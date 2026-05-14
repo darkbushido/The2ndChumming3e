@@ -96,7 +96,91 @@ Correct damage is reported.
 - Weight is tracked so leave anything you don't need in storage but clicking on the home icon.
 ---
 ## Compendiums
-- Compendiums for all sorts of weapons, gear, spells, cyberware etc are all installed. Just import them into your items. 
+Compendiums for weapons, spells, cyberware, bioware, adept powers, melee, armour and matrix programs are bundled with the system.
+
+### Compendium picker
+When you click an **Add** button on an actor sheet (e.g. **+ Add Firearm**, **+ Add Spell**), the system automatically searches every Item compendium pack belonging to this system for entries of that item type. If any are found, a searchable picker dialog appears — type to filter, select an item, and click **Add** to import it directly onto the actor with all fields pre-filled. A **— Create blank —** option is always available at the bottom if you want to start from scratch.
+
+**Adding a new pack:** Declare it in `system.json` as a `"type": "Item"` pack and add a `flags` entry listing the item type(s) it contains. The picker reads this flag — no code changes needed, but a full Foundry restart is required after editing `system.json`.
+
+```json
+{
+  "name": "sr3e-armor",
+  "label": "Armor",
+  "path": "packs/sr3e-armor.db",
+  "type": "Item",
+  "system": "The2ndChumming3e",
+  "flags": { "The2ndChumming3e": { "itemTypes": ["armor"] } }
+}
+```
+
+**Pack naming convention:** `sr3e-{plural-category}` (e.g. `sr3e-armor`, `sr3e-ammunition`).
+
+### Existing Item packs
+
+| Pack ID | Label | Item type(s) |
+|---|---|---|
+| `sr3e-adept-powers` | Adept Powers | `adeptpower` |
+| `sr3e-bioware` | Bioware | `bioware` |
+| `sr3e-cyberware` | Cyberware | `cyberware` |
+| `sr3e-firearms` | Firearms | `firearm` |
+| `sr3e-melee` | Melee Weapons | `melee` |
+| `sr3e-projectiles` | Projectile Weapons | `projectile`, `thrown` |
+| `sr3e-spells` | Spells | `spell` |
+| `sr3e-programs` | Matrix Programs | `program` |
+| `sr3e-vehicle-mods` | Vehicle Mods | vehicle item types |
+| `sr3e-vehicle-weapons` | Vehicle Weapons | vehicle item types |
+
+**Planned (not yet created):** `sr3e-armor`, `sr3e-ammunition`, `sr3e-gear`, `sr3e-cyberdecks`. Until these packs exist, clicking **+ Add Armor** etc. will create a blank item as before.
+
+### Editing compendium packs
+All compendium packs are maintained as JSON files in `src/packs/`. Requires the [Foundry CLI](https://github.com/foundryvtt/foundryvtt-cli) installed globally:
+```
+npm install -g @foundryvtt/foundryvtt-cli
+```
+
+**Unpack** (LevelDB → JSON — do this before editing, or to pull in changes made via the Foundry UI):
+```
+fvtt package unpack sr3e-adept-powers    --inputDirectory packs --outputDirectory src/packs
+fvtt package unpack sr3e-armor           --inputDirectory packs --outputDirectory src/packs
+fvtt package unpack sr3e-bioware         --inputDirectory packs --outputDirectory src/packs
+fvtt package unpack sr3e-cyberdecks      --inputDirectory packs --outputDirectory src/packs
+fvtt package unpack sr3e-cyberware       --inputDirectory packs --outputDirectory src/packs
+fvtt package unpack sr3e-drones          --inputDirectory packs --outputDirectory src/packs
+fvtt package unpack sr3e-firearms        --inputDirectory packs --outputDirectory src/packs
+fvtt package unpack sr3e-melee           --inputDirectory packs --outputDirectory src/packs
+fvtt package unpack sr3e-programs        --inputDirectory packs --outputDirectory src/packs
+fvtt package unpack sr3e-projectiles     --inputDirectory packs --outputDirectory src/packs
+fvtt package unpack sr3e-sample-characters --inputDirectory packs --outputDirectory src/packs
+fvtt package unpack sr3e-spells          --inputDirectory packs --outputDirectory src/packs
+fvtt package unpack sr3e-vehicle-mods    --inputDirectory packs --outputDirectory src/packs
+fvtt package unpack sr3e-vehicle-weapons --inputDirectory packs --outputDirectory src/packs
+fvtt package unpack sr3e-vehicles        --inputDirectory packs --outputDirectory src/packs
+```
+
+**Add or edit entries:** create/modify JSON files in `src/packs/<pack-name>/`. The `_id` field inside each file is the entry's identity — keep it stable. The filename is for your organisation only.
+
+**Repack** (JSON → LevelDB — do this when done editing, before committing):
+```
+fvtt package pack sr3e-adept-powers    --inputDirectory src/packs --outputDirectory packs
+fvtt package pack sr3e-armor           --inputDirectory src/packs --outputDirectory packs
+fvtt package pack sr3e-bioware         --inputDirectory src/packs --outputDirectory packs
+fvtt package pack sr3e-cyberdecks      --inputDirectory src/packs --outputDirectory packs
+fvtt package pack sr3e-cyberware       --inputDirectory src/packs --outputDirectory packs
+fvtt package pack sr3e-drones          --inputDirectory src/packs --outputDirectory packs
+fvtt package pack sr3e-firearms        --inputDirectory src/packs --outputDirectory packs
+fvtt package pack sr3e-melee           --inputDirectory src/packs --outputDirectory packs
+fvtt package pack sr3e-programs        --inputDirectory src/packs --outputDirectory packs
+fvtt package pack sr3e-projectiles     --inputDirectory src/packs --outputDirectory packs
+fvtt package pack sr3e-sample-characters --inputDirectory src/packs --outputDirectory packs
+fvtt package pack sr3e-spells          --inputDirectory src/packs --outputDirectory packs
+fvtt package pack sr3e-vehicle-mods    --inputDirectory src/packs --outputDirectory packs
+fvtt package pack sr3e-vehicle-weapons --inputDirectory src/packs --outputDirectory packs
+fvtt package pack sr3e-vehicles        --inputDirectory src/packs --outputDirectory packs
+```
+
+Then commit the updated `packs/<pack-name>/` files as normal. `src/packs/` is the source of truth — never edit via the Foundry UI without unpacking first, or those changes will be overwritten on the next repack.
+
 ---
 ## Nullsheen importer macro
 - if you use nullsheen dot com's chargen app you can import the resulting json download directly into this system using the suitably named macro. Just click it and follow the prompts.

@@ -14,7 +14,8 @@
       "Bash(node convert-drones.js)",
       "Bash(awk 'NR%30==1')",
       "Bash(node convert-vehicles.js)",
-      "Bash(node convert-cyberware.js)"
+      "Bash(node convert-cyberware.js)",
+      "Bash(python -m json.tool)"
     ]
   }
 }

@@ -384,6 +384,14 @@ Hooks.on('renderCombatTracker', (_app, html) => {
   }
 });
 
+// Auto-flag actors imported from any compendium as templates so they don't
+// pollute combat targeting dialogs until the GM explicitly deploys a copy.
+Hooks.on('preCreateActor', (actor) => {
+  if (actor._stats?.compendiumSource) {
+    actor.updateSource({ 'flags.The2ndChumming3e.isTemplate': true });
+  }
+});
+
 // Re-render combat tracker when a vehicle actor's control mode changes so the
 // VCR / RCD / Auto badge in the sidebar stays current without needing a turn advance.
 Hooks.on('updateActor', (actor, changes) => {

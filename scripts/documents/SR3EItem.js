@@ -699,7 +699,9 @@ export class SR3EItem extends Item {
    * Returns array of Actor objects (may include vehicles), or null if cancelled.
    */
   static async _promptTargetsAoE(attacker) {
-    const candidates = game.actors.contents.filter(a => a.id !== attacker.id);
+    const candidates = game.actors.contents.filter(a =>
+      a.id !== attacker.id && !a.getFlag('The2ndChumming3e', 'isTemplate')
+    );
     if (candidates.length === 0) {
       ui.notifications.warn('No valid targets found.');
       return null;
@@ -916,7 +918,9 @@ export class SR3EItem extends Item {
       if (type === 'vehicle') return `<span style="font-size:10px;color:var(--sr-accent)"> [Vehicle]</span>`;
       return '';
     };
-    const candidates = game.actors.contents.filter(a => a.id !== attacker.id);
+    const candidates = game.actors.contents.filter(a =>
+      a.id !== attacker.id && !a.getFlag('The2ndChumming3e', 'isTemplate')
+    );
 
     if (!candidates.length) {
       ui.notifications.warn('No valid targets found.');
@@ -1163,7 +1167,7 @@ _getDefaultAttribute() {
    */
   static async _promptTargetsMulti(attacker, spellType, spellTarget, force) {
     const candidates = game.actors.contents
-      .filter(a => a.id !== attacker.id && a.type !== 'vehicle');
+      .filter(a => a.id !== attacker.id && a.type !== 'vehicle' && !a.getFlag('The2ndChumming3e', 'isTemplate'));
     if (candidates.length === 0) {
       ui.notifications.warn('No valid targets found.');
       return null;

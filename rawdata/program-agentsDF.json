@@ -1,0 +1,69 @@
+{
+  "programmingAgents": {
+    "baseRules": {
+      "startingMultiplier": 1,
+      "defaultSkills": ["Computer", "Cybercombat"],
+      "defaultAttack": {
+        "damageLevel": "Light",
+        "damageType": "Overload"
+      },
+      "skillConstraint": "No skill can exceed Agent's Rating",
+      "programmingTest": "Programming vs Agent's desired rating"
+    },
+    "addOns": {
+      "skills": [
+        { "category": "Biotech", "multiplierIncrease": 1 },
+        { "category": "Build/Repair", "multiplierIncrease": 1 },
+        { "category": "Electronics", "multiplierIncrease": 1 },
+        { "category": "Etiquette", "multiplierIncrease": 1 },
+        { "category": "Gunnery", "multiplierIncrease": 1 },
+        { "category": "Hacking", "multiplierIncrease": 1 },
+        { "category": "Instruction", "multiplierIncrease": 1 },
+        { "category": "Knowledge", "multiplierIncrease": 1 },
+        { "category": "Language", "multiplierIncrease": 1 },
+        { "category": "Negotiation", "multiplierIncrease": 1 },
+        { "category": "Pilot", "subcategory": "[Vehicle]", "multiplierIncrease": 1 }
+      ],
+      "utilities": [
+        { "name": "Analyze", "multiplierIncrease": 3 },
+        { "name": "Armor", "multiplierIncrease": 3 },
+        { "name": "Attack", "variant": "Light (Overload)", "multiplierIncrease": 2 },
+        { "name": "Attack", "variant": "Moderate (Overload)", "multiplierIncrease": 3 },
+        { "name": "Attack", "variant": "Severe (Overload)", "multiplierIncrease": 4 },
+        { "name": "Attack", "variant": "Deadly (Overload)", "multiplierIncrease": 5 },
+        { "name": "Attack", "variant": "Nosebleed: Light (Biofeedback)", "multiplierIncrease": 5 },
+        { "name": "Attack", "variant": "Blackout: Moderate (Biofeedback)", "multiplierIncrease": 10 },
+        { "name": "Attack", "variant": "Killjoy: Severe (Biofeedback)", "multiplierIncrease": 15 },
+        { "name": "Attack", "variant": "Black Hammer: Deadly (Biofeedback)", "multiplierIncrease": 20 },
+        { "name": "Decrypt", "multiplierIncrease": 4 },
+        { "name": "Encrypt", "multiplierIncrease": 3 },
+        { "name": "Exploit", "multiplierIncrease": 5 },
+        { "name": "Jamboree", "multiplierIncrease": 1 },
+        { "name": "Kill Switch", "multiplierIncrease": 5 },
+        { "name": "Lock-On", "multiplierIncrease": 6 },
+        { "name": "Medic", "multiplierIncrease": 4 },
+        { "name": "Saboteur", "multiplierIncrease": 4 },
+        { "name": "Shield", "multiplierIncrease": 3 },
+        { "name": "Signal Booster", "multiplierIncrease": 1 },
+        { "name": "Sleaze", "multiplierIncrease": 4 },
+        { "name": "Slow", "multiplierIncrease": 4 },
+        { "name": "Smoke Screen", "multiplierIncrease": 4 },
+        { "name": "Snoop", "multiplierIncrease": 3 }
+      ],
+      "specialAbilities": [
+        { "name": "Authenticate", "multiplierIncrease": 3, "requiresGrading": true },
+        { "name": "Corrupt and Burn", "multiplierIncrease": 5, "requiresGrading": true },
+        { "name": "Corruption", "multiplierIncrease": 3, "requiresGrading": true },
+        { "name": "Erosion", "multiplierIncrease": "Varies", "requiresGrading": true },
+        { "name": "Guardian", "multiplierIncrease": 1, "requiresGrading": true },
+        { "name": "Infiltration", "multiplierIncrease": "Varies", "requiresGrading": true },
+        { "name": "Instance", "multiplierIncrease": 2, "requiresGrading": true },
+        { "name": "Respawn", "multiplierIncrease": 8, "requiresGrading": true }
+      ]
+    },
+    "icAgentGradingRequirement": {
+      "description": "IC Agents may only be programmed with special abilities if graded for use with an official Security Sheaf.",
+      "grayAndBlackRequirement": "Gray and Black IC require host system to include Mainframe Support Module before inclusion in Security Sheaf."
+    }
+  }
+}

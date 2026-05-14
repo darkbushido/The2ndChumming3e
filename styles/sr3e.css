@@ -2897,3 +2897,87 @@ label.act-field input[type=number] {
   transition: all 0.1s;
 }
 .sr-veh-unlink:hover { border-color: var(--sr-red); color: var(--sr-red); }
+
+/* ── Template actor controls ─────────────────────────────── */
+.sr3e-template-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+.sr3e-template-badge {
+  color: var(--sr-amber);
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: .07em;
+  border: 1px solid var(--sr-amber);
+  border-radius: var(--r);
+  padding: 1px 5px;
+}
+.sr3e-template-btn {
+  background: transparent;
+  border: 1px solid var(--sr-border);
+  color: var(--sr-muted);
+  font-size: 10px;
+  border-radius: var(--r);
+  padding: 2px 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.sr3e-template-btn:hover { border-color: var(--sr-amber); color: var(--sr-amber); }
+.sr3e-template-btn-remove:hover { border-color: var(--sr-red); color: var(--sr-red); }
+.sr3e-template-mark { opacity: 0.45; }
+.sr3e-template-mark:hover { opacity: 1; }
+
+/* ── Compendium picker button (item sheet header) ────────── */
+.btn-compendium-pick {
+  font-size: 0.78em;
+  padding: 2px 8px;
+  background: transparent;
+  border: 1px solid var(--sr-border);
+  border-radius: var(--r);
+  color: var(--sr-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  align-self: center;
+}
+.btn-compendium-pick:hover { border-color: var(--sr-accent); color: var(--sr-accent); }
+
+/* ── Compendium item picker dialog ───────────────────────── */
+.sr3e-pack-picker { display: flex; flex-direction: column; gap: 6px; }
+.sr3e-pack-picker #sr3e-pack-filter {
+  width: 100%;
+  padding: 4px 6px;
+  background: var(--sr-surface);
+  border: 1px solid var(--sr-border);
+  border-radius: var(--r);
+  color: var(--sr-text);
+}
+.sr3e-pack-list {
+  max-height: 280px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border: 1px solid var(--sr-border);
+  border-radius: var(--r);
+  padding: 4px;
+  background: var(--sr-bg);
+}
+.sr3e-pack-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: var(--r);
+  cursor: pointer;
+}
+.sr3e-pack-item:hover { background: var(--sr-surface); }
+.sr3e-pack-item input[type="radio"] { accent-color: var(--sr-accent); }
+.sr3e-pack-blank {
+  color: var(--sr-muted);
+  font-style: italic;
+  margin-top: 4px;
+  border-top: 1px solid var(--sr-border);
+  padding-top: 6px;
+}

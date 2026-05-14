@@ -59,6 +59,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         toggleVehicleMode: SR3EActorSheet._onToggleVehicleMode,
         openVehicle:       SR3EActorSheet._onOpenVehicle,
         toggleStored:      SR3EActorSheet._onToggleStored,
+        toggleTemplate:    SR3EActorSheet._onToggleTemplate,
+        deployTemplate:    SR3EActorSheet._onDeployTemplate,
     }
   };
 
@@ -271,7 +273,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   _header(actor, sys) {
-    const w = sys.wounds ?? {};
+    const w          = sys.wounds ?? {};
+    const isTemplate = !!actor.getFlag('The2ndChumming3e', 'isTemplate');
 
     const str     = sys.attributes?.strength?.value ?? 0;
     const carried = this._carryWeight(actor);
@@ -291,7 +294,14 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <div class="header-fields">
           <div class="header-top">
             <input class="actor-name" type="text" name="name" value="${actor.name}"/>
-
+            <div class="sr3e-template-controls">
+              ${isTemplate
+                ? `<span class="sr3e-template-badge">TEMPLATE</span>
+                   <button type="button" class="sr3e-template-btn" data-action="deployTemplate" title="Create a working copy with the template flag removed">Deploy Copy</button>
+                   <button type="button" class="sr3e-template-btn sr3e-template-btn-remove" data-action="toggleTemplate" title="Remove template flag — actor will appear in combat targeting">Remove Flag</button>`
+                : `<button type="button" class="sr3e-template-btn sr3e-template-mark" data-action="toggleTemplate" title="Mark as template — hides from combat targeting dialogs">Mark as Template</button>`
+              }
+            </div>
           </div>
           <div class="wound-tracks">
             ${this._woundTrack('stun', 'Stun', w.stun?.value ?? 0, 10)}
@@ -997,6 +1007,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     if (deck) {
       const da  = deck.system.attributes   ?? {};
       const ds  = deck.system.derivedStats  ?? {};
+      const totalSlots  = da.mpcp?.base ?? 0;
+      const burnedCount = (deck.system.utilitySlotsArray ?? []).filter(s => s.burned).length;
       const mcm = deck.system.damage?.matrixConditionMonitor ?? { boxes: 10, current: 0 };
       const mcmBoxes = Array.from({ length: mcm.boxes ?? 10 }, (_, i) => {
         const filled = (i + 1) <= (mcm.current ?? 0);
@@ -1018,7 +1030,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           <div class="derived-block"><span class="derived-label">Firewall</span><span class="derived-value">${da.firewall?.base ?? 0}</span></div>
           <div class="derived-block"><span class="derived-label">Response</span><span class="derived-value">${response}</span></div>
           <div class="derived-block"><span class="derived-label">Memory</span><span class="derived-value">${da.memory?.used ?? 0}/${da.memory?.total ?? 0} Mp</span></div>
-          <div class="derived-block"><span class="derived-label">Slots</span><span class="derived-value">${da.utilitySlots?.available ?? 0}/${da.utilitySlots?.total ?? 0}</span></div>
+          <div class="derived-block"><span class="derived-label">Slots</span><span class="derived-value">${totalSlots - burnedCount}/${totalSlots}</span></div>
           <div class="derived-block"><span class="derived-label">DTR</span><span class="derived-value">${da.dataTransferRate?.value ?? 0} Mp/CT</span></div>
           <div class="derived-block"><span class="derived-label">Flux</span><span class="derived-value">${da.fluxRating?.value ?? 1}${da.fluxRating?.wireless ? ' ✦' : ''}</span></div>
           <div class="derived-block"><span class="derived-label">Hack Pool +</span><span class="derived-value">${ds.hackingPoolBonus ?? 0}</span></div>
@@ -1029,8 +1041,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           <div style="display:flex;gap:3px">${mcmBoxes}</div>
         </div>`;
 
-      // Utility slots — generated from total slot count, merged with stored array
-      const totalSlots   = da.utilitySlots?.total ?? 0;
+      // Utility slots — slot count auto-derived from MPCP rating (totalSlots/burnedCount set above)
       const memTotal     = da.memory?.total ?? 0;
       const memUsed      = da.memory?.used  ?? 0;
       const memOver      = memUsed > memTotal && memTotal > 0;
@@ -1092,12 +1103,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         </div>` : '';
 
       utilitySlotSection = totalSlots > 0 ? `
-        <h3 class="section-hdr" style="margin-top:0.8rem">Utility Slots — ${deck.name} (${totalSlots} slots)</h3>
+        <h3 class="section-hdr" style="margin-top:0.8rem">Utility Slots — ${deck.name} (${totalSlots - burnedCount}/${totalSlots} slots)</h3>
         ${memBar}
-        <div class="list-header"><span>#</span><span>Burn</span><span>Program</span><span>Type</span><span>Rtg</span><span>Size</span><span></span><span></span></div>
+        <div class="list-header"><span>#</span><span>Burn</span><span>Program</span><span>Type</span><span>Rtg</span><span>Size</span><span>Deg.</span><span></span></div>
         ${slotRows}` : `
         <h3 class="section-hdr" style="margin-top:0.8rem">Utility Slots — ${deck.name}</h3>
-        <p class="empty-list">Set Utility Slots Total on the cyberdeck to enable slots.</p>`;
+        <p class="empty-list">Set MPCP rating on the cyberdeck to enable slots.</p>`;
     }
 
     // --- Programs list (draggable into utility slots) ---
@@ -1107,7 +1118,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <span class="item-name">${p.name}</span>
         <span class="item-cell">${p.system.type || '—'}</span>
         <span class="item-cell">${p.system.category || '—'}</span>
-        <span class="item-cell">${p.system.multiplier ?? 0}×</span>
+        <span class="item-cell">${p.system.rating ?? 0}</span>
+        <span class="item-cell">${p.system.sizeMp ?? 0} Mp</span>
         <span class="item-cell">${p.system.degradable ? '⚠ Deg.' : ''}</span>
         ${this._itemControls(p.id, false, 'rollWeapon', false)}
       </div>`).join('') : '<p class="empty-list">No programs.</p>';
@@ -1130,7 +1142,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ${deck ? deckStats : ''}
       ${utilitySlotSection}
       <h3 class="section-hdr" style="margin-top:1rem">Programs</h3>
-      <div class="list-header"><span>Name</span><span>Type</span><span>Category</span><span>Mult</span><span>Deg.</span><span></span></div>
+      <div class="list-header"><span>Name</span><span>Type</span><span>Category</span><span>Rtg</span><span>Size</span><span>Deg.</span><span></span></div>
       ${progRows}
       <div style="display:flex;gap:8px;margin-top:8px">
         <button type="button" class="btn-add" data-action="itemCreate" data-type="cyberdeck">+ Add Cyberdeck</button>
@@ -2086,6 +2098,22 @@ static async _onHealDamage(ev, target) {
 
   static async _onRollResistDamage(ev, _target) {
     await this.actor.resistDamagePrompt(ev.shiftKey);
+  }
+
+  static async _onToggleTemplate(_ev, _target) {
+    const actor   = this.actor;
+    const current = !!actor.getFlag('The2ndChumming3e', 'isTemplate');
+    await actor.setFlag('The2ndChumming3e', 'isTemplate', !current);
+  }
+
+  static async _onDeployTemplate(_ev, _target) {
+    const actor = this.actor;
+    const data  = actor.toObject();
+    delete data._id;
+    data.name = `${data.name} (copy)`;
+    if (data.flags?.['The2ndChumming3e']) delete data.flags['The2ndChumming3e'].isTemplate;
+    const newActor = await Actor.create(data);
+    newActor.sheet.render(true);
   }
 
   /* ------------------------------------------------------------------ */

@@ -1,0 +1,1019 @@
+{
+  "name": "\"Ironwood\" Mbeki",
+  "type": "character",
+  "system": {
+    "metatype": "troll",
+    "gender": "male",
+    "age": "29",
+    "nuyen": 12000,
+    "karma": 4,
+    "totalKarma": 38,
+    "magicTradition": "Shamanic",
+    "magicType": "Full",
+    "magicTotem": "Gator",
+    "biography": "<p>Nobody summoned Ironwood to shadowrunning. He arrived the way Gator arrives — patient, submerged, and already in exactly the right position when things went wrong for everyone else. The Ork Underground put him in contact with the right fixer; the fixer has not yet stopped questioning this decision.</p><p>Talks less than he looks like he should. Hits considerably harder.</p>",
+    "notes": "<p><strong>Spell Pool:</strong> 7 · <strong>Astral Pool:</strong> 4 · <strong>Combat Pool:</strong> 6<br><strong>Initiative:</strong> 3 + 1d6 · <strong>Essence:</strong> 6 (no cyberware)<br><strong>Totem:</strong> Gator — +2 dice to Combat spells, −2 to Detection spells.<br><strong>Racial:</strong> Troll natural armour +4B/+4I (add manually to soak). Unarmed reach +1. Thermographic vision.<br><strong>Staff damage:</strong> (STR+3)M = <strong>11M</strong>, Reach 2.<br><strong>Tip:</strong> Equip Armor Jacket and Staff. Ironwood wades into close combat while his spells suppress ranged threats.</p>",
+    "attributes": {
+      "body": {
+        "base": 8,
+        "value": 8,
+        "mod": 0,
+        "force": 0
+      },
+      "quickness": {
+        "base": 2,
+        "value": 2,
+        "mod": 0,
+        "force": 0
+      },
+      "strength": {
+        "base": 8,
+        "value": 8,
+        "mod": 0,
+        "force": 0
+      },
+      "charisma": {
+        "base": 2,
+        "value": 2,
+        "mod": 0,
+        "force": 0
+      },
+      "intelligence": {
+        "base": 4,
+        "value": 4,
+        "mod": 0,
+        "force": 0
+      },
+      "willpower": {
+        "base": 6,
+        "value": 6,
+        "mod": 0,
+        "force": 0
+      },
+      "essence": {
+        "base": 6,
+        "value": 6,
+        "force": 0
+      },
+      "magic": {
+        "base": 5,
+        "value": 5,
+        "mod": 0,
+        "force": 0
+      },
+      "reaction": {
+        "base": 3,
+        "value": 3,
+        "reactionBonus": 0,
+        "diceBonus": 0,
+        "override": false,
+        "force": 0
+      }
+    },
+    "height": "",
+    "weight": "",
+    "ethnicity": "",
+    "reputation": 0,
+    "notoriety": 0,
+    "streetCred": 0,
+    "karmaPool": 0,
+    "hackingBonus": 0,
+    "initiativeDiceBonus": 0,
+    "equippedArmor": "",
+    "equippedMelee": "",
+    "activeVCRItemId": "",
+    "equippedCyberdeck": "",
+    "matrixUserMode": "",
+    "astralMode": "",
+    "magicElement": "",
+    "combatPoolSpent": 0,
+    "combatPoolMod": 0,
+    "spellPoolSpent": 0,
+    "spellPoolMod": 0,
+    "astralPoolSpent": 0,
+    "astralPoolMod": 0,
+    "spellDefensePool": 0,
+    "spellDefenseSorceryDice": 0,
+    "wounds": {
+      "stun": {
+        "value": 0,
+        "max": 10
+      },
+      "physical": {
+        "value": 0,
+        "max": 10
+      },
+      "overflow": {
+        "value": 0
+      }
+    },
+    "linkedVehicles": []
+  },
+  "_id": "oDzzmnAuSXlNDazF",
+  "img": "icons/svg/mystery-man.svg",
+  "prototypeToken": {
+    "name": "\"Ironwood\" Mbeki",
+    "displayName": 0,
+    "actorLink": false,
+    "width": 1,
+    "height": 1,
+    "depth": 1,
+    "texture": {
+      "src": "icons/svg/mystery-man.svg",
+      "anchorX": 0.5,
+      "anchorY": 0.5,
+      "fit": "contain",
+      "scaleX": 1,
+      "scaleY": 1,
+      "tint": "#ffffff",
+      "alphaThreshold": 0.75
+    },
+    "lockRotation": false,
+    "rotation": 0,
+    "alpha": 1,
+    "disposition": -1,
+    "displayBars": 0,
+    "bar1": {
+      "attribute": null
+    },
+    "bar2": {
+      "attribute": null
+    },
+    "light": {
+      "negative": false,
+      "priority": 0,
+      "alpha": 0.5,
+      "angle": 360,
+      "bright": 0,
+      "color": null,
+      "coloration": 1,
+      "dim": 0,
+      "attenuation": 0.5,
+      "luminosity": 0.5,
+      "saturation": 0,
+      "contrast": 0,
+      "shadows": 0,
+      "animation": {
+        "type": null,
+        "speed": 5,
+        "intensity": 5,
+        "reverse": false
+      },
+      "darkness": {
+        "min": 0,
+        "max": 1
+      }
+    },
+    "sight": {
+      "enabled": false,
+      "range": 0,
+      "angle": 360,
+      "visionMode": "basic",
+      "color": null,
+      "attenuation": 0.1,
+      "brightness": 0,
+      "saturation": 0,
+      "contrast": 0
+    },
+    "detectionModes": {},
+    "occludable": {
+      "radius": 0
+    },
+    "ring": {
+      "enabled": false,
+      "colors": {
+        "ring": null,
+        "background": null
+      },
+      "effects": 1,
+      "subject": {
+        "scale": 1,
+        "texture": null
+      }
+    },
+    "turnMarker": {
+      "mode": 1,
+      "animation": null,
+      "src": null,
+      "disposition": false
+    },
+    "movementAction": null,
+    "flags": {},
+    "randomImg": false,
+    "appendNumber": false,
+    "prependAdjective": false
+  },
+  "items": [
+    {
+      "name": "Unarmed Combat",
+      "type": "skill",
+      "system": {
+        "skillName": "Unarmed Combat",
+        "rating": 6,
+        "linkedAttribute": "quickness",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "fyTxOokNIC8tOPAJ",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010201,
+        "modifiedTime": 1777292010201,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!oDzzmnAuSXlNDazF.fyTxOokNIC8tOPAJ"
+    },
+    {
+      "name": "Sorcery",
+      "type": "skill",
+      "system": {
+        "skillName": "Sorcery",
+        "rating": 6,
+        "linkedAttribute": "intelligence",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "XCqPwWINF2KogKmm",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010201,
+        "modifiedTime": 1777292010201,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!oDzzmnAuSXlNDazF.XCqPwWINF2KogKmm"
+    },
+    {
+      "name": "Conjuring",
+      "type": "skill",
+      "system": {
+        "skillName": "Conjuring",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "XZDQO35yeEA7qrsL",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010201,
+        "modifiedTime": 1777292010201,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!oDzzmnAuSXlNDazF.XZDQO35yeEA7qrsL"
+    },
+    {
+      "name": "Intimidation",
+      "type": "skill",
+      "system": {
+        "skillName": "Intimidation",
+        "rating": 5,
+        "linkedAttribute": "charisma",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "n79RIrNNC1swwSM3",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010201,
+        "modifiedTime": 1777292010201,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!oDzzmnAuSXlNDazF.n79RIrNNC1swwSM3"
+    },
+    {
+      "name": "Ork Underground (Seattle)",
+      "type": "skill",
+      "system": {
+        "skillName": "Ork Underground (Seattle)",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "knowledge",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "kjWhT5qESmm8sMHp",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010201,
+        "modifiedTime": 1777292010201,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!oDzzmnAuSXlNDazF.kjWhT5qESmm8sMHp"
+    },
+    {
+      "name": "Armed Combat",
+      "type": "skill",
+      "system": {
+        "skillName": "Armed Combat",
+        "rating": 5,
+        "linkedAttribute": "quickness",
+        "category": "active",
+        "specialisation": "Pole Arms",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "LSt9C9BoTjgAITiO",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010201,
+        "modifiedTime": 1777292010201,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!oDzzmnAuSXlNDazF.LSt9C9BoTjgAITiO"
+    },
+    {
+      "name": "Awakened Paracritters",
+      "type": "skill",
+      "system": {
+        "skillName": "Awakened Paracritters",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "knowledge",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "sVopuPLWNa9xvJcq",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010201,
+        "modifiedTime": 1777292010201,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!oDzzmnAuSXlNDazF.sVopuPLWNa9xvJcq"
+    },
+    {
+      "name": "Athletics",
+      "type": "skill",
+      "system": {
+        "skillName": "Athletics",
+        "rating": 4,
+        "linkedAttribute": "quickness",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "KnvM9IVIfgeWtVRl",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010201,
+        "modifiedTime": 1777292010201,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!oDzzmnAuSXlNDazF.KnvM9IVIfgeWtVRl"
+    },
+    {
+      "name": "Aura Reading",
+      "type": "skill",
+      "system": {
+        "skillName": "Aura Reading",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "4EMTw6ziOnPGZPHN",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010201,
+        "modifiedTime": 1777292010201,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!oDzzmnAuSXlNDazF.4EMTw6ziOnPGZPHN"
+    },
+    {
+      "name": "English",
+      "type": "skill",
+      "system": {
+        "skillName": "English",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "language",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "Ukh2v8WjEPqNQnde",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010201,
+        "modifiedTime": 1777292010201,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!oDzzmnAuSXlNDazF.Ukh2v8WjEPqNQnde"
+    },
+    {
+      "name": "Urban Terrain Tactics",
+      "type": "skill",
+      "system": {
+        "skillName": "Urban Terrain Tactics",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "knowledge",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "3M0NZghOOs3LTKK3",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010201,
+        "modifiedTime": 1777292010201,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!oDzzmnAuSXlNDazF.3M0NZghOOs3LTKK3"
+    },
+    {
+      "name": "Or'zet",
+      "type": "skill",
+      "system": {
+        "skillName": "Or'zet",
+        "rating": 3,
+        "linkedAttribute": "intelligence",
+        "category": "language",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "7ubIZ5DgFXGa0Y1B",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010201,
+        "modifiedTime": 1777292010201,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!oDzzmnAuSXlNDazF.7ubIZ5DgFXGa0Y1B"
+    },
+    {
+      "name": "Stunball",
+      "type": "spell",
+      "system": {
+        "category": "Combat",
+        "type": "Mana",
+        "range": "LOS (Area)",
+        "damage": "M",
+        "duration": "Instant",
+        "drain": "(F/2+1)S",
+        "target": "",
+        "bookPage": "",
+        "description": ""
+      },
+      "_id": "YJFxO61NB5jJ1GLj",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010201,
+        "modifiedTime": 1777292010201,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!oDzzmnAuSXlNDazF.YJFxO61NB5jJ1GLj"
+    },
+    {
+      "name": "Powerball",
+      "type": "spell",
+      "system": {
+        "category": "Combat",
+        "type": "Physical",
+        "range": "LOS (Area)",
+        "damage": "S",
+        "duration": "Instant",
+        "drain": "(F/2+2)D",
+        "target": "",
+        "bookPage": "",
+        "description": ""
+      },
+      "_id": "JstsVCfizd40VS2Z",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010201,
+        "modifiedTime": 1777292010201,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!oDzzmnAuSXlNDazF.JstsVCfizd40VS2Z"
+    },
+    {
+      "name": "Swahili",
+      "type": "skill",
+      "system": {
+        "skillName": "Swahili",
+        "rating": 3,
+        "linkedAttribute": "intelligence",
+        "category": "language",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "Kv5sUQmWNlwZ9whh",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010201,
+        "modifiedTime": 1777292010201,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!oDzzmnAuSXlNDazF.Kv5sUQmWNlwZ9whh"
+    },
+    {
+      "name": "Troll-Sized Staff",
+      "type": "melee",
+      "system": {
+        "category": "POL",
+        "damage": "11M",
+        "reach": 2,
+        "concealability": "-",
+        "cost": 200,
+        "weight": 0,
+        "availability": "",
+        "streetIndex": "",
+        "bookPage": "",
+        "legal": true,
+        "notes": "",
+        "isFocus": false,
+        "focusActive": false
+      },
+      "_id": "wq1otdD1n0sDwEiO",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010201,
+        "modifiedTime": 1777292010201,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!oDzzmnAuSXlNDazF.wq1otdD1n0sDwEiO"
+    },
+    {
+      "name": "Clout",
+      "type": "spell",
+      "system": {
+        "category": "Combat",
+        "type": "Physical",
+        "range": "Touch",
+        "damage": "L",
+        "duration": "Instant",
+        "drain": "(F/2)M",
+        "target": "",
+        "bookPage": "",
+        "description": ""
+      },
+      "_id": "LL9ixGa6knIIsGA8",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010201,
+        "modifiedTime": 1777292010201,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!oDzzmnAuSXlNDazF.LL9ixGa6knIIsGA8"
+    },
+    {
+      "name": "Troll-Sized Knife",
+      "type": "melee",
+      "system": {
+        "category": "EDG",
+        "damage": "9M",
+        "reach": 0,
+        "concealability": "-",
+        "cost": 90,
+        "weight": 0,
+        "availability": "",
+        "streetIndex": "",
+        "bookPage": "",
+        "legal": true,
+        "notes": "",
+        "isFocus": false,
+        "focusActive": false
+      },
+      "_id": "oVDpIg0pXqGFKqB7",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010201,
+        "modifiedTime": 1777292010201,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!oDzzmnAuSXlNDazF.oVDpIg0pXqGFKqB7"
+    },
+    {
+      "name": "Stabilize",
+      "type": "spell",
+      "system": {
+        "category": "Health",
+        "type": "Mana",
+        "range": "Touch",
+        "damage": "",
+        "duration": "Sustained",
+        "drain": "(F/2)M",
+        "target": "",
+        "bookPage": "",
+        "description": ""
+      },
+      "_id": "YbbONIeaoD8vHEmt",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010201,
+        "modifiedTime": 1777292010201,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!oDzzmnAuSXlNDazF.YbbONIeaoD8vHEmt"
+    },
+    {
+      "name": "Armor",
+      "type": "spell",
+      "system": {
+        "category": "Manipulation",
+        "type": "Physical",
+        "range": "Touch",
+        "damage": "",
+        "duration": "Sustained",
+        "drain": "(F/2)M",
+        "target": "",
+        "bookPage": "",
+        "description": ""
+      },
+      "_id": "2OBQmDfzTtgQeFkv",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010201,
+        "modifiedTime": 1777292010201,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!oDzzmnAuSXlNDazF.2OBQmDfzTtgQeFkv"
+    },
+    {
+      "name": "Spirit Focus Rating 3",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 30000,
+        "weight": 0,
+        "description": ""
+      },
+      "_id": "3s2GPlss7Oo0Y93v",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010201,
+        "modifiedTime": 1777292010201,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!oDzzmnAuSXlNDazF.3s2GPlss7Oo0Y93v"
+    },
+    {
+      "name": "Armor Jacket (Troll-Sized)",
+      "type": "armor",
+      "system": {
+        "ballistic": 5,
+        "impact": 3,
+        "concealability": "-",
+        "cost": 1800,
+        "weight": 0,
+        "availability": "",
+        "streetIndex": "",
+        "bookPage": "",
+        "notes": ""
+      },
+      "_id": "1IfENcGbTM2I7F8j",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010201,
+        "modifiedTime": 1777292010201,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!oDzzmnAuSXlNDazF.1IfENcGbTM2I7F8j"
+    }
+  ],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0,
+    "3PGX0kdStjzzMqJx": 3
+  },
+  "flags": {},
+  "_stats": {
+    "coreVersion": "14.360",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.1.0",
+    "createdTime": 1777292010201,
+    "modifiedTime": 1777292010201,
+    "lastModifiedBy": "3PGX0kdStjzzMqJx",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  },
+  "sort": 0,
+  "_key": "!actors!oDzzmnAuSXlNDazF"
+}

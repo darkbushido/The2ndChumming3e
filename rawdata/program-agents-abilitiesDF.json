@@ -1,0 +1,160 @@
+{
+  "agentSpecialAbilities": [
+    {
+      "name": "Authenticate",
+      "action": "Complex",
+      "multiplier": 3,
+      "test": "Computer vs System",
+      "target": "Visible icon",
+      "description": "Validates any and all marks placed on a node.",
+      "effects": [
+        {
+          "successes": 1,
+          "result": "Detects whether users with falsified marks are present in the node (but not which users)."
+        },
+        {
+          "successes": 2,
+          "result": "All falsified marks are rejected and purged from the node. User is denied access to node's prompts for remainder of session or until agent is crashed."
+        }
+      ],
+      "defendedBy": "Mirrors utility"
+    },
+    {
+      "name": "Corrupt and Burn",
+      "action": "Complex",
+      "multiplier": 5,
+      "test": "Hacking vs Sys/Sec",
+      "target": "Visible icon",
+      "description": "More sophisticated version of Corruption. Degrades active utility by 1 point per success. If utility reduced to zero, it Burns the utility slot (rendered useless until repaired).",
+      "defendedBy": "Shield utility",
+      "notes": "Burned slots require Computer (B/R) skill and 100% cost to repair."
+    },
+    {
+      "name": "Corruption",
+      "action": "Complex",
+      "multiplier": 3,
+      "test": "Hacking vs Sys/Sec",
+      "target": "Visible icon",
+      "description": "Degrades an active utility of agent's choice by 1 point for every success scored. Can degrade utilities not normally categorized as degradable.",
+      "effects": [
+        {
+          "condition": "Utility reduced to 0",
+          "result": "No longer available until restored via Boot Utility prompt or reloaded from SCC copy."
+        }
+      ],
+      "defendedBy": "Shield utility"
+    },
+    {
+      "name": "Erosion",
+      "action": "Complex",
+      "multiplier": "Varies by target attribute",
+      "test": "Hacking vs Sys/Sec",
+      "target": "Visible icon (Matrix enabled device)",
+      "description": "Attempts to permanently degrade a specific attribute associated with a Matrix enabled device.",
+      "variants": [
+        {
+          "targetAttribute": "Flux Rating",
+          "multiplier": 3
+        },
+        {
+          "targetAttribute": "MPCP",
+          "multiplier": 5
+        }
+      ],
+      "effects": [
+        {
+          "condition": "Success",
+          "result": "Targeted attribute degraded by 1 point per success (no effect on utility slots or other attributes for active session)."
+        },
+        {
+          "condition": "Attribute degraded to 0",
+          "result": "Icon crashes. Targeted attribute permanently reduced by 1 point."
+        }
+      ],
+      "defendedBy": "Shield utility"
+    },
+    {
+      "name": "Guardian",
+      "action": "Complex",
+      "multiplier": 1,
+      "test": "Computer vs System",
+      "target": "All datafiles and datastreams in host",
+      "description": "Encrypts all datafiles and datastreams currently active within the host up to agent's rating.",
+      "duration": "Persists until agent is dismissed or icon is crashed in cybercombat.",
+      "effects": [
+        {
+          "result": "Thwarts any use of Crack Protections prompt while active."
+        }
+      ]
+    },
+    {
+      "name": "Infiltration",
+      "action": "Complex",
+      "multiplier": "Varies by secondary function",
+      "test": "Hacking vs Sys/Sec (using Access Node prompt)",
+      "target": "Visible icon",
+      "description": "Agent installs itself into target's Memory, toggles visibility to Hidden, and goes dormant for hours equal to its rating.",
+      "constraints": [
+        "If agent's rating or Mp size exceed host's Memory capacity, agent can reduce rating to complete action; otherwise fails."
+      ],
+      "enhancedBy": "Exploit utility",
+      "variants": [
+        {
+          "name": "Infiltration: Memory Lock",
+          "multiplier": 5,
+          "description": "When agent crashes, it unpacks into self-replicating tokens. Infected icon's Memory (including data stores and add-on Memory) is pressed to capacity and rendered inoperable.",
+          "effect": "User cannot move, upload, download, or manipulate any Memory resource until device is purged by Dewormer Protocol."
+        },
+        {
+          "name": "Infiltration: Report",
+          "multiplier": 3,
+          "description": "When agent crashes, it uses Send Transmission to submit incriminating information to Grid Overwatch Division or associated DemiGOD.",
+          "effect": "Increases user's Overwatch score by agent's rating on next Logon. Information received is same as successful Signal Trace."
+        }
+      ],
+      "notes": "If Search and Rendered while dormant, agent can be revealed and engaged in cybercombat."
+    },
+    {
+      "name": "Instance",
+      "action": "Complex",
+      "multiplier": 2,
+      "test": "Hacking vs Sys/Sec",
+      "target": "Visible icon",
+      "description": "Target icon is jumped into an 'instance' (superficially identical copy) of the current node.",
+      "effects": [
+        {
+          "result": "From target's perspective, nothing has changed."
+        },
+        {
+          "result": "Target cannot successfully utilize Jump Grid / Host or Access Node prompts."
+        },
+        {
+          "result": "Attempts to utilize node's specialized prompts automatically fail."
+        },
+        {
+          "result": "Attempting to exit node via pathways returns target to where they started."
+        }
+      ],
+      "duration": "Persists until target utilizes Terminate Session prompt or crashes agent in cybercombat."
+    },
+    {
+      "name": "Respawn",
+      "action": "Exclusive Free Action",
+      "multiplier": 8,
+      "trigger": "Agent's icon is crashed in cybercombat",
+      "description": "Agent reconstitutes itself into a lesser configuration.",
+      "effects": [
+        {
+          "result": "Agent splits and respawns into two identical agents."
+        },
+        {
+          "result": "Each new agent has rating equal to half of original (rounded down)."
+        },
+        {
+          "result": "New agents respawn and roll into initiative at top of next Combat Phase (-10 for each phase already elapsed)."
+        }
+      ],
+      "limitation": "Ability is lost once agent is reduced to rating of 1."
+    }
+  ]
+}

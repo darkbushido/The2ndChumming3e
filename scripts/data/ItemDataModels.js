@@ -350,7 +350,6 @@ export class ProgramData extends foundry.abstract.TypeDataModel {
 export class CyberdeckData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
-      manufacturer:  new StringField({ initial: '' }),
       era:           new StringField({ initial: '' }),
       cost:          new NumberField({ integer: true, initial: 0, min: 0 }),
       streetIndex:   new NumberField({ initial: 0, min: 0 }),

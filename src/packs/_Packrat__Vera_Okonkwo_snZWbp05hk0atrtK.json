@@ -1,0 +1,1534 @@
+{
+  "name": "\"Packrat\" Vera Okonkwo",
+  "type": "character",
+  "system": {
+    "metatype": "dwarf",
+    "gender": "female",
+    "age": "52",
+    "nuyen": 28000,
+    "karma": 12,
+    "totalKarma": 49,
+    "biography": "<p>Former Renraku Electronics field engineer. Spent sixteen years going to the places where expensive corporate hardware had broken down, carrying everything she might need in a single over-engineered backpack. When the megacorp downsized her entire division during a hostile acquisition, she kept the backpack, upgraded the deck, and started offering her services to people whose equipment problems were more legally complicated.</p><p>Has never been on a run where she didn't have the right piece of kit. This has made her indispensable and difficult to travel with.</p>",
+    "notes": "<p><strong>Combat Pool:</strong> 6 · <strong>Initiative:</strong> 4 + 1d6<br><strong>Essence:</strong> 5.9 (Datajack Alpha −0.1)<br><strong>Specialty:</strong> Electronics 7 means she builds, repairs, and modifies all her own gear. Carries two cyberdecks (primary + hot-spare), full repair kit, and programs for every situation.<br><strong>Tip:</strong> Equip Armor Jacket. Vera is the team's electronics support — decking is secondary to her role as the person who keeps everyone's gear running.</p>",
+    "attributes": {
+      "body": {
+        "base": 5,
+        "value": 5,
+        "mod": 0,
+        "force": 0
+      },
+      "quickness": {
+        "base": 3,
+        "value": 3,
+        "mod": 0,
+        "force": 0
+      },
+      "strength": {
+        "base": 4,
+        "value": 4,
+        "mod": 0,
+        "force": 0
+      },
+      "charisma": {
+        "base": 3,
+        "value": 3,
+        "mod": 0,
+        "force": 0
+      },
+      "intelligence": {
+        "base": 5,
+        "value": 5,
+        "mod": 0,
+        "force": 0
+      },
+      "willpower": {
+        "base": 4,
+        "value": 4,
+        "mod": 0,
+        "force": 0
+      },
+      "essence": {
+        "base": 6,
+        "value": 6,
+        "force": 0
+      },
+      "magic": {
+        "base": 0,
+        "value": 0,
+        "mod": 0,
+        "force": 0
+      },
+      "reaction": {
+        "base": 4,
+        "value": 4,
+        "reactionBonus": 0,
+        "diceBonus": 0,
+        "override": false,
+        "force": 0
+      }
+    },
+    "height": "",
+    "weight": "",
+    "ethnicity": "",
+    "reputation": 0,
+    "notoriety": 0,
+    "streetCred": 0,
+    "karmaPool": 0,
+    "hackingBonus": 0,
+    "initiativeDiceBonus": 0,
+    "equippedArmor": "",
+    "equippedMelee": "",
+    "activeVCRItemId": "",
+    "equippedCyberdeck": "",
+    "matrixUserMode": "",
+    "astralMode": "",
+    "magicTradition": "",
+    "magicType": "",
+    "magicTotem": "",
+    "magicElement": "",
+    "combatPoolSpent": 0,
+    "combatPoolMod": 0,
+    "spellPoolSpent": 0,
+    "spellPoolMod": 0,
+    "astralPoolSpent": 0,
+    "astralPoolMod": 0,
+    "spellDefensePool": 0,
+    "spellDefenseSorceryDice": 0,
+    "wounds": {
+      "stun": {
+        "value": 0,
+        "max": 10
+      },
+      "physical": {
+        "value": 0,
+        "max": 10
+      },
+      "overflow": {
+        "value": 0
+      }
+    },
+    "linkedVehicles": []
+  },
+  "_id": "snZWbp05hk0atrtK",
+  "img": "icons/svg/mystery-man.svg",
+  "prototypeToken": {
+    "name": "\"Packrat\" Vera Okonkwo",
+    "displayName": 0,
+    "actorLink": false,
+    "width": 1,
+    "height": 1,
+    "depth": 1,
+    "texture": {
+      "src": "icons/svg/mystery-man.svg",
+      "anchorX": 0.5,
+      "anchorY": 0.5,
+      "fit": "contain",
+      "scaleX": 1,
+      "scaleY": 1,
+      "tint": "#ffffff",
+      "alphaThreshold": 0.75
+    },
+    "lockRotation": false,
+    "rotation": 0,
+    "alpha": 1,
+    "disposition": -1,
+    "displayBars": 0,
+    "bar1": {
+      "attribute": null
+    },
+    "bar2": {
+      "attribute": null
+    },
+    "light": {
+      "negative": false,
+      "priority": 0,
+      "alpha": 0.5,
+      "angle": 360,
+      "bright": 0,
+      "color": null,
+      "coloration": 1,
+      "dim": 0,
+      "attenuation": 0.5,
+      "luminosity": 0.5,
+      "saturation": 0,
+      "contrast": 0,
+      "shadows": 0,
+      "animation": {
+        "type": null,
+        "speed": 5,
+        "intensity": 5,
+        "reverse": false
+      },
+      "darkness": {
+        "min": 0,
+        "max": 1
+      }
+    },
+    "sight": {
+      "enabled": false,
+      "range": 0,
+      "angle": 360,
+      "visionMode": "basic",
+      "color": null,
+      "attenuation": 0.1,
+      "brightness": 0,
+      "saturation": 0,
+      "contrast": 0
+    },
+    "detectionModes": {},
+    "occludable": {
+      "radius": 0
+    },
+    "ring": {
+      "enabled": false,
+      "colors": {
+        "ring": null,
+        "background": null
+      },
+      "effects": 1,
+      "subject": {
+        "scale": 1,
+        "texture": null
+      }
+    },
+    "turnMarker": {
+      "mode": 1,
+      "animation": null,
+      "src": null,
+      "disposition": false
+    },
+    "movementAction": null,
+    "flags": {},
+    "randomImg": false,
+    "appendNumber": false,
+    "prependAdjective": false
+  },
+  "items": [
+    {
+      "name": "Mechanical",
+      "type": "skill",
+      "system": {
+        "skillName": "Mechanical",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "QGqC6wVweuRvi7Am",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.QGqC6wVweuRvi7Am"
+    },
+    {
+      "name": "Decking",
+      "type": "skill",
+      "system": {
+        "skillName": "Decking",
+        "rating": 6,
+        "linkedAttribute": "intelligence",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "OLx1gCADSKFYdfuM",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.OLx1gCADSKFYdfuM"
+    },
+    {
+      "name": "Computer",
+      "type": "skill",
+      "system": {
+        "skillName": "Computer",
+        "rating": 6,
+        "linkedAttribute": "intelligence",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "0teCs52gp0BWbxHo",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.0teCs52gp0BWbxHo"
+    },
+    {
+      "name": "Electronics",
+      "type": "skill",
+      "system": {
+        "skillName": "Electronics",
+        "rating": 7,
+        "linkedAttribute": "intelligence",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "BeZUhmc40L7MOsB3",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.BeZUhmc40L7MOsB3"
+    },
+    {
+      "name": "B/R Electronics",
+      "type": "skill",
+      "system": {
+        "skillName": "B/R Electronics",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "8R1ZXV3FNptg1DYL",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.8R1ZXV3FNptg1DYL"
+    },
+    {
+      "name": "Stealth",
+      "type": "skill",
+      "system": {
+        "skillName": "Stealth",
+        "rating": 3,
+        "linkedAttribute": "quickness",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "oaJYXeseFibwQRmy",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.oaJYXeseFibwQRmy"
+    },
+    {
+      "name": "Renraku Systems Architecture",
+      "type": "skill",
+      "system": {
+        "skillName": "Renraku Systems Architecture",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "knowledge",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "QDwgXCBDvH8W6WDX",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.QDwgXCBDvH8W6WDX"
+    },
+    {
+      "name": "Pistols",
+      "type": "skill",
+      "system": {
+        "skillName": "Pistols",
+        "rating": 3,
+        "linkedAttribute": "quickness",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "Cr5l2jfMahdll5xx",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.Cr5l2jfMahdll5xx"
+    },
+    {
+      "name": "Negotiations",
+      "type": "skill",
+      "system": {
+        "skillName": "Negotiations",
+        "rating": 4,
+        "linkedAttribute": "charisma",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "JJfpGIglAiUQKQcZ",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.JJfpGIglAiUQKQcZ"
+    },
+    {
+      "name": "Drone Systems",
+      "type": "skill",
+      "system": {
+        "skillName": "Drone Systems",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "knowledge",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "S3K5JPeTYAOuYm1p",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.S3K5JPeTYAOuYm1p"
+    },
+    {
+      "name": "English",
+      "type": "skill",
+      "system": {
+        "skillName": "English",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "language",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "WbeBVW3A879ucc8Z",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.WbeBVW3A879ucc8Z"
+    },
+    {
+      "name": "Electronics (Street Market)",
+      "type": "skill",
+      "system": {
+        "skillName": "Electronics (Street Market)",
+        "rating": 6,
+        "linkedAttribute": "intelligence",
+        "category": "knowledge",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "3n85loPNJXODnPhJ",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.3n85loPNJXODnPhJ"
+    },
+    {
+      "name": "Ares Light Fire 70",
+      "type": "firearm",
+      "system": {
+        "category": "LPist",
+        "damage": "6L",
+        "mode": "SA",
+        "ammunition": "16(c)",
+        "concealability": "8",
+        "cost": 350,
+        "accessories": "",
+        "weight": 0,
+        "availability": "",
+        "streetIndex": "",
+        "bookPage": "",
+        "notes": "",
+        "isAoE": false
+      },
+      "_id": "tNO1Nz1ZyulKixng",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.tNO1Nz1ZyulKixng"
+    },
+    {
+      "name": "Corporate Supply Chains",
+      "type": "skill",
+      "system": {
+        "skillName": "Corporate Supply Chains",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "knowledge",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "AWqJgT8L3xovhJ4u",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.AWqJgT8L3xovhJ4u"
+    },
+    {
+      "name": "Japanese",
+      "type": "skill",
+      "system": {
+        "skillName": "Japanese",
+        "rating": 3,
+        "linkedAttribute": "intelligence",
+        "category": "language",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "GwO5FPufyelsZeP9",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.GwO5FPufyelsZeP9"
+    },
+    {
+      "name": "Igbo",
+      "type": "skill",
+      "system": {
+        "skillName": "Igbo",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "language",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "HG04SO2PxH5gwz3W",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.HG04SO2PxH5gwz3W"
+    },
+    {
+      "name": "Armor Jacket",
+      "type": "armor",
+      "system": {
+        "ballistic": 5,
+        "impact": 3,
+        "concealability": "-",
+        "cost": 900,
+        "weight": 0,
+        "availability": "",
+        "streetIndex": "",
+        "bookPage": "",
+        "notes": ""
+      },
+      "_id": "BG45y8wuhWuAOtE1",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.BG45y8wuhWuAOtE1"
+    },
+    {
+      "name": "Datajack",
+      "type": "cyberware",
+      "system": {
+        "essenceCost": 0.1,
+        "grade": "Alpha",
+        "cyberwareCategory": "Headware",
+        "cost": 1000,
+        "rating": 0,
+        "availability": "",
+        "streetIndex": 0,
+        "legalCode": "",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "",
+        "description": ""
+      },
+      "_id": "agqCIMkdxTbl6wbL",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.agqCIMkdxTbl6wbL"
+    },
+    {
+      "name": "Fuchi Cyber-7 (Primary)",
+      "type": "cyberdeck",
+      "system": {
+        "attributes": {
+          "mpcp": {
+            "value": 7,
+            "base": 7,
+            "multiplier": 8,
+            "costPerMp": 300
+          },
+          "firewall": {
+            "value": 0,
+            "base": 0,
+            "multiplier": 8,
+            "costPerMp": 200
+          },
+          "response": {
+            "value": 0,
+            "base": 0,
+            "maxLevel": 0,
+            "initiativeDice": 0,
+            "reactionBonus": 0
+          },
+          "memory": {
+            "total": 0,
+            "used": 0,
+            "unit": "Mp"
+          },
+          "utilitySlots": {
+            "total": 0,
+            "available": 0
+          },
+          "dataTransferRate": {
+            "value": 0,
+            "unit": "Mp per Combat Turn"
+          },
+          "fluxRating": {
+            "value": 1,
+            "wireless": false
+          }
+        },
+        "cost": 120000,
+        "manufacturer": "",
+        "era": "",
+        "streetIndex": 0,
+        "availability": "",
+        "legalityCode": "4P-S",
+        "weight": 0,
+        "notes": "",
+        "damage": {
+          "matrixConditionMonitor": {
+            "boxes": 10,
+            "current": 0,
+            "woundPenalties": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "burnedSlots": []
+        },
+        "derivedStats": {
+          "matrixInitiative": {
+            "base": 0,
+            "dice": "0d6",
+            "userModeRequired": "VR-Hot"
+          },
+          "hackingPoolBonus": 0,
+          "personaStorage": 0,
+          "iconPhysicalStats": {
+            "strength": 0,
+            "quickness": 0
+          }
+        },
+        "modules": [],
+        "utilitySlotsArray": [],
+        "storedUtilities": []
+      },
+      "_id": "dtYggj0hTD4nXNz3",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.dtYggj0hTD4nXNz3"
+    },
+    {
+      "name": "Analyze",
+      "type": "program",
+      "system": {
+        "rating": 6,
+        "category": "Offensive",
+        "degradable": false,
+        "name": "",
+        "type": "",
+        "sizeMp": 0,
+        "multiplier": 0,
+        "description": "",
+        "associatedPrompt": "",
+        "effect": ""
+      },
+      "_id": "WUrobQadGH8TPovA",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.WUrobQadGH8TPovA"
+    },
+    {
+      "name": "Decrypt",
+      "type": "program",
+      "system": {
+        "rating": 5,
+        "category": "Offensive",
+        "degradable": false,
+        "name": "",
+        "type": "",
+        "sizeMp": 0,
+        "multiplier": 0,
+        "description": "",
+        "associatedPrompt": "",
+        "effect": ""
+      },
+      "_id": "bToiT7EWIzOUc1fN",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.bToiT7EWIzOUc1fN"
+    },
+    {
+      "name": "Browse",
+      "type": "program",
+      "system": {
+        "rating": 6,
+        "category": "Offensive",
+        "degradable": false,
+        "name": "",
+        "type": "",
+        "sizeMp": 0,
+        "multiplier": 0,
+        "description": "",
+        "associatedPrompt": "",
+        "effect": ""
+      },
+      "_id": "X1yETYfmgRdWBhF0",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.X1yETYfmgRdWBhF0"
+    },
+    {
+      "name": "Snoop",
+      "type": "program",
+      "system": {
+        "rating": 6,
+        "category": "Offensive",
+        "degradable": false,
+        "name": "",
+        "type": "",
+        "sizeMp": 0,
+        "multiplier": 0,
+        "description": "",
+        "associatedPrompt": "",
+        "effect": ""
+      },
+      "_id": "MNl2d0xCf9OUPq4N",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.MNl2d0xCf9OUPq4N"
+    },
+    {
+      "name": "Medic",
+      "type": "program",
+      "system": {
+        "rating": 4,
+        "category": "Offensive",
+        "degradable": true,
+        "name": "",
+        "type": "",
+        "sizeMp": 0,
+        "multiplier": 0,
+        "description": "",
+        "associatedPrompt": "",
+        "effect": ""
+      },
+      "_id": "7X7lloL7LzCY8OLI",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.7X7lloL7LzCY8OLI"
+    },
+    {
+      "name": "Electronic Warfare Suite Rating 4",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 18000,
+        "weight": 0,
+        "description": ""
+      },
+      "_id": "Y3kGTN0vHt4Qra9G",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.Y3kGTN0vHt4Qra9G"
+    },
+    {
+      "name": "Fuchi Cyber-5 (Hot Spare)",
+      "type": "cyberdeck",
+      "system": {
+        "attributes": {
+          "mpcp": {
+            "value": 5,
+            "base": 5,
+            "multiplier": 8,
+            "costPerMp": 300
+          },
+          "firewall": {
+            "value": 0,
+            "base": 0,
+            "multiplier": 8,
+            "costPerMp": 200
+          },
+          "response": {
+            "value": 0,
+            "base": 0,
+            "maxLevel": 0,
+            "initiativeDice": 0,
+            "reactionBonus": 0
+          },
+          "memory": {
+            "total": 0,
+            "used": 0,
+            "unit": "Mp"
+          },
+          "utilitySlots": {
+            "total": 0,
+            "available": 0
+          },
+          "dataTransferRate": {
+            "value": 0,
+            "unit": "Mp per Combat Turn"
+          },
+          "fluxRating": {
+            "value": 1,
+            "wireless": false
+          }
+        },
+        "cost": 48000,
+        "manufacturer": "",
+        "era": "",
+        "streetIndex": 0,
+        "availability": "",
+        "legalityCode": "4P-S",
+        "weight": 0,
+        "notes": "",
+        "damage": {
+          "matrixConditionMonitor": {
+            "boxes": 10,
+            "current": 0,
+            "woundPenalties": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "burnedSlots": []
+        },
+        "derivedStats": {
+          "matrixInitiative": {
+            "base": 0,
+            "dice": "0d6",
+            "userModeRequired": "VR-Hot"
+          },
+          "hackingPoolBonus": 0,
+          "personaStorage": 0,
+          "iconPhysicalStats": {
+            "strength": 0,
+            "quickness": 0
+          }
+        },
+        "modules": [],
+        "utilitySlotsArray": [],
+        "storedUtilities": []
+      },
+      "_id": "8FcSEiX8CTN4Ilna",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.8FcSEiX8CTN4Ilna"
+    },
+    {
+      "name": "Encrypt",
+      "type": "program",
+      "system": {
+        "rating": 5,
+        "category": "Operational",
+        "degradable": false,
+        "name": "",
+        "type": "",
+        "sizeMp": 0,
+        "multiplier": 0,
+        "description": "",
+        "associatedPrompt": "",
+        "effect": ""
+      },
+      "_id": "c8SMcK14whozQFOq",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.c8SMcK14whozQFOq"
+    },
+    {
+      "name": "Optical Memory Chips ×50",
+      "type": "gear",
+      "system": {
+        "quantity": 50,
+        "cost": 500,
+        "weight": 0,
+        "description": ""
+      },
+      "_id": "tuFEnZ5sw8UqvyQo",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.tuFEnZ5sw8UqvyQo"
+    },
+    {
+      "name": "Electronics Tool Kit (Rating 6)",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 6000,
+        "weight": 0,
+        "description": ""
+      },
+      "_id": "Gdgi61kht1FOfShY",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.Gdgi61kht1FOfShY"
+    },
+    {
+      "name": "Mechanical Tool Kit (Rating 4)",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 2000,
+        "weight": 0,
+        "description": ""
+      },
+      "_id": "KwuU1lIvExWFYqX9",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.KwuU1lIvExWFYqX9"
+    },
+    {
+      "name": "Fake SIN Rating 3",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 1000,
+        "weight": 0,
+        "description": ""
+      },
+      "_id": "aeT3M5m6KT47Ogdt",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.aeT3M5m6KT47Ogdt"
+    },
+    {
+      "name": "Micro-Transceiver Set (Encrypted, Rtg 6)",
+      "type": "gear",
+      "system": {
+        "quantity": 4,
+        "cost": 3000,
+        "weight": 0,
+        "description": ""
+      },
+      "_id": "ANXwCVM3hn6ZwZvL",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.ANXwCVM3hn6ZwZvL"
+    },
+    {
+      "name": "Spare Cyberdeck Components Kit",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 8000,
+        "weight": 0,
+        "description": ""
+      },
+      "_id": "KBEIZxz8zIUQSaIa",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010473,
+        "modifiedTime": 1777292010473,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!snZWbp05hk0atrtK.KBEIZxz8zIUQSaIa"
+    }
+  ],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0,
+    "3PGX0kdStjzzMqJx": 3
+  },
+  "flags": {},
+  "_stats": {
+    "coreVersion": "14.360",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.1.0",
+    "createdTime": 1777292010473,
+    "modifiedTime": 1777292010473,
+    "lastModifiedBy": "3PGX0kdStjzzMqJx",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  },
+  "sort": 0,
+  "_key": "!actors!snZWbp05hk0atrtK"
+}

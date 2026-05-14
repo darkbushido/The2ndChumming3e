@@ -1,0 +1,1047 @@
+{
+  "name": "Delilah \"Deli\" Hawkes",
+  "type": "character",
+  "system": {
+    "metatype": "human",
+    "gender": "female",
+    "age": "31",
+    "nuyen": 22000,
+    "karma": 10,
+    "totalKarma": 48,
+    "magicTradition": "Shamanic",
+    "magicType": "Full",
+    "magicTotem": "Coyote",
+    "biography": "<p>Grifter before she was a shaman. Running con jobs from Tacoma to Everett when the magic woke up — she thought she was just getting better at reading marks until she realised she was actually rewriting what they saw. Coyote found her first, which explains a lot about her personality.</p><p>Does not distinguish clearly between \"illusion spell\" and \"talking her way out of it\". Both work. Why pick one?</p>",
+    "notes": "<p><strong>Spell Pool:</strong> 8 · <strong>Astral Pool:</strong> 5 · <strong>Combat Pool:</strong> 7<br><strong>Initiative:</strong> 4 + 1d6 · <strong>Essence:</strong> 6 (no cyberware)<br><strong>Totem:</strong> Coyote — +2 dice to Illusion spells, −2 dice to Health spells.<br><strong>Tip:</strong> Equip Armored Clothing. Use Mask and Improved Invisibility to put the team in position before a fight starts.</p>",
+    "attributes": {
+      "body": {
+        "base": 3,
+        "value": 3,
+        "mod": 0,
+        "force": 0
+      },
+      "quickness": {
+        "base": 4,
+        "value": 4,
+        "mod": 0,
+        "force": 0
+      },
+      "strength": {
+        "base": 2,
+        "value": 2,
+        "mod": 0,
+        "force": 0
+      },
+      "charisma": {
+        "base": 6,
+        "value": 6,
+        "mod": 0,
+        "force": 0
+      },
+      "intelligence": {
+        "base": 5,
+        "value": 5,
+        "mod": 0,
+        "force": 0
+      },
+      "willpower": {
+        "base": 5,
+        "value": 5,
+        "mod": 0,
+        "force": 0
+      },
+      "essence": {
+        "base": 6,
+        "value": 6,
+        "force": 0
+      },
+      "magic": {
+        "base": 6,
+        "value": 6,
+        "mod": 0,
+        "force": 0
+      },
+      "reaction": {
+        "base": 4,
+        "value": 4,
+        "reactionBonus": 0,
+        "diceBonus": 0,
+        "override": false,
+        "force": 0
+      }
+    },
+    "height": "",
+    "weight": "",
+    "ethnicity": "",
+    "reputation": 0,
+    "notoriety": 0,
+    "streetCred": 0,
+    "karmaPool": 0,
+    "hackingBonus": 0,
+    "initiativeDiceBonus": 0,
+    "equippedArmor": "",
+    "equippedMelee": "",
+    "activeVCRItemId": "",
+    "equippedCyberdeck": "",
+    "matrixUserMode": "",
+    "astralMode": "",
+    "magicElement": "",
+    "combatPoolSpent": 0,
+    "combatPoolMod": 0,
+    "spellPoolSpent": 0,
+    "spellPoolMod": 0,
+    "astralPoolSpent": 0,
+    "astralPoolMod": 0,
+    "spellDefensePool": 0,
+    "spellDefenseSorceryDice": 0,
+    "wounds": {
+      "stun": {
+        "value": 0,
+        "max": 10
+      },
+      "physical": {
+        "value": 0,
+        "max": 10
+      },
+      "overflow": {
+        "value": 0
+      }
+    },
+    "linkedVehicles": []
+  },
+  "_id": "erUcnJGC2mfkyh8q",
+  "img": "icons/svg/mystery-man.svg",
+  "prototypeToken": {
+    "name": "Delilah \"Deli\" Hawkes",
+    "displayName": 0,
+    "actorLink": false,
+    "width": 1,
+    "height": 1,
+    "depth": 1,
+    "texture": {
+      "src": "icons/svg/mystery-man.svg",
+      "anchorX": 0.5,
+      "anchorY": 0.5,
+      "fit": "contain",
+      "scaleX": 1,
+      "scaleY": 1,
+      "tint": "#ffffff",
+      "alphaThreshold": 0.75
+    },
+    "lockRotation": false,
+    "rotation": 0,
+    "alpha": 1,
+    "disposition": -1,
+    "displayBars": 0,
+    "bar1": {
+      "attribute": null
+    },
+    "bar2": {
+      "attribute": null
+    },
+    "light": {
+      "negative": false,
+      "priority": 0,
+      "alpha": 0.5,
+      "angle": 360,
+      "bright": 0,
+      "color": null,
+      "coloration": 1,
+      "dim": 0,
+      "attenuation": 0.5,
+      "luminosity": 0.5,
+      "saturation": 0,
+      "contrast": 0,
+      "shadows": 0,
+      "animation": {
+        "type": null,
+        "speed": 5,
+        "intensity": 5,
+        "reverse": false
+      },
+      "darkness": {
+        "min": 0,
+        "max": 1
+      }
+    },
+    "sight": {
+      "enabled": false,
+      "range": 0,
+      "angle": 360,
+      "visionMode": "basic",
+      "color": null,
+      "attenuation": 0.1,
+      "brightness": 0,
+      "saturation": 0,
+      "contrast": 0
+    },
+    "detectionModes": {},
+    "occludable": {
+      "radius": 0
+    },
+    "ring": {
+      "enabled": false,
+      "colors": {
+        "ring": null,
+        "background": null
+      },
+      "effects": 1,
+      "subject": {
+        "scale": 1,
+        "texture": null
+      }
+    },
+    "turnMarker": {
+      "mode": 1,
+      "animation": null,
+      "src": null,
+      "disposition": false
+    },
+    "movementAction": null,
+    "flags": {},
+    "randomImg": false,
+    "appendNumber": false,
+    "prependAdjective": false
+  },
+  "items": [
+    {
+      "name": "Conjuring",
+      "type": "skill",
+      "system": {
+        "skillName": "Conjuring",
+        "rating": 7,
+        "linkedAttribute": "intelligence",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "OQUeGw4HGzoLUeas",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.OQUeGw4HGzoLUeas"
+    },
+    {
+      "name": "Sorcery",
+      "type": "skill",
+      "system": {
+        "skillName": "Sorcery",
+        "rating": 6,
+        "linkedAttribute": "intelligence",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "GVUEMZJleP6OtyMG",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.GVUEMZJleP6OtyMG"
+    },
+    {
+      "name": "Aura Reading",
+      "type": "skill",
+      "system": {
+        "skillName": "Aura Reading",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "YkCiHgH7rLx3sedM",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.YkCiHgH7rLx3sedM"
+    },
+    {
+      "name": "Stealth",
+      "type": "skill",
+      "system": {
+        "skillName": "Stealth",
+        "rating": 4,
+        "linkedAttribute": "quickness",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "rhvlGepF2GT037Lg",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.rhvlGepF2GT037Lg"
+    },
+    {
+      "name": "Pistols",
+      "type": "skill",
+      "system": {
+        "skillName": "Pistols",
+        "rating": 2,
+        "linkedAttribute": "quickness",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "thFcNTLmubLHg0Jo",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.thFcNTLmubLHg0Jo"
+    },
+    {
+      "name": "Etiquette",
+      "type": "skill",
+      "system": {
+        "skillName": "Etiquette",
+        "rating": 5,
+        "linkedAttribute": "charisma",
+        "category": "active",
+        "specialisation": "Street",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "Rs9vUQ4bKREKh1Sn",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.Rs9vUQ4bKREKh1Sn"
+    },
+    {
+      "name": "Con Artistry",
+      "type": "skill",
+      "system": {
+        "skillName": "Con Artistry",
+        "rating": 6,
+        "linkedAttribute": "intelligence",
+        "category": "knowledge",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "dHlZU2GuaQ4lXbDU",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.dHlZU2GuaQ4lXbDU"
+    },
+    {
+      "name": "Con",
+      "type": "skill",
+      "system": {
+        "skillName": "Con",
+        "rating": 5,
+        "linkedAttribute": "charisma",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "L1wrw80Irr2HJE9R",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.L1wrw80Irr2HJE9R"
+    },
+    {
+      "name": "English",
+      "type": "skill",
+      "system": {
+        "skillName": "English",
+        "rating": 6,
+        "linkedAttribute": "intelligence",
+        "category": "language",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "i0StsF0HY39SSfPj",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.i0StsF0HY39SSfPj"
+    },
+    {
+      "name": "Negotiations",
+      "type": "skill",
+      "system": {
+        "skillName": "Negotiations",
+        "rating": 6,
+        "linkedAttribute": "charisma",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "PBx7jkZLLK1eFCAP",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.PBx7jkZLLK1eFCAP"
+    },
+    {
+      "name": "Seattle Fences",
+      "type": "skill",
+      "system": {
+        "skillName": "Seattle Fences",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "knowledge",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "QQwre19MAMHusffh",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.QQwre19MAMHusffh"
+    },
+    {
+      "name": "Underworld Etiquette",
+      "type": "skill",
+      "system": {
+        "skillName": "Underworld Etiquette",
+        "rating": 5,
+        "linkedAttribute": "charisma",
+        "category": "knowledge",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "2e00p4I8XRmn0vax",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.2e00p4I8XRmn0vax"
+    },
+    {
+      "name": "Silence",
+      "type": "spell",
+      "system": {
+        "category": "Illusion",
+        "type": "Physical",
+        "range": "LOS (Area)",
+        "damage": "",
+        "duration": "Sustained",
+        "drain": "(F/2)S",
+        "target": "",
+        "bookPage": "",
+        "description": ""
+      },
+      "_id": "lr7EfCB7WbAtUKif",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.lr7EfCB7WbAtUKif"
+    },
+    {
+      "name": "Confusion",
+      "type": "spell",
+      "system": {
+        "category": "Manipulation",
+        "type": "Mana",
+        "range": "LOS",
+        "damage": "",
+        "duration": "Sustained",
+        "drain": "(F/2+1)M",
+        "target": "",
+        "bookPage": "",
+        "description": ""
+      },
+      "_id": "ueXVft0lhFbicwNQ",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.ueXVft0lhFbicwNQ"
+    },
+    {
+      "name": "Improved Invisibility",
+      "type": "spell",
+      "system": {
+        "category": "Illusion",
+        "type": "Physical",
+        "range": "LOS",
+        "damage": "",
+        "duration": "Sustained",
+        "drain": "(F/2+1)S",
+        "target": "",
+        "bookPage": "",
+        "description": ""
+      },
+      "_id": "Afa1hG2Kxm4PIlgs",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.Afa1hG2Kxm4PIlgs"
+    },
+    {
+      "name": "Treat",
+      "type": "spell",
+      "system": {
+        "category": "Health",
+        "type": "Mana",
+        "range": "Touch",
+        "damage": "",
+        "duration": "Instant",
+        "drain": "(F/2)S",
+        "target": "",
+        "bookPage": "",
+        "description": ""
+      },
+      "_id": "sxd1UDk1jGo7HGno",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.sxd1UDk1jGo7HGno"
+    },
+    {
+      "name": "Levitate",
+      "type": "spell",
+      "system": {
+        "category": "Manipulation",
+        "type": "Physical",
+        "range": "LOS",
+        "damage": "",
+        "duration": "Sustained",
+        "drain": "(F/2)S",
+        "target": "",
+        "bookPage": "",
+        "description": ""
+      },
+      "_id": "WMttbZJz3SniT5yR",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.WMttbZJz3SniT5yR"
+    },
+    {
+      "name": "Mask",
+      "type": "spell",
+      "system": {
+        "category": "Illusion",
+        "type": "Physical",
+        "range": "Touch",
+        "damage": "",
+        "duration": "Sustained",
+        "drain": "(F/2)S",
+        "target": "",
+        "bookPage": "",
+        "description": ""
+      },
+      "_id": "1KEBXOs8gGxOJQ7y",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.1KEBXOs8gGxOJQ7y"
+    },
+    {
+      "name": "Salish",
+      "type": "skill",
+      "system": {
+        "skillName": "Salish",
+        "rating": 3,
+        "linkedAttribute": "intelligence",
+        "category": "language",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "49TWAPmgfPSA9cv6",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.49TWAPmgfPSA9cv6"
+    },
+    {
+      "name": "Fichetti Security 500",
+      "type": "firearm",
+      "system": {
+        "category": "LPist",
+        "damage": "6L",
+        "mode": "SA",
+        "ammunition": "16(c)",
+        "concealability": "8",
+        "cost": 250,
+        "accessories": "",
+        "weight": 0,
+        "availability": "",
+        "streetIndex": "",
+        "bookPage": "",
+        "notes": "",
+        "isAoE": false
+      },
+      "_id": "kA42DhBAczAZQekj",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.kA42DhBAczAZQekj"
+    },
+    {
+      "name": "Sustaining Focus Rating 3",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 45000,
+        "weight": 0,
+        "description": ""
+      },
+      "_id": "V5KmgCZJdXErUJaA",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.V5KmgCZJdXErUJaA"
+    },
+    {
+      "name": "Armored Clothing",
+      "type": "armor",
+      "system": {
+        "ballistic": 3,
+        "impact": 2,
+        "concealability": "-",
+        "cost": 700,
+        "weight": 0,
+        "availability": "",
+        "streetIndex": "",
+        "bookPage": "",
+        "notes": ""
+      },
+      "_id": "Aj2XYLxPRQ1lcRJL",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.Aj2XYLxPRQ1lcRJL"
+    },
+    {
+      "name": "Ally Spirit Formulae",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 50000,
+        "weight": 0,
+        "description": ""
+      },
+      "_id": "6EjhHW7UGqzgwpnK",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010017,
+        "modifiedTime": 1777292010017,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!erUcnJGC2mfkyh8q.6EjhHW7UGqzgwpnK"
+    }
+  ],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0,
+    "3PGX0kdStjzzMqJx": 3
+  },
+  "flags": {},
+  "_stats": {
+    "coreVersion": "14.360",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.1.0",
+    "createdTime": 1777292010017,
+    "modifiedTime": 1777292010017,
+    "lastModifiedBy": "3PGX0kdStjzzMqJx",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  },
+  "sort": 0,
+  "_key": "!actors!erUcnJGC2mfkyh8q"
+}

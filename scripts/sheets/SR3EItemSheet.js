@@ -22,9 +22,10 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       closeOnSubmit: false,
     },
     actions: {
-      itemRoll:        SR3EItemSheet._onRoll,
-      categoryChange:  SR3EItemSheet._onCategoryChange,
-      skillChange:     SR3EItemSheet._onSkillChange,
+      itemRoll:           SR3EItemSheet._onRoll,
+      categoryChange:     SR3EItemSheet._onCategoryChange,
+      skillChange:        SR3EItemSheet._onSkillChange,
+      pickFromCompendium: SR3EItemSheet._onPickFromCompendium,
     }
   };
 
@@ -91,6 +92,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
             <input class="item-name-input" type="text" name="name" value="${item.name}"/>
             <span class="item-type-badge">${this._typeLabel()}</span>
           </div>
+          ${this.isEditable ? '<button type="button" class="btn-compendium-pick" data-action="pickFromCompendium" title="Fill from compendium">&#128218; Pick from compendium</button>' : ''}
         </header>
         <div class="item-body">
           ${this._details()}
@@ -566,7 +568,6 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         <h3 style="margin:8px 0 4px;font-size:13px;color:var(--sr-accent)">Memory & Slots</h3>
         <div class="form-grid">
           ${this._f('Memory Total (Mp)', 'attributes.memory.total', da.memory?.total ?? 0, 'number', 'min="0"')}
-          ${this._f('Utility Slots Total', 'attributes.utilitySlots.total', da.utilitySlots?.total ?? 0, 'number', 'min="0"')}
         </div>
         <h3 style="margin:8px 0 4px;font-size:13px;color:var(--sr-accent)">Transfer & Flux</h3>
         <div class="form-grid">
@@ -589,7 +590,6 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         </div>
         <h3 style="margin:8px 0 4px;font-size:13px;color:var(--sr-accent)">Acquisition</h3>
         <div class="form-grid">
-          ${this._f('Manufacturer', 'manufacturer', s.manufacturer)}
           ${this._f('Era', 'era', s.era)}
           ${this._f('Cost (¥)', 'cost', s.cost ?? 0, 'number')}
           ${this._f('Street Index', 'streetIndex', s.streetIndex ?? 0, 'number')}
@@ -640,5 +640,97 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         name:                     fullName
       });
     }
+  }
+
+  static async _onPickFromCompendium() {
+    const type = this.item.type;
+
+    // Collect matching entries from packs that declare this itemType in their flags
+    const packItems = [];
+    for (const pack of game.packs) {
+      const itemTypes = pack.metadata.flags?.[game.system.id]?.itemTypes;
+      if (!Array.isArray(itemTypes) || !itemTypes.includes(type)) continue;
+      await pack.getIndex();
+      for (const entry of pack.index) {
+        packItems.push({ uuid: entry.uuid, name: entry.name });
+      }
+    }
+    packItems.sort((a, b) => a.name.localeCompare(b.name));
+
+    if (packItems.length === 0) {
+      ui.notifications.info(`No compendium entries found for type "${type}".`);
+      return;
+    }
+
+    let chosen = null;
+
+    // DialogV2.wait() does not call its render option — use the Foundry hook instead
+    let hookId = Hooks.on('renderDialogV2', (app, html) => {
+      if (!html.querySelector?.('#sr3e-pack-filter')) return; // not our dialog
+      Hooks.off('renderDialogV2', hookId);
+
+      const filterEl = html.querySelector('#sr3e-pack-filter');
+      const rows     = html.querySelectorAll('.sr3e-pack-item');
+
+      // Live filter
+      filterEl.addEventListener('input', () => {
+        const q = filterEl.value.toLowerCase();
+        rows.forEach(row => {
+          row.style.display = row.dataset.name.includes(q) ? '' : 'none';
+        });
+      });
+
+      // Prevent Enter in filter box from triggering the default Pick button
+      filterEl.addEventListener('keydown', e => {
+        if (e.key === 'Enter') e.preventDefault();
+      });
+
+      // Single-click any row to select and immediately import
+      rows.forEach(row => {
+        row.addEventListener('click', () => {
+          chosen = row.querySelector('input[type="radio"]')?.value ?? null;
+          if (chosen) setTimeout(() => html.querySelector('[data-action="pick"]')?.click(), 0);
+        });
+      });
+
+      filterEl.focus();
+    });
+
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `Pick ${type} from compendium` },
+      content: `
+        <div class="sr3e-pack-picker">
+          <input type="text" id="sr3e-pack-filter" placeholder="Filter…" autocomplete="off">
+          <div class="sr3e-pack-list">
+            ${packItems.map(i => `
+              <label class="sr3e-pack-item" data-name="${i.name.toLowerCase()}">
+                <input type="radio" name="pack-choice" value="${i.uuid}">
+                <span>${i.name}</span>
+              </label>
+            `).join('')}
+          </div>
+        </div>
+      `,
+      buttons: [
+        {
+          label: 'Pick',
+          action: 'pick',
+          default: true,
+          callback: (_e, _b, dialog) => {
+            // Fallback for keyboard users who select a radio then click Pick
+            if (!chosen) chosen = dialog.element.querySelector('input[name="pack-choice"]:checked')?.value ?? null;
+          }
+        },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+
+    Hooks.off('renderDialogV2', hookId); // clean up if dialog was cancelled
+
+    if (!chosen) return;
+    const doc = await fromUuid(chosen);
+    if (!doc) return;
+    const data = doc.toObject();
+    await this.item.update({ name: data.name, system: data.system });
   }
 }

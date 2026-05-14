@@ -1,0 +1,1042 @@
+{
+  "name": "\"Void\" (Eilidh MacAllister)",
+  "type": "character",
+  "system": {
+    "metatype": "elf",
+    "gender": "female",
+    "age": "67",
+    "nuyen": 55000,
+    "karma": 18,
+    "totalKarma": 62,
+    "magicTradition": "Hermetic",
+    "magicType": "Full",
+    "biography": "<p>Forty-two years of hermetic practice. Former senior researcher at Ares Macrotechnology's awakened resources division, until she understood what \"awakened resources\" meant in practice. She severed her employment contract and three fire elemental binding agreements simultaneously, which made for an eventful afternoon in the Detroit office.</p><p>Rarely casts directly. Her elementals arrive first. By the time anyone sees Void herself, the work is usually done.</p>",
+    "notes": "<p><strong>Spell Pool:</strong> 9 · <strong>Astral Pool:</strong> 5 · <strong>Combat Pool:</strong> 8<br><strong>Initiative:</strong> 5 + 1d6 · <strong>Essence:</strong> 6 (no cyberware)<br><strong>Tip:</strong> Equip Armored Clothing. Void's power comes entirely from summoned elementals — Conjuring 8 lets her bind very powerful ones. The spells are defensive fallbacks only.</p>",
+    "attributes": {
+      "body": {
+        "base": 2,
+        "value": 2,
+        "mod": 0,
+        "force": 0
+      },
+      "quickness": {
+        "base": 4,
+        "value": 4,
+        "mod": 0,
+        "force": 0
+      },
+      "strength": {
+        "base": 2,
+        "value": 2,
+        "mod": 0,
+        "force": 0
+      },
+      "charisma": {
+        "base": 3,
+        "value": 3,
+        "mod": 0,
+        "force": 0
+      },
+      "intelligence": {
+        "base": 6,
+        "value": 6,
+        "mod": 0,
+        "force": 0
+      },
+      "willpower": {
+        "base": 6,
+        "value": 6,
+        "mod": 0,
+        "force": 0
+      },
+      "essence": {
+        "base": 6,
+        "value": 6,
+        "force": 0
+      },
+      "magic": {
+        "base": 6,
+        "value": 6,
+        "mod": 0,
+        "force": 0
+      },
+      "reaction": {
+        "base": 5,
+        "value": 5,
+        "reactionBonus": 0,
+        "diceBonus": 0,
+        "override": false,
+        "force": 0
+      }
+    },
+    "height": "",
+    "weight": "",
+    "ethnicity": "",
+    "reputation": 0,
+    "notoriety": 0,
+    "streetCred": 0,
+    "karmaPool": 0,
+    "hackingBonus": 0,
+    "initiativeDiceBonus": 0,
+    "equippedArmor": "",
+    "equippedMelee": "",
+    "activeVCRItemId": "",
+    "equippedCyberdeck": "",
+    "matrixUserMode": "",
+    "astralMode": "",
+    "magicTotem": "",
+    "magicElement": "",
+    "combatPoolSpent": 0,
+    "combatPoolMod": 0,
+    "spellPoolSpent": 0,
+    "spellPoolMod": 0,
+    "astralPoolSpent": 0,
+    "astralPoolMod": 0,
+    "spellDefensePool": 0,
+    "spellDefenseSorceryDice": 0,
+    "wounds": {
+      "stun": {
+        "value": 0,
+        "max": 10
+      },
+      "physical": {
+        "value": 0,
+        "max": 10
+      },
+      "overflow": {
+        "value": 0
+      }
+    },
+    "linkedVehicles": []
+  },
+  "_id": "vVv73IBQ7RepSp4k",
+  "img": "icons/svg/mystery-man.svg",
+  "prototypeToken": {
+    "name": "\"Void\" (Eilidh MacAllister)",
+    "displayName": 0,
+    "actorLink": false,
+    "width": 1,
+    "height": 1,
+    "depth": 1,
+    "texture": {
+      "src": "icons/svg/mystery-man.svg",
+      "anchorX": 0.5,
+      "anchorY": 0.5,
+      "fit": "contain",
+      "scaleX": 1,
+      "scaleY": 1,
+      "tint": "#ffffff",
+      "alphaThreshold": 0.75
+    },
+    "lockRotation": false,
+    "rotation": 0,
+    "alpha": 1,
+    "disposition": -1,
+    "displayBars": 0,
+    "bar1": {
+      "attribute": null
+    },
+    "bar2": {
+      "attribute": null
+    },
+    "light": {
+      "negative": false,
+      "priority": 0,
+      "alpha": 0.5,
+      "angle": 360,
+      "bright": 0,
+      "color": null,
+      "coloration": 1,
+      "dim": 0,
+      "attenuation": 0.5,
+      "luminosity": 0.5,
+      "saturation": 0,
+      "contrast": 0,
+      "shadows": 0,
+      "animation": {
+        "type": null,
+        "speed": 5,
+        "intensity": 5,
+        "reverse": false
+      },
+      "darkness": {
+        "min": 0,
+        "max": 1
+      }
+    },
+    "sight": {
+      "enabled": false,
+      "range": 0,
+      "angle": 360,
+      "visionMode": "basic",
+      "color": null,
+      "attenuation": 0.1,
+      "brightness": 0,
+      "saturation": 0,
+      "contrast": 0
+    },
+    "detectionModes": {},
+    "occludable": {
+      "radius": 0
+    },
+    "ring": {
+      "enabled": false,
+      "colors": {
+        "ring": null,
+        "background": null
+      },
+      "effects": 1,
+      "subject": {
+        "scale": 1,
+        "texture": null
+      }
+    },
+    "turnMarker": {
+      "mode": 1,
+      "animation": null,
+      "src": null,
+      "disposition": false
+    },
+    "movementAction": null,
+    "flags": {},
+    "randomImg": false,
+    "appendNumber": false,
+    "prependAdjective": false
+  },
+  "items": [
+    {
+      "name": "Conjuring",
+      "type": "skill",
+      "system": {
+        "skillName": "Conjuring",
+        "rating": 8,
+        "linkedAttribute": "intelligence",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "ZtWpGem6kp2ucYRj",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.ZtWpGem6kp2ucYRj"
+    },
+    {
+      "name": "Aura Reading",
+      "type": "skill",
+      "system": {
+        "skillName": "Aura Reading",
+        "rating": 6,
+        "linkedAttribute": "intelligence",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "N8FQwAK3hxkkEQY8",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.N8FQwAK3hxkkEQY8"
+    },
+    {
+      "name": "Pistols",
+      "type": "skill",
+      "system": {
+        "skillName": "Pistols",
+        "rating": 2,
+        "linkedAttribute": "quickness",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "mqe6e3uQmqhWigV5",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.mqe6e3uQmqhWigV5"
+    },
+    {
+      "name": "Elemental Theory",
+      "type": "skill",
+      "system": {
+        "skillName": "Elemental Theory",
+        "rating": 7,
+        "linkedAttribute": "intelligence",
+        "category": "knowledge",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "zdgHm2BqYRm2RJgx",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.zdgHm2BqYRm2RJgx"
+    },
+    {
+      "name": "Negotiations",
+      "type": "skill",
+      "system": {
+        "skillName": "Negotiations",
+        "rating": 4,
+        "linkedAttribute": "charisma",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "7Is0RZdCjVcSxsDR",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.7Is0RZdCjVcSxsDR"
+    },
+    {
+      "name": "Sorcery",
+      "type": "skill",
+      "system": {
+        "skillName": "Sorcery",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "0jEkXIkp4Vt5MLvM",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.0jEkXIkp4Vt5MLvM"
+    },
+    {
+      "name": "Computer",
+      "type": "skill",
+      "system": {
+        "skillName": "Computer",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "active",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "3nOydQI3XoSOKgaj",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.3nOydQI3XoSOKgaj"
+    },
+    {
+      "name": "Arcane History",
+      "type": "skill",
+      "system": {
+        "skillName": "Arcane History",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "knowledge",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "8bvw6R4B4KZNiXnf",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.8bvw6R4B4KZNiXnf"
+    },
+    {
+      "name": "Latin",
+      "type": "skill",
+      "system": {
+        "skillName": "Latin",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "language",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "kAGkvhHJI7ChYasK",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.kAGkvhHJI7ChYasK"
+    },
+    {
+      "name": "Ares Corporate Structure",
+      "type": "skill",
+      "system": {
+        "skillName": "Ares Corporate Structure",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "knowledge",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "9edpXvcPOcBkvHX7",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.9edpXvcPOcBkvHX7"
+    },
+    {
+      "name": "Awakened Ecology",
+      "type": "skill",
+      "system": {
+        "skillName": "Awakened Ecology",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "knowledge",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "2tPKvuPwA7OWO2LZ",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.2tPKvuPwA7OWO2LZ"
+    },
+    {
+      "name": "English",
+      "type": "skill",
+      "system": {
+        "skillName": "English",
+        "rating": 6,
+        "linkedAttribute": "intelligence",
+        "category": "language",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "LBl9hdpbnMwTLQf5",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.LBl9hdpbnMwTLQf5"
+    },
+    {
+      "name": "Detect Magic",
+      "type": "spell",
+      "system": {
+        "category": "Detection",
+        "type": "Mana",
+        "range": "Self",
+        "damage": "",
+        "duration": "Sustained",
+        "drain": "(F/2)S",
+        "target": "",
+        "bookPage": "",
+        "description": ""
+      },
+      "_id": "lg1xxz2TebCbY8LJ",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.lg1xxz2TebCbY8LJ"
+    },
+    {
+      "name": "Levitate",
+      "type": "spell",
+      "system": {
+        "category": "Manipulation",
+        "type": "Physical",
+        "range": "LOS",
+        "damage": "",
+        "duration": "Sustained",
+        "drain": "(F/2)S",
+        "target": "",
+        "bookPage": "",
+        "description": ""
+      },
+      "_id": "Su18bRcZadzVRjuX",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.Su18bRcZadzVRjuX"
+    },
+    {
+      "name": "Armor",
+      "type": "spell",
+      "system": {
+        "category": "Manipulation",
+        "type": "Physical",
+        "range": "Touch",
+        "damage": "",
+        "duration": "Sustained",
+        "drain": "(F/2)M",
+        "target": "",
+        "bookPage": "",
+        "description": ""
+      },
+      "_id": "QmDEnZ4yiEB8gyYK",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.QmDEnZ4yiEB8gyYK"
+    },
+    {
+      "name": "Scottish Gaelic",
+      "type": "skill",
+      "system": {
+        "skillName": "Scottish Gaelic",
+        "rating": 3,
+        "linkedAttribute": "intelligence",
+        "category": "language",
+        "specialisation": "",
+        "force": 0,
+        "description": ""
+      },
+      "_id": "LuNmtAElgulJXGZF",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.LuNmtAElgulJXGZF"
+    },
+    {
+      "name": "Analyze Magic",
+      "type": "spell",
+      "system": {
+        "category": "Detection",
+        "type": "Mana",
+        "range": "LOS",
+        "damage": "",
+        "duration": "Instant",
+        "drain": "(F/2)S",
+        "target": "",
+        "bookPage": "",
+        "description": ""
+      },
+      "_id": "b6RdymLLgdYw7kkD",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.b6RdymLLgdYw7kkD"
+    },
+    {
+      "name": "Ares Light Fire 70",
+      "type": "firearm",
+      "system": {
+        "category": "LPist",
+        "damage": "6L",
+        "mode": "SA",
+        "ammunition": "16(c)",
+        "concealability": "8",
+        "cost": 350,
+        "accessories": "",
+        "weight": 0,
+        "availability": "",
+        "streetIndex": "",
+        "bookPage": "",
+        "notes": "",
+        "isAoE": false
+      },
+      "_id": "WbalNae2d4FBOr6h",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.WbalNae2d4FBOr6h"
+    },
+    {
+      "name": "Manabolt",
+      "type": "spell",
+      "system": {
+        "category": "Combat",
+        "type": "Mana",
+        "range": "LOS",
+        "damage": "S",
+        "duration": "Instant",
+        "drain": "(F/2+1)S",
+        "target": "",
+        "bookPage": "",
+        "description": ""
+      },
+      "_id": "Jovc2LF0rBO48KyL",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.Jovc2LF0rBO48KyL"
+    },
+    {
+      "name": "Armored Clothing",
+      "type": "armor",
+      "system": {
+        "ballistic": 3,
+        "impact": 2,
+        "concealability": "-",
+        "cost": 700,
+        "weight": 0,
+        "availability": "",
+        "streetIndex": "",
+        "bookPage": "",
+        "notes": ""
+      },
+      "_id": "MxaNsG1qpxsMCw3D",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.MxaNsG1qpxsMCw3D"
+    },
+    {
+      "name": "Hermetic Library (Rating 6)",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 48000,
+        "weight": 0,
+        "description": ""
+      },
+      "_id": "mNXlNny3N9wbrrtd",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.mNXlNny3N9wbrrtd"
+    },
+    {
+      "name": "Elemental Focus Rating 5",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 100000,
+        "weight": 0,
+        "description": ""
+      },
+      "_id": "5g4kdyHD1AfI1pcC",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.5g4kdyHD1AfI1pcC"
+    },
+    {
+      "name": "Sustaining Focus Rating 4",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 80000,
+        "weight": 0,
+        "description": ""
+      },
+      "_id": "CoJ3oyar3xEap11U",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "3PGX0kdStjzzMqJx": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.360",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.1.0",
+        "createdTime": 1777292010144,
+        "modifiedTime": 1777292010144,
+        "lastModifiedBy": "3PGX0kdStjzzMqJx",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_key": "!actors.items!vVv73IBQ7RepSp4k.CoJ3oyar3xEap11U"
+    }
+  ],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0,
+    "3PGX0kdStjzzMqJx": 3
+  },
+  "flags": {},
+  "_stats": {
+    "coreVersion": "14.360",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.1.0",
+    "createdTime": 1777292010144,
+    "modifiedTime": 1777292010144,
+    "lastModifiedBy": "3PGX0kdStjzzMqJx",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  },
+  "sort": 0,
+  "_key": "!actors!vVv73IBQ7RepSp4k"
+}

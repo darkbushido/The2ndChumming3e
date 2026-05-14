@@ -138,21 +138,24 @@
       "label": "Adept Powers",
       "path": "packs/sr3e-adept-powers.db",
       "type": "Item",
-      "system": "The2ndChumming3e"
+      "system": "The2ndChumming3e",
+      "flags": { "The2ndChumming3e": { "itemTypes": ["adeptpower"] } }
     },
     {
       "name": "sr3e-bioware",
       "label": "Bioware",
       "path": "packs/sr3e-bioware.db",
       "type": "Item",
-      "system": "The2ndChumming3e"
+      "system": "The2ndChumming3e",
+      "flags": { "The2ndChumming3e": { "itemTypes": ["bioware"] } }
     },
     {
       "name": "sr3e-cyberware",
       "label": "Cyberware",
       "path": "packs/sr3e-cyberware.db",
       "type": "Item",
-      "system": "The2ndChumming3e"
+      "system": "The2ndChumming3e",
+      "flags": { "The2ndChumming3e": { "itemTypes": ["cyberware"] } }
     },
     {
       "name": "sr3e-drones",
@@ -166,28 +169,32 @@
       "label": "Firearms",
       "path": "packs/sr3e-firearms.db",
       "type": "Item",
-      "system": "The2ndChumming3e"
+      "system": "The2ndChumming3e",
+      "flags": { "The2ndChumming3e": { "itemTypes": ["firearm"] } }
     },
     {
       "name": "sr3e-melee",
       "label": "Melee Weapons",
       "path": "packs/sr3e-melee.db",
       "type": "Item",
-      "system": "The2ndChumming3e"
+      "system": "The2ndChumming3e",
+      "flags": { "The2ndChumming3e": { "itemTypes": ["melee"] } }
     },
     {
       "name": "sr3e-projectiles",
       "label": "Projectile Weapons",
       "path": "packs/sr3e-projectiles.db",
       "type": "Item",
-      "system": "The2ndChumming3e"
+      "system": "The2ndChumming3e",
+      "flags": { "The2ndChumming3e": { "itemTypes": ["projectile", "thrown"] } }
     },
     {
       "name": "sr3e-spells",
       "label": "Spells",
       "path": "packs/sr3e-spells.db",
       "type": "Item",
-      "system": "The2ndChumming3e"
+      "system": "The2ndChumming3e",
+      "flags": { "The2ndChumming3e": { "itemTypes": ["spell"] } }
     },
     {
       "name": "sr3e-vehicle-mods",
@@ -215,7 +222,24 @@
       "label": "Matrix Programs",
       "path": "packs/sr3e-programs.db",
       "type": "Item",
-      "system": "The2ndChumming3e"
+      "system": "The2ndChumming3e",
+      "flags": { "The2ndChumming3e": { "itemTypes": ["program"] } }
+    },
+    {
+      "name": "sr3e-cyberdecks",
+      "label": "Cyberdecks",
+      "path": "packs/sr3e-cyberdecks.db",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "flags": { "The2ndChumming3e": { "itemTypes": ["cyberdeck"] } }
+    },
+    {
+      "name": "sr3e-armor",
+      "label": "Armor",
+      "path": "packs/sr3e-armor.db",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "flags": { "The2ndChumming3e": { "itemTypes": ["armor"] } }
     },
     {
       "name": "sr3e-sample-characters",
