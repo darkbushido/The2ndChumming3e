@@ -14,14 +14,14 @@ Create a new world, select **The 2nd Chumming** as your system.
 
 ## Dice rolling — Rule of Six
 All rolls use SR3e success-counting (d6 ≥ TN = success).
-- **Exploding dice** require an extra click per die — getting 15 successes in one click is boring and kills one of the most exciting moments in SR. Each die showing 6 gets a button; click to roll it again and add to its running total.
+- **Exploding dice** require an extra click — getting 15 successes in one click is boring and kills one of the most exciting moments in SR. Click to roll it again and add to its running total.
 - **Glitch** triggers when more than half the first-wave dice show 1s.
 - **Critical Glitch** = glitch + zero successes.
 - Rolls prompt for TN and optional combat pool allocation before rolling.
 ---
 
 ## Physical Dice Support
-- Shift-Clicking on dice icons / roll buttons will ask you to enter the number of successes, perfect if somone wants to use real dice. 
+- Shift-Clicking on dice icons / roll buttons will ask you to enter the number of successes; perfect if somone wants to use real dice. 
 
 ## Initiative tracking
 - **SR3 mode** (default): Pass-based. Everyone acts once per pass in init order; subtract 10 after each pass. Repeat until all initiatives ≤ 0.
@@ -40,27 +40,32 @@ All rolls use SR3e success-counting (d6 ≥ TN = success).
 Correct damage is reported.
 ---
 
-## Astral state (Awakened characters)
+## Astral state
 - Astral state is tracked in the magic tab, initiative modifiers automatically applied.
 - Weapon focus can be applied to any melee weapon toggled active/inactive for when you need to stay unseen.
 - Astral combat button automatically uses the correct skills and report damage.
 - Assensing button allow for quick assensing tests. 
 ---
 
+## Physical Adepts
+- Import skills from the Adept compendium. They come complete with notes and modified stats are tracked alongside your base stats so it is simple to know what you are looking at. 
+
+
 ## Riggers
 - Select VCR, RCB and Autopilot control for your vehicles and drones, automatically modifying initiative and attacks.
 - Add and use weapons with the appropriate skills selected automatically.
 - Driving test button allows for quick vehicle maneuver tests.
 - Chase Scene works out maneuver scores from km/h speeds and vehicle stats - no more km per combat turn. 
-- Chase scene calculates TNs and dice pools for accel/dec, position etc. No more handwaving getaway chases.
+- Chase scene calculates TNs and dice pools for accel/dec, position etc - no more handwaving getaway chases.
 ---
 
 ## Deckers
-- Use the Matrix Unfragged system.
+- Uses the Matrix Unfragged system.
 - Track slot damage.
 - Attack using programs.
 - Drag/drop and eject programs with automatic updates to memory.
 - When making a new program, the program size will be automatically reported. 
+- Full compendium of programs. Just add the rating and drag it to your deck.
 - 4 matrix modes are selectable. Hot VR mode modifies initiative rolls. 
 - Degradable programs are tracked.
 ---
@@ -93,10 +98,13 @@ Correct damage is reported.
 ---
 
 ## Storage
-- Weight is tracked so leave anything you don't need in storage but clicking on the home icon.
+- Players can leave what they don't want to carry in storage, it is always clear who has what on them and what was lost when the player's base was robbed. 
+- Weight is tracked so leave anything you don't need in storage by clicking on the home icon.
 ---
+
 ## Compendiums
 Compendiums for weapons, spells, cyberware, bioware, adept powers, melee, armour and matrix programs are bundled with the system.
+---
 
 ### Compendium picker
 When you click an **Add** button on an actor sheet (e.g. **+ Add Firearm**, **+ Add Spell**), the system automatically searches every Item compendium pack belonging to this system for entries of that item type. If any are found, a searchable picker dialog appears — type to filter, select an item, and click **Add** to import it directly onto the actor with all fields pre-filled. A **— Create blank —** option is always available at the bottom if you want to start from scratch.
@@ -131,10 +139,10 @@ When you click an **Add** button on an actor sheet (e.g. **+ Add Firearm**, **+ 
 | `sr3e-vehicle-mods` | Vehicle Mods | vehicle item types |
 | `sr3e-vehicle-weapons` | Vehicle Weapons | vehicle item types |
 
-**Planned (not yet created):** `sr3e-armor`, `sr3e-ammunition`, `sr3e-gear`, `sr3e-cyberdecks`. Until these packs exist, clicking **+ Add Armor** etc. will create a blank item as before.
+**Planned (not yet created):**  `sr3e-ammunition`, `sr3e-gear`. Until these packs exist, clicking **+ Add Armor** etc. will create a blank item as before.
 
 ### Editing compendium packs
-All compendium packs are maintained as JSON files in `src/packs/`. Requires the [Foundry CLI](https://github.com/foundryvtt/foundryvtt-cli) installed globally:
+All compendium packs are maintained as JSON files in `src/packs/`. Editing requires the [Foundry CLI](https://github.com/foundryvtt/foundryvtt-cli) installed globally:
 ```
 npm install -g @foundryvtt/foundryvtt-cli
 ```
@@ -184,7 +192,7 @@ Then commit the updated `packs/<pack-name>/` files as normal. `src/packs/` is th
 ---
 ## Nullsheen importer macro
 - if you use nullsheen dot com's chargen app you can import the resulting json download directly into this system using the suitably named macro. Just click it and follow the prompts.
-- vehicles will be imported as gear as a vehicle is it's own actor type. You'll need to copy them over manually or just grab one from the compendium and mod it. 
+- vehicles will be imported as gear as a vehicle is its own actor type. You'll need to copy them over manually or just grab one from the compendium and mod it. 
 ---
 
 ## Architecture
@@ -242,10 +250,7 @@ sr3e/
 
 ## What is not yet implemented
 - Full Defense posture (melee/ranged defensive mode)
-- add compendium for random actors, cyberdecks, programs, agents
 - Matrix data sheath could be useful
-- All compendiums need to be added (not via macro) and cleaned up
-- Matrix compendium needs to be compiled
 
 
 ## Legal Disclaimer
