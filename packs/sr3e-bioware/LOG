@@ -1,5 +1,5 @@
-2026/05/14-11:20:41.155 30ec Recovering log #72
-2026/05/14-11:20:41.156 30ec Level-0 table #74: started
-2026/05/14-11:20:41.159 30ec Level-0 table #74: 27463 bytes OK
-2026/05/14-11:20:41.166 30ec Delete type=0 #72
-2026/05/14-11:20:41.166 30ec Delete type=3 #70
+2026/05/15-09:42:37.808 6bec Recovering log #111
+2026/05/15-09:42:37.808 6bec Level-0 table #113: started
+2026/05/15-09:42:37.811 6bec Level-0 table #113: 27555 bytes OK
+2026/05/15-09:42:37.819 6bec Delete type=0 #111
+2026/05/15-09:42:37.819 6bec Delete type=3 #109

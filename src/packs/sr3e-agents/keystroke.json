@@ -1,0 +1,5 @@
+{
+  "_id": "sr3e-agent-0006", "name": "Keystroke", "type": "agent", "img": "icons/svg/mystery-man.svg",
+  "system": { "rating": 4, "graded": false, "hostSecurityTier": "Green", "additionalSkills": [{"category":"Hacking"}], "utilities": [{"name":"Exploit","multiplier":5}], "specialAbilities": [], "woundValue": 0, "notes": "<p>Access specialist. Exploit cuts the TN for Access Node; the Hacking skill pool supplements its Computer and Cybercombat when needed. Multiplier 7, 112 Mp.</p><p>Send it ahead to mark a path through a host before the decker arrives.</p>" },
+  "items": [], "effects": [], "_key": "!actors!sr3e-agent-0006"
+}

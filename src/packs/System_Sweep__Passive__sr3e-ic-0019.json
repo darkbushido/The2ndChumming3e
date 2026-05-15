@@ -1,0 +1,20 @@
+{
+  "img": "icons/svg/clockwork.svg",
+  "_id": "sr3e-ic-0019",
+  "name": "System Sweep (Passive)",
+  "type": "ic",
+  "system": {
+    "icType": "Scrambler",
+    "grading": "White",
+    "rating": 4,
+    "systemRating": 4,
+    "memoryRequired": 100,
+    "damage": "",
+    "hostSecurityTier": "Blue",
+    "notes": "<p><strong>Passive countermeasure.</strong> Periodically scans for falsified marks and unauthorized users. Any detected access triggers Alert and raises Overwatch by 1. 100 Mp per instance.</p>",
+    "woundValue": 0
+  },
+  "items": [],
+  "effects": [],
+  "_key": "!actors!sr3e-ic-0019"
+}

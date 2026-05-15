@@ -1,0 +1,24 @@
+2026/05/15-09:42:14.339 6bb8 Recovering log #23
+2026/05/15-09:42:14.339 6bb8 Level-0 table #25: started
+2026/05/15-09:42:14.342 6bb8 Level-0 table #25: 11545 bytes OK
+2026/05/15-09:42:14.349 6bb8 Delete type=0 #23
+2026/05/15-09:42:14.349 6bb8 Delete type=3 #22
+2026/05/15-09:42:14.354 510 Level-0 table #28: started
+2026/05/15-09:42:14.357 510 Level-0 table #28: 41657 bytes OK
+2026/05/15-09:42:14.360 510 Delete type=0 #26
+2026/05/15-09:42:14.360 510 Manual compaction at level-0 from '!actors!sr3e-host-0000' @ 72057594037927935 : 1 .. '!actors!sr3e-host-0009' @ 0 : 0; will stop at '!actors!null' @ 11 : 1
+2026/05/15-09:42:14.360 510 Compacting 2@0 + 0@1 files
+2026/05/15-09:42:14.363 510 Generated table #29@0: 10 keys, 41646 bytes
+2026/05/15-09:42:14.363 510 Compacted 2@0 + 0@1 files => 41646 bytes
+2026/05/15-09:42:14.365 510 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/05/15-09:42:14.365 510 Delete type=2 #25
+2026/05/15-09:42:14.365 510 Delete type=2 #28
+2026/05/15-09:42:14.365 510 Manual compaction at level-0 from '!actors!null' @ 11 : 1 .. '!actors!sr3e-host-0009' @ 0 : 0; will stop at (end)
+2026/05/15-09:42:14.365 510 Manual compaction at level-1 from '!actors!sr3e-host-0000' @ 72057594037927935 : 1 .. '!actors!sr3e-host-0009' @ 0 : 0; will stop at '!actors!sr3e-host-0009' @ 30 : 1
+2026/05/15-09:42:14.365 510 Compacting 1@1 + 1@2 files
+2026/05/15-09:42:14.369 510 Generated table #30@1: 10 keys, 41646 bytes
+2026/05/15-09:42:14.369 510 Compacted 1@1 + 1@2 files => 41646 bytes
+2026/05/15-09:42:14.371 510 compacted to: files[ 0 0 1 0 0 0 0 ]
+2026/05/15-09:42:14.371 510 Delete type=2 #21
+2026/05/15-09:42:14.371 510 Delete type=2 #29
+2026/05/15-09:42:14.371 510 Manual compaction at level-1 from '!actors!sr3e-host-0009' @ 30 : 1 .. '!actors!sr3e-host-0009' @ 0 : 0; will stop at (end)

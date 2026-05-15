@@ -413,6 +413,9 @@ async _newRoundSR3() {
         await actor.refreshCombatPool();
         await actor.refreshSpellPool();
         await actor.clearSpellDefense();
+        if ((actor.system?.matrixUserMode ?? '') !== '') {
+          await actor.refreshHackingPool();
+        }
       }
       ui.notifications.info('Combat pools refreshed.');
     }

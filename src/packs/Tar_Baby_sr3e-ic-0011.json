@@ -1,0 +1,20 @@
+{
+  "img": "icons/svg/clockwork.svg",
+  "_id": "sr3e-ic-0011",
+  "name": "Tar Baby",
+  "type": "ic",
+  "system": {
+    "icType": "Tar Baby",
+    "grading": "Gray",
+    "rating": 6,
+    "systemRating": 6,
+    "memoryRequired": 15,
+    "damage": "6M Stun",
+    "hostSecurityTier": "Orange",
+    "notes": "<p>Entraps decker icons, causing all their actions to cost extra Hacking Pool dice. Ability: Guardian.</p>",
+    "woundValue": 0
+  },
+  "items": [],
+  "effects": [],
+  "_key": "!actors!sr3e-ic-0011"
+}

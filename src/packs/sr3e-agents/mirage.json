@@ -1,0 +1,5 @@
+{
+  "_id": "sr3e-agent-0016", "name": "Mirage", "type": "agent", "img": "icons/svg/mystery-man.svg",
+  "system": { "rating": 4, "graded": true, "hostSecurityTier": "Green", "additionalSkills": [], "utilities": [], "specialAbilities": [{"name":"Instance","multiplier":2}], "woundValue": 0, "notes": "<p>Node-instance trap. Graded agent. Locks the target in a superficially perfect copy of their current node: Jump Grid/Host fails, node prompts fail, exits loop back to entry. Persists until the target terminates session or crashes the agent. Multiplier 3, 48 Mp.</p><p>Cheap and infuriating. Use it to strand a pursuing IC or security decker while the team finishes the run.</p>" },
+  "items": [], "effects": [], "_key": "!actors!sr3e-agent-0016"
+}

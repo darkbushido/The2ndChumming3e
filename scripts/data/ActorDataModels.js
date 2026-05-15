@@ -30,6 +30,7 @@ function _pools() {
     spellPoolMod:            new NumberField({ integer: true, initial: 0 }),
     astralPoolSpent:         new NumberField({ integer: true, initial: 0, min: 0 }),
     astralPoolMod:           new NumberField({ integer: true, initial: 0 }),
+    hackingPoolSpent:        new NumberField({ integer: true, initial: 0, min: 0 }),
     spellDefensePool:        new NumberField({ integer: true, initial: 0, min: 0 }),
     spellDefenseSorceryDice: new NumberField({ integer: true, initial: 0, min: 0 }),
   };
@@ -162,6 +163,74 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       }),
       wounds:         _wounds(),
       linkedVehicles: new ArrayField(new ObjectField()),
+    };
+  }
+}
+
+// ── IC (Intrusion Countermeasure) ─────────────────────────────────────────────
+
+export class ICData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      icType:           new StringField({ initial: 'Scrambler' }),
+      grading:          new StringField({ initial: 'White' }),   // 'White' | 'Gray' | 'Black'
+      rating:           new NumberField({ integer: true, initial: 1, min: 1 }),
+      systemRating:     new NumberField({ integer: true, initial: 6, min: 1 }),  // host's System Rating — TN for attacks, pool for IC soak
+      memoryRequired:   new NumberField({ integer: true, initial: 0, min: 0 }),
+      damage:           new StringField({ initial: '' }),
+      hostSecurityTier: new StringField({ initial: 'Green' }),   // used to derive initiativeDice
+      notes:            new HTMLField({ initial: '', required: false }),
+      woundValue:       new NumberField({ integer: true, initial: 0, min: 0 }),
+    };
+  }
+}
+
+// ── Programming Agent ─────────────────────────────────────────────────────────
+
+export class AgentData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      rating:           new NumberField({ integer: true, initial: 1, min: 1 }),
+      graded:           new BooleanField({ initial: false }),
+      hostSecurityTier: new StringField({ initial: 'Green' }),
+      additionalSkills: new ArrayField(new ObjectField(), { initial: [] }),
+      utilities:        new ArrayField(new ObjectField(), { initial: [] }),
+      specialAbilities: new ArrayField(new ObjectField(), { initial: [] }),
+      woundValue:       new NumberField({ integer: true, initial: 0, min: 0 }),
+      notes:            new HTMLField({ initial: '', required: false }),
+    };
+  }
+}
+
+// ── DataHost ──────────────────────────────────────────────────────────────────
+
+export class HostData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      systemRating:          new NumberField({ integer: true, initial: 6, min: 1, max: 12 }),
+      securityTierName:      new StringField({ initial: 'Green' }),
+      securityTierThreshold: new NumberField({ integer: true, initial: 2, min: 0 }),
+      securityTierColor:     new StringField({ initial: '#00AA00' }),
+      mainframeSupport:      new BooleanField({ initial: false }),
+      memoryTotal:           new NumberField({ integer: true, initial: 3000, min: 0 }),
+      memoryUsed:            new NumberField({ integer: true, initial: 0, min: 0 }),
+      overwatchCurrent:      new NumberField({ integer: true, initial: 0, min: 0, max: 10 }),
+      alertCount:            new NumberField({ integer: true, initial: 0, min: 0, max: 2 }),
+      notes:                 new HTMLField({ initial: '', required: false }),
+      // {id,name,type,abbreviation,iconShape,accessLevel,x,y,description,barrierProtected,barrierRating,markedBy[],prompts[]}
+      nodes:       new ArrayField(new ObjectField()),
+      // {id,fromId,toId,blocked,blockedBy}
+      pathways:    new ArrayField(new ObjectField()),
+      // {id,name,connectedNodeId,accessLevel,requiresPasscode,physicalLocation}
+      ioPorts:     new ArrayField(new ObjectField()),
+      // {step,label,triggered,ic[],description}
+      triggerSteps: new ArrayField(new ObjectField()),
+      // {actorId,name,memoryRequired}
+      stockedIC:   new ArrayField(new ObjectField()),
+      // {actorId,name,iconType,currentNodeId,hidden,linkLocked,marks[],marksFalsified}
+      activeUsers: new ArrayField(new ObjectField()),
+      // {actorId,name,iconType,currentNodeId,hidden,role}
+      activeAgents: new ArrayField(new ObjectField()),
     };
   }
 }

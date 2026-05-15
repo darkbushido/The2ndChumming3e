@@ -1,0 +1,5 @@
+{
+  "_id": "sr3e-agent-0002", "name": "Watchdog", "type": "agent", "img": "icons/svg/mystery-man.svg",
+  "system": { "rating": 4, "graded": false, "hostSecurityTier": "Green", "additionalSkills": [], "utilities": [{"name":"Analyze","multiplier":3},{"name":"Smoke Screen","multiplier":4}], "specialAbilities": [], "woundValue": 0, "notes": "<p>Patrol agent that hunts intruders while staying concealed. Multiplier 8, 128 Mp.</p><p>Analyze drives its Search and Render checks; Smoke Screen raises the TN for enemy Search and Render against it. Hard to spot, effective at finding others.</p>" },
+  "items": [], "effects": [], "_key": "!actors!sr3e-agent-0002"
+}

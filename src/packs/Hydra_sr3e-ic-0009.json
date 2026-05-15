@@ -1,0 +1,20 @@
+{
+  "img": "icons/svg/clockwork.svg",
+  "_id": "sr3e-ic-0009",
+  "name": "Hydra",
+  "type": "ic",
+  "system": {
+    "icType": "Hydra",
+    "grading": "Gray",
+    "rating": 6,
+    "systemRating": 6,
+    "memoryRequired": 20,
+    "damage": "6M Stun",
+    "hostSecurityTier": "Orange",
+    "notes": "<p>Respawns from a hidden backup copy each time it is destroyed. Ability: Respawn.</p>",
+    "woundValue": 0
+  },
+  "items": [],
+  "effects": [],
+  "_key": "!actors!sr3e-ic-0009"
+}

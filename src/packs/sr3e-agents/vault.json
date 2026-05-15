@@ -1,0 +1,5 @@
+{
+  "_id": "sr3e-agent-0015", "name": "Vault", "type": "agent", "img": "icons/svg/mystery-man.svg",
+  "system": { "rating": 6, "graded": true, "hostSecurityTier": "Green", "additionalSkills": [], "utilities": [], "specialAbilities": [{"name":"Guardian","multiplier":1}], "woundValue": 0, "notes": "<p>Datafile guardian. Graded agent. Encrypts all datafiles and datastreams currently active in the host up to its rating; while active, Crack Protections (Encryption) automatically fails. Multiplier 2, 72 Mp.</p><p>High Rating makes the encryption meaningful. Dismiss it before the decker needs to read the files themselves.</p>" },
+  "items": [], "effects": [], "_key": "!actors!sr3e-agent-0015"
+}

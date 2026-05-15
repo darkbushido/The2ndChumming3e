@@ -52,6 +52,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     html.querySelector('.skill-select')
       ?.addEventListener('change', ev => SR3EItemSheet._onSkillChange.call(this, ev));
 
+
     const specModeEl = html.querySelector('#spec-mode');
     if (specModeEl) {
       const hidden   = html.querySelector('#spec-hidden');

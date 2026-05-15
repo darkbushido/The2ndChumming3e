@@ -1,0 +1,20 @@
+{
+  "img": "icons/svg/clockwork.svg",
+  "_id": "sr3e-ic-0000",
+  "name": "ARis",
+  "type": "ic",
+  "system": {
+    "icType": "ARis",
+    "grading": "White",
+    "rating": 6,
+    "systemRating": 6,
+    "memoryRequired": 12,
+    "damage": "6L Stun",
+    "hostSecurityTier": "Green",
+    "notes": "<p>Marks and tracks unauthorized decker icons. Each detected intruder raises Overwatch. Ability: Authenticate.</p>",
+    "woundValue": 0
+  },
+  "items": [],
+  "effects": [],
+  "_key": "!actors!sr3e-ic-0000"
+}

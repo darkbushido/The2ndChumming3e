@@ -1,0 +1,5 @@
+{
+  "_id": "sr3e-agent-0000", "name": "Basic Agent", "type": "agent", "img": "icons/svg/mystery-man.svg",
+  "system": { "rating": 3, "graded": false, "hostSecurityTier": "Green", "additionalSkills": [], "utilities": [], "specialAbilities": [], "woundValue": 0, "notes": "<p>Minimal configuration — Computer + Cybercombat only. Multiplier 1, 9 Mp.</p><p>Use as a cheap decoy, a general-purpose assistant, or a first test of agent programming at low Rating.</p>" },
+  "items": [], "effects": [], "_key": "!actors!sr3e-agent-0000"
+}

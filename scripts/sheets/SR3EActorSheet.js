@@ -61,6 +61,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         toggleStored:      SR3EActorSheet._onToggleStored,
         toggleTemplate:    SR3EActorSheet._onToggleTemplate,
         deployTemplate:    SR3EActorSheet._onDeployTemplate,
+        rollCybercombat:   SR3EActorSheet._onRollCybercombat,
+        rollProgram:       SR3EActorSheet._onRollProgram,
+        refreshHackingPool: SR3EActorSheet._onRefreshHackingPool,
     }
   };
 
@@ -473,10 +476,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           : ''}
         ${(sys.spellDefensePool ?? 0) > 0 ? this._derivedBlock('Spell Defense', `<span style="color:var(--sr-accent)">${sys.spellDefensePool} dice</span>`) : ''}
         ${this._poolBlock('Hacking Pool',
-          d.hackingPool ?? 0,
+          d.availableHackingPool ?? d.hackingPool ?? 0,
           d.hackingPool ?? 0,
           d.hackingPoolBase ?? 0,
-          null, 'system.hackingBonus')}
+          'system.hackingPoolSpent', 'system.hackingBonus')}
       </div>
     </div>
     <div style="margin-top:8px;padding:4px 0;border-top:1px solid var(--sr-border);display:flex;gap:6px;flex-wrap:wrap">
@@ -1121,7 +1124,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <span class="item-cell">${p.system.rating ?? 0}</span>
         <span class="item-cell">${p.system.sizeMp ?? 0} Mp</span>
         <span class="item-cell">${p.system.degradable ? '⚠ Deg.' : ''}</span>
-        ${this._itemControls(p.id, false, 'rollWeapon', false)}
+        ${this._itemControls(p.id, true, 'rollProgram', false)}
       </div>`).join('') : '<p class="empty-list">No programs.</p>';
 
     const conflictBanner = '';
@@ -1132,11 +1135,30 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ? `<div class="list-header"><span>Name</span><span>MPCP</span><span>FW</span><span>Resp</span><span></span></div>${deckRows}`
       : '<p class="empty-list">No cyberdecks.</p>';
 
+    const inMatrix = vrActive || currentMode === 'TRM' || currentMode === 'AR';
+    const hackSpent = sys.hackingPoolSpent ?? 0;
+    const matrixInitBtn = (currentMode === 'VR-Hot' || currentMode === 'VR-Cold') ? `
+      <button type="button" class="btn-roll" data-action="rollInitiative"
+              style="background:var(--sr-surface);border-color:var(--sr-accent);color:var(--sr-accent)"
+              title="Roll Matrix Initiative (Shift: physical dice)">⚡ Matrix Init</button>` : '';
+    const refreshHackBtn = inMatrix && hackSpent > 0 ? `
+      <button type="button" class="btn-sm" data-action="refreshHackingPool"
+              title="Reset hacking pool to full">↺ Hack Pool</button>` : '';
+    const cybercombatBtn = inMatrix ? `
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+        <button type="button" class="btn-roll" data-action="rollCybercombat"
+                style="background:var(--sr-red-bg);border-color:var(--sr-red);color:var(--sr-red)"
+                title="Initiate cybercombat against an IC actor">⚡ Cybercombat</button>
+        ${matrixInitBtn}
+        ${refreshHackBtn}
+      </div>` : '';
+
     return `<div class="tab ${this._activeTab === 'matrix' ? 'active' : ''}" data-tab="matrix" style="overflow-y:auto">
       ${conflictBanner}
       <h3 class="section-hdr">User Mode</h3>
       <div class="sr-veh-modes" style="flex-wrap:wrap;gap:6px;margin-bottom:6px">${modeButtons}</div>
       ${modeDesc}
+      ${cybercombatBtn}
       <h3 class="section-hdr" style="margin-top:0.8rem">Cyberdecks</h3>
       ${deckListHtml}
       ${deck ? deckStats : ''}
@@ -1957,6 +1979,21 @@ static async _onHealDamage(ev, target) {
     const mode    = target.dataset.mode;
     const current = actor.system.astralMode ?? '';
     await actor.update({ 'system.astralMode': current === mode ? '' : mode });
+  }
+
+  static async _onRollCybercombat(_ev, _target) {
+    await this.actor.rollCybercombat();
+  }
+
+  static async _onRollProgram(ev, target) {
+    const itemId = (target ?? ev.currentTarget).dataset.itemId;
+    const item   = this.actor.items.get(itemId);
+    if (!item) return;
+    await this.actor.rollProgram(item, { physicalDice: ev.shiftKey ?? false });
+  }
+
+  static async _onRefreshHackingPool(_ev, _target) {
+    await this.actor.refreshHackingPool();
   }
 
   static async _onEjectSlot(_ev, target) {

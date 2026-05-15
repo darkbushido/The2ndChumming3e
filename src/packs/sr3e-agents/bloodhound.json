@@ -1,0 +1,5 @@
+{
+  "_id": "sr3e-agent-0001", "name": "Bloodhound", "type": "agent", "img": "icons/svg/mystery-man.svg",
+  "system": { "rating": 4, "graded": false, "hostSecurityTier": "Green", "additionalSkills": [], "utilities": [{"name":"Analyze","multiplier":3}], "specialAbilities": [], "woundValue": 0, "notes": "<p>Search specialist. Analyze reduces the TN for Search and Render by its rating. Multiplier 4, 64 Mp.</p><p>Deploy to locate hidden users, mapped datafiles, or concealed IC in a node.</p>" },
+  "items": [], "effects": [], "_key": "!actors!sr3e-agent-0001"
+}

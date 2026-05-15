@@ -1,0 +1,5 @@
+{
+  "_id": "sr3e-agent-0010", "name": "Phantom", "type": "agent", "img": "icons/svg/mystery-man.svg",
+  "system": { "rating": 4, "graded": false, "hostSecurityTier": "Green", "additionalSkills": [], "utilities": [{"name":"Sleaze","multiplier":4},{"name":"Smoke Screen","multiplier":4},{"name":"Armor","multiplier":3}], "specialAbilities": [], "woundValue": 0, "notes": "<p>Survivable stealth agent. Sleaze for barrier bypass, Smoke Screen to stay hidden, Armor to absorb hits if found. Multiplier 12, 192 Mp.</p><p>More robust than Ghost — built to stay on-station in a hostile host for extended operations.</p>" },
+  "items": [], "effects": [], "_key": "!actors!sr3e-agent-0010"
+}

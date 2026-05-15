@@ -1,0 +1,54 @@
+{
+  "_id": "sr3e-host-0006",
+  "name": "Renraku Arcology — Residential Subnet B",
+  "type": "host",
+  "img": "icons/svg/portal.svg",
+  "system": {
+    "systemRating": 8, "securityTierName": "Red", "securityTierThreshold": 4, "securityTierColor": "#cc2222",
+    "mainframeSupport": false, "memoryTotal": 7000, "memoryUsed": 0, "overwatchCurrent": 0, "alertCount": 0,
+    "notes": "<p>Internal Matrix host for Renraku Arcology Residential Block B — housing, environmental controls, and personal communications for 40,000 residents. The SN controls HVAC, door locks, and elevator systems for six towers.</p><p><strong>Notable data:</strong> Resident communications (monitored), physical access logs for all doors, environmental override codes. Renraku treats any intrusion as a threat against the Arcology itself.</p>",
+    "nodes": [
+      {"id":"h06-san","name":"System Access Node","type":"SAN","abbreviation":"SAN","iconShape":"rectangle","accessLevel":"private","description":"Internal-only gateway. Resident access requires Renraku residential SIN. No public access pathway exists — the SAN is not listed on any external directory.","barrierProtected":false,"barrierRating":0,"markedBy":[],"prompts":[],"x":295,"y":15},
+      {"id":"h06-io1","name":"I/O Port","type":"I/O","abbreviation":"I/O","iconShape":"triangle","accessLevel":"private","description":"Building management console. Located in the Arcology's secure network operations centre, sublevel 3. Physical access requires Renraku security clearance level 4.","barrierProtected":false,"barrierRating":0,"markedBy":[],"prompts":[],"x":490,"y":35},
+      {"id":"h06-spu","name":"Sub-Processing Unit","type":"SPU","abbreviation":"SPU","iconShape":"hexagon","accessLevel":"private","description":"Central routing for resident data, environmental requests, and security event processing.","barrierProtected":false,"barrierRating":0,"markedBy":[],"prompts":[],"x":300,"y":155},
+      {"id":"h06-ds","name":"Data Store","type":"DS","abbreviation":"DS","iconShape":"square","accessLevel":"private","description":"Resident files, physical access logs (every door, every elevator, every moment), and monitored communication archives. A complete record of 40,000 people's movements.","barrierProtected":true,"barrierRating":8,"markedBy":[],"prompts":[],"x":490,"y":205},
+      {"id":"h06-sn1","name":"Slave Node — Environmental","type":"SN","abbreviation":"SN-E","iconShape":"circle","accessLevel":"private","description":"Controls HVAC, temperature, air filtration, and utilities for all six residential towers. Compromising this node means control over the environment of 40,000 people.","barrierProtected":true,"barrierRating":6,"markedBy":[],"prompts":[],"x":75,"y":210},
+      {"id":"h06-sn2","name":"Slave Node — Access Control","type":"SN","abbreviation":"SN-A","iconShape":"circle","accessLevel":"private","description":"Controls all electronic door locks, elevator access, and physical security cameras throughout Block B. Every mag-lock in the Arcology runs through here.","barrierProtected":true,"barrierRating":6,"markedBy":[],"prompts":[],"x":75,"y":290},
+      {"id":"h06-cpu","name":"Central Processing Unit","type":"CPU","abbreviation":"CPU","iconShape":"doubleHexagon","accessLevel":"private","description":"Renraku Arcology Security master node. Direct link to Arcology Command. Any breach here triggers building-wide lockdown protocols automatically.","barrierProtected":true,"barrierRating":8,"markedBy":[],"prompts":[],"x":289,"y":370}
+    ],
+    "pathways": [
+      {"id":"h06-p1","fromId":"h06-san","toId":"h06-spu","blocked":false,"blockedBy":null},
+      {"id":"h06-p2","fromId":"h06-san","toId":"h06-io1","blocked":false,"blockedBy":null},
+      {"id":"h06-p3","fromId":"h06-spu","toId":"h06-ds","blocked":false,"blockedBy":null},
+      {"id":"h06-p4","fromId":"h06-spu","toId":"h06-sn1","blocked":false,"blockedBy":null},
+      {"id":"h06-p5","fromId":"h06-spu","toId":"h06-sn2","blocked":false,"blockedBy":null},
+      {"id":"h06-p6","fromId":"h06-spu","toId":"h06-cpu","blocked":false,"blockedBy":null}
+    ],
+    "ioPorts": [
+      {"id":"h06-ioport1","name":"Network Operations Centre Console","connectedNodeId":"h06-io1","accessLevel":"private","requiresPasscode":true,"physicalLocation":"Arcology NOC, Sublevel 3. Accessible only via Renraku Security escort. Biometric + passcode + security clearance level 4 required. Staffed 24/7 by Renraku sysops."}
+    ],
+    "stockedIC": [
+      {"actorId":"","name":"Alert (Passive)","memoryRequired":6,"hidden":false},
+      {"actorId":"","name":"Encryption (Passive)","memoryRequired":8,"hidden":false},
+      {"actorId":"","name":"Authenticator","memoryRequired":16,"hidden":false},
+      {"actorId":"","name":"Tracker","memoryRequired":20,"hidden":false},
+      {"actorId":"","name":"Gemini","memoryRequired":28,"hidden":false},
+      {"actorId":"","name":"Hydra","memoryRequired":28,"hidden":false},
+      {"actorId":"","name":"Killer","memoryRequired":36,"hidden":false}
+    ],
+    "triggerSteps": [
+      {"step":1,"label":"TS 1","triggered":false,"hidden":false,"ic":[{"actorId":"","name":"Alert (Passive)"},{"actorId":"","name":"Encryption (Passive)"}],"description":"Alert (Passive) and Encryption (Passive) activate simultaneously. Resident data traffic encrypted mid-stream. Renraku NOC alerted instantly — this is a monitored residential system and intrusion is treated as a physical threat to residents."},
+      {"step":2,"label":"TS 2","triggered":false,"hidden":false,"ic":[{"actorId":"","name":"Authenticator"}],"description":"Authenticator launches. All active sessions re-challenged. Renraku residential SINs are not easily forged — the Arcology issues them internally and validates against a biometric registry."},
+      {"step":3,"label":"TS 3","triggered":false,"hidden":false,"ic":[{"actorId":"","name":"Tracker"}],"description":"Tracker deploys and feeds live data to the duty security commander. Building-wide physical alert declared. Arcology Security moving to jackpoint locations throughout Block B."},
+      {"step":4,"label":"TS 4","triggered":false,"hidden":false,"ic":[{"actorId":"","name":"Gemini"}],"description":"Gemini deploys — two instances, each pursuing the intruder in separate nodes. They coordinate; if the decker moves to evade one, the other is already there. Overload attacks, Moderate damage."},
+      {"step":5,"label":"TS 5","triggered":false,"hidden":false,"ic":[{"actorId":"","name":"Hydra"}],"description":"Hydra launches. Multi-instance attack — one head per node the decker has accessed. Fighting your way out of the Arcology's Matrix is like fighting your way through the building — every corridor covered."},
+      {"step":6,"label":"TS 6","triggered":false,"hidden":false,"ic":[],"description":"SN-E environmental lockdown: ventilation in Block B restricted, elevator movement suspended except for Security use. 40,000 residents are now aware something is wrong. SN-A locks all non-emergency exits."},
+      {"step":7,"label":"TS 7","triggered":false,"hidden":false,"ic":[{"actorId":"","name":"Killer"}],"description":"Killer IC deploys. This is not a warning — Renraku Arcology Security has authorised lethal Matrix countermeasures. VR-Hot deckers are now at risk of Physical damage on every exchange."},
+      {"step":8,"label":"TS 8","triggered":false,"hidden":false,"ic":[],"description":"Full Arcology Security alert. All of Block B physically locked down. Physical arrest teams moving through every floor. The decker has minutes before their jackpoint is reached."},
+      {"step":9,"label":"TS 9","triggered":false,"hidden":false,"ic":[],"description":"Convergence. Arcology Command assumes direct control of the subnet. GOD response inbound. Inside the Arcology, there is nowhere to run. Renraku does not call the police — they handle this themselves."}
+    ],
+    "activeUsers": [], "activeAgents": []
+  },
+  "items": [], "effects": [],
+  "_key": "!actors!sr3e-host-0006"
+}

@@ -1,0 +1,5 @@
+{
+  "_id": "sr3e-agent-0003", "name": "Brawler", "type": "agent", "img": "icons/svg/mystery-man.svg",
+  "system": { "rating": 4, "graded": false, "hostSecurityTier": "Green", "additionalSkills": [], "utilities": [{"name":"Attack: Moderate (Overload)","multiplier":3}], "specialAbilities": [], "woundValue": 0, "notes": "<p>Standard combat agent. Moderate Overload attack. Multiplier 4, 64 Mp.</p><p>The go-to cheap combatant. Reliable Cybercombat pool + moderate Overload damage is enough for most White and Blue-tier targets.</p>" },
+  "items": [], "effects": [], "_key": "!actors!sr3e-agent-0003"
+}

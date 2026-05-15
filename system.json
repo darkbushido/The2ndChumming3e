@@ -35,6 +35,15 @@
       },
       "vehicle": {
         "htmlFields": ["notes"]
+      },
+      "host": {
+        "htmlFields": ["notes"]
+      },
+      "ic": {
+        "htmlFields": ["notes"]
+      },
+      "agent": {
+        "htmlFields": ["notes"]
       }
     },
     "Item": {
@@ -245,6 +254,27 @@
       "name": "sr3e-sample-characters",
       "label": "Sample Characters",
       "path": "packs/sr3e-sample-characters.db",
+      "type": "Actor",
+      "system": "The2ndChumming3e"
+    },
+    {
+      "name": "sr3e-ic",
+      "label": "Intrusion Countermeasures",
+      "path": "packs/sr3e-ic.db",
+      "type": "Actor",
+      "system": "The2ndChumming3e"
+    },
+    {
+      "name": "sr3e-agents",
+      "label": "Programming Agents",
+      "path": "packs/sr3e-agents.db",
+      "type": "Actor",
+      "system": "The2ndChumming3e"
+    },
+    {
+      "name": "sr3e-hosts",
+      "label": "DataHosts",
+      "path": "packs/sr3e-hosts.db",
       "type": "Actor",
       "system": "The2ndChumming3e"
     }

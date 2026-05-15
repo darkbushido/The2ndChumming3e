@@ -1,0 +1,50 @@
+{
+  "_id": "sr3e-host-0003",
+  "name": "Lone Star — LEMD Sector 4 Server",
+  "type": "host",
+  "img": "icons/svg/portal.svg",
+  "system": {
+    "systemRating": 6, "securityTierName": "Orange", "securityTierThreshold": 3, "securityTierColor": "#dd6600",
+    "mainframeSupport": false, "memoryTotal": 4000, "memoryUsed": 0, "overwatchCurrent": 0, "alertCount": 0,
+    "notes": "<p>Lone Star Law Enforcement Matrix Division operational host for Sector 4. Handles dispatch logs, warrant databases, and active patrol coordination. Sysops are human officers with backup from automated IC.</p><p><strong>Notable data:</strong> Outstanding warrants (including your clients'), active patrol routes, CI reports, booking records. Most runners have personal reasons to visit this one.</p>",
+    "nodes": [
+      {"id":"h03-san","name":"System Access Node","type":"SAN","abbreviation":"SAN","iconShape":"rectangle","accessLevel":"private","description":"Restricted gateway. LEMD credentials required. Public access is explicitly denied — connection attempts from unregistered SINs trigger immediate IC response.","barrierProtected":false,"barrierRating":0,"markedBy":[],"prompts":[],"x":295,"y":15},
+      {"id":"h03-io1","name":"I/O Port","type":"I/O","abbreviation":"I/O","iconShape":"triangle","accessLevel":"private","description":"Hardlined jackpoints inside Lone Star Sector 4 Precinct. Physical access requires passing through a badge-controlled checkpoint.","barrierProtected":false,"barrierRating":0,"markedBy":[],"prompts":[],"x":490,"y":35},
+      {"id":"h03-spu","name":"Sub-Processing Unit","type":"SPU","abbreviation":"SPU","iconShape":"hexagon","accessLevel":"private","description":"Routes dispatch traffic, warrant queries, and inter-precinct data transfers.","barrierProtected":false,"barrierRating":0,"markedBy":[],"prompts":[],"x":300,"y":155},
+      {"id":"h03-ds","name":"Data Store","type":"DS","abbreviation":"DS","iconShape":"square","accessLevel":"private","description":"Warrant database, patrol logs, CI contact files, booking records, and active case files. The primary target for most runner-related intrusions.","barrierProtected":true,"barrierRating":6,"markedBy":[],"prompts":[],"x":490,"y":215},
+      {"id":"h03-sn","name":"Slave Node","type":"SN","abbreviation":"SN","iconShape":"circle","accessLevel":"private","description":"Controls sector patrol drone routes, surveillance camera network, and electronic door locks at the precinct. High-value secondary target.","barrierProtected":true,"barrierRating":4,"markedBy":[],"prompts":[],"x":85,"y":240},
+      {"id":"h03-cpu","name":"Central Processing Unit","type":"CPU","abbreviation":"CPU","iconShape":"doubleHexagon","accessLevel":"private","description":"Core administrative system. Manages officer access credentials, security sheaf, and encrypted inter-precinct communications.","barrierProtected":true,"barrierRating":6,"markedBy":[],"prompts":[],"x":289,"y":335}
+    ],
+    "pathways": [
+      {"id":"h03-p1","fromId":"h03-san","toId":"h03-spu","blocked":false,"blockedBy":null},
+      {"id":"h03-p2","fromId":"h03-san","toId":"h03-io1","blocked":false,"blockedBy":null},
+      {"id":"h03-p3","fromId":"h03-spu","toId":"h03-ds","blocked":false,"blockedBy":null},
+      {"id":"h03-p4","fromId":"h03-spu","toId":"h03-sn","blocked":false,"blockedBy":null},
+      {"id":"h03-p5","fromId":"h03-spu","toId":"h03-cpu","blocked":false,"blockedBy":null}
+    ],
+    "ioPorts": [
+      {"id":"h03-ioport1","name":"Sector 4 Precinct Hardlines","connectedNodeId":"h03-io1","accessLevel":"private","requiresPasscode":true,"physicalLocation":"6 hardlined terminals in the LEMD operations room, Sector 4 Precinct. Requires badge access through two checkpoints. Sysop desk is staffed 24/7."}
+    ],
+    "stockedIC": [
+      {"actorId":"","name":"Alert (Passive)","memoryRequired":6,"hidden":false},
+      {"actorId":"","name":"Authenticator","memoryRequired":12,"hidden":false},
+      {"actorId":"","name":"Tracker","memoryRequired":16,"hidden":false},
+      {"actorId":"","name":"Blaster","memoryRequired":20,"hidden":false},
+      {"actorId":"","name":"Crippler","memoryRequired":20,"hidden":false}
+    ],
+    "triggerSteps": [
+      {"step":1,"label":"TS 1","triggered":false,"hidden":false,"ic":[{"actorId":"","name":"Alert (Passive)"},{"actorId":"","name":"Authenticator"}],"description":"Simultaneous Alert (Passive) and Authenticator deployment. LEMD does not have a 'wait and see' posture — any unrecognised access pattern triggers immediate credential verification. Human sysop alerted within 30 seconds."},
+      {"step":2,"label":"TS 2","triggered":false,"hidden":false,"ic":[{"actorId":"","name":"Tracker"}],"description":"Tracker deploys at SPU. Begins mapping persona movements and transmitting real-time log to the duty sysop. A human officer is now watching the intruder's movements live."},
+      {"step":3,"label":"TS 3","triggered":false,"hidden":false,"ic":[{"actorId":"","name":"Blaster"}],"description":"Blaster launches from CPU. Overload attack — moderate damage. Lone Star IC is not subtle. If the decker is in VR-Hot, this deals Physical damage."},
+      {"step":4,"label":"TS 4","triggered":false,"hidden":false,"ic":[{"actorId":"","name":"Crippler"}],"description":"Crippler deploys targeting the intruder's active programs. Begins degrading program ratings — each pass reduces one program's effective rating by 1. Priority: attack and exploit programs."},
+      {"step":5,"label":"TS 5","triggered":false,"hidden":false,"ic":[],"description":"Active Alert declared. All patrol units in Sector 4 alerted to possible Matrix intrusion. Physical security sweep of all registered jackpoint addresses begins. DS access suspended for all non-duty officers."},
+      {"step":6,"label":"TS 6","triggered":false,"hidden":false,"ic":[],"description":"SN drone patrol routes updated to converge on probable physical location. Surveillance cameras in a 3-block radius reoriented. Facial recognition sweep initiated."},
+      {"step":7,"label":"TS 7","triggered":false,"hidden":false,"ic":[],"description":"CPU activates emergency passcode rotation. All current sessions invalidated. Even legitimate officers must re-authenticate. Host effectively locked down for 2 minutes."},
+      {"step":8,"label":"TS 8","triggered":false,"hidden":false,"ic":[],"description":"Full Alert. Knight Errant notified as backup (inter-agency protocol). Physical location of I/O Port hardline confirmed — officers already in the building. Extraction window closing fast."},
+      {"step":9,"label":"TS 9","triggered":false,"hidden":false,"ic":[],"description":"Convergence. GOD trace complete. SIN flagged in the warrant system — the decker now has an outstanding warrant. Physical arrest team en route. This is not the kind of host you run without an exit plan."}
+    ],
+    "activeUsers": [], "activeAgents": []
+  },
+  "items": [], "effects": [],
+  "_key": "!actors!sr3e-host-0003"
+}

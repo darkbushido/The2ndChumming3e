@@ -1,0 +1,20 @@
+{
+  "img": "icons/svg/clockwork.svg",
+  "_id": "sr3e-ic-0004",
+  "name": "Scrambler",
+  "type": "ic",
+  "system": {
+    "icType": "Scrambler",
+    "grading": "White",
+    "rating": 6,
+    "systemRating": 6,
+    "memoryRequired": 15,
+    "damage": "6M Stun",
+    "hostSecurityTier": "Green",
+    "notes": "<p>Scrambles and corrupts the decker's active programs, reducing their effectiveness. Ability: Erosion.</p>",
+    "woundValue": 0
+  },
+  "items": [],
+  "effects": [],
+  "_key": "!actors!sr3e-ic-0004"
+}

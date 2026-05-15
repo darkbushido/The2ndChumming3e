@@ -1,4 +1,4 @@
-import { CharacterData, NpcData, VehicleData } from './data/ActorDataModels.js';
+import { CharacterData, NpcData, VehicleData, ICData, HostData, AgentData } from './data/ActorDataModels.js';
 import {
   MeleeData, ProjectileData, ThrownData, FirearmData, AmmunitionData,
   ArmorData, GearData, SkillData, QualityData, CyberwareData, BiowareData,
@@ -9,6 +9,9 @@ import { SR3EItem } from './documents/SR3EItem.js';
 import { SR3EActorSheet } from './sheets/SR3EActorSheet.js';
 import { SR3EVehicleSheet } from './sheets/SR3EVehicleSheet.js';
 import { SR3EItemSheet } from './sheets/SR3EItemSheet.js';
+import { SR3EHostSheet } from './sheets/SR3EHostSheet.js';
+import { SR3EICSheet } from './sheets/SR3EICSheet.js';
+import { SR3EAgentSheet } from './sheets/SR3EAgentSheet.js';
 import { SR3E } from './config.js';
 import { SR3ECombat } from './documents/SR3ECombat.js';
 import { SR3ESpiritSummoning } from './documents/SR3ESpiritSummoning.js';
@@ -23,6 +26,9 @@ Hooks.once('init', () => {
   CONFIG.Actor.dataModels.character = CharacterData;
   CONFIG.Actor.dataModels.npc       = NpcData;
   CONFIG.Actor.dataModels.vehicle   = VehicleData;
+  CONFIG.Actor.dataModels.host      = HostData;
+  CONFIG.Actor.dataModels.ic        = ICData;
+  CONFIG.Actor.dataModels.agent     = AgentData;
 
   CONFIG.Item.dataModels.melee        = MeleeData;
   CONFIG.Item.dataModels.projectile   = ProjectileData;
@@ -85,6 +91,24 @@ Hooks.once('init', () => {
     label: 'SR3E Vehicle Sheet'
   });
 
+  foundry.documents.collections.Actors.registerSheet('The2ndChumming3e', SR3EHostSheet, {
+    types: ['host'],
+    makeDefault: true,
+    label: 'SR3E Host Sheet'
+  });
+
+  foundry.documents.collections.Actors.registerSheet('The2ndChumming3e', SR3EICSheet, {
+    types: ['ic'],
+    makeDefault: true,
+    label: 'SR3E IC Sheet'
+  });
+
+  foundry.documents.collections.Actors.registerSheet('The2ndChumming3e', SR3EAgentSheet, {
+    types: ['agent'],
+    makeDefault: true,
+    label: 'SR3E Agent Sheet'
+  });
+
   foundry.documents.collections.Items.unregisterSheet('core', foundry.appv1.sheets.ItemSheet);
   foundry.documents.collections.Items.registerSheet('The2ndChumming3e', SR3EItemSheet, {
     makeDefault: true,
@@ -128,6 +152,16 @@ Hooks.once('ready', async () => {
       path: 'scripts/macros/populate-sample-characters-2.js',
       img:  'icons/svg/mystery-man.svg',
     },
+    {
+      name: 'Populate SR3E Programming Agents',
+      path: 'scripts/macros/populate-agents.js',
+      img:  'icons/svg/mystery-man.svg',
+    },
+    {
+      name: 'Populate SR3E DataHosts',
+      path: 'scripts/macros/populate-hosts.js',
+      img:  'icons/svg/portal.svg',
+    },
   ];
 
   for (const def of macros) {
@@ -140,6 +174,37 @@ Hooks.once('ready', async () => {
       console.warn(`SR3E | Could not auto-create macro "${def.name}":`, err);
     }
   }
+
+  // Auto-create organisational folders for non-character actor types.
+  // These folders keep the world actors directory tidy — IC, agents, hosts,
+  // and vehicles live in folders rather than mixing with runner characters.
+  const ACTOR_FOLDERS = [
+    { name: 'IC & Agents',      color: '#1a3a5c' },
+    { name: 'DataHosts',        color: '#2a1a3a' },
+    { name: 'Vehicles & Drones', color: '#1c2a1c' },
+  ];
+  for (const fd of ACTOR_FOLDERS) {
+    if (!game.folders.find(f => f.type === 'Actor' && f.name === fd.name)) {
+      await Folder.create({ name: fd.name, type: 'Actor', color: fd.color });
+    }
+  }
+});
+
+// Auto-assign newly created Matrix/vehicle actors to their organisational folder.
+// Fires before creation so the actor is placed in the right folder from the start.
+Hooks.on('preCreateActor', (document, _data, options, _userId) => {
+  if (options.pack) return; // compendium creates don't use world folders
+  if (document.folder) return; // already in a folder — respect manual placement
+  const folderMap = {
+    ic:      'IC & Agents',
+    agent:   'IC & Agents',
+    host:    'DataHosts',
+    vehicle: 'Vehicles & Drones',
+  };
+  const folderName = folderMap[document.type];
+  if (!folderName) return;
+  const folder = game.folders?.find(f => f.type === 'Actor' && f.name === folderName);
+  if (folder) document.updateSource({ folder: folder.id });
 });
 
 // Vehicle Chase button + drone/VCR labels in the combat tracker sidebar
@@ -615,6 +680,37 @@ Hooks.on('renderChatMessageHTML', (_message, html, _data) => {
       event.preventDefault();
       event.stopPropagation();
       await SR3EActor.handleRamPassengerResist(btn, event.shiftKey);
+    });
+  });
+
+  // Matrix combat — IC resist matrix damage (opens IC resist card)
+  html.querySelectorAll('.sr-matrix-ic-resist-btn').forEach(btn => {
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      btn.disabled    = true;
+      btn.textContent = '⏳ Preparing…';
+      await SR3EActor.handleMatrixICResistClick(btn);
+    });
+  });
+
+  // Matrix combat — IC rolls to resist (on IC resist card)
+  html.querySelectorAll('.sr-matrix-ic-resist-roll-btn').forEach(btn => {
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      await SR3EActor.handleMatrixICResistRollClick(btn);
+    });
+  });
+
+  // Matrix combat — Decker rolls Cybercombat defense against IC
+  html.querySelectorAll('.sr-matrix-defend-btn').forEach(btn => {
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      btn.disabled    = true;
+      btn.textContent = '⏳ Preparing…';
+      await SR3EActor.handleMatrixDefendClick(btn);
     });
   });
 });

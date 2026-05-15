@@ -1,0 +1,51 @@
+{
+  "_id": "sr3e-host-0000",
+  "name": "Downtown Public MetroGrid",
+  "type": "host",
+  "img": "icons/svg/portal.svg",
+  "system": {
+    "systemRating": 3, "securityTierName": "Blue", "securityTierThreshold": 1, "securityTierColor": "#3377cc",
+    "mainframeSupport": false, "memoryTotal": 1500, "memoryUsed": 0, "overwatchCurrent": 0, "alertCount": 0,
+    "notes": "<p>Seattle Downtown district's public access Matrix node. AR advertising, transit schedules, permit kiosks, event listings, and basic government services. Thousands of users daily; Overwatch accumulates slowly here due to high traffic noise.</p><p><strong>Notable data:</strong> Almost nothing worth stealing on its own — but a useful unmonitored launch point to reach adjacent hosts without surfacing your physical location.</p>",
+    "nodes": [
+      {"id":"h00-san","name":"System Access Node","type":"SAN","abbreviation":"SAN","iconShape":"rectangle","accessLevel":"public","description":"High-traffic public gateway. Flooded with legitimate user traffic — Overwatch builds slowly here.","barrierProtected":false,"barrierRating":0,"markedBy":[],"prompts":[],"x":295,"y":15},
+      {"id":"h00-io1","name":"I/O Port","type":"I/O","abbreviation":"I/O","iconShape":"triangle","accessLevel":"public","description":"Metro Centre jackpoint cluster. Four public sockets on the concourse level.","barrierProtected":false,"barrierRating":0,"markedBy":[],"prompts":[],"x":490,"y":35},
+      {"id":"h00-io2","name":"I/O Port","type":"I/O","abbreviation":"I/O","iconShape":"triangle","accessLevel":"public","description":"Street-level AR kiosk row. Unmonitored pedestrian terminals along 3rd Avenue.","barrierProtected":false,"barrierRating":0,"markedBy":[],"prompts":[],"x":570,"y":90},
+      {"id":"h00-spu","name":"Sub-Processing Unit","type":"SPU","abbreviation":"SPU","iconShape":"hexagon","accessLevel":"public","description":"Routes advertising feeds, transit data, and permit requests. Very high legitimate traffic.","barrierProtected":false,"barrierRating":0,"markedBy":[],"prompts":[],"x":300,"y":155},
+      {"id":"h00-sn","name":"Slave Node","type":"SN","abbreviation":"SN","iconShape":"circle","accessLevel":"public","description":"Controls AR billboard arrays, transit announcement boards, and public kiosk displays.","barrierProtected":false,"barrierRating":0,"markedBy":[],"prompts":[],"x":85,"y":240},
+      {"id":"h00-ds","name":"Data Store","type":"DS","abbreviation":"DS","iconShape":"square","accessLevel":"private","description":"Public records: transit schedules, permit filings, event registrations, AR ad contracts.","barrierProtected":false,"barrierRating":0,"markedBy":[],"prompts":[],"x":490,"y":215},
+      {"id":"h00-cpu","name":"Central Processing Unit","type":"CPU","abbreviation":"CPU","iconShape":"doubleHexagon","accessLevel":"private","description":"Administers city service APIs and manages sysop access. Lightly defended — this host's value is in availability, not secrecy.","barrierProtected":true,"barrierRating":3,"markedBy":[],"prompts":[],"x":289,"y":335}
+    ],
+    "pathways": [
+      {"id":"h00-p1","fromId":"h00-san","toId":"h00-spu","blocked":false,"blockedBy":null},
+      {"id":"h00-p2","fromId":"h00-san","toId":"h00-io1","blocked":false,"blockedBy":null},
+      {"id":"h00-p3","fromId":"h00-san","toId":"h00-io2","blocked":false,"blockedBy":null},
+      {"id":"h00-p4","fromId":"h00-spu","toId":"h00-sn","blocked":false,"blockedBy":null},
+      {"id":"h00-p5","fromId":"h00-spu","toId":"h00-ds","blocked":false,"blockedBy":null},
+      {"id":"h00-p6","fromId":"h00-spu","toId":"h00-cpu","blocked":false,"blockedBy":null}
+    ],
+    "ioPorts": [
+      {"id":"h00-ioport1","name":"Metro Centre Concourse Sockets","connectedNodeId":"h00-io1","accessLevel":"public","requiresPasscode":false,"physicalLocation":"4 public jackpoints on the main concourse level of Metro Centre, 3rd & Pine."},
+      {"id":"h00-ioport2","name":"3rd Avenue AR Kiosk Row","connectedNodeId":"h00-io2","accessLevel":"public","requiresPasscode":false,"physicalLocation":"6 unmonitored street-facing kiosk terminals along 3rd Avenue between Pike and Union."}
+    ],
+    "stockedIC": [
+      {"actorId":"","name":"Alert (Passive)","memoryRequired":6,"hidden":false},
+      {"actorId":"","name":"ARis","memoryRequired":12,"hidden":false},
+      {"actorId":"","name":"Authenticator","memoryRequired":12,"hidden":false}
+    ],
+    "triggerSteps": [
+      {"step":1,"label":"TS 1","triggered":false,"hidden":false,"ic":[{"actorId":"","name":"Alert (Passive)"}],"description":"Alert (Passive) activates. System logs the anomalous access signature and flags it for automated review. No active response yet — traffic volume masks the alert."},
+      {"step":2,"label":"TS 2","triggered":false,"hidden":false,"ic":[{"actorId":"","name":"ARis"}],"description":"ARis deploys at SPU. Begins tracking the intruder's persona icon. Low rating — may lose track in heavy traffic. Overwatch begins accumulating."},
+      {"step":3,"label":"TS 3","triggered":false,"hidden":false,"ic":[{"actorId":"","name":"Authenticator"}],"description":"Authenticator activates at SAN. Begins re-validating all active sessions. Legitimate users notice a brief slowdown. Intruder's credentials are re-checked against city registry."},
+      {"step":4,"label":"TS 4","triggered":false,"hidden":false,"ic":[],"description":"Automated lockout triggers on the DS. Public permit and event data remains readable but write access is suspended. A sysop receives an automated page."},
+      {"step":5,"label":"TS 5","triggered":false,"hidden":false,"ic":[],"description":"SN billboard arrays begin looping 'SYSTEM MAINTENANCE' banners. Physical security notified at Metro Centre. I/O Port 1 access suspended pending review."},
+      {"step":6,"label":"TS 6","triggered":false,"hidden":false,"ic":[],"description":"Partial shutdown of public-facing SPU processes. Transit data goes to read-only cached mode. City IT department alerted."},
+      {"step":7,"label":"TS 7","triggered":false,"hidden":false,"ic":[],"description":"CPU initiates emergency passcode rotation. All active sessions forcibly terminated and re-authenticated. System effectively reboots for 1d6 minutes."},
+      {"step":8,"label":"TS 8","triggered":false,"hidden":false,"ic":[],"description":"Full host lockdown. All I/O ports physically disabled (electronic lock on kiosk panels). Host switches to emergency-services-only mode. GOD pinged."},
+      {"step":9,"label":"TS 9","triggered":false,"hidden":false,"ic":[],"description":"Convergence. GOD response team dispatched. Physical location of active jackpoints traced. Decker's SAN connection logged with timestamp. Expect a Lone Star visit within 4d6 minutes."}
+    ],
+    "activeUsers": [], "activeAgents": []
+  },
+  "items": [], "effects": [],
+  "_key": "!actors!sr3e-host-0000"
+}

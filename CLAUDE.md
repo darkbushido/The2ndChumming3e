@@ -378,11 +378,108 @@ CYB/UNA → Unarmed Combat
 
 ---
 
+## Matrix rules (Matrix Defragged v2)
+
+### System Rating
+- All Matrix-enabled devices have a System Rating (range 1–12, can exceed 12)
+- Determines the **TN** for any action taken against a host or its assets
+- Hosts: assigned by GM. Cyberdecks: equal to MPCP Rating. Other devices: Device Rating.
+
+### Security Tiers
+- All Matrix-enabled devices belong to a Security Tier
+- Represented by a **colour** (flavour hint to deckers) and a **Security Threshold** (the actual firewall rating)
+- Any hack attempt must generate successes **≥ Security Threshold**, or the action fails and the user's **Overwatch increases by 1**
+- Cyberdecks determine their tier from their Firewall Rating
+
+| Tier | Threshold | Colour | Description |
+|------|-----------|--------|-------------|
+| Ivory | 0 | Cream | No security. Toys and minor Matrix devices. |
+| Blue | 1 | Blue | Low security. Public access: bus tickets, libraries. |
+| Green | 2 | Green | Standard. Shops, petty outfits, public Matrix. |
+| Orange | 3 | Orange | Challenging. Mid-size corps, corp offices. |
+| Red | 4 | Red | Threatening. Classified info; agencies will kill to protect. |
+| Black | 5 | Black | Dangerous. Top military/corporate/government SOTA. |
+| Ultraviolet | 6 | Purple | Deadly. The Sixth World's greatest secrets. |
+
+### Hacking Pool
+- Formula: `Intelligence + ⌊MPCP / 3⌋` (MPCP = cyberdeck's MPCP Rating)
+- Replaces the raw Intelligence roll — always pair with the appropriate skill
+
+### User Modes and their effects
+| Mode | Initiative | Biofeedback | Dumpshock |
+|------|-----------|-------------|-----------|
+| Tortoise (TRM) | Physical | Immune | — |
+| AR | Physical | Immune | — |
+| VR-Cold | Matrix (Rating + Xd6) | Stun overflow | Stun |
+| VR-Hot | Matrix (Rating + Xd6) | Physical | Physical |
+
+- Tortoise mode: +2 TN to all Matrix actions, immune to Biofeedback
+- VR-Cold: overflow damage after stun track filled goes to physical; dumpshock = Stun
+- VR-Hot: all damage physical; dumpshock = physical; uses Matrix initiative formula
+
+### Hacking procedure (3 steps)
+1. **Declare action** — attacker picks a node prompt (e.g. Duplicate/Download on DS)
+2. **Check Security Threshold** — roll Hacking vs System Rating; need ≥ Security Threshold successes or: action fails + Overwatch +1
+3. **Perform action** — if threshold met, action resolves (may require a second roll per the prompt's test field)
+
+### Overwatch / Convergence
+- Track: 10 boxes
+- Each failed hack attempt (misses Security Threshold): Overwatch +1
+- Box 10 = **Convergence**: Dumpshock attack (Power = System Rating) + GOD/corporate response + possible physical security
+
+### Cybercombat procedure
+1. **Attack** — attacker rolls Cybercombat + Hacking Pool dice vs TN = target's System Rating
+2. **Defend** — defender rolls Cybercombat (or Firewall dice) vs same TN
+3. **Compare** — net successes (attacker hits − defender hits)
+4. **Determine damage** — base = IC Rating + level (e.g. "6S"); stage up by net successes (every 2 net = +1 stage)
+5. **Resist** — target rolls Body (physical) or System Rating (Matrix entity) vs Power; each 2 soak hits = stage down
+
+### IC / Agent rules
+- **Firewall** = host's Security Threshold (not a separate stat on the IC actor)
+- IC initiative is tier-based (derived in `_prepareIC`):
+
+| Tier | Initiative formula |
+|------|--------------------|
+| Ivory | Rating + 0d6 |
+| Blue | Rating + 1d6 |
+| Green | Rating + 2d6 |
+| Orange | Rating + 3d6 |
+| Red / Black / Ultraviolet | Rating + 4d6 |
+
+- IC grading (White/Gray/Black) determines lethality; Black IC deal physical damage
+- IC act on their own initiative in the Matrix combat tracker (type = `ic` actor)
+
+### Official IC/Agent types (by grading)
+- **White**: ARis, Authenticator, Looper, Mr. Medkit, Scrambler
+- **Gray**: Blaster, Crippler, Dataworm, Gemini, Hydra, Sparky, Tar Baby, Tracker
+- **Black**: Killer, Ripper
+
+### Matrix Condition Monitor
+- 10 boxes (same click-to-toggle pattern as physical/stun wound track)
+- TN penalties at 3/6/8/10 boxes filled (+1/+2/+3/crash)
+- Not yet implemented as a separate track on the host sheet
+
+### Sys/Sec modifiers
+| Condition | Modifier |
+|-----------|---------|
+| Hardlined (physical jackpoint) | −2 |
+| Tortoise mode | +2 |
+| Using comms only | +1 |
+
+### Host sheet implementation notes (SR3EHostSheet.js)
+- `securityTierName` change auto-fills both `securityTierColor` and `securityTierThreshold`
+- Overwatch track (10 boxes, gradient green→amber→red→gold) increments on failed hacks
+- Box 10 = Convergence (gold border)
+- Default topology mirrors the canonical host system map: SAN (top) → SPU (centre) → SN (left) / DS (right) / CPU (bottom); I/O (upper-right) hangs off SAN
+- Node shapes: SAN=rectangle, SPU=hexagon, DS=square, **SN=circle**, CPU=doubleHexagon, I/O=triangle
+
+---
+
 ## What is NOT yet implemented
 - Spirit summoning (SR3ESpiritSummoning.js exists but is not wired in)
 - Full Defense (melee/ranged defensive posture — deferred)
 - Vehicle sheets
-- Matrix/hacking combat
+- Matrix/hacking combat rolls (host sheet is GM reference/tracking only for now)
 - Magic combat (spellcasting rolls exist, combat application not wired)
 - Karma spending in character advancement
 - Pool refresh prompts for astral/hacking pools (only combat pool currently)

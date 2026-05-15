@@ -1,0 +1,20 @@
+{
+  "img": "icons/svg/clockwork.svg",
+  "_id": "sr3e-ic-0017",
+  "name": "Encryption (Passive)",
+  "type": "ic",
+  "system": {
+    "icType": "Authenticator",
+    "grading": "White",
+    "rating": 6,
+    "systemRating": 6,
+    "memoryRequired": 108,
+    "damage": "",
+    "hostSecurityTier": "Blue",
+    "notes": "<p><strong>Passive countermeasure.</strong> Encrypts all data on this node. All actions against encrypted data add +Rating to the TN. Requires Decryption program to bypass without penalty. Memory: Rating squared x3 Mp.</p>",
+    "woundValue": 0
+  },
+  "items": [],
+  "effects": [],
+  "_key": "!actors!sr3e-ic-0017"
+}

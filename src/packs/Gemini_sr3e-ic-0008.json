@@ -1,0 +1,20 @@
+{
+  "img": "icons/svg/clockwork.svg",
+  "_id": "sr3e-ic-0008",
+  "name": "Gemini",
+  "type": "ic",
+  "system": {
+    "icType": "Gemini",
+    "grading": "Gray",
+    "rating": 6,
+    "systemRating": 6,
+    "memoryRequired": 20,
+    "damage": "6M Stun",
+    "hostSecurityTier": "Orange",
+    "notes": "<p>Splits into multiple instances to overwhelm deckers with simultaneous attacks. Ability: Instance.</p>",
+    "woundValue": 0
+  },
+  "items": [],
+  "effects": [],
+  "_key": "!actors!sr3e-ic-0008"
+}

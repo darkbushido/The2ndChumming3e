@@ -15,7 +15,11 @@
       "Bash(awk 'NR%30==1')",
       "Bash(node convert-vehicles.js)",
       "Bash(node convert-cyberware.js)",
-      "Bash(python -m json.tool)"
+      "Bash(python -m json.tool)",
+      "Bash(Get-ChildItem -Recurse -Filter \"*.js\")",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(Select-String \"ic|host|agent\")",
+      "Bash(fvtt package *)"
     ]
   }
 }

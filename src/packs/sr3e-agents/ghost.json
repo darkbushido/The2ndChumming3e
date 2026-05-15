@@ -1,0 +1,5 @@
+{
+  "_id": "sr3e-agent-0005", "name": "Ghost", "type": "agent", "img": "icons/svg/mystery-man.svg",
+  "system": { "rating": 4, "graded": false, "hostSecurityTier": "Green", "additionalSkills": [], "utilities": [{"name":"Sleaze","multiplier":4},{"name":"Smoke Screen","multiplier":4}], "specialAbilities": [], "woundValue": 0, "notes": "<p>Pure stealth agent. Sleaze bypasses barriers up to its rating without triggering Overwatch; Smoke Screen makes it nearly invisible to Search and Render. Multiplier 9, 144 Mp.</p><p>Does not attack — deploy it ahead of the decker for a clean insertion.</p>" },
+  "items": [], "effects": [], "_key": "!actors!sr3e-agent-0005"
+}

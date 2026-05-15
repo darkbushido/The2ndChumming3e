@@ -164,6 +164,8 @@ fvtt package unpack sr3e-spells          --inputDirectory packs --outputDirector
 fvtt package unpack sr3e-vehicle-mods    --inputDirectory packs --outputDirectory src/packs
 fvtt package unpack sr3e-vehicle-weapons --inputDirectory packs --outputDirectory src/packs
 fvtt package unpack sr3e-vehicles        --inputDirectory packs --outputDirectory src/packs
+fvtt package unpack -n sr3e-hosts   --in packs --out src/packs/sr3e-hosts
+fvtt package unpack -n sr3e-agents  --in packs --out src/packs/sr3e-agents
 ```
 
 **Add or edit entries:** create/modify JSON files in `src/packs/<pack-name>/`. The `_id` field inside each file is the entry's identity — keep it stable. The filename is for your organisation only.
@@ -185,6 +187,8 @@ fvtt package pack sr3e-spells          --inputDirectory src/packs --outputDirect
 fvtt package pack sr3e-vehicle-mods    --inputDirectory src/packs --outputDirectory packs
 fvtt package pack sr3e-vehicle-weapons --inputDirectory src/packs --outputDirectory packs
 fvtt package pack sr3e-vehicles        --inputDirectory src/packs --outputDirectory packs
+fvtt package pack -n sr3e-hosts   --in src/packs/sr3e-hosts  --out packs
+fvtt package pack -n sr3e-agents  --in src/packs/sr3e-agents --out packs
 ```
 
 Then commit the updated `packs/<pack-name>/` files as normal. `src/packs/` is the source of truth — never edit via the Foundry UI without unpacking first, or those changes will be overwritten on the next repack.

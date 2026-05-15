@@ -1,0 +1,51 @@
+{
+  "_id": "sr3e-host-0004",
+  "name": "Knight Errant — KCAS Dispatch Hub",
+  "type": "host",
+  "img": "icons/svg/portal.svg",
+  "system": {
+    "systemRating": 7, "securityTierName": "Orange", "securityTierThreshold": 3, "securityTierColor": "#dd6600",
+    "mainframeSupport": false, "memoryTotal": 5000, "memoryUsed": 0, "overwatchCurrent": 0, "alertCount": 0,
+    "notes": "<p>Knight Errant's King County Armed Security real-time dispatch host. Patrol positioning, armed response allocation, and active incident management. A decker who can read this has a live map of where KE is — and isn't.</p><p><strong>Notable data:</strong> Patrol routes, response time estimates by district, personnel assignments, ongoing incident reports. Invaluable for planning any run in KE-protected territory.</p>",
+    "nodes": [
+      {"id":"h04-san","name":"System Access Node","type":"SAN","abbreviation":"SAN","iconShape":"rectangle","accessLevel":"private","description":"Hardened gateway. KE officer credentials required. Unrecognised connections are immediately flagged and IC deployed — KE does not wait.","barrierProtected":false,"barrierRating":0,"markedBy":[],"prompts":[],"x":295,"y":15},
+      {"id":"h04-io1","name":"I/O Port","type":"I/O","abbreviation":"I/O","iconShape":"triangle","accessLevel":"private","description":"Dispatch centre hardlines. Located inside KE King County HQ, which is itself a hardened facility. Getting to this jackpoint is half the challenge.","barrierProtected":false,"barrierRating":0,"markedBy":[],"prompts":[],"x":490,"y":35},
+      {"id":"h04-spu","name":"Sub-Processing Unit","type":"SPU","abbreviation":"SPU","iconShape":"hexagon","accessLevel":"private","description":"Routes real-time dispatch data, patrol positioning updates, and incident escalation flags.","barrierProtected":false,"barrierRating":0,"markedBy":[],"prompts":[],"x":300,"y":155},
+      {"id":"h04-ds","name":"Data Store","type":"DS","abbreviation":"DS","iconShape":"square","accessLevel":"private","description":"Patrol route schedules, response time logs, personnel assignments, active incident files, and KE client contracts. The motherlode for planning a run in KE territory.","barrierProtected":true,"barrierRating":7,"markedBy":[],"prompts":[],"x":490,"y":215},
+      {"id":"h04-sn","name":"Slave Node","type":"SN","abbreviation":"SN","iconShape":"circle","accessLevel":"private","description":"Controls KE patrol vehicle transponders, response drone positioning, and facility access locks across all contracted client sites.","barrierProtected":true,"barrierRating":5,"markedBy":[],"prompts":[],"x":85,"y":240},
+      {"id":"h04-cpu","name":"Central Processing Unit","type":"CPU","abbreviation":"CPU","iconShape":"doubleHexagon","accessLevel":"private","description":"Administers the dispatch system, officer credentials, and the encrypted client contract database. The only node with full read access to all patrol data.","barrierProtected":true,"barrierRating":7,"markedBy":[],"prompts":[],"x":289,"y":335}
+    ],
+    "pathways": [
+      {"id":"h04-p1","fromId":"h04-san","toId":"h04-spu","blocked":false,"blockedBy":null},
+      {"id":"h04-p2","fromId":"h04-san","toId":"h04-io1","blocked":false,"blockedBy":null},
+      {"id":"h04-p3","fromId":"h04-spu","toId":"h04-ds","blocked":false,"blockedBy":null},
+      {"id":"h04-p4","fromId":"h04-spu","toId":"h04-sn","blocked":false,"blockedBy":null},
+      {"id":"h04-p5","fromId":"h04-spu","toId":"h04-cpu","blocked":false,"blockedBy":null}
+    ],
+    "ioPorts": [
+      {"id":"h04-ioport1","name":"KE HQ Dispatch Hardlines","connectedNodeId":"h04-io1","accessLevel":"private","requiresPasscode":true,"physicalLocation":"KE King County HQ dispatch floor. The building itself is a rated security facility — armed guards, biometric entry, and roving patrols. The jackpoints are at the dispatcher workstations on the secure floor."}
+    ],
+    "stockedIC": [
+      {"actorId":"","name":"Alert (Passive)","memoryRequired":6,"hidden":false},
+      {"actorId":"","name":"Authenticator","memoryRequired":12,"hidden":false},
+      {"actorId":"","name":"Tracker","memoryRequired":16,"hidden":false},
+      {"actorId":"","name":"Blaster","memoryRequired":20,"hidden":false},
+      {"actorId":"","name":"Sparky","memoryRequired":20,"hidden":false},
+      {"actorId":"","name":"Hydra","memoryRequired":24,"hidden":false}
+    ],
+    "triggerSteps": [
+      {"step":1,"label":"TS 1","triggered":false,"hidden":false,"ic":[{"actorId":"","name":"Alert (Passive)"},{"actorId":"","name":"Authenticator"}],"description":"Immediate dual response. Alert (Passive) logs the access event; Authenticator challenges credentials simultaneously. KE maintains a 24/7 matrix monitoring team — a human sysop is reviewing this within 60 seconds."},
+      {"step":2,"label":"TS 2","triggered":false,"hidden":false,"ic":[{"actorId":"","name":"Tracker"}],"description":"Tracker deploys. Live feed to the duty matrix officer. Every node the decker enters is logged. KE will use this to build a threat profile even if the decker escapes."},
+      {"step":3,"label":"TS 3","triggered":false,"hidden":false,"ic":[{"actorId":"","name":"Blaster"}],"description":"Blaster launches. KE IC is combat-rated — this is an Overload attack, Moderate damage. Duty officer has authorised aggressive countermeasures."},
+      {"step":4,"label":"TS 4","triggered":false,"hidden":false,"ic":[{"actorId":"","name":"Sparky"}],"description":"Sparky activates. Disrupts Matrix-connected equipment — decks, commlinks, and cyberware with Matrix interfaces may suffer temporary glitches (GM discretion). Particularly nasty against heavily augmented deckers."},
+      {"step":5,"label":"TS 5","triggered":false,"hidden":false,"ic":[{"actorId":"","name":"Hydra"}],"description":"Hydra deploys. Multiple attack vectors simultaneously — one instance per active node the intruder has accessed. If the decker is spread across the host, they're fighting on multiple fronts."},
+      {"step":6,"label":"TS 6","triggered":false,"hidden":false,"ic":[],"description":"Active Alert. All KE patrols within 3km redirected to probable physical location. Drone assets repositioned. SN begins broadcasting the intruder's estimated physical zone to all units."},
+      {"step":7,"label":"TS 7","triggered":false,"hidden":false,"ic":[],"description":"DS locked down completely. SN control authority transferred to armed response team command. The patrol data the decker came for is now inaccessible."},
+      {"step":8,"label":"TS 8","triggered":false,"hidden":false,"ic":[],"description":"Full lockdown. Host switches to emergency-only mode. CPU severs all non-essential connections. KE armed response team is 2 minutes out from the I/O jackpoint location."},
+      {"step":9,"label":"TS 9","triggered":false,"hidden":false,"ic":[],"description":"Convergence. GOD response. KE records the decker's matrix signature for future identification. Physical arrest team on-site. KE will remember this face."}
+    ],
+    "activeUsers": [], "activeAgents": []
+  },
+  "items": [], "effects": [],
+  "_key": "!actors!sr3e-host-0004"
+}
