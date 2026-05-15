@@ -1,5 +1,0 @@
-{
-  "_id": "sr3e-agent-0013", "name": "Rat", "type": "agent", "img": "icons/svg/mystery-man.svg",
-  "system": { "rating": 4, "graded": true, "hostSecurityTier": "Green", "additionalSkills": [], "utilities": [{"name":"Sleaze","multiplier":4}], "specialAbilities": [{"name":"Infiltration: Report","multiplier":3}], "woundValue": 0, "notes": "<p>Infiltration snitch. Graded agent. Sleaze gets it into the target icon's Memory; it lies dormant until crashed, then uses Send Transmission to report its findings to GOD, increasing the target's Overwatch by the agent's rating on next logon. Multiplier 8, 128 Mp.</p><p>Plant one on a rival decker's persona and watch their Overwatch spiral.</p>" },
-  "items": [], "effects": [], "_key": "!actors!sr3e-agent-0013"
-}

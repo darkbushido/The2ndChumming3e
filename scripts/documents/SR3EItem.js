@@ -324,8 +324,8 @@ export class SR3EItem extends Item {
     return null;
   }
 
-  const isAoE     = this.system.isAoE ?? false;
-  const rawDamage = this.system.damage || '';
+  const isAoE = this.system.isAoE ?? false;
+  let rawDamage = this.system.damage || '';
 
   if (isAoE) {
     // ── AoE path ────────────────────────────────────────────────────────────
@@ -333,8 +333,8 @@ export class SR3EItem extends Item {
     const targetActors = await SR3EItem._promptTargetsAoE(actor);
     if (!targetActors || targetActors.length === 0) return null;
 
-    // Step 2: Roll options (TN + damage code, no vehicle modifier or dodge)
-    const weaponOpts = await SR3EItem._promptWeaponRollOptionsAoE(rawDamage, actor);
+    // Step 2: Roll options (TN + damage code, optional Chunky Salsa)
+    const weaponOpts = await SR3EItem._promptWeaponRollOptionsAoE(rawDamage, actor, targetActors);
     if (!weaponOpts) return null;
 
     const tn               = weaponOpts.tn;
@@ -399,6 +399,7 @@ export class SR3EItem extends Item {
     options.isMelee        = false;
     options.isAoE          = true;
     options.aoeTargetIds   = targetActors.map(t => t.id);
+    options.chunkySalsa    = weaponOpts.chunkySalsa ?? null;
 
     return actor.rollPool(pool, tn, label, options);
   }
@@ -408,8 +409,76 @@ export class SR3EItem extends Item {
   const targetActor = await SR3EItem._promptTarget(actor);
   if (!targetActor) return null;
 
-  // --- Step 2: Roll options dialog (TN + damage code + vehicle modifier) ---
-  const weaponOpts = await SR3EItem._promptWeaponRollOptions(targetActor, rawDamage, actor);
+  // --- Step 1.5: Ammo selection (firearms only) ---
+  let ammoPowerMod = 0, ammoTNMod = 0;
+  if (this.type === 'firearm') {
+    const ammoItems = actor.items.filter(i => i.type === 'ammunition');
+    if (ammoItems.length > 0) {
+      const ammoResult = await SR3EItem._promptAmmoSelection(ammoItems, this.system.equippedAmmoId ?? '', this);
+      if (ammoResult === null) return null; // cancelled
+      ammoPowerMod = ammoResult.powerMod;
+      ammoTNMod    = ammoResult.tnMod;
+      // Persist the selected ammo on the weapon
+      if (ammoResult.ammoId !== this.system.equippedAmmoId) {
+        await this.update({ 'system.equippedAmmoId': ammoResult.ammoId });
+      }
+      // Apply power modifier to raw damage code default
+      if (ammoPowerMod !== 0) {
+        const parsed = SR3EItem.parseDamageCode(rawDamage, actor);
+        if (parsed) {
+          const newPower = parsed.power + ammoPowerMod;
+          rawDamage = `${newPower}${parsed.level}${parsed.isStun ? ' Stun' : ''}`;
+        }
+      }
+    }
+  }
+
+  // --- Step 2: Fire mode selection (firearms only) ---
+  let fireModeResult = null;
+  let fireModeRounds = 0;
+  if (this.type === 'firearm') {
+    const availableModes = this._getAvailableModes();
+    if (availableModes.length > 0) {
+      // SS-only weapons: skip the dialog — no recoil, no damage mods
+      if (availableModes.length === 1 && availableModes[0] === 'SS') {
+        fireModeResult = { mode: 'SS', rounds: 0, roundsWasted: 0, recoilTN: 0, additionalTNPenalty: 0 };
+      } else {
+        fireModeResult = await SR3EItem._promptFireMode(availableModes, actor, this.name);
+        if (!fireModeResult) return null;
+      }
+      fireModeRounds = fireModeResult.rounds + (fireModeResult.roundsWasted ?? 0);
+
+      // Apply mode damage modifiers to rawDamage
+      const parsed = SR3EItem.parseDamageCode(rawDamage, actor);
+      if (parsed) {
+        const STAGES  = ['L','M','S','D'];
+        let   power   = parsed.power;
+        let   lvlIdx  = STAGES.indexOf(parsed.level ?? 'M');
+        if (lvlIdx < 0) lvlIdx = 1;
+
+        if (fireModeResult.mode === 'BF') {
+          power  += 3;
+          lvlIdx  = Math.min(3, lvlIdx + 1);
+        } else if (fireModeResult.mode === 'FA') {
+          power  += fireModeResult.rounds;
+          const stagesUp = Math.floor(fireModeResult.rounds / 3);
+          lvlIdx  = Math.min(3, lvlIdx + stagesUp);
+        }
+
+        rawDamage = `${power}${STAGES[lvlIdx]}${parsed.isStun ? ' Stun' : ''}`;
+      }
+    }
+  }
+
+  // --- Step 3: Roll options dialog (TN + damage code + vehicle modifier) ---
+  const recoilTNMod = fireModeResult?.recoilTN ?? 0;
+  const extraTNMod  = ammoTNMod + recoilTNMod + (fireModeResult?.additionalTNPenalty ?? 0);
+  const tnBreakdownParts = [];
+  if (recoilTNMod)                           tnBreakdownParts.push(`Recoil +${recoilTNMod}`);
+  if (fireModeResult?.additionalTNPenalty)   tnBreakdownParts.push(`Multi-target +${fireModeResult.additionalTNPenalty}`);
+  if (ammoTNMod)                             tnBreakdownParts.push(`Ammo TN${ammoTNMod > 0 ? '+' : ''}${ammoTNMod}`);
+  const weaponOpts = await SR3EItem._promptWeaponRollOptions(targetActor, rawDamage, actor, extraTNMod,
+    tnBreakdownParts.length ? tnBreakdownParts.join(' | ') : null);
   if (!weaponOpts) return null;
 
   const tn = weaponOpts.tn;
@@ -496,6 +565,12 @@ export class SR3EItem extends Item {
   options.isWeaponRoll       = true;
   options.isMelee            = ['melee'].includes(this.type);
   options.committedDodgeDice = committedDodgeDice;
+
+  // Commit recoil — update rounds fired counter before the roll
+  if (fireModeRounds > 0) {
+    const currentRounds = actor.system.roundsFiredThisPhase ?? 0;
+    await actor.update({ 'system.roundsFiredThisPhase': currentRounds + fireModeRounds });
+  }
 
   return actor.rollPool(pool, tn, label, options);
 }
@@ -742,10 +817,120 @@ export class SR3EItem extends Item {
   }
 
   /**
-   * Roll options dialog for AoE weapons — TN and damage code only (no dodge, no vehicle mod).
+   * Ammo selection dialog — shown before weapon roll options for firearms.
+   * Returns { ammoId, powerMod, tnMod } or null if cancelled.
    */
-  static async _promptWeaponRollOptionsAoE(rawDamage, actor) {
+  static async _promptAmmoSelection(ammoItems, currentAmmoId, weapon) {
+    const opts = [
+      `<option value="" ${!currentAmmoId ? 'selected' : ''}>— No ammo modifier —</option>`,
+      ...ammoItems.map(a => {
+        const pm = a.system.powerMod ?? 0;
+        const tm = a.system.tnMod ?? 0;
+        const mods = [
+          pm !== 0 ? `Power${pm > 0 ? '+' : ''}${pm}` : '',
+          tm !== 0 ? `TN${tm > 0 ? '+' : ''}${tm}` : '',
+        ].filter(Boolean).join(', ') || 'no modifier';
+        return `<option value="${a.id}" ${a.id === currentAmmoId ? 'selected' : ''}>${a.name} (${mods})</option>`;
+      }),
+    ].join('');
+
+    let result = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `${weapon.name} — Select Ammo` },
+      content: `
+        <div style="padding:8px 0">
+          <p style="margin:0 0 8px;font-size:12px;color:var(--sr-muted)">
+            Select the ammo type loaded for this shot. Changing ammo counts as an action.
+          </p>
+          <select id="ammo-select" style="width:100%">${opts}</select>
+        </div>`,
+      buttons: [
+        {
+          label: 'Fire',
+          action: 'fire',
+          default: true,
+          callback: (_e, _b, dialog) => {
+            const sel    = dialog.element.querySelector('#ammo-select');
+            const ammoId = sel?.value ?? '';
+            const ammo   = ammoId ? ammoItems.find(a => a.id === ammoId) : null;
+            result = {
+              ammoId,
+              powerMod: ammo?.system.powerMod ?? 0,
+              tnMod:    ammo?.system.tnMod    ?? 0,
+            };
+          },
+        },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    return result;
+  }
+
+  /**
+   * Roll options dialog for AoE weapons — TN, damage code, and optional Chunky Salsa
+   * confined-space blast calculator with per-target distance inputs.
+   */
+  static async _promptWeaponRollOptionsAoE(rawDamage, actor, targetActors = []) {
     const karmaPool = actor?.system.karmaPool ?? 0;
+
+    function calcBlast(power, charDist, walls) {
+      const waves = [];
+      const direct = power - charDist;
+      if (direct > 0) waves.push({ power: direct });
+      for (const w of walls) {
+        let wp;
+        if (w.type === 'same') {
+          if (w.dist <= charDist) continue; // wall between blast and target — not a valid rebound
+          wp = power - (2 * w.dist - charDist);
+        } else {
+          wp = power - (2 * w.dist + charDist);
+        }
+        if (wp > 0) waves.push({ power: wp });
+      }
+      return waves;
+    }
+
+    function getWalls(el) {
+      const walls = [];
+      el.querySelectorAll('.sr-wall-row').forEach(row => {
+        walls.push({
+          type: row.querySelector('.sr-wall-type')?.value || 'same',
+          dist: parseInt(row.querySelector('.sr-wall-dist')?.value) || 1,
+        });
+      });
+      return walls;
+    }
+
+    function updatePreview(el) {
+      const csEnabled = el.querySelector('#cs-toggle')?.checked;
+      const csSection = el.querySelector('#cs-section');
+      if (csSection) csSection.style.display = csEnabled ? 'block' : 'none';
+      if (!csEnabled) return;
+
+      const code = el.querySelector('#sr-damage')?.value.trim() || rawDamage;
+      const m    = code.match(/^(\d+)\s*([LMSDlmsd])/i);
+      if (!m) return;
+      const basePower = parseInt(m[1]);
+      const level     = m[2].toUpperCase();
+      const walls     = getWalls(el);
+
+      targetActors.forEach((ta, idx) => {
+        const charDist   = parseInt(el.querySelector(`.cs-target-dist[data-idx="${idx}"]`)?.value) || 0;
+        const totalPower = calcBlast(basePower, charDist, walls).reduce((s, w) => s + w.power, 0);
+        const previewEl  = el.querySelector(`.cs-target-preview[data-idx="${idx}"]`);
+        if (previewEl) previewEl.textContent = totalPower > 0 ? `→ ${totalPower}${level}` : '→ No hit';
+      });
+    }
+
+    const targetRows = targetActors.map((ta, i) => `
+      <div style="display:flex;align-items:center;gap:8px;margin:3px 0;">
+        <span style="flex:1;font-size:12px;">${ta.name}</span>
+        <label style="display:flex;align-items:center;gap:4px;white-space:nowrap;font-size:12px;">Dist:
+          <input type="number" class="cs-target-dist" data-idx="${i}" value="0" min="0" style="width:50px;"/>m
+        </label>
+        <span class="cs-target-preview" data-idx="${i}" style="font-size:11px;color:var(--sr-amber);min-width:60px;text-align:right;"></span>
+      </div>`).join('');
+
     let result = null;
     await foundry.applications.api.DialogV2.wait({
       window: { title: 'AoE Weapon Roll Options' },
@@ -766,20 +951,84 @@ export class SR3EItem extends Item {
               <label><input type="checkbox" id="sr-karma"/> Use Karma Pool (${karmaPool} available)</label>
             </div>
           ` : ''}
+          <div style="margin-bottom:8px;padding:6px 8px;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:bold;">
+              <input type="checkbox" id="cs-toggle"/>
+              💥 Confined Space (Chunky Salsa)?
+            </label>
+          </div>
+          <div id="cs-section" style="display:none;padding:8px;background:var(--sr-surface);border:1px solid var(--sr-accent);border-radius:var(--r);margin-bottom:8px;">
+            <div style="margin-bottom:8px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                <strong style="font-size:12px;">Walls</strong>
+                <button type="button" id="sr-add-wall-btn" style="padding:2px 10px;font-size:11px;">+ Add Wall</button>
+              </div>
+              <div id="sr-wall-list"></div>
+            </div>
+            ${targetActors.length > 0 ? `
+              <div>
+                <strong style="font-size:12px;display:block;margin-bottom:4px;">Distance from Blast Epicentre</strong>
+                ${targetRows}
+              </div>` : ''}
+          </div>
           <div style="color:var(--sr-muted);font-size:11px">Rule of Six active. No dodge — all targets in blast soak.</div>
         </div>
       `,
+      render: (_event, html) => {
+        const el = html instanceof HTMLElement ? html : (html?.[0] ?? null);
+        if (!el) return;
+        el.addEventListener('input',  () => updatePreview(el));
+        el.addEventListener('change', () => updatePreview(el));
+        const wallList = el.querySelector('#sr-wall-list');
+        el.querySelector('#sr-add-wall-btn')?.addEventListener('click', () => {
+          const div = document.createElement('div');
+          div.className = 'sr-wall-row';
+          div.style.cssText = 'display:flex;align-items:center;gap:8px;margin:3px 0;';
+          div.innerHTML = `
+            <select class="sr-wall-type" style="flex:1;">
+              <option value="same">Same-side (behind target)</option>
+              <option value="opposite">Opposite / perpendicular</option>
+            </select>
+            <label style="display:flex;align-items:center;gap:4px;white-space:nowrap;font-size:12px;">Dist:
+              <input type="number" class="sr-wall-dist" value="3" min="1" style="width:50px;"/>m
+            </label>
+            <button type="button" class="sr-remove-wall-btn" style="padding:2px 8px;">✕</button>`;
+          div.querySelector('.sr-remove-wall-btn').addEventListener('click', () => {
+            div.remove();
+            updatePreview(el);
+          });
+          wallList.appendChild(div);
+          updatePreview(el);
+        });
+      },
       buttons: [
         {
           label: 'Roll',
           action: 'roll',
           default: true,
           callback: (_e, _b, dialog) => {
-            const html      = dialog.element;
-            const tn        = Math.max(2, parseInt(html.querySelector('#sr-tn')?.value) || 4);
-            const damageCode = html.querySelector('#sr-damage')?.value.trim() || rawDamage;
-            const useKarma  = html.querySelector('#sr-karma')?.checked ?? false;
-            result = { tn, damageCode, useKarma, karmaReroll: useKarma };
+            const el         = dialog.element;
+            const tn         = Math.max(2, parseInt(el.querySelector('#sr-tn')?.value) || 4);
+            const damageCode = el.querySelector('#sr-damage')?.value.trim() || rawDamage;
+            const useKarma   = el.querySelector('#sr-karma')?.checked ?? false;
+            const csEnabled  = el.querySelector('#cs-toggle')?.checked ?? false;
+
+            let chunkySalsa = null;
+            if (csEnabled && targetActors.length > 0) {
+              const m = damageCode.match(/^(\d+)\s*([LMSDlmsd])/i);
+              if (m) {
+                const basePower = parseInt(m[1]);
+                const level     = m[2].toUpperCase();
+                const walls     = getWalls(el);
+                chunkySalsa = targetActors.map((ta, idx) => {
+                  const charDist   = parseInt(el.querySelector(`.cs-target-dist[data-idx="${idx}"]`)?.value) || 0;
+                  const totalPower = calcBlast(basePower, charDist, walls).reduce((s, w) => s + w.power, 0);
+                  return { actorId: ta.id, name: ta.name, power: totalPower, level };
+                }).filter(t => t.power > 0);
+              }
+            }
+
+            result = { tn, damageCode, useKarma, karmaReroll: useKarma, chunkySalsa };
           }
         },
         { label: 'Cancel', action: 'cancel' }
@@ -788,18 +1037,23 @@ export class SR3EItem extends Item {
     return result;
   }
 
-  static async _promptWeaponRollOptions(targetActor, rawDamage, actor) {
+  static async _promptWeaponRollOptions(targetActor, rawDamage, actor, totalTNMod = 0, modBreakdown = null) {
     const isVehicle = targetActor.type === 'vehicle';
     const karmaPool = actor?.system.karmaPool ?? 0;
+    const defaultTN = 4 + totalTNMod;
+    const modNote   = (totalTNMod !== 0 || modBreakdown)
+      ? `<div style="font-size:11px;color:var(--sr-amber);margin-bottom:8px">⚡ TN modifiers: ${modBreakdown ?? (totalTNMod > 0 ? `+${totalTNMod}` : totalTNMod)} (pre-applied)</div>`
+      : '';
 
     let result = null;
     await foundry.applications.api.DialogV2.wait({
       window: { title: 'Weapon Roll Options' },
       content: `
         <div style="padding:8px 0">
+          ${modNote}
           <div style="margin-bottom:10px">
             <label>Target Number (TN):
-              <input type="number" id="sr-tn" value="4" min="2" max="30" style="width:60px;margin-left:8px"/>
+              <input type="number" id="sr-tn" value="${defaultTN}" min="2" max="30" style="width:60px;margin-left:8px"/>
             </label>
           </div>
           <div style="margin-bottom:10px">
@@ -850,7 +1104,24 @@ export class SR3EItem extends Item {
    */
   static async _promptDodgeDeclaration(defender, attackerName, weaponName) {
     if (defender.type === 'vehicle') return 0;  // vehicles cannot dodge
+
+    // Full Defense: skip the dialog and auto-commit the reserved pool
+    if ((defender.system.fullDefense ?? false) && (defender.system.fullDefensePool ?? 0) > 0) {
+      const fd = defender.system.fullDefensePool;
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: defender }),
+        content: `<div class="sr-roll-card"><div class="sr-roll-header">🛡 ${defender.name} — Full Defense (${fd} dice auto-committed)</div></div>`,
+        type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      });
+      // Clear full defense after first use
+      await defender.update({ 'system.fullDefense': false, 'system.fullDefensePool': 0 });
+      return fd;
+    }
+
     const availPool  = defender.system.derived?.availableCombatPool ?? 0;
+    const fdNote     = (defender.system.fullDefense ?? false)
+      ? '<p style="color:var(--sr-amber);font-size:11px;margin-top:8px">Full Defense active — pool already committed</p>'
+      : '';
 
     let dodgeDice = 0;
     let cancelled = true;
@@ -883,6 +1154,7 @@ export class SR3EItem extends Item {
         ${availPool === 0
           ? '<p style="color:var(--sr-red);font-size:11px;margin-top:8px">No Combat Pool remaining — cannot dodge</p>'
           : ''}
+        ${fdNote}
       `,
       buttons: [
         {
@@ -1055,18 +1327,155 @@ _getWeaponSkill() {
  */
 _getDefaultAttribute() {
   const code = this._getWeaponCode();
-  
+
   if (code && SR3EItem.WEAPON_SKILL_MAP[code]) {
     return SR3EItem.WEAPON_SKILL_MAP[code].attribute;
   }
-  
+
   // Fallbacks
   if (this.type === 'firearm') return 'quickness';
   if (this.type === 'melee') return 'strength';
   if (this.type === 'bow') return 'strength';
-  
+
   return 'quickness';
 }
+
+/**
+ * Parse the weapon's mode string into an array of available mode codes.
+ * e.g. "SA/BF/FA" → ['SA','BF','FA'], "FA" → ['FA']
+ */
+_getAvailableModes() {
+  const raw = (this.system.mode ?? '').toUpperCase();
+  return raw.split('/').map(m => m.trim()).filter(m => ['SS','SA','BF','FA'].includes(m));
+}
+
+/**
+ * Fire mode selection dialog. Returns { mode, rounds, additionalTNPenalty, roundsWasted } or null.
+ */
+static async _promptFireMode(availableModes, actor, weaponName) {
+  const comp        = actor.system.recoilCompensation ?? 0;
+  const roundsBefore = actor.system.roundsFiredThisPhase ?? 0;
+
+  // Stage-up helper
+  function stageUp(level, times) {
+    const S = ['L','M','S','D'];
+    return S[Math.min(3, S.indexOf(level) + times)] ?? 'D';
+  }
+
+  // Build mode option rows (radio buttons with damage preview)
+  const modeInfo = {
+    SS: { label: 'SS — Single Shot',      rounds: 0, powerMod: 0, stageMod: 0, note: 'Standard single-shot, no recoil accumulation.' },
+    SA: { label: 'SA — Semi-Auto',        rounds: 1, powerMod: 0, stageMod: 0, note: 'Second shot this phase: cumulative +1 recoil.' },
+    BF: { label: 'BF — Burst Fire',       rounds: 3, powerMod: 3, stageMod: 1, note: 'Power +3, damage level +1.' },
+    FA: { label: 'FA — Full Auto',        rounds: 3, powerMod: 0, stageMod: 0, note: 'Power +rounds, level +1/3 rounds (3–10 rounds, Complex Action).' },
+  };
+
+  const modeRows = availableModes.map((m, i) => {
+    const info    = modeInfo[m] ?? { label: m, rounds: 1, powerMod: 0, stageMod: 0, note: '' };
+    const isFirst = i === 0;
+    const roundsPreview = m === 'FA' ? '(see below)' : m === 'SS' ? '1 (no recoil)' : info.rounds;
+    const baseRecoil    = Math.max(0, roundsBefore - comp);
+    const recoilPreview = m === 'FA'
+      ? `+${baseRecoil} recoil + multi-target (see below)`
+      : `+${baseRecoil}`;
+    return `
+      <label style="display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;cursor:pointer">
+        <input type="radio" name="sr-fire-mode" value="${m}" ${isFirst ? 'checked' : ''} style="margin-top:2px"/>
+        <span>
+          <strong style="color:var(--sr-accent)">${info.label}</strong>
+          <span style="font-size:11px;color:var(--sr-muted);margin-left:4px">— ${info.note}</span>
+          <br><span style="font-size:11px">Rounds: <strong>${roundsPreview}</strong> &nbsp;|&nbsp; TN penalty this shot: <strong style="color:var(--sr-amber)">${recoilPreview}</strong></span>
+        </span>
+      </label>`;
+  }).join('');
+
+  const isFAAvailable = availableModes.includes('FA');
+  const secondSANote  = (availableModes.includes('SA') && roundsBefore >= 1)
+    ? `<p style="color:var(--sr-amber);font-size:11px;margin:4px 0">⚠ You have already fired this phase (${roundsBefore} rounds) — any further shots incur cumulative recoil.</p>`
+    : '';
+
+  const faInitialDisplay = availableModes[0] === 'FA' ? 'block' : 'none';
+  const faSection = isFAAvailable ? `
+    <div id="fa-section" style="margin-top:8px;padding:8px;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);display:${faInitialDisplay};">
+      <label style="display:block;margin-bottom:6px"><strong>Rounds to fire (FA):</strong>
+        <input type="number" id="fa-rounds" value="3" min="3" max="10" style="width:55px;margin-left:6px"/>
+        <span style="font-size:11px;color:var(--sr-muted)">(3–10, Complex Action)</span>
+      </label>
+      <div style="font-size:11px;color:var(--sr-muted);margin-bottom:6px">Walking fire: 1 wasted round per metre between targets (smartguns: 0)</div>
+      <label style="display:block;margin-bottom:4px">Which target in this phase?
+        <select id="fa-target-num" style="margin-left:6px">
+          <option value="1">1st (no penalty)</option>
+          <option value="2">2nd (+2 TN)</option>
+          <option value="3">3rd (+4 TN)</option>
+          <option value="4">4th (+6 TN)</option>
+          <option value="5">5th+ (+8 TN)</option>
+        </select>
+      </label>
+      <label style="display:block">Metres to previous target (wasted rounds):
+        <input type="number" id="fa-metres" value="0" min="0" max="30" style="width:55px;margin-left:6px"/>
+      </label>
+    </div>` : '';
+
+  const recoilState = `
+    <div style="margin-top:10px;padding:6px 8px;background:#0a0a0a;border:1px solid var(--sr-border);border-radius:var(--r);font-size:11px">
+      <strong>Recoil state:</strong>
+      Compensation <strong>${comp}</strong> &nbsp;|&nbsp;
+      Rounds already fired this phase: <strong>${roundsBefore}</strong>
+    </div>`;
+
+  let result = null;
+  await foundry.applications.api.DialogV2.wait({
+    window: { title: `${weaponName} — Fire Mode` },
+    content: `
+      <div style="padding:8px 0">
+        ${secondSANote}
+        <p style="margin:0 0 8px;font-size:12px;color:var(--sr-muted)">Select firing mode:</p>
+        ${modeRows}
+        ${faSection}
+        ${recoilState}
+      </div>`,
+    render: (_event, html) => {
+      const el = html instanceof HTMLElement ? html : (html?.[0] ?? null);
+      if (!el) return;
+      el.addEventListener('change', event => {
+        if (event.target.name !== 'sr-fire-mode') return;
+        const faEl = el.querySelector('#fa-section');
+        if (faEl) faEl.style.display = event.target.value === 'FA' ? 'block' : 'none';
+      });
+    },
+    buttons: [
+      {
+        label: 'Confirm Mode',
+        action: 'confirm',
+        default: true,
+        callback: (_e, _b, dialog) => {
+          const el     = dialog.element;
+          const mode   = el.querySelector('input[name="sr-fire-mode"]:checked')?.value ?? availableModes[0];
+          let   rounds = modeInfo[mode]?.rounds ?? 1;
+          let   additionalTNPenalty = 0;
+          let   roundsWasted = 0;
+
+          if (mode === 'FA') {
+            rounds = Math.min(10, Math.max(3, parseInt(el.querySelector('#fa-rounds')?.value) || 3));
+            const targetNum = parseInt(el.querySelector('#fa-target-num')?.value) || 1;
+            const metres    = Math.max(0, parseInt(el.querySelector('#fa-metres')?.value) || 0);
+            if (targetNum > 1) additionalTNPenalty = (targetNum - 1) * 2;
+            if (metres > 0)    roundsWasted = metres;
+          }
+
+          // Recoil TN = rounds already fired BEFORE this shot minus compensation.
+          // Rounds from THIS shot are added after the roll (they penalise future shots, not this one).
+          const recoilTN = Math.max(0, roundsBefore - comp);
+          result = { mode, rounds, roundsWasted, recoilTN, additionalTNPenalty };
+        },
+      },
+      { label: 'Cancel', action: 'cancel' },
+    ],
+  });
+
+  return result;
+}
+
   // ---------------------------------------------------------------------------
   // SPELLCASTING
   // ---------------------------------------------------------------------------

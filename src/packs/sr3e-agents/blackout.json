@@ -1,5 +1,0 @@
-{
-  "_id": "sr3e-agent-0011", "name": "Blackout", "type": "agent", "img": "icons/svg/mystery-man.svg",
-  "system": { "rating": 4, "graded": false, "hostSecurityTier": "Green", "additionalSkills": [], "utilities": [{"name":"Attack: Blackout — Moderate (Biofeedback)","multiplier":10}], "specialAbilities": [], "woundValue": 0, "notes": "<p>Biofeedback attack agent. Moderate Biofeedback bypasses standard Overload soaking and deals damage directly to the pilot's stun (VR-Cold) or physical (VR-Hot) track. Multiplier 11, 176 Mp.</p><p>Illegal in most jurisdictions. Devastating against hot-sim runners. In TRM or AR, the pilot is immune — switch to Brawler instead.</p>" },
-  "items": [], "effects": [], "_key": "!actors!sr3e-agent-0011"
-}

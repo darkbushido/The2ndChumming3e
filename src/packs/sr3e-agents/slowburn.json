@@ -1,5 +1,0 @@
-{
-  "_id": "sr3e-agent-0012", "name": "Slowburn", "type": "agent", "img": "icons/svg/mystery-man.svg",
-  "system": { "rating": 4, "graded": false, "hostSecurityTier": "Green", "additionalSkills": [], "utilities": [{"name":"Slow","multiplier":4},{"name":"Lock-On","multiplier":6}], "specialAbilities": [], "woundValue": 0, "notes": "<p>Disabling agent. Slow reduces a target's initiative by 3 per net success (crashes at 0 within one turn); Lock-On guarantees a Link-Lock even on a single success. Multiplier 11, 176 Mp.</p><p>Not a killer — used to pin and stall enemy icons while the decker acts freely.</p>" },
-  "items": [], "effects": [], "_key": "!actors!sr3e-agent-0012"
-}

@@ -109,18 +109,32 @@ export class SR3EActor extends Actor {
   /*  Matrix combat — Decker initiates cybercombat against an IC        */
   /* ------------------------------------------------------------------ */
 
+  _matrixTNPenalty() {
+    const deckId = this.system.equippedCyberdeck ?? '';
+    if (!deckId) return 0;
+    const deck  = this.items.get(deckId);
+    const boxes = deck?.system?.damage?.matrixConditionMonitor?.current ?? 0;
+    if (boxes >= 8) return 3;
+    if (boxes >= 6) return 2;
+    if (boxes >= 3) return 1;
+    return 0;
+  }
+
   async rollCybercombat() {
     const sys = this.system;
     const d   = sys.derived ?? {};
 
-    const ccSkill  = this.items.find(i => i.type === 'skill' && i.name.toLowerCase().includes('cybercombat'));
-    const ccRating = ccSkill?.system?.rating ?? 0;
+    const ccSkill      = this.items.find(i => i.type === 'skill' && i.name.toLowerCase().includes('cybercombat'));
+    const intel        = this.system.attributes?.intelligence?.value ?? 0;
+    const isDefaulting = !ccSkill;
+    const ccRating     = ccSkill?.system?.rating ?? Math.max(1, intel - 2);
     const availHackPool = d.availableHackingPool ?? d.hackingPool ?? 0;
+    const mcmPenalty    = this._matrixTNPenalty();
 
-    const icActors   = game.actors.filter(a => a.type === 'ic');
+    const icActors   = game.actors.filter(a => a.type === 'ic' && !a.getFlag('The2ndChumming3e', 'isTemplate'));
     const hostActors = game.actors.filter(a => a.type === 'host');
     if (!icActors.length) {
-      ui.notifications.warn('No IC actors found. Create an IC actor first.');
+      ui.notifications.warn('No IC actors found. Create or deploy an IC actor first.');
       return;
     }
 
@@ -132,17 +146,25 @@ export class SR3EActor extends Actor {
       `<option value="${a.id}">${a.name} (Rating ${a.system.rating ?? 1}, Sys ${a.system.systemRating ?? 6})</option>`
     ).join('');
     const hostOptions = hostActors.length
-      ? `<option value="">— none —</option>` + hostActors.map(a =>
-          `<option value="${a.id}">${a.name} (Tier: ${a.system.securityTierName ?? '?'}, Threshold: ${a.system.securityTierThreshold ?? 0})</option>`
-        ).join('')
+      ? `<option value="">— none —</option>` + hostActors.map(a => {
+          const ap = a.system?.derived?.alertTNPenalty ?? 0;
+          return `<option value="${a.id}">${a.name} (Tier: ${a.system.securityTierName ?? '?'}, Threshold: ${a.system.securityTierThreshold ?? 0}${ap > 0 ? `, Alert +${ap}TN` : ''})</option>`;
+        }).join('')
       : null;
+    const alertNote = hostActors.some(a => (a.system?.alertCount ?? 0) > 0)
+      ? `<p style="margin:0 0 8px;font-size:11px;color:var(--sr-amber)">⚠ One or more hosts on alert — TN penalty applied after host selection</p>`
+      : '';
+    const mcmNote = mcmPenalty > 0
+      ? `<p style="margin:0 0 8px;font-size:11px;color:var(--sr-red)">⚠ Deck damage: +${mcmPenalty} TN penalty on all matrix rolls</p>`
+      : '';
 
     await foundry.applications.api.DialogV2.wait({
       window: { title: `${this.name}: Cybercombat` },
       content: `
         <div style="padding:8px 0">
+          ${mcmNote}${alertNote}
           <p style="margin:0 0 8px;font-size:12px;color:var(--color-text-dark-secondary)">
-            Cybercombat: <strong>${ccRating}</strong> &nbsp;|&nbsp; Hacking Pool available: <strong>${availHackPool}</strong>
+            Cybercombat: <strong>${ccRating}</strong>${isDefaulting ? ` <span style="color:var(--sr-amber)">(no skill — defaulting to INT ${intel} − 2)</span>` : ''} &nbsp;|&nbsp; Hacking Pool: <strong>${availHackPool}</strong>
           </p>
           <label style="display:block;margin-bottom:8px">
             Target IC:
@@ -180,7 +202,7 @@ export class SR3EActor extends Actor {
     const pool = ccRating + hackPoolDice;
     if (pool < 1) { ui.notifications.warn('Cybercombat pool is 0.'); return; }
 
-    const tn = targetIC.system.systemRating ?? targetIC.system.rating ?? 6;
+    const tn = (targetIC.system.systemRating ?? targetIC.system.rating ?? 6) + mcmPenalty;
 
     // Damage: persona damage = cyberdeck MPCP + "S" (editable on resist card)
     const deck       = sys.equippedCyberdeck ? this.items.get(sys.equippedCyberdeck) : null;
@@ -192,15 +214,17 @@ export class SR3EActor extends Actor {
     await this.spendHackingPool(hackPoolDice);
 
     const hostActor       = hostActorId ? game.actors.get(hostActorId) : null;
+    const alertPenalty    = hostActor?.system?.derived?.alertTNPenalty ?? 0;
+    const effectiveTN     = tn + alertPenalty;
     const securityThreshold = hostActor?.system?.securityTierThreshold ?? 0;
 
-    const label = `${this.name}: Cybercombat → ${targetIC.name}`;
-    await this.rollPool(pool, tn, label, {
+    const label = `${this.name}: Cybercombat → ${targetIC.name}${alertPenalty > 0 ? ` [Alert +${alertPenalty}]` : ''}`;
+    await this.rollPool(pool, effectiveTN, label, {
       isMatrixAttackRoll:  true,
       matrixAttackContext: {
         attackerActorId:   this.id,
         targetActorId:     targetId,
-        tn,
+        tn:                effectiveTN,
         damageCode,
         damageBase,
         hackPoolSpent:     hackPoolDice,
@@ -218,27 +242,38 @@ export class SR3EActor extends Actor {
     const sys = this.system;
     const d   = sys.derived ?? {};
 
-    const ccSkill  = this.items.find(i => i.type === 'skill' && i.name.toLowerCase().includes('cybercombat'));
-    const ccRating = ccSkill?.system?.rating ?? 0;
+    const ccSkill       = this.items.find(i => i.type === 'skill' && i.name.toLowerCase().includes('cybercombat'));
+    const intel         = this.system.attributes?.intelligence?.value ?? 0;
+    const isDefaulting  = !ccSkill;
+    const ccRating      = ccSkill?.system?.rating ?? Math.max(1, intel - 2);
     const availHackPool = d.availableHackingPool ?? d.hackingPool ?? 0;
+    const mcmPenalty    = this._matrixTNPenalty();
 
     const category    = (item.system.category ?? '').toLowerCase();
     const isOffensive = /exploit|attack|offensive|hammer/.test(category);
 
-    const icActors   = isOffensive ? game.actors.filter(a => a.type === 'ic') : [];
+    const icActors   = isOffensive ? game.actors.filter(a => a.type === 'ic' && !a.getFlag('The2ndChumming3e', 'isTemplate')) : [];
     const hostActors = game.actors.filter(a => a.type === 'host');
 
-    const defaultTN = 6;
+    const firstAlertPenalty = hostActors.length ? (hostActors[0]?.system?.derived?.alertTNPenalty ?? 0) : 0;
+    const defaultTN = 6 + mcmPenalty + firstAlertPenalty;
     const tnLabel   = isOffensive ? 'Target System Rating' : 'System Rating / Threshold';
 
     const icOptions = isOffensive && icActors.length
       ? icActors.map(a => `<option value="${a.id}">${a.name} (Rating ${a.system.rating ?? 1}, Sys ${a.system.systemRating ?? 6})</option>`).join('')
       : '';
     const hostOptions = hostActors.length
-      ? `<option value="">— none —</option>` + hostActors.map(a =>
-          `<option value="${a.id}">${a.name} (Tier: ${a.system.securityTierName ?? '?'}, Threshold: ${a.system.securityTierThreshold ?? 0})</option>`
-        ).join('')
+      ? `<option value="">— none —</option>` + hostActors.map(a => {
+          const ap = a.system?.derived?.alertTNPenalty ?? 0;
+          return `<option value="${a.id}">${a.name} (Tier: ${a.system.securityTierName ?? '?'}, Threshold: ${a.system.securityTierThreshold ?? 0}${ap > 0 ? `, Alert +${ap}TN` : ''})</option>`;
+        }).join('')
       : null;
+    const mcmNote = mcmPenalty > 0
+      ? `<p style="margin:0 0 8px;font-size:11px;color:var(--sr-red)">⚠ Deck damage: +${mcmPenalty} TN penalty included in default TN</p>`
+      : '';
+    const alertNote = firstAlertPenalty > 0
+      ? `<p style="margin:0 0 8px;font-size:11px;color:var(--sr-amber)">⚠ Host alert: +${firstAlertPenalty} TN included in default TN</p>`
+      : '';
 
     let hackPoolDice = 0;
     let tn           = defaultTN;
@@ -250,11 +285,12 @@ export class SR3EActor extends Actor {
       window: { title: `${item.name}: Roll Program` },
       content: `
         <div style="padding:8px 0">
+          ${mcmNote}${alertNote}
           <p style="margin:0 0 8px;font-size:12px;color:var(--color-text-dark-secondary)">
             ${item.name} [${item.system.category || item.system.type || '?'}] Rating ${item.system.rating ?? 0}
           </p>
           <p style="margin:0 0 8px;font-size:12px;color:var(--color-text-dark-secondary)">
-            Cybercombat: <strong>${ccRating}</strong> &nbsp;|&nbsp; Hacking Pool available: <strong>${availHackPool}</strong>
+            Cybercombat: <strong>${ccRating}</strong>${isDefaulting ? ` <span style="color:var(--sr-amber)">(no skill — defaulting to INT ${intel} − 2)</span>` : ''} &nbsp;|&nbsp; Hacking Pool: <strong>${availHackPool}</strong>
           </p>
           ${isOffensive && icOptions ? `
           <label style="display:block;margin-bottom:8px">
@@ -325,6 +361,200 @@ export class SR3EActor extends Actor {
   }
 
   /* ------------------------------------------------------------------ */
+  /*  Matrix — General hacking action (3-step threshold check)           */
+  /* ------------------------------------------------------------------ */
+
+  async rollHackingAction() {
+    const sys = this.system;
+    const d   = sys.derived ?? {};
+
+    const hackSkill      = this.items.find(i => i.type === 'skill' && /hacking|computer/i.test(i.name));
+    const intel          = sys.attributes?.intelligence?.value ?? 0;
+    const isDefaulting   = !hackSkill;
+    const hackRating     = hackSkill?.system?.rating ?? Math.max(1, intel - 2);
+    const availHackPool  = d.availableHackingPool ?? d.hackingPool ?? 0;
+    const mcmPenalty     = this._matrixTNPenalty();
+    const mcmNote        = mcmPenalty > 0
+      ? `<p style="margin:0 0 8px;font-size:11px;color:var(--sr-red)">⚠ Deck damage: +${mcmPenalty} TN penalty included in default TN</p>`
+      : '';
+
+    const hostActors = game.actors.filter(a => a.type === 'host');
+    if (!hostActors.length) {
+      ui.notifications.warn('No host actors found. Create a host actor first.');
+      return;
+    }
+
+    const firstHost        = hostActors[0];
+    const firstAlertPenalty = firstHost?.system?.derived?.alertTNPenalty ?? 0;
+    const defaultTN        = (firstHost?.system.systemRating ?? 6) + mcmPenalty + firstAlertPenalty;
+    const defaultThresh    = firstHost?.system.securityTierThreshold ?? 1;
+    const alertNote        = firstAlertPenalty > 0
+      ? `<p style="margin:0 0 8px;font-size:11px;color:var(--sr-amber)">⚠ Host alert: +${firstAlertPenalty} TN included in default TN</p>`
+      : '';
+
+    const hostOptions = hostActors.map(a => {
+      const ap = a.system?.derived?.alertTNPenalty ?? 0;
+      const alertTag = ap > 0 ? ` ⚠+${ap}TN` : '';
+      return `<option value="${a.id}">${a.name} (Sys ${a.system.systemRating ?? 6}, Threshold ${a.system.securityTierThreshold ?? 1}${alertTag})</option>`;
+    }).join('');
+
+    let confirmed         = false;
+    let hostActorId       = firstHost?.id ?? null;
+    let actionName        = 'Hacking Action';
+    let tn                = defaultTN;
+    let securityThreshold = defaultThresh;
+    let hackPoolDice      = 0;
+    let overwatchOnFail   = true;
+
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `${this.name}: Hacking Action` },
+      content: `
+        <div style="padding:8px 0">
+          ${mcmNote}${alertNote}
+          <p style="margin:0 0 8px;font-size:12px;color:var(--color-text-dark-secondary)">
+            Hacking: <strong>${hackRating}</strong>${isDefaulting ? ` <span style="color:var(--sr-amber)">(no skill — INT ${intel} − 2)</span>` : ''} &nbsp;|&nbsp; Hacking Pool: <strong>${availHackPool}</strong>
+          </p>
+          <label style="display:block;margin-bottom:8px">
+            Host:
+            <select id="ha-host" style="width:100%;margin-top:4px">${hostOptions}</select>
+          </label>
+          <label style="display:block;margin-bottom:8px">
+            Action name:
+            <input type="text" id="ha-name" value="Hacking Action" style="width:100%;margin-top:4px">
+          </label>
+          <div style="display:flex;gap:12px;margin-bottom:8px">
+            <label>TN (System Rating):
+              <input type="number" id="ha-tn" value="${defaultTN}" min="2" style="width:60px;margin-left:4px">
+            </label>
+            <label>Security Threshold:
+              <input type="number" id="ha-threshold" value="${defaultThresh}" min="0" style="width:60px;margin-left:4px">
+            </label>
+          </div>
+          <label style="display:block;margin-bottom:8px">
+            Allocate Hacking Pool (0–${availHackPool}):
+            <input type="number" id="ha-pool" value="0" min="0" max="${availHackPool}" style="width:60px;margin-left:4px">
+          </label>
+          <label style="display:flex;align-items:center;gap:6px">
+            <input type="checkbox" id="ha-overwatch" checked>
+            Increment Overwatch if threshold missed
+          </label>
+        </div>`,
+      buttons: [
+        {
+          label: 'Roll',
+          action: 'confirm',
+          default: true,
+          callback: (_e, _b, dlg) => {
+            confirmed         = true;
+            hostActorId       = dlg.element.querySelector('#ha-host')?.value || null;
+            actionName        = dlg.element.querySelector('#ha-name')?.value?.trim() || 'Hacking Action';
+            tn                = Math.max(2, parseInt(dlg.element.querySelector('#ha-tn')?.value) || defaultTN);
+            securityThreshold = parseInt(dlg.element.querySelector('#ha-threshold')?.value) || 0;
+            hackPoolDice      = Math.min(availHackPool, parseInt(dlg.element.querySelector('#ha-pool')?.value) || 0);
+            overwatchOnFail   = dlg.element.querySelector('#ha-overwatch')?.checked ?? true;
+          },
+        },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+
+    if (!confirmed || !hostActorId) return;
+
+    const pool = hackRating + hackPoolDice;
+    if (pool < 1) { ui.notifications.warn('Hacking pool is 0.'); return; }
+
+    await this.spendHackingPool(hackPoolDice);
+
+    await this.rollPool(pool, tn, `${this.name}: ${actionName}`, {
+      isHackingActionRoll:  true,
+      hackingActionContext: {
+        attackerActorId: this.id,
+        hostActorId,
+        securityThreshold,
+        overwatchOnFail,
+        actionName,
+      },
+    });
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Dumpshock — manual trigger for GM                                   */
+  /* ------------------------------------------------------------------ */
+
+  async rollDumpshock() {
+    const isVRHot = (this.system.matrixUserMode ?? '') === 'VR-Hot';
+    const isStun  = !isVRHot;
+
+    const hostActors = game.actors.filter(a => a.type === 'host');
+    const hostOptions = hostActors.length
+      ? hostActors.map(a => `<option value="${a.system.systemRating ?? 6}">${a.name} (Sys ${a.system.systemRating ?? 6})</option>`).join('')
+      : `<option value="6">Manual (default 6)</option>`;
+
+    let power     = 6;
+    let confirmed = false;
+
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `${this.name}: Dumpshock` },
+      content: `
+        <div style="padding:8px 0">
+          <p style="margin:0 0 8px">
+            Mode: <strong>${this.system.matrixUserMode || 'Unknown'}</strong> → damage type: <strong>${isStun ? 'Stun' : 'Physical'}</strong>
+          </p>
+          ${hostActors.length ? `<label style="display:block;margin-bottom:8px">
+            Host (sets Power):
+            <select id="ds-host" style="width:100%;margin-top:4px">${hostOptions}</select>
+          </label>` : ''}
+          <label>Dumpshock Power (System Rating):
+            <input type="number" id="ds-power" value="6" min="1" style="width:60px;margin-left:4px">
+          </label>
+        </div>`,
+      buttons: [
+        {
+          label: 'Apply Dumpshock',
+          action: 'confirm',
+          default: true,
+          callback: (_e, _b, dlg) => {
+            confirmed = true;
+            const hostSel = dlg.element.querySelector('#ds-host');
+            if (hostSel) power = parseInt(hostSel.value) || 6;
+            const manualPower = parseInt(dlg.element.querySelector('#ds-power')?.value);
+            if (!isNaN(manualPower) && manualPower > 0) power = manualPower;
+          },
+        },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+
+    if (!confirmed) return;
+
+    const trackLabel = isStun ? 'Stun' : 'Physical';
+    const soakCtx = JSON.stringify({
+      attackerActorId: null,
+      targetActorId:   this.id,
+      isMelee:         false,
+      stagedPower:     power,
+      stagedLevel:     'M',
+      isStun,
+      rawDamage:       `${power}M`,
+    }).replace(/'/g, '&#39;');
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      content: `
+        <div class="sr-roll-card">
+          <div class="sr-roll-header" style="color:var(--sr-red)">⚡ Dumpshock — ${this.name}</div>
+          <div class="sr-staging-result">
+            Dumpshock ${isVRHot ? '(VR-Hot → Physical)' : '(VR-Cold → Stun)'}: <strong>${power}M ${trackLabel}</strong>
+          </div>
+          <div class="sr-soak-action">
+            <button class="sr-soak-btn" data-payload='${soakCtx}'>🛡 ${this.name}: Resist Dumpshock (Body)</button>
+          </div>
+        </div>`,
+      type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+    });
+  }
+
+  /* ------------------------------------------------------------------ */
   /*  Overwatch / Convergence helpers                                     */
   /* ------------------------------------------------------------------ */
 
@@ -350,18 +580,21 @@ export class SR3EActor extends Actor {
   }
 
   static async _postConvergenceCard(hostActor, attackerActorId) {
-    const systemRating = hostActor.system.systemRating ?? 6;
-    const damageCode   = `${systemRating}S`;
-    const damageBase   = SR3EItem.parseDamageCode(damageCode);
-    const attackerName = game.actors.get(attackerActorId)?.name ?? 'Decker';
+    const systemRating  = hostActor.system.systemRating ?? 6;
+    const attacker      = game.actors.get(attackerActorId);
+    const attackerName  = attacker?.name ?? 'Decker';
+    const isVRHot       = (attacker?.system?.matrixUserMode ?? '') === 'VR-Hot';
+    const isStun        = !isVRHot;
+    const damageCode    = `${systemRating}M`;
+    const trackLabel    = isStun ? 'Stun' : 'Physical';
 
     const soakCtx = JSON.stringify({
       attackerActorId: hostActor.id,
       targetActorId:   attackerActorId,
       isMelee:         false,
-      stagedPower:     damageBase.power,
-      stagedLevel:     damageBase.level,
-      isStun:          damageBase.isStun,
+      stagedPower:     systemRating,
+      stagedLevel:     'M',
+      isStun,
       rawDamage:       damageCode,
     }).replace(/'/g, '&#39;');
 
@@ -371,7 +604,7 @@ export class SR3EActor extends Actor {
           <div class="sr-roll-header" style="color:var(--sr-red)">⚠ CONVERGENCE — ${hostActor.name}</div>
           <div class="sr-roll-result" style="color:var(--sr-red)">GOD Response activated! Overwatch reached 10.</div>
           <div class="sr-staging-result">
-            Dumpshock attack on ${attackerName}: <strong>${systemRating}${damageBase.level} ${damageBase.isStun ? 'Stun' : 'Physical'}</strong>
+            Dumpshock on ${attackerName}${isVRHot ? ' (VR-Hot → Physical)' : ' (VR-Cold → Stun)'}: <strong>${systemRating}M ${trackLabel}</strong>
           </div>
           <div class="sr-soak-action">
             <button class="sr-soak-btn" data-payload='${soakCtx}'>
@@ -393,7 +626,9 @@ export class SR3EActor extends Actor {
     const damageCode = sys.damage && sys.damage.trim() ? sys.damage.trim() : `${icRating}S`;
     const damageBase = SR3EItem.parseDamageCode(damageCode);
 
-    const targets = game.actors.filter(a => a.type === 'character' || a.type === 'npc');
+    const targets = game.actors.filter(a =>
+      (a.type === 'character' || a.type === 'npc') && !a.getFlag('The2ndChumming3e', 'isTemplate')
+    );
     if (!targets.length) {
       ui.notifications.warn('No character or NPC actors found.');
       return;
@@ -401,9 +636,11 @@ export class SR3EActor extends Actor {
 
     let targetId = null;
 
-    const targetOptions = targets.map(a =>
-      `<option value="${a.id}">${a.name}</option>`
-    ).join('');
+    const targetOptions = targets.map(a => {
+      const vrMode = a.system?.matrixUserMode ?? '';
+      const vrTag  = vrMode ? ` [${vrMode}]` : '';
+      return `<option value="${a.id}">${a.name}${vrTag}</option>`;
+    }).join('');
 
     await foundry.applications.api.DialogV2.wait({
       window: { title: `${this.name}: Attack` },
@@ -439,12 +676,14 @@ export class SR3EActor extends Actor {
     const deckItem = deckId ? targetActor.items.get(deckId) : null;
     const tn       = deckItem?.system?.attributes?.mpcp?.base ?? 4;
 
+    const targetVRMode = targetActor.system?.matrixUserMode ?? '';
     const label = `${this.name}: Attack → ${targetActor.name}`;
     await this.rollPool(icRating, tn, label, {
       isICAttackRoll: true,
       icAttackContext: {
         icActorId:     this.id,
         targetActorId: targetId,
+        targetVRMode,
         tn,
         damageCode,
         damageBase,
@@ -540,9 +779,13 @@ export class SR3EActor extends Actor {
     btn.disabled    = true;
     btn.textContent = '⏳ Preparing…';
 
-    const ccSkill  = targetActor.items.find(i => i.type === 'skill' && i.name.toLowerCase().includes('cybercombat'));
-    const ccRating = ccSkill?.system?.rating ?? 0;
-    const hackPool = targetActor.system.derived?.hackingPool ?? 0;
+    const ccSkill      = targetActor.items.find(i => i.type === 'skill' && i.name.toLowerCase().includes('cybercombat'));
+    const defIntel     = targetActor.system.attributes?.intelligence?.value ?? 0;
+    const isDefaulting = !ccSkill;
+    const ccRating     = ccSkill?.system?.rating ?? Math.max(1, defIntel - 2);
+    const hackPool   = targetActor.system.derived?.availableHackingPool ?? targetActor.system.derived?.hackingPool ?? 0;
+    const mcmPenalty = targetActor._matrixTNPenalty?.() ?? 0;
+    const effectiveTN = ctx.tn + mcmPenalty;
 
     let hackPoolDice = 0;
 
@@ -552,10 +795,10 @@ export class SR3EActor extends Actor {
         content: `
           <div style="padding:8px 0">
             <p style="margin:0 0 8px">
-              Cybercombat: <strong>${ccRating}</strong> &nbsp;|&nbsp; Hacking Pool: <strong>${hackPool}</strong>
+              Cybercombat: <strong>${ccRating}</strong>${isDefaulting ? ` <span style="color:var(--sr-amber)">(no skill — INT ${defIntel} − 2)</span>` : ''} &nbsp;|&nbsp; Hacking Pool: <strong>${hackPool}</strong>
             </p>
             <p style="margin:0 0 8px;font-size:12px;color:var(--color-text-dark-secondary)">
-              Defending against ${ctx.icHits} IC hit${ctx.icHits !== 1 ? 's' : ''} (TN ${ctx.tn})
+              Defending against ${ctx.icHits} IC hit${ctx.icHits !== 1 ? 's' : ''} (TN ${effectiveTN}${mcmPenalty > 0 ? `, +${mcmPenalty} MCM` : ''})
             </p>
             <label>Allocate Hacking Pool (0–${hackPool}):
               <input type="number" id="def-pool" value="0" min="0" max="${hackPool}" style="width:60px;margin-left:4px">
@@ -578,15 +821,18 @@ export class SR3EActor extends Actor {
     const pool = ccRating + hackPoolDice;
     if (pool < 1) {
       // Zero pool — treat as 0 defense hits, post soak immediately
-      const netHits = ctx.icHits;
-      const staged  = SR3EItem.stageDamage(ctx.damageBase, netHits);
-      const soakCtx = JSON.stringify({
+      const netHits    = ctx.icHits;
+      const staged     = SR3EItem.stageDamage(ctx.damageBase, netHits);
+      const isVRHot    = (targetActor.system?.matrixUserMode ?? '') === 'VR-Hot';
+      const isStun     = staged.isStun && !isVRHot;
+      const trackLabel = isStun ? 'Stun' : 'Physical';
+      const soakCtx    = JSON.stringify({
         attackerActorId: ctx.icActorId,
         targetActorId:   ctx.targetActorId,
         isMelee:         false,
         stagedPower:     staged.power,
         stagedLevel:     staged.level,
-        isStun:          staged.isStun,
+        isStun,
         rawDamage:       ctx.damageCode,
       }).replace(/'/g, '&#39;');
       const targetName = targetActor.name;
@@ -596,7 +842,7 @@ export class SR3EActor extends Actor {
           <div class="sr-roll-card">
             <div class="sr-roll-header">💻 ${targetName}: No Cybercombat defense</div>
             <div class="sr-staging-result">
-              IC ${ctx.icHits} hits undefended → <strong>${staged.power}${staged.level} ${staged.isStun ? 'Stun' : 'Physical'}</strong>
+              IC ${ctx.icHits} hits undefended → <strong>${staged.power}${staged.level} ${trackLabel}</strong>${isVRHot ? ' <span style="color:var(--sr-red);font-size:11px">(VR-Hot: Physical)</span>' : ''}
             </div>
             <div class="sr-soak-action">
               <button class="sr-soak-btn" data-payload='${soakCtx}'>🛡 ${targetName}: Resist Damage (Body)</button>
@@ -608,13 +854,13 @@ export class SR3EActor extends Actor {
     }
 
     const label = `${targetActor.name}: Cybercombat Defense (${ctx.icHits} IC hit${ctx.icHits !== 1 ? 's' : ''})`;
-    await targetActor.rollPool(pool, ctx.tn, label, {
+    await targetActor.rollPool(pool, effectiveTN, label, {
       isMatrixDefenseRoll:  true,
       matrixDefenseContext: {
         icHits:        ctx.icHits,
         icActorId:     ctx.icActorId,
         targetActorId: ctx.targetActorId,
-        tn:            ctx.tn,
+        tn:            effectiveTN,
         damageCode:    ctx.damageCode,
         damageBase:    ctx.damageBase,
       },
@@ -876,6 +1122,7 @@ _prepareCharacter(sys, attr) {
         isMelee:             options.isMelee            ?? false,
         isAoE:               options.isAoE              ?? false,
         aoeTargetIds:        options.aoeTargetIds       ?? null,
+        chunkySalsa:         options.chunkySalsa        ?? null,
         rawDamage:           options.rawDamage          ?? '',
         damageBase:          options.damageBase         ?? null,
         weaponItemId:        options.weaponItemId       ?? null,
@@ -907,9 +1154,11 @@ _prepareCharacter(sys, attr) {
         matrixDefenseContext:  options.matrixDefenseContext  ?? null,
         isMatrixSoakRoll:      options.isMatrixSoakRoll      ?? false,
         matrixSoakContext:     options.matrixSoakContext     ?? null,
-        isProgramRoll:         options.isProgramRoll         ?? false,
-        programContext:        options.programContext        ?? null,
-        footerNote:            options.footerNote            ?? null,
+        isProgramRoll:          options.isProgramRoll          ?? false,
+        programContext:         options.programContext         ?? null,
+        isHackingActionRoll:    options.isHackingActionRoll   ?? false,
+        hackingActionContext:   options.hackingActionContext  ?? null,
+        footerNote:             options.footerNote            ?? null,
       });
       return successes;
     }
@@ -931,6 +1180,7 @@ _prepareCharacter(sys, attr) {
       isMelee:               options.isMelee               ?? false,
       isAoE:                 options.isAoE                 ?? false,
       aoeTargetIds:          options.aoeTargetIds          ?? null,
+      chunkySalsa:           options.chunkySalsa           ?? null,
       rawDamage:             options.rawDamage             ?? '',
       damageBase:            options.damageBase            ?? null,
       weaponItemId:          options.weaponItemId          ?? null,
@@ -1124,26 +1374,57 @@ _prepareCharacter(sys, attr) {
           const attackerName = game.actors.get(state.attackerActorId)?.name ?? 'Attacker';
 
           if (state.isAoE && state.aoeTargetIds?.length) {
-            // AoE weapon — soak button for every target, no dodge
-            for (const tid of state.aoeTargetIds) {
-              const tActor = game.actors.get(tid);
-              if (!tActor) continue;
-              const soakCtx = JSON.stringify({
-                attackerActorId: state.attackerActorId,
-                targetActorId:   tid,
-                weaponItemId:    state.weaponItemId,
-                isMelee:         false,
-                stagedPower:     staged.power,
-                stagedLevel:     staged.level,
-                isStun:          staged.isStun,
-                rawDamage:       state.rawDamage,
-              }).replace(/'/g, '&#39;');
-              postRollHtml += `
-                <div class="sr-soak-action">
-                  <button class="sr-soak-btn" data-payload='${soakCtx}'>
-                    🛡 ${tActor.name}: Resist Damage
-                  </button>
+            if (state.chunkySalsa?.length) {
+              // Confined space (Chunky Salsa): each target has its own blast power
+              const csMap = new Map(state.chunkySalsa.map(t => [t.actorId, t]));
+              stagingHtml = `
+                <div class="sr-staging-result">
+                  💥 Confined blast — ${state.chunkySalsa.length} target${state.chunkySalsa.length !== 1 ? 's' : ''} hit by reflected waves
                 </div>`;
+              for (const tid of state.aoeTargetIds) {
+                const cs = csMap.get(tid);
+                if (!cs || cs.power <= 0) continue;
+                const tActor = game.actors.get(tid);
+                if (!tActor) continue;
+                const soakCtx = JSON.stringify({
+                  attackerActorId: state.attackerActorId,
+                  targetActorId:   tid,
+                  weaponItemId:    state.weaponItemId,
+                  isMelee:         false,
+                  stagedPower:     cs.power,
+                  stagedLevel:     cs.level,
+                  isStun:          staged.isStun,
+                  rawDamage:       `${cs.power}${cs.level}`,
+                }).replace(/'/g, '&#39;');
+                postRollHtml += `
+                  <div class="sr-soak-action">
+                    <button class="sr-soak-btn" data-payload='${soakCtx}'>
+                      🛡 ${tActor.name}: Resist Damage (${cs.power}${cs.level})
+                    </button>
+                  </div>`;
+              }
+            } else {
+              // Standard AoE — same staged damage for all targets
+              for (const tid of state.aoeTargetIds) {
+                const tActor = game.actors.get(tid);
+                if (!tActor) continue;
+                const soakCtx = JSON.stringify({
+                  attackerActorId: state.attackerActorId,
+                  targetActorId:   tid,
+                  weaponItemId:    state.weaponItemId,
+                  isMelee:         false,
+                  stagedPower:     staged.power,
+                  stagedLevel:     staged.level,
+                  isStun:          staged.isStun,
+                  rawDamage:       state.rawDamage,
+                }).replace(/'/g, '&#39;');
+                postRollHtml += `
+                  <div class="sr-soak-action">
+                    <button class="sr-soak-btn" data-payload='${soakCtx}'>
+                      🛡 ${tActor.name}: Resist Damage
+                    </button>
+                  </div>`;
+              }
             }
           } else if ((state.committedDodgeDice ?? 0) > 0) {
             // Defender committed dice — show a button to trigger the dodge roll
@@ -1549,18 +1830,21 @@ _prepareCharacter(sys, attr) {
 
       } else if (state.isMatrixDefenseRoll && state.matrixDefenseContext) {
         // Decker defended against IC — resolve, show soak if damage remains
-        const mdc       = state.matrixDefenseContext;
-        const netHits   = Math.max(0, mdc.icHits - successes);
-        const icName    = game.actors.get(mdc.icActorId)?.name ?? 'IC';
+        const mdc         = state.matrixDefenseContext;
+        const netHits     = Math.max(0, mdc.icHits - successes);
+        const icName      = game.actors.get(mdc.icActorId)?.name ?? 'IC';
+        const targetActor = game.actors.get(mdc.targetActorId);
+        const isVRHot     = (targetActor?.system?.matrixUserMode ?? '') === 'VR-Hot';
 
         if (netHits <= 0) {
           stagingHtml = `<div class="sr-staging-result sr-soak-blocked">✅ Defense successful! No damage taken.</div>`;
         } else {
-          const staged = SR3EItem.stageDamage(mdc.damageBase, netHits);
-          const trackLabel = staged.isStun ? 'Stun' : 'Physical';
+          const staged     = SR3EItem.stageDamage(mdc.damageBase, netHits);
+          const isStun     = staged.isStun && !isVRHot;
+          const trackLabel = isStun ? 'Stun' : 'Physical';
           stagingHtml = `
             <div class="sr-staging-result">
-              💻 Net ${netHits} hit${netHits !== 1 ? 's' : ''}: ${mdc.damageCode} → <strong>${staged.power}${staged.level} ${trackLabel}</strong>
+              💻 Net ${netHits} hit${netHits !== 1 ? 's' : ''}: ${mdc.damageCode} → <strong>${staged.power}${staged.level} ${trackLabel}</strong>${isVRHot ? ' <span style="color:var(--sr-red);font-size:11px">(VR-Hot: Physical)</span>' : ''}
             </div>`;
           const soakCtx = JSON.stringify({
             attackerActorId: mdc.icActorId,
@@ -1568,10 +1852,10 @@ _prepareCharacter(sys, attr) {
             isMelee:         false,
             stagedPower:     staged.power,
             stagedLevel:     staged.level,
-            isStun:          staged.isStun,
+            isStun,
             rawDamage:       mdc.damageCode,
           }).replace(/'/g, '&#39;');
-          const targetName = game.actors.get(mdc.targetActorId)?.name ?? 'Target';
+          const targetName = targetActor?.name ?? 'Target';
           postRollHtml = `
             <div class="sr-soak-action">
               <button class="sr-soak-btn" data-payload='${soakCtx}'>
@@ -1639,6 +1923,7 @@ _prepareCharacter(sys, attr) {
         isMelee:            state.isMelee            ?? false,
         isAoE:              state.isAoE              ?? false,
         aoeTargetIds:       state.aoeTargetIds       ?? null,
+        chunkySalsa:        state.chunkySalsa        ?? null,
         rawDamage:          state.rawDamage          ?? '',
         damageBase:         state.damageBase         ?? null,
         weaponItemId:       state.weaponItemId       ?? null,
@@ -1674,6 +1959,8 @@ _prepareCharacter(sys, attr) {
         matrixSoakContext:    state.matrixSoakContext    ?? null,
         isProgramRoll:        state.isProgramRoll        ?? false,
         programContext:       state.programContext       ?? null,
+        isHackingActionRoll:  state.isHackingActionRoll  ?? false,
+        hackingActionContext: state.hackingActionContext ?? null,
         footerNote:           state.footerNote           ?? null,
       }).replace(/'/g, '&#39;');
       explodeBtn = `
@@ -1817,6 +2104,34 @@ _prepareCharacter(sys, attr) {
         auraBonus:     bonus,
         auraSuccesses: successes,
       });
+    }
+
+    // Hacking action threshold check — increment Overwatch if below Security Threshold
+    if (allDone && state.isHackingActionRoll && state.hackingActionContext) {
+      const hac = state.hackingActionContext;
+      if (successes < hac.securityThreshold) {
+        if (hac.overwatchOnFail && hac.hostActorId) {
+          await SR3EActor._incrementOverwatch(hac.hostActorId, hac.attackerActorId);
+        } else {
+          await ChatMessage.create({
+            content: `
+              <div class="sr-roll-card">
+                <div class="sr-roll-header" style="color:var(--sr-amber)">⚠ Threshold Missed — ${hac.actionName}</div>
+                <div class="sr-roll-result">${successes} hit${successes !== 1 ? 's' : ''} — need ${hac.securityThreshold}. Action failed.</div>
+              </div>`,
+            type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+          });
+        }
+      } else {
+        await ChatMessage.create({
+          content: `
+            <div class="sr-roll-card">
+              <div class="sr-roll-header" style="color:var(--sr-green)">✅ Threshold Met — ${hac.actionName}</div>
+              <div class="sr-roll-result">${successes} hit${successes !== 1 ? 's' : ''} vs threshold ${hac.securityThreshold} — proceed with action.</div>
+            </div>`,
+          type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+        });
+      }
     }
   }
 
@@ -2651,11 +2966,51 @@ _prepareCharacter(sys, attr) {
     await this.update({ 'system.spellPoolSpent': 0 });
   }
 
+  async refreshAstralPool() {
+    await this.update({ 'system.astralPoolSpent': 0 });
+  }
+
+  /**
+   * Toggle Full Defense for this combatant.
+   * Declares all available combat pool dice as defense for the current pass.
+   * The pool is not pre-spent — it remains available to allocate during dodge declarations.
+   */
+  async toggleFullDefense() {
+    const current = this.system.fullDefense ?? false;
+    if (current) {
+      await this.update({ 'system.fullDefense': false, 'system.fullDefensePool': 0 });
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: this }),
+        content: `<div class="sr-roll-card"><div class="sr-roll-header">🛡 ${this.name} — Full Defense cancelled</div></div>`,
+        type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      });
+    } else {
+      const avail = this.system.derived?.availableCombatPool ?? 0;
+      if (avail < 1) {
+        ui.notifications.warn('No combat pool available for Full Defense.');
+        return;
+      }
+      await this.update({ 'system.fullDefense': true, 'system.fullDefensePool': avail });
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: this }),
+        content: `<div class="sr-roll-card"><div class="sr-roll-header">🛡 ${this.name} — Full Defense declared (${avail} dice)</div><div class="sr-roll-result">All combat pool committed to defense for this pass. Dodge declarations auto-fill.</div></div>`,
+        type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      });
+    }
+  }
+
   /**
    * Reset hacking pool spending.
    */
   async refreshHackingPool() {
     await this.update({ 'system.hackingPoolSpent': 0 });
+  }
+
+  /**
+   * Reset recoil accumulation (called at start of each new combat phase).
+   */
+  async resetRecoil() {
+    await this.update({ 'system.roundsFiredThisPhase': 0 });
   }
 
   /**
@@ -3335,7 +3690,7 @@ _prepareCharacter(sys, attr) {
     const matrixMode  = this.system.matrixUserMode ?? '';
     const astralMode  = this.system.astralMode ?? '';
     const jackedIn    = matrixMode === 'VR-Cold' || matrixMode === 'VR-Hot';
-    const useMatrix   = matrixMode === 'VR-Hot';
+    const useMatrix   = matrixMode === 'VR-Hot' || matrixMode === 'VR-Cold';
     const useAstral   = astralMode === 'astral';
 
     let base, dice, modeNote;
@@ -3354,7 +3709,7 @@ _prepareCharacter(sys, attr) {
       const response  = deck?.system?.attributes?.response?.base ?? 0;
       base = reaction + (response * 2);
       dice = 1 + response;
-      modeNote = `<div class="sr-roll-meta" style="color:var(--sr-accent)">💻 Matrix Init (VR-Hot) — Response ${response}</div>`;
+      modeNote = `<div class="sr-roll-meta" style="color:var(--sr-accent)">💻 Matrix Init (${matrixMode}) — Response ${response}</div>`;
     } else {
       base = d.initiative     ?? 0;
       dice = d.initiativeDice ?? 1;

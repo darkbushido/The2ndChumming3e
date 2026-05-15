@@ -120,6 +120,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       summoning:    'Summoning',
       cyberdeck:    'Cyberdeck',
       program:      'Program',
+      contact:      'Contact',
     };
     return labels[this.item.type] ?? this.item.type;
   }
@@ -294,7 +295,9 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       case 'ammunition':
         return `<div class="form-grid">
           ${this._f('Concealability', 'concealability', s.concealability)}
-          ${this._f('Damage Mod', 'damage', s.damage, 'text', 'placeholder="+1 or -1P"')}
+          ${this._f('Description', 'damage', s.damage, 'text', 'placeholder="Ex-Explosive, Hollow Point…"')}
+          ${this._f('Power Modifier', 'powerMod', s.powerMod ?? 0, 'number', 'title="Added to weapon power (negative reduces damage)"')}
+          ${this._f('TN Modifier', 'tnMod', s.tnMod ?? 0, 'number', 'title="Added to attack TN (negative makes it easier to hit)"')}
           ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
           ${this._f('Availability', 'availability', s.availability)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
@@ -600,6 +603,14 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         </div>
         ${this._notes(s.notes)}`;
       }
+
+      case 'contact':
+        return `<div class="form-grid">
+          ${this._f('Archetype', 'archetype', s.archetype, 'text', 'placeholder="Fixer, Street Doc, Cop…"')}
+          ${this._f('Loyalty (1–6)', 'loyalty', s.loyalty ?? 1, 'number', 'min="1" max="6"')}
+          ${this._f('Connection (1–6)', 'connection', s.connection ?? 1, 'number', 'min="1" max="6"')}
+        </div>
+        ${this._notes(s.notes)}`;
 
       default:
         return `<p class="empty-list">No fields defined for item type: ${type}</p>`;

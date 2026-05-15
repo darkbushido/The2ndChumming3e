@@ -33,6 +33,10 @@ function _pools() {
     hackingPoolSpent:        new NumberField({ integer: true, initial: 0, min: 0 }),
     spellDefensePool:        new NumberField({ integer: true, initial: 0, min: 0 }),
     spellDefenseSorceryDice: new NumberField({ integer: true, initial: 0, min: 0 }),
+    fullDefense:             new BooleanField({ initial: false }),
+    fullDefensePool:         new NumberField({ integer: true, initial: 0, min: 0 }),
+    recoilCompensation:      new NumberField({ integer: true, initial: 0, min: 0 }),
+    roundsFiredThisPhase:    new NumberField({ integer: true, initial: 0, min: 0 }),
   };
 }
 

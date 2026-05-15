@@ -253,8 +253,7 @@ sr3e/
 
 
 ## What is not yet implemented
-- Full Defense posture (melee/ranged defensive mode)
-- Matrix data sheath could be useful
+- Flux and ECM/ECCM in vehicles and drones. Don't hold your breath
 
 
 ## Legal Disclaimer

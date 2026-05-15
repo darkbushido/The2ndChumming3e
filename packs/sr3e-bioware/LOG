@@ -1,5 +1,5 @@
-2026/05/15-09:42:37.808 6bec Recovering log #111
-2026/05/15-09:42:37.808 6bec Level-0 table #113: started
-2026/05/15-09:42:37.811 6bec Level-0 table #113: 27555 bytes OK
-2026/05/15-09:42:37.819 6bec Delete type=0 #111
-2026/05/15-09:42:37.819 6bec Delete type=3 #109
+2026/05/15-17:46:08.105 6b14 Recovering log #121
+2026/05/15-17:46:08.106 6b14 Level-0 table #123: started
+2026/05/15-17:46:08.109 6b14 Level-0 table #123: 27459 bytes OK
+2026/05/15-17:46:08.116 6b14 Delete type=0 #121
+2026/05/15-17:46:08.116 6b14 Delete type=3 #119

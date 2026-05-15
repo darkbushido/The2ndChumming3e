@@ -1,5 +1,0 @@
-{
-  "_id": "sr3e-agent-0004", "name": "Warhound", "type": "agent", "img": "icons/svg/mystery-man.svg",
-  "system": { "rating": 4, "graded": false, "hostSecurityTier": "Green", "additionalSkills": [], "utilities": [{"name":"Attack: Deadly (Overload)","multiplier":5},{"name":"Armor","multiplier":3}], "specialAbilities": [], "woundValue": 0, "notes": "<p>Heavy combat agent. Deadly Overload attack; Armor soaks incoming Overload damage point-for-point before it hits the condition monitor. Multiplier 9, 144 Mp.</p><p>Expensive but durable. Best used against high-rating IC or to hold a node while the decker works elsewhere.</p>" },
-  "items": [], "effects": [], "_key": "!actors!sr3e-agent-0004"
-}

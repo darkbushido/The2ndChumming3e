@@ -2,7 +2,7 @@ import { CharacterData, NpcData, VehicleData, ICData, HostData, AgentData } from
 import {
   MeleeData, ProjectileData, ThrownData, FirearmData, AmmunitionData,
   ArmorData, GearData, SkillData, QualityData, CyberwareData, BiowareData,
-  SpellData, ComplexFormData, SummoningData, AdeptPowerData, VehicleWeaponData, VehicleModData, ProgramData, CyberdeckData,
+  SpellData, ComplexFormData, SummoningData, AdeptPowerData, VehicleWeaponData, VehicleModData, ProgramData, CyberdeckData, ContactData,
 } from './data/ItemDataModels.js';
 import { SR3EActor } from './documents/SR3EActor.js';
 import { SR3EItem } from './documents/SR3EItem.js';
@@ -49,6 +49,7 @@ Hooks.once('init', () => {
   CONFIG.Item.dataModels.vehiclemod    = VehicleModData;
   CONFIG.Item.dataModels.program      = ProgramData;
   CONFIG.Item.dataModels.cyberdeck    = CyberdeckData;
+  CONFIG.Item.dataModels.contact      = ContactData;
 
   // Default icons for each item type (must reference paths that exist in Foundry v14)
   CONFIG.Item.typeIcons = {
@@ -71,6 +72,7 @@ Hooks.once('init', () => {
     vehiclemod:   'icons/svg/clockwork.svg',
     program:      'icons/svg/net.svg',
     cyberdeck:    'icons/svg/portal.svg',
+    contact:      'icons/svg/mystery-man.svg',
   };
 
   CONFIG.Actor.documentClass = SR3EActor;
@@ -207,6 +209,276 @@ Hooks.on('preCreateActor', (document, _data, options, _userId) => {
   if (folder) document.updateSource({ folder: folder.id });
 });
 
+async function _openSessionRewardDialog() {
+  const allPCs = game.actors.filter(a => a.type === 'character' && !a.getFlag('The2ndChumming3e', 'isTemplate'));
+
+  if (!allPCs.length) {
+    ui.notifications.warn('No character actors found in this world.');
+    return;
+  }
+
+  const pcRows = allPCs.map(a => `
+    <label style="display:flex;align-items:center;gap:8px;margin:3px 0;cursor:pointer;">
+      <input type="checkbox" data-actor-id="${a.id}" checked/>
+      <span>${a.name}</span>
+      <span style="color:var(--sr-muted);font-size:11px">(${a.system.karmaPool ?? 0} karma | ¥${(a.system.nuyen ?? 0).toLocaleString()})</span>
+    </label>`).join('');
+
+  let karma = 0, nuyen = 0, gearNotes = '', selectedIds = [], proceed = false;
+
+  await foundry.applications.api.DialogV2.wait({
+    window: { title: 'Session Rewards' },
+    content: `
+      <div style="padding:8px 0">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <label>Karma reward:
+            <input type="number" id="sr-karma-reward" value="0" min="0" style="width:70px;margin-left:6px"/>
+          </label>
+          <label>Nuyen reward:
+            <input type="number" id="sr-nuyen-reward" value="0" min="0" style="width:80px;margin-left:6px"/>
+          </label>
+        </div>
+        <label style="display:block;margin-bottom:12px">Gear / notes (text only):
+          <textarea id="sr-gear-notes" rows="2" style="width:100%;margin-top:4px;box-sizing:border-box;resize:vertical;"></textarea>
+        </label>
+        <p style="margin:0 0 6px;font-size:11px;color:var(--sr-muted)">Award to:</p>
+        <div>${pcRows}</div>
+      </div>`,
+    buttons: [
+      {
+        label: 'Award',
+        action: 'award',
+        default: true,
+        callback: (_e, _b, dialog) => {
+          proceed = true;
+          karma       = Math.max(0, parseInt(dialog.element.querySelector('#sr-karma-reward')?.value) || 0);
+          nuyen       = Math.max(0, parseInt(dialog.element.querySelector('#sr-nuyen-reward')?.value) || 0);
+          gearNotes   = dialog.element.querySelector('#sr-gear-notes')?.value.trim() ?? '';
+          selectedIds = [...dialog.element.querySelectorAll('[data-actor-id]:checked')].map(cb => cb.dataset.actorId);
+        },
+      },
+      { label: 'Cancel', action: 'cancel' },
+    ],
+  });
+
+  if (!proceed || !selectedIds.length) return;
+
+  const targets = allPCs.filter(a => selectedIds.includes(a.id));
+  for (const actor of targets) {
+    const updates = {};
+    if (karma) updates['system.karmaPool'] = (actor.system.karmaPool ?? 0) + karma;
+    if (nuyen)  updates['system.nuyen']    = (actor.system.nuyen ?? 0) + nuyen;
+    if (Object.keys(updates).length) await actor.update(updates);
+  }
+
+  const lines = targets.map(a => `<li>${a.name}</li>`).join('');
+  const karmaLine = karma ? `<div><strong>Karma:</strong> +${karma}</div>` : '';
+  const nuyenLine = nuyen ? `<div><strong>Nuyen:</strong> +¥${nuyen.toLocaleString()}</div>` : '';
+  const gearLine  = gearNotes ? `<div><strong>Gear:</strong> ${gearNotes}</div>` : '';
+
+  await ChatMessage.create({
+    speaker: { alias: 'GM' },
+    content: `
+      <div class="sr-roll-card">
+        <div class="sr-roll-header" style="background:var(--sr-gold,#c8a040);color:#0a0a0a">🎖 Session Rewards</div>
+        <div class="sr-roll-body" style="padding:8px">
+          ${karmaLine}${nuyenLine}${gearLine}
+          <div style="margin-top:6px;font-size:11px;color:var(--sr-muted)">Awarded to:</div>
+          <ul style="margin:4px 0 0;padding-left:18px;font-size:12px">${lines}</ul>
+        </div>
+      </div>`,
+    type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+  });
+}
+
+async function _openChunkySalsaCalculator() {
+  // Blast formulas (all distances in metres from blast epicentre):
+  //   Direct wave      : P − D
+  //   Same-side wall   : P − (2W − D)  — wall must be behind the character (W > D)
+  //   Opposite/perp    : P − (2W + D)
+  function calcBlast(power, charDist, walls) {
+    const waves = [];
+    const direct = power - charDist;
+    if (direct > 0) waves.push({ label: `Direct (${power} − ${charDist}m)`, power: direct });
+
+    for (const w of walls) {
+      let wp;
+      if (w.type === 'same') {
+        if (w.dist <= charDist) continue; // wall between blast and character — not a valid rebound
+        wp = power - (2 * w.dist - charDist);
+      } else {
+        wp = power - (2 * w.dist + charDist);
+      }
+      if (wp > 0) {
+        const lbl = w.type === 'same' ? 'Same-side wall' : 'Opposite/perp. wall';
+        waves.push({ label: `${lbl} @${w.dist}m`, power: wp });
+      }
+    }
+    return waves;
+  }
+
+  function updatePreview(el) {
+    const power    = parseInt(el.querySelector('#sr-salsa-power')?.value) || 0;
+    const charDist = parseInt(el.querySelector('#sr-salsa-dist')?.value)  || 0;
+    const level    = el.querySelector('#sr-salsa-level')?.value || 'S';
+    const walls    = [];
+    el.querySelectorAll('.sr-wall-row').forEach(row => {
+      walls.push({
+        type: row.querySelector('.sr-wall-type')?.value || 'same',
+        dist: parseInt(row.querySelector('.sr-wall-dist')?.value) || 1,
+      });
+    });
+
+    const waves      = calcBlast(power, charDist, walls);
+    const totalPower = waves.reduce((s, w) => s + w.power, 0);
+    const preview    = el.querySelector('#sr-salsa-preview');
+    if (!preview) return;
+
+    if (!waves.length) {
+      preview.innerHTML = '<span style="color:var(--sr-muted)">No blast reaches the target.</span>';
+      return;
+    }
+
+    const lines = waves.map(w =>
+      `<div>• ${w.label}: <strong>${w.power}${level}</strong></div>`
+    ).join('');
+    const total = waves.length > 1
+      ? `<div style="margin-top:4px;border-top:1px solid var(--sr-border);padding-top:4px;font-weight:bold;">Total: ${totalPower}${level}</div>`
+      : '';
+    preview.innerHTML = lines + total;
+  }
+
+  function addWallRow(wallList, el) {
+    const div = document.createElement('div');
+    div.className = 'sr-wall-row';
+    div.style.cssText = 'display:flex;align-items:center;gap:8px;margin:3px 0;';
+    div.innerHTML = `
+      <select class="sr-wall-type" style="flex:1;">
+        <option value="same">Same-side (behind char)</option>
+        <option value="opposite">Opposite / perpendicular</option>
+      </select>
+      <label style="display:flex;align-items:center;gap:4px;white-space:nowrap;">Dist:
+        <input type="number" class="sr-wall-dist" value="3" min="1" style="width:50px;"/>m
+      </label>
+      <button type="button" class="sr-remove-wall-btn" style="padding:2px 8px;">✕</button>`;
+    div.querySelector('.sr-remove-wall-btn').addEventListener('click', () => {
+      div.remove();
+      updatePreview(el);
+    });
+    wallList.appendChild(div);
+    updatePreview(el);
+  }
+
+  const actorOptions = game.actors
+    .filter(a => a.type === 'character' || a.type === 'npc')
+    .map(a => `<option value="${a.id}">${a.name}</option>`)
+    .join('');
+
+  let proceed = false, finalPower = 0, finalDist = 0, finalLevel = 'S';
+  let finalWaves = [], finalTargetId = '';
+
+  await foundry.applications.api.DialogV2.wait({
+    window: { title: '💥 Chunky Salsa — Confined Space Blast' },
+    content: `
+      <div style="padding:8px 0">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;">
+          <label>Power:<br/><input type="number" id="sr-salsa-power" value="6" min="1" style="width:100%;"/></label>
+          <label>Level:<br/>
+            <select id="sr-salsa-level" style="width:100%;">
+              <option value="L">L — Light</option>
+              <option value="M">M — Moderate</option>
+              <option value="S" selected>S — Serious</option>
+              <option value="D">D — Deadly</option>
+            </select>
+          </label>
+          <label>Char. dist (m):<br/><input type="number" id="sr-salsa-dist" value="0" min="0" style="width:100%;"/></label>
+        </div>
+        <div style="margin-bottom:8px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+            <strong style="font-size:12px;">Walls</strong>
+            <button type="button" id="sr-add-wall-btn" style="padding:2px 10px;font-size:11px;">+ Add Wall</button>
+          </div>
+          <div id="sr-wall-list"></div>
+        </div>
+        <div id="sr-salsa-preview" style="background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);padding:8px;margin-bottom:10px;font-size:12px;min-height:36px;"></div>
+        <label style="font-size:12px;">Post soak card for:
+          <select id="sr-salsa-target" style="margin-left:6px;max-width:180px;">
+            <option value="">— none —</option>
+            ${actorOptions}
+          </select>
+        </label>
+      </div>`,
+    render: (_event, html) => {
+      const el = html instanceof HTMLElement ? html : (html?.[0] ?? null);
+      if (!el) return;
+      updatePreview(el);
+      el.addEventListener('input',  () => updatePreview(el));
+      el.addEventListener('change', () => updatePreview(el));
+      const wallList = el.querySelector('#sr-wall-list');
+      el.querySelector('#sr-add-wall-btn')?.addEventListener('click', () => addWallRow(wallList, el));
+    },
+    buttons: [
+      {
+        label: 'Post to Chat',
+        action: 'post',
+        default: true,
+        callback: (_e, _b, dialog) => {
+          proceed       = true;
+          finalPower    = parseInt(dialog.element.querySelector('#sr-salsa-power')?.value) || 0;
+          finalDist     = parseInt(dialog.element.querySelector('#sr-salsa-dist')?.value)  || 0;
+          finalLevel    = dialog.element.querySelector('#sr-salsa-level')?.value || 'S';
+          finalTargetId = dialog.element.querySelector('#sr-salsa-target')?.value || '';
+          const walls   = [];
+          dialog.element.querySelectorAll('.sr-wall-row').forEach(row => {
+            walls.push({
+              type: row.querySelector('.sr-wall-type')?.value || 'same',
+              dist: parseInt(row.querySelector('.sr-wall-dist')?.value) || 1,
+            });
+          });
+          finalWaves = calcBlast(finalPower, finalDist, walls);
+        }
+      },
+      { label: 'Cancel', action: 'cancel' },
+    ],
+  });
+
+  if (!proceed) return;
+
+  const totalPower = finalWaves.reduce((s, w) => s + w.power, 0);
+  const waveLines  = finalWaves.map(w => `<li>${w.label}: <strong>${w.power}${finalLevel}</strong></li>`).join('');
+  const totalLine  = finalWaves.length > 1
+    ? `<div style="margin-top:6px;font-weight:bold;border-top:1px solid var(--sr-border);padding-top:4px;">Combined: ${totalPower}${finalLevel}</div>`
+    : '';
+
+  const soakPayload = finalTargetId ? JSON.stringify({
+    targetActorId: finalTargetId,
+    power:    totalPower,
+    level:    finalLevel,
+    isStun:   false,
+    armorType: 'ballistic',
+    label:    'Confined Blast',
+  }) : null;
+
+  const soakBtn = soakPayload
+    ? `<button class="sr-soak-btn" data-payload='${soakPayload}' style="margin-top:8px;width:100%;padding:4px 0;">💥 Resist Damage (${totalPower}${finalLevel})</button>`
+    : '';
+
+  await ChatMessage.create({
+    speaker: { alias: 'GM' },
+    content: `
+      <div class="sr-roll-card">
+        <div class="sr-roll-header" style="background:#5a1a10;color:#ffcca0;">💥 Chunky Salsa — Confined Blast</div>
+        <div class="sr-roll-body" style="padding:8px">
+          <div style="font-size:11px;color:var(--sr-muted);margin-bottom:6px">Base power ${finalPower}${finalLevel} · character ${finalDist}m from blast · ${finalWaves.length} wave${finalWaves.length !== 1 ? 's' : ''}</div>
+          <ul style="margin:0 0 4px;padding-left:18px;font-size:12px;">${waveLines}</ul>
+          ${totalLine}
+          ${soakBtn}
+        </div>
+      </div>`,
+    type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+  });
+}
+
 // Vehicle Chase button + drone/VCR labels in the combat tracker sidebar
 Hooks.on('renderCombatTracker', (_app, html) => {
   const el  = html instanceof HTMLElement ? html : html[0];
@@ -276,6 +548,16 @@ Hooks.on('renderCombatTracker', (_app, html) => {
         if (nameEl) nameEl.appendChild(tag);
       }
 
+      // Full Defense badge
+      if (cbt.actor.system?.fullDefense) {
+        const fdPool = cbt.actor.system.fullDefensePool ?? 0;
+        const tag = document.createElement('span');
+        tag.style.cssText = 'font-size:10px;font-weight:bold;padding:1px 5px;border-radius:3px;margin-left:4px;background:var(--sr-accent,#3a7abf);color:#fff;';
+        tag.textContent = `Full Def${fdPool > 0 ? ` (${fdPool})` : ''}`;
+        const nameEl = row.querySelector('.combatant-name, .token-name, h4');
+        if (nameEl) nameEl.appendChild(tag);
+      }
+
       // VCR rigger: reminder badge — vehicle bonus and non-vehicle penalty
       const jumpedInto = cbt.flags?.The2ndChumming3e?.jumpedInto;
       if (jumpedInto) {
@@ -287,6 +569,62 @@ Hooks.on('renderCombatTracker', (_app, html) => {
         tag.textContent = `VCR: ${jumpedInto} |${bonusPart} non-veh TN+8`;
         const nameEl = row.querySelector('.combatant-name, .token-name, h4');
         if (nameEl) nameEl.appendChild(tag);
+      }
+
+      // Initiative display badge — SR3: "P2 | 12" / SR2: "@23"
+      const initMode = game.settings.get?.('The2ndChumming3e', 'initiativeMode') ?? 'sr3';
+      if (initMode === 'sr3') {
+        const flags   = cbt.flags?.The2ndChumming3e ?? {};
+        const passNum = flags.passNumber ?? 1;
+        const curInit = flags.currentInitiative ?? (cbt.initiative ?? 0);
+        if (cbt.initiative != null) {
+          const passTag = document.createElement('span');
+          if (curInit > 0) {
+            passTag.style.cssText = 'font-size:10px;font-weight:bold;padding:1px 5px;border-radius:3px;margin-left:4px;background:#0a1a10;color:#7db87d;font-family:monospace;letter-spacing:0.03em;';
+            passTag.textContent = `P${passNum} | ${curInit}`;
+          } else {
+            passTag.style.cssText = 'font-size:10px;font-weight:bold;padding:1px 5px;border-radius:3px;margin-left:4px;background:#1a1a1a;color:#555;font-family:monospace;';
+            passTag.textContent = 'Done';
+          }
+          const nameEl = row.querySelector('.combatant-name, .token-name, h4');
+          if (nameEl) nameEl.appendChild(passTag);
+        }
+      } else if (initMode === 'sr2' && combat) {
+        const queue = combat.flags?.The2ndChumming3e?.sr2Queue ?? [];
+        const qIdx  = combat.flags?.The2ndChumming3e?.sr2QueueIndex ?? 0;
+        // Active slot is queue[qIdx - 1] (just activated). Next for each combatant from qIdx onward.
+        const activeSlot = qIdx > 0 ? queue[qIdx - 1] : null;
+        const isActive   = activeSlot?.id === cid;
+        const slotScore  = isActive
+          ? activeSlot.score
+          : (queue.slice(qIdx).find(s => s.id === cid)?.score ?? null);
+        if (slotScore != null) {
+          const slotTag = document.createElement('span');
+          slotTag.style.cssText = `font-size:10px;font-weight:bold;padding:1px 5px;border-radius:3px;margin-left:4px;background:#0a1a10;color:${isActive ? '#7db87d' : '#3d6640'};font-family:monospace;`;
+          slotTag.textContent = `@${slotScore}`;
+          const nameEl = row.querySelector('.combatant-name, .token-name, h4');
+          if (nameEl) nameEl.appendChild(slotTag);
+        }
+      }
+
+      // Pool tooltip — hover over any combatant row to see available pools
+      if (cbt.actor) {
+        const d     = cbt.actor.system?.derived ?? {};
+        const parts = [];
+        const cpAvail = d.availableCombatPool ?? d.combatPool ?? 0;
+        const cpTotal = d.combatPool ?? 0;
+        parts.push(`Combat Pool: ${cpAvail}/${cpTotal}`);
+        if ((d.magicPool ?? 0) > 0) {
+          const mpAvail = d.availableMagicPool ?? 0;
+          parts.push(`Magic Pool: ${mpAvail}/${d.magicPool}`);
+        }
+        const hackMode = cbt.actor.system?.matrixUserMode ?? '';
+        if (hackMode === 'VR-Hot' || hackMode === 'VR-Cold') {
+          const hpAvail = d.availableHackingPool ?? 0;
+          const hpTotal = d.hackingPool ?? 0;
+          parts.push(`Hacking Pool: ${hpAvail}/${hpTotal}`);
+        }
+        row.title = parts.join('  |  ');
       }
     });
   }
@@ -446,6 +784,30 @@ Hooks.on('renderCombatTracker', (_app, html) => {
     btn.addEventListener('click', () => game.sr3e.SR3EVehicleChase.open());
     if (footer) footer.insertAdjacentElement('afterend', btn);
     else el.appendChild(btn);
+  }
+
+  if (game.user.isGM && !el.querySelector('.sr3e-reward-btn')) {
+    const anchor = el.querySelector('.sr3e-chase-btn') ?? el.querySelector('footer') ?? el.querySelector('.combat-controls');
+    const rewardBtn = document.createElement('button');
+    rewardBtn.type      = 'button';
+    rewardBtn.className = 'sr3e-reward-btn';
+    rewardBtn.textContent = '🎖 Session Rewards';
+    rewardBtn.style.cssText = 'display:block;box-sizing:border-box;margin:4px 8px 0;width:calc(100% - 16px);';
+    rewardBtn.addEventListener('click', _openSessionRewardDialog);
+    if (anchor) anchor.insertAdjacentElement('afterend', rewardBtn);
+    else el.appendChild(rewardBtn);
+  }
+
+  if (game.user.isGM && !el.querySelector('.sr3e-salsa-btn')) {
+    const anchor = el.querySelector('.sr3e-reward-btn') ?? el.querySelector('.sr3e-chase-btn') ?? el.querySelector('footer') ?? el.querySelector('.combat-controls');
+    const salsaBtn = document.createElement('button');
+    salsaBtn.type      = 'button';
+    salsaBtn.className = 'sr3e-salsa-btn';
+    salsaBtn.textContent = '💥 Chunky Salsa';
+    salsaBtn.style.cssText = 'display:block;box-sizing:border-box;margin:4px 8px 0;width:calc(100% - 16px);';
+    salsaBtn.addEventListener('click', _openChunkySalsaCalculator);
+    if (anchor) anchor.insertAdjacentElement('afterend', salsaBtn);
+    else el.appendChild(salsaBtn);
   }
 });
 

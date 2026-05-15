@@ -201,6 +201,11 @@ export class SR3ECombat extends Combat {
 
     await this.updateEmbeddedDocuments('Combatant', passUpdates);
 
+    // New combat phase — reset recoil for all actors
+    for (const c of this.combatants.contents) {
+      if (c.actor?.resetRecoil) await c.actor.resetRecoil();
+    }
+
     // Reload to get fresh data after bulk update
     const updatedCombat = game.combats.get(this.id);
 
@@ -412,9 +417,12 @@ async _newRoundSR3() {
       for (const actor of actors) {
         await actor.refreshCombatPool();
         await actor.refreshSpellPool();
+        await actor.refreshAstralPool?.();
+        await actor.refreshHackingPool();
         await actor.clearSpellDefense();
-        if ((actor.system?.matrixUserMode ?? '') !== '') {
-          await actor.refreshHackingPool();
+        await actor.resetRecoil?.();
+        if (actor.system?.fullDefense) {
+          await actor.update({ 'system.fullDefense': false, 'system.fullDefensePool': 0 });
         }
       }
       ui.notifications.info('Combat pools refreshed.');

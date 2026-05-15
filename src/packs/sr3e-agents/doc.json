@@ -1,5 +1,0 @@
-{
-  "_id": "sr3e-agent-0007", "name": "Doc", "type": "agent", "img": "icons/svg/mystery-man.svg",
-  "system": { "rating": 4, "graded": false, "hostSecurityTier": "Green", "additionalSkills": [], "utilities": [{"name":"Medic","multiplier":4}], "specialAbilities": [], "woundValue": 0, "notes": "<p>Icon repair agent. Medic reduces the TN for Repair an Icon. Multiplier 5, 80 Mp.</p><p>Keep one running in the background during hot operations. A repaired Condition Monitor can mean the difference between a clean exit and dumpshock.</p>" },
-  "items": [], "effects": [], "_key": "!actors!sr3e-agent-0007"
-}

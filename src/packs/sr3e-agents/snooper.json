@@ -1,5 +1,0 @@
-{
-  "_id": "sr3e-agent-0008", "name": "Snooper", "type": "agent", "img": "icons/svg/mystery-man.svg",
-  "system": { "rating": 4, "graded": false, "hostSecurityTier": "Green", "additionalSkills": [], "utilities": [{"name":"Snoop","multiplier":3},{"name":"Signal Booster","multiplier":1}], "specialAbilities": [], "woundValue": 0, "notes": "<p>Signals intelligence agent. Snoop cuts TN for Tap/Spoof Datastream; Signal Booster assists Send Transmission. Multiplier 5, 80 Mp.</p><p>Use during legwork runs to intercept communications without the decker staying jacked in.</p>" },
-  "items": [], "effects": [], "_key": "!actors!sr3e-agent-0008"
-}

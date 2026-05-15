@@ -33,6 +33,9 @@
           "notes"
         ]
       },
+      "npc": {
+        "htmlFields": ["notes"]
+      },
       "vehicle": {
         "htmlFields": ["notes"]
       },
@@ -135,6 +138,11 @@
         ]
       },
       "cyberdeck": {
+        "htmlFields": [
+          "notes"
+        ]
+      },
+      "contact": {
         "htmlFields": [
           "notes"
         ]

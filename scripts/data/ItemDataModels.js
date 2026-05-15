@@ -97,19 +97,20 @@ export class FirearmData extends foundry.abstract.TypeDataModel {
 
   static defineSchema() {
     return {
-      category:       new StringField({ initial: '' }),
-      concealability: new StringField({ initial: '' }),
-      ammunition:     new StringField({ initial: '' }),
-      mode:           new StringField({ initial: '' }),
-      damage:         new StringField({ initial: '' }),
-      weight:         new NumberField({ initial: 0, min: 0 }),
-      availability:   new StringField({ initial: '' }),
-      cost:           new NumberField({ integer: true, initial: 0, min: 0 }),
-      streetIndex:    new StringField({ initial: '' }),
-      accessories:    new StringField({ initial: '' }),
-      bookPage:       new StringField({ initial: '' }),
-      notes:          new HTMLField({ initial: '', required: false }),
-      isAoE:          new BooleanField({ initial: false }),
+      category:        new StringField({ initial: '' }),
+      concealability:  new StringField({ initial: '' }),
+      ammunition:      new StringField({ initial: '' }),
+      equippedAmmoId:  new StringField({ initial: '' }),
+      mode:            new StringField({ initial: '' }),
+      damage:          new StringField({ initial: '' }),
+      weight:          new NumberField({ initial: 0, min: 0 }),
+      availability:    new StringField({ initial: '' }),
+      cost:            new NumberField({ integer: true, initial: 0, min: 0 }),
+      streetIndex:     new StringField({ initial: '' }),
+      accessories:     new StringField({ initial: '' }),
+      bookPage:        new StringField({ initial: '' }),
+      notes:           new HTMLField({ initial: '', required: false }),
+      isAoE:           new BooleanField({ initial: false }),
     };
   }
 }
@@ -126,6 +127,8 @@ export class AmmunitionData extends foundry.abstract.TypeDataModel {
     return {
       concealability: new StringField({ initial: '' }),
       damage:         new StringField({ initial: '' }),
+      powerMod:       new NumberField({ integer: true, initial: 0 }),
+      tnMod:          new NumberField({ integer: true, initial: 0 }),
       weight:         new NumberField({ initial: 0, min: 0 }),
       availability:   new StringField({ initial: '' }),
       cost:           new NumberField({ integer: true, initial: 0, min: 0 }),
@@ -419,6 +422,19 @@ export class CyberdeckData extends foundry.abstract.TypeDataModel {
       modules:           new ArrayField(new ObjectField()),
       utilitySlotsArray: new ArrayField(new ObjectField()),
       storedUtilities:   new ArrayField(new ObjectField()),
+    };
+  }
+}
+
+// ── Contact ───────────────────────────────────────────────────────────────────
+
+export class ContactData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      loyalty:    new NumberField({ integer: true, initial: 1, min: 1, max: 6 }),
+      connection: new NumberField({ integer: true, initial: 1, min: 1, max: 6 }),
+      archetype:  new StringField({ initial: '' }),
+      notes:      new HTMLField({ initial: '', required: false }),
     };
   }
 }

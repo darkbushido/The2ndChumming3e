@@ -1,5 +1,0 @@
-{
-  "_id": "sr3e-agent-0014", "name": "Phoenix", "type": "agent", "img": "icons/svg/mystery-man.svg",
-  "system": { "rating": 4, "graded": true, "hostSecurityTier": "Green", "additionalSkills": [], "utilities": [], "specialAbilities": [{"name":"Respawn","multiplier":8}], "woundValue": 0, "notes": "<p>Self-replicating agent. Graded agent. When crashed, it splits into two Rating-2 clones that re-enter initiative at the top of the next Combat Phase. The clones can also Respawn once more each before the ability is lost. Multiplier 9, 144 Mp.</p><p>Effectively impossible to permanently crash until Rating 1. A significant investment but a serious force multiplier in prolonged Matrix combat.</p>" },
-  "items": [], "effects": [], "_key": "!actors!sr3e-agent-0014"
-}

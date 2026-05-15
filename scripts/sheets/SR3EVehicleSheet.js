@@ -272,7 +272,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
             <span class="item-cell">${w.system.damage || '—'}</span>
             <span class="item-cell">${w.system.mode || '—'}</span>
             <span class="item-cell">${w.system.ammunition || '—'}</span>
-            ${this._itemControls(w.id, false)}
+            ${this._itemControls(w.id, true)}
           </div>`).join('')
       : '<p class="empty-list">No vehicle weapons.</p>';
 

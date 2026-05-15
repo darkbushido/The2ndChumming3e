@@ -53,6 +53,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         setAstralMode:     SR3EActorSheet._onSetAstralMode,
         ejectSlot:         SR3EActorSheet._onEjectSlot,
         toggleBurnSlot:    SR3EActorSheet._onToggleBurnSlot,
+        rollSlotProgram:   SR3EActorSheet._onRollSlotProgram,
         linkVehicle:       SR3EActorSheet._onLinkVehicle,
         createLinkVehicle: SR3EActorSheet._onCreateLinkVehicle,
         unlinkVehicle:     SR3EActorSheet._onUnlinkVehicle,
@@ -61,8 +62,13 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         toggleStored:      SR3EActorSheet._onToggleStored,
         toggleTemplate:    SR3EActorSheet._onToggleTemplate,
         deployTemplate:    SR3EActorSheet._onDeployTemplate,
-        rollCybercombat:   SR3EActorSheet._onRollCybercombat,
-        rollProgram:       SR3EActorSheet._onRollProgram,
+        karmaCalculator:    SR3EActorSheet._onKarmaCalculator,
+        toggleFullDefense:  SR3EActorSheet._onToggleFullDefense,
+        resetRecoil:        SR3EActorSheet._onResetRecoil,
+        rollCybercombat:    SR3EActorSheet._onRollCybercombat,
+        rollHackingAction:  SR3EActorSheet._onRollHackingAction,
+        rollDumpshock:      SR3EActorSheet._onRollDumpshock,
+        rollProgram:        SR3EActorSheet._onRollProgram,
         refreshHackingPool: SR3EActorSheet._onRefreshHackingPool,
     }
   };
@@ -260,6 +266,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           ${this._tabArmor(actor, sys)}
           ${this._tabMagic(actor, sys)}
           ${this._tabGear(actor)}
+          ${this._tabContacts(actor)}
           ${this._tabVehicles(actor, sys)}
           ${this._tabCyber(actor, sys)}
           ${this._tabMatrix(actor, sys)}
@@ -357,6 +364,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ['armor',       'Armor'],
       ['magic',       'Magic'],
       ['gear',        'Gear'],
+      ['contacts',    'Contacts'],
       ['vehicles',    'Vehicles'],
       ['cyber',       'Cyber'],
       ['matrix',      'Matrix'],
@@ -459,7 +467,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           d.combatPoolBase ?? 0,
           'system.combatPoolSpent', 'system.combatPoolMod')}
         ${this._derivedBlock('Karma Pool',
-          `<input type="number" name="system.karmaPool" value="${sys.karmaPool ?? 0}" class="pool-input" style="width:45px"/>`)}
+          `<span style="display:flex;align-items:center;gap:4px">
+            <input type="number" name="system.karmaPool" value="${sys.karmaPool ?? 0}" class="pool-input" style="width:45px"/>
+            <button type="button" class="btn-xs" data-action="karmaCalculator" title="Karma cost calculator">Calc</button>
+          </span>`)}
         ${d.spellPool !== null && d.spellPool !== undefined
           ? this._poolBlock('Spell Pool',
               d.availableSpellPool ?? d.spellPool ?? 0,
@@ -482,6 +493,25 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           'system.hackingPoolSpent', 'system.hackingBonus')}
       </div>
     </div>
+
+    <!-- Recoil tracking -->
+    <div class="derived-section" style="margin-top:8px">
+      <div class="derived-section-header">
+        <h3 class="section-hdr">Recoil</h3>
+        <button type="button" class="btn-sm" data-action="resetRecoil" title="Reset rounds-fired counter (start of new Combat Phase)">↺ Reset Recoil</button>
+      </div>
+      <div class="derived-grid">
+        ${this._derivedBlock('Compensation',
+          `<input type="number" name="system.recoilCompensation" value="${sys.recoilCompensation ?? 0}" min="0" max="20" class="pool-input" style="width:45px" title="Total recoil compensation from gas vents, shock pads, cyberware, etc."/>`)}
+        ${this._derivedBlock('Rounds This Phase',
+          `<span style="color:${(sys.roundsFiredThisPhase ?? 0) > 0 ? 'var(--sr-amber)' : 'var(--sr-muted)'}">${sys.roundsFiredThisPhase ?? 0}</span>`,
+          '')}
+        ${this._derivedBlock('TN Penalty',
+          `<span style="color:${Math.max(0,(sys.roundsFiredThisPhase ?? 0)-(sys.recoilCompensation ?? 0)) > 0 ? 'var(--sr-red)' : 'var(--sr-muted)'}">+${Math.max(0,(sys.roundsFiredThisPhase ?? 0)-(sys.recoilCompensation ?? 0))}</span>`,
+          '')}
+      </div>
+    </div>
+
     <div style="margin-top:8px;padding:4px 0;border-top:1px solid var(--sr-border);display:flex;gap:6px;flex-wrap:wrap">
       <button type="button" class="btn-sm" data-action="rollContested"
               style="background:var(--sr-surface);color:var(--sr-text);border:1px solid var(--sr-border)">
@@ -491,6 +521,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
               style="background:var(--sr-surface);color:var(--sr-text);border:1px solid var(--sr-border)"
               title="Shift-click to enter successes manually">
         🛡 Resist Damage
+      </button>
+      <button type="button" class="btn-sm" data-action="toggleFullDefense"
+              style="background:${sys.fullDefense ? 'var(--sr-accent)' : 'var(--sr-surface)'};color:${sys.fullDefense ? '#fff' : 'var(--sr-text)'};border:1px solid ${sys.fullDefense ? 'var(--sr-accent)' : 'var(--sr-border)'};"
+              title="Commit all combat pool dice to defense for this pass — auto-applied to next dodge declaration">
+        🛡 Full Defense${sys.fullDefense ? ` (${sys.fullDefensePool ?? 0})` : ''}
       </button>
     </div>
   </div>`;
@@ -1073,6 +1108,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
              <span class="item-cell">${u.sizeMp ?? 0} Mp</span>
              <span class="item-cell" style="font-size:10px;color:var(--sr-amber)">${u.degradable ? '⚠ Deg.' : ''}</span>
              <div class="item-controls">
+               <i class="fas fa-dice-d6 rollable" data-action="rollSlotProgram"
+                  data-deck-id="${deck.id}" data-slot="${slotNum}"
+                  title="Roll/Execute program (Shift: real dice)"></i>
                <button type="button" class="btn-xs" data-action="ejectSlot"
                        data-deck-id="${deck.id}" data-slot="${slotNum}"
                        style="color:var(--sr-red)" title="Eject program">✕</button>
@@ -1144,11 +1182,20 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const refreshHackBtn = inMatrix && hackSpent > 0 ? `
       <button type="button" class="btn-sm" data-action="refreshHackingPool"
               title="Reset hacking pool to full">↺ Hack Pool</button>` : '';
+    const inVR = currentMode === 'VR-Hot' || currentMode === 'VR-Cold';
+    const dumpshockBtn = inVR ? `
+        <button type="button" class="btn-roll" data-action="rollDumpshock"
+                style="background:var(--sr-surface);border-color:var(--sr-amber);color:var(--sr-amber)"
+                title="Trigger dumpshock (GM use — e.g. reboot, disconnect, power loss)">⚡ Dumpshock</button>` : '';
     const cybercombatBtn = inMatrix ? `
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
         <button type="button" class="btn-roll" data-action="rollCybercombat"
                 style="background:var(--sr-red-bg);border-color:var(--sr-red);color:var(--sr-red)"
                 title="Initiate cybercombat against an IC actor">⚡ Cybercombat</button>
+        <button type="button" class="btn-roll" data-action="rollHackingAction"
+                style="background:var(--sr-surface);border-color:var(--sr-accent);color:var(--sr-accent)"
+                title="Roll a hacking action against a host node (checks Security Threshold, may increment Overwatch)">🔓 Hacking Action</button>
+        ${dumpshockBtn}
         ${matrixInitBtn}
         ${refreshHackBtn}
       </div>` : '';
@@ -1185,14 +1232,22 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         ${this._itemControls(g.id, false, 'rollWeapon', false)}
       </div>`).join('') : '<p class="empty-list">No gear.</p>';
 
-    const aRows = ammo.length ? ammo.map(a => `
+    const aRows = ammo.length ? ammo.map(a => {
+      const pm  = a.system.powerMod ?? 0;
+      const tm  = a.system.tnMod    ?? 0;
+      const mods = [
+        pm !== 0 ? `Power${pm > 0 ? '+' : ''}${pm}` : '',
+        tm !== 0 ? `TN${tm > 0 ? '+' : ''}${tm}` : '',
+      ].filter(Boolean).join(', ') || '—';
+      return `
       <div class="item-row" data-item-id="${a.id}">
         <span class="item-name">${a.name}</span>
-        <span class="item-cell">${a.system.damage || '—'}</span>
+        <span class="item-cell">${mods}</span>
         <span class="item-cell">${a.system.availability || '—'}</span>
         <span class="item-cell">${a.system.weight ?? 0}</span>
         ${this._itemControls(a.id, false, 'rollWeapon', false)}
-      </div>`).join('') : '<p class="empty-list">No ammunition.</p>';
+      </div>`;
+    }).join('') : '<p class="empty-list">No ammunition.</p>';
 
     return `<div class="tab ${this._activeTab === 'gear' ? 'active' : ''}" data-tab="gear" style="overflow-y:auto">
       <h3 class="section-hdr">Gear</h3>
@@ -1442,6 +1497,40 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <div style="color:var(--sr-green);margin-bottom:4px"><span style="color:var(--sr-muted)">Advantages: </span>${entry.advantages}</div>
         <div style="color:var(--sr-red)"><span style="color:var(--sr-muted)">Disadvantages: </span>${entry.disadvantages}</div>
       </div>`;
+  }
+
+  _tabContacts(actor) {
+    const contacts = actor.items.filter(i => i.type === 'contact').sort((a, b) => a.name.localeCompare(b.name));
+
+    const rows = contacts.length ? contacts.map(c => {
+      const loyalty    = c.system.loyalty ?? 1;
+      const connection = c.system.connection ?? 1;
+      const archetype  = c.system.archetype || '—';
+      const dots = (val, max = 6) => Array.from({ length: max }, (_, i) =>
+        `<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin:0 1px;background:${i < val ? 'var(--sr-gold,#c8a040)' : 'var(--sr-border)'};"></span>`
+      ).join('');
+      return `
+        <div class="item-row" data-item-id="${c.id}">
+          <span class="item-name">${c.name}</span>
+          <span class="item-cell" style="font-size:11px;color:var(--sr-muted)">${archetype}</span>
+          <span class="item-cell" title="Loyalty ${loyalty}/6">${dots(loyalty)}</span>
+          <span class="item-cell" title="Connection ${connection}/6">${dots(connection)}</span>
+          ${this._itemControls(c.id, false)}
+        </div>`;
+    }).join('') : '<p class="empty-list">No contacts. Add some below.</p>';
+
+    return `<div class="tab ${this._activeTab === 'contacts' ? 'active' : ''}" data-tab="contacts" style="overflow-y:auto">
+      <h3 class="section-hdr">Contacts</h3>
+      <div class="list-header">
+        <span>Name</span>
+        <span>Archetype</span>
+        <span>Loyalty</span>
+        <span>Connection</span>
+        <span></span>
+      </div>
+      ${rows}
+      <button type="button" class="btn-add" data-action="itemCreate" data-type="contact">+ Add Contact</button>
+    </div>`;
   }
 
   _tabVehicles(actor, sys) {
@@ -1981,8 +2070,147 @@ static async _onHealDamage(ev, target) {
     await actor.update({ 'system.astralMode': current === mode ? '' : mode });
   }
 
+  static async _onKarmaCalculator(_ev, _target) {
+    const actor     = this.actor;
+    const karmaPool = actor.system.karmaPool ?? 0;
+
+    const TYPES = [
+      { value: 'attribute',       label: 'Attribute (×1.5 per rank, rounded up)' },
+      { value: 'active',          label: 'Active Skill (×1 per rank)' },
+      { value: 'knowledge',       label: 'Knowledge/Language Skill (×0.5 per rank, rounded up)' },
+      { value: 'new-skill',       label: 'New Active Skill (flat 4 karma)' },
+      { value: 'new-knowledge',   label: 'New Knowledge/Language Skill (flat 1 karma)' },
+      { value: 'specialization',  label: 'Specialisation (flat 1 karma)' },
+      { value: 'new-spell',       label: 'New Spell (Force × 1 karma — enter Force as current rating)' },
+    ];
+    const typeOpts = TYPES.map(t => `<option value="${t.value}">${t.label}</option>`).join('');
+
+    function karmaCost(type, from, _to) {
+      if (type === 'new-skill')      return 4;
+      if (type === 'new-knowledge')  return 1;
+      if (type === 'specialization') return 1;
+      if (type === 'new-spell')      return Math.max(1, from);
+      let total = 0;
+      for (let r = from + 1; r <= _to; r++) {
+        if (type === 'attribute')  total += Math.ceil(r * 1.5);
+        else if (type === 'active') total += r;
+        else if (type === 'knowledge') total += Math.ceil(r * 0.5);
+      }
+      return total;
+    }
+
+    let type = 'attribute';
+    let from = 3;
+    let to   = 4;
+    let proceed = false;
+
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `Karma Cost Calculator — ${actor.name}` },
+      content: `
+        <div style="padding:8px 0">
+          <p style="margin:0 0 8px;font-size:12px;color:var(--color-text-dark-secondary)">
+            Karma Pool available: <strong>${karmaPool}</strong>
+          </p>
+          <label style="display:block;margin-bottom:8px">
+            Type:
+            <select id="kc-type" style="width:100%;margin-top:4px">${typeOpts}</select>
+          </label>
+          <div style="display:flex;gap:16px;margin-bottom:8px">
+            <label>Current rating:
+              <input type="number" id="kc-from" value="3" min="0" max="20" style="width:55px;margin-left:4px">
+            </label>
+            <label>Target rating:
+              <input type="number" id="kc-to" value="4" min="1" max="20" style="width:55px;margin-left:4px">
+            </label>
+          </div>
+          <p style="font-size:11px;color:var(--sr-muted)">
+            Attribute: new rating ×1.5 each step &nbsp;|&nbsp; Active: new rating ×1 &nbsp;|&nbsp; Knowledge: new rating ×0.5
+          </p>
+        </div>`,
+      buttons: [
+        {
+          label: 'Calculate & Spend',
+          action: 'confirm',
+          default: true,
+          callback: (_e, _b, dlg) => {
+            proceed = true;
+            type = dlg.element.querySelector('#kc-type')?.value ?? 'attribute';
+            from = parseInt(dlg.element.querySelector('#kc-from')?.value) || 0;
+            to   = parseInt(dlg.element.querySelector('#kc-to')?.value)   || 1;
+          },
+        },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+
+    if (!proceed) return;
+
+    const SINGLE_VALUE_TYPES = ['new-skill', 'new-knowledge', 'specialization', 'new-spell'];
+    if (to <= from && !SINGLE_VALUE_TYPES.includes(type)) {
+      ui.notifications.warn('Target rating must be higher than current rating.');
+      return;
+    }
+
+    const cost = karmaCost(type, from, to);
+    if (cost <= 0) { ui.notifications.warn('Karma cost is 0.'); return; }
+
+    const typeLabel = TYPES.find(t => t.value === type)?.label ?? type;
+    const FLAT_TYPES = ['new-skill', 'new-knowledge', 'specialization'];
+    const detailLabel = FLAT_TYPES.includes(type) ? 'Flat cost'
+      : type === 'new-spell' ? `Force ${from}`
+      : `Rating ${from} → ${to}`;
+
+    let spend = false;
+
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: 'Confirm Karma Spend' },
+      content: `
+        <div style="padding:8px 0">
+          <p><strong>${typeLabel}</strong></p>
+          <p>${detailLabel}: <strong>${cost} karma</strong></p>
+          <p style="margin-top:8px">Pool after: <strong>${karmaPool - cost}</strong>${cost > karmaPool ? ' <span style="color:var(--sr-red)">(insufficient karma!)</span>' : ''}</p>
+        </div>`,
+      buttons: [
+        {
+          label: cost > karmaPool ? 'Spend Anyway' : 'Spend',
+          action: 'spend',
+          default: true,
+          callback: () => { spend = true; },
+        },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+
+    if (!spend) return;
+    const newPool = Math.max(0, karmaPool - cost);
+    await actor.update({ 'system.karmaPool': newPool });
+    ui.notifications.info(`Spent ${cost} karma. Pool: ${newPool} remaining.`);
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="sr-roll-card"><div class="sr-roll-header" style="background:var(--sr-gold,#c8a040);color:#0a0a0a">Karma Spent: ${cost}</div><div class="sr-roll-body" style="padding:6px 8px;font-size:12px"><strong>${typeLabel}</strong> — ${detailLabel}<br>Pool: ${karmaPool} → ${newPool}</div></div>`,
+      type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    });
+  }
+
+  static async _onToggleFullDefense(_ev, _target) {
+    await this.actor.toggleFullDefense();
+  }
+
+  static async _onResetRecoil(_ev, _target) {
+    await this.actor.resetRecoil();
+    ui.notifications.info('Recoil counter reset.');
+  }
+
   static async _onRollCybercombat(_ev, _target) {
     await this.actor.rollCybercombat();
+  }
+
+  static async _onRollHackingAction(_ev, _target) {
+    await this.actor.rollHackingAction();
+  }
+
+  static async _onRollDumpshock(_ev, _target) {
+    await this.actor.rollDumpshock();
   }
 
   static async _onRollProgram(ev, target) {
@@ -1990,6 +2218,20 @@ static async _onHealDamage(ev, target) {
     const item   = this.actor.items.get(itemId);
     if (!item) return;
     await this.actor.rollProgram(item, { physicalDice: ev.shiftKey ?? false });
+  }
+
+  static async _onRollSlotProgram(ev, target) {
+    const actor  = this.actor;
+    const deckId = target.dataset.deckId;
+    const slot   = parseInt(target.dataset.slot);
+    const deck   = actor.items.get(deckId);
+    if (!deck) return;
+    const entry = (deck.system.utilitySlotsArray ?? []).find(s => s.slot === slot);
+    if (!entry?.utility) return;
+    const u = entry.utility;
+    // Use currentRating so degraded programs roll at their degraded value
+    const synthetic = { id: null, name: u.name, system: { category: u.category ?? '', rating: u.currentRating ?? u.rating ?? 0 } };
+    await actor.rollProgram(synthetic, { physicalDice: ev.shiftKey ?? false });
   }
 
   static async _onRefreshHackingPool(_ev, _target) {

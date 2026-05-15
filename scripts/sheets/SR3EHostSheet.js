@@ -170,9 +170,10 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
       toggleStepHidden:   SR3EHostSheet._onToggleStepHidden,
       assignIC:           SR3EHostSheet._onAssignIC,
       removeStepIC:       SR3EHostSheet._onRemoveStepIC,
-      addStockedIC:       SR3EHostSheet._onAddStockedIC,
-      removeStockedIC:    SR3EHostSheet._onRemoveStockedIC,
+      addStockedIC:          SR3EHostSheet._onAddStockedIC,
+      removeStockedIC:       SR3EHostSheet._onRemoveStockedIC,
       toggleStockedICHidden: SR3EHostSheet._onToggleStockedICHidden,
+      deployICToEncounter:   SR3EHostSheet._onDeployICToEncounter,
       addUser:            SR3EHostSheet._onAddUser,
       removeUser:         SR3EHostSheet._onRemoveUser,
       moveUser:           SR3EHostSheet._onMoveUser,
@@ -539,7 +540,11 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
         </section>
 
         <section class="host-section">
-          <h3 class="host-section-title">Stocked IC</h3>
+          <h3 class="host-section-title">Stocked IC
+            <button type="button" class="host-action-btn-sm" data-action="deployICToEncounter"
+                    style="margin-left:8px;font-size:11px;padding:2px 8px;"
+                    title="Add selected IC to the active combat encounter">⚔ Deploy to Encounter</button>
+          </h3>
           <div class="stocked-ic-list">${stockedRows || '<span class="host-empty">No IC stocked.</span>'}</div>
           <button type="button" class="host-action-btn" data-action="addStockedIC">+ Add IC</button>
         </section>
@@ -1268,6 +1273,74 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
     const stocked = (this.actor.system.stockedIC ?? []).filter((_, i) => i !== idx);
     const memUsed = stocked.reduce((s, ic) => s + (ic.memoryRequired ?? 0), 0);
     await this.actor.update({ 'system.stockedIC': stocked, 'system.memoryUsed': memUsed });
+  }
+
+  static async _onDeployICToEncounter(_e, _t) {
+    if (!game.combat) {
+      ui.notifications.warn('No active encounter. Start or join an encounter first.');
+      return;
+    }
+
+    const stocked = this.actor.system.stockedIC ?? [];
+    const deployable = stocked
+      .map(ic => ({ ...ic, actor: ic.actorId ? game.actors.get(ic.actorId) : null }))
+      .filter(ic => ic.actor?.type === 'ic' && !ic.actor.getFlag('The2ndChumming3e', 'isTemplate'));
+
+    if (!deployable.length) {
+      ui.notifications.warn('No stocked IC with linked (non-template) actors found.');
+      return;
+    }
+
+    // Check which are already in the encounter
+    const alreadyIn = new Set(game.combat.combatants.contents.map(c => c.actor?.id).filter(Boolean));
+
+    const rows = deployable.map(ic => {
+      const inCombat = alreadyIn.has(ic.actorId);
+      return `
+        <label style="display:flex;align-items:center;gap:8px;margin:4px 0;cursor:pointer;${inCombat ? 'opacity:0.5' : ''}">
+          <input type="checkbox" data-actor-id="${ic.actorId}" ${inCombat ? 'disabled' : 'checked'}/>
+          <span>${ic.actor.name} <span style="font-size:11px;color:var(--sr-muted)">(Rating ${ic.actor.system.rating ?? '?'})${inCombat ? ' — already in encounter' : ''}</span></span>
+        </label>`;
+    }).join('');
+
+    let selected = [];
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `Deploy IC — ${this.actor.name}` },
+      content: `
+        <div style="padding:8px 0">
+          <p style="margin:0 0 8px;font-size:12px;color:var(--color-text-dark-secondary)">Select IC to add to the active encounter:</p>
+          ${rows}
+        </div>`,
+      buttons: [
+        { label: 'Deploy', action: 'deploy', default: true, callback: (_e, _b, dlg) => {
+          selected = [...dlg.element.querySelectorAll('[data-actor-id]:checked')]
+            .map(cb => cb.dataset.actorId);
+        }},
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+
+    if (!selected.length) return;
+
+    const toCreate   = [];
+    const noToken    = [];
+
+    for (const actorId of selected) {
+      // Prefer a scene token so the combatant has a visual presence
+      const sceneToken = (canvas.tokens?.placeables ?? []).find(t => t.actor?.id === actorId);
+      if (sceneToken) {
+        toCreate.push({ tokenId: sceneToken.id, actorId, sceneId: canvas.scene?.id });
+      } else {
+        toCreate.push({ actorId });
+        noToken.push(game.actors.get(actorId)?.name ?? actorId);
+      }
+    }
+
+    await game.combat.createEmbeddedDocuments('Combatant', toCreate);
+    ui.notifications.info(`Added ${toCreate.length} IC to the encounter.`);
+    if (noToken.length) {
+      ui.notifications.warn(`No scene token found for: ${noToken.join(', ')}. Added as actor-only combatants.`);
+    }
   }
 
   /* ── Active Users ──────────────────────────────────────────────── */
