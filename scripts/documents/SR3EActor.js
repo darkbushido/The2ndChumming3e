@@ -550,7 +550,7 @@ export class SR3EActor extends Actor {
             <button class="sr-soak-btn" data-payload='${soakCtx}'>🛡 ${this.name}: Resist Dumpshock (Body)</button>
           </div>
         </div>`,
-      type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
   }
 
@@ -571,7 +571,7 @@ export class SR3EActor extends Actor {
           <div class="sr-roll-header" style="color:var(--sr-amber)">⚠ Overwatch: ${newOW}/10 — ${hostActor.name}</div>
           <div class="sr-roll-result">Hack attempt failed Security Threshold check.</div>
         </div>`,
-      type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
 
     if (newOW >= 10) {
@@ -612,7 +612,7 @@ export class SR3EActor extends Actor {
             </button>
           </div>
         </div>`,
-      type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
   }
 
@@ -732,7 +732,7 @@ export class SR3EActor extends Actor {
             </button>
           </div>
         </div>`,
-      type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
   }
 
@@ -848,7 +848,7 @@ export class SR3EActor extends Actor {
               <button class="sr-soak-btn" data-payload='${soakCtx}'>🛡 ${targetName}: Resist Damage (Body)</button>
             </div>
           </div>`,
-        type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+        style: CONST.CHAT_MESSAGE_STYLES.ROLL,
       });
       return;
     }
@@ -1377,9 +1377,16 @@ _prepareCharacter(sys, attr) {
             if (state.chunkySalsa?.length) {
               // Confined space (Chunky Salsa): each target has its own blast power
               const csMap = new Map(state.chunkySalsa.map(t => [t.actorId, t]));
+              const csLines = state.chunkySalsa.map(t => {
+                const waveDetail = (t.waves?.length ?? 0) > 1
+                  ? ` <span style="font-weight:normal;color:var(--sr-muted)">(${t.waves.map(w => `${w.label}: ${w.power}`).join(' + ')})</span>`
+                  : '';
+                return `<div style="margin-top:3px;font-size:11px;"><strong>${t.name}</strong>: ${t.power}${t.level}${waveDetail}</div>`;
+              }).join('');
               stagingHtml = `
                 <div class="sr-staging-result">
-                  💥 Confined blast — ${state.chunkySalsa.length} target${state.chunkySalsa.length !== 1 ? 's' : ''} hit by reflected waves
+                  💥 Confined blast — ${state.chunkySalsa.length} target${state.chunkySalsa.length !== 1 ? 's' : ''} affected
+                  ${csLines}
                 </div>`;
               for (const tid of state.aoeTargetIds) {
                 const cs = csMap.get(tid);
@@ -2080,7 +2087,7 @@ _prepareCharacter(sys, attr) {
           ${explodeBtn}
         </div>
       `,
-      type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
 
     // Post the Spell Defense phase card after the wave card so messages are in order
@@ -2119,7 +2126,7 @@ _prepareCharacter(sys, attr) {
                 <div class="sr-roll-header" style="color:var(--sr-amber)">⚠ Threshold Missed — ${hac.actionName}</div>
                 <div class="sr-roll-result">${successes} hit${successes !== 1 ? 's' : ''} — need ${hac.securityThreshold}. Action failed.</div>
               </div>`,
-            type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
           });
         }
       } else {
@@ -2129,7 +2136,7 @@ _prepareCharacter(sys, attr) {
               <div class="sr-roll-header" style="color:var(--sr-green)">✅ Threshold Met — ${hac.actionName}</div>
               <div class="sr-roll-result">${successes} hit${successes !== 1 ? 's' : ''} vs threshold ${hac.securityThreshold} — proceed with action.</div>
             </div>`,
-          type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+          style: CONST.CHAT_MESSAGE_STYLES.OTHER,
         });
       }
     }
@@ -2491,7 +2498,7 @@ _prepareCharacter(sys, attr) {
           </div>
         </div>
       `,
-      type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
   }
 
@@ -2680,7 +2687,7 @@ _prepareCharacter(sys, attr) {
           <div class="sr-roll-header">⚔ ${atk?.name ?? ''} vs ${def?.name ?? ''} — Result</div>
           ${resultHtml}
         </div>`,
-      type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
   }
 
@@ -2864,7 +2871,7 @@ _prepareCharacter(sys, attr) {
           </div>
         </div>
       `,
-      type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
   }
 
@@ -2982,7 +2989,7 @@ _prepareCharacter(sys, attr) {
       await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor: this }),
         content: `<div class="sr-roll-card"><div class="sr-roll-header">🛡 ${this.name} — Full Defense cancelled</div></div>`,
-        type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       });
     } else {
       const avail = this.system.derived?.availableCombatPool ?? 0;
@@ -2994,7 +3001,7 @@ _prepareCharacter(sys, attr) {
       await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor: this }),
         content: `<div class="sr-roll-card"><div class="sr-roll-header">🛡 ${this.name} — Full Defense declared (${avail} dice)</div><div class="sr-roll-result">All combat pool committed to defense for this pass. Dodge declarations auto-fill.</div></div>`,
-        type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       });
     }
   }
@@ -3429,7 +3436,7 @@ _prepareCharacter(sys, attr) {
           </div>
         </div>
       `,
-      type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
   }
 
@@ -3520,7 +3527,7 @@ _prepareCharacter(sys, attr) {
           </div>
         </div>
       `,
-      type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
   }
 
@@ -3627,7 +3634,7 @@ _prepareCharacter(sys, attr) {
                     <span style="font-size:11px;color:var(--sr-muted)">(${base} + ${rolled})</span>
                   </div>
                 </div>`,
-              type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+              style: CONST.CHAT_MESSAGE_STYLES.ROLL,
             });
             return score;
           } else {
@@ -3652,7 +3659,7 @@ _prepareCharacter(sys, attr) {
                     <span style="font-size:11px;color:var(--sr-muted)">(${base} + ${rolled})</span>
                   </div>
                 </div>`,
-              type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+              style: CONST.CHAT_MESSAGE_STYLES.ROLL,
             });
             return score;
           }
@@ -3680,7 +3687,7 @@ _prepareCharacter(sys, attr) {
               <span style="font-size:11px;color:var(--sr-muted)">(${base} + ${rolled})</span>
             </div>
           </div>`,
-        type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+        style: CONST.CHAT_MESSAGE_STYLES.ROLL,
       });
       return score;
     }
@@ -3773,7 +3780,7 @@ _prepareCharacter(sys, attr) {
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
       content: cardContent,
-      type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
 
     return score;
@@ -4039,7 +4046,7 @@ _prepareCharacter(sys, attr) {
             <button class="sr-astral-roll-btn" data-payload='${payload}'>✦ Roll!</button>
           </div>
         </div>`,
-      type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
   }
 
@@ -4171,7 +4178,7 @@ _prepareCharacter(sys, attr) {
           <div class="sr-roll-header">✦ ${atk?.name ?? ''} vs ${def?.name ?? ''} — Astral Result</div>
           ${resultHtml}
         </div>`,
-      type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
   }
 
@@ -4223,7 +4230,7 @@ _prepareCharacter(sys, attr) {
             </button>
           </div>
         </div>`,
-      type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
   }
 
@@ -4617,7 +4624,7 @@ _prepareCharacter(sys, attr) {
             </button>
           </div>
         </div>`,
-      type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
   }
 
@@ -4892,7 +4899,7 @@ _prepareCharacter(sys, attr) {
           <div class="sr-roll-header">⚔ ${ctx.atkActorName} vs ${ctx.oppActorName} — Result</div>
           ${resultHtml}
         </div>`,
-      type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
   }
 }

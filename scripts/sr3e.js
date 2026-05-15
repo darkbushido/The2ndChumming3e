@@ -287,65 +287,61 @@ async function _openSessionRewardDialog() {
           <ul style="margin:4px 0 0;padding-left:18px;font-size:12px">${lines}</ul>
         </div>
       </div>`,
-    type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    style: CONST.CHAT_MESSAGE_STYLES.OTHER,
   });
 }
 
 async function _openChunkySalsaCalculator() {
-  // Blast formulas (all distances in metres from blast epicentre):
-  //   Direct wave      : P − D
-  //   Same-side wall   : P − (2W − D)  — wall must be behind the character (W > D)
-  //   Opposite/perp    : P − (2W + D)
   function calcBlast(power, charDist, walls) {
     const waves = [];
     const direct = power - charDist;
-    if (direct > 0) waves.push({ label: `Direct (${power} − ${charDist}m)`, power: direct });
-
+    if (direct > 0) waves.push({ label: `Direct (${power}−${charDist}m)`, power: direct });
     for (const w of walls) {
       let wp;
       if (w.type === 'same') {
-        if (w.dist <= charDist) continue; // wall between blast and character — not a valid rebound
+        if (w.dist <= charDist) continue;
         wp = power - (2 * w.dist - charDist);
       } else {
         wp = power - (2 * w.dist + charDist);
       }
       if (wp > 0) {
-        const lbl = w.type === 'same' ? 'Same-side wall' : 'Opposite/perp. wall';
+        const lbl = w.type === 'same' ? 'Same-side' : 'Opp./perp.';
         waves.push({ label: `${lbl} @${w.dist}m`, power: wp });
       }
     }
     return waves;
   }
 
-  function updatePreview(el) {
-    const power    = parseInt(el.querySelector('#sr-salsa-power')?.value) || 0;
-    const charDist = parseInt(el.querySelector('#sr-salsa-dist')?.value)  || 0;
-    const level    = el.querySelector('#sr-salsa-level')?.value || 'S';
-    const walls    = [];
+  function getWalls(el) {
+    const walls = [];
     el.querySelectorAll('.sr-wall-row').forEach(row => {
       walls.push({
         type: row.querySelector('.sr-wall-type')?.value || 'same',
         dist: parseInt(row.querySelector('.sr-wall-dist')?.value) || 1,
       });
     });
+    return walls;
+  }
 
-    const waves      = calcBlast(power, charDist, walls);
-    const totalPower = waves.reduce((s, w) => s + w.power, 0);
-    const preview    = el.querySelector('#sr-salsa-preview');
-    if (!preview) return;
-
-    if (!waves.length) {
-      preview.innerHTML = '<span style="color:var(--sr-muted)">No blast reaches the target.</span>';
-      return;
-    }
-
-    const lines = waves.map(w =>
-      `<div>• ${w.label}: <strong>${w.power}${level}</strong></div>`
-    ).join('');
-    const total = waves.length > 1
-      ? `<div style="margin-top:4px;border-top:1px solid var(--sr-border);padding-top:4px;font-weight:bold;">Total: ${totalPower}${level}</div>`
-      : '';
-    preview.innerHTML = lines + total;
+  function updatePreview(el) {
+    const power = parseInt(el.querySelector('#sr-salsa-power')?.value) || 0;
+    const level = el.querySelector('#sr-salsa-level')?.value || 'S';
+    const walls = getWalls(el);
+    el.querySelectorAll('.cs-actor-row').forEach(row => {
+      const dist    = parseInt(row.querySelector('.cs-actor-dist')?.value) || 0;
+      const waves   = calcBlast(power, dist, walls);
+      const preview = row.querySelector('.cs-actor-preview');
+      if (!preview) return;
+      if (!waves.length) {
+        preview.textContent = '→ No blast';
+        preview.style.color = 'var(--sr-muted)';
+        return;
+      }
+      const totalP    = waves.reduce((s, w) => s + w.power, 0);
+      const breakdown = waves.length > 1 ? ` (${waves.map(w => w.power).join('+')}=)` : '';
+      preview.textContent = `→ ${totalP}${level}${breakdown}`;
+      preview.style.color = 'var(--sr-red,#c04040)';
+    });
   }
 
   function addWallRow(wallList, el) {
@@ -369,19 +365,24 @@ async function _openChunkySalsaCalculator() {
     updatePreview(el);
   }
 
-  const actorOptions = game.actors
-    .filter(a => a.type === 'character' || a.type === 'npc')
-    .map(a => `<option value="${a.id}">${a.name}</option>`)
-    .join('');
+  const eligibleActors = game.actors.filter(a => a.type === 'character' || a.type === 'npc');
+  const actorRows = eligibleActors.map(a => `
+    <div class="cs-actor-row" data-actor-id="${a.id}" style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--sr-border);">
+      <input type="checkbox" class="cs-actor-check" checked style="margin:0;flex-shrink:0;"/>
+      <span style="flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.name}</span>
+      <label style="display:flex;align-items:center;gap:4px;font-size:12px;white-space:nowrap;flex-shrink:0;">Dist:
+        <input type="number" class="cs-actor-dist" value="0" min="0" style="width:48px;"/>m
+      </label>
+      <span class="cs-actor-preview" style="min-width:90px;font-size:11px;font-weight:bold;text-align:right;color:var(--sr-muted);flex-shrink:0;">→ ?</span>
+    </div>`).join('');
 
-  let proceed = false, finalPower = 0, finalDist = 0, finalLevel = 'S';
-  let finalWaves = [], finalTargetId = '';
+  let proceed = false, finalTargets = [], finalPower = 0, finalLevel = 'S';
 
   await foundry.applications.api.DialogV2.wait({
     window: { title: '💥 Chunky Salsa — Confined Space Blast' },
     content: `
       <div style="padding:8px 0">
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
           <label>Power:<br/><input type="number" id="sr-salsa-power" value="6" min="1" style="width:100%;"/></label>
           <label>Level:<br/>
             <select id="sr-salsa-level" style="width:100%;">
@@ -391,25 +392,23 @@ async function _openChunkySalsaCalculator() {
               <option value="D">D — Deadly</option>
             </select>
           </label>
-          <label>Char. dist (m):<br/><input type="number" id="sr-salsa-dist" value="0" min="0" style="width:100%;"/></label>
         </div>
-        <div style="margin-bottom:8px;">
+        <div style="margin-bottom:10px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
             <strong style="font-size:12px;">Walls</strong>
             <button type="button" id="sr-add-wall-btn" style="padding:2px 10px;font-size:11px;">+ Add Wall</button>
           </div>
           <div id="sr-wall-list"></div>
         </div>
-        <div id="sr-salsa-preview" style="background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);padding:8px;margin-bottom:10px;font-size:12px;min-height:36px;"></div>
-        <label style="font-size:12px;">Post soak card for:
-          <select id="sr-salsa-target" style="margin-left:6px;max-width:180px;">
-            <option value="">— none —</option>
-            ${actorOptions}
-          </select>
-        </label>
+        <div>
+          <strong style="font-size:12px;">Targets</strong>
+          <div id="sr-salsa-actors" style="margin-top:4px;max-height:220px;overflow-y:auto;">
+            ${actorRows || '<div style="color:var(--sr-muted);font-size:12px;padding:4px 0;">No characters/NPCs in world.</div>'}
+          </div>
+        </div>
       </div>`,
-    render: (_event, html) => {
-      const el = html instanceof HTMLElement ? html : (html?.[0] ?? null);
+    render: (...args) => {
+      const el = args.find(a => a instanceof HTMLElement) ?? args[0]?.[0] ?? null;
       if (!el) return;
       updatePreview(el);
       el.addEventListener('input',  () => updatePreview(el));
@@ -423,59 +422,66 @@ async function _openChunkySalsaCalculator() {
         action: 'post',
         default: true,
         callback: (_e, _b, dialog) => {
-          proceed       = true;
-          finalPower    = parseInt(dialog.element.querySelector('#sr-salsa-power')?.value) || 0;
-          finalDist     = parseInt(dialog.element.querySelector('#sr-salsa-dist')?.value)  || 0;
-          finalLevel    = dialog.element.querySelector('#sr-salsa-level')?.value || 'S';
-          finalTargetId = dialog.element.querySelector('#sr-salsa-target')?.value || '';
-          const walls   = [];
-          dialog.element.querySelectorAll('.sr-wall-row').forEach(row => {
-            walls.push({
-              type: row.querySelector('.sr-wall-type')?.value || 'same',
-              dist: parseInt(row.querySelector('.sr-wall-dist')?.value) || 1,
+          proceed    = true;
+          finalPower = parseInt(dialog.element.querySelector('#sr-salsa-power')?.value) || 0;
+          finalLevel = dialog.element.querySelector('#sr-salsa-level')?.value || 'S';
+          const walls = getWalls(dialog.element);
+          dialog.element.querySelectorAll('.cs-actor-row').forEach(row => {
+            if (!row.querySelector('.cs-actor-check')?.checked) return;
+            const actorId = row.dataset.actorId;
+            const actor   = game.actors.get(actorId);
+            if (!actor) return;
+            const dist  = parseInt(row.querySelector('.cs-actor-dist')?.value) || 0;
+            const waves = calcBlast(finalPower, dist, walls);
+            if (!waves.length) return;
+            finalTargets.push({
+              actorId,
+              name:  actor.name,
+              power: waves.reduce((s, w) => s + w.power, 0),
+              level: finalLevel,
+              waves,
             });
           });
-          finalWaves = calcBlast(finalPower, finalDist, walls);
         }
       },
       { label: 'Cancel', action: 'cancel' },
     ],
   });
 
-  if (!proceed) return;
+  if (!proceed || !finalTargets.length) return;
 
-  const totalPower = finalWaves.reduce((s, w) => s + w.power, 0);
-  const waveLines  = finalWaves.map(w => `<li>${w.label}: <strong>${w.power}${finalLevel}</strong></li>`).join('');
-  const totalLine  = finalWaves.length > 1
-    ? `<div style="margin-top:6px;font-weight:bold;border-top:1px solid var(--sr-border);padding-top:4px;">Combined: ${totalPower}${finalLevel}</div>`
-    : '';
-
-  const soakPayload = finalTargetId ? JSON.stringify({
-    targetActorId: finalTargetId,
-    power:    totalPower,
-    level:    finalLevel,
-    isStun:   false,
-    armorType: 'ballistic',
-    label:    'Confined Blast',
-  }) : null;
-
-  const soakBtn = soakPayload
-    ? `<button class="sr-soak-btn" data-payload='${soakPayload}' style="margin-top:8px;width:100%;padding:4px 0;">💥 Resist Damage (${totalPower}${finalLevel})</button>`
-    : '';
+  const targetSections = finalTargets.map(t => {
+    const waveDetail = t.waves.length > 1
+      ? t.waves.map(w => `<div style="font-size:11px;color:var(--sr-muted);padding-left:8px;">• ${w.label}: ${w.power}${t.level}</div>`).join('')
+      : '';
+    const breakdown = t.waves.length > 1 ? ` (${t.waves.map(w => w.power).join('+')}=)` : '';
+    const soakPayload = JSON.stringify({
+      targetActorId: t.actorId,
+      power:    t.power,
+      level:    t.level,
+      isStun:   false,
+      armorType: 'ballistic',
+      label:    'Confined Blast',
+    });
+    return `
+      <div style="margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--sr-border);">
+        <div style="font-size:12px;font-weight:bold;margin-bottom:2px;">${t.name}</div>
+        ${waveDetail}
+        <div style="font-size:12px;margin:3px 0;"><strong>→ ${t.power}${t.level}</strong>${breakdown}</div>
+        <button class="sr-soak-btn" data-payload='${soakPayload}' style="width:100%;padding:4px 0;margin-top:2px;">💥 Resist Damage (${t.power}${t.level})</button>
+      </div>`;
+  }).join('');
 
   await ChatMessage.create({
     speaker: { alias: 'GM' },
     content: `
       <div class="sr-roll-card">
-        <div class="sr-roll-header" style="background:#5a1a10;color:#ffcca0;">💥 Chunky Salsa — Confined Blast</div>
+        <div class="sr-roll-header" style="background:#5a1a10;color:#ffcca0;">💥 Chunky Salsa — Confined Blast (${finalPower}${finalLevel} base · ${finalTargets.length} target${finalTargets.length !== 1 ? 's' : ''})</div>
         <div class="sr-roll-body" style="padding:8px">
-          <div style="font-size:11px;color:var(--sr-muted);margin-bottom:6px">Base power ${finalPower}${finalLevel} · character ${finalDist}m from blast · ${finalWaves.length} wave${finalWaves.length !== 1 ? 's' : ''}</div>
-          <ul style="margin:0 0 4px;padding-left:18px;font-size:12px;">${waveLines}</ul>
-          ${totalLine}
-          ${soakBtn}
+          ${targetSections}
         </div>
       </div>`,
-    type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    style: CONST.CHAT_MESSAGE_STYLES.OTHER,
   });
 }
 

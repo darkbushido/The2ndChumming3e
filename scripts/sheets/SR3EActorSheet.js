@@ -2188,7 +2188,7 @@ static async _onHealDamage(ev, target) {
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor }),
       content: `<div class="sr-roll-card"><div class="sr-roll-header" style="background:var(--sr-gold,#c8a040);color:#0a0a0a">Karma Spent: ${cost}</div><div class="sr-roll-body" style="padding:6px 8px;font-size:12px"><strong>${typeLabel}</strong> — ${detailLabel}<br>Pool: ${karmaPool} → ${newPool}</div></div>`,
-      type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
   }
 

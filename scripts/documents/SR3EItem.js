@@ -876,7 +876,7 @@ export class SR3EItem extends Item {
     function calcBlast(power, charDist, walls) {
       const waves = [];
       const direct = power - charDist;
-      if (direct > 0) waves.push({ power: direct });
+      if (direct > 0) waves.push({ label: `Direct (${charDist}m)`, power: direct });
       for (const w of walls) {
         let wp;
         if (w.type === 'same') {
@@ -885,7 +885,10 @@ export class SR3EItem extends Item {
         } else {
           wp = power - (2 * w.dist + charDist);
         }
-        if (wp > 0) waves.push({ power: wp });
+        if (wp > 0) {
+          const wallLabel = w.type === 'same' ? 'Same-side' : 'Opp./perp.';
+          waves.push({ label: `${wallLabel} @${w.dist}m`, power: wp });
+        }
       }
       return waves;
     }
@@ -916,9 +919,13 @@ export class SR3EItem extends Item {
 
       targetActors.forEach((ta, idx) => {
         const charDist   = parseInt(el.querySelector(`.cs-target-dist[data-idx="${idx}"]`)?.value) || 0;
-        const totalPower = calcBlast(basePower, charDist, walls).reduce((s, w) => s + w.power, 0);
+        const waves      = calcBlast(basePower, charDist, walls);
+        const totalPower = waves.reduce((s, w) => s + w.power, 0);
         const previewEl  = el.querySelector(`.cs-target-preview[data-idx="${idx}"]`);
-        if (previewEl) previewEl.textContent = totalPower > 0 ? `→ ${totalPower}${level}` : '→ No hit';
+        if (!previewEl) return;
+        if (totalPower <= 0) { previewEl.textContent = '→ No hit'; return; }
+        const detail = waves.length > 1 ? ` (${waves.map(w => w.power).join('+')}=)` : '';
+        previewEl.textContent = `→ ${totalPower}${level}${detail}`;
       });
     }
 
@@ -974,8 +981,8 @@ export class SR3EItem extends Item {
           <div style="color:var(--sr-muted);font-size:11px">Rule of Six active. No dodge — all targets in blast soak.</div>
         </div>
       `,
-      render: (_event, html) => {
-        const el = html instanceof HTMLElement ? html : (html?.[0] ?? null);
+      render: (...args) => {
+        const el = args.find(a => a instanceof HTMLElement) ?? args[0]?.[0] ?? null;
         if (!el) return;
         el.addEventListener('input',  () => updatePreview(el));
         el.addEventListener('change', () => updatePreview(el));
@@ -1022,8 +1029,9 @@ export class SR3EItem extends Item {
                 const walls     = getWalls(el);
                 chunkySalsa = targetActors.map((ta, idx) => {
                   const charDist   = parseInt(el.querySelector(`.cs-target-dist[data-idx="${idx}"]`)?.value) || 0;
-                  const totalPower = calcBlast(basePower, charDist, walls).reduce((s, w) => s + w.power, 0);
-                  return { actorId: ta.id, name: ta.name, power: totalPower, level };
+                  const waves      = calcBlast(basePower, charDist, walls);
+                  const totalPower = waves.reduce((s, w) => s + w.power, 0);
+                  return { actorId: ta.id, name: ta.name, power: totalPower, level, waves };
                 }).filter(t => t.power > 0);
               }
             }
@@ -1111,7 +1119,7 @@ export class SR3EItem extends Item {
       await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor: defender }),
         content: `<div class="sr-roll-card"><div class="sr-roll-header">🛡 ${defender.name} — Full Defense (${fd} dice auto-committed)</div></div>`,
-        type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       });
       // Clear full defense after first use
       await defender.update({ 'system.fullDefense': false, 'system.fullDefensePool': 0 });
@@ -1434,8 +1442,8 @@ static async _promptFireMode(availableModes, actor, weaponName) {
         ${faSection}
         ${recoilState}
       </div>`,
-    render: (_event, html) => {
-      const el = html instanceof HTMLElement ? html : (html?.[0] ?? null);
+    render: (...args) => {
+      const el = args.find(a => a instanceof HTMLElement) ?? args[0]?.[0] ?? null;
       if (!el) return;
       el.addEventListener('change', event => {
         if (event.target.name !== 'sr-fire-mode') return;
