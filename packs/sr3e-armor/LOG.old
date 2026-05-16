@@ -1,5 +1,5 @@
-2026/05/16-19:16:51.776 1bbc Recovering log #58
-2026/05/16-19:16:51.777 1bbc Level-0 table #60: started
-2026/05/16-19:16:51.780 1bbc Level-0 table #60: 35807 bytes OK
-2026/05/16-19:16:51.786 1bbc Delete type=0 #58
-2026/05/16-19:16:51.786 1bbc Delete type=3 #56
+2026/05/16-19:27:45.957 57e4 Recovering log #61
+2026/05/16-19:27:45.957 57e4 Level-0 table #63: started
+2026/05/16-19:27:45.961 57e4 Level-0 table #63: 35819 bytes OK
+2026/05/16-19:27:45.967 57e4 Delete type=0 #61
+2026/05/16-19:27:45.967 57e4 Delete type=3 #59

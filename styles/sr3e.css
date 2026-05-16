@@ -1450,6 +1450,15 @@ background-color: var(--sr-surface) !important;
   gap: 4px;
 }
 
+.overflow-track {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0 2px 2px;
+  border-left: 2px solid var(--sr-amber);
+  margin-left: 2px;
+}
+
 .damage-buttons {
   display: flex;
   gap: 4px;

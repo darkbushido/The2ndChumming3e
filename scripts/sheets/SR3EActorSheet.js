@@ -35,8 +35,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       woundBox:       SR3EActorSheet._onWoundBox,
       equipArmor:     SR3EActorSheet._onEquipArmor,
       equipMelee:     SR3EActorSheet._onEquipMelee,
-        applyDamage: SR3EActorSheet._onApplyDamage,
-        healDamage:  SR3EActorSheet._onHealDamage,
+        applyDamage:    SR3EActorSheet._onApplyDamage,
+        healDamage:     SR3EActorSheet._onHealDamage,
         rollSpell:      SR3EActorSheet._onRollSpell,
         dispelSpell:    SR3EActorSheet._onDispelSpell,
         summonSpirit:   SR3EActorSheet._onSummonSpirit,
@@ -296,6 +296,13 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     }
     const weightDisplay = `<span style="color:var(--sr-muted)">${carried.toFixed(1)} kg</span>${warningLine}`;
 
+    const body         = sys.attributes?.body?.value ?? 0;
+    const overflowVal  = w.overflow?.value ?? 0;
+    const isDead       = body > 0 && overflowVal >= body;
+    const deadHtml     = isDead
+      ? `<span style="color:var(--sr-red);font-weight:bold;font-size:12px;letter-spacing:1px;margin-left:6px;">☠ DEAD</span>`
+      : '';
+
     return `
       <header class="sheet-header">
         <div class="portrait-wrap">
@@ -316,6 +323,15 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           <div class="wound-tracks">
             ${this._woundTrack('stun', 'Stun', w.stun?.value ?? 0, 10)}
             ${this._woundTrack('physical', 'Physical', w.physical?.value ?? 0, 10)}
+            <div class="overflow-track">
+              <span class="wound-track-label" style="color:var(--sr-amber);font-size:11px;">↑ Overflow</span>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <input type="number" name="system.wounds.overflow.value" value="${overflowVal}" min="0"
+                  style="width:38px;text-align:center;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);color:var(--sr-text);padding:2px 4px;font-size:13px;"
+                  title="Dead if this exceeds Body (${body})"/>
+                ${deadHtml}
+              </div>
+            </div>
             <span class="wound-mod-display">
               Wound Mod: <strong>${sys.woundMod < 0 ? sys.woundMod : '—'}</strong>
             </span>

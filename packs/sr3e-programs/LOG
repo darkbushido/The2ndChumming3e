@@ -1,5 +1,5 @@
-2026/05/16-19:27:45.928 64c Recovering log #130
-2026/05/16-19:27:45.928 64c Level-0 table #133: started
-2026/05/16-19:27:45.932 64c Level-0 table #133: 7407 bytes OK
-2026/05/16-19:27:45.938 64c Delete type=0 #130
-2026/05/16-19:27:45.938 64c Delete type=3 #128
+2026/05/16-21:57:43.534 1ccc Recovering log #134
+2026/05/16-21:57:43.534 1ccc Level-0 table #136: started
+2026/05/16-21:57:43.538 1ccc Level-0 table #136: 7407 bytes OK
+2026/05/16-21:57:43.544 1ccc Delete type=0 #134
+2026/05/16-21:57:43.544 1ccc Delete type=3 #132
