@@ -400,6 +400,7 @@ export class SR3EItem extends Item {
     options.isAoE          = true;
     options.aoeTargetIds   = targetActors.map(t => t.id);
     options.chunkySalsa    = weaponOpts.chunkySalsa ?? null;
+    options.grenadeType    = weaponOpts.grenadeType ?? 'standard';
 
     return actor.rollPool(pool, tn, label, options);
   }
@@ -886,7 +887,7 @@ export class SR3EItem extends Item {
           wp = power - (2 * w.dist + charDist);
         }
         if (wp > 0) {
-          const wallLabel = w.type === 'same' ? 'Same-side' : 'Opp./perp.';
+          const wallLabel = w.type === 'same' ? 'Behind-target rebound' : 'Opp./side wall';
           waves.push({ label: `${wallLabel} @${w.dist}m`, power: wp });
         }
       }
@@ -938,9 +939,42 @@ export class SR3EItem extends Item {
         <span class="cs-target-preview" data-idx="${i}" style="font-size:11px;color:var(--sr-amber);min-width:60px;text-align:right;"></span>
       </div>`).join('');
 
+    const AOE_TITLE = 'AoE Weapon Roll Options';
+    let aoeHookId;
+    aoeHookId = Hooks.on('renderDialogV2', (app, html) => {
+      if (app.options?.window?.title !== AOE_TITLE) return;
+      Hooks.off('renderDialogV2', aoeHookId);
+      const el = html?.querySelector ? html : (html?.[0] ?? null);
+      if (!el) return;
+      el.addEventListener('input',  () => updatePreview(el));
+      el.addEventListener('change', () => updatePreview(el));
+      el.addEventListener('click', event => {
+        if (!event.target.closest('#sr-add-wall-btn')) return;
+        const wallList = el.querySelector('#sr-wall-list');
+        const div = document.createElement('div');
+        div.className = 'sr-wall-row';
+        div.style.cssText = 'display:flex;align-items:center;gap:8px;margin:3px 0;';
+        div.innerHTML = `
+          <select class="sr-wall-type" style="flex:1;">
+            <option value="same">Behind target (further from blast)</option>
+            <option value="opposite">Opposite / side wall</option>
+          </select>
+          <label style="display:flex;align-items:center;gap:4px;white-space:nowrap;font-size:12px;">Dist:
+            <input type="number" class="sr-wall-dist" value="3" min="1" style="width:50px;"/>m
+          </label>
+          <button type="button" class="sr-remove-wall-btn" style="padding:2px 8px;">✕</button>`;
+        div.querySelector('.sr-remove-wall-btn').addEventListener('click', () => {
+          div.remove();
+          updatePreview(el);
+        });
+        wallList.appendChild(div);
+        updatePreview(el);
+      });
+    });
+
     let result = null;
     await foundry.applications.api.DialogV2.wait({
-      window: { title: 'AoE Weapon Roll Options' },
+      window: { title: AOE_TITLE },
       content: `
         <div style="padding:8px 0">
           <div style="margin-bottom:10px">
@@ -951,6 +985,15 @@ export class SR3EItem extends Item {
           <div style="margin-bottom:10px">
             <label>Damage Code:
               <input type="text" id="sr-damage" value="${rawDamage}" style="width:80px;margin-left:8px"/>
+            </label>
+          </div>
+          <div style="margin-bottom:10px">
+            <label>Grenade Type:
+              <select id="sr-grenade-type" style="margin-left:8px">
+                <option value="standard">Standard (1d6m scatter, −2m/hit)</option>
+                <option value="aerodynamic">Aerodynamic (2d6m scatter, −4m/hit)</option>
+                <option value="launcher">Grenade Launcher (3d6m scatter, −4m/hit)</option>
+              </select>
             </label>
           </div>
           ${karmaPool > 0 ? `
@@ -981,33 +1024,6 @@ export class SR3EItem extends Item {
           <div style="color:var(--sr-muted);font-size:11px">Rule of Six active. No dodge — all targets in blast soak.</div>
         </div>
       `,
-      render: (...args) => {
-        const el = args.find(a => a instanceof HTMLElement) ?? args[0]?.[0] ?? null;
-        if (!el) return;
-        el.addEventListener('input',  () => updatePreview(el));
-        el.addEventListener('change', () => updatePreview(el));
-        const wallList = el.querySelector('#sr-wall-list');
-        el.querySelector('#sr-add-wall-btn')?.addEventListener('click', () => {
-          const div = document.createElement('div');
-          div.className = 'sr-wall-row';
-          div.style.cssText = 'display:flex;align-items:center;gap:8px;margin:3px 0;';
-          div.innerHTML = `
-            <select class="sr-wall-type" style="flex:1;">
-              <option value="same">Same-side (behind target)</option>
-              <option value="opposite">Opposite / perpendicular</option>
-            </select>
-            <label style="display:flex;align-items:center;gap:4px;white-space:nowrap;font-size:12px;">Dist:
-              <input type="number" class="sr-wall-dist" value="3" min="1" style="width:50px;"/>m
-            </label>
-            <button type="button" class="sr-remove-wall-btn" style="padding:2px 8px;">✕</button>`;
-          div.querySelector('.sr-remove-wall-btn').addEventListener('click', () => {
-            div.remove();
-            updatePreview(el);
-          });
-          wallList.appendChild(div);
-          updatePreview(el);
-        });
-      },
       buttons: [
         {
           label: 'Roll',
@@ -1036,7 +1052,8 @@ export class SR3EItem extends Item {
               }
             }
 
-            result = { tn, damageCode, useKarma, karmaReroll: useKarma, chunkySalsa };
+            const grenadeType = el.querySelector('#sr-grenade-type')?.value ?? 'standard';
+            result = { tn, damageCode, useKarma, karmaReroll: useKarma, chunkySalsa, grenadeType };
           }
         },
         { label: 'Cancel', action: 'cancel' }
@@ -1431,9 +1448,23 @@ static async _promptFireMode(availableModes, actor, weaponName) {
       Rounds already fired this phase: <strong>${roundsBefore}</strong>
     </div>`;
 
+  const fireModeTitle = `${weaponName} — Fire Mode`;
+  let fireModeHookId;
+  fireModeHookId = Hooks.on('renderDialogV2', (app, html) => {
+    if (app.options?.window?.title !== fireModeTitle) return;
+    Hooks.off('renderDialogV2', fireModeHookId);
+    const el = html?.querySelector ? html : (html?.[0] ?? null);
+    if (!el) return;
+    el.addEventListener('change', event => {
+      if (event.target.name !== 'sr-fire-mode') return;
+      const faEl = el.querySelector('#fa-section');
+      if (faEl) faEl.style.display = event.target.value === 'FA' ? 'block' : 'none';
+    });
+  });
+
   let result = null;
   await foundry.applications.api.DialogV2.wait({
-    window: { title: `${weaponName} — Fire Mode` },
+    window: { title: fireModeTitle },
     content: `
       <div style="padding:8px 0">
         ${secondSANote}
@@ -1442,15 +1473,6 @@ static async _promptFireMode(availableModes, actor, weaponName) {
         ${faSection}
         ${recoilState}
       </div>`,
-    render: (...args) => {
-      const el = args.find(a => a instanceof HTMLElement) ?? args[0]?.[0] ?? null;
-      if (!el) return;
-      el.addEventListener('change', event => {
-        if (event.target.name !== 'sr-fire-mode') return;
-        const faEl = el.querySelector('#fa-section');
-        if (faEl) faEl.style.display = event.target.value === 'FA' ? 'block' : 'none';
-      });
-    },
     buttons: [
       {
         label: 'Confirm Mode',

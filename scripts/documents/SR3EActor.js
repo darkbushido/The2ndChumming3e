@@ -1158,6 +1158,8 @@ _prepareCharacter(sys, attr) {
         programContext:         options.programContext         ?? null,
         isHackingActionRoll:    options.isHackingActionRoll   ?? false,
         hackingActionContext:   options.hackingActionContext  ?? null,
+        barrierContext:         options.barrierContext        ?? null,
+        grenadeType:            options.grenadeType           ?? 'standard',
         footerNote:             options.footerNote            ?? null,
       });
       return successes;
@@ -1214,6 +1216,10 @@ _prepareCharacter(sys, attr) {
       matrixSoakContext:     options.matrixSoakContext     ?? null,
       isProgramRoll:         options.isProgramRoll         ?? false,
       programContext:        options.programContext        ?? null,
+      isHackingActionRoll:   options.isHackingActionRoll  ?? false,
+      hackingActionContext:  options.hackingActionContext  ?? null,
+      barrierContext:        options.barrierContext        ?? null,
+      grenadeType:           options.grenadeType           ?? 'standard',
       footerNote:            options.footerNote            ?? null,
     });
   }
@@ -1374,10 +1380,30 @@ _prepareCharacter(sys, attr) {
           const attackerName = game.actors.get(state.attackerActorId)?.name ?? 'Attacker';
 
           if (state.isAoE && state.aoeTargetIds?.length) {
+            // Scatter roll — always happens for AoE grenades
+            const grenadeType = state.grenadeType ?? 'standard';
+            const numDistDice = grenadeType === 'standard' ? 1 : grenadeType === 'aerodynamic' ? 2 : 3;
+            const reductionPerSuccess = grenadeType === 'standard' ? 2 : 4;
+            const SCATTER_DIRS = ['', 'past the target', 'past and to the right of the target', 'short and to the right of the target', 'short of the target', 'short and to the left of the target', 'past and to the left of the target'];
+            const dirRoll     = Math.ceil(Math.random() * 6);
+            const distRolls   = Array.from({ length: numDistDice }, () => Math.ceil(Math.random() * 6));
+            const rawDist     = distRolls.reduce((a, b) => a + b, 0);
+            const reduction   = successes * reductionPerSuccess;
+            const scatterDist = Math.max(0, rawDist - reduction);
+
+            let scatterHtml;
+            if (scatterDist <= 0) {
+              scatterHtml = `<div style="font-size:12px;color:var(--sr-green);margin-top:4px;">🎯 Scatter: <strong>Direct hit</strong> — grenade detonates at target (rolled ${rawDist}m, reduced by ${reduction}m).</div>`;
+            } else {
+              const diceStr = distRolls.length > 1 ? `[${distRolls.join('+')}]=${rawDist}` : rawDist;
+              scatterHtml = `<div style="font-size:12px;color:var(--sr-amber);margin-top:4px;">💨 Scatter: grenade landed <strong>${scatterDist}m ${SCATTER_DIRS[dirRoll]}</strong> (rolled ${diceStr}m − ${reduction}m reduction = ${scatterDist}m). Power reduced by ${scatterDist}.</div>`;
+            }
+
             if (state.chunkySalsa?.length) {
-              // Confined space (Chunky Salsa): each target has its own blast power
+              // Confined space (Chunky Salsa): each target has its own blast power, reduced by scatter
               const csMap = new Map(state.chunkySalsa.map(t => [t.actorId, t]));
-              const csLines = state.chunkySalsa.map(t => {
+              const adjustedCs = state.chunkySalsa.map(t => ({ ...t, power: Math.max(0, t.power - scatterDist) }));
+              const csLines = adjustedCs.map(t => {
                 const waveDetail = (t.waves?.length ?? 0) > 1
                   ? ` <span style="font-weight:normal;color:var(--sr-muted)">(${t.waves.map(w => `${w.label}: ${w.power}`).join(' + ')})</span>`
                   : '';
@@ -1387,10 +1413,13 @@ _prepareCharacter(sys, attr) {
                 <div class="sr-staging-result">
                   💥 Confined blast — ${state.chunkySalsa.length} target${state.chunkySalsa.length !== 1 ? 's' : ''} affected
                   ${csLines}
+                  ${scatterHtml}
                 </div>`;
               for (const tid of state.aoeTargetIds) {
-                const cs = csMap.get(tid);
-                if (!cs || cs.power <= 0) continue;
+                const orig = csMap.get(tid);
+                if (!orig) continue;
+                const adjPower = Math.max(0, orig.power - scatterDist);
+                if (adjPower <= 0) continue;
                 const tActor = game.actors.get(tid);
                 if (!tActor) continue;
                 const soakCtx = JSON.stringify({
@@ -1398,39 +1427,50 @@ _prepareCharacter(sys, attr) {
                   targetActorId:   tid,
                   weaponItemId:    state.weaponItemId,
                   isMelee:         false,
-                  stagedPower:     cs.power,
-                  stagedLevel:     cs.level,
+                  stagedPower:     adjPower,
+                  stagedLevel:     orig.level,
                   isStun:          staged.isStun,
-                  rawDamage:       `${cs.power}${cs.level}`,
+                  rawDamage:       `${adjPower}${orig.level}`,
                 }).replace(/'/g, '&#39;');
                 postRollHtml += `
                   <div class="sr-soak-action">
                     <button class="sr-soak-btn" data-payload='${soakCtx}'>
-                      🛡 ${tActor.name}: Resist Damage (${cs.power}${cs.level})
+                      🛡 ${tActor.name}: Resist Damage (${adjPower}${orig.level})
                     </button>
                   </div>`;
               }
             } else {
-              // Standard AoE — same staged damage for all targets
-              for (const tid of state.aoeTargetIds) {
-                const tActor = game.actors.get(tid);
-                if (!tActor) continue;
-                const soakCtx = JSON.stringify({
-                  attackerActorId: state.attackerActorId,
-                  targetActorId:   tid,
-                  weaponItemId:    state.weaponItemId,
-                  isMelee:         false,
-                  stagedPower:     staged.power,
-                  stagedLevel:     staged.level,
-                  isStun:          staged.isStun,
-                  rawDamage:       state.rawDamage,
-                }).replace(/'/g, '&#39;');
-                postRollHtml += `
-                  <div class="sr-soak-action">
-                    <button class="sr-soak-btn" data-payload='${soakCtx}'>
-                      🛡 ${tActor.name}: Resist Damage
-                    </button>
-                  </div>`;
+              // Standard AoE — same staged damage for all targets, reduced by scatter
+              const adjPower = Math.max(0, staged.power - scatterDist);
+              stagingHtml = `
+                <div class="sr-staging-result">
+                  📊 ${state.rawDamage} + ${successes} hits → <strong>${staged.power}${staged.level} ${staged.isStun ? 'Stun' : 'Physical'}</strong>
+                  ${scatterHtml}
+                  ${scatterDist > 0 ? `<div style="font-size:12px;color:var(--sr-muted);margin-top:2px;">Effective power at target: <strong>${adjPower}${staged.level}</strong></div>` : ''}
+                </div>`;
+              if (adjPower <= 0) {
+                postRollHtml = `<div style="font-size:12px;color:var(--sr-muted);padding:4px;">Blast too weak at target location — no soak needed.</div>`;
+              } else {
+                for (const tid of state.aoeTargetIds) {
+                  const tActor = game.actors.get(tid);
+                  if (!tActor) continue;
+                  const soakCtx = JSON.stringify({
+                    attackerActorId: state.attackerActorId,
+                    targetActorId:   tid,
+                    weaponItemId:    state.weaponItemId,
+                    isMelee:         false,
+                    stagedPower:     adjPower,
+                    stagedLevel:     staged.level,
+                    isStun:          staged.isStun,
+                    rawDamage:       `${adjPower}${staged.level}`,
+                  }).replace(/'/g, '&#39;');
+                  postRollHtml += `
+                    <div class="sr-soak-action">
+                      <button class="sr-soak-btn" data-payload='${soakCtx}'>
+                        🛡 ${tActor.name}: Resist Damage (${adjPower}${staged.level})
+                      </button>
+                    </div>`;
+                }
               }
             }
           } else if ((state.committedDodgeDice ?? 0) > 0) {
@@ -1968,6 +2008,8 @@ _prepareCharacter(sys, attr) {
         programContext:       state.programContext       ?? null,
         isHackingActionRoll:  state.isHackingActionRoll  ?? false,
         hackingActionContext: state.hackingActionContext ?? null,
+        barrierContext:       state.barrierContext       ?? null,
+        grenadeType:          state.grenadeType          ?? 'standard',
         footerNote:           state.footerNote           ?? null,
       }).replace(/'/g, '&#39;');
       explodeBtn = `
@@ -2113,6 +2155,14 @@ _prepareCharacter(sys, attr) {
       });
     }
 
+    // Demolitions barrier damage — apply successes to Power and post result
+    if (allDone && state.barrierContext) {
+      const { basePower, currentBR, material } = state.barrierContext;
+      const effectivePower = basePower + successes;
+      const effect = SR3EActor.computeBarrierEffect(effectivePower, currentBR, 'demolitions');
+      await SR3EActor._postBarrierDamageCard(effect, material, currentBR, effectivePower, successes);
+    }
+
     // Hacking action threshold check — increment Overwatch if below Security Threshold
     if (allDone && state.isHackingActionRoll && state.hackingActionContext) {
       const hac = state.hackingActionContext;
@@ -2140,6 +2190,71 @@ _prepareCharacter(sys, attr) {
         });
       }
     }
+  }
+
+  // ── Barrier damage ─────────────────────────────────────────────────────────
+
+  static computeBarrierEffect(power, currentBR, attackType = 'blast') {
+    const effectiveBR = attackType === 'blast' ? currentBR * 2 : currentBR;
+    const halfEffBR   = effectiveBR / 2;
+    if (power < halfEffBR) {
+      return { result: 'no_effect', effectiveBR, brReduction: 0, holes: 0, remainingPower: null };
+    }
+    if (power <= effectiveBR) {
+      return { result: 'damage', effectiveBR, brReduction: 1, holes: 0, remainingPower: null };
+    }
+    const halfCurrentBR = currentBR / 2;
+    const excess        = power - effectiveBR;
+    const increments    = halfCurrentBR > 0 ? Math.floor(excess / halfCurrentBR) : 1;
+    const remainPower   = attackType === 'blast' ? power - currentBR : null;
+    return { result: 'breach', effectiveBR, brReduction: increments, holes: increments * 0.5, remainingPower: remainPower };
+  }
+
+  static async _postBarrierDamageCard(effect, material, currentBR, power, demSuccesses = 0) {
+    const { result, effectiveBR, brReduction, holes, remainingPower } = effect;
+    const newBR = Math.max(0, currentBR - brReduction);
+
+    let headerBg, headerColor, resultHtml;
+    if (result === 'no_effect') {
+      headerBg = '#1a1a2a'; headerColor = '#8888cc';
+      resultHtml = `<div style="font-size:13px;color:var(--sr-muted);">Barrier holds — no structural damage. Minor cosmetic damage only.</div>`;
+    } else if (result === 'damage') {
+      headerBg = '#2a1a0a'; headerColor = '#c8a040';
+      resultHtml = `<div style="font-size:13px;">Barrier damaged — reduce BR by 1 <span style="color:var(--sr-muted)">(${currentBR} → ${newBR})</span>.</div>`;
+    } else {
+      headerBg = '#5a1010'; headerColor = '#ff8060';
+      if (newBR <= 0) {
+        resultHtml = `
+          <div style="font-size:13px;"><strong>Barrier destroyed.</strong></div>
+          ${remainingPower > 0 ? `<div style="font-size:12px;margin-top:4px;color:var(--sr-amber);">Blast continues through — remaining Power <strong>${Math.round(remainingPower)}</strong>.</div>` : ''}`;
+      } else {
+        const holeStr = holes === 0.5 ? '0.5m hole' : `${holes}m of holes`;
+        resultHtml = `
+          <div style="font-size:13px;"><strong>${holeStr} opened.</strong> BR reduced by ${brReduction} <span style="color:var(--sr-muted)">(${currentBR} → ${newBR})</span>.</div>
+          ${remainingPower > 0 ? `<div style="font-size:12px;margin-top:4px;color:var(--sr-amber);">Blast continues through — remaining Power <strong>${Math.round(remainingPower)}</strong>.</div>` : ''}`;
+      }
+    }
+
+    const modNote = effectiveBR !== currentBR
+      ? `<span style="color:var(--sr-muted)"> (${currentBR} × 2 for blast)</span>` : '';
+    const demNote = demSuccesses > 0
+      ? `<div style="font-size:11px;color:var(--sr-muted);">Demolitions: ${demSuccesses} success${demSuccesses !== 1 ? 'es' : ''} added → Power ${power}</div>` : '';
+
+    await ChatMessage.create({
+      speaker: { alias: 'GM' },
+      content: `
+        <div class="sr-roll-card">
+          <div class="sr-roll-header" style="background:${headerBg};color:${headerColor};">🧱 Barrier Damage — ${material}</div>
+          <div class="sr-roll-body" style="padding:8px">
+            <div style="font-size:11px;color:var(--sr-muted);margin-bottom:6px;">
+              Current BR <strong>${currentBR}</strong> · effective BR <strong>${effectiveBR}</strong>${modNote} · Power <strong>${power}</strong>
+              ${demNote}
+            </div>
+            ${resultHtml}
+          </div>
+        </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    });
   }
 
   /**

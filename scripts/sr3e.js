@@ -292,155 +292,322 @@ async function _openSessionRewardDialog() {
 }
 
 async function _openChunkySalsaCalculator() {
-  function calcBlast(power, charDist, walls) {
+  // ── Constants ──────────────────────────────────────────────────────────────
+  const CW = 420, CH = 420, CX = 210, CY = 210;
+  const SCALE = 25;          // pixels per metre
+  const MAX_R = 195;         // max rendered radius in px  (~7.8 m)
+  const HIT   = 11;          // hit-test radius in px
+  const ACTOR_COLORS = ['#e06060','#60a0e0','#60c060','#e0c060','#c060e0','#e09060','#60c0c0','#d0a060'];
+
+  // ── Coordinate helpers ─────────────────────────────────────────────────────
+  const toMx  = px => (px - CX) / SCALE;
+  const toMy  = py => (py - CY) / SCALE;
+  const toPx  = mx => CX + mx * SCALE;
+  const toPy  = my => CY + my * SCALE;
+  const hypot = (x, y) => Math.sqrt(x * x + y * y);
+
+  function distPtSeg(px, py, ax, ay, bx, by) {
+    const dx = bx - ax, dy = by - ay, len2 = dx * dx + dy * dy;
+    if (len2 < 1e-9) return hypot(px - ax, py - ay);
+    const t = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / len2));
+    return hypot(px - (ax + t * dx), py - (ay + t * dy));
+  }
+
+  // ── Blast physics (all in metres, blast at origin) ─────────────────────────
+  function calcBlastM(amx, amy, walls, power) {
+    const D = hypot(amx, amy);
     const waves = [];
-    const direct = power - charDist;
-    if (direct > 0) waves.push({ label: `Direct (${power}−${charDist}m)`, power: direct });
+    const direct = power - D;
+    if (direct > 0) waves.push({ label: `Direct (${D.toFixed(1)}m)`, power: direct });
     for (const w of walls) {
-      let wp;
-      if (w.type === 'same') {
-        if (w.dist <= charDist) continue;
-        wp = power - (2 * w.dist - charDist);
+      const W = distPtSeg(0, 0, w.x1, w.y1, w.x2, w.y2);
+      if (W < 0.05) continue;
+      let wp, label;
+      if (D < 0.05) {
+        wp = power - 2 * W;
+        label = `Wall @${W.toFixed(1)}m`;
       } else {
-        wp = power - (2 * w.dist + charDist);
+        const proj = (amx / D) * (w.x1 + w.x2) / 2 + (amy / D) * (w.y1 + w.y2) / 2;
+        if (proj > D) {
+          wp    = power - (2 * W - D);
+          label = `Behind @${W.toFixed(1)}m`;
+        } else {
+          wp    = power - (2 * W + D);
+          label = `Opp. @${W.toFixed(1)}m`;
+        }
       }
-      if (wp > 0) {
-        const lbl = w.type === 'same' ? 'Same-side' : 'Opp./perp.';
-        waves.push({ label: `${lbl} @${w.dist}m`, power: wp });
-      }
+      if (wp > 0) waves.push({ label, power: wp });
     }
     return waves;
   }
 
-  function getWalls(el) {
-    const walls = [];
-    el.querySelectorAll('.sr-wall-row').forEach(row => {
-      walls.push({
-        type: row.querySelector('.sr-wall-type')?.value || 'same',
-        dist: parseInt(row.querySelector('.sr-wall-dist')?.value) || 1,
-      });
-    });
-    return walls;
-  }
+  // ── Mutable state ──────────────────────────────────────────────────────────
+  const eligible = game.actors.filter(a => a.type === 'character' || a.type === 'npc');
+  const actors   = eligible.map((a, i) => {
+    const angle = (2 * Math.PI * i / Math.max(eligible.length, 1)) - Math.PI / 2;
+    return { id: a.id, name: a.name, color: ACTOR_COLORS[i % ACTOR_COLORS.length],
+             mx: 3 * Math.cos(angle), my: 3 * Math.sin(angle), checked: true };
+  });
+  const walls = [];
+  let power = 10, level = 'S';
+  let mode = 'idle'; // idle | draw_wall | drag_actor | drag_wall_end | drag_wall_mid
+  let drag = null, wallStart = null, prevPx = 0, prevPy = 0;
 
-  function updatePreview(el) {
-    const power = parseInt(el.querySelector('#sr-salsa-power')?.value) || 0;
-    const level = el.querySelector('#sr-salsa-level')?.value || 'S';
-    const walls = getWalls(el);
-    el.querySelectorAll('.cs-actor-row').forEach(row => {
-      const dist    = parseInt(row.querySelector('.cs-actor-dist')?.value) || 0;
-      const waves   = calcBlast(power, dist, walls);
-      const preview = row.querySelector('.cs-actor-preview');
-      if (!preview) return;
-      if (!waves.length) {
-        preview.textContent = '→ No blast';
-        preview.style.color = 'var(--sr-muted)';
-        return;
+  // ── Canvas draw ────────────────────────────────────────────────────────────
+  function draw(canvas) {
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, CW, CH);
+
+    // Background
+    ctx.fillStyle = '#0c0c0c';
+    ctx.fillRect(0, 0, CW, CH);
+
+    // Grid lines (1 m)
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    ctx.lineWidth = 1;
+    for (let x = CX % SCALE; x < CW; x += SCALE) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, CH); ctx.stroke(); }
+    for (let y = CY % SCALE; y < CH; y += SCALE) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(CW, y); ctx.stroke(); }
+
+    // Blast radial fill
+    const blastR = Math.min(power * SCALE + 30, MAX_R + 60);
+    const grd = ctx.createRadialGradient(CX, CY, 0, CX, CY, blastR);
+    grd.addColorStop(0,   'rgba(255,80,0,0.20)');
+    grd.addColorStop(0.6, 'rgba(255,140,0,0.07)');
+    grd.addColorStop(1,   'rgba(0,0,0,0)');
+    ctx.fillStyle = grd;
+    ctx.beginPath(); ctx.arc(CX, CY, blastR, 0, 2 * Math.PI); ctx.fill();
+
+    // Distance rings
+    const maxRing = Math.ceil(MAX_R / SCALE) + 1;
+    for (let r = 1; r <= maxRing; r++) {
+      const rpx = r * SCALE;
+      const rem = power - r;
+      const major = r % 2 === 0;
+      ctx.strokeStyle = rem > 0
+        ? `hsla(${(rem / power) * 120},70%,55%,${major ? 0.40 : 0.14})`
+        : 'rgba(120,120,120,0.08)';
+      ctx.lineWidth = major ? 1.5 : 0.7;
+      ctx.setLineDash(rem > 0 ? [] : [3, 3]);
+      ctx.beginPath(); ctx.arc(CX, CY, rpx, 0, 2 * Math.PI); ctx.stroke();
+      ctx.setLineDash([]);
+      if (major && rem > 0 && rpx <= MAX_R) {
+        ctx.fillStyle = `hsla(${(rem / power) * 120},70%,65%,0.65)`;
+        ctx.font = '8px monospace'; ctx.textAlign = 'left';
+        ctx.fillText(`${r}m`, CX + rpx + 3, CY - 3);
       }
-      const totalP    = waves.reduce((s, w) => s + w.power, 0);
-      const breakdown = waves.length > 1 ? ` (${waves.map(w => w.power).join('+')}=)` : '';
-      preview.textContent = `→ ${totalP}${level}${breakdown}`;
-      preview.style.color = 'var(--sr-red,#c04040)';
-    });
+    }
+
+    // Walls
+    for (const w of walls) {
+      const px1 = toPx(w.x1), py1 = toPy(w.y1), px2 = toPx(w.x2), py2 = toPy(w.y2);
+      const mpx = (px1 + px2) / 2, mpy = (py1 + py2) / 2;
+      ctx.strokeStyle = '#8888cc'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(px1, py1); ctx.lineTo(px2, py2); ctx.stroke();
+      // Endpoint handles
+      ctx.fillStyle = '#aaaaee';
+      for (const [ex, ey] of [[px1, py1], [px2, py2]]) { ctx.beginPath(); ctx.arc(ex, ey, 5, 0, 2 * Math.PI); ctx.fill(); }
+      // Midpoint handle
+      ctx.fillStyle = '#ccccff';
+      ctx.beginPath(); ctx.arc(mpx, mpy, 4, 0, 2 * Math.PI); ctx.fill();
+      // Distance label
+      const Wm = distPtSeg(0, 0, w.x1, w.y1, w.x2, w.y2);
+      ctx.fillStyle = 'rgba(170,170,255,0.85)'; ctx.font = '9px monospace'; ctx.textAlign = 'center';
+      ctx.fillText(`${Wm.toFixed(1)}m`, mpx, mpy - 8);
+    }
+
+    // Wall preview while drawing
+    if (mode === 'draw_wall' && wallStart) {
+      ctx.strokeStyle = 'rgba(170,170,220,0.4)'; ctx.lineWidth = 2;
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath(); ctx.moveTo(toPx(wallStart.mx), toPy(wallStart.my)); ctx.lineTo(prevPx, prevPy); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Blast centre marker
+    ctx.fillStyle = '#ff5010';
+    ctx.beginPath(); ctx.arc(CX, CY, 9, 0, 2 * Math.PI); ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(CX, CY, 9, 0, 2 * Math.PI); ctx.stroke();
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 10px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('G', CX, CY);
+    ctx.textBaseline = 'alphabetic';
+
+    // Actors
+    for (const ac of actors) {
+      if (!ac.checked) continue;
+      const px = toPx(ac.mx), py = toPy(ac.my);
+      const D  = hypot(ac.mx, ac.my);
+
+      // Dashed line to centre
+      ctx.strokeStyle = ac.color + '44'; ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
+      ctx.beginPath(); ctx.moveTo(CX, CY); ctx.lineTo(px, py); ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Distance tag on the line
+      const lx = (CX + px) / 2, ly = (CY + py) / 2;
+      const dtxt = `${D.toFixed(1)}m`;
+      ctx.font = '8px monospace';
+      const dtw = ctx.measureText(dtxt).width;
+      ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(lx - dtw / 2 - 2, ly - 9, dtw + 4, 11);
+      ctx.fillStyle = ac.color; ctx.textAlign = 'center'; ctx.fillText(dtxt, lx, ly);
+
+      // Actor disc
+      ctx.fillStyle = ac.color;
+      ctx.beginPath(); ctx.arc(px, py, 11, 0, 2 * Math.PI); ctx.fill();
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(px, py, 11, 0, 2 * Math.PI); ctx.stroke();
+
+      // Damage label below disc
+      const waves  = calcBlastM(ac.mx, ac.my, walls, power);
+      const totalP = Math.round(waves.reduce((s, w) => s + w.power, 0));
+      const dmgStr = waves.length ? `${totalP}${level}` : '—';
+      const short  = ac.name.length > 11 ? ac.name.slice(0, 10) + '…' : ac.name;
+      ctx.font = '9px monospace';
+      const lw = Math.max(ctx.measureText(short).width, ctx.measureText(dmgStr).width) + 10;
+      ctx.fillStyle = 'rgba(0,0,0,0.75)'; ctx.fillRect(px - lw / 2, py + 13, lw, 25);
+      ctx.fillStyle = '#ddd'; ctx.textAlign = 'center'; ctx.fillText(short, px, py + 23);
+      ctx.fillStyle = waves.length ? '#ff8060' : '#70c070';
+      ctx.font = 'bold 10px monospace'; ctx.fillText(dmgStr, px, py + 34);
+      ctx.textAlign = 'left';
+    }
+
+    // Status bar
+    ctx.fillStyle = 'rgba(0,0,0,0.65)'; ctx.fillRect(0, CH - 18, CW, 18);
+    ctx.fillStyle = 'rgba(150,150,150,0.85)'; ctx.font = '9px monospace'; ctx.textAlign = 'left';
+    ctx.fillText(
+      mode === 'draw_wall'
+        ? 'Click to place second endpoint  ·  Right-click to cancel'
+        : 'Click to draw wall  ·  Drag actors & walls  ·  Right-click wall to delete',
+      6, CH - 5
+    );
   }
 
-  function addWallRow(wallList, el) {
-    const div = document.createElement('div');
-    div.className = 'sr-wall-row';
-    div.style.cssText = 'display:flex;align-items:center;gap:8px;margin:3px 0;';
-    div.innerHTML = `
-      <select class="sr-wall-type" style="flex:1;">
-        <option value="same">Same-side (behind char)</option>
-        <option value="opposite">Opposite / perpendicular</option>
-      </select>
-      <label style="display:flex;align-items:center;gap:4px;white-space:nowrap;">Dist:
-        <input type="number" class="sr-wall-dist" value="3" min="1" style="width:50px;"/>m
-      </label>
-      <button type="button" class="sr-remove-wall-btn" style="padding:2px 8px;">✕</button>`;
-    div.querySelector('.sr-remove-wall-btn').addEventListener('click', () => {
-      div.remove();
-      updatePreview(el);
-    });
-    wallList.appendChild(div);
-    updatePreview(el);
+  // ── Hit testing ────────────────────────────────────────────────────────────
+  const hitActor   = (px, py) => actors.find(a => a.checked && hypot(px - toPx(a.mx), py - toPy(a.my)) < HIT) ?? null;
+  const hitWallEP  = (px, py) => { for (const w of walls) { if (hypot(px - toPx(w.x1), py - toPy(w.y1)) < HIT) return { wall: w, end: 1 }; if (hypot(px - toPx(w.x2), py - toPy(w.y2)) < HIT) return { wall: w, end: 2 }; } return null; };
+  const hitWallMid = (px, py) => walls.find(w => hypot(px - (toPx(w.x1) + toPx(w.x2)) / 2, py - (toPy(w.y1) + toPy(w.y2)) / 2) < HIT) ?? null;
+  const hitWall    = (px, py) => walls.find(w => distPtSeg(px, py, toPx(w.x1), toPy(w.y1), toPx(w.x2), toPy(w.y2)) < 6) ?? null;
+
+  // ── Interaction handlers ───────────────────────────────────────────────────
+  function onDown(e, canvas) {
+    const r = canvas.getBoundingClientRect();
+    const px = e.clientX - r.left, py = e.clientY - r.top;
+
+    if (e.button === 2) {
+      e.preventDefault();
+      if (mode === 'draw_wall') { mode = 'idle'; wallStart = null; }
+      else { const w = hitWall(px, py); if (w) walls.splice(walls.indexOf(w), 1); }
+      draw(canvas); return;
+    }
+
+    if (mode === 'draw_wall') {
+      if (wallStart) {
+        walls.push({ x1: wallStart.mx, y1: wallStart.my, x2: toMx(px), y2: toMy(py) });
+        mode = 'idle'; wallStart = null;
+      }
+      draw(canvas); return;
+    }
+
+    const ac = hitActor(px, py);
+    if (ac) { mode = 'drag_actor'; drag = { ac }; return; }
+
+    const ep = hitWallEP(px, py);
+    if (ep) { mode = 'drag_wall_end'; drag = ep; return; }
+
+    const wm = hitWallMid(px, py);
+    if (wm) { mode = 'drag_wall_mid'; drag = { wall: wm, x1s: wm.x1, y1s: wm.y1, x2s: wm.x2, y2s: wm.y2, mxs: toMx(px), mys: toMy(py) }; return; }
+
+    // Start wall
+    mode = 'draw_wall'; wallStart = { mx: toMx(px), my: toMy(py) }; prevPx = px; prevPy = py;
+    draw(canvas);
   }
 
-  const eligibleActors = game.actors.filter(a => a.type === 'character' || a.type === 'npc');
-  const actorRows = eligibleActors.map(a => `
-    <div class="cs-actor-row" data-actor-id="${a.id}" style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--sr-border);">
-      <input type="checkbox" class="cs-actor-check" checked style="margin:0;flex-shrink:0;"/>
-      <span style="flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.name}</span>
-      <label style="display:flex;align-items:center;gap:4px;font-size:12px;white-space:nowrap;flex-shrink:0;">Dist:
-        <input type="number" class="cs-actor-dist" value="0" min="0" style="width:48px;"/>m
-      </label>
-      <span class="cs-actor-preview" style="min-width:90px;font-size:11px;font-weight:bold;text-align:right;color:var(--sr-muted);flex-shrink:0;">→ ?</span>
-    </div>`).join('');
+  function onMove(e, canvas) {
+    const r = canvas.getBoundingClientRect();
+    const px = e.clientX - r.left, py = e.clientY - r.top;
+    const mx = toMx(px), my = toMy(py);
+    switch (mode) {
+      case 'drag_actor':    drag.ac.mx = mx; drag.ac.my = my; break;
+      case 'drag_wall_end': drag.end === 1 ? (drag.wall.x1 = mx, drag.wall.y1 = my) : (drag.wall.x2 = mx, drag.wall.y2 = my); break;
+      case 'drag_wall_mid': { const d = drag, dmx = mx - d.mxs, dmy = my - d.mys; d.wall.x1 = d.x1s + dmx; d.wall.y1 = d.y1s + dmy; d.wall.x2 = d.x2s + dmx; d.wall.y2 = d.y2s + dmy; break; }
+      case 'draw_wall':     prevPx = px; prevPy = py; break;
+    }
+    canvas.style.cursor = mode !== 'idle' ? 'crosshair'
+      : (hitActor(px, py) || hitWallEP(px, py) || hitWallMid(px, py)) ? 'grab' : 'crosshair';
+    if (mode !== 'idle') draw(canvas);
+  }
 
-  let proceed = false, finalTargets = [], finalPower = 0, finalLevel = 'S';
+  function onUp(e, canvas) {
+    if (mode === 'drag_actor' || mode === 'drag_wall_end' || mode === 'drag_wall_mid') {
+      mode = 'idle'; drag = null; draw(canvas);
+    }
+  }
+
+  // ── Dialog ─────────────────────────────────────────────────────────────────
+  let proceed = false, finalPower = 0, finalLevel = 'S', finalTargets = [];
+
+  const SALSA_TITLE = '💥 Chunky Salsa — Confined Space Blast';
+  let salsaHookId;
+  salsaHookId = Hooks.on('renderDialogV2', (app, html) => {
+    if (app.options?.window?.title !== SALSA_TITLE) return;
+    Hooks.off('renderDialogV2', salsaHookId);
+    const el = html?.querySelector ? html : (html?.[0] ?? null);
+    if (!el) return;
+    // Canvas stripped by Foundry's sanitizer — inject it programmatically
+    const container = el.querySelector('#cs-canvas-container');
+    if (!container) return;
+    const canvas = document.createElement('canvas');
+    canvas.width  = CW;
+    canvas.height = CH;
+    canvas.style.cssText = 'display:block;cursor:crosshair;border:1px solid var(--sr-border);border-radius:var(--r);';
+    container.appendChild(canvas);
+    el.querySelector('#cs-power')?.addEventListener('input',  e => { power = Math.max(1, parseInt(e.target.value) || 1); draw(canvas); });
+    el.querySelector('#cs-level')?.addEventListener('change', e => { level = e.target.value; draw(canvas); });
+    el.querySelectorAll('.cs-actor-toggle').forEach(cb => cb.addEventListener('change', e => {
+      const a = actors.find(a => a.id === e.target.dataset.id);
+      if (a) { a.checked = e.target.checked; draw(canvas); }
+    }));
+    canvas.addEventListener('mousedown',   e => { e.preventDefault(); onDown(e, canvas); });
+    canvas.addEventListener('mousemove',   e => onMove(e, canvas));
+    canvas.addEventListener('mouseup',     e => onUp(e, canvas));
+    canvas.addEventListener('contextmenu', e => e.preventDefault());
+    draw(canvas);
+  });
 
   await foundry.applications.api.DialogV2.wait({
-    window: { title: '💥 Chunky Salsa — Confined Space Blast' },
+    window:   { title: SALSA_TITLE },
+    position: { width: 478 },
     content: `
-      <div style="padding:8px 0">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
-          <label>Power:<br/><input type="number" id="sr-salsa-power" value="6" min="1" style="width:100%;"/></label>
-          <label>Level:<br/>
-            <select id="sr-salsa-level" style="width:100%;">
-              <option value="L">L — Light</option>
-              <option value="M">M — Moderate</option>
-              <option value="S" selected>S — Serious</option>
-              <option value="D">D — Deadly</option>
+      <div style="padding:4px 0">
+        <div style="display:flex;gap:14px;align-items:center;margin-bottom:6px;">
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;">Power:
+            <input type="number" id="cs-power" value="10" min="1" max="30" style="width:58px;"/>
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;">Level:
+            <select id="cs-level">
+              <option value="L">L</option><option value="M">M</option>
+              <option value="S" selected>S</option><option value="D">D</option>
             </select>
           </label>
+          <span style="font-size:10px;color:var(--sr-muted);line-height:1.3;">Drag actors · click to draw walls<br/>Right-click wall to delete</span>
         </div>
-        <div style="margin-bottom:10px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-            <strong style="font-size:12px;">Walls</strong>
-            <button type="button" id="sr-add-wall-btn" style="padding:2px 10px;font-size:11px;">+ Add Wall</button>
-          </div>
-          <div id="sr-wall-list"></div>
-        </div>
-        <div>
-          <strong style="font-size:12px;">Targets</strong>
-          <div id="sr-salsa-actors" style="margin-top:4px;max-height:220px;overflow-y:auto;">
-            ${actorRows || '<div style="color:var(--sr-muted);font-size:12px;padding:4px 0;">No characters/NPCs in world.</div>'}
-          </div>
-        </div>
+        <div id="cs-canvas-container"></div>
+        ${actors.length ? `<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:5px 14px;">
+          ${actors.map(a => `<label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;">
+            <input type="checkbox" class="cs-actor-toggle" data-id="${a.id}" checked/>
+            <span style="width:9px;height:9px;border-radius:50%;background:${a.color};display:inline-block;flex-shrink:0;"></span>${a.name}
+          </label>`).join('')}
+        </div>` : ''}
       </div>`,
-    render: (...args) => {
-      const el = args.find(a => a instanceof HTMLElement) ?? args[0]?.[0] ?? null;
-      if (!el) return;
-      updatePreview(el);
-      el.addEventListener('input',  () => updatePreview(el));
-      el.addEventListener('change', () => updatePreview(el));
-      const wallList = el.querySelector('#sr-wall-list');
-      el.querySelector('#sr-add-wall-btn')?.addEventListener('click', () => addWallRow(wallList, el));
-    },
     buttons: [
       {
-        label: 'Post to Chat',
-        action: 'post',
-        default: true,
-        callback: (_e, _b, dialog) => {
-          proceed    = true;
-          finalPower = parseInt(dialog.element.querySelector('#sr-salsa-power')?.value) || 0;
-          finalLevel = dialog.element.querySelector('#sr-salsa-level')?.value || 'S';
-          const walls = getWalls(dialog.element);
-          dialog.element.querySelectorAll('.cs-actor-row').forEach(row => {
-            if (!row.querySelector('.cs-actor-check')?.checked) return;
-            const actorId = row.dataset.actorId;
-            const actor   = game.actors.get(actorId);
-            if (!actor) return;
-            const dist  = parseInt(row.querySelector('.cs-actor-dist')?.value) || 0;
-            const waves = calcBlast(finalPower, dist, walls);
-            if (!waves.length) return;
-            finalTargets.push({
-              actorId,
-              name:  actor.name,
-              power: waves.reduce((s, w) => s + w.power, 0),
-              level: finalLevel,
-              waves,
-            });
+        label: 'Post to Chat', action: 'post', default: true,
+        callback: () => {
+          proceed = true; finalPower = power; finalLevel = level;
+          finalTargets = actors.filter(a => a.checked).flatMap(a => {
+            const waves = calcBlastM(a.mx, a.my, walls, power);
+            if (!waves.length) return [];
+            return [{ actorId: a.id, name: a.name, level, power: Math.round(waves.reduce((s, w) => s + w.power, 0)), waves: waves.map(w => ({ ...w, power: Math.round(w.power) })) }];
           });
         }
       },
@@ -448,21 +615,16 @@ async function _openChunkySalsaCalculator() {
     ],
   });
 
+  Hooks.off('renderDialogV2', salsaHookId);
   if (!proceed || !finalTargets.length) return;
 
+  // ── Chat output ────────────────────────────────────────────────────────────
   const targetSections = finalTargets.map(t => {
     const waveDetail = t.waves.length > 1
       ? t.waves.map(w => `<div style="font-size:11px;color:var(--sr-muted);padding-left:8px;">• ${w.label}: ${w.power}${t.level}</div>`).join('')
       : '';
-    const breakdown = t.waves.length > 1 ? ` (${t.waves.map(w => w.power).join('+')}=)` : '';
-    const soakPayload = JSON.stringify({
-      targetActorId: t.actorId,
-      power:    t.power,
-      level:    t.level,
-      isStun:   false,
-      armorType: 'ballistic',
-      label:    'Confined Blast',
-    });
+    const breakdown    = t.waves.length > 1 ? ` (${t.waves.map(w => w.power).join('+')}=)` : '';
+    const soakPayload  = JSON.stringify({ targetActorId: t.actorId, power: t.power, level: t.level, isStun: false, armorType: 'ballistic', label: 'Confined Blast' });
     return `
       <div style="margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--sr-border);">
         <div style="font-size:12px;font-weight:bold;margin-bottom:2px;">${t.name}</div>
@@ -477,12 +639,136 @@ async function _openChunkySalsaCalculator() {
     content: `
       <div class="sr-roll-card">
         <div class="sr-roll-header" style="background:#5a1a10;color:#ffcca0;">💥 Chunky Salsa — Confined Blast (${finalPower}${finalLevel} base · ${finalTargets.length} target${finalTargets.length !== 1 ? 's' : ''})</div>
-        <div class="sr-roll-body" style="padding:8px">
-          ${targetSections}
-        </div>
+        <div class="sr-roll-body" style="padding:8px">${targetSections}</div>
       </div>`,
     style: CONST.CHAT_MESSAGE_STYLES.OTHER,
   });
+}
+
+async function _openBarrierDamageCalculator() {
+  const MATERIALS = [
+    { name: 'Standard Glass',                br: 2  },
+    { name: 'Cheap Material / Regular Tires', br: 3  },
+    { name: 'Average Material / Ballistic Glass', br: 4  },
+    { name: 'Heavy Material',                br: 6  },
+    { name: 'Reinforced / Armored Glass',    br: 8  },
+    { name: 'Structural Material',           br: 12 },
+    { name: 'Heavy Structural Material',     br: 16 },
+    { name: 'Armored / Reinforced Material', br: 24 },
+    { name: 'Hardened Material',             br: 32 },
+  ];
+
+  const matOpts   = MATERIALS.map((m, i) => `<option value="${i}">${m.name} (BR ${m.br})</option>`).join('');
+  const actorOpts = game.actors.filter(a => a.type === 'character' || a.type === 'npc')
+    .map(a => `<option value="${a.id}">${a.name}</option>`).join('');
+
+  const TITLE = '🧱 Barrier Damage';
+  let hookId;
+  hookId = Hooks.on('renderDialogV2', (app, html) => {
+    if (app.options?.window?.title !== TITLE) return;
+    Hooks.off('renderDialogV2', hookId);
+    const el = html?.querySelector ? html : (html?.[0] ?? null);
+    if (!el) return;
+
+    function updateEffLabel() {
+      const br  = parseInt(el.querySelector('#br-current')?.value) || 0;
+      const att = el.querySelector('input[name="br-attack"]:checked')?.value ?? 'blast';
+      const eff = att === 'blast' ? br * 2 : br;
+      const lbl = el.querySelector('#br-eff-label');
+      if (lbl) lbl.textContent = `Effective BR: ${eff}${att === 'blast' ? ` (${br} × 2 for blast)` : ''}`;
+    }
+
+    el.querySelector('#br-material')?.addEventListener('change', e => {
+      const m = MATERIALS[parseInt(e.target.value)];
+      if (m) { el.querySelector('#br-current').value = m.br; updateEffLabel(); }
+    });
+    el.addEventListener('change', e => {
+      if (e.target.name === 'br-attack') {
+        const isDemo = e.target.value === 'demo';
+        el.querySelector('#br-blast-row').style.display = isDemo ? 'none' : '';
+        el.querySelector('#br-demo-rows').style.display = isDemo ? '' : 'none';
+      }
+      updateEffLabel();
+    });
+    el.addEventListener('input', updateEffLabel);
+    updateEffLabel();
+  });
+
+  let res = null;
+  await foundry.applications.api.DialogV2.wait({
+    window: { title: TITLE },
+    content: `
+      <div style="padding:4px 0">
+        <div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin-bottom:6px;">
+          <label style="font-size:12px;">Material:
+            <select id="br-material" style="width:100%;margin-top:2px;">${matOpts}</select>
+          </label>
+          <label style="font-size:12px;">Current BR:
+            <input type="number" id="br-current" value="2" min="0" max="200" style="width:60px;margin-top:2px;"/>
+          </label>
+        </div>
+        <div id="br-eff-label" style="font-size:11px;color:var(--sr-muted);margin-bottom:10px;"></div>
+        <div style="margin-bottom:10px;">
+          <label style="display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:12px;">
+            <input type="radio" name="br-attack" value="blast" checked/> Blast (grenade / explosive)
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;">
+            <input type="radio" name="br-attack" value="demo"/> Demolitions (placed charge)
+          </label>
+        </div>
+        <div id="br-blast-row" style="margin-bottom:6px;">
+          <label style="font-size:12px;">Blast Power (after distance reduction):
+            <input type="number" id="br-blast-power" value="10" min="0" style="width:60px;margin-left:6px;"/>
+          </label>
+        </div>
+        <div id="br-demo-rows" style="display:none;">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;">
+            <label style="font-size:12px;">Base Power:<br/><input type="number" id="br-demo-power" value="10" min="0" style="width:100%;"/></label>
+            <label style="font-size:12px;">Demo Pool:<br/><input type="number" id="br-demo-pool" value="4" min="1" style="width:100%;"/></label>
+            <label style="font-size:12px;">TN:<br/><input type="number" id="br-demo-tn" value="2" min="2" max="30" style="width:100%;"/></label>
+          </div>
+          <label style="font-size:12px;">Attacker (for roll):
+            <select id="br-demo-actor" style="width:100%;margin-top:2px;">
+              ${actorOpts || '<option value="">No actors in world</option>'}
+            </select>
+          </label>
+        </div>
+      </div>`,
+    buttons: [
+      {
+        label: 'Post / Roll', action: 'confirm', default: true,
+        callback: (_e, _b, dialog) => {
+          const el  = dialog.element;
+          const att = el.querySelector('input[name="br-attack"]:checked')?.value ?? 'blast';
+          const br  = parseInt(el.querySelector('#br-current')?.value) || 0;
+          const mat = MATERIALS[parseInt(el.querySelector('#br-material')?.value) || 0]?.name ?? 'Unknown';
+          if (att === 'blast') {
+            res = { type: 'blast', power: parseInt(el.querySelector('#br-blast-power')?.value) || 0, br, mat };
+          } else {
+            res = { type: 'demo', basePower: parseInt(el.querySelector('#br-demo-power')?.value) || 0,
+              pool: parseInt(el.querySelector('#br-demo-pool')?.value) || 1,
+              tn:   parseInt(el.querySelector('#br-demo-tn')?.value) || 2,
+              actorId: el.querySelector('#br-demo-actor')?.value, br, mat };
+          }
+        }
+      },
+      { label: 'Cancel', action: 'cancel' },
+    ],
+  });
+
+  Hooks.off('renderDialogV2', hookId);
+  if (!res) return;
+
+  if (res.type === 'blast') {
+    const effect = game.sr3e.SR3EActor.computeBarrierEffect(res.power, res.br, 'blast');
+    await game.sr3e.SR3EActor._postBarrierDamageCard(effect, res.mat, res.br, res.power);
+  } else {
+    const actor = game.actors.get(res.actorId);
+    if (!actor) { ui.notifications.warn('Select an actor to roll demolitions.'); return; }
+    await actor.rollPool(res.pool, res.tn, 'Demolitions Test', {
+      barrierContext: { basePower: res.basePower, currentBR: res.br, material: res.mat },
+    });
+  }
 }
 
 // Vehicle Chase button + drone/VCR labels in the combat tracker sidebar
@@ -814,6 +1100,18 @@ Hooks.on('renderCombatTracker', (_app, html) => {
     salsaBtn.addEventListener('click', _openChunkySalsaCalculator);
     if (anchor) anchor.insertAdjacentElement('afterend', salsaBtn);
     else el.appendChild(salsaBtn);
+  }
+
+  if (game.user.isGM && !el.querySelector('.sr3e-barrier-btn')) {
+    const anchor = el.querySelector('.sr3e-salsa-btn') ?? el.querySelector('.sr3e-reward-btn') ?? el.querySelector('footer') ?? el.querySelector('.combat-controls');
+    const barrierBtn = document.createElement('button');
+    barrierBtn.type = 'button';
+    barrierBtn.className = 'sr3e-barrier-btn';
+    barrierBtn.textContent = '🧱 Barrier Damage';
+    barrierBtn.style.cssText = 'display:block;box-sizing:border-box;margin:4px 8px 0;width:calc(100% - 16px);';
+    barrierBtn.addEventListener('click', _openBarrierDamageCalculator);
+    if (anchor) anchor.insertAdjacentElement('afterend', barrierBtn);
+    else el.appendChild(barrierBtn);
   }
 });
 
