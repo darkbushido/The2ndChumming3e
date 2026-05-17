@@ -367,6 +367,28 @@ background-color: var(--sr-surface) !important;
   font-style: italic;
 }
 
+.sr-assign-damage-btn {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 6px 10px;
+  background: color-mix(in srgb, var(--sr-red) 10%, transparent);
+  border: 1px solid var(--sr-red);
+  border-radius: var(--r);
+  color: var(--sr-red);
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.sr-assign-damage-btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--sr-red) 22%, transparent);
+}
+.sr-assign-damage-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 /* ── Select reset ── */
 .sr3e select {
   background: var(--sr-card);
@@ -1115,6 +1137,15 @@ background-color: var(--sr-surface) !important;
 .sr-die.sr-hit  { background: var(--sr-green-bg); color: var(--sr-green); border-color: var(--sr-green); }
 .sr-die.sr-miss { background: var(--sr-card); color: var(--sr-dim); }
 .sr-die.sr-one  { background: var(--sr-red-bg); color: var(--sr-red); border-color: var(--sr-red); }
+.sr-phys-summary {
+  font-size: 12px;
+  color: var(--sr-green);
+  background: var(--sr-green-bg);
+  border: 1px solid var(--sr-green);
+  border-radius: var(--r);
+  padding: 2px 8px;
+  white-space: nowrap;
+}
 .sr-roll-result { font-size: 14px; color: var(--sr-text); font-weight: 600; }
 .sr-glitch { color: var(--sr-amber); font-size: 12px; margin-left: 8px; }
 
@@ -2734,7 +2765,8 @@ label.act-field input[type=number] {
 }
 .roll-opts-note,
 .roll-opts-karma,
-.roll-opts-physical {
+.roll-opts-physical,
+.roll-opts-wound-note {
   grid-column: 1 / -1;
   margin: 0;
 }
@@ -2758,7 +2790,8 @@ label.act-field input[type=number] {
   font-size: 11px;
   color: var(--sr-muted);
 }
-.roll-opts-physical {
+.roll-opts-physical,
+.roll-opts-wound-note {
   color: var(--sr-amber);
   font-size: 11px;
 }

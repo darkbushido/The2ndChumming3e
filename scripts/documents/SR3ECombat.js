@@ -398,7 +398,7 @@ async _newRoundSR3() {
       `,
       buttons: [
         {
-          label: 'Yes — Refresh Pools',
+          label: 'Refresh Pools',
           action: 'yes',
           default: true,
           callback: () => { refresh = true; }

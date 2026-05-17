@@ -1349,6 +1349,15 @@ Hooks.on('renderChatMessageHTML', (_message, html, _data) => {
     });
   });
 
+  // Assign damage button — applies final staged damage directly to actor wound track
+  html.querySelectorAll('.sr-assign-damage-btn').forEach(btn => {
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      await SR3EActor.handleAssignDamage(btn);
+    });
+  });
+
   // Matrix combat — IC resist matrix damage (opens IC resist card)
   html.querySelectorAll('.sr-matrix-ic-resist-btn').forEach(btn => {
     btn.addEventListener('click', async event => {

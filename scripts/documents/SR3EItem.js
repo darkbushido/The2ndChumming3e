@@ -76,7 +76,6 @@ export class SR3EItem extends Item {
     }
     
     const s = this.system;
-    const woundMod = actor.system.woundMod ?? 0;
     const isDefaulting = !s.rating || s.rating === 0;
 
     let pool;
@@ -85,7 +84,7 @@ export class SR3EItem extends Item {
     } else {
       pool = isDefaulting
         ? s.defaultingPool
-        : Math.max(1, (s.skillRating ?? 0) + woundMod);
+        : Math.max(1, s.skillRating ?? 0);
     }
 
     if (pool < 1) {
@@ -143,8 +142,8 @@ export class SR3EItem extends Item {
     const defInfo  = SR3EItem._buildMeleePoolInfo(targetActor, defWeapon);
     const atkReach = this.system.reach ?? 0;
     const defReach = defWeapon?.system?.reach ?? 0;
-    const atkTN    = Math.max(2, 4 + (actor.system.woundMod ?? 0) - atkReach);
-    const defTN    = Math.max(2, 4 + (targetActor.system.woundMod ?? 0) - defReach);
+    const atkTN    = Math.max(2, 4 - atkReach);
+    const defTN    = Math.max(2, 4 - defReach);
 
     await game.sr3e.SR3EActor.postMeleeCard({
       attackerActorId:  actor.id,
@@ -210,7 +209,6 @@ export class SR3EItem extends Item {
       i.type === 'skill' && (i.name === skillName || i.name.includes(skillName))
     );
     const str       = actor.system.attributes?.strength?.value ?? 1;
-    const woundMod  = actor.system.woundMod ?? 0;
     const isDefault = !skill;
     const basePool  = isDefault ? Math.max(1, str - 2) : (skill.system.skillRating ?? 0);
     let specBonus   = 0;
@@ -220,9 +218,9 @@ export class SR3EItem extends Item {
       specBonus = 2;
       specName  = skill.system.specialisation;
     }
-    const skillDice  = Math.max(1, basePool + specBonus + woundMod);
+    const skillDice  = Math.max(1, basePool + specBonus);
     const availPool  = actor.system.derived?.availableCombatPool ?? 0;
-    return { skillName, skillRating: basePool, specName, specBonus, woundMod, skillDice, availPool, isDefault };
+    return { skillName, skillRating: basePool, specName, specBonus, skillDice, availPool, isDefault };
   }
 
     static _buildMeleePool(actor, weapon) {
@@ -248,7 +246,6 @@ export class SR3EItem extends Item {
       pool += 2;
     }
 
-    pool += (actor.system.woundMod ?? 0);
     return Math.max(1, pool);
   }
 
@@ -388,7 +385,6 @@ export class SR3EItem extends Item {
       }
     }
 
-    pool += (actor.system.woundMod ?? 0);
     pool  = Math.max(1, pool);
 
     options.weaponItemId   = this.id;
@@ -401,6 +397,7 @@ export class SR3EItem extends Item {
     options.aoeTargetIds   = targetActors.map(t => t.id);
     options.chunkySalsa    = weaponOpts.chunkySalsa ?? null;
     options.grenadeType    = weaponOpts.grenadeType ?? 'standard';
+    options.skipWoundMod   = true;
 
     return actor.rollPool(pool, tn, label, options);
   }
@@ -472,12 +469,14 @@ export class SR3EItem extends Item {
   }
 
   // --- Step 3: Roll options dialog (TN + damage code + vehicle modifier) ---
-  const recoilTNMod = fireModeResult?.recoilTN ?? 0;
-  const extraTNMod  = ammoTNMod + recoilTNMod + (fireModeResult?.additionalTNPenalty ?? 0);
+  const recoilTNMod  = fireModeResult?.recoilTN ?? 0;
+  const woundPenalty = -(actor.system.woundMod ?? 0);
+  const extraTNMod   = ammoTNMod + recoilTNMod + (fireModeResult?.additionalTNPenalty ?? 0) + woundPenalty;
   const tnBreakdownParts = [];
   if (recoilTNMod)                           tnBreakdownParts.push(`Recoil +${recoilTNMod}`);
   if (fireModeResult?.additionalTNPenalty)   tnBreakdownParts.push(`Multi-target +${fireModeResult.additionalTNPenalty}`);
   if (ammoTNMod)                             tnBreakdownParts.push(`Ammo TN${ammoTNMod > 0 ? '+' : ''}${ammoTNMod}`);
+  if (woundPenalty > 0)                      tnBreakdownParts.push(`Wound +${woundPenalty}`);
   const weaponOpts = await SR3EItem._promptWeaponRollOptions(targetActor, rawDamage, actor, extraTNMod,
     tnBreakdownParts.length ? tnBreakdownParts.join(' | ') : null);
   if (!weaponOpts) return null;
@@ -554,7 +553,6 @@ export class SR3EItem extends Item {
     }
   }
 
-  pool += (actor.system.woundMod ?? 0);
   pool  = Math.max(1, pool);
 
   // Store full context — including committed dodge dice
@@ -566,6 +564,7 @@ export class SR3EItem extends Item {
   options.isWeaponRoll       = true;
   options.isMelee            = ['melee'].includes(this.type);
   options.committedDodgeDice = committedDodgeDice;
+  options.skipWoundMod       = true;
 
   // Commit recoil — update rounds fired counter before the roll
   if (fireModeRounds > 0) {
@@ -627,7 +626,7 @@ export class SR3EItem extends Item {
       }
       const stunVal = pilotActor.system.wounds?.stun?.value     ?? 0;
       const physVal = pilotActor.system.wounds?.physical?.value ?? 0;
-      pilotWoundMod = -(Math.floor(stunVal / 3) + Math.floor(physVal / 3));
+      pilotWoundMod = -(game.sr3e.SR3EActor._trackMod(stunVal) + game.sr3e.SR3EActor._trackMod(physVal));
       pool += pilotWoundMod;
 
       if (vcrMode) {
@@ -1409,7 +1408,7 @@ static async _promptFireMode(availableModes, actor, weaponName) {
         <span>
           <strong style="color:var(--sr-accent)">${info.label}</strong>
           <span style="font-size:11px;color:var(--sr-muted);margin-left:4px">— ${info.note}</span>
-          <br><span style="font-size:11px">Rounds: <strong>${roundsPreview}</strong> &nbsp;|&nbsp; TN penalty this shot: <strong style="color:var(--sr-amber)">${recoilPreview}</strong></span>
+          <br><span style="font-size:11px">Rounds: <strong>${roundsPreview}</strong> &nbsp;|&nbsp; TN penalty this shot: <strong class="sr-recoil-preview" data-mode="${m}" style="color:var(--sr-amber)">${recoilPreview}</strong></span>
         </span>
       </label>`;
   }).join('');
@@ -1442,10 +1441,11 @@ static async _promptFireMode(availableModes, actor, weaponName) {
     </div>` : '';
 
   const recoilState = `
-    <div style="margin-top:10px;padding:6px 8px;background:#0a0a0a;border:1px solid var(--sr-border);border-radius:var(--r);font-size:11px">
-      <strong>Recoil state:</strong>
+    <div style="margin-top:10px;padding:6px 8px;background:#0a0a0a;border:1px solid var(--sr-border);border-radius:var(--r);font-size:11px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <span><strong>Recoil state:</strong>
       Compensation <strong>${comp}</strong> &nbsp;|&nbsp;
-      Rounds already fired this phase: <strong>${roundsBefore}</strong>
+      Rounds fired this phase: <strong id="sr-rounds-fired">${roundsBefore}</strong></span>
+      <button id="sr-reset-recoil" type="button" style="margin-left:auto;padding:1px 7px;font-size:10px;cursor:pointer;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);color:var(--sr-muted)">↺ Reset</button>
     </div>`;
 
   const fireModeTitle = `${weaponName} — Fire Mode`;
@@ -1459,6 +1459,13 @@ static async _promptFireMode(availableModes, actor, weaponName) {
       if (event.target.name !== 'sr-fire-mode') return;
       const faEl = el.querySelector('#fa-section');
       if (faEl) faEl.style.display = event.target.value === 'FA' ? 'block' : 'none';
+    });
+    el.querySelector('#sr-reset-recoil')?.addEventListener('click', async () => {
+      await actor.update({ 'system.roundsFiredThisPhase': 0 });
+      el.querySelector('#sr-rounds-fired').textContent = '0';
+      el.querySelectorAll('.sr-recoil-preview').forEach(span => {
+        span.textContent = span.dataset.mode === 'FA' ? '+0 recoil + multi-target (see below)' : '+0';
+      });
     });
   });
 
@@ -1769,16 +1776,13 @@ static async _promptFireMode(availableModes, actor, weaponName) {
 
     // Step 3: Spell Pool allocation — compute from raw fields, not derived cache
     const sAttr     = actor.system.attributes ?? {};
-    const stunVal   = actor.system.wounds?.stun?.value     ?? 0;
-    const physVal   = actor.system.wounds?.physical?.value ?? 0;
-    const woundMod  = -(Math.floor(stunVal / 3) + Math.floor(physVal / 3));
-    const specBonus = hasSpellcastingSpec ? 2 : 0;
-    const sorceryDice = Math.max(0, sorceryRating + specBonus + woundMod);
+    const specBonus   = hasSpellcastingSpec ? 2 : 0;
+    const sorceryDice = Math.max(0, sorceryRating + specBonus);
 
     const magicBase2 = sAttr.magic?.base ?? 0;
     const intVal     = sAttr.intelligence?.base ?? 0;
     const wilVal     = sAttr.willpower?.base    ?? 0;
-    const spBase2    = Math.max(0, Math.floor((intVal + wilVal + magicBase2) / 2) + woundMod);
+    const spBase2    = Math.max(0, Math.floor((intVal + wilVal + magicBase2) / 3));
     const spTotal2   = spBase2 + (actor.system.spellPoolMod ?? 0);
     const availMagic = Math.max(0, spTotal2 - (actor.system.spellPoolSpent ?? 0));
 

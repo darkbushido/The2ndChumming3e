@@ -60,7 +60,7 @@ export class SR3EActor extends Actor {
 
     const stunVal = w.stun?.value     ?? 0;
     const physVal = w.physical?.value ?? 0;
-    sys.woundMod  = -(Math.floor(stunVal / 3) + Math.floor(physVal / 3));
+    sys.woundMod  = -(SR3EActor._trackMod(stunVal) + SR3EActor._trackMod(physVal));
 
     if (this.type === 'character' || this.type === 'npc') {
       this._prepareCharacter(sys, attr);
@@ -904,9 +904,10 @@ _ensureAttributeValues(attr) {
   if (!attr.reaction) {
     const quick = attr.quickness?.base ?? 3;
     const intel = attr.intelligence?.base ?? 3;
+    const reactionBase = Math.max(1, Math.floor((quick + intel) / 2));
     attr.reaction = {
-      base: Math.floor((quick + intel) / 2),
-      value: Math.floor((quick + intel) / 2),
+      base: reactionBase,
+      value: reactionBase,
       bonus: 0,
       override: false
     };
@@ -914,7 +915,7 @@ _ensureAttributeValues(attr) {
     if (attr.reaction.base === undefined) {
       const quick = attr.quickness?.base ?? 3;
       const intel = attr.intelligence?.base ?? 3;
-      attr.reaction.base = Math.floor((quick + intel) / 2);
+      attr.reaction.base = Math.max(1, Math.floor((quick + intel) / 2));
     }
     if (attr.reaction.value === undefined) {
       attr.reaction.value = attr.reaction.base + (attr.reaction.bonus ?? 0);
@@ -964,17 +965,17 @@ _prepareCharacter(sys, attr) {
     }
   }
 
-  // Reaction — derived from force-enhanced QUI + INT per RAW
+  // Reaction — derived from force-enhanced QUI + INT per RAW, minimum 1
   if (attr.reaction) {
-    const baseReaction = Math.floor(
+    const baseReaction = Math.max(1, Math.floor(
       ((attr.quickness?.value ?? 0) + (attr.intelligence?.value ?? 0)) / 2
-    );
+    ));
     attr.reaction.base = baseReaction;
 
     if (!attr.reaction.override) {
-      attr.reaction.value = baseReaction
+      attr.reaction.value = Math.max(1, baseReaction
         + (attr.reaction.reactionBonus ?? 0)
-        + (isAdept ? (attr.reaction.force ?? 0) : 0);
+        + (isAdept ? (attr.reaction.force ?? 0) : 0));
     }
   }
 
@@ -1015,7 +1016,7 @@ _prepareCharacter(sys, attr) {
     ((attr.quickness?.value    ?? 0) +
      (attr.intelligence?.value ?? 0) +
      (attr.willpower?.value    ?? 0)) / 2
-  ) + wm);
+  ));
   const combatPool          = combatPoolBase + (sys.combatPoolMod ?? 0);
   const combatPoolSpent     = sys.combatPoolSpent ?? 0;
   const availableCombatPool = Math.max(0, combatPool - combatPoolSpent);
@@ -1025,22 +1026,25 @@ _prepareCharacter(sys, attr) {
     ? Math.max(0, Math.floor(
         ((attr.intelligence?.value ?? 0) +
          (attr.willpower?.value    ?? 0) +
-         magicEff) / 2
-      ) + wm)
+         magicEff) / 3
+      ))
     : null;
   const spellPool          = spellPoolBase !== null ? spellPoolBase + (sys.spellPoolMod ?? 0) : null;
   const spellPoolSpent     = magicBase > 0 ? (sys.spellPoolSpent ?? 0) : 0;
   const availableSpellPool = spellPool !== null ? Math.max(0, spellPool - spellPoolSpent) : null;
 
-  const hackingPoolBase = Math.floor((attr.intelligence?.value ?? 0) / 2) + (sys.hackingBonus ?? 0) + wm;
+  const deckItem        = sys.equippedCyberdeck ? this.items?.get(sys.equippedCyberdeck) : null;
+  const mpcp            = deckItem?.system?.attributes?.mpcp?.base ?? null;
+  const hackingPoolBase = mpcp !== null
+    ? Math.max(0, Math.floor(((attr.intelligence?.value ?? 0) + mpcp) / 3))
+    : null;
 
-  // Astral pool (magic users only): floor((INT + CHA + WIL) / 3) + woundMod
   const astralPoolBase = magicBase > 0
     ? Math.max(0, Math.floor(
         ((attr.intelligence?.value ?? 0) +
          (attr.charisma?.value    ?? 0) +
-         (attr.willpower?.value   ?? 0)) / 3
-      ) + wm)
+         (attr.willpower?.value   ?? 0)) / 2
+      ))
     : null;
   const astralPool          = astralPoolBase !== null ? astralPoolBase + (sys.astralPoolMod ?? 0) : null;
   const astralPoolSpent     = magicBase > 0 ? (sys.astralPoolSpent ?? 0) : 0;
@@ -1063,8 +1067,8 @@ _prepareCharacter(sys, attr) {
     astralPool,
     availableAstralPool,
     hackingPoolBase,
-    hackingPool:          Math.max(0, hackingPoolBase),
-    availableHackingPool: Math.max(0, hackingPoolBase - (sys.hackingPoolSpent ?? 0)),
+    hackingPool:          hackingPoolBase !== null ? Math.max(0, hackingPoolBase) : null,
+    availableHackingPool: hackingPoolBase !== null ? Math.max(0, hackingPoolBase - (sys.hackingPoolSpent ?? 0)) : null,
     vcrRating,
     vcrActive:          vcrRating > 0,
     totalBioIndex,
@@ -1102,10 +1106,13 @@ _prepareCharacter(sys, attr) {
       return null;
     }
 
-    const effectiveTN = Math.max(2, tn);
+    const effectiveTN  = options.skipWoundMod
+      ? Math.max(2, tn)
+      : Math.max(2, tn - (this.system.woundMod ?? 0));
+    const woundDisplay = options.skipWoundMod ? 0 : -(this.system.woundMod ?? 0);
 
     if (options.physicalDice) {
-      const successes = await SR3EActor._promptPhysicalSuccesses(pool, effectiveTN, label);
+      const successes = await SR3EActor._promptPhysicalSuccesses(pool, effectiveTN, label, tn, woundDisplay);
       if (successes === null) return null;
       await this._postWaveCard({
         actorId:             this.id,
@@ -1282,13 +1289,17 @@ _prepareCharacter(sys, attr) {
     return dice;
   }
 
-  static async _promptPhysicalSuccesses(pool, tn, label) {
+  static async _promptPhysicalSuccesses(pool, tn, label, baseTN = tn, woundPenalty = 0) {
+    const woundNote = woundPenalty > 0
+      ? `<div style="font-size:11px;color:var(--sr-amber);margin-bottom:8px">⚡ TN modifiers: Wound +${woundPenalty} (base ${baseTN} → ${tn})</div>`
+      : '';
     let successes = null;
     await foundry.applications.api.DialogV2.wait({
       window: { title: `${label} — Physical Dice` },
       content: `
         <div style="padding:8px 0">
           <p>TN: <strong>${tn}</strong> &nbsp;—&nbsp; Pool: <strong>${pool}</strong> dice</p>
+          ${woundNote}
           <label style="display:flex;align-items:center;gap:8px">
             Successes:
             <input type="number" id="phys-successes" value="0" min="0" max="${pool * 5}"
@@ -1309,6 +1320,9 @@ _prepareCharacter(sys, attr) {
     });
     return successes;
   }
+
+  // SR3 wound modifier per track: Light (1+ boxes) = 1, Moderate (3+) = 2, Serious (6+) = 3
+  static _trackMod(boxes) { return boxes >= 6 ? 3 : boxes >= 3 ? 2 : boxes >= 1 ? 1 : 0; }
 
   static _buildPhysicalDice(pool, successes) {
     return Array.from({ length: pool }, (_, i) => ({
@@ -1336,7 +1350,7 @@ _prepareCharacter(sys, attr) {
 
     // Build dice display — exploding dice show a ★ and a pending style.
     const diceHtml = state.physicalDice
-      ? `<span class="sr-die sr-hit" title="Physical dice result">📋 ${successes} success${successes !== 1 ? 'es' : ''} entered</span>`
+      ? `<span class="sr-phys-summary">📋 ${successes} success${successes !== 1 ? 'es' : ''} entered</span>`
       : dice.map(d => {
           const cls = ['sr-die'];
           if (d.done && d.success)  cls.push('sr-hit');
@@ -1928,9 +1942,16 @@ _prepareCharacter(sys, attr) {
           const resultLine = unchanged
             ? `${successes} resist hit${successes !== 1 ? 's' : ''} — damage unchanged: <strong>${msc.stagedPower}${finalLevel} Matrix</strong>`
             : `${successes} resist hit${successes !== 1 ? 's' : ''} — <strong>${msc.stagedPower}${msc.stagedLevel}</strong> staged down to <strong>${msc.stagedPower}${finalLevel} Matrix</strong>`;
+          const icBoxes = ({ L: 1, M: 3, S: 6, D: 10 })[finalLevel] ?? 1;
+          const icName  = game.actors.get(msc.icActorId)?.name ?? 'IC';
+          const icAssignPayload = JSON.stringify({ icActorId: msc.icActorId, boxes: icBoxes }).replace(/'/g, '&#39;');
           stagingHtml = `
             <div class="sr-staging-result">💻 ${resultLine}</div>
-            <div class="sr-soak-hint">Apply matrix damage manually using the IC wound track.</div>`;
+            <div class="sr-soak-action">
+              <button class="sr-assign-damage-btn" data-payload='${icAssignPayload}'>
+                💉 Assign ${msc.stagedPower}${finalLevel} Matrix to ${icName}
+              </button>
+            </div>`;
         }
       }
 
@@ -1941,7 +1962,7 @@ _prepareCharacter(sys, attr) {
       resultHtml = `
         <div class="sr-roll-stats">
           <span class="sr-stat">🎲 Successes: ${successes}</span>
-          <span class="sr-stat">⚠️ 1s: ${ones}</span>
+          ${state.physicalDice ? '' : `<span class="sr-stat">⚠️ 1s: ${ones}</span>`}
         </div>
         <div class="sr-roll-result">
           <strong>${successes}</strong> success${successes !== 1 ? 'es' : ''}
@@ -2067,9 +2088,17 @@ _prepareCharacter(sys, attr) {
         const resultLine = unchanged
           ? `${successes} hit${successes !== 1 ? 's' : ''} — drain unchanged: <strong>${finalLevel} ${trackLabel}</strong>`
           : `${successes} hit${successes !== 1 ? 's' : ''} — <strong>${dp.drainLevel} ${trackLabel}</strong> staged down to <strong>${finalLevel} ${trackLabel}</strong>`;
+        const drainBoxes   = ({ L: 1, M: 3, S: 6, D: 10 })[finalLevel] ?? 1;
+        const drainTrack   = dp.drainIsPhysical ? 'physical' : 'stun';
+        const drainActorName = game.actors.get(dp.actorId)?.name ?? 'Caster';
+        const drainAssignPayload = JSON.stringify({ actorId: dp.actorId, track: drainTrack, boxes: drainBoxes }).replace(/'/g, '&#39;');
         drainResultHtml = `
           <div class="sr-soak-result">⚡ ${resultLine}</div>
-          <div class="sr-soak-hint">Apply drain manually using the wound track.</div>
+          <div class="sr-soak-action">
+            <button class="sr-assign-damage-btn" data-payload='${drainAssignPayload}'>
+              ⚡ Assign ${finalLevel} ${trackLabel} drain to ${drainActorName}
+            </button>
+          </div>
         `;
       }
     }
@@ -2098,9 +2127,17 @@ _prepareCharacter(sys, attr) {
         const resultLine = unchanged
           ? `${successes} soak hit${successes !== 1 ? 's' : ''} — damage unchanged: <strong>${power}${finalLevel} ${trackLabel}</strong>`
           : `${successes} soak hit${successes !== 1 ? 's' : ''} — <strong>${sp.stagedPower}${sp.stagedLevel}</strong> staged down to <strong>${power}${finalLevel} ${trackLabel}</strong>`;
+        const soakBoxes      = ({ L: 1, M: 3, S: 6, D: 10 })[finalLevel] ?? 1;
+        const soakTrack      = sp.isStun ? 'stun' : 'physical';
+        const soakTargetName = game.actors.get(sp.actorId)?.name ?? 'Target';
+        const soakAssignPayload = JSON.stringify({ actorId: sp.actorId, track: soakTrack, boxes: soakBoxes }).replace(/'/g, '&#39;');
         soakResultHtml = `
           <div class="sr-soak-result">🛡 ${resultLine}</div>
-          <div class="sr-soak-hint">Apply damage manually using the wound track buttons.</div>
+          <div class="sr-soak-action">
+            <button class="sr-assign-damage-btn" data-payload='${soakAssignPayload}'>
+              🩸 Assign ${power}${finalLevel} ${trackLabel} to ${soakTargetName}
+            </button>
+          </div>
         `;
       }
     }
@@ -2386,9 +2423,15 @@ _prepareCharacter(sys, attr) {
       const resultLine = unchanged
         ? `${successes} soak hit${successes !== 1 ? 's' : ''} — damage unchanged: <strong>${ctx.power}${finalLevel} Physical</strong>`
         : `${successes} soak hit${successes !== 1 ? 's' : ''} — <strong>${ctx.power}${ctx.level}</strong> staged down to <strong>${ctx.power}${finalLevel} Physical</strong>`;
+      const vehBoxes = ({ L: 1, M: 3, S: 6, D: 10 })[finalLevel] ?? 1;
+      const vehAssignPayload = JSON.stringify({ vehicleActorId: ctx.vehicleActorId, boxes: vehBoxes }).replace(/'/g, '&#39;');
       html += `
         <div class="sr-soak-result">🛡 ${ctx.vehicleName}: ${resultLine}</div>
-        <div class="sr-soak-hint">Apply damage manually using the vehicle wound track.</div>`;
+        <div class="sr-soak-action">
+          <button class="sr-assign-damage-btn" data-payload='${vehAssignPayload}'>
+            🩸 Assign ${ctx.power}${finalLevel} to ${ctx.vehicleName}
+          </button>
+        </div>`;
     }
 
     // Occupants resist the staged-down level (ctx.useStaged=true for crash)
@@ -2542,13 +2585,11 @@ _prepareCharacter(sys, attr) {
       const specLine  = info?.specName
         ? `<div class="sr-melee-spec">${info.skillRating} (${info.skillRating + info.specBonus}) – ${info.specName}</div>`
         : '';
-      const woundMod  = info?.woundMod ?? 0;
       const availPool = info?.availPool ?? 0;
       const skillDice = info?.skillDice ?? 1;
       const tnCalc    = [
         '4',
-        woundMod < 0 ? ` ${woundMod} wounds` : '',
-        reach > 0    ? ` −${reach} reach`    : '',
+        reach > 0 ? ` −${reach} reach` : '',
       ].join('');
       const displayDamage = damageBase && /STR/i.test(rawDamage)
         ? `${damageBase.power}${damageBase.level}${damageBase.isStun ? ' Stun' : ''}`
@@ -2574,7 +2615,6 @@ _prepareCharacter(sys, attr) {
             <span>Skill:</span>
             <div style="display:flex;align-items:center;gap:4px">
               <input type="number" class="${skillDiceClass}" value="${skillDice}" min="1" max="30" style="width:40px"/>
-              ${woundMod < 0 ? `<span style="font-size:10px;color:var(--sr-red)">(${woundMod})</span>` : ''}
             </div>
           </div>
           <div class="sr-melee-field-row">
@@ -3036,6 +3076,31 @@ _prepareCharacter(sys, attr) {
     });
   }
 
+  static async handleAssignDamage(btn) {
+    btn.disabled    = true;
+    btn.textContent = '✓ Damage Applied';
+    const p = JSON.parse(btn.dataset.payload);
+    if (p.icActorId) {
+      const ic  = game.actors.get(p.icActorId);
+      if (!ic) return;
+      const current = ic.system.woundValue ?? 0;
+      const max     = ic.system.derived?.woundMax ?? (ic.system.rating ?? 1) * 2;
+      await ic.update({ 'system.woundValue': Math.min(max, current + p.boxes) });
+    } else if (p.vehicleActorId) {
+      const veh = game.actors.get(p.vehicleActorId);
+      if (!veh) return;
+      const current = veh.system.damage?.value ?? 0;
+      const max     = (veh.system.attributes?.body?.base ?? 4) * 2;
+      await veh.update({ 'system.damage.value': Math.min(max, current + p.boxes) });
+    } else {
+      const actor = game.actors.get(p.actorId);
+      if (!actor) return;
+      const current = actor.system.wounds?.[p.track]?.value ?? 0;
+      const max     = actor.system.wounds?.[p.track]?.max ?? 10;
+      await actor.update({ [`system.wounds.${p.track}.value`]: Math.min(max, current + p.boxes) });
+    }
+  }
+
   /**
    * Spend combat pool dice, clamped to available pool.
    * Returns how many were actually spent.
@@ -3065,12 +3130,9 @@ _prepareCharacter(sys, attr) {
     const magicBase  = attr.magic?.base ?? 0;
     let available    = 0;
     if (magicBase > 0) {
-      const stunVal  = this.system.wounds?.stun?.value     ?? 0;
-      const physVal  = this.system.wounds?.physical?.value ?? 0;
-      const wm       = -(Math.floor(stunVal / 3) + Math.floor(physVal / 3));
       const int2     = attr.intelligence?.base ?? 0;
       const wil2     = attr.willpower?.base    ?? 0;
-      const spBase   = Math.max(0, Math.floor((int2 + wil2 + magicBase) / 2) + wm);
+      const spBase   = Math.max(0, Math.floor((int2 + wil2 + magicBase) / 3));
       const spTotal  = spBase + (this.system.spellPoolMod ?? 0);
       available      = Math.max(0, spTotal - (this.system.spellPoolSpent ?? 0));
     }
@@ -3840,6 +3902,11 @@ _prepareCharacter(sys, attr) {
         : '';
     }
 
+    const woundMod = this.system.woundMod ?? 0;
+    const woundNote = (woundMod < 0 && !useAstral && !useMatrix)
+      ? `<div class="sr-roll-meta" style="color:var(--sr-amber)">Wound −${-woundMod}: reaction ${base - woundMod} → ${base} base</div>`
+      : '';
+
     let score;
     let cardContent;
 
@@ -3868,6 +3935,7 @@ _prepareCharacter(sys, attr) {
         <div class="sr-roll-card">
           <div class="sr-roll-header">⚡ Initiative — ${this.name}</div>
           <div class="sr-roll-meta">${base} base + ${dice}d6</div>
+          ${woundNote}
           ${modeNote}
           <div class="sr-roll-dice"><span class="sr-die sr-hit" title="Physical dice">📋 ${score}</span></div>
           <div class="sr-roll-result">Score: <strong>${score}</strong></div>
@@ -3883,6 +3951,7 @@ _prepareCharacter(sys, attr) {
         <div class="sr-roll-card">
           <div class="sr-roll-header">⚡ Initiative — ${this.name}</div>
           <div class="sr-roll-meta">${base} base + ${dice}d6</div>
+          ${woundNote}
           ${modeNote}
           <div class="sr-roll-dice">${diceHtml}</div>
           <div class="sr-roll-result">
@@ -3957,16 +4026,12 @@ _prepareCharacter(sys, attr) {
     });
     if (cancelled || force === null) return null;
 
-    // Compute wound mod and spell pool total from raw fields (don't trust derived cache)
-    const stunVal   = this.system.wounds?.stun?.value     ?? 0;
-    const physVal   = this.system.wounds?.physical?.value ?? 0;
-    const woundMod  = -(Math.floor(stunVal / 3) + Math.floor(physVal / 3));
-    const specBonus = hasDispelSpec ? 2 : 0;
-    const sorceryDice = Math.max(0, sorceryRating + specBonus + woundMod);
+    const specBonus   = hasDispelSpec ? 2 : 0;
+    const sorceryDice = Math.max(0, sorceryRating + specBonus);
 
-    const intVal    = this.system.attributes?.intelligence?.base ?? 0;
-    const wilVal    = this.system.attributes?.willpower?.base    ?? 0;
-    const spBase    = Math.max(0, Math.floor((intVal + wilVal + magicBase) / 2) + woundMod);
+    const intVal  = this.system.attributes?.intelligence?.base ?? 0;
+    const wilVal  = this.system.attributes?.willpower?.base    ?? 0;
+    const spBase  = Math.max(0, Math.floor((intVal + wilVal + magicBase) / 3));
     const spTotal   = spBase + (this.system.spellPoolMod ?? 0);
     const spSpent   = this.system.spellPoolSpent ?? 0;
     const availSpell = Math.max(0, spTotal - spSpent);
@@ -4498,8 +4563,7 @@ _prepareCharacter(sys, attr) {
     }
 
     const rating   = skill.system.skillRating ?? 1;
-    const woundMod = actor.system.woundMod ?? 0;
-    const basePool = Math.max(1, rating + woundMod);
+    const basePool = Math.max(1, rating);
 
     let opts = null;
     await foundry.applications.api.DialogV2.wait({

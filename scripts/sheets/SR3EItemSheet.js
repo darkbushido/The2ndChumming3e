@@ -53,6 +53,64 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       ?.addEventListener('change', ev => SR3EItemSheet._onSkillChange.call(this, ev));
 
 
+    const specAddBtn = html.querySelector('#spec-add-btn');
+    if (specAddBtn) {
+      specAddBtn.addEventListener('click', async () => {
+        const s            = this.item.system;
+        const predefined   = getSpecializationsForSkill(s.category, s.skillName);
+        const fixedOptions = predefined.filter(opt => !opt.endsWith('->'));
+        const existingNames = new Set((s.specialisations ?? []).map(sp => sp.name));
+        const available    = fixedOptions.filter(opt => !existingNames.has(opt));
+
+        let specName = null;
+        await foundry.applications.api.DialogV2.wait({
+          window: { title: `Add Specialisation — ${this.item.name}` },
+          content: `
+            <div style="padding:8px;display:flex;flex-direction:column;gap:6px">
+              ${available.length > 0 ? `
+                <label>From list:
+                  <select id="spec-select" style="margin-left:8px">
+                    <option value="">— or type a custom name below —</option>
+                    ${available.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                  </select>
+                </label>` : ''}
+              <label>${available.length > 0 ? 'Custom:' : 'Name:'}
+                <input type="text" id="new-spec-name" style="width:180px;margin-left:8px"
+                       ${available.length === 0 ? 'autofocus' : ''}
+                       placeholder="${available.length > 0 ? 'Leave blank if selecting above' : 'Specialisation name'}"/>
+              </label>
+            </div>`,
+          buttons: [
+            {
+              label: 'Add', action: 'add', default: true,
+              callback: (_e, _b, dlg) => {
+                const sel    = dlg.element.querySelector('#spec-select')?.value?.trim() ?? '';
+                const custom = dlg.element.querySelector('#new-spec-name')?.value?.trim() ?? '';
+                specName = sel || custom;
+              }
+            },
+            { label: 'Cancel', action: 'cancel' },
+          ],
+        });
+        if (!specName) return;
+        const specs = [...(this.item.system.specialisations ?? [])];
+        specs.push({ name: specName, level: 1 });
+        await this.item.update({ 'system.specialisations': specs });
+      });
+    }
+
+    html.querySelectorAll('.spec-remove-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const idx = parseInt(btn.dataset.specIdx);
+        const specs = [...(this.item.system.specialisations ?? [])];
+        const removedName = specs[idx]?.name ?? '';
+        specs.splice(idx, 1);
+        const updates = { 'system.specialisations': specs };
+        if (removedName && this.item.system.specialisation === removedName) updates['system.specialisation'] = '';
+        await this.item.update(updates);
+      });
+    });
+
     const specModeEl = html.querySelector('#spec-mode');
     if (specModeEl) {
       const hidden   = html.querySelector('#spec-hidden');
@@ -415,6 +473,29 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
               </div>
             ` : ''}
           </div>
+
+          ${s.skillName ? (() => {
+            const specs = s.specialisations ?? [];
+            const rating = s.rating ?? 0;
+            return `
+              <div class="form-field" style="grid-column:1/-1">
+                <span class="field-label">Purchased Specialisations</span>
+                <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:4px">
+                  ${specs.length === 0
+                    ? `<span style="color:var(--sr-muted);font-size:11px">None purchased yet</span>`
+                    : specs.map((sp, i) => `
+                        <div style="display:flex;align-items:center;gap:6px">
+                          <span style="flex:1;font-size:12px">${sp.name}</span>
+                          <span style="font-size:11px;color:var(--sr-accent);background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);padding:1px 5px"
+                                title="Effective dice with this spec">${rating + (sp.level ?? 1)} dice (lv${sp.level ?? 1})</span>
+                          <button type="button" class="btn-xs spec-remove-btn" data-spec-idx="${i}"
+                                  style="padding:0 5px;line-height:1.4" title="Remove">×</button>
+                        </div>`).join('')}
+                </div>
+                ${specs.length < rating ? `<button type="button" class="btn-xs" id="spec-add-btn">+ Add Specialisation</button>` : `<span style="font-size:11px;color:var(--sr-muted)">Max specialisations reached (${rating})</span>`}
+              </div>
+            `;
+          })() : ''}
 
           ${currentCat && s.skillName ? `
             <div class="skill-info-box">

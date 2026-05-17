@@ -185,6 +185,13 @@ export class GearData extends foundry.abstract.TypeDataModel {
 }
 
 export class SkillData extends foundry.abstract.TypeDataModel {
+  static migrateData(source) {
+    if (typeof source.specialisation === 'string' && source.specialisation !== '' && !Array.isArray(source.specialisations)) {
+      source.specialisations = [{ name: source.specialisation, level: 2 }];
+    }
+    return super.migrateData(source);
+  }
+
   static defineSchema() {
     return {
       rating:          new NumberField({ integer: true, initial: 1, min: 0 }),
@@ -193,6 +200,10 @@ export class SkillData extends foundry.abstract.TypeDataModel {
       skillName:       new StringField({ initial: '' }),
       linkedAttribute: new StringField({ initial: 'quickness' }),
       specialisation:  new StringField({ initial: '' }),
+      specialisations: new ArrayField(new SchemaField({
+        name:  new StringField({ initial: '' }),
+        level: new NumberField({ integer: true, initial: 1, min: 1, max: 2 }),
+      }), { initial: [] }),
       description:     new HTMLField({ initial: '', required: false }),
     };
   }

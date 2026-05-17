@@ -1,4 +1,4 @@
-import { SR3E } from '../config.js';
+import { SR3E, getSpecializationsForSkill } from '../config.js';
 
 /**
  * SR3EActorSheet — V2 Application framework (Foundry v13+).
@@ -62,14 +62,16 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         toggleStored:      SR3EActorSheet._onToggleStored,
         toggleTemplate:    SR3EActorSheet._onToggleTemplate,
         deployTemplate:    SR3EActorSheet._onDeployTemplate,
-        karmaCalculator:    SR3EActorSheet._onKarmaCalculator,
+
         toggleFullDefense:  SR3EActorSheet._onToggleFullDefense,
         resetRecoil:        SR3EActorSheet._onResetRecoil,
         rollCybercombat:    SR3EActorSheet._onRollCybercombat,
         rollHackingAction:  SR3EActorSheet._onRollHackingAction,
         rollDumpshock:      SR3EActorSheet._onRollDumpshock,
         rollProgram:        SR3EActorSheet._onRollProgram,
-        refreshHackingPool: SR3EActorSheet._onRefreshHackingPool,
+        refreshHackingPool:      SR3EActorSheet._onRefreshHackingPool,
+        awardKarma:              SR3EActorSheet._onAwardKarma,
+        spendKarmaCalculator:    SR3EActorSheet._onSpendKarmaCalculator,
     }
   };
 
@@ -332,9 +334,15 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                 ${deadHtml}
               </div>
             </div>
-            <span class="wound-mod-display">
-              Wound Mod: <strong>${sys.woundMod < 0 ? sys.woundMod : '—'}</strong>
-            </span>
+            ${(() => {
+              const wm = sys.woundMod ?? 0;
+              if ((w.stun?.value ?? 0) >= 10 || (w.physical?.value ?? 0) >= 10)
+                return `<span class="wound-mod-display" style="color:var(--sr-red)">unconscious</span>`;
+              if (wm < 0)
+                return `<span class="wound-mod-display" style="color:var(--sr-red)">TN+${-wm}, Init${wm}</span>`;
+              return '';
+            })()}
+            ${(() => { const rb = sys.attributes?.reaction?.reactionBonus ?? 0; return rb !== 0 ? `<span class="wound-mod-display" style="color:var(--sr-accent)">Init Mod: <strong>${rb > 0 ? '+' : ''}${rb}</strong></span>` : ''; })()}
             <span class="wound-mod-display">
               Carry: <strong>${weightDisplay}</strong>
             </span>
@@ -380,11 +388,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ['armor',       'Armor'],
       ['magic',       'Magic'],
       ['gear',        'Gear'],
-      ['contacts',    'Contacts'],
       ['vehicles',    'Vehicles'],
       ['cyber',       'Cyber'],
       ['matrix',      'Matrix'],
-      ['stored',      'Stored'],
+      ['stored',      'Storage'],
+      ['contacts',    'Contacts'],
     ];
     return `<nav class="sheet-tabs">
       ${tabs.map(([id, label]) =>
@@ -442,6 +450,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <span class="attr-label" style="color:var(--sr-amber)">Reaction</span>
         <div class="attr-row">
           <span class="attr-derived" style="color:var(--sr-amber)">${attr.reaction?.value ?? 0}</span>
+          <span class="attr-force-sep" title="Initiative modifier (wired reflexes, drugs, etc.)">+</span>
+          <input class="attr-input attr-force" type="number" name="system.attributes.reaction.reactionBonus"
+                 value="${attr.reaction?.reactionBonus ?? 0}" title="Initiative modifier (wired reflexes, drugs, etc.)"/>
           ${isAdept ? `<span class="attr-force-sep" title="Reaction adept force">+</span>
           <input class="attr-input attr-force" type="number" name="system.attributes.reaction.force"
                  value="${attr.reaction?.force ?? 0}" min="0" max="10" title="Adept force on Reaction"/>` : ''}
@@ -483,10 +494,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           d.combatPoolBase ?? 0,
           'system.combatPoolSpent', 'system.combatPoolMod')}
         ${this._derivedBlock('Karma Pool',
-          `<span style="display:flex;align-items:center;gap:4px">
-            <input type="number" name="system.karmaPool" value="${sys.karmaPool ?? 0}" class="pool-input" style="width:45px"/>
-            <button type="button" class="btn-xs" data-action="karmaCalculator" title="Karma cost calculator">Calc</button>
-          </span>`)}
+          `<input type="number" name="system.karmaPool" value="${sys.karmaPool ?? 0}" class="pool-input" style="width:45px"/>`)}
         ${d.spellPool !== null && d.spellPool !== undefined
           ? this._poolBlock('Spell Pool',
               d.availableSpellPool ?? d.spellPool ?? 0,
@@ -502,11 +510,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
               'system.astralPoolSpent', 'system.astralPoolMod')
           : ''}
         ${(sys.spellDefensePool ?? 0) > 0 ? this._derivedBlock('Spell Defense', `<span style="color:var(--sr-accent)">${sys.spellDefensePool} dice</span>`) : ''}
-        ${this._poolBlock('Hacking Pool',
-          d.availableHackingPool ?? d.hackingPool ?? 0,
+        ${d.hackingPool !== null ? this._poolBlock('Hacking Pool',
+          d.availableHackingPool ?? 0,
           d.hackingPool ?? 0,
           d.hackingPoolBase ?? 0,
-          'system.hackingPoolSpent', 'system.hackingBonus')}
+          'system.hackingPoolSpent', null) : ''}
       </div>
     </div>
 
@@ -596,8 +604,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const _skillRow = s => {
       const rating    = s.system.rating ?? 0;
       const force     = s.system.force  ?? 0;
-      const ratingDisplay = s.system.specialisation
-        ? `${rating} <span style="color:var(--sr-accent)">(${rating + 2})</span>`
+      const specs     = s.system.specialisations ?? [];
+      const maxBonus  = specs.length > 0
+        ? Math.max(...specs.map(sp => sp.level ?? 1))
+        : (s.system.specialisation ? 2 : 0);
+      const ratingDisplay = maxBonus > 0
+        ? `${rating} <span style="color:var(--sr-accent)">(${rating + maxBonus})</span>`
         : `${rating}`;
       const forceCell = isAdept ? `
         <span class="item-cell">
@@ -613,7 +625,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           <span class="item-cell">${s.system.linkedAttribute ?? '—'}</span>
           <span class="item-cell">${ratingDisplay}</span>
           ${forceCell}
-          <span class="item-cell">${s.system.specialisation || '—'}</span>
+          <span class="item-cell" title="${specs.map(sp => `${sp.name} (+${sp.level})`).join(', ') || s.system.specialisation || ''}">${specs.length > 0 ? specs.map(sp => sp.name).join(', ') : (s.system.specialisation || '—')}</span>
           ${this._itemControls(s.id, true, 'rollSkill')}
         </div>`;
     };
@@ -1695,8 +1707,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       <div class="bio-fields">
         ${this._inlineField('Nuyen (¥)', 'system.nuyen', sys.nuyen, 'number', 100)}
         ${this._inlineField('Karma', 'system.karma', sys.karma, 'number', 80)}
+        <button type="button" class="btn-sm" data-action="spendKarmaCalculator" style="align-self:flex-end">Spend Karma…</button>
       </div>
-      
+
       <h3 class="section-hdr" style="margin-top:1rem">Reputation</h3>
       <div class="rep-grid">
         ${this._inlineField('Street Cred', 'system.streetCred', sys.streetCred, 'number', 55)}
@@ -2086,128 +2099,6 @@ static async _onHealDamage(ev, target) {
     await actor.update({ 'system.astralMode': current === mode ? '' : mode });
   }
 
-  static async _onKarmaCalculator(_ev, _target) {
-    const actor     = this.actor;
-    const karmaPool = actor.system.karmaPool ?? 0;
-
-    const TYPES = [
-      { value: 'attribute',       label: 'Attribute (×1.5 per rank, rounded up)' },
-      { value: 'active',          label: 'Active Skill (×1 per rank)' },
-      { value: 'knowledge',       label: 'Knowledge/Language Skill (×0.5 per rank, rounded up)' },
-      { value: 'new-skill',       label: 'New Active Skill (flat 4 karma)' },
-      { value: 'new-knowledge',   label: 'New Knowledge/Language Skill (flat 1 karma)' },
-      { value: 'specialization',  label: 'Specialisation (flat 1 karma)' },
-      { value: 'new-spell',       label: 'New Spell (Force × 1 karma — enter Force as current rating)' },
-    ];
-    const typeOpts = TYPES.map(t => `<option value="${t.value}">${t.label}</option>`).join('');
-
-    function karmaCost(type, from, _to) {
-      if (type === 'new-skill')      return 4;
-      if (type === 'new-knowledge')  return 1;
-      if (type === 'specialization') return 1;
-      if (type === 'new-spell')      return Math.max(1, from);
-      let total = 0;
-      for (let r = from + 1; r <= _to; r++) {
-        if (type === 'attribute')  total += Math.ceil(r * 1.5);
-        else if (type === 'active') total += r;
-        else if (type === 'knowledge') total += Math.ceil(r * 0.5);
-      }
-      return total;
-    }
-
-    let type = 'attribute';
-    let from = 3;
-    let to   = 4;
-    let proceed = false;
-
-    await foundry.applications.api.DialogV2.wait({
-      window: { title: `Karma Cost Calculator — ${actor.name}` },
-      content: `
-        <div style="padding:8px 0">
-          <p style="margin:0 0 8px;font-size:12px;color:var(--color-text-dark-secondary)">
-            Karma Pool available: <strong>${karmaPool}</strong>
-          </p>
-          <label style="display:block;margin-bottom:8px">
-            Type:
-            <select id="kc-type" style="width:100%;margin-top:4px">${typeOpts}</select>
-          </label>
-          <div style="display:flex;gap:16px;margin-bottom:8px">
-            <label>Current rating:
-              <input type="number" id="kc-from" value="3" min="0" max="20" style="width:55px;margin-left:4px">
-            </label>
-            <label>Target rating:
-              <input type="number" id="kc-to" value="4" min="1" max="20" style="width:55px;margin-left:4px">
-            </label>
-          </div>
-          <p style="font-size:11px;color:var(--sr-muted)">
-            Attribute: new rating ×1.5 each step &nbsp;|&nbsp; Active: new rating ×1 &nbsp;|&nbsp; Knowledge: new rating ×0.5
-          </p>
-        </div>`,
-      buttons: [
-        {
-          label: 'Calculate & Spend',
-          action: 'confirm',
-          default: true,
-          callback: (_e, _b, dlg) => {
-            proceed = true;
-            type = dlg.element.querySelector('#kc-type')?.value ?? 'attribute';
-            from = parseInt(dlg.element.querySelector('#kc-from')?.value) || 0;
-            to   = parseInt(dlg.element.querySelector('#kc-to')?.value)   || 1;
-          },
-        },
-        { label: 'Cancel', action: 'cancel' },
-      ],
-    });
-
-    if (!proceed) return;
-
-    const SINGLE_VALUE_TYPES = ['new-skill', 'new-knowledge', 'specialization', 'new-spell'];
-    if (to <= from && !SINGLE_VALUE_TYPES.includes(type)) {
-      ui.notifications.warn('Target rating must be higher than current rating.');
-      return;
-    }
-
-    const cost = karmaCost(type, from, to);
-    if (cost <= 0) { ui.notifications.warn('Karma cost is 0.'); return; }
-
-    const typeLabel = TYPES.find(t => t.value === type)?.label ?? type;
-    const FLAT_TYPES = ['new-skill', 'new-knowledge', 'specialization'];
-    const detailLabel = FLAT_TYPES.includes(type) ? 'Flat cost'
-      : type === 'new-spell' ? `Force ${from}`
-      : `Rating ${from} → ${to}`;
-
-    let spend = false;
-
-    await foundry.applications.api.DialogV2.wait({
-      window: { title: 'Confirm Karma Spend' },
-      content: `
-        <div style="padding:8px 0">
-          <p><strong>${typeLabel}</strong></p>
-          <p>${detailLabel}: <strong>${cost} karma</strong></p>
-          <p style="margin-top:8px">Pool after: <strong>${karmaPool - cost}</strong>${cost > karmaPool ? ' <span style="color:var(--sr-red)">(insufficient karma!)</span>' : ''}</p>
-        </div>`,
-      buttons: [
-        {
-          label: cost > karmaPool ? 'Spend Anyway' : 'Spend',
-          action: 'spend',
-          default: true,
-          callback: () => { spend = true; },
-        },
-        { label: 'Cancel', action: 'cancel' },
-      ],
-    });
-
-    if (!spend) return;
-    const newPool = Math.max(0, karmaPool - cost);
-    await actor.update({ 'system.karmaPool': newPool });
-    ui.notifications.info(`Spent ${cost} karma. Pool: ${newPool} remaining.`);
-    await ChatMessage.create({
-      speaker: ChatMessage.getSpeaker({ actor }),
-      content: `<div class="sr-roll-card"><div class="sr-roll-header" style="background:var(--sr-gold,#c8a040);color:#0a0a0a">Karma Spent: ${cost}</div><div class="sr-roll-body" style="padding:6px 8px;font-size:12px"><strong>${typeLabel}</strong> — ${detailLabel}<br>Pool: ${karmaPool} → ${newPool}</div></div>`,
-      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-    });
-  }
-
   static async _onToggleFullDefense(_ev, _target) {
     await this.actor.toggleFullDefense();
   }
@@ -2416,7 +2307,11 @@ static async _onHealDamage(ev, target) {
   /* ------------------------------------------------------------------ */
 
   static async _promptRollOptions(actor, { defaultPool = null, poolNote = '', physicalDice = false, rollAttr = null } = {}) {
-    const karmaPool = actor?.system.karmaPool ?? 0;
+    const karmaPool    = actor?.system.karmaPool ?? 0;
+    const woundPenalty = -(actor?.system.woundMod ?? 0);
+    const woundNote    = woundPenalty > 0
+      ? `<div class="roll-opts-wound-note">⚡ Wound TN +${woundPenalty} (pre-applied)</div>`
+      : '';
     const attrs = actor?.system.attributes ?? {};
 
     const attrList = [
@@ -2454,7 +2349,8 @@ static async _onHealDamage(ev, target) {
             ${poolNote ? `<p class="roll-opts-note">${poolNote}</p>` : ''}
             <label class="roll-opts-label" for="sr-tn">Target Number</label>
             <span></span>
-            <input type="number" id="sr-tn" class="roll-opts-tn" value="4" min="2" max="30"/>
+            <input type="number" id="sr-tn" class="roll-opts-tn" value="${4 + woundPenalty}" min="2" max="30"/>
+            ${woundNote}
             <span></span>
             ${karmaPool > 0 ? `<label class="roll-opts-karma"><input type="checkbox" id="sr-karma"/> Use Karma Pool (${karmaPool} available)</label>` : ''}
             ${physicalDice ? `<p class="roll-opts-physical">📋 Physical dice mode</p>` : ''}
@@ -2478,6 +2374,7 @@ static async _onHealDamage(ev, target) {
                 pool:         poolEl ? Math.max(1, parseInt(poolEl.value) || 1) : null,
                 selectedAttr: attrEl?.value ?? selectedKey,
                 physicalDice,
+                skipWoundMod: true,
               });
             }
           },
@@ -2494,9 +2391,9 @@ static async _onHealDamage(ev, target) {
   /* ------------------------------------------------------------------ */
 
   static async _promptSkillRollOptions(actor, defaultItem, { physicalDice = false } = {}) {
-    const karmaPool = actor?.system.karmaPool ?? 0;
-    const woundMod  = actor?.system.woundMod ?? 0;
-    const isAdept   = (actor?.system.magicType ?? '') === 'Adept';
+    const karmaPool    = actor?.system.karmaPool ?? 0;
+    const woundPenalty = -(actor?.system.woundMod ?? 0);
+    const isAdept      = (actor?.system.magicType ?? '') === 'Adept';
 
     const skills = actor.items
       .filter(i => i.type === 'skill')
@@ -2510,8 +2407,8 @@ static async _onHealDamage(ev, target) {
       const s          = sk.system;
       const forceBonus = isAdept ? (s.force ?? 0) : 0;
       const pool       = s.rating
-        ? Math.max(1, (s.rating ?? 0) + forceBonus + woundMod)
-        : Math.max(1, (s.attributeValue ?? 3) - 2 + woundMod);
+        ? Math.max(1, (s.rating ?? 0) + forceBonus)
+        : Math.max(1, (s.attributeValue ?? 3) - 2);
       return `<option value="${sk.id}" data-pool="${pool}" data-spec="${s.specialisation ?? ''}"${sk.id === defaultId ? ' selected' : ''}>${sk.name}</option>`;
     }).join('');
 
@@ -2519,8 +2416,8 @@ static async _onHealDamage(ev, target) {
     const defS       = defSkill.system;
     const defForce   = isAdept ? (defS.force ?? 0) : 0;
     const defPool    = defS.rating
-      ? Math.max(1, (defS.rating ?? 0) + defForce + woundMod)
-      : Math.max(1, (defS.attributeValue ?? 3) - 2 + woundMod);
+      ? Math.max(1, (defS.rating ?? 0) + defForce)
+      : Math.max(1, (defS.attributeValue ?? 3) - 2);
     const defSpec    = defS.specialisation ?? '';
 
     const onSkillChange = `
@@ -2566,8 +2463,9 @@ static async _onHealDamage(ev, target) {
             </div>
             <div class="skill-opts-tn-row">
               <label class="skill-opts-tn-label" for="sr-tn">Target Number</label>
-              <input type="number" id="sr-tn" class="skill-opts-tn" value="4" min="2" max="30"/>
+              <input type="number" id="sr-tn" class="skill-opts-tn" value="${4 + woundPenalty}" min="2" max="30"/>
             </div>
+            ${woundPenalty > 0 ? `<div style="font-size:11px;color:var(--sr-amber);margin:4px 0 8px">⚡ Wound TN +${woundPenalty} (pre-applied)</div>` : ''}
             ${karmaPool > 0 ? `
               <label class="skill-opts-karma">
                 <input type="checkbox" id="sr-karma"/> Use Karma Pool (${karmaPool} available)
@@ -2594,6 +2492,7 @@ static async _onHealDamage(ev, target) {
                 pool:          poolEl ? Math.max(1, parseInt(poolEl.value) || 1) : defPool,
                 selectedSkillId,
                 physicalDice,
+                skipWoundMod:  true,
               });
             }
           },
@@ -2605,5 +2504,236 @@ static async _onHealDamage(ev, target) {
         ]
       }).render(true);
     });
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Karma                                                               */
+  /* ------------------------------------------------------------------ */
+
+  static _isActiveSkill(category) {
+    const c = (category ?? '').toLowerCase();
+    return !c.includes('knowledge') && !c.includes('language');
+  }
+
+  static _skillCost(newRating, attrRating, isActive) {
+    const m = newRating <= attrRating        ? (isActive ? 1.5 : 1)
+            : newRating <= 2 * attrRating    ? (isActive ? 2   : 1.5)
+            :                                  (isActive ? 2.5 : 2);
+    return Math.ceil(newRating * m);
+  }
+
+  static _specCost(newRating, attrRating) {
+    const m = newRating <= attrRating     ? 0.5
+            : newRating <= 2 * attrRating ? 1
+            :                               1.5;
+    return Math.ceil(newRating * m);
+  }
+
+  static async _onAwardKarma() {
+    const actor = this.actor;
+    let amount = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `Award Karma — ${actor.name}` },
+      content: `
+        <div style="padding:8px">
+          <label>Karma to award:
+            <input type="number" id="karma-amount" value="3" min="1" style="width:60px;margin-left:8px"/>
+          </label>
+        </div>`,
+      buttons: [
+        {
+          label: 'Award', action: 'award', default: true,
+          callback: (_e, _b, dlg) => { amount = parseInt(dlg.element.querySelector('#karma-amount')?.value) || 0; }
+        },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (!amount || amount <= 0) return;
+
+    const karma      = actor.system.karma      ?? 0;
+    const totalKarma = actor.system.totalKarma ?? 0;
+    const karmaPool  = actor.system.karmaPool  ?? 0;
+    const newTotal   = totalKarma + amount;
+    const poolGained = Math.floor(newTotal / 20) - Math.floor(totalKarma / 20);
+
+    await actor.update({
+      'system.karma':      karma + amount,
+      'system.totalKarma': newTotal,
+      'system.karmaPool':  karmaPool + poolGained,
+    });
+
+    let msg = `${actor.name} awarded ${amount} karma (total: ${newTotal}).`;
+    if (poolGained > 0) msg += ` +${poolGained} Karma Pool point${poolGained > 1 ? 's' : ''}!`;
+    ui.notifications.info(msg);
+  }
+
+  static async _onSpendKarmaCalculator() {
+    const actor  = this.actor;
+    const sys    = actor.system;
+    const karma  = sys.karma ?? 0;
+    const attrs  = sys.attributes ?? {};
+    const skills = actor.items.filter(i => i.type === 'skill').sort((a, b) => a.name.localeCompare(b.name));
+
+    const IMPROVABLE_ATTRS = [
+      { key: 'body',         label: 'Body' },
+      { key: 'quickness',    label: 'Quickness' },
+      { key: 'strength',     label: 'Strength' },
+      { key: 'charisma',     label: 'Charisma' },
+      { key: 'intelligence', label: 'Intelligence' },
+      { key: 'willpower',    label: 'Willpower' },
+    ];
+
+    const row = (value, label, change, cost, canAfford) => `
+      <label style="display:grid;grid-template-columns:14px 1fr auto auto;gap:6px;align-items:center;padding:3px 4px;border-radius:var(--r);${canAfford ? '' : 'opacity:0.45;'}cursor:${canAfford ? 'pointer' : 'not-allowed'}">
+        <input type="radio" name="karma-choice" value="${value}" data-cost="${cost}" ${canAfford ? '' : 'disabled'}/>
+        <span style="font-size:12px;white-space:nowrap">${label}</span>
+        <span style="font-size:11px;color:var(--sr-muted);white-space:nowrap">${change}</span>
+        <span style="font-size:12px;color:${canAfford ? 'var(--sr-gold)' : 'var(--sr-dim)'};font-weight:600;white-space:nowrap">${cost}</span>
+      </label>`;
+
+    const attrHtml = IMPROVABLE_ATTRS.map(a => {
+      const cur  = attrs[a.key]?.base ?? 0;
+      const next = cur + 1;
+      const cost = 2 * next;
+      return row(`attr:${a.key}`, a.label, `${cur} → ${next}`, cost, cost <= karma);
+    }).join('');
+
+    const skillHtml = [];
+    for (const sk of skills) {
+      const s          = sk.system;
+      const rating     = s.rating ?? 0;
+      if (rating === 0) continue;
+      const linkedAttr = s.linkedAttribute ?? 'quickness';
+      const attrRating = attrs[linkedAttr]?.base ?? 0;
+      const isActive   = SR3EActorSheet._isActiveSkill(s.category);
+      const specs      = s.specialisations ?? [];
+
+      // Raise base skill
+      const skillCost = SR3EActorSheet._skillCost(rating + 1, attrRating, isActive);
+      skillHtml.push(row(`skill:${sk.id}:rating`, sk.name, `${rating} → ${rating + 1}`, skillCost, skillCost <= karma));
+
+      // Add new specialisation (up to rating specs max)
+      if (specs.length < rating) {
+        const specRating = rating + 1;
+        const cost = SR3EActorSheet._specCost(specRating, attrRating);
+        skillHtml.push(row(`skill:${sk.id}:addspec`, `${sk.name} + specialisation`, `new (${specRating} dice)`, cost, cost <= karma));
+      }
+
+      // Improve existing lv1 specs to lv2
+      specs.forEach((sp, specIdx) => {
+        if ((sp.level ?? 1) >= 2) return;
+        const specRating = rating + 2;
+        const cost = SR3EActorSheet._specCost(specRating, attrRating);
+        skillHtml.push(row(`skill:${sk.id}:improvespec:${specIdx}`, `${sk.name} — ${sp.name}`, `${rating+1} → ${rating+2} dice`, cost, cost <= karma));
+      });
+    }
+
+    let chosen = null;
+    let chosenCost = 0;
+
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `Spend Karma — ${actor.name}` },
+      content: `
+        <div style="max-height:480px;overflow-y:auto;padding:4px 8px">
+          <p style="margin:4px 0 8px;color:var(--sr-gold);font-weight:600">Available karma: ${karma}</p>
+          <h4 style="margin:6px 0 4px;color:var(--sr-accent);font-size:12px;text-transform:uppercase;letter-spacing:.05em">Attributes (2 × new rating)</h4>
+          <div style="display:flex;flex-direction:column;gap:1px">${attrHtml}</div>
+          <h4 style="margin:10px 0 4px;color:var(--sr-accent);font-size:12px;text-transform:uppercase;letter-spacing:.05em">Skills</h4>
+          <div style="display:flex;flex-direction:column;gap:1px">${skillHtml.join('') || '<p style="color:var(--sr-muted);font-size:12px">No improvable skills.</p>'}</div>
+        </div>`,
+      buttons: [
+        {
+          label: 'Spend Karma', action: 'spend', default: true,
+          callback: (_e, _b, dlg) => {
+            const checked = dlg.element.querySelector('input[name="karma-choice"]:checked');
+            if (!checked) return;
+            chosen     = checked.value;
+            chosenCost = parseInt(checked.dataset.cost) || 0;
+          }
+        },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+
+    if (!chosen || chosenCost <= 0) return;
+    if (chosenCost > karma) { ui.notifications.warn('Not enough karma!'); return; }
+
+    const parts  = chosen.split(':');
+    const type   = parts[0];
+
+    if (type === 'attr') {
+      const key  = parts[1];
+      const cur  = attrs[key]?.base ?? 0;
+      await actor.update({ [`system.attributes.${key}.base`]: cur + 1, 'system.karma': karma - chosenCost });
+      ui.notifications.info(`${actor.name}: ${key} raised to ${cur + 1} (${chosenCost} karma spent).`);
+      return;
+    }
+
+    if (type === 'skill') {
+      const skillId = parts[1];
+      const action  = parts[2];
+      const skill   = actor.items.get(skillId);
+      if (!skill) return;
+
+      if (action === 'rating') {
+        const newRating = (skill.system.rating ?? 0) + 1;
+        await skill.update({ 'system.rating': newRating });
+        await actor.update({ 'system.karma': karma - chosenCost });
+        ui.notifications.info(`${skill.name} raised to ${newRating} (${chosenCost} karma spent).`);
+
+      } else if (action === 'addspec') {
+        const predefined    = getSpecializationsForSkill(skill.system.category, skill.system.skillName);
+        const fixedOptions  = predefined.filter(s => !s.endsWith('->'));
+        const existingNames = new Set((skill.system.specialisations ?? []).map(sp => sp.name));
+        const available     = fixedOptions.filter(s => !existingNames.has(s));
+
+        let specName = null;
+        await foundry.applications.api.DialogV2.wait({
+          window: { title: `New Specialisation — ${skill.name}` },
+          content: `
+            <div style="padding:8px;display:flex;flex-direction:column;gap:6px">
+              ${available.length > 0 ? `
+                <label>From list:
+                  <select id="spec-select" style="margin-left:8px">
+                    <option value="">— or type a custom name below —</option>
+                    ${available.map(s => `<option value="${s}">${s}</option>`).join('')}
+                  </select>
+                </label>` : ''}
+              <label>${available.length > 0 ? 'Custom:' : 'Name:'}
+                <input type="text" id="new-spec-name" style="width:180px;margin-left:8px"
+                       ${available.length === 0 ? 'autofocus' : ''}
+                       placeholder="${available.length > 0 ? 'Leave blank if selecting above' : 'Specialisation name'}"/>
+              </label>
+            </div>`,
+          buttons: [
+            {
+              label: 'Add', action: 'add', default: true,
+              callback: (_e, _b, dlg) => {
+                const sel    = dlg.element.querySelector('#spec-select')?.value?.trim() ?? '';
+                const custom = dlg.element.querySelector('#new-spec-name')?.value?.trim() ?? '';
+                specName = sel || custom;
+              }
+            },
+            { label: 'Cancel', action: 'cancel' },
+          ],
+        });
+        if (!specName) return;
+        const specs = [...(skill.system.specialisations ?? [])];
+        specs.push({ name: specName, level: 1 });
+        await skill.update({ 'system.specialisations': specs });
+        await actor.update({ 'system.karma': karma - chosenCost });
+        ui.notifications.info(`${skill.name}: "${specName}" added (${chosenCost} karma spent).`);
+
+      } else if (action === 'improvespec') {
+        const specIdx = parseInt(parts[3]);
+        const specs   = [...(skill.system.specialisations ?? [])];
+        if (isNaN(specIdx) || specIdx < 0 || specIdx >= specs.length) return;
+        const specName = specs[specIdx].name;
+        specs[specIdx] = { ...specs[specIdx], level: 2 };
+        await skill.update({ 'system.specialisations': specs });
+        await actor.update({ 'system.karma': karma - chosenCost });
+        ui.notifications.info(`${skill.name} "${specName}" improved to level 2 (${chosenCost} karma spent).`);
+      }
+    }
   }
 }
