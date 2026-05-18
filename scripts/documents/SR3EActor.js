@@ -1166,6 +1166,8 @@ _prepareCharacter(sys, attr) {
         isHackingActionRoll:    options.isHackingActionRoll   ?? false,
         hackingActionContext:   options.hackingActionContext  ?? null,
         barrierContext:         options.barrierContext        ?? null,
+        fallingContext:         options.fallingContext        ?? null,
+        escapeContext:          options.escapeContext         ?? null,
         grenadeType:            options.grenadeType           ?? 'standard',
         footerNote:             options.footerNote            ?? null,
       });
@@ -1226,6 +1228,8 @@ _prepareCharacter(sys, attr) {
       isHackingActionRoll:   options.isHackingActionRoll  ?? false,
       hackingActionContext:  options.hackingActionContext  ?? null,
       barrierContext:        options.barrierContext        ?? null,
+      fallingContext:        options.fallingContext        ?? null,
+      escapeContext:         options.escapeContext         ?? null,
       grenadeType:           options.grenadeType           ?? 'standard',
       footerNote:            options.footerNote            ?? null,
     });
@@ -2198,6 +2202,58 @@ _prepareCharacter(sys, attr) {
       const effectivePower = basePower + successes;
       const effect = SR3EActor.computeBarrierEffect(effectivePower, currentBR, 'demolitions');
       await SR3EActor._postBarrierDamageCard(effect, material, currentBR, effectivePower, successes);
+    }
+
+    // Escape Artist — post success (with time) or failure (with retry time)
+    if (allDone && state.escapeContext) {
+      const { restraintName, baseTime, actorId } = state.escapeContext;
+      const actor = game.actors.get(actorId);
+      if (actor) {
+        if (successes > 0) {
+          const time = Math.ceil(baseTime / successes);
+          await ChatMessage.create({
+            content: `
+              <div class="sr-roll-card">
+                <div class="sr-roll-header" style="color:var(--sr-green)">🔓 ${actor.name} — Escaped (${restraintName})</div>
+                <div class="sr-roll-result">${successes} success${successes !== 1 ? 'es' : ''} — escaped in <strong>${time} minute${time !== 1 ? 's' : ''}</strong>.</div>
+              </div>`,
+            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+          });
+        } else {
+          await ChatMessage.create({
+            content: `
+              <div class="sr-roll-card">
+                <div class="sr-roll-header" style="color:var(--sr-red)">🔒 ${actor.name} — Escape Failed (${restraintName})</div>
+                <div class="sr-roll-result">Cannot try again for <strong>${baseTime} minute${baseTime !== 1 ? 's' : ''}</strong>.</div>
+              </div>`,
+            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+          });
+        }
+      }
+    }
+
+    // Falling damage — subtract Athletics successes from power, then post soak card
+    if (allDone && state.fallingContext) {
+      const { netPower, level, actorId } = state.fallingContext;
+      const finalPower = Math.max(0, netPower - successes);
+      const actor = game.actors.get(actorId);
+      if (actor) {
+        if (finalPower <= 0) {
+          await ChatMessage.create({
+            content: `
+              <div class="sr-roll-card">
+                <div class="sr-roll-header">🪂 Falling — ${actor.name}</div>
+                <div class="sr-roll-result" style="color:var(--sr-green)">Athletics negates all damage — ${successes} success${successes !== 1 ? 'es' : ''} reduces Power to 0.</div>
+              </div>`,
+            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+          });
+        } else {
+          await actor._postSoakCard({
+            stagedPower: finalPower, stagedLevel: level, isStun: false, isMelee: true,
+            rawDamage: `${finalPower}${level}`, attackerActorId: null, targetActorId: actorId,
+          });
+        }
+      }
     }
 
     // Hacking action threshold check — increment Overwatch if below Security Threshold
@@ -3873,9 +3929,9 @@ _prepareCharacter(sys, attr) {
     const d           = this.system.derived ?? {};
     const matrixMode  = this.system.matrixUserMode ?? '';
     const astralMode  = this.system.astralMode ?? '';
-    const jackedIn    = matrixMode === 'VR-Cold' || matrixMode === 'VR-Hot';
-    const useMatrix   = matrixMode === 'VR-Hot' || matrixMode === 'VR-Cold';
-    const useAstral   = astralMode === 'astral';
+    const useMatrixHot    = matrixMode === 'VR-Hot';
+    const useMatrixJacked = matrixMode === 'TRM' || matrixMode === 'AR' || matrixMode === 'VR-Cold';
+    const useAstral       = astralMode === 'astral';
 
     let base, dice, modeNote;
 
@@ -3885,25 +3941,30 @@ _prepareCharacter(sys, attr) {
       base = intel + 20;
       dice = 1;
       modeNote = `<div class="sr-roll-meta" style="color:#c070f5">✦ Astral Init — INT ${intel} + 20</div>`;
-    } else if (useMatrix) {
-      // Matrix initiative (VR-Hot): Reaction + (Response × 2) + (1 + Response)d6
-      const reaction  = this.system.attributes?.reaction?.value ?? d.initiative ?? 0;
-      const deckId    = this.system.equippedCyberdeck ?? '';
-      const deck      = deckId ? this.items.get(deckId) : null;
-      const response  = deck?.system?.attributes?.response?.base ?? 0;
-      base = reaction + (response * 2);
+    } else if (useMatrixHot) {
+      // VR-Hot: (base Reaction + woundMod + Response×2) + (1+Response)d6
+      // Wired reflexes excluded — use reaction.base, not reaction.value
+      const wm           = this.system.woundMod ?? 0;
+      const reactionBase = this.system.attributes?.reaction?.base ?? 0;
+      const deckId       = this.system.equippedCyberdeck ?? '';
+      const deck         = deckId ? this.items.get(deckId) : null;
+      const response     = deck?.system?.attributes?.response?.base ?? 0;
+      base = reactionBase + wm + (response * 2);
       dice = 1 + response;
-      modeNote = `<div class="sr-roll-meta" style="color:var(--sr-accent)">💻 Matrix Init (${matrixMode}) — Response ${response}</div>`;
+      modeNote = `<div class="sr-roll-meta" style="color:var(--sr-accent)">💻 VR-Hot Init — REA ${reactionBase} + Response ${response}×2</div>`;
+    } else if (useMatrixJacked) {
+      // TRM / AR / VR-Cold: Reaction (with wired reflexes) + 1d6 (Response does not apply)
+      base = d.initiative ?? 0;
+      dice = 1;
+      modeNote = `<div class="sr-roll-meta" style="color:var(--sr-accent)">🔌 Matrix Init (${matrixMode})</div>`;
     } else {
       base = d.initiative     ?? 0;
       dice = d.initiativeDice ?? 1;
-      modeNote = jackedIn
-        ? `<div class="sr-roll-meta" style="color:var(--sr-accent)">🔌 Jacked In (${matrixMode})</div>`
-        : '';
+      modeNote = '';
     }
 
     const woundMod = this.system.woundMod ?? 0;
-    const woundNote = (woundMod < 0 && !useAstral && !useMatrix)
+    const woundNote = (woundMod < 0 && !useAstral && !useMatrixHot)
       ? `<div class="sr-roll-meta" style="color:var(--sr-amber)">Wound −${-woundMod}: reaction ${base - woundMod} → ${base} base</div>`
       : '';
 

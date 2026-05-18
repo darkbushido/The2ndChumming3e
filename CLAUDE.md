@@ -48,6 +48,23 @@ await foundry.applications.api.DialogV2.wait({
 });
 ```
 
+### Filtering actors for dialog dropdowns
+
+Actors imported from compendiums are flagged as templates (`flags.The2ndChumming3e.isTemplate`)
+so they don't pollute targeting and selection dialogs. **Always** apply this filter when
+building an actor option list:
+
+```js
+const actorOpts = game.actors
+  .filter(a => (a.type === 'character' || a.type === 'npc') && !a.getFlag('The2ndChumming3e', 'isTemplate'))
+  .map(a => `<option value="${a.id}">${a.name}</option>`)
+  .join('');
+```
+
+Add `|| a.type === 'vehicle'` if vehicles are also valid targets. The flag is set
+automatically by the `preCreateActor` hook in `sr3e.js` whenever an actor's
+`_stats.compendiumSource` is set.
+
 ### ApplicationV2 sheet form handling — critical
 
 Every sheet (ActorSheetV2, ItemSheetV2) **must** declare `tag: 'form'` in `DEFAULT_OPTIONS`
@@ -92,6 +109,57 @@ Hooks.on('renderChatMessageHTML', (_message, html, _data) => {
   });
 });
 ```
+
+### One-shot button guard — critical for all action buttons
+
+`renderChatMessageHTML` fires for **both** the Foundry pop-up notification and the main
+chat log when a message is created. Both DOM instances are live simultaneously, so a
+user can click a button in the pop-up and then click the same button again in the chat log,
+firing the action twice (double-soak, double-assign, etc.).
+
+The fix is a module-scoped `Set` keyed by `messageId|class|index`. Every action button
+must use `_checkBtn` at render time and `_claimBtn` inside the click handler.
+
+```js
+// sr3e.js — module scope
+const _usedButtons = new Set();
+
+function _checkBtn(btn, mid, cls, idx) {
+  if (!_usedButtons.has(`${mid}|${cls}|${idx}`)) return true;
+  btn.disabled = true;
+  return false;
+}
+
+function _claimBtn(btn, mid, cls, idx) {
+  const key = `${mid}|${cls}|${idx}`;
+  if (_usedButtons.has(key)) { btn.disabled = true; return false; }
+  _usedButtons.add(key);
+  btn.disabled = true;
+  return true;
+}
+
+// In the hook — capture message.id, not _message
+Hooks.on('renderChatMessageHTML', (message, html, _data) => {
+  const mid = message.id;
+
+  html.querySelectorAll('.my-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'mybtn', i)) return;   // disable if already used
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'mybtn', i)) return;  // bail if race-clicked
+      // handle click
+    });
+  });
+});
+```
+
+- `_checkBtn` at render time handles chat-log re-renders after a click in the pop-up.
+- `_claimBtn` in the handler is the primary guard — JS is single-threaded so check+add
+  is atomic; no race condition is possible.
+- The `idx` parameter disambiguates when multiple buttons of the same class appear on
+  one card (e.g. per-target soak buttons, per-passenger resist buttons).
+- The Set is in-memory only and resets on page reload — that is intentional.
 
 ### Actor system data — most important gotcha
 
@@ -190,8 +258,9 @@ Both modes end combat when the round is complete and prompt GM to re-roll initia
 physical dice dialog — shows the formula, lets the user type in the result directly.
 
 **Initiative formulas by mode:**
-- Default: `Reaction + woundMod` base + `initiativeDice` d6
-- Matrix (VR-Hot): `Reaction + (Response × 2)` base + `(1 + Response)` d6
+- Default (no Matrix mode): `Reaction + woundMod` base + `initiativeDice` d6 (wired reflexes apply)
+- TRM / AR / VR-Cold: `Reaction + woundMod` base + `1d6` (wired reflexes apply to Reaction; dice forced to 1; Response does NOT apply)
+- VR-Hot: `(reaction.base + woundMod + Response×2)` base + `(1 + Response)d6` (wired reflexes excluded — uses `reaction.base`, not `reaction.value`; Response replaces cyber bonuses)
 - Astral Projection: `Intelligence + 20` base + `1d6`
 - Physical Plane / Dual Natured: use default formula
 

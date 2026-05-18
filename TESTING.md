@@ -58,7 +58,7 @@ Each track (stun and physical) contributes its own modifier — both sum to give
 
 ## 3. Derived Pools
 
-### Combat Pool
+### Combat Pool - passed
 Formula: `⌊(QUI + INT + WIL) / 2⌋ + modifier`
 
 | QUI | INT | WIL | Expected Pool |
@@ -66,9 +66,9 @@ Formula: `⌊(QUI + INT + WIL) / 2⌋ + modifier`
 | 4 | 3 | 3 | 5 |
 | 6 | 5 | 4 | 7 |
 | 3 | 2 | 2 | 3 |
-- Passed
 
-### Spell Pool (Awakened only)
+
+### Spell Pool (Awakened only) - passed
 Formula: `⌊(INT + WIL + MAG) / 3⌋`
 
 | INT | WIL | MAG | Expected Pool |
@@ -77,18 +77,18 @@ Formula: `⌊(INT + WIL + MAG) / 3⌋`
 | 4 | 3 | 4 | 3 |
 
 - Non-Awakened actors (MAG 0): field should be **hidden**.
--Passed
 
-### Astral Pool (Awakened only)
+
+### Astral Pool (Awakened only) - passed
 Formula: `⌊(INT + CHA + WIL) / 2⌋`
 
 | INT | CHA | WIL | Expected Pool |
 |---|---|---|---|
 | 6 | 4 | 5 | 7 |
 | 4 | 3 | 3 | 5 |
--Passed
 
-### Hacking Pool
+
+### Hacking Pool - passed
 Formula: `⌊(INT + MPCP) / 3⌋` where MPCP comes from the equipped cyberdeck. Hidden if no cyberdeck is equipped.
 
 | INT | MPCP | Expected Pool |
@@ -96,25 +96,28 @@ Formula: `⌊(INT + MPCP) / 3⌋` where MPCP comes from the equipped cyberdeck. 
 | 6 | 6 | 4 |
 | 5 | 8 | 4 |
 | 4 | 0 | 1 |
-- Passed
 ---
 
 ## 4. Initiative
 
-### Physical (default)
-Formula: `REA - woundMod` base + `1d6`
+### Physical (default) - passed
+Formula: `REA + woundMod` base + `initiativeDice d6` (wired reflexes add to REA and grant extra dice)
+**In:** REA 4, no wounds, no cyber → **Out:** rolls `4 + 1d6`, result 5–10.
 
-**In:** REA 4, no wounds → **Out:** rolls `4 + 1d6`, result 5–10.
-
-### Astral Projection
+### Astral Projection - passed
 Formula: `INT + 20` base + `1d6`
-
 **In:** INT 5 → **Out:** rolls `25 + 1d6`, result 26–31.
 
-### Matrix VR-Hot / VR-Cold
-Formula: `REA + (Response × 2)` base + `(1 + Response)d6`
+### Matrix TRM / AR / VR-Cold
+Formula: `REA + woundMod` base + `1d6` (wired reflexes apply to REA; dice **forced to 1** regardless of cyber; Response does NOT apply)
 
-**In:** REA 4, Response 3 → base `4 + 6 = 10`, dice `4d6` → result 14–34.
+**In:** REA 5 (includes wired reflex bonus), no wounds → base `5`, dice `1d6` → result 6–11.
+
+### Matrix VR-Hot
+Formula: `(reaction.base + woundMod + Response×2)` base + `(1 + Response)d6` (wired reflexes **excluded** from base; Response replaces them)
+
+**In:** base REA 4 (no cyber), Response 3 → base `4 + 6 = 10`, dice `4d6` → result 14–34.
+
 
 ### VCR (Vehicle — jumped-in rigger)
 Formula: `Rigger REA + VCR level + woundMod` base + `(1 + VCR)d6`
@@ -419,12 +422,12 @@ Set on the Magic tab. Only one active at a time; clicking active button deactiva
 
 ### User modes (Matrix tab)
 
-| Mode | Initiative | Notes |
+| Mode | Initiative formula | Notes |
 |---|---|---|
-| Tortoise (TRM) | Physical | +2 TN to all Matrix actions |
-| AR | Physical | Standard |
-| VR-Cold | Matrix formula | Dumpshock = Stun |
-| VR-Hot | Matrix formula | All damage Physical |
+| Tortoise (TRM) | REA + woundMod + 1d6 | +2 TN to all Matrix actions; wired reflexes apply |
+| AR | REA + woundMod + 1d6 | Wired reflexes apply |
+| VR-Cold | REA + woundMod + 1d6 | Wired reflexes apply; dumpshock = Stun |
+| VR-Hot | (REA_base + woundMod + Response×2) + (1+Response)d6 | Wired reflexes excluded; Response replaces them; dumpshock = Physical |
 
 ### Hacking pool shown on sheet
 `⌊INT / 2⌋ + hackingBonus` — hackingBonus field manually set to `⌊MPCP / 3⌋`.
@@ -485,6 +488,92 @@ Physical track full (10 boxes) → additional physical damage goes to overflow. 
 Stun track full → overflow goes to physical track. - Passed
 
 When overflow matches or exceeds body attribute show 'dead' - Passed
+---
+
+## 22. Escape Artist
+
+Triggered via the **🔓 Escape Artist** button in the combat tracker sidebar (GM only).
+
+### Pool
+
+| Situation | Pool |
+|---|---|
+| Athletics skill, no spec | Athletics rating |
+| Athletics + Escape Artist spec | Athletics rating + 2 |
+| No Athletics (defaulting) | max(1, Body − 2) |
+
+### Restraint TN table
+
+| Restraint | TN |
+|---|---|
+| Ropes | 4 |
+| Handcuffs | 6 |
+| Straitjacket | 8 |
+| Containment Manacles | 10 |
+
+TN modifier field in dialog: positive values reduce TN (e.g. Pain Resistance levels). Effective TN is clamped to minimum 2.
+
+### Success
+
+**In:** Athletics 5 (Escape Artist spec), Handcuffs (TN 6), no modifier → **7 dice vs TN 6**.
+
+1 success → escaped in **30 min** (5 × 6 ÷ 1). 3 successes → **10 min** (30 ÷ 3, rounded up).
+
+### Failure
+
+0 successes → chat card reads "Cannot try again for **30 minutes**" (5 × 6).
+
+### Defaulting
+
+**In:** No Athletics, Body 4 → pool **2** (max(1, 4−2)), Ropes TN 4 → 2 dice vs TN 4.
+
+### Pain Resistance modifier
+
+**In:** Handcuffs TN 6, adept with 3 levels Pain Resistance → TN modifier +3 → effective TN **3**.
+
+---
+
+## 23. Falling Damage
+
+
+Triggered via the **🪂 Falling Damage** button in the combat tracker sidebar (GM only).
+
+### Damage calculation
+
+| Distance | Power (dist÷2) | Level |
+|---|---|---|
+| 1–2 m | 1 | L |
+| 3–6 m | 2–3 | M |
+| 7–20 m | 4–10 | S |
+| 21+ m | 11+ | D |
+
+Impact armour reduces Power by `⌊Impact÷2⌋` before the Athletics test.
+
+**In:** 10 m fall, Impact armour 4 → Power `5 − 2 = 3`, Level S → base damage code **3S**.
+
+### Athletics test
+
+Pool = Athletics rating; if no Athletics skill, defaults to `max(1, Body − 2)`.
+TN = distance in metres. Each success reduces Power by 1.
+
+**In:** Athletics 4, distance 10 → 4 dice vs TN 10.
+
+**In:** No Athletics, Body 4 → defaulting pool 2 vs TN 10.
+
+### Athletics negates all damage
+
+**In:** Power 2 after armour, Athletics roll 3 successes → Power reduced to 0 → chat card reads "Athletics negates all damage", no soak card posted.
+
+### Soak card
+
+After the Athletics roll, a standard Resist Damage soak card posts for the faller using Impact armour (not Ballistic).
+
+**In:** Final power 3S → soak card shows TN = `max(2, 3 − Impact)`, Body dice editable.
+
+### No armour → armour reduction 0
+
+**In:** 6 m fall, no armour → Power 3, no reduction → base 3M → soak card posts for 3M.
+
 ---
 
 ## Quick Sanity Numbers

@@ -342,7 +342,7 @@ async function _openChunkySalsaCalculator() {
   }
 
   // ── Mutable state ──────────────────────────────────────────────────────────
-  const eligible = game.actors.filter(a => a.type === 'character' || a.type === 'npc');
+  const eligible = game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && !a.getFlag('The2ndChumming3e', 'isTemplate'));
   const actors   = eligible.map((a, i) => {
     const angle = (2 * Math.PI * i / Math.max(eligible.length, 1)) - Math.PI / 2;
     return { id: a.id, name: a.name, color: ACTOR_COLORS[i % ACTOR_COLORS.length],
@@ -771,6 +771,271 @@ async function _openBarrierDamageCalculator() {
   }
 }
 
+async function _openFallingDamageCalculator() {
+  const actorOpts = game.actors
+    .filter(a => (a.type === 'character' || a.type === 'npc') && !a.getFlag('The2ndChumming3e', 'isTemplate'))
+    .map(a => `<option value="${a.id}">${a.name}</option>`).join('');
+
+  if (!actorOpts) { ui.notifications.warn('No characters or NPCs in the world.'); return; }
+
+  const TITLE = '🪂 Falling Damage';
+  let hookId;
+  hookId = Hooks.on('renderDialogV2', (app, html) => {
+    if (app.options?.window?.title !== TITLE) return;
+    Hooks.off('renderDialogV2', hookId);
+    const el = html?.querySelector ? html : (html?.[0] ?? null);
+    if (!el) return;
+
+    function updatePreview() {
+      const actorId  = el.querySelector('#fall-actor')?.value;
+      const distance = parseInt(el.querySelector('#fall-distance')?.value) || 0;
+      const actor    = actorId ? game.actors.get(actorId) : null;
+
+      let impactArmor = 0, athleticsPool = 0, isDefaulting = false;
+      if (actor) {
+        actor.prepareDerivedData();
+        const armorItem = actor.system.equippedArmor ? actor.items.get(actor.system.equippedArmor) : null;
+        impactArmor = armorItem?.system?.impact ?? 0;
+        const skill = actor.items.find(i => i.type === 'skill' && i.name.toLowerCase() === 'athletics');
+        if (skill) {
+          athleticsPool = skill.system.rating;
+        } else {
+          const body    = actor.system.attributes?.body?.value ?? actor.system.attributes?.body?.base ?? 0;
+          athleticsPool = Math.max(1, body - 2);
+          isDefaulting  = true;
+        }
+      }
+
+      const power       = Math.floor(distance / 2);
+      const armorReduce = Math.floor(impactArmor / 2);
+      const netPower    = Math.max(0, power - armorReduce);
+      const level       = distance >= 21 ? 'D' : distance >= 7 ? 'S' : distance >= 3 ? 'M' : distance >= 1 ? 'L' : '—';
+
+      el.querySelector('#fp-power').textContent     = distance >= 1 ? power : '—';
+      el.querySelector('#fp-armor').textContent     = distance >= 1 ? armorReduce : '—';
+      el.querySelector('#fp-net').textContent       = distance >= 1 ? netPower : '—';
+      el.querySelector('#fp-level').textContent     = level;
+      el.querySelector('#fp-code').textContent      = distance >= 1 ? `${netPower}${level}` : '—';
+      el.querySelector('#fp-athletics').textContent = isDefaulting ? `${athleticsPool} (Body −2, defaulting)` : athleticsPool;
+      el.querySelector('#fp-tn').textContent        = distance >= 1 ? distance : '—';
+    }
+
+    el.querySelector('#fall-actor')?.addEventListener('change', updatePreview);
+    el.querySelector('#fall-distance')?.addEventListener('input', updatePreview);
+    updatePreview();
+  });
+
+  let res = null;
+  await foundry.applications.api.DialogV2.wait({
+    window: { title: TITLE },
+    content: `
+      <div style="padding:4px 0">
+        <div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin-bottom:10px;">
+          <label style="font-size:12px;">Faller:
+            <select id="fall-actor" style="width:100%;margin-top:2px;">${actorOpts}</select>
+          </label>
+          <label style="font-size:12px;">Distance (m):
+            <input type="number" id="fall-distance" value="5" min="1" style="width:60px;margin-top:2px;"/>
+          </label>
+        </div>
+        <div style="background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);padding:8px;font-size:12px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
+            <div>Power (distance ÷ 2): <strong id="fp-power">—</strong></div>
+            <div>Impact armour ÷ 2: <strong id="fp-armor">—</strong></div>
+            <div>Net power: <strong id="fp-net">—</strong></div>
+            <div>Damage level: <strong id="fp-level">—</strong></div>
+          </div>
+          <div style="margin-top:6px;border-top:1px solid var(--sr-border);padding-top:6px;">
+            Damage code: <strong id="fp-code">—</strong>
+            &nbsp;·&nbsp; Athletics pool: <strong id="fp-athletics">—</strong>
+            &nbsp;·&nbsp; TN: <strong id="fp-tn">—</strong>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--sr-muted);margin-top:6px;">Athletics test TN = distance; each success reduces Power by 1. No Athletics skill defaults to Body −2.</div>
+      </div>`,
+    buttons: [
+      {
+        label: '🎲 Roll Athletics', action: 'confirm', default: true,
+        callback: (_e, _b, dialog) => {
+          const el       = dialog.element;
+          const actorId  = el.querySelector('#fall-actor')?.value;
+          const distance = parseInt(el.querySelector('#fall-distance')?.value) || 0;
+          const actor    = game.actors.get(actorId);
+          if (!actor || distance < 1) return;
+
+          actor.prepareDerivedData();
+          const armorItem   = actor.system.equippedArmor ? actor.items.get(actor.system.equippedArmor) : null;
+          const impactArmor = armorItem?.system?.impact ?? 0;
+          const netPower    = Math.max(0, Math.floor(distance / 2) - Math.floor(impactArmor / 2));
+          const level       = distance >= 21 ? 'D' : distance >= 7 ? 'S' : distance >= 3 ? 'M' : 'L';
+          const skill       = actor.items.find(i => i.type === 'skill' && i.name.toLowerCase() === 'athletics');
+          let pool;
+          if (skill) {
+            pool = skill.system.rating;
+          } else {
+            const body = actor.system.attributes?.body?.value ?? actor.system.attributes?.body?.base ?? 0;
+            pool = Math.max(1, body - 2);
+          }
+
+          res = { actorId, distance, netPower, level, pool };
+        }
+      },
+      { label: 'Cancel', action: 'cancel' },
+    ],
+  });
+
+  Hooks.off('renderDialogV2', hookId);
+  if (!res) return;
+
+  const actor = game.actors.get(res.actorId);
+  if (!actor) { ui.notifications.warn('Actor not found.'); return; }
+
+  if (res.netPower <= 0) {
+    await ChatMessage.create({
+      content: `<div class="sr-roll-card"><div class="sr-roll-header">🪂 Falling — ${actor.name}</div><div class="sr-roll-result" style="color:var(--sr-green)">Armour fully absorbs the impact — no damage taken.</div></div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    });
+    return;
+  }
+
+  await actor.rollPool(res.pool, res.distance, `🪂 ${actor.name}: Athletics (Falling)`, {
+    fallingContext: { distance: res.distance, netPower: res.netPower, level: res.level, actorId: res.actorId },
+  });
+}
+
+async function _openEscapeArtistCalculator() {
+  const RESTRAINTS = [
+    { name: 'Ropes',                tn: 4  },
+    { name: 'Handcuffs',            tn: 6  },
+    { name: 'Straitjacket',         tn: 8  },
+    { name: 'Containment Manacles', tn: 10 },
+  ];
+
+  const actorOpts = game.actors
+    .filter(a => (a.type === 'character' || a.type === 'npc') && !a.getFlag('The2ndChumming3e', 'isTemplate'))
+    .map(a => `<option value="${a.id}">${a.name}</option>`).join('');
+
+  if (!actorOpts) { ui.notifications.warn('No characters or NPCs in the world.'); return; }
+
+  const TITLE = '🔓 Escape Artist';
+  let hookId;
+  hookId = Hooks.on('renderDialogV2', (app, html) => {
+    if (app.options?.window?.title !== TITLE) return;
+    Hooks.off('renderDialogV2', hookId);
+    const el = html?.querySelector ? html : (html?.[0] ?? null);
+    if (!el) return;
+
+    function updatePreview() {
+      const actorId = el.querySelector('#ea-actor')?.value;
+      const rIdx    = parseInt(el.querySelector('#ea-restraint')?.value) || 0;
+      const tnMod   = parseInt(el.querySelector('#ea-tn-mod')?.value) || 0;
+      const actor   = actorId ? game.actors.get(actorId) : null;
+      const r       = RESTRAINTS[rIdx];
+
+      let pool = 0, hasSpec = false, isDefaulting = false;
+      if (actor) {
+        actor.prepareDerivedData();
+        const skill = actor.items.find(i => i.type === 'skill' && i.name.toLowerCase() === 'athletics');
+        if (skill) {
+          hasSpec = !!(skill.system.specialisation?.toLowerCase().includes('escape'));
+          pool    = skill.system.rating + (hasSpec ? 2 : 0);
+        } else {
+          const body = actor.system.attributes?.body?.value ?? actor.system.attributes?.body?.base ?? 0;
+          pool        = Math.max(1, body - 2);
+          isDefaulting = true;
+        }
+      }
+
+      const effectiveTN = Math.max(2, (r?.tn ?? 4) - tnMod);
+      const baseTime    = 5 * (r?.tn ?? 4);
+
+      let poolLabel;
+      if (isDefaulting)    poolLabel = `${pool} (Body −2, defaulting)`;
+      else if (hasSpec)    poolLabel = `${pool} (Athletics +2 spec)`;
+      else                 poolLabel = pool;
+
+      el.querySelector('#ea-preview-pool').textContent = poolLabel;
+      el.querySelector('#ea-preview-tn').textContent   = effectiveTN;
+      el.querySelector('#ea-preview-time').textContent = `${baseTime} min`;
+    }
+
+    el.querySelector('#ea-actor')?.addEventListener('change', updatePreview);
+    el.querySelector('#ea-restraint')?.addEventListener('change', updatePreview);
+    el.querySelector('#ea-tn-mod')?.addEventListener('input', updatePreview);
+    updatePreview();
+  });
+
+  const restraintOpts = RESTRAINTS.map((r, i) => `<option value="${i}">${r.name} (TN ${r.tn})</option>`).join('');
+
+  let res = null;
+  await foundry.applications.api.DialogV2.wait({
+    window: { title: TITLE },
+    content: `
+      <div style="padding:4px 0">
+        <div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin-bottom:10px;">
+          <label style="font-size:12px;">Escapee:
+            <select id="ea-actor" style="width:100%;margin-top:2px;">${actorOpts}</select>
+          </label>
+          <label style="font-size:12px;">TN modifier:
+            <input type="number" id="ea-tn-mod" value="0" min="-10" max="10" style="width:60px;margin-top:2px;" title="Positive = easier (e.g. Pain Resistance); negative = harder"/>
+          </label>
+        </div>
+        <label style="font-size:12px;display:block;margin-bottom:10px;">Restraint:
+          <select id="ea-restraint" style="width:100%;margin-top:2px;">${restraintOpts}</select>
+        </label>
+        <div style="background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);padding:8px;font-size:12px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;">
+            <div>Pool: <strong id="ea-preview-pool">—</strong></div>
+            <div>TN: <strong id="ea-preview-tn">—</strong></div>
+            <div>Base time: <strong id="ea-preview-time">—</strong></div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--sr-muted);margin-top:6px;">TN modifier: positive for Pain Resistance or other bonuses. No Athletics defaults to Body −2. Spec bonus (+2) auto-detected.</div>
+      </div>`,
+    buttons: [
+      {
+        label: '🎲 Roll', action: 'confirm', default: true,
+        callback: (_e, _b, dialog) => {
+          const el      = dialog.element;
+          const actorId = el.querySelector('#ea-actor')?.value;
+          const rIdx    = parseInt(el.querySelector('#ea-restraint')?.value) || 0;
+          const tnMod   = parseInt(el.querySelector('#ea-tn-mod')?.value) || 0;
+          const actor   = game.actors.get(actorId);
+          if (!actor) return;
+
+          const r           = RESTRAINTS[rIdx];
+          const effectiveTN = Math.max(2, r.tn - tnMod);
+          const baseTime    = 5 * r.tn;
+
+          actor.prepareDerivedData();
+          const skill = actor.items.find(i => i.type === 'skill' && i.name.toLowerCase() === 'athletics');
+          let pool;
+          if (skill) {
+            const hasSpec = !!(skill.system.specialisation?.toLowerCase().includes('escape'));
+            pool = skill.system.rating + (hasSpec ? 2 : 0);
+          } else {
+            const body = actor.system.attributes?.body?.value ?? actor.system.attributes?.body?.base ?? 0;
+            pool = Math.max(1, body - 2);
+          }
+
+          res = { actorId, restraintName: r.name, effectiveTN, baseTime, pool };
+        }
+      },
+      { label: 'Cancel', action: 'cancel' },
+    ],
+  });
+
+  Hooks.off('renderDialogV2', hookId);
+  if (!res) return;
+
+  const actor = game.actors.get(res.actorId);
+  if (!actor) { ui.notifications.warn('Actor not found.'); return; }
+
+  await actor.rollPool(res.pool, res.effectiveTN, `🔓 ${actor.name}: Escape Artist (${res.restraintName})`, {
+    escapeContext: { restraintName: res.restraintName, baseTime: res.baseTime, actorId: res.actorId },
+  });
+}
+
 // Vehicle Chase button + drone/VCR labels in the combat tracker sidebar
 Hooks.on('renderCombatTracker', (_app, html) => {
   const el  = html instanceof HTMLElement ? html : html[0];
@@ -1113,6 +1378,30 @@ Hooks.on('renderCombatTracker', (_app, html) => {
     if (anchor) anchor.insertAdjacentElement('afterend', barrierBtn);
     else el.appendChild(barrierBtn);
   }
+
+  if (game.user.isGM && !el.querySelector('.sr3e-falling-btn')) {
+    const anchor = el.querySelector('.sr3e-barrier-btn') ?? el.querySelector('.sr3e-salsa-btn') ?? el.querySelector('.sr3e-reward-btn') ?? el.querySelector('footer') ?? el.querySelector('.combat-controls');
+    const fallingBtn = document.createElement('button');
+    fallingBtn.type      = 'button';
+    fallingBtn.className = 'sr3e-falling-btn';
+    fallingBtn.textContent = '🪂 Falling Damage';
+    fallingBtn.style.cssText = 'display:block;box-sizing:border-box;margin:4px 8px 0;width:calc(100% - 16px);';
+    fallingBtn.addEventListener('click', _openFallingDamageCalculator);
+    if (anchor) anchor.insertAdjacentElement('afterend', fallingBtn);
+    else el.appendChild(fallingBtn);
+  }
+
+  if (game.user.isGM && !el.querySelector('.sr3e-escape-btn')) {
+    const anchor = el.querySelector('.sr3e-falling-btn') ?? el.querySelector('.sr3e-barrier-btn') ?? el.querySelector('.sr3e-salsa-btn') ?? el.querySelector('.sr3e-reward-btn') ?? el.querySelector('footer') ?? el.querySelector('.combat-controls');
+    const escapeBtn = document.createElement('button');
+    escapeBtn.type      = 'button';
+    escapeBtn.className = 'sr3e-escape-btn';
+    escapeBtn.textContent = '🔓 Escape Artist';
+    escapeBtn.style.cssText = 'display:block;box-sizing:border-box;margin:4px 8px 0;width:calc(100% - 16px);';
+    escapeBtn.addEventListener('click', _openEscapeArtistCalculator);
+    if (anchor) anchor.insertAdjacentElement('afterend', escapeBtn);
+    else el.appendChild(escapeBtn);
+  }
 });
 
 // Auto-flag actors imported from any compendium as templates so they don't
@@ -1133,14 +1422,39 @@ Hooks.on('updateActor', (actor, changes) => {
   }
 });
 
-// Attach explosion button handler to each chat message as it renders.
-// renderChatMessage fires for every new message, ensuring buttons are always wired.
-Hooks.on('renderChatMessageHTML', (_message, html, _data) => {
+// ── One-shot button guard ────────────────────────────────────────────────────
+// Prevents a button from firing twice when both the Foundry pop-up notification
+// and the main chat log render the same card with live buttons simultaneously.
+// Key = messageId|class|index. In-memory only; clears on page reload.
+const _usedButtons = new Set();
+
+function _checkBtn(btn, mid, cls, idx) {
+  if (!_usedButtons.has(`${mid}|${cls}|${idx}`)) return true;
+  btn.disabled = true;
+  return false;
+}
+
+function _claimBtn(btn, mid, cls, idx) {
+  const key = `${mid}|${cls}|${idx}`;
+  if (_usedButtons.has(key)) { btn.disabled = true; return false; }
+  _usedButtons.add(key);
+  btn.disabled = true;
+  return true;
+}
+
+// Attach action button handlers to each chat message as it renders.
+// renderChatMessageHTML fires for every render (new message AND pop-up notification),
+// so the guard above is what prevents double-firing across the two DOM instances.
+Hooks.on('renderChatMessageHTML', (message, html, _data) => {
+  const mid = message.id;
+
   // Rule of Six explosion button
-  html.querySelectorAll('.sr-explode-btn').forEach(btn => {
+  html.querySelectorAll('.sr-explode-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'explode', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'explode', i)) return;
       const payload = btn.dataset.payload;
       if (!payload) return;
       btn.disabled    = true;
@@ -1150,10 +1464,12 @@ Hooks.on('renderChatMessageHTML', (_message, html, _data) => {
   });
 
   // "Resist Damage" button — posts soak card for the identified target
-  html.querySelectorAll('.sr-soak-btn').forEach(btn => {
+  html.querySelectorAll('.sr-soak-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'soak', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'soak', i)) return;
       const payload = btn.dataset.payload;
       if (!payload) return;
       btn.disabled    = true;
@@ -1164,10 +1480,12 @@ Hooks.on('renderChatMessageHTML', (_message, html, _data) => {
   });
 
   // Dodge roll button — triggered by player after seeing attack hits
-  html.querySelectorAll('.sr-dodge-roll-btn').forEach(btn => {
+  html.querySelectorAll('.sr-dodge-roll-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'dodge', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'dodge', i)) return;
       const payload = btn.dataset.payload;
       if (!payload) return;
       btn.disabled    = true;
@@ -1179,28 +1497,34 @@ Hooks.on('renderChatMessageHTML', (_message, html, _data) => {
   });
 
   // Melee Roll! button on boxing card
-  html.querySelectorAll('.sr-melee-roll-btn').forEach(btn => {
+  html.querySelectorAll('.sr-melee-roll-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'melee', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'melee', i)) return;
       await SR3EActor.handleMeleeRoll(btn, event.shiftKey);
     });
   });
 
   // Roll Soak button on soak card (also handles spell-resist soak via same handler)
-  html.querySelectorAll('.sr-soak-roll-btn').forEach(btn => {
+  html.querySelectorAll('.sr-soak-roll-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'soakroll', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'soakroll', i)) return;
       await SR3EActor.handleSoakRollClick(btn, event.shiftKey);
     });
   });
 
   // Spell resist button — posts a spell-specific soak card (Willpower/Body, TN = Force)
-  html.querySelectorAll('.sr-spell-soak-btn').forEach(btn => {
+  html.querySelectorAll('.sr-spell-soak-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'spellsoak', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'spellsoak', i)) return;
       const p = JSON.parse(btn.dataset.payload);
       btn.disabled    = true;
       btn.textContent = '⏳ Preparing…';
@@ -1209,10 +1533,12 @@ Hooks.on('renderChatMessageHTML', (_message, html, _data) => {
   });
 
   // Confirm Summoning button — creates the spirit actor
-  html.querySelectorAll('.sr-summon-confirm-btn').forEach(btn => {
+  html.querySelectorAll('.sr-summon-confirm-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'summon', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'summon', i)) return;
       const p = JSON.parse(btn.dataset.payload);
       btn.disabled    = true;
       btn.textContent = '⏳ Summoning…';
@@ -1221,10 +1547,12 @@ Hooks.on('renderChatMessageHTML', (_message, html, _data) => {
   });
 
   // Drain button — posts drain resist card for the caster
-  html.querySelectorAll('.sr-drain-btn').forEach(btn => {
+  html.querySelectorAll('.sr-drain-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'drain', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'drain', i)) return;
       const p = JSON.parse(btn.dataset.payload);
       btn.disabled    = true;
       btn.textContent = '⏳ Preparing…';
@@ -1233,28 +1561,34 @@ Hooks.on('renderChatMessageHTML', (_message, html, _data) => {
   });
 
   // Roll Drain button on drain card
-  html.querySelectorAll('.sr-drain-roll-btn').forEach(btn => {
+  html.querySelectorAll('.sr-drain-roll-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'drainroll', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'drainroll', i)) return;
       await SR3EActor.handleDrainRollClick(btn, event.shiftKey);
     });
   });
 
   // Spell Defense declaration card — Commit
-  html.querySelectorAll('.sr-sd-declare-commit-btn').forEach(btn => {
+  html.querySelectorAll('.sr-sd-declare-commit-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'sddeclare', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'sddeclare', i)) return;
       await SR3EActor.handleSpellDefenseDeclareCommit(btn);
     });
   });
 
   // Spell Defense declaration card — Skip (delete card without committing)
-  html.querySelectorAll('.sr-sd-declare-skip-btn').forEach(btn => {
+  html.querySelectorAll('.sr-sd-declare-skip-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'sdskip', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'sdskip', i)) return;
       const msgEl = btn.closest('[data-message-id]');
       const msg = msgEl ? game.messages.get(msgEl.dataset.messageId) : null;
       if (msg) await msg.delete();
@@ -1262,37 +1596,45 @@ Hooks.on('renderChatMessageHTML', (_message, html, _data) => {
   });
 
   // Spell Defense roll button — on the spell defense phase card
-  html.querySelectorAll('.sr-spell-defense-btn').forEach(btn => {
+  html.querySelectorAll('.sr-spell-defense-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'spelldef', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'spelldef', i)) return;
       await SR3EActor.handleSpellDefenseRoll(btn, event.shiftKey);
     });
   });
 
   // Proceed to Resist Spell — skips remaining defense rolls
-  html.querySelectorAll('.sr-spell-defense-proceed-btn').forEach(btn => {
+  html.querySelectorAll('.sr-spell-defense-proceed-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'spelldefproceed', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'spelldefproceed', i)) return;
       await SR3EActor.handleSpellDefenseProceed(btn);
     });
   });
 
   // Astral Combat Roll! button on boxing card
-  html.querySelectorAll('.sr-astral-roll-btn').forEach(btn => {
+  html.querySelectorAll('.sr-astral-roll-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'astral', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'astral', i)) return;
       await SR3EActor.handleAstralRoll(btn, event.shiftKey);
     });
   });
 
   // Astral soak button — posts astral resist card (INT dice, TN = winner's CHA)
-  html.querySelectorAll('.sr-astral-soak-btn').forEach(btn => {
+  html.querySelectorAll('.sr-astral-soak-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'astralsoak', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'astralsoak', i)) return;
       const p = JSON.parse(btn.dataset.payload);
       btn.disabled    = true;
       btn.textContent = '⏳ Preparing…';
@@ -1301,19 +1643,23 @@ Hooks.on('renderChatMessageHTML', (_message, html, _data) => {
   });
 
   // Roll to Resist (Astral) button on astral soak card
-  html.querySelectorAll('.sr-astral-soak-roll-btn').forEach(btn => {
+  html.querySelectorAll('.sr-astral-soak-roll-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'astralsoakroll', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'astralsoakroll', i)) return;
       await SR3EActor.handleAstralSoakRoll(btn, event.shiftKey);
     });
   });
 
   // Aura Reading complementary roll button on assensing result card
-  html.querySelectorAll('.sr-aura-reading-btn').forEach(btn => {
+  html.querySelectorAll('.sr-aura-reading-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'aurareading', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'aurareading', i)) return;
       btn.disabled    = true;
       btn.textContent = '⏳ Rolling…';
       await SR3EActor.handleAuraReadingClick(btn, event.shiftKey);
@@ -1321,10 +1667,12 @@ Hooks.on('renderChatMessageHTML', (_message, html, _data) => {
   });
 
   // Universal contested roll button
-  html.querySelectorAll('.sr-contested-roll-btn').forEach(btn => {
+  html.querySelectorAll('.sr-contested-roll-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'contested', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'contested', i)) return;
       btn.disabled    = true;
       btn.textContent = '⏳ Rolling…';
       await SR3EActor.handleContestedRoll(btn, event.shiftKey);
@@ -1332,37 +1680,45 @@ Hooks.on('renderChatMessageHTML', (_message, html, _data) => {
   });
 
   // Ramming — vehicle soak button (body + control pool vs TN power)
-  html.querySelectorAll('.sr-ram-vehicle-soak-btn').forEach(btn => {
+  html.querySelectorAll('.sr-ram-vehicle-soak-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'ramvehicle', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'ramvehicle', i)) return;
       await SR3EActor.handleRamVehicleSoak(btn, event.shiftKey);
     });
   });
 
   // Ramming — individual passenger resist button
-  html.querySelectorAll('.sr-ram-passenger-resist-btn').forEach(btn => {
+  html.querySelectorAll('.sr-ram-passenger-resist-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'rampassenger', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'rampassenger', i)) return;
       await SR3EActor.handleRamPassengerResist(btn, event.shiftKey);
     });
   });
 
   // Assign damage button — applies final staged damage directly to actor wound track
-  html.querySelectorAll('.sr-assign-damage-btn').forEach(btn => {
+  html.querySelectorAll('.sr-assign-damage-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'assign', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'assign', i)) return;
       await SR3EActor.handleAssignDamage(btn);
     });
   });
 
   // Matrix combat — IC resist matrix damage (opens IC resist card)
-  html.querySelectorAll('.sr-matrix-ic-resist-btn').forEach(btn => {
+  html.querySelectorAll('.sr-matrix-ic-resist-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'maticresist', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'maticresist', i)) return;
       btn.disabled    = true;
       btn.textContent = '⏳ Preparing…';
       await SR3EActor.handleMatrixICResistClick(btn);
@@ -1370,19 +1726,23 @@ Hooks.on('renderChatMessageHTML', (_message, html, _data) => {
   });
 
   // Matrix combat — IC rolls to resist (on IC resist card)
-  html.querySelectorAll('.sr-matrix-ic-resist-roll-btn').forEach(btn => {
+  html.querySelectorAll('.sr-matrix-ic-resist-roll-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'maticresistroll', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'maticresistroll', i)) return;
       await SR3EActor.handleMatrixICResistRollClick(btn);
     });
   });
 
   // Matrix combat — Decker rolls Cybercombat defense against IC
-  html.querySelectorAll('.sr-matrix-defend-btn').forEach(btn => {
+  html.querySelectorAll('.sr-matrix-defend-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'maticdefend', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'maticdefend', i)) return;
       btn.disabled    = true;
       btn.textContent = '⏳ Preparing…';
       await SR3EActor.handleMatrixDefendClick(btn);
