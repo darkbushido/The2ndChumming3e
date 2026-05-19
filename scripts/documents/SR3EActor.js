@@ -60,7 +60,9 @@ export class SR3EActor extends Actor {
 
     const stunVal = w.stun?.value     ?? 0;
     const physVal = w.physical?.value ?? 0;
-    sys.woundMod  = -(SR3EActor._trackMod(stunVal) + SR3EActor._trackMod(physVal));
+    const rawWoundMod = -(SR3EActor._trackMod(stunVal) + SR3EActor._trackMod(physVal));
+    sys.rawWoundMod   = rawWoundMod;
+    sys.woundMod      = Math.min(0, rawWoundMod + (sys.stimBonus ?? 0));
 
     if (this.type === 'character' || this.type === 'npc') {
       this._prepareCharacter(sys, attr);
@@ -106,7 +108,36 @@ export class SR3EActor extends Actor {
   }
 
   /* ------------------------------------------------------------------ */
-  /*  Matrix combat — Decker initiates cybercombat against an IC        */
+  /*  Matrix combat — shared helpers                                     */
+  /* ------------------------------------------------------------------ */
+
+  // Returns the Firewall rating that acts as armor when actorId soaks matrix damage:
+  //   IC   → host's Security Threshold (neither IC nor host has a Firewall stat)
+  //   Agent → operator's cyberdeck Firewall (agent runs on the operator's deck)
+  static _getMatrixFirewall(actorId) {
+    const actor = game.actors.get(actorId);
+    if (!actor) return 0;
+    if (actor.type === 'ic') {
+      for (const host of game.actors.filter(a => a.type === 'host')) {
+        if ((host.system.stockedIC ?? []).some(r => r.actorId === actorId)) {
+          return host.system.securityTierThreshold ?? 0;
+        }
+      }
+      return 0;
+    }
+    if (actor.type === 'agent') {
+      const operatorId = actor.system.operatorActorId ?? '';
+      const operator   = game.actors.get(operatorId);
+      if (!operator) return 0;
+      const deckId = operator.system.equippedCyberdeck ?? '';
+      const deck   = deckId ? operator.items.get(deckId) : null;
+      return deck?.system?.attributes?.firewall?.base ?? 0;
+    }
+    return 0;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Matrix combat — Decker initiates cybercombat against an IC/Agent  */
   /* ------------------------------------------------------------------ */
 
   _matrixTNPenalty() {
@@ -121,116 +152,456 @@ export class SR3EActor extends Actor {
   }
 
   async rollCybercombat() {
-    const sys = this.system;
-    const d   = sys.derived ?? {};
-
-    const ccSkill      = this.items.find(i => i.type === 'skill' && i.name.toLowerCase().includes('cybercombat'));
-    const intel        = this.system.attributes?.intelligence?.value ?? 0;
-    const isDefaulting = !ccSkill;
-    const ccRating     = ccSkill?.system?.rating ?? Math.max(1, intel - 2);
-    const availHackPool = d.availableHackingPool ?? d.hackingPool ?? 0;
-    const mcmPenalty    = this._matrixTNPenalty();
-
-    const icActors   = game.actors.filter(a => a.type === 'ic' && !a.getFlag('The2ndChumming3e', 'isTemplate'));
-    const hostActors = game.actors.filter(a => a.type === 'host');
-    if (!icActors.length) {
-      ui.notifications.warn('No IC actors found. Create or deploy an IC actor first.');
+    const targets = SR3EActor._getMatrixCombatTargets(this.id);
+    if (!targets.length) {
+      const hostId = this.system.activeHostId ?? '';
+      if (!hostId) {
+        ui.notifications.warn('Not connected to a host. Select a User Mode and host on the Matrix tab.');
+      } else {
+        ui.notifications.warn('No valid matrix targets on this host. Other actors must be connected to the same host (and IC must be deployed).');
+      }
       return;
     }
 
-    let targetId     = null;
-    let hackPoolDice = 0;
-    let hostActorId  = null;
-
-    const icOptions   = icActors.map(a =>
-      `<option value="${a.id}">${a.name} (Rating ${a.system.rating ?? 1}, Sys ${a.system.systemRating ?? 6})</option>`
-    ).join('');
-    const hostOptions = hostActors.length
-      ? `<option value="">— none —</option>` + hostActors.map(a => {
-          const ap = a.system?.derived?.alertTNPenalty ?? 0;
-          return `<option value="${a.id}">${a.name} (Tier: ${a.system.securityTierName ?? '?'}, Threshold: ${a.system.securityTierThreshold ?? 0}${ap > 0 ? `, Alert +${ap}TN` : ''})</option>`;
-        }).join('')
-      : null;
-    const alertNote = hostActors.some(a => (a.system?.alertCount ?? 0) > 0)
-      ? `<p style="margin:0 0 8px;font-size:11px;color:var(--sr-amber)">⚠ One or more hosts on alert — TN penalty applied after host selection</p>`
-      : '';
+    const atk = SR3EActor._buildCCParticipant(this);
+    const mcmPenalty = this._matrixTNPenalty?.() ?? 0;
     const mcmNote = mcmPenalty > 0
-      ? `<p style="margin:0 0 8px;font-size:11px;color:var(--sr-red)">⚠ Deck damage: +${mcmPenalty} TN penalty on all matrix rolls</p>`
+      ? `<p style="margin:0 0 8px;font-size:11px;color:var(--sr-red)">⚠ Deck damage: +${mcmPenalty} TN on all matrix rolls</p>`
       : '';
+
+    const targetOptions = targets.map(a => {
+      const typeTag = a.type === 'agent' ? 'Agent' : a.type === 'ic' ? 'IC' : a.type.toUpperCase();
+      const rtgTag  = (a.type === 'ic' || a.type === 'agent') ? ` (Rating ${a.system.rating ?? 1})` : '';
+      const vrTag   = a.system.matrixUserMode ? ` [${a.system.matrixUserMode}]` : '';
+      return `<option value="${a.id}">${a.name} [${typeTag}]${rtgTag}${vrTag}</option>`;
+    }).join('');
+
+    let targetId  = null;
+    let confirmed = false;
 
     await foundry.applications.api.DialogV2.wait({
       window: { title: `${this.name}: Cybercombat` },
       content: `
         <div style="padding:8px 0">
-          ${mcmNote}${alertNote}
+          ${mcmNote}
           <p style="margin:0 0 8px;font-size:12px;color:var(--color-text-dark-secondary)">
-            Cybercombat: <strong>${ccRating}</strong>${isDefaulting ? ` <span style="color:var(--sr-amber)">(no skill — defaulting to INT ${intel} − 2)</span>` : ''} &nbsp;|&nbsp; Hacking Pool: <strong>${availHackPool}</strong>
+            ${atk.skillName} &nbsp;|&nbsp; Damage: <strong>${atk.damageCode}</strong>
           </p>
-          <label style="display:block;margin-bottom:8px">
-            Target IC:
-            <select id="cc-target" style="width:100%;margin-top:4px">${icOptions}</select>
-          </label>
-          <label style="display:block;margin-bottom:8px">
-            Allocate Hacking Pool (0–${availHackPool}):
-            <input type="number" id="cc-pool" value="0" min="0" max="${availHackPool}" style="width:60px;margin-left:4px">
-          </label>
-          ${hostOptions ? `
           <label style="display:block">
-            Host (for Overwatch tracking):
-            <select id="cc-host" style="width:100%;margin-top:4px">${hostOptions}</select>
-          </label>` : ''}
+            Target:
+            <select id="cc-target" style="width:100%;margin-top:4px">${targetOptions}</select>
+          </label>
         </div>`,
       buttons: [
         {
-          label: 'Roll',
+          label: 'Confirm',
           action: 'confirm',
           default: true,
           callback: (_e, _b, dlg) => {
-            targetId     = dlg.element.querySelector('#cc-target')?.value ?? null;
-            hackPoolDice = Math.min(availHackPool, parseInt(dlg.element.querySelector('#cc-pool')?.value) || 0);
-            hostActorId  = dlg.element.querySelector('#cc-host')?.value || null;
+            targetId  = dlg.element.querySelector('#cc-target')?.value ?? null;
+            confirmed = true;
           },
         },
         { label: 'Cancel', action: 'cancel' },
       ],
     });
-    if (!targetId) return;
+    if (!confirmed || !targetId) return;
 
-    const targetIC = game.actors.get(targetId);
-    if (!targetIC) return;
+    const defActor = game.actors.get(targetId);
+    if (!defActor) return;
 
-    const pool = ccRating + hackPoolDice;
-    if (pool < 1) { ui.notifications.warn('Cybercombat pool is 0.'); return; }
+    const def = SR3EActor._buildCCParticipant(defActor);
 
-    const tn = (targetIC.system.systemRating ?? targetIC.system.rating ?? 6) + mcmPenalty;
+    await SR3EActor.postCybercombatCard({
+      attackerActorId:  this.id,
+      defenderActorId:  targetId,
 
-    // Damage: persona damage = cyberdeck MPCP + "S" (editable on resist card)
-    const deck       = sys.equippedCyberdeck ? this.items.get(sys.equippedCyberdeck) : null;
-    const deckMpcp   = deck?.system?.attributes?.mpcp?.base ?? ccRating;
-    const damageCode = `${deckMpcp}S`;
-    const damageBase = SR3EItem.parseDamageCode(damageCode);
+      atkLabel:         atk.label,
+      atkSkillName:     atk.skillName,
+      atkSkillDice:     atk.skillDice,
+      atkHackPoolAvail: atk.hackPoolAvail,
+      atkTN:            atk.tn,
+      atkDamageCode:    atk.damageCode,
+      atkDamageBase:    atk.damageBase,
+      atkFirewall:      atk.firewall,
+      atkSoakPool:      atk.soakPool,
+      atkUserMode:      atk.userMode,
 
-    // Spend hacking pool before roll
-    await this.spendHackingPool(hackPoolDice);
+      defLabel:         def.label,
+      defSkillName:     def.skillName,
+      defSkillDice:     def.skillDice,
+      defHackPoolAvail: def.hackPoolAvail,
+      defTN:            def.tn,
+      defDamageCode:    def.damageCode,
+      defDamageBase:    def.damageBase,
+      defFirewall:      def.firewall,
+      defSoakPool:      def.soakPool,
+      defUserMode:      def.userMode,
 
-    const hostActor       = hostActorId ? game.actors.get(hostActorId) : null;
-    const alertPenalty    = hostActor?.system?.derived?.alertTNPenalty ?? 0;
-    const effectiveTN     = tn + alertPenalty;
-    const securityThreshold = hostActor?.system?.securityTierThreshold ?? 0;
+      attackerProgramId:       atk.programId,
+      attackerOperatorActorId: atk.operatorActorId,
+    });
+  }
 
-    const label = `${this.name}: Cybercombat → ${targetIC.name}${alertPenalty > 0 ? ` [Alert +${alertPenalty}]` : ''}`;
-    await this.rollPool(pool, effectiveTN, label, {
-      isMatrixAttackRoll:  true,
-      matrixAttackContext: {
-        attackerActorId:   this.id,
-        targetActorId:     targetId,
-        tn:                effectiveTN,
-        damageCode,
-        damageBase,
-        hackPoolSpent:     hackPoolDice,
-        hostActorId:       hostActorId ?? null,
-        securityThreshold,
-      },
+  /* ------------------------------------------------------------------ */
+  /*  Matrix combat — host-based target resolution                        */
+  /* ------------------------------------------------------------------ */
+
+  static _getMatrixCombatTargets(actorId) {
+    const actor = game.actors.get(actorId);
+    if (!actor) return [];
+    const hostId = actor.system.activeHostId ?? '';
+    if (!hostId) return [];
+
+    return game.actors.filter(a => {
+      if (a.id === actorId) return false;
+      if (a.getFlag('The2ndChumming3e', 'isTemplate')) return false;
+      if (a.type === 'ic')      return (a.system.activeHostId ?? '') === hostId && (a.system.deployed ?? false);
+      if (a.type === 'agent')   return (a.system.activeHostId ?? '') === hostId;
+      if (a.type === 'character' || a.type === 'npc')
+        return (a.system.activeHostId ?? '') === hostId && !!(a.system.matrixUserMode ?? '');
+      return false;
+    });
+  }
+
+  static _buildCCParticipant(actor) {
+    const sys = actor.system;
+
+    if (actor.type === 'ic') {
+      const rating   = sys.rating ?? 1;
+      const dmgCode  = sys.damage?.trim() || `${rating}S`;
+      const firewall = SR3EActor._getMatrixFirewall(actor.id);
+      return {
+        label: 'IC', skillName: `Cybercombat (Rating ${rating})`,
+        skillDice: rating, hackPoolAvail: 0, tn: 4,
+        damageCode: dmgCode, damageBase: SR3EItem.parseDamageCode(dmgCode),
+        firewall, soakPool: rating, userMode: '',
+        programId: null, operatorActorId: null,
+      };
+    }
+
+    if (actor.type === 'agent') {
+      const rating    = sys.rating ?? 1;
+      const firewall  = SR3EActor._getMatrixFirewall(actor.id);
+      const opId      = sys.operatorActorId ?? '';
+      const operator  = opId ? game.actors.get(opId) : null;
+      let dmgCode     = `${rating}L`;
+      let programId   = null;
+
+      if (operator) {
+        const progs = operator.items.filter(i => i.type === 'program' && /attack|offensive/i.test(i.system.category ?? ''));
+        const best  = progs.reduce((b, p) => {
+          const eR  = (p.system.currentRating ?? 0) > 0 ? p.system.currentRating : p.system.rating;
+          const bR  = b ? ((b.system.currentRating ?? 0) > 0 ? b.system.currentRating : b.system.rating) : 0;
+          return eR > bR ? p : b;
+        }, null);
+        if (best) {
+          const effR = (best.system.currentRating ?? 0) > 0 ? best.system.currentRating : best.system.rating;
+          dmgCode   = `${effR}S`;
+          programId = best.id;
+        }
+      }
+
+      return {
+        label: 'Agent', skillName: `Cybercombat (Rating ${rating})`,
+        skillDice: rating, hackPoolAvail: 0, tn: 4,
+        damageCode: dmgCode, damageBase: SR3EItem.parseDamageCode(dmgCode),
+        firewall, soakPool: rating, userMode: '',
+        programId, operatorActorId: opId || null,
+      };
+    }
+
+    // character / npc (decker)
+    const ccSkill      = actor.items.find(i => i.type === 'skill' && i.name.toLowerCase().includes('cybercombat'));
+    const intel        = sys.attributes?.intelligence?.value ?? 0;
+    const isDefaulting = !ccSkill;
+    const ccRating     = ccSkill?.system?.rating ?? Math.max(1, intel - 2);
+    const d            = sys.derived ?? {};
+    const hackPoolAvail = d.availableHackingPool ?? d.hackingPool ?? 0;
+    const mcmPenalty   = actor._matrixTNPenalty?.() ?? 0;
+    const deckId       = sys.equippedCyberdeck ?? '';
+    const deck         = deckId ? actor.items.get(deckId) : null;
+    const deckMpcp     = deck?.system?.attributes?.mpcp?.base ?? ccRating;
+    const deckFirewall = deck?.system?.attributes?.firewall?.base ?? 0;
+    const attackProg   = actor.items.find(i => i.type === 'program' && /attack|offensive/i.test(i.system.category ?? ''));
+    const progEffR     = attackProg ? ((attackProg.system.currentRating ?? 0) > 0 ? attackProg.system.currentRating : attackProg.system.rating) : 0;
+    const dmgCode      = progEffR > 0 ? `${progEffR}S` : `${deckMpcp}L`;
+
+    return {
+      label: 'Decker',
+      skillName: isDefaulting ? `Cybercombat (defaulting, INT ${intel}−2)` : `Cybercombat ${ccRating}`,
+      skillDice: ccRating, hackPoolAvail, tn: 4 + mcmPenalty,
+      damageCode: dmgCode, damageBase: SR3EItem.parseDamageCode(dmgCode),
+      firewall: deckFirewall, soakPool: deckMpcp, userMode: sys.matrixUserMode ?? '',
+      programId: attackProg?.id ?? null, operatorActorId: null,
+    };
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Matrix combat — Cybercombat boxing card                            */
+  /* ------------------------------------------------------------------ */
+
+  static async postCybercombatCard(ctx) {
+    const atk = game.actors.get(ctx.attackerActorId);
+    const def = game.actors.get(ctx.defenderActorId);
+    if (!atk || !def) return;
+
+    const payload = JSON.stringify(ctx).replace(/'/g, '&#39;');
+
+    const _vrBadge = (mode) => {
+      if (!mode) return '';
+      const map = {
+        'VR-Hot':  { label: 'VR-Hot',  color: 'var(--sr-red)' },
+        'VR-Cold': { label: 'VR-Cold', color: 'var(--sr-accent)' },
+        'AR':      { label: 'AR',       color: 'var(--sr-green)' },
+        'TRM':     { label: 'Tortoise', color: 'var(--sr-muted)' },
+      };
+      const m = map[mode];
+      if (!m) return '';
+      return `<span style="font-size:10px;font-weight:600;color:${m.color};margin-left:4px">[${m.label}]</span>`;
+    };
+
+    const _corner = (name, label, skillName, skillDice, hackPoolAvail, tn, damageCode, firewall, soakPool, userMode,
+                     skillClass, poolClass, tnClass, dmgClass) => `
+      <div class="sr-melee-corner">
+        <div class="sr-melee-name">${name} <span style="font-size:11px;color:var(--sr-muted)">[${label}]</span>${_vrBadge(userMode)}</div>
+        <div class="sr-melee-skill">${skillName}</div>
+        <div class="sr-melee-field-row">
+          <span>Damage:</span>
+          <div><input type="text" class="${dmgClass}" value="${damageCode}" style="width:55px"/></div>
+        </div>
+        <div class="sr-melee-field-row">
+          <span>Skill:</span>
+          <div style="display:flex;align-items:center;gap:4px">
+            <input type="number" class="${skillClass}" value="${skillDice}" min="1" max="30" style="width:40px"/>
+          </div>
+        </div>
+        <div class="sr-melee-field-row">
+          <span>Pool:</span>
+          <div style="display:flex;align-items:center;gap:4px">
+            <input type="number" class="${poolClass}" value="0" min="0" max="${hackPoolAvail}" style="width:40px"/>
+            <span>/ ${hackPoolAvail}</span>
+          </div>
+        </div>
+        <div class="sr-melee-field-row">
+          <span>TN:</span>
+          <div>
+            <input type="number" class="${tnClass}" value="${tn}" min="2" max="30" style="width:40px"/>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--sr-muted);margin-top:4px">
+          Firewall: ${firewall} &nbsp;·&nbsp; Soak pool: ${soakPool}
+        </div>
+      </div>`;
+
+    await ChatMessage.create({
+      speaker: { alias: 'Matrix Combat' },
+      content: `
+        <div class="sr-roll-card sr-melee-card">
+          <div class="sr-roll-header">💻 CYBERCOMBAT — ${atk.name} vs ${def.name}</div>
+          <div class="sr-melee-boxing">
+            ${_corner(atk.name, ctx.atkLabel, ctx.atkSkillName, ctx.atkSkillDice, ctx.atkHackPoolAvail, ctx.atkTN,
+                      ctx.atkDamageCode, ctx.atkFirewall, ctx.atkSoakPool, ctx.atkUserMode ?? '',
+                      'sr-cc-atk-skill', 'sr-cc-atk-pool', 'sr-cc-atk-tn', 'sr-cc-atk-dmg')}
+            <div class="sr-melee-vs">VS</div>
+            ${_corner(def.name, ctx.defLabel, ctx.defSkillName, ctx.defSkillDice, ctx.defHackPoolAvail, ctx.defTN,
+                      ctx.defDamageCode, ctx.defFirewall, ctx.defSoakPool, ctx.defUserMode ?? '',
+                      'sr-cc-def-skill', 'sr-cc-def-pool', 'sr-cc-def-tn', 'sr-cc-def-dmg')}
+          </div>
+          <div class="sr-soak-action" style="text-align:center;padding:4px 0">
+            <button class="sr-cc-roll-btn" data-payload='${payload}'>
+              💻 Roll Cybercombat
+            </button>
+          </div>
+        </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
+    });
+  }
+
+  static async handleCybercombatRoll(btn) {
+    const ctx  = JSON.parse(btn.dataset.payload);
+    const card = btn.closest('.sr-melee-card');
+
+    btn.disabled    = true;
+    btn.textContent = '⏳ Rolling…';
+
+    // Read live values from card
+    const atkSkillDice = parseInt(card.querySelector('.sr-cc-atk-skill')?.value) || ctx.atkSkillDice || 1;
+    const defSkillDice = parseInt(card.querySelector('.sr-cc-def-skill')?.value) || ctx.defSkillDice || 1;
+    const atkHackPool  = parseInt(card.querySelector('.sr-cc-atk-pool')?.value)  || 0;
+    const defHackPool  = parseInt(card.querySelector('.sr-cc-def-pool')?.value)  || 0;
+    const atkTN        = Math.max(2, parseInt(card.querySelector('.sr-cc-atk-tn')?.value)  || 4);
+    const defTN        = Math.max(2, parseInt(card.querySelector('.sr-cc-def-tn')?.value)  || 4);
+    const atkDmgCode   = card.querySelector('.sr-cc-atk-dmg')?.value.trim() || ctx.atkDamageCode;
+    const defDmgCode   = card.querySelector('.sr-cc-def-dmg')?.value.trim() || ctx.defDamageCode;
+    const atkDmgBase   = SR3EItem.parseDamageCode(atkDmgCode) ?? ctx.atkDamageBase;
+    const defDmgBase   = SR3EItem.parseDamageCode(defDmgCode) ?? ctx.defDamageBase;
+
+    const atkPool = Math.max(1, atkSkillDice + atkHackPool);
+    const defPool = Math.max(1, defSkillDice + defHackPool);
+
+    const atkActor = game.actors.get(ctx.attackerActorId);
+    const defActor = game.actors.get(ctx.defenderActorId);
+    if (!atkActor || !defActor) return;
+
+    // Spend hacking pool for decker side
+    if (atkHackPool > 0 && (atkActor.type === 'character' || atkActor.type === 'npc')) {
+      const avail = atkActor.system.derived?.availableHackingPool ?? 0;
+      const spend = Math.min(atkHackPool, avail);
+      if (spend > 0) await atkActor.update({ 'system.hackingPoolSpent': (atkActor.system.hackingPoolSpent ?? 0) + spend });
+    }
+
+    // Program degradation — attacker's program (may be on operator's deck if agent)
+    if (ctx.attackerProgramId) {
+      const progOwner = ctx.attackerOperatorActorId
+        ? game.actors.get(ctx.attackerOperatorActorId)
+        : atkActor;
+      const prog = progOwner?.items.get(ctx.attackerProgramId);
+      if (prog?.system?.degradable) {
+        const effR     = (prog.system.currentRating ?? 0) > 0 ? prog.system.currentRating : prog.system.rating;
+        const progName = prog.name;
+        if (effR <= 1) {
+          await prog.delete();
+          await ChatMessage.create({
+            content: `
+              <div class="sr-roll-card">
+                <div class="sr-roll-header" style="color:var(--sr-red)">💻 Program Crash — ${progName}</div>
+                <div class="sr-roll-result">${progName} (Rating ${effR}) degraded to 0 — crashed and removed from ${progOwner.name}'s deck.</div>
+              </div>`,
+            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+          });
+        } else {
+          await prog.update({ 'system.currentRating': effR - 1 });
+          await ChatMessage.create({
+            content: `
+              <div class="sr-roll-card">
+                <div class="sr-roll-header" style="color:var(--sr-amber)">💻 Program Degraded — ${progName}</div>
+                <div class="sr-roll-result">${progName} degraded: Rating ${effR} → ${effR - 1} (on ${progOwner.name}'s deck)</div>
+              </div>`,
+            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+          });
+        }
+      }
+    }
+
+    // Roll both sides
+    const atkDice = atkActor._rollWave(atkPool, atkTN, true);
+    const defDice = defActor._rollWave(defPool, defTN, true);
+
+    const atkOnes   = atkDice.filter(d => d.isOne).length;
+    const defOnes   = defDice.filter(d => d.isOne).length;
+    const atkGlitch = atkOnes > Math.floor(atkPool / 2);
+    const defGlitch = defOnes > Math.floor(defPool / 2);
+
+    // Post wave cards for both sides
+    await atkActor._postWaveCard({
+      actorId: ctx.attackerActorId,
+      label:   `💻 ${atkActor.name} attacks`,
+      tn: atkTN, pool: atkPool, wave: 0,
+      dice: atkDice, ones: atkOnes, glitch: atkGlitch,
+      isWeaponRoll: false, isMeleeAtk: true, meleeCtx: null,
+    });
+    await defActor._postWaveCard({
+      actorId: ctx.defenderActorId,
+      label:   `💻 ${defActor.name} defends`,
+      tn: defTN, pool: defPool, wave: 0,
+      dice: defDice, ones: defOnes, glitch: defGlitch,
+      isWeaponRoll: false, isMeleeDef: true, meleeCtx: null,
+    });
+
+    // Post result
+    await SR3EActor._postCCResult({
+      ...ctx,
+      atkPool, atkTN, defPool, defTN,
+      atkDamageCode: atkDmgCode, atkDamageBase: atkDmgBase,
+      defDamageCode: defDmgCode, defDamageBase: defDmgBase,
+    }, atkDice, defDice);
+  }
+
+  static async _postCCResult(ctx, atkDice, defDice) {
+    const atkHits = atkDice.filter(d => d.success).length;
+    const defHits = defDice.filter(d => d.success).length;
+    const net     = Math.abs(atkHits - defHits);
+
+    const atkActor = game.actors.get(ctx.attackerActorId);
+    const defActor = game.actors.get(ctx.defenderActorId);
+
+    let resultHtml;
+
+    if (atkHits === defHits) {
+      resultHtml = `
+        <div class="sr-melee-result sr-melee-tie">
+          🤝 Tie! ${atkHits} vs ${defHits} — no damage dealt.
+        </div>`;
+    } else {
+      const atkWins = atkHits > defHits;
+      const winner  = atkWins ? atkActor : defActor;
+      const loser   = atkWins ? defActor : atkActor;
+
+      const winnerDmgBase = atkWins ? ctx.atkDamageBase : ctx.defDamageBase;
+      const winnerDmgCode = atkWins ? ctx.atkDamageCode : ctx.defDamageCode;
+      const loserFirewall = atkWins ? (ctx.defFirewall ?? 0) : (ctx.atkFirewall ?? 0);
+      const loserSoakPool = atkWins ? (ctx.defSoakPool ?? 1) : (ctx.atkSoakPool ?? 1);
+
+      const staged     = SR3EItem.stageDamage(winnerDmgBase, net);
+      const isVRHot    = (loser?.system?.matrixUserMode ?? '') === 'VR-Hot';
+      const isStun     = staged.isStun && !isVRHot;
+      const trackLabel = isStun ? 'Stun' : 'Physical';
+
+      const stagingHtml = `
+        <div class="sr-staging-result">
+          💻 ${atkWins ? '⚔ Attacker' : '🛡 Defender'} wins! ${atkHits} vs ${defHits} (net ${net}):
+          ${winnerDmgCode} → <strong>${staged.power}${staged.level} ${trackLabel}</strong>
+          ${isVRHot ? '<span style="color:var(--sr-red);font-size:11px"> (VR-Hot: Physical)</span>' : ''}
+        </div>`;
+
+      const loserIsIC = loser?.type === 'ic' || loser?.type === 'agent';
+      let soakBtn;
+      if (loserIsIC) {
+        const resistCtx = JSON.stringify({
+          icActorId:      loser.id,
+          stagedPower:    staged.power,
+          stagedLevel:    staged.level,
+          isStun:         staged.isStun,
+          rawDamage:      winnerDmgCode,
+          firewallRating: loserFirewall,
+        }).replace(/'/g, '&#39;');
+        soakBtn = `
+          <div class="sr-soak-action">
+            <button class="sr-matrix-ic-resist-btn" data-payload='${resistCtx}'>
+              💻 ${loser.name}: Resist Matrix Damage (Rating ${loserSoakPool})
+            </button>
+          </div>`;
+      } else {
+        const resistCtx = JSON.stringify({
+          deckerActorId:  loser.id,
+          icActorId:      winner?.id ?? '',
+          stagedPower:    staged.power,
+          stagedLevel:    staged.level,
+          isStun,
+          rawDamage:      winnerDmgCode,
+          deckerMPCP:     loserSoakPool,
+          firewallRating: loserFirewall,
+        }).replace(/'/g, '&#39;');
+        soakBtn = `
+          <div class="sr-soak-action">
+            <button class="sr-matrix-decker-resist-btn" data-payload='${resistCtx}'>
+              🛡 ${loser.name}: Resist Matrix Damage (MPCP ${loserSoakPool})
+            </button>
+          </div>`;
+      }
+
+      resultHtml = stagingHtml + soakBtn;
+    }
+
+    await ChatMessage.create({
+      speaker: { alias: 'Matrix Combat' },
+      content: `
+        <div class="sr-roll-card">
+          <div class="sr-roll-header">💻 Cybercombat Result — ${atkActor?.name ?? 'Attacker'} vs ${defActor?.name ?? 'Defender'}</div>
+          ${resultHtml}
+        </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
   }
 
@@ -252,8 +623,11 @@ export class SR3EActor extends Actor {
     const category    = (item.system.category ?? '').toLowerCase();
     const isOffensive = /exploit|attack|offensive|hammer/.test(category);
 
-    const icActors   = isOffensive ? game.actors.filter(a => a.type === 'ic' && !a.getFlag('The2ndChumming3e', 'isTemplate')) : [];
-    const hostActors = game.actors.filter(a => a.type === 'host');
+    const _combatIds = game.combat?.combatants.size
+      ? new Set(game.combat.combatants.contents.map(c => c.actorId).filter(Boolean))
+      : null;
+    const icActors   = isOffensive ? game.actors.filter(a => a.type === 'ic' && !a.getFlag('The2ndChumming3e', 'isTemplate') && (!_combatIds || _combatIds.has(a.id))) : [];
+    const hostActors = game.actors.filter(a => a.type === 'host' && !a.getFlag('The2ndChumming3e', 'isTemplate'));
 
     const firstAlertPenalty = hostActors.length ? (hostActors[0]?.system?.derived?.alertTNPenalty ?? 0) : 0;
     const defaultTN = 6 + mcmPenalty + firstAlertPenalty;
@@ -378,7 +752,7 @@ export class SR3EActor extends Actor {
       ? `<p style="margin:0 0 8px;font-size:11px;color:var(--sr-red)">⚠ Deck damage: +${mcmPenalty} TN penalty included in default TN</p>`
       : '';
 
-    const hostActors = game.actors.filter(a => a.type === 'host');
+    const hostActors = game.actors.filter(a => a.type === 'host' && !a.getFlag('The2ndChumming3e', 'isTemplate'));
     if (!hostActors.length) {
       ui.notifications.warn('No host actors found. Create a host actor first.');
       return;
@@ -485,7 +859,7 @@ export class SR3EActor extends Actor {
     const isVRHot = (this.system.matrixUserMode ?? '') === 'VR-Hot';
     const isStun  = !isVRHot;
 
-    const hostActors = game.actors.filter(a => a.type === 'host');
+    const hostActors = game.actors.filter(a => a.type === 'host' && !a.getFlag('The2ndChumming3e', 'isTemplate'));
     const hostOptions = hostActors.length
       ? hostActors.map(a => `<option value="${a.system.systemRating ?? 6}">${a.name} (Sys ${a.system.systemRating ?? 6})</option>`).join('')
       : `<option value="6">Manual (default 6)</option>`;
@@ -617,37 +991,39 @@ export class SR3EActor extends Actor {
   }
 
   /* ------------------------------------------------------------------ */
-  /*  Matrix combat — IC initiates cybercombat against a decker          */
+  /*  Matrix combat — IC/Agent initiates cybercombat against a decker   */
   /* ------------------------------------------------------------------ */
 
   async rollICAttack() {
-    const sys = this.system;
-    const icRating   = sys.rating ?? 1;
-    const damageCode = sys.damage && sys.damage.trim() ? sys.damage.trim() : `${icRating}S`;
-    const damageBase = SR3EItem.parseDamageCode(damageCode);
-
-    const targets = game.actors.filter(a =>
-      (a.type === 'character' || a.type === 'npc') && !a.getFlag('The2ndChumming3e', 'isTemplate')
-    );
+    const targets = SR3EActor._getMatrixCombatTargets(this.id);
     if (!targets.length) {
-      ui.notifications.warn('No character or NPC actors found.');
+      const hostId = this.system.activeHostId ?? '';
+      if (!hostId) {
+        ui.notifications.warn('Not deployed to a host. Deploy this IC from a host sheet first.');
+      } else {
+        ui.notifications.warn('No valid matrix targets on this host. Deckers must be connected to the same host.');
+      }
       return;
     }
 
-    let targetId = null;
+    const atk = SR3EActor._buildCCParticipant(this);
 
     const targetOptions = targets.map(a => {
-      const vrMode = a.system?.matrixUserMode ?? '';
-      const vrTag  = vrMode ? ` [${vrMode}]` : '';
-      return `<option value="${a.id}">${a.name}${vrTag}</option>`;
+      const typeTag = a.type === 'agent' ? 'Agent' : a.type === 'ic' ? 'IC' : a.type.toUpperCase();
+      const rtgTag  = (a.type === 'ic' || a.type === 'agent') ? ` (Rating ${a.system.rating ?? 1})` : '';
+      const vrTag   = a.system.matrixUserMode ? ` [${a.system.matrixUserMode}]` : '';
+      return `<option value="${a.id}">${a.name} [${typeTag}]${rtgTag}${vrTag}</option>`;
     }).join('');
+
+    let targetId  = null;
+    let confirmed = false;
 
     await foundry.applications.api.DialogV2.wait({
       window: { title: `${this.name}: Attack` },
       content: `
         <div style="padding:8px 0">
           <p style="margin:0 0 8px;font-size:12px;color:var(--color-text-dark-secondary)">
-            IC Rating: <strong>${icRating}</strong> &nbsp;|&nbsp; Damage: <strong>${damageCode}</strong>
+            ${atk.label}: <strong>${atk.skillName}</strong> &nbsp;|&nbsp; Damage: <strong>${atk.damageCode}</strong>
           </p>
           <label style="display:block">
             Target:
@@ -660,34 +1036,48 @@ export class SR3EActor extends Actor {
           action: 'confirm',
           default: true,
           callback: (_e, _b, dlg) => {
-            targetId = dlg.element.querySelector('#ic-target')?.value ?? null;
+            targetId  = dlg.element.querySelector('#ic-target')?.value ?? null;
+            confirmed = true;
           },
         },
         { label: 'Cancel', action: 'cancel' },
       ],
     });
-    if (!targetId) return;
+    if (!confirmed || !targetId) return;
 
-    const targetActor = game.actors.get(targetId);
-    if (!targetActor) return;
+    const defActor = game.actors.get(targetId);
+    if (!defActor) return;
 
-    // TN = target's cyberdeck MPCP (= the decker's System Rating)
-    const deckId   = targetActor.system.equippedCyberdeck ?? '';
-    const deckItem = deckId ? targetActor.items.get(deckId) : null;
-    const tn       = deckItem?.system?.attributes?.mpcp?.base ?? 4;
+    const def = SR3EActor._buildCCParticipant(defActor);
 
-    const targetVRMode = targetActor.system?.matrixUserMode ?? '';
-    const label = `${this.name}: Attack → ${targetActor.name}`;
-    await this.rollPool(icRating, tn, label, {
-      isICAttackRoll: true,
-      icAttackContext: {
-        icActorId:     this.id,
-        targetActorId: targetId,
-        targetVRMode,
-        tn,
-        damageCode,
-        damageBase,
-      },
+    await SR3EActor.postCybercombatCard({
+      attackerActorId:  this.id,
+      defenderActorId:  targetId,
+
+      atkLabel:         atk.label,
+      atkSkillName:     atk.skillName,
+      atkSkillDice:     atk.skillDice,
+      atkHackPoolAvail: atk.hackPoolAvail,
+      atkTN:            atk.tn,
+      atkDamageCode:    atk.damageCode,
+      atkDamageBase:    atk.damageBase,
+      atkFirewall:      atk.firewall,
+      atkSoakPool:      atk.soakPool,
+      atkUserMode:      atk.userMode,
+
+      defLabel:         def.label,
+      defSkillName:     def.skillName,
+      defSkillDice:     def.skillDice,
+      defHackPoolAvail: def.hackPoolAvail,
+      defTN:            def.tn,
+      defDamageCode:    def.damageCode,
+      defDamageBase:    def.damageBase,
+      defFirewall:      def.firewall,
+      defSoakPool:      def.soakPool,
+      defUserMode:      def.userMode,
+
+      attackerProgramId:       atk.programId,
+      attackerOperatorActorId: atk.operatorActorId,
     });
   }
 
@@ -696,10 +1086,11 @@ export class SR3EActor extends Actor {
   /* ------------------------------------------------------------------ */
 
   async _postICResistCard(payload) {
-    const { stagedPower, stagedLevel, isStun, rawDamage } = payload;
-    const sys          = this.system;
-    const systemRating = sys.systemRating ?? sys.rating ?? 1;
-    const trackLabel   = isStun ? 'Stun' : 'Physical';
+    const { stagedPower, stagedLevel, isStun, rawDamage, firewallRating = 0 } = payload;
+    const sys        = this.system;
+    const ownRating  = sys.rating ?? 1;
+    const trackLabel = isStun ? 'Stun' : 'Physical';
+    const soakTN     = Math.max(2, stagedPower - firewallRating);
 
     const resistPayload = JSON.stringify({
       icActorId:   this.id,
@@ -719,16 +1110,58 @@ export class SR3EActor extends Actor {
             <span style="color:var(--sr-muted);font-size:11px"> (${rawDamage})</span>
           </div>
           <div class="sr-soak-pool-row">
-            <label>Pool (System Rating):
-              <input type="number" class="sr-matrix-resist-pool" value="${systemRating}" min="1" max="20">
+            <label>Pool (Rating):
+              <input type="number" class="sr-matrix-resist-pool" value="${ownRating}" min="1" max="20">
             </label>
-            <label style="margin-left:12px">TN (Power):
-              <input type="number" class="sr-matrix-resist-tn" value="${Math.max(2, stagedPower)}" min="2">
+            <label style="margin-left:12px">TN (Power − Firewall):
+              <input type="number" class="sr-matrix-resist-tn" value="${soakTN}" min="2">
             </label>
           </div>
           <div class="sr-soak-pool-row" style="margin-top:6px">
             <button class="sr-matrix-ic-resist-roll-btn" data-payload='${resistPayload}'>
               🎲 Roll to Resist
+            </button>
+          </div>
+        </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    });
+  }
+
+  async _postDeckerMatrixSoakCard(payload) {
+    const { stagedPower, stagedLevel, isStun, rawDamage, icActorId, deckerMPCP, firewallRating = 0 } = payload;
+    const trackLabel = isStun ? 'Stun' : 'Physical';
+    const soakTN     = Math.max(2, stagedPower - firewallRating);
+    const icName     = game.actors.get(icActorId)?.name ?? 'IC';
+
+    const rollPayload = JSON.stringify({
+      deckerActorId: this.id,
+      stagedPower,
+      stagedLevel,
+      isStun,
+      rawDamage,
+      icActorId,
+    }).replace(/'/g, '&#39;');
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      content: `
+        <div class="sr-soak-card">
+          <div class="sr-soak-header">💻 ${this.name}: Resist Matrix Damage (MPCP)</div>
+          <div class="sr-soak-incoming">
+            Incoming from ${icName}: <strong>${stagedPower}${stagedLevel} ${trackLabel}</strong>
+            <span style="color:var(--sr-muted);font-size:11px"> (${rawDamage})</span>
+          </div>
+          <div class="sr-soak-pool-row">
+            <label>Pool (MPCP):
+              <input type="number" class="sr-matrix-decker-resist-pool" value="${deckerMPCP}" min="1" max="20">
+            </label>
+            <label style="margin-left:12px">TN (Power − Firewall):
+              <input type="number" class="sr-matrix-decker-resist-tn" value="${soakTN}" min="2">
+            </label>
+          </div>
+          <div class="sr-soak-pool-row" style="margin-top:6px">
+            <button class="sr-matrix-decker-resist-roll-btn" data-payload='${rollPayload}'>
+              🎲 Roll to Resist (MPCP)
             </button>
           </div>
         </div>`,
@@ -767,102 +1200,34 @@ export class SR3EActor extends Actor {
     });
   }
 
-  /* ------------------------------------------------------------------ */
-  /*  Matrix combat — Decker defends against IC attack                   */
-  /* ------------------------------------------------------------------ */
+  static async handleDeckerMatrixResistClick(btn) {
+    const payload = JSON.parse(btn.dataset.payload);
+    const actor   = game.actors.get(payload.deckerActorId);
+    if (!actor) return;
+    await actor._postDeckerMatrixSoakCard(payload);
+  }
 
-  static async handleMatrixDefendClick(btn) {
-    const ctx         = JSON.parse(btn.dataset.payload);
-    const targetActor = game.actors.get(ctx.targetActorId);
-    if (!targetActor) return;
+  static async handleDeckerMatrixResistRollClick(btn) {
+    const payload = JSON.parse(btn.dataset.payload);
+    const card    = btn.closest('.sr-soak-card');
+    const pool    = parseInt(card.querySelector('.sr-matrix-decker-resist-pool')?.value) || 1;
+    const tn      = parseInt(card.querySelector('.sr-matrix-decker-resist-tn')?.value)   || 2;
+    const actor   = game.actors.get(payload.deckerActorId);
+    if (!actor) return;
 
     btn.disabled    = true;
-    btn.textContent = '⏳ Preparing…';
+    btn.textContent = '⏳ Rolling…';
 
-    const ccSkill      = targetActor.items.find(i => i.type === 'skill' && i.name.toLowerCase().includes('cybercombat'));
-    const defIntel     = targetActor.system.attributes?.intelligence?.value ?? 0;
-    const isDefaulting = !ccSkill;
-    const ccRating     = ccSkill?.system?.rating ?? Math.max(1, defIntel - 2);
-    const hackPool   = targetActor.system.derived?.availableHackingPool ?? targetActor.system.derived?.hackingPool ?? 0;
-    const mcmPenalty = targetActor._matrixTNPenalty?.() ?? 0;
-    const effectiveTN = ctx.tn + mcmPenalty;
-
-    let hackPoolDice = 0;
-
-    if (hackPool > 0) {
-      await foundry.applications.api.DialogV2.wait({
-        window: { title: `${targetActor.name}: Cybercombat Defense` },
-        content: `
-          <div style="padding:8px 0">
-            <p style="margin:0 0 8px">
-              Cybercombat: <strong>${ccRating}</strong>${isDefaulting ? ` <span style="color:var(--sr-amber)">(no skill — INT ${defIntel} − 2)</span>` : ''} &nbsp;|&nbsp; Hacking Pool: <strong>${hackPool}</strong>
-            </p>
-            <p style="margin:0 0 8px;font-size:12px;color:var(--color-text-dark-secondary)">
-              Defending against ${ctx.icHits} IC hit${ctx.icHits !== 1 ? 's' : ''} (TN ${effectiveTN}${mcmPenalty > 0 ? `, +${mcmPenalty} MCM` : ''})
-            </p>
-            <label>Allocate Hacking Pool (0–${hackPool}):
-              <input type="number" id="def-pool" value="0" min="0" max="${hackPool}" style="width:60px;margin-left:4px">
-            </label>
-          </div>`,
-        buttons: [
-          {
-            label: 'Defend',
-            action: 'confirm',
-            default: true,
-            callback: (_e, _b, dlg) => {
-              hackPoolDice = Math.min(hackPool, parseInt(dlg.element.querySelector('#def-pool')?.value) || 0);
-            },
-          },
-          { label: 'Cancel', action: 'cancel' },
-        ],
-      });
-    }
-
-    const pool = ccRating + hackPoolDice;
-    if (pool < 1) {
-      // Zero pool — treat as 0 defense hits, post soak immediately
-      const netHits    = ctx.icHits;
-      const staged     = SR3EItem.stageDamage(ctx.damageBase, netHits);
-      const isVRHot    = (targetActor.system?.matrixUserMode ?? '') === 'VR-Hot';
-      const isStun     = staged.isStun && !isVRHot;
-      const trackLabel = isStun ? 'Stun' : 'Physical';
-      const soakCtx    = JSON.stringify({
-        attackerActorId: ctx.icActorId,
-        targetActorId:   ctx.targetActorId,
-        isMelee:         false,
-        stagedPower:     staged.power,
-        stagedLevel:     staged.level,
-        isStun,
-        rawDamage:       ctx.damageCode,
-      }).replace(/'/g, '&#39;');
-      const targetName = targetActor.name;
-      await ChatMessage.create({
-        speaker: ChatMessage.getSpeaker({ actor: targetActor }),
-        content: `
-          <div class="sr-roll-card">
-            <div class="sr-roll-header">💻 ${targetName}: No Cybercombat defense</div>
-            <div class="sr-staging-result">
-              IC ${ctx.icHits} hits undefended → <strong>${staged.power}${staged.level} ${trackLabel}</strong>${isVRHot ? ' <span style="color:var(--sr-red);font-size:11px">(VR-Hot: Physical)</span>' : ''}
-            </div>
-            <div class="sr-soak-action">
-              <button class="sr-soak-btn" data-payload='${soakCtx}'>🛡 ${targetName}: Resist Damage (Body)</button>
-            </div>
-          </div>`,
-        style: CONST.CHAT_MESSAGE_STYLES.ROLL,
-      });
-      return;
-    }
-
-    const label = `${targetActor.name}: Cybercombat Defense (${ctx.icHits} IC hit${ctx.icHits !== 1 ? 's' : ''})`;
-    await targetActor.rollPool(pool, effectiveTN, label, {
-      isMatrixDefenseRoll:  true,
-      matrixDefenseContext: {
-        icHits:        ctx.icHits,
-        icActorId:     ctx.icActorId,
-        targetActorId: ctx.targetActorId,
-        tn:            effectiveTN,
-        damageCode:    ctx.damageCode,
-        damageBase:    ctx.damageBase,
+    const label = `${actor.name}: Resist Matrix Damage (MPCP)`;
+    await actor.rollPool(pool, tn, label, {
+      isDeckerMatrixSoakRoll:  true,
+      deckerMatrixSoakContext: {
+        deckerActorId: payload.deckerActorId,
+        icActorId:     payload.icActorId,
+        stagedPower:   payload.stagedPower,
+        stagedLevel:   payload.stagedLevel,
+        isStun:        payload.isStun,
+        rawDamage:     payload.rawDamage,
       },
     });
   }
@@ -1153,23 +1518,19 @@ _prepareCharacter(sys, attr) {
         soakPayload:         options.soakPayload        ?? null,
         isVehicleSoakRoll:     options.isVehicleSoakRoll    ?? false,
         vehicleSoakContext:    options.vehicleSoakContext    ?? null,
-        isMatrixAttackRoll:    options.isMatrixAttackRoll    ?? false,
-        matrixAttackContext:   options.matrixAttackContext   ?? null,
-        isICAttackRoll:        options.isICAttackRoll        ?? false,
-        icAttackContext:       options.icAttackContext       ?? null,
-        isMatrixDefenseRoll:   options.isMatrixDefenseRoll   ?? false,
-        matrixDefenseContext:  options.matrixDefenseContext  ?? null,
-        isMatrixSoakRoll:      options.isMatrixSoakRoll      ?? false,
-        matrixSoakContext:     options.matrixSoakContext     ?? null,
-        isProgramRoll:          options.isProgramRoll          ?? false,
-        programContext:         options.programContext         ?? null,
-        isHackingActionRoll:    options.isHackingActionRoll   ?? false,
-        hackingActionContext:   options.hackingActionContext  ?? null,
-        barrierContext:         options.barrierContext        ?? null,
-        fallingContext:         options.fallingContext        ?? null,
-        escapeContext:          options.escapeContext         ?? null,
-        grenadeType:            options.grenadeType           ?? 'standard',
-        footerNote:             options.footerNote            ?? null,
+        isMatrixSoakRoll:        options.isMatrixSoakRoll        ?? false,
+        matrixSoakContext:       options.matrixSoakContext       ?? null,
+        isDeckerMatrixSoakRoll:  options.isDeckerMatrixSoakRoll  ?? false,
+        deckerMatrixSoakContext: options.deckerMatrixSoakContext ?? null,
+        isProgramRoll:           options.isProgramRoll           ?? false,
+        programContext:          options.programContext          ?? null,
+        isHackingActionRoll:     options.isHackingActionRoll     ?? false,
+        hackingActionContext:    options.hackingActionContext    ?? null,
+        barrierContext:          options.barrierContext          ?? null,
+        fallingContext:          options.fallingContext          ?? null,
+        escapeContext:           options.escapeContext           ?? null,
+        grenadeType:             options.grenadeType             ?? 'standard',
+        footerNote:              options.footerNote              ?? null,
       });
       return successes;
     }
@@ -1215,21 +1576,17 @@ _prepareCharacter(sys, attr) {
       soakPayload:           options.soakPayload           ?? null,
       isVehicleSoakRoll:     options.isVehicleSoakRoll     ?? false,
       vehicleSoakContext:    options.vehicleSoakContext    ?? null,
-      isMatrixAttackRoll:    options.isMatrixAttackRoll    ?? false,
-      matrixAttackContext:   options.matrixAttackContext   ?? null,
-      isICAttackRoll:        options.isICAttackRoll        ?? false,
-      icAttackContext:       options.icAttackContext       ?? null,
-      isMatrixDefenseRoll:   options.isMatrixDefenseRoll   ?? false,
-      matrixDefenseContext:  options.matrixDefenseContext  ?? null,
-      isMatrixSoakRoll:      options.isMatrixSoakRoll      ?? false,
-      matrixSoakContext:     options.matrixSoakContext     ?? null,
-      isProgramRoll:         options.isProgramRoll         ?? false,
-      programContext:        options.programContext        ?? null,
-      isHackingActionRoll:   options.isHackingActionRoll  ?? false,
-      hackingActionContext:  options.hackingActionContext  ?? null,
-      barrierContext:        options.barrierContext        ?? null,
-      fallingContext:        options.fallingContext        ?? null,
-      escapeContext:         options.escapeContext         ?? null,
+      isMatrixSoakRoll:        options.isMatrixSoakRoll        ?? false,
+      matrixSoakContext:       options.matrixSoakContext       ?? null,
+      isDeckerMatrixSoakRoll:  options.isDeckerMatrixSoakRoll  ?? false,
+      deckerMatrixSoakContext: options.deckerMatrixSoakContext ?? null,
+      isProgramRoll:           options.isProgramRoll           ?? false,
+      programContext:          options.programContext          ?? null,
+      isHackingActionRoll:     options.isHackingActionRoll     ?? false,
+      hackingActionContext:    options.hackingActionContext    ?? null,
+      barrierContext:          options.barrierContext          ?? null,
+      fallingContext:          options.fallingContext          ?? null,
+      escapeContext:           options.escapeContext           ?? null,
       grenadeType:           options.grenadeType           ?? 'standard',
       footerNote:            options.footerNote            ?? null,
     });
@@ -1754,57 +2111,6 @@ _prepareCharacter(sys, attr) {
         } else {
           stagingHtml = `<div class="sr-staging-result" style="color:#4caf50;">✅ ${successes} success${successes !== 1 ? 'es' : ''} — vehicle remains under control.</div>`;
         }
-      } else if (state.isMatrixAttackRoll && state.matrixAttackContext) {
-        // Decker attacked IC — auto-resolve IC defense, then show damage/resist
-        const mac       = state.matrixAttackContext;
-        const targetIC  = game.actors.get(mac.targetActorId);
-        const icRating  = targetIC?.system?.rating ?? 1;
-        const icName    = targetIC?.name ?? 'IC';
-
-        // Overwatch: check if decker's successes met the security threshold
-        if (mac.hostActorId && (mac.securityThreshold ?? 0) > 0 && successes < mac.securityThreshold) {
-          await SR3EActor._incrementOverwatch(mac.hostActorId, mac.attackerActorId);
-        }
-
-        // Auto-roll IC Cybercombat defense (IC rating dice vs same TN)
-        let icHits = 0;
-        const icFaces = [];
-        for (let i = 0; i < icRating; i++) {
-          const f = Math.floor(Math.random() * 6) + 1;
-          icFaces.push(f);
-          if (f >= state.tn) icHits++;
-        }
-
-        const netHits = Math.max(0, successes - icHits);
-        stagingHtml = `
-          <div class="sr-staging-result" style="color:var(--sr-muted)">
-            💻 ${icName} defends: ${icRating}d6 vs TN ${state.tn} → [${icFaces.join(', ')}] = <strong>${icHits}</strong> hit${icHits !== 1 ? 's' : ''}
-          </div>`;
-
-        if (netHits <= 0) {
-          stagingHtml += '<div class="sr-staging-result sr-soak-blocked">✅ IC blocks all hits — no damage!</div>';
-        } else {
-          const staged = SR3EItem.stageDamage(mac.damageBase, netHits);
-          const trackLabel = staged.isStun ? 'Stun' : 'Physical';
-          stagingHtml += `
-            <div class="sr-staging-result">
-              💻 Net ${netHits} hit${netHits !== 1 ? 's' : ''}: ${mac.damageCode} → <strong>${staged.power}${staged.level} ${trackLabel}</strong>
-            </div>`;
-          const resistCtx = JSON.stringify({
-            icActorId:   mac.targetActorId,
-            stagedPower: staged.power,
-            stagedLevel: staged.level,
-            isStun:      staged.isStun,
-            rawDamage:   mac.damageCode,
-          }).replace(/'/g, '&#39;');
-          postRollHtml = `
-            <div class="sr-soak-action">
-              <button class="sr-matrix-ic-resist-btn" data-payload='${resistCtx}'>
-                💻 ${icName}: Resist Matrix Damage
-              </button>
-            </div>`;
-        }
-
       } else if (state.isProgramRoll && state.programContext) {
         const pc = state.programContext;
 
@@ -1814,7 +2120,7 @@ _prepareCharacter(sys, attr) {
         }
 
         if (pc.isOffensive && pc.targetActorId) {
-          // Auto-roll IC defense (same pattern as isMatrixAttackRoll)
+          // Auto-roll IC defense (program offensive roll vs IC)
           const targetIC = game.actors.get(pc.targetActorId);
           const icRating = targetIC?.system?.rating ?? 1;
           const icName   = targetIC?.name ?? 'IC';
@@ -1864,71 +2170,6 @@ _prepareCharacter(sys, attr) {
             </div>`;
         }
 
-      } else if (state.isICAttackRoll && state.icAttackContext) {
-        // IC attacked a decker — show a "Roll to Defend" button for the target
-        const iac        = state.icAttackContext;
-        const targetActor = game.actors.get(iac.targetActorId);
-        const targetName  = targetActor?.name ?? 'Target';
-
-        if (successes === 0) {
-          stagingHtml = `<div class="sr-staging-result sr-soak-blocked">✅ IC rolled 0 hits — no damage!</div>`;
-        } else {
-          const defendCtx = JSON.stringify({
-            icHits:          successes,
-            icActorId:       iac.icActorId,
-            targetActorId:   iac.targetActorId,
-            tn:              state.tn,
-            damageCode:      iac.damageCode,
-            damageBase:      iac.damageBase,
-          }).replace(/'/g, '&#39;');
-          stagingHtml = `
-            <div class="sr-staging-result" style="color:var(--sr-muted)">
-              💻 IC: ${successes} hit${successes !== 1 ? 's' : ''} — ${targetName}, roll to defend.
-            </div>`;
-          postRollHtml = `
-            <div class="sr-soak-action">
-              <button class="sr-matrix-defend-btn" data-payload='${defendCtx}'>
-                🛡 ${targetName}: Roll Cybercombat Defense
-              </button>
-            </div>`;
-        }
-
-      } else if (state.isMatrixDefenseRoll && state.matrixDefenseContext) {
-        // Decker defended against IC — resolve, show soak if damage remains
-        const mdc         = state.matrixDefenseContext;
-        const netHits     = Math.max(0, mdc.icHits - successes);
-        const icName      = game.actors.get(mdc.icActorId)?.name ?? 'IC';
-        const targetActor = game.actors.get(mdc.targetActorId);
-        const isVRHot     = (targetActor?.system?.matrixUserMode ?? '') === 'VR-Hot';
-
-        if (netHits <= 0) {
-          stagingHtml = `<div class="sr-staging-result sr-soak-blocked">✅ Defense successful! No damage taken.</div>`;
-        } else {
-          const staged     = SR3EItem.stageDamage(mdc.damageBase, netHits);
-          const isStun     = staged.isStun && !isVRHot;
-          const trackLabel = isStun ? 'Stun' : 'Physical';
-          stagingHtml = `
-            <div class="sr-staging-result">
-              💻 Net ${netHits} hit${netHits !== 1 ? 's' : ''}: ${mdc.damageCode} → <strong>${staged.power}${staged.level} ${trackLabel}</strong>${isVRHot ? ' <span style="color:var(--sr-red);font-size:11px">(VR-Hot: Physical)</span>' : ''}
-            </div>`;
-          const soakCtx = JSON.stringify({
-            attackerActorId: mdc.icActorId,
-            targetActorId:   mdc.targetActorId,
-            isMelee:         false,
-            stagedPower:     staged.power,
-            stagedLevel:     staged.level,
-            isStun,
-            rawDamage:       mdc.damageCode,
-          }).replace(/'/g, '&#39;');
-          const targetName = targetActor?.name ?? 'Target';
-          postRollHtml = `
-            <div class="sr-soak-action">
-              <button class="sr-soak-btn" data-payload='${soakCtx}'>
-                🛡 ${targetName}: Resist Matrix Damage (Body)
-              </button>
-            </div>`;
-        }
-
       } else if (state.isMatrixSoakRoll && state.matrixSoakContext) {
         // IC soaking damage — same staging logic as normal soak
         const msc     = state.matrixSoakContext;
@@ -1956,6 +2197,26 @@ _prepareCharacter(sys, attr) {
                 💉 Assign ${msc.stagedPower}${finalLevel} Matrix to ${icName}
               </button>
             </div>`;
+        }
+
+      } else if (state.isDeckerMatrixSoakRoll && state.deckerMatrixSoakContext) {
+        // Decker soaking matrix damage with MPCP
+        const dsc    = state.deckerMatrixSoakContext;
+        const STAGES = ['L', 'M', 'S', 'D'];
+        let idx      = STAGES.indexOf(dsc.stagedLevel);
+        let remaining = successes;
+        const origIdx = idx;
+        while (remaining >= 2 && idx >= 0) { remaining -= 2; idx--; }
+
+        if (idx < 0) {
+          stagingHtml = '<div class="sr-staging-result sr-soak-blocked">💻 Matrix damage fully resisted!</div>';
+        } else {
+          const finalLevel = STAGES[idx];
+          const unchanged  = idx === origIdx;
+          const resultLine = unchanged
+            ? `${successes} resist hit${successes !== 1 ? 's' : ''} — damage unchanged: <strong>${dsc.stagedPower}${finalLevel} Matrix</strong>`
+            : `${successes} resist hit${successes !== 1 ? 's' : ''} — <strong>${dsc.stagedPower}${dsc.stagedLevel}</strong> staged down to <strong>${dsc.stagedPower}${finalLevel} Matrix</strong>`;
+          stagingHtml = `<div class="sr-staging-result">💻 ${resultLine}</div>`;
         }
       }
 
@@ -2021,21 +2282,17 @@ _prepareCharacter(sys, attr) {
         crashContext:       state.crashContext          ?? null,
         isVehicleSoakRoll:    state.isVehicleSoakRoll    ?? false,
         vehicleSoakContext:   state.vehicleSoakContext   ?? null,
-        isMatrixAttackRoll:   state.isMatrixAttackRoll   ?? false,
-        matrixAttackContext:  state.matrixAttackContext  ?? null,
-        isICAttackRoll:       state.isICAttackRoll       ?? false,
-        icAttackContext:      state.icAttackContext      ?? null,
-        isMatrixDefenseRoll:  state.isMatrixDefenseRoll  ?? false,
-        matrixDefenseContext: state.matrixDefenseContext ?? null,
-        isMatrixSoakRoll:     state.isMatrixSoakRoll     ?? false,
-        matrixSoakContext:    state.matrixSoakContext    ?? null,
-        isProgramRoll:        state.isProgramRoll        ?? false,
-        programContext:       state.programContext       ?? null,
-        isHackingActionRoll:  state.isHackingActionRoll  ?? false,
-        hackingActionContext: state.hackingActionContext ?? null,
-        barrierContext:       state.barrierContext       ?? null,
-        grenadeType:          state.grenadeType          ?? 'standard',
-        footerNote:           state.footerNote           ?? null,
+        isMatrixSoakRoll:          state.isMatrixSoakRoll          ?? false,
+        matrixSoakContext:         state.matrixSoakContext         ?? null,
+        isDeckerMatrixSoakRoll:    state.isDeckerMatrixSoakRoll    ?? false,
+        deckerMatrixSoakContext:   state.deckerMatrixSoakContext   ?? null,
+        isProgramRoll:             state.isProgramRoll             ?? false,
+        programContext:            state.programContext            ?? null,
+        isHackingActionRoll:       state.isHackingActionRoll       ?? false,
+        hackingActionContext:      state.hackingActionContext      ?? null,
+        barrierContext:            state.barrierContext            ?? null,
+        grenadeType:               state.grenadeType               ?? 'standard',
+        footerNote:                state.footerNote                ?? null,
       }).replace(/'/g, '&#39;');
       explodeBtn = `
         <div class="sr-explode-action">

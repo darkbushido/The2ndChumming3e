@@ -169,6 +169,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
       toggleTriggered:    SR3EHostSheet._onToggleTriggered,
       toggleStepHidden:   SR3EHostSheet._onToggleStepHidden,
       assignIC:           SR3EHostSheet._onAssignIC,
+      deployStepIC:       SR3EHostSheet._onDeployStepIC,
       removeStepIC:       SR3EHostSheet._onRemoveStepIC,
       addStockedIC:          SR3EHostSheet._onAddStockedIC,
       removeStockedIC:       SR3EHostSheet._onRemoveStockedIC,
@@ -490,13 +491,17 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
           <div class="ts-right">
             <button type="button" class="host-action-btn-sm"
                     data-action="assignIC" data-step="${idx}">Assign IC</button>
+            <button type="button" class="host-action-btn-sm"
+                    data-action="deployStepIC" data-step="${idx}"
+                    ${!(s.ic?.length) ? 'disabled' : ''}
+                    title="Deploy this step's IC to the active encounter">⚔ Deploy</button>
           </div>
         </div>`;
     }).join('') : `<div class="host-empty">No trigger steps defined.</div>`;
 
     const initSheafBtn = steps.length === 0 ? `
       <button type="button" class="host-action-btn" data-action="initSheaf">
-        Add Default Security Sheaf (9 steps)
+        Add Default Security Sheaf (10 steps)
       </button>` : '';
 
     return `
@@ -916,7 +921,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   static async _onInitSheaf(_e, _t) {
-    const steps = Array.from({ length: 9 }, (_, i) => ({
+    const steps = Array.from({ length: 10 }, (_, i) => ({
       step: i + 1, label: `TS ${i + 1}`, triggered: false, hidden: false, ic: [], description: '',
     }));
     await this.actor.update({ 'system.triggerSteps': steps });
@@ -1205,6 +1210,54 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
     await this.actor.update({ 'system.triggerSteps': steps });
   }
 
+  static async _onDeployStepIC(_e, target) {
+    if (!game.combat) {
+      ui.notifications.warn('No active encounter. Start or join an encounter first.');
+      return;
+    }
+    const stepIdx = parseInt(target.dataset.step);
+    const steps   = this.actor.system.triggerSteps ?? [];
+    const icRefs  = steps[stepIdx]?.ic ?? [];
+    if (!icRefs.length) {
+      ui.notifications.warn('No IC assigned to this trigger step.');
+      return;
+    }
+
+    const toCreate = [];
+    const noToken  = [];
+
+    for (const ref of icRefs) {
+      if (!ref.actorId) continue;
+      const actor = game.actors.get(ref.actorId);
+      if (!actor) continue;
+      const sceneToken = (canvas.tokens?.placeables ?? []).find(t => t.actor?.id === ref.actorId);
+      if (sceneToken) {
+        toCreate.push({ tokenId: sceneToken.id, actorId: ref.actorId, sceneId: canvas.scene?.id });
+      } else {
+        toCreate.push({ actorId: ref.actorId });
+        noToken.push(ref.name ?? actor.name);
+      }
+    }
+
+    if (!toCreate.length) {
+      ui.notifications.warn('No deployable IC found (missing actor IDs?).');
+      return;
+    }
+
+    await game.combat.createEmbeddedDocuments('Combatant', toCreate);
+
+    // Mark IC actors as deployed on this host for matrix targeting
+    const hostId = this.actor.id;
+    for (const ref of icRefs) {
+      if (!ref.actorId) continue;
+      const icActor = game.actors.get(ref.actorId);
+      if (icActor) await icActor.update({ 'system.deployed': true, 'system.activeHostId': hostId });
+    }
+
+    ui.notifications.info(`Deployed ${toCreate.length} IC to the encounter.`);
+    if (noToken.length) ui.notifications.warn(`No scene token for: ${noToken.join(', ')}. Added as actor-only.`);
+  }
+
   static async _onRemoveStepIC(_e, target) {
     const stepIdx = parseInt(target.dataset.step);
     const icIdx   = parseInt(target.dataset.icIndex);
@@ -1337,6 +1390,14 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
     }
 
     await game.combat.createEmbeddedDocuments('Combatant', toCreate);
+
+    // Mark deployed IC actors for matrix targeting
+    const hostId = this.actor.id;
+    for (const actorId of selected) {
+      const icActor = game.actors.get(actorId);
+      if (icActor) await icActor.update({ 'system.deployed': true, 'system.activeHostId': hostId });
+    }
+
     ui.notifications.info(`Added ${toCreate.length} IC to the encounter.`);
     if (noToken.length) {
       ui.notifications.warn(`No scene token found for: ${noToken.join(', ')}. Added as actor-only combatants.`);
@@ -1454,41 +1515,85 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
   /* ── Active Agents ─────────────────────────────────────────────── */
 
   static async _onAddAgent(_e, _t) {
-    const nodes    = this.actor.system.nodes ?? [];
-    const nodeOpts = nodes.map(n => `<option value="${n.id}">${n.abbreviation ?? n.name}</option>`).join('');
-    let entry = null;
+    const nodes       = this.actor.system.nodes ?? [];
+    const nodeOpts    = nodes.map(n => `<option value="${n.id}">${n.abbreviation ?? n.name}</option>`).join('');
+    const agentActors = game.actors.filter(a => a.type === 'agent' && !a.getFlag('The2ndChumming3e', 'isTemplate'));
+    const alreadyOn   = new Set((this.actor.system.activeAgents ?? []).map(a => a.actorId).filter(Boolean));
 
-    await foundry.applications.api.DialogV2.wait({
-      window: { title: 'Add Agent / IC' },
-      content: `
-        <div style="display:grid;gap:8px;padding:8px 0">
-          <label>Name <input id="ag-name" type="text" placeholder="Authenticator-4" style="width:100%"/></label>
-          <label>Node <select id="ag-node">${nodeOpts}</select></label>
-          <label>Role <input id="ag-role" type="text" placeholder="IC / Agent" style="width:100%"/></label>
-        </div>`,
-      buttons: [
-        { label: 'Add', action: 'add', default: true, callback: (_e, _b, dlg) => {
-          entry = {
-            actorId:       '',
-            name:          dlg.element.querySelector('#ag-name').value || 'Agent',
-            iconType:      'agent',
-            currentNodeId: dlg.element.querySelector('#ag-node').value,
-            hidden:        false,
-            role:          dlg.element.querySelector('#ag-role').value || 'IC',
-          };
-        }},
-        { label: 'Cancel', action: 'cancel' },
-      ],
-    });
+    let entry    = null;
+    let actorId  = null;
+
+    if (agentActors.length) {
+      const agentOpts = agentActors
+        .map(a => `<option value="${a.id}" ${alreadyOn.has(a.id) ? 'disabled' : ''}>${a.name} (Rating ${a.system.rating ?? '?'})${alreadyOn.has(a.id) ? ' — already here' : ''}</option>`)
+        .join('');
+
+      await foundry.applications.api.DialogV2.wait({
+        window: { title: 'Add Agent to Host' },
+        content: `
+          <div style="display:grid;gap:8px;padding:8px 0">
+            <label>Agent Actor <select id="ag-actor" style="width:100%">${agentOpts}</select></label>
+            ${nodeOpts ? `<label>Starting Node <select id="ag-node">${nodeOpts}</select></label>` : ''}
+          </div>`,
+        buttons: [
+          { label: 'Add', action: 'add', default: true, callback: (_e, _b, dlg) => {
+            actorId = dlg.element.querySelector('#ag-actor')?.value;
+            const a = actorId ? game.actors.get(actorId) : null;
+            entry = {
+              actorId:       actorId ?? '',
+              name:          a?.name ?? 'Agent',
+              iconType:      'agent',
+              currentNodeId: dlg.element.querySelector('#ag-node')?.value ?? null,
+              hidden:        false,
+              role:          'Agent',
+            };
+          }},
+          { label: 'Cancel', action: 'cancel' },
+        ],
+      });
+    } else {
+      await foundry.applications.api.DialogV2.wait({
+        window: { title: 'Add Agent (Manual)' },
+        content: `
+          <div style="display:grid;gap:8px;padding:8px 0">
+            <label>Name <input id="ag-name" type="text" placeholder="Authenticator-4" style="width:100%"/></label>
+            ${nodeOpts ? `<label>Node <select id="ag-node">${nodeOpts}</select></label>` : ''}
+          </div>`,
+        buttons: [
+          { label: 'Add', action: 'add', default: true, callback: (_e, _b, dlg) => {
+            entry = {
+              actorId: '', name: dlg.element.querySelector('#ag-name').value || 'Agent',
+              iconType: 'agent', currentNodeId: dlg.element.querySelector('#ag-node')?.value ?? null,
+              hidden: false, role: 'Agent',
+            };
+          }},
+          { label: 'Cancel', action: 'cancel' },
+        ],
+      });
+    }
 
     if (!entry) return;
     const agents = [...(this.actor.system.activeAgents ?? []), entry];
     await this.actor.update({ 'system.activeAgents': agents });
+
+    // Sync activeHostId on the agent actor
+    if (actorId) {
+      const agentActor = game.actors.get(actorId);
+      if (agentActor) await agentActor.update({ 'system.activeHostId': this.actor.id });
+    }
   }
 
   static async _onRemoveAgent(_e, target) {
     const idx    = parseInt(target.dataset.index);
-    const agents = (this.actor.system.activeAgents ?? []).filter((_, i) => i !== idx);
-    await this.actor.update({ 'system.activeAgents': agents });
+    const agents = (this.actor.system.activeAgents ?? []);
+    const removed = agents[idx];
+    const updated = agents.filter((_, i) => i !== idx);
+    await this.actor.update({ 'system.activeAgents': updated });
+
+    // Clear activeHostId on the removed agent actor
+    if (removed?.actorId) {
+      const agentActor = game.actors.get(removed.actorId);
+      if (agentActor) await agentActor.update({ 'system.activeHostId': '' });
+    }
   }
 }

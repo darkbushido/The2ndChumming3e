@@ -351,6 +351,7 @@ export class ProgramData extends foundry.abstract.TypeDataModel {
       type:             new StringField({ initial: '' }),
       category:         new StringField({ initial: '' }),
       rating:           new NumberField({ integer: true, initial: 0, min: 0 }),
+      currentRating:    new NumberField({ integer: true, initial: 0, min: 0 }),
       sizeMp:           new NumberField({ integer: true, initial: 0, min: 0 }),
       multiplier:       new NumberField({ integer: true, initial: 0 }),
       degradable:       new BooleanField({ initial: false }),

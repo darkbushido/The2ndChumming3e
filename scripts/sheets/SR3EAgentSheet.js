@@ -61,10 +61,19 @@ export class SR3EAgentSheet extends foundry.applications.sheets.ActorSheetV2 {
     const initiative = derived.initiative ?? sys.rating ?? 1;
     const totalMult  = derived.totalMultiplier ?? 1;
     const mpCost     = derived.mpCost ?? 0;
+    const operatorId   = sys.operatorActorId ?? '';
+    const activeHostId = sys.activeHostId ?? '';
+    const activeHost   = activeHostId ? game.actors.get(activeHostId) : null;
 
     const tierOpts = SR3EAgentSheet.SEC_TIERS.map(t =>
       `<option value="${t}" ${tier === t ? 'selected' : ''}>${t}</option>`
     ).join('');
+
+    const operatorOpts = `<option value="">— none —</option>` +
+      game.actors
+        .filter(a => (a.type === 'character' || a.type === 'npc') && !a.getFlag('The2ndChumming3e', 'isTemplate'))
+        .map(a => `<option value="${a.id}" ${a.id === operatorId ? 'selected' : ''}>${a.name}</option>`)
+        .join('');
 
     const woundBoxes = Array.from({ length: woundMax }, (_, i) => {
       const filled = i < woundVal ? 'filled' : '';
@@ -107,6 +116,10 @@ export class SR3EAgentSheet extends foundry.applications.sheets.ActorSheetV2 {
               <span>Host Tier</span>
               <select name="system.hostSecurityTier">${tierOpts}</select>
             </label>
+            <label class="ic-field-row">
+              <span>Operator</span>
+              <select name="system.operatorActorId">${operatorOpts}</select>
+            </label>
             <div class="ic-field-row ic-derived-row">
               <span>Initiative</span>
               <span class="ic-derived-val">${initFormula}</span>
@@ -115,6 +128,10 @@ export class SR3EAgentSheet extends foundry.applications.sheets.ActorSheetV2 {
               <span>IC Graded</span>
               <input type="checkbox" name="system.graded" ${sys.graded ? 'checked' : ''}/>
             </label>
+            <div class="ic-field-row ic-derived-row">
+              <span>Active Host</span>
+              <span>${activeHost ? activeHost.name : '<span style="color:var(--sr-muted)">— none —</span>'}</span>
+            </div>
           </div>
 
           <div class="ic-wound-section">

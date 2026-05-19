@@ -1736,16 +1736,38 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
     });
   });
 
-  // Matrix combat — Decker rolls Cybercombat defense against IC
-  html.querySelectorAll('.sr-matrix-defend-btn').forEach((btn, i) => {
-    if (!_checkBtn(btn, mid, 'maticdefend', i)) return;
+  // Matrix combat — Cybercombat boxing card Roll button
+  html.querySelectorAll('.sr-cc-roll-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'ccroll', i)) return;
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
-      if (!_claimBtn(btn, mid, 'maticdefend', i)) return;
+      if (!_claimBtn(btn, mid, 'ccroll', i)) return;
+      await SR3EActor.handleCybercombatRoll(btn);
+    });
+  });
+
+  // Matrix combat — Decker opens their MPCP soak card
+  html.querySelectorAll('.sr-matrix-decker-resist-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'maticdeckerresist', i)) return;
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'maticdeckerresist', i)) return;
       btn.disabled    = true;
       btn.textContent = '⏳ Preparing…';
-      await SR3EActor.handleMatrixDefendClick(btn);
+      await SR3EActor.handleDeckerMatrixResistClick(btn);
+    });
+  });
+
+  // Matrix combat — Decker rolls to resist on MPCP soak card
+  html.querySelectorAll('.sr-matrix-decker-resist-roll-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'maticdeckerresistroll', i)) return;
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'maticdeckerresistroll', i)) return;
+      await SR3EActor.handleDeckerMatrixResistRollClick(btn);
     });
   });
 });

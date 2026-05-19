@@ -108,12 +108,12 @@ Formula: `REA + woundMod` base + `initiativeDice d6` (wired reflexes add to REA 
 Formula: `INT + 20` base + `1d6`
 **In:** INT 5 → **Out:** rolls `25 + 1d6`, result 26–31.
 
-### Matrix TRM / AR / VR-Cold
+### Matrix TRM / AR / VR-Cold - passed
 Formula: `REA + woundMod` base + `1d6` (wired reflexes apply to REA; dice **forced to 1** regardless of cyber; Response does NOT apply)
 
 **In:** REA 5 (includes wired reflex bonus), no wounds → base `5`, dice `1d6` → result 6–11.
 
-### Matrix VR-Hot
+### Matrix VR-Hot - passed
 Formula: `(reaction.base + woundMod + Response×2)` base + `(1 + Response)d6` (wired reflexes **excluded** from base; Response replaces them)
 
 **In:** base REA 4 (no cyber), Response 3 → base `4 + 6 = 10`, dice `4d6` → result 14–34.
@@ -429,8 +429,13 @@ Set on the Magic tab. Only one active at a time; clicking active button deactiva
 | VR-Cold | REA + woundMod + 1d6 | Wired reflexes apply; dumpshock = Stun |
 | VR-Hot | (REA_base + woundMod + Response×2) + (1+Response)d6 | Wired reflexes excluded; Response replaces them; dumpshock = Physical |
 
-### Hacking pool shown on sheet
-`⌊INT / 2⌋ + hackingBonus` — hackingBonus field manually set to `⌊MPCP / 3⌋`.
+### Hacking pool
+Formula: `⌊(INT + MPCP) / 3⌋` — displayed on sheet when cyberdeck is equipped.
+
+| INT | MPCP | Expected Pool |
+|---|---|---|
+| 6 | 6 | 4 |
+| 5 | 9 | 4 |
 
 ### IC wound track
 IC soak roll result → **💻 Assign [power][level] Matrix to [IC name]** button → updates IC `system.woundValue`.
@@ -439,7 +444,258 @@ IC wound max = `rating × 2`. Hitting max = destroyed.
 
 ---
 
-## 19. Vehicles
+## 19. Matrix Combat — Cybercombat (Decker attacks IC/Agent)
+
+**Prerequisites:** Decker must be connected to a host (User Mode button → host selection dialog). IC must be deployed from a host sheet. Both must share the same `activeHostId`.
+
+Flow: Cybercombat button on decker sheet → **target dialog** (lists all actors on same host) → **boxing card** posts with both sides editable → GM clicks **Roll!** → both wave cards posted → result card.
+
+### Boxing card layout
+
+Both attacker (Decker) and defender (IC/Agent) shown side-by-side. Each corner has editable:
+- **Skill** dice (pre-filled from skill rating or defaulting)
+- **Pool** (hacking pool, 0 to available; 0 for IC/Agent side)
+- **TN** (pre-filled 4, + MCM penalty for decker)
+- **Damage** code (editable text)
+
+Firewall and soak pool shown read-only in each corner for reference.
+
+### TN is always 4
+
+**In:** Decker cybercombat skill 5, TN pre-filled **4** → **Out:** boxing card shows 4 in TN field.
+
+### Decker damage code
+
+| Condition | Damage code |
+|---|---|
+| Has Attack/Offensive category program | `${currentRating or rating}S` |
+| No such program (fallback) | `${deck.MPCP}L` |
+
+**In:** Attack utility Rating 5 → damage `5S` pre-filled. No attack utility, MPCP 8 → damage `8L`.
+
+### MCM penalty pre-applied to decker TN
+
+| MCM boxes | TN penalty |
+|---|---|
+| 0–2 | 0 |
+| 3–5 | +1 |
+| 6–7 | +2 |
+| 8+ | +3 |
+
+**In:** 6 deck damage boxes → decker corner TN pre-filled **6** (4+2).
+
+### Tri-state outcome (result card after Roll!)
+
+**Attacker (decker) more hits:**
+- Net hits staged into decker's damage code
+- **Out:** IC/Agent gets **💻 IC Name: Resist Matrix Damage (Rating N)** button
+- Soak TN = `max(2, Power − IC Firewall)` where IC Firewall = host's Security Threshold
+
+**Defender (IC/Agent) more hits:**
+- Net hits staged into defender's damage code
+- **Out:** Decker gets **🛡 Decker Name: Resist Matrix Damage (MPCP N)** button
+- Soak TN = `max(2, Power − Decker Firewall)` where Decker Firewall = own deck's Firewall attribute
+
+**Tie:**
+- **Out:** "Tie! X vs X — no damage dealt."
+
+### Net hit staging
+
+| damage code | Net hits | Staged result |
+|---|---|---|
+| 6S | 0 net | 6S (unchanged) |
+| 6S | 2 net | 6D |
+| 6L | 4 net | 6S |
+
+### Soak pool — IC soaks with IC Rating (not System Rating)
+
+**In:** IC Rating 5, soak TN 4 (Power 6, host threshold 2) → **Out:** soak card pre-filled pool **5**, TN **4**.
+
+### Soak pool — Decker soaks with MPCP
+
+**In:** Decker MPCP 8, soak TN 3 (Power 5, Firewall 2) → **Out:** soak card pre-filled pool **8**, TN **3**.
+
+### Hacking pool
+
+Decker allocates hacking pool dice in the boxing card Pool field. Spent on Roll! click.
+
+**In:** Hacking pool 4, enter 2 in Pool field → pool reads **2** after roll.
+
+---
+
+## 20. Matrix Combat — IC/Agent attacks Decker
+
+**Prerequisites:** IC must be deployed from the host sheet (sets `deployed: true` and `activeHostId`). Agent must be added to the host's Active Agents (sets `activeHostId`). Decker must be connected to the same host. Target list = all actors sharing the same `activeHostId`.
+
+Flow: IC/Agent Attack button → **target dialog** (host-based list) → **boxing card** posts with both sides editable → GM clicks **Roll!** → result card.
+
+### Boxing card — IC/Agent side
+
+- Skill = IC/Agent `rating` dice, TN 4
+- Hacking Pool = 0 (IC/agents don't have hacking pool)
+- Damage = IC's `system.damage` field or `${rating}S` fallback
+
+### IC damage code
+
+| IC has `system.damage` set | Damage used |
+|---|---|
+| Yes (e.g. `6M`) | `6M` |
+| No | `${icRating}S` (e.g. Rating 5 → `5S`) |
+
+### Agent attack flow (auto-selects best program)
+
+Agent's Attack button → target dialog → boxing card. Agent's attack program is **auto-selected** as the highest-rating Attack/Offensive program from the operator's deck. Damage code pre-filled in the boxing card and editable by GM.
+
+**In:** Agent with operator whose deck has "Attack" (Rating 4) → boxing card damage pre-filled `4S`. GM can edit before rolling.
+
+### IC deployment flow
+
+Host sheet → Security Sheaf tab → Trigger Step → **⚔ Deploy** button (or Stocked IC → **⚔ Deploy to Encounter**) → IC added to combat + `deployed: true` + `activeHostId` set → IC now appears in matrix target lists.
+
+IC sheet shows **⚔ Deployed** badge and host name. **✕ Clear** button resets deployment for reuse.
+
+**In:** Agent with no Attack programs on operator's deck → dialog skipped, damage falls back to `${agentRating}L`.
+
+**In:** Agent with no operator linked → damage falls back to `${agentRating}L`.
+
+### Boxing card — Decker side (defender)
+
+- Skill = decker's Cybercombat (or INT−2 defaulting)
+- Hacking Pool = available hacking pool (0 to max)
+- TN = 4 + MCM penalty
+- Damage = decker's own attack program or MPCP-L (for counter-attack)
+
+### Firewall reference
+
+| Side | Firewall source (soak TN reduction) |
+|---|---|
+| IC | Host's Security Threshold |
+| Agent | Operator's cyberdeck Firewall attribute |
+| Decker | Own cyberdeck Firewall attribute |
+
+### Tri-state outcome (same result card as §19)
+
+- Attacker (IC/Agent) more hits → decker soaks with MPCP
+- Defender (decker) more hits → IC/agent soaks (IC: System Rating; agent: Rating)
+- Tie → no damage
+
+---
+
+## 21. Matrix Combat — Program Degradation (Agents)
+
+### Setup
+
+- Operator actor with cyberdeck equipped
+- Deck has an Attack program with `degradable: true`, `rating: 3`, `currentRating: 0` (initial — means "use base rating")
+- Agent actor with `operatorActorId` set to operator
+
+### Effective rating rule
+
+| `currentRating` | Effective rating used |
+|---|---|
+| 0 (never degraded) | `rating` (base) |
+| > 0 | `currentRating` |
+
+### On each use — decrement
+
+After agent attack roll resolves (regardless of hit count):
+- If program is Degradable, `currentRating` decrements by 1
+- Amber chat card: **💻 Program Degraded — [Name]: Rating 3 → 2 (on [Operator]'s deck)**
+- Both decker and agents using the same deck now see effective rating **2**
+
+**In:** Attack (Degradable, Rating 3, currentRating 0) used → **Out:** currentRating set to **2**, degradation card posted.
+
+### Use sequence
+
+| Use # | currentRating before | Effective rating | currentRating after |
+|---|---|---|---|
+| 1st | 0 | 3 | 2 |
+| 2nd | 2 | 2 | 1 |
+| 3rd | 1 | 1 | crash |
+
+### Crash at Rating 1
+
+When effective rating = 1 and the program is used:
+- Program item **deleted** from operator's items
+- Red chat card: **💻 Program Crash — [Name]: Rating 1 degraded to 0, removed from [Operator]'s deck**
+- Program no longer appears in Attack Utility dialog for any agent
+
+**In:** Attack (Degradable, currentRating 1) used → **Out:** item deleted, crash card posted, agent attack falls back to `${agentRating}L` on next attack.
+
+---
+
+## 22. Matrix — Firewall as Armor (Summary)
+
+| Actor type | Firewall source | Soak pool |
+|---|---|---|
+| Decker (character/NPC) | Own cyberdeck `firewall.base` | MPCP (`mpcp.base`) |
+| IC | Host's `securityTierThreshold` (IC lives on a host) | IC `systemRating` |
+| Agent | Operator's cyberdeck `firewall.base` (agent lives on a deck) | Agent `rating` |
+
+Soak TN = `max(2, stagedPower − Firewall)`.
+
+**In:** Staged power 8, Firewall 3 → TN **5**. Staged power 4, Firewall 6 → TN **2** (min).
+
+---
+
+## 23. Matrix — Hacking Action (3-step threshold check)
+
+Flow: Hacking Action button → host / TN / threshold / pool dialog → roll → threshold check.
+
+### Security Tiers
+
+| Tier | Threshold | Description |
+|---|---|---|
+| Ivory | 0 | No security |
+| Blue | 1 | Low security |
+| Green | 2 | Standard |
+| Orange | 3 | Challenging |
+| Red | 4 | Threatening |
+| Black | 5 | Dangerous |
+| Ultraviolet | 6 | Deadly |
+
+### Threshold check
+
+- successes ≥ Security Threshold → action proceeds (chat card shows success)
+- successes < Security Threshold → action fails + Overwatch +1
+
+**In:** Hacking 5, TN 6, threshold 2. Roll 3 successes → threshold met, action proceeds. Roll 1 success → fail, Overwatch increments.
+
+### Overwatch track
+
+Each failed threshold check increments the host's `system.overwatchCurrent`.
+
+**In:** Overwatch at 3, fail → reads **4**. At 9, fail → reads **10** and Convergence triggers.
+
+### Convergence
+
+Overwatch 10 → red **⚠ CONVERGENCE** card posts:
+- Dumpshock attack on decker: Power = host System Rating
+- Damage type: Stun (VR-Cold) or Physical (VR-Hot)
+- Soak card posted with Body dice
+
+**In:** Host System Rating 8, decker in VR-Hot → Convergence posts `8M Physical`, Body soak card.
+
+---
+
+## 24. Matrix — Dumpshock
+
+Manual trigger via dumpshock button (or auto from Convergence).
+
+| Decker mode | Damage type |
+|---|---|
+| VR-Cold | Stun |
+| VR-Hot | Physical |
+
+Power = host System Rating (selected in dialog or set automatically from Convergence).
+
+**In:** System Rating 6, VR-Cold → `6M Stun` soak card. VR-Hot → `6M Physical` soak card.
+
+Soak: Body dice vs TN = Power (no armor reduction for dumpshock).
+
+---
+
+## 25. Vehicles
 
 ### Vehicle initiative
 Confirm the correct formula fires based on `vcrMode` / `controlledBy` fields on the vehicle actor.
@@ -465,7 +721,7 @@ Formula: `max(2, Signature − Sensor rating)` (or − VCR level if jumped in).
 
 ---
 
-## 20. Pool Refresh
+## 26. Pool Refresh
 
 ### Combat pool
 End combat → GM prompted "Refresh all combat pools?" → Yes clears `combatPoolSpent` on all combatants.
@@ -481,7 +737,7 @@ Mid-combat: manually via actor sheet Reset Pools button.
 
 ---
 
-## 21. Damage Overflow
+## 27. Damage Overflow
 
 Physical track full (10 boxes) → additional physical damage goes to overflow. Overflow track visible on character sheet. - Passed
 
@@ -490,7 +746,7 @@ Stun track full → overflow goes to physical track. - Passed
 When overflow matches or exceeds body attribute show 'dead' - Passed
 ---
 
-## 22. Escape Artist
+## 28. Escape Artist
 
 Triggered via the **🔓 Escape Artist** button in the combat tracker sidebar (GM only).
 
@@ -533,7 +789,7 @@ TN modifier field in dialog: positive values reduce TN (e.g. Pain Resistance lev
 
 ---
 
-## 23. Falling Damage
+## 29. Falling Damage
 
 
 Triggered via the **🪂 Falling Damage** button in the combat tracker sidebar (GM only).

@@ -37,6 +37,7 @@ function _pools() {
     fullDefensePool:         new NumberField({ integer: true, initial: 0, min: 0 }),
     recoilCompensation:      new NumberField({ integer: true, initial: 0, min: 0 }),
     roundsFiredThisPhase:    new NumberField({ integer: true, initial: 0, min: 0 }),
+    stimBonus:               new NumberField({ integer: true, initial: 0, min: 0 }),
   };
 }
 
@@ -84,6 +85,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       activeVCRItemId:         new StringField({ initial: '' }),
       equippedCyberdeck:       new StringField({ initial: '' }),
       matrixUserMode:          new StringField({ initial: '' }),
+      activeHostId:            new StringField({ initial: '' }),
       astralMode:              new StringField({ initial: '' }),
       magicTradition:          new StringField({ initial: '' }),
       magicType:               new StringField({ initial: '' }),
@@ -135,6 +137,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       activeVCRItemId:  new StringField({ initial: '' }),
       equippedCyberdeck: new StringField({ initial: '' }),
       matrixUserMode:   new StringField({ initial: '' }),
+      activeHostId:     new StringField({ initial: '' }),
       astralMode:       new StringField({ initial: '' }),
       magicTradition:   new StringField({ initial: '' }),
       magicType:        new StringField({ initial: '' }),
@@ -183,6 +186,8 @@ export class ICData extends foundry.abstract.TypeDataModel {
       memoryRequired:   new NumberField({ integer: true, initial: 0, min: 0 }),
       damage:           new StringField({ initial: '' }),
       hostSecurityTier: new StringField({ initial: 'Green' }),   // used to derive initiativeDice
+      activeHostId:     new StringField({ initial: '' }),
+      deployed:         new BooleanField({ initial: false }),
       notes:            new HTMLField({ initial: '', required: false }),
       woundValue:       new NumberField({ integer: true, initial: 0, min: 0 }),
     };
@@ -197,6 +202,8 @@ export class AgentData extends foundry.abstract.TypeDataModel {
       rating:           new NumberField({ integer: true, initial: 1, min: 1 }),
       graded:           new BooleanField({ initial: false }),
       hostSecurityTier: new StringField({ initial: 'Green' }),
+      operatorActorId:  new StringField({ initial: '' }),
+      activeHostId:     new StringField({ initial: '' }),
       additionalSkills: new ArrayField(new ObjectField(), { initial: [] }),
       utilities:        new ArrayField(new ObjectField(), { initial: [] }),
       specialAbilities: new ArrayField(new ObjectField(), { initial: [] }),

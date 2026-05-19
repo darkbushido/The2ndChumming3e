@@ -207,7 +207,7 @@ background-color: var(--sr-surface) !important;
 .sr-summon-confirm-btn,
 .sr-matrix-ic-resist-btn,
 .sr-matrix-ic-resist-roll-btn,
-.sr-matrix-defend-btn {
+.sr-cc-roll-btn {
   width: 100%;
   padding: 6px 10px;
   border-radius: var(--r);
@@ -258,16 +258,6 @@ background-color: var(--sr-surface) !important;
   box-shadow: 0 0 10px color-mix(in srgb, var(--sr-accent) 30%, transparent);
 }
 
-.sr-matrix-defend-btn {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--sr-green) 15%, transparent) 0%, color-mix(in srgb, var(--sr-green) 5%, transparent) 100%);
-  border: 1px solid var(--sr-green);
-  color: var(--sr-green);
-}
-.sr-matrix-defend-btn:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--sr-green) 25%, transparent);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--sr-green) 30%, transparent);
-}
-
 /* Matrix soak card — blue left border */
 .sr-soak-card.sr-matrix { border-left-color: var(--sr-accent); }
 .sr-soak-pool-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 12px; }
@@ -293,7 +283,8 @@ background-color: var(--sr-surface) !important;
 .sr-aura-reading-btn,
 .sr-contested-roll-btn,
 .sr-spell-defense-proceed-btn,
-.sr-summon-confirm-btn {
+.sr-summon-confirm-btn,
+.sr-cc-roll-btn {
   background: linear-gradient(135deg, color-mix(in srgb, var(--sr-accent) 15%, transparent) 0%, color-mix(in srgb, var(--sr-accent) 5%, transparent) 100%);
   border: 1px solid var(--sr-border-hi);
   color: var(--sr-accent);
@@ -304,7 +295,8 @@ background-color: var(--sr-surface) !important;
 .sr-aura-reading-btn:hover:not(:disabled),
 .sr-contested-roll-btn:hover:not(:disabled),
 .sr-spell-defense-proceed-btn:hover:not(:disabled),
-.sr-summon-confirm-btn:hover:not(:disabled) {
+.sr-summon-confirm-btn:hover:not(:disabled),
+.sr-cc-roll-btn:hover:not(:disabled) {
   background: color-mix(in srgb, var(--sr-accent) 25%, transparent);
   box-shadow: 0 0 10px color-mix(in srgb, var(--sr-accent) 30%, transparent);
 }

@@ -13,6 +13,7 @@ export class SR3EICSheet extends foundry.applications.sheets.ActorSheetV2 {
       woundBox:     SR3EICSheet._onWoundBox,
       rollInit:     SR3EICSheet._onRollInit,
       rollAttack:   SR3EICSheet._onRollAttack,
+      clearDeploy:  SR3EICSheet._onClearDeploy,
     },
   };
 
@@ -47,6 +48,9 @@ export class SR3EICSheet extends foundry.applications.sheets.ActorSheetV2 {
     const initDice     = derived.initiativeDice ?? 2;
     const initiative   = derived.initiative ?? sys.rating ?? 1;
     const systemRating = sys.systemRating ?? 6;
+    const deployed     = sys.deployed ?? false;
+    const activeHostId = sys.activeHostId ?? '';
+    const activeHost   = activeHostId ? game.actors.get(activeHostId) : null;
 
     const agentsForGrading = SR3EICSheet.IC_AGENTS[grading] ?? SR3EICSheet.IC_AGENTS.White;
     const currentType = sys.icType ?? agentsForGrading[0];
@@ -139,6 +143,18 @@ export class SR3EICSheet extends foundry.applications.sheets.ActorSheetV2 {
             <div class="ic-wound-track">${woundBoxes}</div>
           </div>
 
+          <div class="ic-field-row ic-derived-row" style="margin-top:6px">
+            <span>Status</span>
+            <span>
+              ${deployed
+                ? `<span style="color:var(--sr-red);font-weight:600">⚔ Deployed</span>${activeHost ? ` — ${activeHost.name}` : ''}
+                   <button type="button" class="btn-xs" data-action="clearDeploy"
+                           style="margin-left:6px;color:var(--sr-muted)" title="Clear deployment flag">✕ Clear</button>`
+                : `<span style="color:var(--sr-muted)">Stocked</span>${activeHost ? ` — ${activeHost.name}` : ''}`
+              }
+            </span>
+          </div>
+
           <div class="ic-notes-section">
             <label class="ic-notes-label">Notes</label>
             <div class="prosemirror-content" data-edit="system.notes">
@@ -171,5 +187,9 @@ export class SR3EICSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   static async _onRollAttack(_event, _target) {
     await this.actor.rollICAttack();
+  }
+
+  static async _onClearDeploy(_event, _target) {
+    await this.actor.update({ 'system.deployed': false, 'system.activeHostId': '' });
   }
 }

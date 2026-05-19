@@ -335,13 +335,25 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
               </div>
             </div>
             ${(() => {
-              const wm = sys.woundMod ?? 0;
+              const wm    = sys.woundMod    ?? 0;
+              const stim  = sys.stimBonus   ?? 0;
+              const rawWm = sys.rawWoundMod ?? wm;
               if ((w.stun?.value ?? 0) >= 10 || (w.physical?.value ?? 0) >= 10)
                 return `<span class="wound-mod-display" style="color:var(--sr-red)">unconscious</span>`;
+              if (rawWm < 0 && stim > 0) {
+                const effStr = wm < 0 ? `TN+${-wm}, Init${wm}` : 'fully negated';
+                const col    = wm < 0 ? 'var(--sr-amber)' : 'var(--sr-green)';
+                return `<span class="wound-mod-display" style="color:${col}">Raw TN+${-rawWm} − Stim ${stim} → ${effStr}</span>`;
+              }
               if (wm < 0)
                 return `<span class="wound-mod-display" style="color:var(--sr-red)">TN+${-wm}, Init${wm}</span>`;
               return '';
             })()}
+            <span class="wound-mod-display">
+              Stim: <input type="number" name="system.stimBonus" value="${sys.stimBonus ?? 0}" min="0"
+                style="width:36px;text-align:center;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);color:var(--sr-text);padding:1px 2px;font-size:12px;"
+                title="Wound modifier reduction from stim patches or drugs (does not heal wounds)"/>
+            </span>
             ${(() => { const rb = sys.attributes?.reaction?.reactionBonus ?? 0; return rb !== 0 ? `<span class="wound-mod-display" style="color:var(--sr-accent)">Init Mod: <strong>${rb > 0 ? '+' : ''}${rb}</strong></span>` : ''; })()}
             <span class="wound-mod-display">
               Carry: <strong>${weightDisplay}</strong>
@@ -1028,6 +1040,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     ];
 
     const currentMode    = sys.matrixUserMode ?? '';
+    const activeHostId   = sys.activeHostId ?? '';
+    const activeHost     = activeHostId ? game.actors.get(activeHostId) : null;
     const equippedDeckId = sys.equippedCyberdeck ?? '';
     const deck           = equippedDeckId ? actor.items.get(equippedDeckId) : null;
     const decks          = actor.items.filter(i => i.type === 'cyberdeck' && !i.getFlag('The2ndChumming3e', 'stored')).sort((a, b) => a.name.localeCompare(b.name));
@@ -1228,10 +1242,17 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         ${refreshHackBtn}
       </div>` : '';
 
+    const hostBadge = activeHost
+      ? `<span style="font-size:11px;color:var(--sr-accent);margin-left:6px">📡 ${activeHost.name}</span>`
+      : (currentMode ? `<span style="font-size:11px;color:var(--sr-amber);margin-left:6px">⚠ No host selected</span>` : '');
+
     return `<div class="tab ${this._activeTab === 'matrix' ? 'active' : ''}" data-tab="matrix" style="overflow-y:auto">
       ${conflictBanner}
       <h3 class="section-hdr">User Mode</h3>
-      <div class="sr-veh-modes" style="flex-wrap:wrap;gap:6px;margin-bottom:6px">${modeButtons}</div>
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+        <div class="sr-veh-modes" style="flex-wrap:wrap;gap:6px;margin:0">${modeButtons}</div>
+        ${hostBadge}
+      </div>
       ${modeDesc}
       ${cybercombatBtn}
       <h3 class="section-hdr" style="margin-top:0.8rem">Cyberdecks</h3>
@@ -2073,15 +2094,79 @@ static async _onHealDamage(ev, target) {
   }
 
   static async _onSetMatrixMode(_ev, target) {
-    const actor   = this.actor;
-    const mode    = target.dataset.mode;
-    const current = actor.system.matrixUserMode ?? '';
-    const newMode = current === mode ? '' : mode;
+    const actor      = this.actor;
+    const mode       = target.dataset.mode;
+    const current    = actor.system.matrixUserMode ?? '';
+    const oldHostId  = actor.system.activeHostId ?? '';
 
-    const updates = { 'system.matrixUserMode': newMode };
+    // Toggle off — clear mode and host
+    if (current === mode) {
+      if (oldHostId) {
+        const oldHost = game.actors.get(oldHostId);
+        if (oldHost) {
+          const users = (oldHost.system.activeUsers ?? []).filter(u => u.actorId !== actor.id);
+          await oldHost.update({ 'system.activeUsers': users });
+        }
+      }
+      await actor.update({ 'system.matrixUserMode': '', 'system.activeHostId': '' });
+      return;
+    }
+
+    // Activating — show host selection dialog
+    const hostActors = game.actors.filter(a => a.type === 'host' && !a.getFlag('The2ndChumming3e', 'isTemplate'));
+
+    if (!hostActors.length) {
+      ui.notifications.warn('No host actors found. Create a Host actor to enable matrix targeting.');
+      const updates = { 'system.matrixUserMode': mode, 'system.activeHostId': '' };
+      if (mode === 'VR-Cold' || mode === 'VR-Hot') {
+        const vehicles = (actor.system.linkedVehicles ?? []).map(v => ({ ...v }));
+        if (vehicles.some(v => v.mode === 'vcr')) {
+          vehicles.forEach(v => { if (v.mode === 'vcr') v.mode = ''; });
+          updates['system.linkedVehicles'] = vehicles;
+        }
+      }
+      await actor.update(updates);
+      return;
+    }
+
+    const hostOpts = hostActors.map(a =>
+      `<option value="${a.id}" ${a.id === oldHostId ? 'selected' : ''}>${a.name} [SR ${a.system.systemRating ?? '?'} / ${a.system.securityTierName ?? 'Green'}]</option>`
+    ).join('');
+
+    let hostId    = null;
+    let confirmed = false;
+
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `${actor.name}: Enter Matrix — ${mode}` },
+      content: `
+        <div style="padding:8px 0">
+          <p style="margin:0 0 8px;font-size:12px;color:var(--color-text-dark-secondary)">
+            Mode: <strong>${mode}</strong> — select the host you are connecting to:
+          </p>
+          <label style="display:block">
+            Host:
+            <select id="matrix-host" style="width:100%;margin-top:4px">${hostOpts}</select>
+          </label>
+        </div>`,
+      buttons: [
+        {
+          label: 'Connect',
+          action: 'confirm',
+          default: true,
+          callback: (_e, _b, dlg) => {
+            hostId    = dlg.element.querySelector('#matrix-host')?.value ?? null;
+            confirmed = true;
+          },
+        },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (!confirmed || !hostId) return;
+
+    const updates = { 'system.matrixUserMode': mode, 'system.activeHostId': hostId };
 
     // Activating VR — auto-deactivate any vehicle VCR
-    if (newMode === 'VR-Cold' || newMode === 'VR-Hot') {
+    if (mode === 'VR-Cold' || mode === 'VR-Hot') {
       const vehicles = (actor.system.linkedVehicles ?? []).map(v => ({ ...v }));
       if (vehicles.some(v => v.mode === 'vcr')) {
         vehicles.forEach(v => { if (v.mode === 'vcr') v.mode = ''; });
@@ -2089,7 +2174,34 @@ static async _onHealDamage(ev, target) {
       }
     }
 
+    // Remove from old host if switching
+    if (oldHostId && oldHostId !== hostId) {
+      const oldHost = game.actors.get(oldHostId);
+      if (oldHost) {
+        const users = (oldHost.system.activeUsers ?? []).filter(u => u.actorId !== actor.id);
+        await oldHost.update({ 'system.activeUsers': users });
+      }
+    }
+
     await actor.update(updates);
+
+    // Add to new host's activeUsers list
+    if (hostId !== oldHostId) {
+      const host = game.actors.get(hostId);
+      if (host) {
+        const existing = host.system.activeUsers ?? [];
+        if (!existing.some(u => u.actorId === actor.id)) {
+          await host.update({
+            'system.activeUsers': [...existing, {
+              actorId: actor.id, name: actor.name,
+              iconType: 'icon', currentNodeId: null,
+              hidden: false, linkLocked: false,
+              marks: [], marksFalsified: false,
+            }],
+          });
+        }
+      }
+    }
   }
 
   static async _onSetAstralMode(_ev, target) {
