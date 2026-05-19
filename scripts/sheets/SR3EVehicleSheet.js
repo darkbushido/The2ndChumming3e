@@ -67,9 +67,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   _header(actor, sys) {
     const attr   = sys.attributes ?? {};
-    const body   = attr.body?.base ?? 4;
-    const dmgMax = body * 2;
-    const dmgDis = body;
+    const dmgMax = 10;
     const dmgVal = sys.damage?.value ?? 0;
 
     const VEHICLE_TYPES = [
@@ -83,16 +81,13 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const boxes = Array.from({ length: dmgMax }, (_, i) => {
       const n   = i + 1;
-      let   cls = n <= dmgVal ? 'wound-box filled' : 'wound-box';
-      if (n === dmgDis) cls += ' veh-disabled-marker';
+      const cls = n <= dmgVal ? 'wound-box filled' : 'wound-box';
       return `<div class="${cls}" data-action="damageBox" data-box="${n}"></div>`;
     }).join('');
 
     const statusBadge = dmgVal >= dmgMax
       ? `<span class="veh-status-badge veh-status-destroyed">⚠ DESTROYED</span>`
-      : dmgVal >= dmgDis
-        ? `<span class="veh-status-badge veh-status-disabled">⚠ DISABLED</span>`
-        : '';
+      : '';
 
     return `
       <header class="sheet-header">
@@ -379,7 +374,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
   static async _onApplyDamage(ev, target) {
     const amount  = parseInt(target.dataset.amount);
     const current = this.actor.system.damage?.value ?? 0;
-    const max     = (this.actor.system.attributes?.body?.base ?? 4) * 2;
+    const max     = 10;
     await this.actor.update({ 'system.damage.value': Math.min(max, current + amount) });
   }
 

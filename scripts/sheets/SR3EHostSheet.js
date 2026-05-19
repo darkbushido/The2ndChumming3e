@@ -184,6 +184,8 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
       removeMark:         SR3EHostSheet._onRemoveMark,
       addAgent:           SR3EHostSheet._onAddAgent,
       removeAgent:        SR3EHostSheet._onRemoveAgent,
+      toggleTemplate:     SR3EHostSheet._onToggleTemplate,
+      deployTemplate:     SR3EHostSheet._onDeployTemplate,
     },
   };
 
@@ -224,8 +226,9 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
   /* ── Header ─────────────────────────────────────────────────────── */
 
   _header(actor, sys) {
-    const tierColor = sys.securityTierColor ?? '#00AA00';
-    const sysSec    = `${sys.systemRating ?? 6}/${sys.securityTierName ?? 'Green'}(${sys.securityTierThreshold ?? 2})`;
+    const tierColor  = sys.securityTierColor ?? '#00AA00';
+    const sysSec     = `${sys.systemRating ?? 6}/${sys.securityTierName ?? 'Green'}(${sys.securityTierThreshold ?? 2})`;
+    const isTemplate = !!actor.getFlag('The2ndChumming3e', 'isTemplate');
     return `
       <header class="host-header">
         <img class="actor-portrait" src="${actor.img}" alt="${actor.name}" width="56" height="56">
@@ -234,6 +237,14 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
           <div class="host-syssec" style="color:${tierColor}">
             <span class="host-syssec-badge">${sysSec}</span>
             ${sys.mainframeSupport ? '<span class="host-mainframe-badge">MAINFRAME</span>' : ''}
+          </div>
+          <div class="sr3e-template-controls">
+            ${isTemplate
+              ? `<span class="sr3e-template-badge">TEMPLATE</span>
+                 <button type="button" class="sr3e-template-btn" data-action="deployTemplate" title="Create a working copy with the template flag removed">Deploy Copy</button>
+                 <button type="button" class="sr3e-template-btn sr3e-template-btn-remove" data-action="toggleTemplate" title="Remove template flag">Remove Flag</button>`
+              : `<button type="button" class="sr3e-template-btn sr3e-template-mark" data-action="toggleTemplate" title="Mark as template — hides from host selection dialogs">Mark as Template</button>`
+            }
           </div>
         </div>
       </header>`;
@@ -611,6 +622,16 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
     const users  = sys.activeUsers  ?? [];
     const agents = sys.activeAgents ?? [];
     const nodes  = sys.nodes ?? [];
+    const hostId = this.actor.id;
+
+    // Deployed IC actors linked to this host (populated by the deploy buttons)
+    const deployedIC = game.actors
+      ? game.actors.filter(a =>
+          a.type === 'ic' &&
+          (a.system.activeHostId ?? '') === hostId &&
+          (a.system.deployed ?? false)
+        )
+      : [];
 
     const nodeOpts = nodes.map(n =>
       `<option value="${n.id}">${n.abbreviation ?? n.name}</option>`
@@ -685,7 +706,18 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
           <div class="presence-header agent-header">
             <span>Name</span><span>Node</span><span>Role</span><span>👁</span><span></span>
           </div>
-          <div class="presence-list">${agentRows || '<span class="host-empty">No active agents.</span>'}</div>
+          <div class="presence-list">
+            ${deployedIC.map(ic => `
+              <div class="presence-row agent-row">
+                <span class="presence-name">${ic.name}</span>
+                <span style="font-size:11px;color:var(--sr-muted)">—</span>
+                <span class="agent-role" style="color:var(--sr-red);font-weight:600">⚔ Deployed (Rtg ${ic.system.rating ?? '?'})</span>
+                <span></span>
+                <span></span>
+              </div>`).join('')}
+            ${agentRows}
+            ${!deployedIC.length && !agentRows ? '<span class="host-empty">No active agents or IC.</span>' : ''}
+          </div>
           <button type="button" class="host-action-btn" data-action="addAgent">+ Add Agent</button>
         </section>
       </div>`;
@@ -1337,10 +1369,10 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
     const stocked = this.actor.system.stockedIC ?? [];
     const deployable = stocked
       .map(ic => ({ ...ic, actor: ic.actorId ? game.actors.get(ic.actorId) : null }))
-      .filter(ic => ic.actor?.type === 'ic' && !ic.actor.getFlag('The2ndChumming3e', 'isTemplate'));
+      .filter(ic => ic.actor?.type === 'ic');
 
     if (!deployable.length) {
-      ui.notifications.warn('No stocked IC with linked (non-template) actors found.');
+      ui.notifications.warn('No stocked IC with linked actors found. Use "Add IC" to link actor records to stocked entries.');
       return;
     }
 
@@ -1595,5 +1627,19 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
       const agentActor = game.actors.get(removed.actorId);
       if (agentActor) await agentActor.update({ 'system.activeHostId': '' });
     }
+  }
+
+  static async _onToggleTemplate(_ev, _target) {
+    const current = !!this.actor.getFlag('The2ndChumming3e', 'isTemplate');
+    await this.actor.setFlag('The2ndChumming3e', 'isTemplate', !current);
+  }
+
+  static async _onDeployTemplate(_ev, _target) {
+    const data = this.actor.toObject();
+    delete data._id;
+    data.name = `${data.name} (copy)`;
+    if (data.flags?.['The2ndChumming3e']) delete data.flags['The2ndChumming3e'].isTemplate;
+    const newActor = await Actor.create(data);
+    newActor.sheet.render(true);
   }
 }

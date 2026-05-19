@@ -10,10 +10,12 @@ export class SR3EICSheet extends foundry.applications.sheets.ActorSheetV2 {
       closeOnSubmit: false,
     },
     actions: {
-      woundBox:     SR3EICSheet._onWoundBox,
-      rollInit:     SR3EICSheet._onRollInit,
-      rollAttack:   SR3EICSheet._onRollAttack,
-      clearDeploy:  SR3EICSheet._onClearDeploy,
+      woundBox:       SR3EICSheet._onWoundBox,
+      rollInit:       SR3EICSheet._onRollInit,
+      rollAttack:     SR3EICSheet._onRollAttack,
+      clearDeploy:    SR3EICSheet._onClearDeploy,
+      toggleTemplate: SR3EICSheet._onToggleTemplate,
+      deployTemplate: SR3EICSheet._onDeployTemplate,
     },
   };
 
@@ -51,6 +53,7 @@ export class SR3EICSheet extends foundry.applications.sheets.ActorSheetV2 {
     const deployed     = sys.deployed ?? false;
     const activeHostId = sys.activeHostId ?? '';
     const activeHost   = activeHostId ? game.actors.get(activeHostId) : null;
+    const isTemplate   = !!actor.getFlag('The2ndChumming3e', 'isTemplate');
 
     const agentsForGrading = SR3EICSheet.IC_AGENTS[grading] ?? SR3EICSheet.IC_AGENTS.White;
     const currentType = sys.icType ?? agentsForGrading[0];
@@ -88,6 +91,14 @@ export class SR3EICSheet extends foundry.applications.sheets.ActorSheetV2 {
             <input class="actor-name" type="text" name="name" value="${actor.name}" placeholder="IC Name"/>
             <div class="ic-subtitle">Intrusion Countermeasure
               <span class="ic-grading-badge" style="${gradingStyle}">[${grading}]</span>
+            </div>
+            <div class="sr3e-template-controls">
+              ${isTemplate
+                ? `<span class="sr3e-template-badge">TEMPLATE</span>
+                   <button type="button" class="sr3e-template-btn" data-action="deployTemplate" title="Create a working copy with the template flag removed">Deploy Copy</button>
+                   <button type="button" class="sr3e-template-btn sr3e-template-btn-remove" data-action="toggleTemplate" title="Remove template flag">Remove Flag</button>`
+                : `<button type="button" class="sr3e-template-btn sr3e-template-mark" data-action="toggleTemplate" title="Mark as template — hides from combat targeting dialogs">Mark as Template</button>`
+              }
             </div>
           </div>
           <div style="display:flex;flex-direction:column;gap:4px">
@@ -191,5 +202,19 @@ export class SR3EICSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   static async _onClearDeploy(_event, _target) {
     await this.actor.update({ 'system.deployed': false, 'system.activeHostId': '' });
+  }
+
+  static async _onToggleTemplate(_ev, _target) {
+    const current = !!this.actor.getFlag('The2ndChumming3e', 'isTemplate');
+    await this.actor.setFlag('The2ndChumming3e', 'isTemplate', !current);
+  }
+
+  static async _onDeployTemplate(_ev, _target) {
+    const data = this.actor.toObject();
+    delete data._id;
+    data.name = `${data.name} (copy)`;
+    if (data.flags?.['The2ndChumming3e']) delete data.flags['The2ndChumming3e'].isTemplate;
+    const newActor = await Actor.create(data);
+    newActor.sheet.render(true);
   }
 }

@@ -1,5 +1,5 @@
-2026/05/19-08:26:04.863 6c18 Recovering log #77
-2026/05/19-08:26:04.863 6c18 Level-0 table #79: started
-2026/05/19-08:26:04.867 6c18 Level-0 table #79: 50579 bytes OK
-2026/05/19-08:26:04.874 6c18 Delete type=0 #77
-2026/05/19-08:26:04.874 6c18 Delete type=3 #75
+2026/05/19-22:23:38.265 bc0 Recovering log #103
+2026/05/19-22:23:38.265 bc0 Level-0 table #105: started
+2026/05/19-22:23:38.269 bc0 Level-0 table #105: 50586 bytes OK
+2026/05/19-22:23:38.277 bc0 Delete type=0 #103
+2026/05/19-22:23:38.278 bc0 Delete type=3 #101

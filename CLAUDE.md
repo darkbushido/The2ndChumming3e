@@ -48,6 +48,74 @@ await foundry.applications.api.DialogV2.wait({
 });
 ```
 
+### Interactive dialogs — live filtering and DOM wiring
+
+**`DialogV2.wait()` does NOT call its `render` option.** To wire up event listeners inside a
+`DialogV2` dialog (live filter inputs, row-click selection, etc.), use the `renderDialogV2`
+Foundry hook instead. Guard with an element check so the hook only fires for your dialog,
+then immediately remove it.
+
+```js
+let hookId = Hooks.on('renderDialogV2', (app, html) => {
+  if (!html.querySelector?.('#my-filter')) return; // not our dialog
+  Hooks.off('renderDialogV2', hookId);
+
+  const filterInput = html.querySelector('#my-filter');
+  const rows        = html.querySelectorAll('.my-row');
+
+  // Live filter
+  filterInput.addEventListener('input', () => {
+    const q = filterInput.value.toLowerCase();
+    rows.forEach(row => { row.style.display = row.dataset.name.includes(q) ? '' : 'none'; });
+  });
+
+  // Prevent Enter in filter triggering the default button
+  filterInput.addEventListener('keydown', e => { if (e.key === 'Enter') e.preventDefault(); });
+
+  // Row selection — store chosen value; optionally auto-submit
+  rows.forEach(row => {
+    row.addEventListener('click', () => {
+      rows.forEach(r => r.style.background = '');
+      row.style.background = 'color-mix(in srgb,var(--sr-accent) 20%,transparent)';
+      html.querySelector('#my-hidden').value = row.dataset.value;
+    });
+  });
+
+  filterInput.focus();
+});
+
+await foundry.applications.api.DialogV2.wait({ ... });
+```
+
+Never use inline `oninput=` / `onclick=` attributes with `document.querySelector` — these
+fail in the ApplicationV2 rendering context. Always wire through the hook's `html` reference.
+
+### Compendium population — correct pattern
+
+Do **not** use `Item.createDocuments(items, { pack: pack.collection })` — it imports 0 items.
+
+The correct pattern is: create a temporary world document → import into the pack → delete the temp.
+Wrap in a macro script (see `scripts/macros/populate-*.js`):
+
+```js
+await pack.configure({ locked: false });
+let created = 0;
+for (const data of MY_DATA) {
+  try {
+    const tmp = await Item.create(data, { renderSheet: false });
+    await pack.importDocument(tmp);
+    await tmp.delete();
+    created++;
+  } catch (err) {
+    console.error(`SR3E | Failed to create "${data.name}":`, err);
+  }
+}
+await pack.configure({ locked: true });
+ui.notifications.info(`SR3E: ${created} items added.`);
+```
+
+For Actor compendiums use `Actor.create(data, { renderSheet: false })` instead of `Item.create`.
+
 ### Filtering actors for dialog dropdowns
 
 Actors imported from compendiums are flagged as templates (`flags.The2ndChumming3e.isTemplate`)

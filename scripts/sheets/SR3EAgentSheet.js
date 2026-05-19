@@ -12,9 +12,11 @@ export class SR3EAgentSheet extends foundry.applications.sheets.ActorSheetV2 {
       closeOnSubmit: false,
     },
     actions: {
-      woundBox:  SR3EAgentSheet._onWoundBox,
-      rollInit:  SR3EAgentSheet._onRollInit,
-      rollAttack:SR3EAgentSheet._onRollAttack,
+      woundBox:       SR3EAgentSheet._onWoundBox,
+      rollInit:       SR3EAgentSheet._onRollInit,
+      rollAttack:     SR3EAgentSheet._onRollAttack,
+      toggleTemplate: SR3EAgentSheet._onToggleTemplate,
+      deployTemplate: SR3EAgentSheet._onDeployTemplate,
     },
   };
 
@@ -64,6 +66,7 @@ export class SR3EAgentSheet extends foundry.applications.sheets.ActorSheetV2 {
     const operatorId   = sys.operatorActorId ?? '';
     const activeHostId = sys.activeHostId ?? '';
     const activeHost   = activeHostId ? game.actors.get(activeHostId) : null;
+    const isTemplate   = !!actor.getFlag('The2ndChumming3e', 'isTemplate');
 
     const tierOpts = SR3EAgentSheet.SEC_TIERS.map(t =>
       `<option value="${t}" ${tier === t ? 'selected' : ''}>${t}</option>`
@@ -92,6 +95,14 @@ export class SR3EAgentSheet extends foundry.applications.sheets.ActorSheetV2 {
             <input class="actor-name" type="text" name="name" value="${actor.name}" placeholder="Agent Name"/>
             <div class="ic-subtitle">Programming Agent
               ${sys.graded ? '<span class="prog-graded-badge">Graded</span>' : ''}
+            </div>
+            <div class="sr3e-template-controls">
+              ${isTemplate
+                ? `<span class="sr3e-template-badge">TEMPLATE</span>
+                   <button type="button" class="sr3e-template-btn" data-action="deployTemplate" title="Create a working copy with the template flag removed">Deploy Copy</button>
+                   <button type="button" class="sr3e-template-btn sr3e-template-btn-remove" data-action="toggleTemplate" title="Remove template flag">Remove Flag</button>`
+                : `<button type="button" class="sr3e-template-btn sr3e-template-mark" data-action="toggleTemplate" title="Mark as template — hides from combat targeting dialogs">Mark as Template</button>`
+              }
             </div>
           </div>
           <div style="display:flex;flex-direction:column;gap:4px">
@@ -296,5 +307,19 @@ export class SR3EAgentSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   static async _onRollAttack(_event, _target) {
     await this.actor.rollICAttack();
+  }
+
+  static async _onToggleTemplate(_ev, _target) {
+    const current = !!this.actor.getFlag('The2ndChumming3e', 'isTemplate');
+    await this.actor.setFlag('The2ndChumming3e', 'isTemplate', !current);
+  }
+
+  static async _onDeployTemplate(_ev, _target) {
+    const data = this.actor.toObject();
+    delete data._id;
+    data.name = `${data.name} (copy)`;
+    if (data.flags?.['The2ndChumming3e']) delete data.flags['The2ndChumming3e'].isTemplate;
+    const newActor = await Actor.create(data);
+    newActor.sheet.render(true);
   }
 }

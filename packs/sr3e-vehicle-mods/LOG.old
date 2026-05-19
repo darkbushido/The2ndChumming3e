@@ -1,5 +1,5 @@
-2026/05/18-21:49:24.245 69a8 Recovering log #156
-2026/05/18-21:49:24.246 69a8 Level-0 table #159: started
-2026/05/18-21:49:24.250 69a8 Level-0 table #159: 37785 bytes OK
-2026/05/18-21:49:24.257 69a8 Delete type=0 #156
-2026/05/18-21:49:24.257 69a8 Delete type=3 #154
+2026/05/19-21:14:59.366 2bcc Recovering log #182
+2026/05/19-21:14:59.367 2bcc Level-0 table #185: started
+2026/05/19-21:14:59.371 2bcc Level-0 table #185: 37823 bytes OK
+2026/05/19-21:14:59.378 2bcc Delete type=0 #182
+2026/05/19-21:14:59.378 2bcc Delete type=3 #180

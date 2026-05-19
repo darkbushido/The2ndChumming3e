@@ -255,9 +255,12 @@ export class SR3EActor extends Actor {
 
     return game.actors.filter(a => {
       if (a.id === actorId) return false;
+      // Deployed IC bypass the template filter — deployment is an explicit GM action
+      if (a.type === 'ic') return (a.system.activeHostId ?? '') === hostId && (a.system.deployed ?? false);
+      // All other types: respect the template flag
       if (a.getFlag('The2ndChumming3e', 'isTemplate')) return false;
-      if (a.type === 'ic')      return (a.system.activeHostId ?? '') === hostId && (a.system.deployed ?? false);
-      if (a.type === 'agent')   return (a.system.activeHostId ?? '') === hostId;
+      if (a.type === 'agent')
+        return (a.system.activeHostId ?? '') === hostId;
       if (a.type === 'character' || a.type === 'npc')
         return (a.system.activeHostId ?? '') === hostId && !!(a.system.matrixUserMode ?? '');
       return false;
@@ -1307,10 +1310,28 @@ _prepareCharacter(sys, attr) {
   const wm      = sys.woundMod ?? 0;
   const isAdept = (sys.magicType ?? '') === 'Adept';
 
-  // Apply adept force to core attributes first — derivations below use .value
+  // Cyber/bio augmentation bonuses — summed from all cyberware and bioware items
+  const cyberBonus = { bod: 0, qui: 0, str: 0, cha: 0, int: 0, wil: 0, rea: 0, initDice: 0 };
+  for (const item of (this.items ?? [])) {
+    if (item.type !== 'cyberware' && item.type !== 'bioware') continue;
+    const s = item.system;
+    cyberBonus.bod      += s.bonusBod      ?? 0;
+    cyberBonus.qui      += s.bonusQui      ?? 0;
+    cyberBonus.str      += s.bonusStr      ?? 0;
+    cyberBonus.cha      += s.bonusCha      ?? 0;
+    cyberBonus.int      += s.bonusInt      ?? 0;
+    cyberBonus.wil      += s.bonusWil      ?? 0;
+    cyberBonus.rea      += s.bonusRea      ?? 0;
+    cyberBonus.initDice += s.bonusInitDice ?? 0;
+  }
+
+  // Apply adept force + cyber/bio bonuses to core attributes — derivations below use .value
+  const _cyberKey = { body: 'bod', quickness: 'qui', strength: 'str', charisma: 'cha', intelligence: 'int', willpower: 'wil' };
   for (const key of ['body', 'quickness', 'strength', 'charisma', 'intelligence', 'willpower']) {
     if (attr[key]) {
-      attr[key].value = (attr[key].base ?? 0) + (isAdept ? (attr[key].force ?? 0) : 0);
+      attr[key].value = (attr[key].base ?? 0)
+        + (isAdept ? (attr[key].force ?? 0) : 0)
+        + (cyberBonus[_cyberKey[key]] ?? 0);
     }
   }
 
@@ -1340,7 +1361,8 @@ _prepareCharacter(sys, attr) {
     if (!attr.reaction.override) {
       attr.reaction.value = Math.max(1, baseReaction
         + (attr.reaction.reactionBonus ?? 0)
-        + (isAdept ? (attr.reaction.force ?? 0) : 0));
+        + (isAdept ? (attr.reaction.force ?? 0) : 0)
+        + cyberBonus.rea);
     }
   }
 
@@ -1420,7 +1442,8 @@ _prepareCharacter(sys, attr) {
 
   sys.derived = {
     initiative:         (attr.reaction?.value ?? 0) + wm,
-    initiativeDice:     1 + (sys.initiativeDiceBonus ?? 0) + (attr.reaction?.diceBonus ?? 0),
+    initiativeDice:     1 + (sys.initiativeDiceBonus ?? 0) + (attr.reaction?.diceBonus ?? 0) + cyberBonus.initDice,
+    cyberBonus,
     combatPoolBase,
     combatPool,
     availableCombatPool,

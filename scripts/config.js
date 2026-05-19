@@ -472,7 +472,69 @@ export const SR3ESkills = {
     { name: "Tir Tairngire",   linkedAttribute: "intelligence", specializations: [] },
   ],
 
+  "Language": [
+    { name: "English",    linkedAttribute: "lan", specializations: ["Cityspeak", "Deckerese", "Netspeak", "Trog", "Military Jargon", "Scientific Jargon"] },
+    { name: "Arabic",     linkedAttribute: "lan", specializations: [] },
+    { name: "Cantonese",  linkedAttribute: "lan", specializations: [] },
+    { name: "Chinese",    linkedAttribute: "lan", specializations: [] },
+    { name: "Danish",     linkedAttribute: "lan", specializations: [] },
+    { name: "Dutch",      linkedAttribute: "lan", specializations: [] },
+    { name: "Filipino",   linkedAttribute: "lan", specializations: [] },
+    { name: "Finnish",    linkedAttribute: "lan", specializations: [] },
+    { name: "French",     linkedAttribute: "lan", specializations: [] },
+    { name: "German",     linkedAttribute: "lan", specializations: [] },
+    { name: "Greek",      linkedAttribute: "lan", specializations: [] },
+    { name: "Hebrew",     linkedAttribute: "lan", specializations: [] },
+    { name: "Hindi",      linkedAttribute: "lan", specializations: [] },
+    { name: "Italian",    linkedAttribute: "lan", specializations: [] },
+    { name: "Japanese",   linkedAttribute: "lan", specializations: [] },
+    { name: "Korean",     linkedAttribute: "lan", specializations: [] },
+    { name: "Latin",      linkedAttribute: "lan", specializations: [] },
+    { name: "Mandarin",   linkedAttribute: "lan", specializations: [] },
+    { name: "Norwegian",  linkedAttribute: "lan", specializations: [] },
+    { name: "Or'zet",     linkedAttribute: "lan", specializations: [] },
+    { name: "Polish",     linkedAttribute: "lan", specializations: [] },
+    { name: "Portuguese", linkedAttribute: "lan", specializations: [] },
+    { name: "Russian",    linkedAttribute: "lan", specializations: [] },
+    { name: "Salish",     linkedAttribute: "lan", specializations: [] },
+    { name: "Sign Language", linkedAttribute: "lan", specializations: [] },
+    { name: "Spanish",    linkedAttribute: "lan", specializations: [] },
+    { name: "Sperethiel", linkedAttribute: "lan", specializations: [] },
+    { name: "Swedish",    linkedAttribute: "lan", specializations: [] },
+    { name: "Swahili",    linkedAttribute: "lan", specializations: [] },
+    { name: "Thai",       linkedAttribute: "lan", specializations: [] },
+    { name: "Turkish",    linkedAttribute: "lan", specializations: [] },
+    { name: "Ukrainian",  linkedAttribute: "lan", specializations: [] },
+    { name: "Urdu",       linkedAttribute: "lan", specializations: [] },
+    { name: "Vietnamese", linkedAttribute: "lan", specializations: [] },
+    { name: "Welsh",      linkedAttribute: "lan", specializations: [] },
+    { name: "Yoruba",     linkedAttribute: "lan", specializations: [] },
+    { name: "Zulu",       linkedAttribute: "lan", specializations: [] },
+  ],
+
 };
+
+// ---------------------------------------------------------------------------
+// Skill category classification
+// ---------------------------------------------------------------------------
+
+export const ACTIVE_SKILL_CATEGORIES = new Set([
+  'Combat skills', 'Build/Repair skills', 'Magical skills', 'Physical skills',
+  'Social skills', 'Technical skills', 'Vehicle skills',
+]);
+
+export const KNOWLEDGE_SKILL_CATEGORIES = new Set([
+  'Martial Arts', 'Matrix skills', 'Survival skills', 'Otaku skills',
+  'Street knowledge', 'Academic skills', 'System familiarity', 'Program design',
+  '6th World knowledge', 'Interests', 'Area knowledge', 'Background',
+]);
+
+/** Derive 'active' | 'knowledge' | 'language' from a category name. */
+export function skillTypeForCategory(category) {
+  if (category === 'Language') return 'language';
+  if (ACTIVE_SKILL_CATEGORIES.has(category)) return 'active';
+  return 'knowledge';
+}
 
 // ---------------------------------------------------------------------------
 // Helper functions
@@ -498,6 +560,7 @@ export function getLinkedAttributeForSkill(category, skillName) {
  * Returns the attribute of the first skill in the category as a sensible default.
  */
 export function getLinkedAttributeForCategory(category) {
+  if (category === 'Language') return 'lan';
   return SR3ESkills[category]?.[0]?.linkedAttribute ?? 'quickness';
 }
 
@@ -738,6 +801,7 @@ export const SR3E = {
   getLinkedAttributeForCategory,
   getFullSkillName,
   getSpecializationsForSkill,
+  skillTypeForCategory,
 
   // ── Programming Agents ──────────────────────────────────────────────────────
   agentSkillCategories: [

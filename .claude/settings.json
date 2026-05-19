@@ -21,7 +21,8 @@
       "Bash(Select-String \"ic|host|agent\")",
       "Bash(fvtt package *)",
       "Read(//c/Users/willi/.claude/projects/c--Users-willi-AppData-Local-FoundryVTT-Data-systems-The2ndChumming3e/8cb4bf41-6a61-48c0-8891-2f257e9d0724/tool-results/**)",
-      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\willi\\\\AppData\\\\Local\\\\FoundryVTT\\\\Data\\\\systems\\\\The2ndChumming3e\\\\scripts\\\\\" -Recurse | Select-Object -ExpandProperty Name)"
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\willi\\\\AppData\\\\Local\\\\FoundryVTT\\\\Data\\\\systems\\\\The2ndChumming3e\\\\scripts\\\\\" -Recurse | Select-Object -ExpandProperty Name)",
+      "Bash(git log *)"
     ]
   }
 }

@@ -197,6 +197,7 @@ export class SkillData extends foundry.abstract.TypeDataModel {
       rating:          new NumberField({ integer: true, initial: 1, min: 0 }),
       force:           new NumberField({ integer: true, initial: 0, min: 0 }),
       category:        new StringField({ initial: '' }),
+      skillType:       new StringField({ initial: 'active' }),   // 'active' | 'knowledge' | 'language'
       skillName:       new StringField({ initial: '' }),
       linkedAttribute: new StringField({ initial: 'quickness' }),
       specialisation:  new StringField({ initial: '' }),
@@ -237,6 +238,14 @@ export class CyberwareData extends foundry.abstract.TypeDataModel {
       isReplacement:     new BooleanField({ initial: false }),
       bookPage:          new StringField({ initial: '' }),
       description:       new HTMLField({ initial: '', required: false }),
+      bonusBod:          new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusQui:          new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusStr:          new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusCha:          new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusInt:          new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusWil:          new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusRea:          new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusInitDice:     new NumberField({ integer: true, initial: 0, min: 0 }),
     };
   }
 }
@@ -254,6 +263,14 @@ export class BiowareData extends foundry.abstract.TypeDataModel {
       biowareCategory:  new StringField({ initial: '' }),
       bookPage:         new StringField({ initial: '' }),
       description:      new HTMLField({ initial: '', required: false }),
+      bonusBod:         new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusQui:         new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusStr:         new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusCha:         new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusInt:         new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusWil:         new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusRea:         new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusInitDice:    new NumberField({ integer: true, initial: 0, min: 0 }),
     };
   }
 }

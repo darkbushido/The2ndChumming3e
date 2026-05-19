@@ -50,18 +50,18 @@ export class SR3EItem extends Item {
     
     if (!actor) return;
     
-    const attrKey = s.linkedAttribute || 'quickness';
-    const attrValue = actor.system.attributes?.[attrKey]?.value ?? 0;
-    
+    const attrKey   = s.linkedAttribute || 'quickness';
+    const isLan     = attrKey === 'lan';
+    const attrValue = isLan ? 0 : (actor.system.attributes?.[attrKey]?.value ?? 0);
+
     let basePool = s.rating || 0;
-    if (s.specialisation && basePool > 0) {
-      basePool += 2;
-    }
-    
-    s.dicePool = basePool;
-    s.defaultingPool = Math.max(1, attrValue - 2);
-    s.skillRating = s.rating || 0;
-    s.attributeValue = attrValue;
+    if (s.specialisation && basePool > 0) basePool += 2;
+
+    s.dicePool        = basePool;
+    s.canDefault      = !isLan && s.skillType !== 'language';
+    s.defaultingPool  = s.canDefault ? Math.max(1, attrValue - 2) : 0;
+    s.skillRating     = s.rating || 0;
+    s.attributeValue  = attrValue;
     s.specializationBonus = (s.specialisation && s.rating > 0) ? 2 : 0;
   }
 
@@ -78,13 +78,16 @@ export class SR3EItem extends Item {
     const s = this.system;
     const isDefaulting = !s.rating || s.rating === 0;
 
+    if (isDefaulting && !s.canDefault) {
+      ui.notifications.warn(`${this.name} cannot be defaulted.`);
+      return null;
+    }
+
     let pool;
     if (options.pool != null) {
       pool = Math.max(1, options.pool);
     } else {
-      pool = isDefaulting
-        ? s.defaultingPool
-        : Math.max(1, s.skillRating ?? 0);
+      pool = isDefaulting ? s.defaultingPool : Math.max(1, s.skillRating ?? 0);
     }
 
     if (pool < 1) {

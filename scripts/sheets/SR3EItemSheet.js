@@ -6,7 +6,8 @@ import {
   getLinkedAttributeForCategory,
   getLinkedAttributeForSkill,
   getFullSkillName,
-  getSpecializationsForSkill
+  getSpecializationsForSkill,
+  skillTypeForCategory,
 } from '../config.js';
 import { SPIRIT_TYPES } from '../documents/SR3ESpiritSummoning.js';
 
@@ -398,8 +399,20 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ? linkedAttr.charAt(0).toUpperCase() + linkedAttr.slice(1)
           : '';
 
+        const skillTypeLabel = s.skillType === 'language' ? 'Language'
+          : s.skillType === 'knowledge' ? 'Knowledge'
+          : 'Active';
+        const skillTypeColor = s.skillType === 'language' ? 'var(--sr-green)'
+          : s.skillType === 'knowledge' ? 'var(--sr-gold)'
+          : 'var(--sr-accent)';
+
         return `
           <div class="form-grid">
+            <div class="form-field">
+              <span class="field-label">Skill Type</span>
+              <span style="font-weight:bold;color:${skillTypeColor}">${skillTypeLabel}</span>
+              <input type="hidden" name="system.skillType" value="${s.skillType ?? 'active'}"/>
+            </div>
             <div class="form-field">
               <span class="field-label">Category</span>
               <select name="system.category" class="category-select">
@@ -531,17 +544,32 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         </div>`;
 
       case 'cyberware':
-      case 'bioware':
+      case 'bioware': {
+        const isBio = type === 'bioware';
         return `<div class="form-grid">
-          ${this._f('Essence Cost', 'essenceCost', s.essenceCost, 'number', 'step="0.1" min="0"')}
+          ${isBio
+            ? this._f('Bio Index', 'bioIndex', s.bioIndex, 'number', 'step="0.1" min="0"')
+            : this._f('Essence Cost', 'essenceCost', s.essenceCost, 'number', 'step="0.1" min="0"')}
           ${this._sel('Grade', 'grade', s.grade, SR3E.cyberwareGrades)}
           ${this._f('Rating', 'rating', s.rating, 'number')}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
+        </div>
+        <div class="form-section-hdr" style="margin:8px 0 4px;font-size:11px;font-weight:600;color:var(--sr-muted);letter-spacing:.05em;text-transform:uppercase">Attribute Bonuses</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px 8px;margin-bottom:8px">
+          ${[['BOD','bonusBod'],['QUI','bonusQui'],['STR','bonusStr'],['CHA','bonusCha'],
+             ['INT','bonusInt'],['WIL','bonusWil'],['REA','bonusRea'],['Init Dice','bonusInitDice']]
+            .map(([lbl,field]) => `
+            <label style="display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:var(--sr-muted)">
+              ${lbl}
+              <input type="number" name="system.${field}" value="${s[field] ?? 0}"
+                     min="0" style="width:42px;text-align:center"/>
+            </label>`).join('')}
         </div>
         <div class="notes-field">
           <label class="bio-label">Description</label>
           <textarea name="system.description" class="bio-text">${s.description ?? ''}</textarea>
         </div>`;
+      }
 
       case 'spell':
         return `<div class="form-grid">
@@ -713,6 +741,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     const linkedAttr = getLinkedAttributeForCategory(category);
     await this.item.update({
       'system.category':        category,
+      'system.skillType':       skillTypeForCategory(category),
       'system.linkedAttribute': linkedAttr,
       'system.skillName':       '',
       'system.specialisation':  '',

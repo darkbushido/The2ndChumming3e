@@ -119,7 +119,7 @@ Formula: `(reaction.base + woundMod + Response×2)` base + `(1 + Response)d6` (w
 **In:** base REA 4 (no cyber), Response 3 → base `4 + 6 = 10`, dice `4d6` → result 14–34.
 
 
-### VCR (Vehicle — jumped-in rigger)
+### VCR (Vehicle — jumped-in rigger) 
 Formula: `Rigger REA + VCR level + woundMod` base + `(1 + VCR)d6`
 
 **In:** REA 5, VCR 2 → base `7`, dice `3d6` → result 10–25.
@@ -697,6 +697,11 @@ Soak: Body dice vs TN = Power (no armor reduction for dumpshock).
 
 ## 25. Vehicles
 
+### Damage track
+All vehicles have a fixed **10-box** damage track regardless of Body. DESTROYED badge appears when all 10 are filled.
+
+**In:** Vehicle with Body 2 → track still shows **10 boxes**.
+
 ### Vehicle initiative
 Confirm the correct formula fires based on `vcrMode` / `controlledBy` fields on the vehicle actor.
 
@@ -706,13 +711,31 @@ Confirm the correct formula fires based on `vcrMode` / `controlledBy` fields on 
 | RCD (remote) | Rigger REA, 1d6 |
 | Auto (no pilot) | Pilot rating, 2d6 |
 
+### Mode sync — actor sheet and vehicle sheet must agree
+Mode is stored on the vehicle actor (`system.vcrMode`, `system.controlledBy`). Both sheets read from and write to the same data.
+
+- Set VCR on the actor sheet vehicle tab → open vehicle sheet → VCR button is highlighted.
+- Set RCD on the vehicle sheet → switch back to actor sheet → RCD button is highlighted.
+- Activating VCR on one vehicle in a multi-vehicle list → all other vehicles switch to RCD automatically.
+- Entering VR-Cold or VR-Hot on the actor → any vehicle in VCR mode drops to RCD automatically.
+
+### Link Existing
+`+ Link Existing` dialog only shows in-world vehicle actors. Compendium-imported templates (isTemplate flag) must **not** appear.
+
+### Create & Link
+`+ Create & Link` dialog has a **Source** dropdown:
+- First option "-- Create blank --" → shows name input → creates a new blank vehicle actor.
+- Subsequent options are compendium entries (sr3e-vehicles, sr3e-drones, etc.) grouped by pack → creates a world actor from that entry with isTemplate cleared.
+
+In both cases the new actor is linked to the rigger and opens its sheet.
+
 ### Vehicle soak TN
 Formula: `Damage Power` (no armor reduction for vehicles).
 
 **In:** Power 9 → soak TN **9**.
 
 ### Assign Damage (vehicle)
-**🩸 Assign [code] to [VehicleName]** → updates `system.damage.value`. Max = `Body × 2`.
+**🩸 Assign [code] to [VehicleName]** → updates `system.damage.value`. Capped at **10**.
 
 ### Vehicle targeting TN
 Formula: `max(2, Signature − Sensor rating)` (or − VCR level if jumped in).

@@ -20,7 +20,51 @@ import { SR3EVehicleChase } from './SR3EVehicleChase.js';
 Hooks.once('init', () => {
   console.log('SR3E | Initialising');
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase };
+  async function buildSkillsCompendium() {
+    const PACK_ID = 'The2ndChumming3e.sr3e-skills';
+    const pack = game.packs.get(PACK_ID);
+    if (!pack) { ui.notifications.error('sr3e-skills pack not found — restart Foundry after the system.json change.'); return; }
+
+    const existing = await pack.getDocuments();
+    if (existing.length > 0) {
+      let proceed = false;
+      await foundry.applications.api.DialogV2.wait({
+        window: { title: 'Rebuild Skills Compendium?' },
+        content: `<p>The Skills compendium already contains ${existing.length} entries. Delete them and repopulate?</p>`,
+        buttons: [
+          { label: 'Repopulate', action: 'yes', default: true, callback: () => { proceed = true; } },
+          { label: 'Cancel', action: 'cancel', default: false },
+        ],
+      });
+      if (!proceed) return;
+    }
+
+    await pack.configure({ locked: false });
+    for (const doc of await pack.getDocuments()) await doc.delete();
+
+    let created = 0;
+    for (const [cat, skills] of Object.entries(SR3E.skills)) {
+      for (const s of skills) {
+        try {
+          const tmpItem = await Item.create({
+            name: s.name, type: 'skill',
+            system: { category: cat, skillType: SR3E.skillTypeForCategory(cat),
+                      skillName: s.name, linkedAttribute: s.linkedAttribute, rating: 1 },
+          }, { renderSheet: false });
+          await pack.importDocument(tmpItem);
+          await tmpItem.delete();
+          created++;
+        } catch (err) {
+          console.error(`SR3E | Failed to create skill "${s.name}":`, err);
+        }
+      }
+    }
+
+    await pack.configure({ locked: true });
+    ui.notifications.info(`SR3E: ${created} skills added to the compendium.`);
+  }
+
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, buildSkillsCompendium };
 
   // Data models (replace template.json defaults)
   CONFIG.Actor.dataModels.character = CharacterData;
@@ -1404,13 +1448,6 @@ Hooks.on('renderCombatTracker', (_app, html) => {
   }
 });
 
-// Auto-flag actors imported from any compendium as templates so they don't
-// pollute combat targeting dialogs until the GM explicitly deploys a copy.
-Hooks.on('preCreateActor', (actor) => {
-  if (actor._stats?.compendiumSource) {
-    actor.updateSource({ 'flags.The2ndChumming3e.isTemplate': true });
-  }
-});
 
 // Re-render combat tracker when a vehicle actor's control mode changes so the
 // VCR / RCD / Auto badge in the sidebar stays current without needing a turn advance.

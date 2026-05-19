@@ -3564,3 +3564,5 @@ label.act-field input[type=number] {
   font-size: 0.72rem;
 }
 .host-action-btn-sm:hover { border-color: var(--sr-accent); color: var(--sr-accent); }
+
+.attr-aug { font-size: 14px; font-weight: 600; color: var(--sr-green); min-width: 18px; text-align: center; }

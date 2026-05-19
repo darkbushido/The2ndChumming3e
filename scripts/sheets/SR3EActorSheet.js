@@ -1,4 +1,4 @@
-import { SR3E, getSpecializationsForSkill } from '../config.js';
+import { SR3E, getSpecializationsForSkill, skillTypeForCategory } from '../config.js';
 
 /**
  * SR3EActorSheet — V2 Application framework (Foundry v13+).
@@ -30,6 +30,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       rollMelee:      SR3EActorSheet._onRollMelee,
       rollInitiative: SR3EActorSheet._onRollInitiative,
       itemCreate:     SR3EActorSheet._onItemCreate,
+      browseSkills:   SR3EActorSheet._onBrowseSkills,
       itemEdit:       SR3EActorSheet._onItemEdit,
       itemDelete:     SR3EActorSheet._onItemDelete,
       woundBox:       SR3EActorSheet._onWoundBox,
@@ -418,27 +419,37 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   const attr    = sys.attributes ?? {};
   const d       = sys.derived    ?? {};
   const isAdept = (sys.magicType ?? '') === 'Adept';
+  const cb      = d.cyberBonus ?? {};
 
   // Core attributes (2 columns)
   const coreAttrs = [
     ['body','Body'], ['quickness','Quickness'], ['strength','Strength'],
     ['charisma','Charisma'], ['intelligence','Intelligence'], ['willpower','Willpower']
   ];
+  const _cyberKey = { body: 'bod', quickness: 'qui', strength: 'str', charisma: 'cha', intelligence: 'int', willpower: 'wil' };
 
-  const attrBlocks = coreAttrs.map(([key, label]) => `
+  const attrBlocks = coreAttrs.map(([key, label]) => {
+    const base  = attr[key]?.base ?? 3;
+    const force = isAdept ? (attr[key]?.force ?? 0) : 0;
+    const aug   = cb[_cyberKey[key]] ?? 0;
+    const showTotal = isAdept || aug > 0;
+    return `
     <div class="attr-block">
       <span class="attr-label">${label}</span>
       <div class="attr-row">
         <input class="attr-input" type="number" name="system.attributes.${key}.base"
-               value="${attr[key]?.base ?? 3}" min="1" max="30" title="Base"/>
+               value="${base}" min="1" max="30" title="Base"/>
         ${isAdept ? `<span class="attr-force-sep" title="Improved Ability / Increased ${label}">+</span>
         <input class="attr-input attr-force" type="number" name="system.attributes.${key}.force"
-               value="${attr[key]?.force ?? 0}" min="0" max="10" title="Adept force"/>
-        <span class="attr-force-total" title="Effective">(${(attr[key]?.base ?? 3) + (attr[key]?.force ?? 0)})</span>` : ''}
+               value="${force}" min="0" max="10" title="Adept force"/>` : ''}
+        ${aug > 0 ? `<span class="attr-force-sep" title="Cyber/bio augmentation">+</span>
+        <span class="attr-aug" title="Cyber/bio augmentation">${aug}</span>` : ''}
+        ${showTotal ? `<span class="attr-force-total" title="Effective">(${base + force + aug})</span>` : ''}
         ${key === 'quickness' && (d.armorEncPenalty ?? 0) > 0 ? `<span class="attr-enc-penalty" title="Armor encumbrance penalty (equipped armor exceeds Quickness)">−${d.armorEncPenalty}</span>` : ''}
         <i class="fas fa-dice-d6 rollable" data-action="rollAttr" data-attr="${key}" title="Shift-Click to use Phys. Dice" ${label}"></i>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
   return `<div class="tab ${this._activeTab === 'attributes' ? 'active' : ''}" data-tab="attributes" style="overflow-y:auto">
     <div class="attributes-grid">
@@ -462,12 +473,14 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <span class="attr-label" style="color:var(--sr-amber)">Reaction</span>
         <div class="attr-row">
           <span class="attr-derived" style="color:var(--sr-amber)">${attr.reaction?.value ?? 0}</span>
-          <span class="attr-force-sep" title="Initiative modifier (wired reflexes, drugs, etc.)">+</span>
+          <span class="attr-force-sep" title="Manual bonus (drugs, etc.)">+</span>
           <input class="attr-input attr-force" type="number" name="system.attributes.reaction.reactionBonus"
-                 value="${attr.reaction?.reactionBonus ?? 0}" title="Initiative modifier (wired reflexes, drugs, etc.)"/>
+                 value="${attr.reaction?.reactionBonus ?? 0}" title="Manual reaction bonus (drugs, etc.)"/>
           ${isAdept ? `<span class="attr-force-sep" title="Reaction adept force">+</span>
           <input class="attr-input attr-force" type="number" name="system.attributes.reaction.force"
                  value="${attr.reaction?.force ?? 0}" min="0" max="10" title="Adept force on Reaction"/>` : ''}
+          ${(cb.rea ?? 0) > 0 ? `<span class="attr-force-sep" title="Cyber/bio augmentation">+</span>
+          <span class="attr-aug" title="Cyber/bio augmentation">${cb.rea}</span>` : ''}
         </div>
       </div>
 
@@ -486,7 +499,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <span class="attr-label">Init Dice +</span>
         <div class="attr-row">
           <input class="attr-input" type="number" name="system.initiativeDiceBonus"
-                 value="${sys.initiativeDiceBonus ?? 0}" min="0" max="10"/>
+                 value="${sys.initiativeDiceBonus ?? 0}" min="0" max="10" title="Manual init dice bonus"/>
+          ${(cb.initDice ?? 0) > 0 ? `<span class="attr-force-sep" title="Cyber/bio augmentation">+</span>
+          <span class="attr-aug" title="Cyber/bio augmentation">${cb.initDice}</span>` : ''}
         </div>
       </div>
     </div>
@@ -609,15 +624,28 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   _tabSkills(actor) {
     const allSkills = actor.items.filter(i => i.type === 'skill')
       .sort((a, b) => a.name.localeCompare(b.name));
-    const skills       = allSkills.filter(s => (s.system.category ?? '') !== '' && (s.system.skillName ?? '') !== '' && (s.system.rating ?? 0) > 0);
-    const uncatSkills  = allSkills.filter(s => (s.system.category ?? '') === '' || (s.system.skillName ?? '') === '' || (s.system.rating ?? 0) === 0);
-    const isAdept      = (actor.system.magicType ?? '') === 'Adept';
+    const isAdept = (actor.system.magicType ?? '') === 'Adept';
+
+    const _isComplete = s => (s.system.category ?? '') !== '' && (s.system.skillName ?? '') !== '' && (s.system.rating ?? 0) > 0;
+
+    const _skillType = s => {
+      const cat = s.system.category ?? '';
+      if (cat) return skillTypeForCategory(cat);
+      return s.system.skillType ?? 'active';
+    };
+
+    const complete   = allSkills.filter(_isComplete);
+    const incomplete = allSkills.filter(s => !_isComplete(s));
+
+    const activeSkills   = complete.filter(s => _skillType(s) === 'active');
+    const knowledgeSkills= complete.filter(s => _skillType(s) === 'knowledge');
+    const languageSkills = complete.filter(s => _skillType(s) === 'language');
 
     const _skillRow = s => {
-      const rating    = s.system.rating ?? 0;
-      const force     = s.system.force  ?? 0;
-      const specs     = s.system.specialisations ?? [];
-      const maxBonus  = specs.length > 0
+      const rating   = s.system.rating ?? 0;
+      const force    = s.system.force  ?? 0;
+      const specs    = s.system.specialisations ?? [];
+      const maxBonus = specs.length > 0
         ? Math.max(...specs.map(sp => sp.level ?? 1))
         : (s.system.specialisation ? 2 : 0);
       const ratingDisplay = maxBonus > 0
@@ -630,11 +658,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                  style="width:38px;text-align:center;background:var(--sr-surface);color:var(--sr-gold);border:1px solid var(--sr-border);border-radius:var(--r)"
                  title="Improved Ability (Adept force)"/>
         </span>` : '';
+      const attrLabel = s.system.linkedAttribute === 'lan' ? 'LAN' : (s.system.linkedAttribute ?? '—');
       return `
         <div class="item-row" data-item-id="${s.id}">
           <span class="item-name skill-name" data-action="rollSkill" data-item-id="${s.id}"
                 title="Roll ${s.name}">${s.name}</span>
-          <span class="item-cell">${s.system.linkedAttribute ?? '—'}</span>
+          <span class="item-cell">${attrLabel}</span>
           <span class="item-cell">${ratingDisplay}</span>
           ${forceCell}
           <span class="item-cell" title="${specs.map(sp => `${sp.name} (+${sp.level})`).join(', ') || s.system.specialisation || ''}">${specs.length > 0 ? specs.map(sp => sp.name).join(', ') : (s.system.specialisation || '—')}</span>
@@ -642,19 +671,26 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         </div>`;
     };
 
-    const header    = `<div class="list-header"><span>Skill</span><span>Attr</span><span>Rtg</span>${isAdept ? '<span>Force</span>' : ''}<span>Spec</span><span></span></div>`;
-    const rows      = skills.length ? skills.map(_skillRow).join('') : '<p class="empty-list">No skills. Add some below.</p>';
-    const uncatRows = uncatSkills.map(_skillRow).join('');
+    const header = `<div class="list-header"><span>Skill</span><span>Attr</span><span>Rtg</span>${isAdept ? '<span>Force</span>' : ''}<span>Spec</span><span></span></div>`;
+
+    const _section = (label, color, skills) => skills.length === 0 ? '' : `
+      <h3 class="section-hdr" style="margin-top:1rem;color:${color}">${label}</h3>
+      ${header}
+      ${skills.map(_skillRow).join('')}`;
 
     return `<div class="tab ${this._activeTab === 'skills' ? 'active' : ''}" data-tab="skills" style="overflow-y:auto">
-      ${header}
-      ${rows}
-      ${uncatSkills.length ? `
+      ${_section('Active Skills', 'var(--sr-accent)', activeSkills)}
+      ${_section('Knowledge Skills', 'var(--sr-gold)', knowledgeSkills)}
+      ${_section('Language Skills', 'var(--sr-green)', languageSkills)}
+      ${incomplete.length ? `
         <h3 class="section-hdr" style="margin-top:1rem;color:var(--sr-amber)">Incomplete (set category, skill name, and rating)</h3>
         ${header}
-        ${uncatRows}
+        ${incomplete.map(_skillRow).join('')}
       ` : ''}
-      <button type="button" class="btn-add" data-action="itemCreate" data-type="skill">+ Add Skill</button>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button type="button" class="btn-add" data-action="browseSkills">+ Browse Skills</button>
+        <button type="button" class="btn-add" data-action="itemCreate" data-type="skill">+ Add Custom</button>
+      </div>
     </div>`;
   }
 
@@ -1047,7 +1083,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const decks          = actor.items.filter(i => i.type === 'cyberdeck' && !i.getFlag('The2ndChumming3e', 'stored')).sort((a, b) => a.name.localeCompare(b.name));
     const programs       = actor.items.filter(i => i.type === 'program'   && !i.getFlag('The2ndChumming3e', 'stored')).sort((a, b) => a.name.localeCompare(b.name));
 
-    const vcrActive = (sys.linkedVehicles ?? []).some(v => v.mode === 'vcr');
+    const vcrActive = (sys.linkedVehicles ?? []).some(({ actorId }) => {
+      const v = game.actors?.get(actorId);
+      return !!(v?.system?.controlledBy?.trim() && v?.system?.vcrMode);
+    });
     const vrActive  = currentMode === 'VR-Cold' || currentMode === 'VR-Hot';
 
     // --- User mode buttons ---
@@ -1594,7 +1633,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ['sensor',   'Sens'],
     ];
 
-    const rows = linked.map(({ actorId, mode }) => {
+    const rows = linked.map(({ actorId }) => {
       const vActor = game.actors?.get(actorId);
       const name   = vActor?.name ?? `[Missing: ${actorId.slice(0,6)}]`;
       const attr   = vActor?.system?.attributes ?? {};
@@ -1605,8 +1644,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           <span class="sr-veh-stat-val">${attr[key]?.base ?? 0}</span>
         </span>`).join('');
 
-      const vcrActive = mode === 'vcr';
-      const rcdActive = mode === 'rcd';
+      // Mode is authoritative on the vehicle actor, not in linkedVehicles
+      const vsys     = vActor?.system ?? {};
+      const vcrActive = !!(vsys.controlledBy?.trim() && vsys.vcrMode);
+      const rcdActive = !!(vsys.controlledBy?.trim() && !vsys.vcrMode);
 
       return `
         <div class="sr-veh-row">
@@ -1907,6 +1948,109 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     item?.sheet?.render(true);
   }
 
+  static async _onBrowseSkills(_ev, _target) {
+    const allSkills = SR3E.skills;
+    const actor     = this.actor;
+
+    // Build flat indexed list: { name, category, attribute }
+    const entries = [];
+    for (const [cat, skills] of Object.entries(allSkills)) {
+      for (const s of skills) {
+        entries.push({ name: s.name, category: cat, attribute: s.linkedAttribute });
+      }
+    }
+    entries.sort((a, b) => a.name.localeCompare(b.name));
+
+    const rowsHtml = entries.map((e, i) => {
+      const attrLabel = e.attribute === 'lan' ? 'LAN'
+        : e.attribute ? e.attribute.charAt(0).toUpperCase() + e.attribute.slice(1, 3)
+        : '—';
+      return `<div class="sk-row" data-idx="${i}"
+          data-search="${e.name.toLowerCase()} ${e.category.toLowerCase()}"
+          style="padding:4px 8px;cursor:pointer;border-bottom:1px solid var(--sr-border);display:flex;gap:6px;align-items:center">
+          <span style="font-size:10px;color:var(--sr-muted);min-width:120px">[${e.category}]</span>
+          <span style="flex:1">${e.name}</span>
+          <span style="font-size:10px;color:var(--sr-accent)">${attrLabel}</span>
+        </div>`;
+    }).join('');
+
+    let selectedIdx = null;
+
+    // DialogV2.wait() does not call its render option — use the Foundry hook instead
+    let hookId = Hooks.on('renderDialogV2', (app, html) => {
+      if (!html.querySelector?.('#sk-filter')) return;
+      Hooks.off('renderDialogV2', hookId);
+
+      const filterInput = html.querySelector('#sk-filter');
+      const idxInput    = html.querySelector('#sk-idx');
+      const rows        = html.querySelectorAll('.sk-row');
+
+      filterInput.addEventListener('input', () => {
+        const v = filterInput.value.toLowerCase();
+        rows.forEach(r => {
+          r.style.display = (!v || r.dataset.search.includes(v)) ? '' : 'none';
+        });
+      });
+
+      filterInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') e.preventDefault();
+      });
+
+      rows.forEach(r => {
+        r.addEventListener('click', () => {
+          rows.forEach(rr => rr.style.background = '');
+          r.style.background = 'color-mix(in srgb,var(--sr-accent) 20%,transparent)';
+          idxInput.value = r.dataset.idx;
+        });
+      });
+
+      filterInput.focus();
+    });
+
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: 'Browse Skills' },
+      content: `
+        <div style="padding:4px 0">
+          <input id="sk-filter" type="text" placeholder="Type to filter…"
+                 style="width:100%;margin-bottom:6px"/>
+          <div style="max-height:360px;overflow-y:auto;border:1px solid var(--sr-border);border-radius:var(--r)">
+            ${rowsHtml}
+          </div>
+          <input type="hidden" id="sk-idx" value=""/>
+        </div>`,
+      buttons: [
+        { label: 'Add to Character', action: 'add', default: true,
+          callback: (_e, _b, d) => {
+            const v = d.element.querySelector('#sk-idx')?.value;
+            selectedIdx = v !== '' && v != null ? parseInt(v) : null;
+          } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+
+    if (selectedIdx == null || isNaN(selectedIdx)) return;
+    const def = entries[selectedIdx];
+    if (!def) return;
+
+    const existing = actor.items.find(i => i.type === 'skill' && i.name === def.name);
+    if (existing) {
+      ui.notifications.warn(`${def.name} is already on this character.`);
+      return;
+    }
+
+    await actor.createEmbeddedDocuments('Item', [{
+      name:   def.name,
+      type:   'skill',
+      system: {
+        category:        def.category,
+        skillType:       skillTypeForCategory(def.category),
+        skillName:       def.name,
+        linkedAttribute: def.attribute,
+        rating:          1,
+      },
+    }]);
+  }
+
   static _onItemEdit(ev, target) {
     const itemId = (target ?? ev.currentTarget).dataset.itemId;
     const item   = this.actor.items.get(itemId);
@@ -2117,15 +2261,13 @@ static async _onHealDamage(ev, target) {
 
     if (!hostActors.length) {
       ui.notifications.warn('No host actors found. Create a Host actor to enable matrix targeting.');
-      const updates = { 'system.matrixUserMode': mode, 'system.activeHostId': '' };
       if (mode === 'VR-Cold' || mode === 'VR-Hot') {
-        const vehicles = (actor.system.linkedVehicles ?? []).map(v => ({ ...v }));
-        if (vehicles.some(v => v.mode === 'vcr')) {
-          vehicles.forEach(v => { if (v.mode === 'vcr') v.mode = ''; });
-          updates['system.linkedVehicles'] = vehicles;
+        for (const { actorId } of (actor.system.linkedVehicles ?? [])) {
+          const v = game.actors?.get(actorId);
+          if (v?.system?.vcrMode) await v.update({ 'system.vcrMode': false });
         }
       }
-      await actor.update(updates);
+      await actor.update({ 'system.matrixUserMode': mode, 'system.activeHostId': '' });
       return;
     }
 
@@ -2167,10 +2309,9 @@ static async _onHealDamage(ev, target) {
 
     // Activating VR — auto-deactivate any vehicle VCR
     if (mode === 'VR-Cold' || mode === 'VR-Hot') {
-      const vehicles = (actor.system.linkedVehicles ?? []).map(v => ({ ...v }));
-      if (vehicles.some(v => v.mode === 'vcr')) {
-        vehicles.forEach(v => { if (v.mode === 'vcr') v.mode = ''; });
-        updates['system.linkedVehicles'] = vehicles;
+      for (const { actorId } of (actor.system.linkedVehicles ?? [])) {
+        const v = game.actors?.get(actorId);
+        if (v?.system?.vcrMode) await v.update({ 'system.vcrMode': false });
       }
     }
 
@@ -2301,7 +2442,11 @@ static async _onHealDamage(ev, target) {
 
   static async _onLinkVehicle(_ev, _target) {
     const linked    = new Set((this.actor.system.linkedVehicles ?? []).map(v => v.actorId));
-    const available = game.actors.contents.filter(a => a.type === 'vehicle' && !linked.has(a.id));
+    const available = game.actors.contents.filter(a =>
+      a.type === 'vehicle' &&
+      !linked.has(a.id) &&
+      !a.getFlag('The2ndChumming3e', 'isTemplate')
+    );
 
     if (available.length === 0) {
       ui.notifications.warn('No unlinked vehicle actors found in this world.');
@@ -2330,22 +2475,65 @@ static async _onHealDamage(ev, target) {
   }
 
   static async _onCreateLinkVehicle(_ev, _target) {
-    let name = null;
+    // Build compendium options from Actor packs (vehicles and drones)
+    const vehiclePacks = game.packs.filter(p => p.metadata.type === 'Actor');
+    const packGroups = [];
+    for (const pack of vehiclePacks) {
+      const index = await pack.getIndex();
+      const entries = index.filter(e => e.type === 'vehicle');
+      if (entries.length) {
+        const opts = entries.map(e => `<option value="${pack.collection}|${e._id}">${e.name}</option>`).join('');
+        packGroups.push(`<optgroup label="${pack.metadata.label}">${opts}</optgroup>`);
+      }
+    }
+    const compendiumOpts = packGroups.join('');
+
+    let choice = null;  // 'packCollection|docId' if from compendium, null if blank
+    let name   = null;
     await foundry.applications.api.DialogV2.wait({
       window: { title: 'Create & Link Vehicle' },
       content: `
-        <label style="display:block;padding:8px 0">Vehicle name:
-          <input id="veh-name" type="text" value="New Vehicle"
-                 style="width:100%;margin-top:4px"/>
-        </label>`,
+        <div style="padding:8px 0">
+          <label style="display:block;margin-bottom:6px">Source:
+            <select id="veh-src" style="width:100%;margin-top:4px"
+                    onchange="document.getElementById('veh-blank').style.display=this.value?'none':'block'">
+              <option value="">-- Create blank --</option>
+              ${compendiumOpts}
+            </select>
+          </label>
+          <div id="veh-blank" style="margin-top:6px">
+            <label>Name:
+              <input id="veh-name" type="text" value="New Vehicle" style="width:100%;margin-top:4px"/>
+            </label>
+          </div>
+        </div>`,
       buttons: [
         { label: 'Create', action: 'create', default: true,
-          callback: (_e, _b, d) => { name = d.element.querySelector('#veh-name')?.value.trim() || 'New Vehicle'; } },
+          callback: (_e, _b, d) => {
+            const el  = d.element;
+            const src = el.querySelector('#veh-src')?.value ?? '';
+            if (src) { choice = src; }
+            else     { name   = el.querySelector('#veh-name')?.value.trim() || 'New Vehicle'; }
+          } },
         { label: 'Cancel', action: 'cancel' },
       ],
     });
-    if (!name) return;
-    const newActor = await Actor.implementation.create({ name, type: 'vehicle' });
+
+    let newActor;
+    if (choice) {
+      const [collection, docId] = choice.split('|');
+      const pack = game.packs.get(collection);
+      const doc  = await pack.getDocument(docId);
+      const data = doc.toObject();
+      delete data._id;
+      foundry.utils.setProperty(data, `flags.The2ndChumming3e.isTemplate`, false);
+      newActor = await Actor.implementation.create(data);
+    } else if (name) {
+      newActor = await Actor.implementation.create({ name, type: 'vehicle' });
+    } else {
+      return;
+    }
+
     const vehicles = [...(this.actor.system.linkedVehicles ?? []), { actorId: newActor.id, mode: '' }];
     await this.actor.update({ 'system.linkedVehicles': vehicles });
     await newActor.update({ 'system.controlledBy': this.actor.name });
@@ -2363,31 +2551,28 @@ static async _onHealDamage(ev, target) {
   }
 
   static async _onToggleVehicleMode(_ev, target) {
-    const actorId  = target.dataset.actorId;
-    const mode     = target.dataset.mode;           // 'vcr' or 'rcd'
-    const vehicles = (this.actor.system.linkedVehicles ?? []).map(v => ({ ...v }));
-    const entry    = vehicles.find(v => v.actorId === actorId);
-    if (!entry) return;
+    const actorId    = target.dataset.actorId;
+    const mode       = target.dataset.mode;  // 'vcr' or 'rcd'
+    const vActor     = game.actors.get(actorId);
+    if (!vActor) return;
 
-    const newMode = entry.mode === mode ? '' : mode; // toggle off if already selected
+    const newVcrMode = mode === 'vcr';  // VCR btn → true, RCD btn → false
 
-    if (newMode === 'vcr') {
-      // VCR exclusive: other vehicles (VCR or RCD) default to Auto
-      vehicles.forEach(v => { if (v.actorId !== actorId) v.mode = ''; });
-    }
-    entry.mode = newMode;
-
-    const updates = { 'system.linkedVehicles': vehicles };
-
-    // Activating vehicle VCR — auto-deactivate any VR matrix mode
-    if (newMode === 'vcr') {
+    if (newVcrMode) {
+      // VCR is exclusive — deactivate VCR on all other linked vehicles
+      for (const { actorId: otherId } of (this.actor.system.linkedVehicles ?? [])) {
+        if (otherId === actorId) continue;
+        const other = game.actors.get(otherId);
+        if (other?.system?.vcrMode) await other.update({ 'system.vcrMode': false });
+      }
+      // VCR and VR are mutually exclusive
       const matrixMode = this.actor.system.matrixUserMode ?? '';
       if (matrixMode === 'VR-Cold' || matrixMode === 'VR-Hot') {
-        updates['system.matrixUserMode'] = '';
+        await this.actor.update({ 'system.matrixUserMode': '' });
       }
     }
 
-    await this.actor.update(updates);
+    await vActor.update({ 'system.vcrMode': newVcrMode });
   }
 
   static async _onRollContested(ev, _target) {
