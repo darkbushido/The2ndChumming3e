@@ -6,16 +6,20 @@ const PACK_ID = 'The2ndChumming3e.sr3e-cyberware';
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function cw(name, grade, essenceCost, rating, cost, category, opts = {}) {
+  const availability = opts.availability ?? '';
   return {
     name,
     type: 'cyberware',
     system: {
       grade,
       essenceCost,
+      essenceCostBase:   essenceCost,   // Standard-grade base for grade recalc
       rating,
       cost,
+      costBase:          cost,          // Standard-grade base for grade recalc
+      availability,
+      availabilityBase:  availability,  // Standard-grade base for grade recalc
       cyberwareCategory: category,
-      availability:      opts.availability ?? '',
       streetIndex:       opts.streetIndex  ?? 1,
       legalCode:         opts.legalCode    ?? '',
       mods:              opts.mods         ?? '',

@@ -1325,13 +1325,37 @@ _prepareCharacter(sys, attr) {
     cyberBonus.initDice += s.bonusInitDice ?? 0;
   }
 
-  // Apply adept force + cyber/bio bonuses to core attributes — derivations below use .value
+  // Adept power bonuses — summed from all adeptpower items
+  const adeptBonus    = { bod: 0, qui: 0, str: 0, cha: 0, int: 0, wil: 0, mag: 0, rea: 0, initDice: 0 };
+  const improvedAbility = {};  // { skillName → total bonus dice }
+  if (isAdept) {
+    for (const item of (this.items ?? [])) {
+      if (item.type !== 'adeptpower') continue;
+      const s = item.system;
+      adeptBonus.bod      += s.bonusBod      ?? 0;
+      adeptBonus.qui      += s.bonusQui      ?? 0;
+      adeptBonus.str      += s.bonusStr      ?? 0;
+      adeptBonus.cha      += s.bonusCha      ?? 0;
+      adeptBonus.int      += s.bonusInt      ?? 0;
+      adeptBonus.wil      += s.bonusWil      ?? 0;
+      adeptBonus.mag      += s.bonusMag      ?? 0;
+      adeptBonus.rea      += s.bonusRea      ?? 0;
+      adeptBonus.initDice += s.bonusInitDice ?? 0;
+      const skillName = (s.improvedSkillName ?? '').trim();
+      if (skillName) {
+        const dice = s.hasLevels ? (s.level ?? 1) : 1;
+        improvedAbility[skillName] = (improvedAbility[skillName] ?? 0) + dice;
+      }
+    }
+  }
+
+  // Apply cyber/bio + adept power bonuses to core attributes — derivations below use .value
   const _cyberKey = { body: 'bod', quickness: 'qui', strength: 'str', charisma: 'cha', intelligence: 'int', willpower: 'wil' };
   for (const key of ['body', 'quickness', 'strength', 'charisma', 'intelligence', 'willpower']) {
     if (attr[key]) {
       attr[key].value = (attr[key].base ?? 0)
-        + (isAdept ? (attr[key].force ?? 0) : 0)
-        + (cyberBonus[_cyberKey[key]] ?? 0);
+        + (cyberBonus[_cyberKey[key]] ?? 0)
+        + (adeptBonus[_cyberKey[key]] ?? 0);
     }
   }
 
@@ -1361,7 +1385,7 @@ _prepareCharacter(sys, attr) {
     if (!attr.reaction.override) {
       attr.reaction.value = Math.max(1, baseReaction
         + (attr.reaction.reactionBonus ?? 0)
-        + (isAdept ? (attr.reaction.force ?? 0) : 0)
+        + adeptBonus.rea
         + cyberBonus.rea);
     }
   }
@@ -1394,7 +1418,7 @@ _prepareCharacter(sys, attr) {
   const effectiveMagic = Math.max(0, essenceVal - (totalBioIndex / 2));
   if (attr.magic && magicBase > 0) {
     attr.magic.value = Math.min(magicBase, Math.floor(effectiveMagic))
-      + (isAdept ? (attr.magic.force ?? 0) : 0);
+      + adeptBonus.mag;
   }
   const magicSuppressed = magicBase > 0 && effectiveMagic < magicBase;
 
@@ -1442,8 +1466,10 @@ _prepareCharacter(sys, attr) {
 
   sys.derived = {
     initiative:         (attr.reaction?.value ?? 0) + wm,
-    initiativeDice:     1 + (sys.initiativeDiceBonus ?? 0) + (attr.reaction?.diceBonus ?? 0) + cyberBonus.initDice,
+    initiativeDice:     1 + (sys.initiativeDiceBonus ?? 0) + (attr.reaction?.diceBonus ?? 0) + cyberBonus.initDice + adeptBonus.initDice,
     cyberBonus,
+    adeptBonus,
+    improvedAbility,
     combatPoolBase,
     combatPool,
     availableCombatPool,

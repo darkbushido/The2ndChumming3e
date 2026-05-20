@@ -121,16 +121,6 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       el.addEventListener('change', ev => this._onFieldChange(ev))
     );
 
-    // Inline skill force inputs — saved directly to the item, not the actor form
-    html.querySelectorAll('.skill-force-input').forEach(input => {
-      input.addEventListener('change', async ev => {
-        ev.stopPropagation();
-        const itemId = ev.currentTarget.dataset.itemId;
-        const item   = this.actor.items.get(itemId);
-        if (item) await item.update({ 'system.force': parseInt(ev.currentTarget.value) || 0 });
-      });
-    });
-
     // Matrix tab: make program rows draggable
     html.querySelectorAll('[data-matrix-program-id]').forEach(el => {
       el.setAttribute('draggable', 'true');
@@ -419,7 +409,15 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   const attr    = sys.attributes ?? {};
   const d       = sys.derived    ?? {};
   const isAdept = (sys.magicType ?? '') === 'Adept';
-  const cb      = d.cyberBonus ?? {};
+  const cb      = d.cyberBonus  ?? {};
+  const ab      = d.adeptBonus  ?? {};
+
+  // Shorthands for tooltip formulas
+  const _v = key => attr[key]?.value ?? 0;
+  const qui = _v('quickness'), intl = _v('intelligence'), wil = _v('willpower'),
+        cha = _v('charisma'),  mag  = _v('magic'),        rea = attr.reaction?.value ?? 0;
+  const reactionBase  = attr.reaction?.base ?? 0;
+  const reactionBonus = attr.reaction?.reactionBonus ?? 0;
 
   // Core attributes (2 columns)
   const coreAttrs = [
@@ -429,22 +427,21 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   const _cyberKey = { body: 'bod', quickness: 'qui', strength: 'str', charisma: 'cha', intelligence: 'int', willpower: 'wil' };
 
   const attrBlocks = coreAttrs.map(([key, label]) => {
-    const base  = attr[key]?.base ?? 3;
-    const force = isAdept ? (attr[key]?.force ?? 0) : 0;
-    const aug   = cb[_cyberKey[key]] ?? 0;
-    const showTotal = isAdept || aug > 0;
+    const base     = attr[key]?.base ?? 3;
+    const aug      = cb[_cyberKey[key]] ?? 0;
+    const adept    = isAdept ? (ab[_cyberKey[key]] ?? 0) : 0;
+    const showTotal = aug > 0 || adept > 0;
     return `
     <div class="attr-block">
       <span class="attr-label">${label}</span>
       <div class="attr-row">
         <input class="attr-input" type="number" name="system.attributes.${key}.base"
                value="${base}" min="1" max="30" title="Base"/>
-        ${isAdept ? `<span class="attr-force-sep" title="Improved Ability / Increased ${label}">+</span>
-        <input class="attr-input attr-force" type="number" name="system.attributes.${key}.force"
-               value="${force}" min="0" max="10" title="Adept force"/>` : ''}
+        ${adept > 0 ? `<span class="attr-force-sep" title="Adept power bonus">+</span>
+        <span class="attr-adept" title="Adept power bonus">${adept}</span>` : ''}
         ${aug > 0 ? `<span class="attr-force-sep" title="Cyber/bio augmentation">+</span>
         <span class="attr-aug" title="Cyber/bio augmentation">${aug}</span>` : ''}
-        ${showTotal ? `<span class="attr-force-total" title="Effective">(${base + force + aug})</span>` : ''}
+        ${showTotal ? `<span class="attr-force-total" title="Effective">(${base + adept + aug})</span>` : ''}
         ${key === 'quickness' && (d.armorEncPenalty ?? 0) > 0 ? `<span class="attr-enc-penalty" title="Armor encumbrance penalty (equipped armor exceeds Quickness)">−${d.armorEncPenalty}</span>` : ''}
         <i class="fas fa-dice-d6 rollable" data-action="rollAttr" data-attr="${key}" title="Shift-Click to use Phys. Dice" ${label}"></i>
       </div>
@@ -454,38 +451,38 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   return `<div class="tab ${this._activeTab === 'attributes' ? 'active' : ''}" data-tab="attributes" style="overflow-y:auto">
     <div class="attributes-grid">
       ${attrBlocks}
-      
+
       <!-- Magic -->
       <div class="attr-block attr-special">
         <span class="attr-label">Magic</span>
         <div class="attr-row">
           <input class="attr-input" type="number" name="system.attributes.magic.base"
                  value="${attr.magic?.base ?? 0}" min="0" max="12" title="Base"/>
-          ${isAdept ? `<span class="attr-force-sep" title="Adept magic force">+</span>
-          <input class="attr-input attr-force" type="number" name="system.attributes.magic.force"
-                 value="${attr.magic?.force ?? 0}" min="0" max="10" title="Adept force"/>` : ''}
+          ${isAdept && (ab.mag ?? 0) > 0 ? `<span class="attr-force-sep" title="Adept power bonus">+</span>
+          <span class="attr-adept" title="Adept power bonus">${ab.mag}</span>` : ''}
           <span class="attr-mod">${attr.magic?.value ?? 0}</span>
         </div>
       </div>
 
       <!-- Reaction (derived: floor((QUI+INT)/2) + bonus) -->
-      <div class="attr-block attr-special">
+      <div class="attr-block attr-special"
+           title="floor((QUI ${qui} + INT ${intl}) / 2) = ${reactionBase}${reactionBonus ? ` + bonus ${reactionBonus}` : ''}${(cb.rea??0) ? ` + cyber ${cb.rea}` : ''}${isAdept&&(ab.rea??0) ? ` + adept ${ab.rea}` : ''} = ${rea}">
         <span class="attr-label" style="color:var(--sr-amber)">Reaction</span>
         <div class="attr-row">
-          <span class="attr-derived" style="color:var(--sr-amber)">${attr.reaction?.value ?? 0}</span>
+          <span class="attr-derived" style="color:var(--sr-amber)">${attr.reaction?.base ?? 0}</span>
           <span class="attr-force-sep" title="Manual bonus (drugs, etc.)">+</span>
           <input class="attr-input attr-force" type="number" name="system.attributes.reaction.reactionBonus"
                  value="${attr.reaction?.reactionBonus ?? 0}" title="Manual reaction bonus (drugs, etc.)"/>
-          ${isAdept ? `<span class="attr-force-sep" title="Reaction adept force">+</span>
-          <input class="attr-input attr-force" type="number" name="system.attributes.reaction.force"
-                 value="${attr.reaction?.force ?? 0}" min="0" max="10" title="Adept force on Reaction"/>` : ''}
+          ${isAdept && (ab.rea ?? 0) > 0 ? `<span class="attr-force-sep" title="Adept power bonus">+</span>
+          <span class="attr-adept" title="Adept power bonus">${ab.rea}</span>` : ''}
           ${(cb.rea ?? 0) > 0 ? `<span class="attr-force-sep" title="Cyber/bio augmentation">+</span>
           <span class="attr-aug" title="Cyber/bio augmentation">${cb.rea}</span>` : ''}
         </div>
       </div>
 
       <!-- Essence -->
-      <div class="attr-block attr-special">
+      <div class="attr-block attr-special"
+           title="6 - cyberware essence cost = ${attr.essence?.value ?? 6}${(d.totalBioIndex??0) > 0 ? ` | Bio Index ${d.totalBioIndex} / ${d.bioIndexCapacity} capacity` : ''}">
         <span class="attr-label" style="color:var(--sr-amber)">Essence</span>
         <div class="attr-row">
           <input class="attr-input" type="number" name="system.attributes.essence.value"
@@ -495,17 +492,20 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       </div>
 
       <!-- Initiative Dice Bonus -->
-      <div class="attr-block attr-special">
+      <div class="attr-block attr-special"
+           title="1 base${(sys.initiativeDiceBonus??0) ? ` + manual ${sys.initiativeDiceBonus}` : ''}${(cb.initDice??0) ? ` + cyber ${cb.initDice}` : ''}${isAdept&&(ab.initDice??0) ? ` + adept ${ab.initDice}` : ''} = ${d.initiativeDice ?? 1}d6">
         <span class="attr-label">Init Dice +</span>
         <div class="attr-row">
           <input class="attr-input" type="number" name="system.initiativeDiceBonus"
                  value="${sys.initiativeDiceBonus ?? 0}" min="0" max="10" title="Manual init dice bonus"/>
+          ${isAdept && (ab.initDice ?? 0) > 0 ? `<span class="attr-force-sep" title="Adept power bonus">+</span>
+          <span class="attr-adept" title="Adept power bonus">${ab.initDice}</span>` : ''}
           ${(cb.initDice ?? 0) > 0 ? `<span class="attr-force-sep" title="Cyber/bio augmentation">+</span>
           <span class="attr-aug" title="Cyber/bio augmentation">${cb.initDice}</span>` : ''}
         </div>
       </div>
     </div>
-    
+
     <!-- Derived Pools -->
     <div class="derived-section">
       <div class="derived-section-header">
@@ -514,12 +514,14 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       </div>
       <div class="derived-grid">
         ${this._derivedBlock('Initiative', `${d.initiative ?? 0} + ${d.initiativeDice ?? 1}d6`,
-          `<i class="fas fa-dice-d6 rollable" data-action="rollInitiative" title="Roll Initiative (Shift: physical dice)"></i>`)}
+          `<i class="fas fa-dice-d6 rollable" data-action="rollInitiative" title="Roll Initiative (Shift: physical dice)"></i>`,
+          `REA (${rea}) + wound mod (${sys.woundMod ?? 0}) = ${d.initiative ?? 0} base + ${d.initiativeDice ?? 1}d6`)}
         ${this._poolBlock('Combat Pool',
           d.availableCombatPool ?? d.combatPool ?? 0,
           d.combatPool ?? 0,
           d.combatPoolBase ?? 0,
-          'system.combatPoolSpent', 'system.combatPoolMod')}
+          'system.combatPoolSpent', 'system.combatPoolMod',
+          `floor((QUI ${qui} + INT ${intl} + WIL ${wil}) / 2) = ${d.combatPoolBase ?? 0}`)}
         ${this._derivedBlock('Karma Pool',
           `<input type="number" name="system.karmaPool" value="${sys.karmaPool ?? 0}" class="pool-input" style="width:45px"/>`)}
         ${d.spellPool !== null && d.spellPool !== undefined
@@ -527,21 +529,24 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
               d.availableSpellPool ?? d.spellPool ?? 0,
               d.spellPool ?? 0,
               d.spellPoolBase ?? 0,
-              'system.spellPoolSpent', 'system.spellPoolMod')
+              'system.spellPoolSpent', 'system.spellPoolMod',
+              `floor((INT ${intl} + WIL ${wil} + MAG ${mag}) / 3) = ${d.spellPoolBase ?? 0}`)
           : ''}
         ${d.astralPool !== null && d.astralPool !== undefined
           ? this._poolBlock('Astral Pool',
               d.availableAstralPool ?? d.astralPool ?? 0,
               d.astralPool ?? 0,
               d.astralPoolBase ?? 0,
-              'system.astralPoolSpent', 'system.astralPoolMod')
+              'system.astralPoolSpent', 'system.astralPoolMod',
+              `floor((INT ${intl} + CHA ${cha} + WIL ${wil}) / 2) = ${d.astralPoolBase ?? 0}`)
           : ''}
         ${(sys.spellDefensePool ?? 0) > 0 ? this._derivedBlock('Spell Defense', `<span style="color:var(--sr-accent)">${sys.spellDefensePool} dice</span>`) : ''}
         ${d.hackingPool !== null ? this._poolBlock('Hacking Pool',
           d.availableHackingPool ?? 0,
           d.hackingPool ?? 0,
           d.hackingPoolBase ?? 0,
-          'system.hackingPoolSpent', null) : ''}
+          'system.hackingPoolSpent', null,
+          `floor((INT ${intl} + MPCP) / 3) = ${d.hackingPoolBase ?? 0}`) : ''}
       </div>
     </div>
 
@@ -582,8 +587,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   </div>`;
 }
 
-  _derivedBlock(label, value, extra = '') {
-    return `<div class="derived-block">
+  _derivedBlock(label, value, extra = '', tooltip = '') {
+    return `<div class="derived-block"${tooltip ? ` title="${tooltip}"` : ''}>
       <span class="derived-label">${label}</span>
       <span class="derived-value">${value}</span>
       ${extra}
@@ -598,7 +603,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    * spentField   — system field name for "spent" counter, or null if no spent tracking
    * modField     — system field name for the pool mod / bonus
    */
-  _poolBlock(label, currentVal, totalVal, baseVal, spentField, modField) {
+  _poolBlock(label, currentVal, totalVal, baseVal, spentField, modField, tooltip = '') {
     const currentInput = spentField
       ? `<input type="number" class="pool-current-input" style="width:38px"
                data-spent-field="${spentField}"
@@ -611,7 +616,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
              data-pool-base="${baseVal}"
              value="${totalVal}" min="0"/>`;
 
-    return `<div class="derived-block">
+    return `<div class="derived-block"${tooltip ? ` title="${tooltip}"` : ''}>
       <span class="derived-label">${label}</span>
       <span class="derived-value pool-value-pair">
         ${currentInput}
@@ -624,7 +629,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   _tabSkills(actor) {
     const allSkills = actor.items.filter(i => i.type === 'skill')
       .sort((a, b) => a.name.localeCompare(b.name));
-    const isAdept = (actor.system.magicType ?? '') === 'Adept';
+    const isAdept         = (actor.system.magicType ?? '') === 'Adept';
+    const improvedAbility = actor.system.derived?.improvedAbility ?? {};
 
     const _isComplete = s => (s.system.category ?? '') !== '' && (s.system.skillName ?? '') !== '' && (s.system.rating ?? 0) > 0;
 
@@ -643,7 +649,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const _skillRow = s => {
       const rating   = s.system.rating ?? 0;
-      const force    = s.system.force  ?? 0;
+      const ia       = improvedAbility[s.name] ?? 0;
       const specs    = s.system.specialisations ?? [];
       const maxBonus = specs.length > 0
         ? Math.max(...specs.map(sp => sp.level ?? 1))
@@ -653,10 +659,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         : `${rating}`;
       const forceCell = isAdept ? `
         <span class="item-cell">
-          <input type="number" class="skill-force-input" data-item-id="${s.id}"
-                 value="${force}" min="0" max="10"
-                 style="width:38px;text-align:center;background:var(--sr-surface);color:var(--sr-gold);border:1px solid var(--sr-border);border-radius:var(--r)"
-                 title="Improved Ability (Adept force)"/>
+          ${ia > 0
+            ? `<span class="attr-adept" title="Improved Ability (from adept powers)">${ia}</span>`
+            : `<span style="color:var(--sr-dim)">—</span>`}
         </span>` : '';
       const attrLabel = s.system.linkedAttribute === 'lan' ? 'LAN' : (s.system.linkedAttribute ?? '—');
       return `
@@ -671,7 +676,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         </div>`;
     };
 
-    const header = `<div class="list-header"><span>Skill</span><span>Attr</span><span>Rtg</span>${isAdept ? '<span>Force</span>' : ''}<span>Spec</span><span></span></div>`;
+    const header = `<div class="list-header"><span>Skill</span><span>Attr</span><span>Rtg</span>${isAdept ? '<span>IA</span>' : ''}<span>Spec</span><span></span></div>`;
 
     const _section = (label, color, skills) => skills.length === 0 ? '' : `
       <h3 class="section-hdr" style="margin-top:1rem;color:${color}">${label}</h3>
@@ -2690,7 +2695,8 @@ static async _onHealDamage(ev, target) {
   static async _promptSkillRollOptions(actor, defaultItem, { physicalDice = false } = {}) {
     const karmaPool    = actor?.system.karmaPool ?? 0;
     const woundPenalty = -(actor?.system.woundMod ?? 0);
-    const isAdept      = (actor?.system.magicType ?? '') === 'Adept';
+    const isAdept         = (actor?.system.magicType ?? '') === 'Adept';
+    const improvedAbility = actor?.system.derived?.improvedAbility ?? {};
 
     const skills = actor.items
       .filter(i => i.type === 'skill')
@@ -2702,7 +2708,7 @@ static async _onHealDamage(ev, target) {
 
     const optionsHtml = skills.map(sk => {
       const s          = sk.system;
-      const forceBonus = isAdept ? (s.force ?? 0) : 0;
+      const forceBonus = isAdept ? (improvedAbility[sk.name] ?? 0) : 0;
       const pool       = s.rating
         ? Math.max(1, (s.rating ?? 0) + forceBonus)
         : Math.max(1, (s.attributeValue ?? 3) - 2);
@@ -2711,7 +2717,7 @@ static async _onHealDamage(ev, target) {
 
     const defSkill   = skills.find(sk => sk.id === defaultId) ?? skills[0];
     const defS       = defSkill.system;
-    const defForce   = isAdept ? (defS.force ?? 0) : 0;
+    const defForce   = isAdept ? (improvedAbility[defSkill.name] ?? 0) : 0;
     const defPool    = defS.rating
       ? Math.max(1, (defS.rating ?? 0) + defForce)
       : Math.max(1, (defS.attributeValue ?? 3) - 2);

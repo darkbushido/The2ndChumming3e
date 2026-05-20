@@ -6,16 +6,20 @@ const PACK_ID = 'The2ndChumming3e.sr3e-bioware';
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function bw(name, grade, bioIndex, rating, cost, category, opts = {}) {
+  const availability = opts.availability ?? '';
   return {
     name,
     type: 'bioware',
     system: {
       grade,
       bioIndex,
+      bioIndexBase:    bioIndex,      // Standard-grade base for grade recalc
       rating,
       cost,
+      costBase:        cost,          // Standard-grade base for grade recalc
+      availability,
+      availabilityBase: availability, // Standard-grade base for grade recalc
       biowareCategory: category,
-      availability:    opts.availability ?? '',
       streetIndex:     opts.streetIndex  ?? 1,
       mods:            opts.mods         ?? '',
       bookPage:        opts.bookPage     ?? '',

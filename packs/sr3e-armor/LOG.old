@@ -1,5 +1,5 @@
-2026/05/19-21:14:59.459 2bcc Recovering log #113
-2026/05/19-21:14:59.459 2bcc Level-0 table #115: started
-2026/05/19-21:14:59.464 2bcc Level-0 table #115: 35811 bytes OK
-2026/05/19-21:14:59.471 2bcc Delete type=0 #113
-2026/05/19-21:14:59.471 2bcc Delete type=3 #111
+2026/05/20-21:53:19.571 6c0c Recovering log #126
+2026/05/20-21:53:19.571 6c0c Level-0 table #128: started
+2026/05/20-21:53:19.577 6c0c Level-0 table #128: 35807 bytes OK
+2026/05/20-21:53:19.583 6c0c Delete type=0 #126
+2026/05/20-21:53:19.583 6c0c Delete type=3 #124

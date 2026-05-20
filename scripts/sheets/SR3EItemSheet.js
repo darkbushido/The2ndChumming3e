@@ -52,6 +52,8 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       ?.addEventListener('change', ev => SR3EItemSheet._onCategoryChange.call(this, ev));
     html.querySelector('.skill-select')
       ?.addEventListener('change', ev => SR3EItemSheet._onSkillChange.call(this, ev));
+    html.querySelector('.grade-select')
+      ?.addEventListener('change', ev => SR3EItemSheet._onGradeChange.call(this, ev));
 
 
     const specAddBtn = html.querySelector('#spec-add-btn');
@@ -198,7 +200,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     </label>`;
   }
 
-  _sel(label, name, value, opts) {
+  _sel(label, name, value, opts, extraClass = '') {
     const options = opts.map(o => {
       const v = typeof o === 'string' ? o : o.value;
       const l = typeof o === 'string' ? o : o.label;
@@ -206,7 +208,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     }).join('');
     return `<label class="form-field">
       <span class="field-label">${label}</span>
-      <select name="system.${name}">${options}</select>
+      <select name="system.${name}" ${extraClass ? `class="${extraClass}"` : ''}>${options}</select>
     </label>`;
   }
 
@@ -545,14 +547,32 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
 
       case 'cyberware':
       case 'bioware': {
-        const isBio = type === 'bioware';
-        return `<div class="form-grid">
-          ${isBio
-            ? this._f('Bio Index', 'bioIndex', s.bioIndex, 'number', 'step="0.1" min="0"')
-            : this._f('Essence Cost', 'essenceCost', s.essenceCost, 'number', 'step="0.1" min="0"')}
-          ${this._sel('Grade', 'grade', s.grade, SR3E.cyberwareGrades)}
+        const isBio    = type === 'bioware';
+        const grade    = s.grade ?? 'Standard';
+        const isStd    = grade === 'Standard';
+        const costEff  = s.cost ?? 0;
+        const availEff = s.availability ?? '';
+        const essEff   = isBio ? (s.bioIndex ?? 0) : (s.essenceCost ?? 0);
+        const baseEss  = isBio ? (s.bioIndexBase ?? 0) : (s.essenceCostBase ?? 0);
+        const effNote  = !isStd && baseEss > 0
+          ? `<span style="font-size:10px;color:var(--sr-muted)"> (base ${baseEss})</span>` : '';
+        return `
+        <input type="hidden" name="system.${isBio ? 'bioIndexBase' : 'essenceCostBase'}" value="${baseEss}"/>
+        <input type="hidden" name="system.costBase" value="${s.costBase ?? 0}"/>
+        <input type="hidden" name="system.availabilityBase" value="${s.availabilityBase ?? ''}"/>
+        <div class="form-grid">
+          <label class="form-field">
+            <span class="field-label">${isBio ? 'Bio Index' : 'Essence Cost'}${effNote}</span>
+            <input type="number" name="system.${isBio ? 'bioIndex' : 'essenceCost'}"
+                   value="${essEff}" step="0.01" min="0"/>
+          </label>
+          ${this._sel('Grade', 'grade', grade, SR3E.cyberwareGrades, 'grade-select')}
           ${this._f('Rating', 'rating', s.rating, 'number')}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
+          ${this._f('Availability', 'availability', availEff, 'text', 'placeholder="8/36 hrs"')}
+          ${this._f('Street Index', 'streetIndex', s.streetIndex, 'number', 'step="0.1" min="0"')}
+          ${isBio ? '' : this._f('Legal Code', 'legalCode', s.legalCode, 'text', 'placeholder="R / Legal"')}
+          ${this._f('Book / Page', 'bookPage', s.bookPage, 'text')}
         </div>
         <div class="form-section-hdr" style="margin:8px 0 4px;font-size:11px;font-weight:600;color:var(--sr-muted);letter-spacing:.05em;text-transform:uppercase">Attribute Bonuses</div>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px 8px;margin-bottom:8px">
@@ -721,6 +741,42 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         </div>
         ${this._notes(s.notes)}`;
 
+      case 'adeptpower': {
+        const actorSkills = this.item.actor
+          ? this.item.actor.items.filter(i => i.type === 'skill').sort((a,b) => a.name.localeCompare(b.name))
+          : null;
+        const currentSkill = s.improvedSkillName ?? '';
+        const skillPicker = actorSkills
+          ? `<label class="form-field"><span class="field-label">Improves Skill</span>
+               <select name="system.improvedSkillName">
+                 <option value="">— None —</option>
+                 ${actorSkills.map(sk => `<option value="${sk.name}"${sk.name === currentSkill ? ' selected' : ''}>${sk.name}</option>`).join('')}
+               </select></label>`
+          : this._f('Improves Skill', 'improvedSkillName', currentSkill, 'text', 'placeholder="e.g. Pistols"');
+        return `<div class="form-grid">
+          ${this._f('Power Cost', 'powerCost', s.powerCost ?? 0.5, 'number', 'step="0.25" min="0"')}
+          ${this._check('Has Levels', 'hasLevels', s.hasLevels ?? false)}
+          ${s.hasLevels ? this._f('Level', 'level', s.level ?? 1, 'number', 'min="1"') : ''}
+          ${skillPicker}
+          ${this._f('Book / Page', 'bookPage', s.bookPage, 'text')}
+        </div>
+        <div class="form-section-hdr" style="margin:8px 0 4px;font-size:11px;font-weight:600;color:var(--sr-muted);letter-spacing:.05em;text-transform:uppercase">Attribute Bonuses</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px 8px;margin-bottom:8px">
+          ${[['BOD','bonusBod'],['QUI','bonusQui'],['STR','bonusStr'],['CHA','bonusCha'],
+             ['INT','bonusInt'],['WIL','bonusWil'],['MAG','bonusMag'],['REA','bonusRea'],['Init Dice','bonusInitDice']]
+            .map(([lbl,field]) => `
+            <label style="display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:var(--sr-muted)">
+              ${lbl}
+              <input type="number" name="system.${field}" value="${s[field] ?? 0}"
+                     min="0" style="width:42px;text-align:center"/>
+            </label>`).join('')}
+        </div>
+        <div class="notes-field">
+          <label class="bio-label">Description</label>
+          <textarea name="system.description" class="bio-text">${s.description ?? ''}</textarea>
+        </div>`;
+      }
+
       default:
         return `<p class="empty-list">No fields defined for item type: ${type}</p>`;
     }
@@ -734,6 +790,61 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     if (type === 'melee')      return this.item.rollWeapon?.({ physicalDice });
     if (type === 'projectile') return this.item.rollWeapon?.({ physicalDice });
     if (type === 'thrown')     return this.item.rollWeapon?.({ physicalDice });
+  }
+
+  static async _onGradeChange(ev) {
+    const grade   = ev.currentTarget.value;
+    const s       = this.item.system;
+    const isBio   = this.item.type === 'bioware';
+
+    // Grade modifiers — essence/cost use multipliers; availability has a flat rating addition + time multiplier
+    const GRADES = {
+      Standard: { essMult: 1.0, costMult: 1.0, availAdd: 0, timeMult: 1.0 },
+      Alpha:    { essMult: 0.8, costMult: 2.0, availAdd: 0, timeMult: 1.0 },
+      Beta:     { essMult: 0.6, costMult: 4.0, availAdd: 5, timeMult: 1.5 },
+      Delta:    { essMult: 0.5, costMult: 8.0, availAdd: 9, timeMult: 3.0 },
+      Used:     { essMult: 1.0, costMult: 0.5, availAdd: 0, timeMult: 1.0 },
+    };
+    const { essMult, costMult, availAdd, timeMult } = GRADES[grade] ?? GRADES.Standard;
+
+    // Capture base values if not yet set (first grade change on an existing item)
+    const essBase  = isBio
+      ? (s.bioIndexBase  > 0 ? s.bioIndexBase  : (s.bioIndex     ?? 0))
+      : (s.essenceCostBase > 0 ? s.essenceCostBase : (s.essenceCost ?? 0));
+    const costBase = s.costBase > 0 ? s.costBase : (s.cost ?? 0);
+    const availBase = (s.availabilityBase ?? '') || (s.availability ?? '');
+
+    // Recalculate essence/bioIndex and cost from base
+    const newEss  = Math.round(essBase  * essMult  * 100) / 100;
+    const newCost = Math.round(costBase * costMult);
+
+    // Parse and adjust availability (format: "N/M unit" e.g. "8/36 hrs" or "12/7 days")
+    // Rating gets a flat addition; acquisition time gets a multiplier
+    let newAvail = availBase;
+    if ((availAdd !== 0 || timeMult !== 1.0) && availBase) {
+      const m = availBase.match(/^(\d+)\/(\d+)(.*)$/);
+      if (m) {
+        const rating  = parseInt(m[1]) + availAdd;
+        const timeNum = Math.round(parseInt(m[2]) * timeMult);
+        newAvail = `${rating}/${timeNum}${m[3]}`;
+      }
+    }
+
+    const update = {
+      'system.grade':            grade,
+      'system.cost':             newCost,
+      'system.availability':     newAvail,
+      'system.costBase':         costBase,
+      'system.availabilityBase': availBase,
+    };
+    if (isBio) {
+      update['system.bioIndex']     = newEss;
+      update['system.bioIndexBase'] = essBase;
+    } else {
+      update['system.essenceCost']     = newEss;
+      update['system.essenceCostBase'] = essBase;
+    }
+    await this.item.update(update);
   }
 
   static async _onCategoryChange(ev) {

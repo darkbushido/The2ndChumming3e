@@ -246,6 +246,9 @@ export class CyberwareData extends foundry.abstract.TypeDataModel {
       bonusWil:          new NumberField({ integer: true, initial: 0, min: 0 }),
       bonusRea:          new NumberField({ integer: true, initial: 0, min: 0 }),
       bonusInitDice:     new NumberField({ integer: true, initial: 0, min: 0 }),
+      essenceCostBase:   new NumberField({ initial: 0, min: 0 }),
+      costBase:          new NumberField({ integer: true, initial: 0, min: 0 }),
+      availabilityBase:  new StringField({ initial: '' }),
     };
   }
 }
@@ -271,6 +274,9 @@ export class BiowareData extends foundry.abstract.TypeDataModel {
       bonusWil:         new NumberField({ integer: true, initial: 0, min: 0 }),
       bonusRea:         new NumberField({ integer: true, initial: 0, min: 0 }),
       bonusInitDice:    new NumberField({ integer: true, initial: 0, min: 0 }),
+      bioIndexBase:     new NumberField({ initial: 0, min: 0 }),
+      costBase:         new NumberField({ integer: true, initial: 0, min: 0 }),
+      availabilityBase: new StringField({ initial: '' }),
     };
   }
 }
@@ -329,12 +335,21 @@ export class VehicleModData extends foundry.abstract.TypeDataModel {
 export class AdeptPowerData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
-      powerCost:   new NumberField({ initial: 0.5, min: 0 }),
-      hasLevels:   new BooleanField({ initial: false }),
-      level:       new NumberField({ integer: true, initial: 1, min: 1 }),
-      mods:        new StringField({ initial: '' }),
-      bookPage:    new StringField({ initial: '' }),
-      description: new HTMLField({ initial: '', required: false }),
+      powerCost:        new NumberField({ initial: 0.5, min: 0 }),
+      hasLevels:        new BooleanField({ initial: false }),
+      level:            new NumberField({ integer: true, initial: 1, min: 1 }),
+      improvedSkillName: new StringField({ initial: '' }),
+      bookPage:         new StringField({ initial: '' }),
+      description:      new HTMLField({ initial: '', required: false }),
+      bonusBod:         new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusQui:      new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusStr:      new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusCha:      new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusInt:      new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusWil:      new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusMag:      new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusRea:      new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusInitDice: new NumberField({ integer: true, initial: 0, min: 0 }),
     };
   }
 }
