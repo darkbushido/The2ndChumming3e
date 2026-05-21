@@ -855,6 +855,179 @@ After the Athletics roll, a standard Resist Damage soak card posts for the falle
 
 ---
 
+## 30. Matrix — Node Tracking (Character / NPC Sheet)
+
+The Matrix tab shows a node-tracking section when the actor is connected to a host (`activeHostId` is set).
+
+### Current node selector
+
+A dropdown lists all nodes on the active host. Selecting one stores `system.currentMatrixNode`.
+
+**In:** Decker connected to a host with nodes SAN, SPU, DS → dropdown shows those three → select DS → `currentMatrixNode` saved.
+
+### Mark chips
+
+Each mark is stored as a node ID. Chips display the node's abbreviation in green.
+
+- **+ Mark** button → dialog lists all host nodes → select one → chip appears.
+- **✕** on a chip → removes that mark.
+
+**In:** Decker has no marks → add mark on SPU → green "SPU" chip appears.
+**In:** Remove that chip → chip disappears, `matrixMarks` array is empty.
+
+### Auto-mark on Access Node success
+
+When a Hacking Action roll succeeds AND the prompt has `grantsAccess: true` (the Access Node prompt), a mark is automatically added for the current node.
+
+**In:** Decker in SPU, clicks "Access Node" Use button, rolls enough hits to meet Security Threshold → green "✓ Mark Granted — SPU" card posts + SPU chip appears on sheet.
+
+### Requires-mark prompt
+
+If a node prompt has `requiresMark: true` and the decker has no mark on that node, a confirmation dialog appears before the roll.
+
+**In:** Decker in DS with no mark, clicks "Duplicate / Download" Use button → dialog asks "This action requires a mark on this node. Proceed anyway?" → Cancel aborts roll, OK proceeds.
+
+### Link Lock
+
+Checkbox stored as `system.linkLocked`. No automated effect yet — GM reference flag.
+
+---
+
+## 31. Matrix — Node Prompts (Use Buttons)
+
+Each node on a host has a `prompts[]` array. When a decker is in that node, the prompts list is shown on the Matrix tab.
+
+### Prompt badges
+
+- **OW↑** badge (amber) = `overwatchOnFail: true` — a failed threshold check increments Overwatch.
+- **+mark** badge (green) = `grantsAccess: true` — a successful Access Node roll auto-marks the node.
+
+### Use button — Hacking prompt (`overwatchOnFail: true`)
+
+Fires `rollPool` with `isHackingActionRoll: true`. Standard hacking flow: threshold check, overwatch on fail, auto-mark if `grantsAccess`.
+
+**In:** Decker clicks Use on "Duplicate / Download" (DS node, `overwatchOnFail: true`) → dialog to set TN and hacking pool dice → Hacking skill + pool dice rolled vs TN → threshold checked against host Security Threshold.
+
+### Use button — Computer prompt (`overwatchOnFail: false`)
+
+Fires plain `rollPool` with no hacking context. No threshold check, no overwatch.
+
+**In:** Decker clicks Use on "Host Services" (SAN node, `overwatchOnFail: false`) → dialog → Computer skill + pool dice rolled → success count shown, no security check.
+
+### Dim prompt (requires mark, no mark held)
+
+Prompts with `requiresMark: true` are dimmed (opacity 0.55) when the decker holds no mark on the current node. Still clickable but shows confirmation dialog first.
+
+**In:** Decker in DS, no mark, "Access Datafile" prompt (requiresMark) → appears dim → clicking shows confirmation before roll fires.
+
+---
+
+## 32. Matrix — Security Sheaf Automation
+
+When a hacking action fails the Security Threshold check, Overwatch increments. If the host has a Trigger Step whose `step` number matches the new Overwatch count, a **GM-only** whisper card appears.
+
+### Sheaf prompt card
+
+Card shows:
+- Step description (if set)
+- IC assigned to that step (names)
+- Three buttons: **📢 Public**, **🔇 Silent**, **✗ No**
+
+**In:** Decker fails hack on a Green (threshold 2) host. Overwatch was 6, now 7. Trigger Step 7 has description "Killer deployed" with Killer IC assigned → whisper card appears for GM only. Players see only the amber "⚠ Overwatch: 7/10" card.
+
+### Public activation
+
+Clicks **📢 Public**:
+1. A visible chat card posts to all players: step number, description, IC names.
+2. Each regular IC in the step is deployed to the active encounter (`game.combat`) and its `system.deployed` and `system.activeHostId` are set. `system.currentMatrixNode` is set from the IC's stocked entry `nodeId`.
+3. Any Alert IC (actor `icType` starts with "alert") sets `system.alertCount` on the host instead of joining the encounter. Alert (Passive) → alertCount 1; Alert (Active) → alertCount 2.
+4. The trigger step's `triggered` checkbox is checked.
+5. All three buttons disable (one-shot guard).
+
+**In:** Step 7 has Killer IC + Alert (Active) → click Public → Killer appears in encounter, host alertCount set to 2, step 7 checked triggered, public chat posted.
+
+### Silent activation
+
+Clicks **🔇 Silent**:
+- Same deploy logic as Public (IC deployed, alert set, step triggered).
+- **No** public chat card. A GM-only whisper confirmation posts instead.
+
+**In:** Step 7 → click Silent → Killer deployed, alertCount 2, step triggered, GM sees "🔇 Sheaf level 7 activated silently." Players see nothing additional.
+
+### No activation
+
+Clicks **✗ No**:
+- Nothing happens beyond the already-posted Overwatch increment card.
+- All three buttons disable.
+
+### Already-triggered step
+
+If the matching trigger step is already `triggered: true`, no whisper card is posted.
+
+**In:** Step 7 triggered in a previous turn → Overwatch reaches 7 again (impossible in normal play, but resetting overwatch manually) → no sheaf prompt appears.
+
+### Alert IC in Active Presence tab
+
+Alert IC that are "deployed" via the sheaf (or Deploy button) appear in the host sheet's **Active Presence → Active Agents / IC** section with "⚔ Deployed" badge, same as regular IC.
+
+---
+
+## 33. Host Sheet — Stocked IC Improvements
+
+### Node assignment dropdown
+
+Each stocked IC row has a node dropdown (pulls from host's `nodes[]`). Selecting a node stores `nodeId` on the stocked IC entry.
+
+**In:** Stocked IC list has Killer → select "CPU" from its dropdown → on next deploy, Killer's `system.currentMatrixNode` is set to the CPU node ID.
+
+### Deployed indicator
+
+Each row shows `⚔` (gold) when the IC actor has `system.deployed: true`, `·` (dim) otherwise. Updates when the host sheet re-renders.
+
+**In:** Deploy Killer from the sheaf prompt → host sheet re-renders → Killer row shows gold ⚔.
+
+### Deploy to Encounter applies node
+
+When IC is deployed (via sheaf prompt or ⚔ Deploy button), if its stocked entry has a `nodeId` set, `system.currentMatrixNode` is set on the IC actor automatically.
+
+**In:** Killer stocked with node = CPU → deploy → Killer actor `system.currentMatrixNode` = CPU node ID.
+
+### Hide All toggle — Stocked IC
+
+👁 button in the Stocked IC section header. If any IC are visible → hides all. If all hidden → reveals all.
+
+**In:** 4 IC visible → click 👁 → all show blur. Click again → all revealed.
+
+### Hide All toggle — Trigger Steps
+
+Same 👁 button in the Trigger Steps section header, same toggle logic.
+
+**In:** 10 steps, 3 triggered (visible) → click 👁 → all blurred. Click again → all revealed.
+
+---
+
+## 34. Host Sheet — Operational Changes
+
+### GM-only visibility
+
+Non-GM users who attempt to open a host sheet see: *"Host sheets are visible to Game Masters only."* and the sheet does not open.
+
+**In:** Player double-clicks a host actor → warning notification, no sheet appears.
+
+### Overwatch + Alerts inline
+
+The Alerts section has been merged into the Overwatch section header row. Alert label (Passive / Active Alert (+2 TN) / Full Alert (+4 TN)) appears to the right of the OW count, with − and + buttons.
+
+**In:** alertCount 0 → right side shows grey "Passive" badge. alertCount 1 → amber "Active Alert (+2 TN)". alertCount 2 → red "Full Alert (+4 TN)".
+
+Alert description (no alert / active / full text) appears below the OW track, replacing the old static OW description.
+
+### Scroll position preserved
+
+Clicking the 👁 eye toggle (hide/show individual or all) no longer jumps the Security Sheaf tab back to the top. Scroll position is preserved across re-renders.
+
+---
+
 ## Quick Sanity Numbers
 
 Use these as fast checks with a fresh character (QUI 4, INT 3, WIL 3, STR 3, BOD 4, REA 4, MAG 0):

@@ -855,6 +855,114 @@ export class SR3EActor extends Actor {
   }
 
   /* ------------------------------------------------------------------ */
+  /*  Matrix — Roll a specific node prompt                               */
+  /* ------------------------------------------------------------------ */
+
+  async rollNodePrompt(promptData, nodeId) {
+    const sys = this.system;
+    const d   = sys.derived ?? {};
+
+    const isHacking    = promptData.overwatchOnFail ?? false;
+    const grantsAccess = promptData.grantsAccess ?? false;
+    const promptName   = promptData.name ?? 'Node Action';
+    const requiresMark = promptData.requiresMark ?? false;
+
+    const marks = Array.isArray(sys.matrixMarks) ? sys.matrixMarks : [];
+    if (requiresMark && nodeId && !marks.includes(nodeId)) {
+      const proceed = await foundry.applications.api.DialogV2.confirm({
+        window: { title: promptName },
+        content: `<p style="padding:8px 0">This action requires a mark on this node. Proceed anyway?</p>`,
+      });
+      if (!proceed) return;
+    }
+
+    const skillName     = isHacking ? 'hacking' : 'computer';
+    const skill         = this.items.find(i => i.type === 'skill' && new RegExp(skillName, 'i').test(i.name));
+    const intel         = sys.attributes?.intelligence?.value ?? 0;
+    const isDefaulting  = !skill;
+    const skillRating   = skill?.system?.rating ?? Math.max(1, intel - 2);
+    const skillLabel    = isHacking ? 'Hacking' : 'Computer';
+    const availHackPool = d.availableHackingPool ?? d.hackingPool ?? 0;
+    const mcmPenalty    = this._matrixTNPenalty?.() ?? 0;
+
+    const hostId     = sys.activeHostId ?? '';
+    const hostActor  = hostId ? game.actors.get(hostId) : null;
+    const alertPenalty = hostActor?.system?.derived?.alertTNPenalty ?? 0;
+    const defaultTN  = (hostActor?.system?.systemRating ?? 6) + mcmPenalty + alertPenalty;
+    const threshold  = isHacking ? (hostActor?.system?.securityTierThreshold ?? 0) : 0;
+
+    const mcmNote   = mcmPenalty > 0 ? `<p style="margin:0 0 6px;font-size:11px;color:var(--sr-red)">⚠ Deck damage: +${mcmPenalty} TN</p>` : '';
+    const alertNote = alertPenalty > 0 ? `<p style="margin:0 0 6px;font-size:11px;color:var(--sr-amber)">⚠ Host alert: +${alertPenalty} TN</p>` : '';
+
+    let hackPoolDice = 0;
+    let tn           = defaultTN;
+    let confirmed    = false;
+
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `${this.name}: ${promptName}` },
+      content: `
+        <div style="padding:8px 0">
+          ${mcmNote}${alertNote}
+          ${promptData.description ? `<p style="margin:0 0 8px;font-size:12px;color:var(--color-text-dark-secondary)">${promptData.description}</p>` : ''}
+          <p style="margin:0 0 8px;font-size:12px;color:var(--color-text-dark-secondary)">
+            ${skillLabel}: <strong>${skillRating}</strong>${isDefaulting ? ` <span style="color:var(--sr-amber)">(defaulting)</span>` : ''}
+            &nbsp;|&nbsp; Hacking Pool: <strong>${availHackPool}</strong>
+          </p>
+          <p style="margin:0 0 8px;font-size:12px;color:var(--color-text-dark-secondary)">
+            Test: <em>${promptData.test ?? 'vs System Rating'}</em>
+            ${isHacking && threshold > 0 ? `&nbsp;|&nbsp; Threshold: <strong>${threshold}</strong>` : ''}
+          </p>
+          <label style="display:block;margin-bottom:8px">
+            Allocate Hacking Pool (0–${availHackPool}):
+            <input type="number" id="np-pool" value="0" min="0" max="${availHackPool}" style="width:60px;margin-left:4px">
+          </label>
+          <label style="display:block">
+            TN:
+            <input type="number" id="np-tn" value="${defaultTN}" min="2" style="width:60px;margin-left:4px">
+          </label>
+        </div>`,
+      buttons: [
+        {
+          label: 'Roll',
+          action: 'confirm',
+          default: true,
+          callback: (_e, _b, dlg) => {
+            hackPoolDice = Math.min(availHackPool, parseInt(dlg.element.querySelector('#np-pool')?.value) || 0);
+            tn           = Math.max(2, parseInt(dlg.element.querySelector('#np-tn')?.value) || defaultTN);
+            confirmed    = true;
+          },
+        },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (!confirmed) return;
+
+    const pool = skillRating + hackPoolDice;
+    if (pool < 1) { ui.notifications.warn(`${promptName}: roll pool is 0.`); return; }
+
+    if (hackPoolDice > 0) await this.spendHackingPool(hackPoolDice);
+
+    const label = `${this.name}: ${promptName}`;
+
+    if (isHacking) {
+      await this.rollPool(pool, tn, label, {
+        isHackingActionRoll:  true,
+        hackingActionContext: {
+          attackerActorId:   this.id,
+          hostActorId:       hostId,
+          securityThreshold: threshold,
+          overwatchOnFail:   true,
+          actionName:        promptName,
+          grantsAccess,
+          nodeId,
+        },
+      });
+    } else {
+      await this.rollPool(pool, tn, label);
+    }
+  }
+
+  /* ------------------------------------------------------------------ */
   /*  Dumpshock — manual trigger for GM                                   */
   /* ------------------------------------------------------------------ */
 
@@ -951,9 +1059,74 @@ export class SR3EActor extends Actor {
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
 
+    await SR3EActor._postSheafPrompt(hostActor, newOW);
+
     if (newOW >= 10) {
       await SR3EActor._postConvergenceCard(hostActor, attackerActorId);
     }
+  }
+
+  static async _postSheafPrompt(hostActor, owCount) {
+    const steps = hostActor.system.triggerSteps ?? [];
+    if (!steps.length) return;
+
+    // Match by stored step number first, then fall back to 1-indexed position
+    let stepIdx = steps.findIndex(s => (s.step ?? 0) === owCount);
+    if (stepIdx === -1) stepIdx = owCount - 1;
+    const step = steps[stepIdx];
+    if (!step || step.triggered) return;
+
+    const icList = (step.ic ?? []).map(r => r.name ?? 'IC').join(', ') || 'None';
+    const desc   = step.description
+      ? `<div class="sr-roll-result" style="margin:2px 0;font-style:italic">${step.description}</div>`
+      : '';
+
+    const gmUsers = game.users.filter(u => u.isGM).map(u => u.id);
+    await ChatMessage.create({
+      content: `
+        <div class="sr-roll-card">
+          <div class="sr-roll-header" style="color:var(--sr-red)">⚠ Security Sheaf — Level ${owCount}</div>
+          ${desc}
+          <div class="sr-roll-result">IC: <strong>${icList}</strong></div>
+          <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+            <button class="sheaf-activate-btn" data-choice="public"
+                    data-host-id="${hostActor.id}" data-step-index="${stepIdx}">📢 Public</button>
+            <button class="sheaf-activate-btn" data-choice="silent"
+                    data-host-id="${hostActor.id}" data-step-index="${stepIdx}">🔇 Silent</button>
+            <button class="sheaf-activate-btn" data-choice="no"
+                    data-host-id="${hostActor.id}" data-step-index="${stepIdx}">✗ No</button>
+          </div>
+        </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      whisper: gmUsers,
+    });
+  }
+
+  static async _addMatrixMark(actorId, nodeId, hostActorId) {
+    const actor = game.actors.get(actorId);
+    if (!actor || !nodeId) return;
+    const marks = [...new Set([...(actor.system.matrixMarks ?? []), nodeId])];
+    await actor.update({ 'system.matrixMarks': marks });
+
+    const host = hostActorId ? game.actors.get(hostActorId) : null;
+    if (host) {
+      const activeUsers = foundry.utils.deepClone(host.system.activeUsers ?? []);
+      const userEntry   = activeUsers.find(u => u.actorId === actorId);
+      if (userEntry) {
+        userEntry.marks = [...new Set([...(userEntry.marks ?? []), nodeId])];
+        await host.update({ 'system.activeUsers': activeUsers });
+      }
+    }
+
+    const nodeName = host?.system?.nodes?.find(n => n.id === nodeId)?.abbreviation ?? 'node';
+    await ChatMessage.create({
+      content: `
+        <div class="sr-roll-card">
+          <div class="sr-roll-header" style="color:var(--sr-green)">✓ Mark Granted — ${actor.name}</div>
+          <div class="sr-roll-result">Access mark added for <strong>${nodeName}</strong>.</div>
+        </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    });
   }
 
   static async _postConvergenceCard(hostActor, attackerActorId) {
@@ -2587,6 +2760,9 @@ _prepareCharacter(sys, attr) {
             </div>`,
           style: CONST.CHAT_MESSAGE_STYLES.OTHER,
         });
+        if (hac.grantsAccess && hac.nodeId) {
+          await SR3EActor._addMatrixMark(hac.attackerActorId, hac.nodeId, hac.hostActorId);
+        }
       }
     }
   }

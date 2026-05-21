@@ -1807,4 +1807,94 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       await SR3EActor.handleDeckerMatrixResistRollClick(btn);
     });
   });
+
+  // Security sheaf activation — GM-whisper card after failed hack
+  html.querySelectorAll('.sheaf-activate-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'sheafactivate', i)) return;
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'sheafactivate', i)) return;
+
+      const choice    = btn.dataset.choice;
+      const hostId    = btn.dataset.hostId;
+      const stepIndex = parseInt(btn.dataset.stepIndex);
+
+      if (choice === 'no') return;
+
+      const host = game.actors.get(hostId);
+      if (!host) return;
+
+      const steps = foundry.utils.deepClone(host.system.triggerSteps ?? []);
+      const step  = steps[stepIndex];
+      if (!step) return;
+
+      const icRefs   = step.ic ?? [];
+      const toCreate = [];
+      let   newAlert = null;
+
+      for (const ref of icRefs) {
+        if (!ref.actorId) continue;
+        const icActor = game.actors.get(ref.actorId);
+        if (!icActor) continue;
+
+        const icTypeLower = (icActor.system.icType ?? '').toLowerCase();
+        if (icTypeLower.startsWith('alert')) {
+          const level = icTypeLower.includes('active') ? 2 : 1;
+          if (newAlert === null || level > newAlert) newAlert = level;
+          await icActor.update({ 'system.deployed': true, 'system.activeHostId': hostId });
+        } else {
+          if (game.combat) {
+            const alreadyIn = game.combat.combatants.contents.some(c => c.actor?.id === ref.actorId);
+            if (!alreadyIn) {
+              const tok = (canvas.tokens?.placeables ?? []).find(t => t.actor?.id === ref.actorId);
+              toCreate.push(tok
+                ? { tokenId: tok.id, actorId: ref.actorId, sceneId: canvas.scene?.id }
+                : { actorId: ref.actorId }
+              );
+            }
+          }
+          const stockedEntry = (host.system.stockedIC ?? []).find(r => r.actorId === ref.actorId);
+          const upd = { 'system.deployed': true, 'system.activeHostId': hostId };
+          if (stockedEntry?.nodeId) upd['system.currentMatrixNode'] = stockedEntry.nodeId;
+          await icActor.update(upd);
+        }
+      }
+
+      if (toCreate.length && game.combat) {
+        await game.combat.createEmbeddedDocuments('Combatant', toCreate);
+      }
+      if (newAlert !== null) {
+        await host.update({ 'system.alertCount': newAlert });
+      }
+
+      steps[stepIndex].triggered = true;
+      await host.update({ 'system.triggerSteps': steps });
+
+      const stepNum = step.step ?? (stepIndex + 1);
+      const gmUsers = game.users.filter(u => u.isGM).map(u => u.id);
+
+      if (choice === 'public') {
+        const desc    = step.description
+          ? `<div class="sr-roll-result" style="font-style:italic">${step.description}</div>`
+          : '';
+        const icNames = icRefs.map(r => r.name ?? 'IC').join(', ');
+        await ChatMessage.create({
+          content: `
+            <div class="sr-roll-card">
+              <div class="sr-roll-header" style="color:var(--sr-red)">🚨 Security Level ${stepNum} — ${host.name}</div>
+              ${desc}
+              ${icNames ? `<div class="sr-roll-result">Deploying: <strong>${icNames}</strong></div>` : ''}
+            </div>`,
+          style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+        });
+      } else {
+        await ChatMessage.create({
+          content: `<div class="sr-roll-card"><div class="sr-roll-result">🔇 Sheaf level ${stepNum} activated silently.</div></div>`,
+          style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+          whisper: gmUsers,
+        });
+      }
+    });
+  });
 });

@@ -1,5 +1,5 @@
-2026/05/20-22:13:59.504 22cc Recovering log #199
-2026/05/20-22:13:59.504 22cc Level-0 table #201: started
-2026/05/20-22:13:59.506 22cc Level-0 table #201: 9808 bytes OK
-2026/05/20-22:13:59.515 22cc Delete type=0 #199
-2026/05/20-22:13:59.515 22cc Delete type=3 #197
+2026/05/21-17:16:16.697 ca0 Recovering log #208
+2026/05/21-17:16:16.697 ca0 Level-0 table #211: started
+2026/05/21-17:16:16.701 ca0 Level-0 table #211: 9807 bytes OK
+2026/05/21-17:16:16.707 ca0 Delete type=0 #208
+2026/05/21-17:16:16.707 ca0 Delete type=3 #206

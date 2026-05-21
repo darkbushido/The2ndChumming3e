@@ -50,33 +50,39 @@ function _defaultTopology(systemRating) {
   const snId  = foundry.utils.randomID();
   const cpuId = foundry.utils.randomID();
 
+  const _accessNode = { name:'Access Node', action:'Hacking', test:'Hacking vs Sys/Sec', requiresMark:false, overwatchOnFail:true, grantsAccess:true, description:'Gain a mark on this node by overcoming its Security Threshold.' };
+
   const defaultPrompts = {
     [sanId]: [
-      { name:'Comment / Review',  action:'Complex', test:'Computer vs System',   requiresMark:false, overwatchOnFail:false, description:'Leave a comment or feedback regarding the host or its services.' },
-      { name:'Host Services',     action:'Complex', test:'Computer vs System',   requiresMark:false, overwatchOnFail:false, description:'Access public information, shop goods/services, contact customer service.' },
+      { name:'Comment / Review',  action:'Complex', test:'Computer vs System',   requiresMark:false, overwatchOnFail:false, grantsAccess:false, description:'Leave a comment or feedback regarding the host or its services.' },
+      { name:'Host Services',     action:'Complex', test:'Computer vs System',   requiresMark:false, overwatchOnFail:false, grantsAccess:false, description:'Access public information, shop goods/services, contact customer service.' },
     ],
     [spuId]: [
-      { name:'Index Users and Scheduling', action:'Complex', test:'Computer vs System', requiresMark:true, overwatchOnFail:false, description:'Index of all users, logon status, projects, calendars, and tasks.' },
-      { name:'System Map',                 action:'Complex', test:'Computer vs System', requiresMark:true, overwatchOnFail:false, description:'ARO map of the host. Highlights visible and hidden targets.' },
+      { ..._accessNode },
+      { name:'Index Users and Scheduling', action:'Complex', test:'Computer vs System', requiresMark:true, overwatchOnFail:false, grantsAccess:false, description:'Index of all users, logon status, projects, calendars, and tasks.' },
+      { name:'System Map',                 action:'Complex', test:'Computer vs System', requiresMark:true, overwatchOnFail:false, grantsAccess:false, description:'ARO map of the host. Highlights visible and hidden targets.' },
     ],
     [dsId]: [
-      { name:'Access Datafile',          action:'Complex', test:'Computer vs System',       requiresMark:true, overwatchOnFail:false, description:'Read an unprotected datafile.' },
-      { name:'Duplicate / Download',     action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, description:'Copy a datafile to device Memory.' },
-      { name:'Edit / Upload Datafile',   action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, description:'Alter contents or upload a new datafile.' },
-      { name:'Index Data Store',         action:'Complex', test:'Computer vs System',       requiresMark:true, overwatchOnFail:false, description:'List all datafiles. Reveals hidden files and protection status.' },
-      { name:'Siphon Paydata',           action:'Complex', test:'Hacking vs Sys/Sec',       requiresMark:true, overwatchOnFail:true,  description:'Steal paydata from a data store.' },
+      { ..._accessNode },
+      { name:'Access Datafile',          action:'Complex', test:'Computer vs System',       requiresMark:true, overwatchOnFail:false, grantsAccess:false, description:'Read an unprotected datafile.' },
+      { name:'Duplicate / Download',     action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, grantsAccess:false, description:'Copy a datafile to device Memory.' },
+      { name:'Edit / Upload Datafile',   action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, grantsAccess:false, description:'Alter contents or upload a new datafile.' },
+      { name:'Index Data Store',         action:'Complex', test:'Computer vs System',       requiresMark:true, overwatchOnFail:false, grantsAccess:false, description:'List all datafiles. Reveals hidden files and protection status.' },
+      { name:'Siphon Paydata',           action:'Complex', test:'Hacking vs Sys/Sec',       requiresMark:true, overwatchOnFail:true,  grantsAccess:false, description:'Steal paydata from a data store.' },
     ],
     [snId]: [
-      { name:'Control Device',    action:'Complex', test:'Computer or applicable Skill vs System', requiresMark:true, overwatchOnFail:false, description:'Operate a subscribed device (drone, maglock, camera).' },
-      { name:'Index Devices',     action:'Complex', test:'Computer vs System',                   requiresMark:true, overwatchOnFail:false, description:'List all devices connected to this slave node.' },
-      { name:'Spoof Datastream',  action:'Complex', test:'Hacking vs Sys/Sec',                   requiresMark:true, overwatchOnFail:true,  description:'Feed false data to a device\'s datastream.' },
-      { name:'Tap Datastream',    action:'Complex', test:'Hacking vs Sys/Sec',                   requiresMark:true, overwatchOnFail:true,  description:'Access a device\'s live datastream.' },
+      { ..._accessNode },
+      { name:'Control Device',    action:'Complex', test:'Computer or applicable Skill vs System', requiresMark:true, overwatchOnFail:false, grantsAccess:false, description:'Operate a subscribed device (drone, maglock, camera).' },
+      { name:'Index Devices',     action:'Complex', test:'Computer vs System',                   requiresMark:true, overwatchOnFail:false, grantsAccess:false, description:'List all devices connected to this slave node.' },
+      { name:'Spoof Datastream',  action:'Complex', test:'Hacking vs Sys/Sec',                   requiresMark:true, overwatchOnFail:true,  grantsAccess:false, description:'Feed false data to a device\'s datastream.' },
+      { name:'Tap Datastream',    action:'Complex', test:'Hacking vs Sys/Sec',                   requiresMark:true, overwatchOnFail:true,  grantsAccess:false, description:'Access a device\'s live datastream.' },
     ],
     [cpuId]: [
-      { name:'Configure I/O Ports',    action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, description:'Alter pathways, authorize I/O Port connections.' },
-      { name:'Configure Passcodes',    action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, description:'Create or modify passcodes for any node.' },
-      { name:'Configure Security Sheaf', action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, description:'Activate/deactivate Alerts, reassign IC to Trigger Steps.' },
-      { name:'Reboot Node',            action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, description:'Power down a node. Dumps users inside.' },
+      { ..._accessNode },
+      { name:'Configure I/O Ports',      action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, grantsAccess:false, description:'Alter pathways, authorize I/O Port connections.' },
+      { name:'Configure Passcodes',      action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, grantsAccess:false, description:'Create or modify passcodes for any node.' },
+      { name:'Configure Security Sheaf', action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, grantsAccess:false, description:'Activate/deactivate Alerts, reassign IC to Trigger Steps.' },
+      { name:'Reboot Node',              action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, grantsAccess:false, description:'Power down a node. Dumps users inside.' },
     ],
   };
 
@@ -97,7 +103,7 @@ function _defaultTopology(systemRating) {
   // SPU centre, SN left, DS right, CPU bottom-centre).
   const nodes = [
     _nodeFromType('SAN', sanId,  defaultPrompts[sanId],  295, 15),
-    _nodeFromType('I/O', ioId,   [],                      490, 35),
+    _nodeFromType('I/O', ioId,   [{ ..._accessNode }],   490, 35),
     _nodeFromType('SPU', spuId,  defaultPrompts[spuId],  300, 155),
     _nodeFromType('SN',  snId,   defaultPrompts[snId],    85, 240),
     _nodeFromType('DS',  dsId,   defaultPrompts[dsId],   490, 215),
@@ -171,10 +177,12 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
       assignIC:           SR3EHostSheet._onAssignIC,
       deployStepIC:       SR3EHostSheet._onDeployStepIC,
       removeStepIC:       SR3EHostSheet._onRemoveStepIC,
-      addStockedIC:          SR3EHostSheet._onAddStockedIC,
-      removeStockedIC:       SR3EHostSheet._onRemoveStockedIC,
-      toggleStockedICHidden: SR3EHostSheet._onToggleStockedICHidden,
-      deployICToEncounter:   SR3EHostSheet._onDeployICToEncounter,
+      addStockedIC:            SR3EHostSheet._onAddStockedIC,
+      removeStockedIC:         SR3EHostSheet._onRemoveStockedIC,
+      toggleStockedICHidden:   SR3EHostSheet._onToggleStockedICHidden,
+      toggleAllStockedICHidden: SR3EHostSheet._onToggleAllStockedICHidden,
+      toggleAllStepsHidden:    SR3EHostSheet._onToggleAllStepsHidden,
+      deployICToEncounter:     SR3EHostSheet._onDeployICToEncounter,
       addUser:            SR3EHostSheet._onAddUser,
       removeUser:         SR3EHostSheet._onRemoveUser,
       moveUser:           SR3EHostSheet._onMoveUser,
@@ -191,6 +199,14 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   get title() { return `${this.actor.name} — DataHost`; }
 
+  async render(options = {}, _options2 = {}) {
+    if (!game.user.isGM) {
+      ui.notifications.warn('Host sheets are visible to Game Masters only.');
+      return this;
+    }
+    return super.render(options, _options2);
+  }
+
   async _renderHTML(_context, _options) {
     const div = document.createElement('div');
     div.style.cssText = 'flex:1;min-height:0;display:flex;flex-direction:column;';
@@ -199,7 +215,15 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   _replaceHTML(result, content, _options) {
+    const savedScroll = content.querySelector('.host-body')?.scrollTop ?? 0;
+
     content.replaceChildren(result);
+
+    if (savedScroll > 0) {
+      const el = content.querySelector('.host-body');
+      if (el) el.scrollTop = savedScroll;
+    }
+
     this._attachDragListeners(content);
     this._redrawPathways(content);
   }
@@ -453,14 +477,29 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
     }).join('');
 
     // Stocked IC list
+    const hostNodes      = sys.nodes ?? [];
+    const nodeBlankOpt   = `<option value="">— node —</option>`;
     const stockedRows = stocked.map((ic, idx) => {
-      const isHidden = ic.hidden ?? false;
+      const isHidden   = ic.hidden ?? false;
+      const icActor    = ic.actorId ? game.actors.get(ic.actorId) : null;
+      const icDeployed = icActor?.system?.deployed ?? false;
+      const nodeSelOpts = nodeBlankOpt + hostNodes.map(n =>
+        `<option value="${n.id}" ${ic.nodeId === n.id ? 'selected' : ''}>${n.abbreviation ?? n.name}</option>`
+      ).join('');
       return `
         <div class="stocked-ic-row ${isHidden ? 'sheaf-hidden' : ''}">
           <div class="sheaf-blurrable">
             <span class="ic-chip">${ic.name ?? 'IC'}</span>
-            <span class="stocked-ic-mem">${ic.memoryRequired ?? 0} Mp</span>
+            <span class="stocked-ic-mem"><span class="mem-n">${ic.memoryRequired ?? 0}</span> Mp</span>
           </div>
+          <select class="stocked-ic-node" data-ic-field="nodeId" data-index="${idx}"
+                  title="Starting node for this IC">
+            ${nodeSelOpts}
+          </select>
+          <span class="stocked-ic-deployed ${icDeployed ? 'ic-deployed' : ''}"
+                title="${icDeployed ? 'Deployed to encounter' : 'Not deployed'}">
+            ${icDeployed ? '⚔' : '·'}
+          </span>
           <button type="button" class="sheaf-eye-btn ${isHidden ? 'eye-off' : ''}"
                   data-action="toggleStockedICHidden" data-index="${idx}"
                   title="${isHidden ? 'Hidden from players — click to reveal' : 'Visible — click to hide'}">
@@ -515,14 +554,31 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
         Add Default Security Sheaf (10 steps)
       </button>` : '';
 
+    const alertLabel = alertCount === 0 ? 'Passive' : alertCount === 1 ? 'Active Alert (+2 TN)' : 'Full Alert (+4 TN)';
+    const alertDesc  = alertCount === 0
+      ? 'No alert — standard monitoring only. Overwatch accumulates on failed hacks.'
+      : alertCount === 1
+      ? 'Active Alert — IC patrols increased. All hacking actions +2 TN.'
+      : 'Full Alert — GOD notified. Maximum IC response. All hacking +4 TN. Physical security alerted.';
+
+    const anyStepsVisible  = steps.some(s => !(s.hidden ?? false));
+    const anyStockedVisible = stocked.some(s => !(s.hidden ?? false));
+
     return `
       <div class="tab ${this._activeTab === 'sheaf' ? 'active' : ''}" data-tab="sheaf">
 
         <section class="host-section">
-          <h3 class="host-section-title">Overwatch Track
-            <span class="ts-ow-count">${overwatch} / 10</span>
-          </h3>
-          <div class="host-ow-desc">Each failed hack attempt fills one box. Box 10 triggers Convergence.</div>
+          <div class="ow-alert-row">
+            <h3 class="host-section-title" style="margin:0">Overwatch
+              <span class="ts-ow-count">${overwatch} / 10</span>
+            </h3>
+            <div class="ow-alert-controls">
+              <span class="ow-alert-label host-alert-${alertCount}">${alertLabel}</span>
+              <button type="button" class="host-num-btn" data-action="alertDec" ${alertCount <= 0 ? 'disabled' : ''}>−</button>
+              <button type="button" class="host-num-btn" data-action="alertInc" ${alertCount >= 2 ? 'disabled' : ''}>+</button>
+            </div>
+          </div>
+          <div class="host-ow-desc">${alertDesc}</div>
           <div class="overwatch-track">${owBoxes}</div>
           <div class="host-convergence-note ${overwatch >= 10 ? 'active' : ''}">
             ⚠ CONVERGENCE — Dumpshock + GOD notification + Physical security response
@@ -530,36 +586,23 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
         </section>
 
         <section class="host-section">
-          <h3 class="host-section-title">Alerts
-            <span class="ts-ow-count ${alertCount > 0 ? 'ts-ow-warn' : ''}">
-              ${alertCount === 0 ? 'Passive' : alertCount === 1 ? 'Active Alert (+2 TN)' : 'Full Alert (+4 TN)'}
-            </span>
+          <h3 class="host-section-title">Trigger Steps
+            <button type="button" class="sheaf-eye-btn" data-action="toggleAllStepsHidden"
+                    title="${anyStepsVisible ? 'Hide all steps from players' : 'Reveal all steps to players'}">👁</button>
           </h3>
-          <div class="alert-controls">
-            <button type="button" class="host-num-btn" data-action="alertDec" ${alertCount <= 0 ? 'disabled' : ''}>−</button>
-            <span class="host-derived host-alert-level host-alert-${alertCount}">${alertCount}</span>
-            <button type="button" class="host-num-btn" data-action="alertInc" ${alertCount >= 2 ? 'disabled' : ''}>+</button>
-          </div>
-          <div class="host-alert-desc">
-            ${alertCount === 0
-              ? 'No alert — standard monitoring only. Overwatch accumulates on failed hacks.'
-              : alertCount === 1
-              ? 'Active Alert — IC patrols increased. All hacking actions +2 TN. Trigger Steps activate faster.'
-              : 'Full Alert — GOD notified. Maximum IC response. All hacking +4 TN. Physical security alerted.'}
-          </div>
-        </section>
-
-        <section class="host-section">
-          <h3 class="host-section-title">Trigger Steps</h3>
           ${initSheafBtn}
           <div class="trigger-steps-list">${stepRows}</div>
         </section>
 
         <section class="host-section">
           <h3 class="host-section-title">Stocked IC
-            <button type="button" class="host-action-btn-sm" data-action="deployICToEncounter"
-                    style="margin-left:8px;font-size:11px;padding:2px 8px;"
-                    title="Add selected IC to the active combat encounter">⚔ Deploy to Encounter</button>
+            <div style="display:flex;gap:4px;align-items:center">
+              <button type="button" class="sheaf-eye-btn" data-action="toggleAllStockedICHidden"
+                      title="${anyStockedVisible ? 'Hide all IC from players' : 'Reveal all IC to players'}">👁</button>
+              <button type="button" class="host-action-btn-sm" data-action="deployICToEncounter"
+                      style="font-size:11px;padding:2px 8px;"
+                      title="Add selected IC to the active combat encounter">⚔ Deploy</button>
+            </div>
           </h3>
           <div class="stocked-ic-list">${stockedRows || '<span class="host-empty">No IC stocked.</span>'}</div>
           <button type="button" class="host-action-btn" data-action="addStockedIC">+ Add IC</button>
@@ -802,6 +845,13 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
       });
     });
 
+    // Inline changes on Stocked IC fields (node assignment)
+    content.querySelectorAll('[data-ic-field]').forEach(el => {
+      el.addEventListener('change', async e => {
+        await this._onICFieldChange(e.target);
+      });
+    });
+
     // Alert level select — coerce string to integer (NumberField expects a number)
     const alertSelect = content.querySelector('[name="system.alertCount"]');
     if (alertSelect && this.isEditable) {
@@ -930,6 +980,15 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
     if (!agents[idx]) return;
     agents[idx][field] = el.type === 'checkbox' ? el.checked : el.value;
     await this.actor.update({ 'system.activeAgents': agents });
+  }
+
+  async _onICFieldChange(el) {
+    const field   = el.dataset.icField;
+    const idx     = parseInt(el.dataset.index);
+    const stocked = foundry.utils.deepClone(this.actor.system.stockedIC ?? []);
+    if (!stocked[idx]) return;
+    stocked[idx][field] = el.type === 'checkbox' ? el.checked : el.value;
+    await this.actor.update({ 'system.stockedIC': stocked });
   }
 
   /* ================================================================== */
@@ -1211,6 +1270,20 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
     await this.actor.update({ 'system.stockedIC': stocked });
   }
 
+  static async _onToggleAllStockedICHidden(_e, _t) {
+    const stocked  = foundry.utils.deepClone(this.actor.system.stockedIC ?? []);
+    const hideAll  = stocked.some(ic => !(ic.hidden ?? false));
+    stocked.forEach(ic => { ic.hidden = hideAll; });
+    await this.actor.update({ 'system.stockedIC': stocked });
+  }
+
+  static async _onToggleAllStepsHidden(_e, _t) {
+    const steps   = foundry.utils.deepClone(this.actor.system.triggerSteps ?? []);
+    const hideAll = steps.some(s => !(s.hidden ?? false));
+    steps.forEach(s => { s.hidden = hideAll; });
+    await this.actor.update({ 'system.triggerSteps': steps });
+  }
+
   static async _onAssignIC(_e, target) {
     const stepIdx = parseInt(target.dataset.step);
     const stocked = this.actor.system.stockedIC ?? [];
@@ -1423,11 +1496,16 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     await game.combat.createEmbeddedDocuments('Combatant', toCreate);
 
-    // Mark deployed IC actors for matrix targeting
+    // Mark deployed IC actors for matrix targeting; apply assigned starting node
     const hostId = this.actor.id;
     for (const actorId of selected) {
-      const icActor = game.actors.get(actorId);
-      if (icActor) await icActor.update({ 'system.deployed': true, 'system.activeHostId': hostId });
+      const icActor      = game.actors.get(actorId);
+      const stockedEntry = stocked.find(ic => ic.actorId === actorId);
+      if (icActor) {
+        const upd = { 'system.deployed': true, 'system.activeHostId': hostId };
+        if (stockedEntry?.nodeId) upd['system.currentMatrixNode'] = stockedEntry.nodeId;
+        await icActor.update(upd);
+      }
     }
 
     ui.notifications.info(`Added ${toCreate.length} IC to the encounter.`);

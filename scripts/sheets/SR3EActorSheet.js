@@ -73,6 +73,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         refreshHackingPool:      SR3EActorSheet._onRefreshHackingPool,
         awardKarma:              SR3EActorSheet._onAwardKarma,
         spendKarmaCalculator:    SR3EActorSheet._onSpendKarmaCalculator,
+        useNodePrompt:           SR3EActorSheet._onUseNodePrompt,
+        removeMatrixMark:        SR3EActorSheet._onRemoveMatrixMark,
+        addMatrixMark:           SR3EActorSheet._onAddMatrixMark,
     }
   };
 
@@ -1290,6 +1293,77 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ? `<span style="font-size:11px;color:var(--sr-accent);margin-left:6px">📡 ${activeHost.name}</span>`
       : (currentMode ? `<span style="font-size:11px;color:var(--sr-amber);margin-left:6px">⚠ No host selected</span>` : '');
 
+    // ── Node tracking ─────────────────────────────────────────────────────────
+    const currentNodeId = sys.currentMatrixNode ?? '';
+    const matrixMarks   = Array.isArray(sys.matrixMarks) ? sys.matrixMarks : [];
+    const linkLocked    = sys.linkLocked ?? false;
+    const hostNodes     = activeHost ? (activeHost.system.nodes ?? []) : [];
+    const currentNode   = hostNodes.find(n => n.id === currentNodeId) ?? null;
+
+    const nodeOpts = hostNodes.map(n =>
+      `<option value="${n.id}" ${n.id === currentNodeId ? 'selected' : ''}>${n.abbreviation ?? n.type ?? n.name}</option>`
+    ).join('');
+
+    const markChips = matrixMarks.map(nid => {
+      const node  = hostNodes.find(n => n.id === nid);
+      const label = node?.abbreviation ?? nid.substring(0, 6);
+      return `<span title="${node?.name ?? nid}" style="display:inline-flex;align-items:center;gap:3px;background:var(--sr-green-bg);color:var(--sr-green);border-radius:3px;padding:1px 6px;font-size:11px;font-weight:600">
+        ✓ ${label}
+        <button type="button" data-action="removeMatrixMark" data-node-id="${nid}"
+                style="background:none;border:none;cursor:pointer;color:var(--sr-muted);padding:0;margin-left:2px;line-height:1;font-size:10px">✕</button>
+      </span>`;
+    }).join('');
+
+    let nodePromptsHtml = '';
+    if (currentNode && activeHost) {
+      const prompts = currentNode.prompts ?? [];
+      const promptRows = prompts.map(p => {
+        const marked    = matrixMarks.includes(currentNode.id);
+        const needsMark = p.requiresMark && !marked;
+        const rowStyle  = needsMark ? 'opacity:0.55' : '';
+        const lockNote  = needsMark ? ' <span style="font-size:9px;color:var(--sr-amber)">(needs mark)</span>' : '';
+        const owBadge   = p.overwatchOnFail ? '<span style="font-size:9px;color:var(--sr-amber);font-weight:600">OW↑</span>' : '<span></span>';
+        const accessBadge = p.grantsAccess ? '<span style="font-size:9px;color:var(--sr-green);font-weight:600">+mark</span>' : '<span></span>';
+        const promptJson  = JSON.stringify(p).replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+        return `<div class="item-row" style="${rowStyle}">
+          <span class="item-name">${p.name}${lockNote}</span>
+          <span class="item-cell" style="font-size:10px;color:var(--sr-muted)">${p.test ?? ''}</span>
+          <span class="item-cell">${owBadge}</span>
+          <span class="item-cell">${accessBadge}</span>
+          <div class="item-controls">
+            <button type="button" class="btn-xs" data-action="useNodePrompt"
+                    data-node-id="${currentNode.id}"
+                    data-prompt="${promptJson}"
+                    title="${(p.description ?? p.name).replace(/"/g, '&quot;')}">Use</button>
+          </div>
+        </div>`;
+      }).join('');
+      nodePromptsHtml = `
+        <h3 class="section-hdr" style="margin-top:0.8rem">Prompts — ${currentNode.abbreviation ?? currentNode.name}</h3>
+        <div class="list-header"><span>Action</span><span>Test</span><span>OW</span><span>Mark</span><span></span></div>
+        ${promptRows || '<p class="empty-list">No prompts defined for this node.</p>'}`;
+    }
+
+    const nodeTrackingHtml = activeHost ? `
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:6px 0">
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px">
+          Node:
+          <select name="system.currentMatrixNode" style="min-width:110px">
+            <option value="">— none —</option>
+            ${nodeOpts}
+          </select>
+        </label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:12px">
+          <input type="checkbox" name="system.linkLocked" ${linkLocked ? 'checked' : ''}>
+          🔒 Link-Locked
+        </label>
+        <button type="button" class="btn-xs" data-action="addMatrixMark" title="Manually add a mark to a node">+ Mark</button>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">
+        ${markChips || '<span style="font-size:11px;color:var(--sr-muted)">No marks</span>'}
+      </div>
+      ${nodePromptsHtml}` : '';
+
     return `<div class="tab ${this._activeTab === 'matrix' ? 'active' : ''}" data-tab="matrix" style="overflow-y:auto">
       ${conflictBanner}
       <h3 class="section-hdr">User Mode</h3>
@@ -1297,6 +1371,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <div class="sr-veh-modes" style="flex-wrap:wrap;gap:6px;margin:0">${modeButtons}</div>
         ${hostBadge}
       </div>
+      ${nodeTrackingHtml}
       ${modeDesc}
       ${cybercombatBtn}
       <h3 class="section-hdr" style="margin-top:0.8rem">Cyberdecks</h3>
@@ -2401,6 +2476,39 @@ static async _onHealDamage(ev, target) {
 
   static async _onRefreshHackingPool(_ev, _target) {
     await this.actor.refreshHackingPool();
+  }
+
+  static async _onUseNodePrompt(_ev, target) {
+    let promptData;
+    try { promptData = JSON.parse(target.dataset.prompt ?? '{}'); } catch { promptData = {}; }
+    const nodeId = target.dataset.nodeId ?? '';
+    await this.actor.rollNodePrompt(promptData, nodeId);
+  }
+
+  static async _onRemoveMatrixMark(_ev, target) {
+    const nodeId = target.dataset.nodeId ?? '';
+    if (!nodeId) return;
+    const marks = (this.actor.system.matrixMarks ?? []).filter(m => m !== nodeId);
+    await this.actor.update({ 'system.matrixMarks': marks });
+  }
+
+  static async _onAddMatrixMark(_ev, _target) {
+    const actor = this.actor;
+    const nodes = game.actors.get(actor.system.activeHostId ?? '')?.system?.nodes ?? [];
+    if (!nodes.length) { ui.notifications.warn('No host nodes found — connect to a host first.'); return; }
+    const nodeOpts = nodes.map(n => `<option value="${n.id}">${n.abbreviation ?? n.name}</option>`).join('');
+    let nodeId = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: 'Add Matrix Mark' },
+      content: `<div style="padding:8px 0"><label>Node: <select id="mark-node" style="width:100%;margin-top:4px">${nodeOpts}</select></label></div>`,
+      buttons: [
+        { label: 'Add Mark', action: 'confirm', default: true, callback: (_e, _b, dlg) => { nodeId = dlg.element.querySelector('#mark-node')?.value; } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (!nodeId) return;
+    const marks = [...new Set([...(actor.system.matrixMarks ?? []), nodeId])];
+    await actor.update({ 'system.matrixMarks': marks });
   }
 
   static async _onEjectSlot(_ev, target) {

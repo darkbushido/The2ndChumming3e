@@ -207,7 +207,8 @@ background-color: var(--sr-surface) !important;
 .sr-summon-confirm-btn,
 .sr-matrix-ic-resist-btn,
 .sr-matrix-ic-resist-roll-btn,
-.sr-cc-roll-btn {
+.sr-cc-roll-btn,
+.sheaf-activate-btn {
   width: 100%;
   padding: 6px 10px;
   border-radius: var(--r);
@@ -3433,7 +3434,20 @@ label.act-field input[type=number] {
 
 .stocked-ic-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
 .stocked-ic-row { display: flex; align-items: center; gap: 8px; }
-.stocked-ic-mem { font-size: 0.75rem; color: var(--sr-muted); }
+.stocked-ic-row .ic-chip { width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 0; }
+.stocked-ic-mem { font-size: 0.75rem; color: var(--sr-muted); display: flex; align-items: baseline; gap: 2px; flex-shrink: 0; }
+.stocked-ic-mem .mem-n { min-width: 22px; text-align: right; font-variant-numeric: tabular-nums; }
+.stocked-ic-node { font-size: 0.75rem; padding: 1px 4px; background: var(--sr-surface); border: 1px solid var(--sr-border); border-radius: var(--r); color: var(--sr-text); width: 80px; flex-shrink: 0; }
+.stocked-ic-deployed { font-size: 0.85rem; color: var(--sr-dim); flex-shrink: 0; width: 16px; text-align: center; }
+.stocked-ic-deployed.ic-deployed { color: var(--sr-gold); }
+
+/* Overwatch + alert inline row */
+.ow-alert-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.ow-alert-controls { display: flex; align-items: center; gap: 6px; }
+.ow-alert-label { font-size: 0.8rem; font-weight: 600; padding: 1px 8px; border-radius: var(--r); }
+.ow-alert-label.host-alert-0 { color: var(--sr-muted); border: 1px solid var(--sr-border); }
+.ow-alert-label.host-alert-1 { color: var(--sr-amber); border: 1px solid var(--sr-amber); }
+.ow-alert-label.host-alert-2 { color: var(--sr-red);   border: 1px solid var(--sr-red); }
 
 /* Eye / hide toggle for trigger steps and stocked IC */
 .sheaf-eye-btn {
