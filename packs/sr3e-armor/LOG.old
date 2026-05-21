@@ -1,5 +1,5 @@
-2026/05/21-13:36:18.481 65fc Recovering log #136
-2026/05/21-13:36:18.481 65fc Level-0 table #138: started
-2026/05/21-13:36:18.486 65fc Level-0 table #138: 35809 bytes OK
-2026/05/21-13:36:18.492 65fc Delete type=0 #136
-2026/05/21-13:36:18.493 65fc Delete type=3 #134
+2026/05/21-21:27:15.543 3ef4 Recovering log #145
+2026/05/21-21:27:15.544 3ef4 Level-0 table #148: started
+2026/05/21-21:27:15.548 3ef4 Level-0 table #148: 35808 bytes OK
+2026/05/21-21:27:15.554 3ef4 Delete type=0 #145
+2026/05/21-21:27:15.555 3ef4 Delete type=3 #143

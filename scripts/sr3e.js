@@ -1459,6 +1459,35 @@ Hooks.on('updateActor', (actor, changes) => {
   }
 });
 
+// Sync actor currentMatrixNode / matrixMarks → host activeUsers entry.
+// Runs only on the GM's client so host updates always have permission.
+// The _sr3eSync flag on the options object prevents recursive loops.
+Hooks.on('updateActor', async (actor, changes, options) => {
+  if (options?._sr3eSync) return;
+  if (!game.user?.isGM) return;
+  if (actor.type === 'host' || actor.type === 'ic' || actor.type === 'agent') return;
+
+  const hostId = actor.system?.activeHostId ?? '';
+  if (!hostId) return;
+  const host = game.actors.get(hostId);
+  if (!host) return;
+
+  const users = foundry.utils.deepClone(host.system.activeUsers ?? []);
+  const entry = users.find(u => u.actorId === actor.id);
+  if (!entry) return;
+
+  let changed = false;
+  if (changes.system?.currentMatrixNode !== undefined) {
+    entry.currentNodeId = changes.system.currentMatrixNode;
+    changed = true;
+  }
+  if (changes.system?.matrixMarks !== undefined) {
+    entry.marks = [...(changes.system.matrixMarks ?? [])];
+    changed = true;
+  }
+  if (changed) await host.update({ 'system.activeUsers': users }, { _sr3eSync: true });
+});
+
 // ── One-shot button guard ────────────────────────────────────────────────────
 // Prevents a button from firing twice when both the Foundry pop-up notification
 // and the main chat log render the same card with live buttons simultaneously.

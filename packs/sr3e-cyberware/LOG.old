@@ -1,14 +1,5 @@
-2026/05/21-13:36:18.081 5afc Recovering log #205
-2026/05/21-13:36:18.083 5afc Level-0 table #207: started
-2026/05/21-13:36:18.091 5afc Level-0 table #207: 157648 bytes OK
-2026/05/21-13:36:18.098 5afc Delete type=0 #205
-2026/05/21-13:36:18.098 5afc Delete type=3 #203
-2026/05/21-13:36:18.098 5a20 Compacting 4@0 + 1@1 files
-2026/05/21-13:36:18.112 5a20 Generated table #209@0: 1104 keys, 108692 bytes
-2026/05/21-13:36:18.112 5a20 Compacted 4@0 + 1@1 files => 108692 bytes
-2026/05/21-13:36:18.114 5a20 compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/05/21-13:36:18.114 5a20 Delete type=2 #196
-2026/05/21-13:36:18.114 5a20 Delete type=2 #198
-2026/05/21-13:36:18.114 5a20 Delete type=2 #201
-2026/05/21-13:36:18.114 5a20 Delete type=2 #204
-2026/05/21-13:36:18.115 5a20 Delete type=2 #207
+2026/05/21-21:27:15.341 3ef4 Recovering log #215
+2026/05/21-21:27:15.342 3ef4 Level-0 table #217: started
+2026/05/21-21:27:15.349 3ef4 Level-0 table #217: 157582 bytes OK
+2026/05/21-21:27:15.355 3ef4 Delete type=0 #215
+2026/05/21-21:27:15.355 3ef4 Delete type=3 #213

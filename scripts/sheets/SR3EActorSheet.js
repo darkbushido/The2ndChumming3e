@@ -60,6 +60,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         unlinkVehicle:     SR3EActorSheet._onUnlinkVehicle,
         toggleVehicleMode: SR3EActorSheet._onToggleVehicleMode,
         openVehicle:       SR3EActorSheet._onOpenVehicle,
+        openHost:          SR3EActorSheet._onOpenHost,
         toggleStored:      SR3EActorSheet._onToggleStored,
         toggleTemplate:    SR3EActorSheet._onToggleTemplate,
         deployTemplate:    SR3EActorSheet._onDeployTemplate,
@@ -117,6 +118,16 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         this.render();
       })
     );
+
+    // Re-render this sheet whenever the connected host updates (keeps prompts, marks, node fresh)
+    if (this._hostUpdateHookId) Hooks.off('updateActor', this._hostUpdateHookId);
+    this._hostUpdateHookId = null;
+    const trackedHostId = this.actor.system?.activeHostId ?? '';
+    if (trackedHostId) {
+      this._hostUpdateHookId = Hooks.on('updateActor', (updated) => {
+        if (updated.id === trackedHostId) this.render();
+      });
+    }
 
     if (!this.isEditable) return;
 
@@ -1290,7 +1301,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       </div>` : '';
 
     const hostBadge = activeHost
-      ? `<span style="font-size:11px;color:var(--sr-accent);margin-left:6px">📡 ${activeHost.name}</span>`
+      ? `<button type="button" data-action="openHost" data-actor-id="${activeHost.id}"
+               style="font-size:11px;color:var(--sr-accent);margin-left:6px;background:none;border:none;cursor:pointer;padding:0;text-decoration:underline"
+               title="Open host sheet">📡 ${activeHost.name}</button>`
       : (currentMode ? `<span style="font-size:11px;color:var(--sr-amber);margin-left:6px">⚠ No host selected</span>` : '');
 
     // ── Node tracking ─────────────────────────────────────────────────────────
@@ -1371,8 +1384,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <div class="sr-veh-modes" style="flex-wrap:wrap;gap:6px;margin:0">${modeButtons}</div>
         ${hostBadge}
       </div>
-      ${nodeTrackingHtml}
       ${modeDesc}
+      ${nodeTrackingHtml}
       ${cybercombatBtn}
       <h3 class="section-hdr" style="margin-top:0.8rem">Cyberdecks</h3>
       ${deckListHtml}
@@ -2549,6 +2562,11 @@ static async _onHealDamage(ev, target) {
   /* ------------------------------------------------------------------ */
 
   static async _onOpenVehicle(_ev, target) {
+    const actor = game.actors.get(target.dataset.actorId);
+    actor?.sheet.render(true);
+  }
+
+  static async _onOpenHost(_ev, target) {
     const actor = game.actors.get(target.dataset.actorId);
     actor?.sheet.render(true);
   }

@@ -756,27 +756,46 @@ export class SR3EActor extends Actor {
       : '';
 
     const hostActors = game.actors.filter(a => a.type === 'host' && !a.getFlag('The2ndChumming3e', 'isTemplate'));
-    if (!hostActors.length) {
+
+    // If actor is already connected to a host, use it without prompting for selection
+    const activeHostId   = sys.activeHostId ?? '';
+    const connectedHost  = activeHostId ? game.actors.get(activeHostId) : null;
+    const isConnected    = !!connectedHost;
+
+    if (!isConnected && !hostActors.length) {
       ui.notifications.warn('No host actors found. Create a host actor first.');
       return;
     }
 
-    const firstHost        = hostActors[0];
-    const firstAlertPenalty = firstHost?.system?.derived?.alertTNPenalty ?? 0;
-    const defaultTN        = (firstHost?.system.systemRating ?? 6) + mcmPenalty + firstAlertPenalty;
-    const defaultThresh    = firstHost?.system.securityTierThreshold ?? 1;
-    const alertNote        = firstAlertPenalty > 0
-      ? `<p style="margin:0 0 8px;font-size:11px;color:var(--sr-amber)">⚠ Host alert: +${firstAlertPenalty} TN included in default TN</p>`
+    const primaryHost      = connectedHost ?? hostActors[0];
+    const alertPenalty     = primaryHost?.system?.derived?.alertTNPenalty ?? 0;
+    const defaultTN        = (primaryHost?.system.systemRating ?? 6) + mcmPenalty + alertPenalty;
+    const defaultThresh    = primaryHost?.system.securityTierThreshold ?? 1;
+    const alertNote        = alertPenalty > 0
+      ? `<p style="margin:0 0 8px;font-size:11px;color:var(--sr-amber)">⚠ Host alert: +${alertPenalty} TN included in default TN</p>`
       : '';
+
+    // Node context for label
+    const currentNodeId  = sys.currentMatrixNode ?? '';
+    const currentNode    = primaryHost?.system?.nodes?.find(n => n.id === currentNodeId);
+    const nodeTag        = currentNode ? ` [${currentNode.abbreviation ?? currentNode.name}]` : '';
 
     const hostOptions = hostActors.map(a => {
       const ap = a.system?.derived?.alertTNPenalty ?? 0;
       const alertTag = ap > 0 ? ` ⚠+${ap}TN` : '';
-      return `<option value="${a.id}">${a.name} (Sys ${a.system.systemRating ?? 6}, Threshold ${a.system.securityTierThreshold ?? 1}${alertTag})</option>`;
+      return `<option value="${a.id}" ${a.id === activeHostId ? 'selected' : ''}>${a.name} (Sys ${a.system.systemRating ?? 6}, Threshold ${a.system.securityTierThreshold ?? 1}${alertTag})</option>`;
     }).join('');
 
+    const hostRow = isConnected
+      ? `<p style="margin:0 0 8px;font-size:12px;color:var(--color-text-dark-secondary)">
+           Host: <strong>${primaryHost.name}</strong>${nodeTag ? `&nbsp;|&nbsp; Node: <strong>${currentNode.abbreviation ?? currentNode.name}</strong>` : ''}
+         </p>`
+      : `<label style="display:block;margin-bottom:8px">Host:
+           <select id="ha-host" style="width:100%;margin-top:4px">${hostOptions}</select>
+         </label>`;
+
     let confirmed         = false;
-    let hostActorId       = firstHost?.id ?? null;
+    let hostActorId       = primaryHost?.id ?? null;
     let actionName        = 'Hacking Action';
     let tn                = defaultTN;
     let securityThreshold = defaultThresh;
@@ -791,10 +810,7 @@ export class SR3EActor extends Actor {
           <p style="margin:0 0 8px;font-size:12px;color:var(--color-text-dark-secondary)">
             Hacking: <strong>${hackRating}</strong>${isDefaulting ? ` <span style="color:var(--sr-amber)">(no skill — INT ${intel} − 2)</span>` : ''} &nbsp;|&nbsp; Hacking Pool: <strong>${availHackPool}</strong>
           </p>
-          <label style="display:block;margin-bottom:8px">
-            Host:
-            <select id="ha-host" style="width:100%;margin-top:4px">${hostOptions}</select>
-          </label>
+          ${hostRow}
           <label style="display:block;margin-bottom:8px">
             Action name:
             <input type="text" id="ha-name" value="Hacking Action" style="width:100%;margin-top:4px">
@@ -823,7 +839,7 @@ export class SR3EActor extends Actor {
           default: true,
           callback: (_e, _b, dlg) => {
             confirmed         = true;
-            hostActorId       = dlg.element.querySelector('#ha-host')?.value || null;
+            if (!isConnected) hostActorId = dlg.element.querySelector('#ha-host')?.value || null;
             actionName        = dlg.element.querySelector('#ha-name')?.value?.trim() || 'Hacking Action';
             tn                = Math.max(2, parseInt(dlg.element.querySelector('#ha-tn')?.value) || defaultTN);
             securityThreshold = parseInt(dlg.element.querySelector('#ha-threshold')?.value) || 0;
@@ -842,7 +858,7 @@ export class SR3EActor extends Actor {
 
     await this.spendHackingPool(hackPoolDice);
 
-    await this.rollPool(pool, tn, `${this.name}: ${actionName}`, {
+    await this.rollPool(pool, tn, `${this.name}: ${actionName}${nodeTag}`, {
       isHackingActionRoll:  true,
       hackingActionContext: {
         attackerActorId: this.id,
@@ -1078,7 +1094,7 @@ export class SR3EActor extends Actor {
 
     const icList = (step.ic ?? []).map(r => r.name ?? 'IC').join(', ') || 'None';
     const desc   = step.description
-      ? `<div class="sr-roll-result" style="margin:2px 0;font-style:italic">${step.description}</div>`
+      ? `<div style="font-size:11px;color:var(--sr-muted);font-style:italic;margin:3px 0">${step.description}</div>`
       : '';
 
     const gmUsers = game.users.filter(u => u.isGM).map(u => u.id);
@@ -1087,8 +1103,8 @@ export class SR3EActor extends Actor {
         <div class="sr-roll-card">
           <div class="sr-roll-header" style="color:var(--sr-red)">⚠ Security Sheaf — Level ${owCount}</div>
           ${desc}
-          <div class="sr-roll-result">IC: <strong>${icList}</strong></div>
-          <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+          <div style="font-size:11px;color:var(--sr-text);margin:3px 0">IC: <strong>${icList}</strong></div>
+          <div style="display:flex;gap:6px;margin-top:8px">
             <button class="sheaf-activate-btn" data-choice="public"
                     data-host-id="${hostActor.id}" data-step-index="${stepIdx}">📢 Public</button>
             <button class="sheaf-activate-btn" data-choice="silent"

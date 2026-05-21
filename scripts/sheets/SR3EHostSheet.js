@@ -42,6 +42,46 @@ const NODE_TYPES = [
     description:'Input/Output jackpoint linking a real-world physical location directly to a specific node. Can be set to Private (acting as a datalock).' },
 ];
 
+/* Default prompts keyed by node type abbreviation — used by _defaultTopology and seedPrompts */
+const _ACCESS_PROMPT = { name:'Access Node', action:'Hacking', test:'Hacking vs Sys/Sec', requiresMark:false, overwatchOnFail:true, grantsAccess:true, description:'Gain a mark on this node by overcoming its Security Threshold.' };
+
+const DEFAULT_NODE_PROMPTS = {
+  'SAN': [
+    { name:'Comment / Review',  action:'Complex', test:'Computer vs System', requiresMark:false, overwatchOnFail:false, grantsAccess:false, description:'Leave a comment or feedback regarding the host or its services.' },
+    { name:'Host Services',     action:'Complex', test:'Computer vs System', requiresMark:false, overwatchOnFail:false, grantsAccess:false, description:'Access public information, shop goods/services, contact customer service.' },
+  ],
+  'SPU': [
+    { ..._ACCESS_PROMPT },
+    { name:'Index Users and Scheduling', action:'Complex', test:'Computer vs System', requiresMark:true, overwatchOnFail:false, grantsAccess:false, description:'Index of all users, logon status, projects, calendars, and tasks.' },
+    { name:'System Map',                 action:'Complex', test:'Computer vs System', requiresMark:true, overwatchOnFail:false, grantsAccess:false, description:'ARO map of the host. Highlights visible and hidden targets.' },
+  ],
+  'DS': [
+    { ..._ACCESS_PROMPT },
+    { name:'Access Datafile',        action:'Complex', test:'Computer vs System',              requiresMark:true, overwatchOnFail:false, grantsAccess:false, description:'Read an unprotected datafile.' },
+    { name:'Duplicate / Download',   action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true,  grantsAccess:false, description:'Copy a datafile to device Memory.' },
+    { name:'Edit / Upload Datafile', action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true,  grantsAccess:false, description:'Alter contents or upload a new datafile.' },
+    { name:'Index Data Store',       action:'Complex', test:'Computer vs System',              requiresMark:true, overwatchOnFail:false, grantsAccess:false, description:'List all datafiles. Reveals hidden files and protection status.' },
+    { name:'Siphon Paydata',         action:'Complex', test:'Hacking vs Sys/Sec',              requiresMark:true, overwatchOnFail:true,  grantsAccess:false, description:'Steal paydata from a data store.' },
+  ],
+  'SN': [
+    { ..._ACCESS_PROMPT },
+    { name:'Control Device',   action:'Complex', test:'Computer or applicable Skill vs System', requiresMark:true, overwatchOnFail:false, grantsAccess:false, description:'Operate a subscribed device (drone, maglock, camera).' },
+    { name:'Index Devices',    action:'Complex', test:'Computer vs System',                    requiresMark:true, overwatchOnFail:false, grantsAccess:false, description:'List all devices connected to this slave node.' },
+    { name:'Spoof Datastream', action:'Complex', test:'Hacking vs Sys/Sec',                    requiresMark:true, overwatchOnFail:true,  grantsAccess:false, description:'Feed false data to a device\'s datastream.' },
+    { name:'Tap Datastream',   action:'Complex', test:'Hacking vs Sys/Sec',                    requiresMark:true, overwatchOnFail:true,  grantsAccess:false, description:'Access a device\'s live datastream.' },
+  ],
+  'CPU': [
+    { ..._ACCESS_PROMPT },
+    { name:'Configure I/O Ports',      action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, grantsAccess:false, description:'Alter pathways, authorize I/O Port connections.' },
+    { name:'Configure Passcodes',      action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, grantsAccess:false, description:'Create or modify passcodes for any node.' },
+    { name:'Configure Security Sheaf', action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, grantsAccess:false, description:'Activate/deactivate Alerts, reassign IC to Trigger Steps.' },
+    { name:'Reboot Node',              action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, grantsAccess:false, description:'Power down a node. Dumps users inside.' },
+  ],
+  'I/O': [
+    { ..._ACCESS_PROMPT },
+  ],
+};
+
 /* Default topology seeded when a new host is initialised */
 function _defaultTopology(systemRating) {
   const sanId = foundry.utils.randomID();
@@ -50,40 +90,12 @@ function _defaultTopology(systemRating) {
   const snId  = foundry.utils.randomID();
   const cpuId = foundry.utils.randomID();
 
-  const _accessNode = { name:'Access Node', action:'Hacking', test:'Hacking vs Sys/Sec', requiresMark:false, overwatchOnFail:true, grantsAccess:true, description:'Gain a mark on this node by overcoming its Security Threshold.' };
-
   const defaultPrompts = {
-    [sanId]: [
-      { name:'Comment / Review',  action:'Complex', test:'Computer vs System',   requiresMark:false, overwatchOnFail:false, grantsAccess:false, description:'Leave a comment or feedback regarding the host or its services.' },
-      { name:'Host Services',     action:'Complex', test:'Computer vs System',   requiresMark:false, overwatchOnFail:false, grantsAccess:false, description:'Access public information, shop goods/services, contact customer service.' },
-    ],
-    [spuId]: [
-      { ..._accessNode },
-      { name:'Index Users and Scheduling', action:'Complex', test:'Computer vs System', requiresMark:true, overwatchOnFail:false, grantsAccess:false, description:'Index of all users, logon status, projects, calendars, and tasks.' },
-      { name:'System Map',                 action:'Complex', test:'Computer vs System', requiresMark:true, overwatchOnFail:false, grantsAccess:false, description:'ARO map of the host. Highlights visible and hidden targets.' },
-    ],
-    [dsId]: [
-      { ..._accessNode },
-      { name:'Access Datafile',          action:'Complex', test:'Computer vs System',       requiresMark:true, overwatchOnFail:false, grantsAccess:false, description:'Read an unprotected datafile.' },
-      { name:'Duplicate / Download',     action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, grantsAccess:false, description:'Copy a datafile to device Memory.' },
-      { name:'Edit / Upload Datafile',   action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, grantsAccess:false, description:'Alter contents or upload a new datafile.' },
-      { name:'Index Data Store',         action:'Complex', test:'Computer vs System',       requiresMark:true, overwatchOnFail:false, grantsAccess:false, description:'List all datafiles. Reveals hidden files and protection status.' },
-      { name:'Siphon Paydata',           action:'Complex', test:'Hacking vs Sys/Sec',       requiresMark:true, overwatchOnFail:true,  grantsAccess:false, description:'Steal paydata from a data store.' },
-    ],
-    [snId]: [
-      { ..._accessNode },
-      { name:'Control Device',    action:'Complex', test:'Computer or applicable Skill vs System', requiresMark:true, overwatchOnFail:false, grantsAccess:false, description:'Operate a subscribed device (drone, maglock, camera).' },
-      { name:'Index Devices',     action:'Complex', test:'Computer vs System',                   requiresMark:true, overwatchOnFail:false, grantsAccess:false, description:'List all devices connected to this slave node.' },
-      { name:'Spoof Datastream',  action:'Complex', test:'Hacking vs Sys/Sec',                   requiresMark:true, overwatchOnFail:true,  grantsAccess:false, description:'Feed false data to a device\'s datastream.' },
-      { name:'Tap Datastream',    action:'Complex', test:'Hacking vs Sys/Sec',                   requiresMark:true, overwatchOnFail:true,  grantsAccess:false, description:'Access a device\'s live datastream.' },
-    ],
-    [cpuId]: [
-      { ..._accessNode },
-      { name:'Configure I/O Ports',      action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, grantsAccess:false, description:'Alter pathways, authorize I/O Port connections.' },
-      { name:'Configure Passcodes',      action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, grantsAccess:false, description:'Create or modify passcodes for any node.' },
-      { name:'Configure Security Sheaf', action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, grantsAccess:false, description:'Activate/deactivate Alerts, reassign IC to Trigger Steps.' },
-      { name:'Reboot Node',              action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, grantsAccess:false, description:'Power down a node. Dumps users inside.' },
-    ],
+    [sanId]: DEFAULT_NODE_PROMPTS['SAN'].map(p => ({...p})),
+    [spuId]: DEFAULT_NODE_PROMPTS['SPU'].map(p => ({...p})),
+    [dsId]:  DEFAULT_NODE_PROMPTS['DS'].map(p => ({...p})),
+    [snId]:  DEFAULT_NODE_PROMPTS['SN'].map(p => ({...p})),
+    [cpuId]: DEFAULT_NODE_PROMPTS['CPU'].map(p => ({...p})),
   };
 
   function _nodeFromType(abbr, id, prompts, x, y, overrides = {}) {
@@ -103,7 +115,7 @@ function _defaultTopology(systemRating) {
   // SPU centre, SN left, DS right, CPU bottom-centre).
   const nodes = [
     _nodeFromType('SAN', sanId,  defaultPrompts[sanId],  295, 15),
-    _nodeFromType('I/O', ioId,   [{ ..._accessNode }],   490, 35),
+    _nodeFromType('I/O', ioId,   DEFAULT_NODE_PROMPTS['I/O'].map(p => ({...p})), 490, 35),
     _nodeFromType('SPU', spuId,  defaultPrompts[spuId],  300, 155),
     _nodeFromType('SN',  snId,   defaultPrompts[snId],    85, 240),
     _nodeFromType('DS',  dsId,   defaultPrompts[dsId],   490, 215),
@@ -160,6 +172,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
     actions: {
       switchTab:          SR3EHostSheet._onSwitchTab,
       initTopology:       SR3EHostSheet._onInitTopology,
+      seedPrompts:        SR3EHostSheet._onSeedPrompts,
       initSheaf:          SR3EHostSheet._onInitSheaf,
       addNode:            SR3EHostSheet._onAddNode,
       editNode:           SR3EHostSheet._onEditNode,
@@ -183,6 +196,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
       toggleAllStockedICHidden: SR3EHostSheet._onToggleAllStockedICHidden,
       toggleAllStepsHidden:    SR3EHostSheet._onToggleAllStepsHidden,
       deployICToEncounter:     SR3EHostSheet._onDeployICToEncounter,
+      openLinkedActor:    SR3EHostSheet._onOpenLinkedActor,
       addUser:            SR3EHostSheet._onAddUser,
       removeUser:         SR3EHostSheet._onRemoveUser,
       moveUser:           SR3EHostSheet._onMoveUser,
@@ -432,6 +446,12 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
         Initialize Standard Topology
       </button>` : '';
 
+    const seedPromptsBtn = nodes.length > 0 ? `
+      <button type="button" class="host-action-btn-sm" data-action="seedPrompts"
+              title="Populate empty prompt lists from defaults (does not overwrite existing prompts)">
+        Seed Prompts
+      </button>` : '';
+
     return `
       <div class="tab ${this._activeTab === 'network' ? 'active' : ''}" data-tab="network">
         <div class="network-map-wrap">
@@ -445,6 +465,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
           <div class="network-controls-row">
             <button type="button" class="host-action-btn" data-action="addNode">+ Add Node</button>
             <button type="button" class="host-action-btn" data-action="addPathway">+ Add Pathway</button>
+            ${seedPromptsBtn}
           </div>
           <div class="pathway-list">
             ${pathwayControls || '<span class="host-empty">No pathways defined.</span>'}
@@ -690,9 +711,16 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
         </span>`;
       }).join('');
 
+      const nameEl = u.actorId
+        ? `<button type="button" class="presence-name ${u.hidden ? 'presence-hidden' : ''}"
+                   data-action="openLinkedActor" data-actor-id="${u.actorId}"
+                   style="background:none;border:none;cursor:pointer;text-align:left;text-decoration:underline;padding:0"
+                   title="Open actor sheet">${u.name ?? 'Unknown'}</button>`
+        : `<span class="presence-name ${u.hidden ? 'presence-hidden' : ''}">${u.name ?? 'Unknown'}</span>`;
+
       return `
         <div class="presence-row user-row">
-          <span class="presence-name ${u.hidden ? 'presence-hidden' : ''}">${u.name ?? 'Unknown'}</span>
+          ${nameEl}
           <select data-user-field="currentNodeId" data-index="${idx}">
             <option value="">—</option>
             ${nodes.map(n => `<option value="${n.id}" ${u.currentNodeId === n.id ? 'selected' : ''}>${n.abbreviation ?? n.name}</option>`).join('')}
@@ -971,6 +999,16 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
     if (!users[idx]) return;
     users[idx][field] = el.type === 'checkbox' ? el.checked : el.value;
     await this.actor.update({ 'system.activeUsers': users });
+
+    // When GM moves a linked actor to a new node, keep the actor's currentMatrixNode in sync.
+    // _sr3eSync:true prevents the updateActor hook from looping back.
+    if (field === 'currentNodeId') {
+      const actorId = users[idx].actorId;
+      if (actorId) {
+        const linked = game.actors.get(actorId);
+        if (linked) await linked.update({ 'system.currentMatrixNode': el.value }, { _sr3eSync: true });
+      }
+    }
   }
 
   async _onAgentFieldChange(el) {
@@ -1009,6 +1047,23 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
       'system.pathways':     pathways,
       'system.triggerSteps': triggerSteps,
     });
+  }
+
+  // Populate empty prompts arrays on existing nodes without touching IDs, positions, or other data
+  static async _onSeedPrompts(_e, _t) {
+    const nodes = foundry.utils.deepClone(this.actor.system.nodes ?? []);
+    let seeded = 0;
+    for (const node of nodes) {
+      if ((node.prompts ?? []).length > 0) continue;
+      const defaults = DEFAULT_NODE_PROMPTS[node.abbreviation ?? node.type ?? ''];
+      if (defaults) {
+        node.prompts = defaults.map(p => ({...p}));
+        seeded++;
+      }
+    }
+    if (seeded === 0) { ui.notifications.info('SR3E: All nodes already have prompts.'); return; }
+    await this.actor.update({ 'system.nodes': nodes });
+    ui.notifications.info(`SR3E: Seeded prompts for ${seeded} node(s).`);
   }
 
   static async _onInitSheaf(_e, _t) {
@@ -1516,6 +1571,11 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   /* ── Active Users ──────────────────────────────────────────────── */
 
+  static async _onOpenLinkedActor(_e, target) {
+    const actor = game.actors.get(target.dataset.actorId);
+    actor?.sheet.render(true);
+  }
+
   static async _onAddUser(_e, _t) {
     const nodes    = this.actor.system.nodes ?? [];
     const nodeOpts = nodes.map(n => `<option value="${n.id}">${n.abbreviation ?? n.name}</option>`).join('');
@@ -1568,6 +1628,12 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
     if (!users[idx]) return;
     users[idx].currentNodeId = target.value;
     await this.actor.update({ 'system.activeUsers': users });
+
+    const actorId = users[idx].actorId;
+    if (actorId) {
+      const linked = game.actors.get(actorId);
+      if (linked) await linked.update({ 'system.currentMatrixNode': target.value }, { _sr3eSync: true });
+    }
   }
 
   static async _onToggleUserHidden(_e, target) {
@@ -1611,6 +1677,16 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
     if (!users[userIdx].marks) users[userIdx].marks = [];
     if (!users[userIdx].marks.includes(nodeId)) users[userIdx].marks.push(nodeId);
     await this.actor.update({ 'system.activeUsers': users });
+
+    // Sync to linked actor's matrixMarks (_sr3eSync prevents the hook from echoing back)
+    const actorId = users[userIdx].actorId;
+    if (actorId) {
+      const linked = game.actors.get(actorId);
+      if (linked) {
+        const marks = [...new Set([...(linked.system.matrixMarks ?? []), nodeId])];
+        await linked.update({ 'system.matrixMarks': marks }, { _sr3eSync: true });
+      }
+    }
   }
 
   static async _onRemoveMark(_e, target) {
@@ -1620,6 +1696,16 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
     if (!users[userIdx]) return;
     users[userIdx].marks = (users[userIdx].marks ?? []).filter(id => id !== nodeId);
     await this.actor.update({ 'system.activeUsers': users });
+
+    // Sync removal to linked actor's matrixMarks (_sr3eSync prevents the hook from echoing back)
+    const actorId = users[userIdx].actorId;
+    if (actorId) {
+      const linked = game.actors.get(actorId);
+      if (linked) {
+        const marks = (linked.system.matrixMarks ?? []).filter(m => m !== nodeId);
+        await linked.update({ 'system.matrixMarks': marks }, { _sr3eSync: true });
+      }
+    }
   }
 
   /* ── Active Agents ─────────────────────────────────────────────── */
