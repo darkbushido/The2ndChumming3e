@@ -37,10 +37,11 @@ export class SR3ECombat extends Combat {
     // VCR: mark any jumped-in rigger combatants as defeated so they don't act separately.
     for (const c of combatants) {
       if (c.actor?.type !== 'vehicle') continue;
-      if (!(c.actor.system.vcrMode ?? false)) continue;
-      const pilotName = c.actor.system.controlledBy?.trim();
-      if (!pilotName) continue;
-      const riggerCombatant = this.combatants.find(rc => rc.actor?.name === pilotName);
+      if (c.actor.system.controlMode !== 'vcr') continue;
+      const driverActId = c.actor.system.driverActorId?.trim();
+      if (!driverActId) continue;
+      const pilotActor = game.actors.get(driverActId);
+      const riggerCombatant = pilotActor && this.combatants.find(rc => rc.actor?.id === pilotActor.id);
       if (riggerCombatant) {
         await riggerCombatant.update({
           flags: { The2ndChumming3e: { jumpedInto: c.actor.name } },

@@ -17,6 +17,7 @@ export class SR3EAgentSheet extends foundry.applications.sheets.ActorSheetV2 {
       rollAttack:     SR3EAgentSheet._onRollAttack,
       toggleTemplate: SR3EAgentSheet._onToggleTemplate,
       deployTemplate: SR3EAgentSheet._onDeployTemplate,
+      markAsLive:     SR3EAgentSheet._onMarkAsLive,
     },
   };
 
@@ -66,7 +67,8 @@ export class SR3EAgentSheet extends foundry.applications.sheets.ActorSheetV2 {
     const operatorId   = sys.operatorActorId ?? '';
     const activeHostId = sys.activeHostId ?? '';
     const activeHost   = activeHostId ? game.actors.get(activeHostId) : null;
-    const isTemplate   = !!actor.getFlag('The2ndChumming3e', 'isTemplate');
+    const isTemplate   = actor.getFlag('The2ndChumming3e', 'isTemplate');
+    const appearsInUI  = game.sr3e.isLiveActor(actor);
 
     const tierOpts = SR3EAgentSheet.SEC_TIERS.map(t =>
       `<option value="${t}" ${tier === t ? 'selected' : ''}>${t}</option>`
@@ -74,7 +76,7 @@ export class SR3EAgentSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const operatorOpts = `<option value="">— none —</option>` +
       game.actors
-        .filter(a => (a.type === 'character' || a.type === 'npc') && !a.getFlag('The2ndChumming3e', 'isTemplate'))
+        .filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a))
         .map(a => `<option value="${a.id}" ${a.id === operatorId ? 'selected' : ''}>${a.name}</option>`)
         .join('');
 
@@ -97,11 +99,13 @@ export class SR3EAgentSheet extends foundry.applications.sheets.ActorSheetV2 {
               ${sys.graded ? '<span class="prog-graded-badge">Graded</span>' : ''}
             </div>
             <div class="sr3e-template-controls">
-              ${isTemplate
+              ${isTemplate === true
                 ? `<span class="sr3e-template-badge">TEMPLATE</span>
                    <button type="button" class="sr3e-template-btn" data-action="deployTemplate" title="Create a working copy with the template flag removed">Deploy Copy</button>
                    <button type="button" class="sr3e-template-btn sr3e-template-btn-remove" data-action="toggleTemplate" title="Remove template flag">Remove Flag</button>`
-                : `<button type="button" class="sr3e-template-btn sr3e-template-mark" data-action="toggleTemplate" title="Mark as template — hides from combat targeting dialogs">Mark as Template</button>`
+                : !appearsInUI
+                  ? `<button type="button" class="sr3e-template-btn sr3e-live-btn" data-action="markAsLive" title="Mark as live agent — will appear in host agent dialogs">Mark as Live</button>`
+                  : `<button type="button" class="sr3e-template-btn sr3e-template-mark" data-action="toggleTemplate" title="Mark as template — hides from combat targeting dialogs">Mark as Template</button>`
               }
             </div>
           </div>
@@ -314,11 +318,16 @@ export class SR3EAgentSheet extends foundry.applications.sheets.ActorSheetV2 {
     await this.actor.setFlag('The2ndChumming3e', 'isTemplate', !current);
   }
 
+  static async _onMarkAsLive(_ev, _target) {
+    await this.actor.setFlag('The2ndChumming3e', 'isTemplate', false);
+  }
+
   static async _onDeployTemplate(_ev, _target) {
     const data = this.actor.toObject();
     delete data._id;
+    delete data._stats;
     data.name = `${data.name} (copy)`;
-    if (data.flags?.['The2ndChumming3e']) delete data.flags['The2ndChumming3e'].isTemplate;
+    foundry.utils.setProperty(data, 'flags.The2ndChumming3e.isTemplate', false);
     const newActor = await Actor.create(data);
     newActor.sheet.render(true);
   }

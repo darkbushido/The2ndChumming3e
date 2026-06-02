@@ -64,7 +64,16 @@ Hooks.once('init', () => {
     ui.notifications.info(`SR3E: ${created} skills added to the compendium.`);
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, buildSkillsCompendium };
+  // Returns true when an actor should appear in selection/targeting dialogs.
+  // Fresh world actors (no compendiumSource): shown unless explicitly marked template.
+  // Compendium imports (has compendiumSource): hidden unless explicitly marked live.
+  function isLiveActor(a) {
+    return a._stats?.compendiumSource
+      ? game.sr3e.isLiveActor(a)
+      : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
+  }
+
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, buildSkillsCompendium, isLiveActor };
 
   // Data models (replace template.json defaults)
   CONFIG.Actor.dataModels.character = CharacterData;
@@ -236,25 +245,41 @@ Hooks.once('ready', async () => {
   }
 });
 
-// Auto-assign newly created Matrix/vehicle actors to their organisational folder.
-// Fires before creation so the actor is placed in the right folder from the start.
+// Auto-assign newly created Matrix/vehicle actors to their organisational folder,
+// and stamp fresh world actors with isTemplate:false so they appear in selection dialogs.
+// Compendium imports are left unmarked (isTemplate:undefined) — GM must explicitly
+// click "Mark as Live" on each one before it appears in targeting/linking dialogs.
 Hooks.on('preCreateActor', (document, _data, options, _userId) => {
   if (options.pack) return; // compendium creates don't use world folders
-  if (document.folder) return; // already in a folder — respect manual placement
-  const folderMap = {
-    ic:      'IC & Agents',
-    agent:   'IC & Agents',
-    host:    'DataHosts',
-    vehicle: 'Vehicles & Drones',
-  };
-  const folderName = folderMap[document.type];
-  if (!folderName) return;
-  const folder = game.folders?.find(f => f.type === 'Actor' && f.name === folderName);
-  if (folder) document.updateSource({ folder: folder.id });
+
+  if (!document.folder) {
+    const folderMap = {
+      ic:      'IC & Agents',
+      agent:   'IC & Agents',
+      host:    'DataHosts',
+      vehicle: 'Vehicles & Drones',
+    };
+    const folderName = folderMap[document.type];
+    if (folderName) {
+      const folder = game.folders?.find(f => f.type === 'Actor' && f.name === folderName);
+      if (folder) document.updateSource({ folder: folder.id });
+    }
+  }
+
+  // Fresh world creates (not imported from a compendium) are live actors.
+  if (!_data._stats?.compendiumSource) {
+    document.updateSource({ flags: { 'The2ndChumming3e': { isTemplate: false } } });
+  }
+
+  // Ensure tokens are linked by default so token sheet === world actor sheet.
+  // Unlinked tokens create a separate actor instance, causing duplicate sheets.
+  if (!_data.prototypeToken?.actorLink) {
+    document.updateSource({ prototypeToken: { actorLink: true } });
+  }
 });
 
 async function _openSessionRewardDialog() {
-  const allPCs = game.actors.filter(a => a.type === 'character' && !a.getFlag('The2ndChumming3e', 'isTemplate'));
+  const allPCs = game.actors.filter(a => a.type === 'character' && game.sr3e.isLiveActor(a));
 
   if (!allPCs.length) {
     ui.notifications.warn('No character actors found in this world.');
@@ -386,7 +411,7 @@ async function _openChunkySalsaCalculator() {
   }
 
   // ── Mutable state ──────────────────────────────────────────────────────────
-  const eligible = game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && !a.getFlag('The2ndChumming3e', 'isTemplate'));
+  const eligible = game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a));
   const actors   = eligible.map((a, i) => {
     const angle = (2 * Math.PI * i / Math.max(eligible.length, 1)) - Math.PI / 2;
     return { id: a.id, name: a.name, color: ACTOR_COLORS[i % ACTOR_COLORS.length],
@@ -817,7 +842,7 @@ async function _openBarrierDamageCalculator() {
 
 async function _openFallingDamageCalculator() {
   const actorOpts = game.actors
-    .filter(a => (a.type === 'character' || a.type === 'npc') && !a.getFlag('The2ndChumming3e', 'isTemplate'))
+    .filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a))
     .map(a => `<option value="${a.id}">${a.name}</option>`).join('');
 
   if (!actorOpts) { ui.notifications.warn('No characters or NPCs in the world.'); return; }
@@ -956,7 +981,7 @@ async function _openEscapeArtistCalculator() {
   ];
 
   const actorOpts = game.actors
-    .filter(a => (a.type === 'character' || a.type === 'npc') && !a.getFlag('The2ndChumming3e', 'isTemplate'))
+    .filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a))
     .map(a => `<option value="${a.id}">${a.name}</option>`).join('');
 
   if (!actorOpts) { ui.notifications.warn('No characters or NPCs in the world.'); return; }
@@ -1094,15 +1119,17 @@ Hooks.on('renderCombatTracker', (_app, html) => {
 
       // Vehicle in combat: show RCD / VCR mode tag
       if (cbt.actor.type === 'vehicle') {
-        const vcrMode   = cbt.actor.system.vcrMode ?? false;
-        const pilotName = cbt.actor.system.controlledBy?.trim() ?? '';
+        const controlMode  = cbt.actor.system.controlMode ?? '';
+        const driverActId  = cbt.actor.system.driverActorId?.trim() ?? '';
+        const pilotActor   = driverActId ? game.actors.get(driverActId) : null;
+        const pilotName    = pilotActor?.name ?? '';
         const tag = document.createElement('span');
         tag.style.cssText = 'font-size:10px;font-weight:bold;padding:1px 5px;border-radius:3px;margin-left:4px;';
-        if (!pilotName) {
+        if (!driverActId) {
           tag.textContent  = 'Auto';
           tag.style.background = '#2a2010';
           tag.style.color      = '#c8a040';
-        } else if (vcrMode) {
+        } else if (controlMode === 'vcr') {
           tag.textContent  = `VCR: ${pilotName}`;
           tag.style.background = '#1a3a5c';
           tag.style.color      = '#5ab4f5';
@@ -1454,10 +1481,11 @@ Hooks.on('renderCombatTracker', (_app, html) => {
 Hooks.on('updateActor', (actor, changes) => {
   if (actor.type !== 'vehicle') return;
   const sys = changes?.system ?? {};
-  if ('vcrMode' in sys || 'controlledBy' in sys) {
+  if ('controlMode' in sys || 'driverActorId' in sys) {
     ui.combat?.render();
   }
 });
+
 
 // Sync actor currentMatrixNode / matrixMarks → host activeUsers entry.
 // Runs only on the GM's client so host updates always have permission.
@@ -1507,6 +1535,7 @@ function _claimBtn(btn, mid, cls, idx) {
   btn.disabled = true;
   return true;
 }
+
 
 // Attach action button handlers to each chat message as it renders.
 // renderChatMessageHTML fires for every render (new message AND pop-up notification),

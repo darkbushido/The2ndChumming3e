@@ -619,8 +619,8 @@ background-color: var(--sr-surface) !important;
   padding: 12px 14px;
 }
 
-.tab { display: none; }
-.tab.active { display: block; }
+.sr3e .tab { display: none; }
+.sr3e .tab.active { display: block; }
 
 /* ── Section headers ─────────────────────────────────────── */
 .section-hdr {
@@ -633,6 +633,34 @@ background-color: var(--sr-surface) !important;
   padding-bottom: 4px;
   margin-bottom: 8px;
 }
+
+/* ── Weapons tab drag-and-drop ───────────────────────────── */
+.weapon-section {
+  border: 1px solid transparent;
+  border-radius: var(--r);
+  padding: 0 4px 6px;
+  margin-bottom: 0.5rem;
+  transition: border-color 0.15s, background 0.15s;
+}
+.weapon-section.wep-drag-over {
+  border-color: var(--sr-accent);
+  background: color-mix(in srgb, var(--sr-accent) 8%, transparent);
+}
+.wep-section-hdr {
+  cursor: default;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.wep-drag-grip {
+  font-size: 13px;
+  color: var(--sr-muted);
+  cursor: grab;
+  letter-spacing: -2px;
+  line-height: 1;
+}
+.weapon-section[draggable]:hover .wep-drag-grip { color: var(--sr-accent); }
 
 /* ── Attributes ──────────────────────────────────────────── */
 .attributes-grid {
@@ -1309,7 +1337,7 @@ background-color: var(--sr-surface) !important;
 
 /* Initiative specific */
 .sr-roll-card .sr-roll-result {
-  font-size: 16px;
+  font-size: 13px;
   margin-top: 8px;
   padding-top: 8px;
   border-top: 1px solid var(--sr-border);
@@ -1349,30 +1377,23 @@ background-color: var(--sr-surface) !important;
 .sr3e.sheet.actor .tab { display: none; }
 .sr3e.sheet.actor .tab.active { display: block; }
 
-/* --- Sidebar & Compendium Scroll Fix --- */
-
-/* 1. Target the main container for the items list */
-.directory .directory-list,
+/* --- Compendium window scroll fix (scoped to floating pack browser only) --- */
 .compendium.window-app .directory-list {
     display: flex;
     flex-direction: column;
     height: 100%;
-    min-height: 0; /* Allows the flex child to be smaller than its content */
+    min-height: 0;
 }
 
-/* 2. Target the specific list element you identified */
-.directory .subdirectory.plain,
 .compendium.window-app .subdirectory.plain {
-    flex: 1;             /* Grow to fill all available vertical space */
-    overflow-y: auto;    /* Enable the vertical scrollbar */
+    flex: 1;
+    overflow-y: auto;
     overflow-x: hidden;
-    min-height: 0;       /* Critical for triggering the scrollbar in flexbox */
+    min-height: 0;
 }
 
-/* 3. Ensure the weapon/item entries don't distort */
-.directory .directory-item.entry,
 .compendium.window-app .directory-item.entry {
-    flex: 0 0 auto;      /* Don't let items shrink or grow */
+    flex: 0 0 auto;
     width: 100%;
 }
 
@@ -1809,8 +1830,8 @@ background-color: var(--sr-surface) !important;
   padding: 12px 14px;
 }
 
-.tab { display: none; }
-.tab.active { display: block; }
+.sr3e .tab { display: none; }
+.sr3e .tab.active { display: block; }
 
 /* ── Section headers ─────────────────────────────────────── */
 .section-hdr {
@@ -1823,6 +1844,34 @@ background-color: var(--sr-surface) !important;
   padding-bottom: 4px;
   margin-bottom: 8px;
 }
+
+/* ── Weapons tab drag-and-drop ───────────────────────────── */
+.weapon-section {
+  border: 1px solid transparent;
+  border-radius: var(--r);
+  padding: 0 4px 6px;
+  margin-bottom: 0.5rem;
+  transition: border-color 0.15s, background 0.15s;
+}
+.weapon-section.wep-drag-over {
+  border-color: var(--sr-accent);
+  background: color-mix(in srgb, var(--sr-accent) 8%, transparent);
+}
+.wep-section-hdr {
+  cursor: default;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.wep-drag-grip {
+  font-size: 13px;
+  color: var(--sr-muted);
+  cursor: grab;
+  letter-spacing: -2px;
+  line-height: 1;
+}
+.weapon-section[draggable]:hover .wep-drag-grip { color: var(--sr-accent); }
 
 /* ── Attributes ──────────────────────────────────────────── */
 .attributes-grid {
@@ -2949,6 +2998,11 @@ label.act-field input[type=number] {
   background: color-mix(in srgb, var(--sr-green) 15%, transparent);
   color: var(--sr-green) !important;
 }
+.sr-veh-auto-active {
+  border-color: var(--sr-gold) !important;
+  background: color-mix(in srgb, var(--sr-gold) 15%, transparent);
+  color: var(--sr-gold) !important;
+}
 
 .sr-veh-unlink {
   background: transparent;
@@ -2992,6 +3046,8 @@ label.act-field input[type=number] {
 .sr3e-template-btn-remove:hover { border-color: var(--sr-red); color: var(--sr-red); }
 .sr3e-template-mark { opacity: 0.45; }
 .sr3e-template-mark:hover { opacity: 1; }
+.sr3e-live-btn { color: var(--sr-green); border-color: var(--sr-green); }
+.sr3e-live-btn:hover { background: color-mix(in srgb,var(--sr-green) 15%,transparent); }
 
 /* ── Compendium picker button (item sheet header) ────────── */
 .btn-compendium-pick {

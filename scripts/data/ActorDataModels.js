@@ -123,7 +123,6 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
         }),
       }),
       wounds:         _wounds(),
-      linkedVehicles: new ArrayField(new ObjectField()),
     };
   }
 }
@@ -175,7 +174,6 @@ export class NpcData extends foundry.abstract.TypeDataModel {
         }),
       }),
       wounds:         _wounds(),
-      linkedVehicles: new ArrayField(new ObjectField()),
     };
   }
 }
@@ -259,8 +257,8 @@ export class VehicleData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
       vehicleType:  new StringField({ initial: 'car' }),
-      controlledBy: new StringField({ initial: '' }),
-      vcrMode:      new BooleanField({ initial: false }),
+      driverActorId: new StringField({ initial: '' }),
+      controlMode:   new StringField({ initial: '' }),
       seating:      new NumberField({ integer: true, initial: 4, min: 0 }),
       entryPoints:  new StringField({ initial: '' }),
       cost:         new NumberField({ integer: true, initial: 0, min: 0 }),

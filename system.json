@@ -1,8 +1,9 @@
-  {
+{
   "id": "The2ndChumming3e",
-"title": "The 2nd Chumming — Shadowrun 3rd Edition",
+  "title": "The 2nd Chumming — Shadowrun 3rd Edition",
   "description": "An unofficial implementation of Shadowrun 3rd Edition for Foundry VTT.",
   "version": "0.2.0",
+  "socket": true,
   "compatibility": {
     "minimum": "13",
     "verified": "14"
@@ -27,274 +28,238 @@
   ],
   "documentTypes": {
     "Actor": {
-      "character": {
-        "htmlFields": [
-          "biography",
-          "notes"
-        ]
-      },
-      "npc": {
-        "htmlFields": ["notes"]
-      },
-      "vehicle": {
-        "htmlFields": ["notes"]
-      },
-      "host": {
-        "htmlFields": ["notes"]
-      },
-      "ic": {
-        "htmlFields": ["notes"]
-      },
-      "agent": {
-        "htmlFields": ["notes"]
-      }
+      "character": { "htmlFields": ["biography", "notes"] },
+      "npc":       { "htmlFields": ["notes"] },
+      "vehicle":   { "htmlFields": ["notes"] },
+      "host":      { "htmlFields": ["notes"] },
+      "ic":        { "htmlFields": ["notes"] },
+      "agent":     { "htmlFields": ["notes"] }
     },
     "Item": {
-      "melee": {
-        "htmlFields": ["notes"]
-      },
-      "thrown": {
-        "htmlFields": ["notes"]
-      },
-      "projectile": {
-        "htmlFields": [
-          "notes"
-        ]
-      },
-      "firearm": {
-        "htmlFields": [
-          "notes"
-        ]
-      },
-      "ammunition": {
-        "htmlFields": [
-          "notes"
-        ]
-      },
-      "armor": {
-        "htmlFields": [
-          "notes"
-        ]
-      },
-      "gear": {
-        "htmlFields": [
-          "description"
-        ]
-      },
-      "skill": {
-        "htmlFields": [
-          "description"
-        ]
-      },
-      "quality": {
-        "htmlFields": [
-          "description"
-        ]
-      },
-      "cyberware": {
-        "htmlFields": [
-          "description"
-        ]
-      },
-      "bioware": {
-        "htmlFields": [
-          "description"
-        ]
-      },
-      "adeptpower": {
-        "htmlFields": [
-          "description"
-        ]
-      },
-      "vehiclemod": {
-        "htmlFields": [
-          "description"
-        ]
-      },
-      "vehicleweapon": {
-        "htmlFields": [
-          "notes"
-        ]
-      },
-      "spell": {
-        "htmlFields": [
-          "description"
-        ]
-      },
-      "complex_form": {
-        "htmlFields": [
-          "description"
-        ]
-      },
-      "summoning": {
-        "htmlFields": [
-          "notes"
-        ]
-      },
-      "program": {
-        "htmlFields": [
-          "description",
-          "effect"
-        ]
-      },
-      "cyberdeck": {
-        "htmlFields": [
-          "notes"
-        ]
-      },
-      "contact": {
-        "htmlFields": [
-          "notes"
-        ]
-      }
+      "melee":        { "htmlFields": ["notes"] },
+      "thrown":       { "htmlFields": ["notes"] },
+      "projectile":   { "htmlFields": ["notes"] },
+      "firearm":      { "htmlFields": ["notes"] },
+      "ammunition":   { "htmlFields": ["notes"] },
+      "armor":        { "htmlFields": ["notes"] },
+      "gear":         { "htmlFields": ["description"] },
+      "skill":        { "htmlFields": ["description"] },
+      "quality":      { "htmlFields": ["description"] },
+      "cyberware":    { "htmlFields": ["description"] },
+      "bioware":      { "htmlFields": ["description"] },
+      "adeptpower":   { "htmlFields": ["description"] },
+      "vehiclemod":   { "htmlFields": ["description"] },
+      "vehicleweapon":{ "htmlFields": ["notes"] },
+      "spell":        { "htmlFields": ["description"] },
+      "complex_form": { "htmlFields": ["description"] },
+      "summoning":    { "htmlFields": ["notes"] },
+      "program":      { "htmlFields": ["description", "effect"] },
+      "cyberdeck":    { "htmlFields": ["notes"] },
+      "contact":      { "htmlFields": ["notes"] }
     }
   },
   "packs": [
     {
       "name": "sr3e-adept-powers",
       "label": "Adept Powers",
-      "path": "packs/sr3e-adept-powers.db",
+      "path": "packs/sr3e-adept-powers",
       "type": "Item",
       "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" },
       "flags": { "The2ndChumming3e": { "itemTypes": ["adeptpower"] } }
     },
     {
       "name": "sr3e-bioware",
       "label": "Bioware",
-      "path": "packs/sr3e-bioware.db",
+      "path": "packs/sr3e-bioware",
       "type": "Item",
       "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" },
       "flags": { "The2ndChumming3e": { "itemTypes": ["bioware"] } }
     },
     {
       "name": "sr3e-cyberware",
       "label": "Cyberware",
-      "path": "packs/sr3e-cyberware.db",
+      "path": "packs/sr3e-cyberware",
       "type": "Item",
       "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" },
       "flags": { "The2ndChumming3e": { "itemTypes": ["cyberware"] } }
     },
     {
       "name": "sr3e-drones",
       "label": "Drones",
-      "path": "packs/sr3e-drones.db",
+      "path": "packs/sr3e-drones",
       "type": "Actor",
-      "system": "The2ndChumming3e"
+      "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
     {
       "name": "sr3e-firearms",
       "label": "Firearms",
-      "path": "packs/sr3e-firearms.db",
+      "path": "packs/sr3e-firearms",
       "type": "Item",
       "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" },
       "flags": { "The2ndChumming3e": { "itemTypes": ["firearm"] } }
     },
     {
       "name": "sr3e-melee",
       "label": "Melee Weapons",
-      "path": "packs/sr3e-melee.db",
+      "path": "packs/sr3e-melee",
       "type": "Item",
       "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" },
       "flags": { "The2ndChumming3e": { "itemTypes": ["melee"] } }
     },
     {
       "name": "sr3e-projectiles",
       "label": "Projectile Weapons",
-      "path": "packs/sr3e-projectiles.db",
+      "path": "packs/sr3e-projectiles",
       "type": "Item",
       "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" },
       "flags": { "The2ndChumming3e": { "itemTypes": ["projectile", "thrown"] } }
     },
     {
       "name": "sr3e-spells",
       "label": "Spells",
-      "path": "packs/sr3e-spells.db",
+      "path": "packs/sr3e-spells",
       "type": "Item",
       "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" },
       "flags": { "The2ndChumming3e": { "itemTypes": ["spell"] } }
     },
     {
       "name": "sr3e-vehicle-mods",
       "label": "Vehicle Mods",
-      "path": "packs/sr3e-vehicle-mods.db",
+      "path": "packs/sr3e-vehicle-mods",
       "type": "Item",
-      "system": "The2ndChumming3e"
+      "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
     {
       "name": "sr3e-vehicle-weapons",
       "label": "Vehicle Weapons",
-      "path": "packs/sr3e-vehicle-weapons.db",
+      "path": "packs/sr3e-vehicle-weapons",
       "type": "Item",
-      "system": "The2ndChumming3e"
+      "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
     {
       "name": "sr3e-vehicles",
       "label": "Vehicles",
-      "path": "packs/sr3e-vehicles.db",
+      "path": "packs/sr3e-vehicles",
       "type": "Actor",
-      "system": "The2ndChumming3e"
+      "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
     {
       "name": "sr3e-programs",
       "label": "Matrix Programs",
-      "path": "packs/sr3e-programs.db",
+      "path": "packs/sr3e-programs",
       "type": "Item",
       "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" },
       "flags": { "The2ndChumming3e": { "itemTypes": ["program"] } }
     },
     {
       "name": "sr3e-cyberdecks",
       "label": "Cyberdecks",
-      "path": "packs/sr3e-cyberdecks.db",
+      "path": "packs/sr3e-cyberdecks",
       "type": "Item",
       "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" },
       "flags": { "The2ndChumming3e": { "itemTypes": ["cyberdeck"] } }
     },
     {
       "name": "sr3e-armor",
       "label": "Armor",
-      "path": "packs/sr3e-armor.db",
+      "path": "packs/sr3e-armor",
       "type": "Item",
       "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" },
       "flags": { "The2ndChumming3e": { "itemTypes": ["armor"] } }
     },
     {
       "name": "sr3e-sample-characters",
       "label": "Sample Characters",
-      "path": "packs/sr3e-sample-characters.db",
+      "path": "packs/sr3e-sample-characters",
       "type": "Actor",
-      "system": "The2ndChumming3e"
+      "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
     {
       "name": "sr3e-ic",
       "label": "Intrusion Countermeasures",
-      "path": "packs/sr3e-ic.db",
+      "path": "packs/sr3e-ic",
       "type": "Actor",
-      "system": "The2ndChumming3e"
+      "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
     {
       "name": "sr3e-agents",
       "label": "Programming Agents",
-      "path": "packs/sr3e-agents.db",
+      "path": "packs/sr3e-agents",
       "type": "Actor",
-      "system": "The2ndChumming3e"
+      "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
     {
       "name": "sr3e-hosts",
       "label": "DataHosts",
-      "path": "packs/sr3e-hosts.db",
+      "path": "packs/sr3e-hosts",
       "type": "Actor",
-      "system": "The2ndChumming3e"
+      "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
     {
       "name": "sr3e-skills",
       "label": "Skills",
       "path": "packs/sr3e-skills",
       "type": "Item",
-      "system": "The2ndChumming3e"
+      "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     }
   ],
-      "url": "https://github.com/williamdiffey/The2ndChumming3e",
+  "packFolders": [
+    {
+      "name": "Characters",
+      "sorting": "a",
+      "packs": ["sr3e-sample-characters"]
+    },
+    {
+      "name": "Weapons & Gear",
+      "sorting": "a",
+      "packs": ["sr3e-firearms", "sr3e-melee", "sr3e-projectiles", "sr3e-armor", "sr3e-vehicle-weapons"]
+    },
+    {
+      "name": "Augmentations",
+      "sorting": "a",
+      "packs": ["sr3e-cyberware", "sr3e-bioware", "sr3e-adept-powers"]
+    },
+    {
+      "name": "Magic",
+      "sorting": "a",
+      "packs": ["sr3e-spells"]
+    },
+    {
+      "name": "Vehicles & Drones",
+      "sorting": "a",
+      "packs": ["sr3e-vehicles", "sr3e-drones", "sr3e-vehicle-mods"]
+    },
+    {
+      "name": "Matrix",
+      "sorting": "a",
+      "packs": ["sr3e-cyberdecks", "sr3e-programs", "sr3e-ic", "sr3e-agents", "sr3e-hosts"]
+    },
+    {
+      "name": "Reference",
+      "sorting": "a",
+      "packs": ["sr3e-skills"]
+    }
+  ],
+  "url": "https://github.com/williamdiffey/The2ndChumming3e",
   "manifest": "https://raw.githubusercontent.com/williamdiffey/The2ndChumming3e/main/system.json",
   "download": "https://github.com/williamdiffey/The2ndChumming3e/archive/refs/heads/main.zip"
 }

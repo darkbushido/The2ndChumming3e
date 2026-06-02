@@ -55,15 +55,14 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         ejectSlot:         SR3EActorSheet._onEjectSlot,
         toggleBurnSlot:    SR3EActorSheet._onToggleBurnSlot,
         rollSlotProgram:   SR3EActorSheet._onRollSlotProgram,
-        linkVehicle:       SR3EActorSheet._onLinkVehicle,
         createLinkVehicle: SR3EActorSheet._onCreateLinkVehicle,
-        unlinkVehicle:     SR3EActorSheet._onUnlinkVehicle,
         toggleVehicleMode: SR3EActorSheet._onToggleVehicleMode,
         openVehicle:       SR3EActorSheet._onOpenVehicle,
         openHost:          SR3EActorSheet._onOpenHost,
         toggleStored:      SR3EActorSheet._onToggleStored,
         toggleTemplate:    SR3EActorSheet._onToggleTemplate,
         deployTemplate:    SR3EActorSheet._onDeployTemplate,
+        markAsLive:        SR3EActorSheet._onMarkAsLive,
 
         toggleFullDefense:  SR3EActorSheet._onToggleFullDefense,
         resetRecoil:        SR3EActorSheet._onResetRecoil,
@@ -107,8 +106,45 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     this._activateListeners(content);
   }
 
+  // Called by Foundry after every render (initial open AND re-renders).
+  // This is the correct place for Foundry hook registration — _replaceHTML
+  // is skipped on the very first render (_insertElement is used instead).
+  _onRender(context, options) {
+    super._onRender?.(context, options);
+    this._registerPersistentHooks();
+  }
+
+  _registerPersistentHooks() {
+    // Host hook — refresh when the linked host actor updates
+    if (this._hostUpdateHookId) Hooks.off('updateActor', this._hostUpdateHookId);
+    this._hostUpdateHookId = null;
+    const trackedHostId = this.actor.system?.activeHostId ?? '';
+    if (trackedHostId) {
+      this._hostUpdateHookId = Hooks.on('updateActor', (updated) => {
+        if (updated.id === trackedHostId) this.render();
+      });
+    }
+
+    // Vehicle hooks — refresh vehicles tab when any vehicle is updated/deleted
+    if (this._vehicleUpdateHookId) Hooks.off('updateActor', this._vehicleUpdateHookId);
+    if (this._vehicleDeleteHookId) Hooks.off('deleteActor', this._vehicleDeleteHookId);
+    this._vehicleUpdateHookId = Hooks.on('updateActor', (updated) => {
+      if (updated.type === 'vehicle') this.render();
+    });
+    this._vehicleDeleteHookId = Hooks.on('deleteActor', (deleted) => {
+      if (deleted.type === 'vehicle') this.render();
+    });
+  }
+
+  _onClose(options) {
+    super._onClose?.(options);
+    if (this._vehicleUpdateHookId) { Hooks.off('updateActor', this._vehicleUpdateHookId); this._vehicleUpdateHookId = null; }
+    if (this._vehicleDeleteHookId) { Hooks.off('deleteActor', this._vehicleDeleteHookId); this._vehicleDeleteHookId = null; }
+    if (this._hostUpdateHookId)    { Hooks.off('updateActor', this._hostUpdateHookId);    this._hostUpdateHookId    = null; }
+  }
+
   /* ------------------------------------------------------------------ */
-  /*  Listener attachment                                                 */
+  /*  Listener attachment (DOM only — hooks are in _registerPersistentHooks) */
   /* ------------------------------------------------------------------ */
 
   _activateListeners(html) {
@@ -118,16 +154,6 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         this.render();
       })
     );
-
-    // Re-render this sheet whenever the connected host updates (keeps prompts, marks, node fresh)
-    if (this._hostUpdateHookId) Hooks.off('updateActor', this._hostUpdateHookId);
-    this._hostUpdateHookId = null;
-    const trackedHostId = this.actor.system?.activeHostId ?? '';
-    if (trackedHostId) {
-      this._hostUpdateHookId = Hooks.on('updateActor', (updated) => {
-        if (updated.id === trackedHostId) this.render();
-      });
-    }
 
     if (!this.isEditable) return;
 
@@ -254,6 +280,52 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     // html.querySelectorAll('[data-action="woundBox"]').forEach(el =>
     //   el.addEventListener('click', ev => SR3EActorSheet._onWoundBox.call(this, ev, el))
     // );
+
+    // Weapons tab: drag-and-drop section reordering
+    // dragstart is on the h3 header (ev.target is the h3, not the section div)
+    // dragover/drop are on the section wrapper
+    let _wepDragSrc = null;
+    html.querySelectorAll('h3.wep-section-hdr[draggable]').forEach(hdr => {
+      hdr.addEventListener('dragstart', ev => {
+        const section = hdr.closest('.weapon-section');
+        if (!section) return;
+        _wepDragSrc = section;
+        ev.dataTransfer.effectAllowed = 'move';
+        ev.dataTransfer.setData('text/plain', section.dataset.section);
+        setTimeout(() => { if (_wepDragSrc) _wepDragSrc.style.opacity = '0.45'; }, 0);
+      });
+      hdr.addEventListener('dragend', () => {
+        if (_wepDragSrc) _wepDragSrc.style.opacity = '';
+        html.querySelectorAll('.weapon-section').forEach(s => s.classList.remove('wep-drag-over'));
+        _wepDragSrc = null;
+      });
+    });
+    html.querySelectorAll('.weapon-section').forEach(section => {
+      section.addEventListener('dragover', ev => {
+        if (!_wepDragSrc || section === _wepDragSrc) return;
+        ev.preventDefault();
+        ev.dataTransfer.dropEffect = 'move';
+        html.querySelectorAll('.weapon-section').forEach(s => s.classList.remove('wep-drag-over'));
+        section.classList.add('wep-drag-over');
+      });
+      section.addEventListener('dragleave', ev => {
+        if (!ev.relatedTarget || !section.contains(ev.relatedTarget)) {
+          section.classList.remove('wep-drag-over');
+        }
+      });
+      section.addEventListener('drop', ev => {
+        ev.preventDefault();
+        if (!_wepDragSrc || _wepDragSrc === section) return;
+        const allSections = [...html.querySelectorAll('.weapon-section')];
+        const srcIdx  = allSections.indexOf(_wepDragSrc);
+        const destIdx = allSections.indexOf(section);
+        const newOrder = allSections.map(s => s.dataset.section);
+        newOrder.splice(srcIdx, 1);
+        newOrder.splice(destIdx, 0, _wepDragSrc.dataset.section);
+        try { localStorage.setItem(`sr3e-weapons-order-${this.actor.id}`, JSON.stringify(newOrder)); } catch { /* ignore */ }
+        this.render();
+      });
+    });
   }
 
   /* ------------------------------------------------------------------ */
@@ -274,7 +346,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           ${this._tabMagic(actor, sys)}
           ${this._tabGear(actor)}
           ${this._tabContacts(actor)}
-          ${this._tabVehicles(actor, sys)}
+          ${this._tabVehicles(actor)}
           ${this._tabCyber(actor, sys)}
           ${this._tabMatrix(actor, sys)}
           ${this._tabStored(actor)}
@@ -291,7 +363,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   _header(actor, sys) {
     const w          = sys.wounds ?? {};
-    const isTemplate = !!actor.getFlag('The2ndChumming3e', 'isTemplate');
+    const isTemplate    = actor.getFlag('The2ndChumming3e', 'isTemplate');
+    const compSrc       = !!actor._stats?.compendiumSource;
+    const appearsInUI   = game.sr3e.isLiveActor(actor);
 
     const str     = sys.attributes?.strength?.value ?? 0;
     const carried = this._carryWeight(actor);
@@ -319,11 +393,13 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           <div class="header-top">
             <input class="actor-name" type="text" name="name" value="${actor.name}"/>
             <div class="sr3e-template-controls">
-              ${isTemplate
+              ${isTemplate === true
                 ? `<span class="sr3e-template-badge">TEMPLATE</span>
                    <button type="button" class="sr3e-template-btn" data-action="deployTemplate" title="Create a working copy with the template flag removed">Deploy Copy</button>
                    <button type="button" class="sr3e-template-btn sr3e-template-btn-remove" data-action="toggleTemplate" title="Remove template flag — actor will appear in combat targeting">Remove Flag</button>`
-                : `<button type="button" class="sr3e-template-btn sr3e-template-mark" data-action="toggleTemplate" title="Mark as template — hides from combat targeting dialogs">Mark as Template</button>`
+                : !appearsInUI
+                  ? `<button type="button" class="sr3e-template-btn sr3e-live-btn" data-action="markAsLive" title="Mark as live actor — will appear in targeting and linking dialogs">Mark as Live</button>`
+                  : `<button type="button" class="sr3e-template-btn sr3e-template-mark" data-action="toggleTemplate" title="Mark as template — hides from combat targeting dialogs">Mark as Template</button>`
               }
             </div>
           </div>
@@ -722,12 +798,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   const BOW_CATS    = new Set(['Bow', 'LCB', 'MCB', 'HCB', 'SL']);
   const THROWN_CATS = new Set(['TK', 'SH', 'Imp', 'Ctrp', 'GR', 'BOL', 'THR', 'other']);
-
-  const ARMED_CATS   = new Set(['EDG', 'CLB', 'POL', 'WHP']);
+  const ARMED_CATS  = new Set(['EDG', 'CLB', 'POL', 'WHP']);
   const UNARMED_CATS = new Set(['CYB', 'UNA']);
 
-  const armedMelee        = melees.filter(w => ARMED_CATS.has(w.system.category ?? ''));
-  const unarmedCyber      = melees.filter(w => UNARMED_CATS.has(w.system.category ?? ''));
+  const armedMelee         = melees.filter(w => ARMED_CATS.has(w.system.category ?? ''));
+  const unarmedCyber       = melees.filter(w => UNARMED_CATS.has(w.system.category ?? ''));
   const uncategorisedMelee = melees.filter(w => {
     const cat = w.system.category ?? '';
     return !ARMED_CATS.has(cat) && !UNARMED_CATS.has(cat);
@@ -735,6 +810,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   const categorisedFirearms   = firearms.filter(w => (w.system.category ?? '') !== '');
   const uncategorisedFirearms = firearms.filter(w => (w.system.category ?? '') === '');
+
+  const equippedMeleeId = actor.system.equippedMelee ?? '';
+  const isAwakened      = (actor.system.attributes?.magic?.base ?? 0) > 0;
 
   const fRows = categorisedFirearms.length ? categorisedFirearms.map(w => `
     <div class="item-row" data-item-id="${w.id}">
@@ -746,9 +824,6 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       <span class="item-cell">${w.system.ammunition || '—'}</span>
       ${this._itemControls(w.id, true, 'rollWeapon', false)}
     </div>`).join('') : '<p class="empty-list">No firearms.</p>';
-
-  const equippedMeleeId = actor.system.equippedMelee ?? '';
-  const isAwakened      = (actor.system.attributes?.magic?.base ?? 0) > 0;
 
   const armedRows = armedMelee.length ? armedMelee.map(w => {
     const isEquipped  = equippedMeleeId === w.id;
@@ -782,11 +857,6 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     </div>`;
   }).join('') : '<p class="empty-list">No unarmed/cyber weapons.</p>';
 
-  const _uncatSection = (rows, header) => `
-    <h3 class="section-hdr" style="margin-top:1rem;color:var(--sr-amber)">${header}</h3>
-    <div class="list-header"><span>Name</span><span>Damage</span><span>Reach/Mode</span><span>Conceal</span><span>Weight (kg)</span><span></span></div>
-    ${rows}`;
-
   const _projRow = w => `
     <div class="item-row" data-item-id="${w.id}">
       <span class="item-name">${w.name}</span>
@@ -797,79 +867,107 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ${this._itemControls(w.id, true, 'rollWeapon', false)}
     </div>`;
 
-  const bows          = projectiles.filter(i => BOW_CATS.has(i.system.category ?? ''));
-  const legacyThrown  = projectiles.filter(i => THROWN_CATS.has(i.system.category ?? ''));
-  const uncatProj     = projectiles.filter(i => {
+  const bows         = projectiles.filter(i => BOW_CATS.has(i.system.category ?? ''));
+  const legacyThrown = projectiles.filter(i => THROWN_CATS.has(i.system.category ?? ''));
+  const uncatProj    = projectiles.filter(i => {
     const cat = i.system.category ?? '';
     return !BOW_CATS.has(cat) && !THROWN_CATS.has(cat) && cat !== '';
   });
-  const allThrown = [...thrown, ...legacyThrown];
+  const allThrown  = [...thrown, ...legacyThrown];
 
-  const bowRows    = bows.length    ? bows.map(_projRow).join('')    : '<p class="empty-list">No bows or crossbows.</p>';
+  const bowRows    = bows.length     ? bows.map(_projRow).join('')     : '<p class="empty-list">No bows or crossbows.</p>';
   const thrownRows = allThrown.length ? allThrown.map(_projRow).join('') : '<p class="empty-list">No thrown weapons.</p>';
 
-  return `<div class="tab ${this._activeTab === 'weapons' ? 'active' : ''}" data-tab="weapons" style="overflow-y:auto">
-    <h3 class="section-hdr">Melee — Armed (Edged/Clubs/Polearms/Whips)</h3>
-    <div class="skill-note"><i class="fas fa-fist-raised"></i> Uses Armed Combat skills (Strength)</div>
-    <div class="list-header"><span>Name</span><span>Damage</span><span>Reach</span><span>Conceal</span><span>Weight (kg)</span><span></span></div>
-    ${armedRows}
-    <button type="button" class="btn-add" data-action="itemCreate" data-type="melee">+ Add Armed Melee</button>
+  const uncatMeleeHtml = uncategorisedMelee.length ? `
+    <h3 class="section-hdr" style="margin-top:0.75rem;color:var(--sr-amber)">Uncategorised Melee (set category in item sheet)</h3>
+    <div class="list-header"><span>Name</span><span>Damage</span><span>Reach/Mode</span><span>Conceal</span><span>Weight (kg)</span><span></span></div>
+    ${uncategorisedMelee.map(w => {
+      const isEquipped  = equippedMeleeId === w.id;
+      const isFocus     = w.system.isFocus     ?? false;
+      const focusActive = w.system.focusActive ?? false;
+      return `
+      <div class="item-row" data-item-id="${w.id}">
+        <span class="item-name">${w.name}</span>
+        <span class="item-cell">${w.system.damage || '—'}</span>
+        <span class="item-cell">Reach ${w.system.reach ?? 0}</span>
+        <span class="item-cell">${w.system.concealability ?? '—'}</span>
+        <span class="item-cell">${w.system.weight ?? 0}</span>
+        ${this._meleeControls(w.id, isEquipped, isAwakened, isFocus, focusActive, false)}
+      </div>`;
+    }).join('')}` : '';
 
-    <h3 class="section-hdr" style="margin-top:1rem">Melee — Unarmed &amp; Cyber Implants</h3>
-    <div class="skill-note"><i class="fas fa-hand-rock"></i> Uses Unarmed Combat skill (Strength)</div>
-    <div class="list-header"><span>Name</span><span>Damage</span><span>Reach</span><span>Conceal</span><span>Weight (kg)</span><span></span></div>
-    ${unarmedRows}
-    <button type="button" class="btn-add" data-action="itemCreate" data-type="melee">+ Add Unarmed/Cyber</button>
-
-    ${uncategorisedMelee.length ? _uncatSection(
-        uncategorisedMelee.map(w => {
-          const isEquipped  = equippedMeleeId === w.id;
-          const isFocus     = w.system.isFocus     ?? false;
-          const focusActive = w.system.focusActive ?? false;
-          return `
-          <div class="item-row" data-item-id="${w.id}">
-            <span class="item-name">${w.name}</span>
-            <span class="item-cell">${w.system.damage || '—'}</span>
-            <span class="item-cell">Reach ${w.system.reach ?? 0}</span>
-            <span class="item-cell">${w.system.concealability ?? '—'}</span>
-            <span class="item-cell">${w.system.weight ?? 0}</span>
-            ${this._meleeControls(w.id, isEquipped, isAwakened, isFocus, focusActive, false)}
-          </div>`;
-        }).join(''),
-        'Uncategorised Melee (set category in item sheet)'
-      ) : ''}
-
-    <h3 class="section-hdr" style="margin-top:1rem">Firearms</h3>
+  const uncatFirearmsHtml = uncategorisedFirearms.length ? `
+    <h3 class="section-hdr" style="margin-top:0.75rem;color:var(--sr-amber)">Uncategorised Firearms (set category in item sheet)</h3>
     <div class="list-header"><span>Name</span><span>Damage</span><span>Mode</span><span>Conceal</span><span>Weight (kg)</span><span>Ammo</span><span></span></div>
-    ${fRows}
-    ${uncategorisedFirearms.length ? _uncatSection(
-        uncategorisedFirearms.map(w => `
-          <div class="item-row" data-item-id="${w.id}">
-            <span class="item-name">${w.name}</span>
-            <span class="item-cell">${w.system.damage || '—'}</span>
-            <span class="item-cell">${w.system.mode || '—'}</span>
-            <span class="item-cell">${w.system.concealability ?? '—'}</span>
-            <span class="item-cell">${w.system.weight ?? 0}</span>
-            <span class="item-cell">${w.system.ammunition || '—'}</span>
-            ${this._itemControls(w.id, true, 'rollWeapon', false)}
-          </div>`).join(''),
-        'Uncategorised Firearms (set category in item sheet)'
-      ) : ''}
-    <button type="button" class="btn-add" data-action="itemCreate" data-type="firearm">+ Add Firearm</button>
+    ${uncategorisedFirearms.map(w => `
+      <div class="item-row" data-item-id="${w.id}">
+        <span class="item-name">${w.name}</span>
+        <span class="item-cell">${w.system.damage || '—'}</span>
+        <span class="item-cell">${w.system.mode || '—'}</span>
+        <span class="item-cell">${w.system.concealability ?? '—'}</span>
+        <span class="item-cell">${w.system.weight ?? 0}</span>
+        <span class="item-cell">${w.system.ammunition || '—'}</span>
+        ${this._itemControls(w.id, true, 'rollWeapon', false)}
+      </div>`).join('')}` : '';
 
-    <h3 class="section-hdr" style="margin-top:1rem">Projectiles (Bows &amp; Crossbows)</h3>
-    <div class="list-header"><span>Name</span><span>Damage</span><span>Str Min</span><span>Conceal</span><span>Weight (kg)</span><span></span></div>
-    ${bowRows}
-    ${uncatProj.length ? `
-      <h3 class="section-hdr" style="margin-top:0.5rem;color:var(--sr-amber)">Uncategorised Projectiles</h3>
-      ${uncatProj.map(_projRow).join('')}
-    ` : ''}
-    <button type="button" class="btn-add" data-action="itemCreate" data-type="projectile">+ Add Bow / Crossbow</button>
+  const _dragHdr = label => `<span class="wep-drag-grip" title="Drag to reorder">&#8942;&#8942;</span>${label}`;
 
-    <h3 class="section-hdr" style="margin-top:1rem">Thrown Weapons</h3>
-    <div class="list-header"><span>Name</span><span>Damage</span><span>Str Min</span><span>Conceal</span><span>Weight (kg)</span><span></span></div>
-    ${thrownRows}
-    <button type="button" class="btn-add" data-action="itemCreate" data-type="thrown">+ Add Thrown Weapon</button>
+  const sections = {
+    'firearms': `
+      <div class="weapon-section" data-section="firearms">
+        <h3 class="section-hdr wep-section-hdr" draggable="true">${_dragHdr('Firearms')}</h3>
+        <div class="list-header"><span>Name</span><span>Damage</span><span>Mode</span><span>Conceal</span><span>Weight (kg)</span><span>Ammo</span><span></span></div>
+        ${fRows}
+        ${uncatFirearmsHtml}
+        <button type="button" class="btn-add" data-action="itemCreate" data-type="firearm">+ Add Firearm</button>
+      </div>`,
+    'melee-armed': `
+      <div class="weapon-section" data-section="melee-armed">
+        <h3 class="section-hdr wep-section-hdr" draggable="true">${_dragHdr('Melee')} <span style="font-size:11px;font-weight:normal;color:var(--sr-muted)">(Edged / Clubs / Polearms / Whips)</span></h3>
+        <div class="skill-note"><i class="fas fa-fist-raised"></i> Uses Armed Combat skills (Strength)</div>
+        <div class="list-header"><span>Name</span><span>Damage</span><span>Reach</span><span>Conceal</span><span>Weight (kg)</span><span></span></div>
+        ${armedRows}
+        ${uncatMeleeHtml}
+        <button type="button" class="btn-add" data-action="itemCreate" data-type="melee">+ Add Armed Melee</button>
+      </div>`,
+    'thrown': `
+      <div class="weapon-section" data-section="thrown">
+        <h3 class="section-hdr wep-section-hdr" draggable="true">${_dragHdr('Thrown Weapons')}</h3>
+        <div class="list-header"><span>Name</span><span>Damage</span><span>Str Min</span><span>Conceal</span><span>Weight (kg)</span><span></span></div>
+        ${thrownRows}
+        <button type="button" class="btn-add" data-action="itemCreate" data-type="thrown">+ Add Thrown Weapon</button>
+      </div>`,
+    'projectile': `
+      <div class="weapon-section" data-section="projectile">
+        <h3 class="section-hdr wep-section-hdr" draggable="true">${_dragHdr('Projectiles')} <span style="font-size:11px;font-weight:normal;color:var(--sr-muted)">(Bows &amp; Crossbows)</span></h3>
+        <div class="list-header"><span>Name</span><span>Damage</span><span>Str Min</span><span>Conceal</span><span>Weight (kg)</span><span></span></div>
+        ${bowRows}
+        ${uncatProj.length ? `
+          <h3 class="section-hdr" style="margin-top:0.5rem;color:var(--sr-amber)">Uncategorised Projectiles</h3>
+          ${uncatProj.map(_projRow).join('')}
+        ` : ''}
+        <button type="button" class="btn-add" data-action="itemCreate" data-type="projectile">+ Add Bow / Crossbow</button>
+      </div>`,
+    'cyber-unarmed': `
+      <div class="weapon-section" data-section="cyber-unarmed">
+        <h3 class="section-hdr wep-section-hdr" draggable="true">${_dragHdr('Cyber &amp; Unarmed')}</h3>
+        <div class="skill-note"><i class="fas fa-hand-rock"></i> Uses Unarmed Combat skill (Strength)</div>
+        <div class="list-header"><span>Name</span><span>Damage</span><span>Reach</span><span>Conceal</span><span>Weight (kg)</span><span></span></div>
+        ${unarmedRows}
+        <button type="button" class="btn-add" data-action="itemCreate" data-type="melee">+ Add Unarmed/Cyber</button>
+      </div>`,
+  };
+
+  const DEFAULT_ORDER = ['firearms', 'melee-armed', 'thrown', 'projectile', 'cyber-unarmed'];
+  let order = DEFAULT_ORDER;
+  try {
+    const stored = localStorage.getItem(`sr3e-weapons-order-${actor.id}`);
+    if (stored) order = JSON.parse(stored);
+  } catch { /* ignore */ }
+  const fullOrder = [...order.filter(id => sections[id]), ...DEFAULT_ORDER.filter(id => !order.includes(id))];
+
+  return `<div class="tab ${this._activeTab === 'weapons' ? 'active' : ''}" data-tab="weapons" style="overflow-y:auto">
+    ${fullOrder.map(id => sections[id]).join('')}
   </div>`;
 }
 
@@ -1102,10 +1200,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const decks          = actor.items.filter(i => i.type === 'cyberdeck' && !i.getFlag('The2ndChumming3e', 'stored')).sort((a, b) => a.name.localeCompare(b.name));
     const programs       = actor.items.filter(i => i.type === 'program'   && !i.getFlag('The2ndChumming3e', 'stored')).sort((a, b) => a.name.localeCompare(b.name));
 
-    const vcrActive = (sys.linkedVehicles ?? []).some(({ actorId }) => {
-      const v = game.actors?.get(actorId);
-      return !!(v?.system?.controlledBy?.trim() && v?.system?.vcrMode);
-    });
+    const vcrActive = game.actors?.some(a =>
+      a.type === 'vehicle' && a.system?.driverActorId === actor.id && a.system?.controlMode === 'vcr'
+    ) ?? false;
     const vrActive  = currentMode === 'VR-Cold' || currentMode === 'VR-Hot';
 
     // --- User mode buttons ---
@@ -1714,8 +1811,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     </div>`;
   }
 
-  _tabVehicles(actor, sys) {
-    const linked = sys.linkedVehicles ?? [];
+  _tabVehicles(actor) {
+    const vehicles = game.actors?.filter(a =>
+      a.type === 'vehicle' && a.system?.driverActorId === actor.id
+    ) ?? [];
 
     const statKeys = [
       ['handling', 'Hand'],
@@ -1726,10 +1825,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ['sensor',   'Sens'],
     ];
 
-    const rows = linked.map(({ actorId }) => {
-      const vActor = game.actors?.get(actorId);
-      const name   = vActor?.name ?? `[Missing: ${actorId.slice(0,6)}]`;
-      const attr   = vActor?.system?.attributes ?? {};
+    const rows = vehicles.map(vActor => {
+      const actorId = vActor.id;
+      const attr    = vActor.system?.attributes ?? {};
 
       const statsHtml = statKeys.map(([key, label]) => `
         <span class="sr-veh-stat">
@@ -1737,36 +1835,35 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           <span class="sr-veh-stat-val">${attr[key]?.base ?? 0}</span>
         </span>`).join('');
 
-      // Mode is authoritative on the vehicle actor, not in linkedVehicles
-      const vsys     = vActor?.system ?? {};
-      const vcrActive = !!(vsys.controlledBy?.trim() && vsys.vcrMode);
-      const rcdActive = !!(vsys.controlledBy?.trim() && !vsys.vcrMode);
+      const mode       = vActor.system?.controlMode ?? '';
+      const vcrActive  = mode === 'vcr';
+      const rcdActive  = mode === 'rcd';
+      const autoActive = !vcrActive && !rcdActive;
 
       return `
         <div class="sr-veh-row">
           <button type="button" class="sr-veh-name-btn" data-action="openVehicle" data-actor-id="${actorId}"
-                  title="Open vehicle sheet">${name}</button>
+                  title="Open vehicle sheet">${vActor.name}</button>
           <div class="sr-veh-stats">${statsHtml}</div>
           <div class="sr-veh-modes">
             <button type="button" class="sr-veh-mode-btn${vcrActive ? ' sr-veh-vcr-active' : ''}"
                     data-action="toggleVehicleMode" data-actor-id="${actorId}" data-mode="vcr">VCR</button>
             <button type="button" class="sr-veh-mode-btn${rcdActive ? ' sr-veh-rcd-active' : ''}"
                     data-action="toggleVehicleMode" data-actor-id="${actorId}" data-mode="rcd">RCD</button>
+            <button type="button" class="sr-veh-mode-btn${autoActive ? ' sr-veh-auto-active' : ''}"
+                    data-action="toggleVehicleMode" data-actor-id="${actorId}" data-mode="auto">Auto</button>
           </div>
-          <button type="button" class="sr-veh-unlink" data-action="unlinkVehicle"
-                  data-actor-id="${actorId}" title="Unlink vehicle">✕</button>
         </div>`;
     }).join('');
 
     return `<div class="tab ${this._activeTab === 'vehicles' ? 'active' : ''}" data-tab="vehicles" style="overflow-y:auto">
-      ${linked.length === 0
-        ? '<p class="empty-list">No linked vehicles.</p>'
+      ${vehicles.length === 0
+        ? '<p class="empty-list">No assigned vehicles. Set pilot on the vehicle sheet.</p>'
         : `<div class="sr-veh-header">
-            <span>Vehicle</span><span>Stats</span><span>Mode</span><span></span>
+            <span>Vehicle</span><span>Stats</span><span>Mode</span>
            </div>${rows}`}
       <div style="display:flex;gap:8px;margin-top:8px">
-        <button type="button" class="btn-add" data-action="linkVehicle">+ Link Existing</button>
-        <button type="button" class="btn-add" data-action="createLinkVehicle">+ Create &amp; Link</button>
+        <button type="button" class="btn-add" data-action="createLinkVehicle">+ Create &amp; Assign</button>
       </div>
     </div>`;
   }
@@ -2291,20 +2388,52 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   static async _onApplyDamage(ev, target) {
-  const track = target.dataset.track;
-  const amount = parseInt(target.dataset.amount);
-  const current = this.actor.system.wounds?.[track]?.value ?? 0;
-  const max = this.actor.system.wounds?.[track]?.max ?? 10;
-  const newVal = Math.min(max, current + amount);
-  await this.actor.update({ [`system.wounds.${track}.value`]: newVal });
-}
+    const track  = target.dataset.track;
+    const amount = parseInt(target.dataset.amount);
+    const w      = this.actor.system.wounds ?? {};
+    const updates = {};
 
-static async _onHealDamage(ev, target) {
-  const track = target.dataset.track;
-  const current = this.actor.system.wounds?.[track]?.value ?? 0;
-  const newVal = Math.max(0, current - 1);
-  await this.actor.update({ [`system.wounds.${track}.value`]: newVal });
-}
+    const trackCur = w[track]?.value ?? 0;
+    const trackMax = w[track]?.max   ?? 10;
+    const trackNew = Math.min(trackMax, trackCur + amount);
+    let   spill    = (trackCur + amount) - trackMax; // boxes that didn't fit
+
+    updates[`system.wounds.${track}.value`] = trackNew;
+
+    if (spill > 0) {
+      if (track === 'stun') {
+        // Stun overflow cascades into physical
+        const physCur = w.physical?.value ?? 0;
+        const physMax = w.physical?.max   ?? 10;
+        const physNew = Math.min(physMax, physCur + spill);
+        spill = (physCur + spill) - physMax;
+        updates['system.wounds.physical.value'] = physNew;
+      }
+      // Physical overflow (or stun→physical that also overflows) → overflow box
+      if (spill > 0) {
+        updates['system.wounds.overflow.value'] = (w.overflow?.value ?? 0) + spill;
+      }
+    }
+
+    await this.actor.update(updates);
+  }
+
+  static async _onHealDamage(ev, target) {
+    const track = target.dataset.track;
+    const w     = this.actor.system.wounds ?? {};
+
+    if (track === 'physical') {
+      // Drain overflow before healing physical boxes (mirrors the damage cascade in reverse)
+      const overflow = w.overflow?.value ?? 0;
+      if (overflow > 0) {
+        await this.actor.update({ 'system.wounds.overflow.value': overflow - 1 });
+      } else {
+        await this.actor.update({ 'system.wounds.physical.value': Math.max(0, (w.physical?.value ?? 0) - 1) });
+      }
+    } else {
+      await this.actor.update({ [`system.wounds.${track}.value`]: Math.max(0, (w[track]?.value ?? 0) - 1) });
+    }
+  }
 
   /* ------------------------------------------------------------------ */
   /*  Cyber tab handlers                                                 */
@@ -2350,14 +2479,13 @@ static async _onHealDamage(ev, target) {
     }
 
     // Activating — show host selection dialog
-    const hostActors = game.actors.filter(a => a.type === 'host' && !a.getFlag('The2ndChumming3e', 'isTemplate'));
+    const hostActors = game.actors.filter(a => a.type === 'host' && game.sr3e.isLiveActor(a));
 
     if (!hostActors.length) {
       ui.notifications.warn('No host actors found. Create a Host actor to enable matrix targeting.');
       if (mode === 'VR-Cold' || mode === 'VR-Hot') {
-        for (const { actorId } of (actor.system.linkedVehicles ?? [])) {
-          const v = game.actors?.get(actorId);
-          if (v?.system?.vcrMode) await v.update({ 'system.vcrMode': false });
+        for (const v of game.actors.filter(a => a.type === 'vehicle' && a.system?.driverActorId === actor.id)) {
+          if (v.system?.controlMode === 'vcr') await v.update({ 'system.controlMode': 'rcd' });
         }
       }
       await actor.update({ 'system.matrixUserMode': mode, 'system.activeHostId': '' });
@@ -2402,9 +2530,8 @@ static async _onHealDamage(ev, target) {
 
     // Activating VR — auto-deactivate any vehicle VCR
     if (mode === 'VR-Cold' || mode === 'VR-Hot') {
-      for (const { actorId } of (actor.system.linkedVehicles ?? [])) {
-        const v = game.actors?.get(actorId);
-        if (v?.system?.vcrMode) await v.update({ 'system.vcrMode': false });
+      for (const v of game.actors.filter(a => a.type === 'vehicle' && a.system?.driverActorId === actor.id)) {
+        if (v.system?.controlMode === 'vcr') await v.update({ 'system.controlMode': 'rcd' });
       }
     }
 
@@ -2563,46 +2690,12 @@ static async _onHealDamage(ev, target) {
 
   static async _onOpenVehicle(_ev, target) {
     const actor = game.actors.get(target.dataset.actorId);
-    actor?.sheet.render(true);
+    actor?.sheet.render({ force: true });
   }
 
   static async _onOpenHost(_ev, target) {
     const actor = game.actors.get(target.dataset.actorId);
-    actor?.sheet.render(true);
-  }
-
-  static async _onLinkVehicle(_ev, _target) {
-    const linked    = new Set((this.actor.system.linkedVehicles ?? []).map(v => v.actorId));
-    const available = game.actors.contents.filter(a =>
-      a.type === 'vehicle' &&
-      !linked.has(a.id) &&
-      !a.getFlag('The2ndChumming3e', 'isTemplate')
-    );
-
-    if (available.length === 0) {
-      ui.notifications.warn('No unlinked vehicle actors found in this world.');
-      return;
-    }
-
-    const opts = available.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
-    let selectedId = null;
-    await foundry.applications.api.DialogV2.wait({
-      window: { title: 'Link Vehicle' },
-      content: `
-        <label style="display:block;padding:8px 0">Vehicle:
-          <select id="veh-select" style="width:100%;margin-top:4px">${opts}</select>
-        </label>`,
-      buttons: [
-        { label: 'Link', action: 'link', default: true,
-          callback: (_e, _b, d) => { selectedId = d.element.querySelector('#veh-select')?.value; } },
-        { label: 'Cancel', action: 'cancel' },
-      ],
-    });
-    if (!selectedId) return;
-    const vehicles = [...(this.actor.system.linkedVehicles ?? []), { actorId: selectedId, mode: '' }];
-    await this.actor.update({ 'system.linkedVehicles': vehicles });
-    const vActor = game.actors.get(selectedId);
-    if (vActor) await vActor.update({ 'system.controlledBy': this.actor.name });
+    actor?.sheet.render({ force: true });
   }
 
   static async _onCreateLinkVehicle(_ev, _target) {
@@ -2665,36 +2758,26 @@ static async _onHealDamage(ev, target) {
       return;
     }
 
-    const vehicles = [...(this.actor.system.linkedVehicles ?? []), { actorId: newActor.id, mode: '' }];
-    await this.actor.update({ 'system.linkedVehicles': vehicles });
-    await newActor.update({ 'system.controlledBy': this.actor.name });
+    await newActor.update({ 'system.driverActorId': this.actor.id });
     newActor.sheet.render(true);
   }
 
-  static async _onUnlinkVehicle(_ev, target) {
-    const actorId  = target.dataset.actorId;
-    const vehicles = (this.actor.system.linkedVehicles ?? []).filter(v => v.actorId !== actorId);
-    await this.actor.update({ 'system.linkedVehicles': vehicles });
-    const vActor = game.actors.get(actorId);
-    if (vActor && vActor.system.controlledBy === this.actor.name) {
-      await vActor.update({ 'system.controlledBy': '' });
-    }
-  }
-
   static async _onToggleVehicleMode(_ev, target) {
-    const actorId    = target.dataset.actorId;
-    const mode       = target.dataset.mode;  // 'vcr' or 'rcd'
-    const vActor     = game.actors.get(actorId);
+    const actorId = target.dataset.actorId;
+    const mode    = target.dataset.mode;  // 'vcr', 'rcd', or 'auto'
+    const vActor  = game.actors.get(actorId);
     if (!vActor) return;
 
-    const newVcrMode = mode === 'vcr';  // VCR btn → true, RCD btn → false
+    if (mode === 'auto') {
+      await vActor.update({ 'system.controlMode': '', 'system.driverActorId': '' });
+      return;
+    }
 
-    if (newVcrMode) {
-      // VCR is exclusive — deactivate VCR on all other linked vehicles
-      for (const { actorId: otherId } of (this.actor.system.linkedVehicles ?? [])) {
-        if (otherId === actorId) continue;
-        const other = game.actors.get(otherId);
-        if (other?.system?.vcrMode) await other.update({ 'system.vcrMode': false });
+    if (mode === 'vcr') {
+      // VCR is exclusive — drop other vehicles assigned to this character to RCD
+      for (const v of game.actors.filter(a => a.type === 'vehicle' && a.system?.driverActorId === this.actor.id)) {
+        if (v.id === actorId) continue;
+        if (v.system?.controlMode === 'vcr') await v.update({ 'system.controlMode': 'rcd' });
       }
       // VCR and VR are mutually exclusive
       const matrixMode = this.actor.system.matrixUserMode ?? '';
@@ -2703,7 +2786,7 @@ static async _onHealDamage(ev, target) {
       }
     }
 
-    await vActor.update({ 'system.vcrMode': newVcrMode });
+    await vActor.update({ 'system.controlMode': mode });
   }
 
   static async _onRollContested(ev, _target) {
@@ -2720,12 +2803,17 @@ static async _onHealDamage(ev, target) {
     await actor.setFlag('The2ndChumming3e', 'isTemplate', !current);
   }
 
+  static async _onMarkAsLive(_ev, _target) {
+    await this.actor.setFlag('The2ndChumming3e', 'isTemplate', false);
+  }
+
   static async _onDeployTemplate(_ev, _target) {
     const actor = this.actor;
     const data  = actor.toObject();
     delete data._id;
+    delete data._stats;
     data.name = `${data.name} (copy)`;
-    if (data.flags?.['The2ndChumming3e']) delete data.flags['The2ndChumming3e'].isTemplate;
+    foundry.utils.setProperty(data, 'flags.The2ndChumming3e.isTemplate', false);
     const newActor = await Actor.create(data);
     newActor.sheet.render(true);
   }

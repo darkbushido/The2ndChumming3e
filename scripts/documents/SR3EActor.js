@@ -258,7 +258,7 @@ export class SR3EActor extends Actor {
       // Deployed IC bypass the template filter — deployment is an explicit GM action
       if (a.type === 'ic') return (a.system.activeHostId ?? '') === hostId && (a.system.deployed ?? false);
       // All other types: respect the template flag
-      if (a.getFlag('The2ndChumming3e', 'isTemplate')) return false;
+      if (a.getFlag('The2ndChumming3e', 'isTemplate') === true) return false;
       if (a.type === 'agent')
         return (a.system.activeHostId ?? '') === hostId;
       if (a.type === 'character' || a.type === 'npc')
@@ -629,8 +629,8 @@ export class SR3EActor extends Actor {
     const _combatIds = game.combat?.combatants.size
       ? new Set(game.combat.combatants.contents.map(c => c.actorId).filter(Boolean))
       : null;
-    const icActors   = isOffensive ? game.actors.filter(a => a.type === 'ic' && !a.getFlag('The2ndChumming3e', 'isTemplate') && (!_combatIds || _combatIds.has(a.id))) : [];
-    const hostActors = game.actors.filter(a => a.type === 'host' && !a.getFlag('The2ndChumming3e', 'isTemplate'));
+    const icActors   = isOffensive ? game.actors.filter(a => a.type === 'ic' && game.sr3e.isLiveActor(a) && (!_combatIds || _combatIds.has(a.id))) : [];
+    const hostActors = game.actors.filter(a => a.type === 'host' && game.sr3e.isLiveActor(a));
 
     const firstAlertPenalty = hostActors.length ? (hostActors[0]?.system?.derived?.alertTNPenalty ?? 0) : 0;
     const defaultTN = 6 + mcmPenalty + firstAlertPenalty;
@@ -755,7 +755,7 @@ export class SR3EActor extends Actor {
       ? `<p style="margin:0 0 8px;font-size:11px;color:var(--sr-red)">⚠ Deck damage: +${mcmPenalty} TN penalty included in default TN</p>`
       : '';
 
-    const hostActors = game.actors.filter(a => a.type === 'host' && !a.getFlag('The2ndChumming3e', 'isTemplate'));
+    const hostActors = game.actors.filter(a => a.type === 'host' && game.sr3e.isLiveActor(a));
 
     // If actor is already connected to a host, use it without prompting for selection
     const activeHostId   = sys.activeHostId ?? '';
@@ -986,7 +986,7 @@ export class SR3EActor extends Actor {
     const isVRHot = (this.system.matrixUserMode ?? '') === 'VR-Hot';
     const isStun  = !isVRHot;
 
-    const hostActors = game.actors.filter(a => a.type === 'host' && !a.getFlag('The2ndChumming3e', 'isTemplate'));
+    const hostActors = game.actors.filter(a => a.type === 'host' && game.sr3e.isLiveActor(a));
     const hostOptions = hostActors.length
       ? hostActors.map(a => `<option value="${a.system.systemRating ?? 6}">${a.name} (Sys ${a.system.systemRating ?? 6})</option>`).join('')
       : `<option value="6">Manual (default 6)</option>`;
@@ -1070,7 +1070,7 @@ export class SR3EActor extends Actor {
       content: `
         <div class="sr-roll-card">
           <div class="sr-roll-header" style="color:var(--sr-amber)">⚠ Overwatch: ${newOW}/10 — ${hostActor.name}</div>
-          <div class="sr-roll-result">Hack attempt failed Security Threshold check.</div>
+          <div style="font-size:12px;color:var(--sr-text);margin-top:4px">Hack attempt failed Security Threshold check.</div>
         </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
@@ -1139,7 +1139,7 @@ export class SR3EActor extends Actor {
       content: `
         <div class="sr-roll-card">
           <div class="sr-roll-header" style="color:var(--sr-green)">✓ Mark Granted — ${actor.name}</div>
-          <div class="sr-roll-result">Access mark added for <strong>${nodeName}</strong>.</div>
+          <div style="font-size:12px;color:var(--sr-text);margin-top:4px">Access mark added for <strong>${nodeName}</strong>.</div>
         </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
@@ -1573,7 +1573,7 @@ _prepareCharacter(sys, attr) {
 
     if (!attr.reaction.override) {
       attr.reaction.value = Math.max(1, baseReaction
-        + (attr.reaction.reactionBonus ?? 0)
+        + (attr.reaction.reactionBonus ?? 0) + (attr.reaction.bonus ?? 0)
         + adeptBonus.rea
         + cyberBonus.rea);
     }
@@ -4316,16 +4316,16 @@ _prepareCharacter(sys, attr) {
   async rollInitiative(options = {}) {
     // --- Vehicle: VCR, RCD, or Auto initiative ---
     if (this.type === 'vehicle') {
-      const vcrMode     = this.system.vcrMode ?? false;
-      const pilotName   = this.system.controlledBy?.trim() ?? '';
+      const controlMode = this.system.controlMode ?? '';
+      const driverActId = this.system.driverActorId?.trim() ?? '';
       const pilotRating = this.system.attributes?.pilot?.base ?? 0;
 
-      if (pilotName) {
-        const rigger = game.actors.find(a => a.name === pilotName);
+      if (driverActId) {
+        const rigger = game.actors.get(driverActId);
         if (rigger) {
           const d = rigger.system.derived ?? {};
 
-          if (vcrMode) {
+          if (controlMode === 'vcr') {
             // VCR: Rigger's Reaction + vcrLevel base, (1 + vcrLevel)d6
             let vcrLevel = 0;
             const activeVCRId = rigger.system.activeVCRItemId ?? '';
@@ -4348,6 +4348,10 @@ _prepareCharacter(sys, attr) {
             const rolled   = rolls.reduce((s, r) => s + r, 0);
             const score    = base + rolled;
             const diceHtml = rolls.map(r => `<span class="sr-die ${r === 6 ? 'sr-hit' : ''}">${r}</span>`).join('');
+            const reaVal  = rigger.system.attributes?.reaction?.value ?? 0;
+            const wm      = rigger.system.woundMod ?? 0;
+            const wmPart  = wm !== 0 ? ` + wound (${wm})` : '';
+            const vcrPart = vcrLevel ? ` + VCR ${vcrLevel}` : '';
             const bonusNote = vcrLevel
               ? `<div class="sr-roll-meta" style="color:var(--sr-accent)">VCR Lv${vcrLevel}: +${vcrLevel} Reaction, +${vcrLevel}d6</div>`
               : '';
@@ -4358,7 +4362,7 @@ _prepareCharacter(sys, attr) {
                   <div class="sr-roll-header">⚡ Initiative — ${this.name}
                     <span style="font-size:11px;font-weight:normal;color:var(--sr-accent)"> VCR: ${rigger.name}</span>
                   </div>
-                  <div class="sr-roll-meta">${base} base (${rigger.name}) + ${dice}d6</div>
+                  <div class="sr-roll-meta">REA ${reaVal}${vcrPart}${wmPart} = ${base} base (${rigger.name}) + ${dice}d6</div>
                   ${bonusNote}
                   <div class="sr-roll-dice">${diceHtml}</div>
                   <div class="sr-roll-result">Score: <strong>${score}</strong>
@@ -4377,6 +4381,9 @@ _prepareCharacter(sys, attr) {
             const rolled   = rolls.reduce((s, r) => s + r, 0);
             const score    = base + rolled;
             const diceHtml = rolls.map(r => `<span class="sr-die ${r === 6 ? 'sr-hit' : ''}">${r}</span>`).join('');
+            const reaVal  = rigger.system.attributes?.reaction?.value ?? 0;
+            const wm      = rigger.system.woundMod ?? 0;
+            const wmPart  = wm !== 0 ? ` + wound (${wm})` : '';
             await ChatMessage.create({
               speaker: ChatMessage.getSpeaker({ actor: this }),
               content: `
@@ -4384,7 +4391,7 @@ _prepareCharacter(sys, attr) {
                   <div class="sr-roll-header">⚡ Initiative — ${this.name}
                     <span style="font-size:11px;font-weight:normal;color:var(--sr-green)"> RCD: ${rigger.name}</span>
                   </div>
-                  <div class="sr-roll-meta">${base} base (${rigger.name}) + ${dice}d6</div>
+                  <div class="sr-roll-meta">REA ${reaVal}${wmPart} = ${base} base (${rigger.name}) + ${dice}d6</div>
                   <div class="sr-roll-dice">${diceHtml}</div>
                   <div class="sr-roll-result">Score: <strong>${score}</strong>
                     <span style="font-size:11px;color:var(--sr-muted)">(${base} + ${rolled})</span>
@@ -4395,7 +4402,7 @@ _prepareCharacter(sys, attr) {
             return score;
           }
         } else {
-          ui.notifications.warn(`${this.name}: driver "${pilotName}" not found — rolling Auto instead.`);
+          ui.notifications.warn(`${this.name}: driver not found — rolling Auto instead.`);
         }
       }
 

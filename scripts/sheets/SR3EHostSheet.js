@@ -208,6 +208,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
       removeAgent:        SR3EHostSheet._onRemoveAgent,
       toggleTemplate:     SR3EHostSheet._onToggleTemplate,
       deployTemplate:     SR3EHostSheet._onDeployTemplate,
+      markAsLive:         SR3EHostSheet._onMarkAsLive,
     },
   };
 
@@ -266,7 +267,8 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
   _header(actor, sys) {
     const tierColor  = sys.securityTierColor ?? '#00AA00';
     const sysSec     = `${sys.systemRating ?? 6}/${sys.securityTierName ?? 'Green'}(${sys.securityTierThreshold ?? 2})`;
-    const isTemplate = !!actor.getFlag('The2ndChumming3e', 'isTemplate');
+    const isTemplate  = actor.getFlag('The2ndChumming3e', 'isTemplate');
+    const appearsInUI = game.sr3e.isLiveActor(actor);
     return `
       <header class="host-header">
         <img class="actor-portrait" src="${actor.img}" alt="${actor.name}" width="56" height="56">
@@ -277,11 +279,13 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
             ${sys.mainframeSupport ? '<span class="host-mainframe-badge">MAINFRAME</span>' : ''}
           </div>
           <div class="sr3e-template-controls">
-            ${isTemplate
+            ${isTemplate === true
               ? `<span class="sr3e-template-badge">TEMPLATE</span>
                  <button type="button" class="sr3e-template-btn" data-action="deployTemplate" title="Create a working copy with the template flag removed">Deploy Copy</button>
                  <button type="button" class="sr3e-template-btn sr3e-template-btn-remove" data-action="toggleTemplate" title="Remove template flag">Remove Flag</button>`
-              : `<button type="button" class="sr3e-template-btn sr3e-template-mark" data-action="toggleTemplate" title="Mark as template — hides from host selection dialogs">Mark as Template</button>`
+              : !appearsInUI
+                ? `<button type="button" class="sr3e-template-btn sr3e-live-btn" data-action="markAsLive" title="Mark as live host — will appear in selection dialogs">Mark as Live</button>`
+                : `<button type="button" class="sr3e-template-btn sr3e-template-mark" data-action="toggleTemplate" title="Mark as template — hides from host selection dialogs">Mark as Template</button>`
             }
           </div>
         </div>
@@ -1573,7 +1577,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   static async _onOpenLinkedActor(_e, target) {
     const actor = game.actors.get(target.dataset.actorId);
-    actor?.sheet.render(true);
+    actor?.sheet.render({ force: true });
   }
 
   static async _onAddUser(_e, _t) {
@@ -1713,7 +1717,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
   static async _onAddAgent(_e, _t) {
     const nodes       = this.actor.system.nodes ?? [];
     const nodeOpts    = nodes.map(n => `<option value="${n.id}">${n.abbreviation ?? n.name}</option>`).join('');
-    const agentActors = game.actors.filter(a => a.type === 'agent' && !a.getFlag('The2ndChumming3e', 'isTemplate'));
+    const agentActors = game.actors.filter(a => a.type === 'agent' && game.sr3e.isLiveActor(a));
     const alreadyOn   = new Set((this.actor.system.activeAgents ?? []).map(a => a.actorId).filter(Boolean));
 
     let entry    = null;
@@ -1798,11 +1802,16 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
     await this.actor.setFlag('The2ndChumming3e', 'isTemplate', !current);
   }
 
+  static async _onMarkAsLive(_ev, _target) {
+    await this.actor.setFlag('The2ndChumming3e', 'isTemplate', false);
+  }
+
   static async _onDeployTemplate(_ev, _target) {
     const data = this.actor.toObject();
     delete data._id;
+    delete data._stats;
     data.name = `${data.name} (copy)`;
-    if (data.flags?.['The2ndChumming3e']) delete data.flags['The2ndChumming3e'].isTemplate;
+    foundry.utils.setProperty(data, 'flags.The2ndChumming3e.isTemplate', false);
     const newActor = await Actor.create(data);
     newActor.sheet.render(true);
   }

@@ -22,7 +22,7 @@ Verify each feature by checking the **in → out** numbers against what the chat
 ### Critical Glitch
 - **In:** All dice show 1s, 0 successes → **Out:** critical glitch warning shown. - Passed
 ---
-Reporting of 1s omitted with Physical dice mode - triggers nothing, GM convenience only.
+Reporting of 1s omitted with Physical dice mode - triggers nothing, GM convenience only, unnessesary work for the player to report in system
 
 ## 2. Wound Modifier
 
@@ -38,13 +38,13 @@ Each track (stun and physical) contributes its own modifier — both sum to give
 - Passed
 
 **Effect:** wound mod is a TN penalty applied to all rolls, and reduces initiative base.
-
-
 **Example:** 3 stun boxes → TN +2 on all rolls, initiative −2.
 
 **Unconscious:** When either track reaches 10 boxes, the Wound Mod field displays `unconscious` instead of a number.
 
 -Passed 
+
+**adding/removing wounds updates overflow automatically. - passed
 
 **Tests:**
 - Fill **1 stun box** → wound mod reads **−1**.
@@ -124,23 +124,23 @@ Formula: `Rigger REA + VCR level + woundMod` base + `(1 + VCR)d6`
 
 **In:** REA 5, VCR 2 → base `7`, dice `3d6` → result 10–25.
 
-### RCD (Vehicle — remote control)
+### RCD (Vehicle — remote control) - failed - too high
 Formula: `Rigger REA + woundMod` base + `1d6`
 
 **In:** REA 5 → **Out:** `5 + 1d6`, result 6–11.
 
-### Auto / Pilot (Vehicle — no rigger)
+### Auto / Pilot (Vehicle — no rigger) - passed
 Formula: `Pilot rating` base + `2d6`
 
 **In:** Pilot 4 → **Out:** `4 + 2d6`, result 6–16.
 
-### Shift-click (physical dice mode)
+### Shift-click (physical dice mode) - passed but not all situations tested
 Any initiative button → shift-click → dialog asks for result → enter manually, posts card with that value.
 
-### SR3 pass mode
+### SR3 pass mode - passed
 After everyone acts: all initiatives drop by 10. Combatants with initiative ≤ 0 are done. Continue until none left, then GM prompted to re-roll.
 
-### SR2 flat queue mode
+### SR2 flat queue mode - passed
 Full action list built upfront (init, init−10, init−20 …). Walk top to bottom.
 
 ---
@@ -149,10 +149,14 @@ Full action list built upfront (init, init−10, init−20 …). Walk top to bot
 
 Full flow: click weapon → target dialog → dodge declaration → attack roll → dodge roll (if declared) → soak card → soak roll → assign damage button.
 
-### Attack dice
+### drag and drop weapon sections - passed
+Move preferred weapon types to the top of the weapons tab - passed
+
+
+### Attack dice - passed 
 **In:** Pistols skill 5, TN 4 → **Out:** 5 dice chat card vs TN 4.
 
-### Firing modes
+### Firing modes - NEXT
 
 | Mode | Rounds | Power mod | Level mod |
 |---|---|---|---|

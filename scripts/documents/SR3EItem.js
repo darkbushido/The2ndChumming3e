@@ -441,10 +441,12 @@ export class SR3EItem extends Item {
     const availableModes = this._getAvailableModes();
     if (availableModes.length > 0) {
       // SS-only weapons: skip the dialog — no recoil, no damage mods
+      const HEAVY_CATS = new Set(['LMG', 'MMG', 'HMG', 'MinG']);
+      const isHeavy = HEAVY_CATS.has(this.system.category ?? '');
       if (availableModes.length === 1 && availableModes[0] === 'SS') {
         fireModeResult = { mode: 'SS', rounds: 0, roundsWasted: 0, recoilTN: 0, additionalTNPenalty: 0 };
       } else {
-        fireModeResult = await SR3EItem._promptFireMode(availableModes, actor, this.name);
+        fireModeResult = await SR3EItem._promptFireMode(availableModes, actor, this.name, isHeavy);
         if (!fireModeResult) return null;
       }
       fireModeRounds = fireModeResult.rounds + (fireModeResult.roundsWasted ?? 0);
@@ -582,8 +584,8 @@ export class SR3EItem extends Item {
    * Vehicle / drone weapon attack flow.
    *
    * Pool:
-   *   VCR / RCR mode (controlledBy set): pilot actor's Gunnery skill + wound mod
-   *   Autonomous (no controlledBy):      vehicle's Pilot rating
+   *   VCR / RCR mode (driverActorId set): pilot actor's Gunnery skill + wound mod
+   *   Autonomous (no driverActorId):      vehicle's Pilot rating
    *
    * TN: target Sig + range modifier (editable)
    * Fire Control: bonus dice added to pool (vehicle mod)
@@ -599,9 +601,10 @@ export class SR3EItem extends Item {
     if (!targetActor) return null;
 
     // Step 2: Resolve attacker pool
-    const pilotName = actor.system.controlledBy?.trim() ?? '';
-    const vcrMode   = actor.system.vcrMode ?? false;
-    let   pilotActor    = pilotName ? (game.actors.find(a => a.name === pilotName) ?? null) : null;
+    const driverActId = actor.system.driverActorId?.trim() ?? '';
+    const controlMode = actor.system.controlMode ?? '';
+    const vcrMode     = controlMode === 'vcr';
+    let   pilotActor  = driverActId ? game.actors.get(driverActId) : null;
     let   pool          = 0;
     let   poolLabel     = '';
     let   pilotWoundMod = 0;
@@ -778,7 +781,7 @@ export class SR3EItem extends Item {
    */
   static async _promptTargetsAoE(attacker) {
     const candidates = game.actors.contents.filter(a =>
-      a.id !== attacker.id && !a.getFlag('The2ndChumming3e', 'isTemplate')
+      a.id !== attacker.id && game.sr3e.isLiveActor(a)
     );
     if (candidates.length === 0) {
       ui.notifications.warn('No valid targets found.');
@@ -1218,7 +1221,7 @@ export class SR3EItem extends Item {
       return '';
     };
     const candidates = game.actors.contents.filter(a =>
-      a.id !== attacker.id && !a.getFlag('The2ndChumming3e', 'isTemplate')
+      a.id !== attacker.id && game.sr3e.isLiveActor(a)
     );
 
     if (!candidates.length) {
@@ -1379,9 +1382,11 @@ _getAvailableModes() {
 /**
  * Fire mode selection dialog. Returns { mode, rounds, additionalTNPenalty, roundsWasted } or null.
  */
-static async _promptFireMode(availableModes, actor, weaponName) {
+static async _promptFireMode(availableModes, actor, weaponName, isHeavy = false) {
   const comp        = actor.system.recoilCompensation ?? 0;
   const roundsBefore = actor.system.roundsFiredThisPhase ?? 0;
+  const baseRecoil  = Math.max(0, roundsBefore - comp);
+  const recoilMult  = isHeavy ? 2 : 1;
 
   // Stage-up helper
   function stageUp(level, times) {
@@ -1400,11 +1405,11 @@ static async _promptFireMode(availableModes, actor, weaponName) {
   const modeRows = availableModes.map((m, i) => {
     const info    = modeInfo[m] ?? { label: m, rounds: 1, powerMod: 0, stageMod: 0, note: '' };
     const isFirst = i === 0;
-    const roundsPreview = m === 'FA' ? '(see below)' : m === 'SS' ? '1 (no recoil)' : info.rounds;
-    const baseRecoil    = Math.max(0, roundsBefore - comp);
-    const recoilPreview = m === 'FA'
-      ? `+${baseRecoil} recoil + multi-target (see below)`
-      : `+${baseRecoil}`;
+    const roundsPreview  = m === 'FA' ? '(see below)' : m === 'SS' ? '1 (no recoil)' : info.rounds;
+    const recoilDisplay  = baseRecoil * recoilMult;
+    const recoilPreview  = m === 'FA'
+      ? `+${recoilDisplay} recoil + multi-target (see below)`
+      : `+${recoilDisplay}`;
     return `
       <label style="display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;cursor:pointer">
         <input type="radio" name="sr-fire-mode" value="${m}" ${isFirst ? 'checked' : ''} style="margin-top:2px"/>
@@ -1447,7 +1452,8 @@ static async _promptFireMode(availableModes, actor, weaponName) {
     <div style="margin-top:10px;padding:6px 8px;background:#0a0a0a;border:1px solid var(--sr-border);border-radius:var(--r);font-size:11px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
       <span><strong>Recoil state:</strong>
       Compensation <strong>${comp}</strong> &nbsp;|&nbsp;
-      Rounds fired this phase: <strong id="sr-rounds-fired">${roundsBefore}</strong></span>
+      Rounds fired this phase: <strong id="sr-rounds-fired">${roundsBefore}</strong>
+      ${isHeavy ? '&nbsp;|&nbsp; <span style="color:var(--sr-amber)">⚠ Heavy weapon: 2× uncompensated recoil</span>' : ''}</span>
       <button id="sr-reset-recoil" type="button" style="margin-left:auto;padding:1px 7px;font-size:10px;cursor:pointer;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);color:var(--sr-muted)">↺ Reset</button>
     </div>`;
 
@@ -1503,9 +1509,9 @@ static async _promptFireMode(availableModes, actor, weaponName) {
             if (metres > 0)    roundsWasted = metres;
           }
 
-          // Recoil TN = rounds already fired BEFORE this shot minus compensation.
+          // Recoil TN = uncompensated rounds fired before this shot × multiplier (2× for heavy weapons).
           // Rounds from THIS shot are added after the roll (they penalise future shots, not this one).
-          const recoilTN = Math.max(0, roundsBefore - comp);
+          const recoilTN = baseRecoil * recoilMult;
           result = { mode, rounds, roundsWasted, recoilTN, additionalTNPenalty };
         },
       },
@@ -1616,7 +1622,7 @@ static async _promptFireMode(availableModes, actor, weaponName) {
    */
   static async _promptTargetsMulti(attacker, spellType, spellTarget, force) {
     const candidates = game.actors.contents
-      .filter(a => a.id !== attacker.id && a.type !== 'vehicle' && !a.getFlag('The2ndChumming3e', 'isTemplate'));
+      .filter(a => a.id !== attacker.id && a.type !== 'vehicle' && game.sr3e.isLiveActor(a));
     if (candidates.length === 0) {
       ui.notifications.warn('No valid targets found.');
       return null;

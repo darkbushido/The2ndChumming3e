@@ -25,9 +25,12 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
       openPilot:      SR3EVehicleSheet._onOpenPilot,
       rollWeapon:     SR3EVehicleSheet._onRollWeapon,
       rollMelee:      SR3EVehicleSheet._onRollMelee,
-      setVcrMode:     SR3EVehicleSheet._onSetVcrMode,
-      setRcdMode:     SR3EVehicleSheet._onSetRcdMode,
-      setAutoMode:    SR3EVehicleSheet._onSetAutoMode,
+      setVcrMode:      SR3EVehicleSheet._onSetVcrMode,
+      setRcdMode:      SR3EVehicleSheet._onSetRcdMode,
+      setAutoMode:     SR3EVehicleSheet._onSetAutoMode,
+      toggleTemplate:  SR3EVehicleSheet._onToggleTemplate,
+      deployTemplate:  SR3EVehicleSheet._onDeployTemplate,
+      markAsLive:      SR3EVehicleSheet._onMarkAsLive,
     }
   };
 
@@ -45,6 +48,23 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   _replaceHTML(result, content, _options) {
     content.replaceChildren(result);
+  }
+
+  // Called by Foundry after every render (initial open AND re-renders).
+  _onRender(context, options) {
+    super._onRender?.(context, options);
+    if (this._selfUpdateHookId) Hooks.off('updateActor', this._selfUpdateHookId);
+    this._selfUpdateHookId = Hooks.on('updateActor', (updated) => {
+      if (updated.id === this.actor.id) this.render();
+    });
+  }
+
+  _onClose(options) {
+    super._onClose?.(options);
+    if (this._selfUpdateHookId) {
+      Hooks.off('updateActor', this._selfUpdateHookId);
+      this._selfUpdateHookId = null;
+    }
   }
 
   /* ------------------------------------------------------------------ */
@@ -66,9 +86,11 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   _header(actor, sys) {
-    const attr   = sys.attributes ?? {};
-    const dmgMax = 10;
-    const dmgVal = sys.damage?.value ?? 0;
+    const attr        = sys.attributes ?? {};
+    const dmgMax      = 10;
+    const dmgVal      = sys.damage?.value ?? 0;
+    const isTemplate  = actor.getFlag('The2ndChumming3e', 'isTemplate');
+    const appearsInUI = game.sr3e.isLiveActor(actor);
 
     const VEHICLE_TYPES = [
       ['car', 'Car'], ['bike', 'Motorcycle'], ['truck', 'Truck'], ['van', 'Van'],
@@ -78,6 +100,17 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     const typeOpts = VEHICLE_TYPES.map(([v, l]) =>
       `<option value="${v}" ${sys.vehicleType === v ? 'selected' : ''}>${l}</option>`
     ).join('');
+
+    const _driverActorId = sys.driverActorId?.trim() ?? '';
+    const _pilotActor = _driverActorId ? game.actors.get(_driverActorId) : null;
+    const _pilotName = _pilotActor?.name ?? '';
+    const pilotOpts = [
+      `<option value="">No pilot</option>`,
+      ...game.actors
+        .filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a))
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map(a => `<option value="${a.id}"${_driverActorId === a.id ? ' selected' : ''}>${a.name}</option>`),
+    ].join('');
 
     const boxes = Array.from({ length: dmgMax }, (_, i) => {
       const n   = i + 1;
@@ -97,6 +130,14 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
         <div class="header-fields">
           <div class="header-top">
             <input class="actor-name" type="text" name="name" value="${actor.name}" style="flex:1"/>
+            ${isTemplate === true
+              ? `<span class="sr3e-template-badge">TEMPLATE</span>
+                 <button type="button" class="sr3e-template-btn" data-action="deployTemplate" title="Create a working copy with the template flag removed">Deploy Copy</button>
+                 <button type="button" class="sr3e-template-btn sr3e-template-btn-remove" data-action="toggleTemplate" title="Remove template flag — vehicle will appear in linking dialogs">Remove Flag</button>`
+              : !appearsInUI
+                ? `<button type="button" class="sr3e-template-btn sr3e-live-btn" data-action="markAsLive" title="Mark as live vehicle — will appear in linking dialogs">Mark as Live</button>`
+                : `<button type="button" class="sr3e-template-btn sr3e-template-mark" data-action="toggleTemplate" title="Mark as template — hides from pilot linking dialogs">Mark as Template</button>`
+            }
             <label class="inline-field" style="margin-left:10px;">Type
               <select name="system.vehicleType" style="background:var(--sr-surface);color:var(--sr-text);border:1px solid var(--sr-border);border-radius:var(--r);padding:2px 6px;">
                 ${typeOpts}
@@ -105,12 +146,12 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
           </div>
           <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sr-muted);margin-top:4px;">
             <span>Pilot:</span>
-            <input type="text" name="system.controlledBy"
-              value="${sys.controlledBy || ''}"
-              placeholder="No pilot"
-              style="flex:1;background:var(--sr-card);border:1px solid var(--sr-border);border-radius:var(--r);color:var(--sr-text);padding:2px 6px;font-size:12px;"/>
-            ${sys.controlledBy?.trim()
-              ? `<a data-action="openPilot" title="Open ${sys.controlledBy}'s sheet"
+            <select name="system.driverActorId"
+              style="flex:1;background:var(--sr-card);border:1px solid var(--sr-border);border-radius:var(--r);color:var(--sr-text);padding:2px 6px;font-size:12px;">
+              ${pilotOpts}
+            </select>
+            ${_pilotActor
+              ? `<a data-action="openPilot" title="Open ${_pilotName}'s sheet"
                     style="color:var(--sr-accent);cursor:pointer;font-size:13px;line-height:1;">
                    <i class="fa fa-external-link"></i>
                  </a>`
@@ -119,10 +160,10 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
           <div style="display:flex;align-items:center;gap:6px;font-size:12px;margin-top:4px;">
             <span style="color:var(--sr-muted);">Mode:</span>
             ${(() => {
-              const hasPilot = sys.controlledBy?.trim();
-              const isVcr  = hasPilot && sys.vcrMode;
-              const isRcd  = hasPilot && !sys.vcrMode;
-              const isAuto = !hasPilot;
+              const hasPilot = sys.driverActorId?.trim();
+              const isVcr  = hasPilot && sys.controlMode === 'vcr';
+              const isRcd  = hasPilot && sys.controlMode === 'rcd';
+              const isAuto = !hasPilot || (!isVcr && !isRcd);
               const btn = (action, label, active, color) =>
                 `<button type="button" data-action="${action}"
                    style="padding:2px 10px;font-size:11px;font-weight:bold;border-radius:var(--r);cursor:pointer;
@@ -221,7 +262,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
                 style="background:var(--sr-surface);color:var(--sr-text);border:1px solid var(--sr-border)">
           ⚔ Contested Roll
         </button>
-        ${sys.controlledBy?.trim()
+        ${sys.driverActorId?.trim()
           ? `<button type="button" class="btn-sm" data-action="drivingTest"
                      style="background:var(--sr-surface);color:var(--sr-text);border:1px solid var(--sr-border)">
                🚗 Driving Test
@@ -399,21 +440,21 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   static async _onOpenPilot(_ev, _target) {
-    const name  = this.actor.system.controlledBy?.trim();
-    const pilot = name && game.actors.find(a => a.name === name);
-    if (pilot) pilot.sheet.render(true);
-    else if (name) ui.notifications.warn(`Actor "${name}" not found.`);
+    const id    = this.actor.system.driverActorId?.trim();
+    const pilot = id ? game.actors.get(id) : null;
+    if (pilot) pilot.sheet.render({ force: true });
+    else if (id) ui.notifications.warn('Pilot actor not found.');
   }
 
   static async _onDrivingTest(_ev, _target) {
     const actor      = this.actor;
     const sys        = actor.system;
-    const driverName = sys.controlledBy?.trim();
-    if (!driverName) return;
+    const driverRef = sys.driverActorId?.trim();
+    if (!driverRef) return;
 
-    const driver = game.actors.find(a => a.name === driverName);
+    const driver = game.actors.get(driverRef);
     if (!driver) {
-      ui.notifications.warn(`Driver "${driverName}" not found in actor list.`);
+      ui.notifications.warn('Driver actor not found.');
       return;
     }
 
@@ -664,14 +705,33 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   static async _onSetVcrMode(_ev, _target) {
-    await this.actor.update({ 'system.vcrMode': true });
+    await this.actor.update({ 'system.controlMode': 'vcr' });
   }
 
   static async _onSetRcdMode(_ev, _target) {
-    await this.actor.update({ 'system.vcrMode': false });
+    await this.actor.update({ 'system.controlMode': 'rcd' });
+  }
+
+  static async _onToggleTemplate(_ev, _target) {
+    const current = !!this.actor.getFlag('The2ndChumming3e', 'isTemplate');
+    await this.actor.setFlag('The2ndChumming3e', 'isTemplate', !current);
+  }
+
+  static async _onMarkAsLive(_ev, _target) {
+    await this.actor.setFlag('The2ndChumming3e', 'isTemplate', false);
+  }
+
+  static async _onDeployTemplate(_ev, _target) {
+    const data = this.actor.toObject();
+    delete data._id;
+    delete data._stats;
+    data.name = `${data.name} (copy)`;
+    foundry.utils.setProperty(data, 'flags.The2ndChumming3e.isTemplate', false);
+    const newActor = await Actor.create(data);
+    newActor.sheet.render(true);
   }
 
   static async _onSetAutoMode(_ev, _target) {
-    await this.actor.update({ 'system.vcrMode': false, 'system.controlledBy': '' });
+    await this.actor.update({ 'system.controlMode': '', 'system.driverActorId': '' });
   }
 }

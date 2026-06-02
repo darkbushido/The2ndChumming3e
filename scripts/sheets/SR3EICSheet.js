@@ -16,6 +16,7 @@ export class SR3EICSheet extends foundry.applications.sheets.ActorSheetV2 {
       clearDeploy:    SR3EICSheet._onClearDeploy,
       toggleTemplate: SR3EICSheet._onToggleTemplate,
       deployTemplate: SR3EICSheet._onDeployTemplate,
+      markAsLive:     SR3EICSheet._onMarkAsLive,
     },
   };
 
@@ -53,7 +54,8 @@ export class SR3EICSheet extends foundry.applications.sheets.ActorSheetV2 {
     const deployed     = sys.deployed ?? false;
     const activeHostId = sys.activeHostId ?? '';
     const activeHost   = activeHostId ? game.actors.get(activeHostId) : null;
-    const isTemplate   = !!actor.getFlag('The2ndChumming3e', 'isTemplate');
+    const isTemplate   = actor.getFlag('The2ndChumming3e', 'isTemplate');
+    const appearsInUI  = game.sr3e.isLiveActor(actor);
 
     const agentsForGrading = SR3EICSheet.IC_AGENTS[grading] ?? SR3EICSheet.IC_AGENTS.White;
     const currentType = sys.icType ?? agentsForGrading[0];
@@ -93,11 +95,13 @@ export class SR3EICSheet extends foundry.applications.sheets.ActorSheetV2 {
               <span class="ic-grading-badge" style="${gradingStyle}">[${grading}]</span>
             </div>
             <div class="sr3e-template-controls">
-              ${isTemplate
+              ${isTemplate === true
                 ? `<span class="sr3e-template-badge">TEMPLATE</span>
                    <button type="button" class="sr3e-template-btn" data-action="deployTemplate" title="Create a working copy with the template flag removed">Deploy Copy</button>
                    <button type="button" class="sr3e-template-btn sr3e-template-btn-remove" data-action="toggleTemplate" title="Remove template flag">Remove Flag</button>`
-                : `<button type="button" class="sr3e-template-btn sr3e-template-mark" data-action="toggleTemplate" title="Mark as template — hides from combat targeting dialogs">Mark as Template</button>`
+                : !appearsInUI
+                  ? `<button type="button" class="sr3e-template-btn sr3e-live-btn" data-action="markAsLive" title="Mark as live IC — will appear in combat dialogs">Mark as Live</button>`
+                  : `<button type="button" class="sr3e-template-btn sr3e-template-mark" data-action="toggleTemplate" title="Mark as template — hides from combat targeting dialogs">Mark as Template</button>`
               }
             </div>
           </div>
@@ -209,11 +213,16 @@ export class SR3EICSheet extends foundry.applications.sheets.ActorSheetV2 {
     await this.actor.setFlag('The2ndChumming3e', 'isTemplate', !current);
   }
 
+  static async _onMarkAsLive(_ev, _target) {
+    await this.actor.setFlag('The2ndChumming3e', 'isTemplate', false);
+  }
+
   static async _onDeployTemplate(_ev, _target) {
     const data = this.actor.toObject();
     delete data._id;
+    delete data._stats;
     data.name = `${data.name} (copy)`;
-    if (data.flags?.['The2ndChumming3e']) delete data.flags['The2ndChumming3e'].isTemplate;
+    foundry.utils.setProperty(data, 'flags.The2ndChumming3e.isTemplate', false);
     const newActor = await Actor.create(data);
     newActor.sheet.render(true);
   }
