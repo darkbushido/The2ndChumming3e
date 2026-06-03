@@ -1,5 +1,5 @@
-2026/06/02-23:03:32.379 120ec Recovering log #195
-2026/06/02-23:03:32.381 120ec Level-0 table #197: started
-2026/06/02-23:03:32.384 120ec Level-0 table #197: 35821 bytes OK
-2026/06/02-23:03:32.391 120ec Delete type=0 #195
-2026/06/02-23:03:32.391 120ec Delete type=3 #194
+2026/06/03-10:05:24.038 df60 Recovering log #198
+2026/06/03-10:05:24.039 df60 Level-0 table #200: started
+2026/06/03-10:05:24.043 df60 Level-0 table #200: 35822 bytes OK
+2026/06/03-10:05:24.050 df60 Delete type=0 #198
+2026/06/03-10:05:24.050 df60 Delete type=3 #196

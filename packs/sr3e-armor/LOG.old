@@ -1,3 +1,5 @@
-2026/06/02-22:14:18.701 c7fc Recovering log #191
-2026/06/02-22:14:18.709 c7fc Delete type=0 #191
-2026/06/02-22:14:18.709 c7fc Delete type=3 #189
+2026/06/02-23:03:32.379 120ec Recovering log #195
+2026/06/02-23:03:32.381 120ec Level-0 table #197: started
+2026/06/02-23:03:32.384 120ec Level-0 table #197: 35821 bytes OK
+2026/06/02-23:03:32.391 120ec Delete type=0 #195
+2026/06/02-23:03:32.391 120ec Delete type=3 #194

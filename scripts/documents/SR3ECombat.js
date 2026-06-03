@@ -15,8 +15,21 @@ export class SR3ECombat extends Combat {
       if (c.actor) await c.actor.clearSpellDefense();
     }
 
+    // Vehicles in VCR/RCD mode copy their rigger's initiative instead of rolling independently.
+    // Pre-compute which vehicle combatants will sync so we can skip them in the roll loop.
+    const vehiclesToSync = new Set();
+    for (const vc of this.combatants.contents) {
+      if (vc.actor?.type !== 'vehicle') continue;
+      const mode = vc.actor.system.controlMode ?? '';
+      if (mode !== 'vcr' && mode !== 'rcd') continue;
+      const driverId = vc.actor.system.driverActorId?.trim() ?? '';
+      if (!driverId) continue;
+      if (this.combatants.find(rc => rc.actor?.id === driverId)) vehiclesToSync.add(vc.id);
+    }
+
     for (const c of combatants) {
       if (!c.actor) continue;
+      if (vehiclesToSync.has(c.id)) continue; // initiative will be copied from rigger below
 
       // Roll initiative using actor's method
       const score = await c.actor.rollInitiative();
@@ -34,17 +47,58 @@ export class SR3ECombat extends Combat {
       });
     }
 
-    // VCR: mark any jumped-in rigger combatants as defeated so they don't act separately.
-    for (const c of combatants) {
-      if (c.actor?.type !== 'vehicle') continue;
-      if (c.actor.system.controlMode !== 'vcr') continue;
-      const driverActId = c.actor.system.driverActorId?.trim();
+    // Sync VCR/RCD vehicle initiatives to their rigger's score.
+    for (const vcId of vehiclesToSync) {
+      const vc = this.combatants.get(vcId);
+      if (!vc?.actor) continue;
+      const mode = vc.actor.system.controlMode ?? '';
+      const driverId = vc.actor.system.driverActorId?.trim() ?? '';
+      const riggerC = this.combatants.find(rc => rc.actor?.id === driverId);
+      if (!riggerC || riggerC.initiative == null) {
+        ui.notifications.info(
+          `${vc.actor.name} is in ${mode.toUpperCase()} mode — roll ${riggerC?.actor?.name ?? 'the pilot'}'s initiative first.`
+        );
+        continue;
+      }
+
+      const score = riggerC.initiative;
+      const modeColor = mode === 'vcr' ? 'var(--sr-accent)' : 'var(--sr-green)';
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: vc.actor }),
+        content: `
+          <div class="sr-roll-card">
+            <div class="sr-roll-header">⚡ Initiative — ${vc.actor.name}
+              <span style="font-size:11px;font-weight:normal;color:${modeColor}"> ${mode.toUpperCase()}: ${riggerC.actor?.name}</span>
+            </div>
+            <div class="sr-roll-meta">Initiative derived from ${riggerC.actor?.name}</div>
+            <div class="sr-roll-result">Score: <strong>${score}</strong></div>
+          </div>`,
+        style: CONST.CHAT_MESSAGE_STYLES.ROLL,
+      });
+      await vc.update({
+        initiative: score,
+        flags: {
+          The2ndChumming3e: {
+            baseInitiative:    score,
+            currentInitiative: score,
+            passesRemaining:   Math.floor(score / 10) + 1,
+          }
+        }
+      });
+    }
+
+    // VCR: stamp the jumped-in rigger combatant with which drone they're controlling
+    // (used for the VCR badge in the combat tracker sidebar).
+    for (const vc of this.combatants.contents) {
+      if (vc.actor?.type !== 'vehicle') continue;
+      if (vc.actor.system.controlMode !== 'vcr') continue;
+      const driverActId = vc.actor.system.driverActorId?.trim();
       if (!driverActId) continue;
       const pilotActor = game.actors.get(driverActId);
       const riggerCombatant = pilotActor && this.combatants.find(rc => rc.actor?.id === pilotActor.id);
       if (riggerCombatant) {
         await riggerCombatant.update({
-          flags: { The2ndChumming3e: { jumpedInto: c.actor.name } },
+          flags: { The2ndChumming3e: { jumpedInto: vc.actor.name } },
         });
       }
     }

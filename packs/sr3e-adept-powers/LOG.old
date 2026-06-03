@@ -1,3 +1,5 @@
-2026/06/02-22:14:18.548 9f4 Recovering log #260
-2026/06/02-22:14:18.554 9f4 Delete type=0 #260
-2026/06/02-22:14:18.555 9f4 Delete type=3 #258
+2026/06/02-23:03:32.120 10fbc Recovering log #264
+2026/06/02-23:03:32.121 10fbc Level-0 table #266: started
+2026/06/02-23:03:32.124 10fbc Level-0 table #266: 20601 bytes OK
+2026/06/02-23:03:32.131 10fbc Delete type=0 #264
+2026/06/02-23:03:32.132 10fbc Delete type=3 #263

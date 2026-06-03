@@ -4326,7 +4326,7 @@ _prepareCharacter(sys, attr) {
           const d = rigger.system.derived ?? {};
 
           if (controlMode === 'vcr') {
-            // VCR: Rigger's Reaction + vcrLevel base, (1 + vcrLevel)d6
+            // VCR: Rigger's reaction BASE (no wired reflexes) + vcrLevel + woundMod, (1 + vcrLevel)d6
             let vcrLevel = 0;
             const activeVCRId = rigger.system.activeVCRItemId ?? '';
             if (activeVCRId) {
@@ -4340,21 +4340,18 @@ _prepareCharacter(sys, attr) {
               if (vcrItem) vcrLevel = vcrItem.system.rating ?? 1;
             }
 
-            // VCR bonus: +1 Reaction per level, +1d6 per level
-            const base = (d.initiative ?? 0) + vcrLevel;
-            const dice = (d.initiativeDice ?? 1) + vcrLevel;
+            // Wired reflexes excluded in VCR — use reaction.base not reaction.value
+            const wm          = rigger.system.woundMod ?? 0;
+            const reactionBase = rigger.system.attributes?.reaction?.base ?? 0;
+            const base = reactionBase + wm + vcrLevel;
+            const dice = 1 + vcrLevel;
 
             const rolls    = Array.from({ length: dice }, () => Math.floor(Math.random() * 6) + 1);
             const rolled   = rolls.reduce((s, r) => s + r, 0);
             const score    = base + rolled;
             const diceHtml = rolls.map(r => `<span class="sr-die ${r === 6 ? 'sr-hit' : ''}">${r}</span>`).join('');
-            const reaVal  = rigger.system.attributes?.reaction?.value ?? 0;
-            const wm      = rigger.system.woundMod ?? 0;
             const wmPart  = wm !== 0 ? ` + wound (${wm})` : '';
-            const vcrPart = vcrLevel ? ` + VCR ${vcrLevel}` : '';
-            const bonusNote = vcrLevel
-              ? `<div class="sr-roll-meta" style="color:var(--sr-accent)">VCR Lv${vcrLevel}: +${vcrLevel} Reaction, +${vcrLevel}d6</div>`
-              : '';
+            const vcrPart = ` + VCR ${vcrLevel}`;
             await ChatMessage.create({
               speaker: ChatMessage.getSpeaker({ actor: this }),
               content: `
@@ -4362,8 +4359,7 @@ _prepareCharacter(sys, attr) {
                   <div class="sr-roll-header">⚡ Initiative — ${this.name}
                     <span style="font-size:11px;font-weight:normal;color:var(--sr-accent)"> VCR: ${rigger.name}</span>
                   </div>
-                  <div class="sr-roll-meta">REA ${reaVal}${vcrPart}${wmPart} = ${base} base (${rigger.name}) + ${dice}d6</div>
-                  ${bonusNote}
+                  <div class="sr-roll-meta">REA base ${reactionBase}${vcrPart}${wmPart} = ${base} base (${rigger.name}) + ${dice}d6</div>
                   <div class="sr-roll-dice">${diceHtml}</div>
                   <div class="sr-roll-result">Score: <strong>${score}</strong>
                     <span style="font-size:11px;color:var(--sr-muted)">(${base} + ${rolled})</span>
@@ -4440,7 +4436,31 @@ _prepareCharacter(sys, attr) {
 
     let base, dice, modeNote;
 
-    if (useAstral) {
+    // VCR (jumped-in): rigger uses reaction BASE + VCR level (wired reflexes excluded).
+    const vcrVehicle = game.actors?.find(a =>
+      a.type === 'vehicle' &&
+      a.system?.driverActorId === this.id &&
+      a.system?.controlMode === 'vcr'
+    );
+    if (vcrVehicle) {
+      let vcrLevel = 0;
+      const activeVCRId = this.system.activeVCRItemId ?? '';
+      if (activeVCRId) {
+        const vcrItem = this.items.get(activeVCRId);
+        if (vcrItem) vcrLevel = vcrItem.system.rating ?? 0;
+      }
+      if (!vcrLevel) {
+        const vcrItem = this.items.find(i =>
+          i.type === 'cyberware' && /vcr|vehicle\s*control\s*rig/i.test(i.name)
+        );
+        if (vcrItem) vcrLevel = vcrItem.system.rating ?? 1;
+      }
+      const wm = this.system.woundMod ?? 0;
+      const reactionBase = this.system.attributes?.reaction?.base ?? 0;
+      base = reactionBase + vcrLevel + wm;
+      dice = 1 + vcrLevel;
+      modeNote = `<div class="sr-roll-meta" style="color:var(--sr-accent)">🎮 VCR Lv${vcrLevel} — REA base ${reactionBase}${vcrLevel ? ` + VCR ${vcrLevel}` : ''}</div>`;
+    } else if (useAstral) {
       // Astral initiative: Intelligence + 20 + 1d6
       const intel = this.system.attributes?.intelligence?.value ?? 0;
       base = intel + 20;
