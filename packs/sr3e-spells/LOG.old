@@ -1,5 +1,5 @@
-2026/06/02-23:03:32.262 10fbc Recovering log #264
-2026/06/02-23:03:32.262 10fbc Level-0 table #266: started
-2026/06/02-23:03:32.266 10fbc Level-0 table #266: 27193 bytes OK
-2026/06/02-23:03:32.273 10fbc Delete type=0 #264
-2026/06/02-23:03:32.273 10fbc Delete type=3 #263
+2026/06/03-10:05:23.846 f9d4 Recovering log #267
+2026/06/03-10:05:23.846 f9d4 Level-0 table #269: started
+2026/06/03-10:05:23.849 f9d4 Level-0 table #269: 27192 bytes OK
+2026/06/03-10:05:23.856 f9d4 Delete type=0 #267
+2026/06/03-10:05:23.856 f9d4 Delete type=3 #265

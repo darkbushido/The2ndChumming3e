@@ -119,12 +119,12 @@ Formula: `(reaction.base + woundMod + Response×2)` base + `(1 + Response)d6` (w
 **In:** base REA 4 (no cyber), Response 3 → base `4 + 6 = 10`, dice `4d6` → result 14–34.
 
 
-### VCR (Vehicle — jumped-in rigger) 
+### VCR (Vehicle — jumped-in rigger) - passed
 Formula: `Rigger REA + VCR level + woundMod` base + `(1 + VCR)d6`
 
 **In:** REA 5, VCR 2 → base `7`, dice `3d6` → result 10–25.
 
-### RCD (Vehicle — remote control) - failed - too high
+### RCD (Vehicle — remote control) - failed - passed
 Formula: `Rigger REA + woundMod` base + `1d6`
 
 **In:** REA 5 → **Out:** `5 + 1d6`, result 6–11.

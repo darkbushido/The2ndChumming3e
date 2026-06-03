@@ -611,7 +611,7 @@ export class SR3EItem extends Item {
 
     let vcrLevel = 0;
     if (pilotActor) {
-      const modeLabel  = vcrMode ? 'VCR' : 'RCR';
+      const modeLabel  = vcrMode ? 'VCR' : 'RCD';
       const gunnery    = pilotActor.items.find(i => i.type === 'skill' && /gunnery/i.test(i.name));
       if (gunnery) {
         const base = gunnery.system.skillRating ?? gunnery.system.rating ?? 0;
@@ -648,19 +648,27 @@ export class SR3EItem extends Item {
       poolLabel = `Autonomous: Pilot ${pilotRating}`;
     }
 
+    // Control Pool for gunnery: VCR only (reaction.base + VCR level, no wired reflexes).
+    // RCD cannot use Control Pool for weapon tests; Auto has no pool at all.
+    let controlPoolMax = 0;
+    if (vcrMode && pilotActor) {
+      const reactionBase = pilotActor.system.attributes?.reaction?.base ?? 0;
+      controlPoolMax = Math.max(0, reactionBase + vcrLevel);
+    }
+
     // Step 3: Roll options dialog
     const baseSig  = targetActor.type === 'vehicle'
       ? (targetActor.system.attributes?.sig?.base ?? 4)
       : 4;
     const weaponOpts = await SR3EItem._promptVehicleWeaponRollOptions(
-      this, targetActor, pool, poolLabel, baseSig, rawDamage, vcrLevel
+      this, targetActor, pool, poolLabel, baseSig, rawDamage, vcrLevel, controlPoolMax
     );
     if (!weaponOpts) return null;
 
-    const finalPool = Math.max(1, pool + weaponOpts.fireControl);
+    const finalPool = Math.max(1, pool + weaponOpts.controlPool);
     const tn        = weaponOpts.tn;
-    const fcNote    = weaponOpts.fireControl > 0 ? ` + FC${weaponOpts.fireControl}` : '';
-    const label     = `🚗 ${this.name} [${weaponOpts.damageCode}] vs ${targetActor.name} — ${poolLabel}${fcNote}`;
+    const cpNote    = weaponOpts.controlPool > 0 ? ` + CP${weaponOpts.controlPool}` : '';
+    const label     = `🚗 ${this.name} [${weaponOpts.damageCode}] vs ${targetActor.name} — ${poolLabel}${cpNote}`;
 
     // Step 4: Vehicle damage modifier (unless AV munition)
     let effectiveRawDamage = weaponOpts.damageCode;
@@ -691,7 +699,7 @@ export class SR3EItem extends Item {
   /**
    * Roll options dialog for vehicle weapon attacks.
    */
-  static async _promptVehicleWeaponRollOptions(weapon, targetActor, pool, poolLabel, baseSig, rawDamage, vcrLevel = 0) {
+  static async _promptVehicleWeaponRollOptions(weapon, targetActor, pool, poolLabel, baseSig, rawDamage, vcrLevel = 0, controlPoolMax = 0) {
     const isVehicleTarget = targetActor.type === 'vehicle';
     const sensorRating    = weapon.actor?.system.attributes?.sensor?.base ?? 0;
     const tnReduction     = vcrLevel > 0 ? vcrLevel : sensorRating;
@@ -735,9 +743,15 @@ export class SR3EItem extends Item {
               <option value="8">Extreme (+8)</option>
             </select>
           </label>
-          <label class="vw-field">Fire Control dice
-            <input type="number" id="vw-fc" value="0" min="0" max="20"/>
-          </label>
+          ${controlPoolMax > 0
+            ? `<label class="vw-field">Control Pool dice (max ${controlPoolMax})
+                 <input type="number" id="vw-fc" value="${controlPoolMax}" min="0" max="${controlPoolMax}"/>
+               </label>`
+            : `<label class="vw-field" style="color:var(--sr-muted)">Control Pool
+                 <input type="number" id="vw-fc" value="0" min="0" max="0" disabled style="opacity:0.4"
+                        title="Control Pool unavailable — VCR required for gunnery"/>
+               </label>`
+          }
           <label class="vw-field">Damage Code
             <input type="text" id="vw-damage" value="${rawDamage}"/>
           </label>
@@ -763,7 +777,7 @@ export class SR3EItem extends Item {
             const rng = parseInt(el.querySelector('#vw-range')?.value) || 0;
             result = {
               tn:          Math.max(2, sig + rng),
-              fireControl: Math.max(0, parseInt(el.querySelector('#vw-fc')?.value)     || 0),
+              controlPool: Math.max(0, parseInt(el.querySelector('#vw-fc')?.value) || 0),
               damageCode:  el.querySelector('#vw-damage')?.value.trim() || rawDamage,
               avMunition:  el.querySelector('#vw-av')?.checked ?? false,
             };
