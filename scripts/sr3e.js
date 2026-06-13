@@ -184,6 +184,17 @@ Hooks.once('init', () => {
     default: 'sr3'
   });
 
+  // Optional ammunition tracking — when on, firing decrements the loaded ammo's
+  // rounds-remaining counter. Off by default; behaves as before when disabled.
+  game.settings.register('The2ndChumming3e', 'trackAmmo', {
+    name: 'Track Ammunition',
+    hint: 'When enabled, firing decrements the selected ammo\'s rounds-remaining counter (1 SS/SA, 3 BF, N FA). Warns when empty but never blocks a shot. Reload by editing the rounds field on the ammo item.',
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: false,
+  });
+
   console.log('SR3E | Ready');
 });
 
@@ -1257,11 +1268,22 @@ Hooks.on('renderCombatTracker', (_app, html) => {
     });
   }
 
-  // Replace d20 icon with bolt to match actor sheet style
+  // Replace d20 icon with bolt to match actor sheet style.
+  // Before the encounter begins, initiative is established only via "Begin Encounter" —
+  // disable the per-combatant roll icons so nobody (esp. players) rolls ad-hoc beforehand.
+  const combatStarted = !!combat?.started;
   el.querySelectorAll('[data-action="rollInitiative"]').forEach(btn => {
     const icon = btn.querySelector('i');
     if (icon) icon.className = 'fas fa-bolt';
-    btn.title = 'Roll Initiative (Shift: physical dice)';
+    if (!combatStarted) {
+      btn.style.opacity       = '0.3';
+      btn.style.pointerEvents = 'none';
+      btn.title               = 'Initiative is rolled when you Begin Encounter';
+    } else {
+      btn.style.opacity       = '';
+      btn.style.pointerEvents = '';
+      btn.title               = 'Roll Initiative (Shift: physical dice)';
+    }
   });
 
   // Shift-click initiative buttons → physical dice mode
@@ -1270,6 +1292,7 @@ Hooks.on('renderCombatTracker', (_app, html) => {
       if (!event.shiftKey) return;
       event.preventDefault();
       event.stopImmediatePropagation();
+      if (!game.combat?.started) return; // initiative is rolled via Begin Encounter
 
       const row = btn.closest('[data-combatant-id]');
       if (!row) return;
@@ -1402,77 +1425,116 @@ Hooks.on('renderCombatTracker', (_app, html) => {
     }, true); // capture phase — intercepts before Foundry's bubble handler
   }
 
-  if (!el.querySelector('.sr3e-chase-btn')) {
-    const footer = el.querySelector('footer') ?? el.querySelector('.combat-controls');
-    const btn = document.createElement('button');
-    btn.type      = 'button';
-    btn.className = 'sr3e-chase-btn';
-    btn.textContent = '🚗 Chase Scene';
-    btn.style.cssText = 'display:block;box-sizing:border-box;margin:4px 8px 0;width:calc(100% - 16px);';
-    btn.addEventListener('click', () => game.sr3e.SR3EVehicleChase.open());
-    if (footer) footer.insertAdjacentElement('afterend', btn);
-    else el.appendChild(btn);
+  // Action Tracker — GM-only, on the active combatant's card.
+  // Complex (full width) advances the turn; clicking the first Simple toggles Complex off
+  // (one simple action used); the second Simple advances the turn.
+  if (game.user.isGM && combat?.started && combat.combatant) {
+    const activeId = combat.combatant.id;
+    const row = el.querySelector(`[data-combatant-id="${activeId}"]`);
+    if (row && !row.querySelector('.sr3e-action-tracker')) {
+      const btnStyle = 'box-sizing:border-box;padding:2px 4px;font-size:11px;cursor:pointer;border:1px solid var(--sr-border,#444);border-radius:3px;background:var(--sr-surface,#1a1a1a);color:var(--sr-text,#ddd);';
+
+      // Combat rows are usually flex; let the tracker wrap to a full-width line below the row content.
+      row.style.flexWrap = 'wrap';
+      const wrap = document.createElement('div');
+      wrap.className = 'sr3e-action-tracker';
+      wrap.style.cssText = 'flex-basis:100%;margin:6px 6px 2px;display:flex;flex-direction:column;gap:3px;';
+
+      const label = document.createElement('div');
+      label.textContent = 'Action Tracker';
+      label.style.cssText = 'font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:var(--sr-muted,#999);text-align:center;';
+
+      const complexBtn = document.createElement('button');
+      complexBtn.type = 'button';
+      complexBtn.className = 'sr3e-act-complex';
+      complexBtn.textContent = 'Complex';
+      complexBtn.style.cssText = btnStyle + 'width:100%;';
+
+      const simpleRow = document.createElement('div');
+      simpleRow.style.cssText = 'display:flex;gap:3px;';
+      const simple1 = document.createElement('button');
+      simple1.type = 'button'; simple1.className = 'sr3e-act-simple1';
+      simple1.textContent = 'Simple'; simple1.style.cssText = btnStyle + 'flex:1;';
+      const simple2 = document.createElement('button');
+      simple2.type = 'button'; simple2.className = 'sr3e-act-simple2';
+      simple2.textContent = 'Simple'; simple2.style.cssText = btnStyle + 'flex:1;';
+      simpleRow.append(simple1, simple2);
+
+      const applyState = () => {
+        const used = (_actionTracker.get(activeId) ?? {}).firstSimpleUsed;
+        complexBtn.style.opacity = used ? '0.35' : '1';
+        complexBtn.style.cursor  = used ? 'not-allowed' : 'pointer';
+        simple1.style.background = used ? 'var(--sr-accent,#3a6ea5)' : 'var(--sr-surface,#1a1a1a)';
+        simple1.style.color      = used ? '#fff' : 'var(--sr-text,#ddd)';
+      };
+
+      complexBtn.addEventListener('click', async () => {
+        if ((_actionTracker.get(activeId) ?? {}).firstSimpleUsed) return; // greyed out
+        _actionTracker.delete(activeId);
+        await combat.nextTurn();
+      });
+      simple1.addEventListener('click', () => {
+        const s = _actionTracker.get(activeId) ?? { firstSimpleUsed: false };
+        s.firstSimpleUsed = !s.firstSimpleUsed;
+        _actionTracker.set(activeId, s);
+        applyState();
+      });
+      simple2.addEventListener('click', async () => {
+        _actionTracker.delete(activeId);
+        await combat.nextTurn();
+      });
+
+      applyState();
+      wrap.append(label, complexBtn, simpleRow);
+      row.appendChild(wrap);
+    }
   }
 
-  if (game.user.isGM && !el.querySelector('.sr3e-reward-btn')) {
-    const anchor = el.querySelector('.sr3e-chase-btn') ?? el.querySelector('footer') ?? el.querySelector('.combat-controls');
-    const rewardBtn = document.createElement('button');
-    rewardBtn.type      = 'button';
-    rewardBtn.className = 'sr3e-reward-btn';
-    rewardBtn.textContent = '🎖 Session Rewards';
-    rewardBtn.style.cssText = 'display:block;box-sizing:border-box;margin:4px 8px 0;width:calc(100% - 16px);';
-    rewardBtn.addEventListener('click', _openSessionRewardDialog);
-    if (anchor) anchor.insertAdjacentElement('afterend', rewardBtn);
-    else el.appendChild(rewardBtn);
-  }
+  // GM tool buttons (Chase Scene, Session Rewards, Chunky Salsa, Barrier/Falling Damage,
+  // Escape Artist) live on the Rollable Tables sidebar tab — see renderRollTableDirectory below.
+});
 
-  if (game.user.isGM && !el.querySelector('.sr3e-salsa-btn')) {
-    const anchor = el.querySelector('.sr3e-reward-btn') ?? el.querySelector('.sr3e-chase-btn') ?? el.querySelector('footer') ?? el.querySelector('.combat-controls');
-    const salsaBtn = document.createElement('button');
-    salsaBtn.type      = 'button';
-    salsaBtn.className = 'sr3e-salsa-btn';
-    salsaBtn.textContent = '💥 Chunky Salsa';
-    salsaBtn.style.cssText = 'display:block;box-sizing:border-box;margin:4px 8px 0;width:calc(100% - 16px);';
-    salsaBtn.addEventListener('click', _openChunkySalsaCalculator);
-    if (anchor) anchor.insertAdjacentElement('afterend', salsaBtn);
-    else el.appendChild(salsaBtn);
-  }
+// Action Tracker state resets whenever the combat turn or round changes (covers both the
+// tracker's own buttons and the default next-turn arrow).
+Hooks.on('updateCombat', (_combat, changed) => {
+  if ('turn' in changed || 'round' in changed) _actionTracker.clear();
+});
 
-  if (game.user.isGM && !el.querySelector('.sr3e-barrier-btn')) {
-    const anchor = el.querySelector('.sr3e-salsa-btn') ?? el.querySelector('.sr3e-reward-btn') ?? el.querySelector('footer') ?? el.querySelector('.combat-controls');
-    const barrierBtn = document.createElement('button');
-    barrierBtn.type = 'button';
-    barrierBtn.className = 'sr3e-barrier-btn';
-    barrierBtn.textContent = '🧱 Barrier Damage';
-    barrierBtn.style.cssText = 'display:block;box-sizing:border-box;margin:4px 8px 0;width:calc(100% - 16px);';
-    barrierBtn.addEventListener('click', _openBarrierDamageCalculator);
-    if (anchor) anchor.insertAdjacentElement('afterend', barrierBtn);
-    else el.appendChild(barrierBtn);
-  }
 
-  if (game.user.isGM && !el.querySelector('.sr3e-falling-btn')) {
-    const anchor = el.querySelector('.sr3e-barrier-btn') ?? el.querySelector('.sr3e-salsa-btn') ?? el.querySelector('.sr3e-reward-btn') ?? el.querySelector('footer') ?? el.querySelector('.combat-controls');
-    const fallingBtn = document.createElement('button');
-    fallingBtn.type      = 'button';
-    fallingBtn.className = 'sr3e-falling-btn';
-    fallingBtn.textContent = '🪂 Falling Damage';
-    fallingBtn.style.cssText = 'display:block;box-sizing:border-box;margin:4px 8px 0;width:calc(100% - 16px);';
-    fallingBtn.addEventListener('click', _openFallingDamageCalculator);
-    if (anchor) anchor.insertAdjacentElement('afterend', fallingBtn);
-    else el.appendChild(fallingBtn);
-  }
+// SR3E GM tools — injected into the Rollable Tables sidebar tab.
+// Chase Scene is available to all players; the rest are GM-only.
+Hooks.on('renderRollTableDirectory', (_app, html) => {
+  const el = html instanceof HTMLElement ? html : html?.[0];
+  if (!el || el.querySelector('.sr3e-table-tools')) return;
 
-  if (game.user.isGM && !el.querySelector('.sr3e-escape-btn')) {
-    const anchor = el.querySelector('.sr3e-falling-btn') ?? el.querySelector('.sr3e-barrier-btn') ?? el.querySelector('.sr3e-salsa-btn') ?? el.querySelector('.sr3e-reward-btn') ?? el.querySelector('footer') ?? el.querySelector('.combat-controls');
-    const escapeBtn = document.createElement('button');
-    escapeBtn.type      = 'button';
-    escapeBtn.className = 'sr3e-escape-btn';
-    escapeBtn.textContent = '🔓 Escape Artist';
-    escapeBtn.style.cssText = 'display:block;box-sizing:border-box;margin:4px 8px 0;width:calc(100% - 16px);';
-    escapeBtn.addEventListener('click', _openEscapeArtistCalculator);
-    if (anchor) anchor.insertAdjacentElement('afterend', escapeBtn);
-    else el.appendChild(escapeBtn);
-  }
+  const tools = document.createElement('div');
+  tools.className = 'sr3e-table-tools';
+  tools.style.cssText = 'display:flex;flex-direction:column;gap:4px;padding:6px 8px;border-top:1px solid var(--sr-border,#333);';
+
+  const mk = (cls, label, handler, gmOnly) => {
+    if (gmOnly && !game.user.isGM) return;
+    const b = document.createElement('button');
+    b.type        = 'button';
+    b.className    = cls;
+    b.textContent = label;
+    b.style.cssText = 'display:block;box-sizing:border-box;width:100%;margin:0;';
+    b.addEventListener('click', handler);
+    tools.appendChild(b);
+  };
+
+  mk('sr3e-chase-btn',   '🚗 Chase Scene',     () => game.sr3e.SR3EVehicleChase.open(), false);
+  mk('sr3e-reward-btn',  '🎖 Session Rewards', _openSessionRewardDialog,     true);
+  mk('sr3e-salsa-btn',   '💥 Chunky Salsa',    _openChunkySalsaCalculator,   true);
+  mk('sr3e-barrier-btn', '🧱 Barrier Damage',  _openBarrierDamageCalculator, true);
+  mk('sr3e-falling-btn', '🪂 Falling Damage',  _openFallingDamageCalculator, true);
+  mk('sr3e-escape-btn',  '🔓 Escape Artist',   _openEscapeArtistCalculator,  true);
+
+  if (!tools.childElementCount) return; // non-GM with nothing to show
+
+  // Pin below the directory header so the tools stay visible above the (scrolling) table list.
+  const header = el.querySelector('.directory-header');
+  if (header) header.insertAdjacentElement('afterend', tools);
+  else el.prepend(tools);
 });
 
 
@@ -1521,6 +1583,10 @@ Hooks.on('updateActor', async (actor, changes, options) => {
 // and the main chat log render the same card with live buttons simultaneously.
 // Key = messageId|class|index. In-memory only; clears on page reload.
 const _usedButtons = new Set();
+
+// Action Tracker state — per active combatant, this turn only. Keyed by combatant id,
+// value { firstSimpleUsed }. Cleared whenever the combat turn/round changes (below).
+const _actionTracker = new Map();
 
 function _checkBtn(btn, mid, cls, idx) {
   if (!_usedButtons.has(`${mid}|${cls}|${idx}`)) return true;

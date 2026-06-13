@@ -66,6 +66,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
         toggleFullDefense:  SR3EActorSheet._onToggleFullDefense,
         resetRecoil:        SR3EActorSheet._onResetRecoil,
+        reloadWeapon:       SR3EActorSheet._onReloadWeapon,
         rollCybercombat:    SR3EActorSheet._onRollCybercombat,
         rollHackingAction:  SR3EActorSheet._onRollHackingAction,
         rollDumpshock:      SR3EActorSheet._onRollDumpshock,
@@ -648,7 +649,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       </div>
       <div class="derived-grid">
         ${this._derivedBlock('Compensation',
-          `<input type="number" name="system.recoilCompensation" value="${sys.recoilCompensation ?? 0}" min="0" max="20" class="pool-input" style="width:45px" title="Total recoil compensation from gas vents, shock pads, cyberware, etc."/>`)}
+          `<span style="color:var(--sr-muted)" title="Cyber/body recoil compensation — edit on the Cyber tab; weapon-mounted comp is set on each weapon">${sys.recoilCompensation ?? 0}</span>`)}
         ${this._derivedBlock('Rounds This Phase',
           `<span style="color:${(sys.roundsFiredThisPhase ?? 0) > 0 ? 'var(--sr-amber)' : 'var(--sr-muted)'}">${sys.roundsFiredThisPhase ?? 0}</span>`,
           '')}
@@ -821,8 +822,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       <span class="item-cell">${w.system.mode || '—'}</span>
       <span class="item-cell">${w.system.concealability ?? '—'}</span>
       <span class="item-cell">${w.system.weight ?? 0}</span>
-      <span class="item-cell">${w.system.ammunition || '—'}</span>
-      ${this._itemControls(w.id, true, 'rollWeapon', false)}
+      <span class="item-cell">${this._firearmAmmoCell(w)}</span>
+      ${this._itemControls(w.id, true, 'rollWeapon', false, this._weaponOutOfAmmo(w))}
     </div>`).join('') : '<p class="empty-list">No firearms.</p>';
 
   const armedRows = armedMelee.length ? armedMelee.map(w => {
@@ -867,6 +868,23 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ${this._itemControls(w.id, true, 'rollWeapon', false)}
     </div>`;
 
+  // Thrown weapons are consumed on use — show quantity and disable when empty (tracking on).
+  const _thrownRow = w => {
+    const trackOn = game.settings.get('The2ndChumming3e', 'trackAmmo');
+    const qty     = w.system.quantity ?? 0;
+    const out     = trackOn && qty <= 0;
+    const qtyCol  = out ? 'var(--sr-red)' : (trackOn && qty <= 2 ? 'var(--sr-amber)' : 'var(--sr-muted)');
+    return `
+    <div class="item-row" data-item-id="${w.id}">
+      <span class="item-name">${w.name}</span>
+      <span class="item-cell">${w.system.damage || '—'}</span>
+      <span class="item-cell">${w.system.strMin || '—'}</span>
+      <span class="item-cell">${w.system.concealability ?? '—'}</span>
+      <span class="item-cell" style="color:${qtyCol}">${trackOn ? `×${qty}` : '—'}</span>
+      ${this._itemControls(w.id, true, 'rollWeapon', false, out)}
+    </div>`;
+  };
+
   const bows         = projectiles.filter(i => BOW_CATS.has(i.system.category ?? ''));
   const legacyThrown = projectiles.filter(i => THROWN_CATS.has(i.system.category ?? ''));
   const uncatProj    = projectiles.filter(i => {
@@ -876,7 +894,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   const allThrown  = [...thrown, ...legacyThrown];
 
   const bowRows    = bows.length     ? bows.map(_projRow).join('')     : '<p class="empty-list">No bows or crossbows.</p>';
-  const thrownRows = allThrown.length ? allThrown.map(_projRow).join('') : '<p class="empty-list">No thrown weapons.</p>';
+  const thrownRows = allThrown.length ? allThrown.map(_thrownRow).join('') : '<p class="empty-list">No thrown weapons.</p>';
 
   const uncatMeleeHtml = uncategorisedMelee.length ? `
     <h3 class="section-hdr" style="margin-top:0.75rem;color:var(--sr-amber)">Uncategorised Melee (set category in item sheet)</h3>
@@ -906,8 +924,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <span class="item-cell">${w.system.mode || '—'}</span>
         <span class="item-cell">${w.system.concealability ?? '—'}</span>
         <span class="item-cell">${w.system.weight ?? 0}</span>
-        <span class="item-cell">${w.system.ammunition || '—'}</span>
-        ${this._itemControls(w.id, true, 'rollWeapon', false)}
+        <span class="item-cell">${this._firearmAmmoCell(w)}</span>
+        ${this._itemControls(w.id, true, 'rollWeapon', false, this._weaponOutOfAmmo(w))}
       </div>`).join('')}` : '';
 
   const _dragHdr = label => `<span class="wep-drag-grip" title="Drag to reorder">&#8942;&#8942;</span>${label}`;
@@ -933,7 +951,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     'thrown': `
       <div class="weapon-section" data-section="thrown">
         <h3 class="section-hdr wep-section-hdr" draggable="true">${_dragHdr('Thrown Weapons')}</h3>
-        <div class="list-header"><span>Name</span><span>Damage</span><span>Str Min</span><span>Conceal</span><span>Weight (kg)</span><span></span></div>
+        <div class="list-header"><span>Name</span><span>Damage</span><span>Str Min</span><span>Conceal</span><span>Qty</span><span></span></div>
         ${thrownRows}
         <button type="button" class="btn-add" data-action="itemCreate" data-type="thrown">+ Add Thrown Weapon</button>
       </div>`,
@@ -1083,19 +1101,59 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     </div>`;
   }
 
+  /**
+   * Stockpile-total cell for a gear/ammo-tab row. Ammo items are a reservoir, not a
+   * magazine — they are never reloaded here; weapons draw from them.
+   */
+  _ammoStockCell(a) {
+    const rounds  = a.system.rounds ?? 0;
+    const trackOn = game.settings.get('The2ndChumming3e', 'trackAmmo');
+    const color   = (trackOn && rounds === 0) ? 'var(--sr-red)' : 'var(--sr-text)';
+    return `<span style="color:${color}">${rounds}</span>`;
+  }
+
+  /**
+   * Ammo cell for a firearm row in the weapons tab: capacity string, the loaded
+   * ammo type + magazine count (when tracking), and a Reload button.
+   */
+  _firearmAmmoCell(w) {
+    const cap     = w.system.ammunition || '—';
+    const trackOn = game.settings.get('The2ndChumming3e', 'trackAmmo');
+    const type    = w.system.loadedAmmoType ?? 'regular';
+    const label   = SR3E.ammoTypes[type]?.label ?? 'Regular';
+    const magSize = game.sr3e.SR3EItem._parseMagazineSize(w.system.ammunition ?? '');
+    const loaded  = w.system.loadedRounds ?? 0;
+
+    let badge = '';
+    if (type !== 'regular' || trackOn) {
+      const countTxt = trackOn && magSize > 0 ? ` ${loaded}/${magSize}` : '';
+      const color    = (trackOn && magSize > 0 && loaded === 0) ? 'var(--sr-red)'
+                     : (trackOn && magSize > 0 && loaded <= magSize / 4) ? 'var(--sr-amber)'
+                     : 'var(--sr-muted)';
+      badge = `<div style="font-size:10px;color:${color}">${label}${countTxt}</div>`;
+    }
+    const reloadBtn = `<button type="button" class="btn-sm" data-action="reloadWeapon" data-item-id="${w.id}" title="Load ammo from stock" style="margin-left:4px;padding:0 5px">↻</button>`;
+    return `<span>${cap}</span>${reloadBtn}${badge}`;
+  }
+
   _tabAmmo(actor) {
-    const ammo = actor.items.filter(i => i.type === 'ammunition');
-    const ammoRows = ammo.length ? ammo.map(a => `
+    const ammo     = actor.items.filter(i => i.type === 'ammunition');
+    const ammoRows = ammo.length ? ammo.map(a => {
+      const typeLabel = SR3E.ammoTypes[a.system.ammoType ?? 'regular']?.label ?? 'Regular';
+      const mech      = a.system.loadMechanism ?? 'c';
+      return `
       <div class="item-row" data-item-id="${a.id}">
         <span class="item-name">${a.name}</span>
-        <span class="item-cell">${a.system.damage || '—'}</span>
-        <span class="item-cell">${a.system.availability || '—'}</span>
+        <span class="item-cell">${typeLabel}</span>
+        <span class="item-cell" title="${SR3E.ammoLoadMechanisms[mech] ?? mech}">${mech}</span>
+        <span class="item-cell">${this._ammoStockCell(a)}</span>
         ${this._itemControls(a.id, false)}
-      </div>`).join('') : '<p class="empty-list">No ammunition.</p>';
+      </div>`;
+    }).join('') : '<p class="empty-list">No ammunition.</p>';
 
     return `<div class="tab ${this._activeTab === 'ammo' ? 'active' : ''}" data-tab="ammo">
       <h3 class="section-hdr">Ammunition</h3>
-      <div class="list-header"><span>Name</span><span>Damage Mod</span><span>Availability</span><span></span></div>
+      <div class="list-header"><span>Name</span><span>Type</span><span>Load</span><span>Stock</span><span></span></div>
       ${ammoRows}
       <button type="button" class="btn-add" data-action="itemCreate" data-type="ammunition">+ Add Ammunition</button>
     </div>`;
@@ -1172,6 +1230,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     return `<div class="tab ${this._activeTab === 'cyber' ? 'active' : ''}" data-tab="cyber" style="overflow-y:auto">
       ${vcrBanner}
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:6px 8px;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r)">
+        <span class="field-label" style="margin:0">Recoil Compensation</span>
+        <input type="number" name="system.recoilCompensation" value="${sys.recoilCompensation ?? 0}" min="0" max="20" class="pool-input" style="width:50px"
+               title="Recoil compensation from cyberware, bioware, shock pads etc. (weapon-mounted comp is set on the weapon)"/>
+        <span style="font-size:11px;color:var(--sr-muted)">from cyber/bio sources — stacks with weapon-mounted compensation</span>
+      </div>
       <h3 class="section-hdr">Cyberware</h3>
       <div class="list-header"><span>Name</span><span>Grade</span><span>Essence</span><span>Rating</span><span>VCR</span><span></span></div>
       ${cwRows}
@@ -1511,18 +1575,14 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       </div>`).join('') : '<p class="empty-list">No gear.</p>';
 
     const aRows = ammo.length ? ammo.map(a => {
-      const pm  = a.system.powerMod ?? 0;
-      const tm  = a.system.tnMod    ?? 0;
-      const mods = [
-        pm !== 0 ? `Power${pm > 0 ? '+' : ''}${pm}` : '',
-        tm !== 0 ? `TN${tm > 0 ? '+' : ''}${tm}` : '',
-      ].filter(Boolean).join(', ') || '—';
+      const typeLabel = SR3E.ammoTypes[a.system.ammoType ?? 'regular']?.label ?? 'Regular';
+      const mech      = a.system.loadMechanism ?? 'c';
       return `
       <div class="item-row" data-item-id="${a.id}">
         <span class="item-name">${a.name}</span>
-        <span class="item-cell">${mods}</span>
-        <span class="item-cell">${a.system.availability || '—'}</span>
-        <span class="item-cell">${a.system.weight ?? 0}</span>
+        <span class="item-cell">${typeLabel}</span>
+        <span class="item-cell" title="${SR3E.ammoLoadMechanisms[mech] ?? mech}">${mech}</span>
+        <span class="item-cell">${this._ammoStockCell(a)}</span>
         ${this._itemControls(a.id, false, 'rollWeapon', false)}
       </div>`;
     }).join('') : '<p class="empty-list">No ammunition.</p>';
@@ -1533,7 +1593,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ${gRows}
       <button type="button" class="btn-add" data-action="itemCreate" data-type="gear">+ Add Gear</button>
       <h3 class="section-hdr" style="margin-top:1rem">Ammunition</h3>
-      <div class="list-header"><span>Name</span><span>Damage Mod</span><span>Availability</span><span>Weight (kg)</span><span></span></div>
+      <div class="list-header"><span>Name</span><span>Type</span><span>Load</span><span>Stock</span><span></span></div>
       ${aRows}
       <button type="button" class="btn-add" data-action="itemCreate" data-type="ammunition">+ Add Ammunition</button>
     </div>`;
@@ -1978,16 +2038,27 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     </div>`;
   }
 
-  _itemControls(itemId, hasRoll, rollAction = 'rollWeapon', stored = null) {
+  _itemControls(itemId, hasRoll, rollAction = 'rollWeapon', stored = null, rollDisabled = false) {
     const storeIcon = stored !== null ? `<i class="fas fa-home" data-action="toggleStored" data-item-id="${itemId}"
       style="color:${stored ? 'var(--sr-gold)' : 'var(--sr-dim)'}"
       title="${stored ? 'Remove from storage' : 'Put in storage'}"></i>` : '';
+    const rollIcon = !hasRoll ? ''
+      : rollDisabled
+        ? `<i class="fas fa-dice-d6" style="opacity:0.25;cursor:not-allowed;text-decoration:line-through" title="Out of ammo — reload / restock"></i>`
+        : `<i class="fas fa-dice-d6 rollable" data-action="${rollAction}" data-item-id="${itemId}" title="Shift+Click to use Real Dice"></i>`;
     return `<div class="item-controls">
       ${storeIcon}
-      ${hasRoll ? `<i class="fas fa-dice-d6 rollable" data-action="${rollAction}" data-item-id="${itemId}" title="Shift+Click to use Real Dice"></i>` : ''}
+      ${rollIcon}
       <i class="fas fa-edit" data-action="itemEdit" data-item-id="${itemId}" title="Edit"></i>
       <i class="fas fa-trash" data-action="itemDelete" data-item-id="${itemId}" title="Delete"></i>
     </div>`;
+  }
+
+  /** True when a weapon is empty and ammo tracking is on (so its roll icon is disabled). */
+  _weaponOutOfAmmo(w) {
+    if (!game.settings.get('The2ndChumming3e', 'trackAmmo')) return false;
+    if (w.type === 'firearm') return (w.system.loadedRounds ?? 0) <= 0;
+    return false; // thrown handled in its own row renderer
   }
 
   _meleeControls(itemId, isEquipped, isAwakened = false, isFocus = false, focusActive = false, stored = null) {
@@ -2579,6 +2650,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   static async _onResetRecoil(_ev, _target) {
     await this.actor.resetRecoil();
     ui.notifications.info('Recoil counter reset.');
+  }
+
+  static async _onReloadWeapon(_ev, target) {
+    const weapon = this.actor.items.get(target.dataset.itemId);
+    if (!weapon) return;
+    await weapon.reload();
   }
 
   static async _onRollCybercombat(_ev, _target) {

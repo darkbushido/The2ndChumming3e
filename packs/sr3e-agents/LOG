@@ -1,5 +1,5 @@
-2026/06/03-13:41:54.683 b338 Recovering log #188
-2026/06/03-13:41:54.683 b338 Level-0 table #190: started
-2026/06/03-13:41:54.687 b338 Level-0 table #190: 13585 bytes OK
-2026/06/03-13:41:54.695 b338 Delete type=0 #188
-2026/06/03-13:41:54.695 b338 Delete type=3 #186
+2026/06/13-19:57:08.114 cfb0 Recovering log #201
+2026/06/13-19:57:08.114 cfb0 Level-0 table #203: started
+2026/06/13-19:57:08.118 cfb0 Level-0 table #203: 13585 bytes OK
+2026/06/13-19:57:08.125 cfb0 Delete type=0 #201
+2026/06/13-19:57:08.125 cfb0 Delete type=3 #199

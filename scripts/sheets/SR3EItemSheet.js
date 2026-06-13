@@ -273,6 +273,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     ${this._f('Concealability', 'concealability', s.concealability)}
     ${this._f('Str. Min.', 'strMin', s.strMin, 'text', 'placeholder="3 or -"')}
     ${this._f('Damage', 'damage', s.damage, 'text', 'placeholder="(STR)L or 6M"')}
+    ${this._f('Quantity', 'quantity', s.quantity ?? 0, 'number', 'min="0" title="How many you carry. Thrown weapons (not bows) are consumed on use when ammo tracking is enabled."')}
     ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
     ${this._f('Availability', 'availability', s.availability)}
     ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
@@ -301,6 +302,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     ${this._f('Concealability', 'concealability', s.concealability)}
     ${this._f('Str. Min.', 'strMin', s.strMin, 'text', 'placeholder="3 or -"')}
     ${this._f('Damage', 'damage', s.damage, 'text', 'placeholder="(STR)L or 6M"')}
+    ${this._f('Quantity', 'quantity', s.quantity ?? 0, 'number', 'min="0" title="How many you carry. Consumed on use when ammo tracking is enabled."')}
     ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
     ${this._f('Availability', 'availability', s.availability)}
     ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
@@ -343,6 +345,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Ammunition', 'ammunition', s.ammunition, 'text', 'placeholder="15(c)"')}
           ${this._f('Mode', 'mode', s.mode, 'text', 'placeholder="SA/BF/FA"')}
           ${this._f('Damage', 'damage', s.damage, 'text', 'placeholder="9M"')}
+          ${this._f('Recoil Comp', 'recoilMod', s.recoilMod ?? 0, 'number', 'min="0" max="20" title="Recoil compensation from gas vents, bipods, shock pads etc. mounted on this weapon"')}
           ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
           ${this._f('Availability', 'availability', s.availability)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
@@ -353,12 +356,25 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         </div>
         ${this._notes(s.notes)}`;
 
-      case 'ammunition':
+      case 'ammunition': {
+        const ammoTypeOpts = Object.entries(SR3E.ammoTypes)
+          .map(([k, v]) => `<option value="${k}" ${(s.ammoType ?? 'regular') === k ? 'selected' : ''}>${v.label}</option>`)
+          .join('');
+        const mechOpts = Object.entries(SR3E.ammoLoadMechanisms)
+          .map(([k, v]) => `<option value="${k}" ${(s.loadMechanism ?? 'c') === k ? 'selected' : ''}>${v} (${k})</option>`)
+          .join('');
         return `<div class="form-grid">
-          ${this._f('Concealability', 'concealability', s.concealability)}
+          <div class="form-field">
+            <span class="field-label">Ammo Type</span>
+            <select name="system.ammoType" title="Rules (power, armour interaction, stun) are applied automatically by type">${ammoTypeOpts}</select>
+          </div>
+          <div class="form-field">
+            <span class="field-label">Loading Mechanism</span>
+            <select name="system.loadMechanism" title="Must match the weapon's loading mechanism (the code in its ammo-capacity, e.g. 15(c))">${mechOpts}</select>
+          </div>
+          ${this._f('Rounds in Stock', 'rounds', s.rounds ?? 0, 'number', 'min="0" title="Total rounds of this ammo you own (the stockpile). Reloading a weapon draws from this; the weapon\'s magazine size comes from its own ammo-capacity (e.g. 15(c))."')}
           ${this._f('Description', 'damage', s.damage, 'text', 'placeholder="Ex-Explosive, Hollow Point…"')}
-          ${this._f('Power Modifier', 'powerMod', s.powerMod ?? 0, 'number', 'title="Added to weapon power (negative reduces damage)"')}
-          ${this._f('TN Modifier', 'tnMod', s.tnMod ?? 0, 'number', 'title="Added to attack TN (negative makes it easier to hit)"')}
+          ${this._f('Concealability', 'concealability', s.concealability)}
           ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
           ${this._f('Availability', 'availability', s.availability)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
@@ -366,6 +382,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Book / Page', 'bookPage', s.bookPage)}
         </div>
         ${this._notes(s.notes)}`;
+      }
 
       case 'armor':
         return `<div class="form-grid">

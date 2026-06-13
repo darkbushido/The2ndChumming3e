@@ -156,12 +156,12 @@ Move preferred weapon types to the top of the weapons tab - passed
 ### Attack dice - passed 
 **In:** Pistols skill 5, TN 4 → **Out:** 5 dice chat card vs TN 4.
 
-### Firing modes - NEXT
+### Firing modes - passed
 
 | Mode | Rounds | Power mod | Level mod |
 |---|---|---|---|
-| SS | 0 (no recoil) | 0 | 0 |
-| SA | 1 | 0 | 0 |
+| SS | 0 (no recoil) | 0 | 0 | - warns if fired more than once in a phase
+| SA | 1 | 0 | 0 | - 
 | BF | 3 | +3 | +1 stage |
 | FA (3 rds) | 3 | +3 | +1 stage |
 | FA (6 rds) | 6 | +6 | +2 stages |
@@ -170,11 +170,15 @@ Move preferred weapon types to the top of the weapons tab - passed
 **BF example:** Weapon `9M` → BF → damage becomes `12S`.
 
 ### Recoil (SA / BF / FA)
-`Recoil TN penalty = rounds fired this phase − recoil compensation`
+`totalComp = actor recoilCompensation (Cyber tab) + weapon recoilMod ("Recoil Comp" on the item)`
+Both are editable inline in the fire-mode dialog and persist on confirm.
 
-**In:** Fired 3 rounds previously, compensation 2 → TN penalty **+1**.
+- **SS/SA/FA cumulative:** `max(0, roundsBeforeThisShot − totalComp) × heavyMult`. **In:** fired 3 rounds previously, totalComp 2 → TN penalty **+1**.
+- **BF stacks:** `max(0, (roundsBeforeThisShot + 3) − totalComp) × heavyMult` — **+3 first burst, +6 second, +9 third** (BF counts its own 3 rounds). **In:** totalComp 0, first burst → **+3**; fire a second burst (roundsBefore now 3) → **+6**.
+- **Heavy weapons** (LMG/MMG/HMG/MinG) double the uncompensated recoil.
+- `roundsFiredThisPhase` resets at the start of each combat phase (and via the ↺ Reset button).
 
-### FA multi-target TN penalty
+### FA multi-target TN penalty - passed
 
 | Target number | TN penalty |
 |---|---|
@@ -184,12 +188,56 @@ Move preferred weapon types to the top of the weapons tab - passed
 | 4th | +6 |
 | 5th+ | +8 |
 
+### Ammunition — stockpile / magazine model
+
+World setting **Track Ammunition** (Configure Settings → System) gates all counting (off by default).
+
+**Stockpile (gear/ammo tabs):** ammo items are a reservoir. Each has Ammo Type, Loading Mechanism (c/m/cy/b/d/sb/internal), and Rounds in Stock. The tab shows Type / Load / Stock — no reload here.
+
+**Magazine (weapons tab):** each firearm shows its capacity, a loaded badge (type + `loaded/magSize` when tracking), and a ↻ **Reload** button. Magazine size is parsed from the gun's capacity string (`15(c)` → 15).
+
+**Reload:** ↻ → prompts compatible stockpiles (matched by loading mechanism; with rounds, when tracking on) → loads up to magazine size, subtracts from the stockpile, **discards any rounds left in the old mag** (full swap). Tracking off → only sets the loaded type, no stock math.
+
+**Firing** uses whatever is loaded — no per-shot picker. When tracking on, the magazine decrements (1 SS/SA, 3 BF, N FA + walking-fire waste) and warns (never blocks) when empty.
+
+**Loading-mechanism filter:** a clip-fed gun (`(c)`) only offers clip-mechanism ammo on reload. **In:** gun `15(c)`, stockpiles of clip-APDS and belt-FMJ → only clip-APDS is offered.
+
+**Type effects (applied automatically from the loaded type):**
+
+| Type | Effect | When |
+|---|---|---|
+| Regular | none | — |
+| Explosive | Power +1 | attack |
+| EX Explosive | Power +2 | attack |
+| Gel | Power −2, damage → Stun | attack |
+| APDS | target ballistic halved (round down) | soak card |
+| Flechette | unarmoured → level +1; armoured → effective armour ×2 (incl. vehicle) | soak card |
+| Tracer | FA-only; tracer rounds raise Level not Power (5M ×10 rds → 12D); −1 TN/3 rds shown as a manual note | attack |
+| Anti-Vehicle | bypasses the vehicle Power÷2 reduction | attack |
+
+**Examples:**
+- Explosive on `5M` → `6M`. EX on `5M` → `7M`.
+- Gel on `9M` → `7M Stun`.
+- APDS vs ballistic 6 → soak card shows ballistic **3**, gold note "APDS — ballistic armour halved".
+- Flechette vs unarmoured target → soak card incoming level raised one (e.g. `9M` → `9S`). Vs armour 5 → effective armour **10**.
+- Tracer FA 10 rounds on `5M` → `12D` (not 15D), gold-noted tracer TN bonus.
+- Anti-Vehicle vs vehicle → no Power÷2 applied (no manual checkbox needed on character firearms).
+
+**Vehicle-mounted weapons** keep their own AV-munition checkbox in the 🚗 dialog (no clip system).
+
+### Empty weapons are inoperable (tracking on)
+When **Track Ammunition** is on, an empty weapon's dice icon is faded + struck-through and cannot be rolled; the Reload button stays active.
+- **In:** firearm with `loadedRounds 0` → dice icon disabled; clicking does nothing; ↻ Reload still works. After reload → dice icon active.
+- **In:** thrown weapon with quantity 0 → dice icon disabled.
+- Tracking **off** → all weapons always operable (no fading).
+
+
 ### Dodge (binary)
 Defender commits dice → after attack rolls → dodge card appears.
 - Dodge hits **≥** attack hits → **complete miss**, no damage proceeds.
 - Dodge hits **<** attack hits → **full staged damage** proceeds (net hits do NOT reduce staging).
 
-### Soak TN
+### Soak TN - passed
 Formula: `max(2, Damage Power − Armor)`
 
 | Power | Armor (Ballistic) | Soak TN |
@@ -198,12 +246,12 @@ Formula: `max(2, Damage Power − Armor)`
 | 6 | 0 | 6 |
 | 4 | 8 | 2 (min) |
 
-### Damage staging (after soak)
+### Damage staging (after soak) - passed
 Every 2 soak hits = 1 stage down (D→S→M→L). Below L = fully soaked.
 
 **In:** `9S` damage, 4 soak hits → staged down 2 → `9L`. 6 soak hits → `9L` → fully soaked.
 
-### Assign Damage button
+### Assign Damage button - passed
 After soak resolves → **🩸 Assign X to [Name]** button. Click → wound track updates, button disables.
 
 Boxes applied per level:
@@ -216,7 +264,7 @@ Boxes applied per level:
 
 ---
 
-## 6. Melee Combat
+## 6. Melee Combat 
 
 Click melee weapon → target dialog → boxing card appears for both sides simultaneously.
 
@@ -262,6 +310,13 @@ Click grenade/projectile weapon → target selection (multi-select) → each tar
 Multiple walls/reflections: additional power penalty applied per path. All wave hits on a target are summed.
 
 Each target gets their own Resist Damage button → soak flow runs per-target.
+
+### Thrown-weapon quantity (tracking on)
+Thrown weapons / grenades (`thrown` type, or `projectile` with a thrown category) carry a **Quantity** and are decremented 1 per throw. Bows/crossbows are never consumed. The weapons-tab thrown section shows `×qty` (amber ≤2, red at 0).
+
+- **In:** grenade quantity 3 → throw it → quantity **2**, card resolves as normal.
+- **In:** quantity 1 → throw → quantity **0**, "last one" warning, dice icon now disabled.
+- **In:** bow fired → quantity unchanged (bows aren't consumables).
 
 ---
 

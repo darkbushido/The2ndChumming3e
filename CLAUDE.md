@@ -350,17 +350,44 @@ Only one state active at a time; clicking the active button deactivates it.
 ### Ranged combat flow
 1. Attacker clicks weapon on sheet
 2. Target selection dialog (radio buttons, single actor)
-3. Defender declares: no dodge OR dodge with X combat pool dice (committed immediately, pool spent)
-4. Attacker allocates combat pool to attack
-5. Attack rolls (interactive Rule of Six)
-6. On final wave: if dodge committed → "Roll to dodge" button appears; if no dodge → soak card auto-posts
-7. Dodge roll (interactive Rule of Six, TN 4)
-8. Dodge result: **binary** — dodge hits ≥ attack hits = complete miss; otherwise full hit lands
-9. Dodge does NOT reduce staging. Net hits are irrelevant to damage. Full staged damage proceeds to soak.
-10. Soak card posts for target: editable Body pool, TN (power − armour), armour type dropdown (ballistic default, impact for melee)
-11. Soak roll (interactive Rule of Six)
-12. Soak result: each 2 soak hits = stage down (D→S→M→L). Below L = completely soaked.
-13. GM applies damage manually using wound track buttons.
+3. (Firearms) Loaded ammo type is read from the weapon — no per-shot ammo picker. Power/level/stun mods (Explosive/EX/Gel) applied now; see **Firearms** section
+4. (Firearms) Fire-mode dialog: SS/SA/BF/FA, recoil preview, editable compensation (see **Firearms**)
+5. Roll-options dialog: TN, damage code, TN-modifier breakdown (recoil, wound, multi-target, tracer note)
+6. Defender declares: no dodge OR dodge with X combat pool dice (committed immediately, pool spent)
+7. Attacker allocates combat pool to attack
+8. Attack rolls (interactive Rule of Six)
+9. On final wave: if dodge committed → "Roll to dodge" button appears; if no dodge → soak card auto-posts
+10. Dodge roll (interactive Rule of Six, TN 4)
+11. Dodge result: **binary** — dodge hits ≥ attack hits = complete miss; otherwise full hit lands
+12. Dodge does NOT reduce staging. Net hits are irrelevant to damage. Full staged damage proceeds to soak.
+13. Soak card posts for target: editable Body pool, TN (power − armour), armour type dropdown (ballistic default, impact for melee). APDS/Flechette armour effects auto-applied here from the carried `ammoType` (editable; shows a gold note)
+14. Soak roll (interactive Rule of Six)
+15. Soak result: each 2 soak hits = stage down (D→S→M→L). Below L = completely soaked.
+16. GM applies damage manually using wound track buttons.
+
+### Firearms — fire modes, recoil & ammunition
+**Fire modes** (`SR3EItem._promptFireMode`, weapon `mode` string e.g. "SA/BF/FA"):
+- SS: single shot, no recoil accumulation. Warns if already fired this phase ("SS weapons cannot fire twice").
+- SA: +1 round to the phase counter; cumulative recoil.
+- BF: Power +3, level +1. **Recoil stacks +3/+6/+9** per burst (counts its own 3 rounds).
+- FA: 3–10 rounds; Power +rounds, level +⌊rounds/3⌋; multi-target & walking-fire (wasted rounds) options.
+
+**Recoil** = `max(0, roundsBeforeThisShot − totalComp) × heavyMult` (BF adds its own +3 first). `totalComp = actor.system.recoilCompensation + weapon.system.recoilMod`, both editable inline in the fire dialog and persisted on confirm. Heavy weapons (LMG/MMG/HMG/MinG) double uncompensated recoil. Actor comp is edited on the **Cyber tab**; weapon comp ("Recoil Comp") on the firearm item. `roundsFiredThisPhase` resets each combat phase (`SR3EActor.resetRecoil`).
+
+**Ammunition** — two-layer model (see also the ammo-architecture memory):
+- *Stockpile*: ammo items are a reservoir (gear/ammo tabs show "Stock"). Fields: `ammoType`, `loadMechanism`, `rounds` (total owned). Rules live in `SR3E.ammoTypes` config, NOT on the item.
+- *Magazine*: each firearm tracks `loadedAmmoType` + `loadedRounds`; magazine size is parsed from its capacity string (`15(c)` → 15). The weapons-tab ammo cell shows the capacity, a loaded badge, and a ↻ **Reload** button (`SR3EItem.reload`).
+- *Reload*: prompts a compatible stockpile (matched by loading mechanism), full-swaps the magazine (leftovers discarded), and subtracts from the stockpile. When `trackAmmo` is off it only sets the loaded type (no stock math).
+- *Firing* uses whatever is loaded; decrements `loadedRounds` when `trackAmmo` is on (warns, never blocks, when empty).
+- *Type rules*: Explosive +1 / EX +2 power; Gel −2 power + Stun (attack time). APDS halves ballistic; Flechette unarmoured → level +1, armoured → effective armour ×2 (soak time, via `ammoType` carried into `_postSoakCard`). Anti-Vehicle sets `weaponOpts.avMunition` to bypass the vehicle Power/2. Tracer: FA-only, tracer rounds raise Level not Power, TN bonus shown as a manual note.
+- *Loading mechanisms*: c/m/cy/b/d/sb/internal (`SR3E.ammoLoadMechanisms`); parsed from the gun's capacity string by `SR3EItem._parseLoadMechanism`.
+- *Setting*: world setting `trackAmmo` (off by default) gates all counting/depletion.
+
+**Thrown weapons / grenades** (`thrown` type, and `projectile` type with a thrown category — `SR3EItem._isConsumable`): carry a `quantity` and are decremented 1 per use (`_consumeThrown`) when `trackAmmo` is on. The weapons-tab thrown section shows `×qty`. Bows/crossbows are never consumed.
+
+**Empty = inoperable** (when `trackAmmo` is on): `rollWeapon` bails at the top if a firearm has `loadedRounds ≤ 0` or a consumable has `quantity ≤ 0`. The roll dice icon is rendered faded + struck-through (`_itemControls` `rollDisabled`, gated by `SR3EActorSheet._weaponOutOfAmmo` for firearms / inline for thrown). The Reload button stays active so you can refill.
+
+**Vehicle-mounted weapons** keep their own AV-munition checkbox in the `🚗` firing dialog — they do **not** use the clip/reload system (built for vehicle-vs-vehicle). Character firearm dialogs no longer have a manual AV checkbox (driven by Anti-Vehicle ammo type).
 
 ### Melee combat flow
 1. Attacker clicks melee weapon on sheet
@@ -441,10 +468,15 @@ system.equippedMelee               ← item ID string
 system.karmaPool                   ← persisted
 system.astralMode                  ← persisted: '' | 'physical' | 'dual' | 'astral'
 system.matrixUserMode              ← persisted: '' | 'TRM' | 'AR' | 'VR-Cold' | 'VR-Hot'
+system.recoilCompensation          ← persisted, cyber/body recoil comp (edited on Cyber tab)
+system.roundsFiredThisPhase        ← persisted, recoil accumulator; reset each phase
 ```
 
 ### Item types and key fields
-- `firearm` / `melee` / `projectile` / `thrown`: `damage` (string e.g. "9M"), `reach` (number), `category` (weapon code)
+- `firearm`: `damage` (string e.g. "9M"), `category` (weapon code), `mode` (e.g. "SA/BF/FA"), `ammunition` (capacity string e.g. "15(c)"), `recoilMod` (weapon-mounted comp), `loadedAmmoType` / `loadedRounds` (current magazine)
+- `melee`: `damage` (string e.g. "9M"), `reach` (number), `category` (weapon code)
+- `projectile` / `thrown`: `damage`, `category`, `quantity` (thrown weapons are consumed on use; bows are not — see Firearms section)
+- `ammunition`: `ammoType` (key into `SR3E.ammoTypes`), `loadMechanism` (c/m/cy/b/d/sb/internal), `rounds` (stockpile total) + descriptive fields. NO power/armour data fields — rules are in config
 - `armor`: `ballistic` (number), `impact` (number)
 - `skill`: `rating`, `linkedAttribute`, `specialisation`
 - `spell`: `type` ("Mana"/"Physical"), `damage` (level letter e.g. "S" — power = Force at cast time), `drain` (formula string e.g. "(F/2)S"), `category`, `range`, `duration`
@@ -484,8 +516,13 @@ CYB/UNA → Unarmed Combat
 - `rollInitiative(options)` — rolls initiative; `options.physicalDice` skips virtual roll and prompts for manual entry
 
 ### SR3EItem
-- `rollWeapon(tn, options)` — ranged attack flow
+- `rollWeapon(tn, options)` — ranged attack flow (reads loaded ammo, fire mode, recoil; decrements magazine)
 - `rollMelee()` — melee attack flow
+- `reload()` — firearm: prompt a compatible stockpile, full-swap the magazine, subtract from stock
+- `_promptFireMode(availableModes, actor, weapon, isHeavy)` — static, fire-mode + editable recoil-comp dialog
+- `_parseLoadMechanism(capacityStr)` — static, "15(c)" → 'c'
+- `_parseMagazineSize(capacityStr)` — static, "15(c)" → 15
+- `_promptReloadChoice(stock, weapon, magSize, trackOn)` — static, reload selection dialog
 - `parseDamageCode(code)` — static, returns `{ power, level, isStun }`
 - `stageDamage(base, netSuccesses)` — static, returns staged `{ power, level, isStun }`
 - `_buildMeleePoolInfo(actor, weapon)` — static, returns rich pool info for boxing card

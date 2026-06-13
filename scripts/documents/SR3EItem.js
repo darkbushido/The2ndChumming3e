@@ -324,6 +324,18 @@ export class SR3EItem extends Item {
     return null;
   }
 
+  // Out-of-ammo guard (only when tracking) — empty weapons are inoperable.
+  if (game.settings.get('The2ndChumming3e', 'trackAmmo')) {
+    if (this.type === 'firearm' && (this.system.loadedRounds ?? 0) <= 0) {
+      ui.notifications.warn(`${this.name} is empty — reload before firing.`);
+      return null;
+    }
+    if (this._isConsumable() && (this.system.quantity ?? 0) <= 0) {
+      ui.notifications.warn(`No ${this.name} left to throw.`);
+      return null;
+    }
+  }
+
   const isAoE = this.system.isAoE ?? false;
   let rawDamage = this.system.damage || '';
 
@@ -402,6 +414,7 @@ export class SR3EItem extends Item {
     options.grenadeType    = weaponOpts.grenadeType ?? 'standard';
     options.skipWoundMod   = true;
 
+    await this._consumeThrown();
     return actor.rollPool(pool, tn, label, options);
   }
 
@@ -410,27 +423,20 @@ export class SR3EItem extends Item {
   const targetActor = await SR3EItem._promptTarget(actor);
   if (!targetActor) return null;
 
-  // --- Step 1.5: Ammo selection (firearms only) ---
-  let ammoPowerMod = 0, ammoTNMod = 0;
+  // --- Step 1.5: Loaded ammo (firearms only) ---
+  // Ammo is loaded into the weapon via the Reload button; firing uses whatever is loaded.
+  let ammoType = 'regular';
   if (this.type === 'firearm') {
-    const ammoItems = actor.items.filter(i => i.type === 'ammunition');
-    if (ammoItems.length > 0) {
-      const ammoResult = await SR3EItem._promptAmmoSelection(ammoItems, this.system.equippedAmmoId ?? '', this);
-      if (ammoResult === null) return null; // cancelled
-      ammoPowerMod = ammoResult.powerMod;
-      ammoTNMod    = ammoResult.tnMod;
-      // Persist the selected ammo on the weapon
-      if (ammoResult.ammoId !== this.system.equippedAmmoId) {
-        await this.update({ 'system.equippedAmmoId': ammoResult.ammoId });
-      }
-      // Apply power modifier to raw damage code default
-      if (ammoPowerMod !== 0) {
-        const parsed = SR3EItem.parseDamageCode(rawDamage, actor);
-        if (parsed) {
-          const newPower = parsed.power + ammoPowerMod;
-          rawDamage = `${newPower}${parsed.level}${parsed.isStun ? ' Stun' : ''}`;
-        }
-      }
+    const SR3E   = game.sr3e.SR3E;
+    ammoType     = this.system.loadedAmmoType ?? 'regular';
+    // Apply attack-time type rules (power modifier + stun flag) to the raw damage code.
+    // Armour-interacting types (APDS/Flechette) and Anti-Vehicle resolve later.
+    const rules  = SR3E.ammoTypes[ammoType] ?? {};
+    const parsed = SR3EItem.parseDamageCode(rawDamage, actor);
+    if (parsed && ((rules.powerMod ?? 0) !== 0 || rules.isStun)) {
+      const newPower = parsed.power + (rules.powerMod ?? 0);
+      const stun     = parsed.isStun || !!rules.isStun;
+      rawDamage = `${newPower}${parsed.level}${stun ? ' Stun' : ''}`;
     }
   }
 
@@ -446,8 +452,18 @@ export class SR3EItem extends Item {
       if (availableModes.length === 1 && availableModes[0] === 'SS') {
         fireModeResult = { mode: 'SS', rounds: 0, roundsWasted: 0, recoilTN: 0, additionalTNPenalty: 0 };
       } else {
-        fireModeResult = await SR3EItem._promptFireMode(availableModes, actor, this.name, isHeavy);
+        fireModeResult = await SR3EItem._promptFireMode(availableModes, actor, this, isHeavy);
         if (!fireModeResult) return null;
+      }
+
+      // SS warning — single-shot weapons cannot fire twice in a combat phase
+      if (fireModeResult.mode === 'SS' && (actor.system.roundsFiredThisPhase ?? 0) >= 1) {
+        ui.notifications.warn('SS weapons cannot fire twice in a combat phase.');
+      }
+      // FA-only ammo (Tracer) warning
+      const ammoRules = game.sr3e.SR3E.ammoTypes[ammoType] ?? {};
+      if (ammoRules.faOnly && fireModeResult.mode !== 'FA') {
+        ui.notifications.warn(`${ammoRules.label} ammo can only be used in Full Auto.`);
       }
       fireModeRounds = fireModeResult.rounds + (fireModeResult.roundsWasted ?? 0);
 
@@ -463,8 +479,11 @@ export class SR3EItem extends Item {
           power  += 3;
           lvlIdx  = Math.min(3, lvlIdx + 1);
         } else if (fireModeResult.mode === 'FA') {
-          power  += fireModeResult.rounds;
-          const stagesUp = Math.floor(fireModeResult.rounds / 3);
+          const rds      = fireModeResult.rounds;
+          const stagesUp = Math.floor(rds / 3);
+          // Tracer: the every-third tracer rounds raise the Damage Level but do NOT
+          // add to Power (e.g. SMG 5M firing 10 rounds → 12D, not 15D).
+          power  += ammoRules.tracer ? (rds - Math.floor(rds / 3)) : rds;
           lvlIdx  = Math.min(3, lvlIdx + stagesUp);
         }
 
@@ -476,15 +495,24 @@ export class SR3EItem extends Item {
   // --- Step 3: Roll options dialog (TN + damage code + vehicle modifier) ---
   const recoilTNMod  = fireModeResult?.recoilTN ?? 0;
   const woundPenalty = -(actor.system.woundMod ?? 0);
-  const extraTNMod   = ammoTNMod + recoilTNMod + (fireModeResult?.additionalTNPenalty ?? 0) + woundPenalty;
+  const extraTNMod   = recoilTNMod + (fireModeResult?.additionalTNPenalty ?? 0) + woundPenalty;
   const tnBreakdownParts = [];
   if (recoilTNMod)                           tnBreakdownParts.push(`Recoil +${recoilTNMod}`);
   if (fireModeResult?.additionalTNPenalty)   tnBreakdownParts.push(`Multi-target +${fireModeResult.additionalTNPenalty}`);
-  if (ammoTNMod)                             tnBreakdownParts.push(`Ammo TN${ammoTNMod > 0 ? '+' : ''}${ammoTNMod}`);
   if (woundPenalty > 0)                      tnBreakdownParts.push(`Wound +${woundPenalty}`);
+  // Tracer TN bonus is conditional (beyond Short range, non-smartgun) so it is shown
+  // as a note for the GM to apply manually rather than baked into the TN.
+  const tracerRules = game.sr3e.SR3E.ammoTypes[ammoType] ?? {};
+  if (tracerRules.tracer && fireModeResult?.mode === 'FA') {
+    const tracerTN = Math.floor(fireModeResult.rounds / 3);
+    if (tracerTN > 0) tnBreakdownParts.push(`Tracer −${tracerTN} (beyond Short, non-smartgun — apply manually)`);
+  }
   const weaponOpts = await SR3EItem._promptWeaponRollOptions(targetActor, rawDamage, actor, extraTNMod,
     tnBreakdownParts.length ? tnBreakdownParts.join(' | ') : null);
   if (!weaponOpts) return null;
+
+  // Anti-Vehicle ammo bypasses the vehicle Power/2 reduction (same effect as the AV-munition checkbox)
+  if (ammoType === 'antiVehicle') weaponOpts.avMunition = true;
 
   const tn = weaponOpts.tn;
   options.useKarma    = weaponOpts.useKarma;
@@ -570,6 +598,7 @@ export class SR3EItem extends Item {
   options.isMelee            = ['melee'].includes(this.type);
   options.committedDodgeDice = committedDodgeDice;
   options.skipWoundMod       = true;
+  options.ammoType           = ammoType;   // carried to the soak card for APDS/Flechette
 
   // Commit recoil — update rounds fired counter before the roll
   if (fireModeRounds > 0) {
@@ -577,6 +606,22 @@ export class SR3EItem extends Item {
     await actor.update({ 'system.roundsFiredThisPhase': currentRounds + fireModeRounds });
   }
 
+  // Decrement the weapon's loaded magazine when tracking is enabled. Bullets fired =
+  // max(1, mode rounds) plus walking-fire waste. Warns (never blocks) when the mag runs dry.
+  if (this.type === 'firearm' && game.settings.get('The2ndChumming3e', 'trackAmmo')) {
+    const bulletsFired = Math.max(1, fireModeResult?.rounds ?? 1) + (fireModeResult?.roundsWasted ?? 0);
+    const loaded       = this.system.loadedRounds ?? 0;
+    if (loaded <= 0) {
+      ui.notifications.warn(`${this.name} has no rounds loaded — firing anyway. Reload from the weapons tab.`);
+    } else {
+      const newLoaded = Math.max(0, loaded - bulletsFired);
+      await this.update({ 'system.loadedRounds': newLoaded });
+      if (newLoaded === 0)          ui.notifications.warn(`${this.name} is now empty — reload.`);
+      else if (loaded < bulletsFired) ui.notifications.warn(`${this.name} ran dry mid-burst (${loaded} were loaded).`);
+    }
+  }
+
+  await this._consumeThrown();
   return actor.rollPool(pool, tn, label, options);
 }
 
@@ -837,47 +882,131 @@ export class SR3EItem extends Item {
   }
 
   /**
-   * Ammo selection dialog — shown before weapon roll options for firearms.
-   * Returns { ammoId, powerMod, tnMod } or null if cancelled.
+   * True for weapons consumed on use (thrown weapons / grenades). Bows are reusable.
    */
-  static async _promptAmmoSelection(ammoItems, currentAmmoId, weapon) {
-    const opts = [
-      `<option value="" ${!currentAmmoId ? 'selected' : ''}>— No ammo modifier —</option>`,
-      ...ammoItems.map(a => {
-        const pm = a.system.powerMod ?? 0;
-        const tm = a.system.tnMod ?? 0;
-        const mods = [
-          pm !== 0 ? `Power${pm > 0 ? '+' : ''}${pm}` : '',
-          tm !== 0 ? `TN${tm > 0 ? '+' : ''}${tm}` : '',
-        ].filter(Boolean).join(', ') || 'no modifier';
-        return `<option value="${a.id}" ${a.id === currentAmmoId ? 'selected' : ''}>${a.name} (${mods})</option>`;
-      }),
-    ].join('');
+  _isConsumable() {
+    if (this.type === 'thrown') return true;
+    if (this.type === 'projectile') {
+      return game.sr3e.SR3E.thrownCategories.includes(this.system.category ?? '');
+    }
+    return false;
+  }
+
+  /**
+   * Decrement a thrown weapon's quantity by one when ammo tracking is on.
+   */
+  async _consumeThrown() {
+    if (!this._isConsumable()) return;
+    if (!game.settings.get('The2ndChumming3e', 'trackAmmo')) return;
+    const qty = this.system.quantity ?? 0;
+    if (qty <= 0) return; // guarded earlier, but be safe
+    const newQty = qty - 1;
+    await this.update({ 'system.quantity': newQty });
+    if (newQty === 0) ui.notifications.warn(`That was your last ${this.name}.`);
+  }
+
+  /**
+   * Parse a weapon's loading mechanism from its ammo-capacity string.
+   * e.g. "15(c)" → 'c', "5 (cy)" → 'cy', "40(sb)" → 'sb', "(Internal)" → 'internal'.
+   * Matches the longest code first so "cy"/"sb" win over "c"/"s". Returns '' if none found.
+   */
+  static _parseLoadMechanism(ammoCapacityStr) {
+    const m = String(ammoCapacityStr ?? '').match(/\(([^)]+)\)/);
+    if (!m) return '';
+    const code = m[1].trim().toLowerCase();
+    const keys = Object.keys(game.sr3e.SR3E.ammoLoadMechanisms);
+    // exact match first, then longest-prefix
+    if (keys.includes(code)) return code;
+    const sorted = keys.slice().sort((a, b) => b.length - a.length);
+    return sorted.find(k => code.startsWith(k)) ?? '';
+  }
+
+  /**
+   * Parse a weapon's magazine size (the number) from its ammo-capacity string.
+   * e.g. "15(c)" → 15, "5 (cy)" → 5, "(Internal)" → 0. Returns 0 if no number.
+   */
+  static _parseMagazineSize(ammoCapacityStr) {
+    const m = String(ammoCapacityStr ?? '').match(/(\d+)/);
+    return m ? parseInt(m[1]) : 0;
+  }
+
+  /**
+   * Reload this firearm from the actor's ammo stockpile.
+   * Magazine size comes from the gun's ammo-capacity string; compatible stock is
+   * filtered by loading mechanism. Full-swap: any rounds left in the old mag are
+   * discarded. When ammo tracking is off, only the loaded type is set (no stock math).
+   */
+  async reload() {
+    if (this.type !== 'firearm') return;
+    const actor = this.actor;
+    if (!actor) return;
+    const SR3E    = game.sr3e.SR3E;
+    const trackOn = game.settings.get('The2ndChumming3e', 'trackAmmo');
+    const gunMech = SR3EItem._parseLoadMechanism(this.system.ammunition ?? '');
+    const magSize = SR3EItem._parseMagazineSize(this.system.ammunition ?? '');
+
+    if (trackOn && magSize <= 0) {
+      ui.notifications.warn(`${this.name} has no magazine size — set its ammo capacity (e.g. 15(c)) on the item.`);
+      return;
+    }
+
+    let stock = actor.items.filter(i =>
+      i.type === 'ammunition' && (!gunMech || (i.system.loadMechanism ?? 'c') === gunMech));
+    if (trackOn) stock = stock.filter(i => (i.system.rounds ?? 0) > 0);
+    if (stock.length === 0) {
+      ui.notifications.warn(`No compatible ammo in stock for ${this.name}.`);
+      return;
+    }
+
+    const chosenId = await SR3EItem._promptReloadChoice(stock, this, magSize, trackOn);
+    if (!chosenId) return;
+    const ammo = actor.items.get(chosenId);
+    if (!ammo) return;
+    const type      = ammo.system.ammoType ?? 'regular';
+    const typeLabel = SR3E.ammoTypes[type]?.label ?? 'Regular';
+
+    if (trackOn) {
+      const avail  = ammo.system.rounds ?? 0;
+      const loaded = Math.min(magSize, avail);
+      await ammo.update({ 'system.rounds': Math.max(0, avail - loaded) });
+      await this.update({ 'system.loadedAmmoType': type, 'system.loadedRounds': loaded });
+      ui.notifications.info(`${this.name} loaded: ${loaded} × ${typeLabel}${loaded < magSize ? ` (stock ran short of ${magSize})` : ''}.`);
+    } else {
+      await this.update({ 'system.loadedAmmoType': type, 'system.loadedRounds': magSize });
+      ui.notifications.info(`${this.name} loaded with ${typeLabel}.`);
+    }
+  }
+
+  /**
+   * Reload dialog — pick which compatible stockpile to load. Returns ammo item id or null.
+   */
+  static async _promptReloadChoice(stock, weapon, magSize, trackOn) {
+    const SR3E      = game.sr3e.SR3E;
+    const mech      = SR3EItem._parseLoadMechanism(weapon.system.ammunition ?? '');
+    const mechLabel = mech ? (SR3E.ammoLoadMechanisms[mech] ?? mech) : '';
+    const opts = stock.map((a, i) => {
+      const typeLabel = SR3E.ammoTypes[a.system.ammoType ?? 'regular']?.label ?? 'Regular';
+      const stockTxt  = trackOn ? ` — ${a.system.rounds ?? 0} in stock` : '';
+      return `<option value="${a.id}" ${i === 0 ? 'selected' : ''}>${a.name} (${typeLabel})${stockTxt}</option>`;
+    }).join('');
 
     let result = null;
     await foundry.applications.api.DialogV2.wait({
-      window: { title: `${weapon.name} — Select Ammo` },
+      window: { title: `${weapon.name} — Reload` },
       content: `
         <div style="padding:8px 0">
           <p style="margin:0 0 8px;font-size:12px;color:var(--sr-muted)">
-            Select the ammo type loaded for this shot. Changing ammo counts as an action.
+            Choose ammo to load${mechLabel ? ` (only <strong>${mechLabel}</strong>-fed ammo shown)` : ''}.${trackOn ? ` Loads up to <strong>${magSize}</strong> rounds; any in the current magazine are discarded.` : ''}
           </p>
-          <select id="ammo-select" style="width:100%">${opts}</select>
+          <select id="reload-select" style="width:100%">${opts}</select>
         </div>`,
       buttons: [
         {
-          label: 'Fire',
-          action: 'fire',
+          label: 'Reload',
+          action: 'reload',
           default: true,
           callback: (_e, _b, dialog) => {
-            const sel    = dialog.element.querySelector('#ammo-select');
-            const ammoId = sel?.value ?? '';
-            const ammo   = ammoId ? ammoItems.find(a => a.id === ammoId) : null;
-            result = {
-              ammoId,
-              powerMod: ammo?.system.powerMod ?? 0,
-              tnMod:    ammo?.system.tnMod    ?? 0,
-            };
+            result = dialog.element.querySelector('#reload-select')?.value ?? null;
           },
         },
         { label: 'Cancel', action: 'cancel' },
@@ -1107,11 +1236,7 @@ export class SR3EItem extends Item {
           </div>
           ${isVehicle ? `
             <div style="margin-bottom:10px;padding:8px;background:var(--sr-surface);border:1px solid var(--sr-accent);border-radius:var(--r)">
-              <div style="color:var(--sr-accent);font-size:11px;margin-bottom:6px">⚠ Vehicle target: Power ÷2 (round up), Stage −1 will be applied</div>
-              <label style="font-size:12px">
-                <input type="checkbox" id="sr-av"/>
-                AV munition? <span style="color:var(--sr-muted);font-size:11px">(removes vehicle modifier)</span>
-              </label>
+              <div style="color:var(--sr-accent);font-size:11px">⚠ Vehicle target: Power ÷2 (round up), Stage −1 will be applied <span style="color:var(--sr-muted)">(load Anti-Vehicle ammo to bypass)</span></div>
             </div>
           ` : ''}
           ${karmaPool > 0 ? `
@@ -1131,9 +1256,9 @@ export class SR3EItem extends Item {
             const html = dialog.element;
             const tn = Math.max(2, parseInt(html.querySelector('#sr-tn')?.value) || 4);
             const damageCode = html.querySelector('#sr-damage')?.value.trim() || rawDamage;
-            const avMunition = html.querySelector('#sr-av')?.checked ?? false;
             const useKarma   = html.querySelector('#sr-karma')?.checked ?? false;
-            result = { tn, damageCode, avMunition, useKarma, karmaReroll: useKarma };
+            // avMunition is now driven by Anti-Vehicle ammo type, not a manual checkbox
+            result = { tn, damageCode, avMunition: false, useKarma, karmaReroll: useKarma };
           }
         },
         { label: 'Cancel', action: 'cancel' }
@@ -1396,11 +1521,21 @@ _getAvailableModes() {
 /**
  * Fire mode selection dialog. Returns { mode, rounds, additionalTNPenalty, roundsWasted } or null.
  */
-static async _promptFireMode(availableModes, actor, weaponName, isHeavy = false) {
-  const comp        = actor.system.recoilCompensation ?? 0;
+static async _promptFireMode(availableModes, actor, weapon, isHeavy = false) {
+  const weaponName   = weapon.name;
+  const actorComp    = actor.system.recoilCompensation ?? 0;
+  const weaponComp   = weapon.system.recoilMod ?? 0;
   const roundsBefore = actor.system.roundsFiredThisPhase ?? 0;
-  const baseRecoil  = Math.max(0, roundsBefore - comp);
-  const recoilMult  = isHeavy ? 2 : 1;
+  const recoilMult   = isHeavy ? 2 : 1;
+
+  // Recoil TN for a given mode, reduced by total compensation, × heavy multiplier.
+  //  BF: cumulative AND counts its own 3 rounds — +3 first burst, +6 second, +9 third…
+  //  SS/SA/FA: cumulative on the rounds already fired this phase (this shot's rounds
+  //            are added afterwards, so they penalise the NEXT shot, not this one).
+  function recoilForMode(mode, rounds, totalComp, mult) {
+    if (mode === 'BF') return Math.max(0, (rounds + 3) - totalComp) * mult;
+    return Math.max(0, rounds - totalComp) * mult;
+  }
 
   // Stage-up helper
   function stageUp(level, times) {
@@ -1412,15 +1547,16 @@ static async _promptFireMode(availableModes, actor, weaponName, isHeavy = false)
   const modeInfo = {
     SS: { label: 'SS — Single Shot',      rounds: 0, powerMod: 0, stageMod: 0, note: 'Standard single-shot, no recoil accumulation.' },
     SA: { label: 'SA — Semi-Auto',        rounds: 1, powerMod: 0, stageMod: 0, note: 'Second shot this phase: cumulative +1 recoil.' },
-    BF: { label: 'BF — Burst Fire',       rounds: 3, powerMod: 3, stageMod: 1, note: 'Power +3, damage level +1.' },
+    BF: { label: 'BF — Burst Fire',       rounds: 3, powerMod: 3, stageMod: 1, note: 'Power +3, damage level +1. Recoil stacks: +3 first burst, +6 second…' },
     FA: { label: 'FA — Full Auto',        rounds: 3, powerMod: 0, stageMod: 0, note: 'Power +rounds, level +1/3 rounds (3–10 rounds, Complex Action).' },
   };
 
+  const totalComp = actorComp + weaponComp;
   const modeRows = availableModes.map((m, i) => {
     const info    = modeInfo[m] ?? { label: m, rounds: 1, powerMod: 0, stageMod: 0, note: '' };
     const isFirst = i === 0;
     const roundsPreview  = m === 'FA' ? '(see below)' : m === 'SS' ? '1 (no recoil)' : info.rounds;
-    const recoilDisplay  = baseRecoil * recoilMult;
+    const recoilDisplay  = recoilForMode(m, roundsBefore, totalComp, recoilMult);
     const recoilPreview  = m === 'FA'
       ? `+${recoilDisplay} recoil + multi-target (see below)`
       : `+${recoilDisplay}`;
@@ -1463,11 +1599,16 @@ static async _promptFireMode(availableModes, actor, weaponName, isHeavy = false)
     </div>` : '';
 
   const recoilState = `
-    <div style="margin-top:10px;padding:6px 8px;background:#0a0a0a;border:1px solid var(--sr-border);border-radius:var(--r);font-size:11px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-      <span><strong>Recoil state:</strong>
-      Compensation <strong>${comp}</strong> &nbsp;|&nbsp;
-      Rounds fired this phase: <strong id="sr-rounds-fired">${roundsBefore}</strong>
-      ${isHeavy ? '&nbsp;|&nbsp; <span style="color:var(--sr-amber)">⚠ Heavy weapon: 2× uncompensated recoil</span>' : ''}</span>
+    <div style="margin-top:10px;padding:6px 8px;background:#0a0a0a;border:1px solid var(--sr-border);border-radius:var(--r);font-size:11px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+      <strong>Recoil comp:</strong>
+      <span title="Cyberware, bioware, shock pads etc. (from the actor)">Cyber/Body
+        <input type="number" id="sr-actor-comp" value="${actorComp}" min="0" max="20" style="width:42px"/></span>
+      <span>+</span>
+      <span title="Gas vents, bipods etc. mounted on this weapon">Weapon
+        <input type="number" id="sr-weapon-comp" value="${weaponComp}" min="0" max="20" style="width:42px"/></span>
+      <span>= <strong id="sr-total-comp">${totalComp}</strong></span>
+      <span>&nbsp;|&nbsp; Rounds fired this phase: <strong id="sr-rounds-fired">${roundsBefore}</strong></span>
+      ${isHeavy ? '<span style="color:var(--sr-amber)">&nbsp;|&nbsp; ⚠ Heavy weapon: 2× uncompensated recoil</span>' : ''}
       <button id="sr-reset-recoil" type="button" style="margin-left:auto;padding:1px 7px;font-size:10px;cursor:pointer;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);color:var(--sr-muted)">↺ Reset</button>
     </div>`;
 
@@ -1483,12 +1624,28 @@ static async _promptFireMode(availableModes, actor, weaponName, isHeavy = false)
       const faEl = el.querySelector('#fa-section');
       if (faEl) faEl.style.display = event.target.value === 'FA' ? 'block' : 'none';
     });
+
+    // Recompute the per-mode recoil previews from the current comp inputs and rounds count
+    const refreshPreviews = () => {
+      const aComp = Math.max(0, parseInt(el.querySelector('#sr-actor-comp')?.value)  || 0);
+      const wComp = Math.max(0, parseInt(el.querySelector('#sr-weapon-comp')?.value) || 0);
+      const total = aComp + wComp;
+      const rounds = parseInt(el.querySelector('#sr-rounds-fired')?.textContent) || 0;
+      const totalEl = el.querySelector('#sr-total-comp');
+      if (totalEl) totalEl.textContent = String(total);
+      el.querySelectorAll('.sr-recoil-preview').forEach(span => {
+        const m = span.dataset.mode;
+        const r = recoilForMode(m, rounds, total, recoilMult);
+        span.textContent = m === 'FA' ? `+${r} recoil + multi-target (see below)` : `+${r}`;
+      });
+    };
+    el.querySelector('#sr-actor-comp')?.addEventListener('input', refreshPreviews);
+    el.querySelector('#sr-weapon-comp')?.addEventListener('input', refreshPreviews);
+
     el.querySelector('#sr-reset-recoil')?.addEventListener('click', async () => {
       await actor.update({ 'system.roundsFiredThisPhase': 0 });
       el.querySelector('#sr-rounds-fired').textContent = '0';
-      el.querySelectorAll('.sr-recoil-preview').forEach(span => {
-        span.textContent = span.dataset.mode === 'FA' ? '+0 recoil + multi-target (see below)' : '+0';
-      });
+      refreshPreviews();
     });
   });
 
@@ -1508,7 +1665,7 @@ static async _promptFireMode(availableModes, actor, weaponName, isHeavy = false)
         label: 'Confirm Mode',
         action: 'confirm',
         default: true,
-        callback: (_e, _b, dialog) => {
+        callback: async (_e, _b, dialog) => {
           const el     = dialog.element;
           const mode   = el.querySelector('input[name="sr-fire-mode"]:checked')?.value ?? availableModes[0];
           let   rounds = modeInfo[mode]?.rounds ?? 1;
@@ -1523,9 +1680,15 @@ static async _promptFireMode(availableModes, actor, weaponName, isHeavy = false)
             if (metres > 0)    roundsWasted = metres;
           }
 
-          // Recoil TN = uncompensated rounds fired before this shot × multiplier (2× for heavy weapons).
-          // Rounds from THIS shot are added after the roll (they penalise future shots, not this one).
-          const recoilTN = baseRecoil * recoilMult;
+          // Read (possibly edited) compensation values and persist them so they stick for next time.
+          const aComp = Math.max(0, parseInt(el.querySelector('#sr-actor-comp')?.value)  || 0);
+          const wComp = Math.max(0, parseInt(el.querySelector('#sr-weapon-comp')?.value) || 0);
+          if (aComp !== actorComp)  await actor.update({ 'system.recoilCompensation': aComp });
+          if (wComp !== weaponComp) await weapon.update({ 'system.recoilMod': wComp });
+
+          // Recoil per mode (see recoilForMode): BF stacks +3/+6/+9…; SS/SA/FA use the
+          // rounds fired before this shot. This shot's rounds are committed after the roll.
+          const recoilTN = recoilForMode(mode, roundsBefore, aComp + wComp, recoilMult);
           result = { mode, rounds, roundsWasted, recoilTN, additionalTNPenalty };
         },
       },

@@ -1736,6 +1736,7 @@ _prepareCharacter(sys, attr) {
         rawDamage:           options.rawDamage          ?? '',
         damageBase:          options.damageBase         ?? null,
         weaponItemId:        options.weaponItemId       ?? null,
+        ammoType:            options.ammoType           ?? null,
         attackerActorId:     this.id,
         targetActorId:       options.targetActorId      ?? null,
         committedDodgeDice:  options.committedDodgeDice ?? 0,
@@ -1794,6 +1795,7 @@ _prepareCharacter(sys, attr) {
       rawDamage:             options.rawDamage             ?? '',
       damageBase:            options.damageBase            ?? null,
       weaponItemId:          options.weaponItemId          ?? null,
+      ammoType:              options.ammoType              ?? null,
       attackerActorId:       this.id,
       targetActorId:         options.targetActorId         ?? null,
       committedDodgeDice:    options.committedDodgeDice    ?? 0,
@@ -2092,6 +2094,7 @@ _prepareCharacter(sys, attr) {
               attackerActorId: state.attackerActorId,
               targetActorId:   state.targetActorId,
               weaponItemId:    state.weaponItemId,
+              ammoType:        state.ammoType ?? null,
               isMelee:         state.isMelee,
               attackSuccesses: successes,
               committedDodgeDice: state.committedDodgeDice,
@@ -2113,6 +2116,7 @@ _prepareCharacter(sys, attr) {
               attackerActorId: state.attackerActorId,
               targetActorId:   state.targetActorId,
               weaponItemId:    state.weaponItemId,
+              ammoType:        state.ammoType ?? null,
               isMelee:         state.isMelee,
               stagedPower:     staged.power,
               stagedLevel:     staged.level,
@@ -3422,6 +3426,7 @@ _prepareCharacter(sys, attr) {
       attackerActorId: payload.attackerActorId,
       targetActorId:   payload.targetActorId,
       weaponItemId:    payload.weaponItemId,
+      ammoType:        payload.ammoType ?? null,
       isMelee:         payload.isMelee,
       stagedPower:     payload.stagedPower,
       stagedLevel:     payload.stagedLevel,
@@ -3513,6 +3518,7 @@ _prepareCharacter(sys, attr) {
   async _postSoakCard(payload) {
     const { stagedPower, stagedLevel, isStun, isMelee, rawDamage } = payload;
     const trackLabel = isStun ? 'Stun' : 'Physical';
+    let   effStagedLevel = stagedLevel;
 
     // Ensure derived data is current — prepareDerivedData now guarantees sys.attributes exists
     this.prepareDerivedData();
@@ -3531,6 +3537,29 @@ _prepareCharacter(sys, attr) {
       ballistic = armorItem?.system?.ballistic ?? 0;
       impact    = armorItem?.system?.impact    ?? 0;
     }
+    // Ammo armour interactions (APDS / Flechette). Other types resolve at attack time.
+    const ammoRules = game.sr3e.SR3E.ammoTypes[payload.ammoType] ?? {};
+    let ammoNote = '';
+    if (ammoRules.armorEffect === 'apds') {
+      ballistic = Math.floor(ballistic / 2);
+      ammoNote  = `APDS — ballistic armour halved (now ${ballistic})`;
+    } else if (ammoRules.armorEffect === 'flechette') {
+      const maxArmor = Math.max(ballistic, impact);
+      if (maxArmor <= 0) {
+        // Unarmoured target — damage level stages up one
+        const STAGES = ['L', 'M', 'S', 'D'];
+        const li = STAGES.indexOf(effStagedLevel);
+        if (li >= 0) effStagedLevel = STAGES[Math.min(3, li + 1)];
+        ammoNote = `Flechette vs unarmoured — damage level raised to ${effStagedLevel}`;
+      } else {
+        // Armoured target — effective armour = highest of ballistic/impact, doubled
+        const doubled = maxArmor * 2;
+        ballistic = doubled;
+        impact    = doubled;
+        ammoNote  = `Flechette vs armour — effective armour ×2 (now ${doubled})`;
+      }
+    }
+
     const defaultArmor = isMelee ? impact : ballistic;
 
     const soakTN = Math.max(2, stagedPower - defaultArmor);
@@ -3541,7 +3570,7 @@ _prepareCharacter(sys, attr) {
       targetActorId:   payload.targetActorId ?? this.id,
       isMelee,
       stagedPower,
-      stagedLevel,
+      stagedLevel:     effStagedLevel,
       isStun,
       rawDamage,
       ballistic,
@@ -3554,8 +3583,9 @@ _prepareCharacter(sys, attr) {
         <div class="sr-roll-card sr-soak-card">
           <div class="sr-roll-header">🛡 ${this.name} — Resist Damage</div>
           <div class="sr-roll-meta">
-            Incoming: <strong>${stagedPower}${stagedLevel} ${trackLabel}</strong>
+            Incoming: <strong>${stagedPower}${effStagedLevel} ${trackLabel}</strong>
           </div>
+          ${ammoNote ? `<div class="sr-roll-meta" style="color:var(--sr-gold);font-size:11px">🔸 ${ammoNote}</div>` : ''}
           <div class="sr-soak-fields">
             <label class="sr-soak-label">
               Resist Pool (Body ${body} + bonuses):

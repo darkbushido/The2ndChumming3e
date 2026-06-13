@@ -34,7 +34,13 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "Read(//tmp/**)",
       "Bash(xargs grep -l \"controlMode\\\\|vehicle.*link\")",
-      "Bash(gh repo *)"
+      "Bash(gh repo *)",
+      "Bash(node --check scripts/data/ItemDataModels.js)",
+      "Bash(node --check scripts/sheets/SR3EItemSheet.js)",
+      "Bash(node --check scripts/sheets/SR3EActorSheet.js)",
+      "Bash(node --check scripts/documents/SR3EItem.js)",
+      "Bash(node --check scripts/config.js)",
+      "Bash(node --check scripts/sr3e.js)"
     ],
     "additionalDirectories": [
       "c:\\Users\\willi\\AppData\\Local\\FoundryVTT\\Data\\systems\\The2ndChumming3e\\packs"

@@ -593,6 +593,46 @@ export const SR3E = {
   ],
 
   fireModes:      ['SS', 'SA', 'BF', 'FA'],
+
+  // Projectile-weapon categories. Bows/crossbows are reusable; thrown categories are
+  // consumed on use (quantity tracking). Used by SR3EItem._isConsumable.
+  bowCategories:    ['Bow', 'LCB', 'MCB', 'HCB', 'SL'],
+  thrownCategories: ['TK', 'SH', 'Imp', 'Ctrp', 'GR', 'BOL', 'THR', 'other'],
+
+  // Ammo loading mechanisms — key matches the parenthetical code in a weapon's
+  // ammunition-capacity string (e.g. "15(c)" → clip). Used to filter which ammo
+  // a given gun can chamber. Order longest-code-first matters for parsing ("cy"/"sb"
+  // before "c"/"s") — see SR3EItem._parseLoadMechanism.
+  ammoLoadMechanisms: {
+    c:        'Clip',
+    m:        'Magazine',
+    cy:       'Cylinder',
+    b:        'Belt',
+    d:        'Drum',
+    sb:       'Single-Shot / Break',
+    internal: 'Internal',
+  },
+
+  // Ammo types. Rules live here in code, not as per-item data fields. Each entry:
+  //   powerMod    — flat power change applied at the attack roll (Explosive/EX/Gel)
+  //   isStun      — damage goes to the Stun track (Gel)
+  //   armorEffect — resolved on the soak card against the known target armour:
+  //                   'apds'        halve target ballistic (round down)
+  //                   'flechette'   unarmoured → level +1; armoured → effective armour ×2
+  //                   'antiVehicle' bypass the vehicle Power/2 reduction
+  //   faOnly      — only legal in Full Auto (Tracer)
+  //   tracer      — FA damage: tracer rounds add to Damage Level but NOT to Power;
+  //                 non-smartgun TN −1 per 3 rounds at ranges beyond Short
+  ammoTypes: {
+    regular:     { label: 'Regular' },
+    explosive:   { label: 'Explosive',    powerMod: 1 },
+    exExplosive: { label: 'EX Explosive', powerMod: 2 },
+    gel:         { label: 'Gel',          powerMod: -2, isStun: true },
+    apds:        { label: 'APDS',         armorEffect: 'apds' },
+    flechette:   { label: 'Flechette',    armorEffect: 'flechette' },
+    tracer:      { label: 'Tracer',       faOnly: true, tracer: true },
+    antiVehicle: { label: 'Anti-Vehicle', armorEffect: 'antiVehicle' },
+  },
   spellCategories: ['Combat', 'Detection', 'Health', 'Illusion', 'Manipulation'],
   spellTypes:      ['Physical', 'Mana'],
   spellRanges:     ['Touch', 'LOS', 'LOS (A)'],
