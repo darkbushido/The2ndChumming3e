@@ -1733,6 +1733,10 @@ _prepareCharacter(sys, attr) {
         isAoE:               options.isAoE              ?? false,
         aoeTargetIds:        options.aoeTargetIds       ?? null,
         chunkySalsa:         options.chunkySalsa        ?? null,
+        aoeCenter:           options.aoeCenter          ?? null,
+        aoeRadius:           options.aoeRadius          ?? null,
+        aoeThrowerCenter:    options.aoeThrowerCenter   ?? null,
+        aoeChunky:           options.aoeChunky          ?? false,
         rawDamage:           options.rawDamage          ?? '',
         damageBase:          options.damageBase         ?? null,
         weaponItemId:        options.weaponItemId       ?? null,
@@ -1792,6 +1796,10 @@ _prepareCharacter(sys, attr) {
       isAoE:                 options.isAoE                 ?? false,
       aoeTargetIds:          options.aoeTargetIds          ?? null,
       chunkySalsa:           options.chunkySalsa           ?? null,
+      aoeCenter:             options.aoeCenter             ?? null,
+      aoeRadius:             options.aoeRadius             ?? null,
+      aoeThrowerCenter:      options.aoeThrowerCenter      ?? null,
+      aoeChunky:             options.aoeChunky             ?? false,
       rawDamage:             options.rawDamage             ?? '',
       damageBase:            options.damageBase            ?? null,
       weaponItemId:          options.weaponItemId          ?? null,
@@ -1979,7 +1987,96 @@ _prepareCharacter(sys, attr) {
       let postRollHtml = '';
 
       if (state.isWeaponRoll && state.damageBase) {
-        if (successes === 0) {
+        if (state.isAoE && state.aoeCenter) {
+          // Grenade: ALWAYS detonates. Successes only reduce scatter (RAW). Scatter relocates
+          // the blast; we re-detect who's caught (incl. the thrower) and apply power − distance.
+          const SR3E   = game.sr3e.SR3E;
+          const gType  = state.grenadeType ?? 'standard';
+          const gCfg   = SR3E.grenadeTypes?.[gType] ?? { scatterDice: 1, scatterReduction: 2 };
+          const dirRoll   = Math.ceil(Math.random() * 6);
+          const distRolls = Array.from({ length: gCfg.scatterDice ?? 1 }, () => Math.ceil(Math.random() * 6));
+          const rawDist   = distRolls.reduce((a, b) => a + b, 0);
+          const reduction = successes * (gCfg.scatterReduction ?? 2);
+          const scatterDist = Math.max(0, rawDist - reduction);
+          const DIRS = ['', 'overthrown (long)', 'long & right', 'short & right', 'short', 'short & left', 'long & left'];
+
+          const basePower = state.damageBase.power;
+          const level     = state.damageBase.level;
+          const isStun    = state.damageBase.isStun;
+
+          // Relocate the epicentre along the throw axis (1 = overthrow, 4 = short).
+          let center = { ...state.aoeCenter };
+          let scatterDesc;
+          if (scatterDist <= 0) {
+            scatterDesc = `🎯 Direct hit (scatter ${rawDist}m − ${reduction}m = 0).`;
+          } else {
+            const thr = state.aoeThrowerCenter;
+            let ax = thr ? state.aoeCenter.x - thr.x : 0;
+            let ay = thr ? state.aoeCenter.y - thr.y : -1;
+            const al = Math.hypot(ax, ay) || 1; ax /= al; ay /= al;
+            const ang = (dirRoll - 1) * Math.PI / 3;
+            const cos = Math.cos(ang), sin = Math.sin(ang);
+            const dx = ax * cos - ay * sin, dy = ax * sin + ay * cos;
+            const pxPerM = canvas?.dimensions ? canvas.dimensions.size / canvas.dimensions.distance : 1;
+            center = { x: state.aoeCenter.x + dx * scatterDist * pxPerM, y: state.aoeCenter.y + dy * scatterDist * pxPerM };
+            const diceStr = distRolls.length > 1 ? `[${distRolls.join('+')}]=${rawDist}` : `${rawDist}`;
+            scatterDesc = `💨 Scattered <strong>${scatterDist}m ${DIRS[dirRoll]}</strong> (${diceStr}m − ${reduction}m).`;
+          }
+
+          // Show where it actually went off; a Clear button on the chat card removes it.
+          let resultTplId = null;
+          try {
+            const [resultTpl] = await canvas.scene.createEmbeddedDocuments('MeasuredTemplate', [{
+              t: 'circle', user: game.user.id, x: center.x, y: center.y,
+              distance: state.aoeRadius, fillColor: '#cc3300',
+              flags: { 'The2ndChumming3e': { blastResult: true } },
+            }]);
+            resultTplId = resultTpl?.id ?? null;
+          } catch { /* no perms / no canvas — chat still reports */ }
+
+          // Re-detect everyone caught in the (scattered) blast — the thrower can be hit.
+          const hits = [];
+          for (const tok of (canvas?.tokens?.placeables ?? [])) {
+            if (!tok.actor) continue;
+            let dM; try { dM = canvas.grid.measurePath([center, tok.center])?.distance ?? Infinity; } catch { dM = Infinity; }
+            if (dM <= state.aoeRadius) hits.push({ actor: tok.actor, dist: Math.round(dM) });
+          }
+
+          // Per-target codes: Chunky Salsa GUI (confined) or open-air power − distance.
+          let codes;
+          if (state.aoeChunky && game.sr3e.openChunkySalsa && hits.length) {
+            codes = (await game.sr3e.openChunkySalsa({
+              power: basePower, level, actorIds: hits.map(h => h.actor.id), returnOnly: true,
+            })) ?? [];
+          } else {
+            codes = hits.map(h => ({ actorId: h.actor.id, name: h.actor.name, power: Math.max(0, basePower - h.dist), level, dist: h.dist }))
+                        .filter(t => t.power > 0);
+          }
+
+          const hitLines = codes.length
+            ? codes.map(t => `<div style="font-size:11px;margin-top:2px"><strong>${t.name}</strong>: ${t.power}${t.level}${t.dist != null ? ` <span style="color:var(--sr-muted)">(${t.dist}m)</span>` : ''}</div>`).join('')
+            : '<div style="font-size:11px;color:var(--sr-muted)">No one caught in the blast.</div>';
+          const clearBtn = resultTplId
+            ? `<div style="margin-top:5px"><button type="button" class="sr3e-clear-blast-btn btn-sm" data-template-id="${resultTplId}" data-scene-id="${canvas.scene?.id ?? ''}" style="font-size:11px;padding:1px 8px">🧹 Clear blast marker</button></div>`
+            : '';
+          stagingHtml = `<div class="sr-staging-result">💥 ${basePower}${level}${isStun ? ' Stun' : ''} grenade — ${successes} hit${successes !== 1 ? 's' : ''}<div style="margin-top:3px">${scatterDesc}</div>${hitLines}${clearBtn}</div>`;
+
+          for (const t of codes) {
+            const tActor = game.actors.get(t.actorId);
+            if (!tActor) continue;
+            const soakCtx = JSON.stringify({
+              attackerActorId: state.attackerActorId,
+              targetActorId:   t.actorId,
+              weaponItemId:    state.weaponItemId,
+              isMelee:         false,
+              stagedPower:     t.power,
+              stagedLevel:     t.level,
+              isStun,
+              rawDamage:       `${t.power}${t.level}`,
+            }).replace(/'/g, '&#39;');
+            postRollHtml += `<div class="sr-soak-action"><button class="sr-soak-btn" data-payload='${soakCtx}'>🛡 ${tActor.name}: Resist Damage (${t.power}${t.level})</button></div>`;
+          }
+        } else if (successes === 0) {
           stagingHtml = '<div class="sr-staging-result">0 hits — no damage</div>';
         } else {
           const staged     = SR3EItem.stageDamage(state.damageBase, successes);
@@ -2499,6 +2596,10 @@ _prepareCharacter(sys, attr) {
         isAoE:              state.isAoE              ?? false,
         aoeTargetIds:       state.aoeTargetIds       ?? null,
         chunkySalsa:        state.chunkySalsa        ?? null,
+        aoeCenter:          state.aoeCenter          ?? null,
+        aoeRadius:          state.aoeRadius          ?? null,
+        aoeThrowerCenter:   state.aoeThrowerCenter   ?? null,
+        aoeChunky:          state.aoeChunky          ?? false,
         rawDamage:          state.rawDamage          ?? '',
         damageBase:         state.damageBase         ?? null,
         weaponItemId:       state.weaponItemId       ?? null,

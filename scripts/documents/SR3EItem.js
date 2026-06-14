@@ -340,35 +340,48 @@ export class SR3EItem extends Item {
   let rawDamage = this.system.damage || '';
 
   if (isAoE) {
-    // ── AoE path ────────────────────────────────────────────────────────────
-    // Step 1: Select all targets in blast radius
-    const targetActors = await SR3EItem._promptTargetsAoE(actor);
-    if (!targetActors || targetActors.length === 0) return null;
+    // ── AoE path (thrown / launched) ──────────────────────────────────────────
+    // 1) Nominate the blast point with a template. 2) Roll to throw. 3) In resolution,
+    //    scatter relocates the blast, re-detects who's caught (incl. the thrower!),
+    //    optionally runs Chunky Salsa, then posts soak cards. See SR3EActor._postWaveCard.
+    if (!canvas?.ready) {
+      ui.notifications.warn('AoE attacks need a scene — place the attacker and targets on a map.');
+      return null;
+    }
+    const power  = SR3EItem.parseDamageCode(rawDamage, actor)?.power ?? 5;
+    const placed = await SR3EItem._placeBlastTemplate(actor, power);
+    if (!placed) return null; // cancelled placement
 
-    // Step 2: Roll options (TN + damage code, optional Chunky Salsa)
-    const weaponOpts = await SR3EItem._promptWeaponRollOptionsAoE(rawDamage, actor, targetActors);
-    if (!weaponOpts) return null;
-
-    const tn               = weaponOpts.tn;
-    options.useKarma       = weaponOpts.useKarma;
-    options.karmaReroll    = weaponOpts.karmaReroll;
-    let effectiveRawDamage = weaponOpts.damageCode;
-    let damageBase         = SR3EItem.parseDamageCode(effectiveRawDamage, actor);
-    if (!damageBase) {
-      ui.notifications.warn(`${this.name} has no damage code set. Edit the item to add one (e.g. 9M, 8M Stun).`);
+    const aToken        = actor.getActiveTokens?.()[0] ?? null;
+    const throwerCenter = aToken ? { x: aToken.center.x, y: aToken.center.y } : null;
+    let throwDistance = null;
+    if (throwerCenter) {
+      try { throwDistance = canvas.grid.measurePath([throwerCenter, placed.center])?.distance ?? null; }
+      catch { throwDistance = null; }
     }
 
-    // Step 3: Build attacker pool
+    // Step 2: Roll options (TN auto range mod by grenade type, damage code, type, chunky)
+    const weaponOpts = await SR3EItem._promptWeaponRollOptionsAoE(rawDamage, actor, { throwDistance });
+    if (!weaponOpts) return null;
+
+    const tn                 = weaponOpts.tn;
+    options.useKarma         = weaponOpts.useKarma;
+    options.karmaReroll      = weaponOpts.karmaReroll;
+    const effectiveRawDamage = weaponOpts.damageCode;
+    const damageBase         = SR3EItem.parseDamageCode(effectiveRawDamage, actor);
+    if (!damageBase) {
+      ui.notifications.warn(`${this.name} has no damage code set. Edit the item to add one (e.g. 9M, 8M Stun).`);
+      return null;
+    }
+
+    // Step 3: Build attacker (throwing) pool
     const skillName = this._getWeaponSkill();
     const skill     = actor.items.find(i =>
       i.type === 'skill' && (i.name === skillName || i.name.includes(skillName))
     );
 
     let pool  = 0;
-    let label = `${this.name}`;
-    if (damageBase) label += ` [${effectiveRawDamage}]`;
-    label += ` → ${targetActors.length} target${targetActors.length !== 1 ? 's' : ''}`;
-
+    let label = `${this.name} [${effectiveRawDamage}] — Throw`;
     if (skill) {
       pool = skill.system.skillRating || 0;
       const skillSpec  = skill.system.specialisation;
@@ -402,26 +415,36 @@ export class SR3EItem extends Item {
 
     pool  = Math.max(1, pool);
 
-    options.weaponItemId   = this.id;
-    options.actorId        = actor.id;
-    options.rawDamage      = effectiveRawDamage;
-    options.damageBase     = damageBase;
-    options.isWeaponRoll   = true;
-    options.isMelee        = false;
-    options.isAoE          = true;
-    options.aoeTargetIds   = targetActors.map(t => t.id);
-    options.chunkySalsa    = weaponOpts.chunkySalsa ?? null;
-    options.grenadeType    = weaponOpts.grenadeType ?? 'standard';
-    options.skipWoundMod   = true;
+    options.weaponItemId     = this.id;
+    options.actorId          = actor.id;
+    options.rawDamage        = effectiveRawDamage;
+    options.damageBase       = damageBase;
+    options.isWeaponRoll     = true;
+    options.isMelee          = false;
+    options.isAoE            = true;
+    options.aoeCenter        = placed.center;          // nominated epicentre (canvas pixels)
+    options.aoeRadius        = placed.radius;          // blast radius (metres)
+    options.aoeThrowerCenter = throwerCenter;          // for relative scatter direction
+    options.aoeChunky        = weaponOpts.useSalsaGUI; // resolve confined space after scatter
+    options.grenadeType      = weaponOpts.grenadeType ?? 'standard';
+    options.skipWoundMod     = true;
 
     await this._consumeThrown();
     return actor.rollPool(pool, tn, label, options);
   }
 
   // ── Single-target path ─────────────────────────────────────────────────────
-  // --- Step 1: Select target ---
-  const targetActor = await SR3EItem._promptTarget(actor);
-  if (!targetActor) return null;
+  // --- Step 1: Select target (prefer a single canvas target so range can be measured) ---
+  let targetActor, targetToken = null;
+  const _acq = SR3EItem._acquireCanvasTarget();
+  if (_acq) {
+    targetActor = _acq.actor;
+    targetToken = _acq.token;
+  } else {
+    targetActor = await SR3EItem._promptTarget(actor);
+    if (!targetActor) return null;
+    targetToken = targetActor.getActiveTokens?.()[0] ?? null;
+  }
 
   // --- Step 1.5: Loaded ammo (firearms only) ---
   // Ammo is loaded into the weapon via the Reload button; firing uses whatever is loaded.
@@ -492,7 +515,21 @@ export class SR3EItem extends Item {
     }
   }
 
-  // --- Step 3: Roll options dialog (TN + damage code + vehicle modifier) ---
+  // Range — auto-measured from tokens when available (firearms, bows/crossbows, thrown).
+  // Passed to the roll dialog as an editable dropdown so the GM can override the band.
+  let rangeInfo = null;
+  if (['firearm', 'projectile', 'thrown'].includes(this.type)) {
+    const bands  = this._getRangeBands(actor);
+    const aToken = actor.getActiveTokens?.()[0] ?? null;
+    const metres = SR3EItem._measureDistance(aToken, targetToken);
+    if (bands && metres != null) {
+      const band = SR3EItem._rangeBandForDistance(bands, metres);
+      rangeInfo = { bandIdx: band.idx, distance: metres, beyond: band.beyond };
+      if (band.beyond) ui.notifications.warn(`${targetActor.name} is beyond ${this.name}'s extreme range.`);
+    }
+  }
+
+  // --- Step 3: Roll options dialog (TN + damage code + range + vehicle modifier) ---
   const recoilTNMod  = fireModeResult?.recoilTN ?? 0;
   const woundPenalty = -(actor.system.woundMod ?? 0);
   const extraTNMod   = recoilTNMod + (fireModeResult?.additionalTNPenalty ?? 0) + woundPenalty;
@@ -508,7 +545,7 @@ export class SR3EItem extends Item {
     if (tracerTN > 0) tnBreakdownParts.push(`Tracer −${tracerTN} (beyond Short, non-smartgun — apply manually)`);
   }
   const weaponOpts = await SR3EItem._promptWeaponRollOptions(targetActor, rawDamage, actor, extraTNMod,
-    tnBreakdownParts.length ? tnBreakdownParts.join(' | ') : null);
+    tnBreakdownParts.length ? tnBreakdownParts.join(' | ') : null, rangeInfo);
   if (!weaponOpts) return null;
 
   // Anti-Vehicle ammo bypasses the vehicle Power/2 reduction (same effect as the AV-munition checkbox)
@@ -931,6 +968,75 @@ export class SR3EItem extends Item {
   }
 
   /**
+   * This weapon's range bands [shortMax, mediumMax, longMax, extremeMax] in metres.
+   * Priority: weapon rangeOverride ("5/15/30/50") → fixed category table (firearms,
+   * SR3E.weaponRanges) → Strength-scaled table (bows/thrown, SR3E.weaponRangeMultipliers
+   * × the attacker's Strength). Returns null if none apply.
+   */
+  _getRangeBands(actor = this.actor) {
+    const override = (this.system.rangeOverride ?? '').trim();
+    if (override) {
+      const parts = override.split(/[\/,\s]+/).map(Number).filter(n => !isNaN(n));
+      if (parts.length === 4) return parts;
+    }
+    const cat = this.system.category ?? '';
+    const fixed = game.sr3e.SR3E.weaponRanges?.[cat];
+    if (fixed) return fixed;
+    const mult = game.sr3e.SR3E.weaponRangeMultipliers?.[cat];
+    if (mult) {
+      const str = Math.max(1, actor?.system?.attributes?.strength?.value
+                            ?? actor?.system?.attributes?.strength?.base ?? 1);
+      return mult.map(m => m * str);
+    }
+    return null;
+  }
+
+  /**
+   * Classify a distance (metres) into a range band. Returns
+   * { idx, label, tnMod, beyond } — beyond=true means past Extreme (out of range).
+   */
+  static _rangeBandForDistance(bands, metres) {
+    const labels = ['Short', 'Medium', 'Long', 'Extreme'];
+    const tn     = game.sr3e.SR3E.rangeTN ?? [0, 1, 2, 3];
+    for (let i = 0; i < 4; i++) {
+      if (metres <= bands[i]) return { idx: i, label: labels[i], tnMod: tn[i] ?? 0, beyond: false };
+    }
+    return { idx: 3, label: 'Beyond Extreme', tnMod: tn[3] ?? 3, beyond: true };
+  }
+
+  /**
+   * Grid distance (scene units, assumed metres) between two tokens, or null if it
+   * can't be measured (missing token, different scenes, no canvas).
+   */
+  static _measureDistance(aToken, tToken) {
+    if (!aToken || !tToken || !canvas?.ready) return null;
+    const aScene = aToken.scene?.id ?? aToken.document?.parent?.id;
+    const tScene = tToken.scene?.id ?? tToken.document?.parent?.id;
+    if (aScene && tScene && aScene !== tScene) return null;
+    const a = aToken.center ?? aToken.object?.center;
+    const t = tToken.center ?? tToken.object?.center;
+    if (!a || !t) return null;
+    try {
+      const path = canvas.grid.measurePath([a, t]);
+      return path?.distance ?? null;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Resolve the attack target. Prefers a single canvas target (the "T" tool) so its
+   * token can be measured; returns { actor, token } or null to fall back to the dialog.
+   */
+  static _acquireCanvasTarget() {
+    const targets = Array.from(game.user?.targets ?? []);
+    if (targets.length === 1 && targets[0]?.actor) {
+      return { actor: targets[0].actor, token: targets[0] };
+    }
+    return null;
+  }
+
+  /**
    * Reload this firearm from the actor's ammo stockpile.
    * Magazine size comes from the gun's ammo-capacity string; compatible stock is
    * filtered by loading mechanism. Full-swap: any rounds left in the old mag are
@@ -1016,76 +1122,105 @@ export class SR3EItem extends Item {
   }
 
   /**
-   * Roll options dialog for AoE weapons — TN, damage code, and optional Chunky Salsa
-   * confined-space blast calculator with per-target distance inputs.
+   * Place a circular blast template on the canvas. Creates a real template at the
+   * attacker's token (or scene centre); the Templates layer is activated and the template
+   * selected so it can be dragged while the non-modal confirm dialog is open. Returns
+   * { center, radius } and deletes the template. Returns null if cancelled.
    */
-  static async _promptWeaponRollOptionsAoE(rawDamage, actor, targetActors = []) {
-    const karmaPool = actor?.system.karmaPool ?? 0;
+  static async _placeBlastTemplate(actor, radius) {
+    if (!canvas?.ready) return null;
+    const aToken = actor.getActiveTokens?.()[0] ?? null;
+    const origin = aToken
+      ? { x: aToken.center.x, y: aToken.center.y }
+      : { x: canvas.dimensions.width / 2, y: canvas.dimensions.height / 2 };
 
-    function calcBlast(power, charDist, walls) {
-      const waves = [];
-      const direct = power - charDist;
-      if (direct > 0) waves.push({ label: `Direct (${charDist}m)`, power: direct });
-      for (const w of walls) {
-        let wp;
-        if (w.type === 'same') {
-          if (w.dist <= charDist) continue; // wall between blast and target — not a valid rebound
-          wp = power - (2 * w.dist - charDist);
-        } else {
-          wp = power - (2 * w.dist + charDist);
-        }
-        if (wp > 0) {
-          const wallLabel = w.type === 'same' ? 'Behind-target rebound' : 'Opp./side wall';
-          waves.push({ label: `${wallLabel} @${w.dist}m`, power: wp });
-        }
-      }
-      return waves;
+    // Templates are only draggable when their layer is the active control layer.
+    const prevLayer = canvas.activeLayer;
+    canvas.templates?.activate();
+
+    let tpl;
+    try {
+      [tpl] = await canvas.scene.createEmbeddedDocuments('MeasuredTemplate', [{
+        t: 'circle',
+        user: game.user.id,
+        x: origin.x, y: origin.y,
+        distance: radius,
+        fillColor: game.user.color,
+        flags: { 'The2ndChumming3e': { blastPreview: true } },
+      }]);
+    } catch (err) {
+      console.error('SR3E | could not create blast template', err);
+      prevLayer?.activate?.();
+      return null;
     }
 
-    function getWalls(el) {
-      const walls = [];
-      el.querySelectorAll('.sr-wall-row').forEach(row => {
-        walls.push({
-          type: row.querySelector('.sr-wall-type')?.value || 'same',
-          dist: parseInt(row.querySelector('.sr-wall-dist')?.value) || 1,
-        });
-      });
-      return walls;
+    // Select it so the GM can grab and drag it immediately.
+    try { tpl.object?.control?.({ releaseOthers: true }); } catch { /* ignore */ }
+
+    let confirmed = false;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: 'Place Blast Template' },
+      content: `<p style="font-size:12px;margin:4px 0">Drag the <strong>${radius}m</strong> blast circle where it detonates, then click <strong>Confirm</strong>. Tokens inside become targets, with distance from the centre.</p>`,
+      buttons: [
+        { label: 'Confirm', action: 'ok', default: true, callback: () => { confirmed = true; } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+
+    const placed = canvas.scene.templates.get(tpl.id);
+    const center = placed ? { x: placed.x, y: placed.y } : null;
+    if (placed) { try { await placed.delete(); } catch { /* ignore */ } }
+    prevLayer?.activate?.();   // restore the previous control layer (usually Tokens)
+    if (!confirmed || !center) return null;
+    return { center, radius };
+  }
+
+  /**
+   * Tokens whose centre is within `radius` metres of the blast centre (excluding the
+   * attacker's own token). Returns [{ actor, token, distance }].
+   */
+  static _tokensInBlast(center, radius, attacker) {
+    const out = [];
+    for (const tok of (canvas.tokens?.placeables ?? [])) {
+      if (!tok.actor || tok.actor.id === attacker.id) continue;
+      let d;
+      try { d = canvas.grid.measurePath([center, tok.center])?.distance ?? Infinity; }
+      catch { d = Infinity; }
+      if (d <= radius) out.push({ actor: tok.actor, token: tok, distance: d });
+    }
+    return out;
+  }
+
+  /**
+   * Roll options for a thrown / launched AoE weapon: TN (auto range mod by grenade type),
+   * damage code, grenade type, and a Confined Space (Chunky Salsa) tickbox. Targets and
+   * scatter are resolved AFTER the throw roll. opts.throwDistance = thrower→nominated metres.
+   * Returns { tn, damageCode, grenadeType, useSalsaGUI, useKarma, karmaReroll } or null.
+   */
+  static async _promptWeaponRollOptionsAoE(rawDamage, actor, opts = {}) {
+    const SR3E       = game.sr3e.SR3E;
+    const karmaPool  = actor?.system.karmaPool ?? 0;
+    const throwDist  = opts.throwDistance ?? null;
+    const str        = Math.max(1, actor?.system?.attributes?.strength?.value
+                              ?? actor?.system?.attributes?.strength?.base ?? 1);
+    const rangeTNarr = SR3E.rangeTN ?? [0, 1, 2, 5];
+    const gTypes     = SR3E.grenadeTypes ?? {};
+
+    // Range band for a grenade type at the throw distance → { label, tnMod, beyond } or null.
+    function bandFor(type) {
+      if (throwDist == null) return null;
+      const cfg = gTypes[type]; if (!cfg) return null;
+      const bands = cfg.rangeFixed ?? (cfg.rangeMult ? cfg.rangeMult.map(m => m * str) : null);
+      if (!bands) return null;
+      const labels = ['Short', 'Medium', 'Long', 'Extreme'];
+      for (let i = 0; i < 4; i++) if (throwDist <= bands[i]) return { label: labels[i], tnMod: rangeTNarr[i] ?? 0, beyond: false };
+      return { label: 'Beyond Extreme', tnMod: rangeTNarr[3] ?? 5, beyond: true };
     }
 
-    function updatePreview(el) {
-      const csEnabled = el.querySelector('#cs-toggle')?.checked;
-      const csSection = el.querySelector('#cs-section');
-      if (csSection) csSection.style.display = csEnabled ? 'block' : 'none';
-      if (!csEnabled) return;
-
-      const code = el.querySelector('#sr-damage')?.value.trim() || rawDamage;
-      const m    = code.match(/^(\d+)\s*([LMSDlmsd])/i);
-      if (!m) return;
-      const basePower = parseInt(m[1]);
-      const level     = m[2].toUpperCase();
-      const walls     = getWalls(el);
-
-      targetActors.forEach((ta, idx) => {
-        const charDist   = parseInt(el.querySelector(`.cs-target-dist[data-idx="${idx}"]`)?.value) || 0;
-        const waves      = calcBlast(basePower, charDist, walls);
-        const totalPower = waves.reduce((s, w) => s + w.power, 0);
-        const previewEl  = el.querySelector(`.cs-target-preview[data-idx="${idx}"]`);
-        if (!previewEl) return;
-        if (totalPower <= 0) { previewEl.textContent = '→ No hit'; return; }
-        const detail = waves.length > 1 ? ` (${waves.map(w => w.power).join('+')}=)` : '';
-        previewEl.textContent = `→ ${totalPower}${level}${detail}`;
-      });
-    }
-
-    const targetRows = targetActors.map((ta, i) => `
-      <div style="display:flex;align-items:center;gap:8px;margin:3px 0;">
-        <span style="flex:1;font-size:12px;">${ta.name}</span>
-        <label style="display:flex;align-items:center;gap:4px;white-space:nowrap;font-size:12px;">Dist:
-          <input type="number" class="cs-target-dist" data-idx="${i}" value="0" min="0" style="width:50px;"/>m
-        </label>
-        <span class="cs-target-preview" data-idx="${i}" style="font-size:11px;color:var(--sr-amber);min-width:60px;text-align:right;"></span>
-      </div>`).join('');
+    const typeOpts  = Object.entries(gTypes).map(([k, v], i) =>
+      `<option value="${k}" ${i === 0 ? 'selected' : ''}>${v.label}</option>`).join('');
+    const initType  = Object.keys(gTypes)[0] ?? 'standard';
+    const defaultTN = 4 + (bandFor(initType)?.tnMod ?? 0);
 
     const AOE_TITLE = 'AoE Weapon Roll Options';
     let aoeHookId;
@@ -1094,30 +1229,18 @@ export class SR3EItem extends Item {
       Hooks.off('renderDialogV2', aoeHookId);
       const el = html?.querySelector ? html : (html?.[0] ?? null);
       if (!el) return;
-      el.addEventListener('input',  () => updatePreview(el));
-      el.addEventListener('change', () => updatePreview(el));
-      el.addEventListener('click', event => {
-        if (!event.target.closest('#sr-add-wall-btn')) return;
-        const wallList = el.querySelector('#sr-wall-list');
-        const div = document.createElement('div');
-        div.className = 'sr-wall-row';
-        div.style.cssText = 'display:flex;align-items:center;gap:8px;margin:3px 0;';
-        div.innerHTML = `
-          <select class="sr-wall-type" style="flex:1;">
-            <option value="same">Behind target (further from blast)</option>
-            <option value="opposite">Opposite / side wall</option>
-          </select>
-          <label style="display:flex;align-items:center;gap:4px;white-space:nowrap;font-size:12px;">Dist:
-            <input type="number" class="sr-wall-dist" value="3" min="1" style="width:50px;"/>m
-          </label>
-          <button type="button" class="sr-remove-wall-btn" style="padding:2px 8px;">✕</button>`;
-        div.querySelector('.sr-remove-wall-btn').addEventListener('click', () => {
-          div.remove();
-          updatePreview(el);
-        });
-        wallList.appendChild(div);
-        updatePreview(el);
-      });
+      const sel  = el.querySelector('#sr-grenade-type');
+      const tnIn = el.querySelector('#sr-tn');
+      const note = el.querySelector('#sr-range-note');
+      const recompute = () => {
+        const b = bandFor(sel?.value);
+        if (b && tnIn) tnIn.value = 4 + b.tnMod;
+        if (note) note.textContent = b
+          ? `Range: ${b.label} (${Math.round(throwDist)}m) → TN ${4 + b.tnMod}${b.beyond ? ' — beyond Extreme' : ''}`
+          : '';
+      };
+      sel?.addEventListener('change', recompute);
+      recompute();
     });
 
     let result = null;
@@ -1125,98 +1248,92 @@ export class SR3EItem extends Item {
       window: { title: AOE_TITLE },
       content: `
         <div style="padding:8px 0">
-          <div style="margin-bottom:10px">
-            <label>Target Number (TN):
-              <input type="number" id="sr-tn" value="4" min="2" max="30" style="width:60px;margin-left:8px"/>
+          <div style="margin-bottom:10px"><label>Grenade Type:
+            <select id="sr-grenade-type" style="margin-left:8px">${typeOpts}</select></label>
+            <div id="sr-range-note" style="font-size:11px;color:var(--sr-amber);margin-top:4px"></div>
+          </div>
+          <div style="margin-bottom:10px"><label>Target Number (TN):
+            <input type="number" id="sr-tn" value="${defaultTN}" min="2" max="30" style="width:60px;margin-left:8px"/></label></div>
+          <div style="margin-bottom:10px"><label>Damage Code:
+            <input type="text" id="sr-damage" value="${rawDamage}" style="width:80px;margin-left:8px"/></label></div>
+          ${karmaPool > 0 ? `<div style="margin-bottom:10px"><label><input type="checkbox" id="sr-karma"/> Use Karma Pool (${karmaPool} available)</label></div>` : ''}
+          <div style="margin-bottom:8px;padding:6px 8px;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r)">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:bold">
+              <input type="checkbox" id="salsa-toggle"/> 💥 Confined Space (Chunky Salsa)?
             </label>
+            <div style="font-size:11px;color:var(--sr-muted);margin-top:4px">Resolved after the throw &amp; scatter, in the Chunky Salsa tool, on whoever is actually caught in the blast.</div>
           </div>
-          <div style="margin-bottom:10px">
-            <label>Damage Code:
-              <input type="text" id="sr-damage" value="${rawDamage}" style="width:80px;margin-left:8px"/>
-            </label>
-          </div>
-          <div style="margin-bottom:10px">
-            <label>Grenade Type:
-              <select id="sr-grenade-type" style="margin-left:8px">
-                <option value="standard">Standard (1d6m scatter, −2m/hit)</option>
-                <option value="aerodynamic">Aerodynamic (2d6m scatter, −4m/hit)</option>
-                <option value="launcher">Grenade Launcher (3d6m scatter, −4m/hit)</option>
-              </select>
-            </label>
-          </div>
-          ${karmaPool > 0 ? `
-            <div style="margin-bottom:10px">
-              <label><input type="checkbox" id="sr-karma"/> Use Karma Pool (${karmaPool} available)</label>
-            </div>
-          ` : ''}
-          <div style="margin-bottom:8px;padding:6px 8px;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);">
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:bold;">
-              <input type="checkbox" id="cs-toggle"/>
-              💥 Confined Space (Chunky Salsa)?
-            </label>
-          </div>
-          <div id="cs-section" style="display:none;padding:8px;background:var(--sr-surface);border:1px solid var(--sr-accent);border-radius:var(--r);margin-bottom:8px;">
-            <div style="margin-bottom:8px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-                <strong style="font-size:12px;">Walls</strong>
-                <button type="button" id="sr-add-wall-btn" style="padding:2px 10px;font-size:11px;">+ Add Wall</button>
-              </div>
-              <div id="sr-wall-list"></div>
-            </div>
-            ${targetActors.length > 0 ? `
-              <div>
-                <strong style="font-size:12px;display:block;margin-bottom:4px;">Distance from Blast Epicentre</strong>
-                ${targetRows}
-              </div>` : ''}
-          </div>
-          <div style="color:var(--sr-muted);font-size:11px">Rule of Six active. No dodge — all targets in blast soak.</div>
+          <div style="color:var(--sr-muted);font-size:11px">Targets &amp; scatter are determined after you roll to throw. No dodge — those caught soak.</div>
         </div>
       `,
       buttons: [
         {
-          label: 'Roll',
+          label: 'Roll to Throw',
           action: 'roll',
           default: true,
           callback: (_e, _b, dialog) => {
-            const el         = dialog.element;
-            const tn         = Math.max(2, parseInt(el.querySelector('#sr-tn')?.value) || 4);
-            const damageCode = el.querySelector('#sr-damage')?.value.trim() || rawDamage;
-            const useKarma   = el.querySelector('#sr-karma')?.checked ?? false;
-            const csEnabled  = el.querySelector('#cs-toggle')?.checked ?? false;
-
-            let chunkySalsa = null;
-            if (csEnabled && targetActors.length > 0) {
-              const m = damageCode.match(/^(\d+)\s*([LMSDlmsd])/i);
-              if (m) {
-                const basePower = parseInt(m[1]);
-                const level     = m[2].toUpperCase();
-                const walls     = getWalls(el);
-                chunkySalsa = targetActors.map((ta, idx) => {
-                  const charDist   = parseInt(el.querySelector(`.cs-target-dist[data-idx="${idx}"]`)?.value) || 0;
-                  const waves      = calcBlast(basePower, charDist, walls);
-                  const totalPower = waves.reduce((s, w) => s + w.power, 0);
-                  return { actorId: ta.id, name: ta.name, power: totalPower, level, waves };
-                }).filter(t => t.power > 0);
-              }
-            }
-
-            const grenadeType = el.querySelector('#sr-grenade-type')?.value ?? 'standard';
-            result = { tn, damageCode, useKarma, karmaReroll: useKarma, chunkySalsa, grenadeType };
+            const el = dialog.element;
+            const useKarma = el.querySelector('#sr-karma')?.checked ?? false;
+            result = {
+              tn:          Math.max(2, parseInt(el.querySelector('#sr-tn')?.value) || 4),
+              damageCode:  el.querySelector('#sr-damage')?.value.trim() || rawDamage,
+              grenadeType: el.querySelector('#sr-grenade-type')?.value ?? initType,
+              useSalsaGUI: el.querySelector('#salsa-toggle')?.checked ?? false,
+              useKarma,
+              karmaReroll: useKarma,
+            };
           }
         },
         { label: 'Cancel', action: 'cancel' }
       ]
     });
+    if (aoeHookId) Hooks.off('renderDialogV2', aoeHookId);
     return result;
   }
 
-  static async _promptWeaponRollOptions(targetActor, rawDamage, actor, totalTNMod = 0, modBreakdown = null) {
-    const isVehicle = targetActor.type === 'vehicle';
-    const karmaPool = actor?.system.karmaPool ?? 0;
-    const defaultTN = 4 + totalTNMod;
+  static async _promptWeaponRollOptions(targetActor, rawDamage, actor, totalTNMod = 0, modBreakdown = null, rangeInfo = null) {
+    const isVehicle  = targetActor.type === 'vehicle';
+    const karmaPool  = actor?.system.karmaPool ?? 0;
+    const rangeTNarr = game.sr3e.SR3E.rangeTN ?? [0, 1, 2, 5];
+    const rangeLabels = ['Short', 'Medium', 'Long', 'Extreme'];
+
+    // Base TN excludes range; range is added from the (editable) dropdown below.
+    const baseTN     = 4 + totalTNMod;
+    const initBand   = rangeInfo?.bandIdx ?? -1;
+    const initRangeTN = initBand >= 0 ? (rangeTNarr[initBand] ?? 0) : 0;
+    const defaultTN  = baseTN + initRangeTN;
+
     const modNote   = (totalTNMod !== 0 || modBreakdown)
       ? `<div style="font-size:11px;color:var(--sr-amber);margin-bottom:8px">⚡ TN modifiers: ${modBreakdown ?? (totalTNMod > 0 ? `+${totalTNMod}` : totalTNMod)} (pre-applied)</div>`
       : '';
+
+    // Range dropdown — pre-set to the measured band, but the GM can override it (the TN
+    // recomputes live). Shows the measured distance for context.
+    const rangeRow = rangeInfo ? `
+      <div style="margin-bottom:10px">
+        <label>Range:
+          <select id="sr-range" data-base="${baseTN}" style="margin-left:8px">
+            ${rangeLabels.map((l, i) => `<option value="${i}" ${i === initBand ? 'selected' : ''}>${l} (TN ${baseTN + (rangeTNarr[i] ?? 0)})</option>`).join('')}
+          </select>
+        </label>
+        <span style="font-size:11px;color:var(--sr-muted);margin-left:8px">measured ${Math.round(rangeInfo.distance)}m${rangeInfo.beyond ? ' — beyond Extreme' : ''}</span>
+      </div>` : '';
+
+    // Live TN recompute when the range band changes (DialogV2.wait does not call `render`).
+    let hookId = null;
+    if (rangeInfo) {
+      hookId = Hooks.on('renderDialogV2', (_app, html) => {
+        const el = html?.querySelector ? html : html?.[0];
+        if (!el?.querySelector?.('#sr-range')) return;
+        Hooks.off('renderDialogV2', hookId);
+        const sel     = el.querySelector('#sr-range');
+        const tnInput = el.querySelector('#sr-tn');
+        sel.addEventListener('change', () => {
+          const base = parseInt(sel.dataset.base) || 4;
+          tnInput.value = base + (rangeTNarr[parseInt(sel.value)] ?? 0);
+        });
+      });
+    }
 
     let result = null;
     await foundry.applications.api.DialogV2.wait({
@@ -1224,6 +1341,7 @@ export class SR3EItem extends Item {
       content: `
         <div style="padding:8px 0">
           ${modNote}
+          ${rangeRow}
           <div style="margin-bottom:10px">
             <label>Target Number (TN):
               <input type="number" id="sr-tn" value="${defaultTN}" min="2" max="30" style="width:60px;margin-left:8px"/>
@@ -1264,6 +1382,7 @@ export class SR3EItem extends Item {
         { label: 'Cancel', action: 'cancel' }
       ]
     });
+    if (hookId) Hooks.off('renderDialogV2', hookId); // safety if the dialog never matched
     return result;
   }
 

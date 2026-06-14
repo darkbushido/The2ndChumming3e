@@ -143,6 +143,17 @@ After everyone acts: all initiatives drop by 10. Combatants with initiative ≤ 
 ### SR2 flat queue mode - passed
 Full action list built upfront (init, init−10, init−20 …). Walk top to bottom.
 
+### Pre-start initiative lock
+Before **Begin Encounter**, the per-combatant init roll icons are dimmed and unclickable (incl. shift-click) — initiative is rolled only via the Begin Encounter dialog. After combat starts they work again.
+- **In:** add combatants, don't start → clicking a bolt does nothing. Begin Encounter (auto-roll) → inits set. After start → bolt rolls/re-rolls normally.
+
+### Action Tracker (GM, active combatant card)
+On the active combatant's card: **Complex** (full width) + two **Simple** buttons.
+- **In:** click **Complex** → advances to next actor (like the arrow).
+- **In:** click first **Simple** → Complex greys out, first Simple highlights; click it again → undo (Complex re-enabled).
+- **In:** click second **Simple** → advances to next actor.
+- State resets when the turn/round changes (also via the normal arrow).
+
 ---
 
 ## 5. Ranged Combat
@@ -188,7 +199,7 @@ Both are editable inline in the fire-mode dialog and persist on confirm.
 | 4th | +6 |
 | 5th+ | +8 |
 
-### Ammunition — stockpile / magazine model
+### Ammunition — stockpile / magazine model - passed
 
 World setting **Track Ammunition** (Configure Settings → System) gates all counting (off by default).
 
@@ -230,6 +241,19 @@ When **Track Ammunition** is on, an empty weapon's dice icon is faded + struck-t
 - **In:** firearm with `loadedRounds 0` → dice icon disabled; clicking does nothing; ↻ Reload still works. After reload → dice icon active.
 - **In:** thrown weapon with quantity 0 → dice icon disabled.
 - Tracking **off** → all weapons always operable (no fading).
+
+### Range (firearms, bows/crossbows, thrown)
+Needs both combatants as tokens on a scene whose grid distance is in **metres**.
+- **Auto-measure:** target a token (T tool), fire → roll dialog shows a **Range** dropdown pre-set to the measured band, with "measured Nm". TN pre-fills to base + range mod (Short +0 / Medium +1 / Long +2 / Extreme +5).
+  - **In:** firearm vs target 37m, Assault Rifle (`50/150/350/550`) → Short, TN 4. At 200m → Long, TN 6. At 600m → "beyond Extreme" warning, TN 9.
+- **Override:** change the dropdown → TN recomputes live; or edit the TN field directly. **In:** auto says Long (TN 6); GM picks Medium → TN becomes 5.
+- **Strength-scaled (bows/thrown):** bands = STR × multiplier. **In:** STR 5 Bow (`1/10/30/60`) → bands 5/50/150/300m; target 40m → Medium.
+- **Per-weapon override:** item sheet "Range Override" = "5/15/30/50" wins over the category table.
+- **No tokens / no scale:** no dropdown; set TN manually (unchanged behaviour).
+
+### Attacking from the canvas
+- **Token HUD:** select an owned token → 🎯 button → weapon picker lists *ready* weapons (firearm w/ ammo, equipped melee, thrown w/ qty, bows) → fires the normal flow. One ready weapon → fires immediately. **In:** runner with loaded pistol + equipped sword → picker shows both.
+- **Hotbar drag:** drag a weapon row from the sheet to the hotbar → "Fire: \<weapon\>" macro created → click fires it. ⚠ Script macros only run for users granted script-macro permission; the Token HUD works for everyone.
 
 
 ### Dodge (binary)
@@ -298,9 +322,20 @@ Works identically to melee. If no melee weapon equipped, bare hands fallback:
 
 ---
 
-## 8. AoE / Grenades
+## 8. AoE / Grenades (RAW scatter-first)
 
-Click grenade/projectile weapon → target selection (multi-select) → each target at a distance gets power reduced.
+Needs a scene with tokens. Flow: **nominate** the blast point (drag the template, Confirm) → **roll to throw** → scatter **relocates** the blast → re-detect who's caught → soak.
+- **In:** throw a grenade, place the template, set grenade type → throw TN auto-fills from the Grenade Range Table for that type (Standard/Aero = STR-scaled, Launcher = fixed); changing the type updates the TN.
+- **In:** roll the throw. Scatter = (1d6 standard / 2d6 aero / 3d6 launcher) − **2m per success** (4m aero/launcher). The chat reports direction (relative to throw: 1 overthrow … 4 short) + distance; a result template appears where it landed.
+- **In:** **0 successes → grenade does NOT vanish** — it scatters the full rolled distance, lands somewhere, and hits whoever's in range there (possibly no one, possibly the thrower).
+- **In:** scatter carries the blast onto a bystander / the thrower → they get a soak card; the nominated target may be missed entirely. (This is intended — grenades are deadly.)
+- Per-target power = base damage − distance from the (scattered) epicentre. Damage is **not** staged up by successes.
+- **Confined Space (Chunky Salsa):** tick the box → after the throw + scatter, the Chunky Salsa GUI opens seeded with whoever was caught; draw walls / drag positions → it returns each target's code into the soak cards.
+
+### Blast power at distance
+`Power at target = weapon power − distance in metres` (from the scattered epicentre).
+
+**In:** Grenade power 12, target 4m from where it landed → effective power **8**.
 
 ### Blast power at distance
 `Power at target = weapon power − distance in metres`
@@ -828,9 +863,35 @@ Stun track full → overflow goes to physical track. - Passed
 When overflow matches or exceeds body attribute show 'dead' - Passed
 ---
 
+## Foundry integrations (tokens / statuses / enrichers)
+
+### Token wound bars
+Newly-created character/npc tokens show Physical (bar1) and Stun (bar2) as bars that **fill as damage rises**, visible to owners on hover.
+- **In:** create a new character, drop a token → hover shows two bars. Tick 3 physical boxes → physical bar ~30% filled. (Existing pre-update actors need their prototype token bars set manually.)
+
+### Status icons
+- **Auto-synced:** toggling Astral Projection / Dual-Natured (magic tab), VR-Cold/Hot (matrix tab), or Full Defense sets the matching token status icon automatically; clearing removes it. **In:** set Astral → token shows the aura icon; switch to Physical → icon gone.
+- **Manual:** the token HUD status palette includes Sustaining a Spell, Full Defense, Dumpshocked (GM toggles).
+
+### Auto-defeated
+- **In:** fill a combatant's physical or stun track → in combat, the combatant is marked **defeated** (skull in tracker) and the token gets the unconscious icon. Heal below full → defeated clears.
+- **In:** physical full AND overflow ≥ Body → token shows the **dead** overlay.
+
+### Text enrichers (Biography / Notes)
+The Bio tab shows Background/Notes as read-only **enriched** text — `@UUID[...]` links and inline `[[/r ...]]` rolls render and are clickable. Click **✎ Edit** to reveal the textarea; saving re-renders back to enriched.
+- **In:** put `@UUID[Actor.xxx]{Mr. J}` in Background → displays as a clickable link, not raw text.
+
+---
+
+## GM tools — Rollable Tables tab
+Chase Scene, Driving Test, Session Rewards, Chunky Salsa, Barrier Damage, Falling Damage and Escape Artist buttons now live on the **Rollable Tables** sidebar tab (not the combat tracker). Chase Scene + Driving Test show for all players; the rest are GM-only.
+- **In:** open Rollable Tables tab → buttons appear below the header. **Driving Test** → prompts for vehicle + driver, then the usual driving-test dialog.
+
+> Note: the §28/§29 references to "combat tracker sidebar" below are historical — these buttons moved to the Rollable Tables tab.
+
 ## 28. Escape Artist
 
-Triggered via the **🔓 Escape Artist** button in the combat tracker sidebar (GM only).
+Triggered via the **🔓 Escape Artist** button (Rollable Tables tab, GM only).
 
 ### Pool
 
@@ -874,7 +935,7 @@ TN modifier field in dialog: positive values reduce TN (e.g. Pain Resistance lev
 ## 29. Falling Damage
 
 
-Triggered via the **🪂 Falling Damage** button in the combat tracker sidebar (GM only).
+Triggered via the **🪂 Falling Damage** button (Rollable Tables tab, GM only).
 
 ### Damage calculation
 

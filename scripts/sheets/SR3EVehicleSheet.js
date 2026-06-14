@@ -447,14 +447,74 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   static async _onDrivingTest(_ev, _target) {
-    const actor      = this.actor;
-    const sys        = actor.system;
-    const driverRef = sys.driverActorId?.trim();
-    if (!driverRef) return;
+    return SR3EVehicleSheet.runDrivingTest(this.actor);
+  }
 
-    const driver = game.actors.get(driverRef);
+  /**
+   * Prompt for a vehicle (and driver) then run the driving test. Entry point for the
+   * Rollable Tables sidebar tool, where there is no vehicle sheet context.
+   */
+  static async promptVehicleDrivingTest() {
+    const vehicles = game.actors
+      .filter(a => a.type === 'vehicle' && a.getFlag('The2ndChumming3e', 'isTemplate') !== true)
+      .sort((a, b) => a.name.localeCompare(b.name));
+    if (!vehicles.length) {
+      ui.notifications.warn('No vehicles available.');
+      return;
+    }
+    const drivers = game.actors
+      .filter(a => (a.type === 'character' || a.type === 'npc') && a.getFlag('The2ndChumming3e', 'isTemplate') !== true)
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    const vehOpts = vehicles.map(v => `<option value="${v.id}">${v.name}</option>`).join('');
+    const drvOpts = ['<option value="">— Use vehicle\'s linked driver —</option>',
+      ...drivers.map(d => `<option value="${d.id}">${d.name}</option>`)].join('');
+
+    let result = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: 'Driving Test — Select Vehicle' },
+      content: `
+        <div style="display:flex;flex-direction:column;gap:8px;padding:4px 0">
+          <label style="display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--sr-muted)">Vehicle
+            <select id="dt-vehicle" style="width:100%">${vehOpts}</select>
+          </label>
+          <label style="display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--sr-muted)">Driver
+            <select id="dt-driver" style="width:100%">${drvOpts}</select>
+          </label>
+        </div>`,
+      buttons: [
+        {
+          label: 'Continue',
+          action: 'go',
+          default: true,
+          callback: (_e, _b, dialog) => {
+            const el = dialog.element;
+            result = {
+              vehicleId: el.querySelector('#dt-vehicle')?.value ?? '',
+              driverId:  el.querySelector('#dt-driver')?.value ?? '',
+            };
+          },
+        },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+
+    if (!result?.vehicleId) return;
+    const vehicle = game.actors.get(result.vehicleId);
+    if (!vehicle) return;
+    const driverOverride = result.driverId ? game.actors.get(result.driverId) : null;
+    return SR3EVehicleSheet.runDrivingTest(vehicle, driverOverride);
+  }
+
+  /**
+   * Run the driving-test dialog + roll for a vehicle. Driver is the override if given,
+   * otherwise the vehicle's linked driverActorId.
+   */
+  static async runDrivingTest(actor, driverOverride = null) {
+    const sys        = actor.system;
+    const driver = driverOverride ?? game.actors.get(sys.driverActorId?.trim() ?? '');
     if (!driver) {
-      ui.notifications.warn('Driver actor not found.');
+      ui.notifications.warn('No driver set for this vehicle — select one.');
       return;
     }
 
@@ -514,17 +574,23 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     );
     const vcrRating = vcrItem ? (vcrItem.system.rating ?? 1) : 0;
 
+    // Inline styles — DialogV2 does not reliably apply an injected <style> block.
+    const FIELD_S = 'display:flex;flex-direction:column;gap:3px;color:#7880a0;font-size:12px;';
+    const FULL_S  = FIELD_S + 'grid-column:1/-1;';
+    const INPUT_S = 'background:#1c2030;color:#dde1f0;border:1px solid #3a9fd6;border-radius:3px;padding:2px 5px;width:100%;box-sizing:border-box;';
+    const infoRow = (l, v) => `<div style="display:flex;justify-content:space-between;margin:2px 0;color:#7880a0;"><span>${l}</span><span style="color:#dde1f0;font-weight:bold;">${v}</span></div>`;
+
     const datajackRow = !vcrRating ? `
-      <label class="drv-field">Non-Rigger w/ Datajack
-        <select id="drv-datajack">
+      <label style="${FIELD_S}">Non-Rigger w/ Datajack
+        <select id="drv-datajack" style="${INPUT_S}">
           <option value="0">No (0)</option>
           <option value="-1">Yes (−1 TN)</option>
         </select>
       </label>` : '';
 
     const riggerRow = vcrRating ? `
-      <label class="drv-field drv-full">Rigger — VCR Rating ${vcrRating}
-        <select id="drv-rigger">
+      <label style="${FULL_S}">Rigger — VCR Rating ${vcrRating}
+        <select id="drv-rigger" style="${INPUT_S}">
           <option value="0">Not using VCR (0)</option>
           <option value="${-vcrRating * 2}">Using VCR (−${vcrRating * 2} TN)</option>
         </select>
@@ -534,38 +600,24 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     await foundry.applications.api.DialogV2.wait({
       window: { title: `Driving Test — ${actor.name}` },
+      position: { width: 460 },
       content: `
-        <style>
-          .drv-info { background:#1c2030; border-radius:4px; padding:8px; margin-bottom:10px; font-size:12px; }
-          .drv-info-row { display:flex; justify-content:space-between; margin:2px 0; color:#7880a0; }
-          .drv-info-row span:last-child { color:#dde1f0; font-weight:bold; }
-          .drv-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px 12px; font-size:12px; }
-          .drv-full { grid-column:1/-1; }
-          label.drv-field { display:flex; flex-direction:column; gap:3px; color:#7880a0; }
-          label.drv-field select, label.drv-field input[type=number] {
-            background:#1c2030; color:#dde1f0; border:1px solid #3a9fd6;
-            border-radius:3px; padding:2px 5px; width:100%; box-sizing:border-box;
-          }
-          .drv-preview { margin-top:10px; padding:6px 10px; background:#1c2030;
-            border-radius:4px; display:flex; gap:20px; font-size:12px; color:#7880a0; }
-          .drv-preview strong { color:#dde1f0; }
-        </style>
-        <div class="drv-info">
-          <div class="drv-info-row"><span>Driver</span><span>${driver.name}</span></div>
-          <div class="drv-info-row"><span>Skill</span><span>${poolLabel}</span></div>
-          <div class="drv-info-row"><span>Autonav</span><span>${autonav}</span></div>
-          <div class="drv-info-row"><span>Handling (base TN)</span><span>${handling}</span></div>
-          ${vcrRating ? `<div class="drv-info-row"><span>VCR</span><span>Rating ${vcrRating}</span></div>` : ''}
+        <div style="background:#1c2030;border-radius:4px;padding:8px;margin-bottom:10px;font-size:12px;">
+          ${infoRow('Driver', driver.name)}
+          ${infoRow('Skill', poolLabel)}
+          ${infoRow('Autonav', autonav)}
+          ${infoRow('Handling (base TN)', handling)}
+          ${vcrRating ? infoRow('VCR', `Rating ${vcrRating}`) : ''}
         </div>
-        <div class="drv-grid">
-          <label class="drv-field">Unfamiliar Vehicle
-            <select id="drv-unfamiliar">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;">
+          <label style="${FIELD_S}">Unfamiliar Vehicle
+            <select id="drv-unfamiliar" style="${INPUT_S}">
               <option value="0">No (0)</option>
               <option value="1">Yes (+1 TN)</option>
             </select>
           </label>
-          <label class="drv-field">Stress Level
-            <select id="drv-stress">
+          <label style="${FIELD_S}">Stress Level
+            <select id="drv-stress" style="${INPUT_S}">
               <option value="-1">Relaxed (−1 TN)</option>
               <option value="0" selected>Normal (0)</option>
               <option value="1">Stressed (+1 TN)</option>
@@ -575,49 +627,49 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
               <option value="5">Extreme (+5 TN)</option>
             </select>
           </label>
-          <label class="drv-field">Vehicle Size
-            <select id="drv-size">
+          <label style="${FIELD_S}">Vehicle Size
+            <select id="drv-size" style="${INPUT_S}">
               <option value="0">Normal (0)</option>
               <option value="2">Large (+2 TN)</option>
               <option value="3">Very Large (+3 TN)</option>
             </select>
           </label>
-          <label class="drv-field">Weather
-            <select id="drv-weather">
+          <label style="${FIELD_S}">Weather
+            <select id="drv-weather" style="${INPUT_S}">
               <option value="0">Normal (0)</option>
               <option value="2">Bad (+2 TN)</option>
               <option value="4">Terrible (+4 TN)</option>
             </select>
           </label>
-          <label class="drv-field">Terrain
-            <select id="drv-terrain">
+          <label style="${FIELD_S}">Terrain
+            <select id="drv-terrain" style="${INPUT_S}">
               <option value="-1">Open (−1 TN)</option>
               <option value="0" selected>Normal (0)</option>
               <option value="1">Restricted (+1 TN)</option>
               <option value="3">Tight (+3 TN)</option>
             </select>
           </label>
-          <label class="drv-field">Action During Combat
-            <select id="drv-combat">
+          <label style="${FIELD_S}">Action During Combat
+            <select id="drv-combat" style="${INPUT_S}">
               <option value="0">No (0)</option>
               <option value="2">Yes (+2 TN)</option>
             </select>
           </label>
           ${datajackRow}
           ${riggerRow}
-          <label class="drv-field">Control Pool Dice
-            <input id="drv-control" type="number" value="0" min="0" max="30"/>
+          <label style="${FIELD_S}">Control Pool Dice
+            <input id="drv-control" type="number" value="0" min="0" max="30" style="${INPUT_S}"/>
           </label>
-          <label class="drv-field">Base TN
-            <input id="drv-tn" type="number" value="${handling}" min="2" max="30"/>
+          <label style="${FIELD_S}">Base TN
+            <input id="drv-tn" type="number" value="${handling}" min="2" max="30" style="${INPUT_S}"/>
           </label>
-          <label class="drv-field drv-full">Total Pool Dice
-            <input id="drv-pool" type="number" value="${basePool}" min="1" max="30"/>
+          <label style="${FULL_S}">Total Pool Dice
+            <input id="drv-pool" type="number" value="${basePool}" min="1" max="30" style="${INPUT_S}"/>
           </label>
         </div>
-        <div class="drv-preview">
-          <span>Final TN: <strong id="drv-tn-out">${handling}</strong></span>
-          <span>Pool: <strong id="drv-pool-out">${basePool}</strong></span>
+        <div style="margin-top:10px;padding:6px 10px;background:#1c2030;border-radius:4px;display:flex;gap:20px;font-size:12px;color:#7880a0;">
+          <span>Final TN: <strong style="color:#dde1f0;" id="drv-tn-out">${handling}</strong></span>
+          <span>Pool: <strong style="color:#dde1f0;" id="drv-pool-out">${basePool}</strong></span>
         </div>
       `,
       render: (_ev, dialog) => {

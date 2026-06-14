@@ -113,6 +113,30 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   _onRender(context, options) {
     super._onRender?.(context, options);
     this._registerPersistentHooks();
+    this._enrichBioFields();
+  }
+
+  /** Fill the read-only enriched displays for bio/notes and wire the Edit toggles. */
+  async _enrichBioFields() {
+    const root = this.element;
+    if (!root) return;
+    const TE = foundry.applications?.ux?.TextEditor?.implementation ?? globalThis.TextEditor;
+    for (const wrap of root.querySelectorAll('.bio-rich')) {
+      const ta   = wrap.querySelector('textarea');
+      const disp = wrap.querySelector('.bio-display');
+      const btn  = wrap.querySelector('.bio-edit-toggle');
+      if (!ta || !disp) continue;
+      const raw = ta.value ?? '';
+      disp.innerHTML = raw.trim()
+        ? await TE.enrichHTML(raw, { secrets: this.actor.isOwner, rollData: this.actor.getRollData?.() ?? {}, relativeTo: this.actor })
+        : `<span style="color:var(--sr-dim)">${wrap.dataset.empty ?? ''}</span>`;
+      btn?.addEventListener('click', () => {
+        disp.style.display = 'none';
+        ta.style.display   = '';
+        btn.style.display  = 'none';
+        ta.focus();
+      });
+    }
   }
 
   _registerPersistentHooks() {
@@ -170,6 +194,18 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           type: 'sr3e-program',
           itemId: el.dataset.matrixProgramId,
         }));
+        ev.dataTransfer.effectAllowed = 'copy';
+      });
+    });
+
+    // Weapons tab: make weapon rows draggable to the hotbar (creates a fire macro).
+    html.querySelectorAll('.weapon-section .item-row[data-item-id]').forEach(row => {
+      const item = this.actor.items.get(row.dataset.itemId);
+      if (!item || !['firearm', 'melee', 'projectile', 'thrown'].includes(item.type)) return;
+      row.setAttribute('draggable', 'true');
+      row.addEventListener('dragstart', ev => {
+        ev.stopPropagation();
+        ev.dataTransfer.setData('text/plain', JSON.stringify({ type: 'Item', uuid: item.uuid }));
         ev.dataTransfer.effectAllowed = 'copy';
       });
     });
@@ -818,12 +854,13 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   const fRows = categorisedFirearms.length ? categorisedFirearms.map(w => `
     <div class="item-row" data-item-id="${w.id}">
       <span class="item-name">${w.name}</span>
-      <span class="item-cell">${w.system.damage || '—'}</span>
-      <span class="item-cell">${w.system.mode || '—'}</span>
-      <span class="item-cell">${w.system.concealability ?? '—'}</span>
-      <span class="item-cell">${w.system.weight ?? 0}</span>
-      <span class="item-cell">${this._firearmAmmoCell(w)}</span>
-      ${this._itemControls(w.id, true, 'rollWeapon', false, this._weaponOutOfAmmo(w))}
+      <span class="item-cell col-xs">${w.system.damage || '—'}</span>
+      <span class="item-cell col-sm">${w.system.mode || '—'}</span>
+      <span class="item-cell col-xs">${w.system.concealability ?? '—'}</span>
+      <span class="item-cell col-xs">${w.system.weight ?? 0}</span>
+      <span class="item-cell col-sm">${this._firearmAmmoCell(w)}</span>
+      <span class="item-cell">${this._firearmLoadedCell(w)}</span>
+      ${this._itemControls(w.id, true, 'rollWeapon', false, this._weaponOutOfAmmo(w), w.id)}
     </div>`).join('') : '<p class="empty-list">No firearms.</p>';
 
   const armedRows = armedMelee.length ? armedMelee.map(w => {
@@ -834,10 +871,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     return `
     <div class="item-row ${isEquipped ? 'equipped' : ''}" data-item-id="${w.id}">
       <span class="item-name">${w.name}${isEquipped ? ' <span class="equipped-badge">✦ Equipped</span>' : ''}${focusTag}</span>
-      <span class="item-cell">${w.system.damage || '—'}</span>
+      <span class="item-cell col-xs">${w.system.damage || '—'}</span>
       <span class="item-cell">Reach ${w.system.reach ?? 0}</span>
-      <span class="item-cell">${w.system.concealability ?? '—'}</span>
-      <span class="item-cell">${w.system.weight ?? 0}</span>
+      <span class="item-cell col-xs">${w.system.concealability ?? '—'}</span>
+      <span class="item-cell col-xs">${w.system.weight ?? 0}</span>
       ${this._meleeControls(w.id, isEquipped, isAwakened, isFocus, focusActive, false)}
     </div>`;
   }).join('') : '<p class="empty-list">No armed melee weapons.</p>';
@@ -850,10 +887,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     return `
     <div class="item-row ${isEquipped ? 'equipped' : ''}" data-item-id="${w.id}">
       <span class="item-name">${w.name}${isEquipped ? ' <span class="equipped-badge">✦ Equipped</span>' : ''}${focusTag}</span>
-      <span class="item-cell">${w.system.damage || '—'}</span>
+      <span class="item-cell col-xs">${w.system.damage || '—'}</span>
       <span class="item-cell">Reach ${w.system.reach ?? 0}</span>
-      <span class="item-cell">${w.system.concealability ?? '—'}</span>
-      <span class="item-cell">${w.system.weight ?? 0}</span>
+      <span class="item-cell col-xs">${w.system.concealability ?? '—'}</span>
+      <span class="item-cell col-xs">${w.system.weight ?? 0}</span>
       ${this._meleeControls(w.id, isEquipped, isAwakened, isFocus, focusActive, false)}
     </div>`;
   }).join('') : '<p class="empty-list">No unarmed/cyber weapons.</p>';
@@ -861,10 +898,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   const _projRow = w => `
     <div class="item-row" data-item-id="${w.id}">
       <span class="item-name">${w.name}</span>
-      <span class="item-cell">${w.system.damage || '—'}</span>
+      <span class="item-cell col-xs">${w.system.damage || '—'}</span>
       <span class="item-cell">${w.system.strMin || '—'}</span>
-      <span class="item-cell">${w.system.concealability ?? '—'}</span>
-      <span class="item-cell">${w.system.weight ?? 0}</span>
+      <span class="item-cell col-xs">${w.system.concealability ?? '—'}</span>
+      <span class="item-cell col-xs">${w.system.weight ?? 0}</span>
       ${this._itemControls(w.id, true, 'rollWeapon', false)}
     </div>`;
 
@@ -877,9 +914,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     return `
     <div class="item-row" data-item-id="${w.id}">
       <span class="item-name">${w.name}</span>
-      <span class="item-cell">${w.system.damage || '—'}</span>
+      <span class="item-cell col-xs">${w.system.damage || '—'}</span>
       <span class="item-cell">${w.system.strMin || '—'}</span>
-      <span class="item-cell">${w.system.concealability ?? '—'}</span>
+      <span class="item-cell col-xs">${w.system.concealability ?? '—'}</span>
       <span class="item-cell" style="color:${qtyCol}">${trackOn ? `×${qty}` : '—'}</span>
       ${this._itemControls(w.id, true, 'rollWeapon', false, out)}
     </div>`;
@@ -898,7 +935,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   const uncatMeleeHtml = uncategorisedMelee.length ? `
     <h3 class="section-hdr" style="margin-top:0.75rem;color:var(--sr-amber)">Uncategorised Melee (set category in item sheet)</h3>
-    <div class="list-header"><span>Name</span><span>Damage</span><span>Reach/Mode</span><span>Conceal</span><span>Weight (kg)</span><span></span></div>
+    <div class="list-header"><span>Name</span><span class="col-xs" title="Damage">Dam.</span><span>Reach/Mode</span><span class="col-xs" title="Concealability">Con.</span><span class="col-xs" title="Weight (kg)">KG</span><span></span></div>
     ${uncategorisedMelee.map(w => {
       const isEquipped  = equippedMeleeId === w.id;
       const isFocus     = w.system.isFocus     ?? false;
@@ -906,26 +943,27 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       return `
       <div class="item-row" data-item-id="${w.id}">
         <span class="item-name">${w.name}</span>
-        <span class="item-cell">${w.system.damage || '—'}</span>
+        <span class="item-cell col-xs">${w.system.damage || '—'}</span>
         <span class="item-cell">Reach ${w.system.reach ?? 0}</span>
-        <span class="item-cell">${w.system.concealability ?? '—'}</span>
-        <span class="item-cell">${w.system.weight ?? 0}</span>
+        <span class="item-cell col-xs">${w.system.concealability ?? '—'}</span>
+        <span class="item-cell col-xs">${w.system.weight ?? 0}</span>
         ${this._meleeControls(w.id, isEquipped, isAwakened, isFocus, focusActive, false)}
       </div>`;
     }).join('')}` : '';
 
   const uncatFirearmsHtml = uncategorisedFirearms.length ? `
     <h3 class="section-hdr" style="margin-top:0.75rem;color:var(--sr-amber)">Uncategorised Firearms (set category in item sheet)</h3>
-    <div class="list-header"><span>Name</span><span>Damage</span><span>Mode</span><span>Conceal</span><span>Weight (kg)</span><span>Ammo</span><span></span></div>
+    <div class="list-header"><span>Name</span><span class="col-xs" title="Damage">Dam.</span><span class="col-sm">Mode</span><span class="col-xs" title="Concealability">Con.</span><span class="col-xs" title="Weight (kg)">KG</span><span class="col-sm">Ammo</span><span>Loaded Ammo</span><span></span></div>
     ${uncategorisedFirearms.map(w => `
       <div class="item-row" data-item-id="${w.id}">
         <span class="item-name">${w.name}</span>
-        <span class="item-cell">${w.system.damage || '—'}</span>
-        <span class="item-cell">${w.system.mode || '—'}</span>
-        <span class="item-cell">${w.system.concealability ?? '—'}</span>
-        <span class="item-cell">${w.system.weight ?? 0}</span>
-        <span class="item-cell">${this._firearmAmmoCell(w)}</span>
-        ${this._itemControls(w.id, true, 'rollWeapon', false, this._weaponOutOfAmmo(w))}
+        <span class="item-cell col-xs">${w.system.damage || '—'}</span>
+        <span class="item-cell col-sm">${w.system.mode || '—'}</span>
+        <span class="item-cell col-xs">${w.system.concealability ?? '—'}</span>
+        <span class="item-cell col-xs">${w.system.weight ?? 0}</span>
+        <span class="item-cell col-sm">${this._firearmAmmoCell(w)}</span>
+        <span class="item-cell">${this._firearmLoadedCell(w)}</span>
+        ${this._itemControls(w.id, true, 'rollWeapon', false, this._weaponOutOfAmmo(w), w.id)}
       </div>`).join('')}` : '';
 
   const _dragHdr = label => `<span class="wep-drag-grip" title="Drag to reorder">&#8942;&#8942;</span>${label}`;
@@ -934,7 +972,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     'firearms': `
       <div class="weapon-section" data-section="firearms">
         <h3 class="section-hdr wep-section-hdr" draggable="true">${_dragHdr('Firearms')}</h3>
-        <div class="list-header"><span>Name</span><span>Damage</span><span>Mode</span><span>Conceal</span><span>Weight (kg)</span><span>Ammo</span><span></span></div>
+        <div class="list-header"><span>Name</span><span class="col-xs" title="Damage">Dam.</span><span class="col-sm">Mode</span><span class="col-xs" title="Concealability">Con.</span><span class="col-xs" title="Weight (kg)">KG</span><span class="col-sm">Ammo</span><span>Loaded Ammo</span><span></span></div>
         ${fRows}
         ${uncatFirearmsHtml}
         <button type="button" class="btn-add" data-action="itemCreate" data-type="firearm">+ Add Firearm</button>
@@ -943,7 +981,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       <div class="weapon-section" data-section="melee-armed">
         <h3 class="section-hdr wep-section-hdr" draggable="true">${_dragHdr('Melee')} <span style="font-size:11px;font-weight:normal;color:var(--sr-muted)">(Edged / Clubs / Polearms / Whips)</span></h3>
         <div class="skill-note"><i class="fas fa-fist-raised"></i> Uses Armed Combat skills (Strength)</div>
-        <div class="list-header"><span>Name</span><span>Damage</span><span>Reach</span><span>Conceal</span><span>Weight (kg)</span><span></span></div>
+        <div class="list-header"><span>Name</span><span class="col-xs" title="Damage">Dam.</span><span>Reach</span><span class="col-xs" title="Concealability">Con.</span><span class="col-xs" title="Weight (kg)">KG</span><span></span></div>
         ${armedRows}
         ${uncatMeleeHtml}
         <button type="button" class="btn-add" data-action="itemCreate" data-type="melee">+ Add Armed Melee</button>
@@ -951,14 +989,14 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     'thrown': `
       <div class="weapon-section" data-section="thrown">
         <h3 class="section-hdr wep-section-hdr" draggable="true">${_dragHdr('Thrown Weapons')}</h3>
-        <div class="list-header"><span>Name</span><span>Damage</span><span>Str Min</span><span>Conceal</span><span>Qty</span><span></span></div>
+        <div class="list-header"><span>Name</span><span class="col-xs" title="Damage">Dam.</span><span>Str Min</span><span class="col-xs" title="Concealability">Con.</span><span>Qty</span><span></span></div>
         ${thrownRows}
         <button type="button" class="btn-add" data-action="itemCreate" data-type="thrown">+ Add Thrown Weapon</button>
       </div>`,
     'projectile': `
       <div class="weapon-section" data-section="projectile">
         <h3 class="section-hdr wep-section-hdr" draggable="true">${_dragHdr('Projectiles')} <span style="font-size:11px;font-weight:normal;color:var(--sr-muted)">(Bows &amp; Crossbows)</span></h3>
-        <div class="list-header"><span>Name</span><span>Damage</span><span>Str Min</span><span>Conceal</span><span>Weight (kg)</span><span></span></div>
+        <div class="list-header"><span>Name</span><span class="col-xs" title="Damage">Dam.</span><span>Str Min</span><span class="col-xs" title="Concealability">Con.</span><span class="col-xs" title="Weight (kg)">KG</span><span></span></div>
         ${bowRows}
         ${uncatProj.length ? `
           <h3 class="section-hdr" style="margin-top:0.5rem;color:var(--sr-amber)">Uncategorised Projectiles</h3>
@@ -970,7 +1008,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       <div class="weapon-section" data-section="cyber-unarmed">
         <h3 class="section-hdr wep-section-hdr" draggable="true">${_dragHdr('Cyber &amp; Unarmed')}</h3>
         <div class="skill-note"><i class="fas fa-hand-rock"></i> Uses Unarmed Combat skill (Strength)</div>
-        <div class="list-header"><span>Name</span><span>Damage</span><span>Reach</span><span>Conceal</span><span>Weight (kg)</span><span></span></div>
+        <div class="list-header"><span>Name</span><span class="col-xs" title="Damage">Dam.</span><span>Reach</span><span class="col-xs" title="Concealability">Con.</span><span class="col-xs" title="Weight (kg)">KG</span><span></span></div>
         ${unarmedRows}
         <button type="button" class="btn-add" data-action="itemCreate" data-type="melee">+ Add Unarmed/Cyber</button>
       </div>`,
@@ -1032,8 +1070,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <div class="item-row ${isEquipped ? 'equipped' : ''}" data-item-id="${a.id}">
           <span class="item-name">${a.name}</span>
           <span class="item-cell col-narrow">${a.system.ballistic ?? 0}B / ${a.system.impact ?? 0}I</span>
-          <span class="item-cell">${a.system.concealability ?? '—'}</span>
-          <span class="item-cell">${a.system.weight ?? 0}</span>
+          <span class="item-cell col-xs">${a.system.concealability ?? '—'}</span>
+          <span class="item-cell col-xs">${a.system.weight ?? 0}</span>
           <div class="item-controls">
             <i class="fas fa-home" data-action="toggleStored" data-item-id="${a.id}"
                style="color:var(--sr-dim)" title="Put in storage"></i>
@@ -1050,7 +1088,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     return `<div class="tab ${this._activeTab === 'armor' ? 'active' : ''}" data-tab="armor" style="overflow-y:auto">
       ${activeArmorDisplay}
-      <div class="list-header"><span>Name</span><span class="col-narrow">B / I</span><span>Conceal</span><span>Weight (kg)</span><span></span></div>
+      <div class="list-header"><span>Name</span><span class="col-narrow">B / I</span><span class="col-xs" title="Concealability">Con.</span><span class="col-xs" title="Weight (kg)">KG</span><span></span></div>
       ${aRows}
       <button type="button" class="btn-add" data-action="itemCreate" data-type="armor">+ Add Armor</button>
     </div>`;
@@ -1072,9 +1110,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const _row = w => `
       <div class="item-row" data-item-id="${w.id}">
         <span class="item-name">${w.name}</span>
-        <span class="item-cell">${w.system.damage || '—'}</span>
+        <span class="item-cell col-xs">${w.system.damage || '—'}</span>
         <span class="item-cell">${w.system.strMin || '—'}</span>
-        <span class="item-cell">${w.system.concealability ?? '—'}</span>
+        <span class="item-cell col-xs">${w.system.concealability ?? '—'}</span>
         ${this._itemControls(w.id, true)}
       </div>`;
 
@@ -1084,18 +1122,18 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     return `<div class="tab ${this._activeTab === 'projectiles' ? 'active' : ''}" data-tab="projectiles">
       <h3 class="section-hdr">Bows & Crossbows (Projectile Weapons)</h3>
-      <div class="list-header"><span>Name</span><span>Damage</span><span>Str Min</span><span>Conceal</span><span></span></div>
+      <div class="list-header"><span>Name</span><span class="col-xs" title="Damage">Dam.</span><span>Str Min</span><span class="col-xs" title="Concealability">Con.</span><span></span></div>
       ${bowRows}
       <button type="button" class="btn-add" data-action="itemCreate" data-type="projectile">+ Add Bow / Crossbow</button>
 
       <h3 class="section-hdr" style="margin-top:1rem">Thrown Weapons (Throwing Weapons)</h3>
-      <div class="list-header"><span>Name</span><span>Damage</span><span>Str Min</span><span>Conceal</span><span></span></div>
+      <div class="list-header"><span>Name</span><span class="col-xs" title="Damage">Dam.</span><span>Str Min</span><span class="col-xs" title="Concealability">Con.</span><span></span></div>
       ${thrownRows}
       <button type="button" class="btn-add" data-action="itemCreate" data-type="projectile">+ Add Thrown Weapon</button>
 
       ${uncategorised.length ? `
         <h3 class="section-hdr" style="margin-top:1rem;color:var(--sr-amber)">Uncategorised (set category in item sheet)</h3>
-        <div class="list-header"><span>Name</span><span>Damage</span><span>Str Min</span><span>Conceal</span><span></span></div>
+        <div class="list-header"><span>Name</span><span class="col-xs" title="Damage">Dam.</span><span>Str Min</span><span class="col-xs" title="Concealability">Con.</span><span></span></div>
         ${uncategorisedRows}
       ` : ''}
     </div>`;
@@ -1112,28 +1150,23 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     return `<span style="color:${color}">${rounds}</span>`;
   }
 
-  /**
-   * Ammo cell for a firearm row in the weapons tab: capacity string, the loaded
-   * ammo type + magazine count (when tracking), and a Reload button.
-   */
+  /** "Ammo" column for a firearm row — the capacity string (e.g. "60(c)"). */
   _firearmAmmoCell(w) {
-    const cap     = w.system.ammunition || '—';
-    const trackOn = game.settings.get('The2ndChumming3e', 'trackAmmo');
-    const type    = w.system.loadedAmmoType ?? 'regular';
-    const label   = SR3E.ammoTypes[type]?.label ?? 'Regular';
-    const magSize = game.sr3e.SR3EItem._parseMagazineSize(w.system.ammunition ?? '');
-    const loaded  = w.system.loadedRounds ?? 0;
+    return w.system.ammunition || '—';
+  }
 
-    let badge = '';
-    if (type !== 'regular' || trackOn) {
-      const countTxt = trackOn && magSize > 0 ? ` ${loaded}/${magSize}` : '';
-      const color    = (trackOn && magSize > 0 && loaded === 0) ? 'var(--sr-red)'
-                     : (trackOn && magSize > 0 && loaded <= magSize / 4) ? 'var(--sr-amber)'
-                     : 'var(--sr-muted)';
-      badge = `<div style="font-size:10px;color:${color}">${label}${countTxt}</div>`;
-    }
-    const reloadBtn = `<button type="button" class="btn-sm" data-action="reloadWeapon" data-item-id="${w.id}" title="Load ammo from stock" style="margin-left:4px;padding:0 5px">↻</button>`;
-    return `<span>${cap}</span>${reloadBtn}${badge}`;
+  /** "Loaded Ammo" column for a firearm row — reload icon + loaded type/count. */
+  _firearmLoadedCell(w) {
+    const trackOn  = game.settings.get('The2ndChumming3e', 'trackAmmo');
+    const type     = w.system.loadedAmmoType ?? 'regular';
+    const label    = SR3E.ammoTypes[type]?.label ?? 'Regular';
+    const magSize  = game.sr3e.SR3EItem._parseMagazineSize(w.system.ammunition ?? '');
+    const loaded   = w.system.loadedRounds ?? 0;
+    const countTxt = trackOn && magSize > 0 ? ` ${loaded}/${magSize}` : '';
+    const color    = (trackOn && magSize > 0 && loaded === 0) ? 'var(--sr-red)'
+                   : (trackOn && magSize > 0 && loaded <= magSize / 4) ? 'var(--sr-amber)'
+                   : 'var(--sr-muted)';
+    return `<span style="color:${color}">${label}${countTxt}</span>`;
   }
 
   _tabAmmo(actor) {
@@ -1570,7 +1603,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <span class="item-name">${g.name}</span>
         <span class="item-cell">×${g.system.quantity ?? 1}</span>
         <span class="item-cell">${g.system.cost ?? 0}¥</span>
-        <span class="item-cell">${g.system.weight ?? 0}</span>
+        <span class="item-cell col-xs">${g.system.weight ?? 0}</span>
         ${this._itemControls(g.id, false, 'rollWeapon', false)}
       </div>`).join('') : '<p class="empty-list">No gear.</p>';
 
@@ -1589,7 +1622,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     return `<div class="tab ${this._activeTab === 'gear' ? 'active' : ''}" data-tab="gear" style="overflow-y:auto">
       <h3 class="section-hdr">Gear</h3>
-      <div class="list-header"><span>Name</span><span>Qty</span><span>Cost</span><span>Weight (kg)</span><span></span></div>
+      <div class="list-header"><span>Name</span><span>Qty</span><span>Cost</span><span class="col-xs" title="Weight (kg)">KG</span><span></span></div>
       ${gRows}
       <button type="button" class="btn-add" data-action="itemCreate" data-type="gear">+ Add Gear</button>
       <h3 class="section-hdr" style="margin-top:1rem">Ammunition</h3>
@@ -1920,7 +1953,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ${vehicles.length === 0
         ? '<p class="empty-list">No assigned vehicles. Set pilot on the vehicle sheet.</p>'
         : `<div class="sr-veh-header">
-            <span>Vehicle</span><span>Stats</span><span>Mode</span>
+            <span>Vehicle</span><span>Stats</span><span class="col-sm">Mode</span>
            </div>${rows}`}
       <div style="display:flex;gap:8px;margin-top:8px">
         <button type="button" class="btn-add" data-action="createLinkVehicle">+ Create &amp; Assign</button>
@@ -1949,7 +1982,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       <div class="item-row" data-item-id="${i.id}">
         <span class="item-name">${i.name}</span>
         <span class="item-cell" style="color:var(--sr-muted);font-size:11px">${i.type}</span>
-        <span class="item-cell">${i.system.damage || '—'}</span>
+        <span class="item-cell col-xs">${i.system.damage || '—'}</span>
         ${_storeControls(i.id)}
       </div>`).join('');
 
@@ -1980,7 +2013,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const sections = [
       weapons.length ? `
         <h3 class="section-hdr">Weapons</h3>
-        <div class="list-header"><span>Name</span><span>Type</span><span>Damage</span><span></span></div>
+        <div class="list-header"><span>Name</span><span>Type</span><span class="col-xs" title="Damage">Dam.</span><span></span></div>
         ${wRows}` : '',
       armors.length ? `
         <h3 class="section-hdr" style="margin-top:0.8rem">Armor</h3>
@@ -2031,14 +2064,28 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       </div>
       
       <h3 class="section-hdr" style="margin-top:1rem">Notes</h3>
-      <label class="bio-label">Background</label>
-      <textarea name="system.biography" class="bio-text">${sys.biography ?? ''}</textarea>
-      <label class="bio-label">Notes</label>
-      <textarea name="system.notes" class="bio-text">${sys.notes ?? ''}</textarea>
+      ${this._bioField('Background', 'system.biography', sys.biography, 'No background set.')}
+      ${this._bioField('Notes', 'system.notes', sys.notes, 'No notes.')}
     </div>`;
   }
 
-  _itemControls(itemId, hasRoll, rollAction = 'rollWeapon', stored = null, rollDisabled = false) {
+  /**
+   * Rich text field: read-only enriched display (@UUID links, inline rolls) with an Edit
+   * toggle revealing the textarea. Enrichment is filled in `_onRender`.
+   */
+  _bioField(label, name, value, emptyText) {
+    return `
+      <label class="bio-label">${label}</label>
+      <div class="bio-rich" data-empty="${emptyText}">
+        <div class="bio-display"></div>
+        <textarea name="${name}" class="bio-text" style="display:none">${value ?? ''}</textarea>
+        <button type="button" class="btn-sm bio-edit-toggle" style="margin-top:4px">✎ Edit</button>
+      </div>`;
+  }
+
+  _itemControls(itemId, hasRoll, rollAction = 'rollWeapon', stored = null, rollDisabled = false, reloadId = null) {
+    const reloadIcon = reloadId ? `<i class="fas fa-arrows-rotate rollable" data-action="reloadWeapon" data-item-id="${reloadId}"
+      title="Reload — load ammo from stock" style="cursor:pointer"></i>` : '';
     const storeIcon = stored !== null ? `<i class="fas fa-home" data-action="toggleStored" data-item-id="${itemId}"
       style="color:${stored ? 'var(--sr-gold)' : 'var(--sr-dim)'}"
       title="${stored ? 'Remove from storage' : 'Put in storage'}"></i>` : '';
@@ -2046,10 +2093,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       : rollDisabled
         ? `<i class="fas fa-dice-d6" style="opacity:0.25;cursor:not-allowed;text-decoration:line-through" title="Out of ammo — reload / restock"></i>`
         : `<i class="fas fa-dice-d6 rollable" data-action="${rollAction}" data-item-id="${itemId}" title="Shift+Click to use Real Dice"></i>`;
+    // Order: reload, dice, edit, house (store), trash
     return `<div class="item-controls">
-      ${storeIcon}
+      ${reloadIcon}
       ${rollIcon}
       <i class="fas fa-edit" data-action="itemEdit" data-item-id="${itemId}" title="Edit"></i>
+      ${storeIcon}
       <i class="fas fa-trash" data-action="itemDelete" data-item-id="${itemId}" title="Delete"></i>
     </div>`;
   }

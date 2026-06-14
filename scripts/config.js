@@ -599,6 +599,66 @@ export const SR3E = {
   bowCategories:    ['Bow', 'LCB', 'MCB', 'HCB', 'SL'],
   thrownCategories: ['TK', 'SH', 'Imp', 'Ctrp', 'GR', 'BOL', 'THR', 'other'],
 
+  // Firearm range bands by weapon category, in METRES: [shortMax, mediumMax, longMax, extremeMax].
+  // A distance ≤ shortMax is Short, ≤ mediumMax is Medium, etc.; beyond extremeMax is out of range.
+  // Values are from the SR3 core Ranges table. A weapon can override its bands with a
+  // "rangeOverride" string like "5/15/30/50". Categories not in the book (medium/very-heavy/
+  // machine pistol, carbines, laser, minigun) are approximated from the nearest listed weapon.
+  weaponRanges: {
+    HOPist: [5, 15, 30, 50],       // Hold-out Pistol
+    LPist:  [5, 15, 30, 50],       // Light Pistol
+    MPist:  [5, 15, 30, 50],       // Medium Pistol (≈ light, not in book)
+    MaPist: [5, 15, 30, 50],       // Machine Pistol (≈ light, not in book)
+    HPist:  [5, 20, 40, 60],       // Heavy Pistol
+    VHP:    [5, 20, 40, 60],       // Very Heavy Pistol (≈ heavy, not in book)
+    Tasr:   [5, 10, 12, 15],       // Taser
+    SMG:    [10, 40, 80, 150],     // SMG
+    ShtG:   [10, 20, 50, 100],     // Shotgun
+    LCarb:  [50, 150, 350, 550],   // Light Carbine (≈ assault rifle, not in book)
+    Carb:   [50, 150, 350, 550],   // Carbine (≈ assault rifle, not in book)
+    AsRf:   [50, 150, 350, 550],   // Assault Rifle
+    SptR:   [100, 250, 500, 750],  // Sporting Rifle
+    Snip:   [150, 300, 700, 1000], // Sniper Rifle
+    LMG:    [75, 200, 400, 800],   // Light Machine Gun
+    MMG:    [80, 250, 750, 1200],  // Medium Machine Gun
+    HMG:    [80, 250, 800, 1500],  // Heavy Machine Gun
+    MinG:   [100, 300, 900, 2400], // Minigun (≈ assault cannon, not in book)
+    GrLn:   [50, 100, 150, 300],   // Grenade Launcher
+    MisLn:  [150, 450, 1200, 3000],// Missile Launcher
+    Las:    [50, 150, 350, 550],   // Laser (≈ assault rifle, not in book)
+    other:  [10, 50, 150, 300],
+  },
+  // TN modifier per band relative to base TN 4 — book TNs are Short 4 / Medium 5 / Long 6 / Extreme 9.
+  rangeTN: [0, 1, 2, 5], // Short, Medium, Long, Extreme
+
+  // Grenade types (Grenade Range/Scatter tables). scatterDice = Nd6 scatter; scatterReduction =
+  // metres removed per net hit; range bands [S,M,L,E] are STR multipliers, or fixed metres for the
+  // launcher. Damage code/level come from the weapon item; falloff is −1 power per metre.
+  grenadeTypes: {
+    standard:    { label: 'Standard',          scatterDice: 1, scatterReduction: 2, rangeMult:  [3, 5, 10, 20] },
+    aerodynamic: { label: 'Aerodynamic',       scatterDice: 2, scatterReduction: 4, rangeMult:  [3, 5, 20, 30] },
+    launcher:    { label: 'Grenade Launcher',  scatterDice: 3, scatterReduction: 4, rangeFixed: [50, 100, 150, 300] },
+  },
+
+  // Strength-scaled ranges for bows, crossbows and thrown weapons (Impact Projectiles table).
+  // Each band max = Strength × multiplier: [shortMult, mediumMult, longMult, extremeMult].
+  // Same range-TN bands apply (Short +0 / Medium +1 / Long +2 / Extreme +5).
+  // Bow/crossbows and thrown knife/shuriken are from the book; others are approximations.
+  weaponRangeMultipliers: {
+    Bow:  [1, 10, 30, 60],   // Bow
+    LCB:  [2, 8, 20, 40],    // Light Crossbow
+    MCB:  [3, 12, 30, 50],   // Medium Crossbow
+    HCB:  [5, 15, 40, 60],   // Heavy Crossbow
+    TK:   [1, 2, 3, 5],      // Thrown Knife
+    SH:   [1, 2, 5, 7],      // Shuriken
+    SL:   [1, 2, 3, 5],      // Sling (not in book — ≈ thrown knife)
+    GR:   [1, 2, 3, 5],      // Thrown grenade (STR-based; AoE grenades use the AoE flow)
+    BOL:  [1, 2, 3, 5],      // Bolas (not in book — ≈ thrown knife)
+    Ctrp: [1, 1, 1, 1],      // Caltrop (dropped, not really thrown)
+    Imp:  [1, 2, 3, 5],      // Improvised thrown (not in book)
+    other:[1, 2, 3, 5],
+  },
+
   // Ammo loading mechanisms — key matches the parenthetical code in a weapon's
   // ammunition-capacity string (e.g. "15(c)" → clip). Used to filter which ammo
   // a given gun can chamber. Order longest-code-first matters for parsing ("cy"/"sb"

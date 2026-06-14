@@ -106,6 +106,7 @@ export class FirearmData extends foundry.abstract.TypeDataModel {
       mode:            new StringField({ initial: '' }),
       damage:          new StringField({ initial: '' }),
       recoilMod:       new NumberField({ integer: true, initial: 0, min: 0 }),
+      rangeOverride:   new StringField({ initial: '' }),  // "S/M/L/E" metres, e.g. "5/15/30/50"
       loadedAmmoType:  new StringField({ initial: 'regular' }),
       loadedRounds:    new NumberField({ integer: true, initial: 0, min: 0 }),
       weight:          new NumberField({ initial: 0, min: 0 }),

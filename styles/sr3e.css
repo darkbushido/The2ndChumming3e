@@ -896,12 +896,15 @@ background-color: var(--sr-surface) !important;
   border-bottom: 1px solid var(--sr-border);
   margin-bottom: 4px;
 }
-.list-header span             { flex: 1; }
+.list-header span             { flex: 1; min-width: 0; white-space: normal; overflow-wrap: anywhere; line-height: 1.05; }
 .list-header span:first-child { flex: 2; }
-.list-header span:last-child  { flex: 0 0 80px; text-align: right; }
+.list-header span:last-child  { flex: 0 0 108px; text-align: right; }
 
 /* Narrow fixed-width column (e.g. armor B/I) */
 .col-narrow { flex: 0 0 80px !important; }
+/* Tiny columns (damage code, conceal, weight) and small ones (mode, ammo) */
+.col-xs { flex: 0 0 46px !important; }
+.col-sm { flex: 0 0 66px !important; }
 
 .item-row {
   display: flex;
@@ -916,7 +919,7 @@ background-color: var(--sr-surface) !important;
   background: var(--sr-card);
   border-color: var(--sr-border);
 }
-.item-row > span { flex: 1; }
+.item-row > span { flex: 1; min-width: 0; }
 
 .item-name {
   flex: 2 !important;
@@ -924,9 +927,9 @@ background-color: var(--sr-surface) !important;
   color: var(--sr-text);
 }
 
-.item-cell { color: var(--sr-muted); font-size: 12px; }
+.item-cell { color: var(--sr-muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.item-controls { flex: 0 0 80px; min-width: 80px; justify-content: flex-end; }
+.item-controls { flex: 0 0 108px; min-width: 108px; justify-content: flex-end; }
 
 .skill-name {
   cursor: pointer;
@@ -2107,12 +2110,15 @@ background-color: var(--sr-surface) !important;
   border-bottom: 1px solid var(--sr-border);
   margin-bottom: 4px;
 }
-.list-header span             { flex: 1; }
+.list-header span             { flex: 1; min-width: 0; white-space: normal; overflow-wrap: anywhere; line-height: 1.05; }
 .list-header span:first-child { flex: 2; }
-.list-header span:last-child  { flex: 0 0 80px; text-align: right; }
+.list-header span:last-child  { flex: 0 0 108px; text-align: right; }
 
 /* Narrow fixed-width column (e.g. armor B/I) */
 .col-narrow { flex: 0 0 80px !important; }
+/* Tiny columns (damage code, conceal, weight) and small ones (mode, ammo) */
+.col-xs { flex: 0 0 46px !important; }
+.col-sm { flex: 0 0 66px !important; }
 
 .item-row {
   display: flex;
@@ -2127,7 +2133,7 @@ background-color: var(--sr-surface) !important;
   background: var(--sr-card);
   border-color: var(--sr-border);
 }
-.item-row > span { flex: 1; }
+.item-row > span { flex: 1; min-width: 0; }
 
 .item-name {
   flex: 2 !important;
@@ -2135,9 +2141,9 @@ background-color: var(--sr-surface) !important;
   color: var(--sr-text);
 }
 
-.item-cell { color: var(--sr-muted); font-size: 12px; }
+.item-cell { color: var(--sr-muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.item-controls { flex: 0 0 80px; min-width: 80px; justify-content: flex-end; }
+.item-controls { flex: 0 0 108px; min-width: 108px; justify-content: flex-end; }
 
 .skill-name {
   cursor: pointer;

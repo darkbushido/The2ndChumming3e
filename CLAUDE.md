@@ -325,6 +325,22 @@ Both modes end combat when the round is complete and prompt GM to re-roll initia
 **Shift-click** on any initiative roll button (actor sheet bolt or combat tracker d20) opens a
 physical dice dialog — shows the formula, lets the user type in the result directly.
 
+**Pre-start lock**: before the encounter begins (`!combat.started`), the per-combatant initiative
+roll icons in the tracker are dimmed + `pointer-events:none` (and the shift handler bails) so
+initiative is rolled only through the "Begin Encounter" dialog. Re-enabled once combat starts.
+
+**Action Tracker** (GM-only, on the active combatant's card, `renderCombatTracker`): a "Complex"
+(full-width) button advances the turn (`combat.nextTurn()`); the first "Simple" button toggles
+Complex off (one simple action used, can toggle back); the second "Simple" advances the turn.
+Per-turn state is in-memory (`_actionTracker` map), cleared on any `updateCombat` turn/round change.
+
+### GM tools — Rollable Tables sidebar
+Chase Scene, Driving Test, Session Rewards, Chunky Salsa, Barrier Damage, Falling Damage and
+Escape Artist live on the **Rollable Tables** directory tab (`renderRollTableDirectory` hook), not
+the combat tracker. Chase Scene and Driving Test are available to all; the rest are GM-only.
+Driving Test (`SR3EVehicleSheet.promptVehicleDrivingTest` → `runDrivingTest`) prompts for a vehicle
++ driver since there's no sheet context.
+
 **Initiative formulas by mode:**
 - Default (no Matrix mode): `Reaction + woundMod` base + `initiativeDice` d6 (wired reflexes apply)
 - TRM / AR / VR-Cold: `Reaction + woundMod` base + `1d6` (wired reflexes apply to Reaction; dice forced to 1; Response does NOT apply)
@@ -352,7 +368,7 @@ Only one state active at a time; clicking the active button deactivates it.
 2. Target selection dialog (radio buttons, single actor)
 3. (Firearms) Loaded ammo type is read from the weapon — no per-shot ammo picker. Power/level/stun mods (Explosive/EX/Gel) applied now; see **Firearms** section
 4. (Firearms) Fire-mode dialog: SS/SA/BF/FA, recoil preview, editable compensation (see **Firearms**)
-5. Roll-options dialog: TN, damage code, TN-modifier breakdown (recoil, wound, multi-target, tracer note)
+5. Roll-options dialog: TN, damage code, editable **range** dropdown (auto-measured from tokens; see Range section), TN-modifier breakdown (recoil, wound, multi-target, tracer note)
 6. Defender declares: no dodge OR dodge with X combat pool dice (committed immediately, pool spent)
 7. Attacker allocates combat pool to attack
 8. Attack rolls (interactive Rule of Six)
@@ -388,6 +404,31 @@ Only one state active at a time; clicking the active button deactivates it.
 **Empty = inoperable** (when `trackAmmo` is on): `rollWeapon` bails at the top if a firearm has `loadedRounds ≤ 0` or a consumable has `quantity ≤ 0`. The roll dice icon is rendered faded + struck-through (`_itemControls` `rollDisabled`, gated by `SR3EActorSheet._weaponOutOfAmmo` for firearms / inline for thrown). The Reload button stays active so you can refill.
 
 **Vehicle-mounted weapons** keep their own AV-munition checkbox in the `🚗` firing dialog — they do **not** use the clip/reload system (built for vehicle-vs-vehicle). Character firearm dialogs no longer have a manual AV checkbox (driven by Anti-Vehicle ammo type).
+
+### Range (firearms, bows/crossbows, thrown)
+Auto-measured from tokens when available, otherwise manual. Applies to `firearm`/`projectile`/`thrown` in the single-target `rollWeapon` path (AoE/grenades use the scatter flow instead).
+- **Distance**: `SR3EItem._measureDistance(aToken, tToken)` via `canvas.grid.measurePath` (scene units assumed **metres**). Attacker token = `actor.getActiveTokens()[0]`. Target token = the single canvas target (`game.user.targets`) if present, else the chosen actor's first token. Target acquisition: `SR3EItem._acquireCanvasTarget()` (one canvas target → skips the actor dialog), else `_promptTarget`.
+- **Bands**: `SR3EItem._getRangeBands(actor)` → weapon `rangeOverride` ("5/15/30/50") → fixed metre table `SR3E.weaponRanges[category]` (firearms) → Strength-scaled `SR3E.weaponRangeMultipliers[category]` × effective STR (bows/thrown).
+- **Classify**: `SR3EItem._rangeBandForDistance(bands, metres)` → `{idx,label,tnMod,beyond}`. TN modifier from `SR3E.rangeTN` = `[0,1,2,5]` (Short 4 / Medium 5 / Long 6 / Extreme 9). Beyond Extreme warns but still allows.
+- **Override at fire time**: range is NOT pre-baked into `extraTNMod`; it's passed to `_promptWeaponRollOptions` as `rangeInfo` and rendered as an editable **Range dropdown** (pre-set to the measured band, shows measured metres). Changing it recomputes the TN live via a `renderDialogV2` hook guarded by `#sr-range`. The TN field stays the authoritative value on confirm.
+
+### Attacking from the canvas
+Two entry points besides the sheet (both fire ready weapons via `_sr3eReadyWeapons`: firearms with ammo loaded when tracking, equipped melee, thrown w/ quantity, bows):
+- **Token HUD** (`renderTokenHUD` hook, sr3e.js): adds a 🎯 crosshair button on owned character/npc tokens → `_sr3eQuickAttack(actor)` opens a weapon picker (or fires directly if only one ready) → `_sr3eFireWeapon` dispatches `rollMelee`/`rollWeapon`. Works for all players (system code, not a macro).
+- **Hotbar drag** (`hotbarDrop` hook + draggable `.weapon-section .item-row` emitting `{type:'Item', uuid}`): creates a "Fire: \<weapon\>" **script macro**. ⚠ Script macros only run for users with script-macro permission (off for the base Player role) — the Token HUD path has no such restriction.
+
+### Foundry integrations (tokens / statuses / enrichers)
+- **Token wound bars**: `preCreateActor` (sr3e.js) defaults character/npc prototype tokens to `bar1=wounds.physical`, `bar2=wounds.stun` (fill as damage rises), `OWNER_HOVER`. Only affects newly-created actors. Wounds are `{value,max}` so Foundry treats them as trackable.
+- **Status effects**: custom SR conditions appended to `CONFIG.statusEffects` (init): `sr3e-sustaining/-fulldefense/-dumpshock/-astral/-dual/-vr` + core (prone/unconscious/dead…). The `updateActor` hook (gated to `game.users.activeGM.isSelf`) auto-toggles `sr3e-astral`/`-dual` from `astralMode`, `sr3e-vr` from `matrixUserMode` (VR-Cold/Hot), `sr3e-fulldefense` from `fullDefense`, via `actor.toggleStatusEffect`.
+- **Auto-defeated**: same `updateActor` hook — when a wound track is full → combatant `defeated=true` + `unconscious` overlay; physical full AND overflow ≥ Body → `dead` overlay. Reversible on healing.
+- **Text enrichers**: actor Biography/Notes render as read-only enriched HTML (`_bioField` + `_enrichBioFields` in `_onRender`, via `TextEditor.enrichHTML`) with an ✎ Edit toggle revealing the textarea; submit-on-change re-renders back to enriched. Chat-card content is auto-enriched by core. Item/actor edit fields stay plain textareas by design.
+- **AoE / grenade flow (RAW scatter-first)**: requires a scene. `rollWeapon` AoE path:
+  1. **Nominate** the blast point — `_placeBlastTemplate` (activates the Templates layer so it's draggable; deleted after Confirm). Records `aoeCenter` + the thrower token centre.
+  2. **Roll options** — `_promptWeaponRollOptionsAoE(rawDamage, actor, {throwDistance})`: grenade type (Standard/Aero/Launcher), damage code, **auto range-TN** by type (`SR3E.grenadeTypes[type].rangeMult × STR` or `rangeFixed`, recomputed on type change), and a Confined-Space tickbox. No targets chosen here.
+  3. **Throw roll** (`rollPool`) carries `aoeCenter / aoeRadius / aoeThrowerCenter / grenadeType / aoeChunky` in the roll state.
+  4. **Resolution** (`SR3EActor._postWaveCard`, the `state.isAoE && state.aoeCenter` branch — runs **before** the `successes===0` check, so a grenade always detonates): rolls scatter (`scatterDice` d6) − `successes × scatterReduction`; **relocates the epicentre** along the throw axis (dir 1 = overthrow, 4 = short); creates a result template at the landing spot; **re-detects every token in range — including the thrower**; per-target power = base − distance (or the **Chunky Salsa GUI** `game.sr3e.openChunkySalsa({...returnOnly})` when confined). Posts a soak card per caught token. Damage is base power − distance, never success-staged (successes only tighten scatter).
+- `_openChunkySalsaCalculator(opts)` posts soak cards itself when called with no `returnOnly` (the Rollable Tables button); returns per-target codes when `returnOnly:true`.
+- *(Dead/unused after this rework: `_promptTargetsAoE`, `_tokensInBlast`, and the old `aoeTargetIds`-gated branch in `_postWaveCard` — left in place but never reached. Spell AoE still uses its own manual target dialog.)*
 
 ### Melee combat flow
 1. Attacker clicks melee weapon on sheet
@@ -473,9 +514,9 @@ system.roundsFiredThisPhase        ← persisted, recoil accumulator; reset each
 ```
 
 ### Item types and key fields
-- `firearm`: `damage` (string e.g. "9M"), `category` (weapon code), `mode` (e.g. "SA/BF/FA"), `ammunition` (capacity string e.g. "15(c)"), `recoilMod` (weapon-mounted comp), `loadedAmmoType` / `loadedRounds` (current magazine)
+- `firearm`: `damage` (string e.g. "9M"), `category` (weapon code), `mode` (e.g. "SA/BF/FA"), `ammunition` (capacity string e.g. "15(c)"), `recoilMod` (weapon-mounted comp), `rangeOverride` ("S/M/L/E" metres, e.g. "5/15/30/50"), `loadedAmmoType` / `loadedRounds` (current magazine)
 - `melee`: `damage` (string e.g. "9M"), `reach` (number), `category` (weapon code)
-- `projectile` / `thrown`: `damage`, `category`, `quantity` (thrown weapons are consumed on use; bows are not — see Firearms section)
+- `projectile` / `thrown`: `damage`, `category`, `quantity` (thrown weapons are consumed on use; bows are not — see Firearms section). `projectile`/`thrown` use Strength-scaled range bands.
 - `ammunition`: `ammoType` (key into `SR3E.ammoTypes`), `loadMechanism` (c/m/cy/b/d/sb/internal), `rounds` (stockpile total) + descriptive fields. NO power/armour data fields — rules are in config
 - `armor`: `ballistic` (number), `impact` (number)
 - `skill`: `rating`, `linkedAttribute`, `specialisation`
@@ -523,6 +564,8 @@ CYB/UNA → Unarmed Combat
 - `_parseLoadMechanism(capacityStr)` — static, "15(c)" → 'c'
 - `_parseMagazineSize(capacityStr)` — static, "15(c)" → 15
 - `_promptReloadChoice(stock, weapon, magSize, trackOn)` — static, reload selection dialog
+- `_getRangeBands(actor)` — range bands: override → fixed (firearms) → STR-scaled (bows/thrown)
+- `_rangeBandForDistance(bands, metres)` / `_measureDistance(aToken, tToken)` / `_acquireCanvasTarget()` — static, range classification + token distance + canvas target
 - `parseDamageCode(code)` — static, returns `{ power, level, isStun }`
 - `stageDamage(base, netSuccesses)` — static, returns staged `{ power, level, isStun }`
 - `_buildMeleePoolInfo(actor, weapon)` — static, returns rich pool info for boxing card

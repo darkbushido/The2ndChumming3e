@@ -74,6 +74,7 @@ Hooks.once('init', () => {
   }
 
   game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, buildSkillsCompendium, isLiveActor };
+  game.sr3e.openChunkySalsa = _openChunkySalsaCalculator; // (function declaration, hoisted)
 
   // Data models (replace template.json defaults)
   CONFIG.Actor.dataModels.character = CharacterData;
@@ -103,6 +104,17 @@ Hooks.once('init', () => {
   CONFIG.Item.dataModels.program      = ProgramData;
   CONFIG.Item.dataModels.cyberdeck    = CyberdeckData;
   CONFIG.Item.dataModels.contact      = ContactData;
+
+  // SR3 token status conditions. The auto-synced ones (astral/dual/VR/full-defense) are
+  // driven from system state by an updateActor hook; the rest are manual GM toggles.
+  CONFIG.statusEffects.push(
+    { id: 'sr3e-sustaining',  name: 'Sustaining a Spell', img: 'icons/svg/daze.svg' },
+    { id: 'sr3e-fulldefense', name: 'Full Defense',       img: 'icons/svg/shield.svg' },
+    { id: 'sr3e-dumpshock',   name: 'Dumpshocked',        img: 'icons/svg/lightning.svg' },
+    { id: 'sr3e-astral',      name: 'Astral Projection',  img: 'icons/svg/aura.svg' },
+    { id: 'sr3e-dual',        name: 'Dual-Natured',       img: 'icons/svg/eye.svg' },
+    { id: 'sr3e-vr',          name: 'Jacked In (VR)',     img: 'icons/svg/net.svg' },
+  );
 
   // Default icons for each item type (must reference paths that exist in Foundry v14)
   CONFIG.Item.typeIcons = {
@@ -287,6 +299,15 @@ Hooks.on('preCreateActor', (document, _data, options, _userId) => {
   if (!_data.prototypeToken?.actorLink) {
     document.updateSource({ prototypeToken: { actorLink: true } });
   }
+
+  // Default token bars to the wound tracks (fill as damage rises). Owners see them on hover.
+  if (['character', 'npc'].includes(document.type) && !_data.prototypeToken?.bar1) {
+    document.updateSource({ prototypeToken: {
+      bar1: { attribute: 'wounds.physical' },
+      bar2: { attribute: 'wounds.stun' },
+      displayBars: CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,
+    } });
+  }
 });
 
 async function _openSessionRewardDialog() {
@@ -371,7 +392,10 @@ async function _openSessionRewardDialog() {
   });
 }
 
-async function _openChunkySalsaCalculator() {
+// opts (optional): { power, level, actorIds, returnOnly }
+//   - power/level seed the blast; actorIds limits/places the participants
+//   - returnOnly: resolve and RETURN [{actorId,name,power,level,waves}] instead of posting to chat
+async function _openChunkySalsaCalculator(opts = {}) {
   // ── Constants ──────────────────────────────────────────────────────────────
   const CW = 420, CH = 420, CX = 210, CY = 210;
   const SCALE = 25;          // pixels per metre
@@ -422,14 +446,15 @@ async function _openChunkySalsaCalculator() {
   }
 
   // ── Mutable state ──────────────────────────────────────────────────────────
-  const eligible = game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a));
+  let eligible = game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a));
+  if (opts.actorIds?.length) eligible = eligible.filter(a => opts.actorIds.includes(a.id));
   const actors   = eligible.map((a, i) => {
     const angle = (2 * Math.PI * i / Math.max(eligible.length, 1)) - Math.PI / 2;
     return { id: a.id, name: a.name, color: ACTOR_COLORS[i % ACTOR_COLORS.length],
              mx: 3 * Math.cos(angle), my: 3 * Math.sin(angle), checked: true };
   });
   const walls = [];
-  let power = 10, level = 'S';
+  let power = opts.power ?? 10, level = opts.level ?? 'S';
   let mode = 'idle'; // idle | draw_wall | drag_actor | drag_wall_end | drag_wall_mid
   let drag = null, wallStart = null, prevPx = 0, prevPy = 0;
 
@@ -696,7 +721,13 @@ async function _openChunkySalsaCalculator() {
   });
 
   Hooks.off('renderDialogV2', salsaHookId);
-  if (!proceed || !finalTargets.length) return;
+  if (!proceed || !finalTargets.length) return opts.returnOnly ? [] : undefined;
+
+  // Return the computed per-target damage codes to the caller (e.g. an AoE attack)
+  // instead of posting soak cards.
+  if (opts.returnOnly) {
+    return finalTargets.map(t => ({ actorId: t.actorId, name: t.name, power: t.power, level: t.level, waves: t.waves }));
+  }
 
   // ── Chat output ────────────────────────────────────────────────────────────
   const targetSections = finalTargets.map(t => {
@@ -1523,6 +1554,7 @@ Hooks.on('renderRollTableDirectory', (_app, html) => {
   };
 
   mk('sr3e-chase-btn',   '🚗 Chase Scene',     () => game.sr3e.SR3EVehicleChase.open(), false);
+  mk('sr3e-driving-btn', '🏎 Driving Test',    () => SR3EVehicleSheet.promptVehicleDrivingTest(), false);
   mk('sr3e-reward-btn',  '🎖 Session Rewards', _openSessionRewardDialog,     true);
   mk('sr3e-salsa-btn',   '💥 Chunky Salsa',    _openChunkySalsaCalculator,   true);
   mk('sr3e-barrier-btn', '🧱 Barrier Damage',  _openBarrierDamageCalculator, true);
@@ -1535,6 +1567,133 @@ Hooks.on('renderRollTableDirectory', (_app, html) => {
   const header = el.querySelector('.directory-header');
   if (header) header.insertAdjacentElement('afterend', tools);
   else el.prepend(tools);
+});
+
+
+// ── Canvas weapon access ──────────────────────────────────────────────────────
+// "Ready" weapons for quick canvas attacks: firearms with ammo loaded (when tracking),
+// the equipped melee weapon, ready thrown weapons, and bows.
+function _sr3eReadyWeapons(actor) {
+  const trackAmmo = game.settings.get('The2ndChumming3e', 'trackAmmo');
+  const thrownCats = game.sr3e.SR3E.thrownCategories ?? [];
+  const out = [];
+  for (const i of actor.items) {
+    if (i.type === 'firearm') {
+      if (!trackAmmo || (i.system.loadedRounds ?? 0) > 0) out.push(i);
+    } else if (i.type === 'melee') {
+      if (actor.system.equippedMelee === i.id) out.push(i);
+    } else if (i.type === 'thrown' || i.type === 'projectile') {
+      const consumable = i.type === 'thrown' || thrownCats.includes(i.system.category ?? '');
+      if (!consumable) out.push(i);                                  // bow / crossbow
+      else if (!trackAmmo || (i.system.quantity ?? 0) > 0) out.push(i);
+    }
+  }
+  return out;
+}
+
+function _sr3eFireWeapon(item) {
+  return item.type === 'melee' ? item.rollMelee() : item.rollWeapon();
+}
+
+// Open the ready-weapon picker for an actor and fire the chosen weapon.
+async function _sr3eQuickAttack(actor) {
+  const weapons = _sr3eReadyWeapons(actor);
+  if (!weapons.length) { ui.notifications.warn(`${actor.name} has no ready weapons (load/equip one).`); return; }
+  if (weapons.length === 1) return _sr3eFireWeapon(weapons[0]);
+
+  const opts = weapons.map(w => `<option value="${w.id}">${w.name} (${w.system.damage || '—'})</option>`).join('');
+  let chosen = null;
+  await foundry.applications.api.DialogV2.wait({
+    window: { title: `${actor.name} — Attack` },
+    content: `<div style="padding:6px 0"><label style="font-size:12px;color:var(--sr-muted)">Weapon
+      <select id="qa-weapon" style="width:100%;margin-top:4px">${opts}</select></label></div>`,
+    buttons: [
+      { label: 'Fire', action: 'fire', default: true, callback: (_e, _b, d) => { chosen = d.element.querySelector('#qa-weapon')?.value; } },
+      { label: 'Cancel', action: 'cancel' },
+    ],
+  });
+  if (!chosen) return;
+  const item = actor.items.get(chosen);
+  if (item) _sr3eFireWeapon(item);
+}
+
+// Token HUD: add an Attack button on owned character/npc tokens.
+Hooks.on('renderTokenHUD', (hud, html) => {
+  const actor = hud.object?.actor;
+  if (!actor || !actor.isOwner) return;
+  if (!['character', 'npc'].includes(actor.type)) return;
+  const el = html instanceof HTMLElement ? html : html?.[0];
+  if (!el || el.querySelector('.sr3e-attack-hud')) return;
+
+  const btn = document.createElement('div');
+  btn.className = 'control-icon sr3e-attack-hud';
+  btn.innerHTML = '<i class="fas fa-crosshairs"></i>';
+  btn.dataset.tooltip = 'Attack with a weapon';
+  btn.addEventListener('click', ev => { ev.preventDefault(); ev.stopPropagation(); _sr3eQuickAttack(actor); });
+
+  const col = el.querySelector('.col.left') ?? el.querySelector('.col.right') ?? el;
+  col.appendChild(btn);
+});
+
+// Hotbar: dropping a weapon item creates a one-click "fire this weapon" macro.
+Hooks.on('hotbarDrop', (_hotbar, data, slot) => {
+  if (data?.type !== 'Item' || !data.uuid) return;
+  (async () => {
+    const item = await fromUuid(data.uuid);
+    if (!item || !['firearm', 'melee', 'projectile', 'thrown'].includes(item.type)) return;
+    const command =
+      `const it = await fromUuid("${data.uuid}");\n` +
+      `if (!it) return ui.notifications.warn("SR3E: weapon not found.");\n` +
+      `if (it.type === "melee") it.rollMelee(); else it.rollWeapon();`;
+    let macro = game.macros.find(m => m.name === `Fire: ${item.name}` && m.command === command);
+    if (!macro) {
+      macro = await Macro.create({
+        name: `Fire: ${item.name}`,
+        type: 'script',
+        img:  item.img || 'icons/svg/target.svg',
+        command,
+        flags: { 'The2ndChumming3e': { weaponMacro: true } },
+      });
+    }
+    await game.user.assignHotbarMacro(macro, slot);
+  })();
+  return false; // we handled the drop
+});
+
+// Auto-sync token status icons from system state, and auto-mark combatants defeated when down.
+// Runs only on the active GM's client to avoid every client racing to apply effects.
+Hooks.on('updateActor', async (actor, changes) => {
+  if (!game.users.activeGM?.isSelf) return;
+  const sys = changes.system;
+  if (!sys) return;
+  const set = (id, active, overlay = false) => actor.toggleStatusEffect(id, { active, overlay });
+
+  if ('astralMode' in sys) {
+    await set('sr3e-astral', sys.astralMode === 'astral');
+    await set('sr3e-dual',   sys.astralMode === 'dual');
+  }
+  if ('matrixUserMode' in sys) {
+    await set('sr3e-vr', sys.matrixUserMode === 'VR-Cold' || sys.matrixUserMode === 'VR-Hot');
+  }
+  if ('fullDefense' in sys) {
+    await set('sr3e-fulldefense', !!sys.fullDefense);
+  }
+
+  // Auto-defeated / down / dead from the wound tracks (reversible on healing).
+  if (sys.wounds && ['character', 'npc'].includes(actor.type)) {
+    const w        = actor.system.wounds ?? {};
+    const body     = actor.system.attributes?.body?.value ?? actor.system.attributes?.body?.base ?? 6;
+    const physFull = (w.physical?.value ?? 0) >= (w.physical?.max ?? 10);
+    const stunFull = (w.stun?.value ?? 0) >= (w.stun?.max ?? 10);
+    const dead     = physFull && (w.overflow?.value ?? 0) >= body;
+    const down     = physFull || stunFull;
+
+    await set('dead', dead, true);                // skull overlay
+    await set('unconscious', down && !dead);      // KO when down but not dead
+    for (const cbt of (game.combat?.combatants ?? []).filter(c => c.actorId === actor.id)) {
+      if (cbt.isDefeated !== down) await cbt.update({ defeated: down });
+    }
+  }
 });
 
 
@@ -1608,6 +1767,19 @@ function _claimBtn(btn, mid, cls, idx) {
 // so the guard above is what prevents double-firing across the two DOM instances.
 Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   const mid = message.id;
+
+  // Clear-blast-marker button — removes the grenade's landing template (idempotent).
+  html.querySelectorAll('.sr3e-clear-blast-btn').forEach(btn => {
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      const scene = game.scenes?.get(btn.dataset.sceneId) ?? canvas?.scene;
+      const tpl   = scene?.templates?.get(btn.dataset.templateId);
+      if (tpl) { try { await tpl.delete(); } catch { /* already gone */ } }
+      btn.disabled    = true;
+      btn.textContent = '🧹 Cleared';
+    });
+  });
 
   // Rule of Six explosion button
   html.querySelectorAll('.sr-explode-btn').forEach((btn, i) => {

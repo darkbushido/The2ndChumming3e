@@ -40,7 +40,9 @@
       "Bash(node --check scripts/sheets/SR3EActorSheet.js)",
       "Bash(node --check scripts/documents/SR3EItem.js)",
       "Bash(node --check scripts/config.js)",
-      "Bash(node --check scripts/sr3e.js)"
+      "Bash(node --check scripts/sr3e.js)",
+      "Bash(node --check scripts/sheets/SR3EVehicleSheet.js)",
+      "Bash(node --check scripts/documents/SR3EActor.js)"
     ],
     "additionalDirectories": [
       "c:\\Users\\willi\\AppData\\Local\\FoundryVTT\\Data\\systems\\The2ndChumming3e\\packs"

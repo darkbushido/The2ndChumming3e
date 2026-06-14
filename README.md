@@ -76,6 +76,24 @@ Correct damage is reported.
 - If hit, the defender rolls auto-completed soak test.
 - AoE weapons allow multiple targets to resist damage. 
 - Correct damage is reported.
+- **Blast templates:** firing an AoE weapon (grenade etc.) on a scene lets you drop a blast circle on the map — everyone inside becomes a target with their distance from the epicentre worked out automatically (add walls for confined-space "Chunky Salsa" rebounds). Off-map, pick targets from a list as before.
+- **Range** (firearms, bows/crossbows and thrown weapons): if the attacker and target are tokens on a scene set to metres, the system measures the distance and pre-fills the range band (Short/Medium/Long/Extreme) and its TN. Firearms use fixed range tables by category; bows and thrown weapons scale off the attacker's Strength. The band is an editable dropdown in the roll dialog — override it any time (e.g. a token wasn't moved). No tokens / no scale → set the range manually as before. Per-weapon range overrides are available on the item sheet.
+---
+
+## Attacking from the canvas
+You don't have to open the character sheet to fire:
+- **Token HUD:** select your token and click the 🎯 crosshair button. A picker lists your *ready* weapons (firearms with ammo loaded, equipped melee, thrown with quantity, bows) and fires the one you choose. Works for every player.
+- **Hotbar macros:** drag a weapon from the sheet onto the macro hotbar to create a one-click "Fire: \<weapon\>" macro.
+- Combined with target selection (the **T** tool) this gives a fast loop: *target the enemy → click your token → Attack → fire,* with range auto-measured.
+
+> ⚠ **Hotbar weapon macros are script macros.** Foundry only lets a player *run* script macros if the GM has granted that player the **"Use File Browser / script macro"** permission (Game Settings → Configure Permissions → *Use JavaScript / Create Macro*). It's off for the basic Player role by default. The **Token HUD** attack button has no such restriction and works for all players — use that if you don't want to grant script-macro rights.
+---
+
+## Tokens & conditions
+- **Wound bars on tokens:** new character/NPC tokens show Physical and Stun as bars that fill as damage is taken — condition at a glance without opening the sheet. (Existing actors: set their prototype-token bars once.)
+- **Status icons:** Astral / Dual-Natured / VR (jacked-in) / Full Defense icons appear and clear automatically as you toggle those states; plus manual conditions (Sustaining a Spell, Dumpshocked) in the token HUD.
+- **Auto KO/dead:** when a combatant fills a wound track they're marked defeated (and shown unconscious); physical overflow past Body shows the dead overlay. Heal them and it clears.
+- **Rich text:** character Background/Notes support `@`-links to actors/items and inline `[[/r ]]` rolls — they display as clickable links; click **✎ Edit** to change the text.
 ---
 
 ### Melee combat
