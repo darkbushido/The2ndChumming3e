@@ -599,6 +599,12 @@ export const SR3E = {
   bowCategories:    ['Bow', 'LCB', 'MCB', 'HCB', 'SL'],
   thrownCategories: ['TK', 'SH', 'Imp', 'Ctrp', 'GR', 'BOL', 'THR', 'other'],
 
+  // Bows/crossbows that draw from an arrow/bolt ammo stockpile (capacity = 1 nocked round,
+  // depletes when Track Ammunition is on). Maps the weapon category → required ammo loading
+  // mechanism ('arrow' / 'bolt'). Slings (SL) are intentionally omitted (never deplete).
+  // Used by SR3EItem._usesNockedAmmo / _weaponLoadMechanism.
+  nockedAmmoByCategory: { Bow: 'arrow', LCB: 'bolt', MCB: 'bolt', HCB: 'bolt' },
+
   // Firearm range bands by weapon category, in METRES: [shortMax, mediumMax, longMax, extremeMax].
   // A distance ≤ shortMax is Short, ≤ mediumMax is Medium, etc.; beyond extremeMax is out of range.
   // Values are from the SR3 core Ranges table. A weapon can override its bands with a
@@ -671,6 +677,8 @@ export const SR3E = {
     d:        'Drum',
     sb:       'Single-Shot / Break',
     internal: 'Internal',
+    arrow:    'Arrow',   // bows (nocked one at a time)
+    bolt:     'Bolt',    // crossbows (nocked one at a time)
   },
 
   // Ammo types. Rules live here in code, not as per-item data fields. Each entry:
@@ -695,7 +703,7 @@ export const SR3E = {
   },
   spellCategories: ['Combat', 'Detection', 'Health', 'Illusion', 'Manipulation'],
   spellTypes:      ['Physical', 'Mana'],
-  spellRanges:     ['Touch', 'LOS', 'LOS (A)'],
+  spellRanges:     ['Touch', 'LOS', 'LOS (A)', 'Touch (A)'],  // "(A)" suffix = area effect
   spellDurations:  ['Instant', 'Sustained', 'Permanent'],
   cyberwareGrades: ['Standard', 'Alpha', 'Beta', 'Delta', 'Used'],
 

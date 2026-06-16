@@ -1814,6 +1814,8 @@ _prepareCharacter(sys, attr) {
         committedDodgeDice:  options.committedDodgeDice ?? 0,
         isSpellRoll:         options.isSpellRoll        ?? false,
         spellContext:        options.spellContext        ?? null,
+        isSpellResist:       options.isSpellResist      ?? false,
+        spellResistContext:  options.spellResistContext  ?? null,
         isDispelRoll:        options.isDispelRoll       ?? false,
         dispelContext:       options.dispelContext       ?? null,
         isConjuringRoll:     options.isConjuringRoll    ?? false,
@@ -1877,6 +1879,8 @@ _prepareCharacter(sys, attr) {
       committedDodgeDice:    options.committedDodgeDice    ?? 0,
       isSpellRoll:           options.isSpellRoll           ?? false,
       spellContext:          options.spellContext          ?? null,
+      isSpellResist:         options.isSpellResist         ?? false,
+      spellResistContext:    options.spellResistContext    ?? null,
       isDispelRoll:          options.isDispelRoll          ?? false,
       dispelContext:         options.dispelContext         ?? null,
       isConjuringRoll:       options.isConjuringRoll       ?? false,
@@ -2014,6 +2018,53 @@ _prepareCharacter(sys, attr) {
   }
 
   /**
+   * Draw a circular blast/area marker visible to all players. Prefers a Region document
+   * (v14-native, synced, warning-free to delete); falls back to a local PIXI circle if the
+   * caller lacks Region-create permission. `radiusM` is in scene metres.
+   * Returns { regionId, markerId } — feed both to the chat 🧹 Clear button (sr3e.js handles each).
+   */
+  static async _drawBlastArea(center, radiusM, { name = 'Blast', color = '#cc3300' } = {}) {
+    const out = { regionId: null, markerId: null };
+    if (!canvas?.ready || !center) return out;
+    const pxPerM   = canvas.dimensions.size / canvas.dimensions.distance;
+    const radiusPx = Math.max(1, radiusM * pxPerM);
+    const hex      = Number(`0x${color.replace('#', '')}`);
+    try {
+      const [region] = await canvas.scene.createEmbeddedDocuments('Region', [{
+        name,
+        color,
+        visibility: CONST.REGION_VISIBILITY?.ALWAYS ?? 2,
+        shapes: [{ type: 'circle', x: center.x, y: center.y, radius: radiusPx, hole: false }],
+        flags: { 'The2ndChumming3e': { blastResult: true } },
+      }]);
+      out.regionId = region?.id ?? null;
+    } catch {
+      // No create permission — local PIXI circle so the caster at least sees it.
+      try {
+        const layer = canvas.interface ?? canvas.primary ?? canvas.stage;
+        const g = new PIXI.Graphics();
+        g.beginFill(hex, 0.20);
+        g.lineStyle(2, hex, 0.9);
+        g.drawCircle(center.x, center.y, radiusPx);
+        g.endFill();
+        layer.addChild(g);
+        out.markerId = foundry.utils.randomID();
+        (game.sr3e._blastMarkers ??= new Map()).set(out.markerId, g);
+      } catch (err) { console.error('SR3E | could not draw blast marker', err); }
+    }
+    return out;
+  }
+
+  /** Markup for the chat 🧹 Clear-blast-marker button from a { regionId, markerId } pair. */
+  static _clearBlastButton({ regionId, markerId } = {}) {
+    if (!regionId && !markerId) return '';
+    const attrs = regionId
+      ? `data-region-id="${regionId}" data-scene-id="${canvas.scene?.id ?? ''}"`
+      : `data-marker-id="${markerId}"`;
+    return `<div style="margin-top:5px"><button type="button" class="sr3e-clear-blast-btn btn-sm" ${attrs} style="font-size:11px;padding:1px 8px">🧹 Clear blast marker</button></div>`;
+  }
+
+  /**
    * Post a wave result as a chat card.
    *
    * All roll state is embedded as JSON in the explosion button's data-payload
@@ -2091,39 +2142,10 @@ _prepareCharacter(sys, attr) {
             scatterDesc = `💨 Scattered <strong>${scatterDist}m ${DIRS[dirRoll]}</strong> (${diceStr}m − ${reduction}m).`;
           }
 
-          // Show where it actually went off, visible to ALL players. Foundry v14 deprecated
-          // the MeasuredTemplate document AND placeable (merged into Region), so we use a
-          // Region document (the v14-native, warning-free, synced path). If the thrower lacks
-          // Region-create permission we fall back to a local PIXI circle (no MeasuredTemplate).
-          let resultRegionId = null;   // persisted Region (synced to everyone)
-          let resultMarkerId = null;   // fallback: local-only PIXI circle
-          if (canvas?.ready) {
-            const pxPerM   = canvas.dimensions.size / canvas.dimensions.distance;
-            const radiusPx = Math.max(1, state.aoeRadius * pxPerM);
-            try {
-              const [region] = await canvas.scene.createEmbeddedDocuments('Region', [{
-                name: 'Grenade Blast',
-                color: '#cc3300',
-                visibility: CONST.REGION_VISIBILITY?.ALWAYS ?? 2,
-                shapes: [{ type: 'circle', x: center.x, y: center.y, radius: radiusPx, hole: false }],
-                flags: { 'The2ndChumming3e': { blastResult: true } },
-              }]);
-              resultRegionId = region?.id ?? null;
-            } catch {
-              // No create permission (e.g. a player threw) — local PIXI marker so the thrower at least sees it.
-              try {
-                const layer = canvas.interface ?? canvas.primary ?? canvas.stage;
-                const g = new PIXI.Graphics();
-                g.beginFill(0xcc3300, 0.20);
-                g.lineStyle(2, 0xcc3300, 0.9);
-                g.drawCircle(center.x, center.y, radiusPx);
-                g.endFill();
-                layer.addChild(g);
-                resultMarkerId = foundry.utils.randomID();
-                (game.sr3e._blastMarkers ??= new Map()).set(resultMarkerId, g);
-              } catch (err) { console.error('SR3E | could not draw blast marker', err); }
-            }
-          }
+          // Show where it actually went off, visible to ALL players (Region, with a local
+          // PIXI fallback if the thrower lacks Region-create permission).
+          const { regionId: resultRegionId, markerId: resultMarkerId } =
+            await SR3EActor._drawBlastArea(center, state.aoeRadius, { name: 'Grenade Blast' });
 
           // Re-detect everyone caught in the (scattered) blast — the thrower can be hit.
           const hits = [];
@@ -2147,9 +2169,7 @@ _prepareCharacter(sys, attr) {
           const hitLines = codes.length
             ? codes.map(t => `<div style="font-size:11px;margin-top:2px"><strong>${t.name}</strong>: ${t.power}${t.level}${t.dist != null ? ` <span style="color:var(--sr-muted)">(${t.dist}m)</span>` : ''}</div>`).join('')
             : '<div style="font-size:11px;color:var(--sr-muted)">No one caught in the blast.</div>';
-          const clearBtn = (resultRegionId || resultMarkerId)
-            ? `<div style="margin-top:5px"><button type="button" class="sr3e-clear-blast-btn btn-sm" ${resultRegionId ? `data-region-id="${resultRegionId}" data-scene-id="${canvas.scene?.id ?? ''}"` : `data-marker-id="${resultMarkerId}"`} style="font-size:11px;padding:1px 8px">🧹 Clear blast marker</button></div>`
-            : '';
+          const clearBtn = SR3EActor._clearBlastButton({ regionId: resultRegionId, markerId: resultMarkerId });
           stagingHtml = `<div class="sr-staging-result">💥 ${basePower}${level}${isStun ? ' Stun' : ''} grenade — ${successes} hit${successes !== 1 ? 's' : ''}<div style="margin-top:3px">${scatterDesc}</div>${hitLines}${clearBtn}</div>`;
 
           for (const t of codes) {
@@ -2327,74 +2347,38 @@ _prepareCharacter(sys, attr) {
         const sc = state.spellContext;
 
         if (successes === 0) {
-          stagingHtml = '<div class="sr-staging-result">0 hits — spell fizzles, no effect on targets</div>';
+          stagingHtml = '<div class="sr-staging-result">0 successes — spell fails (targets resist automatically), no effect</div>';
         } else {
-          const staged     = SR3EItem.stageDamage(sc.damageBase, successes);
-          const trackLabel = staged.isStun ? 'Stun' : 'Physical';
+          // SR3 opposed test: caster's successes are carried to each target's resistance
+          // roll (Willpower/Body vs Force). Net successes there stage the base damage — no
+          // pre-staging here, no soak afterwards. Preview the staging from the cast hits.
+          const previewStaged = SR3EItem.stageDamage(sc.damageBase, successes);
+          const stagedStr     = `${previewStaged.power}${previewStaged.level}`;
+          const stageLine     = stagedStr !== sc.rawDamage
+            ? `base <strong>${sc.rawDamage}</strong> → <strong>${stagedStr}</strong> at ${successes} hit${successes !== 1 ? 's' : ''}`
+            : `base <strong>${sc.rawDamage}</strong>`;
           stagingHtml = `
             <div class="sr-staging-result">
-              🔮 ${sc.rawDamage} + ${successes} hits → <strong>${staged.power}${staged.level} ${trackLabel}</strong>
+              🔮 ${sc.spellName ?? 'Spell'} [F${sc.force}] — <strong>${successes} success${successes !== 1 ? 'es' : ''}</strong> vs TN ${tn}${sc.tnSource ? ` <span style="color:var(--sr-muted)">(${sc.tnSource})</span>` : ''}<br>
+              ${stageLine}. Each target resists vs Force ${sc.force}; <em>net</em> (caster − resister) sets the final stage.
             </div>`;
 
-          // Check whether any actor (excluding the caster) has an active Spell Defense pool
+          // Counterspelling (Spell Defense) reduces the caster's successes first, if anyone has it.
           const spellDefenders = game.actors.contents.filter(
             a => (a.system.spellDefensePool ?? 0) > 0 && a.id !== sc.attackerActorId
           );
           if (spellDefenders.length > 0) {
-            // Schedule defense card to post AFTER this wave card
             state._pendingDefenseCard = { currentSuccesses: successes, sc, force: sc.force };
-          } else if (!sc.isAoE && (sc.committedDodgeDice ?? 0) > 0) {
-            // Non-AoE spell with committed dodge — show dodge roll button
-            const targetId    = sc.targetActorIds?.[0];
-            const tActor      = game.actors.get(targetId);
-            const targetName  = tActor?.name ?? 'Target';
-            const casterName  = game.actors.get(sc.attackerActorId)?.name ?? 'Caster';
-            const dodgeCtx    = JSON.stringify({
-              attackerActorId:    sc.attackerActorId,
-              targetActorId:      targetId,
-              attackSuccesses:    successes,
-              committedDodgeDice: sc.committedDodgeDice,
-              stagedPower:        staged.power,
-              stagedLevel:        staged.level,
-              isStun:             staged.isStun,
-              rawDamage:          sc.rawDamage,
-              isSpellSoak:        true,
-              spellType:          sc.spellType,
-              spellTarget:        sc.spellTarget ?? '',
-              force:              sc.force,
-            }).replace(/'/g, '&#39;');
-            postRollHtml += `
-              <div class="sr-soak-action">
-                <button class="sr-dodge-roll-btn" data-payload='${dodgeCtx}'>
-                  🎯 ${targetName}, roll to dodge.
-                </button>
-              </div>`;
           } else {
-            // No active defenders and no dodge — post Resist Spell buttons directly
             for (const targetId of (sc.targetActorIds ?? [])) {
-              const tActor = game.actors.get(targetId);
-              if (!tActor) continue;
-              const spellSoakPayload = JSON.stringify({
-                actorId:         targetId,
-                targetActorId:   targetId,
-                attackerActorId: sc.attackerActorId,
-                isSpellSoak:     true,
-                spellType:       sc.spellType,
-                spellTarget:     sc.spellTarget ?? '',
-                force:           sc.force,
-                stagedPower:     staged.power,
-                stagedLevel:     staged.level,
-                isStun:          staged.isStun,
-                rawDamage:       sc.rawDamage,
-              }).replace(/'/g, '&#39;');
-              postRollHtml += `
-                <div class="sr-soak-action">
-                  <button class="sr-spell-soak-btn" data-payload='${spellSoakPayload}'>
-                    🔮 ${tActor.name}: Resist Spell
-                  </button>
-                </div>`;
+              postRollHtml += SR3EActor._spellResistButton(sc, targetId, successes);
             }
           }
+        }
+
+        // AoE area marker — Clear button (the marker was drawn at cast time).
+        if (sc.isAoE && (sc.aoeRegionId || sc.aoeMarkerId)) {
+          stagingHtml += SR3EActor._clearBlastButton({ regionId: sc.aoeRegionId, markerId: sc.aoeMarkerId });
         }
 
         // Drain button always — caster pays drain regardless of hit/miss
@@ -2402,6 +2386,7 @@ _prepareCharacter(sys, attr) {
           actorId:          sc.attackerActorId,
           drainStr:         sc.drainStr,
           force:            sc.force,
+          drainLevel:       sc.drainLevel ?? undefined,   // nominated Damage Level (combat spells)
           sorceryRating:    sc.sorceryRating,
           drainIsPhysical:  sc.drainIsPhysical,
           spellName:        sc.spellName,
@@ -2701,6 +2686,8 @@ _prepareCharacter(sys, attr) {
         soakPayload:        state.soakPayload        ?? null,
         isSpellRoll:        state.isSpellRoll        ?? false,
         spellContext:       state.spellContext        ?? null,
+        isSpellResist:      state.isSpellResist       ?? false,
+        spellResistContext: state.spellResistContext  ?? null,
         isDrainRoll:        state.isDrainRoll         ?? false,
         drainPayload:       state.drainPayload        ?? null,
         isDispelRoll:       state.isDispelRoll        ?? false,
@@ -2842,6 +2829,31 @@ _prepareCharacter(sys, attr) {
       vehicleSoakResultHtml = SR3EActor._buildVehicleSoakResultHtml(successes, state.vehicleSoakContext);
     }
 
+    // Spell resistance result — net (caster − resister) successes stage the base damage.
+    // No further soak: the resistance test IS the defence.
+    let spellResistResultHtml = '';
+    if (allDone && state.isSpellResist && state.spellResistContext) {
+      const rc    = state.spellResistContext;
+      const net   = Math.max(0, (rc.attackSuccesses ?? 0) - successes);
+      const tName = game.actors.get(rc.targetActorId)?.name ?? 'Target';
+      if (net <= 0) {
+        spellResistResultHtml = `<div class="sr-soak-result sr-soak-blocked">✨ Spell resisted — ${successes} resistance hit${successes !== 1 ? 's' : ''} ≥ ${rc.attackSuccesses ?? 0} casting hit${(rc.attackSuccesses ?? 0) !== 1 ? 's' : ''}. No effect.</div>`;
+      } else {
+        const staged     = SR3EItem.stageDamage(rc.baseDamage, net);
+        const trackLabel = staged.isStun ? 'Stun' : 'Physical';
+        const boxes      = ({ L: 1, M: 3, S: 6, D: 10 })[staged.level] ?? 1;
+        const track      = staged.isStun ? 'stun' : 'physical';
+        const payload    = JSON.stringify({ actorId: rc.targetActorId, track, boxes }).replace(/'/g, '&#39;');
+        spellResistResultHtml = `
+          <div class="sr-soak-result">🔮 net <strong>${net}</strong> success${net !== 1 ? 'es' : ''} → <strong>${staged.power}${staged.level} ${trackLabel}</strong></div>
+          <div class="sr-soak-action">
+            <button class="sr-assign-damage-btn" data-payload='${payload}'>
+              🩸 Assign ${staged.power}${staged.level} ${trackLabel} to ${tName}
+            </button>
+          </div>`;
+      }
+    }
+
     const waveMeta = wave === 0
       ? `${pool} dice vs TN ${tn}`
       : `Wave ${wave} — ${explodingDice.length} dice exploding`;
@@ -2856,6 +2868,7 @@ _prepareCharacter(sys, attr) {
           ${resultHtml}
           ${dodgeResultHtml}
           ${soakResultHtml}
+          ${spellResistResultHtml}
           ${vehicleSoakResultHtml}
           ${drainResultHtml}
           ${explodeBtn}
@@ -4174,33 +4187,12 @@ _prepareCharacter(sys, attr) {
     let html = `<div class="sr-roll-card">`;
 
     if (currentSuccesses > 0) {
-      const staged     = SR3EItem.stageDamage(sc.damageBase, currentSuccesses);
-      const trackLabel = staged.isStun ? 'Stun' : 'Physical';
       html += `<div class="sr-roll-meta">
-        🔮 ${sc.spellName} — <strong>${staged.power}${staged.level} ${trackLabel}</strong>
-        (${currentSuccesses} hit${currentSuccesses !== 1 ? 's' : ''} after defense)
+        🔮 ${sc.spellName} — <strong>${currentSuccesses} casting hit${currentSuccesses !== 1 ? 's' : ''}</strong> after defense;
+        base <strong>${sc.rawDamage}</strong>. Each target resists vs Force ${force}.
       </div>`;
       for (const targetId of (sc.targetActorIds ?? [])) {
-        const tActor = game.actors.get(targetId);
-        if (!tActor) continue;
-        const p = JSON.stringify({
-          actorId:         targetId,
-          targetActorId:   targetId,
-          attackerActorId: sc.attackerActorId,
-          isSpellSoak:     true,
-          spellType:       sc.spellType,
-          spellTarget:     sc.spellTarget ?? '',
-          force,
-          stagedPower:     staged.power,
-          stagedLevel:     staged.level,
-          isStun:          staged.isStun,
-          rawDamage:       sc.rawDamage,
-        }).replace(/'/g, '&#39;');
-        html += `<div class="sr-soak-action">
-          <button class="sr-spell-soak-btn" data-payload='${p}'>
-            🔮 ${tActor.name}: Resist Spell
-          </button>
-        </div>`;
+        html += SR3EActor._spellResistButton(sc, targetId, currentSuccesses);
       }
     } else {
       html += `<div class="sr-roll-meta">✨ Spell completely defended — no damage to resist.</div>`;
@@ -4211,6 +4203,7 @@ _prepareCharacter(sys, attr) {
       actorId:         sc.attackerActorId,
       drainStr:        sc.drainStr,
       force,
+      drainLevel:      sc.drainLevel ?? undefined,   // nominated Damage Level (combat spells)
       sorceryRating:   sc.sorceryRating,
       drainIsPhysical: sc.drainIsPhysical,
       spellName:       sc.spellName,
@@ -4322,56 +4315,65 @@ _prepareCharacter(sys, attr) {
     return actor._postSpellSoakCard(payload);
   }
 
+  /** The "🔮 Resist Spell" button markup for one target — carries the caster's successes + base damage. */
+  static _spellResistButton(sc, targetId, attackSuccesses) {
+    const tActor = game.actors.get(targetId);
+    if (!tActor) return '';
+    const payload = JSON.stringify({
+      actorId:         targetId,
+      targetActorId:   targetId,
+      attackerActorId: sc.attackerActorId,
+      spellType:       sc.spellType,
+      spellTarget:     sc.spellTarget ?? '',
+      spellName:       sc.spellName ?? 'Spell',
+      force:           sc.force,
+      attackSuccesses,
+      baseDamage:      sc.damageBase,
+      rawDamage:       sc.rawDamage,
+    }).replace(/'/g, '&#39;');
+    return `
+      <div class="sr-soak-action">
+        <button class="sr-spell-soak-btn" data-payload='${payload}'>
+          🔮 ${tActor.name}: Resist Spell
+        </button>
+      </div>`;
+  }
+
   /**
-   * Post a resist-spell card for this actor.
-   * Resist attribute derived from spell's target field: W(R)=Willpower, B(R)=Body, F(R)=Willpower.
-   * TN = Force (no armour).
+   * Post an editable Resist-Spell card: target rolls the spell's Target attribute (W→Willpower,
+   * B→Body, I→Intelligence, Q→Quickness; F/number/other default to Willpower) — attribute only —
+   * vs TN = Force. The roll's net vs the caster's successes stages the base damage. No soak.
    */
   async _postSpellSoakCard(payload) {
-    const { stagedPower, stagedLevel, isStun, spellType, spellTarget, force, rawDamage } = payload;
-    const trackLabel = isStun ? 'Stun' : 'Physical';
-
-    const t = String(spellTarget ?? '').trim().toUpperCase();
-    let resistAttr, resistName;
-    if (t === 'W(R)' || t === 'W') {
-      resistAttr = 'willpower'; resistName = 'Willpower';
-    } else if (t === 'B(R)' || t === 'B') {
-      resistAttr = 'body'; resistName = 'Body';
-    } else if (t === 'F(R)' || t === 'F') {
-      resistAttr = 'willpower'; resistName = 'Willpower';
-    } else {
-      const isManaSpell = spellType !== 'Physical';
-      resistAttr = isManaSpell ? 'willpower' : 'body';
-      resistName = isManaSpell ? 'Willpower' : 'Body';
-    }
+    const { baseDamage, attackSuccesses, spellType, spellTarget, force, rawDamage, spellName } = payload;
+    // Same parser as the cast, so the resist attribute matches the cast's Target code exactly.
+    const { resistAttr, resistName } = game.sr3e.SR3EItem._parseSpellTarget(spellTarget, this, force, spellType);
 
     this.prepareDerivedData();
     const attrVal = this.system.attributes?.[resistAttr]?.value
                  ?? this.system.attributes?.[resistAttr]?.base
                  ?? 1;
     const pool   = Math.max(1, attrVal);
-    const soakTN = Math.max(2, force);
+    const tn     = Math.max(2, force);
 
-    const soakPayload = JSON.stringify({
+    const resistPayload = JSON.stringify({
       actorId:         this.id,
       attackerActorId: payload.attackerActorId,
       targetActorId:   this.id,
-      isSpellSoak:     true,
-      stagedPower,
-      stagedLevel,
-      isStun,
+      attackSuccesses,
+      baseDamage,
+      force,
       rawDamage,
-      ballistic:       0,
-      impact:          0,
+      spellName,
     }).replace(/'/g, '&#39;');
 
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
       content: `
         <div class="sr-roll-card sr-soak-card">
-          <div class="sr-roll-header">🔮 ${this.name} — Resist Spell</div>
+          <div class="sr-roll-header">🔮 ${this.name} — Resist ${spellName ?? 'Spell'}</div>
           <div class="sr-roll-meta">
-            Incoming: <strong>${stagedPower}${stagedLevel} ${trackLabel}</strong>
+            Opposing <strong>${attackSuccesses}</strong> casting hit${attackSuccesses !== 1 ? 's' : ''} — base <strong>${rawDamage}</strong>
           </div>
           <div class="sr-soak-fields">
             <label class="sr-soak-label">
@@ -4380,17 +4382,44 @@ _prepareCharacter(sys, attr) {
             </label>
             <label class="sr-soak-label">
               TN (Force ${force}):
-              <input type="number" class="sr-soak-tn" value="${soakTN}" min="2" max="30" style="width:55px"/>
+              <input type="number" class="sr-soak-tn" value="${tn}" min="2" max="30" style="width:55px"/>
             </label>
           </div>
           <div class="sr-soak-action">
-            <button class="sr-soak-roll-btn" data-payload='${soakPayload}'>
+            <button class="sr-spell-resist-roll-btn" data-payload='${resistPayload}'>
               🎲 ${this.name}: Roll to Resist
             </button>
           </div>
         </div>
       `,
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
+    });
+  }
+
+  /** Handle "Roll to Resist" on a spell-resist card → interactive Willpower/Body roll vs Force. */
+  static async handleSpellResistRoll(btn, physicalDice = false) {
+    const payload = JSON.parse(btn.dataset.payload);
+    const card    = btn.closest('.sr-soak-card');
+    const pool    = parseInt(card?.querySelector('.sr-soak-pool')?.value) || 1;
+    const tn      = parseInt(card?.querySelector('.sr-soak-tn')?.value)   || 2;
+    const actor   = game.actors.get(payload.actorId);
+    if (!actor) return;
+
+    btn.disabled    = true;
+    btn.textContent = '⏳ Rolling…';
+
+    await actor.rollPool(pool, tn, `🔮 ${actor.name} resists ${payload.spellName ?? 'spell'}`, {
+      isSpellResist:      true,
+      spellResistContext: {
+        attackerActorId: payload.attackerActorId,
+        targetActorId:   actor.id,
+        attackSuccesses: payload.attackSuccesses ?? 0,
+        baseDamage:      payload.baseDamage,
+        force:           payload.force,
+        rawDamage:       payload.rawDamage,
+      },
+      skipWoundMod: true,
+      physicalDice,
     });
   }
 
@@ -4412,7 +4441,9 @@ _prepareCharacter(sys, attr) {
       drainTN    = payload.drainTNOverride;
       drainLevel = payload.drainLevel ?? 'S';
     } else {
-      const parsed = SR3EItem.parseDrainFormula(drainStr, force);
+      // The drain code = drain Power (→ TN); the level is the nominated Damage Level, optionally
+      // shifted by a "Damage Level"/"DL" token in the code. parseDrainFormula folds both in.
+      const parsed = SR3EItem.parseDrainFormula(drainStr, force, payload.drainLevel ?? null);
       if (!parsed) {
         ui.notifications.warn(`SR3E: Could not parse drain formula "${drainStr}". Check the spell item.`);
         return;

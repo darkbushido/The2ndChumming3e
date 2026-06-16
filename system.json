@@ -2,10 +2,10 @@
   "id": "The2ndChumming3e",
   "title": "The 2nd Chumming — Shadowrun 3rd Edition",
   "description": "An unofficial implementation of Shadowrun 3rd Edition for Foundry VTT.",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "socket": true,
   "compatibility": {
-    "minimum": "13",
+    "minimum": "14",
     "verified": "14"
   },
   "authors": [

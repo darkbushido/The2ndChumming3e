@@ -50,6 +50,9 @@ export class ProjectileData extends foundry.abstract.TypeDataModel {
       strMin:         new NumberField({ integer: true, initial: 0, min: 0 }),
       damage:         new StringField({ initial: '' }),
       quantity:       new NumberField({ integer: true, initial: 0, min: 0 }),
+      // Bows/crossbows nock a single arrow/bolt from the ammo stockpile (capacity 1).
+      loadedAmmoType: new StringField({ initial: 'regular' }),
+      loadedRounds:   new NumberField({ integer: true, initial: 0, min: 0 }),
       weight:         new NumberField({ initial: 0, min: 0 }),
       availability:   new StringField({ initial: '' }),
       cost:           new NumberField({ integer: true, initial: 0, min: 0 }),

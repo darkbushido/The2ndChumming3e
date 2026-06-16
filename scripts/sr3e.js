@@ -1607,6 +1607,7 @@ Hooks.on('renderRollTableDirectory', (_app, html) => {
 function _sr3eReadyWeapons(actor) {
   const trackAmmo = game.settings.get('The2ndChumming3e', 'trackAmmo');
   const thrownCats = game.sr3e.SR3E.thrownCategories ?? [];
+  const awakened   = (actor.system.attributes?.magic?.value ?? actor.system.attributes?.magic?.base ?? 0) > 0;
   const out = [];
   for (const i of actor.items) {
     if (i.type === 'firearm') {
@@ -1615,8 +1616,16 @@ function _sr3eReadyWeapons(actor) {
       if (actor.system.equippedMelee === i.id) out.push(i);
     } else if (i.type === 'thrown' || i.type === 'projectile') {
       const consumable = i.type === 'thrown' || thrownCats.includes(i.system.category ?? '');
-      if (!consumable) out.push(i);                                  // bow / crossbow
-      else if (!trackAmmo || (i.system.quantity ?? 0) > 0) out.push(i);
+      if (i.type === 'projectile' && i._usesNockedAmmo?.()) {        // bow / crossbow (nocked)
+        if (!trackAmmo || (i.system.loadedRounds ?? 0) > 0) out.push(i);
+      } else if (!consumable) {
+        out.push(i);                                                 // sling / non-depleting bow
+      } else if (!trackAmmo || (i.system.quantity ?? 0) > 0) {
+        out.push(i);                                                 // thrown w/ quantity
+      }
+    } else if (i.type === 'spell') {
+      // Combat / damaging spells (those with a damage code), Awakened actors only.
+      if (awakened && (i.system.damage ?? '').trim() !== '') out.push(i);
     }
   }
   // Built-in unarmed attack — always available (not a real item).
@@ -1628,6 +1637,7 @@ function _sr3eReadyWeapons(actor) {
 
 function _sr3eFireWeapon(item) {
   if (item._unarmed) return game.sr3e.SR3EItem.rollMeleeAttack(item._actor, item);
+  if (item.type === 'spell') return item.rollSpell();
   return item.type === 'melee' ? item.rollMelee() : item.rollWeapon();
 }
 
@@ -1901,7 +1911,7 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
     });
   });
 
-  // Spell resist button — posts a spell-specific soak card (Willpower/Body, TN = Force)
+  // Spell resist button — posts the editable Resist-Spell card (Willpower/Body, TN = Force)
   html.querySelectorAll('.sr-spell-soak-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'spellsoak', i)) return;
     btn.addEventListener('click', async event => {
@@ -1912,6 +1922,17 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       btn.disabled    = true;
       btn.textContent = '⏳ Preparing…';
       await SR3EActor.postSpellSoakCard(p.targetActorId, p);
+    });
+  });
+
+  // Roll-to-Resist on a spell-resist card — opposed roll (net vs caster stages damage, no soak)
+  html.querySelectorAll('.sr-spell-resist-roll-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'spellresistroll', i)) return;
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'spellresistroll', i)) return;
+      await SR3EActor.handleSpellResistRoll(btn, event.shiftKey);
     });
   });
 

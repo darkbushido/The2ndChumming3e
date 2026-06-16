@@ -236,10 +236,26 @@ World setting **Track Ammunition** (Configure Settings → System) gates all cou
 
 **Vehicle-mounted weapons** keep their own AV-munition checkbox in the 🚗 dialog (no clip system).
 
+### Bows & crossbows — nocked arrows / bolts
+
+Bows and crossbows draw from the same **Ammunition** stockpile as guns, but hold **one** nocked round (capacity 1). Loading mechanism: **bows ↔ Arrow, crossbows ↔ Bolt** (auto-matched by weapon category; slings never deplete). No special arrow/bolt types yet (always Regular). Gated by **Track Ammunition** like firearms.
+
+**Setup:** Add an Ammunition item, set Loading Mechanism = **Arrow** (or **Bolt**), Stock = e.g. 10. Add a Bow (or LCB/MCB/HCB crossbow) on the Projectiles section.
+
+- **Projectiles section (tracking on):** shows a **Nocked** column (Arrow/Bolt when loaded, red "empty" when not) + ↻ Reload. Tracking off → no Nocked column, fires freely (old behaviour).
+- **Reload:** ↻ on the bow → offers only **Arrow** stock (crossbow → only **Bolt**). Loads 1, stock 10 → **9**, Nocked shows "Arrow". **In:** bow with arrow stock 10 → reload → stock 9, nocked Arrow.
+- **Fire:** looses the nocked round → `loadedRounds` 1 → 0, info "no arrow nocked — reload". **In:** fire the bow → Nocked shows red "empty", dice icon faded.
+- **Empty = inoperable:** with no arrow nocked (tracking on), the dice icon is disabled and `rollWeapon` warns "has no arrow nocked — reload"; ↻ stays active. **In:** empty bow → click dice → warning, no roll.
+- **Mechanism filter:** a bow offers only Arrow stock, never Bolt (and vice-versa). **In:** actor with both Arrow and Bolt stock, fire a crossbow → reload lists only Bolt.
+- **Slings (SL) & uncategorised:** never deplete — no Nocked column entry, always operable.
+- **Tracking off:** bows/crossbows fire freely with no counting (reload only sets the type, which is always Regular).
+- **Canvas picker:** a bow with no nocked round (tracking on) is **not** listed as ready; nock one → it appears.
+
 ### Empty weapons are inoperable (tracking on) - passed
 When **Track Ammunition** is on, an empty weapon's dice icon is faded and cannot be rolled; the Reload button stays active.
 - **In:** firearm with `loadedRounds 0` → dice icon disabled; clicking does nothing; ↻ Reload still works. After reload → dice icon active.
 - **In:** thrown weapon with quantity 0 → dice icon disabled.
+- **In:** bow/crossbow with no nocked round → dice icon disabled; ↻ Reload still works.
 - Tracking **off** → all weapons always operable (no fading).
 
 ### Range (firearms, bows/crossbows, thrown) - passed
@@ -252,7 +268,7 @@ Needs both combatants as tokens on a scene whose grid distance is in **metres**.
 - **No tokens / no scale:** no dropdown; set TN manually (unchanged behaviour).
 
 ### Attacking from the canvas - passed
-- **Token HUD:** select an owned token → 🎯 button → weapon picker lists *ready* weapons (firearm w/ ammo, equipped melee, thrown w/ qty, bows) → fires the normal flow. One ready weapon → fires immediately. **In:** runner with loaded pistol + equipped sword → picker shows both.
+- **Token HUD:** select an owned token → 🎯 button → weapon picker lists *ready* weapons (firearm w/ ammo, equipped melee, thrown w/ qty, bow/crossbow w/ nocked round, slings) → fires the normal flow. One ready weapon → fires immediately. **In:** runner with loaded pistol + equipped sword → picker shows both.
 - **Hotbar drag:** drag a weapon row from the sheet to the hotbar → "Fire: \<weapon\>" macro created → click fires it. ⚠ Script macros only run for users granted script-macro permission; the Token HUD works for everyone.
 
 
@@ -332,7 +348,7 @@ A built-in **Unarmed Combat** entry is always available — it's not a real item
 
 ---
 
-## 8. AoE / Grenades (RAW scatter-first)
+## 8. AoE / Grenades (RAW scatter-first) - passed 
 
 Needs a scene with tokens. Flow: **nominate** the blast point (drag the template, Confirm) → **roll to throw** → scatter **relocates** the blast → re-detect who's caught → soak.
 - **In:** throw a grenade, place the template, set grenade type → throw TN auto-fills from the Grenade Range Table for that type (Standard/Aero = STR-scaled, Launcher = fixed); changing the type updates the TN.
@@ -342,7 +358,7 @@ Needs a scene with tokens. Flow: **nominate** the blast point (drag the template
 - Per-target power = base damage − distance from the (scattered) epicentre. Damage is **not** staged up by successes.
 - **Confined Space (Chunky Salsa):** tick the box → after the throw + scatter, the Chunky Salsa GUI opens seeded with whoever was caught; draw walls / drag positions → it returns each target's code into the soak cards.
 
-### Blast power at distance
+### Blast power at distance - passed
 `Power at target = weapon power − distance in metres` (from the scattered epicentre).
 
 **In:** Grenade power 12, target 4m from where it landed → effective power **8**.
@@ -356,12 +372,12 @@ Multiple walls/reflections: additional power penalty applied per path. All wave 
 
 Each target gets their own Resist Damage button → soak flow runs per-target.
 
-### Thrown-weapon quantity (tracking on)
+### Thrown-weapon quantity (tracking on) - passed
 Thrown weapons / grenades (`thrown` type, or `projectile` with a thrown category) carry a **Quantity** and are decremented 1 per throw. Bows/crossbows are never consumed. The weapons-tab thrown section shows `×qty` (amber ≤2, red at 0).
 
 - **In:** grenade quantity 3 → throw it → quantity **2**, card resolves as normal.
 - **In:** quantity 1 → throw → quantity **0**, "last one" warning, dice icon now disabled.
-- **In:** bow fired → quantity unchanged (bows aren't consumables).
+
 
 ---
 
@@ -372,12 +388,12 @@ Pool = skill rating (wound mod adds to TN, not pool)
 
 **In:** Pistols 5, no wounds → 5 dice.
 
-### Specialisation bonus
+### Specialisation bonus - passed 
 Pool = skill rating + 2 (when spec applies)
 
 **In:** Pistols 5, specialisation "Ares Predator", firing an Ares Predator → **7 dice**.
 
-### Defaulting (no skill) — interactive SR3 Default Table
+### Defaulting (no skill) — interactive SR3 Default Table - passed
 When a roll has **no appropriate skill**, a dialog pops asking how to default. Three tiers:
 
 | Default to | TN modifier | Dice pool | Pool dice |
@@ -397,7 +413,7 @@ dice. Roll label includes `Defaulting → Intelligence 4, TN +4 (no pool)`.
 
 ---
 
-## 10. Attribute Rolls
+## 10. Attribute Rolls - passed
 
 Click attribute die on Bio/Attributes tab → rolls pool equal to attribute value vs chosen TN.
 
@@ -407,32 +423,78 @@ Click attribute die on Bio/Attributes tab → rolls pool equal to attribute valu
 
 ## 11. Spellcasting
 
-Full flow: Cast button on spell → Force dialog → Target selection → Magic Pool allocation → Sorcery roll → spell result → Resist Spell button (per target) → Drain button (caster).
+Combat spells are a single **opposed (resisted) test** — like melee, not like a ranged attack + soak.
+Full flow: Cast → Force **+ Damage Level** dialog → Target selection (**no dodge**) → Magic Pool allocation → **Sorcery vs TN = the spell's Target attribute** (e.g. target Willpower) → per-target **Resist Spell** (that same attribute vs **TN = Force**) → **net stages the damage** → Assign Damage. Caster also gets a Drain button. **There is NO soak step after the resist.**
+
+### Force + Damage Level dialog
+For a **damaging** spell (item Damage non-empty) the cast dialog has a **Damage level** dropdown (Light/Moderate/Serious/Deadly), defaulting to the spell item's level. The chosen level sets the base damage `(Force)(level)` for the target **and** the caster's drain level. Non-damaging spells (Heal, Detect…) show no dropdown.
+
+**In:** Manabolt (item Damage `S`) → dropdown defaults **Serious (S)**; pick **Moderate (M)** → base `(F)M`, drain level M.
+
+### Damage track follows spell Type (Mana = Stun, Physical = Physical)
+The target's damage track is **not** read from the Damage text — it's the spell `Type`: **Mana → Stun**, **Physical → Physical**. (Drain track is separate: Stun, or Physical if Force > Magic.)
+
+**In:** Manaball (Type Mana) `5S`, net 5 → **6D Stun**. A Physical spell at the same numbers → **6D Physical**.
 
 ### Sorcery pool
 Skill rating + committed magic pool dice.
 
 **In:** Sorcery 5, 2 magic pool committed → **7 dice**.
 
-### Force vs Sorcery
-- Force ≤ Sorcery → drain is **Stun**.
-- Force > Sorcery → drain is **Physical** (warning shown in Force dialog).
+### Cast TN = the spell's Target attribute (NOT Force)
+The caster rolls Sorcery vs **TN = the target's attribute named in the spell's Target field**. Codes: `W`→Willpower, `B`→Body, `I`→Intelligence, `Q`→Quickness, `F`→Force, or a fixed number. The **Force** is the TN for the *resistance* roll, not the cast.
 
-### Damage staging from successes
-Base = Force + damage level. Every 2 successes = +1 stage.
+**In:** Manaball (Target W), target Willpower 2 → cast **TN 2**. Same spell vs Willpower 5 → cast TN 5.
 
-**In:** Force 6, spell level S (base = 6S), 4 successes → 2 stage-ups → **6D Physical** (or Stun, depending on spell type).
+### Target-code parsing (suffixes stripped, no errors)
+Any `(R)/(T)/(RC)/(V)/(DT)` suffix is descriptive — it's stripped before parsing, so the base code drives both the cast TN and the resist attribute. `OR`/blank/unknown → Mana=Willpower, Physical=Body.
 
-### 0 successes
-Spell fizzles — no damage card — but drain button still appears.
+**In:** Target `W(R)` → Willpower (same as `W`). `B(T)` → Body. `I` → Intelligence. `Q` → Quickness. `4(V)` → fixed TN **4** (resist defaults to Willpower). `F` → cast TN = Force. None of these throw or fall back wrongly.
 
-### Target resist (Mana spell)
-Willpower dice vs TN = Force.
+### Force vs Magic (drain Stun/Physical)
+- Force ≤ **Magic attribute** → drain is **Stun**.
+- Force > **Magic attribute** → drain is **Physical** (warning shown in Force dialog). SR3 RAW — Magic, not Sorcery.
 
-**In:** Willpower 4, Force 6 → 4 dice vs TN 6.
+**In:** Magic 5, Force 5 → Stun. Magic 5, Force 6 → Physical. (Sorcery rating is irrelevant here.)
 
-### Target resist (Physical spell)
-Body dice vs TN = Force.
+### Drain TN from the drain code
+The spell's **Drain** code sets the resist TN: `F`→Force, then the math is evaluated (min 2). Include a level letter (L/M/S/D) or it defaults to S.
+
+**In:** drain `(F/2+1)M`, Force 4 → TN `4/2+1 = 3`, level M. Drain `(F/2)S`, Force 6 → TN 3, level S.
+
+### Resist Spell = opposed, net stages the damage (NO soak)
+Target rolls the **same attribute named in the spell's Target field** (the resist reuses the same parser as the cast, so it always matches — W→Willpower, B→Body, I→Intelligence, Q→Quickness) — **attribute only, no pool** — vs **TN = Force**. **Net = caster successes − resister successes**:
+- net ≤ 0 → **"Spell resisted — no effect"** (no Assign button).
+- net ≥ 1 → base damage (Power = Force, the spell's level) staged up by net (every 2 net = +1 level) → **Assign Damage** button. No further soak card.
+
+### Worked example (Manaball, Target W, Force 6)
+Caster Sorcery 4 / Willpower 4; target Street Sam Willpower 2; base level Moderate (M).
+1. **Cast:** Sorcery 4 vs **TN = target Willpower 2** → say **3 successes**.
+2. **Resist:** target Willpower **2** dice vs **TN = Force 6** → say **1 success**.
+3. **Net = 3 − 1 = 2** → +1 stage → **M → Serious (S)** → Assign **6S** (no armour, no soak).
+4. **Drain:** (Damage Level +1 = S), Drain Power = Force÷2 = **3** → caster Willpower 4 vs TN 3 stages it down (unchanged step — works as before).
+
+### 0 successes (cast)
+Spell fails — no Resist buttons — but the Drain button still appears.
+
+### Area spells (AoE) — canvas template + auto-detect
+
+Set the spell's **Range** to an `(A)` value (`LOS (A)` or `Touch (A)`) — there is **no AoE checkbox**; the `(A)` in the Range code is what makes it area-effect. On cast:
+- The **Force dialog** also shows an **Area radius (m)** input, defaulting to the caster's **Magic** attribute (editable).
+- Then a purple circle follows the cursor → **left-click** places it, **right-click/Esc** cancels.
+- **Every live actor inside the radius (except the caster & vehicles) is auto-targeted** — no checkbox list. **No scatter, no falloff**: each caught target resists at full Force (normal per-target staging).
+- A purple **Region** area marker is drawn for **all players**; the result card has a 🧹 **Clear** button (warning-free).
+- Empty area → casts anyway, drain still applies.
+- **Off a scene** → falls back to the old manual checkbox target list.
+
+**In:** Magic 6 caster, AoE spell → Force dialog radius pre-fills **6**; place over 3 tokens → 3 Resist Spell buttons + 1 Drain button + purple area marker + Clear button.
+**In:** place over empty ground → "no targets in the 6m area — casting anyway", only the Drain button + marker.
+
+### Casting from the canvas (🎯 Token-HUD)
+
+Combat/damaging spells (those with a damage code) on an **Awakened** actor appear in the 🎯 attack picker alongside weapons; choosing one runs the normal cast flow. Utility/health spells (no damage code) and mundane actors are excluded.
+
+**In:** mage with Manabolt `8M` + a pistol → 🎯 picker lists both; pick Manabolt → Force dialog opens. **In:** mage with only Heal (no damage) → 🎯 does not list it.
 
 ---
 
@@ -440,16 +502,24 @@ Body dice vs TN = Force.
 
 After spellcasting, Resist Drain button on caster.
 
-### Drain formula parsing
+### Drain code = two modifiers; ½F and the damage level are the implicit base
+- **Power → resist TN** = ⌊Force/2⌋ + the **number outside the brackets** (½F is implicit; default +0).
+- **Level** = the cast **Damage Level** + the **number inside the brackets** (`(+1)` or `(DL+1)`/`(Damage Level +1)` = +1 stage; `(DL)`/`()` = +0; `(DL-1)` = −1).
 
-| Drain string | Force | TN | Level |
-|---|---|---|---|
-| `(F/2)S` | 6 | 3 | S |
-| `(F/2)S` | 5 | 2 (min) | S |
-| `(F/2+1)M` | 8 | 5 | M |
-| `(F-2)S` | 7 | 5 | S |
+| Drain code | Force | cast level | TN | Drain level |
+|---|---|---|---|---|
+| `(DL+1)` | 6 | S | 3 | **D** (S +1) |
+| `(DL+1)` | 6 | M | 3 | **S** (M +1) |
+| `(DL)` | 6 | M | 3 | M |
+| `(DL-1)` | 6 | S | 3 | M |
+| `+1` (power mod) | 6 | S | **4** (½F+1) | S |
+| `+1(+1)` | 6 | S | 4 | D |
+| `(F/2+1)S` (legacy F-formula) | 6 | M | 4 | M |
+| `(F/2)S` (Heal, non-damaging) | 6 | — | 3 | S |
 
-Pool: Willpower + committed Magic Pool dice, TN = derived from formula above (min 2).
+**In:** Manaball drain `(DL+1)`, cast at **Force 6 Serious** → **3D** (TN ⌊6/2⌋=3, level Serious+1=Deadly), resisted with Willpower — **Stun** (or Physical if Force > Magic). No more "Could not parse drain formula" error.
+
+Pool: Willpower + committed Magic Pool dice.
 
 ### Drain staging from resist hits
 Every 2 hits = 1 stage down (S→M→M→L→fully resisted).

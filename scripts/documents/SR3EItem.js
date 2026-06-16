@@ -536,6 +536,11 @@ export class SR3EItem extends Item {
       ui.notifications.warn(`${this.name} is empty — reload before firing.`);
       return null;
     }
+    if (this._usesNockedAmmo() && (this.system.loadedRounds ?? 0) <= 0) {
+      const noun = this._weaponLoadMechanism() === 'bolt' ? 'bolt' : 'arrow';
+      ui.notifications.warn(`${this.name} has no ${noun} nocked — reload before firing.`);
+      return null;
+    }
     if (this._isConsumable() && (this.system.quantity ?? 0) <= 0) {
       ui.notifications.warn(`No ${this.name} left to throw.`);
       return null;
@@ -883,6 +888,16 @@ export class SR3EItem extends Item {
     }
   }
 
+  // Bows/crossbows spend their single nocked arrow/bolt; must re-nock before firing again.
+  if (this._usesNockedAmmo() && game.settings.get('The2ndChumming3e', 'trackAmmo')) {
+    const loaded = this.system.loadedRounds ?? 0;
+    if (loaded > 0) {
+      await this.update({ 'system.loadedRounds': loaded - 1 });
+      const noun = this._weaponLoadMechanism() === 'bolt' ? 'bolt' : 'arrow';
+      ui.notifications.info(`${this.name} loosed — no ${noun} nocked. Reload to nock another.`);
+    }
+  }
+
   await this._consumeThrown();
   return actor.rollPool(pool, tn, label, options);
 }
@@ -1168,6 +1183,35 @@ export class SR3EItem extends Item {
   }
 
   /**
+   * True for bows/crossbows that nock a single arrow/bolt from the ammo stockpile
+   * (capacity 1, deplete like firearm magazines). Slings are excluded by config.
+   */
+  _usesNockedAmmo() {
+    return this.type === 'projectile'
+      && !!game.sr3e.SR3E.nockedAmmoByCategory?.[this.system.category ?? ''];
+  }
+
+  /**
+   * The loading mechanism this weapon feeds from — firearms parse it from their ammo-capacity
+   * string ("15(c)" → 'c'); nocked bows/crossbows map their category → 'arrow' / 'bolt'.
+   */
+  _weaponLoadMechanism() {
+    if (this.type === 'firearm') return SR3EItem._parseLoadMechanism(this.system.ammunition ?? '');
+    if (this.type === 'projectile') return game.sr3e.SR3E.nockedAmmoByCategory?.[this.system.category ?? ''] ?? '';
+    return '';
+  }
+
+  /**
+   * Magazine size — firearms parse it from the ammo-capacity string; nocked bows/crossbows
+   * hold exactly one round.
+   */
+  _weaponMagazineSize() {
+    if (this.type === 'firearm') return SR3EItem._parseMagazineSize(this.system.ammunition ?? '');
+    if (this._usesNockedAmmo()) return 1;
+    return 0;
+  }
+
+  /**
    * Decrement a thrown weapon's quantity by one when ammo tracking is on.
    */
   async _consumeThrown() {
@@ -1302,13 +1346,13 @@ export class SR3EItem extends Item {
    * discarded. When ammo tracking is off, only the loaded type is set (no stock math).
    */
   async reload() {
-    if (this.type !== 'firearm') return;
+    if (this.type !== 'firearm' && !this._usesNockedAmmo()) return;
     const actor = this.actor;
     if (!actor) return;
     const SR3E    = game.sr3e.SR3E;
     const trackOn = game.settings.get('The2ndChumming3e', 'trackAmmo');
-    const gunMech = SR3EItem._parseLoadMechanism(this.system.ammunition ?? '');
-    const magSize = SR3EItem._parseMagazineSize(this.system.ammunition ?? '');
+    const gunMech = this._weaponLoadMechanism();
+    const magSize = this._weaponMagazineSize();
 
     if (trackOn && magSize <= 0) {
       ui.notifications.warn(`${this.name} has no magazine size — set its ammo capacity (e.g. 15(c)) on the item.`);
@@ -1347,7 +1391,7 @@ export class SR3EItem extends Item {
    */
   static async _promptReloadChoice(stock, weapon, magSize, trackOn) {
     const SR3E      = game.sr3e.SR3E;
-    const mech      = SR3EItem._parseLoadMechanism(weapon.system.ammunition ?? '');
+    const mech      = weapon._weaponLoadMechanism();
     const mechLabel = mech ? (SR3E.ammoLoadMechanisms[mech] ?? mech) : '';
     const opts = stock.map((a, i) => {
       const typeLabel = SR3E.ammoTypes[a.system.ammoType ?? 'regular']?.label ?? 'Regular';
@@ -2101,48 +2145,58 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false) {
   // ---------------------------------------------------------------------------
 
   /**
-   * Parse a drain formula string into { tn, level }.
-   * Handles all observed formats from scraped data:
-   *   "(F/2)S"      → TN = floor(F/2),   level = S
-   *   "(F/2M)"      → TN = floor(F/2),   level = M  (letter inside parens)
-   *   "[(F/2)-1]D"  → TN = floor(F/2-1), level = D
-   *   "(F-2)S"      → TN = floor(F-2),   level = S
-   *
-   * Strategy: substitute F first, normalise brackets, strip the level letter
-   * (wherever it sits), then evaluate the remaining math expression.
-   * TN is always clamped to a minimum of 2.
-   *
-   * Returns null if the string cannot be parsed.
+   * Parse a drain code into { tn, level }. Two components (SR3):
+   *   • Drain Power (→ resist TN) = ⌊Force/2⌋ + the **modifier outside the brackets** (default 0;
+   *     the ½F base is implicit and not written in the code).
+   *   • Drain Level = the nominated Damage Level + the **modifier inside the brackets**
+   *     (the inside may be written "+1" or "DL+1" / "Damage Level +1" — both mean +1 stage).
+   * Examples (cast at Serious, Force 6): "(DL+1)" / "(+1)" → TN 3, level Deadly;
+   *   "+1" → TN 4, level Serious; "+1(+1)" → TN 4, level Deadly.
+   * Legacy fallback: if the code contains an explicit "F" formula (e.g. "(F/2+1)S"), that
+   *   formula IS the TN and the level is the nominated level (or a bare letter for non-damaging
+   *   spells). `damageLevel` is the cast's level (null for non-damaging spells). TN min 2.
    */
-  static parseDrainFormula(drainStr, force) {
+  static parseDrainFormula(drainStr, force, damageLevel = null) {
     if (!drainStr) return null;
+    const STAGES = ['L', 'M', 'S', 'D'];
+    const F      = Number(force) || 0;
+    const halfF  = Math.floor(F / 2);
 
-    // Substitute force value and normalise brackets → parens
-    let s = drainStr.trim()
+    // Normalise: uppercase, strip spaces, brackets→parens, "DAMAGE LEVEL" → "DL".
+    const s = String(drainStr).toUpperCase()
       .replace(/\s/g, '')
-      .replace(/F/gi, String(Number(force)))
-      .replace(/\[/g, '(')
-      .replace(/\]/g, ')');
+      .replace(/\[/g, '(').replace(/\]/g, ')')
+      .replace(/DAMAGELEVEL/g, 'DL');
 
-    // Find the one level letter (L/M/S/D) — default to 'S' if absent
-    const levelMatch = s.match(/[LMSDlmsd]/i);
-    const level = levelMatch ? levelMatch[0].toUpperCase() : 'S';
+    const shiftLevel = (mod) => {
+      let idx = STAGES.indexOf(damageLevel ?? 'S');
+      if (idx < 0) idx = 2;
+      return STAGES[Math.max(0, Math.min(3, idx + (mod || 0)))];
+    };
 
-    // Remove the level letter to leave a pure math expression
-    const expr = s.replace(/[LMSDlmsd]/i, '');
-
-    // Safety: only digits, operators, parens, dots allowed
-    if (!/^[\d\s+\-*/().]+$/.test(expr)) return null;
-
-    let tn;
-    try {
-      // eslint-disable-next-line no-new-func
-      tn = Math.floor(new Function(`"use strict"; return (${expr})`)());
-    } catch {
-      return null;
+    // --- Legacy: an explicit F-formula is the drain Power itself. ---
+    if (/F/.test(s)) {
+      let level;
+      const dl = s.match(/DL([+-]\d+)?/);
+      if (dl)               level = shiftLevel(dl[1] ? parseInt(dl[1]) : 0);
+      else if (damageLevel) level = damageLevel;
+      else { const m = s.match(/[LMSD]/); level = m ? m[0] : 'S'; }
+      const expr = s.replace(/DL([+-]\d+)?/, '').replace(/F/g, String(F))
+        .replace(/[LMSD]/g, '').replace(/[()]/g, '');
+      let tn = halfF;
+      if (/\d/.test(expr) && /^[\d+\-*/.]+$/.test(expr)) {
+        try { tn = Math.floor(new Function(`"use strict"; return (${expr})`)()); } catch { tn = halfF; }
+      }
+      if (!isFinite(tn)) tn = halfF;
+      return { tn: Math.max(2, tn), level };
     }
-    if (!isFinite(tn)) return null;
-    return { tn: Math.max(2, tn), level };
+
+    // --- Modifier model: Power mod is OUTSIDE brackets, Level mod is INSIDE brackets. ---
+    const inside    = (s.match(/\(([^)]*)\)/) || ['', ''])[1];
+    const outside   = s.replace(/\([^)]*\)/g, '');
+    const levelMod  = parseInt((inside.replace(/DL/g, '').match(/[+-]?\d+/) || ['0'])[0]) || 0;
+    const powerMod  = parseInt((outside.match(/[+-]?\d+/) || ['0'])[0]) || 0;
+    return { tn: Math.max(2, halfF + powerMod), level: shiftLevel(levelMod) };
   }
 
   /**
@@ -2156,37 +2210,46 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false) {
   }
 
   /**
-   * Resolve spell attack TN and resist attribute from the spell's target field.
-   * W(R) → Willpower, B(R) → Body, F(R) → Force, numeric → fixed TN.
-   * Falls back to Mana=Essence / Physical=Body if target field is absent.
+   * Resolve a spell's cast TN + resist attribute from its Target code (the cast TN AND the
+   * attribute the target resists with). Any parenthetical suffix — (R)/(T)/(RC)/(V)/(DT) — is
+   * descriptive only and stripped before parsing, so codes like "W(R)", "B(T)", "4(V)" never
+   * misfire. Base codes:
+   *   W → Willpower, B → Body, I → Intelligence, Q → Quickness (TN = that target attribute)
+   *   F → Force (TN = the spell's Force; resist defaults to Willpower)
+   *   a number → fixed TN (resist defaults to Willpower)
+   *   anything else (incl. OR / blank) → Mana→Willpower, Physical→Body fallback.
    */
   static _parseSpellTarget(spellTarget, targetActor, force, spellType) {
-    const t = String(spellTarget ?? '').trim().toUpperCase();
-    if (t === 'W(R)' || t === 'W') {
-      const val = targetActor.system.attributes?.willpower?.value
-               ?? targetActor.system.attributes?.willpower?.base ?? 3;
-      return { tn: Math.max(2, val), resistAttr: 'willpower', resistName: 'Willpower', attrLabel: 'Willpower' };
+    // Strip the parenthetical suffix and whitespace → bare base code.
+    const base = String(spellTarget ?? '').toUpperCase().replace(/\([^)]*\)/g, '').trim();
+
+    const ATTRS = {
+      W: ['willpower',    'Willpower'],
+      B: ['body',         'Body'],
+      I: ['intelligence', 'Intelligence'],
+      Q: ['quickness',    'Quickness'],
+    };
+    if (ATTRS[base]) {
+      const [attr, name] = ATTRS[base];
+      const val = targetActor?.system.attributes?.[attr]?.value
+               ?? targetActor?.system.attributes?.[attr]?.base ?? 3;
+      return { tn: Math.max(2, val), resistAttr: attr, resistName: name, attrLabel: name };
     }
-    if (t === 'B(R)' || t === 'B') {
-      const val = targetActor.system.attributes?.body?.value
-               ?? targetActor.system.attributes?.body?.base ?? 3;
-      return { tn: Math.max(2, val), resistAttr: 'body', resistName: 'Body', attrLabel: 'Body' };
-    }
-    if (t === 'F(R)' || t === 'F') {
+    if (base === 'F') {
+      // Force is the cast TN, not a target attribute; resist defaults to Willpower.
       return { tn: Math.max(2, force ?? 1), resistAttr: 'willpower', resistName: 'Willpower', attrLabel: 'Force' };
     }
-    const numeric = parseInt(t);
-    if (!isNaN(numeric) && t !== '') {
-      return { tn: Math.max(2, numeric), resistAttr: 'willpower', resistName: 'Willpower', attrLabel: 'Fixed' };
+    const numeric = parseInt(base);
+    if (!isNaN(numeric) && base !== '') {
+      return { tn: Math.max(2, numeric), resistAttr: 'willpower', resistName: 'Willpower', attrLabel: `Fixed ${numeric}` };
     }
-    // Fallback: original Mana→Essence / Physical→Body logic
-    if (spellType === 'Physical') {
-      const val = targetActor.system.attributes?.body?.value
-               ?? targetActor.system.attributes?.body?.base ?? 3;
-      return { tn: Math.max(2, val), resistAttr: 'body', resistName: 'Body', attrLabel: 'Body' };
-    }
-    const essVal = targetActor.system.attributes?.essence?.value ?? 6;
-    return { tn: Math.max(2, essVal), resistAttr: 'willpower', resistName: 'Willpower', attrLabel: 'Essence' };
+    // Fallback (empty / OR / unrecognised): Mana → Willpower, Physical → Body.
+    const isMana = spellType !== 'Physical';
+    const attr   = isMana ? 'willpower' : 'body';
+    const name   = isMana ? 'Willpower' : 'Body';
+    const val    = targetActor?.system.attributes?.[attr]?.value
+                ?? targetActor?.system.attributes?.[attr]?.base ?? 3;
+    return { tn: Math.max(2, val), resistAttr: attr, resistName: name, attrLabel: name };
   }
 
   /**
@@ -2293,8 +2356,20 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false) {
     const sorcerySpec        = sorcerySkill?.system?.specialisation ?? '';
     const hasSpellcastingSpec = /spellcasting/i.test(sorcerySpec);
 
-    // Step 1: Choose Force
-    let force       = null;
+    // Area spells are encoded by an "(A)" suffix on the Range code (e.g. "LOS (A)").
+    const isAoE     = /\(A\)/i.test(this.system.range ?? '');
+    const magicAttr = actor.system.attributes?.magic?.value ?? magicBase;
+
+    // Damaging spells let the caster pick the Damage Level at cast time — it sets both the
+    // target's damage and (per SR3) the caster's Drain level. Non-damaging spells skip it.
+    const hasDamage    = (this.system.damage ?? '').trim() !== '';
+    const defaultLevel = SR3EItem._parseSpellDamageLevel(this.system.damage);
+    const LEVEL_NAMES  = { L: 'Light', M: 'Moderate', S: 'Serious', D: 'Deadly' };
+
+    // Step 1: Choose Force (+ Damage Level, + area radius for AoE spells)
+    let force        = null;
+    let damageLevel  = defaultLevel;
+    let aoeRadius    = Math.max(1, magicAttr);
     let castCancelled = true;
     await foundry.applications.api.DialogV2.wait({
       window: { title: `${actor.name} — Cast ${this.name}` },
@@ -2307,7 +2382,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false) {
             : (sorceryRating || '(none)')
           }</strong>
           <div style="color:var(--sr-muted);margin-top:4px">
-            Force &gt; ${sorceryRating} → Drain is
+            Force &gt; Magic ${magicAttr} → Drain is
             <strong style="color:var(--sr-red)">Physical</strong>
             instead of Stun
           </div>
@@ -2316,6 +2391,20 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false) {
           Force: <input type="number" id="spell-force" min="1" max="99"
                  value="${Math.max(1, sorceryRating)}" style="width:60px"/>
         </div>
+        ${hasDamage ? `
+        <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+          Damage level:
+          <select id="spell-damage" style="width:110px">
+            ${['L', 'M', 'S', 'D'].map(l => `<option value="${l}" ${l === defaultLevel ? 'selected' : ''}>${LEVEL_NAMES[l]} (${l})</option>`).join('')}
+          </select>
+          <span style="font-size:11px;color:var(--sr-muted)">target damage &amp; drain level</span>
+        </div>` : ''}
+        ${isAoE ? `
+        <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+          Area radius (m): <input type="number" id="spell-radius" min="1" max="99"
+                 value="${aoeRadius}" style="width:60px"/>
+          <span style="font-size:11px;color:var(--sr-muted)">default = Magic ${magicAttr}</span>
+        </div>` : ''}
       `,
       buttons: [
         {
@@ -2325,6 +2414,8 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false) {
           callback: (_e, _b, dialog) => {
             castCancelled = false;
             force = Math.max(1, parseInt(dialog.element.querySelector('#spell-force')?.value) || 1);
+            if (hasDamage) damageLevel = dialog.element.querySelector('#spell-damage')?.value || defaultLevel;
+            if (isAoE) aoeRadius = Math.max(1, parseInt(dialog.element.querySelector('#spell-radius')?.value) || aoeRadius);
           }
         },
         { label: 'Cancel', action: 'cancel' },
@@ -2332,29 +2423,41 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false) {
     });
     if (castCancelled || force === null) return null;
 
-    const drainIsPhysical = sorceryRating > 0 && force > sorceryRating;
+    // SR3 RAW: Drain is Physical when the spell's Force exceeds the caster's Magic attribute.
+    const drainIsPhysical = force > magicAttr;
 
     // Step 2: Select target(s)
     const spellType   = this.system.type ?? 'Mana';
     const spellTarget = this.system.target ?? '';
-    const isAoE       = (this.system.range ?? 'LOS') === 'LOS (A)';
 
     let targetActors;
     let committedDodgeDice = 0;
+    let aoeRegionId = null, aoeMarkerId = null, aoeCenter = null;
 
     if (isAoE) {
-      targetActors = await SR3EItem._promptTargetsMulti(actor, spellType, spellTarget, force);
-      if (!targetActors || targetActors.length === 0) return null;
+      // Nominate the area on the canvas, then auto-detect every live actor inside the radius
+      // (no scatter, no falloff — each target resists at full Force). Off-canvas → manual list.
+      if (canvas?.ready) {
+        const placed = await SR3EItem._placeBlastTemplate(actor, aoeRadius);
+        if (!placed) return null;   // cancelled placement
+        aoeCenter = placed.center;
+        targetActors = SR3EItem._actorsInRadius(aoeCenter, aoeRadius, actor);
+        const marker = await game.sr3e.SR3EActor._drawBlastArea(aoeCenter, aoeRadius, { name: `${this.name} (area)`, color: '#8030c0' });
+        aoeRegionId = marker.regionId;
+        aoeMarkerId = marker.markerId;
+        if (targetActors.length === 0) {
+          ui.notifications.info(`${this.name}: no targets in the ${aoeRadius}m area — casting anyway (drain still applies).`);
+        }
+      } else {
+        // No scene — fall back to the manual checkbox list.
+        targetActors = await SR3EItem._promptTargetsMulti(actor, spellType, spellTarget, force);
+        if (!targetActors || targetActors.length === 0) return null;
+      }
     } else {
       const targetActor = await SR3EItem._promptTarget(actor);
       if (!targetActor) return null;
       targetActors = [targetActor];
-
-      const dodgeDeclaration = await SR3EItem._promptDodgeDeclaration(targetActor, actor.name, this.name);
-      if (dodgeDeclaration === null) return null;
-      if (dodgeDeclaration > 0) {
-        committedDodgeDice = await targetActor.spendCombatPool(dodgeDeclaration);
-      }
+      // No dodge: combat spells are resisted (Willpower/Body vs Force), not dodged.
     }
 
     // Step 3: Spell Pool allocation — compute from raw fields, not derived cache
@@ -2378,19 +2481,32 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false) {
     const pool = Math.max(1, sorceryDice + magicDice);
     const spellPoolForDrain = Math.max(0, spTotal2 - (actor.system.spellPoolSpent ?? 0));
 
-    // Step 4: TN from primary target
-    const primaryTarget  = targetActors[0];
-    const parsedTarget   = SR3EItem._parseSpellTarget(spellTarget, primaryTarget, force, spellType);
-    const tn             = parsedTarget.tn;
+    // Step 4: SR3 combat spell = opposed test.
+    //   Cast:   Sorcery vs TN = the spell's Target attribute on the target (W→Willpower,
+    //           B→Body, F→Force, or a fixed number). For AoE the primary target sets the TN.
+    //   Resist: target rolls that SAME attribute vs TN = Force (handled at resist time).
+    //   Net successes (caster − resister) stage the base damage. No soak.
+    const primaryTarget  = targetActors[0] ?? null;
+    const parsedPrimary  = primaryTarget
+      ? SR3EItem._parseSpellTarget(spellTarget, primaryTarget, force, spellType)
+      : null;
+    const tn             = parsedPrimary ? parsedPrimary.tn : Math.max(2, force);
+    // Human-readable source of the cast TN, shown on the result card.
+    let tnSource;
+    if (!parsedPrimary || parsedPrimary.attrLabel === 'Force') tnSource = `Force ${force}`;
+    else if (parsedPrimary.attrLabel.startsWith('Fixed'))      tnSource = 'fixed';
+    else tnSource = `${primaryTarget.name}'s ${parsedPrimary.attrLabel}`;
 
-    // Build damage context — power = Force, level from spell's damage field
-    const level      = SR3EItem._parseSpellDamageLevel(this.system.damage);
-    const isStun     = /stun/i.test(this.system.damage ?? '');
+    // Build damage context — power = Force, level chosen at cast (drives target damage AND drain level).
+    // Damage track follows the spell Type: Mana → Stun, Physical → Physical.
+    const level      = damageLevel;
+    const isStun     = spellType !== 'Physical';
     const damageBase = { power: force, level, isStun };
     const rawDamage  = `${force}${level}`;
     const drainStr   = this.system.drain ?? '';
 
-    const targetNames  = targetActors.map(t => t.name).join(', ');
+    const targetNames  = targetActors.length ? targetActors.map(t => t.name).join(', ')
+                       : (isAoE ? `area (${aoeRadius}m)` : '—');
     const sorceryLabel = hasSpellcastingSpec
       ? `Sorcery ${sorceryRating} (${sorceryRating + 2}) — Spellcasting`
       : `Sorcery ${sorceryRating}`;
@@ -2405,9 +2521,14 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false) {
       spellType,
       spellTarget,
       isAoE,
+      aoeRegionId,
+      aoeMarkerId,
+      tnSource,
       rawDamage,
       damageBase,
       drainStr,
+      // SR3: failed-drain damage uses the nominated Damage Level (combat spells only).
+      drainLevel:        hasDamage ? damageLevel : null,
       sorceryRating,
       drainIsPhysical,
       spellPoolForDrain,
@@ -2420,10 +2541,29 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false) {
       rawDamage,
       damageBase,
       attackerActorId:    actor.id,
-      targetActorId:      primaryTarget.id,
+      targetActorId:      primaryTarget?.id ?? actor.id,
       committedDodgeDice,
       physicalDice:       options.physicalDice ?? false,
     });
+  }
+
+  /**
+   * Live actors (excluding the caster and vehicles) whose token centre is within `radiusM`
+   * metres of an area-spell's centre. Returns the actor list (deduped).
+   */
+  static _actorsInRadius(center, radiusM, caster) {
+    const seen = new Set();
+    const out  = [];
+    for (const tok of (canvas?.tokens?.placeables ?? [])) {
+      const a = tok.actor;
+      if (!a || a.type === 'vehicle' || a.id === caster.id) continue;
+      if (!game.sr3e.isLiveActor(a)) continue;
+      if (seen.has(a.id)) continue;
+      let dM; try { dM = canvas.grid.measurePath([center, tok.center])?.distance ?? Infinity; }
+      catch { dM = Infinity; }
+      if (dM <= radiusM) { seen.add(a.id); out.push(a); }
+    }
+    return out;
   }
 
   /**

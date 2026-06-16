@@ -1,5 +1,5 @@
-2026/06/15-11:29:17.637 75e4 Recovering log #301
-2026/06/15-11:29:17.637 75e4 Level-0 table #303: started
-2026/06/15-11:29:17.641 75e4 Level-0 table #303: 9805 bytes OK
-2026/06/15-11:29:17.648 75e4 Delete type=0 #301
-2026/06/15-11:29:17.649 75e4 Delete type=3 #299
+2026/06/16-16:17:11.716 2cf0 Recovering log #310
+2026/06/16-16:17:11.716 2cf0 Level-0 table #313: started
+2026/06/16-16:17:11.719 2cf0 Level-0 table #313: 9812 bytes OK
+2026/06/16-16:17:11.725 2cf0 Delete type=0 #310
+2026/06/16-16:17:11.725 2cf0 Delete type=3 #308

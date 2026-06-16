@@ -115,6 +115,25 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     super._onRender?.(context, options);
     this._registerPersistentHooks();
     this._enrichBioFields();
+    this._syncDuplicateInputs();
+  }
+
+  /**
+   * Recoil Compensation is shown on two tabs (Attributes & Cyber); both are in the DOM at
+   * once, so the form would serialise the duplicate name to the last (stale) one and revert
+   * an edit. Mirror every `system.recoilCompensation` input on `input` (fires before the
+   * `change` that submits), so all copies hold the same value when the form serialises.
+   */
+  _syncDuplicateInputs() {
+    const root = this.element;
+    if (!root) return;
+    const inputs = root.querySelectorAll('input[name="system.recoilCompensation"]');
+    if (inputs.length < 2) return;
+    inputs.forEach(inp => {
+      inp.addEventListener('input', () => {
+        inputs.forEach(other => { if (other !== inp) other.value = inp.value; });
+      });
+    });
   }
 
   /** Fill the read-only enriched displays for bio/notes and wire the Edit toggles. */
@@ -686,7 +705,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       </div>
       <div class="derived-grid">
         ${this._derivedBlock('Compensation',
-          `<span style="color:var(--sr-muted)" title="Cyber/body recoil compensation — edit on the Cyber tab; weapon-mounted comp is set on each weapon">${sys.recoilCompensation ?? 0}</span>`)}
+          `<input type="number" name="system.recoilCompensation" value="${sys.recoilCompensation ?? 0}" min="0" max="20" class="pool-input" style="width:48px;text-align:center"
+                  title="Cyber/body recoil compensation — stacks with weapon-mounted comp (also editable on the Cyber tab)"/>`)}
         ${this._derivedBlock('Rounds This Phase',
           `<span style="color:${(sys.roundsFiredThisPhase ?? 0) > 0 ? 'var(--sr-amber)' : 'var(--sr-muted)'}">${sys.roundsFiredThisPhase ?? 0}</span>`,
           '')}
@@ -908,15 +928,21 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       <div class="item-controls"><i class="fas fa-dice-d6 rollable" data-action="rollUnarmed" title="Unarmed attack (Strength)"></i></div>
     </div>`;
 
-  const _projRow = w => `
+  const trackOnProj = game.settings.get('The2ndChumming3e', 'trackAmmo');
+  const _projRow = w => {
+    const usesNocked = trackOnProj && (w._usesNockedAmmo?.() ?? false);
+    const out        = usesNocked ? this._weaponOutOfAmmo(w) : false;
+    return `
     <div class="item-row" data-item-id="${w.id}">
       <span class="item-name">${w.name}</span>
       <span class="item-cell col-xs">${w.system.damage || '—'}</span>
       <span class="item-cell">${w.system.strMin || '—'}</span>
       <span class="item-cell col-xs">${w.system.concealability ?? '—'}</span>
       <span class="item-cell col-xs">${w.system.weight ?? 0}</span>
-      ${this._itemControls(w.id, true, 'rollWeapon', false)}
+      ${trackOnProj ? `<span class="item-cell">${this._bowNockedCell(w)}</span>` : ''}
+      ${this._itemControls(w.id, true, 'rollWeapon', false, out, usesNocked ? w.id : null)}
     </div>`;
+  };
 
   // Thrown weapons are consumed on use — show quantity and disable when empty (tracking on).
   const _thrownRow = w => {
@@ -1009,7 +1035,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     'projectile': `
       <div class="weapon-section" data-section="projectile">
         <h3 class="section-hdr wep-section-hdr" draggable="true">${_dragHdr('Projectiles')} <span style="font-size:11px;font-weight:normal;color:var(--sr-muted)">(Bows &amp; Crossbows)</span></h3>
-        <div class="list-header"><span>Name</span><span class="col-xs" title="Damage">Dam.</span><span>Str Min</span><span class="col-xs" title="Concealability">Con.</span><span class="col-xs" title="Weight (kg)">KG</span><span></span></div>
+        <div class="list-header"><span>Name</span><span class="col-xs" title="Damage">Dam.</span><span>Str Min</span><span class="col-xs" title="Concealability">Con.</span><span class="col-xs" title="Weight (kg)">KG</span>${trackOnProj ? '<span title="Nocked arrow/bolt">Nocked</span>' : ''}<span></span></div>
         ${bowRows}
         ${uncatProj.length ? `
           <h3 class="section-hdr" style="margin-top:0.5rem;color:var(--sr-amber)">Uncategorised Projectiles</h3>
@@ -2121,7 +2147,17 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   _weaponOutOfAmmo(w) {
     if (!game.settings.get('The2ndChumming3e', 'trackAmmo')) return false;
     if (w.type === 'firearm') return (w.system.loadedRounds ?? 0) <= 0;
+    if (w._usesNockedAmmo?.()) return (w.system.loadedRounds ?? 0) <= 0;  // bows/crossbows
     return false; // thrown handled in its own row renderer
+  }
+
+  /** "Nocked" cell for a depleting bow/crossbow — shows the loaded arrow/bolt (capacity 1). */
+  _bowNockedCell(w) {
+    if (!(w._usesNockedAmmo?.())) return '—';
+    const noun   = w._weaponLoadMechanism() === 'bolt' ? 'Bolt' : 'Arrow';
+    const loaded = w.system.loadedRounds ?? 0;
+    const color  = loaded <= 0 ? 'var(--sr-red)' : 'var(--sr-text)';
+    return `<span style="color:${color}">${loaded > 0 ? noun : 'empty'}</span>`;
   }
 
   _meleeControls(itemId, isEquipped, isAwakened = false, isFocus = false, focusActive = false, stored = null) {

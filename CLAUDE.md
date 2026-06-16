@@ -428,12 +428,14 @@ Only one state active at a time; clicking the active button deactivates it.
 - *Reload*: prompts a compatible stockpile (matched by loading mechanism), full-swaps the magazine (leftovers discarded), and subtracts from the stockpile. When `trackAmmo` is off it only sets the loaded type (no stock math).
 - *Firing* uses whatever is loaded; decrements `loadedRounds` when `trackAmmo` is on (warns, never blocks, when empty).
 - *Type rules*: Explosive +1 / EX +2 power; Gel −2 power + Stun (attack time). APDS halves ballistic; Flechette unarmoured → level +1, armoured → effective armour ×2 (soak time, via `ammoType` carried into `_postSoakCard`). Anti-Vehicle sets `weaponOpts.avMunition` to bypass the vehicle Power/2. Tracer: FA-only, tracer rounds raise Level not Power, TN bonus shown as a manual note.
-- *Loading mechanisms*: c/m/cy/b/d/sb/internal (`SR3E.ammoLoadMechanisms`); parsed from the gun's capacity string by `SR3EItem._parseLoadMechanism`.
+- *Loading mechanisms*: c/m/cy/b/d/sb/internal + arrow/bolt (`SR3E.ammoLoadMechanisms`); for firearms parsed from the gun's capacity string by `SR3EItem._parseLoadMechanism`.
 - *Setting*: world setting `trackAmmo` (off by default) gates all counting/depletion.
 
-**Thrown weapons / grenades** (`thrown` type, and `projectile` type with a thrown category — `SR3EItem._isConsumable`): carry a `quantity` and are decremented 1 per use (`_consumeThrown`) when `trackAmmo` is on. The weapons-tab thrown section shows `×qty`. Bows/crossbows are never consumed.
+**Bows & crossbows — nocked arrows/bolts** (`projectile` type, bow/crossbow categories per `SR3E.nockedAmmoByCategory`; `SR3EItem._usesNockedAmmo`): treated like firearms with a **magazine of 1**. Each draws from the same `ammunition` stockpile, matched by loading mechanism — **bows ↔ `arrow`, crossbows ↔ `bolt`** (the mechanism is inferred from the weapon category, not a capacity string; see `_weaponLoadMechanism` / `_weaponMagazineSize`). Reload nocks one round (subtracts 1 from stock); firing spends it (`loadedRounds` 1→0) so you must re-nock. The weapons-tab projectile section shows a **Nocked** column (Arrow/Bolt or empty) + ↻ Reload, only when `trackAmmo` is on. **Slings (SL) and any non-mapped category never deplete.** No special arrow/bolt types yet (always `regular`).
 
-**Empty = inoperable** (when `trackAmmo` is on): `rollWeapon` bails at the top if a firearm has `loadedRounds ≤ 0` or a consumable has `quantity ≤ 0`. The roll dice icon is rendered faded + struck-through (`_itemControls` `rollDisabled`, gated by `SR3EActorSheet._weaponOutOfAmmo` for firearms / inline for thrown). The Reload button stays active so you can refill.
+**Thrown weapons / grenades** (`thrown` type, and `projectile` type with a thrown category — `SR3EItem._isConsumable`): carry a `quantity` and are decremented 1 per use (`_consumeThrown`) when `trackAmmo` is on. The weapons-tab thrown section shows `×qty`.
+
+**Empty = inoperable** (when `trackAmmo` is on): `rollWeapon` bails at the top if a firearm or nocked bow/crossbow has `loadedRounds ≤ 0`, or a consumable has `quantity ≤ 0`. The roll dice icon is rendered faded + struck-through (`_itemControls` `rollDisabled`, gated by `SR3EActorSheet._weaponOutOfAmmo` for firearms & bows / inline for thrown). The Reload button stays active so you can refill.
 
 **Vehicle-mounted weapons** keep their own AV-munition checkbox in the `🚗` firing dialog — they do **not** use the clip/reload system (built for vehicle-vs-vehicle). Character firearm dialogs no longer have a manual AV checkbox (driven by Anti-Vehicle ammo type).
 
@@ -445,8 +447,8 @@ Auto-measured from tokens when available, otherwise manual. Applies to `firearm`
 - **Override at fire time**: range is NOT pre-baked into `extraTNMod`; it's passed to `_promptWeaponRollOptions` as `rangeInfo` and rendered as an editable **Range dropdown** (pre-set to the measured band, shows measured metres). Changing it recomputes the TN live via a `renderDialogV2` hook guarded by `#sr-range`. The TN field stays the authoritative value on confirm.
 
 ### Attacking from the canvas
-Two entry points besides the sheet (both fire ready weapons via `_sr3eReadyWeapons`: firearms with ammo loaded when tracking, equipped melee, thrown w/ quantity, bows):
-- **Token HUD** (`renderTokenHUD` hook, sr3e.js): adds a 🎯 crosshair button on owned character/npc tokens → `_sr3eQuickAttack(actor)` opens a weapon picker (or fires directly if only one ready) → `_sr3eFireWeapon` dispatches `rollMelee`/`rollWeapon`. Works for all players (system code, not a macro).
+Two entry points besides the sheet (both fire ready weapons via `_sr3eReadyWeapons`: firearms with ammo loaded when tracking, equipped melee, thrown w/ quantity, bows/crossbows with a nocked arrow/bolt when tracking, slings, **and combat/damaging spells — those with a damage code — for Awakened actors**):
+- **Token HUD** (`renderTokenHUD` hook, sr3e.js): adds a 🎯 crosshair button on owned character/npc tokens → `_sr3eQuickAttack(actor)` opens a picker (or fires directly if only one ready) → `_sr3eFireWeapon` dispatches `rollMelee`/`rollWeapon`/`rollSpell`. Works for all players (system code, not a macro).
 - **Hotbar drag** (`hotbarDrop` hook + draggable `.weapon-section .item-row` emitting `{type:'Item', uuid}`): creates a "Fire: \<weapon\>" **script macro**. ⚠ Script macros only run for users with script-macro permission (off for the base Player role) — the Token HUD path has no such restriction.
 
 ### Foundry integrations (tokens / statuses / enrichers)
@@ -460,7 +462,8 @@ Two entry points besides the sheet (both fire ready weapons via `_sr3eReadyWeapo
   3. **Throw roll** (`rollPool`) carries `aoeCenter / aoeRadius / aoeThrowerCenter / grenadeType / aoeChunky` in the roll state.
   4. **Resolution** (`SR3EActor._postWaveCard`, the `state.isAoE && state.aoeCenter` branch — runs **before** the `successes===0` check, so a grenade always detonates): rolls scatter (`scatterDice` d6) − `successes × scatterReduction`; **relocates the epicentre** along the throw axis (dir 1 = overthrow, 4 = short); creates a result template at the landing spot; **re-detects every token in range — including the thrower**; draws a landing marker as a **Region document** (circle shape, `visibility: ALWAYS` — synced & visible to **all players**, deleted warning-free since Region isn't deprecated). If the thrower lacks Region-create permission it falls back to a **local PIXI circle** (tracked in `game.sr3e._blastMarkers`). The chat 🧹 Clear button removes whichever was made (`data-region-id` → region `delete()`; `data-marker-id` → PIXI `destroy()`). Per-target power = base − distance (or the **Chunky Salsa GUI** `game.sr3e.openChunkySalsa({...returnOnly})` when confined). Posts a soak card per caught token. Damage is base power − distance, never success-staged (successes only tighten scatter).
 - `_openChunkySalsaCalculator(opts)` posts soak cards itself when called with no `returnOnly` (the Rollable Tables button); returns per-target codes when `returnOnly:true`.
-- *(Dead/unused after this rework: `_promptTargetsAoE`, `_tokensInBlast`, and the old `aoeTargetIds`-gated branch in `_postWaveCard` — left in place but never reached. Spell AoE still uses its own manual target dialog.)*
+- *(Dead/unused after this rework: `_promptTargetsAoE`, `_tokensInBlast`, and the old `aoeTargetIds`-gated branch in `_postWaveCard` — left in place but never reached.)*
+- **Shared blast-area marker**: `SR3EActor._drawBlastArea(center, radiusM, {name,color})` → `{regionId, markerId}` (Region with `visibility: ALWAYS`, local PIXI fallback) and `SR3EActor._clearBlastButton({regionId,markerId})` build the marker + chat 🧹 Clear button. Used by both grenade resolution and **spell AoE** (purple). Spell AoE has **no scatter/falloff** — `SR3EItem._actorsInRadius(center, radiusM, caster)` auto-detects targets at cast time; each resists at full Force.
 
 ### Melee combat flow
 1. Attacker clicks melee weapon on sheet
@@ -496,19 +499,23 @@ Power (number) + Level (L/M/S/D) + optional Stun flag
 
 ### Spellcasting flow
 1. Caster clicks "Cast" on a spell row (magic tab)
-2. Choose Force dialog — note shown if Force > Sorcery (drain becomes Physical)
-3. Select targets dialog — checkboxes, shows Essence or Body TN per target
+2. Choose Force dialog — note shown if Force > Magic (drain becomes Physical). For damaging spells (item `damage` non-empty) it also has a **Damage Level** dropdown (L/M/S/D, default = the spell item's level); the chosen level drives **both** the target's base damage **and** the caster's drain level. **AoE spells** (Range code contains `(A)`, e.g. `LOS (A)` — there is no separate AoE flag) also show an **Area radius (m)** input (default = caster's **Magic** attribute, editable).
+3. Targeting (**no dodge** — combat spells are resisted, not dodged):
+   - **Single**: target dialog only.
+   - **AoE** (`SR3EItem._placeBlastTemplate` cursor aim → `_actorsInRadius`): nominate the area centre on the canvas; **every live actor (not the caster, not vehicles) inside the radius is auto-detected** as a target — no manual checkbox list, **no scatter, no falloff**. A purple **Region** area marker is drawn for all players (`SR3EActor._drawBlastArea`, local PIXI fallback) with a 🧹 Clear button on the result card. Off-canvas → falls back to the manual checkbox dialog (`_promptTargetsMulti`). Empty area → casts anyway (drain still applies).
 4. Allocate Magic Pool dice dialog (if any available)
-5. Roll Sorcery + Magic Pool dice vs TN = target Essence (Mana spells) or Body (Physical spells)
-6. Rule of Six applies throughout
-7. On final wave (allDone):
-   - 0 successes: spell fizzles — no damage, but drain button still posted
-   - 1+ successes: stage damage up (base = Force + level, every 2 hits = +1 stage)
-   - Each target gets a "Resist Spell" button
-   - Caster always gets a "Resist Drain" button
-8. Target resist: Willpower (Mana) or Body (Physical) dice, TN = Force, stage down
-9. Drain resist: Willpower dice, TN from parsed drain formula (min 2), stage down
-   - Remaining drain = Stun if Force ≤ Sorcery, Physical if Force > Sorcery
+5. **Casting = SR3 opposed test.** Caster rolls Sorcery + Magic Pool vs **TN = the spell's Target attribute** on the target — `SR3EItem._parseSpellTarget` (the single parser for both cast TN and resist): `W`→Willpower, `B`→Body, `I`→Intelligence, `Q`→Quickness, `F`→Force (the TN, not a target attribute), a number→fixed TN, blank/`OR`/unknown→Mana=Willpower/Physical=Body. **Any `(R)/(T)/(RC)/(V)/(DT)` suffix is stripped and ignored** (so `W(R)`, `4(V)` parse cleanly). For AoE the **primary** target sets the cast TN. Rule of Six throughout.
+6. On the caster's final wave (allDone):
+   - 0 successes: spell fails (targets auto-resist), no effect — drain still posted.
+   - 1+ successes: damage is **not** pre-staged; each target gets a **"Resist Spell"** button carrying the caster's successes + base damage (`SR3EActor._spellResistButton`). Caster always gets a **"Resist Drain"** button.
+   - If anyone has a Spell Defense pool, a **Counterspelling** card posts first and reduces the caster's successes (`_postSpellResistOrDoneCard` → same Resist Spell buttons).
+7. **Resist Spell** (`_postSpellSoakCard` → `handleSpellResistRoll`): target rolls the **spell's Target attribute** — the *same* `SR3EItem._parseSpellTarget` is reused so the resist attribute always matches the cast — **attribute only, no pool** — vs **TN = Force** (interactive). **Net = caster successes − resister successes** (`isSpellResist` branch in `_postWaveCard`): ≤ 0 → no effect; otherwise `stageDamage(base, net)` → **Assign Damage** button. **There is no separate soak** — the resistance test *is* the defence.
+8. Drain resist: Willpower dice, two components (`SR3EItem.parseDrainFormula(drainStr, force, damageLevel)`):
+   - **Power → TN** = ⌊Force/2⌋ + the **modifier outside the brackets** (the ½F base is implicit, not written; default +0).
+   - **Level** = the nominated Damage Level + the **modifier inside the brackets** (`(+1)` or `(DL+1)`/`(Damage Level +1)` both = +1 stage; `(DL)`/`()` = +0; `(DL-1)` = −1).
+   - e.g. **Manaball `(DL+1)`** at Force 6 / Serious → TN ⌊6/2⌋=3, level Serious+1 = **Deadly** → "3D".
+   - *Legacy:* a code with an explicit `F` formula (e.g. `(F/2+1)S`) uses that as the TN; level = nominated level (or a bare letter for non-damaging spells). Stage down by Willpower successes.
+   - Remaining drain = **Stun if Force ≤ Magic, Physical if Force > Magic** (SR3 RAW — the caster's Magic attribute, not Sorcery)
 - Sheet displays as "available / total"
 
 ---
@@ -548,11 +555,11 @@ system.roundsFiredThisPhase        ← persisted, recoil accumulator; reset each
 ### Item types and key fields
 - `firearm`: `damage` (string e.g. "9M"), `category` (weapon code), `mode` (e.g. "SA/BF/FA"), `ammunition` (capacity string e.g. "15(c)"), `recoilMod` (weapon-mounted comp), `rangeOverride` ("S/M/L/E" metres, e.g. "5/15/30/50"), `loadedAmmoType` / `loadedRounds` (current magazine)
 - `melee`: `damage` (string e.g. "9M"), `reach` (number), `category` (weapon code)
-- `projectile` / `thrown`: `damage`, `category`, `quantity` (thrown weapons are consumed on use; bows are not — see Firearms section). `projectile`/`thrown` use Strength-scaled range bands.
-- `ammunition`: `ammoType` (key into `SR3E.ammoTypes`), `loadMechanism` (c/m/cy/b/d/sb/internal), `rounds` (stockpile total) + descriptive fields. NO power/armour data fields — rules are in config
+- `projectile` / `thrown`: `damage`, `category`, `quantity` (thrown weapons consume `quantity`; bows/crossbows instead nock a single arrow/bolt via `loadedAmmoType`/`loadedRounds` — see Bows & crossbows above). `projectile`/`thrown` use Strength-scaled range bands.
+- `ammunition`: `ammoType` (key into `SR3E.ammoTypes`), `loadMechanism` (c/m/cy/b/d/sb/internal + arrow/bolt), `rounds` (stockpile total) + descriptive fields. NO power/armour data fields — rules are in config
 - `armor`: `ballistic` (number), `impact` (number)
 - `skill`: `rating`, `linkedAttribute`, `specialisation`
-- `spell`: `type` ("Mana"/"Physical"), `damage` (level letter e.g. "S" — power = Force at cast time), `drain` (formula string e.g. "(F/2)S"), `category`, `range`, `duration`
+- `spell`: `type` ("Mana"/"Physical" — sets the **resist attribute** *and* the **target damage track**: Mana → Stun, Physical → Physical), `damage` (level letter e.g. "S" — supplies the default Damage Level for the cast dropdown; power = Force at cast time), `drain` (drain-Power/TN formula e.g. "(F/2)" — the level is the nominated Damage Level, not the code's letter), `category`, `range` (Touch/LOS; an **`(A)` suffix = area effect** — drives the AoE flow, no separate flag), `duration`, `target` (cast-TN code: `W/B/I/Q/F`/number, suffixes stripped — `SR3EItem._parseSpellTarget`)
 
 ### Weapon category codes → skills
 ```
@@ -596,7 +603,8 @@ CYB/UNA → Unarmed Combat
 - `_buildMeleePoolInfo(actor, weapon)` — static: builds the boxing-card pool info. **Unarmed skill choice:** Unarmed Combat and Martial Arts (`MA:`-prefixed) skills are interchangeable — use the **highest-rated** among Unarmed Combat + all MA skills; default (interactive) only if none exist. The chosen skill's name is shown on the card.
 - `promptDefaultChoice(actor, opts)` — static async: the **SR3 Default Table** dialog (specialization +3 / skill +2 / attribute +4). Returns `{ mode, pool, tnMod, allowPool, label }` or `null` (cancelled). `opts = { message, linkedAttr, title }`. See the **Defaulting** section.
 - `_tokensAdjacent(aToken, tToken)` — static: true when tokens are in the same/adjacent square (melee range warn)
-- `reload()` — firearm: prompt a compatible stockpile, full-swap the magazine, subtract from stock
+- `reload()` — firearm **or** nocked bow/crossbow: prompt a compatible stockpile, swap the magazine (capacity 1 for bows), subtract from stock
+- `_usesNockedAmmo()` / `_weaponLoadMechanism()` / `_weaponMagazineSize()` — bow/crossbow nocked-ammo helpers (category → arrow/bolt, capacity 1); the latter two also cover firearms
 - `_promptFireMode(availableModes, actor, weapon, isHeavy)` — static, fire-mode + editable recoil-comp dialog
 - `_parseLoadMechanism(capacityStr)` — static, "15(c)" → 'c'
 - `_parseMagazineSize(capacityStr)` — static, "15(c)" → 15
