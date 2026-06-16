@@ -470,7 +470,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
                 <input type="text" value="${linkedAttrLabel}"
                        readonly disabled style="background:var(--sr-surface); color:var(--sr-text);"/>
                 <input type="hidden" name="system.linkedAttribute" value="${linkedAttr}"/>
-                <small style="color:var(--sr-muted)">Used when defaulting (Attribute - 2)</small>
+                <small style="color:var(--sr-muted)">Used when defaulting (full Attribute, +4 TN)</small>
               </div>
             ` : ''}
 
@@ -541,7 +541,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
               </p>
               <p style="font-size:11px; color:var(--sr-muted);">
                 Linked Attribute: ${linkedAttrLabel}
-                (for defaulting: Attribute - 2)
+                (for defaulting: full Attribute, +4 TN)
               </p>
             </div>
           ` : ''}

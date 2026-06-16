@@ -28,6 +28,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       rollSkill:      SR3EActorSheet._onRollSkill,
       rollWeapon:     SR3EActorSheet._onRollWeapon,
       rollMelee:      SR3EActorSheet._onRollMelee,
+      rollUnarmed:    SR3EActorSheet._onRollUnarmed,
       rollInitiative: SR3EActorSheet._onRollInitiative,
       itemCreate:     SR3EActorSheet._onItemCreate,
       browseSkills:   SR3EActorSheet._onBrowseSkills,
@@ -893,7 +894,19 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       <span class="item-cell col-xs">${w.system.weight ?? 0}</span>
       ${this._meleeControls(w.id, isEquipped, isAwakened, isFocus, focusActive, false)}
     </div>`;
-  }).join('') : '<p class="empty-list">No unarmed/cyber weapons.</p>';
+  }).join('') : '';
+
+  // Built-in unarmed attack — always available, not a real item (uses STR / Unarmed Combat).
+  const _unarmedStr = actor.system.attributes?.strength?.value ?? actor.system.attributes?.strength?.base ?? 1;
+  const unarmedBuiltinRow = `
+    <div class="item-row">
+      <span class="item-name">Unarmed Combat <span style="font-size:10px;color:var(--sr-dim)">(built-in)</span></span>
+      <span class="item-cell col-xs" title="(STR)M Stun">${_unarmedStr}M Stun</span>
+      <span class="item-cell">Reach 0</span>
+      <span class="item-cell col-xs">—</span>
+      <span class="item-cell col-xs">—</span>
+      <div class="item-controls"><i class="fas fa-dice-d6 rollable" data-action="rollUnarmed" title="Unarmed attack (Strength)"></i></div>
+    </div>`;
 
   const _projRow = w => `
     <div class="item-row" data-item-id="${w.id}">
@@ -1009,6 +1022,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <h3 class="section-hdr wep-section-hdr" draggable="true">${_dragHdr('Cyber &amp; Unarmed')}</h3>
         <div class="skill-note"><i class="fas fa-hand-rock"></i> Uses Unarmed Combat skill (Strength)</div>
         <div class="list-header"><span>Name</span><span class="col-xs" title="Damage">Dam.</span><span>Reach</span><span class="col-xs" title="Concealability">Con.</span><span class="col-xs" title="Weight (kg)">KG</span><span></span></div>
+        ${unarmedBuiltinRow}
         ${unarmedRows}
         <button type="button" class="btn-add" data-action="itemCreate" data-type="melee">+ Add Unarmed/Cyber</button>
       </div>`,
@@ -2403,6 +2417,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     await item.rollMelee({ physicalDice: ev.shiftKey ?? false });
   }
 
+  static async _onRollUnarmed(_ev, _target) {
+    const SR3EItem = game.sr3e.SR3EItem;
+    await SR3EItem.rollMeleeAttack(this.actor, SR3EItem._unarmedWeapon());
+  }
+
   static async _onRollSpell(ev, target) {
     const itemId = (target ?? ev.currentTarget).closest('[data-item-id]')?.dataset.itemId
                 ?? (target ?? ev.currentTarget).dataset.itemId;
@@ -3051,8 +3070,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       const forceBonus = isAdept ? (improvedAbility[sk.name] ?? 0) : 0;
       const pool       = s.rating
         ? Math.max(1, (s.rating ?? 0) + forceBonus)
-        : Math.max(1, (s.attributeValue ?? 3) - 2);
-      return `<option value="${sk.id}" data-pool="${pool}" data-spec="${s.specialisation ?? ''}"${sk.id === defaultId ? ' selected' : ''}>${sk.name}</option>`;
+        : Math.max(1, (s.attributeValue ?? 3));   // defaulting: full attribute (+4 TN at roll)
+      return `<option value="${sk.id}" data-pool="${pool}" data-spec="${s.specialisation ?? ''}" data-default="${s.rating ? '0' : '1'}"${sk.id === defaultId ? ' selected' : ''}>${sk.name}</option>`;
     }).join('');
 
     const defSkill   = skills.find(sk => sk.id === defaultId) ?? skills[0];
@@ -3060,7 +3079,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const defForce   = isAdept ? (improvedAbility[defSkill.name] ?? 0) : 0;
     const defPool    = defS.rating
       ? Math.max(1, (defS.rating ?? 0) + defForce)
-      : Math.max(1, (defS.attributeValue ?? 3) - 2);
+      : Math.max(1, (defS.attributeValue ?? 3));   // defaulting: full attribute (+4 TN at roll)
     const defSpec    = defS.specialisation ?? '';
 
     const onSkillChange = `
@@ -3075,6 +3094,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         if (!spec) { cb.checked = false; lbl.textContent = 'No specialisation'; }
         else        { lbl.textContent = spec + ' (+2 dice)'; }
         poolEl.value = cb.checked ? pool + 2 : pool;
+        const note = document.getElementById('sr-default-note');
+        if (note) note.style.display = opt.dataset.default === '1' ? 'block' : 'none';
       })(this)
     `.replace(/\s+/g, ' ');
 
@@ -3109,6 +3130,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
               <input type="number" id="sr-tn" class="skill-opts-tn" value="${4 + woundPenalty}" min="2" max="30"/>
             </div>
             ${woundPenalty > 0 ? `<div style="font-size:11px;color:var(--sr-amber);margin:4px 0 8px">⚡ Wound TN +${woundPenalty} (pre-applied)</div>` : ''}
+            <div id="sr-default-note" style="font-size:11px;color:var(--sr-amber);margin:4px 0 8px;display:${defS.rating ? 'none' : 'block'}">↩ No skill — you'll <strong>choose how to default</strong> (specialization / skill / attribute) when you roll.</div>
             ${karmaPool > 0 ? `
               <label class="skill-opts-karma">
                 <input type="checkbox" id="sr-karma"/> Use Karma Pool (${karmaPool} available)

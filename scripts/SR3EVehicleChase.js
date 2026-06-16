@@ -533,9 +533,11 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
       }
     }
 
+    // SR3 Default Table: defaulting to an attribute = full Reaction, no pool dice
+    // (in an Open Test the GM raises the threshold rather than the TN).
     const reaction = driver.system.attributes?.reaction?.value
                   ?? driver.system.attributes?.reaction?.base ?? 1;
-    return { pool: reaction, label: `Reaction ${reaction} (no vehicle skill)` };
+    return { pool: reaction, label: `Reaction ${reaction} (no vehicle skill — defaulting, no pool)`, defaulting: true };
   }
 
   async _rollDriverPoints(pid) {
@@ -544,12 +546,29 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
 
     const driver  = game.actors.get(p.driverActorId);
     const vehicle = game.actors.get(p.vehicleActorId);
-    const { pool: skillPool, label: skillLabel } = this._driverSkillPool(p);
+    let { pool: skillPool, label: skillLabel, defaulting } = this._driverSkillPool(p);
 
-    // Read current control allocation directly from the DOM (player may have edited it)
-    const controlAlloc = parseInt(
+    // SR3 Default Table — let the user choose how to default. This is an Open Test
+    // (no TN), so the +2/+3 TN modifiers don't apply; only the dice pool & "no pool"
+    // for an attribute default carry over (the GM raises the threshold by hand).
+    let allowPool = true;
+    if (defaulting) {
+      const def = await game.sr3e.SR3EItem.promptDefaultChoice(driver, {
+        linkedAttr: 'reaction',
+        title:      `Defaulting — ${driver?.name ?? 'Driver'}`,
+        message:    `${driver?.name ?? 'Driver'} has no vehicle skill — choose how to default (Open Test: GM sets the threshold):`,
+      });
+      if (!def) return;   // cancelled
+      skillPool  = def.pool;
+      skillLabel = def.label;
+      allowPool  = def.allowPool;
+    }
+
+    // Read current control allocation directly from the DOM (player may have edited it).
+    // No pool dice allowed when defaulting to an attribute.
+    const controlAlloc = !allowPool ? 0 : (parseInt(
       this.element.querySelector(`#p-${pid}-control`)?.value ?? p.controlAlloc
-    ) || 0;
+    ) || 0);
     const totalPool = skillPool + controlAlloc;
 
     if (totalPool < 1) {

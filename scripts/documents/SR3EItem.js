@@ -59,7 +59,8 @@ export class SR3EItem extends Item {
 
     s.dicePool        = basePool;
     s.canDefault      = !isLan && s.skillType !== 'language';
-    s.defaultingPool  = s.canDefault ? Math.max(1, attrValue - 2) : 0;
+    // SR3: defaulting to an attribute uses the FULL attribute (TN +4, no pool dice).
+    s.defaultingPool  = s.canDefault ? Math.max(1, attrValue) : 0;
     s.skillRating     = s.rating || 0;
     s.attributeValue  = attrValue;
     s.specializationBonus = (s.specialisation && s.rating > 0) ? 2 : 0;
@@ -84,10 +85,29 @@ export class SR3EItem extends Item {
     }
 
     let pool;
-    if (options.pool != null) {
-      pool = Math.max(1, options.pool);
+    let label   = `${this.name}`;
+    let defTnMod = 0;
+
+    if (isDefaulting) {
+      // SR3 Default Table — let the user choose specialization / skill / attribute.
+      const def = await SR3EItem.promptDefaultChoice(actor, {
+        linkedAttr: s.linkedAttribute,
+        message:    `No <strong>${this.name}</strong> skill — choose how to default:`,
+      });
+      if (!def) return null;   // cancelled
+      pool     = def.pool;
+      defTnMod = def.tnMod;
+      label   += ` — ${def.label}`;
+    } else if (options.pool != null) {
+      pool   = Math.max(1, options.pool);
+      label += s.specialisation
+        ? ` ${s.skillRating} (${s.skillRating + 2}) — ${s.specialisation}`
+        : ` (Rating ${s.skillRating} = ${pool} dice)`;
     } else {
-      pool = isDefaulting ? s.defaultingPool : Math.max(1, s.skillRating ?? 0);
+      pool   = Math.max(1, s.skillRating ?? 0);
+      label += s.specialisation
+        ? ` ${s.skillRating} (${s.skillRating + 2}) — ${s.specialisation}`
+        : ` (Rating ${s.skillRating} = ${pool} dice)`;
     }
 
     if (pool < 1) {
@@ -95,16 +115,8 @@ export class SR3EItem extends Item {
       return null;
     }
 
-    let label = `${this.name}`;
-    if (isDefaulting) {
-      label += ` (Defaulting: ${s.linkedAttribute} ${s.attributeValue} - 2 = ${pool})`;
-    } else if (s.specialisation) {
-      label += ` ${s.skillRating} (${s.skillRating + 2}) — ${s.specialisation}`;
-    } else {
-      label += ` (Rating ${s.skillRating} = ${pool} dice)`;
-    }
-    
-    return actor.rollPool(pool, tn, label, options);
+    // TN modifier from defaulting is baked in here; rollPool's own +4 flag is not used.
+    return actor.rollPool(pool, tn + defTnMod, label, { ...options, defaulting: false });
   }
 
   /**
@@ -119,17 +131,36 @@ export class SR3EItem extends Item {
    * Attacker clicks weapon → selects target → boxing card → both roll → compare → soak.
    */
   async rollMelee() {
-    const actor = this.actor;
-    if (!actor) {
-      ui.notifications.warn('No actor for this weapon.');
-      return null;
-    }
+    if (!this.actor) { ui.notifications.warn('No actor for this weapon.'); return null; }
+    return SR3EItem.rollMeleeAttack(this.actor, this);
+  }
+
+  /**
+   * Synthetic "Unarmed Combat" attacker weapon (bare fists): (STR)M Stun, reach 0, UNA.
+   * Not a real inventory item — used to launch an unarmed attack from the sheet or canvas.
+   */
+  static _unarmedWeapon() {
+    return {
+      id:       'unarmed',
+      name:     'Unarmed Combat',
+      type:     'melee',
+      _unarmed: true,
+      system:   { damage: '(STR)M Stun', reach: 0, category: 'UNA' },
+    };
+  }
+
+  /**
+   * Melee opposed-test flow for an attacker actor + attacker weapon (a real melee Item OR a
+   * synthetic object like _unarmedWeapon). Select target → adjacency warn → boxing card.
+   */
+  static async rollMeleeAttack(actor, atkWeapon) {
+    if (!actor || !atkWeapon) return null;
 
     // Parse attacker damage code (resolve STR against attacker)
-    const rawDamage  = this.system.damage || '';
+    const rawDamage  = atkWeapon.system?.damage || '';
     const damageBase = SR3EItem.parseDamageCode(rawDamage, actor);
     if (!damageBase) {
-      ui.notifications.warn(`${this.name} has no damage code set (e.g. 6M or (STR+2)M).`);
+      ui.notifications.warn(`${atkWeapon.name} has no damage code set (e.g. 6M or (STR+2)M).`);
       return null;
     }
 
@@ -137,23 +168,49 @@ export class SR3EItem extends Item {
     const targetActor = await SR3EItem._promptTarget(actor);
     if (!targetActor) return null;
 
+    // Melee reaches adjacent squares only — warn (don't block) if the target is further.
+    // Reach affects TN (below), not range.
+    const atkTok = actor.getActiveTokens?.()[0] ?? null;
+    const tgtTok = targetActor.getActiveTokens?.()[0] ?? null;
+    if (atkTok && tgtTok && !SR3EItem._tokensAdjacent(atkTok, tgtTok)) {
+      const dM = SR3EItem._measureDistance(atkTok, tgtTok);
+      ui.notifications.warn(`${targetActor.name} is ${dM != null ? `${Math.round(dM)}m away` : 'not adjacent'} — out of reach for a melee attack.`);
+    }
+
     // Get defender's equipped melee weapon, fall back to unarmed, then bare hands
     const defWeapon = SR3EItem._getEquippedMelee(targetActor);
 
     // Build rich pool info for both sides
-    const atkInfo  = SR3EItem._buildMeleePoolInfo(actor, this);
+    const atkInfo  = SR3EItem._buildMeleePoolInfo(actor, atkWeapon);
     const defInfo  = SR3EItem._buildMeleePoolInfo(targetActor, defWeapon);
-    const atkReach = this.system.reach ?? 0;
+    const atkReach = atkWeapon.system?.reach ?? 0;
     const defReach = defWeapon?.system?.reach ?? 0;
-    const atkTN    = Math.max(2, 4 - atkReach);
-    const defTN    = Math.max(2, 4 - defReach);
+
+    // SR3 Default Table — either side may lack the skill. Prompt each defaulter
+    // (attacker first, then defender) and patch their pool info / TN modifier.
+    const _applyMeleeDefault = async (info, dActor, who) => {
+      if (!info.isDefault) return true;
+      const def = await SR3EItem.promptDefaultChoice(dActor, {
+        linkedAttr: 'strength',
+        title:      `Defaulting — ${dActor.name} (${who})`,
+        message:    `${dActor.name} has no Unarmed Combat / Martial Arts skill — choose how to default:`,
+      });
+      if (!def) return false;   // cancelled → abort the whole attack
+      info.skillDice    = def.pool;
+      info.skillName    = def.label;
+      info.defaultTnMod = def.tnMod;
+      info.availPool    = def.allowPool ? (dActor.system.derived?.availableCombatPool ?? 0) : 0;
+      return true;
+    };
+    if (!await _applyMeleeDefault(atkInfo, actor, 'attacker'))       return null;
+    if (!await _applyMeleeDefault(defInfo, targetActor, 'defender')) return null;
 
     await game.sr3e.SR3EActor.postMeleeCard({
       attackerActorId:  actor.id,
       defenderActorId:  targetActor.id,
-      atkWeaponId:      this.id,
+      atkWeaponId:      atkWeapon.id,
       defWeaponId:      defWeapon?.id ?? null,
-      atkWeaponName:    this.name,
+      atkWeaponName:    atkWeapon.name,
       defWeaponName:    defWeapon?.name ?? 'Bare Hands',
       atkRawDamage:     rawDamage,
       atkDamageBase:    damageBase,
@@ -161,8 +218,9 @@ export class SR3EItem extends Item {
       defDamageBase:    defWeapon ? SR3EItem.parseDamageCode(defWeapon.system?.damage ?? '', targetActor) : null,
       atkReach,
       defReach,
-      atkTN,
-      defTN,
+      // Defaulting adds the chosen TN modifier (+2 skill / +3 spec / +4 attribute).
+      atkTN:            Math.max(2, 4 - atkReach + (atkInfo.defaultTnMod ?? 0)),
+      defTN:            Math.max(2, 4 - defReach + (defInfo.defaultTnMod ?? 0)),
       atkInfo,
       defInfo,
     });
@@ -191,7 +249,7 @@ export class SR3EItem extends Item {
       name:   'Bare Hands',
       type:   'melee',
       system: {
-        damage:   `${str}M`,
+        damage:   `${str}M Stun`,
         reach:    0,
         category: 'UNA',
       },
@@ -200,7 +258,7 @@ export class SR3EItem extends Item {
 
   /**
    * Build a melee dice pool for an actor using their weapon.
-   * Uses skill rating if available, otherwise defaults to Strength - 2.
+   * Uses skill rating if available, otherwise defaults to full Strength (+4 TN, no pool).
    */
   static _buildMeleePoolInfo(actor, weapon) {
     const map       = SR3EItem.WEAPON_SKILL_MAP;
@@ -208,12 +266,27 @@ export class SR3EItem extends Item {
     const skillName = map[code]?.skill ?? (
       ['CYB','UNA'].includes(code) ? 'Unarmed Combat' : 'Armed Combat'
     );
-    const skill     = actor.items.find(i =>
-      i.type === 'skill' && (i.name === skillName || i.name.includes(skillName))
-    );
+    // Unarmed: Unarmed Combat and Martial Arts (MA:) skills are interchangeable —
+    // use whichever has the highest rating; default to the attribute only if neither exists.
+    const isUnarmedContext = ['CYB', 'UNA'].includes(code) || skillName === 'Unarmed Combat';
+    let skill;
+    if (isUnarmedContext) {
+      const candidates = actor.items.filter(i =>
+        i.type === 'skill' && (i.name === skillName || i.name.includes(skillName) || /^MA:/i.test(i.name))
+      );
+      skill = candidates.length
+        ? candidates.reduce((best, s) => (s.system.rating ?? 0) > (best.system.rating ?? 0) ? s : best)
+        : null;
+    } else {
+      skill = actor.items.find(i =>
+        i.type === 'skill' && (i.name === skillName || i.name.includes(skillName))
+      );
+    }
+
     const str       = actor.system.attributes?.strength?.value ?? 1;
     const isDefault = !skill;
-    const basePool  = isDefault ? Math.max(1, str - 2) : (skill.system.skillRating ?? 0);
+    // Defaulting to Strength uses the FULL attribute (SR3); +4 TN and no combat pool.
+    const basePool  = isDefault ? Math.max(1, str) : (skill.system.skillRating ?? skill.system.rating ?? 0);
     let specBonus   = 0;
     let specName    = '';
     if (skill?.system?.specialisation &&
@@ -222,12 +295,145 @@ export class SR3EItem extends Item {
       specName  = skill.system.specialisation;
     }
     const skillDice  = Math.max(1, basePool + specBonus);
-    const availPool  = actor.system.derived?.availableCombatPool ?? 0;
-    return { skillName, skillRating: basePool, specName, specBonus, skillDice, availPool, isDefault };
+    const availPool  = isDefault ? 0 : (actor.system.derived?.availableCombatPool ?? 0);
+    // Display the actual martial-art skill name when one was used instead of "Unarmed Combat".
+    const displayName = (skill && skill.name !== skillName && /^MA:/i.test(skill.name)) ? skill.name : skillName;
+    return { skillName: displayName, skillRating: basePool, specName, specBonus, skillDice, availPool, isDefault };
+  }
+
+  /**
+   * SR3 Default Table — interactive defaulting prompt.
+   * Shown whenever an actor lacks the appropriate skill for a test. The user
+   * chooses to default to:
+   *   - a Specialization  (+3 TN, ½ the underlying skill's base rating, pool allowed)
+   *   - a related Skill   (+2 TN, ½ the chosen skill's rating, pool allowed)
+   *   - an Attribute      (+4 TN, full attribute, NO extra pool dice)
+   * "½ rating" rounds down. Lists ALL of the actor's active skills/specialisations
+   * (the GM judges relevance — minimal guardrails).
+   *
+   * @param {Actor}  actor
+   * @param {object} opts   { message, linkedAttr, title }
+   * @returns {Promise<null|{mode,pool,tnMod,allowPool,label}>}  null if cancelled.
+   */
+  static async promptDefaultChoice(actor, opts = {}) {
+    const half   = r => Math.floor((r ?? 0) / 2);
+    const skills = actor.items
+      .filter(i => i.type === 'skill'
+        && (i.system.skillType ?? 'active') === 'active'
+        && (i.system.rating ?? 0) > 0)
+      .sort((a, b) => a.name.localeCompare(b.name));
+    const specSkills = skills.filter(s => (s.system.specialisation ?? '').trim() !== '');
+
+    const skillOpts = skills.map(s => {
+      const r = s.system.rating ?? 0;
+      return `<option value="${s.id}" data-dice="${half(r)}">${s.name} ${r} → ${half(r)} dice</option>`;
+    }).join('');
+    const specOpts = specSkills.map(s => {
+      const r = s.system.rating ?? 0;
+      return `<option value="${s.id}" data-dice="${half(r)}">${s.name} (${s.system.specialisation}) — base ${r} → ${half(r)} dice</option>`;
+    }).join('');
+
+    const ATTRS = ['body', 'quickness', 'strength', 'charisma', 'intelligence', 'willpower', 'reaction'];
+    const attrOpts = ATTRS.map(k => {
+      const v   = actor.system.attributes?.[k]?.value ?? actor.system.attributes?.[k]?.base ?? 0;
+      const sel = k === (opts.linkedAttr ?? '') ? ' selected' : '';
+      const lbl = k.charAt(0).toUpperCase() + k.slice(1);
+      return `<option value="${k}" data-dice="${Math.max(1, v)}"${sel}>${lbl} ${v} → ${Math.max(1, v)} dice</option>`;
+    }).join('');
+
+    let hookId = Hooks.on('renderDialogV2', (app, html) => {
+      if (!html.querySelector?.('#def-mode')) return;   // not our dialog
+      Hooks.off('renderDialogV2', hookId);
+      const modeSel  = html.querySelector('#def-mode');
+      const rowSpec  = html.querySelector('#def-row-spec');
+      const rowSkill = html.querySelector('#def-row-skill');
+      const rowAttr  = html.querySelector('#def-row-attr');
+      const diceEl   = html.querySelector('#def-dice');
+      const tnEl     = html.querySelector('#def-tn');
+      const poolEl   = html.querySelector('#def-pool');
+
+      const refresh = () => {
+        const mode = modeSel.value;
+        rowSpec.style.display  = mode === 'specialization' ? 'block' : 'none';
+        rowSkill.style.display = mode === 'skill'          ? 'block' : 'none';
+        rowAttr.style.display  = mode === 'attribute'      ? 'block' : 'none';
+        let sel, tnMod, allowPool;
+        if (mode === 'specialization') { sel = html.querySelector('#def-spec');  tnMod = 3; allowPool = true; }
+        else if (mode === 'skill')     { sel = html.querySelector('#def-skill'); tnMod = 2; allowPool = true; }
+        else                           { sel = html.querySelector('#def-attr');  tnMod = 4; allowPool = false; }
+        const opt = sel?.options[sel.selectedIndex];
+        diceEl.textContent = opt ? (opt.dataset.dice ?? '0') : '0';
+        tnEl.textContent   = `+${tnMod}`;
+        poolEl.textContent = allowPool ? 'allowed' : 'not allowed';
+      };
+      modeSel.addEventListener('change', refresh);
+      html.querySelectorAll('#def-spec,#def-skill,#def-attr').forEach(s => s.addEventListener('change', refresh));
+      refresh();
+    });
+
+    let result = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: opts.title ?? `Defaulting — ${actor.name}` },
+      content: `
+        <div style="padding:6px 0;font-size:13px;">
+          <p style="margin:0 0 8px;">${opts.message ?? 'No appropriate skill detected — choose how to default:'}</p>
+          <label style="display:block;margin-bottom:8px;">Default to:
+            <select id="def-mode" style="width:100%;margin-top:3px;">
+              <option value="specialization"${specOpts ? '' : ' disabled'}>Specialization (+3 TN, ½ base skill)</option>
+              <option value="skill"${skillOpts ? '' : ' disabled'}>Skill (+2 TN, ½ skill rating)</option>
+              <option value="attribute" selected>Attribute (+4 TN, no pool dice)</option>
+            </select>
+          </label>
+          <label id="def-row-spec" style="display:none;margin-bottom:8px;">Specialization:
+            <select id="def-spec" style="width:100%;margin-top:3px;">${specOpts || '<option disabled>— none —</option>'}</select>
+          </label>
+          <label id="def-row-skill" style="display:none;margin-bottom:8px;">Related skill:
+            <select id="def-skill" style="width:100%;margin-top:3px;">${skillOpts || '<option disabled>— none —</option>'}</select>
+          </label>
+          <label id="def-row-attr" style="display:block;margin-bottom:8px;">Attribute:
+            <select id="def-attr" style="width:100%;margin-top:3px;">${attrOpts}</select>
+          </label>
+          <div style="background:var(--sr-surface,#1c2030);border:1px solid var(--sr-border,#3a3f55);border-radius:6px;padding:6px;font-size:12px;">
+            Dice pool: <strong id="def-dice">?</strong> &nbsp;·&nbsp; TN modifier: <strong id="def-tn">+4</strong> &nbsp;·&nbsp; Extra pool dice: <strong id="def-pool">not allowed</strong>
+          </div>
+        </div>`,
+      buttons: [
+        {
+          label: 'Confirm', action: 'confirm', default: true,
+          callback: (_e, _b, dlg) => {
+            const el   = dlg.element;
+            const mode = el.querySelector('#def-mode')?.value ?? 'attribute';
+            if (mode === 'specialization') {
+              const sel = el.querySelector('#def-spec');
+              const opt = sel?.options[sel.selectedIndex];
+              const sk  = opt ? actor.items.get(opt.value) : null;
+              result = { mode, pool: parseInt(opt?.dataset.dice) || 0, tnMod: 3, allowPool: true,
+                         label: sk ? `Defaulting → ${sk.name} spec (½ base ${sk.system.rating}), TN +3` : 'Defaulting → specialization, TN +3' };
+            } else if (mode === 'skill') {
+              const sel = el.querySelector('#def-skill');
+              const opt = sel?.options[sel.selectedIndex];
+              const sk  = opt ? actor.items.get(opt.value) : null;
+              result = { mode, pool: parseInt(opt?.dataset.dice) || 0, tnMod: 2, allowPool: true,
+                         label: sk ? `Defaulting → ${sk.name} (½ of ${sk.system.rating}), TN +2` : 'Defaulting → skill, TN +2' };
+            } else {
+              const sel = el.querySelector('#def-attr');
+              const opt = sel?.options[sel.selectedIndex];
+              const key = opt?.value ?? (opts.linkedAttr ?? 'body');
+              const lbl = key.charAt(0).toUpperCase() + key.slice(1);
+              result = { mode: 'attribute', pool: parseInt(opt?.dataset.dice) || 1, tnMod: 4, allowPool: false,
+                         label: `Defaulting → ${lbl} ${opt?.dataset.dice ?? ''}, TN +4 (no pool)` };
+            }
+          },
+        },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    Hooks.off('renderDialogV2', hookId);
+    return result;
   }
 
     static _buildMeleePool(actor, weapon) {
-    if (!weapon) return Math.max(1, (actor.system.attributes?.strength?.value ?? 1) - 2);
+    if (!weapon) return Math.max(1, (actor.system.attributes?.strength?.value ?? 1));
 
     // Determine skill from weapon category
     const map = SR3EItem.WEAPON_SKILL_MAP;
@@ -241,7 +447,7 @@ export class SR3EItem extends Item {
       (i.name === skillName || i.name.includes(skillName))
     );
 
-    let pool = skill ? (skill.system.skillRating ?? 0) : Math.max(1, (actor.system.attributes?.strength?.value ?? 1) - 2);
+    let pool = skill ? (skill.system.skillRating ?? 0) : Math.max(1, (actor.system.attributes?.strength?.value ?? 1));
 
     // Specialisation bonus
     if (skill?.system?.specialisation &&
@@ -364,7 +570,7 @@ export class SR3EItem extends Item {
     const weaponOpts = await SR3EItem._promptWeaponRollOptionsAoE(rawDamage, actor, { throwDistance });
     if (!weaponOpts) return null;
 
-    const tn                 = weaponOpts.tn;
+    let   tn                 = weaponOpts.tn;
     options.useKarma         = weaponOpts.useKarma;
     options.karmaReroll      = weaponOpts.karmaReroll;
     const effectiveRawDamage = weaponOpts.damageCode;
@@ -382,6 +588,7 @@ export class SR3EItem extends Item {
 
     let pool  = 0;
     let label = `${this.name} [${effectiveRawDamage}] — Throw`;
+    let defTnMod = 0, defAllowPool = false;
     if (skill) {
       pool = skill.system.skillRating || 0;
       const skillSpec  = skill.system.specialisation;
@@ -397,14 +604,21 @@ export class SR3EItem extends Item {
         label += ` (${skill.name} ${baseRating})`;
       }
     } else {
-      const attr      = this._getDefaultAttribute();
-      const attrValue = actor.system.attributes?.[attr]?.value ?? 0;
-      pool  = Math.max(1, attrValue - 2);
-      label += ` (Defaulting: ${attr} - 2)`;
+      // SR3 Default Table — let the user choose specialization / skill / attribute.
+      const def = await SR3EItem.promptDefaultChoice(actor, {
+        linkedAttr: this._getDefaultAttribute(),
+        message:    `No <strong>${skillName}</strong> skill — choose how to default:`,
+      });
+      if (!def) return null;   // cancelled
+      pool         = def.pool;
+      defTnMod     = def.tnMod;
+      defAllowPool = def.allowPool;
+      label       += ` — ${def.label}`;
     }
 
+    // Combat pool allowed unless defaulting to an attribute.
     const availableCombatPool = actor.system.derived?.availableCombatPool ?? 0;
-    if (availableCombatPool > 0) {
+    if ((skill || defAllowPool) && availableCombatPool > 0) {
       const combatDice = await this._promptCombatPool(availableCombatPool);
       if (combatDice > 0) {
         await actor.spendCombatPool(combatDice);
@@ -414,6 +628,7 @@ export class SR3EItem extends Item {
     }
 
     pool  = Math.max(1, pool);
+    tn    = tn + defTnMod;   // bake defaulting TN modifier
 
     options.weaponItemId     = this.id;
     options.actorId          = actor.id;
@@ -422,6 +637,7 @@ export class SR3EItem extends Item {
     options.isWeaponRoll     = true;
     options.isMelee          = false;
     options.isAoE            = true;
+    options.defaulting       = false;                  // TN modifier already baked into tn
     options.aoeCenter        = placed.center;          // nominated epicentre (canvas pixels)
     options.aoeRadius        = placed.radius;          // blast radius (metres)
     options.aoeThrowerCenter = throwerCenter;          // for relative scatter direction
@@ -591,6 +807,7 @@ export class SR3EItem extends Item {
   if (damageBase) label += ` [${effectiveRawDamage}]`;
   label += ` vs ${targetActor.name}`;
 
+  let defTnMod = 0, defAllowPool = false;
   if (skill) {
     pool = skill.system.skillRating || 0;
     const skillSpec  = skill.system.specialisation;
@@ -606,15 +823,21 @@ export class SR3EItem extends Item {
       label += ` (${skill.name} ${baseRating})`;
     }
   } else {
-    const attr      = this._getDefaultAttribute();
-    const attrValue = actor.system.attributes?.[attr]?.value ?? 0;
-    pool  = Math.max(1, attrValue - 2);
-    label += ` (Defaulting: ${attr} - 2)`;
+    // SR3 Default Table — let the user choose specialization / skill / attribute.
+    const def = await SR3EItem.promptDefaultChoice(actor, {
+      linkedAttr: this._getDefaultAttribute(),
+      message:    `No appropriate weapon skill — choose how to default:`,
+    });
+    if (!def) return null;   // cancelled
+    pool         = def.pool;
+    defTnMod     = def.tnMod;
+    defAllowPool = def.allowPool;
+    label       += ` — ${def.label}`;
   }
 
-  // Attacker combat pool allocation
+  // Attacker combat pool allocation — allowed unless defaulting to an attribute.
   const availableCombatPool = actor.system.derived?.availableCombatPool ?? 0;
-  if (availableCombatPool > 0) {
+  if ((skill || defAllowPool) && availableCombatPool > 0) {
     const combatDice = await this._promptCombatPool(availableCombatPool);
     if (combatDice > 0) {
       await actor.spendCombatPool(combatDice);
@@ -624,6 +847,7 @@ export class SR3EItem extends Item {
   }
 
   pool  = Math.max(1, pool);
+  tn    = tn + defTnMod;   // bake defaulting TN modifier
 
   // Store full context — including committed dodge dice
   options.weaponItemId       = this.id;
@@ -635,6 +859,7 @@ export class SR3EItem extends Item {
   options.isMelee            = ['melee'].includes(this.type);
   options.committedDodgeDice = committedDodgeDice;
   options.skipWoundMod       = true;
+  options.defaulting         = false;        // TN modifier already baked into tn
   options.ammoType           = ammoType;   // carried to the soak card for APDS/Flechette
 
   // Commit recoil — update rounds fired counter before the roll
@@ -690,6 +915,9 @@ export class SR3EItem extends Item {
     let   pool          = 0;
     let   poolLabel     = '';
     let   pilotWoundMod = 0;
+    let   gunneryDefaulting   = false;
+    let   gunneryDefTnMod     = 0;
+    let   gunneryDefAllowPool = false;
 
     let vcrLevel = 0;
     if (pilotActor) {
@@ -707,10 +935,17 @@ export class SR3EItem extends Item {
           ? `${pilotActor.name} (${modeLabel}): Gunnery ${base} (${pool}) — ${spec}`
           : `${pilotActor.name} (${modeLabel}): Gunnery ${base}`;
       } else {
-        const int = pilotActor.system.attributes?.intelligence?.value
-                 ?? pilotActor.system.attributes?.intelligence?.base ?? 1;
-        pool      = Math.max(1, int - 2);
-        poolLabel = `${pilotActor.name} (${modeLabel}): Defaulting — INT ${int} − 2`;
+        // SR3 Default Table — let the user choose specialization / skill / attribute for the pilot.
+        const def = await SR3EItem.promptDefaultChoice(pilotActor, {
+          linkedAttr: 'intelligence',
+          message:    `${pilotActor.name} has no <strong>Gunnery</strong> skill — choose how to default:`,
+        });
+        if (!def) return null;   // cancelled
+        pool                = def.pool;
+        poolLabel           = `${pilotActor.name} (${modeLabel}): ${def.label}`;
+        gunneryDefaulting   = true;
+        gunneryDefTnMod     = def.tnMod;
+        gunneryDefAllowPool = def.allowPool;
       }
       const stunVal = pilotActor.system.wounds?.stun?.value     ?? 0;
       const physVal = pilotActor.system.wounds?.physical?.value ?? 0;
@@ -737,6 +972,8 @@ export class SR3EItem extends Item {
       const reactionBase = pilotActor.system.attributes?.reaction?.base ?? 0;
       controlPoolMax = Math.max(0, reactionBase + vcrLevel);
     }
+    // No pool dice allowed when defaulting to an attribute.
+    if (gunneryDefaulting && !gunneryDefAllowPool) controlPoolMax = 0;
 
     // Step 3: Roll options dialog
     const baseSig  = targetActor.type === 'vehicle'
@@ -748,7 +985,7 @@ export class SR3EItem extends Item {
     if (!weaponOpts) return null;
 
     const finalPool = Math.max(1, pool + weaponOpts.controlPool);
-    const tn        = weaponOpts.tn;
+    const tn        = weaponOpts.tn + gunneryDefTnMod;   // bake defaulting TN modifier
     const cpNote    = weaponOpts.controlPool > 0 ? ` + CP${weaponOpts.controlPool}` : '';
     const label     = `🚗 ${this.name} [${weaponOpts.damageCode}] vs ${targetActor.name} — ${poolLabel}${cpNote}`;
 
@@ -774,6 +1011,7 @@ export class SR3EItem extends Item {
     options.isWeaponRoll       = true;
     options.isMelee            = false;
     options.committedDodgeDice = 0;
+    options.defaulting         = false;   // TN modifier already baked into tn
 
     return actor.rollPool(finalPool, tn, label, options);
   }
@@ -1025,6 +1263,27 @@ export class SR3EItem extends Item {
   }
 
   /**
+   * True when two tokens occupy the same or an adjacent square (the 8 surrounding squares) —
+   * "adjacent squares only" for melee, independent of the scene's diagonal rule. Returns true
+   * when adjacency can't be determined (no canvas/tokens) so callers never warn spuriously.
+   */
+  static _tokensAdjacent(aToken, tToken) {
+    if (!aToken || !tToken || !canvas?.ready) return true;
+    const a = aToken.center ?? aToken.object?.center;
+    const t = tToken.center ?? tToken.object?.center;
+    if (!a || !t) return true;
+    try {
+      const ao = canvas.grid.getOffset(a);
+      const to = canvas.grid.getOffset(t);
+      return Math.abs(ao.i - to.i) <= 1 && Math.abs(ao.j - to.j) <= 1;
+    } catch {
+      const dM = SR3EItem._measureDistance(aToken, tToken);
+      const gridM = canvas.dimensions?.distance ?? 1;
+      return dM == null || dM <= gridM * 1.5;
+    }
+  }
+
+  /**
    * Resolve the attack target. Prefers a single canvas target (the "T" tool) so its
    * token can be measured; returns { actor, token } or null to fall back to the dialog.
    */
@@ -1122,10 +1381,10 @@ export class SR3EItem extends Item {
   }
 
   /**
-   * Place a circular blast template on the canvas. Creates a real template at the
-   * attacker's token (or scene centre); the Templates layer is activated and the template
-   * selected so it can be dragged while the non-modal confirm dialog is open. Returns
-   * { center, radius } and deletes the template. Returns null if cancelled.
+   * Nominate a circular blast point on the canvas. Draws a plain PIXI circle that follows
+   * the cursor — no MeasuredTemplate document OR placeable (both are deprecated in Foundry
+   * v14, merged into Region) — so nothing here emits a compatibility warning. Left-click
+   * detonates, right-click / Esc cancels. Returns { center, radius } (scene coords) or null.
    */
   static async _placeBlastTemplate(actor, radius) {
     if (!canvas?.ready) return null;
@@ -1134,45 +1393,64 @@ export class SR3EItem extends Item {
       ? { x: aToken.center.x, y: aToken.center.y }
       : { x: canvas.dimensions.width / 2, y: canvas.dimensions.height / 2 };
 
-    // Templates are only draggable when their layer is the active control layer.
-    const prevLayer = canvas.activeLayer;
-    canvas.templates?.activate();
+    const pxPerM   = canvas.dimensions.size / canvas.dimensions.distance;
+    const radiusPx = Math.max(1, radius * pxPerM);
 
-    let tpl;
-    try {
-      [tpl] = await canvas.scene.createEmbeddedDocuments('MeasuredTemplate', [{
-        t: 'circle',
-        user: game.user.id,
-        x: origin.x, y: origin.y,
-        distance: radius,
-        fillColor: game.user.color,
-        flags: { 'The2ndChumming3e': { blastPreview: true } },
-      }]);
-    } catch (err) {
-      console.error('SR3E | could not create blast template', err);
-      prevLayer?.activate?.();
-      return null;
-    }
+    // The layer holding our graphics shares the scene coordinate system, so positions read
+    // back directly as scene coords (what aoeCenter / token.center expect).
+    const layer = canvas.interface ?? canvas.primary ?? canvas.stage;
+    const g     = new PIXI.Graphics();
+    layer.addChild(g);
 
-    // Select it so the GM can grab and drag it immediately.
-    try { tpl.object?.control?.({ releaseOthers: true }); } catch { /* ignore */ }
+    const draw = (x, y) => {
+      g.clear();
+      g.beginFill(0xcc3300, 0.20);
+      g.lineStyle(2, 0xcc3300, 0.9);
+      g.drawCircle(x, y, radiusPx);
+      g.endFill();
+    };
+    const snap = (x, y) => {
+      try {
+        const p = canvas.grid.getSnappedPoint({ x, y }, { mode: CONST.GRID_SNAPPING_MODES.CENTER });
+        return { x: p.x, y: p.y };
+      } catch { return { x, y }; }
+    };
 
-    let confirmed = false;
-    await foundry.applications.api.DialogV2.wait({
-      window: { title: 'Place Blast Template' },
-      content: `<p style="font-size:12px;margin:4px 0">Drag the <strong>${radius}m</strong> blast circle where it detonates, then click <strong>Confirm</strong>. Tokens inside become targets, with distance from the centre.</p>`,
-      buttons: [
-        { label: 'Confirm', action: 'ok', default: true, callback: () => { confirmed = true; } },
-        { label: 'Cancel', action: 'cancel' },
-      ],
+    let cx = origin.x, cy = origin.y;
+    draw(cx, cy);
+
+    ui.notifications.info(`Aim the ${radius}m blast — left-click to detonate, right-click or Esc to cancel.`);
+
+    return await new Promise(resolve => {
+      const cleanup = () => {
+        canvas.stage.off('pointermove', onMove);
+        canvas.stage.off('pointerdown', onDown);
+        window.removeEventListener('keydown', onKey, true);
+        canvas.app?.view?.removeEventListener?.('contextmenu', onContext, true);
+        try { g.destroy(); } catch { /* ignore */ }
+      };
+      const onMove = (event) => {
+        try {
+          const local = layer.toLocal(event.global);
+          const s = snap(local.x, local.y);
+          cx = s.x; cy = s.y;
+          draw(cx, cy);
+        } catch { /* ignore */ }
+      };
+      const onDown = (event) => {
+        const btn = event.button ?? event.data?.button ?? 0;
+        if (btn !== 0) return;          // let right-click reach the contextmenu handler
+        cleanup();
+        resolve({ center: { x: cx, y: cy }, radius });
+      };
+      const onContext = (event) => { event.preventDefault(); cleanup(); resolve(null); };
+      const onKey = (event) => { if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); cleanup(); resolve(null); } };
+
+      canvas.stage.on('pointermove', onMove);
+      canvas.stage.on('pointerdown', onDown);
+      window.addEventListener('keydown', onKey, true);
+      canvas.app?.view?.addEventListener?.('contextmenu', onContext, true);
     });
-
-    const placed = canvas.scene.templates.get(tpl.id);
-    const center = placed ? { x: placed.x, y: placed.y } : null;
-    if (placed) { try { await placed.delete(); } catch { /* ignore */ } }
-    prevLayer?.activate?.();   // restore the previous control layer (usually Tokens)
-    if (!confirmed || !center) return null;
-    return { center, radius };
   }
 
   /**

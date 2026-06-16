@@ -163,7 +163,8 @@ export class SR3EActor extends Actor {
       return;
     }
 
-    const atk = SR3EActor._buildCCParticipant(this);
+    const atk = await SR3EActor._buildCCParticipant(this);
+    if (!atk) return;   // defaulting cancelled
     const mcmPenalty = this._matrixTNPenalty?.() ?? 0;
     const mcmNote = mcmPenalty > 0
       ? `<p style="margin:0 0 8px;font-size:11px;color:var(--sr-red)">⚠ Deck damage: +${mcmPenalty} TN on all matrix rolls</p>`
@@ -210,7 +211,8 @@ export class SR3EActor extends Actor {
     const defActor = game.actors.get(targetId);
     if (!defActor) return;
 
-    const def = SR3EActor._buildCCParticipant(defActor);
+    const def = await SR3EActor._buildCCParticipant(defActor);
+    if (!def) return;   // defaulting cancelled
 
     await SR3EActor.postCybercombatCard({
       attackerActorId:  this.id,
@@ -267,7 +269,7 @@ export class SR3EActor extends Actor {
     });
   }
 
-  static _buildCCParticipant(actor) {
+  static async _buildCCParticipant(actor) {
     const sys = actor.system;
 
     if (actor.type === 'ic') {
@@ -316,14 +318,31 @@ export class SR3EActor extends Actor {
 
     // character / npc (decker)
     const ccSkill      = actor.items.find(i => i.type === 'skill' && i.name.toLowerCase().includes('cybercombat'));
-    const intel        = sys.attributes?.intelligence?.value ?? 0;
     const isDefaulting = !ccSkill;
-    const ccRating     = ccSkill?.system?.rating ?? Math.max(1, intel - 2);
     const d            = sys.derived ?? {};
-    const hackPoolAvail = d.availableHackingPool ?? d.hackingPool ?? 0;
     const mcmPenalty   = actor._matrixTNPenalty?.() ?? 0;
     const deckId       = sys.equippedCyberdeck ?? '';
     const deck         = deckId ? actor.items.get(deckId) : null;
+
+    let ccRating, hackPoolAvail, skillName, defTnMod = 0;
+    if (isDefaulting) {
+      // SR3 Default Table — let the user choose specialization / skill / attribute.
+      const def = await game.sr3e.SR3EItem.promptDefaultChoice(actor, {
+        linkedAttr: 'intelligence',
+        title:      `Defaulting — ${actor.name}`,
+        message:    `${actor.name} has no <strong>Cybercombat</strong> skill — choose how to default:`,
+      });
+      if (!def) return null;   // cancelled
+      ccRating      = def.pool;
+      defTnMod      = def.tnMod;
+      hackPoolAvail = def.allowPool ? (d.availableHackingPool ?? d.hackingPool ?? 0) : 0;
+      skillName     = def.label;
+    } else {
+      ccRating      = ccSkill.system.rating ?? 0;
+      hackPoolAvail = d.availableHackingPool ?? d.hackingPool ?? 0;
+      skillName     = `Cybercombat ${ccRating}`;
+    }
+
     const deckMpcp     = deck?.system?.attributes?.mpcp?.base ?? ccRating;
     const deckFirewall = deck?.system?.attributes?.firewall?.base ?? 0;
     const attackProg   = actor.items.find(i => i.type === 'program' && /attack|offensive/i.test(i.system.category ?? ''));
@@ -331,9 +350,8 @@ export class SR3EActor extends Actor {
     const dmgCode      = progEffR > 0 ? `${progEffR}S` : `${deckMpcp}L`;
 
     return {
-      label: 'Decker',
-      skillName: isDefaulting ? `Cybercombat (defaulting, INT ${intel}−2)` : `Cybercombat ${ccRating}`,
-      skillDice: ccRating, hackPoolAvail, tn: 4 + mcmPenalty,
+      label: 'Decker', skillName,
+      skillDice: ccRating, hackPoolAvail, tn: 4 + mcmPenalty + defTnMod,
       damageCode: dmgCode, damageBase: SR3EItem.parseDamageCode(dmgCode),
       firewall: deckFirewall, soakPool: deckMpcp, userMode: sys.matrixUserMode ?? '',
       programId: attackProg?.id ?? null, operatorActorId: null,
@@ -617,11 +635,26 @@ export class SR3EActor extends Actor {
     const d   = sys.derived ?? {};
 
     const ccSkill       = this.items.find(i => i.type === 'skill' && i.name.toLowerCase().includes('cybercombat'));
-    const intel         = this.system.attributes?.intelligence?.value ?? 0;
     const isDefaulting  = !ccSkill;
-    const ccRating      = ccSkill?.system?.rating ?? Math.max(1, intel - 2);
-    const availHackPool = d.availableHackingPool ?? d.hackingPool ?? 0;
     const mcmPenalty    = this._matrixTNPenalty();
+
+    // SR3 Default Table — choose how to default before building the dialog.
+    let ccRating, availHackPool, defTnMod = 0, ccNote = '';
+    if (isDefaulting) {
+      const def = await game.sr3e.SR3EItem.promptDefaultChoice(this, {
+        linkedAttr: 'intelligence',
+        title:      `Defaulting — ${this.name}`,
+        message:    `${this.name} has no <strong>Cybercombat</strong> skill — choose how to default:`,
+      });
+      if (!def) return;   // cancelled
+      ccRating      = def.pool;
+      defTnMod      = def.tnMod;
+      availHackPool = def.allowPool ? (d.availableHackingPool ?? d.hackingPool ?? 0) : 0;
+      ccNote        = ` <span style="color:var(--sr-amber)">(${def.label})</span>`;
+    } else {
+      ccRating      = ccSkill.system.rating ?? 0;
+      availHackPool = d.availableHackingPool ?? d.hackingPool ?? 0;
+    }
 
     const category    = (item.system.category ?? '').toLowerCase();
     const isOffensive = /exploit|attack|offensive|hammer/.test(category);
@@ -633,7 +666,7 @@ export class SR3EActor extends Actor {
     const hostActors = game.actors.filter(a => a.type === 'host' && game.sr3e.isLiveActor(a));
 
     const firstAlertPenalty = hostActors.length ? (hostActors[0]?.system?.derived?.alertTNPenalty ?? 0) : 0;
-    const defaultTN = 6 + mcmPenalty + firstAlertPenalty;
+    const defaultTN = 6 + mcmPenalty + firstAlertPenalty + defTnMod;   // defaulting TN modifier baked in
     const tnLabel   = isOffensive ? 'Target System Rating' : 'System Rating / Threshold';
 
     const icOptions = isOffensive && icActors.length
@@ -667,7 +700,7 @@ export class SR3EActor extends Actor {
             ${item.name} [${item.system.category || item.system.type || '?'}] Rating ${item.system.rating ?? 0}
           </p>
           <p style="margin:0 0 8px;font-size:12px;color:var(--color-text-dark-secondary)">
-            Cybercombat: <strong>${ccRating}</strong>${isDefaulting ? ` <span style="color:var(--sr-amber)">(no skill — defaulting to INT ${intel} − 2)</span>` : ''} &nbsp;|&nbsp; Hacking Pool: <strong>${availHackPool}</strong>
+            Cybercombat: <strong>${ccRating}</strong>${ccNote} &nbsp;|&nbsp; Hacking Pool: <strong>${availHackPool}</strong>
           </p>
           ${isOffensive && icOptions ? `
           <label style="display:block;margin-bottom:8px">
@@ -746,10 +779,7 @@ export class SR3EActor extends Actor {
     const d   = sys.derived ?? {};
 
     const hackSkill      = this.items.find(i => i.type === 'skill' && /hacking|computer/i.test(i.name));
-    const intel          = sys.attributes?.intelligence?.value ?? 0;
     const isDefaulting   = !hackSkill;
-    const hackRating     = hackSkill?.system?.rating ?? Math.max(1, intel - 2);
-    const availHackPool  = d.availableHackingPool ?? d.hackingPool ?? 0;
     const mcmPenalty     = this._matrixTNPenalty();
     const mcmNote        = mcmPenalty > 0
       ? `<p style="margin:0 0 8px;font-size:11px;color:var(--sr-red)">⚠ Deck damage: +${mcmPenalty} TN penalty included in default TN</p>`
@@ -767,9 +797,27 @@ export class SR3EActor extends Actor {
       return;
     }
 
+    // SR3 Default Table — choose how to default before building the dialog.
+    let hackRating, availHackPool, defTnMod = 0, hackNote = '';
+    if (isDefaulting) {
+      const def = await game.sr3e.SR3EItem.promptDefaultChoice(this, {
+        linkedAttr: 'intelligence',
+        title:      `Defaulting — ${this.name}`,
+        message:    `${this.name} has no <strong>Hacking/Computer</strong> skill — choose how to default:`,
+      });
+      if (!def) return;   // cancelled
+      hackRating    = def.pool;
+      defTnMod      = def.tnMod;
+      availHackPool = def.allowPool ? (d.availableHackingPool ?? d.hackingPool ?? 0) : 0;
+      hackNote      = ` <span style="color:var(--sr-amber)">(${def.label})</span>`;
+    } else {
+      hackRating    = hackSkill.system.rating ?? 0;
+      availHackPool = d.availableHackingPool ?? d.hackingPool ?? 0;
+    }
+
     const primaryHost      = connectedHost ?? hostActors[0];
     const alertPenalty     = primaryHost?.system?.derived?.alertTNPenalty ?? 0;
-    const defaultTN        = (primaryHost?.system.systemRating ?? 6) + mcmPenalty + alertPenalty;
+    const defaultTN        = (primaryHost?.system.systemRating ?? 6) + mcmPenalty + alertPenalty + defTnMod;   // defaulting TN modifier baked in
     const defaultThresh    = primaryHost?.system.securityTierThreshold ?? 1;
     const alertNote        = alertPenalty > 0
       ? `<p style="margin:0 0 8px;font-size:11px;color:var(--sr-amber)">⚠ Host alert: +${alertPenalty} TN included in default TN</p>`
@@ -808,7 +856,7 @@ export class SR3EActor extends Actor {
         <div style="padding:8px 0">
           ${mcmNote}${alertNote}
           <p style="margin:0 0 8px;font-size:12px;color:var(--color-text-dark-secondary)">
-            Hacking: <strong>${hackRating}</strong>${isDefaulting ? ` <span style="color:var(--sr-amber)">(no skill — INT ${intel} − 2)</span>` : ''} &nbsp;|&nbsp; Hacking Pool: <strong>${availHackPool}</strong>
+            Hacking: <strong>${hackRating}</strong>${hackNote} &nbsp;|&nbsp; Hacking Pool: <strong>${availHackPool}</strong>
           </p>
           ${hostRow}
           <label style="display:block;margin-bottom:8px">
@@ -894,17 +942,32 @@ export class SR3EActor extends Actor {
 
     const skillName     = isHacking ? 'hacking' : 'computer';
     const skill         = this.items.find(i => i.type === 'skill' && new RegExp(skillName, 'i').test(i.name));
-    const intel         = sys.attributes?.intelligence?.value ?? 0;
     const isDefaulting  = !skill;
-    const skillRating   = skill?.system?.rating ?? Math.max(1, intel - 2);
     const skillLabel    = isHacking ? 'Hacking' : 'Computer';
-    const availHackPool = d.availableHackingPool ?? d.hackingPool ?? 0;
     const mcmPenalty    = this._matrixTNPenalty?.() ?? 0;
+
+    // SR3 Default Table — choose how to default before building the dialog.
+    let skillRating, availHackPool, defTnMod = 0, skillNote = '';
+    if (isDefaulting) {
+      const def = await game.sr3e.SR3EItem.promptDefaultChoice(this, {
+        linkedAttr: 'intelligence',
+        title:      `Defaulting — ${this.name}`,
+        message:    `${this.name} has no <strong>${skillLabel}</strong> skill — choose how to default:`,
+      });
+      if (!def) return;   // cancelled
+      skillRating   = def.pool;
+      defTnMod      = def.tnMod;
+      availHackPool = def.allowPool ? (d.availableHackingPool ?? d.hackingPool ?? 0) : 0;
+      skillNote     = ` <span style="color:var(--sr-amber)">(${def.label})</span>`;
+    } else {
+      skillRating   = skill.system.rating ?? 0;
+      availHackPool = d.availableHackingPool ?? d.hackingPool ?? 0;
+    }
 
     const hostId     = sys.activeHostId ?? '';
     const hostActor  = hostId ? game.actors.get(hostId) : null;
     const alertPenalty = hostActor?.system?.derived?.alertTNPenalty ?? 0;
-    const defaultTN  = (hostActor?.system?.systemRating ?? 6) + mcmPenalty + alertPenalty;
+    const defaultTN  = (hostActor?.system?.systemRating ?? 6) + mcmPenalty + alertPenalty + defTnMod;   // defaulting TN modifier baked in
     const threshold  = isHacking ? (hostActor?.system?.securityTierThreshold ?? 0) : 0;
 
     const mcmNote   = mcmPenalty > 0 ? `<p style="margin:0 0 6px;font-size:11px;color:var(--sr-red)">⚠ Deck damage: +${mcmPenalty} TN</p>` : '';
@@ -921,7 +984,7 @@ export class SR3EActor extends Actor {
           ${mcmNote}${alertNote}
           ${promptData.description ? `<p style="margin:0 0 8px;font-size:12px;color:var(--color-text-dark-secondary)">${promptData.description}</p>` : ''}
           <p style="margin:0 0 8px;font-size:12px;color:var(--color-text-dark-secondary)">
-            ${skillLabel}: <strong>${skillRating}</strong>${isDefaulting ? ` <span style="color:var(--sr-amber)">(defaulting)</span>` : ''}
+            ${skillLabel}: <strong>${skillRating}</strong>${skillNote}
             &nbsp;|&nbsp; Hacking Pool: <strong>${availHackPool}</strong>
           </p>
           <p style="margin:0 0 8px;font-size:12px;color:var(--color-text-dark-secondary)">
@@ -1198,7 +1261,8 @@ export class SR3EActor extends Actor {
       return;
     }
 
-    const atk = SR3EActor._buildCCParticipant(this);
+    const atk = await SR3EActor._buildCCParticipant(this);
+    if (!atk) return;   // defaulting cancelled
 
     const targetOptions = targets.map(a => {
       const typeTag = a.type === 'agent' ? 'Agent' : a.type === 'ic' ? 'IC' : a.type.toUpperCase();
@@ -1240,7 +1304,8 @@ export class SR3EActor extends Actor {
     const defActor = game.actors.get(targetId);
     if (!defActor) return;
 
-    const def = SR3EActor._buildCCParticipant(defActor);
+    const def = await SR3EActor._buildCCParticipant(defActor);
+    if (!def) return;   // defaulting cancelled
 
     await SR3EActor.postCybercombatCard({
       attackerActorId:  this.id,
@@ -1709,6 +1774,9 @@ _prepareCharacter(sys, attr) {
       return null;
     }
 
+    // SR3 Default Table: defaulting to an attribute is +4 TN (full attribute dice, no pool).
+    if (options.defaulting) tn += 4;
+
     const effectiveTN  = options.skipWoundMod
       ? Math.max(2, tn)
       : Math.max(2, tn - (this.system.woundMod ?? 0));
@@ -2023,16 +2091,39 @@ _prepareCharacter(sys, attr) {
             scatterDesc = `💨 Scattered <strong>${scatterDist}m ${DIRS[dirRoll]}</strong> (${diceStr}m − ${reduction}m).`;
           }
 
-          // Show where it actually went off; a Clear button on the chat card removes it.
-          let resultTplId = null;
-          try {
-            const [resultTpl] = await canvas.scene.createEmbeddedDocuments('MeasuredTemplate', [{
-              t: 'circle', user: game.user.id, x: center.x, y: center.y,
-              distance: state.aoeRadius, fillColor: '#cc3300',
-              flags: { 'The2ndChumming3e': { blastResult: true } },
-            }]);
-            resultTplId = resultTpl?.id ?? null;
-          } catch { /* no perms / no canvas — chat still reports */ }
+          // Show where it actually went off, visible to ALL players. Foundry v14 deprecated
+          // the MeasuredTemplate document AND placeable (merged into Region), so we use a
+          // Region document (the v14-native, warning-free, synced path). If the thrower lacks
+          // Region-create permission we fall back to a local PIXI circle (no MeasuredTemplate).
+          let resultRegionId = null;   // persisted Region (synced to everyone)
+          let resultMarkerId = null;   // fallback: local-only PIXI circle
+          if (canvas?.ready) {
+            const pxPerM   = canvas.dimensions.size / canvas.dimensions.distance;
+            const radiusPx = Math.max(1, state.aoeRadius * pxPerM);
+            try {
+              const [region] = await canvas.scene.createEmbeddedDocuments('Region', [{
+                name: 'Grenade Blast',
+                color: '#cc3300',
+                visibility: CONST.REGION_VISIBILITY?.ALWAYS ?? 2,
+                shapes: [{ type: 'circle', x: center.x, y: center.y, radius: radiusPx, hole: false }],
+                flags: { 'The2ndChumming3e': { blastResult: true } },
+              }]);
+              resultRegionId = region?.id ?? null;
+            } catch {
+              // No create permission (e.g. a player threw) — local PIXI marker so the thrower at least sees it.
+              try {
+                const layer = canvas.interface ?? canvas.primary ?? canvas.stage;
+                const g = new PIXI.Graphics();
+                g.beginFill(0xcc3300, 0.20);
+                g.lineStyle(2, 0xcc3300, 0.9);
+                g.drawCircle(center.x, center.y, radiusPx);
+                g.endFill();
+                layer.addChild(g);
+                resultMarkerId = foundry.utils.randomID();
+                (game.sr3e._blastMarkers ??= new Map()).set(resultMarkerId, g);
+              } catch (err) { console.error('SR3E | could not draw blast marker', err); }
+            }
+          }
 
           // Re-detect everyone caught in the (scattered) blast — the thrower can be hit.
           const hits = [];
@@ -2056,8 +2147,8 @@ _prepareCharacter(sys, attr) {
           const hitLines = codes.length
             ? codes.map(t => `<div style="font-size:11px;margin-top:2px"><strong>${t.name}</strong>: ${t.power}${t.level}${t.dist != null ? ` <span style="color:var(--sr-muted)">(${t.dist}m)</span>` : ''}</div>`).join('')
             : '<div style="font-size:11px;color:var(--sr-muted)">No one caught in the blast.</div>';
-          const clearBtn = resultTplId
-            ? `<div style="margin-top:5px"><button type="button" class="sr3e-clear-blast-btn btn-sm" data-template-id="${resultTplId}" data-scene-id="${canvas.scene?.id ?? ''}" style="font-size:11px;padding:1px 8px">🧹 Clear blast marker</button></div>`
+          const clearBtn = (resultRegionId || resultMarkerId)
+            ? `<div style="margin-top:5px"><button type="button" class="sr3e-clear-blast-btn btn-sm" ${resultRegionId ? `data-region-id="${resultRegionId}" data-scene-id="${canvas.scene?.id ?? ''}"` : `data-marker-id="${resultMarkerId}"`} style="font-size:11px;padding:1px 8px">🧹 Clear blast marker</button></div>`
             : '';
           stagingHtml = `<div class="sr-staging-result">💥 ${basePower}${level}${isStun ? ' Stun' : ''} grenade — ${successes} hit${successes !== 1 ? 's' : ''}<div style="margin-top:3px">${scatterDesc}</div>${hitLines}${clearBtn}</div>`;
 
@@ -3249,6 +3340,7 @@ _prepareCharacter(sys, attr) {
       const tnCalc    = [
         '4',
         reach > 0 ? ` −${reach} reach` : '',
+        (info?.isDefault && info?.defaultTnMod) ? ` +${info.defaultTnMod} defaulting` : '',
       ].join('');
       const displayDamage = damageBase && /STR/i.test(rawDamage)
         ? `${damageBase.power}${damageBase.level}${damageBase.isStun ? ' Stun' : ''}`
@@ -3259,7 +3351,7 @@ _prepareCharacter(sys, attr) {
           <div class="sr-melee-name">${name}</div>
           <div class="sr-melee-skill">
             ${info?.isDefault
-              ? `<span style="color:var(--sr-amber)">${info.skillName} (defaulting – ${info.skillRating})</span>`
+              ? `<span style="color:var(--sr-amber)">${info.skillName}</span>`
               : `${info?.skillName ?? 'Unknown skill'}${info?.specName ? '' : ` (${info?.skillRating ?? '?'})`}`}
           </div>
           ${specLine}
@@ -4851,13 +4943,14 @@ _prepareCharacter(sys, attr) {
         };
       }
 
-      // Default: Willpower − 2
+      // No Sorcery skill — defaulting (resolved interactively below).
       return {
-        skillName:  'Willpower (defaulting)',
-        skillDice:  Math.max(1, wil - 2),
-        isDefault:  true,
+        skillName:    'Sorcery (defaulting)',
+        skillDice:    Math.max(1, wil),
+        isDefault:    true,
+        defaultTnMod: 0,
         rawDamage,
-        astralPool,
+        astralPool:   0,
       };
     };
 
@@ -4867,8 +4960,26 @@ _prepareCharacter(sys, attr) {
 
     const defInfo = _getAstralInfo(targetActor);
 
-    const atkTN = 4;
-    const defTN = 4;
+    // SR3 Default Table — either side may lack Sorcery. Prompt each defaulter (attacker first).
+    const _applyAstralDefault = async (info, dActor, who) => {
+      if (!info.isDefault) return true;
+      const def = await SR3EItem.promptDefaultChoice(dActor, {
+        linkedAttr: 'willpower',
+        title:      `Defaulting — ${dActor.name} (${who})`,
+        message:    `${dActor.name} has no <strong>Sorcery</strong> skill — choose how to default:`,
+      });
+      if (!def) return false;   // cancelled
+      info.skillDice    = def.pool;
+      info.skillName    = def.label;
+      info.defaultTnMod = def.tnMod;
+      info.astralPool   = def.allowPool ? (dActor.system.derived?.availableAstralPool ?? 0) : 0;
+      return true;
+    };
+    if (!await _applyAstralDefault(atkInfo, this, 'attacker'))         return null;
+    if (!await _applyAstralDefault(defInfo, targetActor, 'defender'))  return null;
+
+    const atkTN = 4 + (atkInfo.defaultTnMod ?? 0);   // defaulting TN modifier
+    const defTN = 4 + (defInfo.defaultTnMod ?? 0);
 
     await SR3EActor.postAstralCard({
       attackerActorId: this.id,

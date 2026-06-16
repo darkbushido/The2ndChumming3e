@@ -912,7 +912,7 @@ async function _openFallingDamageCalculator() {
           athleticsPool = skill.system.rating;
         } else {
           const body    = actor.system.attributes?.body?.value ?? actor.system.attributes?.body?.base ?? 0;
-          athleticsPool = Math.max(1, body - 2);
+          athleticsPool = Math.max(1, body);   // defaulting: full attribute
           isDefaulting  = true;
         }
       }
@@ -927,8 +927,8 @@ async function _openFallingDamageCalculator() {
       el.querySelector('#fp-net').textContent       = distance >= 1 ? netPower : '—';
       el.querySelector('#fp-level').textContent     = level;
       el.querySelector('#fp-code').textContent      = distance >= 1 ? `${netPower}${level}` : '—';
-      el.querySelector('#fp-athletics').textContent = isDefaulting ? `${athleticsPool} (Body −2, defaulting)` : athleticsPool;
-      el.querySelector('#fp-tn').textContent        = distance >= 1 ? distance : '—';
+      el.querySelector('#fp-athletics').textContent = isDefaulting ? `defaulting — choose at roll` : athleticsPool;
+      el.querySelector('#fp-tn').textContent        = distance >= 1 ? `${distance}${isDefaulting ? ' + default mod' : ''}` : '—';
     }
 
     el.querySelector('#fall-actor')?.addEventListener('change', updatePreview);
@@ -962,7 +962,7 @@ async function _openFallingDamageCalculator() {
             &nbsp;·&nbsp; TN: <strong id="fp-tn">—</strong>
           </div>
         </div>
-        <div style="font-size:11px;color:var(--sr-muted);margin-top:6px;">Athletics test TN = distance; each success reduces Power by 1. No Athletics skill defaults to Body −2.</div>
+        <div style="font-size:11px;color:var(--sr-muted);margin-top:6px;">Athletics test TN = distance; each success reduces Power by 1. No Athletics skill defaults to full Body, +4 TN.</div>
       </div>`,
     buttons: [
       {
@@ -980,15 +980,16 @@ async function _openFallingDamageCalculator() {
           const netPower    = Math.max(0, Math.floor(distance / 2) - Math.floor(impactArmor / 2));
           const level       = distance >= 21 ? 'D' : distance >= 7 ? 'S' : distance >= 3 ? 'M' : 'L';
           const skill       = actor.items.find(i => i.type === 'skill' && i.name.toLowerCase() === 'athletics');
-          let pool;
+          let pool, defaulting = false;
           if (skill) {
             pool = skill.system.rating;
           } else {
             const body = actor.system.attributes?.body?.value ?? actor.system.attributes?.body?.base ?? 0;
-            pool = Math.max(1, body - 2);
+            pool = Math.max(1, body);   // defaulting: full attribute
+            defaulting = true;
           }
 
-          res = { actorId, distance, netPower, level, pool };
+          res = { actorId, distance, netPower, level, pool, defaulting };
         }
       },
       { label: 'Cancel', action: 'cancel' },
@@ -1009,7 +1010,21 @@ async function _openFallingDamageCalculator() {
     return;
   }
 
-  await actor.rollPool(res.pool, res.distance, `🪂 ${actor.name}: Athletics (Falling)`, {
+  // SR3 Default Table — if no Athletics skill, let the user choose how to default.
+  let fallPool = res.pool;
+  let fallTn   = res.distance;
+  if (res.defaulting) {
+    const def = await game.sr3e.SR3EItem.promptDefaultChoice(actor, {
+      linkedAttr: 'body',
+      title:      `Defaulting — ${actor.name}`,
+      message:    `${actor.name} has no <strong>Athletics</strong> skill — choose how to default:`,
+    });
+    if (!def) return;
+    fallPool = def.pool;
+    fallTn  += def.tnMod;
+  }
+
+  await actor.rollPool(fallPool, fallTn, `🪂 ${actor.name}: Athletics (Falling)`, {
     fallingContext: { distance: res.distance, netPower: res.netPower, level: res.level, actorId: res.actorId },
   });
 }
@@ -1052,21 +1067,21 @@ async function _openEscapeArtistCalculator() {
           pool    = skill.system.rating + (hasSpec ? 2 : 0);
         } else {
           const body = actor.system.attributes?.body?.value ?? actor.system.attributes?.body?.base ?? 0;
-          pool        = Math.max(1, body - 2);
+          pool        = Math.max(1, body);   // defaulting: full attribute
           isDefaulting = true;
         }
       }
 
-      const effectiveTN = Math.max(2, (r?.tn ?? 4) - tnMod);
+      const effectiveTN = Math.max(2, (r?.tn ?? 4) - tnMod);   // defaulting mod chosen at roll
       const baseTime    = 5 * (r?.tn ?? 4);
 
       let poolLabel;
-      if (isDefaulting)    poolLabel = `${pool} (Body −2, defaulting)`;
+      if (isDefaulting)    poolLabel = `defaulting — choose at roll`;
       else if (hasSpec)    poolLabel = `${pool} (Athletics +2 spec)`;
       else                 poolLabel = pool;
 
       el.querySelector('#ea-preview-pool').textContent = poolLabel;
-      el.querySelector('#ea-preview-tn').textContent   = effectiveTN;
+      el.querySelector('#ea-preview-tn').textContent   = `${effectiveTN}${isDefaulting ? ' + default mod' : ''}`;
       el.querySelector('#ea-preview-time').textContent = `${baseTime} min`;
     }
 
@@ -1101,7 +1116,7 @@ async function _openEscapeArtistCalculator() {
             <div>Base time: <strong id="ea-preview-time">—</strong></div>
           </div>
         </div>
-        <div style="font-size:11px;color:var(--sr-muted);margin-top:6px;">TN modifier: positive for Pain Resistance or other bonuses. No Athletics defaults to Body −2. Spec bonus (+2) auto-detected.</div>
+        <div style="font-size:11px;color:var(--sr-muted);margin-top:6px;">TN modifier: positive for Pain Resistance or other bonuses. No Athletics defaults to full Body, +4 TN. Spec bonus (+2) auto-detected.</div>
       </div>`,
     buttons: [
       {
@@ -1115,21 +1130,23 @@ async function _openEscapeArtistCalculator() {
           if (!actor) return;
 
           const r           = RESTRAINTS[rIdx];
-          const effectiveTN = Math.max(2, r.tn - tnMod);
-          const baseTime    = 5 * r.tn;
 
           actor.prepareDerivedData();
           const skill = actor.items.find(i => i.type === 'skill' && i.name.toLowerCase() === 'athletics');
-          let pool;
+          let pool, defaulting = false;
           if (skill) {
             const hasSpec = !!(skill.system.specialisation?.toLowerCase().includes('escape'));
             pool = skill.system.rating + (hasSpec ? 2 : 0);
           } else {
             const body = actor.system.attributes?.body?.value ?? actor.system.attributes?.body?.base ?? 0;
-            pool = Math.max(1, body - 2);
+            pool = Math.max(1, body);   // defaulting: full attribute
+            defaulting = true;
           }
 
-          res = { actorId, restraintName: r.name, effectiveTN, baseTime, pool };
+          const effectiveTN = Math.max(2, r.tn - tnMod);   // +4 for defaulting applied by rollPool
+          const baseTime    = 5 * r.tn;
+
+          res = { actorId, restraintName: r.name, effectiveTN, baseTime, pool, defaulting };
         }
       },
       { label: 'Cancel', action: 'cancel' },
@@ -1142,7 +1159,21 @@ async function _openEscapeArtistCalculator() {
   const actor = game.actors.get(res.actorId);
   if (!actor) { ui.notifications.warn('Actor not found.'); return; }
 
-  await actor.rollPool(res.pool, res.effectiveTN, `🔓 ${actor.name}: Escape Artist (${res.restraintName})`, {
+  // SR3 Default Table — if no Athletics skill, let the user choose how to default.
+  let eaPool = res.pool;
+  let eaTn   = res.effectiveTN;
+  if (res.defaulting) {
+    const def = await game.sr3e.SR3EItem.promptDefaultChoice(actor, {
+      linkedAttr: 'body',
+      title:      `Defaulting — ${actor.name}`,
+      message:    `${actor.name} has no <strong>Athletics</strong> skill — choose how to default:`,
+    });
+    if (!def) return;
+    eaPool = def.pool;
+    eaTn   = Math.max(2, res.effectiveTN + def.tnMod);
+  }
+
+  await actor.rollPool(eaPool, eaTn, `🔓 ${actor.name}: Escape Artist (${res.restraintName})`, {
     escapeContext: { restraintName: res.restraintName, baseTime: res.baseTime, actorId: res.actorId },
   });
 }
@@ -1588,10 +1619,15 @@ function _sr3eReadyWeapons(actor) {
       else if (!trackAmmo || (i.system.quantity ?? 0) > 0) out.push(i);
     }
   }
+  // Built-in unarmed attack — always available (not a real item).
+  const unarmed = game.sr3e.SR3EItem._unarmedWeapon();
+  unarmed._actor = actor;
+  out.push(unarmed);
   return out;
 }
 
 function _sr3eFireWeapon(item) {
+  if (item._unarmed) return game.sr3e.SR3EItem.rollMeleeAttack(item._actor, item);
   return item.type === 'melee' ? item.rollMelee() : item.rollWeapon();
 }
 
@@ -1608,12 +1644,12 @@ async function _sr3eQuickAttack(actor) {
     content: `<div style="padding:6px 0"><label style="font-size:12px;color:var(--sr-muted)">Weapon
       <select id="qa-weapon" style="width:100%;margin-top:4px">${opts}</select></label></div>`,
     buttons: [
-      { label: 'Fire', action: 'fire', default: true, callback: (_e, _b, d) => { chosen = d.element.querySelector('#qa-weapon')?.value; } },
+      { label: 'Attack', action: 'fire', default: true, callback: (_e, _b, d) => { chosen = d.element.querySelector('#qa-weapon')?.value; } },
       { label: 'Cancel', action: 'cancel' },
     ],
   });
   if (!chosen) return;
-  const item = actor.items.get(chosen);
+  const item = weapons.find(w => w.id === chosen);
   if (item) _sr3eFireWeapon(item);
 }
 
@@ -1768,14 +1804,28 @@ function _claimBtn(btn, mid, cls, idx) {
 Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   const mid = message.id;
 
-  // Clear-blast-marker button — removes the grenade's landing template (idempotent).
+  // Clear-blast-marker button — removes the grenade's landing marker. Two kinds:
+  //  • data-region-id → a Region document (visible to all); deleted via the document API
+  //    (Region is NOT deprecated, so this is warning-free).
+  //  • data-marker-id → a local non-persisted placeable (fallback); destroyed via PIXI.
+  // Idempotent; harmless no-op on clients that don't hold the target.
   html.querySelectorAll('.sr3e-clear-blast-btn').forEach(btn => {
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
-      const scene = game.scenes?.get(btn.dataset.sceneId) ?? canvas?.scene;
-      const tpl   = scene?.templates?.get(btn.dataset.templateId);
-      if (tpl) { try { await tpl.delete(); } catch { /* already gone */ } }
+      const regionId = btn.dataset.regionId;
+      const markerId = btn.dataset.markerId;
+      if (regionId) {
+        const scene  = game.scenes?.get(btn.dataset.sceneId) ?? canvas?.scene;
+        const region = scene?.regions?.get(regionId);
+        if (region) { try { await region.delete(); } catch { /* already gone */ } }
+      } else if (markerId) {
+        const marker = game.sr3e?._blastMarkers?.get(markerId);
+        if (marker) {
+          try { marker.destroy(); } catch { /* already gone */ }
+          game.sr3e._blastMarkers.delete(markerId);
+        }
+      }
       btn.disabled    = true;
       btn.textContent = '🧹 Cleared';
     });

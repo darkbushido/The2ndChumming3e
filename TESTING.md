@@ -15,7 +15,7 @@ Verify each feature by checking the **in → out** numbers against what the chat
 - Click it → that die rolls again. If the running total ≥ TN it's a success, button disappears. - Passed 
 - If running total < TN and the new roll is 6 again → button reappears, keep exploding. - Passed
 
-### Glitch
+### Glitch - 
 - Roll a pool of **6 dice vs TN 4**; arrange for 4+ dice to show 1s 
 - **In:** 4 ones out of 6 dice → **Out:** glitch warning shown (⚠ 4 ones > half pool). - Passed
 
@@ -180,12 +180,12 @@ Move preferred weapon types to the top of the weapons tab - passed
 
 **BF example:** Weapon `9M` → BF → damage becomes `12S`.
 
-### Recoil (SA / BF / FA)
+### Recoil (SA / BF / FA) - passed
 `totalComp = actor recoilCompensation (Cyber tab) + weapon recoilMod ("Recoil Comp" on the item)`
 Both are editable inline in the fire-mode dialog and persist on confirm.
 
 - **SS/SA/FA cumulative:** `max(0, roundsBeforeThisShot − totalComp) × heavyMult`. **In:** fired 3 rounds previously, totalComp 2 → TN penalty **+1**.
-- **BF stacks:** `max(0, (roundsBeforeThisShot + 3) − totalComp) × heavyMult` — **+3 first burst, +6 second, +9 third** (BF counts its own 3 rounds). **In:** totalComp 0, first burst → **+3**; fire a second burst (roundsBefore now 3) → **+6**.
+- **BF stacks:** `max(0, (roundsBeforeThisShot + 3) − totalComp) × heavyMult` — **+3 first burst, +6 second** (BF counts its own 3 rounds). **In:** totalComp 0, first burst → **+3**; fire a second burst (roundsBefore now 3) → **+6**.
 - **Heavy weapons** (LMG/MMG/HMG/MinG) double the uncompensated recoil.
 - `roundsFiredThisPhase` resets at the start of each combat phase (and via the ↺ Reset button).
 
@@ -203,7 +203,7 @@ Both are editable inline in the fire-mode dialog and persist on confirm.
 
 World setting **Track Ammunition** (Configure Settings → System) gates all counting (off by default).
 
-**Stockpile (gear/ammo tabs):** ammo items are a reservoir. Each has Ammo Type, Loading Mechanism (c/m/cy/b/d/sb/internal), and Rounds in Stock. The tab shows Type / Load / Stock — no reload here.
+**Stockpile (gear/ammo tabs):** ammo items are a reservoir. Each has Ammo Type, Loading Mechanism (c/m/cy/b/d/sb/internal), and Rounds in Stock. The tab shows Type / Load / Stock
 
 **Magazine (weapons tab):** each firearm shows its capacity, a loaded badge (type + `loaded/magSize` when tracking), and a ↻ **Reload** button. Magazine size is parsed from the gun's capacity string (`15(c)` → 15).
 
@@ -236,13 +236,13 @@ World setting **Track Ammunition** (Configure Settings → System) gates all cou
 
 **Vehicle-mounted weapons** keep their own AV-munition checkbox in the 🚗 dialog (no clip system).
 
-### Empty weapons are inoperable (tracking on)
-When **Track Ammunition** is on, an empty weapon's dice icon is faded + struck-through and cannot be rolled; the Reload button stays active.
+### Empty weapons are inoperable (tracking on) - passed
+When **Track Ammunition** is on, an empty weapon's dice icon is faded and cannot be rolled; the Reload button stays active.
 - **In:** firearm with `loadedRounds 0` → dice icon disabled; clicking does nothing; ↻ Reload still works. After reload → dice icon active.
 - **In:** thrown weapon with quantity 0 → dice icon disabled.
 - Tracking **off** → all weapons always operable (no fading).
 
-### Range (firearms, bows/crossbows, thrown)
+### Range (firearms, bows/crossbows, thrown) - passed
 Needs both combatants as tokens on a scene whose grid distance is in **metres**.
 - **Auto-measure:** target a token (T tool), fire → roll dialog shows a **Range** dropdown pre-set to the measured band, with "measured Nm". TN pre-fills to base + range mod (Short +0 / Medium +1 / Long +2 / Extreme +5).
   - **In:** firearm vs target 37m, Assault Rifle (`50/150/350/550`) → Short, TN 4. At 200m → Long, TN 6. At 600m → "beyond Extreme" warning, TN 9.
@@ -251,12 +251,12 @@ Needs both combatants as tokens on a scene whose grid distance is in **metres**.
 - **Per-weapon override:** item sheet "Range Override" = "5/15/30/50" wins over the category table.
 - **No tokens / no scale:** no dropdown; set TN manually (unchanged behaviour).
 
-### Attacking from the canvas
+### Attacking from the canvas - passed
 - **Token HUD:** select an owned token → 🎯 button → weapon picker lists *ready* weapons (firearm w/ ammo, equipped melee, thrown w/ qty, bows) → fires the normal flow. One ready weapon → fires immediately. **In:** runner with loaded pistol + equipped sword → picker shows both.
 - **Hotbar drag:** drag a weapon row from the sheet to the hotbar → "Fire: \<weapon\>" macro created → click fires it. ⚠ Script macros only run for users granted script-macro permission; the Token HUD works for everyone.
 
 
-### Dodge (binary)
+### Dodge (binary) - passed
 Defender commits dice → after attack rolls → dodge card appears.
 - Dodge hits **≥** attack hits → **complete miss**, no damage proceeds.
 - Dodge hits **<** attack hits → **full staged damage** proceeds (net hits do NOT reduce staging).
@@ -288,9 +288,13 @@ Boxes applied per level:
 
 ---
 
-## 6. Melee Combat 
+## 6. Melee Combat - passed
 
 Click melee weapon → target dialog → boxing card appears for both sides simultaneously.
+
+### Adjacency (warn only)
+Melee reaches **adjacent squares only**. If both attacker and target are tokens on a scene and the target isn't in an adjacent square, a warning posts ("…Nm away — out of reach for a melee attack") but the attack **still proceeds**. Reach affects TN, not range.
+- **In:** attacker and target on neighbouring squares → no warning. Target several squares away → warning, boxing card still appears. Off a scene / no tokens → no warning.
 
 ### TN formula
 `4 − own reach + woundMod`
@@ -312,13 +316,19 @@ Loser gets Resist Damage button → soak card for their Body dice vs TN power �
 
 ---
 
-## 7. Unarmed Combat
+## 7. Unarmed Combat - passed
 
-Works identically to melee. If no melee weapon equipped, bare hands fallback:
-- Damage: `STR + M` (Moderate stun)
-- Skill: Unarmed Combat (linked to linked attribute)
-
-**In:** STR 4 → bare hands damage `4M Stun`.
+A built-in **Unarmed Combat** entry is always available — it's not a real item (uneditable).
+- **Where:** top of the Weapons tab's **Cyber & Unarmed** section (a row with a dice icon), and in the canvas Token-HUD attack picker.
+- **Damage:** `(STR)M Stun`. **In:** STR 4 → `4M Stun`.
+- **Pool / skill choice:** Unarmed Combat and Martial Arts (`MA:`-prefixed, e.g. `MA:Karate`) skills are interchangeable — use the **highest-rated** among them; if none exist, the **interactive Default dialog** opens (see §9).
+- Runs the normal melee flow (target → adjacency warn → boxing card → soak).
+- **In:** `Unarmed Combat 4` only → boxing card uses **Unarmed Combat 4**, TN 4.
+- **In:** `Unarmed Combat 4` and `MA:Karate 6` → boxing card uses **MA:Karate 6** (highest), TN 4, **not** defaulting.
+- **In:** no Unarmed Combat and no MA skill → Default dialog pops; choose Attribute → Strength 4 → boxing card shows **STR 4 dice, TN 8 (4+4), Pool max 0**. Choosing Skill/Spec uses ½ rating, +2/+3 TN, pool allowed.
+- **In:** both attacker and defender lack a skill → **both** get the dialog (attacker first, then defender).
+- **In:** Token HUD attack picker lists "Unarmed Combat" alongside ready weapons → choosing it runs the unarmed attack.
+- The defender's bare-hands fallback is also `(STR)M Stun` (aligned).
 
 ---
 
@@ -367,10 +377,23 @@ Pool = skill rating + 2 (when spec applies)
 
 **In:** Pistols 5, specialisation "Ares Predator", firing an Ares Predator → **7 dice**.
 
-### Defaulting (no skill, using attribute)
-Pool = `max(1, Attribute − 2)` (no TN penalty, just smaller pool)
+### Defaulting (no skill) — interactive SR3 Default Table
+When a roll has **no appropriate skill**, a dialog pops asking how to default. Three tiers:
 
-**In:** Linked attribute INT 4, no skill → defaulting pool **2**.
+| Default to | TN modifier | Dice pool | Pool dice |
+|---|---|---|---|
+| Specialization | +3 | ½ underlying skill **base** rating (round down) | allowed |
+| Skill | +2 | ½ chosen skill rating (round down) | allowed |
+| Attribute | +4 | full attribute value | **not allowed** |
+
+- The conditional dropdown lists **all** the actor's active skills / specialisations (the GM judges
+  relevance) and every attribute. Live preview shows resulting dice / TN mod / pool-allowed.
+- **Cancel** aborts the whole action.
+
+**In:** untrained skill → roll → choose **Attribute → Intelligence 4** → pool **4**, TN +4, no pool
+dice. Roll label includes `Defaulting → Intelligence 4, TN +4 (no pool)`.
+**In:** choose **Skill → Pistols 5** → pool **2** (⌊5/2⌋), TN +2, may add combat pool.
+**In:** choose **Specialization → Pistols (Ares) base 5** → pool **2** (⌊5/2⌋), TN +3, may add pool.
 
 ---
 
@@ -476,9 +499,11 @@ Aura Reading complementary roll button appears on result card — rolls Assensin
 Both combatants must be in astral space or dual-natured. Click Roll button on astral boxing card.
 
 ### Attack / defence dice
-Sorcery skill (+ 2 if Astral Combat spec), or default: max(1, Willpower − 2).
+Sorcery skill (+ 2 if Astral Combat spec), or **defaulting** (interactive — see §9, linked attribute = Willpower).
 
-**In:** Sorcery 5, no spec → **5 dice**. No Sorcery, WIL 4 → defaulting **2 dice**.
+**In:** Sorcery 5, no spec → **5 dice**, TN 4. No Sorcery → the Default dialog opens; **both sides**
+are prompted (attacker first, defender second) when both lack Sorcery. Choosing Attribute → WIL 4
+gives **4 dice**, TN **8** (4 + 4), astral pool **0**.
 
 ### TN: 4 (both sides)
 
@@ -547,9 +572,9 @@ Flow: Cybercombat button on decker sheet → **target dialog** (lists all actors
 ### Boxing card layout
 
 Both attacker (Decker) and defender (IC/Agent) shown side-by-side. Each corner has editable:
-- **Skill** dice (pre-filled from skill rating or defaulting)
-- **Pool** (hacking pool, 0 to available; 0 for IC/Agent side)
-- **TN** (pre-filled 4, + MCM penalty for decker)
+- **Skill** dice (pre-filled from skill rating; if no Cybercombat skill, the **interactive Default dialog** opens first — see §9 — and pre-fills the chosen pool)
+- **Pool** (hacking pool, 0 to available; 0 for IC/Agent side; **0** when defaulting to an attribute)
+- **TN** (pre-filled 4, + MCM penalty for decker, + the chosen default TN modifier)
 - **Damage** code (editable text)
 
 Firewall and soak pool shown read-only in each corner for reference.
@@ -654,9 +679,9 @@ IC sheet shows **⚔ Deployed** badge and host name. **✕ Clear** button resets
 
 ### Boxing card — Decker side (defender)
 
-- Skill = decker's Cybercombat (or INT−2 defaulting)
-- Hacking Pool = available hacking pool (0 to max)
-- TN = 4 + MCM penalty
+- Skill = decker's Cybercombat (or the interactive Default dialog — see §9 — when no skill)
+- Hacking Pool = available hacking pool (0 to max; **0** when defaulting to an attribute)
+- TN = 4 + MCM penalty + chosen default TN modifier
 - Damage = decker's own attack program or MPCP-L (for counter-attack)
 
 ### Firewall reference
@@ -735,6 +760,10 @@ Soak TN = `max(2, stagedPower − Firewall)`.
 ## 23. Matrix — Hacking Action (3-step threshold check)
 
 Flow: Hacking Action button → host / TN / threshold / pool dialog → roll → threshold check.
+
+**Defaulting:** with no Hacking/Computer skill the **interactive Default dialog** (see §9) opens
+before the action dialog; the chosen pool / TN modifier / pool-allowed are then baked into the
+dialog. Applies to the Hacking Action, node-prompt, and program-roll dialogs alike.
 
 ### Security Tiers
 
@@ -886,6 +915,7 @@ The Bio tab shows Background/Notes as read-only **enriched** text — `@UUID[...
 ## GM tools — Rollable Tables tab
 Chase Scene, Driving Test, Session Rewards, Chunky Salsa, Barrier Damage, Falling Damage and Escape Artist buttons now live on the **Rollable Tables** sidebar tab (not the combat tracker). Chase Scene + Driving Test show for all players; the rest are GM-only.
 - **In:** open Rollable Tables tab → buttons appear below the header. **Driving Test** → prompts for vehicle + driver, then the usual driving-test dialog.
+- **In:** Driving Test with a driver who has **no matching vehicle skill** → the **interactive Default dialog** opens (see §9, linked attribute = Reaction). Choosing Attribute bakes +4 into the base TN and disables the Control Pool; choosing Skill/Spec uses ½ rating, +2/+3 TN, Control Pool enabled.
 
 > Note: the §28/§29 references to "combat tracker sidebar" below are historical — these buttons moved to the Rollable Tables tab.
 
@@ -899,7 +929,7 @@ Triggered via the **🔓 Escape Artist** button (Rollable Tables tab, GM only).
 |---|---|
 | Athletics skill, no spec | Athletics rating |
 | Athletics + Escape Artist spec | Athletics rating + 2 |
-| No Athletics (defaulting) | max(1, Body − 2) |
+| No Athletics (defaulting) | interactive Default dialog — see §9 (linked attribute = Body) |
 
 ### Restraint TN table
 
@@ -924,7 +954,9 @@ TN modifier field in dialog: positive values reduce TN (e.g. Pain Resistance lev
 
 ### Defaulting
 
-**In:** No Athletics, Body 4 → pool **2** (max(1, 4−2)), Ropes TN 4 → 2 dice vs TN 4.
+**In:** No Athletics → preview shows "defaulting — choose at roll". On 🎲, the Default dialog
+opens (linked attribute = Body). Choose Attribute → Body 4 → pool **4**, Ropes effective TN
+**8** (4 + 4). Choosing Skill/Spec uses ½ rating, +2/+3 TN.
 
 ### Pain Resistance modifier
 
@@ -952,12 +984,12 @@ Impact armour reduces Power by `⌊Impact÷2⌋` before the Athletics test.
 
 ### Athletics test
 
-Pool = Athletics rating; if no Athletics skill, defaults to `max(1, Body − 2)`.
-TN = distance in metres. Each success reduces Power by 1.
+Pool = Athletics rating; if no Athletics skill, the **interactive Default dialog** opens (see §9).
+TN = distance in metres (+ chosen default TN modifier). Each success reduces Power by 1.
 
 **In:** Athletics 4, distance 10 → 4 dice vs TN 10.
 
-**In:** No Athletics, Body 4 → defaulting pool 2 vs TN 10.
+**In:** No Athletics → Default dialog → Attribute Body 4 → pool **4** vs TN **14** (10 + 4).
 
 ### Athletics negates all damage
 
@@ -1158,7 +1190,7 @@ Use these as fast checks with a fresh character (QUI 4, INT 3, WIL 3, STR 3, BOD
 | Initiative base | 4 (+ 1d6) |
 | 3 stun boxes wound mod | −2 (TN +2 on all rolls) |
 | Combat pool (unchanged by wounds) | 5 |
-| Defaulting pool (INT 3) | 1 |
+| Defaulting (INT 3, Attribute tier) | 3 dice, +4 TN, no pool (via Default dialog) |
 | Soak TN (power 9, ballistic 4) | 5 |
 | BF on `9M` weapon | `12S` |
 | Staging: `6M` + 4 net hits | `6D` |

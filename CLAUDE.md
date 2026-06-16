@@ -316,6 +316,38 @@ sr3e/
 - Critical glitch: glitch AND zero successes
 - Initiative never explodes interactively — resolved silently as a sum
 
+### Defaulting (SR3 Default Table) — interactive
+
+When an actor lacks the skill for a test, an **interactive dialog** asks how to default
+(`SR3EItem.promptDefaultChoice(actor, opts)` → `{ mode, pool, tnMod, allowPool, label }`,
+or `null` if cancelled). The three tiers from the SR3 Default Table:
+
+| Default to | TN modifier | Dice pool | Extra pool dice |
+|------------|-------------|-----------|-----------------|
+| Specialization | **+3** | ½ the underlying skill's **base** rating (round down) | allowed |
+| Skill          | **+2** | ½ the chosen skill's rating (round down)              | allowed |
+| Attribute      | **+4** | full attribute value                                 | **not allowed** |
+
+- "½ rating" **rounds down** (`Math.floor`). The dialog lists **all** of the actor's active
+  skills / specialisations (the GM judges relevance — minimal guardrails) plus every attribute.
+- A cancelled dialog **aborts** the whole action (returns `null`; callers bail).
+- The TN modifier is **baked into the TN** at each call site (e.g. `tn + def.tnMod`); the old
+  `rollPool` `options.defaulting` flag is no longer set by any path (left in place, inert).
+- "No pool dice" is enforced per-flow: combat/spell/hacking/control pool is offered only when
+  `def.allowPool` (i.e. never for the Attribute tier).
+
+**Wired in everywhere defaulting can occur:**
+- Skill rolls (`SR3EItem.rollSkill`), weapon attacks (single + AoE throw + `rollVehicleWeapon`).
+- **Melee** (`rollMeleeAttack`) and **astral** (`rollAstralCombat`): **both sides** are
+  prompted (attacker first, then defender) — each defaulter patches its boxing-card `skillDice`
+  / `skillName` / `defaultTnMod` / available pool.
+- **Matrix**: cybercombat boxing (`_buildCCParticipant`, now async), `rollProgram`,
+  `rollHackingAction`, `rollNodePrompt`.
+- **GM tools**: Falling & Escape Artist (sr3e.js), Driving Test (`SR3EVehicleSheet.runDrivingTest`).
+- **Chase Scene** is an **Open Test** (no TN) — the dialog still chooses the dice pool and the
+  Attribute tier suppresses the Control Pool; the +2/+3 TN modifiers don't apply (GM raises the
+  threshold by hand).
+
 ### Initiative
 Two modes selectable in game settings:
 - **SR3 mode**: Pass-based. Everyone acts once per pass in init order. Subtract 10 after each pass. Repeat until all initiatives ≤ 0.
@@ -423,16 +455,16 @@ Two entry points besides the sheet (both fire ready weapons via `_sr3eReadyWeapo
 - **Auto-defeated**: same `updateActor` hook — when a wound track is full → combatant `defeated=true` + `unconscious` overlay; physical full AND overflow ≥ Body → `dead` overlay. Reversible on healing.
 - **Text enrichers**: actor Biography/Notes render as read-only enriched HTML (`_bioField` + `_enrichBioFields` in `_onRender`, via `TextEditor.enrichHTML`) with an ✎ Edit toggle revealing the textarea; submit-on-change re-renders back to enriched. Chat-card content is auto-enriched by core. Item/actor edit fields stay plain textareas by design.
 - **AoE / grenade flow (RAW scatter-first)**: requires a scene. `rollWeapon` AoE path:
-  1. **Nominate** the blast point — `_placeBlastTemplate` (activates the Templates layer so it's draggable; deleted after Confirm). Records `aoeCenter` + the thrower token centre.
+  1. **Nominate** the blast point — `_placeBlastTemplate`: a plain **PIXI.Graphics circle** (added to `canvas.interface`) that follows the cursor — left-click detonates, right-click/Esc cancels, destroyed via PIXI. Records `aoeCenter` (scene coords) + the thrower token centre. *(Foundry v14 deprecated both the MeasuredTemplate **document** and **placeable** — merged into Region — so the aiming preview uses no MeasuredTemplate at all, avoiding every compatibility warning.)*
   2. **Roll options** — `_promptWeaponRollOptionsAoE(rawDamage, actor, {throwDistance})`: grenade type (Standard/Aero/Launcher), damage code, **auto range-TN** by type (`SR3E.grenadeTypes[type].rangeMult × STR` or `rangeFixed`, recomputed on type change), and a Confined-Space tickbox. No targets chosen here.
   3. **Throw roll** (`rollPool`) carries `aoeCenter / aoeRadius / aoeThrowerCenter / grenadeType / aoeChunky` in the roll state.
-  4. **Resolution** (`SR3EActor._postWaveCard`, the `state.isAoE && state.aoeCenter` branch — runs **before** the `successes===0` check, so a grenade always detonates): rolls scatter (`scatterDice` d6) − `successes × scatterReduction`; **relocates the epicentre** along the throw axis (dir 1 = overthrow, 4 = short); creates a result template at the landing spot; **re-detects every token in range — including the thrower**; per-target power = base − distance (or the **Chunky Salsa GUI** `game.sr3e.openChunkySalsa({...returnOnly})` when confined). Posts a soak card per caught token. Damage is base power − distance, never success-staged (successes only tighten scatter).
+  4. **Resolution** (`SR3EActor._postWaveCard`, the `state.isAoE && state.aoeCenter` branch — runs **before** the `successes===0` check, so a grenade always detonates): rolls scatter (`scatterDice` d6) − `successes × scatterReduction`; **relocates the epicentre** along the throw axis (dir 1 = overthrow, 4 = short); creates a result template at the landing spot; **re-detects every token in range — including the thrower**; draws a landing marker as a **Region document** (circle shape, `visibility: ALWAYS` — synced & visible to **all players**, deleted warning-free since Region isn't deprecated). If the thrower lacks Region-create permission it falls back to a **local PIXI circle** (tracked in `game.sr3e._blastMarkers`). The chat 🧹 Clear button removes whichever was made (`data-region-id` → region `delete()`; `data-marker-id` → PIXI `destroy()`). Per-target power = base − distance (or the **Chunky Salsa GUI** `game.sr3e.openChunkySalsa({...returnOnly})` when confined). Posts a soak card per caught token. Damage is base power − distance, never success-staged (successes only tighten scatter).
 - `_openChunkySalsaCalculator(opts)` posts soak cards itself when called with no `returnOnly` (the Rollable Tables button); returns per-target codes when `returnOnly:true`.
 - *(Dead/unused after this rework: `_promptTargetsAoE`, `_tokensInBlast`, and the old `aoeTargetIds`-gated branch in `_postWaveCard` — left in place but never reached. Spell AoE still uses its own manual target dialog.)*
 
 ### Melee combat flow
 1. Attacker clicks melee weapon on sheet
-2. Target selection dialog
+2. Target selection dialog. **Adjacency:** if both are tokens and the target isn't in an adjacent square (`SR3EItem._tokensAdjacent` via `canvas.grid.getOffset`), `rollMelee` **warns but proceeds** (minimal-guardrails). Reach affects TN only, not range.
 3. Defender auto-uses equipped melee weapon (equippedMelee field), falls back to unarmed/cyber item, then bare hands (STR + M)
 4. Boxing card shows both sides: skill name/rating, weapon, damage code, reach, skill dice, editable combat pool (0 default), editable TN
 5. TN = 4 − reach (your own reach reduces your TN) + wound modifier
@@ -558,7 +590,12 @@ CYB/UNA → Unarmed Combat
 
 ### SR3EItem
 - `rollWeapon(tn, options)` — ranged attack flow (reads loaded ammo, fire mode, recoil; decrements magazine)
-- `rollMelee()` — melee attack flow
+- `rollMelee()` — instance: melee attack flow → calls `rollMeleeAttack(this.actor, this)`
+- `rollMeleeAttack(actor, atkWeapon)` — static: shared melee flow for a real Item OR a synthetic weapon (adjacency warn → boxing card)
+- `_unarmedWeapon()` — static: synthetic "Unarmed Combat" attacker weapon ((STR)M Stun, reach 0, UNA). Built-in, not a real item; triggered from the Cyber & Unarmed sheet row (`rollUnarmed` action → `_onRollUnarmed`) and the canvas picker (`_sr3eReadyWeapons` appends it; `_sr3eFireWeapon` routes `_unarmed` items to `rollMeleeAttack`)
+- `_buildMeleePoolInfo(actor, weapon)` — static: builds the boxing-card pool info. **Unarmed skill choice:** Unarmed Combat and Martial Arts (`MA:`-prefixed) skills are interchangeable — use the **highest-rated** among Unarmed Combat + all MA skills; default (interactive) only if none exist. The chosen skill's name is shown on the card.
+- `promptDefaultChoice(actor, opts)` — static async: the **SR3 Default Table** dialog (specialization +3 / skill +2 / attribute +4). Returns `{ mode, pool, tnMod, allowPool, label }` or `null` (cancelled). `opts = { message, linkedAttr, title }`. See the **Defaulting** section.
+- `_tokensAdjacent(aToken, tToken)` — static: true when tokens are in the same/adjacent square (melee range warn)
 - `reload()` — firearm: prompt a compatible stockpile, full-swap the magazine, subtract from stock
 - `_promptFireMode(availableModes, actor, weapon, isHeavy)` — static, fire-mode + editable recoil-comp dialog
 - `_parseLoadMechanism(capacityStr)` — static, "15(c)" → 'c'
@@ -568,7 +605,6 @@ CYB/UNA → Unarmed Combat
 - `_rangeBandForDistance(bands, metres)` / `_measureDistance(aToken, tToken)` / `_acquireCanvasTarget()` — static, range classification + token distance + canvas target
 - `parseDamageCode(code)` — static, returns `{ power, level, isStun }`
 - `stageDamage(base, netSuccesses)` — static, returns staged `{ power, level, isStun }`
-- `_buildMeleePoolInfo(actor, weapon)` — static, returns rich pool info for boxing card
 - `_getEquippedMelee(actor)` — static, finds equipped/fallback melee weapon
 - `_promptTarget(attacker)` — static, shows target selection dialog
 - `_promptDodgeDeclaration(defender, attackerName, weaponName)` — static, defender commits dodge dice

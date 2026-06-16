@@ -549,6 +549,8 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     }
 
     let skillDice, poolLabel;
+    const isDefaulting = !matchedSkill;
+    let defTnMod = 0, defAllowPool = true;
     if (matchedSkill) {
       const rating    = matchedSkill.system.rating ?? 1;
       const specBonus = useSpecialisation ? 2 : 0;
@@ -556,15 +558,22 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
       const specNote = useSpecialisation ? ` + spec (${matchedSkill.system.specialisation})` : '';
       poolLabel = `${matchedSkill.system.skillName || matchedSkill.name} ${rating}${specNote}`;
     } else {
-      const reaction = driver.system.attributes?.reaction?.value
-                    ?? driver.system.attributes?.reaction?.base ?? 3;
-      skillDice = reaction;
-      poolLabel = `Reaction ${reaction} (no vehicle skill)`;
+      // SR3 Default Table — let the user choose specialization / skill / attribute.
+      const def = await game.sr3e.SR3EItem.promptDefaultChoice(driver, {
+        linkedAttr: 'reaction',
+        title:      `Defaulting — ${driver.name}`,
+        message:    `${driver.name} has no vehicle skill for this test — choose how to default:`,
+      });
+      if (!def) return;   // cancelled
+      skillDice    = def.pool;
+      defTnMod     = def.tnMod;
+      defAllowPool = def.allowPool;
+      poolLabel    = `${def.label}`;
     }
 
     // Vehicle stats
     const autonav  = sys.attributes?.autonav?.base ?? 0;
-    const handling = sys.attributes?.handling?.base ?? 4;
+    const handling = (sys.attributes?.handling?.base ?? 4) + defTnMod;   // defaulting TN modifier baked in
     const basePool = skillDice + autonav;
 
     // Check for VCR cyberware
@@ -657,8 +666,8 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
           </label>
           ${datajackRow}
           ${riggerRow}
-          <label style="${FIELD_S}">Control Pool Dice
-            <input id="drv-control" type="number" value="0" min="0" max="30" style="${INPUT_S}"/>
+          <label style="${FIELD_S}">Control Pool Dice${(isDefaulting && !defAllowPool) ? ' (none — defaulting to attribute)' : ''}
+            <input id="drv-control" type="number" value="0" min="0" max="${(isDefaulting && !defAllowPool) ? 0 : 30}" ${(isDefaulting && !defAllowPool) ? 'disabled' : ''} style="${INPUT_S}"/>
           </label>
           <label style="${FIELD_S}">Base TN
             <input id="drv-tn" type="number" value="${handling}" min="2" max="30" style="${INPUT_S}"/>
