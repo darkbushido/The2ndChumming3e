@@ -1775,7 +1775,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <span class="item-cell">${s.system.category || '—'}</span>
         <span class="item-cell">${s.system.type || '—'}</span>
         <span class="item-cell">${s.system.range || '—'}</span>
-        <span class="item-cell">${s.system.damage || '—'}</span>
+        <span class="item-cell">${s.system.target || '—'}</span>
         <span class="item-cell">${s.system.drain || '—'}</span>
         <span class="item-cell">
           <button type="button" class="btn-xs" data-action="rollSpell" data-item-id="${s.id}">Cast</button>
@@ -1783,8 +1783,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         ${this._itemControls(s.id, false)}
       </div>`;
 
-    const completeSpells = spells.filter(s => (s.system.damage ?? '') !== '' && (s.system.drain ?? '') !== '');
-    const incompleteSpells = spells.filter(s => (s.system.damage ?? '') === '' || (s.system.drain ?? '') === '');
+    // Spells have no damage code (power = Force, level chosen at cast); only the drain code is required.
+    const completeSpells   = spells.filter(s => (s.system.drain ?? '') !== '');
+    const incompleteSpells = spells.filter(s => (s.system.drain ?? '') === '');
 
     const sRows = completeSpells.length ? completeSpells.map(_spellRow).join('') : '<p class="empty-list">No spells.</p>';
     const incompleteSpellRows = incompleteSpells.map(_spellRow).join('');
@@ -1860,14 +1861,14 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       </div>
       <div class="list-header">
         <span>Spell</span><span>Category</span><span>Type</span><span>Range</span>
-        <span>Dmg</span><span>Drain</span><span>Cast</span><span></span>
+        <span>Target</span><span>Drain</span><span>Cast</span><span></span>
       </div>
       ${sRows}
       ${incompleteSpells.length ? `
-        <h3 class="section-hdr" style="margin-top:1rem;color:var(--sr-amber)">Incomplete (missing damage code or drain formula)</h3>
+        <h3 class="section-hdr" style="margin-top:1rem;color:var(--sr-amber)">Incomplete (missing drain formula)</h3>
         <div class="list-header">
           <span>Spell</span><span>Category</span><span>Type</span><span>Range</span>
-          <span>Dmg</span><span>Drain</span><span>Cast</span><span></span>
+          <span>Target</span><span>Drain</span><span>Cast</span><span></span>
         </div>
         ${incompleteSpellRows}
       ` : ''}

@@ -292,7 +292,7 @@ Every 2 soak hits = 1 stage down (D→S→M→L). Below L = fully soaked.
 **In:** `9S` damage, 4 soak hits → staged down 2 → `9L`. 6 soak hits → `9L` → fully soaked.
 
 ### Assign Damage button - passed
-After soak resolves → **🩸 Assign X to [Name]** button. Click → wound track updates, button disables.
+After soak resolves → **🩸 Assign \<Level\> \<Stun/Physical\> Wound to [Name]** button (e.g. "Assign Serious Stun Wound to Dave Decker"). The **Power number is dropped** (it doesn't change wound severity — only the level does), and "Wound" is used instead of "damage" for clarity. Click → wound track updates (boxes from L/M/S/D = 1/3/6/10), button disables. This wording is shared across **all** combat cards (ranged, melee, spell, drain, matrix/IC, vehicle).
 
 Boxes applied per level:
 | Level | Boxes |
@@ -427,9 +427,9 @@ Combat spells are a single **opposed (resisted) test** — like melee, not like 
 Full flow: Cast → Force **+ Damage Level** dialog → Target selection (**no dodge**) → Magic Pool allocation → **Sorcery vs TN = the spell's Target attribute** (e.g. target Willpower) → per-target **Resist Spell** (that same attribute vs **TN = Force**) → **net stages the damage** → Assign Damage. Caster also gets a Drain button. **There is NO soak step after the resist.**
 
 ### Force + Damage Level dialog
-For a **damaging** spell (item Damage non-empty) the cast dialog has a **Damage level** dropdown (Light/Moderate/Serious/Deadly), defaulting to the spell item's level. The chosen level sets the base damage `(Force)(level)` for the target **and** the caster's drain level. Non-damaging spells (Heal, Detect…) show no dropdown.
+Spells have **no damage code** — power = Force, and the level is chosen at cast. For a **Combat-category** spell the cast dialog shows a **Damage level** dropdown (Light/Moderate/Serious/Deadly, default Moderate). The chosen level sets the base damage `(Force)(level)` for the target **and** the caster's drain level. Non-Combat spells (Heal, Detect…) show no dropdown.
 
-**In:** Manabolt (item Damage `S`) → dropdown defaults **Serious (S)**; pick **Moderate (M)** → base `(F)M`, drain level M.
+**In:** Manabolt (Combat) → dropdown defaults **Moderate**; pick **Serious** → base `(F)S`, drain level S. The spell item sheet has **no Damage Code field**, and a spell is only flagged "incomplete" if its **Drain** is blank.
 
 ### Damage track follows spell Type (Mana = Stun, Physical = Physical)
 The target's damage track is **not** read from the Damage text — it's the spell `Type`: **Mana → Stun**, **Physical → Physical**. (Drain track is separate: Stun, or Physical if Force > Magic.)
@@ -440,6 +440,11 @@ The target's damage track is **not** read from the Damage text — it's the spel
 Skill rating + committed magic pool dice.
 
 **In:** Sorcery 5, 2 magic pool committed → **7 dice**.
+
+### Cast result card shows TN source + staging
+The caster's result card reads: **"🔮 <Spell> (<base>) cast — N successes vs TN X (Target's Attribute)"** then **"N hits stages up ×K. base → staged"** (the cast's own staging, K = ⌊hits/2⌋; the target's resistance then reduces it via net).
+
+**In:** Manaball (5M) vs Dave Decker, 4 hits, TN 3 → "🔮 Manaball (5M) cast — 4 successes vs TN 3 (Dave Decker's Willpower)" / "4 hits stages up ×2. 5M → 5D". With 1 hit → "1 hit — no stage up. 5M".
 
 ### Cast TN = the spell's Target attribute (NOT Force)
 The caster rolls Sorcery vs **TN = the target's attribute named in the spell's Target field**. Codes: `W`→Willpower, `B`→Body, `I`→Intelligence, `Q`→Quickness, `F`→Force, or a fixed number. The **Force** is the TN for the *resistance* roll, not the cast.
@@ -471,7 +476,7 @@ Target rolls the **same attribute named in the spell's Target field** (the resis
 Caster Sorcery 4 / Willpower 4; target Street Sam Willpower 2; base level Moderate (M).
 1. **Cast:** Sorcery 4 vs **TN = target Willpower 2** → say **3 successes**.
 2. **Resist:** target Willpower **2** dice vs **TN = Force 6** → say **1 success**.
-3. **Net = 3 − 1 = 2** → +1 stage → **M → Serious (S)** → Assign **6S** (no armour, no soak).
+3. **Net = 3 − 1 = 2** → +1 stage → **M → Serious (S)** → **Assign Serious Stun Wound** (Mana spell; no armour, no soak).
 4. **Drain:** (Damage Level +1 = S), Drain Power = Force÷2 = **3** → caster Willpower 4 vs TN 3 stages it down (unchanged step — works as before).
 
 ### 0 successes (cast)
@@ -525,7 +530,7 @@ Pool: Willpower + committed Magic Pool dice.
 Every 2 hits = 1 stage down (S→M→M→L→fully resisted).
 
 ### Assign Drain button
-**⚡ Assign [level] [Stun/Physical] drain to [Caster]** → applies boxes to correct track, disables.
+**⚡ Assign \<Level\> \<Stun/Physical\> Wound to [Caster]** → applies boxes to correct track, disables.
 
 ---
 
@@ -541,16 +546,22 @@ Dispeller resists drain as normal.
 
 ---
 
-## 14. Conjuring
+## 14. Conjuring / Summoning
 
-Conjuring skill roll vs TN (user-specified, typically Force of spirit).
-Spirit resists with Force dice vs TN = Conjuring rating.
-Net caster successes = services rendered.
+SR3 RAW. Summon dialog (Magic tab): pick spirit + Force + **Hold back dice** (0…Conjuring−1, saved for the Drain Resist). The dialog previews the drain level (Force-vs-Charisma) and Stun/Physical, with a totem/foci reminder.
 
-**In:** Conjuring 6 vs TN Force 4 → 6 dice. Spirit rolls 4 dice vs TN 6.
-Caster 3 hits, spirit 1 hit → **2 net services**.
+### Step 2 — Conjuring Test (straight success test)
+Pool = **Conjuring skill − held-back**, TN = **Force**. **Each success = one service** (no spirit-resistance roll). 0 successes → "Conjuring failed — no spirit appears (Drain still applies)".
 
-Drain applies. Force > Conjuring → Physical drain.
+**In:** Conjuring 6, hold back 2, Force 4 → roll **4 dice vs TN 4**. 3 successes → **3 services**, "Confirm Summoning" button (creates the spirit, adds to combat).
+
+### Step 3 — Drain Resistance
+Always, even on failure. **Level from the Force-vs-Charisma table** (F ≤ ½C Light, ≤ C Moderate, ≤ 1.5C Serious, else Deadly). **TN = Force.** Pool = **Charisma + held-back dice** (no Willpower; totem/foci added by GM via the editable field). **Physical if Force > Magic, else Stun.**
+
+**In:** Force 4 vs Charisma 4 → Moderate; held back 2 → drain pool = Charisma 4 + 2 = 6, TN 4. Force 4 vs Magic 5 → **Stun**. Force 7 vs Charisma 4 → Deadly.
+
+### Step 4 — Result
+"✅ ... successfully summoned a \<Spirit\> (Force F). It is bound for X services."
 
 ---
 
@@ -627,7 +638,7 @@ Formula: `⌊(INT + MPCP) / 3⌋` — displayed on sheet when cyberdeck is equip
 | 5 | 9 | 4 |
 
 ### IC wound track
-IC soak roll result → **💻 Assign [power][level] Matrix to [IC name]** button → updates IC `system.woundValue`.
+IC soak roll result → **💉 Assign \<Level\> Matrix Wound to [IC name]** button → updates IC `system.woundValue`.
 
 IC wound max = `rating × 2`. Hitting max = destroyed.
 
@@ -928,7 +939,7 @@ Formula: `Damage Power` (no armor reduction for vehicles).
 **In:** Power 9 → soak TN **9**.
 
 ### Assign Damage (vehicle)
-**🩸 Assign [code] to [VehicleName]** → updates `system.damage.value`. Capped at **10**.
+**🩸 Assign \<Level\> Wound to [VehicleName]** → updates `system.damage.value`. Capped at **10**.
 
 ### Vehicle targeting TN
 Formula: `max(2, Signature − Sensor rating)` (or − VCR level if jumped in).

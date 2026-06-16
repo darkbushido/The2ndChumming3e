@@ -194,6 +194,7 @@ background-color: var(--sr-surface) !important;
 .sr-drain-btn,
 .sr-drain-roll-btn,
 .sr-spell-soak-btn,
+.sr-spell-resist-roll-btn,
 .sr-spell-defense-btn,
 .sr-spell-defense-proceed-btn,
 .sr-melee-roll-btn,
@@ -223,6 +224,7 @@ background-color: var(--sr-surface) !important;
 .sr-drain-btn,
 .sr-drain-roll-btn,
 .sr-spell-soak-btn,
+.sr-spell-resist-roll-btn,
 .sr-astral-soak-btn,
 .sr-astral-soak-roll-btn,
 .sr-ram-vehicle-soak-btn,
@@ -237,6 +239,7 @@ background-color: var(--sr-surface) !important;
 .sr-drain-btn:hover:not(:disabled),
 .sr-drain-roll-btn:hover:not(:disabled),
 .sr-spell-soak-btn:hover:not(:disabled),
+.sr-spell-resist-roll-btn:hover:not(:disabled),
 .sr-astral-soak-btn:hover:not(:disabled),
 .sr-astral-soak-roll-btn:hover:not(:disabled),
 .sr-ram-vehicle-soak-btn:hover:not(:disabled),
@@ -302,7 +305,8 @@ background-color: var(--sr-surface) !important;
 }
 
 .sr-soak-btn:disabled,
-.sr-soak-roll-btn:disabled {
+.sr-soak-roll-btn:disabled,
+.sr-spell-resist-roll-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

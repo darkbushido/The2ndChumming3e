@@ -616,8 +616,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._sel('Range', 'range', s.range, SR3E.spellRanges)}
           ${this._f('Target', 'target', s.target, 'text', 'placeholder="W / B / F / number" title="Resisted attribute & cast TN — W=Willpower, B=Body, F=Force, or a fixed number"')}
           ${this._sel('Duration', 'duration', s.duration, SR3E.spellDurations)}
-          ${this._f('Damage Code', 'damage', s.damage, 'text', 'placeholder="8M"')}
-          ${this._f('Drain Code', 'drain', s.drain, 'text', 'placeholder="(F/2)M"')}
+          ${this._f('Drain Code', 'drain', s.drain, 'text', 'placeholder="(F/2) or (DL+1)"')}
         </div>
         <div class="notes-field">
           <label class="bio-label">Description</label>

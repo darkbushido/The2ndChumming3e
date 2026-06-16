@@ -2360,9 +2360,10 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false) {
     const isAoE     = /\(A\)/i.test(this.system.range ?? '');
     const magicAttr = actor.system.attributes?.magic?.value ?? magicBase;
 
-    // Damaging spells let the caster pick the Damage Level at cast time — it sets both the
-    // target's damage and (per SR3) the caster's Drain level. Non-damaging spells skip it.
-    const hasDamage    = (this.system.damage ?? '').trim() !== '';
+    // Combat spells let the caster pick the Damage Level at cast time — it sets both the
+    // target's damage and (per SR3) the caster's Drain level. Non-combat spells skip it.
+    // (Spells have no fixed damage code; "Combat" category = damaging.)
+    const isCombat     = (this.system.category ?? '') === 'Combat';
     const defaultLevel = SR3EItem._parseSpellDamageLevel(this.system.damage);
     const LEVEL_NAMES  = { L: 'Light', M: 'Moderate', S: 'Serious', D: 'Deadly' };
 
@@ -2391,7 +2392,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false) {
           Force: <input type="number" id="spell-force" min="1" max="99"
                  value="${Math.max(1, sorceryRating)}" style="width:60px"/>
         </div>
-        ${hasDamage ? `
+        ${isCombat ? `
         <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
           Damage level:
           <select id="spell-damage" style="width:110px">
@@ -2414,7 +2415,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false) {
           callback: (_e, _b, dialog) => {
             castCancelled = false;
             force = Math.max(1, parseInt(dialog.element.querySelector('#spell-force')?.value) || 1);
-            if (hasDamage) damageLevel = dialog.element.querySelector('#spell-damage')?.value || defaultLevel;
+            if (isCombat) damageLevel = dialog.element.querySelector('#spell-damage')?.value || defaultLevel;
             if (isAoE) aoeRadius = Math.max(1, parseInt(dialog.element.querySelector('#spell-radius')?.value) || aoeRadius);
           }
         },
@@ -2528,7 +2529,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false) {
       damageBase,
       drainStr,
       // SR3: failed-drain damage uses the nominated Damage Level (combat spells only).
-      drainLevel:        hasDamage ? damageLevel : null,
+      drainLevel:        isCombat ? damageLevel : null,
       sorceryRating,
       drainIsPhysical,
       spellPoolForDrain,

@@ -507,7 +507,7 @@ Power (number) + Level (L/M/S/D) + optional Stun flag
 5. **Casting = SR3 opposed test.** Caster rolls Sorcery + Magic Pool vs **TN = the spell's Target attribute** on the target — `SR3EItem._parseSpellTarget` (the single parser for both cast TN and resist): `W`→Willpower, `B`→Body, `I`→Intelligence, `Q`→Quickness, `F`→Force (the TN, not a target attribute), a number→fixed TN, blank/`OR`/unknown→Mana=Willpower/Physical=Body. **Any `(R)/(T)/(RC)/(V)/(DT)` suffix is stripped and ignored** (so `W(R)`, `4(V)` parse cleanly). For AoE the **primary** target sets the cast TN. Rule of Six throughout.
 6. On the caster's final wave (allDone):
    - 0 successes: spell fails (targets auto-resist), no effect — drain still posted.
-   - 1+ successes: damage is **not** pre-staged; each target gets a **"Resist Spell"** button carrying the caster's successes + base damage (`SR3EActor._spellResistButton`). Caster always gets a **"Resist Drain"** button.
+   - 1+ successes: damage is **not** pre-staged; each target gets a **"Resist Spell"** button carrying the caster's successes + base damage (`SR3EActor._spellResistButton`). Caster always gets a **"Resist Drain"** button. The card shows the **cast TN's source** (`spellContext.tnSource`, e.g. "Dave Decker's Willpower") and the **staging the cast hits produce** (base → staged, before the target's resistance reduces it).
    - If anyone has a Spell Defense pool, a **Counterspelling** card posts first and reduces the caster's successes (`_postSpellResistOrDoneCard` → same Resist Spell buttons).
 7. **Resist Spell** (`_postSpellSoakCard` → `handleSpellResistRoll`): target rolls the **spell's Target attribute** — the *same* `SR3EItem._parseSpellTarget` is reused so the resist attribute always matches the cast — **attribute only, no pool** — vs **TN = Force** (interactive). **Net = caster successes − resister successes** (`isSpellResist` branch in `_postWaveCard`): ≤ 0 → no effect; otherwise `stageDamage(base, net)` → **Assign Damage** button. **There is no separate soak** — the resistance test *is* the defence.
 8. Drain resist: Willpower dice, two components (`SR3EItem.parseDrainFormula(drainStr, force, damageLevel)`):
@@ -517,6 +517,13 @@ Power (number) + Level (L/M/S/D) + optional Stun flag
    - *Legacy:* a code with an explicit `F` formula (e.g. `(F/2+1)S`) uses that as the TN; level = nominated level (or a bare letter for non-damaging spells). Stage down by Willpower successes.
    - Remaining drain = **Stun if Force ≤ Magic, Physical if Force > Magic** (SR3 RAW — the caster's Magic attribute, not Sorcery)
 - Sheet displays as "available / total"
+
+### Conjuring / Summoning flow (`SR3ESpiritSummoning.js`)
+Wired in (Magic tab → summon). SR3 RAW:
+1. **Summon dialog** (`openSummonDialog`): pick spirit type + Force + **Hold back dice** (0…Conjuring−1, saved for the Drain Resist). Live preview shows the drain level (Force-vs-Charisma table) and Stun/Physical. Reminder that totem/foci dice may be added.
+2. **Conjuring Test** (`rollPool`, `isConjuringRoll`): pool = **Conjuring skill − held-back**, TN = **Force**. **Each success = one service** (straight success test — no spirit resistance). 0 successes → no spirit (Drain still applies).
+3. **Drain** (always, even on failure): **Level from the Force-vs-Charisma table** (`SR3ESpiritSummoning._conjuringDrainLevel`: F≤½C Light, ≤C Moderate, ≤1.5C Serious, else Deadly — computed at cast), **TN = Force**, resisted with **Charisma + held-back dice** (`_postDrainCard` with `resistAttr:'charisma'`, `bonusDice`). Physical if Force > Magic, else Stun.
+4. **Result** (`confirmSummoning`): "Confirm Summoning" button creates the spirit actor bound for *successes* services and adds it to the tracker **only if a combat is already running** (`game.combat?.started`) — summoning never starts/activates combat.
 
 ---
 
@@ -559,7 +566,7 @@ system.roundsFiredThisPhase        ← persisted, recoil accumulator; reset each
 - `ammunition`: `ammoType` (key into `SR3E.ammoTypes`), `loadMechanism` (c/m/cy/b/d/sb/internal + arrow/bolt), `rounds` (stockpile total) + descriptive fields. NO power/armour data fields — rules are in config
 - `armor`: `ballistic` (number), `impact` (number)
 - `skill`: `rating`, `linkedAttribute`, `specialisation`
-- `spell`: `type` ("Mana"/"Physical" — sets the **resist attribute** *and* the **target damage track**: Mana → Stun, Physical → Physical), `damage` (level letter e.g. "S" — supplies the default Damage Level for the cast dropdown; power = Force at cast time), `drain` (drain-Power/TN formula e.g. "(F/2)" — the level is the nominated Damage Level, not the code's letter), `category`, `range` (Touch/LOS; an **`(A)` suffix = area effect** — drives the AoE flow, no separate flag), `duration`, `target` (cast-TN code: `W/B/I/Q/F`/number, suffixes stripped — `SR3EItem._parseSpellTarget`)
+- `spell`: `type` ("Mana"/"Physical" — sets **only the damage track**: Mana → Stun, Physical → Physical; it does **not** set the resist attribute), `target` (sets the **resist attribute *and* the cast TN** — `W/B/I/Q/F`/number, suffixes stripped — `SR3EItem._parseSpellTarget`), `category` (**Combat = damaging**: shows the cast Damage-Level dropdown), `drain` (drain-Power/TN formula e.g. "(F/2)" or "(DL+1)" — level = nominated Damage Level ± a `DL` token), `range` (Touch/LOS; an **`(A)` suffix = area effect**, no separate flag), `duration`. **No damage code** — spell power = Force and the level is chosen at cast (the `damage` field is hidden/legacy; only `drain` is required for a complete spell).
 
 ### Weapon category codes → skills
 ```
@@ -737,7 +744,6 @@ CYB/UNA → Unarmed Combat
 ---
 
 ## What is NOT yet implemented
-- Spirit summoning (SR3ESpiritSummoning.js exists but is not wired in)
 - Full Defense (melee/ranged defensive posture — deferred)
 - Vehicle sheets
 - Matrix/hacking combat rolls (host sheet is GM reference/tracking only for now)

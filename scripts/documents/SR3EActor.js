@@ -2064,6 +2064,13 @@ _prepareCharacter(sys, attr) {
     return `<div style="margin-top:5px"><button type="button" class="sr3e-clear-blast-btn btn-sm" ${attrs} style="font-size:11px;padding:1px 8px">🧹 Clear blast marker</button></div>`;
   }
 
+  /** Damage-level letter → wound name (L→Light, M→Moderate, S→Serious, D→Deadly).
+   *  Used on "Assign … Wound" buttons — the Power number is dropped (it doesn't change the
+   *  wound severity; only the level does), and "Wound" is used in place of "damage". */
+  static _woundName(level) {
+    return ({ L: 'Light', M: 'Moderate', S: 'Serious', D: 'Deadly' })[String(level).toUpperCase()] ?? String(level);
+  }
+
   /**
    * Post a wave result as a chat card.
    *
@@ -2354,13 +2361,15 @@ _prepareCharacter(sys, attr) {
           // pre-staging here, no soak afterwards. Preview the staging from the cast hits.
           const previewStaged = SR3EItem.stageDamage(sc.damageBase, successes);
           const stagedStr     = `${previewStaged.power}${previewStaged.level}`;
-          const stageLine     = stagedStr !== sc.rawDamage
-            ? `base <strong>${sc.rawDamage}</strong> → <strong>${stagedStr}</strong> at ${successes} hit${successes !== 1 ? 's' : ''}`
-            : `base <strong>${sc.rawDamage}</strong>`;
+          const stages        = Math.floor(successes / 2);
+          const hitsTxt       = `${successes} hit${successes !== 1 ? 's' : ''}`;
+          const stageLine     = stages > 0
+            ? `${hitsTxt} stages up ×${stages}. <strong>${sc.rawDamage} → ${stagedStr}</strong>`
+            : `${hitsTxt} — no stage up. <strong>${sc.rawDamage}</strong>`;
           stagingHtml = `
             <div class="sr-staging-result">
-              🔮 ${sc.spellName ?? 'Spell'} [F${sc.force}] — <strong>${successes} success${successes !== 1 ? 'es' : ''}</strong> vs TN ${tn}${sc.tnSource ? ` <span style="color:var(--sr-muted)">(${sc.tnSource})</span>` : ''}<br>
-              ${stageLine}. Each target resists vs Force ${sc.force}; <em>net</em> (caster − resister) sets the final stage.
+              🔮 ${sc.spellName ?? 'Spell'} (${sc.rawDamage}) cast — <strong>${successes} success${successes !== 1 ? 'es' : ''}</strong> vs TN ${tn}${sc.tnSource ? ` <span style="color:var(--sr-muted)">(${sc.tnSource})</span>` : ''}<br>
+              ${stageLine}
             </div>`;
 
           // Counterspelling (Spell Defense) reduces the caster's successes first, if anyone has it.
@@ -2433,64 +2442,41 @@ _prepareCharacter(sys, attr) {
         const cc       = state.conjuringContext;
         const conjurer = game.actors.get(cc.conjurerActorId);
         const conjName = conjurer?.name ?? 'Conjurer';
-        const tnConj   = Math.max(2, cc.conjuringSkill);
 
         if (successes === 0) {
-          stagingHtml = '<div class="sr-staging-result">0 hits — the spirit does not answer</div>';
+          stagingHtml = '<div class="sr-staging-result">🌀 Conjuring failed — no spirit appears. (Drain still applies.)</div>';
         } else {
-          // Spirit resistance: rolls Force dice vs TN = Conjuring skill rating
-          const spiritDice  = cc.force;
-          let   spiritHits  = 0;
-          const spiritFaces = [];
-          for (let i = 0; i < spiritDice; i++) {
-            const face = Math.floor(Math.random() * 6) + 1;
-            spiritFaces.push(face);
-            if (face >= tnConj) spiritHits++;
-          }
-          const netServices = Math.max(0, successes - spiritHits);
-
-          const faceStr = spiritFaces.join(', ');
+          // SR3: straight Conjuring Test — each success = one service the spirit owes (no spirit resist).
           stagingHtml = `
             <div class="sr-staging-result">
-              🌀 Conjurer: <strong>${successes}</strong> hit${successes !== 1 ? 's' : ''}
-            </div>
-            <div class="sr-staging-result" style="color:var(--sr-muted)">
-              🌀 Spirit resists: ${spiritDice}d6 vs TN ${tnConj} → [${faceStr}] = <strong>${spiritHits}</strong> hit${spiritHits !== 1 ? 's' : ''}
+              🌀 <strong>${successes} success${successes !== 1 ? 'es' : ''}</strong> → ${cc.spiritLabel} [F${cc.force}] is bound for <strong>${successes} service${successes !== 1 ? 's' : ''}</strong>.
             </div>`;
-
-          if (netServices > 0) {
-            stagingHtml += `
-              <div class="sr-staging-result">
-                Net: <strong>${netServices} service${netServices !== 1 ? 's' : ''}</strong>
-              </div>`;
-            const confirmPayload = JSON.stringify({
-              conjurerActorId: cc.conjurerActorId,
-              spiritTypeKey:   cc.spiritTypeKey,
-              force:           cc.force,
-              services:        netServices,
-            }).replace(/'/g, '&#39;');
-            postRollHtml += `
-              <div class="sr-soak-action">
-                <button class="sr-summon-confirm-btn" data-payload='${confirmPayload}'>
-                  🌀 Confirm Summoning (${netServices} service${netServices !== 1 ? 's' : ''})
-                </button>
-              </div>`;
-          } else {
-            stagingHtml += `<div class="sr-staging-result sr-soak-blocked">Spirit fully resists — no services owed, spirit departs</div>`;
-          }
+          const confirmPayload = JSON.stringify({
+            conjurerActorId: cc.conjurerActorId,
+            spiritTypeKey:   cc.spiritTypeKey,
+            force:           cc.force,
+            services:        successes,
+          }).replace(/'/g, '&#39;');
+          postRollHtml += `
+            <div class="sr-soak-action">
+              <button class="sr-summon-confirm-btn" data-payload='${confirmPayload}'>
+                🌀 Confirm Summoning (${successes} service${successes !== 1 ? 's' : ''})
+              </button>
+            </div>`;
         }
 
-        // Drain button — always posted regardless of success
-        // TN = Force; drain damage level derived from floor(Force/2)
-        const drainLevels = ['L', 'L', 'L', 'M', 'M', 'S', 'S', 'D', 'D', 'D', 'D', 'D', 'D'];
-        const drainLevel  = drainLevels[Math.floor(cc.force / 2)] ?? 'D';
+        // Drain — always, even on failure. Level from the Force-vs-Charisma table (computed at
+        // cast); TN = Force; resisted with Charisma + any dice held back from the Conjuring Test.
         const drainPayload = JSON.stringify({
           actorId:          cc.conjurerActorId,
           drainTNOverride:  cc.force,
-          drainLevel:       drainLevel,
+          drainLevel:       cc.drainLevel ?? 'M',
           drainIsPhysical:  cc.drainIsPhysical,
+          resistAttr:       'charisma',
+          resistName:       'Charisma',
+          bonusDice:        cc.heldBack ?? 0,
+          drainNote:        'GM: add totem modifiers / spirit foci dice as applicable.',
           spellName:        `Conjure ${cc.spiritLabel} [F${cc.force}]`,
-          spellPoolForDrain: cc.spellPoolSpent ?? 0,
         }).replace(/'/g, '&#39;');
         postRollHtml += `
           <div class="sr-soak-action">
@@ -2609,7 +2595,7 @@ _prepareCharacter(sys, attr) {
             <div class="sr-staging-result">💻 ${resultLine}</div>
             <div class="sr-soak-action">
               <button class="sr-assign-damage-btn" data-payload='${icAssignPayload}'>
-                💉 Assign ${msc.stagedPower}${finalLevel} Matrix to ${icName}
+                💉 Assign ${SR3EActor._woundName(finalLevel)} Matrix Wound to ${icName}
               </button>
             </div>`;
         }
@@ -2778,7 +2764,7 @@ _prepareCharacter(sys, attr) {
           <div class="sr-soak-result">⚡ ${resultLine}</div>
           <div class="sr-soak-action">
             <button class="sr-assign-damage-btn" data-payload='${drainAssignPayload}'>
-              ⚡ Assign ${finalLevel} ${trackLabel} drain to ${drainActorName}
+              ⚡ Assign ${SR3EActor._woundName(finalLevel)} ${trackLabel} Wound to ${drainActorName}
             </button>
           </div>
         `;
@@ -2817,7 +2803,7 @@ _prepareCharacter(sys, attr) {
           <div class="sr-soak-result">🛡 ${resultLine}</div>
           <div class="sr-soak-action">
             <button class="sr-assign-damage-btn" data-payload='${soakAssignPayload}'>
-              🩸 Assign ${power}${finalLevel} ${trackLabel} to ${soakTargetName}
+              🩸 Assign ${SR3EActor._woundName(finalLevel)} ${trackLabel} Wound to ${soakTargetName}
             </button>
           </div>
         `;
@@ -2848,7 +2834,7 @@ _prepareCharacter(sys, attr) {
           <div class="sr-soak-result">🔮 net <strong>${net}</strong> success${net !== 1 ? 'es' : ''} → <strong>${staged.power}${staged.level} ${trackLabel}</strong></div>
           <div class="sr-soak-action">
             <button class="sr-assign-damage-btn" data-payload='${payload}'>
-              🩸 Assign ${staged.power}${staged.level} ${trackLabel} to ${tName}
+              🩸 Assign ${SR3EActor._woundName(staged.level)} ${trackLabel} Wound to ${tName}
             </button>
           </div>`;
       }
@@ -3192,7 +3178,7 @@ _prepareCharacter(sys, attr) {
         <div class="sr-soak-result">🛡 ${ctx.vehicleName}: ${resultLine}</div>
         <div class="sr-soak-action">
           <button class="sr-assign-damage-btn" data-payload='${vehAssignPayload}'>
-            🩸 Assign ${ctx.power}${finalLevel} to ${ctx.vehicleName}
+            🩸 Assign ${SR3EActor._woundName(finalLevel)} Wound to ${ctx.vehicleName}
           </button>
         </div>`;
     }
@@ -4453,9 +4439,14 @@ _prepareCharacter(sys, attr) {
     }
     const trackLabel = drainIsPhysical ? 'Physical' : 'Stun';
 
+    // Drain is normally resisted with Willpower (spells); conjuring overrides to Charisma and
+    // adds any dice the conjurer held back from the Conjuring Test (payload.bonusDice).
     const attr2      = this.system.attributes ?? {};
-    const wil        = attr2.willpower?.base ?? 1;
-    const willPool   = Math.max(1, wil);
+    const resistAttr = payload.resistAttr ?? 'willpower';
+    const resistName = payload.resistName ?? 'Willpower';
+    const attrVal    = attr2[resistAttr]?.base ?? attr2[resistAttr]?.value ?? 1;
+    const bonusDice  = Math.max(0, payload.bonusDice ?? 0);
+    const basePool   = Math.max(1, attrVal + bonusDice);
     const magicBase  = attr2.magic?.base ?? 0;
 
     // Use the spell pool count computed at roll time and carried in the payload.
@@ -4494,10 +4485,11 @@ _prepareCharacter(sys, attr) {
             (${drainStr ? `formula: ${drainStr}, F=${force} → ` : ''}TN ${drainTN})
             ${physWarning}
           </div>
+          ${payload.drainNote ? `<div style="color:var(--sr-muted);font-size:11px;margin:2px 0 4px">${payload.drainNote}</div>` : ''}
           <div class="sr-soak-fields">
             <label class="sr-soak-label">
-              Drain Pool (Willpower ${wil}):
-              <input type="number" class="sr-drain-pool" value="${willPool}" min="1" max="30" style="width:55px"/>
+              Drain Pool (${resistName} ${attrVal}${bonusDice ? ` + ${bonusDice} held back` : ''}):
+              <input type="number" class="sr-drain-pool" value="${basePool}" min="1" max="30" style="width:55px"/>
             </label>
             ${spellPoolField}
             <label class="sr-soak-label">

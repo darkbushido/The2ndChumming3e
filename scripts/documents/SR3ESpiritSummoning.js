@@ -126,8 +126,10 @@ export class SR3ESpiritSummoning {
    */
   static async openSummonDialog(conjurer, defaultSpiritType = 'earth_elemental') {
     const magicBase      = conjurer.system?.attributes?.magic?.base ?? 0;
+    const charisma       = conjurer.system?.attributes?.charisma?.base ?? conjurer.system?.attributes?.charisma?.value ?? 1;
     const conjuringSkill = SR3ESpiritSummoning._getConjuringRating(conjurer);
-    const spellPoolAvail = conjurer.system?.derived?.availableSpellPool ?? 0;
+    const maxHold        = Math.max(0, conjuringSkill - 1);   // keep ≥1 die for the Conjuring Test
+    const drainName      = { L: 'Light', M: 'Moderate', S: 'Serious', D: 'Deadly' };
 
     const elementalOptions = Object.entries(SPIRIT_TYPES)
       .filter(([, v]) => v.category === 'elemental')
@@ -139,11 +141,11 @@ export class SR3ESpiritSummoning {
       .map(([k, v]) => `<option value="${k}" ${k === defaultSpiritType ? 'selected' : ''}>${v.label} — ${v.domain}</option>`)
       .join('');
 
-    const spellPoolField = spellPoolAvail > 0
+    const holdBackField = maxHold > 0
       ? `<div style="display:grid; grid-template-columns:130px 70px 1fr; align-items:center; gap:6px;">
-           <label style="font-weight:bold;">Spell Pool dice</label>
-           <input id="sr3e-summon-spellpool" type="number" min="0" max="${spellPoolAvail}" value="0" />
-           <span style="color:var(--color-text-dark-secondary,#888); font-size:0.85em;">${spellPoolAvail} available</span>
+           <label style="font-weight:bold;">Hold back dice</label>
+           <input id="sr3e-summon-holdback" type="number" min="0" max="${maxHold}" value="0" />
+           <span style="color:var(--color-text-dark-secondary,#888); font-size:0.85em;">saved for the Drain Resist (max ${maxHold})</span>
          </div>`
       : '';
 
@@ -163,17 +165,20 @@ export class SR3ESpiritSummoning {
             Conjuring skill: <b>${conjuringSkill}</b>
           </span>
         </div>
-        ${spellPoolField}
+        ${holdBackField}
         <hr style="margin:2px 0;" />
         <div style="font-size:0.9em; color:var(--color-text-dark-secondary,#888);">
-          Services = your hits − spirit's resistance hits (spirit rolls Force dice vs TN ${conjuringSkill})
+          Each success = one service the spirit owes (Conjuring Test vs TN = Force).
         </div>
         <div style="display:flex; justify-content:space-between; font-size:0.9em;">
-          <span>Conjuring: <b>${conjuringSkill}</b> dice vs TN = Force</span>
-          <span id="sr3e-drain-preview" style="color:#b44; font-weight:bold;">Drain: — Stun</span>
+          <span>Conjuring: <b>${conjuringSkill}</b> dice <span id="sr3e-conj-pool"></span> vs TN = Force</span>
+          <span id="sr3e-drain-preview" style="color:#b44; font-weight:bold;">Drain: —</span>
         </div>
         <div id="sr3e-phys-warn" style="color:var(--sr-red,#c44); font-size:0.85em; display:none;">
           ⚠ Force &gt; Magic (${magicBase}) — Drain will be Physical!
+        </div>
+        <div style="font-size:0.8em; color:var(--color-text-dark-secondary,#888);">
+          GM: totem modifiers &amp; spirit foci dice may be added to either test.
         </div>
       </div>
     `;
@@ -187,16 +192,21 @@ export class SR3ESpiritSummoning {
       render: (event, dialog) => {
         const el       = dialog.element;
         const forceIn  = el.querySelector('#sr3e-spirit-force');
+        const holdIn   = el.querySelector('#sr3e-summon-holdback');
         const drainLbl = el.querySelector('#sr3e-drain-preview');
         const physWarn = el.querySelector('#sr3e-phys-warn');
+        const poolSpan = el.querySelector('#sr3e-conj-pool');
         const refresh  = () => {
-          const f = parseInt(forceIn.value) || 0;
-          const dn = Math.max(1, Math.floor(f / 2));
+          const f      = parseInt(forceIn.value) || 0;
+          const held   = Math.min(maxHold, Math.max(0, parseInt(holdIn?.value) || 0));
+          const lvl    = SR3ESpiritSummoning._conjuringDrainLevel(f, charisma);
           const isPhys = f > magicBase;
-          drainLbl.textContent = `Drain: ${dn} ${isPhys ? 'Physical' : 'Stun'}`;
+          drainLbl.textContent = `Drain: ${drainName[lvl]} ${isPhys ? 'Physical' : 'Stun'} (TN ${Math.max(2, f)})`;
           if (physWarn) physWarn.style.display = isPhys ? '' : 'none';
+          if (poolSpan) poolSpan.textContent = held > 0 ? `(− ${held} held = ${Math.max(1, conjuringSkill - held)})` : '';
         };
         forceIn.addEventListener('input', refresh);
+        holdIn?.addEventListener('input', refresh);
         refresh();
       },
       buttons: [
@@ -208,9 +218,9 @@ export class SR3ESpiritSummoning {
           callback: (_e, _b, dialog) => {
             const el = dialog.element;
             confirmed       = true;
-            result.typeKey   = el.querySelector('#sr3e-spirit-type').value;
-            result.force     = Math.max(1, parseInt(el.querySelector('#sr3e-spirit-force').value) || 1);
-            result.spellPool = Math.max(0, parseInt(el.querySelector('#sr3e-summon-spellpool')?.value ?? '0') || 0);
+            result.typeKey  = el.querySelector('#sr3e-spirit-type').value;
+            result.force    = Math.max(1, parseInt(el.querySelector('#sr3e-spirit-force').value) || 1);
+            result.heldBack = Math.min(maxHold, Math.max(0, parseInt(el.querySelector('#sr3e-summon-holdback')?.value ?? '0') || 0));
           },
         },
         { label: 'Cancel', action: 'cancel' },
@@ -222,16 +232,14 @@ export class SR3ESpiritSummoning {
     const spiritDef = SPIRIT_TYPES[result.typeKey];
     if (!spiritDef) { ui.notifications.error(`Unknown spirit type: ${result.typeKey}`); return; }
 
-    const { force, spellPool, typeKey } = result;
+    const { force, heldBack, typeKey } = result;
 
-    // Cap spell pool spend to what's available
-    const spendSpell = Math.min(spellPool, spellPoolAvail);
-    if (spendSpell > 0) await conjurer.spendSpellPool(spendSpell);
-
-    const pool = conjuringSkill + spendSpell;
-    if (pool < 1) { ui.notifications.warn(`${conjurer.name}: dice pool is 0 — cannot conjure.`); return; }
+    // Conjuring Test dice = Conjuring skill minus dice held back for the Drain Resistance.
+    const pool = Math.max(0, conjuringSkill - heldBack);
+    if (pool < 1) { ui.notifications.warn(`${conjurer.name}: no Conjuring dice left to roll — hold back fewer.`); return; }
 
     const drainIsPhysical = force > magicBase;
+    const drainLevel      = SR3ESpiritSummoning._conjuringDrainLevel(force, charisma);
 
     await conjurer.rollPool(
       pool,
@@ -240,14 +248,13 @@ export class SR3ESpiritSummoning {
       {
         isConjuringRoll:  true,
         conjuringContext: {
-          conjurerActorId:   conjurer.id,
-          spiritTypeKey:     typeKey,
-          spiritLabel:       spiritDef.label,
+          conjurerActorId: conjurer.id,
+          spiritTypeKey:   typeKey,
+          spiritLabel:     spiritDef.label,
           force,
-          conjurerMagicBase: magicBase,
           drainIsPhysical,
-          conjuringSkill,
-          spellPoolSpent:    spendSpell,
+          drainLevel,        // from the Force-vs-Charisma table
+          heldBack,          // added to Charisma on the Drain Resistance Test
         },
       }
     );
@@ -265,15 +272,15 @@ export class SR3ESpiritSummoning {
 
     const spiritActor = await SR3ESpiritSummoning._createSpiritActor(conjurer, spiritDef, force, services);
 
-    if (game.combat) {
+    // Only join a fight that's already running — never start/activate combat from a summon.
+    if (game.combat?.started) {
       await SR3ESpiritSummoning._addSpiritToCombat(spiritActor, force, spiritDef);
     }
 
     ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: conjurer }),
       content: `
-        <b>${conjurer?.name ?? 'Conjurer'}</b> summons a <b>${spiritDef.label}</b> (Force ${force}).<br>
-        <b>${services} service(s)</b> owed.<br>
+        ✅ <b>${conjurer?.name ?? 'Conjurer'}</b> successfully summoned a <b>${spiritDef.label}</b> (Force ${force}). It is bound for <b>${services} service${services !== 1 ? 's' : ''}</b>.<br>
         <i>Powers: ${spiritDef.powers.join(', ')}.</i>
       `,
     });
@@ -326,7 +333,7 @@ export class SR3ESpiritSummoning {
   // ---------------------------------------------------------------------------
   static async _addSpiritToCombat(spiritActor, force, spiritDef) {
     const combat = game.combat;
-    if (!combat) return;
+    if (!combat?.started) return;   // don't create/activate combat from a summon
 
     await combat.createEmbeddedDocuments('Combatant', [{ actorId: spiritActor.id, hidden: false }]);
 
@@ -356,6 +363,16 @@ export class SR3ESpiritSummoning {
   // ---------------------------------------------------------------------------
   // Helpers
   // ---------------------------------------------------------------------------
+
+  /** SR3 Conjuring Drain Level from Force vs the conjurer's Charisma:
+   *  F ≤ ½C → Light, ≤ C → Moderate, ≤ 1.5C → Serious, else Deadly. */
+  static _conjuringDrainLevel(force, charisma) {
+    const C = Math.max(1, charisma);
+    if (force <= Math.floor(C / 2))   return 'L';
+    if (force <= C)                   return 'M';
+    if (force <= Math.floor(C * 1.5)) return 'S';
+    return 'D';
+  }
 
   static _getConjuringRating(actor) {
     // Look for a skill item named "Conjuring" (case-insensitive)
