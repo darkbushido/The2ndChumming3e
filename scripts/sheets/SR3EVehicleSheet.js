@@ -31,6 +31,17 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
       toggleTemplate:  SR3EVehicleSheet._onToggleTemplate,
       deployTemplate:  SR3EVehicleSheet._onDeployTemplate,
       markAsLive:      SR3EVehicleSheet._onMarkAsLive,
+      // Electronic Warfare
+      signalBox:           SR3EVehicleSheet._onSignalBox,
+      signalInfil:         SR3EVehicleSheet._onSignalInfil,
+      signalDamage:        SR3EVehicleSheet._onSignalDamage,
+      recalcFootprint:     SR3EVehicleSheet._onRecalcFootprint,
+      mijiAttack:          SR3EVehicleSheet._onMijiAttack,
+      infiltrate:          SR3EVehicleSheet._onInfiltrate,
+      detectInfiltration:  SR3EVehicleSheet._onDetectInfiltration,
+      advanceInfiltration: SR3EVehicleSheet._onAdvanceInfiltration,
+      eccmRepair:          SR3EVehicleSheet._onEccmRepair,
+      reduceFootprint:     SR3EVehicleSheet._onReduceFootprint,
     }
   };
 
@@ -80,6 +91,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
           ${this._tabStats(sys)}
           ${this._tabWeapons(actor)}
           ${this._tabMods(actor)}
+          ${this._tabEW(actor, sys)}
           ${this._tabNotes(sys)}
         </div>
       </div>`;
@@ -196,7 +208,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   _tabs() {
-    const tabs = [['stats', 'Stats'], ['weapons', 'Weapons'], ['mods', 'Mods'], ['notes', 'Notes']];
+    const tabs = [['stats', 'Stats'], ['weapons', 'Weapons'], ['mods', 'Mods'], ['ew', 'Electronic Warfare'], ['notes', 'Notes']];
     return `<nav class="sheet-tabs">
       ${tabs.map(([id, label]) =>
         `<a class="tab-btn ${this._activeTab === id ? 'active' : ''}"
@@ -385,6 +397,158 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   /* ------------------------------------------------------------------ */
+  /*  Tab: Electronic Warfare                                             */
+  /* ------------------------------------------------------------------ */
+
+  // Derived Footprint = round((rigger deck Flux + vehicle Flux + ECM) / 10).
+  _ewFootprintDerived(sys) {
+    const rigger   = game.actors.get(sys.driverActorId?.trim() ?? '');
+    const deckFlux = rigger?.system?.ew?.fluxRating ?? 0;
+    const vehFlux  = sys.ew?.fluxRating ?? 0;
+    const ecm      = sys.ew?.ecm ?? 0;
+    return Math.round((deckFlux + vehFlux + ecm) / 10);
+  }
+
+  _signalTier(value) {
+    const tiers = game.sr3e.SR3E.electronicWarfare.degradationTiers;
+    const t = tiers.find(t => value >= t.min && value <= t.max);
+    if (!t) return '<span class="signal-tier">—</span>';
+    if (t.mod === null) return `<span class="signal-tier signal-tier-lost">⚠ ${t.label}</span>`;
+    return `<span class="signal-tier">+${t.mod} ${t.label}</span>`;
+  }
+
+  _signalChannel(channel, label, value, infiltrated) {
+    const locked = !infiltrated;
+    const boxes = Array.from({ length: 10 }, (_, i) => {
+      const n   = i + 1;
+      const cls = n <= value ? 'signal-box filled' : 'signal-box';
+      const lost = n === 10 ? ' signal-box-lost' : '';
+      return `<div class="${cls}${lost}" data-action="signalBox" data-channel="${channel}" data-box="${n}"
+                   title="Box ${n}"></div>`;
+    }).join('');
+    return `
+      <div class="signal-track">
+        <span class="signal-label">${label}</span>
+        <button type="button" class="sig-btn sig-btn-infil${infiltrated ? ' sig-btn-on' : ''}"
+                data-action="signalInfil" data-channel="${channel}"
+                title="${infiltrated ? 'Infiltrated — click to clear the breach' : 'Not infiltrated — click to breach this channel and enable jamming'}">Infiltrated</button>
+        <div class="signal-boxes${locked ? ' signal-faded' : ''}">${boxes}</div>
+        ${this._signalTier(value)}
+        <span class="signal-quick${locked ? ' signal-faded' : ''}">
+          <button type="button" class="sig-btn" data-action="signalDamage" data-channel="${channel}" data-delta="1" title="+1 degradation">+1</button>
+          <button type="button" class="sig-btn sig-btn-heal" data-action="signalDamage" data-channel="${channel}" data-delta="-1" title="−1 degradation">−1</button>
+        </span>
+      </div>`;
+  }
+
+  // Active degradation modifiers — a reference panel listing each degraded channel's TN penalty
+  // and exactly which tests it hits (the ones with no roll path are GM-applied from here).
+  _degradationReadout(sm, rigger) {
+    const cfg      = game.sr3e.SR3E.electronicWarfare;
+    const isJacked = rigger ? this.actor.system.controlMode === 'vcr' : false;
+    const rows = cfg.channels.map(c => {
+      const boxes = sm[c.key] ?? 0;
+      if (boxes <= 0) return '';
+      const tier = cfg.degradationTiers.find(t => boxes >= t.min && boxes <= t.max);
+      if (!tier) return '';
+      const head = tier.mod === null
+        ? `<span style="color:var(--sr-red);font-weight:600">${c.label}: Channel Lost</span> — ${c.fullEffect}`
+        : `<span style="color:var(--sr-amber);font-weight:600">${c.label}: +${tier.mod} ${tier.label}</span> — applies to ${c.appliesTo}`;
+      const auto = (c.key === 'simsense' && isJacked && tier.mod !== null)
+        ? ` <span style="color:var(--sr-green)">(auto-applied: ${rigger.name} is VCR-jacked)</span>`
+        : '';
+      return `<div class="ew-deg-row">${head}${auto}</div>`;
+    }).filter(Boolean).join('');
+    if (!rows) return '';
+    return `
+      <div class="ew-deg-readout">
+        <div class="ew-deg-title">Active Degradation Modifiers</div>
+        ${rows}
+      </div>`;
+  }
+
+  _tabEW(actor, sys) {
+    const ew     = sys.ew ?? {};
+    const sm     = sys.signalMonitor ?? {};
+    const inf    = sys.infiltration ?? {};
+    const rigger = game.actors.get(sys.driverActorId?.trim() ?? '');
+    const rew    = rigger?.system?.ew ?? {};
+    const derivedFp = this._ewFootprintDerived(sys);
+    const sigBase   = sys.attributes?.sig?.base ?? 0;
+    const footprint = ew.footprint ?? 0;
+
+    const _ewStat = (key, label) => `
+      <div class="attr-block">
+        <span class="attr-label">${label}</span>
+        <div class="attr-row">
+          <input class="attr-input" type="number" name="system.ew.${key}" value="${ew[key] ?? 0}" min="0"/>
+        </div>
+      </div>`;
+
+    const channels = game.sr3e.SR3E.electronicWarfare.channels;
+    const intruder = inf.intruderActorId ? game.actors.get(inf.intruderActorId) : null;
+    const infChannelTag = (k) => inf[k]
+      ? `<span class="ew-breach ew-breach-on">breached</span>`
+      : `<span class="ew-breach">clear</span>`;
+
+    return `<div class="tab ${this._activeTab === 'ew' ? 'active' : ''}" data-tab="ew" style="overflow-y:auto">
+
+      <h3 class="section-hdr">Electronics</h3>
+      <div class="attributes-grid veh-stat-grid">
+        ${_ewStat('ecm',        'ECM')}
+        ${_ewStat('eccm',       'ECCM')}
+        ${_ewStat('fluxRating', 'Flux')}
+        ${_ewStat('footprint',  'Footprint')}
+      </div>
+      <div class="ew-note">
+        Derived Footprint <strong>${derivedFp}</strong> = ⌊(deck Flux ${rew.fluxRating ?? 0} + veh Flux ${ew.fluxRating ?? 0} + ECM ${ew.ecm ?? 0}) ÷ 10⌉.
+        <button type="button" class="btn-sm" data-action="recalcFootprint" title="Write derived value into the Footprint field">↻ Recalc</button>
+        <br>Targeting this vehicle's Sig: TN = ${sigBase} − ${footprint} (Footprint) = <strong>${Math.max(2, sigBase - footprint)}</strong>.
+      </div>
+      <div class="ew-note ew-note-muted">
+        Controlling rigger: ${rigger ? rigger.name : '<em>none linked</em>'}
+        ${rigger ? `— Deck ${rew.deckRating ?? 0}, Flux ${rew.fluxRating ?? 0}, Protocol Module ${rew.protocolModule ?? 0}` : ''}
+      </div>
+
+      <h3 class="section-hdr" style="margin-top:1rem">Signal Monitor</h3>
+      <div class="signal-monitor">
+        ${channels.map(c => this._signalChannel(c.key, c.label, sm[c.key] ?? 0, inf[c.key] ?? false)).join('')}
+      </div>
+      ${this._degradationReadout(sm, rigger)}
+
+      <h3 class="section-hdr" style="margin-top:1rem">Infiltration</h3>
+      <div class="ew-infiltration">
+        <div class="ew-inf-row">
+          <span>Intruder: <strong>${intruder ? intruder.name : '—'}</strong></span>
+          <span>Turns left:
+            <input class="ew-inline-num" type="number" name="system.infiltration.turnsRemaining" value="${inf.turnsRemaining ?? 0}" min="0"/>
+            <button type="button" class="sig-btn" data-action="advanceInfiltration" title="Advance one combat turn (−1)">−1</button>
+          </span>
+          <span>Intrusion Factor:
+            <input class="ew-inline-num" type="number" name="system.infiltration.intrusionFactor" value="${inf.intrusionFactor ?? 0}" min="0"/>
+          </span>
+        </div>
+        <div class="ew-inf-row">
+          ${channels.map(c => `<span class="ew-breach-cell">${c.label}: ${infChannelTag(c.key)}</span>`).join('')}
+        </div>
+        <div class="ew-btn-row">
+          <button type="button" class="btn-sm" data-action="infiltrate">📡 Attempt Infiltration</button>
+          <button type="button" class="btn-sm" data-action="detectInfiltration">🔍 Detect Infiltration</button>
+        </div>
+      </div>
+
+      <h3 class="section-hdr" style="margin-top:1rem">Actions</h3>
+      <div class="ew-btn-row">
+        <button type="button" class="btn-sm ew-attack-btn" data-action="mijiAttack">⚡ MIJI Attack</button>
+        <button type="button" class="btn-sm" data-action="reduceFootprint">📉 Reduce Footprint</button>
+      </div>
+      <div class="ew-btn-row" style="margin-top:4px">
+        ${channels.map(c => `<button type="button" class="btn-sm" data-action="eccmRepair" data-channel="${c.key}">🛡 ECCM: ${c.label}</button>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  /* ------------------------------------------------------------------ */
   /*  Tab: Notes                                                          */
   /* ------------------------------------------------------------------ */
 
@@ -422,6 +586,68 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
   static async _onHealDamage(_ev, _target) {
     const current = this.actor.system.damage?.value ?? 0;
     await this.actor.update({ 'system.damage.value': Math.max(0, current - 1) });
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Electronic Warfare actions                                          */
+  /* ------------------------------------------------------------------ */
+
+  // Click a Signal-Monitor box: toggle-at-index (same as wound/overwatch tracks).
+  // Gated on the channel being infiltrated (boxes are faded/locked otherwise).
+  static async _onSignalBox(_ev, target) {
+    const ch  = target.dataset.channel;
+    if (!(this.actor.system.infiltration?.[ch])) return;   // channel not infiltrated → locked
+    const box = parseInt(target.dataset.box);
+    const cur = this.actor.system.signalMonitor?.[ch] ?? 0;
+    const newVal = cur === box ? box - 1 : box;
+    await this.actor.update({ [`system.signalMonitor.${ch}`]: Math.max(0, Math.min(10, newVal)) });
+  }
+
+  // Toggle the per-channel infiltration breach (the same flag the infiltration roll sets).
+  // Activating a channel unlocks its degradation controls; deactivating keeps the value.
+  static async _onSignalInfil(_ev, target) {
+    const ch  = target.dataset.channel;
+    const cur = this.actor.system.infiltration?.[ch] ?? false;
+    await this.actor.update({ [`system.infiltration.${ch}`]: !cur });
+  }
+
+  // +1 / −1 a channel's degradation. Only works once the channel is infiltrated.
+  static async _onSignalDamage(_ev, target) {
+    const ch = target.dataset.channel;
+    if (!(this.actor.system.infiltration?.[ch])) return;   // locked until infiltrated
+    const delta = parseInt(target.dataset.delta) || 0;
+    const cur   = this.actor.system.signalMonitor?.[ch] ?? 0;
+    await this.actor.update({ [`system.signalMonitor.${ch}`]: Math.max(0, Math.min(10, cur + delta)) });
+  }
+
+  static async _onRecalcFootprint(_ev, _target) {
+    const derived = this._ewFootprintDerived(this.actor.system);
+    await this.actor.update({ 'system.ew.footprint': derived });
+  }
+
+  static async _onAdvanceInfiltration(_ev, _target) {
+    const cur = this.actor.system.infiltration?.turnsRemaining ?? 0;
+    await this.actor.update({ 'system.infiltration.turnsRemaining': Math.max(0, cur - 1) });
+  }
+
+  static async _onMijiAttack(_ev, _target) {
+    return game.sr3e.SR3EMIJI?.openAttackDialog(this.actor);
+  }
+
+  static async _onInfiltrate(_ev, _target) {
+    return game.sr3e.SR3EMIJI?.openInfiltration(this.actor);
+  }
+
+  static async _onDetectInfiltration(_ev, _target) {
+    return game.sr3e.SR3EMIJI?.detectInfiltration(this.actor);
+  }
+
+  static async _onEccmRepair(_ev, target) {
+    return game.sr3e.SR3EMIJI?.openECCMRepair(this.actor, target.dataset.channel);
+  }
+
+  static async _onReduceFootprint(_ev, _target) {
+    return game.sr3e.SR3EMIJI?.reduceFootprint(this.actor);
   }
 
   static async _onItemCreate(_ev, target) {
@@ -548,13 +774,14 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
       }
     }
 
-    let skillDice, poolLabel;
+    let skillDice, skillRating, poolLabel;
     const isDefaulting = !matchedSkill;
-    let defTnMod = 0, defAllowPool = true;
+    let defTnMod = 0;
     if (matchedSkill) {
       const rating    = matchedSkill.system.rating ?? 1;
       const specBonus = useSpecialisation ? 2 : 0;
-      skillDice = rating + specBonus;
+      skillDice   = rating + specBonus;
+      skillRating = rating;   // plain Vehicle Skill rating → rigger Control Pool
       const specNote = useSpecialisation ? ` + spec (${matchedSkill.system.specialisation})` : '';
       poolLabel = `${matchedSkill.system.skillName || matchedSkill.name} ${rating}${specNote}`;
     } else {
@@ -565,10 +792,10 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
         message:    `${driver.name} has no vehicle skill for this test — choose how to default:`,
       });
       if (!def) return;   // cancelled
-      skillDice    = def.pool;
-      defTnMod     = def.tnMod;
-      defAllowPool = def.allowPool;
-      poolLabel    = `${def.label}`;
+      skillDice   = def.pool;
+      skillRating = def.pool;
+      defTnMod    = def.tnMod;
+      poolLabel   = `${def.label}`;
     }
 
     // Vehicle stats
@@ -614,9 +841,9 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
         <div style="background:#1c2030;border-radius:4px;padding:8px;margin-bottom:10px;font-size:12px;">
           ${infoRow('Driver', driver.name)}
           ${infoRow('Skill', poolLabel)}
-          ${infoRow('Autonav', autonav)}
+          ${infoRow('Autonav', `${autonav} (added out of combat)`)}
           ${infoRow('Handling (base TN)', handling)}
-          ${vcrRating ? infoRow('VCR', `Rating ${vcrRating}`) : ''}
+          ${vcrRating ? infoRow('VCR', `Rating ${vcrRating} — Control Pool = Vehicle Skill when rigging`) : ''}
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;">
           <label style="${FIELD_S}">Unfamiliar Vehicle
@@ -666,9 +893,6 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
           </label>
           ${datajackRow}
           ${riggerRow}
-          <label style="${FIELD_S}">Control Pool Dice${(isDefaulting && !defAllowPool) ? ' (none — defaulting to attribute)' : ''}
-            <input id="drv-control" type="number" value="0" min="0" max="${(isDefaulting && !defAllowPool) ? 0 : 30}" ${(isDefaulting && !defAllowPool) ? 'disabled' : ''} style="${INPUT_S}"/>
-          </label>
           <label style="${FIELD_S}">Base TN
             <input id="drv-tn" type="number" value="${handling}" min="2" max="30" style="${INPUT_S}"/>
           </label>
@@ -682,10 +906,12 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
         </div>
       `,
       render: (_ev, dialog) => {
-        const el = dialog.element;
+        const el      = dialog.element;
+        const poolInp = el.querySelector('#drv-pool');
+
         const update = () => {
-          const baseTN     = parseInt(el.querySelector('#drv-tn')?.value      ?? handling);
-          const basePoolEl = parseInt(el.querySelector('#drv-pool')?.value    ?? basePool);
+          const baseTN     = parseInt(el.querySelector('#drv-tn')?.value   ?? handling);
+          const basePoolEl = parseInt(el.querySelector('#drv-pool')?.value ?? basePool);
           const selIds     = ['#drv-unfamiliar','#drv-stress','#drv-size',
                               '#drv-weather','#drv-terrain','#drv-combat',
                               '#drv-datajack','#drv-rigger'];
@@ -699,16 +925,19 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
           if (poolOut) poolOut.textContent = basePoolEl;
         };
 
-        // Auto-update total pool when control pool dice changes
-        const controlInp = el.querySelector('#drv-control');
-        const poolInp    = el.querySelector('#drv-pool');
-        const syncPool   = () => {
-          const ctrl = parseInt(controlInp?.value ?? 0);
-          if (poolInp) poolInp.value = basePool + ctrl;
+        // SR3 pool: Vehicle Skill + (rigger using VCR → Control Pool = Vehicle Skill;
+        // else out of combat → Autonav; else nothing). Recomputed when combat/VCR changes.
+        const riggerEl = el.querySelector('#drv-rigger');
+        const combatEl = el.querySelector('#drv-combat');
+        const recomputePool = () => {
+          const usingVCR = riggerEl ? (parseInt(riggerEl.value) || 0) !== 0 : false;
+          const combatOn = (parseInt(combatEl?.value) || 0) > 0;
+          const bonus    = usingVCR ? skillRating : (combatOn ? 0 : autonav);
+          if (poolInp) poolInp.value = Math.max(1, skillDice + bonus);
           update();
         };
-        controlInp?.addEventListener('input',  syncPool);
-        controlInp?.addEventListener('change', syncPool);
+        riggerEl?.addEventListener('change', recomputePool);
+        combatEl?.addEventListener('change', recomputePool);
 
         el.querySelectorAll('select, input').forEach(n => {
           n.addEventListener('change', update);

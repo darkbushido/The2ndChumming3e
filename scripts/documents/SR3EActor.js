@@ -1777,10 +1777,12 @@ _prepareCharacter(sys, attr) {
     // SR3 Default Table: defaulting to an attribute is +4 TN (full attribute dice, no pool).
     if (options.defaulting) tn += 4;
 
+    // Simsense degradation on a VCR-jacked rigger applies to ALL their actions (wound-like).
+    const signalMod    = options.skipSignalMod ? 0 : SR3EActor._jackedSignalMod(this);
     const effectiveTN  = options.skipWoundMod
-      ? Math.max(2, tn)
-      : Math.max(2, tn - (this.system.woundMod ?? 0));
-    const woundDisplay = options.skipWoundMod ? 0 : -(this.system.woundMod ?? 0);
+      ? Math.max(2, tn + signalMod)
+      : Math.max(2, tn - (this.system.woundMod ?? 0) + signalMod);
+    const woundDisplay = (options.skipWoundMod ? 0 : -(this.system.woundMod ?? 0)) + signalMod;
 
     if (options.physicalDice) {
       const successes = await SR3EActor._promptPhysicalSuccesses(pool, effectiveTN, label, tn, woundDisplay);
@@ -2004,6 +2006,32 @@ _prepareCharacter(sys, attr) {
 
   // SR3 wound modifier per track: Light (1+ boxes) = 1, Moderate (3+) = 2, Serious (6+) = 3
   static _trackMod(boxes) { return boxes >= 6 ? 3 : boxes >= 3 ? 2 : boxes >= 1 ? 1 : 0; }
+
+  // Signal-monitor degradation → TN penalty (+N). 0 boxes or full (10, channel lost) → 0;
+  // 1-3 → +1, 4-6 → +2, 7-9 → +3 (from SR3E.electronicWarfare.degradationTiers).
+  static _signalTierMod(boxes) {
+    const tiers = game.sr3e?.SR3E?.electronicWarfare?.degradationTiers ?? [];
+    const t = tiers.find(t => boxes >= t.min && boxes <= t.max);
+    return (t && t.mod) ? t.mod : 0;   // mod === null (channel lost) → no TN penalty (other effect)
+  }
+
+  // A vehicle's Simsense-channel degradation penalty (+N TN).
+  static _vehicleSimsenseMod(vehicle) {
+    return SR3EActor._signalTierMod(vehicle?.system?.signalMonitor?.simsense ?? 0);
+  }
+
+  // For a rigger jumped into a VCR drone, the Simsense degradation acts exactly like a wound
+  // modifier (R3 p.145): +N to ALL their target numbers and −N to initiative. Returns +N (0 if
+  // not jacked in or no degradation). The VCR is exclusive, so at most one drone applies.
+  static _jackedSignalMod(actor) {
+    if (!actor || (actor.type !== 'character' && actor.type !== 'npc')) return 0;
+    const veh = game.actors?.find(a =>
+      a.type === 'vehicle' &&
+      a.system?.driverActorId === actor.id &&
+      a.system?.controlMode === 'vcr'
+    );
+    return veh ? SR3EActor._vehicleSimsenseMod(veh) : 0;
+  }
 
   static _buildPhysicalDice(pool, successes) {
     return Array.from({ length: pool }, (_, i) => ({
@@ -3389,6 +3417,12 @@ _prepareCharacter(sys, attr) {
       content: `
         <div class="sr-roll-card sr-melee-card">
           <div class="sr-roll-header">⚔ MELEE — ${atk.name} vs ${def.name}</div>
+          ${ctx.calledShot && ctx.calledShot !== 'none' ? `
+            <div style="font-size:11px;color:var(--sr-amber);margin:-2px 0 6px;text-align:center">
+              🎯 ${atk.name} called shot${ctx.calledShot === 'stage'
+                ? ' — stage damage up (+4 TN)'
+                : `${ctx.calledShotTarget ? `: ${ctx.calledShotTarget}` : ''} (+4 TN)`}
+            </div>` : ''}
           <div class="sr-melee-boxing">
             ${_corner(atk.name, ctx.atkInfo, ctx.atkWeaponName, ctx.atkRawDamage, ctx.atkDamageBase,
                       ctx.atkReach ?? 0, ctx.atkTN, 'sr-melee-atk-pool', 'sr-melee-atk-tn', 'sr-melee-atk-damage', 'sr-melee-atk-skill-dice')}
@@ -3551,13 +3585,21 @@ _prepareCharacter(sys, attr) {
         while (rem >= 2 && idx < STAGES.length - 1) { rem -= 2; idx++; }
         if (idx === STAGES.length - 1 && rem >= 2) { power += Math.floor(rem / 2); }
 
+        // Called shot (attacker only): stage damage up one further level (cap Deadly).
+        const calledStage = winnerIsAtk && ctx.calledShot === 'stage';
+        if (calledStage) idx = Math.min(STAGES.length - 1, idx + 1);
+        const calledSub   = winnerIsAtk && ctx.calledShot === 'subtarget';
+
         const finalLevel = STAGES[idx];
         const trackLabel = winnerDmgBase.isStun ? 'Stun' : 'Physical';
         const unchanged  = idx === origIdx && power === winnerDmgBase.power;
 
         stagingHtml = unchanged
           ? `<div class="sr-staging-result">${winnerRawDmg} — net ${net} hit${net !== 1 ? 's' : ''}, no stage up → <strong>${power}${finalLevel} ${trackLabel}</strong></div>`
-          : `<div class="sr-staging-result">📊 ${winnerRawDmg} + ${net} net hits → <strong>${power}${finalLevel} ${trackLabel}</strong></div>`;
+          : `<div class="sr-staging-result">📊 ${winnerRawDmg} + ${net} net hits${calledStage ? ' + 🎯 called shot' : ''} → <strong>${power}${finalLevel} ${trackLabel}</strong></div>`;
+        if (calledSub) {
+          stagingHtml += `<div class="sr-staging-result">🎯 Called shot${ctx.calledShotTarget ? `: ${ctx.calledShotTarget}` : ''} — damage applies to that component.</div>`;
+        }
 
         const soakPayload = JSON.stringify({
           attackerActorId: ctx.attackerActorId,
@@ -4589,7 +4631,9 @@ _prepareCharacter(sys, attr) {
             // Wired reflexes excluded in VCR — use reaction.base not reaction.value
             const wm          = rigger.system.woundMod ?? 0;
             const reactionBase = rigger.system.attributes?.reaction?.base ?? 0;
-            const base = reactionBase + wm + vcrLevel;
+            // Simsense jamming on this drone lowers the jacked rigger's initiative (wound-like).
+            const jam = SR3EActor._vehicleSimsenseMod(this);
+            const base = reactionBase + wm + vcrLevel - jam;
             const dice = 1 + vcrLevel;
 
             const rolls    = Array.from({ length: dice }, () => Math.floor(Math.random() * 6) + 1);
@@ -4598,6 +4642,7 @@ _prepareCharacter(sys, attr) {
             const diceHtml = rolls.map(r => `<span class="sr-die ${r === 6 ? 'sr-hit' : ''}">${r}</span>`).join('');
             const wmPart  = wm !== 0 ? ` + wound (${wm})` : '';
             const vcrPart = ` + VCR ${vcrLevel}`;
+            const jamPart = jam ? ` − Simsense jam (${jam})` : '';
             await ChatMessage.create({
               speaker: ChatMessage.getSpeaker({ actor: this }),
               content: `
@@ -4605,7 +4650,7 @@ _prepareCharacter(sys, attr) {
                   <div class="sr-roll-header">⚡ Initiative — ${this.name}
                     <span style="font-size:11px;font-weight:normal;color:var(--sr-accent)"> VCR: ${rigger.name}</span>
                   </div>
-                  <div class="sr-roll-meta">REA base ${reactionBase}${vcrPart}${wmPart} = ${base} base (${rigger.name}) + ${dice}d6</div>
+                  <div class="sr-roll-meta">REA base ${reactionBase}${vcrPart}${wmPart}${jamPart} = ${base} base (${rigger.name}) + ${dice}d6</div>
                   <div class="sr-roll-dice">${diceHtml}</div>
                   <div class="sr-roll-result">Score: <strong>${score}</strong>
                     <span style="font-size:11px;color:var(--sr-muted)">(${base} + ${rolled})</span>
@@ -4703,9 +4748,11 @@ _prepareCharacter(sys, attr) {
       }
       const wm = this.system.woundMod ?? 0;
       const reactionBase = this.system.attributes?.reaction?.base ?? 0;
-      base = reactionBase + vcrLevel + wm;
+      // Simsense jamming on the jumped-in drone lowers initiative (wound-like).
+      const jam = SR3EActor._vehicleSimsenseMod(vcrVehicle);
+      base = reactionBase + vcrLevel + wm - jam;
       dice = 1 + vcrLevel;
-      modeNote = `<div class="sr-roll-meta" style="color:var(--sr-accent)">🎮 VCR Lv${vcrLevel} — REA base ${reactionBase}${vcrLevel ? ` + VCR ${vcrLevel}` : ''}</div>`;
+      modeNote = `<div class="sr-roll-meta" style="color:var(--sr-accent)">🎮 VCR Lv${vcrLevel} — REA base ${reactionBase}${vcrLevel ? ` + VCR ${vcrLevel}` : ''}${jam ? ` − Simsense jam (${jam})` : ''}</div>`;
     } else if (useAstral) {
       // Astral initiative: Intelligence + 20 + 1d6
       const intel = this.system.attributes?.intelligence?.value ?? 0;

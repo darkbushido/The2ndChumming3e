@@ -16,6 +16,7 @@ import { SR3E } from './config.js';
 import { SR3ECombat } from './documents/SR3ECombat.js';
 import { SR3ESpiritSummoning } from './documents/SR3ESpiritSummoning.js';
 import { SR3EVehicleChase } from './SR3EVehicleChase.js';
+import { SR3EMIJI } from './SR3EMIJI.js';
 
 Hooks.once('init', () => {
   console.log('SR3E | Initialising');
@@ -73,7 +74,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, buildSkillsCompendium, isLiveActor };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, buildSkillsCompendium, isLiveActor };
   game.sr3e.openChunkySalsa = _openChunkySalsaCalculator; // (function declaration, hoisted)
 
   // Data models (replace template.json defaults)
@@ -1560,6 +1561,14 @@ Hooks.on('renderCombatTracker', (_app, html) => {
 // tracker's own buttons and the default next-turn arrow).
 Hooks.on('updateCombat', (_combat, changed) => {
   if ('turn' in changed || 'round' in changed) _actionTracker.clear();
+  // Count down active MIJI infiltrations once per combat round (GM client only).
+  if ('round' in changed && game.users?.activeGM?.isSelf) {
+    for (const a of game.actors) {
+      if (a.type !== 'vehicle') continue;
+      const left = a.system?.infiltration?.turnsRemaining ?? 0;
+      if (left > 0) a.update({ 'system.infiltration.turnsRemaining': left - 1 });
+    }
+  }
 });
 
 
@@ -1897,6 +1906,27 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'melee', i)) return;
       await SR3EActor.handleMeleeRoll(btn, event.shiftKey);
+    });
+  });
+
+  // MIJI test (electronic warfare) — roll both sides + apply degradation
+  html.querySelectorAll('.sr-miji-roll-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'mijiroll', i)) return;
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'mijiroll', i)) return;
+      await game.sr3e.SR3EMIJI.handleMIJIRoll(btn);
+    });
+  });
+
+  html.querySelectorAll('.sr-miji-degradation-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'mijideg', i)) return;
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'mijideg', i)) return;
+      await game.sr3e.SR3EMIJI.applyDegradation(btn);
     });
   });
 

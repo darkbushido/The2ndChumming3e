@@ -205,6 +205,11 @@ export class SR3EItem extends Item {
     if (!await _applyMeleeDefault(atkInfo, actor, 'attacker'))       return null;
     if (!await _applyMeleeDefault(defInfo, targetActor, 'defender')) return null;
 
+    // Called shot (SR3 p.114) — attacker only; +4 TN to stage damage up one level or aim
+    // at a sub-component. Take-aim folds in as −1 TN each. Cancelling aborts the attack.
+    const calledShot = await SR3EItem._promptCalledShot(actor);
+    if (!calledShot) return null;
+
     await game.sr3e.SR3EActor.postMeleeCard({
       attackerActorId:  actor.id,
       defenderActorId:  targetActor.id,
@@ -218,9 +223,12 @@ export class SR3EItem extends Item {
       defDamageBase:    defWeapon ? SR3EItem.parseDamageCode(defWeapon.system?.damage ?? '', targetActor) : null,
       atkReach,
       defReach,
-      // Defaulting adds the chosen TN modifier (+2 skill / +3 spec / +4 attribute).
-      atkTN:            Math.max(2, 4 - atkReach + (atkInfo.defaultTnMod ?? 0)),
+      // Defaulting adds the chosen TN modifier (+2 skill / +3 spec / +4 attribute);
+      // a called shot adds +4 (less take-aim) to the attacker's TN only.
+      atkTN:            Math.max(2, 4 - atkReach + (atkInfo.defaultTnMod ?? 0) + (calledShot.tnMod ?? 0)),
       defTN:            Math.max(2, 4 - defReach + (defInfo.defaultTnMod ?? 0)),
+      calledShot:       calledShot.calledShot,
+      calledShotTarget: calledShot.calledShotTarget,
       atkInfo,
       defInfo,
     });
@@ -765,8 +773,11 @@ export class SR3EItem extends Item {
     const tracerTN = Math.floor(fireModeResult.rounds / 3);
     if (tracerTN > 0) tnBreakdownParts.push(`Tracer −${tracerTN} (beyond Short, non-smartgun — apply manually)`);
   }
+  // Called shots are forbidden in Full Auto (SR3 p.114); allowed for every other mode and
+  // for melee/thrown/projectile single-target attacks.
+  const calledShotAllowed = !(this.type === 'firearm' && fireModeResult?.mode === 'FA');
   const weaponOpts = await SR3EItem._promptWeaponRollOptions(targetActor, rawDamage, actor, extraTNMod,
-    tnBreakdownParts.length ? tnBreakdownParts.join(' | ') : null, rangeInfo);
+    tnBreakdownParts.length ? tnBreakdownParts.join(' | ') : null, rangeInfo, calledShotAllowed);
   if (!weaponOpts) return null;
 
   // Anti-Vehicle ammo bypasses the vehicle Power/2 reduction (same effect as the AV-munition checkbox)
@@ -849,6 +860,14 @@ export class SR3EItem extends Item {
       pool  += combatDice;
       label += ` + ${combatDice} Combat Pool`;
     }
+  }
+
+  // Note the called shot on the card label (the +4 TN is already baked into tn; a
+  // stage-up has already been applied to effectiveRawDamage).
+  if (weaponOpts.calledShot === 'stage') {
+    label += ' — 🎯 Called Shot (damage staged up)';
+  } else if (weaponOpts.calledShot === 'subtarget') {
+    label += ` — 🎯 Called Shot${weaponOpts.calledShotTarget ? `: ${weaponOpts.calledShotTarget}` : ''}`;
   }
 
   pool  = Math.max(1, pool);
@@ -1041,6 +1060,29 @@ export class SR3EItem extends Item {
     const tnReductionLabel = vcrLevel > 0 ? `VCR Lv${vcrLevel}` : `Sensor ${sensorRating}`;
     const defaultTN       = Math.max(2, baseSig - tnReduction);
 
+    // Signal-degradation modifiers on the firing vehicle's network: manual gunnery suffers the
+    // Simsense penalty, indirect fire the System penalty (R3 p.145). Folded into the TN live.
+    const SR3EActor = game.sr3e.SR3EActor;
+    const simMod = SR3EActor._signalTierMod(weapon.actor?.system?.signalMonitor?.simsense ?? 0);
+    const sysMod = SR3EActor._signalTierMod(weapon.actor?.system?.signalMonitor?.system ?? 0);
+    const shotOpts = [
+      ['direct',   0,      'Direct fire (no network mod)'],
+      ['manual',   simMod, `Manual gunnery (Simsense +${simMod})`],
+      ['indirect', sysMod, `Indirect fire (System +${sysMod})`],
+    ];
+
+    let hookId = Hooks.on('renderDialogV2', (_app, html) => {
+      const el = html?.querySelector ? html : html?.[0];
+      if (!el?.querySelector?.('#vw-shottype')) return;
+      Hooks.off('renderDialogV2', hookId);
+      const sel = el.querySelector('#vw-shottype');
+      const sig = el.querySelector('#vw-sig');
+      sel.addEventListener('change', () => {
+        const mod = parseInt(sel.selectedOptions[0]?.dataset.mod) || 0;
+        if (sig) sig.value = defaultTN + mod;
+      });
+    });
+
     let result = null;
     await foundry.applications.api.DialogV2.wait({
       window: { title: `${weapon.name} — Attack Options` },
@@ -1078,6 +1120,12 @@ export class SR3EItem extends Item {
               <option value="8">Extreme (+8)</option>
             </select>
           </label>
+          ${(simMod || sysMod) ? `
+          <label class="vw-field vw-full" title="Network degradation modifies gunnery through the drone">Shot type (signal degradation)
+            <select id="vw-shottype">
+              ${shotOpts.map(([k, m, lbl]) => `<option value="${k}" data-mod="${m}">${lbl}</option>`).join('')}
+            </select>
+          </label>` : ''}
           ${controlPoolMax > 0
             ? `<label class="vw-field">Control Pool dice (max ${controlPoolMax})
                  <input type="number" id="vw-fc" value="${controlPoolMax}" min="0" max="${controlPoolMax}"/>
@@ -1121,6 +1169,7 @@ export class SR3EItem extends Item {
         { label: 'Cancel', action: 'cancel' },
       ],
     });
+    if (hookId) Hooks.off('renderDialogV2', hookId);
     return result;
   }
 
@@ -1613,7 +1662,7 @@ export class SR3EItem extends Item {
     return result;
   }
 
-  static async _promptWeaponRollOptions(targetActor, rawDamage, actor, totalTNMod = 0, modBreakdown = null, rangeInfo = null) {
+  static async _promptWeaponRollOptions(targetActor, rawDamage, actor, totalTNMod = 0, modBreakdown = null, rangeInfo = null, calledShotAllowed = true) {
     const isVehicle  = targetActor.type === 'vehicle';
     const karmaPool  = actor?.system.karmaPool ?? 0;
     const rangeTNarr = game.sr3e.SR3E.rangeTN ?? [0, 1, 2, 5];
@@ -1641,18 +1690,57 @@ export class SR3EItem extends Item {
         <span style="font-size:11px;color:var(--sr-muted);margin-left:8px">measured ${Math.round(rangeInfo.distance)}m${rangeInfo.beyond ? ' — beyond Extreme' : ''}</span>
       </div>` : '';
 
-    // Live TN recompute when the range band changes (DialogV2.wait does not call `render`).
+    // Called Shot (SR3 p.114) — declared before the roll. +4 TN for either staging the
+    // base damage up one level OR aiming at a specific sub-component (vehicle-sized+).
+    // Take Aim folds in as −1 TN per Simple Action. Not offered for Full-Auto (the caller
+    // passes calledShotAllowed=false) or AoE (separate dialog entirely).
+    const calledRow = calledShotAllowed ? `
+      <div style="margin-bottom:10px;padding:8px;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r)">
+        <label>🎯 Called Shot:
+          <select id="sr-called" style="margin-left:8px">
+            <option value="none" selected>None</option>
+            <option value="stage">Stage up damage (+4 TN)</option>
+            <option value="subtarget">Specific sub-target (+4 TN)</option>
+          </select>
+        </label>
+        <div id="sr-subtarget-row" style="margin-top:6px;display:none">
+          <label>Component:
+            <input type="text" id="sr-subtarget" placeholder="e.g. tires, window, fuel tank" style="width:170px;margin-left:8px"/>
+          </label>
+          <div style="font-size:10px;color:var(--sr-muted);margin-top:2px">Vehicle-sized or larger targets only — usually needs Moderate+ damage to destroy.</div>
+        </div>
+        <div style="margin-top:6px">
+          <label>Take Aim (−1 TN each):
+            <input type="number" id="sr-aim" value="0" min="0" max="6" style="width:50px;margin-left:8px"/>
+          </label>
+          <span style="font-size:10px;color:var(--sr-muted);margin-left:6px">1 Simple Action per point.</span>
+        </div>
+      </div>` : '';
+
+    // Live TN recompute when range / called shot / take-aim changes (DialogV2.wait does not
+    // call `render`). The TN field stays authoritative; these controls fold into it.
     let hookId = null;
-    if (rangeInfo) {
+    if (rangeInfo || calledShotAllowed) {
       hookId = Hooks.on('renderDialogV2', (_app, html) => {
         const el = html?.querySelector ? html : html?.[0];
-        if (!el?.querySelector?.('#sr-range')) return;
+        if (!el?.querySelector?.('#sr-damage')) return; // not our dialog
         Hooks.off('renderDialogV2', hookId);
-        const sel     = el.querySelector('#sr-range');
-        const tnInput = el.querySelector('#sr-tn');
-        sel.addEventListener('change', () => {
-          const base = parseInt(sel.dataset.base) || 4;
-          tnInput.value = base + (rangeTNarr[parseInt(sel.value)] ?? 0);
+        const tnInput   = el.querySelector('#sr-tn');
+        const sel       = el.querySelector('#sr-range');
+        const calledSel = el.querySelector('#sr-called');
+        const aimInput  = el.querySelector('#sr-aim');
+        const subRow    = el.querySelector('#sr-subtarget-row');
+        const recompute = () => {
+          const rangeTN = sel ? (rangeTNarr[parseInt(sel.value)] ?? 0) : initRangeTN;
+          const called  = (calledSel && calledSel.value !== 'none') ? 4 : 0;
+          const aim     = Math.max(0, parseInt(aimInput?.value) || 0);
+          if (tnInput) tnInput.value = Math.max(2, baseTN + rangeTN + called - aim);
+        };
+        sel?.addEventListener('change', recompute);
+        aimInput?.addEventListener('input', recompute);
+        calledSel?.addEventListener('change', () => {
+          if (subRow) subRow.style.display = calledSel.value === 'subtarget' ? '' : 'none';
+          recompute();
         });
       });
     }
@@ -1674,6 +1762,7 @@ export class SR3EItem extends Item {
               <input type="text" id="sr-damage" value="${rawDamage}" style="width:80px;margin-left:8px"/>
             </label>
           </div>
+          ${calledRow}
           ${isVehicle ? `
             <div style="margin-bottom:10px;padding:8px;background:var(--sr-surface);border:1px solid var(--sr-accent);border-radius:var(--r)">
               <div style="color:var(--sr-accent);font-size:11px">⚠ Vehicle target: Power ÷2 (round up), Stage −1 will be applied <span style="color:var(--sr-muted)">(load Anti-Vehicle ammo to bypass)</span></div>
@@ -1695,16 +1784,96 @@ export class SR3EItem extends Item {
           callback: (_e, _b, dialog) => {
             const html = dialog.element;
             const tn = Math.max(2, parseInt(html.querySelector('#sr-tn')?.value) || 4);
-            const damageCode = html.querySelector('#sr-damage')?.value.trim() || rawDamage;
+            let damageCode = html.querySelector('#sr-damage')?.value.trim() || rawDamage;
             const useKarma   = html.querySelector('#sr-karma')?.checked ?? false;
+            // Called shot: the TN penalty is already folded into #sr-tn above; here we
+            // apply the "stage up one level" damage option and capture the sub-target.
+            const calledShot       = html.querySelector('#sr-called')?.value ?? 'none';
+            const calledShotTarget = (html.querySelector('#sr-subtarget')?.value || '').trim();
+            if (calledShot === 'stage') {
+              const p = SR3EItem.parseDamageCode(damageCode, actor);
+              if (p) {
+                const S = ['L', 'M', 'S', 'D'];
+                let i = S.indexOf(p.level);
+                i = i < 0 ? 1 : Math.min(3, i + 1);
+                damageCode = `${p.power}${S[i]}${p.isStun ? ' Stun' : ''}`;
+              }
+            }
             // avMunition is now driven by Anti-Vehicle ammo type, not a manual checkbox
-            result = { tn, damageCode, avMunition: false, useKarma, karmaReroll: useKarma };
+            result = { tn, damageCode, avMunition: false, useKarma, karmaReroll: useKarma, calledShot, calledShotTarget };
           }
         },
         { label: 'Cancel', action: 'cancel' }
       ]
     });
     if (hookId) Hooks.off('renderDialogV2', hookId); // safety if the dialog never matched
+    return result;
+  }
+
+  /**
+   * Standalone Called Shot prompt (SR3 p.114) for flows that don't use the ranged
+   * roll-options dialog — i.e. melee. Returns { calledShot, calledShotTarget, tnMod }
+   * where tnMod = +4 (if a called shot is chosen) − take-aim points, or null if cancelled.
+   */
+  static async _promptCalledShot(actor) {
+    let hookId = Hooks.on('renderDialogV2', (_app, html) => {
+      const el = html?.querySelector ? html : html?.[0];
+      if (!el?.querySelector?.('#sr-called-cs')) return; // not our dialog
+      Hooks.off('renderDialogV2', hookId);
+      const calledSel = el.querySelector('#sr-called-cs');
+      const subRow    = el.querySelector('#sr-subtarget-row-cs');
+      calledSel?.addEventListener('change', () => {
+        if (subRow) subRow.style.display = calledSel.value === 'subtarget' ? '' : 'none';
+      });
+    });
+
+    let result = { calledShot: 'none', calledShotTarget: '', tnMod: 0 };
+    let cancelled = true;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: 'Called Shot (optional)' },
+      content: `
+        <div style="padding:8px 0">
+          <div style="margin-bottom:8px">
+            <label>🎯 Called Shot:
+              <select id="sr-called-cs" style="margin-left:8px">
+                <option value="none" selected>None</option>
+                <option value="stage">Stage up damage (+4 TN)</option>
+                <option value="subtarget">Specific sub-target (+4 TN)</option>
+              </select>
+            </label>
+          </div>
+          <div id="sr-subtarget-row-cs" style="margin-bottom:8px;display:none">
+            <label>Component:
+              <input type="text" id="sr-subtarget-cs" placeholder="e.g. tires, window, fuel tank" style="width:170px;margin-left:8px"/>
+            </label>
+            <div style="font-size:10px;color:var(--sr-muted);margin-top:2px">Vehicle-sized or larger targets only.</div>
+          </div>
+          <div>
+            <label>Take Aim (−1 TN each):
+              <input type="number" id="sr-aim-cs" value="0" min="0" max="6" style="width:50px;margin-left:8px"/>
+            </label>
+          </div>
+          <div style="color:var(--sr-muted);font-size:11px;margin-top:8px">The +4 TN is added to your attack TN on the boxing card.</div>
+        </div>
+      `,
+      buttons: [
+        {
+          label: 'Confirm', action: 'confirm', default: true,
+          callback: (_e, _b, dialog) => {
+            cancelled = false;
+            const html = dialog.element;
+            const calledShot       = html.querySelector('#sr-called-cs')?.value ?? 'none';
+            const calledShotTarget = (html.querySelector('#sr-subtarget-cs')?.value || '').trim();
+            const aim = Math.max(0, parseInt(html.querySelector('#sr-aim-cs')?.value) || 0);
+            const tnMod = (calledShot !== 'none' ? 4 : 0) - aim;
+            result = { calledShot, calledShotTarget, tnMod };
+          }
+        },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (hookId) Hooks.off('renderDialogV2', hookId);
+    if (cancelled) return null;
     return result;
   }
 

@@ -41,6 +41,15 @@ function _pools() {
   };
 }
 
+/** Rigger electronic-warfare deck stats (character / npc) */
+function _ew() {
+  return new SchemaField({
+    deckRating:     new NumberField({ integer: true, initial: 0, min: 0 }), // remote-control deck rating
+    fluxRating:     new NumberField({ integer: true, initial: 0, min: 0 }), // deck Flux
+    protocolModule: new NumberField({ integer: true, initial: 0, min: 0 }), // protocol-emulation module
+  });
+}
+
 /** Shared wound track */
 function _wounds() {
   return new SchemaField({
@@ -123,6 +132,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
         }),
       }),
       wounds:         _wounds(),
+      ew:             _ew(),
     };
   }
 }
@@ -174,6 +184,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
         }),
       }),
       wounds:         _wounds(),
+      ew:             _ew(),
     };
   }
 }
@@ -282,6 +293,28 @@ export class VehicleData extends foundry.abstract.TypeDataModel {
         sensor:   _vAttr(3),
         cargo:    _vAttr(0),
         load:     _vAttr(0),
+      }),
+      // ── Electronic Warfare (network hub) ──
+      ew: new SchemaField({
+        ecm:        new NumberField({ integer: true, initial: 0, min: 0 }),
+        eccm:       new NumberField({ integer: true, initial: 0, min: 0 }),
+        fluxRating: new NumberField({ integer: true, initial: 0, min: 0 }), // vehicle's own transmitters
+        footprint:  new NumberField({ integer: true, initial: 0, min: 0 }), // manual override; derived shown live
+      }),
+      // 3-channel Signal Monitor — 10 boxes each, degradation accumulates from MIJI
+      signalMonitor: new SchemaField({
+        command:  new NumberField({ integer: true, initial: 0, min: 0, max: 10 }),
+        simsense: new NumberField({ integer: true, initial: 0, min: 0, max: 10 }),
+        system:   new NumberField({ integer: true, initial: 0, min: 0, max: 10 }),
+      }),
+      // Infiltration state: which intruder has breached this network, and how far
+      infiltration: new SchemaField({
+        intruderActorId: new StringField({ initial: '' }),
+        turnsRemaining:  new NumberField({ integer: true, initial: 0, min: 0 }), // counts down from 10
+        intrusionFactor: new NumberField({ integer: true, initial: 0, min: 0 }),
+        command:  new BooleanField({ initial: false }),   // breached channels
+        simsense: new BooleanField({ initial: false }),
+        system:   new BooleanField({ initial: false }),
       }),
     };
   }

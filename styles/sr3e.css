@@ -3656,3 +3656,68 @@ label.act-field input[type=number] {
 
 .attr-aug   { font-size: 14px; font-weight: 600; color: var(--sr-green);  min-width: 18px; text-align: center; }
 .attr-adept { font-size: 14px; font-weight: 600; color: var(--sr-gold);   min-width: 18px; text-align: center; }
+
+/* ── Electronic Warfare — Signal Monitor + MIJI ─────────────────────────────── */
+.signal-monitor { display: flex; flex-direction: column; gap: 8px; }
+.signal-track {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  padding: 4px 0;
+}
+.signal-label { min-width: 72px; font-size: 12px; font-weight: 600; color: var(--sr-text); }
+.signal-boxes { display: flex; gap: 2px; }
+.signal-box {
+  width: 16px; height: 16px;
+  border: 1px solid var(--sr-border);
+  border-radius: 2px;
+  cursor: pointer;
+  background: transparent;
+  transition: background 0.1s;
+}
+.signal-box.filled { background: var(--sr-amber); border-color: var(--sr-amber); }
+.signal-box.signal-box-lost.filled { background: var(--sr-red); border-color: var(--sr-red); }
+.signal-box.signal-box-lost { border-color: var(--sr-red); }
+.signal-box:hover { border-color: var(--sr-accent); }
+.signal-tier { font-size: 11px; min-width: 96px; color: var(--sr-amber); }
+.signal-tier-lost { color: var(--sr-red); font-weight: 700; }
+.signal-quick { display: flex; gap: 3px; }
+.sig-btn {
+  width: 22px; height: 20px; padding: 0; font-size: 11px; line-height: 1;
+  background: var(--sr-surface); color: var(--sr-text);
+  border: 1px solid var(--sr-border); border-radius: 3px; cursor: pointer;
+}
+.sig-btn:hover { border-color: var(--sr-accent); color: var(--sr-accent); }
+.sig-btn-heal { color: var(--sr-green); }
+.sig-btn-infil { width: auto; padding: 0 6px; }
+.sig-btn-on { background: var(--sr-accent); color: #fff; border-color: var(--sr-accent); }
+/* Locked (not infiltrated) signal controls — visible but non-interactive. */
+.signal-faded { opacity: 0.4; pointer-events: none; }
+
+.ew-note { font-size: 11px; color: var(--sr-text); margin: 6px 0; line-height: 1.5; }
+.ew-note-muted { color: var(--sr-muted); }
+.ew-infiltration { display: flex; flex-direction: column; gap: 6px; }
+.ew-inf-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: 12px; }
+.ew-inline-num {
+  width: 46px; text-align: center; background: var(--sr-surface);
+  color: var(--sr-text); border: 1px solid var(--sr-border); border-radius: 3px;
+}
+.ew-breach { font-size: 11px; color: var(--sr-muted); }
+.ew-breach-on { color: var(--sr-red); font-weight: 700; }
+.ew-btn-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.ew-attack-btn { border-color: var(--sr-accent); color: var(--sr-accent); }
+
+.sr-miji-card .sr-miji-corner { text-align: center; padding: 4px 8px; }
+.sr-miji-name { font-weight: 700; color: var(--sr-text); }
+.sr-miji-skill { font-size: 11px; color: var(--sr-muted); margin-bottom: 4px; }
+.sr-miji-comp { font-size: 10px; color: var(--sr-muted); margin-top: 2px; }
+.sr-miji-result-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  font-size: 12px; margin: 6px 0;
+}
+
+.ew-deg-readout {
+  margin-top: 8px; padding: 6px 8px;
+  background: var(--sr-surface); border: 1px solid var(--sr-amber-bg, var(--sr-border));
+  border-left: 3px solid var(--sr-amber); border-radius: var(--r);
+}
+.ew-deg-title { font-size: 11px; font-weight: 700; color: var(--sr-amber); margin-bottom: 4px; }
+.ew-deg-row { font-size: 11px; color: var(--sr-text); line-height: 1.5; }

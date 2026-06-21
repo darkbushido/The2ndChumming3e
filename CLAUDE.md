@@ -310,7 +310,9 @@ sr3e/
 
 ### Dice rolling — Rule of Six
 - All rolls are d6 success-counting (result ≥ TN = success)
-- Any die showing 6 explodes — player clicks a button to roll that die again, adding to its total
+- Any die showing 6 explodes. Each wave shows a single "💥 Roll explosions (N dice)" button that
+  re-rolls **all** of that wave's exploding dice at once (not one click per die), adding to each
+  die's running total; this repeats wave-by-wave until none are left
 - A die stops exploding when its running total ≥ TN (success, no more rolling needed)
 - Glitch: more than half the original pool shows 1s (only first wave counts for glitch)
 - Critical glitch: glitch AND zero successes
@@ -372,6 +374,13 @@ Escape Artist live on the **Rollable Tables** directory tab (`renderRollTableDir
 the combat tracker. Chase Scene and Driving Test are available to all; the rest are GM-only.
 Driving Test (`SR3EVehicleSheet.promptVehicleDrivingTest` → `runDrivingTest`) prompts for a vehicle
 + driver since there's no sheet context.
+
+**Driving Test (SR3 p.134) — `runDrivingTest`.** Base TN = vehicle **Handling**; modifiers are TN
+dropdowns (unfamiliar +1, stress, size +2/+3, weather +2/+4, terrain −1/0/+1/+3, combat +2,
+datajack −1, **VCR −2×rating**). Dice **pool** (auto, editable): Vehicle Skill dice **+ Autonav
+(only out of combat)**; a **jacked-in rigger ("Using VCR") adds Control Pool = Vehicle Skill
+*instead of* Autonav**. Selecting *Action During Combat* or *Using VCR* recomputes the pool live.
+No vehicle skill → the SR3 Default dialog. 1 success = manoeuvre succeeds (0 → GM Crash Test).
 
 **Initiative formulas by mode:**
 - Default (no Matrix mode): `Reaction + woundMod` base + `initiativeDice` d6 (wired reflexes apply)
@@ -475,6 +484,24 @@ Two entry points besides the sheet (both fire ready weapons via `_sr3eReadyWeapo
 7. Compare: winner = most successes. Tie = no damage.
 8. Winner's weapon damage code stages up by net successes (winner hits − loser hits)
 9. Loser gets Resist Damage button → soak flow as above
+
+### Called shots (SR3 p.114)
+Available on **all single-target weapons except AoE/grenades** — firearms (any mode **except Full
+Auto**), bows/crossbows, thrown, and melee. Declared before the roll; **+4 TN**, with two
+mutually-exclusive options. **Take Aim** folds in as **−1 TN per point** (1 Simple Action each).
+- **Stage up damage**: base Damage Level +1 (L→M→S→D, cap D), resolved normally otherwise.
+- **Specific sub-target**: a named component on a vehicle-sized+ target (tires, window, fuel tank…);
+  normal damage rules, GM adjudicates destruction (usually Moderate+).
+- **Ranged**: built into `_promptWeaponRollOptions` (the `#sr-called` select + `#sr-aim` + sub-target
+  field). The +4/−aim is **folded live into the TN field** (same `renderDialogV2` hook as the range
+  dropdown, now guarded on `#sr-damage`); stage-up rewrites the returned `damageCode` **before** any
+  vehicle Power/2. The caller (`rollWeapon`) passes `calledShotAllowed = mode !== 'FA'` and appends a
+  🎯 note to the card label.
+- **Melee**: a standalone `SR3EItem._promptCalledShot(actor)` dialog (attacker only) runs after
+  defaulting; its `tnMod` is baked into `atkTN`, and `calledShot`/`calledShotTarget` ride in the
+  boxing-card ctx. `handleMeleeRoll` adds the extra stage **only when the attacker wins**
+  (`winnerIsAtk && ctx.calledShot==='stage'`); the card header shows the declaration.
+- **Not wired**: vehicle-mounted weapons (`rollVehicleWeapon` uses its own 🚗 dialog) and spells.
 
 ### Damage staging
 Power (number) + Level (L/M/S/D) + optional Stun flag
@@ -740,6 +767,72 @@ CYB/UNA → Unarmed Combat
 - Box 10 = Convergence (gold border)
 - Default topology mirrors the canonical host system map: SAN (top) → SPU (centre) → SN (left) / DS (right) / CPU (bottom); I/O (upper-right) hangs off SAN
 - Node shapes: SAN=rectangle, SPU=hexagon, DS=square, **SN=circle**, CPU=doubleHexagon, I/O=triangle
+
+---
+
+## Electronic Warfare — Flux / Footprint / ECM / ECCM / MIJI (R3 p.36-40, 137-138, 144-145)
+
+A parallel-to-combat electronic-warfare layer for riggers. **Hybrid stat placement:**
+- **Rigger (character/npc)** `system.ew`: `deckRating`, `fluxRating`, `protocolModule`. Edited on
+  the **Matrix tab** ("Rigger — Electronic Warfare" block). Electronics(EW) skill (an Electronics
+  specialisation) drives every roll.
+- **Vehicle (network hub)** `system.ew`: `ecm`, `eccm`, `fluxRating`, `footprint`; plus
+  `system.signalMonitor.{command,simsense,system}` (0-10 each) and `system.infiltration`
+  (`intruderActorId`, `turnsRemaining`, `intrusionFactor`, per-channel `command/simsense/system`
+  booleans). All on the vehicle sheet's **Electronic Warfare tab**.
+
+**Complementary dice** = `min(Flux, skillRating)` extra pool dice (no special mechanic).
+**Footprint** derived = `round((riggerDeckFlux + vehFlux + ECM) / 10)`; "↻ Recalc" writes it into
+the editable field. Targeting the vehicle's Sig uses TN = Sig − Footprint.
+
+**Signal Monitor** (`_signalChannel`/`_signalTier` on the vehicle sheet) is a 10-box track per
+channel. Each row has an **Infil** toggle (`signalInfil` → flips `system.infiltration.<channel>`,
+the same per-channel breach flag the infiltration roll/panel use) and **+1 / −1** degradation buttons
+(`signalDamage`). **Until a channel is infiltrated its boxes and ±1 buttons are faded + locked**
+(`.signal-faded`, plus a guard in `_onSignalBox`/`_onSignalDamage`); only Infil is clickable. MIJI
+`applyDegradation` sets the breach flag true so a jammed channel never shows as locked. Degradation
+tiers (`SR3E.electronicWarfare.degradationTiers`): 1-3 +1, 4-6 +2, 7-9 +3, 10 = channel lost.
+
+**Degradation effects (R3 p.145) — how each tier modifier is applied:**
+- **Simsense, VCR-jacked rigger = wound-equivalent (fully automatic).** `SR3EActor._jackedSignalMod`
+  finds the drone the rigger is jumped into (`controlMode==='vcr'`, exclusive) and returns its
+  Simsense tier as a +N TN penalty. It's folded into **every** `rollPool` (alongside `woundMod`, via
+  a new `skipSignalMod` opt-out) and **subtracted from VCR initiative** in both `rollInitiative`
+  sites (vehicle's own + the rigger's own). `_signalTierMod`/`_vehicleSimsenseMod` are the shared
+  helpers. Simsense full (10) → `applyDegradation` posts a **Dumpshock** pointer for the jacked rigger.
+- **Gunnery (vehicle weapons) — auto-prefilled, editable.** `_promptVehicleWeaponRollOptions` adds a
+  "Shot type" select (Direct / Manual = Simsense / Indirect = System) that folds the firing vehicle's
+  matching channel tier into the TN live (renderDialogV2 hook on `#vw-shottype`); only shown when a
+  relevant channel is degraded.
+- **Reference-only (no roll path / not modelled):** Command (Drone Comprehension, IVIS), Simsense
+  Perception-through-drone, and System Smartlink-cancel. Surfaced via the vehicle EW tab's **Active
+  Degradation Modifiers** readout (`_degradationReadout`, using each channel's `appliesTo`) and a
+  reminder line on MIJI degradation cards — the GM applies them to those specific tests.
+
+**MIJI** (`scripts/SR3EMIJI.js`, registered on `game.sr3e`): a **chat-card opposed contest**
+cloned from the melee boxing card. `openAttackDialog(targetVehicle)` (vehicle EW tab → ⚡ MIJI
+Attack) picks intruder vehicle + operation + channel; `SR3E.electronicWarfare.operations` maps each
+operation to its allowed channels and the stat that sets the **defender TN** (`ecm` for Jamming,
+`protocolModule` otherwise). Intruder TN = defender deck rating. Both sides get Flux complementary
+dice. `postMIJICard` → `.sr-miji-roll-btn` → `handleMIJIRoll` resolves both rolls
+(`_resolveRoll` loops `_rollWave` for full Rule-of-Six) → net successes; intruder win posts a
+`.sr-miji-degradation-btn` → `applyDegradation` fills `signalMonitor[channel]`. Both buttons use the
+`_checkBtn`/`_claimBtn` one-shot guards.
+
+**Infiltration** (`openInfiltration`): EW + Flux comp vs TN 6 − (intruder Protocol − target Deck);
+a second dialog lets the user freely allocate successes **three ways** (R3 p.37): channels breached
+(1 each), **time reduction** (base 10 turns ÷ successes spent → `Math.ceil(10/time)`), and **Intrusion
+Factor** — each its own input with a live spent/remaining counter (over-allocation is trimmed
+Factor-then-Time on confirm; unspent successes are allowed). Writes `system.infiltration`
+(turnsRemaining = the reduced time). `detectInfiltration` rolls the
+defender's EW vs Intrusion Factor. The `updateCombat` round hook decrements every vehicle's
+`turnsRemaining` (GM client); a manual −1 button is also on the tab.
+
+**ECCM repair** (`openECCMRepair(vehicle, channel)`): ECCM + EW comp vs (attacker ECM/Protocol + 3);
+each success removes one degradation box from that channel. **Reduce Footprint** (`reduceFootprint`):
+EW vs (Footprint + 4); each success lowers vehicle Flux by 1, Footprint recomputes (retry +2 TN
+applied manually). Vehicle-sheet actions: `signalBox/signalQuick/signalHeal/recalcFootprint/
+mijiAttack/infiltrate/detectInfiltration/advanceInfiltration/eccmRepair/reduceFootprint`.
 
 ---
 

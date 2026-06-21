@@ -594,6 +594,37 @@ export const SR3E = {
 
   fireModes:      ['SS', 'SA', 'BF', 'FA'],
 
+  // ── Electronic Warfare (Flux / Footprint / ECM / ECCM / MIJI) — R3 p.36-40,137-138,144-145 ──
+  electronicWarfare: {
+    // Signal-monitor channels (10 boxes each).
+    channels: [
+      { key: 'command',  label: 'Command',  appliesTo: 'Drone Comprehension & IVIS Tests',
+        fullEffect: 'Drones execute last order / hold, act in self-defence only.' },
+      { key: 'simsense', label: 'Simsense', appliesTo: 'Perception & manual Gunnery through the drone; if VCR-jacked, the rigger\'s Initiative + ALL target numbers (applied automatically)',
+        fullEffect: 'Rigger jacked into a drone suffers Dumpshock.' },
+      { key: 'system',   label: 'System',   appliesTo: 'Indirect-fire Gunnery through the network; cancels Smartlink bonus at Moderate+',
+        fullEffect: 'Loser dumped; winner takes control of the entire network.' },
+    ],
+    // Degradation tiers by boxes filled → TN modifier.
+    degradationTiers: [
+      { min: 1,  max: 3,  mod: 1, label: 'Light'    },
+      { min: 4,  max: 6,  mod: 2, label: 'Moderate' },
+      { min: 7,  max: 9,  mod: 3, label: 'Serious'  },
+      { min: 10, max: 10, mod: null, label: 'Channel Lost' },
+    ],
+    // MIJI operations: which channels each can target, and which intruder stat sets the
+    // defender's TN ('ecm' for Jamming, 'protocolModule' otherwise).
+    operations: {
+      meaconing:    { label: 'Meaconing',    channels: ['command'],                       tnStat: 'protocolModule', desc: 'False signals fed to drones (acts like Confusion).' },
+      intrusion:    { label: 'Intrusion',    channels: ['system'],                        tnStat: 'protocolModule', desc: 'Attempt to hijack the entire network.' },
+      jamming:      { label: 'Jamming',      channels: ['command', 'simsense', 'system'], tnStat: 'ecm',            desc: 'Floods one channel with noise.' },
+      interference: { label: 'Interference', channels: ['system'],                        tnStat: 'protocolModule', desc: 'Override battle — loser dumped, winner takes control.' },
+    },
+    infiltrationTurns: 10,   // base time for an infiltration attempt (combat turns)
+    // Flux Rating → broadcast range in metres (R3 p.137). 10+ uses (2×Flux)+10 km.
+    fluxRange: [250, 1000, 2000, 4000, 6000, 9000, 12000, 16000, 20000, 25000],
+  },
+
   // Projectile-weapon categories. Bows/crossbows are reusable; thrown categories are
   // consumed on use (quantity tracking). Used by SR3EItem._isConsumable.
   bowCategories:    ['Bow', 'LCB', 'MCB', 'HCB', 'SL'],

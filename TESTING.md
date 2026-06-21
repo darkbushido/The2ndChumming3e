@@ -421,7 +421,7 @@ Click attribute die on Bio/Attributes tab → rolls pool equal to attribute valu
 
 ---
 
-## 11. Spellcasting
+## 11. Spellcasting 
 
 Combat spells are a single **opposed (resisted) test** — like melee, not like a ranged attack + soak.
 Full flow: Cast → Force **+ Damage Level** dialog → Target selection (**no dodge**) → Magic Pool allocation → **Sorcery vs TN = the spell's Target attribute** (e.g. target Willpower) → per-target **Resist Spell** (that same attribute vs **TN = Force**) → **net stages the damage** → Assign Damage. Caster also gets a Drain button. **There is NO soak step after the resist.**
@@ -995,8 +995,16 @@ The Bio tab shows Background/Notes as read-only **enriched** text — `@UUID[...
 
 ## GM tools — Rollable Tables tab
 Chase Scene, Driving Test, Session Rewards, Chunky Salsa, Barrier Damage, Falling Damage and Escape Artist buttons now live on the **Rollable Tables** sidebar tab (not the combat tracker). Chase Scene + Driving Test show for all players; the rest are GM-only.
-- **In:** open Rollable Tables tab → buttons appear below the header. **Driving Test** → prompts for vehicle + driver, then the usual driving-test dialog.
-- **In:** Driving Test with a driver who has **no matching vehicle skill** → the **interactive Default dialog** opens (see §9, linked attribute = Reaction). Choosing Attribute bakes +4 into the base TN and disables the Control Pool; choosing Skill/Spec uses ½ rating, +2/+3 TN, Control Pool enabled.
+- **In:** open Rollable Tables tab → buttons appear below the header. **Driving Test** → prompts for vehicle + driver, then the usual driving-test dialog. Same dialog opens from each vehicle sheet's Driving Test button.
+
+### Driving Test pool & TN (SR3 p.134)
+Base **TN = Handling**; TN modifiers via dropdowns (unfamiliar +1, stress, size +2/+3, weather +2/+4, terrain −1/0/+1/+3, combat +2, datajack −1, **VCR −2×rating**). The dice **pool** auto-composes (and is editable):
+- **Vehicle Skill + Autonav** out of combat.
+- **Action During Combat** selected → Autonav drops (pool = Skill), TN +2.
+- Driver with a VCR, **Using VCR** selected → Autonav dropped, **Control Pool = Vehicle Skill** added, TN −2×VCR.
+
+**In:** Skill 4 / Autonav 2, no VCR, not combat → pool **6**, TN = Handling. Tick combat → pool **4**, TN +2. VCR 1 driver picks Using VCR → pool = **4 + 4 (skill)**, Autonav gone, TN −2.
+- **In:** driver with **no matching vehicle skill** → the **interactive Default dialog** opens (§9, linked attribute = Reaction); the chosen pool/TN-mod flow through (Attribute = +4 TN; Skill/Spec = ½ rating, +2/+3 TN).
 
 > Note: the §28/§29 references to "combat tracker sidebar" below are historical — these buttons moved to the Rollable Tables tab.
 
@@ -1275,3 +1283,80 @@ Use these as fast checks with a fresh character (QUI 4, INT 3, WIL 3, STR 3, BOD
 | Soak TN (power 9, ballistic 4) | 5 |
 | BF on `9M` weapon | `12S` |
 | Staging: `6M` + 4 net hits | `6D` |
+
+---
+
+## Electronic Warfare — Flux / Footprint / ECM / ECCM / MIJI
+
+Two riggers, each with an Electronics skill specialised in *Electronic Warfare*, each linked as the driver of a vehicle.
+On each rigger's **Matrix tab → Rigger — Electronic Warfare**: set Deck, Flux, Protocol Module.
+On each vehicle's **Electronic Warfare tab**: set ECM, ECCM, Flux.
+
+1. **Footprint** — Intruder deck Flux 8, vehicle Flux 6, ECM 0 → derived Footprint shows
+   `⌊(8+6+0)/10⌉ = 1`. Click **↻ Recalc** → the Footprint field becomes 1. The Sig note reads
+   `TN = Sig − 1`.
+2. **Signal Monitor** — each channel starts **locked** (boxes + ±1 faded). Click **Infil** on
+   Command → it highlights and the controls unlock. **+1** raises degradation a box (tier shows
+   +1 Light → +2 Moderate at 4 → +3 Serious at 7 → Channel Lost at 10); **−1** lowers it; clicking
+   a box still sets it directly. Click **Infil** again → controls re-lock but the value is kept.
+   Reload the page → values + breach state persist. (Infil stays in sync with the Infiltration
+   panel's breached/clear tags.)
+3. **MIJI contest** — on the **defender** vehicle's EW tab click **⚡ MIJI Attack** → pick the
+   intruder vehicle, **Jamming**, channel **Command**. Card shows intruder dice = EW skill +
+   `min(Flux,skill)` complementary, TN = defender deck rating; defender TN = **intruder ECM**
+   (switch operation to Intrusion → defender TN flips to **intruder Protocol Module** and the
+   channel list narrows to System). Click **⚡ Roll MIJI Test** → both sides roll; if the intruder
+   nets >0, an **Apply N degradation** button fills the chosen channel (re-click is blocked); a
+   defender win posts "channel holds".
+4. **Infiltration** — **📡 Attempt Infiltration** → pick intruder → rolls EW vs `6 − (Protocol −
+   Deck)`; the allocation dialog lets you freely split successes **three ways** — channels (1 each),
+   **time reduction** (10 ÷ spent) and **Intrusion Factor**, each its own input with a live
+   spent/remaining counter. E.g. 6 successes: System (1) + 2 on time + 3 on Factor → infiltrate in
+   `⌈10/2⌉ = 5` turns, Intrusion Factor 3, 0 unspent. Vehicle
+   `infiltration` shows the intruder, breached channels, Factor, and the reduced turn count.
+   Advancing a **combat round** decrements Turns left (GM client); the **−1** button does so
+   manually. **🔍 Detect Infiltration** rolls defender EW vs Intrusion Factor.
+5. **ECCM repair** — with Command at 6 boxes, click **🛡 ECCM: Command** → rolls ECCM + EW comp vs
+   (attacker ECM/Protocol + 3); each success removes a box; chat shows the new total.
+6. **Reduce Footprint** — **📉 Reduce Footprint** rolls EW vs (Footprint + 4); each success lowers
+   vehicle Flux by 1 and recomputes Footprint.
+
+| Check | Expected |
+|---|---|
+| Footprint, deckFlux 8 + vehFlux 6 + ECM 0 | 1 |
+| Channel before Infil | boxes + ±1 faded/locked |
+| Channel after Infil | controls unlock; MIJI also auto-sets Infil |
+| Signal box 8 filled (infiltrated) | +3 Serious |
+| Signal box 10 filled | Channel Lost |
+| Jamming defender TN | intruder ECM |
+| Intrusion / Meaconing / Interference defender TN | intruder Protocol Module |
+| Intruder TN (all ops) | defender deck rating |
+| MIJI net successes (intruder wins) | degradation boxes added to channel |
+| Infiltration TN | 6 − (Protocol − Deck), min 2 |
+| Infiltration time, 2 successes on time | ⌈10/2⌉ = 5 turns |
+| Infiltration time, 5 / 10 on time | 2 turns / 1 turn |
+| Complementary dice | min(Flux, skill rating) |
+
+### Degradation effects (modifiers from filled channels)
+
+7. **Simsense = wound-equivalent (auto).** Link a rigger as a vehicle's driver, set the vehicle
+   `controlMode` to **VCR** (jumped in). Fill the vehicle's **Simsense** channel to 5 boxes
+   (Moderate, +2). Now roll any skill/attribute test on that rigger → the TN is **+2** (shown in the
+   roll card's modifier line, same place as wounds). Roll the rigger's (or the vehicle's) Initiative
+   → base is **−2** with a "Simsense jam (2)" note. Heal Simsense to 0 → penalties vanish.
+8. **Gunnery shot type.** With the vehicle's **System** channel at 7 (Serious, +3), fire a vehicle
+   weapon → the dialog shows a **Shot type** select; choosing **Indirect fire (System +3)** raises
+   the TN by 3 (editable); **Manual gunnery** uses the Simsense tier; **Direct** adds nothing.
+9. **Channel lost.** Fill Simsense to 10 → the degradation card flags **Channel Lost** and posts a
+   **Dumpshock** pointer naming the jacked rigger.
+10. **Readout.** The vehicle EW tab shows an **Active Degradation Modifiers** panel listing each
+    degraded channel's +N and which tests it hits (Command → Drone Comprehension/IVIS; System →
+    Indirect-fire/Smartlink-cancel), with "(auto-applied)" on Simsense when a VCR rigger is jacked.
+
+| Check | Expected |
+|---|---|
+| VCR rigger, Simsense 5 (Mod) → any roll | TN +2 (like wounds) |
+| VCR rigger, Simsense 5 → initiative | base −2 ("Simsense jam") |
+| Vehicle weapon, System 7, Indirect fire | TN +3 (editable) |
+| Simsense 10 reached | Channel Lost + Dumpshock pointer |
+| Simsense healed to 0 | no penalty on rolls/init |

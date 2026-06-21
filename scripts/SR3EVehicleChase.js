@@ -460,12 +460,19 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     this.render();
   }
 
+  // SR3 Vehicle Chase: Control Pool = the driver's Vehicle Skill rating (no spec
+  // bonus, no VCR — VCR's benefit is the −2×rating TN, not extra pool dice). 0 if
+  // the driver has no applicable vehicle skill (defaulting → no Control Pool).
   _controlPool(p) {
-    const actor = game.actors.get(p.driverActorId);
-    if (!actor) return 0;
-    const reaction = actor.system.attributes?.reaction?.value
-                  ?? actor.system.attributes?.reaction?.base ?? 0;
-    return reaction + (p.vcrActive ? (p.vcrRating ?? 0) : 0);
+    const driver = game.actors.get(p?.driverActorId);
+    if (!driver) return 0;
+    const keywords = SKILL_KEYWORDS[p.chaseVehicleType] ?? [];
+    const skill = driver.items.find(i => {
+      if (i.type !== 'skill') return false;
+      const sName = (i.system.skillName || i.name || '').toLowerCase();
+      return keywords.some(kw => sName.includes(kw));
+    });
+    return skill ? (skill.system.rating ?? 0) : 0;
   }
 
   _detectVcr(actorId) {
@@ -838,6 +845,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
 
     const info0 = this._getParticipantInfo(defaultPid);
     this._warnDamage(info0);
+    const exceedChecked = info0?.exceedsSpeed ? 'checked' : '';
     let result = null;
 
     await foundry.applications.api.DialogV2.wait({
@@ -861,6 +869,10 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
           <label class="act-field act-full">Terrain
             <select id="act-terrain">${terrainOpts}</select>
           </label>
+          <div class="act-check-row act-full" id="act-exceed-row">
+            <input type="checkbox" id="act-exceed" ${exceedChecked}/>
+            <label for="act-exceed" id="act-exceed-lbl">Exceeds speed rating (+1 TN) — km/h ÷ 1.2 &gt; <span id="act-maxspd">${info0?.speedAttr ?? 0}</span> km/ct</label>
+          </div>
           <div class="act-check-row${info0?.autonav ? '' : ' act-disabled'}" id="act-autonav-row">
             <input type="checkbox" id="act-autonav"/>
             <label for="act-autonav" id="act-autonav-lbl">Autonav active (+${info0?.autonav ?? 0} TN)</label>
@@ -893,10 +905,11 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
           const mnvMod  = this._maneuverMod(info?.maneuver ?? null, oppInfo?.maneuver ?? null);
           const flee    = parseInt(el.querySelector('#act-flee')?.value ?? 0);
           const terrain = parseInt(el.querySelector('#act-terrain')?.value ?? 0);
+          const exceed  = el.querySelector('#act-exceed')?.checked ? 1 : 0;
           const autonav = el.querySelector('#act-autonav')?.checked ? (info?.autonav ?? 0) : 0;
           const vcr     = el.querySelector('#act-vcr')?.checked ? -((info?.vcrRating ?? 0) * 2) : 0;
           const dmg     = info?.damageInfo?.tnMod ?? 0;
-          const total   = mnvMod + flee + terrain + autonav + vcr + dmg;
+          const total   = mnvMod + flee + terrain + exceed + autonav + vcr + dmg;
           const hidden  = el.querySelector('#act-mod-total');
           if (hidden) hidden.value = total;
           return total;
@@ -918,6 +931,9 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
           const plInp  = el.querySelector('#act-pool');
           if (tnInp) tnInp.value = info.handling;
           if (plInp) plInp.value = info.skillPool;
+          const exChk  = el.querySelector('#act-exceed');
+          if (exChk) exChk.checked = info.exceedsSpeed;
+          el.querySelector('#act-maxspd')?.replaceChildren(document.createTextNode(info.speedAttr));
           // Refresh opponent dropdown
           const oppSel = el.querySelector('#act-opponent');
           if (oppSel) oppSel.innerHTML = this._opponentSelectHtml(pid);
@@ -1335,7 +1351,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
 
     const terrainOpts = [
       ['open','-1','Open (−1)'], ['normal','0','Normal (0)'],
-      ['restricted','2','Restricted (+2)'], ['tight','3','Tight (+3)'],
+      ['restricted','2','Restricted (+2)'], ['tight','4','Tight (+4)'],
     ].map(([k, v, l]) => `<option value="${v}" ${this._terrain === k ? 'selected' : ''}>${l}</option>`).join('');
 
     const _speedMod = (speedKmct, reaction) => {
@@ -1519,7 +1535,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
           </label>
           <div class="act-check-row act-full" id="act-exceed-row">
             <input type="checkbox" id="act-exceed" ${exceedChecked}/>
-            <label for="act-exceed" id="act-exceed-lbl">Exceeds speed rating (+1 TN) — km/h ÷ 1.2 &gt; <span id="act-maxspd">${info0?.speedAttr ?? 0}</span> km/ct</label>
+            <label for="act-exceed" id="act-exceed-lbl">Exceeds speed rating (+2 TN) — km/h ÷ 1.2 &gt; <span id="act-maxspd">${info0?.speedAttr ?? 0}</span> km/ct</label>
           </div>
           <label class="act-field act-full">Terrain
             <select id="act-terrain">${terrainOpts}</select>
@@ -1565,7 +1581,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
           const oppInfo  = oppPid ? this._getParticipantInfo(oppPid) : null;
           const mnvMod   = hidingManeuverMod(info?.maneuver ?? null, oppInfo?.maneuver ?? null);
           const pursuers = Math.max(0, (parseInt(el.querySelector('#act-pursuers')?.value) || 1) - 1);
-          const exceed   = el.querySelector('#act-exceed')?.checked ? 1 : 0;
+          const exceed   = el.querySelector('#act-exceed')?.checked ? 2 : 0;
           const terrain  = terrainMods[el.querySelector('#act-terrain')?.value] ?? 0;
           const autonav  = el.querySelector('#act-autonav')?.checked ? (info?.autonav ?? 0) : 0;
           const vcr      = el.querySelector('#act-vcr')?.checked ? -((info?.vcrRating ?? 0) * 2) : 0;

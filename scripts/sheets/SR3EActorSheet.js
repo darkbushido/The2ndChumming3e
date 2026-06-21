@@ -119,15 +119,17 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   /**
-   * Recoil Compensation is shown on two tabs (Attributes & Cyber); both are in the DOM at
-   * once, so the form would serialise the duplicate name to the last (stale) one and revert
-   * an edit. Mirror every `system.recoilCompensation` input on `input` (fires before the
-   * `change` that submits), so all copies hold the same value when the form serialises.
+   * Recoil Compensation is shown on two tabs (Attributes & Cyber). Only ONE copy carries the
+   * `name="system.recoilCompensation"` — duplicate names make Foundry's FormDataExtended return
+   * an array (`["0","0"]`), which fails NumberField validation ("must be a number"). The other
+   * copy is a nameless `.recoil-comp` mirror. We sync all `.recoil-comp` inputs on `input`
+   * (fires before the `change` that submits), so the single named input is fresh when the form
+   * serialises regardless of which copy was edited.
    */
   _syncDuplicateInputs() {
     const root = this.element;
     if (!root) return;
-    const inputs = root.querySelectorAll('input[name="system.recoilCompensation"]');
+    const inputs = root.querySelectorAll('.recoil-comp');
     if (inputs.length < 2) return;
     inputs.forEach(inp => {
       inp.addEventListener('input', () => {
@@ -705,7 +707,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       </div>
       <div class="derived-grid">
         ${this._derivedBlock('Compensation',
-          `<input type="number" name="system.recoilCompensation" value="${sys.recoilCompensation ?? 0}" min="0" max="20" class="pool-input" style="width:48px;text-align:center"
+          `<input type="number" class="pool-input recoil-comp" value="${sys.recoilCompensation ?? 0}" min="0" max="20" style="width:48px;text-align:center"
                   title="Cyber/body recoil compensation — stacks with weapon-mounted comp (also editable on the Cyber tab)"/>`)}
         ${this._derivedBlock('Rounds This Phase',
           `<span style="color:${(sys.roundsFiredThisPhase ?? 0) > 0 ? 'var(--sr-amber)' : 'var(--sr-muted)'}">${sys.roundsFiredThisPhase ?? 0}</span>`,
@@ -1305,7 +1307,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ${vcrBanner}
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:6px 8px;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r)">
         <span class="field-label" style="margin:0">Recoil Compensation</span>
-        <input type="number" name="system.recoilCompensation" value="${sys.recoilCompensation ?? 0}" min="0" max="20" class="pool-input" style="width:50px"
+        <input type="number" name="system.recoilCompensation" value="${sys.recoilCompensation ?? 0}" min="0" max="20" class="pool-input recoil-comp" style="width:50px"
                title="Recoil compensation from cyberware, bioware, shock pads etc. (weapon-mounted comp is set on the weapon)"/>
         <span style="font-size:11px;color:var(--sr-muted)">from cyber/bio sources — stacks with weapon-mounted compensation</span>
       </div>
@@ -1632,8 +1634,30 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <button type="button" class="btn-add" data-action="itemCreate" data-type="cyberdeck">+ Add Cyberdeck</button>
         <button type="button" class="btn-add" data-action="itemCreate" data-type="program">+ Add Program</button>
       </div>
+      ${this._riggerEWBlock(sys)}
     </div>`;
   }
+
+  // Rigger Electronic-Warfare deck stats (Flux / Footprint dice on the vehicle side).
+  // Display + edit only — the Signal Monitor and ECM/ECCM live on the controlled vehicle.
+  _riggerEWBlock(sys) {
+    const ew = sys.ew ?? {};
+    const _f = (key, label, title) => `
+      <label class="derived-block" title="${title}" style="cursor:text">
+        <span class="derived-label">${label}</span>
+        <input type="number" name="system.ew.${key}" value="${ew[key] ?? 0}" min="0"
+               class="derived-value" style="width:100%;text-align:center;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:3px"/>
+      </label>`;
+    return `
+      <h3 class="section-hdr" style="margin-top:1rem">Rigger — Electronic Warfare</h3>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px 0">
+        ${_f('deckRating',     'Deck',     'Remote-control deck rating — the TN an intruder rolls against your network')}
+        ${_f('fluxRating',     'Flux',     'Deck Flux — broadcast range + complementary dice (min Flux, skill) in MIJI')}
+        ${_f('protocolModule', 'Protocol', 'Protocol-emulation module rating — defender TN for Meaconing/Intrusion/Interference')}
+      </div>
+      <div style="font-size:11px;color:var(--sr-muted)">Electronics (Electronic Warfare) skill drives all MIJI rolls. ECM/ECCM and the Signal Monitor live on the controlled vehicle.</div>`;
+  }
+
   _tabGear(actor) {
     const gear = actor.items.filter(i => i.type === 'gear'        && !i.getFlag('The2ndChumming3e', 'stored'));
     const ammo = actor.items.filter(i => i.type === 'ammunition'  && !i.getFlag('The2ndChumming3e', 'stored'));
