@@ -4,27 +4,27 @@ Verify each feature by checking the **in → out** numbers against what the chat
 
 ---
 
-## 1. Dice / Rule of Six
+## 1. Dice / Rule of Six - passed
 
 ### Basic roll
 **Setup:** Any attribute or skill roll.
 - Roll **4 dice vs TN 4** → expect 0–4 successes; any die showing 4, 5, or 6 is a success. - Passed
 
-### Explosion
+### Explosion - passed
 - Any die showing **6** → an explosion button appears.
-- Click it → that die rolls again. If the running total ≥ TN it's a success, button disappears. - Passed 
+- Click it → all dice roll again. If the running total ≥ TN it's a success, button disappears. - Passed 
 - If running total < TN and the new roll is 6 again → button reappears, keep exploding. - Passed
 
-### Glitch - 
+### Glitch - passed
 - Roll a pool of **6 dice vs TN 4**; arrange for 4+ dice to show 1s 
 - **In:** 4 ones out of 6 dice → **Out:** glitch warning shown (⚠ 4 ones > half pool). - Passed
 
-### Critical Glitch
+### Critical Glitch - Passed
 - **In:** All dice show 1s, 0 successes → **Out:** critical glitch warning shown. - Passed
 ---
 Reporting of 1s omitted with Physical dice mode - triggers nothing, GM convenience only, unnessesary work for the player to report in system
 
-## 2. Wound Modifier
+## 2. Wound Modifier - Passed
 
 Each track (stun and physical) contributes its own modifier — both sum to give the total wound mod.
 
@@ -56,7 +56,7 @@ Each track (stun and physical) contributes its own modifier — both sum to give
 - Initiative modifier passed
 ---
 
-## 3. Derived Pools
+## 3. Derived Pools - Passed
 
 ### Combat Pool - passed
 Formula: `⌊(QUI + INT + WIL) / 2⌋ + modifier`
@@ -98,7 +98,7 @@ Formula: `⌊(INT + MPCP) / 3⌋` where MPCP comes from the equipped cyberdeck. 
 | 4 | 0 | 1 |
 ---
 
-## 4. Initiative
+## 4. Initiative - Passed
 
 ### Physical (default) - passed
 Formula: `REA + woundMod` base + `initiativeDice d6` (wired reflexes add to REA and grant extra dice)
@@ -946,6 +946,23 @@ Formula: `max(2, Signature − Sensor rating)` (or − VCR level if jumped in).
 
 **In:** Target Sig 4, Sensor 2 → TN **2**. Sig 4, Sensor 6 → TN **2** (min).
 
+### Chase — quarry & auto-distance
+Open **🚗 Chase Scene** (Rollable Tables tab). Add 2+ participants with vehicles + speeds.
+- Tick **Quarry** on one → its Distance box fades/locks (distance 0) and the checkbox clears on any
+  other vehicle (exactly one quarry).
+- Set quarry Speed 250 km/h, a pursuer Speed 275 km/h, pursuer Distance 350 → **Next Turn** →
+  pursuer closes by the speed difference; chat card reports e.g. "… → Xm behind (closing)".
+- Quarry faster than a pursuer → that pursuer's distance grows (opening); distance passing 0 → flips
+  to "Xm ahead". No quarry set → card notes distances weren't auto-updated.
+
+| Check | Expected |
+|---|---|
+| Tick Quarry on B while A is quarry | A unticks; only B is quarry |
+| Quarry box | faded/disabled, distance 0 |
+| Pursuer faster, Next Turn | distance decreases (closing), reported on card |
+| Quarry faster, Next Turn | distance increases (opening) |
+| Sign convention | + = behind, − = ahead |
+
 ---
 
 ## 26. Pool Refresh
@@ -1269,24 +1286,10 @@ Clicking the 👁 eye toggle (hide/show individual or all) no longer jumps the S
 
 ---
 
-## Quick Sanity Numbers
+## 35. Electronic Warfare — Flux / Footprint / ECM / ECCM / MIJI
 
-Use these as fast checks with a fresh character (QUI 4, INT 3, WIL 3, STR 3, BOD 4, REA 4, MAG 0):
-
-| Stat | Expected |
-|---|---|
-| Combat Pool | 5 |
-| Initiative base | 4 (+ 1d6) |
-| 3 stun boxes wound mod | −2 (TN +2 on all rolls) |
-| Combat pool (unchanged by wounds) | 5 |
-| Defaulting (INT 3, Attribute tier) | 3 dice, +4 TN, no pool (via Default dialog) |
-| Soak TN (power 9, ballistic 4) | 5 |
-| BF on `9M` weapon | `12S` |
-| Staging: `6M` + 4 net hits | `6D` |
-
----
-
-## Electronic Warfare — Flux / Footprint / ECM / ECCM / MIJI
+**Adds data-model fields → needs a full Foundry restart, not just F5.** Subsections below cover the
+core MIJI loop, the degradation modifiers, the Drone Comprehension Test and the IVIS Test.
 
 Two riggers, each with an Electronics skill specialised in *Electronic Warfare*, each linked as the driver of a vehicle.
 On each rigger's **Matrix tab → Rigger — Electronic Warfare**: set Deck, Flux, Protocol Module.
@@ -1393,3 +1396,20 @@ On each vehicle's **Electronic Warfare tab**: set ECM, ECCM, Flux.
 | New combat round | pool refreshes 2 → 3 (max) |
 | Clear | pool 0 / 0 |
 | Token HUD broadcast button | only on chars with Small Unit/Vehicle Tactics |
+
+---
+
+## Quick Sanity Numbers
+
+Use these as fast checks with a fresh character (QUI 4, INT 3, WIL 3, STR 3, BOD 4, REA 4, MAG 0):
+
+| Stat | Expected |
+|---|---|
+| Combat Pool | 5 |
+| Initiative base | 4 (+ 1d6) |
+| 3 stun boxes wound mod | −2 (TN +2 on all rolls) |
+| Combat pool (unchanged by wounds) | 5 |
+| Defaulting (INT 3, Attribute tier) | 3 dice, +4 TN, no pool (via Default dialog) |
+| Soak TN (power 9, ballistic 4) | 5 |
+| BF on `9M` weapon | `12S` |
+| Staging: `6M` + 4 net hits | `6D` |

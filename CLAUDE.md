@@ -375,6 +375,15 @@ the combat tracker. Chase Scene and Driving Test are available to all; the rest 
 Driving Test (`SR3EVehicleSheet.promptVehicleDrivingTest` → `runDrivingTest`) prompts for a vehicle
 + driver since there's no sheet context.
 
+**Chase quarry & auto-distance** (`SR3EVehicleChase.js`): each participant has a **Quarry** checkbox
+next to its Distance box. Exactly one vehicle is the quarry (checking one clears the rest); its
+distance is the reference (0) and its box fades. All other distances are **relative to the quarry**:
+**positive = behind (pursuing), negative = ahead (blocking)**. Participant `speed` is stored in
+metres/Combat-Turn (`km/h ÷ 1.2`), so on **`_nextTurn`** each pursuer's distance updates as
+`newDist = oldDist − (pursuerSpeed − quarrySpeed)` (closing when faster, opening when slower) and the
+turn chat card reports each pursuer's new "Xm behind/ahead (closing/opening)". No quarry set → the
+card notes distances weren't auto-updated. State is in-memory (`isQuarry` on each participant).
+
 **Driving Test (SR3 p.134) — `runDrivingTest`.** Base TN = vehicle **Handling**; modifiers are TN
 dropdowns (unfamiliar +1, stress, size +2/+3, weather +2/+4, terrain −1/0/+1/+3, combat +2,
 datajack −1, **VCR −2×rating**). Dice **pool** (auto, editable): Vehicle Skill dice **+ Autonav

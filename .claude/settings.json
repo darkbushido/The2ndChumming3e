@@ -44,7 +44,8 @@
       "Bash(node --check scripts/sheets/SR3EVehicleSheet.js)",
       "Bash(node --check scripts/documents/SR3EActor.js)",
       "Bash(node --check scripts/documents/SR3ESpiritSummoning.js)",
-      "Bash(node --check scripts/SR3EMIJI.js)"
+      "Bash(node --check scripts/SR3EMIJI.js)",
+      "Bash(xargs wc -l)"
     ],
     "additionalDirectories": [
       "c:\\Users\\willi\\AppData\\Local\\FoundryVTT\\Data\\systems\\The2ndChumming3e\\packs"

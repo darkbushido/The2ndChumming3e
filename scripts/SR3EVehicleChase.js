@@ -162,6 +162,17 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
       p.distance = parseInt(ev.target.value) || 0;
     });
 
+    // Quarry → exclusive reference point; others' distances are relative to it (0 itself).
+    el.querySelector(`#p-${pid}-quarry`)?.addEventListener('change', ev => {
+      if (ev.target.checked) {
+        for (const x of this._participants) x.isQuarry = (x.id === pid);
+        p.distance = 0;
+      } else {
+        p.isQuarry = false;
+      }
+      this.render();
+    });
+
     // Driver select → auto-detect VCR, full re-render
     el.querySelector(`#p-${pid}-driver`)?.addEventListener('change', ev => {
       p.driverActorId = ev.target.value;
@@ -366,8 +377,15 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
               <label class="chase-field">Speed (km/h)
                 <input id="p-${pid}-speed" type="number" value="${Math.round(p.speed * 1.2)}" min="0"/>
               </label>
-              <label class="chase-field">Distance (m)
-                <input id="p-${pid}-distance" type="number" value="${p.distance}"/>
+              <label class="chase-field" title="Distance to the quarry: positive = behind (pursuing), negative = ahead (blocking).">Distance (m)
+                <div style="display:flex;align-items:center;gap:5px">
+                  <input id="p-${pid}-distance" type="number" value="${p.distance}"
+                         ${p.isQuarry ? 'disabled' : ''} style="${p.isQuarry ? 'opacity:0.4;' : ''}flex:1;min-width:0"/>
+                  <label style="display:flex;align-items:center;gap:2px;font-size:10px;white-space:nowrap;cursor:pointer"
+                         title="Quarry — the chase reference point. Everyone else's distance is measured relative to it.">
+                    <input type="checkbox" id="p-${pid}-quarry" ${p.isQuarry ? 'checked' : ''}/> Quarry
+                  </label>
+                </div>
               </label>
             </div>
             <div class="chase-scores">
@@ -451,6 +469,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
       chaseVehicleType: 'car',
       speed:            0,
       distance:         0,
+      isQuarry:         false,
       controlAlloc:     0,
       vcrRating:        0,
       vcrActive:        false,
@@ -687,11 +706,33 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
 
   _nextTurn() {
     this._turn++;
+
+    // End-of-turn distance update: each pursuer closes/opens on the quarry by the speed
+    // difference (speeds are metres/turn; +distance = behind, −distance = ahead).
+    const quarry = this._participants.find(p => p.isQuarry);
+    const distLines = [];
+    if (quarry) {
+      for (const p of this._participants) {
+        if (p.isQuarry || !p.vehicleActorId) continue;
+        const veh   = game.actors.get(p.vehicleActorId);
+        const old   = p.distance;
+        const delta = Math.round(p.speed - quarry.speed);     // closing distance this turn
+        p.distance  = old - delta;
+        const dir   = delta > 0 ? 'closing' : delta < 0 ? 'opening' : 'holding';
+        const place = p.distance > 0 ? `${p.distance}m behind`
+                    : p.distance < 0 ? `${-p.distance}m ahead`
+                    : 'alongside';
+        distLines.push(`<div style="font-size:12px;color:#9aa0c0">${veh?.name ?? 'Vehicle'}: ${old}m → <strong>${place}</strong> <span style="color:#7880a0">(${dir})</span></div>`);
+      }
+    }
+
     for (const p of this._participants) {
       p.driverPoints = null;
       p.initiatives  = {};
       p.controlAlloc = this._controlPool(p);
     }
+
+    const quarryName = quarry ? (game.actors.get(quarry.vehicleActorId)?.name ?? 'Quarry') : null;
     ChatMessage.create({
       content: `
         <div class="sr-roll-card">
@@ -699,6 +740,10 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
           <div style="font-size:12px;color:#7880a0;margin-top:4px;">
             Control pools refreshed. Speeds carried over from Turn ${this._turn - 1}.
           </div>
+          ${quarry ? `
+            <div style="margin-top:6px;font-size:11px;color:#7880a0">Distances vs quarry (${quarryName}):</div>
+            ${distLines.join('') || '<div style="font-size:12px;color:#7880a0">No pursuers.</div>'}
+          ` : '<div style="margin-top:6px;font-size:11px;color:#d49030">No quarry set — distances not auto-updated.</div>'}
         </div>`,
     });
     this.render();
