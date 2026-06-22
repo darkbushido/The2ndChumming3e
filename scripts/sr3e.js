@@ -1561,12 +1561,18 @@ Hooks.on('renderCombatTracker', (_app, html) => {
 // tracker's own buttons and the default next-turn arrow).
 Hooks.on('updateCombat', (_combat, changed) => {
   if ('turn' in changed || 'round' in changed) _actionTracker.clear();
-  // Count down active MIJI infiltrations once per combat round (GM client only).
+  // Per-combat-round upkeep (GM client only): count down infiltrations; refresh IVIS Pools.
   if ('round' in changed && game.users?.activeGM?.isSelf) {
     for (const a of game.actors) {
-      if (a.type !== 'vehicle') continue;
-      const left = a.system?.infiltration?.turnsRemaining ?? 0;
-      if (left > 0) a.update({ 'system.infiltration.turnsRemaining': left - 1 });
+      if (a.type === 'vehicle') {
+        const left = a.system?.infiltration?.turnsRemaining ?? 0;
+        if (left > 0) a.update({ 'system.infiltration.turnsRemaining': left - 1 });
+      } else if (a.type === 'character' || a.type === 'npc') {
+        const ip = a.system?.ew?.ivisPool;
+        if (ip && (ip.max ?? 0) > 0 && (ip.value ?? 0) < ip.max) {
+          a.update({ 'system.ew.ivisPool.value': ip.max });
+        }
+      }
     }
   }
 });
@@ -1685,6 +1691,58 @@ Hooks.on('renderTokenHUD', (hud, html) => {
   btn.innerHTML = '<i class="fas fa-crosshairs"></i>';
   btn.dataset.tooltip = 'Attack with a weapon';
   btn.addEventListener('click', ev => { ev.preventDefault(); ev.stopPropagation(); _sr3eQuickAttack(actor); });
+
+  const col = el.querySelector('.col.left') ?? el.querySelector('.col.right') ?? el;
+  col.appendChild(btn);
+
+  // Riggers (have Small Unit Tactics / Vehicle Tactics) get an IVIS Test button.
+  const hasSUT = actor.items.some(i => i.type === 'skill'
+    && /small unit tactics|vehicle tactics/i.test(i.system.skillName || i.name || ''));
+  if (hasSUT && !el.querySelector('.sr3e-ivis-hud')) {
+    const ivis = document.createElement('div');
+    ivis.className = 'control-icon sr3e-ivis-hud';
+    ivis.innerHTML = '<i class="fas fa-tower-broadcast"></i>';
+    ivis.dataset.tooltip = 'IVIS Test (BattleTac)';
+    ivis.addEventListener('click', ev => { ev.preventDefault(); ev.stopPropagation(); game.sr3e.SR3EMIJI.openIVIS(actor); });
+    col.appendChild(ivis);
+  }
+});
+
+// Vehicle tools available from the token HUD (and reusable elsewhere). Add new entries here —
+// the HUD button nests them in a single picker so it never sprawls.
+const _sr3eVehicleTools = [
+  { label: '🚗 Driving Test',        run: (a) => SR3EVehicleSheet.runDrivingTest(a) },
+  { label: '📡 Drone Comprehension', run: (a) => SR3EVehicleSheet.runDroneComprehension(a) },
+];
+
+async function _sr3eVehicleToolMenu(actor) {
+  const opts = _sr3eVehicleTools.map((t, i) => `<option value="${i}">${t.label}</option>`).join('');
+  let chosen = null;
+  await foundry.applications.api.DialogV2.wait({
+    window: { title: `${actor.name} — Vehicle Tools` },
+    content: `<div style="padding:6px 0"><label style="font-size:12px;color:var(--sr-muted)">Tool
+      <select id="vt-tool" style="width:100%;margin-top:4px">${opts}</select></label></div>`,
+    buttons: [
+      { label: 'Open', action: 'go', default: true, callback: (_e, _b, d) => { chosen = d.element.querySelector('#vt-tool')?.value; } },
+      { label: 'Cancel', action: 'cancel' },
+    ],
+  });
+  if (chosen === null) return;
+  return _sr3eVehicleTools[parseInt(chosen)]?.run(actor);
+}
+
+// Token HUD — vehicle/drone tokens get a nested Vehicle Tools button.
+Hooks.on('renderTokenHUD', (hud, html) => {
+  const actor = hud.object?.actor;
+  if (!actor || !actor.isOwner || actor.type !== 'vehicle') return;
+  const el = html instanceof HTMLElement ? html : html?.[0];
+  if (!el || el.querySelector('.sr3e-vehicle-hud')) return;
+
+  const btn = document.createElement('div');
+  btn.className = 'control-icon sr3e-vehicle-hud';
+  btn.innerHTML = '<i class="fas fa-satellite-dish"></i>';
+  btn.dataset.tooltip = 'Vehicle Tools (Driving Test, Drone Comprehension…)';
+  btn.addEventListener('click', ev => { ev.preventDefault(); ev.stopPropagation(); _sr3eVehicleToolMenu(actor); });
 
   const col = el.querySelector('.col.left') ?? el.querySelector('.col.right') ?? el;
   col.appendChild(btn);

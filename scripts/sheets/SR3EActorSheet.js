@@ -51,6 +51,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         rollResistDamage:  SR3EActorSheet._onRollResistDamage,
         activateVCR:       SR3EActorSheet._onActivateVCR,
         equipCyberdeck:    SR3EActorSheet._onEquipCyberdeck,
+        ivisTest:          SR3EActorSheet._onIvisTest,
+        ivisSpend:         SR3EActorSheet._onIvisSpend,
+        ivisClear:         SR3EActorSheet._onIvisClear,
         setMatrixMode:     SR3EActorSheet._onSetMatrixMode,
         setAstralMode:     SR3EActorSheet._onSetAstralMode,
         ejectSlot:         SR3EActorSheet._onEjectSlot,
@@ -1648,6 +1651,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <input type="number" name="system.ew.${key}" value="${ew[key] ?? 0}" min="0"
                class="derived-value" style="width:100%;text-align:center;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:3px"/>
       </label>`;
+    const ivis = ew.ivisPool ?? {};
+    const ivisVal = ivis.value ?? 0;
+    const ivisMax = ivis.max ?? 0;
     return `
       <h3 class="section-hdr" style="margin-top:1rem">Rigger — Electronic Warfare</h3>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px 0">
@@ -1655,7 +1661,13 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         ${_f('fluxRating',     'Flux',     'Deck Flux — broadcast range + complementary dice (min Flux, skill) in MIJI')}
         ${_f('protocolModule', 'Protocol', 'Protocol-emulation module rating — defender TN for Meaconing/Intrusion/Interference')}
       </div>
-      <div style="font-size:11px;color:var(--sr-muted)">Electronics (Electronic Warfare) skill drives all MIJI rolls. ECM/ECCM and the Signal Monitor live on the controlled vehicle.</div>`;
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:4px 0">
+        <button type="button" class="btn-sm" data-action="ivisTest" title="BattleTac IVIS Test — Small Unit Tactics vs TN 5 (R3 p.96)">📶 IVIS Test</button>
+        <span style="font-size:12px">IVIS Pool: <strong>${ivisVal}</strong> / ${ivisMax}</span>
+        <button type="button" class="btn-xs" data-action="ivisSpend" ${ivisVal > 0 ? '' : 'disabled'} title="Spend 1 IVIS Pool die">−1</button>
+        <button type="button" class="btn-xs" data-action="ivisClear" ${ivisMax > 0 ? '' : 'disabled'} title="Expire the IVIS Pool (task complete / new task)">Clear</button>
+      </div>
+      <div style="font-size:11px;color:var(--sr-muted)">Electronics (Electronic Warfare) skill drives all MIJI rolls. ECM/ECCM and the Signal Monitor live on the controlled vehicle. The IVIS Pool is shared by the drone group and refreshes each Combat Turn.</div>`;
   }
 
   _tabGear(actor) {
@@ -2644,6 +2656,20 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const current = this.actor.system.activeVCRItemId ?? '';
     const newVCR  = current === itemId ? '' : itemId;
     await this.actor.update({ 'system.activeVCRItemId': newVCR });
+  }
+
+  static async _onIvisTest(_ev, _target) {
+    return game.sr3e.SR3EMIJI?.openIVIS(this.actor);
+  }
+
+  static async _onIvisSpend(_ev, _target) {
+    const cur = this.actor.system.ew?.ivisPool?.value ?? 0;
+    if (cur <= 0) return;
+    await this.actor.update({ 'system.ew.ivisPool.value': cur - 1 });
+  }
+
+  static async _onIvisClear(_ev, _target) {
+    await this.actor.update({ 'system.ew.ivisPool.value': 0, 'system.ew.ivisPool.max': 0 });
   }
 
   static async _onEquipCyberdeck(ev, target) {

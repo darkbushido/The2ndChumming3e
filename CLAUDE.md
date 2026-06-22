@@ -831,8 +831,31 @@ defender's EW vs Intrusion Factor. The `updateCombat` round hook decrements ever
 **ECCM repair** (`openECCMRepair(vehicle, channel)`): ECCM + EW comp vs (attacker ECM/Protocol + 3);
 each success removes one degradation box from that channel. **Reduce Footprint** (`reduceFootprint`):
 EW vs (Footprint + 4); each success lowers vehicle Flux by 1, Footprint recomputes (retry +2 TN
-applied manually). Vehicle-sheet actions: `signalBox/signalQuick/signalHeal/recalcFootprint/
+applied manually). Vehicle-sheet actions: `signalBox/signalInfil/signalDamage/recalcFootprint/
 mijiAttack/infiltrate/detectInfiltration/advanceInfiltration/eccmRepair/reduceFootprint`.
+
+**Drone Comprehension Test** (SR3 p.157, `SR3EVehicleSheet.runDroneComprehension(vehicle)`): a
+drone understanding a rigger's command. Simple fully-editable dialog — **Pilot Rating dice** (no
+pool) vs a GM-set **TN** (default 4; complex orders 8+), with optional **secondary-drone +2** and
+the vehicle's **Command-channel degradation** (auto-filled from `signalMonitor.command`, editable).
+Rolls via `vehicle.rollPool` with a footer note (0 = no comprehension · 1 = literal · 2+ = leeway).
+Not forced into any flow — accessed from the **📡 Drone Comprehension** button on the vehicle Stats
+tab (next to Driving Test) and the **Vehicle Tools** Token-HUD button (see below).
+
+**IVIS Test** (BattleTac, R3 p.96, `SR3EMIJI.openIVIS(rigger)`): a **rigger** test (not per-vehicle).
+Setup dialog rolls **Small Unit Tactics (Vehicle Tactics)** vs **TN 5** (editable; +System-channel
+degradation field). On success a second dialog splits the hits between **Comprehension bonus dice**
+(announced — add them to the Drone Comprehension dialog's editable Pilot field) and the **IVIS
+Pool**. The pool is a tracked resource on the rigger (`system.ew.ivisPool {value,max}`): shown in the
+Matrix-tab EW block with **−1** (spend) and **Clear** (expire) buttons, **auto-refreshed to max each
+Combat round** by the `updateCombat` hook. Launched from the **📶 IVIS Test** button in the rigger's
+Matrix-tab EW block and a **tower-broadcast Token-HUD** button shown only on character tokens that
+have a Small Unit Tactics / Vehicle Tactics skill. Sheet actions: `ivisTest/ivisSpend/ivisClear`.
+
+**Vehicle Tools Token-HUD menu** (`_sr3eVehicleToolMenu` in sr3e.js): owned **vehicle** tokens get a
+single satellite-dish HUD button that opens a picker of vehicle tools (currently Driving Test +
+Drone Comprehension). Add new entries to the `_sr3eVehicleTools` array — they nest into the one
+button so the HUD never sprawls. (`runDrivingTest` warns if the vehicle has no linked driver.)
 
 ---
 

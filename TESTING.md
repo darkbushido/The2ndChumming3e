@@ -1360,3 +1360,36 @@ On each vehicle's **Electronic Warfare tab**: set ECM, ECCM, Flux.
 | Vehicle weapon, System 7, Indirect fire | TN +3 (editable) |
 | Simsense 10 reached | Channel Lost + Dumpshock pointer |
 | Simsense healed to 0 | no penalty on rolls/init |
+
+### Drone Comprehension Test (SR3 p.157)
+
+11. Open a vehicle → Stats tab → **📡 Drone Comprehension** (also via the vehicle token's
+    satellite-dish **Vehicle Tools** HUD button → pick the tool; the same menu also offers Driving
+    Test). Dialog pre-fills **Pilot dice** = Pilot Rating, **Base TN** 4, and
+    **Command degradation** from the vehicle's Command channel. Tick **secondary drone (+2)** and
+    watch Final TN update live. **Roll** → interactive Pilot-vs-TN card with the "0 = no
+    comprehension · 1 = literal · 2+ = leeway" footer. Everything in the dialog is editable.
+
+| Check | Expected |
+|---|---|
+| Default pool / TN | Pilot Rating / 4 |
+| Secondary-drone tick | +2 to Final TN |
+| Command channel at 5 boxes | degradation pre-fills +2 |
+
+### IVIS Test (BattleTac, R3 p.96)
+
+12. On a **rigger** with a Small Unit Tactics (or Vehicle Tactics) skill: Matrix tab → EW block →
+    **📶 IVIS Test** (also a tower-broadcast button on that character's token HUD). Setup dialog
+    pre-fills Small Unit Tactics dice + **TN 5** (+ editable System-degradation). **Roll** → on
+    success, the split dialog allocates hits between **Comprehension bonus dice** and **IVIS Pool**
+    (live spent/remaining). Confirm → the EW block shows **IVIS Pool value / max**; **−1** spends,
+    **Clear** expires it. Advance a **combat round** → the pool refreshes to max.
+
+| Check | Expected |
+|---|---|
+| IVIS dice / TN default | Small Unit Tactics rating / 5 |
+| 4 successes → 1 comp + 3 pool | EW block shows IVIS Pool 3 / 3 |
+| −1 button | pool 3 → 2 |
+| New combat round | pool refreshes 2 → 3 (max) |
+| Clear | pool 0 / 0 |
+| Token HUD broadcast button | only on chars with Small Unit/Vehicle Tactics |

@@ -455,6 +455,150 @@ export class SR3EMIJI {
   }
 
   /* ------------------------------------------------------------------ */
+  /*  IVIS — BattleTac Inter-Vehicle Information System (R3 p.96)         */
+  /* ------------------------------------------------------------------ */
+
+  static _smallUnitTactics(actor) {
+    const skill = actor?.items.find(i => {
+      if (i.type !== 'skill') return false;
+      const n = (i.system.skillName || i.name || '').toLowerCase();
+      const s = (i.system.specialisation || '').toLowerCase();
+      return n.includes('small unit tactics') || n.includes('vehicle tactics') || s.includes('vehicle tactics');
+    });
+    return skill
+      ? { rating: skill.system.rating ?? 0, name: skill.system.skillName || skill.name }
+      : { rating: 0, name: 'Small Unit Tactics — none' };
+  }
+
+  // IVIS Test: Small Unit Tactics (Vehicle Tactics) vs TN 5, made before a drone group's
+  // Comprehension Test. Successes split between Comprehension bonus dice and a shared IVIS Pool.
+  static async openIVIS(rigger) {
+    if (!rigger) return;
+    const skill = this._smallUnitTactics(rigger);
+
+    // Setup — pool (default SUT rating), TN (default 5), System-channel degradation (editable).
+    let hook1 = Hooks.on('renderDialogV2', (_app, html) => {
+      const el = html?.querySelector ? html : html?.[0];
+      if (!el?.querySelector?.('#ivis-tn')) return;
+      Hooks.off('renderDialogV2', hook1);
+      const out = el.querySelector('#ivis-tn-out');
+      const recompute = () => {
+        const tn  = parseInt(el.querySelector('#ivis-tn')?.value)  || 5;
+        const deg = parseInt(el.querySelector('#ivis-deg')?.value) || 0;
+        if (out) out.textContent = Math.max(2, tn + deg);
+      };
+      el.querySelectorAll('#ivis-tn, #ivis-deg').forEach(n => { n.addEventListener('input', recompute); });
+      recompute();
+    });
+
+    let setup = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `IVIS Test — ${rigger.name}` },
+      content: `
+        <div style="display:flex;flex-direction:column;gap:8px;padding:4px 0;font-size:12px">
+          <div style="color:var(--sr-muted);font-size:11px">Small Unit Tactics (Vehicle Tactics) vs TN 5, before the drone group's Comprehension Test. Requires a BattleTac IVIS master on the deck + IVIS-compatible drone pilots. Not usable by drones the rigger has jumped into.</div>
+          <label>Small Unit Tactics dice
+            <input type="number" id="ivis-pool" value="${skill.rating}" min="1" max="30" style="width:60px;margin-left:6px"/>
+          </label>
+          <label>Base TN
+            <input type="number" id="ivis-tn" value="5" min="2" max="30" style="width:60px;margin-left:6px"/>
+          </label>
+          <label>System-channel degradation (+TN)
+            <input type="number" id="ivis-deg" value="0" min="0" max="9" style="width:60px;margin-left:6px"/>
+          </label>
+          <div style="margin-top:2px">Final TN: <strong id="ivis-tn-out">5</strong></div>
+        </div>`,
+      buttons: [
+        { label: 'Roll', action: 'go', default: true, callback: (_e, _b, d) => {
+            const el = d.element;
+            setup = {
+              pool: Math.max(1, parseInt(el.querySelector('#ivis-pool')?.value) || skill.rating || 1),
+              tn:   Math.max(2, (parseInt(el.querySelector('#ivis-tn')?.value) || 5) + (parseInt(el.querySelector('#ivis-deg')?.value) || 0)),
+            };
+          } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (hook1) Hooks.off('renderDialogV2', hook1);
+    if (!setup) return;
+
+    const res = this._resolveRoll(rigger, setup.pool, setup.tn);
+    if (res.successes <= 0) {
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: rigger }),
+        content: `<div class="sr-roll-card sr-miji-card"><div class="sr-roll-header">📶 IVIS Test Failed</div>
+          <div class="sr-staging-result">${skill.name} vs TN ${setup.tn} → 0 successes. No coordination bonus.</div></div>`,
+      });
+      return;
+    }
+
+    // Split successes: Comprehension bonus dice vs IVIS Pool.
+    const total = res.successes;
+    let hook2 = Hooks.on('renderDialogV2', (_app, html) => {
+      const el = html?.querySelector ? html : html?.[0];
+      if (!el?.querySelector?.('#ivis-comp')) return;
+      Hooks.off('renderDialogV2', hook2);
+      const compInp = el.querySelector('#ivis-comp');
+      const poolInp = el.querySelector('#ivis-poolalloc');
+      const out     = el.querySelector('#ivis-alloc-out');
+      const refresh = () => {
+        const comp = Math.max(0, parseInt(compInp.value) || 0);
+        const pool = Math.max(0, parseInt(poolInp.value) || 0);
+        const rem  = total - comp - pool;
+        if (out) out.innerHTML = `Spent <strong>${comp + pool}</strong> / ${total} — `
+          + (rem < 0 ? `<span style="color:var(--sr-red)">over by ${-rem}</span>` : `<span style="color:var(--sr-muted)">${rem} unspent</span>`);
+      };
+      compInp.addEventListener('input', refresh);
+      poolInp.addEventListener('input', refresh);
+      refresh();
+    });
+
+    let alloc = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `IVIS — ${total} successes` },
+      content: `
+        <div style="display:flex;flex-direction:column;gap:6px;padding:4px 0;font-size:12px">
+          <div>Scored <strong>${total}</strong> successes. Split them between the group's Comprehension bonus and the shared IVIS Pool:</div>
+          <label>Comprehension bonus dice
+            <input type="number" id="ivis-comp" value="0" min="0" max="${total}" style="width:50px;margin-left:6px"/>
+          </label>
+          <label>IVIS Pool dice
+            <input type="number" id="ivis-poolalloc" value="${total}" min="0" max="${total}" style="width:50px;margin-left:6px"/>
+          </label>
+          <div id="ivis-alloc-out" style="font-size:11px;color:var(--sr-text);margin-top:2px"></div>
+        </div>`,
+      buttons: [
+        { label: 'Confirm', action: 'go', default: true, callback: (_e, _b, d) => {
+            const comp = Math.max(0, parseInt(d.element.querySelector('#ivis-comp')?.value) || 0);
+            const pool = Math.max(0, parseInt(d.element.querySelector('#ivis-poolalloc')?.value) || 0);
+            alloc = { comp, pool };
+          } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (hook2) Hooks.off('renderDialogV2', hook2);
+    if (!alloc) return;
+
+    // Trim Pool then Comprehension to fit the available successes.
+    let over = (alloc.comp + alloc.pool) - total;
+    if (over > 0) {
+      const trimP = Math.min(alloc.pool, over); alloc.pool -= trimP; over -= trimP;
+      if (over > 0) alloc.comp = Math.max(0, alloc.comp - over);
+      ui.notifications.warn(`IVIS over-allocated — trimmed to ${total}.`);
+    }
+
+    await rigger.update({ 'system.ew.ivisPool.value': alloc.pool, 'system.ew.ivisPool.max': alloc.pool });
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: rigger }),
+      content: `<div class="sr-roll-card sr-miji-card"><div class="sr-roll-header">📶 IVIS Test — ${rigger.name}</div>
+        <div class="sr-staging-result">${skill.name} vs TN ${setup.tn} → <strong>${total}</strong> success${total !== 1 ? 'es' : ''}.</div>
+        <div class="sr-staging-result">→ <strong>+${alloc.comp}</strong> dice to the group's Comprehension Test · <strong>${alloc.pool}</strong> IVIS Pool.</div>
+        <div class="sr-staging-result" style="font-size:11px;color:var(--sr-muted)">IVIS Pool is shared by the group, refreshes each Combat Turn, expires on task end. Not for jumped-in drones.</div></div>`,
+    });
+  }
+
+  /* ------------------------------------------------------------------ */
   /*  ECCM repair / Footprint reduction                                   */
   /* ------------------------------------------------------------------ */
 

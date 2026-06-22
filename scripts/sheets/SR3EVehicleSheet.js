@@ -22,6 +22,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
       itemDelete:     SR3EVehicleSheet._onItemDelete,
       rollContested:  SR3EVehicleSheet._onRollContested,
       drivingTest:    SR3EVehicleSheet._onDrivingTest,
+      droneComprehension: SR3EVehicleSheet._onDroneComprehension,
       openPilot:      SR3EVehicleSheet._onOpenPilot,
       rollWeapon:     SR3EVehicleSheet._onRollWeapon,
       rollMelee:      SR3EVehicleSheet._onRollMelee,
@@ -284,6 +285,11 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
                No Driver
              </button>`
         }
+        <button type="button" class="btn-sm" data-action="droneComprehension"
+                style="background:var(--sr-surface);color:var(--sr-text);border:1px solid var(--sr-border)"
+                title="Drone Comprehension Test — Pilot vs GM TN (SR3 p.157)">
+          📡 Drone Comprehension
+        </button>
       </div>
     </div>`;
   }
@@ -674,6 +680,78 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   static async _onDrivingTest(_ev, _target) {
     return SR3EVehicleSheet.runDrivingTest(this.actor);
+  }
+
+  static async _onDroneComprehension(_ev, _target) {
+    return SR3EVehicleSheet.runDroneComprehension(this.actor);
+  }
+
+  /**
+   * Drone Comprehension Test (SR3 p.157) — a drone understanding a rigger's command.
+   * Simple, fully-editable dialog: Pilot Rating dice vs a GM-set TN (default 4), no pool.
+   * Modifiers offered: secondary-drone +2, and the vehicle's Command-channel degradation.
+   * Not forced into any flow — just an accessible button (sheet + token HUD).
+   */
+  static async runDroneComprehension(vehicle) {
+    if (!vehicle) return;
+    const sys     = vehicle.system ?? {};
+    const pilot   = sys.attributes?.pilot?.base ?? 0;
+    const cmdDeg  = game.sr3e.SR3EActor._signalTierMod(sys.signalMonitor?.command ?? 0);
+
+    let hookId = Hooks.on('renderDialogV2', (_app, html) => {
+      const el = html?.querySelector ? html : html?.[0];
+      if (!el?.querySelector?.('#dc-tn')) return;
+      Hooks.off('renderDialogV2', hookId);
+      const out = el.querySelector('#dc-tn-out');
+      const recompute = () => {
+        const tn  = parseInt(el.querySelector('#dc-tn')?.value) || 4;
+        const sec = el.querySelector('#dc-secondary')?.checked ? 2 : 0;
+        const deg = parseInt(el.querySelector('#dc-deg')?.value) || 0;
+        if (out) out.textContent = Math.max(2, tn + sec + deg);
+      };
+      el.querySelectorAll('#dc-tn, #dc-secondary, #dc-deg').forEach(n => {
+        n.addEventListener('input', recompute);
+        n.addEventListener('change', recompute);
+      });
+      recompute();
+    });
+
+    let result = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `Drone Comprehension — ${vehicle.name}` },
+      content: `
+        <div style="display:flex;flex-direction:column;gap:8px;padding:4px 0;font-size:12px">
+          <div style="color:var(--sr-muted);font-size:11px">Roll the drone's Pilot Rating vs a GM-set TN (Difficulty table, p.92): simple order ≈ 4, complex ≈ 8+. 0 = no comprehension · 1 = literal · 2+ = intelligent leeway. (Applies to RC-bridged drones on Auto.)</div>
+          <label>Pilot dice
+            <input type="number" id="dc-pool" value="${pilot}" min="1" max="30" style="width:60px;margin-left:6px"/>
+          </label>
+          <label>Base TN (command complexity)
+            <input type="number" id="dc-tn" value="4" min="2" max="30" style="width:60px;margin-left:6px"/>
+          </label>
+          <label><input type="checkbox" id="dc-secondary"/> Issuing to a secondary drone while jumped into a primary (+2 TN)</label>
+          <label>Command-channel degradation (+TN)
+            <input type="number" id="dc-deg" value="${cmdDeg}" min="0" max="9" style="width:60px;margin-left:6px"/>
+          </label>
+          <div style="margin-top:2px">Final TN: <strong id="dc-tn-out">${Math.max(2, 4 + cmdDeg)}</strong></div>
+        </div>`,
+      buttons: [
+        { label: 'Roll', action: 'roll', default: true, callback: (_e, _b, d) => {
+            const el  = d.element;
+            const pool = Math.max(1, parseInt(el.querySelector('#dc-pool')?.value) || pilot || 1);
+            const tn   = parseInt(el.querySelector('#dc-tn')?.value) || 4;
+            const sec  = el.querySelector('#dc-secondary')?.checked ? 2 : 0;
+            const deg  = parseInt(el.querySelector('#dc-deg')?.value) || 0;
+            result = { pool, tn: Math.max(2, tn + sec + deg) };
+          } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (hookId) Hooks.off('renderDialogV2', hookId);
+    if (!result) return;
+
+    return vehicle.rollPool(result.pool, result.tn, `📡 Drone Comprehension — ${vehicle.name}`, {
+      footerNote: '0 successes = no comprehension · 1 = executes literally · 2+ = interprets intelligently',
+    });
   }
 
   /**

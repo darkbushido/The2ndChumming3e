@@ -47,6 +47,11 @@ function _ew() {
     deckRating:     new NumberField({ integer: true, initial: 0, min: 0 }), // remote-control deck rating
     fluxRating:     new NumberField({ integer: true, initial: 0, min: 0 }), // deck Flux
     protocolModule: new NumberField({ integer: true, initial: 0, min: 0 }), // protocol-emulation module
+    // BattleTac IVIS Pool — shared by a drone group; refreshes each Combat Turn (max), expires on task end.
+    ivisPool: new SchemaField({
+      value: new NumberField({ integer: true, initial: 0, min: 0 }),
+      max:   new NumberField({ integer: true, initial: 0, min: 0 }),
+    }),
   });
 }
 
