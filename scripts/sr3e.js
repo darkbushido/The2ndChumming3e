@@ -17,6 +17,7 @@ import { SR3ECombat } from './documents/SR3ECombat.js';
 import { SR3ESpiritSummoning } from './documents/SR3ESpiritSummoning.js';
 import { SR3EVehicleChase } from './SR3EVehicleChase.js';
 import { SR3EMIJI } from './SR3EMIJI.js';
+import { SR3EClocks } from './SR3EClocks.js';
 
 Hooks.once('init', () => {
   console.log('SR3E | Initialising');
@@ -74,7 +75,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, buildSkillsCompendium, isLiveActor };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, buildSkillsCompendium, isLiveActor };
   game.sr3e.openChunkySalsa = _openChunkySalsaCalculator; // (function declaration, hoisted)
 
   // Data models (replace template.json defaults)
@@ -208,7 +209,22 @@ Hooks.once('init', () => {
     default: false,
   });
 
+  // GM Threat Clocks — persisted shared state, edited via game.sr3e.SR3EClocks.open().
+  game.settings.register('The2ndChumming3e', 'clocks', {
+    scope: 'world',
+    config: false,
+    type: Array,
+    default: [],
+  });
+
   console.log('SR3E | Ready');
+});
+
+// Threat Clocks live across all connected clients — re-render any open instance whenever
+// the GM edits the shared world-setting state.
+Hooks.on('updateSetting', setting => {
+  if (setting.key !== 'The2ndChumming3e.clocks') return;
+  SR3EClocks.refresh();
 });
 
 // Auto-create GM utility macros on first load
@@ -1601,6 +1617,7 @@ Hooks.on('renderRollTableDirectory', (_app, html) => {
 
   mk('sr3e-chase-btn',   '🚗 Chase Scene',     () => game.sr3e.SR3EVehicleChase.open(), false);
   mk('sr3e-driving-btn', '🏎 Driving Test',    () => SR3EVehicleSheet.promptVehicleDrivingTest(), false);
+  mk('sr3e-clocks-btn',  '🕐 Threat Clocks',   () => game.sr3e.SR3EClocks.open(), false);
   mk('sr3e-reward-btn',  '🎖 Session Rewards', _openSessionRewardDialog,     true);
   mk('sr3e-salsa-btn',   '💥 Chunky Salsa',    _openChunkySalsaCalculator,   true);
   mk('sr3e-barrier-btn', '🧱 Barrier Damage',  _openBarrierDamageCalculator, true);

@@ -2111,7 +2111,7 @@ _prepareCharacter(sys, attr) {
     const explodingDice = state.physicalDice ? [] : dice.filter(d => d.needsExplosion);
     const allDone       = state.physicalDice || explodingDice.length === 0;
 
-    // Build dice display — exploding dice show a ★ and a pending style.
+    // Build dice display — exploding dice get a pending style (no glyph, just the running total).
     const diceHtml = state.physicalDice
       ? `<span class="sr-phys-summary">📋 ${successes} success${successes !== 1 ? 'es' : ''} entered</span>`
       : dice.map(d => {
@@ -2121,9 +2121,8 @@ _prepareCharacter(sys, attr) {
           else                      cls.push('sr-exploding');
           if (d.isOne)              cls.push('sr-one');
 
-          const title   = d.faces.length > 1 ? `${d.faces.join(' + ')} = ${d.total}` : `${d.total}`;
-          const display = d.needsExplosion ? `${d.total}★` : `${d.total}`;
-          return `<span class="${cls.join(' ')}" title="${title}">${display}</span>`;
+          const title = d.faces.length > 1 ? `${d.faces.join(' + ')} = ${d.total}` : `${d.total}`;
+          return `<span class="${cls.join(' ')}" title="${title}">${d.total}</span>`;
         }).join('');
 
     // Result block — only shown when all dice are resolved.
