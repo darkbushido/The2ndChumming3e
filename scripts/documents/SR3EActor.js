@@ -74,7 +74,15 @@ export class SR3EActor extends Actor {
       this._prepareIC(sys);
     } else if (this.type === 'agent') {
       this._prepareAgent(sys);
+    } else if (this.type === 'ward') {
+      this._prepareWard(sys);
     }
+  }
+
+  _prepareWard(sys) {
+    sys.maxForce = Math.max(1, sys.maxForce ?? 1);
+    sys.damage   = Math.max(0, Math.min(sys.maxForce, sys.damage ?? 0));
+    sys.force    = Math.max(0, sys.maxForce - sys.damage);
   }
 
   _prepareHost(sys) {
@@ -1822,6 +1830,12 @@ _prepareCharacter(sys, attr) {
         dispelContext:       options.dispelContext       ?? null,
         isConjuringRoll:     options.isConjuringRoll    ?? false,
         conjuringContext:    options.conjuringContext    ?? null,
+        isWardCastRoll:      options.isWardCastRoll     ?? false,
+        wardCastContext:     options.wardCastContext     ?? null,
+        isWardAttackRoll:    options.isWardAttackRoll   ?? false,
+        wardAttackContext:   options.wardAttackContext   ?? null,
+        isWardSoakRoll:      options.isWardSoakRoll     ?? false,
+        wardSoakContext:     options.wardSoakContext     ?? null,
         isAssensingRoll:     options.isAssensingRoll    ?? false,
         isAuraReadingRoll:   options.isAuraReadingRoll  ?? false,
         auraReadingContext:  options.auraReadingContext  ?? null,
@@ -1887,6 +1901,12 @@ _prepareCharacter(sys, attr) {
       dispelContext:         options.dispelContext         ?? null,
       isConjuringRoll:       options.isConjuringRoll       ?? false,
       conjuringContext:      options.conjuringContext      ?? null,
+      isWardCastRoll:        options.isWardCastRoll        ?? false,
+      wardCastContext:       options.wardCastContext       ?? null,
+      isWardAttackRoll:      options.isWardAttackRoll      ?? false,
+      wardAttackContext:     options.wardAttackContext     ?? null,
+      isWardSoakRoll:        options.isWardSoakRoll        ?? false,
+      wardSoakContext:       options.wardSoakContext       ?? null,
       isAssensingRoll:       options.isAssensingRoll       ?? false,
       isAuraReadingRoll:     options.isAuraReadingRoll     ?? false,
       auraReadingContext:    options.auraReadingContext     ?? null,
@@ -2512,6 +2532,107 @@ _prepareCharacter(sys, attr) {
             </button>
           </div>`;
 
+      } else if (state.isWardCastRoll && state.wardCastContext) {
+        // Magic Attribute Test vs TN = desired Force. Successes = weeks the ward lasts
+        // (0 successes = it fails to form). Drain is always (Force)L Stun, win or lose.
+        const wc = state.wardCastContext;
+
+        if (successes === 0) {
+          stagingHtml = '<div class="sr-staging-result sr-soak-blocked">🛡 Ward fails to form — no successes. (Drain still applies.)</div>';
+        } else {
+          const durationNote = wc.isPermanent
+            ? 'Permanent (GM: deduct Force Karma to finalize)'
+            : `${successes} week${successes !== 1 ? 's' : ''}`;
+          stagingHtml = `
+            <div class="sr-staging-result">
+              🛡 <strong>${successes} success${successes !== 1 ? 'es' : ''}</strong> — ward (Force ${wc.force}) holds for <strong>${durationNote}</strong>.
+            </div>`;
+          const placePayload = JSON.stringify({ ...wc, weeks: successes }).replace(/'/g, '&#39;');
+          postRollHtml += `
+            <div class="sr-soak-action">
+              <button class="sr3e-place-ward-btn" data-payload='${placePayload}'>🛡 Place Ward on Canvas</button>
+            </div>`;
+        }
+
+        const wardDrainPayload = JSON.stringify({
+          actorId:         wc.casterActorId,
+          drainTNOverride: wc.force,
+          drainLevel:      'L',
+          drainIsPhysical: false,
+          resistAttr:      'willpower',
+          resistName:      'Willpower',
+          drainStr:        '(Force)L',
+          spellName:       'Ward',
+        }).replace(/'/g, '&#39;');
+        postRollHtml += `
+          <div class="sr-soak-action">
+            <button class="sr-drain-btn" data-payload='${wardDrainPayload}'>
+              ⚡ Resist Ward Drain
+            </button>
+          </div>`;
+
+      } else if (state.isWardAttackRoll && state.wardAttackContext) {
+        // Step 1 (SR3 Core p.174): attacker's success test vs TN = ward's current Force.
+        // Every 2 net successes stages the attacker's base damage code up.
+        const wac    = state.wardAttackContext;
+        const ward   = game.actors.get(wac.wardActorId);
+        const staged = SR3EItem.stageDamage(wac.damageBase, successes);
+
+        if (!ward) {
+          stagingHtml = '<div class="sr-staging-result sr-soak-blocked">🛡 Ward not found — it may have been destroyed.</div>';
+        } else if (successes === 0) {
+          stagingHtml = '<div class="sr-staging-result sr-soak-blocked">🛡 Attack fails to connect with the ward.</div>';
+        } else {
+          stagingHtml = `
+            <div class="sr-staging-result">
+              ⚔ ${successes} success${successes !== 1 ? 'es' : ''} — staged to
+              <strong>${staged.power}${staged.level}${staged.isStun ? ' Stun' : ''}</strong>.
+            </div>`;
+          const resistPayload = JSON.stringify({
+            wardActorId:     wac.wardActorId,
+            attackerActorId: wac.attackerActorId,
+            stagedPower:     staged.power,
+            stagedLevel:     staged.level,
+          }).replace(/'/g, '&#39;');
+          postRollHtml += `
+            <div class="sr-soak-action">
+              <button class="sr3e-ward-resist-btn" data-payload='${resistPayload}'>
+                🛡 ${ward.name} Resists
+              </button>
+            </div>`;
+        }
+
+      } else if (state.isWardSoakRoll && state.wardSoakContext) {
+        // Step 2/3 (SR3 Core p.174): ward rolls Force dice vs TN = attacker's Magic/Force.
+        // Every 2 soak successes stages the damage down; staged-to-nothing = attacker bounced
+        // back. Surviving Level converts to condition-monitor boxes (same L/M/S/D table used
+        // everywhere else in this system) and reduces the ward's Force by that many boxes.
+        const wsc     = state.wardSoakContext;
+        const ward    = game.actors.get(wsc.wardActorId);
+        const STAGES  = ['L', 'M', 'S', 'D'];
+        let idx       = STAGES.indexOf(wsc.stagedLevel);
+        let remaining = successes;
+        while (remaining >= 2 && idx >= 0) { remaining -= 2; idx--; }
+
+        if (idx < 0) {
+          stagingHtml = '<div class="sr-staging-result sr-soak-blocked">🛡 Ward holds — attacker bounced back! (Must win another contest to try again.)</div>';
+        } else {
+          const finalLevel = STAGES[idx];
+          const wardBoxes  = ({ L: 1, M: 3, S: 6, D: 10 })[finalLevel] ?? 1;
+          const wardName   = ward?.name ?? 'Ward';
+          stagingHtml = `
+            <div class="sr-staging-result">
+              🛡 ${successes} soak hit${successes !== 1 ? 's' : ''} — damage staged down to <strong>${wsc.stagedPower}${finalLevel}</strong>.
+            </div>`;
+          const assignPayload = JSON.stringify({ wardActorId: wsc.wardActorId, boxes: wardBoxes }).replace(/'/g, '&#39;');
+          postRollHtml += `
+            <div class="sr-soak-action">
+              <button class="sr-assign-damage-btn" data-payload='${assignPayload}'>
+                🩸 Assign ${SR3EActor._woundName(finalLevel)} Damage to ${wardName}
+              </button>
+            </div>`;
+        }
+
       } else if (state.isSpellDefenseRoll && state.spellDefenseContext) {
         // Spell Defense wave resolved — reduce the carried success count
         const sdc         = state.spellDefenseContext;
@@ -2707,6 +2828,12 @@ _prepareCharacter(sys, attr) {
         dispelContext:      state.dispelContext       ?? null,
         isConjuringRoll:    state.isConjuringRoll     ?? false,
         conjuringContext:   state.conjuringContext    ?? null,
+        isWardCastRoll:     state.isWardCastRoll      ?? false,
+        wardCastContext:    state.wardCastContext     ?? null,
+        isWardAttackRoll:   state.isWardAttackRoll    ?? false,
+        wardAttackContext:  state.wardAttackContext   ?? null,
+        isWardSoakRoll:     state.isWardSoakRoll      ?? false,
+        wardSoakContext:    state.wardSoakContext     ?? null,
         isAssensingRoll:    state.isAssensingRoll     ?? false,
         isAuraReadingRoll:  state.isAuraReadingRoll   ?? false,
         auraReadingContext: state.auraReadingContext   ?? null,
@@ -3909,6 +4036,20 @@ _prepareCharacter(sys, attr) {
       const current = veh.system.damage?.value ?? 0;
       const max     = (veh.system.attributes?.body?.base ?? 4) * 2;
       await veh.update({ 'system.damage.value': Math.min(max, current + p.boxes) });
+    } else if (p.wardActorId) {
+      const ward = game.actors.get(p.wardActorId);
+      if (!ward) return;
+      const current = ward.system.damage ?? 0;
+      const max     = ward.system.maxForce ?? 1;
+      const newDamage = Math.min(max, current + p.boxes);
+      await ward.update({ 'system.damage': newDamage });
+      if (newDamage >= max) {
+        await ChatMessage.create({
+          speaker: { alias: 'GM' },
+          content: `<div class="sr-roll-card sr-soak-card"><div class="sr-roll-header">💀 ${ward.name} destroyed</div>
+            <div style="font-size:12px;color:var(--sr-muted);padding:4px 0">Force reduced to 0 — dispel it from its sheet when ready.</div></div>`,
+        });
+      }
     } else {
       const actor = game.actors.get(p.actorId);
       if (!actor) return;
@@ -4977,7 +5118,6 @@ _prepareCharacter(sys, attr) {
 
     const _getAstralInfo = (actor) => {
       const cha        = actor.system.attributes?.charisma?.base   ?? 1;
-      const wil        = actor.system.attributes?.willpower?.base  ?? 1;
       const astralPool = actor.system.derived?.availableAstralPool ?? 0;
 
       // Damage: armed if active weapon focus, unarmed otherwise
@@ -4996,26 +5136,55 @@ _prepareCharacter(sys, attr) {
         rawDamage = `${cha}M`;
       }
 
-      // Attack dice: Sorcery skill (+2 if Astral Combat specialisation)
-      const sorcery = actor.items.find(i =>
-        i.type === 'skill' && i.name.toLowerCase() === 'sorcery'
-      );
-      if (sorcery) {
-        const rating  = sorcery.system.skillRating ?? sorcery.system.rating ?? 1;
-        const hasSpec = (sorcery.system.specialisation ?? '').toLowerCase() === 'astral combat';
+      // Armed: astral combat uses the same Armed Combat skill resolution as physical melee
+      // (matching the focus's weapon category) — Sorcery has nothing to do with it.
+      if (weaponFocus) {
+        const meleeInfo = SR3EItem._buildMeleePoolInfo(actor, weaponFocus);
         return {
-          skillName:  hasSpec ? `Sorcery (Astral Combat spec)` : `Sorcery`,
-          skillDice:  hasSpec ? rating + 2 : rating,
-          isDefault:  false,
+          skillName: meleeInfo.skillName,
+          skillDice: meleeInfo.skillDice,
+          isDefault: meleeInfo.isDefault,
+          rawDamage,
+          astralPool: meleeInfo.isDefault ? 0 : astralPool,
+        };
+      }
+
+      // Unarmed: Unarmed Combat (incl. Martial Arts) OR Sorcery w/ Astral Combat specialisation
+      // substitutes for it — use whichever gives more dice. Only default if the actor has neither.
+      const unarmedCandidates = actor.items.filter(i =>
+        i.type === 'skill' && (i.name === 'Unarmed Combat' || /^MA:/i.test(i.name))
+      );
+      const bestUnarmed = unarmedCandidates.length
+        ? unarmedCandidates.reduce((best, s) => (s.system.rating ?? 0) > (best.system.rating ?? 0) ? s : best)
+        : null;
+      const unarmedDice = bestUnarmed ? (bestUnarmed.system.rating ?? 0) : null;
+
+      const sorcery = actor.items.find(i => i.type === 'skill' && i.name.toLowerCase() === 'sorcery');
+      let sorceryDice = null;
+      let sorceryLabel = 'Sorcery';
+      if (sorcery) {
+        const rating  = sorcery.system.rating ?? sorcery.system.skillRating ?? 1;
+        const hasSpec = (sorcery.system.specialisation ?? '').toLowerCase() === 'astral combat'
+          || (sorcery.system.specialisations ?? []).some(sp => (sp.name ?? '').toLowerCase() === 'astral combat');
+        sorceryDice  = hasSpec ? rating + 2 : rating;
+        sorceryLabel = hasSpec ? 'Sorcery (Astral Combat spec)' : 'Sorcery';
+      }
+
+      if (unarmedDice != null || sorceryDice != null) {
+        const useSorcery = sorceryDice != null && (unarmedDice == null || sorceryDice > unarmedDice);
+        return {
+          skillName: useSorcery ? sorceryLabel : bestUnarmed.name,
+          skillDice: useSorcery ? sorceryDice : unarmedDice,
+          isDefault: false,
           rawDamage,
           astralPool,
         };
       }
 
-      // No Sorcery skill — defaulting (resolved interactively below).
+      // No Unarmed Combat and no Sorcery — defaulting (resolved interactively below).
       return {
-        skillName:    'Sorcery (defaulting)',
-        skillDice:    Math.max(1, wil),
+        skillName:    'Unarmed Combat (defaulting)',
+        skillDice:    Math.max(1, actor.system.attributes?.strength?.base ?? 1),
         isDefault:    true,
         defaultTnMod: 0,
         rawDamage,
@@ -5029,13 +5198,13 @@ _prepareCharacter(sys, attr) {
 
     const defInfo = _getAstralInfo(targetActor);
 
-    // SR3 Default Table — either side may lack Sorcery. Prompt each defaulter (attacker first).
+    // SR3 Default Table — either side may lack a usable skill. Prompt each defaulter (attacker first).
     const _applyAstralDefault = async (info, dActor, who) => {
       if (!info.isDefault) return true;
       const def = await SR3EItem.promptDefaultChoice(dActor, {
-        linkedAttr: 'willpower',
+        linkedAttr: 'strength',
         title:      `Defaulting — ${dActor.name} (${who})`,
-        message:    `${dActor.name} has no <strong>Sorcery</strong> skill — choose how to default:`,
+        message:    `${dActor.name} has no <strong>Unarmed Combat</strong> or <strong>Sorcery</strong> skill — choose how to default:`,
       });
       if (!def) return false;   // cancelled
       info.skillDice    = def.pool;
@@ -5272,7 +5441,9 @@ _prepareCharacter(sys, attr) {
     this.prepareDerivedData();
     const wilAttr = this.system.attributes?.willpower;
     const wilVal  = Math.max(wilAttr?.value ?? 0, wilAttr?.base ?? 0, 1);
-    const soakTN  = Math.max(2, winnerCha ?? stagedPower);
+    // TN = Power of the attack — must reflect any weapon-focus bonus baked into stagedPower,
+    // not just the winner's raw Charisma (which ignores that bonus entirely).
+    const soakTN  = Math.max(2, stagedPower ?? winnerCha);
 
     const soakPayload = JSON.stringify({
       actorId:         this.id,
@@ -5297,7 +5468,7 @@ _prepareCharacter(sys, attr) {
               <input type="number" class="sr-astral-soak-pool" value="${wilVal}" min="1" max="30" style="width:55px"/>
             </label>
             <label class="sr-soak-label">
-              TN (Winner's Charisma ${winnerCha ?? stagedPower}):
+              TN (Power of the attack — ${soakTN}):
               <input type="number" class="sr-astral-soak-tn" value="${soakTN}" min="2" max="30" style="width:55px"/>
             </label>
           </div>

@@ -945,6 +945,7 @@ background-color: var(--sr-surface) !important;
   border-color: var(--sr-border);
 }
 .item-row > span { flex: 1; min-width: 0; }
+.item-row--spec-extra { opacity: 0.75; }
 
 .item-name {
   flex: 2 !important;
@@ -1001,6 +1002,8 @@ background-color: var(--sr-surface) !important;
   transition: all 0.1s;
 }
 .btn-add:hover { border-color: var(--sr-accent); color: var(--sr-accent); }
+.gear-actions-row { display: flex; flex-wrap: wrap; gap: 0; align-items: center; }
+.gear-actions-row .btn-add { margin-top: 6px; }
 
 .btn-xs {
   padding: 2px 8px;
@@ -1664,6 +1667,33 @@ background-color: var(--sr-surface) !important;
 #sidebar-tabs .fa-comments::before { content: "\f8ef"; } /* walkie-talkie */
 #sidebar-tabs .fa-swords::before   { content: "\e19b"; } /* gun */
 
+/* Game-paused overlay — Shadowrun logo mark instead of Foundry's default icon.
+   The source SVG is a near-black (#231f20) silhouette, which would be almost
+   invisible against our near-black --sr-bg — so we hide Foundry's own <img>
+   and paint our own mask-image element in the accent color instead. */
+#pause img { display: none; }
+#pause::before {
+  content: '';
+  display: block;
+  width: 120px;
+  height: 154px; /* matches the logo's native ~147.3:189.1 aspect ratio */
+  margin: 0 auto;
+  background-color: var(--sr-accent);
+  -webkit-mask-image: url('textures/shadowrun-logo.svg');
+  mask-image: url('textures/shadowrun-logo.svg');
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  animation: sr3e-pause-pulse 2.4s ease-in-out infinite;
+}
+@keyframes sr3e-pause-pulse {
+  0%, 100% { opacity: 0.55; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--sr-accent) 60%, transparent)); }
+  50%      { opacity: 1;    filter: drop-shadow(0 0 16px color-mix(in srgb, var(--sr-accent) 80%, transparent)); }
+}
+
 /* ============================================================
    Shadowrun 3rd Edition — Foundry VTT System Stylesheet
    AppV2 build — no Handlebars templates
@@ -2183,6 +2213,7 @@ background-color: var(--sr-surface) !important;
   border-color: var(--sr-border);
 }
 .item-row > span { flex: 1; min-width: 0; }
+.item-row--spec-extra { opacity: 0.75; }
 
 .item-name {
   flex: 2 !important;
@@ -2239,6 +2270,8 @@ background-color: var(--sr-surface) !important;
   transition: all 0.1s;
 }
 .btn-add:hover { border-color: var(--sr-accent); color: var(--sr-accent); }
+.gear-actions-row { display: flex; flex-wrap: wrap; gap: 0; align-items: center; }
+.gear-actions-row .btn-add { margin-top: 6px; }
 
 .btn-xs {
   padding: 2px 8px;
@@ -3935,3 +3968,78 @@ label.act-field input[type=number] {
   border-radius: var(--r);
   color: var(--sr-text) !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════════ */
+/*  Ward Sheet                                                         */
+/* ═══════════════════════════════════════════════════════════════════ */
+
+.ward-sheet { display: flex; flex-direction: column; height: 100%; }
+
+.ward-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--sr-border);
+  background: var(--sr-surface);
+}
+.ward-name-block { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.ward-subtitle {
+  font-size: 0.7rem; color: var(--sr-muted); text-transform: uppercase; letter-spacing: 0.05em;
+  display: flex; align-items: center; gap: 8px;
+}
+.ward-force-badge {
+  font-family: var(--sr-font-display);
+  color: var(--sr-border-hi); border: 1px solid var(--sr-border-hi); border-radius: 10px;
+  padding: 0 7px; font-size: 0.72rem; text-transform: none; letter-spacing: 0;
+}
+.ward-destroyed-badge {
+  color: var(--sr-red); border: 1px solid var(--sr-red); border-radius: 10px;
+  padding: 0 7px; font-size: 0.7rem; font-weight: 700; text-transform: none; letter-spacing: 0.04em;
+}
+
+.ward-body { flex: 1; display: flex; flex-direction: column; gap: 10px; padding: 10px 12px; overflow-y: auto; }
+
+.ward-fields { display: flex; flex-direction: column; gap: 6px; }
+.ward-field-row {
+  display: grid; grid-template-columns: 130px 1fr; align-items: center; gap: 8px; font-size: 0.85rem;
+}
+.ward-field-row span { color: var(--sr-muted); }
+.ward-field-row input, .ward-field-row select { width: 100%; }
+.ward-field-checkbox { grid-template-columns: 130px auto; }
+.ward-field-checkbox input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
+.ward-derived-val { color: var(--sr-text); font-weight: 600; }
+
+.ward-box-section { display: flex; flex-direction: column; gap: 6px; }
+.ward-box-label { font-size: 0.8rem; color: var(--sr-muted); font-weight: 600; }
+.ward-box-track { display: flex; gap: 4px; flex-wrap: wrap; }
+.ward-box {
+  width: 22px; height: 22px;
+  border: 2px solid var(--sr-border);
+  border-radius: 3px;
+  cursor: pointer;
+  background: transparent;
+  transition: background 0.1s;
+}
+.ward-box.filled { background: var(--sr-red); border-color: var(--sr-red); }
+.ward-box:hover { border-color: var(--sr-accent); }
+
+.ward-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.ward-action-btn {
+  flex: 1; min-width: 140px; padding: 6px 10px; border-radius: var(--r);
+  font-size: 0.8rem; font-weight: 600; cursor: pointer;
+  border: 1px solid var(--sr-border-hi); background: transparent; color: var(--sr-border-hi);
+  transition: background 0.15s;
+}
+.ward-action-btn:hover { background: color-mix(in srgb, var(--sr-border-hi) 15%, transparent); }
+.ward-fool-btn { border-color: var(--sr-muted); color: var(--sr-muted); }
+.ward-fool-btn:hover { background: color-mix(in srgb, var(--sr-muted) 15%, transparent); }
+.ward-action-btn-sm {
+  padding: 4px 8px; border-radius: var(--r); font-size: 0.75rem; cursor: pointer;
+  border: 1px solid var(--sr-border); background: transparent; color: var(--sr-muted);
+}
+.ward-action-btn-sm:hover { border-color: var(--sr-border-hi); color: var(--sr-text); }
+.ward-dispel-btn:hover { border-color: var(--sr-red); color: var(--sr-red); }
+
+.ward-notes-section { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.ward-notes-label { font-size: 0.8rem; color: var(--sr-muted); font-weight: 600; }

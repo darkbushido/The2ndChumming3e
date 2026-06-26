@@ -1,8 +1,9 @@
-import { CharacterData, NpcData, VehicleData, ICData, HostData, AgentData } from './data/ActorDataModels.js';
+import { CharacterData, NpcData, VehicleData, ICData, HostData, AgentData, WardData } from './data/ActorDataModels.js';
 import {
   MeleeData, ProjectileData, ThrownData, FirearmData, AmmunitionData,
   ArmorData, GearData, SkillData, QualityData, CyberwareData, BiowareData,
   SpellData, ComplexFormData, SummoningData, AdeptPowerData, VehicleWeaponData, VehicleModData, ProgramData, CyberdeckData, ContactData,
+  DrugData, MedicalData,
 } from './data/ItemDataModels.js';
 import { SR3EActor } from './documents/SR3EActor.js';
 import { SR3EItem } from './documents/SR3EItem.js';
@@ -11,10 +12,12 @@ import { SR3EVehicleSheet } from './sheets/SR3EVehicleSheet.js';
 import { SR3EItemSheet } from './sheets/SR3EItemSheet.js';
 import { SR3EHostSheet } from './sheets/SR3EHostSheet.js';
 import { SR3EICSheet } from './sheets/SR3EICSheet.js';
+import { SR3EWardSheet } from './sheets/SR3EWardSheet.js';
 import { SR3EAgentSheet } from './sheets/SR3EAgentSheet.js';
 import { SR3E } from './config.js';
 import { SR3ECombat } from './documents/SR3ECombat.js';
 import { SR3ESpiritSummoning } from './documents/SR3ESpiritSummoning.js';
+import { SR3EWard } from './documents/SR3EWard.js';
 import { SR3EVehicleChase } from './SR3EVehicleChase.js';
 import { SR3EMIJI } from './SR3EMIJI.js';
 import { SR3EClocks } from './SR3EClocks.js';
@@ -75,7 +78,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, buildSkillsCompendium, isLiveActor };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EWard, buildSkillsCompendium, isLiveActor };
   game.sr3e.openChunkySalsa = _openChunkySalsaCalculator; // (function declaration, hoisted)
 
   // Data models (replace template.json defaults)
@@ -85,6 +88,7 @@ Hooks.once('init', () => {
   CONFIG.Actor.dataModels.host      = HostData;
   CONFIG.Actor.dataModels.ic        = ICData;
   CONFIG.Actor.dataModels.agent     = AgentData;
+  CONFIG.Actor.dataModels.ward      = WardData;
 
   CONFIG.Item.dataModels.melee        = MeleeData;
   CONFIG.Item.dataModels.projectile   = ProjectileData;
@@ -93,6 +97,8 @@ Hooks.once('init', () => {
   CONFIG.Item.dataModels.ammunition   = AmmunitionData;
   CONFIG.Item.dataModels.armor        = ArmorData;
   CONFIG.Item.dataModels.gear         = GearData;
+  CONFIG.Item.dataModels.drug         = DrugData;
+  CONFIG.Item.dataModels.medical      = MedicalData;
   CONFIG.Item.dataModels.skill        = SkillData;
   CONFIG.Item.dataModels.quality      = QualityData;
   CONFIG.Item.dataModels.cyberware    = CyberwareData;
@@ -176,6 +182,12 @@ Hooks.once('init', () => {
     types: ['agent'],
     makeDefault: true,
     label: 'SR3E Agent Sheet'
+  });
+
+  foundry.documents.collections.Actors.registerSheet('The2ndChumming3e', SR3EWardSheet, {
+    types: ['ward'],
+    makeDefault: true,
+    label: 'SR3E Ward Sheet'
   });
 
   foundry.documents.collections.Items.unregisterSheet('core', foundry.appv1.sheets.ItemSheet);
@@ -283,6 +295,13 @@ Hooks.once('ready', async () => {
       await Folder.create({ name: fd.name, type: 'Actor', color: fd.color });
     }
   }
+});
+
+// Deleting a ward actor should also clean up its boundary marker (Region or local PIXI
+// fallback) — same lifecycle the grenade/spell-AoE "🧹 Clear" buttons handle manually.
+Hooks.on('deleteActor', async (actor) => {
+  if (actor.type !== 'ward') return;
+  await SR3EWard._clearBoundary(actor);
 });
 
 // Auto-assign newly created Matrix/vehicle actors to their organisational folder,
@@ -2038,6 +2057,31 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'spellresistroll', i)) return;
       await SR3EActor.handleSpellResistRoll(btn, event.shiftKey);
+    });
+  });
+
+  // Place Ward button — aims with the AoE cursor helper, creates the ward Actor + Token
+  html.querySelectorAll('.sr3e-place-ward-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'placeward', i)) return;
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'placeward', i)) return;
+      const p = JSON.parse(btn.dataset.payload);
+      btn.disabled    = true;
+      btn.textContent = '⏳ Placing…';
+      await SR3EWard.confirmPlaceWard(p);
+    });
+  });
+
+  // Ward Resists button — rolls the ward's own Force-dice soak
+  html.querySelectorAll('.sr3e-ward-resist-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'wardresist', i)) return;
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'wardresist', i)) return;
+      await SR3EWard.handleWardResistClick(btn);
     });
   });
 

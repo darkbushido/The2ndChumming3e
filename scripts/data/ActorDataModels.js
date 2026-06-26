@@ -108,6 +108,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       magicType:               new StringField({ initial: '' }),
       magicTotem:              new StringField({ initial: '' }),
       magicElement:            new StringField({ initial: '' }),
+      initiateGrade:           new NumberField({ integer: true, initial: 0, min: 0 }),
       ..._pools(),
       attributes: new SchemaField({
         body:         _attr(3),
@@ -163,6 +164,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       magicType:        new StringField({ initial: '' }),
       magicTotem:       new StringField({ initial: '' }),
       magicElement:     new StringField({ initial: '' }),
+      initiateGrade:    new NumberField({ integer: true, initial: 0, min: 0 }),
       ..._pools(),
       attributes: new SchemaField({
         body:         _attr(3),
@@ -263,6 +265,27 @@ export class HostData extends foundry.abstract.TypeDataModel {
       activeUsers: new ArrayField(new ObjectField()),
       // {actorId,name,iconType,currentNodeId,hidden,role}
       activeAgents: new ArrayField(new ObjectField()),
+    };
+  }
+}
+
+// ── Ward (astral barrier, SR3 Core p.174 / MitS p.88-89) ──────────────────────
+
+export class WardData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      force:          new NumberField({ integer: true, initial: 4, min: 0 }),     // derived: maxForce - damage
+      maxForce:       new NumberField({ integer: true, initial: 4, min: 1 }),     // Force at creation — also the box-track size
+      damage:         new NumberField({ integer: true, initial: 0, min: 0 }),     // boxes filled
+      wardType:       new StringField({ initial: 'standard' }),                   // standard | alarm | polarized | masking
+      isPermanent:    new BooleanField({ initial: false }),
+      weeksRemaining: new NumberField({ integer: true, initial: 0, min: 0 }),      // ignored when isPermanent
+      areaRadius:     new NumberField({ initial: 5, min: 0 }),                     // metres, for the boundary marker
+      creatorActorId: new StringField({ initial: '' }),
+      regionId:       new StringField({ initial: '' }),                           // boundary marker — Region id
+      markerId:       new StringField({ initial: '' }),                           // boundary marker — local PIXI fallback id
+      sceneId:        new StringField({ initial: '' }),
+      notes:          new HTMLField({ initial: '', required: false }),
     };
   }
 }

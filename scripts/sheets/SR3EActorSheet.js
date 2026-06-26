@@ -32,6 +32,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       rollInitiative: SR3EActorSheet._onRollInitiative,
       itemCreate:     SR3EActorSheet._onItemCreate,
       browseSkills:   SR3EActorSheet._onBrowseSkills,
+      browseCompendium: SR3EActorSheet._onBrowseCompendium,
       itemEdit:       SR3EActorSheet._onItemEdit,
       itemDelete:     SR3EActorSheet._onItemDelete,
       woundBox:       SR3EActorSheet._onWoundBox,
@@ -47,6 +48,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         toggleFocus:       SR3EActorSheet._onToggleFocus,
         toggleFocusActive: SR3EActorSheet._onToggleFocusActive,
         rollAssensing:     SR3EActorSheet._onRollAssensing,
+        castWard:          SR3EActorSheet._onCastWard,
         rollContested:     SR3EActorSheet._onRollContested,
         rollResistDamage:  SR3EActorSheet._onRollResistDamage,
         activateVCR:       SR3EActorSheet._onActivateVCR,
@@ -804,29 +806,50 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       const rating   = s.system.rating ?? 0;
       const ia       = improvedAbility[s.name] ?? 0;
       const specs    = s.system.specialisations ?? [];
-      const maxBonus = specs.length > 0
-        ? Math.max(...specs.map(sp => sp.level ?? 1))
-        : (s.system.specialisation ? 2 : 0);
-      const ratingDisplay = maxBonus > 0
-        ? `${rating} <span style="color:var(--sr-accent)">(${rating + maxBonus})</span>`
-        : `${rating}`;
-      const forceCell = isAdept ? `
+      // Normalise to a {name, level} list, falling back to the legacy singular field.
+      const specList = specs.length > 0
+        ? specs
+        : (s.system.specialisation ? [{ name: s.system.specialisation, level: 2 }] : []);
+      const forceCell = (level) => isAdept ? `
         <span class="item-cell">
-          ${ia > 0
+          ${level == null && ia > 0
             ? `<span class="attr-adept" title="Improved Ability (from adept powers)">${ia}</span>`
             : `<span style="color:var(--sr-dim)">—</span>`}
         </span>` : '';
       const attrLabel = s.system.linkedAttribute === 'lan' ? 'LAN' : (s.system.linkedAttribute ?? '—');
-      return `
+      const ratingCell = (level) => level
+        ? `${rating} <span style="color:var(--sr-accent)">(${rating + level})</span>`
+        : `${rating}`;
+      const specCell = (sp) => `<span class="item-cell" style="white-space:normal;overflow:visible"
+            title="${sp ? `${sp.name} (+${sp.level})` : ''}">${sp ? sp.name : '—'}</span>`;
+
+      const [firstSpec, ...extraSpecs] = specList;
+
+      const mainRow = `
         <div class="item-row" data-item-id="${s.id}">
           <span class="item-name skill-name" data-action="rollSkill" data-item-id="${s.id}"
                 title="Roll ${s.name}">${s.name}</span>
           <span class="item-cell">${attrLabel}</span>
-          <span class="item-cell">${ratingDisplay}</span>
-          ${forceCell}
-          <span class="item-cell" title="${specs.map(sp => `${sp.name} (+${sp.level})`).join(', ') || s.system.specialisation || ''}">${specs.length > 0 ? specs.map(sp => sp.name).join(', ') : (s.system.specialisation || '—')}</span>
+          <span class="item-cell">${ratingCell(firstSpec?.level)}</span>
+          ${forceCell(null)}
+          ${specCell(firstSpec)}
           ${this._itemControls(s.id, true, 'rollSkill')}
         </div>`;
+
+      // Each additional specialisation beyond the first gets its own continuation line,
+      // repeating the rating (with that spec's own dice bonus) and its name — Skill/Attr
+      // are left blank so it reads as "more of the row above", not a data error.
+      const extraRows = extraSpecs.map(sp => `
+        <div class="item-row item-row--spec-extra" data-item-id="${s.id}">
+          <span class="item-name"></span>
+          <span class="item-cell"></span>
+          <span class="item-cell">${ratingCell(sp.level)}</span>
+          ${forceCell(sp.level)}
+          ${specCell(sp)}
+          <div class="item-controls"></div>
+        </div>`).join('');
+
+      return mainRow + extraRows;
     };
 
     const header = `<div class="list-header"><span>Skill</span><span>Attr</span><span>Rtg</span>${isAdept ? '<span>IA</span>' : ''}<span>Spec</span><span></span></div>`;
@@ -1671,8 +1694,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   _tabGear(actor) {
-    const gear = actor.items.filter(i => i.type === 'gear'        && !i.getFlag('The2ndChumming3e', 'stored'));
-    const ammo = actor.items.filter(i => i.type === 'ammunition'  && !i.getFlag('The2ndChumming3e', 'stored'));
+    const gear  = actor.items.filter(i => i.type === 'gear'        && !i.getFlag('The2ndChumming3e', 'stored'));
+    const ammo  = actor.items.filter(i => i.type === 'ammunition'  && !i.getFlag('The2ndChumming3e', 'stored'));
+    const drugs = actor.items.filter(i => i.type === 'drug'        && !i.getFlag('The2ndChumming3e', 'stored'));
 
     const gRows = gear.length ? gear.map(g => `
       <div class="item-row" data-item-id="${g.id}">
@@ -1696,6 +1720,15 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       </div>`;
     }).join('') : '<p class="empty-list">No ammunition.</p>';
 
+    const dRows = drugs.length ? drugs.map(d => `
+      <div class="item-row" data-item-id="${d.id}">
+        <span class="item-name" title="${d.system.category ?? ''}">${d.name}</span>
+        <span class="item-cell">${d.system.category ?? '-'}</span>
+        <span class="item-cell">${d.system.addiction || '-'}</span>
+        <span class="item-cell">${d.system.cost ?? 0}¥</span>
+        ${this._itemControls(d.id, false)}
+      </div>`).join('') : '<p class="empty-list">No drugs or toxins.</p>';
+
     return `<div class="tab ${this._activeTab === 'gear' ? 'active' : ''}" data-tab="gear" style="overflow-y:auto">
       <h3 class="section-hdr">Gear</h3>
       <div class="list-header"><span>Name</span><span>Qty</span><span>Cost</span><span class="col-xs" title="Weight (kg)">KG</span><span></span></div>
@@ -1705,6 +1738,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       <div class="list-header"><span>Name</span><span>Type</span><span>Load</span><span>Stock</span><span></span></div>
       ${aRows}
       <button type="button" class="btn-add" data-action="itemCreate" data-type="ammunition">+ Add Ammunition</button>
+      <h3 class="section-hdr" style="margin-top:1rem">Drugs &amp; Toxins</h3>
+      <div class="list-header"><span>Name</span><span>Category</span><span>Addiction</span><span>Cost</span><span></span></div>
+      ${dRows}
+      <button type="button" class="btn-add" data-action="itemCreate" data-type="drug">+ Add Drug</button>
     </div>`;
   }
 
@@ -1784,6 +1821,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
               </select>
             </label>
           </div>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px" title="Used for fooling wards (Masking metamagic) and other Initiate-only effects.">
+            Initiate Grade
+            <input type="number" name="system.initiateGrade" value="${sys.initiateGrade ?? 0}" min="0" style="width:50px;font-size:12px"/>
+          </label>
         </div>
       </div>`;
 
@@ -1848,6 +1889,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                     style="width:auto;margin:0">Astral Combat</button>
             <button type="button" class="btn-add" data-action="rollAssensing"
                     style="width:auto;margin:0;border-style:solid;border-color:var(--sr-accent);color:var(--sr-accent)">Assensing</button>
+            <button type="button" class="btn-add" data-action="castWard"
+                    style="width:auto;margin:0;border-style:solid;border-color:var(--sr-border-hi);color:var(--sr-border-hi)">🛡 Cast Ward</button>
           </div>
         </div>
       </div>
@@ -2345,6 +2388,16 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     item?.sheet?.render(true);
   }
 
+  static async _onBrowseCompendium(ev, target) {
+    const packId = (target ?? ev.currentTarget).dataset.pack;
+    const pack = game.packs.get(packId);
+    if (!pack) {
+      ui.notifications.warn(`SR3E: Compendium "${packId}" not found — was Foundry fully restarted after this pack was added?`);
+      return;
+    }
+    pack.render(true);
+  }
+
   static async _onBrowseSkills(_ev, _target) {
     const allSkills = SR3E.skills;
     const actor     = this.actor;
@@ -2401,7 +2454,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         });
       });
 
-      filterInput.focus();
+      // Foundry's own ApplicationV2 focus-management runs after this hook fires and
+      // steals focus back to the default button — defer ours to win that race.
+      requestAnimationFrame(() => filterInput.focus());
     });
 
     await foundry.applications.api.DialogV2.wait({
@@ -2435,7 +2490,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       return;
     }
 
-    await actor.createEmbeddedDocuments('Item', [{
+    const [created] = await actor.createEmbeddedDocuments('Item', [{
       name:   def.name,
       type:   'skill',
       system: {
@@ -2446,6 +2501,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         rating:          1,
       },
     }]);
+    created?.sheet?.render(true);
   }
 
   static _onItemEdit(ev, target) {
@@ -2526,6 +2582,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   static async _onRollAstralCombat(ev, _target) {
     await this.actor.rollAstralCombat({ physicalDice: ev.shiftKey ?? false });
+  }
+
+  static async _onCastWard(_ev, _target) {
+    await game.sr3e.SR3EWard.openCastDialog(this.actor);
   }
 
   static async _onRollAssensing(ev, _target) {

@@ -102,6 +102,16 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       });
     }
 
+    html.querySelectorAll('.spec-level-select').forEach(sel => {
+      sel.addEventListener('change', async () => {
+        const idx = parseInt(sel.dataset.specIdx);
+        const specs = [...(this.item.system.specialisations ?? [])];
+        if (!specs[idx]) return;
+        specs[idx] = { ...specs[idx], level: parseInt(sel.value) || 1 };
+        await this.item.update({ 'system.specialisations': specs });
+      });
+    });
+
     html.querySelectorAll('.spec-remove-btn').forEach(btn => {
       btn.addEventListener('click', async () => {
         const idx = parseInt(btn.dataset.specIdx);
@@ -126,7 +136,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         if (val === 'none') {
           hidden.value = '';
           textWrap.style.display = 'none';
-        } else if (val === 'specific') {
+        } else if (val === 'custom') {
           textWrap.style.display = '';
           hidden.value = textInp.value.trim();
         } else {
@@ -154,7 +164,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
             <input class="item-name-input" type="text" name="name" value="${item.name}"/>
             <span class="item-type-badge">${this._typeLabel()}</span>
           </div>
-          ${this.isEditable ? '<button type="button" class="btn-compendium-pick" data-action="pickFromCompendium" title="Fill from compendium">&#128218; Pick from compendium</button>' : ''}
+          ${this.isEditable && item.type !== 'skill' ? '<button type="button" class="btn-compendium-pick" data-action="pickFromCompendium" title="Fill from compendium">&#128218; Pick from compendium</button>' : ''}
         </header>
         <div class="item-body">
           ${this._details()}
@@ -182,6 +192,8 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       cyberdeck:    'Cyberdeck',
       program:      'Program',
       contact:      'Contact',
+      drug:         'Drug / Toxin',
+      medical:      'Medical Equipment / Service',
     };
     return labels[this.item.type] ?? this.item.type;
   }
@@ -401,23 +413,32 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       case 'skill': {
         const categories      = getSkillCategories();
         const currentCat      = s.category || '';
+        // Knowledge/Language categories are inherently open-ended in SR3 — the book's lists are
+        // example topics, not an exhaustive enumeration like Active skills. Give them a free-text
+        // name + editable linked attribute, with the config's example list offered only as
+        // <datalist> autocomplete suggestions, never a hard gate.
+        const catSkillType    = currentCat ? skillTypeForCategory(currentCat) : null;
+        const isFreeformSkill = catSkillType === 'knowledge' || catSkillType === 'language';
         const skills          = currentCat ? getSkillsForCategory(currentCat) : [];
         const skillEntry      = currentCat && s.skillName
           ? (SR3ESkills[currentCat] ?? []).find(sk => sk.name === s.skillName)
           : null;
         const specializations   = skillEntry?.specializations ?? [];
         const fixedSpecs        = specializations.filter(spec => !spec.endsWith('->'));
-        const hasSpecific       = specializations.some(spec => spec.endsWith('->'));
+        const customLabels      = specializations.filter(spec => spec.endsWith('->')).map(spec => spec.slice(0, -2).trim());
         const hasDropdown       = fixedSpecs.length > 0;
-        const isRemoteOps       = s.specialisation === 'Remote Operations';
-        const isSpecificVehicle = !!s.specialisation && !isRemoteOps && !fixedSpecs.includes(s.specialisation);
-        const specMode          = !s.specialisation ? 'none' : isRemoteOps ? 'Remote Operations' : isSpecificVehicle ? 'specific' : s.specialisation;
-        const linkedAttr      = s.skillName
-          ? getLinkedAttributeForSkill(currentCat, s.skillName)
-          : getLinkedAttributeForCategory(currentCat);
+        const customPlaceholder = customLabels.length ? customLabels.join(' / ') : 'Custom specialisation';
+        const isCustomValue     = !!s.specialisation && !fixedSpecs.includes(s.specialisation);
+        const specMode          = !s.specialisation ? 'none' : isCustomValue ? 'custom' : s.specialisation;
+        const linkedAttr      = isFreeformSkill
+          ? (s.linkedAttribute || getLinkedAttributeForCategory(currentCat))
+          : s.skillName
+            ? getLinkedAttributeForSkill(currentCat, s.skillName)
+            : getLinkedAttributeForCategory(currentCat);
         const linkedAttrLabel = linkedAttr
           ? linkedAttr.charAt(0).toUpperCase() + linkedAttr.slice(1)
           : '';
+        const ATTR_OPTIONS = ['body', 'quickness', 'strength', 'charisma', 'intelligence', 'willpower', 'reaction'];
 
         const skillTypeLabel = s.skillType === 'language' ? 'Language'
           : s.skillType === 'knowledge' ? 'Knowledge'
@@ -443,7 +464,17 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
               </select>
             </div>
 
-            ${currentCat ? `
+            ${currentCat && isFreeformSkill ? `
+              <div class="form-field">
+                <span class="field-label">Skill (Topic)</span>
+                <input type="text" name="system.skillName" value="${s.skillName ?? ''}" list="skill-name-suggestions"
+                       placeholder="Type a topic — the list below is just examples"/>
+                <datalist id="skill-name-suggestions">
+                  ${skills.map(skill => `<option value="${skill}"></option>`).join('')}
+                </datalist>
+                <small style="color:var(--sr-muted)">Knowledge/Language topics are open-ended — type anything</small>
+              </div>
+            ` : currentCat ? `
               <div class="form-field">
                 <span class="field-label">Skill</span>
                 <select name="system.skillName" class="skill-select">
@@ -464,7 +495,17 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
                 : '';
             })()}
 
-            ${currentCat ? `
+            ${currentCat && isFreeformSkill ? `
+              <div class="form-field">
+                <span class="field-label">Linked Attribute (for defaulting)</span>
+                <select name="system.linkedAttribute">
+                  ${ATTR_OPTIONS.map(attr =>
+                    `<option value="${attr}" ${linkedAttr === attr ? 'selected' : ''}>${attr.charAt(0).toUpperCase() + attr.slice(1)}</option>`
+                  ).join('')}
+                </select>
+                <small style="color:var(--sr-muted)">Used when defaulting (full Attribute, +4 TN)</small>
+              </div>
+            ` : currentCat ? `
               <div class="form-field">
                 <span class="field-label">Linked Attribute (for defaulting)</span>
                 <input type="text" value="${linkedAttrLabel}"
@@ -477,28 +518,18 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
             ${s.skillName ? `
               <div class="form-field">
                 <span class="field-label">Specialization (Optional, +2 dice)</span>
-                ${hasSpecific && hasDropdown ? `
+                ${hasDropdown ? `
                   <select id="spec-mode">
                     <option value="none" ${specMode === 'none' ? 'selected' : ''}>— None —</option>
                     ${fixedSpecs.map(spec =>
                       `<option value="${spec}" ${specMode === spec ? 'selected' : ''}>${spec}</option>`
                     ).join('')}
-                    <option value="specific" ${specMode === 'specific' ? 'selected' : ''}>Specific Vehicle</option>
+                    <option value="custom" ${specMode === 'custom' ? 'selected' : ''}>Other (type below)</option>
                   </select>
                   <input type="hidden" id="spec-hidden" name="system.specialisation" value="${s.specialisation || ''}"/>
-                  <div id="spec-text-wrap" style="${isSpecificVehicle ? '' : 'display:none;'}margin-top:4px;">
-                    <input type="text" id="spec-text" placeholder="Vehicle name" value="${isSpecificVehicle ? s.specialisation : ''}"/>
-                    <small style="color:var(--sr-muted)">Enter the exact vehicle name</small>
+                  <div id="spec-text-wrap" style="${isCustomValue ? '' : 'display:none;'}margin-top:4px;">
+                    <input type="text" id="spec-text" placeholder="${customPlaceholder}" value="${isCustomValue ? s.specialisation : ''}"/>
                   </div>
-                ` : hasSpecific ? `
-                  <input type="text" name="system.specialisation" value="${s.specialisation || ''}" placeholder="Vehicle name"/>
-                ` : hasDropdown ? `
-                  <select name="system.specialisation">
-                    <option value="">— None —</option>
-                    ${fixedSpecs.map(spec =>
-                      `<option value="${spec}" ${s.specialisation === spec ? 'selected' : ''}>${spec}</option>`
-                    ).join('')}
-                  </select>
                 ` : `
                   <input type="text" name="system.specialisation" value="${s.specialisation || ''}"
                          placeholder="Custom specialization"/>
@@ -519,8 +550,12 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
                     : specs.map((sp, i) => `
                         <div style="display:flex;align-items:center;gap:6px">
                           <span style="flex:1;font-size:12px">${sp.name}</span>
-                          <span style="font-size:11px;color:var(--sr-accent);background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);padding:1px 5px"
-                                title="Effective dice with this spec">${rating + (sp.level ?? 1)} dice (lv${sp.level ?? 1})</span>
+                          <select class="spec-level-select" data-spec-idx="${i}"
+                                  style="width:130px;flex:0 0 130px;font-size:11px;color:var(--sr-accent);background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);padding:1px 3px"
+                                  title="Specialisation level">
+                            <option value="1" ${(sp.level ?? 1) === 1 ? 'selected' : ''}>Lv1 (${rating + 1} dice)</option>
+                            <option value="2" ${(sp.level ?? 1) === 2 ? 'selected' : ''}>Lv2 (${rating + 2} dice)</option>
+                          </select>
                           <button type="button" class="btn-xs spec-remove-btn" data-spec-idx="${i}"
                                   style="padding:0 5px;line-height:1.4" title="Remove">×</button>
                         </div>`).join('')}
@@ -644,6 +679,33 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           <label class="bio-label">Description</label>
           <textarea name="system.description" class="bio-text">${s.description ?? ''}</textarea>
         </div>`;
+
+      case 'drug':
+        return `<div class="form-grid">
+          ${this._f('Category', 'category', s.category, 'text', 'placeholder="Stimulant, Narcotic, Toxin…"')}
+          ${this._f('Addiction', 'addiction', s.addiction, 'text', 'placeholder="2M, 4M+3P, 5M/5P…"')}
+          ${this._f('Tolerance', 'tolerance', s.tolerance)}
+          ${this._f('Effect', 'effect', s.effect)}
+          ${this._f('Speed (Onset)', 'speed', s.speed, 'text', 'placeholder="Instant, 10 min, 1D6 hrs…"')}
+          ${this._f('Vector', 'vector', s.vector, 'text', 'placeholder="Ingestion, Injection, Inhalation, Contact…"')}
+          ${this._f('Availability', 'availability', s.availability)}
+          ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
+          ${this._f('Street Index', 'streetIndex', s.streetIndex)}
+          ${this._f('Book / Page', 'bookPage', s.bookPage)}
+        </div>
+        ${this._notes(s.notes)}`;
+
+      case 'medical':
+        return `<div class="form-grid">
+          ${this._f('Category', 'category', s.category, 'text', 'placeholder="Medical Equipment — General, Medical Clinics — Alpha Grade…"')}
+          ${this._f('Rating', 'rating', s.rating)}
+          ${this._f('Availability', 'availability', s.availability)}
+          ${this._f('Weight (kg)', 'weight', s.weight)}
+          ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
+          ${this._f('Street Index', 'streetIndex', s.streetIndex)}
+          ${this._f('Book / Page', 'bookPage', s.bookPage)}
+        </div>
+        ${this._notes(s.notes)}`;
 
       case 'summoning': {
         const spiritOptions = Object.entries(SPIRIT_TYPES)
@@ -944,7 +1006,9 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         });
       });
 
-      filterEl.focus();
+      // Foundry's own ApplicationV2 focus-management runs after this hook fires and
+      // steals focus back to the default button — defer ours to win that race.
+      requestAnimationFrame(() => filterEl.focus());
     });
 
     await foundry.applications.api.DialogV2.wait({

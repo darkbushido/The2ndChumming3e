@@ -92,8 +92,34 @@ automatically. The GM/player makes the final call (clicking wound boxes, interpr
   test (each success = a service) + Drain; **Confirm Summoning** creates the spirit.
 - **Astral** — Magic tab toggles **Physical / Dual / Astral** state. **Assensing** and **Astral
   Combat** roll from the sheet. **(shift-click available)** Astral Projection uses INT+20+1d6 init.
+- **Initiate Grade** — a plain editable number on the Magic-Identity block (Awakened only, default
+  0). Not a skill or attribute; currently only used for **Fooling a Ward** (see below).
 
-## 9. The Matrix (deckers) - Uses 'The Matrix Defragged' rules. 
+## 9. Wards (astral barriers)
+
+- **Cast a ward** — Magic tab → **🛡 Cast Ward**: set Force, ward type (Standard / Alarm / Polarized
+  / Masking), area radius, and an optional **Permanent** checkbox → roll Magic vs TN=Force.
+  Successes = weeks the ward lasts (0 = it fails to form). **Drain is always `(Force)L` Stun**,
+  win or lose. On success, click **🛡 Place Ward on Canvas** to aim and drop it — this creates a
+  real token (the ward's "icon") plus a persistent silvery-grey boundary marker showing its volume
+  (same AoE-aim/Region tooling the grenade and spell-AoE flows use).
+- **Ward sheet** (its own Actor type) — Force / condition-monitor box track (each box = −1 Force,
+  same L=1/M=3/S=6/D=10 conversion every other condition monitor in this system uses), ward type,
+  permanent flag, weeks remaining, area radius, and the creator's name. **🔁 Redraw Boundary**
+  re-draws the marker at the token's current position; **🧹 Dispel Ward** deletes it (and its
+  marker) after a confirm.
+- **Attack a ward** — ward sheet → **⚔ Attack This Ward**: pick an attacker + mode (unarmed astral /
+  weapon focus / offensive sorcery / spirit). Declaring the attack immediately whispers the GM
+  **and the ward's creator** — wards alert their creator the instant they're attacked, before any
+  dice are even rolled. The attacker's roll stages damage up; a **🛡 Ward Resists** button then
+  rolls the ward's own Force dice to stage it back down, ending in the usual **Assign Damage**
+  button. Force hitting 0 posts a destroyed notice (no auto-deletion — dispel it manually).
+- **Fool a ward** — ward sheet → **🌫 Fool This Ward** (requires the Masking metamagic): a one-click
+  simultaneous contest — 2×Initiate Grade vs the ward's Force, and the ward's Force vs the
+  Initiate's Grade. More successes wins (a tie favors the ward). **No alert is posted** — fooling
+  is the quiet alternative to fighting.
+
+## 10. The Matrix (deckers) - Uses 'The Matrix Defragged' rules. 
 
 - **User mode** — Matrix tab buttons: Tortoise / AR / VR-Cold / VR-Hot (sets initiative & biofeedback
   rules).
@@ -107,7 +133,7 @@ automatically. The GM/player makes the final call (clicking wound boxes, interpr
 - **Host sheet** (GM) — System Rating, Security Tier (auto-fills threshold/colour), **Overwatch**
   10-box track (box 10 = Convergence), node map, **Security Sheaf** with stocked IC + trigger steps.
 
-## 10. Vehicles & rigging
+## 11. Vehicles & rigging
 
 - **Vehicle sheet tabs:** Stats, Weapons, Mods, **Electronic Warfare**, Notes.
 - **Vehicle initiative** — VCR (jumped-in) / RCD (remote/captain's chair) / Auto, set by the control-mode buttons.
@@ -127,7 +153,7 @@ automatically. The GM/player makes the final call (clicking wound boxes, interpr
     **+ = behind, − = ahead**). On **Next Turn** each pursuer's distance updates by the speed
     difference and is reported in chat.
 
-## 11. Electronic Warfare (riggers) — R3
+## 12. Electronic Warfare (riggers) — R3
 
 - **Stats placement:** the rigger's deck stats (**Deck / Flux / Protocol module**, and the **IVIS
   Pool**) live on the **character Matrix tab → Rigger — Electronic Warfare**; the vehicle/network's
@@ -151,13 +177,19 @@ automatically. The GM/player makes the final call (clicking wound boxes, interpr
   into Comprehension bonus + a shared **IVIS Pool** (auto-refreshes each combat round; **−1** spend /
   **Clear** expire).
 
-## 12. GM tools (Rollable Tables sidebar)
+## 13. GM tools (Rollable Tables sidebar)
 
-All on the **Rollable Tables** directory tab. Chase Scene & Driving Test are open to all; the rest are
-GM-only: **Chase Scene**, **Driving Test**, **Session Rewards**, **Chunky Salsa** (blast calculator),
-**Barrier Damage**, **Falling Damage**, **Escape Artist**.
+All on the **Rollable Tables** directory tab. Chase Scene, Driving Test & Threat Clocks are open to
+all; the rest are GM-only: **Chase Scene**, **Driving Test**, **🕐 Threat Clocks**, **Session
+Rewards**, **Chunky Salsa** (blast calculator), **Barrier Damage**, **Falling Damage**, **Escape
+Artist**.
 
-## 13. Canvas & tokens
+- **Threat Clocks** — Blades-in-the-Dark-style countdown dials for tracking threats. GM view is a
+  full editor (name, segment count, color, a **visible to players** toggle, click-a-wedge or
+  +/− stepper to fill it, delete); the same button gives players a read-only view of only the
+  clocks marked visible. Changes sync live to every connected client.
+
+## 14. Canvas & tokens
 
 - **Attack from a token** — owned character/NPC tokens get a **crosshairs** HUD button → pick a ready
   weapon (or spell) and fire. **(shift-click the sheet dice icon for physical dice)**
@@ -168,6 +200,19 @@ GM-only: **Chase Scene**, **Driving Test**, **Session Rewards**, **Chunky Salsa*
 - **Token wound bars** auto-track Physical/Stun; **status effects** (sustaining, full defense,
   dumpshock, astral, dual, VR) auto-toggle; **Bio/Notes** render as enriched read-only text with an
   ✎ edit toggle.
+
+## 15. Look & feel
+
+- **Blade Runner-inspired theme.** Fonts: **Teko** (display — headers, tab labels, big numeric
+  displays, dice) paired with **Quantico** (body text), loaded via Google Fonts. Palette swapped to
+  Blade Runner's own near-black/cream base with its blue accent and gold/green/red/amber status
+  colors — both `:root` blocks in `styles/sr3e.css` carry the values.
+- **Sidebar icons** — the Chat tab shows a walkie-talkie, Combat shows a gun (pure CSS glyph swap,
+  same trick the Blade Runner Foundry system uses).
+- **Chat-card textures** — roll/soak cards reference `styles/textures/sr-card-bg.webp` for a faded
+  background image; drop a `.webp` there and it lights up automatically, no code changes needed.
+- **Dice colors** — success = neon blue, fail = grey, rolled 1s = red, a pending "6" awaiting
+  explosion = solid neon blue with a black number.
 
 ---
 

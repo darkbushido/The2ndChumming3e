@@ -33,7 +33,8 @@
       "vehicle":   { "htmlFields": ["notes"] },
       "host":      { "htmlFields": ["notes"] },
       "ic":        { "htmlFields": ["notes"] },
-      "agent":     { "htmlFields": ["notes"] }
+      "agent":     { "htmlFields": ["notes"] },
+      "ward":      { "htmlFields": ["notes"] }
     },
     "Item": {
       "melee":        { "htmlFields": ["notes"] },
@@ -43,6 +44,8 @@
       "ammunition":   { "htmlFields": ["notes"] },
       "armor":        { "htmlFields": ["notes"] },
       "gear":         { "htmlFields": ["description"] },
+      "drug":         { "htmlFields": ["notes"] },
+      "medical":      { "htmlFields": ["notes"] },
       "skill":        { "htmlFields": ["description"] },
       "quality":      { "htmlFields": ["description"] },
       "cyberware":    { "htmlFields": ["description"] },
@@ -182,6 +185,24 @@
       "flags": { "The2ndChumming3e": { "itemTypes": ["armor"] } }
     },
     {
+      "name": "sr3e-drugs",
+      "label": "Drugs & Toxins",
+      "path": "packs/sr3e-drugs",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" },
+      "flags": { "The2ndChumming3e": { "itemTypes": ["drug"] } }
+    },
+    {
+      "name": "sr3e-medical",
+      "label": "Medical Equipment & Services",
+      "path": "packs/sr3e-medical",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" },
+      "flags": { "The2ndChumming3e": { "itemTypes": ["medical"] } }
+    },
+    {
       "name": "sr3e-sample-characters",
       "label": "Sample Characters",
       "path": "packs/sr3e-sample-characters",
@@ -231,7 +252,7 @@
     {
       "name": "Weapons & Gear",
       "sorting": "a",
-      "packs": ["sr3e-firearms", "sr3e-melee", "sr3e-projectiles", "sr3e-armor", "sr3e-vehicle-weapons"]
+      "packs": ["sr3e-firearms", "sr3e-melee", "sr3e-projectiles", "sr3e-armor", "sr3e-vehicle-weapons", "sr3e-drugs", "sr3e-medical"]
     },
     {
       "name": "Augmentations",

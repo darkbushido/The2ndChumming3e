@@ -492,3 +492,40 @@ export class ContactData extends foundry.abstract.TypeDataModel {
     };
   }
 }
+
+// ── Drugs / Toxins / Chemical Compounds ─────────────────────────────────────────
+
+export class DrugData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      category:     new StringField({ initial: '' }),  // Pharmaceutical Compounds / Depressants / Designer Drugs / Hallucinogens / Magical Compounds / Narcotics / Stimulants
+      addiction:    new StringField({ initial: '' }),   // e.g. "2M", "4M+3P", "5M/5P" (M=Mental, P=Physical)
+      tolerance:    new StringField({ initial: '' }),
+      effect:       new StringField({ initial: '' }),   // source table's "Edge" column
+      speed:        new StringField({ initial: '' }),   // onset time, e.g. "Instant", "10 min", "1D6 hrs"
+      vector:       new StringField({ initial: '' }),   // delivery method, e.g. "Inhalation", "Ingestion, Injection"
+      availability: new StringField({ initial: '' }),
+      cost:         new NumberField({ integer: true, initial: 0, min: 0 }),
+      streetIndex:  new StringField({ initial: '' }),
+      bookPage:     new StringField({ initial: '' }),
+      notes:        new HTMLField({ initial: '', required: false }),
+    };
+  }
+}
+
+// ── Medical Equipment / Clinics / Hospitals ─────────────────────────────────────
+
+export class MedicalData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      category:     new StringField({ initial: '' }),  // e.g. "Medical Equipment — General", "Medical Clinics — Alpha Grade", "Hospitals — Delta Grade"
+      rating:       new StringField({ initial: '' }),   // some Biotech entries use signed modifiers ("-1", "+2") rather than a plain rating number
+      availability: new StringField({ initial: '' }),
+      weight:       new StringField({ initial: '' }),
+      cost:         new NumberField({ integer: true, initial: 0, min: 0 }),
+      streetIndex:  new StringField({ initial: '' }),
+      bookPage:     new StringField({ initial: '' }),
+      notes:        new HTMLField({ initial: '', required: false }),
+    };
+  }
+}

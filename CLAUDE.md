@@ -603,6 +603,7 @@ system.roundsFiredThisPhase        ← persisted, recoil accumulator; reset each
 - `armor`: `ballistic` (number), `impact` (number)
 - `skill`: `rating`, `linkedAttribute`, `specialisation`
 - `spell`: `type` ("Mana"/"Physical" — sets **only the damage track**: Mana → Stun, Physical → Physical; it does **not** set the resist attribute), `target` (sets the **resist attribute *and* the cast TN** — `W/B/I/Q/F`/number, suffixes stripped — `SR3EItem._parseSpellTarget`), `category` (**Combat = damaging**: shows the cast Damage-Level dropdown), `drain` (drain-Power/TN formula e.g. "(F/2)" or "(DL+1)" — level = nominated Damage Level ± a `DL` token), `range` (Touch/LOS; an **`(A)` suffix = area effect**, no separate flag), `duration`. **No damage code** — spell power = Force and the level is chosen at cast (the `damage` field is hidden/legacy; only `drain` is required for a complete spell).
+- `drug`: reference-only item type (no roll/mechanic automation — the system has no drug rules yet). `category` (Pharmaceutical Compounds / Depressants / Designer Drugs / Hallucinogens / Magical Compounds / Narcotics / Stimulants), `addiction` (e.g. "2M", "4M+3P", "5M/5P" — M=Mental, P=Physical, all free text), `tolerance`, `effect`, `speed` (onset time), `vector` (delivery method), `availability`, `cost`, `streetIndex`, `bookPage`, `notes`. Populated via `scripts/macros/populate-drugs.js` into the `sr3e-drugs` compendium pack.
 
 ### Weapon category codes → skills
 ```

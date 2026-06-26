@@ -1011,8 +1011,21 @@ The Bio tab shows Background/Notes as read-only **enriched** text — `@UUID[...
 ---
 
 ## GM tools — Rollable Tables tab
-Chase Scene, Driving Test, Session Rewards, Chunky Salsa, Barrier Damage, Falling Damage and Escape Artist buttons now live on the **Rollable Tables** sidebar tab (not the combat tracker). Chase Scene + Driving Test show for all players; the rest are GM-only.
+Chase Scene, Driving Test, Threat Clocks, Session Rewards, Chunky Salsa, Barrier Damage, Falling Damage and Escape Artist buttons now live on the **Rollable Tables** sidebar tab (not the combat tracker). Chase Scene, Driving Test & Threat Clocks show for all players; the rest are GM-only.
 - **In:** open Rollable Tables tab → buttons appear below the header. **Driving Test** → prompts for vehicle + driver, then the usual driving-test dialog. Same dialog opens from each vehicle sheet's Driving Test button.
+
+### Threat Clocks
+- **In:** GM clicks **🕐 Threat Clocks** → **+ Add Clock** → a new 6-segment clock appears (default
+  color cycles through a small palette). Click wedge 3 → fills to 3/6; click **+** → 4/6; click **−**
+  → 3/6. Edit the name field, change Segments to 8 (box re-renders an 8-wedge dial, fill clamps to
+  the new max), pick a color, tick **Visible to players**.
+- **In:** a player opens the same **🕐 Threat Clocks** button → sees only the one clock marked
+  visible, read-only (no wedge clicks, no +/− steppers), showing "4 / 8". A second hidden clock the
+  GM also created does not appear in the player's view at all.
+- **In:** with two clients open (GM + player), GM clicks a wedge → the player's already-open Threat
+  Clocks window updates immediately without needing to reopen it (world-setting sync via the
+  `updateSetting` hook).
+- **In:** GM clicks 🗑 on a clock → it's removed from both the GM and player views on next render.
 
 ### Driving Test pool & TN (SR3 p.134)
 Base **TN = Handling**; TN modifiers via dropdowns (unfamiliar +1, stress, size +2/+3, weather +2/+4, terrain −1/0/+1/+3, combat +2, datajack −1, **VCR −2×rating**). The dice **pool** auto-composes (and is editable):
@@ -1399,6 +1412,58 @@ On each vehicle's **Electronic Warfare tab**: set ECM, ECCM, Flux.
 
 ---
 
+## 36. Wards (astral barriers, SR3 Core p.174 / MitS p.88-89)
+
+### Casting
+On an Awakened actor's Magic tab → **🛡 Cast Ward**: set Force, Ward Type, Area Radius (m), and an
+optional **Permanent** checkbox. Confirm rolls **Magic Attribute dice vs TN = Force** (Rule of Six).
+
+- **In:** Magic 6, default Force 6 → **6 dice vs TN 6**. 3 successes (not Permanent) → card reads
+  "ward holds for **3 weeks**" and shows **🛡 Place Ward on Canvas**. 0 successes → "Ward fails to
+  form — no successes." either way a **⚡ Resist Ward Drain** button appears.
+- **In:** click **⚡ Resist Ward Drain** → drain card shows **TN = Force** (6 in the example above,
+  *not* halved), level **L**, track **Stun** — confirm this stays Stun even if Force > Magic (RAW:
+  ward drain is never physical, unlike spell drain).
+- **In:** click **🛡 Place Ward on Canvas** → cursor shows the aiming circle at the chosen radius;
+  left-click drops it → a new **ward** Actor + Token appears at that point, and a silvery-grey
+  boundary Region is drawn around it. Open the new actor's sheet — confirm Force/maxForce match
+  what was cast, Creator shows the caster's name, and the box track has **Force** boxes (0 filled).
+
+### Attacking (breaking)
+Ward sheet → **⚔ Attack This Ward**: pick an attacker + mode (unarmed astral / weapon focus /
+offensive sorcery / spirit).
+
+- **In:** declaring the attack immediately posts a whisper card "⚠ \<ward\> attacked!" to the **GM
+  and the ward's creator** — confirm this appears *before* any dice are rolled, and that a player
+  with no ownership of the creator's actor does **not** see it.
+- **In:** Unarmed mode on an attacker with Magic 5 → damage code defaults to **5M Stun**, editable.
+  Attacker rolls Sorcery (+2 if Astral Combat spec) vs **TN = ward's current Force**. 4 successes →
+  staged to **5D Stun** (2 successes per stage). A **🛡 \<ward\> Resists** button appears.
+- **In:** click **🛡 Resists** → ward rolls **Force dice vs TN = attacker's Magic**, reducing the
+  staged level by 1 per 2 soak successes (same loop as a normal soak). Staged to nothing → "Ward
+  holds — attacker bounced back!" (no damage, must win another contest). Otherwise the surviving
+  level converts to boxes via the system's standard **L=1 / M=3 / S=6 / D=10** table and an
+  **Assign Damage** button appears.
+- **In:** assign damage that fills the box track completely → `system.damage === maxForce` →
+  `system.force` derives to **0** and a "💀 \<ward\> destroyed" card posts to the GM. The ward is
+  **not** auto-deleted — confirm **🧹 Dispel Ward** on its sheet still works (with a confirm prompt)
+  and that it also removes the boundary marker.
+
+### Fooling (Masking metamagic)
+Ward sheet → **🌫 Fool This Ward**: pick an Initiate (their Grade is shown in the dropdown).
+
+- **In:** Grade 3 attacker vs a Force 5 ward → attacker rolls **6 dice (2×3) vs TN 5**; ward rolls
+  **5 dice vs TN 3**. More successes wins; a tie favors the ward. Confirm **no GM/creator whisper is
+  posted** for this flow (unlike Attack, above) — Fooling is meant to be quiet.
+- **In:** Grade 0 attacker → a warning toast appears ("no Initiate Grade — proceeding anyway") but
+  the roll still happens (minimal-guardrails — GM may rule it auto-fails narratively).
+
+### Initiate Grade field
+- **In:** Magic tab → Magic Identity block → **Initiate Grade** number input, default **0**, only
+  visible on Awakened actors (hidden entirely when Magic attribute is 0).
+
+---
+
 ## Quick Sanity Numbers
 
 Use these as fast checks with a fresh character (QUI 4, INT 3, WIL 3, STR 3, BOD 4, REA 4, MAG 0):
@@ -1413,3 +1478,33 @@ Use these as fast checks with a fresh character (QUI 4, INT 3, WIL 3, STR 3, BOD
 | Soak TN (power 9, ballistic 4) | 5 |
 | BF on `9M` weapon | `12S` |
 | Staging: `6M` + 4 net hits | `6D` |
+
+---
+
+## 37. Visual / Theme refresh (Blade Runner-inspired)
+
+Mostly visual checks — reload Foundry (CSS/JS hot-reload; no `system.json` styling change needed)
+and look, rather than roll dice.
+
+- **In:** Foundry sidebar — the **Chat** tab icon is a walkie-talkie, the **Combat** tab icon is a
+  gun (not the default speech-bubble/crossed-swords). If either still shows a default Font Awesome
+  icon (or, notably, a hearing-aid icon on Combat), the `::before` content codepoint regressed —
+  check `#sidebar-tabs .fa-comments`/`.fa-swords` in `styles/sr3e.css`.
+- **In:** any sheet header, tab label, or chat-card header renders in the condensed **Teko** font;
+  body text/inputs render in **Quantico**. If both still look like the system-default sans-serif,
+  the Google Fonts `@import` likely failed (no internet access from the Foundry client is the most
+  common cause — confirm by checking the Network tab for a blocked `fonts.googleapis.com` request).
+- **In:** sheets/dialogs/chat cards show a near-black/cream base with a blue accent (Blade Runner's
+  actual UI palette) — not the navy/cyan scheme from before this refresh, and not the brighter neon
+  magenta/teal scheme from partway through this refresh (both superseded).
+- **In:** a roll/soak chat card with `styles/textures/sr-card-bg.webp` present shows the texture
+  blended under the card content (55%-opacity dark scrim over the image); with no file at that path
+  the card just shows its flat background color — no broken-image icon either way.
+- **In:** roll dice — success = neon blue, fail = grey, a rolled 1 = red, a pending "6" awaiting an
+  explosion reroll = solid neon blue with a **black** number (no `★` glyph on it). The "💥 Roll
+  explosions" button is also neon blue, not gold.
+- **In:** hovering a dice-roll icon (e.g. an attribute's roll icon) turns it **red**, not green/teal.
+- **In:** Rollable Tables GM-tools row buttons and the Actors-directory "Create Actor"/"Create
+  Folder" buttons/search box show the blue-accent bordered style, not Foundry's default tan.
+- **In:** folder rows in any sidebar directory show as an **outline** in the folder's chosen color
+  (not a solid color fill).
