@@ -2,7 +2,7 @@
   "id": "The2ndChumming3e",
   "title": "The 2nd Chumming — Shadowrun 3rd Edition",
   "description": "An unofficial implementation of Shadowrun 3rd Edition for Foundry VTT.",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "socket": true,
   "compatibility": {
     "minimum": "14",
@@ -10,7 +10,7 @@
   },
   "authors": [
     {
-      "name": "William Diffey"
+      "name": "Skunkworx"
     }
   ],
   "esmodules": [
