@@ -42,6 +42,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         healDamage:     SR3EActorSheet._onHealDamage,
         rollSpell:      SR3EActorSheet._onRollSpell,
         dispelSpell:    SR3EActorSheet._onDispelSpell,
+        banishSpirit:   SR3EActorSheet._onBanishSpirit,
         summonSpirit:   SR3EActorSheet._onSummonSpirit,
         resetAllPools:     SR3EActorSheet._onResetAllPools,
         rollAstralCombat:  SR3EActorSheet._onRollAstralCombat,
@@ -51,7 +52,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         castWard:          SR3EActorSheet._onCastWard,
         rollContested:     SR3EActorSheet._onRollContested,
         rollResistDamage:  SR3EActorSheet._onRollResistDamage,
-        activateVCR:       SR3EActorSheet._onActivateVCR,
+        clearVCR:          SR3EActorSheet._onClearVCR,
         equipCyberdeck:    SR3EActorSheet._onEquipCyberdeck,
         ivisTest:          SR3EActorSheet._onIvisTest,
         ivisSpend:         SR3EActorSheet._onIvisSpend,
@@ -121,6 +122,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     this._registerPersistentHooks();
     this._enrichBioFields();
     this._syncDuplicateInputs();
+
   }
 
   /**
@@ -390,6 +392,43 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         this.render();
       });
     });
+
+    // Cyber tab: make cyberware rows draggable onto the VCR slot
+    html.querySelectorAll('[data-cyber-item-id]').forEach(row => {
+      row.setAttribute('draggable', 'true');
+      row.addEventListener('dragstart', ev => {
+        ev.stopPropagation();
+        ev.dataTransfer.setData('text/plain', JSON.stringify({
+          type: 'sr3e-cyberware',
+          itemId: row.dataset.cyberItemId,
+        }));
+        ev.dataTransfer.effectAllowed = 'copy';
+        setTimeout(() => { row.style.opacity = '0.45'; }, 0);
+      });
+      row.addEventListener('dragend', () => { row.style.opacity = ''; });
+    });
+
+    const vcrSlot = html.querySelector('[data-vcr-drop]');
+    if (vcrSlot) {
+      vcrSlot.addEventListener('dragover', ev => {
+        ev.preventDefault();
+        vcrSlot.classList.add('sr-vcr-slot--hover');
+        ev.dataTransfer.dropEffect = 'copy';
+      });
+      vcrSlot.addEventListener('dragleave', () => {
+        vcrSlot.classList.remove('sr-vcr-slot--hover');
+      });
+      vcrSlot.addEventListener('drop', async ev => {
+        ev.preventDefault();
+        vcrSlot.classList.remove('sr-vcr-slot--hover');
+        let data;
+        try { data = JSON.parse(ev.dataTransfer.getData('text/plain')); } catch { return; }
+        if (data.type !== 'sr3e-cyberware') return;
+        const item = this.actor.items.get(data.itemId);
+        if (!item) return;
+        await this.actor.update({ 'system.activeVCRItemId': item.id });
+      });
+    }
   }
 
   /* ------------------------------------------------------------------ */
@@ -451,7 +490,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     return `
       <header class="sheet-header">
         <div class="portrait-wrap">
-          <img class="profile-img" src="${actor.img}" title="${actor.name}" data-edit="img"/>
+          <img class="profile-img" src="${actor.img}" title="${actor.name}" data-action="editImage" data-edit="img"/>
         </div>
         <div class="header-fields">
           <div class="header-top">
@@ -1268,21 +1307,13 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       .sort((a, b) => a.name.localeCompare(b.name));
 
     const cwRows = cyberware.length ? cyberware.map(c => {
-      const isVCRActive = c.id === activeVCRId;
-      const rating      = c.system.rating ?? 0;
+      const rating = c.system.rating ?? 0;
       return `
-        <div class="item-row" data-item-id="${c.id}">
+        <div class="item-row" data-item-id="${c.id}" data-cyber-item-id="${c.id}">
           <span class="item-name">${c.name}</span>
           <span class="item-cell">${c.system.grade ?? '—'}</span>
           <span class="item-cell">${c.system.essenceCost ?? 0}</span>
           <span class="item-cell">${rating}</span>
-          <span class="item-cell">
-            <button type="button" class="sr-veh-mode-btn${isVCRActive ? ' sr-veh-vcr-active' : ''}"
-                    data-action="activateVCR" data-item-id="${c.id}"
-                    title="${isVCRActive ? 'VCR active — click to deactivate' : 'Activate as VCR'}">
-              VCR${isVCRActive ? ' ✓' : ''}
-            </button>
-          </span>
           ${this._itemControls(c.id, false, 'rollWeapon', false)}
         </div>`;
     }).join('') : '<p class="empty-list">No cyberware.</p>';
@@ -1304,10 +1335,18 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const effMagic   = sys.derived?.effectiveMagic   ?? 0;
     const magicBase  = actor.system.attributes?.magic?.base ?? 0;
 
-    const vcrBanner = vcrRating > 0 ? `
-      <div class="sr-vcr-banner">
-        ⚡ VCR Rating ${vcrRating} active
-      </div>` : '';
+    const activeVCRItem = activeVCRId ? actor.items.get(activeVCRId) : null;
+    const vcrSlot = activeVCRItem
+      ? `<div class="sr-vcr-slot sr-vcr-slot--filled" data-vcr-drop>
+           <span class="sr-vcr-slot-label">⚡ VCR</span>
+           <span class="sr-vcr-slot-name">${activeVCRItem.name}</span>
+           <span class="sr-vcr-slot-rating">Rating ${activeVCRItem.system.rating ?? 0}</span>
+           <button type="button" class="sr-vcr-slot-clear" data-action="clearVCR" title="Remove VCR">✕</button>
+         </div>`
+      : `<div class="sr-vcr-slot" data-vcr-drop>
+           <span class="sr-vcr-slot-label">⚡ VCR</span>
+           <span class="sr-vcr-slot-placeholder">Drag a cyberware item here to set as active VCR</span>
+         </div>`;
 
     const bioAlert = bioOver ? `
       <div class="sr-alert sr-alert--danger" style="margin-top:6px">
@@ -1330,7 +1369,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ${magicAlert}` : '';
 
     return `<div class="tab ${this._activeTab === 'cyber' ? 'active' : ''}" data-tab="cyber" style="overflow-y:auto">
-      ${vcrBanner}
+      ${vcrSlot}
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:6px 8px;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r)">
         <span class="field-label" style="margin:0">Recoil Compensation</span>
         <input type="number" name="system.recoilCompensation" value="${sys.recoilCompensation ?? 0}" min="0" max="20" class="pool-input recoil-comp" style="width:50px"
@@ -1338,7 +1377,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <span style="font-size:11px;color:var(--sr-muted)">from cyber/bio sources — stacks with weapon-mounted compensation</span>
       </div>
       <h3 class="section-hdr">Cyberware</h3>
-      <div class="list-header"><span>Name</span><span>Grade</span><span>Essence</span><span>Rating</span><span>VCR</span><span></span></div>
+      <div class="list-header"><span>Name</span><span>Grade</span><span>Essence</span><span>Rating</span><span></span></div>
       ${cwRows}
       <button type="button" class="btn-add" data-action="itemCreate" data-type="cyberware">+ Cyberware</button>
       <h3 class="section-hdr" style="margin-top:1rem">Bioware</h3>
@@ -1951,8 +1990,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         </div>
         ${incompleteSpellRows}
       ` : ''}
-      <button type="button" class="btn-add" data-action="itemCreate" data-type="spell">+ Add Spell</button>
-      <button type="button" class="btn-add" data-action="dispelSpell" style="margin-top:4px">✦ Dispel Spell</button>
+      <div style="display:flex;gap:6px;margin-top:4px">
+        <button type="button" class="btn-add" data-action="itemCreate" data-type="spell">+ Add Spell</button>
+        <button type="button" class="btn-add" data-action="dispelSpell">✦ Dispel Spell</button>
+      </div>
       ` : ''}
       ${!isSorcerer ? `
       <h3 class="section-hdr" style="margin-top:1.2rem">Conjuring</h3>
@@ -1960,7 +2001,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <span>Name</span><span>Spirit Type</span><span>Summon</span><span></span>
       </div>
       ${summonRows}
-      <button type="button" class="btn-add" data-action="itemCreate" data-type="summoning">+ Add Conjuring</button>
+      <div style="display:flex;gap:6px;margin-top:4px">
+        <button type="button" class="btn-add" data-action="itemCreate" data-type="summoning">+ Add Conjuring</button>
+        <button type="button" class="btn-add" data-action="banishSpirit">🌀 Banish Spirit</button>
+      </div>
       ` : ''}
       `}
       ${this._magicNotesCard(magicType, magicTotem, magicElement)}
@@ -2563,6 +2607,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     await this.actor.rollDispel();
   }
 
+  static async _onBanishSpirit(_ev, _target) {
+    await this.actor.rollBanish();
+  }
+
   static async _onSummonSpirit(ev, target) {
     const itemId = (target ?? ev.currentTarget).closest('[data-item-id]')?.dataset.itemId
                 ?? (target ?? ev.currentTarget).dataset.itemId;
@@ -2711,11 +2759,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   /*  Cyber tab handlers                                                 */
   /* ------------------------------------------------------------------ */
 
-  static async _onActivateVCR(_ev, target) {
-    const itemId  = target.dataset.itemId;
-    const current = this.actor.system.activeVCRItemId ?? '';
-    const newVCR  = current === itemId ? '' : itemId;
-    await this.actor.update({ 'system.activeVCRItemId': newVCR });
+  static async _onClearVCR(_ev, _target) {
+    await this.actor.update({ 'system.activeVCRItemId': '' });
   }
 
   static async _onIvisTest(_ev, _target) {

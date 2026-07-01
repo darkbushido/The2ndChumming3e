@@ -1830,6 +1830,8 @@ _prepareCharacter(sys, attr) {
         dispelContext:       options.dispelContext       ?? null,
         isConjuringRoll:     options.isConjuringRoll    ?? false,
         conjuringContext:    options.conjuringContext    ?? null,
+        isBanishingRoll:     options.isBanishingRoll    ?? false,
+        banishContext:       options.banishContext       ?? null,
         isWardCastRoll:      options.isWardCastRoll     ?? false,
         wardCastContext:     options.wardCastContext     ?? null,
         isWardAttackRoll:    options.isWardAttackRoll   ?? false,
@@ -1901,6 +1903,8 @@ _prepareCharacter(sys, attr) {
       dispelContext:         options.dispelContext         ?? null,
       isConjuringRoll:       options.isConjuringRoll       ?? false,
       conjuringContext:      options.conjuringContext      ?? null,
+      isBanishingRoll:       options.isBanishingRoll       ?? false,
+      banishContext:         options.banishContext         ?? null,
       isWardCastRoll:        options.isWardCastRoll        ?? false,
       wardCastContext:       options.wardCastContext       ?? null,
       isWardAttackRoll:      options.isWardAttackRoll      ?? false,
@@ -2532,6 +2536,74 @@ _prepareCharacter(sys, attr) {
             </button>
           </div>`;
 
+      } else if (state.isBanishingRoll && state.banishContext) {
+        const bc           = state.banishContext;
+        const banisher     = game.actors.get(bc.banisherActorId);
+        const spirit       = game.actors.get(bc.spiritActorId);
+        const banisherName = banisher?.name ?? 'Banisher';
+        const spiritName   = spirit?.name   ?? bc.spiritLabel;
+
+        // Auto-resolve spirit resistance: Force dice vs TN = banisher's effective Magic
+        const spiritForce = bc.spiritForce;
+        const miji        = game.sr3e?.SR3EMIJI;
+        const spiritRes   = miji
+          ? miji._resolveRoll(spirit ?? banisher, spiritForce, bc.effectiveMagic)
+          : { successes: 0, dice: [] };
+        const spiritHits  = spiritRes.successes;
+
+        const net = successes - spiritHits;
+
+        let outcomeHtml = '';
+        let newForce    = spiritForce;
+
+        if (net > 0) {
+          // Banisher wins — reduce spirit's Force
+          newForce = Math.max(0, spiritForce - net);
+          await spirit?.setFlag('sr3e', 'force', newForce);
+          if (newForce === 0) {
+            outcomeHtml = `<div class="sr-staging-result" style="color:var(--sr-green)">
+              💀 <strong>${spiritName}</strong> is destroyed — Force reduced to 0.
+              Remove it from the tracker when ready.
+            </div>`;
+          } else {
+            outcomeHtml = `<div class="sr-staging-result" style="color:var(--sr-green)">
+              🌀 <strong>${banisherName}</strong> wins by ${net} — ${spiritName}'s Force reduced to <strong>${newForce}</strong>.
+            </div>
+            <div style="font-size:11px;color:var(--sr-muted);margin-top:4px">
+              ⚔ Both locked in magical combat until <strong>${banisherName}'s</strong> next Combat Phase.
+            </div>`;
+          }
+        } else if (net < 0) {
+          // Spirit wins — temporary Magic loss for banisher
+          const magicLost = Math.abs(net);
+          const prev      = banisher ? (banisher.getFlag('The2ndChumming3e', 'tempMagicLoss') ?? 0) : 0;
+          await banisher?.setFlag('The2ndChumming3e', 'tempMagicLoss', prev + magicLost);
+          outcomeHtml = `<div class="sr-staging-result" style="color:var(--sr-red)">
+            🌀 <strong>${spiritName}</strong> wins by ${magicLost} — ${banisherName}'s effective Magic reduced by ${magicLost} for this combat (now ${Math.max(0, bc.effectiveMagic - magicLost)}).
+            ${Math.max(0, bc.effectiveMagic - magicLost) === 0
+              ? `<br><strong>⚠ Magic reached 0 — ${banisherName} takes Deadly Stun damage, passes out. Spirit goes free. Check for Magic Loss!</strong>`
+              : ''}
+          </div>
+          <div style="font-size:11px;color:var(--sr-muted);margin-top:4px">
+            ⚔ Both locked in magical combat until <strong>${spiritName}'s</strong> next Combat Phase.
+          </div>`;
+        } else {
+          // Tie
+          outcomeHtml = `<div class="sr-staging-result" style="color:var(--sr-muted)">
+            🌀 Tie — no change. Contest may continue.
+          </div>
+          <div style="font-size:11px;color:var(--sr-muted);margin-top:4px">
+            ⚔ Both locked in magical combat. Winner decides whether to continue.
+          </div>`;
+        }
+
+        stagingHtml = `
+          <div class="sr-staging-result" style="font-size:12px;color:var(--sr-muted);margin-bottom:4px">
+            ${banisherName}: <strong>${successes}</strong> hit${successes !== 1 ? 's' : ''} &nbsp;|&nbsp;
+            ${spiritName} resists (${spiritForce}d vs TN ${bc.effectiveMagic}): <strong>${spiritHits}</strong> hit${spiritHits !== 1 ? 's' : ''}
+          </div>
+          ${outcomeHtml}`;
+
       } else if (state.isWardCastRoll && state.wardCastContext) {
         // Magic Attribute Test vs TN = desired Force. Successes = weeks the ward lasts
         // (0 successes = it fails to form). Drain is always (Force)L Stun, win or lose.
@@ -2828,6 +2900,8 @@ _prepareCharacter(sys, attr) {
         dispelContext:      state.dispelContext       ?? null,
         isConjuringRoll:    state.isConjuringRoll     ?? false,
         conjuringContext:   state.conjuringContext    ?? null,
+        isBanishingRoll:    state.isBanishingRoll     ?? false,
+        banishContext:      state.banishContext       ?? null,
         isWardCastRoll:     state.isWardCastRoll      ?? false,
         wardCastContext:    state.wardCastContext     ?? null,
         isWardAttackRoll:   state.isWardAttackRoll    ?? false,
@@ -5101,6 +5175,104 @@ _prepareCharacter(sys, attr) {
         drainIsPhysical,
         sorceryRating,
         spellPoolForDrain,
+      },
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+  // BANISHING
+  // ---------------------------------------------------------------------------
+
+  async rollBanish() {
+    const magicBase = this.system.attributes?.magic?.base ?? 0;
+    if (magicBase <= 0) {
+      ui.notifications.warn(`${this.name} is not Awakened (Magic attribute is 0).`);
+      return null;
+    }
+
+    // Find spirits in the active combat tracker
+    const spiritCombatants = (game.combat?.combatants ?? [])
+      .map(c => c.actor)
+      .filter(a => a && a.getFlag('sr3e', 'isSpirit'));
+    if (!spiritCombatants.length) {
+      ui.notifications.warn('No spirits found in the active combat tracker.');
+      return null;
+    }
+
+    // Spirit selection (auto-pick if only one)
+    let spirit = spiritCombatants.length === 1 ? spiritCombatants[0] : null;
+    if (!spirit) {
+      const opts = spiritCombatants
+        .map(s => `<option value="${s.id}">${s.name} [F${s.getFlag('sr3e', 'force') ?? '?'}]</option>`)
+        .join('');
+      let cancelled = true;
+      let spiritId = '';
+      await foundry.applications.api.DialogV2.wait({
+        window: { title: `${this.name} — Banish Spirit` },
+        content: `<p>Select the spirit to banish:</p><select id="ban-spirit" style="width:100%">${opts}</select>`,
+        buttons: [
+          { label: 'Select', action: 'ok', default: true,
+            callback: (_e, _b, dialog) => { cancelled = false; spiritId = dialog.element.querySelector('#ban-spirit')?.value; } },
+          { label: 'Cancel', action: 'cancel' },
+        ],
+      });
+      if (cancelled) return null;
+      spirit = game.actors.get(spiritId);
+      if (!spirit) return null;
+    }
+
+    const spiritForce  = spirit.getFlag('sr3e', 'force') ?? 4;
+    const isSummoner   = spirit.getFlag('sr3e', 'conjurerId') === this.id;
+    const tempLoss     = this.getFlag('The2ndChumming3e', 'tempMagicLoss') ?? 0;
+    const effectiveMagic = Math.max(1, magicBase - tempLoss);
+
+    // Conjuring skill
+    const conjSkill   = this.items.find(i => i.type === 'skill' && /conjuring/i.test(i.name));
+    const conjRating  = conjSkill?.system?.rating ?? 0;
+    const charisma    = this.system.attributes?.charisma?.base ?? 0;
+
+    // Build dialog
+    const poolPreview = conjRating + (isSummoner ? charisma : 0);
+    let cancelled = true, conjDice = conjRating, chaDice = isSummoner ? charisma : 0;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `${this.name} — Banish ${spirit.name}` },
+      content: `
+        <p style="font-size:12px;color:var(--sr-muted);margin-bottom:8px">
+          Banishing: Conjuring vs TN = Force (${spiritForce}). Spirit resists with Force vs TN = your Magic (${effectiveMagic}${tempLoss > 0 ? `, reduced by ${tempLoss} this combat` : ''}).
+        </p>
+        <div style="display:grid;grid-template-columns:auto 1fr;align-items:center;gap:6px 12px">
+          <label>Conjuring dice:</label>
+          <input type="number" id="ban-conj" value="${conjRating}" min="0" max="99" style="width:70px"/>
+          ${isSummoner ? `
+          <label>Charisma dice (you are the summoner):</label>
+          <input type="number" id="ban-cha" value="${charisma}" min="0" max="99" style="width:70px"/>` : ''}
+        </div>`,
+      buttons: [
+        { label: 'Roll Banish', action: 'ok', default: true,
+          callback: (_e, _b, dialog) => {
+            cancelled = false;
+            conjDice  = Math.max(0, parseInt(dialog.element.querySelector('#ban-conj')?.value) || 0);
+            chaDice   = isSummoner ? Math.max(0, parseInt(dialog.element.querySelector('#ban-cha')?.value) || 0) : 0;
+          } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (cancelled) return null;
+
+    const pool  = Math.max(1, conjDice + chaDice);
+    const parts = [`Conjuring ${conjDice}`];
+    if (chaDice > 0) parts.push(`CHA ${chaDice} (summoner bonus)`);
+    const label = `🌀 ${this.name} — Banish ${spirit.name} [F${spiritForce}] — ${parts.join(' + ')}`;
+
+    return this.rollPool(pool, spiritForce, label, {
+      isBanishingRoll: true,
+      banishContext: {
+        banisherActorId: this.id,
+        spiritActorId:   spirit.id,
+        spiritLabel:     spirit.name,
+        spiritForce,
+        effectiveMagic,
+        isSummoner,
       },
     });
   }

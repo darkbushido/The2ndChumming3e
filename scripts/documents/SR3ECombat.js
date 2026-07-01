@@ -476,6 +476,7 @@ async _newRoundSR3() {
         await actor.refreshHackingPool();
         await actor.clearSpellDefense();
         await actor.resetRecoil?.();
+        await actor.unsetFlag('The2ndChumming3e', 'tempMagicLoss').catch(() => {});
         if (actor.system?.fullDefense) {
           await actor.update({ 'system.fullDefense': false, 'system.fullDefensePool': 0 });
         }
