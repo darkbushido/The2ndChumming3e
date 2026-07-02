@@ -2,11 +2,12 @@
 //  Nullsheen.com SR3 Character JSON → The 2nd Chumming 3e Importer
 //  Run this macro, then paste the JSON exported from nullsheen.com.
 //  Supports: attributes, skills, gear, weapons, armor, ammo, cyberware,
-//            bioware, spells, adept powers.
-//  Vehicles are noted but not imported (create them manually).
+//            bioware, spells, adept powers, contacts, drugs.
+//  Weapon mods: gas-vent recoil compensation auto-applied; all mods noted.
+//  Edges/flaws appended to actor notes. Vehicles noted but not imported.
 // ════════════════════════════════════════════════════════════════════════════
 
-// ── Lookup tables ────────────────────────────────────────────────────────────
+// ── Lookup tables ─────────────────────────────────────────────────────────────
 
 const ATTR_MAP = {
   QCK: 'quickness', STR: 'strength',    CHA: 'charisma',
@@ -26,7 +27,25 @@ const SKILL_ATTR_FALLBACK = {
   Pilot:      'reaction',
 };
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+// Reverse map: skill name (lowercase) → category group name, built from live SR3E config.
+// Used by _skillItem so the sheet's skillTypeForCategory() resolves to the right type.
+const _skillCatLookup = {};
+for (const [cat, skillList] of Object.entries(game.sr3e?.SR3E?.skills ?? {})) {
+  for (const sk of (skillList ?? [])) {
+    if (sk.name) _skillCatLookup[sk.name.toLowerCase()] = cat;
+  }
+}
+
+// Nullsheen spell Class codes → our category values
+const SPELL_CLASS_MAP = {
+  C: 'Combat', E: 'Combat',
+  D: 'Detection', H: 'Health', I: 'Illusion', N: 'Illusion',
+  M: 'Manipulation', T: 'Manipulation', Z: 'Other',
+};
+const SPELL_TYPE_MAP     = { P: 'Physical', M: 'Mana' };
+const SPELL_DURATION_MAP = { I: 'Instant', S: 'Sustained', P: 'Permanent', L: 'Limited', T: 'Task' };
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
 function _num(v, fallback = 0)  { const n = parseFloat(v); return isNaN(n) ? fallback : n; }
 function _int(v, fallback = 0)  { const n = parseInt(v);   return isNaN(n) ? fallback : n; }
@@ -38,13 +57,73 @@ function _fireCat(name) {
   return m ? m[1] : '';
 }
 
+/**
+ * Normalise a Nullsheen Mode string to a valid SR3E mode string.
+ * SR3E understands SS, SA, BF, FA, and "/" combinations thereof.
+ *
+ * DAR (Double-Action Revolver) = SA in game terms.
+ * DAR(SA) is Nullsheen being explicit — same result.
+ * Some entries have typos (period instead of slash) or exotic notations
+ * (bracket secondary, "2x", multi-weapon parentheses) that need flattening.
+ */
+function _normalizeMode(raw) {
+  const s = raw.trim();
+  if (!s) return '';
+  const EXACT = {
+    'DAR':      'SA',
+    'DAR(SA)':  'SA',
+    'SA.BF/FA': 'SA/BF/FA',  // period typo in Nullsheen source
+    'SA[SS]':   'SA/SS',     // LeMat secondary-barrel bracket notation
+    '2x SS':    'SS',
+    '2x SA':    'SA',
+    '2x SA/FA': 'SA/FA',
+  };
+  if (EXACT[s]) return EXACT[s];
+  // Multi-weapon "(primary)/(secondary)" — take the primary weapon's modes.
+  const multi = s.match(/^\(([^)]+)\)\//);
+  if (multi) return multi[1];
+  return s;
+}
+
+/**
+ * Parse weaponMods array → { recoilMod: N, notes: '<p>...</p>' }
+ * Auto-detects gas-vent-N id pattern to apply recoil compensation.
+ * All other mods are noted by label + cost.
+ */
+function _parseWeaponMods(mods) {
+  if (!mods?.length) return { recoilMod: 0, notes: '' };
+  let recoilMod = 0;
+  const lines = [];
+  for (const m of mods) {
+    const id    = _str(m.id);
+    const label = _str(m.label ?? m.name ?? m.Name ?? id);
+    const cost  = _int(m.cost);
+    const gasVent = id.match(/^gas-vent-(\d+)$/);
+    if (gasVent) recoilMod += _int(gasVent[1]);
+    lines.push(label + (cost ? ` (¥${cost.toLocaleString()})` : ''));
+  }
+  const notes = lines.length
+    ? `<p><strong>Mods:</strong> ${lines.join(', ')}</p>`
+    : '';
+  return { recoilMod, notes };
+}
+
 // ── Item builders ─────────────────────────────────────────────────────────────
 
 function _skillItem(s) {
-  const attr = ATTR_MAP[s.attribute ?? ''] ?? SKILL_ATTR_FALLBACK[s.name] ?? 'intelligence';
-  const cat  = s.type === 'Active' ? 'active'
-             : s.type === 'Language' ? 'language'
-             : 'knowledge';
+  const attr    = ATTR_MAP[s.attribute ?? ''] ?? SKILL_ATTR_FALLBACK[s.name] ?? 'intelligence';
+  const nsType  = _str(s.type);  // 'Active' | 'Knowledge' | 'Language'
+
+  // Resolve category group: look the skill up in our config data first,
+  // then fall back to a generic group that maps to the right skillType.
+  let category;
+  if (nsType === 'Language') {
+    category = 'Language';
+  } else {
+    category = _skillCatLookup[_str(s.name).toLowerCase()]
+      ?? (nsType === 'Active' ? 'Technical skills' : 'Academic skills');
+  }
+
   return {
     name: s.name,
     type: 'skill',
@@ -53,7 +132,7 @@ function _skillItem(s) {
       rating:          _int(s.rating),
       linkedAttribute: attr,
       specialisation:  _str(s.specialization),
-      category:        cat,
+      category,
     },
   };
 }
@@ -68,6 +147,7 @@ function _gearItems(gear) {
     const hasBal   = balStr !== '' && balStr !== '-' && !isNaN(parseFloat(balStr));
 
     if (type === 'Firearms') {
+      const { recoilMod, notes } = _parseWeaponMods(g.weaponMods);
       items.push({
         name: g.Name,
         type: 'firearm',
@@ -75,14 +155,16 @@ function _gearItems(gear) {
           category:       _fireCat(g.Name),
           concealability: _str(g.Concealability),
           ammunition:     _str(g.Ammunition),
-          mode:           _str(g.Mode),
+          mode:           _normalizeMode(_str(g.Mode)),
           damage:         _str(g.Damage),
           weight:         _num(g.Weight),
+          recoilMod,
           availability:   _str(g.Availability),
           cost:           _int(g.Cost),
           streetIndex:    _str(g['Street Index']),
           accessories:    _str(g.Accessories),
           bookPage:       _str(g.BookPage),
+          notes,
         },
       });
 
@@ -117,8 +199,82 @@ function _gearItems(gear) {
         },
       });
 
+    } else if (type === 'Bow and crossbow') {
+      const dmg = _str(g.Damage);
+      // Real damage code starts with a digit ("7M"); ammo references start with "(" ("(As crossbow)")
+      if (/^\d/.test(dmg)) {
+        // Weapon — bow or crossbow
+        items.push({
+          name: g.Name,
+          type: 'projectile',
+          system: {
+            category:       _fireCat(g.Name) || 'Bow',
+            concealability: _str(g.Concealability),
+            damage:         dmg,
+            weight:         _num(g.Weight),
+            availability:   _str(g.Availability),
+            cost:           _int(g.Cost),
+            streetIndex:    _str(g['Street Index']),
+            bookPage:       _str(g.BookPage),
+          },
+        });
+      } else {
+        // Ammo — bolts or arrows; name often encodes count ("10 Bolts")
+        const nm      = _str(g.Name);
+        const mech    = nm.toLowerCase().includes('bolt') ? 'bolt' : 'arrow';
+        const countM  = nm.match(/^(\d+)\s/);
+        const rounds  = countM ? _int(countM[1]) * qty : qty;
+        items.push({
+          name: nm,
+          type: 'ammunition',
+          system: {
+            ammoType:      'regular',
+            loadMechanism:  mech,
+            rounds,
+            weight:         _num(g.Weight) * qty,
+            availability:   _str(g.Availability),
+            cost:           _int(g.Cost),
+            streetIndex:    _str(g['Street Index']),
+            bookPage:       _str(g.BookPage),
+          },
+        });
+      }
+
+    } else if (type === 'Grenades') {
+      items.push({
+        name: qty > 1 ? `${g.Name} ×${qty}` : g.Name,
+        type: 'thrown',
+        system: {
+          category:       'Grenade',
+          concealability: _str(g.Concealability),
+          damage:         _str(g.Damage),
+          weight:         _num(g.Weight) * qty,
+          quantity:       qty,
+          availability:   _str(g.Availability),
+          cost:           _int(g.Cost),
+          streetIndex:    _str(g['Street Index']),
+          bookPage:       _str(g.BookPage),
+        },
+      });
+
+    } else if (type === 'Drugs') {
+      items.push({
+        name: qty > 1 ? `${g.Name} ×${qty}` : g.Name,
+        type: 'drug',
+        system: {
+          addiction:    _str(g.Addiction),
+          tolerance:    _str(g.Tolerance),
+          effect:       _str(g.Edge),   // "Edge" column in source tables
+          availability: _str(g.Availability),
+          cost:         _int(g.Cost),
+          streetIndex:  _str(g['Street Index']),
+          bookPage:     _str(g.BookPage),
+          notes:        g.Notes ? `<p>${_str(g.Notes)}</p>` : '',
+        },
+      });
+
     } else {
-      // Plain gear: clothing without armour stats, drugs, misc
+      // Plain gear: clothing without armour stats, lifestyles, misc
       items.push({
         name: qty > 1 ? `${g.Name} ×${qty}` : g.Name,
         type: 'gear',
@@ -157,6 +313,7 @@ function _weaponItems(weapons) {
         },
       };
     }
+    const { recoilMod, notes } = _parseWeaponMods(w.weaponMods);
     return {
       name,
       type: 'firearm',
@@ -164,16 +321,70 @@ function _weaponItems(weapons) {
         category:       _fireCat(name),
         concealability: _str(w.Concealability),
         ammunition:     _str(w.Ammunition),
-        mode:           _str(w.Mode),
+        mode:           _normalizeMode(_str(w.Mode)),
         damage:         _str(w.Damage ?? w.damage),
         weight:         _num(w.Weight ?? w.weight),
+        recoilMod,
         availability:   _str(w.Availability),
         cost:           _int(w.Cost ?? w.cost),
         streetIndex:    _str(w['Street Index'] ?? w.streetIndex),
+        accessories:    _str(w.Accessories),
         bookPage:       _str(w.BookPage ?? w.bookPage),
+        notes,
       },
     };
   });
+}
+
+function _spellItem(sp) {
+  // Nullsheen uses capitalised field names (Name, Class, Type, etc.)
+  const classCode    = _str(sp.Class    ?? sp.class    ?? sp.category ?? '').trim();
+  const typeCode     = _str(sp.Type     ?? sp.type     ?? '').trim();
+  const durationCode = _str(sp.Duration ?? sp.duration ?? '').trim();
+  return {
+    name: _str(sp.Name ?? sp.name),
+    type: 'spell',
+    system: {
+      category:    (SPELL_CLASS_MAP[classCode]    ?? classCode)    || 'Combat',
+      type:        (SPELL_TYPE_MAP[typeCode]       ?? typeCode)    || 'Physical',
+      range:       _str(sp.Range    ?? sp.range)                  || 'LOS',
+      target:      _str(sp.Target   ?? sp.target),
+      duration:    (SPELL_DURATION_MAP[durationCode] ?? durationCode) || 'Instant',
+      drain:       _str(sp.Drain    ?? sp.drain),
+      bookPage:    _str(sp.BookPage ?? sp.bookPage),
+      description: (sp.Notes ?? sp.notes) ? `<p>${_str(sp.Notes ?? sp.notes)}</p>` : '',
+    },
+  };
+}
+
+function _contactItem(c) {
+  const level = _int(c.Level ?? c.level, 1);
+  return {
+    name: _str(c.Name ?? c.name) || 'Unknown Contact',
+    type: 'contact',
+    system: {
+      loyalty:    level,
+      connection: level,
+      archetype:  _str(c.Archtype ?? c.archetype ?? c.Type ?? ''),
+      notes:      (c.GeneralInfo ?? c.notes) ? `<p>${_str(c.GeneralInfo ?? c.notes)}</p>` : '',
+    },
+  };
+}
+
+/** Build an HTML block summarising edges and flaws for the actor's Notes field. */
+function _edgesFlawsNotes(cj) {
+  const edges = (cj.edges ?? []).map(e => {
+    const cost = e.cost != null ? ` [${e.cost > 0 ? '+' : ''}${e.cost}]` : '';
+    return _str(e.name) + cost;
+  });
+  const flaws = (cj.flaws ?? []).map(f => {
+    const cost = f.cost != null ? ` [${f.cost}]` : '';
+    return _str(f.name) + cost;
+  });
+  const parts = [];
+  if (edges.length) parts.push(`<p><strong>Edges:</strong> ${edges.join(', ')}</p>`);
+  if (flaws.length)  parts.push(`<p><strong>Flaws:</strong> ${flaws.join(', ')}</p>`);
+  return parts.join('');
 }
 
 // ── Dialog ────────────────────────────────────────────────────────────────────
@@ -192,8 +403,8 @@ await foundry.applications.api.DialogV2.wait({
              padding:6px;box-sizing:border-box"
       placeholder='{ "street_name": "...", "skills": [...], "gear": [...] }'></textarea>
     <p style="margin:6px 0 0;font-size:11px;color:#888">
-      Imports: attributes · skills · gear · weapons · armor · ammo ·
-      cyberware · bioware · spells · adept powers
+      Imports: attributes · skills · firearms · bows/crossbows · grenades ·
+      armor · ammo · drugs · cyberware · bioware · spells · adept powers · contacts
     </p>`,
   buttons: [
     {
@@ -219,6 +430,12 @@ catch (e) { return void ui.notifications.error(`SR3 Import — invalid JSON: ${e
 const a     = cj.attributes ?? {};
 const nuyen = Math.max(0, _int(cj.chargenCash) - _int(cj.cashSpent)) + _int(cj.cash);
 
+// magicalTradition may be a plain string or an object { name, description, ... }
+const tradObj = cj.magicalTradition;
+const trad    = typeof tradObj === 'string' ? tradObj : (_str(tradObj?.name));
+
+const notesText = (cj.notes ? `<p>${cj.notes}</p>` : '') + _edgesFlawsNotes(cj);
+
 const actorData = {
   name: (_str(cj.street_name) || _str(cj.name) || 'Imported Character').trim(),
   type: 'character',
@@ -228,7 +445,7 @@ const actorData = {
     nuyen,
     karma:     _int(cj.karma),
     karmaPool: _int(cj.karmaPool),
-    notes:     cj.notes     ? `<p>${cj.notes}</p>`     : '',
+    notes:     notesText,
     biography: cj.description ? `<p>${cj.description}</p>` : '',
     attributes: {
       body:         { base: a.Body         ?? 3, value: a.Body         ?? 3 },
@@ -247,9 +464,8 @@ const actorData = {
 
 // Awakened / Adept flags
 if (cj.magical && (a.Magic ?? 0) > 0) {
-  const trad = typeof cj.magicalTradition === 'string' ? cj.magicalTradition : '';
   actorData.system.magicTradition = trad;
-  actorData.system.magicType = 'Full';
+  actorData.system.magicType      = 'Full';
 } else if (cj.adept && (a.Magic ?? 0) > 0) {
   actorData.system.magicType = 'Adept';
 }
@@ -266,6 +482,8 @@ const items = [];
 for (const s of cj.skills   ?? []) items.push(_skillItem(s));
 items.push(..._gearItems(cj.gear));
 items.push(..._weaponItems(cj.weapons));
+for (const sp of cj.spells  ?? []) items.push(_spellItem(sp));
+for (const c of cj.contacts ?? []) items.push(_contactItem(c));
 
 for (const c of cj.cyberware ?? []) {
   items.push({
@@ -282,6 +500,7 @@ for (const c of cj.cyberware ?? []) {
       capacity:          _num(c.Capacity),
       cyberwareCategory: _str(c.Category),
       bookPage:          _str(c.BookPage),
+      description:       c.Notes ? `<p>${_str(c.Notes)}</p>` : '',
     },
   });
 }
@@ -303,33 +522,17 @@ for (const b of cj.bioware ?? []) {
   });
 }
 
-for (const sp of cj.spells ?? []) {
-  items.push({
-    name: _str(sp.name),
-    type: 'spell',
-    system: {
-      category: _str(sp.category),
-      type:     _str(sp.type)     || 'Physical',
-      range:    _str(sp.range)    || 'LOS',
-      damage:   _str(sp.damage),
-      duration: _str(sp.duration) || 'Instant',
-      drain:    _str(sp.drain),
-      target:   _str(sp.target),
-      bookPage: _str(sp.bookPage ?? sp.BookPage),
-    },
-  });
-}
-
 for (const pw of cj.powers ?? []) {
   items.push({
-    name: _str(pw.name),
+    name: _str(pw.Name ?? pw.name),
     type: 'adeptpower',
     system: {
-      powerCost: _num(pw.powerCost ?? pw.cost, 0.5),
-      hasLevels: pw.hasLevels ?? false,
-      level:     _int(pw.level, 1),
-      mods:      _str(pw.mods),
-      bookPage:  _str(pw.bookPage ?? pw.BookPage),
+      powerCost:   _num(pw.Cost ?? pw.powerCost ?? pw.cost, 0.5),
+      hasLevels:   (pw.HasLevels ?? pw.hasLevels) ?? false,
+      level:       _int(pw.Rating ?? pw.level, 1),
+      mods:        _str(pw.Mods ?? pw.mods),
+      bookPage:    _str(pw.BookPage ?? pw.bookPage),
+      description: (pw.Notes ?? pw.notes) ? `<p>${_str(pw.Notes ?? pw.notes)}</p>` : '',
     },
   });
 }
@@ -347,19 +550,79 @@ if (armorItems.length) {
   await actor.update({ 'system.equippedArmor': best.id });
 }
 
+// ── Create vehicle / drone actors ─────────────────────────────────────────────
+
+function _vattr(n) { return { base: n, value: n }; }
+
+function _vehicleActorData(v, isDrone) {
+  // Parse "A/B" slash pairs into two ints; dash or missing → 0
+  function _pair(field) {
+    const parts = _str(v[field]).split('/');
+    return [_int(parts[0], 0), _int(parts[1] ?? parts[0], 0)];
+  }
+  const [handling, handlingOff] = _pair('Handling');
+  const [speed, accel]          = _pair('Speed/Accel');
+  const [body, armor]           = _pair('Body/Armor');
+  const [sig, autonav]          = _pair('Sig/Autonav');
+  const [pilot, sensor]         = _pair('Pilot/Sensor');
+  const [cargo, load]           = _pair('Cargo/Load');
+
+  const seatStr = _str(v.Seating ?? v.seating);
+  // If seating string ends in 'm' it's a motorcycle seat
+  const vehicleType = isDrone ? 'drone' : (/m$/i.test(seatStr.trim()) ? 'bike' : 'car');
+
+  return {
+    name: _str(v.name ?? v.Name),
+    type: 'vehicle',
+    system: {
+      vehicleType,
+      seating:      parseInt(seatStr) || 0,
+      cost:         _int(v['$Cost'] ?? v.Cost),
+      streetIndex:  _num(v['Street Index']),
+      availability: _str(v.Availability),
+      bookPage:     _str(v['Book.Page'] ?? v.BookPage),
+      notes:        v.Notes ? `<p>${_str(v.Notes)}</p>` : '',
+      attributes: {
+        handling:        _vattr(handling),
+        handlingOffRoad: _vattr(handlingOff),
+        speed:           _vattr(speed),
+        accel:           _vattr(accel),
+        body:            _vattr(body),
+        armor:           _vattr(armor),
+        sig:             _vattr(sig),
+        autonav:         _vattr(autonav),
+        pilot:           _vattr(pilot),
+        sensor:          _vattr(sensor),
+        cargo:           _vattr(cargo),
+        load:            _vattr(load),
+      },
+    },
+  };
+}
+
+let vehicleCount = 0;
+for (const v of cj.vehicles ?? []) {
+  try   { await Actor.create(_vehicleActorData(v, false)); vehicleCount++; }
+  catch (err) { console.error(`SR3 Import | vehicle "${v.name}":`, err); }
+}
+for (const d of cj.drones ?? []) {
+  try   { await Actor.create(_vehicleActorData(d, true)); vehicleCount++; }
+  catch (err) { console.error(`SR3 Import | drone "${d.name}":`, err); }
+}
+
 // ── Summary notification ──────────────────────────────────────────────────────
 
-const count    = t => created.filter(i => i.type === t).length;
-const weapons  = ['firearm', 'melee', 'projectile', 'thrown'].reduce((n, t) => n + count(t), 0);
-const vehicles = (cj.vehicles ?? []).length;
+const count   = t => created.filter(i => i.type === t).length;
+const weapons = ['firearm', 'melee', 'projectile', 'thrown'].reduce((n, t) => n + count(t), 0);
 
 ui.notifications.info(
   `Imported "${actor.name}": ` +
   `${count('skill')} skills · ${weapons} weapons · ${count('armor')} armor · ` +
-  `${count('ammunition')} ammo · ${count('gear')} gear · ` +
+  `${count('ammunition')} ammo · ${count('drug')} drugs · ${count('gear')} gear · ` +
   `${count('cyberware')} cyber · ${count('bioware')} bio · ` +
-  `${count('spell')} spells · ${count('adeptpower')} powers` +
-  (vehicles ? ` — ${vehicles} vehicle(s) not imported, create manually` : '')
+  `${count('spell')} spells · ${count('adeptpower')} powers · ` +
+  `${count('contact')} contacts` +
+  (vehicleCount ? ` · ${vehicleCount} vehicles/drones` : '')
 );
 
 actor.sheet.render(true);

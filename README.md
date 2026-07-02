@@ -211,10 +211,46 @@ fvtt package pack -n sr3e-agents  --in src/packs/sr3e-agents --out packs
 
 Then commit the updated `packs/<pack-name>/` files as normal. `src/packs/` is the source of truth — never edit via the Foundry UI without unpacking first, or those changes will be overwritten on the next repack.
 
+### Macro pack (sr3e-macros)
+
+The macro pack works differently from item packs — the source of truth is `scripts/macros/*.js`, not `src/packs/`.
+
+**Populating / updating macro JS content:**  
+Run the `populate-macros.js` script macro in Foundry. It fetches each source file from the system path and creates or updates the entry in the compendium. JS content is always overwritten from the file; the icon is preserved if it has already been set.
+
+**Changing a macro's icon (or any other metadata):**
+1. Compendiums → Tools → Macros → unlock the pack (padlock icon)
+2. Right-click the macro → Edit → change the icon → Save
+3. Lock the pack again
+4. The `packs/sr3e-macros/` LevelDB files are now updated — commit them directly:
+```
+git add packs/sr3e-macros/
+git commit -m "Update macro icon"
+```
+No unpack/repack step needed for icon changes.
+
+**Adding a new macro to the pack:**  
+Add a `{ name, file, img }` entry to the `MACROS` array in `scripts/macros/populate-macros.js`, then run the populate script.
+
 ---
-## Nullsheen importer macro
-- if you use nullsheen dot com's chargen app you can import the resulting json download directly into this system using the suitably named macro. Just click it and follow the prompts.
-- vehicles will be imported as gear as a vehicle is its own actor type. You'll need to copy them over manually or just grab one from the compendium and mod it. 
+## Nullsheen importer
+
+If you use [nullsheen.com](https://nullsheen.com) for character generation, you can import the exported JSON directly. The macro lives in **Compendiums → Tools → Macros → Import Nullsheen 3e Character json**. Import it to your world, run it, paste in the JSON, and click Import.
+
+**What gets imported:**
+- Attributes, metatype, nuyen, karma
+- Skills (active, knowledge, language) with correct skill-group category
+- Gear including firearms, melee weapons, armor, ammunition, and drugs
+- Weapon mods — Gas Vent systems auto-apply recoil compensation; all other mods are noted on the item
+- Cyberware and bioware
+- Spells (category, type, range, drain all mapped from Nullsheen codes)
+- Adept powers
+- Contacts (imported as contact items with loyalty/connection from Level)
+- Edges and flaws appended to the actor's Notes field
+- Magical tradition name
+
+**Not imported:** Vehicles are their own actor type — grab one from the compendium and modify it. Foci, initiations, and complex forms are not yet handled.
+
 ---
 
 ## Architecture

@@ -10,7 +10,7 @@
   },
   "authors": [
     {
-      "name": "Skunkworx"
+      "name": "William Diffey"
     }
   ],
   "esmodules": [
@@ -241,6 +241,14 @@
       "type": "Item",
       "system": "The2ndChumming3e",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    },
+    {
+      "name": "sr3e-macros",
+      "label": "Macros",
+      "path": "packs/sr3e-macros",
+      "type": "Macro",
+      "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     }
   ],
   "packFolders": [
@@ -278,6 +286,11 @@
       "name": "Reference",
       "sorting": "a",
       "packs": ["sr3e-skills"]
+    },
+    {
+      "name": "Tools",
+      "sorting": "a",
+      "packs": ["sr3e-macros"]
     }
   ],
   "url": "https://github.com/williamdiffey/The2ndChumming3e",

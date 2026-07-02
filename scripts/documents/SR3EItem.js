@@ -2363,8 +2363,15 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false) {
     // --- Modifier model: Power mod is OUTSIDE brackets, Level mod is INSIDE brackets. ---
     const inside    = (s.match(/\(([^)]*)\)/) || ['', ''])[1];
     const outside   = s.replace(/\([^)]*\)/g, '');
-    const levelMod  = parseInt((inside.replace(/DL/g, '').match(/[+-]?\d+/) || ['0'])[0]) || 0;
     const powerMod  = parseInt((outside.match(/[+-]?\d+/) || ['0'])[0]) || 0;
+
+    // A bare level letter inside brackets (e.g. "(M)", "(L)") is a fixed drain level used
+    // by non-combat spells — not a modifier relative to the nominated damage level.
+    if (/^[LMSD]$/.test(inside)) {
+      return { tn: Math.max(2, halfF + powerMod), level: inside };
+    }
+
+    const levelMod  = parseInt((inside.replace(/DL/g, '').match(/[+-]?\d+/) || ['0'])[0]) || 0;
     return { tn: Math.max(2, halfF + powerMod), level: shiftLevel(levelMod) };
   }
 
