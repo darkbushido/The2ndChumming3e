@@ -70,6 +70,14 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         toggleTemplate:    SR3EActorSheet._onToggleTemplate,
         deployTemplate:    SR3EActorSheet._onDeployTemplate,
         markAsLive:        SR3EActorSheet._onMarkAsLive,
+        setOrthoAlertLevel:        SR3EActorSheet._onSetOrthoAlertLevel,
+        setOrthoHost:              SR3EActorSheet._onSetOrthoHost,
+        clearOrthoHost:            SR3EActorSheet._onClearOrthoHost,
+        rollOrthodoxSystemTest:    SR3EActorSheet._onRollOrthodoxSystemTest,
+        rollOrthodoxCybercombat:   SR3EActorSheet._onRollOrthodoxCybercombat,
+        toggleOrthoMatrixCM:       SR3EActorSheet._onToggleOrthoMatrixCM,
+        addOrthodoxCyberdeck:      SR3EActorSheet._onAddOrthodoxCyberdeck,
+        addOrthodoxProgram:        SR3EActorSheet._onAddOrthodoxProgram,
 
         toggleFullDefense:  SR3EActorSheet._onToggleFullDefense,
         resetRecoil:        SR3EActorSheet._onResetRecoil,
@@ -122,7 +130,20 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     this._registerPersistentHooks();
     this._enrichBioFields();
     this._syncDuplicateInputs();
+    this._wireOrthodoxProgramRatings();
+  }
 
+  _wireOrthodoxProgramRatings() {
+    const root = this.element;
+    if (!root) return;
+    root.querySelectorAll('.odm-prog-rating').forEach(inp => {
+      inp.addEventListener('change', async () => {
+        const id  = inp.dataset.itemId;
+        const val = parseInt(inp.value) || 0;
+        if (!id) return;
+        await this.actor.updateEmbeddedDocuments('Item', [{ _id: id, 'system.rating': val }]);
+      });
+    });
   }
 
   /**
@@ -1389,6 +1410,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   _tabMatrix(actor, sys) {
+    if (game.settings.get('The2ndChumming3e', 'matrixRuleset') === 'orthodox') {
+      return this._tabMatrixOrthodox(actor, sys);
+    }
     const modes = SR3E.matrixUserModes ?? [
       { name: 'Terminal',                abbreviation: 'TRM',     initiative: 'default', description: 'Classic computer terminal or device interface.' },
       { name: 'Augmented Reality',       abbreviation: 'AR',      initiative: 'default', description: 'Holographic overlay on real world.' },
@@ -1730,6 +1754,268 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <button type="button" class="btn-xs" data-action="ivisClear" ${ivisMax > 0 ? '' : 'disabled'} title="Expire the IVIS Pool (task complete / new task)">Clear</button>
       </div>
       <div style="font-size:11px;color:var(--sr-muted)">Electronics (Electronic Warfare) skill drives all MIJI rolls. ECM/ECCM and the Signal Monitor live on the controlled vehicle. The IVIS Pool is shared by the drone group and refreshes each Combat Turn.</div>`;
+  }
+
+  // ── Orthodox SR3 Matrix Tab ─────────────────────────────────────────────────
+
+  _tabMatrixOrthodox(actor, sys) {
+    const deck     = sys.orthodoxDeck    ?? {};
+    const run      = sys.orthodoxRunState ?? {};
+    const intl     = sys.attributes?.intelligence?.value ?? 0;
+    const reaction = sys.attributes?.reaction?.value ?? 0;
+
+    const mccp     = deck.mccp     ?? 0;
+    const masking  = deck.masking  ?? 0;
+    const sleaze   = deck.sleazeRating ?? 0;
+    const resp     = deck.responseIncrease ?? 0;
+
+    // Derived
+    const hackingPool    = mccp > 0 ? Math.floor((intl + mccp) / 3) : 0;
+    const detectFactor   = sleaze > 0
+      ? Math.ceil((masking + sleaze) / 2)
+      : Math.ceil(masking / 2);
+    const matrixReaction = reaction + resp * 2;
+    const initDice       = 1 + resp;
+
+    // Validation hints
+    const personaTotal  = (deck.bod ?? 0) + (deck.evasion ?? 0) + (deck.masking ?? 0) + (deck.sensor ?? 0);
+    const personaMax    = mccp * 3;
+    const respMax       = mccp > 0 ? Math.floor(mccp / 4) : 0;
+    const personaWarn   = mccp > 0 && personaTotal > personaMax
+      ? `<span style="color:var(--sr-red);font-size:10px"> Total exceeds MPCP×3 (${personaMax})</span>` : '';
+    const respWarn      = mccp > 0 && resp > respMax
+      ? `<span style="color:var(--sr-red);font-size:10px"> Exceeds MPCP÷4 (${respMax})</span>` : '';
+
+    // Run state
+    const alertLevel  = run.alertLevel ?? 'none';
+    const tally       = run.securityTally ?? 0;
+    const hostId      = run.currentHostId ?? '';
+    const currentHost = hostId ? game.actors.get(hostId) : null;
+    const hostBadge   = currentHost
+      ? `<span style="color:var(--sr-accent);font-size:11px">📡 ${currentHost.name}</span>`
+      : `<span style="font-size:11px;color:var(--sr-muted)">Not logged in</span>`;
+
+    const alertColors = { none: 'var(--sr-muted)', passive: 'var(--sr-amber)', active: 'var(--sr-red)' };
+    const alertLabels = { none: 'No Alert', passive: 'Passive Alert', active: 'Active Alert' };
+    const alertBtns   = ['none', 'passive', 'active'].map(lvl => {
+      const active = alertLevel === lvl;
+      return `<button type="button" class="sr-veh-mode-btn${active ? ' sr-veh-vcr-active' : ''}"
+        style="${active ? `background:${alertColors[lvl]};color:#111` : ''}"
+        data-action="setOrthoAlertLevel" data-level="${lvl}">${alertLabels[lvl]}</button>`;
+    }).join('');
+
+    const _stat = (label, name, val, title = '') => `
+      <label class="derived-block" title="${title}">
+        <span class="derived-label">${label}</span>
+        <input type="number" name="system.orthodoxDeck.${name}" value="${val}" min="0"
+               class="derived-value" style="width:100%;text-align:center;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:3px"/>
+      </label>`;
+
+    const _persona = (label, name, val) => _stat(label, name, val, `Persona program — max ${mccp} (MPCP Rating). Total of all four persona programs may not exceed MPCP×3.`);
+
+    return `<div class="tab ${this._activeTab === 'matrix' ? 'active' : ''}" data-tab="matrix" style="overflow-y:auto">
+      <h3 class="section-hdr" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>Cyberdeck</span>
+        <button type="button" class="btn-xs" data-action="addOrthodoxCyberdeck"
+          title="Pick a cyberdeck from the Orthodox SR3 compendium and load its stats">
+          📦 Browse Cyberdecks
+        </button>
+      </h3>
+      <div style="margin-bottom:6px">
+        <label style="font-size:12px;display:flex;align-items:center;gap:6px">
+          <span style="color:var(--sr-muted);min-width:80px">Model</span>
+          <input type="text" name="system.orthodoxDeck.deckModel" value="${deck.deckModel ?? ''}"
+                 style="flex:1;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:3px;padding:2px 4px;color:var(--sr-text)">
+        </label>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px">
+        ${_stat('MPCP', 'mccp', mccp, 'Master Persona Control Program — central cyberdeck rating. Persona programs may not exceed this value individually; total may not exceed MPCP×3.')}
+        ${_stat('Hardening', 'hardening', deck.hardening ?? 0, 'Reduces Power of Black IC damage by this amount. Also raises TN for Gray IC Attack Tests by 1 per point of Hardening.')}
+        ${_stat('Act. Mem', 'activeMemory', deck.activeMemory ?? 0, 'Active Memory (Mp) — limits utility programs loaded simultaneously. 1 Mp per Mp of utility rating.')}
+        ${_stat('Store Mem', 'storageMemory', deck.storageMemory ?? 0, 'Storage Memory (Mp) — total storage for all programs.')}
+        ${_stat('I/O Speed', 'ioSpeed', deck.ioSpeed ?? 0, 'Upload/download rate in Mp per Combat Turn.')}
+        ${_stat('Response', 'responseIncrease', resp, `Response Increase — each point adds +2 to Reaction and +1d6 to initiative. Max 3; max = MPCP÷4 (${respMax}).`)}
+      </div>
+      <h3 class="section-hdr">Persona Programs${personaWarn}</h3>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px">
+        ${_persona('Bod', 'bod', deck.bod ?? 0)}
+        ${_persona('Evasion', 'evasion', deck.evasion ?? 0)}
+        ${_persona('Masking', 'masking', masking)}
+        ${_persona('Sensor', 'sensor', deck.sensor ?? 0)}
+      </div>
+      <div style="font-size:11px;color:var(--sr-muted);margin-bottom:8px">
+        Persona total: <strong>${personaTotal}</strong> / ${personaMax} (MPCP×3) — no single program may exceed MPCP (${mccp}).
+      </div>
+
+      <h3 class="section-hdr">Utilities (Active)</h3>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:6px">
+        ${_stat('Sleaze', 'sleazeRating', sleaze, 'Sleaze utility rating — raises your Detection Factor: ⌈(Masking + Sleaze) ÷ 2⌉. A Deception program by any other name.')}
+      </div>
+      ${this._orthodoxProgramList(actor, sys)}
+
+      <h3 class="section-hdr">Derived Stats</h3>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px">
+        <div class="derived-block" title="Hacking Pool = ⌊(Intelligence + MPCP) ÷ 3⌋. Adds to any System Test, attack or defence test, or manoeuvre test.">
+          <span class="derived-label">Hacking Pool</span>
+          <span class="derived-value">${hackingPool}</span>
+        </div>
+        <div class="derived-block" title="Detection Factor = ⌈(Masking + Sleaze) ÷ 2⌉ (or ½ Masking if no Sleaze). The host rolls its Security Value dice vs this TN.">
+          <span class="derived-label">Detect. Factor</span>
+          <span class="derived-value">${detectFactor}</span>
+        </div>
+        <div class="derived-block" title="Matrix Initiative = (Reaction + Response×2) + (1 + Response)d6. Wired reflexes and other physical enhancements do not apply.">
+          <span class="derived-label">Matrix Init.</span>
+          <span class="derived-value">${matrixReaction} + ${initDice}d6</span>
+        </div>
+      </div>
+      ${resp > 0 ? `<div style="font-size:11px;color:var(--sr-muted);margin-bottom:8px">
+        Response Increase ${resp}: Reaction ${reaction} + ${resp * 2} = ${matrixReaction}; ${initDice}d6 initiative dice${respWarn}
+      </div>` : ''}
+
+      <h3 class="section-hdr">Current Run</h3>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+        ${hostBadge}
+        <button type="button" class="btn-xs" data-action="setOrthoHost" title="${currentHost ? 'Change linked host' : 'Link to a host actor'}">
+          ${currentHost ? '⇄ Change' : '📡 Set Host'}
+        </button>
+        ${currentHost ? `<button type="button" class="btn-xs" data-action="clearOrthoHost" title="Disconnect from host (log off)">✕ Log Off</button>` : ''}
+        <label style="font-size:12px;display:flex;align-items:center;gap:6px">
+          Security Tally:
+          <input type="number" name="system.orthodoxRunState.securityTally" value="${tally}" min="0"
+                 style="width:60px;text-align:center;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:3px;color:var(--sr-text)">
+        </label>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
+        ${alertBtns}
+      </div>
+      <div style="font-size:11px;color:var(--sr-muted);margin-bottom:8px">
+        The security tally accumulates as the host scores successes on Security Tests. Trigger steps (set by the GM on the Host sheet) activate IC and alerts. Passive Alert raises all subsystem ratings by 2.
+      </div>
+
+      <h3 class="section-hdr">Matrix Actions</h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+        <button type="button" class="btn-roll" data-action="rollOrthodoxSystemTest"
+                title="Run a System Test vs a host subsystem (Computer skill vs Subsystem Rating; host counter-rolls Security Value vs Detection Factor)"
+                ${!currentHost ? 'disabled' : ''}>💻 System Test</button>
+        <button type="button" class="btn-roll" data-action="rollOrthodoxCybercombat"
+                title="Attack deployed IC on the current host (attack utility vs Cybercombat TN; IC soaks with Security Value)"
+                ${!currentHost ? 'disabled' : ''}>⚔ Cybercombat</button>
+      </div>
+      ${!currentHost ? `<div style="font-size:11px;color:var(--sr-muted);margin-bottom:8px">Log on to a host to enable matrix actions.</div>` : ''}
+
+      ${mccp > 0 ? this._orthodoxMatrixCMTrack(sys) : ''}
+
+      ${this._riggerEWBlock(sys)}
+    </div>`;
+  }
+
+  _orthodoxProgramList(actor, sys) {
+    const programs = actor.items.filter(i => i.type === 'program');
+    const memAvail = sys.orthodoxDeck?.activeMemory ?? 0;
+
+    const CAT_LABELS = { utility: 'Utility', comms: 'Comms', attack: 'Attack', defense: 'Defense' };
+    const CAT_COLORS = {
+      utility:  'var(--sr-accent)',
+      comms:    'var(--sr-muted)',
+      attack:   'var(--sr-red)',
+      defense:  'var(--sr-green)',
+    };
+
+    const memUsed = programs.reduce((sum, p) => {
+      const r = p.system.rating ?? 0, m = p.system.multiplier ?? 0;
+      return sum + (r * r * m);
+    }, 0);
+    const memOver = memAvail > 0 && memUsed > memAvail;
+
+    const rows = programs.length
+      ? programs.map(p => {
+          const cat  = p.system.category ?? 'utility';
+          const mult = p.system.multiplier ?? 0;
+          const r    = p.system.rating ?? 0;
+          const size = r > 0 ? r * r * mult : 0;
+          return `
+            <div class="item-row" data-item-id="${p.id}">
+              <span class="item-name" style="cursor:pointer" data-action="itemEdit" data-item-id="${p.id}">${p.name}</span>
+              <span class="item-cell" style="font-size:10px;color:${CAT_COLORS[cat] ?? 'var(--sr-muted)'}">
+                ${CAT_LABELS[cat] ?? cat}
+              </span>
+              <span class="item-cell">
+                <input type="number" class="odm-prog-rating" data-item-id="${p.id}"
+                  value="${r}" min="0" max="20" title="Program rating"
+                  style="width:38px;text-align:center;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:3px;color:var(--sr-text)">
+              </span>
+              <span class="item-cell" style="font-size:11px;color:var(--sr-muted);" title="Active memory used = Rating² × ${mult} Mp">
+                ${size > 0 ? `${size} Mp` : `×${mult}`}
+              </span>
+              ${this._itemControls(p.id, false, null, false)}
+            </div>`;
+        }).join('')
+      : `<p class="empty-list">No programs loaded.</p>`;
+
+    const memBar = memAvail > 0
+      ? `<div style="font-size:11px;margin-bottom:6px;${memOver ? 'color:var(--sr-red);font-weight:bold' : 'color:var(--sr-muted)'}">
+           Active memory: <strong>${memUsed}</strong> / ${memAvail} Mp${memOver ? ' — OVER CAPACITY' : ' used'}
+         </div>`
+      : `<div style="font-size:11px;color:var(--sr-dim);margin-bottom:6px">Set Active Memory above to track capacity.</div>`;
+
+    return `
+      <div style="margin-bottom:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <h3 class="section-hdr" style="margin:0">Loaded Programs</h3>
+          <button type="button" class="btn-xs" data-action="addOrthodoxProgram"
+            title="Add a program from the Orthodox SR3 compendium">
+            + Browse Programs
+          </button>
+        </div>
+        <div class="list-header">
+          <span>Name</span>
+          <span>Category</span>
+          <span>Rating</span>
+          <span>Mem (Mp)</span>
+          <span></span>
+        </div>
+        ${rows}
+        ${memBar}
+      </div>`;
+  }
+
+  _orthodoxMatrixCMTrack(sys) {
+    const cm    = sys.orthodoxMatrixCM?.value ?? 0;
+    const max   = 10;
+    const boxes = Array.from({ length: max }, (_, i) => {
+      const n      = i + 1;
+      const filled = n <= cm;
+      const crash  = cm >= max;
+      return `<div class="${filled ? 'wound-box filled' : 'wound-box'}${crash && filled ? ' wound-box-dead' : ''}"
+        data-action="toggleOrthoMatrixCM" data-box="${n}"
+        style="cursor:pointer;${filled && n === max ? 'outline:2px solid var(--sr-red);' : ''}"></div>`;
+    }).join('');
+
+    const crashBadge = cm >= max
+      ? `<span style="color:var(--sr-red);font-size:11px;font-weight:bold;margin-left:8px">⚡ CRASHED — Dumpshock!</span>`
+      : (cm >= 8 ? `<span style="color:var(--sr-amber);font-size:11px;margin-left:8px">+3 TN to all tests</span>`
+        : cm >= 6 ? `<span style="color:var(--sr-amber);font-size:11px;margin-left:8px">+2 TN to all tests</span>`
+        : cm >= 3 ? `<span style="color:var(--sr-amber);font-size:11px;margin-left:8px">+1 TN to all tests</span>` : '');
+
+    return `
+      <h3 class="section-hdr">Matrix Condition Monitor</h3>
+      <div class="wound-track-container" style="margin-bottom:8px">
+        <div class="wound-track">
+          <span class="wound-track-label">Matrix CM</span>
+          <div class="wound-boxes">${boxes}</div>
+          ${crashBadge}
+        </div>
+        <div class="damage-buttons">
+          <button type="button" class="damage-btn" data-action="toggleOrthoMatrixCM" data-amount="1"  title="Light (1 box)">L</button>
+          <button type="button" class="damage-btn" data-action="toggleOrthoMatrixCM" data-amount="3"  title="Moderate (3 boxes)">M</button>
+          <button type="button" class="damage-btn" data-action="toggleOrthoMatrixCM" data-amount="6"  title="Serious (6 boxes)">S</button>
+          <button type="button" class="damage-btn" data-action="toggleOrthoMatrixCM" data-amount="10" title="Deadly — Crash">D</button>
+          <button type="button" class="damage-btn damage-btn-heal" data-action="toggleOrthoMatrixCM" data-amount="-1" title="Heal 1 box">−</button>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--sr-muted);margin-bottom:10px">
+        Damage: 3/6/8/10 boxes = +1/+2/+3 TN or crash. Click boxes or use L/M/S/D buttons to apply damage.
+      </div>`;
   }
 
   _tabGear(actor) {
@@ -2788,6 +3074,272 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     }
     const current = actor.system.equippedCyberdeck ?? '';
     await actor.update({ 'system.equippedCyberdeck': current === itemId ? '' : itemId });
+  }
+
+  static async _onSetOrthoAlertLevel(_ev, target) {
+    const level   = target.dataset.level;
+    const current = this.actor.system.orthodoxRunState?.alertLevel ?? 'none';
+    await this.actor.update({ 'system.orthodoxRunState.alertLevel': current === level ? 'none' : level });
+  }
+
+  static async _onSetOrthoHost(_ev, _target) {
+    const actor   = this.actor;
+    const hosts   = game.actors.filter(a => a.type === 'host');
+    if (!hosts.length) { ui.notifications.warn('No host actors found.'); return; }
+    const opts    = hosts.map(h => `<option value="${h.id}">${h.name}</option>`).join('');
+    let chosen    = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: 'Log On To Host' },
+      content: `<label style="display:flex;align-items:center;gap:8px;margin:8px 0">
+        Host: <select id="ortho-host-sel" style="flex:1">${opts}</select>
+      </label>`,
+      buttons: [
+        { label: 'Log On', action: 'ok', default: true,
+          callback: (_e, _b, dlg) => { chosen = dlg.element.querySelector('#ortho-host-sel')?.value; } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (!chosen) return;
+    await actor.update({ 'system.orthodoxRunState.currentHostId': chosen, 'system.orthodoxRunState.securityTally': 0, 'system.orthodoxRunState.alertLevel': 'none' });
+  }
+
+  static async _onClearOrthoHost(_ev, _target) {
+    await this.actor.update({ 'system.orthodoxRunState.currentHostId': '', 'system.orthodoxRunState.securityTally': 0, 'system.orthodoxRunState.alertLevel': 'none' });
+  }
+
+  static async _onRollOrthodoxSystemTest(_ev, _target) {
+    await this.actor.rollOrthodoxSystemTest();
+  }
+
+  static async _onRollOrthodoxCybercombat(_ev, _target) {
+    await this.actor.rollOrthodoxCybercombat();
+  }
+
+  static async _onToggleOrthoMatrixCM(_ev, target) {
+    const cur = this.actor.system.orthodoxMatrixCM?.value ?? 0;
+    // data-box: individual box index (1-10); data-amount: L/M/S/D or heal (-1)
+    let newVal;
+    if (target.dataset.box) {
+      const box = parseInt(target.dataset.box);
+      newVal = cur >= box ? box - 1 : box;
+    } else {
+      const amount = parseInt(target.dataset.amount);
+      newVal = amount < 0 ? Math.max(0, cur + amount) : Math.min(10, cur + amount);
+    }
+    newVal = Math.max(0, Math.min(10, newVal));
+    await this.actor.update({ 'system.orthodoxMatrixCM.value': newVal });
+  }
+
+  static async _onAddOrthodoxCyberdeck() {
+    const actor  = this.actor;
+    const packId = 'The2ndChumming3e.sr3e-odm-cyberdecks';
+    const pack   = game.packs.get(packId);
+    if (!pack) {
+      ui.notifications.warn('Orthodox SR3 cyberdeck compendium not found — restart Foundry, then run the populate-odm-cyberdecks macro.');
+      return;
+    }
+    const docs = await pack.getDocuments();
+    if (!docs.length) {
+      ui.notifications.warn('No cyberdecks in compendium — run the populate-odm-cyberdecks macro first.');
+      return;
+    }
+
+    const rowsHtml = docs.map((d, i) => {
+      const mpcp  = d.system.attributes?.mpcp?.base ?? 0;
+      const mem   = d.system.attributes?.memory?.total ?? 0;
+      const io    = d.system.attributes?.dataTransferRate?.value ?? 0;
+      const odm   = d.system.modules?.find(m => m._odmType === 'orthodox') ?? {};
+      const hard  = odm.hardening ?? 0;
+      const resp  = odm.responseIncrease ?? 0;
+      const cost  = (d.system.cost ?? 0).toLocaleString();
+      return `
+        <div class="sk-row" data-idx="${i}" data-search="${d.name.toLowerCase()}"
+          style="padding:5px 8px;cursor:pointer;border-bottom:1px solid var(--sr-border);
+                 display:grid;grid-template-columns:1fr 36px 60px 48px 36px 36px 72px;
+                 align-items:center;gap:4px;font-size:12px">
+          <span style="font-weight:500">${d.name}</span>
+          <span style="color:var(--sr-accent);text-align:center" title="MPCP">${mpcp}</span>
+          <span style="color:var(--sr-muted);text-align:center" title="Active Memory">${mem} Mp</span>
+          <span style="color:var(--sr-muted);text-align:center" title="I/O Speed">${io}</span>
+          <span style="color:var(--sr-muted);text-align:center" title="Hardening">${hard}</span>
+          <span style="color:var(--sr-muted);text-align:center" title="Response+">${resp}</span>
+          <span style="color:var(--sr-dim);text-align:right" title="Cost">¥${cost}</span>
+        </div>`;
+    }).join('');
+
+    let selectedIdx = null;
+    let hookId = Hooks.on('renderDialogV2', (_app, html) => {
+      if (!html.querySelector?.('#odm-deck-filter')) return;
+      Hooks.off('renderDialogV2', hookId);
+      const filter = html.querySelector('#odm-deck-filter');
+      const rows   = html.querySelectorAll('.sk-row');
+      const idxIn  = html.querySelector('#odm-deck-idx');
+      filter.addEventListener('input', () => {
+        const q = filter.value.toLowerCase();
+        rows.forEach(r => { r.style.display = (!q || r.dataset.search.includes(q)) ? '' : 'none'; });
+      });
+      filter.addEventListener('keydown', e => { if (e.key === 'Enter') e.preventDefault(); });
+      rows.forEach(r => {
+        r.addEventListener('click', () => {
+          rows.forEach(rr => rr.style.background = '');
+          r.style.background = 'color-mix(in srgb,var(--sr-accent) 20%,transparent)';
+          idxIn.value = r.dataset.idx;
+        });
+      });
+      requestAnimationFrame(() => filter.focus());
+    });
+
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: 'Browse Orthodox SR3 Cyberdecks' },
+      position: { width: 560 },
+      content: `
+        <div style="padding:4px 0">
+          <input id="odm-deck-filter" type="text" placeholder="Filter by name…"
+            style="width:100%;margin-bottom:6px"/>
+          <div style="display:grid;grid-template-columns:1fr 36px 60px 48px 36px 36px 72px;
+                      padding:2px 8px;font-size:10px;color:var(--sr-muted);gap:4px;margin-bottom:2px">
+            <span>Model</span><span style="text-align:center">MPCP</span>
+            <span style="text-align:center">Act.Mem</span><span style="text-align:center">I/O</span>
+            <span style="text-align:center" title="Hardening">Hard.</span>
+            <span style="text-align:center" title="Response Increase">Resp+</span>
+            <span style="text-align:right">Cost ¥</span>
+          </div>
+          <div style="max-height:340px;overflow-y:auto;border:1px solid var(--sr-border);border-radius:var(--r)">
+            ${rowsHtml}
+          </div>
+          <input type="hidden" id="odm-deck-idx" value=""/>
+          <p style="font-size:11px;color:var(--sr-muted);margin:6px 0 0">
+            Selecting a deck fills in your Matrix tab stats (MPCP, Memory, I/O, Hardening, Response Increase).
+          </p>
+        </div>`,
+      buttons: [
+        { label: 'Load Stats', action: 'load', default: true,
+          callback: (_e, _b, d) => {
+            const v = d.element.querySelector('#odm-deck-idx')?.value;
+            selectedIdx = (v !== '' && v != null) ? parseInt(v) : null;
+          } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+
+    if (selectedIdx == null || isNaN(selectedIdx)) return;
+    const doc = docs[selectedIdx];
+    if (!doc) return;
+
+    const mpcp  = doc.system.attributes?.mpcp?.base ?? 0;
+    const mem   = doc.system.attributes?.memory?.total ?? 0;
+    const io    = doc.system.attributes?.dataTransferRate?.value ?? 0;
+    const odm   = doc.system.modules?.find(m => m._odmType === 'orthodox') ?? {};
+
+    await actor.update({
+      'system.orthodoxDeck.deckModel':       doc.name,
+      'system.orthodoxDeck.mccp':            mpcp,
+      'system.orthodoxDeck.activeMemory':    mem,
+      'system.orthodoxDeck.storageMemory':   odm.storageMemory   ?? 0,
+      'system.orthodoxDeck.ioSpeed':         io,
+      'system.orthodoxDeck.hardening':       odm.hardening       ?? 0,
+      'system.orthodoxDeck.responseIncrease': odm.responseIncrease ?? 0,
+    });
+    ui.notifications.info(`${actor.name}: deck stats loaded from ${doc.name}.`);
+  }
+
+  static async _onAddOrthodoxProgram() {
+    const actor  = this.actor;
+    const packId = 'The2ndChumming3e.sr3e-odm-programs';
+    const pack   = game.packs.get(packId);
+    if (!pack) {
+      ui.notifications.warn('Orthodox SR3 programs compendium not found — restart Foundry, then run the populate-odm-programs macro.');
+      return;
+    }
+    const docs = await pack.getDocuments();
+    if (!docs.length) {
+      ui.notifications.warn('No programs in compendium — run the populate-odm-programs macro first.');
+      return;
+    }
+
+    const CAT_LABELS = { utility: 'Utility', comms: 'Comms', attack: 'Attack', defense: 'Defense' };
+    const CAT_COLORS = { utility: 'var(--sr-accent)', comms: 'var(--sr-muted)', attack: 'var(--sr-red)', defense: 'var(--sr-green)' };
+
+    const rowsHtml = docs.map((d, i) => {
+      const cat  = d.system.category ?? 'utility';
+      const mult = d.system.multiplier ?? 0;
+      return `
+        <div class="sk-row" data-idx="${i}" data-search="${d.name.toLowerCase()} ${cat}"
+          style="padding:5px 8px;cursor:pointer;border-bottom:1px solid var(--sr-border);
+                 display:grid;grid-template-columns:1fr 72px 36px 80px;
+                 align-items:center;gap:6px;font-size:12px">
+          <span style="font-weight:500">${d.name}</span>
+          <span style="color:${CAT_COLORS[cat] ?? 'var(--sr-muted)'};font-size:10px">${CAT_LABELS[cat] ?? cat}</span>
+          <span style="color:var(--sr-muted);text-align:center" title="Size multiplier">×${mult}</span>
+          <span style="color:var(--sr-dim);font-size:10px" title="Active memory at rating 1">1: ${mult} Mp · 4: ${16 * mult} Mp</span>
+        </div>`;
+    }).join('');
+
+    let selectedIdx = null;
+    let hookId = Hooks.on('renderDialogV2', (_app, html) => {
+      if (!html.querySelector?.('#odm-prog-filter')) return;
+      Hooks.off('renderDialogV2', hookId);
+      const filter = html.querySelector('#odm-prog-filter');
+      const rows   = html.querySelectorAll('.sk-row');
+      const idxIn  = html.querySelector('#odm-prog-idx');
+      filter.addEventListener('input', () => {
+        const q = filter.value.toLowerCase();
+        rows.forEach(r => { r.style.display = (!q || r.dataset.search.includes(q)) ? '' : 'none'; });
+      });
+      filter.addEventListener('keydown', e => { if (e.key === 'Enter') e.preventDefault(); });
+      rows.forEach(r => {
+        r.addEventListener('click', () => {
+          rows.forEach(rr => rr.style.background = '');
+          r.style.background = 'color-mix(in srgb,var(--sr-accent) 20%,transparent)';
+          idxIn.value = r.dataset.idx;
+        });
+      });
+      requestAnimationFrame(() => filter.focus());
+    });
+
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: 'Browse Orthodox SR3 Programs' },
+      position: { width: 460 },
+      content: `
+        <div style="padding:4px 0">
+          <input id="odm-prog-filter" type="text" placeholder="Filter by name or category…"
+            style="width:100%;margin-bottom:6px"/>
+          <div style="display:grid;grid-template-columns:1fr 72px 36px 80px;
+                      padding:2px 8px;font-size:10px;color:var(--sr-muted);gap:6px;margin-bottom:2px">
+            <span>Program</span><span>Category</span>
+            <span style="text-align:center">Mult.</span>
+            <span>Mem at Rtg 1 / 4</span>
+          </div>
+          <div style="max-height:360px;overflow-y:auto;border:1px solid var(--sr-border);border-radius:var(--r)">
+            ${rowsHtml}
+          </div>
+          <input type="hidden" id="odm-prog-idx" value=""/>
+          <p style="font-size:11px;color:var(--sr-muted);margin:6px 0 0">
+            Program added at rating 0 — set the rating after adding. Mem = Rating² × Multiplier Mp.
+          </p>
+        </div>`,
+      buttons: [
+        { label: 'Add to Sheet', action: 'add', default: true,
+          callback: (_e, _b, d) => {
+            const v = d.element.querySelector('#odm-prog-idx')?.value;
+            selectedIdx = (v !== '' && v != null) ? parseInt(v) : null;
+          } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+
+    if (selectedIdx == null || isNaN(selectedIdx)) return;
+    const doc = docs[selectedIdx];
+    if (!doc) return;
+
+    // Don't add duplicates
+    const existing = actor.items.find(i => i.type === 'program' && i.name === doc.name);
+    if (existing) {
+      ui.notifications.warn(`${doc.name} is already on this character.`);
+      return;
+    }
+
+    await actor.createEmbeddedDocuments('Item', [doc.toObject()]);
   }
 
   static async _onSetMatrixMode(_ev, target) {

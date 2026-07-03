@@ -96,9 +96,19 @@ export class SR3EActor extends Actor {
     if (!sys.derived) sys.derived = {};
     sys.derived.woundMax   = (sys.rating ?? 1) * 2;
     sys.derived.initiative = sys.rating ?? 1;
-    // Initiative dice scale with host security tier (Matrix Defragged p.22)
-    const tierDice = { Ivory: 0, Blue: 1, Green: 2, Orange: 3, Red: 4, Black: 4, Ultraviolet: 4 };
-    sys.derived.initiativeDice = tierDice[sys.hostSecurityTier ?? 'Green'] ?? 2;
+    // Orthodox SR3 (SR3 Core p.223): Blue=1d6 Green=2d6 Orange=3d6 Red=4d6
+    // Defragged uses hostSecurityTier; orthodox uses linked host's orthodoxSecurityCode.
+    const isOrthodox = (() => { try { return game.settings.get('The2ndChumming3e', 'matrixRuleset') === 'orthodox'; } catch { return false; } })();
+    if (isOrthodox) {
+      const hostActor = (sys.activeHostId) ? game.actors?.get(sys.activeHostId) : null;
+      const secCode   = hostActor?.system?.orthodoxSecurityCode ?? 'Green';
+      const tierDice  = { Blue: 1, Green: 2, Orange: 3, Red: 4 };
+      sys.derived.initiativeDice = tierDice[secCode] ?? 2;
+    } else {
+      // Matrix Defragged: tier drives dice count
+      const tierDice = { Ivory: 0, Blue: 1, Green: 2, Orange: 3, Red: 4, Black: 4, Ultraviolet: 4 };
+      sys.derived.initiativeDice = tierDice[sys.hostSecurityTier ?? 'Green'] ?? 2;
+    }
   }
 
   _prepareAgent(sys) {
@@ -1711,6 +1721,11 @@ _prepareCharacter(sys, attr) {
   const hackingPoolBase = mpcp !== null
     ? Math.max(0, Math.floor(((attr.intelligence?.value ?? 0) + mpcp) / 3))
     : null;
+  // Orthodox SR3 hacking pool: derived from actor-stored deck stats (same formula, different source)
+  const orthodoxMccp         = sys.orthodoxDeck?.mccp ?? 0;
+  const orthodoxHackingPool  = orthodoxMccp > 0
+    ? Math.max(0, Math.floor(((attr.intelligence?.value ?? 0) + orthodoxMccp) / 3))
+    : 0;
 
   const astralPoolBase = magicBase > 0
     ? Math.max(0, Math.floor(
@@ -1745,6 +1760,8 @@ _prepareCharacter(sys, attr) {
     hackingPoolBase,
     hackingPool:          hackingPoolBase !== null ? Math.max(0, hackingPoolBase) : null,
     availableHackingPool: hackingPoolBase !== null ? Math.max(0, hackingPoolBase - (sys.hackingPoolSpent ?? 0)) : null,
+    orthodoxHackingPool,
+    availableOrthodoxHackingPool: Math.max(0, orthodoxHackingPool - (sys.hackingPoolSpent ?? 0)),
     vcrRating,
     vcrActive:          vcrRating > 0,
     totalBioIndex,
@@ -4973,6 +4990,16 @@ _prepareCharacter(sys, attr) {
       base = intel + 20;
       dice = 1;
       modeNote = `<div class="sr-roll-meta" style="color:#c070f5">✦ Astral Init — INT ${intel} + 20</div>`;
+    } else if (() => { try { return game.settings.get('The2ndChumming3e', 'matrixRuleset') === 'orthodox'; } catch { return false; } })()
+              && (this.system.orthodoxRunState?.currentHostId ?? '') !== '') {
+      // Orthodox SR3: decker jacked in uses reaction BASE + ResponseIncrease×2 + (1+Response)d6
+      // Wired reflexes excluded while jacked in.
+      const wm           = this.system.woundMod ?? 0;
+      const reactionBase = this.system.attributes?.reaction?.base ?? 0;
+      const resp         = this.system.orthodoxDeck?.responseIncrease ?? 0;
+      base = reactionBase + wm + (resp * 2);
+      dice = 1 + resp;
+      modeNote = `<div class="sr-roll-meta" style="color:var(--sr-accent)">💻 Orthodox Matrix Init — REA base ${reactionBase}${resp ? ` + Response ${resp}×2` : ''}</div>`;
     } else if (useMatrixHot) {
       // VR-Hot: (base Reaction + woundMod + Response×2) + (1+Response)d6
       // Wired reflexes excluded — use reaction.base, not reaction.value
@@ -6318,6 +6345,699 @@ _prepareCharacter(sys, attr) {
           <div class="sr-roll-header">⚔ ${ctx.atkActorName} vs ${ctx.oppActorName} — Result</div>
           ${resultHtml}
         </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
+    });
+  }
+
+  // ── Orthodox SR3 Matrix Rolls ───────────────────────────────────────────────
+
+  /** Cybercombat Target Numbers table (SR3 p.224). */
+  static _orthoCCTN = {
+    intruding:  { Blue: 6, Green: 5, Orange: 4, Red: 3 },
+    legitimate: { Blue: 3, Green: 4, Orange: 5, Red: 6 },
+  };
+
+  /** Damage level IC programs inflict (SR3 p.224). */
+  static _orthoICDmgLevel = { Blue: 'Moderate', Green: 'Moderate', Orange: 'Serious', Red: 'Serious' };
+
+  /** Resolve a full Rule-of-Six roll silently (no chat cards). */
+  static _resolveOrthoRoll(actor, pool, tn) {
+    pool = Math.max(1, pool | 0);
+    tn   = Math.max(2, tn   | 0);
+    let dice = actor._rollWave(pool, tn, true);
+    for (let guard = 0; guard < 50; guard++) {
+      const idx = dice.flatMap((d, i) => (!d.done && d.needsExplosion) ? [i] : []);
+      if (!idx.length) break;
+      dice = actor._rollWave(pool, tn, false, dice, idx);
+    }
+    return { successes: dice.filter(d => d.success).length, dice };
+  }
+
+  // ── Orthodox System Test ────────────────────────────────────────────────────
+
+  async rollOrthodoxSystemTest() {
+    const sys  = this.system;
+    const run  = sys.orthodoxRunState ?? {};
+    const deck = sys.orthodoxDeck    ?? {};
+    const d    = sys.derived         ?? {};
+
+    const hostId = run.currentHostId ?? '';
+    const host   = hostId ? game.actors.get(hostId) : null;
+    if (!host) {
+      ui.notifications.warn('Not logged on to a host. Use the Matrix tab to set a host first.');
+      return;
+    }
+
+    const subs = host.system.orthodoxSubsystems ?? {};
+    const secVal = host.system.orthodoxSecurityValue ?? 0;
+    if (!secVal) ui.notifications.warn('Host has no Security Value set — counter-roll will use 0 dice.');
+
+    // Computer skill
+    const compSkill     = this.items.find(i => i.type === 'skill' && /computer|decking/i.test(i.name));
+    const compRating    = compSkill?.system?.rating ?? 0;
+    const compLabel     = compSkill?.name ?? 'Computer (none)';
+    const hackPool      = d.availableHackingPool ?? 0;
+    const detectFactor  = (() => {
+      const m = deck.masking ?? 0, s = deck.sleazeRating ?? 0;
+      return s > 0 ? Math.ceil((m + s) / 2) : Math.ceil(m / 2);
+    })();
+
+    const alertLevel = run.alertLevel ?? 'none';
+    const alertMod   = alertLevel === 'passive' ? 2 : 0;
+
+    const subsOpts = [
+      ['access',  'Access',  subs.access  ?? 0],
+      ['control', 'Control', subs.control ?? 0],
+      ['index',   'Index',   subs.index   ?? 0],
+      ['files',   'Files',   subs.files   ?? 0],
+      ['slave',   'Slave',   subs.slave   ?? 0],
+    ].map(([v, l, r]) => `<option value="${v}" data-rating="${r}">${l} (Rating ${r}${alertMod ? ` +${alertMod} alert` : ''})</option>`).join('');
+
+    let confirmed = false, subsystem = 'access', opName = 'System Test', deckerDice = compRating, deckerTN = 0, utilMod = 0, hpAlloc = 0;
+
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `${this.name}: System Test` },
+      content: `<div style="padding:8px 0;display:flex;flex-direction:column;gap:8px">
+        <p style="margin:0;font-size:12px;color:var(--color-text-dark-secondary)">
+          Host: <strong>${host.name}</strong> (Sec. Value ${secVal}) &nbsp;|&nbsp;
+          Computer: <strong>${compRating}</strong> &nbsp;|&nbsp;
+          Hacking Pool: <strong>${hackPool}</strong> &nbsp;|&nbsp;
+          Detect. Factor: <strong>${detectFactor}</strong>
+        </p>
+        <label>Subsystem:
+          <select id="ost-sub" style="width:100%;margin-top:2px">${subsOpts}</select>
+        </label>
+        <label>Operation name:
+          <input type="text" id="ost-op" value="System Test" style="width:100%;margin-top:2px">
+        </label>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <label>Utility TN modifier (−):
+            <input type="number" id="ost-util" value="0" min="0" max="10" style="width:55px;margin-left:4px">
+          </label>
+          <label>Hacking Pool (0–${hackPool}):
+            <input type="number" id="ost-hp" value="0" min="0" max="${hackPool}" style="width:55px;margin-left:4px">
+          </label>
+        </div>
+      </div>`,
+      buttons: [
+        {
+          label: 'Roll', action: 'ok', default: true,
+          callback: (_e, _b, dlg) => {
+            confirmed  = true;
+            const sel  = dlg.element.querySelector('#ost-sub');
+            subsystem  = sel?.value ?? 'access';
+            const subR = parseInt(sel?.options[sel.selectedIndex]?.dataset.rating ?? 0);
+            opName     = dlg.element.querySelector('#ost-op')?.value?.trim() || 'System Test';
+            utilMod    = Math.max(0, parseInt(dlg.element.querySelector('#ost-util')?.value) || 0);
+            hpAlloc    = Math.min(hackPool, Math.max(0, parseInt(dlg.element.querySelector('#ost-hp')?.value) || 0));
+            deckerDice = compRating + hpAlloc;
+            deckerTN   = Math.max(2, subR + alertMod - utilMod);
+          },
+        },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (!confirmed) return;
+
+    if (hpAlloc > 0) await this.update({ 'system.hackingPoolSpent': (sys.hackingPoolSpent ?? 0) + hpAlloc });
+
+    const ctx = {
+      deckerActorId: this.id,
+      hostActorId:   hostId,
+      deckerName:    this.name,
+      hostName:      host.name,
+      opName,
+      subsystem,
+      deckerDice:    Math.max(1, deckerDice),
+      deckerTN,
+      hostDice:      Math.max(1, secVal),
+      hostTN:        Math.max(2, detectFactor),
+      compLabel,
+      secVal,
+    };
+    const payload = JSON.stringify(ctx).replace(/'/g, '&#39;');
+    const _corner = (name, skill, dice, tn, tnLabel, dcls, tcls) => `
+      <div class="sr-miji-corner">
+        <div class="sr-miji-name">${name}</div>
+        <div class="sr-miji-skill">${skill}</div>
+        <div class="sr-melee-field-row"><span>Dice:</span>
+          <input type="number" class="${dcls}" value="${dice}" min="1" max="40" style="width:44px"/></div>
+        <div class="sr-melee-field-row"><span>${tnLabel}:</span>
+          <input type="number" class="${tcls}" value="${tn}" min="2" max="30" style="width:40px"/></div>
+      </div>`;
+
+    await ChatMessage.create({
+      speaker: { alias: 'System Test' },
+      content: `<div class="sr-roll-card sr-miji-card">
+        <div class="sr-roll-header">💻 ${opName} — ${this.name} on ${host.name}</div>
+        <div style="font-size:11px;color:var(--sr-muted);text-align:center;margin-bottom:4px">
+          Subsystem: <strong>${subsystem.toUpperCase()}</strong>
+          ${hpAlloc > 0 ? ` &nbsp;|&nbsp; HP spent: ${hpAlloc}` : ''}
+        </div>
+        <div class="sr-melee-boxing">
+          ${_corner(this.name, compLabel, ctx.deckerDice, ctx.deckerTN,
+                    'TN (subsys.)', 'sr-ost-decker-dice', 'sr-ost-decker-tn')}
+          <div class="sr-melee-vs">VS</div>
+          ${_corner(host.name, `Sec.Value ${secVal} dice`, ctx.hostDice, ctx.hostTN,
+                    'TN (Det.Factor)', 'sr-ost-host-dice', 'sr-ost-host-tn')}
+        </div>
+        <div class="sr-soak-action">
+          <button class="sr-ost-roll-btn" data-payload='${payload}'>💻 Roll System Test</button>
+        </div>
+      </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
+    });
+  }
+
+  static async handleOrthodoxSystemTestRoll(btn) {
+    const ctx  = JSON.parse(btn.dataset.payload);
+    const card = btn.closest('.sr-miji-card');
+    btn.disabled = true; btn.textContent = '⏳ Rolling…';
+
+    const deckerDice = Math.max(1, parseInt(card?.querySelector('.sr-ost-decker-dice')?.value) || ctx.deckerDice);
+    const hostDice   = Math.max(1, parseInt(card?.querySelector('.sr-ost-host-dice')?.value)   || ctx.hostDice);
+    const deckerTN   = Math.max(2, parseInt(card?.querySelector('.sr-ost-decker-tn')?.value)   || ctx.deckerTN);
+    const hostTN     = Math.max(2, parseInt(card?.querySelector('.sr-ost-host-tn')?.value)      || ctx.hostTN);
+
+    const deckerActor = game.actors.get(ctx.deckerActorId);
+    const hostActor   = game.actors.get(ctx.hostActorId);
+    if (!deckerActor || !hostActor) { ui.notifications.warn('Orthodox System Test: missing actor.'); return; }
+
+    const dRes = SR3EActor._resolveOrthoRoll(deckerActor, deckerDice, deckerTN);
+    const hRes = SR3EActor._resolveOrthoRoll(hostActor,   hostDice,   hostTN);
+
+    const dHits = dRes.successes, hHits = hRes.successes;
+    const won   = dHits >= hHits;
+
+    // Update Security Tally on decker actor if host scored any successes
+    if (hHits > 0) {
+      const curTally = deckerActor.system.orthodoxRunState?.securityTally ?? 0;
+      await deckerActor.update({ 'system.orthodoxRunState.securityTally': curTally + hHits });
+    }
+
+    const _dice = r => r.dice.map(d =>
+      `<span class="chase-die${d.success ? ' chase-die-best' : ''}">${d.total}</span>`
+    ).join('');
+
+    const result = won
+      ? `<div class="sr-staging-result" style="color:var(--sr-green)">✓ Success — ${ctx.deckerName} wins by ${dHits - hHits} (${dHits} vs ${hHits})</div>`
+      : `<div class="sr-staging-result" style="color:var(--sr-red)">✗ Failure — host wins by ${hHits - dHits} (${dHits} vs ${hHits})</div>`;
+    const tallyNote = hHits > 0
+      ? `<div style="font-size:11px;color:var(--sr-amber);margin-top:4px">⚠ Security Tally +${hHits} → now ${(deckerActor.system.orthodoxRunState?.securityTally ?? 0)}</div>`
+      : `<div style="font-size:11px;color:var(--sr-muted);margin-top:4px">Security Tally unchanged.</div>`;
+
+    await ChatMessage.create({
+      speaker: { alias: 'System Test' },
+      content: `<div class="sr-roll-card sr-miji-card">
+        <div class="sr-roll-header">💻 ${ctx.opName} — Result</div>
+        <div class="sr-miji-result-grid">
+          <div><strong>${ctx.deckerName}</strong>: ${dHits} hit${dHits !== 1 ? 's' : ''}<br>${_dice(dRes)}</div>
+          <div><strong>${ctx.hostName}</strong>: ${hHits} hit${hHits !== 1 ? 's' : ''}<br>${_dice(hRes)}</div>
+        </div>
+        ${result}
+        ${tallyNote}
+      </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
+    });
+  }
+
+  // ── Orthodox Cybercombat ────────────────────────────────────────────────────
+
+  async rollOrthodoxCybercombat() {
+    const sys  = this.system;
+    const run  = sys.orthodoxRunState ?? {};
+    const deck = sys.orthodoxDeck    ?? {};
+    const d    = sys.derived         ?? {};
+
+    const hostId = run.currentHostId ?? '';
+    const host   = hostId ? game.actors.get(hostId) : null;
+    if (!host) {
+      ui.notifications.warn('Not logged on to a host. Use the Matrix tab to set a host first.');
+      return;
+    }
+
+    const secCode = host.system.orthodoxSecurityCode ?? 'Green';
+    const secVal  = host.system.orthodoxSecurityValue ?? 0;
+    const hackPool = d.availableHackingPool ?? 0;
+
+    // IC targets on this host
+    const icTargets = game.actors.filter(a =>
+      a.type === 'ic' && (a.system.activeHostId ?? '') === hostId && (a.system.deployed ?? false)
+    );
+    if (!icTargets.length) {
+      ui.notifications.warn('No deployed IC on this host.');
+      return;
+    }
+
+    const icOpts = icTargets.map(a => {
+      const icType = a.system.orthodoxIcType ?? a.system.icType ?? 'IC';
+      return `<option value="${a.id}">${a.name} [${icType}, Rating ${a.system.rating ?? 0}]</option>`;
+    }).join('');
+
+    const tnIntruding = SR3EActor._orthoCCTN.intruding[secCode]  ?? 4;
+    const dmgLevel    = SR3EActor._orthoICDmgLevel[secCode] ?? 'Moderate';
+    const dmgPower    = deck.mccp ?? 4;  // default attack power: MPCP Rating
+
+    let confirmed = false, targetId = null, atkName = 'Attack', atkDice = 1, atkTN = tnIntruding, hpAlloc = 0, atkPower = dmgPower;
+
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `${this.name}: Cybercombat Attack` },
+      content: `<div style="padding:8px 0;display:flex;flex-direction:column;gap:8px">
+        <p style="margin:0;font-size:12px;color:var(--color-text-dark-secondary)">
+          Host: <strong>${host.name}</strong> (${secCode}, Sec.Value ${secVal}) &nbsp;|&nbsp;
+          HP Available: <strong>${hackPool}</strong>
+        </p>
+        <label>Target IC:
+          <select id="occ-target" style="width:100%;margin-top:2px">${icOpts}</select>
+        </label>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <label>Attack utility:
+            <input type="text" id="occ-util" value="Attack" style="width:120px;margin-left:4px">
+          </label>
+          <label>Utility rating (attack dice):
+            <input type="number" id="occ-dice" value="1" min="1" max="30" style="width:55px;margin-left:4px">
+          </label>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <label>Attack TN (${tnIntruding} vs Intruder):
+            <input type="number" id="occ-tn" value="${tnIntruding}" min="2" max="12" style="width:55px;margin-left:4px">
+          </label>
+          <label>Attack Power (damage):
+            <input type="number" id="occ-pwr" value="${dmgPower}" min="1" max="20" style="width:55px;margin-left:4px">
+          </label>
+        </div>
+        <label>Hacking Pool (0–${hackPool}):
+          <input type="number" id="occ-hp" value="0" min="0" max="${hackPool}" style="width:55px;margin-left:4px">
+        </label>
+        <p style="margin:0;font-size:11px;color:var(--sr-muted)">
+          ${secCode} host — IC damage level: <strong>${dmgLevel}</strong>.
+          IC soak pool = Security Value (${secVal}).
+        </p>
+      </div>`,
+      buttons: [
+        {
+          label: 'Attack', action: 'ok', default: true,
+          callback: (_e, _b, dlg) => {
+            confirmed = true;
+            targetId  = dlg.element.querySelector('#occ-target')?.value;
+            atkName   = dlg.element.querySelector('#occ-util')?.value?.trim() || 'Attack';
+            atkDice   = Math.max(1, parseInt(dlg.element.querySelector('#occ-dice')?.value) || 1);
+            atkTN     = Math.max(2, parseInt(dlg.element.querySelector('#occ-tn')?.value)   || tnIntruding);
+            atkPower  = Math.max(1, parseInt(dlg.element.querySelector('#occ-pwr')?.value)  || dmgPower);
+            hpAlloc   = Math.min(hackPool, Math.max(0, parseInt(dlg.element.querySelector('#occ-hp')?.value) || 0));
+          },
+        },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (!confirmed || !targetId) return;
+
+    if (hpAlloc > 0) await this.update({ 'system.hackingPoolSpent': (sys.hackingPoolSpent ?? 0) + hpAlloc });
+    const totalAtkDice = atkDice + hpAlloc;
+
+    const icActor = game.actors.get(targetId);
+    if (!icActor) return;
+    const icType    = icActor.system.orthodoxIcType ?? icActor.system.icType ?? 'IC';
+    const icRating  = icActor.system.rating ?? 0;
+    // IC soak pool = Security Value; IC soak TN = attack power
+    const soakPool  = secVal;
+    const soakTN    = Math.max(2, atkPower);
+
+    const ctx = {
+      deckerActorId: this.id,
+      icActorId:     targetId,
+      hostActorId:   hostId,
+      deckerName:    this.name,
+      icName:        icActor.name,
+      icType,
+      atkName,
+      atkDice:       totalAtkDice,
+      atkTN,
+      atkPower,
+      soakPool,
+      soakTN,
+      secCode,
+      dmgLevel,
+    };
+    const payload = JSON.stringify(ctx).replace(/'/g, '&#39;');
+    const _corner = (name, skill, dice, tn, tnLabel, dcls, tcls) => `
+      <div class="sr-miji-corner">
+        <div class="sr-miji-name">${name}</div>
+        <div class="sr-miji-skill">${skill}</div>
+        <div class="sr-melee-field-row"><span>Dice:</span>
+          <input type="number" class="${dcls}" value="${dice}" min="1" max="40" style="width:44px"/></div>
+        <div class="sr-melee-field-row"><span>${tnLabel}:</span>
+          <input type="number" class="${tcls}" value="${tn}" min="2" max="30" style="width:40px"/></div>
+      </div>`;
+
+    await ChatMessage.create({
+      speaker: { alias: 'Cybercombat' },
+      content: `<div class="sr-roll-card sr-miji-card">
+        <div class="sr-roll-header">⚔ ${this.name} attacks ${icActor.name} [${icType}]</div>
+        <div style="font-size:11px;color:var(--sr-muted);text-align:center;margin-bottom:4px">
+          ${host.name} (${secCode}) &nbsp;|&nbsp; Damage Level: <strong>${dmgLevel}</strong>
+          ${hpAlloc > 0 ? ` &nbsp;|&nbsp; HP spent: ${hpAlloc}` : ''}
+        </div>
+        <div class="sr-melee-boxing">
+          ${_corner(this.name, `${atkName} (${atkDice - hpAlloc}${hpAlloc > 0 ? `+${hpAlloc}HP` : ''})`,
+                    totalAtkDice, atkTN, 'TN (attack)', 'sr-occ-atk-dice', 'sr-occ-atk-tn')}
+          <div class="sr-melee-vs">VS</div>
+          ${_corner(icActor.name, `Soak (Sec.Val ${secVal})`,
+                    soakPool, soakTN, 'TN (power)', 'sr-occ-soak-dice', 'sr-occ-soak-tn')}
+        </div>
+        <div class="sr-soak-action">
+          <button class="sr-occ-roll-btn" data-payload='${payload}'>⚔ Roll Cybercombat</button>
+        </div>
+      </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
+    });
+  }
+
+  // ── Orthodox IC Attack (IC → Decker) ───────────────────────────────────────
+
+  async rollOrthodoxICAttack() {
+    const sys  = this.system;
+    const host = sys.activeHostId ? game.actors.get(sys.activeHostId) : null;
+    if (!host) return void ui.notifications.warn('No host linked — open the IC sheet and use Set Host.');
+
+    const code   = host.system.orthodoxSecurityCode ?? 'Green';
+    const secVal = host.system.orthodoxSecurityValue ?? 0;
+    const rating = sys.rating ?? 1;
+    const dmgLevel = SR3EActor._orthoICDmgLevel[code] ?? 'Moderate';
+    const atkTN    = SR3EActor._orthoCCTN.intruding[code] ?? 5;
+
+    if (!secVal) return void ui.notifications.warn('Host Security Value is 0 — set it on the host sheet first.');
+
+    // Target decker selection
+    const deckers = game.actors.filter(a =>
+      (a.type === 'character' || a.type === 'npc') && !a.getFlag('The2ndChumming3e', 'isTemplate')
+    );
+    if (!deckers.length) return void ui.notifications.warn('No valid decker targets in world.');
+
+    const deckerOpts = deckers.map(a => {
+      const ccSkill = a.items.find(i => i.type === 'skill' && /cybercombat/i.test(i.name));
+      const hp      = a.system.derived?.availableOrthodoxHackingPool ?? 0;
+      return `<option value="${a.id}" data-cc="${ccSkill?.system?.rating ?? 0}" data-hp="${hp}">${a.name}</option>`;
+    }).join('');
+
+    let confirmed = false, targetId = null, defDice = 0, defHp = 0;
+    let atkDiceOverride = secVal, atkTNOverride = atkTN;
+
+    let hookId = Hooks.on('renderDialogV2', (_app, html) => {
+      if (!html.querySelector?.('#icia-target')) return;
+      Hooks.off('renderDialogV2', hookId);
+      const sel   = html.querySelector('#icia-target');
+      const dIn   = html.querySelector('#icia-def-dice');
+      const hpIn  = html.querySelector('#icia-def-hp');
+      const hpMax = html.querySelector('#icia-hp-max');
+
+      const sync = () => {
+        const opt = sel.selectedOptions[0];
+        if (!opt) return;
+        if (dIn)  dIn.value  = opt.dataset.cc  ?? 0;
+        if (hpMax) hpMax.textContent = opt.dataset.hp ?? 0;
+        if (hpIn) hpIn.max = opt.dataset.hp ?? 0;
+      };
+      sel.addEventListener('change', sync);
+      sync();
+    });
+
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `${this.name}: Attack Decker` },
+      content: `<div style="padding:8px 0;display:flex;flex-direction:column;gap:8px">
+        <p style="margin:0;font-size:12px;color:var(--color-text-dark-secondary)">
+          Host: <strong>${host.name}</strong> (${code}) &nbsp;|&nbsp;
+          IC attack pool: <strong>${secVal}d6</strong>, TN <strong>${atkTN}</strong>
+          &nbsp;|&nbsp; Base damage: <strong>${rating}${dmgLevel[0]}</strong>
+        </p>
+        <label>Target decker:
+          <select id="icia-target" style="width:100%;margin-top:2px">${deckerOpts}</select>
+        </label>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <label>Decker defense dice (Cybercombat):
+            <input type="number" id="icia-def-dice" value="0" min="0" max="30"
+              style="width:54px;margin-left:4px">
+          </label>
+          <label>Decker HP allocation (available: <span id="icia-hp-max">0</span>):
+            <input type="number" id="icia-def-hp" value="0" min="0"
+              style="width:54px;margin-left:4px">
+          </label>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <label>IC attack dice (${secVal}):
+            <input type="number" id="icia-atk-dice" value="${secVal}" min="1" max="30"
+              style="width:54px;margin-left:4px">
+          </label>
+          <label>Attack TN (${atkTN}):
+            <input type="number" id="icia-atk-tn" value="${atkTN}" min="2" max="12"
+              style="width:54px;margin-left:4px">
+          </label>
+        </div>
+      </div>`,
+      buttons: [
+        {
+          label: 'Post Card', action: 'ok', default: true,
+          callback: (_e, _b, dlg) => {
+            confirmed       = true;
+            targetId        = dlg.element.querySelector('#icia-target')?.value;
+            defDice         = Math.max(0, parseInt(dlg.element.querySelector('#icia-def-dice')?.value)  || 0);
+            defHp           = Math.max(0, parseInt(dlg.element.querySelector('#icia-def-hp')?.value)    || 0);
+            atkDiceOverride = Math.max(1, parseInt(dlg.element.querySelector('#icia-atk-dice')?.value)  || secVal);
+            atkTNOverride   = Math.max(2, parseInt(dlg.element.querySelector('#icia-atk-tn')?.value)    || atkTN);
+          },
+        },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (!confirmed || !targetId) return;
+
+    const deckerActor = game.actors.get(targetId);
+    if (!deckerActor) return;
+
+    // Spend decker's hacking pool if allocated
+    if (defHp > 0) {
+      const curSpent = deckerActor.system.hackingPoolSpent ?? 0;
+      await deckerActor.update({ 'system.hackingPoolSpent': curSpent + defHp });
+    }
+
+    const totalDefDice = defDice + defHp;
+    const defTN        = atkTNOverride;  // same TN for both sides
+    const baseCode     = `${rating}${dmgLevel[0]}`;
+
+    const ctx = {
+      icActorId:     this.id,
+      deckerActorId: targetId,
+      hostActorId:   host.id,
+      icName:        this.name,
+      deckerName:    deckerActor.name,
+      secCode:       code,
+      dmgLevel,
+      atkPower:      rating,
+      atkDice:       atkDiceOverride,
+      atkTN:         atkTNOverride,
+      defDice:       totalDefDice,
+      defTN,
+      baseCode,
+    };
+    const payload = JSON.stringify(ctx).replace(/'/g, '&#39;');
+
+    const _corner = (name, skill, dice, tn, tnLabel, dcls, tcls) => `
+      <div class="sr-miji-corner">
+        <div class="sr-miji-name">${name}</div>
+        <div class="sr-miji-skill">${skill}</div>
+        <div class="sr-melee-field-row"><span>Dice:</span>
+          <input type="number" class="${dcls}" value="${dice}" min="1" max="40" style="width:44px"/></div>
+        <div class="sr-melee-field-row"><span>${tnLabel}:</span>
+          <input type="number" class="${tcls}" value="${tn}"  min="2" max="30" style="width:40px"/></div>
+      </div>`;
+
+    await ChatMessage.create({
+      speaker: { alias: 'Cybercombat' },
+      content: `<div class="sr-roll-card sr-miji-card">
+        <div class="sr-roll-header">⚔ ${this.name} attacks ${deckerActor.name}</div>
+        <div style="font-size:11px;color:var(--sr-muted);text-align:center;margin-bottom:4px">
+          ${host.name} (${code}) &nbsp;|&nbsp; Base damage: <strong>${baseCode}</strong>
+          ${defHp > 0 ? ` &nbsp;|&nbsp; Decker HP spent: ${defHp}` : ''}
+        </div>
+        <div class="sr-melee-boxing">
+          ${_corner(this.name, `Security Value (${atkDiceOverride}d6)`,
+                    atkDiceOverride, atkTNOverride, 'TN', 'sr-icia-atk-dice', 'sr-icia-atk-tn')}
+          <div class="sr-melee-vs">VS</div>
+          ${_corner(deckerActor.name, `Cybercombat${defHp > 0 ? `+${defHp}HP` : ''} (${totalDefDice}d6)`,
+                    totalDefDice, defTN, 'TN', 'sr-icia-def-dice', 'sr-icia-def-tn')}
+        </div>
+        <div class="sr-soak-action">
+          <button class="sr-icia-roll-btn" data-payload='${payload}'>⚔ Roll IC Attack</button>
+        </div>
+      </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
+    });
+  }
+
+  static async handleOrthodoxICAttackRoll(btn) {
+    const ctx  = JSON.parse(btn.dataset.payload);
+    const card = btn.closest('.sr-miji-card');
+    btn.disabled = true; btn.textContent = '⏳ Rolling…';
+
+    const atkDice = Math.max(1, parseInt(card?.querySelector('.sr-icia-atk-dice')?.value) || ctx.atkDice);
+    const defDice = Math.max(0, parseInt(card?.querySelector('.sr-icia-def-dice')?.value) || ctx.defDice);
+    const atkTN   = Math.max(2, parseInt(card?.querySelector('.sr-icia-atk-tn')?.value)  || ctx.atkTN);
+    const defTN   = Math.max(2, parseInt(card?.querySelector('.sr-icia-def-tn')?.value)  || ctx.defTN);
+
+    const icActor     = game.actors.get(ctx.icActorId);
+    const deckerActor = game.actors.get(ctx.deckerActorId);
+    if (!icActor || !deckerActor) { ui.notifications.warn('Orthodox IC Attack: missing actor.'); return; }
+
+    const aRes = SR3EActor._resolveOrthoRoll(icActor,     atkDice, atkTN);
+    const dRes = SR3EActor._resolveOrthoRoll(deckerActor, defDice, defTN);
+
+    const aHits = aRes.successes, dHits = dRes.successes;
+    const net   = aHits - dHits;
+
+    const _dice = r => r.dice.map(d =>
+      `<span class="chase-die${d.success ? ' chase-die-best' : ''}">${d.total}</span>`
+    ).join('');
+
+    let outcome;
+    if (net <= 0) {
+      outcome = `<div class="sr-staging-result" style="color:var(--sr-green)">✓ Decker evades (${dHits} vs ${aHits})</div>`;
+    } else {
+      const { stageDamage, parseDamageCode } = game.sr3e.SR3EItem;
+      const staged    = stageDamage(parseDamageCode(ctx.baseCode), Math.floor(net / 2));
+      const finalCode = `${staged.power}${staged.level}`;
+      const lvlBoxes  = { L: 1, M: 3, S: 6, D: 10 };
+      const boxes     = lvlBoxes[staged.level] ?? 3;
+
+      const assignCtx = JSON.stringify({
+        deckerActorId: ctx.deckerActorId,
+        deckerName:    ctx.deckerName,
+        hostActorId:   ctx.hostActorId,
+        dmgCode:       finalCode,
+        boxes,
+      }).replace(/'/g, '&#39;');
+
+      outcome = `<div class="sr-staging-result" style="color:var(--sr-red)">
+        ✗ Hit! Net ${net} → ${Math.floor(net / 2)} stage${Math.floor(net / 2) !== 1 ? 's' : ''} up
+        → <strong>${finalCode}</strong> (${boxes} box${boxes !== 1 ? 'es' : ''}) on ${ctx.deckerName}
+      </div>
+      <div class="sr-soak-action">
+        <button class="sr-icia-assign-btn" data-payload='${assignCtx}'>
+          💻 Assign ${boxes} box${boxes !== 1 ? 'es' : ''} to ${ctx.deckerName}'s Matrix CM
+        </button>
+      </div>`;
+    }
+
+    await ChatMessage.create({
+      speaker: { alias: 'Cybercombat' },
+      content: `<div class="sr-roll-card sr-miji-card">
+        <div class="sr-roll-header">⚔ IC Attack Result — ${ctx.icName} vs ${ctx.deckerName}</div>
+        <div class="sr-miji-result-grid">
+          <div><strong>${ctx.icName}</strong> (attack): ${aHits} hit${aHits !== 1 ? 's' : ''}<br>${_dice(aRes)}</div>
+          <div><strong>${ctx.deckerName}</strong> (defend): ${dHits} hit${dHits !== 1 ? 's' : ''}<br>${_dice(dRes)}</div>
+        </div>
+        ${outcome}
+      </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
+    });
+  }
+
+  static async handleOrthodoxICAssign(btn) {
+    const ctx         = JSON.parse(btn.dataset.payload);
+    btn.disabled      = true;
+    const deckerActor = game.actors.get(ctx.deckerActorId);
+    if (!deckerActor) { ui.notifications.warn('Target decker not found.'); return; }
+
+    const cur    = deckerActor.system.orthodoxMatrixCM?.value ?? 0;
+    const newVal = Math.min(10, cur + ctx.boxes);
+    await deckerActor.update({ 'system.orthodoxMatrixCM.value': newVal });
+
+    if (newVal >= 10 && cur < 10) {
+      // Cyberdeck just crashed — trigger dumpshock
+      const host      = ctx.hostActorId ? game.actors.get(ctx.hostActorId) : null;
+      const secVal    = host?.system?.orthodoxSecurityValue ?? 6;
+      const isVRHot   = (deckerActor.system.matrixUserMode ?? '') === 'VR-Hot';
+      const isStun    = !isVRHot;
+      const trackLabel = isStun ? 'Stun' : 'Physical';
+      const soakCtx    = JSON.stringify({
+        attackerActorId: null,
+        targetActorId:   ctx.deckerActorId,
+        isMelee:         false,
+        stagedPower:     secVal,
+        stagedLevel:     'M',
+        isStun,
+        rawDamage:       `${secVal}M`,
+      }).replace(/'/g, '&#39;');
+
+      await ChatMessage.create({
+        speaker: { alias: 'Matrix' },
+        content: `<div class="sr-roll-card">
+          <div class="sr-roll-header" style="color:var(--sr-red)">⚡ Cyberdeck Crashed — ${ctx.deckerName}</div>
+          <div class="sr-staging-result">
+            Matrix CM full — ${ctx.deckerName} is forcibly disconnected.
+            Dumpshock ${isVRHot ? '(VR-Hot → Physical)' : '(VR-Cold → Stun)'}: <strong>${secVal}M ${trackLabel}</strong>
+          </div>
+          <div class="sr-soak-action">
+            <button class="sr-soak-btn" data-payload='${soakCtx}'>
+              🛡 ${ctx.deckerName}: Resist Dumpshock (Body)
+            </button>
+          </div>
+        </div>`,
+        style: CONST.CHAT_MESSAGE_STYLES.ROLL,
+      });
+    } else if (newVal > cur) {
+      ui.notifications.info(`${ctx.deckerName}: Matrix CM ${cur} → ${newVal}/10 (${ctx.dmgCode})`);
+    }
+  }
+
+  static async handleOrthodoxCybercombatRoll(btn) {
+    const ctx  = JSON.parse(btn.dataset.payload);
+    const card = btn.closest('.sr-miji-card');
+    btn.disabled = true; btn.textContent = '⏳ Rolling…';
+
+    const atkDice  = Math.max(1, parseInt(card?.querySelector('.sr-occ-atk-dice')?.value)  || ctx.atkDice);
+    const soakDice = Math.max(1, parseInt(card?.querySelector('.sr-occ-soak-dice')?.value) || ctx.soakPool);
+    const atkTN    = Math.max(2, parseInt(card?.querySelector('.sr-occ-atk-tn')?.value)   || ctx.atkTN);
+    const soakTN   = Math.max(2, parseInt(card?.querySelector('.sr-occ-soak-tn')?.value)  || ctx.soakTN);
+
+    const deckerActor = game.actors.get(ctx.deckerActorId);
+    const icActor     = game.actors.get(ctx.icActorId);
+    if (!deckerActor || !icActor) { ui.notifications.warn('Orthodox Cybercombat: missing actor.'); return; }
+
+    const aRes = SR3EActor._resolveOrthoRoll(deckerActor, atkDice,  atkTN);
+    const sRes = SR3EActor._resolveOrthoRoll(icActor,     soakDice, soakTN);
+
+    const aHits = aRes.successes, sHits = sRes.successes;
+    const net   = aHits - sHits;
+
+    const _dice = r => r.dice.map(d =>
+      `<span class="chase-die${d.success ? ' chase-die-best' : ''}">${d.total}</span>`
+    ).join('');
+
+    let outcome;
+    if (net <= 0) {
+      outcome = `<div class="sr-staging-result" style="color:var(--sr-green)">✓ IC soaks all damage (${sHits} vs ${aHits})</div>`;
+    } else {
+      // Stage damage: base level is dmgLevel, 2 net successes = +1 stage
+      const { stageDamage, parseDamageCode } = game.sr3e.SR3EItem;
+      const baseCode = `${ctx.atkPower}${ctx.dmgLevel[0]}`; // e.g. "8M"
+      const staged   = stageDamage(parseDamageCode(baseCode), Math.floor(net / 2));
+      const finalCode = `${staged.power}${staged.level}${staged.isStun ? 'S' : ''}`;
+      outcome = `<div class="sr-staging-result" style="color:var(--sr-red)">
+        ✗ Hit! Net successes: ${net} → ${Math.floor(net / 2)} stage${Math.floor(net/2) !== 1 ? 's' : ''} up
+        → <strong>${finalCode}</strong> on ${ctx.icName}
+      </div>`;
+    }
+
+    await ChatMessage.create({
+      speaker: { alias: 'Cybercombat' },
+      content: `<div class="sr-roll-card sr-miji-card">
+        <div class="sr-roll-header">⚔ Cybercombat Result — ${ctx.deckerName} vs ${ctx.icName}</div>
+        <div class="sr-miji-result-grid">
+          <div><strong>${ctx.deckerName}</strong> (${ctx.atkName}): ${aHits} hit${aHits !== 1 ? 's' : ''}<br>${_dice(aRes)}</div>
+          <div><strong>${ctx.icName}</strong> (soak): ${sHits} hit${sHits !== 1 ? 's' : ''}<br>${_dice(sRes)}</div>
+        </div>
+        ${outcome}
+      </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
   }

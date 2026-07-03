@@ -1,2 +1,3 @@
 *.LOCK*
 .claude/settings.local.json
+rules pdfs/

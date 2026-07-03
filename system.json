@@ -2,7 +2,7 @@
   "id": "The2ndChumming3e",
   "title": "The 2nd Chumming — Shadowrun 3rd Edition",
   "description": "An unofficial implementation of Shadowrun 3rd Edition for Foundry VTT.",
-  "version": "0.4.0",
+  "version": "0.4.5",
   "socket": true,
   "compatibility": {
     "minimum": "14",
@@ -235,6 +235,22 @@
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
     {
+      "name": "sr3e-odm-cyberdecks",
+      "label": "Cyberdecks — Orthodox SR3",
+      "path": "packs/sr3e-odm-cyberdecks",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    },
+    {
+      "name": "sr3e-odm-programs",
+      "label": "Programs — Orthodox SR3",
+      "path": "packs/sr3e-odm-programs",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    },
+    {
       "name": "sr3e-skills",
       "label": "Skills",
       "path": "packs/sr3e-skills",
@@ -281,6 +297,11 @@
       "name": "Matrix",
       "sorting": "a",
       "packs": ["sr3e-cyberdecks", "sr3e-programs", "sr3e-ic", "sr3e-agents", "sr3e-hosts"]
+    },
+    {
+      "name": "Matrix — Orthodox SR3",
+      "sorting": "a",
+      "packs": ["sr3e-odm-cyberdecks", "sr3e-odm-programs"]
     },
     {
       "name": "Reference",

@@ -139,6 +139,31 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       }),
       wounds:         _wounds(),
       ew:             _ew(),
+      // ── Orthodox SR3 matrix decker fields ─────────────────────────────
+      // Only surfaced when matrixRuleset === 'orthodox'. Stored directly on
+      // the actor so the GM can edit them inline without opening an item sheet.
+      orthodoxDeck: new SchemaField({
+        deckModel:       new StringField({ initial: '' }),
+        mccp:            new NumberField({ integer: true, initial: 0, min: 0 }),
+        bod:             new NumberField({ integer: true, initial: 0, min: 0 }),
+        evasion:         new NumberField({ integer: true, initial: 0, min: 0 }),
+        masking:         new NumberField({ integer: true, initial: 0, min: 0 }),
+        sensor:          new NumberField({ integer: true, initial: 0, min: 0 }),
+        hardening:       new NumberField({ integer: true, initial: 0, min: 0 }),
+        activeMemory:    new NumberField({ integer: true, initial: 0, min: 0 }),
+        storageMemory:   new NumberField({ integer: true, initial: 0, min: 0 }),
+        ioSpeed:         new NumberField({ integer: true, initial: 0, min: 0 }),
+        responseIncrease: new NumberField({ integer: true, initial: 0, min: 0 }),
+        sleazeRating:    new NumberField({ integer: true, initial: 0, min: 0 }),
+      }),
+      orthodoxRunState: new SchemaField({
+        securityTally:   new NumberField({ integer: true, initial: 0, min: 0 }),
+        alertLevel:      new StringField({ initial: 'none' }),  // none | passive | active
+        currentHostId:   new StringField({ initial: '' }),
+      }),
+      orthodoxMatrixCM: new SchemaField({
+        value: new NumberField({ integer: true, initial: 0, min: 0, max: 10 }),
+      }),
     };
   }
 }
@@ -192,6 +217,28 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       }),
       wounds:         _wounds(),
       ew:             _ew(),
+      orthodoxDeck: new SchemaField({
+        deckModel:       new StringField({ initial: '' }),
+        mccp:            new NumberField({ integer: true, initial: 0, min: 0 }),
+        bod:             new NumberField({ integer: true, initial: 0, min: 0 }),
+        evasion:         new NumberField({ integer: true, initial: 0, min: 0 }),
+        masking:         new NumberField({ integer: true, initial: 0, min: 0 }),
+        sensor:          new NumberField({ integer: true, initial: 0, min: 0 }),
+        hardening:       new NumberField({ integer: true, initial: 0, min: 0 }),
+        activeMemory:    new NumberField({ integer: true, initial: 0, min: 0 }),
+        storageMemory:   new NumberField({ integer: true, initial: 0, min: 0 }),
+        ioSpeed:         new NumberField({ integer: true, initial: 0, min: 0 }),
+        responseIncrease: new NumberField({ integer: true, initial: 0, min: 0 }),
+        sleazeRating:    new NumberField({ integer: true, initial: 0, min: 0 }),
+      }),
+      orthodoxRunState: new SchemaField({
+        securityTally:   new NumberField({ integer: true, initial: 0, min: 0 }),
+        alertLevel:      new StringField({ initial: 'none' }),
+        currentHostId:   new StringField({ initial: '' }),
+      }),
+      orthodoxMatrixCM: new SchemaField({
+        value: new NumberField({ integer: true, initial: 0, min: 0, max: 10 }),
+      }),
     };
   }
 }
@@ -213,6 +260,12 @@ export class ICData extends foundry.abstract.TypeDataModel {
       deployed:         new BooleanField({ initial: false }),
       notes:            new HTMLField({ initial: '', required: false }),
       woundValue:       new NumberField({ integer: true, initial: 0, min: 0 }),
+      // ── Orthodox SR3 matrix fields ─────────────────────────────────────────
+      // Only used when game setting matrixRuleset === 'orthodox'.
+      // Initiative = Rating + Nd6 where N is 1/2/3/4 for Blue/Green/Orange/Red host.
+      // Attack pool and damage resistance both use the host's Security Value (SR3 p.223).
+      orthodoxIcType:   new StringField({ initial: 'Probe' }),
+      orthodoxProactive: new BooleanField({ initial: true }),
     };
   }
 }
@@ -265,6 +318,23 @@ export class HostData extends foundry.abstract.TypeDataModel {
       activeUsers: new ArrayField(new ObjectField()),
       // {actorId,name,iconType,currentNodeId,hidden,role}
       activeAgents: new ArrayField(new ObjectField()),
+      // ── Orthodox SR3 matrix fields ─────────────────────────────────────────
+      // Only used when game setting matrixRuleset === 'orthodox'.
+      // Defragged fields above are unused in orthodox mode (left in place).
+      orthodoxSecurityCode:  new StringField({ initial: 'Green' }), // Blue/Green/Orange/Red/Black
+      orthodoxAlertLevel:    new StringField({ initial: 'passive' }), // passive | active | shutdown
+      // Security Value — dice pool for IC attack tests and IC damage resistance tests (SR3 p.223)
+      orthodoxSecurityValue: new NumberField({ integer: true, initial: 0, min: 0 }),
+      // Each subsystem rated independently (0 = subsystem not present on this host)
+      orthodoxSubsystems: new SchemaField({
+        access:  new NumberField({ integer: true, initial: 0, min: 0 }),
+        files:   new NumberField({ integer: true, initial: 0, min: 0 }),
+        control: new NumberField({ integer: true, initial: 0, min: 0 }),
+        index:   new NumberField({ integer: true, initial: 0, min: 0 }),
+        slave:   new NumberField({ integer: true, initial: 0, min: 0 }),
+      }),
+      // {actorId, name, icType, rating, alertRequired}
+      orthodoxActiveIC: new ArrayField(new ObjectField()),
     };
   }
 }

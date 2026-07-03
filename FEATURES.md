@@ -119,7 +119,12 @@ automatically. The GM/player makes the final call (clicking wound boxes, interpr
   Initiate's Grade. More successes wins (a tie favors the ward). **No alert is posted** — fooling
   is the quiet alternative to fighting.
 
-## 10. The Matrix (deckers) - Uses 'The Matrix Defragged' rules. 
+## 10. The Matrix — two rulesets
+
+Switch between rulesets in **Configure Settings → System → Matrix Ruleset**. Requires a full
+Foundry restart. A red warning is shown in the settings UI.
+
+### 10a. Matrix Defragged (default ruleset)
 
 - **User mode** — Matrix tab buttons: Tortoise / AR / VR-Cold / VR-Hot (sets initiative & biofeedback
   rules).
@@ -132,6 +137,27 @@ automatically. The GM/player makes the final call (clicking wound boxes, interpr
   buttons per host node.
 - **Host sheet** (GM) — System Rating, Security Tier (auto-fills threshold/colour), **Overwatch**
   10-box track (box 10 = Convergence), node map, **Security Sheaf** with stocked IC + trigger steps.
+
+### 10b. Orthodox SR3 Matrix (SR3 core book Chapter 8)
+
+- **Cyberdeck setup** — Matrix tab → **📦 Browse Cyberdecks** opens a live-filter picker from the
+  `Cyberdecks — Orthodox SR3` compendium. Selecting a deck writes MPCP, Active/Storage Memory, I/O
+  Speed, Hardening, and Response Increase directly to the actor. Run the `populate-odm-cyberdecks`
+  macro once after a full Foundry restart to fill the compendium.
+- **Programs** — Matrix tab → **+ Browse Programs** adds a program from the `Programs — Orthodox SR3`
+  compendium as an item on the actor. The program list shows Category, editable Rating, and calculated
+  Active Memory (`Rating² × multiplier`). A memory bar turns red if you exceed Active Memory. Run
+  `populate-odm-programs` to fill the compendium.
+- **Hacking Pool** — derived: `⌊(Intelligence + MPCP) / 3⌋`. Shown on the Matrix tab when MPCP > 0.
+- **Matrix Condition Monitor** — 10-box track on the Matrix tab. TN penalties at 3 / 6 / 8 boxes
+  (+1 / +2 / +3). Filling all 10 crashes the deck → dumpshock (Stun in VR-Cold, Physical in VR-Hot)
+  at the host's Security Value.
+- **Host sheet (Orthodox)** — Security Code (Green / Orange / Red / Black), Security Value, active
+  IC roster, **Trigger Steps** editor (sorted by tally threshold, inline editable).
+- **IC sheet (Orthodox)** — Derived stats panel (Rating, Damage, TN), Roll Initiative, Roll Attack.
+  IC initiative is tier-based (Ivory 0d6 → Blue 1d6 → Green 2d6 → Orange 3d6 → Red/Black/UV 4d6).
+- **IC attacks decker** — IC sheet → Roll Attack: target decker dialog, boxing card posts for both
+  sides, result assigns Matrix CM boxes to the decker. CM box 10 = dumpshock auto-posted.
 
 ## 11. Vehicles & rigging
 

@@ -11,7 +11,9 @@ import { SR3EActorSheet } from './sheets/SR3EActorSheet.js';
 import { SR3EVehicleSheet } from './sheets/SR3EVehicleSheet.js';
 import { SR3EItemSheet } from './sheets/SR3EItemSheet.js';
 import { SR3EHostSheet } from './sheets/SR3EHostSheet.js';
+import { SR3EHostSheetOrthodox } from './sheets/SR3EHostSheetOrthodox.js';
 import { SR3EICSheet } from './sheets/SR3EICSheet.js';
+import { SR3EICSheetOrthodox } from './sheets/SR3EICSheetOrthodox.js';
 import { SR3EWardSheet } from './sheets/SR3EWardSheet.js';
 import { SR3EAgentSheet } from './sheets/SR3EAgentSheet.js';
 import { SR3E } from './config.js';
@@ -152,6 +154,24 @@ Hooks.once('init', () => {
   CONFIG.Item.documentClass = SR3EItem;
   CONFIG.Combat.documentClass = SR3ECombat;
 
+  // Matrix ruleset — registered first so it can gate host-sheet selection below.
+  // Changing this setting triggers a page reload (requiresReload) which re-runs
+  // init and registers the correct sheet class.
+  game.settings.register('The2ndChumming3e', 'matrixRuleset', {
+    name: 'Matrix Ruleset',
+    hint: 'Choose the matrix rules for your campaign. Defragged v2 is the default simplified ruleset. Orthodox uses the standard SR3 core-book hacking rules. Changing this reloads Foundry.',
+    scope: 'world',
+    config: true,
+    requiresReload: true,
+    type: String,
+    choices: {
+      'defragged': 'Matrix Defragged v2',
+      'orthodox':  'Orthodox SR3 Matrix',
+    },
+    default: 'defragged',
+  });
+  const _orthodoxMatrix = game.settings.get('The2ndChumming3e', 'matrixRuleset') === 'orthodox';
+
   // Register sheets
   foundry.documents.collections.Actors.unregisterSheet('core', foundry.appv1.sheets.ActorSheet);
   foundry.documents.collections.Actors.registerSheet('The2ndChumming3e', SR3EActorSheet, {
@@ -166,16 +186,18 @@ Hooks.once('init', () => {
     label: 'SR3E Vehicle Sheet'
   });
 
-  foundry.documents.collections.Actors.registerSheet('The2ndChumming3e', SR3EHostSheet, {
+  foundry.documents.collections.Actors.registerSheet('The2ndChumming3e',
+    _orthodoxMatrix ? SR3EHostSheetOrthodox : SR3EHostSheet, {
     types: ['host'],
     makeDefault: true,
-    label: 'SR3E Host Sheet'
+    label: _orthodoxMatrix ? 'SR3E Host Sheet (Orthodox)' : 'SR3E Host Sheet (Defragged v2)',
   });
 
-  foundry.documents.collections.Actors.registerSheet('The2ndChumming3e', SR3EICSheet, {
+  foundry.documents.collections.Actors.registerSheet('The2ndChumming3e',
+    _orthodoxMatrix ? SR3EICSheetOrthodox : SR3EICSheet, {
     types: ['ic'],
     makeDefault: true,
-    label: 'SR3E IC Sheet'
+    label: _orthodoxMatrix ? 'SR3E IC Sheet (Orthodox)' : 'SR3E IC Sheet (Defragged v2)',
   });
 
   foundry.documents.collections.Actors.registerSheet('The2ndChumming3e', SR3EAgentSheet, {
@@ -1911,6 +1933,19 @@ function _claimBtn(btn, mid, cls, idx) {
 }
 
 
+// Inject red warning below the matrixRuleset setting in Configure Settings.
+Hooks.on('renderSettingsConfig', (_app, html) => {
+  const input = html.querySelector('[name="The2ndChumming3e.matrixRuleset"]');
+  if (!input) return;
+  const formGroup = input.closest('.form-group');
+  if (!formGroup) return;
+  const warn = document.createElement('p');
+  warn.className = 'notes';
+  warn.style.cssText = 'color:#cc2222;font-weight:bold;margin-top:4px';
+  warn.textContent = '⚠ Changing Matrix rules midgame could break your game.';
+  formGroup.appendChild(warn);
+});
+
 // Attach action button handlers to each chat message as it renders.
 // renderChatMessageHTML fires for every render (new message AND pop-up notification),
 // so the guard above is what prevents double-firing across the two DOM instances.
@@ -2021,6 +2056,46 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'mijideg', i)) return;
       await game.sr3e.SR3EMIJI.applyDegradation(btn);
+    });
+  });
+
+  html.querySelectorAll('.sr-ost-roll-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'ostroll', i)) return;
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'ostroll', i)) return;
+      await SR3EActor.handleOrthodoxSystemTestRoll(btn);
+    });
+  });
+
+  html.querySelectorAll('.sr-occ-roll-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'occroll', i)) return;
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'occroll', i)) return;
+      await SR3EActor.handleOrthodoxCybercombatRoll(btn);
+    });
+  });
+
+  html.querySelectorAll('.sr-icia-roll-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'iciaroll', i)) return;
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'iciaroll', i)) return;
+      await SR3EActor.handleOrthodoxICAttackRoll(btn);
+    });
+  });
+
+  html.querySelectorAll('.sr-icia-assign-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'iciaassign', i)) return;
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'iciaassign', i)) return;
+      await SR3EActor.handleOrthodoxICAssign(btn);
     });
   });
 

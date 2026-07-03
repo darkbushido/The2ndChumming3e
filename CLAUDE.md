@@ -286,23 +286,58 @@ static defineSchema() {
 
 ```
 sr3e/
-├── system.json                   ← Foundry manifest + documentTypes declaration
-├── lang/en.json                  ← Localisation strings
-├── styles/sr3e.css               ← All styles, CSS custom properties
+├── system.json                       ← Foundry manifest + documentTypes declaration
+├── lang/en.json                      ← Localisation strings
+├── styles/sr3e.css                   ← All styles, CSS custom properties
+├── rawdata/                          ← Source JSON used to populate compendiums (not loaded by Foundry)
+│   ├── ODM-Cyberdeck.json            ← Orthodox SR3 cyberdeck stats     ← USE for orthodox compendiums
+│   ├── ODM-Programs.json             ← Orthodox SR3 program list         ← USE for orthodox compendiums
+│   ├── ODM-ProgrammingRules.js       ← Orthodox SR3 rules reference      ← USE for orthodox compendiums
+│   ├── MDF-cyberdecks.json           ← Matrix Defragged cyberdeck data   ← DO NOT touch for ODM work
+│   ├── MDF-matrixprograms.json       ← Matrix Defragged program data     ← DO NOT touch for ODM work
+│   ├── MDF-IC.json                   ← Matrix Defragged IC data          ← DO NOT touch for ODM work
+│   ├── MDF-program-agents.json       ← Matrix Defragged agent data       ← DO NOT touch for ODM work
+│   ├── MDF-program-agents-abilities.json ← MDF agent abilities          ← DO NOT touch for ODM work
+│   ├── ActiveSkills.json             ← General skills compendium source
+│   └── Armor.json                    ← General armor compendium source
 └── scripts/
-    ├── sr3e.js                   ← Entry point: registers models, classes, hooks, button handlers
-    ├── config.js                 ← SR3E constants
+    ├── sr3e.js                       ← Entry point: registers models, classes, hooks, button handlers
+    ├── config.js                     ← SR3E constants
     ├── data/
-    │   ├── ActorDataModels.js    ← TypeDataModel subclasses: CharacterData, NpcData, VehicleData
-    │   └── ItemDataModels.js     ← TypeDataModel subclasses: all item types
+    │   ├── ActorDataModels.js        ← TypeDataModel subclasses: CharacterData, NpcData, VehicleData
+    │   └── ItemDataModels.js         ← TypeDataModel subclasses: all item types
     ├── documents/
-    │   ├── SR3EActor.js          ← Actor: derived data, all roll/combat methods
-    │   ├── SR3EItem.js           ← Item: skill/weapon/melee roll methods
-    │   └── SR3ECombat.js         ← Combat: SR2/SR3 initiative, endCombat pool refresh
-    └── sheets/
-        ├── SR3EActorSheet.js     ← ApplicationV2 actor sheet
-        └── SR3EItemSheet.js      ← ApplicationV2 item sheet
+    │   ├── SR3EActor.js              ← Actor: derived data, all roll/combat methods
+    │   ├── SR3EItem.js               ← Item: skill/weapon/melee roll methods
+    │   ├── SR3ECombat.js             ← Combat: SR2/SR3 initiative, endCombat pool refresh
+    │   ├── SR3ESpiritSummoning.js    ← Conjuring / summoning flow
+    │   ├── SR3EVehicleChase.js       ← Chase scene logic
+    │   └── SR3EMIJI.js               ← Electronic warfare MIJI contest
+    ├── sheets/
+    │   ├── SR3EActorSheet.js         ← ApplicationV2 character/NPC actor sheet
+    │   ├── SR3EItemSheet.js          ← ApplicationV2 item sheet
+    │   ├── SR3EVehicleSheet.js       ← Vehicle sheet
+    │   ├── SR3EHostSheet.js          ← Host sheet (Matrix Defragged ruleset)
+    │   ├── SR3EHostSheetOrthodox.js  ← Host sheet (Orthodox SR3 ruleset)
+    │   ├── SR3EICSheet.js            ← IC/Agent sheet (Matrix Defragged)
+    │   ├── SR3EICSheetOrthodox.js    ← IC sheet (Orthodox SR3)
+    │   └── SR3EWardSheet.js          ← Ward (astral barrier) sheet
+    └── macros/
+        ├── populate-odm-cyberdecks.js ← Populates sr3e-odm-cyberdecks pack (Orthodox SR3)
+        ├── populate-odm-programs.js   ← Populates sr3e-odm-programs pack (Orthodox SR3)
+        └── populate-drugs.js          ← Populates sr3e-drugs pack
 ```
+
+### rawdata/ file naming convention
+
+**ODM-\*** = **Orthodox Decking Matrix** (SR3 core book rules, Chapter 8).
+These are the source files for the `sr3e-odm-cyberdecks` and `sr3e-odm-programs` compendium packs.
+Use only ODM files when working on Orthodox SR3 Matrix features.
+
+**MDF-\*** = **Matrix Defragged** (the alternative Matrix ruleset, a community supplement).
+These are the source for `sr3e-cyberdecks`, `sr3e-programs`, `sr3e-ic`, and related packs.
+**Do not touch MDF files when working on Orthodox SR3 Matrix features** — they are a completely
+separate ruleset with different schemas and different game mechanics.
 
 ---
 
@@ -680,6 +715,37 @@ CYB/UNA → Unarmed Combat
 --sr-amber, --sr-amber-bg          ← warnings/defaulting
 --r, --r-lg                        ← border radius tokens
 ```
+
+---
+
+## Two-track Matrix system
+
+The system supports two mutually-exclusive Matrix rulesets, toggled via the **`matrixRuleset`** world
+setting (Configure Settings → System → Matrix Ruleset). **Changing this requires a full Foundry
+restart** (`requiresReload: true`). A red warning is injected into the settings UI by the
+`renderSettingsConfig` hook.
+
+| Setting value | Ruleset | Sheet classes registered |
+|---------------|---------|--------------------------|
+| `'defragged'` (default) | **Matrix Defragged v2** | `SR3EHostSheet`, `SR3EICSheet` |
+| `'orthodox'`  | **Orthodox SR3** (core book Ch. 8) | `SR3EHostSheetOrthodox`, `SR3EICSheetOrthodox` |
+
+The character sheet (`SR3EActorSheet`) renders its Matrix tab differently depending on the setting:
+- **Defragged** — Hacking Pool (INT+MPCP/3 from equipped cyberdeck item), node tracking, Overwatch.
+- **Orthodox** — `system.orthodoxDeck.*` fields (MPCP, Active Memory, Hardening, Response, etc.),
+  Loaded Programs list (program items with memory tracking), **Matrix Condition Monitor** (10-box
+  track), Cyberdeck picker (from `sr3e-odm-cyberdecks`), Program picker (from `sr3e-odm-programs`).
+  Hacking Pool = `⌊(INT + MPCP) / 3⌋` via `system.orthodoxDeck.mpcp`.
+
+**Key data model fields for Orthodox SR3 (on `CharacterData` / `NpcData`):**
+- `system.orthodoxDeck.{ mpcp, activeMemory, storageMemory, hardening, responseIncrease, ioPeed }` — persisted
+- `system.orthodoxRunState.{ hostId, hostName, securityCode, securityValue, securityTally, personaBod, personaEvasion, personaMasking, personaSensor }` — current run state
+- `system.orthodoxMatrixCM.value` — Matrix Condition Monitor boxes (0–10); crash at 10 → dumpshock
+
+**Compendiums (Orthodox only):**
+- `sr3e-odm-cyberdecks` — populated from `rawdata/ODM-Cyberdeck.json` via `populate-odm-cyberdecks.js`
+- `sr3e-odm-programs` — populated from `rawdata/ODM-Programs.json` via `populate-odm-programs.js`
+- Program items store extra fields in `modules[0]` with `_odmType: 'orthodox'` (hardening, storageMemory, responseIncrease) since these don't map to the Defragged `CyberdeckData` schema.
 
 ---
 

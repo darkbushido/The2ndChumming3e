@@ -1508,3 +1508,113 @@ and look, rather than roll dice.
   Folder" buttons/search box show the blue-accent bordered style, not Foundry's default tan.
 - **In:** folder rows in any sidebar directory show as an **outline** in the folder's chosen color
   (not a solid color fill).
+
+---
+
+## 38. Orthodox SR3 Matrix
+
+**Prerequisites:** Switch Configure Settings → System → Matrix Ruleset to **Orthodox SR3** and do a
+full Foundry restart (not just F5). Then run the `populate-odm-cyberdecks` and
+`populate-odm-programs` macros to fill the two compendiums (confirm both show the expected counts:
+18 cyberdecks, 55 programs).
+
+### Settings warning
+
+**In:** Configure Settings → System → scroll to Matrix Ruleset → a red bold line reads
+*"⚠ Changing Matrix rules midgame could break your game."* should appear beneath the dropdown.
+
+### Cyberdeck picker
+
+**In:** Open a character sheet → Matrix tab → **📦 Browse Cyberdecks** → picker opens showing a
+filter box and a grid (Model / MPCP / Act.Mem / I/O / Hard. / Resp+ / Cost). Type "nova" → only
+Novatech decks remain. Click **Novatech Slimcase-10** → confirm → actor `system.orthodoxDeck`:
+`mpcp: 10`, `activeMemory: 2000`, `storageMemory: 2500`, `ioSpeed: 480`, `hardening: 5`,
+`responseIncrease: 2`.
+
+| Field on actor | Expected value |
+|---|---|
+| MPCP | 10 |
+| Active Memory | 2000 |
+| I/O Speed | 480 |
+| Hardening | 5 |
+| Response Increase | 2 |
+
+### Program picker + memory tracking
+
+**In:** Matrix tab → **+ Browse Programs** → picker opens (Program / Category / Mult / Mem@1 / Mem@4
+columns). Filter "attack" → only Attack-category programs show. Click **Attack-S** → confirm → a
+`program` item "Attack-S" appears in the Loaded Programs list with Category "Attack", Rating 0, Mem
+shown as `×4` (size formula: Rating² × 4).
+
+**Edit rating:** click the Rating input for Attack-S, type **3**, press Tab/blur → `system.rating`
+updates to 3; size column now shows `36 Mp` (3² × 4). Editing triggers `updateEmbeddedDocuments`,
+not the form submit — confirm the sheet re-renders showing the new value.
+
+**Memory bar:** Active Memory = 2000 (from Slimcase-10 above). Add Attack-S (r3, 36 Mp) + Armor (r4,
+48 Mp, ×3) + Browse (r5, 25 Mp, ×1) → total 109 Mp — bar shows "109 / 2000 Mp used" in dim text.
+Edit Attack-S rating to 20 (400 × 4 = 1600 Mp) → total exceeds 2000 → bar turns **red** and reads
+"OVER CAPACITY".
+
+**Duplicate block:** try to add Attack-S a second time → `ui.notifications.warn` fires "Attack-S is
+already in your programs — update its rating directly.", no second item created.
+
+**Delete:** item controls on each row; delete Attack-S → it disappears from the list.
+
+### Hacking Pool formula
+
+Formula: `⌊(Intelligence + MPCP) / 3⌋`
+
+| INT | MPCP | Expected HP |
+|---|---|---|
+| 6 | 10 | 5 |
+| 5 | 6 | 3 |
+| 4 | 0 | 1 |
+
+**In:** Set MPCP to 6 on an INT 5 character → Matrix tab shows Hacking Pool **3** (shown as
+`available / total`). Spend 1 → shows `2 / 3`.
+
+### Matrix Condition Monitor (decker)
+
+**In:** Matrix tab (MPCP > 0) shows a 10-box CM track. Click box 3 → boxes 1–3 fill; TN penalty
+readout shows **+1**. Click box 6 → shows **+2**. Click box 8 → shows **+3**. Click the box again
+to toggle off (works like the wound track).
+
+**L/M/S/D buttons:** click **M** (3 boxes) on a fresh track → boxes 1–3 fill. Click **S** → boxes
+1–6 fill. The **Crashed!** badge appears only when all 10 are filled.
+
+**TN penalty table:**
+
+| CM boxes filled | Penalty |
+|---|---|
+| 0–2 | 0 |
+| 3–5 | +1 |
+| 6–7 | +2 |
+| 8–9 | +3 |
+| 10 | Crashed |
+
+### IC → Decker attack
+
+**Prerequisites:** Orthodox host sheet with Security Code and Security Value set; IC actor (type
+`ic`) deployed to the host (activeHostId set); decker connected to same host.
+
+**In:** IC sheet → **⚔ Roll Attack** → target dropdown shows the connected decker. Select them →
+boxing card posts with IC stats on one side (Rating dice, TN 4, damage code) and Decker on the other
+(Cybercombat skill dice, editable HP, TN 4 + CM penalty). GM clicks **⚔ Roll!** → both sides roll.
+
+**If IC wins (more hits):** net hits stage the IC's damage code upwards (every 2 net = +1 level).
+Result card shows a **💻 Assign X Matrix CM damage** button. Clicking it → decker's `orthodoxMatrixCM.value`
+increases by the box count (L=1 / M=3 / S=6 / D=10), capped at 10. CM track on sheet updates.
+
+**Dumpshock at 10:** when the CM assignment hits 10 boxes, a dumpshock soak card auto-posts for
+the decker (Power = host Security Value; Stun if VR-Cold/TRM/AR, Physical if VR-Hot).
+
+**If decker wins (more hits):** result shows the net success count; GM resolves as IC damage (no
+automatic IC wound assignment currently — GM adjudicates IC destruction).
+
+**Tie:** "Tie! N vs N — no damage." result, no assign buttons.
+
+### Settings — red warning in Configure Settings
+
+**In:** Go to Configure Settings → System → the Matrix Ruleset dropdown should have a bold red
+warning beneath it: *"⚠ Changing Matrix rules midgame could break your game."* — confirm it appears
+and is not cut off or hidden by surrounding elements.
