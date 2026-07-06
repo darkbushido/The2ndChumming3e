@@ -4990,7 +4990,7 @@ _prepareCharacter(sys, attr) {
       base = intel + 20;
       dice = 1;
       modeNote = `<div class="sr-roll-meta" style="color:#c070f5">✦ Astral Init — INT ${intel} + 20</div>`;
-    } else if (() => { try { return game.settings.get('The2ndChumming3e', 'matrixRuleset') === 'orthodox'; } catch { return false; } })()
+    } else if ((() => { try { return game.settings.get('The2ndChumming3e', 'matrixRuleset') === 'orthodox'; } catch { return false; } })()
               && (this.system.orthodoxRunState?.currentHostId ?? '') !== '') {
       // Orthodox SR3: decker jacked in uses reaction BASE + ResponseIncrease×2 + (1+Response)d6
       // Wired reflexes excluded while jacked in.
