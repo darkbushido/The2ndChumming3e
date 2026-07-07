@@ -211,6 +211,14 @@
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
     {
+      "name": "sr3e-mr-johnsons-contacts",
+      "label": "Mr. Johnson's Contacts",
+      "path": "packs/sr3e-mr-johnsons-contacts",
+      "type": "Actor",
+      "system": "The2ndChumming3e",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    },
+    {
       "name": "sr3e-ic",
       "label": "Intrusion Countermeasures",
       "path": "packs/sr3e-ic",

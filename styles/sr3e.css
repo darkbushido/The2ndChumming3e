@@ -222,6 +222,8 @@ background-color: var(--sr-surface) !important;
 .sr-matrix-ic-resist-roll-btn,
 .sr-cc-roll-btn {
   width: 100%;
+  height: auto;      /* core gives buttons a fixed height — grow with wrapped text */
+  white-space: normal;
   padding: 6px 10px;
   border-radius: var(--r);
   font-size: 12px;
@@ -318,7 +320,25 @@ background-color: var(--sr-surface) !important;
 
 .sr-soak-btn:disabled,
 .sr-soak-roll-btn:disabled,
-.sr-spell-resist-roll-btn:disabled {
+.sr-dodge-roll-btn:disabled,
+.sr-drain-btn:disabled,
+.sr-drain-roll-btn:disabled,
+.sr-spell-soak-btn:disabled,
+.sr-spell-resist-roll-btn:disabled,
+.sr-spell-defense-btn:disabled,
+.sr-spell-defense-proceed-btn:disabled,
+.sr-melee-roll-btn:disabled,
+.sr-astral-roll-btn:disabled,
+.sr-astral-soak-btn:disabled,
+.sr-astral-soak-roll-btn:disabled,
+.sr-aura-reading-btn:disabled,
+.sr-contested-roll-btn:disabled,
+.sr-ram-vehicle-soak-btn:disabled,
+.sr-ram-passenger-resist-btn:disabled,
+.sr-summon-confirm-btn:disabled,
+.sr-matrix-ic-resist-btn:disabled,
+.sr-matrix-ic-resist-roll-btn:disabled,
+.sr-cc-roll-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
@@ -378,6 +398,8 @@ background-color: var(--sr-surface) !important;
 .sr-assign-damage-btn {
   display: block;
   width: 100%;
+  height: auto;      /* core gives buttons a fixed height — grow with wrapped text */
+  white-space: normal;
   margin-top: 6px;
   padding: 6px 10px;
   background: color-mix(in srgb, var(--sr-red) 10%, transparent);
@@ -494,17 +516,7 @@ background-color: var(--sr-surface) !important;
   min-width: 0;
 }
 
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.form-field--check {
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-}
+/* .form-field base + --check styles live in the shared form block further down */
 
 .field-label {
   font-size: 11px;
@@ -861,34 +873,6 @@ background-color: var(--sr-surface) !important;
   color: var(--sr-bg);
 }
 
-.reaction-bonuses {
-  display: flex;
-  gap: 8px;
-  margin-top: 4px;
-  font-size: 11px;
-}
-
-.reaction-bonus-label {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  color: var(--sr-muted);
-}
-
-.reaction-bonus-label input {
-  width: 40px;
-  background: var(--sr-card);
-  border: 1px solid var(--sr-border);
-  border-radius: 3px;
-  color: var(--sr-text);
-  text-align: center;
-  padding: 1px 3px;
-}
-
-.reaction-bonus-label span {
-  margin-left: 2px;
-}
-
 .attr-block.attr-full-width {
   grid-column: span 2;
 }
@@ -921,6 +905,13 @@ background-color: var(--sr-surface) !important;
 
 .reaction-bonus-label span {
   margin-left: 3px;
+}
+
+/* Foundry v13+ sidebar tabs are bottom-anchored cards sized to content
+   (#sidebar-content has align-items:flex-end). Stretch every tab — combat
+   tracker, actors, items, etc. — to full height instead. */
+#sidebar-content .tab {
+  height: 100%;
 }
 
 /* Foundry v13 chat sidebar scroll fix */
@@ -1503,8 +1494,6 @@ background-color: var(--sr-surface) !important;
 
 .item-cell { color: var(--sr-muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.item-controls { flex: 0 0 108px; min-width: 108px; justify-content: flex-end; }
-
 .skill-name {
   cursor: pointer;
 }
@@ -1523,6 +1512,9 @@ background-color: var(--sr-surface) !important;
   display: flex;
   gap: 10px;
   color: var(--sr-dim);
+  flex: 0 0 108px;
+  min-width: 108px;
+  justify-content: flex-end;
 }
 .item-controls i { cursor: pointer; font-size: 12px; transition: color 0.1s; }
 .item-controls i:hover                      { color: var(--sr-text); }
@@ -1672,6 +1664,7 @@ background-color: var(--sr-surface) !important;
   color: var(--sr-muted);
 }
 .form-field.checkbox { flex-direction: row; align-items: center; gap: 6px; }
+.form-field--check   { flex-direction: row; align-items: center; gap: 8px; }
 .form-field input,
 .form-field select {
   height: 30px;

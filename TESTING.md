@@ -1618,3 +1618,83 @@ automatic IC wound assignment currently — GM adjudicates IC destruction).
 **In:** Go to Configure Settings → System → the Matrix Ruleset dropdown should have a bold red
 warning beneath it: *"⚠ Changing Matrix rules midgame could break your game."* — confirm it appears
 and is not cut off or hidden by surrounding elements.
+
+---
+
+# Code-review findings — 2026-07-04 (statuses updated 2026-07-07)
+
+Suspected bugs found by static code review. Each entry: what the code does, where, what should
+happen, and how to reproduce. Tick each one passed/confirmed and the fix can go in.
+
+## F1. `isLiveActor` infinite recursion (compendium-imported actors) — FIXED 2026-07-07
+
+`scripts/sr3e.js:77-81` — the compendium-source branch called `game.sr3e.isLiveActor(a)`,
+but line 83 assigns *this same function* to `game.sr3e.isLiveActor`, so it recursed forever
+(RangeError: Maximum call stack size exceeded) for any actor with `_stats.compendiumSource`.
+Called from most selection dialogs and the actor sheet header (`appearsInUI`), so sheets of
+compendium-imported actors crashed on render.
+
+**Fix applied (user-approved):** the branch now tests the flag —
+`a.getFlag('The2ndChumming3e', 'isTemplate') === false` (hidden unless explicitly marked live;
+"Mark as Live" sets the flag to explicit `false`).
+
+**Verify:** import an actor from any compendium (e.g. Mr. Johnson's Contacts) → open its sheet →
+renders normally. "Mark as Live"/"Mark as Template" toggles show/hide it in targeting dialogs.
+
+## F2. Missing template filter in some actor dropdowns — OPEN (user approved adding the filter)
+
+- **Barrier Damage** (`scripts/sr3e.js` ~line 831) filters only by type — no `isLiveActor` —
+  unlike siblings Falling Damage and Escape Artist.
+- **IC picker** (`SR3EHostSheet.js` ~1438, `SR3EHostSheetOrthodox.js` ~356) and **host picker**
+  (`SR3EActorSheet.js` ~3087) also skip the filter.
+
+**Repro:** template-flagged character appears in the 🧱 Barrier Damage dropdown (it shouldn't).
+
+## F3. Melee boxing-card TNs omit the wound modifier — OPEN
+
+`SR3EItem.js` (melee ctx build, ~line 229) pre-fills `atkTN`/`defTN` as
+`max(2, 4 − reach + defaulting (+ called shot))` with **no wound term**, and `handleMeleeRoll`
+rolls via `_rollWave` directly so `rollPool`'s wound fold-in never runs. §6 above says
+TN = `4 − own reach + woundMod`; the ranged path applies it. Astral combat may share the gap.
+
+**Proposed fix:** bake `− (actor.system.woundMod ?? 0)` (woundMod is negative) into both
+pre-filled TNs; fields stay GM-editable.
+
+**Repro:** give the attacker 3 stun boxes (wound mod −2) → melee attack → boxing card TN
+shows **4** (should pre-fill **6**).
+
+## F4. Melee / cybercombat / contested results ignore explosion waves (TN > 6 only) — OPEN
+
+When an opposed roll's TN exceeds 6 (defaulting +4, called shot +4…), the wave cards **do**
+show the 💥 explosion button — but the winner/damage comparison card is posted immediately
+from wave-0 successes (`_postMeleeResult`, `_postCCResult`, `_postContestedResult`), and the
+explosion payload drops the melee/CC context, so clicking 💥 re-rolls the dice **but can never
+update the result**. With TN ≤ 6 nothing is wrong (a 6 is already a success).
+
+**Proposed fix (interactive, not silent):** carry the context through the explosion payload and
+defer the comparison card until **both** sides' dice fully resolve (in-memory pending map, same
+pattern as `_actionTracker`). TN ≤ 6 keeps posting immediately as today.
+
+**Repro:** melee attack with a called shot (TN 8), roll until a 6 shows → result card has
+already declared the winner; click 💥 → dice update, result card doesn't.
+
+**Related:** MIJI resolves both sides' explosions silently (`_resolveRoll`) — flagged as wrong
+for the same reason; confirm desired behaviour.
+
+## F5. Drain track (Stun vs Physical) inconsistent between casting and dispelling — OPEN
+
+Spellcasting decides Physical drain with **effective** Magic (`magic.value`); dispelling and
+banishing use **base** Magic (`magic.base`, three sites in SR3EActor.js). A caster with reduced
+effective Magic (Essence loss) gets Stun drain in one flow and Physical in the other at the
+same Force.
+
+**Proposed fix:** standardize all on `magic.value ?? magic.base` (RAW: the caster's Magic).
+
+**Repro:** character with magic.base 6, magic.value 4 → cast at Force 5 → drain is Physical;
+dispel at Force 5 → drain is Stun. They should match (both Physical).
+
+## F6. Wrong range-TN fallback array — OPEN
+
+`SR3EItem.js` (`_rangeBandForDistance` area) — one fallback reads `?? [0, 1, 2, 3]`; the
+Extreme value should be **5** (`[0, 1, 2, 5]`, as in `config.js` and the other two fallbacks).
+Inert unless `SR3E.rangeTN` is ever undefined — consistency fix only. No repro needed.

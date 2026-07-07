@@ -1799,9 +1799,6 @@ _prepareCharacter(sys, attr) {
       return null;
     }
 
-    // SR3 Default Table: defaulting to an attribute is +4 TN (full attribute dice, no pool).
-    if (options.defaulting) tn += 4;
-
     // Simsense degradation on a VCR-jacked rigger applies to ALL their actions (wound-like).
     const signalMod    = options.skipSignalMod ? 0 : SR3EActor._jackedSignalMod(this);
     const effectiveTN  = options.skipWoundMod
@@ -1826,8 +1823,6 @@ _prepareCharacter(sys, attr) {
         isWeaponRoll:        options.isWeaponRoll       ?? false,
         isMelee:             options.isMelee            ?? false,
         isAoE:               options.isAoE              ?? false,
-        aoeTargetIds:        options.aoeTargetIds       ?? null,
-        chunkySalsa:         options.chunkySalsa        ?? null,
         aoeCenter:           options.aoeCenter          ?? null,
         aoeRadius:           options.aoeRadius          ?? null,
         aoeThrowerCenter:    options.aoeThrowerCenter   ?? null,
@@ -1899,8 +1894,6 @@ _prepareCharacter(sys, attr) {
       isWeaponRoll:          options.isWeaponRoll          ?? false,
       isMelee:               options.isMelee               ?? false,
       isAoE:                 options.isAoE                 ?? false,
-      aoeTargetIds:          options.aoeTargetIds          ?? null,
-      chunkySalsa:           options.chunkySalsa           ?? null,
       aoeCenter:             options.aoeCenter             ?? null,
       aoeRadius:             options.aoeRadius             ?? null,
       aoeThrowerCenter:      options.aoeThrowerCenter      ?? null,
@@ -2277,101 +2270,7 @@ _prepareCharacter(sys, attr) {
           const targetName   = targetActor?.name ?? 'Target';
           const attackerName = game.actors.get(state.attackerActorId)?.name ?? 'Attacker';
 
-          if (state.isAoE && state.aoeTargetIds?.length) {
-            // Scatter roll — always happens for AoE grenades
-            const grenadeType = state.grenadeType ?? 'standard';
-            const numDistDice = grenadeType === 'standard' ? 1 : grenadeType === 'aerodynamic' ? 2 : 3;
-            const reductionPerSuccess = grenadeType === 'standard' ? 2 : 4;
-            const SCATTER_DIRS = ['', 'past the target', 'past and to the right of the target', 'short and to the right of the target', 'short of the target', 'short and to the left of the target', 'past and to the left of the target'];
-            const dirRoll     = Math.ceil(Math.random() * 6);
-            const distRolls   = Array.from({ length: numDistDice }, () => Math.ceil(Math.random() * 6));
-            const rawDist     = distRolls.reduce((a, b) => a + b, 0);
-            const reduction   = successes * reductionPerSuccess;
-            const scatterDist = Math.max(0, rawDist - reduction);
-
-            let scatterHtml;
-            if (scatterDist <= 0) {
-              scatterHtml = `<div style="font-size:12px;color:var(--sr-green);margin-top:4px;">🎯 Scatter: <strong>Direct hit</strong> — grenade detonates at target (rolled ${rawDist}m, reduced by ${reduction}m).</div>`;
-            } else {
-              const diceStr = distRolls.length > 1 ? `[${distRolls.join('+')}]=${rawDist}` : rawDist;
-              scatterHtml = `<div style="font-size:12px;color:var(--sr-amber);margin-top:4px;">💨 Scatter: grenade landed <strong>${scatterDist}m ${SCATTER_DIRS[dirRoll]}</strong> (rolled ${diceStr}m − ${reduction}m reduction = ${scatterDist}m). Power reduced by ${scatterDist}.</div>`;
-            }
-
-            if (state.chunkySalsa?.length) {
-              // Confined space (Chunky Salsa): each target has its own blast power, reduced by scatter
-              const csMap = new Map(state.chunkySalsa.map(t => [t.actorId, t]));
-              const adjustedCs = state.chunkySalsa.map(t => ({ ...t, power: Math.max(0, t.power - scatterDist) }));
-              const csLines = adjustedCs.map(t => {
-                const waveDetail = (t.waves?.length ?? 0) > 1
-                  ? ` <span style="font-weight:normal;color:var(--sr-muted)">(${t.waves.map(w => `${w.label}: ${w.power}`).join(' + ')})</span>`
-                  : '';
-                return `<div style="margin-top:3px;font-size:11px;"><strong>${t.name}</strong>: ${t.power}${t.level}${waveDetail}</div>`;
-              }).join('');
-              stagingHtml = `
-                <div class="sr-staging-result">
-                  💥 Confined blast — ${state.chunkySalsa.length} target${state.chunkySalsa.length !== 1 ? 's' : ''} affected
-                  ${csLines}
-                  ${scatterHtml}
-                </div>`;
-              for (const tid of state.aoeTargetIds) {
-                const orig = csMap.get(tid);
-                if (!orig) continue;
-                const adjPower = Math.max(0, orig.power - scatterDist);
-                if (adjPower <= 0) continue;
-                const tActor = game.actors.get(tid);
-                if (!tActor) continue;
-                const soakCtx = JSON.stringify({
-                  attackerActorId: state.attackerActorId,
-                  targetActorId:   tid,
-                  weaponItemId:    state.weaponItemId,
-                  isMelee:         false,
-                  stagedPower:     adjPower,
-                  stagedLevel:     orig.level,
-                  isStun:          staged.isStun,
-                  rawDamage:       `${adjPower}${orig.level}`,
-                }).replace(/'/g, '&#39;');
-                postRollHtml += `
-                  <div class="sr-soak-action">
-                    <button class="sr-soak-btn" data-payload='${soakCtx}'>
-                      🛡 ${tActor.name}: Resist Damage (${adjPower}${orig.level})
-                    </button>
-                  </div>`;
-              }
-            } else {
-              // Standard AoE — same staged damage for all targets, reduced by scatter
-              const adjPower = Math.max(0, staged.power - scatterDist);
-              stagingHtml = `
-                <div class="sr-staging-result">
-                  📊 ${state.rawDamage} + ${successes} hits → <strong>${staged.power}${staged.level} ${staged.isStun ? 'Stun' : 'Physical'}</strong>
-                  ${scatterHtml}
-                  ${scatterDist > 0 ? `<div style="font-size:12px;color:var(--sr-muted);margin-top:2px;">Effective power at target: <strong>${adjPower}${staged.level}</strong></div>` : ''}
-                </div>`;
-              if (adjPower <= 0) {
-                postRollHtml = `<div style="font-size:12px;color:var(--sr-muted);padding:4px;">Blast too weak at target location — no soak needed.</div>`;
-              } else {
-                for (const tid of state.aoeTargetIds) {
-                  const tActor = game.actors.get(tid);
-                  if (!tActor) continue;
-                  const soakCtx = JSON.stringify({
-                    attackerActorId: state.attackerActorId,
-                    targetActorId:   tid,
-                    weaponItemId:    state.weaponItemId,
-                    isMelee:         false,
-                    stagedPower:     adjPower,
-                    stagedLevel:     staged.level,
-                    isStun:          staged.isStun,
-                    rawDamage:       `${adjPower}${staged.level}`,
-                  }).replace(/'/g, '&#39;');
-                  postRollHtml += `
-                    <div class="sr-soak-action">
-                      <button class="sr-soak-btn" data-payload='${soakCtx}'>
-                        🛡 ${tActor.name}: Resist Damage (${adjPower}${staged.level})
-                      </button>
-                    </div>`;
-                }
-              }
-            }
-          } else if ((state.committedDodgeDice ?? 0) > 0) {
+          if ((state.committedDodgeDice ?? 0) > 0) {
             // Defender committed dice — show a button to trigger the dodge roll
             const dodgeContext = JSON.stringify({
               attackerActorId: state.attackerActorId,
@@ -2893,8 +2792,6 @@ _prepareCharacter(sys, attr) {
         isWeaponRoll:       state.isWeaponRoll       ?? false,
         isMelee:            state.isMelee            ?? false,
         isAoE:              state.isAoE              ?? false,
-        aoeTargetIds:       state.aoeTargetIds       ?? null,
-        chunkySalsa:        state.chunkySalsa        ?? null,
         aoeCenter:          state.aoeCenter          ?? null,
         aoeRadius:          state.aoeRadius          ?? null,
         aoeThrowerCenter:   state.aoeThrowerCenter   ?? null,

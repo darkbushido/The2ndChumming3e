@@ -316,8 +316,8 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     const dmgDisplay = dmgInfo.condition === 'none' ? '—'
       : `${dmgInfo.label} (+${dmgInfo.tnMod} TN, −${dmgInfo.initPenalty} Init)`;
 
-    const vehicles   = game.actors.filter(a => a.type === 'vehicle');
-    const characters = game.actors.filter(a => ['character', 'npc'].includes(a.type));
+    const vehicles   = game.actors.filter(a => a.type === 'vehicle' && game.sr3e.isLiveActor(a));
+    const characters = game.actors.filter(a => ['character', 'npc'].includes(a.type) && game.sr3e.isLiveActor(a));
     const controlPool = this._controlPool(p);
 
     const vehicleOpts = [

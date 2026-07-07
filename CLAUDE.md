@@ -303,6 +303,9 @@ sr3e/
 └── scripts/
     ├── sr3e.js                       ← Entry point: registers models, classes, hooks, button handlers
     ├── config.js                     ← SR3E constants
+    ├── SR3EVehicleChase.js           ← Chase scene logic
+    ├── SR3EMIJI.js                   ← Electronic warfare MIJI contest + IVIS
+    ├── SR3EClocks.js                 ← GM Threat Clocks (persisted shared state)
     ├── data/
     │   ├── ActorDataModels.js        ← TypeDataModel subclasses: CharacterData, NpcData, VehicleData
     │   └── ItemDataModels.js         ← TypeDataModel subclasses: all item types
@@ -311,16 +314,16 @@ sr3e/
     │   ├── SR3EItem.js               ← Item: skill/weapon/melee roll methods
     │   ├── SR3ECombat.js             ← Combat: SR2/SR3 initiative, endCombat pool refresh
     │   ├── SR3ESpiritSummoning.js    ← Conjuring / summoning flow
-    │   ├── SR3EVehicleChase.js       ← Chase scene logic
-    │   └── SR3EMIJI.js               ← Electronic warfare MIJI contest
+    │   └── SR3EWard.js               ← Ward (astral barrier) document logic
     ├── sheets/
     │   ├── SR3EActorSheet.js         ← ApplicationV2 character/NPC actor sheet
     │   ├── SR3EItemSheet.js          ← ApplicationV2 item sheet
     │   ├── SR3EVehicleSheet.js       ← Vehicle sheet
     │   ├── SR3EHostSheet.js          ← Host sheet (Matrix Defragged ruleset)
     │   ├── SR3EHostSheetOrthodox.js  ← Host sheet (Orthodox SR3 ruleset)
-    │   ├── SR3EICSheet.js            ← IC/Agent sheet (Matrix Defragged)
+    │   ├── SR3EICSheet.js            ← IC sheet (Matrix Defragged)
     │   ├── SR3EICSheetOrthodox.js    ← IC sheet (Orthodox SR3)
+    │   ├── SR3EAgentSheet.js         ← Agent sheet (Matrix Defragged)
     │   └── SR3EWardSheet.js          ← Ward (astral barrier) sheet
     └── macros/
         ├── populate-odm-cyberdecks.js ← Populates sr3e-odm-cyberdecks pack (Orthodox SR3)
@@ -369,7 +372,7 @@ or `null` if cancelled). The three tiers from the SR3 Default Table:
   skills / specialisations (the GM judges relevance — minimal guardrails) plus every attribute.
 - A cancelled dialog **aborts** the whole action (returns `null`; callers bail).
 - The TN modifier is **baked into the TN** at each call site (e.g. `tn + def.tnMod`); the old
-  `rollPool` `options.defaulting` flag is no longer set by any path (left in place, inert).
+  `rollPool` `options.defaulting` flag has been removed.
 - "No pool dice" is enforced per-flow: combat/spell/hacking/control pool is offered only when
   `def.allowPool` (i.e. never for the Attribute tier).
 
@@ -515,7 +518,7 @@ Two entry points besides the sheet (both fire ready weapons via `_sr3eReadyWeapo
   3. **Throw roll** (`rollPool`) carries `aoeCenter / aoeRadius / aoeThrowerCenter / grenadeType / aoeChunky` in the roll state.
   4. **Resolution** (`SR3EActor._postWaveCard`, the `state.isAoE && state.aoeCenter` branch — runs **before** the `successes===0` check, so a grenade always detonates): rolls scatter (`scatterDice` d6) − `successes × scatterReduction`; **relocates the epicentre** along the throw axis (dir 1 = overthrow, 4 = short); creates a result template at the landing spot; **re-detects every token in range — including the thrower**; draws a landing marker as a **Region document** (circle shape, `visibility: ALWAYS` — synced & visible to **all players**, deleted warning-free since Region isn't deprecated). If the thrower lacks Region-create permission it falls back to a **local PIXI circle** (tracked in `game.sr3e._blastMarkers`). The chat 🧹 Clear button removes whichever was made (`data-region-id` → region `delete()`; `data-marker-id` → PIXI `destroy()`). Per-target power = base − distance (or the **Chunky Salsa GUI** `game.sr3e.openChunkySalsa({...returnOnly})` when confined). Posts a soak card per caught token. Damage is base power − distance, never success-staged (successes only tighten scatter).
 - `_openChunkySalsaCalculator(opts)` posts soak cards itself when called with no `returnOnly` (the Rollable Tables button); returns per-target codes when `returnOnly:true`.
-- *(Dead/unused after this rework: `_promptTargetsAoE`, `_tokensInBlast`, and the old `aoeTargetIds`-gated branch in `_postWaveCard` — left in place but never reached.)*
+- *(The dead remnants of the pre-scatter rework — `_promptTargetsAoE`, `_tokensInBlast`, the `aoeTargetIds`-gated branch in `_postWaveCard` and its `aoeTargetIds`/`chunkySalsa` payload plumbing, and `rollPool`'s inert `options.defaulting` +4 — have been removed.)*
 - **Shared blast-area marker**: `SR3EActor._drawBlastArea(center, radiusM, {name,color})` → `{regionId, markerId}` (Region with `visibility: ALWAYS`, local PIXI fallback) and `SR3EActor._clearBlastButton({regionId,markerId})` build the marker + chat 🧹 Clear button. Used by both grenade resolution and **spell AoE** (purple). Spell AoE has **no scatter/falloff** — `SR3EItem._actorsInRadius(center, radiusM, caster)` auto-detects targets at cast time; each resists at full Force.
 
 ### Melee combat flow
@@ -561,9 +564,9 @@ Power (number) + Level (L/M/S/D) + optional Stun flag
 - Spent when allocated to attack, dodge, or melee
 - Refreshed at end of combat (GM prompted: "Refresh all combat pools?")
 
-### Magic pool (Awakened characters only)
-- Derived: ⌊(INT + WIL + MAG) / 2⌋ + wound modifier
-- Tracked via `magicPoolSpent` on actor system
+### Spell pool (Awakened characters only)
+- Derived: ⌊(INT + WIL + MAG) / 3⌋ (effective Magic; SR3 RAW Spell Pool)
+- Tracked via `spellPoolSpent` on actor system (manual adjustment via `spellPoolMod`)
 - Available = derived − spent
 - Spent when allocated to spellcasting
 - Null / hidden for non-Awakened actors (Magic attribute = 0)
@@ -574,8 +577,8 @@ Power (number) + Level (L/M/S/D) + optional Stun flag
 3. Targeting (**no dodge** — combat spells are resisted, not dodged):
    - **Single**: target dialog only.
    - **AoE** (`SR3EItem._placeBlastTemplate` cursor aim → `_actorsInRadius`): nominate the area centre on the canvas; **every live actor (not the caster, not vehicles) inside the radius is auto-detected** as a target — no manual checkbox list, **no scatter, no falloff**. A purple **Region** area marker is drawn for all players (`SR3EActor._drawBlastArea`, local PIXI fallback) with a 🧹 Clear button on the result card. Off-canvas → falls back to the manual checkbox dialog (`_promptTargetsMulti`). Empty area → casts anyway (drain still applies).
-4. Allocate Magic Pool dice dialog (if any available)
-5. **Casting = SR3 opposed test.** Caster rolls Sorcery + Magic Pool vs **TN = the spell's Target attribute** on the target — `SR3EItem._parseSpellTarget` (the single parser for both cast TN and resist): `W`→Willpower, `B`→Body, `I`→Intelligence, `Q`→Quickness, `F`→Force (the TN, not a target attribute), a number→fixed TN, blank/`OR`/unknown→Mana=Willpower/Physical=Body. **Any `(R)/(T)/(RC)/(V)/(DT)` suffix is stripped and ignored** (so `W(R)`, `4(V)` parse cleanly). For AoE the **primary** target sets the cast TN. Rule of Six throughout.
+4. Allocate Spell Pool dice dialog (if any available)
+5. **Casting = SR3 opposed test.** Caster rolls Sorcery + Spell Pool vs **TN = the spell's Target attribute** on the target — `SR3EItem._parseSpellTarget` (the single parser for both cast TN and resist): `W`→Willpower, `B`→Body, `I`→Intelligence, `Q`→Quickness, `F`→Force (the TN, not a target attribute), a number→fixed TN, blank/`OR`/unknown→Mana=Willpower/Physical=Body. **Any `(R)/(T)/(RC)/(V)/(DT)` suffix is stripped and ignored** (so `W(R)`, `4(V)` parse cleanly). For AoE the **primary** target sets the cast TN. Rule of Six throughout.
 6. On the caster's final wave (allDone):
    - 0 successes: spell fails (targets auto-resist), no effect — drain still posted.
    - 1+ successes: damage is **not** pre-staged; each target gets a **"Resist Spell"** button carrying the caster's successes + base damage (`SR3EActor._spellResistButton`). Caster always gets a **"Resist Drain"** button. The card shows the **cast TN's source** (`spellContext.tnSource`, e.g. "Dave Decker's Willpower") and the **staging the cast hits produce** (base → staged, before the target's resistance reduces it).
@@ -615,12 +618,12 @@ system.wounds.physical.value / .max
 system.woundMod                    ← derived, written by prepareDerivedData
 system.derived.combatPool          ← derived
 system.derived.availableCombatPool ← derived (combatPool − combatPoolSpent)
-system.derived.magicPool           ← derived ⌊(INT+WIL+MAG)/2⌋+wm, null if not Awakened
-system.derived.availableMagicPool  ← derived (magicPool − magicPoolSpent), null if not Awakened
+system.derived.spellPool           ← derived ⌊(INT+WIL+MAG)/3⌋, null if not Awakened
+system.derived.availableSpellPool  ← derived (spellPool − spellPoolSpent), null if not Awakened
 system.derived.initiative          ← derived (reaction + woundMod)
 system.derived.initiativeDice      ← derived
 system.combatPoolSpent             ← persisted, tracks pool usage mid-combat
-system.magicPoolSpent              ← persisted, tracks magic pool usage mid-combat
+system.spellPoolSpent              ← persisted, tracks spell pool usage mid-combat
 system.equippedArmor               ← item ID string
 system.equippedMelee               ← item ID string
 system.karmaPool                   ← persisted

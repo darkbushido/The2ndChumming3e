@@ -115,8 +115,8 @@ export class SR3EItem extends Item {
       return null;
     }
 
-    // TN modifier from defaulting is baked in here; rollPool's own +4 flag is not used.
-    return actor.rollPool(pool, tn + defTnMod, label, { ...options, defaulting: false });
+    // TN modifier from defaulting is baked in here.
+    return actor.rollPool(pool, tn + defTnMod, label, { ...options });
   }
 
   /**
@@ -650,7 +650,6 @@ export class SR3EItem extends Item {
     options.isWeaponRoll     = true;
     options.isMelee          = false;
     options.isAoE            = true;
-    options.defaulting       = false;                  // TN modifier already baked into tn
     options.aoeCenter        = placed.center;          // nominated epicentre (canvas pixels)
     options.aoeRadius        = placed.radius;          // blast radius (metres)
     options.aoeThrowerCenter = throwerCenter;          // for relative scatter direction
@@ -783,7 +782,7 @@ export class SR3EItem extends Item {
   // Anti-Vehicle ammo bypasses the vehicle Power/2 reduction (same effect as the AV-munition checkbox)
   if (ammoType === 'antiVehicle') weaponOpts.avMunition = true;
 
-  const tn = weaponOpts.tn;
+  let tn = weaponOpts.tn;
   options.useKarma    = weaponOpts.useKarma;
   options.karmaReroll = weaponOpts.karmaReroll;
 
@@ -883,7 +882,6 @@ export class SR3EItem extends Item {
   options.isMelee            = ['melee'].includes(this.type);
   options.committedDodgeDice = committedDodgeDice;
   options.skipWoundMod       = true;
-  options.defaulting         = false;        // TN modifier already baked into tn
   options.ammoType           = ammoType;   // carried to the soak card for APDS/Flechette
 
   // Commit recoil — update rounds fired counter before the roll
@@ -1045,7 +1043,6 @@ export class SR3EItem extends Item {
     options.isWeaponRoll       = true;
     options.isMelee            = false;
     options.committedDodgeDice = 0;
-    options.defaulting         = false;   // TN modifier already baked into tn
 
     return actor.rollPool(finalPool, tn, label, options);
   }
@@ -1171,53 +1168,6 @@ export class SR3EItem extends Item {
     });
     if (hookId) Hooks.off('renderDialogV2', hookId);
     return result;
-  }
-
-  /**
-   * Multi-select target dialog for AoE weapons.
-   * Returns array of Actor objects (may include vehicles), or null if cancelled.
-   */
-  static async _promptTargetsAoE(attacker) {
-    const candidates = game.actors.contents.filter(a =>
-      a.id !== attacker.id && game.sr3e.isLiveActor(a)
-    );
-    if (candidates.length === 0) {
-      ui.notifications.warn('No valid targets found.');
-      return null;
-    }
-
-    const choices = candidates.map(a => {
-      const body = a.system.attributes?.body?.value ?? a.system.attributes?.body?.base ?? '?';
-      return `
-        <label class="sr-target-row">
-          <input type="checkbox" name="target-actor" value="${a.id}"
-                 style="width:13px;height:13px;margin:0;accent-color:var(--sr-accent);flex-shrink:0;appearance:auto;-webkit-appearance:checkbox"/>
-          <span>${a.name} <span style="font-size:11px;color:var(--sr-muted)">(Body ${body})</span></span>
-        </label>`;
-    }).join('');
-
-    let targetIds = [];
-    let cancelled = true;
-    await foundry.applications.api.DialogV2.wait({
-      window: { title: `${attacker.name} — Who's in the blast?` },
-      content: `<div class="sr-target-list">${choices}</div>`,
-      buttons: [
-        {
-          label: 'Throw / Fire',
-          action: 'confirm',
-          default: true,
-          callback: (_e, _b, dialog) => {
-            cancelled = false;
-            dialog.element.querySelectorAll('input[name="target-actor"]:checked')
-              .forEach(cb => targetIds.push(cb.value));
-          }
-        },
-        { label: 'Cancel', action: 'cancel' },
-      ],
-    });
-
-    if (cancelled || targetIds.length === 0) return null;
-    return targetIds.map(id => game.actors.get(id)).filter(Boolean);
   }
 
   /**
@@ -1544,22 +1494,6 @@ export class SR3EItem extends Item {
       window.addEventListener('keydown', onKey, true);
       canvas.app?.view?.addEventListener?.('contextmenu', onContext, true);
     });
-  }
-
-  /**
-   * Tokens whose centre is within `radius` metres of the blast centre (excluding the
-   * attacker's own token). Returns [{ actor, token, distance }].
-   */
-  static _tokensInBlast(center, radius, attacker) {
-    const out = [];
-    for (const tok of (canvas.tokens?.placeables ?? [])) {
-      if (!tok.actor || tok.actor.id === attacker.id) continue;
-      let d;
-      try { d = canvas.grid.measurePath([center, tok.center])?.distance ?? Infinity; }
-      catch { d = Infinity; }
-      if (d <= radius) out.push({ actor: tok.actor, token: tok, distance: d });
-    }
-    return out;
   }
 
   /**
@@ -1969,9 +1903,13 @@ export class SR3EItem extends Item {
       if (type === 'vehicle') return `<span style="font-size:10px;color:var(--sr-accent)"> [Vehicle]</span>`;
       return '';
     };
-    const candidates = game.actors.contents.filter(a =>
+    const all = game.actors.contents.filter(a =>
       a.id !== attacker.id && game.sr3e.isLiveActor(a)
     );
+    // Prefer actors with a token on the current scene; fall back to the full
+    // world list when nothing is on canvas (theatre-of-the-mind).
+    const onCanvas   = canvas?.ready ? all.filter(a => a.getActiveTokens().length > 0) : [];
+    const candidates = onCanvas.length ? onCanvas : all;
 
     if (!candidates.length) {
       ui.notifications.warn('No valid targets found.');
@@ -2434,8 +2372,12 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false) {
    * Returns array of Actor objects, or null if cancelled / nothing selected.
    */
   static async _promptTargetsMulti(attacker, spellType, spellTarget, force) {
-    const candidates = game.actors.contents
+    const all = game.actors.contents
       .filter(a => a.id !== attacker.id && a.type !== 'vehicle' && game.sr3e.isLiveActor(a));
+    // Prefer actors with a token on the current scene; fall back to the full
+    // world list when nothing is on canvas (theatre-of-the-mind).
+    const onCanvas   = canvas?.ready ? all.filter(a => a.getActiveTokens().length > 0) : [];
+    const candidates = onCanvas.length ? onCanvas : all;
     if (candidates.length === 0) {
       ui.notifications.warn('No valid targets found.');
       return null;

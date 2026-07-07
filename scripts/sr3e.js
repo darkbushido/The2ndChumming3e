@@ -76,7 +76,7 @@ Hooks.once('init', () => {
   // Compendium imports (has compendiumSource): hidden unless explicitly marked live.
   function isLiveActor(a) {
     return a._stats?.compendiumSource
-      ? game.sr3e.isLiveActor(a)
+      ? a.getFlag('The2ndChumming3e', 'isTemplate') === false
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
