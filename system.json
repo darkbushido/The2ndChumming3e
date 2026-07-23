@@ -203,14 +203,6 @@
       "flags": { "The2ndChumming3e": { "itemTypes": ["medical"] } }
     },
     {
-      "name": "sr3e-sample-characters",
-      "label": "Sample Characters",
-      "path": "packs/sr3e-sample-characters",
-      "type": "Actor",
-      "system": "The2ndChumming3e",
-      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
-    },
-    {
       "name": "sr3e-mr-johnsons-contacts",
       "label": "Mr. Johnson's Contacts",
       "path": "packs/sr3e-mr-johnsons-contacts",
@@ -276,11 +268,6 @@
     }
   ],
   "packFolders": [
-    {
-      "name": "Characters",
-      "sorting": "a",
-      "packs": ["sr3e-sample-characters"]
-    },
     {
       "name": "Weapons & Gear",
       "sorting": "a",

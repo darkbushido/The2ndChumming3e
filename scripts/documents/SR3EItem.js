@@ -699,11 +699,12 @@ export class SR3EItem extends Item {
     if (availableModes.length > 0) {
       // SS-only weapons: skip the dialog — no recoil, no damage mods
       const HEAVY_CATS = new Set(['LMG', 'MMG', 'HMG', 'MinG']);
-      const isHeavy = HEAVY_CATS.has(this.system.category ?? '');
+      const isHeavy   = HEAVY_CATS.has(this.system.category ?? '');
+      const isShotgun = (this.system.category ?? '') === 'ShtG';
       if (availableModes.length === 1 && availableModes[0] === 'SS') {
         fireModeResult = { mode: 'SS', rounds: 0, roundsWasted: 0, recoilTN: 0, additionalTNPenalty: 0 };
       } else {
-        fireModeResult = await SR3EItem._promptFireMode(availableModes, actor, this, isHeavy);
+        fireModeResult = await SR3EItem._promptFireMode(availableModes, actor, this, isHeavy, isShotgun);
         if (!fireModeResult) return null;
       }
 
@@ -1609,7 +1610,7 @@ export class SR3EItem extends Item {
     const defaultTN  = baseTN + initRangeTN;
 
     const modNote   = (totalTNMod !== 0 || modBreakdown)
-      ? `<div style="font-size:11px;color:var(--sr-amber);margin-bottom:8px">⚡ TN modifiers: ${modBreakdown ?? (totalTNMod > 0 ? `+${totalTNMod}` : totalTNMod)} (pre-applied)</div>`
+      ? `<div style="font-size:11px;color:var(--sr-amber);margin-top:4px">⚡ TN modifiers: ${modBreakdown ?? (totalTNMod > 0 ? `+${totalTNMod}` : totalTNMod)} (pre-applied)</div>`
       : '';
 
     // Range dropdown — pre-set to the measured band, but the GM can override it (the TN
@@ -1684,12 +1685,12 @@ export class SR3EItem extends Item {
       window: { title: 'Weapon Roll Options' },
       content: `
         <div style="padding:8px 0">
-          ${modNote}
           ${rangeRow}
           <div style="margin-bottom:10px">
             <label>Target Number (TN):
               <input type="number" id="sr-tn" value="${defaultTN}" min="2" max="30" style="width:60px;margin-left:8px"/>
             </label>
+            ${modNote}
           </div>
           <div style="margin-bottom:10px">
             <label>Damage Code:
@@ -2069,20 +2070,23 @@ _getAvailableModes() {
 /**
  * Fire mode selection dialog. Returns { mode, rounds, additionalTNPenalty, roundsWasted } or null.
  */
-static async _promptFireMode(availableModes, actor, weapon, isHeavy = false) {
+static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isShotgun = false) {
   const weaponName   = weapon.name;
   const actorComp    = actor.system.recoilCompensation ?? 0;
   const weaponComp   = weapon.system.recoilMod ?? 0;
   const roundsBefore = actor.system.roundsFiredThisPhase ?? 0;
-  const recoilMult   = isHeavy ? 2 : 1;
 
-  // Recoil TN for a given mode, reduced by total compensation, × heavy multiplier.
+  // Heavy weapons always double uncompensated recoil; shotguns double it in
+  // Burst-Fire mode only (SR3 p.111) — so the multiplier is per-mode.
+  const multForMode = mode => (isHeavy || (isShotgun && mode === 'BF')) ? 2 : 1;
+
+  // Recoil TN for a given mode, reduced by total compensation, × heavy/shotgun-BF multiplier.
   //  BF: cumulative AND counts its own 3 rounds — +3 first burst, +6 second, +9 third…
   //  SS/SA/FA: cumulative on the rounds already fired this phase (this shot's rounds
   //            are added afterwards, so they penalise the NEXT shot, not this one).
-  function recoilForMode(mode, rounds, totalComp, mult) {
-    if (mode === 'BF') return Math.max(0, (rounds + 3) - totalComp) * mult;
-    return Math.max(0, rounds - totalComp) * mult;
+  function recoilForMode(mode, rounds, totalComp) {
+    if (mode === 'BF') return Math.max(0, (rounds + 3) - totalComp) * multForMode(mode);
+    return Math.max(0, rounds - totalComp) * multForMode(mode);
   }
 
   // Stage-up helper
@@ -2104,7 +2108,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false) {
     const info    = modeInfo[m] ?? { label: m, rounds: 1, powerMod: 0, stageMod: 0, note: '' };
     const isFirst = i === 0;
     const roundsPreview  = m === 'FA' ? '(see below)' : m === 'SS' ? '1 (no recoil)' : info.rounds;
-    const recoilDisplay  = recoilForMode(m, roundsBefore, totalComp, recoilMult);
+    const recoilDisplay  = recoilForMode(m, roundsBefore, totalComp);
     const recoilPreview  = m === 'FA'
       ? `+${recoilDisplay} recoil + multi-target (see below)`
       : `+${recoilDisplay}`;
@@ -2157,6 +2161,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false) {
       <span>= <strong id="sr-total-comp">${totalComp}</strong></span>
       <span>&nbsp;|&nbsp; Rounds fired this phase: <strong id="sr-rounds-fired">${roundsBefore}</strong></span>
       ${isHeavy ? '<span style="color:var(--sr-amber)">&nbsp;|&nbsp; ⚠ Heavy weapon: 2× uncompensated recoil</span>' : ''}
+      ${isShotgun ? '<span style="color:var(--sr-amber)">&nbsp;|&nbsp; ⚠ Shotgun: 2× uncompensated recoil in Burst Fire</span>' : ''}
       <button id="sr-reset-recoil" type="button" style="margin-left:auto;padding:1px 7px;font-size:10px;cursor:pointer;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);color:var(--sr-muted)">↺ Reset</button>
     </div>`;
 
@@ -2183,7 +2188,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false) {
       if (totalEl) totalEl.textContent = String(total);
       el.querySelectorAll('.sr-recoil-preview').forEach(span => {
         const m = span.dataset.mode;
-        const r = recoilForMode(m, rounds, total, recoilMult);
+        const r = recoilForMode(m, rounds, total);
         span.textContent = m === 'FA' ? `+${r} recoil + multi-target (see below)` : `+${r}`;
       });
     };
@@ -2236,7 +2241,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false) {
 
           // Recoil per mode (see recoilForMode): BF stacks +3/+6/+9…; SS/SA/FA use the
           // rounds fired before this shot. This shot's rounds are committed after the roll.
-          const recoilTN = recoilForMode(mode, roundsBefore, aComp + wComp, recoilMult);
+          const recoilTN = recoilForMode(mode, roundsBefore, aComp + wComp);
           result = { mode, rounds, roundsWasted, recoilTN, additionalTNPenalty };
         },
       },

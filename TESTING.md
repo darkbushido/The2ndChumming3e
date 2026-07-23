@@ -187,6 +187,13 @@ Both are editable inline in the fire-mode dialog and persist on confirm.
 - **SS/SA/FA cumulative:** `max(0, roundsBeforeThisShot − totalComp) × heavyMult`. **In:** fired 3 rounds previously, totalComp 2 → TN penalty **+1**.
 - **BF stacks:** `max(0, (roundsBeforeThisShot + 3) − totalComp) × heavyMult` — **+3 first burst, +6 second** (BF counts its own 3 rounds). **In:** totalComp 0, first burst → **+3**; fire a second burst (roundsBefore now 3) → **+6**.
 - **Heavy weapons** (LMG/MMG/HMG/MinG) double the uncompensated recoil.
+- **Shotgun in Burst Fire** doubles uncompensated recoil (SR3 p.111) — NEW 2026-07-07, verify:
+  - **In:** shotgun (ShtG) with SA/BF modes, no compensation, first shot of the phase → fire-mode
+    dialog shows BF recoil preview **+6** (not +3); SA preview stays +0/+1. A second BF burst in
+    the same phase previews **+12**. The dialog shows an amber "⚠ Shotgun: 2× uncompensated
+    recoil in Burst Fire" note.
+  - **In:** same shotgun with total comp 3 → BF preview +0 first burst ((3+0−3)×2), +6 second.
+  - **In:** non-shotgun SA/BF weapon (e.g. SMG) → BF preview still +3 (unchanged).
 - `roundsFiredThisPhase` resets at the start of each combat phase (and via the ↺ Reset button).
 
 ### FA multi-target TN penalty - passed
