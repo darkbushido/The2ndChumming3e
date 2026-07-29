@@ -820,16 +820,6 @@ export class SR3EItem extends Item {
     effectiveRawDamage = `${newPower}${newLevel}${damageBase.isStun ? ' Stun' : ''}`;
   }
 
-  // --- Step 3: Defender declares dodge (vehicles cannot dodge) ---
-  let committedDodgeDice = 0;
-  if (targetActor.type !== 'vehicle') {
-    const dodgeDeclaration = await SR3EItem._promptDodgeDeclaration(targetActor, actor.name, this.name);
-    if (dodgeDeclaration === null) return null;  // cancelled
-    if (dodgeDeclaration > 0) {
-      committedDodgeDice = await targetActor.spendCombatPool(dodgeDeclaration);
-    }
-  }
-
   // --- Step 4: Build attacker pool ---
   const skillName = this._getWeaponSkill();
   const skill = actor.items.find(i =>
@@ -892,7 +882,8 @@ export class SR3EItem extends Item {
   pool  = Math.max(1, pool);
   tn    = tn + defTnMod;   // bake defaulting TN modifier
 
-  // Store full context — including committed dodge dice
+  // Store full context for the roll — committedDodgeDice is filled in once the
+  // defender responds (see Step 5 below).
   options.weaponItemId       = this.id;
   options.actorId            = actor.id;
   options.targetActorId      = targetActor.id;
@@ -900,7 +891,6 @@ export class SR3EItem extends Item {
   options.damageBase         = damageBase;
   options.isWeaponRoll       = true;
   options.isMelee            = ['melee'].includes(this.type);
-  options.committedDodgeDice = committedDodgeDice;
   options.skipWoundMod       = true;
   options.ammoType           = ammoType;   // carried to the soak card for APDS/Flechette
 
@@ -936,7 +926,28 @@ export class SR3EItem extends Item {
   }
 
   await this._consumeThrown();
-  return actor.rollPool(pool, tn, label, options);
+
+  // --- Step 5: Defender declares dodge (vehicles cannot dodge) ---
+  // Vehicles can't dodge, so there's nothing to wait on — roll immediately.
+  if (targetActor.type === 'vehicle') {
+    options.committedDodgeDice = 0;
+    return actor.rollPool(pool, tn, label, options);
+  }
+
+  // The dodge declaration belongs to the DEFENDER, not the attacker. Posting it as a
+  // whispered chat card (instead of a local dialog on the attacker's client) lets the
+  // actual owning player answer it themselves on their own client, so the resulting
+  // spendCombatPool() update carries the right Foundry ownership permissions — the
+  // attacker's client may not have UPDATE rights on the target's actor at all (e.g.
+  // PC-vs-PC, or a GM-owned NPC). The attack roll resumes via a second whispered card
+  // once the defender (or a GM) responds — see _postDodgeRequestCard / _postAttackContinueCard.
+  await SR3EItem._postDodgeRequestCard({
+    defender:     targetActor,
+    attackerName: actor.name,
+    weaponName:   this.name,
+    rollPayload:  { actorId: actor.id, pool, tn, label, options },
+  });
+  return null;
 }
 
   /**
@@ -1832,85 +1843,178 @@ export class SR3EItem extends Item {
   }
 
   /**
-   * Ask the defender to commit dodge dice before the attack is rolled.
-   * Returns number of dice committed (0 = no dodge), or null if cancelled.
+   * User ids to whisper a target-actor-facing card to: every GM (always, as a fallback
+   * for NPCs / offline owners) plus any currently-active non-GM user who owns the actor.
+   * Mirrors the existing `gmUsers` whisper pattern used for the Security Sheaf card.
    */
-  static async _promptDodgeDeclaration(defender, attackerName, weaponName) {
-    if (defender.type === 'vehicle') return 0;  // vehicles cannot dodge
+  static _resolveOwnerWhisper(actor) {
+    const gmIds    = game.users.filter(u => u.isGM).map(u => u.id);
+    const ownerIds = game.users
+      .filter(u => !u.isGM && u.active && actor.testUserPermission(u, 'OWNER'))
+      .map(u => u.id);
+    return Array.from(new Set([...gmIds, ...ownerIds]));
+  }
 
-    // Full Defense: skip the dialog and auto-commit the reserved pool
+  /**
+   * Posts the "declare a response" card to the DEFENDER's owner(s) + GMs, whispered so
+   * it doesn't clutter the public log for everyone else. Replaces the old blocking
+   * DialogV2 (which ran on the ATTACKER's client and silently required the attacker to
+   * hold UPDATE permission on the target — false for PC-vs-PC or GM-owned NPC targets).
+   * The attack itself resumes later via _postAttackContinueCard once the defender answers.
+   */
+  static async _postDodgeRequestCard({ defender, attackerName, weaponName, rollPayload }) {
+    const whisper = SR3EItem._resolveOwnerWhisper(defender);
+    const payload = JSON.stringify({ ...rollPayload, defenderId: defender.id, attackerName, weaponName })
+      .replace(/'/g, '&#39;');
+
+    // Full Defense: no choice to make, but clearing it is still an update on the
+    // defender's actor — still needs to run on a client that owns them, so it gets its
+    // own one-click acknowledgement card rather than a radio-button choice.
     if ((defender.system.fullDefense ?? false) && (defender.system.fullDefensePool ?? 0) > 0) {
       const fd = defender.system.fullDefensePool;
       await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor: defender }),
-        content: `<div class="sr-roll-card"><div class="sr-roll-header">🛡 ${defender.name} — Full Defense (${fd} dice auto-committed)</div></div>`,
+        whisper,
+        content: `
+          <div class="sr-roll-card">
+            <div class="sr-roll-header">🛡 ${defender.name} — Full Defense (${fd} dice auto-committed)</div>
+            <p style="font-size:11px;color:var(--sr-muted);margin:6px 0 8px">
+              ${attackerName} is attacking with <strong>${weaponName}</strong>.
+            </p>
+            <div class="sr-soak-action">
+              <button class="sr-dodge-fulldef-btn" data-payload='${payload}' data-dodge-dice="${fd}">
+                ✔ Acknowledge &amp; Continue
+              </button>
+            </div>
+          </div>`,
         style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       });
-      // Clear full defense after first use
-      await defender.update({ 'system.fullDefense': false, 'system.fullDefensePool': 0 });
-      return fd;
+      ui.notifications.info(`Waiting for ${defender.name} to acknowledge Full Defense…`);
+      return;
     }
 
-    const availPool  = defender.system.derived?.availableCombatPool ?? 0;
-    const fdNote     = (defender.system.fullDefense ?? false)
-      ? '<p style="color:var(--sr-amber);font-size:11px;margin-top:8px">Full Defense active — pool already committed</p>'
-      : '';
-
-    let dodgeDice = 0;
-    let cancelled = true;
-
-    await foundry.applications.api.DialogV2.wait({
-      window: { title: `${defender.name} — Declare Response` },
+    const availPool = defender.system.derived?.availableCombatPool ?? 0;
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: defender }),
+      whisper,
       content: `
-        <p style="margin-bottom:8px">
-          <strong>${defender.name}</strong>, ${attackerName} is attacking you
-          with <strong>${weaponName}</strong>.
-          Do you want to try and dodge this attack?
-        </p>
-        <p style="margin-bottom:12px;font-size:11px;color:var(--sr-muted)">
-          Your available Combat Pool: <strong>${availPool}</strong> dice
-        </p>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <label style="display:flex;align-items:center;gap:8px">
-            <input type="radio" name="dodge-choice" value="none" checked/>
-            ❌ No dodge — save pool for soak
-          </label>
-          <label style="display:flex;align-items:center;gap:8px">
-            <input type="radio" name="dodge-choice" value="dodge"/>
-            🎯 Dodge with
-            <input type="number" id="dodge-dice" min="1" max="${availPool}"
-                   value="${Math.min(1, availPool)}" style="width:55px"
-                   ${availPool === 0 ? 'disabled' : ''}/>
-            dice
-          </label>
-        </div>
-        ${availPool === 0
-          ? '<p style="color:var(--sr-red);font-size:11px;margin-top:8px">No Combat Pool remaining — cannot dodge</p>'
-          : ''}
-        ${fdNote}
-      `,
-      buttons: [
-        {
-          label: 'Confirm',
-          action: 'confirm',
-          default: true,
-          callback: (_e, _b, dialog) => {
-            cancelled = false;
-            const choice = dialog.element.querySelector('input[name="dodge-choice"]:checked')?.value;
-            if (choice === 'dodge') {
-              dodgeDice = Math.min(
-                parseInt(dialog.element.querySelector('#dodge-dice')?.value) || 0,
-                availPool
-              );
-            }
-          }
-        },
-        { label: 'Cancel', action: 'cancel' },
-      ],
+        <div class="sr-roll-card">
+          <div class="sr-roll-header">🎯 Incoming Attack — ${defender.name}</div>
+          <p style="font-size:12px;margin:6px 0">
+            <strong>${attackerName}</strong> is attacking you with <strong>${weaponName}</strong>.
+            Do you want to try and dodge?
+          </p>
+          <p style="font-size:11px;color:var(--sr-muted);margin-bottom:8px">
+            Available Combat Pool: <strong>${availPool}</strong> dice
+          </p>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px">
+            <label style="display:flex;align-items:center;gap:8px">
+              <input type="radio" name="sr-dodge-choice-${defender.id}" class="sr-dodge-choice" value="none" checked/>
+              ❌ No dodge — save pool for soak
+            </label>
+            <label style="display:flex;align-items:center;gap:8px">
+              <input type="radio" name="sr-dodge-choice-${defender.id}" class="sr-dodge-choice" value="dodge" ${availPool === 0 ? 'disabled' : ''}/>
+              🎯 Dodge with
+              <input type="number" class="sr-dodge-dice-input" min="1" max="${availPool}"
+                     value="${Math.min(1, availPool)}" style="width:55px" ${availPool === 0 ? 'disabled' : ''}/>
+              dice
+            </label>
+          </div>
+          ${availPool === 0
+            ? '<p style="color:var(--sr-red);font-size:11px;margin-bottom:8px">No Combat Pool remaining — cannot dodge</p>'
+            : ''}
+          <div class="sr-soak-action" style="display:flex;gap:6px">
+            <button class="sr-dodge-declare-btn" data-payload='${payload}'>
+              ✔ Confirm Response
+            </button>
+            <button class="sr-dodge-force-btn" data-payload='${payload}'
+                    style="font-size:10px;color:var(--sr-muted)">
+              ⏭ GM: Force No Dodge
+            </button>
+          </div>
+        </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
+    ui.notifications.info(`Waiting for ${defender.name} to declare a response…`);
+  }
 
-    if (cancelled) return null;
-    return dodgeDice;
+  /** Click handler for the manual dodge-choice card (`.sr-dodge-declare-btn`). */
+  static async handleDodgeDeclareClick(btn) {
+    const payload = JSON.parse(btn.dataset.payload);
+    const card    = btn.closest('.sr-roll-card');
+    const choice  = card?.querySelector('.sr-dodge-choice:checked')?.value;
+    let dodgeDice = 0;
+    if (choice === 'dodge') {
+      dodgeDice = parseInt(card.querySelector('.sr-dodge-dice-input')?.value) || 0;
+    }
+    const defender = game.actors.get(payload.defenderId);
+    let committedDodgeDice = 0;
+    if (defender && dodgeDice > 0) {
+      committedDodgeDice = await defender.spendCombatPool(dodgeDice);
+    }
+    await SR3EItem._postAttackContinueCard({ ...payload, committedDodgeDice });
+  }
+
+  /** Click handler for the Full Defense acknowledgement card (`.sr-dodge-fulldef-btn`). */
+  static async handleDodgeFullDefenseClick(btn) {
+    const payload   = JSON.parse(btn.dataset.payload);
+    const dodgeDice = parseInt(btn.dataset.dodgeDice) || 0;
+    const defender  = game.actors.get(payload.defenderId);
+    if (defender) {
+      await defender.update({ 'system.fullDefense': false, 'system.fullDefensePool': 0 });
+    }
+    await SR3EItem._postAttackContinueCard({ ...payload, committedDodgeDice: dodgeDice });
+  }
+
+  /** GM escape hatch (`.sr-dodge-force-btn`) — unblocks a stalled attack with no dodge. */
+  static async handleDodgeForceNoneClick(btn) {
+    const payload = JSON.parse(btn.dataset.payload);
+    await SR3EItem._postAttackContinueCard({ ...payload, committedDodgeDice: 0 });
+  }
+
+  /**
+   * Posts the "your target has answered — roll now" card to the ATTACKER's owner(s) +
+   * GMs. Whoever clicks it runs the rest of the attack (attacker's own pool spend
+   * already happened before the dodge card went out; this just kicks off rollPool),
+   * which needs UPDATE permission on the attacker's actor — hence whispering it there
+   * rather than resolving on the defender's client that answered the dodge card.
+   */
+  static async _postAttackContinueCard({ actorId, pool, tn, label, options, defenderId, attackerName, weaponName, committedDodgeDice }) {
+    const attacker = game.actors.get(actorId);
+    if (!attacker) return;
+    const defender = game.actors.get(defenderId);
+    const whisper  = SR3EItem._resolveOwnerWhisper(attacker);
+    const dodgeNote = committedDodgeDice > 0
+      ? `🎯 ${defender?.name ?? 'Target'} is dodging with ${committedDodgeDice} dice.`
+      : `❌ ${defender?.name ?? 'Target'} is not dodging.`;
+    const finalOptions = { ...options, committedDodgeDice };
+    const payload = JSON.stringify({ actorId, pool, tn, label, options: finalOptions }).replace(/'/g, '&#39;');
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: attacker }),
+      whisper,
+      content: `
+        <div class="sr-roll-card">
+          <div class="sr-roll-header">🎲 ${attackerName} — Ready to Attack</div>
+          <p style="font-size:12px;margin:6px 0">${dodgeNote}</p>
+          <div class="sr-soak-action">
+            <button class="sr-attack-continue-btn" data-payload='${payload}'>
+              🎲 Roll Attack — ${weaponName}
+            </button>
+          </div>
+        </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    });
+  }
+
+  /** Click handler for the attack-continuation card (`.sr-attack-continue-btn`). */
+  static async handleAttackContinueClick(btn) {
+    const payload  = JSON.parse(btn.dataset.payload);
+    const attacker = game.actors.get(payload.actorId);
+    if (!attacker) { ui.notifications.warn('Attacker not found.'); return; }
+    btn.disabled    = true;
+    btn.textContent = '⏳ Rolling…';
+    await attacker.rollPool(payload.pool, payload.tn, payload.label, payload.options);
   }
 
   /**

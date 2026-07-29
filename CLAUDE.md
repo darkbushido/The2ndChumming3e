@@ -457,9 +457,9 @@ Only one state active at a time; clicking the active button deactivates it.
 3. (Firearms) Loaded ammo type is read from the weapon — no per-shot ammo picker. Power/level/stun mods (Explosive/EX/Gel) applied now; see **Firearms** section
 4. (Firearms) Fire-mode dialog: SS/SA/BF/FA, recoil preview, editable compensation (see **Firearms**)
 5. Roll-options dialog: TN, damage code, editable **range** dropdown (auto-measured from tokens; see Range section), TN-modifier breakdown (recoil, wound, multi-target, tracer note)
-6. Defender declares: no dodge OR dodge with X combat pool dice (committed immediately, pool spent)
-7. Attacker allocates combat pool to attack
-8. Attack rolls (interactive Rule of Six)
+6. Attacker allocates combat pool to attack (recoil/ammo bookkeeping commits here too — see **Defender response hand-off** below)
+7. **Defender response hand-off** (async, cross-client — not a local dialog): a whispered chat card ("Incoming Attack — Declare Response") posts to the defender's owner(s) + GMs, so the actual controlling player answers on their own client — see below
+8. Attack rolls (interactive Rule of Six) — resumes once the defender responds, via a second whispered card to the attacker's owner(s) + GMs
 9. On final wave: if dodge committed → "Roll to dodge" button appears; if no dodge → soak card auto-posts
 10. Dodge roll (interactive Rule of Six, TN 4)
 11. Dodge result: **binary** — dodge hits ≥ attack hits = complete miss; otherwise full hit lands
@@ -468,6 +468,40 @@ Only one state active at a time; clicking the active button deactivates it.
 14. Soak roll (interactive Rule of Six)
 15. Soak result: each 2 soak hits = stage down (D→S→M→L). Below L = completely soaked.
 16. GM applies damage manually using wound track buttons.
+
+### Defender response hand-off (single-target ranged/thrown attacks only)
+The dodge declaration belongs to the **defender**, not the attacker, so it is never a
+local `DialogV2` on the attacker's client — that would force the attacker's client to
+call `targetActor.spendCombatPool()`, which silently fails whenever the attacker lacks
+UPDATE permission on the target (any PC-vs-PC attack, or a player attacking a GM-owned
+NPC). Instead `rollWeapon()` splits into two halves connected by whispered chat cards,
+following the same "state in a button's `data-payload`, click to continue" pattern used
+by the melee/soak/spell-resist cards elsewhere in this codebase — no sockets involved:
+
+1. `SR3EItem._postDodgeRequestCard({ defender, attackerName, weaponName, rollPayload })`
+   posts a card **whispered to the defender's owner(s) + GMs**
+   (`SR3EItem._resolveOwnerWhisper(actor)`: every GM always, plus any active non-GM user
+   with OWNER permission — mirrors the existing `gmUsers` whisper pattern used for the
+   Security Sheaf card). `rollWeapon()` returns `null` here; nothing more happens on the
+   attacker's client until the defender responds. If Full Defense is pre-committed, the
+   card skips the choice UI and shows a one-click "Acknowledge & Continue" instead (the
+   pool-clearing `update()` still needs to run on a defender-owned client). A "⏭ GM:
+   Force No Dodge" button is always present as an escape hatch for a stalled attack
+   (defending player offline/AFK).
+2. Whoever answers (`handleDodgeDeclareClick` / `handleDodgeFullDefenseClick` /
+   `handleDodgeForceNoneClick`, all in `sr3e.js`'s `renderChatMessageHTML` hook) spends
+   the defender's combat pool **on their own client** — correct permissions — then calls
+   `SR3EItem._postAttackContinueCard(...)`, which posts a second card **whispered to the
+   attacker's owner(s) + GMs** carrying the full roll payload (`pool`, `tn`, `label`,
+   `options` with `committedDodgeDice` now baked in).
+3. `handleAttackContinueClick` finally calls `attacker.rollPool(...)`, kicking off the
+   normal interactive Rule-of-Six wave sequence (step 8 above).
+
+The attacker's own choices (skill defaulting, combat pool allocation, recoil/ammo
+bookkeeping) all happen **before** the dodge card is posted — they're the attacker's
+own decisions and don't depend on the defender's answer, so there's no reason to make
+the attacker wait on them. Vehicles can't dodge at all, so a vehicle target skips this
+whole hand-off and rolls immediately, exactly as before.
 
 ### Firearms — fire modes, recoil & ammunition
 **Fire modes** (`SR3EItem._promptFireMode`, weapon `mode` string e.g. "SA/BF/FA"):
@@ -697,7 +731,9 @@ CYB/UNA → Unarmed Combat
 - `stageDamage(base, netSuccesses)` — static, returns staged `{ power, level, isStun }`
 - `_getEquippedMelee(actor)` — static, finds equipped/fallback melee weapon
 - `_promptTarget(attacker)` — static, shows target selection dialog
-- `_promptDodgeDeclaration(defender, attackerName, weaponName)` — static, defender commits dodge dice
+- `_resolveOwnerWhisper(actor)` — static, whisper recipient list for an actor: all GMs + active non-GM owners
+- `_postDodgeRequestCard({ defender, attackerName, weaponName, rollPayload })` — static async, whispers the dodge-declare card to the defender. See **Defender response hand-off**.
+- `_postAttackContinueCard({ actorId, pool, tn, label, options, defenderId, attackerName, weaponName, committedDodgeDice })` — static async, whispers the roll-resume card to the attacker.
 
 ### SR3ECombat
 - `_nextTurnSR3()` — SR3 pass-based initiative advancement

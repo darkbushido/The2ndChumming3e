@@ -2027,6 +2027,59 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
     });
   });
 
+  // Dodge-declare card — posted to the DEFENDER (whispered), lets them answer on their
+  // own client so the combat-pool spend has the right ownership permissions.
+  html.querySelectorAll('.sr-dodge-declare-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'dodgedeclare', i)) return;
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'dodgedeclare', i)) return;
+      btn.disabled    = true;
+      btn.textContent = '⏳ Responding…';
+      await SR3EItem.handleDodgeDeclareClick(btn);
+    });
+  });
+
+  // Full Defense acknowledgement — no choice to make, just needs a defender-owned client
+  // to clear the flag before the attack can continue.
+  html.querySelectorAll('.sr-dodge-fulldef-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'dodgefulldef', i)) return;
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'dodgefulldef', i)) return;
+      btn.disabled    = true;
+      btn.textContent = '⏳ Continuing…';
+      await SR3EItem.handleDodgeFullDefenseClick(btn);
+    });
+  });
+
+  // GM escape hatch — unblocks an attack if the defending player never answers.
+  html.querySelectorAll('.sr-dodge-force-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'dodgeforce', i)) return;
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'dodgeforce', i)) return;
+      btn.disabled    = true;
+      btn.textContent = '⏳ Continuing…';
+      await SR3EItem.handleDodgeForceNoneClick(btn);
+    });
+  });
+
+  // Attack-continue card — posted to the ATTACKER (whispered) once the defender has
+  // answered; kicks off the actual interactive attack roll.
+  html.querySelectorAll('.sr-attack-continue-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'attackcontinue', i)) return;
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'attackcontinue', i)) return;
+      await SR3EItem.handleAttackContinueClick(btn);
+    });
+  });
+
   // Melee Roll! button on boxing card
   html.querySelectorAll('.sr-melee-roll-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'melee', i)) return;
