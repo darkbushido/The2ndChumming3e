@@ -1,4 +1,16 @@
-*.LOCK*
+# LevelDB runtime artifacts inside Foundry compendium packs. LevelDB recreates
+# these on every open and they carry no pack data, so tracking them only produces
+# churn in every commit that touches a compendium:
+#   LOCK    — zero-byte lock file, held while the database is open
+#   LOG     — human-readable debug log, rewritten on each open
+#   LOG.old — the previous run's debug log
+#
+# These were previously tracked because the old "*.LOCK*" pattern never matched
+# anything: LevelDB's file is named exactly "LOCK", with no dot before it.
+packs/*/LOCK
+packs/*/LOG
+packs/*/LOG.old
+
 .claude/settings.local.json
 rules pdfs/
 
