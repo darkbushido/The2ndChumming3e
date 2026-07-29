@@ -440,11 +440,17 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           : '';
         const ATTR_OPTIONS = ['body', 'quickness', 'strength', 'charisma', 'intelligence', 'willpower', 'reaction'];
 
-        const skillTypeLabel = s.skillType === 'language' ? 'Language'
-          : s.skillType === 'knowledge' ? 'Knowledge'
+        // Prefer the category-derived type (catSkillType, above) over the stored field, so
+        // the badge always agrees with the actor sheet's grouping. A stored 'active' can
+        // just be the schema default on a skill that never had the field written (older
+        // Nullsheen imports) — persisting that below would entrench the wrong type, whereas
+        // writing the derived value heals it on the next save.
+        const effSkillType   = catSkillType ?? s.skillType ?? 'active';
+        const skillTypeLabel = effSkillType === 'language' ? 'Language'
+          : effSkillType === 'knowledge' ? 'Knowledge'
           : 'Active';
-        const skillTypeColor = s.skillType === 'language' ? 'var(--sr-green)'
-          : s.skillType === 'knowledge' ? 'var(--sr-gold)'
+        const skillTypeColor = effSkillType === 'language' ? 'var(--sr-green)'
+          : effSkillType === 'knowledge' ? 'var(--sr-gold)'
           : 'var(--sr-accent)';
 
         return `
@@ -452,7 +458,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
             <div class="form-field">
               <span class="field-label">Skill Type</span>
               <span style="font-weight:bold;color:${skillTypeColor}">${skillTypeLabel}</span>
-              <input type="hidden" name="system.skillType" value="${s.skillType ?? 'active'}"/>
+              <input type="hidden" name="system.skillType" value="${effSkillType}"/>
             </div>
             <div class="form-field">
               <span class="field-label">Category</span>

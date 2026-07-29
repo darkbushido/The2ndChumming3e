@@ -111,7 +111,6 @@ function _parseWeaponMods(mods) {
 // ── Item builders ─────────────────────────────────────────────────────────────
 
 function _skillItem(s) {
-  const attr    = ATTR_MAP[s.attribute ?? ''] ?? SKILL_ATTR_FALLBACK[s.name] ?? 'intelligence';
   const nsType  = _str(s.type);  // 'Active' | 'Knowledge' | 'Language'
 
   // Resolve category group: look the skill up in our config data first,
@@ -124,6 +123,18 @@ function _skillItem(s) {
       ?? (nsType === 'Active' ? 'Technical skills' : 'Academic skills');
   }
 
+  // skillType must be written explicitly — the schema defaults it to 'active', so leaving
+  // it unset made every imported knowledge/language skill read as active. Derived from the
+  // resolved category (not Nullsheen's own type string) so it always agrees with the
+  // sheet's category-first classification: e.g. "MA:Aikido" → Martial Arts → knowledge.
+  const skillType = game.sr3e?.SR3E?.skillTypeForCategory?.(category)
+    ?? (nsType === 'Language' ? 'language' : nsType === 'Active' ? 'active' : 'knowledge');
+
+  // Languages are rated against the Language slot, not a physical/mental attribute.
+  const attr = skillType === 'language'
+    ? 'lan'
+    : (ATTR_MAP[s.attribute ?? ''] ?? SKILL_ATTR_FALLBACK[s.name] ?? 'intelligence');
+
   return {
     name: s.name,
     type: 'skill',
@@ -133,6 +144,7 @@ function _skillItem(s) {
       linkedAttribute: attr,
       specialisation:  _str(s.specialization),
       category,
+      skillType,
     },
   };
 }

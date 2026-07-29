@@ -58,7 +58,9 @@ export class SR3EItem extends Item {
     if (s.specialisation && basePool > 0) basePool += 2;
 
     s.dicePool        = basePool;
-    s.canDefault      = !isLan && s.skillType !== 'language';
+    // Category-derived (see _skillTypeOf) — a stored skillType of 'active' may just be
+    // the schema default on a skill that was created without the field being set.
+    s.canDefault      = !isLan && SR3EItem._skillTypeOf(this) !== 'language';
     // SR3: defaulting to an attribute uses the FULL attribute (TN +4, no pool dice).
     s.defaultingPool  = s.canDefault ? Math.max(1, attrValue) : 0;
     s.skillRating     = s.rating || 0;
@@ -310,6 +312,23 @@ export class SR3EItem extends Item {
   }
 
   /**
+   * Effective skill type for a skill Item: 'active' | 'knowledge' | 'language'.
+   *
+   * Category wins whenever it is set, mirroring how the actor sheet classifies skills
+   * for display. The stored `system.skillType` is NOT trustworthy on its own: the schema
+   * defaults it to 'active', so any skill created without it explicitly set (notably
+   * characters imported before the Nullsheen importer wrote the field) reads as active
+   * regardless of its real category — which let knowledge skills such as `MA:` martial
+   * arts appear as valid Combat-Pool-eligible defaulting targets.
+   */
+  static _skillTypeOf(skill) {
+    const cat = skill?.system?.category ?? '';
+    const fn  = game.sr3e?.SR3E?.skillTypeForCategory;
+    if (cat && typeof fn === 'function') return fn(cat);
+    return skill?.system?.skillType ?? 'active';
+  }
+
+  /**
    * SR3 Default Table — interactive defaulting prompt.
    * Shown whenever an actor lacks the appropriate skill for a test. The user
    * chooses to default to:
@@ -327,7 +346,7 @@ export class SR3EItem extends Item {
     const half   = r => Math.floor((r ?? 0) / 2);
     const skills = actor.items
       .filter(i => i.type === 'skill'
-        && (i.system.skillType ?? 'active') === 'active'
+        && SR3EItem._skillTypeOf(i) === 'active'
         && (i.system.rating ?? 0) > 0)
       .sort((a, b) => a.name.localeCompare(b.name));
     const specSkills = skills.filter(s => (s.system.specialisation ?? '').trim() !== '');
