@@ -1,0 +1,13 @@
+# Foundry compendium packs are LevelDB databases. A few of their internal files
+# (CURRENT, LOG, LOG.old, MANIFEST-*) are pure ASCII, so git's text detection treats
+# them as text and rewrites their line endings on checkout wherever core.autocrlf is
+# enabled — i.e. on most Windows clones.
+#
+# That is fatal for CURRENT, which must contain exactly "MANIFEST-NNNNNN\n". With a
+# CRLF, LevelDB strips only the trailing \n and then looks for a file literally named
+# "MANIFEST-NNNNNN\r", which cannot exist — the pack fails to open and the compendium
+# is unusable. The .ldb files escape this only because they contain NUL bytes and are
+# therefore auto-detected as binary.
+#
+# Mark the whole pack tree binary so no content filtering is ever applied to it.
+packs/** binary
