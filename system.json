@@ -11,6 +11,12 @@
   "authors": [
     {
       "name": "William Diffey"
+    },
+    {
+      "name": "Lance 'DarkBushido' Sanchez"
+    },
+    {
+      "name": "Claude (AI)"
     }
   ],
   "esmodules": [
@@ -1601,7 +1607,7 @@
       ]
     }
   ],
-  "url": "https://github.com/williamdiffey/The2ndChumming3e",
-  "manifest": "https://raw.githubusercontent.com/williamdiffey/The2ndChumming3e/main/system.json",
-  "download": "https://github.com/williamdiffey/The2ndChumming3e/archive/refs/heads/main.zip"
+  "url": "https://github.com/darkbushido/The2ndChumming3e/tree/Shadowfork",
+  "manifest": "https://raw.githubusercontent.com/darkbushido/The2ndChumming3e/refs/heads/Shadowfork/system.json",
+  "download": "https://github.com/darkbushido/The2ndChumming3e/archive/refs/heads/Shadowfork.zip"
 }
