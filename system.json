@@ -219,6 +219,1155 @@
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       }
+    },
+    {
+      "name": "sr3e-cc-armor",
+      "label": "Cannon Companion",
+      "path": "packs/sr3e-cc-armor",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "armor"
+          ],
+          "book": "cc"
+        }
+      }
+    },
+    {
+      "name": "sr3e-cc-cyberware",
+      "label": "Cannon Companion",
+      "path": "packs/sr3e-cc-cyberware",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "cyberware"
+          ],
+          "book": "cc"
+        }
+      }
+    },
+    {
+      "name": "sr3e-cc-firearms",
+      "label": "Cannon Companion",
+      "path": "packs/sr3e-cc-firearms",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "firearm"
+          ],
+          "book": "cc"
+        }
+      }
+    },
+    {
+      "name": "sr3e-cc-melee",
+      "label": "Cannon Companion",
+      "path": "packs/sr3e-cc-melee",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "melee"
+          ],
+          "book": "cc"
+        }
+      }
+    },
+    {
+      "name": "sr3e-cc-projectiles",
+      "label": "Cannon Companion",
+      "path": "packs/sr3e-cc-projectiles",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "projectile",
+            "thrown"
+          ],
+          "book": "cc"
+        }
+      }
+    },
+    {
+      "name": "sr3e-fra-cyberware",
+      "label": "France Sourcebook",
+      "path": "packs/sr3e-fra-cyberware",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "cyberware"
+          ],
+          "book": "fra"
+        }
+      }
+    },
+    {
+      "name": "sr3e-fra-firearms",
+      "label": "France Sourcebook",
+      "path": "packs/sr3e-fra-firearms",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "firearm"
+          ],
+          "book": "fra"
+        }
+      }
+    },
+    {
+      "name": "sr3e-fra-vehicle-mods",
+      "label": "France Sourcebook",
+      "path": "packs/sr3e-fra-vehicle-mods",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "fra"
+        }
+      }
+    },
+    {
+      "name": "sr3e-fra-vehicle-weapons",
+      "label": "France Sourcebook",
+      "path": "packs/sr3e-fra-vehicle-weapons",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "fra"
+        }
+      }
+    },
+    {
+      "name": "sr3e-ger-cyberware",
+      "label": "Germany Sourcebook",
+      "path": "packs/sr3e-ger-cyberware",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "cyberware"
+          ],
+          "book": "ger"
+        }
+      }
+    },
+    {
+      "name": "sr3e-mits-adept-powers",
+      "label": "Magic in the Shadows",
+      "path": "packs/sr3e-mits-adept-powers",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "adeptpower"
+          ],
+          "book": "mits"
+        }
+      }
+    },
+    {
+      "name": "sr3e-mits-spells",
+      "label": "Magic in the Shadows",
+      "path": "packs/sr3e-mits-spells",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "spell"
+          ],
+          "book": "mits"
+        }
+      }
+    },
+    {
+      "name": "sr3e-mm-armor",
+      "label": "Man and Machine",
+      "path": "packs/sr3e-mm-armor",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "armor"
+          ],
+          "book": "mm"
+        }
+      }
+    },
+    {
+      "name": "sr3e-mm-bioware",
+      "label": "Man and Machine",
+      "path": "packs/sr3e-mm-bioware",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "bioware"
+          ],
+          "book": "mm"
+        }
+      }
+    },
+    {
+      "name": "sr3e-mm-cyberware",
+      "label": "Man and Machine",
+      "path": "packs/sr3e-mm-cyberware",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "cyberware"
+          ],
+          "book": "mm"
+        }
+      }
+    },
+    {
+      "name": "sr3e-mm-drugs",
+      "label": "Man and Machine",
+      "path": "packs/sr3e-mm-drugs",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "drug"
+          ],
+          "book": "mm"
+        }
+      }
+    },
+    {
+      "name": "sr3e-mm-firearms",
+      "label": "Man and Machine",
+      "path": "packs/sr3e-mm-firearms",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "firearm"
+          ],
+          "book": "mm"
+        }
+      }
+    },
+    {
+      "name": "sr3e-mm-melee",
+      "label": "Man and Machine",
+      "path": "packs/sr3e-mm-melee",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "melee"
+          ],
+          "book": "mm"
+        }
+      }
+    },
+    {
+      "name": "sr3e-r3-drones",
+      "label": "Rigger 3",
+      "path": "packs/sr3e-r3-drones",
+      "type": "Actor",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "r3"
+        }
+      }
+    },
+    {
+      "name": "sr3e-r3-vehicle-mods",
+      "label": "Rigger 3",
+      "path": "packs/sr3e-r3-vehicle-mods",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "r3"
+        }
+      }
+    },
+    {
+      "name": "sr3e-r3-vehicle-weapons",
+      "label": "Rigger 3",
+      "path": "packs/sr3e-r3-vehicle-weapons",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "r3"
+        }
+      }
+    },
+    {
+      "name": "sr3e-r3-vehicles",
+      "label": "Rigger 3",
+      "path": "packs/sr3e-r3-vehicles",
+      "type": "Actor",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "r3"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sota-bioware",
+      "label": "State of the Art 2063",
+      "path": "packs/sr3e-sota-bioware",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "bioware"
+          ],
+          "book": "sota"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sota-drugs",
+      "label": "State of the Art 2063",
+      "path": "packs/sr3e-sota-drugs",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "drug"
+          ],
+          "book": "sota"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sota-vehicles",
+      "label": "State of the Art 2063",
+      "path": "packs/sr3e-sota-vehicles",
+      "type": "Actor",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "sota"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sota2-adept-powers",
+      "label": "State of the Art 2064",
+      "path": "packs/sr3e-sota2-adept-powers",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "adeptpower"
+          ],
+          "book": "sota2"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sota2-armor",
+      "label": "State of the Art 2064",
+      "path": "packs/sr3e-sota2-armor",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "armor"
+          ],
+          "book": "sota2"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sota2-drones",
+      "label": "State of the Art 2064",
+      "path": "packs/sr3e-sota2-drones",
+      "type": "Actor",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "sota2"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sota2-firearms",
+      "label": "State of the Art 2064",
+      "path": "packs/sr3e-sota2-firearms",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "firearm"
+          ],
+          "book": "sota2"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sota2-spells",
+      "label": "State of the Art 2064",
+      "path": "packs/sr3e-sota2-spells",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "spell"
+          ],
+          "book": "sota2"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sota2-vehicle-mods",
+      "label": "State of the Art 2064",
+      "path": "packs/sr3e-sota2-vehicle-mods",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "sota2"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sota2-vehicles",
+      "label": "State of the Art 2064",
+      "path": "packs/sr3e-sota2-vehicles",
+      "type": "Actor",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "sota2"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr3-adept-powers",
+      "label": "Shadowrun 3rd",
+      "path": "packs/sr3e-sr3-adept-powers",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "adeptpower"
+          ],
+          "book": "sr3"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr3-armor",
+      "label": "Shadowrun 3rd",
+      "path": "packs/sr3e-sr3-armor",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "armor"
+          ],
+          "book": "sr3"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr3-cyberware",
+      "label": "Shadowrun 3rd",
+      "path": "packs/sr3e-sr3-cyberware",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "cyberware"
+          ],
+          "book": "sr3"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr3-drones",
+      "label": "Shadowrun 3rd",
+      "path": "packs/sr3e-sr3-drones",
+      "type": "Actor",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "sr3"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr3-firearms",
+      "label": "Shadowrun 3rd",
+      "path": "packs/sr3e-sr3-firearms",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "firearm"
+          ],
+          "book": "sr3"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr3-melee",
+      "label": "Shadowrun 3rd",
+      "path": "packs/sr3e-sr3-melee",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "melee"
+          ],
+          "book": "sr3"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr3-projectiles",
+      "label": "Shadowrun 3rd",
+      "path": "packs/sr3e-sr3-projectiles",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "projectile",
+            "thrown"
+          ],
+          "book": "sr3"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr3-spells",
+      "label": "Shadowrun 3rd",
+      "path": "packs/sr3e-sr3-spells",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "spell"
+          ],
+          "book": "sr3"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr3-vehicle-mods",
+      "label": "Shadowrun 3rd",
+      "path": "packs/sr3e-sr3-vehicle-mods",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "sr3"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr3-vehicle-weapons",
+      "label": "Shadowrun 3rd",
+      "path": "packs/sr3e-sr3-vehicle-weapons",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "sr3"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr3-vehicles",
+      "label": "Shadowrun 3rd",
+      "path": "packs/sr3e-sr3-vehicles",
+      "type": "Actor",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "sr3"
+        }
+      }
+    },
+    {
+      "name": "sr3e-ssg-drones",
+      "label": "Sprawl Survival Guide",
+      "path": "packs/sr3e-ssg-drones",
+      "type": "Actor",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "ssg"
+        }
+      }
+    },
+    {
+      "name": "sr3e-tal-drugs",
+      "label": "Target: Awakened Lands",
+      "path": "packs/sr3e-tal-drugs",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "drug"
+          ],
+          "book": "tal"
+        }
+      }
+    },
+    {
+      "name": "sr3e-tss-adept-powers",
+      "label": "The Shadowrun Supplemental",
+      "path": "packs/sr3e-tss-adept-powers",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "adeptpower"
+          ],
+          "book": "tss"
+        }
+      }
+    },
+    {
+      "name": "sr3e-tss-armor",
+      "label": "The Shadowrun Supplemental",
+      "path": "packs/sr3e-tss-armor",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "armor"
+          ],
+          "book": "tss"
+        }
+      }
+    },
+    {
+      "name": "sr3e-tss-bioware",
+      "label": "The Shadowrun Supplemental",
+      "path": "packs/sr3e-tss-bioware",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "bioware"
+          ],
+          "book": "tss"
+        }
+      }
+    },
+    {
+      "name": "sr3e-tss-cyberware",
+      "label": "The Shadowrun Supplemental",
+      "path": "packs/sr3e-tss-cyberware",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "cyberware"
+          ],
+          "book": "tss"
+        }
+      }
+    },
+    {
+      "name": "sr3e-tss-drones",
+      "label": "The Shadowrun Supplemental",
+      "path": "packs/sr3e-tss-drones",
+      "type": "Actor",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "tss"
+        }
+      }
+    },
+    {
+      "name": "sr3e-tss-firearms",
+      "label": "The Shadowrun Supplemental",
+      "path": "packs/sr3e-tss-firearms",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "firearm"
+          ],
+          "book": "tss"
+        }
+      }
+    },
+    {
+      "name": "sr3e-tss-melee",
+      "label": "The Shadowrun Supplemental",
+      "path": "packs/sr3e-tss-melee",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "melee"
+          ],
+          "book": "tss"
+        }
+      }
+    },
+    {
+      "name": "sr3e-tss-spells",
+      "label": "The Shadowrun Supplemental",
+      "path": "packs/sr3e-tss-spells",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "spell"
+          ],
+          "book": "tss"
+        }
+      }
+    },
+    {
+      "name": "sr3e-tss-vehicles",
+      "label": "The Shadowrun Supplemental",
+      "path": "packs/sr3e-tss-vehicles",
+      "type": "Actor",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "tss"
+        }
+      }
+    },
+    {
+      "name": "sr3e-twl-armor",
+      "label": "Target: Wastelands",
+      "path": "packs/sr3e-twl-armor",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "armor"
+          ],
+          "book": "twl"
+        }
+      }
+    },
+    {
+      "name": "sr3e-twl-spells",
+      "label": "Target: Wastelands",
+      "path": "packs/sr3e-twl-spells",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "spell"
+          ],
+          "book": "twl"
+        }
+      }
+    },
+    {
+      "name": "sr3e-twl-vehicle-mods",
+      "label": "Target: Wastelands",
+      "path": "packs/sr3e-twl-vehicle-mods",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "twl"
+        }
+      }
+    },
+    {
+      "name": "sr3e-twl-vehicle-weapons",
+      "label": "Target: Wastelands",
+      "path": "packs/sr3e-twl-vehicle-weapons",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "twl"
+        }
+      }
+    },
+    {
+      "name": "sr3e-twl-vehicles",
+      "label": "Target: Wastelands",
+      "path": "packs/sr3e-twl-vehicles",
+      "type": "Actor",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "twl"
+        }
+      }
+    },
+    {
+      "name": "sr3e-mdf-cyberdecks",
+      "label": "Cyberdecks",
+      "path": "packs/sr3e-mdf-cyberdecks",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "cyberdeck"
+          ],
+          "book": "matrix-defragged"
+        }
+      }
+    },
+    {
+      "name": "sr3e-mdf-programs",
+      "label": "Matrix Programs",
+      "path": "packs/sr3e-mdf-programs",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "program"
+          ],
+          "book": "matrix-defragged"
+        }
+      }
+    },
+    {
+      "name": "sr3e-mdf-ic",
+      "label": "Intrusion Countermeasures",
+      "path": "packs/sr3e-mdf-ic",
+      "type": "Actor",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "matrix-defragged"
+        }
+      }
+    },
+    {
+      "name": "sr3e-mdf-agents",
+      "label": "Programming Agents",
+      "path": "packs/sr3e-mdf-agents",
+      "type": "Actor",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "matrix-defragged"
+        }
+      }
+    },
+    {
+      "name": "sr3e-mdf-hosts",
+      "label": "DataHosts",
+      "path": "packs/sr3e-mdf-hosts",
+      "type": "Actor",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "matrix-defragged"
+        }
+      }
     }
   ],
   "packFolders": [
@@ -245,6 +1394,208 @@
           "sorting": "a",
           "packs": [
             "sr3e-mr-johnsons-contacts"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Weapons & Gear",
+      "sorting": "a",
+      "folders": [
+        {
+          "name": "Armor",
+          "sorting": "a",
+          "packs": [
+            "sr3e-cc-armor",
+            "sr3e-mm-armor",
+            "sr3e-sota2-armor",
+            "sr3e-sr3-armor",
+            "sr3e-tss-armor",
+            "sr3e-twl-armor"
+          ]
+        },
+        {
+          "name": "Firearms",
+          "sorting": "a",
+          "packs": [
+            "sr3e-cc-firearms",
+            "sr3e-fra-firearms",
+            "sr3e-mm-firearms",
+            "sr3e-sota2-firearms",
+            "sr3e-sr3-firearms",
+            "sr3e-tss-firearms"
+          ]
+        },
+        {
+          "name": "Melee Weapons",
+          "sorting": "a",
+          "packs": [
+            "sr3e-cc-melee",
+            "sr3e-mm-melee",
+            "sr3e-sr3-melee",
+            "sr3e-tss-melee"
+          ]
+        },
+        {
+          "name": "Projectile Weapons",
+          "sorting": "a",
+          "packs": [
+            "sr3e-cc-projectiles",
+            "sr3e-sr3-projectiles"
+          ]
+        },
+        {
+          "name": "Vehicle Weapons",
+          "sorting": "a",
+          "packs": [
+            "sr3e-fra-vehicle-weapons",
+            "sr3e-r3-vehicle-weapons",
+            "sr3e-sr3-vehicle-weapons",
+            "sr3e-twl-vehicle-weapons"
+          ]
+        },
+        {
+          "name": "Drugs & Toxins",
+          "sorting": "a",
+          "packs": [
+            "sr3e-mm-drugs",
+            "sr3e-sota-drugs",
+            "sr3e-tal-drugs"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Augmentations",
+      "sorting": "a",
+      "folders": [
+        {
+          "name": "Cyberware",
+          "sorting": "a",
+          "packs": [
+            "sr3e-cc-cyberware",
+            "sr3e-fra-cyberware",
+            "sr3e-ger-cyberware",
+            "sr3e-mm-cyberware",
+            "sr3e-sr3-cyberware",
+            "sr3e-tss-cyberware"
+          ]
+        },
+        {
+          "name": "Adept Powers",
+          "sorting": "a",
+          "packs": [
+            "sr3e-mits-adept-powers",
+            "sr3e-sota2-adept-powers",
+            "sr3e-sr3-adept-powers",
+            "sr3e-tss-adept-powers"
+          ]
+        },
+        {
+          "name": "Bioware",
+          "sorting": "a",
+          "packs": [
+            "sr3e-mm-bioware",
+            "sr3e-sota-bioware",
+            "sr3e-tss-bioware"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Vehicles & Drones",
+      "sorting": "a",
+      "folders": [
+        {
+          "name": "Vehicle Mods",
+          "sorting": "a",
+          "packs": [
+            "sr3e-fra-vehicle-mods",
+            "sr3e-r3-vehicle-mods",
+            "sr3e-sota2-vehicle-mods",
+            "sr3e-sr3-vehicle-mods",
+            "sr3e-twl-vehicle-mods"
+          ]
+        },
+        {
+          "name": "Drones",
+          "sorting": "a",
+          "packs": [
+            "sr3e-r3-drones",
+            "sr3e-sota2-drones",
+            "sr3e-sr3-drones",
+            "sr3e-ssg-drones",
+            "sr3e-tss-drones"
+          ]
+        },
+        {
+          "name": "Vehicles",
+          "sorting": "a",
+          "packs": [
+            "sr3e-r3-vehicles",
+            "sr3e-sota-vehicles",
+            "sr3e-sota2-vehicles",
+            "sr3e-sr3-vehicles",
+            "sr3e-tss-vehicles",
+            "sr3e-twl-vehicles"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Magic",
+      "sorting": "a",
+      "folders": [
+        {
+          "name": "Spells",
+          "sorting": "a",
+          "packs": [
+            "sr3e-mits-spells",
+            "sr3e-sota2-spells",
+            "sr3e-sr3-spells",
+            "sr3e-tss-spells",
+            "sr3e-twl-spells"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Matrix",
+      "sorting": "a",
+      "folders": [
+        {
+          "name": "Cyberdecks",
+          "sorting": "a",
+          "packs": [
+            "sr3e-mdf-cyberdecks"
+          ]
+        },
+        {
+          "name": "Matrix Programs",
+          "sorting": "a",
+          "packs": [
+            "sr3e-mdf-programs"
+          ]
+        },
+        {
+          "name": "Intrusion Countermeasures",
+          "sorting": "a",
+          "packs": [
+            "sr3e-mdf-ic"
+          ]
+        },
+        {
+          "name": "Programming Agents",
+          "sorting": "a",
+          "packs": [
+            "sr3e-mdf-agents"
+          ]
+        },
+        {
+          "name": "DataHosts",
+          "sorting": "a",
+          "packs": [
+            "sr3e-mdf-hosts"
           ]
         }
       ]
