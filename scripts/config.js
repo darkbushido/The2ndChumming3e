@@ -529,6 +529,41 @@ export const KNOWLEDGE_SKILL_CATEGORIES = new Set([
   '6th World knowledge', 'Interests', 'Area knowledge', 'Background',
 ]);
 
+// ---------------------------------------------------------------------------
+// Source books
+// ---------------------------------------------------------------------------
+
+/**
+ * Every source whose content ships in a compendium pack. Each pack declares which
+ * one it belongs to via `flags.The2ndChumming3e.book`, and the GM chooses which are
+ * in play through the "Source Books" setting.
+ *
+ * `enabled` is only the out-of-the-box default; the stored setting wins once saved.
+ * Codes match the upstream Shadowrun Character Generator's Books.json so a future
+ * re-import lines up. `matrix-defragged` is ours — a community ruleset, not a book.
+ */
+export const SOURCE_BOOKS = {
+  sr3:                { label: 'Shadowrun 3rd Edition',    edition: 'SR3', enabled: true  },
+  cc:                 { label: 'Cannon Companion',         edition: 'SR3', enabled: true  },
+  mm:                 { label: 'Man & Machine',            edition: 'SR3', enabled: true  },
+  mits:               { label: 'Magic in the Shadows',     edition: 'SR3', enabled: true  },
+  r3:                 { label: 'Rigger 3',                 edition: 'SR3', enabled: true  },
+  sota:               { label: 'State of the Art 2063',    edition: 'SR3', enabled: true  },
+  sota2:              { label: 'State of the Art 2064',    edition: 'SR3', enabled: true  },
+  tal:                { label: 'Target: Awakened Lands',   edition: 'SR3', enabled: true  },
+  twl:                { label: 'Target: Wastelands',       edition: 'SR3', enabled: true  },
+  fra:                { label: 'France Sourcebook',        edition: 'SR3', enabled: false },
+  ger:                { label: 'Germany Sourcebook',       edition: 'SR3', enabled: false },
+  ssg:                { label: 'Sprawl Survival Guide',    edition: 'SR3', enabled: false },
+  tss:                { label: 'The Shadowrun Supplemental', edition: 'SR3', enabled: false, fan: true },
+  'matrix-defragged': { label: 'Matrix Defragged v2',      edition: 'SR3', enabled: true, note: 'Community Matrix ruleset — only useful when Matrix Ruleset is set to Defragged.' },
+};
+
+/** Default allowed-books map, used when the setting has never been saved. */
+export function defaultAllowedBooks() {
+  return Object.fromEntries(Object.entries(SOURCE_BOOKS).map(([c, b]) => [c, b.enabled]));
+}
+
 /** Derive 'active' | 'knowledge' | 'language' from a category name. */
 export function skillTypeForCategory(category) {
   if (category === 'Language') return 'language';
@@ -941,6 +976,8 @@ export const SR3E = {
   getFullSkillName,
   getSpecializationsForSkill,
   skillTypeForCategory,
+  sourceBooks: SOURCE_BOOKS,
+  defaultAllowedBooks,
 
   // ── Programming Agents ──────────────────────────────────────────────────────
   agentSkillCategories: [

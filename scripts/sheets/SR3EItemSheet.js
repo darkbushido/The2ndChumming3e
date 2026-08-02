@@ -964,11 +964,10 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
   static async _onPickFromCompendium() {
     const type = this.item.type;
 
-    // Collect matching entries from packs that declare this itemType in their flags
+    // Packs declaring this itemType, restricted to source books the GM has enabled —
+    // otherwise a book hidden from the sidebar would still offer its gear here.
     const packItems = [];
-    for (const pack of game.packs) {
-      const itemTypes = pack.metadata.flags?.[game.system.id]?.itemTypes;
-      if (!Array.isArray(itemTypes) || !itemTypes.includes(type)) continue;
+    for (const pack of game.sr3e.SR3EItem._packsForType(type)) {
       await pack.getIndex();
       for (const entry of pack.index) {
         packItems.push({ uuid: entry.uuid, name: entry.name });

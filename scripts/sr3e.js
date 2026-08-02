@@ -23,6 +23,8 @@ import { SR3EWard } from './documents/SR3EWard.js';
 import { SR3EVehicleChase } from './SR3EVehicleChase.js';
 import { SR3EMIJI } from './SR3EMIJI.js';
 import { SR3EClocks } from './SR3EClocks.js';
+import { SR3ESourceBooks } from './SR3ESourceBooks.js';
+import { SR3ECompendiumDirectory } from './SR3ECompendiumDirectory.js';
 
 Hooks.once('init', () => {
   console.log('SR3E | Initialising');
@@ -80,7 +82,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EWard, buildSkillsCompendium, isLiveActor };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor };
   game.sr3e.openChunkySalsa = _openChunkySalsaCalculator; // (function declaration, hoisted)
 
   // Data models (replace template.json defaults)
@@ -153,6 +155,13 @@ Hooks.once('init', () => {
   CONFIG.Actor.documentClass = SR3EActor;
   CONFIG.Item.documentClass = SR3EItem;
   CONFIG.Combat.documentClass = SR3ECombat;
+
+  // Source books — which books' compendium content is in play. Hidden books are
+  // filtered out of the sidebar (via the CompendiumDirectory subclass below) and out
+  // of the item pickers (SR3EItem._packsForType). Packs declare their book with
+  // flags.The2ndChumming3e.book; packs without it are system content, always shown.
+  SR3ESourceBooks.register();
+  CONFIG.ui.compendium = SR3ECompendiumDirectory;
 
   // Matrix ruleset — registered first so it can gate host-sheet selection below.
   // Changing this setting triggers a page reload (requiresReload) which re-runs

@@ -329,23 +329,28 @@ export class SR3EItem extends Item {
   }
 
   /**
-   * Every loaded compendium pack that declares it holds `type` items, via
-   * `flags.<system>.itemTypes` on the pack declaration.
+   * Every pack that declares it holds `type` items AND belongs to a source book the
+   * GM has switched on. Book membership comes from `flags.<system>.book` on the pack;
+   * packs without it are system content and always included.
    *
-   * Always prefer this over `game.packs.get('<system>.<pack>')`. Sourcebook content
-   * ships as separate modules, each with its own packs, so a hard-coded pack id sees
-   * only the system's own copy and silently ignores every enabled book. Foundry keys
-   * packs by `<packageName>.<packName>`, so module packs are distinct entries in
-   * `game.packs` and are picked up here automatically.
+   * Always prefer this over `game.packs.get('<system>.<pack>')`. Book content lives in
+   * one pack per book, so a hard-coded pack id sees only a single book's worth and
+   * silently ignores the rest.
    *
-   * @param {string} type   Item type, e.g. 'cyberdeck'
+   * @param {string} type            Item type, e.g. 'cyberdeck'
+   * @param {object} [opts]
+   * @param {boolean} [opts.ignoreBookFilter]  Include disabled books too. For places
+   *   that must see everything regardless of GM visibility choices — migrations and
+   *   integrity checks, not player-facing pickers.
    * @returns {CompendiumCollection[]}
    */
-  static _packsForType(type) {
+  static _packsForType(type, { ignoreBookFilter = false } = {}) {
     const sysId = game.system.id;
     return game.packs.filter(p => {
       const types = p.metadata?.flags?.[sysId]?.itemTypes;
-      return Array.isArray(types) && types.includes(type);
+      if (!Array.isArray(types) || !types.includes(type)) return false;
+      if (ignoreBookFilter) return true;
+      return game.sr3e?.SR3ESourceBooks?.packAllowed(p) ?? true;
     });
   }
 
