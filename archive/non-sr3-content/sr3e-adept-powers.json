@@ -1,0 +1,78 @@
+[
+ {
+  "_key": "!items!sr3e-adeptpower-0001",
+  "bucket": "fan",
+  "doc": {
+   "_id": "sr3e-adeptpower-0001",
+   "name": "Agravated Damage",
+   "type": "adeptpower",
+   "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+   "system": {
+    "powerCost": 1,
+    "hasLevels": false,
+    "level": 1,
+    "mods": "",
+    "bookPage": "adh.3",
+    "description": "If all unarmed combat dice succeed, stage damage level by 1"
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-adeptpower-0002",
+  "bucket": "fan",
+  "doc": {
+   "_id": "sr3e-adeptpower-0002",
+   "name": "Aimed Shot*",
+   "type": "adeptpower",
+   "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+   "system": {
+    "powerCost": 0.5,
+    "hasLevels": true,
+    "level": 1,
+    "mods": "",
+    "bookPage": "adh.3",
+    "description": "reduce called shot modifer by 1 per level"
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-adeptpower-0029",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-adeptpower-0029",
+   "name": "Enhanced Centering (x skill) 1",
+   "type": "adeptpower",
+   "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+   "system": {
+    "powerCost": 2,
+    "hasLevels": false,
+    "level": 1,
+    "mods": "",
+    "bookPage": "gm2.34",
+    "description": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-adeptpower-0086",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-adeptpower-0086",
+   "name": "Missile Parry (extended)",
+   "type": "adeptpower",
+   "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+   "system": {
+    "powerCost": 1.5,
+    "hasLevels": false,
+    "level": 1,
+    "mods": "",
+    "bookPage": "cs.105",
+    "description": ""
+   },
+   "effects": []
+  }
+ }
+]

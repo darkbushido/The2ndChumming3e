@@ -1,0 +1,2752 @@
+[
+ {
+  "_key": "!items!sr3e-armor-0007",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0007",
+   "name": "Heavy Leather Jacket",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 2,
+    "weight": 1,
+    "availability": "Always",
+    "cost": 750,
+    "streetIndex": ".75",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0008",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0008",
+   "name": "Heavy Leather Pants",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 2,
+    "weight": 1,
+    "availability": "Always",
+    "cost": 750,
+    "streetIndex": ".75",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0013",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0013",
+   "name": "Arasaka Jetsetter Briefcase",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 3,
+    "impact": 3,
+    "weight": 4.5,
+    "availability": "4/36hrs",
+    "cost": 2000,
+    "streetIndex": "1.2",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0016",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0016",
+   "name": "Armored Stockings",
+   "type": "armor",
+   "system": {
+    "concealability": "15",
+    "ballistic": 1,
+    "impact": 0,
+    "weight": 0,
+    "availability": "6/72hrs",
+    "cost": 110,
+    "streetIndex": "1.1",
+    "bookPage": "sr2.???",
+    "notes": "Ballistic +1 (additive modifier)"
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0017",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0017",
+   "name": "Armor Street Clothes Type 1",
+   "type": "armor",
+   "system": {
+    "concealability": "12",
+    "ballistic": 3,
+    "impact": 1,
+    "weight": 1.5,
+    "availability": "3/24hrs",
+    "cost": 500,
+    "streetIndex": ".8",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0018",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0018",
+   "name": "Armor Street Clothes Type 2",
+   "type": "armor",
+   "system": {
+    "concealability": "12",
+    "ballistic": 2,
+    "impact": 2,
+    "weight": 1.5,
+    "availability": "3/24hrs",
+    "cost": 500,
+    "streetIndex": ".8",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0021",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0021",
+   "name": "Forearm Guards",
+   "type": "armor",
+   "system": {
+    "concealability": "12",
+    "ballistic": 0,
+    "impact": 1,
+    "weight": 0.2,
+    "availability": "5/36hrs",
+    "cost": 250,
+    "streetIndex": ".75",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0022",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0022",
+   "name": "Kevlar Armor Jacket, Light",
+   "type": "armor",
+   "system": {
+    "concealability": "8",
+    "ballistic": 3,
+    "impact": 2,
+    "weight": 1,
+    "availability": "2/36hrs",
+    "cost": 600,
+    "streetIndex": ".8",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0023",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0023",
+   "name": "Kevlar Armor Jacket, Medium",
+   "type": "armor",
+   "system": {
+    "concealability": "6",
+    "ballistic": 4,
+    "impact": 3,
+    "weight": 1.5,
+    "availability": "3/36hrs",
+    "cost": 800,
+    "streetIndex": ".8",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0024",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0024",
+   "name": "Kevlar Armor Jacket, Heavy",
+   "type": "armor",
+   "system": {
+    "concealability": "5",
+    "ballistic": 5,
+    "impact": 4,
+    "weight": 2,
+    "availability": "3/36hrs",
+    "cost": 1000,
+    "streetIndex": ".8",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0025",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0025",
+   "name": "Kevlar T-Shirt/Vest",
+   "type": "armor",
+   "system": {
+    "concealability": "11",
+    "ballistic": 2,
+    "impact": 0,
+    "weight": 1,
+    "availability": "4/48hrs",
+    "cost": 220,
+    "streetIndex": "2",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0045",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0045",
+   "name": "Armante \"Tokyo\" Business Suit",
+   "type": "armor",
+   "system": {
+    "concealability": "13",
+    "ballistic": 2,
+    "impact": 1,
+    "weight": 1,
+    "availability": "3/48hrs",
+    "cost": 1000,
+    "streetIndex": ".75",
+    "bookPage": "cp.32",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0047",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0047",
+   "name": "Eji Armored Cloak",
+   "type": "armor",
+   "system": {
+    "concealability": "14",
+    "ballistic": 2,
+    "impact": 1,
+    "weight": 1.5,
+    "availability": "always",
+    "cost": 500,
+    "streetIndex": ".75",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0048",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0048",
+   "name": "Eji Designer's Jeans",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 1,
+    "availability": "always",
+    "cost": 50,
+    "streetIndex": ".75",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0049",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0049",
+   "name": "Eji Lamb's Wool Sweater",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 1,
+    "availability": "always",
+    "cost": 60,
+    "streetIndex": ".75",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0050",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0050",
+   "name": "Gibson Acid-washed Jeans",
+   "type": "armor",
+   "system": {
+    "concealability": "10",
+    "ballistic": 2,
+    "impact": 1,
+    "weight": 1,
+    "availability": "4/48hrs",
+    "cost": 300,
+    "streetIndex": "1",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0051",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0051",
+   "name": "Gibson Denim Jacket",
+   "type": "armor",
+   "system": {
+    "concealability": "9",
+    "ballistic": 2,
+    "impact": 1,
+    "weight": 1,
+    "availability": "4/48hrs",
+    "cost": 1500,
+    "streetIndex": "1",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0052",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0052",
+   "name": "Gibson T-Shirt",
+   "type": "armor",
+   "system": {
+    "concealability": "10",
+    "ballistic": 1,
+    "impact": 0,
+    "weight": 0.5,
+    "availability": "4/48hrs",
+    "cost": 100,
+    "streetIndex": "1",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0053",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0053",
+   "name": "Gibson Sneak Suit Helmet",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 1,
+    "impact": 0,
+    "weight": 1.5,
+    "availability": "10/5days",
+    "cost": 1185,
+    "streetIndex": "2.5",
+    "bookPage": "cb1.37",
+    "notes": "Ballistic +1 (additive modifier)"
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0054",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0054",
+   "name": "Gibson Sneak Suit Diving Suit",
+   "type": "armor",
+   "system": {
+    "concealability": "+4",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 2,
+    "availability": "12/7days",
+    "cost": 35000,
+    "streetIndex": "3.5",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0055",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0055",
+   "name": "Gibson Sneak Suit Flak Vest",
+   "type": "armor",
+   "system": {
+    "concealability": "+2",
+    "ballistic": 2,
+    "impact": 1,
+    "weight": 1.5,
+    "availability": "8/5days",
+    "cost": 1375,
+    "streetIndex": "2",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0056",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0056",
+   "name": "Gibson Sneak Suit Sneak Suit",
+   "type": "armor",
+   "system": {
+    "concealability": "+4",
+    "ballistic": 1,
+    "impact": 0,
+    "weight": 1,
+    "availability": "8/5days",
+    "cost": 1560,
+    "streetIndex": "3",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0057",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0057",
+   "name": "Gibson Sneak Suit Space Suit",
+   "type": "armor",
+   "system": {
+    "concealability": "+4",
+    "ballistic": 1,
+    "impact": 1,
+    "weight": 10,
+    "availability": "14/7days",
+    "cost": 25000,
+    "streetIndex": "4.5",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0058",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0058",
+   "name": "ICON Bomber Jacket",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 2,
+    "weight": 1.5,
+    "availability": "always",
+    "cost": 900,
+    "streetIndex": ".9",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0059",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0059",
+   "name": "ICON Boots",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 1,
+    "availability": "always",
+    "cost": 450,
+    "streetIndex": ".8",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0060",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0060",
+   "name": "ICON Gun Belt",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 0.25,
+    "availability": "3/24hrs",
+    "cost": 180,
+    "streetIndex": ".9",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0061",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0061",
+   "name": "ICON \"Gunfighter\" Hat",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 0.5,
+    "availability": "always",
+    "cost": 300,
+    "streetIndex": ".8",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0062",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0062",
+   "name": "ICON Half Boots",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 0.75,
+    "availability": "always",
+    "cost": 300,
+    "streetIndex": ".8",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0063",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0063",
+   "name": "ICON Long Duster",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 1,
+    "weight": 1.5,
+    "availability": "always",
+    "cost": 1500,
+    "streetIndex": ".8",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0064",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0064",
+   "name": "ICON Long Skirt",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 1,
+    "availability": "always",
+    "cost": 600,
+    "streetIndex": ".8",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0065",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0065",
+   "name": "ICON Miniskirt",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 0.5,
+    "availability": "always",
+    "cost": 300,
+    "streetIndex": ".8",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0066",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0066",
+   "name": "ICON Pants",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 1,
+    "availability": "always",
+    "cost": 750,
+    "streetIndex": ".8",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0067",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0067",
+   "name": "ICON Tunic",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 1,
+    "weight": 1,
+    "availability": "always",
+    "cost": 660,
+    "streetIndex": ".8",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0068",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0068",
+   "name": "Masetto 'Alessio' Coveralls",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 0,
+    "availability": "always",
+    "cost": 200,
+    "streetIndex": "1",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0069",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0069",
+   "name": "Masetto 'Ciampolo' Gloves",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 0,
+    "availability": "always",
+    "cost": 40,
+    "streetIndex": "1",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0070",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0070",
+   "name": "Masetto 'Gianni' Helmet",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 1,
+    "weight": 1,
+    "availability": "4/48hrs",
+    "cost": 3500,
+    "streetIndex": "2",
+    "bookPage": "sr2.???",
+    "notes": "Impact +1 (additive modifier)"
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0071",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0071",
+   "name": "Masetto 'Guercio' Helmet",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 1,
+    "weight": 1,
+    "availability": "3/48hrs",
+    "cost": 600,
+    "streetIndex": "2",
+    "bookPage": "sr2.???",
+    "notes": "Impact +1 (additive modifier)"
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0072",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0072",
+   "name": "Masetto 'Lano' Coveralls",
+   "type": "armor",
+   "system": {
+    "concealability": "6",
+    "ballistic": 3,
+    "impact": 2,
+    "weight": 1,
+    "availability": "always",
+    "cost": 1600,
+    "streetIndex": "1",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0073",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0073",
+   "name": "Masetto 'Pinamonte' Boots",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 0,
+    "availability": "always",
+    "cost": 50,
+    "streetIndex": "1",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0078",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0078",
+   "name": "Nu-Tek Wearment Jacket",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 1,
+    "availability": "3/48hrs",
+    "cost": 300,
+    "streetIndex": ".9",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0079",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0079",
+   "name": "Nu-Tek Wearman Skirt",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 0.75,
+    "availability": "3/48hrs",
+    "cost": 200,
+    "streetIndex": ".9",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0080",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0080",
+   "name": "Takanaka Exec Briefcase",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 1.5,
+    "availability": "5/72hrs",
+    "cost": 600,
+    "streetIndex": ".8",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0081",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0081",
+   "name": "Takanaka Exec Cape",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 1.5,
+    "availability": "6/72hrs",
+    "cost": 900,
+    "streetIndex": ".9",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0082",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0082",
+   "name": "Takanaka Exec Cologne",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 0,
+    "availability": "6/72hrs",
+    "cost": 150,
+    "streetIndex": ".9",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0083",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0083",
+   "name": "Takanaka Exec Cravat",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 0.5,
+    "availability": "6/72hrs",
+    "cost": 100,
+    "streetIndex": ".9",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0084",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0084",
+   "name": "Takanaka Exec Armored Topcoat",
+   "type": "armor",
+   "system": {
+    "concealability": "10",
+    "ballistic": 4,
+    "impact": 1,
+    "weight": 2.5,
+    "availability": "8/72hrs",
+    "cost": 2000,
+    "streetIndex": ".9",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0085",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0085",
+   "name": "Takanaka Exec Jacket",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 1,
+    "availability": "6/72hrs",
+    "cost": 800,
+    "streetIndex": ".9",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0086",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0086",
+   "name": "Takanaka Exec Monogram Shirt",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 0.75,
+    "availability": "7/72hrs",
+    "cost": 200,
+    "streetIndex": "1.1",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0087",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0087",
+   "name": "Takanaka Exec Opera Cloak",
+   "type": "armor",
+   "system": {
+    "concealability": "10",
+    "ballistic": 3,
+    "impact": 1,
+    "weight": 2.5,
+    "availability": "8/72hrs",
+    "cost": 1200,
+    "streetIndex": ".9",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0088",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0088",
+   "name": "Takanaka Exec Pants",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 1,
+    "availability": "6/72hrs",
+    "cost": 700,
+    "streetIndex": ".9",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0089",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0089",
+   "name": "Takanaka Exec Scarf",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 0.25,
+    "availability": "6/72hrs",
+    "cost": 75,
+    "streetIndex": ".9",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0090",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0090",
+   "name": "Takanaka Exec Sword Case",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 0.5,
+    "availability": "8/72hrs",
+    "cost": 300,
+    "streetIndex": "1",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0091",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0091",
+   "name": "Takanaka Exec Tie",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 0,
+    "availability": "6/72hrs",
+    "cost": 100,
+    "streetIndex": ".9",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0092",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0092",
+   "name": "Takanaka Exec Top Coat",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 1.5,
+    "availability": "6/72hrs",
+    "cost": 1000,
+    "streetIndex": ".9",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0093",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0093",
+   "name": "Takanaka Exec Vest",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 0.75,
+    "availability": "6/72hrs",
+    "cost": 500,
+    "streetIndex": ".9",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0094",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0094",
+   "name": "Uniware Armored Jacket",
+   "type": "armor",
+   "system": {
+    "concealability": "7",
+    "ballistic": 3,
+    "impact": 2,
+    "weight": 1.5,
+    "availability": "10/4days",
+    "cost": 800,
+    "streetIndex": "1.3",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0095",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0095",
+   "name": "Uniware Armored Trenchcoat",
+   "type": "armor",
+   "system": {
+    "concealability": "7",
+    "ballistic": 4,
+    "impact": 3,
+    "weight": 2,
+    "availability": "10/4days",
+    "cost": 900,
+    "streetIndex": "1.3",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0096",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0096",
+   "name": "Uniware Blouse/Shirt",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 0.75,
+    "availability": "8/4days",
+    "cost": 40,
+    "streetIndex": "1.2",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0097",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0097",
+   "name": "Uniware Boots",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 1,
+    "availability": "4/4days",
+    "cost": 60,
+    "streetIndex": "1.2",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0098",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0098",
+   "name": "Uniware Dress",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 1.5,
+    "availability": "6/4days",
+    "cost": 100,
+    "streetIndex": "1.2",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0099",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0099",
+   "name": "Uniware Jumpsuit",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 1.5,
+    "availability": "8/4days",
+    "cost": 150,
+    "streetIndex": "1.2",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0100",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0100",
+   "name": "Uniware Legpads",
+   "type": "armor",
+   "system": {
+    "concealability": "8",
+    "ballistic": 2,
+    "impact": 2,
+    "weight": 1.5,
+    "availability": "9/4days",
+    "cost": 300,
+    "streetIndex": "1.3",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0101",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0101",
+   "name": "Uniware Pants",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 1,
+    "availability": "8/4days",
+    "cost": 70,
+    "streetIndex": "1.2",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0102",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0102",
+   "name": "Uniware Skirt",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 0.75,
+    "availability": "8/4days",
+    "cost": 70,
+    "streetIndex": "1.2",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0103",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0103",
+   "name": "Uniware Torso Armor",
+   "type": "armor",
+   "system": {
+    "concealability": "8",
+    "ballistic": 2,
+    "impact": 2,
+    "weight": 2,
+    "availability": "10/4days",
+    "cost": 300,
+    "streetIndex": "1.3",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0104",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0104",
+   "name": "Uniware Utility Belt",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 0.5,
+    "availability": "5/4days",
+    "cost": 30,
+    "streetIndex": "1.1",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0105",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0105",
+   "name": "Uniware Vest",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 0.5,
+    "availability": "8/4days",
+    "cost": 50,
+    "streetIndex": "1.2",
+    "bookPage": "cb1.37",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0110",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0110",
+   "name": "Vashon Island Houndstooth Set",
+   "type": "armor",
+   "system": {
+    "concealability": "varies",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 0,
+    "availability": "6/48hrs",
+    "cost": 2000,
+    "streetIndex": ".75",
+    "bookPage": "sr2.???",
+    "notes": "Ballistic: varies | Impact: varies"
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0111",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0111",
+   "name": "Vashon Island Hunt Ball Set",
+   "type": "armor",
+   "system": {
+    "concealability": "varies",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 0,
+    "availability": "5/48hrs",
+    "cost": 3000,
+    "streetIndex": ".75",
+    "bookPage": "sr2.???",
+    "notes": "Ballistic: varies | Impact: varies"
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0132",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0132",
+   "name": "Zo� \"Country Club\" Blazer",
+   "type": "armor",
+   "system": {
+    "concealability": "13",
+    "ballistic": 3,
+    "impact": 1,
+    "weight": 1,
+    "availability": "4/48hrs",
+    "cost": 2000,
+    "streetIndex": ".75",
+    "bookPage": "r2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0137",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0137",
+   "name": "Zo� \"Highland Laird\" Kilt",
+   "type": "armor",
+   "system": {
+    "concealability": "14",
+    "ballistic": 4,
+    "impact": 2,
+    "weight": 1.5,
+    "availability": "6/48hrs",
+    "cost": 2000,
+    "streetIndex": ".75",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0138",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0138",
+   "name": "Zo� \"Retrovision\" Skirt Suit",
+   "type": "armor",
+   "system": {
+    "concealability": "13",
+    "ballistic": 3,
+    "impact": 1,
+    "weight": 1.5,
+    "availability": "4/48hrs",
+    "cost": 2500,
+    "streetIndex": ".75",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0150",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0150",
+   "name": "Form-fitting Armor Lvl [1]",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 2,
+    "impact": 0,
+    "weight": 0.75,
+    "availability": "3/48hrs",
+    "cost": 150,
+    "streetIndex": "1",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0151",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0151",
+   "name": "Form-fitting Armor Lvl [2]",
+   "type": "armor",
+   "system": {
+    "concealability": "15",
+    "ballistic": 3,
+    "impact": 1,
+    "weight": 1.25,
+    "availability": "4/48hrs",
+    "cost": 250,
+    "streetIndex": "1",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0152",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0152",
+   "name": "Form-fitting Armor Lvl [3]",
+   "type": "armor",
+   "system": {
+    "concealability": "12",
+    "ballistic": 4,
+    "impact": 1,
+    "weight": 1.75,
+    "availability": "4/48hrs",
+    "cost": 500,
+    "streetIndex": "1",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0156",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0156",
+   "name": "Fireproof Coat",
+   "type": "armor",
+   "system": {
+    "concealability": "8",
+    "ballistic": 0,
+    "impact": 2,
+    "weight": 1,
+    "availability": "4/48hrs",
+    "cost": 220,
+    "streetIndex": "2",
+    "bookPage": "cb1.17",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0157",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0157",
+   "name": "Fireproof Jacket",
+   "type": "armor",
+   "system": {
+    "concealability": "8",
+    "ballistic": 0,
+    "impact": 2,
+    "weight": 1,
+    "availability": "4/48hrs",
+    "cost": 200,
+    "streetIndex": "2",
+    "bookPage": "cb1.17",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0158",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0158",
+   "name": "Fireproof Shirt",
+   "type": "armor",
+   "system": {
+    "concealability": "8",
+    "ballistic": 0,
+    "impact": 1,
+    "weight": 0.5,
+    "availability": "4/48hrs",
+    "cost": 130,
+    "streetIndex": "2",
+    "bookPage": "cb1.17",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0159",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0159",
+   "name": "Fireproof Hat",
+   "type": "armor",
+   "system": {
+    "concealability": "8",
+    "ballistic": 0,
+    "impact": 1,
+    "weight": 0,
+    "availability": "4/48hrs",
+    "cost": 130,
+    "streetIndex": "2",
+    "bookPage": "cb1.17",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0160",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0160",
+   "name": "Fireproof Skirt",
+   "type": "armor",
+   "system": {
+    "concealability": "8",
+    "ballistic": 0,
+    "impact": 1,
+    "weight": 1,
+    "availability": "4/48hrs",
+    "cost": 150,
+    "streetIndex": "2",
+    "bookPage": "cb1.17",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0161",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0161",
+   "name": "Fireproof Pants",
+   "type": "armor",
+   "system": {
+    "concealability": "8",
+    "ballistic": 0,
+    "impact": 2,
+    "weight": 1.5,
+    "availability": "4/48hrs",
+    "cost": 150,
+    "streetIndex": "2",
+    "bookPage": "cb1.17",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0162",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0162",
+   "name": "Fireproof Overcoat",
+   "type": "armor",
+   "system": {
+    "concealability": "8",
+    "ballistic": 0,
+    "impact": 2,
+    "weight": 2,
+    "availability": "4/48hrs",
+    "cost": 500,
+    "streetIndex": "2",
+    "bookPage": "cb1.17",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0163",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0163",
+   "name": "Fireproof Suit",
+   "type": "armor",
+   "system": {
+    "concealability": "4",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 3,
+    "availability": "6/72hrs",
+    "cost": 500,
+    "streetIndex": "2.5",
+    "bookPage": "sr2.???",
+    "notes": "Ballistic: (Special) | Impact: (Special)"
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0164",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0164",
+   "name": "Fire-Resistant Coveralls",
+   "type": "armor",
+   "system": {
+    "concealability": "10",
+    "ballistic": 0,
+    "impact": 3,
+    "weight": 3.5,
+    "availability": "10/48hrs",
+    "cost": 2000,
+    "streetIndex": "1",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0165",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0165",
+   "name": "Light Combat Biker Armor",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 3,
+    "impact": 2,
+    "weight": 1.25,
+    "availability": "4/48hrs",
+    "cost": 900,
+    "streetIndex": "1",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0166",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0166",
+   "name": "Heavy Combat Biker Armor",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 6,
+    "impact": 5,
+    "weight": 2.75,
+    "availability": "4/48hrs",
+    "cost": 1200,
+    "streetIndex": "1",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0167",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0167",
+   "name": "Combat Bikr Helmet",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 1,
+    "impact": 1,
+    "weight": 0.5,
+    "availability": "5/48hrs",
+    "cost": 600,
+    "streetIndex": "2",
+    "bookPage": "sr2.???",
+    "notes": "Ballistic +1 (additive modifier) | Impact +1 (additive modifier)"
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0222",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0222",
+   "name": "Light Urban Brawl Armor",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 3,
+    "impact": 2,
+    "weight": 1.25,
+    "availability": "4/48hrs",
+    "cost": 700,
+    "streetIndex": "1",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0223",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0223",
+   "name": "Medium Urban Brawl Armor",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 4,
+    "impact": 3,
+    "weight": 1.5,
+    "availability": "4/48hrs",
+    "cost": 750,
+    "streetIndex": "1",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0224",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0224",
+   "name": "Heavy Urban Brawl Armor",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 6,
+    "impact": 4,
+    "weight": 2.5,
+    "availability": "4/48hrs",
+    "cost": 1000,
+    "streetIndex": "1",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0225",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0225",
+   "name": "Urban Brawl Helmet",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 1,
+    "impact": 1,
+    "weight": 0.5,
+    "availability": "5/48hrs",
+    "cost": 600,
+    "streetIndex": "1",
+    "bookPage": "sr2.???",
+    "notes": "Ballistic +1 (additive modifier) | Impact +1 (additive modifier)"
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0226",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0226",
+   "name": "Battle Vest",
+   "type": "armor",
+   "system": {
+    "concealability": "7",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 1,
+    "availability": "5/3days",
+    "cost": 750,
+    "streetIndex": "1.75",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0227",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0227",
+   "name": "Doorgunner's Vest",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 6,
+    "impact": 4,
+    "weight": 12,
+    "availability": "9/8days",
+    "cost": 7500,
+    "streetIndex": "1.9",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0228",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0228",
+   "name": "Flack Vest",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 4,
+    "impact": 4,
+    "weight": 2,
+    "availability": "6/4days",
+    "cost": 1000,
+    "streetIndex": "1",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0229",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0229",
+   "name": "Full Suit",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 8,
+    "impact": 6,
+    "weight": 0,
+    "availability": "16/14days",
+    "cost": 20000,
+    "streetIndex": "3",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0230",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0230",
+   "name": "Helmet",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 1,
+    "impact": 1,
+    "weight": 0,
+    "availability": "12/14days",
+    "cost": 200,
+    "streetIndex": "1.5",
+    "bookPage": "sr2.???",
+    "notes": "Ballistic +1 (additive modifier) | Impact +1 (additive modifier)"
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0231",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0231",
+   "name": "Helmet, Nylon",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 1,
+    "impact": 1,
+    "weight": 0,
+    "availability": "12/14days",
+    "cost": 200,
+    "streetIndex": "1.5",
+    "bookPage": "sr2.???",
+    "notes": "Ballistic +1 (additive modifier) | Impact +1 (additive modifier)"
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0232",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0232",
+   "name": "Helmet, Steel",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 1,
+    "impact": 2,
+    "weight": 0,
+    "availability": "14/14days",
+    "cost": 250,
+    "streetIndex": "1.75",
+    "bookPage": "sr2.???",
+    "notes": "Ballistic +1 (additive modifier) | Impact +2 (additive modifier)"
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0233",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0233",
+   "name": "MedicGear Combat Medical Armor",
+   "type": "armor",
+   "system": {
+    "concealability": "5",
+    "ballistic": 3,
+    "impact": 1,
+    "weight": 4,
+    "availability": "10/14days",
+    "cost": 3400,
+    "streetIndex": "2",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0234",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0234",
+   "name": "Partial Suit",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 6,
+    "impact": 4,
+    "weight": 0,
+    "availability": "8/10days",
+    "cost": 10000,
+    "streetIndex": "2",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0235",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0235",
+   "name": "Kelmar Light Police Armor",
+   "type": "armor",
+   "system": {
+    "concealability": "2",
+    "ballistic": 3,
+    "impact": 5,
+    "weight": 2.5,
+    "availability": "20/14days",
+    "cost": 10000,
+    "streetIndex": "3",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0236",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0236",
+   "name": "Kelmar Heavy Police Armor",
+   "type": "armor",
+   "system": {
+    "concealability": "1",
+    "ballistic": 5,
+    "impact": 7,
+    "weight": 4,
+    "availability": "24/20days",
+    "cost": 12500,
+    "streetIndex": "3.5",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0237",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0237",
+   "name": "Kelmar Police Helmet",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 1,
+    "weight": 0.75,
+    "availability": "20/14days",
+    "cost": 2000,
+    "streetIndex": "3.5",
+    "bookPage": "sr2.???",
+    "notes": "Impact +1 (additive modifier)"
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0292",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0292",
+   "name": "Light Military Armor",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 10,
+    "impact": 7,
+    "weight": 0,
+    "availability": "18/1mth",
+    "cost": 25000,
+    "streetIndex": "3",
+    "bookPage": "fof.54",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0293",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0293",
+   "name": "Medium Military Armor",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 12,
+    "impact": 8,
+    "weight": 0,
+    "availability": "24/1mth",
+    "cost": 45000,
+    "streetIndex": "3",
+    "bookPage": "fof.54",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0294",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0294",
+   "name": "Heavy Military Armor",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 14,
+    "impact": 9,
+    "weight": 0,
+    "availability": "28/1mth",
+    "cost": 70000,
+    "streetIndex": "3",
+    "bookPage": "fof.54",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0295",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0295",
+   "name": "Military Helmet",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 2,
+    "impact": 3,
+    "weight": 3,
+    "availability": "24/1mth",
+    "cost": 2500,
+    "streetIndex": "3",
+    "bookPage": "fof.54",
+    "notes": "Ballistic +2 (additive modifier) | Impact +3 (additive modifier)"
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0296",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0296",
+   "name": "MetalGear Arm Piece",
+   "type": "armor",
+   "system": {
+    "concealability": "2",
+    "ballistic": 2,
+    "impact": 1,
+    "weight": 2,
+    "availability": "10/7days",
+    "cost": 2000,
+    "streetIndex": "3",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0297",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0297",
+   "name": "MetalGear Helmet",
+   "type": "armor",
+   "system": {
+    "concealability": "2",
+    "ballistic": 2,
+    "impact": 1,
+    "weight": 2,
+    "availability": "10/7days",
+    "cost": 2000,
+    "streetIndex": "3",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0298",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0298",
+   "name": "MetalGear Leg Piece",
+   "type": "armor",
+   "system": {
+    "concealability": "2",
+    "ballistic": 2,
+    "impact": 1,
+    "weight": 2,
+    "availability": "10/7days",
+    "cost": 2000,
+    "streetIndex": "3",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0299",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0299",
+   "name": "MetalGear Torso Piece",
+   "type": "armor",
+   "system": {
+    "concealability": "2",
+    "ballistic": 2,
+    "impact": 1,
+    "weight": 2,
+    "availability": "10/7days",
+    "cost": 2000,
+    "streetIndex": "3",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0301",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0301",
+   "name": "Esporma Environment Suit",
+   "type": "armor",
+   "system": {
+    "concealability": "1",
+    "ballistic": 2,
+    "impact": 1,
+    "weight": 5,
+    "availability": "6/4days",
+    "cost": 7250,
+    "streetIndex": "3",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0304",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0304",
+   "name": "\"Ghostsuit\"",
+   "type": "armor",
+   "system": {
+    "concealability": "+4",
+    "ballistic": 2,
+    "impact": 1,
+    "weight": 3,
+    "availability": "6/14days",
+    "cost": 53000,
+    "streetIndex": "8",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0305",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0305",
+   "name": "\"Ghostsuit\" Helmet",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 1,
+    "impact": 0,
+    "weight": 1.5,
+    "availability": "8/14days",
+    "cost": 6000,
+    "streetIndex": "8",
+    "bookPage": "sr2.???",
+    "notes": "Ballistic +1 (additive modifier)"
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0306",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0306",
+   "name": "IR Combat Cloak",
+   "type": "armor",
+   "system": {
+    "concealability": "+4/+2",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 2,
+    "availability": "6/48hrs",
+    "cost": 450,
+    "streetIndex": "2",
+    "bookPage": "cb1.18",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0307",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0307",
+   "name": "Kevlar Blanket",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 2,
+    "impact": 0,
+    "weight": 0,
+    "availability": "always",
+    "cost": 500,
+    "streetIndex": "1",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0308",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0308",
+   "name": "Medieval Armor (Maximillian)",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 3,
+    "impact": 4,
+    "weight": 14,
+    "availability": "10/4days",
+    "cost": 10600,
+    "streetIndex": "1",
+    "bookPage": "cb1.19",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0309",
+  "bucket": "fan",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0309",
+   "name": "Medieval Armor (Standard)",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 2,
+    "impact": 3,
+    "weight": 10,
+    "availability": "8/48hrs",
+    "cost": 3500,
+    "streetIndex": "1",
+    "bookPage": "cb1.19",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0310",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0310",
+   "name": "Military Chemsuit",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 0,
+    "availability": "18/14days",
+    "cost": 15000,
+    "streetIndex": "2",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0311",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0311",
+   "name": "\"Mirage Gear\" Combat Helmet",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 1,
+    "impact": 0,
+    "weight": 1,
+    "availability": "9/4days",
+    "cost": 700,
+    "streetIndex": "2.5",
+    "bookPage": "sr2.???",
+    "notes": "Ballistic +1 (additive modifier)"
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0312",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0312",
+   "name": "\"Mirage Gear\" Flak Vest",
+   "type": "armor",
+   "system": {
+    "concealability": "-",
+    "ballistic": 2,
+    "impact": 1,
+    "weight": 1.5,
+    "availability": "7/4days",
+    "cost": 1275,
+    "streetIndex": "2.5",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0313",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0313",
+   "name": "\"Mirage Gear\"",
+   "type": "armor",
+   "system": {
+    "concealability": "+2",
+    "ballistic": 1,
+    "impact": 0,
+    "weight": 1.5,
+    "availability": "5/48hrs",
+    "cost": 1050,
+    "streetIndex": "3",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0316",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0316",
+   "name": "Shadow Suit",
+   "type": "armor",
+   "system": {
+    "concealability": "12",
+    "ballistic": 4,
+    "impact": 1,
+    "weight": 1.5,
+    "availability": "6/48hrs",
+    "cost": 800,
+    "streetIndex": "1",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0318",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0318",
+   "name": "Sneak Suit",
+   "type": "armor",
+   "system": {
+    "concealability": "+4",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 2,
+    "availability": "8/14days",
+    "cost": 50000,
+    "streetIndex": "7.5",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-armor-0319",
+  "bucket": "sr2",
+  "doc": {
+   "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+   "_id": "sr3e-armor-0319",
+   "name": "Thermal Regulation Suit",
+   "type": "armor",
+   "system": {
+    "concealability": "14",
+    "ballistic": 0,
+    "impact": 0,
+    "weight": 2,
+    "availability": "6/48hrs",
+    "cost": 8000,
+    "streetIndex": "2",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ }
+]

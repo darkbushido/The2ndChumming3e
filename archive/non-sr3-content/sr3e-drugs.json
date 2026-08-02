@@ -1,0 +1,1976 @@
+[
+ {
+  "_key": "!items!07CBSdlMwpdj2MV6",
+  "bucket": "fan",
+  "doc": {
+   "name": "Diamond-Four",
+   "type": "drug",
+   "system": {
+    "category": "Designer Drugs",
+    "addiction": "2P",
+    "tolerance": "2",
+    "effect": "10",
+    "speed": "",
+    "vector": "",
+    "availability": "10/48hrs",
+    "cost": 1500,
+    "streetIndex": "3.5",
+    "bookPage": "nagee.104",
+    "notes": ""
+   },
+   "_id": "07CBSdlMwpdj2MV6",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826193,
+    "modifiedTime": 1782889914230,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!09JP7exidfhEzzVN",
+  "bucket": "fan",
+  "doc": {
+   "name": "Marijuana (smoked)",
+   "type": "drug",
+   "system": {
+    "category": "Depressants",
+    "addiction": "3M",
+    "tolerance": "3",
+    "effect": "10",
+    "speed": "",
+    "vector": "",
+    "availability": "3/1hr",
+    "cost": 4,
+    "streetIndex": ".5",
+    "bookPage": "nagee.102",
+    "notes": ""
+   },
+   "_id": "09JP7exidfhEzzVN",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826185,
+    "modifiedTime": 1782889914230,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!0bpwdwrQG35gCGcH",
+  "bucket": "fan",
+  "doc": {
+   "name": "Methaqualone",
+   "type": "drug",
+   "system": {
+    "category": "Depressants",
+    "addiction": "4M+4P",
+    "tolerance": "4",
+    "effect": "2",
+    "speed": "",
+    "vector": "",
+    "availability": "4/3hrs",
+    "cost": 3,
+    "streetIndex": "1.2",
+    "bookPage": "nagee.102",
+    "notes": ""
+   },
+   "_id": "0bpwdwrQG35gCGcH",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826186,
+    "modifiedTime": 1782889914230,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!0cH4ATC0XtWx4qh1",
+  "bucket": "fan",
+  "doc": {
+   "name": "Endorphins",
+   "type": "drug",
+   "system": {
+    "category": "Stimulants",
+    "addiction": "4P",
+    "tolerance": "4",
+    "effect": "5",
+    "speed": "",
+    "vector": "",
+    "availability": "6/3hrs",
+    "cost": 30,
+    "streetIndex": "3",
+    "bookPage": "nagee.107",
+    "notes": ""
+   },
+   "_id": "0cH4ATC0XtWx4qh1",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826277,
+    "modifiedTime": 1782889914230,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!1oqQk7gHwRRIe5gt",
+  "bucket": "fan",
+  "doc": {
+   "name": "Somaware Biotech Sleep Inductor",
+   "type": "drug",
+   "system": {
+    "category": "Narcotics",
+    "addiction": "4M",
+    "tolerance": "15",
+    "effect": "10",
+    "speed": "",
+    "vector": "",
+    "availability": "2/6hrs",
+    "cost": 400,
+    "streetIndex": "1",
+    "bookPage": "cb3.101",
+    "notes": ""
+   },
+   "_id": "1oqQk7gHwRRIe5gt",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826262,
+    "modifiedTime": 1782889914230,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!2aa6o3liNNcHfCW4",
+  "bucket": "fan",
+  "doc": {
+   "name": "Ecstacy",
+   "type": "drug",
+   "system": {
+    "category": "Hallucinogens",
+    "addiction": "4M",
+    "tolerance": "4",
+    "effect": "20",
+    "speed": "",
+    "vector": "",
+    "availability": "5/7hrs",
+    "cost": 150,
+    "streetIndex": "4",
+    "bookPage": "nagee.104",
+    "notes": ""
+   },
+   "_id": "2aa6o3liNNcHfCW4",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826207,
+    "modifiedTime": 1782889914230,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!2iNdyoF77qx7V2Lo",
+  "bucket": "fan",
+  "doc": {
+   "name": "Schwarzeneine",
+   "type": "drug",
+   "system": {
+    "category": "Designer Drugs",
+    "addiction": "6P",
+    "tolerance": "4",
+    "effect": "5",
+    "speed": "",
+    "vector": "",
+    "availability": "8/3hrs",
+    "cost": 45,
+    "streetIndex": "3.5",
+    "bookPage": "nagee.102",
+    "notes": ""
+   },
+   "_id": "2iNdyoF77qx7V2Lo",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826204,
+    "modifiedTime": 1782889914230,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!7SUNSfxCdkMFQTbJ",
+  "bucket": "fan",
+  "doc": {
+   "name": "Butaqualide",
+   "type": "drug",
+   "system": {
+    "category": "Depressants",
+    "addiction": "5M",
+    "tolerance": "3",
+    "effect": "10",
+    "speed": "",
+    "vector": "",
+    "availability": "5/1hr",
+    "cost": 20,
+    "streetIndex": "2.5",
+    "bookPage": "nagee.102",
+    "notes": ""
+   },
+   "_id": "7SUNSfxCdkMFQTbJ",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826177,
+    "modifiedTime": 1782889914230,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!7YVbbyCtcCRFcYjA",
+  "bucket": "fan",
+  "doc": {
+   "name": "Triphetamines (50 tablets)",
+   "type": "drug",
+   "system": {
+    "category": "Stimulants",
+    "addiction": "2M",
+    "tolerance": "4",
+    "effect": "5",
+    "speed": "",
+    "vector": "",
+    "availability": "5/3hrs",
+    "cost": 25,
+    "streetIndex": "1.5",
+    "bookPage": "nagee.108",
+    "notes": ""
+   },
+   "_id": "7YVbbyCtcCRFcYjA",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826295,
+    "modifiedTime": 1782889914230,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!7i4rX556g7D2pMuv",
+  "bucket": "fan",
+  "doc": {
+   "name": "Marijuana (ingested)",
+   "type": "drug",
+   "system": {
+    "category": "Depressants",
+    "addiction": "3M",
+    "tolerance": "3",
+    "effect": "10",
+    "speed": "",
+    "vector": "",
+    "availability": "3/1hr",
+    "cost": 20,
+    "streetIndex": ".5",
+    "bookPage": "nagee.102",
+    "notes": ""
+   },
+   "_id": "7i4rX556g7D2pMuv",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826183,
+    "modifiedTime": 1782889914230,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!C55ZTCFA5UjCu06M",
+  "bucket": "fan",
+  "doc": {
+   "name": "Shades",
+   "type": "drug",
+   "system": {
+    "category": "Designer Drugs",
+    "addiction": "5M",
+    "tolerance": "2",
+    "effect": "5",
+    "speed": "",
+    "vector": "",
+    "availability": "4/1hr",
+    "cost": 30,
+    "streetIndex": "2",
+    "bookPage": "nagee.102",
+    "notes": ""
+   },
+   "_id": "C55ZTCFA5UjCu06M",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826205,
+    "modifiedTime": 1782889914230,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!CJ6Wp4ImSXbwgiNo",
+  "bucket": "fan",
+  "doc": {
+   "name": "NuYou",
+   "type": "drug",
+   "system": {
+    "category": "Designer Drugs",
+    "addiction": "6M",
+    "tolerance": "3",
+    "effect": "10",
+    "speed": "",
+    "vector": "",
+    "availability": "4/2hrs",
+    "cost": 350,
+    "streetIndex": "3",
+    "bookPage": "nagee.102",
+    "notes": ""
+   },
+   "_id": "CJ6Wp4ImSXbwgiNo",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826202,
+    "modifiedTime": 1782889914230,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!DCDP3U97HHKVs1JO",
+  "bucket": "fan",
+  "doc": {
+   "name": "Methadone",
+   "type": "drug",
+   "system": {
+    "category": "Narcotics",
+    "addiction": "2M+3P",
+    "tolerance": "3",
+    "effect": "5",
+    "speed": "",
+    "vector": "",
+    "availability": "5/6hrs",
+    "cost": 50,
+    "streetIndex": "2",
+    "bookPage": "nagee.106",
+    "notes": ""
+   },
+   "_id": "DCDP3U97HHKVs1JO",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826257,
+    "modifiedTime": 1782889914230,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!GLfGx5qXNum8XgSr",
+  "bucket": "fan",
+  "doc": {
+   "name": "Genesios Three",
+   "type": "drug",
+   "system": {
+    "category": "Designer Drugs",
+    "addiction": "2M",
+    "tolerance": "5",
+    "effect": "20",
+    "speed": "",
+    "vector": "",
+    "availability": "14/14days",
+    "cost": 1000,
+    "streetIndex": "8.5",
+    "bookPage": "nagee.104",
+    "notes": ""
+   },
+   "_id": "GLfGx5qXNum8XgSr",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826196,
+    "modifiedTime": 1782889914230,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!GQggd3kQVJHhWzlo",
+  "bucket": "fan",
+  "doc": {
+   "name": "Alcohol (bottle)",
+   "type": "drug",
+   "system": {
+    "category": "Depressants",
+    "addiction": "2M",
+    "tolerance": "3",
+    "effect": "50",
+    "speed": "",
+    "vector": "",
+    "availability": "always",
+    "cost": 10,
+    "streetIndex": ".8",
+    "bookPage": "nagee.101",
+    "notes": ""
+   },
+   "_id": "GQggd3kQVJHhWzlo",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826170,
+    "modifiedTime": 1782889914230,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!GjEJb5AvKzxUWqms",
+  "bucket": "fan",
+  "doc": {
+   "name": "Zen",
+   "type": "drug",
+   "system": {
+    "category": "Hallucinogens",
+    "addiction": "5M",
+    "tolerance": "3",
+    "effect": "10",
+    "speed": "",
+    "vector": "",
+    "availability": "5/10hrs",
+    "cost": 120,
+    "streetIndex": "3",
+    "bookPage": "nagee.105",
+    "notes": ""
+   },
+   "_id": "GjEJb5AvKzxUWqms",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826223,
+    "modifiedTime": 1782889914230,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!IbVhoL6u7HTCrrn2",
+  "bucket": "fan",
+  "doc": {
+   "name": "LSD (one tab)",
+   "type": "drug",
+   "system": {
+    "category": "Hallucinogens",
+    "addiction": "1M",
+    "tolerance": "2",
+    "effect": "4",
+    "speed": "",
+    "vector": "",
+    "availability": "4/7hrs",
+    "cost": 5,
+    "streetIndex": "1.5",
+    "bookPage": "nagee.104",
+    "notes": ""
+   },
+   "_id": "IbVhoL6u7HTCrrn2",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826209,
+    "modifiedTime": 1782889914230,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!Jbi88tH17LgtE37o",
+  "bucket": "fan",
+  "doc": {
+   "name": "J",
+   "type": "drug",
+   "system": {
+    "category": "Stimulants",
+    "addiction": "1M",
+    "tolerance": "1",
+    "effect": "50",
+    "speed": "",
+    "vector": "",
+    "availability": "10/3hrs",
+    "cost": 600,
+    "streetIndex": "4",
+    "bookPage": "nagee.107",
+    "notes": ""
+   },
+   "_id": "Jbi88tH17LgtE37o",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826278,
+    "modifiedTime": 1782889914230,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!JmI7XLRFAgB31MSX",
+  "bucket": "fan",
+  "doc": {
+   "name": "Hydromorphone",
+   "type": "drug",
+   "system": {
+    "category": "Narcotics",
+    "addiction": "4M+4P",
+    "tolerance": "5",
+    "effect": "7",
+    "speed": "",
+    "vector": "",
+    "availability": "5/6hrs",
+    "cost": 250,
+    "streetIndex": "1.5",
+    "bookPage": "nagee.106",
+    "notes": ""
+   },
+   "_id": "JmI7XLRFAgB31MSX",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826253,
+    "modifiedTime": 1782889914230,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!MyEC7YBD9KcjsyDO",
+  "bucket": "fan",
+  "doc": {
+   "name": "Ribopropylmethionine",
+   "type": "drug",
+   "system": {
+    "category": "Hallucinogens",
+    "addiction": "8P",
+    "tolerance": "2",
+    "effect": "2",
+    "speed": "",
+    "vector": "",
+    "availability": "10/7hrs",
+    "cost": 100,
+    "streetIndex": "3",
+    "bookPage": "nagee.105",
+    "notes": ""
+   },
+   "_id": "MyEC7YBD9KcjsyDO",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826219,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!PEYYCvjozRieYdJq",
+  "bucket": "fan",
+  "doc": {
+   "name": "Brown Study",
+   "type": "drug",
+   "system": {
+    "category": "Stimulants",
+    "addiction": "1M",
+    "tolerance": "4",
+    "effect": "10",
+    "speed": "",
+    "vector": "",
+    "availability": "6/6hrs",
+    "cost": 35,
+    "streetIndex": "3",
+    "bookPage": "nagee.107",
+    "notes": ""
+   },
+   "_id": "PEYYCvjozRieYdJq",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826270,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!PMWA5AgL4OsPV14S",
+  "bucket": "fan",
+  "doc": {
+   "name": "Mescaline",
+   "type": "drug",
+   "system": {
+    "category": "Hallucinogens",
+    "addiction": "2M",
+    "tolerance": "2",
+    "effect": "4",
+    "speed": "",
+    "vector": "",
+    "availability": "4/5hrs",
+    "cost": 80,
+    "streetIndex": "2",
+    "bookPage": "nagee.105",
+    "notes": ""
+   },
+   "_id": "PMWA5AgL4OsPV14S",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826214,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!Pmv3e3J8b0ObRsNC",
+  "bucket": "fan",
+  "doc": {
+   "name": "Heroin",
+   "type": "drug",
+   "system": {
+    "category": "Narcotics",
+    "addiction": "5M+5P",
+    "tolerance": "3",
+    "effect": "3",
+    "speed": "",
+    "vector": "",
+    "availability": "5/2hrs",
+    "cost": 20,
+    "streetIndex": "2.5",
+    "bookPage": "nagee.106",
+    "notes": ""
+   },
+   "_id": "Pmv3e3J8b0ObRsNC",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826252,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!QiDIzhwwkRAB5XLI",
+  "bucket": "fan",
+  "doc": {
+   "name": "Phencyclidine",
+   "type": "drug",
+   "system": {
+    "category": "Hallucinogens",
+    "addiction": "5M",
+    "tolerance": "4",
+    "effect": "2",
+    "speed": "",
+    "vector": "",
+    "availability": "8/14hrs",
+    "cost": 25,
+    "streetIndex": "2.5",
+    "bookPage": "nagee.105",
+    "notes": ""
+   },
+   "_id": "QiDIzhwwkRAB5XLI",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826216,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!TcQX8ZqPq1qkBfHx",
+  "bucket": "fan",
+  "doc": {
+   "name": "Phenmetrazine (10 tablets)",
+   "type": "drug",
+   "system": {
+    "category": "Stimulants",
+    "addiction": "5P",
+    "tolerance": "4",
+    "effect": "5",
+    "speed": "",
+    "vector": "",
+    "availability": "5/3hrs",
+    "cost": 75,
+    "streetIndex": "1.5",
+    "bookPage": "nagee.108",
+    "notes": ""
+   },
+   "_id": "TcQX8ZqPq1qkBfHx",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826290,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!UABVF4SqnlU9fVfp",
+  "bucket": "sr2",
+  "doc": {
+   "name": "Doom (1 dose)",
+   "type": "drug",
+   "system": {
+    "category": "Pharmaceutical Compounds",
+    "addiction": "",
+    "tolerance": "",
+    "effect": "",
+    "speed": "",
+    "vector": "",
+    "availability": "14/30days",
+    "cost": 500,
+    "streetIndex": "5",
+    "bookPage": "st.80",
+    "notes": ""
+   },
+   "_id": "UABVF4SqnlU9fVfp",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826164,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!UGcQBXvlRBuAIVXU",
+  "bucket": "fan",
+  "doc": {
+   "name": "Morphine",
+   "type": "drug",
+   "system": {
+    "category": "Narcotics",
+    "addiction": "4M+4P",
+    "tolerance": "4",
+    "effect": "10",
+    "speed": "",
+    "vector": "",
+    "availability": "4/3hrs",
+    "cost": 150,
+    "streetIndex": "1.25",
+    "bookPage": "nagee.106",
+    "notes": ""
+   },
+   "_id": "UGcQBXvlRBuAIVXU",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826258,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!UdQ35auPMhsRHYoo",
+  "bucket": "fan",
+  "doc": {
+   "name": "Sonniene",
+   "type": "drug",
+   "system": {
+    "category": "Depressants",
+    "addiction": "4M",
+    "tolerance": "3",
+    "effect": "5",
+    "speed": "",
+    "vector": "",
+    "availability": "4/1hr",
+    "cost": 80,
+    "streetIndex": "3",
+    "bookPage": "nagee.102",
+    "notes": ""
+   },
+   "_id": "UdQ35auPMhsRHYoo",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826191,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!UiHPohpnyIjZPRKT",
+  "bucket": "fan",
+  "doc": {
+   "name": "Nicotine (pack of cigarettes)",
+   "type": "drug",
+   "system": {
+    "category": "Depressants",
+    "addiction": "3M",
+    "tolerance": "1",
+    "effect": "20",
+    "speed": "",
+    "vector": "",
+    "availability": "always",
+    "cost": 2,
+    "streetIndex": ".8",
+    "bookPage": "nagee.102",
+    "notes": ""
+   },
+   "_id": "UiHPohpnyIjZPRKT",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826188,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!YFc1VW0s7Z7XS1Ru",
+  "bucket": "fan",
+  "doc": {
+   "name": "Meperidine",
+   "type": "drug",
+   "system": {
+    "category": "Narcotics",
+    "addiction": "4M+4P",
+    "tolerance": "5",
+    "effect": "4",
+    "speed": "",
+    "vector": "",
+    "availability": "6/6hrs",
+    "cost": 500,
+    "streetIndex": "2.5",
+    "bookPage": "nagee.106",
+    "notes": ""
+   },
+   "_id": "YFc1VW0s7Z7XS1Ru",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826255,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!YSX3zkgmcbHwx4HI",
+  "bucket": "fan",
+  "doc": {
+   "name": "Musk",
+   "type": "drug",
+   "system": {
+    "category": "Designer Drugs",
+    "addiction": "3M",
+    "tolerance": "3",
+    "effect": "20",
+    "speed": "",
+    "vector": "",
+    "availability": "3/1hr",
+    "cost": 250,
+    "streetIndex": "2",
+    "bookPage": "nagee.102",
+    "notes": ""
+   },
+   "_id": "YSX3zkgmcbHwx4HI",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826200,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!ZHkkv9EFEHhjIPt7",
+  "bucket": "fan",
+  "doc": {
+   "name": "Cocaine",
+   "type": "drug",
+   "system": {
+    "category": "Stimulants",
+    "addiction": "6P",
+    "tolerance": "3",
+    "effect": "5",
+    "speed": "",
+    "vector": "",
+    "availability": "4/1hr",
+    "cost": 10,
+    "streetIndex": "2",
+    "bookPage": "nagee.107",
+    "notes": ""
+   },
+   "_id": "ZHkkv9EFEHhjIPt7",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826275,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!ajyaXzDwBBDoWY8z",
+  "bucket": "fan",
+  "doc": {
+   "name": "MDA, MDMA, other amphetamines",
+   "type": "drug",
+   "system": {
+    "category": "Hallucinogens",
+    "addiction": "2M",
+    "tolerance": "2",
+    "effect": "6",
+    "speed": "",
+    "vector": "",
+    "availability": "4/7hrs",
+    "cost": 10,
+    "streetIndex": "1.7",
+    "bookPage": "nagee.105",
+    "notes": ""
+   },
+   "_id": "ajyaXzDwBBDoWY8z",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826212,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!bB2BCbs53rGKq7Ux",
+  "bucket": "fan",
+  "doc": {
+   "name": "Opium",
+   "type": "drug",
+   "system": {
+    "category": "Narcotics",
+    "addiction": "4M+4P",
+    "tolerance": "3",
+    "effect": "15",
+    "speed": "",
+    "vector": "",
+    "availability": "6/24hrs",
+    "cost": 50,
+    "streetIndex": "1.25",
+    "bookPage": "nagee.106",
+    "notes": ""
+   },
+   "_id": "bB2BCbs53rGKq7Ux",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826260,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!bCjydqUbgEaIHSXp",
+  "bucket": "fan",
+  "doc": {
+   "name": "Barbiturates",
+   "type": "drug",
+   "system": {
+    "category": "Depressants",
+    "addiction": "4M+3P",
+    "tolerance": "3",
+    "effect": "5",
+    "speed": "",
+    "vector": "",
+    "availability": "4/3hrs",
+    "cost": 1,
+    "streetIndex": ".8",
+    "bookPage": "nagee.101",
+    "notes": ""
+   },
+   "_id": "bCjydqUbgEaIHSXp",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826172,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!dSpBzEluzg9JANYv",
+  "bucket": "fan",
+  "doc": {
+   "name": "Chloral Hydrate",
+   "type": "drug",
+   "system": {
+    "category": "Depressants",
+    "addiction": "4M+3P",
+    "tolerance": "3",
+    "effect": "5",
+    "speed": "",
+    "vector": "",
+    "availability": "5/4hrs",
+    "cost": 2,
+    "streetIndex": "1",
+    "bookPage": "nagee.102",
+    "notes": ""
+   },
+   "_id": "dSpBzEluzg9JANYv",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826179,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!dVBDlAFyaEmv4LzV",
+  "bucket": "fan",
+  "doc": {
+   "name": "Spaz",
+   "type": "drug",
+   "system": {
+    "category": "Stimulants",
+    "addiction": "5P",
+    "tolerance": "1",
+    "effect": "5",
+    "speed": "",
+    "vector": "",
+    "availability": "8/24hrs",
+    "cost": 10,
+    "streetIndex": "1.5",
+    "bookPage": "nagee.108",
+    "notes": ""
+   },
+   "_id": "dVBDlAFyaEmv4LzV",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826293,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!fJVLA4Mt0rRXw47G",
+  "bucket": "fan",
+  "doc": {
+   "name": "Paxium",
+   "type": "drug",
+   "system": {
+    "category": "Depressants",
+    "addiction": "2M",
+    "tolerance": "4",
+    "effect": "20",
+    "speed": "",
+    "vector": "",
+    "availability": "3/1hr",
+    "cost": 5,
+    "streetIndex": "2.5",
+    "bookPage": "nagee.102",
+    "notes": ""
+   },
+   "_id": "fJVLA4Mt0rRXw47G",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826189,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!g3d28u5RD7818pue",
+  "bucket": "fan",
+  "doc": {
+   "name": "Glutethimide",
+   "type": "drug",
+   "system": {
+    "category": "Depressants",
+    "addiction": "3M+4P",
+    "tolerance": "4",
+    "effect": "3",
+    "speed": "",
+    "vector": "",
+    "availability": "5/4hrs",
+    "cost": 3,
+    "streetIndex": "1",
+    "bookPage": "nagee.102",
+    "notes": ""
+   },
+   "_id": "g3d28u5RD7818pue",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826180,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!gIEkwzxoqsUKXzwl",
+  "bucket": "fan",
+  "doc": {
+   "name": "Benzodiazepines",
+   "type": "drug",
+   "system": {
+    "category": "Depressants",
+    "addiction": "2M+2P",
+    "tolerance": "5",
+    "effect": "5",
+    "speed": "",
+    "vector": "",
+    "availability": "4/3hrs",
+    "cost": 1,
+    "streetIndex": ".9",
+    "bookPage": "nagee.101",
+    "notes": ""
+   },
+   "_id": "gIEkwzxoqsUKXzwl",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826174,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!oW0kxivKXENplIqS",
+  "bucket": "fan",
+  "doc": {
+   "name": "LSD (100 tabs)",
+   "type": "drug",
+   "system": {
+    "category": "Hallucinogens",
+    "addiction": "1M",
+    "tolerance": "2",
+    "effect": "4",
+    "speed": "",
+    "vector": "",
+    "availability": "4/7hrs",
+    "cost": 200,
+    "streetIndex": "1.5",
+    "bookPage": "nagee.104",
+    "notes": ""
+   },
+   "_id": "oW0kxivKXENplIqS",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826210,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!pWJ7DuyF1gsD1uar",
+  "bucket": "fan",
+  "doc": {
+   "name": "FoolKiller",
+   "type": "drug",
+   "system": {
+    "category": "Designer Drugs",
+    "addiction": "5P",
+    "tolerance": "2",
+    "effect": "10",
+    "speed": "",
+    "vector": "",
+    "availability": "8/3hrs",
+    "cost": 35,
+    "streetIndex": "2.5",
+    "bookPage": "nagee.104",
+    "notes": ""
+   },
+   "_id": "pWJ7DuyF1gsD1uar",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826195,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!q9AvRZdBRfeu6gpB",
+  "bucket": "fan",
+  "doc": {
+   "name": "Caffeine (100 tablets)",
+   "type": "drug",
+   "system": {
+    "category": "Stimulants",
+    "addiction": "1M",
+    "tolerance": "3",
+    "effect": "50",
+    "speed": "",
+    "vector": "",
+    "availability": "always",
+    "cost": 5,
+    "streetIndex": "1",
+    "bookPage": "nagee.107",
+    "notes": ""
+   },
+   "_id": "q9AvRZdBRfeu6gpB",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826272,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!s4OAeOovThaCdoJn",
+  "bucket": "sr2",
+  "doc": {
+   "name": "Gamma-Anthrax (1 dose)",
+   "type": "drug",
+   "system": {
+    "category": "Pharmaceutical Compounds",
+    "addiction": "",
+    "tolerance": "",
+    "effect": "",
+    "speed": "",
+    "vector": "",
+    "availability": "14/30days",
+    "cost": 180,
+    "streetIndex": "6",
+    "bookPage": "st.81",
+    "notes": ""
+   },
+   "_id": "s4OAeOovThaCdoJn",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826130,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!smSjGRMj5fOJFKC9",
+  "bucket": "fan",
+  "doc": {
+   "name": "Methylphenidate",
+   "type": "drug",
+   "system": {
+    "category": "Stimulants",
+    "addiction": "3P",
+    "tolerance": "5",
+    "effect": "4",
+    "speed": "",
+    "vector": "",
+    "availability": "4/3hrs",
+    "cost": 25,
+    "streetIndex": "1.8",
+    "bookPage": "nagee.108",
+    "notes": ""
+   },
+   "_id": "smSjGRMj5fOJFKC9",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826286,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!tpwpEkhMVnJsz1vb",
+  "bucket": "sr2",
+  "doc": {
+   "name": "Myco-Protein",
+   "type": "drug",
+   "system": {
+    "category": "Pharmaceutical Compounds",
+    "addiction": "",
+    "tolerance": "",
+    "effect": "",
+    "speed": "",
+    "vector": "",
+    "availability": "always",
+    "cost": 25,
+    "streetIndex": "1",
+    "bookPage": "st.82",
+    "notes": ""
+   },
+   "_id": "tpwpEkhMVnJsz1vb",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826167,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ },
+ {
+  "_key": "!items!yPtH7lGCbdjogajR",
+  "bucket": "fan",
+  "doc": {
+   "name": "Amphetamines (50 tablets)",
+   "type": "drug",
+   "system": {
+    "category": "Stimulants",
+    "addiction": "5P",
+    "tolerance": "3",
+    "effect": "6",
+    "speed": "",
+    "vector": "",
+    "availability": "4/3hrs",
+    "cost": 75,
+    "streetIndex": "1.5",
+    "bookPage": "nagee.107",
+    "notes": ""
+   },
+   "_id": "yPtH7lGCbdjogajR",
+   "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+   "effects": [],
+   "folder": null,
+   "ownership": {
+    "default": 0,
+    "ge55aFMax5sNd2Ho": 3
+   },
+   "flags": {},
+   "_stats": {
+    "coreVersion": "14.364",
+    "systemId": "The2ndChumming3e",
+    "systemVersion": "0.3.1",
+    "createdTime": 1782280826266,
+    "modifiedTime": 1782889914231,
+    "lastModifiedBy": "ge55aFMax5sNd2Ho",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+   },
+   "sort": 0
+  }
+ }
+]

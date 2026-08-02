@@ -1,0 +1,376 @@
+[
+ {
+  "_key": "!items!sr3e-vehiclemod-0226",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehiclemod-0226",
+   "name": "Amphibious Package",
+   "type": "vehiclemod",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+   "system": {
+    "cost": 2500,
+    "availability": "1/?",
+    "streetIndex": "1",
+    "installEquipment": "Facility",
+    "installTime": "0/0",
+    "cfCost": "0",
+    "load": "0",
+    "bookPage": "sr2.???",
+    "description": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehiclemod-0227",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehiclemod-0227",
+   "name": "Amphibious Package",
+   "type": "vehiclemod",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+   "system": {
+    "cost": 7500,
+    "availability": "1/?",
+    "streetIndex": "1",
+    "installEquipment": "Facility",
+    "installTime": "0/0",
+    "cfCost": "2",
+    "load": "0",
+    "bookPage": "sr2.???",
+    "description": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehiclemod-0228",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehiclemod-0228",
+   "name": "Amphibious Package",
+   "type": "vehiclemod",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+   "system": {
+    "cost": 15000,
+    "availability": "1/?",
+    "streetIndex": "1",
+    "installEquipment": "Facility",
+    "installTime": "0/0",
+    "cfCost": "3",
+    "load": "0",
+    "bookPage": "sr2.???",
+    "description": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehiclemod-0263",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehiclemod-0263",
+   "name": "Boat Hull Modification",
+   "type": "vehiclemod",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+   "system": {
+    "cost": 500,
+    "availability": "1/?",
+    "streetIndex": "1",
+    "installEquipment": "Facility",
+    "installTime": "0/0",
+    "cfCost": "0",
+    "load": "0",
+    "bookPage": "sr2.???",
+    "description": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehiclemod-0264",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehiclemod-0264",
+   "name": "Convertible Top",
+   "type": "vehiclemod",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+   "system": {
+    "cost": 250010,
+    "availability": "1/?",
+    "streetIndex": "1",
+    "installEquipment": "Shop",
+    "installTime": "0/0",
+    "cfCost": "0",
+    "load": "0",
+    "bookPage": "sr2.???",
+    "description": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehiclemod-0265",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehiclemod-0265",
+   "name": "EnviroSeal (Gas)",
+   "type": "vehiclemod",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+   "system": {
+    "cost": 250,
+    "availability": "1/?",
+    "streetIndex": "1",
+    "installEquipment": "Facility",
+    "installTime": "0/0",
+    "cfCost": "1",
+    "load": "0",
+    "bookPage": "sr2.???",
+    "description": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehiclemod-0266",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehiclemod-0266",
+   "name": "EnviroSeal (Water)",
+   "type": "vehiclemod",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+   "system": {
+    "cost": 750,
+    "availability": "1/?",
+    "streetIndex": "1",
+    "installEquipment": "Facility",
+    "installTime": "0/0",
+    "cfCost": "1",
+    "load": "0",
+    "bookPage": "sr2.???",
+    "description": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehiclemod-0267",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehiclemod-0267",
+   "name": "EnviroSeal (Engine)",
+   "type": "vehiclemod",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+   "system": {
+    "cost": 1000,
+    "availability": "1/?",
+    "streetIndex": "1",
+    "installEquipment": "Facility",
+    "installTime": "0/0",
+    "cfCost": "1",
+    "load": "0",
+    "bookPage": "sr2.???",
+    "description": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehiclemod-0268",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehiclemod-0268",
+   "name": "External Luggage",
+   "type": "vehiclemod",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+   "system": {
+    "cost": 250,
+    "availability": "1/?",
+    "streetIndex": "1",
+    "installEquipment": "Shop",
+    "installTime": "0/0",
+    "cfCost": "0",
+    "load": "0",
+    "bookPage": "sr2.???",
+    "description": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehiclemod-0269",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehiclemod-0269",
+   "name": "Flotation Package (Aircraft)",
+   "type": "vehiclemod",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+   "system": {
+    "cost": 10,
+    "availability": "1/?",
+    "streetIndex": "1",
+    "installEquipment": "Facility",
+    "installTime": "0/0",
+    "cfCost": "2",
+    "load": "0",
+    "bookPage": "sr2.???",
+    "description": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehiclemod-0270",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehiclemod-0270",
+   "name": "Life Support (10 man-hours)",
+   "type": "vehiclemod",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+   "system": {
+    "cost": 1500,
+    "availability": "1/?",
+    "streetIndex": "1",
+    "installEquipment": "Shop",
+    "installTime": "0/0",
+    "cfCost": "1",
+    "load": "0",
+    "bookPage": "sr2.???",
+    "description": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehiclemod-0271",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehiclemod-0271",
+   "name": "Reinforced Seating",
+   "type": "vehiclemod",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+   "system": {
+    "cost": 250,
+    "availability": "1/?",
+    "streetIndex": "1",
+    "installEquipment": "Shop",
+    "installTime": "0/0",
+    "cfCost": "1",
+    "load": "0",
+    "bookPage": "sr2.???",
+    "description": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehiclemod-0272",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehiclemod-0272",
+   "name": "Secondary Controls",
+   "type": "vehiclemod",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+   "system": {
+    "cost": 400,
+    "availability": "1/?",
+    "streetIndex": "1",
+    "installEquipment": "Facility",
+    "installTime": "0/0",
+    "cfCost": "2",
+    "load": "0",
+    "bookPage": "sr2.???",
+    "description": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehiclemod-0277",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehiclemod-0277",
+   "name": "External Rack Mount(1 missile)",
+   "type": "vehiclemod",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+   "system": {
+    "cost": 1000,
+    "availability": "1/?",
+    "streetIndex": "1",
+    "installEquipment": "-",
+    "installTime": "0/0",
+    "cfCost": "0",
+    "load": "0",
+    "bookPage": "sr2.???",
+    "description": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehiclemod-0279",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehiclemod-0279",
+   "name": "Ring Mount",
+   "type": "vehiclemod",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+   "system": {
+    "cost": 1500,
+    "availability": "1/?",
+    "streetIndex": "1",
+    "installEquipment": "-",
+    "installTime": "0/0",
+    "cfCost": "0",
+    "load": "0",
+    "bookPage": "sr2.???",
+    "description": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehiclemod-0280",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehiclemod-0280",
+   "name": "Ring Mount with Hatch",
+   "type": "vehiclemod",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+   "system": {
+    "cost": 2000,
+    "availability": "1/?",
+    "streetIndex": "1",
+    "installEquipment": "-",
+    "installTime": "0/0",
+    "cfCost": "0",
+    "load": "0",
+    "bookPage": "sr2.???",
+    "description": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehiclemod-0281",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehiclemod-0281",
+   "name": "Ring Mount",
+   "type": "vehiclemod",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+   "system": {
+    "cost": 3000,
+    "availability": "1/?",
+    "streetIndex": "1",
+    "installEquipment": "-",
+    "installTime": "0/0",
+    "cfCost": "1",
+    "load": "0",
+    "bookPage": "sr2.???",
+    "description": ""
+   },
+   "effects": []
+  }
+ }
+]

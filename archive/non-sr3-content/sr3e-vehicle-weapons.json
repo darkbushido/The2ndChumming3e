@@ -1,0 +1,232 @@
+[
+ {
+  "_key": "!items!sr3e-vehicleweapon-0011",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehicleweapon-0011",
+   "name": "Flechette Gun",
+   "type": "vehicleweapon",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+   "system": {
+    "weaponType": "MMG",
+    "mode": "SA/FA",
+    "damage": "9D(f)",
+    "ammunition": "20(c)",
+    "weight": 45,
+    "cost": 17000,
+    "availability": "14/14days",
+    "streetIndex": "1.5",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehicleweapon-0012",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehicleweapon-0012",
+   "name": "Gauss Gun",
+   "type": "vehicleweapon",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+   "system": {
+    "weaponType": "Cannon",
+    "mode": "SS",
+    "damage": "11S",
+    "ammunition": "10(c)",
+    "weight": 135,
+    "cost": 500000,
+    "availability": "-",
+    "streetIndex": "-",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehicleweapon-0018",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehicleweapon-0018",
+   "name": "Rocket Launcher",
+   "type": "vehicleweapon",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+   "system": {
+    "weaponType": "Assault",
+    "mode": "SS",
+    "damage": "(Rocket)",
+    "ammunition": "6(b)",
+    "weight": 15,
+    "cost": 15000,
+    "availability": "GM",
+    "streetIndex": "GM",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehicleweapon-0019",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehicleweapon-0019",
+   "name": "Ruhrmetall GPRL for vehicles",
+   "type": "vehicleweapon",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+   "system": {
+    "weaponType": "Missile",
+    "mode": "SS",
+    "damage": "(Missile)",
+    "ammunition": "4(m)",
+    "weight": 10,
+    "cost": 12000,
+    "availability": "14/30days",
+    "streetIndex": "4",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehicleweapon-0020",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehicleweapon-0020",
+   "name": "Ruhrmetall SF20 for vehicles",
+   "type": "vehicleweapon",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+   "system": {
+    "weaponType": "HMG",
+    "mode": "BF/FA",
+    "damage": "10S",
+    "ammunition": "200(beltbox)",
+    "weight": 16,
+    "cost": 8500,
+    "availability": "18/30days",
+    "streetIndex": ".5",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehicleweapon-0024",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehicleweapon-0024",
+   "name": "Twin Laser",
+   "type": "vehicleweapon",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+   "system": {
+    "weaponType": "Sniper",
+    "mode": "SA",
+    "damage": "18S",
+    "ammunition": "(Special)",
+    "weight": 340,
+    "cost": 700000,
+    "availability": "-",
+    "streetIndex": "-",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehicleweapon-0025",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehicleweapon-0025",
+   "name": "Vengeance Minigun",
+   "type": "vehicleweapon",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+   "system": {
+    "weaponType": "HMG",
+    "mode": "FA",
+    "damage": "9S",
+    "ammunition": "100",
+    "weight": 30,
+    "cost": 50000,
+    "availability": "GM",
+    "streetIndex": "GM",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehicleweapon-0026",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehicleweapon-0026",
+   "name": "Vehicular Shotgun",
+   "type": "vehicleweapon",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+   "system": {
+    "weaponType": "Shotgun",
+    "mode": "SA",
+    "damage": "9S",
+    "ammunition": "10(c)",
+    "weight": 8.5,
+    "cost": 2500,
+    "availability": "8/72hrs",
+    "streetIndex": "1.75",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehicleweapon-0027",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehicleweapon-0027",
+   "name": "Victory Rotary Assault Cannon",
+   "type": "vehicleweapon",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+   "system": {
+    "weaponType": "Cannon",
+    "mode": "FA",
+    "damage": "18D",
+    "ammunition": "50",
+    "weight": 90,
+    "cost": 90000,
+    "availability": "GM",
+    "streetIndex": "GM",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-vehicleweapon-0028",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-vehicleweapon-0028",
+   "name": "Vigilant Rotary Autocannon",
+   "type": "vehicleweapon",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+   "system": {
+    "weaponType": "Cannon",
+    "mode": "FA",
+    "damage": "20D",
+    "ammunition": "25",
+    "weight": 60,
+    "cost": 125000,
+    "availability": "GM",
+    "streetIndex": "GM",
+    "bookPage": "sr2.???",
+    "notes": ""
+   },
+   "effects": []
+  }
+ }
+]

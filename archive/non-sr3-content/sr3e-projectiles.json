@@ -1,0 +1,540 @@
+[
+ {
+  "_key": "!items!sr3e-projectile-0000",
+  "bucket": "fan",
+  "doc": {
+   "_id": "sr3e-projectile-0000",
+   "name": "Arasaka Arms Half-Bow",
+   "type": "projectile",
+   "system": {
+    "category": "Bow",
+    "skill": "Projectile Weapons",
+    "attribute": "strength",
+    "concealability": "3/6/10",
+    "strMin": 3,
+    "damage": "6M",
+    "weight": "1.25",
+    "availability": "6/7 days",
+    "cost": 300,
+    "streetIndex": "1.5",
+    "legal": false,
+    "bookPage": "cb1.4",
+    "notes": ""
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  }
+ },
+ {
+  "_key": "!items!sr3e-projectile-0026",
+  "bucket": "fan",
+  "doc": {
+   "_id": "sr3e-projectile-0026",
+   "name": "Nomad Hand Crosbow",
+   "type": "projectile",
+   "system": {
+    "category": "LCB",
+    "skill": "Projectile Weapons",
+    "attribute": "strength",
+    "concealability": "-",
+    "strMin": 1,
+    "damage": "3M",
+    "weight": ".5",
+    "availability": "10/7 days",
+    "cost": 100,
+    "streetIndex": "1",
+    "legal": false,
+    "bookPage": "cb1.5",
+    "notes": ""
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  }
+ },
+ {
+  "_key": "!items!sr3e-projectile-0048",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-projectile-0048",
+   "name": "Concussion Grenade",
+   "type": "projectile",
+   "system": {
+    "category": "GR",
+    "skill": "Throwing Weapons",
+    "attribute": "strength",
+    "concealability": "6",
+    "strMin": 0,
+    "damage": "6M Stun",
+    "weight": ".25",
+    "availability": "5/4days",
+    "cost": 30,
+    "streetIndex": "2",
+    "legal": false,
+    "bookPage": "sr2.283",
+    "notes": "",
+    "isAoE": true
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  }
+ },
+ {
+  "_key": "!items!sr3e-projectile-0049",
+  "bucket": "fan",
+  "doc": {
+   "_id": "sr3e-projectile-0049",
+   "name": "Concussion Grenade",
+   "type": "projectile",
+   "system": {
+    "category": "GR",
+    "skill": "Throwing Weapons",
+    "attribute": "strength",
+    "concealability": "7",
+    "strMin": 0,
+    "damage": "10M Stun",
+    "weight": ".25",
+    "availability": "6/72hrs",
+    "cost": 40,
+    "streetIndex": "1.2",
+    "legal": false,
+    "bookPage": "cb1.32",
+    "notes": "",
+    "isAoE": true
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  }
+ },
+ {
+  "_key": "!items!sr3e-projectile-0050",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-projectile-0050",
+   "name": "Crawler Grenade",
+   "type": "projectile",
+   "system": {
+    "category": "GR",
+    "skill": "Throwing Weapons",
+    "attribute": "strength",
+    "concealability": "6",
+    "strMin": 0,
+    "damage": "(see rules)",
+    "weight": ".25",
+    "availability": "20/14 days",
+    "cost": 150,
+    "streetIndex": "6",
+    "legal": false,
+    "bookPage": "sr2.???",
+    "notes": "",
+    "isAoE": true
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  }
+ },
+ {
+  "_key": "!items!sr3e-projectile-0051",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-projectile-0051",
+   "name": "CS Grenade",
+   "type": "projectile",
+   "system": {
+    "category": "GR",
+    "skill": "Throwing Weapons",
+    "attribute": "strength",
+    "concealability": "5",
+    "strMin": 0,
+    "damage": "tear gas",
+    "weight": ".5",
+    "availability": "6/4 days",
+    "cost": 75,
+    "streetIndex": "2.5",
+    "legal": false,
+    "bookPage": "sr2.???",
+    "notes": "",
+    "isAoE": true
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  }
+ },
+ {
+  "_key": "!items!sr3e-projectile-0057",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-projectile-0057",
+   "name": "Mace XII Gas Grenade",
+   "type": "projectile",
+   "system": {
+    "category": "GR",
+    "skill": "Throwing Weapons",
+    "attribute": "strength",
+    "concealability": "6",
+    "strMin": 0,
+    "damage": "gas",
+    "weight": ".25",
+    "availability": "8/6days",
+    "cost": 50,
+    "streetIndex": "2",
+    "legal": false,
+    "bookPage": "sr2.???",
+    "notes": "",
+    "isAoE": true
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  }
+ },
+ {
+  "_key": "!items!sr3e-projectile-0058",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-projectile-0058",
+   "name": "Militech PDU-3",
+   "type": "projectile",
+   "system": {
+    "category": "GR",
+    "skill": "Throwing Weapons",
+    "attribute": "strength",
+    "concealability": "8",
+    "strMin": 0,
+    "damage": "10S",
+    "weight": ".25",
+    "availability": "10/7days",
+    "cost": 150,
+    "streetIndex": "2.5",
+    "legal": false,
+    "bookPage": "sr2.???",
+    "notes": "",
+    "isAoE": true
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  }
+ },
+ {
+  "_key": "!items!sr3e-projectile-0059",
+  "bucket": "fan",
+  "doc": {
+   "_id": "sr3e-projectile-0059",
+   "name": "Motion Restraints Grenade",
+   "type": "projectile",
+   "system": {
+    "category": "GR",
+    "skill": "Throwing Weapons",
+    "attribute": "strength",
+    "concealability": "6",
+    "strMin": 0,
+    "damage": "-",
+    "weight": ".5",
+    "availability": "6/48hrs",
+    "cost": 60,
+    "streetIndex": "2",
+    "legal": false,
+    "bookPage": "cb1.33",
+    "notes": "",
+    "isAoE": true
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  }
+ },
+ {
+  "_key": "!items!sr3e-projectile-0060",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-projectile-0060",
+   "name": "Neurostun IX Grenade",
+   "type": "projectile",
+   "system": {
+    "category": "GR",
+    "skill": "Throwing Weapons",
+    "attribute": "strength",
+    "concealability": "6",
+    "strMin": 0,
+    "damage": "gas",
+    "weight": ".25",
+    "availability": "6/6days",
+    "cost": 50,
+    "streetIndex": "2",
+    "legal": false,
+    "bookPage": "sr2.???",
+    "notes": "",
+    "isAoE": true
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  }
+ },
+ {
+  "_key": "!items!sr3e-projectile-0061",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-projectile-0061",
+   "name": "Niref D Gas Grenade",
+   "type": "projectile",
+   "system": {
+    "category": "GR",
+    "skill": "Throwing Weapons",
+    "attribute": "strength",
+    "concealability": "6",
+    "strMin": 0,
+    "damage": "gas",
+    "weight": ".25",
+    "availability": "10/6days",
+    "cost": 80,
+    "streetIndex": "2",
+    "legal": false,
+    "bookPage": "sr2.???",
+    "notes": "",
+    "isAoE": true
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  }
+ },
+ {
+  "_key": "!items!sr3e-projectile-0062",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-projectile-0062",
+   "name": "Offensive AP Grenade B",
+   "type": "projectile",
+   "system": {
+    "category": "GR",
+    "skill": "Throwing Weapons",
+    "attribute": "strength",
+    "concealability": "6",
+    "strMin": 0,
+    "damage": "10S(f)",
+    "weight": ".25",
+    "availability": "4/4days",
+    "cost": 30,
+    "streetIndex": "2",
+    "legal": false,
+    "bookPage": "sr2.283",
+    "notes": "",
+    "isAoE": true
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  }
+ },
+ {
+  "_key": "!items!sr3e-projectile-0063",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-projectile-0063",
+   "name": "Offensive HE Grenade B",
+   "type": "projectile",
+   "system": {
+    "category": "GR",
+    "skill": "Throwing Weapons",
+    "attribute": "strength",
+    "concealability": "6",
+    "strMin": 0,
+    "damage": "10S",
+    "weight": ".25",
+    "availability": "4/4days",
+    "cost": 30,
+    "streetIndex": "2",
+    "legal": false,
+    "bookPage": "sr2.283",
+    "notes": "",
+    "isAoE": true
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  }
+ },
+ {
+  "_key": "!items!sr3e-projectile-0064",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-projectile-0064",
+   "name": "Paint Grenade",
+   "type": "projectile",
+   "system": {
+    "category": "GR",
+    "skill": "Throwing Weapons",
+    "attribute": "strength",
+    "concealability": "6",
+    "strMin": 0,
+    "damage": "-",
+    "weight": ".25",
+    "availability": "3/48hrs",
+    "cost": 20,
+    "streetIndex": "2",
+    "legal": false,
+    "bookPage": "sr2.???",
+    "notes": "",
+    "isAoE": true
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  }
+ },
+ {
+  "_key": "!items!sr3e-projectile-0065",
+  "bucket": "fan",
+  "doc": {
+   "_id": "sr3e-projectile-0065",
+   "name": "Scatter Grenade",
+   "type": "projectile",
+   "system": {
+    "category": "GR",
+    "skill": "Throwing Weapons",
+    "attribute": "strength",
+    "concealability": "6",
+    "strMin": 0,
+    "damage": "per charge",
+    "weight": ".25",
+    "availability": "3/48hrs",
+    "cost": 70,
+    "streetIndex": "1.5",
+    "legal": false,
+    "bookPage": "cb2.49,SR2-???",
+    "notes": "",
+    "isAoE": true
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  }
+ },
+ {
+  "_key": "!items!sr3e-projectile-0066",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-projectile-0066",
+   "name": "Smoke Grenade",
+   "type": "projectile",
+   "system": {
+    "category": "GR",
+    "skill": "Throwing Weapons",
+    "attribute": "strength",
+    "concealability": "6",
+    "strMin": 0,
+    "damage": "-",
+    "weight": ".25",
+    "availability": "3/24hrs",
+    "cost": 30,
+    "streetIndex": "2",
+    "legal": false,
+    "bookPage": "sr2.283,fof.48",
+    "notes": "",
+    "isAoE": true
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  }
+ },
+ {
+  "_key": "!items!sr3e-projectile-0067",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-projectile-0067",
+   "name": "Smoke (IR) Grenade",
+   "type": "projectile",
+   "system": {
+    "category": "other",
+    "skill": "Projectile Weapons",
+    "attribute": "strength",
+    "concealability": "6",
+    "strMin": 0,
+    "damage": "-",
+    "weight": ".25",
+    "availability": "4/48hrs",
+    "cost": 40,
+    "streetIndex": "2",
+    "legal": false,
+    "bookPage": "sr2.283,fof.48",
+    "notes": "",
+    "isAoE": true
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  }
+ },
+ {
+  "_key": "!items!sr3e-projectile-0068",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-projectile-0068",
+   "name": "Spraypaint Grenade",
+   "type": "projectile",
+   "system": {
+    "category": "GR",
+    "skill": "Throwing Weapons",
+    "attribute": "strength",
+    "concealability": "6",
+    "strMin": 0,
+    "damage": "-",
+    "weight": ".25",
+    "availability": "2/3days",
+    "cost": 20,
+    "streetIndex": ".9",
+    "legal": false,
+    "bookPage": "sr2.???",
+    "notes": "",
+    "isAoE": true
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  }
+ },
+ {
+  "_key": "!items!sr3e-projectile-0069",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-projectile-0069",
+   "name": "Stench Bomb",
+   "type": "projectile",
+   "system": {
+    "category": "GR",
+    "skill": "Throwing Weapons",
+    "attribute": "strength",
+    "concealability": "6",
+    "strMin": 0,
+    "damage": "-",
+    "weight": ".25",
+    "availability": "3/48hrs",
+    "cost": 20,
+    "streetIndex": ".8",
+    "legal": false,
+    "bookPage": "sr2.???",
+    "notes": "",
+    "isAoE": true
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  }
+ },
+ {
+  "_key": "!items!sr3e-projectile-0070",
+  "bucket": "sr2",
+  "doc": {
+   "_id": "sr3e-projectile-0070",
+   "name": "Thermal Smoke",
+   "type": "projectile",
+   "system": {
+    "category": "GR",
+    "skill": "Throwing Weapons",
+    "attribute": "strength",
+    "concealability": "6",
+    "strMin": 0,
+    "damage": "-",
+    "weight": ".25",
+    "availability": "5/4days",
+    "cost": 40,
+    "streetIndex": "2",
+    "legal": false,
+    "bookPage": "sr2.???",
+    "notes": "",
+    "isAoE": true
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  }
+ }
+]

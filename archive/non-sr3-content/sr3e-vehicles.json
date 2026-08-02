@@ -1,0 +1,150 @@
+[
+ {
+  "_key": "!actors!sr3e-vehicle-0094",
+  "bucket": "fan",
+  "doc": {
+   "_id": "sr3e-vehicle-0094",
+   "name": "GMC Tow Truck",
+   "type": "vehicle",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+   "system": {
+    "vehicleType": "car",
+    "cost": 142000,
+    "streetIndex": 2,
+    "availability": "6/6 days",
+    "bookPage": "cus.",
+    "seating": 2,
+    "notes": "crash cage, load hydraulic flatbed and winch designed to cary up to rating 6 Bod vehicle (heavy transport trailer t-bird or smaller), diesel engine, 500L fuel capacity, 3km/l economy",
+    "damage": {
+     "value": 0
+    },
+    "attributes": {
+     "handling": {
+      "value": 5,
+      "base": 5
+     },
+     "handlingOffRoad": {
+      "value": 12,
+      "base": 12
+     },
+     "speed": {
+      "value": 60,
+      "base": 60
+     },
+     "accel": {
+      "value": 3,
+      "base": 3
+     },
+     "body": {
+      "value": 6,
+      "base": 6
+     },
+     "armor": {
+      "value": 0,
+      "base": 0
+     },
+     "sig": {
+      "value": 2,
+      "base": 2
+     },
+     "autonav": {
+      "value": 0,
+      "base": 0
+     },
+     "pilot": {
+      "value": 0,
+      "base": 0
+     },
+     "sensor": {
+      "value": 0,
+      "base": 0
+     },
+     "cargo": {
+      "value": 105,
+      "base": 105
+     },
+     "load": {
+      "value": 11495,
+      "base": 11495
+     }
+    }
+   },
+   "items": [],
+   "effects": []
+  }
+ },
+ {
+  "_key": "!actors!sr3e-vehicle-0121",
+  "bucket": "fan",
+  "doc": {
+   "_id": "sr3e-vehicle-0121",
+   "name": "BMW 9018s",
+   "type": "vehicle",
+   "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+   "system": {
+    "vehicleType": "car",
+    "cost": 121200,
+    "streetIndex": 0,
+    "availability": "-",
+    "bookPage": "cb1.20",
+    "seating": 6,
+    "notes": "Seating: 2+2+2",
+    "damage": {
+     "value": 0
+    },
+    "attributes": {
+     "handling": {
+      "value": 3,
+      "base": 3
+     },
+     "handlingOffRoad": {
+      "value": 8,
+      "base": 8
+     },
+     "speed": {
+      "value": 190,
+      "base": 190
+     },
+     "accel": {
+      "value": 14,
+      "base": 14
+     },
+     "body": {
+      "value": 4,
+      "base": 4
+     },
+     "armor": {
+      "value": 2,
+      "base": 2
+     },
+     "sig": {
+      "value": 0,
+      "base": 0
+     },
+     "autonav": {
+      "value": 3,
+      "base": 3
+     },
+     "pilot": {
+      "value": 0,
+      "base": 0
+     },
+     "sensor": {
+      "value": 0,
+      "base": 0
+     },
+     "cargo": {
+      "value": 4,
+      "base": 4
+     },
+     "load": {
+      "value": 180,
+      "base": 180
+     }
+    }
+   },
+   "items": [],
+   "effects": []
+  }
+ }
+]
