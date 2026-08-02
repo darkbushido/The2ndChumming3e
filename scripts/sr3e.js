@@ -272,16 +272,6 @@ Hooks.once('ready', async () => {
       img:  'icons/svg/mystery-man.svg',
     },
     {
-      name: 'Populate SR3E Sample Characters (1–5)',
-      path: 'scripts/macros/populate-sample-characters.js',
-      img:  'icons/svg/mystery-man.svg',
-    },
-    {
-      name: 'Populate SR3E Sample Characters (6–14)',
-      path: 'scripts/macros/populate-sample-characters-2.js',
-      img:  'icons/svg/mystery-man.svg',
-    },
-    {
       name: 'Populate SR3E Programming Agents',
       path: 'scripts/macros/populate-agents.js',
       img:  'icons/svg/mystery-man.svg',
@@ -296,7 +286,12 @@ Hooks.once('ready', async () => {
   for (const def of macros) {
     if (game.macros.find(m => m.name === def.name)) continue;
     try {
-      const src = await fetch(`systems/The2ndChumming3e/${def.path}`).then(r => r.text());
+      // fetch() resolves for 404s too, and the body is Foundry's HTML error page.
+      // Without this check that HTML is handed to Macro.create as script source,
+      // which fails validation with a bewildering "Unexpected token '<'".
+      const res = await fetch(`systems/The2ndChumming3e/${def.path}`);
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText} fetching ${def.path}`);
+      const src = await res.text();
       await Macro.create({ name: def.name, type: 'script', command: src, img: def.img });
       ui.notifications.info(`SR3E: "${def.name}" macro added to your macro library.`);
     } catch (err) {
