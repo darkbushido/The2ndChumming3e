@@ -21,3 +21,6 @@ rules pdfs/
 
 # Tooling
 node_modules/
+
+# macOS directory metadata
+.DS_Store
