@@ -329,6 +329,40 @@ export class SR3EItem extends Item {
   }
 
   /**
+   * Every loaded compendium pack that declares it holds `type` items, via
+   * `flags.<system>.itemTypes` on the pack declaration.
+   *
+   * Always prefer this over `game.packs.get('<system>.<pack>')`. Sourcebook content
+   * ships as separate modules, each with its own packs, so a hard-coded pack id sees
+   * only the system's own copy and silently ignores every enabled book. Foundry keys
+   * packs by `<packageName>.<packName>`, so module packs are distinct entries in
+   * `game.packs` and are picked up here automatically.
+   *
+   * @param {string} type   Item type, e.g. 'cyberdeck'
+   * @returns {CompendiumCollection[]}
+   */
+  static _packsForType(type) {
+    const sysId = game.system.id;
+    return game.packs.filter(p => {
+      const types = p.metadata?.flags?.[sysId]?.itemTypes;
+      return Array.isArray(types) && types.includes(type);
+    });
+  }
+
+  /**
+   * All documents of `type` across every pack that declares it, sorted by name.
+   * Returns [] when nothing is available.
+   */
+  static async _documentsOfType(type) {
+    const out = [];
+    for (const pack of SR3EItem._packsForType(type)) {
+      try { out.push(...await pack.getDocuments()); }
+      catch (err) { console.warn(`SR3E | Could not read pack ${pack.collection}:`, err); }
+    }
+    return out.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  /**
    * SR3 Default Table — interactive defaulting prompt.
    * Shown whenever an actor lacks the appropriate skill for a test. The user
    * chooses to default to:

@@ -32,7 +32,6 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       rollInitiative: SR3EActorSheet._onRollInitiative,
       itemCreate:     SR3EActorSheet._onItemCreate,
       browseSkills:   SR3EActorSheet._onBrowseSkills,
-      browseCompendium: SR3EActorSheet._onBrowseCompendium,
       itemEdit:       SR3EActorSheet._onItemEdit,
       itemDelete:     SR3EActorSheet._onItemDelete,
       woundBox:       SR3EActorSheet._onWoundBox,
@@ -2718,16 +2717,6 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     item?.sheet?.render(true);
   }
 
-  static async _onBrowseCompendium(ev, target) {
-    const packId = (target ?? ev.currentTarget).dataset.pack;
-    const pack = game.packs.get(packId);
-    if (!pack) {
-      ui.notifications.warn(`SR3E: Compendium "${packId}" not found — was Foundry fully restarted after this pack was added?`);
-      return;
-    }
-    pack.render(true);
-  }
-
   static async _onBrowseSkills(_ev, _target) {
     const allSkills = SR3E.skills;
     const actor     = this.actor;
@@ -3131,16 +3120,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   static async _onAddOrthodoxCyberdeck() {
-    const actor  = this.actor;
-    const packId = 'The2ndChumming3e.sr3e-odm-cyberdecks';
-    const pack   = game.packs.get(packId);
-    if (!pack) {
-      ui.notifications.warn('Orthodox SR3 cyberdeck compendium not found — restart Foundry, then run the populate-odm-cyberdecks macro.');
-      return;
-    }
-    const docs = await pack.getDocuments();
+    const actor = this.actor;
+    // Gather from every pack declaring cyberdeck items, not just the system's own —
+    // sourcebook modules ship their own packs and a fixed pack id would ignore them.
+    const docs = await game.sr3e.SR3EItem._documentsOfType('cyberdeck');
     if (!docs.length) {
-      ui.notifications.warn('No cyberdecks in compendium — run the populate-odm-cyberdecks macro first.');
+      ui.notifications.warn('No cyberdecks found in any compendium — run the populate-odm-cyberdecks macro, or enable a sourcebook module that provides them.');
       return;
     }
 
@@ -3244,16 +3229,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   static async _onAddOrthodoxProgram() {
-    const actor  = this.actor;
-    const packId = 'The2ndChumming3e.sr3e-odm-programs';
-    const pack   = game.packs.get(packId);
-    if (!pack) {
-      ui.notifications.warn('Orthodox SR3 programs compendium not found — restart Foundry, then run the populate-odm-programs macro.');
-      return;
-    }
-    const docs = await pack.getDocuments();
+    const actor = this.actor;
+    // See _onAddOrthodoxCyberdeck — aggregate across packs so module content is included.
+    const docs = await game.sr3e.SR3EItem._documentsOfType('program');
     if (!docs.length) {
-      ui.notifications.warn('No programs in compendium — run the populate-odm-programs macro first.');
+      ui.notifications.warn('No programs found in any compendium — run the populate-odm-programs macro, or enable a sourcebook module that provides them.');
       return;
     }
 
