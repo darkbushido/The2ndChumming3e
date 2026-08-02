@@ -11,6 +11,11 @@ packs/*/LOCK
 packs/*/LOG
 packs/*/LOG.old
 
+# Same artifacts inside book modules' own packs.
+modules/*/packs/*/LOCK
+modules/*/packs/*/LOG
+modules/*/packs/*/LOG.old
+
 .claude/settings.local.json
 rules pdfs/
 

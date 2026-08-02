@@ -11,3 +11,7 @@
 #
 # Mark the whole pack tree binary so no content filtering is ever applied to it.
 packs/** binary
+
+# Book modules ship packs of their own under modules/<id>/packs/, which are the
+# same LevelDB format and need exactly the same protection.
+modules/**/packs/** binary
