@@ -235,24 +235,6 @@
       }
     },
     {
-      "name": "sr3e-medical",
-      "label": "Medical Equipment & Services",
-      "path": "packs/sr3e-medical",
-      "type": "Item",
-      "system": "The2ndChumming3e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      },
-      "flags": {
-        "The2ndChumming3e": {
-          "itemTypes": [
-            "medical"
-          ]
-        }
-      }
-    },
-    {
       "name": "sr3e-mr-johnsons-contacts",
       "label": "Mr. Johnson's Contacts",
       "path": "packs/sr3e-mr-johnsons-contacts",
@@ -297,42 +279,6 @@
       }
     },
     {
-      "name": "sr3e-odm-cyberdecks",
-      "label": "Cyberdecks — Orthodox SR3",
-      "path": "packs/sr3e-odm-cyberdecks",
-      "type": "Item",
-      "system": "The2ndChumming3e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      },
-      "flags": {
-        "The2ndChumming3e": {
-          "itemTypes": [
-            "cyberdeck"
-          ]
-        }
-      }
-    },
-    {
-      "name": "sr3e-odm-programs",
-      "label": "Programs — Orthodox SR3",
-      "path": "packs/sr3e-odm-programs",
-      "type": "Item",
-      "system": "The2ndChumming3e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      },
-      "flags": {
-        "The2ndChumming3e": {
-          "itemTypes": [
-            "program"
-          ]
-        }
-      }
-    },
-    {
       "name": "sr3e-skills",
       "label": "Skills",
       "path": "packs/sr3e-skills",
@@ -351,10 +297,10 @@
       }
     },
     {
-      "name": "sr3e-macros",
-      "label": "Macros",
-      "path": "packs/sr3e-macros",
-      "type": "Macro",
+      "name": "sr3e-example-characters",
+      "label": "Example Characters",
+      "path": "packs/sr3e-example-characters",
+      "type": "Actor",
       "system": "The2ndChumming3e",
       "ownership": {
         "PLAYER": "OBSERVER",
@@ -372,13 +318,6 @@
           "sorting": "a",
           "packs": [
             "sr3e-firearms"
-          ]
-        },
-        {
-          "name": "Medical Equipment & Services",
-          "sorting": "a",
-          "packs": [
-            "sr3e-medical"
           ]
         }
       ]
@@ -425,26 +364,6 @@
       ]
     },
     {
-      "name": "Matrix — Orthodox SR3",
-      "sorting": "a",
-      "folders": [
-        {
-          "name": "Cyberdecks — Orthodox SR3",
-          "sorting": "a",
-          "packs": [
-            "sr3e-odm-cyberdecks"
-          ]
-        },
-        {
-          "name": "Programs — Orthodox SR3",
-          "sorting": "a",
-          "packs": [
-            "sr3e-odm-programs"
-          ]
-        }
-      ]
-    },
-    {
       "name": "Reference",
       "sorting": "a",
       "folders": [
@@ -454,18 +373,19 @@
           "packs": [
             "sr3e-skills"
           ]
-        }
-      ]
-    },
-    {
-      "name": "Tools",
-      "sorting": "a",
-      "folders": [
+        },
         {
-          "name": "Macros",
+          "name": "Example Characters",
           "sorting": "a",
           "packs": [
-            "sr3e-macros"
+            "sr3e-example-characters"
+          ]
+        },
+        {
+          "name": "Mr. Johnson's Contacts",
+          "sorting": "a",
+          "packs": [
+            "sr3e-mr-johnsons-contacts"
           ]
         }
       ]
