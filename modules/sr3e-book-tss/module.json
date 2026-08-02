@@ -1,0 +1,263 @@
+{
+  "id": "sr3e-book-tss",
+  "title": "SR3E — The Shadowrun Supplemental",
+  "description": "Shadowrun compendium content sourced from The Shadowrun Supplemental. Requires The 2nd Chumming 3e system.",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "The2ndChumming3e",
+        "type": "system",
+        "compatibility": {}
+      }
+    ]
+  },
+  "packs": [
+    {
+      "name": "sr3e-book-tss-adept-powers",
+      "label": "The Shadowrun Supplemental",
+      "path": "packs/sr3e-book-tss-adept-powers",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "adeptpower"
+          ]
+        }
+      }
+    },
+    {
+      "name": "sr3e-book-tss-armor",
+      "label": "The Shadowrun Supplemental",
+      "path": "packs/sr3e-book-tss-armor",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "armor"
+          ]
+        }
+      }
+    },
+    {
+      "name": "sr3e-book-tss-bioware",
+      "label": "The Shadowrun Supplemental",
+      "path": "packs/sr3e-book-tss-bioware",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "bioware"
+          ]
+        }
+      }
+    },
+    {
+      "name": "sr3e-book-tss-cyberware",
+      "label": "The Shadowrun Supplemental",
+      "path": "packs/sr3e-book-tss-cyberware",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "cyberware"
+          ]
+        }
+      }
+    },
+    {
+      "name": "sr3e-book-tss-drones",
+      "label": "The Shadowrun Supplemental",
+      "path": "packs/sr3e-book-tss-drones",
+      "type": "Actor",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "sr3e-book-tss-firearms",
+      "label": "The Shadowrun Supplemental",
+      "path": "packs/sr3e-book-tss-firearms",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "firearm"
+          ]
+        }
+      }
+    },
+    {
+      "name": "sr3e-book-tss-melee",
+      "label": "The Shadowrun Supplemental",
+      "path": "packs/sr3e-book-tss-melee",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "melee"
+          ]
+        }
+      }
+    },
+    {
+      "name": "sr3e-book-tss-spells",
+      "label": "The Shadowrun Supplemental",
+      "path": "packs/sr3e-book-tss-spells",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "spell"
+          ]
+        }
+      }
+    },
+    {
+      "name": "sr3e-book-tss-vehicles",
+      "label": "The Shadowrun Supplemental",
+      "path": "packs/sr3e-book-tss-vehicles",
+      "type": "Actor",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ],
+  "packFolders": [
+    {
+      "name": "Augmentations",
+      "sorting": "a",
+      "folders": [
+        {
+          "name": "Adept Powers",
+          "sorting": "a",
+          "packs": [
+            "sr3e-book-tss-adept-powers"
+          ]
+        },
+        {
+          "name": "Bioware",
+          "sorting": "a",
+          "packs": [
+            "sr3e-book-tss-bioware"
+          ]
+        },
+        {
+          "name": "Cyberware",
+          "sorting": "a",
+          "packs": [
+            "sr3e-book-tss-cyberware"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Weapons & Gear",
+      "sorting": "a",
+      "folders": [
+        {
+          "name": "Armor",
+          "sorting": "a",
+          "packs": [
+            "sr3e-book-tss-armor"
+          ]
+        },
+        {
+          "name": "Firearms",
+          "sorting": "a",
+          "packs": [
+            "sr3e-book-tss-firearms"
+          ]
+        },
+        {
+          "name": "Melee Weapons",
+          "sorting": "a",
+          "packs": [
+            "sr3e-book-tss-melee"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Vehicles & Drones",
+      "sorting": "a",
+      "folders": [
+        {
+          "name": "Drones",
+          "sorting": "a",
+          "packs": [
+            "sr3e-book-tss-drones"
+          ]
+        },
+        {
+          "name": "Vehicles",
+          "sorting": "a",
+          "packs": [
+            "sr3e-book-tss-vehicles"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Magic",
+      "sorting": "a",
+      "folders": [
+        {
+          "name": "Spells",
+          "sorting": "a",
+          "packs": [
+            "sr3e-book-tss-spells"
+          ]
+        }
+      ]
+    }
+  ],
+  "authors": [
+    {
+      "name": "The 2nd Chumming 3e"
+    }
+  ]
+}

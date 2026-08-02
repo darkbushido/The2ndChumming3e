@@ -1,0 +1,206 @@
+{
+  "id": "sr3e-book-sota2",
+  "title": "SR3E — State of the Art 2064",
+  "description": "Shadowrun compendium content sourced from State of the Art 2064. Requires The 2nd Chumming 3e system.",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "The2ndChumming3e",
+        "type": "system",
+        "compatibility": {}
+      }
+    ]
+  },
+  "packs": [
+    {
+      "name": "sr3e-book-sota2-adept-powers",
+      "label": "State of the Art 2064",
+      "path": "packs/sr3e-book-sota2-adept-powers",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "adeptpower"
+          ]
+        }
+      }
+    },
+    {
+      "name": "sr3e-book-sota2-armor",
+      "label": "State of the Art 2064",
+      "path": "packs/sr3e-book-sota2-armor",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "armor"
+          ]
+        }
+      }
+    },
+    {
+      "name": "sr3e-book-sota2-drones",
+      "label": "State of the Art 2064",
+      "path": "packs/sr3e-book-sota2-drones",
+      "type": "Actor",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "sr3e-book-sota2-firearms",
+      "label": "State of the Art 2064",
+      "path": "packs/sr3e-book-sota2-firearms",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "firearm"
+          ]
+        }
+      }
+    },
+    {
+      "name": "sr3e-book-sota2-spells",
+      "label": "State of the Art 2064",
+      "path": "packs/sr3e-book-sota2-spells",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "spell"
+          ]
+        }
+      }
+    },
+    {
+      "name": "sr3e-book-sota2-vehicle-mods",
+      "label": "State of the Art 2064",
+      "path": "packs/sr3e-book-sota2-vehicle-mods",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "sr3e-book-sota2-vehicles",
+      "label": "State of the Art 2064",
+      "path": "packs/sr3e-book-sota2-vehicles",
+      "type": "Actor",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ],
+  "packFolders": [
+    {
+      "name": "Augmentations",
+      "sorting": "a",
+      "folders": [
+        {
+          "name": "Adept Powers",
+          "sorting": "a",
+          "packs": [
+            "sr3e-book-sota2-adept-powers"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Weapons & Gear",
+      "sorting": "a",
+      "folders": [
+        {
+          "name": "Armor",
+          "sorting": "a",
+          "packs": [
+            "sr3e-book-sota2-armor"
+          ]
+        },
+        {
+          "name": "Firearms",
+          "sorting": "a",
+          "packs": [
+            "sr3e-book-sota2-firearms"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Vehicles & Drones",
+      "sorting": "a",
+      "folders": [
+        {
+          "name": "Drones",
+          "sorting": "a",
+          "packs": [
+            "sr3e-book-sota2-drones"
+          ]
+        },
+        {
+          "name": "Vehicle Mods",
+          "sorting": "a",
+          "packs": [
+            "sr3e-book-sota2-vehicle-mods"
+          ]
+        },
+        {
+          "name": "Vehicles",
+          "sorting": "a",
+          "packs": [
+            "sr3e-book-sota2-vehicles"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Magic",
+      "sorting": "a",
+      "folders": [
+        {
+          "name": "Spells",
+          "sorting": "a",
+          "packs": [
+            "sr3e-book-sota2-spells"
+          ]
+        }
+      ]
+    }
+  ],
+  "authors": [
+    {
+      "name": "The 2nd Chumming 3e"
+    }
+  ]
+}

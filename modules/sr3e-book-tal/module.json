@@ -1,0 +1,59 @@
+{
+  "id": "sr3e-book-tal",
+  "title": "SR3E — Target: Awakened Lands",
+  "description": "Shadowrun compendium content sourced from Target: Awakened Lands. Requires The 2nd Chumming 3e system.",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "The2ndChumming3e",
+        "type": "system",
+        "compatibility": {}
+      }
+    ]
+  },
+  "packs": [
+    {
+      "name": "sr3e-book-tal-drugs",
+      "label": "Target: Awakened Lands",
+      "path": "packs/sr3e-book-tal-drugs",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "drug"
+          ]
+        }
+      }
+    }
+  ],
+  "packFolders": [
+    {
+      "name": "Weapons & Gear",
+      "sorting": "a",
+      "folders": [
+        {
+          "name": "Drugs & Toxins",
+          "sorting": "a",
+          "packs": [
+            "sr3e-book-tal-drugs"
+          ]
+        }
+      ]
+    }
+  ],
+  "authors": [
+    {
+      "name": "The 2nd Chumming 3e"
+    }
+  ]
+}
