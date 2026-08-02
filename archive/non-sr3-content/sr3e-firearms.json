@@ -23769,5 +23769,157 @@
    },
    "effects": []
   }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0645",
+  "bucket": "fan",
+  "recoveredSource": "cb1.2",
+  "recoveredFrom": "streetIndex",
+  "note": "Field-shifted on import: every column is displaced by roughly three positions, so bookPage is blank and the real source ended up in the column named in foundIn. Damage/mode/cost values are also displaced and unusable as-is. Archived unrepaired.",
+  "doc": {
+   "_id": "sr3e-firearm-0645",
+   "name": "Excalibur Nightstick    (Tasr) 1",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "Tasr",
+    "skill": "Tasers",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "1",
+    "mode": "8S stun",
+    "damage": "1",
+    "weight": "4/48hrs",
+    "availability": "1800",
+    "cost": 2,
+    "streetIndex": "cb1.2",
+    "accessories": "",
+    "bookPage": "",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0652",
+  "bucket": "sr2",
+  "recoveredSource": "sr2.???",
+  "recoveredFrom": "streetIndex",
+  "note": "Field-shifted on import: every column is displaced by roughly three positions, so bookPage is blank and the real source ended up in the column named in foundIn. Damage/mode/cost values are also displaced and unusable as-is. Archived unrepaired.",
+  "doc": {
+   "_id": "sr3e-firearm-0652",
+   "name": "Taser II                (Tasr) 1",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "Tasr",
+    "skill": "Tasers",
+    "attribute": "quickness",
+    "concealability": "7",
+    "ammunition": "0",
+    "mode": "5S Stun",
+    "damage": ".5",
+    "weight": "4/24hrs",
+    "availability": "300",
+    "cost": 1,
+    "streetIndex": "sr2.???",
+    "accessories": "",
+    "bookPage": "",
+    "notes": ""
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-1197",
+  "bucket": "fan",
+  "recoveredSource": "ray.000",
+  "recoveredFrom": "accessories",
+  "note": "Field-shifted on import: every column is displaced by roughly three positions, so bookPage is blank and the real source ended up in the column named in foundIn. Damage/mode/cost values are also displaced and unusable as-is. Archived unrepaired.",
+  "doc": {
+   "_id": "sr3e-firearm-1197",
+   "name": "Fab Nationale GL 40mmLV",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "GrLn",
+    "skill": "Grenade Launchers",
+    "attribute": "quickness",
+    "concealability": "-2",
+    "ammunition": "1(b)",
+    "mode": "SS",
+    "damage": "(Grenade)",
+    "weight": "1",
+    "availability": "3/4days",
+    "cost": 400,
+    "streetIndex": "none",
+    "accessories": "ray.000",
+    "bookPage": "",
+    "notes": "",
+    "isAoE": true
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-1198",
+  "bucket": "fan",
+  "recoveredSource": "ray.000",
+  "recoveredFrom": "accessories",
+  "note": "Field-shifted on import: every column is displaced by roughly three positions, so bookPage is blank and the real source ended up in the column named in foundIn. Damage/mode/cost values are also displaced and unusable as-is. Archived unrepaired.",
+  "doc": {
+   "_id": "sr3e-firearm-1198",
+   "name": "Zastava grenade launch",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "GrLn",
+    "skill": "Grenade Launchers",
+    "attribute": "quickness",
+    "concealability": "-2",
+    "ammunition": "1(b)",
+    "mode": "SS",
+    "damage": "(Grenade)",
+    "weight": "1",
+    "availability": "3/4days",
+    "cost": 350,
+    "streetIndex": "none",
+    "accessories": "ray.000",
+    "bookPage": "",
+    "notes": "",
+    "isAoE": true
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-1253",
+  "bucket": "fan",
+  "recoveredSource": "cb1.6",
+  "recoveredFrom": "streetIndex",
+  "note": "Field-shifted on import: every column is displaced by roughly three positions, so bookPage is blank and the real source ended up in the column named in foundIn. Damage/mode/cost values are also displaced and unusable as-is. Archived unrepaired.",
+  "doc": {
+   "_id": "sr3e-firearm-1253",
+   "name": "Arasaka WXA Comp.Aim.Wpn (LMG) 27",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "LMG",
+    "skill": "Gunnery",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "-",
+    "mode": "50",
+    "damage": "30000",
+    "weight": "12/21 days",
+    "availability": "4",
+    "cost": 500,
+    "streetIndex": "cb1.6",
+    "accessories": "",
+    "bookPage": "",
+    "notes": ""
+   },
+   "effects": []
+  }
  }
 ]

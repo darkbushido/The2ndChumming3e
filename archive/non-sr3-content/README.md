@@ -1,6 +1,6 @@
 # Archived non-SR3 compendium content
 
-1,698 documents removed from the system's compendium packs, held here until they
+1,703 documents removed from the system's compendium packs, held here until they
 are turned into their own modules. Nothing is lost — every document is stored
 whole, including its original LevelDB key, so it can be restored exactly.
 
@@ -29,7 +29,7 @@ By pack:
 
 | Pack | Archived | Left in system |
 |---|---:|---:|
-| firearms | 880 | 5 |
+| firearms | 885 | 0 |
 | cyberware | 415 | 0 |
 | armor | 125 | 0 |
 | melee | 101 | 0 |
@@ -68,3 +68,22 @@ parameter rather than hard-coding them.
   not a real source. Worth fixing rather than modularising.
 - `ray` (Raygun's Firearms, 658 docs) is by far the largest single source here and
   may deserve its own module rather than being lumped with other fan material.
+
+### Five field-shifted firearms
+
+The last five entries in `sr3e-firearms.json` carry extra keys — `recoveredSource`,
+`recoveredFrom` and `note`. Every column in those records is displaced by roughly
+three positions, so `bookPage` came out blank and the real source landed elsewhere:
+
+| Entry | Real source | Found in |
+|---|---|---|
+| Excalibur Nightstick (Tasr) | `cb1.2` | `streetIndex` |
+| Taser II (Tasr) | `sr2.???` | `streetIndex` |
+| Fab Nationale GL 40mmLV | `ray.000` | `accessories` |
+| Zastava grenade launcher | `ray.000` | `accessories` |
+| Arasaka WXA Comp.Aim.Wpn (LMG) | `cb1.6` | `streetIndex` |
+
+They stayed in the system through the first archive pass only because the classifier
+reads `bookPage`, which was empty. The damage, mode and cost fields are displaced too
+— Arasaka WXA reads `damage: "30000"`, which is its cost — so these records are not
+usable until repaired. Archived unrepaired; repair before modularising them.

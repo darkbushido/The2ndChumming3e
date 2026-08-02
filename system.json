@@ -181,96 +181,9 @@
   },
   "packs": [
     {
-      "name": "sr3e-firearms",
-      "label": "Firearms",
-      "path": "packs/sr3e-firearms",
-      "type": "Item",
-      "system": "The2ndChumming3e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      },
-      "flags": {
-        "The2ndChumming3e": {
-          "itemTypes": [
-            "firearm"
-          ]
-        }
-      }
-    },
-    {
-      "name": "sr3e-programs",
-      "label": "Matrix Programs",
-      "path": "packs/sr3e-programs",
-      "type": "Item",
-      "system": "The2ndChumming3e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      },
-      "flags": {
-        "The2ndChumming3e": {
-          "itemTypes": [
-            "program"
-          ]
-        }
-      }
-    },
-    {
-      "name": "sr3e-cyberdecks",
-      "label": "Cyberdecks",
-      "path": "packs/sr3e-cyberdecks",
-      "type": "Item",
-      "system": "The2ndChumming3e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      },
-      "flags": {
-        "The2ndChumming3e": {
-          "itemTypes": [
-            "cyberdeck"
-          ]
-        }
-      }
-    },
-    {
       "name": "sr3e-mr-johnsons-contacts",
       "label": "Mr. Johnson's Contacts",
       "path": "packs/sr3e-mr-johnsons-contacts",
-      "type": "Actor",
-      "system": "The2ndChumming3e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "sr3e-ic",
-      "label": "Intrusion Countermeasures",
-      "path": "packs/sr3e-ic",
-      "type": "Actor",
-      "system": "The2ndChumming3e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "sr3e-agents",
-      "label": "Programming Agents",
-      "path": "packs/sr3e-agents",
-      "type": "Actor",
-      "system": "The2ndChumming3e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "sr3e-hosts",
-      "label": "DataHosts",
-      "path": "packs/sr3e-hosts",
       "type": "Actor",
       "system": "The2ndChumming3e",
       "ownership": {
@@ -309,60 +222,6 @@
     }
   ],
   "packFolders": [
-    {
-      "name": "Weapons & Gear",
-      "sorting": "a",
-      "folders": [
-        {
-          "name": "Firearms",
-          "sorting": "a",
-          "packs": [
-            "sr3e-firearms"
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Matrix",
-      "sorting": "a",
-      "folders": [
-        {
-          "name": "Cyberdecks",
-          "sorting": "a",
-          "packs": [
-            "sr3e-cyberdecks"
-          ]
-        },
-        {
-          "name": "Matrix Programs",
-          "sorting": "a",
-          "packs": [
-            "sr3e-programs"
-          ]
-        },
-        {
-          "name": "Intrusion Countermeasures",
-          "sorting": "a",
-          "packs": [
-            "sr3e-ic"
-          ]
-        },
-        {
-          "name": "Programming Agents",
-          "sorting": "a",
-          "packs": [
-            "sr3e-agents"
-          ]
-        },
-        {
-          "name": "DataHosts",
-          "sorting": "a",
-          "packs": [
-            "sr3e-hosts"
-          ]
-        }
-      ]
-    },
     {
       "name": "Reference",
       "sorting": "a",
