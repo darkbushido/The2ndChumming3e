@@ -1,7 +1,8 @@
-import { SOURCE_BOOKS, defaultAllowedBooks } from './config.js';
+import { SOURCE_BOOKS, EDITIONS, defaultAllowedBooks } from './config.js';
 
-const SYS     = 'The2ndChumming3e';
-const SETTING = 'allowedBooks';
+const SYS             = 'The2ndChumming3e';
+const SETTING         = 'allowedBooks';
+const EDITION_SETTING = 'edition';
 
 /**
  * Which source books are in play, and the plumbing that hides the rest.
@@ -20,9 +21,27 @@ export class SR3ESourceBooks {
     return { ...defaultAllowedBooks(), ...stored };
   }
 
-  /** Is this book's content currently in play? Unknown books default to visible. */
+  /** The edition currently being played. Defaults to SR3. */
+  static get edition() {
+    try { return game.settings.get(SYS, EDITION_SETTING) || 'SR3'; } catch { return 'SR3'; }
+  }
+
+  /**
+   * Is this book's content currently in play?
+   *
+   * Two independent gates, both of which must pass:
+   *   1. the book belongs to the edition being played
+   *   2. the GM has that specific book switched on
+   *
+   * Both fail VISIBLE on unknown input. A pack with no book flag is system content; a
+   * book code with no registry entry, or an entry with no edition, is assumed to belong
+   * to whatever is being played. Making content vanish because of a typo is far worse
+   * than showing a book that should have been hidden.
+   */
   static isAllowed(code) {
     if (!code) return true;                       // packs with no book flag are system content
+    const book = SOURCE_BOOKS[code];
+    if (book?.edition && book.edition !== this.edition) return false;
     const a = this.allowed;
     return code in a ? !!a[code] : true;
   }
@@ -40,6 +59,17 @@ export class SR3ESourceBooks {
   /* ---------------------------------------------------------------------- */
 
   static register() {
+    game.settings.register(SYS, EDITION_SETTING, {
+      name: 'Edition',
+      hint: 'Which edition of Shadowrun this world plays. Only that edition\'s sourcebooks are offered — the others are hidden from the compendium sidebar and from item pickers, not deleted.',
+      scope: 'world',
+      config: true,
+      type: String,
+      choices: Object.fromEntries(Object.entries(EDITIONS).map(([k, v]) => [k, v.label])),
+      default: 'SR3',
+      onChange: () => ui.compendium?.render(),
+    });
+
     game.settings.register(SYS, SETTING, {
       scope: 'world',
       config: false,                              // edited through the menu below
@@ -107,17 +137,29 @@ export class SR3ESourceBooksConfig extends foundry.applications.api.ApplicationV
         </label>`;
     };
 
+    // Only the edition being played is listed. Books from the other edition are not
+    // shown as unchecked boxes, because ticking one would do nothing — the edition gate
+    // in isAllowed() overrides the per-book toggle. Change the Edition setting instead.
+    const edition = SR3ESourceBooks.edition;
+    const inPlay  = Object.entries(SOURCE_BOOKS).filter(([, b]) => (b.edition ?? edition) === edition);
+    const otherN  = Object.keys(SOURCE_BOOKS).length - inPlay.length;
+
     return `
       <p style="font-size:12px;color:var(--sr-muted);margin:0 0 8px">
         Content from books you switch off is hidden from the compendium sidebar and skipped by
         item pickers. Nothing is deleted, and characters already using that content keep it.
+      </p>
+      <p style="font-size:11px;color:var(--sr-muted);margin:0 0 8px">
+        Showing <strong>${EDITIONS[edition]?.label ?? edition}</strong> books.
+        ${otherN ? `${otherN} book${otherN === 1 ? '' : 's'} from other editions are hidden —
+          change <em>Edition</em> in system settings to use them.` : ''}
       </p>
       <div style="display:flex;gap:6px;margin-bottom:8px">
         <button type="button" data-preset="all"     style="font-size:11px">Select all</button>
         <button type="button" data-preset="none"    style="font-size:11px">Select none</button>
         <button type="button" data-preset="default" style="font-size:11px">Defaults</button>
       </div>
-      <div class="sr3e-book-list">${Object.entries(SOURCE_BOOKS).map(row).join('')}</div>
+      <div class="sr3e-book-list">${inPlay.map(row).join('')}</div>
       <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:10px">
         <button type="button" data-action="save" style="font-weight:600">Save</button>
       </div>`;

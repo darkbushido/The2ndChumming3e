@@ -542,7 +542,25 @@ export const KNOWLEDGE_SKILL_CATEGORIES = new Set([
  * Codes match the upstream Shadowrun Character Generator's Books.json so a future
  * re-import lines up. `matrix-defragged` is ours — a community ruleset, not a book.
  */
+export const EDITIONS = {
+  SR3: { label: 'Shadowrun 3rd Edition' },
+  SR2: { label: 'Shadowrun 2nd Edition' },
+};
+
 export const SOURCE_BOOKS = {
+  // ── 2nd Edition ────────────────────────────────────────────────────────────
+  sr2:                { label: 'Shadowrun 2nd Edition',    edition: 'SR2', enabled: true  },
+  cb1:                { label: 'The Chromebook 1',         edition: 'SR2', enabled: true  },
+  cb2:                { label: 'The Chromebook 2',         edition: 'SR2', enabled: true  },
+  cb3:                { label: 'The Chromebook 3',         edition: 'SR2', enabled: true  },
+  cb4:                { label: 'The Chromebook 4',         edition: 'SR2', enabled: true  },
+  ct:                 { label: 'Cybertechnology',          edition: 'SR2', enabled: true  },
+  ssc:                { label: 'Street Samurai Catalog',   edition: 'SR2', enabled: true  },
+  st:                 { label: 'Shadowtech',               edition: 'SR2', enabled: true  },
+  fof:                { label: 'Fields of Fire',           edition: 'SR2', enabled: true  },
+  pna:                { label: 'Paranormal Animals',       edition: 'SR2', enabled: true  },
+
+  // ── 3rd Edition ────────────────────────────────────────────────────────────
   sr3:                { label: 'Shadowrun 3rd Edition',    edition: 'SR3', enabled: true  },
   cc:                 { label: 'Cannon Companion',         edition: 'SR3', enabled: true  },
   mm:                 { label: 'Man & Machine',            edition: 'SR3', enabled: true  },
@@ -562,6 +580,11 @@ export const SOURCE_BOOKS = {
 /** Default allowed-books map, used when the setting has never been saved. */
 export function defaultAllowedBooks() {
   return Object.fromEntries(Object.entries(SOURCE_BOOKS).map(([c, b]) => [c, b.enabled]));
+}
+
+/** Book codes belonging to an edition. */
+export function booksForEdition(edition) {
+  return Object.entries(SOURCE_BOOKS).filter(([, b]) => b.edition === edition).map(([c]) => c);
 }
 
 /** Derive 'active' | 'knowledge' | 'language' from a category name. */

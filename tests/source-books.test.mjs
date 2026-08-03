@@ -21,10 +21,12 @@ const manifest = JSON.parse(readFileSync(join(root, 'system.json'), 'utf8'));
 
 const { SOURCE_BOOKS, defaultAllowedBooks } = await import('../scripts/config.js');
 
-// The setting value the module reads. Reassigned per scenario below.
+// The setting values the module reads. Reassigned per scenario below. Keyed properly:
+// returning one blob for every key made the edition gate read the allowed-books map.
 let stored = {};
+let edition = 'SR3';
 installGame({ packs: manifest.packs });
-globalThis.game.settings.get = () => stored;
+globalThis.game.settings.get = (_ns, key) => (key === 'edition' ? edition : stored);
 
 const { SR3ESourceBooks } = await import('../scripts/SR3ESourceBooks.js');
 globalThis.game.sr3e = { SR3ESourceBooks };
@@ -94,4 +96,35 @@ export async function run(t) {
   t.ok('hiding books shrinks the item picker too',
     forType('cyberware') < cyberAll,
     `picker showed ${forType('cyberware')} of ${cyberAll} cyberware packs`);
+
+  /* ---- edition gate ---- */
+  const sr3Books = Object.entries(SOURCE_BOOKS).filter(([, b]) => b.edition === 'SR3').map(([c]) => c);
+  const sr2Books = Object.entries(SOURCE_BOOKS).filter(([, b]) => b.edition === 'SR2').map(([c]) => c);
+  t.ok('the registry knows about both editions', sr3Books.length > 0 && sr2Books.length > 0,
+    `SR3 ${sr3Books.length}, SR2 ${sr2Books.length}`);
+
+  stored = allOn();
+  edition = 'SR3';
+  t.ok('playing SR3, every SR2 book is hidden even with its toggle on',
+    sr2Books.every(c => SR3ESourceBooks.isAllowed(c) === false));
+  t.ok('playing SR3, SR3 books are shown', sr3Books.every(c => SR3ESourceBooks.isAllowed(c)));
+
+  edition = 'SR2';
+  t.ok('playing SR2, every SR3 book is hidden even with its toggle on',
+    sr3Books.every(c => SR3ESourceBooks.isAllowed(c) === false));
+  t.ok('playing SR2, SR2 books are shown', sr2Books.every(c => SR3ESourceBooks.isAllowed(c)));
+
+  // The edition gate must not override the fail-visible rules.
+  t.is('an unrecognised book code stays visible in either edition',
+    SR3ESourceBooks.isAllowed('not-a-real-book'), true);
+  t.is('a pack with no book flag stays visible in either edition',
+    SR3ESourceBooks.packAllowed({ metadata: {} }), true);
+
+  // Both gates apply: right edition but switched off is still hidden.
+  stored = { ...allOn(), [sr2Books[0]]: false };
+  t.is('a book of the played edition can still be switched off individually',
+    SR3ESourceBooks.isAllowed(sr2Books[0]), false);
+
+  edition = 'SR3';
+  stored = allOn();
 }
