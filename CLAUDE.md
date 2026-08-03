@@ -338,9 +338,79 @@ These are the source files for the `sr3e-odm-cyberdecks` and `sr3e-odm-programs`
 Use only ODM files when working on Orthodox SR3 Matrix features.
 
 **MDF-\*** = **Matrix Defragged** (the alternative Matrix ruleset, a community supplement).
-These are the source for `sr3e-cyberdecks`, `sr3e-programs`, `sr3e-ic`, and related packs.
+These are the source for `sr3e-mdf-cyberdecks`, `sr3e-mdf-programs`, `sr3e-mdf-ic`, and related packs.
 **Do not touch MDF files when working on Orthodox SR3 Matrix features** — they are a completely
 separate ruleset with different schemas and different game mechanics.
+
+---
+
+## Source books & compendium filtering
+
+Compendium content is **one pack per source book**. Each pack declares its origin in
+`system.json` as `flags.The2ndChumming3e.book`; packs **without** that flag are system content
+(currently `sr3e-skills`, `sr3e-example-characters`, `sr3e-mr-johnsons-contacts`).
+
+`SOURCE_BOOKS` in `config.js` is the registry of book codes and which start enabled. The GM
+picks which are in play via **Configure Settings → System → Configure Source Books**
+(`SR3ESourceBooksConfig`). Codes match the upstream Shadowrun Character Generator's
+`Books.json` so a future re-import lines up.
+
+| | Codes |
+|---|---|
+| On by default | `sr3` `cc` `mm` `mits` `r3` `sota` `sota2` `tal` `twl` `matrix-defragged` |
+| Off by default | `fra` `ger` `ssg` `tss` (tss is a fan publication) |
+
+**How filtering works** — `SR3ESourceBooks.packAllowed(pack)` is the single predicate, consumed
+in exactly two places:
+- `SR3ECompendiumDirectory._preparePackContext` sets the `hidden` flag core already renders on
+  each sidebar pack entry (registered as `CONFIG.ui.compendium` at init). It also collapses
+  folders left with nothing visible — core doesn't do that for its own type filter, but one book
+  going dark can empty a whole branch. Overriding `hidden` rides core's own path; **do not**
+  prune DOM on a render hook.
+- `SR3EItem._packsForType(type)` — so a hidden book stops offering its gear through the item
+  pickers. Pass `{ ignoreBookFilter: true }` for migrations and integrity checks that must see
+  everything.
+
+**Nothing is unloaded.** Packs stay in `game.packs`, so a character already holding content from
+a hidden book keeps it. This is a presentation filter.
+
+**Fail-visible by design:** a pack with no `book` flag, or a book code the setting has never
+seen, both default to *visible*. Adding a pack can never silently hide it.
+
+**The filter only reaches packs.** Skills hardcoded in `SR3ESkills` (`config.js`) cannot be
+hidden by any book toggle — worth remembering before adding a book code that has no packs
+behind it, which would render as an empty checkbox.
+
+### Source PDFs
+
+The maintainer's SR3 PDF library lives at `C:\Users\lance\Documents\Shadowrun 3rd Edition PDFs`
+(32 books). They carry a **real text layer** — `pdftotext -layout` (ships with Git for Windows)
+extracts them exactly; **no OCR needed**. Two-column pages come out with the columns merged on
+each line, so crop per column (`pdftotext -x -y -W -H`, mediabox is ~616×795pt) when a clean
+list is needed. Use these to source page references and verify stats rather than guessing.
+
+### The Matrix sourcebook (`mat`) — audited, deliberately not registered
+
+There is **no `mat` code**, and that is a decision rather than an oversight. Audited against
+`Shadowrun 3e - Matrix.pdf` (159 pages):
+
+- **Skills — yes.** The book's introduction states it adds new active and knowledge skills. Its
+  *The Matrix User* chapter (p. 22–27) covers Active Skills (p. 24), System Familiarity (p. 24),
+  Program Design (p. 25), Cyberterminal Design (p. 25), Info Sortilage (p. 25) and other
+  knowledge skills (p. 25), plus an Otaku chapter. Named: Computer (Cybernetics / Decking /
+  Hardware / Search Operations), Computer Build/Repair, Electronics Build/Repair, and the
+  Etiquette (Matrix) and Small Unit Tactics (Matrix) specialisations. **Much of this is already
+  in `SR3ESkills`** — the "Matrix skills" and "Otaku skills" categories and the Matrix knowledge
+  skills — just unattributed. Being hardcoded, no book toggle can hide it.
+- **Spells — no.** 37 magic-term matches across the book, all incidental prose references. No
+  spell entries, drain codes or tables.
+- **Gear — yes, but none of it is imported.** Cyberterminal Construction (p. 52), Utilities
+  (p. 68), Programming (p. 76), System Operations (p. 95), Intrusion Countermeasures (p. 103).
+
+So `mat` becomes worth registering only once something exists to carry it. Keep the three Matrix
+sources distinct — conflating them is the easy mistake: **`sr3`** = core rulebook Ch. 8 (the
+ODM-\* rawdata), **`mat`** = this sourcebook, **`matrix-defragged`** = the community ruleset
+(the MDF-\* rawdata).
 
 ---
 
@@ -737,7 +807,8 @@ The character sheet (`SR3EActorSheet`) renders its Matrix tab differently depend
 - **Defragged** — Hacking Pool (INT+MPCP/3 from equipped cyberdeck item), node tracking, Overwatch.
 - **Orthodox** — `system.orthodoxDeck.*` fields (MPCP, Active Memory, Hardening, Response, etc.),
   Loaded Programs list (program items with memory tracking), **Matrix Condition Monitor** (10-box
-  track), Cyberdeck picker (from `sr3e-odm-cyberdecks`), Program picker (from `sr3e-odm-programs`).
+  track), Cyberdeck picker, Program picker (both read every pack declaring `cyberdeck` / `program`
+  items via `SR3EItem._documentsOfType` — see the missing-packs warning below).
   Hacking Pool = `⌊(INT + MPCP) / 3⌋` via `system.orthodoxDeck.mpcp`.
 
 **Key data model fields for Orthodox SR3 (on `CharacterData` / `NpcData`):**
@@ -745,9 +816,13 @@ The character sheet (`SR3EActorSheet`) renders its Matrix tab differently depend
 - `system.orthodoxRunState.{ hostId, hostName, securityCode, securityValue, securityTally, personaBod, personaEvasion, personaMasking, personaSensor }` — current run state
 - `system.orthodoxMatrixCM.value` — Matrix Condition Monitor boxes (0–10); crash at 10 → dumpshock
 
-**Compendiums (Orthodox only):**
-- `sr3e-odm-cyberdecks` — populated from `rawdata/ODM-Cyberdeck.json` via `populate-odm-cyberdecks.js`
-- `sr3e-odm-programs` — populated from `rawdata/ODM-Programs.json` via `populate-odm-programs.js`
+**Compendiums (Orthodox only) — ⚠ currently missing.** `sr3e-odm-cyberdecks` and
+`sr3e-odm-programs` are **no longer declared in `system.json` and their pack directories are gone**,
+removed during the per-book pack restructure. Everything else on the Orthodox path survives — both
+sheet classes, the `matrixRuleset` setting, and `scripts/macros/populate-odm-cyberdecks.js` /
+`populate-odm-programs.js` — so the pickers described above have nothing to read from until the
+packs are re-declared and re-populated from the ODM-\* rawdata. Fix this before doing any Orthodox
+Matrix work.
 - Program items store extra fields in `modules[0]` with `_odmType: 'orthodox'` (hardening, storageMemory, responseIncrease) since these don't map to the Defragged `CyberdeckData` schema.
 
 ---
