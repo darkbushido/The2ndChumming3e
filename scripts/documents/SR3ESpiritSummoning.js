@@ -350,7 +350,7 @@ export class SR3ESpiritSummoning {
         sr3e: {
           baseInitiative:    initScore,
           currentInitiative: initScore,
-          passesRemaining:   Math.floor(initScore / 10) + 1,
+          passesRemaining:   Math.ceil(initScore / 10),
           passNumber:        1,
           isSpirit:          true,
         },

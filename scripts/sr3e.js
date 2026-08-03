@@ -1429,11 +1429,13 @@ Hooks.on('renderCombatTracker', (_app, html) => {
           The2ndChumming3e: {
             baseInitiative:    score,
             currentInitiative: score,
-            passesRemaining:   Math.floor(score / 10) + 1,
+            passesRemaining:   Math.ceil(score / 10),
           }
         }
       });
-      await game.combat?.update({ flags: { The2ndChumming3e: { sr2Queue: null, sr2QueueIndex: 0 } } });
+      // Re-order the round against the new score, holding position (the updateCombatant
+      // hook above covers GM edits; this covers the shift-click physical-dice entry).
+      await game.combat?.rebuildQueue?.();
       if (ui.combat) ui.combat.render();
     }, true); // capture phase so we intercept before Foundry's bubble handler
   });
@@ -1612,6 +1614,18 @@ Hooks.on('renderCombatTracker', (_app, html) => {
 
   // GM tool buttons (Chase Scene, Session Rewards, Chunky Salsa, Barrier/Falling Damage,
   // Escape Artist) live on the Rollable Tables sidebar tab — see renderRollTableDirectory below.
+});
+
+// A GM editing an initiative value in the tracker (or via Update Combatant) must re-order
+// the round, not just change the number shown. The action queue is built from the
+// `initiative` field, so rebuild it — holding position, so an edit mid-round does not
+// restart the round. GM client only, since it writes.
+Hooks.on('updateCombatant', (combatant, changed) => {
+  if (!('initiative' in changed)) return;
+  if (!game.users?.activeGM?.isSelf) return;
+  const combat = combatant.parent;
+  if (!combat?.started || typeof combat.rebuildQueue !== 'function') return;
+  combat.rebuildQueue().then(() => ui.combat?.render());
 });
 
 // Action Tracker state resets whenever the combat turn or round changes (covers both the
