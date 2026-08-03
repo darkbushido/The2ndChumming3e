@@ -549,11 +549,10 @@ export const EDITIONS = {
 
 export const SOURCE_BOOKS = {
   // ── 2nd Edition ────────────────────────────────────────────────────────────
+  // Official SR2 books only. The Chromebooks (cb1-cb4) and Cyberpunk 2020 (cp) content
+  // in the archive are fan CONVERSIONS rather than official 2nd-edition products, so
+  // they stay archived alongside the other fan material — see archive/non-sr3-content.
   sr2:                { label: 'Shadowrun 2nd Edition',    edition: 'SR2', enabled: true  },
-  cb1:                { label: 'The Chromebook 1',         edition: 'SR2', enabled: true  },
-  cb2:                { label: 'The Chromebook 2',         edition: 'SR2', enabled: true  },
-  cb3:                { label: 'The Chromebook 3',         edition: 'SR2', enabled: true  },
-  cb4:                { label: 'The Chromebook 4',         edition: 'SR2', enabled: true  },
   ct:                 { label: 'Cybertechnology',          edition: 'SR2', enabled: true  },
   ssc:                { label: 'Street Samurai Catalog',   edition: 'SR2', enabled: true  },
   st:                 { label: 'Shadowtech',               edition: 'SR2', enabled: true  },
