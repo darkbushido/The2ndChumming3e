@@ -28,7 +28,10 @@ export class SR3EWard {
   static _astralSkillInfo(actor) {
     const sorcery = actor.items.find(i => i.type === 'skill' && i.name.toLowerCase() === 'sorcery');
     if (sorcery) {
-      const rating  = sorcery.system.skillRating ?? sorcery.system.rating ?? 1;
+      // Improved Ability / augmentation dice. Via the game.sr3e registry — SR3EWard cannot
+      // import SR3EItem without recreating the circular dependency.
+      const rating  = (sorcery.system.skillRating ?? sorcery.system.rating ?? 1)
+        + (game.sr3e?.SR3EItem?._skillBonusDice?.(actor, sorcery) ?? 0);
       const hasSpec = (sorcery.system.specialisation ?? '').toLowerCase() === 'astral combat';
       return { skillName: hasSpec ? 'Sorcery (Astral Combat spec)' : 'Sorcery', skillDice: hasSpec ? rating + 2 : rating, isDefault: false };
     }

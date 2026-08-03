@@ -101,15 +101,20 @@ export class SR3EItem extends Item {
       defTnMod = def.tnMod;
       label   += ` — ${def.label}`;
     } else if (options.pool != null) {
+      // Caller-supplied pool — already includes any bonus dice (see
+      // SR3EActorSheet._promptSkillRollOptions). Adding them again here would double-count.
       pool   = Math.max(1, options.pool);
       label += s.specialisation
         ? ` ${s.skillRating} (${s.skillRating + 2}) — ${s.specialisation}`
         : ` (Rating ${s.skillRating} = ${pool} dice)`;
     } else {
-      pool   = Math.max(1, s.skillRating ?? 0);
+      // Rolling the skill directly off the item: build the pool here, bonus dice included.
+      const bonusDice = SR3EItem._skillBonusDice(actor, this);
+      pool   = Math.max(1, (s.skillRating ?? 0) + bonusDice);
+      const bonusNote = bonusDice ? ` +${bonusDice}` : '';
       label += s.specialisation
-        ? ` ${s.skillRating} (${s.skillRating + 2}) — ${s.specialisation}`
-        : ` (Rating ${s.skillRating} = ${pool} dice)`;
+        ? ` ${s.skillRating}${bonusNote} (${s.skillRating + bonusDice + 2}) — ${s.specialisation}`
+        : ` (Rating ${s.skillRating}${bonusNote} = ${pool} dice)`;
     }
 
     if (pool < 1) {
@@ -267,6 +272,31 @@ export class SR3EItem extends Item {
   }
 
   /**
+   * Bonus dice this actor gets on a specific skill, from any source — adept Improved
+   * Ability, or cyberware/bioware that boosts one named skill.
+   *
+   * Reads the derived `skillBonusDice` map and nothing else. There is deliberately NO
+   * `magicType === 'Adept'` check here: the map is only ever populated for actors who
+   * qualify (see SR3EActor._prepareCharacter), so re-checking at the point of use could
+   * only ever discard a bonus that derivation already decided was earned. That mismatch
+   * was the original bug — the sheet read the map and showed the dice, while the roll
+   * paths never consulted it at all.
+   *
+   * Safe to call at roll time: a button click happens long after prepareDerivedData.
+   * Do NOT fold this into SR3EItem.prepareDerivedData — Foundry prepares embedded items
+   * BEFORE the actor's own derived data, so the map is not reliably populated yet.
+   *
+   * @param {Actor|null} actor
+   * @param {Item|string|null} skill  Skill Item, or its name.
+   * @returns {number} dice to add, 0 when none
+   */
+  static _skillBonusDice(actor, skill) {
+    const name = typeof skill === 'string' ? skill : skill?.name;
+    if (!name) return 0;
+    return actor?.system?.derived?.skillBonusDice?.[name] ?? 0;
+  }
+
+  /**
    * Build a melee dice pool for an actor using their weapon.
    * Uses skill rating if available, otherwise defaults to full Strength (+4 TN, no pool).
    */
@@ -304,11 +334,15 @@ export class SR3EItem extends Item {
       specBonus = 2;
       specName  = skill.system.specialisation;
     }
-    const skillDice  = Math.max(1, basePool + specBonus);
+    // Improved Ability / augmentation dice, keyed on the skill actually used — which for
+    // unarmed may be a martial art rather than Unarmed Combat itself. Not added when
+    // defaulting: there is no skill to have improved.
+    const bonusDice  = isDefault ? 0 : SR3EItem._skillBonusDice(actor, skill);
+    const skillDice  = Math.max(1, basePool + specBonus + bonusDice);
     const availPool  = isDefault ? 0 : (actor.system.derived?.availableCombatPool ?? 0);
     // Display the actual martial-art skill name when one was used instead of "Unarmed Combat".
     const displayName = (skill && skill.name !== skillName && /^MA:/i.test(skill.name)) ? skill.name : skillName;
-    return { skillName: displayName, skillRating: basePool, specName, specBonus, skillDice, availPool, isDefault };
+    return { skillName: displayName, skillRating: basePool, specName, specBonus, bonusDice, skillDice, availPool, isDefault };
   }
 
   /**
@@ -661,18 +695,21 @@ export class SR3EItem extends Item {
     let label = `${this.name} [${effectiveRawDamage}] — Throw`;
     let defTnMod = 0, defAllowPool = false;
     if (skill) {
-      pool = skill.system.skillRating || 0;
+      // Improved Ability / augmentation dice for this weapon's skill.
+      const bonusDice  = SR3EItem._skillBonusDice(actor, skill);
+      pool = (skill.system.skillRating || 0) + bonusDice;
       const skillSpec  = skill.system.specialisation;
       const baseRating = skill.system.skillRating || 0;
+      const bonusNote  = bonusDice ? ` +${bonusDice}` : '';
       const specMatch  = skillSpec && (
         this.name.toLowerCase() === skillSpec.toLowerCase() ||
         this.name.toLowerCase().includes(skillSpec.toLowerCase())
       );
       if (specMatch) {
         pool += 2;
-        label += ` (${skill.name} ${baseRating} (${baseRating + 2}) — ${skillSpec})`;
+        label += ` (${skill.name} ${baseRating}${bonusNote} (${baseRating + bonusDice + 2}) — ${skillSpec})`;
       } else {
-        label += ` (${skill.name} ${baseRating})`;
+        label += ` (${skill.name} ${baseRating}${bonusNote})`;
       }
     } else {
       // SR3 Default Table — let the user choose specialization / skill / attribute.
@@ -883,18 +920,21 @@ export class SR3EItem extends Item {
 
   let defTnMod = 0, defAllowPool = false;
   if (skill) {
-    pool = skill.system.skillRating || 0;
+    // Improved Ability / augmentation dice for this weapon's skill.
+    const bonusDice  = SR3EItem._skillBonusDice(actor, skill);
+    pool = (skill.system.skillRating || 0) + bonusDice;
     const skillSpec  = skill.system.specialisation;
     const baseRating = skill.system.skillRating || 0;
+    const bonusNote  = bonusDice ? ` +${bonusDice}` : '';
     const specMatch  = skillSpec && (
       this.name.toLowerCase() === skillSpec.toLowerCase() ||
       this.name.toLowerCase().includes(skillSpec.toLowerCase())
     );
     if (specMatch) {
       pool += 2;
-      label += ` (${skill.name} ${baseRating} (${baseRating + 2}) — ${skillSpec})`;
+      label += ` (${skill.name} ${baseRating}${bonusNote} (${baseRating + bonusDice + 2}) — ${skillSpec})`;
     } else {
-      label += ` (${skill.name} ${baseRating})`;
+      label += ` (${skill.name} ${baseRating}${bonusNote})`;
     }
   } else {
     // SR3 Default Table — let the user choose specialization / skill / attribute.
@@ -1015,7 +1055,10 @@ export class SR3EItem extends Item {
       const modeLabel  = vcrMode ? 'VCR' : 'RCD';
       const gunnery    = pilotActor.items.find(i => i.type === 'skill' && /gunnery/i.test(i.name));
       if (gunnery) {
-        const base = gunnery.system.skillRating ?? gunnery.system.rating ?? 0;
+        // Improved Ability / augmentation dice on the gunner's Gunnery skill.
+        const bonusDice = SR3EItem._skillBonusDice(pilotActor, gunnery);
+        const base = (gunnery.system.skillRating ?? gunnery.system.rating ?? 0) + bonusDice;
+        const shown = `${gunnery.system.skillRating ?? gunnery.system.rating ?? 0}${bonusDice ? ` +${bonusDice}` : ''}`;
         const spec  = gunnery.system.specialisation ?? '';
         const specMatch = spec && (
           this.name.toLowerCase().includes(spec.toLowerCase()) ||
@@ -1023,8 +1066,8 @@ export class SR3EItem extends Item {
         );
         pool      = specMatch ? base + 2 : base;
         poolLabel = specMatch
-          ? `${pilotActor.name} (${modeLabel}): Gunnery ${base} (${pool}) — ${spec}`
-          : `${pilotActor.name} (${modeLabel}): Gunnery ${base}`;
+          ? `${pilotActor.name} (${modeLabel}): Gunnery ${shown} (${pool}) — ${spec}`
+          : `${pilotActor.name} (${modeLabel}): Gunnery ${shown}`;
       } else {
         // SR3 Default Table — let the user choose specialization / skill / attribute for the pilot.
         const def = await SR3EItem.promptDefaultChoice(pilotActor, {
