@@ -256,6 +256,12 @@ export class CyberwareData extends foundry.abstract.TypeDataModel {
       bonusWil:          new NumberField({ integer: true, initial: 0, min: 0 }),
       bonusRea:          new NumberField({ integer: true, initial: 0, min: 0 }),
       bonusInitDice:     new NumberField({ integer: true, initial: 0, min: 0 }),
+      // Dice added to one named skill, e.g. Tailored Pheromones on Negotiation. Feeds the
+      // same derived skillBonusDice map as adept Improved Ability, so every roll path and
+      // the sheet's bonus column pick it up with no further wiring. The name must match the
+      // skill Item's name exactly — the map is keyed by name.
+      improvedSkillName: new StringField({ initial: '' }),
+      improvedSkillDice: new NumberField({ integer: true, initial: 0, min: 0 }),
       essenceCostBase:   new NumberField({ initial: 0, min: 0 }),
       costBase:          new NumberField({ integer: true, initial: 0, min: 0 }),
       availabilityBase:  new StringField({ initial: '' }),
@@ -284,6 +290,10 @@ export class BiowareData extends foundry.abstract.TypeDataModel {
       bonusWil:         new NumberField({ integer: true, initial: 0, min: 0 }),
       bonusRea:         new NumberField({ integer: true, initial: 0, min: 0 }),
       bonusInitDice:    new NumberField({ integer: true, initial: 0, min: 0 }),
+      // See CyberwareData — same skill-dice channel (Enhanced Articulation, Tailored
+      // Pheromones and friends all have this shape).
+      improvedSkillName: new StringField({ initial: '' }),
+      improvedSkillDice: new NumberField({ integer: true, initial: 0, min: 0 }),
       bioIndexBase:     new NumberField({ initial: 0, min: 0 }),
       costBase:         new NumberField({ integer: true, initial: 0, min: 0 }),
       availabilityBase: new StringField({ initial: '' }),

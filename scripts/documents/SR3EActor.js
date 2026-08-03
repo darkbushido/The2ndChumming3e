@@ -978,7 +978,7 @@ export class SR3EActor extends Actor {
       availHackPool = def.allowPool ? (d.availableHackingPool ?? d.hackingPool ?? 0) : 0;
       skillNote     = ` <span style="color:var(--sr-amber)">(${def.label})</span>`;
     } else {
-      skillRating   = skill.system.rating ?? 0;
+      skillRating   = (skill.system.rating ?? 0) + SR3EItem._skillBonusDice(this, skill);
       availHackPool = d.availableHackingPool ?? d.hackingPool ?? 0;
     }
 
@@ -1582,6 +1582,24 @@ _prepareCharacter(sys, attr) {
   const wm      = sys.woundMod ?? 0;
   const isAdept = (sys.magicType ?? '') === 'Adept';
 
+  /**
+   * Bonus dice granted to a NAMED skill, summed across every source: `{ skillName → dice }`.
+   *
+   * Deliberately source-agnostic. Adept Improved Ability populates it today; cyberware and
+   * bioware that boost a specific skill are meant to feed the same map, so that consumers —
+   * the roll paths and the sheet's bonus column — never need to know where a die came from.
+   *
+   * Gate contributions HERE, at the point of derivation, not at the point of use. A reader
+   * that re-checks `isAdept` can only produce one outcome: a value present in the map that
+   * is silently dropped on the way to the dice. Consumers must trust this map.
+   */
+  const skillBonusDice = {};
+  const _addSkillDice = (name, dice) => {
+    const key = (name ?? '').trim();
+    if (!key || !dice) return;
+    skillBonusDice[key] = (skillBonusDice[key] ?? 0) + dice;
+  };
+
   // Cyber/bio augmentation bonuses — summed from all cyberware and bioware items
   const cyberBonus = { bod: 0, qui: 0, str: 0, cha: 0, int: 0, wil: 0, rea: 0, initDice: 0 };
   for (const item of (this.items ?? [])) {
@@ -1595,11 +1613,14 @@ _prepareCharacter(sys, attr) {
     cyberBonus.wil      += s.bonusWil      ?? 0;
     cyberBonus.rea      += s.bonusRea      ?? 0;
     cyberBonus.initDice += s.bonusInitDice ?? 0;
+    // Skill-specific augmentation dice. No item populates `improvedSkillName` yet — the
+    // bonus fields are still being imported — but the channel is open, so an entry that
+    // gains one starts working with no change to any roll path or to the sheet.
+    _addSkillDice(s.improvedSkillName, s.improvedSkillDice ?? 0);
   }
 
   // Adept power bonuses — summed from all adeptpower items
   const adeptBonus    = { bod: 0, qui: 0, str: 0, cha: 0, int: 0, wil: 0, mag: 0, rea: 0, initDice: 0 };
-  const improvedAbility = {};  // { skillName → total bonus dice }
   if (isAdept) {
     for (const item of (this.items ?? [])) {
       if (item.type !== 'adeptpower') continue;
@@ -1613,11 +1634,8 @@ _prepareCharacter(sys, attr) {
       adeptBonus.mag      += s.bonusMag      ?? 0;
       adeptBonus.rea      += s.bonusRea      ?? 0;
       adeptBonus.initDice += s.bonusInitDice ?? 0;
-      const skillName = (s.improvedSkillName ?? '').trim();
-      if (skillName) {
-        const dice = s.hasLevels ? (s.level ?? 1) : 1;
-        improvedAbility[skillName] = (improvedAbility[skillName] ?? 0) + dice;
-      }
+      // Improved Ability: a levelled power grants dice equal to its level, otherwise 1.
+      _addSkillDice(s.improvedSkillName, s.hasLevels ? (s.level ?? 1) : 1);
     }
   }
 
@@ -1746,7 +1764,11 @@ _prepareCharacter(sys, attr) {
     initiativeDice:     1 + (sys.initiativeDiceBonus ?? 0) + (attr.reaction?.diceBonus ?? 0) + cyberBonus.initDice + adeptBonus.initDice,
     cyberBonus,
     adeptBonus,
-    improvedAbility,
+    skillBonusDice,
+    // Legacy alias. `improvedAbility` named an adept-only map; the same data is now fed by
+    // cyberware and bioware too, so `skillBonusDice` is the name to read. Same object, not
+    // a copy — kept so any world macro still referencing the old key keeps working.
+    improvedAbility: skillBonusDice,
     combatPoolBase,
     combatPool,
     availableCombatPool,
@@ -5259,7 +5281,8 @@ _prepareCharacter(sys, attr) {
       let sorceryDice = null;
       let sorceryLabel = 'Sorcery';
       if (sorcery) {
-        const rating  = sorcery.system.rating ?? sorcery.system.skillRating ?? 1;
+        const rating  = (sorcery.system.rating ?? sorcery.system.skillRating ?? 1)
+          + SR3EItem._skillBonusDice(actor, sorcery);
         const hasSpec = (sorcery.system.specialisation ?? '').toLowerCase() === 'astral combat'
           || (sorcery.system.specialisations ?? []).some(sp => (sp.name ?? '').toLowerCase() === 'astral combat');
         sorceryDice  = hasSpec ? rating + 2 : rating;
@@ -5726,7 +5749,7 @@ _prepareCharacter(sys, attr) {
       return;
     }
 
-    const rating   = skill.system.skillRating ?? 1;
+    const rating   = (skill.system.skillRating ?? 1) + SR3EItem._skillBonusDice(actor, skill);
     const basePool = Math.max(1, rating);
 
     let opts = null;
@@ -5798,7 +5821,8 @@ _prepareCharacter(sys, attr) {
         if (mag > 0) sources.push({ group: 'attr', label: `Magic (${mag})`, value: mag });
       }
       for (const sk of a.items.filter(i => i.type === 'skill').sort((x,y) => x.name.localeCompare(y.name))) {
-        const rating = sk.system.skillRating ?? sk.system.rating ?? 0;
+        const rating = (sk.system.skillRating ?? sk.system.rating ?? 0)
+          + SR3EItem._skillBonusDice(a, sk);
         sources.push({ group: 'skill', label: `${sk.name} (${rating})`, value: rating });
       }
       return sources;

@@ -844,8 +844,13 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   _tabSkills(actor) {
     const allSkills = actor.items.filter(i => i.type === 'skill')
       .sort((a, b) => a.name.localeCompare(b.name));
-    const isAdept         = (actor.system.magicType ?? '') === 'Adept';
-    const improvedAbility = actor.system.derived?.improvedAbility ?? {};
+    const skillBonusDice = actor.system.derived?.skillBonusDice ?? {};
+    // Whether to render the bonus-dice column at all. Adepts always get it (an adept with
+    // no Improved Ability still expects to see the column); anyone else gets it only once
+    // something actually grants them skill dice — cyberware or bioware — so non-augmented
+    // characters are not given a permanently empty column.
+    const showBonusCol = (actor.system.magicType ?? '') === 'Adept'
+      || Object.values(skillBonusDice).some(n => n > 0);
 
     const _isComplete = s => (s.system.category ?? '') !== '' && (s.system.skillName ?? '') !== '' && (s.system.rating ?? 0) > 0;
 
@@ -864,16 +869,16 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const _skillRow = s => {
       const rating   = s.system.rating ?? 0;
-      const ia       = improvedAbility[s.name] ?? 0;
+      const ia       = skillBonusDice[s.name] ?? 0;
       const specs    = s.system.specialisations ?? [];
       // Normalise to a {name, level} list, falling back to the legacy singular field.
       const specList = specs.length > 0
         ? specs
         : (s.system.specialisation ? [{ name: s.system.specialisation, level: 2 }] : []);
-      const forceCell = (level) => isAdept ? `
+      const forceCell = (level) => showBonusCol ? `
         <span class="item-cell">
           ${level == null && ia > 0
-            ? `<span class="attr-adept" title="Improved Ability (from adept powers)">${ia}</span>`
+            ? `<span class="attr-adept" title="Bonus dice — adept Improved Ability, cyberware or bioware">${ia}</span>`
             : `<span style="color:var(--sr-dim)">—</span>`}
         </span>` : '';
       const attrLabel = s.system.linkedAttribute === 'lan' ? 'LAN' : (s.system.linkedAttribute ?? '—');
@@ -912,7 +917,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       return mainRow + extraRows;
     };
 
-    const header = `<div class="list-header"><span>Skill</span><span>Attr</span><span>Rtg</span>${isAdept ? '<span>IA</span>' : ''}<span>Spec</span><span></span></div>`;
+    const header = `<div class="list-header"><span>Skill</span><span>Attr</span><span>Rtg</span>${showBonusCol ? '<span title="Bonus dice">+D</span>' : ''}<span>Spec</span><span></span></div>`;
 
     const _section = (label, color, skills) => skills.length === 0 ? '' : `
       <h3 class="section-hdr" style="margin-top:1rem;color:${color}">${label}</h3>
@@ -3798,8 +3803,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   static async _promptSkillRollOptions(actor, defaultItem, { physicalDice = false } = {}) {
     const karmaPool    = actor?.system.karmaPool ?? 0;
     const woundPenalty = -(actor?.system.woundMod ?? 0);
-    const isAdept         = (actor?.system.magicType ?? '') === 'Adept';
-    const improvedAbility = actor?.system.derived?.improvedAbility ?? {};
+    // No isAdept check: skillBonusDice is only populated for actors who earned the dice,
+    // so re-gating here could only drop a bonus derivation already granted. It also now
+    // carries cyberware/bioware skill bonuses, which have nothing to do with being an adept.
+    const skillBonusDice = actor?.system.derived?.skillBonusDice ?? {};
 
     const skills = actor.items
       .filter(i => i.type === 'skill')
@@ -3811,7 +3818,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const optionsHtml = skills.map(sk => {
       const s          = sk.system;
-      const forceBonus = isAdept ? (improvedAbility[sk.name] ?? 0) : 0;
+      const forceBonus = skillBonusDice[sk.name] ?? 0;
       const pool       = s.rating
         ? Math.max(1, (s.rating ?? 0) + forceBonus)
         : Math.max(1, (s.attributeValue ?? 3));   // defaulting: full attribute (+4 TN at roll)
@@ -3820,7 +3827,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const defSkill   = skills.find(sk => sk.id === defaultId) ?? skills[0];
     const defS       = defSkill.system;
-    const defForce   = isAdept ? (improvedAbility[defSkill.name] ?? 0) : 0;
+    const defForce   = skillBonusDice[defSkill.name] ?? 0;
     const defPool    = defS.rating
       ? Math.max(1, (defS.rating ?? 0) + defForce)
       : Math.max(1, (defS.attributeValue ?? 3));   // defaulting: full attribute (+4 TN at roll)
