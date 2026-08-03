@@ -41,7 +41,7 @@ export class SR3ECombat extends Combat {
           The2ndChumming3e: {
             baseInitiative: score,
             currentInitiative: score,
-            passesRemaining: Math.floor(score / 10) + 1
+            passesRemaining: Math.ceil(score / 10)
           }
         }
       });
@@ -81,7 +81,7 @@ export class SR3ECombat extends Combat {
           The2ndChumming3e: {
             baseInitiative:    score,
             currentInitiative: score,
-            passesRemaining:   Math.floor(score / 10) + 1,
+            passesRemaining:   Math.ceil(score / 10),
           }
         }
       });
@@ -103,9 +103,13 @@ export class SR3ECombat extends Combat {
       }
     }
 
-    // Invalidate any stored SR2 queue — it will be rebuilt on next startCombat
-    // or lazily on the first nextTurn call with the fresh scores.
-    await this.update({ flags: { The2ndChumming3e: { sr2Queue: null, sr2QueueIndex: 0 } } });
+    // Rebuild the action queue against the new scores and point the tracker back at its
+    // head. Previously only the SR2 queue was invalidated and the SR3 pass state was left
+    // alone, so a mid-combat re-roll updated the numbers while the turn pointer stayed on
+    // the previously-active combatant — every combatant ordered above them was then skipped
+    // for the rest of that round.
+    const queue = await this.rebuildQueue({ resetIndex: true });
+    if (this.started && queue.length) await this._applySlot(queue, 0);
 
     // Prompt Spell Defense declaration for Sorcery-capable actors
     await game.sr3e.SR3EActor.promptSpellDefenseDeclaration(combatants);
@@ -119,40 +123,161 @@ export class SR3ECombat extends Combat {
    */
   async startCombat() {
     await super.startCombat();
-    
-    const mode = game.settings.get('The2ndChumming3e', 'initiativeMode');
-    if (mode === 'sr3') {
-      await this._setupSR3Passes();
-    } else {
-      const queue = this._buildSR2Queue();
-      await this.update({ flags: { The2ndChumming3e: { sr2Queue: queue, sr2QueueIndex: 0 } } });
-    }
-    
+    await this.rebuildQueue({ resetIndex: true });
     return this;
   }
 
   /**
-   * Set up SR3 pass structure
+   * Build this round's action queue from combatant `initiative` values.
+   *
+   * One slot per action a combatant gets: initiative, initiative-10, -20 … while > 0.
+   * Both initiative modes use the SAME slot list and differ only in how it is sorted:
+   *
+   *   SR3 — pass-grouped.  Everyone acts once at pass 1 (highest first), then everyone
+   *         still above 0 acts at pass 2, and so on.
+   *   SR2 — interleaved.   All slots merged and walked strictly by descending score.
+   *
+   * `initiative` (the Combatant document field) is the SINGLE SOURCE OF TRUTH for order.
+   * It used to be mirrored into a `currentInitiative` flag that the pass logic read
+   * instead, which meant a GM editing initiative in the tracker changed the displayed
+   * number and nothing else. Those flags are still written, but only as a display echo
+   * (see _applySlot) — nothing reads them to decide order.
+   *
+   * Ties on score are broken by the `tieBreak` rank resolved in assignTieBreaks() —
+   * Reaction first, then a dice-off. Combatant id is the final fallback purely so the
+   * comparator is always a total order; it should never actually decide anything.
+   *
+   * Without any tie-break at all, JS's stable sort left tied combatants in
+   * `combatants.contents` (insertion) order while Foundry's `turns` held them in id
+   * order — the two disagreed, and a tied combatant got skipped entirely.
+   *
+   * @returns {Array<{id: string, score: number, pass: number}>}
+   */
+  buildRoundQueue() {
+    const mode  = game.settings.get('The2ndChumming3e', 'initiativeMode');
+    const slots = [];
+    const rank  = new Map();
+
+    for (const c of this.combatants.contents) {
+      const base = Number(c.initiative);
+      if (!Number.isFinite(base) || base <= 0) continue;
+      rank.set(c.id, c.flags?.The2ndChumming3e?.tieBreak ?? 0);
+      let pass = 1;
+      for (let score = base; score > 0; score -= 10, pass++) slots.push({ id: c.id, score, pass });
+    }
+
+    const tie = (a, b) => (rank.get(a.id) - rank.get(b.id)) || (a.id > b.id ? 1 : -1);
+    slots.sort(mode === 'sr3'
+      // pass first: everyone acts once before anyone acts twice
+      ? (a, b) => (a.pass - b.pass) || (b.score - a.score) || tie(a, b)
+      // strict descending score: a fast combatant may act twice before a slow one acts once
+      : (a, b) => (b.score - a.score) || tie(a, b));
+
+    return slots;
+  }
+
+  /**
+   * Resolve the order of combatants who tied on initiative, and store it as a `tieBreak`
+   * rank flag (lower acts first).
+   *
+   * SR3: highest Reaction goes first; on equal Reaction the tied combatants roll off, and
+   * anyone still level re-rolls until separated.
+   *
+   * The dice CANNOT be rolled inside the sort comparator. Array.prototype.sort requires a
+   * consistent total order, and a comparator that returns a fresh random answer each time
+   * it is asked about the same pair produces a garbage ordering. So the ranks are resolved
+   * once here and the comparator just reads them.
+   *
+   * Combatants tied on base initiative stay tied at every pass — they decrement in step —
+   * so one rank per combatant covers the whole round.
    * @private
    */
-  async _setupSR3Passes() {
-    const updates = this.combatants.map(c => {
-      const baseInit = c.initiative || 0;
-      const passes = Math.floor(baseInit / 10) + 1;
-      return {
-        _id: c.id,
-        flags: {
-          The2ndChumming3e: {
-            baseInitiative: baseInit,
-            currentInitiative: baseInit,
-            passesRemaining: passes,
-            passNumber: 1
-          }
-        }
-      };
-    });
-    
-    await this.updateEmbeddedDocuments('Combatant', updates);
+  async _assignTieBreaks() {
+    const byScore = new Map();
+    for (const c of this.combatants.contents) {
+      const init = Number(c.initiative);
+      if (!Number.isFinite(init) || init <= 0) continue;
+      if (!byScore.has(init)) byScore.set(init, []);
+      byScore.get(init).push(c);
+    }
+
+    const notes   = [];
+    const updates = [];
+    for (const [score, group] of byScore) {
+      if (group.length === 1) {
+        updates.push({ _id: group[0].id, flags: { The2ndChumming3e: { tieBreak: 0 } } });
+        continue;
+      }
+      // Reaction descending, then dice-off within each equal-Reaction run.
+      const withRea = group.map(c => ({ c, rea: c.actor?.system?.attributes?.reaction?.value ?? 0 }));
+      withRea.sort((a, b) => b.rea - a.rea);
+
+      const ordered = [];
+      for (let i = 0; i < withRea.length;) {
+        let j = i + 1;
+        while (j < withRea.length && withRea[j].rea === withRea[i].rea) j++;
+        const run = withRea.slice(i, j).map(x => x.c);
+        ordered.push(...(run.length > 1 ? await this._diceOff(run, score, notes) : run));
+        i = j;
+      }
+      ordered.forEach((c, idx) => updates.push({ _id: c.id, flags: { The2ndChumming3e: { tieBreak: idx } } }));
+    }
+
+    if (updates.length) await this.updateEmbeddedDocuments('Combatant', updates);
+    if (notes.length) {
+      await ChatMessage.create({
+        content: `<div class="sr-roll-card">
+            <div class="sr-roll-header">⚡ Initiative Tie-Break</div>
+            ${notes.map(n => `<div class="sr-roll-meta">${n}</div>`).join('')}
+          </div>`,
+      });
+    }
+  }
+
+  /**
+   * Roll off between combatants tied on both initiative AND Reaction. Anyone still level
+   * after a roll re-rolls among themselves, per "repeat until one is higher".
+   *
+   * Bounded at 20 rounds of re-rolling. The probability of getting that far is negligible,
+   * but an unbounded loop here would hang the client rather than merely order two goons
+   * arbitrarily.
+   * @private
+   */
+  async _diceOff(members, score, notes, depth = 0) {
+    const rolled = [];
+    for (const c of members) {
+      const roll = await new Roll('1d6').evaluate();
+      rolled.push({ c, v: roll.total });
+    }
+    notes.push(`Initiative ${score} — ${rolled.map(r => `${r.c.name} rolled ${r.v}`).join(', ')}`);
+    rolled.sort((a, b) => b.v - a.v);
+
+    const out = [];
+    for (let i = 0; i < rolled.length;) {
+      let j = i + 1;
+      while (j < rolled.length && rolled[j].v === rolled[i].v) j++;
+      const run = rolled.slice(i, j).map(x => x.c);
+      if (run.length > 1 && depth < 20) out.push(...await this._diceOff(run, score, notes, depth + 1));
+      else out.push(...run);
+      i = j;
+    }
+    return out;
+  }
+
+  /**
+   * Rebuild the stored queue from current initiative values.
+   *
+   * Called on start, after any initiative roll, and whenever a GM edits an initiative
+   * value in the tracker. Without `resetIndex` it tries to hold position: the pointer is
+   * clamped into the new queue so an edit mid-round does not restart the round.
+   */
+  async rebuildQueue({ resetIndex = false } = {}) {
+    await this._assignTieBreaks();
+    const queue = this.buildRoundQueue();
+    const prev  = resetIndex ? 0 : (this.flags?.The2ndChumming3e?.queueIndex ?? 0);
+    const index = Math.min(Math.max(0, prev), queue.length);
+    await this.update({ flags: { The2ndChumming3e: { queue, queueIndex: index, sr2Queue: null, sr2QueueIndex: 0 } } });
+    return queue;
   }
 
   /**
@@ -160,282 +285,73 @@ export class SR3ECombat extends Combat {
    * @override
    */
   async nextTurn() {
-    const mode = game.settings.get('The2ndChumming3e', 'initiativeMode');
-    
-    if (mode === 'sr3') {
-      return this._nextTurnSR3();
-    } else {
-      return this._nextTurnSR2();
+    let queue = this.flags?.The2ndChumming3e?.queue ?? null;
+    if (!queue?.length) queue = await this.rebuildQueue({ resetIndex: true });
+    if (!queue.length) return this._newRound();   // nobody has initiative yet
+
+    const index = this.flags?.The2ndChumming3e?.queueIndex ?? 0;
+    const next  = index + 1;
+
+    // Queue exhausted — the combat round is over.
+    if (next >= queue.length) return this._newRound();
+
+    // A new pass means a new combat phase: recoil resets.
+    if (queue[next].pass !== queue[index]?.pass) {
+      for (const c of this.combatants.contents) await c.actor?.resetRecoil?.();
     }
+
+    await this._applySlot(queue, next);
+    return this;
   }
 
   /**
-   * SR3 Mode: Pass-based initiative.
+   * Point the tracker at queue[index] and echo that slot onto the combatant for display.
    *
-   * Each combat pass is a queue of everyone whose currentInitiative > 0,
-   * sorted highest-first. The current combatant acts, then we move to the
-   * next person in the same pass. When the last person in a pass has acted
-   * we subtract 10 from everyone's currentInitiative and start a new pass
-   * with whoever is still above 0. When nobody is left we start a new round.
-   *
-   * Example: init 21 → acts at 21, 11, 1. Init 4 → acts at 4 only (in the
-   * first pass, before the init-21 person takes their second turn).
+   * The position in the round is the stored index — it is NOT re-derived by searching the
+   * queue for whoever is currently active. That search was the original defect: it assumed
+   * queue order and `turns` order agreed, and when they did not (ties, or a mid-round
+   * re-roll) the current combatant was found at the wrong offset and the rest of the pass
+   * was silently dropped.
    * @private
    */
-  async _nextTurnSR3() {
-    console.log('=== _nextTurnSR3 called ===');
+  async _applySlot(queue, index) {
+    const slot      = queue[index];
+    const turnIndex = this.turns.findIndex(t => t.id === slot.id);
 
-     // Check if EVERYONE is exhausted (all initiatives ≤ 0)
-  const allExhausted = this.combatants.contents.every(c => 
-    (c.flags?.The2ndChumming3e?.currentInitiative ?? 0) <= 0
-  );
-  
-  if (allExhausted) {
-    console.log('All combatants exhausted — ending combat');
-    ui.notifications.info('Combat ended — all turns complete!');
-    return this.endCombat();
-  }
-
-    // Build the current pass queue: everyone with currentInitiative > 0,
-    // sorted highest first. This is the authoritative order for this pass.
-    const passQueue = this.combatants.contents
-      .filter(c => (c.flags?.The2ndChumming3e?.currentInitiative ?? 0) > 0)
-      .sort((a, b) => (b.flags?.The2ndChumming3e?.currentInitiative || 0) - (a.flags?.The2ndChumming3e?.currentInitiative || 0));
-
-    console.log('Pass queue:', passQueue.map(c => `${c.name} (${c.flags?.The2ndChumming3e?.currentInitiative})`));
-
-    if (passQueue.length === 0) {
-      console.log('Empty pass queue — new round');
-      return this._newRoundSR3();
+    // Display-only echo. Nothing reads these to decide order.
+    const c = this.combatants.get(slot.id);
+    if (c) {
+      await c.update({ flags: { The2ndChumming3e: {
+        currentInitiative: slot.score,
+        passNumber:        slot.pass,
+        passesRemaining:   queue.slice(index).filter(s => s.id === slot.id).length,
+      } } });
     }
 
-    // Where are we in the current pass?
-    const current = this.combatant;
-    const posInPass = current ? passQueue.findIndex(c => c.id === current.id) : -1;
+    await this.update({ turn: Math.max(0, turnIndex), flags: { The2ndChumming3e: { queueIndex: index } } });
+    if (ui.combat) ui.combat.render();
+  }
 
-    console.log('Current:', current?.name, 'posInPass:', posInPass);
-
-    // Is there someone still to act in this pass after the current combatant?
-    // Guard against posInPass === -1: if the current combatant has already
-    // dropped out of the queue (init hit 0) we must NOT treat passQueue[0]
-    // as the next person — that would re-start the pass instead of ending it.
-    const nextInPass = posInPass >= 0 ? (passQueue[posInPass + 1] ?? null) : null;
-
-    if (nextInPass) {
-      // Simply advance to the next person in the same pass.
-      console.log('Next in pass:', nextInPass.name);
-      const nextTurnIndex = this.turns.findIndex(c => c.id === nextInPass.id);
-      await this.update({ turn: Math.max(0, nextTurnIndex) });
-      if (ui.combat) ui.combat.render();
+  /**
+   * End of round. SR3 RAW: initiative is re-rolled every combat round, so roll for
+   * everyone, rebuild the queue and carry straight on into the next round.
+   *
+   * This used to call endCombat(), which forced the GM to create a brand new encounter
+   * for every round of a fight. endCombat is now reached only from the tracker's own
+   * End Combat control.
+   * @private
+   */
+  async _newRound() {
+    await this.nextRound();                       // increments round, resets turn
+    await this.rollInitiative();                  // RAW: re-roll every round
+    const queue = await this.rebuildQueue({ resetIndex: true });
+    if (!queue.length) {
+      ui.notifications.warn('New round: nobody has an initiative score above 0.');
       return this;
     }
-
-    // -------------------------------------------------------------------
-    // End of pass: everyone in the queue has acted.
-    // Subtract 10 from currentInitiative for all combatants and start the
-    // next pass. Anyone dropping to ≤ 0 is simply excluded from the next
-    // pass queue naturally (their currentInitiative will be ≤ 0).
-    // -------------------------------------------------------------------
-    console.log('End of pass — advancing all initiatives by -10');
-
-    const passUpdates = this.combatants.map(c => {
-      const flags = c.flags?.The2ndChumming3e || {};
-      const newInit = (flags.currentInitiative || 0) - 10;
-      return {
-        _id: c.id,
-        flags: {
-          The2ndChumming3e: {
-            ...flags,
-            currentInitiative: newInit,       // allow negatives so we can detect exhaustion
-            passesRemaining: Math.max(0, (flags.passesRemaining || 0) - 1),
-            passNumber: (flags.passNumber || 1) + 1
-          }
-        }
-      };
-    });
-
-    await this.updateEmbeddedDocuments('Combatant', passUpdates);
-
-    // New combat phase — reset recoil for all actors
-    for (const c of this.combatants.contents) {
-      if (c.actor?.resetRecoil) await c.actor.resetRecoil();
-    }
-
-    // Reload to get fresh data after bulk update
-    const updatedCombat = game.combats.get(this.id);
-
-    // Build the next pass queue
-    const nextPassQueue = updatedCombat.combatants.contents
-      .filter(c => (c.flags?.The2ndChumming3e?.currentInitiative ?? 0) > 0)
-      .sort((a, b) => (b.flags?.The2ndChumming3e?.currentInitiative || 0) - (a.flags?.The2ndChumming3e?.currentInitiative || 0));
-
-    console.log('Next pass queue:', nextPassQueue.map(c => `${c.name} (${c.flags?.The2ndChumming3e?.currentInitiative})`));
-
-    if (nextPassQueue.length === 0) {
-      console.log('No one left after pass — new round');
-      return updatedCombat._newRoundSR3();
-    }
-
-    // Point the tracker at the first person in the new pass
-    const firstInNextPass = nextPassQueue[0];
-    const firstTurnIndex = updatedCombat.turns.findIndex(c => c.id === firstInNextPass.id);
-    await updatedCombat.update({ turn: Math.max(0, firstTurnIndex) });
-
-    if (ui.combat) ui.combat.render();
+    await this._applySlot(queue, 0);
+    ui.notifications.info(`Round ${this.round} — initiative re-rolled.`);
     return this;
-  }
-
-  /**
-   * End of a pass - reduce passes and current initiative
-   * @private
-   */
-  async _endPassSR3() {
-    const updates = this.combatants.map(c => {
-      const flags = c.flags?.The2ndChumming3e || {};
-      const passesRemaining = (flags.passesRemaining || 0) - 1;
-      const currentInitiative = (flags.currentInitiative || 0) - 10;
-      const passNumber = (flags.passNumber || 1) + 1;
-      
-      return {
-        _id: c.id,
-        flags: {
-          The2ndChumming3e: {
-            baseInitiative: flags.baseInitiative,
-            currentInitiative: Math.max(0, currentInitiative),
-            passesRemaining: Math.max(0, passesRemaining),
-            passNumber
-          }
-        }
-      };
-    });
-    
-    await this.updateEmbeddedDocuments('Combatant', updates);
-  }
-
-  /**
-   * New round - reset all passes (SR3 mode)
-   * @private
-   */
- /**
- * New round - SR3 mode
- * In SR3, after all passes are complete, the combat round ends.
- * To continue fighting, end this combat and start a new one (re-roll initiative).
- * @private
- */
-async _newRoundSR3() {
-  console.log('Combat round complete — ending combat');
-  ui.notifications.info('Combat round complete. Re-roll initiative to continue fighting.');
-  return this.endCombat();
-}
-  /**
-   * Build and store the SR2 flat queue on the combat flags.
-   *
-   * Each combatant contributes one slot per initiative pass they qualify for:
-   * score, score-10, score-20 … down to the last value > 0. All slots from
-   * all combatants are merged and sorted descending. Ties at the same score
-   * keep the combatant with the higher base initiative first; identical base
-   * initiatives fall back to Foundry turn order.
-   *
-   * Stored as flags.The2ndChumming3e.sr2Queue — an array of { id, score } objects.
-   * Also resets the queue pointer (sr2QueueIndex) to 0.
-   *
-   * Example: street sam (33), viz (11), rex (2) →
-   *   [sam@33, sam@23, sam@13, viz@11, sam@3, rex@2, viz@1]
-   * @private
-   */
-  _buildSR2Queue() {
-    const slots = [];
-
-    for (const c of this.combatants.contents) {
-      const base = c.flags?.The2ndChumming3e?.baseInitiative ?? c.initiative ?? 0;
-      if (base <= 0) continue;
-      for (let score = base; score > 0; score -= 10) {
-        slots.push({ id: c.id, score });
-      }
-    }
-
-    // Sort descending by action score, then by base initiative, then by
-    // Foundry turn order for any remaining ties.
-    slots.sort((a, b) => {
-      if (b.score !== a.score) return b.score - a.score;
-      const baseA = this.combatants.get(a.id)?.flags?.The2ndChumming3e?.baseInitiative ?? 0;
-      const baseB = this.combatants.get(b.id)?.flags?.The2ndChumming3e?.baseInitiative ?? 0;
-      if (baseB !== baseA) return baseB - baseA;
-      return this.turns.findIndex(t => t.id === a.id) - this.turns.findIndex(t => t.id === b.id);
-    });
-
-    console.log('SR2 queue built:', slots.map(s => {
-      const name = this.combatants.get(s.id)?.name ?? s.id;
-      return `${name}@${s.score}`;
-    }));
-
-    return slots;
-  }
-
-  /**
-   * SR2 Mode: Flat interleaved initiative queue.
-   *
-   * All action slots for all combatants are pre-built into a single sorted
-   * list and stored on the combat flags. Each call to nextTurn advances a
-   * pointer through that list. The active combatant in the tracker is updated
-   * to whoever owns the current slot. When the pointer exhausts the list,
-   * combat ends.
-   *
-   * Example: street sam (33), viz (11), rex (2) →
-   *   sam@33 → sam@23 → sam@13 → viz@11 → sam@3 → rex@2 → viz@1 → end
-   * @private
-   */
-  async _nextTurnSR2() {
-    console.log('=== _nextTurnSR2 called ===');
-
-    // Retrieve or build the queue
-    let queue = this.flags?.The2ndChumming3e?.sr2Queue ?? null;
-    let index = this.flags?.The2ndChumming3e?.sr2QueueIndex ?? 0;
-
-    if (!queue || queue.length === 0) {
-      queue = this._buildSR2Queue();
-      index = 0;
-      if (queue.length === 0) {
-        console.log('SR2 queue empty — ending combat');
-        return this._newRoundSR2();
-      }
-      await this.update({ flags: { The2ndChumming3e: { sr2Queue: queue, sr2QueueIndex: 0 } } });
-    }
-
-    console.log(`SR2 queue index: ${index} / ${queue.length - 1}`);
-
-    // Check if the queue is exhausted
-    if (index >= queue.length) {
-      console.log('SR2 queue exhausted — ending combat');
-      return this._newRoundSR2();
-    }
-
-    // Point the tracker at the combatant for the current slot
-    const slot = queue[index];
-    const turnIndex = this.turns.findIndex(t => t.id === slot.id);
-    const combatantName = this.combatants.get(slot.id)?.name ?? slot.id;
-
-    console.log(`SR2 slot ${index}: ${combatantName}@${slot.score}`);
-
-    await this.update({
-      turn: Math.max(0, turnIndex),
-      flags: { The2ndChumming3e: { sr2QueueIndex: index + 1 } }
-    });
-
-    if (ui.combat) ui.combat.render();
-    return this;
-  }
-
-  /**
-   * New round - SR2 mode.
-   * Clears the stored queue so it will be rebuilt on the next roll.
-   * @private
-   */
-  async _newRoundSR2() {
-    console.log('SR2 combat round complete — ending combat');
-    await this.update({ flags: { The2ndChumming3e: { sr2Queue: null, sr2QueueIndex: 0 } } });
-    ui.notifications.info('Combat round complete. Re-roll initiative to continue fighting.');
-    return this.endCombat();
   }
 
   /**
