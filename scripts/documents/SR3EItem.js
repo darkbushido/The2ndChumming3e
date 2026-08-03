@@ -1898,19 +1898,38 @@ export class SR3EItem extends Item {
    * Prompt the attacker to select a target from all non-vehicle actors.
    * Returns the selected Actor or null if cancelled.
    */
-  static async _promptTarget(attacker) {
+  /**
+   * Target-selection dialog.
+   *
+   * @param {Actor}   attacker
+   * @param {object}  [opts]
+   * @param {boolean} [opts.allowSelf]  Offer the attacker as a target. Spells only —
+   *   you have line of sight to yourself, so Increase Reflexes, Heal and the rest are
+   *   legal self-casts. Weapons leave this off: nothing should let a firearm pick its
+   *   own wielder out of a list.
+   * @returns {Promise<Actor|null>}  null when cancelled or nothing to target.
+   */
+  static async _promptTarget(attacker, { allowSelf = false } = {}) {
     const _typeBadge = type => {
       if (type === 'npc')     return `<span style="font-size:10px;color:var(--sr-amber)"> [NPC]</span>`;
       if (type === 'vehicle') return `<span style="font-size:10px;color:var(--sr-accent)"> [Vehicle]</span>`;
       return '';
     };
-    const all = game.actors.contents.filter(a =>
+    const _selfBadge = `<span style="font-size:10px;color:var(--sr-green)"> [self]</span>`;
+
+    const others = game.actors.contents.filter(a =>
       a.id !== attacker.id && game.sr3e.isLiveActor(a)
     );
     // Prefer actors with a token on the current scene; fall back to the full
     // world list when nothing is on canvas (theatre-of-the-mind).
-    const onCanvas   = canvas?.ready ? all.filter(a => a.getActiveTokens().length > 0) : [];
-    const candidates = onCanvas.length ? onCanvas : all;
+    const onCanvas   = canvas?.ready ? others.filter(a => a.getActiveTokens().length > 0) : [];
+    const candidates = [...(onCanvas.length ? onCanvas : others)];
+
+    // Self is appended AFTER the canvas filter, so a caster with no token placed can
+    // still be picked, and goes LAST so it is never the pre-checked default — a stray
+    // Confirm should not Manabolt the caster. When it is the only candidate it lands at
+    // index 0 and is selected normally.
+    if (allowSelf && game.sr3e.isLiveActor(attacker)) candidates.push(attacker);
 
     if (!candidates.length) {
       ui.notifications.warn('No valid targets found.');
@@ -1921,7 +1940,7 @@ export class SR3EItem extends Item {
       <label class="sr-target-row">
         <input type="radio" name="target-actor" value="${a.id}" ${i === 0 ? 'checked' : ''}
                style="width:13px;height:13px;margin:0;accent-color:var(--sr-accent);flex-shrink:0;appearance:auto;-webkit-appearance:radio"/>
-        <span>${a.name}${_typeBadge(a.type)}</span>
+        <span>${a.name}${a.id === attacker.id ? _selfBadge : _typeBadge(a.type)}</span>
       </label>`).join('');
 
     let targetId = candidates[0].id;
@@ -2578,7 +2597,10 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
         if (!targetActors || targetActors.length === 0) return null;
       }
     } else {
-      const targetActor = await SR3EItem._promptTarget(actor);
+      // allowSelf: line of sight to yourself is line of sight. Health spells in
+      // particular (Heal, Increase Attribute, Increase Reflexes) are normally self-cast.
+      // The GM judges whether a given spell makes sense on its caster — minimal guardrails.
+      const targetActor = await SR3EItem._promptTarget(actor, { allowSelf: true });
       if (!targetActor) return null;
       targetActors = [targetActor];
       // No dodge: combat spells are resisted (Willpower/Body vs Force), not dodged.
