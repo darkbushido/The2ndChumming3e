@@ -22,7 +22,7 @@ produced nothing; sequential inline work is the whole point of this file.
 | # | Dimension | State | Scope |
 |---|-----------|-------|-------|
 | 1 | Ranged combat | **done** — 1 defect (gel armour) | `rollWeapon` end to end: base TN and every modifier, range bands and measurement, recoil accumulation / compensation / heavy doubling, fire modes SS-SA-BF-FA, ammo effects, called shots, multi-target |
-| 2 | Damage, staging, soak | pending | `parseDamageCode` / `stageDamage`, soak card path, armour ballistic vs impact, APDS halving, flechette doubling, wound track, overflow, stun-to-physical |
+| 2 | Damage, staging, soak | **partial** — soak TN, staging, wound mods done | `parseDamageCode` / `stageDamage`, soak card path, armour ballistic vs impact, APDS halving, flechette doubling, wound track, overflow, stun-to-physical |
 | 3 | Melee combat | pending | `rollMeleeAttack` / `_buildMeleePoolInfo` / `handleMeleeRoll`: opposed test, reach on both sides, defender weapon fallback, staging by net successes, ties, called shots |
 | 4 | Pools and defence | pending | Combat Pool derivation and wound mod, spend/track/refresh timing (SR3 refreshes per Combat Turn — check the boundary now rounds auto-advance), dodge commitment, Full Defense |
 | 5 | Action economy | pending | Combat Turn / pass / action structure, Free-Simple-Complex, what the Action Tracker enforces vs displays, per-pass state resets, delayed actions, mid-round joins |
@@ -154,5 +154,34 @@ oversight later.
 
 **Range bands** are covered by `tests/damage-codes.test.mjs` (band classification and the
 beyond-Extreme flag) and were re-verified there rather than re-audited here.
+
+### 2. Damage, staging and soak (partial)
+
+**No defects found in this part**, beyond the gel-armour issue already recorded above —
+which lives in this same code path and is the reason to read the two sections together.
+
+| Rule | Code | Verdict |
+|---|---|---|
+| Soak target number = Power − armour, floor of 2 | `Math.max(2, stagedPower - defaultArmor)` — `SR3EActor.js:3934` | correct |
+| Two soak successes stage the damage down one level | `Math.floor(successes / 2)` — `SR3EActor.js:3251` | correct |
+| Wound modifiers from the stun and physical tracks are cumulative | `-(_trackMod(stun) + _trackMod(phys))` — `SR3EActor.js:64` | correct |
+| Wound modifier tiers: +1 Light, +2 Moderate, +3 Serious | `_trackMod`: `>=6 ? 3 : >=3 ? 2 : >=1 ? 1 : 0` | correct for the reachable range |
+
+`stimBonus` offsets the wound modifier but is clamped with `Math.min(0, …)`, so stimulants
+can cancel a penalty and never become a bonus. That is the right shape.
+
+#### Observed, defensible: no Deadly (+4) wound tier
+
+`_trackMod` tops out at +3 for six or more boxes, so the +4 associated with a full track is
+never produced. In practice a filled condition monitor incapacitates the character — the
+`updateActor` hook in `sr3e.js` sets `defeated` and the unconscious or dead overlay — so an
+actor who would qualify for +4 is not rolling anything. The missing tier therefore has no
+reachable effect. Recorded because the omission looks like an oversight when reading
+`_trackMod` in isolation, and because it would become a real defect if the incapacitation
+rule were ever relaxed.
+
+**Still pending in dimension 2** (do these next, then mark the row done): overflow damage
+and its Body threshold, stun-to-physical conversion on overflow, and how the soak result is
+written back to the wound track.
 
 ---
