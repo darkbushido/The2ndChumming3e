@@ -42,6 +42,10 @@ export class SR3ESourceBooks {
     if (!code) return true;                       // packs with no book flag are system content
     const book = SOURCE_BOOKS[code];
     if (book?.edition && book.edition !== this.edition) return false;
+    // The core rulebook of the edition being played is never switchable. Turning it off
+    // would leave supplements with no base content to supplement, which nobody wants and
+    // which the edition setting already expresses.
+    if (book?.core) return true;
     const a = this.allowed;
     return code in a ? !!a[code] : true;
   }
@@ -139,15 +143,23 @@ export class SR3ESourceBooksConfig extends foundry.applications.api.ApplicationV
     const counts  = SR3ESourceBooks._packCounts();
 
     const row = ([code, b]) => {
-      const on = allowed[code] !== false;
+      const on = b.core || allowed[code] !== false;
       const n  = counts[code] ?? 0;
+      // A core book is shown checked and disabled, and carries NO data-book attribute so
+      // the preset buttons and the save handler both skip it. It is on because the
+      // edition says so, not because of a stored choice.
+      const box = b.core
+        ? `<input type="checkbox" checked disabled title="The core rulebook is always available for the edition you are playing"
+                  style="width:14px;height:14px;margin-top:3px;flex-shrink:0;opacity:.6"/>`
+        : `<input type="checkbox" data-book="${code}" ${on ? 'checked' : ''}
+                  style="width:14px;height:14px;margin-top:3px;accent-color:var(--sr-accent);flex-shrink:0"/>`;
       return `
         <label class="sr3e-book-row" style="display:flex;align-items:flex-start;gap:8px;padding:6px 4px;
-               border-bottom:1px solid var(--sr-border);cursor:pointer">
-          <input type="checkbox" data-book="${code}" ${on ? 'checked' : ''}
-                 style="width:14px;height:14px;margin-top:3px;accent-color:var(--sr-accent);flex-shrink:0"/>
+               border-bottom:1px solid var(--sr-border);cursor:${b.core ? 'default' : 'pointer'}">
+          ${box}
           <span style="flex:1">
             <span style="font-weight:500">${b.label}</span>
+            ${b.core ? '<span style="font-size:10px;color:var(--sr-green);margin-left:6px">core — always on</span>' : ''}
             ${b.fan ? '<span style="font-size:10px;color:var(--sr-amber);margin-left:6px">fan publication</span>' : ''}
             <span style="font-size:11px;color:var(--sr-muted);margin-left:6px">${n} pack${n === 1 ? '' : 's'}</span>
             ${b.note ? `<div style="font-size:10px;color:var(--sr-dim);margin-top:2px">${b.note}</div>` : ''}
@@ -199,7 +211,10 @@ export class SR3ESourceBooksConfig extends foundry.applications.api.ApplicationV
     });
 
     el.querySelector('[data-action="save"]')?.addEventListener('click', async () => {
-      const next = {};
+      // MERGE over what is already stored, never replace it. The dialog renders only the
+      // edition being played, so a wholesale replace would silently reset every choice
+      // made under the other edition back to its default.
+      const next = { ...SR3ESourceBooks.allowed };
       el.querySelectorAll('input[data-book]').forEach(cb => { next[cb.dataset.book] = cb.checked; });
       await game.settings.set(SYS, SETTING, next);
       const off = Object.values(next).filter(v => !v).length;

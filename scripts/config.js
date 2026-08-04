@@ -552,7 +552,7 @@ export const SOURCE_BOOKS = {
   // Official SR2 books only. The Chromebooks (cb1-cb4) and Cyberpunk 2020 (cp) content
   // in the archive are fan CONVERSIONS rather than official 2nd-edition products, so
   // they stay archived alongside the other fan material — see archive/non-sr3-content.
-  sr2:                { label: 'Shadowrun 2nd Edition',    edition: 'SR2', enabled: true  },
+  sr2:                { label: 'Shadowrun 2nd Edition',    edition: 'SR2', enabled: true, core: true },
   ct:                 { label: 'Cybertechnology',          edition: 'SR2', enabled: true  },
   ssc:                { label: 'Street Samurai Catalog',   edition: 'SR2', enabled: true  },
   st:                 { label: 'Shadowtech',               edition: 'SR2', enabled: true  },
@@ -560,7 +560,7 @@ export const SOURCE_BOOKS = {
   pna:                { label: 'Paranormal Animals',       edition: 'SR2', enabled: true  },
 
   // ── 3rd Edition ────────────────────────────────────────────────────────────
-  sr3:                { label: 'Shadowrun 3rd Edition',    edition: 'SR3', enabled: true  },
+  sr3:                { label: 'Shadowrun 3rd Edition',    edition: 'SR3', enabled: true, core: true },
   cc:                 { label: 'Cannon Companion',         edition: 'SR3', enabled: true  },
   mm:                 { label: 'Man & Machine',            edition: 'SR3', enabled: true  },
   mits:               { label: 'Magic in the Shadows',     edition: 'SR3', enabled: true  },

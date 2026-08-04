@@ -77,9 +77,14 @@ export async function run(t) {
     visible() < packs.length,
     `${packs.length - visible()} packs hidden by the edition gate`);
 
+  // The core rulebook of the played edition cannot be switched off, so "everything off"
+  // leaves the system packs plus whatever the core book contributes.
   stored = allOff();
-  t.is('everything off leaves only unflagged system packs', visible(), systemOnly);
-  t.is('everything off empties the cyberware picker', forType('cyberware'), 0);
+  const coreCode  = Object.entries(SOURCE_BOOKS).find(([, b]) => b.core && b.edition === edition)?.[0];
+  t.ok('the played edition has a core book', !!coreCode);
+  t.is('everything off leaves system packs plus the core book',
+    visible(), systemOnly + (perBook[coreCode] ?? 0));
+  t.is('the core book cannot be switched off', SR3ESourceBooks.isAllowed(coreCode), true);
 
   stored = { ...allOff(), sr3: true };
   t.is('one book on shows that book plus system packs',
@@ -128,9 +133,12 @@ export async function run(t) {
     SR3ESourceBooks.packAllowed({ metadata: {} }), true);
 
   // Both gates apply: right edition but switched off is still hidden.
-  stored = { ...allOn(), [sr2Books[0]]: false };
-  t.is('a book of the played edition can still be switched off individually',
-    SR3ESourceBooks.isAllowed(sr2Books[0]), false);
+  const sr2NonCore = sr2Books.find(c => !SOURCE_BOOKS[c].core);
+  stored = { ...allOn(), [sr2NonCore]: false };
+  t.is('a non-core book of the played edition can still be switched off individually',
+    SR3ESourceBooks.isAllowed(sr2NonCore), false);
+  t.is('switching off a supplement does not affect the core book',
+    SR3ESourceBooks.isAllowed(sr2Books.find(c => SOURCE_BOOKS[c].core)), true);
 
   edition = 'SR3';
   stored = allOn();
