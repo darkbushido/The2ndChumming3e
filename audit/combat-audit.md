@@ -22,7 +22,7 @@ produced nothing; sequential inline work is the whole point of this file.
 | # | Dimension | State | Scope |
 |---|-----------|-------|-------|
 | 1 | Ranged combat | **done** — 1 defect (gel armour) | `rollWeapon` end to end: base TN and every modifier, range bands and measurement, recoil accumulation / compensation / heavy doubling, fire modes SS-SA-BF-FA, ammo effects, called shots, multi-target |
-| 2 | Damage, staging, soak | **partial** — soak TN, staging, wound mods done | `parseDamageCode` / `stageDamage`, soak card path, armour ballistic vs impact, APDS halving, flechette doubling, wound track, overflow, stun-to-physical |
+| 2 | Damage, staging, soak | **done** — no defects | `parseDamageCode` / `stageDamage`, soak card path, armour ballistic vs impact, APDS halving, flechette doubling, wound track, overflow, stun-to-physical |
 | 3 | Melee combat | pending | `rollMeleeAttack` / `_buildMeleePoolInfo` / `handleMeleeRoll`: opposed test, reach on both sides, defender weapon fallback, staging by net successes, ties, called shots |
 | 4 | Pools and defence | pending | Combat Pool derivation and wound mod, spend/track/refresh timing (SR3 refreshes per Combat Turn — check the boundary now rounds auto-advance), dodge commitment, Full Defense |
 | 5 | Action economy | pending | Combat Turn / pass / action structure, Free-Simple-Complex, what the Action Tracker enforces vs displays, per-pass state resets, delayed actions, mid-round joins |
@@ -180,8 +180,33 @@ reachable effect. Recorded because the omission looks like an oversight when rea
 `_trackMod` in isolation, and because it would become a real defect if the incapacitation
 rule were ever relaxed.
 
-**Still pending in dimension 2** (do these next, then mark the row done): overflow damage
-and its Body threshold, stun-to-physical conversion on overflow, and how the soak result is
-written back to the wound track.
+### 2. Damage — overflow, cascade and write-back
+
+**No defects.** The overflow chain is implemented and matches the rules.
+
+| Rule | Code | Verdict |
+|---|---|---|
+| Stun damage beyond a full stun track cascades into physical | `SR3EActorSheet.js:3005-3010` | correct |
+| Physical damage beyond a full physical track goes to overflow | `SR3EActorSheet.js:3013-3015` | correct |
+| Cascaded stun that also fills physical continues into overflow | same block, `spill` recomputed between the two steps | correct |
+| Death when the physical track is full and overflow reaches Body | `sr3e.js:1877`, mirrored for display at `SR3EActorSheet.js:505` | correct |
+
+The `spill` variable is recomputed between the stun-to-physical step and the overflow step,
+so a single large stun hit can traverse all three stages in one application. That is the
+case most implementations get wrong.
+
+Overflow is also directly editable on the sheet (`SR3EActorSheet.js:535`), and damage is
+applied by the GM through the wound-track controls rather than automatically — both
+consistent with the design ethos, so neither is a defect.
+
+#### Structural note: the cascade lives in the sheet, not the document
+
+The stun-to-physical and overflow logic sits in the actor **sheet**'s wound-box handler.
+Any future code path that writes `system.wounds.*` without going through that handler will
+skip the cascade — damage would stop at a full track instead of spilling. Nothing does that
+today, and with manual application it may never matter. Worth knowing before any automated
+damage application is added, at which point this logic should move onto `SR3EActor`.
+
+**Dimension 2 complete.**
 
 ---
