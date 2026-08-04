@@ -378,3 +378,41 @@ three-step fix. That makes `populate-medical.js` blocked-not-dead in §1, not de
 
 **Open:** raised as "the macros from Mr. Johnson's Little Black Book", but no MJLBB-specific
 macros were found. `sr3e-mr-johnsons-contacts` still ships and is unaffected.
+
+## 12. Write a committed pack rebuild script and vendor its sources — *keystone; blocks #1*
+
+**The repo cannot currently rebuild its own pack structure.** The book split used throwaway
+scratchpad scripts never committed (`3437608`, `39f8946` touched only `system.json`,
+`packs/`, `archive/`, tests), so the **`bookPage`-prefix → per-book-pack routing exists
+nowhere in git**. The populate macros wouldn't help — they target the old monolithic packs.
+This gap predates the retire decision.
+
+**Live risk:** issue #199 is open against `criticalfault/Shadowrun-Character-Generator`. If
+they normalise the `Mods` encoding (3-letter `ROD`/`NCT` vs 4-letter `RBOD`), every mapping
+assumption breaks with no committed tooling to re-derive from.
+
+**Step 1 — vendor.** `rawdata/` pins `ActiveSkills`, `Armor`, `LanguageSkills`, `MDF-*`,
+`ODM-*` but **none** of the generator JSON the 11 v2 macros fetch live (Cyberware, Bioware,
+Firearms, Spells, Vehicles, Drones, AdeptPowers, Programs, VehicleMods, VehicleWeapons).
+Snapshot them (suggest `SRCG-` prefix). Upstream change then = reviewable diff.
+
+**Step 2 — the script.** `read vendored JSON → map → route by bookPage → per-book packs`.
+
+- *Map*: recover field translations from the v2 macros **before deleting them** —
+  `EssCost`→`essenceCost`, the `(CategoryCode)` suffix parse, weapon-category→skill,
+  damage codes, art. The 82 shipped packs are worked examples to verify against.
+- *Route*: prefix → book code → `packs/sr3e-<code>-<type>`. 32 codes known (§9); handle
+  `sta2`/`sota2` and the slash in `n/sl`.
+- *Write*: `fvtt package`, not in-Foundry macros. This is what actually performed the split.
+- Emit the `system.json` declaration + `SOURCE_BOOKS` entry per new book, or it ships
+  permanently visible.
+
+**Unblocks:** #8 (the `Mods` parse is this script's map stage) · #9 (book restoration is
+this script pointed at `archive/`) · #1 (macros safely deletable once mapping is preserved).
+
+⚠ **Harvest the 7 inline-data macros as part of this.** `populate-cyberware.js`'s 61 bonus
+definitions and Move-by-Wire block, `populate-mr-johnsons-contacts.js`'s 2,116 lines — no
+rebuild script recovers that from upstream.
+
+⚠ Rewrite CLAUDE.md's "Compendium population — correct pattern" when this lands. It
+documents a workflow by which no pack in this repo was actually built.
