@@ -289,6 +289,10 @@ sr3e/
 ├── system.json                       ← Foundry manifest + documentTypes declaration
 ├── lang/en.json                      ← Localisation strings
 ├── styles/sr3e.css                   ← All styles, CSS custom properties
+├── packs/                            ← 82 compendium packs, `sr3e-<book>-<type>` (see Source books)
+├── archive/non-sr3-content/          ← 1,703 documents split out of the packs, held for future modules
+│   ├── README.md                     ← ⚠ STALE — predates the SR2 restore; see Source books
+│   └── sr3e-<pack>.json              ← one file per ORIGINAL pack: [{ _key, bucket, doc }]
 ├── rawdata/                          ← Source JSON used to populate compendiums (not loaded by Foundry)
 │   ├── ODM-Cyberdeck.json            ← Orthodox SR3 cyberdeck stats     ← USE for orthodox compendiums
 │   ├── ODM-Programs.json             ← Orthodox SR3 program list         ← USE for orthodox compendiums
@@ -346,19 +350,62 @@ separate ruleset with different schemas and different game mechanics.
 
 ## Source books & compendium filtering
 
-Compendium content is **one pack per source book**. Each pack declares its origin in
-`system.json` as `flags.The2ndChumming3e.book`; packs **without** that flag are system content
-(currently `sr3e-skills`, `sr3e-example-characters`, `sr3e-mr-johnsons-contacts`).
+Compendium content is **one pack per source book**, named `sr3e-<book>-<type>`
+(`sr3e-mm-cyberware`, `sr3e-r3-vehicles`, …). Each pack declares its origin in `system.json`
+as `flags.The2ndChumming3e.book`; packs **without** that flag are system content
+(exactly three: `sr3e-skills`, `sr3e-example-characters`, `sr3e-mr-johnsons-contacts`).
+
+**82 packs, 20 books, 3 system packs.** This layout is **Shadowfork's** — `main` still carries
+the old monolithic packs (27 of them: one `sr3e-cyberware`, one `sr3e-firearms`, …) with no
+book flags and no `archive/`. Don't assume a pack name from `main` exists here.
 
 `SOURCE_BOOKS` in `config.js` is the registry of book codes and which start enabled. The GM
 picks which are in play via **Configure Settings → System → Configure Source Books**
-(`SR3ESourceBooksConfig`). Codes match the upstream Shadowrun Character Generator's
-`Books.json` so a future re-import lines up.
+(`SR3ESourceBooksConfig`).
+
+Codes come from the **`BookPage` prefix** in the upstream Shadowrun Character Generator's gear
+data (`src/data/SR3/*.json` — values like `mm.064`, `sr3.304`, `cb1.29`), so a future re-import
+lines up. They are *not* from that repo's `Books.json`, which holds only
+`{name, loadByDefault, edition}` and carries no codes at all.
 
 | | Codes |
 |---|---|
-| On by default | `sr3` `cc` `mm` `mits` `r3` `sota` `sota2` `tal` `twl` `matrix-defragged` |
+| SR2, on by default | `sr2` (core) `ct` `ssc` `st` `fof` `pna` |
+| SR3, on by default | `sr3` (core) `cc` `mm` `mits` `r3` `sota` `sota2` `tal` `twl` `matrix-defragged` |
 | Off by default | `fra` `ger` `ssg` `tss` (tss is a fan publication) |
+
+Packs per book, as declared in `system.json`:
+
+`sr3` 11 · `tss` 9 · `sota2` 7 · `sr2` 7 · `mm` 6 · `cc` 5 · `twl` 5 · `matrix-defragged` 5 ·
+`fra` 4 · `r3` 4 · `sota` 3 · `ct` 2 · `fof` 2 · `mits` 2 · `st` 2 · `ger` 1 · `pna` 1 ·
+`ssc` 1 · `ssg` 1 · `tal` 1
+
+### The book split and the archive
+
+The system ships **no sourcebook content it cannot turn off**. Splitting the monolithic packs
+per book left a remainder that had no book to belong to, and it is parked — not deleted — in
+`archive/non-sr3-content/`.
+
+**1,703 documents**, one JSON file per *original* pack (`sr3e-cyberware.json`,
+`sr3e-firearms.json`, …), each an array of `{ _key, bucket, doc }` — the original LevelDB key,
+the classification bucket, and the untouched document. Restoring is a direct write back under
+the same key.
+
+| Bucket | Docs | Contents |
+|---|---:|---|
+| `fan` | 1,219 | ray · cb1-4 · cp · nagee · pw · bjf · adh |
+| `sr2` | 441 | **already restored** into the `sr2`/`ct`/`ssc`/`st`/`fof`/`pna` packs |
+| `sr2-fan` | 41 | NERPS: ShadowLore |
+| `unknown` | 2 | two MP7 entries whose `bookPage` holds an accessory list, not a source |
+
+⚠ **`archive/non-sr3-content/README.md` is stale.** It states 0 documents were left in the
+system and does not know the `sr2` bucket has since been split into per-book packs. Its counts
+are also off by a few (it says fan 1,215 / sr2 440; the files hold 1,219 / 441). **Re-importing
+a bucket blind will duplicate documents** — inventory what already ships first.
+
+The **Chromebooks** (`cb1`-`cb4`) and **Cyberpunk 2020** (`cp`) material is fan *conversion*,
+not official 2nd-edition product, so it stays archived with the rest of the fan content rather
+than joining the SR2 books — see the comment above `SOURCE_BOOKS` in `config.js`.
 
 **How filtering works** — `SR3ESourceBooks.packAllowed(pack)` is the single predicate, consumed
 in exactly two places:
