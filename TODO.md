@@ -416,3 +416,40 @@ rebuild script recovers that from upstream.
 
 ⚠ Rewrite CLAUDE.md's "Compendium population — correct pattern" when this lands. It
 documents a workflow by which no pack in this repo was actually built.
+
+---
+
+## Parked for a longer discussion: ODM-* and MDF-*
+
+Flagged 2026-08-04 as needing a proper design conversation, not a task yet. State as
+established this session, so the discussion starts warm:
+
+**Three distinct Matrix things — conflating them is the easy mistake.**
+
+| | What | Source |
+|---|---|---|
+| `sr3` | Core rulebook Ch. 8 — "Orthodox" | `rawdata/ODM-*` |
+| `mat` | The Matrix sourcebook | **unregistered**; 112 gear entries exist in the generator |
+| `matrix-defragged` | Community ruleset | `rawdata/MDF-*` |
+
+**Mutually exclusive at runtime** via the `matrixRuleset` world setting (`'defragged'`
+default / `'orthodox'`), which needs a full restart. It swaps sheet classes —
+`SR3EHostSheet`/`SR3EICSheet` vs `SR3EHostSheetOrthodox`/`SR3EICSheetOrthodox` — and changes
+how the character sheet's Matrix tab renders. `SR3EAgentSheet` is MDF-only.
+
+**Asymmetry is the thing to discuss:**
+
+- **MDF ships and works.** 5 packs (`sr3e-mdf-{agents,cyberdecks,hosts,ic,programs}`), book
+  code `matrix-defragged`, enabled by default.
+- **ODM is unshippable.** `sr3e-odm-cyberdecks` / `sr3e-odm-programs` are undeclared and
+  their directories are gone. Every Orthodox picker has nothing to read. Its populate macros
+  survive and read **local `rawdata/`**, so they are self-contained and would work the moment
+  the packs are re-declared — unlike the v2 macros, they need no network and no book routing.
+- `rawdata/MDF-*` (5 files) have **0** references from `scripts/`; `ODM-Cyberdeck.json` and
+  `ODM-Programs.json` have 1 each (their populate macros).
+
+**Questions worth settling:** is Orthodox actually wanted, or is MDF the only supported path?
+If wanted, does it become a book-flagged pack pair like everything else, or stay a
+ruleset-switched special case? And does `mat` get registered now that content exists to carry
+it (CLAUDE.md documents the decision not to, on the grounds nothing existed — that condition
+no longer holds).
