@@ -119,9 +119,39 @@ Foundry sockets so each participant sees the right window on their own screen:
 - **Dodge window on the target's screen**, not the attacker's
 - **GM window to set TN, with checkboxes for combat modifiers** (not a typed field)
 
-Prior art: `origin/player-combat`, single commit `0c45bc5` *"Route dodge declaration to
-the defending player instead of the attacker"*, already merged into Shadowfork. Read it
-first — decide whether this extends or replaces it.
+### The live bug this fixes
+
+`SR3EItem._promptDodgeDeclaration` runs on the **attacker's** client and calls
+`targetActor.spendCombatPool()`, which needs UPDATE permission on the target. It
+**silently fails** for PC-vs-PC attacks and GM-owned NPCs — no error, the pool just never
+spends. This is the concrete reason the task exists; the routing change is how it gets fixed.
+
+### Decided
+
+- **Transport is sockets, not chat messages.** A chat-card hand-off was built and
+  play-tested, then reverted (`6006a78`) as worse to use than the blocking dialog it
+  replaced — it added two clicks and two chat entries per attack. Do not rebuild it. The
+  binding constraint on any design here: **it must not add clicks.**
+- **Defender has no connected owner → fall back to the GM.**
+- `"socket": true` is **already set** (`system.json:6`). No manifest change, no restart
+  needed to start emitting.
+
+### Approach — socket-driven remote dialog
+
+The attacker emits a `dodge-request` carrying a correlation ID; the **defender's** client
+opens the same `DialogV2` it opens today; the answer returns as `dodge-response`. The
+attacker sees a non-blocking "waiting for X…" with a GM override and a timeout. Zero added
+clicks — the defender's click is one they'd have made anyway, and nothing touches chat.
+
+Needs a new `SR3ESocket.js`: correlation IDs, a pending-promise registry, timeout handling,
+and the GM fallback above. The same layer then carries the **GM TN window**, so the dodge
+window and the GM window share one build. The modifier checkboxes themselves are ordinary
+client-side dialog work — free of the socket layer.
+
+*Proposed, not ratified:* a cheap precursor — leave the attacker's dialog exactly as it is
+and send only the `spendCombatPool` **write** to `game.users.activeGM` (the primitive the
+`updateActor` hook already gates on). ~30 lines, zero UX change, fixes the bug above without
+waiting on the full build.
 
 Touches `SR3EItem.rollWeapon`, `SR3EActor.postMeleeCard`, `_promptDodgeDeclaration`, and
 the chat-card handlers in `sr3e.js`. Keep the ethos: no automation of outcomes, all values
