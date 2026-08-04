@@ -319,3 +319,29 @@ things it explicitly did not resolve:
 - The Matrix sourcebook (`mat`) is deliberately unregistered because nothing existed to carry
   it — but the generator has **112 `mat` gear entries**, so that condition is now met.
   Not yet a task.
+
+## 11. Restore the sr3e-macros pack (and the character importer's delivery)
+
+**Never archived.** `f457d3c` dropped `medical`, `odm-cyberdecks`, `odm-programs` and
+`macros` together because each **shipped empty**, waiting on a populate macro never run.
+Verified: no Macro-type documents in `archive/non-sr3-content/`; the pack tree at
+`f457d3c^` held only LevelDB scaffolding. Nothing to restore *from* — re-declare and
+re-populate.
+
+1. Declare `sr3e-macros` in `system.json` (type `Macro`, **no** book flag — system content
+   like `sr3e-skills`). Fold under Reference.
+2. **Full Foundry restart** — manifest changes are not hot-reloaded.
+3. Run `scripts/macros/populate-macros.js`.
+
+**This is a regression, not a tidy-up.** `populate-macros.js` registers exactly one macro —
+*"Import Nullsheen 3e Character json"* → `import-sr3-character.js` — so the character
+importer currently has **no delivery mechanism to users**, despite being one of only three
+macros in the repo that still works. The macro body is fetched from the served system path
+at run time, so nothing is duplicated into the pack.
+
+**Related:** `sr3e-medical` was dropped in the same commit for the same reason — same
+three-step fix. That makes `populate-medical.js` blocked-not-dead in §1, not deletable.
+`sr3e-odm-*` are the third and fourth cases, already tracked.
+
+**Open:** raised as "the macros from Mr. Johnson's Little Black Book", but no MJLBB-specific
+macros were found. `sr3e-mr-johnsons-contacts` still ships and is unaffected.
