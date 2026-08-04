@@ -11,24 +11,72 @@ Sequencing: **#4 and #8 before #1.** Everything else is independent.
 
 ---
 
-## 1. Audit and remove dead code — *blocked by #4, #8*
+## 1. Audit and remove dead code — *investigated 2026-08-04; blocked by #4, #8 for deletion only*
 
-Candidates, none confirmed dead:
+**Root cause: the book split renamed every content pack from `sr3e-<type>` to
+`sr3e-<book>-<type>`, and no macro was updated.** 24 of 27 macros in `scripts/macros/`
+target a pack that no longer exists and fail at `game.packs.get()` returning undefined.
 
-- v2/non-v2 macro pairs: `populate-cyberware.js` vs `-v2`, `populate-bioware.js` vs `-v2`
-- Root build scripts: `build-armor-pack.mjs`, `build-cyberdeck-pack.mjs`
-- Unreferenced image updaters: `update-{all-compendium,firearms,host,projectiles}-images.js`
+Nothing under `scripts/` is unreferenced at file level — the loaded code is clean. All the
+rot is in `scripts/macros/` plus two root build scripts.
 
-⚠ **"0 inbound references" is not proof.** Population macros are run by hand from the
-console. Check what `scripts/macros/populate-macros.js` registers — that is the real
-liveness signal.
+### Delete now — cannot run, nothing to lose
 
-⚠ **Do NOT delete `populate-cyberware.js`.** It holds 61 `bonus` references and is the
-only hand-authored bonus data in the repo (see #8). `populate-cyberware-v2.js` has 0.
-It is also the only home for the Move-by-Wire stat block (see #4).
+- **`build-cyberdeck-pack.mjs`** — three independent reasons: input
+  `rawdata/cyberdecksDF.json` **missing**, output pack `sr3e-cyberdecks` **missing**, and
+  it writes NeDB `.db`, which exists nowhere in `packs/` (v13 uses LevelDB directories).
+- **`build-armor-pack.mjs`** — input `rawdata/Armor.json` survives, but output
+  `packs/sr3e-armor` is gone and it writes the same obsolete format.
 
-⚠ `populate-odm-cyberdecks.js` / `populate-odm-programs.js` are the recovery path for the
-missing `sr3e-odm-*` packs. Not dead.
+### Safe to delete — carry NO data
+
+The 11 `populate-*-v2.js` (all except `populate-skills-v2.js`) are thin 80–86 line
+fetch-and-map loaders. They hold no data: each `fetch()`es live JSON from
+`raw.githubusercontent.com/criticalfault/Shadowrun-Character-Generator/main/src/data/SR3/*.json`
+at run time. Deleting them loses only mapping logic.
+
+⚠ **But that mapping logic is the working reference for #8.** It is the existing
+fetch → map → `pack.importDocument` pipeline, and #8 has to rewrite exactly that (to parse
+`Mods` rather than `Notes`). Do #8 first, or keep one as a template.
+
+⚠ They fetch from **`criticalfault/`** — upstream, not the `darkbushido/` fork.
+
+### Must harvest before deleting — hand-authored inline data
+
+These do not fetch. Their data exists only inside them:
+
+| File | Lines | Note |
+|---|---:|---|
+| `populate-mr-johnsons-contacts.js` | 2116 | |
+| `populate-cyberware.js` | 350 | **61 `bonus` refs — only hand-authored bonus data in the repo (#8); only home for the Move-by-Wire block (#4)** |
+| `populate-bioware.js` | 248 | |
+| `populate-agents.js` | 219 | |
+| `populate-drugs.js` | 210 | |
+| `populate-hosts.js` | 153 | |
+| `populate-medical.js` | 152 | |
+
+### Keep — blocked, not dead
+
+`populate-odm-cyberdecks.js`, `populate-odm-programs.js`. Their packs are missing because
+they were *dropped*, not renamed. Documented recovery path for Orthodox Matrix.
+
+### Still working — 3
+
+`import-sr3-character.js` (targets no pack), `populate-skills-v2.js` → `sr3e-skills`,
+`populate-mr-johnsons-contacts.js` → `sr3e-mr-johnsons-contacts`. The two surviving packs
+are exactly the system packs the split didn't touch.
+
+### Image updaters — 4, low value
+
+`update-{firearms,host,projectiles}-images.js` are 25 lines each with a single image path;
+`update-all-compendium-images.js` is 48 lines with 20 paths, every one targeting a dead
+pack. Trivial to re-derive. Delete unless the path list is wanted.
+
+### ⚠ Functional regression this exposed
+
+`populate-macros.js` targets **`sr3e-macros`, which is missing**. That pack is how
+`import-sr3-character.js` reaches users as a clickable macro — so the character importer
+currently has no delivery mechanism. Restoring the pack is a fix, not a cleanup.
 
 ## 2. Rebuild combat on sockets with player-initiated flow
 
