@@ -232,8 +232,22 @@ export class SR3EItem extends Item {
       defReach,
       // Defaulting adds the chosen TN modifier (+2 skill / +3 spec / +4 attribute);
       // a called shot adds +4 (less take-aim) to the attacker's TN only.
-      atkTN:            Math.max(2, 4 - atkReach + (atkInfo.defaultTnMod ?? 0) + (calledShot.tnMod ?? 0)),
-      defTN:            Math.max(2, 4 - defReach + (defInfo.defaultTnMod ?? 0)),
+      // Reach is a DIFFERENTIAL, not an absolute bonus to whoever holds a long weapon.
+      // Take the gap between the two ratings; only the fighter with the longer reach
+      // applies it, as a bonus to their own test. Equal reach cancels out and neither side
+      // benefits — two staff-wielders both roll against the base 4, not against 2.
+      //
+      // Previously each side subtracted their own reach from their own TN, so both
+      // improved simultaneously. The gap between the two numbers came out right, which is
+      // why it survived play; the absolute level did not, and armed-vs-armed melee was
+      // markedly bloodier than the rules intend. It was correct by accident against an
+      // unarmed opponent, whose reach is 0.
+      //
+      // The rules also let the longer-reach fighter choose to push the modifier onto the
+      // opponent's TN instead. Not offered here — both TNs are editable on the boxing
+      // card, so a GM wanting that can move it by hand.
+      atkTN:            Math.max(2, 4 + Math.min(0, defReach - atkReach) + (atkInfo.defaultTnMod ?? 0) + (calledShot.tnMod ?? 0)),
+      defTN:            Math.max(2, 4 + Math.min(0, atkReach - defReach) + (defInfo.defaultTnMod ?? 0)),
       calledShot:       calledShot.calledShot,
       calledShotTarget: calledShot.calledShotTarget,
       atkInfo,
