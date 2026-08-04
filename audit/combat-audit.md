@@ -23,7 +23,7 @@ produced nothing; sequential inline work is the whole point of this file.
 |---|-----------|-------|-------|
 | 1 | Ranged combat | **done** — 1 defect (gel armour) | `rollWeapon` end to end: base TN and every modifier, range bands and measurement, recoil accumulation / compensation / heavy doubling, fire modes SS-SA-BF-FA, ammo effects, called shots, multi-target |
 | 2 | Damage, staging, soak | **done** — no defects | `parseDamageCode` / `stageDamage`, soak card path, armour ballistic vs impact, APDS halving, flechette doubling, wound track, overflow, stun-to-physical |
-| 3 | Melee combat | pending | `rollMeleeAttack` / `_buildMeleePoolInfo` / `handleMeleeRoll`: opposed test, reach on both sides, defender weapon fallback, staging by net successes, ties, called shots |
+| 3 | Melee combat | **done** — 1 defect (reach) | `rollMeleeAttack` / `_buildMeleePoolInfo` / `handleMeleeRoll`: opposed test, reach on both sides, defender weapon fallback, staging by net successes, ties, called shots |
 | 4 | Pools and defence | pending | Combat Pool derivation and wound mod, spend/track/refresh timing (SR3 refreshes per Combat Turn — check the boundary now rounds auto-advance), dodge commitment, Full Defense |
 | 5 | Action economy | pending | Combat Turn / pass / action structure, Free-Simple-Complex, what the Action Tracker enforces vs displays, per-pass state resets, delayed actions, mid-round joins |
 
@@ -208,5 +208,61 @@ today, and with manual application it may never matter. Worth knowing before any
 damage application is added, at which point this logic should move onto `SR3EActor`.
 
 **Dimension 2 complete.**
+
+### 3. Melee combat
+
+#### DEFECT: reach is applied as an absolute bonus to both sides, not as a differential — `wrong-result`
+
+`SR3EItem.js:235-236` builds the two target numbers as:
+
+```js
+atkTN: Math.max(2, 4 - atkReach + …)
+defTN: Math.max(2, 4 - defReach + …)
+```
+
+Each combatant subtracts their **own** Reach rating from their **own** target number,
+independently and simultaneously.
+
+The rule is a *differential*: take the difference between the two Reach ratings, and only
+the fighter with the longer reach applies it — as either a bonus to their own test or a
+penalty to the opponent's, at that fighter's choice. One benefit, to one side, sized by the
+gap.
+
+**When it goes wrong:** whenever both combatants have non-zero reach.
+
+- Sword (reach 1) vs staff (reach 2). Rules: difference 1, staff wielder alone benefits.
+  Code: sword TN 3, staff TN 2 — both improved.
+- Two staffs (reach 2 each). Rules: difference 0, nobody benefits, both roll against 4.
+  Code: **both roll against 2** — dramatically easier for both sides.
+
+The differential between the two TNs happens to come out right, which is why this survives
+casual play. What is wrong is the absolute level: both sides hit far more often than they
+should, so armed melee is markedly bloodier than the rules intend, and the error grows with
+the reach of the weapons involved.
+
+It is only correct by accident in the common case of an armed fighter against an unarmed
+one, because unarmed reach is 0 — which is likely why it has not been noticed.
+
+Also unimplemented: the rules give the longer-reach fighter a *choice* of where to apply
+the modifier. The code has no such prompt.
+
+**Fix shape:** compute `diff = atkReach - defReach` once; apply `-diff` to the longer-reach
+side's TN (or `+diff` to the other side's, if the choice is offered), and leave the shorter-
+reach side at the base 4. Both TNs are already editable on the boxing card, so a GM can
+correct it by hand today — but as with the gel finding, the default is silently wrong.
+
+#### Verified correct
+
+| Rule | Code | Verdict |
+|---|---|---|
+| Opposed test: both sides roll, most successes wins | `SR3EActor.js:3700` | correct |
+| A tie deals no damage | `SR3EActor.js:3696` | correct |
+| Winner's own weapon damage code is used | `SR3EActor.js:3707-3708` | correct |
+| Damage stages up by **net** successes | `net`, `SR3EActor.js:3713` | correct |
+| Minimum target number of 2 | `Math.max(2, …)` on both TNs | correct |
+| Either side may default, each prompted separately | `_applyMeleeDefault`, `SR3EItem.js:199` | correct |
+| Called-shot modifier folds into the attacker's TN only | `calledShot.tnMod` in `atkTN` | correct |
+
+**Dimension 3 complete.**
 
 ---
