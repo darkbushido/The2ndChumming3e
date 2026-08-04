@@ -1,0 +1,273 @@
+# TODO
+
+Durable backing store for the work list. Same principle as `audit/combat-audit.md`:
+**this file is the progress**, not a cache. The in-session task list is ephemeral —
+update this file when items change, and rebuild the task list from here.
+
+Every file:line citation below was verified against the code at time of writing
+(2026-08-04, branch `Shadowfork`). Verify before relying on any of them.
+
+Sequencing: **#4 and #8 before #1.** Everything else is independent.
+
+---
+
+## 1. Audit and remove dead code — *blocked by #4, #8*
+
+Candidates, none confirmed dead:
+
+- v2/non-v2 macro pairs: `populate-cyberware.js` vs `-v2`, `populate-bioware.js` vs `-v2`
+- Root build scripts: `build-armor-pack.mjs`, `build-cyberdeck-pack.mjs`
+- Unreferenced image updaters: `update-{all-compendium,firearms,host,projectiles}-images.js`
+
+⚠ **"0 inbound references" is not proof.** Population macros are run by hand from the
+console. Check what `scripts/macros/populate-macros.js` registers — that is the real
+liveness signal.
+
+⚠ **Do NOT delete `populate-cyberware.js`.** It holds 61 `bonus` references and is the
+only hand-authored bonus data in the repo (see #8). `populate-cyberware-v2.js` has 0.
+It is also the only home for the Move-by-Wire stat block (see #4).
+
+⚠ `populate-odm-cyberdecks.js` / `populate-odm-programs.js` are the recovery path for the
+missing `sr3e-odm-*` packs. Not dead.
+
+## 2. Rebuild combat on sockets with player-initiated flow
+
+Foundry sockets so each participant sees the right window on their own screen:
+
+- Players can initiate combat (currently attacker-sheet driven, assumes one client)
+- **Dodge window on the target's screen**, not the attacker's
+- **GM window to set TN, with checkboxes for combat modifiers** (not a typed field)
+
+Prior art: `origin/player-combat`, single commit `0c45bc5` *"Route dodge declaration to
+the defending player instead of the attacker"*, already merged into Shadowfork. Read it
+first — decide whether this extends or replaces it.
+
+Touches `SR3EItem.rollWeapon`, `SR3EActor.postMeleeCard`, `_promptDodgeDeclaration`, and
+the chat-card handlers in `sr3e.js`. Keep the ethos: no automation of outcomes, all values
+editable. `_checkBtn`/`_claimBtn` one-shot guards still apply — socket messages land on
+multiple clients.
+
+## 3. Implement the Pain Editor
+
+**Data-present, mechanics-absent.** In the `sr3e-mm-bioware` pack; `scripts/` has zero hits
+for "pain editor".
+
+Implementation point is derived `system.woundMod` in `prepareDerivedData` and everything
+downstream — TN penalties on every `rollPool`, Combat Pool derivation, initiative base.
+Check M&M for exact behaviour incl. interaction with overflow/unconsciousness thresholds,
+and whether boxes still track normally while the penalty is ignored. Keep the resulting
+wound modifier GM-overridable.
+
+## 4. Review move-by-wire calculations
+
+Exists **only as compendium data**, `scripts/macros/populate-cyberware.js:71-85`. No
+dedicated calculation code.
+
+| Level | Essence | bonusQui | bonusRea | bonusInitDice |
+|---|---|---|---|---|
+| MBW 1 | 3 | +2 | +2 | +2 |
+| MBW 2 | 4 | +4 | +4 | +3 |
+| MBW 3 | 5 | +6 | +6 | +4 |
+
+- Verify against Man & Machine.
+- **Quickness feeds Combat Pool** (⌊(QUI+INT+WIL)/2⌋) — `bonusQui: +6` silently moves the
+  pool. Confirm intended and that it flows through `prepareDerivedData`.
+- Descriptions claim "Incompatible with wired reflexes or boosted reflexes" but nothing
+  enforces or warns. Under minimal-guardrails a warning, not a block.
+- Confirm the bonus fields are actually consumed, not decorative.
+
+## 5. Make essence loss permanent when cyberware is removed — **CONFIRMED BUG**
+
+`SR3EActor.js:1683-1692` recomputes Essence every `prepareDerivedData` from **currently
+held** cyberware:
+
+```js
+let essenceLoss = 0;
+for (const item of (this.items ?? [])) {
+  if (item.type === 'cyberware') essenceLoss += parseFloat(item.system?.essenceCost ?? 0);
+}
+attr.essence.value = Math.max(0, parseFloat((6 - essenceLoss).toFixed(2)));
+```
+
+Delete the item, the loss vanishes. SR3: Essence loss is permanent.
+
+Blast radius — two derived values hang off it at `SR3EActor.js:1702-1708`:
+Bio Index capacity = `essence.value + 3`; effective Magic = `essence.value − (totalBioIndex / 2)`.
+So a refund silently inflates Magic and bio-index headroom.
+
+**Fix:** persist the loss as a high-water mark that only ratchets down (the data model
+already has `attributes.essence` as a SchemaField with `base`, `ActorDataModels.js:120`).
+Keep it manually editable — GMs need it for chargen, imports, houserules.
+`scripts/macros/import-sr3-character.js:469-470` currently relies on the re-derivation and
+must change in step.
+
+## 6. Open upstream bugs and PRs for the pushed non-Shadowfork branches
+
+Target **upstream** (`williamdiffey/The2ndChumming3e`), not origin (`darkbushido/…`).
+`origin/main` is level with `upstream/main`, so each PR is a clean diff.
+All four are already merged into Shadowfork locally.
+
+| Branch | Ahead | Content |
+|---|---|---|
+| `origin/player-combat` | 1 | `0c45bc5` dodge declaration → defending player |
+| `origin/initiative-rounds` | 4 | `5985910` initiative as explicit action queue + `tests/initiative.test.mjs` |
+| `origin/skill-bonus-dice` | 4 | `7190d20` skill bonus dice on every roll path + `tests/skill-bonus.test.mjs` |
+| `origin/spell-self-target` | 4 | `74d0ab4` spells castable on caster + `tests/targeting.test.mjs` |
+
+The three 4-commit branches each carry the same `6962d2c` test-harness commit merged from
+the `tests` branch — upstream sees it three times unless it lands once first. Consider
+landing the harness alone, then rebasing the rest.
+
+`player-combat` and arguably `spell-self-target` are defect fixes — open a bug describing
+the broken behaviour and reference it from the PR. `gh` defaults to origin; confirm the
+target repo on every command.
+
+## 7. Expand test coverage for combat, initiative and pools
+
+Existing: `tests/{combat-rules,damage-codes,initiative,skill-bonus,source-books,targeting}.test.mjs`,
+run via `tests/run.mjs` with the `tests/helpers/foundry.mjs` stub. Read before adding.
+
+Gaps — every one was a real defect the audit found by hand and no test caught:
+
+- **Pool refresh at the round boundary.** Combat/Spell/Astral/Hacking were refreshed only in
+  `endCombat`, staying spent across rounds. Fixed `30bab18`.
+- **Recoil reset at all three phase boundaries** (pass, new round, end of combat). Fixed `802c99b`.
+- **Full Defense ending at a turn boundary** rather than at end of combat. Fixed `30bab18`.
+- **Combat Pool derivation** — ⌊(QUI+INT+WIL)/2⌋, wound mod folded in, available = derived −
+  spent floored at 0, spending accumulates rather than overwrites.
+- **Spell Pool** ⌊(INT+WIL+MAG)/3⌋ and null-for-non-Awakened.
+
+Common thread: state that used to reset because every round called `endCombat()`, orphaned
+when rounds became continuous. `audit/combat-audit.md:338-356` lists the full eight-item
+reset block; `tempMagicLoss` is the one whose correct lifetime was never established.
+
+## 8. Ship cyberware/bioware with their bonuses pre-filled
+
+**Plumbing is complete; only structured data is missing.**
+
+- Fields declared: `ItemDataModels.js:250-266` (`bonusBod/Qui/Str/Cha/Int/Wil/Rea/InitDice`,
+  `improvedSkillName`/`improvedSkillDice`)
+- Summed into `cyberBonus`: `SR3EActor.js:1608-1615`
+- Rendered as editable inputs: `SR3EItemSheet.js:638` (cyber), `:851` (bio)
+
+**No shipped pack carries a structured bonus.** ~800 cyberware + ~119 bioware documents
+across 14 packs: **zero `bonus*` keys present at all**.
+
+**But the data is there as free text** — 181 hits in the pack LevelDB for `+1RCT,+1INI`,
+`+2RCT,+2INI`, `+1QCK,+1STR`. It rode along in a notes field and was never parsed.
+
+Cause: `populate-cyberware-v2.js` (built the shipped packs) has **0** `bonus` references;
+legacy `populate-cyberware.js` has **61**. The v2 rewrite dropped them.
+
+### ⚠ Parse `Mods`, NOT `Notes`
+
+Established in `criticalfault/Shadowrun-Character-Generator` issue #199 — the maintainer
+confirmed **`Mods` is authoritative and carries strictly more information**. `Notes` is a
+flattened human-readable view. An earlier version of this task said to parse `Notes`; that
+was wrong.
+
+Source: `C:\Users\lance\Documents\Shadowrun-Character-Generator\src\data\SR3\{Cyberware,Bioware}.json`.
+
+`Mods` uses a **first-letter-replacement** encoding, and there are **two incompatible
+schemes**:
+
+- **3-letter** (Bioware): `R` = racial, `N` = natural, `X` = both, replacing letter 1.
+  `ROD`=Body `RTR`=Str `RCK`=Qui `RNT`=Int `NCT`=Reaction `NNI`=Init `XOD`/`XCK`/`XTR`=both
+- **4-letter** (AdeptPowers): `R` + full code — `RBOD` `RSTR` `RQCK`
+
+The 3-letter scheme is not injective (racial Reaction would be `RCT`, already plain
+Reaction — which is why Reaction uses `N`). The 4-letter form is unambiguous.
+
+**`Mods` is overloaded** — it also carries non-attribute feature flags that must be
+filtered, or they become phantom attributes: `STG` (Suprathyroid Gland), `MNE` (Mnemonic
+Enhancer), `DGX` (Digestive Expansion), `DJK`, `PCL`, `PCA`, `MUL`, `AST`, `CPL` (Combat Pool).
+
+**For SR3E specifically:** no racial-max tracking exists, so `ROD`/`BOD`/`XOD` all collapse
+to `bonusBod`. The distinction costs nothing.
+
+**14 entries have `Mods: ""` with modifiers only in `Notes`** (9 in Bioware) — e.g. Adrenal
+Pump `+1QCK,+2STR,+1WIL,+2RCT`. A `Mods`-only parse silently drops these. Flag for manual
+review; some are conditional (`+2BOD` only vs nitrogen narcosis) and may be excluded on purpose.
+
+Won't parse cleanly, needs judgement: armour values (`+3IMP`,`+3BAL` on Body Plating),
+weapon damage strings (`Unarmed = (STR+4)M Stun` on Bone Lace), category-wide skill
+bonuses (→ #10), incompatibility prose.
+
+Harvest `populate-cyberware.js` before #1 deletes anything; use it to check the parser.
+Keep fields editable — pre-fill defaults, don't lock. M&M PDF available for the leftovers.
+
+## 9. Re-add the archived fan books and conversions
+
+`archive/non-sr3-content/` — 1,703 docs, one JSON per **original** pack, each entry
+`{ _key, bucket, doc }`. Its README was rewritten in `6ed41b8` and is now accurate; read it
+before starting.
+
+| Bucket | Docs | Status |
+|---|---:|---|
+| `fan` | 1,219 | un-restored (ray 658 · cb1-4 369 · cp 114 · nagee 44 · pw 18 · bjf 9 · adh 2 · cus 1) |
+| `sr2` | 441 | **435 already restored**; 6 orphaned (`cs` 3, `gm2` 1, `r2` 1, blank 1) |
+| `sr2-fan` | 41 | un-restored (NERPS: ShadowLore) |
+| `unknown` | 2 | corrupt `bookPage`, needs hand classification |
+
+⚠ **Files still hold everything, including what now ships. Re-importing blind duplicates.**
+
+Per book restored: a pack per content type (`packs/sr3e-<code>-<type>`), a `system.json`
+declaration with `flags.The2ndChumming3e.book`, and a `SOURCE_BOOKS` entry in `config.js`.
+Missing flag ⇒ permanently visible (fail-visible by design). `tss` is the working precedent
+(fan: true, enabled: false, nine packs).
+
+Codes come from the `BookPage` prefix in the generator's gear data, **not** its `Books.json`
+(which has no codes). Two snags: generator uses `sta2` where `SOURCE_BOOKS` uses `sota2`;
+`n/sl` has a slash needing sanitising for a pack name.
+
+Chromebooks (`cb1`-`cb4`) and Cyberpunk 2020 (`cp`) are fan *conversions*, not official SR2 —
+they stay archived.
+
+## 10. Support category-wide skill bonuses (Enhanced Articulation)
+
+**Enhanced Articulation** (M&M p.66) grants `+1 Reaction` (covered by #8) **and 1 extra die
+to Combat, Physical, Technical and Build/Repair skill tests** — currently inexpressible.
+
+`skillBonusDice` is flat and keyed by **skill name** (`SR3EActor.js:1596-1600`), fed from
+`improvedSkillName`/`improvedSkillDice` on three models (`ItemDataModels.js:263-264`,
+`:295-296`, `:361`). No category support anywhere — no `improvedSkillCategory`,
+`categoryBonus` or `bonusCategory`.
+
+Enumerating member skills by name breaks silently when a skill is added.
+
+**Small fix, because:** the four categories map exactly onto `ACTIVE_SKILL_CATEGORIES`
+(`config.js:521-524`) — `'Combat skills'` `'Physical skills'` `'Technical skills'`
+`'Build/Repair skills'`. And consumption needs no work: everything reads via
+`SR3EItem._skillBonusDice` (`SR3EActor.js:981`, `:5292`, `:5759`, `:5832`;
+`SR3EItem.js:112`), so anything in the map reaches every roll path and the sheet for free.
+
+**Shape:** add `improvedSkillCategory` beside `improvedSkillName` on the three models;
+expand category → member skills in the map builder at `SR3EActor.js:1596`. Name and
+category bonuses should stack. Check adept powers and Encephalon-style bioware for the same
+pattern.
+
+⚠ Data model changes need a full Foundry restart, not F5. Guard reads with `?? default`.
+
+---
+
+## Open questions carried from the combat audit
+
+`audit/combat-audit.md` — all five dimensions done, every defect fixed and merged. Three
+things it explicitly did not resolve:
+
+- Whether Full Defense is *complete* against the rules (`:311`) — "worth its own pass"
+- `tempMagicLoss` — the one `endCombat` reset whose correct lifetime was never established (`:352`)
+- Delayed actions and mid-round joins (`:371`) — no delay mechanism; an actor added mid-round
+  gets no slot until the next round. Called a design question, not a rules defect.
+
+## Other known drift
+
+- CLAUDE.md "What is NOT yet implemented" (`:1016`) is stale: Full Defense is largely wired
+  and now clears at the turn boundary (`30bab18`); vehicle sheets exist.
+- `sr3e-odm-cyberdecks` / `sr3e-odm-programs` are undeclared and their directories are gone.
+  Blocks all Orthodox Matrix work. Populate macros survive.
+- Code TODOs: `SR3EICSheetOrthodox.js:70` (drag-drop host link),
+  `SR3EHostSheetOrthodox.js:83` (notes enrichment, IC assignment drag-drop).
+- The Matrix sourcebook (`mat`) is deliberately unregistered because nothing existed to carry
+  it — but the generator has **112 `mat` gear entries**, so that condition is now met.
+  Not yet a task.
