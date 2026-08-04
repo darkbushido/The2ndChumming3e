@@ -726,7 +726,7 @@ export const SR3E = {
     regular:     { label: 'Regular' },
     explosive:   { label: 'Explosive',    powerMod: 1 },
     exExplosive: { label: 'EX Explosive', powerMod: 2 },
-    gel:         { label: 'Gel',          powerMod: -2, isStun: true },
+    gel:         { label: 'Gel',          powerMod: -2, isStun: true, armorEffect: 'gel' },
     apds:        { label: 'APDS',         armorEffect: 'apds' },
     flechette:   { label: 'Flechette',    armorEffect: 'flechette' },
     tracer:      { label: 'Tracer',       faOnly: true, tracer: true },

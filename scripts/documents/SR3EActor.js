@@ -3888,7 +3888,9 @@ _prepareCharacter(sys, attr) {
     // Ammo armour interactions (APDS / Flechette). Other types resolve at attack time.
     const ammoRules = game.sr3e.SR3E.ammoTypes[payload.ammoType] ?? {};
     let ammoNote = '';
-    if (ammoRules.armorEffect === 'apds') {
+    if (ammoRules.armorEffect === 'gel') {
+      ammoNote = `Gel — Impact armour applies (${impact}), not Ballistic`;
+    } else if (ammoRules.armorEffect === 'apds') {
       ballistic = Math.floor(ballistic / 2);
       ammoNote  = `APDS — ballistic armour halved (now ${ballistic})`;
     } else if (ammoRules.armorEffect === 'flechette') {
@@ -3908,7 +3910,12 @@ _prepareCharacter(sys, attr) {
       }
     }
 
-    const defaultArmor = isMelee ? impact : ballistic;
+    // Which armour rating resists this attack. Melee uses Impact, ranged uses Ballistic —
+    // except gel rounds, which are a ranged attack the rules resist with Impact. That
+    // exception is declared on the ammo type (config.js) rather than hard-coded here, so it
+    // sits with the rest of the ammo-armour rules instead of hiding in the selection.
+    const usesImpact   = isMelee || ammoRules.armorEffect === 'gel';
+    const defaultArmor = usesImpact ? impact : ballistic;
 
     const soakTN = Math.max(2, stagedPower - defaultArmor);
 
