@@ -22,17 +22,25 @@ rot is in `scripts/macros/` plus two root build scripts.
 
 ### DECISION (2026-08-04): retire the populate pipeline, don't repair it
 
-The macros are the live content-authoring pipeline — they run in a world and write straight
-to the LevelDB pack files, which are then committed (`populate-macros.js:7`). Retiring them
-removes bulk pack regeneration. **A Foundry restart does not replace this**: a restart
-reloads the manifest and data models, it never repopulates a pack.
+**Retiring costs nothing — the macros were already superseded, not merely broken.**
 
-Accepted, because two better replacements exist for a git-tracked system:
+The book split did not use them. `3437608` and `39f8946` touched only `system.json`,
+`packs/`, `archive/` and tests; **no migration script was ever committed**. The split was
+done by direct LevelDB manipulation from throwaway scratchpad scripts — which is why
+`archive/non-sr3-content/*.json` carries raw `_key` values and the README's restore snippet
+is `db.put(_key, doc)`.
 
-1. **Edit in Foundry directly** — unlock pack → edit → lock. Writes to LevelDB, commits to
-   git. Already the documented workflow for icons.
-2. **`fvtt package` CLI** — LevelDB ↔ YAML/JSON. Scriptable, diffable, reviewable, needs no
-   live world. The better long-term pipeline.
+So a more capable pipeline already exists and is what actually gets used:
+
+1. **Direct LevelDB / `fvtt package`** — LevelDB ↔ YAML/JSON. Scriptable, diffable, needs no
+   live world. This is what performed the split.
+2. **Edit in Foundry** — unlock pack → edit → lock. Writes to LevelDB, commits to git.
+   Already the documented workflow for icons.
+
+Compendium content kept working through the split because it is **static data in committed
+LevelDB files** — Foundry reads packs from the `system.json` declarations and the files on
+disk at load. The macros are authoring-time only, with no runtime role, so their breakage
+has no user-facing effect at all.
 
 Packs ship as committed LevelDB in git and are the source of truth. Population was a
 one-time bootstrap.
