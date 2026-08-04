@@ -119,4 +119,61 @@ export async function run(t) {
   const unused = useScriptedRolls([9, 9, 9]);
   await resolved([['a', 10, 5], ['b', 12, 5]]);
   t.is('no dice are rolled when nobody is tied', unused.remaining(), 3);
+
+  /* ---- end-of-turn resets ----
+   * Three separate bugs came from state that only endCombat() reset: recoil, the dice
+   * pools, and Full Defense. They were invisible because every round used to call
+   * endCombat. These assertions pin the whole set to the turn boundary.
+   */
+  {
+    const calls = [];
+    const mkActor = () => ({
+      system: { fullDefense: true, fullDefensePool: 4 },
+      resetRecoil:        async () => calls.push('recoil'),
+      refreshCombatPool:  async () => calls.push('combatPool'),
+      refreshSpellPool:   async () => calls.push('spellPool'),
+      refreshAstralPool:  async () => calls.push('astralPool'),
+      refreshHackingPool: async () => calls.push('hackingPool'),
+      update:             async u  => calls.push(`update:${JSON.stringify(u)}`),
+    });
+    const combat = Object.create(SR3ECombat.prototype);
+    combat.combatants = { contents: [{ actor: mkActor() }] };
+    await combat._endOfTurnReset();
+
+    t.ok('recoil resets at the turn boundary',        calls.includes('recoil'));
+    t.ok('Combat Pool refreshes at the turn boundary', calls.includes('combatPool'));
+    t.ok('Spell Pool refreshes',                       calls.includes('spellPool'));
+    t.ok('Astral Pool refreshes',                      calls.includes('astralPool'));
+    t.ok('Hacking Pool refreshes',                     calls.includes('hackingPool'));
+    t.ok('Full Defense is cleared',
+      calls.some(c => c.startsWith('update:') && c.includes('"system.fullDefense":false')),
+      `updates seen: ${calls.filter(c => c.startsWith('update:')).join(' | ') || 'none'}`);
+    t.ok('the Full Defense pool is zeroed too',
+      calls.some(c => c.includes('"system.fullDefensePool":0')));
+  }
+
+  // An actor NOT in Full Defense must not be written to needlessly.
+  {
+    const calls = [];
+    const combat = Object.create(SR3ECombat.prototype);
+    combat.combatants = { contents: [{ actor: {
+      system: { fullDefense: false },
+      resetRecoil: async () => {}, refreshCombatPool: async () => {},
+      refreshSpellPool: async () => {}, refreshAstralPool: async () => {},
+      refreshHackingPool: async () => {},
+      update: async () => calls.push('update'),
+    } }] };
+    await combat._endOfTurnReset();
+    t.is('no needless write when Full Defense was not active', calls.length, 0);
+  }
+
+  // An actorless combatant must not throw.
+  {
+    const combat = Object.create(SR3ECombat.prototype);
+    combat.combatants = { contents: [{ actor: null }] };
+    let threw = false;
+    try { await combat._endOfTurnReset(); } catch { threw = true; }
+    t.is('a combatant with no actor is skipped, not fatal', threw, false);
+  }
 }
+

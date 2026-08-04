@@ -341,13 +341,47 @@ export class SR3ECombat extends Combat {
    * End Combat control.
    * @private
    */
+  /**
+   * Everything that expires at the end of a Combat Turn.
+   *
+   * ONE place for per-turn state, deliberately. All of this used to be reset only in
+   * endCombat(), which was correct purely by accident: every completed round used to call
+   * endCombat, so the resets happened once per round for the wrong reason. Making rounds
+   * continue removed that, and each item then had to be rediscovered as its own bug —
+   * recoil first, then the pools, then Full Defense. Anything else that should expire per
+   * turn belongs here, not in a fourth scattered place.
+   *
+   * NOT here: clearSpellDefense, which rollInitiative already does for every combatant on
+   * its way through — doing it twice would be harmless but misleading.
+   *
+   * Silent by design. The pool refresh in endCombat sits behind a GM prompt because ending
+   * a fight is a decision; a turn rolling over is not, and the rules make the refresh
+   * unconditional, so a confirmation every round would be pure noise.
+   * @private
+   */
+  async _endOfTurnReset() {
+    for (const c of this.combatants.contents) {
+      const actor = c.actor;
+      if (!actor) continue;
+      // New combat phase — the rounds-fired counter that drives recoil starts over.
+      await actor.resetRecoil?.();
+      // Pools refresh at the start of each Combat Turn.
+      await actor.refreshCombatPool?.();
+      await actor.refreshSpellPool?.();
+      await actor.refreshAstralPool?.();
+      await actor.refreshHackingPool?.();
+      // Full Defense is a declared posture for the turn, not a standing state. The
+      // updateActor hook in sr3e.js drives the status icon off this field, so clearing it
+      // clears the icon too.
+      if (actor.system?.fullDefense) {
+        await actor.update({ 'system.fullDefense': false, 'system.fullDefensePool': 0 });
+      }
+    }
+  }
+
   async _newRound() {
     await this.nextRound();                       // increments round, resets turn
-    // A new round is also a new combat phase, so recoil resets — same as crossing a pass
-    // boundary in nextTurn. It has to be done HERE as well: nextTurn returns to _newRound
-    // before reaching its own pass-change check, so without this the rounds-fired counter
-    // survives into the next round and every subsequent shot carries phantom recoil.
-    for (const c of this.combatants.contents) await c.actor?.resetRecoil?.();
+    await this._endOfTurnReset();
     await this.rollInitiative();                  // RAW: re-roll every round
     const queue = await this.rebuildQueue({ resetIndex: true });
     if (!queue.length) {
