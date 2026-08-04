@@ -343,6 +343,11 @@ export class SR3ECombat extends Combat {
    */
   async _newRound() {
     await this.nextRound();                       // increments round, resets turn
+    // A new round is also a new combat phase, so recoil resets — same as crossing a pass
+    // boundary in nextTurn. It has to be done HERE as well: nextTurn returns to _newRound
+    // before reaching its own pass-change check, so without this the rounds-fired counter
+    // survives into the next round and every subsequent shot carries phantom recoil.
+    for (const c of this.combatants.contents) await c.actor?.resetRecoil?.();
     await this.rollInitiative();                  // RAW: re-roll every round
     const queue = await this.rebuildQueue({ resetIndex: true });
     if (!queue.length) {
