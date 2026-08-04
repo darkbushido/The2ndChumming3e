@@ -20,6 +20,31 @@ target a pack that no longer exists and fail at `game.packs.get()` returning und
 Nothing under `scripts/` is unreferenced at file level — the loaded code is clean. All the
 rot is in `scripts/macros/` plus two root build scripts.
 
+### DECISION (2026-08-04): retire the populate pipeline, don't repair it
+
+The macros are the live content-authoring pipeline — they run in a world and write straight
+to the LevelDB pack files, which are then committed (`populate-macros.js:7`). Retiring them
+removes bulk pack regeneration. **A Foundry restart does not replace this**: a restart
+reloads the manifest and data models, it never repopulates a pack.
+
+Accepted, because two better replacements exist for a git-tracked system:
+
+1. **Edit in Foundry directly** — unlock pack → edit → lock. Writes to LevelDB, commits to
+   git. Already the documented workflow for icons.
+2. **`fvtt package` CLI** — LevelDB ↔ YAML/JSON. Scriptable, diffable, reviewable, needs no
+   live world. The better long-term pipeline.
+
+Packs ship as committed LevelDB in git and are the source of truth. Population was a
+one-time bootstrap.
+
+**This does not relax the harvest requirement below** — retiring the *code* still destroys
+the *data* in the seven inline-data macros unless it is extracted first. Sequence stays:
+harvest → delete.
+
+⚠ CLAUDE.md's "Compendium population — correct pattern" section documents the temp-doc →
+`importDocument` → delete workflow as core. Update or remove it when this lands, or the docs
+will describe a pipeline that no longer exists.
+
 ### Delete now — cannot run, nothing to lose
 
 - **`build-cyberdeck-pack.mjs`** — three independent reasons: input
