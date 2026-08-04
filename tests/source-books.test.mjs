@@ -59,16 +59,23 @@ export async function run(t) {
   t.ok('the manifest declares at least one pack', packs.length > 0);
 
   /* ---- the filter ---- */
+  // Counts are edition-aware: a pack is visible only if its book belongs to the edition
+  // being played AND is switched on. Packs of the other edition never count.
+  const inEdition = code => (SOURCE_BOOKS[code]?.edition ?? 'SR3') === edition;
+  const packsIn = codes => codes.filter(inEdition).reduce((n, c) => n + (perBook[c] ?? 0), 0);
+  const allCodes = Object.keys(perBook);
+
   stored = {};
   const defaults = defaultAllowedBooks();
-  const hiddenAtDefault = Object.entries(defaults)
-    .filter(([, on]) => !on)
-    .reduce((n, [code]) => n + (perBook[code] ?? 0), 0);
-  t.is('defaults hide exactly the packs of the default-off books',
-    visible(), packs.length - hiddenAtDefault);
+  t.is('defaults show the played edition\'s enabled books plus system packs',
+    visible(), packsIn(allCodes.filter(c => defaults[c] !== false)) + systemOnly);
 
   stored = allOn();
-  t.is('everything on shows every pack', visible(), packs.length);
+  t.is('everything on shows every pack of the played edition',
+    visible(), packsIn(allCodes) + systemOnly);
+  t.ok('the other edition\'s packs are excluded even with everything on',
+    visible() < packs.length,
+    `${packs.length - visible()} packs hidden by the edition gate`);
 
   stored = allOff();
   t.is('everything off leaves only unflagged system packs', visible(), systemOnly);
