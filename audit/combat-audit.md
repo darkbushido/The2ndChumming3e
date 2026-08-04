@@ -21,7 +21,7 @@ produced nothing; sequential inline work is the whole point of this file.
 
 | # | Dimension | State | Scope |
 |---|-----------|-------|-------|
-| 1 | Ranged combat | **partial** — recoil + fire modes done, see Findings | `rollWeapon` end to end: base TN and every modifier, range bands and measurement, recoil accumulation / compensation / heavy doubling, fire modes SS-SA-BF-FA, ammo effects, called shots, multi-target |
+| 1 | Ranged combat | **done** — 1 defect (gel armour) | `rollWeapon` end to end: base TN and every modifier, range bands and measurement, recoil accumulation / compensation / heavy doubling, fire modes SS-SA-BF-FA, ammo effects, called shots, multi-target |
 | 2 | Damage, staging, soak | pending | `parseDamageCode` / `stageDamage`, soak card path, armour ballistic vs impact, APDS halving, flechette doubling, wound track, overflow, stun-to-physical |
 | 3 | Melee combat | pending | `rollMeleeAttack` / `_buildMeleePoolInfo` / `handleMeleeRoll`: opposed test, reach on both sides, defender weapon fallback, staging by net successes, ties, called shots |
 | 4 | Pools and defence | pending | Combat Pool derivation and wound mod, spend/track/refresh timing (SR3 refreshes per Combat Turn — check the boundary now rounds auto-advance), dodge commitment, Full Defense |
@@ -109,8 +109,50 @@ that tracer rounds raise Damage Level but not Power. That is a house interpretat
 full-auto rule as written adds Power per round without excepting tracers. Left alone under
 the minimal-guardrails ethos, but flagged since it silently changes a damage code.
 
-**Still pending in dimension 1** (do these next, then mark the row done): range bands and
-TN by band, the ammunition effects table (explosive / EX / gel / APDS / flechette), called
-shots, and the multi-target modifier.
+### 1. Ranged combat — ammunition, called shots, multi-target
+
+#### DEFECT: gel rounds soak against Ballistic armour instead of Impact — `wrong-result`
+
+`SR3EActor.js:3931` picks the armour rating with
+`const defaultArmor = isMelee ? impact : ballistic;`
+A gel round is a ranged attack, so `isMelee` is false and the target soaks with **Ballistic**.
+The rulebook's gel-round entry is explicit that Impact armour applies rather than Ballistic,
+alongside the Power −2 and the switch to Stun.
+
+Ballistic is usually the higher of the two on armour, so the target soaks better than it
+should and gel rounds land softer than the rules intend — quietly, with nothing on the card
+indicating the wrong track was used.
+
+`config.js:786` has `gel: { powerMod: -2, isStun: true }` — the Power and Stun halves are
+right; there is no `armorEffect` for gel, and nothing anywhere else switches the rating
+(only `apds` and `flechette` are handled, `SR3EActor.js:3913`).
+
+Mitigating: the soak card's armour dropdown is editable, so a GM who knows the rule can
+switch it. That makes this less severe than a hard miscalculation, but the default is wrong
+and silent, which is the failure mode this audit is looking for.
+
+**Fix shape:** give gel an `armorEffect: 'gel'` in config and branch on it where APDS and
+flechette already are, so the choice is expressed in one place with the other ammo rules.
+
+#### Verified correct
+
+| Rule | Book | Code | Verdict |
+|---|---|---|---|
+| Called shot, +4 TN | modifiers table | `_promptWeaponRollOptions` called-shot handling | correct |
+| APDS halves Ballistic, rounding down | APDS entry | `Math.floor(ballistic / 2)` — `SR3EActor.js:3914` | correct |
+| Flechette: raises level unarmoured, doubles effective armour otherwise | flechette entry | `SR3EActor.js:3917-3930` | correct in shape |
+| Explosive +1 Power, EX Explosive +2 | ammo entries | `config.js` ammoTypes | correct |
+| Gel: Power −2 and Stun | gel entry | `config.js:786` | correct (armour is the broken part) |
+
+#### Observed, not a defect
+
+**Multiple targets (+2 per additional target in the phase)** is surfaced as a note in the
+fire dialog rather than folded into the TN — the dialog shows "+recoil + multi-target (see
+below)" (`SR3EItem.js:2233`). Under the minimal-guardrails ethos this is a legitimate
+choice: the GM applies it to the editable TN. Recorded so it is not mistaken for an
+oversight later.
+
+**Range bands** are covered by `tests/damage-codes.test.mjs` (band classification and the
+beyond-Extreme flag) and were re-verified there rather than re-audited here.
 
 ---
