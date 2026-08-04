@@ -24,7 +24,7 @@ produced nothing; sequential inline work is the whole point of this file.
 | 1 | Ranged combat | **done** — 1 defect (gel armour) | `rollWeapon` end to end: base TN and every modifier, range bands and measurement, recoil accumulation / compensation / heavy doubling, fire modes SS-SA-BF-FA, ammo effects, called shots, multi-target |
 | 2 | Damage, staging, soak | **done** — no defects | `parseDamageCode` / `stageDamage`, soak card path, armour ballistic vs impact, APDS halving, flechette doubling, wound track, overflow, stun-to-physical |
 | 3 | Melee combat | **done** — 1 defect (reach) | `rollMeleeAttack` / `_buildMeleePoolInfo` / `handleMeleeRoll`: opposed test, reach on both sides, defender weapon fallback, staging by net successes, ties, called shots |
-| 4 | Pools and defence | pending | Combat Pool derivation and wound mod, spend/track/refresh timing (SR3 refreshes per Combat Turn — check the boundary now rounds auto-advance), dodge commitment, Full Defense |
+| 4 | Pools and defence | **done** — 1 defect (pool refresh), 1 doc drift | Combat Pool derivation and wound mod, spend/track/refresh timing (SR3 refreshes per Combat Turn — check the boundary now rounds auto-advance), dodge commitment, Full Defense |
 | 5 | Action economy | pending | Combat Turn / pass / action structure, Free-Simple-Complex, what the Action Tracker enforces vs displays, per-pass state resets, delayed actions, mid-round joins |
 
 ## Method
@@ -264,5 +264,57 @@ correct it by hand today — but as with the gel finding, the default is silentl
 | Called-shot modifier folds into the attacker's TN only | `calledShot.tnMod` in `atkTN` | correct |
 
 **Dimension 3 complete.**
+
+### 4. Pools and defence
+
+#### DEFECT: dice pools never refresh between rounds — `wrong-result`, highest severity so far
+
+The rulebook is explicit that a pool refreshes at the beginning of the next Combat Turn.
+`refreshCombatPool` is called from exactly **one** place in the system:
+`SR3ECombat.js:394`, inside `endCombat`. `_newRound` does not refresh anything.
+
+So Combat Pool spent in round 1 stays spent for the rest of the fight. A character who
+commits five dice to a dodge in the first round fights rounds two, three and four without
+them, and only gets them back when the encounter ends.
+
+**This is a regression from the initiative rework, and the same shape as the recoil bug.**
+Before that change every completed round called `endCombat()`, which refreshed the pools —
+so the correct behaviour was happening for the wrong reason. Making rounds continue removed
+the only thing that was refreshing them. Recoil was the visible half of this; the pools are
+the half that was missed.
+
+Severity is higher than the earlier findings because there is no editable field standing
+between the player and the wrong number. Gel armour and melee reach both land in a box a GM
+can override; an exhausted Combat Pool simply is not there, and the effect compounds every
+round — combat gets progressively and silently more lethal the longer it runs.
+
+Affects Combat Pool, and by the same route Spell Pool, Astral Pool and Hacking Pool: all
+four are refreshed together in that one `endCombat` block, and nowhere else.
+
+**Fix shape:** refresh in `_newRound`, alongside the `resetRecoil` loop that is already
+there for exactly this reason. `endCombat` should keep its own refresh — that one is about
+leaving the actor clean after the fight, not about turn structure. Worth checking whether
+the GM prompt currently attached to the `endCombat` refresh should appear at round
+boundaries too, or whether per-round refresh should simply be automatic (RAW says it is).
+
+#### Verified correct
+
+| Rule | Code | Verdict |
+|---|---|---|
+| Combat Pool = (Quickness + Intelligence + Willpower) / 2, rounded down | `SR3EActor.js` ~1722 | correct |
+| Available pool = derived total minus spent, floored at 0 | `Math.max(0, combatPool - combatPoolSpent)` | correct |
+| Spending accumulates rather than overwriting | `SR3EActor.js:4080` | correct |
+| Wound modifier reduces the pool | folded via `woundMod` in the derivation | correct |
+
+#### CLAUDE.md drift: Full Defense is documented as unimplemented
+
+CLAUDE.md's "What is NOT yet implemented" lists Full Defense as deferred. It is largely
+wired: data model fields (`fullDefense`, `fullDefensePool`), a toggle at
+`SR3EActor.js:4131`, consumption in the dodge path at `SR3EItem.js:1924`, and a clear on
+combat end at `SR3ECombat.js:396`. The documentation should be corrected; whether the
+implementation is *complete* against the rules was not established here and is worth its
+own pass.
+
+**Dimension 4 complete.**
 
 ---
