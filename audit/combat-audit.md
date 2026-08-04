@@ -25,7 +25,7 @@ produced nothing; sequential inline work is the whole point of this file.
 | 2 | Damage, staging, soak | **done** — no defects | `parseDamageCode` / `stageDamage`, soak card path, armour ballistic vs impact, APDS halving, flechette doubling, wound track, overflow, stun-to-physical |
 | 3 | Melee combat | **done** — 1 defect (reach) | `rollMeleeAttack` / `_buildMeleePoolInfo` / `handleMeleeRoll`: opposed test, reach on both sides, defender weapon fallback, staging by net successes, ties, called shots |
 | 4 | Pools and defence | **done** — 1 defect (pool refresh), 1 doc drift | Combat Pool derivation and wound mod, spend/track/refresh timing (SR3 refreshes per Combat Turn — check the boundary now rounds auto-advance), dodge commitment, Full Defense |
-| 5 | Action economy | pending | Combat Turn / pass / action structure, Free-Simple-Complex, what the Action Tracker enforces vs displays, per-pass state resets, delayed actions, mid-round joins |
+| 5 | Action economy | **done** — 1 defect (Full Defense) | Combat Turn / pass / action structure, Free-Simple-Complex, what the Action Tracker enforces vs displays, per-pass state resets, delayed actions, mid-round joins |
 
 ## Method
 
@@ -316,5 +316,63 @@ implementation is *complete* against the rules was not established here and is w
 own pass.
 
 **Dimension 4 complete.**
+
+### 5. Action economy and turn structure
+
+#### DEFECT: Full Defense never ends until combat does — `wrong-result`
+
+`fullDefense` and `fullDefensePool` are cleared in exactly one place:
+`SR3ECombat.js:401`, inside `endCombat`. A character who declares Full Defense in round 1
+is still in Full Defense in round 5, and the `sr3e-fulldefense` status icon stays lit for
+the whole fight.
+
+Full Defense is a declared posture bought with pool dice, not a permanent state, so it
+should end at a turn boundary. *The precise duration should be confirmed against the
+rulebook before fixing* — this finding establishes that the code never ends it at all,
+which is wrong under any reading.
+
+**Third instance of the same pattern.** It sits in the same `endCombat` reset block as the
+pools and recoil, and has the same history: it used to clear every round because every
+round called `endCombat()`.
+
+#### The full contents of that block, and where each one now stands
+
+`endCombat` resets eight things. Auditing them as a group is what this pattern deserves —
+they were all silently relying on `endCombat` firing once per round:
+
+| Reset | Handled at the round boundary? |
+|---|---|
+| `resetRecoil` | **yes** — added to `_newRound` in `802c99b` |
+| `clearSpellDefense` | **yes** — runs inside `rollInitiative`, which `_newRound` calls |
+| `refreshCombatPool` | **no** — see the dimension 4 defect |
+| `refreshSpellPool` | **no** — same |
+| `refreshAstralPool` | **no** — same |
+| `refreshHackingPool` | **no** — same |
+| `fullDefense` / `fullDefensePool` | **no** — the defect above |
+| `tempMagicLoss` flag | unclear — this one may legitimately outlive a round; not established |
+
+That is the whole of the blast radius from making rounds continue: six of eight items
+needed a home at the new boundary, two already had one. Fixing the pools and Full Defense
+together closes it.
+
+#### Verified correct / not a defect
+
+**The Action Tracker displays, it does not enforce.** State lives in an in-memory
+`_actionTracker` map (`sr3e.js:1590-1609`), cleared on any turn or round change. Nothing
+stops a player taking more actions than they have. Under the minimal-guardrails ethos this
+is the intended design, not a gap — the tracker is a reminder for the GM.
+
+**Complex-versus-two-Simple** is modelled the way the rules describe: the first Simple
+button toggles Complex off and marks one simple action used, the second advances the turn.
+
+**Per-pass state** is now correct following `802c99b` — recoil resets on a pass change in
+`nextTurn` and at the round boundary in `_newRound`.
+
+**Delayed actions and mid-round joins** were NOT established. The queue is built once per
+round from initiative, so an actor added mid-round has no slot until the next round, and
+there is no delay mechanism. Whether either matters is a design question rather than a
+rules defect, and is left open.
+
+**Dimension 5 complete. Audit complete.**
 
 ---
