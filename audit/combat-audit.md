@@ -21,7 +21,7 @@ produced nothing; sequential inline work is the whole point of this file.
 
 | # | Dimension | State | Scope |
 |---|-----------|-------|-------|
-| 1 | Ranged combat | pending | `rollWeapon` end to end: base TN and every modifier, range bands and measurement, recoil accumulation / compensation / heavy doubling, fire modes SS-SA-BF-FA, ammo effects, called shots, multi-target |
+| 1 | Ranged combat | **partial** — recoil + fire modes done, see Findings | `rollWeapon` end to end: base TN and every modifier, range bands and measurement, recoil accumulation / compensation / heavy doubling, fire modes SS-SA-BF-FA, ammo effects, called shots, multi-target |
 | 2 | Damage, staging, soak | pending | `parseDamageCode` / `stageDamage`, soak card path, armour ballistic vs impact, APDS halving, flechette doubling, wound track, overflow, stun-to-physical |
 | 3 | Melee combat | pending | `rollMeleeAttack` / `_buildMeleePoolInfo` / `handleMeleeRoll`: opposed test, reach on both sides, defender weapon fallback, staging by net successes, ties, called shots |
 | 4 | Pools and defence | pending | Combat Pool derivation and wound mod, spend/track/refresh timing (SR3 refreshes per Combat Turn — check the boundary now rounds auto-advance), dodge commitment, Full Defense |
@@ -84,6 +84,33 @@ round. Now reset at all three real phase boundaries — pass change, new round, 
 *This one was found by the audit brief before the fan-out died, which is the reason to
 finish the remaining five dimensions rather than assume the system is clean.*
 
----
+### 1. Ranged combat — recoil and fire modes (partial)
 
-*(no dimension audited yet — start with 1. Ranged combat)*
+**No defects found in this part.** Verified against SR3 core, recoil table and the
+burst/full-auto damage passages.
+
+| Rule | Book | Code | Verdict |
+|---|---|---|---|
+| Burst fire recoil, +3 per burst in the phase | recoil table | `recoilForMode`, `(rounds + 3) - totalComp` — `SR3EItem.js:2208` | correct |
+| Heavy weapons double uncompensated recoil | recoil table | `multForMode`, `SR3EItem.js:2201` | correct |
+| Shotguns double it in burst only | SR3 p.111 | same, gated on `mode === 'BF'` | correct |
+| Burst fire damage: Power +3 **and** Damage Level +1 | burst-fire section | `power += 3; lvlIdx + 1` — `SR3EItem.js:826` | correct |
+| Full auto: Power +1 per round, Level +1 per 3 full rounds, cap Deadly | full-auto section | `power += rds; lvlIdx + floor(rds/3)`, `Math.min(3, …)` — `SR3EItem.js:829` | correct |
+| Recoil counts rounds fired *before* this shot, so the first bullet incurs none | recoil rules | `roundsBefore`, `SR3EItem.js:2197` | correct |
+
+The book's worked example — a four-round full-auto burst from an 8M assault rifle
+producing 12S — reproduces exactly through `SR3EItem.js:829` (8+4 Power, M +1 stage).
+That is a strong check: it exercises Power accumulation, level staging and the
+rounds-to-stages division together.
+
+Tracer handling is a deliberate deviation worth knowing about rather than a defect: with
+tracer ammo the code adds `rds - floor(rds/3)` to Power instead of `rds`, on the reasoning
+that tracer rounds raise Damage Level but not Power. That is a house interpretation — the
+full-auto rule as written adds Power per round without excepting tracers. Left alone under
+the minimal-guardrails ethos, but flagged since it silently changes a damage code.
+
+**Still pending in dimension 1** (do these next, then mark the row done): range bands and
+TN by band, the ammunition effects table (explosive / EX / gel / APDS / flechette), called
+shots, and the multi-target modifier.
+
+---
