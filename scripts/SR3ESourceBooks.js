@@ -56,6 +56,24 @@ export class SR3ESourceBooks {
     return this.isAllowed(this.bookOf(pack));
   }
 
+  /**
+   * Re-render whatever is showing filtered content, after the edition or the per-book
+   * toggles change.
+   *
+   * The compendium sidebar is the obvious one. The Source Books dialog matters too: it
+   * lists only the played edition, so if it is open when the edition changes it would
+   * otherwise sit there showing the wrong book list until reopened. Item pickers need
+   * nothing — they are transient and re-read the filter each time they open.
+   *
+   * Note the settings form commits on Save, so none of this fires while a dropdown is
+   * merely changed. Until then game.settings.get still returns the stored value, which
+   * is why the book list does not move as you change the edition in the form.
+   */
+  static _refreshUI() {
+    ui.compendium?.render();
+    foundry.applications.instances?.get('sr3e-source-books')?.render();
+  }
+
   /* ---------------------------------------------------------------------- */
 
   static register() {
@@ -67,7 +85,7 @@ export class SR3ESourceBooks {
       type: String,
       choices: Object.fromEntries(Object.entries(EDITIONS).map(([k, v]) => [k, v.label])),
       default: 'SR3',
-      onChange: () => ui.compendium?.render(),
+      onChange: () => SR3ESourceBooks._refreshUI(),
     });
 
     game.settings.register(SYS, SETTING, {
@@ -78,7 +96,7 @@ export class SR3ESourceBooks {
       // Re-render the sidebar so the change shows without a reload. The item
       // pickers are transient dialogs that re-read the filter each time they open,
       // so the sidebar is the only persistent UI that needs nudging.
-      onChange: () => ui.compendium?.render(),
+      onChange: () => SR3ESourceBooks._refreshUI(),
     });
 
     game.settings.registerMenu(SYS, 'allowedBooksMenu', {
