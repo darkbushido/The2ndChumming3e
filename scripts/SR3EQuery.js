@@ -100,27 +100,17 @@ const _SEEN_MAX = 200;
  */
 const _openDialogs = new Map();
 
-/**
- * GM-side negotiations awaiting their commit. requestId → {defUuid, fd, requested,
- * userId, at, result}. Reaped after 10 minutes, and immediately when the
- * requesting user goes inactive, so a GM adjudicating into the void after the
- * attacker refreshed or timed out never writes.
+/*
+ * There is deliberately NO pending-negotiation registry any more.
+ *
+ * The two-phase negotiate/commit split existed because the defender's pool was
+ * reserved during negotiation, before the attacker's remaining abort paths — so a
+ * cancelled attack could burn someone else's resources. Moving the dodge to AFTER
+ * the attack roll (SR3 sequence step 4) removes the reservation entirely:
+ * `sr3e.attack.negotiate` now only reads a target number and writes nothing at all,
+ * and the defender's pool is spent by `SR3EActor.handleDodgeDeclare` at the moment
+ * they choose to spend it. Nothing is ever held in limbo, so nothing needs reaping.
  */
-const _pending = new Map();
-const _PENDING_TTL_MS = 10 * 60 * 1000;
-
-function _reapPending() {
-  const now = Date.now();
-  for (const [id, e] of _pending) {
-    const gone = !game.users.get(e.userId)?.active;
-    if (gone || now - e.at > _PENDING_TTL_MS) _pending.delete(id);
-  }
-}
-
-/** Drop pending negotiations for a user who just disconnected. */
-export function sr3eReapPendingFor(userId) {
-  for (const [id, e] of _pending) if (e.userId === userId) _pending.delete(id);
-}
 
 export class SR3EQuery {
 
@@ -388,12 +378,12 @@ export class SR3EQuery {
      * NOTE: no `assertActiveGM` — this deliberately runs on a player client.
      * It performs NO writes; it returns a number and the GM commits it.
      */
-    CONFIG.queries['sr3e.dodge.declare'] = async ({ rid, exchangeId, defenderUuid, attackerName, weaponName }) =>
+    CONFIG.queries['sr3e.dodge.declare'] = async ({ rid, exchangeId, defenderUuid, attackerName, weaponName, attackSuccesses }) =>
       SR3EQuery.once(rid, async () => {
         const defender = SR3EQuery.resolve(defenderUuid);
         if (!defender) return { dice: 0 };
         const dice = await game.sr3e.SR3EItem._promptDodgeDeclaration(
-          defender, attackerName, weaponName, { exchangeId });
+          defender, attackerName, weaponName, { exchangeId, attackSuccesses });
         return { dice: dice ?? 0 };
       });
 
@@ -427,103 +417,20 @@ export class SR3EQuery {
       // when the GM is attacking with their own NPCs, so GM-vs-NPC costs nothing.
       const mode = game.settings.get('The2ndChumming3e', 'gmApprovesTN');
       const requesterIsGM = game.users.get(ctx._requesterId)?.isGM === true;
+      // No GM window: the attacker's own TN stands, unchanged.
       if (mode === 'off' || (mode === 'player' && requesterIsGM)) {
-        const def = SR3EQuery.resolve(ctx.defenderUuid);
-        const fdOff = SR3EActor._fullDefenseDice(def);
-        const canDodgeOff = Boolean(def) && def.type !== 'vehicle' && fdOff === 0;
-        const decider = def ? SR3EQuery.deciderFor(def) : null;
-        const res = canDodgeOff
-          ? await SR3EQuery.ask(decider, 'sr3e.dodge.declare', {
-              exchangeId: foundry.utils.randomID(), defenderUuid: ctx.defenderUuid,
-              attackerName: ctx.attackerName, weaponName: ctx.weaponName,
-            }, { fallback: { dice: 0 } })
-          : null;
-        const want = fdOff > 0 ? fdOff : Math.max(0, res?.dice ?? 0);
-        const rq = foundry.utils.randomID();
-        _pending.set(rq, { defUuid: ctx.defenderUuid, fd: fdOff, requested: want,
-                           userId: ctx._requesterId, at: Date.now(), result: null });
-        _reapPending();
-        return { requestId: rq, tn: ctx.baseTN, mods: {}, requested: want, fullDefenseDice: fdOff };
+        return { tn: ctx.baseTN, mods: {} };
       }
 
-      const defender  = SR3EQuery.resolve(ctx.defenderUuid);
-      const attacker  = SR3EQuery.resolve(ctx.attackerUuid);
-      const weapon    = attacker?.items?.get(ctx.weaponId) ?? null;
-      const fd        = SR3EActor._fullDefenseDice(defender);
-      const canDodge  = Boolean(defender) && defender.type !== 'vehicle' && fd === 0;
-      const deciderId = defender ? SR3EQuery.deciderFor(defender) : null;
-      const gmDecides = deciderId === game.user.id;
-      const exchangeId = foundry.utils.randomID();
-      const availPool = defender?.system?.derived?.availableCombatPool ?? 0;
+      const attacker = SR3EQuery.resolve(ctx.attackerUuid);
+      const weapon   = attacker?.items?.get(ctx.weaponId) ?? null;
 
-      // Merged branch: when the GM also decides for the defender, the dodge row
-      // renders INSIDE the TN window so the GM is never asked twice per attack.
-      const dodgeP = (canDodge && !gmDecides)
-        ? SR3EQuery.ask(deciderId, 'sr3e.dodge.declare', {
-            exchangeId, defenderUuid: ctx.defenderUuid,
-            attackerName: ctx.attackerName, weaponName: ctx.weaponName,
-          }, { fallback: { dice: 0 } })
-        : Promise.resolve(null);
+      const gmRes = await SR3EItem._promptGMAttackWindow({ ...ctx, attacker, weapon });
+      if (!gmRes) return null;   // GM cancelled — nothing written anywhere
 
-      const gmP = SR3EItem._promptGMAttackWindow(
-        { ...ctx, attacker, weapon },
-        { dodge: (canDodge && gmDecides) ? { availPool, defenderName: defender.name } : null });
-
-      const [dodgeRes, gmRes] = await Promise.all([dodgeP, gmP]);
-
-      if (!gmRes) {
-        // GM cancelled — close the defender's now-pointless dialog. Nothing written.
-        if (canDodge && !gmDecides) {
-          await SR3EQuery.withdraw(deciderId, exchangeId, 'The GM cancelled that attack.');
-        }
-        return null;
-      }
-
-      const requested = fd > 0 ? fd
-                      : gmDecides ? (gmRes.dodgeDice ?? 0)
-                      : Math.max(0, dodgeRes?.dice ?? 0);
-
-      // Stash for the commit phase. NOTHING is written yet — the attacker still
-      // has two abort paths ahead (defaulting, combat pool).
-      const requestId = foundry.utils.randomID();
-      _pending.set(requestId, {
-        defUuid: ctx.defenderUuid, fd, requested,
-        // The REQUESTER, not game.user — this handler runs on the GM, so
-        // game.user.id would be the GM and the disconnect reaper would never
-        // match the attacker who actually left.
-        userId: ctx._requesterId, at: Date.now(), result: null,
-      });
-      _reapPending();
-
-      return { requestId, tn: gmRes.tn, mods: gmRes.mods, requested, fullDefenseDice: fd };
+      return { tn: gmRes.tn, mods: gmRes.mods };
     });
 
-    /**
-     * PHASE 2 — commit. The point of no return, and idempotent by `requestId`:
-     * a repeat returns the stored result rather than spending the pool twice.
-     */
-    CONFIG.queries['sr3e.attack.commit'] = async ({ requestId }) => {
-      SR3EQuery.assertActiveGM();
-      const entry = _pending.get(requestId);
-      if (!entry) return { committedDodgeDice: 0, fullDefenseUsed: false, stale: true };
-      if (entry.result) return entry.result;          // already committed
-
-      const { SR3EActor } = game.sr3e;
-      const defender = SR3EQuery.resolve(entry.defUuid);
-      let committed = 0;
-
-      if (defender && entry.requested > 0) {
-        committed = await defender.spendCombatPool(entry.requested);
-        if (entry.fd > 0) {
-          await SR3EActor._announceFullDefense(defender, committed);
-          await defender.clearFullDefense();
-        }
-      }
-
-      entry.result = { committedDodgeDice: committed, fullDefenseUsed: entry.fd > 0 };
-      _pending.delete(requestId);
-      return entry.result;
-    };
 
     /** Close a decision dialog whose answer is no longer wanted. */
     CONFIG.queries['sr3e.dialog.withdraw'] = async ({ exchangeId, reason }) => {

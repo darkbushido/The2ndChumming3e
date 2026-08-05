@@ -25,7 +25,7 @@ import { SR3EMIJI } from './SR3EMIJI.js';
 import { SR3EClocks } from './SR3EClocks.js';
 import { SR3ESourceBooks } from './SR3ESourceBooks.js';
 import { SR3ECompendiumDirectory } from './SR3ECompendiumDirectory.js';
-import { SR3EQuery, SR3EQueue, SR3EGMUnavailable, sr3eReapPendingFor } from './SR3EQuery.js';
+import { SR3EQuery, SR3EQueue, SR3EGMUnavailable } from './SR3EQuery.js';
 
 Hooks.once('init', () => {
   console.log('SR3E | Initialising');
@@ -291,12 +291,6 @@ Hooks.on('updateSetting', setting => {
 });
 
 // Auto-create GM utility macros on first load
-// Drop any negotiation still awaiting a commit from a user who just left, so the
-// GM cannot adjudicate into the void and write for an attack nobody is running.
-Hooks.on('userConnected', (user, connected) => {
-  if (!connected) sr3eReapPendingFor(user.id);
-});
-
 Hooks.once('ready', async () => {
   if (!game.user.isGM) return;
 
@@ -2095,6 +2089,28 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   });
 
   // Dodge roll button — triggered by player after seeing attack hits
+  // Post-roll defence declaration (SR3 sequence step 4). The defender decides
+  // AFTER seeing the attack successes — dodge, or save the pool for the Damage
+  // Resistance Test. Gated to the defender: it spends their pool.
+  html.querySelectorAll('.sr-dodge-declare-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'dodgedeclare', i)) return;
+    try {
+      if (!_isDecider(JSON.parse(btn.dataset.payload ?? '{}'))) {
+        return _denyBtn(btn, 'Only the defender (or the GM) declares this defence.');
+      }
+    } catch { /* unreadable payload — leave the button alone */ }
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'dodgedeclare', i)) return;
+      const payload = btn.dataset.payload;
+      if (!payload) return;
+      btn.disabled    = true;
+      btn.textContent = '⏳ Declaring…';
+      await SR3EActor.handleDodgeDeclare(JSON.parse(payload));
+    });
+  });
+
   html.querySelectorAll('.sr-dodge-roll-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'dodge', i)) return;
     try {

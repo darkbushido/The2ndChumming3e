@@ -2314,8 +2314,15 @@ _prepareCharacter(sys, attr) {
           const targetName   = targetActor?.name ?? 'Target';
           const attackerName = game.actors.get(state.attackerActorId)?.name ?? 'Attacker';
 
-          if ((state.committedDodgeDice ?? 0) > 0) {
-            // Defender committed dice — show a button to trigger the dodge roll
+          // SR3 ranged sequence, core rulebook: "3. Make Attacker's Success Test …
+          // 4. Resolve Dodge Test — if the target wishes to attempt to dodge …
+          // 5. Resolve Target's Damage Resistance Test." The defender decides AFTER
+          // seeing the attack roll, and the real choice is dodge-vs-soak: pool spent
+          // dodging is gone from the Damage Resistance Test. The old flow asked them
+          // to commit before the roll, so they were guessing blind.
+          const canDodge = targetActor && targetActor.type !== 'vehicle' && !state.isMelee;
+
+          if (canDodge) {
             const dodgeContext = JSON.stringify({
               attackerActorId: state.attackerActorId,
               targetActorId:   state.targetActorId,
@@ -2323,7 +2330,7 @@ _prepareCharacter(sys, attr) {
               ammoType:        state.ammoType ?? null,
               isMelee:         state.isMelee,
               attackSuccesses: successes,
-              committedDodgeDice: state.committedDodgeDice,
+              attackerName,
               stagedPower:     staged.power,
               stagedLevel:     staged.level,
               isStun:          staged.isStun,
@@ -2332,8 +2339,8 @@ _prepareCharacter(sys, attr) {
 
             postRollHtml = `
               <div class="sr-soak-action">
-                <button class="sr-dodge-roll-btn" data-payload='${dodgeContext}'>
-                  🎯 ${targetName}, roll to dodge.
+                <button class="sr-dodge-declare-btn" data-payload='${dodgeContext}'>
+                  🎯 ${targetName} — ${successes} hit${successes === 1 ? '' : 's'} incoming. Dodge or take it?
                 </button>
               </div>`;
           } else {
@@ -3862,6 +3869,53 @@ _prepareCharacter(sys, attr) {
    * Roll committed dodge dice and post result card.
    * Called automatically after the attack roll resolves.
    */
+  /**
+   * Resolve the defender's post-roll defence decision (SR3 sequence step 4).
+   *
+   * Asks the DEFENDER — on their own screen — whether to dodge, now that they can
+   * see how many successes they have to beat. The pool spend routes through the GM,
+   * and a declaration of 0 falls straight through to the Damage Resistance Test.
+   *
+   * @param {object} ctx  payload from `.sr-dodge-declare-btn`
+   */
+  static async handleDodgeDeclare(ctx) {
+    const { SR3EQuery, SR3EItem } = game.sr3e;
+    const targetActor = game.actors.get(ctx.targetActorId);
+    if (!targetActor) return;
+
+    const exchangeId = foundry.utils.randomID();
+    const deciderId  = SR3EQuery.deciderFor(targetActor);
+    const reserved   = SR3EActor._fullDefenseDice(targetActor);
+
+    // Full Defense is already declared — no question to ask.
+    let wanted = reserved;
+    if (reserved === 0) {
+      const declared = await SR3EQuery.ask(deciderId, 'sr3e.dodge.declare', {
+        exchangeId,
+        defenderUuid:    targetActor.uuid,
+        attackerName:    ctx.attackerName ?? 'The attacker',
+        weaponName:      ctx.rawDamage ?? 'the attack',
+        attackSuccesses: ctx.attackSuccesses ?? 0,
+      }, { fallback: { dice: 0 } });   // AFK / unreachable → no dodge, resolution continues
+      wanted = Math.max(0, declared?.dice ?? 0);
+    }
+
+    let committed = 0;
+    if (wanted > 0) {
+      committed = await targetActor.spendCombatPool(wanted);
+      if (reserved > 0) {
+        await SR3EActor._announceFullDefense(targetActor, committed);
+        await targetActor.clearFullDefense();
+      }
+    }
+
+    if (committed > 0) {
+      return SR3EActor._rollDodge(targetActor, committed, { ...ctx, committedDodgeDice: committed });
+    }
+    // Declined, or nothing left to spend — straight to the Damage Resistance Test.
+    return SR3EActor.postSoakCard(ctx.targetActorId, ctx);
+  }
+
   static async _rollDodge(targetActor, dodgeDice, dodgeContext, physicalDice = false) {
     const DODGE_TN = 4;
     const label    = `🎯 ${targetActor.name} dodges`;

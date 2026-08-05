@@ -619,14 +619,45 @@ Only one state active at a time; clicking the active button deactivates it.
 2. Target selection dialog (radio buttons, single actor)
 3. (Firearms) Loaded ammo type is read from the weapon — no per-shot ammo picker. Power/level/stun mods (Explosive/EX/Gel) applied now; see **Firearms** section
 4. (Firearms) Fire-mode dialog: SS/SA/BF/FA, recoil preview, editable compensation (see **Firearms**)
-5. Roll-options dialog: TN, damage code, editable **range** dropdown (auto-measured from tokens; see Range section), TN-modifier breakdown (recoil, wound, multi-target, tracer note)
-6. Defender declares: no dodge OR dodge with X combat pool dice (committed immediately, pool spent)
-7. Attacker allocates combat pool to attack
+5. Roll-options dialog: damage code, editable **range** dropdown (auto-measured from tokens; see Range section), TN-modifier breakdown (recoil, wound, multi-target, tracer note). **The TN field is read-only whenever a GM window will open** — see `gmApprovesTN` below
+6. **GM's TN window** (`_promptGMAttackWindow`): p.112 modifier checkboxes, live-summed into an editable TN, displayed value clamped at 2
+7. Attacker allocates combat pool to attack — this dialog is the attacker's **🎲 Roll** trigger
 8. Attack rolls (interactive Rule of Six)
-9. On final wave: if dodge committed → "Roll to dodge" button appears; if no dodge → soak card auto-posts
+9. On final wave: **the defender is asked to declare a defence, knowing the attack's successes** — "N hits incoming. Dodge or take it?"
 10. Dodge roll (interactive Rule of Six, TN 4)
 11. Dodge result: **binary** — dodge hits ≥ attack hits = complete miss; otherwise full hit lands
 12. Dodge does NOT reduce staging. Net hits are irrelevant to damage. Full staged damage proceeds to soak.
+
+#### ⚠ The defender declares AFTER the attack roll — this is RAW, not a convenience
+
+The core rulebook's numbered ranged sequence is explicit:
+
+> **3. Make Attacker's Success Test** — "Count the successes the attacker rolls."
+> **4. Resolve Dodge Test** — "If the target wishes to attempt to dodge an attack, he may use the
+> Combat Pool against a Target Number 4… A clean miss occurs if the number of successes from the
+> target's Combat Pool dice **exceeds the attacker's successes**."
+> **5. Resolve Target's Damage Resistance Test**
+
+The book's worked example follows the same order: Liam rolls 5 successes, and *then* "Snot first
+decides to attempt a Dodge Test."
+
+**The decision is dodge-vs-soak, not a blind guess.** Combat Pool spent dodging is gone from the
+Damage Resistance Test — in the example Snot burns all 5 dice on the dodge, fails, and then has
+"no dice remaining in his Combat Pool with which to increase his odds of survival." Showing the
+defender the attack's successes first is what makes that trade a real decision.
+
+**This system had it backwards until 2026-08-05**, asking the defender to commit before the roll.
+Do not "restore" the old order: prompting early is not a simplification, it deletes the choice the
+rule exists to create.
+
+Consequences in the code, so they are not undone by accident:
+- `sr3e.attack.negotiate` handles **only** the GM's TN window. It writes nothing.
+- There is **no** negotiate/commit two-phase and no pending registry. Both existed to protect a
+  defender-pool reservation that no longer happens.
+- `SR3EActor.handleDodgeDeclare` (from `.sr-dodge-declare-btn`) runs step 4: relays
+  `sr3e.dodge.declare` to the defender's decider with `attackSuccesses`, spends the pool through
+  the GM, then rolls the dodge — or falls through to the soak card on a declaration of 0.
+- Full Defense is read (`_fullDefenseDice`) but only consumed at that point, never earlier.
 13. Soak card posts for target: editable Body pool, TN (power − armour), armour type dropdown (ballistic default, impact for melee). APDS/Flechette armour effects auto-applied here from the carried `ammoType` (editable; shows a gold note)
 14. Soak roll (interactive Rule of Six)
 15. Soak result: each 2 soak hits = stage down (D→S→M→L). Below L = completely soaked.

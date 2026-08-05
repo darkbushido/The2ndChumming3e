@@ -1107,26 +1107,20 @@ export class SR3EItem extends Item {
   tn    = tn + defTnMod;   // bake defaulting TN modifier
 
   // ╔════════════════════ POINT OF NO RETURN ════════════════════════════════╗
-  // Every abort path is now behind us: the fire-mode dialog, the GM's TN window,
-  // the SR3 Default Table and the Combat Pool dialog can all still cancel ABOVE
-  // this line, and cancelling any of them writes nothing anywhere.
+  // Every abort path is behind us: the fire-mode dialog, the GM's TN window, the
+  // SR3 Default Table and the Combat Pool dialog can all still cancel ABOVE this
+  // line, and cancelling any of them writes nothing anywhere.
   //
-  // Only now does the defender's pool get spent and their Full Defense consumed.
-  // This ordering is the whole reason negotiate and commit are separate verbs —
-  // the earlier shape spent the defender's pool at the dodge step, so an attacker
-  // cancelling their own defaulting dialog burnt someone else's resources for an
-  // attack that never happened, on a different client, with no rollback.
+  // NOTHING belonging to the DEFENDER is touched here at all. Per the SR3 sequence
+  // the defender does not decide until step 4, after this roll resolves, so their
+  // pool is spent by SR3EActor.handleDodgeDeclare when they actually choose to
+  // spend it. Only the attacker's own resources are committed below.
   //
   // DO NOT ADD A WRITE ABOVE THIS BLOCK. The attacker's own commits (recoil,
   // magazine, nocked round, thrown quantity) are all already below it.
   // ╚════════════════════════════════════════════════════════════════════════╝
-  if (negotiation?.requestId) {
-    const committed = await game.sr3e.SR3EQuery.asGM('sr3e.attack.commit',
-      { requestId: negotiation.requestId });
-    committedDodgeDice = committed?.committedDodgeDice ?? 0;
-  }
 
-  // Store full context — including committed dodge dice
+  // Store full context
   options.weaponItemId       = this.id;
   options.actorId            = actor.id;
   options.targetActorId      = targetActor.id;
@@ -2270,8 +2264,15 @@ export class SR3EItem extends Item {
         <p style="margin-bottom:8px">
           <strong>${defender.name}</strong>, ${attackerName} is attacking you
           with <strong>${weaponName}</strong>.
-          Do you want to try and dodge this attack?
         </p>
+        ${Number.isFinite(opts.attackSuccesses) ? `
+        <p style="margin-bottom:8px;padding:6px 8px;background:var(--sr-red-bg);border-radius:var(--r)">
+          The attack scored <strong>${opts.attackSuccesses}</strong>
+          success${opts.attackSuccesses === 1 ? '' : 'es'} — you must beat that to dodge it completely.
+        </p>
+        <p style="margin-bottom:8px;font-size:11px;color:var(--sr-amber)">
+          Pool dice spent dodging are <strong>not</strong> available to resist the damage.
+        </p>` : ''}
         <p style="margin-bottom:12px;font-size:11px;color:var(--sr-muted)">
           Your available Combat Pool: <strong>${availPool}</strong> dice
         </p>
