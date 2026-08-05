@@ -715,6 +715,48 @@ Migrate incrementally, highest-risk first (anything that can plausibly be open t
 drop the `Hooks.on`/`Hooks.off` dance and the element-check guard for
 `render: (_event, dialog) => { const html = dialog.element; … }`.
 
+## 22. Add a linter — **the project has none, and it has already cost us**
+
+`package.json` has `"scripts": {"test": "node tests/run.mjs"}`, **no devDependencies**, and no
+ESLint config anywhere. The only static check available is `node --check`, which is a *syntax*
+check and nothing more.
+
+**This is not hypothetical.** Socket Stage 3 shipped `baseNote: modBreakdown ?? null` in
+`rollWeapon` ([SR3EItem.js](scripts/documents/SR3EItem.js)). `modBreakdown` is a **parameter of a
+different function** (`_promptWeaponRollOptions`); in `rollWeapon` it is undeclared. ES modules are
+always strict mode, so that is a `ReferenceError` — and `??` does not save you, because the throw
+happens on *reading* the undeclared binding. It would have crashed **every ranged attack**.
+`node --check` passed it. `npm test` passed it. It was caught by reading the code.
+
+`no-undef` alone would have caught it, for free, instantly.
+
+**Minimum viable setup:**
+
+```
+npm i -D eslint
+npx eslint --init      # ESM, browser env
+```
+
+Then in `eslint.config.js` declare Foundry's globals — `game`, `ui`, `CONFIG`, `CONST`, `Hooks`,
+`foundry`, `canvas`, `ChatMessage`, `Actor`, `Item`, `fromUuid`, `fromUuidSync`, `TextEditor`,
+`PIXI`, `Roll` — or every one of them reads as `no-undef` and the signal drowns.
+
+Rules worth having on day one, in rough order of value here:
+
+| Rule | Why, for this codebase |
+|---|---|
+| `no-undef` | the bug above |
+| `no-unused-vars` | would have flagged the duplicate `refreshAstralPool` (#16) |
+| `no-dupe-class-members` | **exactly** the duplicate-method bug in #16 |
+| `require-atomic-updates` | the read-modify-write races Stage 1 exists to fix |
+| `no-await-in-loop` (warn) | the pack/populate scripts |
+
+Add `"lint": "eslint scripts"` to `scripts`, and wire it into `npm test` so it runs with the suite.
+
+⚠ **Expect a large first run.** ~12,000 lines were written without a linter, so budget for a
+triage pass and consider starting with only the rules above rather than a full recommended set —
+a wall of 500 style warnings gets ignored, and the correctness rules are what matter.
+
 ## 19. Convert the SR3 GM Screen into a compendium — as data, not page images
 
 Put the reference tables a GM needs at the table into a Foundry compendium, **rebuilt as real
