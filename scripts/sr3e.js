@@ -25,7 +25,7 @@ import { SR3EMIJI } from './SR3EMIJI.js';
 import { SR3EClocks } from './SR3EClocks.js';
 import { SR3ESourceBooks } from './SR3ESourceBooks.js';
 import { SR3ECompendiumDirectory } from './SR3ECompendiumDirectory.js';
-import { SR3EQuery, SR3EQueue, SR3EGMUnavailable } from './SR3EQuery.js';
+import { SR3EQuery, SR3EQueue, SR3EGMUnavailable, sr3eReapPendingFor } from './SR3EQuery.js';
 
 Hooks.once('init', () => {
   console.log('SR3E | Initialising');
@@ -249,6 +249,20 @@ Hooks.once('init', () => {
 
   // Optional ammunition tracking — when on, firing decrements the loaded ammo's
   // rounds-remaining counter. Off by default; behaves as before when disabled.
+  game.settings.register('The2ndChumming3e', 'gmApprovesTN', {
+    name: 'GM sets the Target Number',
+    hint: 'Who adjudicates the TN on a ranged attack. "Player attacks only" (default) opens the GM\'s modifier window when a player attacks, and costs the GM nothing when running NPC-vs-NPC. "Always" opens it for every attack including the GM\'s own. "Off" restores the old behaviour exactly — the attacker sets their own TN and no GM window opens.',
+    scope: 'world',
+    config: true,
+    type: String,
+    choices: {
+      off:    'Off — attacker sets the TN (as before)',
+      player: 'Player attacks only (recommended)',
+      always: 'Always, including GM attacks',
+    },
+    default: 'player',
+  });
+
   game.settings.register('The2ndChumming3e', 'trackAmmo', {
     name: 'Track Ammunition',
     hint: 'When enabled, firing decrements the selected ammo\'s rounds-remaining counter (1 SS/SA, 3 BF, N FA). Warns when empty but never blocks a shot. Reload by editing the rounds field on the ammo item.',
@@ -277,6 +291,12 @@ Hooks.on('updateSetting', setting => {
 });
 
 // Auto-create GM utility macros on first load
+// Drop any negotiation still awaiting a commit from a user who just left, so the
+// GM cannot adjudicate into the void and write for an attack nobody is running.
+Hooks.on('userConnected', (user, connected) => {
+  if (!connected) sr3eReapPendingFor(user.id);
+});
+
 Hooks.once('ready', async () => {
   if (!game.user.isGM) return;
 

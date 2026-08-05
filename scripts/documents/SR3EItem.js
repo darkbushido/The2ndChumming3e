@@ -1006,37 +1006,25 @@ export class SR3EItem extends Item {
   // attack would hand every defender a one-click veto over the attacker's turn,
   // and an AFK defender would exercise it by doing nothing.
   let committedDodgeDice = 0;
-  if (targetActor.type !== 'vehicle') {
-    const { SR3EQuery, SR3EActor } = game.sr3e;   // registry, not import — breaks the cycle
-    const exchangeId = foundry.utils.randomID();
-    const deciderId  = SR3EQuery.deciderFor(targetActor);
-    const wasFullDef = SR3EActor._fullDefenseDice(targetActor) > 0;
-
-    const declared = await SR3EQuery.ask(deciderId, 'sr3e.dodge.declare', {
-      exchangeId,
+  let negotiation        = null;
+  {
+    const { SR3EQuery } = game.sr3e;   // registry, not import — breaks the cycle
+    negotiation = await SR3EQuery.asGM('sr3e.attack.negotiate', {
+      attackerUuid: actor.uuid,
       defenderUuid: targetActor.uuid,
+      weaponId:     this.id,
       attackerName: actor.name,
+      targetName:   targetActor.name,
       weaponName:   this.name,
-    }, { fallback: { dice: 0 } });
+      baseTN:       tn,
+      baseNote:     modBreakdown ?? null,
+    }, { timeout: 300_000 });
 
-    // Close the dialog if we fell through on a timeout rather than an answer.
-    if (!declared) {
-      await SR3EQuery.withdraw(deciderId, exchangeId,
-        'The attack resolved without your dodge declaration.');
-    }
+    // GM cancelled the attack. Nothing has been written anywhere.
+    if (negotiation === null) return null;
 
-    const wanted = Math.max(0, declared?.dice ?? 0);
-    if (wanted > 0) {
-      // The GM performs the spend and clamps against live data.
-      committedDodgeDice = await targetActor.spendCombatPool(wanted);
-
-      // Full Defense was READ, not consumed, by the prompt — commit it only now
-      // that the exchange is real, and announce dice committed on their behalf.
-      if (wasFullDef) {
-        await SR3EActor._announceFullDefense(targetActor, committedDodgeDice);
-        await targetActor.clearFullDefense();
-      }
-    }
+    // The GM's TN is authoritative from here.
+    if (Number.isFinite(negotiation?.tn)) tn = negotiation.tn;
   }
 
   // --- Step 4: Build attacker pool ---
@@ -1107,6 +1095,26 @@ export class SR3EItem extends Item {
 
   pool  = Math.max(1, pool);
   tn    = tn + defTnMod;   // bake defaulting TN modifier
+
+  // ╔════════════════════ POINT OF NO RETURN ════════════════════════════════╗
+  // Every abort path is now behind us: the fire-mode dialog, the GM's TN window,
+  // the SR3 Default Table and the Combat Pool dialog can all still cancel ABOVE
+  // this line, and cancelling any of them writes nothing anywhere.
+  //
+  // Only now does the defender's pool get spent and their Full Defense consumed.
+  // This ordering is the whole reason negotiate and commit are separate verbs —
+  // the earlier shape spent the defender's pool at the dodge step, so an attacker
+  // cancelling their own defaulting dialog burnt someone else's resources for an
+  // attack that never happened, on a different client, with no rollback.
+  //
+  // DO NOT ADD A WRITE ABOVE THIS BLOCK. The attacker's own commits (recoil,
+  // magazine, nocked round, thrown quantity) are all already below it.
+  // ╚════════════════════════════════════════════════════════════════════════╝
+  if (negotiation?.requestId) {
+    const committed = await game.sr3e.SR3EQuery.asGM('sr3e.attack.commit',
+      { requestId: negotiation.requestId });
+    committedDodgeDice = committed?.committedDodgeDice ?? 0;
+  }
 
   // Store full context — including committed dodge dice
   options.weaponItemId       = this.id;
@@ -2056,6 +2064,126 @@ export class SR3EItem extends Item {
    * Ask the defender to commit dodge dice before the attack is rolled.
    * Returns number of dice committed (0 = no dodge), or null if cancelled.
    */
+  /**
+   * The GM's TN window — requirement 3.
+   *
+   * Renders the SR3 p.112 modifier checkboxes, sums them live into an editable
+   * TN, and clamps the DISPLAYED value at 2 while showing the raw sum when they
+   * differ, so stacking modifiers past the floor stays visible instead of
+   * silently vanishing.
+   *
+   * When this GM is also the defender's decider — a player shooting a GM-owned
+   * NPC, the most common case — the dodge rows render INSIDE this window via
+   * `opts.dodge`, so the GM is never asked twice for one attack.
+   *
+   * @param {object} ctx
+   * @param {object} [opts]
+   * @param {object} [opts.dodge]  { availPool, defenderName } to merge the dodge row in
+   * @returns {Promise<null|{tn:number, mods:object, dodgeDice:number|null}>}  null = GM cancelled
+   */
+  static async _promptGMAttackWindow(ctx, opts = {}) {
+    const { mvpModifiers, sumModifiers, clampTN, guessGearModifiers } =
+      await import('../SR3ECombatModifiers.js');
+
+    const rows    = mvpModifiers();
+    const guessed = guessGearModifiers(ctx.attacker, ctx.weapon);
+    const baseTN  = Number(ctx.baseTN) || 4;
+
+    const rowHtml = rows.map(m => {
+      const pre  = m.gear && guessed[m.key] ? 'checked' : '';
+      const sign = m.mod > 0 ? `+${m.mod}` : `${m.mod}`;
+      const hint = m.gear && guessed[m.key]
+        ? ' <span style="color:var(--sr-gold);font-size:10px">detected</span>' : '';
+      const note = m.note ? `<div style="font-size:10px;color:var(--sr-dim);margin-left:22px">${m.note}</div>` : '';
+      if (m.per) {
+        return `<label style="display:flex;align-items:center;gap:8px;padding:2px 0">
+            <input type="number" class="sr-gm-mod-per" data-key="${m.key}" value="0" min="0" max="10" style="width:48px"/>
+            <span>${m.label} <strong>${sign}</strong> each${hint}</span></label>${note}`;
+      }
+      return `<label style="display:flex;align-items:center;gap:8px;padding:2px 0">
+          <input type="checkbox" class="sr-gm-mod" data-key="${m.key}" ${pre}/>
+          <span>${m.label} <strong>${sign}</strong>${hint}</span></label>${note}`;
+    }).join('');
+
+    const dodgeHtml = opts.dodge ? `
+      <hr style="margin:10px 0;border-color:var(--sr-border)"/>
+      <div style="font-size:12px;margin-bottom:4px">
+        <strong>${opts.dodge.defenderName}</strong> is yours to defend
+        — available Combat Pool <strong>${opts.dodge.availPool}</strong>
+      </div>
+      <label style="display:flex;align-items:center;gap:8px">
+        🎯 Dodge with
+        <input type="number" id="sr-gm-dodge" min="0" max="${opts.dodge.availPool}"
+               value="0" style="width:55px" ${opts.dodge.availPool === 0 ? 'disabled' : ''}/>
+        dice
+      </label>` : '';
+
+    let result = null;
+
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `GM — ${ctx.attackerName} → ${ctx.targetName} · ${ctx.weaponName}` },
+      content: `
+        <div style="font-size:12px;color:var(--sr-muted);margin-bottom:6px">
+          Base TN <strong>${baseTN}</strong>${ctx.baseNote ? ` — ${ctx.baseNote}` : ''}
+        </div>
+        <div style="max-height:280px;overflow-y:auto;padding-right:4px">${rowHtml}</div>
+        ${dodgeHtml}
+        <hr style="margin:10px 0;border-color:var(--sr-border)"/>
+        <label style="display:flex;align-items:center;gap:8px">
+          <strong>Target Number</strong>
+          <input type="number" id="sr-gm-tn" value="${baseTN}" min="2" max="30" style="width:60px"/>
+        </label>
+        <div id="sr-gm-tn-note" style="font-size:11px;color:var(--sr-dim);margin-top:4px"></div>
+      `,
+      buttons: [
+        { label: '🎲 Roll', action: 'roll', default: true,
+          callback: (_e, _b, dlg) => {
+            const el   = dlg.element;
+            const mods = {};
+            el.querySelectorAll('.sr-gm-mod').forEach(c => { if (c.checked) mods[c.dataset.key] = true; });
+            el.querySelectorAll('.sr-gm-mod-per').forEach(n => {
+              const v = parseInt(n.value) || 0; if (v > 0) mods[n.dataset.key] = v;
+            });
+            const dodgeEl = el.querySelector('#sr-gm-dodge');
+            result = {
+              // The typed field is authoritative — the GM may override the sum.
+              tn:        clampTN(parseInt(el.querySelector('#sr-gm-tn')?.value)).tn,
+              mods,
+              dodgeDice: dodgeEl ? Math.min(parseInt(dodgeEl.value) || 0, opts.dodge.availPool) : null,
+            };
+          } },
+        { label: 'Cancel attack', action: 'cancel' },
+      ],
+      // Per-dialog wiring. NOT a renderDialogV2 hook — with two attacks in flight
+      // the global hook wires the first dialog twice (with the second's closure)
+      // and the second not at all, and the GM's checkboxes silently stop working.
+      render: (_event, dialog) => {
+        const el   = dialog.element;
+        const tnEl = el.querySelector('#sr-gm-tn');
+        const note = el.querySelector('#sr-gm-tn-note');
+
+        const recompute = () => {
+          const state = {};
+          el.querySelectorAll('.sr-gm-mod').forEach(c => { if (c.checked) state[c.dataset.key] = true; });
+          el.querySelectorAll('.sr-gm-mod-per').forEach(n => {
+            const v = parseInt(n.value) || 0; if (v > 0) state[n.dataset.key] = v;
+          });
+          const { tn, floored, raw } = clampTN(baseTN + sumModifiers(state));
+          tnEl.value      = tn;
+          note.textContent = floored
+            ? `Floored at ${tn} — modifiers summed to ${raw}. No target number can be less than 2 (SR3 p.112).`
+            : '';
+        };
+
+        el.querySelectorAll('.sr-gm-mod, .sr-gm-mod-per')
+          .forEach(i => i.addEventListener('change', recompute));
+        recompute();
+      },
+    });
+
+    return result;
+  }
+
   /**
    * Ask the defender how many Combat Pool dice to commit to dodging.
    *
