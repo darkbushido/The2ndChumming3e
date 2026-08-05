@@ -220,6 +220,15 @@ background-color: var(--sr-surface) !important;
 .sr-summon-confirm-btn,
 .sr-matrix-ic-resist-btn,
 .sr-matrix-ic-resist-roll-btn,
+.sr-dodge-declare-btn,
+.sr-icia-roll-btn,
+.sr-icia-assign-btn,
+.sr-matrix-decker-resist-btn,
+.sr-matrix-decker-resist-roll-btn,
+.sr-miji-roll-btn,
+.sr-miji-degradation-btn,
+.sr-occ-roll-btn,
+.sr-ost-roll-btn,
 .sr-cc-roll-btn {
   width: 100%;
   height: auto;      /* core gives buttons a fixed height — grow with wrapped text */
@@ -264,13 +273,17 @@ background-color: var(--sr-surface) !important;
 
 /* cyan/accent — matrix combat */
 .sr-matrix-ic-resist-btn,
-.sr-matrix-ic-resist-roll-btn {
+.sr-matrix-ic-resist-roll-btn,
+.sr-matrix-decker-resist-btn,
+.sr-matrix-decker-resist-roll-btn {
   background: linear-gradient(135deg, color-mix(in srgb, var(--sr-accent) 15%, transparent) 0%, color-mix(in srgb, var(--sr-accent) 5%, transparent) 100%);
   border: 1px solid var(--sr-accent);
   color: var(--sr-accent);
 }
 .sr-matrix-ic-resist-btn:hover:not(:disabled),
-.sr-matrix-ic-resist-roll-btn:hover:not(:disabled) {
+.sr-matrix-ic-resist-roll-btn:hover:not(:disabled),
+.sr-matrix-decker-resist-btn:hover:not(:disabled),
+.sr-matrix-decker-resist-roll-btn:hover:not(:disabled) {
   background: color-mix(in srgb, var(--sr-accent) 25%, transparent);
   box-shadow: 0 0 10px color-mix(in srgb, var(--sr-accent) 30%, transparent);
 }
@@ -282,6 +295,7 @@ background-color: var(--sr-surface) !important;
 
 /* green — dodge / defense */
 .sr-dodge-roll-btn,
+.sr-dodge-declare-btn,
 .sr-spell-defense-btn {
   background: linear-gradient(135deg, color-mix(in srgb, var(--sr-green) 15%, transparent) 0%, color-mix(in srgb, var(--sr-green) 5%, transparent) 100%);
   border: 1px solid var(--sr-green);
@@ -289,6 +303,7 @@ background-color: var(--sr-surface) !important;
 }
 
 .sr-dodge-roll-btn:hover:not(:disabled),
+.sr-dodge-declare-btn:hover:not(:disabled),
 .sr-spell-defense-btn:hover:not(:disabled) {
   background: color-mix(in srgb, var(--sr-green) 25%, transparent);
   box-shadow: 0 0 10px color-mix(in srgb, var(--sr-green) 30%, transparent);
@@ -301,10 +316,27 @@ background-color: var(--sr-surface) !important;
 .sr-contested-roll-btn,
 .sr-spell-defense-proceed-btn,
 .sr-summon-confirm-btn,
+.sr-icia-roll-btn,
+.sr-miji-roll-btn,
+.sr-occ-roll-btn,
+.sr-ost-roll-btn,
 .sr-cc-roll-btn {
   background: linear-gradient(135deg, color-mix(in srgb, var(--sr-accent) 15%, transparent) 0%, color-mix(in srgb, var(--sr-accent) 5%, transparent) 100%);
   border: 1px solid var(--sr-border-hi);
   color: var(--sr-accent);
+}
+
+/* gold — applies a result to a track (IC damage, signal degradation) */
+.sr-icia-assign-btn,
+.sr-miji-degradation-btn {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--sr-gold) 15%, transparent) 0%, color-mix(in srgb, var(--sr-gold) 5%, transparent) 100%);
+  border: 1px solid var(--sr-gold);
+  color: var(--sr-gold);
+}
+.sr-icia-assign-btn:hover:not(:disabled),
+.sr-miji-degradation-btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--sr-gold) 25%, transparent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--sr-gold) 30%, transparent);
 }
 
 .sr-melee-roll-btn:hover:not(:disabled),
@@ -313,6 +345,10 @@ background-color: var(--sr-surface) !important;
 .sr-contested-roll-btn:hover:not(:disabled),
 .sr-spell-defense-proceed-btn:hover:not(:disabled),
 .sr-summon-confirm-btn:hover:not(:disabled),
+.sr-icia-roll-btn:hover:not(:disabled),
+.sr-miji-roll-btn:hover:not(:disabled),
+.sr-occ-roll-btn:hover:not(:disabled),
+.sr-ost-roll-btn:hover:not(:disabled),
 .sr-cc-roll-btn:hover:not(:disabled) {
   background: color-mix(in srgb, var(--sr-accent) 25%, transparent);
   box-shadow: 0 0 10px color-mix(in srgb, var(--sr-accent) 30%, transparent);
@@ -321,6 +357,15 @@ background-color: var(--sr-surface) !important;
 .sr-soak-btn:disabled,
 .sr-soak-roll-btn:disabled,
 .sr-dodge-roll-btn:disabled,
+.sr-dodge-declare-btn:disabled,
+.sr-icia-roll-btn:disabled,
+.sr-icia-assign-btn:disabled,
+.sr-matrix-decker-resist-btn:disabled,
+.sr-matrix-decker-resist-roll-btn:disabled,
+.sr-miji-roll-btn:disabled,
+.sr-miji-degradation-btn:disabled,
+.sr-occ-roll-btn:disabled,
+.sr-ost-roll-btn:disabled,
 .sr-drain-btn:disabled,
 .sr-drain-roll-btn:disabled,
 .sr-spell-soak-btn:disabled,
