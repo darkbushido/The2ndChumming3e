@@ -4139,6 +4139,58 @@ _prepareCharacter(sys, attr) {
   }
 
   /**
+   * Reserved Full Defense dice for this actor. **PURE READ — never clears.**
+   *
+   * The split matters. The old code read the reserve, announced it and cleared
+   * the flag all inside the dodge dialog, so a cancelled or withdrawn attack
+   * still consumed the defender's entire Full Defense declaration. Reading and
+   * clearing are now separate, and the clear happens only once the exchange has
+   * actually committed.
+   *
+   * @param {Actor} actor
+   * @returns {number} reserved dice, or 0
+   */
+  static _fullDefenseDice(actor) {
+    if (!actor?.system?.fullDefense) return 0;
+    return actor.system.fullDefensePool ?? 0;
+  }
+
+  /**
+   * Clear a Full Defense declaration once it has actually been consumed.
+   *
+   * Separate from `toggleFullDefense` because this is not a toggle — it is the
+   * commit half of the read/commit split, and calling toggle here would re-arm
+   * Full Defense if the flag had already been cleared by something else.
+   */
+  async clearFullDefense() {
+    const changes = { 'system.fullDefense': false, 'system.fullDefensePool': 0 };
+    if (!game.users.activeGM?.isSelf) {
+      await game.sr3e.SR3EQuery.asGM('sr3e.actor.set', { uuid: this.uuid, changes });
+      return;
+    }
+    await this.update(changes);
+  }
+
+  /**
+   * Announce an automatic Full Defense commit.
+   *
+   * Not chat pollution: it is the record of dice committed on the defender's
+   * behalf without them being asked in the moment. The GM is its correct author,
+   * since the GM is the client that commits it.
+   *
+   * @param {Actor} actor
+   * @param {number} dice
+   */
+  static async _announceFullDefense(actor, dice) {
+    if (!actor || dice <= 0) return;
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="sr-roll-card"><div class="sr-roll-header">🛡 ${actor.name} — Full Defense (${dice} dice auto-committed)</div></div>`,
+      style:   CONST.CHAT_MESSAGE_STYLES.OTHER,
+    });
+  }
+
+  /**
    * Spend combat pool dice, clamped to available pool.
    * Returns how many were actually spent.
    *

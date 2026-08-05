@@ -92,6 +92,14 @@ export class SR3EQueue {
 const _seen = new Map();
 const _SEEN_MAX = 200;
 
+/**
+ * exchangeId → open DialogV2, so a decision that has been resolved elsewhere can
+ * actively close the now-pointless dialog instead of leaving it stacked. Three
+ * exchanges in a round would otherwise leave three stale modals on the defender,
+ * who then answers the wrong one.
+ */
+const _openDialogs = new Map();
+
 export class SR3EQuery {
 
   /* ---------------------------------------------------------------- */
@@ -126,18 +134,82 @@ export class SR3EQuery {
 
   /**
    * The single user who decides for this actor.
-   * Assigned character → connected non-GM owner → active GM → null.
-   * (Unused in Stage 1; the dodge relay in Stage 2 is its first consumer.)
+   * Assigned character → EXPLICIT connected owner → active GM → null.
+   *
+   * Two things here are deliberate and must not be "simplified":
+   *
+   * 1. `ownership[u.id] === OWNER`, **not** `testUserPermission(u, 'OWNER')`.
+   *    `testUserPermission` resolves `ownership[user.id] ?? ownership.default`
+   *    (`common/abstract/document.mjs:390`), so in a world whose Actors directory
+   *    default ownership is Owner — a common setup — it is true for EVERY player,
+   *    and a random player would be handed the dodge dialog for a goon they have
+   *    never seen. Requiring an explicit entry stops `default` sweeping the table in.
+   *
+   * 2. `getDesignatedUser`, **not** `find`. Core's documented, deterministic,
+   *    role-ranked selector (`users.mjs:87`; `activeGM` is built on it). `find`
+   *    order is arbitrary when two players co-own a drone.
+   *
+   * `u.active` excludes offline owners, so a disconnected player's PC falls to the
+   * GM automatically — the standing ruling, for free.
+   *
    * @param {Actor} actor
-   * @returns {string|null} userId
+   * @returns {string|null} userId, or null when no GM is connected either
    */
   static deciderFor(actor) {
-    if (!actor) return null;
-    const assigned = game.users.find(u => u.active && u.character?.id === actor.id);
+    if (!actor) return game.users.activeGM?.id ?? null;
+    const assigned = game.users.find(u => u.active && !u.isGM && u.character?.id === actor.id);
     if (assigned) return assigned.id;
-    const owner = game.users.find(u => u.active && !u.isGM && actor.testUserPermission?.(u, 'OWNER'));
-    if (owner) return owner.id;
-    return game.users.activeGM?.id ?? null;
+    const OWNER = CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER;
+    const explicit = game.users.getDesignatedUser(
+      u => u.active && !u.isGM && actor.ownership?.[u.id] === OWNER);
+    return explicit?.id ?? game.users.activeGM?.id ?? null;
+  }
+
+  /**
+   * Ask a SPECIFIC user to make a decision, with a conservative fallback.
+   *
+   * Reaper rule (see plan §1.5): on timeout or an unreachable decider, **fill the
+   * missing slot with `opts.fallback` and resolve — never cancel.** Under a relay,
+   * letting a defender's cancelled dialog abort the attack would let any defender
+   * kill an attacker's turn with one click, and an AFK defender would do it by
+   * doing nothing.
+   *
+   * @param {string|null} userId
+   * @param {string} verb
+   * @param {object} data
+   * @param {object} [opts]
+   * @param {number} [opts.timeout=300000]  Matches the GM window in Stage 3 — unequal
+   *   deadlines silently discard the slower participant's answer.
+   * @param {*} [opts.fallback]
+   */
+  static async ask(userId, verb, data, opts = {}) {
+    const timeout  = opts.timeout ?? 300_000;
+    const fallback = opts.fallback;
+    const user     = userId ? game.users.get(userId) : null;
+    if (!user?.active) return fallback;
+
+    const payload = { rid: foundry.utils.randomID(), ...data };
+    try {
+      if (user.isSelf) {
+        const handler = CONFIG.queries[verb];
+        if (!handler) throw new Error(`SR3E | no handler registered for '${verb}'`);
+        return await handler(payload, { user: game.user, timeout });
+      }
+      return await user.query(verb, payload, { timeout });
+    } catch (err) {
+      console.warn(`SR3E | '${verb}' to ${user.name} failed or timed out — using the safe default.`, err);
+      return fallback;
+    }
+  }
+
+  /** Tell a client to close a decision dialog it no longer needs to answer. */
+  static async withdraw(userId, exchangeId, reason) {
+    const user = userId ? game.users.get(userId) : null;
+    if (!user?.active) return;
+    try {
+      if (user.isSelf) return CONFIG.queries['sr3e.dialog.withdraw']({ exchangeId, reason }, { user: game.user });
+      await user.query('sr3e.dialog.withdraw', { exchangeId, reason }, { timeout: 5000 });
+    } catch { /* the dialog is already gone, or the user left — nothing to do */ }
   }
 
   /**
@@ -281,5 +353,64 @@ export class SR3EQuery {
       SR3EQuery.assertActiveGM();
       return game.sr3e.SR3EActor._applyDamageBoxes({ uuid, kind, track, boxes });
     });
+
+    /* ---------------------------------------------------------------- */
+    /*  Decisions — run on the DECIDER's client, not the GM's             */
+    /* ---------------------------------------------------------------- */
+
+    /**
+     * Open the dodge declaration on the defender's own screen.
+     * NOTE: no `assertActiveGM` — this deliberately runs on a player client.
+     * It performs NO writes; it returns a number and the GM commits it.
+     */
+    CONFIG.queries['sr3e.dodge.declare'] = async ({ rid, exchangeId, defenderUuid, attackerName, weaponName }) =>
+      SR3EQuery.once(rid, async () => {
+        const defender = SR3EQuery.resolve(defenderUuid);
+        if (!defender) return { dice: 0 };
+        const dice = await game.sr3e.SR3EItem._promptDodgeDeclaration(
+          defender, attackerName, weaponName, { exchangeId });
+        return { dice: dice ?? 0 };
+      });
+
+    /**
+     * Open the SR3 Default Table on the actor's own client.
+     * Also write-free — it returns the chosen tier and the caller uses it.
+     */
+    CONFIG.queries['sr3e.default.choose'] = async ({ rid, exchangeId, actorUuid, message, linkedAttr, title }) =>
+      SR3EQuery.once(rid, async () => {
+        const actor = SR3EQuery.resolve(actorUuid);
+        if (!actor) return null;
+        return game.sr3e.SR3EItem.promptDefaultChoice(
+          actor, { message, linkedAttr, title, exchangeId, _local: true });
+      });
+
+    /** Close a decision dialog whose answer is no longer wanted. */
+    CONFIG.queries['sr3e.dialog.withdraw'] = async ({ exchangeId, reason }) => {
+      const dlg = _openDialogs.get(exchangeId);
+      if (!dlg) return { ok: true };
+      _openDialogs.delete(exchangeId);
+      if (reason) ui.notifications?.info(reason);
+      try { await dlg.close(); } catch { /* already closing */ }
+      return { ok: true };
+    };
+  }
+
+  /* ---------------------------------------------------------------- */
+  /*  Dialog registry — lets `withdraw` reach an open decision dialog   */
+  /* ---------------------------------------------------------------- */
+
+  /** Register an open dialog against its exchange id. No-op without an id. */
+  static trackDialog(exchangeId, dialog) {
+    if (exchangeId && dialog) _openDialogs.set(exchangeId, dialog);
+  }
+
+  /** Stop tracking a dialog that has resolved on its own. */
+  static untrackDialog(exchangeId) {
+    if (exchangeId) _openDialogs.delete(exchangeId);
+  }
+
+  /** True when this dialog was closed by a withdraw rather than by the user. */
+  static wasWithdrawn(exchangeId) {
+    return Boolean(exchangeId) && !_openDialogs.has(exchangeId);
   }
 }

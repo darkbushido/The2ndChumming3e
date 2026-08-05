@@ -1956,6 +1956,41 @@ function _claimBtn(btn, mid, cls, idx) {
   return true;
 }
 
+/**
+ * May this client act for the payload's actor at all? A SET — any owner, or a GM.
+ * Used for buttons that merely post a card onward.
+ */
+function _mine(p) {
+  if (game.user.isGM) return true;
+  return game.actors.get(p?.targetActorId)?.isOwner === true;
+}
+
+/**
+ * Is this client THE decider for the payload's actor? Exactly ONE user, resolved
+ * by the same `deciderFor` that routed the decision in the first place.
+ *
+ * Used for buttons that actually ROLL. `_mine` is deliberately broader, and
+ * gating a rolling button on it would let two co-owners of a party drone both
+ * click "roll to dodge" for the same attack.
+ *
+ * Computed live rather than read from a stamped payload id: it cannot drift out
+ * of agreement with `deciderFor`, and if the decider disconnects mid-exchange it
+ * re-resolves to the GM so the roll can still be finished.
+ */
+function _isDecider(p) {
+  if (game.user.isGM) return true;
+  const a = game.actors.get(p?.targetActorId);
+  if (!a) return false;                    // fail CLOSED — no fail-open `!a` branch
+  return game.sr3e.SR3EQuery.deciderFor(a) === game.user.id;
+}
+
+/** Dim a button this client must not press, with the reason on hover. */
+function _denyBtn(btn, why) {
+  btn.disabled = true;
+  btn.title    = why;
+  btn.style.opacity = '0.45';
+}
+
 
 // Inject red warning below the matrixRuleset setting in Configure Settings.
 Hooks.on('renderSettingsConfig', (_app, html) => {
@@ -2021,6 +2056,11 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // "Resist Damage" button — posts soak card for the identified target
   html.querySelectorAll('.sr-soak-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'soak', i)) return;
+    try {
+      if (!_mine(JSON.parse(btn.dataset.payload ?? '{}'))) {
+        return _denyBtn(btn, 'Only the target or the GM can resist this damage.');
+      }
+    } catch { /* unreadable payload — leave the button alone and let the handler warn */ }
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2037,6 +2077,11 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Dodge roll button — triggered by player after seeing attack hits
   html.querySelectorAll('.sr-dodge-roll-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'dodge', i)) return;
+    try {
+      if (!_isDecider(JSON.parse(btn.dataset.payload ?? '{}'))) {
+        return _denyBtn(btn, 'Only the defender (or the GM) rolls this dodge.');
+      }
+    } catch { /* unreadable payload — leave the button alone */ }
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2126,6 +2171,11 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Roll Soak button on soak card (also handles spell-resist soak via same handler)
   html.querySelectorAll('.sr-soak-roll-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'soakroll', i)) return;
+    try {
+      if (!_isDecider(JSON.parse(btn.dataset.payload ?? '{}'))) {
+        return _denyBtn(btn, 'Only the target (or the GM) rolls this soak.');
+      }
+    } catch { /* unreadable payload — leave the button alone */ }
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();

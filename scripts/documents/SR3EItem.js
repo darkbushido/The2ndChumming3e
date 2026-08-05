@@ -500,6 +500,25 @@ export class SR3EItem extends Item {
   }
 
   static async promptDefaultChoice(actor, opts = {}) {
+    // Relay to whoever decides for this actor, unless we already ARE them (or
+    // this call arrived over the wire, marked `_local`, and must not bounce
+    // again). One guard here fixes every defaulting flow at once: the melee
+    // defender, the vehicle pilot and the cybercombat defender were all being
+    // asked to choose a defaulting tier on their OPPONENT's screen.
+    if (!opts._local) {
+      const { SR3EQuery } = game.sr3e;
+      const deciderId = SR3EQuery.deciderFor(actor);
+      if (deciderId && deciderId !== game.user.id) {
+        return SR3EQuery.ask(deciderId, 'sr3e.default.choose', {
+          exchangeId: foundry.utils.randomID(),
+          actorUuid:  actor.uuid,
+          message:    opts.message,
+          linkedAttr: opts.linkedAttr,
+          title:      opts.title,
+        }, { fallback: null });   // unreachable decider → cancel, as today
+      }
+    }
+
     const tiers = SR3EItem.defaultTiers(actor, opts);
     const asOption = e =>
       `<option value="${e.value}" data-dice="${e.dice}" data-cap="${e.cap}"`
@@ -979,13 +998,44 @@ export class SR3EItem extends Item {
     effectiveRawDamage = `${newPower}${newLevel}${damageBase.isStun ? ' Stun' : ''}`;
   }
 
-  // --- Step 3: Defender declares dodge (vehicles cannot dodge) ---
+  // --- Step 3: Defender declares dodge, ON THEIR OWN SCREEN (vehicles cannot dodge) ---
+  //
+  // The dialog runs on the defender's client and returns a number; this client
+  // never writes to the target. Reaper rule: an unreachable, AFK or cancelling
+  // defender yields 0 dice and the attack PROCEEDS. Letting a cancel abort the
+  // attack would hand every defender a one-click veto over the attacker's turn,
+  // and an AFK defender would exercise it by doing nothing.
   let committedDodgeDice = 0;
   if (targetActor.type !== 'vehicle') {
-    const dodgeDeclaration = await SR3EItem._promptDodgeDeclaration(targetActor, actor.name, this.name);
-    if (dodgeDeclaration === null) return null;  // cancelled
-    if (dodgeDeclaration > 0) {
-      committedDodgeDice = await targetActor.spendCombatPool(dodgeDeclaration);
+    const { SR3EQuery, SR3EActor } = game.sr3e;   // registry, not import — breaks the cycle
+    const exchangeId = foundry.utils.randomID();
+    const deciderId  = SR3EQuery.deciderFor(targetActor);
+    const wasFullDef = SR3EActor._fullDefenseDice(targetActor) > 0;
+
+    const declared = await SR3EQuery.ask(deciderId, 'sr3e.dodge.declare', {
+      exchangeId,
+      defenderUuid: targetActor.uuid,
+      attackerName: actor.name,
+      weaponName:   this.name,
+    }, { fallback: { dice: 0 } });
+
+    // Close the dialog if we fell through on a timeout rather than an answer.
+    if (!declared) {
+      await SR3EQuery.withdraw(deciderId, exchangeId,
+        'The attack resolved without your dodge declaration.');
+    }
+
+    const wanted = Math.max(0, declared?.dice ?? 0);
+    if (wanted > 0) {
+      // The GM performs the spend and clamps against live data.
+      committedDodgeDice = await targetActor.spendCombatPool(wanted);
+
+      // Full Defense was READ, not consumed, by the prompt — commit it only now
+      // that the exchange is real, and announce dice committed on their behalf.
+      if (wasFullDef) {
+        await SR3EActor._announceFullDefense(targetActor, committedDodgeDice);
+        await targetActor.clearFullDefense();
+      }
     }
   }
 
@@ -2006,21 +2056,31 @@ export class SR3EItem extends Item {
    * Ask the defender to commit dodge dice before the attack is rolled.
    * Returns number of dice committed (0 = no dodge), or null if cancelled.
    */
-  static async _promptDodgeDeclaration(defender, attackerName, weaponName) {
+  /**
+   * Ask the defender how many Combat Pool dice to commit to dodging.
+   *
+   * **This function performs NO writes.** It used to announce Full Defense and
+   * clear the flag inline, which meant a cancelled attack still consumed the
+   * defender's whole declaration — and it cannot write anyway now that it runs
+   * on the defender's client, which may not own... anything. It returns a number;
+   * the GM commits it.
+   *
+   * @param {Actor}  defender
+   * @param {string} attackerName
+   * @param {string} weaponName
+   * @param {object} [opts]
+   * @param {string} [opts.exchangeId]  Lets the GM withdraw this dialog if the
+   *   exchange resolves without it (timeout, or the GM rolling early).
+   * @returns {Promise<number|null>}  Dice to commit; null if the user cancelled.
+   *   Callers under a relay treat null as 0 — see the reaper rule in the plan.
+   */
+  static async _promptDodgeDeclaration(defender, attackerName, weaponName, opts = {}) {
     if (defender.type === 'vehicle') return 0;  // vehicles cannot dodge
 
-    // Full Defense: skip the dialog and auto-commit the reserved pool
-    if ((defender.system.fullDefense ?? false) && (defender.system.fullDefensePool ?? 0) > 0) {
-      const fd = defender.system.fullDefensePool;
-      await ChatMessage.create({
-        speaker: ChatMessage.getSpeaker({ actor: defender }),
-        content: `<div class="sr-roll-card"><div class="sr-roll-header">🛡 ${defender.name} — Full Defense (${fd} dice auto-committed)</div></div>`,
-        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-      });
-      // Clear full defense after first use
-      await defender.update({ 'system.fullDefense': false, 'system.fullDefensePool': 0 });
-      return fd;
-    }
+    // Full Defense: the reserve is already declared, so there is nothing to ask.
+    // Read only — the announcement and the clear are the GM's job, after commit.
+    const reserved = game.sr3e.SR3EActor._fullDefenseDice(defender);
+    if (reserved > 0) return reserved;
 
     const availPool  = defender.system.derived?.availableCombatPool ?? 0;
     const fdNote     = (defender.system.fullDefense ?? false)
@@ -2078,8 +2138,21 @@ export class SR3EItem extends Item {
         },
         { label: 'Cancel', action: 'cancel' },
       ],
+      // Per-dialog wiring. NOT a `renderDialogV2` hook: that hook is global, so
+      // two exchanges in flight would wire the first dialog twice (the second
+      // time with the other's closure) and the second not at all. Registering
+      // here also lets the GM withdraw this dialog if the exchange resolves
+      // without it, rather than leaving a stale modal to be answered later.
+      render: (_event, dialog) => {
+        game.sr3e.SR3EQuery.trackDialog(opts.exchangeId, dialog);
+        dialog.element.querySelector('#dodge-dice')?.addEventListener('focus', () => {
+          const radio = dialog.element.querySelector('input[name="dodge-choice"][value="dodge"]');
+          if (radio) radio.checked = true;   // typing dice implies you meant to dodge
+        });
+      },
     });
 
+    game.sr3e.SR3EQuery.untrackDialog(opts.exchangeId);
     if (cancelled) return null;
     return dodgeDice;
   }
