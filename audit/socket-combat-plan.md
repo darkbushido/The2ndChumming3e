@@ -491,7 +491,79 @@ export const SR3E_VISIBILITY_TABLE = {
 };
 ```
 
-⚠ **Two things I am flagging rather than papering over.** (1) The Visibility Table's `X/Y` slash notation — I have the values right (cross-checked between `-layout` and raw extraction), but the book's meaning of the two numbers is *not* stated on p.112 and I did not chase it down. Confirm with the maintainer before the GM window renders a single number. Until then, render the slash string verbatim and let the GM type the TN. (2) `Multiple targets` is **+2 per additional target** in the book; reconcile against whatever the existing `additionalTNPenalty` in `rollWeapon` currently computes before wiring, since these must not double-count.
+⚠ `Multiple targets` is **+2 per additional target** in the book; reconcile against whatever the
+existing `additionalTNPenalty` in `rollWeapon` currently computes before wiring, since these must
+not double-count.
+
+⚠ **`Gyro stabilization` and `Recoil compensation` are missing from the array above.** Both are
+rows in the book's table. `recoilCompensation` is already handled by the existing recoil maths, but
+gyro is not represented anywhere — see the decisions below.
+
+### ✅ RESOLVED — the Visibility Table slash notation
+
+**First number = cybernetic or electronic vision. Second number = natural vision.** Stated twice
+in the core rulebook, just not on p.112 itself:
+
+> "If the number listed is split by a slash, the first modifier applies to cybernetic or electronic
+> vision and the second to natural vision. Modifiers listed singly apply equally to all types of
+> vision." — visibility prose, p.111
+
+> "When target modifiers are separated by a slash, the first number applies to cybernetic vision
+> enhancements and the second to natural vision." — Perception Table footnote
+
+Note the direction: **cyber vision is worse.** In Mist, low-light is `+2` cyber / **`0`** natural —
+an elf's own eyes beat cybereyes. So the GM window **can** eventually render a single number, because
+the system knows metatype (natural low-light / thermographic) and can read cyberware. The GM picks
+the *condition*; the system derives the modifier from the attacker's eyes. **Not in the MVP** — see
+below — but the blocker is removed.
+
+### Maintainer decisions — 2026-08-05
+
+**1. Partial cover is `+4`.** The Quick Start Rules give `+2`; the core rulebook p.112 gives `+4`, and
+core governs — the system follows core everywhere else (recoil, ranges, staging). Verified against
+the PDF. *(The QSG could not be checked directly: it is 23 MB of scanned images with no text layer,
+unlike the other 31 books. CLAUDE.md's blanket "they carry a real text layer, no OCR needed" is wrong
+for that one file.)*
+
+**2. Gear modifiers ship as checkboxes the system PRE-TICKS by best guess.** There is no structured
+gear data to drive them today:
+
+- `accessories` on a firearm is a free-text `StringField` (`ItemDataModels.js:119`)
+- 'Smartgun Link' exists as cyberware in a populate macro, but nothing reads it for TN maths
+- **zero** references to laser sight or gyro as mechanics anywhere in `scripts/`
+
+So pre-tick from a name match on the actor's cyberware plus a substring match on the weapon's
+`accessories` string, and let the GM override freely. Degrades gracefully when the data is absent,
+and improves for free once gear data is structured (same root cause as TODO #8). Two rules details
+that constrain this:
+
+- **Smartlink and smart goggles are PAIR conditions, not character properties.** Both read
+  *"with a properly equipped smart-weapon"* — the cyberware alone earns nothing. Check character
+  gear **AND** weapon gear.
+- **Gyro stabilization "reduces recoil *or* movement modifier"** — a per-shot choice, not a fixed
+  number. It cannot be a plain checkbox; it needs a small "apply gyro to: recoil / movement" control.
+
+### MVP checkbox set for Stage 3
+
+Ship exactly these. Everything else in the array stays `auto:true` or waits.
+
+| Checkbox | Mod |
+|---|---|
+| Partial cover | **+4** |
+| Target running | +2 |
+| Target stationary | −1 |
+| Attacker running | +4 |
+| Aimed shot | −1 per Simple Action |
+| Smartlink (with smartgun) | −2 · *pre-ticked by guess* |
+| Smart goggles (with smartgun) | −1 · *pre-ticked by guess* |
+| Laser sight | −1 · *pre-ticked by guess* |
+| Gyro stabilization | *control, not checkbox — see above* |
+
+**Already computed, never a checkbox:** range → base TN, wound modifier, recoil (all modes incl.
+heavy-weapon doubling), and the defaulting penalty for using a skill you lack.
+
+**Deferred to the "elegant / automated suggestions" pass:** visibility (now unblocked), blind fire,
+multiple targets, attacker in melee, walking, difficult ground, second firearm, image magnification.
 
 **`scripts/documents/SR3EItem.js`**
 - **NEW** `static async _promptGMAttackWindow(payload, opts)`. Uses `DialogV2.wait({ render: … })` — **not** a `renderDialogV2` hook. This matters: with two attacks in flight the hook pattern's shared `#sr-gm-tn` guard cross-wires, because both hooks register before either dialog renders, so dialog A gets wired twice (the second time with B's closure variables) and dialog B gets no wiring at all — the GM ticks a checkbox and the TN silently never recomputes. A per-dialog `render` callback cannot cross-wire. Window title carries `${attackerName} → ${targetName} · ${weaponName}` plus a queue-depth line.
@@ -645,3 +717,8 @@ Set up: Player owns PC "Dave"; GM owns NPC "Ganger". A second PC "Mika" owned by
 5. **`DialogV2.wait({render})` replaces the `renderDialogV2` hook** for the GM window, which deletes the concurrent-dialog cross-wiring bug class outright rather than guarding against it.
 
 The thing I'd most want the maintainer to weigh in on before Stage 3: **the Visibility Table's slash notation**, and whether the GM window should render a computed number there at all versus the verbatim string plus a typed TN.
+
+> **✅ Answered 2026-08-05.** First number = cybernetic/electronic vision, second = natural vision
+> (core p.111 prose + the Perception Table footnote). The window *can* render a computed number,
+> since the system knows metatype and cyberware — but visibility is **out of the MVP** either way.
+> See "RESOLVED — the Visibility Table slash notation" and the maintainer decisions in §2.
