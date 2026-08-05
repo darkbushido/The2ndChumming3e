@@ -985,6 +985,15 @@ export class SR3EItem extends Item {
   // modifier window resolves BEFORE the attacker's screen opens, and its result
   // becomes the base the attacker's own declarations (range, called shot, take aim)
   // adjust from. Writes nothing either way — see the SR3EQuery negotiate handler.
+  // Take Aim cap, SR3 p.107: "The maximum number of sequential Take Aim actions a
+  // character may take is equal to one-half the character's base skill or
+  // specialization (if applicable) with that weapon, rounded down." Resolved here
+  // because the roll-options dialog opens before step 4 looks the skill up.
+  const _aimSkillName = this._getWeaponSkill();
+  const _aimSkill     = actor.items.find(i =>
+    i.type === 'skill' && (i.name === _aimSkillName || i.name.includes(_aimSkillName)));
+  const _maxAim = Math.max(0, Math.floor((_aimSkill?.system?.skillRating ?? 0) / 2));
+
   const _baseTNForGM = 4 + extraTNMod;
   const negotiation = await game.sr3e.SR3EQuery.asGM('sr3e.attack.negotiate', {
     attackerUuid: actor.uuid,
@@ -1006,7 +1015,7 @@ export class SR3EItem extends Item {
 
   const weaponOpts = await SR3EItem._promptWeaponRollOptions(targetActor, rawDamage, actor, extraTNMod,
     tnBreakdownParts.length ? tnBreakdownParts.join(' | ') : null, rangeInfo, calledShotAllowed,
-    { gmTNDelta, gmSetTN: gmTNDelta !== 0 || negotiation?.mods });
+    { gmTNDelta, gmSetTN: gmTNDelta !== 0 || negotiation?.mods, maxAim: _maxAim });
   if (!weaponOpts) return null;
 
   // Anti-Vehicle ammo bypasses the vehicle Power/2 reduction (same effect as the AV-munition checkbox)
@@ -1863,6 +1872,8 @@ export class SR3EItem extends Item {
     // aim) still adjust from there, because those are the attacker's call.
     const gmTNDelta   = Number(gmCtx.gmTNDelta) || 0;
     const gmWillSetTN = Boolean(gmCtx.gmSetTN) || gmTNDelta !== 0;
+    // ⌊skill ÷ 2⌋ per SR3 p.107, computed by the caller which has the skill in hand.
+    const maxAim      = Math.max(0, Number(gmCtx.maxAim) || 0);
 
     // Combat Pool is offered on THIS screen so the attacker allocates it while
     // looking at the target number they are allocating against — and so the whole
@@ -1914,9 +1925,17 @@ export class SR3EItem extends Item {
         </div>
         <div style="margin-top:6px">
           <label>Take Aim (−1 TN each):
-            <input type="number" id="sr-aim" value="0" min="0" max="6" style="width:50px;margin-left:8px"/>
+            <input type="number" id="sr-aim" value="0" min="0" max="${maxAim}"
+                   style="width:50px;margin-left:8px" ${maxAim === 0 ? 'disabled' : ''}/>
           </label>
-          <span style="font-size:10px;color:var(--sr-muted);margin-left:6px">1 Simple Action per point.</span>
+          <span style="font-size:10px;color:var(--sr-muted);margin-left:6px">
+            1 Simple Action each${maxAim > 0
+              ? ` · max <strong>${maxAim}</strong> (½ skill, rounded down — SR3 p.107)`
+              : ' · no skill with this weapon, so no aiming'}.
+          </span>
+          <div style="font-size:10px;color:var(--sr-amber);margin-top:2px">
+            ⚠ Aiming across multiple Combat Phases? Spending <em>any</em> pool dice loses the benefit (p.107).
+          </div>
         </div>
       </div>` : '';
 
@@ -1936,7 +1955,10 @@ export class SR3EItem extends Item {
       const recompute = () => {
         const rangeTN = sel ? (rangeTNarr[parseInt(sel.value)] ?? 0) : initRangeTN;
         const called  = (calledSel && calledSel.value !== 'none') ? 4 : 0;
-        const aim     = Math.max(0, parseInt(aimInput?.value) || 0);
+        // Clamp to the p.107 cap on READ — the input's `max` is advisory and a
+        // typed value sails straight past it.
+        const aim     = Math.min(maxAim, Math.max(0, parseInt(aimInput?.value) || 0));
+        if (aimInput && (parseInt(aimInput.value) || 0) > maxAim) aimInput.value = maxAim;
         if (tnInput) tnInput.value = Math.max(2, baseTN + rangeTN + called - aim);
       };
       sel?.addEventListener('change', recompute);
