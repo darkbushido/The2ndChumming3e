@@ -4125,10 +4125,6 @@ _prepareCharacter(sys, attr) {
     await this.update({ 'system.spellPoolSpent': 0 });
   }
 
-  async refreshAstralPool() {
-    await this.update({ 'system.astralPoolSpent': 0 });
-  }
-
   /**
    * Toggle Full Defense for this combatant.
    * Declares all available combat pool dice as defense for the current pass.
@@ -4193,6 +4189,9 @@ _prepareCharacter(sys, attr) {
     return spend;
   }
 
+  /**
+   * Reset astral pool spending.
+   */
   async refreshAstralPool() {
     await this.update({ 'system.astralPoolSpent': 0 });
   }
