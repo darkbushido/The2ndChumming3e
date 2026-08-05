@@ -1017,7 +1017,7 @@ export class SR3EItem extends Item {
       targetName:   targetActor.name,
       weaponName:   this.name,
       baseTN:       tn,
-      baseNote:     modBreakdown ?? null,
+      baseNote:     tnBreakdownParts.length ? tnBreakdownParts.join(' | ') : null,
     }, { timeout: 300_000 });
 
     // GM cancelled the attack. Nothing has been written anywhere.
