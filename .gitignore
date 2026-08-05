@@ -1,3 +1,6 @@
 *.LOCK*
 .claude/settings.local.json
 rules pdfs/
+
+# Tooling
+node_modules/

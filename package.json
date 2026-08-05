@@ -1,8 +1,19 @@
-﻿{
-    "dependencies":  {
-                         "classic-level":  "^3.0.0"
-                     },
-    "scripts":  {
-                    "test":  "node tests/run.mjs"
-                }
+{
+  "dependencies": {
+    "classic-level": "^3.0.0"
+  },
+  "scripts": {
+    "test": "node tests/run.mjs",
+    "lint": "eslint scripts tests",
+    "lint:fix": "eslint scripts tests --fix",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@league-of-foundry-developers/foundry-vtt-types": "^13.346.0-beta.20250812191140",
+    "eslint": "^10.8.0",
+    "globals": "^17.9.0",
+    "typescript": "^5.9.3"
+  },
+  "name": "the2ndchumming3e",
+  "private": true
 }
