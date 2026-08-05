@@ -158,6 +158,48 @@ the chat-card handlers in `sr3e.js`. Keep the ethos: no automation of outcomes, 
 editable. `_checkBtn`/`_claimBtn` one-shot guards still apply — socket messages land on
 multiple clients.
 
+### ✅ DESIGN COMPLETE — see [audit/socket-combat-plan.md](audit/socket-combat-plan.md)
+
+Resumed 2026-08-05; all 15 agents finished. Winner **"One Hop, Three Windows"** — *unanimous,
+3/3 judges*. Adversarial pass raised **32 breaks, 8 fatal**; §5 of the plan maps each to a
+handling. Start at **Stage 0**, which is four small prerequisite commits.
+
+**The brief's premise was wrong, and it was mine.** I told the designers "Foundry sockets are
+fire-and-forget broadcast, there is no built-in request/response." **False since v13.** Verified
+by hand against the installed build (**Foundry 14.365.0**):
+
+| Capability | Location |
+|---|---|
+| `User#query(name, data, {timeout})` | `client/documents/user.mjs:289` |
+| Fast-fail on disconnect (no hang) | `:306` `throw new Error('User [x] is not active')` |
+| Correlation id minted by core | `:308` `foundry.utils.randomID()` |
+| `User.queryMany` | `:335` |
+| `CONFIG.queries` + system-prefix convention | `client/config.mjs:2964`, doc at `:2961` |
+| `DialogV2.query(user, type, config)` | `client/applications/api/dialog.mjs:443` |
+| Loopback short-circuit already in core | `:449` `if (user.isSelf) return this[type](config)` |
+| Players may query the GM by default | `common/constants.mjs:1409` `defaultRole: USER_ROLES.PLAYER` |
+
+So **`SR3ESocket.js` is not built.** `scripts/SR3EQuery.js` (~180 lines) wraps `CONFIG.queries`
+instead. Caveat the plan catches: `DialogV2.query` forwards config as JSON and its docstring
+says *"Callback options are not supported"* (`dialog.mjs:435`), so the dodge window cannot use
+it directly — it needs live recompute and a close handle. Register our own query and build the
+dialog locally on the defender's client.
+
+**Second fatal cluster, independent of the above:** relaying `.update(changes)` ships
+**absolutes**, so two clients both read `combatPoolSpent: 0`, both compute `0+3`, both send `3`
+— six dice declared, three charged. Affects 15 call sites incl. `SR3EActor.js:3610-3611` (melee
+spends *both* corners from whoever clicked) and all four `handleAssignDamage` branches. Fix:
+relay **intent** (`{actorId, pool:'combat', n:3}`) and let the GM re-enter the clamp locally.
+
+**Stages:** 0 prerequisites (~2h) → 1 transport + single writer (~½d, **zero UI change**, fixes
+`SR3EItem.js:919`) → 2 dodge window on the defender (~1d) → 3 GM TN window (~1.5d). Click budget
+after: **attacker 5→3, defender 0→1, GM 0→1, chat unchanged.**
+
+**Open question the plan wants answered before Stage 3:** the Visibility Table's slash notation
+— should the GM window render a computed number, or the verbatim string plus a typed TN?
+
+<details><summary>Superseded — partial run of 2026-08-04</summary>
+
 ### Design state — 2026-08-04, PARTIAL
 
 A design workflow produced a pipeline map (179 findings) and **three independent designs**.
@@ -190,6 +232,8 @@ Workflow({ scriptPath: "<session>/workflows/scripts/socket-combat-design-wf_d954
 ```
 
 Full per-agent returns: `<session>/subagents/workflows/wf_d9545118-374/journal.jsonl`.
+
+</details>
 
 ## 3. Implement the Pain Editor
 
@@ -497,6 +541,25 @@ CLAUDE.md explicitly forbids. Three separate defects:
 
 Verified by reading 2834-2859. Fix: convert to `DialogV2.wait()`, return `null` on cancel and
 on close, and make the caller bail — matching `_promptDodgeDeclaration`'s contract.
+
+⚠ **Two call sites, not one.** `SR3EItem.js:969` (single-target) **and `:744` (AoE)**. Both guard
+with `if (combatDice > 0)`, and `null > 0` is `false` — so switching the return to `null` without
+fixing *both* silently rolls the grenade with no pool instead of aborting. Update them in the
+same commit. (`DialogV2.wait` defaults `rejectClose: false` and resolves `null` on dismissal, so
+the conversion genuinely fixes the hang.)
+
+## 16. Delete the duplicate `refreshAstralPool` — **CONFIRMED**
+
+`SR3EActor.js:4128` and `SR3EActor.js:4196` define `refreshAstralPool()` twice with byte-identical
+bodies (`await this.update({ 'system.astralPoolSpent': 0 })`). In a JS class the second wins, so
+4128 is dead. Delete one. Socket Stage 1 touches both lines, so clear it first or the work edits
+dead code.
+
+## 17. Fix `handleAssignDamage`'s lying button — **CONFIRMED**
+
+`SR3EActor.js:4040-4042` sets `btn.textContent = '✓ Damage Applied'` **before** `JSON.parse` and
+before four `if (!x) return` bailouts. When the actor lookup fails the card claims damage was
+applied and nothing was written. Move the label after the successful write.
 
 ## 14. Fix the wrong flag scope on spirits — **CONFIRMED**, 5 sites
 
