@@ -897,6 +897,67 @@ A makes dodging look better than it is at parity, B makes it look worse than it 
 4. Add tests — this is pure arithmetic with no Foundry dependency, so it belongs in `tests/`
    alongside the damage-code parsers ([#7](#7-expand-test-coverage-for-combat-initiative-and-pools)).
 
+## 27. Audit every chat-card button for who may click it
+
+**6 of ~31 are gated.** The rest are actionable by anyone who can see the card, which is the
+whole table — combat cards are public by design and that part is wanted.
+
+Gated so far: `.sr-soak-btn`, `.sr-dodge-declare-btn`, `.sr-dodge-roll-btn`, `.sr-soak-roll-btn`,
+`.sr-explode-btn`, `.sr-assign-damage-btn`.
+
+**The predicates already exist** (`sr3e.js`), so each remaining button is roughly a line:
+
+| Helper | Use for |
+|---|---|
+| `_mine(p)` | buttons that post a card onward — any owner, or a GM |
+| `_isDecider(p)` | buttons that **roll** — exactly one user, via `SR3EQuery.deciderFor` |
+| `_denyBtn(btn, why)` | dims and explains on hover, instead of silently doing nothing |
+| `_payloadActorId(p)` | resolves whichever actor key the payload carries |
+
+Ungated, roughly by risk:
+
+- **Rolls someone else's dice:** `.sr-melee-roll-btn` (rolls *both* corners — see
+  [#24](#24)), `.sr-spell-resist-roll-btn`, `.sr-drain-roll-btn`, `.sr-astral-roll-btn`,
+  `.sr-astral-soak-roll-btn`, `.sr-contested-roll-btn`, `.sr-icia-roll-btn`, `.sr-ost-roll-btn`,
+  `.sr-occ-roll-btn`, `.sr-miji-roll-btn`, `.sr-ram-passenger-resist-btn`
+- **Writes state:** `.sr-icia-assign-btn`, `.sr-miji-degradation-btn`, `.sr-summon-confirm-btn`,
+  `.sr-sd-declare-commit-btn`, `.sr-sd-declare-skip-btn`
+- **Posts a card:** `.sr-spell-soak-btn`, `.sr-drain-btn`, `.sr-astral-soak-btn`,
+  `.sr-spell-defense-btn`, `.sr-spell-defense-proceed-btn`, `.sr-aura-reading-btn`,
+  `.sr-ram-vehicle-soak-btn`, `.sr-matrix-ic-resist-btn`
+
+⚠ **Check each payload's actor key before assuming.** `_payloadActorId`'s precedence is
+`actorId → icActorId → vehicleActorId → wardActorId → targetActorId`, and it is load-bearing:
+a wave payload carries *both* `actorId` (roller) and `targetActorId`, and `attackerActorId` is
+excluded on purpose so an attacker never inherits rights over their target's card. A button whose
+payload names its actor some other way will fail closed and only the GM will be able to click it.
+
+## 28. Spell Defense is declared for everyone, on the GM's screen
+
+**Found in play 2026-08-05.** Starting a round pops a magic window on the GM that decides for the
+players' mages too.
+
+`SR3ECombat.js:115` calls `SR3EActor.promptSpellDefenseDeclaration(combatants)`
+([`SR3EActor.js:4533`](scripts/documents/SR3EActor.js)), which builds **one dialog with a row per
+Sorcery-capable actor** and opens it on whichever client advanced the round — in practice the GM.
+So the GM allocates every player mage's Sorcery and Spell Pool dice for the round.
+
+This is exactly the dodge bug in a different costume, and it is arguably worse: Spell Defense
+commits **Spell Pool** for the whole round, so a bad guess costs the player their spellcasting, not
+just one exchange.
+
+**Fix — reuse the ranged pattern, don't invent one:**
+
+1. Split the single multi-row dialog into a per-actor declaration.
+2. Relay each to `SR3EQuery.deciderFor(actor)` via `SR3EQuery.ask`, in parallel — they are
+   independent, and serialising them makes round start drag once there are two mages.
+3. Same reaper rule as dodge: an unreachable or AFK mage declares **nothing** and the round
+   proceeds. Never block round start on a human.
+4. The GM keeps a view of the results — they need to know what was committed.
+
+The *write* is already correct: `commitSpellDefense` routes through the GM (socket Stage 1), so
+this is purely about who makes the decision, not who performs it.
+
 ## 19. Convert the SR3 GM Screen into a compendium — as data, not page images
 
 Put the reference tables a GM needs at the table into a Foundry compendium, **rebuilt as real
