@@ -757,6 +757,46 @@ Add `"lint": "eslint scripts"` to `scripts`, and wire it into `npm test` so it r
 triage pass and consider starting with only the rules above rather than a full recommended set —
 a wall of 500 style warnings gets ignored, and the correctness rules are what matter.
 
+## 23. Ship an ammunition compendium — **found in play 2026-08-05**
+
+**The code is complete; there is simply no content.** Verified:
+
+| Piece | State |
+|---|---|
+| `ammunition` in `system.json` → `documentTypes.Item` | ✅ present |
+| `AmmunitionData` model (`ItemDataModels.js:127`) | ✅ full schema |
+| `CONFIG.Item.dataModels.ammunition` (`sr3e.js:107`) | ✅ registered |
+| "+ Add Ammunition" buttons (`SR3EActorSheet.js:1323`, `:2069`) | ✅ present |
+| `SR3E.ammoTypes` rules (8 types) + `ammoLoadMechanisms` (9) | ✅ in `config.js` |
+| **Any ammunition item, anywhere** | ❌ **zero** |
+
+**Not a regression — it never existed.** `main`'s 24 monolithic packs had none either, the
+archive holds **0** ammunition documents, and there is no source data in `rawdata/` or the
+upstream character generator. Of 82 packs across 20 books, not one is ammunition.
+
+The practical effect is what got reported: to use ammo at all, someone must hand-create an item
+and fill in `ammoType`, `loadMechanism`, `rounds`, `cost`, `availability`, `streetIndex` and
+`bookPage` — **per type, per gun class** — before `reload()` has any stockpile to match against.
+Everything downstream (magazine tracking, APDS/flechette armour effects, the `trackAmmo` setting)
+is dead until that content exists.
+
+### What the pack needs
+
+8 types from `SR3E.ammoTypes`: Regular · Explosive · EX Explosive · Gel · APDS · Flechette ·
+Tracer · Anti-Vehicle. Load mechanism matters because `reload()` matches on it, so a Belt entry is
+distinct from a Clip entry.
+
+Pricing is core p.281, *Ammunition, Per 10 Shots*. ⚠ **That table extracts badly** — the two-column
+merge offsets the stat rows against their labels, exactly like the Visibility Table, so crop per
+column (`pdftotext -x -y -W -H`, mediabox ~616×795pt, **book page = PDF page − 2**) rather than
+reading the merged dump. One figure is safe from prose: *"Standard ammo costs 20¥ for 10 rounds."*
+
+### ⚠ Blocked on [#12](#12-write-a-committed-pack-rebuild-script-and-vendor-its-sources)
+
+The populate macros were **retired**, so there is currently no supported way to build a pack. This
+is the first task to actually need that decision, and it should not be resolved by quietly
+resurrecting a one-off macro.
+
 ## 19. Convert the SR3 GM Screen into a compendium — as data, not page images
 
 Put the reference tables a GM needs at the table into a Foundry compendium, **rebuilt as real
