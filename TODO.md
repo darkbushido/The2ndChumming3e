@@ -958,6 +958,28 @@ just one exchange.
 The *write* is already correct: `commitSpellDefense` routes through the GM (socket Stage 1), so
 this is purely about who makes the decision, not who performs it.
 
+## 29. Group the modifiers in the GM's TN window
+
+Requested from play 2026-08-05 — the window reads as a flat list of unrelated checkboxes.
+
+`_promptGMAttackWindow` renders `mvpModifiers()` in table order, which is the *book's* order, not a
+useful one. Group by what the GM is actually looking at when they tick it:
+
+| Group | Rows |
+|---|---|
+| **Target** | Partial cover · Target running · Target stationary |
+| **Attacker** | Attacker running |
+| **Gear** *(pre-ticked from the weapon and cyberware)* | Smartlink · Smart goggles · Laser sight |
+
+Gear especially wants separating: those three are **guesses the system made**, not judgements the
+GM is being asked for, and they currently sit indistinguishable among rows that are.
+
+Add a `group` field to `SR3E_RANGED_MODIFIERS` rather than hard-coding the layout in the dialog, so
+the deferred rows ([#18](#18), visibility, blind fire, multiple targets, walking) drop into place
+when they land instead of forcing a re-sort.
+
+Keep the two-column grid — group headers span both columns.
+
 ## 19. Convert the SR3 GM Screen into a compendium — as data, not page images
 
 Put the reference tables a GM needs at the table into a Foundry compendium, **rebuilt as real

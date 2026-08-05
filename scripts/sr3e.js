@@ -2010,9 +2010,34 @@ function _mine(p) {
  */
 function _isDecider(p) {
   if (game.user.isGM) return true;
-  const a = game.actors.get(p?.targetActorId);
+  return _isTheDecider(p);
+}
+
+/**
+ * Strictly THE decider — no GM shortcut.
+ *
+ * `_isDecider` lets a GM click anything, which is right for an override but wrong
+ * for deciding whose screen a prompt should open on: with the GM shortcut the GM
+ * would have every player's decision thrust at them.
+ */
+function _isTheDecider(p) {
+  const a = game.actors.get(_payloadActorId(p));
   if (!a) return false;                    // fail CLOSED — no fail-open `!a` branch
   return game.sr3e.SR3EQuery.deciderFor(a) === game.user.id;
+}
+
+/**
+ * One-shot guard for prompts this client opens by itself.
+ *
+ * Separate from `_usedButtons`: that marks a button as *spent*, whereas this marks
+ * it as *already offered*. `renderChatMessageHTML` fires for both the pop-up
+ * notification and the chat log, so without this the same decision opens twice.
+ */
+const _autoOpened = new Set();
+function _claimAuto(key) {
+  if (_autoOpened.has(key)) return false;
+  _autoOpened.add(key);
+  return true;
 }
 
 /** Dim a button this client must not press, with the reason on hover. */
@@ -2133,6 +2158,20 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       btn.textContent = '⏳ Declaring…';
       await SR3EActor.handleDodgeDeclare(JSON.parse(payload));
     });
+
+    // Come to the defender rather than waiting to be spotted. The attack is
+    // already resolved and everything downstream is blocked on this answer, so a
+    // button the defender has to notice in a scrolling chat log is the wrong
+    // shape. Strictly the decider — a GM must not have every player's defence
+    // decision thrust at them, though they can still click it as an override.
+    try {
+      const p = JSON.parse(btn.dataset.payload ?? '{}');
+      if (_isTheDecider(p) && _claimAuto(`${mid}|dodgeauto|${i}`)) {
+        // Deferred so the card finishes rendering first, and routed through the
+        // button's own click so the _claimBtn guard still applies exactly once.
+        setTimeout(() => { if (!btn.disabled) btn.click(); }, 0);
+      }
+    } catch { /* unreadable payload — the button still works manually */ }
   });
 
   html.querySelectorAll('.sr-dodge-roll-btn').forEach((btn, i) => {
