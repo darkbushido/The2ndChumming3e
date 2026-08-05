@@ -4038,24 +4038,31 @@ _prepareCharacter(sys, attr) {
   }
 
   static async handleAssignDamage(btn) {
-    btn.disabled    = true;
-    btn.textContent = '✓ Damage Applied';
-    const p = JSON.parse(btn.dataset.payload);
+    // Disable immediately as a double-click guard, but do NOT claim success yet — the
+    // label is only truthful once a write has actually landed. Every bail below restores
+    // the button so the user can retry rather than being left with a dead control.
+    btn.disabled = true;
+    const fail = msg => { ui.notifications.warn(msg); btn.disabled = false; return null; };
+
+    let p;
+    try { p = JSON.parse(btn.dataset.payload); }
+    catch { return fail('Damage payload could not be read — no damage applied.'); }
+
     if (p.icActorId) {
       const ic  = game.actors.get(p.icActorId);
-      if (!ic) return;
+      if (!ic) return fail('That IC no longer exists — no damage applied.');
       const current = ic.system.woundValue ?? 0;
       const max     = ic.system.derived?.woundMax ?? (ic.system.rating ?? 1) * 2;
       await ic.update({ 'system.woundValue': Math.min(max, current + p.boxes) });
     } else if (p.vehicleActorId) {
       const veh = game.actors.get(p.vehicleActorId);
-      if (!veh) return;
+      if (!veh) return fail('That vehicle no longer exists — no damage applied.');
       const current = veh.system.damage?.value ?? 0;
       const max     = (veh.system.attributes?.body?.base ?? 4) * 2;
       await veh.update({ 'system.damage.value': Math.min(max, current + p.boxes) });
     } else if (p.wardActorId) {
       const ward = game.actors.get(p.wardActorId);
-      if (!ward) return;
+      if (!ward) return fail('That ward no longer exists — no damage applied.');
       const current = ward.system.damage ?? 0;
       const max     = ward.system.maxForce ?? 1;
       const newDamage = Math.min(max, current + p.boxes);
@@ -4069,11 +4076,13 @@ _prepareCharacter(sys, attr) {
       }
     } else {
       const actor = game.actors.get(p.actorId);
-      if (!actor) return;
+      if (!actor) return fail('That actor no longer exists — no damage applied.');
       const current = actor.system.wounds?.[p.track]?.value ?? 0;
       const max     = actor.system.wounds?.[p.track]?.max ?? 10;
       await actor.update({ [`system.wounds.${p.track}.value`]: Math.min(max, current + p.boxes) });
     }
+
+    btn.textContent = '✓ Damage Applied';   // truthful only now — a write has landed
   }
 
   /**
