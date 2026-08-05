@@ -742,6 +742,7 @@ export class SR3EItem extends Item {
     const availableCombatPool = actor.system.derived?.availableCombatPool ?? 0;
     if ((skill || defAllowPool) && availableCombatPool > 0) {
       const combatDice = await this._promptCombatPool(availableCombatPool);
+      if (combatDice === null) return null;   // cancelled — abort before anything is committed
       if (combatDice > 0) {
         await actor.spendCombatPool(combatDice);
         pool  += combatDice;
@@ -967,6 +968,7 @@ export class SR3EItem extends Item {
   const availableCombatPool = actor.system.derived?.availableCombatPool ?? 0;
   if ((skill || defAllowPool) && availableCombatPool > 0) {
     const combatDice = await this._promptCombatPool(availableCombatPool);
+    if (combatDice === null) return null;   // cancelled — abort before anything is committed
     if (combatDice > 0) {
       await actor.spendCombatPool(combatDice);
       pool  += combatDice;
@@ -2831,30 +2833,43 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
    * Prompt for combat pool allocation
    * @private
    */
+  /**
+   * Ask the attacker how many Combat Pool dice to commit.
+   *
+   * @param   {number} maxDice  Available pool. 0 or less skips the dialog entirely.
+   * @returns {Promise<number|null>}  Dice to commit, or **null if the user cancelled or
+   *   dismissed the dialog** — callers must treat null as "abort the attack", matching
+   *   `promptDefaultChoice` and `_promptDodgeDeclaration`. Returns 0 only when there was
+   *   no pool to offer, or the user deliberately committed zero dice.
+   */
   async _promptCombatPool(maxDice) {
     if (maxDice <= 0) return 0;
     const actorName = this.actor?.name ?? 'Attacker';
-    return new Promise(resolve => {
-      new foundry.applications.api.DialogV2({
-        window: { title: `${actorName} — Combat Pool` },
-        content: `
-          <p><strong>${actorName}</strong>, how many dice from your Combat Pool would you like to add to this attack?</p>
-          <p style="font-size:11px;color:var(--sr-muted)">Available: <strong>${maxDice}</strong> dice (0 = none)</p>
-          <input type="number" id="combat-dice" min="0" max="${maxDice}" value="0" style="width:80px"/>
-        `,
-        buttons: [
-          {
-            label: 'Confirm',
-            action: 'roll',
-            default: true,
-            callback: (_event, _button, dialog) => {
-              const dice = parseInt(dialog.element.querySelector('#combat-dice')?.value) || 0;
-              resolve(Math.min(dice, maxDice));
-            }
-          },
-          { label: 'Cancel', action: 'cancel', callback: () => resolve(0) },
-        ],
-      }).render(true);
+
+    // Stays null unless Confirm runs, so Cancel *and* dismissal (Esc / ✕) both yield null.
+    // DialogV2.wait defaults rejectClose:false, so dismissal resolves rather than throwing.
+    let dice = null;
+
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `${actorName} — Combat Pool` },
+      content: `
+        <p><strong>${actorName}</strong>, how many dice from your Combat Pool would you like to add to this attack?</p>
+        <p style="font-size:11px;color:var(--sr-muted)">Available: <strong>${maxDice}</strong> dice (0 = none)</p>
+        <input type="number" id="combat-dice" min="0" max="${maxDice}" value="0" style="width:80px"/>
+      `,
+      buttons: [
+        {
+          label: 'Confirm',
+          action: 'roll',
+          default: true,
+          callback: (_event, _button, dialog) => {
+            dice = Math.min(parseInt(dialog.element.querySelector('#combat-dice')?.value) || 0, maxDice);
+          }
+        },
+        { label: 'Cancel', action: 'cancel' },
+      ],
     });
+
+    return dice;
   }
 }
