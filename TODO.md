@@ -158,6 +158,39 @@ the chat-card handlers in `sr3e.js`. Keep the ethos: no automation of outcomes, 
 editable. `_checkBtn`/`_claimBtn` one-shot guards still apply — socket messages land on
 multiple clients.
 
+### Design state — 2026-08-04, PARTIAL
+
+A design workflow produced a pipeline map (179 findings) and **three independent designs**.
+The **judge, adversarial-verify and synthesis phases never ran** — all seven agents died on a
+session limit. So there is **no scored winner and no adversarial pass**. Any "winner" or
+"0 breaks found" in the raw output is an artefact of those phases not running, not a result.
+
+| Design | Click math | Shape |
+|---|---|---|
+| **1. Thin RPC** (`SR3ESocket.js`) | attacker 6→5, defender 0→1‑3, **GM +1**, chat +0 | Generic correlated request/response + GM-pinned writes; combat verbs in a separate file. Most reusable. |
+| **2. Exchange Ledger** | player‑vs‑NPC **5→5**; PC‑vs‑PC 5→6‑7 | World-setting state machine; GM is sole writer because Foundry refuses non-GM `settings.set`. Survives refresh. Self-flagged hazard: opening a modal from an `updateSetting` hook. |
+| **3. One Hop, Three Windows** | **8→8 neutral; attacker 8→3** | Scoped to single-target ranged. Merges the TN window *into* the dodge window when the GM is both, so the GM is never asked twice. |
+
+1 and 3 propose the **same** `scripts/SR3ESocket.js` primitive — they are not rivals. 3 is
+roughly "1, scoped down, plus the merge optimisation."
+
+**Unratified recommendation (mine, unverified):** build 3's shape on 1's generic primitive.
+3 wins on the criterion that killed the last attempt — the attacker goes 8 clicks → 3 and the
+table nets zero — while 1's primitive lets melee and spells reuse the transport later.
+
+**Accepted cost:** requirement 3 is **+1 GM click per player attack**. "The GM gets a window"
+is a click by definition. Design 3 caps it at one, never two. Put it behind a
+`combatGMWindow`-style world setting so a play-test rejection is a toggle, not a revert.
+
+**Resume handle** — replays the 8 finished agents from cache, re-runs only the 7 that failed:
+
+```
+Workflow({ scriptPath: "<session>/workflows/scripts/socket-combat-design-wf_d9545118-374.js",
+           resumeFromRunId: "wf_d9545118-374" })
+```
+
+Full per-agent returns: `<session>/subagents/workflows/wf_d9545118-374/journal.jsonl`.
+
 ## 3. Implement the Pain Editor
 
 **Data-present, mechanics-absent.** In the `sr3e-mm-bioware` pack; `scripts/` has zero hits
@@ -446,6 +479,54 @@ rebuild script recovers that from upstream.
 
 ⚠ Rewrite CLAUDE.md's "Compendium population — correct pattern" when this lands. It
 documents a workflow by which no pack in this repo was actually built.
+
+## 13. Fix `_promptCombatPool` — three defects in one dialog — **CONFIRMED**
+
+`SR3EItem._promptCombatPool` ([SR3EItem.js:2834](scripts/documents/SR3EItem.js)) is the only
+combat prompt that does **not** use `DialogV2.wait()`. It hand-rolls
+`new foundry.applications.api.DialogV2({...}).render(true)` inside a `new Promise`, which
+CLAUDE.md explicitly forbids. Three separate defects:
+
+1. **Cancel resolves `0`, not `null`** (line 2855) — so cancelling does not abort the attack,
+   it fires it with no pool dice. Every other prompt in the flow returns null-on-cancel and its
+   caller bails.
+2. **No `close` handler** — dismissing with Escape or the ✕ never resolves the promise at all,
+   so `rollWeapon` awaits forever and the attack is stuck with no error.
+3. **Contradicts the documented pattern**, so it cannot be dropped into a uniform
+   await-a-reply wrapper. Blocks the melee defender's pool window in a later socket stage.
+
+Verified by reading 2834-2859. Fix: convert to `DialogV2.wait()`, return `null` on cancel and
+on close, and make the caller bail — matching `_promptDodgeDeclaration`'s contract.
+
+## 14. Fix the wrong flag scope on spirits — **CONFIRMED**, 5 sites
+
+Five calls use the scope string `'sr3e'`, but the system id is **`The2ndChumming3e`**:
+
+| Site | Call |
+|---|---|
+| `SR3EActor.js:2500` | `spirit?.setFlag('sr3e', 'force', newForce)` |
+| `SR3EActor.js:5149` | `a.getFlag('sr3e', 'isSpirit')` |
+| `SR3EActor.js:5159` | `s.getFlag('sr3e', 'force')` |
+| `SR3EActor.js:5177` | `spirit.getFlag('sr3e', 'force')` |
+| `SR3EActor.js:5178` | `spirit.getFlag('sr3e', 'conjurerId')` |
+
+Foundry validates the scope on **write**, so the banishing path at 2500 fails; the reads
+return undefined and silently fall back to their `??` defaults. Net effect: spirit Force,
+the spirit list and summoner identification do not work as intended.
+
+Check what `SR3ESpiritSummoning.js` writes when it creates a spirit before fixing — if it
+already writes under the correct scope, these five are simply reading the wrong place, and
+the fix is one-directional. Do **not** fix this inside the socket diff.
+
+## 15. Settle the Foundry version: manifest says 14, CLAUDE.md says 13
+
+`system.json:8-9` declares `"minimum": "14", "verified": "14"`. CLAUDE.md is titled for **v13**
+and documents v13 patterns throughout, and the archived notes reason about "v14 deprecated the
+MeasuredTemplate document" as a *future* concern. One of the two is stale.
+
+Worth settling before the socket work leans on it: `game.socket.on/emit` is stable across both,
+but nothing in this repo has ever exercised it, and the v13/v14 question also governs whether
+the ApplicationV2 and Region patterns in CLAUDE.md are still current guidance.
 
 ---
 
