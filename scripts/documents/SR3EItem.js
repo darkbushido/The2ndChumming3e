@@ -977,8 +977,36 @@ export class SR3EItem extends Item {
   // Called shots are forbidden in Full Auto (SR3 p.114); allowed for every other mode and
   // for melee/thrown/projectile single-target attacks.
   const calledShotAllowed = !(this.type === 'firearm' && fireModeResult?.mode === 'FA');
+
+  // --- The GM sets the situational TN FIRST -------------------------------------
+  //
+  // Order matters for the human, not the code: the attacker should not be asked to
+  // commit Combat Pool against a target number they cannot see yet. So the GM's
+  // modifier window resolves BEFORE the attacker's screen opens, and its result
+  // becomes the base the attacker's own declarations (range, called shot, take aim)
+  // adjust from. Writes nothing either way — see the SR3EQuery negotiate handler.
+  const _baseTNForGM = 4 + extraTNMod;
+  const negotiation = await game.sr3e.SR3EQuery.asGM('sr3e.attack.negotiate', {
+    attackerUuid: actor.uuid,
+    defenderUuid: targetActor.uuid,
+    weaponId:     this.id,
+    attackerName: actor.name,
+    targetName:   targetActor.name,
+    weaponName:   this.name,
+    baseTN:       _baseTNForGM,
+    baseNote:     tnBreakdownParts.length ? tnBreakdownParts.join(' | ') : null,
+  }, { timeout: 300_000 });
+
+  if (negotiation === null) return null;   // GM cancelled the attack — nothing written
+
+  // How much the GM moved the TN. Applied on top of the attacker's own dialog maths
+  // so range/called-shot/aim keep working exactly as before rather than being
+  // silently overridden.
+  const gmTNDelta = Number.isFinite(negotiation?.tn) ? (negotiation.tn - _baseTNForGM) : 0;
+
   const weaponOpts = await SR3EItem._promptWeaponRollOptions(targetActor, rawDamage, actor, extraTNMod,
-    tnBreakdownParts.length ? tnBreakdownParts.join(' | ') : null, rangeInfo, calledShotAllowed);
+    tnBreakdownParts.length ? tnBreakdownParts.join(' | ') : null, rangeInfo, calledShotAllowed,
+    { gmTNDelta, gmSetTN: gmTNDelta !== 0 || negotiation?.mods });
   if (!weaponOpts) return null;
 
   // Anti-Vehicle ammo bypasses the vehicle Power/2 reduction (same effect as the AV-munition checkbox)
@@ -1002,34 +1030,9 @@ export class SR3EItem extends Item {
     effectiveRawDamage = `${newPower}${newLevel}${damageBase.isStun ? ' Stun' : ''}`;
   }
 
-  // --- Step 3: Defender declares dodge, ON THEIR OWN SCREEN (vehicles cannot dodge) ---
-  //
-  // The dialog runs on the defender's client and returns a number; this client
-  // never writes to the target. Reaper rule: an unreachable, AFK or cancelling
-  // defender yields 0 dice and the attack PROCEEDS. Letting a cancel abort the
-  // attack would hand every defender a one-click veto over the attacker's turn,
-  // and an AFK defender would exercise it by doing nothing.
+  // The defender declares nothing yet — under RAW they decide after this roll
+  // resolves (SR3 sequence step 4). See SR3EActor.handleDodgeDeclare.
   let committedDodgeDice = 0;
-  let negotiation        = null;
-  {
-    const { SR3EQuery } = game.sr3e;   // registry, not import — breaks the cycle
-    negotiation = await SR3EQuery.asGM('sr3e.attack.negotiate', {
-      attackerUuid: actor.uuid,
-      defenderUuid: targetActor.uuid,
-      weaponId:     this.id,
-      attackerName: actor.name,
-      targetName:   targetActor.name,
-      weaponName:   this.name,
-      baseTN:       tn,
-      baseNote:     tnBreakdownParts.length ? tnBreakdownParts.join(' | ') : null,
-    }, { timeout: 300_000 });
-
-    // GM cancelled the attack. Nothing has been written anywhere.
-    if (negotiation === null) return null;
-
-    // The GM's TN is authoritative from here.
-    if (Number.isFinite(negotiation?.tn)) tn = negotiation.tn;
-  }
 
   // --- Step 4: Build attacker pool ---
   const skillName = this._getWeaponSkill();
@@ -1075,21 +1078,20 @@ export class SR3EItem extends Item {
     label       += ` — ${def.label}`;
   }
 
-  // Attacker combat pool allocation — allowed unless defaulting to an attribute, and
-  // capped by the Default Table at half the rating defaulted from (SR3 p.84-85).
+  // Combat Pool was allocated on the roll-options screen, alongside the GM's TN —
+  // one dialog, one click, and the attacker could see what they were allocating
+  // against. Pool is not allowed when defaulting to an attribute (SR3 Default Table).
   //
-  // Called UNCONDITIONALLY, even with no pool to spend. The GM's window only sets
-  // the target number; this dialog is the attacker's own roll trigger, and it must
-  // exist for every attack or a player with an empty pool watches their dice get
-  // thrown by the GM's click. With no pool it degrades to a bare "🎲 Roll" confirm.
-  const availableCombatPool = Math.min(
-    actor.system.derived?.availableCombatPool ?? 0, defPoolCap);
-  const poolAllowed         = (skill || defAllowPool) ? availableCombatPool : 0;
+  // That screen opens BEFORE defaulting is resolved (skill lookup happens after), so
+  // it cannot know the Default Table's pool cap at offer time. The cap is enforced
+  // here instead, at the point of actually spending — clamping what was requested
+  // rather than what was offered (SR3 p.84-85: half the rating defaulted from).
   {
-    const combatDice = await this._promptCombatPool(poolAllowed);
-    if (combatDice === null) return null;   // cancelled — abort before anything is committed
+    const requested  = (skill || defAllowPool)
+      ? Math.min(Math.max(0, weaponOpts.poolDice ?? 0), defPoolCap)
+      : 0;
+    const combatDice = requested > 0 ? await actor.spendCombatPool(requested) : 0;
     if (combatDice > 0) {
-      await actor.spendCombatPool(combatDice);
       pool  += combatDice;
       label += ` + ${combatDice} Combat Pool`;
     }
@@ -1849,28 +1851,31 @@ export class SR3EItem extends Item {
     return result;
   }
 
-  static async _promptWeaponRollOptions(targetActor, rawDamage, actor, totalTNMod = 0, modBreakdown = null, rangeInfo = null, calledShotAllowed = true) {
+  static async _promptWeaponRollOptions(targetActor, rawDamage, actor, totalTNMod = 0, modBreakdown = null, rangeInfo = null, calledShotAllowed = true, gmCtx = {}) {
     const isVehicle  = targetActor.type === 'vehicle';
     const karmaPool  = actor?.system.karmaPool ?? 0;
     const rangeTNarr = game.sr3e.SR3E.rangeTN ?? [0, 1, 2, 5];
     const rangeLabels = ['Short', 'Medium', 'Long', 'Extreme'];
 
-    // Will a GM TN window actually open for this attack? If so the TN typed here is
-    // only a starting value the GM sees, so it is shown read-only and this dialog's
-    // button stops claiming to roll.
-    //
-    // ⚠ This MUST mirror the gate in the `sr3e.attack.negotiate` handler
-    // (SR3EQuery.js). If the two ever disagree the dialog lies to the attacker —
-    // either greying out a field that is in fact authoritative, or letting them
-    // type a TN that gets silently discarded.
-    const _tnMode    = game.settings.get('The2ndChumming3e', 'gmApprovesTN');
-    const gmWillSetTN = _tnMode === 'always' || (_tnMode === 'player' && !game.user.isGM);
+    // The GM has ALREADY set the situational TN by the time this opens — their
+    // adjustment arrives as `gmCtx.gmTNDelta` and is folded into every TN the
+    // dialog computes. The attacker's own declarations (range, called shot, take
+    // aim) still adjust from there, because those are the attacker's call.
+    const gmTNDelta   = Number(gmCtx.gmTNDelta) || 0;
+    const gmWillSetTN = Boolean(gmCtx.gmSetTN) || gmTNDelta !== 0;
+
+    // Combat Pool is offered on THIS screen so the attacker allocates it while
+    // looking at the target number they are allocating against — and so the whole
+    // attack is one dialog instead of a chain of modals flashing past.
+    const availPool = actor?.system?.derived?.availableCombatPool ?? 0;
 
     // Base TN excludes range; range is added from the (editable) dropdown below.
-    const baseTN     = 4 + totalTNMod;
+    // The GM's situational adjustment is folded in here so every downstream
+    // computation — the default value and the live recompute — carries it.
+    const baseTN     = 4 + totalTNMod + gmTNDelta;
     const initBand   = rangeInfo?.bandIdx ?? -1;
     const initRangeTN = initBand >= 0 ? (rangeTNarr[initBand] ?? 0) : 0;
-    const defaultTN  = baseTN + initRangeTN;
+    const defaultTN  = Math.max(2, baseTN + initRangeTN);
 
     const modNote   = (totalTNMod !== 0 || modBreakdown)
       ? `<div style="font-size:11px;color:var(--sr-amber);margin-top:4px">⚡ TN modifiers: ${modBreakdown ?? (totalTNMod > 0 ? `+${totalTNMod}` : totalTNMod)} (pre-applied)</div>`
@@ -1915,33 +1920,32 @@ export class SR3EItem extends Item {
         </div>
       </div>` : '';
 
-    // Live TN recompute when range / called shot / take-aim changes (DialogV2.wait does not
-    // call `render`). The TN field stays authoritative; these controls fold into it.
-    let hookId = null;
-    if (rangeInfo || calledShotAllowed) {
-      hookId = Hooks.on('renderDialogV2', (_app, html) => {
-        const el = html?.querySelector ? html : html?.[0];
-        if (!el?.querySelector?.('#sr-damage')) return; // not our dialog
-        Hooks.off('renderDialogV2', hookId);
-        const tnInput   = el.querySelector('#sr-tn');
-        const sel       = el.querySelector('#sr-range');
-        const calledSel = el.querySelector('#sr-called');
-        const aimInput  = el.querySelector('#sr-aim');
-        const subRow    = el.querySelector('#sr-subtarget-row');
-        const recompute = () => {
-          const rangeTN = sel ? (rangeTNarr[parseInt(sel.value)] ?? 0) : initRangeTN;
-          const called  = (calledSel && calledSel.value !== 'none') ? 4 : 0;
-          const aim     = Math.max(0, parseInt(aimInput?.value) || 0);
-          if (tnInput) tnInput.value = Math.max(2, baseTN + rangeTN + called - aim);
-        };
-        sel?.addEventListener('change', recompute);
-        aimInput?.addEventListener('input', recompute);
-        calledSel?.addEventListener('change', () => {
-          if (subRow) subRow.style.display = calledSel.value === 'subtarget' ? '' : 'none';
-          recompute();
-        });
+    // Live TN recompute, wired through DialogV2.wait's `render` option below.
+    // NOT a `renderDialogV2` hook: that hook is global, so two attackers firing at
+    // once register both handlers before either dialog renders — the first gets
+    // wired twice with the second's closure, the second not at all, and the TN
+    // silently stops updating. (The old comment here claimed `wait` does not call
+    // `render`; that was wrong — see CLAUDE.md, corrected against dialog.mjs:420.)
+    const wireRecompute = (_event, dialog) => {
+      const el        = dialog.element;
+      const tnInput   = el.querySelector('#sr-tn');
+      const sel       = el.querySelector('#sr-range');
+      const calledSel = el.querySelector('#sr-called');
+      const aimInput  = el.querySelector('#sr-aim');
+      const subRow    = el.querySelector('#sr-subtarget-row');
+      const recompute = () => {
+        const rangeTN = sel ? (rangeTNarr[parseInt(sel.value)] ?? 0) : initRangeTN;
+        const called  = (calledSel && calledSel.value !== 'none') ? 4 : 0;
+        const aim     = Math.max(0, parseInt(aimInput?.value) || 0);
+        if (tnInput) tnInput.value = Math.max(2, baseTN + rangeTN + called - aim);
+      };
+      sel?.addEventListener('change', recompute);
+      aimInput?.addEventListener('input', recompute);
+      calledSel?.addEventListener('change', () => {
+        if (subRow) subRow.style.display = calledSel.value === 'subtarget' ? '' : 'none';
+        recompute();
       });
-    }
+    };
 
     let result = null;
     await foundry.applications.api.DialogV2.wait({
@@ -1956,8 +1960,10 @@ export class SR3EItem extends Item {
                      ${gmWillSetTN ? 'readonly tabindex="-1" title="The GM sets the final TN for this attack."' : ''}/>
             </label>
             ${gmWillSetTN
-              ? `<div style="font-size:11px;color:var(--sr-amber);margin-top:4px">
-                   🎲 The GM sets the final target number — this is the starting value they will see.
+              ? `<div style="font-size:11px;color:var(--sr-green);margin-top:4px">
+                   ✓ The GM has set this target number${gmTNDelta !== 0
+                     ? ` (${gmTNDelta > 0 ? '+' : ''}${gmTNDelta} from situational modifiers)` : ''}.
+                   Your range, called shot and take-aim choices adjust it below.
                  </div>`
               : ''}
             ${modNote}
@@ -1978,20 +1984,31 @@ export class SR3EItem extends Item {
               <label><input type="checkbox" id="sr-karma"/> Use Karma Pool (${karmaPool} available)</label>
             </div>
           ` : ''}
+          <div style="margin:10px 0;padding:8px;background:var(--sr-surface);border-radius:var(--r)">
+            <label>🎲 Combat Pool dice:
+              <input type="number" id="sr-pool" value="0" min="0" max="${availPool}"
+                     style="width:55px;margin-left:8px" ${availPool === 0 ? 'disabled' : ''}/>
+            </label>
+            <div style="font-size:10px;color:var(--sr-muted);margin-top:2px">
+              ${availPool > 0
+                ? `${availPool} available. Dice spent here are unavailable to resist damage.`
+                : 'No Combat Pool available.'}
+            </div>
+          </div>
           <div style="color:var(--sr-muted);font-size:11px">Rule of Six (exploding 6s) always active</div>
         </div>
       `,
       buttons: [
         {
-          // Not "Roll" when a GM window follows — this dialog does not roll anything,
-          // it hands the attack to the GM to set the TN. The attacker's actual roll
-          // trigger is the Combat Pool dialog at the end of the chain.
-          label: gmWillSetTN ? '→ Send to GM' : 'Roll',
+          // The attacker's roll trigger. The GM has already set the TN by this point,
+          // so this dialog genuinely does roll — one screen, one click.
+          label: '🎲 Roll',
           action: 'roll',
           default: true,
           callback: (_e, _b, dialog) => {
             const html = dialog.element;
             const tn = Math.max(2, parseInt(html.querySelector('#sr-tn')?.value) || 4);
+            const poolDice = Math.min(Math.max(0, parseInt(html.querySelector('#sr-pool')?.value) || 0), availPool);
             let damageCode = html.querySelector('#sr-damage')?.value.trim() || rawDamage;
             const useKarma   = html.querySelector('#sr-karma')?.checked ?? false;
             // Called shot: the TN penalty is already folded into #sr-tn above; here we
@@ -2008,13 +2025,14 @@ export class SR3EItem extends Item {
               }
             }
             // avMunition is now driven by Anti-Vehicle ammo type, not a manual checkbox
-            result = { tn, damageCode, avMunition: false, useKarma, karmaReroll: useKarma, calledShot, calledShotTarget };
+            result = { tn, damageCode, avMunition: false, useKarma, karmaReroll: useKarma,
+                       calledShot, calledShotTarget, poolDice };
           }
         },
         { label: 'Cancel', action: 'cancel' }
-      ]
+      ],
+      render: wireRecompute,
     });
-    if (hookId) Hooks.off('renderDialogV2', hookId); // safety if the dialog never matched
     return result;
   }
 

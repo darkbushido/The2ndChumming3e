@@ -45,7 +45,10 @@ export const SR3E_RANGED_MODIFIERS = [
   { key: 'smartGoggles',   label: 'Smart goggles (with smartgun)', mod: -1,   mvp: true,  gear: true },
   { key: 'laserSight',     label: 'Laser sight',                   mod: -1,   mvp: true,  gear: true },
   { key: 'secondFirearm',  label: 'Using a second firearm',        mod: +2 },
-  { key: 'aimedShot',      label: 'Aimed shot',                    mod: -1,   mvp: true,  per: true, note: 'per Simple Action' },
+  // NOT an mvp checkbox: the attacker declares Take Aim on their own roll screen
+  // (they are the one spending the Simple Actions). Rendering it here too would
+  // double-count every aimed shot.
+  { key: 'aimedShot',      label: 'Aimed shot',                    mod: -1,   auto: true, per: true, note: 'declared by the attacker, per Simple Action' },
   { key: 'calledShot',     label: 'Called shot',                   mod: +4,   auto: true, note: 'declared in the fire dialog' },
   { key: 'imageMag',       label: 'Image magnification',           mod: null, note: 'Special' },
 ];
