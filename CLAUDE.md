@@ -625,7 +625,7 @@ Only one state active at a time; clicking the active button deactivates it.
 8. Attack rolls (interactive Rule of Six)
 9. On final wave: **the defender is asked to declare a defence, knowing the attack's successes** — "N hits incoming. Dodge or take it?"
 10. Dodge roll (interactive Rule of Six, TN 4)
-11. Dodge result — see the RAW box below. **⚠ The code currently gets this wrong on two counts; TODO #26.**
+11. Dodge result — see the RAW box below. Resolved by `SR3EActor.dodgeOutcome`.
 12. Dodge does **not** reduce *staging* — but its successes are not discarded either. See below.
 
 #### ⚠ Resolving the Dodge Test — RAW, and where the code diverges
@@ -656,10 +656,15 @@ Worked, to make the three concrete. Attacker 3 successes, defender rolls 2 on th
 staged damage is computed from **3** (not 1), the attack **hits** (2 does not exceed 3), and the
 defender carries **2 successes** into the soak before rolling a single Body die.
 
-**Where the code diverges** (`SR3EActor.js:2890-2909`): it uses `netHits <= 0` for a clean miss,
-so a tie wrongly favours the defender; and the failed-dodge branch discards the successes entirely.
-Both are recorded in TODO #26. Fix them together — correcting only the tie makes dodging strictly
-worse, and correcting only the carry-over makes it strictly better.
+**Both rules live in one pure function**, `SR3EActor.dodgeOutcome(dodgeHits, attackHits)` →
+`{cleanMiss, carried}`, so there is a single place to get them wrong. It has no Foundry dependency
+and is covered by `tests/dodge-resolution.test.mjs` — including the tie, which is the case that was
+wrong before and the one most likely to be "helpfully" relaxed back to `>=`.
+
+The carried successes ride to the soak as `carriedSuccesses` on the soak payload and are added to
+the Damage Resistance roll's own successes. The soak card shows the sum **and its parts**
+(`5 hits (3 soak + 2 dodge)`) so a player can see the dodge was credited rather than silently
+folded in.
 
 #### ⚠ The defender declares AFTER the attack roll — this is RAW, not a convenience
 

@@ -2909,24 +2909,39 @@ _prepareCharacter(sys, attr) {
       const dp          = state.dodgePayload;
       const dodgerName  = game.actors.get(dp.targetActorId)?.name   ?? 'Defender';
       const attackerName = game.actors.get(dp.attackerActorId)?.name ?? 'Attacker';
-      const netHits     = dp.attackSuccesses - successes;
+      const atkHits = dp.attackSuccesses ?? 0;
+      // Both SR3 rules live in SR3EActor.dodgeOutcome — see its doc comment.
+      const { cleanMiss, carried } = SR3EActor.dodgeOutcome(successes, atkHits);
 
-      if (netHits <= 0) {
-        // Dodge cancelled all hits — miss
+      if (cleanMiss) {
         dodgeResultHtml = `
           <div class="sr-dodge-result sr-dodge-success">
-            ✅ Dodge Successful! No damage taken.
+            ✅ Dodge Successful! ${successes} dodge hit${successes !== 1 ? 's' : ''}
+            beat ${atkHits} attack hit${atkHits !== 1 ? 's' : ''} — no damage taken.
           </div>`;
       } else {
-        // Dodge failed — full hit lands, staging based on raw attack successes (dodge doesn't reduce staging)
+        // A failed dodge is NOT a wasted dodge: "Even if you don't dodge completely,
+        // the successes still count and are added to the Damage Resistance
+        // Successes." They carry to the soak — they do NOT reduce staging, which is
+        // still computed from the attacker's raw successes.
         const trackLabel = dp.isStun ? 'Stun' : 'Physical';
         const soakBtn    = dp.isSpellSoak
-          ? SR3EActor._spellSoakButtonHtml(dp)
-          : SR3EActor._soakButtonHtml(dp);
+          ? SR3EActor._spellSoakButtonHtml({ ...dp, carriedSuccesses: carried })
+          : SR3EActor._soakButtonHtml({ ...dp, carriedSuccesses: carried });
+        const tieNote = (successes === atkHits && atkHits > 0)
+          ? ' <span style="color:var(--sr-muted);font-size:11px">(a tie goes to the attacker)</span>'
+          : '';
         dodgeResultHtml = `
           <div class="sr-dodge-result sr-dodge-fail">
-            ❌ Dodge Failed! Incoming: <strong>${dp.stagedPower}${dp.stagedLevel} ${trackLabel}</strong>
+            ❌ Dodge Failed! ${successes} dodge hit${successes !== 1 ? 's' : ''}
+            vs ${atkHits} attack hit${atkHits !== 1 ? 's' : ''}${tieNote}.
+            Incoming: <strong>${dp.stagedPower}${dp.stagedLevel} ${trackLabel}</strong>
           </div>
+          ${carried > 0
+            ? `<div class="sr-staging-result" style="color:var(--sr-green)">
+                 ➕ ${carried} dodge hit${carried !== 1 ? 's' : ''} carried into the Damage Resistance Test.
+               </div>`
+            : ''}
           ${soakBtn}`;
       }
     }
@@ -2971,8 +2986,13 @@ _prepareCharacter(sys, attr) {
       const STAGES  = ['L', 'M', 'S', 'D'];
       let idx       = STAGES.indexOf(sp.stagedLevel);
       let power     = sp.stagedPower;
-      let remaining = successes;
       const origIdx = idx;
+
+      // SR3: "Even if you don't dodge completely, the successes still count and are
+      // added to the Damage Resistance Successes to determine the final outcome."
+      const carried    = Math.max(0, sp.carriedSuccesses ?? 0);
+      const totalSoak  = successes + carried;
+      let   remaining  = totalSoak;
 
       while (remaining >= 2 && idx >= 0) {
         remaining -= 2;
@@ -2985,9 +3005,14 @@ _prepareCharacter(sys, attr) {
         const finalLevel = STAGES[idx];
         const trackLabel = sp.isStun ? 'Stun' : 'Physical';
         const unchanged  = idx === origIdx && power === sp.stagedPower;
+        // Show the sum AND its parts, so a player can see the dodge was credited
+        // rather than silently folded in.
+        const hitsLabel  = carried > 0
+          ? `${totalSoak} hit${totalSoak !== 1 ? 's' : ''} (${successes} soak + ${carried} dodge)`
+          : `${successes} soak hit${successes !== 1 ? 's' : ''}`;
         const resultLine = unchanged
-          ? `${successes} soak hit${successes !== 1 ? 's' : ''} — damage unchanged: <strong>${power}${finalLevel} ${trackLabel}</strong>`
-          : `${successes} soak hit${successes !== 1 ? 's' : ''} — <strong>${sp.stagedPower}${sp.stagedLevel}</strong> staged down to <strong>${power}${finalLevel} ${trackLabel}</strong>`;
+          ? `${hitsLabel} — damage unchanged: <strong>${power}${finalLevel} ${trackLabel}</strong>`
+          : `${hitsLabel} — <strong>${sp.stagedPower}${sp.stagedLevel}</strong> staged down to <strong>${power}${finalLevel} ${trackLabel}</strong>`;
         const soakBoxes      = ({ L: 1, M: 3, S: 6, D: 10 })[finalLevel] ?? 1;
         const soakTrack      = sp.isStun ? 'stun' : 'physical';
         const soakTargetName = game.actors.get(sp.actorId)?.name ?? 'Target';
@@ -3831,6 +3856,8 @@ _prepareCharacter(sys, attr) {
       stagedLevel:     payload.stagedLevel,
       isStun:          payload.isStun,
       rawDamage:       payload.rawDamage,
+      // Dodge hits that failed to beat the attack still count toward resisting.
+      carriedSuccesses: payload.carriedSuccesses ?? 0,
     }).replace(/'/g, '&#39;');
 
     return `
@@ -3914,6 +3941,31 @@ _prepareCharacter(sys, attr) {
     }
     // Declined, or nothing left to spend — straight to the Damage Resistance Test.
     return SR3EActor.postSoakCard(ctx.targetActorId, ctx);
+  }
+
+  /**
+   * Resolve a Dodge Test against an Attack Test. **Pure — no Foundry, no I/O.**
+   *
+   * Both SR3 rules live here so there is exactly one place to get them wrong:
+   *
+   * 1. **A tie is a HIT.** "A clean miss occurs if the number of successes from the
+   *    target's Combat Pool dice EXCEEDS the attacker's successes", and "if the
+   *    number of successes obtained on the Dodge Test are MORE THAN the Attacker
+   *    achieved". Both strict. Do not relax to `>=`.
+   * 2. **A failed dodge is not a wasted dodge.** "Even if you don't dodge
+   *    completely, the successes still count and are added to the Damage Resistance
+   *    Successes." They carry — but they do NOT reduce staging, which is computed
+   *    from the attacker's raw successes.
+   *
+   * @param {number} dodgeHits
+   * @param {number} attackHits
+   * @returns {{cleanMiss: boolean, carried: number}}
+   */
+  static dodgeOutcome(dodgeHits, attackHits) {
+    const d = Math.max(0, Number(dodgeHits) || 0);
+    const a = Math.max(0, Number(attackHits) || 0);
+    if (d > a) return { cleanMiss: true, carried: 0 };
+    return { cleanMiss: false, carried: d };
   }
 
   static async _rollDodge(targetActor, dodgeDice, dodgeContext, physicalDice = false) {
@@ -4028,6 +4080,8 @@ _prepareCharacter(sys, attr) {
       rawDamage,
       ballistic,
       impact,
+      // Carried in from a failed Dodge Test; added to this test's successes.
+      carriedSuccesses: payload.carriedSuccesses ?? 0,
     }).replace(/'/g, '&#39;');
 
     await ChatMessage.create({
