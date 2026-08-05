@@ -191,16 +191,22 @@ Two problems:
 
 1. **Wrong threshold, wildly.** More than half is SR4's glitch rule; RAW needs every die.
 
-   **The observed case, 2026-08-05** — a 3-die dodge rolling **1 success and 2 failures**, the
-   failures both 1s:
+   **The observed case, 2026-08-05** — a dodge of **`5, 1, 1` against TN 4**:
+
+   | Die | vs TN 4 | |
+   |---|---|---|
+   | 5 | ≥ 4 | ✅ success |
+   | 1 | — | ❌ failure |
+   | 1 | — | ❌ failure |
 
    | | |
    |---|---|
    | System | `ones (2) > Math.floor(3/2) = 1` → **true** → "⚠ Glitch" |
-   | SR3 RAW | needs *all three* dice showing 1 → **not a Rule of One event at all** |
+   | SR3 RAW | Rule of One needs `1, 1, 1` → **not a Rule of One event at all** |
 
-   The book describes that exact roll as normal: *"the test can still succeed as long as other dice
-   succeed."* It showed the plain banner rather than CRITICAL only because of the single success.
+   Under SR3 that is simply 1 success on 3 dice, and the book's own sentence covers it: *"the test
+   can still succeed as long as other dice succeed."* It showed the plain banner rather than
+   CRITICAL only because of that single success — the other half of the same imported SR4 model.
 2. **The two-tier glitch / critical-glitch model is SR4 vocabulary.** SR3 has no "critical glitch".
    There is one condition and the GM decides what it means.
 
