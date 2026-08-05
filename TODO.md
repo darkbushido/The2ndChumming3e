@@ -840,6 +840,63 @@ the choice drives everything else.
 cybercombat card (`~:460`) share the both-corners-one-client shape and should be done in the same
 pass or they become the next report.
 
+## 26. Dodge resolution is wrong in two places — **CONFIRMED against the book**
+
+Reported from play 2026-08-05 ("not sure the dodge math is working"). It isn't. Both defects sit
+in the same block, `SR3EActor.js:2890-2909`:
+
+```js
+const netHits = dp.attackSuccesses - successes;
+if (netHits <= 0) { /* ✅ Dodge Successful! No damage taken. */ }
+else { /* ❌ Dodge Failed — full hit, "dodge doesn't reduce staging" */ }
+```
+
+### A. Ties go to the wrong side — off by one
+
+`netHits <= 0` means the dodge wins on a **tie**. The book says the opposite, in both places it
+states the rule:
+
+> "A clean miss occurs if the number of successes from the target's Combat Pool dice **exceeds**
+> the attacker's successes." — numbered sequence, step 4
+>
+> "If the number of successes obtained on the Dodge Test are **more than** the Attacker achieved on
+> his Attack Test, then the attack is completely dodged." — Dodge Test
+
+**Exceeds / more than.** A tie is a HIT. The condition should be `successes > dp.attackSuccesses`
+for a clean miss, i.e. `netHits < 0`.
+
+### B. Partial dodge successes are thrown away
+
+The `else` branch discards the dodge entirely — 2 successes against 3 attack successes buys the
+defender nothing. The book continues immediately:
+
+> "**Even if you don't dodge completely, the successes still count and are added to the Damage
+> Resistance Successes** to determine the final outcome."
+
+So a failed dodge is not a wasted dodge: its successes carry into the Damage Resistance Test and
+stage the damage down at the usual 2-per-level. Discarding them makes partial dodging worthless
+and quietly punishes anyone who dodges with too few dice.
+
+⚠ Note what does **not** change: staging *up* still uses the attacker's raw successes. Dodge
+successes are added to the **resistance** side, they do not cancel attack successes. CLAUDE.md's
+"Dodge does NOT reduce staging. Net hits are irrelevant to damage" is right about staging and
+wrong about the successes being irrelevant.
+
+### Why this matters more now
+
+The socket work put the dodge decision after the attack roll ([#25](#25)), so the defender now
+chooses dodge-vs-soak with the numbers in front of them. Both bugs distort exactly that choice —
+A makes dodging look better than it is at parity, B makes it look worse than it is below parity.
+
+### Fix
+
+1. Flip the tie: clean miss only on `dodgeSuccesses > attackSuccesses`.
+2. Carry the dodge successes into the soak card as pre-counted resistance successes, and show them
+   on it so the player can see they were credited.
+3. Correct CLAUDE.md's ranged-combat flow, steps 11–12.
+4. Add tests — this is pure arithmetic with no Foundry dependency, so it belongs in `tests/`
+   alongside the damage-code parsers ([#7](#7-expand-test-coverage-for-combat-initiative-and-pools)).
+
 ## 19. Convert the SR3 GM Screen into a compendium — as data, not page images
 
 Put the reference tables a GM needs at the table into a Foundry compendium, **rebuilt as real
@@ -869,6 +926,71 @@ config constants, or cross-check every figure against them and note the single s
 Pack should be system content (**no** `flags.The2ndChumming3e.book`, like `sr3e-skills`) so no book
 toggle can hide the GM's reference material — and remember a new pack in `system.json` needs a full
 Foundry restart, not an F5.
+
+---
+
+## 25. Delete the duplicate `_onRender` in `SR3EHostSheetOrthodox` — **CONFIRMED**
+
+Sibling of [#16](#16-delete-the-duplicate-refreshastralpool), and the more dangerous of the two.
+
+`SR3EHostSheetOrthodox.js:82` and `:458` both define `_onRender(_context, _options)`. The second
+wins, so **:82 is dead**:
+
+```js
+// :82 — dead
+_onRender(_context, _options) {
+  // TODO: enrich notes field, wire drag-drop for IC assignment
+}
+
+// :458 — the one that actually runs
+_onRender(_context, _options) {
+  // Save trigger step edits on blur/change
+  const table = this.element?.querySelector('#ost-trigger-table');
+  ...
+```
+
+Unlike `refreshAstralPool`, whose twins are byte-identical and therefore harmless, these bodies
+**differ** — the sheet behaves correctly only by accident of ordering. Reorder them and the
+trigger-table wiring silently stops working.
+
+Worse, the dead one is a **TODO stub**, already listed under *Other known drift* as
+`SR3EHostSheetOrthodox.js:83` (notes enrichment, IC assignment drag-drop). Anyone acting on that
+TODO writes code into a method that never runs, with no error to explain it.
+
+Fix: merge the stub's comment into the surviving `_onRender` at :458 and delete :82. Do it before
+that drift item is picked up, not after.
+
+---
+
+## 26. Support conditional and scoped cyber/bioware modifiers
+
+Sibling of [#10](#10-support-category-wide-skill-bonuses-enhanced-articulation), which covers
+*category-wide* skill bonuses only (`improvedSkillCategory`). Conditional modifiers are a
+different shape and are not covered by it or by [#8](#8-ship-cyberwarebioware-with-their-bonuses-pre-filled).
+
+**14 upstream entries carry modifiers that only apply sometimes**, which is why they sit in `Notes`
+prose with an empty `Mods` — #8 reads `Mods`, so it will skip every one of them. They fall into
+distinct shapes needing distinct mechanisms:
+
+| Shape | Examples |
+|---|---|
+| **Triggered / toggled state** | Adrenal Pump [1]/[2] (`+1QCK,+2STR,+1WIL,+2RCT` while triggered); Pain Editor (`+1WIL,-1INT` while engaged) |
+| **Situational — specific tests only** | Nephritic Screen (`+1BOD` vs pathogens/toxins); Nitrogen Binder (`+2BOD` vs nitrogen narcosis); PACESETTER hearts (`+1BOD,+1QCK` *in Athletics*); Magnetic Cyberlimb (`+4STR` to hold items) |
+| **Movement-only Quickness** | Corvette CyberLegs Basic/Advanced (`+3QCK for mov.`); Extending Legs Unit (`+1QCK for walking speed`) |
+| **Affects bystanders, not the wearer** | Tailored Revolutionary Pheromones (Confusion) 1/2 — `-1INT,-1RCT for anyone within 1 meter` |
+| **Cosmetic / conditional** | Transparent Skin (`-2CHA if face transparent`) |
+
+Also unexpressible and belonging here: **Enhanced Articulation's `+1 Reaction` must not apply to
+rigging or decking** (M&M p.66). `cyberBonus.rea` is one flat number that currently flows into VCR
+and Matrix initiative alike. Its Combat Pool caveat needs nothing — pool derives from QUI+INT+WIL
+and never reads Reaction.
+
+The toggled group resembles the existing `focusActive` pattern on melee weapons. Worth designing
+alongside #10 rather than separately — both want scoped modifiers instead of one flat number per
+attribute.
+
+⚠ Probably **not** an upstream data bug. The pattern is uniform enough that `Mods` looks
+deliberately reserved for unconditional passive modifiers, with everything else left as prose.
 
 ---
 
