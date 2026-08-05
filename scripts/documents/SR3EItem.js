@@ -1861,6 +1861,17 @@ export class SR3EItem extends Item {
     const rangeTNarr = game.sr3e.SR3E.rangeTN ?? [0, 1, 2, 5];
     const rangeLabels = ['Short', 'Medium', 'Long', 'Extreme'];
 
+    // Will a GM TN window actually open for this attack? If so the TN typed here is
+    // only a starting value the GM sees, so it is shown read-only and this dialog's
+    // button stops claiming to roll.
+    //
+    // ⚠ This MUST mirror the gate in the `sr3e.attack.negotiate` handler
+    // (SR3EQuery.js). If the two ever disagree the dialog lies to the attacker —
+    // either greying out a field that is in fact authoritative, or letting them
+    // type a TN that gets silently discarded.
+    const _tnMode    = game.settings.get('The2ndChumming3e', 'gmApprovesTN');
+    const gmWillSetTN = _tnMode === 'always' || (_tnMode === 'player' && !game.user.isGM);
+
     // Base TN excludes range; range is added from the (editable) dropdown below.
     const baseTN     = 4 + totalTNMod;
     const initBand   = rangeInfo?.bandIdx ?? -1;
@@ -1946,8 +1957,15 @@ export class SR3EItem extends Item {
           ${rangeRow}
           <div style="margin-bottom:10px">
             <label>Target Number (TN):
-              <input type="number" id="sr-tn" value="${defaultTN}" min="2" max="30" style="width:60px;margin-left:8px"/>
+              <input type="number" id="sr-tn" value="${defaultTN}" min="2" max="30"
+                     style="width:60px;margin-left:8px${gmWillSetTN ? ';opacity:.5' : ''}"
+                     ${gmWillSetTN ? 'readonly tabindex="-1" title="The GM sets the final TN for this attack."' : ''}/>
             </label>
+            ${gmWillSetTN
+              ? `<div style="font-size:11px;color:var(--sr-amber);margin-top:4px">
+                   🎲 The GM sets the final target number — this is the starting value they will see.
+                 </div>`
+              : ''}
             ${modNote}
           </div>
           <div style="margin-bottom:10px">
@@ -1971,7 +1989,10 @@ export class SR3EItem extends Item {
       `,
       buttons: [
         {
-          label: 'Roll',
+          // Not "Roll" when a GM window follows — this dialog does not roll anything,
+          // it hands the attack to the GM to set the TN. The attacker's actual roll
+          // trigger is the Combat Pool dialog at the end of the chain.
+          label: gmWillSetTN ? '→ Send to GM' : 'Roll',
           action: 'roll',
           default: true,
           callback: (_e, _b, dialog) => {
