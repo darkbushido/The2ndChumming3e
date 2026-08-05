@@ -1974,9 +1974,26 @@ function _claimBtn(btn, mid, cls, idx) {
  * May this client act for the payload's actor at all? A SET — any owner, or a GM.
  * Used for buttons that merely post a card onward.
  */
+/**
+ * Which actor a chat payload is *about*. Different cards name it differently, and
+ * the order matters: `actorId` is the roller on a wave payload and the damaged
+ * actor on a soak/assign payload, both of which are the actor whose owner should
+ * be acting. `attackerActorId` is deliberately absent — an attacker must not
+ * inherit rights over their target's card.
+ */
+function _payloadActorId(p) {
+  return p?.actorId ?? p?.icActorId ?? p?.vehicleActorId ?? p?.wardActorId ?? p?.targetActorId ?? null;
+}
+
+/**
+ * May this client act on this payload's actor? A SET — any owner, or a GM.
+ * Fails CLOSED when no actor can be resolved: the GM can always still click.
+ */
 function _mine(p) {
   if (game.user.isGM) return true;
-  return game.actors.get(p?.targetActorId)?.isOwner === true;
+  const id = _payloadActorId(p);
+  if (!id) return false;
+  return game.actors.get(id)?.isOwner === true;
 }
 
 /**
@@ -2055,6 +2072,13 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Rule of Six explosion button
   html.querySelectorAll('.sr-explode-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'explode', i)) return;
+    // Continuing someone's roll is continuing THEIR roll — the card is visible to
+    // the whole table, but only the roller's owner (or the GM) may advance it.
+    try {
+      if (!_mine(JSON.parse(btn.dataset.payload ?? '{}'))) {
+        return _denyBtn(btn, 'Only this actor\'s owner (or the GM) can roll these explosions.');
+      }
+    } catch { /* unreadable payload — leave the button alone */ }
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2442,6 +2466,13 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Assign damage button — applies final staged damage directly to actor wound track
   html.querySelectorAll('.sr-assign-damage-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'assign', i)) return;
+    // Writes to a wound track. Owner or GM only — an attacker must not be able to
+    // apply damage to the actor they just shot.
+    try {
+      if (!_mine(JSON.parse(btn.dataset.payload ?? '{}'))) {
+        return _denyBtn(btn, 'Only this actor\'s owner (or the GM) can apply this damage.');
+      }
+    } catch { /* unreadable payload — leave the button alone */ }
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
