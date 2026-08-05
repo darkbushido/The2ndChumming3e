@@ -797,6 +797,49 @@ The populate macros were **retired**, so there is currently no supported way to 
 is the first task to actually need that decision, and it should not be resolved by quietly
 resurrecting a one-off macro.
 
+## 24. Revise melee onto the socket layer — each side edits only its own corner
+
+**Requested 2026-08-05 after play-testing the ranged flow.** Stages 1–3 routed *ranged* combat;
+melee was Stage 4 and explicitly deferred. It is now the most obviously wrong surface in the game.
+
+**What is wrong.** The boxing card carries **both** corners, and `SR3EActor.handleMeleeRoll`
+reads every field off whichever client clicked:
+
+```js
+const atkCombatPool = parseInt(card.querySelector('.sr-melee-atk-pool')?.value) || 0;
+const defCombatPool = parseInt(card.querySelector('.sr-melee-def-pool')?.value) || 0;   // ← the OPPONENT's
+const atkTN = …'.sr-melee-atk-tn'…;  const defTN = …'.sr-melee-def-tn'…;                // ← both
+const atkRawDamage = …'.sr-melee-atk-damage'…; const defRawDamage = …'.sr-melee-def-damage'…;
+```
+
+So the attacker sets the defender's **combat pool, TN and damage code**, then rolls for them. And
+`.sr-melee-roll-btn` (`sr3e.js:2120`) carries **no decider gate** — only `_checkBtn`/`_claimBtn` —
+so any observer with the card can roll the whole exchange. Stage 1 fixed the *permission* on the
+two cross-actor pool writes (`SR3EActor.js:3610-3611`); it never touched *who decides*.
+
+**The machinery already exists.** `SR3EQuery.ask`, `deciderFor`, the withdraw/dialog registry and
+the two-phase negotiate/commit split were all built in Stages 1–3 and generalise directly.
+
+**Shape to follow — the ranged flow, not a new invention:**
+
+1. `sr3e.melee.declare` → the defender's decider, on their own screen: pool dice, their TN, their
+   damage code. Same reaper rule as dodge — unreachable or AFK yields the defaults and the exchange
+   proceeds; a defender must not be able to veto by cancelling.
+2. Attacker's corner stays local, as today.
+3. Gate `.sr-melee-roll-btn` with `_isDecider` (it rolls, so it needs the single-user predicate,
+   not the broader `_mine`).
+4. Render each corner's inputs **read-only for the other side**, so the card stops *looking*
+   editable to someone who cannot legitimately change it.
+5. Keep negotiate/commit split — nothing is spent until both corners are in.
+
+⚠ Also revisit `postMeleeCard`: it currently builds one card for both corners. Either it keeps
+doing that with per-side read-only rendering, or it splits — decide before writing code, because
+the choice drives everything else.
+
+**Same problem, same fix, elsewhere:** `handleAstralRoll` (`SR3EActor.js:~5450`) and the
+cybercombat card (`~:460`) share the both-corners-one-client shape and should be done in the same
+pass or they become the next report.
+
 ## 19. Convert the SR3 GM Screen into a compendium — as data, not page images
 
 Put the reference tables a GM needs at the table into a Foundry compendium, **rebuilt as real
