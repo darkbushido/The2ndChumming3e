@@ -827,6 +827,10 @@ export class SR3EItem extends Item {
     // Default Table at half the rating being defaulted from (SR3 p.84-85).
     const availableCombatPool = Math.min(
       actor.system.derived?.availableCombatPool ?? 0, defPoolCap);
+    // Unlike the single-target path this KEEPS the `> 0` guard, deliberately. The
+    // AoE flow has no GM TN window (`_promptWeaponRollOptionsAoE` keeps its own
+    // attacker-side TN), so the attacker's roll-options Confirm is already their
+    // roll trigger — prompting again with nothing to allocate would be a dead click.
     if ((skill || defAllowPool) && availableCombatPool > 0) {
       const combatDice = await this._promptCombatPool(availableCombatPool);
       if (combatDice === null) return null;   // cancelled — abort before anything is committed
@@ -1073,10 +1077,16 @@ export class SR3EItem extends Item {
 
   // Attacker combat pool allocation — allowed unless defaulting to an attribute, and
   // capped by the Default Table at half the rating defaulted from (SR3 p.84-85).
+  //
+  // Called UNCONDITIONALLY, even with no pool to spend. The GM's window only sets
+  // the target number; this dialog is the attacker's own roll trigger, and it must
+  // exist for every attack or a player with an empty pool watches their dice get
+  // thrown by the GM's click. With no pool it degrades to a bare "🎲 Roll" confirm.
   const availableCombatPool = Math.min(
     actor.system.derived?.availableCombatPool ?? 0, defPoolCap);
-  if ((skill || defAllowPool) && availableCombatPool > 0) {
-    const combatDice = await this._promptCombatPool(availableCombatPool);
+  const poolAllowed         = (skill || defAllowPool) ? availableCombatPool : 0;
+  {
+    const combatDice = await this._promptCombatPool(poolAllowed);
     if (combatDice === null) return null;   // cancelled — abort before anything is committed
     if (combatDice > 0) {
       await actor.spendCombatPool(combatDice);
@@ -2089,20 +2099,28 @@ export class SR3EItem extends Item {
     const guessed = guessGearModifiers(ctx.attacker, ctx.weapon);
     const baseTN  = Number(ctx.baseTN) || 4;
 
+    // Two columns. Each row is ONE grid item — label and its note wrapped together,
+    // or the note would become a separate cell and every row after it would land in
+    // the wrong column. `auto-fit` collapses to a single column on a narrow window
+    // rather than squeezing, and `align-items:start` keeps rows of differing height
+    // (the ones carrying notes) top-aligned instead of centred against their neighbour.
     const rowHtml = rows.map(m => {
       const pre  = m.gear && guessed[m.key] ? 'checked' : '';
       const sign = m.mod > 0 ? `+${m.mod}` : `${m.mod}`;
       const hint = m.gear && guessed[m.key]
         ? ' <span style="color:var(--sr-gold);font-size:10px">detected</span>' : '';
-      const note = m.note ? `<div style="font-size:10px;color:var(--sr-dim);margin-left:22px">${m.note}</div>` : '';
-      if (m.per) {
-        return `<label style="display:flex;align-items:center;gap:8px;padding:2px 0">
-            <input type="number" class="sr-gm-mod-per" data-key="${m.key}" value="0" min="0" max="10" style="width:48px"/>
-            <span>${m.label} <strong>${sign}</strong> each${hint}</span></label>${note}`;
-      }
-      return `<label style="display:flex;align-items:center;gap:8px;padding:2px 0">
-          <input type="checkbox" class="sr-gm-mod" data-key="${m.key}" ${pre}/>
-          <span>${m.label} <strong>${sign}</strong>${hint}</span></label>${note}`;
+      const note = m.note
+        ? `<div style="font-size:10px;color:var(--sr-dim);margin-left:22px;line-height:1.25">${m.note}</div>`
+        : '';
+      const control = m.per
+        ? `<input type="number" class="sr-gm-mod-per" data-key="${m.key}" value="0" min="0" max="10" style="width:44px;flex:none"/>
+           <span>${m.label} <strong>${sign}</strong> each${hint}</span>`
+        : `<input type="checkbox" class="sr-gm-mod" data-key="${m.key}" ${pre} style="flex:none"/>
+           <span>${m.label} <strong>${sign}</strong>${hint}</span>`;
+      return `<div class="sr-gm-modrow" style="break-inside:avoid">
+          <label style="display:flex;align-items:center;gap:8px;padding:2px 0">${control}</label>
+          ${note}
+        </div>`;
     }).join('');
 
     const dodgeHtml = opts.dodge ? `
@@ -2122,11 +2140,16 @@ export class SR3EItem extends Item {
 
     await foundry.applications.api.DialogV2.wait({
       window: { title: `GM — ${ctx.attackerName} → ${ctx.targetName} · ${ctx.weaponName}` },
+      // Wide enough for the grid to actually resolve to two columns; below the
+      // 240px minmax it collapses back to one rather than cramping.
+      position: { width: 560 },
       content: `
         <div style="font-size:12px;color:var(--sr-muted);margin-bottom:6px">
           Base TN <strong>${baseTN}</strong>${ctx.baseNote ? ` — ${ctx.baseNote}` : ''}
         </div>
-        <div style="max-height:280px;overflow-y:auto;padding-right:4px">${rowHtml}</div>
+        <div style="max-height:300px;overflow-y:auto;padding-right:4px;
+                    display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+                    gap:0 18px;align-items:start">${rowHtml}</div>
         ${dodgeHtml}
         <hr style="margin:10px 0;border-color:var(--sr-border)"/>
         <label style="display:flex;align-items:center;gap:8px">
@@ -2136,7 +2159,9 @@ export class SR3EItem extends Item {
         <div id="sr-gm-tn-note" style="font-size:11px;color:var(--sr-dim);margin-top:4px"></div>
       `,
       buttons: [
-        { label: '🎲 Roll', action: 'roll', default: true,
+        // NOT "Roll" — the GM sets the target number, the ATTACKER rolls. Labelling
+        // this Roll made it look like the GM was rolling the player's dice.
+        { label: '✓ Set Target Number', action: 'roll', default: true,
           callback: (_e, _b, dlg) => {
             const el   = dlg.element;
             const mods = {};
@@ -3117,27 +3142,36 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
    *   no pool to offer, or the user deliberately committed zero dice.
    */
   async _promptCombatPool(maxDice) {
-    if (maxDice <= 0) return 0;
     const actorName = this.actor?.name ?? 'Attacker';
+    const hasPool   = maxDice > 0;
 
     // Stays null unless Confirm runs, so Cancel *and* dismissal (Esc / ✕) both yield null.
     // DialogV2.wait defaults rejectClose:false, so dismissal resolves rather than throwing.
     let dice = null;
 
     await foundry.applications.api.DialogV2.wait({
-      window: { title: `${actorName} — Combat Pool` },
-      content: `
+      window: { title: hasPool ? `${actorName} — Combat Pool` : `${actorName} — Ready to Roll` },
+      content: hasPool
+        ? `
         <p><strong>${actorName}</strong>, how many dice from your Combat Pool would you like to add to this attack?</p>
         <p style="font-size:11px;color:var(--sr-muted)">Available: <strong>${maxDice}</strong> dice (0 = none)</p>
         <input type="number" id="combat-dice" min="0" max="${maxDice}" value="0" style="width:80px"/>
+      `
+        : `
+        <p><strong>${actorName}</strong> — the GM has set the target number.</p>
+        <p style="font-size:11px;color:var(--sr-muted)">No Combat Pool available to allocate.</p>
       `,
       buttons: [
         {
-          label: 'Confirm',
+          // The ATTACKER's roll trigger. The GM's window only sets the TN; this is
+          // the click that actually throws the dice, so it is labelled accordingly.
+          label: '🎲 Roll',
           action: 'roll',
           default: true,
           callback: (_event, _button, dialog) => {
-            dice = Math.min(parseInt(dialog.element.querySelector('#combat-dice')?.value) || 0, maxDice);
+            dice = hasPool
+              ? Math.min(parseInt(dialog.element.querySelector('#combat-dice')?.value) || 0, maxDice)
+              : 0;
           }
         },
         { label: 'Cancel', action: 'cancel' },
