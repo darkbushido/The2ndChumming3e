@@ -25,9 +25,15 @@ import { SR3EMIJI } from './SR3EMIJI.js';
 import { SR3EClocks } from './SR3EClocks.js';
 import { SR3ESourceBooks } from './SR3ESourceBooks.js';
 import { SR3ECompendiumDirectory } from './SR3ECompendiumDirectory.js';
+import { SR3EQuery, SR3EQueue, SR3EGMUnavailable } from './SR3EQuery.js';
 
 Hooks.once('init', () => {
   console.log('SR3E | Initialising');
+
+  // Register the GM-authoritative query handlers FIRST, and in `init` rather
+  // than `ready`: a fast click during world load must not reach a verb that
+  // nobody is listening for.
+  SR3EQuery.register();
 
   async function buildSkillsCompendium() {
     const PACK_ID = 'The2ndChumming3e.sr3e-skills';
@@ -82,7 +88,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, SR3EQuery, SR3EQueue, SR3EGMUnavailable };
   game.sr3e.openChunkySalsa = _openChunkySalsaCalculator; // (function declaration, hoisted)
 
   // Data models (replace template.json defaults)

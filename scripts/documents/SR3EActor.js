@@ -4070,60 +4070,107 @@ _prepareCharacter(sys, attr) {
     try { p = JSON.parse(btn.dataset.payload); }
     catch { return fail('Damage payload could not be read — no damage applied.'); }
 
-    if (p.icActorId) {
-      const ic  = game.actors.get(p.icActorId);
-      if (!ic) return fail('That IC no longer exists — no damage applied.');
-      const current = ic.system.woundValue ?? 0;
-      const max     = ic.system.derived?.woundMax ?? (ic.system.rating ?? 1) * 2;
-      await ic.update({ 'system.woundValue': Math.min(max, current + p.boxes) });
-    } else if (p.vehicleActorId) {
-      const veh = game.actors.get(p.vehicleActorId);
-      if (!veh) return fail('That vehicle no longer exists — no damage applied.');
-      const current = veh.system.damage?.value ?? 0;
-      const max     = (veh.system.attributes?.body?.base ?? 4) * 2;
-      await veh.update({ 'system.damage.value': Math.min(max, current + p.boxes) });
-    } else if (p.wardActorId) {
-      const ward = game.actors.get(p.wardActorId);
-      if (!ward) return fail('That ward no longer exists — no damage applied.');
-      const current = ward.system.damage ?? 0;
-      const max     = ward.system.maxForce ?? 1;
-      const newDamage = Math.min(max, current + p.boxes);
-      await ward.update({ 'system.damage': newDamage });
-      if (newDamage >= max) {
-        await ChatMessage.create({
-          speaker: { alias: 'GM' },
-          content: `<div class="sr-roll-card sr-soak-card"><div class="sr-roll-header">💀 ${ward.name} destroyed</div>
-            <div style="font-size:12px;color:var(--sr-muted);padding:4px 0">Force reduced to 0 — dispel it from its sheet when ready.</div></div>`,
-        });
-      }
-    } else {
-      const actor = game.actors.get(p.actorId);
-      if (!actor) return fail('That actor no longer exists — no damage applied.');
-      const current = actor.system.wounds?.[p.track]?.value ?? 0;
-      const max     = actor.system.wounds?.[p.track]?.max ?? 10;
-      await actor.update({ [`system.wounds.${p.track}.value`]: Math.min(max, current + p.boxes) });
+    // Which track, and on what. The uuid/id is resolved GM-side.
+    const kind = p.icActorId      ? 'ic'
+               : p.vehicleActorId ? 'vehicle'
+               : p.wardActorId    ? 'ward'
+               :                    'actor';
+    const uuid = p.icActorId ?? p.vehicleActorId ?? p.wardActorId ?? p.actorId;
+
+    try {
+      // Relay the DELTA (boxes). The GM reads current/max live and does the
+      // Math.min itself — two players clicking Assign at once must not both
+      // compute from the same stale `current` and lose one another's damage.
+      const res = (!game.users.activeGM?.isSelf)
+        ? await game.sr3e.SR3EQuery.asGM('sr3e.damage.apply', { uuid, kind, track: p.track, boxes: p.boxes })
+        : await SR3EActor._applyDamageBoxes({ uuid, kind, track: p.track, boxes: p.boxes });
+      if (!res?.ok) return fail(res?.reason ?? 'Damage could not be applied.');
+    } catch (err) {
+      return fail(err?.message ?? 'Damage could not be applied.');
     }
 
     btn.textContent = '✓ Damage Applied';   // truthful only now — a write has landed
   }
 
   /**
+   * GM-side damage application. Reads current/max against live data inside the
+   * per-document queue, so concurrent Assign clicks accumulate instead of
+   * overwriting each other.
+   *
+   * @param {object}  p
+   * @param {string}  p.uuid   actor uuid, or a legacy bare actor id
+   * @param {string}  p.kind   'ic' | 'vehicle' | 'ward' | 'actor'
+   * @param {string} [p.track] wound track, for kind 'actor'
+   * @param {number}  p.boxes  boxes to ADD
+   * @returns {Promise<{ok:boolean, reason?:string}>}
+   */
+  static async _applyDamageBoxes({ uuid, kind, track, boxes }) {
+    const doc = game.sr3e.SR3EQuery.resolve(uuid);
+    if (!doc) return { ok: false, reason: 'That target no longer exists — no damage applied.' };
+
+    return game.sr3e.SR3EQueue.run(doc.uuid, async () => {
+      if (kind === 'ic') {
+        const current = doc.system.woundValue ?? 0;
+        const max     = doc.system.derived?.woundMax ?? (doc.system.rating ?? 1) * 2;
+        await doc.update({ 'system.woundValue': Math.min(max, current + boxes) });
+      } else if (kind === 'vehicle') {
+        const current = doc.system.damage?.value ?? 0;
+        const max     = (doc.system.attributes?.body?.base ?? 4) * 2;
+        await doc.update({ 'system.damage.value': Math.min(max, current + boxes) });
+      } else if (kind === 'ward') {
+        const current   = doc.system.damage ?? 0;
+        const max       = doc.system.maxForce ?? 1;
+        const newDamage = Math.min(max, current + boxes);
+        await doc.update({ 'system.damage': newDamage });
+        if (newDamage >= max) {
+          await ChatMessage.create({
+            speaker: { alias: 'GM' },
+            content: `<div class="sr-roll-card sr-soak-card"><div class="sr-roll-header">💀 ${doc.name} destroyed</div>
+              <div style="font-size:12px;color:var(--sr-muted);padding:4px 0">Force reduced to 0 — dispel it from its sheet when ready.</div></div>`,
+          });
+        }
+      } else {
+        const current = doc.system.wounds?.[track]?.value ?? 0;
+        const max     = doc.system.wounds?.[track]?.max ?? 10;
+        await doc.update({ [`system.wounds.${track}.value`]: Math.min(max, current + boxes) });
+      }
+      return { ok: true };
+    });
+  }
+
+  /**
    * Spend combat pool dice, clamped to available pool.
    * Returns how many were actually spent.
+   *
+   * GM-authoritative: a non-GM client relays the INTENT (`n` dice) rather than a
+   * pre-computed absolute, because two clients reading `combatPoolSpent: 0` would
+   * both send `3` and only one would stick. The GM re-enters this method, takes
+   * the local branch, and reads live data inside the per-document queue.
    */
   async spendCombatPool(amount) {
-    const available = this.system.derived?.availableCombatPool ?? 0;
-    const spend     = Math.min(amount, available);
-    if (spend > 0) {
-      await this.update({ 'system.combatPoolSpent': (this.system.combatPoolSpent ?? 0) + spend });
+    if (!game.users.activeGM?.isSelf) {
+      const { spent } = await game.sr3e.SR3EQuery.asGM('sr3e.pool.spend',
+        { uuid: this.uuid, pool: 'combat', n: amount });
+      return spent;
     }
-    return spend;
+    return game.sr3e.SR3EQueue.run(this.uuid, async () => {
+      const available = this.system.derived?.availableCombatPool ?? 0;
+      const spend     = Math.min(amount, available);
+      if (spend > 0) {
+        await this.update({ 'system.combatPoolSpent': (this.system.combatPoolSpent ?? 0) + spend });
+      }
+      return spend;
+    });
   }
 
   /**
    * Reset combat pool spending.
    */
   async refreshCombatPool() {
+    if (!game.users.activeGM?.isSelf) {
+      await game.sr3e.SR3EQuery.asGM('sr3e.pool.refresh', { uuid: this.uuid, pool: 'combat' });
+      return;
+    }
     await this.update({ 'system.combatPoolSpent': 0 });
   }
 
@@ -4131,28 +4178,39 @@ _prepareCharacter(sys, attr) {
    * Spend spell pool dice, clamped to available pool.
    */
   async spendSpellPool(amount) {
-    // Compute available directly — derived cache may be stale
-    const attr       = this.system.attributes ?? {};
-    const magicBase  = attr.magic?.base ?? 0;
-    let available    = 0;
-    if (magicBase > 0) {
-      const int2     = attr.intelligence?.base ?? 0;
-      const wil2     = attr.willpower?.base    ?? 0;
-      const spBase   = Math.max(0, Math.floor((int2 + wil2 + magicBase) / 3));
-      const spTotal  = spBase + (this.system.spellPoolMod ?? 0);
-      available      = Math.max(0, spTotal - (this.system.spellPoolSpent ?? 0));
+    if (!game.users.activeGM?.isSelf) {
+      const { spent } = await game.sr3e.SR3EQuery.asGM('sr3e.pool.spend',
+        { uuid: this.uuid, pool: 'spell', n: amount });
+      return spent;
     }
-    const spend = Math.min(amount, available);
-    if (spend > 0) {
-      await this.update({ 'system.spellPoolSpent': (this.system.spellPoolSpent ?? 0) + spend });
-    }
-    return spend;
+    return game.sr3e.SR3EQueue.run(this.uuid, async () => {
+      // Compute available directly — derived cache may be stale
+      const attr       = this.system.attributes ?? {};
+      const magicBase  = attr.magic?.base ?? 0;
+      let available    = 0;
+      if (magicBase > 0) {
+        const int2     = attr.intelligence?.base ?? 0;
+        const wil2     = attr.willpower?.base    ?? 0;
+        const spBase   = Math.max(0, Math.floor((int2 + wil2 + magicBase) / 3));
+        const spTotal  = spBase + (this.system.spellPoolMod ?? 0);
+        available      = Math.max(0, spTotal - (this.system.spellPoolSpent ?? 0));
+      }
+      const spend = Math.min(amount, available);
+      if (spend > 0) {
+        await this.update({ 'system.spellPoolSpent': (this.system.spellPoolSpent ?? 0) + spend });
+      }
+      return spend;
+    });
   }
 
   /**
    * Reset spell pool spending.
    */
   async refreshSpellPool() {
+    if (!game.users.activeGM?.isSelf) {
+      await game.sr3e.SR3EQuery.asGM('sr3e.pool.refresh', { uuid: this.uuid, pool: 'spell' });
+      return;
+    }
     await this.update({ 'system.spellPoolSpent': 0 });
   }
 
@@ -4163,8 +4221,17 @@ _prepareCharacter(sys, attr) {
    */
   async toggleFullDefense() {
     const current = this.system.fullDefense ?? false;
+    // fullDefense/fullDefensePool are absolute, non-accumulating values, so
+    // last-writer-wins is correct here and `actor.set` is the right verb.
+    const set = async changes => {
+      if (!game.users.activeGM?.isSelf) {
+        await game.sr3e.SR3EQuery.asGM('sr3e.actor.set', { uuid: this.uuid, changes });
+        return;
+      }
+      await this.update(changes);
+    };
     if (current) {
-      await this.update({ 'system.fullDefense': false, 'system.fullDefensePool': 0 });
+      await set({ 'system.fullDefense': false, 'system.fullDefensePool': 0 });
       await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor: this }),
         content: `<div class="sr-roll-card"><div class="sr-roll-header">🛡 ${this.name} — Full Defense cancelled</div></div>`,
@@ -4176,7 +4243,7 @@ _prepareCharacter(sys, attr) {
         ui.notifications.warn('No combat pool available for Full Defense.');
         return;
       }
-      await this.update({ 'system.fullDefense': true, 'system.fullDefensePool': avail });
+      await set({ 'system.fullDefense': true, 'system.fullDefensePool': avail });
       await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor: this }),
         content: `<div class="sr-roll-card"><div class="sr-roll-header">🛡 ${this.name} — Full Defense declared (${avail} dice)</div><div class="sr-roll-result">All combat pool committed to defense for this pass. Dodge declarations auto-fill.</div></div>`,
@@ -4189,13 +4256,23 @@ _prepareCharacter(sys, attr) {
    * Reset hacking pool spending.
    */
   async refreshHackingPool() {
+    if (!game.users.activeGM?.isSelf) {
+      await game.sr3e.SR3EQuery.asGM('sr3e.pool.refresh', { uuid: this.uuid, pool: 'hacking' });
+      return;
+    }
     await this.update({ 'system.hackingPoolSpent': 0 });
   }
 
   /**
    * Reset recoil accumulation (called at start of each new combat phase).
+   * Absolute write — last-writer-wins is correct.
    */
   async resetRecoil() {
+    if (!game.users.activeGM?.isSelf) {
+      await game.sr3e.SR3EQuery.asGM('sr3e.actor.set',
+        { uuid: this.uuid, changes: { 'system.roundsFiredThisPhase': 0 } });
+      return;
+    }
     await this.update({ 'system.roundsFiredThisPhase': 0 });
   }
 
@@ -4203,27 +4280,45 @@ _prepareCharacter(sys, attr) {
    * Spend from the available hacking pool. Returns actual amount spent.
    */
   async spendHackingPool(amount) {
-    const avail  = this.system.derived?.availableHackingPool ?? 0;
-    const actual = Math.min(amount, avail);
-    if (actual > 0) {
-      await this.update({ 'system.hackingPoolSpent': (this.system.hackingPoolSpent ?? 0) + actual });
+    if (!game.users.activeGM?.isSelf) {
+      const { spent } = await game.sr3e.SR3EQuery.asGM('sr3e.pool.spend',
+        { uuid: this.uuid, pool: 'hacking', n: amount });
+      return spent;
     }
-    return actual;
+    return game.sr3e.SR3EQueue.run(this.uuid, async () => {
+      const avail  = this.system.derived?.availableHackingPool ?? 0;
+      const actual = Math.min(amount, avail);
+      if (actual > 0) {
+        await this.update({ 'system.hackingPoolSpent': (this.system.hackingPoolSpent ?? 0) + actual });
+      }
+      return actual;
+    });
   }
 
   async spendAstralPool(amount) {
-    const available = this.system.derived?.availableAstralPool ?? 0;
-    const spend     = Math.min(amount, available);
-    if (spend > 0) {
-      await this.update({ 'system.astralPoolSpent': (this.system.astralPoolSpent ?? 0) + spend });
+    if (!game.users.activeGM?.isSelf) {
+      const { spent } = await game.sr3e.SR3EQuery.asGM('sr3e.pool.spend',
+        { uuid: this.uuid, pool: 'astral', n: amount });
+      return spent;
     }
-    return spend;
+    return game.sr3e.SR3EQueue.run(this.uuid, async () => {
+      const available = this.system.derived?.availableAstralPool ?? 0;
+      const spend     = Math.min(amount, available);
+      if (spend > 0) {
+        await this.update({ 'system.astralPoolSpent': (this.system.astralPoolSpent ?? 0) + spend });
+      }
+      return spend;
+    });
   }
 
   /**
    * Reset astral pool spending.
    */
   async refreshAstralPool() {
+    if (!game.users.activeGM?.isSelf) {
+      await game.sr3e.SR3EQuery.asGM('sr3e.pool.refresh', { uuid: this.uuid, pool: 'astral' });
+      return;
+    }
     await this.update({ 'system.astralPoolSpent': 0 });
   }
 
@@ -4239,21 +4334,39 @@ _prepareCharacter(sys, attr) {
   async commitSpellDefense(sorceryDice, spellDice) {
     const pool = Math.max(0, sorceryDice + spellDice);
     if (pool <= 0) return;
-    await this.update({
+    // The pool is SET here (a fresh declaration), not accumulated, so actor.set
+    // is correct. spendSpellPool below routes its own intent.
+    const changes = {
       'system.spellDefensePool':        pool,
       'system.spellDefenseSorceryDice': sorceryDice,
-    });
+    };
+    if (!game.users.activeGM?.isSelf) {
+      // spellDefensePool is normally an accumulator; here it is a fresh total,
+      // not a delta off the current value — hence the explicit opt-out.
+      await game.sr3e.SR3EQuery.asGM('sr3e.actor.set',
+        { uuid: this.uuid, changes, allowAbsolute: ['system.spellDefensePool'] });
+    } else {
+      await this.update(changes);
+    }
     if (spellDice > 0) await this.spendSpellPool(spellDice);
   }
 
   /**
    * Deduct n dice from the Spell Defense pool (clamped to available).
+   * Accumulating (read-modify-write), so it relays intent like the other pools.
    */
   async useSpellDefenseDice(n) {
-    const current = this.system.spellDefensePool ?? 0;
-    const spend   = Math.min(n, current);
-    if (spend > 0) await this.update({ 'system.spellDefensePool': current - spend });
-    return spend;
+    if (!game.users.activeGM?.isSelf) {
+      const { spent } = await game.sr3e.SR3EQuery.asGM('sr3e.pool.spend',
+        { uuid: this.uuid, pool: 'spellDefense', n });
+      return spent;
+    }
+    return game.sr3e.SR3EQueue.run(this.uuid, async () => {
+      const current = this.system.spellDefensePool ?? 0;
+      const spend   = Math.min(n, current);
+      if (spend > 0) await this.update({ 'system.spellDefensePool': current - spend });
+      return spend;
+    });
   }
 
   /**
@@ -4262,10 +4375,17 @@ _prepareCharacter(sys, attr) {
    * remain spent until the GM manually refreshes pools.
    */
   async clearSpellDefense() {
-    await this.update({
+    const changes = {
       'system.spellDefensePool':        0,
       'system.spellDefenseSorceryDice': 0,
-    });
+    };
+    if (!game.users.activeGM?.isSelf) {
+      // Writing a constant 0, not a delta — safe as an absolute.
+      await game.sr3e.SR3EQuery.asGM('sr3e.actor.set',
+        { uuid: this.uuid, changes, allowAbsolute: ['system.spellDefensePool'] });
+      return;
+    }
+    await this.update(changes);
   }
 
   /**
