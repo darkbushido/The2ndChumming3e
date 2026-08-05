@@ -591,6 +591,44 @@ Worth settling before the socket work leans on it: `game.socket.on/emit` is stab
 but nothing in this repo has ever exercised it, and the v13/v14 question also governs whether
 the ApplicationV2 and Region patterns in CLAUDE.md are still current guidance.
 
+## 18. Structured gear data for weapon-accessory TN modifiers
+
+Four SR3 p.112 modifiers depend on gear the system **cannot currently detect** — verified 2026-08-05:
+
+| Modifier | Mod | Why it can't be detected |
+|---|---|---|
+| Smartlink (with smartgun) | −2 | 'Smartgun Link' exists as cyberware in a populate macro, but nothing reads it |
+| Smart goggles (with smartgun) | −1 | no vision-gear flag anywhere |
+| Laser sight | −1 | **zero** references in `scripts/` |
+| Gyro stabilization | *varies* | **zero** references in `scripts/` |
+
+Root cause: `accessories` on a firearm is a free-text `StringField`
+([ItemDataModels.js:119](scripts/data/ItemDataModels.js)) — there is nothing structured to query.
+**Same underlying gap as [#8](#8-ship-cyberwarebioware-with-their-bonuses-pre-filled)**: gear carries
+descriptive text, not mechanical data. Worth doing these together.
+
+**This is the follow-up to a deliberate shortcut, not a missing feature.** Socket Stage 3 ships these
+as checkboxes the GM window **pre-ticks by guessing** — name-matching the actor's cyberware and
+substring-matching the weapon's `accessories` string, always GM-overridable. That works and is
+shipping; this task replaces the guess with real data, at which point the pre-tick becomes correct
+rather than probable.
+
+Two rules constraints any implementation has to respect (both from core p.112):
+
+1. **Smartlink and smart goggles are PAIR conditions, not character properties.** Both read *"with a
+   properly equipped smart-weapon"*. A character with smartlink cyberware firing an unmodified pistol
+   gets **nothing** — a naive `actor.items.find(smartlink)` check will wrongly hand out −2. Needs a
+   smartgun flag on the *weapon* as well as the vision/cyber side.
+2. **Gyro stabilization "reduces recoil *or* movement modifier"** — a per-shot player choice, not a
+   fixed number. It cannot be modelled as a flat modifier; it needs an either/or control at fire time
+   and has to interact with the existing recoil maths rather than sit beside it.
+
+Suggested shape: `smartgunLink` / `laserSight` (booleans) and `gyroRating` (number) on the firearm
+model; a vision-gear flag reachable from the actor for goggles; keep `accessories` as the human-readable
+description. Then delete the guessing in `SR3ECombatModifiers` and read the fields.
+
+See [audit/socket-combat-plan.md](audit/socket-combat-plan.md) — "Maintainer decisions — 2026-08-05".
+
 ---
 
 ## Parked for a longer discussion: ODM-* and MDF-*
