@@ -681,6 +681,40 @@ description. Then delete the guessing in `SR3ECombatModifiers` and read the fiel
 
 See [audit/socket-combat-plan.md](audit/socket-combat-plan.md) — "Maintainer decisions — 2026-08-05".
 
+## 20. Migrate ~58 `renderDialogV2` hook sites to `DialogV2.wait`'s `render` option
+
+CLAUDE.md claimed **"`DialogV2.wait()` does NOT call its `render` option"** and sent everyone to the
+global `renderDialogV2` hook. **That was false.** Corrected in Stage 0d; verified against the
+installed build (Foundry **14.365.0**):
+
+```js
+// resources/app/client/applications/api/dialog.mjs:405, :420-422
+static async wait({rejectClose=false, close, render, renderOptions={}, ...config}={}) {
+  ...
+  if ( typeof render === "function" ) {
+    dialog.addEventListener("render", event => render(event, dialog));
+  }
+```
+
+Core's own docs at `dialog.mjs:154` say *"you must still use the `render` option to attach
+listeners."* **~58 references across 8 files** still use the hook: `SR3EActor.js`, `SR3EItem.js`,
+`SR3EWard.js`, `SR3EActorSheet.js`, `SR3EItemSheet.js`, `SR3EVehicleSheet.js`, `sr3e.js`,
+`SR3EMIJI.js`.
+
+**Why this is more than tidiness.** `Hooks.on('renderDialogV2', …)` is **global**. With two dialogs
+of the same kind in flight, both hooks register before either renders — so dialog A gets wired
+**twice** (the second time with B's closure variables) and dialog B gets **no wiring at all**. The
+symptom is a checkbox or dropdown that silently stops recomputing, which is near-impossible to
+reproduce on demand. A per-dialog `render` callback cannot cross-wire.
+
+Latent today because dialogs are almost always sequential. **Socket Stage 3 makes concurrent dialogs
+normal** — the GM can have two attack windows open at once. Stage 3's `_promptGMAttackWindow` is
+already specified to use `render`; this task is about the pre-existing sites.
+
+Migrate incrementally, highest-risk first (anything that can plausibly be open twice). Pattern:
+drop the `Hooks.on`/`Hooks.off` dance and the element-check guard for
+`render: (_event, dialog) => { const html = dialog.element; … }`.
+
 ## 19. Convert the SR3 GM Screen into a compendium — as data, not page images
 
 Put the reference tables a GM needs at the table into a Foundry compendium, **rebuilt as real

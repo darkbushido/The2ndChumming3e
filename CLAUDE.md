@@ -7,7 +7,9 @@ Read it fully before touching any code.
 
 ## What this is
 
-An unofficial Foundry VTT v13 system for **Shadowrun 3rd Edition**.
+An unofficial Foundry VTT **v14** system for **Shadowrun 3rd Edition**.
+`system.json` declares `compatibility.minimum` / `verified` = **"14"**; developed against build
+**14.365.0**. (This file previously said v13 throughout — corrected 2026-08-05.)
 Built with **ApplicationV2** — zero Handlebars template files.
 All sheet HTML is rendered directly from JavaScript using tagged template literals.
 
@@ -18,12 +20,12 @@ All sheet HTML is rendered directly from JavaScript using tagged template litera
 - **Minimal guardrails.** The GM is trusted. Players are adults. The system presents the right information and dice but humans make all narrative decisions.
 - **No automation of outcomes.** Damage is never applied automatically. The system announces what happened and the GM clicks wound boxes manually.
 - **All stats are manually editable.** Edge cases, houserules, and situational modifiers should always be achievable without fighting the system.
-- **No jQuery.** This is Foundry v13 — use native DOM throughout (`querySelector`, `addEventListener`, `querySelectorAll`). Never use `.find()`, `.val()`, `.on()`.
+- **No jQuery.** This is Foundry v14 — use native DOM throughout (`querySelector`, `addEventListener`, `querySelectorAll`). Never use `.find()`, `.val()`, `.on()`.
 - **No Handlebars.** All markup lives in `_renderHTML()` as template literals.
 
 ---
 
-## Foundry v13 API patterns — critical knowledge
+## Foundry v14 API patterns — critical knowledge
 
 ### Dialogs
 Always use `DialogV2`, never the old `Dialog`.
@@ -50,42 +52,60 @@ await foundry.applications.api.DialogV2.wait({
 
 ### Interactive dialogs — live filtering and DOM wiring
 
-**`DialogV2.wait()` does NOT call its `render` option.** To wire up event listeners inside a
-`DialogV2` dialog (live filter inputs, row-click selection, etc.), use the `renderDialogV2`
-Foundry hook instead. Guard with an element check so the hook only fires for your dialog,
-then immediately remove it.
+**Use `DialogV2.wait()`'s `render` option.** It is a per-dialog callback invoked on every
+render — the correct place to wire live filters, row-click selection and live TN recomputation.
+
+> ⚠ **This section previously claimed `DialogV2.wait()` does NOT call its `render` option, and
+> told you to use the `renderDialogV2` hook instead. That was wrong.** Verified against the
+> installed build (`resources/app/client/applications/api/dialog.mjs:405`, Foundry 14.365.0):
+> `wait` destructures `render` and, at `:420-422`, does
+> `if (typeof render === "function") dialog.addEventListener("render", event => render(event, dialog))`.
+> Core's own docs at `:154` say *"you must still use the `render` option to attach listeners"*.
+> **~58 sites across 8 files still use the old hook pattern** and should migrate — see the
+> dedicated TODO task. Do not add new ones.
 
 ```js
-let hookId = Hooks.on('renderDialogV2', (app, html) => {
-  if (!html.querySelector?.('#my-filter')) return; // not our dialog
-  Hooks.off('renderDialogV2', hookId);
+await foundry.applications.api.DialogV2.wait({
+  window:  { title: 'Pick a thing' },
+  content: `...`,
+  buttons: [ /* … */ ],
 
-  const filterInput = html.querySelector('#my-filter');
-  const rows        = html.querySelectorAll('.my-row');
+  // Per-dialog, scoped to THIS dialog instance. No hook, no guard, no teardown.
+  render: (_event, dialog) => {
+    const html        = dialog.element;
+    const filterInput = html.querySelector('#my-filter');
+    const rows        = html.querySelectorAll('.my-row');
 
-  // Live filter
-  filterInput.addEventListener('input', () => {
-    const q = filterInput.value.toLowerCase();
-    rows.forEach(row => { row.style.display = row.dataset.name.includes(q) ? '' : 'none'; });
-  });
-
-  // Prevent Enter in filter triggering the default button
-  filterInput.addEventListener('keydown', e => { if (e.key === 'Enter') e.preventDefault(); });
-
-  // Row selection — store chosen value; optionally auto-submit
-  rows.forEach(row => {
-    row.addEventListener('click', () => {
-      rows.forEach(r => r.style.background = '');
-      row.style.background = 'color-mix(in srgb,var(--sr-accent) 20%,transparent)';
-      html.querySelector('#my-hidden').value = row.dataset.value;
+    filterInput.addEventListener('input', () => {
+      const q = filterInput.value.toLowerCase();
+      rows.forEach(row => { row.style.display = row.dataset.name.includes(q) ? '' : 'none'; });
     });
-  });
 
-  filterInput.focus();
+    // Prevent Enter in filter triggering the default button
+    filterInput.addEventListener('keydown', e => { if (e.key === 'Enter') e.preventDefault(); });
+
+    rows.forEach(row => {
+      row.addEventListener('click', () => {
+        rows.forEach(r => r.style.background = '');
+        row.style.background = 'color-mix(in srgb,var(--sr-accent) 20%,transparent)';
+        html.querySelector('#my-hidden').value = row.dataset.value;
+      });
+    });
+
+    filterInput.focus();
+  },
 });
-
-await foundry.applications.api.DialogV2.wait({ ... });
 ```
+
+**Why this matters beyond tidiness.** `Hooks.on('renderDialogV2', …)` is global. With two dialogs
+of the same kind in flight, both hooks are registered before either renders, so the first dialog
+gets wired twice — the second time with the *other* dialog's closure variables — and the second
+gets no wiring at all. The symptom is a checkbox that silently stops recomputing. A per-dialog
+`render` callback cannot cross-wire.
+
+`DialogV2.wait` also defaults `rejectClose: false` (`dialog.mjs:405`), so dismissing with Esc or ✕
+**resolves** rather than throwing. Hold your result in a variable that only the Confirm button's
+callback assigns, and both Cancel and dismissal fall through as `null`.
 
 Never use inline `oninput=` / `onclick=` attributes with `document.querySelector` — these
 fail in the ApplicationV2 rendering context. Always wire through the hook's `html` reference.
@@ -157,7 +177,9 @@ nested forms and breaks the framework. Use `<div class="sr3e-inner">` instead.
 `DocumentSheetV2` has a built-in submit handler that calls `document.update()`.
 You do **not** need a custom `form.handler` for basic persistence.
 
-`_activateListeners` does **not** exist in the Foundry v13 parent chain — do not call it.
+`_activateListeners` does **not** exist in the ApplicationV2 / DocumentSheetV2 parent chain — do
+not call it. (It *does* exist in v14 on unrelated classes — `game.keyboard`, some custom elements —
+so a global grep will find hits. None of them are your sheet's base class.)
 Use `_onRender(context, options)` for any post-render DOM wiring (e.g. class-based
 click/change listeners that can't use `data-action`). `_onRender` is called by the
 framework after every render, so listeners re-attach automatically.
