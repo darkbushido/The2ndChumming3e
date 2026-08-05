@@ -625,8 +625,41 @@ Only one state active at a time; clicking the active button deactivates it.
 8. Attack rolls (interactive Rule of Six)
 9. On final wave: **the defender is asked to declare a defence, knowing the attack's successes** — "N hits incoming. Dodge or take it?"
 10. Dodge roll (interactive Rule of Six, TN 4)
-11. Dodge result: **binary** — dodge hits ≥ attack hits = complete miss; otherwise full hit lands
-12. Dodge does NOT reduce staging. Net hits are irrelevant to damage. Full staged damage proceeds to soak.
+11. Dodge result — see the RAW box below. **⚠ The code currently gets this wrong on two counts; TODO #26.**
+12. Dodge does **not** reduce *staging* — but its successes are not discarded either. See below.
+
+#### ⚠ Resolving the Dodge Test — RAW, and where the code diverges
+
+Two separate questions, easy to conflate. The rulebook answers both in consecutive sentences:
+
+> "If the number of successes obtained on the Dodge Test are **more than** the Attacker achieved on
+> his Attack Test, then the attack is completely dodged, and the target takes no damage.
+> **Even if you don't dodge completely, the successes still count and are added to the Damage
+> Resistance Successes** to determine the final outcome."
+
+and again in the numbered sequence, step 4:
+
+> "A clean miss occurs if the number of successes from the target's Combat Pool dice **exceeds** the
+> attacker's successes."
+
+**1 — A tie is a HIT.** Both statements are strict inequalities: *more than*, *exceeds*. Equal
+successes means the attack lands. Dodging is not "match the attacker", it is "beat the attacker".
+
+**2 — A failed dodge is not a wasted dodge.** Its successes carry into the Damage Resistance Test
+and stage the damage down at the usual 2-per-level, exactly as Body successes do.
+
+**3 — Staging UP is unaffected.** The attacker's raw successes stage the damage; dodge successes are
+added to the **resistance** side, they do not cancel attack successes. So "dodge does not reduce
+staging" is correct — "net hits are irrelevant" is not.
+
+Worked, to make the three concrete. Attacker 3 successes, defender rolls 2 on the dodge:
+staged damage is computed from **3** (not 1), the attack **hits** (2 does not exceed 3), and the
+defender carries **2 successes** into the soak before rolling a single Body die.
+
+**Where the code diverges** (`SR3EActor.js:2890-2909`): it uses `netHits <= 0` for a clean miss,
+so a tie wrongly favours the defender; and the failed-dodge branch discards the successes entirely.
+Both are recorded in TODO #26. Fix them together — correcting only the tie makes dodging strictly
+worse, and correcting only the carry-over makes it strictly better.
 
 #### ⚠ The defender declares AFTER the attack roll — this is RAW, not a convenience
 
