@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 21 · 24 · 27 · 28 · 29 |
-| 🔴 Confirmed bugs, still open | 5 · 14 · 25 |
+| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 32 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 |
@@ -161,6 +161,59 @@ Full per-agent returns: `<session>/subagents/workflows/wf_d9545118-374/journal.j
 ---
 
 ### 🟢 Socket combat — follow-ups
+
+## 32. Audit glitch / critical glitch — **the threshold is an SR4 rule**
+
+Prompted by play 2026-08-05: a dodge showed a glitch banner and nobody could tell whether it had
+done anything. **It hadn't** — and it probably should not have said "glitch" in the first place.
+
+### What SR3 actually says (core, *Rule of One*)
+
+> "Any time a die roll result comes up 1 in a test, that die is an automatic failure, no matter
+> what the target number. But the test can still succeed as long as other dice succeed.
+>
+> If **ALL** the dice rolled for a test come up 1s, it means that the character has made a
+> disastrous mistake. The result may be humorous, embarrassing, or deadly. **The gamemaster
+> determines** whatever tone is appropriate… Individual rules may also have particular results when
+> the Rule of One is applied."
+
+So SR3 has **one** condition — *every* die shows 1 — and its consequence is **GM adjudication**,
+not a mechanical penalty.
+
+### What the system does
+
+```js
+const glitch         = ones > Math.floor(pool / 2);   // "more than half" — SR4
+const criticalGlitch = glitch && successes === 0;     // SR4's two-tier model
+```
+
+Two problems:
+
+1. **Wrong threshold, wildly.** More than half is SR4's glitch rule. On a 5-die pool the system
+   glitches at 3 ones; RAW needs 5. It fires constantly compared to the real rule, which is why it
+   turned up on an ordinary dodge.
+2. **The two-tier glitch / critical-glitch model is SR4 vocabulary.** SR3 has no "critical glitch".
+   There is one condition and the GM decides what it means.
+
+### Purely cosmetic today
+
+`glitch` is computed, carried in the roll state and rendered as a banner. **Nothing reads it.**
+That part is arguably right — GM adjudication is exactly what this project's ethos wants, and
+automating a consequence would be wrong. The banner just needs to fire on the correct condition and
+say something the GM can act on.
+
+### Also worth checking in the same pass
+
+- **Does the Rule of One interact with the Rule of Six correctly?** "That die is an automatic
+  failure, no matter what the target number" — but an exploding 6 that re-rolls a 1 gives a running
+  total of 7. Is that die a success at TN 7, or a failure? Decide it, and write it down.
+- **CLAUDE.md says "only first wave counts for glitch"** — check that against the all-1s rule, where
+  re-rolls make "the dice rolled for a test" ambiguous.
+- **Five independent copies of the formula**, all in `SR3EActor.js`: `rollPool`, `_rollDodge`, and
+  three more in the drain/soak/resist paths. Fix once in a shared helper — the way `dodgeOutcome`
+  now holds the dodge rules — not five times.
+- **Test it.** Pure arithmetic, no Foundry dependency, so it belongs beside
+  `tests/dodge-resolution.test.mjs`.
 
 ## 21. Fold the attacker's roll-options into one screen
 
