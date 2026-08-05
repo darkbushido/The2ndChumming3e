@@ -448,6 +448,32 @@ things it explicitly did not resolve:
 - Delayed actions and mid-round joins (`:371`) — no delay mechanism; an actor added mid-round
   gets no slot until the next round. Called a design question, not a rules defect.
 
+### ⏸ Unfinished: is the TN floor of 2 enforced everywhere? — *opened 2026-08-05, NOT yet verified*
+
+**"No target number can ever be less than 2" is a CORE rule**, not a Quick Start simplification.
+It appears twice in the core rulebook — once in the general mechanics section and again in the
+ranged-combat modifiers text — plus a third "treat a result less than 2 as 2" in the
+recoil/movement compensation rules.
+
+The codebase clearly knows this: there are ~15 `Math.max(2, …)` clamps in `SR3EActor.js` (cybercombat
+attack/defence TNs `:472-473`, hacking `:910`, node `:1028`, soak `:1368/:1408/:3942`, `rollPool`
+`:1827-1828`, melee boxing `:3598-3599`, drain `:4009`, spell resist `:4542`). **But they are applied
+per-site, not centrally.**
+
+What I had not yet checked when we stopped:
+
+1. Does the **ranged** attack path clamp? `rollWeapon` bakes range, recoil, called shot and the
+   defaulting modifier into `tn` — no clamp observed at the point the TN is finalised.
+2. Do the **TN reducers** clamp? Melee is `4 − reach`, the VCR is `−2 × rating` on driving tests,
+   and aimed shot is `−1 per Simple Action`. Each can independently push below 2.
+
+**Why it matters for socket Stage 3:** the GM window's checkboxes make stacking negatives trivial —
+Target stationary −1, Aimed shot −1, Smartlink −2 is four points off, taking a base TN of 4 to **0**.
+Whatever the answer, the GM window must clamp its computed TN at 2, and if the floor turns out to be
+missing centrally it is a live rules bug independent of the socket work.
+
+Resume by finishing the grep for TN-reducing sites and checking `rollWeapon`'s final `tn`.
+
 ## Other known drift
 
 - CLAUDE.md "What is NOT yet implemented" (`:1016`) is stale: Full Defense is largely wired
@@ -628,6 +654,36 @@ model; a vision-gear flag reachable from the actor for goggles; keep `accessorie
 description. Then delete the guessing in `SR3ECombatModifiers` and read the fields.
 
 See [audit/socket-combat-plan.md](audit/socket-combat-plan.md) — "Maintainer decisions — 2026-08-05".
+
+## 19. Convert the SR3 GM Screen into a compendium — as data, not page images
+
+Put the reference tables a GM needs at the table into a Foundry compendium, **rebuilt as real
+content — no embedded page scans.** Journal pages with proper HTML tables: searchable, linkable
+by `@UUID`, enrichable, themable with the system's CSS custom properties, and legible on any
+screen size. A screenshot of a PDF page is none of those things.
+
+**Source the content from the Core Rules, not the GM Screen.** `Shadowrun 3e - GM Screen.pdf`
+(kept at the PDF library root, deliberately — it holds the rules a GM needs to run) has **no text
+layer**, so nothing can be extracted from it. But the screen is only a *curated selection* of core
+rulebook tables, and `Shadowrun 3e - Core Rules {FAN25000}.pdf` **does** have a clean text layer.
+So:
+
+1. Read the GM Screen visually to determine **which** tables belong on it.
+2. Pull each table's **content** from the Core Rules text layer via `pdftotext -layout`
+   (crop per column, `-x -y -W -H`; mediabox ~616×795pt; **book page = PDF page − 2**).
+
+That avoids OCR entirely and gives accurate figures rather than best-guess character recognition.
+
+⚠ **Do not duplicate what `config.js` already owns.** Several of these tables are already encoded —
+`SR3E.rangeTN`, `SR3E.weaponRanges`, `SR3E.ammoTypes`, and `SR3E.electronicWarfare.degradationTiers`,
+with `SR3E_RANGED_MODIFIERS` / `SR3E_VISIBILITY_TABLE` arriving in socket Stage 3
+([#2](#2-rebuild-combat-on-sockets-with-player-initiated-flow)). A journal table that silently
+disagrees with the code is worse than no journal table. Either generate the journal **from** the
+config constants, or cross-check every figure against them and note the single source of truth.
+
+Pack should be system content (**no** `flags.The2ndChumming3e.book`, like `sr3e-skills`) so no book
+toggle can hide the GM's reference material — and remember a new pack in `system.json` needs a full
+Foundry restart, not an F5.
 
 ---
 
