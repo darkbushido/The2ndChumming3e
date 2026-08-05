@@ -565,6 +565,43 @@ heavy-weapon doubling), and the defaulting penalty for using a skill you lack.
 **Deferred to the "elegant / automated suggestions" pass:** visibility (now unblocked), blind fire,
 multiple targets, attacker in melee, walking, difficult ground, second firearm, image magnification.
 
+### ⚠ The GM window MUST clamp its DISPLAYED target number at 2
+
+**"No target number can ever be less than 2" is a core rule** (stated twice in the core rulebook —
+the general mechanics section and again in the ranged-combat modifiers text, plus a third
+"treat a result less than 2 as 2" in the compensation rules).
+
+**The engine already enforces it on every roll path** — audited 2026-08-05, all 20 `_rollWave` call
+sites and all 34 `rollPool` calls:
+
+`rollPool` `SR3EActor.js:1826-1828` · cybercombat `:472-473` · melee `:3598-3599` · astral
+`:5436-5437` · contested `:6157-6158` · drain `:4729` · spell resist `:5628` · soak `:3942/:1368/:1408`
+· hacking `:910` · node `:1028` · orthodox resolver `:6293` · `SR3EWard._resolveRoll:280` ·
+`SR3EMIJI._resolveRoll:47` · dodge is a fixed TN 4.
+
+**So there is no rules bug to fix — but there is a display trap this window walks straight into.**
+On card-based rolls the clamp happens at **read** time:
+
+```js
+const atkTN = Math.max(2, parseInt(card.querySelector('.sr-melee-atk-tn')?.value) || 4);
+```
+
+The input itself holds whatever was written. Melee happens to clamp at *write* time too
+(`SR3EItem.js:249` — `Math.max(2, 4 + Math.min(0, defReach - atkReach) + defaultTnMod + calledShot.tnMod)`),
+so today display and roll agree everywhere.
+
+The GM window breaks that by construction: it sums checkboxes into a **live-updating TN field**, and
+the MVP set alone reaches −4 (Target stationary −1, Aimed shot −1, Smartlink −2) against a base of 4.
+Without a clamp on the rendered value the GM reads **"TN 0"**, confirms, and the dice roll at 2 — the
+window lying about the roll it is about to cause, which is the one thing a GM adjudication surface
+must never do.
+
+**Requirement:** clamp in the `render` recompute, not only on submit. Show the clamped value with the
+raw sum alongside when they differ (e.g. `TN 2 (floored, sum was 0)`) so the GM can see the modifiers
+are stacking past the floor rather than silently losing them. Keep the field editable — a GM typing
+`1` is still floored at roll time by `rollPool`, and per the project's ethos the field should not
+fight them.
+
 **`scripts/documents/SR3EItem.js`**
 - **NEW** `static async _promptGMAttackWindow(payload, opts)`. Uses `DialogV2.wait({ render: … })` — **not** a `renderDialogV2` hook. This matters: with two attacks in flight the hook pattern's shared `#sr-gm-tn` guard cross-wires, because both hooks register before either dialog renders, so dialog A gets wired twice (the second time with B's closure variables) and dialog B gets no wiring at all — the GM ticks a checkbox and the TN silently never recomputes. A per-dialog `render` callback cannot cross-wire. Window title carries `${attackerName} → ${targetName} · ${weaponName}` plus a queue-depth line.
 - Delete `_promptWeaponRollOptions` (`:1715`); move called shot / take aim / karma into `_promptFireMode`.

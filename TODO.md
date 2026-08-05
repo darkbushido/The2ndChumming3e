@@ -448,7 +448,31 @@ things it explicitly did not resolve:
 - Delayed actions and mid-round joins (`:371`) — no delay mechanism; an actor added mid-round
   gets no slot until the next round. Called a design question, not a rules defect.
 
-### ⏸ Unfinished: is the TN floor of 2 enforced everywhere? — *opened 2026-08-05, NOT yet verified*
+### ✅ RESOLVED — the TN floor of 2 *is* enforced everywhere. No bug.
+
+**Audited 2026-08-05: all 20 `_rollWave` call sites (the only function that rolls dice) and all 34
+`rollPool` calls. Every roll path clamps.** The concern below was unfounded.
+
+`rollPool` `SR3EActor.js:1826-1828` · cybercombat `:472-473` · melee `:3598-3599` · astral
+`:5436-5437` · contested `:6157-6158` · drain `:4729` · spell resist `:5628` ·
+soak `:3942/:1368/:1408` · hacking `:910` · node `:1028` · orthodox silent resolver `:6293` ·
+`SR3EWard._resolveRoll:280` · `SR3EMIJI._resolveRoll:47` · dodge is a fixed TN 4.
+
+Both open questions answered:
+
+1. **Ranged path** — yes. `rollWeapon` returns through `actor.rollPool(...)` at five sites, and
+   `rollPool` clamps unconditionally.
+2. **TN reducers** — yes. Melee bakes reach, defaulting *and* called shot into a single clamp at
+   `SR3EItem.js:249`. The VCR's `−2 × rating` is a dropdown feeding a field clamped on read.
+
+**One real consequence, carried into socket Stage 3.** On card-based rolls the clamp is applied at
+**read** time, so an input can hold a sub-2 value while the roll uses 2. Nothing displays that way
+today (melee also clamps on write), but the GM TN window sums checkboxes into a live field and the
+MVP set reaches −4 against a base of 4 — it would render "TN 0" and roll at 2. Recorded as a Stage 3
+requirement in [audit/socket-combat-plan.md](audit/socket-combat-plan.md) → "The GM window MUST clamp
+its DISPLAYED target number at 2".
+
+<details><summary>Original question, as opened</summary>
 
 **"No target number can ever be less than 2" is a CORE rule**, not a Quick Start simplification.
 It appears twice in the core rulebook — once in the general mechanics section and again in the
@@ -473,6 +497,8 @@ Whatever the answer, the GM window must clamp its computed TN at 2, and if the f
 missing centrally it is a live rules bug independent of the socket work.
 
 Resume by finishing the grep for TN-reducing sites and checking `rollWeapon`'s final `tn`.
+
+</details>
 
 ## Other known drift
 
