@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 21 · 24 · 27 · 28 · 29 |
-| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 32 |
+| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 32 · 33 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 |
@@ -161,6 +161,48 @@ Full per-agent returns: `<session>/subagents/workflows/wf_d9545118-374/journal.j
 ---
 
 ### 🟢 Socket combat — follow-ups
+
+## 33. Staging past Deadly adds Power — **not an SR3 rule** — **CONFIRMED**
+
+Found in play 2026-08-05: a Colt Manhunter (**9M**) with **6 successes** reported **10D**.
+
+### The book
+
+> "If the weapon damage is staged below Light (the level is already at L and at least two more
+> successes remain to be used for staging), then no damage is done. **On the other end of the
+> spectrum, Deadly damage is the highest level of damage possible.**" — *Staging*
+
+**Deadly is the ceiling.** Successes beyond the ones that reach D are simply spent. There is no
+rule converting them into Power.
+
+### The code
+
+[`SR3EItem.stageDamage`](scripts/documents/SR3EItem.js) — `:648-650`:
+
+```js
+} else {
+  // Already at D — each pair of remaining successes adds 1 to power
+  power++;
+}
+```
+
+The observed roll walks it exactly: 9M → S (2 successes) → D (4) → 2 spare → `power++` → 10D.
+RAW is **9D**, surplus discarded.
+
+### Why it matters more than one point of Power
+
+**Power is the soak target number.** `soakTN = max(2, stagedPower − armour)`. So every phantom
+point makes the Damage Resistance Test harder *and* the wound worse, and it compounds with the
+number of successes — exactly the rolls that were already going badly for the defender.
+
+### Fix
+
+Cap at `D` and drop the `else` branch. Then extend `tests/damage-codes.test.mjs`, which already
+covers `stageDamage`, with the boundary: **9M + 6 → 9D**, and 9M + 20 → still 9D.
+
+⚠ Check the same assumption elsewhere before fixing only this: the melee boxing card, the spell
+resist path and the Chunky Salsa calculator all stage damage, and any of them may re-implement the
+same invented rule rather than calling `stageDamage`.
 
 ## 32. Audit glitch / critical glitch — **the threshold is an SR4 rule**
 
