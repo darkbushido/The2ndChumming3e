@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 21 · 24 · 27 · 28 · 29 |
-| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 32 · 33 |
+| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 32 · 33 · 34 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 |
@@ -161,6 +161,72 @@ Full per-agent returns: `<session>/subagents/workflows/wf_d9545118-374/journal.j
 ---
 
 ### 🟢 Socket combat — follow-ups
+
+## 34. Defaulting rolls half the dice it should — **CONFIRMED**, three errors in one table
+
+Found auditing CLAUDE.md against RAW, 2026-08-05. The **Dice Pool** column of the Default Table was
+read as *the dice you roll*. It is the **cap on pool dice**; you roll the full rating.
+
+### The book
+
+```
+DEFAULT TABLE
+Default To:       Target Number Modifier   Dice Pool
+Specialization              +3             = to 1/2 specialization's base skill
+Skill                       +2             = to 1/2 base skill being used
+Attribute                   +4             No pool dice allowed
+```
+
+> **Skill → Skill:** "roll a number of dice equal to **your rating in the default skill**.
+> Defaulting increases the target number by 2. If the default skill can be augmented with a dice
+> pool, the maximum number of **pool dice** allowed is equal to half your rating in that skill."
+>
+> **Skill → Specialization:** "roll a number of dice equal to **the specialization's rating**.
+> Defaulting increases the target number by 3. …the maximum number of **pool dice** allowed is equal
+> to half the character's rating in the specialization's **related base skill**."
+>
+> **Skill → Attribute:** "roll a number of dice equal to the rating of the default Attribute…
+> Players cannot use pool dice."
+
+The book's worked examples pin it: Ratchet, **Shotgun 5**, defaulting to an assault rifle, "is
+rolling **5 dice** (his rating in the default skill), plus **up to 2 dice** from his Combat Pool".
+And with **Edged Weapons 4 (Sword 6)**, defaulting to a club via the sword specialization, he "is
+rolling **6 dice** for the sword specialization, and can use **up to 2** dice from his Combat Pool
+(half of Edged Weapons 4)".
+
+### What the system does
+
+`SR3EItem.promptDefaultChoice` — `data-dice="${half(r)}"` for both the skill and specialization
+rows:
+
+| | RAW | System |
+|---|---|---|
+| Skill → Skill | full default skill rating | **½** the rating |
+| Skill → Specialization | full **specialization** rating | **½ the base skill** |
+| Skill → Attribute | full attribute ✅ | full attribute ✅ |
+| Pool cap | ½ the relevant skill | **not implemented — full pool offered** |
+
+Ratchet's two cases become **2 dice** instead of 5, and **2** instead of 6.
+
+### Both directions at once
+
+The errors do not cancel — they compound in opposite directions. A defaulting character rolls
+roughly **half the skill dice** they should while being allowed to pour in **more Combat Pool** than
+the rules permit. The specialization tier is worst: RAW makes it *better* than the skill tier
+(a Sword 6 spec beats an Edged Weapons 4 base) at the cost of a stiffer TN, and the system inverts
+that into the weakest option.
+
+### Fix
+
+1. `data-dice` = the **full** rating for skill and specialization tiers.
+2. Return a `maxPool` alongside `allowPool`, and enforce it where pool is offered — `rollWeapon`
+   currently passes `availableCombatPool` uncapped.
+3. Correct the CLAUDE.md table, which states the same three errors.
+4. Test with the book's own examples — Shotgun 5 → 5 dice / 2 pool, Edged Weapons 4 (Sword 6) →
+   6 dice / 2 pool. Pure arithmetic, belongs beside `tests/dodge-resolution.test.mjs`.
+
+⚠ **Scope:** `promptDefaultChoice` feeds every defaulting flow — skills, ranged, melee, astral,
+cybercombat, vehicle, Falling, Escape Artist, Driving. One fix, wide blast radius, so test broadly.
 
 ## 33. Staging past Deadly adds Power — **not an SR3 rule** — **CONFIRMED**
 
