@@ -485,6 +485,21 @@ ODM-\* rawdata), **`mat`** = this sourcebook, **`matrix-defragged`** = the commu
 
 ## SR3 rules implemented so far
 
+> **Citation convention.** Each rules section carries its source as *· SR3 p.NN* — the printed
+> page in the **core rulebook**, not the PDF page. (`Shadowrun 3e - Core Rules {FAN25000}.pdf`,
+> **PDF page = book page + 2**; it has a real text layer, so `pdftotext -layout -f N -l N` works.
+> Two-column pages merge the columns per line and scramble tables — crop per column with
+> `-x 0 -W 308` then `-x 308 -W 320`, mediabox ~616×795pt.)
+>
+> **🔴 DIVERGES FROM RAW** marks a rule the system implements *differently from the book*, with the
+> book's own wording and the TODO number tracking the fix. These are deliberate flags, not notes to
+> tidy away: without them this file reads as an authority and someone builds to the wrong rule.
+> **Delete the marker only when the code is fixed** — and check the book, not this file, when it is.
+>
+> Sections with no citation have **not been audited** against RAW yet. Absence of a flag is not
+> evidence of correctness. Audited so far: Rule of Six/One · Defaulting · Damage staging · Combat
+> Pool · pool refresh · initiative −10 · dodge resolution.
+
 ### Dice rolling — Rule of Six & Rule of One  · *SR3 p.38-39*
 - All rolls are d6 success-counting (result ≥ TN = success)
 - Any die showing 6 explodes. Each wave shows a single "💥 Roll explosions (N dice)" button that
@@ -498,7 +513,8 @@ ODM-\* rawdata), **`mat`** = this sourcebook, **`matrix-defragged`** = the commu
   is appropriate."* There is **no second "critical" tier** — a sweep is already an automatic
   zero-success failure, so the tier could only ever relabel the same event.
   ⚠ A two-tier rule keyed on *more than half* the pool showing 1s is **SR4's glitch**. Do not
-  reintroduce it: at 3 dice it trips about twenty times more often than RAW.
+  reintroduce it: at 3 dice it trips about twenty times more often than RAW. Caught 2026-08-05
+  when a dodge of `5, 1, 1` at TN 4 wrongly reported a glitch.
 - A single 1 is only *that die* failing — *"the test can still succeed as long as other dice
   succeed"* — so it needs no special handling beyond comparing against the TN
 - Initiative never explodes interactively — resolved silently as a sum
@@ -551,7 +567,7 @@ The book's worked examples, both asserted in `tests/defaulting.test.mjs`:
   Attribute tier suppresses the Control Pool; the +2/+3 TN modifiers don't apply (GM raises the
   threshold by hand).
 
-### Initiative
+### Initiative  · *SR3 p.103-104*
 Two modes selectable in game settings:
 - **SR3 mode**: Pass-based. Everyone acts once per pass in init order. Subtract 10 after each pass. Repeat until all initiatives ≤ 0.
 - **SR2 mode**: Flat queue. All action slots pre-built (init, init-10, init-20...) merged and sorted descending. Walk queue top to bottom.
@@ -614,7 +630,7 @@ Toggled on the Magic tab. Stored as `system.astralMode` (persisted):
 
 Only one state active at a time; clicking the active button deactivates it.
 
-### Ranged combat flow
+### Ranged combat flow  · *SR3 p.109-114*
 1. Attacker clicks weapon on sheet
 2. Target selection dialog (radio buttons, single actor)
 3. (Firearms) Loaded ammo type is read from the weapon — no per-shot ammo picker. Power/level/stun mods (Explosive/EX/Gel) applied now; see **Firearms** section
@@ -790,11 +806,11 @@ Power (number) + Level (L/M/S/D) + optional Stun flag
   highest level of damage possible"* (p.113). There is no rule converting them to Power,
   and inventing one is not cosmetic — **Power is the Damage Resistance TN**, so a phantom
   point makes the soak harder *and* the wound worse. A 9M weapon rolling 6 successes is
-  **9D**, not 10D.
+  **9D**, not 10D. Caught 2026-08-05: a Colt Manhunter reported **10D**.
 - Stun damage goes to stun track; physical to physical track
 - GM applies manually
 
-### Combat pool
+### Combat pool  · *SR3 p.43; refresh p.104*
 - Derived: ⌊(QUI + INT + WIL) / 2⌋ + wound modifier
 - Tracked via `combatPoolSpent` on actor system
 - Available = derived − spent

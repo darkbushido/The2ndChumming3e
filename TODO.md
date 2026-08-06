@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 21 · 24 · 27 · 28 · 29 |
-| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 32 · 33 · 34 |
+| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 32 · 33 · 34 · 35 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 |
@@ -161,6 +161,50 @@ Full per-agent returns: `<session>/subagents/workflows/wf_d9545118-374/journal.j
 ---
 
 ### 🟢 Socket combat — follow-ups
+
+## 35. Round 1 never refreshes dice pools — **CONFIRMED**
+
+Raised in play 2026-08-05 ("the end of combat pool refresh may be a bug"). It is — but not in the
+way it looks. The `endCombat()` refresh isn't redundant; it is **silently load-bearing**, because
+the *first* Combat Turn has no refresh of its own.
+
+`SR3ECombat._endOfTurnReset()` — which refreshes combat / spell / astral / hacking pools, resets
+recoil and clears Full Defense — has **exactly one caller**: `_newRound()`. `startCombat()`
+(`:124`) calls `super.startCombat()` and `rebuildQueue()` and nothing else.
+
+| Moment | Pools refreshed? |
+|---|---|
+| Combat starts — **round 1** | ❌ **no** |
+| Rounds 2, 3, 4 … (`_newRound`) | ✅ yes |
+| Combat ends (`endCombat`) | ✅ yes |
+
+So round 1 inherits whatever pool state was lying around, and the end-of-combat refresh is what
+makes the *next* fight usually start clean.
+
+### Where that shows
+
+- **Combat ends without `endCombat()`** — tracker deleted, or the GM declines the refresh prompt —
+  and the next fight opens with depleted pools.
+- **Pool spent outside a running combat** (ambush dodge, a spell) is not restored until a round
+  *two* happens.
+- Recoil (`roundsFiredThisPhase`) and a stale Full Defense flag ride along on the same reset, so
+  both leak into round 1 as well.
+
+### RAW
+
+*"At the start of each Combat Turn, all dice pools refresh to their original, full value"*, and the
+Combat Turn Sequence (**p.104**) makes **"1. All Dice Pools Refresh"** the *first* step — before
+initiative is determined. Round 1 is a Combat Turn like any other.
+
+### Fix
+
+Call `_endOfTurnReset()` from `startCombat()`, after `super.startCombat()` and before
+`rebuildQueue()`. That makes the `endCombat()` refresh genuinely redundant — keep it as a
+convenience, but it should no longer be the thing holding this together.
+
+⚠ Check the ordering against the initiative flow: "Begin Encounter" rolls initiative through its
+own dialog (`sr3e.js:1467`), so make sure the refresh lands **before** any pool is offered for a
+first-round action, not after.
 
 ## 34. Defaulting rolls half the dice it should — **CONFIRMED**, three errors in one table
 
