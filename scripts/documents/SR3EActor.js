@@ -353,7 +353,7 @@ export class SR3EActor extends Actor {
       if (!def) return null;   // cancelled
       ccRating      = def.pool;
       defTnMod      = def.tnMod;
-      hackPoolAvail = def.allowPool ? (d.availableHackingPool ?? d.hackingPool ?? 0) : 0;
+      hackPoolAvail = Math.min(d.availableHackingPool ?? d.hackingPool ?? 0, def.poolCap);
       skillName     = def.label;
     } else {
       ccRating      = ccSkill.system.rating ?? 0;
@@ -667,7 +667,7 @@ export class SR3EActor extends Actor {
       if (!def) return;   // cancelled
       ccRating      = def.pool;
       defTnMod      = def.tnMod;
-      availHackPool = def.allowPool ? (d.availableHackingPool ?? d.hackingPool ?? 0) : 0;
+      availHackPool = Math.min(d.availableHackingPool ?? d.hackingPool ?? 0, def.poolCap);
       ccNote        = ` <span style="color:var(--sr-amber)">(${def.label})</span>`;
     } else {
       ccRating      = ccSkill.system.rating ?? 0;
@@ -826,7 +826,7 @@ export class SR3EActor extends Actor {
       if (!def) return;   // cancelled
       hackRating    = def.pool;
       defTnMod      = def.tnMod;
-      availHackPool = def.allowPool ? (d.availableHackingPool ?? d.hackingPool ?? 0) : 0;
+      availHackPool = Math.min(d.availableHackingPool ?? d.hackingPool ?? 0, def.poolCap);
       hackNote      = ` <span style="color:var(--sr-amber)">(${def.label})</span>`;
     } else {
       hackRating    = hackSkill.system.rating ?? 0;
@@ -975,7 +975,7 @@ export class SR3EActor extends Actor {
       if (!def) return;   // cancelled
       skillRating   = def.pool;
       defTnMod      = def.tnMod;
-      availHackPool = def.allowPool ? (d.availableHackingPool ?? d.hackingPool ?? 0) : 0;
+      availHackPool = Math.min(d.availableHackingPool ?? d.hackingPool ?? 0, def.poolCap);
       skillNote     = ` <span style="color:var(--sr-amber)">(${def.label})</span>`;
     } else {
       skillRating   = skill.system.rating ?? 0;
@@ -5328,7 +5328,7 @@ _prepareCharacter(sys, attr) {
       info.skillDice    = def.pool;
       info.skillName    = def.label;
       info.defaultTnMod = def.tnMod;
-      info.astralPool   = def.allowPool ? (dActor.system.derived?.availableAstralPool ?? 0) : 0;
+      info.astralPool   = Math.min(dActor.system.derived?.availableAstralPool ?? 0, def.poolCap);
       return true;
     };
     if (!await _applyAstralDefault(atkInfo, this, 'attacker'))         return null;
