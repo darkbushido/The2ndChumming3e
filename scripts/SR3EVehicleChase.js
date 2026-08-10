@@ -577,7 +577,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     // SR3 Default Table — let the user choose how to default. This is an Open Test
     // (no TN), so the +2/+3 TN modifiers don't apply; only the dice pool & "no pool"
     // for an attribute default carry over (the GM raises the threshold by hand).
-    let allowPool = true;
+    let poolCap = Infinity;
     if (defaulting) {
       const def = await game.sr3e.SR3EItem.promptDefaultChoice(driver, {
         linkedAttr: 'reaction',
@@ -587,12 +587,12 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
       if (!def) return;   // cancelled
       skillPool  = def.pool;
       skillLabel = def.label;
-      allowPool  = def.allowPool;
+      poolCap    = def.poolCap;   // 0 for an attribute default — no pool dice at all
     }
 
-    // Read current control allocation directly from the DOM (player may have edited it).
-    // No pool dice allowed when defaulting to an attribute.
-    const controlAlloc = !allowPool ? 0 : (parseInt(
+    // Read current control allocation directly from the DOM (player may have edited it),
+    // then clamp it to what the Default Table allows (SR3 p.85).
+    const controlAlloc = Math.min(poolCap, parseInt(
       this.element.querySelector(`#p-${pid}-control`)?.value ?? p.controlAlloc
     ) || 0);
     const totalPool = skillPool + controlAlloc;

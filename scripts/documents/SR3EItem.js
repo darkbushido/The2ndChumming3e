@@ -199,7 +199,7 @@ export class SR3EItem extends Item {
       info.skillDice    = def.pool;
       info.skillName    = def.label;
       info.defaultTnMod = def.tnMod;
-      info.availPool    = def.allowPool ? (dActor.system.derived?.availableCombatPool ?? 0) : 0;
+      info.availPool    = Math.min(dActor.system.derived?.availableCombatPool ?? 0, def.poolCap);
       return true;
     };
     if (!await _applyMeleeDefault(atkInfo, actor, 'attacker'))       return null;
@@ -310,44 +310,98 @@ export class SR3EItem extends Item {
   }
 
   /**
-   * SR3 Default Table — interactive defaulting prompt.
-   * Shown whenever an actor lacks the appropriate skill for a test. The user
-   * chooses to default to:
-   *   - a Specialization  (+3 TN, ½ the underlying skill's base rating, pool allowed)
-   *   - a related Skill   (+2 TN, ½ the chosen skill's rating, pool allowed)
-   *   - an Attribute      (+4 TN, full attribute, NO extra pool dice)
-   * "½ rating" rounds down. Lists ALL of the actor's active skills/specialisations
-   * (the GM judges relevance — minimal guardrails).
+   * SR3 Default Table (p.85) — interactive defaulting prompt.
+   * Shown whenever an actor lacks the appropriate skill for a test.
+   *
+   *   Default To      TN Modifier   Dice Pool
+   *   Specialization      +3        = to 1/2 specialization's base skill
+   *   Skill               +2        = to 1/2 base skill being used
+   *   Attribute           +4        No pool dice allowed
+   *
+   * The "Dice Pool" column is the CAP ON POOL DICE, not the dice you roll. You roll
+   * the FULL rating (p.84): "roll a number of dice equal to your rating in the default
+   * skill… the maximum number of pool dice allowed is equal to half your rating in
+   * that skill (round down)."
+   *
+   * The book's own examples pin both halves. Ratchet, Shotgun 5, defaulting to an
+   * assault rifle: "Ratchet is rolling 5 dice (his rating in the default skill), plus
+   * up to 2 dice from his Combat Pool". And for a specialization, Edged Weapons 4 with
+   * a sword specialization rolls the SPECIALIZATION's rating and "can use up to 2 dice
+   * from his Combat Pool (half of Edged Weapons 4)" — the cap comes off the related
+   * base skill, not off the specialization.
+   *
+   * Reading that column as the dice to roll (which this did) halves every defaulted
+   * test AND drops the cap, so it errs in both directions at once.
+   *
+   * Lists ALL of the actor's active skills/specialisations — the GM judges relevance.
    *
    * @param {Actor}  actor
    * @param {object} opts   { message, linkedAttr, title }
-   * @returns {Promise<null|{mode,pool,tnMod,allowPool,label}>}  null if cancelled.
+   * @returns {Promise<null|{mode,pool,tnMod,allowPool,poolCap,label}>}  null if cancelled.
+   *          `pool` is the dice to ROLL; `poolCap` is the most pool dice that may be
+   *          added on top (0 for the Attribute tier, so it alone expresses allowPool).
    */
-  static async promptDefaultChoice(actor, opts = {}) {
+  /**
+   * The three Default Table tiers as data — dice to roll and pool cap per option.
+   *
+   * Pure, and deliberately separate from the dialog: this IS the rule, and burying it
+   * in template literals is how it came to halve every defaulted test unnoticed. Kept
+   * testable so the book's own examples can be asserted directly.
+   *
+   * @returns {{specializations: object[], skills: object[], attributes: object[]}}
+   *          each entry `{ value, label, dice, cap }`.
+   */
+  static defaultTiers(actor, opts = {}) {
     const half   = r => Math.floor((r ?? 0) / 2);
-    const skills = actor.items
+    const skills = (actor.items ?? [])
       .filter(i => i.type === 'skill'
         && (i.system.skillType ?? 'active') === 'active'
         && (i.system.rating ?? 0) > 0)
       .sort((a, b) => a.name.localeCompare(b.name));
-    const specSkills = skills.filter(s => (s.system.specialisation ?? '').trim() !== '');
 
-    const skillOpts = skills.map(s => {
+    // Roll the full rating; cap the pool at half of it.
+    const skillTier = skills.map(s => {
       const r = s.system.rating ?? 0;
-      return `<option value="${s.id}" data-dice="${half(r)}">${s.name} ${r} → ${half(r)} dice</option>`;
-    }).join('');
-    const specOpts = specSkills.map(s => {
-      const r = s.system.rating ?? 0;
-      return `<option value="${s.id}" data-dice="${half(r)}">${s.name} (${s.system.specialisation}) — base ${r} → ${half(r)} dice</option>`;
-    }).join('');
+      return { value: s.id, dice: r, cap: half(r),
+               label: `${s.name} ${r} → ${r} dice (max ${half(r)} pool)` };
+    });
+
+    // One entry per specialisation, not per skill — a skill may carry several, and each
+    // has its own rating. `specialisations` holds the BONUS as `level` (1 or 2), so the
+    // specialisation's rating is base + level; SkillData.migrateData converts the legacy
+    // `specialisation` string into this array, so it is the only source worth reading.
+    // The pool cap comes off the RELATED BASE skill, not the specialisation (p.85).
+    const specTier = skills.flatMap(s => {
+      const base = s.system.rating ?? 0;
+      return (s.system.specialisations ?? []).map((sp, i) => {
+        const dice = base + (sp.level ?? 1);
+        return { value: `${s.id}:${i}`, dice, cap: half(base),
+                 label: `${s.name} (${sp.name}) ${dice} → ${dice} dice `
+                      + `(max ${half(base)} pool, ½ of base ${base})` };
+      });
+    });
 
     const ATTRS = ['body', 'quickness', 'strength', 'charisma', 'intelligence', 'willpower', 'reaction'];
-    const attrOpts = ATTRS.map(k => {
-      const v   = actor.system.attributes?.[k]?.value ?? actor.system.attributes?.[k]?.base ?? 0;
-      const sel = k === (opts.linkedAttr ?? '') ? ' selected' : '';
-      const lbl = k.charAt(0).toUpperCase() + k.slice(1);
-      return `<option value="${k}" data-dice="${Math.max(1, v)}"${sel}>${lbl} ${v} → ${Math.max(1, v)} dice</option>`;
-    }).join('');
+    const attrTier = ATTRS.map(k => {
+      const v    = actor.system?.attributes?.[k]?.value ?? actor.system?.attributes?.[k]?.base ?? 0;
+      const dice = Math.max(1, v);
+      const lbl  = k.charAt(0).toUpperCase() + k.slice(1);
+      return { value: k, dice, cap: 0, selected: k === (opts.linkedAttr ?? ''),
+               label: `${lbl} ${v} → ${dice} dice` };
+    });
+
+    return { specializations: specTier, skills: skillTier, attributes: attrTier };
+  }
+
+  static async promptDefaultChoice(actor, opts = {}) {
+    const tiers = SR3EItem.defaultTiers(actor, opts);
+    const asOption = e =>
+      `<option value="${e.value}" data-dice="${e.dice}" data-cap="${e.cap}"`
+      + `${e.selected ? ' selected' : ''}>${e.label}</option>`;
+
+    const skillOpts = tiers.skills.map(asOption).join('');
+    const specOpts  = tiers.specializations.map(asOption).join('');
+    const attrOpts  = tiers.attributes.map(asOption).join('');
 
     let hookId = Hooks.on('renderDialogV2', (app, html) => {
       if (!html.querySelector?.('#def-mode')) return;   // not our dialog
@@ -365,14 +419,15 @@ export class SR3EItem extends Item {
         rowSpec.style.display  = mode === 'specialization' ? 'block' : 'none';
         rowSkill.style.display = mode === 'skill'          ? 'block' : 'none';
         rowAttr.style.display  = mode === 'attribute'      ? 'block' : 'none';
-        let sel, tnMod, allowPool;
-        if (mode === 'specialization') { sel = html.querySelector('#def-spec');  tnMod = 3; allowPool = true; }
-        else if (mode === 'skill')     { sel = html.querySelector('#def-skill'); tnMod = 2; allowPool = true; }
-        else                           { sel = html.querySelector('#def-attr');  tnMod = 4; allowPool = false; }
+        let sel, tnMod;
+        if (mode === 'specialization') { sel = html.querySelector('#def-spec');  tnMod = 3; }
+        else if (mode === 'skill')     { sel = html.querySelector('#def-skill'); tnMod = 2; }
+        else                           { sel = html.querySelector('#def-attr');  tnMod = 4; }
         const opt = sel?.options[sel.selectedIndex];
+        const cap = opt ? (parseInt(opt.dataset.cap) || 0) : 0;
         diceEl.textContent = opt ? (opt.dataset.dice ?? '0') : '0';
         tnEl.textContent   = `+${tnMod}`;
-        poolEl.textContent = allowPool ? 'allowed' : 'not allowed';
+        poolEl.textContent = cap > 0 ? `up to ${cap}` : 'not allowed';
       };
       modeSel.addEventListener('change', refresh);
       html.querySelectorAll('#def-spec,#def-skill,#def-attr').forEach(s => s.addEventListener('change', refresh));
@@ -387,8 +442,8 @@ export class SR3EItem extends Item {
           <p style="margin:0 0 8px;">${opts.message ?? 'No appropriate skill detected — choose how to default:'}</p>
           <label style="display:block;margin-bottom:8px;">Default to:
             <select id="def-mode" style="width:100%;margin-top:3px;">
-              <option value="specialization"${specOpts ? '' : ' disabled'}>Specialization (+3 TN, ½ base skill)</option>
-              <option value="skill"${skillOpts ? '' : ' disabled'}>Skill (+2 TN, ½ skill rating)</option>
+              <option value="specialization"${specOpts ? '' : ' disabled'}>Specialization (+3 TN, pool capped at ½ base skill)</option>
+              <option value="skill"${skillOpts ? '' : ' disabled'}>Skill (+2 TN, pool capped at ½ rating)</option>
               <option value="attribute" selected>Attribute (+4 TN, no pool dice)</option>
             </select>
           </label>
@@ -402,7 +457,7 @@ export class SR3EItem extends Item {
             <select id="def-attr" style="width:100%;margin-top:3px;">${attrOpts}</select>
           </label>
           <div style="background:var(--sr-surface,#1c2030);border:1px solid var(--sr-border,#3a3f55);border-radius:6px;padding:6px;font-size:12px;">
-            Dice pool: <strong id="def-dice">?</strong> &nbsp;·&nbsp; TN modifier: <strong id="def-tn">+4</strong> &nbsp;·&nbsp; Extra pool dice: <strong id="def-pool">not allowed</strong>
+            Dice rolled: <strong id="def-dice">?</strong> &nbsp;·&nbsp; TN modifier: <strong id="def-tn">+4</strong> &nbsp;·&nbsp; Extra pool dice: <strong id="def-pool">not allowed</strong>
           </div>
         </div>`,
       buttons: [
@@ -411,25 +466,34 @@ export class SR3EItem extends Item {
           callback: (_e, _b, dlg) => {
             const el   = dlg.element;
             const mode = el.querySelector('#def-mode')?.value ?? 'attribute';
+            const pick = id => {
+              const sel = el.querySelector(id);
+              const opt = sel?.options[sel.selectedIndex];
+              return { opt, dice: parseInt(opt?.dataset.dice) || 0, cap: parseInt(opt?.dataset.cap) || 0 };
+            };
             if (mode === 'specialization') {
-              const sel = el.querySelector('#def-spec');
-              const opt = sel?.options[sel.selectedIndex];
-              const sk  = opt ? actor.items.get(opt.value) : null;
-              result = { mode, pool: parseInt(opt?.dataset.dice) || 0, tnMod: 3, allowPool: true,
-                         label: sk ? `Defaulting → ${sk.name} spec (½ base ${sk.system.rating}), TN +3` : 'Defaulting → specialization, TN +3' };
+              const { opt, dice, cap } = pick('#def-spec');
+              // value is "<skillId>:<index into specialisations>"
+              const [skId, spIdx] = (opt?.value ?? '').split(':');
+              const sk   = skId ? actor.items.get(skId) : null;
+              const spec = sk?.system.specialisations?.[Number(spIdx)];
+              result = { mode, pool: dice, tnMod: 3, allowPool: cap > 0, poolCap: cap,
+                         label: sk
+                           ? `Defaulting → ${sk.name} (${spec?.name ?? 'spec'}) ${dice} dice, TN +3, max ${cap} pool`
+                           : 'Defaulting → specialization, TN +3' };
             } else if (mode === 'skill') {
-              const sel = el.querySelector('#def-skill');
-              const opt = sel?.options[sel.selectedIndex];
-              const sk  = opt ? actor.items.get(opt.value) : null;
-              result = { mode, pool: parseInt(opt?.dataset.dice) || 0, tnMod: 2, allowPool: true,
-                         label: sk ? `Defaulting → ${sk.name} (½ of ${sk.system.rating}), TN +2` : 'Defaulting → skill, TN +2' };
+              const { opt, dice, cap } = pick('#def-skill');
+              const sk = opt ? actor.items.get(opt.value) : null;
+              result = { mode, pool: dice, tnMod: 2, allowPool: cap > 0, poolCap: cap,
+                         label: sk
+                           ? `Defaulting → ${sk.name} ${dice} dice, TN +2, max ${cap} pool`
+                           : 'Defaulting → skill, TN +2' };
             } else {
-              const sel = el.querySelector('#def-attr');
-              const opt = sel?.options[sel.selectedIndex];
+              const { opt, dice } = pick('#def-attr');
               const key = opt?.value ?? (opts.linkedAttr ?? 'body');
               const lbl = key.charAt(0).toUpperCase() + key.slice(1);
-              result = { mode: 'attribute', pool: parseInt(opt?.dataset.dice) || 1, tnMod: 4, allowPool: false,
-                         label: `Defaulting → ${lbl} ${opt?.dataset.dice ?? ''}, TN +4 (no pool)` };
+              result = { mode: 'attribute', pool: dice || 1, tnMod: 4, allowPool: false, poolCap: 0,
+                         label: `Defaulting → ${lbl} ${dice || 1} dice, TN +4 (no pool)` };
             }
           },
         },
@@ -602,7 +666,7 @@ export class SR3EItem extends Item {
 
     let pool  = 0;
     let label = `${this.name} [${effectiveRawDamage}] — Throw`;
-    let defTnMod = 0, defAllowPool = false;
+    let defTnMod = 0, defAllowPool = false, defPoolCap = Infinity;
     if (skill) {
       pool = skill.system.skillRating || 0;
       const skillSpec  = skill.system.specialisation;
@@ -627,11 +691,14 @@ export class SR3EItem extends Item {
       pool         = def.pool;
       defTnMod     = def.tnMod;
       defAllowPool = def.allowPool;
+      defPoolCap   = def.poolCap;
       label       += ` — ${def.label}`;
     }
 
-    // Combat pool allowed unless defaulting to an attribute.
-    const availableCombatPool = actor.system.derived?.availableCombatPool ?? 0;
+    // Combat pool allowed unless defaulting to an attribute, and capped by the
+    // Default Table at half the rating being defaulted from (SR3 p.84-85).
+    const availableCombatPool = Math.min(
+      actor.system.derived?.availableCombatPool ?? 0, defPoolCap);
     if ((skill || defAllowPool) && availableCombatPool > 0) {
       const combatDice = await this._promptCombatPool(availableCombatPool);
       if (combatDice > 0) {
@@ -824,7 +891,7 @@ export class SR3EItem extends Item {
   if (damageBase) label += ` [${effectiveRawDamage}]`;
   label += ` vs ${targetActor.name}`;
 
-  let defTnMod = 0, defAllowPool = false;
+  let defTnMod = 0, defAllowPool = false, defPoolCap = Infinity;
   if (skill) {
     pool = skill.system.skillRating || 0;
     const skillSpec  = skill.system.specialisation;
@@ -849,11 +916,14 @@ export class SR3EItem extends Item {
     pool         = def.pool;
     defTnMod     = def.tnMod;
     defAllowPool = def.allowPool;
+    defPoolCap   = def.poolCap;
     label       += ` — ${def.label}`;
   }
 
-  // Attacker combat pool allocation — allowed unless defaulting to an attribute.
-  const availableCombatPool = actor.system.derived?.availableCombatPool ?? 0;
+  // Attacker combat pool allocation — allowed unless defaulting to an attribute, and
+  // capped by the Default Table at half the rating defaulted from (SR3 p.84-85).
+  const availableCombatPool = Math.min(
+    actor.system.derived?.availableCombatPool ?? 0, defPoolCap);
   if ((skill || defAllowPool) && availableCombatPool > 0) {
     const combatDice = await this._promptCombatPool(availableCombatPool);
     if (combatDice > 0) {
@@ -952,6 +1022,7 @@ export class SR3EItem extends Item {
     let   gunneryDefaulting   = false;
     let   gunneryDefTnMod     = 0;
     let   gunneryDefAllowPool = false;
+    let   gunneryDefPoolCap   = Infinity;
 
     let vcrLevel = 0;
     if (pilotActor) {
@@ -980,6 +1051,7 @@ export class SR3EItem extends Item {
         gunneryDefaulting   = true;
         gunneryDefTnMod     = def.tnMod;
         gunneryDefAllowPool = def.allowPool;
+        gunneryDefPoolCap   = def.poolCap;
       }
       const stunVal = pilotActor.system.wounds?.stun?.value     ?? 0;
       const physVal = pilotActor.system.wounds?.physical?.value ?? 0;
@@ -1007,7 +1079,7 @@ export class SR3EItem extends Item {
       controlPoolMax = Math.max(0, reactionBase + vcrLevel);
     }
     // No pool dice allowed when defaulting to an attribute.
-    if (gunneryDefaulting && !gunneryDefAllowPool) controlPoolMax = 0;
+    if (gunneryDefaulting) controlPoolMax = Math.min(controlPoolMax, gunneryDefPoolCap);
 
     // Step 3: Roll options dialog
     const baseSig  = targetActor.type === 'vehicle'

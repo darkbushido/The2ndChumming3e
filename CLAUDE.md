@@ -364,25 +364,41 @@ separate ruleset with different schemas and different game mechanics.
   succeed"* — so it needs no special handling beyond comparing against the TN
 - Initiative never explodes interactively — resolved silently as a sum
 
-### Defaulting (SR3 Default Table) — interactive
+### Defaulting (SR3 Default Table) — interactive  · *SR3 p.84-85*
 
 When an actor lacks the skill for a test, an **interactive dialog** asks how to default
-(`SR3EItem.promptDefaultChoice(actor, opts)` → `{ mode, pool, tnMod, allowPool, label }`,
-or `null` if cancelled). The three tiers from the SR3 Default Table:
+(`SR3EItem.promptDefaultChoice(actor, opts)` → `{ mode, pool, tnMod, allowPool, poolCap, label }`,
+or `null` if cancelled). The table as printed on **p.85**:
 
-| Default to | TN modifier | Dice pool | Extra pool dice |
-|------------|-------------|-----------|-----------------|
-| Specialization | **+3** | ½ the underlying skill's **base** rating (round down) | allowed |
-| Skill          | **+2** | ½ the chosen skill's rating (round down)              | allowed |
-| Attribute      | **+4** | full attribute value                                 | **not allowed** |
+| Default To | TN Modifier | Dice Pool |
+|---|---|---|
+| Specialization | +3 | = to ½ specialization's base skill |
+| Skill | +2 | = to ½ base skill being used |
+| Attribute | +4 | No pool dice allowed |
 
+⚠ **The "Dice Pool" column is the cap on POOL dice, not the dice you roll.** You roll the
+**full** rating — *"roll a number of dice equal to **your rating in the default skill**… the
+maximum number of **pool dice** allowed is equal to half your rating in that skill (round
+down)"* (p.84). Reading it as the dice to roll halves every defaulted test *and* drops the
+cap, so it errs in both directions and the two errors partly mask each other.
+
+The book's worked examples, both asserted in `tests/defaulting.test.mjs`:
+- **Shotgun 5** defaulting to an assault rifle → rolls **5 dice**, plus **up to 2** Combat Pool.
+- **Edged Weapons 4 (Sword)** → rolls the **specialization's** rating, with pool capped at
+  **½ the related base skill** (2), not half the specialization.
+
+- `SR3EItem.defaultTiers(actor, opts)` is the **pure** function holding the rule; the dialog only
+  renders it. Specializations come from the `specialisations` array (`level` is the **bonus**, so
+  the spec's rating is `base + level`) — **one option per specialisation**, since a skill may
+  carry several.
 - "½ rating" **rounds down** (`Math.floor`). The dialog lists **all** of the actor's active
   skills / specialisations (the GM judges relevance — minimal guardrails) plus every attribute.
 - A cancelled dialog **aborts** the whole action (returns `null`; callers bail).
 - The TN modifier is **baked into the TN** at each call site (e.g. `tn + def.tnMod`); the old
   `rollPool` `options.defaulting` flag has been removed.
-- "No pool dice" is enforced per-flow: combat/spell/hacking/control pool is offered only when
-  `def.allowPool` (i.e. never for the Attribute tier).
+- **`poolCap` is the single gate on pool dice.** Every flow clamps its offer with
+  `Math.min(available, def.poolCap)`; the Attribute tier reports `poolCap: 0`, so the cap alone
+  expresses "no pool dice" and `allowPool` is kept only as a convenience alias for `poolCap > 0`.
 
 **Wired in everywhere defaulting can occur:**
 - Skill rolls (`SR3EItem.rollSkill`), weapon attacks (single + AoE throw + `rollVehicleWeapon`).
