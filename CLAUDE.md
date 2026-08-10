@@ -346,14 +346,22 @@ separate ruleset with different schemas and different game mechanics.
 
 ## SR3 rules implemented so far
 
-### Dice rolling — Rule of Six
+### Dice rolling — Rule of Six & Rule of One  · *SR3 p.38-39*
 - All rolls are d6 success-counting (result ≥ TN = success)
 - Any die showing 6 explodes. Each wave shows a single "💥 Roll explosions (N dice)" button that
   re-rolls **all** of that wave's exploding dice at once (not one click per die), adding to each
   die's running total; this repeats wave-by-wave until none are left
 - A die stops exploding when its running total ≥ TN (success, no more rolling needed)
-- Glitch: more than half the original pool shows 1s (only first wave counts for glitch)
-- Critical glitch: glitch AND zero successes
+- **Rule of One** (`SR3EActor.isRuleOfOne`, one pure function feeding all five roll paths):
+  fires **only when every die rolled comes up 1** — *"If ALL the dice rolled for a test come
+  up 1s, it means that the character has made a disastrous mistake"* (p.38). Its consequence
+  is **GM adjudication**, not a mechanical penalty: *"The gamemaster determines whatever tone
+  is appropriate."* There is **no second "critical" tier** — a sweep is already an automatic
+  zero-success failure, so the tier could only ever relabel the same event.
+  ⚠ A two-tier rule keyed on *more than half* the pool showing 1s is **SR4's glitch**. Do not
+  reintroduce it: at 3 dice it trips about twenty times more often than RAW.
+- A single 1 is only *that die* failing — *"the test can still succeed as long as other dice
+  succeed"* — so it needs no special handling beyond comparing against the TN
 - Initiative never explodes interactively — resolved silently as a sum
 
 ### Defaulting (SR3 Default Table) — interactive

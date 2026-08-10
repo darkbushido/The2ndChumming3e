@@ -1880,7 +1880,7 @@ _prepareCharacter(sys, attr) {
 
     const dice = this._rollWave(pool, effectiveTN, /* isFirstWave */ true);
     const ones   = dice.filter(d => d.isOne).length;
-    const glitch = ones > Math.floor(pool / 2);
+    const glitch = SR3EActor.isRuleOfOne(ones, pool);
 
     await this._postWaveCard({
       actorId:         this.id,
@@ -1946,6 +1946,27 @@ _prepareCharacter(sys, attr) {
       grenadeType:           options.grenadeType           ?? 'standard',
       footerNote:            options.footerNote            ?? null,
     });
+  }
+
+  /**
+   * SR3's Rule of One (p.38) — true only when EVERY die rolled comes up 1:
+   *
+   *   "If ALL the dice rolled for a test come up 1s, it means that the character
+   *    has made a disastrous mistake. The result may be humorous, embarrassing,
+   *    or deadly. The gamemaster determines whatever tone is appropriate…"
+   *
+   * The consequence is GM adjudication, not a mechanical penalty, and there is no
+   * second "critical" tier — a two-tier rule triggered by more than half the pool
+   * showing 1s is SR4's glitch, not anything in SR3.
+   *
+   * Only the first wave is ever counted, which needs no special handling: a die
+   * showing 1 does not explode, so no later wave can change the tally.
+   *
+   * Kept as one pure function because the same test is made from five separate
+   * roll paths, and five copies of a rule is five chances to get it wrong.
+   */
+  static isRuleOfOne(ones, pool) {
+    return pool > 0 && ones === pool;
   }
 
   /**
@@ -2162,12 +2183,13 @@ _prepareCharacter(sys, attr) {
     // Result block — only shown when all dice are resolved.
     let resultHtml = '';
     if (allDone) {
-      const criticalGlitch = glitch && successes === 0;
-      const glitchHtml     = criticalGlitch
-        ? '<div class="sr-critical-glitch">⚠ CRITICAL GLITCH! ⚠</div>'
-        : glitch
-          ? '<div class="sr-glitch">⚠ Glitch</div>'
-          : '';
+      // Rule of One (p.38). One tier, not two: all dice showing 1s is already an
+      // automatic zero-success failure, so the old "critical" tier could never be
+      // anything but a second label on the same event.
+      const glitchHtml = glitch
+        ? '<div class="sr-rule-of-one">⚠ RULE OF ONE — every die came up 1. '
+          + 'A disastrous mistake; the GM decides what it costs.</div>'
+        : '';
 
       // Weapon roll result — dodge was pre-declared, so we resolve immediately
       let stagingHtml = '';
@@ -3830,7 +3852,7 @@ _prepareCharacter(sys, attr) {
     } else {
       dice   = targetActor._rollWave(dodgeDice, DODGE_TN, true);
       ones   = dice.filter(d => d.isOne).length;
-      glitch = ones > Math.floor(dodgeDice / 2);
+      glitch = SR3EActor.isRuleOfOne(ones, dodgeDice);
     }
 
     await targetActor._postWaveCard({
@@ -3988,7 +4010,7 @@ _prepareCharacter(sys, attr) {
     } else {
       dice  = actor._rollWave(pool, effectiveTN, true);
       ones  = dice.filter(d => d.isOne).length;
-      glitch = ones > Math.floor(pool / 2);
+      glitch = SR3EActor.isRuleOfOne(ones, pool);
     }
 
     await actor._postWaveCard({
@@ -4708,7 +4730,7 @@ _prepareCharacter(sys, attr) {
     } else {
       dice   = actor._rollWave(pool, effectiveTN, true);
       ones   = dice.filter(d => d.isOne).length;
-      glitch = ones > Math.floor(pool / 2);
+      glitch = SR3EActor.isRuleOfOne(ones, pool);
     }
 
     await actor._postWaveCard({
@@ -5601,7 +5623,7 @@ _prepareCharacter(sys, attr) {
     } else {
       dice   = actor._rollWave(pool, effectiveTN, true);
       ones   = dice.filter(d => d.isOne).length;
-      glitch = ones > Math.floor(pool / 2);
+      glitch = SR3EActor.isRuleOfOne(ones, pool);
     }
 
     await actor._postWaveCard({
