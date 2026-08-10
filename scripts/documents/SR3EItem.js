@@ -505,25 +505,26 @@ export class SR3EItem extends Item {
   /**
    * Stage damage upward by the given number of net successes.
    * Rules: every 2 successes = +1 stage (L→M→S→D).
-   * Once at D, every 2 remaining successes = +1 power.
+   *
+   * Deadly is the ceiling. Surplus successes are discarded — they do NOT convert
+   * into Power. "Deadly damage is the highest level of damage possible" (SR3 p.113);
+   * the book gives no rule for spending successes past it. Power matters twice over
+   * here, because it is also the Damage Resistance TN, so an invented point makes the
+   * soak harder AND the wound worse.
+   *
    * Returns { power, level, isStun, staged } where staged = number of stage steps taken.
    */
   static stageDamage(base, netSuccesses) {
     const STAGES = ['L', 'M', 'S', 'D'];
-    let { power, level, isStun } = base;
-    let idx     = STAGES.indexOf(level);
+    const { power, level, isStun } = base;
+    let idx       = STAGES.indexOf(level);
     let remaining = netSuccesses;
     let staged    = 0;
 
-    while (remaining >= 2) {
+    while (remaining >= 2 && idx < STAGES.length - 1) {
       remaining -= 2;
-      if (idx < STAGES.length - 1) {
-        idx++;
-        staged++;
-      } else {
-        // Already at D — each pair of remaining successes adds 1 to power
-        power++;
-      }
+      idx++;
+      staged++;
     }
 
     return { power, level: STAGES[idx], isStun, staged };

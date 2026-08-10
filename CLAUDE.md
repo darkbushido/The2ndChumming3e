@@ -550,10 +550,15 @@ mutually-exclusive options. **Take Aim** folds in as **−1 TN per point** (1 Si
   (`winnerIsAtk && ctx.calledShot==='stage'`); the card header shows the declaration.
 - **Not wired**: vehicle-mounted weapons (`rollVehicleWeapon` uses its own 🚗 dialog) and spells.
 
-### Damage staging
+### Damage staging  · *SR3 p.113-114*
 Power (number) + Level (L/M/S/D) + optional Stun flag
-- Each 2 net successes = +1 stage (L→M→S→D)
-- Once at D, each additional 2 successes = +1 power
+- Each 2 net successes = +1 stage (L→M→S→D) — the same 2-per-level applies to the
+  defender staging **down**
+- **Deadly is the ceiling.** Surplus successes are discarded: *"Deadly damage is the
+  highest level of damage possible"* (p.113). There is no rule converting them to Power,
+  and inventing one is not cosmetic — **Power is the Damage Resistance TN**, so a phantom
+  point makes the soak harder *and* the wound worse. A 9M weapon rolling 6 successes is
+  **9D**, not 10D.
 - Stun damage goes to stun track; physical to physical track
 - GM applies manually
 
