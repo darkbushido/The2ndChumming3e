@@ -11,3 +11,7 @@
 #
 # Mark the whole pack tree binary so no content filtering is ever applied to it.
 packs/** binary
+
+# Kept deliberately broad: if packs are ever shipped from a modules/ tree again,
+# they are the same LevelDB format and need identical protection.
+modules/**/packs/** binary
