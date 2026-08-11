@@ -24,7 +24,7 @@ independent.
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 24 |
 | 🔴 Confirmed bugs, still open | 5 · 14 · 25 |
-| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 |
+| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
@@ -1232,6 +1232,84 @@ model; a vision-gear flag reachable from the actor for goggles; keep `accessorie
 description. Then delete the guessing in `SR3ECombatModifiers` and read the fields.
 
 See [audit/socket-combat-plan.md](audit/socket-combat-plan.md) — "Maintainer decisions — 2026-08-05".
+
+## 39. Full Defense is half-built — RAW is a TWO-STAGE defence
+
+**Requested 2026-08-10.** CLAUDE.md lists Full Defense under *"not yet implemented"*, but that is
+not quite true — a simplified version ships and is doing the wrong thing quietly, which is worse
+than nothing being there.
+
+**What exists:** `system.fullDefense` / `system.fullDefensePool`
+([ActorDataModels.js:36-37](scripts/data/ActorDataModels.js)), `SR3EActor._fullDefenseDice`,
+`_announceFullDefense`, `clearFullDefense`, the `sr3e-fulldefense` status icon, and a clear at every
+turn boundary via `_endOfTurnReset`. `handleDodgeDeclare` reads the reserved pool and uses it as a
+**pre-committed dodge allocation**.
+
+**What RAW says (p.123)** — it is not a reserved dodge pool at all:
+
+> "Attacked characters may choose to only defend themselves. Characters who choose this option **do
+> not do any damage to their opponent**, even if they achieve more successes…
+>
+> A character on Full Defense still makes a Combat Skill Test, but they **may not add any Combat
+> Pool dice** to the test. Compare the successes… If the defender has achieved more successes, the
+> attack has been blocked. Otherwise, note the attacker's net successes.
+>
+> The defender may **at this point make a Dodge Test**… **Only Combat Pool dice may be used for this
+> test.** The target number is 4, and any applicable modifiers from the Melee [Modifiers Table]…"
+
+So the shape is:
+
+1. **Skill test, no pool** — the defender rolls their Combat Skill alone.
+2. Defender wins → **blocked**, exchange over.
+3. Otherwise → **a second, separate Dodge Test**, TN 4, **pool dice only**, plus melee modifiers.
+4. **The defender deals no damage regardless** — even winning the skill test.
+
+Three gaps against what ships: the pool-free skill stage does not exist, the second-stage dodge is
+conflated with the first, and **nothing enforces "does no damage"** — a Full Defense defender who
+wins the melee exchange currently damages the attacker, which RAW forbids outright.
+
+⚠ Check whether Full Defense applies to **ranged** too before wiring. p.123 is written in a melee
+context, but it is cross-referenced from the ranged side (p.109) and from movement (*"the defending
+character is assumed to be in Full Defense"*). The current code only reaches it via the dodge path.
+
+Sequence after [#24](#24) — the two-stage structure has to live wherever the melee exchange ends up.
+
+## 40. Charging Attack — Cannon Companion, and the first rule that needs a BOOK GATE
+
+**Requested 2026-08-10.** Not in the core rulebook. **Cannon Companion p.86**:
+
+> "A running start can increase the effectiveness of an attack. If a character moved **2 or more
+> meters** to attack his target, he gains a **+1 bonus to the Power** of the attack. While the
+> character need not have moved 2+ meters in the Initiative Pass in which he is attacking, the
+> character must have been **continuously moving (without interruption)** in any previous passes as
+> well as in the pass in which the charging attack is made.
+>
+> If a character **fails** a charging attack (the defender wins or dodges), the character must make
+> a **Quickness (5) Test or fall prone**. If the character must already make a Knockdown Test
+> because the defender inflicted damage, modify that target number by **+2 instead**.
+>
+> **Only attacking characters may use this option.**"
+
+### ⚠ This is the first RULE that should respect the source-book filter
+
+`SR3ESourceBooks` currently gates **compendium content only** — packs in the sidebar and item
+pickers. No *rule* is conditioned on a book being enabled. Charging is `cc` content, so a table not
+playing Cannon Companion should not be offered it.
+
+That is a new capability, and worth deciding deliberately rather than by accident: either
+`SR3ESourceBooks.bookEnabled('cc')` becomes readable from combat code, or optional rules get their
+own setting. **Whichever is chosen will set the precedent for every later sourcebook rule**, so
+decide it here rather than in the fourth one.
+
+### Notes for implementation
+
+- **+1 Power, not a TN change** — it is a damage modifier, unlike almost everything else on the
+  melee surface.
+- **Movement continuity spans passes**, so it cannot be derived from a single action; it needs
+  either token-movement tracking or an honest declaration. Given the minimal-guardrails ethos, a
+  checkbox the attacker ticks is probably right.
+- The failure branch wants **Knockdown**, which is also not implemented — check before assuming the
+  `+2 instead` clause has anything to modify.
 
 ## 38. Multiple targets is Full-Auto-only — the rule is per Combat Phase
 
