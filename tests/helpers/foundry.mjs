@@ -15,7 +15,10 @@
 export function installGlobals() {
   globalThis.Item   ??= class {};
   globalThis.Actor  ??= class {};
-  globalThis.Combat ??= class {};
+  // startCombat is a real no-op rather than absent: SR3ECombat.startCombat calls
+  // super.startCombat(), so an empty base class would throw before reaching the logic
+  // under test.
+  globalThis.Combat ??= class { async startCombat() {} };
   globalThis.ui     ??= { notifications: { info() {}, warn() {}, error() {} } };
   globalThis.CONFIG ??= {};
   globalThis.CONST  ??= { CHAT_MESSAGE_STYLES: { ROLL: 0 } };

@@ -815,9 +815,9 @@ Power (number) + Level (L/M/S/D) + optional Stun flag
 - Tracked via `combatPoolSpent` on actor system
 - Available = derived − spent
 - Spent when allocated to attack, dodge, or melee
-- **Refreshed at the start of every Combat Turn** — `SR3ECombat._endOfTurnReset()`, called from
-  `_newRound()`, refreshes combat / spell / astral / hacking pools together (and resets recoil and
-  Full Defense). This is RAW:
+- **Refreshed at the start of every Combat Turn** — `SR3ECombat._endOfTurnReset()` refreshes
+  combat / spell / astral / hacking pools together (and resets recoil and Full Defense). This
+  is RAW:
 
   > "At the start of each Combat Turn, all dice pools refresh to their original, full value…
   > **Unused pool dice do not carry over** from one Combat Turn to the next."
@@ -825,6 +825,19 @@ Power (number) + Level (L/M/S/D) + optional Stun flag
   A Foundry **round** is an SR3 **Combat Turn** (which contains several Initiative Passes), so
   per-round is the correct granularity. ⚠ Do not "fix" this to per-pass or per-combat — pools
   refreshing once per combat would leave everyone dry after the first turn.
+- **Three call sites, and round 1 needs its own.** `_newRound()` covers rounds 2+; `startCombat()`
+  covers round 1, because a Combat Turn Sequence (**p.104**) begins with step 1 *"All Dice Pools
+  Refresh"* and round 1 is a Combat Turn like any other. The **Begin Encounter** flow
+  (`sr3e.js`) calls it once more *before* `rollInitiative()` — that ordering is load-bearing, not
+  decorative: `rollInitiative()` ends by posting the Spell Defense card, which caps its Spell Pool
+  input at `availableSpellPool` **as computed when the card is built**, so refreshing afterwards
+  would show a mage a stale cap and block dice they actually have.
+  ⚠ `_endOfTurnReset()` had exactly **one** caller for a long time (`_newRound`), which meant
+  round 1 silently inherited leftover state and `endCombat()`'s optional prompt was the only thing
+  keeping the *next* fight clean. Covered by `tests/initiative.test.mjs`.
+- Every write is **dirty-checked**, so the overlapping calls above cost nothing — each helper
+  writes unconditionally and each write fires the `updateActor` hook that drives status icons and
+  the auto-defeated logic.
 - Also refreshed by `endCombat()` (GM prompted: "Refresh all combat pools?") — a tidy-up on the way
   out, **not** the mechanism that keeps pools topped up during a fight.
 

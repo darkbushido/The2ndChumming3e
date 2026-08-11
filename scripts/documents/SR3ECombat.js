@@ -123,6 +123,16 @@ export class SR3ECombat extends Combat {
    */
   async startCombat() {
     await super.startCombat();
+    // Round 1 is a Combat Turn like any other, and RAW p.104 makes "All Dice Pools
+    // Refresh" step 1 of the Combat Turn Sequence. Without this the first turn inherited
+    // whatever pool state was lying around, and endCombat()'s refresh prompt was the only
+    // thing keeping the NEXT fight clean — so declining that prompt, or closing a tracker
+    // without it, quietly started the following fight on depleted pools.
+    //
+    // The Begin Encounter flow refreshes earlier still, before rolling initiative, so the
+    // Spell Defense card is built against full pools. This call covers every other entry
+    // point; it is dirty-checked, so arriving here already clean writes nothing.
+    await this._endOfTurnReset();
     await this.rebuildQueue({ resetIndex: true });
     return this;
   }
@@ -342,7 +352,7 @@ export class SR3ECombat extends Combat {
    * @private
    */
   /**
-   * Everything that expires at the end of a Combat Turn.
+   * Everything that refreshes at a Combat Turn boundary.
    *
    * ONE place for per-turn state, deliberately. All of this used to be reset only in
    * endCombat(), which was correct purely by accident: every completed round used to call
@@ -350,6 +360,16 @@ export class SR3ECombat extends Combat {
    * continue removed that, and each item then had to be rediscovered as its own bug —
    * recoil first, then the pools, then Full Defense. Anything else that should expire per
    * turn belongs here, not in a fourth scattered place.
+   *
+   * Called from BOTH ends of a turn boundary: `_newRound()` for rounds 2+, and
+   * `startCombat()` for round 1 (RAW p.104 makes "All Dice Pools Refresh" step 1 of the
+   * Combat Turn Sequence, and round 1 is a Combat Turn like any other). The Begin
+   * Encounter flow calls it a third time, ahead of rolling initiative — see sr3e.js.
+   *
+   * Every write is dirty-checked, so those overlapping calls cost nothing. That matters
+   * beyond tidiness: each helper writes unconditionally and every write fires the
+   * `updateActor` hook, which drives status icons and the auto-defeated logic. Firing it
+   * several times per combatant per round for values that never changed is pure churn.
    *
    * NOT here: clearSpellDefense, which rollInitiative already does for every combatant on
    * its way through — doing it twice would be harmless but misleading.
@@ -363,17 +383,18 @@ export class SR3ECombat extends Combat {
     for (const c of this.combatants.contents) {
       const actor = c.actor;
       if (!actor) continue;
+      const sys = actor.system ?? {};
       // New combat phase — the rounds-fired counter that drives recoil starts over.
-      await actor.resetRecoil?.();
+      if (sys.roundsFiredThisPhase) await actor.resetRecoil?.();
       // Pools refresh at the start of each Combat Turn.
-      await actor.refreshCombatPool?.();
-      await actor.refreshSpellPool?.();
-      await actor.refreshAstralPool?.();
-      await actor.refreshHackingPool?.();
+      if (sys.combatPoolSpent)      await actor.refreshCombatPool?.();
+      if (sys.spellPoolSpent)       await actor.refreshSpellPool?.();
+      if (sys.astralPoolSpent)      await actor.refreshAstralPool?.();
+      if (sys.hackingPoolSpent)     await actor.refreshHackingPool?.();
       // Full Defense is a declared posture for the turn, not a standing state. The
       // updateActor hook in sr3e.js drives the status icon off this field, so clearing it
       // clears the icon too.
-      if (actor.system?.fullDefense) {
+      if (sys.fullDefense) {
         await actor.update({ 'system.fullDefense': false, 'system.fullDefensePool': 0 });
       }
     }

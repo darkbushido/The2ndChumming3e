@@ -1566,6 +1566,15 @@ Hooks.on('renderCombatTracker', (_app, html) => {
       });
 
       if (!proceed) return;
+      // Pools refresh BEFORE initiative is rolled — RAW p.104 orders the Combat Turn
+      // Sequence that way, and _newRound() already follows it for rounds 2+.
+      //
+      // It matters here for a concrete reason: rollInitiative() ends by posting the Spell
+      // Defense declaration card, and that card caps its Spell Pool input at
+      // availableSpellPool as computed WHEN THE CARD IS BUILT. Refreshing afterwards would
+      // leave a mage who arrived with a depleted pool looking at a stale, too-low cap and
+      // unable to declare dice they actually have.
+      await combat._endOfTurnReset();
       if (selectedIds.length) await combat.rollInitiative(selectedIds);
       await combat.startCombat();
     }, true); // capture phase — intercepts before Foundry's bubble handler

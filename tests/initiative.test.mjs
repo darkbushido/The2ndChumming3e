@@ -127,8 +127,16 @@ export async function run(t) {
    */
   {
     const calls = [];
+    // Every tracked value is dirty, so every reset is expected to fire. The spent/fired
+    // counters are load-bearing: the resets are dirty-checked, so an actor with nothing
+    // spent would legitimately produce no calls at all.
     const mkActor = () => ({
-      system: { fullDefense: true, fullDefensePool: 4 },
+      system: {
+        fullDefense: true, fullDefensePool: 4,
+        roundsFiredThisPhase: 3,
+        combatPoolSpent: 2, spellPoolSpent: 1,
+        astralPoolSpent: 1, hackingPoolSpent: 1,
+      },
       resetRecoil:        async () => calls.push('recoil'),
       refreshCombatPool:  async () => calls.push('combatPool'),
       refreshSpellPool:   async () => calls.push('spellPool'),
@@ -165,6 +173,75 @@ export async function run(t) {
     } }] };
     await combat._endOfTurnReset();
     t.is('no needless write when Full Defense was not active', calls.length, 0);
+  }
+
+  /* ---- the reset is dirty-checked, so overlapping calls are free ----
+   * Three call sites now overlap by design — Begin Encounter, startCombat and _newRound —
+   * and every reset helper writes unconditionally, firing the updateActor hook that drives
+   * status icons and the auto-defeated logic. An already-clean actor must produce silence,
+   * or starting a fight would fire that hook several times per combatant for no change.
+   */
+  {
+    const calls = [];
+    const combat = Object.create(SR3ECombat.prototype);
+    combat.combatants = { contents: [{ actor: {
+      system: {
+        fullDefense: false, roundsFiredThisPhase: 0,
+        combatPoolSpent: 0, spellPoolSpent: 0,
+        astralPoolSpent: 0, hackingPoolSpent: 0,
+      },
+      resetRecoil:        async () => calls.push('recoil'),
+      refreshCombatPool:  async () => calls.push('combatPool'),
+      refreshSpellPool:   async () => calls.push('spellPool'),
+      refreshAstralPool:  async () => calls.push('astralPool'),
+      refreshHackingPool: async () => calls.push('hackingPool'),
+      update:             async () => calls.push('update'),
+    } }] };
+    await combat._endOfTurnReset();
+    await combat._endOfTurnReset();   // the overlap the three call sites create
+    t.is('an already-clean actor is never written to', calls.length, 0,
+      `unexpected writes: ${calls.join(' | ')}`);
+  }
+
+  // Each field is checked independently — a stale Combat Pool must not be skipped just
+  // because recoil happens to be clean, which a single combined guard would do.
+  {
+    const calls = [];
+    const combat = Object.create(SR3ECombat.prototype);
+    combat.combatants = { contents: [{ actor: {
+      system: { combatPoolSpent: 3, roundsFiredThisPhase: 0, fullDefense: false },
+      resetRecoil:        async () => calls.push('recoil'),
+      refreshCombatPool:  async () => calls.push('combatPool'),
+      refreshSpellPool:   async () => calls.push('spellPool'),
+      refreshAstralPool:  async () => calls.push('astralPool'),
+      refreshHackingPool: async () => calls.push('hackingPool'),
+      update:             async () => calls.push('update'),
+    } }] };
+    await combat._endOfTurnReset();
+    t.is('a spent Combat Pool still refreshes on its own', calls.join(','), 'combatPool');
+  }
+
+  /* ---- round 1 refreshes too ----
+   * The regression this guards: _endOfTurnReset had exactly ONE caller, _newRound, so
+   * combat STARTED without a refresh. Round 1 inherited whatever was left over and
+   * endCombat's optional prompt was the only thing cleaning up for the next fight —
+   * decline it, or close a tracker without it, and the next fight opened depleted.
+   * RAW p.104 makes "All Dice Pools Refresh" step 1, and round 1 is a Combat Turn.
+   */
+  {
+    const order = [];
+    const combat = Object.create(SR3ECombat.prototype);
+    combat.combatants     = { contents: [] };
+    combat._endOfTurnReset = async () => { order.push('reset'); };
+    combat.rebuildQueue    = async () => { order.push('rebuildQueue'); return []; };
+    await combat.startCombat();
+
+    // Asserted as the exact sequence, not `indexOf(reset) < indexOf(rebuildQueue)`: with
+    // the reset missing, indexOf returns -1 and that comparison passes trivially, so the
+    // ordering check would have silently kept passing through the very regression it is
+    // here to catch.
+    t.is('starting combat refreshes the pools, before building the queue',
+      order.join(' → '), 'reset → rebuildQueue');
   }
 
   // An actorless combatant must not throw.

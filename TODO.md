@@ -23,12 +23,12 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 21 · 24 · 27 · 28 · 29 |
-| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 35 |
+| 🔴 Confirmed bugs, still open | 5 · 14 · 25 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 22 · 26 · 31 · 32 · 33 · 34 |
+| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 22 · 26 · 31 · 32 · 33 · 34 · 35 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -162,7 +162,26 @@ Full per-agent returns: `<session>/subagents/workflows/wf_d9545118-374/journal.j
 
 ### 🟢 Socket combat — follow-ups
 
-## 35. Round 1 never refreshes dice pools — **CONFIRMED**
+## 35. ✅ Round 1 never refreshes dice pools — **CONFIRMED**
+
+**✅ DONE.** `startCombat()` now calls `_endOfTurnReset()`, and the Begin Encounter flow calls it
+once more *before* `rollInitiative()`. Kept for the record; this file is the progress, not a queue.
+
+The ⚠ below turned out to be real, and more specific than it guessed: `rollInitiative()` ends by
+posting the **Spell Defense declaration card**, which caps its Spell Pool input at
+`availableSpellPool` *as computed when the card is built*. Refreshing only inside `startCombat()`
+would have left a mage who arrived with a depleted pool staring at a stale, too-low cap — unable to
+declare dice they now had. No allocation was ever at risk of being wiped (the spend happens later,
+on Commit), but the cap would have lied. Hence the extra call ahead of the roll, which also puts
+round 1 in the same order as `_newRound()` and as RAW p.104.
+
+`_endOfTurnReset()` is now dirty-checked so the overlapping call sites are free — each helper wrote
+unconditionally, and each write fires the `updateActor` hook behind status icons and auto-defeated.
+
+Covered in `tests/initiative.test.mjs`: `startCombat` refreshes before building the queue (asserted
+as the exact sequence — an `indexOf(a) < indexOf(b)` form passes trivially at `-1 < 0` when the
+reset is missing, which is precisely the regression), an already-clean actor is never written to
+across two calls, and each field is guarded independently.
 
 Raised in play 2026-08-05 ("the end of combat pool refresh may be a bug"). It is — but not in the
 way it looks. The `endCombat()` refresh isn't redundant; it is **silently load-bearing**, because
