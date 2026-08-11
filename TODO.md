@@ -22,13 +22,13 @@ independent.
 | Group | Items |
 |---|---|
 | 🔵 In progress | 2 |
-| 🟢 Socket combat — follow-ups | 21 · 24 · 27 |
+| 🟢 Socket combat — follow-ups | 24 · 27 |
 | 🔴 Confirmed bugs, still open | 5 · 14 · 25 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 22 · 26 · 28 · 29 · 31 · 32 · 33 · 34 · 35 |
+| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 21 · 22 · 26 · 28 · 29 · 31 · 32 · 33 · 34 · 35 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -413,22 +413,51 @@ say something the GM can act on.
 - **Test it.** Pure arithmetic, no Foundry dependency, so it belongs beside
   `tests/dodge-resolution.test.mjs`.
 
-## 21. Fold the attacker's roll-options into one screen
+## 21. ✅ Fold the attacker's roll-options into one screen — **target met**
 
-Socket Stage 3 shipped the GM's TN window but skipped the attacker-side consolidation, so the
-table pays **+1 click** rather than the plan's neutral budget.
+**✅ MET — target reached by `54e9698` and `8fcaed8`, not by the consolidation described below.**
+Kept for the record; this file is the progress, not a queue.
 
-Since then the flow improved — the GM now sets the TN *first*, and Combat Pool moved onto the
-attacker's screen — so the remaining work is smaller than originally scoped: fold **called shot**,
-**take aim** and **karma** into `_promptFireMode`, which the attacker already sees, and delete
-`_promptWeaponRollOptions` from the ranged path
-([SR3EItem.js](scripts/documents/SR3EItem.js)). Weapons with no fire-mode dialog (SS-only firearms,
-bows, thrown) fold the same fields into `_promptCalledShot` instead.
+The stated target was *"attacker **2 clicks** (fire dialog → roll), GM 1, defender 1."* Measured
+against the code 2026-08-10, the ranged path is:
 
-Target: attacker **2 clicks** (fire dialog → roll), GM 1, defender 1.
+| Weapon | Attacker dialogs |
+|---|---|
+| Firearm with a fire mode, token targeted | **2** — `_promptFireMode`, then `_promptWeaponRollOptions` |
+| SS-only firearm · bow · crossbow · thrown | **1** — roll options only |
+| *(any of the above with no canvas target)* | +1 for `_promptTarget` |
 
-⚠ Click count is exactly what got the previous attempt (`0c45bc5`) reverted after play-testing,
-so this is not cosmetic. `gmApprovesTN: 'off'` remains the escape hatch meanwhile.
+`_promptWeaponRollOptions`' confirm button is labelled **`🎲 Roll`** and *is* the roll trigger, so
+that dialog is not an extra step before rolling — it is the roll. Two of the three original
+complaints were fixed on the way: Combat Pool moved onto that screen (`8fcaed8`) and the attacker
+rolls their own dice rather than watching the GM click (`54e9698`).
+
+### What was left, and why it was not done
+
+The task carried two budgets that stopped agreeing once the flow changed:
+
+- **"attacker 2 clicks"** — met, and beaten for non-firearms.
+- **"the table pays +1 click"** — a *total-across-participants* budget. The GM's window is a new
+  click that consolidating the attacker's two dialogs into one was meant to offset. By that reading
+  there is still one dialog to fold.
+
+The remaining win is **one dialog, firearms only** — bows, thrown and SS-only weapons gain nothing,
+since they already show a single screen. Weighed against a real refactor of a working flow, and
+against the ⚠ below, that is not obviously worth spending. Deliberately not done.
+
+⚠ Click count is exactly what got the previous attempt (`0c45bc5`) reverted after play-testing, so
+any further change here wants **table evidence, not a spec**. `gmApprovesTN` is the lever meanwhile:
+`'off'` removes the GM window entirely, `'player'` (default) skips it when the GM attacks with their
+own NPCs.
+
+### Successor, if the table still feels it
+
+**Fold `_promptFireMode` into `_promptWeaponRollOptions` for firearms** — one screen carrying fire
+mode, recoil comp, range, called shot, take aim, karma, pool and the roll. Scope is firearms alone;
+every other weapon is already there.
+
+Do it only with a measured before/after from play, and only after [#24](#24) settles — melee will
+copy whichever attacker-side shape wins, and it should copy a verified one.
 
 ## 24. Revise melee onto the socket layer — each side edits only its own corner
 
