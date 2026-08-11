@@ -24,7 +24,7 @@ independent.
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 24 |
 | 🔴 Confirmed bugs, still open | 5 · 14 · 25 |
-| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 |
+| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
@@ -1232,6 +1232,46 @@ model; a vision-gear flag reachable from the actor for goggles; keep `accessorie
 description. Then delete the guessing in `SR3ECombatModifiers` and read the fields.
 
 See [audit/socket-combat-plan.md](audit/socket-combat-plan.md) — "Maintainer decisions — 2026-08-05".
+
+## 38. Multiple targets is Full-Auto-only — the rule is per Combat Phase
+
+**Raised in play 2026-08-10.** The +2-per-additional-target penalty is computed in exactly one
+place, inside a Full Auto branch of the fire-mode dialog
+([SR3EItem.js:2811-2816](scripts/documents/SR3EItem.js)):
+
+```js
+if (mode === 'FA') {
+  const targetNum = parseInt(el.querySelector('#fa-target-num')?.value) || 1;
+  if (targetNum > 1) additionalTNPenalty = (targetNum - 1) * 2;
+}
+```
+
+**The book scopes it to the Combat Phase, not the fire mode.** p.112: *"Multiple targets — +2 per
+additional target **that Combat Phase**."* So SS, SA and BF all qualify: fire single-shot at one
+target and single-shot at another in the same phase, and the second shot takes +2. Today it takes
+nothing, and there is no manual route either — `multiTarget` is in `SR3E_RANGED_MODIFIERS` but
+without `mvp: true`, so it never renders as a GM checkbox.
+
+**Melee has its own, also missing.** p.123: *"Character attacking multiple targets +2/target"*, and
+p.122 spells out the mechanics — *"Characters may attack more than one opponent with a Complex
+Action… The target number for each attack increases by +2 per additional target struck in that
+Combat Phase… **Dice from the Combat Pool must be allocated separately for each attack.**"* That
+last clause is a second, separate gap: nothing enforces per-attack pool allocation.
+
+### Why it is not simply "add a checkbox"
+
+The penalty is **cumulative across a Combat Phase**, so something has to remember how many distinct
+targets an actor has engaged this phase — the same shape as `roundsFiredThisPhase`, which already
+exists for recoil and is already reset at every phase boundary by `_endOfTurnReset`. Reuse that
+lifecycle rather than inventing a second one; a per-phase counter that resets on a different clock
+than recoil will drift out of step and be very hard to spot.
+
+⚠ Do **not** fix this by making the existing FA field non-FA. It counts targets *for one burst*;
+the general rule counts targets *across the phase*. They are different quantities that happen to
+share a modifier.
+
+Sequence after [#37](#37) — both want a home in a melee/ranged GM surface, and this one needs the
+per-phase counter that #37's window would display.
 
 ## 37. Melee has its own modifiers table — the GM window only covers ranged
 
