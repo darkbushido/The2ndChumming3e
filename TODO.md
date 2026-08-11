@@ -23,12 +23,12 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 21 · 24 · 27 · 28 · 29 |
-| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 32 · 33 · 34 · 35 |
+| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 35 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 22 · 26 · 31 |
+| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 22 · 26 · 31 · 32 · 33 · 34 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -206,7 +206,11 @@ convenience, but it should no longer be the thing holding this together.
 own dialog (`sr3e.js:1467`), so make sure the refresh lands **before** any pool is offered for a
 first-round action, not after.
 
-## 34. Defaulting rolls half the dice it should — **CONFIRMED**, three errors in one table
+## 34. ✅ Defaulting rolls half the dice it should — **CONFIRMED**, three errors in one table
+
+**✅ DONE — `e751e85`.** Fixed on the `sr3-rules-corrections` branch (`766389f`), merged into
+`main` separately from this branch's own history. Kept for the record; this file is the
+progress, not a queue.
 
 Found auditing CLAUDE.md against RAW, 2026-08-05. The **Dice Pool** column of the Default Table was
 read as *the dice you roll*. It is the **cap on pool dice**; you roll the full rating.
@@ -272,7 +276,11 @@ that into the weakest option.
 ⚠ **Scope:** `promptDefaultChoice` feeds every defaulting flow — skills, ranged, melee, astral,
 cybercombat, vehicle, Falling, Escape Artist, Driving. One fix, wide blast radius, so test broadly.
 
-## 33. Staging past Deadly adds Power — **not an SR3 rule** — **CONFIRMED**
+## 33. ✅ Staging past Deadly adds Power — **not an SR3 rule** — **CONFIRMED**
+
+**✅ DONE — `e751e85`.** Fixed on the `sr3-rules-corrections` branch (`a79d9c1`), merged into
+`main` separately from this branch's own history. Kept for the record; this file is the
+progress, not a queue.
 
 Found in play 2026-08-05: a Colt Manhunter (**9M**) with **6 successes** reported **10D**.
 
@@ -314,7 +322,11 @@ covers `stageDamage`, with the boundary: **9M + 6 → 9D**, and 9M + 20 → stil
 resist path and the Chunky Salsa calculator all stage damage, and any of them may re-implement the
 same invented rule rather than calling `stageDamage`.
 
-## 32. Audit glitch / critical glitch — **the threshold is an SR4 rule**
+## 32. ✅ Audit glitch / critical glitch — **the threshold is an SR4 rule**
+
+**✅ DONE — `e751e85`.** Fixed on the `sr3-rules-corrections` branch (`69f62ec`), merged into
+`main` separately from this branch's own history. Kept for the record; this file is the
+progress, not a queue.
 
 Prompted by play 2026-08-05: a dodge showed a glitch banner and nobody could tell whether it had
 done anything. **It hadn't** — and it probably should not have said "glitch" in the first place.
