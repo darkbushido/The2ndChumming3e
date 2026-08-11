@@ -39,7 +39,9 @@ export const SR3E_RANGED_MODIFIERS = [
   { key: 'recoilHeavy',    label: 'Recoil, heavy weapon',          mod: null, auto: true, group: 'attacker',   note: '2 × uncompensated recoil' },
   { key: 'blindFire',      label: 'Blind fire',                    mod: +8,               group: 'conditions' },
   { key: 'partialCover',   label: 'Partial cover',                 mod: +4,   mvp: true,  group: 'target',     note: 'physical obstruction; smoke/darkness use the Visibility Table' },
-  { key: 'visibility',     label: 'Visibility impaired',           mod: null, select: 'visibility', group: 'conditions' },
+  // `value: true` — the state carries the RESOLVED modifier rather than a tick or a
+  // count, because the number comes from a two-axis table lookup and not from this row.
+  { key: 'visibility',     label: 'Visibility impaired',           mod: null, mvp: true, select: 'visibility', value: true, group: 'conditions' },
   { key: 'multiTarget',    label: 'Multiple targets',              mod: +2,   per: true,  group: 'target',     note: 'per additional target that Combat Phase' },
   { key: 'targetRunning',  label: 'Target running',                mod: +2,   mvp: true,  group: 'target' },
   { key: 'targetStill',    label: 'Target stationary',             mod: -1,   mvp: true,  group: 'target' },
@@ -104,6 +106,56 @@ export const SR3E_VISIBILITY_TABLE = {
   'Heavy Smoke/Fog/Rain': { normal: +6, lowLight: '+6/+4', thermo: '+1/0'  },
   'Thermal Smoke':        { normal: +4, lowLight: '+4',    thermo: '+8/+6' },
 };
+
+/**
+ * The five selectable ways of seeing, flattened from the table's two axes: the COLUMN
+ * (type of vision) and the slash WITHIN a cell (cybernetic vs natural).
+ *
+ * Flattened deliberately, rather than offered as a vision dropdown plus a "cybernetic"
+ * checkbox. Two controls would permit "Normal + cybernetic", which means nothing — p.111:
+ * *"Modifiers listed singly apply equally to all types of vision"* — and the Normal column
+ * carries no slash anywhere. Five options have no unrepresentable or meaningless state.
+ *
+ * ⚠ Low-Light and Thermographic are NOT interchangeable: they differ in six of the eight
+ * conditions, and in Thermal Smoke they invert (low-light +4, thermographic +8/+6 — the
+ * smoke exists to blind thermo). A single "enhanced vision" toggle would be wrong.
+ */
+export const SR3E_VISION_TYPES = [
+  { key: 'normal',      label: 'Normal',                     column: 'normal',   natural: true  },
+  { key: 'lowLightNat', label: 'Low-Light (natural)',        column: 'lowLight', natural: true  },
+  { key: 'lowLightCyb', label: 'Low-Light (cybernetic)',     column: 'lowLight', natural: false },
+  { key: 'thermoNat',   label: 'Thermographic (natural)',    column: 'thermo',   natural: true  },
+  { key: 'thermoCyb',   label: 'Thermographic (cybernetic)', column: 'thermo',   natural: false },
+];
+
+/**
+ * Read one Visibility Table cell for a given vision source.
+ *
+ * A cell is either a bare number, a single string (`'+4'`), or a slashed pair
+ * (`'+4/+2'` = cybernetic/natural). Singles apply to everything (p.111), so they are
+ * returned regardless of source — that is the rule, not a convenience.
+ */
+function visibilityCell(cell, natural) {
+  if (typeof cell === 'number') return cell;
+  const parts = String(cell).split('/');
+  const pick  = parts.length === 1 ? parts[0] : (natural ? parts[1] : parts[0]);
+  const n     = parseInt(pick, 10);
+  return Number.isFinite(n) ? n : 0;
+}
+
+/**
+ * The Visibility Table modifier for a condition seen with a given vision type.
+ * Unknown or empty condition means "not impaired" → 0.
+ *
+ * @param {string} condition  a key of SR3E_VISIBILITY_TABLE
+ * @param {string} visionKey  a key of SR3E_VISION_TYPES
+ */
+export function visibilityModifier(condition, visionKey) {
+  const row = SR3E_VISIBILITY_TABLE[condition];
+  if (!row) return 0;
+  const vision = SR3E_VISION_TYPES.find(v => v.key === visionKey) ?? SR3E_VISION_TYPES[0];
+  return visibilityCell(row[vision.column], vision.natural);
+}
 
 /** SR3 p.112: "No target number can ever be less than 2." */
 export const SR3E_MIN_TN = 2;
@@ -184,6 +236,10 @@ export function sumModifiers(state = {}) {
   let total = 0;
   for (const m of SR3E_RANGED_MODIFIERS) {
     const v = state[m.key];
+    // `value` rows carry their own resolved modifier (visibility, from the table
+    // lookup). Checked BEFORE the falsy guard: 0 is a legitimate result — thermographic
+    // vision in Mist is genuinely 0 — and must not be mistaken for "not set".
+    if (m.value) { total += Number(v) || 0; continue; }
     if (!v || m.mod == null) continue;
     total += m.per ? m.mod * (Number(v) || 0) : m.mod;
   }

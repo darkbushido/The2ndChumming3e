@@ -567,8 +567,9 @@ headings, and `mvpModifierGroups()` to bucket them. The dialog renders headings 
 progress, not a queue.
 
 A fourth group, **Conditions**, was added beyond the three below: visibility and blind fire are
-neither Target nor Attacker nor Gear. It is declared but renders nothing today, because both of its
-rows are still deferred — empty groups are dropped rather than shown as a bare heading.
+neither Target nor Attacker nor Gear. Visibility now renders in it (two dropdowns — condition and
+vision type — resolving against the Visibility Table); blind fire is still deferred. Empty groups
+are dropped rather than shown as a bare heading, so the group would vanish again if both went.
 
 Made **fail-visible** on the way: a row whose `group` is missing or unrecognised lands in a trailing
 **Other** bucket instead of disappearing. Silently dropping it would remove a modifier the GM is

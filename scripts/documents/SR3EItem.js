@@ -2146,8 +2146,32 @@ export class SR3EItem extends Item {
    * @param {object} [opts.dodge]  { availPool, defenderName } to merge the dodge row in
    * @returns {Promise<null|{tn:number, mods:object, dodgeDice:number|null}>}  null = GM cancelled
    */
+  /**
+   * Read the GM window's modifier controls into a `sumModifiers` state object.
+   *
+   * Shared by the live recompute and the Confirm callback deliberately. They were two
+   * near-identical inline loops; letting them drift would show the GM one target number
+   * and commit a different one — the kind of bug nobody reports because the displayed
+   * value looks right.
+   *
+   * @param {HTMLElement} el  the dialog element
+   * @param {Function} visibilityModifier  injected so this stays free of the dynamic import
+   */
+  static _readGMModifierState(el, visibilityModifier) {
+    const state = {};
+    el.querySelectorAll('.sr-gm-mod').forEach(c => { if (c.checked) state[c.dataset.key] = true; });
+    el.querySelectorAll('.sr-gm-mod-per').forEach(n => {
+      const v = parseInt(n.value) || 0; if (v > 0) state[n.dataset.key] = v;
+    });
+    const cond = el.querySelector('.sr-gm-vis-cond')?.value ?? '';
+    const vis  = el.querySelector('.sr-gm-vis-type')?.value ?? 'normal';
+    state.visibility = cond ? visibilityModifier(cond, vis) : 0;
+    return state;
+  }
+
   static async _promptGMAttackWindow(ctx, opts = {}) {
-    const { mvpModifierGroups, sumModifiers, clampTN, guessGearModifiers } =
+    const { mvpModifierGroups, sumModifiers, clampTN, guessGearModifiers,
+            SR3E_VISIBILITY_TABLE, SR3E_VISION_TYPES, visibilityModifier } =
       await import('../SR3ECombatModifiers.js');
 
     const groups  = mvpModifierGroups();
@@ -2160,6 +2184,27 @@ export class SR3EItem extends Item {
     // rather than squeezing, and `align-items:start` keeps rows of differing height
     // (the ones carrying notes) top-aligned instead of centred against their neighbour.
     const renderRow = m => {
+      // Visibility is a two-axis table lookup, not a tick: the GM picks the CONDITION
+      // and which vision the attacker is using, and the modifier derives from the
+      // Visibility Table. Nothing is pre-selected — the system cannot reliably know
+      // which eyes are in play (metatype is stored, but cybernetic vision is only
+      // name-matchable, the same gap as TODO #18), so it asks rather than guesses.
+      if (m.select === 'visibility') {
+        const condOpts = ['<option value="">— not impaired —</option>']
+          .concat(Object.keys(SR3E_VISIBILITY_TABLE)
+            .map(c => `<option value="${c}">${c}</option>`)).join('');
+        const visOpts = SR3E_VISION_TYPES
+          .map(v => `<option value="${v.key}">${v.label}</option>`).join('');
+        return `<div class="sr-gm-modrow" style="break-inside:avoid">
+            <div style="display:flex;flex-direction:column;gap:3px;padding:2px 0">
+              <span>${m.label}</span>
+              <select class="sr-gm-vis-cond" style="width:100%">${condOpts}</select>
+              <select class="sr-gm-vis-type" style="width:100%">${visOpts}</select>
+              <div class="sr-gm-vis-note" style="font-size:10px;color:var(--sr-dim);line-height:1.25"></div>
+            </div>
+          </div>`;
+      }
+
       const pre  = m.gear && guessed[m.key] ? 'checked' : '';
       const sign = m.mod > 0 ? `+${m.mod}` : `${m.mod}`;
       const hint = m.gear && guessed[m.key]
@@ -2231,11 +2276,7 @@ export class SR3EItem extends Item {
         { label: '✓ Set Target Number', action: 'roll', default: true,
           callback: (_e, _b, dlg) => {
             const el   = dlg.element;
-            const mods = {};
-            el.querySelectorAll('.sr-gm-mod').forEach(c => { if (c.checked) mods[c.dataset.key] = true; });
-            el.querySelectorAll('.sr-gm-mod-per').forEach(n => {
-              const v = parseInt(n.value) || 0; if (v > 0) mods[n.dataset.key] = v;
-            });
+            const mods = SR3EItem._readGMModifierState(el, visibilityModifier);
             const dodgeEl = el.querySelector('#sr-gm-dodge');
             result = {
               // The typed field is authoritative — the GM may override the sum.
@@ -2253,13 +2294,22 @@ export class SR3EItem extends Item {
         const el   = dialog.element;
         const tnEl = el.querySelector('#sr-gm-tn');
         const note = el.querySelector('#sr-gm-tn-note');
+        const visNote = el.querySelector('.sr-gm-vis-note');
 
         const recompute = () => {
-          const state = {};
-          el.querySelectorAll('.sr-gm-mod').forEach(c => { if (c.checked) state[c.dataset.key] = true; });
-          el.querySelectorAll('.sr-gm-mod-per').forEach(n => {
-            const v = parseInt(n.value) || 0; if (v > 0) state[n.dataset.key] = v;
-          });
+          // Same reader the Confirm callback uses — two copies of this drifted apart
+          // would show the GM one target number and commit another.
+          const state = SR3EItem._readGMModifierState(el, visibilityModifier);
+
+          // Show what the Visibility Table actually resolved to; the two dropdowns on
+          // their own do not tell the GM whether they picked +2 or +8.
+          if (visNote) {
+            const cond = el.querySelector('.sr-gm-vis-cond')?.value ?? '';
+            visNote.textContent = cond
+              ? `${cond} → ${state.visibility >= 0 ? '+' : ''}${state.visibility} (SR3 p.112)`
+              : '';
+          }
+
           const { tn, floored, raw } = clampTN(baseTN + sumModifiers(state));
           tnEl.value      = tn;
           note.textContent = floored
@@ -2267,7 +2317,7 @@ export class SR3EItem extends Item {
             : '';
         };
 
-        el.querySelectorAll('.sr-gm-mod, .sr-gm-mod-per')
+        el.querySelectorAll('.sr-gm-mod, .sr-gm-mod-per, .sr-gm-vis-cond, .sr-gm-vis-type')
           .forEach(i => i.addEventListener('change', recompute));
         recompute();
       },
