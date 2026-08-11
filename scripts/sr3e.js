@@ -2381,29 +2381,11 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
     });
   });
 
-  // Spell Defense declaration card — Commit
-  html.querySelectorAll('.sr-sd-declare-commit-btn').forEach((btn, i) => {
-    if (!_checkBtn(btn, mid, 'sddeclare', i)) return;
-    btn.addEventListener('click', async event => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (!_claimBtn(btn, mid, 'sddeclare', i)) return;
-      await SR3EActor.handleSpellDefenseDeclareCommit(btn);
-    });
-  });
-
-  // Spell Defense declaration card — Skip (delete card without committing)
-  html.querySelectorAll('.sr-sd-declare-skip-btn').forEach((btn, i) => {
-    if (!_checkBtn(btn, mid, 'sdskip', i)) return;
-    btn.addEventListener('click', async event => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (!_claimBtn(btn, mid, 'sdskip', i)) return;
-      const msgEl = btn.closest('[data-message-id]');
-      const msg = msgEl ? game.messages.get(msgEl.dataset.messageId) : null;
-      if (msg) await msg.delete();
-    });
-  });
+  // The Spell Defense DECLARATION card is gone — declaring is now a per-mage dialog on
+  // that mage's own client (SR3EActor.promptSpellDefenseFor, via the
+  // 'sr3e.spelldefense.declare' query), so there are no commit/skip buttons to wire and
+  // no card for one player to answer on another's behalf. The phase card below, which
+  // ROLLS an already-declared defense, is unaffected.
 
   // Spell Defense roll button — on the spell defense phase card
   html.querySelectorAll('.sr-spell-defense-btn').forEach((btn, i) => {

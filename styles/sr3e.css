@@ -55,80 +55,10 @@ background-color: var(--sr-surface) !important;
   display: none !important;
 }
 
-/* ── Spell Defense declaration card ─────────────────────── */
-.sr-sd-declare-card {
-  border-left: 3px solid var(--sr-green);
-}
-
-.sr-sd-row {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 6px 0;
-  border-top: 1px solid var(--sr-border);
-  margin-top: 4px;
-}
-
-.sr-sd-name {
-  font-weight: bold;
-  font-size: 13px;
-  color: var(--sr-text);
-}
-
-.sr-sd-fields {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 6px !important;
-}
-
-.sr-sd-fields .sr-sd-field {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  gap: 8px !important;
-}
-
-.sr-sd-label {
-  font-size: 11px;
-  color: var(--sr-muted);
-  width: 90px;
-  flex-shrink: 0;
-}
-
-.sr-sd-field input[type="number"] {
-  width: 44px !important;
-  min-width: 44px !important;
-  flex: 0 0 44px !important;
-  background: var(--sr-bg) !important;
-  border: 1px solid var(--sr-border-hi) !important;
-  border-radius: 3px !important;
-  color: var(--sr-text) !important;
-  text-align: center;
-  padding: 2px 4px !important;
-  height: auto !important;
-}
-
-.sr-sd-declare-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.sr-sd-declare-actions button {
-  flex: 1;
-  padding: 6px 10px;
-  border: 1px solid var(--sr-border-hi);
-  background: rgba(255,255,255,0.04);
-  border-radius: var(--r);
-  cursor: pointer;
-  font-size: 12px;
-  color: var(--sr-text);
-}
-
-.sr-sd-declare-commit-btn {
-  color: var(--sr-green) !important;
-  border-color: var(--sr-green) !important;
-}
+/* The Spell Defense declaration card's styles lived here. Declaring is now a per-mage
+   DialogV2 on that mage's own client rather than a shared chat card, so the whole block
+   (.sr-sd-declare-card, .sr-sd-row/-name/-fields/-field/-label, .sr-sd-declare-actions,
+   .sr-sd-declare-commit-btn) had no remaining markup to style. */
 
 /* ── Melee / boxing card layout ─────────────────────────── */
 .sr-melee-corner input[type="text"],

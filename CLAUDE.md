@@ -829,9 +829,9 @@ Power (number) + Level (L/M/S/D) + optional Stun flag
   covers round 1, because a Combat Turn Sequence (**p.104**) begins with step 1 *"All Dice Pools
   Refresh"* and round 1 is a Combat Turn like any other. The **Begin Encounter** flow
   (`sr3e.js`) calls it once more *before* `rollInitiative()` — that ordering is load-bearing, not
-  decorative: `rollInitiative()` ends by posting the Spell Defense card, which caps its Spell Pool
-  input at `availableSpellPool` **as computed when the card is built**, so refreshing afterwards
-  would show a mage a stale cap and block dice they actually have.
+  decorative: `rollInitiative()` ends by opening the Spell Defense declarations, and each one caps
+  its Spell Pool input at `availableSpellPool` **as read when the dialog is built**, so refreshing
+  afterwards would show a mage a stale cap and block dice they actually have.
   ⚠ `_endOfTurnReset()` had exactly **one** caller for a long time (`_newRound`), which meant
   round 1 silently inherited leftover state and `endCombat()`'s optional prompt was the only thing
   keeping the *next* fight clean. Covered by `tests/initiative.test.mjs`.
@@ -860,6 +860,24 @@ Power (number) + Level (L/M/S/D) + optional Stun flag
    - 0 successes: spell fails (targets auto-resist), no effect — drain still posted.
    - 1+ successes: damage is **not** pre-staged; each target gets a **"Resist Spell"** button carrying the caster's successes + base damage (`SR3EActor._spellResistButton`). Caster always gets a **"Resist Drain"** button. The card shows the **cast TN's source** (`spellContext.tnSource`, e.g. "Dave Decker's Willpower") and the **staging the cast hits produce** (base → staged, before the target's resistance reduces it).
    - If anyone has a Spell Defense pool, a **Counterspelling** card posts first and reduces the caster's successes (`_postSpellResistOrDoneCard` → same Resist Spell buttons).
+
+**Spell Defense is declared per mage, on that mage's own client.** `rollInitiative()` ends by
+calling `SR3EActor.promptSpellDefenseDeclaration(combatants)`, which fans one
+`sr3e.spelldefense.declare` query out per Sorcery-capable actor to `SR3EQuery.deciderFor(actor)`;
+the handler opens `SR3EActor.promptSpellDefenseFor` on that client, commits, and posts a summary
+card so the GM can see what was taken.
+- ⚠ **The asks are deliberately NOT awaited as a set.** Round start must never block on a human —
+  an active-but-AFK mage would otherwise hold the table for the full query timeout. Firing them in
+  parallel and letting each resolve on its own preserves the non-blocking behaviour the old shared
+  card had. Do not "tidy" this into `await Promise.all(...)`.
+- This replaced **one public chat card carrying a row per mage**, where whoever clicked Commit —
+  in practice the GM, who advances the round — allocated every player's dice. Worse than the dodge
+  equivalent, because Spell Defense commits **Spell Pool for the whole Combat Turn**.
+- Unlike `sr3e.dodge.declare` and `sr3e.default.choose`, this handler **does write** — nothing is
+  waiting on the answer to fold into a larger exchange. The writes still land on the GM
+  (`commitSpellDefense` → `sr3e.actor.set`, `spendSpellPool` → `sr3e.pool.spend`).
+- Covered by `tests/spell-defense.test.mjs`, including that each mage is asked on their own
+  decider and that a mage who never answers does not block round start.
 7. **Resist Spell** (`_postSpellSoakCard` → `handleSpellResistRoll`): target rolls the **spell's Target attribute** — the *same* `SR3EItem._parseSpellTarget` is reused so the resist attribute always matches the cast — **attribute only, no pool** — vs **TN = Force** (interactive). **Net = caster successes − resister successes** (`isSpellResist` branch in `_postWaveCard`): ≤ 0 → no effect; otherwise `stageDamage(base, net)` → **Assign Damage** button. **There is no separate soak** — the resistance test *is* the defence.
 8. Drain resist: Willpower dice, two components (`SR3EItem.parseDrainFormula(drainStr, force, damageLevel)`):
    - **Power → TN** = ⌊Force/2⌋ + the **modifier outside the brackets** (the ½F base is implicit, not written; default +0).

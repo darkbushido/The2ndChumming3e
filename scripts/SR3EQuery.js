@@ -388,6 +388,24 @@ export class SR3EQuery {
       });
 
     /**
+     * Declare Spell Defense on the mage's own client, for the round.
+     *
+     * Unlike the two above this one DOES commit, because nothing is waiting on the
+     * answer — there is no attacker mid-exchange to fold it into. The writes still land
+     * on the GM: commitSpellDefense routes through 'sr3e.actor.set', and the Spell Pool
+     * spend through 'sr3e.pool.spend'.
+     *
+     * Callers must NOT await the set of these. Round start cannot block on a human — an
+     * active but AFK mage would hold the table for the whole timeout.
+     */
+    CONFIG.queries['sr3e.spelldefense.declare'] = async ({ rid, exchangeId, actorUuid }) =>
+      SR3EQuery.once(rid, async () => {
+        const actor = SR3EQuery.resolve(actorUuid);
+        if (!actor) return null;
+        return game.sr3e.SR3EActor.promptSpellDefenseFor(actor, { exchangeId });
+      });
+
+    /**
      * Open the SR3 Default Table on the actor's own client.
      * Also write-free — it returns the chosen tier and the caller uses it.
      */

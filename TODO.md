@@ -22,13 +22,13 @@ independent.
 | Group | Items |
 |---|---|
 | 🔵 In progress | 2 |
-| 🟢 Socket combat — follow-ups | 21 · 24 · 27 · 28 · 29 |
+| 🟢 Socket combat — follow-ups | 21 · 24 · 27 · 29 |
 | 🔴 Confirmed bugs, still open | 5 · 14 · 25 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 22 · 26 · 31 · 32 · 33 · 34 · 35 |
+| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 22 · 26 · 28 · 31 · 32 · 33 · 34 · 35 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -475,11 +475,16 @@ pass or they become the next report.
 
 ## 27. Audit every chat-card button for who may click it
 
-**6 of ~31 are gated.** The rest are actionable by anyone who can see the card, which is the
+**6 of ~29 are gated.** The rest are actionable by anyone who can see the card, which is the
 whole table — combat cards are public by design and that part is wanted.
 
 Gated so far: `.sr-soak-btn`, `.sr-dodge-declare-btn`, `.sr-dodge-roll-btn`, `.sr-soak-roll-btn`,
 `.sr-explode-btn`, `.sr-assign-damage-btn`.
+
+Two of the original ~31 are gone rather than gated: [#28](#28) deleted the Spell Defense
+declaration card, taking `.sr-sd-declare-commit-btn` and `.sr-sd-declare-skip-btn` with it. Worth
+remembering as a pattern — moving a decision onto the deciding player's own client removes the
+button instead of guarding it, which is the stronger fix where the flow allows it.
 
 **The predicates already exist** (`sr3e.js`), so each remaining button is roughly a line:
 
@@ -496,8 +501,7 @@ Ungated, roughly by risk:
   [#24](#24)), `.sr-spell-resist-roll-btn`, `.sr-drain-roll-btn`, `.sr-astral-roll-btn`,
   `.sr-astral-soak-roll-btn`, `.sr-contested-roll-btn`, `.sr-icia-roll-btn`, `.sr-ost-roll-btn`,
   `.sr-occ-roll-btn`, `.sr-miji-roll-btn`, `.sr-ram-passenger-resist-btn`
-- **Writes state:** `.sr-icia-assign-btn`, `.sr-miji-degradation-btn`, `.sr-summon-confirm-btn`,
-  `.sr-sd-declare-commit-btn`, `.sr-sd-declare-skip-btn`
+- **Writes state:** `.sr-icia-assign-btn`, `.sr-miji-degradation-btn`, `.sr-summon-confirm-btn`
 - **Posts a card:** `.sr-spell-soak-btn`, `.sr-drain-btn`, `.sr-astral-soak-btn`,
   `.sr-spell-defense-btn`, `.sr-spell-defense-proceed-btn`, `.sr-aura-reading-btn`,
   `.sr-ram-vehicle-soak-btn`, `.sr-matrix-ic-resist-btn`
@@ -508,7 +512,27 @@ a wave payload carries *both* `actorId` (roller) and `targetActorId`, and `attac
 excluded on purpose so an attacker never inherits rights over their target's card. A button whose
 payload names its actor some other way will fail closed and only the GM will be able to click it.
 
-## 28. Spell Defense is declared for everyone, on the GM's screen
+## 28. ✅ Spell Defense is declared for everyone, on the GM's screen
+
+**✅ DONE.** Declaring is now a per-mage `DialogV2` on that mage's own client, fanned out as
+`sr3e.spelldefense.declare` to `SR3EQuery.deciderFor(actor)`. Kept for the record; this file is the
+progress, not a queue.
+
+Two notes for anyone revisiting it:
+
+- It was a **public chat card**, not a dialog as described below — which made it slightly worse
+  than written, since any player could click Commit for the whole table, not just the GM.
+- The asks are **deliberately not awaited as a set**. Point 3 below ("never block round start on a
+  human") is not satisfied by the reaper rule alone: `ask`'s fallback covers an *unreachable*
+  decider, but an **active-but-AFK** one would still hold the round for the full timeout if the
+  caller awaited. Firing them in parallel without awaiting keeps the old card's non-blocking
+  behaviour and changes only who decides.
+
+`handleSpellDefenseDeclareCommit`, the two chat-button handlers and the whole
+`.sr-sd-declare-*` CSS block are gone with it. Covered by `tests/spell-defense.test.mjs`.
+
+⚠ Citation drift, now corrected: `promptSpellDefenseDeclaration` was cited below at
+`SR3EActor.js:4533`; it was actually at `:4555` by the time this was implemented.
 
 **Found in play 2026-08-05.** Starting a round pops a magic window on the GM that decides for the
 players' mages too.

@@ -4552,73 +4552,116 @@ _prepareCharacter(sys, attr) {
    * Show the Spell Defense declaration dialog for all Sorcery-capable actors
    * in the current combat. Called after initiative is rolled each round.
    */
+  /**
+   * Ask every Sorcery-capable combatant to declare Spell Defense for the round — each on
+   * their OWN client.
+   *
+   * This used to post ONE public chat card carrying a row per mage, so whoever clicked
+   * Commit (in practice the GM, since they advance the round) allocated every player
+   * mage's Sorcery and Spell Pool dice. That is the dodge bug in a different costume, and
+   * worse: Spell Defense commits Spell Pool for the WHOLE round, so a bad guess costs the
+   * player their spellcasting rather than one exchange.
+   *
+   * Deliberately NOT awaited as a set. Round start must never block on a human: an active
+   * but AFK mage would otherwise hold the whole table for the full query timeout. Each ask
+   * is fired in parallel and resolves on its own — exactly the non-blocking behaviour the
+   * old chat card had, with only the decider changed. An unreachable decider is handled by
+   * `ask`'s reaper rule and simply declares nothing.
+   *
+   * The write was already correct before this change (`commitSpellDefense` routes through
+   * the GM), so this is purely about who makes the decision.
+   */
   static async promptSpellDefenseDeclaration(combatants) {
     const sorceryActors = combatants
       .map(c => c.actor)
       .filter(a => a && a.items.some(i => i.type === 'skill' && /sorcery/i.test(i.name)));
     if (sorceryActors.length === 0) return;
 
-    const rows = sorceryActors.map(actor => {
-      const sorcery      = actor.items.find(i => i.type === 'skill' && /sorcery/i.test(i.name));
-      const sorRating    = sorcery?.system?.rating ?? 0;
-      const hasSDSpec    = /spell.?defense/i.test(sorcery?.system?.specialisation ?? '');
-      const sorEffective = hasSDSpec ? sorRating + 2 : sorRating;
-      const specNote     = hasSDSpec ? ` <span style="color:var(--sr-accent)">(${sorRating}+2 spec)</span>` : '';
-      const spellAvail   = actor.system.derived?.availableSpellPool ?? 0;
-      return `
-        <div class="sr-sd-row">
-          <span class="sr-sd-name">${actor.name}</span>
-          <div class="sr-sd-fields">
-            <div class="sr-sd-field">
-              <span class="sr-sd-label">Sorcery ${sorEffective}${specNote}</span>
-              <input type="number" class="sd-sor" data-actor-id="${actor.id}"
-                     value="0" min="0" max="${sorEffective}"/>
-            </div>
-            <div class="sr-sd-field">
-              <span class="sr-sd-label">Spell Pool ${spellAvail}</span>
-              <input type="number" class="sd-sp" data-actor-id="${actor.id}"
-                     value="0" min="0" max="${spellAvail}"/>
-            </div>
-          </div>
-        </div>`;
-    }).join('');
+    const { SR3EQuery } = game.sr3e;
+    for (const actor of sorceryActors) {
+      SR3EQuery.ask(SR3EQuery.deciderFor(actor), 'sr3e.spelldefense.declare', {
+        exchangeId: foundry.utils.randomID(),
+        actorUuid:  actor.uuid,
+      }, { fallback: null })
+        .catch(err => console.warn(`SR3E | Spell Defense declaration for ${actor.name} failed:`, err));
+    }
+  }
 
+  /**
+   * The per-actor Spell Defense dialog, opened on that actor's own client by the
+   * `sr3e.spelldefense.declare` query. Commits and announces what was declared.
+   *
+   * Unlike the dodge declaration this DOES write — there is no attacker waiting on the
+   * answer to fold into a larger exchange, so there is nothing to hand back. The write
+   * still lands on the GM: `commitSpellDefense` routes through `sr3e.actor.set` and
+   * `spendSpellPool` through `sr3e.pool.spend`.
+   */
+  static async promptSpellDefenseFor(actor, opts = {}) {
+    const sorcery      = actor.items.find(i => i.type === 'skill' && /sorcery/i.test(i.name));
+    const sorRating    = sorcery?.system?.rating ?? 0;
+    const hasSDSpec    = /spell.?defense/i.test(sorcery?.system?.specialisation ?? '');
+    const sorEffective = hasSDSpec ? sorRating + 2 : sorRating;
+    const specNote     = hasSDSpec ? ` (${sorRating}+2 spec)` : '';
+    const spellAvail   = actor.system.derived?.availableSpellPool ?? 0;
+
+    let sor = 0, spl = 0;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `${actor.name} — Declare Spell Defense` },
+      content: `
+        <p style="margin:0 0 8px;font-size:13px">
+          Allocate dice to resist spells cast at you this Combat Turn.
+        </p>
+        <p style="margin:0 0 12px;font-size:11px;color:var(--sr-amber)">
+          Spell Pool dice are spent <strong>immediately</strong> and are gone for the rest of the
+          turn; Sorcery dice return at round end.
+        </p>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+            <span>Sorcery ${sorEffective}${specNote}</span>
+            <input type="number" id="sd-sor" value="0" min="0" max="${sorEffective}" style="width:60px"/>
+          </label>
+          <label style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+            <span>Spell Pool ${spellAvail}</span>
+            <input type="number" id="sd-spl" value="0" min="0" max="${spellAvail}" style="width:60px"
+                   ${spellAvail === 0 ? 'disabled' : ''}/>
+          </label>
+        </div>`,
+      buttons: [
+        {
+          label: 'Commit',
+          action: 'commit',
+          default: true,
+          callback: (_e, _b, dialog) => {
+            const el = dialog.element;
+            sor = Math.min(Math.max(0, parseInt(el.querySelector('#sd-sor')?.value) || 0), sorEffective);
+            spl = Math.min(Math.max(0, parseInt(el.querySelector('#sd-spl')?.value) || 0), spellAvail);
+          }
+        },
+        { label: 'None', action: 'none' },
+      ],
+      // Per-dialog, so the GM can withdraw it if the round moves on. Never a global
+      // renderDialogV2 hook — two mages declaring at once would cross-wire.
+      render: (_event, dialog) => game.sr3e.SR3EQuery.trackDialog(opts.exchangeId, dialog),
+    });
+    game.sr3e.SR3EQuery.untrackDialog(opts.exchangeId);
+
+    if (sor + spl === 0) return null;
+    await actor.commitSpellDefense(sor, spl);
+
+    // The GM needs to see what was committed — they are no longer the one entering it.
     await ChatMessage.create({
       speaker: { alias: 'Spell Defense' },
       content: `
-        <div class="sr-roll-card sr-sd-declare-card">
-          <div class="sr-roll-header">🛡 Declare Spell Defense</div>
-          <div class="sr-roll-meta">Allocate Sorcery and/or Spell Pool dice for this round. Spell Pool dice are spent immediately; Sorcery dice return at round end.</div>
-          ${rows}
-          <div class="sr-sd-declare-actions">
-            <button class="sr-sd-declare-commit-btn">Commit</button>
-            <button class="sr-sd-declare-skip-btn">Skip</button>
+        <div class="sr-roll-card">
+          <div class="sr-roll-header">🛡 ${actor.name} — Spell Defense</div>
+          <div class="sr-roll-result">${sor + spl} dice
+            <span style="font-size:11px;color:var(--sr-muted)">
+              (${sor} Sorcery${spl ? ` + ${spl} Spell Pool` : ''})
+            </span>
           </div>
         </div>`,
     });
-  }
-
-  static async handleSpellDefenseDeclareCommit(btn) {
-    const card = btn.closest('.sr-sd-declare-card');
-    const alloc = {};
-    card.querySelectorAll('.sd-sor').forEach(inp => {
-      const id = inp.dataset.actorId;
-      if (!alloc[id]) alloc[id] = {};
-      alloc[id].sorcery = parseInt(inp.value) || 0;
-    });
-    card.querySelectorAll('.sd-sp').forEach(inp => {
-      const id = inp.dataset.actorId;
-      if (!alloc[id]) alloc[id] = {};
-      alloc[id].spell = parseInt(inp.value) || 0;
-    });
-    for (const [actorId, a] of Object.entries(alloc)) {
-      if ((a.sorcery ?? 0) + (a.spell ?? 0) === 0) continue;
-      const actor = game.actors.get(actorId);
-      if (actor) await actor.commitSpellDefense(a.sorcery ?? 0, a.spell ?? 0);
-    }
-    const msgEl = btn.closest('[data-message-id]');
-    const msg = msgEl ? game.messages.get(msgEl.dataset.messageId) : null;
-    if (msg) await msg.delete();
+    return { sorcery: sor, spell: spl };
   }
 
   /**

@@ -11,6 +11,8 @@
  * Foundry (rendering, persistence, hooks) belongs in TESTING.md as a manual check.
  */
 
+let _randomIdSeq = 0;
+
 /** Install the base classes and ambient globals every system module expects at import. */
 export function installGlobals() {
   globalThis.Item   ??= class {};
@@ -25,7 +27,11 @@ export function installGlobals() {
   globalThis.ChatMessage ??= { create: async () => {}, getSpeaker: () => ({}) };
   globalThis.foundry ??= {
     applications: { api: { ApplicationV2: class {}, DialogV2: { wait: async () => {} } } },
-    utils: { randomID: () => 'stub' },
+    // Unique per call, like the real randomID. A constant here is a landmine: correlation
+    // ids (exchangeId, rid) exist precisely to tell concurrent exchanges apart, so a stub
+    // that hands out the same id every time makes two distinct exchanges look like one
+    // and quietly passes tests that should fail.
+    utils: { randomID: () => `stub-${++_randomIdSeq}` },
   };
 }
 
