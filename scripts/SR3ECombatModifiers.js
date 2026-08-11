@@ -262,3 +262,115 @@ export function clampTN(raw) {
   const n = Number.isFinite(raw) ? Math.round(raw) : SR3E_MIN_TN;
   return { tn: Math.max(SR3E_MIN_TN, n), floored: n < SR3E_MIN_TN, raw: n };
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * MELEE — a separate table, and a different SHAPE (SR3 p.123)
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ * Melee is not ranged with different numbers. Two structural differences drive
+ * everything below:
+ *
+ * 1. **There are TWO target numbers.** Attacker and defender each roll against their
+ *    own. A two-column copy of the ranged window would make the GM enter the same
+ *    fact twice and let them contradict themselves.
+ *
+ * 2. **Most rows are RELATIVE.** "Friends in melee" is a single fact about the fight
+ *    that lands on both sides at once, in opposite directions — the book states it as
+ *    two rows, but they are one control:
+ *
+ *      "The side with the greater number of friends gets a -1 target number modifier
+ *       for each friend more than their opponents have, to a maximum of -4. The side
+ *       with the lesser number of friends suffers a +1 target number modifier for each
+ *       additional friend their opponents have, to a maximum of +4."
+ *
+ * So these emit a `{atk, def}` PAIR rather than a single number.
+ *
+ * Already handled elsewhere, and deliberately NOT here — putting them in the window
+ * would double-count:
+ *   - Reach          differential, baked into atkTN/defTN by rollMeleeAttack
+ *   - Called Shot    +4, declared by the attacker in _promptCalledShot
+ *   - Wounded        folded in by rollPool from system.woundMod
+ */
+export const SR3E_MELEE_MODIFIERS = [
+  {
+    key: 'friends', label: 'Friends in the melee', kind: 'diff', max: 4, group: 'fight',
+    note: 'attacker\u2019s surplus friends; negative if the defender has more',
+  },
+  {
+    key: 'superiorPosition', label: 'Superior position', kind: 'side', mod: -1, group: 'fight',
+    note: 'higher or stabler ground, or the opponent is in a restricted position',
+  },
+  {
+    key: 'prone', label: 'Prone', kind: 'sideOpposed', mod: -2, group: 'fight',
+    note: 'lying on the ground \u2014 the modifier goes to their OPPONENT',
+  },
+  {
+    key: 'multiTargetAtk', label: 'Attacker striking multiple targets', kind: 'perAtk', mod: +2, group: 'fight',
+    note: 'per additional target this Combat Phase',
+  },
+  {
+    key: 'visibility', label: 'Visibility impaired', kind: 'visibility', group: 'conditions',
+    note: 'Visibility Table at HALF value, rounded down \u2014 except Full Darkness',
+  },
+];
+
+/**
+ * The Visibility Table as melee applies it (p.123):
+ *
+ *   "Consult the Visibility Table, p. 112. Apply the modifiers at half their value,
+ *    rounding down, except for Full Darkness."
+ *
+ * Full Darkness is explicitly exempt and applies in full. Everything else halves,
+ * rounding DOWN — so Partial Light with natural low-light (+1) becomes 0, not 1.
+ */
+export function meleeVisibilityModifier(condition, visionKey) {
+  const full = visibilityModifier(condition, visionKey);
+  if (condition === 'Full Darkness') return full;
+  return Math.floor(full / 2);
+}
+
+/**
+ * Resolve the melee modifier state into a delta for each side's target number.
+ *
+ * Returns deltas, NOT target numbers — `rollMeleeAttack` already computes base TNs
+ * carrying reach, defaulting and called shot, and these add on top. Handing back
+ * finished TNs would silently discard all of that.
+ *
+ * @param {object} state
+ * @param {number} [state.friends]            attacker's surplus friends (may be negative)
+ * @param {'attacker'|'defender'|null} [state.superiorPosition]
+ * @param {'attacker'|'defender'|null} [state.prone]   who is DOWN
+ * @param {number} [state.multiTargetAtk]     additional targets the attacker is striking
+ * @param {string} [state.visibilityCondition]
+ * @param {string} [state.visibilityVision]
+ * @returns {{atk:number, def:number}}
+ */
+export function sumMeleeModifiers(state = {}) {
+  let atk = 0, def = 0;
+
+  // Friends: one fact, both directions, capped at 4 EACH WAY (not 4 total).
+  const raw = Math.trunc(Number(state.friends) || 0);
+  if (raw) {
+    const n = Math.min(Math.abs(raw), 4);
+    if (raw > 0) { atk -= n; def += n; }   // attacker outnumbers
+    else         { atk += n; def -= n; }   // defender outnumbers
+  }
+
+  if (state.superiorPosition === 'attacker') atk -= 1;
+  if (state.superiorPosition === 'defender') def -= 1;
+
+  // "Opponent prone" is a bonus to the one still standing.
+  if (state.prone === 'defender') atk -= 2;
+  if (state.prone === 'attacker') def -= 2;
+
+  const extra = Math.max(0, Math.trunc(Number(state.multiTargetAtk) || 0));
+  if (extra) atk += 2 * extra;
+
+  // Environmental: both sides are in the same murk.
+  if (state.visibilityCondition) {
+    const v = meleeVisibilityModifier(state.visibilityCondition, state.visibilityVision ?? 'normal');
+    atk += v; def += v;
+  }
+
+  return { atk, def };
+}

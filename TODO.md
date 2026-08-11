@@ -1372,8 +1372,27 @@ Melee has a separate table (**p.123**) and the GM currently has no surface for i
 
 \* *Only one of these may be applied, to attacker or defender* — the differential already implemented.
 
-**Friends in melee is the big one.** It ranges ±4 and both sides get it in opposite directions, so a
-4-on-1 swings **8 points** between the two target numbers. Nothing models it today.
+### ✅ The data layer is built — `SR3E_MELEE_MODIFIERS` + `sumMeleeModifiers`
+
+Modifiers resolve to an `{atk, def}` **pair**, not a single number, because melee has **two** target
+numbers and most rows land on both sides at once. Covered by `tests/melee-modifiers.test.mjs`.
+Still to do: the GM window itself, and wiring it into the melee flow.
+
+**Friends in melee is the big one, and it IS symmetric** — settled by discussion 2026-08-10 after
+being challenged and re-checked against the book. The greater side gets −1 per surplus friend
+(max −4); the lesser side gets +1 per surplus friend the opponent has (max +4). Equal magnitude,
+opposite signs.
+
+The brutality is **emergent, not in the numbers**: in a 3-on-1, each of the three rolls at −2 *and
+gets their own attack*, while the lone fighter defends three separate times at +2. The modifier is
+symmetric; the number of exchanges is not. A maxed ±4 separates the two target numbers by **8**.
+
+⚠ **The prose and the table disagree once a cap binds, and the prose wins here.** p.122 says −1 per
+friend *"more than their opponents have"* — a **differential**. The p.123 table says
+*"−1/**Friend** (max −4)"* and *"+1/Friend (max +4)"* — **absolute counts**, capped separately. They
+agree until someone has more than four friends: at 6-vs-5 the differential gives ∓1 while the table's
+two capped rows cancel to **0**. Implemented as the differential; do not "fix" it to match the table
+without deciding that deliberately.
 
 ⚠ **Visibility cannot reuse the ranged control as-is.** p.123: apply the Visibility Table *"at half
 their value, rounding down, except for Full Darkness"*. So `visibilityModifier()` needs a halving
