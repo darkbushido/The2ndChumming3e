@@ -22,13 +22,13 @@ independent.
 | Group | Items |
 |---|---|
 | 🔵 In progress | 2 |
-| 🟢 Socket combat — follow-ups | 21 · 24 · 27 · 29 |
+| 🟢 Socket combat — follow-ups | 21 · 24 · 27 |
 | 🔴 Confirmed bugs, still open | 5 · 14 · 25 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 22 · 26 · 28 · 31 · 32 · 33 · 34 · 35 |
+| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 22 · 26 · 28 · 29 · 31 · 32 · 33 · 34 · 35 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -558,7 +558,23 @@ just one exchange.
 The *write* is already correct: `commitSpellDefense` routes through the GM (socket Stage 1), so
 this is purely about who makes the decision, not who performs it.
 
-## 29. Group the modifiers in the GM's TN window
+## 29. ✅ Group the modifiers in the GM's TN window
+
+**✅ DONE.** `group` added to every `SR3E_RANGED_MODIFIERS` row — including the `auto` and deferred
+ones, so promoting a row to `mvp` needs no other change — plus `SR3E_MODIFIER_GROUPS` for order and
+headings, and `mvpModifierGroups()` to bucket them. The dialog renders headings with
+`grid-column:1/-1` so a group always starts a fresh line. Kept for the record; this file is the
+progress, not a queue.
+
+A fourth group, **Conditions**, was added beyond the three below: visibility and blind fire are
+neither Target nor Attacker nor Gear. It is declared but renders nothing today, because both of its
+rows are still deferred — empty groups are dropped rather than shown as a bare heading.
+
+Made **fail-visible** on the way: a row whose `group` is missing or unrecognised lands in a trailing
+**Other** bucket instead of disappearing. Silently dropping it would remove a modifier the GM is
+meant to adjudicate, and a typo in a `group` string is exactly the kind of thing nobody notices
+until a shot resolves wrong. `tests/combat-modifiers.test.mjs` asserts that, that grouping never
+loses or duplicates a row, and that every row in the table declares a group that actually exists.
 
 Requested from play 2026-08-05 — the window reads as a flat list of unrelated checkboxes.
 

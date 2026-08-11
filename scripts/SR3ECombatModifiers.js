@@ -23,34 +23,57 @@
  * obstruction only.
  */
 
-/** The full p.112 table. Reference + future automation; only `mvp:true` rows render. */
+/**
+ * The full p.112 table. Reference + future automation; only `mvp:true` rows render.
+ *
+ * `group` decides WHERE a row renders in the GM window, and lives on the data rather than
+ * in the dialog's layout so the deferred rows drop into place when they land instead of
+ * forcing a re-sort. It is independent of `gear`, which means something else: "guessable
+ * from the attacker's kit, so pre-tick it". Rows that never render (`auto: true`) still
+ * carry a group, so promoting one to `mvp` needs no other change.
+ */
 export const SR3E_RANGED_MODIFIERS = [
-  { key: 'recoilSA',       label: 'Recoil, semi-automatic',        mod: +1,   auto: true, note: 'second shot that Combat Phase' },
-  { key: 'recoilBF',       label: 'Recoil, burst-fire',            mod: +3,   auto: true, note: 'per burst that Combat Phase' },
-  { key: 'recoilFA',       label: 'Recoil, full-auto',             mod: +1,   auto: true, note: 'per round fired that Combat Phase' },
-  { key: 'recoilHeavy',    label: 'Recoil, heavy weapon',          mod: null, auto: true, note: '2 × uncompensated recoil' },
-  { key: 'blindFire',      label: 'Blind fire',                    mod: +8 },
-  { key: 'partialCover',   label: 'Partial cover',                 mod: +4,   mvp: true,  note: 'physical obstruction; smoke/darkness use the Visibility Table' },
-  { key: 'visibility',     label: 'Visibility impaired',           mod: null, select: 'visibility' },
-  { key: 'multiTarget',    label: 'Multiple targets',              mod: +2,   per: true,  note: 'per additional target that Combat Phase' },
-  { key: 'targetRunning',  label: 'Target running',                mod: +2,   mvp: true },
-  { key: 'targetStill',    label: 'Target stationary',             mod: -1,   mvp: true },
-  { key: 'atkMelee',       label: 'Attacker in melee combat',      mod: +2,   per: true,  note: 'per opponent' },
-  { key: 'atkRunning',     label: 'Attacker running',              mod: +4,   mvp: true },
-  { key: 'atkRunningDiff', label: 'Attacker running (difficult)',  mod: +6 },
-  { key: 'atkWalking',     label: 'Attacker walking',              mod: +1 },
-  { key: 'atkWalkingDiff', label: 'Attacker walking (difficult)',  mod: +2 },
-  { key: 'wounded',        label: 'Attacker wounded',              mod: null, auto: true, note: 'Damage Modifiers Table, p.126' },
-  { key: 'smartlink',      label: 'Smartlink (with smartgun)',     mod: -2,   mvp: true,  gear: true },
-  { key: 'smartGoggles',   label: 'Smart goggles (with smartgun)', mod: -1,   mvp: true,  gear: true },
-  { key: 'laserSight',     label: 'Laser sight',                   mod: -1,   mvp: true,  gear: true },
-  { key: 'secondFirearm',  label: 'Using a second firearm',        mod: +2 },
+  { key: 'recoilSA',       label: 'Recoil, semi-automatic',        mod: +1,   auto: true, group: 'attacker',   note: 'second shot that Combat Phase' },
+  { key: 'recoilBF',       label: 'Recoil, burst-fire',            mod: +3,   auto: true, group: 'attacker',   note: 'per burst that Combat Phase' },
+  { key: 'recoilFA',       label: 'Recoil, full-auto',             mod: +1,   auto: true, group: 'attacker',   note: 'per round fired that Combat Phase' },
+  { key: 'recoilHeavy',    label: 'Recoil, heavy weapon',          mod: null, auto: true, group: 'attacker',   note: '2 × uncompensated recoil' },
+  { key: 'blindFire',      label: 'Blind fire',                    mod: +8,               group: 'conditions' },
+  { key: 'partialCover',   label: 'Partial cover',                 mod: +4,   mvp: true,  group: 'target',     note: 'physical obstruction; smoke/darkness use the Visibility Table' },
+  { key: 'visibility',     label: 'Visibility impaired',           mod: null, select: 'visibility', group: 'conditions' },
+  { key: 'multiTarget',    label: 'Multiple targets',              mod: +2,   per: true,  group: 'target',     note: 'per additional target that Combat Phase' },
+  { key: 'targetRunning',  label: 'Target running',                mod: +2,   mvp: true,  group: 'target' },
+  { key: 'targetStill',    label: 'Target stationary',             mod: -1,   mvp: true,  group: 'target' },
+  { key: 'atkMelee',       label: 'Attacker in melee combat',      mod: +2,   per: true,  group: 'attacker',   note: 'per opponent' },
+  { key: 'atkRunning',     label: 'Attacker running',              mod: +4,   mvp: true,  group: 'attacker' },
+  { key: 'atkRunningDiff', label: 'Attacker running (difficult)',  mod: +6,               group: 'attacker' },
+  { key: 'atkWalking',     label: 'Attacker walking',              mod: +1,               group: 'attacker' },
+  { key: 'atkWalkingDiff', label: 'Attacker walking (difficult)',  mod: +2,               group: 'attacker' },
+  { key: 'wounded',        label: 'Attacker wounded',              mod: null, auto: true, group: 'attacker',   note: 'Damage Modifiers Table, p.126' },
+  { key: 'smartlink',      label: 'Smartlink (with smartgun)',     mod: -2,   mvp: true,  group: 'gear', gear: true },
+  { key: 'smartGoggles',   label: 'Smart goggles (with smartgun)', mod: -1,   mvp: true,  group: 'gear', gear: true },
+  { key: 'laserSight',     label: 'Laser sight',                   mod: -1,   mvp: true,  group: 'gear', gear: true },
+  { key: 'secondFirearm',  label: 'Using a second firearm',        mod: +2,               group: 'attacker' },
   // NOT an mvp checkbox: the attacker declares Take Aim on their own roll screen
   // (they are the one spending the Simple Actions). Rendering it here too would
   // double-count every aimed shot.
-  { key: 'aimedShot',      label: 'Aimed shot',                    mod: -1,   auto: true, per: true, note: 'declared by the attacker, per Simple Action' },
-  { key: 'calledShot',     label: 'Called shot',                   mod: +4,   auto: true, note: 'declared in the fire dialog' },
-  { key: 'imageMag',       label: 'Image magnification',           mod: null, note: 'Special' },
+  { key: 'aimedShot',      label: 'Aimed shot',                    mod: -1,   auto: true, per: true, group: 'attacker', note: 'declared by the attacker, per Simple Action' },
+  { key: 'calledShot',     label: 'Called shot',                   mod: +4,   auto: true, group: 'attacker',   note: 'declared in the fire dialog' },
+  { key: 'imageMag',       label: 'Image magnification',           mod: null,             group: 'gear',       note: 'Special' },
+];
+
+/**
+ * Group order and headings for the GM window — the order the GM reads them in, which is
+ * not the book's table order.
+ *
+ * Gear is last and separated deliberately: those rows are **guesses the system made**
+ * from the attacker's kit, not judgements the GM is being asked for, and they previously
+ * sat indistinguishable among rows that are.
+ */
+export const SR3E_MODIFIER_GROUPS = [
+  { key: 'target',     label: 'Target' },
+  { key: 'attacker',   label: 'Attacker' },
+  { key: 'conditions', label: 'Conditions' },
+  { key: 'gear',       label: 'Gear', note: 'detected from the attacker’s kit; override freely' },
 ];
 
 /**
@@ -88,6 +111,31 @@ export const SR3E_MIN_TN = 2;
 /** The rows the GM window actually renders, in table order. */
 export function mvpModifiers() {
   return SR3E_RANGED_MODIFIERS.filter(m => m.mvp);
+}
+
+/**
+ * The same rows, bucketed by `group` and ordered for reading rather than for the book.
+ * Empty groups are dropped, so adding a group costs nothing until a row uses it.
+ *
+ * **Fail-visible.** A row whose `group` is missing or unrecognised lands in a trailing
+ * "Other" bucket rather than disappearing: silently dropping it would remove a modifier
+ * the GM is meant to adjudicate, and a typo in a `group` string is exactly the kind of
+ * thing nobody notices until a shot resolves wrong.
+ *
+ * @returns {Array<{key: string, label: string, note?: string, rows: object[]}>}
+ */
+export function mvpModifierGroups() {
+  const rows  = mvpModifiers();
+  const known = new Set(SR3E_MODIFIER_GROUPS.map(g => g.key));
+
+  const groups = SR3E_MODIFIER_GROUPS
+    .map(g => ({ key: g.key, label: g.label, note: g.note, rows: rows.filter(m => m.group === g.key) }))
+    .filter(g => g.rows.length);
+
+  const orphans = rows.filter(m => !known.has(m.group));
+  if (orphans.length) groups.push({ key: 'other', label: 'Other', rows: orphans });
+
+  return groups;
 }
 
 /**

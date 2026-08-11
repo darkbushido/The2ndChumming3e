@@ -2147,10 +2147,10 @@ export class SR3EItem extends Item {
    * @returns {Promise<null|{tn:number, mods:object, dodgeDice:number|null}>}  null = GM cancelled
    */
   static async _promptGMAttackWindow(ctx, opts = {}) {
-    const { mvpModifiers, sumModifiers, clampTN, guessGearModifiers } =
+    const { mvpModifierGroups, sumModifiers, clampTN, guessGearModifiers } =
       await import('../SR3ECombatModifiers.js');
 
-    const rows    = mvpModifiers();
+    const groups  = mvpModifierGroups();
     const guessed = guessGearModifiers(ctx.attacker, ctx.weapon);
     const baseTN  = Number(ctx.baseTN) || 4;
 
@@ -2159,7 +2159,7 @@ export class SR3EItem extends Item {
     // the wrong column. `auto-fit` collapses to a single column on a narrow window
     // rather than squeezing, and `align-items:start` keeps rows of differing height
     // (the ones carrying notes) top-aligned instead of centred against their neighbour.
-    const rowHtml = rows.map(m => {
+    const renderRow = m => {
       const pre  = m.gear && guessed[m.key] ? 'checked' : '';
       const sign = m.mod > 0 ? `+${m.mod}` : `${m.mod}`;
       const hint = m.gear && guessed[m.key]
@@ -2176,7 +2176,19 @@ export class SR3EItem extends Item {
           <label style="display:flex;align-items:center;gap:8px;padding:2px 0">${control}</label>
           ${note}
         </div>`;
-    }).join('');
+    };
+
+    // Headings span every column (`grid-column:1/-1`) so a group always starts on a fresh
+    // line — otherwise a heading would drop into the right-hand column beside the previous
+    // group's last row and appear to label it.
+    const rowHtml = groups.map(g => `
+      <div style="grid-column:1/-1;margin:8px 0 2px;padding-bottom:2px;
+                  border-bottom:1px solid var(--sr-border);
+                  font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+                  color:var(--sr-muted)">${g.label}${g.note
+        ? ` <span style="text-transform:none;letter-spacing:0;color:var(--sr-dim)">— ${g.note}</span>`
+        : ''}</div>
+      ${g.rows.map(renderRow).join('')}`).join('');
 
     const dodgeHtml = opts.dodge ? `
       <hr style="margin:10px 0;border-color:var(--sr-border)"/>
