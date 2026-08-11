@@ -2378,6 +2378,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Place Ward button — aims with the AoE cursor helper, creates the ward Actor + Token
   html.querySelectorAll('.sr3e-place-ward-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'placeward', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_mineId(pl.casterActorId)) return _denyBtn(btn, 'Only the caster\'s owner (or the GM) can place this ward.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2392,6 +2394,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Ward Resists button — rolls the ward's own Force-dice soak
   html.querySelectorAll('.sr3e-ward-resist-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'wardresist', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_isDeciderId(pl.wardActorId)) return _denyBtn(btn, 'Only the ward\'s owner (or the GM) rolls its resistance.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2611,6 +2615,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Matrix combat — IC rolls to resist (on IC resist card)
   html.querySelectorAll('.sr-matrix-ic-resist-roll-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'maticresistroll', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_isDecider(pl)) return _denyBtn(btn, 'Only the IC\'s owner (or the GM) rolls this resistance.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2622,6 +2628,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Matrix combat — Cybercombat boxing card Roll button
   html.querySelectorAll('.sr-cc-roll-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'ccroll', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_mineAny(pl.attackerActorId, pl.defenderActorId)) return _denyBtn(btn, 'Only a combatant in this exchange (or the GM) can roll it.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2633,6 +2641,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Matrix combat — Decker opens their MPCP soak card
   html.querySelectorAll('.sr-matrix-decker-resist-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'maticdeckerresist', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_mineId(pl.deckerActorId)) return _denyBtn(btn, 'Only the decker\'s owner (or the GM) can open this resistance card.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2646,6 +2656,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Matrix combat — Decker rolls to resist on MPCP soak card
   html.querySelectorAll('.sr-matrix-decker-resist-roll-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'maticdeckerresistroll', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_isDeciderId(pl.deckerActorId)) return _denyBtn(btn, 'Only the decker (or the GM) rolls this resistance.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();

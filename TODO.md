@@ -459,7 +459,9 @@ every other weapon is already there.
 Do it only with a measured before/after from play, and only after [#24](#24) settles — melee will
 copy whichever attacker-side shape wins, and it should copy a verified one.
 
-## 24. Revise melee onto the socket layer — each side edits only its own corner
+## 24. Revise the two-corner cards onto the socket layer — each side edits only its own corner
+
+*(Scope widened from melee alone to **all eight** two-corner cards — see the table at the end.)*
 
 **Requested 2026-08-05 after play-testing the ranged flow.** Stages 1–3 routed *ranged* combat;
 melee was Stage 4 and explicitly deferred. It is now the most obviously wrong surface in the game.
@@ -498,15 +500,59 @@ the two-phase negotiate/commit split were all built in Stages 1–3 and generali
 doing that with per-side read-only rendering, or it splits — decide before writing code, because
 the choice drives everything else.
 
-**Same problem, same fix, elsewhere:** `handleAstralRoll` (`SR3EActor.js:~5450`) and the
-cybercombat card (`~:460`) share the both-corners-one-client shape and should be done in the same
-pass or they become the next report.
+### ⚠ Scope is EIGHT cards, not one — widened 2026-08-10 after the [#27](#27) sweep
+
+Melee is the worst and the most visible, but the both-corners-one-client shape was copied across the
+codebase. Doing melee alone leaves seven identical bugs behind, and each becomes the next play
+report:
+
+| Card | Roll button | Builder |
+|---|---|---|
+| Melee boxing | `.sr-melee-roll-btn` | `postMeleeCard` |
+| Astral combat | `.sr-astral-roll-btn` | `postAstralCard` |
+| Contested test | `.sr-contested-roll-btn` | `postContestedCard` |
+| MIJI | `.sr-miji-roll-btn` | `postMIJICard` (`SR3EMIJI.js`) |
+| Cybercombat (Defragged) | `.sr-cc-roll-btn` | `postCybercombatCard` |
+| Orthodox System Test | `.sr-ost-roll-btn` | *(reuses the melee layout)* |
+| Orthodox Cybercombat | `.sr-occ-roll-btn` | *(reuses the melee layout)* |
+| Orthodox IC Attack | `.sr-icia-roll-btn` | *(reuses the melee layout)* |
+
+They are not merely similar — the three Orthodox Matrix cards emit the melee layout classes verbatim
+(`sr-melee-boxing`, `sr-melee-vs`, `sr-miji-corner`), and CLAUDE.md describes MIJI's card as *"cloned
+from the melee boxing card"*. **This is one bug with eight copies**, which argues for fixing the
+shared `_corner` shape once rather than eight times — decide that before writing code.
+
+All seven non-melee buttons are already permission-gated ([#27](#27)), so the exposure is reduced but
+the structure is untouched: each still lets one client edit the other side's pool, TN and damage.
+`_mineAny` on the two-corner cards is explicitly a stopgap this task is meant to retire.
 
 ## 27. ✅ Audit every chat-card button for who may click it — **one left, by design**
 
-**✅ DONE — 27 of 28 gated.** The only ungated button is `.sr-melee-roll-btn`, deliberately left
+**✅ DONE — 33 of 34 gated.** The only ungated button is `.sr-melee-roll-btn`, deliberately left
 for [#24](#24), which deletes it rather than guarding it. Kept for the record; this file is the
 progress, not a queue.
+
+### ⚠ This task's own inventory was wrong — verify lists, don't trust them
+
+It was first marked done at "27 of 28" against **the list written below**, which was incomplete.
+Sweeping every `-btn` class actually emitted in card HTML against the handlers in `sr3e.js` found
+**six more ungated**, none of them named below:
+
+`.sr-cc-roll-btn` · `.sr-matrix-ic-resist-roll-btn` · `.sr-matrix-decker-resist-btn` ·
+`.sr-matrix-decker-resist-roll-btn` · `.sr3e-place-ward-btn` · `.sr3e-ward-resist-btn`
+
+The last two were missed originally because the inventory enumerated the `sr-` prefix and these use
+**`sr3e-`**. So "6 of ~31" was never the real denominator. The sweep that gets it right:
+
+```bash
+for c in $(grep -rhoE 'class="sr[0-9a-z-]*-btn"' scripts/*.js scripts/documents/*.js \
+           | grep -oE 'sr[0-9a-z-]*-btn' | sort -u); do
+  ln=$(grep -n "querySelectorAll('\.$c')" scripts/sr3e.js | head -1 | cut -d: -f1)
+  [ -z "$ln" ] && { echo "NO HANDLER  .$c"; continue; }
+  n=$(sed -n "${ln},$((ln+10))p" scripts/sr3e.js | grep -cE "_denyBtn|_mine|_isDecider")
+  [ "$n" = "0" ] && echo "UNGATED  .$c"
+done
+```
 
 ### What the audit actually found
 
@@ -521,12 +567,29 @@ So `_mineId(id)` / `_isDeciderId(id)` were added, taking the id explicitly. Wide
 `_payloadActorId` to swallow every key was rejected: it would drag `attackerActorId` in through the
 back door on cards carrying both, and an attacker must never inherit rights over their target's card.
 
-### Two-corner cards are only half-fixed
+### Two-corner cards are only half-fixed — and there are **eight**, not three
 
-`.sr-astral-roll-btn`, `.sr-contested-roll-btn` and `.sr-miji-roll-btn` carry **both** participants
-and one button rolls the whole exchange — the same structural flaw as melee. They are gated with
-`_mineAny(...)`, so only one of the two people involved can click, but each side still does not edit
-only its own corner. **[#24](#24) should take these three with it**, not just the melee card.
+Every one of these carries **both** participants' editable inputs with a single button rolling the
+whole exchange. Gating narrows *who* may click; it does not make each side edit only its own corner.
+Full list, since the count kept growing as it was checked properly:
+
+| Card | Button | Gate now |
+|---|---|---|
+| Melee boxing | `.sr-melee-roll-btn` | **ungated** — [#24](#24) deletes it |
+| Astral combat | `.sr-astral-roll-btn` | `_mineAny` |
+| Contested test | `.sr-contested-roll-btn` | `_mineAny` |
+| MIJI | `.sr-miji-roll-btn` | `_mineAny` |
+| Cybercombat (Defragged) | `.sr-cc-roll-btn` | `_mineAny` |
+| Orthodox System Test | `.sr-ost-roll-btn` | `_isDeciderId(decker)` |
+| Orthodox Cybercombat | `.sr-occ-roll-btn` | `_isDeciderId(decker)` |
+| Orthodox IC Attack | `.sr-icia-roll-btn` | `_isDecider` → IC |
+
+The three Orthodox Matrix cards give themselves away in the markup — they reuse the melee layout
+classes verbatim (`sr-melee-boxing`, `sr-melee-vs`, `sr-miji-corner`), so they are the same card with
+different labels. MIJI's own card is described in CLAUDE.md as *"cloned from the melee boxing card"*.
+The flaw spread by copy-paste, which is why finding one meant finding eight.
+
+**[#24](#24) should take all eight**, not just melee — its scope note has been widened to say so.
 
 ### ⚠ Landmine found on the way — `node --check` proves nothing here
 
