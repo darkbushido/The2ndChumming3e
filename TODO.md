@@ -24,7 +24,7 @@ independent.
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 24 |
 | 🔴 Confirmed bugs, still open | 5 · 14 · 25 |
-| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 |
+| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 · 41 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
@@ -514,6 +514,33 @@ two cross-actor pool writes (`SR3EActor.js:3610-3611`); it never touched *who de
 
 **The machinery already exists.** `SR3EQuery.ask`, `deciderFor`, the withdraw/dialog registry and
 the two-phase negotiate/commit split were all built in Stages 1–3 and generalise directly.
+
+### ✅ FLOW DECIDED — 2026-08-10, by the maintainer
+
+1. **Attacker initiates** → the two-corner card posts.
+2. **GM sets the target number** — their own control on the card.
+3. **Each side edits only their own corner**; the opponent's is read-only to them.
+4. **Each side clicks Submit. Whoever is last triggers the resolution.**
+
+This keeps the shared view of the matchup — which splitting into per-side cards would lose — and
+makes the race **structurally impossible** rather than merely gated: there is no roll button for
+one player to reach first.
+
+**Three consequences, settled:**
+
+- **Submissions route through the GM.** A player cannot write to a chat message they did not author,
+  so "who has submitted" cannot live in the card's DOM — it would be per-client and diverge. It goes
+  in **message flags, written by the GM** via a `sr3e.melee.submit` query, same GM-authoritative
+  pattern as every other write on this branch.
+- **Three inputs, not two** — GM TN, attacker, defender; the *last of the three* resolves. Since the
+  GM step can therefore stall an exchange, mirror `gmApprovesTN`: `'off'` skips it entirely,
+  `'player'` skips it when the GM fights with their own NPCs.
+- **An AFK player stalls it forever**, so the GM needs a **"resolve now"** that submits defaults for
+  anyone outstanding. Same reaper rule as dodge, but manual — there is no blocking dialog to time out.
+
+⚠ **Full Defense is explicitly OUT of scope here** (maintainer, 2026-08-10). Accepted cost: RAW gives
+a Full Defense defender no Combat Pool in the skill test and pool only in the second-stage dodge
+([#39](#39)), so the defender's corner **will need revisiting** when that lands. Known, not overlooked.
 
 **Shape to follow — the ranged flow, not a new invention:**
 
@@ -1232,6 +1259,56 @@ model; a vision-gear flag reachable from the actor for goggles; keep `accessorie
 description. Then delete the guessing in `SR3ECombatModifiers` and read the fields.
 
 See [audit/socket-combat-plan.md](audit/socket-combat-plan.md) — "Maintainer decisions — 2026-08-05".
+
+## 41. Knockdown — nothing implements it, and two other rules already depend on it
+
+**Requested 2026-08-10** while scoping charging. Core **p.124**. Not implemented anywhere; the only
+mentions in the codebase are the `prone` status effect and [#37](#37)'s melee modifier, neither of
+which is produced by anything.
+
+> "Characters struck in ranged or melee combat may be knocked back or possibly down by the blow.
+> When struck, the character must make a **Body Test**. Against ranged attacks, the target is equal
+> to **one-half the Power** of the attack, rounding down. Against melee attacks, the target number is
+> the **opponent's Strength**…
+>
+> If the character rolls **no successes, he falls down (prone)**. If he rolls successes, but does not
+> generate enough for his wound level, the character **remains standing but takes a step or two away
+> from the direction of the attack** (approximately one meter). … If for some reason he cannot step
+> backward (for example, he is up against a wall), he fights at a **+2 modifier to his target
+> numbers** until he is able to move away. Characters who take a **Deadly wound are always knocked
+> down**."
+
+**Knockdown Table (p.124)** — minimum successes to stay standing:
+
+| Wound Level | Successes needed |
+|---|---|
+| Light | 2 |
+| Moderate | 3 |
+| Serious | 4 |
+| Deadly | **always knocked down** |
+
+⚠ The printed table extracts one row out of alignment — the same column-merge that scrambles the
+Visibility Table. The prose pins it: *"a character who has taken a **Moderate** wound must roll at
+least **3** successes."* Verify against the page before trusting any transcription, including this one.
+
+⚠ **Gel rounds are an explicit exception**: *"against weapons firing gel rounds the target number for
+the Body Test to resist knockdown is against the **full** Power of the attack"* (p.116) — not half.
+The system already models gel's armour exception via `armorEffect: 'gel'`, so this belongs beside it.
+
+### Two open questions before implementing
+
+- **Which wound level?** *"how severely damaged the character is"* and *"has taken a Moderate wound"*
+  read as the wound from **this** attack, but could mean the character's **current** total wound
+  level. They differ constantly in play. Decide deliberately.
+- **Who rolls it, and when?** It happens after damage resolves, so it is a third stage after the
+  soak — which is another chat card, another click, and lands on whichever card shape [#24](#24)
+  settles.
+
+### What depends on it
+
+- [#40](#40) Charging's failure branch — *"Quickness (5) Test or fall prone"*, or *"+2 instead"* to
+  an existing Knockdown Test. Without Knockdown, that clause has nothing to modify.
+- [#37](#37)'s `prone` melee modifier (−2 to the opponent) has no way to become true today.
 
 ## 39. Full Defense is half-built — RAW is a TWO-STAGE defence
 
