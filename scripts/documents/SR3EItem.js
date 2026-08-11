@@ -695,17 +695,35 @@ export class SR3EItem extends Item {
    * Stage damage upward by the given number of net successes.
    * Rules: every 2 successes = +1 stage (L→M→S→D).
    *
-   * Deadly is the ceiling. Surplus successes are discarded — they do NOT convert
-   * into Power. "Deadly damage is the highest level of damage possible" (SR3 p.113);
-   * the book gives no rule for spending successes past it. Power matters twice over
-   * here, because it is also the Damage Resistance TN, so an invented point makes the
-   * soak harder AND the wound worse.
+   * ⚠ **SR3 gives two different answers past Deadly, and both are RAW.** This is not a
+   * contradiction to tidy away — it is a general rule with a melee-specific exception,
+   * and the specific one wins where it applies.
    *
-   * Returns { power, level, isStun, staged } where staged = number of stage steps taken.
+   * **General (p.113), the default here.** Deadly is the ceiling and surplus successes
+   * are discarded: *"If the weapon damage is staged below Light… then no damage is done.
+   * On the other end of the spectrum, Deadly damage is the highest level of damage
+   * possible."* Power matters twice over, because it is also the Damage Resistance TN —
+   * an invented point makes the soak harder AND the wound worse.
+   *
+   * **Melee (p.122), `opts.meleeRules`.** *"If the Damage Level has been increased to
+   * Deadly, extra successes can be used to stage the Power Rating up. For every two
+   * successes the Power Rating increases by one."*
+   *
+   * **Astral combat counts as melee** — *"Astral combat uses the same rules as Melee
+   * Combat"* (p.174) — so it passes the flag too. Matrix and contested tests do not:
+   * nothing makes them melee, so they take the general rule.
+   *
+   * @param {{power:number, level:string, isStun:boolean}} base
+   * @param {number} netSuccesses
+   * @param {object} [opts]
+   * @param {boolean} [opts.meleeRules=false]  apply the p.122 melee exception
+   * @returns {{power:number, level:string, isStun:boolean, staged:number}}
+   *          `staged` = number of LEVEL steps taken (Power bumps are not steps)
    */
-  static stageDamage(base, netSuccesses) {
+  static stageDamage(base, netSuccesses, opts = {}) {
     const STAGES = ['L', 'M', 'S', 'D'];
-    const { power, level, isStun } = base;
+    const { level, isStun } = base;
+    let power     = base.power;
     let idx       = STAGES.indexOf(level);
     let remaining = netSuccesses;
     let staged    = 0;
@@ -714,6 +732,12 @@ export class SR3EItem extends Item {
       remaining -= 2;
       idx++;
       staged++;
+    }
+
+    // Melee/astral only: what is left over past Deadly raises Power (p.122).
+    // Everywhere else it is discarded (p.113).
+    if (opts.meleeRules && idx === STAGES.length - 1 && remaining >= 2) {
+      power += Math.floor(remaining / 2);
     }
 
     return { power, level: STAGES[idx], isStun, staged };

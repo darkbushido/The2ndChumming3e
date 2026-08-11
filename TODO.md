@@ -24,7 +24,7 @@ independent.
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 24 |
 | 🔴 Confirmed bugs, still open | 5 · 14 · 25 |
-| 📕 Rules not implemented | 3 · 4 · 10 · 30 |
+| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
@@ -295,11 +295,42 @@ that into the weakest option.
 ⚠ **Scope:** `promptDefaultChoice` feeds every defaulting flow — skills, ranged, melee, astral,
 cybercombat, vehicle, Falling, Escape Artist, Driving. One fix, wide blast radius, so test broadly.
 
-## 33. ✅ Staging past Deadly adds Power — **not an SR3 rule** — **CONFIRMED**
+## 33. ✅ Staging past Deadly adds Power — **an SR3 rule, but MELEE-ONLY** — **CONFIRMED**
 
-**✅ DONE — `e751e85`.** Fixed on the `sr3-rules-corrections` branch (`a79d9c1`), merged into
-`main` separately from this branch's own history. Kept for the record; this file is the
-progress, not a queue.
+**✅ DONE — `e751e85`, then CORRECTED 2026-08-10.** Fixed on the `sr3-rules-corrections` branch
+(`a79d9c1`), merged into `main`. Kept for the record; this file is the progress, not a queue.
+
+### 🔴 The original diagnosis was half wrong — "not an SR3 rule" IS an SR3 rule
+
+Found while answering a question about melee modifiers. **SR3 gives two different answers past
+Deadly and both are RAW** — a general rule with a melee-specific exception:
+
+- **General (p.113)** — *"On the other end of the spectrum, Deadly damage is the highest level of
+  damage possible."* Surplus discarded. Correct for the reported case, a **firearm**.
+- **Melee (p.122, step 4)** — *"If the Damage Level has been increased to Deadly, extra successes
+  can be used to stage the Power Rating up. For every two successes the Power Rating increases by
+  one."*
+
+Specific beats general, so **Power-staging past Deadly is real — for melee**. This entry originally
+asserted the book contained no such rule. It does; it is just scoped.
+
+**Astral counts as melee**: *"Astral combat uses the same rules as Melee Combat"* (**p.174**).
+Matrix and contested tests do not — nothing makes them melee.
+
+### What was actually broken, and for how long
+
+Melee **never called `stageDamage`** — `_postMeleeResult` carried its own inline copy of the staging
+loop, Power bump included. So capping `stageDamage` left melee accidentally correct and broke
+**astral combat**, which does use it. The duplication hid the error in both directions at once: it
+protected the code that needed the exception and disguised the code that lost it.
+
+Now one implementation with an explicit flag —
+`stageDamage(base, net, { meleeRules: true })` — and melee's inline duplicate is gone. `_postAstralResult`
+passes the flag; the ranged, Matrix and contested paths do not.
+
+`tests/damage-codes.test.mjs` pins **both** rules side by side, including the same input resolving
+to `6D` ranged and `8D` melee, because they are one flag apart and either direction is wrong at the
+table.
 
 Found in play 2026-08-05: a Colt Manhunter (**9M**) with **6 successes** reported **10D**.
 
@@ -1201,6 +1232,39 @@ model; a vision-gear flag reachable from the actor for goggles; keep `accessorie
 description. Then delete the guessing in `SR3ECombatModifiers` and read the fields.
 
 See [audit/socket-combat-plan.md](audit/socket-combat-plan.md) — "Maintainer decisions — 2026-08-05".
+
+## 37. Melee has its own modifiers table — the GM window only covers ranged
+
+**Asked in play 2026-08-10: "do melee fights get modifiers the GM needs to worry about?"** Yes.
+Melee has a separate table (**p.123**) and the GM currently has no surface for it — the TN window
+([#29](#29)) is wired to `SR3E_RANGED_MODIFIERS` and only opens on the ranged path.
+
+| Situation | Modifier | Wired? |
+|---|---|---|
+| Called Shot | +4 | ✅ `_promptCalledShot` |
+| Character's weapon has longer Reach\* | −1 per point | ✅ differential, `atkTN`/`defTN` |
+| Character's weapon has inferior Reach\* | +1 per point | ✅ same |
+| Character is wounded | Damage Modifier (p.126) | ✅ folded in by `rollPool` |
+| **Character has friends in the melee** | **−1 per friend, max −4** | ❌ |
+| **Opponent has friends in the melee** | **+1 per friend, max +4** | ❌ |
+| **Character has superior position** | **−1** | ❌ |
+| **Opponent prone** | **−2** | ❌ |
+| **Attacking multiple targets** | **+2 per target** | ❌ |
+| **Visibility impaired** | Visibility Table **at HALF value**, rounded down — **except Full Darkness** | ❌ |
+
+\* *Only one of these may be applied, to attacker or defender* — the differential already implemented.
+
+**Friends in melee is the big one.** It ranges ±4 and both sides get it in opposite directions, so a
+4-on-1 swings **8 points** between the two target numbers. Nothing models it today.
+
+⚠ **Visibility cannot reuse the ranged control as-is.** p.123: apply the Visibility Table *"at half
+their value, rounding down, except for Full Darkness"*. So `visibilityModifier()` needs a halving
+mode — `Math.floor(v / 2)` with Full Darkness passed through at full value.
+
+**Shape:** a `SR3E_MELEE_MODIFIERS` table beside the ranged one, reusing `mvpModifierGroups`'s
+`group` mechanism, surfaced from the melee flow. Sequence it **after [#24](#24)** — that task decides
+whether the boxing card stays one card or splits, and a GM modifier surface has to attach to
+whichever wins.
 
 ## 36. Detect which vision an attacker actually has
 

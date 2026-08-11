@@ -804,11 +804,22 @@ mutually-exclusive options. **Take Aim** folds in as **−1 TN per point** (1 Si
 Power (number) + Level (L/M/S/D) + optional Stun flag
 - Each 2 net successes = +1 stage (L→M→S→D) — the same 2-per-level applies to the
   defender staging **down**
-- **Deadly is the ceiling.** Surplus successes are discarded: *"Deadly damage is the
-  highest level of damage possible"* (p.113). There is no rule converting them to Power,
-  and inventing one is not cosmetic — **Power is the Damage Resistance TN**, so a phantom
-  point makes the soak harder *and* the wound worse. A 9M weapon rolling 6 successes is
-  **9D**, not 10D. Caught 2026-08-05: a Colt Manhunter reported **10D**.
+- ⚠ **Past Deadly, SR3 gives TWO answers and both are RAW.** A general rule with a
+  melee-specific exception — do not "resolve" the conflict, it is scoped on purpose.
+  `SR3EItem.stageDamage(base, net, { meleeRules })` is the single implementation.
+  - **General — the default.** Surplus successes are **discarded**: *"On the other end of
+    the spectrum, Deadly damage is the highest level of damage possible"* (**p.113**).
+    **Power is the Damage Resistance TN**, so a phantom point makes the soak harder *and*
+    the wound worse. A 9M firearm rolling 6 successes is **9D**, not 10D.
+  - **Melee — `meleeRules: true`.** *"If the Damage Level has been increased to Deadly,
+    extra successes can be used to stage the Power Rating up. For every two successes the
+    Power Rating increases by one"* (**p.122**, step 4). The same 9M/6-success roll is
+    **10D** in melee.
+  - **Astral counts as melee** — *"Astral combat uses the same rules as Melee Combat"*
+    (**p.174**). Matrix and contested tests do **not**.
+  - ⚠ Melee used to carry its own inline copy of the staging loop, so capping
+    `stageDamage` for the ranged fix left melee accidentally right and broke **astral**.
+    The duplicate is gone; both rules are pinned in `tests/damage-codes.test.mjs`.
 - Stun damage goes to stun track; physical to physical track
 - GM applies manually
 

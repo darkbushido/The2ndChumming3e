@@ -3766,14 +3766,15 @@ _prepareCharacter(sys, attr) {
       let soakBtn     = '';
 
       if (winnerDmgBase && net > 0) {
-        // Stage damage — need SR3EItem, use inline fallback if import failed
+        // Melee stages Power past Deadly (p.122) — the exception to the general
+        // "Deadly is the ceiling" rule (p.113). This used to be an inline copy of the
+        // staging loop, which is why capping stageDamage for the ranged fix left melee
+        // silently correct and astral silently wrong. One implementation, one flag.
         const STAGES = ['L','M','S','D'];
-        let idx   = STAGES.indexOf(winnerDmgBase.level);
-        let power = winnerDmgBase.power;
-        let rem   = net;
-        const origIdx = idx;
-        while (rem >= 2 && idx < STAGES.length - 1) { rem -= 2; idx++; }
-        if (idx === STAGES.length - 1 && rem >= 2) { power += Math.floor(rem / 2); }
+        const origIdx = STAGES.indexOf(winnerDmgBase.level);
+        const _st   = game.sr3e.SR3EItem.stageDamage(winnerDmgBase, net, { meleeRules: true });
+        let   idx   = STAGES.indexOf(_st.level);
+        let   power = _st.power;
 
         // Called shot (attacker only): stage damage up one further level (cap Deadly).
         const calledStage = winnerIsAtk && ctx.calledShot === 'stage';
@@ -5894,7 +5895,9 @@ _prepareCharacter(sys, attr) {
       const isStun       = !(ctx.isPhysical ?? false);
       const winnerRaw    = winnerIsAtk ? (ctx.atkRawDamage || `${winnerCha}M`) : (ctx.defRawDamage || `${winnerCha}M`);
       const baseDamage   = SR3EItem.parseDamageCode(winnerRaw, winner) ?? { power: winnerCha, level: 'M', isStun: false };
-      const staged       = SR3EItem.stageDamage(baseDamage, net);
+      // "Astral combat uses the same rules as Melee Combat" (SR3 p.174), so the p.122
+      // melee exception applies: past Deadly, leftover successes raise Power.
+      const staged       = SR3EItem.stageDamage(baseDamage, net, { meleeRules: true });
       const finalIsStun  = isStun ?? staged.isStun;
       const trackLabel   = finalIsStun ? 'Stun' : 'Physical';
 

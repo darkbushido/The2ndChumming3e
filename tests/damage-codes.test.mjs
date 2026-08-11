@@ -46,16 +46,26 @@ export async function run(t) {
   t.is('4 successes stage twice',    stage(base, 4).level, 'D');
   t.is('3 successes stage once (odd successes round down)', stage(base, 3).level, 'S');
 
-  // Deadly is the ceiling and surplus successes are DISCARDED (SR3 p.113):
-  // "Deadly damage is the highest level of damage possible". The old code turned
-  // every spare pair into +1 Power, which is not a rule the book contains.
+  /* ---- past Deadly, SR3 gives TWO answers and both are RAW ----
+   * This is a general rule with a melee-specific exception, not a contradiction to
+   * resolve. Getting it wrong in either direction changes damage at the table, and the
+   * two are only a single flag apart, so both are pinned here side by side.
+   *
+   *   General, p.113: "If the weapon damage is staged below Light… then no damage is
+   *   done. On the other end of the spectrum, Deadly damage is the highest level of
+   *   damage possible."
+   *
+   *   Melee, p.122: "If the Damage Level has been increased to Deadly, extra successes
+   *   can be used to stage the Power Rating up. For every two successes the Power
+   *   Rating increases by one."
+   */
   const past = stage({ power: 6, level: 'D', isStun: false }, 4);
   t.is('beyond Deadly the level stays D', past.level, 'D');
-  t.is('beyond Deadly the power does NOT rise', past.power, 6);
+  t.is('beyond Deadly the power does NOT rise (general rule)', past.power, 6);
 
-  // The table case that exposed it: a Colt Manhunter (9M) hit with 6 successes.
-  // 6 successes = 3 stages, but M has only two rungs above it, so it caps at 9D.
-  // The buggy code reported 10D — and Power is the soak TN, so that phantom point
+  // The table case that exposed the ranged half: a Colt Manhunter (9M) hit with 6
+  // successes. 6 successes = 3 stages, but M has only two rungs above it, so it caps at
+  // 9D. The buggy code reported 10D — and Power is the soak TN, so that phantom point
   // made the Damage Resistance Test harder as well as the wound worse.
   const manhunter = stage({ power: 9, level: 'M', isStun: false }, 6);
   t.is('Colt Manhunter 9M with 6 successes is 9D, not 10D',
@@ -64,6 +74,30 @@ export async function run(t) {
   // Staging cannot walk past D no matter how lopsided the roll.
   t.is('20 successes still caps at D', stage(base, 20).level, 'D');
   t.is('20 successes leaves power alone', stage(base, 20).power, 6);
+
+  /* ---- the melee exception (p.122), opted into explicitly ----
+   * Astral counts as melee: "Astral combat uses the same rules as Melee Combat" (p.174).
+   * Matrix and contested tests do NOT — nothing makes them melee.
+   */
+  const m = (b, n) => SR3EItem.stageDamage(b, n, { meleeRules: true });
+
+  const meleePast = m({ power: 6, level: 'D', isStun: false }, 4);
+  t.is('melee past Deadly keeps the level at D', meleePast.level, 'D');
+  t.is('but DOES raise Power, +1 per 2 spare successes', meleePast.power, 8);
+
+  t.is('melee: one spare pair is +1 Power', m({ power: 6, level: 'D', isStun: false }, 2).power, 7);
+  t.is('melee: an odd spare success is not enough',
+    m({ power: 6, level: 'D', isStun: false }, 3).power, 7);
+  t.is('melee: reaching D exactly does not bump Power',
+    m({ power: 9, level: 'M', isStun: false }, 4).power, 9);
+  t.is('melee: 9M with 6 successes reaches D with one pair left → 10D',
+    (() => { const r = m({ power: 9, level: 'M', isStun: false }, 6); return `${r.power}${r.level}`; })(), '10D');
+
+  // The flag is the ONLY difference — same input, two lawful answers.
+  const shared = { power: 6, level: 'S', isStun: false };
+  t.is('same roll, ranged caps',  `${stage(shared, 6).power}${stage(shared, 6).level}`, '6D');
+  t.is('same roll, melee stages Power', `${m(shared, 6).power}${m(shared, 6).level}`, '8D');
+  t.is('melee rules default to OFF', stage({ power: 6, level: 'D', isStun: false }, 4).power, 6);
 
   t.is('staging preserves the stun flag',
     stage({ power: 6, level: 'M', isStun: true }, 2).isStun, true);
