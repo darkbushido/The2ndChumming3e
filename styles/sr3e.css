@@ -505,7 +505,6 @@ background-color: var(--sr-surface) !important;
   white-space: nowrap;
 }
 .sr-roll-result { font-size: 14px; color: var(--sr-text); font-weight: 600; }
-.sr-glitch { color: var(--sr-amber); font-size: 12px; margin-left: 8px; }
 
 /* ── Item sheet form fields ──────────────────────────────── */
 .item-header-text {
@@ -646,7 +645,7 @@ background-color: var(--sr-surface) !important;
   color: var(--sr-gold);
 }
 
-.sr-critical-glitch {
+.sr-rule-of-one {
   margin-top: 8px;
   padding: 6px 10px;
   background: var(--sr-red-bg);

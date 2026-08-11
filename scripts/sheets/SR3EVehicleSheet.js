@@ -871,7 +871,11 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
       });
       if (!def) return;   // cancelled
       skillDice   = def.pool;
-      skillRating = def.pool;
+      // skillRating feeds the jacked-in rigger's Control Pool. Defaulting caps pool
+      // dice at half the rating defaulted from, and forbids them outright when
+      // defaulting to an Attribute (SR3 p.85), so the cap is the ceiling here — not
+      // the dice being rolled.
+      skillRating = def.poolCap;
       defTnMod    = def.tnMod;
       poolLabel   = `${def.label}`;
     }

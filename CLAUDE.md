@@ -485,35 +485,59 @@ ODM-\* rawdata), **`mat`** = this sourcebook, **`matrix-defragged`** = the commu
 
 ## SR3 rules implemented so far
 
-### Dice rolling — Rule of Six
+### Dice rolling — Rule of Six & Rule of One  · *SR3 p.38-39*
 - All rolls are d6 success-counting (result ≥ TN = success)
 - Any die showing 6 explodes. Each wave shows a single "💥 Roll explosions (N dice)" button that
   re-rolls **all** of that wave's exploding dice at once (not one click per die), adding to each
   die's running total; this repeats wave-by-wave until none are left
 - A die stops exploding when its running total ≥ TN (success, no more rolling needed)
-- Glitch: more than half the original pool shows 1s (only first wave counts for glitch)
-- Critical glitch: glitch AND zero successes
+- **Rule of One** (`SR3EActor.isRuleOfOne`, one pure function feeding all five roll paths):
+  fires **only when every die rolled comes up 1** — *"If ALL the dice rolled for a test come
+  up 1s, it means that the character has made a disastrous mistake"* (p.38). Its consequence
+  is **GM adjudication**, not a mechanical penalty: *"The gamemaster determines whatever tone
+  is appropriate."* There is **no second "critical" tier** — a sweep is already an automatic
+  zero-success failure, so the tier could only ever relabel the same event.
+  ⚠ A two-tier rule keyed on *more than half* the pool showing 1s is **SR4's glitch**. Do not
+  reintroduce it: at 3 dice it trips about twenty times more often than RAW.
+- A single 1 is only *that die* failing — *"the test can still succeed as long as other dice
+  succeed"* — so it needs no special handling beyond comparing against the TN
 - Initiative never explodes interactively — resolved silently as a sum
 
-### Defaulting (SR3 Default Table) — interactive
+### Defaulting (SR3 Default Table) — interactive  · *SR3 p.84-85*
 
 When an actor lacks the skill for a test, an **interactive dialog** asks how to default
-(`SR3EItem.promptDefaultChoice(actor, opts)` → `{ mode, pool, tnMod, allowPool, label }`,
-or `null` if cancelled). The three tiers from the SR3 Default Table:
+(`SR3EItem.promptDefaultChoice(actor, opts)` → `{ mode, pool, tnMod, allowPool, poolCap, label }`,
+or `null` if cancelled). The table as printed on **p.85**:
 
-| Default to | TN modifier | Dice pool | Extra pool dice |
-|------------|-------------|-----------|-----------------|
-| Specialization | **+3** | ½ the underlying skill's **base** rating (round down) | allowed |
-| Skill          | **+2** | ½ the chosen skill's rating (round down)              | allowed |
-| Attribute      | **+4** | full attribute value                                 | **not allowed** |
+| Default To | TN Modifier | Dice Pool |
+|---|---|---|
+| Specialization | +3 | = to ½ specialization's base skill |
+| Skill | +2 | = to ½ base skill being used |
+| Attribute | +4 | No pool dice allowed |
 
+⚠ **The "Dice Pool" column is the cap on POOL dice, not the dice you roll.** You roll the
+**full** rating — *"roll a number of dice equal to **your rating in the default skill**… the
+maximum number of **pool dice** allowed is equal to half your rating in that skill (round
+down)"* (p.84). Reading it as the dice to roll halves every defaulted test *and* drops the
+cap, so it errs in both directions and the two errors partly mask each other.
+
+The book's worked examples, both asserted in `tests/defaulting.test.mjs`:
+- **Shotgun 5** defaulting to an assault rifle → rolls **5 dice**, plus **up to 2** Combat Pool.
+- **Edged Weapons 4 (Sword)** → rolls the **specialization's** rating, with pool capped at
+  **½ the related base skill** (2), not half the specialization.
+
+- `SR3EItem.defaultTiers(actor, opts)` is the **pure** function holding the rule; the dialog only
+  renders it. Specializations come from the `specialisations` array (`level` is the **bonus**, so
+  the spec's rating is `base + level`) — **one option per specialisation**, since a skill may
+  carry several.
 - "½ rating" **rounds down** (`Math.floor`). The dialog lists **all** of the actor's active
   skills / specialisations (the GM judges relevance — minimal guardrails) plus every attribute.
 - A cancelled dialog **aborts** the whole action (returns `null`; callers bail).
 - The TN modifier is **baked into the TN** at each call site (e.g. `tn + def.tnMod`); the old
   `rollPool` `options.defaulting` flag has been removed.
-- "No pool dice" is enforced per-flow: combat/spell/hacking/control pool is offered only when
-  `def.allowPool` (i.e. never for the Attribute tier).
+- **`poolCap` is the single gate on pool dice.** Every flow clamps its offer with
+  `Math.min(available, def.poolCap)`; the Attribute tier reports `poolCap: 0`, so the cap alone
+  expresses "no pool dice" and `allowPool` is kept only as a convenience alias for `poolCap > 0`.
 
 **Wired in everywhere defaulting can occur:**
 - Skill rolls (`SR3EItem.rollSkill`), weapon attacks (single + AoE throw + `rollVehicleWeapon`).
@@ -689,10 +713,15 @@ mutually-exclusive options. **Take Aim** folds in as **−1 TN per point** (1 Si
   (`winnerIsAtk && ctx.calledShot==='stage'`); the card header shows the declaration.
 - **Not wired**: vehicle-mounted weapons (`rollVehicleWeapon` uses its own 🚗 dialog) and spells.
 
-### Damage staging
+### Damage staging  · *SR3 p.113-114*
 Power (number) + Level (L/M/S/D) + optional Stun flag
-- Each 2 net successes = +1 stage (L→M→S→D)
-- Once at D, each additional 2 successes = +1 power
+- Each 2 net successes = +1 stage (L→M→S→D) — the same 2-per-level applies to the
+  defender staging **down**
+- **Deadly is the ceiling.** Surplus successes are discarded: *"Deadly damage is the
+  highest level of damage possible"* (p.113). There is no rule converting them to Power,
+  and inventing one is not cosmetic — **Power is the Damage Resistance TN**, so a phantom
+  point makes the soak harder *and* the wound worse. A 9M weapon rolling 6 successes is
+  **9D**, not 10D.
 - Stun damage goes to stun track; physical to physical track
 - GM applies manually
 

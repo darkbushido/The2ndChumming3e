@@ -46,10 +46,24 @@ export async function run(t) {
   t.is('4 successes stage twice',    stage(base, 4).level, 'D');
   t.is('3 successes stage once (odd successes round down)', stage(base, 3).level, 'S');
 
-  // Past Deadly, further successes raise Power instead of Level.
+  // Deadly is the ceiling and surplus successes are DISCARDED (SR3 p.113):
+  // "Deadly damage is the highest level of damage possible". The old code turned
+  // every spare pair into +1 Power, which is not a rule the book contains.
   const past = stage({ power: 6, level: 'D', isStun: false }, 4);
   t.is('beyond Deadly the level stays D', past.level, 'D');
-  t.ok('beyond Deadly the power rises', past.power > 6, `power was ${past.power}`);
+  t.is('beyond Deadly the power does NOT rise', past.power, 6);
+
+  // The table case that exposed it: a Colt Manhunter (9M) hit with 6 successes.
+  // 6 successes = 3 stages, but M has only two rungs above it, so it caps at 9D.
+  // The buggy code reported 10D — and Power is the soak TN, so that phantom point
+  // made the Damage Resistance Test harder as well as the wound worse.
+  const manhunter = stage({ power: 9, level: 'M', isStun: false }, 6);
+  t.is('Colt Manhunter 9M with 6 successes is 9D, not 10D',
+    `${manhunter.power}${manhunter.level}`, '9D');
+
+  // Staging cannot walk past D no matter how lopsided the roll.
+  t.is('20 successes still caps at D', stage(base, 20).level, 'D');
+  t.is('20 successes leaves power alone', stage(base, 20).power, 6);
 
   t.is('staging preserves the stun flag',
     stage({ power: 6, level: 'M', isStun: true }, 2).isStun, true);

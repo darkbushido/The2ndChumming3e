@@ -353,7 +353,7 @@ export class SR3EActor extends Actor {
       if (!def) return null;   // cancelled
       ccRating      = def.pool;
       defTnMod      = def.tnMod;
-      hackPoolAvail = def.allowPool ? (d.availableHackingPool ?? d.hackingPool ?? 0) : 0;
+      hackPoolAvail = Math.min(d.availableHackingPool ?? d.hackingPool ?? 0, def.poolCap);
       skillName     = def.label;
     } else {
       ccRating      = ccSkill.system.rating ?? 0;
@@ -667,7 +667,7 @@ export class SR3EActor extends Actor {
       if (!def) return;   // cancelled
       ccRating      = def.pool;
       defTnMod      = def.tnMod;
-      availHackPool = def.allowPool ? (d.availableHackingPool ?? d.hackingPool ?? 0) : 0;
+      availHackPool = Math.min(d.availableHackingPool ?? d.hackingPool ?? 0, def.poolCap);
       ccNote        = ` <span style="color:var(--sr-amber)">(${def.label})</span>`;
     } else {
       ccRating      = ccSkill.system.rating ?? 0;
@@ -826,7 +826,7 @@ export class SR3EActor extends Actor {
       if (!def) return;   // cancelled
       hackRating    = def.pool;
       defTnMod      = def.tnMod;
-      availHackPool = def.allowPool ? (d.availableHackingPool ?? d.hackingPool ?? 0) : 0;
+      availHackPool = Math.min(d.availableHackingPool ?? d.hackingPool ?? 0, def.poolCap);
       hackNote      = ` <span style="color:var(--sr-amber)">(${def.label})</span>`;
     } else {
       hackRating    = hackSkill.system.rating ?? 0;
@@ -975,7 +975,7 @@ export class SR3EActor extends Actor {
       if (!def) return;   // cancelled
       skillRating   = def.pool;
       defTnMod      = def.tnMod;
-      availHackPool = def.allowPool ? (d.availableHackingPool ?? d.hackingPool ?? 0) : 0;
+      availHackPool = Math.min(d.availableHackingPool ?? d.hackingPool ?? 0, def.poolCap);
       skillNote     = ` <span style="color:var(--sr-amber)">(${def.label})</span>`;
     } else {
       skillRating   = (skill.system.rating ?? 0) + SR3EItem._skillBonusDice(this, skill);
@@ -1902,7 +1902,7 @@ _prepareCharacter(sys, attr) {
 
     const dice = this._rollWave(pool, effectiveTN, /* isFirstWave */ true);
     const ones   = dice.filter(d => d.isOne).length;
-    const glitch = ones > Math.floor(pool / 2);
+    const glitch = SR3EActor.isRuleOfOne(ones, pool);
 
     await this._postWaveCard({
       actorId:         this.id,
@@ -1968,6 +1968,27 @@ _prepareCharacter(sys, attr) {
       grenadeType:           options.grenadeType           ?? 'standard',
       footerNote:            options.footerNote            ?? null,
     });
+  }
+
+  /**
+   * SR3's Rule of One (p.38) — true only when EVERY die rolled comes up 1:
+   *
+   *   "If ALL the dice rolled for a test come up 1s, it means that the character
+   *    has made a disastrous mistake. The result may be humorous, embarrassing,
+   *    or deadly. The gamemaster determines whatever tone is appropriate…"
+   *
+   * The consequence is GM adjudication, not a mechanical penalty, and there is no
+   * second "critical" tier — a two-tier rule triggered by more than half the pool
+   * showing 1s is SR4's glitch, not anything in SR3.
+   *
+   * Only the first wave is ever counted, which needs no special handling: a die
+   * showing 1 does not explode, so no later wave can change the tally.
+   *
+   * Kept as one pure function because the same test is made from five separate
+   * roll paths, and five copies of a rule is five chances to get it wrong.
+   */
+  static isRuleOfOne(ones, pool) {
+    return pool > 0 && ones === pool;
   }
 
   /**
@@ -2184,12 +2205,13 @@ _prepareCharacter(sys, attr) {
     // Result block — only shown when all dice are resolved.
     let resultHtml = '';
     if (allDone) {
-      const criticalGlitch = glitch && successes === 0;
-      const glitchHtml     = criticalGlitch
-        ? '<div class="sr-critical-glitch">⚠ CRITICAL GLITCH! ⚠</div>'
-        : glitch
-          ? '<div class="sr-glitch">⚠ Glitch</div>'
-          : '';
+      // Rule of One (p.38). One tier, not two: all dice showing 1s is already an
+      // automatic zero-success failure, so the old "critical" tier could never be
+      // anything but a second label on the same event.
+      const glitchHtml = glitch
+        ? '<div class="sr-rule-of-one">⚠ RULE OF ONE — every die came up 1. '
+          + 'A disastrous mistake; the GM decides what it costs.</div>'
+        : '';
 
       // Weapon roll result — dodge was pre-declared, so we resolve immediately
       let stagingHtml = '';
@@ -3852,7 +3874,7 @@ _prepareCharacter(sys, attr) {
     } else {
       dice   = targetActor._rollWave(dodgeDice, DODGE_TN, true);
       ones   = dice.filter(d => d.isOne).length;
-      glitch = ones > Math.floor(dodgeDice / 2);
+      glitch = SR3EActor.isRuleOfOne(ones, dodgeDice);
     }
 
     await targetActor._postWaveCard({
@@ -4017,7 +4039,7 @@ _prepareCharacter(sys, attr) {
     } else {
       dice  = actor._rollWave(pool, effectiveTN, true);
       ones  = dice.filter(d => d.isOne).length;
-      glitch = ones > Math.floor(pool / 2);
+      glitch = SR3EActor.isRuleOfOne(ones, pool);
     }
 
     await actor._postWaveCard({
@@ -4745,7 +4767,7 @@ _prepareCharacter(sys, attr) {
     } else {
       dice   = actor._rollWave(pool, effectiveTN, true);
       ones   = dice.filter(d => d.isOne).length;
-      glitch = ones > Math.floor(pool / 2);
+      glitch = SR3EActor.isRuleOfOne(ones, pool);
     }
 
     await actor._postWaveCard({
@@ -5344,7 +5366,7 @@ _prepareCharacter(sys, attr) {
       info.skillDice    = def.pool;
       info.skillName    = def.label;
       info.defaultTnMod = def.tnMod;
-      info.astralPool   = def.allowPool ? (dActor.system.derived?.availableAstralPool ?? 0) : 0;
+      info.astralPool   = Math.min(dActor.system.derived?.availableAstralPool ?? 0, def.poolCap);
       return true;
     };
     if (!await _applyAstralDefault(atkInfo, this, 'attacker'))         return null;
@@ -5639,7 +5661,7 @@ _prepareCharacter(sys, attr) {
     } else {
       dice   = actor._rollWave(pool, effectiveTN, true);
       ones   = dice.filter(d => d.isOne).length;
-      glitch = ones > Math.floor(pool / 2);
+      glitch = SR3EActor.isRuleOfOne(ones, pool);
     }
 
     await actor._postWaveCard({
