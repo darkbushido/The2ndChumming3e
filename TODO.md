@@ -540,12 +540,26 @@ cards already did it correctly (`|| ctx.atkTN`), so it was an oversight, not a c
 It never fired, because the input always exists today — **but the moment a corner is rendered
 read-only or conditionally, every one of those modifiers silently vanishes and the exchange
 resolves at TN 4.** That is squarely in this task's path, which is why it was fixed first, ahead of
-any rendering change. All eight now read `|| ctx.<tn>`; the three fixed here also carry a trailing
-`|| 4` so a missing ctx field yields 4 rather than `NaN`.
+any rendering change.
 
-⚠ Not unit-tested: these handlers need a live chat-card DOM plus actors, which the harness does not
-stub. Verified by reading all eight call sites. **Add coverage when the corner rendering changes** —
-that is exactly when this regresses.
+**Now one pure function, `SR3EActor.cornerTN(raw, ctxTN, floor = 4)`, used by all 16 reads across
+the 8 cards.** The inline versions had split into two wrong behaviours, and the extraction fixes
+both at once:
+
+| Old behaviour | Cards | Failure |
+|---|---|---|
+| `\|\| 4` | melee · astral · Defragged cybercombat | discards reach / defaulting / called-shot |
+| `\|\| ctxTN` with no guard | contested · MIJI · the 3 Orthodox | `Math.max(2, undefined)` = **NaN**, fails every die |
+
+⚠ A typed **0** falls *through* to `ctxTN` rather than to the floor of 2, because `0` is falsy. That
+is pre-existing behaviour, **pinned by a test rather than changed** — a GM typing 0 most likely
+means "as low as possible", so revisit it as a decision, not as a tidy-up.
+
+Covered by `tests/corner-tn.test.mjs` (19 assertions: precedence, the p.112 floor of 2, the
+never-NaN guarantee, and the typed-0 case). The *handlers* remain untested — they need a live
+chat-card DOM plus actors, which the harness does not stub — but the rule they all share no longer
+does. Left alone deliberately: the two `dlg.element` reads at `SR3EActor.js:6954` and `:7115` are
+setup dialogs that **produce** `ctx.atkTN`, not consumers of it.
 
 ### Enabler worth knowing before starting
 

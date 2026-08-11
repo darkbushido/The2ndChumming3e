@@ -212,8 +212,8 @@ export class SR3EMIJI {
 
     const intDice = Math.max(1, parseInt(card?.querySelector('.sr-miji-int-dice')?.value) || ctx.intDice);
     const defDice = Math.max(1, parseInt(card?.querySelector('.sr-miji-def-dice')?.value) || ctx.defDice);
-    const intTN   = Math.max(2, parseInt(card?.querySelector('.sr-miji-int-tn')?.value) || ctx.intTN);
-    const defTN   = Math.max(2, parseInt(card?.querySelector('.sr-miji-def-tn')?.value) || ctx.defTN);
+    const intTN   = game.sr3e.SR3EActor.cornerTN(card?.querySelector('.sr-miji-int-tn')?.value, ctx.intTN);
+    const defTN   = game.sr3e.SR3EActor.cornerTN(card?.querySelector('.sr-miji-def-tn')?.value, ctx.defTN);
 
     const intActor = game.actors.get(ctx.intruderRiggerId) ?? game.actors.get(ctx.intruderVehicleId);
     const defActor = game.actors.get(ctx.defenderRiggerId) ?? game.actors.get(ctx.targetVehicleId);

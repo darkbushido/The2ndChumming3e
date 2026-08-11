@@ -469,8 +469,8 @@ export class SR3EActor extends Actor {
     const defSkillDice = parseInt(card.querySelector('.sr-cc-def-skill')?.value) || ctx.defSkillDice || 1;
     const atkHackPool  = parseInt(card.querySelector('.sr-cc-atk-pool')?.value)  || 0;
     const defHackPool  = parseInt(card.querySelector('.sr-cc-def-pool')?.value)  || 0;
-    const atkTN        = Math.max(2, parseInt(card.querySelector('.sr-cc-atk-tn')?.value)  || ctx.atkTN || 4);
-    const defTN        = Math.max(2, parseInt(card.querySelector('.sr-cc-def-tn')?.value)  || ctx.defTN || 4);
+    const atkTN        = SR3EActor.cornerTN(card.querySelector('.sr-cc-atk-tn')?.value, ctx.atkTN);
+    const defTN        = SR3EActor.cornerTN(card.querySelector('.sr-cc-def-tn')?.value, ctx.defTN);
     const atkDmgCode   = card.querySelector('.sr-cc-atk-dmg')?.value.trim() || ctx.atkDamageCode;
     const defDmgCode   = card.querySelector('.sr-cc-def-dmg')?.value.trim() || ctx.defDamageCode;
     const atkDmgBase   = SR3EItem.parseDamageCode(atkDmgCode) ?? ctx.atkDamageBase;
@@ -3649,8 +3649,8 @@ _prepareCharacter(sys, attr) {
     const defSkillDice  = parseInt(card.querySelector('.sr-melee-def-skill-dice')?.value) || ctx.defSkillDice || 1;
     const atkPool = Math.max(1, atkSkillDice + atkCombatPool);
     const defPool = Math.max(1, defSkillDice + defCombatPool);
-    const atkTN   = Math.max(2, parseInt(card.querySelector('.sr-melee-atk-tn')?.value) || ctx.atkTN || 4);
-    const defTN   = Math.max(2, parseInt(card.querySelector('.sr-melee-def-tn')?.value) || ctx.defTN || 4);
+    const atkTN   = SR3EActor.cornerTN(card.querySelector('.sr-melee-atk-tn')?.value, ctx.atkTN);
+    const defTN   = SR3EActor.cornerTN(card.querySelector('.sr-melee-def-tn')?.value, ctx.defTN);
 
     // Read edited damage codes
     const atkRawDamage = card.querySelector('.sr-melee-atk-damage')?.value.trim() || ctx.atkRawDamage;
@@ -3961,6 +3961,34 @@ _prepareCharacter(sys, attr) {
    * @param {number} attackHits
    * @returns {{cleanMiss: boolean, carried: number}}
    */
+  /**
+   * Resolve one corner's target number on a two-corner card.
+   *
+   * Precedence: what the user typed → the value computed when the card was built →
+   * the SR3 base of 4. Floored at 2, because "no target number can ever be less than
+   * 2" (p.112).
+   *
+   * Pure, and extracted for a reason. This lived inline in eight handlers with two
+   * different behaviours: melee, astral and Defragged cybercombat fell back to a
+   * **hardcoded 4**, silently discarding the reach differential, the defaulting
+   * penalty and the called-shot +4 that `ctxTN` carries; the other five fell back to
+   * `ctxTN` with no final guard, so a missing field yielded `Math.max(2, undefined)`
+   * — **NaN**, which fails every die. One function has one behaviour.
+   *
+   * ⚠ A typed **0** falls through to `ctxTN`, not to the floor of 2 — `0` is falsy.
+   * That is existing behaviour, pinned by tests rather than changed: a GM typing 0
+   * most likely means "as low as possible", so if this is ever revisited, treat it as
+   * a deliberate decision and not a tidy-up.
+   *
+   * @param {string|number|undefined} raw    the card input's value, if the input exists
+   * @param {number|undefined} ctxTN         the TN computed when the card was built
+   * @param {number} [floor=4]               last resort when neither is usable
+   * @returns {number} a target number of at least 2
+   */
+  static cornerTN(raw, ctxTN, floor = 4) {
+    return Math.max(2, parseInt(raw) || ctxTN || floor);
+  }
+
   static dodgeOutcome(dodgeHits, attackHits) {
     const d = Math.max(0, Number(dodgeHits) || 0);
     const a = Math.max(0, Number(attackHits) || 0);
@@ -5786,8 +5814,8 @@ _prepareCharacter(sys, attr) {
     const defAstralPool = parseInt(card.querySelector('.sr-astral-def-pool')?.value) || 0;
     const atkPool       = Math.max(1, (ctx.atkSkillDice ?? 1) + atkAstralPool);
     const defPool       = Math.max(1, (ctx.defSkillDice ?? 1) + defAstralPool);
-    const atkTN         = Math.max(2, parseInt(card.querySelector('.sr-astral-atk-tn')?.value) || ctx.atkTN || 4);
-    const defTN         = Math.max(2, parseInt(card.querySelector('.sr-astral-def-tn')?.value) || ctx.defTN || 4);
+    const atkTN         = SR3EActor.cornerTN(card.querySelector('.sr-astral-atk-tn')?.value, ctx.atkTN);
+    const defTN         = SR3EActor.cornerTN(card.querySelector('.sr-astral-def-tn')?.value, ctx.defTN);
     const atkRawDamage  = card.querySelector('.sr-astral-atk-damage')?.value.trim() || ctx.atkRawDamage;
     const defRawDamage  = card.querySelector('.sr-astral-def-damage')?.value.trim() || ctx.defRawDamage;
     const isPhysical    = card.querySelector('.sr-astral-physical-dmg')?.checked ?? false;
@@ -6507,8 +6535,8 @@ _prepareCharacter(sys, attr) {
 
     const atkPool   = Math.max(1, parseInt(card.querySelector('.sr-contested-atk-pool')?.value)   || ctx.atkPool);
     const oppPool   = Math.max(1, parseInt(card.querySelector('.sr-contested-opp-pool')?.value)   || ctx.oppPool);
-    const atkTN     = Math.max(2, parseInt(card.querySelector('.sr-contested-atk-tn')?.value)     || ctx.atkTN);
-    const oppTN     = Math.max(2, parseInt(card.querySelector('.sr-contested-opp-tn')?.value)     || ctx.oppTN);
+    const atkTN     = SR3EActor.cornerTN(card.querySelector('.sr-contested-atk-tn')?.value, ctx.atkTN);
+    const oppTN     = SR3EActor.cornerTN(card.querySelector('.sr-contested-opp-tn')?.value, ctx.oppTN);
     const atkDamage = card.querySelector('.sr-contested-atk-damage')?.value.trim() || ctx.atkDamage;
     const oppDamage = card.querySelector('.sr-contested-opp-damage')?.value.trim() || ctx.oppDamage;
 
@@ -6797,8 +6825,8 @@ _prepareCharacter(sys, attr) {
 
     const deckerDice = Math.max(1, parseInt(card?.querySelector('.sr-ost-decker-dice')?.value) || ctx.deckerDice);
     const hostDice   = Math.max(1, parseInt(card?.querySelector('.sr-ost-host-dice')?.value)   || ctx.hostDice);
-    const deckerTN   = Math.max(2, parseInt(card?.querySelector('.sr-ost-decker-tn')?.value)   || ctx.deckerTN);
-    const hostTN     = Math.max(2, parseInt(card?.querySelector('.sr-ost-host-tn')?.value)      || ctx.hostTN);
+    const deckerTN   = SR3EActor.cornerTN(card?.querySelector('.sr-ost-decker-tn')?.value, ctx.deckerTN);
+    const hostTN     = SR3EActor.cornerTN(card?.querySelector('.sr-ost-host-tn')?.value, ctx.hostTN);
 
     const deckerActor = game.actors.get(ctx.deckerActorId);
     const hostActor   = game.actors.get(ctx.hostActorId);
@@ -7162,8 +7190,8 @@ _prepareCharacter(sys, attr) {
 
     const atkDice = Math.max(1, parseInt(card?.querySelector('.sr-icia-atk-dice')?.value) || ctx.atkDice);
     const defDice = Math.max(0, parseInt(card?.querySelector('.sr-icia-def-dice')?.value) || ctx.defDice);
-    const atkTN   = Math.max(2, parseInt(card?.querySelector('.sr-icia-atk-tn')?.value)  || ctx.atkTN);
-    const defTN   = Math.max(2, parseInt(card?.querySelector('.sr-icia-def-tn')?.value)  || ctx.defTN);
+    const atkTN   = SR3EActor.cornerTN(card?.querySelector('.sr-icia-atk-tn')?.value, ctx.atkTN);
+    const defTN   = SR3EActor.cornerTN(card?.querySelector('.sr-icia-def-tn')?.value, ctx.defTN);
 
     const icActor     = game.actors.get(ctx.icActorId);
     const deckerActor = game.actors.get(ctx.deckerActorId);
@@ -7277,8 +7305,8 @@ _prepareCharacter(sys, attr) {
 
     const atkDice  = Math.max(1, parseInt(card?.querySelector('.sr-occ-atk-dice')?.value)  || ctx.atkDice);
     const soakDice = Math.max(1, parseInt(card?.querySelector('.sr-occ-soak-dice')?.value) || ctx.soakPool);
-    const atkTN    = Math.max(2, parseInt(card?.querySelector('.sr-occ-atk-tn')?.value)   || ctx.atkTN);
-    const soakTN   = Math.max(2, parseInt(card?.querySelector('.sr-occ-soak-tn')?.value)  || ctx.soakTN);
+    const atkTN    = SR3EActor.cornerTN(card?.querySelector('.sr-occ-atk-tn')?.value, ctx.atkTN);
+    const soakTN   = SR3EActor.cornerTN(card?.querySelector('.sr-occ-soak-tn')?.value, ctx.soakTN);
 
     const deckerActor = game.actors.get(ctx.deckerActorId);
     const icActor     = game.actors.get(ctx.icActorId);
