@@ -22,13 +22,13 @@ independent.
 | Group | Items |
 |---|---|
 | 🔵 In progress | 2 |
-| 🟢 Socket combat — follow-ups | 24 · 27 |
+| 🟢 Socket combat — follow-ups | 24 |
 | 🔴 Confirmed bugs, still open | 5 · 14 · 25 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 21 · 22 · 26 · 28 · 29 · 31 · 32 · 33 · 34 · 35 |
+| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 21 · 22 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -502,12 +502,41 @@ the choice drives everything else.
 cybercombat card (`~:460`) share the both-corners-one-client shape and should be done in the same
 pass or they become the next report.
 
-## 27. Audit every chat-card button for who may click it
+## 27. ✅ Audit every chat-card button for who may click it — **one left, by design**
 
-**6 of ~29 are gated.** The rest are actionable by anyone who can see the card, which is the
-whole table — combat cards are public by design and that part is wanted.
+**✅ DONE — 27 of 28 gated.** The only ungated button is `.sr-melee-roll-btn`, deliberately left
+for [#24](#24), which deletes it rather than guarding it. Kept for the record; this file is the
+progress, not a queue.
 
-Gated so far: `.sr-soak-btn`, `.sr-dodge-declare-btn`, `.sr-dodge-roll-btn`, `.sr-soak-roll-btn`,
+### What the audit actually found
+
+The ⚠ below was right, and it was the whole job. **11 of the 21 buttons named an actor under a key
+`_payloadActorId` does not resolve** — `deckerActorId` (×3), `conjurerActorId`, `passengerActorId`,
+`targetVehicleId`, `defenderActorId`, `atkActorId`/`oppActorId`, `intruderRiggerId`/
+`defenderRiggerId`, and `attackerActorId`/`defenderActorId`. Gating those with plain `_mine` would
+have failed closed and quietly made each one **GM-only** — a worse bug than the one being fixed,
+and invisible to whoever shipped it.
+
+So `_mineId(id)` / `_isDeciderId(id)` were added, taking the id explicitly. Widening
+`_payloadActorId` to swallow every key was rejected: it would drag `attackerActorId` in through the
+back door on cards carrying both, and an attacker must never inherit rights over their target's card.
+
+### Two-corner cards are only half-fixed
+
+`.sr-astral-roll-btn`, `.sr-contested-roll-btn` and `.sr-miji-roll-btn` carry **both** participants
+and one button rolls the whole exchange — the same structural flaw as melee. They are gated with
+`_mineAny(...)`, so only one of the two people involved can click, but each side still does not edit
+only its own corner. **[#24](#24) should take these three with it**, not just the melee card.
+
+### ⚠ Landmine found on the way — `node --check` proves nothing here
+
+The 21 gates were inserted by script, and 11 of the deny messages contained an unescaped apostrophe
+(`the decker's owner`). **`node --check scripts/sr3e.js` exited 0 on the broken file.** Every file
+under `scripts/` is an ES module in a `.js` file, and for those Node re-parses as ESM and silently
+stops reporting syntax errors. ESLint caught it instantly. See the entry now at the top of
+CLAUDE.md's *Known issues*.
+
+Previously gated: `.sr-soak-btn`, `.sr-dodge-declare-btn`, `.sr-dodge-roll-btn`, `.sr-soak-roll-btn`,
 `.sr-explode-btn`, `.sr-assign-damage-btn`.
 
 Two of the original ~31 are gone rather than gated: [#28](#28) deleted the Spell Defense

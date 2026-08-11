@@ -1251,11 +1251,34 @@ button so the HUD never sprawls. (`runDrivingTest` warns if the vehicle has no l
 ---
 
 ## Known issues / watch out for
+- 🔴 **`node --check` is USELESS on this codebase — use `npx eslint <file>` instead.**
+  Every file under `scripts/` is an ES module in a `.js` file, and for those `node --check`
+  **exits 0 on genuine syntax errors, printing nothing.** Verified 2026-08-10 against Node
+  v24.18.0: a two-line `.js` containing `import {a} from './x.js'` plus an unescaped
+  apostrophe inside a string passes `node --check` with exit 0, while the identical file
+  saved as `.mjs`, or without the `import`, fails correctly. (Node can't parse it as
+  CommonJS, re-parses as ESM, and the check silently stops reporting.)
+  **This bit for real:** 11 broken string literals in `sr3e.js` passed `node --check` and
+  were caught only by ESLint (`Parsing error: Unexpected token s`). Treat any past
+  "syntax OK" from `node --check` on a `scripts/**/*.js` file as meaningless.
 - **`system.json` changes require a full Foundry restart** — a browser reload is not enough. JS/CSS changes hot-reload; manifest/data-model changes do not.
 - `prepareDerivedData` must initialise missing fields in-place: `if (!sys.x) sys.x = {}` not `const x = sys.x ?? {}`
 - TypeDataModel defaults only apply to **newly created** documents — always guard reads with `?? defaultValue` for existing actors
 - Circular import between SR3EActor and SR3EItem is broken via `game.sr3e` registry
 - `DialogV2.render(true)` does NOT await user input — always use `DialogV2.wait()`
 - Chat button handlers must use `renderChatMessageHTML` hook (v13), not `renderChatMessage`
+- **Every chat-card button must be permission-gated at render time**, not just guarded by
+  `_checkBtn`/`_claimBtn` — those stop *double* clicks, not *wrong-person* clicks. Cards are
+  public by design, so without a gate any spectator can roll your dice. Helpers in `sr3e.js`:
+  `_mine(p)` (any owner or GM — for buttons that post a card onward), `_isDecider(p)` (exactly
+  one user — for buttons that **roll**), `_mineId(id)` / `_isDeciderId(id)` (same, for the many
+  payloads that name their actor something other than `actorId`), `_mineAny(...ids)` (either
+  side of a two-corner card), `_payload(btn)` and `_denyBtn(btn, why)`.
+  ⚠ **Check the payload's actor key before gating.** `_payloadActorId` resolves
+  `actorId → icActorId → vehicleActorId → wardActorId → targetActorId` **only**; a card using
+  `deckerActorId`, `conjurerActorId`, `passengerActorId`, `targetVehicleId`, `defenderActorId`,
+  `atkActorId` or `intruderRiggerId` **fails closed and becomes GM-only** unless you pass the id
+  explicitly. `attackerActorId` is excluded on purpose — an attacker must never inherit rights
+  over their target's card.
 - Explosion button payloads must carry all context fields forward through every wave or final-wave logic loses context
 - `renderCombatTracker` fires on every render — guard any DOM insertions with a class check to avoid duplicates (e.g. `if (!el.querySelector('.sr3e-chase-btn'))`)

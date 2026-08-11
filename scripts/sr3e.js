@@ -2049,6 +2049,48 @@ function _claimAuto(key) {
   return true;
 }
 
+/**
+ * The two predicates above, but for a payload that names its actor under a key
+ * `_payloadActorId` does not know.
+ *
+ * Most cards do not use `actorId`. Auditing every chat button turned up eleven that
+ * carry `deckerActorId`, `conjurerActorId`, `passengerActorId`, `targetVehicleId`,
+ * `defenderActorId`, `atkActorId`/`oppActorId` or `intruderRiggerId`. Passing the id
+ * explicitly is deliberate: widening `_payloadActorId` to swallow them all would drag
+ * `attackerActorId` in by the back door on the cards that carry both, and an attacker
+ * must never inherit rights over their target's card.
+ */
+function _mineId(actorId) {
+  if (game.user.isGM) return true;
+  if (!actorId) return false;
+  return game.actors.get(actorId)?.isOwner === true;
+}
+
+function _isDeciderId(actorId) {
+  if (game.user.isGM) return true;
+  const a = actorId ? game.actors.get(actorId) : null;
+  if (!a) return false;                    // fail CLOSED
+  return game.sr3e.SR3EQuery.deciderFor(a) === game.user.id;
+}
+
+/**
+ * Either side of a two-corner card may act.
+ *
+ * A stopgap, not a fix. The astral, contested and MIJI cards carry BOTH participants and
+ * one button rolls the whole exchange — the same structural flaw as the melee boxing card
+ * (see TODO #24). Narrowing "anyone at the table" to "one of the two people involved" is
+ * a real improvement; it does not make each side edit only its own corner.
+ */
+function _mineAny(...actorIds) {
+  return actorIds.some(id => _mineId(id));
+}
+
+/** Parse a button's payload, or null if it is unreadable. Callers leave those alone. */
+function _payload(btn) {
+  try { return JSON.parse(btn.dataset.payload ?? '{}'); }
+  catch { return null; }
+}
+
 /** Dim a button this client must not press, with the reason on hover. */
 function _denyBtn(btn, why) {
   btn.disabled = true;
@@ -2218,6 +2260,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // MIJI test (electronic warfare) — roll both sides + apply degradation
   html.querySelectorAll('.sr-miji-roll-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'mijiroll', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_mineAny(pl.intruderRiggerId, pl.defenderRiggerId)) return _denyBtn(btn, 'Only a rigger in this contest (or the GM) can roll it.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2228,6 +2272,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
 
   html.querySelectorAll('.sr-miji-degradation-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'mijideg', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_mineId(pl.targetVehicleId)) return _denyBtn(btn, 'Only the target vehicle\'s owner (or the GM) can apply this degradation.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2238,6 +2284,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
 
   html.querySelectorAll('.sr-ost-roll-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'ostroll', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_isDeciderId(pl.deckerActorId)) return _denyBtn(btn, 'Only the decker (or the GM) rolls this System Test.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2248,6 +2296,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
 
   html.querySelectorAll('.sr-occ-roll-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'occroll', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_isDeciderId(pl.deckerActorId)) return _denyBtn(btn, 'Only the decker (or the GM) rolls this cybercombat.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2258,6 +2308,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
 
   html.querySelectorAll('.sr-icia-roll-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'iciaroll', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_isDecider(pl)) return _denyBtn(btn, 'Only the IC\'s owner (or the GM) rolls this attack.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2268,6 +2320,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
 
   html.querySelectorAll('.sr-icia-assign-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'iciaassign', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_mineId(pl.deckerActorId)) return _denyBtn(btn, 'Only the decker\'s owner (or the GM) can assign this.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2295,6 +2349,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Spell resist button — posts the editable Resist-Spell card (Willpower/Body, TN = Force)
   html.querySelectorAll('.sr-spell-soak-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'spellsoak', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_mine(pl)) return _denyBtn(btn, 'Only the target\'s owner (or the GM) can open this resistance card.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2309,6 +2365,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Roll-to-Resist on a spell-resist card — opposed roll (net vs caster stages damage, no soak)
   html.querySelectorAll('.sr-spell-resist-roll-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'spellresistroll', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_isDecider(pl)) return _denyBtn(btn, 'Only the target (or the GM) rolls this resistance.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2345,6 +2403,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Confirm Summoning button — creates the spirit actor
   html.querySelectorAll('.sr-summon-confirm-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'summon', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_mineId(pl.conjurerActorId)) return _denyBtn(btn, 'Only the conjurer\'s owner (or the GM) can confirm this summoning.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2359,6 +2419,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Drain button — posts drain resist card for the caster
   html.querySelectorAll('.sr-drain-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'drain', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_mine(pl)) return _denyBtn(btn, 'Only the caster\'s owner (or the GM) can open this drain card.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2373,6 +2435,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Roll Drain button on drain card
   html.querySelectorAll('.sr-drain-roll-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'drainroll', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_isDecider(pl)) return _denyBtn(btn, 'Only the caster (or the GM) rolls this drain.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2390,6 +2454,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Spell Defense roll button — on the spell defense phase card
   html.querySelectorAll('.sr-spell-defense-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'spelldef', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_isDeciderId(pl.defenderActorId)) return _denyBtn(btn, 'Only the defender (or the GM) rolls their Spell Defense.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2401,6 +2467,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Proceed to Resist Spell — skips remaining defense rolls
   html.querySelectorAll('.sr-spell-defense-proceed-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'spelldefproceed', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_mineId(pl.sc?.attackerActorId)) return _denyBtn(btn, 'Only the caster (or the GM) can skip the remaining defenses.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2412,6 +2480,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Astral Combat Roll! button on boxing card
   html.querySelectorAll('.sr-astral-roll-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'astral', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_mineAny(pl.attackerActorId, pl.defenderActorId)) return _denyBtn(btn, 'Only a combatant in this exchange (or the GM) can roll it.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2423,6 +2493,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Astral soak button — posts astral resist card (INT dice, TN = winner's CHA)
   html.querySelectorAll('.sr-astral-soak-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'astralsoak', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_mine(pl)) return _denyBtn(btn, 'Only the target\'s owner (or the GM) can open this astral resistance card.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2437,6 +2509,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Roll to Resist (Astral) button on astral soak card
   html.querySelectorAll('.sr-astral-soak-roll-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'astralsoakroll', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_isDecider(pl)) return _denyBtn(btn, 'Only the target (or the GM) rolls this astral resistance.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2448,6 +2522,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Aura Reading complementary roll button on assensing result card
   html.querySelectorAll('.sr-aura-reading-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'aurareading', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_isDecider(pl)) return _denyBtn(btn, 'Only this actor\'s owner (or the GM) rolls this aura reading.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2461,6 +2537,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Universal contested roll button
   html.querySelectorAll('.sr-contested-roll-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'contested', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_mineAny(pl.atkActorId, pl.oppActorId)) return _denyBtn(btn, 'Only a participant in this test (or the GM) can roll it.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2474,6 +2552,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Ramming — vehicle soak button (body + control pool vs TN power)
   html.querySelectorAll('.sr-ram-vehicle-soak-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'ramvehicle', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_isDecider(pl)) return _denyBtn(btn, 'Only the vehicle\'s owner (or the GM) rolls this soak.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2485,6 +2565,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Ramming — individual passenger resist button
   html.querySelectorAll('.sr-ram-passenger-resist-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'rampassenger', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_isDeciderId(pl.passengerActorId)) return _denyBtn(btn, 'Only this passenger\'s owner (or the GM) rolls this resistance.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
@@ -2514,6 +2596,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Matrix combat — IC resist matrix damage (opens IC resist card)
   html.querySelectorAll('.sr-matrix-ic-resist-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'maticresist', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_mine(pl)) return _denyBtn(btn, 'Only the IC\'s owner (or the GM) can open this resistance card.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
