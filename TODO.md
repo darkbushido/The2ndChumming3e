@@ -992,9 +992,41 @@ Two rules constraints any implementation has to respect (both from core p.112):
    properly equipped smart-weapon"*. A character with smartlink cyberware firing an unmodified pistol
    gets **nothing** — a naive `actor.items.find(smartlink)` check will wrongly hand out −2. Needs a
    smartgun flag on the *weapon* as well as the vision/cyber side.
-2. **Gyro stabilization "reduces recoil *or* movement modifier"** — a per-shot player choice, not a
-   fixed number. It cannot be modelled as a flat modifier; it needs an either/or control at fire time
-   and has to interact with the existing recoil maths rather than sit beside it.
+2. **Gyro stabilization is not a flat modifier, and it is not only about recoil.** It cannot be
+   modelled as a number beside the others; it needs a control at fire time and has to interact with
+   the existing recoil maths rather than sit next to it. Detail verified against the book
+   2026-08-10 — see the sub-section below, which is bigger than this line implies.
+
+### Gyro stabilization — the full picture *(core p.112 and p.280)*
+
+**It cancels MOVEMENT, not just recoil.** Easy to remember as a recoil accessory and miss the other
+half. p.112, under *Attacker Running*: *"Movement modifiers can be counteracted by gyro-stabilization
+systems."* Those are exactly the rows now grouped under **Attacker** in the GM window
+([#29](#29)) — Attacker running **+4**, running difficult **+6**, walking **+1**, walking difficult
+**+2**. So gyro has to reach the GM's TN window, not merely the fire dialog's recoil maths.
+
+**Ratings are concrete:** standard **5**, deluxe **6** (p.280) — so `gyroRating` is a real number
+with known defaults, not a guess.
+
+⚠ **RAW ambiguity, do not resolve it silently.** The two passages disagree on wording:
+- p.112 table: *"Reduces recoil **or** movement modifier"* → reads as a per-shot choice.
+- p.280 gear entry: *"neutralizes recoil **and** movement modifiers up to its rating"* → reads as
+  one rating-capped allowance covering both.
+
+Whether the rating is a shared pool or applies in full to each is genuinely unclear. Surface it as a
+GM-adjustable control rather than hard-coding either reading.
+
+⚠ **The drawbacks are severe and are modelled nowhere.** Implementing only the upside would hand out
+a large benefit for free. From p.280, all of it currently missing:
+- **+4 to the wearer's target numbers in melee combat**
+- **only half their Combat Pool dice** — interacts with every pool path this branch touched
+- +1 impact **and** ballistic armour; **not concealable**
+- 5 minutes to don; one Complex Action to quick-release; two Complex Actions to attach or remove
+  the weapon
+
+**It also bundles smart goggles.** *"Standard military systems also include smart goggles with a
+protected cable connection"*, and mounted smartguns still feed through palm induction links — so
+gyro detection and constraint 1 above are not independent.
 
 Suggested shape: `smartgunLink` / `laserSight` (booleans) and `gyroRating` (number) on the firearm
 model; a vision-gear flag reachable from the actor for goggles; keep `accessories` as the human-readable
