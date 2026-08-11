@@ -26,7 +26,7 @@ independent.
 | 🔴 Confirmed bugs, still open | 5 · 14 · 25 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
-| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 |
+| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
 | ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 22 · 26 · 28 · 29 · 31 · 32 · 33 · 34 · 35 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -1034,6 +1034,65 @@ model; a vision-gear flag reachable from the actor for goggles; keep `accessorie
 description. Then delete the guessing in `SR3ECombatModifiers` and read the fields.
 
 See [audit/socket-combat-plan.md](audit/socket-combat-plan.md) — "Maintainer decisions — 2026-08-05".
+
+## 36. Detect which vision an attacker actually has
+
+The Visibility Table renders in the GM's TN window ([#29](#29)) as two dropdowns — condition, and
+which vision the attacker is using — with **nothing pre-selected**. The second dropdown is
+information the system could largely work out for itself.
+
+### What is already derivable
+
+**Metatype is a real stored field** (`ActorDataModels.js:82` / `:176`, `StringField`, initial
+`'human'`), and core **p.40** assigns natural vision explicitly:
+
+| Metatype | Natural vision |
+|---|---|
+| Human | none |
+| Elf | Low-Light — *"They also have low-light vision"* |
+| Ork | Low-Light — *"They too have low-light vision"* |
+| Dwarf | Thermographic — *"They also have thermographic vision"* |
+| Troll | Thermographic — *"They too have thermographic vision"* |
+
+So natural vision is a lookup, not a guess.
+
+### ⚠ Cybereyes REMOVE natural vision — the rule that makes this non-obvious
+
+Core **p.299**, Cybereyes:
+
+> "If a metahuman has his or her eyes cybernetically replaced, he or she **loses natural vision
+> enhancements such as low light or thermographic vision**, but can have such features installed in
+> the new eyes."
+
+The eyes are gone. A naive "take the best vision available" detector gets this exactly backwards —
+it would keep handing an elf with cybereyes their natural low-light, which they no longer have.
+
+And because the slash reads **cybernetic first, natural second** (p.111), cyber vision is the
+**worse** of the two. So cybereyes are a genuine mechanical *downgrade* for an elf, ork, dwarf or
+troll who had natural enhancement: same feature, worse column. In Minimal Light an elf reads +2
+naturally and **+4** through cybereyes with low-light installed. That is a real, checkable
+consequence any detector must reproduce rather than smooth over.
+
+### Open question — retinal modification
+
+The same paragraph offers *"Retinal modification, rather than eye replacement"* as an alternative.
+It modifies the natural eye rather than replacing it, so it presumably preserves natural vision —
+but a retinal low-light enhancement is still an *electronic* enhancement, and the slash rule splits
+on *"cybernetic or electronic vision"* versus *"natural vision"*. Whether a retinal mod reads as the
+cyber or the natural column is genuinely unclear. **Do not resolve it silently** — surface it, or
+keep the dropdown overridable so the GM decides.
+
+### Blocked on the same gap as [#18](#18)
+
+Vision gear exists only as item **names** — `'Cybereyes'`, `'Low-Light Vision'`,
+`'Thermographic Vision'` in `populate-cyberware.js`, plus goggles as free-text gear — with **zero**
+references anywhere in `scripts/`. Detecting it today means name-matching, exactly like
+`guessGearModifiers` does for smartlink. Metatype half is solid; the cyberware half needs the
+structured fields #18 is about, or it is another guess.
+
+**Suggested shape:** a derived `system.derived.vision` — `{ natural, cyber: [], effective }` — so
+every consumer reads one resolved answer rather than each re-deriving it. Then pre-select the GM
+window's vision dropdown from it, still freely overridable.
 
 ## 20. Migrate ~58 `renderDialogV2` hook sites to `DialogV2.wait`'s `render` option
 
