@@ -469,8 +469,8 @@ export class SR3EActor extends Actor {
     const defSkillDice = parseInt(card.querySelector('.sr-cc-def-skill')?.value) || ctx.defSkillDice || 1;
     const atkHackPool  = parseInt(card.querySelector('.sr-cc-atk-pool')?.value)  || 0;
     const defHackPool  = parseInt(card.querySelector('.sr-cc-def-pool')?.value)  || 0;
-    const atkTN        = Math.max(2, parseInt(card.querySelector('.sr-cc-atk-tn')?.value)  || 4);
-    const defTN        = Math.max(2, parseInt(card.querySelector('.sr-cc-def-tn')?.value)  || 4);
+    const atkTN        = Math.max(2, parseInt(card.querySelector('.sr-cc-atk-tn')?.value)  || ctx.atkTN || 4);
+    const defTN        = Math.max(2, parseInt(card.querySelector('.sr-cc-def-tn')?.value)  || ctx.defTN || 4);
     const atkDmgCode   = card.querySelector('.sr-cc-atk-dmg')?.value.trim() || ctx.atkDamageCode;
     const defDmgCode   = card.querySelector('.sr-cc-def-dmg')?.value.trim() || ctx.defDamageCode;
     const atkDmgBase   = SR3EItem.parseDamageCode(atkDmgCode) ?? ctx.atkDamageBase;
@@ -3649,8 +3649,8 @@ _prepareCharacter(sys, attr) {
     const defSkillDice  = parseInt(card.querySelector('.sr-melee-def-skill-dice')?.value) || ctx.defSkillDice || 1;
     const atkPool = Math.max(1, atkSkillDice + atkCombatPool);
     const defPool = Math.max(1, defSkillDice + defCombatPool);
-    const atkTN   = Math.max(2, parseInt(card.querySelector('.sr-melee-atk-tn')?.value) || 4);
-    const defTN   = Math.max(2, parseInt(card.querySelector('.sr-melee-def-tn')?.value) || 4);
+    const atkTN   = Math.max(2, parseInt(card.querySelector('.sr-melee-atk-tn')?.value) || ctx.atkTN || 4);
+    const defTN   = Math.max(2, parseInt(card.querySelector('.sr-melee-def-tn')?.value) || ctx.defTN || 4);
 
     // Read edited damage codes
     const atkRawDamage = card.querySelector('.sr-melee-atk-damage')?.value.trim() || ctx.atkRawDamage;
@@ -5786,8 +5786,8 @@ _prepareCharacter(sys, attr) {
     const defAstralPool = parseInt(card.querySelector('.sr-astral-def-pool')?.value) || 0;
     const atkPool       = Math.max(1, (ctx.atkSkillDice ?? 1) + atkAstralPool);
     const defPool       = Math.max(1, (ctx.defSkillDice ?? 1) + defAstralPool);
-    const atkTN         = Math.max(2, parseInt(card.querySelector('.sr-astral-atk-tn')?.value) || 4);
-    const defTN         = Math.max(2, parseInt(card.querySelector('.sr-astral-def-tn')?.value) || 4);
+    const atkTN         = Math.max(2, parseInt(card.querySelector('.sr-astral-atk-tn')?.value) || ctx.atkTN || 4);
+    const defTN         = Math.max(2, parseInt(card.querySelector('.sr-astral-def-tn')?.value) || ctx.defTN || 4);
     const atkRawDamage  = card.querySelector('.sr-astral-atk-damage')?.value.trim() || ctx.atkRawDamage;
     const defRawDamage  = card.querySelector('.sr-astral-def-damage')?.value.trim() || ctx.defRawDamage;
     const isPhysical    = card.querySelector('.sr-astral-physical-dmg')?.checked ?? false;

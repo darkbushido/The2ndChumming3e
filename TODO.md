@@ -519,8 +519,40 @@ report:
 
 They are not merely similar — the three Orthodox Matrix cards emit the melee layout classes verbatim
 (`sr-melee-boxing`, `sr-melee-vs`, `sr-miji-corner`), and CLAUDE.md describes MIJI's card as *"cloned
-from the melee boxing card"*. **This is one bug with eight copies**, which argues for fixing the
-shared `_corner` shape once rather than eight times — decide that before writing code.
+from the melee boxing card"*. **This is one bug with eight copies.**
+
+⚠ **Correction to an earlier note here: there is NO shared `_corner` to fix once.** There are
+**eight separate local definitions** — `SR3EActor.js:403` (cybercombat) · `:3551` (melee) · `:5726`
+(astral) · `:6322` (contested) · `:6760` `:6964` `:7125` (the three Orthodox) · `SR3EMIJI.js:174`.
+Unifying them is a **prerequisite refactor**, not a free consequence of fixing melee.
+
+**The three Orthodox ones are byte-identical** — same signature `(name, skill, dice, tn, tnLabel,
+dcls, tcls)` and the same body, differing only in the surrounding header and speaker alias.
+Deduping those three is pure win with no behaviour change, and takes 8 cards down to 6 shapes.
+
+### ✅ The TN fallback is fixed — do not re-introduce it
+
+`handleMeleeRoll` read TN as `parseInt(...) || 4`, falling back to a **hardcoded 4** rather than the
+computed `ctx.atkTN` — which is where the **reach differential, the defaulting penalty and the
+called-shot +4** all live. Astral and Defragged cybercombat had the same line. Five of the eight
+cards already did it correctly (`|| ctx.atkTN`), so it was an oversight, not a convention.
+
+It never fired, because the input always exists today — **but the moment a corner is rendered
+read-only or conditionally, every one of those modifiers silently vanishes and the exchange
+resolves at TN 4.** That is squarely in this task's path, which is why it was fixed first, ahead of
+any rendering change. All eight now read `|| ctx.<tn>`; the three fixed here also carry a trailing
+`|| 4` so a missing ctx field yields 4 rather than `NaN`.
+
+⚠ Not unit-tested: these handlers need a live chat-card DOM plus actors, which the harness does not
+stub. Verified by reading all eight call sites. **Add coverage when the corner rendering changes** —
+that is exactly when this regresses.
+
+### Enabler worth knowing before starting
+
+`postMeleeCard` stringifies the **whole `ctx`** into the payload, and the handler already falls back
+to it for skill dice and damage codes. So the opponent's corner does **not** need new transport —
+read *your* corner from the DOM and take theirs from `ctx`. That makes the single-card option
+materially cheaper than splitting, and is the recommended shape.
 
 All seven non-melee buttons are already permission-gated ([#27](#27)), so the exposure is reduced but
 the structure is untouched: each still lets one client edit the other side's pool, TN and damage.
