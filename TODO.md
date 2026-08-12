@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 24 |
-| 🔴 Confirmed bugs, still open | 5 · 14 · 25 |
+| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 42 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 · 41 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
@@ -826,6 +826,45 @@ Keep the two-column grid — group headers span both columns.
 ---
 
 ### 🔴 Confirmed bugs, still open
+
+## 42. Chat cards carry no shared state — the GM cannot see who has acted — **CONFIRMED**
+
+**Found in play 2026-08-10:** *"cards in the chat log don't look like anyone has done it to the GM."*
+
+Correct, and by construction. Both mechanisms that mark a button as used are **per client**:
+
+```js
+const _usedButtons = new Set();   // sr3e.js:1962 — module-scoped, "clears on page reload"
+btn.disabled    = true;           // DOM mutation, on the clicking client only
+btn.textContent = '⏳ Rolling…';
+```
+
+A player clicks; the button greys out **on their screen**. Every other client — including the GM's —
+still shows the card untouched, with live buttons. The card carries **zero shared state**.
+
+That is deliberate for the double-click guard, which only ever needs to stop *one* client
+double-firing (see the one-shot guard section in CLAUDE.md). It was never meant to communicate.
+The consequence is that the GM only learns something happened when a *downstream* card posts — the
+dodge roll, the soak — and until then cannot distinguish "still thinking" from "already answered".
+
+### ⚠ This blocks [#24](#24)'s decided flow
+
+The agreed melee flow is *"both players enter their choices, the last one to hit submit triggers the
+roll."* There is no "last one" without knowing who is already in, so #24 **cannot be built on the
+current card**. Same missing primitive, and #24 forces it.
+
+### Fix shape
+
+Submission/acted state in **message flags**, written by the GM via a query — flags are document
+data, so Foundry syncs them and re-renders the card on every client. A `✓ Attacker ready · waiting
+for defender` strip then shows for the whole table.
+
+- **Does not replace `_usedButtons`.** That still guards the pop-up/chat-log double-render locally,
+  which flags cannot do — the two renders share a client.
+- **Costs a document write per click.** Fine at melee's cadence; do **not** retrofit it onto every
+  button in the system.
+- Worth generalising past melee — a "who has acted" strip is equally useful on soak and resist
+  cards, which is why this is its own task rather than a sub-part of #24.
 
 ## 5. Make essence loss permanent when cyberware is removed — **CONFIRMED BUG**
 
