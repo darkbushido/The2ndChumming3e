@@ -23,12 +23,12 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 24 |
-| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 42 · 43 · 44 · 45 · 46 |
+| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 42 · 43 · 45 · 46 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 · 41 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 21 · 22 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 |
+| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 21 · 22 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 44 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -902,16 +902,27 @@ through to cyberware and then to bare hands — which would produce exactly this
 skill lookup for a character holding a pole arm. **Check that first**; it may collapse this,
 [#44](#44) and the icon report into one cause.
 
-## 44. Melee reach/range may reject a legitimate attack — **REPORTED, not yet diagnosed**
+## 44. ✅ Melee reach/range — **NOT A BUG, it warns rather than blocks**
 
-**Found in play 2026-08-10.** Logged from the table; **not investigated** — record only.
+**Reported then resolved in the same session, 2026-08-10.**
 
-**Observed:**
-- Grid square size set to **1**
-- Measured distance between the two actors: **2**
-- A **pole arm** (reach 2) *"was not able to reach"*
-- The two tokens were **parallel / orthogonal**, so this is not a diagonal or corner-measurement
-  artifact
+Re-tested deliberately at **6 m with a reach-3 pole arm**: the system posts
+*"PlayerN is 6m away — out of reach for a melee attack"* **and the attack proceeds anyway.** The
+first report — a pole arm *"not able to reach"* at distance 2 — was the warning being read as a
+rejection. Working as designed:
+
+> "**Adjacency:** if both are tokens and the target isn't in an adjacent square
+> (`SR3EItem._tokensAdjacent` via `canvas.grid.getOffset`), `rollMelee` **warns but proceeds**
+> (minimal-guardrails). Reach affects TN only, not range." — CLAUDE.md
+
+Both halves check out: the guardrail is advisory, and **reach does not extend melee range** — it is
+a target-number differential. SR3 melee assumes engaged combatants, so a reach-3 weapon does not let
+you strike from 6 m; it makes you harder to reach *while* engaged.
+
+**Left open as a design question, not a defect:** whether the warning should say something better
+than "out of reach" — the phrasing implies a block that does not happen, which is what caused the
+misread. Something like *"6m away — not adjacent; attacking anyway"* would describe what the system
+actually does.
 
 **Why it looks wrong rather than merely surprising** — two documented behaviours it appears to
 contradict, both worth re-checking before assuming a fix:
