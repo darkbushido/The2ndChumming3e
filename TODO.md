@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 24 |
-| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 42 |
+| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 42 · 43 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 · 41 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
@@ -826,6 +826,49 @@ Keep the two-column grid — group headers span both columns.
 ---
 
 ### 🔴 Confirmed bugs, still open
+
+## 43. The resist card spends Combat Pool for free — **CONFIRMED**
+
+**Found in play 2026-08-10.** The soak card offers one field and never charges for it:
+
+```html
+Resist Pool (Body ${body} + bonuses):
+<input type="number" class="sr-soak-pool" value="${body}" min="1" max="30"/>
+```
+
+`handleSoakRollClick` reads `.sr-soak-pool` and rolls it. **`spendCombatPool` is never called** on
+that path. So a player can type any number up to 30 and roll it, every time, at no cost — Combat
+Pool on a soak is currently unlimited.
+
+**The pool is legitimately usable here**, which is why the field exists — core **p.44**:
+
+> "Combat Pool dice can affect a Ranged Combat or Melee Combat result. Whenever a character takes
+> damage from a ranged or melee attack, he or she can allocate dice to either dodge the attack or
+> **'soak up' the damage**."
+
+The rule is right; the accounting is missing.
+
+### Three parts to this
+
+1. **A separate Combat Pool box.** Today Body and pool are one number, so nothing can tell which
+   dice are free and which must be charged. Body dice are not spent; pool dice are.
+2. **Show what is available** — the card gives no indication the actor even *has* a pool, let alone
+   how much is left after a dodge.
+3. **Actually spend it**, routed through the GM like every other write
+   (`spendCombatPool` → `sr3e.pool.spend`).
+
+⚠ **The dodge interaction is the point of the rule, and it is currently invisible.** Pool spent
+dodging is gone from the soak — p.113's worked example turns on exactly this: Snot burns all five
+dice dodging, fails, and then has *"no dice remaining in his Combat Pool with which to increase his
+odds of survival."* [#26](#26) already carries dodge successes into the soak; the card must also show
+the **reduced** pool, or the trade the rule exists to create is invisible at the table.
+
+⚠ Cap the input at what is actually available once it is charged, or the first over-allocation will
+silently roll dice the actor does not have.
+
+**Check the sibling cards in the same pass** — `sr-astral-soak-pool`, `sr-drain-pool`,
+`sr-matrix-resist-pool` and `sr-matrix-decker-resist-pool` share this shape and were written the same
+way. `sr-drain-spell-pool` likewise for Spell Pool.
 
 ## 42. Chat cards carry no shared state — the GM cannot see who has acted — **CONFIRMED**
 
