@@ -2286,7 +2286,12 @@ export class SR3EItem extends Item {
         <div style="font-size:12px;color:var(--sr-muted);margin-bottom:6px">
           Base TN <strong>${baseTN}</strong>${ctx.baseNote ? ` — ${ctx.baseNote}` : ''}
         </div>
-        <div style="max-height:300px;overflow-y:auto;padding-right:4px;
+        <!-- The cap is viewport-relative, not a fixed pixel height. At 300px this scrolled on
+             every screen regardless of how much room the window had, because the limit was on
+             the LIST rather than on the dialog: making the window taller did nothing. 65vh lets
+             the whole modifier set show on a normal display while still capping on a laptop or
+             a short window, and the dialog auto-heights to whatever the list needs. -->
+        <div style="max-height:65vh;overflow-y:auto;padding-right:4px;
                     display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
                     gap:0 18px;align-items:start">${rowHtml}</div>
         ${dodgeHtml}
