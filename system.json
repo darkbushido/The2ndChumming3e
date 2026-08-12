@@ -1907,7 +1907,7 @@
       ]
     }
   ],
-  "url": "https://github.com/darkbushido/The2ndChumming3e/tree/Shadowfork",
-  "manifest": "https://raw.githubusercontent.com/darkbushido/The2ndChumming3e/refs/heads/Shadowfork/system.json",
-  "download": "https://github.com/darkbushido/The2ndChumming3e/archive/refs/heads/Shadowfork.zip"
+  "url": "https://github.com/darkbushido/The2ndChumming3e/tree/main",
+  "manifest": "https://raw.githubusercontent.com/darkbushido/The2ndChumming3e/refs/heads/main/system.json",
+  "download": "https://github.com/darkbushido/The2ndChumming3e/archive/refs/heads/main.zip"
 }
