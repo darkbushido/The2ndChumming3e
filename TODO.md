@@ -1516,6 +1516,31 @@ Two rules that make the count non-trivial and argue the same way: **SS weapons m
 once per Combat Phase** (already warned in `_promptFireMode`), while SA can legitimately fire twice
 as two Simple Actions.
 
+### Players must be able to SEE what they have spent
+
+**Requested 2026-08-11:** *"it would also be nice if the player were able to see some kind of
+indicator that they have used a simple action or both of them."*
+
+Today they cannot see anything. The whole block is behind
+`if (game.user.isGM && combat?.started && combat.combatant)` (`sr3e.js:1586`) — not just the
+buttons, the entire tracker. A player has no way to know whether they have one Simple left, and
+under [#47](#47) and auto-charging they will be spending them on things (readying, aiming) that are
+easy to lose track of.
+
+**This falls out of the combatant-flag ledger almost for free.** Combatant flags sync to every
+client, so once the state stops being a GM-local `Map` the only work left is rendering it
+unprivileged. The change is therefore to **split display from control**, not to duplicate the
+widget: read-only pips for everyone, buttons only for the GM.
+
+- **Pips, not buttons** — ○○ / ●○ / ●● for the two Simples, and a single wider pip for the Complex,
+  greyed once a Simple is spent (it is already mutually exclusive in the current logic).
+- **On the active combatant's row**, since the ledger is cleared on every turn change and means
+  nothing for anyone else.
+- **Visible to all players, not just the owner.** Action economy is public at a physical table —
+  everyone can see you fire twice. Hiding it from the rest of the table would be a house rule, and
+  a confusing one during a melee where two players are trading.
+- The GM keeps the three clickable buttons in the same slot, so nothing is lost.
+
 ### On the ethos
 
 CLAUDE.md's *"no automation of outcomes"* is about damage and narrative — the GM clicks wound boxes.
