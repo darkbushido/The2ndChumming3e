@@ -15,3 +15,9 @@ packs/** binary
 # Kept deliberately broad: if packs are ever shipped from a modules/ tree again,
 # they are the same LevelDB format and need identical protection.
 modules/**/packs/** binary
+
+# Git hooks are run through `sh`. With core.autocrlf enabled — the default on most
+# Windows clones — they would be checked out with CRLF endings, and sh fails on the
+# carriage return in the shebang line ("bad interpreter"). Pin them to LF so the
+# hooks survive a Windows checkout.
+.githooks/** text eol=lf

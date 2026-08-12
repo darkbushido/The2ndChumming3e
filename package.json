@@ -6,7 +6,10 @@
     "test": "node tests/run.mjs",
     "lint": "eslint scripts tests",
     "lint:fix": "eslint scripts tests --fix",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "manifest:branch": "node tools/manifest-branch.mjs",
+    "manifest:check": "node tools/manifest-branch.mjs --check",
+    "setup:hooks": "git config core.hooksPath .githooks"
   },
   "devDependencies": {
     "@league-of-foundry-developers/foundry-vtt-types": "^13.346.0-beta.20250812191140",

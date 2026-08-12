@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+# Warn — do NOT modify — when the checked-out branch's system.json points somewhere else.
+#
+# Warn-only on purpose. Stamping here would leave the working tree dirty after every
+# `git checkout` of a branch that was never set up for distribution, which turns an
+# ordinary branch switch into something you have to clean up. The stamp is a deliberate
+# act (`npm run manifest:branch`); this only makes a mismatch visible.
+#
+# $3 is 1 for a branch checkout and 0 for a file checkout — only the former matters.
+[ "$3" = "1" ] || exit 0
+
+command -v node >/dev/null 2>&1 || exit 0
+
+if ! node tools/manifest-branch.mjs --check >/dev/null 2>&1; then
+  branch=$(git rev-parse --abbrev-ref HEAD)
+  echo ""
+  echo "  system.json's manifest URLs do NOT point at '$branch'."
+  echo "  If this branch is meant to be installable, run:  npm run manifest:branch"
+  echo ""
+fi
+
+exit 0
