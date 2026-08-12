@@ -15,6 +15,52 @@ All sheet HTML is rendered directly from JavaScript using tagged template litera
 
 ---
 
+## Branch manifest URLs — `npm run manifest:branch`
+
+The three fields at the bottom of `system.json` (`url` / `manifest` / `download`) name a
+**branch**. Foundry installs from them, so a playtest branch is only installable if its own copy
+points at itself rather than at `main`.
+
+```bash
+npm run manifest:branch          # stamp to the current branch
+npm run manifest:check           # exit 1 if stale — changes nothing
+```
+
+**Run it once when setting up a branch to push out, and commit the change.** After that the branch
+is self-consistent and checkouts are clean.
+
+`tools/manifest-branch.mjs` rewrites **three lines**, never the parsed document — round-tripping
+`system.json` through `JSON.parse`/`stringify` would reformat ~1900 lines of pack declarations into
+one unreviewable diff. The repo slug is read back out of the existing `url` rather than hardcoded,
+so a rename or a fork does not keep publishing the old owner's manifest.
+
+### ⚠ Merging a branch into main must NOT drag its URLs along
+
+Handled by **`.githooks/post-merge`**, which re-stamps to the branch you are *on* after any merge.
+
+**A `.gitattributes` merge driver does not work here** — and this is the trap. A custom driver only
+runs when git has to merge the file's *content*, i.e. when **both** sides changed it. If `main`
+never touched `system.json` since the merge base, git resolves trivially by taking the branch's
+version wholesale and never consults the driver. That is the **common** case: the playtest branch
+stamps its URLs, main does not. A merge driver would miss precisely the merge it was installed for.
+
+The hook deliberately **does not commit** — a fast-forward merge creates no new commit, so an
+automatic `--amend` would rewrite a commit that came from the other branch. It leaves the file
+dirty with a loud notice instead.
+
+`.githooks/post-checkout` is **warn-only** by design: stamping there would leave the tree dirty
+after every checkout of a branch that was never set up for distribution.
+
+**Hooks need one-time local setup** — `core.hooksPath` lives in `.git/config`, which is not
+committed, so a fresh clone has no hooks until:
+
+```bash
+npm run setup:hooks
+```
+
+`.gitattributes` pins `.githooks/**` to `eol=lf`; with CRLF, `sh` fails on the carriage return in
+the shebang and the hooks silently do nothing.
+
 ## Design ethos — read this first
 
 - **Minimal guardrails.** The GM is trusted. Players are adults. The system presents the right information and dice but humans make all narrative decisions.

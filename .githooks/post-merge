@@ -1,0 +1,35 @@
+#!/bin/sh
+#
+# Re-stamp system.json's distribution URLs to the branch we are ON, after any merge.
+#
+# WHY THIS IS A HOOK AND NOT A .gitattributes MERGE DRIVER
+# --------------------------------------------------------
+# A custom merge driver only runs when git actually has to merge the file's CONTENT,
+# i.e. when BOTH sides changed it. If main never touched system.json since the merge
+# base, git resolves it trivially by taking the branch's version wholesale and never
+# consults the driver at all. That is the COMMON case here — a playtest branch stamps
+# its own URLs, main does not — so a merge driver would miss exactly the merge it was
+# installed to catch. This hook runs after every merge regardless of how git resolved.
+#
+# It deliberately does NOT commit. A fast-forward merge creates no new commit, so an
+# automatic `--amend` would rewrite a commit that came from the other branch.
+set -e
+
+if ! command -v node >/dev/null 2>&1; then
+  echo "post-merge: node not found — skipping system.json branch stamp." >&2
+  exit 0
+fi
+
+if node tools/manifest-branch.mjs --check >/dev/null 2>&1; then
+  exit 0   # already correct for this branch
+fi
+
+node tools/manifest-branch.mjs
+
+echo ""
+echo "  ┌─────────────────────────────────────────────────────────────┐"
+echo "  │ system.json was re-stamped to this branch after the merge.  │"
+echo "  │ It is UNCOMMITTED — commit it so the manifest URLs do not   │"
+echo "  │ keep pointing at the branch you just merged in.             │"
+echo "  └─────────────────────────────────────────────────────────────┘"
+echo ""
