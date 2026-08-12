@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 24 |
-| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 42 · 43 · 44 |
+| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 42 · 43 · 44 · 45 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 · 41 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
@@ -826,6 +826,36 @@ Keep the two-column grid — group headers span both columns.
 ---
 
 ### 🔴 Confirmed bugs, still open
+
+## 45. Defender is asked to default despite having the skill AND the weapon — **REPORTED, not yet diagnosed**
+
+**Found in play 2026-08-10.** Logged from the table; **not investigated** — record only.
+
+**Observed:**
+- Defender has **Pole Arms 6** and a **pole arm equipped**
+- On an incoming melee attack, the **SR3 Default Table opens for them anyway**, saying they have
+  *"no Unarmed Combat / Martial Arts skill"*
+- It appears **even when the attacker is out of melee range**
+
+**Three separate things may be wrong here — establish which before fixing any:**
+
+1. **Wrong skill sought.** The defender's equipped weapon is category `POL`, which maps to
+   *Pole Arms/Staff* in `WEAPON_SKILL_MAP` — not Unarmed Combat. Either the weapon is not being
+   found and the fallback to bare hands (`UNA`) is selecting the unarmed skill, or the lookup is
+   ignoring the weapon.
+2. **The message is hardcoded regardless.** `_applyMeleeDefault` in `rollMeleeAttack` passes a
+   fixed *"has no Unarmed Combat / Martial Arts skill"* string, so even a correct defaulting prompt
+   for a pole-arm user would name the wrong skill. That much is cosmetic, but it **masks** cause 1
+   by making every case look like an unarmed case.
+3. **Ordering.** The prompt fires even when the attacker is out of range, so defaulting is being
+   resolved before or independently of the adjacency check — see [#44](#44), which reports the
+   range check behaving unexpectedly in the same session.
+
+⚠ **Likely shares a root with the unresolved equip-melee question** (the fist icon reportedly not
+showing on the Weapons tab). If `system.equippedMelee` is never set, `_getEquippedMelee` falls
+through to cyberware and then to bare hands — which would produce exactly this symptom, an unarmed
+skill lookup for a character holding a pole arm. **Check that first**; it may collapse this,
+[#44](#44) and the icon report into one cause.
 
 ## 44. Melee reach/range may reject a legitimate attack — **REPORTED, not yet diagnosed**
 
