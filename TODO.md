@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 24 |
-| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 42 · 43 |
+| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 42 · 43 · 44 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 · 41 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
@@ -826,6 +826,33 @@ Keep the two-column grid — group headers span both columns.
 ---
 
 ### 🔴 Confirmed bugs, still open
+
+## 44. Melee reach/range may reject a legitimate attack — **REPORTED, not yet diagnosed**
+
+**Found in play 2026-08-10.** Logged from the table; **not investigated** — record only.
+
+**Observed:**
+- Grid square size set to **1**
+- Measured distance between the two actors: **2**
+- A **pole arm** (reach 2) *"was not able to reach"*
+- The two tokens were **parallel / orthogonal**, so this is not a diagonal or corner-measurement
+  artifact
+
+**Why it looks wrong rather than merely surprising** — two documented behaviours it appears to
+contradict, both worth re-checking before assuming a fix:
+
+1. *"Reach affects TN only, not range"* (CLAUDE.md, melee flow). Reach is a target-number
+   differential; it is not supposed to extend how far you can strike. So a reach-2 weapon failing
+   at distance 2 may be the **adjacency** check firing, not reach.
+2. *"`rollMelee` **warns but proceeds**"* — the adjacency check (`SR3EItem._tokensAdjacent`, via
+   `canvas.grid.getOffset`) is explicitly minimal-guardrails: it should surface a warning and let
+   the attack happen anyway. *"Was not able to reach"* suggests something **blocked**, which would
+   be a departure from that.
+
+**To establish when picking this up:** whether the attack was blocked or merely warned; what
+`canvas.grid.measurePath` actually returns for that token pair; whether grid units are metres and
+what one square is meant to represent; and whether reach should modify the adjacency threshold at
+all (SR3 melee assumes engaged combatants — a pole arm's reach is a TN edge, not a second square).
 
 ## 43. The resist card spends Combat Pool for free — **CONFIRMED**
 
