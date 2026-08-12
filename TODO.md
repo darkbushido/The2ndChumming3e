@@ -24,7 +24,7 @@ independent.
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 24 |
 | 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 42 · 43 · 45 · 46 |
-| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 · 41 · 47 · 48 |
+| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 · 41 · 47 · 48 · 49 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
@@ -1482,6 +1482,63 @@ model; a vision-gear flag reachable from the actor for goggles; keep `accessorie
 description. Then delete the guessing in `SR3ECombatModifiers` and read the fields.
 
 See [audit/socket-combat-plan.md](audit/socket-combat-plan.md) — "Maintainer decisions — 2026-08-05".
+
+## 49. Nothing models hands — what is held, and how many can be held
+
+**Requested 2026-08-11:** *"a person has two hands (unless there is a cyberware option to add more)
+and you can have two one-handed weapons equipped or a two-handed weapon equipped."* Nothing in the
+system tracks this. `equippedMelee` is a single `StringField`, there is no `equippedFirearm` at all
+([#47](#47)), and no weapon knows whether it needs one hand or two.
+
+### ⚠ SR3 does not model hands — it models a WHITELIST, and the difference matters
+
+The instinct "two hands, so two one-handed weapons" is a reasonable abstraction, but it is **not**
+what the book says. **p.112**, Using a Second Firearm:
+
+> "Characters can use two **pistol- or SMG-class weapons**, one in each hand. Doing so, however,
+> imposes a **+2 target modifier to each weapon** and **negates any target number reductions from
+> smartlinks, smart goggles or laser sights**. Additionally, **any uncompensated recoil modifiers
+> applicable to one weapon also apply to the other weapon**."
+
+So the constraint is the weapon *class*, not the hand count. A troll has two hands and still may not
+dual-wield assault rifles. Building this as a pure hand-slot system would quietly permit that — the
+class whitelist has to be a separate gate, not an emergent property of having two free slots.
+
+### What the book gives us, and what the system has
+
+| Rule | Source | State |
+|---|---|---|
+| Dual wield restricted to **pistol/SMG class** | p.112 | ❌ nothing checks |
+| **+2 TN to each weapon** | p.112 | ⚠ exists as a GM checkbox only — `secondFirearm`, `SR3ECombatModifiers.js:57` |
+| **Negates smartlink / smart goggles / laser sight** reductions | p.112 | ❌ |
+| **Uncompensated recoil crosses over** to the other weapon | p.112 | ❌ |
+| Firing both = **one Simple Action** | p.107 | ❌ — noted in [#48](#48) so it is not double-billed |
+| Quick-drawing two = **+2 each** to the Reaction (4) Test | p.107 | ❌ — deferred, see below |
+| Matched hand razors/spurs (one per hand) add **+½ Strength** to Power | p.121 | ❌ |
+
+That last row is the one that shows hands are already load-bearing elsewhere: the book's own example
+has Logan's paired spurs take 6M to **9M** purely because he has one in each arm. Any hand model has
+to reach cyberware, not just carried weapons.
+
+**The smartlink negation is blocked by [#18](#18).** Smartlink and laser sights are currently
+*guessed* from free-text gear (`guessGearModifiers`), so there is no reliable flag to negate. This
+row cannot be done properly until accessories are structured data.
+
+### Shape
+
+- **Hand count is a derived actor field, not the constant 2.** The request explicitly anticipates
+  cyberware changing it, and core has no extra-limb rules — so it must be data-driven from the start
+  rather than hardcoded and later unpicked. Default 2.
+- **Slots supersede `equippedMelee`/`equippedFirearm`** rather than sitting beside them, or the two
+  will disagree. Fold this together with #47 rather than shipping a second equip concept.
+- ⚠ **There is no two-handed flag in SR3, and deriving one is a judgement call, not a lookup.**
+  Rifles, shotguns, LMG-and-heavier, pole arms and bows are all obviously two-handed, but the book
+  never says so in a table — it only ever states the *positive* case for pistols and SMGs. Adding a
+  `hands` field to the weapon model is honest; inferring it from `category` is a guess that will be
+  wrong at the edges (a heavy pistol fired two-handed, a one-handed crossbow).
+- **Quick Draw is explicitly out of scope** — *"we will need some way for someone to quick draw a
+  one-handed weapon if the need arises but that's a problem for another day."* It is specified in
+  #47 (p.107, Reaction (4) Test, +2 unholstered, +2 each for two weapons); do not build it here.
 
 ## 48. The GM hand-charges every action — most of them are knowable
 
