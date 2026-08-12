@@ -1,3 +1,33 @@
+# Line endings are declared HERE, not left to core.autocrlf.
+#
+# Git for Windows ships core.autocrlf=true in its SYSTEM config
+# (C:/Program Files/Git/etc/gitconfig), so it is on for every Windows clone without
+# ever appearing in --local or --global — which is why it was so hard to find.
+#
+# The objects in this repo were always LF. autocrlf=true was converting them to CRLF
+# on checkout, so the working tree and the repo disagreed on every text file. That
+# mismatch is what produced the constant "LF will be replaced by CRLF" warnings, files
+# reported as modified while being byte-identical, and rebases and merges that failed
+# with "local changes would be overwritten" on a clean tree.
+#
+# text=auto  — git decides text vs binary, and stores text as LF in the objects.
+# eol=lf     — and checks it out as LF too, on every platform.
+#
+# So the working tree now matches the objects and NOTHING is converted in either
+# direction. `-c core.autocrlf=false` is no longer needed on rebases; passing it is in
+# fact harmful, because it makes git re-read the tree without the conversion the index
+# was written under and see phantom modifications.
+#
+# ⚠ text=auto has a safety valve: it will NOT normalise a file that was committed with
+# CRLF, deliberately, to avoid churn. Three files here really were CRLF in the objects
+# (two rawdata JSON, the logo SVG) and `git add --renormalize` silently skipped them —
+# they had to be rewritten to LF on disk first. If a stubborn file ever refuses to
+# normalise, that is why.
+#
+# Nothing in the toolchain wants CRLF: there are no .bat or .cmd files, and Node,
+# ESLint and Foundry all read LF natively on Windows.
+* text=auto eol=lf
+
 # Foundry compendium packs are LevelDB databases. A few of their internal files
 # (CURRENT, LOG, LOG.old, MANIFEST-*) are pure ASCII, so git's text detection treats
 # them as text and rewrites their line endings on checkout wherever core.autocrlf is

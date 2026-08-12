@@ -1323,6 +1323,13 @@ button so the HUD never sprawls. (`runDrivingTest` warns if the vehicle has no l
   **This bit for real:** 11 broken string literals in `sr3e.js` passed `node --check` and
   were caught only by ESLint (`Parsing error: Unexpected token s`). Treat any past
   "syntax OK" from `node --check` on a `scripts/**/*.js` file as meaningless.
+- **Do NOT pass `-c core.autocrlf=false` to git any more.** It was a workaround for
+  Git-for-Windows setting `core.autocrlf=true` in its *system* config; line endings are now
+  pinned in `.gitattributes` (`* text=auto eol=lf`) and the working tree matches the objects.
+  Forcing the override makes git re-read the tree without the conversion the index was written
+  under, so it reports phantom "local changes would be overwritten" on a clean tree and refuses
+  to merge or rebase. `node_modules` is also no longer tracked — it never was needed at runtime
+  (no bare imports in `scripts/`, no reference from `system.json`).
 - **`system.json` changes require a full Foundry restart** — a browser reload is not enough. JS/CSS changes hot-reload; manifest/data-model changes do not.
 - `prepareDerivedData` must initialise missing fields in-place: `if (!sys.x) sys.x = {}` not `const x = sys.x ?? {}`
 - TypeDataModel defaults only apply to **newly created** documents — always guard reads with `?? defaultValue` for existing actors
