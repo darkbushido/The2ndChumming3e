@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 24 |
-| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 42 · 43 · 44 · 45 |
+| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 42 · 43 · 44 · 45 · 46 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 · 41 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
@@ -827,13 +827,58 @@ Keep the two-column grid — group headers span both columns.
 
 ### 🔴 Confirmed bugs, still open
 
-## 45. Defender is asked to default despite having the skill AND the weapon — **REPORTED, not yet diagnosed**
+## 46. No usable way to equip a melee weapon — **REPORTED, blocks melee**
 
 **Found in play 2026-08-10.** Logged from the table; **not investigated** — record only.
 
-**Observed:**
-- Defender has **Pole Arms 6** and a **pole arm equipped**
-- On an incoming melee attack, the **SR3 Default Table opens for them anyway**, saying they have
+The equip control (a `fa-hand-rock` fist icon, `data-action="equipMelee"`, on each melee row of the
+Weapons tab) **was reported as not showing**, and the weapon was consequently **never equipped**.
+
+**This is the root of [#45](#45)**, and possibly [#44](#44). With `system.equippedMelee` unset,
+`SR3EItem._getEquippedMelee` falls through — equipped item → first cyber/unarmed item → synthesised
+**Bare Hands** `(STR)M Stun`, reach 0, category `UNA`. A pole-arm carrier therefore fights bare-handed
+with an Unarmed Combat skill lookup, and every downstream symptom follows from that.
+
+**Not yet established:** whether the icon is genuinely absent, or present but unnoticed — unequipped
+it carries no colour, so it sits among the edit/delete icons looking identical to them. The handler
+and action registration both exist (`SR3EActorSheet.js:39`, `:2974`, `:2582`), and `_meleeControls`
+is called from all three melee sections, so nothing obvious explains an absence.
+
+**Settles it in one line, in-world:**
+
+```javascript
+game.actors.getName("NAME").items
+  .filter(i => i.type === "melee")
+  .forEach(i => console.log(i.name, "| category:", i.system.category || "(blank)"));
+```
+
+Empty output → the weapon is not item type `melee` and never reaches a melee section, so the missing
+icon is a symptom rather than the fault. Output present → the icon is rendering and this is a
+visibility/discoverability problem.
+
+⚠ **Worth fixing regardless of cause, because the failure is silent.** Falling back to bare hands
+without a word is defensible for a character who genuinely has none; doing it to someone carrying a
+pole arm is not. And [#24](#24) makes the corners read-only, at which point a wrong default weapon
+becomes uncorrectable mid-exchange.
+
+## 45. Defender is asked to default despite having the skill AND the weapon — **ROOT CAUSE FOUND**
+
+**Found in play 2026-08-10.** ⚠ **The weapon turned out not to be equipped** — see [#46](#46). With
+nothing equipped the lookup falls through to bare hands, which genuinely has no Unarmed Combat, so
+**the defaulting prompt was correct**. The fault is upstream.
+
+What remains in scope here, once #46 is resolved:
+
+- **The hardcoded message.** `_applyMeleeDefault` passes a fixed *"has no Unarmed Combat / Martial
+  Arts skill"* string regardless of the weapon's actual skill. It happened to be accurate this time,
+  which is exactly why it is dangerous — it will name the wrong skill for an armed defaulter and
+  make every case look like an unarmed one, masking faults like #46.
+- **Ordering.** The prompt fired **even with the attacker out of melee range**, so defaulting is
+  resolved before or independently of the adjacency check. Related to [#44](#44).
+
+**Originally observed:**
+- Defender has **Pole Arms 6** and a pole arm **in inventory** (believed equipped; it was not)
+- On an incoming melee attack, the **SR3 Default Table opens for them**, saying they have
   *"no Unarmed Combat / Martial Arts skill"*
 - It appears **even when the attacker is out of melee range**
 
