@@ -560,15 +560,29 @@ export const SOURCE_BOOKS = {
   pna:                { label: 'Paranormal Animals',       edition: 'SR2', enabled: true  },
 
   // ── 3rd Edition ────────────────────────────────────────────────────────────
+  //
+  // What ships ON by default: the core rulebook and the four RULES supplements. Those
+  // extend the system itself — cyberware, magic, vehicles, weapons — and a table that
+  // owns them expects their content to exist.
+  //
+  // What ships OFF: everything whose content is tied to a PLACE or a YEAR, plus the
+  // regional and fan books. The State of the Art volumes are the clearest case — they
+  // are dated gear catalogues, so defaulting them on drops 2064 street gear into a
+  // campaign set in 2060 without anyone choosing it. The Target: books are location
+  // material, the same kind as the France and Germany sourcebooks already off below.
+  //
+  // A GM who wants any of these switches them on in Configure Source Books. Changing a
+  // default here only affects NEW worlds — defaultAllowedBooks() is consulted solely
+  // when the setting has never been saved, so existing worlds keep their own choices.
   sr3:                { label: 'Shadowrun 3rd Edition',    edition: 'SR3', enabled: true, core: true },
   cc:                 { label: 'Cannon Companion',         edition: 'SR3', enabled: true  },
   mm:                 { label: 'Man & Machine',            edition: 'SR3', enabled: true  },
   mits:               { label: 'Magic in the Shadows',     edition: 'SR3', enabled: true  },
   r3:                 { label: 'Rigger 3',                 edition: 'SR3', enabled: true  },
-  sota:               { label: 'State of the Art 2063',    edition: 'SR3', enabled: true  },
-  sota2:              { label: 'State of the Art 2064',    edition: 'SR3', enabled: true  },
-  tal:                { label: 'Target: Awakened Lands',   edition: 'SR3', enabled: true  },
-  twl:                { label: 'Target: Wastelands',       edition: 'SR3', enabled: true  },
+  sota:               { label: 'State of the Art 2063',    edition: 'SR3', enabled: false },
+  sota2:              { label: 'State of the Art 2064',    edition: 'SR3', enabled: false },
+  tal:                { label: 'Target: Awakened Lands',   edition: 'SR3', enabled: false },
+  twl:                { label: 'Target: Wastelands',       edition: 'SR3', enabled: false },
   fra:                { label: 'France Sourcebook',        edition: 'SR3', enabled: false },
   ger:                { label: 'Germany Sourcebook',       edition: 'SR3', enabled: false },
   ssg:                { label: 'Sprawl Survival Guide',    edition: 'SR3', enabled: false },
