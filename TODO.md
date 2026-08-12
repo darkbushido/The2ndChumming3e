@@ -1485,7 +1485,8 @@ GM's browser. Two consequences, and the second is the real one:
 
 | System entry point | Action | Cost |
 |---|---|---|
-| `rollWeapon` (firearm, any mode) | Fire Weapon | **Simple** |
+| `rollWeapon` (firearm — **SS / SA / BF**) | Fire Weapon | **Simple** |
+| `rollWeapon` (firearm — **FA**) | Fire Automatic Weapon (**p.108**) | **Complex** |
 | `rollWeapon` (thrown) | Throw Weapon | **Simple** |
 | `reload()` — clip weapons | Insert Clip | **Simple** |
 | `reload()` — non-clip weapons | Reload Firearm (**p.108**) | **Complex** |
@@ -1497,6 +1498,52 @@ GM's browser. Two consequences, and the second is the real one:
 | `rollVehicleWeapon` | Fire Mounted or Vehicle Weapon (**p.108**) | **Complex** |
 | Summoning (`SR3ESpiritSummoning`) | Summon Nature Spirit (**p.108**) | **Complex** |
 | `rollSkill`, Drone Comprehension, Driving Test | Use Skill (**p.108**) | **Complex** |
+
+⚠ **Fire mode decides the action type, so the charge cannot be read off "an attack happened".**
+Full auto is a *different entry* in the book (Fire Automatic Weapon, Complex) from the one covering
+SS/SA/BF (Fire Weapon, Simple). The system already knows the mode — `_promptFireMode` returns it —
+so this is a lookup, not a judgement, but a naive "attack = Simple" would let a full-auto burst cost
+half what it should.
+
+⚠ **Two guns are still ONE Simple Action.** p.107: *"If a character has one weapon in each hand, he
+may fire once with each weapon by expending one Simple Action"* (Using a Second Firearm, p.112). A
+per-`rollWeapon` charge would bill twice.
+
+### ⚠ Take Aim is not an action here — it is a number the player promises they earned
+
+**Raised 2026-08-11:** *"right now there isn't an aim action, we just trust that it was counted when
+choosing an attack action."* Exactly right, and aiming is the worst case for that trust because RAW
+makes it fragile in three ways the TN field cannot express.
+
+What the system has (`SR3EItem.js:1952`): a `#sr-aim` number input folded into the TN as −1 per
+point. **The cap is already correct** — `_maxAim` is ½ base skill or specialisation rounded down,
+cited to p.107 and enforced on confirm. What is missing is everything else:
+
+**1. No action is spent.** Each Take Aim is a Simple Action; three points of aim is three Simple
+Actions, i.e. more than one Combat Phase's worth. Nothing charges them.
+
+**2. Aim is STATEFUL ACROSS TURNS, and the dialog is not.** p.107: *"Take Aim actions may be
+extended over multiple Combat Phases and Initiative Passes, even from Combat Turn to Combat Turn."*
+So aim points are a property of the *character over time*, not of the attack dialog — they need to
+live on the actor and be spent by the shot, which is a bigger change than charging an action.
+
+**3. Two invalidation rules, neither modelled, and both easy to violate by accident:**
+
+> "Take Aim actions are cumulative, but **the benefits are lost if the character takes any other kind
+> of action, including a Free Action** at any time."
+
+> "Characters who are aiming over multiple Combat Phases **may not use dice pool dice for any reason**
+> without losing the [benefit]."
+
+The second is the sharper one: a player who aims across phases and then spends **Combat Pool** on the
+shot — which the attack dialog offers them, unprompted, every time — has silently lost the aim they
+paid for. Nothing warns.
+
+Also note Take Aim requires a **ready** weapon, tying it to [#47](#47).
+
+This may deserve its own entry once #47 and the ledger exist; it is recorded here because it is the
+same trust-the-player gap, and because the cross-turn state has to live wherever the action ledger
+lives.
 
 ### ⚠ What must NEVER be auto-charged
 
