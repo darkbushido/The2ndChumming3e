@@ -846,13 +846,18 @@ Power (number) + Level (L/M/S/D) + optional Stun flag
   its Spell Pool input at `availableSpellPool` **as read when the dialog is built**, so refreshing
   afterwards would show a mage a stale cap and block dice they actually have.
   ⚠ `_endOfTurnReset()` had exactly **one** caller for a long time (`_newRound`), which meant
-  round 1 silently inherited leftover state and `endCombat()`'s optional prompt was the only thing
-  keeping the *next* fight clean. Covered by `tests/initiative.test.mjs`.
+  round 1 silently inherited leftover state and `endCombat()`'s prompt was the only thing keeping
+  the *next* fight clean. Covered by `tests/initiative.test.mjs`.
 - Every write is **dirty-checked**, so the overlapping calls above cost nothing — each helper
   writes unconditionally and each write fires the `updateActor` hook that drives status icons and
   the auto-defeated logic.
-- Also refreshed by `endCombat()` (GM prompted: "Refresh all combat pools?") — a tidy-up on the way
-  out, **not** the mechanism that keeps pools topped up during a fight.
+- Also refreshed by `endCombat()`, **silently** — it calls the same `_endOfTurnReset()`, then clears
+  the two things that outlive a Combat Turn but not the fight (`clearSpellDefense`, the
+  `tempMagicLoss` flag). A tidy-up on the way out, **not** the mechanism that keeps pools topped up
+  during a fight.
+  ⚠ This used to **ask** ("Refresh all combat pools?"). The prompt was removed 2026-08-11: once
+  `startCombat()` gained its own reset, the next fight refreshed at round 1 either way, so declining
+  achieved nothing. Do not restore it — it is a question with only one meaningful answer.
 
 ### Spell pool (Awakened characters only)
 - Derived: ⌊(INT + WIL + MAG) / 3⌋ (effective Magic; SR3 RAW Spell Pool)
@@ -1010,7 +1015,7 @@ CYB/UNA → Unarmed Combat
 ### SR3ECombat
 - `_nextTurnSR3()` — SR3 pass-based initiative advancement
 - `_nextTurnSR2()` — SR2 flat queue advancement
-- `endCombat()` — override, prompts pool refresh before ending
+- `endCombat()` — override, silently refreshes pools + clears Spell Defense / `tempMagicLoss` before ending
 
 ---
 

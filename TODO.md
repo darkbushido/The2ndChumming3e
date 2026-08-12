@@ -1632,8 +1632,8 @@ Melee has a separate table (**p.123**) and the GM currently has no surface for i
 | Situation | Modifier | Wired? |
 |---|---|---|
 | Called Shot | +4 | ✅ `_promptCalledShot` |
-| Character's weapon has longer Reach\* | −1 per point | ✅ differential, `atkTN`/`defTN` |
-| Character's weapon has inferior Reach\* | +1 per point | ✅ same |
+| Character's weapon has longer Reach\* | −1 per point | ⚠ differential applied, but the **choice** is not offered — see below |
+| Character's weapon has inferior Reach\* | +1 per point | ⚠ same |
 | Character is wounded | Damage Modifier (p.126) | ✅ folded in by `rollPool` |
 | **Character has friends in the melee** | **−1 per friend, max −4** | ❌ |
 | **Opponent has friends in the melee** | **+1 per friend, max +4** | ❌ |
@@ -1642,7 +1642,46 @@ Melee has a separate table (**p.123**) and the GM currently has no surface for i
 | **Attacking multiple targets** | **+2 per target** | ❌ |
 | **Visibility impaired** | Visibility Table **at HALF value**, rounded down — **except Full Darkness** | ❌ |
 
-\* *Only one of these may be applied, to attacker or defender* — the differential already implemented.
+\* *Only one of these may be applied, to attacker or defender* — the differential is implemented, but
+which side it lands on is **not a system decision to make**; see below.
+
+### ⚠ Reach is a CHOICE the longer-reach fighter makes, and we make it for them
+
+Raised 2026-08-11, from the question *"what happens when the defender doesn't have the reach to hit
+back?"* — the answer being that they defend normally, because reach never gates participation.
+**p.122 step 2** has the defender roll unconditionally: *"Roll the defender's base Combat Skill dice,
+augmented by dice from his Combat Pool, against a base Target Number 4."* No weapon requirement, no
+reach precondition. Reach only moves a target number. That part we have right.
+
+What we do **not** have is the election. **p.121**:
+
+> "Calculate the **difference** between the Reach Ratings of opponents. The character with the longer
+> (higher) Reach **can choose** to apply this number as either a **negative target number modifier to
+> his attack test** OR as a **positive modifier to his opponent's target number**."
+
+The book gives the reason the two are not equivalent: *"beat the opponent's defenses"* versus *"make
+himself harder to hit."* Same magnitude, different target — offence or defence. Against a
+low-skill/high-pool opponent you want the +N on them; when you need the hit, you want the −N on you.
+
+We hardcode the first branch, permanently, for both sides:
+
+```js
+atkTN: Math.max(2, 4 + Math.min(0, defReach - atkReach) + …)
+defTN: Math.max(2, 4 + Math.min(0, atkReach - defReach) + …)
+```
+
+The `Math.min(0, …)` is what makes it a bonus-only-to-the-longer-side reading. It is one of the two
+legal applications, so nothing is *wrong* today — the option is simply unavailable.
+
+**Why it becomes urgent under [#24](#24).** Today both TNs are editable on the boxing card, so a GM
+who wants the other branch can just type it. #24 makes the corners read-only. The workaround dies
+with it, and the choice has to move into this window or it is lost outright.
+
+**Shape:** a reach row that appears only when the differential is non-zero, naming the fighter who
+holds it and offering the two applications — *−N to my TN* / *+N to theirs*. Belongs to whoever has
+the longer reach, not to the GM, so on a two-corner card it renders in **that fighter's** corner.
+Trolls have natural Reach 1 cumulative with weapon reach (p.121) — check the differential is computed
+from the total, not the weapon field alone.
 
 ### ✅ The data layer is built — `SR3E_MELEE_MODIFIERS` + `sumMeleeModifiers`
 

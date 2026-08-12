@@ -415,51 +415,31 @@ export class SR3ECombat extends Combat {
   }
 
   /**
-   * Override endCombat to offer a combat pool refresh before closing.
+   * Override endCombat to clear per-combat state on the way out.
+   *
+   * This used to ASK the GM whether to refresh pools. It no longer does, because since
+   * `startCombat()` gained its own `_endOfTurnReset()` call the answer stopped mattering:
+   * the next fight refreshes at round 1 regardless, so declining bought nothing and the
+   * prompt was a question with only one meaningful answer.
+   *
+   * `_endOfTurnReset()` is dirty-checked per field, so an actor that spent nothing is not
+   * written at all — this costs no `updateActor` hooks on a clean table.
    * @override
    */
   async endCombat() {
-    // Ask GM if combat pools should be refreshed
-    let refresh = false;
-    await foundry.applications.api.DialogV2.wait({
-      window: { title: 'Combat Ended' },
-      content: `
-        <p>Combat is over.</p>
-        <p>Refresh all combat pools?</p>
-      `,
-      buttons: [
-        {
-          label: 'Refresh Pools',
-          action: 'yes',
-          default: true,
-          callback: () => { refresh = true; }
-        },
-        {
-          label: 'No',
-          action: 'no',
-        },
-      ],
-    });
+    await this._endOfTurnReset();
 
-    if (refresh) {
-      const actors = this.combatants.contents
-        .map(c => c.actor)
-        .filter(Boolean);
-      for (const actor of actors) {
-        await actor.refreshCombatPool();
-        await actor.refreshSpellPool();
-        await actor.refreshAstralPool?.();
-        await actor.refreshHackingPool();
-        await actor.clearSpellDefense();
-        await actor.resetRecoil?.();
-        await actor.unsetFlag('The2ndChumming3e', 'tempMagicLoss').catch(() => {});
-        if (actor.system?.fullDefense) {
-          await actor.update({ 'system.fullDefense': false, 'system.fullDefensePool': 0 });
-        }
-      }
-      ui.notifications.info('Combat pools refreshed.');
+    // Two pieces of state that outlive a Combat Turn but not the fight, so they belong
+    // here rather than in the per-turn reset: Spell Defense is committed for a whole turn
+    // and re-declared each round, and tempMagicLoss tracks drain-driven Magic loss.
+    for (const c of this.combatants.contents) {
+      const actor = c.actor;
+      if (!actor) continue;
+      await actor.clearSpellDefense?.();
+      await actor.unsetFlag('The2ndChumming3e', 'tempMagicLoss').catch(() => {});
     }
 
+    ui.notifications.info('Combat ended — pools refreshed.');
     return super.endCombat();
   }
 }
