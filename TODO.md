@@ -1026,7 +1026,34 @@ contradict, both worth re-checking before assuming a fix:
 what one square is meant to represent; and whether reach should modify the adjacency threshold at
 all (SR3 melee assumes engaged combatants — a pole arm's reach is a TN edge, not a second square).
 
-## 43. The resist card spends Combat Pool for free — **CONFIRMED**
+## 43. Resist cards spend pool dice for free — **DAMAGE SOAK FIXED; SIBLINGS OUTSTANDING**
+
+**Fixed 2026-08-12 for the damage soak card** (`_postSoakCard` / `handleSoakRollClick`):
+
+- **Two fields, not one.** `sr-soak-body` (free) and `sr-soak-cp` (charged), because a single
+  merged number made it impossible to tell which dice needed paying for.
+- **The pool is shown**, capped at what is available, and when it is empty the card says so in
+  amber rather than silently offering nothing. That is the p.113 trade becoming visible: a
+  defender who burned pool on a failed dodge arrives at the soak with less.
+- **Charged through `spendCombatPool`**, so a player without UPDATE on their own actor still lands
+  the write on the GM.
+- **Charged AFTER the roll is certain.** The physical-dice path is cancellable, and spending first
+  would bill an actor for a roll that never happened. A shortfall (concurrent spend between the
+  local clamp and the write) warns rather than silently rolling dice the actor does not have.
+- The result label now reads `(4 Body + 2 Combat Pool)` so the split is legible afterwards.
+- `.sr-soak-roll-btn` was already `_isDecider`-gated, which matters more now that it writes.
+
+### ⚠ Still outstanding — the sibling cards
+
+Same shape, same fault, **not touched**: `sr-astral-soak-pool`, `sr-drain-pool`,
+`sr-matrix-resist-pool`, `sr-matrix-decker-resist-pool`, and `sr-drain-spell-pool` for Spell Pool.
+
+⚠ **Audit the rule before copying the fix into each.** They are not all the same question — SR3
+does not allow Spell Pool against drain, and the spell-resist card (`_postSpellSoakCard`) is
+**attribute only, no pool** by RAW, so it was deliberately left alone rather than "fixed" into
+offering a pool it should not have.
+
+### The original report
 
 **Found in play 2026-08-10.** The soak card offers one field and never charges for it:
 

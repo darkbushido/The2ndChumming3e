@@ -4052,6 +4052,15 @@ _prepareCharacter(sys, attr) {
     const bodyAttr = this.system.attributes?.body;
     const body     = Math.max(bodyAttr?.value ?? 0, bodyAttr?.base ?? 0, 1);
 
+    // Body dice are free; Combat Pool dice are not, so they are separate fields — one merged
+    // number made it impossible to tell which dice had to be charged (TODO 43).
+    //
+    // Read at POST time, which is also the point of the rule: a defender who burned pool on a
+    // failed dodge arrives here with less, and p.113's worked example turns on exactly that —
+    // Snot spends all five dodging and then has "no dice remaining in his Combat Pool with
+    // which to increase his odds of survival." Showing 0 left is the trade being visible.
+    const availPool = this.type === 'vehicle' ? 0 : (this.system.derived?.availableCombatPool ?? 0);
+
     let ballistic, impact;
     if (this.type === 'vehicle') {
       // Vehicles use their Armor attribute directly; no equipped-armor item
@@ -4124,9 +4133,17 @@ _prepareCharacter(sys, attr) {
           ${ammoNote ? `<div class="sr-roll-meta" style="color:var(--sr-gold);font-size:11px">🔸 ${ammoNote}</div>` : ''}
           <div class="sr-soak-fields">
             <label class="sr-soak-label">
-              Resist Pool (Body ${body} + bonuses):
-              <input type="number" class="sr-soak-pool" value="${body}" min="1" max="30" style="width:55px"/>
+              Body dice:
+              <input type="number" class="sr-soak-body" value="${body}" min="0" max="30" style="width:55px"/>
             </label>
+            ${availPool > 0
+              ? `<label class="sr-soak-label">
+                   Combat Pool (<strong>${availPool}</strong> left):
+                   <input type="number" class="sr-soak-cp" value="0" min="0" max="${availPool}" style="width:55px"/>
+                 </label>`
+              : `<div class="sr-roll-meta" style="font-size:11px;color:var(--sr-amber)">
+                   No Combat Pool left to soak with.
+                 </div>`}
             <label class="sr-soak-label">
               TN (Power ${stagedPower} − Armour):
               <input type="number" class="sr-soak-tn" value="${soakTN}" min="2" max="30" style="width:55px"/>
@@ -4156,8 +4173,9 @@ _prepareCharacter(sys, attr) {
   static async handleSoakRollClick(btn, physicalDice = false) {
     const payload   = JSON.parse(btn.dataset.payload);
     const card      = btn.closest('.sr-soak-card');
-    const pool      = parseInt(card.querySelector('.sr-soak-pool')?.value) || 1;
-    const tn        = parseInt(card.querySelector('.sr-soak-tn')?.value)   || 2;
+    const body      = Math.max(0, parseInt(card.querySelector('.sr-soak-body')?.value) || 0);
+    const wantCP    = Math.max(0, parseInt(card.querySelector('.sr-soak-cp')?.value)   || 0);
+    const tn        = parseInt(card.querySelector('.sr-soak-tn')?.value) || 2;
 
     btn.disabled    = true;
     btn.textContent = '⏳ Rolling…';
@@ -4165,18 +4183,41 @@ _prepareCharacter(sys, attr) {
     const actor = game.actors.get(payload.actorId);
     if (!actor) return;
 
+    // Clamp locally so the physical-dice prompt never asks about dice the actor cannot
+    // have. `spendCombatPool` clamps again authoritatively — this is presentation only.
+    actor.prepareDerivedData();
+    const availCP = actor.system.derived?.availableCombatPool ?? 0;
+    const useCP   = Math.min(wantCP, availCP);
+    const pool    = Math.max(1, body + useCP);
+
     const effectiveTN = Math.max(2, tn);
-    const label       = `🛡 ${actor.name} resists`;
+    const label       = useCP > 0
+      ? `🛡 ${actor.name} resists (${body} Body + ${useCP} Combat Pool)`
+      : `🛡 ${actor.name} resists`;
 
     let dice, ones, glitch;
     if (physicalDice) {
       const successes = await SR3EActor._promptPhysicalSuccesses(pool, effectiveTN, label);
+      // Nothing has been spent yet, so a cancel here costs the actor nothing.
       if (successes === null) { btn.disabled = false; btn.textContent = 'Roll Soak'; return; }
       dice = SR3EActor._buildPhysicalDice(pool, successes); ones = 0; glitch = false;
     } else {
       dice  = actor._rollWave(pool, effectiveTN, true);
       ones  = dice.filter(d => d.isOne).length;
       glitch = SR3EActor.isRuleOfOne(ones, pool);
+    }
+
+    // Charge AFTER the roll is certain — the physical-dice path above is cancellable, and
+    // spending before it would bill an actor for a roll that never happened. Routed through
+    // spendCombatPool so a player without UPDATE on their own actor still lands the write
+    // on the GM.
+    if (useCP > 0) {
+      const spent = await actor.spendCombatPool(useCP);
+      if (spent < useCP) {
+        ui.notifications.warn(
+          `${actor.name}: only ${spent} of ${useCP} Combat Pool dice were available — ` +
+          `the roll used ${pool}. Adjust by hand if needed.`);
+      }
     }
 
     await actor._postWaveCard({
