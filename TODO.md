@@ -861,6 +861,34 @@ without a word is defensible for a character who genuinely has none; doing it to
 pole arm is not. And [#24](#24) makes the corners read-only, at which point a wrong default weapon
 becomes uncorrectable mid-exchange.
 
+### Code traced 2026-08-11 — there is NO path that renders a melee row without the icon
+
+`melees` is `type === 'melee' && !_stored(i)` (`SR3EActorSheet.js:945`), split three ways —
+`armedMelee` (`EDG`/`CLB`/**`POL`**/`WHP`), `unarmedCyber` (`CYB`/`UNA`), and `uncategorisedMelee`,
+which has its own amber "set category in item sheet" header. **All three call `_meleeControls`**, and
+the fist at `:2582` is unconditional inside it. Pole arms are in `ARMED_CATS`, so they are not a
+special case.
+
+The glyph resolves too: Foundry ships **Font Awesome Pro 7.2.0**, which defines
+`.fa-hand-rock{--fa:"\f255"}` as an alias for `hand-back-fist`. A stale FA5 icon name was the obvious
+suspect and it is not the cause.
+
+So the row itself was absent, or the icon was present and unrecognised. Three candidates, in order:
+
+1. **The item is not type `melee`** — never enters `melees` at all.
+2. **The item is in storage** — `_stored(i)` removes it from the Weapons tab entirely.
+3. **It rendered and was not spotted.** The *unequipped* fist carries no colour, sitting among four
+   to six similar grey icons (home, dice, fist, edit, trash — plus Focus?/Active? on an Awakened
+   sheet). Nothing distinguishes the one control that changes how the character fights.
+
+⚠ **Still unconfirmed** — the reporting world was a production system, and the test case no longer
+exists to re-check. Do not close this from the code trace alone; that is exactly the reasoning that
+produced [#45](#45)'s wrong first diagnosis. But do not assume a rendering bug either.
+
+**The generalisable fault, whichever way it lands:** *nothing tells you when an item is the wrong
+type.* A pole arm saved as `gear` is silently not a weapon — it appears on a tab, looks owned, and
+never reaches any combat path.
+
 ## 45. Defender is asked to default despite having the skill AND the weapon — **ROOT CAUSE FOUND**
 
 **Found in play 2026-08-10.** ⚠ **The weapon turned out not to be equipped** — see [#46](#46). With
@@ -1630,6 +1658,20 @@ reads it, but nothing stops `rollMelee` on an unequipped weapon; the field only 
 
 **Firearms and thrown have no concept of ready at all.** A holstered pistol fires identically to one
 already in hand.
+
+⚠ **Confirmed from the sheet, 2026-08-11:** *"I see a way to equip a melee weapon, but I don't see a
+way to equip a firearm."* Correct, and it is an asymmetry in two places at once:
+
+- **Data model** (`ActorDataModels.js:97-100`, `:179-181`) declares `equippedArmor`,
+  `equippedMelee` and `equippedCyberdeck` — and **no `equippedFirearm`**. The pattern is established
+  for three other slots; guns are the omission.
+- **Sheet**: melee rows render `_meleeControls` (fist icon, `equipMelee`); firearm rows render
+  `_itemControls(w.id, true, 'rollWeapon', …)` (`SR3EActorSheet.js:976`), which has **no equip
+  affordance at all**.
+
+So this is visible as a UI inconsistency *before* any action economy exists, and a player noticing
+"why can I equip my sword but not my gun" is noticing the same hole this task is about. Fixing #47
+means adding the field and the control, not just the check.
 
 ### Sequencing — blocked by [#46](#46), and not merely inconvenienced by it
 
