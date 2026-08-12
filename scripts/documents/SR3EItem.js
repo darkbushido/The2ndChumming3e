@@ -1039,7 +1039,10 @@ export class SR3EItem extends Item {
 
   const weaponOpts = await SR3EItem._promptWeaponRollOptions(targetActor, rawDamage, actor, extraTNMod,
     tnBreakdownParts.length ? tnBreakdownParts.join(' | ') : null, rangeInfo, calledShotAllowed,
-    { gmTNDelta, gmSetTN: gmTNDelta !== 0 || negotiation?.mods, maxAim: _maxAim });
+    // Lock the attacker's TN field only when a GM actually adjudicated. `negotiation.mods`
+    // must NOT be used for this: the skip path returns `{}`, which is truthy, so the field
+    // locked on every GM-run NPC attack with no window to unlock it (TODO 50).
+    { gmTNDelta, gmSetTN: negotiation?.adjudicated === true, maxAim: _maxAim });
   if (!weaponOpts) return null;
 
   // Anti-Vehicle ammo bypasses the vehicle Power/2 reduction (same effect as the AV-munition checkbox)

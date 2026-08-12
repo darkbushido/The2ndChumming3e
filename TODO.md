@@ -23,12 +23,12 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 24 |
-| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 42 · 43 · 45 · 46 · 50 |
+| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 42 · 43 · 45 · 46 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 · 41 · 47 · 48 · 49 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 21 · 22 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 44 |
+| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 21 · 22 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 44 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -827,9 +827,37 @@ Keep the two-column grid — group headers span both columns.
 
 ### 🔴 Confirmed bugs, still open
 
-## 50. Ranged attack: no GM TN window, and the TN is read-only — **REPORTED**
+## 50. ✅ Ranged attack: no GM TN window, and the TN is read-only — **FIXED**
 
-**Found in play 2026-08-12.** Observation only; **not investigated**.
+**Found in play 2026-08-12, fixed the same day.** Two symptoms, and only one was a bug.
+
+**The missing window was correct behaviour.** The `gmApprovesTN` world setting defaults to
+`'player'`, which skips the GM window when the *requester is a GM* — so GM-vs-NPC costs the GM
+nothing. Set it to **"Always, including GM attacks"** to get the p.112 modifier checkboxes when
+running NPC against NPC, which is what was actually being asked for.
+
+**The read-only TN was the bug, and it was a truthiness trap.** The caller decided whether to lock
+the attacker's field with:
+
+```js
+gmSetTN: gmTNDelta !== 0 || negotiation?.mods       // ← `mods` is {} on the skip path
+```
+
+The skip path returns `{ tn: ctx.baseTN, mods: {} }`, and **`{}` is truthy**, so `gmSetTN` was true
+on every attack where no GM had looked at anything. `gmTNDelta` was 0 (the TN passed through
+untouched), so the lock fired purely on the empty object. Result: a target number that could not be
+set by any route — the field was read-only and no window opened to replace it.
+
+**Fix:** the handler now returns an explicit `adjudicated` boolean — `false` on both skip paths
+(`off`, and `player` + GM requester), `true` once the window has run — and the caller keys the lock
+on that instead of on the payload's shape. A GM who opens the window and changes nothing still
+counts as having adjudicated: *"I looked, 4 is right"* is a decision.
+
+Covered by `tests/attack-negotiate.test.mjs`, which pins the exact shape that lied — asserting both
+that `mods` is truthy **and** that `adjudicated` is false in the same breath, so removing `mods` from
+the payload cannot quietly reintroduce the trap.
+
+### The original report, kept for the record
 
 **Setup:** GM logged in to the Foundry app, both combatants GM-owned NPCs — a SWAT team member
 attacking a troll street dealer. New combat started, GM directed the attack. **Ranged.**

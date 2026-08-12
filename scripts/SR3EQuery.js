@@ -436,8 +436,14 @@ export class SR3EQuery {
       const mode = game.settings.get('The2ndChumming3e', 'gmApprovesTN');
       const requesterIsGM = game.users.get(ctx._requesterId)?.isGM === true;
       // No GM window: the attacker's own TN stands, unchanged.
+      //
+      // `adjudicated` is the caller's ONLY reliable signal that a GM actually looked at
+      // this attack. It must not be inferred from the payload: `mods` is `{}` here, which
+      // is truthy, so a caller testing the object itself concludes the GM set the TN and
+      // locks the attacker's field — leaving a GM running NPC-vs-NPC with a number they
+      // cannot change and no window to change it in. That was TODO 50.
       if (mode === 'off' || (mode === 'player' && requesterIsGM)) {
-        return { tn: ctx.baseTN, mods: {} };
+        return { tn: ctx.baseTN, mods: {}, adjudicated: false };
       }
 
       const attacker = SR3EQuery.resolve(ctx.attackerUuid);
@@ -446,7 +452,9 @@ export class SR3EQuery {
       const gmRes = await SR3EItem._promptGMAttackWindow({ ...ctx, attacker, weapon });
       if (!gmRes) return null;   // GM cancelled — nothing written anywhere
 
-      return { tn: gmRes.tn, mods: gmRes.mods };
+      // The window ran and the GM confirmed, so their number is authoritative even when
+      // they changed nothing — "I looked, 4 is right" is a decision, not an absence of one.
+      return { tn: gmRes.tn, mods: gmRes.mods, adjudicated: true };
     });
 
 
