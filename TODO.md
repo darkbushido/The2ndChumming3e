@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 24 |
-| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 42 · 43 · 45 · 46 |
+| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 42 · 43 · 45 · 46 · 50 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 · 41 · 47 · 48 · 49 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
@@ -826,6 +826,36 @@ Keep the two-column grid — group headers span both columns.
 ---
 
 ### 🔴 Confirmed bugs, still open
+
+## 50. Ranged attack: no GM TN window, and the TN is read-only — **REPORTED**
+
+**Found in play 2026-08-12.** Observation only; **not investigated**.
+
+**Setup:** GM logged in to the Foundry app, both combatants GM-owned NPCs — a SWAT team member
+attacking a troll street dealer. New combat started, GM directed the attack. **Ranged.**
+
+**Symptom, two halves:**
+
+1. The **GM TN window never opened** ([#29](#29)'s window, which shipped on this branch).
+2. The **TN field in the roll-options dialog was not editable**, so there was no way to set a target
+   number by any route.
+
+⚠ **The second half is what makes it a dead end rather than a missing feature.** The roll-options TN
+is deliberately read-only *whenever a GM window is expected to open* (`gmApprovesTN`, CLAUDE.md
+"Ranged combat flow" step 5). Those two behaviours are supposed to be two sides of one decision, so
+when the window does not appear the lock has nothing to hand off to and the GM is left with a number
+they cannot change.
+
+Requested alongside it: *"it would be nice if I got the options in the TN window here"* — i.e. the
+p.112 modifier checkboxes, which is what the window is for.
+
+**Not the same as [#37](#37)** — that is melee having no GM window at all, by construction. This is
+the ranged path, where the window exists and did not appear.
+
+Context worth preserving for whoever picks this up, **as facts rather than as a diagnosis**: the
+attacking user *was* the GM, and both actors were GM-owned. Whether either of those matters is
+unknown — the earlier report of a missing TN window (2026-08-10) was **melee**, player-vs-player,
+and is a different case.
 
 ## 46. No usable way to equip a melee weapon — **REPORTED, blocks melee**
 
