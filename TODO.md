@@ -24,7 +24,7 @@ independent.
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 24 |
 | 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 42 · 43 · 45 · 46 |
-| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 · 41 |
+| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 · 41 · 47 · 48 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
@@ -1454,6 +1454,125 @@ model; a vision-gear flag reachable from the actor for goggles; keep `accessorie
 description. Then delete the guessing in `SR3ECombatModifiers` and read the fields.
 
 See [audit/socket-combat-plan.md](audit/socket-combat-plan.md) — "Maintainer decisions — 2026-08-05".
+
+## 48. The GM hand-charges every action — most of them are knowable
+
+**Asked 2026-08-11:** *"right now the GM decides if a player does a simple or complex action. Some of
+these should auto apply. Is that possible?"* **Yes**, and for most combat actions the answer is not
+even ambiguous — SR3 states the cost per action, and the system already knows which action was taken
+because it is the thing that opened the dialog.
+
+### What exists (`sr3e.js:1596-1645`, `_actionTracker` at `:1966`)
+
+Three buttons on the active combatant's card: **Complex** (advances the turn), **Simple** (toggles,
+marking one of the two used), **Simple** (advances the turn). State is
+`const _actionTracker = new Map()` — **module-scoped, in-memory, on the GM's client only**, cleared
+by the `updateCombat` hook on any turn or round change.
+
+### ⚠ The blocker is the same one as [#42](#42), not the rules
+
+A player rolling on their own client cannot charge an action, because the ledger is a `Map` in the
+GM's browser. Two consequences, and the second is the real one:
+
+1. The write has to travel — but that path exists: `SR3EQuery.asGM`, the same route pool spending
+   already takes.
+2. **The `Map` is the wrong home.** In-memory GM-local state cannot be shown to the player whose
+   turn it is, and dies on reload. This wants a **combatant flag** — GM-written, synced to every
+   client, survives refresh. Doing #42 and this against one shared-state design is much cheaper
+   than doing them twice.
+
+### The mapping is unambiguous (core **p.107-108**)
+
+| System entry point | Action | Cost |
+|---|---|---|
+| `rollWeapon` (firearm, any mode) | Fire Weapon | **Simple** |
+| `rollWeapon` (thrown) | Throw Weapon | **Simple** |
+| `reload()` — clip weapons | Insert Clip | **Simple** |
+| `reload()` — non-clip weapons | Reload Firearm (**p.108**) | **Complex** |
+| Ready / nock ([#47](#47)) | Ready Weapon | **Simple** |
+| Quick Draw ([#47](#47)) | Quick Draw | **Simple** |
+| Take Aim (already in the called-shot dialog as −1 TN/point) | Take Aim | **Simple** each |
+| `rollMeleeAttack` | Melee/Unarmed Attack (**p.108**) | **Complex** |
+| `rollSpell` | Cast Spell | **Complex** |
+| `rollVehicleWeapon` | Fire Mounted or Vehicle Weapon (**p.108**) | **Complex** |
+| Summoning (`SR3ESpiritSummoning`) | Summon Nature Spirit (**p.108**) | **Complex** |
+| `rollSkill`, Drone Comprehension, Driving Test | Use Skill (**p.108**) | **Complex** |
+
+### ⚠ What must NEVER be auto-charged
+
+**Everything reactive.** Dodge, Full Defense, Damage Resistance and Spell Resistance are not the
+defender's action and cost them nothing from their own phase — charging them would silently halve
+every defender's turn. Initiative is not an action either. The rule of thumb: **charge the actor who
+opened the dialog, never the one answering it.**
+
+### ⚠ Auto-MARK, do not auto-ADVANCE
+
+The current Complex and second-Simple buttons both call `combat.nextTurn()`. Auto-charging must not
+inherit that: a player's roll silently ending their own turn — before they have readied, aimed, or
+taken their second Simple — is a far worse failure than under-counting. Mark the action as spent,
+leave `nextTurn()` on the GM's click.
+
+Two rules that make the count non-trivial and argue the same way: **SS weapons may be fired only
+once per Combat Phase** (already warned in `_promptFireMode`), while SA can legitimately fire twice
+as two Simple Actions.
+
+### On the ethos
+
+CLAUDE.md's *"no automation of outcomes"* is about damage and narrative — the GM clicks wound boxes.
+Action economy is **bookkeeping**, not an outcome, so tracking it does not cross that line. But
+*"all stats are manually editable"* still applies: every auto-charge must be reversible by the GM
+with one click, and the existing three buttons stay as the manual path.
+
+## 47. Ready Weapon is unmodelled — you can attack with a weapon you never drew
+
+**Reported 2026-08-11:** *"you shouldn't be able to attack with a weapon you don't have equipped."*
+Correct, and RAW says so outright. Core **p.107**, Simple Actions:
+
+> "A character may ready a weapon by spending a **Simple Action**. The weapon may be a firearm,
+> melee weapon, throwing weapon, ranged weapon, or mounted or vehicular weapon. Readying entails
+> drawing a firearm from a holster, drawing a throwing or melee weapon from a sheath, picking up
+> any kind of weapon, nocking an arrow in a bow or crossbow, or generally preparing any kind of
+> weapon for use. **A weapon must be ready before it can be used.**"
+
+So *ready* is a **Simple Action**, and it is a precondition, not a formality.
+
+### ⚠ A hard block would be wrong — Quick Draw is RAW's answer to "I haven't drawn it yet"
+
+Also **p.107**: a pistol-sized weapon (Concealability 4 or greater) can be drawn **and fired** in a
+single **Quick Draw** action, gated on a **Reaction (4) Test** — 1 success clears the weapon, **+2**
+to the test if it is not in a proper holster, and a further **+2 each** when quick-drawing two
+weapons. "Not ready" is therefore a legal state to attack from, at a price. Refusing the attack
+outright would delete a rule rather than enforce one, and it would also take the GM's ability to
+wave things through — see the minimal-guardrails ethos in CLAUDE.md, and [#44](#44), where the same
+question about melee range was settled as **warn, do not block**.
+
+### What the system models today
+
+**Only bows and crossbows are right.** `_usesNockedAmmo` gives them a magazine of one that Reload
+nocks and firing spends, which is exactly the book's own wording for them — Fire Weapon requires a
+bow *"previously made ready using the Simple Action of Ready Weapon"*.
+
+**Melee has the field but not the gate.** `system.equippedMelee` exists and `_getEquippedMelee`
+reads it, but nothing stops `rollMelee` on an unequipped weapon; the field only decides which weapon
+*defends*.
+
+**Firearms and thrown have no concept of ready at all.** A holstered pistol fires identically to one
+already in hand.
+
+### Sequencing — blocked by [#46](#46), and not merely inconvenienced by it
+
+While the `equipMelee` control is invisible, **nothing can be equipped**. Enforcing readiness on top
+of that would not gate melee, it would abolish it. #46 first, always.
+
+### Shape
+
+- A `ready` boolean on weapon items, defaulting **true** for anything already in an actor's hands at
+  migration time — a world full of characters who suddenly cannot fight is a worse bug than the one
+  being fixed.
+- `rollWeapon` / `rollMeleeAttack` warn when firing something unready, offering **Ready** (Simple
+  Action) or, for Concealability ≥ 4, **Quick Draw** with its Reaction (4) Test.
+- The Action Tracker already models Simple vs Complex per turn, so Ready has somewhere to charge to.
+- Throwing weapons ready in **batches**: one action readies ½ Quickness (round down) of them.
 
 ## 41. Knockdown — nothing implements it, and two other rules already depend on it
 
