@@ -2445,17 +2445,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   });
 
   // MIJI test (electronic warfare) — roll both sides + apply degradation
-  html.querySelectorAll('.sr-miji-roll-btn').forEach((btn, i) => {
-    if (!_checkBtn(btn, mid, 'mijiroll', i)) return;
-    const pl = _payload(btn);
-    if (pl && !_mineAny(pl.intruderRiggerId, pl.defenderRiggerId)) return _denyBtn(btn, 'Only a rigger in this contest (or the GM) can roll it.');
-    btn.addEventListener('click', async event => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (!_claimBtn(btn, mid, 'mijiroll', i)) return;
-      await game.sr3e.SR3EMIJI.handleMIJIRoll(btn);
-    });
-  });
+  // (MIJI's roll button is gone - the two-corner block above handles it via
+  //  data-twocorner="miji". TODO 24.)
 
   html.querySelectorAll('.sr-miji-degradation-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'mijideg', i)) return;
@@ -2469,41 +2460,10 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
     });
   });
 
-  html.querySelectorAll('.sr-ost-roll-btn').forEach((btn, i) => {
-    if (!_checkBtn(btn, mid, 'ostroll', i)) return;
-    const pl = _payload(btn);
-    if (pl && !_isDeciderId(pl.deckerActorId)) return _denyBtn(btn, 'Only the decker (or the GM) rolls this System Test.');
-    btn.addEventListener('click', async event => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (!_claimBtn(btn, mid, 'ostroll', i)) return;
-      await SR3EActor.handleOrthodoxSystemTestRoll(btn);
-    });
-  });
-
-  html.querySelectorAll('.sr-occ-roll-btn').forEach((btn, i) => {
-    if (!_checkBtn(btn, mid, 'occroll', i)) return;
-    const pl = _payload(btn);
-    if (pl && !_isDeciderId(pl.deckerActorId)) return _denyBtn(btn, 'Only the decker (or the GM) rolls this cybercombat.');
-    btn.addEventListener('click', async event => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (!_claimBtn(btn, mid, 'occroll', i)) return;
-      await SR3EActor.handleOrthodoxCybercombatRoll(btn);
-    });
-  });
-
-  html.querySelectorAll('.sr-icia-roll-btn').forEach((btn, i) => {
-    if (!_checkBtn(btn, mid, 'iciaroll', i)) return;
-    const pl = _payload(btn);
-    if (pl && !_isDecider(pl)) return _denyBtn(btn, 'Only the IC\'s owner (or the GM) rolls this attack.');
-    btn.addEventListener('click', async event => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (!_claimBtn(btn, mid, 'iciaroll', i)) return;
-      await SR3EActor.handleOrthodoxICAttackRoll(btn);
-    });
-  });
+  // The Orthodox System Test / Cybercombat / IC Attack roll buttons are gone, along with
+  // melee, astral, contested, Defragged cybercombat and MIJI. All eight two-corner cards
+  // are now driven by the `[data-twocorner]` block above: each side submits its own corner
+  // and the last submission resolves. (TODO 24.)
 
   html.querySelectorAll('.sr-icia-assign-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'iciaassign', i)) return;
@@ -2671,18 +2631,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
     });
   });
 
-  // Astral Combat Roll! button on boxing card
-  html.querySelectorAll('.sr-astral-roll-btn').forEach((btn, i) => {
-    if (!_checkBtn(btn, mid, 'astral', i)) return;
-    const pl = _payload(btn);
-    if (pl && !_mineAny(pl.attackerActorId, pl.defenderActorId)) return _denyBtn(btn, 'Only a combatant in this exchange (or the GM) can roll it.');
-    btn.addEventListener('click', async event => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (!_claimBtn(btn, mid, 'astral', i)) return;
-      await SR3EActor.handleAstralRoll(btn, event.shiftKey);
-    });
-  });
+  // (Astral's Roll! button is gone — the two-corner block above handles it via
+  //  data-twocorner="astral". TODO 24.)
 
   // Astral soak button — posts astral resist card (INT dice, TN = winner's CHA)
   html.querySelectorAll('.sr-astral-soak-btn').forEach((btn, i) => {
@@ -2728,21 +2678,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
     });
   });
 
-  // Universal contested roll button
-  html.querySelectorAll('.sr-contested-roll-btn').forEach((btn, i) => {
-    if (!_checkBtn(btn, mid, 'contested', i)) return;
-    const pl = _payload(btn);
-    if (pl && !_mineAny(pl.atkActorId, pl.oppActorId)) return _denyBtn(btn, 'Only a participant in this test (or the GM) can roll it.');
-    btn.addEventListener('click', async event => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (!_claimBtn(btn, mid, 'contested', i)) return;
-      btn.disabled    = true;
-      btn.textContent = '⏳ Rolling…';
-      await SR3EActor.handleContestedRoll(btn, event.shiftKey);
-    });
-  });
-
+  // (Contested's roll button is gone — the two-corner block above handles it via
+  //  data-twocorner="contested". TODO 24.)
   // Ramming — vehicle soak button (body + control pool vs TN power)
   html.querySelectorAll('.sr-ram-vehicle-soak-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'ramvehicle', i)) return;
@@ -2816,17 +2753,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   });
 
   // Matrix combat — Cybercombat boxing card Roll button
-  html.querySelectorAll('.sr-cc-roll-btn').forEach((btn, i) => {
-    if (!_checkBtn(btn, mid, 'ccroll', i)) return;
-    const pl = _payload(btn);
-    if (pl && !_mineAny(pl.attackerActorId, pl.defenderActorId)) return _denyBtn(btn, 'Only a combatant in this exchange (or the GM) can roll it.');
-    btn.addEventListener('click', async event => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (!_claimBtn(btn, mid, 'ccroll', i)) return;
-      await SR3EActor.handleCybercombatRoll(btn);
-    });
-  });
+  // (Cybercombat's roll button is gone — the two-corner block above handles it via
+  //  data-twocorner="cybercombat". TODO 24.)
 
   // Matrix combat — Decker opens their MPCP soak card
   html.querySelectorAll('.sr-matrix-decker-resist-btn').forEach((btn, i) => {

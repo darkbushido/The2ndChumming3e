@@ -171,8 +171,9 @@ export class SR3EMIJI {
   static async postMIJICard(ctx) {
     const payload = JSON.stringify(ctx).replace(/'/g, '&#39;');
     const defName = ctx.defenderRiggerId ? game.actors.get(ctx.defenderRiggerId)?.name : ctx.targetVehicleName;
-    const _corner = (who, dice, tn, comp, skillName, diceCls, tnCls, tnLabel) => `
-      <div class="sr-miji-corner">
+    const _corner = (who, dice, tn, comp, skillName, diceCls, tnCls, tnLabel, role, owner) => `
+      <div class="sr-miji-corner"
+           data-corner-role="${role}" data-corner-owner="${owner ?? ''}" data-corner-label="${who}">
         <div class="sr-miji-name">${who}</div>
         <div class="sr-miji-skill">${skillName}</div>
         <div class="sr-melee-field-row"><span>Dice:</span>
@@ -185,21 +186,22 @@ export class SR3EMIJI {
     await ChatMessage.create({
       speaker: { alias: 'Electronic Warfare' },
       content: `
-        <div class="sr-roll-card sr-miji-card">
+        <div class="sr-roll-card sr-miji-card" data-twocorner="miji">
           <div class="sr-roll-header">⚡ MIJI — ${ctx.operationLabel} on ${ctx.channelLabel}</div>
           <div style="font-size:11px;color:var(--sr-muted);text-align:center;margin-bottom:4px">
             ${ctx.intruderName} → ${ctx.targetVehicleName}
           </div>
           <div class="sr-melee-boxing">
             ${_corner(ctx.intruderName, ctx.intDice, ctx.intTN, ctx.intComp, ctx.intSkillName,
-                      'sr-miji-int-dice', 'sr-miji-int-tn', 'TN (deck)')}
+                      'sr-miji-int-dice', 'sr-miji-int-tn', 'TN (deck)', 'intruder', ctx.intruderRiggerId)}
             <div class="sr-melee-vs">VS</div>
             ${_corner(defName, ctx.defDice, ctx.defTN, ctx.defComp, ctx.defSkillName,
-                      'sr-miji-def-dice', 'sr-miji-def-tn', ctx.tnStat === 'ecm' ? 'TN (ECM)' : 'TN (proto)')}
+                      'sr-miji-def-dice', 'sr-miji-def-tn', ctx.tnStat === 'ecm' ? 'TN (ECM)' : 'TN (proto)', 'defender', ctx.defenderRiggerId)}
           </div>
-          <div class="sr-soak-action">
-            <button class="sr-miji-roll-btn" data-payload='${payload}'>⚡ Roll MIJI Test</button>
-          </div>
+          ${game.sr3e.SR3EActor.cornerActions(payload, [
+            { role: 'intruder', label: ctx.intruderName, owner: ctx.intruderRiggerId },
+            { role: 'defender', label: defName,          owner: ctx.defenderRiggerId },
+          ])}
         </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
@@ -210,10 +212,15 @@ export class SR3EMIJI {
     const card = btn.closest('.sr-miji-card');
     btn.disabled = true; btn.textContent = '⏳ Rolling…';
 
-    const intDice = Math.max(1, parseInt(card?.querySelector('.sr-miji-int-dice')?.value) || ctx.intDice);
-    const defDice = Math.max(1, parseInt(card?.querySelector('.sr-miji-def-dice')?.value) || ctx.defDice);
-    const intTN   = game.sr3e.SR3EActor.cornerTN(card?.querySelector('.sr-miji-int-tn')?.value, ctx.intTN);
-    const defTN   = game.sr3e.SR3EActor.cornerTN(card?.querySelector('.sr-miji-def-tn')?.value, ctx.defTN);
+    // Each side's own submission first, this card's DOM only as a fallback (TODO 24).
+    const _A   = game.sr3e.SR3EActor;
+    const sub  = _A.meleeSubmissions(btn);
+    const f    = (role, cls) => _A.cornerField(sub, role, cls, card);
+
+    const intDice = Math.max(1, parseInt(f('intruder', 'sr-miji-int-dice')) || ctx.intDice);
+    const defDice = Math.max(1, parseInt(f('defender', 'sr-miji-def-dice')) || ctx.defDice);
+    const intTN   = _A.cornerTN(f('intruder', 'sr-miji-int-tn'), ctx.intTN);
+    const defTN   = _A.cornerTN(f('defender', 'sr-miji-def-tn'), ctx.defTN);
 
     const intActor = game.actors.get(ctx.intruderRiggerId) ?? game.actors.get(ctx.intruderVehicleId);
     const defActor = game.actors.get(ctx.defenderRiggerId) ?? game.actors.get(ctx.targetVehicleId);

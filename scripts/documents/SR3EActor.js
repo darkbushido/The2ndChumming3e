@@ -401,8 +401,9 @@ export class SR3EActor extends Actor {
     };
 
     const _corner = (name, label, skillName, skillDice, hackPoolAvail, tn, damageCode, firewall, soakPool, userMode,
-                     skillClass, poolClass, tnClass, dmgClass) => `
-      <div class="sr-melee-corner">
+                     skillClass, poolClass, tnClass, dmgClass, role, owner) => `
+      <div class="sr-melee-corner"
+           data-corner-role="${role}" data-corner-owner="${owner ?? ''}" data-corner-label="${name}">
         <div class="sr-melee-name">${name} <span style="font-size:11px;color:var(--sr-muted)">[${label}]</span>${_vrBadge(userMode)}</div>
         <div class="sr-melee-skill">${skillName}</div>
         <div class="sr-melee-field-row">
@@ -436,22 +437,23 @@ export class SR3EActor extends Actor {
     await ChatMessage.create({
       speaker: { alias: 'Matrix Combat' },
       content: `
-        <div class="sr-roll-card sr-melee-card">
+        <div class="sr-roll-card sr-melee-card" data-twocorner="cybercombat">
           <div class="sr-roll-header">💻 CYBERCOMBAT — ${atk.name} vs ${def.name}</div>
           <div class="sr-melee-boxing">
             ${_corner(atk.name, ctx.atkLabel, ctx.atkSkillName, ctx.atkSkillDice, ctx.atkHackPoolAvail, ctx.atkTN,
                       ctx.atkDamageCode, ctx.atkFirewall, ctx.atkSoakPool, ctx.atkUserMode ?? '',
-                      'sr-cc-atk-skill', 'sr-cc-atk-pool', 'sr-cc-atk-tn', 'sr-cc-atk-dmg')}
+                      'sr-cc-atk-skill', 'sr-cc-atk-pool', 'sr-cc-atk-tn', 'sr-cc-atk-dmg',
+                      'attacker', ctx.attackerActorId)}
             <div class="sr-melee-vs">VS</div>
             ${_corner(def.name, ctx.defLabel, ctx.defSkillName, ctx.defSkillDice, ctx.defHackPoolAvail, ctx.defTN,
                       ctx.defDamageCode, ctx.defFirewall, ctx.defSoakPool, ctx.defUserMode ?? '',
-                      'sr-cc-def-skill', 'sr-cc-def-pool', 'sr-cc-def-tn', 'sr-cc-def-dmg')}
+                      'sr-cc-def-skill', 'sr-cc-def-pool', 'sr-cc-def-tn', 'sr-cc-def-dmg',
+                      'defender', ctx.defenderActorId)}
           </div>
-          <div class="sr-soak-action" style="text-align:center;padding:4px 0">
-            <button class="sr-cc-roll-btn" data-payload='${payload}'>
-              💻 Roll Cybercombat
-            </button>
-          </div>
+          ${SR3EActor.cornerActions(payload, [
+            { role: 'attacker', label: atk.name, owner: ctx.attackerActorId },
+            { role: 'defender', label: def.name, owner: ctx.defenderActorId },
+          ])}
         </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
@@ -464,15 +466,18 @@ export class SR3EActor extends Actor {
     btn.disabled    = true;
     btn.textContent = '⏳ Rolling…';
 
-    // Read live values from card
-    const atkSkillDice = parseInt(card.querySelector('.sr-cc-atk-skill')?.value) || ctx.atkSkillDice || 1;
-    const defSkillDice = parseInt(card.querySelector('.sr-cc-def-skill')?.value) || ctx.defSkillDice || 1;
-    const atkHackPool  = parseInt(card.querySelector('.sr-cc-atk-pool')?.value)  || 0;
-    const defHackPool  = parseInt(card.querySelector('.sr-cc-def-pool')?.value)  || 0;
-    const atkTN        = SR3EActor.cornerTN(card.querySelector('.sr-cc-atk-tn')?.value, ctx.atkTN);
-    const defTN        = SR3EActor.cornerTN(card.querySelector('.sr-cc-def-tn')?.value, ctx.defTN);
-    const atkDmgCode   = card.querySelector('.sr-cc-atk-dmg')?.value.trim() || ctx.atkDamageCode;
-    const defDmgCode   = card.querySelector('.sr-cc-def-dmg')?.value.trim() || ctx.defDamageCode;
+    // Each side's own submission first, this card's DOM only as a fallback (TODO 24).
+    const sub = SR3EActor.meleeSubmissions(btn);
+    const f   = (role, cls) => SR3EActor.cornerField(sub, role, cls, card);
+
+    const atkSkillDice = parseInt(f('attacker', 'sr-cc-atk-skill')) || ctx.atkSkillDice || 1;
+    const defSkillDice = parseInt(f('defender', 'sr-cc-def-skill')) || ctx.defSkillDice || 1;
+    const atkHackPool  = parseInt(f('attacker', 'sr-cc-atk-pool'))  || 0;
+    const defHackPool  = parseInt(f('defender', 'sr-cc-def-pool'))  || 0;
+    const atkTN        = SR3EActor.cornerTN(f('attacker', 'sr-cc-atk-tn'), ctx.atkTN);
+    const defTN        = SR3EActor.cornerTN(f('defender', 'sr-cc-def-tn'), ctx.defTN);
+    const atkDmgCode   = String(f('attacker', 'sr-cc-atk-dmg') ?? '').trim() || ctx.atkDamageCode;
+    const defDmgCode   = String(f('defender', 'sr-cc-def-dmg') ?? '').trim() || ctx.defDamageCode;
     const atkDmgBase   = SR3EItem.parseDamageCode(atkDmgCode) ?? ctx.atkDamageBase;
     const defDmgBase   = SR3EItem.parseDamageCode(defDmgCode) ?? ctx.defDamageBase;
 
@@ -5883,8 +5888,9 @@ _prepareCharacter(sys, attr) {
 
     const payload = JSON.stringify(ctx).replace(/'/g, '&#39;');
 
-    const _corner = (name, skillName, skillDice, isDefault, rawDamage, astralPool, tn, poolClass, tnClass, dmgClass) => `
-      <div class="sr-melee-corner sr-astral-corner">
+    const _corner = (name, skillName, skillDice, isDefault, rawDamage, astralPool, tn, poolClass, tnClass, dmgClass, role, owner) => `
+      <div class="sr-melee-corner sr-astral-corner"
+           data-corner-role="${role}" data-corner-owner="${owner ?? ''}" data-corner-label="${name}">
         <div class="sr-melee-name">${name}</div>
         <div class="sr-astral-skill-line">
           ${isDefault
@@ -5912,14 +5918,16 @@ _prepareCharacter(sys, attr) {
     await ChatMessage.create({
       speaker: { alias: 'Astral Combat' },
       content: `
-        <div class="sr-roll-card sr-melee-card">
+        <div class="sr-roll-card sr-melee-card" data-twocorner="astral">
           <div class="sr-roll-header">✦ ASTRAL COMBAT — ${atk.name} vs ${def.name}</div>
           <div class="sr-melee-boxing">
             ${_corner(atk.name, ctx.atkSkillName, ctx.atkSkillDice, ctx.atkIsDefault, ctx.atkRawDamage,
-                      ctx.atkAstralPool, ctx.atkTN, 'sr-astral-atk-pool', 'sr-astral-atk-tn', 'sr-astral-atk-damage')}
+                      ctx.atkAstralPool, ctx.atkTN, 'sr-astral-atk-pool', 'sr-astral-atk-tn', 'sr-astral-atk-damage',
+                      'attacker', ctx.attackerActorId)}
             <div class="sr-melee-vs">VS</div>
             ${_corner(def.name, ctx.defSkillName, ctx.defSkillDice, ctx.defIsDefault, ctx.defRawDamage,
-                      ctx.defAstralPool, ctx.defTN, 'sr-astral-def-pool', 'sr-astral-def-tn', 'sr-astral-def-damage')}
+                      ctx.defAstralPool, ctx.defTN, 'sr-astral-def-pool', 'sr-astral-def-tn', 'sr-astral-def-damage',
+                      'defender', ctx.defenderActorId)}
           </div>
           <div style="margin:8px 0 4px;font-size:11px;color:var(--sr-muted)">
             <label style="display:flex;align-items:center;gap:6px">
@@ -5927,9 +5935,10 @@ _prepareCharacter(sys, attr) {
               Physical Damage (unchecked = Stun)
             </label>
           </div>
-          <div class="sr-soak-action">
-            <button class="sr-astral-roll-btn" data-payload='${payload}'>✦ Roll!</button>
-          </div>
+          ${SR3EActor.cornerActions(payload, [
+            { role: 'attacker', label: atk.name, owner: ctx.attackerActorId },
+            { role: 'defender', label: def.name, owner: ctx.defenderActorId },
+          ])}
         </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
@@ -5942,14 +5951,18 @@ _prepareCharacter(sys, attr) {
     btn.disabled    = true;
     btn.textContent = '⏳ Rolling…';
 
-    const atkAstralPool = parseInt(card.querySelector('.sr-astral-atk-pool')?.value) || 0;
-    const defAstralPool = parseInt(card.querySelector('.sr-astral-def-pool')?.value) || 0;
+    // Each side's own submission first, this card's DOM only as a fallback (TODO 24).
+    const sub = SR3EActor.meleeSubmissions(btn);
+    const f   = (role, cls) => SR3EActor.cornerField(sub, role, cls, card);
+
+    const atkAstralPool = parseInt(f('attacker', 'sr-astral-atk-pool')) || 0;
+    const defAstralPool = parseInt(f('defender', 'sr-astral-def-pool')) || 0;
     const atkPool       = Math.max(1, (ctx.atkSkillDice ?? 1) + atkAstralPool);
     const defPool       = Math.max(1, (ctx.defSkillDice ?? 1) + defAstralPool);
-    const atkTN         = SR3EActor.cornerTN(card.querySelector('.sr-astral-atk-tn')?.value, ctx.atkTN);
-    const defTN         = SR3EActor.cornerTN(card.querySelector('.sr-astral-def-tn')?.value, ctx.defTN);
-    const atkRawDamage  = card.querySelector('.sr-astral-atk-damage')?.value.trim() || ctx.atkRawDamage;
-    const defRawDamage  = card.querySelector('.sr-astral-def-damage')?.value.trim() || ctx.defRawDamage;
+    const atkTN         = SR3EActor.cornerTN(f('attacker', 'sr-astral-atk-tn'), ctx.atkTN);
+    const defTN         = SR3EActor.cornerTN(f('defender', 'sr-astral-def-tn'), ctx.defTN);
+    const atkRawDamage  = String(f('attacker', 'sr-astral-atk-damage') ?? '').trim() || ctx.atkRawDamage;
+    const defRawDamage  = String(f('defender', 'sr-astral-def-damage') ?? '').trim() || ctx.defRawDamage;
     const isPhysical    = card.querySelector('.sr-astral-physical-dmg')?.checked ?? false;
 
     const atkActor = game.actors.get(ctx.attackerActorId);
@@ -6481,8 +6494,9 @@ _prepareCharacter(sys, attr) {
     const payload = JSON.stringify(ctx).replace(/'/g, '&#39;');
 
     const INP = 'background:#1c2030;border:1px solid #3a9fd6;color:#dde1f0;border-radius:3px;padding:2px 5px;width:100%;box-sizing:border-box;';
-    const _corner = (name, sourceLabel, pool, tn, damage, poolClass, tnClass, dmgClass, color) => `
-      <div class="sr-melee-corner">
+    const _corner = (name, sourceLabel, pool, tn, damage, poolClass, tnClass, dmgClass, color, role, owner) => `
+      <div class="sr-melee-corner"
+           data-corner-role="${role}" data-corner-owner="${owner ?? ''}" data-corner-label="${name}">
         <div class="sr-melee-name" style="color:${color}">${name}</div>
         ${sourceLabel ? `<div style="font-size:11px;color:#7880a0;margin-top:2px">${sourceLabel}</div>` : ''}
         <div class="sr-contested-fields" style="display:grid;grid-template-columns:52px 1fr;gap:4px 8px;align-items:center;margin-top:8px;font-size:11px;color:#7880a0;">
@@ -6495,23 +6509,21 @@ _prepareCharacter(sys, attr) {
     await ChatMessage.create({
       speaker: { alias: 'Contested Roll' },
       content: `
-        <div class="sr-roll-card sr-melee-card">
+        <div class="sr-roll-card sr-melee-card" data-twocorner="contested">
           <div class="sr-roll-header">⚔ CONTESTED — ${ctx.atkActorName} vs ${ctx.oppActorName}</div>
           <div class="sr-melee-boxing">
             ${_corner(ctx.atkActorName, ctx.atkSourceLabel, ctx.atkPool, ctx.atkTN, ctx.atkDamage,
                       'sr-contested-atk-pool', 'sr-contested-atk-tn', 'sr-contested-atk-damage',
-                      'var(--sr-accent)')}
+                      'var(--sr-accent)', 'attacker', ctx.atkActorId)}
             <div class="sr-melee-vs">VS</div>
             ${_corner(ctx.oppActorName, ctx.oppSourceLabel, ctx.oppPool, ctx.oppTN, ctx.oppDamage,
                       'sr-contested-opp-pool', 'sr-contested-opp-tn', 'sr-contested-opp-damage',
-                      'var(--sr-red)')}
+                      'var(--sr-red)', 'opponent', ctx.oppActorId)}
           </div>
-          <div class="sr-soak-action">
-            <button class="sr-contested-roll-btn" data-payload='${payload}'
-                    title="Shift-click to enter successes manually">
-              ${ctx.physicalDice ? '✏ Enter Successes' : '⚔ Roll!'}
-            </button>
-          </div>
+          ${SR3EActor.cornerActions(payload, [
+            { role: 'attacker', label: ctx.atkActorName, owner: ctx.atkActorId },
+            { role: 'opponent', label: ctx.oppActorName, owner: ctx.oppActorId },
+          ])}
         </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
@@ -6667,12 +6679,16 @@ _prepareCharacter(sys, attr) {
     btn.disabled    = true;
     btn.textContent = '⏳ Rolling…';
 
-    const atkPool   = Math.max(1, parseInt(card.querySelector('.sr-contested-atk-pool')?.value)   || ctx.atkPool);
-    const oppPool   = Math.max(1, parseInt(card.querySelector('.sr-contested-opp-pool')?.value)   || ctx.oppPool);
-    const atkTN     = SR3EActor.cornerTN(card.querySelector('.sr-contested-atk-tn')?.value, ctx.atkTN);
-    const oppTN     = SR3EActor.cornerTN(card.querySelector('.sr-contested-opp-tn')?.value, ctx.oppTN);
-    const atkDamage = card.querySelector('.sr-contested-atk-damage')?.value.trim() || ctx.atkDamage;
-    const oppDamage = card.querySelector('.sr-contested-opp-damage')?.value.trim() || ctx.oppDamage;
+    // Each side's own submission first, this card's DOM only as a fallback (TODO 24).
+    const sub = SR3EActor.meleeSubmissions(btn);
+    const f   = (role, cls) => SR3EActor.cornerField(sub, role, cls, card);
+
+    const atkPool   = Math.max(1, parseInt(f('attacker', 'sr-contested-atk-pool')) || ctx.atkPool);
+    const oppPool   = Math.max(1, parseInt(f('opponent', 'sr-contested-opp-pool')) || ctx.oppPool);
+    const atkTN     = SR3EActor.cornerTN(f('attacker', 'sr-contested-atk-tn'), ctx.atkTN);
+    const oppTN     = SR3EActor.cornerTN(f('opponent', 'sr-contested-opp-tn'), ctx.oppTN);
+    const atkDamage = String(f('attacker', 'sr-contested-atk-damage') ?? '').trim() || ctx.atkDamage;
+    const oppDamage = String(f('opponent', 'sr-contested-opp-damage') ?? '').trim() || ctx.oppDamage;
 
     const atkActor = game.actors.get(ctx.atkActorId);
     const oppActor = ctx.oppActorId ? game.actors.get(ctx.oppActorId) : null;
@@ -6919,8 +6935,9 @@ _prepareCharacter(sys, attr) {
       secVal,
     };
     const payload = JSON.stringify(ctx).replace(/'/g, '&#39;');
-    const _corner = (name, skill, dice, tn, tnLabel, dcls, tcls) => `
-      <div class="sr-miji-corner">
+    const _corner = (name, skill, dice, tn, tnLabel, dcls, tcls, role, owner) => `
+      <div class="sr-miji-corner"
+           data-corner-role="${role}" data-corner-owner="${owner ?? ''}" data-corner-label="${name}">
         <div class="sr-miji-name">${name}</div>
         <div class="sr-miji-skill">${skill}</div>
         <div class="sr-melee-field-row"><span>Dice:</span>
@@ -6931,7 +6948,7 @@ _prepareCharacter(sys, attr) {
 
     await ChatMessage.create({
       speaker: { alias: 'System Test' },
-      content: `<div class="sr-roll-card sr-miji-card">
+      content: `<div class="sr-roll-card sr-miji-card" data-twocorner="ost">
         <div class="sr-roll-header">💻 ${opName} — ${this.name} on ${host.name}</div>
         <div style="font-size:11px;color:var(--sr-muted);text-align:center;margin-bottom:4px">
           Subsystem: <strong>${subsystem.toUpperCase()}</strong>
@@ -6939,14 +6956,15 @@ _prepareCharacter(sys, attr) {
         </div>
         <div class="sr-melee-boxing">
           ${_corner(this.name, compLabel, ctx.deckerDice, ctx.deckerTN,
-                    'TN (subsys.)', 'sr-ost-decker-dice', 'sr-ost-decker-tn')}
+                    'TN (subsys.)', 'sr-ost-decker-dice', 'sr-ost-decker-tn', 'decker', this.id)}
           <div class="sr-melee-vs">VS</div>
           ${_corner(host.name, `Sec.Value ${secVal} dice`, ctx.hostDice, ctx.hostTN,
-                    'TN (Det.Factor)', 'sr-ost-host-dice', 'sr-ost-host-tn')}
+                    'TN (Det.Factor)', 'sr-ost-host-dice', 'sr-ost-host-tn', 'host', hostId)}
         </div>
-        <div class="sr-soak-action">
-          <button class="sr-ost-roll-btn" data-payload='${payload}'>💻 Roll System Test</button>
-        </div>
+        ${SR3EActor.cornerActions(payload, [
+          { role: 'decker', label: this.name, owner: this.id },
+          { role: 'host',   label: host.name, owner: hostId },
+        ])}
       </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
@@ -6957,10 +6975,14 @@ _prepareCharacter(sys, attr) {
     const card = btn.closest('.sr-miji-card');
     btn.disabled = true; btn.textContent = '⏳ Rolling…';
 
-    const deckerDice = Math.max(1, parseInt(card?.querySelector('.sr-ost-decker-dice')?.value) || ctx.deckerDice);
-    const hostDice   = Math.max(1, parseInt(card?.querySelector('.sr-ost-host-dice')?.value)   || ctx.hostDice);
-    const deckerTN   = SR3EActor.cornerTN(card?.querySelector('.sr-ost-decker-tn')?.value, ctx.deckerTN);
-    const hostTN     = SR3EActor.cornerTN(card?.querySelector('.sr-ost-host-tn')?.value, ctx.hostTN);
+    // Each side's own submission first, this card's DOM only as a fallback (TODO 24).
+    const sub = SR3EActor.meleeSubmissions(btn);
+    const f   = (role, cls) => SR3EActor.cornerField(sub, role, cls, card);
+
+    const deckerDice = Math.max(1, parseInt(f('decker', 'sr-ost-decker-dice')) || ctx.deckerDice);
+    const hostDice   = Math.max(1, parseInt(f('host',   'sr-ost-host-dice'))   || ctx.hostDice);
+    const deckerTN   = SR3EActor.cornerTN(f('decker', 'sr-ost-decker-tn'), ctx.deckerTN);
+    const hostTN     = SR3EActor.cornerTN(f('host',   'sr-ost-host-tn'), ctx.hostTN);
 
     const deckerActor = game.actors.get(ctx.deckerActorId);
     const hostActor   = game.actors.get(ctx.hostActorId);
@@ -7123,8 +7145,9 @@ _prepareCharacter(sys, attr) {
       dmgLevel,
     };
     const payload = JSON.stringify(ctx).replace(/'/g, '&#39;');
-    const _corner = (name, skill, dice, tn, tnLabel, dcls, tcls) => `
-      <div class="sr-miji-corner">
+    const _corner = (name, skill, dice, tn, tnLabel, dcls, tcls, role, owner) => `
+      <div class="sr-miji-corner"
+           data-corner-role="${role}" data-corner-owner="${owner ?? ''}" data-corner-label="${name}">
         <div class="sr-miji-name">${name}</div>
         <div class="sr-miji-skill">${skill}</div>
         <div class="sr-melee-field-row"><span>Dice:</span>
@@ -7135,7 +7158,7 @@ _prepareCharacter(sys, attr) {
 
     await ChatMessage.create({
       speaker: { alias: 'Cybercombat' },
-      content: `<div class="sr-roll-card sr-miji-card">
+      content: `<div class="sr-roll-card sr-miji-card" data-twocorner="occ">
         <div class="sr-roll-header">⚔ ${this.name} attacks ${icActor.name} [${icType}]</div>
         <div style="font-size:11px;color:var(--sr-muted);text-align:center;margin-bottom:4px">
           ${host.name} (${secCode}) &nbsp;|&nbsp; Damage Level: <strong>${dmgLevel}</strong>
@@ -7143,14 +7166,15 @@ _prepareCharacter(sys, attr) {
         </div>
         <div class="sr-melee-boxing">
           ${_corner(this.name, `${atkName} (${atkDice - hpAlloc}${hpAlloc > 0 ? `+${hpAlloc}HP` : ''})`,
-                    totalAtkDice, atkTN, 'TN (attack)', 'sr-occ-atk-dice', 'sr-occ-atk-tn')}
+                    totalAtkDice, atkTN, 'TN (attack)', 'sr-occ-atk-dice', 'sr-occ-atk-tn', 'attacker', this.id)}
           <div class="sr-melee-vs">VS</div>
           ${_corner(icActor.name, `Soak (Sec.Val ${secVal})`,
-                    soakPool, soakTN, 'TN (power)', 'sr-occ-soak-dice', 'sr-occ-soak-tn')}
+                    soakPool, soakTN, 'TN (power)', 'sr-occ-soak-dice', 'sr-occ-soak-tn', 'defender', targetId)}
         </div>
-        <div class="sr-soak-action">
-          <button class="sr-occ-roll-btn" data-payload='${payload}'>⚔ Roll Cybercombat</button>
-        </div>
+        ${SR3EActor.cornerActions(payload, [
+          { role: 'attacker', label: this.name,    owner: this.id },
+          { role: 'defender', label: icActor.name, owner: targetId },
+        ])}
       </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
@@ -7284,8 +7308,9 @@ _prepareCharacter(sys, attr) {
     };
     const payload = JSON.stringify(ctx).replace(/'/g, '&#39;');
 
-    const _corner = (name, skill, dice, tn, tnLabel, dcls, tcls) => `
-      <div class="sr-miji-corner">
+    const _corner = (name, skill, dice, tn, tnLabel, dcls, tcls, role, owner) => `
+      <div class="sr-miji-corner"
+           data-corner-role="${role}" data-corner-owner="${owner ?? ''}" data-corner-label="${name}">
         <div class="sr-miji-name">${name}</div>
         <div class="sr-miji-skill">${skill}</div>
         <div class="sr-melee-field-row"><span>Dice:</span>
@@ -7296,7 +7321,7 @@ _prepareCharacter(sys, attr) {
 
     await ChatMessage.create({
       speaker: { alias: 'Cybercombat' },
-      content: `<div class="sr-roll-card sr-miji-card">
+      content: `<div class="sr-roll-card sr-miji-card" data-twocorner="icia">
         <div class="sr-roll-header">⚔ ${this.name} attacks ${deckerActor.name}</div>
         <div style="font-size:11px;color:var(--sr-muted);text-align:center;margin-bottom:4px">
           ${host.name} (${code}) &nbsp;|&nbsp; Base damage: <strong>${baseCode}</strong>
@@ -7304,14 +7329,15 @@ _prepareCharacter(sys, attr) {
         </div>
         <div class="sr-melee-boxing">
           ${_corner(this.name, `Security Value (${atkDiceOverride}d6)`,
-                    atkDiceOverride, atkTNOverride, 'TN', 'sr-icia-atk-dice', 'sr-icia-atk-tn')}
+                    atkDiceOverride, atkTNOverride, 'TN', 'sr-icia-atk-dice', 'sr-icia-atk-tn', 'attacker', this.id)}
           <div class="sr-melee-vs">VS</div>
           ${_corner(deckerActor.name, `Cybercombat${defHp > 0 ? `+${defHp}HP` : ''} (${totalDefDice}d6)`,
-                    totalDefDice, defTN, 'TN', 'sr-icia-def-dice', 'sr-icia-def-tn')}
+                    totalDefDice, defTN, 'TN', 'sr-icia-def-dice', 'sr-icia-def-tn', 'defender', targetId)}
         </div>
-        <div class="sr-soak-action">
-          <button class="sr-icia-roll-btn" data-payload='${payload}'>⚔ Roll IC Attack</button>
-        </div>
+        ${SR3EActor.cornerActions(payload, [
+          { role: 'attacker', label: this.name,        owner: this.id },
+          { role: 'defender', label: deckerActor.name, owner: targetId },
+        ])}
       </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
@@ -7322,10 +7348,14 @@ _prepareCharacter(sys, attr) {
     const card = btn.closest('.sr-miji-card');
     btn.disabled = true; btn.textContent = '⏳ Rolling…';
 
-    const atkDice = Math.max(1, parseInt(card?.querySelector('.sr-icia-atk-dice')?.value) || ctx.atkDice);
-    const defDice = Math.max(0, parseInt(card?.querySelector('.sr-icia-def-dice')?.value) || ctx.defDice);
-    const atkTN   = SR3EActor.cornerTN(card?.querySelector('.sr-icia-atk-tn')?.value, ctx.atkTN);
-    const defTN   = SR3EActor.cornerTN(card?.querySelector('.sr-icia-def-tn')?.value, ctx.defTN);
+    // Each side's own submission first, this card's DOM only as a fallback (TODO 24).
+    const sub = SR3EActor.meleeSubmissions(btn);
+    const f   = (role, cls) => SR3EActor.cornerField(sub, role, cls, card);
+
+    const atkDice = Math.max(1, parseInt(f('attacker', 'sr-icia-atk-dice')) || ctx.atkDice);
+    const defDice = Math.max(0, parseInt(f('defender', 'sr-icia-def-dice')) || ctx.defDice);
+    const atkTN   = SR3EActor.cornerTN(f('attacker', 'sr-icia-atk-tn'), ctx.atkTN);
+    const defTN   = SR3EActor.cornerTN(f('defender', 'sr-icia-def-tn'), ctx.defTN);
 
     const icActor     = game.actors.get(ctx.icActorId);
     const deckerActor = game.actors.get(ctx.deckerActorId);
@@ -7437,10 +7467,14 @@ _prepareCharacter(sys, attr) {
     const card = btn.closest('.sr-miji-card');
     btn.disabled = true; btn.textContent = '⏳ Rolling…';
 
-    const atkDice  = Math.max(1, parseInt(card?.querySelector('.sr-occ-atk-dice')?.value)  || ctx.atkDice);
-    const soakDice = Math.max(1, parseInt(card?.querySelector('.sr-occ-soak-dice')?.value) || ctx.soakPool);
-    const atkTN    = SR3EActor.cornerTN(card?.querySelector('.sr-occ-atk-tn')?.value, ctx.atkTN);
-    const soakTN   = SR3EActor.cornerTN(card?.querySelector('.sr-occ-soak-tn')?.value, ctx.soakTN);
+    // Each side's own submission first, this card's DOM only as a fallback (TODO 24).
+    const sub = SR3EActor.meleeSubmissions(btn);
+    const f   = (role, cls) => SR3EActor.cornerField(sub, role, cls, card);
+
+    const atkDice  = Math.max(1, parseInt(f('attacker', 'sr-occ-atk-dice'))  || ctx.atkDice);
+    const soakDice = Math.max(1, parseInt(f('defender', 'sr-occ-soak-dice')) || ctx.soakPool);
+    const atkTN    = SR3EActor.cornerTN(f('attacker', 'sr-occ-atk-tn'), ctx.atkTN);
+    const soakTN   = SR3EActor.cornerTN(f('defender', 'sr-occ-soak-tn'), ctx.soakTN);
 
     const deckerActor = game.actors.get(ctx.deckerActorId);
     const icActor     = game.actors.get(ctx.icActorId);
