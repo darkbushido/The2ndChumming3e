@@ -23,12 +23,12 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 24 |
-| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 42 · 43 |
+| 🔴 Confirmed bugs, still open | 5 · 14 · 42 · 43 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 · 41 · 47 · 48 · 49 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 21 · 22 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 44 · 45 · 46 · 50 |
+| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 21 · 22 · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -1233,7 +1233,17 @@ Check what `SR3ESpiritSummoning.js` writes when it creates a spirit before fixin
 already writes under the correct scope, these five are simply reading the wrong place, and
 the fix is one-directional. Do **not** fix this inside the socket diff.
 
-## 25. Delete the duplicate `_onRender` in `SR3EHostSheetOrthodox` — **CONFIRMED**
+## 25. ✅ Delete the duplicate `_onRender` in `SR3EHostSheetOrthodox` — **FIXED 2026-08-12**
+
+The dead stub at `:82` is gone; the working definition survives as the class's only `_onRender`.
+Its TODO comment was **merged rather than discarded**, and deliberately placed at the **top** of
+the surviving method — above `if (!table) return;`. That guard fires on any host with no trigger
+table, so notes-enrichment or drag-drop code written below it would have silently not run on
+exactly those sheets: the same class of failure as the duplicate itself, one layer down.
+
+This was the **last ESLint error in the project** — `npx eslint scripts tests tools` now exits 0.
+
+### The original report
 
 Sibling of [#16](#16-delete-the-duplicate-refreshastralpool), and the more dangerous of the two.
 
@@ -2675,7 +2685,10 @@ Resume by finishing the grep for TN-reducing sites and checking `rollWeapon`'s f
 - `sr3e-odm-cyberdecks` / `sr3e-odm-programs` are undeclared and their directories are gone.
   Blocks all Orthodox Matrix work. Populate macros survive.
 - Code TODOs: `SR3EICSheetOrthodox.js:70` (drag-drop host link),
-  `SR3EHostSheetOrthodox.js:83` (notes enrichment, IC assignment drag-drop).
+  `SR3EHostSheetOrthodox.js` — notes enrichment and IC-assignment drag-drop, now at the top of
+  the **surviving** `_onRender` (was `:83`, in the dead twin deleted by [#25](#25)). ⚠ Add that
+  work **above** the `if (!table) return;` guard, or it will not run on a host with no trigger
+  table.
 - The Matrix sourcebook (`mat`) is deliberately unregistered because nothing existed to carry
   it — but the generator has **112 `mat` gear entries**, so that condition is now met.
   Not yet a task.

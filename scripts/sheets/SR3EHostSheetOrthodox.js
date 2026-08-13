@@ -79,10 +79,6 @@ export class SR3EHostSheetOrthodox extends foundry.applications.sheets.ActorShee
     if (body) body.scrollTop = savedScroll;
   }
 
-  _onRender(_context, _options) {
-    // TODO: enrich notes field, wire drag-drop for IC assignment
-  }
-
   // ── Sheet build ─────────────────────────────────────────────────────────────
 
   _buildSheet(actor, sys) {
@@ -456,6 +452,15 @@ export class SR3EHostSheetOrthodox extends foundry.applications.sheets.ActorShee
   }
 
   _onRender(_context, _options) {
+    // TODO: enrich notes field, wire drag-drop for IC assignment.
+    //
+    // ⚠ Anything added for that TODO belongs ABOVE the early return below, not beside the
+    // trigger-table wiring. This method used to have a twin earlier in the class holding
+    // only that comment; the later definition won, so the stub never ran and code written
+    // into it would have gone nowhere with no error to explain why. Merged here, and the
+    // guard below returns whenever the host has no trigger table — so work placed after it
+    // would silently not run on exactly those sheets.
+
     // Save trigger step edits on blur/change
     const table = this.element?.querySelector('#ost-trigger-table');
     if (!table) return;
