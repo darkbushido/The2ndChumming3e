@@ -16,9 +16,11 @@
  * So the assertion that matters is the last one: the attacker is charged exactly what the
  * ATTACKER submitted, and the defender exactly what the DEFENDER submitted.
  */
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures.mjs';
 import {
-  joinAs, fireAndForget, answerDialog, actedLedger, actorState, resetPools, clearChat,
+  fireAndForget, answerDialog, selectTarget, arrangeActor,
+  setCardField, clickCardButton, newestCardId, CHAT_LOG, actedLedger, actorState,
+  resetPools, clearChatAll,
 } from './foundry.mjs';
 
 // Player-vs-player on purpose. Both corners belong to DIFFERENT humans, which is the case
@@ -33,26 +35,47 @@ const ATTACKER = 'SWAT Team Member';    // Player2
 const DEFENDER = 'Troll Street Dealer'; // Player3
 
 test.describe('melee two-corner card', () => {
-  let atk, def;
-
-  test.beforeAll(async ({ browser }) => {
-    atk = await joinAs(browser, 'Player2');
-    def = await joinAs(browser, 'Player3');
+  // Sessions come from worker-scoped fixtures, which Playwright tears down even when a
+  // test fails — a leaked context keeps its Foundry session and blocks every later run
+  // with "already connected in another window".
+  // ARRANGE the log, do not merely tidy it afterwards: a run that dies part-way never
+  // reaches cleanup, so the next one would start on the wreckage.
+  test.beforeEach(async ({ janitor }) => {
+    await clearChatAll(janitor.page);
   });
 
-  test.afterAll(async () => {
+  test.afterEach(async ({ player2, player3, janitor }) => {
     // The world is persistent — put back anything the test spent.
-    if (atk) {
-      await resetPools(atk.page, ATTACKER, DEFENDER);
-      await clearChat(atk.page);
-      await atk.context.close();
-    }
-    if (def) await def.context.close();
+    //
+    // ⚠ Each side resets its OWN actor. A player cannot update an actor they do not own,
+    // and the failure surfaces as a permission error thrown from inside Foundry's server
+    // backend with a wall of minified stack — it reads as a Foundry bug, not a test bug.
+    await resetPools(player2.page, ATTACKER);
+    await resetPools(player3.page, DEFENDER);
+    await clearChatAll(janitor.page);
   });
 
-  test('each side submits its own corner and only the last submission resolves', async () => {
-    await resetPools(atk.page, ATTACKER, DEFENDER);
-    await clearChat(atk.page);
+  test('each side submits its own corner and only the last submission resolves',
+    async ({ player2, player3 }) => {
+    const atk = player2;
+    const def = player3;
+    // ── ARRANGE: put both actors into a state this test defines ─────────────────
+    //
+    // Asserting the preconditions beats coping with whatever the world happens to hold.
+    // A shared world drifts between runs, and a test that adapts to the drift silently
+    // exercises a different path each time — this one waited on a defaulting prompt that
+    // had stopped firing because the defender's Katana got equipped between runs.
+    //
+    // Equipping the Katana makes the defender use Edged Weapons, which they have, so NO
+    // defaulting prompt appears and the dialog sequence below is fixed.
+    await arrangeActor(atk.page, ATTACKER, {
+      requireSkills: ['Unarmed Combat'],   // else the attacker would default too
+    });
+    const defState = await arrangeActor(def.page, DEFENDER, {
+      equipMelee: 'Katana',
+      requireSkills: ['Edged Weapons'],
+    });
+    expect(defState.equipped, 'defender must be holding the Katana').toBe('Katana');
 
     const before = await actorState(atk.page, ATTACKER);
 
@@ -64,43 +87,51 @@ test.describe('melee two-corner card', () => {
       await I.rollMeleeAttack(a, I._unarmedWeapon(a));
     `);
 
-    // Target picker — attacker's client.
-    await answerDialog(atk.page, /Select Target/i, /confirm/i);
-
-    // The defender has a Katana but nothing equipped, so the lookup falls through to Bare
-    // Hands, which has no Unarmed Combat — a defaulting prompt opens on the DEFENDER's own
-    // client, because deciderFor routes it to them rather than to whoever attacked.
-    await answerDialog(def.page, /Defaulting/i, /confirm/i);
+    // Target picker — attacker's client. Must SELECT, not just confirm: the dialog
+    // preselects the first actor, and confirming blind attacks the wrong one.
+    await selectTarget(atk.page, DEFENDER);
 
     // Called shot is attacker-only.
     await answerDialog(atk.page, /Called Shot/i, /confirm/i);
 
     // ── The card is up. Check the gating on BOTH clients ─────────────────────────
-    const card = '[data-twocorner="melee"]';
-    await atk.page.locator(card).first().waitFor({ timeout: 20_000 });
-    await def.page.locator(card).first().waitFor({ timeout: 20_000 });
+    //
+    // ⚠ Scope to THIS message's id AND to the main log. Two separate hazards:
+    //   • by class alone, the first match is the OLDEST card in the log, so a leftover
+    //     from an earlier run gets driven instead of this one;
+    //   • by id alone, it matches TWICE, because Foundry renders every message into both
+    //     `#chat` and the `#chat-notifications` pop-up. That double render is the reason
+    //     the system carries a one-shot button guard at all.
+    const msgId = await newestCardId(atk.page, 'melee');
+    const card  = `${CHAT_LOG} .message[data-message-id="${msgId}"] [data-twocorner="melee"]`;
+    await atk.page.locator(card).waitFor({ timeout: 20_000 });
+    await def.page.locator(card).waitFor({ timeout: 20_000 });
 
     // Each player may submit their OWN corner and not the other's — asserted on both
     // clients, because "my button works" is only half the guarantee.
-    const aOwn = atk.page.locator(`${card} .sr-corner-submit-btn[data-role="attacker"]`).first();
-    const aOpp = atk.page.locator(`${card} .sr-corner-submit-btn[data-role="defender"]`).first();
+    const aOwn = atk.page.locator(`${card} .sr-corner-submit-btn[data-role="attacker"]`);
+    const aOpp = atk.page.locator(`${card} .sr-corner-submit-btn[data-role="defender"]`);
     await expect(aOwn).toBeEnabled();
     await expect(aOpp).toBeDisabled();
 
-    const dOwn = def.page.locator(`${card} .sr-corner-submit-btn[data-role="defender"]`).first();
-    const dOpp = def.page.locator(`${card} .sr-corner-submit-btn[data-role="attacker"]`).first();
+    const dOwn = def.page.locator(`${card} .sr-corner-submit-btn[data-role="defender"]`);
+    const dOpp = def.page.locator(`${card} .sr-corner-submit-btn[data-role="attacker"]`);
     await expect(dOwn).toBeEnabled();
     await expect(dOpp).toBeDisabled();
 
     // ...and each sees the OTHER's inputs read-only.
-    await expect(atk.page.locator(`${card} .sr-melee-def-tn`).first())
+    await expect(atk.page.locator(`${card} .sr-melee-def-tn`))
       .toHaveAttribute('readonly', /.*/);
-    await expect(def.page.locator(`${card} .sr-melee-atk-tn`).first())
+    await expect(def.page.locator(`${card} .sr-melee-atk-tn`))
       .toHaveAttribute('readonly', /.*/);
 
     // ── Attacker submits 2 pool dice ─────────────────────────────────────────────
-    await atk.page.locator(`${card} .sr-melee-atk-pool`).first().fill('2');
-    await aOwn.click();
+    // Acted on the live node rather than via locator.click(): Foundry re-renders the card
+    // (this system appends the progress strip during render), so Playwright's stability
+    // wait races the re-render. `aOwn` above already asserted the button is genuinely
+    // enabled, which is the part that matters.
+    await setCardField(atk.page, card, 'sr-melee-atk-pool', 2);
+    await clickCardButton(atk.page, card, '.sr-corner-submit-btn[data-role="attacker"]');
 
     // One submission must NOT resolve: the strip appears, the exchange does not.
     await expect.poll(async () => (await actedLedger(def.page))?.attacker?.label,
@@ -111,12 +142,12 @@ test.describe('melee two-corner card', () => {
     expect(mid.defender, 'defender must not be marked before they submit').toBeUndefined();
 
     // The strip is shared state, so it must be visible to the OTHER client too.
-    await expect(def.page.locator(`${card} .sr-acted-strip`).first())
+    await expect(def.page.locator(`${card} .sr-acted-strip`))
       .toContainText(ATTACKER, { timeout: 15_000 });
 
     // ── Defender submits 0, which completes the pair and resolves ────────────────
-    await def.page.locator(`${card} .sr-melee-def-pool`).first().fill('0');
-    await dOwn.click();
+    await setCardField(def.page, card, 'sr-melee-def-pool', 0);
+    await clickCardButton(def.page, card, '.sr-corner-submit-btn[data-role="defender"]');
 
     await expect.poll(async () => (await actedLedger(atk.page))?.defender?.label,
       { timeout: 15_000 }).toBe(DEFENDER);
