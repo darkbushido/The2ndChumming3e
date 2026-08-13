@@ -15,12 +15,26 @@ Verify each feature by checking the **in → out** numbers against what the chat
 - Click it → all dice roll again. If the running total ≥ TN it's a success, button disappears. - Passed 
 - If running total < TN and the new roll is 6 again → button reappears, keep exploding. - Passed
 
-### Glitch - passed
-- Roll a pool of **6 dice vs TN 4**; arrange for 4+ dice to show 1s 
-- **In:** 4 ones out of 6 dice → **Out:** glitch warning shown (⚠ 4 ones > half pool). - Passed
+### Rule of One - **RETEST REQUIRED**
 
-### Critical Glitch - Passed
-- **In:** All dice show 1s, 0 successes → **Out:** critical glitch warning shown. - Passed
+⚠ **The two tests that used to live here asserted SR4's glitch rule and have been removed.**
+They passed against behaviour that was wrong: a "glitch" on *more than half* the pool showing 1s,
+and a "critical glitch" tier on top of it. SR3 has neither. Both were fixed in code (TODO 32), so
+these cases must be re-run against the correct rule.
+
+**The rule** (SR3 p.38): *"If ALL the dice rolled for a test come up 1s, it means that the
+character has made a disastrous mistake."* One sweep, no second tier — a sweep is already an
+automatic zero-success failure, so a "critical" tier could only relabel the same event. What
+follows is GM adjudication: *"The gamemaster determines whatever tone is appropriate."*
+
+- **In:** 4 ones out of 6 dice → **Out:** *no* Rule of One warning. Just a poor roll.
+- **In:** 3 dice, all showing 1 → **Out:** Rule of One warning shown.
+- **In:** 1 die showing 1 → **Out:** warning shown (a pool of one that comes up 1 is all of it).
+- **In:** 5 dice, four 1s and one success → **Out:** no warning, and the success still counts.
+
+⚠ The 4-of-6 case is the one that matters — it is what the old rule flagged, and at 3 dice the
+half-pool threshold fires roughly **twenty times** more often than RAW. Covered by
+`tests/rule-of-one.test.mjs`, but confirm the chat card agrees.
 ---
 Reporting of 1s omitted with Physical dice mode - triggers nothing, GM convenience only, unnessesary work for the player to report in system
 
@@ -279,10 +293,36 @@ Needs both combatants as tokens on a scene whose grid distance is in **metres**.
 - **Hotbar drag:** drag a weapon row from the sheet to the hotbar → "Fire: \<weapon\>" macro created → click fires it. ⚠ Script macros only run for users granted script-macro permission; the Token HUD works for everyone.
 
 
-### Dodge (binary) - passed
-Defender commits dice → after attack rolls → dodge card appears.
-- Dodge hits **≥** attack hits → **complete miss**, no damage proceeds.
-- Dodge hits **<** attack hits → **full staged damage** proceeds (net hits do NOT reduce staging).
+### Dodge - **RETEST REQUIRED (ordering and tie rule both changed)**
+
+⚠ The version here asserted two things that are wrong, and it passed against both.
+
+**Ordering.** The defender now declares **after** seeing the attack's successes (SR3 p.112 step 4;
+the book's own worked example has Snot decide only once Liam has rolled 5). The prompt opens on the
+**defender's** client, not the attacker's. Committing blind was not a simplification — it deleted
+the dodge-vs-soak trade the rule exists to create, since pool spent dodging is gone from the
+Damage Resistance Test.
+
+**Ties.** A clean miss requires dodge successes to **exceed** the attack's — *"more than"*,
+*"exceeds"*, both strict. Equal successes is a **hit**. The old `≥` is the single most likely thing
+to get "helpfully" relaxed back.
+
+**Failed dodges are not wasted.** Their successes carry into the soak and stage damage down at the
+usual 2-per-level. Staging *up* is unaffected: dodge hits never cancel attack hits.
+
+- **In:** attack 3 hits, dodge 2 → **Out:** hit. Soak card shows the 2 carried, e.g. `5 hits
+  (3 soak + 2 dodge)`.
+- **In:** attack 3 hits, dodge 3 → **Out:** **hit** (tie goes to the attacker), 3 carried to soak.
+- **In:** attack 3 hits, dodge 4 → **Out:** clean miss.
+
+Pinned by `tests/dodge-resolution.test.mjs`, including the tie.
+
+### Soak card — Body and Combat Pool are separate fields
+The card offers **Body dice** (free) and **Combat Pool** (charged, capped at what is available).
+When the pool is empty it says so in amber rather than silently offering nothing — which is the
+p.113 trade made visible, since a defender who burned pool dodging arrives here with less.
+- **In:** spend 2 pool on the soak → **Out:** that actor's Combat Pool drops by 2 on the sheet.
+- **In:** dodge with all your pool, fail, then soak → **Out:** soak card shows **0 left**.
 
 ### Soak TN - passed
 Formula: `max(2, Damage Power − Armor)`
@@ -311,9 +351,33 @@ Boxes applied per level:
 
 ---
 
-## 6. Melee Combat - passed
+## 6. Melee Combat - **RETEST REQUIRED (flow changed)**
 
-Click melee weapon → target dialog → boxing card appears for both sides simultaneously.
+Click melee weapon → target dialog → two-corner card appears for both sides simultaneously.
+
+### ⚠ There is no longer a shared "Roll!" button — retest every card that had one
+
+This applies to **all eight** two-corner cards: melee, astral, contested, both cybercombat
+rulesets, MIJI, and the Orthodox System Test / IC Attack. Anything below that says *"GM clicks
+Roll!"* or *"both sides editable"* describes the old behaviour.
+
+**What to verify, with two clients logged in (a GM and a player):**
+
+- Each side sees **its own corner editable** and the **opponent's read-only** and dimmed, with a
+  tooltip explaining why. The GM sees *both* unlocked — that is intended, since the GM is the
+  decider for every actor and must be able to submit an NPC's corner.
+- Each side gets its **own Submit button**; the other side's is disabled for you.
+- A progress strip appears after the first submission — `✓ <name> · waiting for <other>` — and it
+  appears **on every client**, not just the one that clicked.
+- **The last submission resolves the exchange.** Neither side can roll for both.
+- Your submitted numbers are the ones used: put pool dice in your corner and confirm that actor —
+  and only that actor — is charged for them.
+- The GM's **Resolve now** override resolves with card defaults for anyone outstanding.
+
+⚠ **Verified in play for melee only** (2026-08-12, GM + Player2). The other seven share the
+mechanism but have not been exercised live — and the bug found during that session (submitted
+values silently dropped, resolution falling back to the clicking client's DOM) was invisible to
+the test suite, so a green `npm test` is not evidence here.
 
 ### Adjacency (warn only)
 Melee reaches **adjacent squares only**. If both attacker and target are tokens on a scene and the target isn't in an adjacent square, a warning posts ("…Nm away — out of reach for a melee attack") but the attack **still proceeds**. Reach affects TN, not range.
@@ -328,6 +392,21 @@ Melee reaches **adjacent squares only**. If both attacker and target are tokens 
 1. Equipped melee item (equippedMelee field)
 2. First unarmed/cyber item found
 3. Bare hands: STR + M damage
+
+⚠ **That fall-through is silent, and it caused a two-day misdiagnosis.** A character carrying a
+pole arm who never pressed **Equip** defends bare-handed at reach 0, and the only place it used to
+surface was mid-combat as an unexpected defaulting prompt. Two things now make it visible — verify
+both:
+
+- The Melee section of the sheet states **"Defends with: X (Reach N)"**, turning **amber** with a
+  prompt to press Equip when armed melee weapons are owned but none is equipped. A character with
+  no melee weapons at all stays quiet — that one is simply correct.
+- The defaulting prompt names **the weapon and the skill it needs**, e.g. *"Bare Hands needs
+  Unarmed Combat / Martial Arts, which X does not have"*. It reads the requirement from the same
+  lookup that failed, so the wording cannot drift from the rule.
+- **In:** actor owns a Katana, nothing equipped → sheet shows amber "Defends with: Bare Hands";
+  incoming melee prompts *"Bare Hands needs…"*, not *"has no Unarmed Combat"*.
+- **In:** actor owns cyber spurs, nothing equipped → **quiet** (spurs are a real answer).
 
 ### Net hits → staging
 Winner hits − loser hits = net successes → stage up base damage.
@@ -584,7 +663,7 @@ Aura Reading complementary roll button appears on result card — rolls Assensin
 
 ## 16. Astral Combat
 
-Both combatants must be in astral space or dual-natured. Click Roll button on astral boxing card.
+Both combatants must be in astral space or dual-natured. Each side submits its own corner on the astral card; the last submission resolves. See the ⚠ note in §6.
 
 ### Attack / defence dice
 Sorcery skill (+ 2 if Astral Combat spec), or **defaulting** (interactive — see §9, linked attribute = Willpower).
@@ -655,11 +734,11 @@ IC wound max = `rating × 2`. Hitting max = destroyed.
 
 **Prerequisites:** Decker must be connected to a host (User Mode button → host selection dialog). IC must be deployed from a host sheet. Both must share the same `activeHostId`.
 
-Flow: Cybercombat button on decker sheet → **target dialog** (lists all actors on same host) → **boxing card** posts with both sides editable → GM clicks **Roll!** → both wave cards posted → result card.
+Flow: Cybercombat button on decker sheet → **target dialog** (lists all actors on same host) → **two-corner card** posts → each side submits its own corner, last submission resolves → both wave cards posted → result card. See the ⚠ note in §6.
 
 ### Boxing card layout
 
-Both attacker (Decker) and defender (IC/Agent) shown side-by-side. Each corner has editable:
+Both attacker (Decker) and defender (IC/Agent) shown side-by-side. Each corner is editable **only by that side** (the GM sees both) and has:
 - **Skill** dice (pre-filled from skill rating; if no Cybercombat skill, the **interactive Default dialog** opens first — see §9 — and pre-fills the chosen pool)
 - **Pool** (hacking pool, 0 to available; 0 for IC/Agent side; **0** when defaulting to an attribute)
 - **TN** (pre-filled 4, + MCM penalty for decker, + the chosen default TN modifier)
@@ -691,7 +770,7 @@ Firewall and soak pool shown read-only in each corner for reference.
 
 **In:** 6 deck damage boxes → decker corner TN pre-filled **6** (4+2).
 
-### Tri-state outcome (result card after Roll!)
+### Tri-state outcome (result card after the exchange resolves)
 
 **Attacker (decker) more hits:**
 - Net hits staged into decker's damage code
@@ -724,7 +803,7 @@ Firewall and soak pool shown read-only in each corner for reference.
 
 ### Hacking pool
 
-Decker allocates hacking pool dice in the boxing card Pool field. Spent on Roll! click.
+Decker allocates hacking pool dice in their own corner's Pool field. Spent when the exchange resolves.
 
 **In:** Hacking pool 4, enter 2 in Pool field → pool reads **2** after roll.
 
@@ -734,7 +813,7 @@ Decker allocates hacking pool dice in the boxing card Pool field. Spent on Roll!
 
 **Prerequisites:** IC must be deployed from the host sheet (sets `deployed: true` and `activeHostId`). Agent must be added to the host's Active Agents (sets `activeHostId`). Decker must be connected to the same host. Target list = all actors sharing the same `activeHostId`.
 
-Flow: IC/Agent Attack button → **target dialog** (host-based list) → **boxing card** posts with both sides editable → GM clicks **Roll!** → result card.
+Flow: IC/Agent Attack button → **target dialog** (host-based list) → **two-corner card** posts → each side submits its own corner, last submission resolves → result card. See the ⚠ note in §6.
 
 ### Boxing card — IC/Agent side
 
@@ -1605,8 +1684,9 @@ to toggle off (works like the wound track).
 `ic`) deployed to the host (activeHostId set); decker connected to same host.
 
 **In:** IC sheet → **⚔ Roll Attack** → target dropdown shows the connected decker. Select them →
-boxing card posts with IC stats on one side (Rating dice, TN 4, damage code) and Decker on the other
-(Cybercombat skill dice, editable HP, TN 4 + CM penalty). GM clicks **⚔ Roll!** → both sides roll.
+two-corner card posts with IC stats on one side (Rating dice, TN 4, damage code) and Decker on the
+other (Cybercombat skill dice, editable HP, TN 4 + CM penalty). Each side submits its own corner
+and the last submission rolls both. See the ⚠ note in §6.
 
 **If IC wins (more hits):** net hits stage the IC's damage code upwards (every 2 net = +1 level).
 Result card shows a **💻 Assign X Matrix CM damage** button. Clicking it → decker's `orthodoxMatrixCM.value`

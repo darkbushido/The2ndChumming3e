@@ -15,8 +15,9 @@ automatically. The GM/player makes the final call (clicking wound boxes, interpr
 - **Rule of Six (exploding dice).** Every test counts successes (die ≥ TN). Any 6 explodes — each
   wave shows a single **💥 Roll explosions (N dice)** button that re-rolls *all* pending 6s at once;
   repeat until none remain. 
-  **Glitch / critical glitch.** More than half the original pool showing 1s = glitch; glitch with
-  zero successes = critical glitch (flagged on the card).
+  **Rule of One.** Flagged on the card only when **every** die rolled comes up 1 (SR3 p.38) — an
+  automatic zero-success failure whose consequence is the GM's call. There is no second
+  "critical" tier and no half-the-pool threshold; that is SR4's glitch rule.
 - **Physical dice mode.** Shift-click any roll → enter successes manually. **(shift-click available)**
 - **Karma Pool.** Roll-option dialogs show a *Use Karma Pool* checkbox when you have karma.
 - **Defaulting.** If you lack the skill for a test, an interactive **Default** dialog offers
