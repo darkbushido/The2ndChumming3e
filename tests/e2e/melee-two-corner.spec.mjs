@@ -15,6 +15,17 @@
  *
  * So the assertion that matters is the last one: the attacker is charged exactly what the
  * ATTACKER submitted, and the defender exactly what the DEFENDER submitted.
+ *
+ * ── RUNNING IT ───────────────────────────────────────────────────────────────────────
+ *
+ *   npm run test:e2e            # needs Foundry running with a world launched
+ *   npm run test:e2e:headed     # watch both browsers drive
+ *
+ * ⚠ Do not run two copies at once. Foundry refuses a second session for a user that is
+ * already connected, so an overlapping run fails with "already connected in another
+ * window" — a failure that looks alarming and means nothing. Same if a previous run was
+ * killed rather than allowed to tear its fixtures down; check for stray
+ * `chrome-headless-shell` processes before believing that error.
  */
 import { test, expect } from './fixtures.mjs';
 import {

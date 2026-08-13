@@ -351,9 +351,32 @@ Boxes applied per level:
 
 ---
 
-## 6. Melee Combat - **RETEST REQUIRED (flow changed)**
+## 6. Melee Combat - **AUTOMATED** (`npm run test:e2e`)
 
 Click melee weapon → target dialog → two-corner card appears for both sides simultaneously.
+
+### ✅ Covered by `tests/e2e/melee-two-corner.spec.mjs`
+
+Two real clients — Player2 attacking, Player3 defending — driving actual browsers against a
+running Foundry. Player-vs-player rather than GM-vs-NPC on purpose: the GM is the decider for
+every actor and sees every corner unlocked, so a GM-side test **cannot** exercise the thing
+that was broken.
+
+What it asserts, so this section need not be walked by hand:
+
+- Each player's own Submit is enabled and the opponent's is disabled — checked on **both**
+  clients, since "my button works" is only half the guarantee.
+- Each player sees the other's inputs `readonly`.
+- One submission does **not** resolve: the ledger records the attacker, the defender's slot
+  stays empty, and the progress strip appears **on the other client**.
+- The last submission resolves.
+- **Each side is charged exactly what that side submitted** — attacker 2 pool, defender 0.
+  This is the assertion the suite exists for: under the bug found in play, both corners came
+  from whichever client happened to resolve.
+
+⚠ **Still walk this by hand for anything the assertions do not describe** — layout, whether
+the read-only corner *looks* disabled, whether the strip is legible. Automation proves the
+values are right; it says nothing about whether the card is usable.
 
 ### ⚠ There is no longer a shared "Roll!" button — retest every card that had one
 
