@@ -2,6 +2,32 @@
 
 Verify each feature by checking the **in → out** numbers against what the chat card shows.
 
+## Automated coverage — read this before walking anything by hand
+
+Two suites, and they cover different things. Neither replaces the other.
+
+```bash
+npm test          # 15 suites, ~345 assertions. No browser, no server, seconds.
+npm run test:e2e  # 3 specs, two real clients. Needs Foundry running with a world.
+```
+
+**`npm test`** covers the rules: staging, Rule of One, dodge resolution, defaulting tiers,
+corner TN, combat and melee modifiers, initiative, source books. If a section below restates
+one of those, trust the suite over a manual walk — the manual "- passed" markers are what let
+an SR4 glitch rule sit here wrongly for months.
+
+**`npm run test:e2e`** covers what unit tests structurally cannot: behaviour that only exists
+when two people are looking at the same card. §6 melee, §11 spellcasting's permission split,
+§16 astral. The bug that motivated it — submitted values silently dropped, so resolution used
+whichever client happened to resolve — was invisible to a green `npm test`.
+
+⚠ **Neither judges whether anything is USABLE.** Layout, legibility, whether a read-only
+corner looks disabled, whether a dialog makes sense — those need a human, and the sections
+below are still the checklist for them.
+
+⚠ **`- passed` markers below are historical.** They record a build nobody can identify now.
+Treat a section as verified only if it says AUTOMATED, or if you have just walked it.
+
 ---
 
 ## 1. Dice / Rule of Six - passed
@@ -530,7 +556,27 @@ Click attribute die on Bio/Attributes tab → rolls pool equal to attribute valu
 
 ---
 
-## 11. Spellcasting 
+## 11. Spellcasting — **PARTLY AUTOMATED** (`npm run test:e2e`)
+
+### ✅ Who may click what — `tests/e2e/spellcasting.spec.mjs`
+
+The result card carries buttons belonging to **two different people**, and the spec proves
+each is refused to the other across two real clients:
+
+| Button | Belongs to | Asserted refused to |
+|---|---|---|
+| **Resist Spell** (`.sr-spell-soak-btn`) | the target's owner | the **caster** |
+| **Resist Drain** (`.sr-drain-btn`) | the caster's owner | the **target** |
+
+⚠ **This cannot be checked from one seat.** The GM passes both gates, and a lone player sees
+only their own half and would report it working. The negative assertions are the guarantee —
+and they are what silently regresses when a gate is loosened for an unrelated complaint,
+which is how [#27]'s original defect survived so long.
+
+It also asserts Spell Pool is charged to the caster and that the target spends nothing.
+
+**Still walk by hand:** the rules maths below — Force, drain codes, staging, the resist
+attribute — plus anything about how the cards read.
 
 Combat spells are a single **opposed (resisted) test** — like melee, not like a ranged attack + soak.
 Full flow: Cast → Force **+ Damage Level** dialog → Target selection (**no dodge**) → Magic Pool allocation → **Sorcery vs TN = the spell's Target attribute** (e.g. target Willpower) → per-target **Resist Spell** (that same attribute vs **TN = Force**) → **net stages the damage** → Assign Damage. Caster also gets a Drain button. **There is NO soak step after the resist.**
@@ -684,9 +730,17 @@ Aura Reading complementary roll button appears on result card — rolls Assensin
 
 ---
 
-## 16. Astral Combat
+## 16. Astral Combat — **AUTOMATED** (`npm run test:e2e`)
 
 Both combatants must be in astral space or dual-natured. Each side submits its own corner on the astral card; the last submission resolves. See the ⚠ note in §6.
+
+### ✅ Covered by `tests/e2e/astral-two-corner.spec.mjs`
+
+Two real clients, two purpose-built mages (created and deleted by the spec, so no existing
+character is touched). Same assertions as §6's melee spec — own corner editable, opponent's
+read-only, one submission does not resolve, the last one does — plus the one that is specific
+to astral: it must charge the **Astral** pool, not Combat. A card wired to the wrong helper
+would still resolve and still look right on screen.
 
 ### Attack / defence dice
 Sorcery skill (+ 2 if Astral Combat spec), or **defaulting** (interactive — see §9, linked attribute = Willpower).
