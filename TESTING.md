@@ -8,7 +8,7 @@ Two suites, and they cover different things. Neither replaces the other.
 
 ```bash
 npm test          # 16 suites, ~380 assertions. No browser, no server, seconds.
-npm run test:e2e  # 7 specs, two real clients. Needs Foundry running with a world.
+npm run test:e2e  # 12 tests / 7 files, two real clients. Needs Foundry with a world.
 ```
 
 ### ⚠ The e2e suite tests whatever Foundry is SERVING, not what you just wrote
@@ -39,9 +39,18 @@ an SR4 glitch rule sit here wrongly for months.
 
 **`npm run test:e2e`** covers what unit tests structurally cannot: behaviour that only exists
 when two people are looking at the same card. §6 melee, §11 spellcasting's permission split,
-§16 astral, §35 MIJI, plus the contested card. The bug that motivated it — submitted values
-silently dropped, so resolution used whichever client happened to resolve — was invisible to a
-green `npm test`, as were all four of the defects the contested and MIJI specs later found.
+§16 astral, §35 MIJI, plus contested, cybercombat and the three Orthodox Matrix cards — all
+eight two-corner cards are now driven by two real clients. The bug that motivated it —
+submitted values silently dropped, so resolution used whichever client happened to resolve —
+was invisible to a green `npm test`, as were every one of the defects these specs then found:
+an opponent's dice chosen by the initiator, a defender's Hacking Pool never charged, an
+Orthodox decker offered no pool at all, and the GM spending a player's pool for them.
+
+⚠ **A stale GM browser makes correct fixes look broken.** Foundry runs every authoritative
+write on `game.users.activeGM`, so a tab left open from before your edit executes the OLD
+code on everyone's behalf — the caller just sees a wrong number. The preflight now compares
+that client's `sr3e.debug.loadedAt` against the files and refuses to run, naming whose tab to
+reload. If a pool assertion fails for no reason you can see, this is why.
 
 ⚠ **Neither judges whether anything is USABLE.** Layout, legibility, whether a read-only
 corner looks disabled, whether a dialog makes sense — those need a human, and the sections

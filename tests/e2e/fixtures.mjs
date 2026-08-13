@@ -16,7 +16,7 @@
  * world state — which is fine precisely because each test ARRANGES what it needs
  * (`arrangeActor`) instead of assuming a clean world.
  */
-import { readFileSync } from 'node:fs';
+import { readFileSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { test as base, expect } from '@playwright/test';
@@ -89,11 +89,67 @@ async function preflight() {
   await assertServingWorkingTree();
 }
 
+/**
+ * Fail if the ACTIVE GM is running older code than the working tree.
+ *
+ * Serving fresh files is not enough. Foundry routes every authoritative write — pool
+ * spends, `card.mark` — to `game.users.activeGM`, which is usually a human's browser that
+ * has been open for hours. That client already holds the old module, so a fix lands
+ * everywhere except the one place that executes it, and the symptom surfaces in the caller
+ * as a silently wrong number. It cost an afternoon: a correct Hacking Pool fix returned 0
+ * because the maintainer's tab predated it.
+ *
+ * `sr3e.debug.loadedAt` is a read-only query answering when that client loaded. Compare it
+ * to the newest mtime under scripts/ and say plainly whose tab needs reloading.
+ */
+async function assertActiveGMIsFresh(page) {
+  const newest = Math.max(...['scripts/sr3e.js', 'scripts/documents/SR3EActor.js',
+    'scripts/SR3EQuery.js', 'scripts/SR3EMIJI.js']
+    .map(f => statSync(join(REPO, f)).mtimeMs));
+
+  const res = await page.evaluate(async () => {
+    const gm = game.users.activeGM;
+    if (!gm) return { error: 'no active GM is connected' };
+    if (gm.isSelf) return { loadedAt: game.sr3e?.loadedAt ?? 0, user: gm.name, self: true };
+    try {
+      const r = await gm.query('sr3e.debug.loadedAt', {}, { timeout: 8000 });
+      return { loadedAt: r?.loadedAt ?? 0, user: gm.name, self: false };
+    } catch (e) {
+      return { error: `active GM "${gm.name}" did not answer (${e.message})` };
+    }
+  });
+
+  // No answer is itself the answer. `sr3e.debug.loadedAt` is registered at init by the code
+  // in this working tree, so a GM that cannot answer it is running a build from before the
+  // query existed — which is exactly the staleness this guard is for. The only other cause
+  // is a genuinely unreachable GM, and that fails the run for a good reason too.
+  if (res.error) {
+    throw new Error(
+      `Cannot verify the active GM's code age: ${res.error}.\n\n`
+      + '  The most likely cause is that the GM\'s browser predates this working tree — the\n'
+      + '  diagnostic query is registered at load, so an older tab simply has no handler for\n'
+      + '  it. Foundry runs every GM-authoritative write (pool spends, card submissions) on\n'
+      + '  that client, so your changes will not apply there.\n\n'
+      + '  Reload the GM\'s Foundry tab (F5) and re-run.');
+  }
+  if (res.loadedAt >= newest) return;
+
+  const mins = Math.round((newest - res.loadedAt) / 60000);
+  throw new Error(
+    `The active GM ("${res.user}") is running code about ${mins} minute(s) older than your `
+    + 'working tree.\n\n'
+    + '  Foundry executes every GM-authoritative write (pool spends, card submissions) on\n'
+    + '  THAT client, so your changes will not apply there and correct fixes will look\n'
+    + '  broken — usually as a number that silently stays 0.\n\n'
+    + `  Reload ${res.user}'s Foundry tab (F5) and re-run.`);
+}
+
 /** Build a worker-scoped fixture that joins as `userName`. */
 function clientFixture(userName) {
   return [async ({ browser }, use) => {
     await preflight();
     const client = await joinAs(browser, userName);
+    await assertActiveGMIsFresh(client.page);
     try {
       await use(client);
     } finally {

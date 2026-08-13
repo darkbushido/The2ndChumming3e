@@ -89,6 +89,19 @@ Hooks.once('init', () => {
   }
 
   game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, SR3EQuery, SR3EQueue, SR3EGMUnavailable };
+
+  // When THIS client loaded the system's code.
+  //
+  // Foundry hands GM-authoritative work (every pool spend, every card.mark) to whichever
+  // client is `game.users.activeGM` — frequently not the client that started the action.
+  // A GM who has had their tab open since before the last edit therefore executes the OLD
+  // code on everyone's behalf, and the symptom appears in the CALLER: a spend that returns
+  // 0 for no visible reason. Serving fresh files does not help; that browser already has
+  // the module.
+  //
+  // Exposed so the e2e preflight can compare it against the files' mtime and say "reload
+  // the GM's tab" instead of leaving a correct fix looking broken. Cost: one timestamp.
+  game.sr3e.loadedAt = Date.now();
   game.sr3e.openChunkySalsa = _openChunkySalsaCalculator; // (function declaration, hoisted)
 
   // Data models (replace template.json defaults)

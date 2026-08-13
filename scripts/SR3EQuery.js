@@ -300,6 +300,19 @@ export class SR3EQuery {
    */
   static register() {
 
+    /**
+     * When the answering client loaded the system's code.
+     *
+     * Diagnostic only — it reads nothing and writes nothing. It exists because a client
+     * running stale code makes a CORRECT fix look broken on someone else's screen, and
+     * nothing else in the system can see that. The e2e preflight asks the active GM (who
+     * executes every authoritative write) and compares the answer to the files' mtime.
+     */
+    CONFIG.queries['sr3e.debug.loadedAt'] = async () => ({
+      loadedAt: game.sr3e?.loadedAt ?? 0,
+      user:     game.user.name,
+    });
+
     /** Spend from a pool. Relays INTENT; the GM clamps against live data. */
     CONFIG.queries['sr3e.pool.spend'] = async ({ rid, uuid, pool, n }) => SR3EQuery.once(rid, async () => {
       SR3EQuery.assertActiveGM();

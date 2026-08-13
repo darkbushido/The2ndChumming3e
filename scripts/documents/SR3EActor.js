@@ -481,19 +481,38 @@ export class SR3EActor extends Actor {
     const atkDmgBase   = SR3EItem.parseDamageCode(atkDmgCode) ?? ctx.atkDamageBase;
     const defDmgBase   = SR3EItem.parseDamageCode(defDmgCode) ?? ctx.defDamageBase;
 
-    const atkPool = Math.max(1, atkSkillDice + atkHackPool);
-    const defPool = Math.max(1, defSkillDice + defHackPool);
-
     const atkActor = game.actors.get(ctx.attackerActorId);
     const defActor = game.actors.get(ctx.defenderActorId);
     if (!atkActor || !defActor) return;
 
-    // Spend hacking pool for decker side
-    if (atkHackPool > 0 && (atkActor.type === 'character' || atkActor.type === 'npc')) {
-      const avail = atkActor.system.derived?.availableHackingPool ?? 0;
-      const spend = Math.min(atkHackPool, avail);
-      if (spend > 0) await atkActor.update({ 'system.hackingPoolSpent': (atkActor.system.hackingPoolSpent ?? 0) + spend });
-    }
+    /**
+     * Charge Hacking Pool, and roll only what was actually paid for.
+     *
+     * ⚠ Three separate bugs lived here, and each one favoured the same side.
+     *
+     * 1. **The defender was never charged at all.** Only the attacker's pool was spent, so
+     *    a defending decker drew free Hacking Pool dice every exchange, for ever. Same
+     *    family as TODO 43.
+     * 2. **Over-allocation rolled free dice.** The pool was built from the raw field while
+     *    the spend was clamped to what the actor had, so typing 99 rolled 99 and paid for
+     *    whatever was available.
+     * 3. **The write bypassed the GM.** It was a bare `actor.update`, but resolution runs on
+     *    whichever client completed the pair — routinely NOT the owner of the other side.
+     *    `spendHackingPool` goes through `sr3e.pool.spend`, exactly as `spendCombatPool`
+     *    does for melee, and is queued per-actor so two cards cannot race.
+     *
+     * IC and agents have no Hacking Pool (`hackPoolAvail` 0), so they simply spend nothing.
+     */
+    const _spend = async (actor, want) => {
+      if (want <= 0) return 0;
+      if (actor.type !== 'character' && actor.type !== 'npc') return 0;
+      return await actor.spendHackingPool(want);   // returns what was ACTUALLY deducted
+    };
+    const atkSpent = await _spend(atkActor, atkHackPool);
+    const defSpent = await _spend(defActor, defHackPool);
+
+    const atkPool = Math.max(1, atkSkillDice + atkSpent);
+    const defPool = Math.max(1, defSkillDice + defSpent);
 
     // Program degradation — attacker's program (may be on operator's deck if agent)
     if (ctx.attackerProgramId) {
@@ -4611,7 +4630,14 @@ _prepareCharacter(sys, attr) {
       return spent;
     }
     return game.sr3e.SR3EQueue.run(this.uuid, async () => {
-      const avail  = this.system.derived?.availableHackingPool ?? 0;
+      // ⚠ Both rulesets, or Orthodox deckers can never spend a die.
+      //
+      // `availableHackingPool` is derived from an EQUIPPED CYBERDECK ITEM, which only a
+      // Defragged decker has; an Orthodox decker keeps deck stats on the actor, so theirs
+      // is null and this clamped every spend to 0 — silently, since spending nothing looks
+      // exactly like choosing to spend nothing. Whichever pool the actor actually has wins.
+      const d      = this.system.derived ?? {};
+      const avail  = d.availableHackingPool ?? d.availableOrthodoxHackingPool ?? 0;
       const actual = Math.min(amount, avail);
       if (actual > 0) {
         await this.update({ 'system.hackingPoolSpent': (this.system.hackingPoolSpent ?? 0) + actual });
@@ -6904,7 +6930,13 @@ _prepareCharacter(sys, attr) {
     const compSkill     = this.items.find(i => i.type === 'skill' && /computer|decking/i.test(i.name));
     const compRating    = compSkill?.system?.rating ?? 0;
     const compLabel     = compSkill?.name ?? 'Computer (none)';
-    const hackPool      = d.availableHackingPool ?? 0;
+    // ⚠ The ORTHODOX pool, not the Defragged one. An Orthodox decker keeps their deck
+    // stats on the actor (`system.orthodoxDeck`) and owns no cyberdeck ITEM, so
+    // `availableHackingPool` — derived from an equipped item — is null for them
+    // and was silently becoming 0. Two of the three Orthodox cards offered no Hacking Pool
+    // at all while the IC-attack card correctly offered it, which is what gave the bug away.
+    // Falls back to the Defragged pool so a hybrid sheet is not left worse off.
+    const hackPool = d.availableOrthodoxHackingPool ?? d.availableHackingPool ?? 0;
     const detectFactor  = (() => {
       const m = deck.masking ?? 0, s = deck.sleazeRating ?? 0;
       return s > 0 ? Math.ceil((m + s) / 2) : Math.ceil(m / 2);
@@ -7092,7 +7124,13 @@ _prepareCharacter(sys, attr) {
 
     const secCode = host.system.orthodoxSecurityCode ?? 'Green';
     const secVal  = host.system.orthodoxSecurityValue ?? 0;
-    const hackPool = d.availableHackingPool ?? 0;
+    // ⚠ The ORTHODOX pool, not the Defragged one. An Orthodox decker keeps their deck
+    // stats on the actor (`system.orthodoxDeck`) and owns no cyberdeck ITEM, so
+    // `availableHackingPool` — derived from an equipped item — is null for them
+    // and was silently becoming 0. Two of the three Orthodox cards offered no Hacking Pool
+    // at all while the IC-attack card correctly offered it, which is what gave the bug away.
+    // Falls back to the Defragged pool so a hybrid sheet is not left worse off.
+    const hackPool = d.availableOrthodoxHackingPool ?? d.availableHackingPool ?? 0;
 
     // IC targets on this host
     const icTargets = game.actors.filter(a =>
@@ -7250,33 +7288,18 @@ _prepareCharacter(sys, attr) {
     );
     if (!deckers.length) return void ui.notifications.warn('No valid decker targets in world.');
 
-    const deckerOpts = deckers.map(a => {
-      const ccSkill = a.items.find(i => i.type === 'skill' && /cybercombat/i.test(i.name));
-      const hp      = a.system.derived?.availableOrthodoxHackingPool ?? 0;
-      return `<option value="${a.id}" data-cc="${ccSkill?.system?.rating ?? 0}" data-hp="${hp}">${a.name}</option>`;
-    }).join('');
+    // Name only. The `data-cc` / `data-hp` attributes that used to ride along existed
+    // solely to feed the decker's own dice and Hacking Pool into this dialog; both belong
+    // to the decker's corner now, so publishing them here would only tempt a re-add.
+    const deckerOpts = deckers.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
 
-    let confirmed = false, targetId = null, defDice = 0, defHp = 0;
+    let confirmed = false, targetId = null;
     let atkDiceOverride = secVal, atkTNOverride = atkTN;
 
-    let hookId = Hooks.on('renderDialogV2', (_app, html) => {
-      if (!html.querySelector?.('#icia-target')) return;
-      Hooks.off('renderDialogV2', hookId);
-      const sel   = html.querySelector('#icia-target');
-      const dIn   = html.querySelector('#icia-def-dice');
-      const hpIn  = html.querySelector('#icia-def-hp');
-      const hpMax = html.querySelector('#icia-hp-max');
-
-      const sync = () => {
-        const opt = sel.selectedOptions[0];
-        if (!opt) return;
-        if (dIn)  dIn.value  = opt.dataset.cc  ?? 0;
-        if (hpMax) hpMax.textContent = opt.dataset.hp ?? 0;
-        if (hpIn) hpIn.max = opt.dataset.hp ?? 0;
-      };
-      sel.addEventListener('change', sync);
-      sync();
-    });
+    // The `renderDialogV2` hook that lived here existed only to mirror the selected
+    // decker's Cybercombat rating and Hacking Pool into fields the IC should never have
+    // had. Both fields are gone, the select needs no wiring, and so the hook goes too —
+    // one less global listener that could cross-wire two open dialogs.
 
     await foundry.applications.api.DialogV2.wait({
       window: { title: `${this.name}: Attack Decker` },
@@ -7289,15 +7312,8 @@ _prepareCharacter(sys, attr) {
         <label>Target decker:
           <select id="icia-target" style="width:100%;margin-top:2px">${deckerOpts}</select>
         </label>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-          <label>Decker defense dice (Cybercombat):
-            <input type="number" id="icia-def-dice" value="0" min="0" max="30"
-              style="width:54px;margin-left:4px">
-          </label>
-          <label>Decker HP allocation (available: <span id="icia-hp-max">0</span>):
-            <input type="number" id="icia-def-hp" value="0" min="0"
-              style="width:54px;margin-left:4px">
-          </label>
+        <div style="font-size:11px;color:var(--sr-muted);line-height:1.4">
+          The decker sets their own defence dice and Hacking Pool in their corner of the card.
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <label>IC attack dice (${secVal}):
@@ -7316,8 +7332,6 @@ _prepareCharacter(sys, attr) {
           callback: (_e, _b, dlg) => {
             confirmed       = true;
             targetId        = dlg.element.querySelector('#icia-target')?.value;
-            defDice         = Math.max(0, parseInt(dlg.element.querySelector('#icia-def-dice')?.value)  || 0);
-            defHp           = Math.max(0, parseInt(dlg.element.querySelector('#icia-def-hp')?.value)    || 0);
             atkDiceOverride = Math.max(1, parseInt(dlg.element.querySelector('#icia-atk-dice')?.value)  || secVal);
             atkTNOverride   = Math.max(2, parseInt(dlg.element.querySelector('#icia-atk-tn')?.value)    || atkTN);
           },
@@ -7330,13 +7344,23 @@ _prepareCharacter(sys, attr) {
     const deckerActor = game.actors.get(targetId);
     if (!deckerActor) return;
 
-    // Spend decker's hacking pool if allocated
-    if (defHp > 0) {
-      const curSpent = deckerActor.system.hackingPoolSpent ?? 0;
-      await deckerActor.update({ 'system.hackingPoolSpent': curSpent + defHp });
-    }
-
-    const totalDefDice = defDice + defHp;
+    /**
+     * ⚠ NOTHING of the decker's is chosen or spent here.
+     *
+     * This dialog used to carry "Decker defense dice" and "Decker HP allocation", and then
+     * committed the allocation with `deckerActor.update({ hackingPoolSpent })` — before the
+     * decker had even seen the card. IC is GM-run, so that was the GM choosing a player's
+     * defence AND spending their limited Hacking Pool for them. Of all eight cards this was
+     * the worst instance, because Hacking Pool does not come back until the pools refresh.
+     *
+     * The decker's corner is theirs: dice seeded from their own Cybercombat rating, a
+     * Hacking Pool field they fill in themselves, and the owner gate makes both read-only to
+     * the IC. The spend happens in `handleOrthodoxICAttackRoll`, from what they submitted.
+     */
+    const defCcSkill   = deckerActor.items.find(i => i.type === 'skill' && /cybercombat/i.test(i.name));
+    const totalDefDice = Math.max(1, defCcSkill?.system?.rating ?? 1);
+    const defHpAvail   = deckerActor.system.derived?.availableOrthodoxHackingPool
+                      ?? deckerActor.system.derived?.availableHackingPool ?? 0;
     const defTN        = atkTNOverride;  // same TN for both sides
     const baseCode     = `${rating}${dmgLevel[0]}`;
 
@@ -7357,13 +7381,18 @@ _prepareCharacter(sys, attr) {
     };
     const payload = JSON.stringify(ctx).replace(/'/g, '&#39;');
 
-    const _corner = (name, skill, dice, tn, tnLabel, dcls, tcls, role, owner) => `
+    // `hpCls` is optional — only the decker's corner gets a Hacking Pool field. IC has no
+    // pool of its own, and rendering an inert box there would invite someone to fill it in.
+    const _corner = (name, skill, dice, tn, tnLabel, dcls, tcls, role, owner, hpCls = null, hpAvail = 0) => `
       <div class="sr-miji-corner"
            data-corner-role="${role}" data-corner-owner="${owner ?? ''}" data-corner-label="${name}">
         <div class="sr-miji-name">${name}</div>
         <div class="sr-miji-skill">${skill}</div>
         <div class="sr-melee-field-row"><span>Dice:</span>
           <input type="number" class="${dcls}" value="${dice}" min="1" max="40" style="width:44px"/></div>
+        ${hpCls ? `<div class="sr-melee-field-row"><span>Hack pool:</span>
+          <input type="number" class="${hpCls}" value="0" min="0" max="${hpAvail}" style="width:44px"/>
+          <span style="font-size:10px;color:var(--sr-muted)">/ ${hpAvail}</span></div>` : ''}
         <div class="sr-melee-field-row"><span>${tnLabel}:</span>
           <input type="number" class="${tcls}" value="${tn}"  min="2" max="30" style="width:40px"/></div>
       </div>`;
@@ -7374,14 +7403,14 @@ _prepareCharacter(sys, attr) {
         <div class="sr-roll-header">⚔ ${this.name} attacks ${deckerActor.name}</div>
         <div style="font-size:11px;color:var(--sr-muted);text-align:center;margin-bottom:4px">
           ${host.name} (${code}) &nbsp;|&nbsp; Base damage: <strong>${baseCode}</strong>
-          ${defHp > 0 ? ` &nbsp;|&nbsp; Decker HP spent: ${defHp}` : ''}
         </div>
         <div class="sr-melee-boxing">
           ${_corner(this.name, `Security Value (${atkDiceOverride}d6)`,
                     atkDiceOverride, atkTNOverride, 'TN', 'sr-icia-atk-dice', 'sr-icia-atk-tn', 'attacker', this.id)}
           <div class="sr-melee-vs">VS</div>
-          ${_corner(deckerActor.name, `Cybercombat${defHp > 0 ? `+${defHp}HP` : ''} (${totalDefDice}d6)`,
-                    totalDefDice, defTN, 'TN', 'sr-icia-def-dice', 'sr-icia-def-tn', 'defender', targetId)}
+          ${_corner(deckerActor.name, `Cybercombat (${totalDefDice}d6)`,
+                    totalDefDice, defTN, 'TN', 'sr-icia-def-dice', 'sr-icia-def-tn', 'defender', targetId,
+                    'sr-icia-def-hp', defHpAvail)}
         </div>
         ${SR3EActor.cornerActions(payload, [
           { role: 'attacker', label: this.name,        owner: this.id },
@@ -7410,8 +7439,14 @@ _prepareCharacter(sys, attr) {
     const deckerActor = game.actors.get(ctx.deckerActorId);
     if (!icActor || !deckerActor) { ui.notifications.warn('Orthodox IC Attack: missing actor.'); return; }
 
+    // The decker's Hacking Pool is charged HERE, from what the decker themselves submitted,
+    // and only what they actually have is deducted and rolled. It used to be committed by
+    // the IC's setup dialog with a bare `update`, before the decker had seen the card.
+    const defHpWant  = Math.max(0, parseInt(f('defender', 'sr-icia-def-hp')) || 0);
+    const defHpSpent = defHpWant > 0 ? await deckerActor.spendHackingPool(defHpWant) : 0;
+
     const aRes = SR3EActor._resolveOrthoRoll(icActor,     atkDice, atkTN);
-    const dRes = SR3EActor._resolveOrthoRoll(deckerActor, defDice, defTN);
+    const dRes = SR3EActor._resolveOrthoRoll(deckerActor, defDice + defHpSpent, defTN);
 
     const aHits = aRes.successes, dHits = dRes.successes;
     const net   = aHits - dHits;

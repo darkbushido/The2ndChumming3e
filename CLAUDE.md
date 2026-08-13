@@ -1101,7 +1101,8 @@ The character sheet (`SR3EActorSheet`) renders its Matrix tab differently depend
   Hacking Pool = `⌊(INT + MPCP) / 3⌋` via `system.orthodoxDeck.mpcp`.
 
 **Key data model fields for Orthodox SR3 (on `CharacterData` / `NpcData`):**
-- `system.orthodoxDeck.{ mpcp, activeMemory, storageMemory, hardening, responseIncrease, ioPeed }` — persisted
+- `system.orthodoxDeck.{ mccp, activeMemory, storageMemory, hardening, responseIncrease, ioPeed }` — persisted
+  (⚠ the MPCP field is really named **`mccp`**; the sheet writes the UI's "MPCP" into it)
 - `system.orthodoxRunState.{ hostId, hostName, securityCode, securityValue, securityTally, personaBod, personaEvasion, personaMasking, personaSensor }` — current run state
 - `system.orthodoxMatrixCM.value` — Matrix Condition Monitor boxes (0–10); crash at 10 → dumpshock
 
@@ -1356,6 +1357,48 @@ skills), and the owner gate makes it read-only to everyone else.
 ⚠ This dialog used to set `#opp-source` / `#opp-pool` / `#opp-tn` / `#opp-damage` too, so
 whoever clicked ⚔ Contested Roll on their own sheet decided how their opponent played.
 `tests/e2e/contested.spec.mjs` asserts those four ids are **absent** from the dialog.
+
+### Matrix cards — the Hacking Pool has TWO derivations
+
+`availableHackingPool` comes from an **equipped cyberdeck ITEM** (Defragged).
+`availableOrthodoxHackingPool` comes from **`system.orthodoxDeck.mccp`** on the actor
+(Orthodox). An Orthodox decker owns no deck item, so the Defragged value is `null` for them
+— and `?? 0` turns that into a silent zero rather than an error.
+
+Three sites read the wrong one: the Orthodox System Test and Orthodox Cybercombat dialogs
+offered **0 Hacking Pool to every Orthodox decker**, and `spendHackingPool` clamped every
+Orthodox spend to 0, so allocating dice did nothing. Only the IC-attack card had it right,
+and that disagreement is what exposed it. Always fall back across both:
+`d.availableHackingPool ?? d.availableOrthodoxHackingPool ?? 0`.
+
+### Both corners of an opposed card must be CHARGED, not just rolled
+
+Cybercombat spent the attacker's Hacking Pool and never the defender's, built its dice from
+the raw input while clamping the spend, and wrote with a bare `actor.update` — which fails
+when resolution runs on a client that does not own that side. Use the pool helpers
+(`spendCombatPool` / `spendHackingPool` / …): they route through `sr3e.pool.spend`, are
+queued per actor, and **return what was actually deducted** — roll that, not what was typed.
+
+### The Orthodox IC-attack dialog configures ONE side
+
+`rollOrthodoxICAttack` names the target decker and sets the IC's own dice/TN. It used to
+carry "Decker defense dice" and "Decker HP allocation" and commit the allocation before the
+decker had seen the card — the GM spending a player's Hacking Pool, which does not come back
+until pools refresh. The decker's dice and a `sr-icia-def-hp` field live in **their** corner;
+the spend happens in `handleOrthodoxICAttackRoll` from what they submitted.
+`tests/e2e/orthodox-matrix.spec.mjs` asserts those three ids are absent from the dialog.
+
+### ⚠ A stale GM CLIENT breaks GM-routed fixes invisibly
+
+Foundry runs every authoritative write on `game.users.activeGM` — usually a human's tab that
+has been open for hours. Editing a file does not change what that browser already loaded, so
+a correct fix applies everywhere except the client that executes it, and the caller just sees
+a silently wrong number (a spend returning 0). Serving fresh files does not help.
+
+`game.sr3e.loadedAt` records when each client loaded; the read-only query
+`sr3e.debug.loadedAt` exposes it. The e2e preflight compares the active GM's stamp against
+the files' mtime and fails with "reload <user>'s tab" — including when the GM cannot answer
+at all, which is itself proof the tab predates the query.
 
 ## What is NOT yet implemented
 - Full Defense (melee/ranged defensive posture — deferred)
