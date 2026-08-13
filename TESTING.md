@@ -8,8 +8,29 @@ Two suites, and they cover different things. Neither replaces the other.
 
 ```bash
 npm test          # 15 suites, ~345 assertions. No browser, no server, seconds.
-npm run test:e2e  # 3 specs, two real clients. Needs Foundry running with a world.
+npm run test:e2e  # 5 specs, two real clients. Needs Foundry running with a world.
 ```
+
+### ⚠ The e2e suite tests whatever Foundry is SERVING, not what you just wrote
+
+Foundry serves from its own data directory. On this machine `scripts/`, `styles/` and `lang/`
+under `%LOCALAPPDATA%\FoundryVTT\Data\systems\The2ndChumming3e` are **NTFS junctions** back to
+this checkout, so a save is live in the next page load — no build, no copy step.
+
+A junction is not in the repo and is easily lost: a system reinstall, a fresh clone, another
+machine. When it is lost, **nothing announces it** — the suite just starts testing the data
+directory's copy, and a full run passed against the previous session's code exactly once
+before this note existed. `preflight()` in `tests/e2e/fixtures.mjs` now byte-compares the two
+executable scripts before joining and refuses to run on a mismatch, printing the re-link
+command. To recreate it by hand (no elevation needed):
+
+```bash
+cmd //c mklink //J "$LOCALAPPDATA\\FoundryVTT\\Data\\systems\\The2ndChumming3e\\scripts" "$PWD\\scripts"
+```
+
+**Do not junction the whole system directory.** `packs/` holds live LevelDB that Foundry
+compacts and rewrites while running, and the install also carries 22 pre-split packs the repo
+does not — pointing it at the committed copy would swap real compendium data.
 
 **`npm test`** covers the rules: staging, Rule of One, dodge resolution, defaulting tiers,
 corner TN, combat and melee modifiers, initiative, source books. If a section below restates

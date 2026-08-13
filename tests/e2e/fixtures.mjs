@@ -16,10 +16,58 @@
  * world state — which is fine precisely because each test ARRANGES what it needs
  * (`arrangeActor`) instead of assuming a clean world.
  */
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 import { test as base, expect } from '@playwright/test';
 import { joinAs } from './foundry.mjs';
 
 const BASE = process.env.FOUNDRY_URL ?? 'http://localhost:30000';
+const REPO = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+
+/**
+ * Prove the running Foundry is serving THIS working tree.
+ *
+ * Foundry serves from its own data directory, which is not automatically the repo. Here
+ * `scripts/`, `styles/` and `lang/` are NTFS junctions pointing back at the checkout, so
+ * a save is live immediately — but a junction is invisible in the repo and trivially lost
+ * (a reinstall, a Foundry update, a fresh machine), and when it is lost nothing announces
+ * it. The suite simply starts testing whatever code the data directory happens to hold.
+ *
+ * That already happened once: a whole run passed against the previous session's code, and
+ * the two failures it reported were both in behaviour that had since been rewritten.
+ * Green would have been worse than red.
+ *
+ * So: compare bytes before joining. A drifting file is a broken harness, not a test
+ * failure, and it must fail LOUDLY rather than mislead for an entire run.
+ */
+async function assertServingWorkingTree() {
+  // Two files, one per junction that carries executable behaviour. lang/ is junctioned too
+  // but a stale string never silently changes a result.
+  const probes = ['scripts/sr3e.js', 'scripts/documents/SR3EActor.js'];
+
+  for (const rel of probes) {
+    const local  = readFileSync(join(REPO, rel), 'utf8');
+    const res    = await fetch(`${BASE}/systems/The2ndChumming3e/${rel}`);
+    if (!res.ok) {
+      throw new Error(`Foundry will not serve ${rel} (HTTP ${res.status}) — is the system installed?`);
+    }
+    // Line endings are the one difference that never matters: the repo is LF, and a copied
+    // install may be CRLF. Everything else is drift.
+    const served = (await res.text()).replace(/\r\n/g, '\n');
+    if (served === local.replace(/\r\n/g, '\n')) continue;
+
+    throw new Error(
+      `Foundry is serving a STALE ${rel} — the e2e suite would test code you did not write.\n`
+      + `  served ${served.length} bytes, working tree ${local.length} bytes\n\n`
+      + '  Re-link the data directory to this checkout (PowerShell, no elevation needed):\n'
+      + '    Remove-Item -Recurse -Force "$env:LOCALAPPDATA\\FoundryVTT\\Data\\systems\\The2ndChumming3e\\scripts"\n'
+      + '    cmd /c mklink /J "$env:LOCALAPPDATA\\FoundryVTT\\Data\\systems\\The2ndChumming3e\\scripts" "'
+      + `${REPO}\\scripts"\n\n`
+      + '  Do NOT junction the whole system directory — packs/ holds live LevelDB that\n'
+      + '  Foundry rewrites at runtime, and the repo\'s committed copy is not the same data.');
+  }
+}
 
 /** Fail fast, and say what to do, rather than 60s of timeouts. */
 async function preflight() {
@@ -38,6 +86,7 @@ async function preflight() {
       `${BASE} responded, but no world appears to be launched `
       + '(the setup screen is showing). Launch a world and re-run.');
   }
+  await assertServingWorkingTree();
 }
 
 /** Build a worker-scoped fixture that joins as `userName`. */
