@@ -22,13 +22,13 @@ independent.
 | Group | Items |
 |---|---|
 | 🔵 In progress | 2 |
-| 🟢 Socket combat — follow-ups | 24 |
+| 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | 5 · 14 · 43 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 · 41 · 47 · 48 · 49 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 21 · 22 · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
+| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 21 · 22 · **24** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -37,9 +37,22 @@ independent.
 
 Foundry sockets so each participant sees the right window on their own screen:
 
-- Players can initiate combat (currently attacker-sheet driven, assumes one client)
-- **Dodge window on the target's screen**, not the attacker's
-- **GM window to set TN, with checkboxes for combat modifiers** (not a typed field)
+- ✅ Players can initiate combat (currently attacker-sheet driven, assumes one client)
+- ✅ **Dodge window on the target's screen**, not the attacker's
+- ⏳ **GM window to set TN, with checkboxes for combat modifiers** (not a typed field) — built
+  for **ranged** ([#29](#29)); melee and contested still have no GM TN step, which is [#37](#37)
+
+**Status 2026-08-13 — the socket layer itself is finished.** `SR3EQuery` (ask / asGM / deciderFor
+/ once), the per-actor `SR3EQueue`, the append-only `card.mark` ledger, and the generic
+two-corner block now carry every opposed test in the system: **all eight cards** are converted
+and driven by two real clients ([#24](#24)). Defaulting, dodge declaration and Spell Defense
+each ask their own owner.
+
+What is left under this heading is **not** socket work:
+
+- **[#37](#37)** — the GM TN window for melee/contested. The remaining bullet above.
+- **[#43](#43)** — the sibling resist cards still spend pool dice free.
+- The **`_corner` duplication** noted in [#24](#24) — eight local definitions, now divergent.
 
 ### The live bug this fixes
 
@@ -438,9 +451,17 @@ say something the GM can act on.
   total of 7. Is that die a success at TN 7, or a failure? Decide it, and write it down.
 - **CLAUDE.md says "only first wave counts for glitch"** — check that against the all-1s rule, where
   re-rolls make "the dice rolled for a test" ambiguous.
-- **Five independent copies of the formula**, all in `SR3EActor.js`: `rollPool`, `_rollDodge`, and
-  three more in the drain/soak/resist paths. Fix once in a shared helper — the way `dodgeOutcome`
-  now holds the dodge rules — not five times.
+- ~~**Five independent copies of the formula**~~ — `SR3EActor.isRuleOfOne` is that shared helper.
+
+  ⚠ **But this task was marked ✅ while FOUR resolvers still had the SR4 threshold inline**
+  (`ones > Math.floor(pool / 2)`) — melee, astral, contested and cybercombat, two lines each.
+  They were only found on 2026-08-13 while covering the two-corner cards in [#24](#24), because
+  nothing reads `glitch` and a wrong banner changes no number. All eight lines now call
+  `isRuleOfOne`.
+
+  **The lesson is about the tick, not the rule:** "extracted a helper" is not "every caller
+  uses it", and a cosmetic-only field gives you no feedback when they do not. `grep` for the
+  formula, not for the helper.
 - **Test it.** Pure arithmetic, no Foundry dependency, so it belongs beside
   `tests/dodge-resolution.test.mjs`.
 
@@ -490,7 +511,7 @@ every other weapon is already there.
 Do it only with a measured before/after from play, and only after [#24](#24) settles — melee will
 copy whichever attacker-side shape wins, and it should copy a verified one.
 
-## 24. Revise the two-corner cards onto the socket layer — **MELEE DONE 2026-08-12; 7 CARDS LEFT**
+## 24. ✅ Revise the two-corner cards onto the socket layer — **ALL EIGHT DONE 2026-08-13**
 
 ### ✅ Melee — the decided flow is built
 
@@ -523,13 +544,37 @@ read, and falling through to the defaults is the intended behaviour there.
 - **`gmApprovesTN` mirroring** for melee — belongs with the GM step above.
 - **Full Defense** — already excluded by the maintainer; see the note below.
 
-### ⏳ Seven cards still carry the original shape
+### ✅ All eight cards converted and driven live
 
-Astral · Contested · MIJI · Cybercombat (Defragged) · the three Orthodox. The prerequisite
-refactor below (**eight local `_corner` definitions**, three of them byte-identical) is still
-untouched — melee was done first because it is the one that was reported in play.
+Melee · Astral · Contested · MIJI · Cybercombat · the three Orthodox. They share **one**
+generic handler in `sr3e.js`, found by `[data-twocorner]` and dispatched through the
+`_RESOLVERS` table. Each is exercised by two real Playwright clients (12 e2e tests).
 
-*(Scope widened from melee alone to **all eight** two-corner cards — see the table at the end.)*
+**Every card verified live turned up defects a green `npm test` could not see.** Recording
+them here because the pattern is the point: these are not typos, they are what a single-client
+walkthrough structurally cannot detect.
+
+| Card | Found |
+|---|---|
+| Contested | The setup dialog set the **opponent's** pool source, dice, TN and damage — a player choosing how another player fights. Their pool source is now a dropdown in their own corner. |
+| MIJI | `_ewSkill` was `find(name.includes('electronic'))`, but **three** SR3 skills match, so **item order** decided a rigger's EW dice; the **Electronic Warfare specialisation bonus was ignored** entirely. Now a ranking (`_pickEwSkill`), pinned in `tests/ew-skill.test.mjs`. |
+| Cybercombat | The **defender's Hacking Pool was never charged** — free dice every exchange, for ever. Over-allocation rolled dice it did not pay for. The write was a bare `actor.update`, which fails on a client that does not own that side. |
+| Orthodox ×3 | Two of the three dialogs read the **Defragged** pool, which is `null` for an Orthodox decker, so every one of them was offered **0 Hacking Pool**; `spendHackingPool` clamped against it too. |
+| Orthodox IC attack | The IC's dialog carried "Decker defense dice" and "Decker HP allocation" and **committed the spend before the decker had seen the card** — the GM spending a player's Hacking Pool, which does not return until pools refresh. The worst instance of this task's whole premise. |
+
+Two harness defects came out of the same work:
+
+- **Unsubmitted corner edits were silently discarded.** The other side submitting writes the
+  `acted` flag → the message updates → Foundry rebuilds the card from its payload. So dialling
+  in your dice and waiting reverted you to the defaults and you submitted numbers you never
+  chose. `_cornerDrafts` holds your own unacted corner across re-renders. **Affects all eight.**
+- **Four resolvers still used the SR4 glitch threshold** (`ones > pool/2`) rather than the
+  existing `isRuleOfOne` — see [#32](#32), which was marked done while these survived.
+
+⚠ **The `_corner` duplication was NOT consolidated.** Eight local definitions remain, and they
+have now diverged further (ICIA grew an optional Hacking Pool row). Left deliberately: the
+per-card differences are real, and the behaviour is pinned by e2e rather than by shared code.
+If it is unified later, the specs are what will catch a regression.
 
 **Requested 2026-08-05 after play-testing the ranged flow.** Stages 1–3 routed *ranged* combat;
 melee was Stage 4 and explicitly deferred. It is now the most obviously wrong surface in the game.
@@ -1133,6 +1178,19 @@ all (SR3 melee assumes engaged combatants — a pole arm's reach is a TN edge, n
 - The result label now reads `(4 Body + 2 Combat Pool)` so the split is legible afterwards.
 - `.sr-soak-roll-btn` was already `_isDecider`-gated, which matters more now that it writes.
 
+### ✅ Cybercombat's defender — fixed 2026-08-13
+
+Found while covering the card in [#24](#24), and it was the worst case of this fault in the
+system: the defender's Hacking Pool was **never charged at all**, so a defending decker drew
+free pool dice every exchange indefinitely. Both sides now go through `spendHackingPool`,
+which routes via the GM, queues per actor, and **returns what was actually deducted** — and
+that is what gets rolled, so over-allocation can no longer buy dice either.
+
+⚠ `spendHackingPool` itself clamped against `availableHackingPool`, which is `null` for an
+Orthodox decker — so every Orthodox spend silently clamped to 0. It now falls back across
+both derivations. A spend returning 0 looks exactly like choosing to spend nothing, which is
+why this survived so long.
+
 ### ⚠ Still outstanding — the sibling cards
 
 Same shape, same fault, **not touched**: `sr-astral-soak-pool`, `sr-drain-pool`,
@@ -1592,6 +1650,30 @@ Gaps — every one was a real defect the audit found by hand and no test caught:
 Common thread: state that used to reset because every round called `endCombat()`, orphaned
 when rounds became continuous. `audit/combat-audit.md:338-356` lists the full eight-item
 reset block; `tempMagicLoss` is the one whose correct lifetime was never established.
+
+### ✅ The e2e layer now exists — 16 unit suites (~380 assertions) + 12 Playwright tests
+
+`npm run test:e2e` drives two real clients plus a GM. It covers what unit tests structurally
+**cannot**: behaviour that only exists when two people look at the same card. Every one of the
+defects in [#24](#24)'s table was invisible to a fully green `npm test`.
+
+Three harness facts worth knowing before writing another spec — each cost a wrong diagnosis:
+
+- **Foundry serves from its data directory, not the repo.** `scripts/` `styles/` `lang/` are
+  NTFS junctions back to the checkout; the preflight byte-compares what is served and refuses
+  to run on drift. A whole run once passed against the *previous session's* code.
+- **A stale GM CLIENT breaks GM-routed fixes invisibly.** Every authoritative write runs on
+  `game.users.activeGM` — usually a human tab open for hours, already holding the old module.
+  The caller just sees a number that stays 0. `game.sr3e.loadedAt` + the `sr3e.debug.loadedAt`
+  query let the preflight name whose tab to reload. The janitor is an *assistant* GM and so is
+  **not** `activeGM`: with the Gamemaster logged in, writes land in their browser.
+- **Specs must ARRANGE determinism, not tolerate randomness.** The spellcasting spec depended
+  on a cast succeeding — 6 Sorcery dice at TN 5 fail outright ~9% of the time, and a failed
+  cast posts no resist button, so it died on a missing selector about one run in twelve. It had
+  been reported green repeatedly before the full suite happened to lose the coin toss.
+
+⚠ Still no coverage for the **ranged** flow end-to-end (fire mode → recoil → dodge → soak), which
+is the most-played path in the system and the one with the most moving parts.
 
 ## 12. Write a committed pack rebuild script and vendor its sources — *keystone; blocks #1*
 
@@ -2282,6 +2364,19 @@ every consumer reads one resolved answer rather than each re-deriving it. Then p
 window's vision dropdown from it, still freely overridable.
 
 ## 20. Migrate ~58 `renderDialogV2` hook sites to `DialogV2.wait`'s `render` option
+
+**Two down, 2026-08-13**, both while covering their cards in [#24](#24):
+
+- **`SR3EMIJI.openAttackDialog`** — migrated to the per-dialog `render` option. Its hook drove
+  the operation→channel list, so cross-wiring two open dialogs would leave the channel list
+  silently not matching the operation, letting a rigger jam a channel the operation cannot reach.
+- **`rollOrthodoxICAttack`** — the hook was **deleted outright** rather than migrated. It existed
+  only to mirror the target decker's Cybercombat rating and Hacking Pool into fields the IC should
+  never have had; those fields are gone, so nothing needed wiring.
+
+⚠ Worth noting for the remaining ~56: the second one was **removable, not portable**. Check what
+each hook is actually for before mechanically converting it — some are wiring for a control that
+should not exist.
 
 CLAUDE.md claimed **"`DialogV2.wait()` does NOT call its `render` option"** and sent everyone to the
 global `renderDialogV2` hook. **That was false.** Corrected in Stage 0d; verified against the
