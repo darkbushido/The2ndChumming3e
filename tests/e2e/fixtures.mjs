@@ -172,9 +172,18 @@ export const test = base.extend({
    * oldest match, so a stale card gets driven instead of the one under test, and the
    * failure reads as "the button is disabled" a second after asserting it was enabled.
    *
-   * Deliberately NOT the Gamemaster account: that is the maintainer's own seat, and Foundry
-   * refuses a second session for a connected user, so borrowing it would mean asking them
-   * to log out before every run.
+   * Defaults to an assistant account rather than the Gamemaster seat, because Foundry
+   * refuses a second session for a connected user — borrowing it would mean asking the
+   * maintainer to log out first.
+   *
+   * ⚠ BUT an assistant is not `game.users.activeGM`. When the real Gamemaster is connected,
+   * Foundry routes every authoritative write to THEIR browser, so anything GM-routed runs on
+   * whatever code that tab loaded. If it predates your edits the run tests stale code and
+   * `assertActiveGMIsFresh` will (correctly) refuse to start.
+   *
+   * Two ways out: reload that tab, or have the maintainer log out and run with
+   *   FOUNDRY_JANITOR=Gamemaster npm run test:e2e
+   * which makes the freshly-loaded Playwright client the active GM.
    */
   janitor: clientFixture(process.env.FOUNDRY_JANITOR ?? 'mcp-api'),
 });

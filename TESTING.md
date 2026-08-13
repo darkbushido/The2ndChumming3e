@@ -52,6 +52,14 @@ code on everyone's behalf — the caller just sees a wrong number. The preflight
 that client's `sr3e.debug.loadedAt` against the files and refuses to run, naming whose tab to
 reload. If a pool assertion fails for no reason you can see, this is why.
 
+Note the janitor account is an *assistant* GM, which is **not** `activeGM` — so while the real
+Gamemaster is logged in, the writes happen in their browser. Either reload that tab, or log
+out and run:
+
+```bash
+FOUNDRY_JANITOR=Gamemaster npm run test:e2e
+```
+
 ⚠ **Neither judges whether anything is USABLE.** Layout, legibility, whether a read-only
 corner looks disabled, whether a dialog makes sense — those need a human, and the sections
 below are still the checklist for them.
