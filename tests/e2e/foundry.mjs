@@ -95,9 +95,24 @@ export async function joinAs(browser, userName) {
   return { context, page };
 }
 
-/** Run an async system flow WITHOUT awaiting it — for anything that opens a blocking dialog. */
+/**
+ * Run an async system flow WITHOUT awaiting it — for anything that opens a blocking dialog.
+ *
+ * ⚠ The inner promise is ANCHORED on `window`, deliberately. An async function suspended on
+ * `await DialogV2.wait(...)` is reachable only through the promise chain it is waiting on;
+ * with nothing holding the head of that chain, V8 is free to collect the whole thing while
+ * it sits there waiting for a human. Playwright then reports "Resulting promise was garbage
+ * collected" — an error that names the symptom and points nowhere near the flow that
+ * vanished. Keeping one reference per call costs nothing and makes the wait deterministic.
+ */
 export async function fireAndForget(page, fnBody) {
-  await page.evaluate(`(() => { (async () => { ${fnBody} })(); return true; })()`);
+  await page.evaluate(`(() => {
+    window.__sr3ePending ??= [];
+    window.__sr3ePending.push((async () => { ${fnBody} })());
+    // Bounded: a long run would otherwise accumulate every dialog flow it ever opened.
+    if (window.__sr3ePending.length > 32) window.__sr3ePending.splice(0, 16);
+    return true;
+  })()`);
 }
 
 /**
@@ -331,8 +346,9 @@ export async function arrangeActor(page, name, spec = {}) {
  */
 export async function createTestActor(gmPage, {
   name, ownerUserName, system = {}, items = [], withToken = true, x = 1000, y = 1000,
+  type = 'character',
 }) {
-  const res = await gmPage.evaluate(async ({ n, owner, sys, its, tok, tx, ty }) => {
+  const res = await gmPage.evaluate(async ({ n, owner, sys, its, tok, tx, ty, ty2 }) => {
     if (!game.user.isGM) return { error: `${game.user.name} is not a GM — cannot create actors.` };
 
     const user = game.users.find(u => u.name === owner);
@@ -341,7 +357,7 @@ export async function createTestActor(gmPage, {
     const ownership = { default: 0 };
     if (user) ownership[user.id] = 3;   // OWNER
 
-    const actor = await Actor.create({ name: n, type: 'character', ownership, system: sys });
+    const actor = await Actor.create({ name: n, type: ty2, ownership, system: sys });
     if (!actor) return { error: `Actor.create returned nothing for "${n}".` };
     if (its.length) await actor.createEmbeddedDocuments('Item', its);
 
@@ -368,7 +384,7 @@ export async function createTestActor(gmPage, {
       astralPool: actor.system?.derived?.astralPool ?? null,
       skills: actor.items.filter(i => i.type === 'skill').map(i => i.name),
     };
-  }, { n: name, owner: ownerUserName, sys: system, its: items, tok: withToken, tx: x, ty: y });
+  }, { n: name, owner: ownerUserName, sys: system, its: items, tok: withToken, tx: x, ty: y, ty2: type });
 
   if (res.error) throw new Error(`createTestActor(${name}): ${res.error}`);
   if (withToken && !res.hasToken) {

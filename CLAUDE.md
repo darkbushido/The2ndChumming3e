@@ -1262,6 +1262,24 @@ dice. `postMIJICard` → `.sr-miji-roll-btn` → `handleMIJIRoll` resolves both 
 `.sr-miji-degradation-btn` → `applyDegradation` fills `signalMonitor[channel]`. Both buttons use the
 `_checkBtn`/`_claimBtn` one-shot guards.
 
+**Corner ownership reaches the rigger THROUGH the vehicle** — `vehicle.system.driverActorId`.
+The contest is between vehicles, but the corners belong to the two riggers. A vehicle with no
+linked driver has an owner of `null`, so its corner **fails closed to GM-only**, which is
+correct (there is no player to ask) and deliberate: do not "fix" the greyed-out button by
+widening the gate, or an unmanned drone's defence goes to whoever is nearest. The defender is
+the rigger when there is one, else the vehicle itself — `postMIJICard` resolves that once and
+carries it as `ctx.defenderName`, because the result card used to print the target *vehicle*
+unconditionally and so credited an empty drone with its rigger's dice.
+
+⚠ **`_pickEwSkill` is a RANKING, not `find`.** Three SR3 skills contain "electronic" —
+`Electronics`, `Electronics B/R`, `Electronic Intelligence` — so the old
+`items.find(n => n.includes('electronic'))` let **item order** decide a rigger's EW dice. It
+also ignored the **Electronic Warfare specialisation**, which is a specialisation *of*
+Electronics and whose `level` is its bonus, so Electronics 4 (EW +2) rolled 4 instead of 6.
+Order: EW specialisation → plain `Electronics` → any loose match, highest rating breaking ties.
+A loose match still counts (last) so nobody who had dice loses them. Pinned in
+`tests/ew-skill.test.mjs`; the live dice totals are asserted in `tests/e2e/miji.spec.mjs`.
+
 **Infiltration** (`openInfiltration`): EW + Flux comp vs TN 6 − (intruder Protocol − target Deck);
 a second dialog lets the user freely allocate successes **three ways** (R3 p.37): channels breached
 (1 each), **time reduction** (base 10 turns ÷ successes spent → `Math.ceil(10/time)`), and **Intrusion

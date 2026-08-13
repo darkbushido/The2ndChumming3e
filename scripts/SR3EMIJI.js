@@ -18,17 +18,63 @@ export class SR3EMIJI {
   /*  Shared helpers                                                      */
   /* ------------------------------------------------------------------ */
 
+  /**
+   * Choose the Electronics (Electronic Warfare) skill from a list of candidates.
+   *
+   * ⚠ This used to be `items.find(n => n.includes('electronic'))`, which is wrong twice.
+   *
+   * **"electronic" matches three different skills.** `Electronics B/R` and `Electronic
+   * Intelligence` are both real SR3 skills and both contain the substring, so `find` —
+   * which returns the FIRST match in item order — meant whichever skill the player
+   * happened to add first set their EW dice. A rigger with Electronics B/R 6 and
+   * Electronics 3 rolled 6 or 3 depending on the order they built the sheet in.
+   *
+   * **The specialisation was ignored.** Electronic Warfare is a specialisation OF
+   * Electronics (`config.js`), and a specialisation's `level` is its bonus. A rigger with
+   * Electronics 4 (Electronic Warfare +2) rolls 6 dice for an EW test and was rolling 4.
+   *
+   * Ranked rather than filtered, so nobody silently loses dice: a skill actually carrying
+   * an Electronic Warfare specialisation wins, then plain `Electronics`, then any loose
+   * "electronic…" match. Highest effective rating breaks ties within a tier, so the result
+   * no longer depends on item order at all.
+   *
+   * Pure: takes plain `{ name, rating, specialisations }` shapes, so it is unit-testable
+   * without a Foundry actor.
+   */
+  static _pickEwSkill(candidates) {
+    let best = null;
+    for (const c of candidates ?? []) {
+      const name = c?.name ?? '';
+      if (!/electronic/i.test(name) && !(c?.specialisations ?? []).some(s => /electronic warfare/i.test(s?.name ?? ''))) continue;
+
+      const spec   = (c.specialisations ?? []).find(s => /electronic warfare/i.test(s?.name ?? ''));
+      const base   = Number(c.rating) || 0;
+      const rating = base + (spec ? (Number(spec.level) || 0) : 0);
+      // 2 = has the EW specialisation · 1 = the Electronics skill · 0 = a loose match
+      const tier   = spec ? 2 : (/^electronics$/i.test(name.trim()) ? 1 : 0);
+      const label  = spec ? `${name} (${spec.name})` : name;
+
+      if (!best || tier > best.tier || (tier === best.tier && rating > best.rating)) {
+        best = { tier, rating, name: label };
+      }
+    }
+    return best ? { rating: best.rating, name: best.name } : { rating: 0, name: 'Electronics (EW) — none' };
+  }
+
   /** Electronics (Electronic Warfare) skill on an actor → { rating, name } (0 if none). */
   static _ewSkill(actor) {
     if (!actor) return { rating: 0, name: 'Electronics (EW) — none' };
-    const skill = actor.items.find(i => {
-      if (i.type !== 'skill') return false;
-      const n = (i.system.skillName || i.name || '').toLowerCase();
-      const s = (i.system.specialisation || '').toLowerCase();
-      return n.includes('electronic') || s.includes('electronic warfare');
-    });
-    if (!skill) return { rating: 0, name: 'Electronics (EW) — none' };
-    return { rating: skill.system.rating ?? 0, name: skill.system.skillName || skill.name };
+    return this._pickEwSkill(actor.items
+      .filter(i => i.type === 'skill')
+      .map(i => ({
+        name:            i.system.skillName || i.name || '',
+        rating:          i.system.rating ?? 0,
+        // Older sheets carry a single `specialisation` string; the model migrates it to the
+        // array at load, but read both so a stale document is not silently downgraded.
+        specialisations: i.system.specialisations?.length
+          ? i.system.specialisations
+          : (i.system.specialisation ? [{ name: i.system.specialisation, level: 2 }] : []),
+      })));
   }
 
   static _complementary(flux, skillRating) {
@@ -87,20 +133,6 @@ export class SR3EMIJI {
         .map(c => `<option value="${c.key}">${c.label}</option>`).join('');
     };
 
-    // Live channel-list refresh when operation changes.
-    let hookId = Hooks.on('renderDialogV2', (_app, html) => {
-      const el = html?.querySelector ? html : html?.[0];
-      if (!el?.querySelector?.('#miji-op')) return;
-      Hooks.off('renderDialogV2', hookId);
-      const opSel = el.querySelector('#miji-op');
-      const chSel = el.querySelector('#miji-channel');
-      const descEl = el.querySelector('#miji-op-desc');
-      opSel.addEventListener('change', () => {
-        chSel.innerHTML = chanOpts(opSel.value);
-        if (descEl) descEl.textContent = ops[opSel.value]?.desc ?? '';
-      });
-    });
-
     let result = null;
     await foundry.applications.api.DialogV2.wait({
       window: { title: `MIJI Attack — target ${targetVehicle.name}` },
@@ -117,6 +149,23 @@ export class SR3EMIJI {
             <select id="miji-channel" style="width:100%">${chanOpts(Object.keys(ops)[0])}</select>
           </label>
         </div>`,
+
+      // Per-dialog, not `Hooks.on('renderDialogV2')`. The hook is global: with two MIJI
+      // dialogs open, both handlers register before either renders, so the first dialog is
+      // wired twice — the second time against the OTHER dialog's closure — and the second
+      // gets no wiring at all. The symptom is a channel list that silently stops matching
+      // the chosen operation, letting you jam a channel the operation cannot reach.
+      render: (_event, dialog) => {
+        const el     = dialog.element;
+        const opSel  = el.querySelector('#miji-op');
+        const chSel  = el.querySelector('#miji-channel');
+        const descEl = el.querySelector('#miji-op-desc');
+        opSel?.addEventListener('change', () => {
+          chSel.innerHTML = chanOpts(opSel.value);
+          if (descEl) descEl.textContent = ops[opSel.value]?.desc ?? '';
+        });
+      },
+
       buttons: [
         { label: 'Continue', action: 'go', default: true, callback: (_e, _b, dialog) => {
             const el = dialog.element;
@@ -129,7 +178,6 @@ export class SR3EMIJI {
         { label: 'Cancel', action: 'cancel' },
       ],
     });
-    if (hookId) Hooks.off('renderDialogV2', hookId);
     if (!result?.intruderVehicleId) return;
 
     const intVehicle = game.actors.get(result.intruderVehicleId);
@@ -169,8 +217,13 @@ export class SR3EMIJI {
   }
 
   static async postMIJICard(ctx) {
-    const payload = JSON.stringify(ctx).replace(/'/g, '&#39;');
-    const defName = ctx.defenderRiggerId ? game.actors.get(ctx.defenderRiggerId)?.name : ctx.targetVehicleName;
+    // Who actually ROLLS the defence: the linked rigger if there is one, else the vehicle
+    // itself — the same fallback `handleMIJIRoll` uses to pick `defActor`. Carried in the
+    // payload rather than recomputed, because the result card was rebuilding it as the
+    // vehicle name unconditionally and so credited an unmanned drone with its rigger's dice.
+    const defName = (ctx.defenderRiggerId ? game.actors.get(ctx.defenderRiggerId)?.name : null)
+                    ?? ctx.targetVehicleName;
+    const payload = JSON.stringify({ ...ctx, defenderName: defName }).replace(/'/g, '&#39;');
     const _corner = (who, dice, tn, comp, skillName, diceCls, tnCls, tnLabel, role, owner) => `
       <div class="sr-miji-corner"
            data-corner-role="${role}" data-corner-owner="${owner ?? ''}" data-corner-label="${who}">
@@ -235,6 +288,15 @@ export class SR3EMIJI {
     const net = intRes.successes - defRes.successes;
     const _dice = (r) => r.dice.map(d => `<span class="chase-die${d.success ? ' chase-die-best' : ''}">${d.total}</span>`).join('');
 
+    // Rule of One was being computed and thrown away — `_resolveRoll` has returned `ones`
+    // all along and nothing read it, so a MIJI sweep looked like an ordinary zero-success
+    // failure. It is not: p.38 hands the outcome to the GM to narrate.
+    const _A     = game.sr3e.SR3EActor;
+    const _sweep = (r, who) => _A.isRuleOfOne(r.ones, r.dice.length)
+      ? `<div class="sr-staging-result" style="color:var(--sr-red)">🎲 Rule of One — every die ${who} rolled came up 1. GM adjudicates.</div>`
+      : '';
+    const sweeps = _sweep(intRes, ctx.intruderName) + _sweep(defRes, ctx.defenderName ?? ctx.targetVehicleName);
+
     let outcome;
     if (net > 0) {
       const payload = JSON.stringify({
@@ -260,8 +322,9 @@ export class SR3EMIJI {
           <div class="sr-roll-header">⚡ MIJI Result — ${ctx.operationLabel}</div>
           <div class="sr-miji-result-grid">
             <div><strong>${ctx.intruderName}</strong> (intruder): ${intRes.successes} hit${intRes.successes !== 1 ? 's' : ''}<br>${_dice(intRes)}</div>
-            <div><strong>${ctx.targetVehicleName}</strong> (defender): ${defRes.successes} hit${defRes.successes !== 1 ? 's' : ''}<br>${_dice(defRes)}</div>
+            <div><strong>${ctx.defenderName ?? ctx.targetVehicleName}</strong> (defender): ${defRes.successes} hit${defRes.successes !== 1 ? 's' : ''}<br>${_dice(defRes)}</div>
           </div>
+          ${sweeps}
           ${outcome}
         </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,

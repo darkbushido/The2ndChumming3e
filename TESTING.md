@@ -7,8 +7,8 @@ Verify each feature by checking the **in → out** numbers against what the chat
 Two suites, and they cover different things. Neither replaces the other.
 
 ```bash
-npm test          # 15 suites, ~345 assertions. No browser, no server, seconds.
-npm run test:e2e  # 5 specs, two real clients. Needs Foundry running with a world.
+npm test          # 16 suites, ~380 assertions. No browser, no server, seconds.
+npm run test:e2e  # 7 specs, two real clients. Needs Foundry running with a world.
 ```
 
 ### ⚠ The e2e suite tests whatever Foundry is SERVING, not what you just wrote
@@ -39,8 +39,9 @@ an SR4 glitch rule sit here wrongly for months.
 
 **`npm run test:e2e`** covers what unit tests structurally cannot: behaviour that only exists
 when two people are looking at the same card. §6 melee, §11 spellcasting's permission split,
-§16 astral. The bug that motivated it — submitted values silently dropped, so resolution used
-whichever client happened to resolve — was invisible to a green `npm test`.
+§16 astral, §35 MIJI, plus the contested card. The bug that motivated it — submitted values
+silently dropped, so resolution used whichever client happened to resolve — was invisible to a
+green `npm test`, as were all four of the defects the contested and MIJI specs later found.
 
 ⚠ **Neither judges whether anything is USABLE.** Layout, legibility, whether a read-only
 corner looks disabled, whether a dialog makes sense — those need a human, and the sections
@@ -1487,6 +1488,29 @@ Clicking the 👁 eye toggle (hide/show individual or all) no longer jumps the S
 
 **Adds data-model fields → needs a full Foundry restart, not just F5.** Subsections below cover the
 core MIJI loop, the degradation modifiers, the Drone Comprehension Test and the IVIS Test.
+
+### ✅ Step 3 (the MIJI contest) is AUTOMATED — `tests/e2e/miji.spec.mjs`
+
+Two clients plus a GM. Covered there, so do not re-walk it by hand:
+
+- **Both pools derive from their OWN rigger.** Intruder Electronics 5 (Electronic Warfare +2)
+  + min(Flux 2, 7) = **9** dice; defender Electronics 3, no specialisation, + min(Flux 1, 3)
+  = **4**. Deliberately different, so a card built from one rigger twice fails.
+- **The TNs cross over** — intruder TN = *defender's* deck rating; Jamming's defender TN =
+  *intruder vehicle's* ECM. Swapping them is invisible on screen but reverses the odds.
+- **Corner ownership travels through `driverActorId`.** Each rigger's own submit button is
+  enabled and the other's disabled, on both clients, with the far corner's inputs read-only.
+- **An unmanned drone's corner is GM-only** (fail-closed), and the GM can complete the
+  exchange on its behalf.
+- **The result card credits the riggers**, who actually rolled — not the vehicle names.
+
+`tests/ew-skill.test.mjs` pins the skill-selection rule underneath it: `Electronics B/R` and
+`Electronic Intelligence` also contain "electronic", so which skill supplies the dice must not
+depend on the order the sheet was built in, and the Electronic Warfare specialisation bonus
+must be counted. Both were wrong until 2026-08-13.
+
+⚠ Still needs a human: whether the card is legible, whether a locked corner *looks* locked,
+and every other subsection below.
 
 Two riggers, each with an Electronics skill specialised in *Electronic Warfare*, each linked as the driver of a vehicle.
 On each rigger's **Matrix tab → Rigger — Electronic Warfare**: set Deck, Flux, Protocol Module.

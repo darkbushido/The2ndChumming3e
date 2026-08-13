@@ -25,13 +25,29 @@ import {
 const CASTER = '__TEST Caster';   // owned by Player2
 const VICTIM = '__TEST Victim';   // owned by Player3
 
-const awakened = {
+const awakened = (willpower = 5) => ({
   attributes: {
     body: { base: 4 }, quickness: { base: 4 }, strength: { base: 3 },
-    charisma: { base: 4 }, intelligence: { base: 5 }, willpower: { base: 5 },
+    charisma: { base: 4 }, intelligence: { base: 5 }, willpower: { base: willpower },
     magic: { base: 6 },
   },
-};
+});
+
+/**
+ * ⚠ The VICTIM's Willpower is deliberately low, and it is load-bearing.
+ *
+ * Manabolt's `target: 'W'` makes the cast TN the victim's Willpower. At Willpower 5 the
+ * caster's 6 Sorcery dice fail outright about **9% of the time** — and a cast with zero
+ * successes posts no Resist Spell button at all, because the spell simply failed. This
+ * spec asserts WHO MAY CLICK the resist button, so a failed cast is not a finding, it is
+ * a run with nothing to look at: the spec died on `.sr-spell-soak-btn` never appearing,
+ * roughly one run in twelve, reading as an infrastructure timeout.
+ *
+ * Willpower 2 puts the TN at the floor, where only a 1 misses, so the spell lands with
+ * probability ~0.99998 and the permission assertions always have a card to make. This is
+ * ARRANGEMENT, not tolerance — the spec still fails loudly if the wrong person can click.
+ */
+const VICTIM_WILLPOWER = 2;
 
 /** A Combat spell: damaging, so the cast dialog offers a Damage Level and targets resist. */
 const manabolt = {
@@ -52,14 +68,15 @@ test.describe('spellcasting — caster and target act on their own halves', () =
     // it and nobody else does.
     await sweepTestActors(janitor.page);
     const c = await createTestActor(janitor.page, {
-      name: CASTER, ownerUserName: 'Player2', system: awakened, x: 1500, y: 1700,
+      name: CASTER, ownerUserName: 'Player2', system: awakened(), x: 1500, y: 1700,
       items: [
         { name: 'Sorcery', type: 'skill', system: { rating: 6, linkedAttribute: 'willpower' } },
         manabolt,
       ],
     });
     const v = await createTestActor(janitor.page, {
-      name: VICTIM, ownerUserName: 'Player3', system: awakened, x: 1600, y: 1700, items: [],
+      name: VICTIM, ownerUserName: 'Player3', system: awakened(VICTIM_WILLPOWER),
+      x: 1600, y: 1700, items: [],
     });
     created = [c.id, v.id];
   });
