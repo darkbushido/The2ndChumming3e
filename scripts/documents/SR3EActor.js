@@ -534,8 +534,8 @@ export class SR3EActor extends Actor {
 
     const atkOnes   = atkDice.filter(d => d.isOne).length;
     const defOnes   = defDice.filter(d => d.isOne).length;
-    const atkGlitch = atkOnes > Math.floor(atkPool / 2);
-    const defGlitch = defOnes > Math.floor(defPool / 2);
+    const atkGlitch = SR3EActor.isRuleOfOne(atkOnes, atkPool);
+    const defGlitch = SR3EActor.isRuleOfOne(defOnes, defPool);
 
     // Post wave cards for both sides
     await atkActor._postWaveCard({
@@ -3778,8 +3778,8 @@ _prepareCharacter(sys, attr) {
 
     const atkOnes   = atkDice.filter(d => d.isOne).length;
     const defOnes   = defDice.filter(d => d.isOne).length;
-    const atkGlitch = atkOnes > Math.floor(atkPool / 2);
-    const defGlitch = defOnes > Math.floor(defPool / 2);
+    const atkGlitch = SR3EActor.isRuleOfOne(atkOnes, atkPool);
+    const defGlitch = SR3EActor.isRuleOfOne(defOnes, defPool);
 
     // Post both wave cards with melee context (use edited damage codes)
     const meleeCtx = {
@@ -5989,8 +5989,8 @@ _prepareCharacter(sys, attr) {
 
     const atkOnes   = atkDice.filter(d => d.isOne).length;
     const defOnes   = defDice.filter(d => d.isOne).length;
-    const atkGlitch = atkOnes > Math.floor(atkPool / 2);
-    const defGlitch = defOnes > Math.floor(defPool / 2);
+    const atkGlitch = SR3EActor.isRuleOfOne(atkOnes, atkPool);
+    const defGlitch = SR3EActor.isRuleOfOne(defOnes, defPool);
 
     const astralCtx = { ...ctx, atkPool, atkTN, defPool, defTN, atkRawDamage, defRawDamage, isPhysical };
 
@@ -6338,30 +6338,52 @@ _prepareCharacter(sys, attr) {
   // UNIVERSAL CONTESTED ROLL
   // ---------------------------------------------------------------------------
 
+  /**
+   * Every attribute and skill an actor could roll in a contested test, with its dice.
+   *
+   * Static because BOTH the setup dialog and the card need it: the initiator picks their
+   * own source in the dialog, and the opponent picks theirs in their own corner on the
+   * card. It used to be a closure inside the dialog, which is why the opponent's source
+   * could only ever be chosen by whoever opened it.
+   */
+  static contestedSources(a) {
+    const attr    = a.system.attributes ?? {};
+    const sources = [];
+    const defs = a.type === 'vehicle'
+      ? [['handling','Handling'],['speed','Speed'],['accel','Accel'],['body','Body'],['armor','Armor'],['sig','Sig'],['autonav','Autonav'],['pilot','Pilot'],['sensor','Sensor'],['cargo','Cargo'],['load','Load']]
+      : [['body','Body'],['quickness','Quickness'],['strength','Strength'],['charisma','Charisma'],
+         ['intelligence','Intelligence'],['willpower','Willpower'],['reaction','Reaction'],['essence','Essence']];
+    for (const [key, label] of defs) {
+      const val = attr[key]?.base ?? attr[key]?.value ?? 0;
+      // Always include vehicle stats (even if 0); filter characters to non-zero only
+      if (a.type === 'vehicle' || val > 0) sources.push({ group: 'attr', label: `${label} (${val})`, value: val });
+    }
+    if (a.type !== 'vehicle') {
+      const mag = attr.magic?.base ?? 0;
+      if (mag > 0) sources.push({ group: 'attr', label: `Magic (${mag})`, value: mag });
+    }
+    for (const sk of a.items.filter(i => i.type === 'skill').sort((x,y) => x.name.localeCompare(y.name))) {
+      const rating = (sk.system.skillRating ?? sk.system.rating ?? 0)
+        + SR3EItem._skillBonusDice(a, sk);
+      sources.push({ group: 'skill', label: `${sk.name} (${rating})`, value: rating });
+    }
+    return sources;
+  }
+
+  /** `contestedSources` as grouped <option> markup. */
+  static contestedSourceOptions(a, selectedValue = null) {
+    const sources = SR3EActor.contestedSources(a);
+    const opt = s => `<option value="${s.value}"`
+      + `${selectedValue !== null && String(s.value) === String(selectedValue) ? ' selected' : ''}`
+      + `>${s.label}</option>`;
+    const ao = sources.filter(s => s.group === 'attr').map(opt).join('');
+    const so = sources.filter(s => s.group === 'skill').map(opt).join('');
+    return `${ao.length ? `<optgroup label="Attributes">${ao}</optgroup>` : ''}`
+         + `${so.length ? `<optgroup label="Skills">${so}</optgroup>` : ''}`;
+  }
+
   static async openContestedDialog(defaultActor, shiftKey = false) {
-    const buildSources = (a) => {
-      const attr    = a.system.attributes ?? {};
-      const sources = [];
-      const defs = a.type === 'vehicle'
-        ? [['handling','Handling'],['speed','Speed'],['accel','Accel'],['body','Body'],['armor','Armor'],['sig','Sig'],['autonav','Autonav'],['pilot','Pilot'],['sensor','Sensor'],['cargo','Cargo'],['load','Load']]
-        : [['body','Body'],['quickness','Quickness'],['strength','Strength'],['charisma','Charisma'],
-           ['intelligence','Intelligence'],['willpower','Willpower'],['reaction','Reaction'],['essence','Essence']];
-      for (const [key, label] of defs) {
-        const val = attr[key]?.base ?? attr[key]?.value ?? 0;
-        // Always include vehicle stats (even if 0); filter characters to non-zero only
-        if (a.type === 'vehicle' || val > 0) sources.push({ group: 'attr', label: `${label} (${val})`, value: val });
-      }
-      if (a.type !== 'vehicle') {
-        const mag = attr.magic?.base ?? 0;
-        if (mag > 0) sources.push({ group: 'attr', label: `Magic (${mag})`, value: mag });
-      }
-      for (const sk of a.items.filter(i => i.type === 'skill').sort((x,y) => x.name.localeCompare(y.name))) {
-        const rating = (sk.system.skillRating ?? sk.system.rating ?? 0)
-          + SR3EItem._skillBonusDice(a, sk);
-        sources.push({ group: 'skill', label: `${sk.name} (${rating})`, value: rating });
-      }
-      return sources;
-    };
+    const buildSources = a => SR3EActor.contestedSources(a);
 
     const buildOptions = (sources) => {
       const attrs  = sources.filter(s => s.group === 'attr');
@@ -6383,7 +6405,6 @@ _prepareCharacter(sys, attr) {
     const defaultAtkData = allActorData[defaultAtkId];
     const otherActors    = allActors.filter(a => a.id !== defaultAtkId);
     const defaultOppId   = otherActors[0]?.id ?? 'other';
-    const defaultOppData = defaultOppId !== 'other' ? allActorData[defaultOppId] : null;
 
     const atkActorOptions = allActors.map(a =>
       `<option value="${a.id}"${a.id === defaultAtkId ? ' selected' : ''}>${a.name}</option>`
@@ -6409,21 +6430,8 @@ _prepareCharacter(sys, attr) {
         el.querySelector('#atk-source')?.addEventListener('change', (e) => {
           el.querySelector('#atk-pool').value = parseInt(e.target.value) || 1;
         });
-        el.querySelector('#opp-actor')?.addEventListener('change', (e) => {
-          const id  = e.target.value;
-          const src = el.querySelector('#opp-source');
-          const poo = el.querySelector('#opp-pool');
-          if (id === 'other') {
-            src.innerHTML = '<option value="4">Manual</option>';
-            if (poo) poo.value = 4;
-          } else {
-            const data = allActorData[id];
-            if (data) { src.innerHTML = buildOptions(data.sources); if (poo) poo.value = data.firstVal ?? 4; }
-          }
-        });
-        el.querySelector('#opp-source')?.addEventListener('change', (e) => {
-          el.querySelector('#opp-pool').value = parseInt(e.target.value) || 1;
-        });
+        // No listener for the opponent select — naming them is all this dialog does with
+        // that side. Their dice follow from their own choice, made on the card.
       }
     };
 
@@ -6447,10 +6455,31 @@ _prepareCharacter(sys, attr) {
     await new Promise(resolve => {
       new ContestedDialog({
         window: { title: 'Contested Roll Setup' },
+        // ⚠ ONLY the initiator's side is configured here.
+        //
+        // This dialog used to set the OPPONENT's pool source, dice, TN and damage too — so
+        // whoever clicked ⚔ Contested Roll chose how their opponent would fight. The button
+        // is on the player's own sheet, so that was a player deciding another player's dice.
+        //
+        // Naming WHO is being contested is legitimate and stays: it is the same act as
+        // picking a target. Everything else about that side now belongs to them, and they
+        // choose it in their own corner on the card — including a Pool source dropdown of
+        // their own attributes and skills.
         content: `
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:8px 0">
             <div>${_side(atkActorOptions, defaultAtkData, 'atk-source', 'atk-actor', 'atk-pool', 'atk-tn', 'atk-damage')}</div>
-            <div>${_side(oppActorOptions, defaultOppData, 'opp-source', 'opp-actor', 'opp-pool', 'opp-tn', 'opp-damage')}</div>
+            <div>
+              <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:bold">Contesting against:
+                <select id="opp-actor" style="width:100%;margin-top:2px;font-weight:normal">${oppActorOptions}</select>
+              </label>
+              <div style="font-size:11px;color:var(--sr-muted);line-height:1.4;margin-top:10px">
+                They choose their own pool source, dice, TN and damage in their corner of the
+                card. You will see their numbers once they submit.
+                <div style="margin-top:6px;color:var(--sr-dim)">
+                  The GM can resolve without them if they are away.
+                </div>
+              </div>
+            </div>
           </div>`,
         buttons: [
           {
@@ -6460,9 +6489,17 @@ _prepareCharacter(sys, attr) {
             callback: (_e, _b, dialog) => {
               const el       = dialog.element;
               const atkSrc   = el.querySelector('#atk-source');
-              const oppSrc   = el.querySelector('#opp-source');
               const atkActId = el.querySelector('#atk-actor')?.value  ?? defaultAtkId;
               const oppActId = el.querySelector('#opp-actor')?.value  ?? 'other';
+
+              // The opponent's numbers are STARTING POINTS shown in their corner, not
+              // choices made here. Their first pool source (highest attribute/skill) seeds
+              // the dice so the card is playable if they just hit Submit; they can change
+              // source, dice, TN and damage before they do.
+              const oppData = oppActId === 'other'
+                ? null
+                : SR3EActor.contestedSources(game.actors.get(oppActId));
+
               result = {
                 atkActorId:     atkActId,
                 atkActorName:   game.actors.get(atkActId)?.name ?? 'Actor',
@@ -6472,10 +6509,10 @@ _prepareCharacter(sys, attr) {
                 atkDamage: el.querySelector('#atk-damage')?.value.trim() || '4L',
                 oppActorId:     oppActId === 'other' ? null : oppActId,
                 oppActorName:   oppActId === 'other' ? 'Other' : (game.actors.get(oppActId)?.name ?? 'Other'),
-                oppSourceLabel: oppSrc?.options[oppSrc.selectedIndex]?.text ?? '',
-                oppPool:   Math.max(1, parseInt(el.querySelector('#opp-pool')?.value)   || 4),
-                oppTN:     Math.max(2, parseInt(el.querySelector('#opp-tn')?.value)     || 4),
-                oppDamage: el.querySelector('#opp-damage')?.value.trim() || '4L',
+                oppSourceLabel: oppData?.[0]?.label ?? '',
+                oppPool:   Math.max(1, oppData?.[0]?.value || 4),
+                oppTN:     4,
+                oppDamage: '4L',
                 physicalDice: shiftKey,
               };
               resolve();
@@ -6494,17 +6531,29 @@ _prepareCharacter(sys, attr) {
     const payload = JSON.stringify(ctx).replace(/'/g, '&#39;');
 
     const INP = 'background:#1c2030;border:1px solid #3a9fd6;color:#dde1f0;border-radius:3px;padding:2px 5px;width:100%;box-sizing:border-box;';
-    const _corner = (name, sourceLabel, pool, tn, damage, poolClass, tnClass, dmgClass, color, role, owner) => `
+
+    // Each corner carries its OWN pool-source dropdown, so a participant picks the
+    // attribute or skill they are contesting with rather than inheriting whatever the
+    // person who opened the setup dialog chose for them. The per-corner owner gate in
+    // sr3e.js disables it (like every other field) for anyone but that participant, so
+    // both sides stay VISIBLE to each other and only one side is editable.
+    const _corner = (name, actorId, sourceLabel, pool, tn, damage, srcClass, poolClass, tnClass, dmgClass, color, role, owner) => {
+      const actor = actorId ? game.actors.get(actorId) : null;
+      const opts  = actor ? SR3EActor.contestedSourceOptions(actor, pool) : '';
+      return `
       <div class="sr-melee-corner"
            data-corner-role="${role}" data-corner-owner="${owner ?? ''}" data-corner-label="${name}">
         <div class="sr-melee-name" style="color:${color}">${name}</div>
-        ${sourceLabel ? `<div style="font-size:11px;color:#7880a0;margin-top:2px">${sourceLabel}</div>` : ''}
         <div class="sr-contested-fields" style="display:grid;grid-template-columns:52px 1fr;gap:4px 8px;align-items:center;margin-top:8px;font-size:11px;color:#7880a0;">
+          ${opts
+            ? `<span>Source</span> <select class="${srcClass}" style="${INP}">${opts}</select>`
+            : (sourceLabel ? `<span>Source</span> <span style="color:#7880a0">${sourceLabel}</span>` : '')}
           <span>Pool</span>   <input type="number" class="${poolClass}" value="${pool}" min="1" max="30" style="${INP}"/>
           <span>TN</span>     <input type="number" class="${tnClass}"   value="${tn}"   min="2" max="30" style="${INP}"/>
           <span>Damage</span> <input type="text"   class="${dmgClass}"  value="${damage}"                style="${INP}"/>
         </div>
       </div>`;
+    };
 
     await ChatMessage.create({
       speaker: { alias: 'Contested Roll' },
@@ -6512,12 +6561,12 @@ _prepareCharacter(sys, attr) {
         <div class="sr-roll-card sr-melee-card" data-twocorner="contested">
           <div class="sr-roll-header">⚔ CONTESTED — ${ctx.atkActorName} vs ${ctx.oppActorName}</div>
           <div class="sr-melee-boxing">
-            ${_corner(ctx.atkActorName, ctx.atkSourceLabel, ctx.atkPool, ctx.atkTN, ctx.atkDamage,
-                      'sr-contested-atk-pool', 'sr-contested-atk-tn', 'sr-contested-atk-damage',
+            ${_corner(ctx.atkActorName, ctx.atkActorId, ctx.atkSourceLabel, ctx.atkPool, ctx.atkTN, ctx.atkDamage,
+                      'sr-contested-atk-source', 'sr-contested-atk-pool', 'sr-contested-atk-tn', 'sr-contested-atk-damage',
                       'var(--sr-accent)', 'attacker', ctx.atkActorId)}
             <div class="sr-melee-vs">VS</div>
-            ${_corner(ctx.oppActorName, ctx.oppSourceLabel, ctx.oppPool, ctx.oppTN, ctx.oppDamage,
-                      'sr-contested-opp-pool', 'sr-contested-opp-tn', 'sr-contested-opp-damage',
+            ${_corner(ctx.oppActorName, ctx.oppActorId, ctx.oppSourceLabel, ctx.oppPool, ctx.oppTN, ctx.oppDamage,
+                      'sr-contested-opp-source', 'sr-contested-opp-pool', 'sr-contested-opp-tn', 'sr-contested-opp-damage',
                       'var(--sr-red)', 'opponent', ctx.oppActorId)}
           </div>
           ${SR3EActor.cornerActions(payload, [
@@ -6711,8 +6760,8 @@ _prepareCharacter(sys, attr) {
 
     const atkOnes   = atkDice.filter(d => d.isOne).length;
     const oppOnes   = oppDice.filter(d => d.isOne).length;
-    const atkGlitch = atkOnes > Math.floor(atkPool / 2);
-    const oppGlitch = oppOnes > Math.floor(oppPool / 2);
+    const atkGlitch = SR3EActor.isRuleOfOne(atkOnes, atkPool);
+    const oppGlitch = SR3EActor.isRuleOfOne(oppOnes, oppPool);
 
     await atkActor._postWaveCard({
       actorId: ctx.atkActorId, label: `⚔ ${ctx.atkActorName}`,

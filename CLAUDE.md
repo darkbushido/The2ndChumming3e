@@ -1302,6 +1302,43 @@ button so the HUD never sprawls. (`runDrivingTest` warns if the vehicle has no l
 
 ---
 
+## Two-corner cards — each side edits only its own half
+
+Eight opposed-test cards (melee · astral · contested · cybercombat · MIJI · and the three
+Orthodox Matrix ones) share **one** generic handler in `sr3e.js`, found by
+`[data-twocorner="<kind>"]` and dispatched through the `_RESOLVERS` name→function table.
+Each corner declares `data-corner-role` / `-owner` / `-label`; `SR3EActor.cornerActions()`
+renders the per-corner `.sr-corner-submit-btn` and one `.sr-corner-resolve-btn`.
+
+- **Both corners stay visible on every client; only your own is editable.** The lock sets
+  `readOnly` on inputs and `disabled` on `<select>`s — two different branches, because
+  `readOnly` does nothing to a dropdown. Collapsing them would leave every dropdown on
+  every card editable by everyone and **no existing assertion would fail**.
+- **Resolution is claimed by the submission that completes the set.** `sr3e.card.mark` is
+  append-only and GM-serialised, so exactly one client can observe the ledger becoming
+  full — that, not a lock, is what stops two near-simultaneous clicks double-rolling.
+- **`.sr-corner-resolve-btn` ("⚔ Resolve now (GM)") is the AFK escape.** GM-only. It
+  submits nothing; whoever has not answered falls through to the card's own defaults.
+  Without it a card that moved a choice onto a player's client can stall for ever.
+- ⚠ **Unsubmitted edits live in `_cornerDrafts`, and they have to.** The other side
+  submitting writes the `acted` flag, which updates the message, which makes Foundry
+  **rebuild the card from its payload** — throwing away numbers you dialled in while
+  waiting. The map is keyed `messageId|role`, restored only into your **own** unacted
+  corner, and dropped once that role submits. Do not remove it as redundant state: the
+  bug it fixes is silent, and you submit dice you never chose.
+
+### The setup dialog configures ONE side
+
+`SR3EActor.openContestedDialog` sets the initiator's pool source, dice, TN and damage —
+and, for the opponent, **only who they are**. Naming an opponent is the same act as
+picking a target; choosing their dice is not. Their pool source is a dropdown in **their
+own corner** (`SR3EActor.contestedSourceOptions`, built from *their* attributes and
+skills), and the owner gate makes it read-only to everyone else.
+
+⚠ This dialog used to set `#opp-source` / `#opp-pool` / `#opp-tn` / `#opp-damage` too, so
+whoever clicked ⚔ Contested Roll on their own sheet decided how their opponent played.
+`tests/e2e/contested.spec.mjs` asserts those four ids are **absent** from the dialog.
+
 ## What is NOT yet implemented
 - Full Defense (melee/ranged defensive posture — deferred)
 - Vehicle sheets

@@ -1961,6 +1961,16 @@ Hooks.on('updateActor', async (actor, changes, options) => {
 // Key = messageId|class|index. In-memory only; clears on page reload.
 const _usedButtons = new Set();
 
+// ── Unsubmitted corner edits, held across re-renders ─────────────────────────
+// A two-corner card is rebuilt from its payload every time the message updates — and the
+// other side submitting IS a message update (it writes the `acted` flag). Without this,
+// dialling in your dice and then waiting for your opponent silently threw your numbers
+// away and re-rendered the card's defaults, so you submitted values you never chose.
+//
+// Key = messageId|role. In-memory only, and cleared once that role has submitted: after
+// that the ledger is the record and the DOM no longer matters.
+const _cornerDrafts = new Map();
+
 // Action Tracker state — per active combatant, this turn only. Keyed by combatant id,
 // value { firstSimpleUsed }. Cleared whenever the combat turn/round changes (below).
 const _actionTracker = new Map();
@@ -2378,6 +2388,45 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       key:   c.dataset.cornerRole,
       label: c.dataset.cornerLabel || c.dataset.cornerRole,
     }));
+
+    // Restore anything typed into MY corner but not yet submitted, then keep recording it.
+    // Only my own corner: every other corner is locked below, so it has no edits of mine
+    // to lose, and reapplying a draft there would overwrite what the card actually says.
+    for (const c of corners) {
+      const role = c.dataset.cornerRole;
+      const key  = `${mid}|${role}`;
+      if (acted[role]) { _cornerDrafts.delete(key); continue; }
+      if (!_isDeciderId(c.dataset.cornerOwner)) continue;
+
+      const fields = [...c.querySelectorAll('input, select, textarea')]
+        .map(el => [el, [...el.classList].find(cl => cl.startsWith('sr-'))])
+        .filter(([, cl]) => cl);
+
+      const draft = _cornerDrafts.get(key);
+      if (draft) for (const [el, cl] of fields) {
+        if (!(cl in draft)) continue;
+        if (el.type === 'checkbox') el.checked = draft[cl]; else el.value = draft[cl];
+      }
+
+      const save = () => _cornerDrafts.set(key, Object.fromEntries(
+        fields.map(([el, cl]) => [cl, el.type === 'checkbox' ? el.checked : el.value])));
+      for (const [el] of fields) {
+        el.addEventListener('input',  save);
+        el.addEventListener('change', save);
+      }
+    }
+
+    // A corner's pool-source dropdown drives that corner's own dice field. After the draft
+    // restore above, so a restored source does not clobber a hand-edited pool value.
+    for (const c of corners) {
+      const src  = c.querySelector('select[class*="-source"]');
+      const pool = c.querySelector('input[class*="-pool"]');
+      if (!src || !pool) continue;
+      src.addEventListener('change', () => {
+        pool.value = parseInt(src.value) || 1;
+        pool.dispatchEvent(new Event('input', { bubbles: true }));   // record it as a draft
+      });
+    }
 
     // Lock every corner that is not yours — and your own once submitted. Read-only rather
     // than hidden: the shared view of the matchup is why these stayed single cards.
