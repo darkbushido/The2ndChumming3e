@@ -3351,3 +3351,14 @@ label.act-field input[type=number] {
 
 .ward-notes-section { flex: 1; display: flex; flex-direction: column; gap: 4px; }
 .ward-notes-label { font-size: 0.8rem; color: var(--sr-muted); font-weight: 600; }
+
+/* ── Equip-melee control (TODO 46) ────────────────────────────
+   No border and no background: this lives in an icon strip, and both a text button
+   and a bordered pill read as a stray control dropped into a row of glyphs.
+   COLOUR is the whole signal — accent when equipped, accent on hover.
+
+   That alone is a weak affordance, which is fine: the discoverability problem
+   TODO 46 exists for is carried by the "Defends with: …" line on the Melee
+   section, which states the consequence in words and needs no hover to be read. */
+.item-controls .sr-equip-melee:hover      { color: var(--sr-accent); }
+.item-controls .sr-equip-melee.is-equipped { color: var(--sr-accent); }

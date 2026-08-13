@@ -2617,12 +2617,22 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     // btn-xs style already used by Focus?/Active? in this same row makes it read as
     // something you press, and the equipped state is stated in words rather than in a
     // colour shift that means nothing until you have seen both states side by side.
-    const equipIcon = isEquipped
-      ? `<button type="button" class="btn-xs" data-action="equipMelee" data-item-id="${itemId}"
-                 title="Currently equipped — click to unequip"
-                 style="background:var(--sr-accent);color:#fff">✦ Equipped</button>`
-      : `<button type="button" class="btn-xs" data-action="equipMelee" data-item-id="${itemId}"
-                 title="Equip as active melee weapon — this is the weapon that defends you">Equip</button>`;
+    // Back to the fist ICON, not a text button (TODO 46, revised after play).
+    //
+    // `.item-controls` is a 108px flex strip styled for icons — dropping a padded,
+    // bordered btn-xs into it crowds the row and breaks the alignment. (Focus?/Active?
+    // are btn-xs and predate this; matching them was the wrong model to copy.)
+    //
+    // The original problem still has to be solved though: unequipped, the fist was one
+    // more grey glyph among five and nothing marked the control that decides how the
+    // character fights. So the icon now carries its own affordance — a bordered pill,
+    // accent-filled when equipped — which reads as a control at icon size instead of
+    // relying on a colour shift you can only interpret having seen both states.
+    const equipIcon = `<i class="fas fa-hand-rock sr-equip-melee${isEquipped ? ' is-equipped' : ''}"
+         data-action="equipMelee" data-item-id="${itemId}"
+         title="${isEquipped
+           ? 'Equipped — this weapon defends you. Click to unequip.'
+           : 'Equip as active melee weapon — this is the weapon that defends you.'}"></i>`;
     const focusBtns = isAwakened ? `
       <button type="button" class="btn-xs" data-action="toggleFocus" data-item-id="${itemId}"
               title="Is this a Weapon Focus?"
