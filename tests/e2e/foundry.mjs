@@ -378,14 +378,60 @@ export async function createTestActor(gmPage, {
   return res;
 }
 
-/** Delete actors by id. Safe to call with ids that no longer exist. */
+/**
+ * Delete actors by id, AND their tokens on every scene. Safe with ids that no longer exist.
+ *
+ * ⚠ Deleting the actor does NOT remove its tokens. `getTokenDocument()` yields an UNLINKED
+ * token, which carries its own copy of the actor data and therefore survives its source
+ * being deleted. A teardown that only deletes actors leaves the map littered with tokens
+ * for characters the world says do not exist — reported from the table after three runs had
+ * quietly accumulated six of them.
+ *
+ * Tokens are removed FIRST: once the actor is gone the token is orphaned and harder to
+ * match, since `token.actor` no longer resolves.
+ */
 export async function deleteActors(gmPage, ids) {
-  if (!ids?.length) return { deleted: 0 };
+  if (!ids?.length) return { actors: 0, tokens: 0 };
   return gmPage.evaluate(async list => {
+    let tokens = 0;
+    for (const scene of game.scenes) {
+      const doomed = scene.tokens.filter(t => list.includes(t.actorId)).map(t => t.id);
+      if (doomed.length) {
+        await scene.deleteEmbeddedDocuments('Token', doomed);
+        tokens += doomed.length;
+      }
+    }
     const present = list.filter(id => game.actors.get(id));
     if (present.length) await Actor.deleteDocuments(present);
-    return { deleted: present.length };
+    return { actors: present.length, tokens };
   }, ids);
+}
+
+/**
+ * Sweep every leftover test actor and token by name prefix.
+ *
+ * The per-test teardown handles the happy path, but a run killed mid-test never reaches it,
+ * and orphaned tokens are invisible in the actor directory — they only show up on the map,
+ * which is exactly where a GM notices them and nobody else does. Run this as arrange so a
+ * previous crash cannot leave debris in someone's game.
+ */
+export async function sweepTestActors(gmPage, prefix = '__TEST') {
+  const res = await gmPage.evaluate(async p => {
+    if (!game.user.isGM) return { error: `${game.user.name} is not a GM — cannot sweep.` };
+    let tokens = 0;
+    for (const scene of game.scenes) {
+      const doomed = scene.tokens.filter(t => (t.name ?? '').startsWith(p)).map(t => t.id);
+      if (doomed.length) {
+        await scene.deleteEmbeddedDocuments('Token', doomed);
+        tokens += doomed.length;
+      }
+    }
+    const actors = game.actors.filter(a => (a.name ?? '').startsWith(p)).map(a => a.id);
+    if (actors.length) await Actor.deleteDocuments(actors);
+    return { actors: actors.length, tokens };
+  }, prefix);
+  if (res.error) throw new Error(`sweepTestActors: ${res.error}`);
+  return res;
 }
 
 /**

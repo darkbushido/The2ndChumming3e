@@ -20,7 +20,7 @@
  */
 import { test, expect } from './fixtures.mjs';
 import {
-  fireAndForget, selectTarget, createTestActor, deleteActors,
+  fireAndForget, selectTarget, createTestActor, deleteActors, sweepTestActors,
   setCardField, clickCardButton, newestCardId, CHAT_LOG,
   actedLedger, actorState, clearChatAll,
 } from './foundry.mjs';
@@ -48,6 +48,10 @@ test.describe('astral combat two-corner card', () => {
 
   test.beforeEach(async ({ janitor }) => {
     await clearChatAll(janitor.page);
+    // Sweep first: a run killed mid-test never reaches its teardown, and an orphaned token
+    // is invisible in the actor directory — it shows up only on the map, where a GM finds
+    // it and nobody else does.
+    await sweepTestActors(janitor.page);
     // Tokens are required, not cosmetic: _promptTarget prefers actors with a token on the
     // active scene, and only falls back to the whole world list when none are placed. The
     // world's own characters have tokens, so that fallback never fires and a token-less
@@ -71,6 +75,7 @@ test.describe('astral combat two-corner card', () => {
     // directory into a graveyard.
     await deleteActors(janitor.page, created);
     created = [];
+    await sweepTestActors(janitor.page);   // catches anything an earlier failure stranded
     await clearChatAll(janitor.page);
   });
 
