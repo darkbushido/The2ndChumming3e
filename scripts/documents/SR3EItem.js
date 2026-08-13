@@ -195,12 +195,29 @@ export class SR3EItem extends Item {
 
     // SR3 Default Table — either side may lack the skill. Prompt each defaulter
     // (attacker first, then defender) and patch their pool info / TN modifier.
-    const _applyMeleeDefault = async (info, dActor, who) => {
+    const _applyMeleeDefault = async (info, dActor, who, weapon) => {
       if (!info.isDefault) return true;
+      // Name the WEAPON and the skill it actually needs (TODO 45).
+      //
+      // This message used to be the fixed string "has no Unarmed Combat / Martial Arts
+      // skill" no matter what was being wielded. It masked TODO 46 for two days: a player
+      // holding a pole arm saw an unarmed-skill complaint and reasonably concluded the
+      // skill lookup was broken, when the real fault was that nothing was equipped and
+      // `_getEquippedMelee` had fallen through to Bare Hands. Naming the weapon makes that
+      // visible in the prompt itself — "Bare Hands needs…" is instantly recognisable as
+      // wrong to someone who thinks they are holding a pole arm.
+      //
+      // `requiredSkill` / `unarmedContext` come from _buildMeleePoolInfo, which is what
+      // actually performed the lookup — so the wording cannot drift from the rule. Read
+      // before the lines below overwrite `skillName` with the chosen default's label.
+      const needed   = info.requiredSkill ?? info.skillName;
+      const unarmed  = info.unarmedContext === true;
       const def = await SR3EItem.promptDefaultChoice(dActor, {
         linkedAttr: 'strength',
         title:      `Defaulting — ${dActor.name} (${who})`,
-        message:    `${dActor.name} has no Unarmed Combat / Martial Arts skill — choose how to default:`,
+        message:    `${weapon?.name ?? 'This weapon'} needs `
+                  + `${unarmed ? 'Unarmed Combat / Martial Arts' : needed}, `
+                  + `which ${dActor.name} does not have — choose how to default:`,
       });
       if (!def) return false;   // cancelled → abort the whole attack
       info.skillDice    = def.pool;
@@ -209,8 +226,8 @@ export class SR3EItem extends Item {
       info.availPool    = Math.min(dActor.system.derived?.availableCombatPool ?? 0, def.poolCap);
       return true;
     };
-    if (!await _applyMeleeDefault(atkInfo, actor, 'attacker'))       return null;
-    if (!await _applyMeleeDefault(defInfo, targetActor, 'defender')) return null;
+    if (!await _applyMeleeDefault(atkInfo, actor, 'attacker', atkWeapon))       return null;
+    if (!await _applyMeleeDefault(defInfo, targetActor, 'defender', defWeapon)) return null;
 
     // Called shot (SR3 p.114) — attacker only; +4 TN to stage damage up one level or aim
     // at a sub-component. Take-aim folds in as −1 TN each. Cancelling aborts the attack.
@@ -356,7 +373,12 @@ export class SR3EItem extends Item {
     const availPool  = isDefault ? 0 : (actor.system.derived?.availableCombatPool ?? 0);
     // Display the actual martial-art skill name when one was used instead of "Unarmed Combat".
     const displayName = (skill && skill.name !== skillName && /^MA:/i.test(skill.name)) ? skill.name : skillName;
-    return { skillName: displayName, skillRating: basePool, specName, specBonus, bonusDice, skillDice, availPool, isDefault };
+    // Returned so the defaulting prompt can describe the requirement the way the lookup
+    // ACTUALLY behaved. Re-deriving it at the message would let the two drift: `CYB` maps
+    // to Cyber Implant Combat but still accepts any MA: skill, so a message keyed on the
+    // skill name alone would omit the martial arts that would have satisfied it.
+    return { skillName: displayName, requiredSkill: skillName, unarmedContext: isUnarmedContext,
+             skillRating: basePool, specName, specBonus, bonusDice, skillDice, availPool, isDefault };
   }
 
   /**

@@ -23,12 +23,12 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 24 |
-| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 42 · 43 · 45 |
+| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 42 · 43 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 · 41 · 47 · 48 · 49 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 21 · 22 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 44 · 46 · 50 |
+| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 21 · 22 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -978,13 +978,35 @@ produced [#45](#45)'s wrong first diagnosis. But do not assume a rendering bug e
 type.* A pole arm saved as `gear` is silently not a weapon — it appears on a tab, looks owned, and
 never reaches any combat path.
 
-## 45. Defender is asked to default despite having the skill AND the weapon — **ROOT CAUSE FOUND**
+## 45. ✅ Defender is asked to default despite having the skill AND the weapon — **FIXED 2026-08-12**
 
-**Found in play 2026-08-10.** ⚠ **The weapon turned out not to be equipped** — see [#46](#46). With
-nothing equipped the lookup falls through to bare hands, which genuinely has no Unarmed Combat, so
-**the defaulting prompt was correct**. The fault is upstream.
+The prompt itself was **correct** — the weapon was not equipped ([#46](#46), now fixed), so the
+lookup had fallen through to Bare Hands, which genuinely has no Unarmed Combat. Both remaining
+items are resolved:
 
-What remains in scope here, once #46 is resolved:
+**The hardcoded message — fixed.** `_applyMeleeDefault` said *"has no Unarmed Combat / Martial Arts
+skill"* whatever was being wielded. It now names **the weapon and the skill that weapon actually
+needs**:
+
+> *Bare Hands needs Unarmed Combat / Martial Arts, which Dave does not have — choose how to default:*
+
+⚠ **This is the message that would have diagnosed #46 on sight.** A player holding a pole arm reads
+"Bare Hands needs…" and instantly knows the weapon is not equipped; the old wording instead implied
+the *skill lookup* was broken, and sent two days of investigation in the wrong direction.
+
+**The wording cannot drift from the rule.** `_buildMeleePoolInfo` — the function that actually
+performs the lookup — now returns `requiredSkill` and `unarmedContext`, and the message reads those
+rather than re-deriving them. This matters for `CYB`: it maps to *Cyber Implant Combat* but the
+lookup **also accepts any `MA:` skill**, so a message keyed on the skill name alone would omit the
+martial arts that would have satisfied it. Verified: a character with only *MA: Karate* wielding
+spurs gets **no prompt at all**, and when the prompt does fire for spurs it names Martial Arts as
+accepted.
+
+**Ordering — was never wrong.** The adjacency check runs at `rollMeleeAttack`'s line 182, *before*
+the defaulting at 198. It warns rather than blocking, which [#44](#44) settled as intended, so a
+prompt appearing on an out-of-range attack is the documented behaviour and not a sequencing fault.
+
+### The original report
 
 - **The hardcoded message.** `_applyMeleeDefault` passes a fixed *"has no Unarmed Combat / Martial
   Arts skill"* string regardless of the weapon's actual skill. It happened to be accurate this time,
