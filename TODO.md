@@ -23,12 +23,12 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 24 |
-| 🔴 Confirmed bugs, still open | 5 · 14 · 42 · 43 |
+| 🔴 Confirmed bugs, still open | 5 · 14 · 43 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 · 41 · 47 · 48 · 49 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 21 · 22 · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 44 · 45 · 46 · 50 |
+| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 21 · 22 · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -1149,7 +1149,40 @@ silently roll dice the actor does not have.
 `sr-matrix-resist-pool` and `sr-matrix-decker-resist-pool` share this shape and were written the same
 way. `sr-drain-spell-pool` likewise for Spell Pool.
 
-## 42. Chat cards carry no shared state — the GM cannot see who has acted — **CONFIRMED**
+## 42. ✅ Chat cards carry no shared state — **PRIMITIVE BUILT 2026-08-12**
+
+`sr3e.card.mark` (SR3EQuery) writes an `acted` flag on the **message**, GM-side. Flags are
+document data, so Foundry syncs them and re-renders the card on every client — which is the
+whole point: the GM no longer has to infer "has anyone answered?" from whether a downstream
+card appeared.
+
+**Client side** (`sr3e.js`): `_markActed(messageId, role, label)` routes the write,
+`_actedOn(message)` reads the ledger, and `_renderActedStrip(message, html, roles)` draws a
+`✓ Snot · waiting for target` strip **and disables any button whose role is already claimed on
+every client** — without that second half the strip would say one thing while the buttons
+allowed another.
+
+**Wired to** the dodge-declare and soak-roll cards, the two places a human is actually being
+waited on. The dodge mark is written **before** the dialog opens, because the interval that
+needed exposing is exactly the one where somebody is deciding how much pool to burn.
+
+⚠ **`_usedButtons` is NOT replaced and must not be.** It stops one browser double-firing when
+the pop-up and the chat log render the same card, which synced state cannot do — the two
+renders share a client. The mechanisms are complementary; deleting either reintroduces a
+distinct bug.
+
+⚠ **The ledger is append-only.** A second claim on a role returns the first untouched. This is
+load-bearing for [#24](#24)'s "last one to submit triggers the roll": that flow is only
+well-defined if who-was-first is immutable. Pinned in `tests/card-acted.test.mjs`, along with
+role independence (marking the defender must not disturb the attacker), the non-GM refusal, and
+errors for unknown message / missing role.
+
+**Not done — deliberately.** Not retrofitted onto the other ~30 button classes: each mark costs
+a document write, and most cards have nobody to wait for. [#24](#24) is the consumer that will
+extend the role list to two corners; [#48](#48) should reuse this same
+state-on-a-synced-document approach rather than inventing a second one.
+
+### The original report
 
 **Found in play 2026-08-10:** *"cards in the chat log don't look like anyone has done it to the GM."*
 

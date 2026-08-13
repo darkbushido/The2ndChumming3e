@@ -31,7 +31,15 @@ export function installGlobals() {
     // ids (exchangeId, rid) exist precisely to tell concurrent exchanges apart, so a stub
     // that hands out the same id every time makes two distinct exchanges look like one
     // and quietly passes tests that should fail.
-    utils: { randomID: () => `stub-${++_randomIdSeq}` },
+    utils: {
+      randomID: () => `stub-${++_randomIdSeq}`,
+      // A REAL deep clone, not a pass-through. Code under test clones before mutating
+      // specifically so the original is left alone; a stub that returned its argument
+      // would make aliasing bugs invisible here and only show up in play.
+      deepClone: v => (v === null || typeof v !== 'object')
+        ? v
+        : JSON.parse(JSON.stringify(v)),
+    },
   };
 }
 

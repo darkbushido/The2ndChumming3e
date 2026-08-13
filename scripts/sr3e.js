@@ -1979,6 +1979,78 @@ function _claimBtn(btn, mid, cls, idx) {
   return true;
 }
 
+/* ── Shared "who has acted" state (TODO 42) ──────────────────────────────────
+ *
+ * `_usedButtons` above is per client and always will be — it exists to stop ONE
+ * browser double-firing when the pop-up notification and the chat log render the
+ * same card at once, which no amount of synced state can do.
+ *
+ * What it cannot do is tell the table. These helpers put the fact of having acted
+ * into a MESSAGE FLAG, which is document data: Foundry syncs it and re-renders the
+ * card everywhere, so the GM stops having to infer progress from downstream cards.
+ *
+ * The two mechanisms are complementary and both are needed. Deleting either
+ * reintroduces a distinct bug.
+ */
+
+/** Record that `role` has acted on this card. Routed to the GM; safe to await. */
+async function _markActed(messageId, role, label) {
+  try {
+    return await game.sr3e.SR3EQuery.asGM('sr3e.card.mark', { messageId, role, label });
+  } catch (err) {
+    // Never let bookkeeping break the action the user actually asked for.
+    console.warn('SR3E | could not record card progress:', err);
+    return null;
+  }
+}
+
+/** Read the acted-ledger off a message. `{}` when nothing has happened yet. */
+function _actedOn(message) {
+  return message?.getFlag?.('The2ndChumming3e', 'acted') ?? {};
+}
+
+/**
+ * Render (or refresh) the progress strip on a card, and grey any button whose role
+ * is already claimed — on EVERY client, not just the one that clicked.
+ *
+ * `roles` is the full cast the card is waiting on, in reading order:
+ *   [{ key, label, btnClass }]
+ * A role with no `btnClass` is display-only (it has no button to disable).
+ */
+function _renderActedStrip(message, html, roles) {
+  if (!roles?.length) return;
+  const acted = _actedOn(message);
+
+  // Disable claimed buttons everywhere. This is what makes the strip trustworthy:
+  // without it a second client could still fire an action the ledger says is done.
+  for (const r of roles) {
+    if (!r.btnClass || !acted[r.key]) continue;
+    html.querySelectorAll(`.${r.btnClass}`).forEach(b => {
+      b.disabled = true;
+      b.title    = `${acted[r.key].label} has already acted.`;
+    });
+  }
+
+  const done    = roles.filter(r => acted[r.key]);
+  const waiting = roles.filter(r => !acted[r.key]);
+  if (!done.length) return;   // nothing to report yet — keep the card quiet
+
+  const strip = document.createElement('div');
+  strip.className = 'sr-acted-strip';
+  strip.style.cssText = 'margin:6px 0 2px;padding:4px 6px;border-radius:var(--r,3px);'
+    + 'background:color-mix(in srgb,var(--sr-green) 12%,transparent);'
+    + 'font-size:11px;line-height:1.4;color:var(--sr-muted)';
+  strip.innerHTML =
+    done.map(r => `<span style="color:var(--sr-green)">✓ ${acted[r.key].label}</span>`).join(' · ')
+    + (waiting.length
+      ? ` · <span style="color:var(--sr-amber)">waiting for ${waiting.map(r => r.label).join(', ')}</span>`
+      : ' · <span style="color:var(--sr-green)">all in</span>');
+
+  const card = html.querySelector('.sr-roll-card') ?? html;
+  const old  = card.querySelector('.sr-acted-strip');
+  if (old) old.replaceWith(strip); else card.appendChild(strip);
+}
+
 /**
  * May this client act for the payload's actor at all? A SET — any owner, or a GM.
  * Used for buttons that merely post a card onward.
@@ -2118,6 +2190,25 @@ Hooks.on('renderSettingsConfig', (_app, html) => {
 Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   const mid = message.id;
 
+  // Shared progress strip (TODO 42). Runs on EVERY client because the state lives in a
+  // message flag, so setting it re-renders this card everywhere — which is the whole
+  // point: the GM previously had to infer "has anyone answered yet?" from whether a
+  // downstream card had appeared.
+  //
+  // Declared per card type rather than globally: the roles differ, and a card nobody is
+  // being waited on has nothing to report. `_renderActedStrip` stays silent until at
+  // least one role has acted, so unremarkable cards are unchanged.
+  if (html.querySelector('.sr-dodge-declare-btn')) {
+    _renderActedStrip(message, html, [
+      { key: 'defender', label: 'defender', btnClass: 'sr-dodge-declare-btn' },
+    ]);
+  }
+  if (html.querySelector('.sr-soak-roll-btn')) {
+    _renderActedStrip(message, html, [
+      { key: 'soaker', label: 'target', btnClass: 'sr-soak-roll-btn' },
+    ]);
+  }
+
   // Clear-blast-marker button — removes the grenade's landing marker. Two kinds:
   //  • data-region-id → a Region document (visible to all); deleted via the document API
   //    (Region is NOT deprecated, so this is warning-free).
@@ -2207,7 +2298,13 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       if (!payload) return;
       btn.disabled    = true;
       btn.textContent = '⏳ Declaring…';
-      await SR3EActor.handleDodgeDeclare(JSON.parse(payload));
+      const _p = JSON.parse(payload);
+      // Tell the table BEFORE the dialog opens. Declaring a defence involves a human
+      // deciding how much pool to burn, which is exactly the interval the GM was
+      // previously unable to distinguish from nobody having noticed the card.
+      await _markActed(mid, 'defender',
+        game.actors.get(_payloadActorId(_p))?.name ?? 'Defender');
+      await SR3EActor.handleDodgeDeclare(_p);
     });
 
     // Come to the defender rather than waiting to be spotted. The attack is
@@ -2342,6 +2439,9 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.preventDefault();
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'soakroll', i)) return;
+      const _sp = _payload(btn);
+      await _markActed(mid, 'soaker',
+        game.actors.get(_payloadActorId(_sp ?? {}))?.name ?? 'Target');
       await SR3EActor.handleSoakRollClick(btn, event.shiftKey);
     });
   });

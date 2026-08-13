@@ -317,6 +317,40 @@ export class SR3EQuery {
       return { spent: await actor[fn](n) };
     });
 
+    /**
+     * Record that someone has acted on a chat card, so the WHOLE TABLE can see it (TODO 42).
+     *
+     * The one-shot guard in sr3e.js (`_usedButtons` + `btn.disabled`) is per client by
+     * construction: it exists to stop one browser double-firing when the pop-up and the chat
+     * log both render the same card. It communicates nothing. So a player could click Dodge
+     * and the GM's copy of the card would still show a live button, with no way to tell
+     * "thinking" from "already answered".
+     *
+     * Message FLAGS fix that because they are document data — Foundry syncs them and
+     * re-renders the message on every client. Only a GM may update a message they do not
+     * own, hence the routing.
+     *
+     * Writes are merged rather than replaced, and an already-marked role is returned
+     * untouched, so a double click cannot overwrite who acted first. That matters for
+     * [#24]'s "last one to submit triggers the roll" — the ledger has to be append-only or
+     * the winner of a race decides the order.
+     */
+    CONFIG.queries['sr3e.card.mark'] = async ({ rid, messageId, role, label }) =>
+      SR3EQuery.once(rid, async () => {
+        SR3EQuery.assertActiveGM();
+        const msg = game.messages.get(messageId);
+        if (!msg) throw new Error(`SR3E | card.mark: unknown message '${messageId}'`);
+        if (!role) throw new Error('SR3E | card.mark: a role is required');
+
+        const acted = foundry.utils.deepClone(
+          msg.getFlag('The2ndChumming3e', 'acted') ?? {});
+        if (acted[role]) return { acted, already: true };   // first claim stands
+
+        acted[role] = { label: label ?? role, at: Date.now() };
+        await msg.setFlag('The2ndChumming3e', 'acted', acted);
+        return { acted, already: false };
+      });
+
     /** Reset a pool to zero. Idempotent, but routed for consistency. */
     CONFIG.queries['sr3e.pool.refresh'] = async ({ rid, uuid, pool }) => SR3EQuery.once(rid, async () => {
       SR3EQuery.assertActiveGM();
