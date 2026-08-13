@@ -254,6 +254,9 @@ export async function actorState(page, name) {
     return {
       combatPoolSpent: a.system.combatPoolSpent ?? 0,
       availableCombatPool: a.system.derived?.availableCombatPool ?? null,
+      astralPoolSpent: a.system.astralPoolSpent ?? 0,
+      availableAstralPool: a.system.derived?.availableAstralPool ?? null,
+      spellPoolSpent: a.system.spellPoolSpent ?? 0,
       stun: a.system.wounds?.stun?.value ?? 0,
       physical: a.system.wounds?.physical?.value ?? 0,
     };
@@ -310,6 +313,79 @@ export async function arrangeActor(page, name, spec = {}) {
 
   if (result.error) throw new Error(`arrangeActor(${name}): ${result.error}`);
   return result;
+}
+
+/**
+ * Create a disposable actor owned by a named user, and return its id.
+ *
+ * ⚠ Prefer this to mutating the world's existing characters. A spec needing an Awakened
+ * actor could bolt Sorcery and a Magic attribute onto whoever happens to be there, but that
+ * silently rewrites someone's character and leaves the world different afterwards. Creating
+ * and deleting is additive and reversible; the maintainer's actors are left alone.
+ *
+ * Requires a GM session (role 3+) — creating actors and assigning ownership are both
+ * privileged. Pass the `janitor` fixture's page.
+ *
+ * ⚠ ALWAYS delete these in teardown (`deleteActors`). They are real documents in a real
+ * world, and a suite that leaks them turns the actor directory into a graveyard.
+ */
+export async function createTestActor(gmPage, {
+  name, ownerUserName, system = {}, items = [], withToken = true, x = 1000, y = 1000,
+}) {
+  const res = await gmPage.evaluate(async ({ n, owner, sys, its, tok, tx, ty }) => {
+    if (!game.user.isGM) return { error: `${game.user.name} is not a GM — cannot create actors.` };
+
+    const user = game.users.find(u => u.name === owner);
+    if (owner && !user) return { error: `No user named "${owner}".` };
+
+    const ownership = { default: 0 };
+    if (user) ownership[user.id] = 3;   // OWNER
+
+    const actor = await Actor.create({ name: n, type: 'character', ownership, system: sys });
+    if (!actor) return { error: `Actor.create returned nothing for "${n}".` };
+    if (its.length) await actor.createEmbeddedDocuments('Item', its);
+
+    // ⚠ A token is not decoration — without one the actor cannot be TARGETED.
+    //
+    // `SR3EItem._promptTarget` prefers actors with a token on the current scene and only
+    // falls back to the whole world list when the canvas has none ("theatre of the mind").
+    // Since the world's own characters have tokens, that fallback never fires, and a
+    // token-less test actor is silently absent from the target dialog — which reads as
+    // "my actor was not created" when in fact it was.
+    let tokenId = null;
+    if (tok && game.scenes?.active) {
+      const proto = await actor.getTokenDocument({ x: tx, y: ty });
+      const [placed] = await game.scenes.active.createEmbeddedDocuments('Token', [proto.toObject()]);
+      tokenId = placed?.id ?? null;
+    }
+
+    return {
+      id: actor.id,
+      name: actor.name,
+      tokenId,
+      hasToken: actor.getActiveTokens().length > 0,
+      magic: actor.system?.attributes?.magic?.value ?? 0,
+      astralPool: actor.system?.derived?.astralPool ?? null,
+      skills: actor.items.filter(i => i.type === 'skill').map(i => i.name),
+    };
+  }, { n: name, owner: ownerUserName, sys: system, its: items, tok: withToken, tx: x, ty: y });
+
+  if (res.error) throw new Error(`createTestActor(${name}): ${res.error}`);
+  if (withToken && !res.hasToken) {
+    throw new Error(`createTestActor(${name}): no token was placed, so this actor cannot be `
+      + 'targeted. Is a scene active?');
+  }
+  return res;
+}
+
+/** Delete actors by id. Safe to call with ids that no longer exist. */
+export async function deleteActors(gmPage, ids) {
+  if (!ids?.length) return { deleted: 0 };
+  return gmPage.evaluate(async list => {
+    const present = list.filter(id => game.actors.get(id));
+    if (present.length) await Actor.deleteDocuments(present);
+    return { deleted: present.length };
+  }, ids);
 }
 
 /**
