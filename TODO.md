@@ -23,12 +23,12 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | 24 |
-| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 42 · 43 · 45 · 46 |
+| 🔴 Confirmed bugs, still open | 5 · 14 · 25 · 42 · 43 · 45 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 · 41 · 47 · 48 · 49 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 21 · 22 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 44 · 50 |
+| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 21 · 22 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 44 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -885,7 +885,38 @@ attacking user *was* the GM, and both actors were GM-owned. Whether either of th
 unknown — the earlier report of a missing TN window (2026-08-10) was **melee**, player-vs-player,
 and is a different case.
 
-## 46. No usable way to equip a melee weapon — **REPORTED, blocks melee**
+## 46. ✅ No usable way to equip a melee weapon — **FIXED 2026-08-12**
+
+The reported symptom was never reproducible and the code trace below found no path that
+renders a melee row without the control. So the fix targets the two things that were
+genuinely wrong, rather than a rendering bug that does not exist:
+
+**1. The control did not read as a control.** Unequipped, it was one more grey glyph in a row
+of four to six (home, dice, fist, edit, trash, plus Focus?/Active? on an Awakened sheet), with
+nothing marking the single control that decides how the character fights. It is now a
+**labelled `btn-xs` button** — `Equip` / `✦ Equipped` — matching the Focus?/Active? buttons
+already in that same row. The equipped state is stated in words instead of a colour shift that
+means nothing until you have seen both states side by side.
+
+**2. The bare-hands fall-through was silent.** `_getEquippedMelee` goes equipped item → first
+CYB/UNA item → synthesised Bare Hands without a word, so a character carrying a pole arm who
+never pressed Equip defended bare-handed at reach 0 — and the only place that surfaced was
+mid-combat, as a defaulting prompt nobody expected. The Melee section now states **"Defends
+with: X (Reach N)"**, and turns **amber with a prompt to press Equip** when armed melee weapons
+are owned but none is equipped.
+
+⚠ The amber warning is deliberately keyed on *owning armed melee while equipping nothing*, not
+on defending bare-handed. A character with no melee weapons at all fighting bare-handed is
+simply correct and must not be nagged about it. Branch logic verified across all four cases:
+equipped, owned-but-unequipped (warns), nothing owned (quiet), and cyber-implant fallback
+(quiet — spurs are a real answer).
+
+**Not addressed, and still true:** nothing tells you when an item is the wrong *type*. A pole
+arm saved as `gear` never enters `melees`, so it shows no row at all and the new line simply
+reports Bare Hands without complaint. Detecting that would mean guessing which non-melee items
+"look like" weapons, which is speculative enough to want its own decision.
+
+### The original report and code trace
 
 **Found in play 2026-08-10.** Logged from the table; **not investigated** — record only.
 

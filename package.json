@@ -15,7 +15,8 @@
     "@league-of-foundry-developers/foundry-vtt-types": "^13.346.0-beta.20250812191140",
     "eslint": "^10.8.0",
     "globals": "^17.9.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.10"
   },
   "name": "the2ndchumming3e",
   "private": true

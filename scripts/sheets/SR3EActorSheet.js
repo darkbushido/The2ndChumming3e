@@ -1008,6 +1008,37 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     </div>`;
   }).join('') : '';
 
+  // WHAT ACTUALLY DEFENDS YOU — stated, not inferred (TODO 46).
+  //
+  // `SR3EItem._getEquippedMelee` falls through equipped item -> first CYB/UNA item ->
+  // synthesised Bare Hands, and that fall-through is silent. A character carrying a pole
+  // arm who never pressed Equip defends bare-handed at reach 0, and the only place that
+  // surfaced was mid-combat, as a defaulting prompt nobody expected. Saying it on the
+  // sheet is what makes it fixable BEFORE the fight.
+  //
+  // Amber specifically when armed melee weapons are owned but none is equipped, because
+  // that combination is almost always an oversight rather than a choice — a character
+  // with no melee weapons at all defending bare-handed is simply correct.
+  const _equippedMeleeItem = equippedMeleeId ? actor.items.get(equippedMeleeId) : null;
+  const _cyberFallback     = !_equippedMeleeItem
+    ? unarmedCyber.find(w => w.system.category === 'CYB' || w.system.category === 'UNA')
+    : null;
+  const _defendsWith = _equippedMeleeItem ?? _cyberFallback ?? null;
+  const _fallingBack = !_defendsWith && armedMelee.length > 0;
+
+  const defenceLine = `
+    <div style="margin:4px 6px 8px;font-size:11px;line-height:1.35;color:${
+      _fallingBack ? 'var(--sr-amber)' : 'var(--sr-muted)'}">
+      ${_fallingBack ? '⚠ ' : ''}Defends with:
+      <strong>${_defendsWith ? _defendsWith.name : 'Bare Hands'}</strong>
+      ${_defendsWith
+        ? `(Reach ${_defendsWith.system.reach ?? 0})`
+        : `(Reach 0, ${actor.system.attributes?.strength?.value ?? 1}M Stun)`}
+      ${_fallingBack
+        ? ` — nothing is equipped, so ${armedMelee.length === 1 ? 'your weapon is' : 'your weapons are'} not being used. Press <em>Equip</em>.`
+        : ''}
+    </div>`;
+
   // Built-in unarmed attack — always available, not a real item (uses STR / Unarmed Combat).
   const _unarmedStr = actor.system.attributes?.strength?.value ?? actor.system.attributes?.strength?.base ?? 1;
   const unarmedBuiltinRow = `
@@ -1112,6 +1143,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       <div class="weapon-section" data-section="melee-armed">
         <h3 class="section-hdr wep-section-hdr" draggable="true">${_dragHdr('Melee')} <span style="font-size:11px;font-weight:normal;color:var(--sr-muted)">(Edged / Clubs / Polearms / Whips)</span></h3>
         <div class="skill-note"><i class="fas fa-fist-raised"></i> Uses Armed Combat skills (Strength)</div>
+        ${defenceLine}
         <div class="list-header"><span>Name</span><span class="col-xs" title="Damage">Dam.</span><span>Reach</span><span class="col-xs" title="Concealability">Con.</span><span class="col-xs" title="Weight (kg)">KG</span><span></span></div>
         ${armedRows}
         ${uncatMeleeHtml}
@@ -2578,9 +2610,19 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const storeIcon = stored !== null ? `<i class="fas fa-home" data-action="toggleStored" data-item-id="${itemId}"
       style="color:${stored ? 'var(--sr-gold)' : 'var(--sr-dim)'}"
       title="${stored ? 'Remove from storage' : 'Put in storage'}"></i>` : '';
+    // A LABELLED BUTTON, not a bare icon (TODO 46). Reported from the table as "not
+    // showing" — and it always was, but unequipped it rendered as one more grey glyph in a
+    // row of four to six (home, dice, fist, edit, trash, plus Focus?/Active?), with nothing
+    // marking the single control that decides how the character fights. Matching the
+    // btn-xs style already used by Focus?/Active? in this same row makes it read as
+    // something you press, and the equipped state is stated in words rather than in a
+    // colour shift that means nothing until you have seen both states side by side.
     const equipIcon = isEquipped
-      ? `<i class="fas fa-hand-rock" style="color:var(--sr-accent)" data-action="equipMelee" data-item-id="${itemId}" title="Unequip"></i>`
-      : `<i class="fas fa-hand-rock" data-action="equipMelee" data-item-id="${itemId}" title="Equip as active melee"></i>`;
+      ? `<button type="button" class="btn-xs" data-action="equipMelee" data-item-id="${itemId}"
+                 title="Currently equipped — click to unequip"
+                 style="background:var(--sr-accent);color:#fff">✦ Equipped</button>`
+      : `<button type="button" class="btn-xs" data-action="equipMelee" data-item-id="${itemId}"
+                 title="Equip as active melee weapon — this is the weapon that defends you">Equip</button>`;
     const focusBtns = isAwakened ? `
       <button type="button" class="btn-xs" data-action="toggleFocus" data-item-id="${itemId}"
               title="Is this a Weapon Focus?"
