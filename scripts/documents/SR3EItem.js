@@ -501,6 +501,11 @@ export class SR3EItem extends Item {
     // The pool cap comes off the RELATED BASE skill, not the specialisation (p.85).
     const specTier = skills.flatMap(s => {
       const base = s.system.rating ?? 0;
+      // Martial arts cannot be specialised (Cannon Companion p.86). The picklist no longer
+      // offers maneuvers as specialisations, but characters built before that fix still
+      // carry one on the item — so skip them here too, or those characters keep being
+      // offered a Specialization tier at base+1 dice that the rules do not allow.
+      if (/^MA:/i.test(s.name ?? '')) return [];
       return (s.system.specialisations ?? []).map((sp, i) => {
         const dice = base + (sp.level ?? 1);
         return { value: `${s.id}:${i}`, dice, cap: half(base),

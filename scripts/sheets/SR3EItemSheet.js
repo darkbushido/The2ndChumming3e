@@ -423,6 +423,14 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         const skillEntry      = currentCat && s.skillName
           ? (SR3ESkills[currentCat] ?? []).find(sk => sk.name === s.skillName)
           : null;
+        // Martial arts carry `maneuvers` instead of `specializations` — Cannon Companion
+        // p.86 forbids specialising in them. Keyed on the DATA, not on the "MA:" name
+        // prefix, so a future style added without the prefix is still handled correctly.
+        //
+        // Emptying the list alone was not enough: with no fixed specs the field below falls
+        // through to a free-text input, which would still let one be typed in.
+        const maneuvers         = skillEntry?.maneuvers ?? [];
+        const noSpecialising    = maneuvers.length > 0;
         const specializations   = skillEntry?.specializations ?? [];
         const fixedSpecs        = specializations.filter(spec => !spec.endsWith('->'));
         const customLabels      = specializations.filter(spec => spec.endsWith('->')).map(spec => spec.slice(0, -2).trim());
@@ -521,7 +529,27 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
               </div>
             ` : ''}
 
-            ${s.skillName ? `
+            ${s.skillName && noSpecialising ? `
+              <div class="form-field">
+                <span class="field-label">Specialization</span>
+                <span style="color:var(--sr-muted);font-size:11px">
+                  Not permitted — a martial art is already a specialised style
+                  (Cannon Companion p.86).
+                </span>
+                ${maneuvers.length ? `
+                  <div style="margin-top:6px">
+                    <span class="field-label">Maneuvers granted</span>
+                    <div style="font-size:11px;color:var(--sr-muted);line-height:1.4">
+                      ${maneuvers.map(m => m.replace(/^MN:/, '')).join(' · ')}
+                    </div>
+                    <small style="color:var(--sr-dim)">
+                      Reference only — maneuvers are not implemented yet.
+                    </small>
+                  </div>` : ''}
+              </div>
+            ` : ''}
+
+            ${s.skillName && !noSpecialising ? `
               <div class="form-field">
                 <span class="field-label">Specialization (Optional, +2 dice)</span>
                 ${hasDropdown ? `
