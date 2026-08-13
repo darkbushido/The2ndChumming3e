@@ -2,21 +2,41 @@
 Unofficial Foundry VTT **v14** system for **Shadowrun 3rd Edition** and Matrix Defragged. 
 
 ## Installation
-Under 'Game Systems', click Install System and past the URL below into the Manifest URL field. This will install the setting and associated compendiums. 
-https://raw.githubusercontent.com/williamdiffey/The2ndChumming3e/main/system.json
-Create a new world, select **The 2nd Chumming** as your system. 
+Under 'Game Systems', click Install System and paste the URL below into the Manifest URL field. This will install the system and associated compendiums.
+
+```
+https://raw.githubusercontent.com/darkbushido/The2ndChumming3e/refs/heads/main/system.json
+```
+
+Create a new world, select **The 2nd Chumming** as your system.
+
+> Requires Foundry **v14** (`compatibility.minimum` and `verified` are both `14`).
 
 ## What to expect
 - This is not a fully automated Foundry system, it will prompt, poke and nudge you, it will track wounds and modifiers, it will deal with initiative, it will reduce your - book-keeping and it will make it much easier to do the horrible bits like car chases and tracking a character's carry load. It is designed to show you what it is doing at - each stage so if you are looking to learn or brush up, this may help but you will need to know the basics. 
 - Everything is editable at every stage, if you want to change the attribute, skill or TN used, you can.
-- It definitely won't help you build your character but you can import one that you have made at Null Sheen dot com if you look in the macros section.
+- It definitely won't help you build your character but you can import one that you have made at Null Sheen dot com — see the Nullsheen importer section below.
+- **Multiplayer-aware:** decisions are made by the player they belong to. Your dodge prompt opens on *your* screen, not the attacker's, and on a two-corner card each side edits only its own half.
 ---
 
-## Dice rolling — Rule of Six
+## For developers
+
+```bash
+npm test                 # 15 dependency-free suites, no Foundry required
+npm run lint             # ESLint
+npm run setup:hooks      # once per clone — enables the branch-manifest git hooks
+npm run manifest:branch  # stamp system.json's URLs to the current branch
+```
+
+⚠ **`node --check` is useless on this codebase.** Every file under `scripts/` is an ES module in a
+`.js` file, and for those Node exits 0 on genuine syntax errors, printing nothing. Use ESLint.
+---
+
+## Dice rolling — Rule of Six & Rule of One
 All rolls use SR3e success-counting (d6 ≥ TN = success).
 - **Exploding dice** require an extra click — getting 15 successes in one click is boring and kills one of the most exciting moments in SR. Click to roll it again and add to its running total.
-- **Glitch** triggers when more than half the first-wave dice show 1s.
-- **Critical Glitch** = glitch + zero successes.
+- **Rule of One** fires only when **every** die rolled comes up 1 (SR3 p.38: *"If ALL the dice rolled for a test come up 1s…"*). It is an automatic zero-success failure, and what follows is the GM's call — the book says *"the gamemaster determines whatever tone is appropriate."*
+- There is **no second "critical glitch" tier**, and no threshold at *half* the pool — that is SR4's glitch rule, and at 3 dice it fires about twenty times more often than SR3 intends.
 - Rolls prompt for TN and optional combat pool allocation before rolling.
 ---
 
@@ -60,7 +80,9 @@ Correct damage is reported.
 ---
 
 ## Deckers
-- Uses the Matrix Unfragged system.
+- **Two Matrix rulesets**, chosen in Configure Settings → System → **Matrix Ruleset** (changing it needs a full Foundry restart):
+  - **Matrix Defragged** (default) — the community supplement, described below.
+  - **Orthodox SR3** — the core rulebook's Chapter 8 decking rules, with its own host/IC sheets, MPCP-based deck stats and a Matrix Condition Monitor.
 - Track slot damage.
 - Attack using programs.
 - Drag/drop and eject programs with automatic updates to memory.
@@ -72,8 +94,11 @@ Correct damage is reported.
 
 ## Ranged combat
 - Attacks show appropriate damage code and TN, target rolls auto-completed resistance tests. 
-- Dodge prompts allow defender to allocate dodge dice at the appropriate time. 
-- If hit, the defender rolls auto-completed soak test.
+- **The defender declares their dodge *after* seeing the attack's successes** — that is RAW (p.112 step 4), and it is what makes dodge-vs-soak a real decision: pool spent dodging is gone from the Damage Resistance Test.
+- **The dodge prompt opens on the defender's own screen**, not the attacker's. Same for spell defence and defaulting choices.
+- A **tie goes to the attacker** — a clean miss needs dodge successes to *exceed* the attack's. Failed dodges are not wasted: their successes carry into the soak.
+- If hit, the defender rolls auto-completed soak test, with Body dice and Combat Pool as **separate** fields — pool dice are charged, Body dice are not.
+- **GM target-number window:** on a player's attack the GM gets the p.112 modifier checkboxes (cover, movement, visibility, smartlink…) grouped Target / Attacker / Conditions / Gear, summing live into an editable TN. Controlled by the **GM sets the Target Number** setting: *Player attacks only* (default), *Always*, or *Off*.
 - AoE weapons allow multiple targets to resist damage. 
 - Correct damage is reported.
 - **Blast templates:** firing an AoE weapon (grenade etc.) on a scene lets you drop a blast circle on the map — everyone inside becomes a target with their distance from the epicentre worked out automatically (add walls for confined-space "Chunky Salsa" rebounds). Off-map, pick targets from a list as before.
@@ -97,9 +122,11 @@ You don't have to open the character sheet to fire:
 ---
 
 ### Melee combat
-- Select your target and complete a contested roll. 
-- Loser completes auto-completed soak roll.
-- Correct damage is reported.
+- Select your target and complete a contested roll. Loser completes an auto-completed soak roll, and the correct damage is reported.
+- **Each side edits only its own corner.** The card shows both fighters, but your opponent's dice, TN and damage are read-only to you — and there is no shared "Roll!" button. Each side presses **Submit**, and whichever submission is last resolves the exchange. That makes it impossible for one player to roll for both.
+- The GM keeps a **Resolve now** override, since an absent player would otherwise stall the exchange indefinitely.
+- Reach is a target-number modifier, not a range gate: a defender with a shorter weapon still defends normally. Attacking from beyond melee range **warns rather than blocks**.
+- The same two-corner flow is used by astral combat, contested tests, both cybercombat rulesets, MIJI electronic warfare, and the Orthodox System Test and IC Attack cards.
 ---
 
 ## Vehicles
@@ -121,121 +148,90 @@ You don't have to open the character sheet to fire:
 ---
 
 ## Compendiums
-Compendiums for weapons, spells, cyberware, bioware, adept powers, melee, armour and matrix programs are bundled with the system.
+Compendiums for weapons, spells, cyberware, bioware, adept powers, melee, armour and matrix programs are bundled with the system — **82 packs, one per source book per item type**, named `sr3e-<book>-<type>` (e.g. `sr3e-mm-cyberware`, `sr3e-r3-vehicles`). Three packs are system content with no book of their own: `sr3e-skills`, `sr3e-example-characters`, `sr3e-mr-johnsons-contacts`.
+
+### Source books — turn off what you don't own
+**Configure Settings → System → Configure Source Books** lists every book the packs come from and lets the GM switch each one on or off. Hidden books disappear from the compendium sidebar *and* stop offering their gear in the item pickers, so a table playing core-only never sees Cannon Companion cyberware in a dropdown.
+
+- **On by default:** the SR2 line (`sr2`, `ct`, `ssc`, `st`, `fof`, `pna`) and the SR3 line (`sr3`, `cc`, `mm`, `mits`, `r3`, `sota`, `sota2`, `tal`, `twl`, `matrix-defragged`).
+- **Off by default:** `fra`, `ger`, `ssg`, and `tss` (a fan publication).
+- **Nothing is unloaded** — this is a presentation filter, so a character already holding gear from a hidden book keeps it.
+- **Fails visible:** a pack with no book flag, or a book code the setting has never seen, defaults to *shown*. Adding a pack can never silently hide it.
+
+⚠ Skills are hardcoded rather than packed, so no book toggle can hide them.
 ---
 
 ### Compendium picker
 When you click an **Add** button on an actor sheet (e.g. **+ Add Firearm**, **+ Add Spell**), the system automatically searches every Item compendium pack belonging to this system for entries of that item type. If any are found, a searchable picker dialog appears — type to filter, select an item, and click **Add** to import it directly onto the actor with all fields pre-filled. A **— Create blank —** option is always available at the bottom if you want to start from scratch.
 
-**Adding a new pack:** Declare it in `system.json` as a `"type": "Item"` pack and add a `flags` entry listing the item type(s) it contains. The picker reads this flag — no code changes needed, but a full Foundry restart is required after editing `system.json`.
+**Adding a new pack:** Declare it in `system.json` as a `"type": "Item"` pack, list the item type(s) it contains, and name the source book it came from. The picker and the source-book filter both read these flags — no code changes needed, but a full Foundry restart is required after editing `system.json`.
 
 ```json
 {
-  "name": "sr3e-armor",
-  "label": "Armor",
-  "path": "packs/sr3e-armor.db",
+  "name": "sr3e-cc-armor",
+  "label": "Armor (Cannon Companion)",
+  "path": "packs/sr3e-cc-armor",
   "type": "Item",
   "system": "The2ndChumming3e",
-  "flags": { "The2ndChumming3e": { "itemTypes": ["armor"] } }
+  "flags": { "The2ndChumming3e": { "itemTypes": ["armor"], "book": "cc" } }
 }
 ```
 
-**Pack naming convention:** `sr3e-{plural-category}` (e.g. `sr3e-armor`, `sr3e-ammunition`).
+**Pack naming convention:** `sr3e-<book>-<type>`. The book codes match the `BookPage` prefixes in the upstream character generator's gear data, so a future re-import lines up. A pack with **no** `book` flag is treated as system content and is always visible.
 
-### Existing Item packs
+⚠ `path` points at a **directory** (LevelDB), not a `.db` file — NeDB `.db` packs are a v12-and-earlier format.
 
-| Pack ID | Label | Item type(s) |
-|---|---|---|
-| `sr3e-adept-powers` | Adept Powers | `adeptpower` |
-| `sr3e-bioware` | Bioware | `bioware` |
-| `sr3e-cyberware` | Cyberware | `cyberware` |
-| `sr3e-firearms` | Firearms | `firearm` |
-| `sr3e-melee` | Melee Weapons | `melee` |
-| `sr3e-projectiles` | Projectile Weapons | `projectile`, `thrown` |
-| `sr3e-spells` | Spells | `spell` |
-| `sr3e-programs` | Matrix Programs | `program` |
-| `sr3e-vehicle-mods` | Vehicle Mods | vehicle item types |
-| `sr3e-vehicle-weapons` | Vehicle Weapons | vehicle item types |
-
-**Planned (not yet created):**  `sr3e-ammunition`, `sr3e-gear`. Until these packs exist, clicking **+ Add Armor** etc. will create a blank item as before.
+**Still missing:** `sr3e-ammunition` — the ammunition *code* is complete (types, loading mechanisms, magazines, reloads) but no pack ships the items yet, so **+ Add Ammunition** creates a blank. The Orthodox Matrix packs (`sr3e-odm-cyberdecks`, `sr3e-odm-programs`) are likewise undeclared, so the Orthodox deck/program pickers have nothing to read.
 
 ### Editing compendium packs
-All compendium packs are maintained as JSON files in `src/packs/`. Editing requires the [Foundry CLI](https://github.com/foundryvtt/foundryvtt-cli) installed globally:
+
+**The committed LevelDB under `packs/` is the source of truth.** There is no `src/packs/` JSON
+tree — an earlier version of this README described one, along with a long unpack/repack command
+list naming packs that no longer exist. Both were removed when the packs were split per source
+book.
+
+Two workflows are actually in use:
+
+**1. Edit in Foundry (simplest, and what icon/typo fixes use).**
+Compendiums → right-click the pack → unlock → edit entries → lock again. Foundry writes straight
+to the LevelDB directory; commit `packs/<pack-name>/` as normal.
+
+**2. `fvtt package` for anything bulk or scriptable.**
 ```
 npm install -g @foundryvtt/foundryvtt-cli
+
+fvtt package unpack -n sr3e-cc-armor --in packs --out /tmp/sr3e-cc-armor
+#   ...edit the JSON/YAML...
+fvtt package pack   -n sr3e-cc-armor --in /tmp/sr3e-cc-armor --out packs
 ```
+Keep each entry's `_id` stable — that is its identity; filenames are for your convenience only.
 
-**Unpack** (LevelDB → JSON — do this before editing, or to pull in changes made via the Foundry UI):
-```
-fvtt package unpack sr3e-adept-powers    --inputDirectory packs --outputDirectory src/packs
-fvtt package unpack sr3e-armor           --inputDirectory packs --outputDirectory src/packs
-fvtt package unpack sr3e-bioware         --inputDirectory packs --outputDirectory src/packs
-fvtt package unpack sr3e-cyberdecks      --inputDirectory packs --outputDirectory src/packs
-fvtt package unpack sr3e-cyberware       --inputDirectory packs --outputDirectory src/packs
-fvtt package unpack sr3e-drones          --inputDirectory packs --outputDirectory src/packs
-fvtt package unpack sr3e-firearms        --inputDirectory packs --outputDirectory src/packs
-fvtt package unpack sr3e-melee           --inputDirectory packs --outputDirectory src/packs
-fvtt package unpack sr3e-programs        --inputDirectory packs --outputDirectory src/packs
-fvtt package unpack sr3e-projectiles     --inputDirectory packs --outputDirectory src/packs
-fvtt package unpack sr3e-sample-characters --inputDirectory packs --outputDirectory src/packs
-fvtt package unpack sr3e-spells          --inputDirectory packs --outputDirectory src/packs
-fvtt package unpack sr3e-vehicle-mods    --inputDirectory packs --outputDirectory src/packs
-fvtt package unpack sr3e-vehicle-weapons --inputDirectory packs --outputDirectory src/packs
-fvtt package unpack sr3e-vehicles        --inputDirectory packs --outputDirectory src/packs
-fvtt package unpack -n sr3e-hosts   --in packs --out src/packs/sr3e-hosts
-fvtt package unpack -n sr3e-agents  --in packs --out src/packs/sr3e-agents
-```
+⚠ **`.gitattributes` marks `packs/**` binary on purpose.** A few LevelDB internals (`CURRENT`,
+`LOG`, `MANIFEST-*`) are pure ASCII, so git would otherwise "helpfully" rewrite their line
+endings on a Windows checkout — which is fatal for `CURRENT`, as LevelDB then looks for a
+manifest file whose name ends in a carriage return and the pack simply fails to open.
 
-**Add or edit entries:** create/modify JSON files in `src/packs/<pack-name>/`. The `_id` field inside each file is the entry's identity — keep it stable. The filename is for your organisation only.
+⚠ **The `populate-*.js` macros in `scripts/macros/` are mostly stale.** Most target the old
+monolithic pack names (`sr3e-cyberware`, `sr3e-firearms`) which no longer exist, and fail at
+`game.packs.get()` returning undefined. They were never used for the book split — that was done
+by direct LevelDB manipulation. Treat them as reference for their inline data, not as a pipeline.
 
-**Repack** (JSON → LevelDB — do this when done editing, before committing):
-```
-fvtt package pack sr3e-adept-powers    --inputDirectory src/packs --outputDirectory packs
-fvtt package pack sr3e-armor           --inputDirectory src/packs --outputDirectory packs
-fvtt package pack sr3e-bioware         --inputDirectory src/packs --outputDirectory packs
-fvtt package pack sr3e-cyberdecks      --inputDirectory src/packs --outputDirectory packs
-fvtt package pack sr3e-cyberware       --inputDirectory src/packs --outputDirectory packs
-fvtt package pack sr3e-drones          --inputDirectory src/packs --outputDirectory packs
-fvtt package pack sr3e-firearms        --inputDirectory src/packs --outputDirectory packs
-fvtt package pack sr3e-melee           --inputDirectory src/packs --outputDirectory packs
-fvtt package pack sr3e-programs        --inputDirectory src/packs --outputDirectory packs
-fvtt package pack sr3e-projectiles     --inputDirectory src/packs --outputDirectory packs
-fvtt package pack sr3e-sample-characters --inputDirectory src/packs --outputDirectory packs
-fvtt package pack sr3e-spells          --inputDirectory src/packs --outputDirectory packs
-fvtt package pack sr3e-vehicle-mods    --inputDirectory src/packs --outputDirectory packs
-fvtt package pack sr3e-vehicle-weapons --inputDirectory src/packs --outputDirectory packs
-fvtt package pack sr3e-vehicles        --inputDirectory src/packs --outputDirectory packs
-fvtt package pack -n sr3e-hosts   --in src/packs/sr3e-hosts  --out packs
-fvtt package pack -n sr3e-agents  --in src/packs/sr3e-agents --out packs
-```
+### Macro pack — currently missing
 
-Then commit the updated `packs/<pack-name>/` files as normal. `src/packs/` is the source of truth — never edit via the Foundry UI without unpacking first, or those changes will be overwritten on the next repack.
-
-### Macro pack (sr3e-macros)
-
-The macro pack works differently from item packs — the source of truth is `scripts/macros/*.js`, not `src/packs/`.
-
-**Populating / updating macro JS content:**  
-Run the `populate-macros.js` script macro in Foundry. It fetches each source file from the system path and creates or updates the entry in the compendium. JS content is always overwritten from the file; the icon is preserved if it has already been set.
-
-**Changing a macro's icon (or any other metadata):**
-1. Compendiums → Tools → Macros → unlock the pack (padlock icon)
-2. Right-click the macro → Edit → change the icon → Save
-3. Lock the pack again
-4. The `packs/sr3e-macros/` LevelDB files are now updated — commit them directly:
-```
-git add packs/sr3e-macros/
-git commit -m "Update macro icon"
-```
-No unpack/repack step needed for icon changes.
-
-**Adding a new macro to the pack:**  
-Add a `{ name, file, img }` entry to the `MACROS` array in `scripts/macros/populate-macros.js`, then run the populate script.
+`sr3e-macros` is **not declared and its directory is gone**, so the macros it used to deliver
+(including the Nullsheen importer below) have no in-system delivery mechanism. The sources still
+live in `scripts/macros/`; import one manually as a script macro if you need it.
 
 ---
 ## Nullsheen importer
 
-If you use [nullsheen.com](https://nullsheen.com) for character generation, you can import the exported JSON directly. The macro lives in **Compendiums → Tools → Macros → Import Nullsheen 3e Character json**. Import it to your world, run it, paste in the JSON, and click Import.
+If you use [nullsheen.com](https://nullsheen.com) for character generation, you can import the exported JSON directly.
+
+⚠ **The macro pack that used to deliver this is missing**, so it is not currently available from
+Compendiums → Tools → Macros. Until that is restored, create a **script macro** in your world and
+paste in the contents of `scripts/macros/import-sr3-character.js`, then run it, paste your JSON,
+and click Import. (Script macros require the *Create Macro* permission, which is off for the basic
+Player role by default — so this is normally a GM job.)
 
 **What gets imported:**
 - Attributes, metatype, nuyen, karma
@@ -256,29 +252,44 @@ If you use [nullsheen.com](https://nullsheen.com) for character generation, you 
 ## Architecture
 
 ```
-sr3e/
-├── system.json                   ← Foundry manifest (requires v13+) + documentTypes declaration
-├── lang/en.json                  ← Localisation strings
-├── styles/sr3e.css               ← All styles, CSS custom properties
+The2ndChumming3e/
+├── system.json                    ← Foundry manifest (v14) + documentTypes + 82 pack declarations
+├── lang/en.json                   ← Localisation strings
+├── styles/sr3e.css                ← All styles, CSS custom properties
+├── packs/                         ← 82 compendium packs (committed LevelDB), sr3e-<book>-<type>
+├── archive/non-sr3-content/       ← 1,703 documents split out of the packs, parked for future modules
+├── rawdata/                       ← Source JSON used to build compendiums (not loaded by Foundry)
+├── tools/manifest-branch.mjs      ← Stamps system.json's url/manifest/download to a branch
+├── .githooks/                     ← post-merge / post-checkout (see "Branch manifests" below)
+├── tests/                         ← Dependency-free suites: `npm test`
 └── scripts/
-    ├── sr3e.js                   ← Entry point — registers models, classes, hooks, button handlers
-    ├── config.js                 ← SR3E constants (metatypes, weapon codes, modes, etc.)
-    ├── SR3EVehicleChase.js       ← SR3E chase scene aid
-    ├── data/
-    │   ├── ActorDataModels.js    ← TypeDataModel subclasses: CharacterData, NpcData, VehicleData
-    │   └── ItemDataModels.js     ← TypeDataModel subclasses: all 16 item types
-    ├── documents/
-    │   ├── SR3EActor.js          ← Actor: derived data, all roll/combat methods
-    │   ├── SR3EItem.js           ← Item: skill/weapon/melee roll methods
-    │   ├── SR3ESpiritSummoning.js           ← Item: skill/weapon/melee roll methods
-    │   └── SR3ECombat.js         ← Combat: SR2/SR3 initiative, end-of-round pool refresh
+    ├── sr3e.js                    ← Entry point — models, classes, hooks, chat-button handlers
+    ├── config.js                  ← SR3E constants, skill lists, SOURCE_BOOKS registry
+    ├── SR3EQuery.js               ← GM-authoritative RPC (core user queries) — the socket layer
+    ├── SR3ECombatModifiers.js     ← Ranged + melee modifier tables, visibility resolution
+    ├── SR3ESourceBooks.js         ← Which books are in play; the single packAllowed() predicate
+    ├── SR3ECompendiumDirectory.js ← Hides packs from disabled books in the sidebar
+    ├── SR3EVehicleChase.js        ← Chase scene logic
+    ├── SR3EMIJI.js                ← Electronic warfare: MIJI contest, infiltration, IVIS
+    ├── SR3EClocks.js              ← GM Threat Clocks (persisted shared state)
+    ├── data/                      ← TypeDataModel subclasses (7 actor types, 22 item types)
+    ├── documents/                 ← SR3EActor, SR3EItem, SR3ECombat, SR3ESpiritSummoning, SR3EWard
+    └── sheets/                    ← Actor, Item, Vehicle, Ward + Host/IC/Agent sheets
+                                     (Host and IC have separate Defragged and Orthodox versions)
+```
 
-    └── sheets/
-        ├── SR3EActorSheet.js     ← ApplicationV2 actor sheet
-        ├── SR3EVehicleSheet.js      ← ApplicationV2 item sheet
-        └── SR3EItemSheet.js      ← ApplicationV2 item sheet
-        
----
+### Multi-client design
+Decisions are made by the player they belong to, and **writes are performed by the GM**. Players
+cannot update actors or chat messages they do not own, so anything that changes shared state is
+relayed through `SR3EQuery` to the connected GM. Dodge declarations, spell defence and defaulting
+choices open on the deciding player's own screen; two-corner cards record each side's submission
+in a message flag so every client sees who has acted.
+
+### Branch manifests
+`system.json`'s `url` / `manifest` / `download` name a **branch**, so a playtest branch is only
+installable if its copy points at itself. `npm run manifest:branch` stamps the current branch and
+`npm run manifest:check` reports drift. `.githooks/post-merge` re-stamps after a merge so a
+branch's URLs are never dragged into `main`; run `npm run setup:hooks` once per clone to enable it.
 
 ## Key design decisions
 
@@ -286,7 +297,7 @@ sr3e/
 
 | Decision | Reason |
 |----------|--------|
-| ApplicationV2 (not ActorSheet V1) | Foundry v13 deprecates V1 sheets; future-proof |
+| ApplicationV2 (not ActorSheet V1) | Foundry v14 removes V1 sheets; future-proof |
 | TypeDataModel for all document types | Replaces deprecated template.json; typed defaults, schema validation |
 | No Handlebars templates | Removes compile step; full JS type safety; easier to refactor |
 | `data-action` static handlers | AppV2 pattern; clean separation of concerns |
@@ -307,7 +318,21 @@ sr3e/
 
 
 ## What is not yet implemented
-- Flux and ECM/ECCM in vehicles and drones. Don't hold your breath
+- **Full Defense** — the RAW two-stage defence is only half-built.
+- **Knockdown**, **Charging**, and the multiple-targets rule outside full auto.
+- **Ready Weapon as an action** — you can currently attack with a weapon you never drew, and
+  firearms have no "equipped" concept at all (melee does).
+- **Action economy** — the GM charges Simple/Complex actions by hand; the system knows which
+  action was taken but does not spend it, and players cannot see what they have left.
+- **Hands** — nothing stops you wielding a two-handed weapon and a pistol at once.
+- **Martial arts maneuvers** — the styles and their maneuver lists ship as data, but no maneuver
+  is implemented.
+- **Ammunition compendium** — the code is complete, the content is missing.
+- **Karma spending** in character advancement.
+
+*(Flux and ECM/ECCM for vehicles and drones — previously listed here with "don't hold your
+breath" — are now implemented: see `SR3EMIJI.js` for the MIJI contest, infiltration, signal
+degradation, ECCM repair and IVIS.)*
 
 
 ## Legal Disclaimer
