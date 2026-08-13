@@ -2343,87 +2343,101 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
     });
   });
 
-  // ── Melee two-corner card (TODO 24) ────────────────────────────────────────────────
+  // ── Two-corner cards (TODO 24) ─────────────────────────────────────────────────────
   //
-  // Each side submits its OWN corner; the last submission resolves. There is no shared
-  // Roll! button any more, so the old race — whoever clicked first rolled BOTH corners
-  // using their own client's values — is structurally impossible rather than merely gated.
-  html.querySelectorAll('.sr-melee-card').forEach(card => {
-    const pl = _payload(card.querySelector('.sr-melee-submit-btn')) ?? {};
-    // No `btnClass` here on purpose: both sides share `.sr-melee-submit-btn`, so letting
-    // the strip disable by class would kill BOTH buttons the moment either side submits.
-    // Each button is disabled individually below, against its own role.
-    const roles = [
-      { key: 'attacker', label: 'attacker' },
-      { key: 'defender', label: 'defender' },
-    ];
-    const acted = _actedOn(message);
+  // ONE mechanism for all eight. Each side submits its OWN corner and the last submission
+  // resolves, so the old race — whoever clicked the shared Roll! button first rolled BOTH
+  // corners with their own client's values — is structurally impossible rather than gated.
+  //
+  // Nothing here knows field names. The cards name their inputs differently
+  // (`sr-melee-atk-pool`, `sr-cc-atk-pool`, `sr-miji-int-dice`…), so a corner is marked up
+  // with `data-corner-role` and `SR3EActor.readCornerEl` harvests whatever inputs it holds,
+  // keyed by CSS class. That is what lets one block serve cards as unlike as melee and MIJI.
+  //
+  // ⚠ Resolvers are named, not passed: the markup carries `data-twocorner`, looked up here.
+  // An unknown name is ignored rather than thrown, so a typo disables one card's resolution
+  // instead of breaking every card in the chat log.
+  const _RESOLVERS = {
+    melee:       (btn, shift) => SR3EActor.handleMeleeRoll(btn, shift),
+    astral:      (btn, shift) => SR3EActor.handleAstralRoll(btn, shift),
+    contested:   (btn, shift) => SR3EActor.handleContestedRoll(btn, shift),
+    cybercombat: (btn)        => SR3EActor.handleCybercombatRoll(btn),
+    miji:        (btn)        => game.sr3e.SR3EMIJI.handleMIJIRoll(btn),
+    ost:         (btn)        => SR3EActor.handleOrthodoxSystemTestRoll(btn),
+    occ:         (btn)        => SR3EActor.handleOrthodoxCybercombatRoll(btn),
+    icia:        (btn)        => SR3EActor.handleOrthodoxICAttackRoll(btn),
+  };
 
-    // Lock the corner that is not yours, on every client. Read-only rather than hidden:
-    // the shared view of the matchup is the reason this stayed one card.
-    const mineAtk = _isDeciderId(pl.attackerActorId);
-    const mineDef = _isDeciderId(pl.defenderActorId);
-    for (const [ownSide, mineHere] of [['atk', mineAtk], ['def', mineDef]]) {
-      if (mineHere && !acted[ownSide === 'atk' ? 'attacker' : 'defender']) continue;
-      card.querySelectorAll(
-        `.sr-melee-${ownSide}-pool, .sr-melee-${ownSide}-skill-dice, ` +
-        `.sr-melee-${ownSide}-tn, .sr-melee-${ownSide}-damage`
-      ).forEach(el => {
-        el.readOnly = true;
+  html.querySelectorAll('[data-twocorner]').forEach(card => {
+    const resolve = _RESOLVERS[card.dataset.twocorner];
+    const acted   = _actedOn(message);
+    const corners = [...card.querySelectorAll('[data-corner-role]')];
+    if (!corners.length) return;
+
+    const roles = corners.map(c => ({
+      key:   c.dataset.cornerRole,
+      label: c.dataset.cornerLabel || c.dataset.cornerRole,
+    }));
+
+    // Lock every corner that is not yours — and your own once submitted. Read-only rather
+    // than hidden: the shared view of the matchup is why these stayed single cards.
+    for (const c of corners) {
+      const mineHere = _isDeciderId(c.dataset.cornerOwner);
+      if (mineHere && !acted[c.dataset.cornerRole]) continue;
+      c.querySelectorAll('input, select, textarea').forEach(el => {
+        if (el.tagName === 'SELECT') el.disabled = true; else el.readOnly = true;
         el.style.opacity = '0.55';
-        el.title = mineHere ? 'Already submitted.' : 'Only this combatant may edit their own corner.';
+        el.title = mineHere ? 'Already submitted.' : 'Only this participant may edit their own corner.';
       });
     }
 
-    // Each Submit belongs to exactly one side.
-    card.querySelectorAll('.sr-melee-submit-btn').forEach((btn, i) => {
-      const sideKey = btn.dataset.side === 'atk' ? 'attacker' : 'defender';
-      const ownerId = btn.dataset.side === 'atk' ? pl.attackerActorId : pl.defenderActorId;
-      if (acted[sideKey]) {
+    card.querySelectorAll('.sr-corner-submit-btn').forEach((btn, i) => {
+      const role    = btn.dataset.role;
+      const ownerId = btn.dataset.owner;
+      if (acted[role]) {
         btn.disabled    = true;
-        btn.textContent = `✓ ${acted[sideKey].label} submitted`;
+        btn.textContent = `✓ ${acted[role].label} submitted`;
         return;
       }
       if (!_isDeciderId(ownerId)) {
-        return _denyBtn(btn, 'Only this combatant (or the GM) submits their own corner.');
+        return _denyBtn(btn, 'Only this participant (or the GM) submits their own corner.');
       }
-      if (!_checkBtn(btn, mid, `meleesubmit-${sideKey}`, i)) return;
+      if (!_checkBtn(btn, mid, `csubmit-${role}`, i)) return;
 
       btn.addEventListener('click', async event => {
         event.preventDefault();
         event.stopPropagation();
-        if (!_claimBtn(btn, mid, `meleesubmit-${sideKey}`, i)) return;
-        btn.disabled = true;
+        if (!_claimBtn(btn, mid, `csubmit-${role}`, i)) return;
+        btn.disabled    = true;
         btn.textContent = '⏳ Submitting…';
 
-        const data = SR3EActor.readMeleeCorner(card, btn.dataset.side);
-        const name = game.actors.get(ownerId)?.name ?? sideKey;
-        const res  = await _markActed(mid, sideKey, name, data);
+        const data = SR3EActor.readCornerEl(card.querySelector(`[data-corner-role="${role}"]`));
+        const name = game.actors.get(ownerId)?.name ?? role;
+        const res  = await _markActed(mid, role, name, data);
 
         // Resolve only if MY write completed the set. `card.mark` is append-only and
-        // GM-serialised, so exactly one submission can observe the pair becoming
-        // complete — which is what stops two near-simultaneous clicks double-rolling.
+        // GM-serialised, so exactly one submission can observe the set becoming complete —
+        // which is what stops two near-simultaneous clicks double-rolling.
         const led = res?.acted ?? {};
-        if (res && !res.already && led.attacker && led.defender) {
-          await SR3EActor.handleMeleeRoll(btn, event.shiftKey);
+        if (res && !res.already && roles.every(r => led[r.key]) && resolve) {
+          await resolve(btn, event.shiftKey);
         }
       });
     });
 
-    // GM override — an AFK player would otherwise stall the exchange indefinitely, and
-    // unlike the dodge relay there is no blocking dialog here to time out.
-    card.querySelectorAll('.sr-melee-resolve-btn').forEach((btn, i) => {
+    // GM override — an outstanding participant would otherwise stall the exchange for ever,
+    // and unlike the dodge relay there is no blocking dialog here to time out. It submits
+    // nothing: whoever has not answered falls through to the card's own defaults.
+    card.querySelectorAll('.sr-corner-resolve-btn').forEach((btn, i) => {
       if (!game.user.isGM) return _denyBtn(btn, 'Only the GM can force a resolution.');
-      if (!_checkBtn(btn, mid, 'meleeresolve', i)) return;
+      if (!_checkBtn(btn, mid, 'cresolve', i)) return;
       btn.addEventListener('click', async event => {
         event.preventDefault();
         event.stopPropagation();
-        if (!_claimBtn(btn, mid, 'meleeresolve', i)) return;
-        btn.disabled = true;
+        if (!_claimBtn(btn, mid, 'cresolve', i)) return;
+        btn.disabled    = true;
         btn.textContent = '⏳ Resolving…';
-        // Anyone outstanding submits the card's current defaults — that is what the
-        // fallback in handleMeleeRoll reads, so nothing extra needs writing here.
-        await SR3EActor.handleMeleeRoll(btn, event.shiftKey);
+        if (resolve) await resolve(btn, event.shiftKey);
       });
     });
 

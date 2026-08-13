@@ -3548,7 +3548,7 @@ _prepareCharacter(sys, attr) {
 
     const payload = JSON.stringify(ctx).replace(/'/g, '&#39;');
 
-    const _corner = (name, info, weaponName, rawDamage, damageBase, reach, tn, poolClass, tnClass, damageClass, skillDiceClass) => {
+    const _corner = (name, info, weaponName, rawDamage, damageBase, reach, tn, poolClass, tnClass, damageClass, skillDiceClass, role, owner) => {
       const specLine  = info?.specName
         ? `<div class="sr-melee-spec">${info.skillRating} (${info.skillRating + info.specBonus}) – ${info.specName}</div>`
         : '';
@@ -3564,7 +3564,7 @@ _prepareCharacter(sys, attr) {
         : (rawDamage || '');
 
       return `
-        <div class="sr-melee-corner">
+        <div class="sr-melee-corner" data-corner-role="${role}" data-corner-owner="${owner ?? ''}" data-corner-label="${name}">
           <div class="sr-melee-name">${name}</div>
           <div class="sr-melee-skill">
             ${info?.isDefault
@@ -3605,7 +3605,7 @@ _prepareCharacter(sys, attr) {
     await ChatMessage.create({
       speaker: { alias: 'Melee Combat' },
       content: `
-        <div class="sr-roll-card sr-melee-card">
+        <div class="sr-roll-card sr-melee-card" data-twocorner="melee">
           <div class="sr-roll-header">⚔ MELEE — ${atk.name} vs ${def.name}</div>
           ${ctx.calledShot && ctx.calledShot !== 'none' ? `
             <div style="font-size:11px;color:var(--sr-amber);margin:-2px 0 6px;text-align:center">
@@ -3615,31 +3615,15 @@ _prepareCharacter(sys, attr) {
             </div>` : ''}
           <div class="sr-melee-boxing">
             ${_corner(atk.name, ctx.atkInfo, ctx.atkWeaponName, ctx.atkRawDamage, ctx.atkDamageBase,
-                      ctx.atkReach ?? 0, ctx.atkTN, 'sr-melee-atk-pool', 'sr-melee-atk-tn', 'sr-melee-atk-damage', 'sr-melee-atk-skill-dice')}
+                      ctx.atkReach ?? 0, ctx.atkTN, 'sr-melee-atk-pool', 'sr-melee-atk-tn', 'sr-melee-atk-damage', 'sr-melee-atk-skill-dice', 'attacker', ctx.attackerActorId)}
             <div class="sr-melee-vs">VS</div>
             ${_corner(def.name, ctx.defInfo, ctx.defWeaponName, ctx.defRawDamage, ctx.defDamageBase,
-                      ctx.defReach ?? 0, ctx.defTN, 'sr-melee-def-pool', 'sr-melee-def-tn', 'sr-melee-def-damage', 'sr-melee-def-skill-dice')}
+                      ctx.defReach ?? 0, ctx.defTN, 'sr-melee-def-pool', 'sr-melee-def-tn', 'sr-melee-def-damage', 'sr-melee-def-skill-dice', 'defender', ctx.defenderActorId)}
           </div>
-          <!-- TODO 24: no single Roll! button any more.
-               Each side submits its OWN corner and the last submission resolves the
-               exchange, which makes the race structurally impossible rather than merely
-               gated — there is no button for one player to reach first. The GM keeps a
-               manual override because an AFK player would otherwise stall the exchange
-               forever; there is no blocking dialog here to time out. -->
-          <div class="sr-melee-submit-row" style="display:flex;gap:6px;justify-content:center;margin-top:6px">
-            <button class="sr-melee-submit-btn" data-side="atk" data-payload='${payload}'>
-              ✋ ${atk.name}: Submit
-            </button>
-            <button class="sr-melee-submit-btn" data-side="def" data-payload='${payload}'>
-              ✋ ${def.name}: Submit
-            </button>
-          </div>
-          <div class="sr-soak-action">
-            <button class="sr-melee-resolve-btn" data-payload='${payload}'
-                    title="GM override — submits defaults for anyone outstanding and resolves now">
-              ⚔ Resolve now (GM)
-            </button>
-          </div>
+          ${SR3EActor.cornerActions(payload, [
+            { role: 'attacker', label: atk.name, owner: ctx.attackerActorId },
+            { role: 'defender', label: def.name, owner: ctx.defenderActorId },
+          ])}
         </div>
       `,
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
@@ -3659,19 +3643,66 @@ _prepareCharacter(sys, attr) {
     return (mid && game.messages?.get(mid)?.getFlag('The2ndChumming3e', 'acted')) || {};
   }
 
-  /** Read one side's own corner off the card, as the values that side is submitting. */
-  static readMeleeCorner(card, sideKey) {
-    const p = sideKey === 'atk' ? 'atk' : 'def';
-    const num = (cls, dflt) => {
-      const v = parseInt(card.querySelector(`.sr-melee-${p}-${cls}`)?.value);
-      return Number.isFinite(v) ? v : dflt;
-    };
-    return {
-      pool:      num('pool', 0),
-      skillDice: num('skill-dice', 1),
-      tn:        num('tn', 4),
-      damage:    (card.querySelector(`.sr-melee-${p}-damage`)?.value ?? '').trim(),
-    };
+  /**
+   * Read a corner's inputs generically, keyed by their own CSS class (TODO 24).
+   *
+   * Keying on the class rather than on a per-card field map is what lets one mechanism
+   * serve all eight two-corner cards: they name their inputs differently
+   * (`sr-melee-atk-pool`, `sr-cc-atk-pool`, `sr-miji-int-dice`…) but every one of them
+   * identifies a field by a single `sr-` class. Resolution then looks the value up under
+   * the same class it would have used on the DOM, so each handler changes from
+   * "read the card" to "read this side's submission, else the card".
+   */
+  /**
+   * The submit row + GM override shared by every two-corner card (TODO 24).
+   *
+   * There is no combined Roll! button anywhere any more: each side submits its own corner
+   * and the last submission resolves, which makes the old race structurally impossible
+   * rather than merely gated — there is no button for one participant to reach first.
+   *
+   * The GM override exists because an absent participant would otherwise stall the
+   * exchange for ever; unlike the dodge relay there is no blocking dialog here to time out.
+   * It writes nothing, so whoever has not answered falls through to the card's defaults.
+   *
+   * `sides` is `[{ role, label, owner }]` — `role` must match the corner's
+   * `data-corner-role`, and `owner` is the actor id whose decider may submit it.
+   */
+  static cornerActions(payload, sides) {
+    return `
+      <div class="sr-corner-submit-row" style="display:flex;gap:6px;justify-content:center;margin-top:6px;flex-wrap:wrap">
+        ${sides.map(s => `
+          <button class="sr-corner-submit-btn" data-role="${s.role}" data-owner="${s.owner ?? ''}"
+                  data-payload='${payload}'>✋ ${s.label}: Submit</button>`).join('')}
+      </div>
+      <div class="sr-soak-action">
+        <button class="sr-corner-resolve-btn" data-payload='${payload}'
+                title="GM override — resolves now, using card defaults for anyone outstanding">
+          ⚔ Resolve now (GM)
+        </button>
+      </div>`;
+  }
+
+  static readCornerEl(cornerEl) {
+    const out = {};
+    if (!cornerEl) return out;
+    cornerEl.querySelectorAll('input, select, textarea').forEach(el => {
+      const cls = [...el.classList].find(c => c.startsWith('sr-'));
+      if (cls) out[cls] = el.type === 'checkbox' ? el.checked : el.value;
+    });
+    return out;
+  }
+
+  /**
+   * One field for one side: that side's submitted value, else this card's DOM.
+   *
+   * The order is the whole point — the DOM belongs to whichever client is resolving, which
+   * is exactly the bug. It stays as a fallback only so a GM forcing resolution for an
+   * absent participant still gets the card's defaults.
+   */
+  static cornerField(submitted, role, cls, card) {
+    const v = submitted?.[role]?.data?.[cls];
+    if (v !== undefined && v !== null && v !== '') return v;
+    return card?.querySelector(`.${cls}`)?.value;
   }
 
   /**
@@ -3699,23 +3730,21 @@ _prepareCharacter(sys, attr) {
     // The DOM is kept only as a FALLBACK, and it matters that it is second: a GM using
     // "Resolve now" for an absent player legitimately has no submission to read, and
     // falling through to the card's defaults is exactly the intended behaviour there.
-    const submitted = SR3EActor.meleeSubmissions(btn);
+    const sub = SR3EActor.meleeSubmissions(btn);
+    const f   = (role, cls) => SR3EActor.cornerField(sub, role, cls, card);
 
-    /** One side's field: their own submission first, this card's DOM only as a fallback. */
-    const f = (role, key, cls) => submitted[role]?.data?.[key] ?? card.querySelector(cls)?.value;
-
-    const atkCombatPool = parseInt(f('attacker', 'pool', '.sr-melee-atk-pool')) || 0;
-    const defCombatPool = parseInt(f('defender', 'pool', '.sr-melee-def-pool')) || 0;
-    const atkSkillDice  = parseInt(f('attacker', 'skillDice', '.sr-melee-atk-skill-dice')) || ctx.atkSkillDice || 1;
-    const defSkillDice  = parseInt(f('defender', 'skillDice', '.sr-melee-def-skill-dice')) || ctx.defSkillDice || 1;
+    const atkCombatPool = parseInt(f('attacker', 'sr-melee-atk-pool')) || 0;
+    const defCombatPool = parseInt(f('defender', 'sr-melee-def-pool')) || 0;
+    const atkSkillDice  = parseInt(f('attacker', 'sr-melee-atk-skill-dice')) || ctx.atkSkillDice || 1;
+    const defSkillDice  = parseInt(f('defender', 'sr-melee-def-skill-dice')) || ctx.defSkillDice || 1;
     const atkPool = Math.max(1, atkSkillDice + atkCombatPool);
     const defPool = Math.max(1, defSkillDice + defCombatPool);
-    const atkTN   = SR3EActor.cornerTN(f('attacker', 'tn', '.sr-melee-atk-tn'), ctx.atkTN);
-    const defTN   = SR3EActor.cornerTN(f('defender', 'tn', '.sr-melee-def-tn'), ctx.defTN);
+    const atkTN   = SR3EActor.cornerTN(f('attacker', 'sr-melee-atk-tn'), ctx.atkTN);
+    const defTN   = SR3EActor.cornerTN(f('defender', 'sr-melee-def-tn'), ctx.defTN);
 
     // Read edited damage codes
-    const atkRawDamage = String(f('attacker', 'damage', '.sr-melee-atk-damage') ?? '').trim() || ctx.atkRawDamage;
-    const defRawDamage = String(f('defender', 'damage', '.sr-melee-def-damage') ?? '').trim() || ctx.defRawDamage;
+    const atkRawDamage = String(f('attacker', 'sr-melee-atk-damage') ?? '').trim() || ctx.atkRawDamage;
+    const defRawDamage = String(f('defender', 'sr-melee-def-damage') ?? '').trim() || ctx.defRawDamage;
     const atkDamageBase = game.sr3e.SR3EItem.parseDamageCode(atkRawDamage, game.actors.get(ctx.attackerActorId)) ?? ctx.atkDamageBase;
     const defDamageBase = game.sr3e.SR3EItem.parseDamageCode(defRawDamage, game.actors.get(ctx.defenderActorId)) ?? ctx.defDamageBase;
 
