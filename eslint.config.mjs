@@ -232,6 +232,30 @@ export default [
     },
   },
 
+  // ── Playwright end-to-end tests ─────────────────────────────────────────────
+  //
+  // These files are Node on the outside and BROWSER on the inside: the bodies passed to
+  // `page.evaluate()` are serialised and run inside Foundry, so they legitimately reference
+  // `game`, `ChatMessage` and friends even though nothing in this file's own scope defines
+  // them. Declaring both global sets is what keeps `no-undef` useful here — the alternative
+  // is a file-level disable, which would also stop it catching a genuine typo in the Node
+  // half.
+  //
+  // ⚠ It cannot distinguish the two sides, so a Foundry global referenced by mistake in the
+  // Node half will not be flagged. That is the accepted cost of the rule staying on at all.
+  {
+    files: ['tests/e2e/**/*.mjs'],
+    languageOptions: {
+      ecmaVersion: 2023,
+      sourceType: 'module',
+      globals: { ...globals.node, ...globals.browser, ...foundryGlobals },
+    },
+    rules: {
+      'no-undef': 'error',
+      'no-unused-vars': ['warn', { args: 'none', varsIgnorePattern: '^_' }],
+    },
+  },
+
   // ── Macros run inside Foundry's macro sandbox ───────────────────────────────
   //
   // A Foundry macro is neither a module nor a plain script: its body is wrapped

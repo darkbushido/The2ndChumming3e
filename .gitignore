@@ -24,3 +24,7 @@ node_modules/
 
 # macOS directory metadata
 .DS_Store
+
+# Playwright e2e artifacts — traces and screenshots from failed runs
+test-results/
+playwright-report/

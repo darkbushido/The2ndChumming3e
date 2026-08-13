@@ -9,10 +9,13 @@
     "typecheck": "tsc --noEmit",
     "manifest:branch": "node tools/manifest-branch.mjs",
     "manifest:check": "node tools/manifest-branch.mjs --check",
-    "setup:hooks": "git config core.hooksPath .githooks"
+    "setup:hooks": "git config core.hooksPath .githooks",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed"
   },
   "devDependencies": {
     "@league-of-foundry-developers/foundry-vtt-types": "^13.346.0-beta.20250812191140",
+    "@playwright/test": "^1.62.1",
     "eslint": "^10.8.0",
     "globals": "^17.9.0",
     "typescript": "^5.9.3",
