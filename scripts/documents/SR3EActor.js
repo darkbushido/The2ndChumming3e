@@ -3620,9 +3620,24 @@ _prepareCharacter(sys, attr) {
             ${_corner(def.name, ctx.defInfo, ctx.defWeaponName, ctx.defRawDamage, ctx.defDamageBase,
                       ctx.defReach ?? 0, ctx.defTN, 'sr-melee-def-pool', 'sr-melee-def-tn', 'sr-melee-def-damage', 'sr-melee-def-skill-dice')}
           </div>
+          <!-- TODO 24: no single Roll! button any more.
+               Each side submits its OWN corner and the last submission resolves the
+               exchange, which makes the race structurally impossible rather than merely
+               gated — there is no button for one player to reach first. The GM keeps a
+               manual override because an AFK player would otherwise stall the exchange
+               forever; there is no blocking dialog here to time out. -->
+          <div class="sr-melee-submit-row" style="display:flex;gap:6px;justify-content:center;margin-top:6px">
+            <button class="sr-melee-submit-btn" data-side="atk" data-payload='${payload}'>
+              ✋ ${atk.name}: Submit
+            </button>
+            <button class="sr-melee-submit-btn" data-side="def" data-payload='${payload}'>
+              ✋ ${def.name}: Submit
+            </button>
+          </div>
           <div class="sr-soak-action">
-            <button class="sr-melee-roll-btn" data-payload='${payload}'>
-              ⚔ Roll!
+            <button class="sr-melee-resolve-btn" data-payload='${payload}'
+                    title="GM override — submits defaults for anyone outstanding and resolves now">
+              ⚔ Resolve now (GM)
             </button>
           </div>
         </div>
@@ -3631,30 +3646,76 @@ _prepareCharacter(sys, attr) {
     });
   }
 
-    /**
+  /**
+   * The per-role submission ledger for the melee card this button belongs to (TODO 24).
+   *
+   * Written by each side through `sr3e.card.mark`, so it is document data and identical on
+   * every client — unlike the card's DOM, which is whatever the local player has typed.
+   * Returns `{}` when nothing has been submitted, which lets every caller fall back to the
+   * DOM without a special case.
+   */
+  static meleeSubmissions(btn) {
+    const mid = btn?.closest?.('.message')?.dataset?.messageId;
+    return (mid && game.messages?.get(mid)?.getFlag('The2ndChumming3e', 'acted')) || {};
+  }
+
+  /** Read one side's own corner off the card, as the values that side is submitting. */
+  static readMeleeCorner(card, sideKey) {
+    const p = sideKey === 'atk' ? 'atk' : 'def';
+    const num = (cls, dflt) => {
+      const v = parseInt(card.querySelector(`.sr-melee-${p}-${cls}`)?.value);
+      return Number.isFinite(v) ? v : dflt;
+    };
+    return {
+      pool:      num('pool', 0),
+      skillDice: num('skill-dice', 1),
+      tn:        num('tn', 4),
+      damage:    (card.querySelector(`.sr-melee-${p}-damage`)?.value ?? '').trim(),
+    };
+  }
+
+  /**
    * Handle the Roll! button click on a melee card.
-   * Reads live pool/TN values, rolls both sides, posts results, then compares.
+   * Reads each side's SUBMITTED pool/TN values, rolls both sides, posts results, compares.
    */
   static async handleMeleeRoll(btn, physicalDice = false) {
     const ctx  = JSON.parse(btn.dataset.payload);
     const card = btn.closest('.sr-melee-card');
 
+    // Remember the label rather than hardcoding a restore: since TODO 24 this can be
+    // reached from either side's Submit button or the GM's "Resolve now", so restoring a
+    // literal "Roll!" on cancel would relabel whichever button was actually clicked.
+    const _btnLabel = btn.textContent;
     btn.disabled    = true;
     btn.textContent = '⏳ Rolling…';
 
-    // Pool = skill dice + combat pool dice added by player
-    const atkCombatPool = parseInt(card.querySelector('.sr-melee-atk-pool')?.value) || 0;
-    const defCombatPool = parseInt(card.querySelector('.sr-melee-def-pool')?.value) || 0;
-    const atkSkillDice  = parseInt(card.querySelector('.sr-melee-atk-skill-dice')?.value) || ctx.atkSkillDice || 1;
-    const defSkillDice  = parseInt(card.querySelector('.sr-melee-def-skill-dice')?.value) || ctx.defSkillDice || 1;
+    // ── Each side's values come from what THAT side submitted (TODO 24) ──────────────
+    //
+    // These used to be read straight off `card`, i.e. off whichever client happened to
+    // click Roll! — so the attacker supplied the defender's combat pool, TN and damage
+    // code and then rolled with them. The submitted values now live in the message flag,
+    // written by each side through the GM.
+    //
+    // The DOM is kept only as a FALLBACK, and it matters that it is second: a GM using
+    // "Resolve now" for an absent player legitimately has no submission to read, and
+    // falling through to the card's defaults is exactly the intended behaviour there.
+    const submitted = SR3EActor.meleeSubmissions(btn);
+
+    /** One side's field: their own submission first, this card's DOM only as a fallback. */
+    const f = (role, key, cls) => submitted[role]?.data?.[key] ?? card.querySelector(cls)?.value;
+
+    const atkCombatPool = parseInt(f('attacker', 'pool', '.sr-melee-atk-pool')) || 0;
+    const defCombatPool = parseInt(f('defender', 'pool', '.sr-melee-def-pool')) || 0;
+    const atkSkillDice  = parseInt(f('attacker', 'skillDice', '.sr-melee-atk-skill-dice')) || ctx.atkSkillDice || 1;
+    const defSkillDice  = parseInt(f('defender', 'skillDice', '.sr-melee-def-skill-dice')) || ctx.defSkillDice || 1;
     const atkPool = Math.max(1, atkSkillDice + atkCombatPool);
     const defPool = Math.max(1, defSkillDice + defCombatPool);
-    const atkTN   = SR3EActor.cornerTN(card.querySelector('.sr-melee-atk-tn')?.value, ctx.atkTN);
-    const defTN   = SR3EActor.cornerTN(card.querySelector('.sr-melee-def-tn')?.value, ctx.defTN);
+    const atkTN   = SR3EActor.cornerTN(f('attacker', 'tn', '.sr-melee-atk-tn'), ctx.atkTN);
+    const defTN   = SR3EActor.cornerTN(f('defender', 'tn', '.sr-melee-def-tn'), ctx.defTN);
 
     // Read edited damage codes
-    const atkRawDamage = card.querySelector('.sr-melee-atk-damage')?.value.trim() || ctx.atkRawDamage;
-    const defRawDamage = card.querySelector('.sr-melee-def-damage')?.value.trim() || ctx.defRawDamage;
+    const atkRawDamage = String(f('attacker', 'damage', '.sr-melee-atk-damage') ?? '').trim() || ctx.atkRawDamage;
+    const defRawDamage = String(f('defender', 'damage', '.sr-melee-def-damage') ?? '').trim() || ctx.defRawDamage;
     const atkDamageBase = game.sr3e.SR3EItem.parseDamageCode(atkRawDamage, game.actors.get(ctx.attackerActorId)) ?? ctx.atkDamageBase;
     const defDamageBase = game.sr3e.SR3EItem.parseDamageCode(defRawDamage, game.actors.get(ctx.defenderActorId)) ?? ctx.defDamageBase;
 
@@ -3671,9 +3732,9 @@ _prepareCharacter(sys, attr) {
     let atkDice, defDice;
     if (physicalDice) {
       const atkSuccesses = await SR3EActor._promptPhysicalSuccesses(atkPool, atkTN, `⚔ ${atk.name} attacks`);
-      if (atkSuccesses === null) { btn.disabled = false; btn.textContent = 'Roll!'; return; }
+      if (atkSuccesses === null) { btn.disabled = false; btn.textContent = _btnLabel; return; }
       const defSuccesses = await SR3EActor._promptPhysicalSuccesses(defPool, defTN, `⚔ ${def.name} defends`);
-      if (defSuccesses === null) { btn.disabled = false; btn.textContent = 'Roll!'; return; }
+      if (defSuccesses === null) { btn.disabled = false; btn.textContent = _btnLabel; return; }
       atkDice = SR3EActor._buildPhysicalDice(atkPool, atkSuccesses);
       defDice = SR3EActor._buildPhysicalDice(defPool, defSuccesses);
     } else {

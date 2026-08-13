@@ -490,7 +490,44 @@ every other weapon is already there.
 Do it only with a measured before/after from play, and only after [#24](#24) settles — melee will
 copy whichever attacker-side shape wins, and it should copy a verified one.
 
-## 24. Revise the two-corner cards onto the socket layer — each side edits only its own corner
+## 24. Revise the two-corner cards onto the socket layer — **MELEE DONE 2026-08-12; 7 CARDS LEFT**
+
+### ✅ Melee — the decided flow is built
+
+- **No shared Roll! button.** `.sr-melee-roll-btn` is **deleted**, replaced by one
+  `.sr-melee-submit-btn` per side. The race is now structurally impossible rather than gated:
+  there is no button for one player to reach first. *(This also closes [#27](#27)'s last
+  deliberately-ungated button — it was retired rather than guarded, the stronger fix.)*
+- **Each side edits only its own corner.** The opponent's inputs render **read-only** on every
+  client, and your own lock once submitted. Read-only rather than hidden, so the shared view of
+  the matchup — the reason this stayed one card — survives.
+- **The last submission resolves.** Values ride in the `acted` message flag from [#42](#42),
+  extended to carry a `data` payload per role, so resolution reads each side's numbers from
+  what *that side* submitted rather than from whichever browser clicked.
+- **GM "Resolve now"** submits nothing and simply resolves, so an outstanding side falls through
+  to the card's defaults. Needed because an AFK player would otherwise stall the exchange
+  forever, and unlike the dodge relay there is no blocking dialog to time out.
+
+⚠ **Exactly one submission may observe the pair completing.** The resolver is whoever gets
+`already:false` *and* finds both roles present. Since `card.mark` is append-only and
+GM-serialised, two near-simultaneous clicks cannot both resolve. Pinned in
+`tests/card-acted.test.mjs` along with per-role data isolation and the duplicate-click case.
+
+⚠ **The DOM fallback in `handleMeleeRoll` is deliberate and ordered.** Submitted values first,
+card DOM second — a GM forcing resolution for an absent player genuinely has no submission to
+read, and falling through to the defaults is the intended behaviour there.
+
+**Deferred from this pass, on purpose:**
+- **The GM TN step** (flow step 2) — that window is [#37](#37), which has the melee modifier
+  table. Building a second TN surface here first would just be thrown away.
+- **`gmApprovesTN` mirroring** for melee — belongs with the GM step above.
+- **Full Defense** — already excluded by the maintainer; see the note below.
+
+### ⏳ Seven cards still carry the original shape
+
+Astral · Contested · MIJI · Cybercombat (Defragged) · the three Orthodox. The prerequisite
+refactor below (**eight local `_corner` definitions**, three of them byte-identical) is still
+untouched — melee was done first because it is the one that was reported in play.
 
 *(Scope widened from melee alone to **all eight** two-corner cards — see the table at the end.)*
 

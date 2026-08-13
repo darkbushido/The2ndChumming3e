@@ -335,7 +335,7 @@ export class SR3EQuery {
      * [#24]'s "last one to submit triggers the roll" — the ledger has to be append-only or
      * the winner of a race decides the order.
      */
-    CONFIG.queries['sr3e.card.mark'] = async ({ rid, messageId, role, label }) =>
+    CONFIG.queries['sr3e.card.mark'] = async ({ rid, messageId, role, label, data }) =>
       SR3EQuery.once(rid, async () => {
         SR3EQuery.assertActiveGM();
         const msg = game.messages.get(messageId);
@@ -346,7 +346,11 @@ export class SR3EQuery {
           msg.getFlag('The2ndChumming3e', 'acted') ?? {});
         if (acted[role]) return { acted, already: true };   // first claim stands
 
-        acted[role] = { label: label ?? role, at: Date.now() };
+        // `data` carries a side's SUBMITTED VALUES for two-corner cards (TODO 24). It lives
+        // here rather than being re-read from the DOM at resolution time because the DOM
+        // belongs to whichever client happens to resolve — which is the original bug: one
+        // player's browser supplied both corners' pool, TN and damage.
+        acted[role] = { label: label ?? role, at: Date.now(), ...(data ? { data } : {}) };
         await msg.setFlag('The2ndChumming3e', 'acted', acted);
         return { acted, already: false };
       });

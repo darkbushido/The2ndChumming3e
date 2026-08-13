@@ -43,6 +43,8 @@ function harness({ isGM = true } = {}) {
   return {
     mark: (role, label) => globalThis.CONFIG.queries['sr3e.card.mark'](
       { rid: `rid-${++_rid}`, messageId: 'msg1', role, label }),
+    markData: (role, label, data) => globalThis.CONFIG.queries['sr3e.card.mark'](
+      { rid: `rid-${++_rid}`, messageId: 'msg1', role, label, data }),
     markOn: (messageId, role) => globalThis.CONFIG.queries['sr3e.card.mark'](
       { rid: `rid-${++_rid}`, messageId, role, label: role }),
     flags,
@@ -98,6 +100,49 @@ export async function run(t) {
     let threw = false;
     try { await h.mark('defender', 'Snot'); } catch { threw = true; }
     t.ok('a non-GM client is refused', threw);
+  }
+
+  /* ---- submitted VALUES ride along, per role (TODO 24) ----
+   * This is what stops one client supplying both corners: resolution reads each side's
+   * numbers from here, not from whichever browser happened to click.
+   */
+  {
+    const h = harness();
+    const atk = { pool: 3, skillDice: 6, tn: 4, damage: '9M' };
+    const def = { pool: 1, skillDice: 5, tn: 5, damage: '6M' };
+    await h.markData('attacker', 'Liam', atk);
+    const res = await h.markData('defender', 'Snot', def);
+
+    t.is('the attacker\'s pool survives',  res.acted.attacker.data.pool, 3);
+    t.is('and their TN',                   res.acted.attacker.data.tn, 4);
+    t.is('the defender\'s pool is theirs', res.acted.defender.data.pool, 1);
+    t.is('and their damage code',          res.acted.defender.data.damage, '6M');
+    t.ok('neither side can see the other written into their own slot',
+      res.acted.attacker.data.tn !== res.acted.defender.data.tn);
+  }
+
+  /* ---- EXACTLY ONE submission observes the pair completing ----
+   * The client that gets `already:false` AND finds both roles present is the one that
+   * resolves. Two near-simultaneous clicks must not both roll the exchange.
+   */
+  {
+    const h = harness();
+    const first  = await h.markData('attacker', 'Liam', { pool: 0 });
+    const second = await h.markData('defender', 'Snot', { pool: 0 });
+    const dup    = await h.markData('defender', 'Snot', { pool: 9 });
+
+    const completes = r => !r.already && !!r.acted.attacker && !!r.acted.defender;
+    t.is('the first submission does not resolve',  completes(first), false);
+    t.is('the second one does',                    completes(second), true);
+    t.is('and a duplicate click does NOT resolve again', completes(dup), false);
+    t.is('the duplicate also cannot change the value', dup.acted.defender.data.pool, 0);
+  }
+
+  /* ---- a role with no data is still a valid mark (the dodge/soak strip uses it) ---- */
+  {
+    const h = harness();
+    const res = await h.mark('defender', 'Snot');
+    t.ok('no data key is added when none was passed', !('data' in res.acted.defender));
   }
 
   /* ---- unknown message and missing role are errors, not silent no-ops ---- */

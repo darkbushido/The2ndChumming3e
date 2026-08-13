@@ -2343,15 +2343,91 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
     });
   });
 
-  // Melee Roll! button on boxing card
-  html.querySelectorAll('.sr-melee-roll-btn').forEach((btn, i) => {
-    if (!_checkBtn(btn, mid, 'melee', i)) return;
-    btn.addEventListener('click', async event => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (!_claimBtn(btn, mid, 'melee', i)) return;
-      await SR3EActor.handleMeleeRoll(btn, event.shiftKey);
+  // ── Melee two-corner card (TODO 24) ────────────────────────────────────────────────
+  //
+  // Each side submits its OWN corner; the last submission resolves. There is no shared
+  // Roll! button any more, so the old race — whoever clicked first rolled BOTH corners
+  // using their own client's values — is structurally impossible rather than merely gated.
+  html.querySelectorAll('.sr-melee-card').forEach(card => {
+    const pl = _payload(card.querySelector('.sr-melee-submit-btn')) ?? {};
+    // No `btnClass` here on purpose: both sides share `.sr-melee-submit-btn`, so letting
+    // the strip disable by class would kill BOTH buttons the moment either side submits.
+    // Each button is disabled individually below, against its own role.
+    const roles = [
+      { key: 'attacker', label: 'attacker' },
+      { key: 'defender', label: 'defender' },
+    ];
+    const acted = _actedOn(message);
+
+    // Lock the corner that is not yours, on every client. Read-only rather than hidden:
+    // the shared view of the matchup is the reason this stayed one card.
+    const mineAtk = _isDeciderId(pl.attackerActorId);
+    const mineDef = _isDeciderId(pl.defenderActorId);
+    for (const [ownSide, mineHere] of [['atk', mineAtk], ['def', mineDef]]) {
+      if (mineHere && !acted[ownSide === 'atk' ? 'attacker' : 'defender']) continue;
+      card.querySelectorAll(
+        `.sr-melee-${ownSide}-pool, .sr-melee-${ownSide}-skill-dice, ` +
+        `.sr-melee-${ownSide}-tn, .sr-melee-${ownSide}-damage`
+      ).forEach(el => {
+        el.readOnly = true;
+        el.style.opacity = '0.55';
+        el.title = mineHere ? 'Already submitted.' : 'Only this combatant may edit their own corner.';
+      });
+    }
+
+    // Each Submit belongs to exactly one side.
+    card.querySelectorAll('.sr-melee-submit-btn').forEach((btn, i) => {
+      const sideKey = btn.dataset.side === 'atk' ? 'attacker' : 'defender';
+      const ownerId = btn.dataset.side === 'atk' ? pl.attackerActorId : pl.defenderActorId;
+      if (acted[sideKey]) {
+        btn.disabled    = true;
+        btn.textContent = `✓ ${acted[sideKey].label} submitted`;
+        return;
+      }
+      if (!_isDeciderId(ownerId)) {
+        return _denyBtn(btn, 'Only this combatant (or the GM) submits their own corner.');
+      }
+      if (!_checkBtn(btn, mid, `meleesubmit-${sideKey}`, i)) return;
+
+      btn.addEventListener('click', async event => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (!_claimBtn(btn, mid, `meleesubmit-${sideKey}`, i)) return;
+        btn.disabled = true;
+        btn.textContent = '⏳ Submitting…';
+
+        const data = SR3EActor.readMeleeCorner(card, btn.dataset.side);
+        const name = game.actors.get(ownerId)?.name ?? sideKey;
+        const res  = await _markActed(mid, sideKey, name, data);
+
+        // Resolve only if MY write completed the set. `card.mark` is append-only and
+        // GM-serialised, so exactly one submission can observe the pair becoming
+        // complete — which is what stops two near-simultaneous clicks double-rolling.
+        const led = res?.acted ?? {};
+        if (res && !res.already && led.attacker && led.defender) {
+          await SR3EActor.handleMeleeRoll(btn, event.shiftKey);
+        }
+      });
     });
+
+    // GM override — an AFK player would otherwise stall the exchange indefinitely, and
+    // unlike the dodge relay there is no blocking dialog here to time out.
+    card.querySelectorAll('.sr-melee-resolve-btn').forEach((btn, i) => {
+      if (!game.user.isGM) return _denyBtn(btn, 'Only the GM can force a resolution.');
+      if (!_checkBtn(btn, mid, 'meleeresolve', i)) return;
+      btn.addEventListener('click', async event => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (!_claimBtn(btn, mid, 'meleeresolve', i)) return;
+        btn.disabled = true;
+        btn.textContent = '⏳ Resolving…';
+        // Anyone outstanding submits the card's current defaults — that is what the
+        // fallback in handleMeleeRoll reads, so nothing extra needs writing here.
+        await SR3EActor.handleMeleeRoll(btn, event.shiftKey);
+      });
+    });
+
+    _renderActedStrip(message, card, roles);
   });
 
   // MIJI test (electronic warfare) — roll both sides + apply degradation
