@@ -139,7 +139,8 @@ background-color: var(--sr-surface) !important;
 .sr-spell-resist-roll-btn,
 .sr-spell-defense-btn,
 .sr-spell-defense-proceed-btn,
-.sr-melee-roll-btn,
+.sr-corner-submit-btn,
+.sr-corner-resolve-btn,
 .sr-astral-roll-btn,
 .sr-astral-soak-btn,
 .sr-astral-soak-roll-btn,
@@ -240,7 +241,8 @@ background-color: var(--sr-surface) !important;
 }
 
 /* accent/blue — roll actions */
-.sr-melee-roll-btn,
+.sr-corner-submit-btn,
+.sr-corner-resolve-btn,
 .sr-astral-roll-btn,
 .sr-aura-reading-btn,
 .sr-contested-roll-btn,
@@ -269,7 +271,8 @@ background-color: var(--sr-surface) !important;
   box-shadow: 0 0 10px color-mix(in srgb, var(--sr-gold) 30%, transparent);
 }
 
-.sr-melee-roll-btn:hover:not(:disabled),
+.sr-corner-submit-btn:hover:not(:disabled),
+.sr-corner-resolve-btn:hover:not(:disabled),
 .sr-astral-roll-btn:hover:not(:disabled),
 .sr-aura-reading-btn:hover:not(:disabled),
 .sr-contested-roll-btn:hover:not(:disabled),
@@ -302,7 +305,8 @@ background-color: var(--sr-surface) !important;
 .sr-spell-resist-roll-btn:disabled,
 .sr-spell-defense-btn:disabled,
 .sr-spell-defense-proceed-btn:disabled,
-.sr-melee-roll-btn:disabled,
+.sr-corner-submit-btn:disabled,
+.sr-corner-resolve-btn:disabled,
 .sr-astral-roll-btn:disabled,
 .sr-astral-soak-btn:disabled,
 .sr-astral-soak-roll-btn:disabled,

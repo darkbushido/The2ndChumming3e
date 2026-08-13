@@ -1994,9 +1994,9 @@ function _claimBtn(btn, mid, cls, idx) {
  */
 
 /** Record that `role` has acted on this card. Routed to the GM; safe to await. */
-async function _markActed(messageId, role, label) {
+async function _markActed(messageId, role, label, data) {
   try {
-    return await game.sr3e.SR3EQuery.asGM('sr3e.card.mark', { messageId, role, label });
+    return await game.sr3e.SR3EQuery.asGM('sr3e.card.mark', { messageId, role, label, data });
   } catch (err) {
     // Never let bookkeeping break the action the user actually asked for.
     console.warn('SR3E | could not record card progress:', err);
