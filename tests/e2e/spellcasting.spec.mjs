@@ -19,7 +19,7 @@
 import { test, expect } from './fixtures.mjs';
 import {
   fireAndForget, answerDialog, selectTarget, createTestActor, deleteActors, sweepTestActors,
-  CHAT_LOG, actorState, clearChatAll,
+  CHAT_LOG, actorState, clearChatAll, clickNewestChatButton, setNewestChatField,
 } from './foundry.mjs';
 
 const CASTER = '__TEST Caster';   // owned by Player2
@@ -140,5 +140,37 @@ test.describe('spellcasting — caster and target act on their own halves', () =
       'spell pool is spent when the spell is cast').toBeGreaterThanOrEqual(before.spellPoolSpent);
     const victimAfter = await actorState(caster.page, VICTIM);
     expect(victimAfter.spellPoolSpent, 'the target spends nothing to be shot at').toBe(0);
+
+    // ── Drain: Spell Pool is legal here, and must be CHARGED (TODO 43) ─────────
+    //
+    // p.43: "Dice from the Spell Pool can be used to augment Spell Success Tests and
+    // Drain Resistance Tests… There is no limit to the number of dice a character may
+    // draw from the Spell Pool for the Drain Resistance Test." So the field belongs on
+    // the card — what it must not do is hand out dice for free.
+    //
+    // Deliberately asks for MORE than remains. The input's max is a browser hint, not a
+    // gate, so the clamp has to live in the handler: the roll must use what
+    // `spendSpellPool` actually deducted, never what was typed.
+    await clickNewestChatButton(caster.page, '.sr-drain-btn');
+
+    const drainPool = `${CHAT_LOG} .sr-drain-spell-pool`;
+    const hasField  = await caster.page.locator(drainPool).count();
+    if (hasField) {
+      const spentBeforeDrain = (await actorState(caster.page, CASTER)).spellPoolSpent;
+      const remaining = (await actorState(caster.page, CASTER)).availableSpellPool ?? 0;
+      // A caster with nothing left proves nothing about clamping, so say so rather than
+      // passing silently on an empty pool.
+      expect(remaining, "the caster needs Spell Pool left for this to test anything")
+        .toBeGreaterThan(0);
+
+      await setNewestChatField(caster.page, 'sr-drain-spell-pool', 99);
+      await clickNewestChatButton(caster.page, '.sr-drain-roll-btn');
+
+      // Charged exactly what was left — never 99, and never more than the pool holds.
+      await expect.poll(async () => (await actorState(caster.page, CASTER)).spellPoolSpent,
+        { timeout: 25_000 }).toBe(spentBeforeDrain + remaining);
+      await expect.poll(async () => (await actorState(caster.page, CASTER)).availableSpellPool,
+        { timeout: 25_000 }).toBe(0);
+    }
   });
 });

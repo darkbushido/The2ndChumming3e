@@ -23,12 +23,12 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | 5 · 14 · 43 |
+| 🔴 Confirmed bugs, still open | 5 · 14 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 38 · 39 · 40 · 41 · 47 · 48 · 49 · 51 · 52 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 21 · 22 · **24** · **37** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
+| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -1161,7 +1161,7 @@ contradict, both worth re-checking before assuming a fix:
 what one square is meant to represent; and whether reach should modify the adjacency threshold at
 all (SR3 melee assumes engaged combatants — a pole arm's reach is a TN edge, not a second square).
 
-## 43. Resist cards spend pool dice for free — **DAMAGE SOAK FIXED; SIBLINGS OUTSTANDING**
+## 43. ✅ Resist cards spend pool dice for free — **DONE 2026-08-13**
 
 **Fixed 2026-08-12 for the damage soak card** (`_postSoakCard` / `handleSoakRollClick`):
 
@@ -1191,15 +1191,58 @@ Orthodox decker — so every Orthodox spend silently clamped to 0. It now falls 
 both derivations. A spend returning 0 looks exactly like choosing to spend nothing, which is
 why this survived so long.
 
-### ⚠ Still outstanding — the sibling cards
+### ✅ The siblings — audited 2026-08-13, and the audit changed the answer
 
-Same shape, same fault, **not touched**: `sr-astral-soak-pool`, `sr-drain-pool`,
-`sr-matrix-resist-pool`, `sr-matrix-decker-resist-pool`, and `sr-drain-spell-pool` for Spell Pool.
+This task told the next person to *"audit the rule before copying the fix into each"*. Doing
+that found the task's own premise was wrong, and that three of the five listed fields were
+never bugs.
 
-⚠ **Audit the rule before copying the fix into each.** They are not all the same question — SR3
-does not allow Spell Pool against drain, and the spell-resist card (`_postSpellSoakCard`) is
-**attribute only, no pool** by RAW, so it was deliberately left alone rather than "fixed" into
-offering a pool it should not have.
+**🔴 The premise was wrong: SR3 DOES allow Spell Pool against Drain.** p.43, in consecutive
+sentences:
+
+> "Dice from the Spell Pool can be used to augment Spell Success Tests and **Drain
+> Resistance Tests** in spellcasting (p. 183), Dispelling (p. 184), and for Spell Defense
+> (p. 183). Dice from the Spell Pool **cannot** be used to augment **Conjuring** or any
+> other magic-related tests."
+
+and, a few lines later:
+
+> "There is **no limit** to the number of dice a character may draw from the Spell Pool for
+> the Drain Resistance Test."
+
+That last line lifts the usual per-test pool cap; it does **not** mean a caster can spend
+dice they do not have. So `sr-drain-spell-pool` is legitimate and stays.
+
+**What was actually broken: over-allocation.** `handleDrainRollClick` built the dice from the
+raw input while clamping only the spend, so typing 99 rolled 99 and paid whatever was left.
+The input's `max` is a browser hint enforced for spinner clicks, not a gate. Now the roll is
+built from what `spendSpellPool` **returned**, and a shortfall warns rather than silently
+rolling dice nobody paid for — the same defect, and the same fix, as the cybercombat
+defender's Hacking Pool.
+
+**Conjuring drain is now correct by RULE, not by accident.** The conjuring payload happens
+not to set `spellPoolForDrain`, so the field was already absent — but adding that field later
+would have quietly granted dice the book forbids. `_postDrainCard` now refuses it outright
+when `resistAttr === 'charisma'`.
+
+**The other three were never pool bugs.** `sr-astral-soak-pool` (Willpower / Astral Body),
+`sr-matrix-resist-pool` (the entity's own rating) and `sr-matrix-decker-resist-pool` (deck
+MPCP) are **attribute** fields. Attributes cost nothing, and every stat in this system is
+editable by design — that is the ethos, not an oversight. `sr-drain-pool` is Willpower, same
+thing. Listing them here conflated "a number you can edit" with "a limited resource you must
+pay for"; only the second is this task.
+
+Verified live in `tests/e2e/spellcasting.spec.mjs`, which now rolls the drain asking for 99
+dice and asserts the caster is charged exactly what remained and ends on an empty pool.
+
+### 📌 Noticed while auditing — NOT fixed
+
+**Astral damage resistance offers no Astral Pool.** Combat Pool augments the physical Damage
+Resistance Test (p.113's worked example turns on Snot having none left), and the Astral
+Combat Pool is described as "similar to the Combat Pool" for astral combat. By analogy the
+astral soak card should offer it and charge it. That is a **missing option**, not dice being
+given away, so it is out of scope here — but it is the one place a pool arguably *should*
+appear and does not.
 
 ### The original report
 

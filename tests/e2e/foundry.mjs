@@ -313,6 +313,7 @@ export async function actorState(page, name) {
       astralPoolSpent: a.system.astralPoolSpent ?? 0,
       availableAstralPool: a.system.derived?.availableAstralPool ?? null,
       spellPoolSpent: a.system.spellPoolSpent ?? 0,
+      availableSpellPool: a.system.derived?.availableSpellPool ?? null,
       hackingPoolSpent: a.system.hackingPoolSpent ?? 0,
       availableHackingPool: a.system.derived?.availableHackingPool ?? null,
       stun: a.system.wounds?.stun?.value ?? 0,

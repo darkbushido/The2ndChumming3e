@@ -5263,7 +5263,19 @@ _prepareCharacter(sys, attr) {
       ? `<div style="color:var(--sr-red);font-size:11px;margin-top:4px">⚠ Force (${force}) &gt; Magic (${magicBase}) — Drain is Physical!</div>`
       : '';
 
-    const spellPoolField = availSpell > 0
+    // ⚠ Spell Pool may augment a Drain Resistance Test — but only for SORCERY.
+    //
+    // p.43 states both halves in consecutive sentences: "Dice from the Spell Pool can be
+    // used to augment Spell Success Tests and Drain Resistance Tests in spellcasting,
+    // Dispelling, and for Spell Defense. Dice from the Spell Pool cannot be used to
+    // augment Conjuring or any other magic-related tests." Conjuring drain is resisted
+    // with Charisma and gets no pool at all.
+    //
+    // The conjuring payload happens not to set spellPoolForDrain, so the field is already
+    // absent today — correct by omission. This makes it correct by RULE, so adding that
+    // field to the conjuring path later cannot quietly grant dice the book forbids.
+    const isConjuringDrain = resistAttr === 'charisma';
+    const spellPoolField = (availSpell > 0 && !isConjuringDrain)
       ? `<label class="sr-soak-label">
            Spell Pool (${availSpell} available):
            <input type="number" class="sr-drain-spell-pool" value="0" min="0" max="${availSpell}" style="width:55px"/>
@@ -5310,9 +5322,8 @@ _prepareCharacter(sys, attr) {
     const payload   = JSON.parse(btn.dataset.payload);
     const card      = btn.closest('.sr-soak-card');
     const willDice  = parseInt(card.querySelector('.sr-drain-pool')?.value)       || 1;
-    const spellDice = parseInt(card.querySelector('.sr-drain-spell-pool')?.value) || 0;
+    const wantSpell = Math.max(0, parseInt(card.querySelector('.sr-drain-spell-pool')?.value) || 0);
     const tn        = parseInt(card.querySelector('.sr-drain-tn')?.value)         || 2;
-    const pool      = willDice + spellDice;
 
     btn.disabled    = true;
     btn.textContent = '⏳ Rolling…';
@@ -5320,7 +5331,20 @@ _prepareCharacter(sys, attr) {
     const actor = game.actors.get(payload.actorId);
     if (!actor) return;
 
-    if (spellDice > 0) await actor.spendSpellPool(spellDice);
+    // ⚠ Roll what was PAID FOR, not what was typed.
+    //
+    // The input's max attribute is a hint the browser enforces only for spinner clicks —
+    // a determined player can type 99 into it. So the pool has to be built from
+    // spendSpellPool's RETURN value, which is clamped against live data on the GM.
+    // Building the dice from the raw field while clamping only the spend is exactly how
+    // free dice appear, and it is the same defect that let a cybercombat defender roll
+    // pool they never paid for.
+    const spellDice = wantSpell > 0 ? await actor.spendSpellPool(wantSpell) : 0;
+    if (spellDice < wantSpell) {
+      ui.notifications.warn(
+        `${actor.name} has only ${spellDice} Spell Pool left — rolling that, not ${wantSpell}.`);
+    }
+    const pool = willDice + spellDice;
 
     const effectiveTN = Math.max(2, tn);
     const label       = `⚡ ${actor.name} resists drain`;
