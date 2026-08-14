@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | 54 |
+| 🔴 Confirmed bugs, still open | 54 *(1 of 3 fixed; the other two are design calls)* |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 38 · 39 · 40 · 41 · 47 · 48 · 49 · 51 · 52 · 53 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
@@ -1901,7 +1901,7 @@ Also confirmed against R3: intruder TN = targeted deck rating; defender TN = the
 protocol-emulation module, or **ECM rating when jamming**; net successes = boxes of signal
 degradation; infiltration TN 6 modified by (protocol − deck); base time 10 Combat Turns.
 
-### 🔴 1. Intrusion Factor omits the EW skill baseline
+### ✅ 1. Intrusion Factor omitted the EW skill baseline — **FIXED 2026-08-14**
 
 > "A rigger's Intrusion Factor is equal to his **Electronics (Electronic Warfare) skill plus
 > any successes allocated** from his test to infiltrate the network."  — *R3 p.37*
@@ -1910,9 +1910,13 @@ degradation; infiltration TN 6 modified by (protocol − deck); base time 10 Com
 the allocated successes (`SR3EMIJI.js:494`). Trixie's factor starts at **6** — her skill —
 and rises to 8; ours would start at 0 and reach 2.
 
-**This one matters in play.** `detectInfiltration` rolls the defender's EW against the
-Intrusion Factor as the target number, so an intruder is far easier to spot than RAW allows —
-TN 2 instead of TN 8 in Trixie's case. Of the three, this is the one worth fixing.
+**This one mattered in play.** `detectInfiltration` rolls the defender's EW against the
+Intrusion Factor as the target number, so an intruder was far easier to spot than RAW allows —
+TN 2 instead of TN 8 in Trixie's case.
+
+`openInfiltration` now stores `skill.rating + alloc.factor`. The allocation dialog and the
+result card both show the split (`6 skill + 2 allocated`) so the baseline is visible rather
+than mysterious, and `tests/ew-skill.test.mjs` pins Trixie's 6 and the 8 it becomes.
 
 ### 🟠 2. Flux complementary dice are granted to the Infiltration Test
 

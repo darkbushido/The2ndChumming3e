@@ -438,7 +438,7 @@ export class SR3EMIJI {
         const spent  = ch + time + factor;
         const rem    = total - spent;
         if (out) out.innerHTML =
-          `Channels ${ch} · Time ${time} (→ infiltrate in <strong>${turnsFor(time)}</strong> turn(s)) · Intrusion Factor ${factor}`
+          `Channels ${ch} · Time ${time} (→ infiltrate in <strong>${turnsFor(time)}</strong> turn(s)) `+ `· Intrusion Factor <strong>${skill.rating + factor}</strong> (${skill.rating} skill + ${factor})`
           + `<br>Spent <strong>${spent}</strong> / ${total} — `
           + (rem < 0
               ? `<span style="color:var(--sr-red)">over-allocated by ${-rem}</span>`
@@ -456,7 +456,7 @@ export class SR3EMIJI {
       content: `
         <div style="display:flex;flex-direction:column;gap:6px;padding:4px 0">
           <div style="font-size:12px">Scored <strong>${total}</strong> successes vs TN ${tn}. Allocate them across the three options as you wish:</div>
-          <div style="font-size:11px;color:var(--sr-muted)">① channels to breach (1 each) ② time reduction (10 turns ÷ spent) ③ Intrusion Factor (stay hidden).</div>
+          <div style="font-size:11px;color:var(--sr-muted)">① channels to breach (1 each) ② time reduction (10 turns ÷ spent) ③ Intrusion Factor (stay hidden — starts at your EW skill of ${skill.rating}).</div>
           ${channels.map(c => `<label style="font-size:12px"><input type="checkbox" class="inf-ch" value="${c.key}"/> ${c.label}</label>`).join('')}
           <label style="font-size:12px">Successes on time reduction
             <input type="number" id="inf-time" value="0" min="0" max="${total}" style="width:50px;margin-left:6px"/>
@@ -491,7 +491,16 @@ export class SR3EMIJI {
     const update = {
       'system.infiltration.intruderActorId': intRigger.id,
       'system.infiltration.turnsRemaining':  turns,
-      'system.infiltration.intrusionFactor': alloc.factor,
+      // ⚠ Intrusion Factor is the SKILL PLUS the allocated successes, not the successes
+      // alone (R3 p.37): "A rigger's Intrusion Factor is equal to his Electronics
+      // (Electronic Warfare) skill plus any successes allocated from his test to infiltrate
+      // the network." The book's own example starts Trixie at 6 — her EW rating — and
+      // raises it to 8 with two successes.
+      //
+      // This matters more than it looks: `detectInfiltration` rolls the defender's EW
+      // against the Intrusion Factor as a TARGET NUMBER, so dropping the baseline turned a
+      // TN 8 check into a TN 2 one and made intruders far easier to spot than RAW allows.
+      'system.infiltration.intrusionFactor': skill.rating + alloc.factor,
       'system.infiltration.command':  alloc.channels.includes('command'),
       'system.infiltration.simsense': alloc.channels.includes('simsense'),
       'system.infiltration.system':   alloc.channels.includes('system'),
@@ -503,7 +512,7 @@ export class SR3EMIJI {
       speaker: ChatMessage.getSpeaker({ actor: intRigger }),
       content: `<div class="sr-roll-card sr-miji-card"><div class="sr-roll-header">📡 Infiltration Established</div>
         <div class="sr-staging-result">${intVehicle.name} breached <strong>${breachedLabels}</strong> on ${targetVehicle.name}.</div>
-        <div class="sr-staging-result">Intrusion Factor <strong>${alloc.factor}</strong>${alloc.time ? ` · ${alloc.time} success${alloc.time !== 1 ? 'es' : ''} on time` : ''} · infiltrate in <strong>${turns}</strong> combat turn(s).</div></div>`,
+        <div class="sr-staging-result">Intrusion Factor <strong>${skill.rating + alloc.factor}</strong> <span style="font-size:11px;color:var(--sr-muted)">(${skill.rating} skill + ${alloc.factor} allocated)</span>${alloc.time ? ` · ${alloc.time} success${alloc.time !== 1 ? 'es' : ''} on time` : ''} · infiltrate in <strong>${turns}</strong> combat turn(s).</div></div>`,
     });
   }
 

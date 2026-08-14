@@ -61,6 +61,23 @@ export async function run(t) {
   t.is('between two loose matches the higher rating wins',
     pick([skill('Electronic Intelligence', 3), skill('Electronics B/R', 5)]).rating, 5);
 
+  // ── Rigger 3’s own worked example (R3 p.37) ─────────────────────────────────
+  //
+  //   "Trixie has an Electronics Skill 4, with an Electronic Warfare specialization of 6.
+  //    She rolls 6 dice against a Target Number 6."
+  //
+  // The book prints the exact case this selector exists for. Before the fix the code rolled
+  // `skill.system.rating` — 4 — and R3 says 6.
+  t.is("Trixie: Electronics 4 with an EW specialisation rolls 6 dice (R3 p.37)",
+    pick([skill('Electronics', 4, EW(2))]).rating, 6);
+
+  // Her Intrusion Factor then STARTS at that 6 before any successes are allocated:
+  // "A rigger's Intrusion Factor is equal to his Electronics (Electronic Warfare) skill
+  // plus any successes allocated" — 6, rising to 8 when she spends two. The system stores
+  // `skill.rating + allocated`; this pins the baseline the sum depends on.
+  t.is("and that same rating is the Intrusion Factor baseline",
+    pick([skill('Electronics', 4, EW(2))]).rating + 2, 8);
+
   // ── A specialisation on an oddly-named skill still counts ──────────────────
   // The specialisation identifies the skill, so it is matched even when the parent skill's
   // name has no "electronic" in it — a renamed or houseruled skill still works.
