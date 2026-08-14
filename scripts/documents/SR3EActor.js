@@ -2550,7 +2550,7 @@ _prepareCharacter(sys, attr) {
         if (net > 0) {
           // Banisher wins — reduce spirit's Force
           newForce = Math.max(0, spiritForce - net);
-          await spirit?.setFlag('sr3e', 'force', newForce);
+          await spirit?.setFlag('The2ndChumming3e', 'force', newForce);
           if (newForce === 0) {
             outcomeHtml = `<div class="sr-staging-result" style="color:var(--sr-green)">
               💀 <strong>${spiritName}</strong> is destroyed — Force reduced to 0.
@@ -5766,7 +5766,7 @@ _prepareCharacter(sys, attr) {
     // Find spirits in the active combat tracker
     const spiritCombatants = (game.combat?.combatants ?? [])
       .map(c => c.actor)
-      .filter(a => a && a.getFlag('sr3e', 'isSpirit'));
+      .filter(a => a && game.sr3e.SR3ESpiritSummoning._spiritFlag(a, 'isSpirit'));
     if (!spiritCombatants.length) {
       ui.notifications.warn('No spirits found in the active combat tracker.');
       return null;
@@ -5776,7 +5776,7 @@ _prepareCharacter(sys, attr) {
     let spirit = spiritCombatants.length === 1 ? spiritCombatants[0] : null;
     if (!spirit) {
       const opts = spiritCombatants
-        .map(s => `<option value="${s.id}">${s.name} [F${s.getFlag('sr3e', 'force') ?? '?'}]</option>`)
+        .map(s => `<option value="${s.id}">${s.name} [F${game.sr3e.SR3ESpiritSummoning._spiritFlag(s, 'force') ?? '?'}]</option>`)
         .join('');
       let cancelled = true;
       let spiritId = '';
@@ -5794,8 +5794,8 @@ _prepareCharacter(sys, attr) {
       if (!spirit) return null;
     }
 
-    const spiritForce  = spirit.getFlag('sr3e', 'force') ?? 4;
-    const isSummoner   = spirit.getFlag('sr3e', 'conjurerId') === this.id;
+    const spiritForce  = game.sr3e.SR3ESpiritSummoning._spiritFlag(spirit, 'force') ?? 4;
+    const isSummoner   = game.sr3e.SR3ESpiritSummoning._spiritFlag(spirit, 'conjurerId') === this.id;
     const tempLoss     = this.getFlag('The2ndChumming3e', 'tempMagicLoss') ?? 0;
     const effectiveMagic = Math.max(1, magicBase - tempLoss);
 

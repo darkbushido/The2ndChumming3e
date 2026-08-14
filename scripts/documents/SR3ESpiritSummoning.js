@@ -289,6 +289,23 @@ export class SR3ESpiritSummoning {
   // ---------------------------------------------------------------------------
   // Create a temporary world Actor for the spirit.
   // ---------------------------------------------------------------------------
+  /**
+   * Read a spirit flag, tolerating spirits summoned before the namespace was fixed.
+   *
+   * Spirits used to be created with `flags.sr3e.*`, which is not a valid flag scope —
+   * only `core`, `world`, the system id and active module ids are (client-backend.mjs
+   * `getFlagScopes`). A raw create payload is not validated, so the data was written
+   * happily and then every `getFlag('sr3e', …)` **threw**.
+   *
+   * The legacy branch exists so a spirit already standing in someone's world keeps
+   * working after the fix rather than becoming unbindable. It reads the raw path, never
+   * `getFlag`, because `getFlag` would throw on the very scope it is trying to rescue.
+   * Safe to delete once no pre-fix spirits can plausibly remain.
+   */
+  static _spiritFlag(actor, key) {
+    return actor?.getFlag('The2ndChumming3e', key) ?? actor?.flags?.sr3e?.[key];
+  }
+
   static async _createSpiritActor(conjurer, spiritDef, force, services) {
     const stats = spiritDef.stats(force);
 
@@ -310,7 +327,7 @@ export class SR3ESpiritSummoning {
         },
       },
       flags: {
-        sr3e: {
+        The2ndChumming3e: {
           isSpirit:       true,
           spiritType:     spiritDef.category === 'elemental' ? 'elemental' : 'nature',
           spiritTypeKey:  Object.keys(SPIRIT_TYPES).find(k => SPIRIT_TYPES[k] === spiritDef),
@@ -347,7 +364,7 @@ export class SR3ESpiritSummoning {
     await combatant.update({
       initiative: initScore,
       flags: {
-        sr3e: {
+        The2ndChumming3e: {
           baseInitiative:    initScore,
           currentInitiative: initScore,
           passesRemaining:   Math.ceil(initScore / 10),
@@ -388,7 +405,13 @@ export class SR3ESpiritSummoning {
   // Spend one service. Auto-dismisses at 0.
   // ---------------------------------------------------------------------------
   static async spendService(spiritActor) {
-    const current = spiritActor.flags?.sr3e?.services ?? 0;
+    // ⚠ Read and write must agree on a namespace. This read used the raw path
+    // `flags.sr3e.services` while the write below used setFlag with the SYSTEM id, so a
+    // spirit's services were decremented into a location nothing ever read: spend a
+    // service, and the next call still saw the original count. The spirit never ran out
+    // and never departed. Nothing errored, because a raw path read of a missing key is
+    // simply undefined.
+    const current = SR3ESpiritSummoning._spiritFlag(spiritActor, 'services') ?? 0;
     if (current <= 0) {
       ui.notifications.warn(`${spiritActor.name} has no services remaining.`);
       await SR3ESpiritSummoning.dismissSpirit(spiritActor);

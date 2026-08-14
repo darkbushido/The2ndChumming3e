@@ -23,12 +23,12 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | 5 · 14 |
+| 🔴 Confirmed bugs, still open | 5 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 38 · 39 · 40 · 41 · 47 · 48 · 49 · 51 · 52 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
+| ✅ Done — kept for the record | 13 · **14** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -1384,25 +1384,60 @@ Keep it manually editable — GMs need it for chargen, imports, houserules.
 `scripts/macros/import-sr3-character.js:469-470` currently relies on the re-derivation and
 must change in step.
 
-## 14. Fix the wrong flag scope on spirits — **CONFIRMED**, 5 sites
+## 14. ✅ Fix the wrong flag scope on spirits — **DONE 2026-08-14**
 
-Five calls use the scope string `'sr3e'`, but the system id is **`The2ndChumming3e`**:
+**Seven sites, not five, and the diagnosis was wrong.**
 
-| Site | Call |
-|---|---|
-| `SR3EActor.js:2500` | `spirit?.setFlag('sr3e', 'force', newForce)` |
-| `SR3EActor.js:5149` | `a.getFlag('sr3e', 'isSpirit')` |
-| `SR3EActor.js:5159` | `s.getFlag('sr3e', 'force')` |
-| `SR3EActor.js:5177` | `spirit.getFlag('sr3e', 'force')` |
-| `SR3EActor.js:5178` | `spirit.getFlag('sr3e', 'conjurerId')` |
+`sr3e` is not a valid flag scope. Foundry accepts only `core`, `world`, `game.system.id` and
+active module ids (`client/data/client-backend.mjs` → `getFlagScopes`), and this system's id
+is `The2ndChumming3e`.
 
-Foundry validates the scope on **write**, so the banishing path at 2500 fails; the reads
-return undefined and silently fall back to their `??` defaults. Net effect: spirit Force,
-the spirit list and summoner identification do not work as intended.
+### 🔴 This task said the reads fail silently. They THROW.
 
-Check what `SR3ESpiritSummoning.js` writes when it creates a spirit before fixing — if it
-already writes under the correct scope, these five are simply reading the wrong place, and
-the fix is one-directional. Do **not** fix this inside the socket diff.
+The original note read: *"the reads return undefined and silently fall back to their `??`
+defaults."* Checking the engine rather than the note:
+
+```js
+getFlag(scope, key) {                                     // document.mjs:947
+  const scopes = this.constructor.database.getFlagScopes();
+  if ( !scopes.includes(scope) ) throw new Error(`Flag scope "${scope}" is not valid…`);
+```
+
+`getFlag` validates identically to `setFlag` (`:975`). So the spirit list and the banishing
+dialog were **broken outright**, not quietly degraded — a worse symptom than recorded, and
+the reason to read the source instead of trusting the summary.
+
+### Why it survived: the two directions differ
+
+- A **raw create payload** (`{ flags: { sr3e: {…} } }`) is **not** scope-validated. Spirits
+  were created with their data in an unreachable namespace, with no error anywhere.
+- **`getFlag` / `setFlag` throw.** Every subsequent read blew up.
+
+The two extra sites the task missed are exactly those raw payloads, in
+`SR3ESpiritSummoning._createSpiritActor` and the combatant update beside it.
+
+### 🔴 A third bug, unrecorded: services never decreased
+
+`services` was READ from the raw path `flags.sr3e.services` and WRITTEN with
+`setFlag(SYSTEM, 'services')`. Both operations succeed — on different keys. So spending a
+service wrote a decremented value somewhere nothing ever read, the original count stood, and
+**a spirit never ran out of services and never departed.** Only visible in play, over several
+uses, which is why no audit caught it.
+
+### The fix
+
+Everything normalised to `The2ndChumming3e` — both raw payloads and all five calls.
+
+Reads go through `SR3ESpiritSummoning._spiritFlag(actor, key)`, which prefers the system
+scope and falls back to the legacy **raw path** for spirits summoned before the fix. The
+fallback deliberately does not use `getFlag`, because `getFlag` throws on the very scope it
+is rescuing — `tests/spirit-flags.test.mjs` asserts that with a stub that enforces Foundry's
+real contract, so "simplifying" the fallback fails the suite instead of the session.
+
+It uses `??`, not `||`: services legitimately reach 0 — precisely when a spirit should depart
+— and `||` would fall through to a stale legacy count and keep it bound.
+
+The compatibility branch is safe to delete once no pre-fix spirits can plausibly remain.
 
 ## 25. ✅ Delete the duplicate `_onRender` in `SR3EHostSheetOrthodox` — **FIXED 2026-08-12**
 
