@@ -2225,7 +2225,10 @@ function _ratchetEssenceOnInstall(item) {
   // the "before" total the seed needs.
   const installedNow    = SR3EActor.installedEssenceCost(actor.items);
   const installedBefore = Math.max(0, parseFloat((installedNow - cost).toFixed(2)));
-  const lost            = actor.system?.attributes?.essence?.lost ?? 0;
+  // `null` here means nothing has been recorded yet, so the hardware already fitted is
+  // the correct starting point — that is the seed the `max` below provides.
+  const recorded        = actor.system?.attributes?.essence?.lost;
+  const lost            = (recorded === null || recorded === undefined) ? 0 : recorded;
 
   const next = parseFloat((Math.max(lost, installedBefore) + cost).toFixed(2));
   if (next <= lost) return;

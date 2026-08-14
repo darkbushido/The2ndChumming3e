@@ -122,10 +122,15 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
           // Never persist a meaningful number here; write `lost` instead.
           value: new NumberField({ initial: 6, nullable: false }),
           base:  new NumberField({ initial: 6, nullable: false }),
-          // Essence loss is PERMANENT (SR3 p.90). Stored as a high-water mark so
-          // removing the cyberware does not refund it. Editable — chargen, imports and
-          // houserules all need to set it directly.
-          lost:  new NumberField({ initial: 0, min: 0, nullable: false }),
+          // Essence loss is PERMANENT (M&M p.147) — removing the cyberware does not
+          // refund it.
+          //
+          // ⚠ NULLABLE, and the null is load-bearing: `null` means "never recorded", so
+          // the value is derived from installed cyberware instead (which is how actors
+          // saved before this field existed stay correct without a migration script). Any
+          // NUMBER — including 0 — is an authoritative statement and overrides the
+          // hardware. That is what makes a GM correction stick.
+          lost:  new NumberField({ initial: null, min: 0, nullable: true }),
           force: new NumberField({ initial: 0, min: 0 }),
         }),
         magic: new SchemaField({
@@ -207,7 +212,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
         essence: new SchemaField({
           value: new NumberField({ initial: 6 }),
           base:  new NumberField({ initial: 6 }),
-          lost:  new NumberField({ initial: 0, min: 0 }),   // permanent; see CharacterData
+          lost:  new NumberField({ initial: null, min: 0, nullable: true }),   // see CharacterData
           force: new NumberField({ initial: 0, min: 0 }),
         }),
         magic: new SchemaField({

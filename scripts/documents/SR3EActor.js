@@ -1721,7 +1721,7 @@ _prepareCharacter(sys, attr) {
     // cyberware shows immediately, before the ratchet hook has written anything.
     attr.essence.value = SR3EActor.essenceValue({
       base: attr.essence.base ?? 6,
-      lost: attr.essence.lost ?? 0,
+      lost: attr.essence.lost ?? null,
       installed: SR3EActor.installedEssenceCost(this.items),
     });
   }
@@ -4580,9 +4580,21 @@ _prepareCharacter(sys, attr) {
    * Floors at 0: SR3 has no negative Essence, and the two values that hang off it
    * (Bio Index capacity, effective Magic) would go strange rather than merely low.
    */
-  static essenceValue({ base = 6, lost = 0, installed = 0 } = {}) {
+  static essenceValue({ base = 6, lost = null, installed = 0 } = {}) {
     const b = Number.isFinite(Number(base)) ? Number(base) : 6;
-    const effective = Math.max(Number(lost) || 0, Number(installed) || 0);
+    const inst = Number(installed) || 0;
+
+    // `lost == null` means nothing has ever been recorded, so fall back to the hardware.
+    // That is the migration path for actors saved before the field existed, and it is the
+    // ONLY case where installed cyberware decides the answer.
+    //
+    // ⚠ Once a number is present it WINS OUTRIGHT — it is not `max`ed against installed.
+    // The max was the first design and it silently blocked the one thing a GM most needs:
+    // undoing a mistake. A player who installs the wrong 2.0 of chrome and has it removed
+    // could not be given the Essence back, because the number they were being corrected
+    // to was below what the (already deleted) hardware implied. The GM is trusted here,
+    // as everywhere else in this system.
+    const effective = (lost === null || lost === undefined) ? inst : (Number(lost) || 0);
     return Math.max(0, parseFloat((b - effective).toFixed(2)));
   }
 

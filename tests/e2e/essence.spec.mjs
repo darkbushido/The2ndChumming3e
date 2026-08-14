@@ -72,7 +72,9 @@ test.describe('Essence loss is permanent', () => {
 
     const clean = await essence(gm, SUBJECT);
     expect(clean.value, 'a fresh character starts at 6').toBe(6);
-    expect(clean.lost, 'and has lost nothing').toBe(0);
+    // `null`, not 0 — nothing has been RECORDED yet, which is a different statement from
+    // "has lost nothing" and is what lets the value follow installed cyberware.
+    expect(clean.lost, 'and nothing has been recorded yet').toBeNull();
 
     // ── Install ────────────────────────────────────────────────────────────────
     const wiredId = await implant(gm, SUBJECT, 'Wired Reflexes 1', 2);
@@ -130,15 +132,27 @@ test.describe('Essence loss is permanent', () => {
     expect(fixed.lost, 'the typed Essence is stored as the loss it implies').toBe(4);
     expect(fixed.value, 'and it sticks instead of reverting to the derived number').toBe(2);
 
-    // ⚠ But a GM cannot claim MORE Essence than the installed hardware allows. The
-    // derivation floors on max(lost, installed), so 3.0 of fitted chrome holds Essence at 3
-    // however high the box is set. That floor is what keeps an actor saved before this
-    // field existed reading correctly, and it is not worth trading away: alphaware and
-    // betaware express their discount in the item cost, not by overriding the total.
+    // ── The override must work UPWARD too — that is the mistake case ──────────
+    //
+    // A player installs the wrong 3.0 of chrome. The GM needs to give it back. An earlier
+    // design floored on max(lost, installed), so the correction silently clamped and the
+    // typed number reverted with no explanation — the same class of failure this whole task
+    // set out to remove, one layer along.
     await gm.evaluate(async n => {
       await game.actors.getName(n).update({ 'system.attributes.essence.value': 5 });
     }, SUBJECT);
     const raised = await essence(gm, SUBJECT);
-    expect(raised.value, 'installed cyberware floors Essence regardless of the typed value').toBe(3);
+    expect(raised.lost, 'the correction is stored as the loss it implies').toBe(1);
+    expect(raised.value, 'and it holds even though 3.0 of cyberware is still fitted').toBe(5);
+
+    // ── ↺ clears the override, so Essence follows the hardware again ──────────
+    // `null`, not 0: "nobody has said" and "this character has lost nothing" are different
+    // statements, and conflating them would make the reset read as "your chrome is free".
+    await gm.evaluate(async n => {
+      await game.actors.getName(n).update({ 'system.attributes.essence.lost': null });
+    }, SUBJECT);
+    const cleared = await essence(gm, SUBJECT);
+    expect(cleared.lost, 'cleared back to unrecorded').toBeNull();
+    expect(cleared.value, 'and Essence derives from the 3.0 still installed').toBe(3);
   });
 });

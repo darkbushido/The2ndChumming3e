@@ -35,6 +35,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       itemEdit:       SR3EActorSheet._onItemEdit,
       itemDelete:     SR3EActorSheet._onItemDelete,
       woundBox:       SR3EActorSheet._onWoundBox,
+      essenceRecalc:  SR3EActorSheet._onEssenceRecalc,
       equipArmor:     SR3EActorSheet._onEquipArmor,
       equipMelee:     SR3EActorSheet._onEquipMelee,
         applyDamage:    SR3EActorSheet._onApplyDamage,
@@ -621,6 +622,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   _tabAttributes(sys) {
   const attr    = sys.attributes ?? {};
   const d       = sys.derived    ?? {};
+
+  // Essence override state, for the two controls below. `lost` is nullable: null means no
+  // override has ever been recorded, so the value follows installed cyberware instead.
+  const essLost      = attr.essence?.lost ?? null;
+  const essInstalled = game.sr3e.SR3EActor.installedEssenceCost(this.actor.items);
   const isAdept = (sys.magicType ?? '') === 'Adept';
   const cb      = d.cyberBonus  ?? {};
   const ab      = d.adeptBonus  ?? {};
@@ -694,13 +700,28 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       </div>
 
       <!-- Essence -->
+      <!--
+        Two controls, deliberately. The top box is the familiar Essence number and writes
+        through _preUpdate, which converts it into the loss it implies. The second is the
+        stored loss itself, so a GM fixing a mistake can see and set the number that
+        actually persists rather than inferring it from a subtraction. The reset arrow
+        clears the override so Essence follows installed cyberware again.
+      -->
       <div class="attr-block attr-special"
-           title="6 - cyberware essence cost = ${attr.essence?.value ?? 6}${(d.totalBioIndex??0) > 0 ? ` | Bio Index ${d.totalBioIndex} / ${d.bioIndexCapacity} capacity` : ''}">
+           title="Essence ${attr.essence?.value ?? 6} = base ${attr.essence?.base ?? 6} − ${essLost === null ? `${essInstalled} installed (not overridden)` : `${essLost} lost`}${(d.totalBioIndex??0) > 0 ? ` | Bio Index ${d.totalBioIndex} / ${d.bioIndexCapacity} capacity` : ''}">
         <span class="attr-label" style="color:var(--sr-amber)">Essence</span>
         <div class="attr-row">
           <input class="attr-input" type="number" name="system.attributes.essence.value"
                  value="${attr.essence?.value ?? 6}" min="0" max="6" step="0.1"
                  style="color:var(--sr-amber)"/>
+        </div>
+        <div class="attr-row" style="margin-top:2px;gap:3px;align-items:center">
+          <span style="font-size:9px;color:var(--sr-muted)" title="Permanent Essence loss (M&amp;M p.147). Removing cyberware never lowers this by itself.">lost</span>
+          <input class="attr-input" type="number" name="system.attributes.essence.lost"
+                 value="${essLost ?? ''}" placeholder="${essInstalled}" min="0" max="6" step="0.1"
+                 style="width:42px;font-size:10px"
+                 title="Blank = follow installed cyberware (${essInstalled}). Type a number to override it — that is how you undo a mistaken install."/>
+          ${essLost === null ? '' : `<a data-action="essenceRecalc" title="Clear the override and go back to following installed cyberware (${essInstalled})." style="cursor:pointer;font-size:10px;color:var(--sr-muted)">↺</a>`}
         </div>
       </div>
 
@@ -2905,6 +2926,18 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       }
       await item.delete();
     }
+  }
+
+  /**
+   * Clear the Essence override so the value follows installed cyberware again.
+   *
+   * Writes `null`, not 0 — 0 is a legitimate override meaning “this character has lost no
+   * Essence at all”, which is a different statement from “nobody has said”. Conflating them
+   * would make the reset button read as “your chrome is free”.
+   */
+  static async _onEssenceRecalc(_event, _target) {
+    await this.actor.update({ 'system.attributes.essence.lost': null });
+    ui.notifications.info(`${this.actor.name}: Essence now follows installed cyberware.`);
   }
 
   static async _onWoundBox(ev, target) {

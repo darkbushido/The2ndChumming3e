@@ -669,8 +669,19 @@ No vehicle skill → the SR3 Default dialog. 1 success = manoeuvre succeeds (0 �
 
 ### Essence is permanent  · *M&M p.147*
 
-`essence.value` is **derived** — `base − max(lost, installedCyberwareCost)` — and rewritten
-every `prepareDerivedData`. The persisted number is **`essence.lost`**.
+`essence.value` is **derived** and rewritten every `prepareDerivedData`. The persisted number
+is **`essence.lost`**, and it is **nullable** — the null carries meaning:
+
+| `lost` | Meaning | Essence |
+|---|---|---|
+| `null` | nothing recorded | `base − installedCyberwareCost` |
+| a number (incl. `0`) | authoritative | `base − lost` |
+
+⚠ **A recorded number wins outright — it is NOT `max`ed against installed hardware.** The
+first design did exactly that, and it silently blocked the case a GM most needs: a player
+installs the wrong 2.0 of chrome, it is removed, and the corrected Essence cannot be restored
+because the number being corrected *to* sits below what the (now deleted) hardware implied.
+Permanence means removal does not refund **by itself** — not that the GM is overruled.
 
 ⚠ **`lost` ACCUMULATES on install; it is not a running maximum of what is fitted.** Storing
 `max(lost, installed)` passes every arithmetic test and still lets a character rip out 2.0 of
@@ -687,11 +698,12 @@ firing on delete could only lower it, which is the refund this prevents. One hoo
 Magic (`essence − totalBioIndex / 2`) — so the old refund silently inflated a character's
 Magic and their bioware headroom.
 
-The sheet's Essence box writes to the DERIVED field, which used to mean a GM's correction
-reverted with no error at all. `SR3EActor._preUpdate` translates a write to `value` into the
-`lost` it implies. A GM can deepen the loss by hand but cannot claim more Essence than the
-installed hardware allows — alphaware and betaware express their discount in the item's
-`essenceCost`, not by overriding the total.
+**Two controls on the sheet.** The Essence box writes to the DERIVED field, which used to mean
+a GM's correction reverted with no error at all; `SR3EActor._preUpdate` now translates a write
+to `value` into the `lost` it implies. Beneath it sits **`lost` itself**, editable, showing the
+installed total as its placeholder when unset — so a GM can see and set the number that
+actually persists rather than inferring it from a subtraction. The **↺** beside it clears the
+override back to `null` (never `0`) so Essence follows installed cyberware again.
 
 ⚠ **The rule is in Man & Machine, not core.** SR3 core never states the removal case —
 it only says the Essence Cost is "the amount by which the character's Essence is reduced

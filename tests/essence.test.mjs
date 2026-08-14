@@ -25,12 +25,18 @@
  *
  * ── THE RULE ─────────────────────────────────────────────────────────────────────────
  *
- * `essence.lost` is a persisted high-water mark and the value is `base − max(lost,
- * installed)`. The `max` does two jobs, and both matter:
+ * `essence.lost` is the persisted loss, and it is NULLABLE — the null carries meaning:
  *
- *   • RATCHET — removing cyberware cannot lower the mark, so the loss stays.
- *   • MIGRATE — an actor saved before `lost` existed has `lost: 0` and still reads
- *     correctly from its installed hardware alone, so no migration script is needed.
+ *   • `null`  — nothing recorded. Fall back to installed cyberware. This is how actors
+ *     saved before the field existed stay correct with no migration script.
+ *   • a NUMBER — an authoritative statement, including 0. It wins outright and is NOT
+ *     max'd against installed hardware.
+ *
+ * ⚠ That second rule is what makes a GM correction stick. The first design took
+ * `max(lost, installed)` always, which silently blocked the one case a GM most needs: a
+ * player installs the wrong 2.0 of chrome, it is removed, and the corrected Essence cannot
+ * be given back because the number being corrected TO sits below what the hardware implied.
+ * Permanence is about removal not refunding automatically — not about overruling the GM.
  */
 import { installGlobals, installGame } from './helpers/foundry.mjs';
 installGlobals();
@@ -59,9 +65,9 @@ export async function run(t) {
     cost([cyber(0.1), cyber(0.2)]), 0.3);
 
   // ── The derivation ────────────────────────────────────────────────────────
-  t.is('a clean character is Essence 6', ess({ base: 6, lost: 0, installed: 0 }), 6);
+  t.is('a clean character is Essence 6', ess({ base: 6, lost: null, installed: 0 }), 6);
   t.is('installed cyberware shows immediately, before anything is persisted',
-    ess({ base: 6, lost: 0, installed: 1.5 }), 4.5);
+    ess({ base: 6, lost: null, installed: 1.5 }), 4.5);
   t.is('a recorded mark applies with nothing installed — the loss is permanent',
     ess({ base: 6, lost: 1.5, installed: 0 }), 4.5);
 
@@ -71,14 +77,30 @@ export async function run(t) {
     ess({ base: 6, lost: 2, installed: 0 }), 4);
   t.is('removing SOME of it keeps the full mark',
     ess({ base: 6, lost: 2, installed: 0.5 }), 4);
-  t.is('installing MORE than the mark deepens the loss straight away',
-    ess({ base: 6, lost: 2, installed: 3.25 }), 2.75);
+  // ⚠ Installing more chrome does NOT deepen the loss here — that is the install hook's job
+  // (`_ratchetEssenceOnInstall` writes `max(lost, installedBefore) + cost`). The derivation
+  // trusts the recorded number, because trusting it is the whole point of the override.
+  // Having BOTH ratchet would double-count a GM who is mid-correction.
+  t.is('a recorded loss is trusted even when more hardware is fitted than it accounts for',
+    ess({ base: 6, lost: 2, installed: 3.25 }), 4);
 
   // ── Migration: actors saved before `lost` existed ─────────────────────────
   // They all carry lost: 0 with chrome fitted. Reading from `installed` alone keeps them
   // correct on load, which is why this needed no migration script.
   t.is('a pre-fix actor with 2.1 of cyberware and no mark still reads 3.9',
-    ess({ base: 6, lost: 0, installed: 2.1 }), 3.9);
+    ess({ base: 6, lost: null, installed: 2.1 }), 3.9);
+
+  // ── THE GM OVERRIDE ───────────────────────────────────────────────────────
+  // An explicit number wins outright. These are the mistake-correction cases, and every
+  // one of them returned the WRONG answer under the original max(lost, installed).
+  t.is('an explicit loss BELOW the installed hardware is honoured',
+    ess({ base: 6, lost: 1, installed: 3 }), 5);
+  t.is('an explicit 0 means "this character has lost nothing", even with chrome fitted',
+    ess({ base: 6, lost: 0, installed: 3 }), 6);
+  t.is('and null is NOT the same as 0 — it means "nobody has said", so follow the hardware',
+    ess({ base: 6, lost: null, installed: 3 }), 3);
+  t.is('undefined behaves as null, for actors whose field has never been touched',
+    ess({ base: 6, installed: 3 }), 3);
 
   // ── Floors and odd bases ──────────────────────────────────────────────────
   // SR3 has no negative Essence, and the two derived values above would go strange rather
