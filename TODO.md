@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | *(none — 5, 14 and 43 all closed)* |
+| 🔴 Confirmed bugs, still open | 54 |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 38 · 39 · 40 · 41 · 47 · 48 · 49 · 51 · 52 · 53 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
@@ -1870,6 +1870,74 @@ without the cost.
 procedure options) rather than as a special case bolted onto the install hook — and it needs
 to track WHICH hole is being filled, since a 0.5 implant cannot borrow 2.0 of hole and then
 lend the remainder to the next one for free.
+
+## 54. Three EW divergences from Rigger 3 — found by audit, **not fixed**
+
+Found 2026-08-14 when the [#24](#24) MIJI skill fix was challenged on sourcing. Verifying it
+against R3 confirmed the fix (see below) and turned up three **pre-existing** divergences in
+code nobody had asked about. Recorded rather than fixed, because two of them may be
+deliberate and the third changes play balance.
+
+**R3's worked example is the yardstick throughout** (R3 p.37, "Trixie"):
+
+> "Trixie has a remote-control deck with a **Rating 6 protocol-emulation module** and a
+> **Flux Rating 8**… Trixie has an **Electronics Skill 4, with an Electronic Warfare
+> specialization of 6**. She rolls **6 dice** against a Target Number 6. This target number
+> is reduced by 3 (her protocol-emulation module rating of 6 minus the network's deck rating
+> of 3) to 3. Her test yields 4 successes. Trixie decides to use 2 of those successes to
+> **increase her Intrusion Factor from 6 to 8**. Trixie uses her remaining 2 successes to
+> infiltrate two channels."
+
+### ✅ What the audit CONFIRMED
+
+`_pickEwSkill` is right, and Trixie proves it number-for-number: **Electronics 4 with an EW
+specialisation rolls 6 dice**, which is what the fix produces and what the old
+`find(name.includes('electronic'))` did not. R3 names **Electronics (Electronic Warfare)**
+explicitly for infiltration, for the MIJI Test on both sides, and for detection — and uses
+**Electronics (Control Systems)** for the frequency switchover, so the book distinguishes
+specialisations precisely where the old substring match could not.
+
+Also confirmed against R3: intruder TN = targeted deck rating; defender TN = the intruder's
+protocol-emulation module, or **ECM rating when jamming**; net successes = boxes of signal
+degradation; infiltration TN 6 modified by (protocol − deck); base time 10 Combat Turns.
+
+### 🔴 1. Intrusion Factor omits the EW skill baseline
+
+> "A rigger's Intrusion Factor is equal to his **Electronics (Electronic Warfare) skill plus
+> any successes allocated** from his test to infiltrate the network."  — *R3 p.37*
+
+`system.infiltration.intrusionFactor` is initialised to 0 and `openInfiltration` writes only
+the allocated successes (`SR3EMIJI.js:494`). Trixie's factor starts at **6** — her skill —
+and rises to 8; ours would start at 0 and reach 2.
+
+**This one matters in play.** `detectInfiltration` rolls the defender's EW against the
+Intrusion Factor as the target number, so an intruder is far easier to spot than RAW allows —
+TN 2 instead of TN 8 in Trixie's case. Of the three, this is the one worth fixing.
+
+### 🟠 2. Flux complementary dice are granted to the Infiltration Test
+
+R3 grants them **only for the MIJI Test**: *"The Intruder's flux rating may be used as
+complementary skill dice for **this part of the test**"*, and the defender rolls "with
+complementary skill dice equal to his Flux rating". The infiltration text grants none, and
+Trixie confirms it: Flux 8, EW 6, and she rolls **6** dice, not 6 + Flux.
+
+`openInfiltration` adds `_complementary(flux, skill.rating)` anyway (`SR3EMIJI.js:402`).
+
+### 🟠 3. `_complementary` caps at min(Flux, skill), which is in neither book
+
+R3 says complementary dice **equal to the Flux rating**, with no cap. And SR3's actual
+Complementary Skills mechanic (p.97) is not bonus dice at all:
+
+> "the player can roll dice for the Knowledge Skill **against the same target number**…
+> **Every 2 successes** rolled on the Knowledge Skill Test count as an additional success
+> toward the Active Skill's Success Test. At least one success must have been scored with
+> the Active Skill."
+
+So there are three candidate readings — R3's flat "+Flux dice", SR3's 2:1 second test, and
+our capped `min(Flux, skill)`. CLAUDE.md documents the cap as a deliberate simplification
+("no special mechanic"), so **decide this before changing it**; it is a design call, not
+obviously a bug. Note it interacts with the skill fix: raising Trixie's EW from 4 to 6 also
+raises her cap from 4 to 6, so she now gets 6 of her 8 Flux dice instead of 4.
 
 ## 12. Write a committed pack rebuild script and vendor its sources — *keystone; blocks #1*
 

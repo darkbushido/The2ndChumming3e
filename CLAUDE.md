@@ -1332,6 +1332,9 @@ A parallel-to-combat electronic-warfare layer for riggers. **Hybrid stat placeme
   booleans). All on the vehicle sheet's **Electronic Warfare tab**.
 
 **Complementary dice** = `min(Flux, skillRating)` extra pool dice (no special mechanic).
+⚠ **The cap is ours, not RAW** — R3 says dice "equal to his Flux rating", and SR3 p.97’s
+actual complementary mechanic is a separate test at 2 successes → 1. R3 also grants them for
+the **MIJI Test only**, not for infiltration. See TODO 54.
 **Footprint** derived = `round((riggerDeckFlux + vehFlux + ECM) / 10)`; "↻ Recalc" writes it into
 the editable field. Targeting the vehicle's Sig uses TN = Sig − Footprint.
 
