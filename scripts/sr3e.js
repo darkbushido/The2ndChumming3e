@@ -2194,6 +2194,48 @@ function _denyBtn(btn, why) {
 }
 
 
+/**
+ * Persist Essence loss when cyberware is installed. It is PERMANENT (SR3 p.90).
+ *
+ * ⚠ **This ACCUMULATES; it is not a running maximum.** An earlier attempt stored
+ * `max(lost, currentlyInstalled)`, which is wrong the moment anything is removed: rip out
+ * 2.0 of wired reflexes, fit 0.5 of cybereyes, and the max is still 2.0 — the new chrome
+ * cost nothing. Installing always deepens the loss, whatever came out before it.
+ *
+ * So: `lost = max(lost, installedBeforeThisItem) + thisCost`. The `max` handles actors
+ * saved before `lost` existed — they arrive with 0 and their fitted hardware seeds the
+ * mark on the first install, which is why no migration script is needed.
+ *
+ * ⚠ There is deliberately NO delete hook. Removal must not touch the mark at all; a hook
+ * there could only ever lower it, which is the refund this exists to prevent.
+ *
+ * Gated to the active GM: every connected client sees these hooks and would otherwise
+ * race to make the same write.
+ */
+function _ratchetEssenceOnInstall(item) {
+  const actor = item?.actor;
+  if (!actor || !game.users.activeGM?.isSelf) return;
+  if (item.type !== 'cyberware') return;
+  if (actor.type !== 'character' && actor.type !== 'npc') return;
+
+  const cost = parseFloat(item.system?.essenceCost ?? 0);
+  if (!Number.isFinite(cost) || cost <= 0) return;
+
+  // The item is already attached by the time this fires, so subtract it back out to get
+  // the "before" total the seed needs.
+  const installedNow    = SR3EActor.installedEssenceCost(actor.items);
+  const installedBefore = Math.max(0, parseFloat((installedNow - cost).toFixed(2)));
+  const lost            = actor.system?.attributes?.essence?.lost ?? 0;
+
+  const next = parseFloat((Math.max(lost, installedBefore) + cost).toFixed(2));
+  if (next <= lost) return;
+
+  actor.update({ 'system.attributes.essence.lost': next })
+    .catch(err => console.error('SR3E | essence ratchet failed:', err));
+}
+
+Hooks.on('createItem', (item) => _ratchetEssenceOnInstall(item));
+
 // Inject red warning below the matrixRuleset setting in Configure Settings.
 Hooks.on('renderSettingsConfig', (_app, html) => {
   const input = html.querySelector('[name="The2ndChumming3e.matrixRuleset"]');

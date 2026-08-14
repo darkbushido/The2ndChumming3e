@@ -466,8 +466,11 @@ const actorData = {
       charisma:     { base: a.Charisma     ?? 3, value: a.Charisma     ?? 3 },
       intelligence: { base: a.Intelligence ?? 3, value: a.Intelligence ?? 3 },
       willpower:    { base: a.Willpower    ?? 3, value: a.Willpower    ?? 3 },
-      // essence.value is re-derived from cyberware costs by prepareDerivedData
-      essence:      { base: 6, value: 6 },
+      // Essence: `value` is derived, `lost` is the persisted permanent loss. Leaving
+      // `lost` at 0 is correct here — the derivation takes max(lost, installed), so an
+      // imported character reads the right Essence from their cyberware immediately, and
+      // the ratchet hook records the mark the first time that hardware is touched.
+      essence:      { base: 6, value: 6, lost: 0 },
       magic:        { base: a.Magic        ?? 0, value: a.Magic        ?? 0 },
       reaction:     { base: a.Reaction     ?? 3, value: a.Reaction     ?? 3 },
     },

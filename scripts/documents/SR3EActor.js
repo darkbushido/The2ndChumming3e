@@ -1706,13 +1706,20 @@ _prepareCharacter(sys, attr) {
 
   // Essence — reduced by cyberware only (M&M rules: bioware uses Bio Index, not Essence)
   if (attr.essence) {
-    let essenceLoss = 0;
-    for (const item of (this.items ?? [])) {
-      if (item.type === 'cyberware') {
-        essenceLoss += parseFloat(item.system?.essenceCost ?? 0);
-      }
-    }
-    attr.essence.value = Math.max(0, parseFloat((6 - essenceLoss).toFixed(2)));
+    // ⚠ Essence loss is PERMANENT. Deriving it from currently-held cyberware refunded
+    // it the moment an item was deleted, and two things hang off Essence — Bio Index
+    // capacity (essence + 3) and effective Magic (essence − bioIndex/2) — so a refund
+    // silently inflated a character's Magic and their bioware headroom.
+    //
+    // `essence.lost` is the persisted high-water mark. Taking the max against the live
+    // cyberware sum means an actor created before this field existed still reads
+    // correctly with `lost: 0`, so no migration script is needed — and installing
+    // cyberware shows immediately, before the ratchet hook has written anything.
+    attr.essence.value = SR3EActor.essenceValue({
+      base: attr.essence.base ?? 6,
+      lost: attr.essence.lost ?? 0,
+      installed: SR3EActor.installedEssenceCost(this.items),
+    });
   }
 
   // Bio Index (M&M p.XX): capacity = Essence + 3; effective magic = Essence − (totalBioIndex ÷ 2)
@@ -4543,6 +4550,61 @@ _prepareCharacter(sys, attr) {
    * both send `3` and only one would stick. The GM re-enters this method, takes
    * the local branch, and reads live data inside the per-document queue.
    */
+  /**
+   * Total Essence cost of the cyberware an actor is CURRENTLY carrying. **Pure.**
+   *
+   * Bioware is excluded on purpose: M&M charges it against the Bio Index, not Essence.
+   */
+  static installedEssenceCost(items) {
+    let total = 0;
+    for (const item of (items ?? [])) {
+      if (item?.type !== 'cyberware') continue;
+      const c = parseFloat(item.system?.essenceCost ?? 0);
+      if (Number.isFinite(c)) total += c;
+    }
+    return parseFloat(total.toFixed(2));
+  }
+
+  /**
+   * Current Essence from the persisted mark and what is installed. **Pure.**
+   *
+   * `max(lost, installed)` is doing two jobs at once:
+   *   • it RATCHETS — removing cyberware cannot lower the mark, so the loss stays;
+   *   • it MIGRATES — an actor from before `lost` existed has `lost: 0`, and still
+   *     reads correctly from its installed hardware alone.
+   *
+   * Floors at 0: SR3 has no negative Essence, and the two values that hang off it
+   * (Bio Index capacity, effective Magic) would go strange rather than merely low.
+   */
+  static essenceValue({ base = 6, lost = 0, installed = 0 } = {}) {
+    const b = Number.isFinite(Number(base)) ? Number(base) : 6;
+    const effective = Math.max(Number(lost) || 0, Number(installed) || 0);
+    return Math.max(0, parseFloat((b - effective).toFixed(2)));
+  }
+
+  /**
+   * Translate a direct edit of the DERIVED Essence field into the persisted mark.
+   *
+   * The sheet has always shown an editable Essence box, and it has never worked: the
+   * next `prepareDerivedData` overwrote whatever was typed, so the number reverted with
+   * no error. Rather than remove a control GMs need for chargen, imports and
+   * houserules, a write to `essence.value` is rewritten as the `lost` it implies.
+   *
+   * ⚠ This is a DOWNWARD-ONLY control by nature — typing a HIGHER Essence lowers `lost`,
+   * which is the one way to undo a mistaken install. That is deliberate: the ratchet
+   * exists to stop cyberware REMOVAL refunding Essence, not to stop a GM correcting
+   * their own data. Minimal guardrails.
+   */
+  async _preUpdate(changed, options, user) {
+    const v = foundry.utils.getProperty(changed, 'system.attributes.essence.value');
+    if (v !== undefined && foundry.utils.getProperty(changed, 'system.attributes.essence.lost') === undefined) {
+      const base = this.system?.attributes?.essence?.base ?? 6;
+      foundry.utils.setProperty(changed, 'system.attributes.essence.lost',
+        Math.max(0, parseFloat((base - (Number(v) || 0)).toFixed(2))));
+    }
+    return super._preUpdate(changed, options, user);
+  }
+
   async spendCombatPool(amount) {
     if (!game.users.activeGM?.isSelf) {
       const { spent } = await game.sr3e.SR3EQuery.asGM('sr3e.pool.spend',

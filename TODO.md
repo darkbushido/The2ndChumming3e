@@ -23,12 +23,12 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | 5 |
+| 🔴 Confirmed bugs, still open | *(none — 5, 14 and 43 all closed)* |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 38 · 39 · 40 · 41 · 47 · 48 · 49 · 51 · 52 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | 13 · **14** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
+| ✅ Done — kept for the record | **5** · 13 · **14** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -1359,30 +1359,66 @@ for defender` strip then shows for the whole table.
 - Worth generalising past melee — a "who has acted" strip is equally useful on soak and resist
   cards, which is why this is its own task rather than a sub-part of #24.
 
-## 5. Make essence loss permanent when cyberware is removed — **CONFIRMED BUG**
+## 5. ✅ Make essence loss permanent when cyberware is removed — **DONE 2026-08-14**
 
-`SR3EActor.js:1683-1692` recomputes Essence every `prepareDerivedData` from **currently
-held** cyberware:
+`attributes.essence.lost` is a persisted, permanent record of Essence spent; the derived
+value is `base − max(lost, installed)`.
 
-```js
-let essenceLoss = 0;
-for (const item of (this.items ?? [])) {
-  if (item.type === 'cyberware') essenceLoss += parseFloat(item.system?.essenceCost ?? 0);
-}
-attr.essence.value = Math.max(0, parseFloat((6 - essenceLoss).toFixed(2)));
+**The `max` is a migration device, not the rule.** An actor saved before this field existed
+arrives with `lost: 0` and its fitted hardware alone still reads correctly — which is why
+this needed no migration script. Once anything is installed, the hook seeds the mark.
+
+### 🔴 A high-water mark is NOT the right model, and only e2e caught it
+
+The obvious implementation — store `max(lost, currentlyInstalled)` — passes every arithmetic
+test and is still wrong. Rip out 2.0 of wired reflexes, fit 0.5 of cybereyes: the max is
+still 2.0, so **the new chrome costs nothing**. Installing always deepens the loss, whatever
+came out before it.
+
+The rule is therefore an ACCUMULATOR:
+
+```
+lost = max(lost, installedBeforeThisItem) + thisCost
 ```
 
-Delete the item, the loss vanishes. SR3: Essence loss is permanent.
+The `max` term seeds an un-migrated actor from what they are already carrying; the `+ cost`
+is the actual rule. Caught by `tests/e2e/essence.spec.mjs` on a real world, after the unit
+suite was green — the arithmetic was never what broke.
 
-Blast radius — two derived values hang off it at `SR3EActor.js:1702-1708`:
-Bio Index capacity = `essence.value + 3`; effective Magic = `essence.value − (totalBioIndex / 2)`.
-So a refund silently inflates Magic and bio-index headroom.
+### ⚠ There is deliberately NO delete hook
 
-**Fix:** persist the loss as a high-water mark that only ratchets down (the data model
-already has `attributes.essence` as a SchemaField with `base`, `ActorDataModels.js:120`).
-Keep it manually editable — GMs need it for chargen, imports, houserules.
-`scripts/macros/import-sr3-character.js:469-470` currently relies on the re-derivation and
-must change in step.
+Removal must not touch the mark. Anything running on delete could only lower it, which is
+precisely the refund this task exists to prevent. The single hook is on `createItem`.
+
+*(An earlier draft used `preDeleteItem` to record the mark before removal. It works, but it
+is redundant once installs accumulate — and a hook that fires on delete is a standing
+invitation for someone to later "fix" it into lowering the mark.)*
+
+### The manual control now actually works — and its one limit
+
+The sheet has always shown an editable Essence box bound to `system.attributes.essence.value`.
+That field is DERIVED and rewritten every `prepareDerivedData`, so a GM's correction reverted
+with no error whatsoever. `SR3EActor._preUpdate` now rewrites a direct write to `value` as the
+`lost` it implies, so the box does what it looks like it does.
+
+⚠ **A GM cannot claim MORE Essence than the installed hardware allows** — the derivation
+floors on `max(lost, installed)`, so 3.0 of fitted chrome holds Essence at 3 however high the
+box is set. That floor is what keeps pre-fix actors reading correctly, and it is not worth
+trading away: alphaware and betaware express their discount in the item's `essenceCost`, not
+by overriding the total.
+
+### Blast radius, now contained
+
+Bio Index capacity (`essence + 3`) and effective Magic (`essence − totalBioIndex / 2`) both
+hang off this value, so the old refund silently inflated a character's Magic and their
+bioware headroom — install, uninstall, come out ahead.
+
+`scripts/macros/import-sr3-character.js` sets `lost: 0` explicitly and relies on the seeding
+`max`, so an imported character reads correctly the moment they arrive.
+
+Covered by `tests/essence.test.mjs` (20 assertions on the pure derivation, including that
+bioware is excluded and that floating-point costs round cleanly) and `tests/e2e/essence.spec.mjs`
+(the ratchet, the remove-then-reinstall case, and the manual control).
 
 ## 14. ✅ Fix the wrong flag scope on spirits — **DONE 2026-08-14**
 

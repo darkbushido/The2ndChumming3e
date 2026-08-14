@@ -667,6 +667,34 @@ No vehicle skill → the SR3 Default dialog. 1 success = manoeuvre succeeds (0 �
 - Auto (no pilot or pilot not found): `Pilot rating` base + `2d6`
 - VCR is exclusive: activating VCR sets all other linked vehicles to Auto (not locked — editable after)
 
+### Essence is permanent  · *SR3 p.90*
+
+`essence.value` is **derived** — `base − max(lost, installedCyberwareCost)` — and rewritten
+every `prepareDerivedData`. The persisted number is **`essence.lost`**.
+
+⚠ **`lost` ACCUMULATES on install; it is not a running maximum of what is fitted.** Storing
+`max(lost, installed)` passes every arithmetic test and still lets a character rip out 2.0 of
+wired reflexes, fit 0.5 of cybereyes, and pay nothing for the new chrome — the removed
+hardware keeps "covering" it. The rule is `lost = max(lost, installedBefore) + cost`, where
+the `max` term exists only to seed actors saved before the field existed (so no migration
+script is needed).
+
+⚠ **There is deliberately NO delete hook.** Removal must never touch the mark; anything
+firing on delete could only lower it, which is the refund this prevents. One hook, on
+`createItem`, gated to the active GM.
+
+⚠ **Two derived values hang off Essence** — Bio Index capacity (`essence + 3`) and effective
+Magic (`essence − totalBioIndex / 2`) — so the old refund silently inflated a character's
+Magic and their bioware headroom.
+
+The sheet's Essence box writes to the DERIVED field, which used to mean a GM's correction
+reverted with no error at all. `SR3EActor._preUpdate` translates a write to `value` into the
+`lost` it implies. A GM can deepen the loss by hand but cannot claim more Essence than the
+installed hardware allows — alphaware and betaware express their discount in the item's
+`essenceCost`, not by overriding the total.
+
+⚠ Adding this field was a **data-model change**: it needs a full Foundry restart, not F5.
+
 ### Astral state (Awakened characters)
 Toggled on the Magic tab. Stored as `system.astralMode` (persisted):
 - `''` — no state set (default)
@@ -1025,7 +1053,9 @@ system.attributes.strength.base / .value
 system.attributes.intelligence.base / .value
 system.attributes.willpower.base / .value
 system.attributes.reaction.value / .reactionBonus / .diceBonus / .override
-system.attributes.essence.value
+system.attributes.essence.value     ← DERIVED: base − max(lost, installed cyberware)
+system.attributes.essence.base      ← persisted starting Essence (6)
+system.attributes.essence.lost      ← persisted PERMANENT loss; accumulates on install
 system.attributes.magic.base / .value
 system.wounds.stun.value / .max
 system.wounds.physical.value / .max

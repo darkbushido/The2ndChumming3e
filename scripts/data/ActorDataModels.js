@@ -118,8 +118,14 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
         intelligence: _attr(3),
         willpower:    _attr(3),
         essence: new SchemaField({
+          // `value` is DERIVED (base − lost) and rewritten every prepareDerivedData.
+          // Never persist a meaningful number here; write `lost` instead.
           value: new NumberField({ initial: 6, nullable: false }),
           base:  new NumberField({ initial: 6, nullable: false }),
+          // Essence loss is PERMANENT (SR3 p.90). Stored as a high-water mark so
+          // removing the cyberware does not refund it. Editable — chargen, imports and
+          // houserules all need to set it directly.
+          lost:  new NumberField({ initial: 0, min: 0, nullable: false }),
           force: new NumberField({ initial: 0, min: 0 }),
         }),
         magic: new SchemaField({
@@ -201,6 +207,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
         essence: new SchemaField({
           value: new NumberField({ initial: 6 }),
           base:  new NumberField({ initial: 6 }),
+          lost:  new NumberField({ initial: 0, min: 0 }),   // permanent; see CharacterData
           force: new NumberField({ initial: 0, min: 0 }),
         }),
         magic: new SchemaField({
