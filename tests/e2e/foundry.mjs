@@ -229,6 +229,23 @@ export function cardIn(page, messageId) {
 }
 
 /** Set a card input's value directly. Handlers read `.value` at click time. */
+/**
+ * Set the NEWEST chat card's field, in-page. Same reasoning as `clickNewestChatButton`:
+ * `locator.fill()` performs the identical actionability wait and stalls on the same
+ * notification overlay, burning the whole test budget on a field that is plainly editable.
+ */
+export async function setNewestChatField(page, fieldCls, value) {
+  const ok = await page.evaluate(({ f, v }) => {
+    const el = [...document.querySelectorAll(`#chat .${f}`)].pop();
+    if (!el) return false;
+    el.value = String(v);
+    el.dispatchEvent(new Event('input',  { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+    return true;
+  }, { f: fieldCls, v: value });
+  if (!ok) throw new Error(`No .${fieldCls} in the chat log`);
+}
+
 export async function setCardField(page, cardSel, fieldCls, value) {
   const ok = await page.evaluate(({ c, f, v }) => {
     const el = document.querySelector(`${c} .${f}`);   // c is message-scoped by the caller
@@ -241,6 +258,30 @@ export async function setCardField(page, cardSel, fieldCls, value) {
 }
 
 /** Dispatch a click on a card button, bypassing actionability checks. */
+/**
+ * Click the NEWEST chat button matching `sel`, by dispatching the event in-page.
+ *
+ * ⚠ Not `locator.click()`, and the difference is not stylistic. Playwright's click waits
+ * for the element to "receive events", and Foundry renders every message twice — once in
+ * `#chat` and once in the `#chat-notifications` overlay — so the notification copy can sit
+ * on top of the log copy and intercept the hit. The element is visible, enabled and
+ * untitled, and the click still times out after the full budget with nothing to explain it.
+ *
+ * Dispatching straight at the element sidesteps the overlay. The handlers are ordinary
+ * `addEventListener('click')` registrations, so a synthetic bubbling MouseEvent drives the
+ * real code path — this skips the hit-test, not the application logic.
+ */
+export async function clickNewestChatButton(page, sel) {
+  const state = await page.evaluate(s => {
+    const el = [...document.querySelectorAll(`${'#chat'} ${s}`)].pop();
+    if (!el) return 'missing';
+    if (el.disabled) return 'disabled';
+    el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    return 'clicked';
+  }, sel);
+  if (state !== 'clicked') throw new Error(`Could not click newest ${sel}: ${state}`);
+}
+
 export async function clickCardButton(page, cardSel, btnSel) {
   const state = await page.evaluate(({ c, b }) => {
     const el = document.querySelector(`${c} ${b}`);

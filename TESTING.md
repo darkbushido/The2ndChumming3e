@@ -8,7 +8,7 @@ Two suites, and they cover different things. Neither replaces the other.
 
 ```bash
 npm test          # 16 suites, ~380 assertions. No browser, no server, seconds.
-npm run test:e2e  # 12 tests / 7 files, two real clients. Needs Foundry with a world.
+npm run test:e2e  # 13 tests / 8 files, two real clients + a GM. Needs Foundry running.
 ```
 
 ### ⚠ The e2e suite tests whatever Foundry is SERVING, not what you just wrote
@@ -235,9 +235,34 @@ On the active combatant's card: **Complex** (full width) + two **Simple** button
 
 ---
 
-## 5. Ranged Combat
+## 5. Ranged Combat — **PARTLY AUTOMATED** (`npm run test:e2e`)
 
-Full flow: click weapon → target dialog → dodge declaration → attack roll → dodge roll (if declared) → soak card → soak roll → assign damage button.
+Full flow: click weapon → target dialog → **GM's TN window** → roll options (TN, range,
+called shot, Combat Pool) → attack roll → **defender declares** → dodge roll → Resist Damage
+→ soak card → soak roll → assign damage button.
+
+⚠ **That order was wrong here until 2026-08-13.** This section used to read "target dialog →
+dodge declaration → attack roll", which is the pre-fix sequence. SR3 resolves the Dodge Test
+at step 4, *after* counting the attacker's successes at step 3 — the defender must see the
+hits before choosing between dodging and saving the pool for the Damage Resistance Test. The
+code was fixed 2026-08-05; this file kept describing the old flow for another week.
+
+### ✅ Covered by `tests/e2e/ranged.spec.mjs` — three clients
+
+- **The GM's TN window opens on the GM and NOT on the attacker**, and the attacker's own TN
+  field is read-only once a GM has adjudicated. The negative is the valuable half: a GM
+  testing alone passes every gate themselves.
+- **The declaration comes AFTER the roll and comes TO the defender.** The card states the
+  incoming hits; the declare button auto-clicks on the decider's client, so the dialog opens
+  on the defender and never on the attacker, whose button is refused outright.
+- **Each side pays its own pool** — attacker for attack dice, defender for dodge dice and
+  again for soak dice, on three separate spends across two actors.
+- **`.sr-soak-btn` vs `.sr-soak-roll-btn`** carry deliberately different gates: the first only
+  posts a card onward (`_mine`, any owner), the second rolls (`_isDecider`, exactly one).
+
+⚠ **Not covered, still needs a human:** fire modes beyond SS (BF/FA recoil accumulation),
+ammunition types and depletion, called shots, range-band TN changes, and grenade/AoE scatter.
+The spec deliberately holds every TN at or below 6 so no die can explode — real play does not.
 
 ### drag and drop weapon sections - passed
 Move preferred weapon types to the top of the weapons tab - passed
