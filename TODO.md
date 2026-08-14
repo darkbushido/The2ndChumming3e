@@ -24,7 +24,7 @@ independent.
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | 5 · 14 · 43 |
-| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 · 41 · 47 · 48 · 49 |
+| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 · 41 · 47 · 48 · 49 · 51 · 52 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
@@ -1674,6 +1674,43 @@ Three harness facts worth knowing before writing another spec — each cost a wr
 
 ⚠ Still no coverage for the **ranged** flow end-to-end (fire mode → recoil → dodge → soak), which
 is the most-played path in the system and the one with the most moving parts.
+
+## 51. Short Bursts are not implemented — *SR3 p.115*
+
+Found 2026-08-13 while verifying the fire-mode rules against the book for
+`tests/fire-modes.test.mjs`. The rule is printed directly under BURST-FIRE MODE:
+
+> "If a burst ends up being a round short because of insufficient ammunition in the clip,
+> the Power Rating increases by **+2**, but the Damage Level does **not** increase. A **+2**
+> recoil modifier also applies. If a burst consists of only **one** round due to insufficient
+> ammunition, resolve it as a **single-shot** attack."
+
+So a 2-round burst is a distinct case, not "a burst that happens to fire two". Nothing in
+`_promptFireMode` or `rollWeapon` knows about it: a BF shot always applies +3 Power / +1 level
+and counts 3 rounds, whatever the magazine holds.
+
+**Only reachable with `trackAmmo` ON**, which is off by default — which is presumably why it
+has never been noticed. Wire it where `loadedRounds` is checked, and give `fireModeDamage` a
+`shortBurst` branch (+2 Power, level unchanged) plus `recoilTN` its +2.
+
+## 52. The full-auto Dodge Test modifier is missing — *SR3 p.113*
+
+Also found 2026-08-13, in the DODGE TEST section:
+
+> "The base target number for this test is 4. The following modifiers apply:
+> **+1 per 3 rounds fired from a burst-fire or full-auto weapon.**"
+
+`SR3EActor._rollDodge` hardcodes `const DODGE_TN = 4` with no modifiers at all, so dodging a
+10-round burst is exactly as easy as dodging a single pistol shot.
+
+⚠ **Do not confuse this with the damage rule.** "+1 per 3 rounds" appears in the book as a
+DODGE target-number modifier; the damage side is separate and already implemented (BF: Power
++3 / level +1; FA: Power +rounds, level +⌊rounds/3⌋). This file previously risked conflating
+them — the damage-level increase and the dodge penalty are different rules that share a
+phrase.
+
+The rounds are already known at that point: the attack's `fireModeResult.rounds` would need
+carrying into `dodgeContext`, which already ferries `attackSuccesses` and the staged damage.
 
 ## 12. Write a committed pack rebuild script and vendor its sources — *keystone; blocks #1*
 

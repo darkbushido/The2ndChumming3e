@@ -772,7 +772,16 @@ Consequences in the code, so they are not undone by accident:
 - BF: Power +3, level +1. **Recoil stacks +3/+6/+9** per burst (counts its own 3 rounds).
 - FA: 3–10 rounds; Power +rounds, level +⌊rounds/3⌋; multi-target & walking-fire (wasted rounds) options.
 
-**Recoil** = `max(0, roundsBeforeThisShot − totalComp) × heavyMult` (BF adds its own +3 first). `totalComp = actor.system.recoilCompensation + weapon.system.recoilMod`, both editable inline in the fire dialog and persisted on confirm. Heavy weapons (LMG/MMG/HMG/MinG) double uncompensated recoil; shotguns (ShtG) double it in **BF mode only** (SR3 p.111). Actor comp is edited on the **Cyber tab**; weapon comp ("Recoil Comp") on the firearm item. `roundsFiredThisPhase` resets each combat phase (`SR3EActor.resetRecoil`).
+**Recoil** (`SR3EItem.recoilTN`, pure) = `max(0, (roundsBefore + ownRounds) − totalComp) × mult`.
+
+⚠ **BF and FA count their OWN rounds; SS and SA do not.** *"Each round fired imposes a +1
+recoil modifier for the entire burst"* (p.115). BF contributes 3, FA contributes the rounds
+that burst fires, SS/SA contribute 0 — their shot penalises the *next* one. This was wrong
+for FA until 2026-08-13 (it counted only prior rounds), so the book's own Wedge example came
+out +0/+2 instead of +2/+6 — understating recoil more the longer a firefight ran.
+⚠ **Compensation is subtracted BEFORE the multiplier**: *"2 × uncompensated recoil"*, and
+p.111 works it — an MMG firing 10 rounds with 6 comp is **+8**, i.e. (10−6)×2, not 14.
+Pinned with all three worked examples in `tests/fire-modes.test.mjs`. `totalComp = actor.system.recoilCompensation + weapon.system.recoilMod`, both editable inline in the fire dialog and persisted on confirm. Heavy weapons (LMG/MMG/HMG/MinG) double uncompensated recoil; shotguns (ShtG) double it in **BF mode only** (SR3 p.111). Actor comp is edited on the **Cyber tab**; weapon comp ("Recoil Comp") on the firearm item. `roundsFiredThisPhase` resets each combat phase (`SR3EActor.resetRecoil`).
 
 **Ammunition** — two-layer model (see also the ammo-architecture memory):
 - *Stockpile*: ammo items are a reservoir (gear/ammo tabs show "Stock"). Fields: `ammoType`, `loadMechanism`, `rounds` (total owned). Rules live in `SR3E.ammoTypes` config, NOT on the item.

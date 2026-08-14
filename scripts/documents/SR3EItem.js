@@ -974,24 +974,15 @@ export class SR3EItem extends Item {
       // Apply mode damage modifiers to rawDamage
       const parsed = SR3EItem.parseDamageCode(rawDamage, actor);
       if (parsed) {
-        const STAGES  = ['L','M','S','D'];
-        let   power   = parsed.power;
-        let   lvlIdx  = STAGES.indexOf(parsed.level ?? 'M');
-        if (lvlIdx < 0) lvlIdx = 1;
-
-        if (fireModeResult.mode === 'BF') {
-          power  += 3;
-          lvlIdx  = Math.min(3, lvlIdx + 1);
-        } else if (fireModeResult.mode === 'FA') {
-          const rds      = fireModeResult.rounds;
-          const stagesUp = Math.floor(rds / 3);
-          // Tracer: the every-third tracer rounds raise the Damage Level but do NOT
-          // add to Power (e.g. SMG 5M firing 10 rounds → 12D, not 15D).
-          power  += ammoRules.tracer ? (rds - Math.floor(rds / 3)) : rds;
-          lvlIdx  = Math.min(3, lvlIdx + stagesUp);
-        }
-
-        rawDamage = `${power}${STAGES[lvlIdx]}${parsed.isStun ? ' Stun' : ''}`;
+        // Pure, and shared with the fire-mode dialog's preview — see fireModeDamage.
+        const staged = SR3EItem.fireModeDamage({
+          power:    parsed.power,
+          level:    parsed.level ?? 'M',
+          mode:     fireModeResult.mode,
+          rounds:   fireModeResult.rounds,
+          isTracer: !!ammoRules.tracer,
+        });
+        rawDamage = `${staged.power}${staged.level}${parsed.isStun ? ' Stun' : ''}`;
       }
     }
   }
@@ -2688,24 +2679,100 @@ _getAvailableModes() {
 /**
  * Fire mode selection dialog. Returns { mode, rounds, additionalTNPenalty, roundsWasted } or null.
  */
+/**
+ * Recoil TN penalty for one shot — **pure**.  · *SR3 p.111*
+ *
+ * `recoil = max(0, uncompensatedRounds − totalComp) × multiplier`
+ *
+ * Three things here are easy to get subtly wrong, and all three were locked inside a
+ * closure in the fire-mode dialog where nothing could reach them:
+ *
+ * 1. **BF and FA count their OWN rounds; SS and SA do not.**
+ *    - *Full auto*: "Each round fired imposes a +1 recoil modifier **for the entire
+ *      burst**." The Wedge example (p.115) is decisive — his first 3-round burst "generates
+ *      3 points of recoil", then at 6 rounds fired the modifier is 6, then at 10 it is 10.
+ *    - *Burst fire*: "+3 recoil modifier **per burst fired**", so the first burst is +3.
+ *    - *Semi-auto*: "The first shot is unmodified; the second shot… takes a +1 recoil
+ *      modifier." Only the round already fired counts, never this one.
+ *
+ *    ⚠ FA used to be lumped in with SS/SA here, counting only rounds fired BEFORE the
+ *    burst. Wedge's second burst came out +0 instead of +2 and his third +2 instead of +6 —
+ *    understating recoil by more the longer the fight went on, which is precisely backwards
+ *    from what the rule is for.
+ *
+ * 2. **Compensation is subtracted BEFORE the multiplier, never after.** "Heavy Weapons
+ *    Fire: 2 × **uncompensated** recoil", and the book works it: a medium machine gun
+ *    firing 10 rounds with 6 points of compensation is **+8** — (10 − 6) × 2, not
+ *    (10 × 2) − 6 = 14. The two agree only when compensation is 0.
+ *
+ * 3. **The multiplier is per-MODE, not per-weapon.** Heavy weapons (LMG/MMG/HMG/MinG)
+ *    double always; shotguns double **only in BF** ("Any shotgun fired in Burst-Fire Mode
+ *    is also subjected to the double recoil modifier"). A shotgun firing SA is ×1.
+ *
+ * @param {object} o
+ * @param {string} o.mode            SS · SA · BF · FA
+ * @param {number} o.roundsBefore    rounds already fired this phase
+ * @param {number} [o.roundsThisShot] rounds THIS full-auto burst fires (FA only; BF is
+ *                                    always 3 and SS/SA contribute nothing)
+ * @param {number} o.totalComp       actor recoil comp + weapon recoil mod
+ * @param {boolean} [o.isHeavy]      LMG/MMG/HMG/MinG
+ * @param {boolean} [o.isShotgun]    ShtG
+ * @returns {number} TN penalty, never negative
+ */
+static recoilTN({ mode, roundsBefore = 0, roundsThisShot = 0, totalComp = 0,
+                  isHeavy = false, isShotgun = false }) {
+  const mult = (isHeavy || (isShotgun && mode === 'BF')) ? 2 : 1;
+  const own  = mode === 'BF' ? 3
+             : mode === 'FA' ? Math.max(0, Number(roundsThisShot) || 0)
+             : 0;
+  return Math.max(0, (roundsBefore + own) - totalComp) * mult;
+}
+
+/**
+ * Damage code after the fire mode's own modifiers — **pure**.  · *SR3 p.113*
+ *
+ * - **BF**: Power +3 and Damage Level +1.
+ * - **FA**: Power +rounds, Level +⌊rounds / 3⌋.
+ * - **SS / SA**: unchanged.
+ *
+ * ⚠ **Tracer is not simply "FA with a bonus".** Every third round in a tracer belt raises
+ * the Damage Level but adds nothing to Power, so Power gains `rounds − ⌊rounds/3⌋`. The
+ * book's own example is an SMG 5M firing 10 rounds → **12D**, not 15D. Getting this wrong
+ * inflates a burst by a quarter and looks entirely plausible on the card.
+ *
+ * Level is capped at Deadly. Power is not — staging past Deadly is a separate rule
+ * (`stageDamage`), and this is the weapon's base code, before any successes.
+ *
+ * @returns {{power:number, level:string}}
+ */
+static fireModeDamage({ power, level = 'M', mode, rounds = 0, isTracer = false }) {
+  const STAGES = ['L', 'M', 'S', 'D'];
+  let lvlIdx = STAGES.indexOf(level);
+  if (lvlIdx < 0) lvlIdx = 1;
+  let pwr = Number(power) || 0;
+
+  if (mode === 'BF') {
+    pwr   += 3;
+    lvlIdx = Math.min(3, lvlIdx + 1);
+  } else if (mode === 'FA') {
+    const rds = Math.max(0, Number(rounds) || 0);
+    pwr   += isTracer ? (rds - Math.floor(rds / 3)) : rds;
+    lvlIdx = Math.min(3, lvlIdx + Math.floor(rds / 3));
+  }
+  return { power: pwr, level: STAGES[lvlIdx] };
+}
+
 static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isShotgun = false) {
   const weaponName   = weapon.name;
   const actorComp    = actor.system.recoilCompensation ?? 0;
   const weaponComp   = weapon.system.recoilMod ?? 0;
   const roundsBefore = actor.system.roundsFiredThisPhase ?? 0;
 
-  // Heavy weapons always double uncompensated recoil; shotguns double it in
-  // Burst-Fire mode only (SR3 p.111) — so the multiplier is per-mode.
-  const multForMode = mode => (isHeavy || (isShotgun && mode === 'BF')) ? 2 : 1;
-
-  // Recoil TN for a given mode, reduced by total compensation, × heavy/shotgun-BF multiplier.
-  //  BF: cumulative AND counts its own 3 rounds — +3 first burst, +6 second, +9 third…
-  //  SS/SA/FA: cumulative on the rounds already fired this phase (this shot's rounds
-  //            are added afterwards, so they penalise the NEXT shot, not this one).
-  function recoilForMode(mode, rounds, totalComp) {
-    if (mode === 'BF') return Math.max(0, (rounds + 3) - totalComp) * multForMode(mode);
-    return Math.max(0, rounds - totalComp) * multForMode(mode);
-  }
+  // Delegates to the pure `SR3EItem.recoilTN` so the dialog's preview and the TN actually
+  // applied cannot drift apart — they are now the same function, and it is unit-tested.
+  const recoilForMode = (mode, rounds, totalComp, faRounds = 3) =>
+    SR3EItem.recoilTN({ mode, roundsBefore: rounds, roundsThisShot: faRounds,
+                        totalComp, isHeavy, isShotgun });
 
   // Stage-up helper
   function stageUp(level, times) {
@@ -2804,14 +2871,18 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       const rounds = parseInt(el.querySelector('#sr-rounds-fired')?.textContent) || 0;
       const totalEl = el.querySelector('#sr-total-comp');
       if (totalEl) totalEl.textContent = String(total);
+      // A full-auto burst's own rounds count toward its recoil, so the preview has to track
+      // the rounds field — otherwise it shows a number the shot will not actually use.
+      const faRounds = Math.max(3, parseInt(el.querySelector('#fa-rounds')?.value) || 3);
       el.querySelectorAll('.sr-recoil-preview').forEach(span => {
         const m = span.dataset.mode;
-        const r = recoilForMode(m, rounds, total);
+        const r = recoilForMode(m, rounds, total, faRounds);
         span.textContent = m === 'FA' ? `+${r} recoil + multi-target (see below)` : `+${r}`;
       });
     };
     el.querySelector('#sr-actor-comp')?.addEventListener('input', refreshPreviews);
     el.querySelector('#sr-weapon-comp')?.addEventListener('input', refreshPreviews);
+    el.querySelector('#fa-rounds')?.addEventListener('input', refreshPreviews);
 
     el.querySelector('#sr-reset-recoil')?.addEventListener('click', async () => {
       await actor.update({ 'system.roundsFiredThisPhase': 0 });
@@ -2857,9 +2928,10 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
           if (aComp !== actorComp)  await actor.update({ 'system.recoilCompensation': aComp });
           if (wComp !== weaponComp) await weapon.update({ 'system.recoilMod': wComp });
 
-          // Recoil per mode (see recoilForMode): BF stacks +3/+6/+9…; SS/SA/FA use the
-          // rounds fired before this shot. This shot's rounds are committed after the roll.
-          const recoilTN = recoilForMode(mode, roundsBefore, aComp + wComp);
+          // Recoil per mode (see SR3EItem.recoilTN). BF and FA count their OWN rounds —
+          // `rounds` is what this shot fires — while SS/SA count only what came before.
+          // Passing `rounds` here is what makes Wedge's second burst +2 rather than +0.
+          const recoilTN = recoilForMode(mode, roundsBefore, aComp + wComp, rounds);
           result = { mode, rounds, roundsWasted, recoilTN, additionalTNPenalty };
         },
       },
