@@ -330,6 +330,34 @@ export function meleeVisibilityModifier(condition, visionKey) {
 }
 
 /**
+ * Groups for the melee window. Two, not the ranged four — melee has no Gear row (no
+ * smartlink, no laser sight; those are firearm accessories) and no separate Target/Attacker
+ * split, because almost every melee row lands on BOTH fighters at once.
+ */
+export const SR3E_MELEE_MODIFIER_GROUPS = [
+  { key: 'fight',      label: 'The fight' },
+  { key: 'conditions', label: 'Conditions' },
+];
+
+/**
+ * `SR3E_MELEE_MODIFIERS` arranged for rendering. Same contract as `mvpModifierGroups`,
+ * including the trailing **Other** bucket: a row whose `group` is missing or unrecognised
+ * must still render, because silently dropping one removes a modifier the GM is meant to
+ * apply and nothing anywhere would report it.
+ */
+export function meleeModifierGroups() {
+  const known = new Set(SR3E_MELEE_MODIFIER_GROUPS.map(g => g.key));
+  const groups = SR3E_MELEE_MODIFIER_GROUPS
+    .map(g => ({ key: g.key, label: g.label, note: g.note,
+                 rows: SR3E_MELEE_MODIFIERS.filter(m => m.group === g.key) }))
+    .filter(g => g.rows.length);
+
+  const orphans = SR3E_MELEE_MODIFIERS.filter(m => !known.has(m.group));
+  if (orphans.length) groups.push({ key: 'other', label: 'Other', rows: orphans });
+  return groups;
+}
+
+/**
  * Resolve the melee modifier state into a delta for each side's target number.
  *
  * Returns deltas, NOT target numbers — `rollMeleeAttack` already computes base TNs

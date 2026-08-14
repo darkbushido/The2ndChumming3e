@@ -67,7 +67,7 @@ test.describe('melee two-corner card', () => {
   });
 
   test('each side submits its own corner and only the last submission resolves',
-    async ({ player2, player3 }) => {
+    async ({ player2, player3, janitor }) => {
     const atk = player2;
     const def = player3;
     // ── ARRANGE: put both actors into a state this test defines ─────────────────
@@ -104,6 +104,23 @@ test.describe('melee two-corner card', () => {
 
     // Called shot is attacker-only.
     await answerDialog(atk.page, /Called Shot/i, /confirm/i);
+
+    // ── The GM sets BOTH target numbers (TODO 37) ────────────────────────────────
+    //
+    // Melee resolves two TNs, and most p.123 rows move both at once in opposite
+    // directions, so this is a separate window from the ranged one rather than a mode of
+    // it. Like ranged, it is RELAYED: it must open on the GM and never on whoever swung.
+    const gmWindow = janitor.page.locator('.application.dialog, dialog[open]')
+      .filter({ has: janitor.page.locator('.window-title', { hasText: /^GM — / }) }).first();
+    await gmWindow.waitFor({ state: 'visible', timeout: 30_000 });
+
+    // The negative half, which is the one that matters: a GM testing alone passes every
+    // gate themselves, so "a window opened" says nothing about whose screen it opened on.
+    expect(await atk.page.locator('.application.dialog, dialog[open]')
+      .filter({ has: atk.page.locator('.window-title', { hasText: /^GM — / }) }).count(),
+      'the attacker must never see the GM\u0027s melee window').toBe(0);
+
+    await gmWindow.getByRole('button', { name: /set target numbers/i }).click();
 
     // ── The card is up. Check the gating on BOTH clients ─────────────────────────
     //

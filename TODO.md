@@ -24,11 +24,11 @@ independent.
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | 5 · 14 · 43 |
-| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 37 · 38 · 39 · 40 · 41 · 47 · 48 · 49 · 51 · 52 |
+| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 38 · 39 · 40 · 41 · 47 · 48 · 49 · 51 · 52 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 21 · 22 · **24** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
+| ✅ Done — kept for the record | 13 · 15 · 16 · 17 · 21 · 22 · **24** · **37** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -2250,7 +2250,47 @@ share a modifier.
 Sequence after [#37](#37) — both want a home in a melee/ranged GM surface, and this one needs the
 per-phase counter that #37's window would display.
 
-## 37. Melee has its own modifiers table — the GM window only covers ranged
+## 37. ✅ Melee has its own modifiers table — **DONE 2026-08-13**
+
+**✅ Both halves built.** `SR3EItem._promptGMMeleeWindow` renders `SR3E_MELEE_MODIFIERS`
+through `meleeModifierGroups()`, relayed by `sr3e.melee.negotiate` so it opens on the GM
+rather than on whoever swung. Governed by the same `gmApprovesTN` setting as the ranged
+window — including the `player` mode that skips it for GM-vs-GM NPCs — and it returns
+`adjudicated` explicitly rather than letting a truthy-but-empty payload be mistaken for a
+decision, which was the [#50](#50) trap.
+
+Melee resolves **two** target numbers where ranged resolves one, and most p.123 rows move
+both at once in opposite directions, so `sumMeleeModifiers` hands back an `{atk, def}` pair
+of **deltas**. The base TNs already carry reach, defaulting tiers and any called shot;
+returning finished numbers would silently discard all three.
+
+**And the reach election exists at last.** It renders in the LONGER-REACH fighter's own
+corner (`sr-melee-atk-reach` / `sr-melee-def-reach`), never in the GM window — that was the
+whole point, and putting it there would have repeated exactly the mistake the contested
+rework removed. Electing "onto the opponent" raises both TNs by N, so the gap is unchanged
+and only who faces the harder number moves.
+
+⚠ **The two branches are NOT equivalent at the TN floor**, and that is RAW rather than a
+bug: no target number may drop below 2, so a bonus that would take you under it is lost
+while the same points pushed onto the opponent are not. Against a soft target the election
+is a real edge — which is precisely why the book hands the choice to the player rather than
+resolving it in the rules.
+
+Covered by `tests/melee-gm-window.test.mjs` (grouping, the melee visibility halving, and the
+election including the floor asymmetry) on top of the existing `melee-modifiers.test.mjs`,
+and driven live by `tests/e2e/melee-two-corner.spec.mjs`, which now asserts the window opens
+on the GM and **not** on the attacker.
+
+**Still open, deliberately:**
+
+- **Troll natural Reach 1** (p.121) is not folded in. The differential is computed from
+  `weapon.system.reach` alone, so a troll with a club reads as Reach 1 rather than 2. It
+  needs a metatype lookup, which is the same lookup [#36](#36) wants for vision — worth
+  doing together.
+- **Contested rolls still have no GM window.** They are not a melee exchange and have no
+  modifier table of their own; giving them one needs a decision about what it would
+  *contain*, not a copy of this.
+
 
 **Asked in play 2026-08-10: "do melee fights get modifiers the GM needs to worry about?"** Yes.
 Melee has a separate table (**p.123**) and the GM currently has no surface for it — the TN window

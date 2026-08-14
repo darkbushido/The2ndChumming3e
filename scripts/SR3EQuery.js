@@ -477,6 +477,36 @@ export class SR3EQuery {
      * sequential await. Both use the same deadline — unequal ones silently discard
      * the slower participant's answer.
      */
+    /**
+     * Ask the GM to set BOTH target numbers for a melee exchange.  · *SR3 p.123*
+     *
+     * Mirrors `sr3e.attack.negotiate` deliberately, including its escape hatches: the same
+     * `gmApprovesTN` setting governs both, so a table that has turned the ranged window off
+     * does not suddenly acquire a melee one, and `player` still skips the window when the GM
+     * is swinging their own NPCs at each other.
+     *
+     * Reads nothing and writes nothing. It returns target numbers; the caller folds them
+     * into the boxing card it was about to post.
+     */
+    CONFIG.queries['sr3e.melee.negotiate'] = async ({ rid, ...ctx }) => SR3EQuery.once(rid, async () => {
+      SR3EQuery.assertActiveGM();
+      const { SR3EItem } = game.sr3e;
+
+      const mode = game.settings.get('The2ndChumming3e', 'gmApprovesTN');
+      const requesterIsGM = game.users.get(ctx._requesterId)?.isGM === true;
+      // No window: the TNs the flow computed stand exactly as they are. `adjudicated:false`
+      // is the caller’s only reliable signal that no GM looked — same trap as TODO 50, where
+      // an empty-but-truthy payload was mistaken for a decision and locked a field nobody
+      // could unlock.
+      if (mode === 'off' || (mode === 'player' && requesterIsGM)) {
+        return { atkTN: ctx.baseAtkTN, defTN: ctx.baseDefTN, adjudicated: false };
+      }
+
+      const res = await SR3EItem._promptGMMeleeWindow(ctx);
+      if (!res) return null;   // GM cancelled the exchange — nothing posted
+      return res;
+    });
+
     CONFIG.queries['sr3e.attack.negotiate'] = async ({ rid, ...ctx }) => SR3EQuery.once(rid, async () => {
       SR3EQuery.assertActiveGM();
       const { SR3EActor, SR3EItem } = game.sr3e;

@@ -826,16 +826,62 @@ Two entry points besides the sheet (both fire ready weapons via `_sr3eReadyWeapo
 - *(The dead remnants of the pre-scatter rework — `_promptTargetsAoE`, `_tokensInBlast`, the `aoeTargetIds`-gated branch in `_postWaveCard` and its `aoeTargetIds`/`chunkySalsa` payload plumbing, and `rollPool`'s inert `options.defaulting` +4 — have been removed.)*
 - **Shared blast-area marker**: `SR3EActor._drawBlastArea(center, radiusM, {name,color})` → `{regionId, markerId}` (Region with `visibility: ALWAYS`, local PIXI fallback) and `SR3EActor._clearBlastButton({regionId,markerId})` build the marker + chat 🧹 Clear button. Used by both grenade resolution and **spell AoE** (purple). Spell AoE has **no scatter/falloff** — `SR3EItem._actorsInRadius(center, radiusM, caster)` auto-detects targets at cast time; each resists at full Force.
 
-### Melee combat flow
-1. Attacker clicks melee weapon on sheet
-2. Target selection dialog. **Adjacency:** if both are tokens and the target isn't in an adjacent square (`SR3EItem._tokensAdjacent` via `canvas.grid.getOffset`), `rollMelee` **warns but proceeds** (minimal-guardrails). Reach affects TN only, not range.
-3. Defender auto-uses equipped melee weapon (equippedMelee field), falls back to unarmed/cyber item, then bare hands (STR + M)
-4. Boxing card shows both sides: skill name/rating, weapon, damage code, reach, skill dice, editable combat pool (0 default), editable TN
-5. TN = 4 − reach (your own reach reduces your TN) + wound modifier
-6. Both roll simultaneously when GM clicks Roll
-7. Compare: winner = most successes. Tie = no damage.
-8. Winner's weapon damage code stages up by net successes (winner hits − loser hits)
-9. Loser gets Resist Damage button → soak flow as above
+### Melee combat flow  · *SR3 p.121-123*
+1. Attacker clicks a melee weapon on their sheet.
+2. Target selection dialog. **Adjacency:** if both are tokens and the target is not in an
+   adjacent square (`SR3EItem._tokensAdjacent`), `rollMelee` **warns but proceeds**
+   (minimal guardrails). Reach affects the TN only, never whether the attack is possible.
+3. Defender auto-uses their equipped melee weapon, falling back to an unarmed/cyber item,
+   then to bare hands (STR + M). **Reach never gates participation** — p.122 step 2 has the
+   defender roll unconditionally, so an unarmed defender still defends normally.
+4. Either side lacking the skill is prompted to default — **on their own client**.
+5. Called shot (attacker only).
+6. **The GM sets BOTH target numbers** — `sr3e.melee.negotiate` →
+   `SR3EItem._promptGMMeleeWindow`. See below.
+7. Two-corner boxing card; each side edits only its own corner and submits. The last
+   submission resolves (see **Two-corner cards**).
+8. Winner = most successes. **A tie does no damage.** The winner's damage code stages up by
+   the net successes; the loser gets a Resist Damage button into the usual soak flow.
+
+#### The GM's melee TN window — separate from the ranged one on purpose
+
+Ranged resolves **one** target number; melee resolves **two**, and most p.123 rows move both
+at once in opposite directions — "friends in the melee" is a single fact that helps one
+fighter and hurts the other by the same amount. `sumMeleeModifiers` therefore returns an
+`{atk, def}` **pair of deltas**, not finished numbers: the base TNs already carry reach,
+defaulting tiers and any called shot, and handing back absolutes would silently discard them.
+
+Governed by the same `gmApprovesTN` setting as ranged, including `off` and the `player`
+mode that skips the window for GM-vs-GM NPCs. `adjudicated` is the caller's only reliable
+signal that a GM actually looked — do not infer it from the payload (TODO 50).
+
+⚠ **Visibility halves in melee.** p.123 applies the Visibility Table *"at half their value,
+rounding down, except for Full Darkness"* — `meleeVisibilityModifier`, not the ranged
+`visibilityModifier`. An odd +1 therefore becomes 0 rather than persisting.
+
+#### ⚠ Reach is a DIFFERENTIAL, and its application is the fighter's CHOICE
+
+p.121: *"Calculate the **difference** between the Reach Ratings of opponents. The character
+with the longer (higher) Reach **can choose** to apply this number as either a negative
+target number modifier to his attack test OR as a positive modifier to his opponent's target
+number."* The book gives the reason the two are not the same: *"beat the opponent's
+defenses"* versus *"make himself harder to hit."*
+
+- **Differential, not an absolute.** Equal reach cancels — two staff-wielders both roll
+  against 4, not 2. Each side subtracting its own reach was an old bug: the *gap* came out
+  right, which is why it survived play, but the absolute level did not.
+- **The election lives in the holder's own corner** (`sr-melee-atk-reach` /
+  `sr-melee-def-reach`), rendered only for the fighter who holds the longer reach, so the
+  per-corner owner gate already makes it read-only to everyone else. It is **not** in the GM
+  window — putting it there would repeat exactly the mistake the contested rework removed.
+- Electing "onto the opponent" raises **both** TNs by N: the holder gives back the bonus the
+  card was posted with, and the opponent takes the penalty. The gap is unchanged; only who
+  is measured against the harder number moves.
+- ⚠ **At the TN floor the two branches stop being equivalent, and that is RAW.** No TN may
+  fall below 2, so a bonus that would take you under it is simply lost while the same points
+  pushed onto the opponent are not. Against a soft target the election is a real edge.
+- Trolls have natural Reach 1 cumulative with weapon reach (p.121) — **not yet folded in**;
+  the differential is computed from `weapon.system.reach` alone.
 
 ### Called shots (SR3 p.114)
 Available on **all single-target weapons except AoE/grenades** — firearms (any mode **except Full

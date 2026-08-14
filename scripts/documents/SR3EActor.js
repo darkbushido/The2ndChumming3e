@@ -3583,6 +3583,30 @@ _prepareCharacter(sys, attr) {
         reach > 0 ? ` −${reach} reach` : '',
         (info?.isDefault && info?.defaultTnMod) ? ` +${info.defaultTnMod} defaulting` : '',
       ].join('');
+      // ── The reach election (p.121) — the LONGER-REACH fighter's call, not the GM's ──
+      //
+      // "The character with the longer (higher) Reach can choose to apply this number as
+      // either a negative target number modifier to his attack test OR as a positive
+      // modifier to his opponent's target number." Same magnitude, different target, and
+      // the book gives the reason: "beat the opponent's defenses" versus "make himself
+      // harder to hit".
+      //
+      // Rendered ONLY in the holder's corner, so the per-corner owner gate already makes it
+      // read-only to everyone else. The system used to take the self-bonus branch silently
+      // for both sides — one of the two legal readings, so nothing was WRONG; the choice
+      // simply did not exist. It matters now that #24 made the corners read-only, because
+      // typing the other branch into the opponent's TN box is no longer possible.
+      const holdsReach  = (ctx.reachHolder ?? null) === role;
+      const reachDiff   = ctx.reachDiff ?? 0;
+      const reachChoice = (holdsReach && reachDiff > 0) ? `
+          <div class="sr-melee-field-row">
+            <span>Reach ${reachDiff}:</span>
+            <div><select class="sr-melee-${role === 'attacker' ? 'atk' : 'def'}-reach" style="width:100%">
+              <option value="self">−${reachDiff} to my TN</option>
+              <option value="opponent">+${reachDiff} to their TN</option>
+            </select></div>
+          </div>` : '';
+
       const displayDamage = damageBase && /STR/i.test(rawDamage)
         ? `${damageBase.power}${damageBase.level}${damageBase.isStun ? ' Stun' : ''}`
         : (rawDamage || '');
@@ -3616,6 +3640,7 @@ _prepareCharacter(sys, attr) {
               <span>/ ${availPool}</span>
             </div>
           </div>
+          ${reachChoice}
           <div class="sr-melee-field-row">
             <span>TN:</span>
             <div style="display:flex;align-items:center;gap:4px">
@@ -3763,8 +3788,35 @@ _prepareCharacter(sys, attr) {
     const defSkillDice  = parseInt(f('defender', 'sr-melee-def-skill-dice')) || ctx.defSkillDice || 1;
     const atkPool = Math.max(1, atkSkillDice + atkCombatPool);
     const defPool = Math.max(1, defSkillDice + defCombatPool);
-    const atkTN   = SR3EActor.cornerTN(f('attacker', 'sr-melee-atk-tn'), ctx.atkTN);
-    const defTN   = SR3EActor.cornerTN(f('defender', 'sr-melee-def-tn'), ctx.defTN);
+    let atkTN = SR3EActor.cornerTN(f('attacker', 'sr-melee-atk-tn'), ctx.atkTN);
+    let defTN = SR3EActor.cornerTN(f('defender', 'sr-melee-def-tn'), ctx.defTN);
+
+    // ── Apply the reach election (p.121) ────────────────────────────────────────
+    //
+    // The card is posted with the DEFAULT branch already in the holder's TN (−N to
+    // themselves), so only the other branch needs work: hand the N back and put it on the
+    // opponent instead. Same magnitude either way — this moves it, it never doubles it.
+    //
+    // ⚠ Read from the holder's SUBMISSION, not from the card DOM. Resolution runs on
+    // whichever client completed the pair, which is routinely the opponent — and they must
+    // not be able to choose how their enemy's reach is spent. Everything else on this card
+    // already works that way; this is the same rule.
+    const _reachHolder = ctx.reachHolder ?? null;
+    const _reachDiff   = ctx.reachDiff ?? 0;
+    if (_reachHolder && _reachDiff > 0) {
+      const cls    = _reachHolder === 'attacker' ? 'sr-melee-atk-reach' : 'sr-melee-def-reach';
+      const choice = String(f(_reachHolder, cls) ?? 'self');
+      if (choice === 'opponent') {
+        // BOTH target numbers rise by N, whichever side holds the reach: the holder gives
+        // back the bonus baked into the card (−N → 0) and the opponent takes the penalty
+        // (0 → +N). The GAP between the two is unchanged — that is the point. Only who is
+        // measured against the harder number moves.
+        atkTN += _reachDiff;
+        defTN += _reachDiff;
+      }
+    }
+    atkTN = Math.max(2, atkTN);
+    defTN = Math.max(2, defTN);
 
     // Read edited damage codes
     const atkRawDamage = String(f('attacker', 'sr-melee-atk-damage') ?? '').trim() || ctx.atkRawDamage;

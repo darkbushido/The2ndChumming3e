@@ -234,6 +234,50 @@ export class SR3EItem extends Item {
     const calledShot = await SR3EItem._promptCalledShot(actor);
     if (!calledShot) return null;
 
+    // ── Reach, and the election the longer-reach fighter is entitled to ──────────
+    //
+    // p.121: "Calculate the DIFFERENCE between the Reach Ratings of opponents. The
+    // character with the longer (higher) Reach CAN CHOOSE to apply this number as either a
+    // negative target number modifier to his attack test OR as a positive modifier to his
+    // opponent's target number."
+    //
+    // The two are the same magnitude but not the same choice — the book gives the reason:
+    // "beat the opponent's defenses" versus "make himself harder to hit". Against a
+    // low-skill, high-pool opponent you want the penalty on them; when you simply need to
+    // land the blow, you want the bonus on you.
+    //
+    // ⚠ Reach is a DIFFERENTIAL. Equal reach cancels and neither side benefits — two
+    // staff-wielders both roll against 4, not against 2. Each side subtracting its own
+    // reach was an old bug: the GAP came out right, which is why it survived play, but the
+    // absolute level did not and armed-vs-armed melee was far bloodier than intended.
+    //
+    // Base TNs below therefore carry NO reach at all. It is applied from the holder's
+    // election, which lives in that fighter's own corner of the card and defaults to the
+    // self-bonus (what the system did unconditionally before).
+    const reachDiff   = Math.abs(atkReach - defReach);
+    const reachHolder = reachDiff === 0 ? null : (atkReach > defReach ? 'attacker' : 'defender');
+
+    const baseAtkTN = Math.max(2, 4 + (atkInfo.defaultTnMod ?? 0) + (calledShot.tnMod ?? 0));
+    const baseDefTN = Math.max(2, 4 + (defInfo.defaultTnMod ?? 0));
+
+    // Default election: the holder takes the bonus themselves.
+    const dfltAtkTN = Math.max(2, baseAtkTN - (reachHolder === 'attacker' ? reachDiff : 0));
+    const dfltDefTN = Math.max(2, baseDefTN - (reachHolder === 'defender' ? reachDiff : 0));
+
+    // ── The GM sets both target numbers ─────────────────────────────────────────
+    // Relayed, so the window opens on the GM rather than on whoever swung. Cancelling
+    // aborts the exchange before any card is posted.
+    const gm = await game.sr3e.SR3EQuery.asGM('sr3e.melee.negotiate', {
+      atkName:    actor.name,
+      defName:    targetActor.name,
+      baseAtkTN:  dfltAtkTN,
+      baseDefTN:  dfltDefTN,
+      baseNote:   reachHolder
+        ? `Reach ${reachDiff} to ${reachHolder === 'attacker' ? actor.name : targetActor.name}`
+        : null,
+    }, { timeout: 300_000 });
+    if (gm === null) return null;
+
     await game.sr3e.SR3EActor.postMeleeCard({
       attackerActorId:  actor.id,
       defenderActorId:  targetActor.id,
@@ -247,24 +291,14 @@ export class SR3EItem extends Item {
       defDamageBase:    defWeapon ? SR3EItem.parseDamageCode(defWeapon.system?.damage ?? '', targetActor) : null,
       atkReach,
       defReach,
-      // Defaulting adds the chosen TN modifier (+2 skill / +3 spec / +4 attribute);
-      // a called shot adds +4 (less take-aim) to the attacker's TN only.
-      // Reach is a DIFFERENTIAL, not an absolute bonus to whoever holds a long weapon.
-      // Take the gap between the two ratings; only the fighter with the longer reach
-      // applies it, as a bonus to their own test. Equal reach cancels out and neither side
-      // benefits — two staff-wielders both roll against the base 4, not against 2.
-      //
-      // Previously each side subtracted their own reach from their own TN, so both
-      // improved simultaneously. The gap between the two numbers came out right, which is
-      // why it survived play; the absolute level did not, and armed-vs-armed melee was
-      // markedly bloodier than the rules intend. It was correct by accident against an
-      // unarmed opponent, whose reach is 0.
-      //
-      // The rules also let the longer-reach fighter choose to push the modifier onto the
-      // opponent's TN instead. Not offered here — both TNs are editable on the boxing
-      // card, so a GM wanting that can move it by hand.
-      atkTN:            Math.max(2, 4 + Math.min(0, defReach - atkReach) + (atkInfo.defaultTnMod ?? 0) + (calledShot.tnMod ?? 0)),
-      defTN:            Math.max(2, 4 + Math.min(0, atkReach - defReach) + (defInfo.defaultTnMod ?? 0)),
+      reachDiff,
+      reachHolder,
+      // The TNs as posted already carry the DEFAULT reach election (−N to the holder).
+      // `handleMeleeRoll` moves it if the holder elects otherwise; it needs only
+      // reachDiff/reachHolder above, so no separate "base" TN is carried.
+      atkTN:            gm.atkTN,
+      defTN:            gm.defTN,
+      gmSetTN:          gm.adjudicated === true,
       calledShot:       calledShot.calledShot,
       calledShotTarget: calledShot.calledShotTarget,
       atkInfo,
@@ -2212,6 +2246,169 @@ export class SR3EItem extends Item {
     const vis  = el.querySelector('.sr-gm-vis-type')?.value ?? 'normal';
     state.visibility = cond ? visibilityModifier(cond, vis) : 0;
     return state;
+  }
+
+  /**
+   * The GM's target-number window for MELEE.  · *SR3 p.123*
+   *
+   * Separate from `_promptGMAttackWindow` rather than a mode of it, because melee asks a
+   * structurally different question. Ranged resolves ONE target number; melee resolves
+   * TWO, and most rows move both at once in opposite directions — "friends in the melee"
+   * is a single fact that helps one fighter and hurts the other by the same amount. A
+   * shared window would have to special-case every row anyway.
+   *
+   * ⚠ **It returns final TNs, computed from DELTAS.** `rollMeleeAttack` has already built
+   * both base TNs out of reach, defaulting tiers and any called shot; the modifier rows add
+   * on top of those rather than replacing them, so `sumMeleeModifiers` hands back
+   * `{atk, def}` deltas and the fields show base + delta. The GM can still overwrite either
+   * field outright — that is the escape hatch, not the mechanism.
+   *
+   * ⚠ **Nothing in this window belongs to a fighter.** The reach election is the one melee
+   * choice that is a player's: the longer-reach fighter picks whether their advantage lands
+   * as a bonus to themselves or a penalty on the opponent. It lives in that fighter's own
+   * corner of the boxing card. Putting it here would repeat precisely the mistake the
+   * contested rework removed.
+   *
+   * @returns {Promise<{atkTN:number, defTN:number, adjudicated:boolean}|null>}
+   *          null when the GM cancels the exchange outright.
+   */
+  static async _promptGMMeleeWindow(ctx) {
+    const { meleeModifierGroups, sumMeleeModifiers, meleeVisibilityModifier,
+            SR3E_VISIBILITY_TABLE, SR3E_VISION_TYPES } =
+      await import('../SR3ECombatModifiers.js');
+
+    const groups  = meleeModifierGroups();
+    const baseAtk = Number(ctx.baseAtkTN) || 4;
+    const baseDef = Number(ctx.baseDefTN) || 4;
+    const atkName = ctx.atkName ?? 'Attacker';
+    const defName = ctx.defName ?? 'Defender';
+
+    const condOpts = ['<option value="">— not impaired —</option>']
+      .concat(Object.keys(SR3E_VISIBILITY_TABLE).map(c => `<option value="${c}">${c}</option>`))
+      .join('');
+    const visOpts = SR3E_VISION_TYPES
+      .map(v => `<option value="${v.key}">${v.label}</option>`).join('');
+
+    const sideSelect = (id, label) => `
+      <label style="display:flex;align-items:center;gap:6px;margin:3px 0;font-size:12px">
+        <span style="min-width:200px">${label}</span>
+        <select id="${id}" style="flex:1">
+          <option value="">— neither —</option>
+          <option value="attacker">${atkName}</option>
+          <option value="defender">${defName}</option>
+        </select>
+      </label>`;
+
+    const numberRow = (id, label, note, min, max) => `
+      <label style="display:flex;align-items:center;gap:6px;margin:3px 0;font-size:12px">
+        <span style="min-width:200px">${label}</span>
+        <input type="number" id="${id}" value="0" min="${min}" max="${max}" style="width:56px"/>
+        <span style="font-size:11px;color:var(--sr-muted)">${note}</span>
+      </label>`;
+
+    const rowHtml = (row) => {
+      switch (row.kind) {
+        case 'diff':       return numberRow('gmm-friends', row.label, row.note, -9, 9);
+        case 'perAtk':     return numberRow('gmm-multi',   row.label, row.note, 0, 9);
+        case 'side':       return sideSelect('gmm-superior', row.label);
+        case 'sideOpposed': return sideSelect('gmm-prone', `${row.label} — who is DOWN`);
+        case 'visibility':
+          // Two axes, as in the ranged window: the condition, and which vision is in use.
+          // Melee then HALVES the result (rounding down) except in Full Darkness —
+          // `meleeVisibilityModifier` owns that rule, not this markup.
+          return `
+            <div style="margin:3px 0;font-size:12px">
+              <div style="display:flex;align-items:center;gap:6px">
+                <span style="min-width:200px">${row.label}</span>
+                <select id="gmm-vis-cond" style="flex:1">${condOpts}</select>
+                <select id="gmm-vis-type" style="flex:1">${visOpts}</select>
+              </div>
+              <div style="font-size:11px;color:var(--sr-muted);margin-left:206px">${row.note}</div>
+            </div>`;
+        default:
+          // An unrecognised kind renders as a plain note rather than vanishing: a silently
+          // dropped row is a modifier the GM was meant to apply and never saw.
+          return `<div style="margin:3px 0;font-size:12px;color:var(--sr-amber)">
+                    ${row.label} — apply by hand (no control for kind "${row.kind}")
+                  </div>`;
+      }
+    };
+
+    const groupHtml = groups.map(g => `
+      <fieldset style="border:1px solid var(--sr-border);border-radius:var(--r);margin:6px 0;padding:6px 8px">
+        <legend style="font-size:11px;color:var(--sr-accent);padding:0 4px">${g.label}</legend>
+        ${g.rows.map(rowHtml).join('')}
+      </fieldset>`).join('');
+
+    let result = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `GM — ${atkName} vs ${defName}` },
+      content: `
+        <div style="padding:4px 0;min-width:520px">
+          <div style="font-size:11px;color:var(--sr-muted);margin-bottom:4px">
+            Base target numbers already include reach, defaulting and any called shot.
+            ${ctx.baseNote ? `<br>${ctx.baseNote}` : ''}
+          </div>
+          ${groupHtml}
+          <div style="display:flex;gap:14px;align-items:center;margin-top:8px;flex-wrap:wrap">
+            <label style="font-size:12px"><strong>${atkName}</strong> TN
+              <input type="number" id="gmm-atk-tn" value="${baseAtk}" min="2" max="30" style="width:56px;margin-left:4px"/>
+            </label>
+            <label style="font-size:12px"><strong>${defName}</strong> TN
+              <input type="number" id="gmm-def-tn" value="${baseDef}" min="2" max="30" style="width:56px;margin-left:4px"/>
+            </label>
+            <span id="gmm-note" style="font-size:11px;color:var(--sr-dim)"></span>
+          </div>
+        </div>`,
+
+      // Per-dialog `render`, not the global `renderDialogV2` hook: two melee windows open
+      // at once would cross-wire, and the symptom is a window that silently stops
+      // recomputing (see CLAUDE.md).
+      render: (_event, dialog) => {
+        const el   = dialog.element;
+        const read = () => ({
+          friends:             parseInt(el.querySelector('#gmm-friends')?.value) || 0,
+          superiorPosition:    el.querySelector('#gmm-superior')?.value || null,
+          prone:               el.querySelector('#gmm-prone')?.value || null,
+          multiTargetAtk:      parseInt(el.querySelector('#gmm-multi')?.value) || 0,
+          visibilityCondition: el.querySelector('#gmm-vis-cond')?.value || '',
+          visibilityVision:    el.querySelector('#gmm-vis-type')?.value || 'normal',
+        });
+        const refresh = () => {
+          const st = read();
+          const d  = sumMeleeModifiers(st);
+          el.querySelector('#gmm-atk-tn').value = Math.max(2, baseAtk + d.atk);
+          el.querySelector('#gmm-def-tn').value = Math.max(2, baseDef + d.def);
+          const sign = n => `${n >= 0 ? '+' : ''}${n}`;
+          const vis  = st.visibilityCondition
+            ? meleeVisibilityModifier(st.visibilityCondition, st.visibilityVision) : null;
+          el.querySelector('#gmm-note').textContent =
+            `Δ ${sign(d.atk)} / ${sign(d.def)}`
+            + (vis === null ? '' : ` · visibility halves to ${sign(vis)}`);
+        };
+        el.querySelectorAll('input, select').forEach(i => {
+          i.addEventListener('input',  refresh);
+          i.addEventListener('change', refresh);
+        });
+        refresh();
+      },
+
+      buttons: [
+        {
+          label: '✓ Set Target Numbers', action: 'ok', default: true,
+          callback: (_e, _b, dialog) => {
+            const el = dialog.element;
+            result = {
+              atkTN: Math.max(2, parseInt(el.querySelector('#gmm-atk-tn')?.value) || baseAtk),
+              defTN: Math.max(2, parseInt(el.querySelector('#gmm-def-tn')?.value) || baseDef),
+              adjudicated: true,
+            };
+          },
+        },
+        { label: 'Cancel exchange', action: 'cancel' },
+      ],
+    });
+    return result;
   }
 
   static async _promptGMAttackWindow(ctx, opts = {}) {
