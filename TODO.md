@@ -24,7 +24,7 @@ independent.
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | *(none — 5, 14 and 43 all closed)* |
-| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 38 · 39 · 40 · 41 · 47 · 48 · 49 · 51 · 52 |
+| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 38 · 39 · 40 · 41 · 47 · 48 · 49 · 51 · 52 · 53 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
@@ -1361,6 +1361,19 @@ for defender` strip then shows for the whole table.
 
 ## 5. ✅ Make essence loss permanent when cyberware is removed — **DONE 2026-08-14**
 
+**The rule is in Man & Machine, not core** — worth knowing, because a core-only search comes
+up empty and reads as "the book never says this". **M&M p.147**, REMOVE CYBERWARE:
+
+> "Cyberware that is removed **does not restore the character’s lost Essence**. Removing
+> cyberware incurs permanent damage to the implant (1D6 ÷ 2 Stress)."
+
+Core only ever says the cost applies "when the cyberware is installed" (p.60) and never
+addresses removal at all.
+
+⚠ An earlier draft of this entry cited **SR3 p.90**. That is the Skills chapter and says
+nothing about Essence — the number was carried forward unchecked. Verify page citations
+against the PDF; this file is read as an authority.
+
 `attributes.essence.lost` is a persisted, permanent record of Essence spent; the derived
 value is `base − max(lost, installed)`.
 
@@ -1825,6 +1838,38 @@ phrase.
 
 The rounds are already known at that point: the attack's `fireModeResult.rounds` would need
 carrying into `dodgeContext`, which already ferries `attackSuccesses` and the staged damage.
+
+## 53. The "Essence hole" surgery option is not modelled — *M&M p.150*
+
+Found 2026-08-14, when the essence work in [#5](#5) was challenged on sourcing and the
+answer turned out to be in Man & Machine rather than core.
+
+Removing cyberware never refunds Essence (**M&M p.147**, and [#5](#5) implements that). But
+M&M also gives a way to reuse the gap, as an **optional surgery modifier**:
+
+> **Essence Slot (Implant, +2 Threshold)** — "If the character previously had cyberware
+> removed, a new implant with this option can be installed within the 'Essence hole' left
+> behind by the earlier implant. In other words, the old implant's Essence Cost can be
+> subtracted from the new implant's Essence Cost."
+
+⚠ **It is opt-in and it costs something** — +2 to the surgery Threshold, chosen per
+procedure. It is NOT what happens by default when you swap chrome, which is exactly why
+[#5](#5) accumulates on install rather than storing `max(lost, installed)`: that model would
+grant every character a free, permanent Essence Slot on every implant they ever fit.
+
+**Why it is not built.** The system has no surgery flow at all — no procedures, no
+Thresholds, no Stress. The Essence Slot option is one line in a table that only means
+anything inside that framework, and modelling it alone would be modelling the discount
+without the cost.
+
+**How a GM applies it today, and it is genuinely fine:** reduce the new implant's
+`essenceCost` by the old one's before installing, or correct the Essence box afterwards
+(`_preUpdate` translates that into `essence.lost`, so it sticks). Both are one edit.
+
+**If it is ever built**, it belongs with the rest of the surgery rules (Stress, Thresholds,
+procedure options) rather than as a special case bolted onto the install hook — and it needs
+to track WHICH hole is being filled, since a 0.5 implant cannot borrow 2.0 of hole and then
+lend the remainder to the next one for free.
 
 ## 12. Write a committed pack rebuild script and vendor its sources — *keystone; blocks #1*
 

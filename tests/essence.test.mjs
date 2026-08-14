@@ -4,8 +4,16 @@
  * ── THE BUG ──────────────────────────────────────────────────────────────────────────
  *
  * Essence was recomputed every `prepareDerivedData` from the cyberware an actor was
- * CURRENTLY holding. Delete the item, get the Essence back. SR3 p.90 is explicit that the
- * loss is permanent — you do not recover Essence by having the chrome taken out.
+ * CURRENTLY holding. Delete the item, get the Essence back.
+ *
+ * ⚠ The rule is in **Man & Machine p.147**, not core — core only says the cost applies
+ * "when the cyberware is installed" (p.60) and never addresses removal:
+ *
+ *   "Cyberware that is removed does not restore the character's lost Essence."
+ *
+ * The "Essence hole" that lets a later implant reuse the gap is a SURGERY OPTION at +2
+ * Threshold (Essence Slot, M&M p.150), not the default — which is exactly why the mark
+ * accumulates rather than tracking a maximum. See the e2e spec.
  *
  * It was not a cosmetic number either. Two values hang off Essence:
  *

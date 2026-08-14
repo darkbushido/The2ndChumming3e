@@ -1706,7 +1706,11 @@ _prepareCharacter(sys, attr) {
 
   // Essence — reduced by cyberware only (M&M rules: bioware uses Bio Index, not Essence)
   if (attr.essence) {
-    // ⚠ Essence loss is PERMANENT. Deriving it from currently-held cyberware refunded
+    // ⚠ Essence loss is PERMANENT — M&M p.147: "Cyberware that is removed does not
+    // restore the character's lost Essence." (Core never states the removal case; it
+    // only says the cost applies "when the cyberware is installed", p.60.)
+    //
+    // Deriving it from currently-held cyberware refunded
     // it the moment an item was deleted, and two things hang off Essence — Bio Index
     // capacity (essence + 3) and effective Magic (essence − bioIndex/2) — so a refund
     // silently inflated a character's Magic and their bioware headroom.

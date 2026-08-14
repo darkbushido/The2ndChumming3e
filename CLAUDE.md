@@ -667,7 +667,7 @@ No vehicle skill → the SR3 Default dialog. 1 success = manoeuvre succeeds (0 �
 - Auto (no pilot or pilot not found): `Pilot rating` base + `2d6`
 - VCR is exclusive: activating VCR sets all other linked vehicles to Auto (not locked — editable after)
 
-### Essence is permanent  · *SR3 p.90*
+### Essence is permanent  · *M&M p.147*
 
 `essence.value` is **derived** — `base − max(lost, installedCyberwareCost)` — and rewritten
 every `prepareDerivedData`. The persisted number is **`essence.lost`**.
@@ -692,6 +692,27 @@ reverted with no error at all. `SR3EActor._preUpdate` translates a write to `val
 `lost` it implies. A GM can deepen the loss by hand but cannot claim more Essence than the
 installed hardware allows — alphaware and betaware express their discount in the item's
 `essenceCost`, not by overriding the total.
+
+⚠ **The rule is in Man & Machine, not core.** SR3 core never states the removal case —
+it only says the Essence Cost is "the amount by which the character's Essence is reduced
+**when the cyberware is installed**" (p.60). M&M settles it outright, under REMOVE
+CYBERWARE:
+
+> "Cyberware that is removed **does not restore the character's lost Essence**. Removing
+> cyberware incurs permanent damage to the implant (1D6 ÷ 2 Stress)."  — *M&M p.147*
+
+⚠ **The "Essence hole" is an opt-in SURGERY OPTION, not automatic** — *M&M p.150*:
+
+> "Essence Slot (Implant, +2 Threshold) — If the character previously had cyberware
+> removed, a new implant with this option can be installed within the 'Essence hole'
+> left behind by the earlier implant. In other words, the old implant's Essence Cost can
+> be subtracted from the new implant's Essence Cost."
+
+So accumulating on install is the correct **default**, and the discount exists only when
+a surgeon takes that option at +2 Threshold. Storing `max(lost, installed)` instead would
+hand every character a free, permanent Essence Slot on every implant. **Not modelled** —
+there is no surgery flow to hang it on; a GM applies it by editing the item's
+`essenceCost` or the Essence box. See TODO 53.
 
 ⚠ Adding this field was a **data-model change**: it needs a full Foundry restart, not F5.
 
