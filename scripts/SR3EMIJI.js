@@ -8,7 +8,8 @@
  *
  * Registered on game.sr3e as SR3EMIJI; launched from the vehicle EW tab. Rolls reuse the
  * actor `_rollWave` Rule-of-Six engine (resolved here in `_resolveRoll`). "Complementary
- * dice" = min(Flux, skillRating) extra pool dice — no special mechanic.
+ * dice" = min(Flux, skillRating) extra pool dice — no special mechanic, and granted to the
+ * MIJI Test ONLY, per R3 p.36-38. Infiltration rolls the EW skill alone.
  */
 export class SR3EMIJI {
 
@@ -382,7 +383,7 @@ export class SR3EMIJI {
           <label style="font-size:12px;color:var(--sr-muted)">Intruder vehicle
             <select id="inf-intruder" style="width:100%">${vehOpts}</select>
           </label>
-          <div style="font-size:11px;color:var(--sr-muted)">Roll: Electronics (EW) + Flux comp. vs TN 6, modified by −(intruder Protocol − target Deck). Each success infiltrates one channel or adds to the Intrusion Factor.</div>
+          <div style="font-size:11px;color:var(--sr-muted)">Roll: Electronics (EW) vs TN 6, modified by −(intruder Protocol − target Deck). Flux adds no dice here — R3 grants complementary dice to the MIJI Test only. Each success infiltrates one channel or adds to the Intrusion Factor.</div>
         </div>`,
       buttons: [
         { label: 'Roll', action: 'go', default: true, callback: (_e, _b, d) => {
@@ -398,8 +399,20 @@ export class SR3EMIJI {
     const defRigger  = this._riggerOf(targetVehicle);
 
     const skill = this._ewSkill(intRigger);
-    const flux  = intRigger.system?.ew?.fluxRating ?? 0;
-    const pool  = Math.max(1, skill.rating + this._complementary(flux, skill.rating));
+    // ⚠ NO Flux complementary dice here. R3 grants them to the MIJI Test only — "The
+    // Intruder's flux rating may be used as complementary skill dice FOR THIS PART OF THE
+    // TEST" (p.38) — while infiltration is plainly "a number of dice equal to his
+    // Electronics (Electronic Warfare) skill against a Target Number 6" (p.36).
+    //
+    // The book's own example settles it: Trixie has Flux 8 and an EW specialisation of 6,
+    // and "She rolls 6 dice against a Target Number 6." Six — her skill alone. Adding Flux
+    // here roughly doubled the pool, and since these successes buy channels, time reduction
+    // AND Intrusion Factor, it inflated all three at once.
+    //
+    // Flux is not read at all here now. R3 does use it for RANGE ("the range of an
+    // electronic device depends on its Flux Rating"), but this flow never checks range —
+    // that stays a GM call, as it was before.
+    const pool  = Math.max(1, skill.rating);
     const proto = intRigger.system?.ew?.protocolModule ?? 0;
     const deck  = defRigger?.system?.ew?.deckRating ?? 0;
     const tn    = Math.max(2, 6 - (proto - deck));

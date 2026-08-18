@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | 54 *(1 of 3 fixed; the other two are design calls)* |
+| 🔴 Confirmed bugs, still open | 54 *(2 of 3 fixed; 54.3 is a design call)* |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 38 · 39 · 40 · 41 · 47 · 48 · 49 · 51 · 52 · 53 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
@@ -1918,14 +1918,21 @@ TN 2 instead of TN 8 in Trixie's case.
 result card both show the split (`6 skill + 2 allocated`) so the baseline is visible rather
 than mysterious, and `tests/ew-skill.test.mjs` pins Trixie's 6 and the 8 it becomes.
 
-### 🟠 2. Flux complementary dice are granted to the Infiltration Test
+### ✅ 2. Flux complementary dice were granted to the Infiltration Test — **FIXED 2026-08-14**
 
 R3 grants them **only for the MIJI Test**: *"The Intruder's flux rating may be used as
 complementary skill dice for **this part of the test**"*, and the defender rolls "with
 complementary skill dice equal to his Flux rating". The infiltration text grants none, and
 Trixie confirms it: Flux 8, EW 6, and she rolls **6** dice, not 6 + Flux.
 
-`openInfiltration` adds `_complementary(flux, skill.rating)` anyway (`SR3EMIJI.js:402`).
+`openInfiltration` added `_complementary(flux, skill.rating)` anyway, roughly doubling the
+pool — and since these successes buy channels, time reduction AND Intrusion Factor, it
+inflated all three at once. It compounded with 54.1: a bigger success pool feeds a bigger
+factor.
+
+The term is gone; infiltration now rolls the EW skill alone. Flux is no longer read there at
+all. R3 does use Flux for RANGE ("the range of an electronic device depends on its Flux
+Rating"), but this flow has never checked range and still does not — that stays a GM call.
 
 ### 🟠 3. `_complementary` caps at min(Flux, skill), which is in neither book
 
