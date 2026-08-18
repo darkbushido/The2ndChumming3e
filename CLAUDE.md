@@ -856,6 +856,16 @@ clip, since the dialog priced a full burst. See TODO 51/55.
 the action economy, so they are inferred from `roundsFiredThisPhase` and a mixed-mode phase
 drifts. Warns, never blocks.
 
+**Multiple targets** (`SR3EItem.multiTargetTN`, pure) · *SR3 p.112* — **+2 per additional
+target that Combat Phase**, asked for in **every** fire mode via the "Which target this Combat
+Phase?" dropdown. ⚠ **Not a full-auto rule**, though the book's layout makes it look like one:
+p.116 restates it under a *Multiple Targets* heading inside FULL-AUTO MODE, but what is
+genuinely full-auto-only there is **walking the fire** (1 wasted round per metre; smartguns
+waste none). The ordinal counts **targets, not shots** — a second burst at the same target is
+still the 1st. ⚠ The **GM window cannot supply this**: `multiTarget` carries no `mvp` flag, so
+`mvpModifierGroups()` never renders it and the fire dialog is the only source. It used to live
+inside the dialog's FA-only section, so SA's second shot and BF's second burst were both free.
+
 **Ammunition** — two-layer model (see also the ammo-architecture memory):
 - *Stockpile*: ammo items are a reservoir (gear/ammo tabs show "Stock"). Fields: `ammoType`, `loadMechanism`, `rounds` (total owned). Rules live in `SR3E.ammoTypes` config, NOT on the item.
 - *Magazine*: each firearm tracks `loadedAmmoType` + `loadedRounds`; magazine size is parsed from its capacity string (`15(c)` → 15). The weapons-tab ammo cell shows the capacity, a loaded badge, and a ↻ **Reload** button (`SR3EItem.reload`).

@@ -207,6 +207,56 @@ export async function run(t) {
 
   t.is('an unknown mode has no allowance to bust', warn('XX', 99), null);
 
+  // ── Multiple targets, +2 each — SR3 p.112, and NOT a full-auto rule ────────
+  //
+  // The table row is stated flatly and with no mode attached:
+  //
+  //   "Multiple targets — +2 per additional target that Combat Phase"
+  //
+  // It reads as full-auto-only because p.116 restates it under a *Multiple Targets*
+  // heading that lives inside FULL-AUTO MODE. What is genuinely full-auto-only there is
+  // WALKING THE FIRE — the wasted round per metre — not the +2. The dialog used to keep
+  // the target ordinal inside its FA-only section, so SA's second shot and BF's second
+  // burst could never take it, and the GM window cannot supply it either (`multiTarget`
+  // carries no `mvp` flag, so `mvpModifierGroups` never renders it).
+  const mt = n => SR3EItem.multiTargetTN(n);
+
+  t.is('the first target is unmodified', mt(1), 0);
+  t.is('the second target is +2',        mt(2), 2);
+  t.is('the third is +4',                mt(3), 4);
+  t.is('the fifth is +8',                mt(5), 8);
+  t.is('an omitted ordinal reads as the first target', mt(undefined), 0);
+  t.is('junk reads as the first target rather than NaN', mt('x'), 0);
+  t.is('0 and negatives cannot hand out a bonus', mt(0), 0);
+  t.is('a negative ordinal cannot subtract from the TN', mt(-3), 0);
+
+  // ── Wedge's phase, in full — SR3 p.116 ─────────────────────────────────────
+  //
+  // The book works all three attacks. AK-97, 4 points of compensation, base TN 4, laser
+  // sight -1 → 3. Each punk is a separate Success Test; recoil accumulates across the
+  // phase and the multi-target penalty rises with the ordinal.
+  //
+  //   Punk 1: 3 rounds. 3 recoil, all compensated.            TN 3
+  //   Punk 2: 3 rounds. "Wedge has now fired 6 rounds" → +2.  TN 3 + 2 + 2 = 7
+  //   Punk 3: 4 rounds. "now fired 10 rounds" → +6.           TN 3 + 6 + 4 = 13
+  //
+  // This is the case that proves the two penalties are independent and both accumulate.
+  const wedge = (before, rounds, ordinal) =>
+    3 + SR3EItem.recoilTN({ mode: 'FA', roundsBefore: before, roundsThisShot: rounds, totalComp: 4 })
+      + mt(ordinal);
+
+  t.is('Wedge vs Punk 1 — TN 3',  wedge(0, 3, 1), 3);
+  t.is('Wedge vs Punk 2 — TN 7',  wedge(3, 3, 2), 7);
+  t.is('Wedge vs Punk 3 — TN 13', wedge(6, 4, 3), 13);
+
+  // The same +2 has to reach the modes the old FA-only control locked it out of.
+  t.is("SA's second shot at a NEW target takes the +2 as well (p.115 allows two shots)",
+    SR3EItem.recoilTN({ mode: 'SA', roundsBefore: 1, totalComp: 0 }) + mt(2), 3);
+  t.is("BF's second burst at a new target likewise (p.115 allows two bursts)",
+    SR3EItem.recoilTN({ mode: 'BF', roundsBefore: 3, totalComp: 0 }) + mt(2), 8);
+  t.is('but a SECOND burst at the SAME target is still the 1st target — recoil only',
+    SR3EItem.recoilTN({ mode: 'BF', roundsBefore: 3, totalComp: 0 }) + mt(1), 6);
+
   // ── Shape ──────────────────────────────────────────────────────────────────
   t.is('an unknown level falls back to Moderate rather than throwing',
     dmg({ power: 5, level: '?', mode: 'BF' }), '8S');

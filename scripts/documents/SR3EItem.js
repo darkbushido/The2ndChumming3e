@@ -2990,6 +2990,37 @@ static phaseFireWarning(mode, roundsBefore = 0, roundsThisShot = 0) {
 }
 
 /**
+ * TN penalty for engaging a fresh target this Combat Phase — **pure**.  · *SR3 p.112*
+ *
+ * The Ranged Combat Modifiers table states it flatly, with no mode attached:
+ *
+ *   > "Multiple targets — +2 per additional target that Combat Phase"
+ *
+ * ⚠ **This is NOT a full-auto rule**, and the book's layout is what makes it look like one.
+ * The +2 is restated on p.116 under a *Multiple Targets* heading that sits inside FULL-AUTO
+ * MODE — but what is genuinely full-auto-only is **walking the fire**: *"the attacker must
+ * 'walk' the fire from one target to the next… one round is wasted for every meter of
+ * distance between the two targets. Smartguns never waste rounds."* The modifier itself is
+ * a p.112 table row and applies to every mode.
+ *
+ * That matters because two other modes can legitimately engage a second target in one phase:
+ * SA *"can be fired twice in the same Combat Phase"* and BF *"a character can fire up to two
+ * bursts per Combat Phase"* (both p.115). Keeping the ordinal inside the dialog's FA-only
+ * section meant neither could ever take the penalty — and the GM window cannot supply it
+ * either, since `multiTarget` carries no `mvp` flag and so is never rendered.
+ *
+ * The ordinal is 1-based and counts targets, not shots: a second burst at the SAME target is
+ * still the 1st target and takes nothing.
+ *
+ * @param {number} ordinal  which target this is in the phase (1 = first, no penalty)
+ * @returns {number} the TN modifier, never negative
+ */
+static multiTargetTN(ordinal) {
+  const n = Math.trunc(Number(ordinal) || 1);
+  return n > 1 ? (n - 1) * 2 : 0;
+}
+
+/**
  * Recoil TN penalty for one shot — **pure**.  · *SR3 p.111*
  *
  * `recoil = max(0, uncompensatedRounds − totalComp) × multiplier`
@@ -3138,20 +3169,26 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
         <input type="number" id="fa-rounds" value="3" min="3" max="10" style="width:55px;margin-left:6px"/>
         <span style="font-size:11px;color:var(--sr-muted)">(3–10, Complex Action)</span>
       </label>
-      <div style="font-size:11px;color:var(--sr-muted);margin-bottom:6px">Walking fire: 1 wasted round per metre between targets (smartguns: 0)</div>
-      <label style="display:block;margin-bottom:4px">Which target in this phase?
-        <select id="fa-target-num" style="margin-left:6px">
-          <option value="1">1st (no penalty)</option>
-          <option value="2">2nd (+2 TN)</option>
-          <option value="3">3rd (+4 TN)</option>
-          <option value="4">4th (+6 TN)</option>
-          <option value="5">5th+ (+8 TN)</option>
-        </select>
-      </label>
+      <div style="font-size:11px;color:var(--sr-muted);margin-bottom:6px">Walking fire: 1 wasted round per metre between targets (smartguns: 0). Full-auto only — the +2 per target above applies to every mode.</div>
       <label style="display:block">Metres to previous target (wasted rounds):
         <input type="number" id="fa-metres" value="0" min="0" max="30" style="width:55px;margin-left:6px"/>
       </label>
     </div>` : '';
+
+  // p.112's "Multiple targets +2 per additional target that Combat Phase" is a general row,
+  // so it is asked for in EVERY mode — not inside `faSection`, where it used to live and
+  // where SA's second shot and BF's second burst could never reach it.
+  const targetOrdinal = `
+    <label style="display:block;margin-top:8px;font-size:12px">Which <strong>target</strong> this Combat Phase?
+      <select id="sr-target-num" style="margin-left:6px">
+        <option value="1">1st (no penalty)</option>
+        <option value="2">2nd (+2 TN)</option>
+        <option value="3">3rd (+4 TN)</option>
+        <option value="4">4th (+6 TN)</option>
+        <option value="5">5th+ (+8 TN)</option>
+      </select>
+      <span style="font-size:11px;color:var(--sr-muted);margin-left:4px">(a further shot at the SAME target is still the 1st)</span>
+    </label>`;
 
   const recoilState = `
     <div style="margin-top:10px;padding:6px 8px;background:#0a0a0a;border:1px solid var(--sr-border);border-radius:var(--r);font-size:11px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
@@ -3195,7 +3232,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       el.querySelectorAll('.sr-recoil-preview').forEach(span => {
         const m = span.dataset.mode;
         const r = recoilForMode(m, rounds, total, faRounds);
-        span.textContent = m === 'FA' ? `+${r} recoil + multi-target (see below)` : `+${r}`;
+        span.textContent = `+${r}`;
       });
     };
     el.querySelector('#sr-actor-comp')?.addEventListener('input', refreshPreviews);
@@ -3217,6 +3254,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
         ${secondSANote}
         <p style="margin:0 0 8px;font-size:12px;color:var(--sr-muted)">Select firing mode:</p>
         ${modeRows}
+        ${targetOrdinal}
         ${faSection}
         ${recoilState}
       </div>`,
@@ -3232,12 +3270,14 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
           let   additionalTNPenalty = 0;
           let   roundsWasted = 0;
 
+          // Every mode — p.112's table row is not scoped to full auto (see multiTargetTN).
+          additionalTNPenalty = SR3EItem.multiTargetTN(el.querySelector('#sr-target-num')?.value);
+
           if (mode === 'FA') {
             rounds = Math.min(10, Math.max(3, parseInt(el.querySelector('#fa-rounds')?.value) || 3));
-            const targetNum = parseInt(el.querySelector('#fa-target-num')?.value) || 1;
-            const metres    = Math.max(0, parseInt(el.querySelector('#fa-metres')?.value) || 0);
-            if (targetNum > 1) additionalTNPenalty = (targetNum - 1) * 2;
-            if (metres > 0)    roundsWasted = metres;
+            // Walking the fire IS full-auto-only (p.116).
+            const metres = Math.max(0, parseInt(el.querySelector('#fa-metres')?.value) || 0);
+            if (metres > 0) roundsWasted = metres;
           }
 
           // Read (possibly edited) compensation values and persist them so they stick for next time.

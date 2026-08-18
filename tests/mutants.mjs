@@ -137,4 +137,16 @@ export const MUTANTS = [
     was:    'no per-phase firing allowance at all — the state before TODO 51',
     impl:   () => null,
   },
+
+  {
+    id:     'multi-target-is-full-auto-only',
+    suite:  'fire-modes',
+    module: '../scripts/documents/SR3EItem.js',
+    klass:  'SR3EItem',
+    method: 'multiTargetTN',
+    was:    "the +2 per additional target reached only full auto, because the dialog kept the "
+          + "target ordinal inside its FA-only section — so SA's second shot and BF's second "
+          + "burst were both free, and the GM window could not supply the row either",
+    impl:   () => 0,
+  },
 ];
