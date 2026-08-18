@@ -100,4 +100,41 @@ export const MUTANTS = [
     },
     needsOriginal: '__origStageDamage',
   },
+  {
+    id:     'short-burst-raises-level',
+    suite:  'fire-modes',
+    ...ITEM, method: 'fireModeDamage',
+    was:    'a short burst treated as a weaker burst — +2 Power AND +1 level (SR3 p.115 says the level does NOT rise)',
+    impl:   ({ power, level = 'M', mode, rounds = 0, isTracer = false, shortBurst = false }) => {
+      const STAGES = ['L', 'M', 'S', 'D'];
+      let lvlIdx = STAGES.indexOf(level); if (lvlIdx < 0) lvlIdx = 1;
+      let pwr = Number(power) || 0;
+      if (mode === 'BF') { pwr += shortBurst ? 2 : 3; lvlIdx = Math.min(3, lvlIdx + 1); }
+      else if (mode === 'FA') {
+        const rds = Math.max(0, Number(rounds) || 0);
+        pwr += isTracer ? (rds - Math.floor(rds / 3)) : rds;
+        lvlIdx = Math.min(3, lvlIdx + Math.floor(rds / 3));
+      }
+      return { power: pwr, level: STAGES[lvlIdx] };
+    },
+  },
+  {
+    id:     'one-round-burst-stays-a-burst',
+    suite:  'fire-modes',
+    ...ITEM, method: 'resolveBurst',
+    was:    'a single remaining round resolved as a feeble BURST rather than a single shot (SR3 p.115)',
+    impl:   (available) => {
+      if (available === null || available === undefined) return { mode: 'BF', rounds: 3, shortBurst: false };
+      const have = Math.max(0, Math.trunc(Number(available) || 0));
+      if (have >= 3) return { mode: 'BF', rounds: 3, shortBurst: false };
+      return { mode: 'BF', rounds: have, shortBurst: true };
+    },
+  },
+  {
+    id:     'phase-caps-never-warn',
+    suite:  'fire-modes',
+    ...ITEM, method: 'phaseFireWarning',
+    was:    'no per-phase firing allowance at all — the state before TODO 51',
+    impl:   () => null,
+  },
 ];

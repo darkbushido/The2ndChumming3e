@@ -24,11 +24,11 @@ independent.
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | *(none — 54 fully closed)* |
-| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 38 · 39 · 40 · 41 · 47 · 48 · 49 · 51 · 52 · 53 |
-| 📦 Content gaps | 9 · 11 · 19 · 23 |
+| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 38 · 39 · 40 · 41 · 47 · 48 · 49 · 52 · 53 |
+| 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | **5** · 13 · **14** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
+| ✅ Done — kept for the record | **5** · 13 · **14** · **51** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -1802,7 +1802,7 @@ Three harness facts worth knowing before writing another spec — each cost a wr
 ⚠ Still no coverage for the **ranged** flow end-to-end (fire mode → recoil → dodge → soak), which
 is the most-played path in the system and the one with the most moving parts.
 
-## 51. Short Bursts are not implemented — *SR3 p.115*
+## 51. ✅ Short Bursts — **DONE 2026-08-14**, with the per-phase caps
 
 Found 2026-08-13 while verifying the fire-mode rules against the book for
 `tests/fire-modes.test.mjs`. The rule is printed directly under BURST-FIRE MODE:
@@ -1817,8 +1817,47 @@ So a 2-round burst is a distinct case, not "a burst that happens to fire two". N
 and counts 3 rounds, whatever the magazine holds.
 
 **Only reachable with `trackAmmo` ON**, which is off by default — which is presumably why it
-has never been noticed. Wire it where `loadedRounds` is checked, and give `fireModeDamage` a
-`shortBurst` branch (+2 Power, level unchanged) plus `recoilTN` its +2.
+was never noticed. See [#55](#55) for the decision to flip that default, and what has to be
+modelled first.
+
+### What was built
+
+`SR3EItem.resolveBurst(available)` is the pure classifier, and it returns a MODE as well as a
+count, because the one-round case stops being a burst:
+
+| rounds left | mode | Power | Level | recoil |
+|---|---|---|---|---|
+| 3+ | BF | +3 | +1 | +3 |
+| 2 | BF (short) | **+2** | **unchanged** | **+2** |
+| 1 | **SS** | — | — | SS rules |
+| `null` (not tracking) | BF | +3 | +1 | +3 |
+
+⚠ **A short burst is not a weaker burst.** +2 Power with the level UNCHANGED is the whole
+rule, and "+2 and +1 level" is the obvious mis-reading — it makes a two-round burst hit harder
+than the book allows. Pinned by the `short-burst-raises-level` mutant.
+
+⚠ **The one-round case changes the MODE.** Resolving it as a feeble burst would still apply
+burst recoil and a burst damage bonus. Pinned by `one-round-burst-stays-a-burst`.
+
+`rollWeapon` re-computes recoil after consulting the clip, because the dialog priced a FULL
+burst before anyone knew the magazine was nearly out, and warns the player which case they got.
+
+### Per-phase firing caps (in scope, and previously absent)
+
+`SR3EItem.phaseFireWarning(mode, roundsBefore, roundsThisShot)`. Only SS ever warned:
+
+| Mode | Cap | Source |
+|---|---|---|
+| SS | 1 shot | p.114 |
+| SA | 2 shots | p.115 |
+| BF | 2 bursts | p.115 |
+| FA | 10 rounds | p.116 |
+
+⚠ **It is a PROXY and says so in its doc comment.** The real caps are stated in Actions —
+Simple per shot or burst, Complex for full auto — and this system does not model the action
+economy at all. All that exists is `roundsFiredThisPhase`, so a phase mixing modes drifts: a
+3-round burst then an SA shot reads as 4 rounds and trips the SA cap early. It therefore
+WARNS and never blocks. If action accounting ever lands, this is where to make it exact.
 
 ## 52. The full-auto Dodge Test modifier is missing — *SR3 p.113*
 
@@ -1962,6 +2001,38 @@ of their 8 dice. Trixie is on Flux 8.
 ⚠ SR3 p.97's mechanic (a separate test at 2 successes → 1) is NOT what this is, and switching
 to it later would be a different shape — a second roll — not a tweak to this number. Pinned
 in `tests/ew-skill.test.mjs`.
+
+## 55. Default `trackAmmo` ON — and the ammunition model it needs first
+
+Decided 2026-08-14. `trackAmmo` currently defaults **off**, so the whole magazine/reload
+layer is dormant for a new world, and rules that depend on it ([#51](#51) short bursts) can
+never fire. It should be on by default.
+
+⚠ **Flipping the default is one line; the reason it is not done yet is what it exposes.**
+With tracking off, nobody notices that ammunition is modelled thinly.
+
+### What needs deciding before the flip
+
+- **Ammo types.** `SR3E.ammoTypes` holds the rules (APDS, explosive, EX, gel, flechette,
+  tracer, anti-vehicle), and firearms carry `loadedAmmoType`, but the **stockpile is one
+  undifferentiated `rounds` count per ammo item**. A runner carrying regular, APDS and
+  explosive for the same gun has three items and no notion of which is in the clip beyond a
+  single string. Reloading picks a stockpile by loading mechanism, not by what the player
+  wants loaded.
+- **Weight / encumbrance.** Ammunition has none. There is no weight field on the ammo item
+  and no carried-load calculation anywhere in the system, so "how much can this character
+  actually carry" cannot be answered — which is half the point of tracking ammo at all.
+- **Bows and crossbows** already nock a single arrow/bolt with no types at all (always
+  `regular`), so arrowheads would need the same treatment.
+
+### Sequencing
+
+Turning tracking on before the model is right would make every table meet the thin parts at
+once — empty-clip bails, reload prompts that cannot express "load the APDS" — and the likely
+outcome is that people turn it straight back off.
+
+So: **model first, default second.** [#23](#23) (ship an ammunition compendium) is the other
+half of this — the code is complete and the content is missing.
 
 ## 12. Write a committed pack rebuild script and vendor its sources — *keystone; blocks #1*
 

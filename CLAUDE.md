@@ -844,6 +844,18 @@ out +0/+2 instead of +2/+6 — understating recoil more the longer a firefight r
 p.111 works it — an MMG firing 10 rounds with 6 comp is **+8**, i.e. (10−6)×2, not 14.
 Pinned with all three worked examples in `tests/fire-modes.test.mjs`. `totalComp = actor.system.recoilCompensation + weapon.system.recoilMod`, both editable inline in the fire dialog and persisted on confirm. Heavy weapons (LMG/MMG/HMG/MinG) double uncompensated recoil; shotguns (ShtG) double it in **BF mode only** (SR3 p.111). Actor comp is edited on the **Cyber tab**; weapon comp ("Recoil Comp") on the firearm item. `roundsFiredThisPhase` resets each combat phase (`SR3EActor.resetRecoil`).
 
+**Short bursts** (`SR3EItem.resolveBurst`, pure) · *SR3 p.115* — a burst fired on a nearly
+empty clip is three cases, not one: **3+ rounds** = normal burst; **2 rounds** = +2 Power with
+the Damage Level **unchanged** and +2 recoil; **1 round** = resolved as **single-shot**, not as
+a burst at all. ⚠ "+2 and +1 level" is the mis-reading, and the one-round case changes the
+MODE. Only reachable with `trackAmmo` on; `rollWeapon` re-computes recoil after consulting the
+clip, since the dialog priced a full burst. See TODO 51/55.
+
+**Per-phase firing caps** (`SR3EItem.phaseFireWarning`) — SS 1 shot · SA 2 shots · BF 2 bursts
+· FA 10 rounds. ⚠ A **proxy**: the book states these in Actions and the system does not model
+the action economy, so they are inferred from `roundsFiredThisPhase` and a mixed-mode phase
+drifts. Warns, never blocks.
+
 **Ammunition** — two-layer model (see also the ammo-architecture memory):
 - *Stockpile*: ammo items are a reservoir (gear/ammo tabs show "Stock"). Fields: `ammoType`, `loadMechanism`, `rounds` (total owned). Rules live in `SR3E.ammoTypes` config, NOT on the item.
 - *Magazine*: each firearm tracks `loadedAmmoType` + `loadedRounds`; magazine size is parsed from its capacity string (`15(c)` → 15). The weapons-tab ammo cell shows the capacity, a loaded badge, and a ↻ **Reload** button (`SR3EItem.reload`).

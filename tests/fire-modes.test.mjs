@@ -147,6 +147,66 @@ export async function run(t) {
   t.is('tracer only differs in FA — a burst is unaffected',
     dmg({ power: 9, level: 'M', mode: 'BF', isTracer: true }), '12S');
 
+  // ── SHORT BURSTS (p.115) — three outcomes, not one ────────────────────────
+  //
+  // "If a burst ends up being a round short because of insufficient ammunition in the clip,
+  //  the Power Rating increases by +2, but the Damage Level does not increase. A +2 recoil
+  //  modifier also applies. If a burst consists of only one round due to insufficient
+  //  ammunition, resolve it as a single-shot attack."
+  const burst = a => SR3EItem.resolveBurst(a);
+
+  t.eq('a full clip fires a normal 3-round burst',
+    burst(15), { mode: 'BF', rounds: 3, shortBurst: false });
+  t.eq('exactly 3 left is still a full burst',
+    burst(3), { mode: 'BF', rounds: 3, shortBurst: false });
+  t.eq('2 left is a SHORT burst — still BF, but flagged',
+    burst(2), { mode: 'BF', rounds: 2, shortBurst: true });
+  // ⚠ The one-round case changes the MODE. Resolving it as a feeble burst would still apply
+  // burst recoil and a burst damage bonus; the book says it is a single shot.
+  t.eq('1 left is NOT a burst at all — it resolves as single-shot',
+    burst(1), { mode: 'SS', rounds: 1, shortBurst: false });
+  t.eq('an empty clip degrades the same way rather than throwing',
+    burst(0), { mode: 'SS', rounds: 0, shortBurst: false });
+  // With trackAmmo off there is no clip to consult, and every burst is a full burst — the
+  // behaviour that predates this rule, preserved deliberately.
+  t.eq('null (not tracking ammo) is always a full burst',
+    burst(null), { mode: 'BF', rounds: 3, shortBurst: false });
+
+  t.is('a short burst is +2 Power and the level does NOT rise',
+    dmg({ power: 9, level: 'M', mode: 'BF', shortBurst: true }), '11M');
+  t.is('against the full burst it replaces, which is +3 and one level up',
+    dmg({ power: 9, level: 'M', mode: 'BF' }), '12S');
+  t.is('the book’s 5M burst example, short: 7M rather than 8S',
+    dmg({ power: 5, level: 'M', mode: 'BF', shortBurst: true }), '7M');
+
+  t.is('a short burst contributes 2 rounds of recoil, not 3',
+    recoil({ mode: 'BF', roundsBefore: 0, totalComp: 0, shortBurst: true }), 2);
+  t.is('and stacks on what came before like any other burst',
+    recoil({ mode: 'BF', roundsBefore: 3, totalComp: 0, shortBurst: true }), 5);
+  t.is('compensation still applies before any doubling',
+    recoil({ mode: 'BF', roundsBefore: 0, totalComp: 1, shortBurst: true, isHeavy: true }), 2);
+
+  // ── Per-phase firing allowance ────────────────────────────────────────────
+  // Warnings, not blocks — and inferred from rounds because the action economy is not
+  // modelled. Asserting the boundary on each side is what stops an off-by-one going unseen.
+  const warn = (m, before, rounds = 0) => SR3EItem.phaseFireWarning(m, before, rounds);
+
+  t.is('the first SS shot of a phase is fine', warn('SS', 0), null);
+  t.ok('a second SS shot warns', /twice/i.test(warn('SS', 1) ?? ''));
+
+  t.is('one SA shot fired, a second is allowed', warn('SA', 1), null);
+  t.ok('a third SA shot warns', /twice per Combat Phase/i.test(warn('SA', 2) ?? ''));
+
+  t.is('one burst fired (3 rounds), a second is allowed', warn('BF', 3), null);
+  t.ok('a third burst warns', /two bursts/i.test(warn('BF', 6) ?? ''));
+
+  t.is('a 10-round full-auto burst is exactly the limit', warn('FA', 0, 10), null);
+  t.ok('11 rounds warns', /10 rounds/i.test(warn('FA', 0, 11) ?? ''));
+  t.ok('and the cap counts rounds ALREADY fired this phase, not just this burst',
+    /10 rounds/i.test(warn('FA', 6, 5) ?? ''));
+
+  t.is('an unknown mode has no allowance to bust', warn('XX', 99), null);
+
   // ── Shape ──────────────────────────────────────────────────────────────────
   t.is('an unknown level falls back to Moderate rather than throwing',
     dmg({ power: 5, level: '?', mode: 'BF' }), '8S');

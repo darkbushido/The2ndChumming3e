@@ -994,10 +994,44 @@ export class SR3EItem extends Item {
         if (!fireModeResult) return null;
       }
 
-      // SS warning — single-shot weapons cannot fire twice in a combat phase
-      if (fireModeResult.mode === 'SS' && (actor.system.roundsFiredThisPhase ?? 0) >= 1) {
-        ui.notifications.warn('SS weapons cannot fire twice in a combat phase.');
+      // ── SHORT BURSTS (SR3 p.115) ──────────────────────────────────────────
+      //
+      // A burst fired on a nearly-empty clip is not simply a burst that hits less hard: at
+      // two rounds it is +2 Power with NO level increase and +2 recoil, and at one round it
+      // stops being a burst at all and resolves as a single shot. `resolveBurst` owns those
+      // three cases; here we just adopt what it says.
+      //
+      // Only meaningful while `trackAmmo` is on — otherwise the clip is not modelled, the
+      // available count is null, and every burst is a full burst exactly as before.
+      let shortBurst = false;
+      if (fireModeResult.mode === 'BF' && game.settings.get('The2ndChumming3e', 'trackAmmo')) {
+        const burst = SR3EItem.resolveBurst(this.system.loadedRounds ?? 0);
+        shortBurst  = burst.shortBurst;
+        if (burst.mode !== fireModeResult.mode || burst.rounds !== fireModeResult.rounds) {
+          fireModeResult.mode   = burst.mode;
+          fireModeResult.rounds = burst.rounds;
+          // Recoil was computed in the dialog for a FULL burst, so it has to be redone once
+          // the clip has had its say. Same pure function the dialog used.
+          fireModeResult.recoilTN = SR3EItem.recoilTN({
+            mode:           burst.mode,
+            roundsBefore:   actor.system.roundsFiredThisPhase ?? 0,
+            roundsThisShot: burst.rounds,
+            totalComp:      (actor.system.recoilCompensation ?? 0) + (this.system.recoilMod ?? 0),
+            isHeavy, isShotgun, shortBurst,
+          });
+          ui.notifications.warn(burst.mode === 'SS'
+            ? `${this.name} has 1 round left — resolving as a single shot, not a burst.`
+            : `${this.name} has only 2 rounds left — SHORT BURST: +2 Power, no level increase.`);
+        }
       }
+
+      // ── Per-phase firing allowance ────────────────────────────────────────
+      // Warns, never blocks: the caps are stated in Actions and this system does not model
+      // the action economy, so phaseFireWarning() infers them from rounds fired. See its doc.
+      const _phaseWarn = SR3EItem.phaseFireWarning(
+        fireModeResult.mode, actor.system.roundsFiredThisPhase ?? 0, fireModeResult.rounds);
+      if (_phaseWarn) ui.notifications.warn(_phaseWarn);
+
       // FA-only ammo (Tracer) warning
       const ammoRules = game.sr3e.SR3E.ammoTypes[ammoType] ?? {};
       if (ammoRules.faOnly && fireModeResult.mode !== 'FA') {
@@ -1015,6 +1049,7 @@ export class SR3EItem extends Item {
           mode:     fireModeResult.mode,
           rounds:   fireModeResult.rounds,
           isTracer: !!ammoRules.tracer,
+          shortBurst,
         });
         rawDamage = `${staged.power}${staged.level}${parsed.isStun ? ' Stun' : ''}`;
       }
@@ -2877,6 +2912,84 @@ _getAvailableModes() {
  * Fire mode selection dialog. Returns { mode, rounds, additionalTNPenalty, roundsWasted } or null.
  */
 /**
+ * What a burst actually becomes when the clip is nearly empty. **Pure.**  · *SR3 p.115*
+ *
+ * > "If a burst ends up being a round short because of insufficient ammunition in the clip,
+ * > the Power Rating increases by +2, but the Damage Level does not increase. A +2 recoil
+ * > modifier also applies. If a burst consists of only one round due to insufficient
+ * > ammunition, resolve it as a single-shot attack."
+ *
+ * Three outcomes, not one:
+ *
+ * | rounds available | mode fired | Power | Level | recoil |
+ * |---|---|---|---|---|
+ * | 3+ | BF | +3 | +1 | +3 |
+ * | 2  | BF (short) | **+2** | **unchanged** | **+2** |
+ * | 1  | **SS** | — | — | SS rules |
+ *
+ * ⚠ The one-round case changes the MODE, not just the numbers. Resolving it as a weak burst
+ * would still apply burst recoil and burst damage; the book says it is a single shot, which
+ * means no burst bonus at all and no burst recoil.
+ *
+ * ⚠ Only reachable when `trackAmmo` is on — with tracking off `available` is null and a
+ * burst is always a full burst, which is the pre-existing behaviour and stays that way.
+ *
+ * @param {number|null} available rounds left in the clip, or null when not tracking
+ * @returns {{mode:'BF'|'SS', rounds:number, shortBurst:boolean}}
+ */
+static resolveBurst(available) {
+  if (available === null || available === undefined) return { mode: 'BF', rounds: 3, shortBurst: false };
+  const have = Math.max(0, Math.trunc(Number(available) || 0));
+  if (have >= 3) return { mode: 'BF', rounds: 3,    shortBurst: false };
+  if (have === 2) return { mode: 'BF', rounds: 2,   shortBurst: true  };
+  // One round, or an empty clip the caller has already warned about.
+  return { mode: 'SS', rounds: Math.min(1, have), shortBurst: false };
+}
+
+/**
+ * Has this actor already used up the mode's allowance this Combat Phase? **Pure.**
+ *
+ * SR3 caps every mode, and the system only ever warned about one of them:
+ *
+ * - **SS** — "cannot be fired again during the same Combat Phase" (p.114)
+ * - **SA** — "can be fired twice in the same Combat Phase" (p.115)
+ * - **BF** — "a character can fire up to two bursts per Combat Phase" (p.115)
+ * - **FA** — "can fire up to 10 rounds in one Combat Phase" (p.116)
+ *
+ * ⚠ **This is a PROXY and says so.** The real limits are expressed in Actions — a Simple
+ * Action per shot or burst, a Complex Action for full auto — and this system does not model
+ * the action economy at all. All we have is `roundsFiredThisPhase`, so the caps are inferred
+ * from rounds. In a phase that mixes modes the inference drifts: a 3-round burst followed by
+ * an SA shot reads as 4 rounds and trips the SA cap early.
+ *
+ * That is why it returns a WARNING and never blocks. Minimal guardrails — the GM adjudicates
+ * an unusual phase, and nobody is stopped from firing.
+ *
+ * @returns {string|null} the warning to show, or null when within the allowance
+ */
+static phaseFireWarning(mode, roundsBefore = 0, roundsThisShot = 0) {
+  const before = Math.max(0, Math.trunc(Number(roundsBefore) || 0));
+  switch (mode) {
+    case 'SS':
+      return before >= 1 ? 'SS weapons cannot fire twice in a combat phase.' : null;
+    case 'SA':
+      return before >= 2
+        ? 'Semi-automatic weapons fire at most twice per Combat Phase (SR3 p.115).' : null;
+    case 'BF':
+      return before >= 6
+        ? 'Burst fire is limited to two bursts per Combat Phase (SR3 p.115).' : null;
+    case 'FA': {
+      const total = before + Math.max(0, Math.trunc(Number(roundsThisShot) || 0));
+      return total > 10
+        ? `Full auto is limited to 10 rounds per Combat Phase — this would be ${total} (SR3 p.116).`
+        : null;
+    }
+    default:
+      return null;
+  }
+}
+
+/**
  * Recoil TN penalty for one shot — **pure**.  · *SR3 p.111*
  *
  * `recoil = max(0, uncompensatedRounds − totalComp) × multiplier`
@@ -2917,9 +3030,13 @@ _getAvailableModes() {
  * @returns {number} TN penalty, never negative
  */
 static recoilTN({ mode, roundsBefore = 0, roundsThisShot = 0, totalComp = 0,
-                  isHeavy = false, isShotgun = false }) {
+                  isHeavy = false, isShotgun = false, shortBurst = false }) {
   const mult = (isHeavy || (isShotgun && mode === 'BF')) ? 2 : 1;
-  const own  = mode === 'BF' ? 3
+  // A SHORT BURST is its own case, not a burst that happens to fire two: "If a burst ends
+  // up being a round short because of insufficient ammunition in the clip… A +2 recoil
+  // modifier also applies" (p.115). So it contributes 2, not 3 — and a ONE-round burst is
+  // not a burst at all, it resolves as single-shot, which contributes nothing.
+  const own  = mode === 'BF' ? (shortBurst ? 2 : 3)
              : mode === 'FA' ? Math.max(0, Number(roundsThisShot) || 0)
              : 0;
   return Math.max(0, (roundsBefore + own) - totalComp) * mult;
@@ -2942,15 +3059,19 @@ static recoilTN({ mode, roundsBefore = 0, roundsThisShot = 0, totalComp = 0,
  *
  * @returns {{power:number, level:string}}
  */
-static fireModeDamage({ power, level = 'M', mode, rounds = 0, isTracer = false }) {
+static fireModeDamage({ power, level = 'M', mode, rounds = 0, isTracer = false,
+                        shortBurst = false }) {
   const STAGES = ['L', 'M', 'S', 'D'];
   let lvlIdx = STAGES.indexOf(level);
   if (lvlIdx < 0) lvlIdx = 1;
   let pwr = Number(power) || 0;
 
   if (mode === 'BF') {
-    pwr   += 3;
-    lvlIdx = Math.min(3, lvlIdx + 1);
+    // ⚠ A short burst raises Power by 2 and does NOT raise the Damage Level (p.115). That
+    // asymmetry is the whole rule — treating it as a weaker burst (+2 AND +1 level) is the
+    // obvious mistake, and it makes a two-round burst hit harder than the book allows.
+    pwr   += shortBurst ? 2 : 3;
+    if (!shortBurst) lvlIdx = Math.min(3, lvlIdx + 1);
   } else if (mode === 'FA') {
     const rds = Math.max(0, Number(rounds) || 0);
     pwr   += isTracer ? (rds - Math.floor(rds / 3)) : rds;
