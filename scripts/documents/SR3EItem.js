@@ -1015,7 +1015,7 @@ export class SR3EItem extends Item {
           fireModeResult.recoilTN = SR3EItem.recoilTN({
             mode:           burst.mode,
             roundsBefore:   actor.system.roundsFiredThisPhase ?? 0,
-            roundsThisShot: burst.rounds,
+            roundsThisShot: SR3EItem.roundsExpended({ ...fireModeResult, rounds: burst.rounds }),
             totalComp:      (actor.system.recoilCompensation ?? 0) + (this.system.recoilMod ?? 0),
             isHeavy, isShotgun, shortBurst,
           });
@@ -1025,11 +1025,16 @@ export class SR3EItem extends Item {
         }
       }
 
+      // Everything that counts rounds down the barrel counts the walking-fire waste too —
+      // the phase cap, recoil and the magazine. Only damage uses `rounds` alone. See
+      // roundsExpended for why the three used to disagree.
+      fireModeRounds = SR3EItem.roundsExpended(fireModeResult);
+
       // ── Per-phase firing allowance ────────────────────────────────────────
       // Warns, never blocks: the caps are stated in Actions and this system does not model
       // the action economy, so phaseFireWarning() infers them from rounds fired. See its doc.
       const _phaseWarn = SR3EItem.phaseFireWarning(
-        fireModeResult.mode, actor.system.roundsFiredThisPhase ?? 0, fireModeResult.rounds);
+        fireModeResult.mode, actor.system.roundsFiredThisPhase ?? 0, fireModeRounds);
       if (_phaseWarn) ui.notifications.warn(_phaseWarn);
 
       // FA-only ammo (Tracer) warning
@@ -1037,8 +1042,6 @@ export class SR3EItem extends Item {
       if (ammoRules.faOnly && fireModeResult.mode !== 'FA') {
         ui.notifications.warn(`${ammoRules.label} ammo can only be used in Full Auto.`);
       }
-      fireModeRounds = fireModeResult.rounds + (fireModeResult.roundsWasted ?? 0);
-
       // Apply mode damage modifiers to rawDamage
       const parsed = SR3EItem.parseDamageCode(rawDamage, actor);
       if (parsed) {
@@ -1266,7 +1269,7 @@ export class SR3EItem extends Item {
   // Decrement the weapon's loaded magazine when tracking is enabled. Bullets fired =
   // max(1, mode rounds) plus walking-fire waste. Warns (never blocks) when the mag runs dry.
   if (this.type === 'firearm' && game.settings.get('The2ndChumming3e', 'trackAmmo')) {
-    const bulletsFired = Math.max(1, fireModeResult?.rounds ?? 1) + (fireModeResult?.roundsWasted ?? 0);
+    const bulletsFired = Math.max(1, SR3EItem.roundsExpended(fireModeResult ?? { rounds: 1 }));
     const loaded       = this.system.loadedRounds ?? 0;
     if (loaded <= 0) {
       ui.notifications.warn(`${this.name} has no rounds loaded — firing anyway. Reload from the weapons tab.`);
@@ -2990,6 +2993,35 @@ static phaseFireWarning(mode, roundsBefore = 0, roundsThisShot = 0) {
 }
 
 /**
+ * Rounds that actually leave the barrel for one declaration — **pure**.  · *SR3 p.116*
+ *
+ * The burst PLUS the walking-fire waste. "One round is wasted for every meter of distance
+ * between the two targets" — wasted, but **fired**, and three separate rules care that it was:
+ *
+ *   - the phase budget — *"Weapons capable of full auto can fire up to 10 rounds in one
+ *     Combat Phase"*; a wasted round is one of those 10
+ *   - recoil — *"Each round fired imposes a +1 recoil modifier"* (p.115)
+ *   - the magazine
+ *
+ * ⚠ **Damage is the exception, and must keep using `rounds` alone.** Power rises "for every
+ * round in that full-auto burst" and the level "for every three full rounds in the full-auto
+ * burst" — rounds spent walking between targets are not in the burst that reaches the target.
+ * So this is deliberately not applied to `fireModeDamage`.
+ *
+ * Existing to be called from THREE sites is the point. They disagreed: the magazine was
+ * decremented by rounds+waste while the recoil and the phase cap saw only `rounds`, so waste
+ * was invisible to the leg that spent it and visible to the next one. A rigger walking fire
+ * across three targets a metre apart fired 11 rounds against a cap of 10 and was never told.
+ *
+ * @param {{rounds?: number, roundsWasted?: number}} fireModeResult
+ * @returns {number} rounds off the clip, never negative
+ */
+static roundsExpended({ rounds = 0, roundsWasted = 0 } = {}) {
+  const n = v => Math.max(0, Math.trunc(Number(v) || 0));
+  return n(rounds) + n(roundsWasted);
+}
+
+/**
  * TN penalty for engaging a fresh target this Combat Phase — **pure**.  · *SR3 p.111*
  *
  * The rule sentence is unrestricted, and the mode appears only in its example:
@@ -3238,13 +3270,16 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       const faRounds = Math.max(3, parseInt(el.querySelector('#fa-rounds')?.value) || 3);
       el.querySelectorAll('.sr-recoil-preview').forEach(span => {
         const m = span.dataset.mode;
-        const r = recoilForMode(m, rounds, total, faRounds);
+        // Walking-fire waste is fired, so it is priced here as well — see roundsExpended.
+        const faMetres = Math.max(0, parseInt(el.querySelector('#fa-metres')?.value) || 0);
+        const r = recoilForMode(m, rounds, total, m === 'FA' ? faRounds + faMetres : faRounds);
         span.textContent = `+${r}`;
       });
     };
     el.querySelector('#sr-actor-comp')?.addEventListener('input', refreshPreviews);
     el.querySelector('#sr-weapon-comp')?.addEventListener('input', refreshPreviews);
     el.querySelector('#fa-rounds')?.addEventListener('input', refreshPreviews);
+    el.querySelector('#fa-metres')?.addEventListener('input', refreshPreviews);
 
     el.querySelector('#sr-reset-recoil')?.addEventListener('click', async () => {
       await actor.update({ 'system.roundsFiredThisPhase': 0 });
@@ -3296,7 +3331,8 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
           // Recoil per mode (see SR3EItem.recoilTN). BF and FA count their OWN rounds —
           // `rounds` is what this shot fires — while SS/SA count only what came before.
           // Passing `rounds` here is what makes Wedge's second burst +2 rather than +0.
-          const recoilTN = recoilForMode(mode, roundsBefore, aComp + wComp, rounds);
+          const recoilTN = recoilForMode(mode, roundsBefore, aComp + wComp,
+                                         SR3EItem.roundsExpended({ rounds, roundsWasted }));
           result = { mode, rounds, roundsWasted, recoilTN, additionalTNPenalty };
         },
       },

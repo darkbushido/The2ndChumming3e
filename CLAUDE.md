@@ -856,6 +856,17 @@ clip, since the dialog priced a full burst. See TODO 51/55.
 the action economy, so they are inferred from `roundsFiredThisPhase` and a mixed-mode phase
 drifts. Warns, never blocks.
 
+**Walking fire** (`SR3EItem.roundsExpended`, pure) · *SR3 p.116* — full-auto only: **1 round
+wasted per metre between targets, and smartguns waste none**. A wasted round is still a **fired**
+round, so it counts against the **10-round phase budget**, against **recoil**, and against the
+**magazine** — `roundsExpended = rounds + roundsWasted` is the single source for all three.
+⚠ **Damage is the exception**: Power rises "for every round in that full-auto burst", and a
+round spent walking is not in the burst that arrives, so `fireModeDamage` keeps using `rounds`
+alone. ⚠ **Each burst is ≥3 rounds** (p.116), so three targets a metre apart costs
+3+1+3+1+3 = **11** and is *not legal* without a smartgun. Previously the magazine was
+decremented by rounds+waste while the cap and recoil saw `rounds` alone, so waste was invisible
+to the leg that spent it and Able's 11-round walk never warned.
+
 **Multiple targets** (`SR3EItem.multiTargetTN`, pure) · *SR3 p.111* — **+2 per additional
 target that Combat Phase**, asked for in **every** fire mode via the "Which target this Combat
 Phase?" dropdown. ⚠ **Not a full-auto rule.** p.111's rule sentence is unrestricted — *"If a

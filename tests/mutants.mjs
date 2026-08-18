@@ -149,4 +149,17 @@ export const MUTANTS = [
           + "burst were both free, and the GM window could not supply the row either",
     impl:   () => 0,
   },
+
+  {
+    id:     'walking-fire-waste-is-free',
+    suite:  'fire-modes',
+    module: '../scripts/documents/SR3EItem.js',
+    klass:  'SR3EItem',
+    method: 'roundsExpended',
+    was:    'the phase cap and recoil were passed the burst size alone while the magazine was '
+          + 'decremented by rounds+waste, so a walked round was invisible to the leg that '
+          + 'spent it — three targets a metre apart fired 11 rounds against a cap of 10 '
+          + 'with no warning',
+    impl:   ({ rounds = 0 } = {}) => Math.max(0, Math.trunc(Number(rounds) || 0)),
+  },
 ];

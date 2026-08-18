@@ -263,6 +263,63 @@ export async function run(t) {
   t.is('but a SECOND burst at the SAME target is still the 1st target — recoil only',
     SR3EItem.recoilTN({ mode: 'BF', roundsBefore: 3, totalComp: 0 }) + mt(1), 6);
 
+  // ── Walking fire: a wasted round is still a FIRED round — SR3 p.116 ────────
+  //
+  //   "When engaging multiple targets in full-auto mode, the attacker must 'walk' the fire
+  //    from one target to the next. This means that one round is wasted for every meter of
+  //    distance between the two targets. Smartguns never waste rounds."
+  //
+  // Three rules care that it was fired — the 10-round phase budget, recoil ("each round
+  // fired imposes a +1 recoil modifier"), and the magazine. Damage is the exception and
+  // must NOT count it: Power rises "for every round in that full-auto burst", and a round
+  // spent walking between targets is not in the burst that reaches the target.
+  const exp = o => SR3EItem.roundsExpended(o);
+
+  t.is('a burst with no walking is just the burst', exp({ rounds: 3, roundsWasted: 0 }), 3);
+  t.is('a metre of walking costs a round',          exp({ rounds: 3, roundsWasted: 1 }), 4);
+  t.is('an absent waste field is zero waste',       exp({ rounds: 3 }), 3);
+  t.is('no argument at all is zero rather than NaN', exp(undefined), 0);
+  t.is('junk reads as zero',                        exp({ rounds: 'x', roundsWasted: null }), 0);
+  t.is('negatives cannot refund rounds',            exp({ rounds: 3, roundsWasted: -5 }), 3);
+
+  // ── Able walks fire across three targets a metre apart ─────────────────────
+  //
+  // "At least three rounds must be fired in each burst" and "up to 10 rounds in one Combat
+  // Phase" (p.116). Three targets at 1m spacing is 3 + 1 + 3 + 1 + 3 = ELEVEN rounds, so
+  // RAW he cannot do it — two targets, or a smartgun, which "never wastes rounds".
+  //
+  // This is the case the old code could not see. The magazine was decremented by
+  // rounds+waste, but the phase cap and recoil were passed `rounds` alone, so each leg was
+  // short by its own waste: the cap saw 3 / 6 / 10 and never warned, while 11 rounds had
+  // actually left the barrel.
+  const leg = (before, rounds, wasted) => before + exp({ rounds, roundsWasted: wasted });
+
+  const able1 = leg(0, 3, 0);        // Brian  — nothing walked yet
+  const able2 = leg(able1, 3, 1);    // Charlie — one metre from Brian
+  const able3 = leg(able2, 3, 1);    // David   — one metre from Charlie
+  t.is('after Brian, 3 rounds are gone',   able1, 3);
+  t.is('after Charlie, 7 — not 6',         able2, 7);
+  t.is('after David, 11 — not 10',         able3, 11);
+  t.ok('and 11 against a 10-round phase busts the cap, which is the warning that was missing',
+    /10 rounds/i.test(SR3EItem.phaseFireWarning('FA', able2, exp({ rounds: 3, roundsWasted: 1 })) ?? ''));
+  t.is('the leg that spends the waste is the leg charged for it — not the next one',
+    SR3EItem.phaseFireWarning('FA', able2, 3), null);
+
+  // A smartgun wastes nothing, so the same three targets cost 9 and stay legal.
+  const smart = leg(leg(leg(0, 3, 0), 3, 0), 3, 0);
+  t.is('with a smartgun the same three targets cost 9', smart, 9);
+  t.is('and 9 rounds does not bust the cap',
+    SR3EItem.phaseFireWarning('FA', 6, 3), null);
+
+  // Recoil counts it too — "each round fired imposes a +1 recoil modifier" (p.115).
+  t.is("Able's second burst is +7 uncompensated, not +6 — the walked round counts",
+    SR3EItem.recoilTN({ mode: 'FA', roundsBefore: able1, roundsThisShot: exp({ rounds: 3, roundsWasted: 1 }), totalComp: 0 }), 7);
+
+  // ⚠ Damage must NOT count it. A 3-round burst that walked a metre is still a 3-round
+  // burst on arrival: +3 Power and +1 level, exactly as one that walked nowhere.
+  t.is('walking does not add Power',
+    dmg({ power: 8, level: 'M', mode: 'FA', rounds: 3 }), '11S');
+
   // ── Shape ──────────────────────────────────────────────────────────────────
   t.is('an unknown level falls back to Moderate rather than throwing',
     dmg({ power: 5, level: '?', mode: 'BF' }), '8S');
