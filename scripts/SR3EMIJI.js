@@ -291,7 +291,7 @@ export class SR3EMIJI {
 
     // Rule of One was being computed and thrown away — `_resolveRoll` has returned `ones`
     // all along and nothing read it, so a MIJI sweep looked like an ordinary zero-success
-    // failure. It is not: p.38 hands the outcome to the GM to narrate.
+    // failure. It is not: SR3 p.38 (Rule of One) hands the outcome to the GM to narrate.
     const _A     = game.sr3e.SR3EActor;
     const _sweep = (r, who) => _A.isRuleOfOne(r.ones, r.dice.length)
       ? `<div class="sr-staging-result" style="color:var(--sr-red)">🎲 Rule of One — every die ${who} rolled came up 1. GM adjudicates.</div>`
@@ -401,7 +401,7 @@ export class SR3EMIJI {
     const skill = this._ewSkill(intRigger);
     // ⚠ NO Flux complementary dice here. R3 grants them to the MIJI Test only — "The
     // Intruder's flux rating may be used as complementary skill dice FOR THIS PART OF THE
-    // TEST" (p.38) — while infiltration is plainly "a number of dice equal to his
+    // TEST" (p.37) — while infiltration is plainly "a number of dice equal to his
     // Electronics (Electronic Warfare) skill against a Target Number 6" (p.36).
     //
     // The book's own example settles it: Trixie has Flux 8 and an EW specialisation of 6,
@@ -428,7 +428,7 @@ export class SR3EMIJI {
       return;
     }
 
-    // Allocate successes three ways (R3 p.37): channels breached (1 each), time reduction
+    // Allocate successes three ways (R3 p.36): channels breached (1 each), time reduction
     // (base 10 turns ÷ successes spent here), and the leftover → Intrusion Factor.
     const channels = this._cfg.channels;
     const base     = this._cfg.infiltrationTurns;
@@ -505,7 +505,7 @@ export class SR3EMIJI {
       'system.infiltration.intruderActorId': intRigger.id,
       'system.infiltration.turnsRemaining':  turns,
       // ⚠ Intrusion Factor is the SKILL PLUS the allocated successes, not the successes
-      // alone (R3 p.37): "A rigger's Intrusion Factor is equal to his Electronics
+      // alone (R3 p.36): "A rigger's Intrusion Factor is equal to his Electronics
       // (Electronic Warfare) skill plus any successes allocated from his test to infiltrate
       // the network." The book's own example starts Trixie at 6 — her EW rating — and
       // raises it to 8 with two successes.

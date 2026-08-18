@@ -1904,7 +1904,7 @@ degradation; infiltration TN 6 modified by (protocol − deck); base time 10 Com
 ### ✅ 1. Intrusion Factor omitted the EW skill baseline — **FIXED 2026-08-14**
 
 > "A rigger's Intrusion Factor is equal to his **Electronics (Electronic Warfare) skill plus
-> any successes allocated** from his test to infiltrate the network."  — *R3 p.37*
+> any successes allocated** from his test to infiltrate the network."  — *R3 p.36*
 
 `system.infiltration.intrusionFactor` is initialised to 0 and `openInfiltration` writes only
 the allocated successes (`SR3EMIJI.js:494`). Trixie's factor starts at **6** — her skill —
