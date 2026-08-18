@@ -9,7 +9,43 @@ Two suites, and they cover different things. Neither replaces the other.
 ```bash
 npm test          # 16 suites, ~380 assertions. No browser, no server, seconds.
 npm run test:e2e  # 13 tests / 8 files, two real clients + a GM. Needs Foundry running.
+npm run test:mutate  # proves the unit suites can FAIL. Seconds, no browser.
 ```
+
+### `npm run test:mutate` — because a green suite proves nothing on its own
+
+A passing test is only evidence if you know it would have gone red had the rule been wrong,
+and twice in one session that did not hold here. Two ways a test quietly stops testing:
+
+- **Vacuous arrangement** — the setup neutered the assertion. A decker with no cyberdeck has
+  a `null` Hacking Pool, `?? 0` turns every field into 0, and every "charged correctly"
+  assertion passes against zeros.
+- **Non-discriminating fixture** — the old and new rules agree on the numbers chosen. Had the
+  complementary-dice test used Flux 4 against skill 6, capped and uncapped both give 4.
+
+`tests/mutants.mjs` holds **bugs this project actually shipped**. Each is reinstated in turn
+and its suite must go **red**:
+
+| Mutant | The bug it restores |
+|---|---|
+| `complementary-capped` | `min(Flux, skill)` — a cap in neither book |
+| `recoil-fa-ignores-own-rounds` | full auto counting only prior rounds |
+| `recoil-double-before-compensating` | doubling heavy recoil before compensation |
+| `essence-high-water-mark` | `max(lost, installed)` — blocks a GM correction |
+| `dodge-tie-goes-to-defender` | `>=` instead of `>` |
+| `glitch-sr4-threshold` | `ones > pool/2` — SR4's rule, not SR3's |
+| `stage-power-past-deadly` | melee staging applied outside melee |
+
+⚠ **Read it the right way round: a suite FAILING is the pass condition.** Output says
+"killed" and "SURVIVED", never "passed". A **survivor means the TEST is wrong**, not the code
+— that rule is not actually covered.
+
+**Add a mutant whenever you fix a rules bug.** It costs four lines and turns the fix into a
+permanent tripwire.
+
+⚠ It cannot cover the **e2e** specs — mutating live Foundry code is slow and awkward. There
+the discipline stays manual: run a new spec against the OLD behaviour, confirm it fails, and
+record the observed value in the comment ("Before the fix this read 5.8").
 
 ### ⚠ The e2e suite tests whatever Foundry is SERVING, not what you just wrote
 

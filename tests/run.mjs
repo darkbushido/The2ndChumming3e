@@ -20,6 +20,27 @@ const filter = process.argv[2] ?? '';
 // A child invocation: run exactly one suite and report via exit code.
 if (process.env.SR3E_SUITE) {
   const mod = await import(pathToFileURL(process.env.SR3E_SUITE).href);
+
+  // ── Mutation mode (see tests/mutate.mjs) ──────────────────────────────────
+  //
+  // Applied AFTER the suite module is imported, never before: importing a script module
+  // on its own would run it without the Foundry stubs the suite installs at its top, and
+  // it would throw. By this point the module is in the ESM cache, so importing it again
+  // hands back the very object the suite is calling through.
+  if (process.env.SR3E_MUTANT) {
+    const { MUTANTS } = await import('./mutants.mjs');
+    const m = MUTANTS.find(x => x.id === process.env.SR3E_MUTANT);
+    if (!m) { console.error(`unknown mutant "${process.env.SR3E_MUTANT}"`); process.exit(2); }
+    const target = (await import(m.module))[m.klass];
+    if (typeof target?.[m.method] !== 'function') {
+      console.error(`mutant ${m.id}: ${m.klass}.${m.method} is not a function`);
+      process.exit(2);
+    }
+    // Some mutants are the real rule with one option forced, so keep the original reachable.
+    if (m.needsOriginal) target[m.needsOriginal] = target[m.method].bind(target);
+    target[m.method] = m.impl;
+  }
+
   const { createSuite } = await import('./helpers/assert.mjs');
   const t = createSuite(mod.name ?? 'suite');
   await mod.run(t);

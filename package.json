@@ -11,7 +11,8 @@
     "manifest:check": "node tools/manifest-branch.mjs --check",
     "setup:hooks": "git config core.hooksPath .githooks",
     "test:e2e": "playwright test",
-    "test:e2e:headed": "playwright test --headed"
+    "test:e2e:headed": "playwright test --headed",
+    "test:mutate": "node tests/mutate.mjs"
   },
   "devDependencies": {
     "@league-of-foundry-developers/foundry-vtt-types": "^13.346.0-beta.20250812191140",
