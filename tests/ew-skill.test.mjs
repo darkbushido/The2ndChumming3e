@@ -78,6 +78,26 @@ export async function run(t) {
   t.is("and that same rating is the Intrusion Factor baseline",
     pick([skill('Electronics', 4, EW(2))]).rating + 2, 8);
 
+  // ── Complementary dice are UNCAPPED (R3 p.37, p.40) ────────────────────────
+  //
+  // R3 states the quantity three times and never bounds it by the primary skill:
+  //   "The Intruder's flux rating may be used as complementary skill dice"      (p.37)
+  //   "with complementary skill dice equal to his Flux rating"                  (p.37)
+  //   "may use Electronics (Electronic Warfare) skill dice as complementary"    (p.40)
+  //
+  // The old min(rating, primarySkill) cap is in neither book, and it bit hardest on the
+  // riggers it should least: Trixie's own Flux 8 was clipped to her EW 6.
+  const comp = r => SR3EMIJI._complementaryDice(r);
+  t.is('the full Flux rating is granted — Trixie keeps all 8', comp(8), 8);
+  t.is('a small rating is unchanged', comp(3), 3);
+  t.is('zero is zero', comp(0), 0);
+  t.is('a negative rating cannot subtract dice', comp(-4), 0);
+  t.is('junk reads as none rather than NaN', comp(undefined), 0);
+  // ⚠ NOT SR3 p.97's Complementary Skills mechanic, which is a separate test converting at
+  // 2 successes → 1. R3 says "dice", so dice is what this is. Changing to the 2:1 model is a
+  // different shape entirely — a second roll — not a tweak to this number.
+  t.is('it is dice, not a 2:1 success conversion', comp(7), 7);
+
   // ── A specialisation on an oddly-named skill still counts ──────────────────
   // The specialisation identifies the skill, so it is matched even when the parent skill's
   // name has no "electronic" in it — a renamed or houseruled skill still works.

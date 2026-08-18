@@ -35,9 +35,13 @@ const DEF_DRONE  = '__TEST MIJI Drone Def';
 const LONE_DRONE = '__TEST MIJI Drone Lone';   // no rigger linked
 
 /**
- * A rigger's EW kit. `fluxRating` caps the complementary dice at min(Flux, skill), so
- * Flux 2 against Electronics 5 contributes exactly 2 — a number the card must show and
- * therefore a number this spec can check rather than guess at.
+ * A rigger's EW kit.
+ *
+ * ⚠ The INTRUDER's Flux (9) deliberately EXCEEDS their EW skill (7), and the defender's (1)
+ * deliberately sits below theirs (3). That asymmetry is the point: complementary dice are
+ * the full rating, uncapped (R3 p.37), and a spec where Flux is under the skill on both
+ * sides passes identically with or without the old `min(Flux, skill)` cap — it would not
+ * protect the rule at all. Under that cap the intruder below would roll 14, not 16.
  */
 const rigger = (flux, deck, protocolModule) => ({
   attributes: {
@@ -107,7 +111,7 @@ test.describe('MIJI two-corner card', () => {
     await sweepTestActors(janitor.page);
 
     const ir = await createTestActor(janitor.page, {
-      name: INT_RIGGER, ownerUserName: 'Player2', system: rigger(2, 4, 5),
+      name: INT_RIGGER, ownerUserName: 'Player2', system: rigger(9, 4, 5),
       items: intSkills, x: 1500, y: 1500,
     });
     const dr = await createTestActor(janitor.page, {
@@ -155,11 +159,13 @@ test.describe('MIJI two-corner card', () => {
     await def.page.locator(card).waitFor({ timeout: 20_000 });
 
     // ── Dice are derived per rigger, not copied from one side ──────────────────
-    // Intruder: Electronics 5 (EW +2) = 7, + min(Flux 2, 7) = 2 → 9.
-    // Defender: Electronics 3, no specialisation, + min(Flux 1, 3) = 1 → 4.
-    // If the EW specialisation were dropped (the bug fixed alongside this spec) the
-    // intruder would show 7, so this doubles as a live check on _pickEwSkill.
-    await expect(int.page.locator(`${card} .sr-miji-int-dice`)).toHaveValue('9');
+    // Intruder: Electronics 5 (EW +2) = 7, + Flux 9 uncapped → 16.
+    // Defender: Electronics 3, no specialisation, + Flux 1 → 4.
+    //
+    // Two rules ride on the intruder's 16. Drop the EW specialisation and it is 14; restore
+    // the old min(Flux, skill) cap and it is 14 as well — different bugs, same wrong number,
+    // and both caught here.
+    await expect(int.page.locator(`${card} .sr-miji-int-dice`)).toHaveValue('16');
     await expect(int.page.locator(`${card} .sr-miji-def-dice`)).toHaveValue('4');
 
     // TNs cross over: the intruder rolls against the DEFENDER's deck rating (6), and

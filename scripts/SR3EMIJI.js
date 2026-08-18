@@ -8,8 +8,9 @@
  *
  * Registered on game.sr3e as SR3EMIJI; launched from the vehicle EW tab. Rolls reuse the
  * actor `_rollWave` Rule-of-Six engine (resolved here in `_resolveRoll`). "Complementary
- * dice" = min(Flux, skillRating) extra pool dice — no special mechanic, and granted to the
- * MIJI Test ONLY, per R3 p.36-38. Infiltration rolls the EW skill alone.
+ * dice" = the full rating as extra pool dice, uncapped (R3 p.37, p.40) — not SR3 p.97’s
+ * 2:1 second test. Granted to the MIJI Test and ECCM regeneration only; infiltration rolls
+ * the EW skill alone (R3 p.36).
  */
 export class SR3EMIJI {
 
@@ -78,8 +79,28 @@ export class SR3EMIJI {
       })));
   }
 
-  static _complementary(flux, skillRating) {
-    return Math.min(Math.max(0, flux | 0), Math.max(0, skillRating | 0));
+  /**
+   * Complementary dice for an EW test — **the full rating, uncapped**.  · *R3 p.37, p.40*
+   *
+   * R3 states the quantity three times and never bounds it by the primary skill:
+   *
+   *   MIJI, intruder  — "The Intruder's flux rating may be used as complementary skill
+   *                      dice for this part of the test."            (p.37)
+   *   MIJI, defender  — "with complementary skill dice equal to his Flux rating."  (p.37)
+   *   ECCM regen      — "The rigger may use Electronics (Electronic Warfare) skill dice as
+   *                      complementary dice for this test."          (p.40)
+   *
+   * ⚠ This used to be `min(rating, primarySkill)`. That cap is in NEITHER book, and it bit
+   * hardest on exactly the riggers it should not: a specialist with Flux 8 and Electronics
+   * (EW) 4 was allowed 4 of their 8 Flux dice. R3's own example has Trixie on Flux 8.
+   *
+   * ⚠ Nor is this SR3 p.97's Complementary Skills mechanic, which is a SEPARATE test whose
+   * successes convert at 2:1. R3 says "dice", repeatedly and unambiguously, so R3's reading
+   * is what this implements — the maintainer's call, 2026-08-14. If the 2:1 mechanic is ever
+   * wanted instead, it is a different shape entirely (a second roll), not a tweak here.
+   */
+  static _complementaryDice(rating) {
+    return Math.max(0, rating | 0);
   }
 
   /** Controlling rigger of a vehicle (its linked driver). */
@@ -190,8 +211,8 @@ export class SR3EMIJI {
     const defSkill = this._ewSkill(defRigger);
     const intFlux  = intRigger?.system?.ew?.fluxRating ?? 0;
     const defFlux  = defRigger?.system?.ew?.fluxRating ?? 0;
-    const intComp  = this._complementary(intFlux, intSkill.rating);
-    const defComp  = this._complementary(defFlux, defSkill.rating);
+    const intComp  = this._complementaryDice(intFlux);
+    const defComp  = this._complementaryDice(defFlux);
 
     // Intruder TN = defender's remote-control deck rating.
     const intTN = Math.max(2, defRigger?.system?.ew?.deckRating ?? 4);
@@ -703,7 +724,8 @@ export class SR3EMIJI {
     if (eccm <= 0) { ui.notifications.warn('This vehicle has no ECCM rating.'); return; }
     const rigger   = this._riggerOf(targetVehicle);
     const skill    = this._ewSkill(rigger);
-    const pool     = Math.max(1, eccm + this._complementary(skill.rating, eccm));
+    // ECCM dice plus the rigger's EW skill as complementary dice, uncapped (R3 p.40).
+    const pool     = Math.max(1, eccm + this._complementaryDice(skill.rating));
 
     // TN = attacker's ECM or protocol-emulation module + 3 (use the recorded intruder).
     const inf      = targetVehicle.system?.infiltration ?? {};

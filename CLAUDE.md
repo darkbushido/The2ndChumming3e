@@ -1343,11 +1343,16 @@ A parallel-to-combat electronic-warfare layer for riggers. **Hybrid stat placeme
   (`intruderActorId`, `turnsRemaining`, `intrusionFactor`, per-channel `command/simsense/system`
   booleans). All on the vehicle sheet's **Electronic Warfare tab**.
 
-**Complementary dice** = `min(Flux, skillRating)` extra pool dice (no special mechanic).
-⚠ **The cap is ours, not RAW** — R3 says dice "equal to his Flux rating", and SR3 p.97’s
-actual complementary mechanic is a separate test at 2 successes → 1. See TODO 54.
-⚠ **MIJI Test only.** Infiltration rolls the EW skill alone — R3 scopes the allowance to
-"this part of the test" (p.38), and its worked example has Trixie roll 6 dice on Flux 8.
+**Complementary dice** = the **full rating, uncapped**, added as extra pool dice
+(`_complementaryDice`). R3 states the quantity three times and never bounds it by the primary
+skill: the MIJI intruder's Flux (p.37), the MIJI defender's Flux (p.37), and the rigger's EW
+skill on ECCM regeneration (p.40).
+⚠ **Not SR3 p.97's Complementary Skills mechanic**, which is a separate test converting at
+2 successes → 1. R3 says "dice", repeatedly, so R3's reading is what is implemented — the
+maintainer's call, 2026-08-14. Switching to 2:1 would be a second roll, not a tweak.
+⚠ **Granted to the MIJI Test and ECCM regeneration only.** Infiltration rolls the EW skill
+alone — R3 scopes the allowance to "this part of the test" (p.37), and its worked example has
+Trixie roll 6 dice on Flux 8 (p.36-37).
 **Footprint** derived = `round((riggerDeckFlux + vehFlux + ECM) / 10)`; "↻ Recalc" writes it into
 the editable field. Targeting the vehicle's Sig uses TN = Sig − Footprint.
 

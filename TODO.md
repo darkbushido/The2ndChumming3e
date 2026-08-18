@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | 54 *(2 of 3 fixed; 54.3 is a design call)* |
+| 🔴 Confirmed bugs, still open | *(none — 54 fully closed)* |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 38 · 39 · 40 · 41 · 47 · 48 · 49 · 51 · 52 · 53 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
@@ -1871,7 +1871,7 @@ procedure options) rather than as a special case bolted onto the install hook �
 to track WHICH hole is being filled, since a 0.5 implant cannot borrow 2.0 of hole and then
 lend the remainder to the next one for free.
 
-## 54. Three EW divergences from Rigger 3 — found by audit, **not fixed**
+## 54. ✅ Three EW divergences from Rigger 3 — **ALL FIXED 2026-08-14**
 
 Found 2026-08-14 when the [#24](#24) MIJI skill fix was challenged on sourcing. Verifying it
 against R3 confirmed the fix (see below) and turned up three **pre-existing** divergences in
@@ -1934,7 +1934,7 @@ The term is gone; infiltration now rolls the EW skill alone. Flux is no longer r
 all. R3 does use Flux for RANGE ("the range of an electronic device depends on its Flux
 Rating"), but this flow has never checked range and still does not — that stays a GM call.
 
-### 🟠 3. `_complementary` caps at min(Flux, skill), which is in neither book
+### ✅ 3. `_complementary` capped at min(Flux, skill) — **FIXED 2026-08-14**
 
 R3 says complementary dice **equal to the Flux rating**, with no cap. And SR3's actual
 Complementary Skills mechanic (p.97) is not bonus dice at all:
@@ -1944,11 +1944,24 @@ Complementary Skills mechanic (p.97) is not bonus dice at all:
 > toward the Active Skill's Success Test. At least one success must have been scored with
 > the Active Skill."
 
-So there are three candidate readings — R3's flat "+Flux dice", SR3's 2:1 second test, and
-our capped `min(Flux, skill)`. CLAUDE.md documents the cap as a deliberate simplification
-("no special mechanic"), so **decide this before changing it**; it is a design call, not
-obviously a bug. Note it interacts with the skill fix: raising Trixie's EW from 4 to 6 also
-raises her cap from 4 to 6, so she now gets 6 of her 8 Flux dice instead of 4.
+Three candidate readings existed — R3's flat "+Flux dice", SR3's 2:1 second test, and our
+capped `min(Flux, skill)`. **The maintainer chose R3's**, 2026-08-14.
+
+`_complementaryDice(rating)` now returns the full rating. R3 states the quantity three times
+and never bounds it by the primary skill, and the third site is one this task had missed:
+
+| Site | R3 |
+|---|---|
+| MIJI intruder | "The Intruder's flux rating may be used as complementary skill dice" (p.37) |
+| MIJI defender | "with complementary skill dice equal to his Flux rating" (p.37) |
+| **ECCM regeneration** | "may use Electronics (Electronic Warfare) skill dice as complementary dice for this test" (**p.40**) |
+
+The cap bit hardest on the riggers it should least — a specialist with Flux 8 and EW 4 got 4
+of their 8 dice. Trixie is on Flux 8.
+
+⚠ SR3 p.97's mechanic (a separate test at 2 successes → 1) is NOT what this is, and switching
+to it later would be a different shape — a second roll — not a tweak to this number. Pinned
+in `tests/ew-skill.test.mjs`.
 
 ## 12. Write a committed pack rebuild script and vendor its sources — *keystone; blocks #1*
 
