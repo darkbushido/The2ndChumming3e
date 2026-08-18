@@ -207,15 +207,21 @@ export async function run(t) {
 
   t.is('an unknown mode has no allowance to bust', warn('XX', 99), null);
 
-  // ── Multiple targets, +2 each — SR3 p.112, and NOT a full-auto rule ────────
+  // ── Multiple targets, +2 each — SR3 p.111, and NOT a full-auto rule ────────
   //
-  // The table row is stated flatly and with no mode attached:
+  // The rule sentence is unrestricted; the mode shows up only in its example:
   //
-  //   "Multiple targets — +2 per additional target that Combat Phase"
+  //   "If a character is attacking multiple targets within a single Combat Phase, he adds
+  //    a +2 modifier per additional target. For example, if a character is engaging three
+  //    targets on full auto-fire, his attack suffers a +2 modifier for the second target
+  //    and a +4 modifier for the third target."
   //
-  // It reads as full-auto-only because p.116 restates it under a *Multiple Targets*
-  // heading that lives inside FULL-AUTO MODE. What is genuinely full-auto-only there is
-  // WALKING THE FIRE — the wasted round per metre — not the +2. The dialog used to keep
+  // An example does not scope a rule, and p.112's table row carries the same number with no
+  // mode on it either. Two Simple Actions at two targets is the ordinary way there.
+  //
+  // It nonetheless READS as full-auto-only, because p.116 restates the +2 beneath a
+  // *Multiple Targets* heading inside FULL-AUTO MODE. What is genuinely full-auto-only in
+  // that passage is WALKING THE FIRE — the wasted round per metre. The dialog used to keep
   // the target ordinal inside its FA-only section, so SA's second shot and BF's second
   // burst could never take it, and the GM window cannot supply it either (`multiTarget`
   // carries no `mvp` flag, so `mvpModifierGroups` never renders it).

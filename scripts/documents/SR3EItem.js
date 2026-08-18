@@ -2990,18 +2990,25 @@ static phaseFireWarning(mode, roundsBefore = 0, roundsThisShot = 0) {
 }
 
 /**
- * TN penalty for engaging a fresh target this Combat Phase — **pure**.  · *SR3 p.112*
+ * TN penalty for engaging a fresh target this Combat Phase — **pure**.  · *SR3 p.111*
  *
- * The Ranged Combat Modifiers table states it flatly, with no mode attached:
+ * The rule sentence is unrestricted, and the mode appears only in its example:
  *
- *   > "Multiple targets — +2 per additional target that Combat Phase"
+ *   > "**Multiple Targets** — If a character is attacking multiple targets within a single
+ *   > Combat Phase, he adds a +2 modifier per additional target. For example, if a character
+ *   > is engaging three targets on full auto-fire, his attack suffers a +2 modifier for the
+ *   > second target and a +4 modifier for the third target."
  *
- * ⚠ **This is NOT a full-auto rule**, and the book's layout is what makes it look like one.
- * The +2 is restated on p.116 under a *Multiple Targets* heading that sits inside FULL-AUTO
- * MODE — but what is genuinely full-auto-only is **walking the fire**: *"the attacker must
- * 'walk' the fire from one target to the next… one round is wasted for every meter of
- * distance between the two targets. Smartguns never waste rounds."* The modifier itself is
- * a p.112 table row and applies to every mode.
+ * ⚠ **This is NOT a full-auto rule** — an example does not scope a rule. The p.112 table
+ * carries the same number ("+2 per additional target that Combat Phase") with no mode on it
+ * either. Two Simple Actions at two different targets is the ordinary way to reach it: a
+ * second SA shot, a second burst, or a pistol in each hand.
+ *
+ * ⚠ What IS full-auto-only is **walking the fire**, and the two are easy to conflate because
+ * p.116 restates the +2 beneath a *Multiple Targets* heading inside FULL-AUTO MODE: *"the
+ * attacker must 'walk' the fire from one target to the next… one round is wasted for every
+ * meter of distance between the two targets. Smartguns never waste rounds."* That sentence is
+ * the full-auto part; the modifier above it is not.
  *
  * That matters because two other modes can legitimately engage a second target in one phase:
  * SA *"can be fired twice in the same Combat Phase"* and BF *"a character can fire up to two

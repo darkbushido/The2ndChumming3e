@@ -856,12 +856,15 @@ clip, since the dialog priced a full burst. See TODO 51/55.
 the action economy, so they are inferred from `roundsFiredThisPhase` and a mixed-mode phase
 drifts. Warns, never blocks.
 
-**Multiple targets** (`SR3EItem.multiTargetTN`, pure) · *SR3 p.112* — **+2 per additional
+**Multiple targets** (`SR3EItem.multiTargetTN`, pure) · *SR3 p.111* — **+2 per additional
 target that Combat Phase**, asked for in **every** fire mode via the "Which target this Combat
-Phase?" dropdown. ⚠ **Not a full-auto rule**, though the book's layout makes it look like one:
-p.116 restates it under a *Multiple Targets* heading inside FULL-AUTO MODE, but what is
-genuinely full-auto-only there is **walking the fire** (1 wasted round per metre; smartguns
-waste none). The ordinal counts **targets, not shots** — a second burst at the same target is
+Phase?" dropdown. ⚠ **Not a full-auto rule.** p.111's rule sentence is unrestricted — *"If a
+character is attacking multiple targets within a single Combat Phase, he adds a +2 modifier per
+additional target"* — and full auto appears only in the **example** that follows it. Two Simple
+Actions at two targets is the ordinary way there (a second SA shot, a second burst, a pistol in
+each hand). It reads as full-auto-only because p.116 restates the +2 beneath a *Multiple
+Targets* heading inside FULL-AUTO MODE; what is genuinely full-auto-only there is **walking the
+fire** (1 wasted round per metre; smartguns waste none). The ordinal counts **targets, not shots** — a second burst at the same target is
 still the 1st. ⚠ The **GM window cannot supply this**: `multiTarget` carries no `mvp` flag, so
 `mvpModifierGroups()` never renders it and the fire dialog is the only source. It used to live
 inside the dialog's FA-only section, so SA's second shot and BF's second burst were both free.
