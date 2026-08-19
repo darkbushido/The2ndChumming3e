@@ -24,11 +24,11 @@ independent.
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | *(none — 54 fully closed)* |
-| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 38 · 39 · 40 · 41 · 47 · 48 · 49 · 53 · 57 |
+| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 39 · 40 · 41 · 47 · 48 · 49 · 53 · 57 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | **5** · 13 · **14** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
+| ✅ Done — kept for the record | **5** · 13 · **14** · **38** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -2575,7 +2575,7 @@ decide it here rather than in the fourth one.
 - The failure branch wants **Knockdown**, which is also not implemented — check before assuming the
   `+2 instead` clause has anything to modify.
 
-## 38. Multiple targets — **ranged half DONE 2026-08-19**, melee half still open
+## 38. ✅ Multiple targets — **DONE 2026-08-19**, both halves
 
 **Raised in play 2026-08-10.**
 
@@ -2595,9 +2595,37 @@ he adds a +2 modifier per additional target"* — with full auto appearing only 
 that follows. p.116's restatement sits under FULL-AUTO MODE because **walking the fire** is the
 full-auto part, not the +2.
 
-### ⏳ Still open
+### ✅ Melee — done, and the second clause was a bigger bug than this item described
 
-The original text follows, for the two halves that remain.
+**The +2 already existed.** `#gmm-multi` in the melee GM window feeds `sumMeleeModifiers`,
+which does `atk += 2 * extra`, and `tests/melee-modifiers.test.mjs` already asserted it. It
+arrived with [#37](#37)'s melee TN window and this item was simply never updated. Reachable in
+both `gmApprovesTN` modes: with the window off, the corner's own TN field is editable.
+
+**The clause that WAS broken** is the one that reads like a note:
+
+> "Dice from the Combat Pool must be allocated separately for each attack."
+
+The clamp inside `spendCombatPool` is what enforces it — a second attack can only draw on
+what the first left behind — and **every call site discarded the return value**, building the
+dice from the REQUEST. Ask for 4 with 2 left and you spend 2 and roll 4, silently, every phase.
+
+⚠ CLAUDE.md had already documented this exact bug in cybercombat (*"built its dice from the raw
+input while clamping the spend"*), which is the best possible evidence that a prose warning does
+not hold this line. So the guard came first: `tests/pool-spend.test.mjs` scans for any
+`spend*Pool(` whose return is discarded, and separately checks the four helpers still RETURN the
+deduction — without that second check the first rule is vacuous.
+
+**Ten sites, six found by hand and four by the guard:** both melee corners, both astral corners,
+three Matrix roll paths, plus Spell Defense commitment (which reserved dice it never paid for
+and rolled them later in the turn), Dispelling, the grenade/AoE Combat Pool, and spellcasting's
+Spell Pool. All now roll the grant and warn when it is short.
+
+⚠ **Not hypothetical on this branch.** The prompt clamps to the pool as read when the dialog is
+built; between that and the spend another client can spend from the same pool. Multi-client
+concurrency is the whole reason [#2](#2) exists.
+
+### The original text, for the record
 
 The +2-per-additional-target penalty was computed in exactly one place, inside a Full Auto
 branch of the fire-mode dialog:

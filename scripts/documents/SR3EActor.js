@@ -781,10 +781,14 @@ export class SR3EActor extends Actor {
     });
     if (!confirmed) return;
 
-    const pool = ccRating + hackPoolDice;
+    // Roll what the pool granted — spendHackingPool clamps, and discarding its return
+    // rolled dice that were never paid for. See handleMeleeRoll.
+    const ccSpent = hackPoolDice > 0 ? await this.spendHackingPool(hackPoolDice) : 0;
+    if (ccSpent !== hackPoolDice) {
+      ui.notifications.warn(`${this.name}: only ${ccSpent} of ${hackPoolDice} Hacking Pool dice were available.`);
+    }
+    const pool = ccRating + ccSpent;
     if (pool < 1) { ui.notifications.warn(`${item.name}: roll pool is 0.`); return; }
-
-    await this.spendHackingPool(hackPoolDice);
 
     const hostActor       = hostActorId ? game.actors.get(hostActorId) : null;
     const securityThreshold = hostActor?.system?.securityTierThreshold ?? 0;
@@ -943,10 +947,12 @@ export class SR3EActor extends Actor {
 
     if (!confirmed || !hostActorId) return;
 
-    const pool = hackRating + hackPoolDice;
+    const hackSpent = hackPoolDice > 0 ? await this.spendHackingPool(hackPoolDice) : 0;
+    if (hackSpent !== hackPoolDice) {
+      ui.notifications.warn(`${this.name}: only ${hackSpent} of ${hackPoolDice} Hacking Pool dice were available.`);
+    }
+    const pool = hackRating + hackSpent;
     if (pool < 1) { ui.notifications.warn('Hacking pool is 0.'); return; }
-
-    await this.spendHackingPool(hackPoolDice);
 
     await this.rollPool(pool, tn, `${this.name}: ${actionName}${nodeTag}`, {
       isHackingActionRoll:  true,
@@ -1058,10 +1064,12 @@ export class SR3EActor extends Actor {
     });
     if (!confirmed) return;
 
-    const pool = skillRating + hackPoolDice;
+    const npSpent = hackPoolDice > 0 ? await this.spendHackingPool(hackPoolDice) : 0;
+    if (npSpent !== hackPoolDice) {
+      ui.notifications.warn(`${this.name}: only ${npSpent} of ${hackPoolDice} Hacking Pool dice were available.`);
+    }
+    const pool = skillRating + npSpent;
     if (pool < 1) { ui.notifications.warn(`${promptName}: roll pool is 0.`); return; }
-
-    if (hackPoolDice > 0) await this.spendHackingPool(hackPoolDice);
 
     const label = `${this.name}: ${promptName}`;
 
@@ -3825,8 +3833,9 @@ _prepareCharacter(sys, attr) {
     const defCombatPool = parseInt(f('defender', 'sr-melee-def-pool')) || 0;
     const atkSkillDice  = parseInt(f('attacker', 'sr-melee-atk-skill-dice')) || ctx.atkSkillDice || 1;
     const defSkillDice  = parseInt(f('defender', 'sr-melee-def-skill-dice')) || ctx.defSkillDice || 1;
-    const atkPool = Math.max(1, atkSkillDice + atkCombatPool);
-    const defPool = Math.max(1, defSkillDice + defCombatPool);
+    // Provisional: the real dice come from what the pool actually GRANTS, below.
+    let atkPool = Math.max(1, atkSkillDice + atkCombatPool);
+    let defPool = Math.max(1, defSkillDice + defCombatPool);
     let atkTN = SR3EActor.cornerTN(f('attacker', 'sr-melee-atk-tn'), ctx.atkTN);
     let defTN = SR3EActor.cornerTN(f('defender', 'sr-melee-def-tn'), ctx.defTN);
 
@@ -3866,8 +3875,23 @@ _prepareCharacter(sys, attr) {
     // Spend combat pool
     const atkActor = game.actors.get(ctx.attackerActorId);
     const defActor = game.actors.get(ctx.defenderActorId);
-    if (atkCombatPool > 0 && atkActor) await atkActor.spendCombatPool(atkCombatPool);
-    if (defCombatPool > 0 && defActor) await defActor.spendCombatPool(defCombatPool);
+    // ── Roll what the pool GRANTED, not what was typed ──────────────────────────
+    //
+    // p.122, on striking several opponents in one phase: "Dice from the Combat Pool must be
+    // allocated separately for each attack." The clamp inside spendCombatPool is what
+    // enforces that — a second attack can only draw on what the first left behind — and the
+    // return value was being discarded, so the dice were built from the REQUEST. Ask for 4
+    // with 2 left and you spent 2 and rolled 4, every phase, silently.
+    const atkSpent = (atkCombatPool > 0 && atkActor) ? await atkActor.spendCombatPool(atkCombatPool) : 0;
+    const defSpent = (defCombatPool > 0 && defActor) ? await defActor.spendCombatPool(defCombatPool) : 0;
+    if (atkSpent !== atkCombatPool) {
+      ui.notifications.warn(`${atkActor?.name ?? 'Attacker'}: only ${atkSpent} of ${atkCombatPool} Combat Pool dice were available.`);
+    }
+    if (defSpent !== defCombatPool) {
+      ui.notifications.warn(`${defActor?.name ?? 'Defender'}: only ${defSpent} of ${defCombatPool} Combat Pool dice were available.`);
+    }
+    atkPool = Math.max(1, atkSkillDice + atkSpent);
+    defPool = Math.max(1, defSkillDice + defSpent);
 
     const atk = game.actors.get(ctx.attackerActorId);
     const def = game.actors.get(ctx.defenderActorId);
@@ -4933,7 +4957,22 @@ _prepareCharacter(sys, attr) {
     } else {
       await this.update(changes);
     }
-    if (spellDice > 0) await this.spendSpellPool(spellDice);
+    // Reserve only what was actually paid for. `spellDefensePool` was written above as an
+    // ABSOLUTE, so a short grant would otherwise reserve dice that were never deducted and
+    // roll them later in the turn. Between building the dialog and committing, another
+    // client can have spent from the same pool — which is precisely the case this branch
+    // exists to handle.
+    const sdSpent = spellDice > 0 ? await this.spendSpellPool(spellDice) : 0;
+    if (sdSpent !== spellDice) {
+      ui.notifications.warn(`${this.name}: only ${sdSpent} of ${spellDice} Spell Pool dice were available for Spell Defense.`);
+      const fix = { 'system.spellDefensePool': sdSpent };
+      if (!game.users.activeGM?.isSelf) {
+        await game.sr3e.SR3EQuery.asGM('sr3e.actor.set',
+          { uuid: this.uuid, changes: fix, allowAbsolute: ['system.spellDefensePool'] });
+      } else {
+        await this.update(fix);
+      }
+    }
   }
 
   /**
@@ -5905,7 +5944,12 @@ _prepareCharacter(sys, attr) {
           { label: 'Skip', action: 'skip' },
         ],
       });
-      if (spellDice > 0) await this.spendSpellPool(spellDice);
+      // Roll the grant, not the request — see tests/pool-spend.test.mjs.
+      const dispelSpent = spellDice > 0 ? await this.spendSpellPool(spellDice) : 0;
+      if (dispelSpent !== spellDice) {
+        ui.notifications.warn(`${this.name}: only ${dispelSpent} of ${spellDice} Spell Pool dice were available.`);
+      }
+      spellDice = dispelSpent;
     }
 
     const pool = Math.max(1, sorceryDice + spellDice);
@@ -6251,8 +6295,16 @@ _prepareCharacter(sys, attr) {
 
     const atkActor = game.actors.get(ctx.attackerActorId);
     const defActor = game.actors.get(ctx.defenderActorId);
-    if (atkAstralPool > 0 && atkActor) await atkActor.spendAstralPool(atkAstralPool);
-    if (defAstralPool > 0 && defActor) await defActor.spendAstralPool(defAstralPool);
+    // Same rule as melee — astral combat "uses the same rules as Melee Combat" (p.174), so
+    // the pool grant is what gets rolled, not the request. See handleMeleeRoll.
+    const atkAstralSpent = (atkAstralPool > 0 && atkActor) ? await atkActor.spendAstralPool(atkAstralPool) : 0;
+    const defAstralSpent = (defAstralPool > 0 && defActor) ? await defActor.spendAstralPool(defAstralPool) : 0;
+    if (atkAstralSpent !== atkAstralPool) {
+      ui.notifications.warn(`${atkActor?.name ?? 'Attacker'}: only ${atkAstralSpent} of ${atkAstralPool} Astral Pool dice were available.`);
+    }
+    if (defAstralSpent !== defAstralPool) {
+      ui.notifications.warn(`${defActor?.name ?? 'Defender'}: only ${defAstralSpent} of ${defAstralPool} Astral Pool dice were available.`);
+    }
 
     const atk = game.actors.get(ctx.attackerActorId);
     const def = game.actors.get(ctx.defenderActorId);

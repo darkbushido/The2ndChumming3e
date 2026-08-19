@@ -920,9 +920,13 @@ export class SR3EItem extends Item {
       const combatDice = await this._promptCombatPool(availableCombatPool);
       if (combatDice === null) return null;   // cancelled — abort before anything is committed
       if (combatDice > 0) {
-        await actor.spendCombatPool(combatDice);
-        pool  += combatDice;
-        label += ` + ${combatDice} Combat Pool`;
+        // Roll the grant, not the request — see tests/pool-spend.test.mjs.
+        const spent = await actor.spendCombatPool(combatDice);
+        if (spent !== combatDice) {
+          ui.notifications.warn(`${actor.name}: only ${spent} of ${combatDice} Combat Pool dice were available.`);
+        }
+        pool  += spent;
+        label += ` + ${spent} Combat Pool`;
       }
     }
 
@@ -3729,7 +3733,14 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     let magicDice = 0;
     if (availMagic > 0) {
       magicDice = await SR3EItem._promptMagicPool(actor, availMagic);
-      if (magicDice > 0) await actor.spendSpellPool(magicDice);
+      if (magicDice > 0) {
+        // Roll the grant, not the request — see tests/pool-spend.test.mjs.
+        const spent = await actor.spendSpellPool(magicDice);
+        if (spent !== magicDice) {
+          ui.notifications.warn(`${actor.name}: only ${spent} of ${magicDice} Spell Pool dice were available.`);
+        }
+        magicDice = spent;
+      }
     }
 
     const pool = Math.max(1, sorceryDice + magicDice);
