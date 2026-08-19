@@ -2575,11 +2575,32 @@ decide it here rather than in the fourth one.
 - The failure branch wants **Knockdown**, which is also not implemented — check before assuming the
   `+2 instead` clause has anything to modify.
 
-## 38. Multiple targets is Full-Auto-only — the rule is per Combat Phase
+## 38. Multiple targets — **ranged half DONE 2026-08-19**, melee half still open
 
-**Raised in play 2026-08-10.** The +2-per-additional-target penalty is computed in exactly one
-place, inside a Full Auto branch of the fire-mode dialog
-([SR3EItem.js:2811-2816](scripts/documents/SR3EItem.js)):
+**Raised in play 2026-08-10.**
+
+> ⚠ **This item was re-discovered and half-fixed on 2026-08-19 without noticing it was already
+> here**, which is worth recording as a process failure rather than quietly tidying away: the
+> ranged fix went in as commit `4368847` and its rationale was re-derived from scratch. The
+> ranged half below is now done; **the melee half and the pool-allocation clause were never
+> touched** and are the reason this item stays open. [#56](#56) was also filed that day and
+> overlaps the "why it is not simply a checkbox" section — see the cross-reference there.
+
+### ✅ Ranged — done (`4368847`, `376faa8`)
+
+Lifted the target ordinal out of the FA-only section of the fire dialog so every mode asks for
+it, behind the pure `SR3EItem.multiTargetTN(ordinal)`. Cited to **p.111**, whose rule sentence
+is unrestricted — *"If a character is attacking multiple targets within a single Combat Phase,
+he adds a +2 modifier per additional target"* — with full auto appearing only in the example
+that follows. p.116's restatement sits under FULL-AUTO MODE because **walking the fire** is the
+full-auto part, not the +2.
+
+### ⏳ Still open
+
+The original text follows, for the two halves that remain.
+
+The +2-per-additional-target penalty was computed in exactly one place, inside a Full Auto
+branch of the fire-mode dialog:
 
 ```js
 if (mode === 'FA') {
@@ -2601,6 +2622,10 @@ Combat Phase… **Dice from the Combat Pool must be allocated separately for eac
 last clause is a second, separate gap: nothing enforces per-attack pool allocation.
 
 ### Why it is not simply "add a checkbox"
+
+⚠ **The ranged fix did NOT solve this** — it asks the player for the ordinal rather than deriving
+it, which is [#56.2](#56). Both items describe the same missing per-phase memory; #56.2 owns the
+derivation work, this one owns the rules still unapplied.
 
 The penalty is **cumulative across a Combat Phase**, so something has to remember how many distinct
 targets an actor has engaged this phase — the same shape as `roundsFiredThisPhase`, which already
@@ -3369,6 +3394,10 @@ rounds (p.116) — leave at 0."* Costs nothing and does not pretend to know.
 the reason shown. Still overridable — minimal guardrails.
 
 ### 56.2 Nothing remembers who you already shot at this phase
+
+⚠ **[#38](#38) raised this first, on 2026-08-10**, under "Why it is not simply add a checkbox".
+This section is the same gap seen from the other end: #38 owns the multi-target rules still
+unapplied (melee, and per-attack pool allocation), this owns deriving the two dialog inputs.
 
 Two controls in the fire dialog are manual for the same missing reason:
 
