@@ -26,7 +26,7 @@ independent.
 | 🔴 Confirmed bugs, still open | *(none — 54 fully closed)* |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 38 · 39 · 40 · 41 · 47 · 48 · 49 · 52 · 53 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
-| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 |
+| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
 | ✅ Done — kept for the record | **5** · 13 · **14** · **51** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -3292,3 +3292,68 @@ ruleset-switched special case? And does `mat` get registered now that content ex
 it (CLAUDE.md documents the decision not to, on the grounds nothing existed — that condition
 no longer holds).
 
+---
+
+<a id="56"></a>
+## 56. Full auto still asks the player for what the system could work out
+
+Raised 2026-08-18, alongside the walking-fire fix. Both numbers that make a multi-target
+full-auto attack correct are typed in by hand, and each has a source of truth already sitting
+in the code that nothing consults.
+
+### 56.1 Smartguns waste no rounds — and the system cannot tell
+
+*SR3 p.116*, flatly: **"Smartguns never waste rounds."**
+
+Not a discount — the round is simply never fired. A smartgun slews to the next target without
+spending anything crossing the gap, so the saving lands on all three of the things
+`roundsExpended` feeds: the magazine, recoil, and the 10-round phase budget. It is the
+difference between Able's three targets at a metre costing **11 rounds** (illegal, over the
+cap) and **9** (fine).
+
+Today the player has to know to leave "metres to previous target" at 0. Nothing in the dialog
+even hints at it.
+
+⚠ **Blocked on [#18](#18), and not worth faking around.** Smartgun detection is the
+free-text `accessories` StringField guess in `guessGearModifiers` — good enough to
+pre-tick an overridable TN checkbox the GM is looking at, nowhere near good enough to
+silently zero a player's ammunition. A wrong guess here is invisible and costs rounds.
+
+**Interim, cheap, honest:** a one-line note under the metres field — *"Smartguns waste no
+rounds (p.116) — leave at 0."* Costs nothing and does not pretend to know.
+
+**Once #18 lands:** default the field to 0 and disable it when a smartgun is detected, with
+the reason shown. Still overridable — minimal guardrails.
+
+### 56.2 Nothing remembers who you already shot at this phase
+
+Two controls in the fire dialog are manual for the same missing reason:
+
+| Control | Asks for | Could be derived from |
+|---|---|---|
+| "Which target this Combat Phase?" | the ordinal, driving +2 each (SR3 p.111) | the set of targets fired at this phase |
+| "Metres to previous target" | walking-fire waste | `_measureDistance` between this target's token and the previous one |
+
+`_measureDistance` already exists and already runs — it is what classifies the range band on
+every shot. What is missing is a per-phase record of **which actors have been engaged**, in
+order. `roundsFiredThisPhase` counts rounds and nothing else, so each `rollWeapon` call is
+blind to the ones before it.
+
+A `system.targetsThisPhase` array (actor ids, in order, cleared by `resetRecoil` alongside
+`roundsFiredThisPhase`) would let both fields prefill:
+- ordinal = index of this target in the list + 1, or `length + 1` for a new one
+- metres = measured distance from the previous entry's token
+
+⚠ **Prefill, do not enforce.** The ordinal counts **targets, not shots** — a second burst at
+someone already shot is still their ordinal, not a new one — and that is exactly the sort of
+judgement a GM overrides. Both fields stay editable.
+
+⚠ **The failure mode today is silent under-reporting**, not cheating: a player forgets they
+already shot at Brian and leaves the ordinal at 1, and the attack is simply 2 points easier
+than it should be. Nothing warns, because nothing knows.
+
+### Not in scope here
+
+The magazine arithmetic is correct and was correct before the walking-fire fix — each
+declaration spends only its own rounds plus its own waste. This item is about the two inputs
+to that arithmetic being hand-entered, not about the arithmetic.
