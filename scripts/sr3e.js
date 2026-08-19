@@ -2351,6 +2351,27 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Post-roll defence declaration (SR3 sequence step 4). The defender decides
   // AFTER seeing the attack successes — dodge, or save the pool for the Damage
   // Resistance Test. Gated to the defender: it spends their pool.
+  // Full Defense stage 2 — the defender's Combat-Pool-only Dodge Test (SR3 p.124).
+  // Gated with `_isDecider`, not `_mine`: this button ROLLS, so exactly one user owns it.
+  // The payload carries `targetActorId` = the defender, which `_payloadActorId` resolves;
+  // `attackerActorId` is deliberately never inherited from.
+  html.querySelectorAll('.sr-fd-dodge-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'fddodge', i)) return;
+    try {
+      if (!_isDecider(JSON.parse(btn.dataset.payload ?? '{}'))) {
+        return _denyBtn(btn, 'Only the defender (or the GM) may make this Dodge Test.');
+      }
+    } catch { /* unreadable payload — leave the button alone */ }
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'fddodge', i)) return;
+      btn.disabled    = true;
+      btn.textContent = '⏳ Dodging…';
+      await SR3EActor.handleFullDefenseDodge(btn);
+    });
+  });
+
   html.querySelectorAll('.sr-dodge-declare-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'dodgedeclare', i)) return;
     try {

@@ -188,4 +188,58 @@ export const MUTANTS = [
       return 4 + Math.floor(n(burstRounds) / 3) + n(shotgunSpread) + Math.min(0, Math.trunc(Number(woundMod) || 0));
     },
   },
+
+  {
+    id:     'melee-tie-deals-no-damage',
+    suite:  'full-defense',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'meleeOutcome',
+    was:    'a melee tie was announced as "no damage dealt", where p.122 step 3 says "a tie '
+          + 'goes in favor of the attacker" - the attacker hits for base damage and the '
+          + 'defender still resists',
+    impl:   (a, d) => {
+      const x = Math.max(0, Math.trunc(Number(a) || 0));
+      const y = Math.max(0, Math.trunc(Number(d) || 0));
+      return { winnerIsAtk: x > y, net: Math.abs(x - y), tie: x === y };
+    },
+  },
+  {
+    id:     'full-defense-dodge-adds-instead-of-subtracting',
+    suite:  'full-defense',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'fullDefenseOutcome',
+    was:    "Full Defense's second-stage dodge SUBTRACTS from the attacker's net before "
+          + 'staging (p.124), unlike the ordinary Dodge Test whose successes are added to the '
+          + 'Damage Resistance Test and never reduce staging (p.113) - reusing the ordinary '
+          + 'rule here silently makes the posture worse than not adopting it',
+    impl:   ({ attackHits = 0, skillHits = 0, dodgeHits = 0 } = {}) => {
+      const n = v => Math.max(0, Math.trunc(Number(v) || 0));
+      const a = n(attackHits), d = n(skillHits), g = n(dodgeHits);
+      const blocked = d > a;
+      const net = blocked ? 0 : a - d;
+      return { blocked, net, cleanMiss: !blocked && g > net, remaining: blocked ? 0 : net,
+               dealsDamage: false };
+    },
+  },
+  {
+    id:     'full-defense-block-on-a-tie',
+    suite:  'full-defense',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'fullDefenseOutcome',
+    was:    'the block test is strict - "if the defender has achieved MORE successes" - so a '
+          + 'tie is not a block; relaxing it to >= hands the defender a free block on every '
+          + 'level exchange',
+    impl:   ({ attackHits = 0, skillHits = 0, dodgeHits = 0 } = {}) => {
+      const n = v => Math.max(0, Math.trunc(Number(v) || 0));
+      const a = n(attackHits), d = n(skillHits), g = n(dodgeHits);
+      const blocked = d >= a;
+      const net = blocked ? 0 : a - d;
+      const cleanMiss = !blocked && g > net;
+      return { blocked, net, cleanMiss,
+               remaining: blocked || cleanMiss ? 0 : Math.max(0, net - g), dealsDamage: false };
+    },
+  },
 ];

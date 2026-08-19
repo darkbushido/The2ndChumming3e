@@ -1002,6 +1002,35 @@ defenses"* versus *"make himself harder to hit."*
 - Trolls have natural Reach 1 cumulative with weapon reach (p.121) — **not yet folded in**;
   the differential is computed from `weapon.system.reach` alone.
 
+### Full Defense  · *SR3 p.123-124*
+
+A **melee** posture (p.108 Interception forces it; p.121 whips reference it). Two stages, in
+`SR3EActor.fullDefenseOutcome` — pure, returning `{blocked, net, cleanMiss, remaining,
+dealsDamage}`.
+
+1. **Skill test, pool-free.** `handleMeleeRoll` zeroes the defender's Combat Pool and says why.
+   It **zeroes rather than rejects** — the pool is reserved for stage 2.
+2. Defender with **more** successes → **blocked**. A tie is *not* a block.
+3. Otherwise `.sr-fd-dodge-btn` → `handleFullDefenseDodge`: **Combat Pool dice only**, TN from
+   the defender's melee TN so the Melee Modifiers Table applies.
+4. **The defender deals no damage**, even winning outright.
+
+⚠ **This dodge SUBTRACTS from the attacker's net before staging** — *"subtract the Dodge
+successes from the attacker's"* (p.124). The **ordinary** dodge instead *adds* its successes to
+the Damage Resistance Test and never touches staging (p.113). Two arithmetics; `dodgeOutcome`
+and `fullDefenseOutcome` stay separate, and `tests/full-defense.test.mjs` asserts both on the
+same numbers.
+
+⚠ **Ranged Full Defense is a system EXTENSION, not RAW** — nothing in the ranged rules
+mentions it. The reserved-pool-as-dodge-declaration behaviour is kept deliberately.
+
+### The melee tie goes to the ATTACKER  · *SR3 p.122*
+
+*"The character who rolls the most successes has hit his or her opponent. A tie goes in favor of
+the attacker."* Net 0 → base Damage Level, defender resists. `SR3EActor.meleeOutcome`.
+⚠ The staging gate is unconditional, **not** `net > 0`: gating on that posts no soak button and
+deletes the attack. ⚠ Same strictness trap as the ranged dodge tie, pointing the other way.
+
 ### Called shots (SR3 p.114)
 Available on **all single-target weapons except AoE/grenades** — firearms (any mode **except Full
 Auto**), bows/crossbows, thrown, and melee. Declared before the roll; **+4 TN**, with two
@@ -1586,7 +1615,6 @@ the files' mtime and fails with "reload <user>'s tab" — including when the GM 
 at all, which is itself proof the tab predates the query.
 
 ## What is NOT yet implemented
-- Full Defense (melee/ranged defensive posture — deferred)
 - Vehicle sheets
 - Matrix/hacking combat rolls (host sheet is GM reference/tracking only for now)
 - Magic combat (spellcasting rolls exist, combat application not wired)

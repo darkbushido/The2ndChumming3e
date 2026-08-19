@@ -24,11 +24,11 @@ independent.
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | *(none — 54 fully closed)* |
-| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 39 · 40 · 41 · 47 · 48 · 49 · 53 · 57 |
+| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 40 · 41 · 47 · 48 · 49 · 53 · 57 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | **5** · 13 · **14** · **38** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
+| ✅ Done — kept for the record | **5** · 13 · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -2497,7 +2497,7 @@ The system already models gel's armour exception via `armorEffect: 'gel'`, so th
   an existing Knockdown Test. Without Knockdown, that clause has nothing to modify.
 - [#37](#37)'s `prone` melee modifier (−2 to the opponent) has no way to become true today.
 
-## 39. Full Defense is half-built — RAW is a TWO-STAGE defence
+## 39. ✅ Full Defense — **DONE 2026-08-19**, and it was worse than half-built
 
 **Requested 2026-08-10.** CLAUDE.md lists Full Defense under *"not yet implemented"*, but that is
 not quite true — a simplified version ships and is doing the wrong thing quietly, which is worse
@@ -2536,7 +2536,58 @@ wins the melee exchange currently damages the attacker, which RAW forbids outrig
 context, but it is cross-referenced from the ranged side (p.109) and from movement (*"the defending
 character is assumed to be in Full Defense"*). The current code only reaches it via the dodge path.
 
-Sequence after [#24](#24) — the two-stage structure has to live wherever the melee exchange ends up.
+### What was built
+
+`SR3EActor.fullDefenseOutcome({ attackHits, skillHits, dodgeHits })` is the whole rule, pure,
+returning `{ blocked, net, cleanMiss, remaining, dealsDamage }` — `dealsDamage` is a constant
+`false`, because the book says so twice and a field that can only be false is clearer than a
+comment nobody reads.
+
+- **Stage 1 is pool-free.** `handleMeleeRoll` zeroes the defender's Combat Pool allocation and
+  says why. It **zeroes rather than rejects**: the pool is not forbidden, it is reserved for
+  stage 2, where *"only Combat Pool dice may be used"*.
+- **Stage 2 is a new card.** `.sr-fd-dodge-btn` → `handleFullDefenseDodge`, gated with
+  `_isDecider` (it rolls, so exactly one user owns it), Combat Pool only, TN from the
+  defender's own melee TN so the Melee Modifiers Table applies as p.124 requires.
+- **The defender deals no damage**, including on an outright win.
+
+⚠ **THE SECOND-STAGE DODGE SUBTRACTS FROM STAGING. The ordinary one does not.** p.124:
+*"subtract the Dodge successes from the attacker's and apply any remaining successes to staging
+up the Damage Level."* p.113: the successes *"are added to the Damage Resistance Successes"* and
+staging still comes from the attacker's raw total. Same word, two arithmetics. `dodgeOutcome`
+and `fullDefenseOutcome` are separate functions for exactly this reason, and
+`tests/full-defense.test.mjs` asserts both answers on the SAME numbers so that unifying them
+means deleting a test that explains why they differ.
+
+⚠ **Both comparisons are strict and point in OPPOSITE directions.** The block needs the
+defender to have *more*; the clean miss needs the dodge to *exceed* the net. A tie on the skill
+test is therefore not a block — net 0, base damage, and the dodge is still offered. Both have
+mutants.
+
+### Found in the same passage: the melee TIE was resolved backwards
+
+p.122 step 3: *"The character who rolls the most successes has hit his or her opponent.
+**A tie goes in favor of the attacker.**"*
+
+`_postMeleeResult` announced "🤝 Tie! — no damage dealt" and returned. RAW is an attacker
+hit with net 0: base Damage Level, defender resists. Now `SR3EActor.meleeOutcome`, and the
+staging gate moved from `net > 0` to unconditional — gating on `> 0` would have posted no soak
+button and deleted the attack a second way.
+
+⚠ This is the same strictness trap as the ranged Dodge Test tie already pinned in
+`dodge-resolution.test.mjs`, pointing the other way. Two tie rules, both wrong, in opposite
+directions, neither found by play.
+
+### Ranged Full Defense is a system extension, not RAW
+
+Full Defense is a **melee** construct: p.108 Interception forces the passer into it, p.121
+whips reference it, p.123 defines it in melee terms. Nothing in the ranged rules mentions it —
+the p.113 Dodge Test already spends Combat Pool freely without it.
+
+The pre-existing behaviour on the ranged path (a reserved pool auto-declared as dodge dice) is
+therefore **kept and documented as an extension**, not RAW. Removing it would take away
+something tables are using, and it is harmless — it only pre-fills a declaration the defender
+would otherwise type. Worth a deliberate decision if it ever conflicts.
 
 ## 40. Charging Attack — Cannon Companion, and the first rule that needs a BOOK GATE
 

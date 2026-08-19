@@ -2908,6 +2908,8 @@ _prepareCharacter(sys, attr) {
         // Dodge: without these the final wave builds no result AND no soak button, so the
         // attack simply stops — no Damage Resistance Test, no damage, no error. Unreachable
         // until the p.113 modifiers landed and a dodge TN could exceed 6.
+        isFullDefenseDodge: state.isFullDefenseDodge ?? false,
+        fullDefenseContext: state.fullDefenseContext ?? null,
         isDodgeRoll:        state.isDodgeRoll        ?? false,
         dodgePayload:       state.dodgePayload       ?? null,
         // Spell Defense: TN is the spell's Force, so Force 7+ reaches this. Losing it drops
@@ -2972,6 +2974,54 @@ _prepareCharacter(sys, attr) {
           </button>
         </div>
       `;
+    }
+
+    // ── Full Defense dodge (p.124) — NOT the same arithmetic as an ordinary dodge ──
+    let fdDodgeHtml = '';
+    if (allDone && state.isFullDefenseDodge && state.fullDefenseContext) {
+      const fc  = state.fullDefenseContext;
+      const dfn = game.actors.get(fc.defenderActorId);
+      // ⚠ Successes come OFF the attacker's net before staging — an ordinary dodge instead
+      // adds them to the Damage Resistance Test and never touches staging. See
+      // fullDefenseOutcome for the two quotations that differ.
+      const fd = SR3EActor.fullDefenseOutcome({
+        attackHits: fc.net, skillHits: 0, dodgeHits: successes,
+      });
+
+      if (fd.cleanMiss) {
+        fdDodgeHtml = `
+          <div class="sr-dodge-result sr-dodge-success">
+            ✅ Clean miss — ${successes} dodge hit${successes !== 1 ? 's' : ''}
+            exceeded the attacker's ${fc.net} net. No damage.
+          </div>`;
+      } else {
+        const base = fc.atkDamageBase;
+        let html = `
+          <div class="sr-dodge-result sr-dodge-fail">
+            ❌ ${successes} dodge hit${successes !== 1 ? 's' : ''} vs ${fc.net} net —
+            <strong>${fd.remaining}</strong> success${fd.remaining !== 1 ? 'es' : ''} remain to stage with.
+          </div>`;
+        if (base) {
+          const st = game.sr3e.SR3EItem.stageDamage(base, fd.remaining, { meleeRules: true });
+          const soakPayload = JSON.stringify({
+            attackerActorId: fc.attackerActorId,
+            targetActorId:   fc.defenderActorId,
+            isMelee:         true,
+            stagedPower:     st.power,
+            stagedLevel:     st.level,
+            isStun:          st.isStun,
+            rawDamage:       fc.atkRawDamage,
+          }).replace(/'/g, '&#39;');
+          html += `
+            <div class="sr-staging-result">📊 ${fc.atkRawDamage} + ${fd.remaining} → <strong>${st.power}${st.level} ${st.isStun ? 'Stun' : 'Physical'}</strong></div>
+            <div class="sr-soak-action">
+              <button class="sr-soak-btn" data-payload='${soakPayload}'>
+                🛡 ${dfn?.name ?? 'Defender'}: Resist Damage
+              </button>
+            </div>`;
+        }
+        fdDodgeHtml = html;
+      }
     }
 
     // Dodge result announcement — shown when dodge wave fully resolves
@@ -3141,7 +3191,8 @@ _prepareCharacter(sys, attr) {
           <div class="sr-roll-meta">${waveMeta}</div>
           <div class="sr-roll-dice">${diceHtml}</div>
           ${resultHtml}
-          ${dodgeResultHtml}
+          ${fdDodgeHtml}
+        ${dodgeResultHtml}
           ${soakResultHtml}
           ${spellResistResultHtml}
           ${vehicleSoakResultHtml}
@@ -3830,7 +3881,20 @@ _prepareCharacter(sys, attr) {
     const f   = (role, cls) => SR3EActor.cornerField(sub, role, cls, card);
 
     const atkCombatPool = parseInt(f('attacker', 'sr-melee-atk-pool')) || 0;
-    const defCombatPool = parseInt(f('defender', 'sr-melee-def-pool')) || 0;
+    let   defCombatPool = parseInt(f('defender', 'sr-melee-def-pool')) || 0;
+
+    // ── Full Defense stage 1: skill dice ONLY ────────────────────────────────────
+    //
+    // p.123: "A character on Full Defense still makes a Combat Skill Test, but they may not
+    // add any Combat Pool dice to the test." The pool is not forbidden outright — it is
+    // reserved for the SECOND stage, the Dodge Test, where "only Combat Pool dice may be
+    // used". So this zeroes the allocation rather than rejecting it, and the dice go to the
+    // dodge that follows.
+    const _defFullDefense = !!game.actors.get(ctx.defenderActorId)?.system?.fullDefense;
+    if (_defFullDefense && defCombatPool > 0) {
+      ui.notifications.info('Full Defense: Combat Pool cannot be added to the skill test — it is held for the Dodge Test (p.123).');
+      defCombatPool = 0;
+    }
     const atkSkillDice  = parseInt(f('attacker', 'sr-melee-atk-skill-dice')) || ctx.atkSkillDice || 1;
     const defSkillDice  = parseInt(f('defender', 'sr-melee-def-skill-dice')) || ctx.defSkillDice || 1;
     // Provisional: the real dice come from what the pool actually GRANTS, below.
@@ -3922,6 +3986,7 @@ _prepareCharacter(sys, attr) {
       atkRawDamage, atkDamageBase,
       defRawDamage, defDamageBase,
       isMeleeOpposed: true,
+      defFullDefense: _defFullDefense,
     };
 
     await atk._postWaveCard({
@@ -3961,26 +4026,150 @@ _prepareCharacter(sys, attr) {
   }
 
   /**
+   * Full Defense resolution — the pool-free skill compare, then the optional Dodge Test.
+   *  · *SR3 p.123-124*
+   *
+   * The arithmetic is all in `SR3EActor.fullDefenseOutcome`; this posts what it says.
+   *
+   * ⚠ The defender NEVER deals damage from this exchange, including when they win the skill
+   * test outright. That is the cost of the posture, stated twice in the book.
+   */
+  static async _postFullDefenseResult(ctx, atkSuccesses, defSuccesses) {
+    const atk = game.actors.get(ctx.attackerActorId);
+    const def = game.actors.get(ctx.defenderActorId);
+    const fd  = SR3EActor.fullDefenseOutcome({ attackHits: atkSuccesses, skillHits: defSuccesses });
+
+    const header = `
+      <div class="sr-melee-result" style="border-left:3px solid var(--sr-accent)">
+        🛡 <strong>Full Defense</strong> — ${def?.name ?? 'Defender'} rolled
+        ${defSuccesses} skill success${defSuccesses !== 1 ? 'es' : ''} (no Combat Pool, p.123)
+        vs ${atk?.name ?? 'Attacker'}'s ${atkSuccesses}.
+      </div>`;
+
+    let body;
+    if (fd.blocked) {
+      body = `
+        <div class="sr-melee-result sr-melee-tie">
+          ✅ Attack <strong>blocked</strong> — the defender had more successes.
+          ${def?.name ?? 'The defender'} deals no damage (Full Defense).
+        </div>`;
+      await ChatMessage.create({ content: `<div class="sr-roll-card">${header}${body}</div>`,
+        style: CONST.CHAT_MESSAGE_STYLES.OTHER });
+      await def?.clearFullDefense();
+      return;
+    }
+
+    // Not blocked — the defender "may at this point make a Dodge Test", Combat Pool only.
+    const payload = JSON.stringify({
+      attackerActorId: ctx.attackerActorId,
+      defenderActorId: ctx.defenderActorId,
+      targetActorId:   ctx.defenderActorId,
+      net:             fd.net,
+      atkRawDamage:    ctx.atkRawDamage,
+      atkDamageBase:   ctx.atkDamageBase,
+      calledShot:      ctx.calledShot ?? null,
+      calledShotTarget: ctx.calledShotTarget ?? null,
+      // The Melee Modifiers Table applies to this dodge (p.124), and the defender's own TN
+      // already carries them from the GM window — so it is reused rather than recomputed.
+      defTN:           ctx.defTN ?? 4,
+    }).replace(/'/g, '&#39;');
+
+    body = `
+      <div class="sr-melee-result sr-melee-win">
+        ⚔ Not blocked — attacker's net successes: <strong>${fd.net}</strong>.
+        ${def?.name ?? 'The defender'} deals no damage regardless (Full Defense).
+      </div>
+      <div class="sr-soak-action">
+        <button class="sr-fd-dodge-btn" data-payload='${payload}'>
+          🎯 ${def?.name ?? 'Defender'} — Dodge Test (Combat Pool only, p.124)
+        </button>
+      </div>`;
+
+    await ChatMessage.create({ content: `<div class="sr-roll-card">${header}${body}</div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER });
+  }
+
+  /**
+   * Stage 2 of Full Defense: the defender's Dodge Test, Combat Pool dice ONLY.  · *p.124*
+   *
+   * ⚠ Its successes SUBTRACT from the attacker's net before staging — not added to the Damage
+   * Resistance Test as an ordinary dodge's are (p.113). See `fullDefenseOutcome`.
+   */
+  static async handleFullDefenseDodge(btn) {
+    const ctx = JSON.parse(btn.dataset.payload);
+    const def = game.actors.get(ctx.defenderActorId);
+    if (!def) return;
+
+    const avail = def.system.derived?.availableCombatPool ?? 0;
+    let wanted  = 0;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `${def.name} — Full Defense Dodge` },
+      content: `
+        <p style="margin-bottom:8px">The attack was not blocked — <strong>${ctx.net}</strong>
+        net success${ctx.net !== 1 ? 'es' : ''} stand.</p>
+        <p style="margin-bottom:8px;font-size:11px;color:var(--sr-amber)">
+          Only Combat Pool dice may be used (p.124). Every dodge success cancels one of the
+          attacker's net successes before damage is staged.</p>
+        <label style="display:block">Combat Pool dice (available ${avail}):
+          <input type="number" id="fd-dodge" value="0" min="0" max="${avail}" style="width:60px;margin-left:6px"/>
+        </label>`,
+      buttons: [
+        { label: '🎲 Dodge', action: 'go', default: true,
+          callback: (_e, _b, d) => { wanted = Math.max(0, parseInt(d.element.querySelector('#fd-dodge')?.value) || 0); } },
+        { label: 'No dodge', action: 'skip' },
+      ],
+    });
+
+    // Roll the grant, not the request — see tests/pool-spend.test.mjs.
+    const spent = wanted > 0 ? await def.spendCombatPool(wanted) : 0;
+    if (spent !== wanted) {
+      ui.notifications.warn(`${def.name}: only ${spent} of ${wanted} Combat Pool dice were available.`);
+    }
+    await def.clearFullDefense();
+
+    const tn = Math.max(2, parseInt(ctx.defTN) || 4);
+    const dice = spent > 0 ? def._rollWave(spent, tn, true) : [];
+    const ones = dice.filter(d => d.isOne).length;
+
+    await def._postWaveCard({
+      actorId:  ctx.defenderActorId,
+      label:    `🎯 ${def.name} — Full Defense Dodge (TN ${tn})`,
+      tn,
+      pool:     spent,
+      wave:     0,
+      dice,
+      ones,
+      glitch:   SR3EActor.isRuleOfOne(ones, spent),
+      isWeaponRoll: false,
+      isFullDefenseDodge:  true,
+      fullDefenseContext:  ctx,
+    });
+  }
+
+  /**
    * Post the melee result — announces winner, staged damage, and resist button.
    */
   static async _postMeleeResult(ctx, atkDice, defDice) {
     const atkSuccesses = atkDice.filter(d => d.success).length;
     const defSuccesses = defDice.filter(d => d.success).length;
-    const net          = Math.abs(atkSuccesses - defSuccesses);
 
     const atk = game.actors.get(ctx.attackerActorId);
     const def = game.actors.get(ctx.defenderActorId);
 
+    // ── Full Defense takes a different shape entirely (p.123-124) ───────────────
+    if (ctx.defFullDefense) {
+      return SR3EActor._postFullDefenseResult(ctx, atkSuccesses, defSuccesses);
+    }
+
+    // p.122 step 3: "The character who rolls the most successes has hit... A tie goes in
+    // favor of the attacker." One pure function — see meleeOutcome.
+    const _mo         = SR3EActor.meleeOutcome(atkSuccesses, defSuccesses);
+    const net         = _mo.net;
+
     let resultHtml;
 
-    if (atkSuccesses === defSuccesses) {
-      // Tie — no damage
-      resultHtml = `
-        <div class="sr-melee-result sr-melee-tie">
-          🤝 Tie! ${atkSuccesses} vs ${defSuccesses} — no damage dealt.
-        </div>`;
-    } else {
-      const winnerIsAtk  = atkSuccesses > defSuccesses;
+    {
+      const winnerIsAtk  = _mo.winnerIsAtk;
       const winner       = winnerIsAtk ? atk : def;
       const loser        = winnerIsAtk ? def : atk;
       const winnerName   = winner?.name ?? 'Winner';
@@ -3994,7 +4183,10 @@ _prepareCharacter(sys, attr) {
       let stagingHtml = '';
       let soakBtn     = '';
 
-      if (winnerDmgBase && net > 0) {
+      // ⚠ `net >= 0`, not `> 0`. A tie is a HIT with net 0 (p.122), so the weapon still does
+      // its base Damage Level and the loser still resists — gating on `> 0` would post no soak
+      // button and silently delete the attack.
+      if (winnerDmgBase) {
         // Melee stages Power past Deadly (p.122) — the exception to the general
         // "Deadly is the ceiling" rule (p.113). This used to be an inline copy of the
         // staging loop, which is why capping stageDamage for the ranged fix left melee
@@ -4039,12 +4231,18 @@ _prepareCharacter(sys, attr) {
           </div>`;
       }
 
-      resultHtml = `
-        <div class="sr-melee-result sr-melee-win">
-          ⚔ ${winnerName} wins! ${atkSuccesses} vs ${defSuccesses} (net ${net})
-        </div>
-        ${stagingHtml}
-        ${soakBtn}`;
+      resultHtml = _mo.tie
+        ? `<div class="sr-melee-result sr-melee-win">
+             ⚔ Tie — ${atkSuccesses} vs ${defSuccesses}. <strong>A tie goes to the attacker</strong> (p.122):
+             ${winnerName} hits for base damage.
+           </div>
+           ${stagingHtml}
+           ${soakBtn}`
+        : `<div class="sr-melee-result sr-melee-win">
+             ⚔ ${winnerName} wins! ${atkSuccesses} vs ${defSuccesses} (net ${net})
+           </div>
+           ${stagingHtml}
+           ${soakBtn}`;
     }
 
     await ChatMessage.create({
@@ -4282,6 +4480,88 @@ _prepareCharacter(sys, attr) {
     if (n(shotgunSpread)) parts.push(`+${n(shotgunSpread)} shot spread`);
     if (wound)         parts.push(`+${-wound} wound`);
     return parts;
+  }
+
+  /**
+   * Who hit, and by how much, in a standard melee exchange — **pure**.  · *SR3 p.122*
+   *
+   * Step 3 of the melee sequence, in full:
+   *
+   *   > "Compare Successes — The character who rolls the most successes has hit his or her
+   *   >  opponent. **A tie goes in favor of the attacker.**"
+   *
+   * ⚠ **A TIE IS A HIT FOR THE ATTACKER**, with net 0 — so step 4 stages nothing and the
+   * weapon does its base Damage Level, which the defender then resists at step 5. The system
+   * announced "Tie! no damage dealt" instead, which deletes a whole attack.
+   *
+   * This is the same rule, and the same mistake, as the ranged Dodge Test tie already pinned in
+   * `dodgeOutcome` — a strict comparison read as though equality favoured the defender. Melee
+   * had it in the opposite direction and was never checked against the book.
+   *
+   * @param {number} atkHits
+   * @param {number} defHits
+   * @returns {{winnerIsAtk: boolean, net: number, tie: boolean}}
+   */
+  static meleeOutcome(atkHits, defHits) {
+    const a = Math.max(0, Math.trunc(Number(atkHits) || 0));
+    const d = Math.max(0, Math.trunc(Number(defHits) || 0));
+    const winnerIsAtk = a >= d;                      // >= : the tie goes to the attacker
+    return { winnerIsAtk, net: winnerIsAtk ? a - d : d - a, tie: a === d };
+  }
+
+  /**
+   * Full Defense — the whole two-stage rule, **pure**.  · *SR3 p.123-124*
+   *
+   *   > "Attacked characters may choose to only defend themselves. Characters who choose this
+   *   >  option **do not do any damage to their opponent**, even if they achieve more successes
+   *   >  on their Combat Skill Test.
+   *   >
+   *   >  A character on Full Defense still makes a Combat Skill Test, but they **may not add any
+   *   >  Combat Pool dice** to the test. Compare the successes… If the defender has achieved
+   *   >  more successes, the attack has been blocked. Otherwise, note the attacker's net
+   *   >  successes.
+   *   >
+   *   >  The defender may **at this point** make a Dodge Test… **Only Combat Pool dice may be
+   *   >  used for this test.** The target number is 4, and any applicable modifiers from the
+   *   >  Melee Modifiers Table… A clean miss occurs if the target's successes from Combat Pool
+   *   >  dice alone **exceed** the attacker's net successes.
+   *   >
+   *   >  Otherwise, **subtract the Dodge successes from the attacker's** and apply any remaining
+   *   >  successes to staging up the Damage Level."
+   *
+   * ⚠ **THE DODGE SUBTRACTS FROM STAGING HERE. That is the opposite of the standard rule**, and
+   * it is the single most dangerous thing to "unify" in this file. p.113's ordinary Dodge Test
+   * says the successes *"are added to the Damage Resistance Successes"* and explicitly do NOT
+   * reduce staging (see `dodgeOutcome`). Full Defense's second-stage dodge instead comes off the
+   * attacker's net BEFORE staging. Two different dodges, two different arithmetics; reusing
+   * `dodgeOutcome` here would silently make Full Defense worse than a normal dodge.
+   *
+   * ⚠ **Both comparisons are strict, and they point in OPPOSITE directions.** The block needs
+   * the defender to have *more* successes; the clean miss needs the dodge to *exceed* the net.
+   * A tie on the skill test is therefore not a block — it is net 0, base damage, and the
+   * defender still gets to dodge.
+   *
+   * ⚠ **`dealsDamage` is always false**, even when the defender wins outright. The book says so
+   * twice over ("do not do any damage… even if they achieve more successes"), and it is the
+   * price of the posture rather than an edge case.
+   *
+   * @param {object} o
+   * @param {number} o.attackHits  the attacker's Combat Skill Test successes
+   * @param {number} o.skillHits   the defender's Combat Skill Test successes, POOL-FREE
+   * @param {number} [o.dodgeHits] second-stage Dodge Test successes, Combat Pool dice only
+   * @returns {{blocked: boolean, net: number, cleanMiss: boolean, remaining: number,
+   *            dealsDamage: boolean}}
+   */
+  static fullDefenseOutcome({ attackHits = 0, skillHits = 0, dodgeHits = 0 } = {}) {
+    const n = v => Math.max(0, Math.trunc(Number(v) || 0));
+    const a = n(attackHits), d = n(skillHits), g = n(dodgeHits);
+
+    const blocked = d > a;                       // strict: a tie is NOT a block
+    const net     = blocked ? 0 : a - d;
+    const cleanMiss = !blocked && g > net;       // strict: "exceed the attacker's net successes"
+    const remaining = blocked || cleanMiss ? 0 : Math.max(0, net - g);
+
+    return { blocked, net, cleanMiss, remaining, dealsDamage: false };
   }
 
   static dodgeOutcome(dodgeHits, attackHits) {
