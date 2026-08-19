@@ -2891,9 +2891,26 @@ _prepareCharacter(sys, attr) {
         rawDamage:          state.rawDamage          ?? '',
         damageBase:         state.damageBase         ?? null,
         weaponItemId:       state.weaponItemId       ?? null,
-        // ⚠ ammoType was MISSING from this payload while being read on the final wave, so any
-        // attack whose dice exploded — most of them — silently lost APDS/Flechette on the soak.
+        // ⚠ These are the fields an AUDIT found missing while they were being read on the
+        // final wave. Every one of them is only reachable at TN ≥ 7, because `_rollWave` sets
+        // `needsExplosion = face === 6 && !success` — a 6 at TN 6 or lower is already a
+        // success and never explodes. That is why they survived so long, and why the audit
+        // rather than play found them.
         ammoType:           state.ammoType           ?? null,
+        // Dodge: without these the final wave builds no result AND no soak button, so the
+        // attack simply stops — no Damage Resistance Test, no damage, no error. Unreachable
+        // until the p.113 modifiers landed and a dodge TN could exceed 6.
+        isDodgeRoll:        state.isDodgeRoll        ?? false,
+        dodgePayload:       state.dodgePayload       ?? null,
+        // Spell Defense: TN is the spell's Force, so Force 7+ reaches this. Losing it drops
+        // the reduction of the caster's successes and never sets `_pendingDefenseCard`, so
+        // the resist and drain cards never post either.
+        isSpellDefenseRoll: state.isSpellDefenseRoll ?? false,
+        spellDefenseContext: state.spellDefenseContext ?? null,
+        // Escape Artist: TN is the restraint rating. Falling: TN is the distance in METRES,
+        // so a 7-metre fall already explodes. Both lose their entire result card.
+        escapeContext:      state.escapeContext      ?? null,
+        fallingContext:     state.fallingContext     ?? null,
         burstRounds:        state.burstRounds        ?? 0,
         shotgunSpread:      state.shotgunSpread      ?? 0,
         attackerActorId:    state.attackerActorId    ?? null,

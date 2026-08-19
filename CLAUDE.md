@@ -1632,5 +1632,19 @@ at all, which is itself proof the tab predates the query.
   `atkActorId` or `intruderRiggerId` **fails closed and becomes GM-only** unless you pass the id
   explicitly. `attackerActorId` is excluded on purpose — an attacker must never inherit rights
   over their target's card.
-- Explosion button payloads must carry all context fields forward through every wave or final-wave logic loses context
+- **Explosion button payloads must carry every field the final wave reads.** `_postWaveCard`
+  rebuilds the roll state into the button payload **by hand**, ~70 fields listed one at a time
+  across three sites with nothing checking they agree. A field that is read on the final wave
+  but missing from the carry is silently `undefined` and its branch just never runs.
+  ⚠ **`tests/explosion-carry.test.mjs` is the check** — it parses the source, diffs `state.X`
+  reads against the carry's declared keys, and fails with the missing names. Add a field to
+  `_postWaveCard` and you must add it to the carry, or to that file's `EXEMPT`/`NESTED` maps
+  **with a reason**.
+  ⚠ **Nothing here is found by play-testing**, because `_rollWave` sets
+  `needsExplosion = face === 6 && !success` — a 6 at TN ≤ 6 is already a success and never
+  explodes, so every bug of this class needs **TN ≥ 7**. An audit on 2026-08-19 found seven
+  live ones: `ammoType` (APDS/Flechette dropped from the soak), `isDodgeRoll`/`dodgePayload`
+  (no dodge result *and no soak button* — the attack stops silently), `isSpellDefenseRoll`/
+  `spellDefenseContext` (no success reduction, no resist or drain card), `escapeContext` and
+  `fallingContext` (whole result cards lost).
 - `renderCombatTracker` fires on every render — guard any DOM insertions with a class check to avoid duplicates (e.g. `if (!el.querySelector('.sr3e-chase-btn'))`)
