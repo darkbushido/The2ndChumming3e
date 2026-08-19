@@ -24,11 +24,11 @@ independent.
 | 🔵 In progress | 2 |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | *(none — 54 fully closed)* |
-| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 38 · 39 · 40 · 41 · 47 · 48 · 49 · 52 · 53 |
+| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 38 · 39 · 40 · 41 · 47 · 48 · 49 · 53 · 57 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | **5** · 13 · **14** · **51** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
+| ✅ Done — kept for the record | **5** · 13 · **14** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -1859,7 +1859,7 @@ economy at all. All that exists is `roundsFiredThisPhase`, so a phase mixing mod
 3-round burst then an SA shot reads as 4 rounds and trips the SA cap early. It therefore
 WARNS and never blocks. If action accounting ever lands, this is where to make it exact.
 
-## 52. The full-auto Dodge Test modifier is missing — *SR3 p.113*
+## 52. ✅ The Dodge Test had no modifiers at all — **DONE 2026-08-19**
 
 Also found 2026-08-13, in the DODGE TEST section:
 
@@ -1875,8 +1875,51 @@ DODGE target-number modifier; the damage side is separate and already implemente
 them — the damage-level increase and the dodge penalty are different rules that share a
 phrase.
 
-The rounds are already known at that point: the attack's `fireModeResult.rounds` would need
-carrying into `dodgeContext`, which already ferries `attackSuccesses` and the staged damage.
+⚠ **It was not one modifier but three**, and the third is the one that bites in every fight:
+
+> "The base target number for this test is 4. The following modifiers apply:
+>  • +1 per 3 rounds fired from a burst-fire or full-auto weapon.
+>  • +1 per meter of shotgun spread at the target's position (see Shotguns, p. 117).
+>  • **+ Damage Modifiers (p. 126).**"
+
+The wound modifier is not an inference from that last line — the book **works it in the
+example**: *"He rolls his 5 Combat Pool dice against a Target Number 5 (4, plus one from the
+Light wound he took earlier)."* A single pistol shot at a lightly-wounded defender was already
+being resolved wrong, so this was never a full-auto corner case.
+
+**Why the wound modifier in particular was missing** is structural, and worth recording:
+`rollPool` is what folds `woundMod` into a TN, and the dodge path does not go through it —
+`_rollDodge` calls `_rollWave` directly, and `_rollWave` takes the TN as given. Nothing was
+"forgotten"; the one place that applies wounds was never on this path.
+
+### What was built
+
+`SR3EActor.dodgeTN({ burstRounds, shotgunSpread, woundMod })`, pure, with `dodgeTNParts()`
+beside it producing the breakdown shown to the player. The parts are a second implementation
+of the same sum, so the suite checks them **against** it rather than against literals.
+
+⚠ **`woundMod` is NEGATIVE**, matching `system.woundMod` everywhere else (`Math.min(0, …)`),
+and is SUBTRACTED. A sign flip here makes wounded characters *harder* to hit and looks
+entirely reasonable on screen — it has its own mutant.
+
+⚠ **Burst rounds are the rounds aimed at THIS target, not `roundsExpended`.** Walking-fire
+waste counts for recoil, the phase cap and the magazine, but it travels *between* targets and
+is not volume of fire this defender is dodging. Same call as damage, opposite call to recoil.
+
+**The defender now sees the TN before choosing.** The declaration dialog shows it with its
+breakdown, because the trade is dodge-versus-soak and a TN of 9 makes spending pool there a
+much worse bet than a 4 — the dialog previously showed the attack's successes but never the
+number the dodge would be rolled against.
+
+**Shotgun spread is declared, not derived** — choke is not modelled at all. See [#57](#57).
+
+### Found while wiring it: `ammoType` was lost on every exploding roll
+
+The explosion carry payload in `_postWaveCard` rebuilds the roll state field by field, and
+`ammoType` **was not in it**, while the final wave reads `state.ammoType` to carry APDS and
+Flechette into the soak. Any attack whose dice exploded — most of them — silently dropped the
+ammunition's armour effects. Fixed in the same commit; it is the same carry chain the two new
+dodge fields ride, and adding them without noticing would have reproduced it.
 
 ## 53. The "Essence hole" surgery option is not modelled — *M&M p.150*
 
@@ -3357,3 +3400,41 @@ than it should be. Nothing warns, because nothing knows.
 The magazine arithmetic is correct and was correct before the walking-fire fix — each
 declaration spends only its own rounds plus its own waste. This item is about the two inputs
 to that arithmetic being hand-entered, not about the arithmetic.
+
+---
+
+<a id="57"></a>
+## 57. Shotgun choke and spread are not modelled — *SR3 p.117*
+
+Split out of [#52](#52), which needed the spread as an input and found nothing to read it from.
+
+A shotgun firing shot rounds throws a cone. The user sets a **choke** from 2 to 10, and *"for
+every number of meters equal to the choke setting that the shot travels, it will spread one
+meter"*. So the width at distance *d* is `ceil(d / choke)` metres, and the number of times it
+has spread is that minus one.
+
+Three separate effects hang off that count, and **the system implements none of them**:
+
+| Effect | Rule |
+|---|---|
+| Power | −1 per spread — *"Every time a shot round increases its spread, it loses 1 point of power"* |
+| Attacker's TN | −1 per spread — *"Every time the shot spreads, subtract -1 from the attacker's target number"* |
+| Defender's Dodge TN | **+1 per metre of spread** (p.113) — the only one currently reachable, and only by hand |
+
+The book's own worked line pins the arithmetic: at choke 5 it is **−2/−2 at fifteen metres**
+(width 3, so two spreads) and **−3/−3 at twenty** (width 4). Also: *"Everything and everyone
+within the area of spread is considered a valid target"*, so a full implementation is a cone
+template, not a number.
+
+**What exists today** is a "Shot spread at the target (m)" field in the fire dialog, shown only
+for `ShtG`, defaulting to 0, feeding `dodgeTN`. That makes the p.113 modifier reachable without
+pretending to model choke. The attacker knows their choke and their range; p.117 has the table.
+
+⚠ **The dodge modifier is +1 per METRE OF SPREAD, which is the width minus one** — the amount
+by which the cone has widened, matching the attacker's −1 per spread. Reading it as the raw
+width would penalise a point-blank shotgun that has not spread at all.
+
+**To finish it:** a `choke` NumberField (2–10) on the firearm — a data-model change, so a full
+Foundry restart — plus a shot-vs-slug distinction (shot rounds use the flechette rules, so
+`ammoType` is close but not the same question), and then all three effects derive from the
+range that `_measureDistance` already computes on every shot.

@@ -1888,6 +1888,8 @@ _prepareCharacter(sys, attr) {
         damageBase:          options.damageBase         ?? null,
         weaponItemId:        options.weaponItemId       ?? null,
         ammoType:            options.ammoType           ?? null,
+        burstRounds:         options.burstRounds        ?? 0,
+        shotgunSpread:       options.shotgunSpread      ?? 0,
         attackerActorId:     this.id,
         targetActorId:       options.targetActorId      ?? null,
         committedDodgeDice:  options.committedDodgeDice ?? 0,
@@ -1959,6 +1961,8 @@ _prepareCharacter(sys, attr) {
       damageBase:            options.damageBase            ?? null,
       weaponItemId:          options.weaponItemId          ?? null,
       ammoType:              options.ammoType              ?? null,
+      burstRounds:           options.burstRounds           ?? 0,
+      shotgunSpread:         options.shotgunSpread         ?? 0,
       attackerActorId:       this.id,
       targetActorId:         options.targetActorId         ?? null,
       committedDodgeDice:    options.committedDodgeDice    ?? 0,
@@ -2363,6 +2367,8 @@ _prepareCharacter(sys, attr) {
               targetActorId:   state.targetActorId,
               weaponItemId:    state.weaponItemId,
               ammoType:        state.ammoType ?? null,
+              burstRounds:     state.burstRounds ?? 0,
+              shotgunSpread:   state.shotgunSpread ?? 0,
               isMelee:         state.isMelee,
               attackSuccesses: successes,
               attackerName,
@@ -2885,6 +2891,11 @@ _prepareCharacter(sys, attr) {
         rawDamage:          state.rawDamage          ?? '',
         damageBase:         state.damageBase         ?? null,
         weaponItemId:       state.weaponItemId       ?? null,
+        // ⚠ ammoType was MISSING from this payload while being read on the final wave, so any
+        // attack whose dice exploded — most of them — silently lost APDS/Flechette on the soak.
+        ammoType:           state.ammoType           ?? null,
+        burstRounds:        state.burstRounds        ?? 0,
+        shotgunSpread:      state.shotgunSpread      ?? 0,
         attackerActorId:    state.attackerActorId    ?? null,
         targetActorId:      state.targetActorId      ?? null,
         committedDodgeDice: state.committedDodgeDice ?? 0,
@@ -4101,6 +4112,10 @@ _prepareCharacter(sys, attr) {
         attackerName:    ctx.attackerName ?? 'The attacker',
         weaponName:      ctx.rawDamage ?? 'the attack',
         attackSuccesses: ctx.attackSuccesses ?? 0,
+        // So the defender sees the TN they are actually rolling against — dodging a
+        // ten-round burst while wounded is a very different call from a plain 4.
+        burstRounds:     ctx.burstRounds   ?? 0,
+        shotgunSpread:   ctx.shotgunSpread ?? 0,
       }, { fallback: { dice: 0 } });   // AFK / unreachable → no dodge, resolution continues
       wanted = Math.max(0, declared?.dice ?? 0);
     }
@@ -4167,6 +4182,67 @@ _prepareCharacter(sys, attr) {
     return Math.max(2, parseInt(raw) || ctxTN || floor);
   }
 
+  /**
+ * Target number for a Dodge Test — **pure**.  · *SR3 p.113*
+ *
+ * The book gives the base and all three modifiers in one place:
+ *
+ *   > "The base target number for this test is 4. The following modifiers apply:
+ *   >  • +1 per 3 rounds fired from a burst-fire or full-auto weapon.
+ *   >  • +1 per meter of shotgun spread at the target's position (see Shotguns, p. 117).
+ *   >  • + Damage Modifiers (p. 126)."
+ *
+ * All three were missing: `_rollDodge` hardcoded 4, so dodging a ten-round burst was exactly
+ * as easy as dodging one pistol shot, and a defender at Serious dodged as though unhurt.
+ *
+ * ⚠ **The wound modifier is not an oversight in the book — it is worked in the example.**
+ * p.113: *"He rolls his 5 Combat Pool dice against a Target Number 5 (4, plus one from the
+ * Light wound he took earlier)."* That single parenthesis is the whole rule.
+ *
+ * ⚠ **`woundMod` is NEGATIVE here**, matching `system.woundMod` everywhere else in this
+ * codebase (`Math.min(0, …)`, a penalty carried as a negative). It is SUBTRACTED, exactly as
+ * `rollPool` does at its own TN line. Passing a positive number silently makes wounded
+ * characters *harder* to hit, which is the one mistake here that looks fine on screen.
+ *
+ * ⚠ **Burst rounds are the rounds AIMED AT THIS TARGET — not `roundsExpended`.** Walking-fire
+ * waste is fired, and counts for recoil, the phase cap and the magazine (see
+ * `SR3EItem.roundsExpended`), but it travels *between* targets. It is not volume of fire this
+ * defender is dodging, so it is excluded here for the same reason it is excluded from damage.
+ *
+ * Shotgun spread is a parameter with no caller yet — `choke` is not modelled. See TODO 57.
+ *
+ * Every modifier is non-negative, so the p.112 floor of 2 cannot bite and is not applied;
+ * the result is never below the base 4.
+ *
+ * @param {object}  [o]
+ * @param {number}  [o.burstRounds=0]    rounds sent at THIS target from a BF/FA weapon
+ * @param {number}  [o.shotgunSpread=0]  metres of shot spread at the target's position
+ * @param {number}  [o.woundMod=0]       the DEFENDER's wound modifier, negative
+ * @returns {number} the Dodge Test target number
+ */
+  static dodgeTN({ burstRounds = 0, shotgunSpread = 0, woundMod = 0 } = {}) {
+    const n = v => Math.max(0, Math.trunc(Number(v) || 0));
+    const wound = Math.min(0, Math.trunc(Number(woundMod) || 0));
+    return 4 + Math.floor(n(burstRounds) / 3) + n(shotgunSpread) - wound;
+  }
+
+  /**
+   * The parts of a Dodge Test TN, for showing the defender why it is not 4.
+   * Same inputs and same arithmetic as `dodgeTN` — kept beside it so they cannot drift.
+   *
+   * @returns {string[]} human-readable fragments, empty when the TN is a plain 4
+   */
+  static dodgeTNParts({ burstRounds = 0, shotgunSpread = 0, woundMod = 0 } = {}) {
+    const n = v => Math.max(0, Math.trunc(Number(v) || 0));
+    const wound = Math.min(0, Math.trunc(Number(woundMod) || 0));
+    const parts = [];
+    const burst = Math.floor(n(burstRounds) / 3);
+    if (burst)         parts.push(`+${burst} burst (${n(burstRounds)} rounds)`);
+    if (n(shotgunSpread)) parts.push(`+${n(shotgunSpread)} shot spread`);
+    if (wound)         parts.push(`+${-wound} wound`);
+    return parts;
+  }
+
   static dodgeOutcome(dodgeHits, attackHits) {
     const d = Math.max(0, Number(dodgeHits) || 0);
     const a = Math.max(0, Number(attackHits) || 0);
@@ -4175,8 +4251,19 @@ _prepareCharacter(sys, attr) {
   }
 
   static async _rollDodge(targetActor, dodgeDice, dodgeContext, physicalDice = false) {
-    const DODGE_TN = 4;
-    const label    = `🎯 ${targetActor.name} dodges`;
+    // p.113's three modifiers. `_rollWave` takes the TN as given — it is `rollPool` that
+    // folds in the wound modifier, and the dodge path does not go through rollPool, which is
+    // why a wounded defender used to dodge as though unhurt.
+    const tnOpts = {
+      burstRounds:   dodgeContext?.burstRounds   ?? 0,
+      shotgunSpread: dodgeContext?.shotgunSpread ?? 0,
+      woundMod:      targetActor.system.woundMod ?? 0,
+    };
+    const DODGE_TN  = SR3EActor.dodgeTN(tnOpts);
+    const tnParts   = SR3EActor.dodgeTNParts(tnOpts);
+    const label     = tnParts.length
+      ? `🎯 ${targetActor.name} dodges — TN ${DODGE_TN} (4 ${tnParts.join(' ')})`
+      : `🎯 ${targetActor.name} dodges`;
 
     let dice, ones, glitch;
     if (physicalDice) {

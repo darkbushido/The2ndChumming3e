@@ -988,7 +988,7 @@ export class SR3EItem extends Item {
       const isHeavy   = HEAVY_CATS.has(this.system.category ?? '');
       const isShotgun = (this.system.category ?? '') === 'ShtG';
       if (availableModes.length === 1 && availableModes[0] === 'SS') {
-        fireModeResult = { mode: 'SS', rounds: 0, roundsWasted: 0, recoilTN: 0, additionalTNPenalty: 0 };
+        fireModeResult = { mode: 'SS', rounds: 0, roundsWasted: 0, recoilTN: 0, additionalTNPenalty: 0, shotgunSpread: 0 };
       } else {
         fireModeResult = await SR3EItem._promptFireMode(availableModes, actor, this, isHeavy, isShotgun);
         if (!fireModeResult) return null;
@@ -1259,6 +1259,14 @@ export class SR3EItem extends Item {
   options.committedDodgeDice = committedDodgeDice;
   options.skipWoundMod       = true;
   options.ammoType           = ammoType;   // carried to the soak card for APDS/Flechette
+
+  // p.113's Dodge Test modifiers, carried to the defender. Rounds are those sent at THIS
+  // target — NOT roundsExpended: walking-fire waste travels between targets and is not
+  // volume of fire this defender is dodging. The wound modifier is read from the defender
+  // at dodge time, not from here.
+  options.burstRounds        = ['BF', 'FA'].includes(fireModeResult?.mode)
+    ? (fireModeResult?.rounds ?? 0) : 0;
+  options.shotgunSpread      = fireModeResult?.shotgunSpread ?? 0;
 
   // Commit recoil — update rounds fired counter before the roll
   if (fireModeRounds > 0) {
@@ -2637,6 +2645,16 @@ export class SR3EItem extends Item {
     const reserved = game.sr3e.SR3EActor._fullDefenseDice(defender);
     if (reserved > 0) return reserved;
 
+    // p.113's Dodge Test TN, shown because it is decision-relevant: the trade is dodge
+    // versus soak, and a TN of 9 makes spending pool here a much worse bet than a 4.
+    const tnOpts   = {
+      burstRounds:   opts.burstRounds   ?? 0,
+      shotgunSpread: opts.shotgunSpread ?? 0,
+      woundMod:      defender.system.woundMod ?? 0,
+    };
+    const dodgeTN    = game.sr3e.SR3EActor.dodgeTN(tnOpts);
+    const dodgeParts = game.sr3e.SR3EActor.dodgeTNParts(tnOpts);
+
     const availPool  = defender.system.derived?.availableCombatPool ?? 0;
     const fdNote     = (defender.system.fullDefense ?? false)
       ? '<p style="color:var(--sr-amber);font-size:11px;margin-top:8px">Full Defense active — pool already committed</p>'
@@ -2660,6 +2678,11 @@ export class SR3EItem extends Item {
         <p style="margin-bottom:8px;font-size:11px;color:var(--sr-amber)">
           Pool dice spent dodging are <strong>not</strong> available to resist the damage.
         </p>` : ''}
+        <p style="margin-bottom:8px;font-size:12px">
+          Dodge target number: <strong>${dodgeTN}</strong>${dodgeParts.length
+            ? ` <span style="font-size:11px;color:var(--sr-amber)">(4 ${dodgeParts.join(' ')})</span>`
+            : ''}
+        </p>
         <p style="margin-bottom:12px;font-size:11px;color:var(--sr-muted)">
           Your available Combat Pool: <strong>${availPool}</strong> dice
         </p>
@@ -2912,7 +2935,8 @@ _getAvailableModes() {
 }
 
 /**
- * Fire mode selection dialog. Returns { mode, rounds, additionalTNPenalty, roundsWasted } or null.
+ * Fire mode selection dialog.
+ * Returns { mode, rounds, additionalTNPenalty, roundsWasted, recoilTN, shotgunSpread } or null.
  */
 /**
  * What a burst actually becomes when the clip is nearly empty. **Pure.**  · *SR3 p.115*
@@ -3229,6 +3253,16 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       <span style="font-size:11px;color:var(--sr-muted);margin-left:4px">(a further shot at the SAME target is still the 1st)</span>
     </label>`;
 
+  // p.113: "+1 per meter of shotgun spread at the target's position". Choke is not modelled
+  // (TODO 57), so the spread is declared rather than derived — the attacker knows their choke
+  // setting and the range, and p.117 has the table. Shotguns only, and zero by default so it
+  // costs nothing to ignore.
+  const spreadRow = isShotgun ? `
+    <label style="display:block;margin-top:8px;font-size:12px">Shot <strong>spread</strong> at the target (m)
+      <input type="number" id="sr-shot-spread" value="0" min="0" max="10" style="width:55px;margin-left:6px"/>
+      <span style="font-size:11px;color:var(--sr-muted)">(p.117 — raises the target's Dodge TN by 1 per metre; 0 for slugs)</span>
+    </label>` : '';
+
   const recoilState = `
     <div style="margin-top:10px;padding:6px 8px;background:#0a0a0a;border:1px solid var(--sr-border);border-radius:var(--r);font-size:11px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
       <strong>Recoil comp:</strong>
@@ -3297,6 +3331,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
         <p style="margin:0 0 8px;font-size:12px;color:var(--sr-muted)">Select firing mode:</p>
         ${modeRows}
         ${targetOrdinal}
+        ${spreadRow}
         ${faSection}
         ${recoilState}
       </div>`,
@@ -3333,7 +3368,8 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
           // Passing `rounds` here is what makes Wedge's second burst +2 rather than +0.
           const recoilTN = recoilForMode(mode, roundsBefore, aComp + wComp,
                                          SR3EItem.roundsExpended({ rounds, roundsWasted }));
-          result = { mode, rounds, roundsWasted, recoilTN, additionalTNPenalty };
+          const shotgunSpread = Math.max(0, parseInt(el.querySelector('#sr-shot-spread')?.value) || 0);
+          result = { mode, rounds, roundsWasted, recoilTN, additionalTNPenalty, shotgunSpread };
         },
       },
       { label: 'Cancel', action: 'cancel' },

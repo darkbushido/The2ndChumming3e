@@ -25,6 +25,89 @@ export const name = 'dodge-resolution';
 export async function run(t) {
   const o = (dodge, attack) => SR3EActor.dodgeOutcome(dodge, attack);
 
+  /* ==== The Dodge Test TARGET NUMBER — SR3EActor.dodgeTN, SR3 p.113 ====
+   *
+   *   "The base target number for this test is 4. The following modifiers apply:
+   *    • +1 per 3 rounds fired from a burst-fire or full-auto weapon.
+   *    • +1 per meter of shotgun spread at the target's position (see Shotguns, p. 117).
+   *    • + Damage Modifiers (p. 126)."
+   *
+   * All three were missing — `_rollDodge` hardcoded 4 — so dodging a ten-round burst was
+   * exactly as easy as dodging one pistol shot, and a wounded defender dodged as though
+   * unhurt. That last one is not an inference: the book works it in the example below.
+   */
+  const tn = opts => SR3EActor.dodgeTN(opts);
+
+  t.is('an unmodified dodge is the base 4', tn(), 4);
+  t.is('an empty options object is also 4', tn({}), 4);
+
+  /* ---- +1 per 3 rounds, and it is per THREE, not per round ---- */
+  t.is('a single shot adds nothing',                tn({ burstRounds: 1 }), 4);
+  t.is('two rounds is still under the threshold',   tn({ burstRounds: 2 }), 4);
+  t.is('a three-round burst is +1',                 tn({ burstRounds: 3 }), 5);
+  t.is('five rounds is still +1 — it rounds DOWN',  tn({ burstRounds: 5 }), 5);
+  t.is('six rounds is +2',                          tn({ burstRounds: 6 }), 6);
+  t.is('a ten-round full-auto burst is +3',         tn({ burstRounds: 10 }), 7);
+  // ⚠ The same phrase "per 3 rounds" drives the DAMAGE LEVEL on the attack side
+  // (level +⌊rounds/3⌋). Two different rules sharing a phrase; this one is the dodge TN.
+  t.is('a two-round short burst adds nothing here either', tn({ burstRounds: 2 }), 4);
+
+  /* ---- Shotgun spread, +1 per metre ---- */
+  t.is('no spread, no modifier',      tn({ shotgunSpread: 0 }), 4);
+  t.is('three metres of spread is +3', tn({ shotgunSpread: 3 }), 7);
+
+  /* ---- The wound modifier, and its SIGN ----
+   *
+   * ⚠ `system.woundMod` is NEGATIVE across this codebase (`Math.min(0, …)`), so it is
+   * SUBTRACTED. A positive value passed here would make wounded characters HARDER to hit —
+   * a sign flip that looks perfectly reasonable on screen and is caught only by arithmetic.
+   */
+  t.is('an unwounded defender is unmodified',   tn({ woundMod: 0 }), 4);
+  t.is('a Light wound is +1',                   tn({ woundMod: -1 }), 5);
+  t.is('a Serious wound is +3',                 tn({ woundMod: -3 }), 7);
+  t.is('a positive woundMod cannot LOWER the TN — the sign guard holds',
+    tn({ woundMod: 2 }), 4);
+
+  /* ---- Snot's dodge, worked in the book — SR3 p.113 ----
+   *
+   *   "Snot first decides to attempt a Dodge Test. He rolls his 5 Combat Pool dice against
+   *    a Target Number 5 (4, plus one from the Light wound he took earlier)."
+   *
+   * Liam is firing an Ares Predator — a single shot, no burst, no spread. The entire
+   * modifier is the wound, which is the one the old code could never have applied.
+   */
+  t.is("Snot dodges Liam's Predator at TN 5, not 4",
+    tn({ burstRounds: 0, shotgunSpread: 0, woundMod: -1 }), 5);
+
+  /* ---- All three at once, since they are independent and cumulative ---- */
+  t.is('a wounded defender dodging a six-round burst through shot spread stacks all three',
+    tn({ burstRounds: 6, shotgunSpread: 2, woundMod: -2 }), 10);
+
+  /* ---- Shape ---- */
+  t.is('junk reads as no modifier rather than NaN',
+    tn({ burstRounds: 'x', shotgunSpread: null, woundMod: undefined }), 4);
+  t.is('a negative round count cannot lower the TN', tn({ burstRounds: -9 }), 4);
+  t.is('a negative spread cannot lower the TN',      tn({ shotgunSpread: -9 }), 4);
+  t.is('fractional rounds truncate rather than drifting',
+    tn({ burstRounds: 3.9 }), 5);
+
+  /* ---- The breakdown shown to the defender must match the arithmetic ---- */
+  const parts = o2 => SR3EActor.dodgeTNParts(o2);
+  t.is('a plain 4 has nothing to explain', parts().length, 0);
+  t.ok('the burst part names the round count, so the defender can check it',
+    /\+?3 burst \(9 rounds\)/.test(parts({ burstRounds: 9 }).join(' ')));
+  t.ok('the wound part is shown as a POSITIVE penalty, matching what the TN did',
+    /\+2 wound/.test(parts({ woundMod: -2 }).join(' ')));
+  t.is('every contributing modifier gets a fragment',
+    parts({ burstRounds: 3, shotgunSpread: 1, woundMod: -1 }).length, 3);
+  // The parts are a second implementation of the same sum, so they are checked against it.
+  for (const o3 of [{ burstRounds: 3 }, { woundMod: -2 }, { shotgunSpread: 4 },
+                    { burstRounds: 7, shotgunSpread: 2, woundMod: -3 }]) {
+    const summed = parts(o3).reduce((a, frag) => a + parseInt(frag.match(/\+(\d+)/)[1]), 4);
+    t.is(`the breakdown sums to the TN it explains (${JSON.stringify(o3)})`, summed, tn(o3));
+  }
+
+
   /* ---- Rule 1: a clean miss needs to BEAT the attack, not match it ---- */
   t.ok('dodge above attack is a clean miss',      o(4, 3).cleanMiss === true);
   t.ok('dodge equal to attack is NOT a miss',     o(3, 3).cleanMiss === false);

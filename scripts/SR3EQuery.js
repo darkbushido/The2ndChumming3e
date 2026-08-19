@@ -429,12 +429,14 @@ export class SR3EQuery {
      * NOTE: no `assertActiveGM` — this deliberately runs on a player client.
      * It performs NO writes; it returns a number and the GM commits it.
      */
-    CONFIG.queries['sr3e.dodge.declare'] = async ({ rid, exchangeId, defenderUuid, attackerName, weaponName, attackSuccesses }) =>
+    CONFIG.queries['sr3e.dodge.declare'] = async ({ rid, exchangeId, defenderUuid, attackerName,
+                                                    weaponName, attackSuccesses, burstRounds, shotgunSpread }) =>
       SR3EQuery.once(rid, async () => {
         const defender = SR3EQuery.resolve(defenderUuid);
         if (!defender) return { dice: 0 };
         const dice = await game.sr3e.SR3EItem._promptDodgeDeclaration(
-          defender, attackerName, weaponName, { exchangeId, attackSuccesses });
+          defender, attackerName, weaponName,
+          { exchangeId, attackSuccesses, burstRounds, shotgunSpread });
         return { dice: dice ?? 0 };
       });
 

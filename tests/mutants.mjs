@@ -162,4 +162,30 @@ export const MUTANTS = [
           + 'with no warning',
     impl:   ({ rounds = 0 } = {}) => Math.max(0, Math.trunc(Number(rounds) || 0)),
   },
+
+  {
+    id:     'dodge-tn-is-always-four',
+    suite:  'dodge-resolution',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'dodgeTN',
+    was:    'the dodge TN was hardcoded 4 with no modifiers at all, so dodging a ten-round '
+          + 'burst was exactly as easy as dodging one pistol shot and a Serious-wounded '
+          + 'defender dodged as though unhurt',
+    impl:   () => 4,
+  },
+  {
+    id:     'dodge-wound-modifier-sign-flipped',
+    suite:  'dodge-resolution',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'dodgeTN',
+    was:    'system.woundMod is carried as a NEGATIVE penalty, so it must be subtracted; '
+          + 'adding it instead makes wounded defenders HARDER to hit, which reads as '
+          + 'perfectly reasonable code',
+    impl:   ({ burstRounds = 0, shotgunSpread = 0, woundMod = 0 } = {}) => {
+      const n = v => Math.max(0, Math.trunc(Number(v) || 0));
+      return 4 + Math.floor(n(burstRounds) / 3) + n(shotgunSpread) + Math.min(0, Math.trunc(Number(woundMod) || 0));
+    },
+  },
 ];

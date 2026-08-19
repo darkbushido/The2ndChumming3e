@@ -753,6 +753,28 @@ Only one state active at a time; clicking the active button deactivates it.
 11. Dodge result — see the RAW box below. Resolved by `SR3EActor.dodgeOutcome`.
 12. Dodge does **not** reduce *staging* — but its successes are not discarded either. See below.
 
+#### The Dodge Test target number  · *SR3 p.113*
+
+`SR3EActor.dodgeTN({ burstRounds, shotgunSpread, woundMod })` — pure, with `dodgeTNParts()`
+beside it for the breakdown the defender is shown. Base **4**, plus: **+1 per 3 rounds** from a
+BF/FA weapon · **+1 per metre of shotgun spread** · **+ the defender's own wound modifier**.
+
+⚠ **The wound modifier is RAW and is worked in the book's example** — *"a Target Number 5 (4,
+plus one from the Light wound he took earlier)"*. It was missing for a structural reason worth
+knowing: `rollPool` is what folds `woundMod` into a TN, and the dodge path never goes through
+it (`_rollDodge` → `_rollWave`, which takes the TN as given).
+
+⚠ **`woundMod` is NEGATIVE** (`Math.min(0, …)`, as everywhere else) and is **subtracted**.
+Adding it makes wounded defenders harder to hit; there is a mutant for exactly that.
+
+⚠ **Burst rounds are the rounds aimed at THIS target — not `roundsExpended`.** Walking-fire
+waste counts for recoil, the phase cap and the magazine, but travels *between* targets, so it
+is excluded here for the same reason it is excluded from damage.
+
+Shotgun spread is **declared** in the fire dialog (`ShtG` only, default 0) because choke is not
+modelled — see TODO 57. The declaration dialog shows the TN and its breakdown, so the
+dodge-versus-soak trade is made against the real number.
+
 #### ⚠ Resolving the Dodge Test — RAW, and where the code diverges
 
 Two separate questions, easy to conflate. The rulebook answers both in consecutive sentences:
