@@ -1907,7 +1907,7 @@
       ]
     }
   ],
-  "url": "https://github.com/darkbushido/The2ndChumming3e/tree/socket-combat",
-  "manifest": "https://raw.githubusercontent.com/darkbushido/The2ndChumming3e/refs/heads/socket-combat/system.json",
-  "download": "https://github.com/darkbushido/The2ndChumming3e/archive/refs/heads/socket-combat.zip"
+  "url": "https://github.com/darkbushido/The2ndChumming3e/tree/main",
+  "manifest": "https://raw.githubusercontent.com/darkbushido/The2ndChumming3e/refs/heads/main/system.json",
+  "download": "https://github.com/darkbushido/The2ndChumming3e/archive/refs/heads/main.zip"
 }
