@@ -896,10 +896,34 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     }
   }
 
+  /**
+   * Roll a skill from the ITEM sheet, through the same dialog the character sheet uses.
+   *
+   * This used to be `this.item.rollSkill()` with no arguments at all — no TN, no pool, no
+   * dialog — which rolled at a hardcoded TN 4 and could not offer the specialisation tick,
+   * the Karma Pool, or (now) the category-bonus checkbox. Two roll buttons for the same skill
+   * behaved differently depending on which sheet you happened to have open.
+   *
+   * Unified 2026-08-20. `_promptSkillRollOptions` needs an ACTOR, so an unowned item — a world
+   * or compendium skill — still falls through to the plain roll, which is what `rollSkill`
+   * already warns about.
+   */
+  static async _rollSkillViaDialog(item, physicalDice = false) {
+    const actor = item?.actor;
+    if (!actor) return item?.rollSkill?.();
+
+    const { SR3EActorSheet } = await import('./SR3EActorSheet.js');
+    const opts = await SR3EActorSheet._promptSkillRollOptions(actor, item, { physicalDice });
+    if (!opts) return null;
+    // The dialog can retarget to a different skill, exactly as it does from the actor sheet.
+    const chosen = actor.items.get(opts.selectedSkillId) ?? item;
+    return chosen.rollSkill(opts.tn, { ...opts, pool: opts.pool });
+  }
+
   static async _onRoll(ev) {
     const physicalDice = ev?.shiftKey ?? false;
     const type = this.item.type;
-    if (type === 'skill')      return this.item.rollSkill?.();
+    if (type === 'skill')      return SR3EItemSheet._rollSkillViaDialog(this.item, physicalDice);
     if (type === 'firearm')    return this.item.rollWeapon?.({ physicalDice });
     if (type === 'melee')      return this.item.rollWeapon?.({ physicalDice });
     if (type === 'projectile') return this.item.rollWeapon?.({ physicalDice });

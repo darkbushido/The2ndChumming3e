@@ -3872,6 +3872,16 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     // so re-gating here could only drop a bonus derivation already granted. It also now
     // carries cyberware/bioware skill bonuses, which have nothing to do with being an adept.
     const skillBonusDice = actor?.system.derived?.skillBonusDice ?? {};
+    // Category-wide bonuses (Enhanced Articulation, M&M p.66) are OPT-IN per roll rather than
+    // auto-applied, because the rule turns on "physical use of Vehicle Skills" — a judgement
+    // about what the character is doing. So they are offered here as a checkbox instead of
+    // being folded into the pool. See SR3EActor.skillCategoryBonus.
+    const catBonuses = actor?.system.derived?.skillCategoryBonuses ?? [];
+    const catFor     = sk => game.sr3e.SR3EActor.skillCategoryBonus(catBonuses, sk?.system?.category);
+    // ⚠ Vehicle skills start UNTICKED: the book excludes rigging ("driving a car via datajack
+    // ... does not qualify"), and that is the one case the player has to opt into rather than
+    // out of. Everything else starts ticked, since the bonus ordinarily applies.
+    const catDefaultOn = sk => (sk?.system?.category ?? '').trim().toLowerCase() !== 'vehicle skills';
 
     const skills = actor.items
       .filter(i => i.type === 'skill')
@@ -3884,10 +3894,14 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const optionsHtml = skills.map(sk => {
       const s          = sk.system;
       const forceBonus = skillBonusDice[sk.name] ?? 0;
+      const cat        = catFor(sk);
       const pool       = s.rating
         ? Math.max(1, (s.rating ?? 0) + forceBonus)
         : Math.max(1, (s.attributeValue ?? 3));   // defaulting: full attribute (+4 TN at roll)
-      return `<option value="${sk.id}" data-pool="${pool}" data-spec="${s.specialisation ?? ''}" data-default="${s.rating ? '0' : '1'}"${sk.id === defaultId ? ' selected' : ''}>${sk.name}</option>`;
+      const catLbl = cat.dice
+        ? `${cat.labels.join(' + ')} (+${cat.dice} die${cat.dice === 1 ? '' : 's'})`
+        : '';
+      return `<option value="${sk.id}" data-pool="${pool}" data-spec="${s.specialisation ?? ''}" data-default="${s.rating ? '0' : '1'}" data-cat="${cat.dice}" data-cat-lbl="${catLbl}" data-cat-on="${cat.dice && catDefaultOn(sk) ? '1' : '0'}"${sk.id === defaultId ? ' selected' : ''}>${sk.name}</option>`;
     }).join('');
 
     const defSkill   = skills.find(sk => sk.id === defaultId) ?? skills[0];
@@ -3897,31 +3911,54 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ? Math.max(1, (defS.rating ?? 0) + defForce)
       : Math.max(1, (defS.attributeValue ?? 3));   // defaulting: full attribute (+4 TN at roll)
     const defSpec    = defS.specialisation ?? '';
+    const defCat     = catFor(defSkill);
+    const defCatOn   = defCat.dice > 0 && catDefaultOn(defSkill);
+    const defCatLbl  = defCat.dice
+      ? `${defCat.labels.join(' + ')} (+${defCat.dice} die${defCat.dice === 1 ? '' : 's'})`
+      : 'No category bonus';
+    // Only render the row at all when this actor has SOME category bonus; a permanently
+    // disabled checkbox on every sheet would be noise.
+    const anyCat = catBonuses.some(b => (Number(b?.dice) || 0) > 0);
 
-    const onSkillChange = `
-      (function(sel){
-        const opt   = sel.options[sel.selectedIndex];
-        const pool  = parseInt(opt.dataset.pool);
-        const spec  = opt.dataset.spec;
-        const cb    = document.getElementById('sr-spec');
-        const lbl   = document.getElementById('sr-spec-lbl');
-        const poolEl = document.getElementById('sr-pool');
+    // One recompute for all three controls. It used to be duplicated between the skill
+    // dropdown and the specialisation tick, which is exactly how the category bonus would
+    // have ended up in one and not the other.
+    const recompute = `
+      (function(){
+        const sel  = document.getElementById('sr-skill');
+        const opt  = sel.options[sel.selectedIndex];
+        const pool = parseInt(opt.dataset.pool);
+        const spec = opt.dataset.spec;
+
+        const cb  = document.getElementById('sr-spec');
+        const lbl = document.getElementById('sr-spec-lbl');
         cb.disabled = !spec;
         if (!spec) { cb.checked = false; lbl.textContent = 'No specialisation'; }
-        else        { lbl.textContent = spec + ' (+2 dice)'; }
-        poolEl.value = cb.checked ? pool + 2 : pool;
+        else       { lbl.textContent = spec + ' (+2 dice)'; }
+
+        var catDice = 0;
+        const ccb = document.getElementById('sr-cat');
+        if (ccb) {
+          const avail = parseInt(opt.dataset.cat) || 0;
+          const clbl  = document.getElementById('sr-cat-lbl');
+          ccb.disabled = !avail;
+          if (!avail) { ccb.checked = false; clbl.textContent = 'No category bonus for this skill'; }
+          else {
+            clbl.textContent = opt.dataset.catLbl;
+            if (ccb.dataset.skill !== opt.value) ccb.checked = opt.dataset.catOn === '1';
+          }
+          ccb.dataset.skill = opt.value;
+          if (ccb.checked) catDice = avail;
+        }
+
+        document.getElementById('sr-pool').value = pool + (cb.checked ? 2 : 0) + catDice;
         const note = document.getElementById('sr-default-note');
         if (note) note.style.display = opt.dataset.default === '1' ? 'block' : 'none';
-      })(this)
+      })()
     `.replace(/\s+/g, ' ');
 
-    const onSpecChange = `
-      (function(cb){
-        const sel   = document.getElementById('sr-skill');
-        const pool  = parseInt(sel.options[sel.selectedIndex].dataset.pool);
-        document.getElementById('sr-pool').value = cb.checked ? pool + 2 : pool;
-      })(this)
-    `.replace(/\s+/g, ' ');
+    const onSkillChange = recompute;
+    const onSpecChange  = recompute;
 
     return new Promise(resolve => {
       new foundry.applications.api.DialogV2({
@@ -3937,9 +3974,18 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                 ${defSpec ? defSpec + ' (+2 dice)' : 'No specialisation'}
               </label>
             </div>
+            ${anyCat ? `
+            <div class="skill-opts-spec-row">
+              <input type="checkbox" id="sr-cat" data-skill="${defaultId}"
+                     ${defCat.dice ? '' : 'disabled'} ${defCatOn ? 'checked' : ''}
+                     onchange="${recompute}"/>
+              <label id="sr-cat-lbl" for="sr-cat" class="${defCat.dice ? '' : 'skill-opts-muted'}">
+                ${defCatLbl}
+              </label>
+            </div>` : ''}
             <div class="skill-opts-pool-row">
               <span class="skill-opts-pool-label">Dice pool</span>
-              <input type="number" id="sr-pool" class="skill-opts-pool" value="${defPool}" min="1" max="30"/>
+              <input type="number" id="sr-pool" class="skill-opts-pool" value="${defPool + (defCatOn ? defCat.dice : 0)}" min="1" max="30"/>
             </div>
             <div class="skill-opts-tn-row">
               <label class="skill-opts-tn-label" for="sr-tn">Target Number</label>

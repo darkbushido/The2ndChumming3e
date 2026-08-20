@@ -24,11 +24,11 @@ independent.
 | 🔵 In progress | *(none)* |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | *(none — 54 fully closed)* |
-| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 40 · 47 · 48 · 49 · 53 · 57 |
+| 📕 Rules not implemented | 3 · 4 · 30 · 40 · 47 · 48 · 49 · 53 · 57 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | **2** · **5** · 13 · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
+| ✅ Done — kept for the record | **2** · **5** · **10** · 13 · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -1569,10 +1569,16 @@ dedicated calculation code.
   enforces or warns. Under minimal-guardrails a warning, not a block.
 - Confirm the bonus fields are actually consumed, not decorative.
 
-## 10. Support category-wide skill bonuses (Enhanced Articulation)
+## 10. ✅ Category-wide skill bonuses — **DONE 2026-08-20**
 
 **Enhanced Articulation** (M&M p.66) grants `+1 Reaction` (covered by #8) **and 1 extra die
 to Combat, Physical, Technical and Build/Repair skill tests** — currently inexpressible.
+
+⚠ **This item recorded FOUR categories and the book gives FIVE.** M&M p.66 continues: *"The
+bonus **also applies to physical use of Vehicle Skills** — driving a car via datajack or
+piloting a submarine does not qualify for the bonus."* All five exist verbatim in
+`ACTIVE_SKILL_CATEGORIES`, so the mapping is still exact — and the suite asserts that, because
+a category renamed in `config.js` would otherwise stop matching in silence.
 
 `skillBonusDice` is flat and keyed by **skill name** (`SR3EActor.js:1596-1600`), fed from
 `improvedSkillName`/`improvedSkillDice` on three models (`ItemDataModels.js:263-264`,
@@ -1587,12 +1593,55 @@ Enumerating member skills by name breaks silently when a skill is added.
 `SR3EItem._skillBonusDice` (`SR3EActor.js:981`, `:5292`, `:5759`, `:5832`;
 `SR3EItem.js:112`), so anything in the map reaches every roll path and the sheet for free.
 
-**Shape:** add `improvedSkillCategory` beside `improvedSkillName` on the three models;
-expand category → member skills in the map builder at `SR3EActor.js:1596`. Name and
-category bonuses should stack. Check adept powers and Encephalon-style bioware for the same
-pattern.
+### Built differently from the shape sketched above — and better
 
-⚠ Data model changes need a full Foundry restart, not F5. Guard reads with `?? default`.
+The original plan expanded a category into member skill names inside `skillBonusDice`. **That
+map is auto-applied at every roll path**, and its own doc comment says consumers must trust it.
+A category bonus cannot make that promise, because of the Vehicle clause: *"physical use"* is a
+judgement about what the character is doing, not something derivable from the sheet. Driving
+the same car with your hands or through a datajack is the same skill, the same actor and the
+same sheet — and only one earns the die.
+
+**So the maintainer's design was taken instead: a CHECKBOX on the Roll Skill dialog**, shown
+only when the actor has a qualifying item and the selected skill's category matches. The player
+opts in per roll, which is precisely the granularity the rule needs, and the Vehicle case stops
+being a problem the code has to guess at.
+
+- `improvedSkillCategory` (comma-separated) on `CyberwareData`, `BiowareData`, `AdeptPowerData`,
+  reusing the existing `improvedSkillDice` for the amount.
+- `derived.skillCategoryBonuses` — a **separate list**, deliberately not the auto-applied map,
+  so `skillBonusDice` keeps meaning "always applies".
+- `SR3EActor.skillCategoryBonus(bonuses, category)` and `parseSkillCategories(raw)`, both pure.
+- The checkbox **disables rather than vanishing** when you switch to a skill it does not cover,
+  matching how the specialisation tick already behaves, and the whole row is omitted for actors
+  with no category bonus at all.
+
+⚠ **Vehicle skills start UNTICKED, everything else ticked.** Rigging is the exception the book
+calls out, so it is the one case the player opts *into* rather than out of.
+
+⚠ **Commas only when parsing.** `Build/Repair skills` contains a slash; splitting on it too
+tears the category in half and it then matches nothing, silently. Mutant:
+`category-bonus-splits-on-slash-too`.
+
+### The two roll paths were unified on the way
+
+`SR3EItemSheet._onRoll` called `item.rollSkill()` with **no arguments at all** — no TN, no pool,
+no dialog — so rolling a skill from its own item sheet used a hardcoded TN 4 and could offer
+neither the specialisation tick nor the Karma Pool. Two buttons for the same skill behaved
+differently depending on which sheet was open. Both now go through
+`SR3EActorSheet._promptSkillRollOptions`. An unowned item (world or compendium) still falls
+through to the plain roll, which is the case `rollSkill` already warns about.
+
+Also collapsed the dialog's two near-identical inline recompute handlers into one. They had
+already drifted apart, and that is exactly how the new bonus would have ended up applied by the
+specialisation tick but not by the skill dropdown.
+
+**Left to [#8](#8):** the Enhanced Articulation item still ships with empty bonus fields, so a
+GM types the categories in until #8 populates them. This opens the channel; #8 fills it.
+**Left to [#30](#30):** the same power's `+1 Reaction`, which has *"no effect on rigging or
+decking and does not affect the Control Pool"* — conditional in a different way again.
+
+⚠ Data model changes need a full Foundry restart, not F5.
 
 ---
 

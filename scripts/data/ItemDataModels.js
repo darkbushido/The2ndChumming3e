@@ -261,6 +261,12 @@ export class CyberwareData extends foundry.abstract.TypeDataModel {
       // the sheet's bonus column pick it up with no further wiring. The name must match the
       // skill Item's name exactly — the map is keyed by name.
       improvedSkillName: new StringField({ initial: '' }),
+      // Comma-separated skill CATEGORIES, e.g. "Combat skills, Physical skills". One item can
+      // cover several - Enhanced Articulation (M&M p.66) covers five. Unlike
+      // `improvedSkillName`, which is applied automatically at every roll path, a category
+      // bonus is OPT-IN per roll and surfaces as a checkbox on the Roll Skill dialog. See
+      // SR3EActor.skillCategoryBonus for why the two are deliberately kept apart.
+      improvedSkillCategory: new StringField({ initial: '' }),
       improvedSkillDice: new NumberField({ integer: true, initial: 0, min: 0 }),
       essenceCostBase:   new NumberField({ initial: 0, min: 0 }),
       costBase:          new NumberField({ integer: true, initial: 0, min: 0 }),
@@ -293,6 +299,12 @@ export class BiowareData extends foundry.abstract.TypeDataModel {
       // See CyberwareData — same skill-dice channel (Enhanced Articulation, Tailored
       // Pheromones and friends all have this shape).
       improvedSkillName: new StringField({ initial: '' }),
+      // Comma-separated skill CATEGORIES, e.g. "Combat skills, Physical skills". One item can
+      // cover several - Enhanced Articulation (M&M p.66) covers five. Unlike
+      // `improvedSkillName`, which is applied automatically at every roll path, a category
+      // bonus is OPT-IN per roll and surfaces as a checkbox on the Roll Skill dialog. See
+      // SR3EActor.skillCategoryBonus for why the two are deliberately kept apart.
+      improvedSkillCategory: new StringField({ initial: '' }),
       improvedSkillDice: new NumberField({ integer: true, initial: 0, min: 0 }),
       bioIndexBase:     new NumberField({ initial: 0, min: 0 }),
       costBase:         new NumberField({ integer: true, initial: 0, min: 0 }),
@@ -359,6 +371,8 @@ export class AdeptPowerData extends foundry.abstract.TypeDataModel {
       hasLevels:        new BooleanField({ initial: false }),
       level:            new NumberField({ integer: true, initial: 1, min: 1 }),
       improvedSkillName: new StringField({ initial: '' }),
+      // As on cyber/bioware - comma-separated skill CATEGORIES, opt-in per roll.
+      improvedSkillCategory: new StringField({ initial: '' }),
       bookPage:         new StringField({ initial: '' }),
       description:      new HTMLField({ initial: '', required: false }),
       bonusBod:         new NumberField({ integer: true, initial: 0, min: 0 }),

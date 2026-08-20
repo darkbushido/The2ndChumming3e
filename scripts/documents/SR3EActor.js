@@ -1632,6 +1632,18 @@ _prepareCharacter(sys, attr) {
     skillBonusDice[key] = (skillBonusDice[key] ?? 0) + dice;
   };
 
+  // Category-wide bonuses are a SEPARATE list, not entries in the map above. The map is
+  // applied automatically everywhere; these are offered as a checkbox on the Roll Skill
+  // dialog, because the rule they exist for (Enhanced Articulation, M&M p.66) has a clause
+  // — "physical use of Vehicle Skills" — that no amount of sheet data can settle.
+  // See SR3EActor.skillCategoryBonus.
+  const skillCategoryBonuses = [];
+  const _addSkillCategory = (label, raw, dice) => {
+    const categories = SR3EActor.parseSkillCategories(raw);
+    if (!categories.length || !dice) return;
+    skillCategoryBonuses.push({ label, dice, categories });
+  };
+
   // Cyber/bio augmentation bonuses — summed from all cyberware and bioware items
   const cyberBonus = { bod: 0, qui: 0, str: 0, cha: 0, int: 0, wil: 0, rea: 0, initDice: 0 };
   for (const item of (this.items ?? [])) {
@@ -1649,6 +1661,7 @@ _prepareCharacter(sys, attr) {
     // bonus fields are still being imported — but the channel is open, so an entry that
     // gains one starts working with no change to any roll path or to the sheet.
     _addSkillDice(s.improvedSkillName, s.improvedSkillDice ?? 0);
+    _addSkillCategory(item.name, s.improvedSkillCategory, s.improvedSkillDice ?? 0);
   }
 
   // Adept power bonuses — summed from all adeptpower items
@@ -1668,6 +1681,7 @@ _prepareCharacter(sys, attr) {
       adeptBonus.initDice += s.bonusInitDice ?? 0;
       // Improved Ability: a levelled power grants dice equal to its level, otherwise 1.
       _addSkillDice(s.improvedSkillName, s.hasLevels ? (s.level ?? 1) : 1);
+      _addSkillCategory(item.name, s.improvedSkillCategory, s.hasLevels ? (s.level ?? 1) : 1);
     }
   }
 
@@ -1808,6 +1822,8 @@ _prepareCharacter(sys, attr) {
     cyberBonus,
     adeptBonus,
     skillBonusDice,
+    // Opt-in, offered per roll — NOT auto-applied like skillBonusDice above.
+    skillCategoryBonuses,
     // Legacy alias. `improvedAbility` named an adept-only map; the same data is now fed by
     // cyberware and bioware too, so `skillBonusDice` is the name to read. Same object, not
     // a copy — kept so any world macro still referencing the old key keeps working.
@@ -4700,6 +4716,63 @@ _prepareCharacter(sys, attr) {
     if (isMelee) return Math.max(2, Math.trunc(Number(strength) || 0));
     const p = Math.max(0, Math.trunc(Number(power) || 0));
     return Math.max(2, ammoType === 'gel' ? p : Math.floor(p / 2));
+  }
+
+  /**
+   * Skill-CATEGORY bonus dice available for one skill — **pure**.  · *M&M p.66*
+   *
+   * Enhanced Articulation is the case this exists for:
+   *
+   *   > "Possessors roll an additional die when making any Success Test involving Combat,
+   *   >  Physical, Technical and Build/Repair Skills. The bonus **also applies to physical use
+   *   >  of Vehicle Skills** — driving a car via datajack or piloting a submarine does not
+   *   >  qualify for the bonus."
+   *
+   * ⚠ **FIVE categories, not four.** TODO 10 recorded four and missed the Vehicle sentence;
+   * all five exist verbatim in `ACTIVE_SKILL_CATEGORIES`, so the mapping is exact.
+   *
+   * ⚠ **This is deliberately NOT folded into `skillBonusDice`.** That map is applied
+   * automatically at every roll path, and its own doc says consumers must trust it. A category
+   * bonus cannot make that promise: the Vehicle clause turns on *"physical use"*, which is a
+   * judgement about what the character is doing, not something derivable from the sheet. So a
+   * category bonus is **opt-in per roll** — a checkbox on the Roll Skill dialog — and lives in
+   * its own derived list. Keeping them apart is what lets `skillBonusDice` keep meaning
+   * "always applies".
+   *
+   * Matching is case-insensitive and trimmed, because the category is free text on the item.
+   *
+   * @param {Array<{label?: string, dice?: number, categories?: string[]}>} bonuses
+   *        `actor.system.derived.skillCategoryBonuses`
+   * @param {string} category  the skill's category, e.g. 'Combat skills'
+   * @returns {{dice: number, labels: string[]}} total dice offered, and what to call them
+   */
+  static skillCategoryBonus(bonuses, category) {
+    const want = String(category ?? '').trim().toLowerCase();
+    if (!want) return { dice: 0, labels: [] };
+
+    let dice = 0;
+    const labels = [];
+    for (const b of (Array.isArray(bonuses) ? bonuses : [])) {
+      const n = Math.trunc(Number(b?.dice) || 0);
+      if (n <= 0) continue;
+      const cats = (Array.isArray(b?.categories) ? b.categories : [])
+        .map(c => String(c ?? '').trim().toLowerCase());
+      if (!cats.includes(want)) continue;
+      dice += n;
+      if (b.label) labels.push(b.label);
+    }
+    return { dice, labels };
+  }
+
+  /**
+   * Split an item's free-text `improvedSkillCategory` into category names.
+   * Commas only — category names themselves contain a slash ("Build/Repair skills").
+   */
+  static parseSkillCategories(raw) {
+    return String(raw ?? '')
+      .split(',')
+      .map(c => c.trim())
+      .filter(Boolean);
   }
 
   static dodgeOutcome(dodgeHits, attackHits) {

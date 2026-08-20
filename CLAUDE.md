@@ -1042,6 +1042,30 @@ the attacker."* Net 0 → base Damage Level, defender resists. `SR3EActor.meleeO
 ⚠ The staging gate is unconditional, **not** `net > 0`: gating on that posts no soak button and
 deletes the attack. ⚠ Same strictness trap as the ranged dodge tie, pointing the other way.
 
+### Skill bonus dice — two channels, and they are NOT interchangeable
+
+| | `derived.skillBonusDice` | `derived.skillCategoryBonuses` |
+|---|---|---|
+| keyed by | skill **name** | skill **category** |
+| applied | **automatically**, every roll path | **opt-in**, a checkbox on the Roll Skill dialog |
+| read via | `SR3EItem._skillBonusDice` | `SR3EActor.skillCategoryBonus` |
+| fed by | `improvedSkillName` + `improvedSkillDice` | `improvedSkillCategory` (comma-separated) + `improvedSkillDice` |
+
+⚠ **Do not fold the second into the first.** `skillBonusDice` promises "always applies" and
+consumers trust it. A category bonus cannot promise that: Enhanced Articulation (M&M p.66)
+covers *"physical use of Vehicle Skills"* but **not** *"driving a car via datajack"* — the same
+skill, actor and sheet, differing only in what the character is doing. Hence a per-roll
+checkbox, on `SR3EActorSheet._promptSkillRollOptions`.
+
+⚠ **FIVE categories, not four** — the Vehicle sentence is easy to miss and TODO 10 missed it.
+⚠ **Vehicle skills start UNTICKED**, everything else ticked: rigging is the exception, so it is
+what the player opts into.
+⚠ **Parse the category field on COMMAS ONLY** — `Build/Repair skills` contains a slash.
+
+Both skill-roll paths go through the same dialog: the character sheet's skill row, and the
+**skill item sheet's own roll button** (unified 2026-08-20; it previously rolled at a hardcoded
+TN 4 with no dialog at all).
+
 ### Knockdown  · *SR3 p.124, p.116*
 
 A **third stage**, after the soak: `.sr-knockdown-btn` on the soak result card, gated with

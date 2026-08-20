@@ -313,4 +313,42 @@ export const MUTANTS = [
       return Math.max(2, Math.floor(Math.max(0, Math.trunc(Number(power) || 0)) / 2));
     },
   },
+
+  {
+    id:     'category-bonus-splits-on-slash-too',
+    suite:  'skill-category-bonus',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'parseSkillCategories',
+    was:    'the field is split on COMMAS ONLY - "Build/Repair skills" contains a slash, so '
+          + 'splitting on it as well tears that category in half and it silently matches '
+          + 'nothing, with no error anywhere',
+    impl:   raw => String(raw ?? '').split(/[,/]/).map(c => c.trim()).filter(Boolean),
+  },
+  {
+    id:     'category-bonus-excludes-vehicle-skills',
+    suite:  'skill-category-bonus',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'skillCategoryBonus',
+    was:    'M&M p.66 covers FIVE categories - the Vehicle sentence is easy to miss, and TODO '
+          + '10 did miss it. The bonus is OFFERED for Vehicle skills and the player judges '
+          + 'whether the use was physical; dropping the category removes the choice entirely',
+    impl:   (bonuses, category) => {
+      const want = String(category ?? '').trim().toLowerCase();
+      if (!want || want === 'vehicle skills') return { dice: 0, labels: [] };
+      let dice = 0;
+      const labels = [];
+      for (const b of (Array.isArray(bonuses) ? bonuses : [])) {
+        const n = Math.trunc(Number(b?.dice) || 0);
+        if (n <= 0) continue;
+        const cats = (Array.isArray(b?.categories) ? b.categories : [])
+          .map(c => String(c ?? '').trim().toLowerCase());
+        if (!cats.includes(want)) continue;
+        dice += n;
+        if (b.label) labels.push(b.label);
+      }
+      return { dice, labels };
+    },
+  },
 ];
