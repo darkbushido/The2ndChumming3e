@@ -26,7 +26,7 @@ independent.
 | 🔴 Confirmed bugs, still open | *(none — 54 fully closed)* |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 40 · 41 · 47 · 48 · 49 · 53 · 57 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
-| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
+| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 · 58 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
 | ✅ Done — kept for the record | **2** · **5** · 13 · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -3550,3 +3550,68 @@ width would penalise a point-blank shotgun that has not spread at all.
 Foundry restart — plus a shot-vs-slug distinction (shot rounds use the flechette rules, so
 `ammoType` is close but not the same question), and then all three effects derive from the
 range that `_measureDistance` already computes on every shot.
+
+---
+
+<a id="58"></a>
+## 58. The GM modifier windows need a free SITUATIONAL row — a number and a reason
+
+**Requested 2026-08-20.** Every row in the GM's TN window is a rule transcribed from a table.
+There is no way to apply *"you are shooting through a doorway at someone leaning out of a
+moving van"* — the GM either abandons the window and types a raw TN, or silently mis-uses a
+row that means something else.
+
+Both are bad in the same way: **the window stops being a record of why the number is what it
+is.** That record is the reason the window exists rather than a plain input.
+
+### What to add
+
+One row, in **both** windows:
+
+| | Ranged (`SR3E_RANGED_MODIFIERS`) | Melee (`SR3E_MELEE_MODIFIERS`) |
+|---|---|---|
+| number | signed, roughly −4…+8 | signed, **and it must say WHICH SIDE** |
+| reason | free text, shown on the result card | same |
+
+⚠ **Melee is not the same control.** `sumMeleeModifiers` returns an `{atk, def}` **pair of
+deltas**, not a finished number, and most p.123 rows move both at once in opposite directions.
+A situational row therefore needs a side — attacker, defender, or both — in the shape of the
+existing `side` / `sideOpposed` kinds. A single number silently applied to the attacker would
+be wrong half the time.
+
+### Where it plugs in
+
+- A new row **kind**, alongside the existing `mod` / `per` / `select`+`value` (ranged) and
+  `diff` / `perAtk` / `side` / `sideOpposed` / `visibility` (melee). Rendered by `renderRow` in
+  `_promptGMAttackWindow` and its melee twin.
+- `sumModifiers` already handles rows that carry their own resolved number — the `value: true`
+  branch, read **before** the falsy guard because 0 is a real answer. A situational row is the
+  same shape, so it should reuse that branch rather than adding a third summing path.
+- Group: **Conditions** for ranged. It is a judgement, not a guess from gear, so it must not
+  land in the `gear` group, which is captioned as things the system inferred.
+
+### The reason text is the point, and it has to survive
+
+The number alone is already achievable by typing a TN. What does not exist is the **why**, so
+the text has to reach the result card, not just the dialog:
+
+- carried out of the window in the returned object next to `adjudicated`
+- carried through `sr3e.attack.negotiate` / `sr3e.melee.negotiate`
+- rendered on the attack card near the TN, so the table can see *"+2 — firing through a
+  doorway"* rather than an unexplained 6
+
+⚠ **If it explodes, it must survive the wave.** Anything read off `state` on the final wave
+has to be in the explosion carry payload — see `tests/explosion-carry.test.mjs`, which will
+fail with the missing field name if it is forgotten. That test exists because seven fields were
+being dropped exactly this way.
+
+⚠ **Sanitise before rendering.** Chat cards interpolate into HTML; a GM typing `<` should not
+be able to break the card. Nothing else on these cards takes free text, so this is the first
+place it matters.
+
+### Deliberately not
+
+- **Not a modifier library.** No saved presets, no per-world list of house modifiers. One row,
+  typed each time — the whole point is the cases the tables do not cover.
+- **Not a replacement for the typed-TN escape.** With `gmApprovesTN` off there is no window at
+  all and the TN field stays editable; that path is unaffected.
