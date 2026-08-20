@@ -2355,6 +2355,47 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Gated with `_isDecider`, not `_mine`: this button ROLLS, so exactly one user owns it.
   // The payload carries `targetActorId` = the defender, which `_payloadActorId` resolves;
   // `attackerActorId` is deliberately never inherited from.
+  // Knockdown Test (SR3 p.124). `_isDecider` — it rolls, so exactly one user owns it.
+  html.querySelectorAll('.sr-knockdown-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'knockdown', i)) return;
+    try {
+      if (!_isDecider(JSON.parse(btn.dataset.payload ?? '{}'))) {
+        return _denyBtn(btn, 'Only the target (or the GM) makes this Knockdown Test.');
+      }
+    } catch { /* unreadable payload — leave the button alone */ }
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'knockdown', i)) return;
+      btn.disabled    = true;
+      btn.textContent = '⏳ Testing…';
+      await SR3EActor.handleKnockdown(btn);
+    });
+  });
+
+  // Mark prone. `_mine` rather than `_isDecider`: this only toggles a status effect, and the
+  // GM applying it for a player is the ordinary case — the same reasoning as damage assignment.
+  html.querySelectorAll('.sr-prone-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'prone', i)) return;
+    try {
+      if (!_mine(JSON.parse(btn.dataset.payload ?? '{}'))) {
+        return _denyBtn(btn, 'Only the target\u2019s owner (or the GM) can mark them prone.');
+      }
+    } catch { /* unreadable payload — leave the button alone */ }
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'prone', i)) return;
+      const { actorId } = JSON.parse(btn.dataset.payload ?? '{}');
+      const actor = game.actors.get(actorId);
+      if (!actor) return;
+      // `prone` is a CORE status, already in CONFIG.statusEffects — no custom id needed.
+      await actor.toggleStatusEffect('prone', { active: true });
+      btn.disabled    = true;
+      btn.textContent = '🔻 Prone';
+    });
+  });
+
   html.querySelectorAll('.sr-fd-dodge-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'fddodge', i)) return;
     try {

@@ -2908,6 +2908,8 @@ _prepareCharacter(sys, attr) {
         // Dodge: without these the final wave builds no result AND no soak button, so the
         // attack simply stops — no Damage Resistance Test, no damage, no error. Unreachable
         // until the p.113 modifiers landed and a dodge TN could exceed 6.
+        isKnockdownRoll:    state.isKnockdownRoll    ?? false,
+        knockdownContext:   state.knockdownContext   ?? null,
         isFullDefenseDodge: state.isFullDefenseDodge ?? false,
         fullDefenseContext: state.fullDefenseContext ?? null,
         isDodgeRoll:        state.isDodgeRoll        ?? false,
@@ -3021,6 +3023,25 @@ _prepareCharacter(sys, attr) {
             </div>`;
         }
         fdDodgeHtml = html;
+      }
+    }
+
+    // Knockdown Test resolved (p.124). Posts its own result card rather than inlining,
+    // because the prone toggle belongs with the announcement.
+    if (allDone && state.isKnockdownRoll && state.knockdownContext) {
+      const kc  = state.knockdownContext;
+      const tgt = game.actors.get(kc.targetActorId ?? kc.actorId);
+      if (tgt) {
+        // `needed` was settled on the dialog — it is editable, because which wound level
+        // drives the threshold is ambiguous in the book. See knockdownOutcome.
+        const out = SR3EActor.knockdownOutcome({ level: kc.level, successes });
+        const eff = { ...out };
+        if (!out.automatic && Number.isFinite(kc.needed)) {
+          eff.knockedDown = successes === 0;
+          eff.staggered   = successes > 0 && successes < kc.needed;
+          eff.standing    = successes >= kc.needed;
+        }
+        await SR3EActor._postKnockdownResult(tgt, eff);
       }
     }
 
@@ -3138,11 +3159,30 @@ _prepareCharacter(sys, attr) {
         const soakTrack      = sp.isStun ? 'stun' : 'physical';
         const soakTargetName = game.actors.get(sp.actorId)?.name ?? 'Target';
         const soakAssignPayload = JSON.stringify({ actorId: sp.actorId, track: soakTrack, boxes: soakBoxes }).replace(/'/g, '&#39;');
+        // Knockdown (p.124) is a THIRD stage, after damage resolves. Offered only when a
+        // wound actually lands — fully soaked means there is no wound level to test against.
+        const kdPayload = JSON.stringify({
+          actorId:         sp.actorId,
+          targetActorId:   sp.actorId,
+          attackerActorId: sp.attackerActorId ?? null,
+          level:           finalLevel,
+          power:           sp.stagedPower,
+          isMelee:         sp.isMelee ?? false,
+          ammoType:        sp.ammoType ?? null,
+        }).replace(/'/g, '&#39;');
+
         soakResultHtml = `
           <div class="sr-soak-result">🛡 ${resultLine}</div>
           <div class="sr-soak-action">
             <button class="sr-assign-damage-btn" data-payload='${soakAssignPayload}'>
               🩸 Assign ${SR3EActor._woundName(finalLevel)} ${trackLabel} Wound to ${soakTargetName}
+            </button>
+          </div>
+          <div class="sr-soak-action">
+            <button class="sr-knockdown-btn" data-payload='${kdPayload}'>
+              ${finalLevel === 'D'
+                ? `💥 ${soakTargetName} — Deadly wound: knocked down automatically (p.124)`
+                : `💥 ${soakTargetName} — Knockdown Test`}
             </button>
           </div>
         `;
@@ -4572,6 +4612,96 @@ _prepareCharacter(sys, attr) {
     return { blocked, net, cleanMiss, remaining, dealsDamage: false };
   }
 
+  /**
+   * Knockdown — the whole rule, **pure**.  · *SR3 p.124*
+   *
+   *   > "Characters struck in ranged or melee combat may be knocked back or possibly down by
+   *   >  the blow. When struck, the character must make a Body Test. Against ranged attacks,
+   *   >  the target is equal to one-half the Power of the attack, rounding down. Against melee
+   *   >  attacks, the target number is the opponent's Strength…
+   *   >
+   *   >  If the character rolls no successes, he falls down (prone). If he rolls successes,
+   *   >  but does not generate enough for his wound level, the character remains standing but
+   *   >  takes a step or two away from the direction of the attack (approximately one meter)…
+   *   >  If for some reason he cannot step backward (for example, he is up against a wall), he
+   *   >  fights at a +2 modifier to his target numbers until he is able to move away.
+   *   >  Characters who take a Deadly wound are always knocked down."
+   *
+   * Knockdown Table — minimum successes to stay standing: **L 2 · M 3 · S 4 · D never**.
+   * Verified against p.124 on 2026-08-20; the table extracts cleanly and the prose confirms it
+   * independently (*"a character who has taken a Moderate wound must roll at least 3
+   * successes"*), so the old warning about a scrambled transcription does not apply.
+   *
+   * ⚠ **A DEADLY WOUND SKIPS THE TEST ENTIRELY.** Not "needs a very high roll" — there is no
+   * number that saves you, which is why the table prints NA rather than 5. Rolling anyway and
+   * comparing against an impossible threshold gives the same answer today and stops doing so
+   * the moment anyone adds a bonus to the test.
+   *
+   * ⚠ **WHICH wound level is genuinely ambiguous in the book**, and this takes the per-attack
+   * reading. p.124 says both *"how severely damaged the character is"* / *"does not generate
+   * enough for **his wound level**"* (the character's condition, cumulative) and *"has taken a
+   * Moderate wound"* / *"Characters who **take** a Deadly wound"* (this blow). They agree only
+   * for an unhurt target. The per-attack reading wins here for a system-specific reason:
+   * damage is never applied automatically, so when this card is built the new wound is not on
+   * the sheet yet and the cumulative figure would ignore the hit that caused the test. The
+   * threshold is left **editable** on the card, and the target's current wound level is shown
+   * beside it, so a table reading it the other way changes one number.
+   *
+   * @param {object} o
+   * @param {string} o.level      damage level actually taken: 'L' | 'M' | 'S' | 'D'
+   * @param {number} [o.successes] Body Test successes
+   * @param {boolean} [o.tested=true] false when no test has been rolled yet
+   * @returns {{needed: number|null, automatic: boolean, knockedDown: boolean,
+   *            staggered: boolean, standing: boolean}}
+   */
+  static knockdownOutcome({ level, successes = 0, tested = true } = {}) {
+    const NEEDED = { L: 2, M: 3, S: 4 };
+    const lvl    = String(level ?? '').toUpperCase();
+
+    // Deadly is not a hard test, it is no test: "always knocked down".
+    if (lvl === 'D') {
+      return { needed: null, automatic: true, knockedDown: true, staggered: false, standing: false };
+    }
+
+    const needed = NEEDED[lvl] ?? null;
+    // An unknown or absent level means nothing was taken — no wound, no knockdown.
+    if (needed === null || !tested) {
+      return { needed, automatic: false, knockedDown: false, staggered: false, standing: true };
+    }
+
+    const hits = Math.max(0, Math.trunc(Number(successes) || 0));
+    if (hits === 0)      return { needed, automatic: false, knockedDown: true,  staggered: false, standing: false };
+    if (hits < needed)   return { needed, automatic: false, knockedDown: false, staggered: true,  standing: true };
+    return { needed, automatic: false, knockedDown: false, staggered: false, standing: true };
+  }
+
+  /**
+   * Target number for the Knockdown Body Test — **pure**.  · *SR3 p.124, p.116*
+   *
+   * ⚠ **Ranged uses HALF the attack's POWER — not the soak TN.** The soak rolls against
+   * Power minus armour; knockdown ignores armour entirely and halves the raw Power.
+   *
+   * ⚠ **Melee uses the opponent's STRENGTH ATTRIBUTE**, not the weapon's damage code — even
+   * though melee damage is usually written as (STR)M and the two often coincide.
+   *
+   * ⚠ **Gel rounds are the exception, and they are not halved** (p.116): *"against weapons
+   * firing gel rounds the target number for the Body Test to resist knockdown is against the
+   * full Power of the attack"*. Gel already carries an armour exception through the same
+   * `ammoType`, so both live off one field.
+   *
+   * @param {object} o
+   * @param {number} [o.power]        the attack's Power — ranged
+   * @param {number} [o.strength]     the attacker's Strength — melee
+   * @param {boolean} [o.isMelee]
+   * @param {string} [o.ammoType]
+   * @returns {number} a target number of at least 2
+   */
+  static knockdownTN({ power = 0, strength = 0, isMelee = false, ammoType = null } = {}) {
+    if (isMelee) return Math.max(2, Math.trunc(Number(strength) || 0));
+    const p = Math.max(0, Math.trunc(Number(power) || 0));
+    return Math.max(2, ammoType === 'gel' ? p : Math.floor(p / 2));
+  }
+
   static dodgeOutcome(dodgeHits, attackHits) {
     const d = Math.max(0, Number(dodgeHits) || 0);
     const a = Math.max(0, Number(attackHits) || 0);
@@ -4620,6 +4750,154 @@ _prepareCharacter(sys, attr) {
       isSoakRoll:        false,
       isDodgeRoll:       true,
       dodgePayload:      dodgeContext,
+    });
+  }
+
+  /**
+   * The Knockdown Test — the target's Body Test after damage resolves.  · *SR3 p.124*
+   *
+   * A third stage, so a separate card and a separate click. Gated to the defender: it ROLLS.
+   */
+  static async handleKnockdown(btn) {
+    const ctx    = JSON.parse(btn.dataset.payload);
+    const target = game.actors.get(ctx.targetActorId ?? ctx.actorId);
+    if (!target) return;
+
+    const level = String(ctx.level ?? '').toUpperCase();
+
+    // Deadly skips the test outright — there is no number that saves you.
+    if (level === 'D') {
+      const auto = SR3EActor.knockdownOutcome({ level: 'D' });
+      await SR3EActor._postKnockdownResult(target, auto);
+      return;
+    }
+
+    const attacker  = ctx.attackerActorId ? game.actors.get(ctx.attackerActorId) : null;
+    const atkStr    = attacker?.system?.attributes?.strength?.value ?? 0;
+    const tnDefault = SR3EActor.knockdownTN({
+      power: ctx.power, strength: atkStr, isMelee: ctx.isMelee, ammoType: ctx.ammoType,
+    });
+    const needed  = SR3EActor.knockdownOutcome({ level, tested: false }).needed ?? 2;
+    const bodyDef = target.system?.attributes?.body?.value ?? 1;
+
+    // The target's CURRENT wound level, shown for context: p.124 can be read as using it
+    // rather than the wound just taken, so the threshold is editable and this is the number a
+    // table reading it that way would type. See knockdownOutcome for the two quotations.
+    const curLevel = SR3EActor._currentWoundLevel(target);
+    const curNeed  = curLevel
+      ? (SR3EActor.knockdownOutcome({ level: curLevel, tested: false }).needed ?? null) : null;
+
+    const tnNote = ctx.isMelee
+      ? `Melee — TN is the opponent's Strength${attacker ? ` (${attacker.name} ${atkStr})` : ''}.`
+      : ctx.ammoType === 'gel'
+        ? `Gel rounds — TN is the <strong>full</strong> Power ${ctx.power} (p.116), not half.`
+        : `Ranged — TN is half the attack's Power (${ctx.power} ÷ 2, rounding down).`;
+
+    const curNote = (curNeed && curLevel !== level)
+      ? ` ${target.name} is currently at <strong>${SR3EActor._woundName(curLevel)}</strong> — a table reading p.124 as overall condition would use <strong>${curNeed}</strong>.`
+      : '';
+
+    let go = false, bodyDice = bodyDef, tn = tnDefault, need = needed;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `${target.name} — Knockdown Test` },
+      content: `
+        <p style="margin-bottom:8px;font-size:12px">
+          ${target.name} took a <strong>${SR3EActor._woundName(level)}</strong> wound and must stay on their feet.
+        </p>
+        <p style="margin-bottom:8px;font-size:11px;color:var(--sr-muted)">${tnNote}</p>
+        <label style="display:block;margin-bottom:6px">Body dice
+          <input type="number" id="kd-body" value="${bodyDef}" min="1" max="50" style="width:60px;margin-left:6px"/>
+        </label>
+        <label style="display:block;margin-bottom:6px">Target number
+          <input type="number" id="kd-tn" value="${tnDefault}" min="2" max="30" style="width:60px;margin-left:6px"/>
+        </label>
+        <label style="display:block;margin-bottom:4px">Successes needed to stay standing
+          <input type="number" id="kd-need" value="${needed}" min="1" max="10" style="width:60px;margin-left:6px"/>
+        </label>
+        <p style="margin:0;font-size:11px;color:var(--sr-amber)">
+          Defaulted from the wound just taken.${curNote}
+        </p>`,
+      buttons: [
+        { label: '🎲 Roll Body', action: 'go', default: true,
+          callback: (_e, _b, d) => {
+            go = true;
+            bodyDice = Math.max(1, parseInt(d.element.querySelector('#kd-body')?.value) || bodyDef);
+            tn       = Math.max(2, parseInt(d.element.querySelector('#kd-tn')?.value) || tnDefault);
+            need     = Math.max(1, parseInt(d.element.querySelector('#kd-need')?.value) || needed);
+          } },
+        { label: 'Skip', action: 'skip' },
+      ],
+    });
+    if (!go) return;
+
+    const dice = target._rollWave(bodyDice, tn, true);
+    const ones = dice.filter(d => d.isOne).length;
+
+    await target._postWaveCard({
+      actorId: target.id,
+      label:   `💥 ${target.name} — Knockdown Test (TN ${tn}, ${need} to stay up)`,
+      tn,
+      pool:    bodyDice,
+      wave:    0,
+      dice,
+      ones,
+      glitch:  SR3EActor.isRuleOfOne(ones, bodyDice),
+      isWeaponRoll:     false,
+      isKnockdownRoll:  true,
+      knockdownContext: { ...ctx, needed: need },
+    });
+  }
+
+  /**
+   * The wound level a character's condition monitor currently sits at, or null if unhurt.
+   * Context only — the Knockdown threshold defaults from the wound just taken.
+   */
+  static _currentWoundLevel(actor) {
+    const w = actor?.system?.wounds ?? {};
+    const worst = Math.max(w.physical?.value ?? 0, w.stun?.value ?? 0);
+    if (worst >= 10) return 'D';
+    if (worst >= 6)  return 'S';
+    if (worst >= 3)  return 'M';
+    if (worst >= 1)  return 'L';
+    return null;
+  }
+
+  /** Announce a knockdown outcome, with a prone toggle when they went down. */
+  static async _postKnockdownResult(target, out) {
+    const proneP = JSON.stringify({ actorId: target.id }).replace(/'/g, '&#39;');
+    let body;
+    if (out.automatic) {
+      body = `<div class="sr-melee-result sr-melee-win">
+                💥 <strong>Deadly wound — ${target.name} is knocked down automatically.</strong>
+                <span style="color:var(--sr-dim)">No test is possible (p.124).</span>
+              </div>`;
+    } else if (out.knockedDown) {
+      body = `<div class="sr-melee-result sr-melee-win">
+                💥 No successes — <strong>${target.name} falls prone.</strong>
+              </div>`;
+    } else if (out.staggered) {
+      body = `<div class="sr-dodge-result sr-dodge-fail">
+                ↩ ${target.name} stays up but is driven back about a metre.
+                <div style="font-size:11px;color:var(--sr-amber);margin-top:2px">
+                  If they cannot step back — against a wall, say — they fight at
+                  <strong>+2 to their target numbers</strong> until they can move away (p.124).
+                </div>
+              </div>`;
+    } else {
+      body = `<div class="sr-dodge-result sr-dodge-success">
+                ✅ ${target.name} keeps their feet.
+              </div>`;
+    }
+
+    const proneBtn = (out.knockedDown || out.automatic)
+      ? `<div class="sr-soak-action">
+           <button class="sr-prone-btn" data-payload='${proneP}'>🔻 Mark ${target.name} prone</button>
+         </div>`
+      : '';
+
+    await ChatMessage.create({
+      content: `<div class="sr-roll-card">${body}${proneBtn}</div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
   }
 

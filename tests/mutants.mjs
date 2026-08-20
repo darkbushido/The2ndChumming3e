@@ -253,4 +253,64 @@ export const MUTANTS = [
   // collapsed the child's exit 2 into 1, so `mutate.mjs` never saw a harness error and
   // reported a mutant that had NEVER RUN as killed, with "0 assertions caught it" as the only
   // clue. Both ends are now guarded — see the comments in those two files.
+
+  {
+    id:     'deadly-knockdown-is-just-a-hard-test',
+    suite:  'knockdown',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'knockdownOutcome',
+    was:    'p.124 prints NA for Deadly, not 5 - "characters who take a Deadly wound are '
+          + 'always knocked down". Treating it as a very hard threshold gives the same answer '
+          + 'today and stops doing so the moment anything grants a bonus to the Body Test',
+    impl:   ({ level, successes = 0, tested = true } = {}) => {
+      const NEEDED = { L: 2, M: 3, S: 4, D: 5 };
+      const lvl = String(level ?? '').toUpperCase();
+      const needed = NEEDED[lvl] ?? null;
+      if (needed === null || !tested) {
+        return { needed, automatic: false, knockedDown: false, staggered: false, standing: true };
+      }
+      const hits = Math.max(0, Math.trunc(Number(successes) || 0));
+      if (hits === 0)    return { needed, automatic: false, knockedDown: true,  staggered: false, standing: false };
+      if (hits < needed) return { needed, automatic: false, knockedDown: false, staggered: true,  standing: true };
+      return { needed, automatic: false, knockedDown: false, staggered: false, standing: true };
+    },
+  },
+  {
+    id:     'knockdown-zero-successes-only-staggers',
+    suite:  'knockdown',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'knockdownOutcome',
+    was:    'p.124 makes ZERO successes specifically the prone case - "if the character rolls '
+          + 'no successes, he falls down" - so staggering needs successes > 0, not merely '
+          + 'fewer than needed; folding them together means nobody ever hits the floor',
+    impl:   ({ level, successes = 0, tested = true } = {}) => {
+      const NEEDED = { L: 2, M: 3, S: 4 };
+      const lvl = String(level ?? '').toUpperCase();
+      if (lvl === 'D') {
+        return { needed: null, automatic: true, knockedDown: true, staggered: false, standing: false };
+      }
+      const needed = NEEDED[lvl] ?? null;
+      if (needed === null || !tested) {
+        return { needed, automatic: false, knockedDown: false, staggered: false, standing: true };
+      }
+      const hits = Math.max(0, Math.trunc(Number(successes) || 0));
+      if (hits < needed) return { needed, automatic: false, knockedDown: false, staggered: true, standing: true };
+      return { needed, automatic: false, knockedDown: false, staggered: false, standing: true };
+    },
+  },
+  {
+    id:     'knockdown-gel-rounds-halve-like-everything-else',
+    suite:  'knockdown',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'knockdownTN',
+    was:    'gel rounds resist knockdown against the FULL Power, not half (p.116) - the round '
+          + 'is easy to soak and hard to stay upright against, which is the whole point of it',
+    impl:   ({ power = 0, strength = 0, isMelee = false } = {}) => {
+      if (isMelee) return Math.max(2, Math.trunc(Number(strength) || 0));
+      return Math.max(2, Math.floor(Math.max(0, Math.trunc(Number(power) || 0)) / 2));
+    },
+  },
 ];

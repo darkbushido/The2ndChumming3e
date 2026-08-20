@@ -1042,6 +1042,38 @@ the attacker."* Net 0 → base Damage Level, defender resists. `SR3EActor.meleeO
 ⚠ The staging gate is unconditional, **not** `net > 0`: gating on that posts no soak button and
 deletes the attack. ⚠ Same strictness trap as the ranged dodge tie, pointing the other way.
 
+### Knockdown  · *SR3 p.124, p.116*
+
+A **third stage**, after the soak: `.sr-knockdown-btn` on the soak result card, gated with
+`_isDecider` (it rolls). Not offered when damage is completely soaked. The target rolls **Body**;
+`SR3EActor.knockdownOutcome` and `knockdownTN` are the pure rules.
+
+| Wound taken | Successes to stay standing |
+|---|---|
+| Light | 2 |
+| Moderate | 3 |
+| Serious | 4 |
+| **Deadly** | **no test — always knocked down** |
+
+Zero successes → **prone**; below the threshold → driven back ~1m; at or above → standing.
+
+⚠ **Deadly skips the test, it is not a hard test** — the table prints NA, not 5.
+⚠ **Zero successes is specifically prone**, not "fewer than needed"; staggering requires
+`successes > 0`, or nobody ever hits the floor.
+⚠ **TN: ranged = ⌊Power ÷ 2⌋ of the attack's POWER (armour is ignored — it is NOT the soak
+TN); melee = the opponent's STRENGTH ATTRIBUTE (not the weapon's damage code); gel rounds =
+the FULL Power** (p.116), so the easiest round to soak is the hardest to stay upright against.
+⚠ **Which wound level drives the threshold is ambiguous in the book** — p.124 says both
+*"his wound level"* (cumulative) and *"take a Deadly wound"* (this blow). The threshold defaults
+from **this attack** and is **editable**, with the target's current level shown beside it,
+because damage is never auto-applied and the cumulative figure would ignore the hit that caused
+the test.
+
+The result card offers **🔻 Mark prone** (core Foundry status), gated with `_mine` — it only
+toggles a status, so a GM doing it for a player is ordinary. **Not modelled:** the +2 TN for a
+staggered character who cannot step back; that is a positional judgement, stated on the card for
+the GM to apply.
+
 ### Called shots (SR3 p.114)
 Available on **all single-target weapons except AoE/grenades** — firearms (any mode **except Full
 Auto**), bows/crossbows, thrown, and melee. Declared before the roll; **+4 TN**, with two

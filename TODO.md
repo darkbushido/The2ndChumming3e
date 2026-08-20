@@ -24,11 +24,11 @@ independent.
 | 🔵 In progress | *(none)* |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | *(none — 54 fully closed)* |
-| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 40 · 41 · 47 · 48 · 49 · 53 · 57 |
+| 📕 Rules not implemented | 3 · 4 · 10 · 30 · 40 · 47 · 48 · 49 · 53 · 57 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | **2** · **5** · 13 · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
+| ✅ Done — kept for the record | **2** · **5** · 13 · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -2451,7 +2451,7 @@ of that would not gate melee, it would abolish it. #46 first, always.
 - The Action Tracker already models Simple vs Complex per turn, so Ready has somewhere to charge to.
 - Throwing weapons ready in **batches**: one action readies ½ Quickness (round down) of them.
 
-## 41. Knockdown — nothing implements it, and two other rules already depend on it
+## 41. ✅ Knockdown — **DONE 2026-08-20**
 
 **Requested 2026-08-10** while scoping charging. Core **p.124**. Not implemented anywhere; the only
 mentions in the codebase are the `prone` status effect and [#37](#37)'s melee modifier, neither of
@@ -2478,28 +2478,72 @@ which is produced by anything.
 | Serious | 4 |
 | Deadly | **always knocked down** |
 
-⚠ The printed table extracts one row out of alignment — the same column-merge that scrambles the
-Visibility Table. The prose pins it: *"a character who has taken a **Moderate** wound must roll at
-least **3** successes."* Verify against the page before trusting any transcription, including this one.
+✅ **Checked 2026-08-20 — the table is fine and that warning is retired.** p.124 extracts cleanly,
+and the prose confirms it independently: *"a character who has taken a **Moderate** wound must roll
+at least **3** successes."* The transcription above was correct.
 
 ⚠ **Gel rounds are an explicit exception**: *"against weapons firing gel rounds the target number for
 the Body Test to resist knockdown is against the **full** Power of the attack"* (p.116) — not half.
 The system already models gel's armour exception via `armorEffect: 'gel'`, so this belongs beside it.
 
-### Two open questions before implementing
+### The two open questions, answered
 
-- **Which wound level?** *"how severely damaged the character is"* and *"has taken a Moderate wound"*
-  read as the wound from **this** attack, but could mean the character's **current** total wound
-  level. They differ constantly in play. Decide deliberately.
-- **Who rolls it, and when?** It happens after damage resolves, so it is a third stage after the
-  soak — which is another chat card, another click, and lands on whichever card shape [#24](#24)
-  settles.
+**Which wound level — the ambiguity is real, and the answer is "this attack, editable".**
+p.124 pulls both ways in adjacent sentences: *"how severely damaged the character is"* and
+*"does not generate enough for **his wound level**"* read as the character's cumulative
+condition, while *"has taken a Moderate wound"* and *"Characters who **take** a Deadly wound"*
+read as this blow. They agree only for an unhurt target.
 
-### What depends on it
+The per-attack reading wins here for a **system-specific** reason rather than a textual one:
+this system never applies damage automatically, so when the knockdown card is built the new
+wound is not on the sheet yet, and a cumulative figure would ignore the very hit that caused
+the test. The threshold is therefore **editable**, and the dialog shows the target's current
+wound level and what a cumulative reading would require — so a table reading it the other way
+changes one number rather than fighting the system. *(Decision: the maintainer, 2026-08-20.)*
 
-- [#40](#40) Charging's failure branch — *"Quickness (5) Test or fall prone"*, or *"+2 instead"* to
-  an existing Knockdown Test. Without Knockdown, that clause has nothing to modify.
-- [#37](#37)'s `prone` melee modifier (−2 to the opponent) has no way to become true today.
+**Who rolls it, and when — the target, on the soak result card.** `.sr-knockdown-btn` sits
+beside Assign Damage and is gated with `_isDecider`, because it rolls. Everything it needs was
+already in the soak payload: `stagedPower`, `isMelee`, `ammoType`, `attackerActorId`. No button
+is offered when the damage is completely soaked — no wound, no wound level, no test.
+
+### What was built
+
+- `SR3EActor.knockdownOutcome({ level, successes })` — pure. Returns `automatic` /
+  `knockedDown` / `staggered` / `standing` and the `needed` threshold.
+- `SR3EActor.knockdownTN({ power, strength, isMelee, ammoType })` — pure.
+- A result card carrying a **🔻 Mark prone** button (`prone` is a core Foundry status, so no
+  custom effect was needed), gated with `_mine` rather than `_isDecider`: it only toggles a
+  status, and a GM doing it for a player is the ordinary case.
+
+⚠ **Deadly SKIPS the test; it is not a hard test.** The table prints NA, not 5. The distinction
+is invisible today and stops being invisible the moment anything grants a bonus to the Body
+Test. Mutant: `deadly-knockdown-is-just-a-hard-test`.
+
+⚠ **ZERO successes is specifically the prone case**, not "fewer than needed" — so staggering
+requires `successes > 0`. Folding the two together means nobody ever hits the floor. Mutant:
+`knockdown-zero-successes-only-staggers`.
+
+⚠ **Ranged halves the attack's POWER, not the soak TN.** The soak rolls against Power minus
+armour; knockdown ignores armour completely.
+
+⚠ **Melee uses the opponent's STRENGTH ATTRIBUTE**, not the weapon's damage code — easy to
+conflate, since melee damage is usually written as (STR)M.
+
+⚠ **Gel rounds resist against the FULL Power** (p.116), so the round that is easiest to soak
+is the hardest to stay upright against — which is the point of it. Mutant:
+`knockdown-gel-rounds-halve-like-everything-else`.
+
+**Not modelled:** the *"+2 modifier to his target numbers until he is able to move away"* clause
+for a staggered character with a wall behind them. Whether they can step back is a positional
+judgement the system cannot make, so the result card states the rule and the GM applies it —
+now easy, via [#58](#58)'s situational modifier.
+
+### What depended on it — both now unblocked
+
+- [#40](#40) Charging's failure branch — *"Quickness (5) Test or fall prone"*, or *"+2 instead"*
+  to an existing Knockdown Test. That clause now has something to modify.
+- [#37](#37)'s `prone` melee modifier (−2 to the opponent) can now become true: the knockdown
+  result card sets the core `prone` status.
 
 ## 39. ✅ Full Defense — **DONE 2026-08-19**, and it was worse than half-built
 
