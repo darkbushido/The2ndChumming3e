@@ -21,26 +21,26 @@ independent.
 
 | Group | Items |
 |---|---|
-| 🔵 In progress | 2 |
+| 🔵 In progress | *(none)* |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | *(none — 54 fully closed)* |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 40 · 41 · 47 · 48 · 49 · 53 · 57 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | **5** · 13 · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
+| ✅ Done — kept for the record | **2** · **5** · 13 · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
 
-## 2. Rebuild combat on sockets with player-initiated flow
+## 2. ✅ Rebuild combat on sockets with player-initiated flow — **DONE 2026-08-19**
 
 Foundry sockets so each participant sees the right window on their own screen:
 
 - ✅ Players can initiate combat (currently attacker-sheet driven, assumes one client)
 - ✅ **Dodge window on the target's screen**, not the attacker's
-- ⏳ **GM window to set TN, with checkboxes for combat modifiers** (not a typed field) — built
-  for **ranged** ([#29](#29)); melee and contested still have no GM TN step, which is [#37](#37)
+- ✅ **GM window to set TN, with checkboxes for combat modifiers** (not a typed field) — built
+  for **ranged** ([#29](#29)), then for melee and contested ([#37](#37))
 
 **Status 2026-08-13 — the socket layer itself is finished.** `SR3EQuery` (ask / asGM / deciderFor
 / once), the per-actor `SR3EQueue`, the append-only `card.mark` ledger, and the generic
@@ -48,11 +48,15 @@ two-corner block now carry every opposed test in the system: **all eight cards**
 and driven by two real clients ([#24](#24)). Defaulting, dodge declaration and Spell Defense
 each ask their own owner.
 
-What is left under this heading is **not** socket work:
+**Closed 2026-08-19.** The two remaining dependencies landed: [#37](#37) (the melee/contested
+GM TN window) and [#43](#43) (resist cards spending pool dice free). Merged to `main` and
+released as **0.4.5.3**.
 
-- **[#37](#37)** — the GM TN window for melee/contested. The remaining bullet above.
-- **[#43](#43)** — the sibling resist cards still spend pool dice free.
-- The **`_corner` duplication** noted in [#24](#24) — eight local definitions, now divergent.
+⚠ **One thing under this heading was deliberately NOT done**, and stays undone rather than
+being quietly dropped: the **`_corner` duplication** from [#24](#24) — now **nine** local
+definitions, not the eight recorded, and further diverged. Left because the per-card
+differences are real and the behaviour is pinned by e2e rather than by shared code. If it is
+ever unified, those specs are what will catch a regression.
 
 ### The live bug this fixes
 
