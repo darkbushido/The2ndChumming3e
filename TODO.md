@@ -26,9 +26,9 @@ independent.
 | 🔴 Confirmed bugs, still open | *(none — 54 fully closed)* |
 | 📕 Rules not implemented | 3 · 4 · 10 · 30 · 40 · 41 · 47 · 48 · 49 · 53 · 57 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
-| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 · 58 |
+| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
 | 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | **2** · **5** · 13 · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
+| ✅ Done — kept for the record | **2** · **5** · 13 · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -3554,7 +3554,7 @@ range that `_measureDistance` already computes on every shot.
 ---
 
 <a id="58"></a>
-## 58. The GM modifier windows need a free SITUATIONAL row — a number and a reason
+## 58. ✅ A free situational row in the GM windows — **DONE 2026-08-20**
 
 **Requested 2026-08-20.** Every row in the GM's TN window is a rule transcribed from a table.
 There is no way to apply *"you are shooting through a doorway at someone leaning out of a
@@ -3564,14 +3564,21 @@ row that means something else.
 Both are bad in the same way: **the window stops being a record of why the number is what it
 is.** That record is the reason the window exists rather than a plain input.
 
-### What to add
+### What was built
+
+⚠ **Scope narrowed during the work, on the requester's call:** the box takes **only the
+number**. Downstream cards carry **static wording** — "GM situational modifier +2" — and the
+table asks the GM why. That removed the free-text plumbing entirely: no reason field through
+the negotiate queries, no explosion-carry field, and no HTML sanitisation problem, which the
+original write-up had flagged as the three hazards.
 
 One row, in **both** windows:
 
 | | Ranged (`SR3E_RANGED_MODIFIERS`) | Melee (`SR3E_MELEE_MODIFIERS`) |
 |---|---|---|
-| number | signed, roughly −4…+8 | signed, **and it must say WHICH SIDE** |
-| reason | free text, shown on the result card | same |
+| control | signed number | signed number **+ a side** |
+| summed by | `sumModifiers` `value: true` branch | `sumMeleeModifiers` situational branch |
+| shown on | the attack card label and TN breakdown | the boxing card header |
 
 ⚠ **Melee is not the same control.** `sumMeleeModifiers` returns an `{atk, def}` **pair of
 deltas**, not a finished number, and most p.123 rows move both at once in opposite directions.
@@ -3590,24 +3597,34 @@ be wrong half the time.
 - Group: **Conditions** for ranged. It is a judgement, not a guess from gear, so it must not
   land in the `gear` group, which is captioned as things the system inferred.
 
-### The reason text is the point, and it has to survive
+### It is reported separately from the TN, and that is the point
 
-The number alone is already achievable by typing a TN. What does not exist is the **why**, so
-the text has to reach the result card, not just the dialog:
+The GM window already returned a finished `tn` with the situational amount inside it. That is
+enough to ROLL correctly and not enough to SAY anything, so the amount is returned alongside
+`adjudicated` as its own field and carried through `sr3e.attack.negotiate` /
+`sr3e.melee.negotiate`. Otherwise the table just sees an unexplained 6.
 
-- carried out of the window in the returned object next to `adjudicated`
-- carried through `sr3e.attack.negotiate` / `sr3e.melee.negotiate`
-- rendered on the attack card near the TN, so the table can see *"+2 — firing through a
-  doorway"* rather than an unexplained 6
+⚠ **The ranged row is signed and may be 0**, unlike every other row in that table, so it is
+summed through the `value: true` branch — which `sumModifiers` reads **before** its falsy
+guard. Routing it through the ordinary `mod` path would silently drop every negative and every
+deliberate zero.
 
-⚠ **If it explodes, it must survive the wave.** Anything read off `state` on the final wave
-has to be in the explosion carry payload — see `tests/explosion-carry.test.mjs`, which will
-fail with the missing field name if it is forgotten. That test exists because seven fields were
-being dropped exactly this way.
+⚠ **Melee's unknown-side fallback is the attacker, not nothing.** A number the GM
+deliberately typed going nowhere is worse than one landing on the likelier side, and a silently
+ignored modifier is invisible on screen.
 
-⚠ **Sanitise before rendering.** Chat cards interpolate into HTML; a GM typing `<` should not
-be able to break the card. Nothing else on these cards takes free text, so this is the first
-place it matters.
+### A harness hole found while writing its mutant
+
+The melee side rule cannot have a mutant: this harness patches a **static on a class**, and
+`sumMeleeModifiers` is a plain module export, which ESM makes read-only. Ten assertions cover
+it instead.
+
+Writing the mutant anyway exposed a real bug in the tooling. `tests/run.mjs`'s parent process
+collapsed a child's **exit 2** (harness error) into **exit 1** (test failure), so
+`tests/mutate.mjs` never saw a harness error — its `broken` branch could not fire, and a
+mutant that had **never run at all** was reported as *killed*, with "0 assertions caught it"
+as the only visible clue. Both ends are now guarded: `run.mjs` propagates 2, and `mutate.mjs`
+independently rejects any kill with zero failing assertions.
 
 ### Deliberately not
 

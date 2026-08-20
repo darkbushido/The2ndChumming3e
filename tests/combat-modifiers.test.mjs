@@ -45,7 +45,11 @@ export async function run(t) {
   t.is('Target holds cover and target movement',
     keysIn('target'), 'partialCover,targetRunning,targetStill');
   t.is('Attacker holds attacker movement', keysIn('attacker'), 'atkRunning');
-  t.is('Conditions holds visibility', keysIn('conditions'), 'visibility');
+  // The GM's free situational row lives in CONDITIONS, not Gear. Gear is captioned as
+  // things the system inferred from the attacker's kit; a situational modifier is a
+  // judgement the GM is making, and putting it there would mislabel it as a guess.
+  t.is('Conditions holds visibility and the GM situational row',
+    keysIn('conditions'), 'situational,visibility');
   t.is('Gear holds the three detectable items',
     keysIn('gear'), 'laserSight,smartGoggles,smartlink');
   t.ok('every gear row is flagged as guessable from the kit',
@@ -156,4 +160,29 @@ export async function run(t) {
   t.is('and combines with ordinary checkboxes',
     sumModifiers({ visibility: 2, partialCover: true }), 6);
   t.is('an unset visibility contributes nothing', sumModifiers({ partialCover: true }), 4);
+
+  /* ==== The GM's free situational modifier ====
+   *
+   * Not a rule from any table — it exists for the cases the tables do not cover, so the GM
+   * is not forced to abandon the window and type a raw TN. The window takes a NUMBER, not a
+   * reason; downstream cards carry static wording and the table asks the GM why.
+   */
+  const sit = SR3E_RANGED_MODIFIERS.find(m => m.key === 'situational');
+  t.ok('the situational row exists and is rendered', sit && sit.mvp === true);
+  t.ok('it is a `value` row, so sumModifiers takes its number as given', sit.value === true);
+  t.ok('it carries no `mod` of its own — there is no rule behind it', sit.mod == null);
+
+  t.is('a positive situational modifier is added',      sumModifiers({ situational: 3 }), 3);
+  t.is('a NEGATIVE one is too — it is signed, unlike every other row',
+    sumModifiers({ situational: -2 }), -2);
+  t.is('zero contributes nothing',                      sumModifiers({ situational: 0 }), 0);
+  t.is('and it stacks with real rows rather than replacing them',
+    sumModifiers({ targetRunning: true, situational: -2 }), 0);
+  t.is('junk reads as 0 rather than NaN',               sumModifiers({ situational: 'x' }), 0);
+
+  // ⚠ `value` rows are read BEFORE sumModifiers' falsy guard, which is what lets a
+  // deliberate 0 — and a negative — survive. A row summed through the `mod` path would
+  // drop both.
+  t.is('a negative survives the falsy guard that a plain row would not',
+    sumModifiers({ situational: -5, atkRunning: true }), -1);
 }

@@ -242,4 +242,15 @@ export const MUTANTS = [
                remaining: blocked || cleanMiss ? 0 : Math.max(0, net - g), dealsDamage: false };
     },
   },
+
+  // NOTE: there is deliberately NO mutant for `sumMeleeModifiers`'s situational side.
+  // This harness patches a STATIC ON A CLASS (`target[m.method] = m.impl`), and
+  // `sumMeleeModifiers` is a plain module export — ESM bindings are read-only, so it cannot
+  // be swapped from outside. The rule is instead pinned by ten assertions in
+  // `melee-modifiers.test.mjs`, including the unknown-side fallback.
+  //
+  // Writing it anyway is what exposed a hole in the harness on 2026-08-20: `run.mjs`'s parent
+  // collapsed the child's exit 2 into 1, so `mutate.mjs` never saw a harness error and
+  // reported a mutant that had NEVER RUN as killed, with "0 assertions caught it" as the only
+  // clue. Both ends are now guarded — see the comments in those two files.
 ];

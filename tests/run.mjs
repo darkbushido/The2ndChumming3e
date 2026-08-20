@@ -64,14 +64,20 @@ if (!suites.length) {
 }
 
 let failedSuites = 0;
+// WARNING: exit 2 means the HARNESS failed (an unapplyable mutant), not that a test failed,
+// and it has to reach mutate.mjs intact. Collapsing it to 1 here made every malformed mutant
+// look KILLED - mutate.mjs's `broken` branch could never fire, so a mutant that never ran at
+// all was reported as caught. Found 2026-08-20 by a mutant with the wrong field names.
+let harnessError = false;
 for (const file of suites) {
   console.log(`\n${file.replace('.test.mjs', '')}`);
   const res = spawnSync(process.execPath, [fileURLToPath(import.meta.url)], {
     stdio: 'inherit',
     env: { ...process.env, SR3E_SUITE: join(here, file) },
   });
+  if (res.status === 2) harnessError = true;
   if (res.status !== 0) failedSuites++;
 }
 
 console.log(`\n${suites.length - failedSuites}/${suites.length} suites passed`);
-process.exit(failedSuites ? 1 : 0);
+process.exit(harnessError ? 2 : failedSuites ? 1 : 0);

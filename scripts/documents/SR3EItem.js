@@ -298,7 +298,11 @@ export class SR3EItem extends Item {
       // reachDiff/reachHolder above, so no separate "base" TN is carried.
       atkTN:            gm.atkTN,
       defTN:            gm.defTN,
+      // Static wording by design: the window takes a number, not a reason.
+      gmSituational:     Math.trunc(Number(gm.situational) || 0),
+      gmSituationalSide: gm.situationalSide ?? null,
       gmSetTN:          gm.adjudicated === true,
+      gmSituational:    Math.trunc(Number(gm.situational) || 0),
       calledShot:       calledShot.calledShot,
       calledShotTarget: calledShot.calledShotTarget,
       atkInfo,
@@ -1131,6 +1135,12 @@ export class SR3EItem extends Item {
   // silently overridden.
   const gmTNDelta = Number.isFinite(negotiation?.tn) ? (negotiation.tn - _baseTNForGM) : 0;
 
+  // Name the GM's free modifier on the card. Static wording by design — the window takes a
+  // number, not a reason, so the card says THAT a situational modifier was applied and by
+  // how much, and the table asks the GM why.
+  const _gmSit = Math.trunc(Number(negotiation?.situational) || 0);
+  if (_gmSit) tnBreakdownParts.push(`GM situational modifier ${_gmSit > 0 ? '+' : ''}${_gmSit}`);
+
   const weaponOpts = await SR3EItem._promptWeaponRollOptions(targetActor, rawDamage, actor, extraTNMod,
     tnBreakdownParts.length ? tnBreakdownParts.join(' | ') : null, rangeInfo, calledShotAllowed,
     // Lock the attacker's TN field only when a GM actually adjudicated. `negotiation.mods`
@@ -1175,6 +1185,7 @@ export class SR3EItem extends Item {
   let label = `${this.name}`;
   if (damageBase) label += ` [${effectiveRawDamage}]`;
   label += ` vs ${targetActor.name}`;
+  if (_gmSit) label += ` — GM situational modifier ${_gmSit > 0 ? '+' : ''}${_gmSit}`;
 
   let defTnMod = 0, defAllowPool = false, defPoolCap = Infinity;
   if (skill) {
@@ -2292,6 +2303,11 @@ export class SR3EItem extends Item {
     el.querySelectorAll('.sr-gm-mod-per').forEach(n => {
       const v = parseInt(n.value) || 0; if (v > 0) state[n.dataset.key] = v;
     });
+    // Signed, and read even when 0 — `sumModifiers` handles `value` rows before its falsy
+    // guard for exactly this reason.
+    el.querySelectorAll('.sr-gm-mod-sit').forEach(n => {
+      state[n.dataset.key] = Math.trunc(Number(n.value) || 0);
+    });
     const cond = el.querySelector('.sr-gm-vis-cond')?.value ?? '';
     const vis  = el.querySelector('.sr-gm-vis-type')?.value ?? 'normal';
     state.visibility = cond ? visibilityModifier(cond, vis) : 0;
@@ -2362,6 +2378,22 @@ export class SR3EItem extends Item {
         case 'perAtk':     return numberRow('gmm-multi',   row.label, row.note, 0, 9);
         case 'side':       return sideSelect('gmm-superior', row.label);
         case 'sideOpposed': return sideSelect('gmm-prone', `${row.label} — who is DOWN`);
+        case 'situational':
+          // A number AND a side. `sumMeleeModifiers` returns a pair of deltas, so a bare
+          // number here would have no defined meaning — see its situational branch.
+          return `
+            <div style="margin:3px 0;font-size:12px">
+              <div style="display:flex;align-items:center;gap:6px">
+                <span style="min-width:200px">${row.label}</span>
+                <input type="number" id="gmm-sit" value="0" min="-20" max="20" step="1" style="width:56px"/>
+                <select id="gmm-sit-side" style="flex:1">
+                  <option value="atk">applies to ${atkName}</option>
+                  <option value="def">applies to ${defName}</option>
+                  <option value="both">applies to both</option>
+                </select>
+              </div>
+              <div style="font-size:11px;color:var(--sr-muted);margin-left:206px">${row.note}</div>
+            </div>`;
         case 'visibility':
           // Two axes, as in the ranged window: the condition, and which vision is in use.
           // Melee then HALVES the result (rounding down) except in Full Darkness —
@@ -2423,6 +2455,8 @@ export class SR3EItem extends Item {
           multiTargetAtk:      parseInt(el.querySelector('#gmm-multi')?.value) || 0,
           visibilityCondition: el.querySelector('#gmm-vis-cond')?.value || '',
           visibilityVision:    el.querySelector('#gmm-vis-type')?.value || 'normal',
+          situational:         parseInt(el.querySelector('#gmm-sit')?.value) || 0,
+          situationalSide:     el.querySelector('#gmm-sit-side')?.value || 'atk',
         });
         const refresh = () => {
           const st = read();
@@ -2448,9 +2482,13 @@ export class SR3EItem extends Item {
           label: '✓ Set Target Numbers', action: 'ok', default: true,
           callback: (_e, _b, dialog) => {
             const el = dialog.element;
+            const sitN = Math.trunc(Number(el.querySelector('#gmm-sit')?.value) || 0);
             result = {
               atkTN: Math.max(2, parseInt(el.querySelector('#gmm-atk-tn')?.value) || baseAtk),
               defTN: Math.max(2, parseInt(el.querySelector('#gmm-def-tn')?.value) || baseDef),
+              // Reported separately from the TNs so the boxing card can SAY one was applied.
+              situational:     sitN,
+              situationalSide: sitN ? (el.querySelector('#gmm-sit-side')?.value || 'atk') : null,
               adjudicated: true,
             };
           },
@@ -2494,6 +2532,19 @@ export class SR3EItem extends Item {
               <select class="sr-gm-vis-type" style="width:100%">${visOpts}</select>
               <div class="sr-gm-vis-note" style="font-size:10px;color:var(--sr-dim);line-height:1.25"></div>
             </div>
+          </div>`;
+      }
+
+      // The GM's free modifier: a signed number, no rule behind it. Rendered before the
+      // checkbox branch because it is neither a tick nor a `per` count.
+      if (m.situational) {
+        return `<div class="sr-gm-modrow" style="break-inside:avoid">
+            <label style="display:flex;align-items:center;gap:8px;padding:2px 0">
+              <input type="number" class="sr-gm-mod-sit" data-key="${m.key}" value="0"
+                     min="-20" max="20" step="1" style="width:52px;flex:none"/>
+              <span>${m.label}</span>
+            </label>
+            ${m.note ? `<div style="font-size:10px;color:var(--sr-dim);margin-left:60px;line-height:1.25">${m.note}</div>` : ''}
           </div>`;
       }
 
@@ -2578,6 +2629,9 @@ export class SR3EItem extends Item {
             result = {
               // The typed field is authoritative — the GM may override the sum.
               tn:        clampTN(parseInt(el.querySelector('#sr-gm-tn')?.value)).tn,
+              // Reported separately from `tn` so downstream cards can SAY a situational
+              // modifier was applied. The number alone is already inside `tn`.
+              situational: Math.trunc(Number(mods.situational) || 0),
               mods,
               dodgeDice: dodgeEl ? Math.min(parseInt(dodgeEl.value) || 0, opts.dodge.availPool) : null,
             };
@@ -2614,8 +2668,12 @@ export class SR3EItem extends Item {
             : '';
         };
 
-        el.querySelectorAll('.sr-gm-mod, .sr-gm-mod-per, .sr-gm-vis-cond, .sr-gm-vis-type')
+        el.querySelectorAll('.sr-gm-mod, .sr-gm-mod-per, .sr-gm-mod-sit, .sr-gm-vis-cond, .sr-gm-vis-type')
           .forEach(i => i.addEventListener('change', recompute));
+        // `change` alone does not fire until the number input loses focus, so the TN would
+        // lag behind what the GM has typed. `input` keeps the two in step.
+        el.querySelectorAll('.sr-gm-mod-sit, .sr-gm-mod-per')
+          .forEach(i => i.addEventListener('input', recompute));
         recompute();
       },
     });

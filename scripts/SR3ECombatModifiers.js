@@ -61,6 +61,15 @@ export const SR3E_RANGED_MODIFIERS = [
   { key: 'aimedShot',      label: 'Aimed shot',                    mod: -1,   auto: true, per: true, group: 'attacker', note: 'declared by the attacker, per Simple Action' },
   { key: 'calledShot',     label: 'Called shot',                   mod: +4,   auto: true, group: 'attacker',   note: 'declared in the fire dialog' },
   { key: 'imageMag',       label: 'Image magnification',           mod: null,             group: 'gear',       note: 'Special' },
+  // A signed number the GM types. NOT a rule from any table - the point is the cases no
+  // table covers. `value: true` so sumModifiers takes the number as given, exactly as it
+  // does for the visibility lookup; `situational: true` tells the renderer to draw a
+  // number box instead of a checkbox.
+  {
+    key: 'situational', label: 'GM situational modifier', mod: null, mvp: true, value: true,
+    situational: true, group: 'conditions',
+    note: 'anything the tables do not cover',
+  },
 ];
 
 /**
@@ -239,6 +248,8 @@ export function sumModifiers(state = {}) {
     // `value` rows carry their own resolved modifier (visibility, from the table
     // lookup). Checked BEFORE the falsy guard: 0 is a legitimate result — thermographic
     // vision in Mist is genuinely 0 — and must not be mistaken for "not set".
+    // `value` rows carry their own number: the visibility lookup, and the free GM
+    // situational row. Both are read here rather than through `mod`.
     if (m.value) { total += Number(v) || 0; continue; }
     if (!v || m.mod == null) continue;
     total += m.per ? m.mod * (Number(v) || 0) : m.mod;
@@ -311,6 +322,13 @@ export const SR3E_MELEE_MODIFIERS = [
   {
     key: 'visibility', label: 'Visibility impaired', kind: 'visibility', group: 'conditions',
     note: 'Visibility Table at HALF value, rounded down \u2014 except Full Darkness',
+  },
+  // WARNING: melee's situational row MUST carry a side. `sumMeleeModifiers` returns a PAIR
+  // of deltas and most p.123 rows move both at once in opposite directions, so a bare number
+  // has no defined meaning here - it has to say whom it lands on.
+  {
+    key: 'situational', label: 'GM situational modifier', kind: 'situational', group: 'conditions',
+    note: 'anything the tables do not cover - choose whom it applies to',
   },
 ];
 
@@ -398,6 +416,17 @@ export function sumMeleeModifiers(state = {}) {
   if (state.visibilityCondition) {
     const v = meleeVisibilityModifier(state.visibilityCondition, state.visibilityVision ?? 'normal');
     atk += v; def += v;
+  }
+
+  // The GM's free situational modifier. `situationalSide` is 'atk' | 'def' | 'both';
+  // anything else lands on the attacker rather than being dropped, because a number the GM
+  // deliberately typed going nowhere is worse than one landing on the likelier side.
+  const sit = Math.trunc(Number(state.situational) || 0);
+  if (sit) {
+    const side = state.situationalSide;
+    if (side === 'def')       def += sit;
+    else if (side === 'both') { atk += sit; def += sit; }
+    else                      atk += sit;
   }
 
   return { atk, def };

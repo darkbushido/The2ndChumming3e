@@ -59,6 +59,18 @@ for (const m of chosen) {
     console.log(`    ✗ SURVIVED — "${m.suite}" still passed with this bug reinstated\n`);
   } else {
     const killed = (res.stdout.match(/^ +FAIL/gm) || []).length;
+    // WARNING: a kill with ZERO failing assertions is not a kill. The suite went red for some
+    // other reason - an unapplyable mutant, an import throwing - which means the bug was never
+    // actually reinstated and nothing was proved. Belt-and-braces alongside the exit-2 path,
+    // because that one depends on every layer propagating the code faithfully, and for a long
+    // time one of them did not.
+    if (killed === 0) {
+      broken.push(m);
+      console.log(`    HARNESS ERROR - "${m.suite}" failed without a single failing assertion, `
+        + `so the mutant never really ran
+`);
+      continue;
+    }
     console.log(`    ✓ killed by "${m.suite}" (${killed} assertion${killed === 1 ? '' : 's'} caught it)\n`);
   }
 }

@@ -744,6 +744,17 @@ Only one state active at a time; clicking the active button deactivates it.
 4. (Firearms) Fire-mode dialog: SS/SA/BF/FA, recoil preview, editable compensation (see **Firearms**)
 5. Roll-options dialog: damage code, editable **range** dropdown (auto-measured from tokens; see Range section), TN-modifier breakdown (recoil, wound, multi-target, tracer note). **The TN field is read-only whenever a GM window will open** — see `gmApprovesTN` below
 6. **GM's TN window** (`_promptGMAttackWindow`): p.112 modifier checkboxes, live-summed into an editable TN, displayed value clamped at 2. Rows are **grouped for reading, not in book order** — Target, Attacker, Conditions, Gear — via a `group` field on each `SR3E_RANGED_MODIFIERS` entry, consumed by `mvpModifierGroups()`. Layout lives on the **data**, so the deferred rows drop into place when they land instead of forcing a re-sort. Gear is last and captioned: those rows are **guesses the system made** from the attacker's kit (`guessGearModifiers`), not judgements the GM is being asked for. Empty groups are dropped; a row with a missing or unknown `group` falls into a trailing **Other** bucket rather than vanishing — a typo there would silently remove a modifier the GM is meant to apply. Covered by `tests/combat-modifiers.test.mjs`.
+   - **GM situational modifier** — a signed number the GM types, for the cases no table
+     covers, so they need not abandon the window and type a raw TN (which would lose the
+     record of why the number is what it is). Lives in **Conditions**, not Gear: Gear is
+     captioned as things the system *guessed* from the attacker's kit, and this is a
+     judgement. ⚠ It is `value: true`, so `sumModifiers` reads it **before** the falsy guard
+     — required, because it is the only row that may legitimately be **negative or 0**.
+     ⚠ The window takes a **number only**; cards carry static wording ("GM situational
+     modifier +2") and the table asks the GM why. ⚠ **Melee's version carries a SIDE**
+     (`atk`/`def`/`both`) because `sumMeleeModifiers` returns a *pair* of deltas and a bare
+     number would have no defined meaning; an unrecognised side falls back to the attacker
+     rather than being dropped.
    - **Visibility** (p.112 table) renders as **two dropdowns** — condition, and which vision the attacker is using — resolved by `visibilityModifier(condition, visionKey)`. Not a dropdown plus a "cybernetic" checkbox: the table has **two axes** (column = vision type, slash within a cell = cybernetic/natural), giving **five** valid states, and a checkbox would also permit the meaningless "Normal + cybernetic". ⚠ The slash reads **cybernetic first, natural second** (p.111), so **cyber vision is the *worse* of the two** — an elf's own eyes beat cybereyes. Low-Light and Thermographic are **not** interchangeable: they differ in 6 of 8 conditions and invert in Thermal Smoke. Nothing is pre-selected — see TODO #36 for deriving it from the attacker.
    - The `visibility` row carries `mod: null` and `value: true`: its state holds the **resolved** number rather than a tick, and `sumModifiers` reads `value` rows **before** its falsy guard, because **0 is a real answer** (thermographic vision in Mist) and must not read as "not set".
 7. Attacker allocates combat pool to attack — this dialog is the attacker's **🎲 Roll** trigger

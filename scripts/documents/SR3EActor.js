@@ -3760,6 +3760,14 @@ _prepareCharacter(sys, attr) {
                 ? ' — stage damage up (+4 TN)'
                 : `${ctx.calledShotTarget ? `: ${ctx.calledShotTarget}` : ''} (+4 TN)`}
             </div>` : ''}
+          ${ctx.gmSituational ? `
+            <div style="font-size:11px;color:var(--sr-accent);margin:-2px 0 6px;text-align:center">
+              ⚖ GM situational modifier ${ctx.gmSituational > 0 ? '+' : ''}${ctx.gmSituational}
+              ${ctx.gmSituationalSide === 'both' ? '— both fighters'
+                : ctx.gmSituationalSide === 'def' ? `— ${def.name}`
+                : `— ${atk.name}`}
+              <span style="color:var(--sr-dim)">(already in the target numbers)</span>
+            </div>` : ''}
           <div class="sr-melee-boxing">
             ${_corner(atk.name, ctx.atkInfo, ctx.atkWeaponName, ctx.atkRawDamage, ctx.atkDamageBase,
                       ctx.atkReach ?? 0, ctx.atkTN, 'sr-melee-atk-pool', 'sr-melee-atk-tn', 'sr-melee-atk-damage', 'sr-melee-atk-skill-dice', 'attacker', ctx.attackerActorId)}

@@ -115,4 +115,40 @@ export async function run(t) {
   // double-count them the moment the window is wired.
   t.ok('reach, called shot and wounds are NOT in this table',
     !SR3E_MELEE_MODIFIERS.some(m => /reach|called|wound/i.test(m.key)));
+
+  /* ==== The GM's free situational modifier ====
+   *
+   * ⚠ MELEE'S VERSION IS NOT THE RANGED ONE. `sumMeleeModifiers` returns a PAIR of deltas,
+   * and most p.123 rows move both target numbers at once in opposite directions, so a bare
+   * number has no defined meaning here — it has to say whom it lands on. The ranged window's
+   * row is a single signed number because ranged resolves ONE target number.
+   */
+  t.is('a situational modifier defaults to the attacker',
+    pair({ situational: 2 }), '2/0');
+  t.is('…explicitly, too',
+    pair({ situational: 2, situationalSide: 'atk' }), '2/0');
+  t.is('it can be put on the DEFENDER instead',
+    pair({ situational: 2, situationalSide: 'def' }), '0/2');
+  t.is('or on both — a condition neither fighter benefits from',
+    pair({ situational: 2, situationalSide: 'both' }), '2/2');
+
+  // Signed, unlike every table row, because the GM may be granting an advantage.
+  t.is('a negative lands on the attacker as a bonus',
+    pair({ situational: -3 }), '-3/0');
+  t.is('and on the defender when so directed',
+    pair({ situational: -3, situationalSide: 'def' }), '0/-3');
+
+  // ⚠ An unrecognised side lands on the ATTACKER rather than being dropped. A number the GM
+  // deliberately typed going nowhere is worse than one landing on the likelier side, and a
+  // silently ignored modifier is invisible on screen.
+  t.is('an unknown side falls back to the attacker rather than vanishing',
+    pair({ situational: 4, situationalSide: 'nonsense' }), '4/0');
+  t.is('a null side likewise', pair({ situational: 4, situationalSide: null }), '4/0');
+
+  t.is('zero contributes nothing to either side', pair({ situational: 0 }), '0/0');
+  t.is('junk reads as nothing rather than NaN',   pair({ situational: 'x' }), '0/0');
+
+  // It stacks with the table rows rather than replacing them: friends in the melee is +1 per
+  // friend to the side outnumbered, and the GM's judgement rides on top.
+  t.is('it stacks with a real row', pair({ multiTargetAtk: 1, situational: 1 }), '3/0');
 }
