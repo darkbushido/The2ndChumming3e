@@ -1042,6 +1042,37 @@ the attacker."* Net 0 → base Damage Level, defender resists. `SR3EActor.meleeO
 ⚠ The staging gate is unconditional, **not** `net > 0`: gating on that posts no soak button and
 deletes the attack. ⚠ Same strictness trap as the ranged dodge tie, pointing the other way.
 
+### World migrations — `scripts/SR3EMigrations.js`
+
+⚠ **Foundry EMBEDS items, it does not link them.** An actor holding an item carries its **own
+copy**, made at drag time. Fixing a compendium entry changes nothing for anyone who already
+owns one, and there is no relink. So a pack correction needs **two** changes: the pack file
+itself, and a migration for worlds already in play.
+
+**Adding one:** append to `MIGRATIONS` with the system version that introduces it, and **bump
+`system.json` in the same commit** — `migrate()` stamps `game.system.version` when it finishes,
+so a migration numbered *above* that version never gets stamped past and re-runs on every world
+load for ever. Silent, because migrations only fill blanks. `tests/migrations.test.mjs`
+asserts this, and caught it the first time.
+
+**Two rules, both asserted:**
+1. **Fill blanks, never overwrite** — a GM who typed a value keeps it (`_fillBlank`). Note `0`
+   and `''` count as unset, since they are the schema defaults; that is why migrations name a
+   specific item rather than sweeping a type.
+2. **Idempotent** — a second run changes nothing. The version stamp is a fast path, not the
+   guarantee; a failed run leaves the stamp alone so the next load retries.
+
+⚠ **Three populations, and the third is the one people forget:** world actors, world items, and
+**unlinked token actors on every scene** (`scene.tokens[].actor` when `actorLink` is false).
+Skip the third and the fix works everywhere except the token actually being played.
+
+⚠ **Compendium packs are deliberately NOT migrated** — they ship as files, so a pack fix belongs
+in the pack (see `tools/patch-enhanced-articulation.mjs`, which needs Foundry **closed**: a
+LevelDB allows one writer).
+
+Gated to `game.users.activeGM`. `game.sr3e.SR3EMigrations.force()` re-runs everything from the
+console, for an actor imported from an older world — safe, because of rule 1.
+
 ### Skill bonus dice — two channels, and they are NOT interchangeable
 
 | | `derived.skillBonusDice` | `derived.skillCategoryBonuses` |

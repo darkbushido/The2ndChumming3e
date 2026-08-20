@@ -32,6 +32,12 @@ function bw(name, grade, bioIndex, rating, cost, category, opts = {}) {
       bonusWil:        opts.bonusWil     ?? 0,
       bonusRea:        opts.bonusRea     ?? 0,
       bonusInitDice:   opts.bonusInitDice ?? 0,
+      // Skill augmentation. `improvedSkillName` is applied automatically at every roll path;
+      // `improvedSkillCategory` (comma-separated) is OPT-IN per roll, surfacing as a checkbox
+      // on the Roll Skill dialog. See SR3EActor.skillCategoryBonus for why they differ.
+      improvedSkillName:     opts.improvedSkillName     ?? '',
+      improvedSkillCategory: opts.improvedSkillCategory ?? '',
+      improvedSkillDice:     opts.improvedSkillDice     ?? 0,
     },
   };
 }
@@ -177,9 +183,20 @@ const BIOWARE = [
     description: '<p>Provides 3 extra dice when resisting toxins, drugs, and disease. No attribute bonus.</p>',
   }),
 
+  // M&M p.66. The old description here was invented — "not Unarmed Combat or Quickness tests"
+  // appears nowhere in the book, and it omitted Vehicle skills entirely.
   bw('Enhanced Articulation', 'Standard', 0.6, 0, 24000, 'Cardiovascular', {
-    availability: '8/7 days', streetIndex: 1,
-    description: '<p>Improved joint and tendon performance. Provides +1 die to all physical skills (not Unarmed Combat or Quickness tests). No attribute bonus.</p>',
+    availability: '8/7 days', streetIndex: 1, bookPage: 'mm.066',
+    improvedSkillCategory: 'Combat skills, Physical skills, Technical skills, Build/Repair skills, Vehicle skills',
+    improvedSkillDice: 1,
+    // ⚠ bonusRea is deliberately NOT set. The +1 Reaction "has no effect on rigging or decking
+    // and does not affect the Control Pool" — a conditional the attribute channel cannot
+    // express, so it stays with TODO 30 rather than being applied unconditionally here.
+    description: '<p>Joint-surface coating, relubrication and tendon augmentation for fluid muscle and joint action.</p>'
+      + '<p><strong>+1 die</strong> on any Success Test involving <strong>Combat, Physical, Technical and Build/Repair</strong> skills, '
+      + 'and on <strong>physical use of Vehicle skills</strong> — driving via datajack or piloting a submarine does not qualify. '
+      + 'Tick the bonus on the Roll Skill dialog; it is left to you to judge the Vehicle case.</p>'
+      + '<p><strong>+1 Reaction</strong>, with no effect on rigging or decking, and no effect on the Control Pool — apply by hand.</p>',
   }),
 
   // ── Skeletal ─────────────────────────────────────────────────────────────
