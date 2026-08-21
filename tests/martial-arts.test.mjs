@@ -27,6 +27,7 @@
  *      character could take Aikido, Jujitsu and Sambo independently — three skills where the
  *      book has one — and the alias entries carried invented maneuver lists.
  */
+import fs from 'node:fs';
 import { installGlobals, installGame } from './helpers/foundry.mjs';
 installGlobals();
 const {
@@ -155,6 +156,44 @@ export async function run(t) {
   const allMan = styles.flatMap(s => s.maneuvers);
   t.ok('no "Kip Up" spelling survives', !allMan.includes('MN:Kip Up'));
   t.ok('and Kip-up is present', allMan.includes('MN:Kip-up'));
+
+  /* ==== rawdata must agree with config ====
+   *
+   * ⚠ TWO SOURCES OF TRUTH, and nothing compared them until now. `SR3ESkills` in config.js is
+   * hand-curated but GENERATED FROM `rawdata/ActiveSkills.json` — so fixing a name in config
+   * alone is undone by the next regeneration. That is exactly what happened with "Kip Up":
+   * corrected in config, still wrong in rawdata, and invisible because nothing reads the field.
+   *
+   * rawdata also carried "MN:Viscious Blow" (a typo, 9 times) and "MN:Focus Strength1" (a
+   * stray digit) — neither of which config had, so neither could be seen from config.
+   *
+   * ⚠ The weapon-qualified names are LEGITIMATE and are stripped before comparison. CC gives
+   * several styles an advantage of the form "can choose to use a single already learned Kung Fu
+   * maneuver when using either the Pole Arms skill or the Edged Weapons skill", and the
+   * generator encodes those as "MN:Blind Fighting (Edged Weapons)". config's curated list holds
+   * only the book's base "Maneuvers:" line, which is why it does not carry them.
+   */
+  const rawText = fs.readFileSync(new URL('../rawdata/ActiveSkills.json', import.meta.url), 'utf8');
+  const rawNames = new Set((rawText.match(/"MN:[^"]+"/g) ?? []).map(m => m.slice(1, -1)));
+  const canonicalManeuvers = new Set(styles.flatMap(s => s.maneuvers));
+
+  const stripWeapon = n => n.replace(/\s*\([^)]*\)\s*$/, '');
+  const unknown = [...rawNames]
+    .filter(n => !canonicalManeuvers.has(stripWeapon(n)))
+    .sort();
+
+  t.is(unknown.length
+      ? `rawdata maneuver names not in config: ${unknown.join(', ')} — the two must agree, or `
+        + 'the next regeneration undoes any fix made in config alone'
+      : 'every rawdata maneuver name matches a canonical one',
+    unknown.length, 0);
+
+  t.ok('rawdata no longer spells it "Kip Up"',        !rawNames.has('MN:Kip Up'));
+  t.ok('and the "Viscious Blow" typo is gone',        !rawNames.has('MN:Viscious Blow'));
+  t.ok('and the "Focus Strength1" stray digit is gone', !rawNames.has('MN:Focus Strength1'));
+  // The weapon-qualified forms must still be there — they encode a real CC advantage.
+  t.ok('weapon-qualified maneuvers survive the comparison',
+    [...rawNames].some(n => /\(Edged Weapons\)$/.test(n)));
 
   /* ==== 5. The book gate ==== */
   t.is('Martial Arts is Cannon Companion content', SKILL_CATEGORY_BOOK['Martial Arts'], 'cc');

@@ -239,7 +239,7 @@
         { "name": "MN:Focus Strength", "source": "cc.91+" },
         { "name": "MN:Ground Fighting", "source": "cc.91+" },
         { "name": "MN:Kick Attack", "source": "cc.91+" },
-        { "name": "MN:Kip Up", "source": "cc.91+" },
+        { "name": "MN:Kip-up", "source": "cc.91+" },
         { "name": "MN:Multi-Strike", "source": "cc.91+" },
         { "name": "MN:Sweep", "source": "cc.91+" },
         { "name": "MN:Throw", "source": "cc.91+" },
@@ -274,7 +274,7 @@
         { "name": "MN:Ground Fighting", "source": "cc.91+" },
         { "name": "MN:Herding", "source": "cc.91+" },
         { "name": "MN:Kick Attack", "source": "cc.91+" },
-        { "name": "MN:Viscious Blow", "source": "cc.91+" },
+        { "name": "MN:Vicious Blow", "source": "cc.91+" },
         { "name": "MN:Zoning", "source": "cc.91+" }
       ]
     },
@@ -288,7 +288,7 @@
         { "name": "MN:Ground Fighting", "source": "cc.91+" },
         { "name": "MN:Herding", "source": "cc.91+" },
         { "name": "MN:Kick Attack", "source": "cc.91+" },
-        { "name": "MN:Kip Up", "source": "cc.91+" },
+        { "name": "MN:Kip-up", "source": "cc.91+" },
         { "name": "MN:Multi-Strike", "source": "cc.91+" },
         { "name": "MN:Sweep", "source": "cc.91+" },
         { "name": "MN:Whirling", "source": "cc.91+" }
@@ -304,7 +304,7 @@
         { "name": "MN:Ground Fighting", "source": "cc.91+" },
         { "name": "MN:Focus Will", "source": "cc.91+" },
         { "name": "MN:Kick Attack", "source": "cc.91+" },
-        { "name": "MN:Kip Up", "source": "cc.91+" },
+        { "name": "MN:Kip-up", "source": "cc.91+" },
         { "name": "MN:Multi-Strike", "source": "cc.91+" },
         { "name": "MN:Sweep", "source": "cc.91+" },
         { "name": "MN:Whirling", "source": "cc.91+" }
@@ -319,7 +319,7 @@
         { "name": "MN:Focus Strength", "source": "cc.91+" },
         { "name": "MN:Ground Fighting", "source": "cc.91+" },
         { "name": "MN:Kick Attack", "source": "cc.91+" },
-        { "name": "MN:Kip Up", "source": "cc.91+" },
+        { "name": "MN:Kip-up", "source": "cc.91+" },
         { "name": "MN:Multi-Strike", "source": "cc.91+" },
         { "name": "MN:Sweep", "source": "cc.91+" },
         { "name": "MN:Throw", "source": "cc.91+" },
@@ -350,7 +350,7 @@
         { "name": "MN:Focus Strength", "source": "cc.91+" },
         { "name": "MN:Ground Fighting", "source": "cc.91+" },
         { "name": "MN:Kick Attack", "source": "cc.91+" },
-        { "name": "MN:Kip Up", "source": "cc.91+" },
+        { "name": "MN:Kip-up", "source": "cc.91+" },
         { "name": "MN:Multi-Strike", "source": "cc.91+" },
         { "name": "MN:Sweep", "source": "cc.91+" },
         { "name": "MN:Throw", "source": "cc.91+" },
@@ -367,7 +367,7 @@
         { "name": "MN:Focus Will", "source": "cc.91+" },
         { "name": "MN:Full Offense", "source": "cc.91+" },
         { "name": "MN:Kick Attack", "source": "cc.91+" },
-        { "name": "MN:Viscious Blow", "source": "cc.91+" },
+        { "name": "MN:Vicious Blow", "source": "cc.91+" },
         { "name": "MN:Sweep", "source": "cc.91+" },
         { "name": "MN:Throw", "source": "cc.91+" },
         { "name": "MN:Whirling", "source": "cc.91+" }
@@ -383,7 +383,7 @@
         { "name": "MN:Focus Will", "source": "cc.91+" },
         { "name": "MN:Full Offense", "source": "cc.91+" },
         { "name": "MN:Kick Attack", "source": "cc.91+" },
-        { "name": "MN:Viscious Blow", "source": "cc.91+" },
+        { "name": "MN:Vicious Blow", "source": "cc.91+" },
         { "name": "MN:Sweep", "source": "cc.91+" },
         { "name": "MN:Throw", "source": "cc.91+" },
         { "name": "MN:Whirling", "source": "cc.91+" }
@@ -400,7 +400,7 @@
         { "name": "MN:Ground Fighting", "source": "cc.91+" },
         { "name": "MN:Herding", "source": "cc.91+" },
         { "name": "MN:Kick Attack", "source": "cc.91+" },
-        { "name": "MN:Kip Up", "source": "cc.91+" },
+        { "name": "MN:Kip-up", "source": "cc.91+" },
         { "name": "MN:Sweep", "source": "cc.91+" },
         { "name": "MN:Zoning", "source": "cc.91+" }
       ]
@@ -423,11 +423,11 @@
         { "name": "MN:Ground Fighting (Edged Weapons)", "source": "cc.91+" },
         { "name": "MN:Ground Fighting (Pole Arms)", "source": "cc.91+" },
         { "name": "MN:Kick Attack", "source": "cc.91+" },
-        { "name": "MN:Kip Up", "source": "cc.91+" },
+        { "name": "MN:Kip-up", "source": "cc.91+" },
         { "name": "MN:Multi-Strike", "source": "cc.91+" },
         { "name": "MN:Multi-Strike (Edged Weapons)", "source": "cc.91+" },
         { "name": "MN:Multi-Strike (Pole Arms)", "source": "cc.91+" },
-        { "name": "MN:Viscious Blow", "source": "cc.91+" },
+        { "name": "MN:Vicious Blow", "source": "cc.91+" },
         { "name": "MN:Whirling", "source": "cc.91+" },
         { "name": "MN:Whirling (Edged Weapons)", "source": "cc.91+" },
         { "name": "MN:Whirling (Pole Arms)", "source": "cc.91+" }
@@ -442,7 +442,7 @@
         { "name": "MN:Full Offense", "source": "cc.91+" },
         { "name": "MN:Herding", "source": "cc.91+" },
         { "name": "MN:Kick Attack", "source": "cc.91+" },
-        { "name": "MN:Kip Up", "source": "cc.91+" },
+        { "name": "MN:Kip-up", "source": "cc.91+" },
         { "name": "MN:Multi-Strike", "source": "cc.91+" },
         { "name": "MN:Sweep", "source": "cc.91+" },
         { "name": "MN:Throw", "source": "cc.91+" },
@@ -459,9 +459,9 @@
         { "name": "MN:Full Offense", "source": "cc.91+" },
         { "name": "MN:Ground Fighting", "source": "cc.91+" },
         { "name": "MN:Kick Attack", "source": "cc.91+" },
-        { "name": "MN:Kip Up", "source": "cc.91+" },
+        { "name": "MN:Kip-up", "source": "cc.91+" },
         { "name": "MN:Multi-Strike", "source": "cc.91+" },
-        { "name": "MN:Viscious Blow", "source": "cc.91+" },
+        { "name": "MN:Vicious Blow", "source": "cc.91+" },
         { "name": "MN:Whirling", "source": "cc.91+" }
       ]
     },
@@ -476,7 +476,7 @@
         { "name": "MN:Ground Fighting", "source": "cc.91+" },
         { "name": "MN:Herding", "source": "cc.91+" },
         { "name": "MN:Kick Attack", "source": "cc.91+" },
-        { "name": "MN:Kip Up", "source": "cc.91+" },
+        { "name": "MN:Kip-up", "source": "cc.91+" },
         { "name": "MN:Sweep", "source": "cc.91+" },
         { "name": "MN:Zoning", "source": "cc.91+" }
       ]
@@ -492,7 +492,7 @@
         { "name": "MN:Ground Fighting", "source": "cc.91+" },
         { "name": "MN:Herding", "source": "cc.91+" },
         { "name": "MN:Kick Attack", "source": "cc.91+" },
-        { "name": "MN:Kip Up", "source": "cc.91+" },
+        { "name": "MN:Kip-up", "source": "cc.91+" },
         { "name": "MN:Sweep", "source": "cc.91+" },
         { "name": "MN:Zoning", "source": "cc.91+" }
       ]
@@ -508,7 +508,7 @@
         { "name": "MN:Ground Fighting", "source": "cc.91+" },
         { "name": "MN:Herding", "source": "cc.91+" },
         { "name": "MN:Kick Attack", "source": "cc.91+" },
-        { "name": "MN:Kip Up", "source": "cc.91+" },
+        { "name": "MN:Kip-up", "source": "cc.91+" },
         { "name": "MN:Sweep", "source": "cc.91+" },
         { "name": "MN:Zoning", "source": "cc.91+" }
       ]
@@ -539,7 +539,7 @@
         { "name": "MN:Evasion", "source": "cc.91+" },
         { "name": "MN:Focus Will", "source": "cc.91+" },
         { "name": "MN:Ground Fighting", "source": "cc.91+" },
-        { "name": "MN:Viscious Blow", "source": "cc.91+" },
+        { "name": "MN:Vicious Blow", "source": "cc.91+" },
         { "name": "MN:Multi-Strike", "source": "cc.91+" },
         { "name": "MN:Sweep", "source": "cc.91+" },
         { "name": "MN:Whirling", "source": "cc.91+" }
@@ -557,7 +557,7 @@
         { "name": "MN:Ground Fighting", "source": "cc.91+" },
         { "name": "MN:Herding", "source": "cc.91+" },
         { "name": "MN:Kick Attack", "source": "cc.91+" },
-        { "name": "MN:Viscious Blow", "source": "cc.91+" },
+        { "name": "MN:Vicious Blow", "source": "cc.91+" },
         { "name": "MN:Zoning", "source": "cc.91+" }
       ]
     },
@@ -587,7 +587,7 @@
         { "name": "MN:Ground Fighting", "source": "cc.91+" },
         { "name": "MN:Herding", "source": "cc.91+" },
         { "name": "MN:Kick Attack", "source": "cc.91+" },
-        { "name": "MN:Kip Up", "source": "cc.91+" },
+        { "name": "MN:Kip-up", "source": "cc.91+" },
         { "name": "MN:Sweep", "source": "cc.91+" },
         { "name": "MN:Zoning", "source": "cc.91+" }
       ]
@@ -597,12 +597,12 @@
       "attribute": "STR",
       "source": "cc.88+",
       "specializations": [
-        { "name": "MN:Focus Strength1", "source": "cc.91+" },
+        { "name": "MN:Focus Strength", "source": "cc.91+" },
         { "name": "MN:Throw", "source": "cc.91+" },
         { "name": "MN:Full Offense", "source": "cc.91+" },
         { "name": "MN:Herding", "source": "cc.91+" },
         { "name": "MN:Kick Attack", "source": "cc.91+" },
-        { "name": "MN:Kip Up", "source": "cc.91+" },
+        { "name": "MN:Kip-up", "source": "cc.91+" },
         { "name": "MN:Multi-Strike", "source": "cc.91+" },
         { "name": "MN:Sweep", "source": "cc.91+" },
         { "name": "MN:Throw", "source": "cc.91+" },
@@ -620,7 +620,7 @@
         { "name": "MN:Throw", "source": "cc.91+" },
         { "name": "MN:Focus Will", "source": "cc.91+" },
         { "name": "MN:Herding", "source": "cc.91+" },
-        { "name": "MN:Kip Up", "source": "cc.91+" },
+        { "name": "MN:Kip-up", "source": "cc.91+" },
         { "name": "MN:Sweep", "source": "cc.91+" },
         { "name": "MN:Throw", "source": "cc.91+" },
         { "name": "MN:Whirling", "source": "cc.91+" }
@@ -637,7 +637,7 @@
         { "name": "MN:Throw", "source": "cc.91+" },
         { "name": "MN:Focus Will", "source": "cc.91+" },
         { "name": "MN:Herding", "source": "cc.91+" },
-        { "name": "MN:Kip Up", "source": "cc.91+" },
+        { "name": "MN:Kip-up", "source": "cc.91+" },
         { "name": "MN:Sweep", "source": "cc.91+" },
         { "name": "MN:Throw", "source": "cc.91+" },
         { "name": "MN:Whirling", "source": "cc.91+" }
@@ -654,7 +654,7 @@
         { "name": "MN:Throw", "source": "cc.91+" },
         { "name": "MN:Focus Will", "source": "cc.91+" },
         { "name": "MN:Herding", "source": "cc.91+" },
-        { "name": "MN:Kip Up", "source": "cc.91+" },
+        { "name": "MN:Kip-up", "source": "cc.91+" },
         { "name": "MN:Sweep", "source": "cc.91+" },
         { "name": "MN:Throw", "source": "cc.91+" },
         { "name": "MN:Whirling", "source": "cc.91+" }
@@ -672,7 +672,7 @@
         { "name": "MN:Kick Attack", "source": "cc.91+" },
         { "name": "MN:Multi-Strike", "source": "cc.91+" },
         { "name": "MN:Sweep", "source": "cc.91+" },
-        { "name": "MN:Viscious Blow", "source": "cc.91+" },
+        { "name": "MN:Vicious Blow", "source": "cc.91+" },
         { "name": "MN:Zoning", "source": "cc.91+" }
       ]
     },
@@ -686,9 +686,9 @@
         { "name": "MN:Full Offense", "source": "cc.91+" },
         { "name": "MN:Ground Fighting", "source": "cc.91+" },
         { "name": "MN:Kick Attack", "source": "cc.91+" },
-        { "name": "MN:Kip Up", "source": "cc.91+" },
+        { "name": "MN:Kip-up", "source": "cc.91+" },
         { "name": "MN:Multi-Strike", "source": "cc.91+" },
-        { "name": "MN:Viscious Blow", "source": "cc.91+" },
+        { "name": "MN:Vicious Blow", "source": "cc.91+" },
         { "name": "MN:Whirling", "source": "cc.91+" }
       ]
     }

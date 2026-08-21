@@ -62,8 +62,11 @@ export const SR3ESkills = {
   // including Karate and Muay Thai, whose lists wrap across a column break and needed
   // reassembling. The 17 distinct maneuver names all appear verbatim in the maneuvers chapter.
   //
-  // ⚠ The book spells it "Kip-up", not "Kip Up". Cosmetic while nothing reads `maneuvers`, and
-  // a silent mismatch the moment anything matches these names against the book's own text.
+  // ⚠ The book spells it "Kip-up", not "Kip Up". Fixed here AND in rawdata/ActiveSkills.json,
+  // which this list is generated from — correcting only this file is undone by the next
+  // regeneration, which is precisely how the misspelling survived. rawdata also carried
+  // "MN:Viscious Blow" (9×) and "MN:Focus Strength1", neither of which existed here to be
+  // noticed. `tests/martial-arts.test.mjs` now compares the two.
   "Martial Arts": [
     { name: "MA:Aikido",        linkedAttribute: "strength", aliases: ["MA:Jujitsu", "MA:Juijitsu", "MA:Sambo"], maneuvers: ["MN:Close Combat", "MN:Disorient", "MN:Evasion", "MN:Focus Will", "MN:Ground Fighting", "MN:Herding", "MN:Sweep", "MN:Throw", "MN:Whirling"] },
     { name: "MA:Arnis De Mano", linkedAttribute: "strength", aliases: ["MA:Escrima", "MA:Kali"], maneuvers: ["MN:Close Combat", "MN:Focus Strength", "MN:Ground Fighting", "MN:Kick Attack", "MN:Kip-up", "MN:Multi-Strike", "MN:Sweep", "MN:Throw", "MN:Zoning"] },
