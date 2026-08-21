@@ -58,18 +58,24 @@ export const SR3ESkills = {
   // MA skills are Active/Combat skills linked to Strength, use Combat Pool, and are boxed
   // with Cyber-Implant Weaponry (CC p.86) — which is why `_buildMeleePoolInfo` accepts an
   // MA: skill for a CYB-category weapon.
+  // ✅ Maneuver lists audited against CC p.89-91 on 2026-08-20 — all twelve match the book,
+  // including Karate and Muay Thai, whose lists wrap across a column break and needed
+  // reassembling. The 17 distinct maneuver names all appear verbatim in the maneuvers chapter.
+  //
+  // ⚠ The book spells it "Kip-up", not "Kip Up". Cosmetic while nothing reads `maneuvers`, and
+  // a silent mismatch the moment anything matches these names against the book's own text.
   "Martial Arts": [
     { name: "MA:Aikido",        linkedAttribute: "strength", aliases: ["MA:Jujitsu", "MA:Juijitsu", "MA:Sambo"], maneuvers: ["MN:Close Combat", "MN:Disorient", "MN:Evasion", "MN:Focus Will", "MN:Ground Fighting", "MN:Herding", "MN:Sweep", "MN:Throw", "MN:Whirling"] },
-    { name: "MA:Arnis De Mano", linkedAttribute: "strength", aliases: ["MA:Escrima", "MA:Kali"], maneuvers: ["MN:Close Combat", "MN:Focus Strength", "MN:Ground Fighting", "MN:Kick Attack", "MN:Kip Up", "MN:Multi-Strike", "MN:Sweep", "MN:Throw", "MN:Zoning"] },
+    { name: "MA:Arnis De Mano", linkedAttribute: "strength", aliases: ["MA:Escrima", "MA:Kali"], maneuvers: ["MN:Close Combat", "MN:Focus Strength", "MN:Ground Fighting", "MN:Kick Attack", "MN:Kip-up", "MN:Multi-Strike", "MN:Sweep", "MN:Throw", "MN:Zoning"] },
     { name: "MA:Brawling",      linkedAttribute: "strength", aliases: ["MA:Boxing", "MA:Pitfighting"], maneuvers: ["MN:Close Combat", "MN:Disorient", "MN:Evasion", "MN:Full Offense", "MN:Ground Fighting", "MN:Herding", "MN:Kick Attack", "MN:Vicious Blow", "MN:Zoning"] },
-    { name: "MA:Capoeira",      linkedAttribute: "strength", aliases: ["MA:Carromeleg"], maneuvers: ["MN:Disorient", "MN:Evasion", "MN:Ground Fighting", "MN:Herding", "MN:Kick Attack", "MN:Kip Up", "MN:Multi-Strike", "MN:Sweep", "MN:Whirling"] },
+    { name: "MA:Capoeira",      linkedAttribute: "strength", aliases: ["MA:Carromeleg"], maneuvers: ["MN:Disorient", "MN:Evasion", "MN:Ground Fighting", "MN:Herding", "MN:Kick Attack", "MN:Kip-up", "MN:Multi-Strike", "MN:Sweep", "MN:Whirling"] },
     { name: "MA:Karate",        linkedAttribute: "strength", aliases: ["MA:Kenpo"], maneuvers: ["MN:Blind Fighting", "MN:Focus Strength", "MN:Focus Will", "MN:Full Offense", "MN:Kick Attack", "MN:Vicious Blow", "MN:Sweep", "MN:Throw", "MN:Whirling"] },
-    { name: "MA:Kung Fu",       linkedAttribute: "strength", aliases: ["MA:Hwarang-do", "MA:Wushu"], maneuvers: ["MN:Blind Fighting", "MN:Focus Strength", "MN:Full Offense", "MN:Ground Fighting", "MN:Kick Attack", "MN:Kip Up", "MN:Multi-Strike", "MN:Vicious Blow", "MN:Whirling"] },
-    { name: "MA:Muay Thai",     linkedAttribute: "strength", aliases: ["MA:Kickboxing", "MA:Kick Boxing", "MA:Savate"], maneuvers: ["MN:Close Combat", "MN:Focus Strength", "MN:Full Offense", "MN:Ground Fighting", "MN:Herding", "MN:Kick Attack", "MN:Kip Up", "MN:Sweep", "MN:Zoning"] },
+    { name: "MA:Kung Fu",       linkedAttribute: "strength", aliases: ["MA:Hwarang-do", "MA:Wushu"], maneuvers: ["MN:Blind Fighting", "MN:Focus Strength", "MN:Full Offense", "MN:Ground Fighting", "MN:Kick Attack", "MN:Kip-up", "MN:Multi-Strike", "MN:Vicious Blow", "MN:Whirling"] },
+    { name: "MA:Muay Thai",     linkedAttribute: "strength", aliases: ["MA:Kickboxing", "MA:Kick Boxing", "MA:Savate"], maneuvers: ["MN:Close Combat", "MN:Focus Strength", "MN:Full Offense", "MN:Ground Fighting", "MN:Herding", "MN:Kick Attack", "MN:Kip-up", "MN:Sweep", "MN:Zoning"] },
     { name: "MA:Ninjutsu",      linkedAttribute: "strength", maneuvers: ["MN:Blind Fighting", "MN:Close Combat", "MN:Disorient", "MN:Evasion", "MN:Ground Fighting", "MN:Herding", "MN:Kick Attack", "MN:Sweep", "MN:Zoning"] },
     { name: "MA:Pentjak-Silat", linkedAttribute: "strength", maneuvers: ["MN:Blind Fighting", "MN:Close Combat", "MN:Evasion", "MN:Focus Will", "MN:Ground Fighting", "MN:Vicious Blow", "MN:Multi-Strike", "MN:Sweep", "MN:Whirling"] },
-    { name: "MA:Tae Kwon Do",   linkedAttribute: "strength", aliases: ["MA:Hapkido"], maneuvers: ["MN:Focus Strength", "MN:Full Offense", "MN:Herding", "MN:Kick Attack", "MN:Kip Up", "MN:Multi-Strike", "MN:Sweep", "MN:Throw", "MN:Whirling"] },
-    { name: "MA:Tai Chi Ch'uan",linkedAttribute: "strength", aliases: ["MA:Tai Chi Wu", "MA:Tai Chi Chen"], maneuvers: ["MN:Blind Fighting", "MN:Evasion", "MN:Focus Strength", "MN:Focus Will", "MN:Herding", "MN:Kip Up", "MN:Sweep", "MN:Throw", "MN:Whirling"] },
+    { name: "MA:Tae Kwon Do",   linkedAttribute: "strength", aliases: ["MA:Hapkido"], maneuvers: ["MN:Focus Strength", "MN:Full Offense", "MN:Herding", "MN:Kick Attack", "MN:Kip-up", "MN:Multi-Strike", "MN:Sweep", "MN:Throw", "MN:Whirling"] },
+    { name: "MA:Tai Chi Ch'uan",linkedAttribute: "strength", aliases: ["MA:Tai Chi Wu", "MA:Tai Chi Chen"], maneuvers: ["MN:Blind Fighting", "MN:Evasion", "MN:Focus Strength", "MN:Focus Will", "MN:Herding", "MN:Kip-up", "MN:Sweep", "MN:Throw", "MN:Whirling"] },
     { name: "MA:Wildcat",       linkedAttribute: "strength", maneuvers: ["MN:Blind Fighting", "MN:Close Combat", "MN:Full Offense", "MN:Ground Fighting", "MN:Kick Attack", "MN:Multi-Strike", "MN:Sweep", "MN:Vicious Blow", "MN:Zoning"] },
   ],
 

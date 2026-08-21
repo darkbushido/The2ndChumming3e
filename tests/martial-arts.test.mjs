@@ -123,6 +123,39 @@ export async function run(t) {
     styles.every(s => !s.specializations));
   t.ok('all are linked to Strength (CC p.87)', styles.every(s => s.linkedAttribute === 'strength'));
 
+  /* ==== Maneuver lists, audited against CC p.89-91 on 2026-08-20 ====
+   *
+   * All twelve match the book. Karate and Muay Thai needed reassembling because their lists
+   * wrap across a column break — the naive extraction truncates both at "Focus" — and an
+   * earlier truncated read of Brawling wrongly suggested a missing Herding. It is not missing.
+   */
+  const book = {
+    'MA:Aikido':        ['Close Combat', 'Disorient', 'Evasion', 'Focus Will', 'Ground Fighting', 'Herding', 'Sweep', 'Throw', 'Whirling'],
+    'MA:Arnis De Mano': ['Close Combat', 'Focus Strength', 'Ground Fighting', 'Kick Attack', 'Kip-up', 'Multi-Strike', 'Sweep', 'Throw', 'Zoning'],
+    'MA:Brawling':      ['Close Combat', 'Disorient', 'Evasion', 'Full Offense', 'Ground Fighting', 'Herding', 'Kick Attack', 'Vicious Blow', 'Zoning'],
+    'MA:Capoeira':      ['Disorient', 'Evasion', 'Ground Fighting', 'Herding', 'Kick Attack', 'Kip-up', 'Multi-Strike', 'Sweep', 'Whirling'],
+    'MA:Karate':        ['Blind Fighting', 'Focus Strength', 'Focus Will', 'Full Offense', 'Kick Attack', 'Vicious Blow', 'Sweep', 'Throw', 'Whirling'],
+    'MA:Kung Fu':       ['Blind Fighting', 'Focus Strength', 'Full Offense', 'Ground Fighting', 'Kick Attack', 'Kip-up', 'Multi-Strike', 'Vicious Blow', 'Whirling'],
+    'MA:Muay Thai':     ['Close Combat', 'Focus Strength', 'Full Offense', 'Ground Fighting', 'Herding', 'Kick Attack', 'Kip-up', 'Sweep', 'Zoning'],
+    'MA:Ninjutsu':      ['Blind Fighting', 'Close Combat', 'Disorient', 'Evasion', 'Ground Fighting', 'Herding', 'Kick Attack', 'Sweep', 'Zoning'],
+    'MA:Pentjak-Silat': ['Blind Fighting', 'Close Combat', 'Evasion', 'Focus Will', 'Ground Fighting', 'Vicious Blow', 'Multi-Strike', 'Sweep', 'Whirling'],
+    'MA:Tae Kwon Do':   ['Focus Strength', 'Full Offense', 'Herding', 'Kick Attack', 'Kip-up', 'Multi-Strike', 'Sweep', 'Throw', 'Whirling'],
+    "MA:Tai Chi Ch'uan":['Blind Fighting', 'Evasion', 'Focus Strength', 'Focus Will', 'Herding', 'Kip-up', 'Sweep', 'Throw', 'Whirling'],
+    'MA:Wildcat':       ['Blind Fighting', 'Close Combat', 'Full Offense', 'Ground Fighting', 'Kick Attack', 'Multi-Strike', 'Sweep', 'Vicious Blow', 'Zoning'],
+  };
+  for (const s of styles) {
+    const want = book[s.name];
+    t.ok(`${s.name} is one of the book's twelve`, !!want);
+    if (!want) continue;
+    const got = s.maneuvers.map(m => m.replace('MN:', ''));
+    t.is(`${s.name} maneuvers match CC`, [...got].sort().join(', '), [...want].sort().join(', '));
+  }
+  // ⚠ The book spells it "Kip-up", not "Kip Up". Nothing reads `maneuvers` yet, so this is
+  // cosmetic — and it stops being cosmetic the moment anything matches these against the book.
+  const allMan = styles.flatMap(s => s.maneuvers);
+  t.ok('no "Kip Up" spelling survives', !allMan.includes('MN:Kip Up'));
+  t.ok('and Kip-up is present', allMan.includes('MN:Kip-up'));
+
   /* ==== 5. The book gate ==== */
   t.is('Martial Arts is Cannon Companion content', SKILL_CATEGORY_BOOK['Martial Arts'], 'cc');
   t.is('and Unarmed Combat is what CC replaces',   SKILL_REPLACED_BY_BOOK['Unarmed Combat'], 'cc');
