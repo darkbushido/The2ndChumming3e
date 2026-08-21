@@ -351,4 +351,34 @@ export const MUTANTS = [
       return { dice, labels };
     },
   },
+
+  {
+    id:     'martial-arts-are-knowledge-skills',
+    suite:  'martial-arts',
+    module: '../scripts/config.js',
+    klass:  'SR3E',
+    method: 'skillTypeForCategory',
+    was:    'CC p.87: "Each of these new martial arts skills is considered a Combat skill and '
+          + 'uses the standard rules for Active skills... including the use of Combat Pool." '
+          + 'Filed as knowledge, Aikido shows in the wrong sheet section and is excluded from '
+          + 'every category bonus keyed on Combat skills',
+    impl:   category => {
+      if (category === 'Language') return 'language';
+      if (category === 'Martial Arts') return 'knowledge';
+      const active = new Set(['Combat skills', 'Build/Repair skills', 'Magical skills',
+        'Physical skills', 'Social skills', 'Technical skills', 'Vehicle skills', 'Martial Arts']);
+      return active.has(category) ? 'active' : 'knowledge';
+    },
+  },
+  {
+    id:     'martial-arts-aliases-are-separate-skills',
+    suite:  'martial-arts',
+    module: '../scripts/config.js',
+    klass:  'SR3E',
+    method: 'resolveMartialArt',
+    was:    'the parenthesised names in CC p.87 are the SAME skill under another name - Aikido '
+          + '(Jujitsu, Sambo). Treating them as distinct lets a character take all three at '
+          + 'full rating, which is three skills where the book has one',
+    impl:   () => null,
+  },
 ];

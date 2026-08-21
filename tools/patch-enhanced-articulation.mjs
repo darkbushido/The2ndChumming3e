@@ -19,7 +19,28 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const PACK = join(HERE, '..', 'packs', 'sr3e-mm-bioware');
+
+/**
+ * ⚠ **THERE ARE TWO COPIES OF EVERY PACK, AND FOUNDRY READS THE OTHER ONE.**
+ *
+ * `scripts/`, `styles/` and `lang/` in the Foundry install are junctions into this checkout,
+ * so code edits are live. **`packs/` is NOT** — it is a real directory that Foundry writes to,
+ * deliberately, because these are LevelDB databases carrying world state. Patching the repo's
+ * copy therefore fixes what ships and changes nothing in the running game, which is exactly
+ * the mistake made on 2026-08-20: the pack was corrected, Foundry was restarted, and the item
+ * still had empty fields because the running game never saw it.
+ *
+ *   --install   patch the installed pack (what your Foundry actually reads)
+ *   (default)   patch the repo pack (what ships to everyone else)
+ *
+ * Both usually need doing: the repo copy so the fix is released, the install copy so it works
+ * here. Set SR3E_INSTALL to override the install location.
+ */
+const INSTALL = process.env.SR3E_INSTALL
+  ?? join(process.env.LOCALAPPDATA ?? '', 'FoundryVTT', 'Data', 'systems', 'The2ndChumming3e');
+const PACK = process.argv.includes('--install')
+  ? join(INSTALL, 'packs', 'sr3e-mm-bioware')
+  : join(HERE, '..', 'packs', 'sr3e-mm-bioware');
 const NAME = 'Enhanced Articulation';
 const CHECK = process.argv.includes('--check');
 
@@ -43,6 +64,7 @@ const DESCRIPTION =
   + '<p><strong>+1 Reaction</strong>, with no effect on rigging or decking and no effect on the Control '
   + 'Pool — apply by hand.</p>';
 
+console.log(`Pack: ${PACK}`);
 const db = new ClassicLevel(PACK, { valueEncoding: 'json' });
 
 try {

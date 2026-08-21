@@ -10,6 +10,8 @@
     "manifest:branch": "node tools/manifest-branch.mjs",
     "manifest:check": "node tools/manifest-branch.mjs --check",
     "setup:hooks": "git config core.hooksPath .githooks",
+    "sync:install": "node tools/sync-install.mjs",
+    "sync:install:check": "node tools/sync-install.mjs --check",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
     "test:mutate": "node tests/mutate.mjs"

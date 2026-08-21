@@ -2800,9 +2800,16 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const actor     = this.actor;
 
     // Build flat indexed list: { name, category, attribute }
+    // Source-book filtering reaches SKILLS, not just packs (see SR3ESourceBooks.skillOffered).
+    // Martial Arts is Cannon Companion content, and CC in turn REPLACES Unarmed Combat — so
+    // the two move together and a table that has not enabled `cc` sees neither change.
+    //
+    // ⚠ Presentation only. A character who already has one of these keeps it and keeps rolling
+    // it, exactly as with gear from a book switched off later.
     const entries = [];
     for (const [cat, skills] of Object.entries(allSkills)) {
       for (const s of skills) {
+        if (!game.sr3e.SR3ESourceBooks.skillOffered(s.name, cat)) continue;
         entries.push({ name: s.name, category: cat, attribute: s.linkedAttribute });
       }
     }
@@ -4037,9 +4044,16 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   /*  Karma                                                               */
   /* ------------------------------------------------------------------ */
 
+  /**
+   * ⚠ This used to test `!category.includes('knowledge')`, which is not the same question and
+   * disagreed with `skillTypeForCategory` on real data. 'Martial Arts' contains neither
+   * "knowledge" nor "language", so karma charged Aikido as an ACTIVE skill while the sheet
+   * filed it under knowledge — the same skill, classified two ways by two functions.
+   *
+   * One classifier now. `skillTypeForCategory` is the authority.
+   */
   static _isActiveSkill(category) {
-    const c = (category ?? '').toLowerCase();
-    return !c.includes('knowledge') && !c.includes('language');
+    return skillTypeForCategory(category) === 'active';
   }
 
   static _skillCost(newRating, attrRating, isActive) {

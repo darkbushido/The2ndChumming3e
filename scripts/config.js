@@ -59,35 +59,18 @@ export const SR3ESkills = {
   // with Cyber-Implant Weaponry (CC p.86) — which is why `_buildMeleePoolInfo` accepts an
   // MA: skill for a CYB-category weapon.
   "Martial Arts": [
-    { name: "MA:Aikido",        linkedAttribute: "strength", maneuvers: ["MN:Close Combat", "MN:Disorient", "MN:Evasion", "MN:Focus Will", "MN:Ground Fighting", "MN:Herding", "MN:Sweep", "MN:Throw", "MN:Whirling"] },
-    { name: "MA:Arnis De Mano", linkedAttribute: "strength", maneuvers: ["MN:Close Combat", "MN:Focus Strength", "MN:Ground Fighting", "MN:Kick Attack", "MN:Kip Up", "MN:Multi-Strike", "MN:Sweep", "MN:Throw", "MN:Zoning"] },
-    { name: "MA:Boxing",        linkedAttribute: "strength", maneuvers: ["MN:Close Combat", "MN:Disorient", "MN:Evasion", "MN:Full Offense", "MN:Ground Fighting", "MN:Herding", "MN:Kick Attack", "MN:Vicious Blow", "MN:Zoning"] },
-    { name: "MA:Brawling",      linkedAttribute: "strength", maneuvers: ["MN:Close Combat", "MN:Disorient", "MN:Evasion", "MN:Full Offense", "MN:Ground Fighting", "MN:Herding", "MN:Kick Attack", "MN:Vicious Blow", "MN:Zoning"] },
-    { name: "MA:Capoeira",      linkedAttribute: "strength", maneuvers: ["MN:Disorient", "MN:Evasion", "MN:Ground Fighting", "MN:Herding", "MN:Kick Attack", "MN:Kip Up", "MN:Multi-Strike", "MN:Sweep", "MN:Whirling"] },
-    { name: "MA:Carromeleg",    linkedAttribute: "strength", maneuvers: ["MN:Disorient", "MN:Evasion", "MN:Ground Fighting", "MN:Focus Will", "MN:Kick Attack", "MN:Kip Up", "MN:Multi-Strike", "MN:Sweep", "MN:Whirling"] },
-    { name: "MA:Escrima",       linkedAttribute: "strength", maneuvers: ["MN:Close Combat", "MN:Focus Strength", "MN:Ground Fighting", "MN:Kick Attack", "MN:Kip Up", "MN:Multi-Strike", "MN:Sweep", "MN:Throw", "MN:Zoning"] },
-    { name: "MA:Hapkido",       linkedAttribute: "strength", maneuvers: ["MN:Focus Strength", "MN:Full Offense", "MN:Herding", "MN:Kick Attack", "MN:Kip Up", "MN:Multi-Strike", "MN:Sweep", "MN:Throw", "MN:Whirling"] },
-    { name: "MA:Hwarang-do",    linkedAttribute: "strength", maneuvers: ["MN:Blind Fighting", "MN:Focus Strength", "MN:Full Offense", "MN:Ground Fighting", "MN:Kick Attack", "MN:Kip Up", "MN:Multi-Strike", "MN:Vicious Blow", "MN:Whirling"] },
-    { name: "MA:Juijitsu",      linkedAttribute: "strength", maneuvers: ["MN:Close Combat", "MN:Disorient", "MN:Evasion", "MN:Focus Will", "MN:Ground Fighting", "MN:Herding", "MN:Sweep", "MN:Whirling"] },
-    { name: "MA:Jujitsu",       linkedAttribute: "strength", maneuvers: ["MN:Close Combat", "MN:Focus Strength", "MN:Full Offense", "MN:Ground Fighting", "MN:Herding", "MN:Kick Attack", "MN:Kip Up", "MN:Sweep", "MN:Zoning"] },
-    { name: "MA:Kali",          linkedAttribute: "strength", maneuvers: ["MN:Close Combat", "MN:Focus Strength", "MN:Ground Fighting", "MN:Kick Attack", "MN:Kip Up", "MN:Multi-Strike", "MN:Sweep", "MN:Throw", "MN:Zoning"] },
-    { name: "MA:Karate",        linkedAttribute: "strength", maneuvers: ["MN:Blind Fighting", "MN:Focus Strength", "MN:Focus Will", "MN:Full Offense", "MN:Kick Attack", "MN:Vicious Blow", "MN:Sweep", "MN:Throw", "MN:Whirling"] },
-    { name: "MA:Kenpo",         linkedAttribute: "strength", maneuvers: ["MN:Blind Fighting", "MN:Focus Strength", "MN:Focus Will", "MN:Full Offense", "MN:Kick Attack", "MN:Vicious Blow", "MN:Sweep", "MN:Throw", "MN:Whirling"] },
-    { name: "MA:Kick Boxing",   linkedAttribute: "strength", maneuvers: ["MN:Close Combat", "MN:Focus Strength", "MN:Full Offense", "MN:Ground Fighting", "MN:Herding", "MN:Kick Attack", "MN:Kip Up", "MN:Sweep", "MN:Zoning"] },
-    { name: "MA:Kickboxing",    linkedAttribute: "strength", maneuvers: ["MN:Close Combat", "MN:Focus Strength", "MN:Full Offense", "MN:Ground Fighting", "MN:Herding", "MN:Kick Attack", "MN:Kip Up", "MN:Sweep", "MN:Zoning"] },
-    { name: "MA:Kung Fu",       linkedAttribute: "strength", maneuvers: ["MN:Blind Fighting", "MN:Focus Strength", "MN:Full Offense", "MN:Ground Fighting", "MN:Kick Attack", "MN:Kip Up", "MN:Multi-Strike", "MN:Vicious Blow", "MN:Whirling"] },
-    { name: "MA:Muay Thai",     linkedAttribute: "strength", maneuvers: ["MN:Close Combat", "MN:Focus Strength", "MN:Full Offense", "MN:Ground Fighting", "MN:Herding", "MN:Kick Attack", "MN:Kip Up", "MN:Sweep", "MN:Zoning"] },
+    { name: "MA:Aikido",        linkedAttribute: "strength", aliases: ["MA:Jujitsu", "MA:Juijitsu", "MA:Sambo"], maneuvers: ["MN:Close Combat", "MN:Disorient", "MN:Evasion", "MN:Focus Will", "MN:Ground Fighting", "MN:Herding", "MN:Sweep", "MN:Throw", "MN:Whirling"] },
+    { name: "MA:Arnis De Mano", linkedAttribute: "strength", aliases: ["MA:Escrima", "MA:Kali"], maneuvers: ["MN:Close Combat", "MN:Focus Strength", "MN:Ground Fighting", "MN:Kick Attack", "MN:Kip Up", "MN:Multi-Strike", "MN:Sweep", "MN:Throw", "MN:Zoning"] },
+    { name: "MA:Brawling",      linkedAttribute: "strength", aliases: ["MA:Boxing", "MA:Pitfighting"], maneuvers: ["MN:Close Combat", "MN:Disorient", "MN:Evasion", "MN:Full Offense", "MN:Ground Fighting", "MN:Herding", "MN:Kick Attack", "MN:Vicious Blow", "MN:Zoning"] },
+    { name: "MA:Capoeira",      linkedAttribute: "strength", aliases: ["MA:Carromeleg"], maneuvers: ["MN:Disorient", "MN:Evasion", "MN:Ground Fighting", "MN:Herding", "MN:Kick Attack", "MN:Kip Up", "MN:Multi-Strike", "MN:Sweep", "MN:Whirling"] },
+    { name: "MA:Karate",        linkedAttribute: "strength", aliases: ["MA:Kenpo"], maneuvers: ["MN:Blind Fighting", "MN:Focus Strength", "MN:Focus Will", "MN:Full Offense", "MN:Kick Attack", "MN:Vicious Blow", "MN:Sweep", "MN:Throw", "MN:Whirling"] },
+    { name: "MA:Kung Fu",       linkedAttribute: "strength", aliases: ["MA:Hwarang-do", "MA:Wushu"], maneuvers: ["MN:Blind Fighting", "MN:Focus Strength", "MN:Full Offense", "MN:Ground Fighting", "MN:Kick Attack", "MN:Kip Up", "MN:Multi-Strike", "MN:Vicious Blow", "MN:Whirling"] },
+    { name: "MA:Muay Thai",     linkedAttribute: "strength", aliases: ["MA:Kickboxing", "MA:Kick Boxing", "MA:Savate"], maneuvers: ["MN:Close Combat", "MN:Focus Strength", "MN:Full Offense", "MN:Ground Fighting", "MN:Herding", "MN:Kick Attack", "MN:Kip Up", "MN:Sweep", "MN:Zoning"] },
     { name: "MA:Ninjutsu",      linkedAttribute: "strength", maneuvers: ["MN:Blind Fighting", "MN:Close Combat", "MN:Disorient", "MN:Evasion", "MN:Ground Fighting", "MN:Herding", "MN:Kick Attack", "MN:Sweep", "MN:Zoning"] },
     { name: "MA:Pentjak-Silat", linkedAttribute: "strength", maneuvers: ["MN:Blind Fighting", "MN:Close Combat", "MN:Evasion", "MN:Focus Will", "MN:Ground Fighting", "MN:Vicious Blow", "MN:Multi-Strike", "MN:Sweep", "MN:Whirling"] },
-    { name: "MA:Pitfighting",   linkedAttribute: "strength", maneuvers: ["MN:Close Combat", "MN:Disorient", "MN:Evasion", "MN:Full Offense", "MN:Ground Fighting", "MN:Herding", "MN:Kick Attack", "MN:Vicious Blow", "MN:Zoning"] },
-    { name: "MA:Sambo",         linkedAttribute: "strength", maneuvers: ["MN:Close Combat", "MN:Disorient", "MN:Evasion", "MN:Focus Will", "MN:Ground Fighting", "MN:Herding", "MN:Sweep", "MN:Whirling"] },
-    { name: "MA:Savate",        linkedAttribute: "strength", maneuvers: ["MN:Close Combat", "MN:Focus Strength", "MN:Full Offense", "MN:Ground Fighting", "MN:Herding", "MN:Kick Attack", "MN:Kip Up", "MN:Sweep", "MN:Zoning"] },
-    { name: "MA:Tae Kwon Do",   linkedAttribute: "strength", maneuvers: ["MN:Focus Strength", "MN:Full Offense", "MN:Herding", "MN:Kick Attack", "MN:Kip Up", "MN:Multi-Strike", "MN:Sweep", "MN:Throw", "MN:Whirling"] },
-    { name: "MA:Tai Chi Ch'uan",linkedAttribute: "strength", maneuvers: ["MN:Blind Fighting", "MN:Evasion", "MN:Focus Strength", "MN:Focus Will", "MN:Herding", "MN:Kip Up", "MN:Sweep", "MN:Throw", "MN:Whirling"] },
-    { name: "MA:Tai Chi Wu",    linkedAttribute: "strength", maneuvers: ["MN:Blind Fighting", "MN:Evasion", "MN:Focus Strength", "MN:Focus Will", "MN:Herding", "MN:Kip Up", "MN:Sweep", "MN:Throw", "MN:Whirling"] },
-    { name: "MA:Tai Chi Chen",  linkedAttribute: "strength", maneuvers: ["MN:Blind Fighting", "MN:Evasion", "MN:Focus Strength", "MN:Focus Will", "MN:Herding", "MN:Kip Up", "MN:Sweep", "MN:Throw", "MN:Whirling"] },
+    { name: "MA:Tae Kwon Do",   linkedAttribute: "strength", aliases: ["MA:Hapkido"], maneuvers: ["MN:Focus Strength", "MN:Full Offense", "MN:Herding", "MN:Kick Attack", "MN:Kip Up", "MN:Multi-Strike", "MN:Sweep", "MN:Throw", "MN:Whirling"] },
+    { name: "MA:Tai Chi Ch'uan",linkedAttribute: "strength", aliases: ["MA:Tai Chi Wu", "MA:Tai Chi Chen"], maneuvers: ["MN:Blind Fighting", "MN:Evasion", "MN:Focus Strength", "MN:Focus Will", "MN:Herding", "MN:Kip Up", "MN:Sweep", "MN:Throw", "MN:Whirling"] },
     { name: "MA:Wildcat",       linkedAttribute: "strength", maneuvers: ["MN:Blind Fighting", "MN:Close Combat", "MN:Full Offense", "MN:Ground Fighting", "MN:Kick Attack", "MN:Multi-Strike", "MN:Sweep", "MN:Vicious Blow", "MN:Zoning"] },
-    { name: "MA:Wushu",         linkedAttribute: "strength", maneuvers: ["MN:Blind Fighting", "MN:Focus Strength", "MN:Full Offense", "MN:Ground Fighting", "MN:Kick Attack", "MN:Kip Up", "MN:Multi-Strike", "MN:Vicious Blow", "MN:Whirling"] },
   ],
 
   "Magical skills": [
@@ -543,10 +526,19 @@ export const SR3ESkills = {
 export const ACTIVE_SKILL_CATEGORIES = new Set([
   'Combat skills', 'Build/Repair skills', 'Magical skills', 'Physical skills',
   'Social skills', 'Technical skills', 'Vehicle skills',
+  // ⚠ Martial Arts belongs HERE, not with the knowledge categories where it sat until
+  // 2026-08-20. Cannon Companion p.87 is explicit: "Each of these new martial arts skills is
+  // considered a Combat skill and uses the standard rules for Active skills (p. 81, SR3) and
+  // skill advancement (p. 244, SR3), INCLUDING THE USE OF COMBAT POOL."
+  //
+  // Filed as knowledge, Aikido appeared in the knowledge section of the sheet and was excluded
+  // from every category-wide bonus keyed on 'Combat skills' — so Enhanced Articulation, whose
+  // whole point is physical skills, did nothing for a martial artist. Reported from play.
+  'Martial Arts',
 ]);
 
 export const KNOWLEDGE_SKILL_CATEGORIES = new Set([
-  'Martial Arts', 'Matrix skills', 'Survival skills', 'Otaku skills',
+  'Matrix skills', 'Survival skills', 'Otaku skills',
   'Street knowledge', 'Academic skills', 'System familiarity', 'Program design',
   '6th World knowledge', 'Interests', 'Area knowledge', 'Background',
 ]);
@@ -622,6 +614,41 @@ export function booksForEdition(edition) {
   return Object.entries(SOURCE_BOOKS).filter(([, b]) => b.edition === edition).map(([c]) => c);
 }
 
+/**
+ * Skill categories that belong to a source book, and are only offered when it is in play.
+ *
+ * ⚠ **This is the first RULE-level use of the source-book filter.** Until now `SR3ESourceBooks`
+ * gated compendium content only — packs in the sidebar and item pickers. The predicate it
+ * needed already existed (`isAllowed(code)`); `packAllowed` is just a thin wrapper over it. So
+ * this sets the precedent TODO 40 was worried about, at far lower cost than that item assumed.
+ *
+ * Consulted at USE time, never at module load: the answer comes from a game setting, and this
+ * file is static data evaluated before settings exist.
+ */
+export const SKILL_CATEGORY_BOOK = {
+  'Martial Arts': 'cc',
+};
+
+/**
+ * Skills a source book REPLACES — hidden when that book is in play, offered when it is not.
+ *
+ * The inverse gate, and Cannon Companion p.87 states it outright:
+ *
+ *   > "To increase the realism and detail of the current melee combat system, the skill of
+ *   >  **Unarmed Combat must be removed from the game and replaced** by a number of new skills
+ *   >  that each represent a martial arts style… The new skill of **Brawling**, though not
+ *   >  technically a martial art, represents generic unarmed fighting techniques previously
+ *   >  represented by the Unarmed Combat skill."
+ *
+ * ⚠ **Presentation only.** A character who already has Unarmed Combat keeps it and keeps
+ * rolling it, exactly as a character keeps gear from a book the GM later switches off. The
+ * weapon-category map (UNA → Unarmed Combat), `SR3EItem._unarmedWeapon()` and
+ * `_buildMeleePoolInfo` all continue to work; this only decides what the skill picker offers.
+ */
+export const SKILL_REPLACED_BY_BOOK = {
+  'Unarmed Combat': 'cc',
+};
+
 /** Derive 'active' | 'knowledge' | 'language' from a category name. */
 export function skillTypeForCategory(category) {
   if (category === 'Language') return 'language';
@@ -632,6 +659,35 @@ export function skillTypeForCategory(category) {
 // ---------------------------------------------------------------------------
 // Helper functions
 // ---------------------------------------------------------------------------
+
+/**
+ * Resolve a martial arts skill name to its canonical entry, following aliases.
+ *
+ * CC p.87 lists twelve styles, several with parenthesised equivalents — Aikido (Jujitsu,
+ * Sambo), Arnis De Mano (Escrima, Kali) and so on. Those are the SAME skill under another
+ * name, not separate skills: "Martial arts styles that have the same game effect are included
+ * in parentheses after the skill name."
+ *
+ * ⚠ They were 29 independent entries until 2026-08-20, so a character could take Aikido AND
+ * Jujitsu AND Sambo separately, each at full rating — three skills where the book has one. The
+ * alias entries also carried INVENTED maneuver lists: Jujitsu's shared barely half its
+ * maneuvers with Aikido's, though by the book they are identical.
+ *
+ * Existing characters keep whatever skill item they already have; this resolves the name so an
+ * old "MA:Sambo" still finds its style.
+ *
+ * @param {string} name  e.g. 'MA:Sambo'
+ * @returns {object|null} the canonical entry, or null if it is not a martial art
+ */
+export function resolveMartialArt(name) {
+  const want = String(name ?? '').trim().toLowerCase();
+  if (!want) return null;
+  for (const entry of (SR3ESkills['Martial Arts'] ?? [])) {
+    if (entry.name.toLowerCase() === want) return entry;
+    if ((entry.aliases ?? []).some(a => a.toLowerCase() === want)) return entry;
+  }
+  return null;
+}
 
 /** All category names, in definition order. */
 export function getSkillCategories() {
@@ -1034,6 +1090,7 @@ export const SR3E = {
   getFullSkillName,
   getSpecializationsForSkill,
   skillTypeForCategory,
+  resolveMartialArt,
   sourceBooks: SOURCE_BOOKS,
   defaultAllowedBooks,
 

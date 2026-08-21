@@ -1,4 +1,5 @@
-import { SOURCE_BOOKS, EDITIONS, defaultAllowedBooks } from './config.js';
+import { SOURCE_BOOKS, EDITIONS, defaultAllowedBooks,
+         SKILL_CATEGORY_BOOK, SKILL_REPLACED_BY_BOOK } from './config.js';
 
 const SYS             = 'The2ndChumming3e';
 const SETTING         = 'allowedBooks';
@@ -58,6 +59,34 @@ export class SR3ESourceBooks {
   /** Should this pack's contents be offered anywhere? */
   static packAllowed(pack) {
     return this.isAllowed(this.bookOf(pack));
+  }
+
+  /**
+   * Should this skill be OFFERED in the picker?
+   *
+   * ⚠ **The first rule-level use of the book filter.** Until 2026-08-20 `SR3ESourceBooks`
+   * gated compendium content only. The predicate was already general — `packAllowed` is a thin
+   * wrapper over `isAllowed(code)` — so a rule can ask directly, and TODO 40's "this needs a
+   * new capability" turned out to be cheaper than recorded.
+   *
+   * Two gates, in this order:
+   *   1. the skill's CATEGORY may belong to a book (Martial Arts → `cc`)
+   *   2. the skill may be REPLACED by a book (Unarmed Combat → `cc` removes it)
+   *
+   * ⚠ **Presentation only, exactly like the pack filter.** A character who already has the
+   * skill keeps it and keeps rolling it. Nothing is deleted and no roll path consults this.
+   *
+   * @param {string} name      the skill's name
+   * @param {string} category  its category
+   */
+  static skillOffered(name, category) {
+    const catBook = SKILL_CATEGORY_BOOK[category];
+    if (catBook && !this.isAllowed(catBook)) return false;
+
+    const replacedBy = SKILL_REPLACED_BY_BOOK[name];
+    if (replacedBy && this.isAllowed(replacedBy)) return false;
+
+    return true;
   }
 
   /**
