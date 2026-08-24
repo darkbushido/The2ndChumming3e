@@ -2138,9 +2138,37 @@ scratchpad scripts never committed (`3437608`, `39f8946` touched only `system.js
 nowhere in git**. The populate macros wouldn't help — they target the old monolithic packs.
 This gap predates the retire decision.
 
-**Live risk:** issue #199 is open against `criticalfault/Shadowrun-Character-Generator`. If
-they normalise the `Mods` encoding (3-letter `ROD`/`NCT` vs 4-letter `RBOD`), every mapping
-assumption breaks with no committed tooling to re-derive from.
+**Live risk — corrected 2026-08-20 after re-reading the thread.** The version above said
+*"issue #199 is open… if they normalise the `Mods` encoding"*. **That is wrong on both counts:**
+the issue is **CLOSED**, withdrawn by us on 2026-07-30 once the maintainer explained the
+encoding, and he gave **no indication of normalising anything** — he described the codes as
+deliberate and specific: *"it's all in there for -something-, but it's all specific
+unfortunately."*
+
+**The actual risk is worse, and it is present rather than hypothetical.** criticalfault posted
+**two different maps from two different parts of his own codebase**, and they disagree:
+
+| | backend map (comment 1) | Magic Panel map (comment 4) |
+|---|---|---|
+| Racial Body / Str / Qui | `ROD` `RTR` `RCK` | `RBOD` `RSTR` `RQCK` |
+| Racial Intelligence | `RNT` | — absent |
+| Natural Reaction / Init | `NCT` `NNI` | — absent |
+| Combat Pool | — absent | `CPL` |
+
+Both encodings **already coexist in the data**: `Bioware.json` uses the 3-letter form,
+`AdeptPowers.json` the 4-letter. So an importer must handle both on day one, and there is no
+single authoritative map to copy — the format's own author maps it differently in different
+panels.
+
+That makes vendoring **more** valuable, not less, but for a different reason than recorded:
+not *"upstream might change it"* but *"it is already inconsistent and undocumented, and a
+pinned snapshot plus a committed map is the only way to make it tractable."*
+
+⚠ **`Mods` is also overloaded with non-attribute flags**, confirmed by the maintainer:
+`STG` (Suprathyroid Gland) and `MNE` (Mnemonic Enhancer) alter **karma spending**, `DGX`
+(Digestive Expansion) alters **lifestyle cost**. With `DJK` `PCL` `PCA` `AST` `MUL` `MAG`,
+none appear in either map. A map stage that treats every `Mods` token as an attribute bonus
+invents phantom attributes for all of them. [#8](#8) carries the filter list.
 
 **Step 1 — vendor.** `rawdata/` pins `ActiveSkills`, `Armor`, `LanguageSkills`, `MDF-*`,
 `ODM-*` but **none** of the generator JSON the 11 v2 macros fetch live (Cyberware, Bioware,
@@ -2152,6 +2180,14 @@ Snapshot them (suggest `SRCG-` prefix). Upstream change then = reviewable diff.
 - *Map*: recover field translations from the v2 macros **before deleting them** —
   `EssCost`→`essenceCost`, the `(CategoryCode)` suffix parse, weapon-category→skill,
   damage codes, art. The 82 shipped packs are worked examples to verify against.
+  **Two hard requirements from issue #199, both non-obvious:**
+  1. **Accept BOTH racial encodings** — 3-letter (`ROD` `RTR` `RCK` `RNT` `NCT` `NNI`
+     `XOD` `XCK` `XTR`) and 4-letter (`RBOD` `RSTR` `RQCK`). They coexist in the data today,
+     split by file, and neither of the maintainer's own two maps covers both.
+  2. **Filter the non-attribute flags** or they become phantom attributes: `STG` `MNE` `DGX`
+     `DJK` `PCL` `PCA` `MUL` `AST` `MAG` `CPL`. These encode karma-spending and lifestyle
+     effects, not bonuses. A parse that assumes every token is an attribute is wrong for all
+     of them — see [#8](#8) for the confirmed list.
 - *Route*: prefix → book code → `packs/sr3e-<code>-<type>`. 32 codes known (§9); handle
   `sta2`/`sota2` and the slash in `n/sl`.
 - *Write*: `fvtt package`, not in-Foundry macros. This is what actually performed the split.
