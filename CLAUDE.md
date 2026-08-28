@@ -1042,6 +1042,29 @@ the attacker."* Net 0 → base Damage Level, defender resists. `SR3EActor.meleeO
 ⚠ The staging gate is unconditional, **not** `net > 0`: gating on that posts no soak button and
 deletes the attack. ⚠ Same strictness trap as the ranged dodge tie, pointing the other way.
 
+### Cyberware/bioware bonuses — the `Mods` field
+
+Upstream (`criticalfault/Shadowrun-Character-Generator`) encodes an item's effects as
+`+2RCT,+1INI,`. `scripts/SR3EMods.js` parses it; `tools/build-mods-bonuses.mjs` generates
+`scripts/data/srcg-bonuses.js` (**generated — do not hand-edit**), which feeds BOTH the pack
+patcher and the world migration.
+
+⚠ **Parse `Mods`, never `Notes`** — the upstream maintainer confirmed `Mods` is authoritative
+(issue #199); `Notes` is a flattened view that sometimes disagrees.
+
+⚠ **Two racial encodings coexist TODAY**, split by file: 3-letter with the first letter
+replaced (`ROD` `RTR` `RCK` `RNT` `NCT` `NNI` `XOD`) in Bioware, 4-letter `R`+code
+(`RBOD` `RSTR` `RQCK`) in AdeptPowers. Neither of the maintainer's own two maps covers both.
+SR3E collapses them all to the plain attribute — we track no racial maxima.
+
+⚠ **Most codes are NOT attributes.** `STG` `MNE` `DGX` drive karma spending and lifestyle
+cost; `DJK` `PCL` `PCA` `MUL` `AST` are equipment flags. `IMP`/`BAL`, `TAS`/`HAC`/`CPL` and
+`VCT`/`VNI`/`VCR` are real modifiers with no SR3E field. **Nothing is silently discarded** —
+every token lands in `bonuses`, `flags`, `unmapped` or `unparsed`.
+
+⚠ **`bonus*` fields on cyberware/bioware have NO `min`** — three entries carry a penalty
+(`-1RCT`), which a floor of 0 silently swallowed. AdeptPowerData keeps its floor deliberately.
+
 ### World migrations — `scripts/SR3EMigrations.js`
 
 ⚠ **Foundry EMBEDS items, it does not link them.** An actor holding an item carries its **own

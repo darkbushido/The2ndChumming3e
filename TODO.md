@@ -27,8 +27,8 @@ independent.
 | 📕 Rules not implemented | 3 · 4 · 30 · 40 · 47 · 48 · 49 · 53 · 57 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
-| 🧹 Housekeeping | 1 · 6 · 8 |
-| ✅ Done — kept for the record | **2** · **5** · **10** · 13 · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
+| 🧹 Housekeeping | 1 · 6 |
+| ✅ Done — kept for the record | **2** · **5** · **8** · **10** · 13 · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -3215,7 +3215,7 @@ landing the harness alone, then rebasing the rest.
 the broken behaviour and reference it from the PR. `gh` defaults to origin; confirm the
 target repo on every command.
 
-## 8. Ship cyberware/bioware with their bonuses pre-filled
+## 8. ✅ Ship cyberware/bioware with their bonuses pre-filled — **DONE 2026-08-21**
 
 **Plumbing is complete; only structured data is missing.**
 
@@ -3268,6 +3268,68 @@ weapon damage strings (`Unarmed = (STR+4)M Stun` on Bone Lace), category-wide sk
 bonuses (→ #10), incompatibility prose.
 
 Harvest `populate-cyberware.js` before #1 deletes anything; use it to check the parser.
+
+---
+
+## What was built
+
+**`scripts/SR3EMods.js`** — `parseMods(str)` → `{ bonuses, flags, unmapped, unparsed }`, pure.
+**Every token lands in exactly one bucket; nothing is silently discarded.** That is the design
+rule, because this data has already lost information once and a parser that quietly ignores
+what it does not understand loses it again.
+
+Verified across all **1,298** upstream entries: **186** carry `Mods`, **zero** tokens unparsed.
+
+| Bucket | What goes there |
+|---|---|
+| `bonuses` | the 8 SR3E `bonus*` fields, racial/natural collapsed to plain |
+| `flags` | `STG` `MNE` `DGX` `DJK` `PCL` `PCA` `MUL` `AST` — karma/lifestyle/equipment, **not** modifiers |
+| `unmapped` | `IMP`/`BAL` armour, `TAS`/`HAC`/`CPL` pools, `VCT`/`VNI`/`VCR` rigger — real, but no field exists |
+| `unparsed` | anything else, named so it can be chased |
+
+**`tools/build-mods-bonuses.mjs`** → generates `scripts/data/srcg-bonuses.js`, **142 items**.
+Vendored deliberately: the populate macros fetch upstream JSON *live from GitHub*, so an
+upstream change is currently invisible ([#12](#12)). A committed map makes it a reviewable
+diff — and lets the migration read it inside Foundry, where there is no filesystem.
+
+**Both halves are patched from the one map:**
+- `tools/patch-pack-bonuses.mjs` — the compendium, so new drags arrive correct.
+  **111 of 142 matched**; the other 31 are simply not in the shipped packs (one is a rename,
+  "Hydraulic Ram" vs "Hydraulic Jack"). ⚠ **Reported, never fuzzy-matched** — assigning
+  bonuses to a guessed item is worse than assigning none.
+- A migration at `0.4.5.5` — items already embedded on actors, which the pack fix cannot reach.
+
+### ⚠ The schema was asserting something false
+
+Every `bonus*` field was `min: 0`. Three entries carry a **penalty** — BIODYNE "Enable"
+Cyberlimbs (`-1RCT`) and Grade Subdermal Armor [8]/[9] (`+3BOD,-1RCT`) — which the floor
+silently stored as **0**, so the items looked as though they had no penalty at all. The floor
+was removed from the 8 cyberware and 8 bioware fields.
+
+⚠ **This currently changes no shipped document**: all three negative items are among the 31 not
+in the packs. It was still necessary — the schema was wrong, the migration will apply them to
+any actor who owns one, and a GM can now type a penalty by hand.
+
+⚠ **`AdeptPowerData` deliberately KEEPS its floor**, `bonusMag` included. Nothing in the data
+produces a negative adept bonus, and negative Magic feeds Spell Pool and Essence-derived Magic
+in ways not worth opening speculatively.
+
+### ⚠ Enhanced Articulation's +1 Reaction is now applied
+
+Reversing the call made on 2026-08-20, when it was left unset because M&M says the bonus has
+*"no effect on rigging or decking and does not affect the Control Pool"*. It comes from `+1NCT`
+like every other item, so the base bonus is right and the conditional exception stays
+unmodelled under [#30](#30) — consistent with how all 142 are treated.
+
+### Still out of scope
+
+**14 entries have `Mods: ""` with modifiers only in `Notes`** (9 in Bioware) — Adrenal Pump,
+Nephritic Screen, Nitrogen Binder. Most are conditional (`+2BOD` only when resisting nitrogen
+narcosis), which is exactly [#30](#30). A `Mods`-only parse skips them by design, not by
+accident.
+
+Armour values, weapon-damage strings and category-wide skill bonuses still need judgement —
+the last of those is [#10](#10), already done.
 Keep fields editable — pre-fill defaults, don't lock. M&M PDF available for the leftovers.
 
 

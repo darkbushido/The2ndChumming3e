@@ -248,14 +248,23 @@ export class CyberwareData extends foundry.abstract.TypeDataModel {
       isReplacement:     new BooleanField({ initial: false }),
       bookPage:          new StringField({ initial: '' }),
       description:       new HTMLField({ initial: '', required: false }),
-      bonusBod:          new NumberField({ integer: true, initial: 0, min: 0 }),
-      bonusQui:          new NumberField({ integer: true, initial: 0, min: 0 }),
-      bonusStr:          new NumberField({ integer: true, initial: 0, min: 0 }),
-      bonusCha:          new NumberField({ integer: true, initial: 0, min: 0 }),
-      bonusInt:          new NumberField({ integer: true, initial: 0, min: 0 }),
-      bonusWil:          new NumberField({ integer: true, initial: 0, min: 0 }),
-      bonusRea:          new NumberField({ integer: true, initial: 0, min: 0 }),
-      bonusInitDice:     new NumberField({ integer: true, initial: 0, min: 0 }),
+      // ⚠ NO `min: 0` — these may legitimately be NEGATIVE. Three SR3 entries carry a
+      // penalty in their `Mods`: BIODYNE "Enable" Cyberlimbs (-1RCT) and Grade Subdermal
+      // Armor [8]/[9] (+3BOD,-1RCT). With a floor of zero the schema silently recorded 0 and
+      // the item looked as though it had no Reaction penalty at all — a value dropped with no
+      // error anywhere, which is the failure mode this project keeps finding.
+      //
+      // ⚠ AdeptPowerData deliberately KEEPS its floor, `bonusMag` included: nothing in the
+      // data produces a negative adept bonus, and negative Magic feeds Spell Pool and the
+      // Essence-derived Magic calculation in ways not worth opening speculatively.
+      bonusBod:          new NumberField({ integer: true, initial: 0 }),
+      bonusQui:          new NumberField({ integer: true, initial: 0 }),
+      bonusStr:          new NumberField({ integer: true, initial: 0 }),
+      bonusCha:          new NumberField({ integer: true, initial: 0 }),
+      bonusInt:          new NumberField({ integer: true, initial: 0 }),
+      bonusWil:          new NumberField({ integer: true, initial: 0 }),
+      bonusRea:          new NumberField({ integer: true, initial: 0 }),
+      bonusInitDice:     new NumberField({ integer: true, initial: 0 }),
       // Dice added to one named skill, e.g. Tailored Pheromones on Negotiation. Feeds the
       // same derived skillBonusDice map as adept Improved Ability, so every roll path and
       // the sheet's bonus column pick it up with no further wiring. The name must match the
@@ -288,14 +297,14 @@ export class BiowareData extends foundry.abstract.TypeDataModel {
       biowareCategory:  new StringField({ initial: '' }),
       bookPage:         new StringField({ initial: '' }),
       description:      new HTMLField({ initial: '', required: false }),
-      bonusBod:         new NumberField({ integer: true, initial: 0, min: 0 }),
-      bonusQui:         new NumberField({ integer: true, initial: 0, min: 0 }),
-      bonusStr:         new NumberField({ integer: true, initial: 0, min: 0 }),
-      bonusCha:         new NumberField({ integer: true, initial: 0, min: 0 }),
-      bonusInt:         new NumberField({ integer: true, initial: 0, min: 0 }),
-      bonusWil:         new NumberField({ integer: true, initial: 0, min: 0 }),
-      bonusRea:         new NumberField({ integer: true, initial: 0, min: 0 }),
-      bonusInitDice:    new NumberField({ integer: true, initial: 0, min: 0 }),
+      bonusBod:         new NumberField({ integer: true, initial: 0 }),
+      bonusQui:         new NumberField({ integer: true, initial: 0 }),
+      bonusStr:         new NumberField({ integer: true, initial: 0 }),
+      bonusCha:         new NumberField({ integer: true, initial: 0 }),
+      bonusInt:         new NumberField({ integer: true, initial: 0 }),
+      bonusWil:         new NumberField({ integer: true, initial: 0 }),
+      bonusRea:         new NumberField({ integer: true, initial: 0 }),
+      bonusInitDice:    new NumberField({ integer: true, initial: 0 }),
       // See CyberwareData — same skill-dice channel (Enhanced Articulation, Tailored
       // Pheromones and friends all have this shape).
       improvedSkillName: new StringField({ initial: '' }),

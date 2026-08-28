@@ -25,6 +25,8 @@
  *    guarantee — a half-finished run leaves the stamp unchanged and the next load repeats it.
  */
 
+import { SRCG_BONUSES } from './data/srcg-bonuses.js';
+
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
 
@@ -92,6 +94,21 @@ const MIGRATIONS = [
         improvedSkillDice: 1,
       },
     },
+  },
+  {
+    version: '0.4.5.5',
+    label: 'Cyberware/bioware attribute bonuses from the SRCG `Mods` field (TODO 8)',
+    /**
+     * No shipped cyberware or bioware document carried a single `bonus*` value — the `v2`
+     * populate rewrite dropped the parsing the legacy macro had. So every one of them was
+     * mechanically inert, which is why Enhanced Articulation appeared to do nothing.
+     *
+     * The map is generated: `node tools/build-mods-bonuses.mjs`. 142 items.
+     *
+     * ⚠ Fills blanks only, like every migration here — a GM who typed their own value keeps
+     * it. That matters more than usual at this size: this touches 142 item names at once.
+     */
+    items: SRCG_BONUSES,
   },
 ];
 
