@@ -22,7 +22,7 @@
 import { ClassicLevel } from 'classic-level';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
-import { existsSync, readdirSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { SRCG_BONUSES } from '../scripts/data/srcg-bonuses.js';
 
 const HERE    = dirname(fileURLToPath(import.meta.url));
@@ -41,13 +41,25 @@ if (!existsSync(PACKS_DIR)) {
   process.exit(2);
 }
 
-// Every cyberware/bioware pack, whichever books they belong to.
-const packs = readdirSync(PACKS_DIR)
-  .filter(d => /-(cyberware|bioware)$/.test(d))
-  .sort();
+/**
+ * Every cyberware/bioware pack the MANIFEST declares.
+ *
+ * ⚠ Filtered by `system.json`, not by what is on disk. The install still carries
+ * `sr3e-bioware` and `sr3e-cyberware` — the OLD monolithic packs from before the
+ * per-book split. They are undeclared, so Foundry never loads them, and patching them
+ * reports 253 matches instead of 111 while changing nothing anyone can see.
+ */
+const declared = new Set(
+  (JSON.parse(readFileSync(join(ROOT, 'system.json'), 'utf8')).packs ?? []).map(x => x.name));
+
+const onDisk = readdirSync(PACKS_DIR).filter(d => /-(cyberware|bioware)$/.test(d)).sort();
+const packs  = onDisk.filter(d => declared.has(d));
+const stale  = onDisk.filter(d => !declared.has(d));
 
 console.log(`Root:  ${ROOT}`);
-console.log(`Packs: ${packs.length} — ${packs.join(', ')}\n`);
+console.log(`Packs: ${packs.length} — ${packs.join(', ')}`);
+if (stale.length) console.log(`Skipped ${stale.length} undeclared pack(s) from the pre-split layout: ${stale.join(', ')}`);
+console.log('');
 
 const BONUS_FIELDS = ['bonusBod', 'bonusQui', 'bonusStr', 'bonusCha',
                       'bonusInt', 'bonusWil', 'bonusRea', 'bonusInitDice'];
