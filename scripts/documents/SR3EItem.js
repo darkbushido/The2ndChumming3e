@@ -304,6 +304,7 @@ export class SR3EItem extends Item {
       gmSetTN:          gm.adjudicated === true,
       gmSituational:    Math.trunc(Number(gm.situational) || 0),
       calledShot:       calledShot.calledShot,
+      charging:         calledShot.charging === true,
       calledShotTarget: calledShot.calledShotTarget,
       atkInfo,
       defInfo,
@@ -2215,7 +2216,13 @@ export class SR3EItem extends Item {
       });
     });
 
-    let result = { calledShot: 'none', calledShotTarget: '', tnMod: 0 };
+    // Charging Attack is Cannon Companion content (p.86), so it is offered only when that book
+    // is in play — the first MECHANICAL use of the source-book filter. See
+    // SR3ESourceBooks.optionalRuleAllowed for why optional rules ride the per-book toggle
+    // rather than getting a settings list of their own.
+    const chargingOffered = game.sr3e.SR3ESourceBooks.optionalRuleAllowed('cc');
+
+    let result = { calledShot: 'none', calledShotTarget: '', tnMod: 0, charging: false };
     let cancelled = true;
     await foundry.applications.api.DialogV2.wait({
       window: { title: 'Called Shot (optional)' },
@@ -2236,6 +2243,19 @@ export class SR3EItem extends Item {
             </label>
             <div style="font-size:10px;color:var(--sr-muted);margin-top:2px">Vehicle-sized or larger targets only.</div>
           </div>
+          ${chargingOffered ? `
+          <div style="margin-bottom:8px;padding:6px 8px;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r)">
+            <label style="display:flex;align-items:center;gap:8px">
+              <input type="checkbox" id="sr-charging-cs"/>
+              <span>🏃 <strong>Charging Attack</strong> — +1 Power <span style="color:var(--sr-muted);font-size:11px">(CC p.86)</span></span>
+            </label>
+            <div style="font-size:10px;color:var(--sr-muted);margin-top:3px;margin-left:22px">
+              Declared, not measured: the book wants 2+ metres of <em>continuous</em> movement
+              across passes, which no single action can show. ⚠ If the charge FAILS you make a
+              Quickness (5) Test or fall prone — or, if the defender hurts you, your Knockdown
+              Test is at +2 instead.
+            </div>
+          </div>` : ''}
           <div>
             <label>Take Aim (−1 TN each):
               <input type="number" id="sr-aim-cs" value="0" min="0" max="6" style="width:50px;margin-left:8px"/>
@@ -2254,7 +2274,9 @@ export class SR3EItem extends Item {
             const calledShotTarget = (html.querySelector('#sr-subtarget-cs')?.value || '').trim();
             const aim = Math.max(0, parseInt(html.querySelector('#sr-aim-cs')?.value) || 0);
             const tnMod = (calledShot !== 'none' ? 4 : 0) - aim;
-            result = { calledShot, calledShotTarget, tnMod };
+            // ⚠ Charging moves POWER, not the TN — it is deliberately absent from `tnMod`.
+            const charging = html.querySelector('#sr-charging-cs')?.checked ?? false;
+            result = { calledShot, calledShotTarget, tnMod, charging };
           }
         },
         { label: 'Cancel', action: 'cancel' },

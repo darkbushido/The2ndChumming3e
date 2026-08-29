@@ -2364,6 +2364,24 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Gated with `_isDecider`, not `_mine`: this button ROLLS, so exactly one user owns it.
   // The payload carries `targetActorId` = the defender, which `_payloadActorId` resolves;
   // `attackerActorId` is deliberately never inherited from.
+  // Quickness test after a failed Charging Attack (CC p.86). `_isDecider` — it rolls.
+  html.querySelectorAll('.sr-charge-quickness-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'chargequick', i)) return;
+    try {
+      if (!_isDecider(JSON.parse(btn.dataset.payload ?? '{}'))) {
+        return _denyBtn(btn, 'Only the charging character (or the GM) makes this test.');
+      }
+    } catch { /* unreadable payload — leave the button alone */ }
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'chargequick', i)) return;
+      btn.disabled    = true;
+      btn.textContent = '⏳ Rolling…';
+      await SR3EActor.handleChargeQuickness(btn);
+    });
+  });
+
   // Knockdown Test (SR3 p.124). `_isDecider` — it rolls, so exactly one user owns it.
   html.querySelectorAll('.sr-knockdown-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'knockdown', i)) return;

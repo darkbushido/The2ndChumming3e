@@ -24,11 +24,11 @@ independent.
 | 🔵 In progress | *(none)* |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | *(none — 54 fully closed)* |
-| 📕 Rules not implemented | 3 · 4 · 30 · 40 · 47 · 48 · 49 · 53 · 57 |
+| 📕 Rules not implemented | 3 · 4 · 30 · 47 · 48 · 49 · 53 · 57 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
 | 🧹 Housekeeping | 1 · 6 |
-| ✅ Done — kept for the record | **2** · **5** · **8** · **10** · 13 · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
+| ✅ Done — kept for the record | **2** · **5** · **8** · **10** · 13 · **40** · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -2722,7 +2722,7 @@ therefore **kept and documented as an extension**, not RAW. Removing it would ta
 something tables are using, and it is harmless — it only pre-fills a declaration the defender
 would otherwise type. Worth a deliberate decision if it ever conflicts.
 
-## 40. Charging Attack — Cannon Companion, and the first rule that needs a BOOK GATE
+## 40. ✅ Charging Attack — **DONE 2026-08-21**, and the book gate is set
 
 **Requested 2026-08-10.** Not in the core rulebook. **Cannon Companion p.86**:
 
@@ -2744,10 +2744,18 @@ would otherwise type. Worth a deliberate decision if it ever conflicts.
 pickers. No *rule* is conditioned on a book being enabled. Charging is `cc` content, so a table not
 playing Cannon Companion should not be offered it.
 
-That is a new capability, and worth deciding deliberately rather than by accident: either
-`SR3ESourceBooks.bookEnabled('cc')` becomes readable from combat code, or optional rules get their
-own setting. **Whichever is chosen will set the precedent for every later sourcebook rule**, so
-decide it here rather than in the fourth one.
+### ✅ The precedent, decided
+
+**Optional rules ride the existing per-book toggle.** `SR3ESourceBooks.optionalRuleAllowed(code)`
+is the entry point, and it is a thin named wrapper over `isAllowed` — which turned out to be
+general already, so the "new capability" this item feared cost almost nothing. `skillOffered`
+(martial arts, 2026-08-20) was the first rule-adjacent use; this is the first mechanical one.
+
+**Why not a separate settings list.** A table that has not enabled Cannon Companion has already
+said it is not playing with Cannon Companion. Asking again in a second list is the same question
+twice, and the two answers can disagree. The cost is granularity — you cannot take Charging
+without the rest of CC — and that is the right trade while the number of optional rules is
+small. **If it stops being small, `optionalRuleAllowed` is the single function to change.**
 
 ### Notes for implementation
 
@@ -2756,8 +2764,31 @@ decide it here rather than in the fourth one.
 - **Movement continuity spans passes**, so it cannot be derived from a single action; it needs
   either token-movement tracking or an honest declaration. Given the minimal-guardrails ethos, a
   checkbox the attacker ticks is probably right.
-- The failure branch wants **Knockdown**, which is also not implemented — check before assuming the
-  `+2 instead` clause has anything to modify.
+- The failure branch wants **Knockdown** — implemented since [#41](#41), so the `+2 instead`
+  clause now has something real to modify.
+
+### What was built
+
+`SR3EActor.chargingFailure({ attackFailed, knockdownRequired })` and `chargingPowerBonus()`,
+both pure. The declaration is a checkbox in the attacker's called-shot dialog, rendered only
+when `cc` is in play.
+
+⚠ **"INSTEAD" IS EXCLUSIVE, and it is why this is a function rather than two inline
+conditions.** A charger who ate a counter-attack does **not** roll Quickness as well — their
+existing Knockdown Test simply gets harder. Running both punishes one failure twice, and is
+exactly what an "apply all consequences" implementation would do. Mutant:
+`charging-failure-does-both-tests`.
+
+⚠ **+1 POWER, not a target number.** Nearly every other melee option moves a TN. Power doubles
+as the Damage Resistance TN, so the +1 makes the wound both likelier and worse. Mutant:
+`charging-bonus-is-a-target-number`.
+
+⚠ **The +2 lands on the CHARGER's Knockdown Test** — the one they make because the *defender*
+hurt *them* — carried through the soak payload as `knockdownTNMod`.
+
+**Movement continuity is declared, not measured**, as this item predicted. The book wants 2+
+metres of *continuous* movement across passes, which no single action can evidence; the dialog
+says so rather than pretending to know.
 
 ## 38. ✅ Multiple targets — **DONE 2026-08-19**, both halves
 

@@ -1120,6 +1120,29 @@ Both skill-roll paths go through the same dialog: the character sheet's skill ro
 **skill item sheet's own roll button** (unified 2026-08-20; it previously rolled at a hardcoded
 TN 4 with no dialog at all).
 
+### Charging Attack  · *Cannon Companion p.86* — and the source-book rule gate
+
+**The first MECHANICAL rule conditioned on a source book.** Declared as a checkbox in the
+attacker's called-shot dialog, shown only when `cc` is enabled.
+
+⚠ **`SR3ESourceBooks.optionalRuleAllowed(code)` is the precedent**: optional rules ride the
+existing per-book toggle rather than getting a settings list of their own. A table that has not
+enabled Cannon Companion has already answered the question; a second list could disagree with
+the first. Change that one function if granularity is ever needed.
+
+| | |
+|---|---|
+| Charge lands | **+1 Power** (`chargingPowerBonus`) — not a TN |
+| Charge fails, no damage | **Quickness (5) Test or prone** |
+| Charge fails, damage taken | **+2 to the charger's Knockdown TN — INSTEAD** |
+
+⚠ **"Instead" is exclusive.** A charger who took damage does NOT also roll Quickness; running
+both punishes one failure twice. `SR3EActor.chargingFailure` owns that, with a mutant.
+⚠ **+1 POWER, not a target number** — and Power is also the Damage Resistance TN, so it makes
+the wound likelier *and* worse.
+⚠ **Movement continuity is DECLARED, not measured** — the book wants 2+ metres of continuous
+movement across passes, which no single action can evidence.
+
 ### Knockdown  · *SR3 p.124, p.116*
 
 A **third stage**, after the soak: `.sr-knockdown-btn` on the soak result card, gated with

@@ -381,4 +381,30 @@ export const MUTANTS = [
           + 'full rating, which is three skills where the book has one',
     impl:   () => null,
   },
+
+  {
+    id:     'charging-failure-does-both-tests',
+    suite:  'charging',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'chargingFailure',
+    was:    'CC p.86 says the +2 to the Knockdown Test applies INSTEAD of the Quickness test. '
+          + 'Returning both punishes one failure twice, and reads as the obvious "apply all '
+          + 'consequences" implementation',
+    impl:   ({ attackFailed = false, knockdownRequired = false } = {}) => {
+      if (!attackFailed) return { quicknessTN: null, knockdownTNMod: 0 };
+      return { quicknessTN: 5, knockdownTNMod: knockdownRequired ? 2 : 0 };
+    },
+  },
+  {
+    id:     'charging-bonus-is-a-target-number',
+    suite:  'charging',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'chargingPowerBonus',
+    was:    'the charge bonus is +1 POWER, not a TN change - nearly every other melee option '
+          + 'moves a target number, and Power doubles as the Damage Resistance TN, so dropping '
+          + 'it makes the charge do nothing at all',
+    impl:   () => 0,
+  },
 ];

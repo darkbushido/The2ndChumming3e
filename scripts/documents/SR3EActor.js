@@ -2924,6 +2924,8 @@ _prepareCharacter(sys, attr) {
         // Dodge: without these the final wave builds no result AND no soak button, so the
         // attack simply stops — no Damage Resistance Test, no damage, no error. Unreachable
         // until the p.113 modifiers landed and a dodge TN could exceed 6.
+        isChargeRecovery:   state.isChargeRecovery   ?? false,
+        chargeContext:      state.chargeContext      ?? null,
         isKnockdownRoll:    state.isKnockdownRoll    ?? false,
         knockdownContext:   state.knockdownContext   ?? null,
         isFullDefenseDodge: state.isFullDefenseDodge ?? false,
@@ -3039,6 +3041,25 @@ _prepareCharacter(sys, attr) {
             </div>`;
         }
         fdDodgeHtml = html;
+      }
+    }
+
+    // A failed charge's Quickness test (CC p.86): any success keeps them upright.
+    if (allDone && state.isChargeRecovery && state.chargeContext) {
+      const ca = game.actors.get(state.chargeContext.actorId);
+      if (ca) {
+        const proneP = JSON.stringify({ actorId: ca.id }).replace(/'/g, '&#39;');
+        await ChatMessage.create({
+          content: successes > 0
+            ? `<div class="sr-roll-card"><div class="sr-dodge-result sr-dodge-success">
+                 ✅ ${ca.name} keeps their feet after the failed charge.</div></div>`
+            : `<div class="sr-roll-card"><div class="sr-melee-result sr-melee-win">
+                 🏃 No successes — <strong>${ca.name} falls prone.</strong></div>
+                 <div class="sr-soak-action">
+                   <button class="sr-prone-btn" data-payload='${proneP}'>🔻 Mark ${ca.name} prone</button>
+                 </div></div>`,
+          style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+        });
       }
     }
 
@@ -4261,6 +4282,10 @@ _prepareCharacter(sys, attr) {
         let   idx   = STAGES.indexOf(_st.level);
         let   power = _st.power;
 
+        // Charging Attack (CC p.86): +1 POWER, and only when the charge actually lands. It is
+        // the attacker's option, so it does nothing when the defender wins.
+        if (winnerIsAtk && ctx.charging) power += SR3EActor.chargingPowerBonus(true);
+
         // Called shot (attacker only): stage damage up one further level (cap Deadly).
         const calledStage = winnerIsAtk && ctx.calledShot === 'stage';
         if (calledStage) idx = Math.min(STAGES.length - 1, idx + 1);
@@ -4277,10 +4302,18 @@ _prepareCharacter(sys, attr) {
           stagingHtml += `<div class="sr-staging-result">🎯 Called shot${ctx.calledShotTarget ? `: ${ctx.calledShotTarget}` : ''} — damage applies to that component.</div>`;
         }
 
+        // A failed charge with damage taken: the charger's Knockdown Test is at +2 INSTEAD of
+        // a Quickness test (CC p.86). The loser here IS the charger when the defender won.
+        const _chargeFailed = ctx.charging && !winnerIsAtk;
+        const _kdMod = SR3EActor.chargingFailure({
+          attackFailed: _chargeFailed, knockdownRequired: true,
+        }).knockdownTNMod;
+
         const soakPayload = JSON.stringify({
           attackerActorId: ctx.attackerActorId,
           targetActorId:   loser?.id,
           isMelee:         true,
+          knockdownTNMod:  _chargeFailed ? _kdMod : 0,
           stagedPower:     power,
           stagedLevel:     finalLevel,
           isStun:          winnerDmgBase.isStun,
@@ -4295,17 +4328,45 @@ _prepareCharacter(sys, attr) {
           </div>`;
       }
 
+    // ⚠ "Instead" is EXCLUSIVE — a charger who took damage does NOT also roll Quickness. When
+    // no damage lands there is no Knockdown Test to modify, so the Quickness (5) Test is the
+    // only consequence, and it needs its own button.
+    let chargeHtml = '';
+    if (ctx.charging) {
+      if (winnerIsAtk) {
+        chargeHtml = `<div class="sr-staging-result">🏃 Charging Attack — <strong>+1 Power</strong> (CC p.86)</div>`;
+      } else {
+        const cf = SR3EActor.chargingFailure({ attackFailed: true, knockdownRequired: !!winnerDmgBase });
+        chargeHtml = cf.quicknessTN !== null
+          ? `<div class="sr-melee-result sr-melee-tie">
+               🏃 Charge failed — ${atk?.name ?? 'The attacker'} must make a
+               <strong>Quickness (${cf.quicknessTN}) Test</strong> or fall prone.
+               <div class="sr-soak-action">
+                 <button class="sr-charge-quickness-btn" data-payload='${JSON.stringify({
+                   actorId: ctx.attackerActorId, targetActorId: ctx.attackerActorId, tn: cf.quicknessTN,
+                 }).replace(/'/g, '&#39;')}'>🏃 Quickness (${cf.quicknessTN}) Test</button>
+               </div>
+             </div>`
+          : `<div class="sr-melee-result sr-melee-tie">
+               🏃 Charge failed — the Knockdown Test below is at <strong>+${cf.knockdownTNMod}</strong>
+               instead of a separate Quickness Test (CC p.86).
+             </div>`;
+      }
+    }
+
       resultHtml = _mo.tie
         ? `<div class="sr-melee-result sr-melee-win">
              ⚔ Tie — ${atkSuccesses} vs ${defSuccesses}. <strong>A tie goes to the attacker</strong> (p.122):
              ${winnerName} hits for base damage.
            </div>
            ${stagingHtml}
+           ${chargeHtml}
            ${soakBtn}`
         : `<div class="sr-melee-result sr-melee-win">
              ⚔ ${winnerName} wins! ${atkSuccesses} vs ${defSuccesses} (net ${net})
            </div>
            ${stagingHtml}
+           ${chargeHtml}
            ${soakBtn}`;
     }
 
@@ -4775,6 +4836,45 @@ _prepareCharacter(sys, attr) {
       .filter(Boolean);
   }
 
+  /**
+   * What a failed Charging Attack costs the charger — **pure**.  · *Cannon Companion p.86*
+   *
+   *   > "A running start can increase the effectiveness of an attack. If a character moved **2
+   *   >  or more meters** to attack his target, he gains a **+1 bonus to the Power** of the
+   *   >  attack…
+   *   >
+   *   >  If a character **fails** a charging attack (the defender wins or dodges), the character
+   *   >  must make a **Quickness (5) Test or fall prone**. If the character must already make a
+   *   >  Knockdown Test because the defender inflicted damage, **modify that target number by +2
+   *   >  instead**."
+   *
+   * ⚠ **"Instead" is exclusive — it is one test or the other, never both.** A charger who ate a
+   * counter-attack does NOT roll Quickness as well; their existing Knockdown Test simply gets
+   * harder. Running both would punish the same failure twice, and is the obvious way to write
+   * this wrong.
+   *
+   * ⚠ **The +2 lands on the CHARGER's Knockdown Test**, which is the one they make because the
+   * DEFENDER hurt them — not on any test the defender makes.
+   *
+   * ⚠ **+1 POWER, not a target number.** Almost everything else on the melee surface moves a TN;
+   * this moves damage, and only when the charge lands.
+   *
+   * @param {object} o
+   * @param {boolean} o.attackFailed       the defender won or dodged
+   * @param {boolean} [o.knockdownRequired] the charger is already making a Knockdown Test
+   * @returns {{quicknessTN: number|null, knockdownTNMod: number}}
+   */
+  static chargingFailure({ attackFailed = false, knockdownRequired = false } = {}) {
+    if (!attackFailed)     return { quicknessTN: null, knockdownTNMod: 0 };
+    if (knockdownRequired) return { quicknessTN: null, knockdownTNMod: 2 };
+    return { quicknessTN: 5, knockdownTNMod: 0 };
+  }
+
+  /** Power bonus for a charge that lands (CC p.86). Pure, and deliberately not inlined. */
+  static chargingPowerBonus(charged) {
+    return charged ? 1 : 0;
+  }
+
   static dodgeOutcome(dodgeHits, attackHits) {
     const d = Math.max(0, Number(dodgeHits) || 0);
     const a = Math.max(0, Number(attackHits) || 0);
@@ -4827,6 +4927,37 @@ _prepareCharacter(sys, attr) {
   }
 
   /**
+   * A failed charge with no damage taken: Quickness (5) Test or fall prone.  · *CC p.86*
+   *
+   * ⚠ Only reachable when the defender inflicted NO damage. With damage there is a Knockdown
+   * Test already, and the book says the +2 applies to that "instead" — see `chargingFailure`.
+   */
+  static async handleChargeQuickness(btn) {
+    const ctx   = JSON.parse(btn.dataset.payload);
+    const actor = game.actors.get(ctx.targetActorId ?? ctx.actorId);
+    if (!actor) return;
+
+    const tn   = Math.max(2, parseInt(ctx.tn) || 5);
+    const dice = Math.max(1, actor.system?.attributes?.quickness?.value ?? 1);
+    const roll = actor._rollWave(dice, tn, true);
+    const ones = roll.filter(d => d.isOne).length;
+
+    await actor._postWaveCard({
+      actorId: actor.id,
+      label:   `🏃 ${actor.name} — Quickness (${tn}) after a failed charge`,
+      tn,
+      pool:    dice,
+      wave:    0,
+      dice:    roll,
+      ones,
+      glitch:  SR3EActor.isRuleOfOne(ones, dice),
+      isWeaponRoll:    false,
+      isChargeRecovery: true,
+      chargeContext:    { actorId: actor.id, tn },
+    });
+  }
+
+  /**
    * The Knockdown Test — the target's Body Test after damage resolves.  · *SR3 p.124*
    *
    * A third stage, so a separate card and a separate click. Gated to the defender: it ROLLS.
@@ -4847,9 +4978,11 @@ _prepareCharacter(sys, attr) {
 
     const attacker  = ctx.attackerActorId ? game.actors.get(ctx.attackerActorId) : null;
     const atkStr    = attacker?.system?.attributes?.strength?.value ?? 0;
+    // A failed Charging Attack adds +2 here rather than costing a separate Quickness test
+    // (CC p.86) — see chargingFailure. Zero for every other attack.
     const tnDefault = SR3EActor.knockdownTN({
       power: ctx.power, strength: atkStr, isMelee: ctx.isMelee, ammoType: ctx.ammoType,
-    });
+    }) + Math.max(0, Math.trunc(Number(ctx.knockdownTNMod) || 0));
     const needed  = SR3EActor.knockdownOutcome({ level, tested: false }).needed ?? 2;
     const bodyDef = target.system?.attributes?.body?.value ?? 1;
 

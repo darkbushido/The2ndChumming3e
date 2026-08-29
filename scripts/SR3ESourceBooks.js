@@ -62,6 +62,29 @@ export class SR3ESourceBooks {
   }
 
   /**
+   * Is an OPTIONAL RULE from a source book in play?
+   *
+   * ⚠ **The precedent TODO 40 asked to be set deliberately.** Until 2026-08-20 `SR3ESourceBooks`
+   * gated compendium content only; `skillOffered` was the first rule-adjacent use, and this is
+   * the first mechanical one. The decision is: **optional rules ride the existing per-book
+   * toggle rather than getting a settings surface of their own.**
+   *
+   * Why that way round. A table that has not enabled Cannon Companion has already said it is
+   * not playing with Cannon Companion; asking again in a second list would be the same question
+   * twice, and the two answers could disagree. The cost is granularity — you cannot take
+   * Charging without also taking the rest of CC — and that is the right trade while the number
+   * of optional rules is small. If it ever stops being, THIS is the single function to change.
+   *
+   * ⚠ Fails VISIBLE, like every other gate here: an unknown code is treated as in play. A rule
+   * vanishing because of a typo is far worse than one being offered that should not be.
+   *
+   * @param {string} code  a `SOURCE_BOOKS` key, e.g. 'cc'
+   */
+  static optionalRuleAllowed(code) {
+    return this.isAllowed(code);
+  }
+
+  /**
    * Should this skill be OFFERED in the picker?
    *
    * ⚠ **The first rule-level use of the book filter.** Until 2026-08-20 `SR3ESourceBooks`
