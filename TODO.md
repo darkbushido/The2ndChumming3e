@@ -25,6 +25,7 @@ independent.
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | **71** · **72** · **73** · **74** |
 | 📕 Rules not implemented | 3 · 4 · 30 · 47 · 48 · 49 · 53 · 57 |
+| 🧙 Adept powers — see `audit/adept-powers-audit.md` | **59** · 60 · 61 · 62 · 63 · 64 · 65 · 66 · 67 · 68 · 69 · 70 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
 | 🧹 Housekeeping | 1 · 6 |
@@ -3854,6 +3855,262 @@ independently rejects any kill with zero failing assertions.
   typed each time — the whole point is the cases the tables do not cover.
 - **Not a replacement for the typed-TN escape.** With `gmApprovesTN` off there is no window at
   all and the TN field stays editable; that path is unaffected.
+
+---
+
+# 🧙 Adept powers
+
+Opened 2026-08-29 from a full audit of all 117 shipped powers — **`audit/adept-powers-audit.md`**
+carries the evidence, the per-power inventory and the book citations. Read it before starting any
+of these; the entries below are the actionable summary, not the finding.
+
+**Sequencing: 59 is the root cause and must come first — but 63 and 64 must land WITH it, not
+after.** Filling the pack data turns two currently-latent rules violations live on the next world
+load. Everything else is independent.
+
+<a id="59"></a>
+## 59. Every adept power ships mechanically inert — **ROOT CAUSE**
+
+**117 powers across 4 packs. Zero have any bonus field set. Zero name a skill.**
+
+```
+powers=117  with a mods string=14  with ANY bonus field set=0  with improvedSkillName set=0
+```
+
+The runtime is fine — `SR3EActor._prepareCharacter` (`:1673-1695`) reads the nine `bonus*`
+fields, `improvedSkillName` and `improvedSkillCategory` off every `adeptpower`, correctly gated
+on `magicType === 'Adept'`. **The data never arrives.** Two independent breaks:
+
+1. **`tools/build-mods-bonuses.mjs:35`** declares `FILES = { 'Cyberware.json': …, 'Bioware.json': … }`.
+   Upstream ships **`AdeptPowers.json`** beside them and it is simply not listed, so
+   `scripts/data/srcg-bonuses.js` holds no adept power and `patch-pack-bonuses.mjs` has nothing
+   to write. A gap in [#8](#8), not a decision — nothing in the tool says adept powers were
+   considered.
+2. **`AdeptPowerData` has no `mods` field** (`ItemDataModels.js:376`; only Cyberware `:245` and
+   Bioware `:296` declare one). 14 powers *do* carry a `mods` string in the pack, 10 of which
+   parse cleanly, but a TypeDataModel drops undeclared keys — so the string is discarded at load.
+   Hand-patching the pack alone would achieve nothing.
+
+**Fix:** add `AdeptPowers.json` to the generator, regenerate, extend `patch-pack-bonuses.mjs` to
+the four adept packs, and add a migration for worlds already holding copies (Foundry embeds
+items — a pack fix reaches nobody who already owns one).
+
+⚠ **Do NOT fill `bonusStr`/`bonusQui`/`bonusBod` for Attribute Boost** — see [#63](#63). It is
+the one power where the obvious channel produces a rule that is *worse* than leaving it inert.
+
+⚠ **Landing this alone makes [#64](#64) live** — Improved Reflexes will start stacking with
+wired reflexes the moment the data exists.
+
+⚠ `+1MAG` on Magical Power stays unmapped, deliberately. It grants a magician's *path*
+(MITS p.22), not a Magic point; `bonusMag` would inflate Spell Pool and effective Magic.
+
+<a id="60"></a>
+## 60. Improved Ability has no cap — *SR3 p.169* — **live today**
+
+> "You cannot have more additional dice than your base skill rating or your Magic Attribute,
+> whichever is less. For example, an adept with Pistols 4 and Magic 5 cannot have more than 4
+> Improved Ability (Pistols) dice."
+
+`SR3EActor.js:1691` applies the level with no clamp:
+
+```js
+_addSkillDice(s.improvedSkillName, s.hasLevels ? (s.level ?? 1) : 1, …);
+```
+
+**The only entry here already reaching the table**, because `improvedSkillName` is the one field
+a GM fills in by hand. A pure clamp — `Math.min(level, skillRating, magic)` — and the smallest
+piece of real work in this group.
+
+⚠ The cap is against the **base skill rating**, not the rating plus specialisation, and against
+**Magic**, so it moves when Essence or Bio Index move.
+
+<a id="61"></a>
+## 61. Defaulting to an improved skill gives the wrong number, twice — *SR3 p.169*
+
+> "If you are defaulting to the improved skill, only half (round down) of the Improved Ability
+> dice may be used."
+
+- `SR3EItem.defaultTiers` (`:525-556`) builds every tier from `s.system.rating` alone. The
+  Default Table's **Skill** tier *is* the book's "defaulting to the improved skill" — and it
+  contributes **no** Improved Ability dice at all. Not half. None.
+- `SR3EItem.js:410` — `const bonusDice = isDefault ? 0 : …`. That path is *attribute*-defaulting
+  where 0 is defensible, but it hard-codes an answer instead of expressing the rule, so the two
+  cases cannot be told apart.
+
+Depends on [#60](#60): halve the capped number, not the raw level.
+
+<a id="62"></a>
+## 62. Improved Ability's category channel is not RAW — *SR3 p.169*
+
+`SR3EActor.js:1693` feeds `improvedSkillCategory` from adept powers into the opt-in category
+bonus. For Improved Ability that is wrong, and the packs actively invite the mistake: the entries
+are named `Imp Abl Combat Skl*->` and `Imp Abl Phys Skl*->`, which reads like a scope.
+
+It is not. The **Improved Ability Costs Table** uses the category only to set *cost per die*
+(Physical .25, Combat .5); the power applies to *"a specific Active Skill"*. The trailing `->` is
+the upstream generator's marker for **"name the skill here"**.
+
+Left alone, `Imp Abl Combat Skl` with category `Combat skills` buys dice across *every* combat
+skill for half a Power Point.
+
+⚠ **Do not remove the channel** — it is right for genuinely category-wide powers (Kinesics,
+Nimble Fingers). The fix is to stop Improved Ability using it, and to make the naming say so.
+
+<a id="63"></a>
+## 63. Attribute Boost — unimplemented, and the obvious fix is a trap — *SR3 p.168-169*
+
+Four stages, none of which exist:
+
+1. **Activate** — Magic Test, TN = ½ the **base (unaugmented)** rating, round **up**. No successes → no boost.
+2. **Effect** — attribute + the power's level. Ceiling of **2× Racial Modified Limit**.
+3. **Duration** — Combat Turns equal to the **successes**.
+4. **Expiry** — a **Drain Resistance Test**. TN = ½ the **boosted** value (round up); Willpower
+   dice; every 2 successes drops the Drain Level by one; damage is **Stun**.
+
+   | Boosted rating is | Drain Level |
+   |---|---|
+   | ≤ Racial Modified Limit | L |
+   | up to Racial Attribute Maximum | M |
+   | up to 2× Racial Modified Limit | S |
+
+> "Attribute Boost is not compatible with any artificial (cyberware) enhancements, nor
+> spell-based increases. It is compatible with the Improved Physical Attribute power."
+
+⚠ **Filling `bonusStr` under [#59](#59) would be worse than leaving it inert** — a permanent,
+always-on, untested, undrained boost that stacks with the cyberware it is expressly incompatible
+with.
+
+⚠ **Reported from play 2026-08-29**: an actor's `Attribute Boost(STR)*` had `improvedSkillName`
+hand-set, contributing **+4 dice to Unarmed Combat**. That is the wrong channel under any
+reading — Attribute Boost grants no skill dice. The shipped pack entry has it empty; the edit was
+local. Worth a migration that clears `improvedSkillName` on Attribute Boost items specifically.
+
+**Shape:** this is the spellcasting pattern (test → duration → drain), not a checkbox. It needs a
+triggered, expiring, levelled state — which is also what [#30](#30) needs for Adrenal Pump and
+Pain Editor, so the two should share a mechanism.
+
+<a id="64"></a>
+## 64. Improved Reflexes stacks with wired reflexes — *SR3 p.169* — **goes live with 59**
+
+> "The maximum level of Improved Reflexes is 3, and the increase **cannot be combined with
+> technological or other magical increases** to Reaction or Initiative."
+
+Both derivations sum the two sources unconditionally:
+
+- `SR3EActor.js:1733-1734` — `… + adeptBonus.rea + cyberBonus.rea`
+- `SR3EActor.js:1830` — `1 + … + cyberBonus.initDice + adeptBonus.initDice`
+
+Latent only because no adept power carries data. **[#59](#59) makes it live**, so they ship
+together or 59 introduces a regression.
+
+The level ≤ 3 cap is also unenforced — a special case of [#65](#65), but stated in the power's
+own text, so worth its own assertion.
+
+⚠ "Cannot be combined" needs a decision the book does not make for us: refuse, or take the
+better of the two? Project ethos says **warn, take one, stay editable** — never silently sum.
+
+<a id="65"></a>
+## 65. No power may exceed Magic in levels — *SR3 p.168*
+
+> "An adept cannot have more levels in a power than the adept's Magic Attribute."
+
+The sheet already computes the **total** Power Point spend and flags it red past Magic
+(`SR3EActorSheet.js:2283-2308`) — correct, and warn-only per the ethos. The **per-power level**
+is never checked, so Magic 4 with Improved Ability 6 passes silently whenever the points fit.
+
+Same treatment as the existing budget warning: a red note, not a block.
+
+<a id="66"></a>
+## 66. Combat Sense contributes nothing — *SR3 p.169*
+
+Two effects, both absent.
+
+- **Combat Pool dice.** `SR3EActor.js:1787` derives `combatPoolBase + (sys.combatPoolMod ?? 0)` —
+  no adept term. There is no `bonusCombatPool` field for the pack's `+1CPL`/`+2CPL`/`+3CPL` to
+  map to, which is why `SR3EMods` reports `CPL` as unmapped rather than dropping it.
+- **Usable Pool dice for the Reaction Test in surprise** (p.109) — ¼ / ½ / Full by level. No hook;
+  surprise is not modelled.
+
+The first half is a data-model change plus one term. The second belongs with surprise.
+
+<a id="67"></a>
+## 67. Killing Hands never changes a punch — *SR3 p.170*
+
+`SR3EItem._unarmedWeapon()` returns `(STR)M Stun` unconditionally. RAW:
+
+- The adept **declares** its use with the Unarmed Combat attack — so it is a per-attack choice,
+  not a passive, and *"you may do normal stun damage, or physical damage as purchased"*.
+- Damage Level comes from the purchased tier: L / M / S / D (cost .5 / 1 / 2 / 4).
+- It **bypasses Immunity to Normal Weapons** — *"Their defensive bonuses do not count against
+  Killing Hands"*.
+- It works in **astral combat** if the adept also has Astral Perception and is using it.
+
+Natural home: the same declaration point as the called-shot dialog on the melee path.
+
+<a id="68"></a>
+## 68. Mystic Armor adds no armour — *SR3 p.170*
+
+Each level is **1 point of Impact armour, cumulative with worn Impact armour**, and *"Mystic
+Armor also protects against damage done in astral combat"*. It grants **no Ballistic**.
+
+Today the soak card reads `impact` off the equipped armour item alone, and astral combat has no
+armour term at all. The pack's `+1IMP` is parsed and reported unmapped for exactly this reason.
+
+⚠ Also read [#69](#69) — both want the actor to expose a derived "armour from powers", and doing
+them separately will produce two.
+
+<a id="69"></a>
+## 69. Pain Resistance does not reduce injury modifiers — *SR3 p.170*
+
+> "Subtract your level of Pain Resistance from your current damage before determining your injury
+> modifiers."
+
+The book's own example: 3 levels means no modifier at all for Light or Moderate; at 4 boxes the
+adept is at +1, not +3. *"Pain Resistance works equally on both the Physical and Stun Condition
+Monitors."*
+
+`sys.woundMod` is derived straight from the wound tracks with no offset. This is arithmetic the
+system already performs — the narrow fix is one subtraction before the threshold lookup.
+
+⚠ **Reduce the damage used for the LOOKUP, not the wound track.** Touching the track would
+un-fill boxes the GM ticked and change how far the character is from unconscious.
+
+The power's other half — level subtracted from TNs to resist torture, disease and interrogation —
+is GM-adjudicated and correctly left alone.
+
+<a id="70"></a>
+## 70. The long tail: dice-granting powers with no test to attach to
+
+~19 powers whose entire rule is "+N dice to test X". None are wired. Full table with book
+citations in `audit/adept-powers-audit.md`; the shape matters more than the list:
+
+| Power | Book | Scope of the dice |
+|---|---|---|
+| Body Control | SR3 p.169 | Resistance Tests vs toxins/disease |
+| Enhanced Perception | SR3 p.169 | Perception Tests — ⚠ capped at min(Intelligence, Magic) |
+| Magic Resistance | SR3 p.170 | Spell Resistance Tests |
+| Rapid Healing | SR3 p.170 | Body for Healing, and crippling-injury tests |
+| Counterstrike | MITS p.149 | **counterattacks only** |
+| Sixth Sense | MITS p.151 | Reaction Tests **for Surprise only** |
+| Spell Shroud | MITS p.151 | Spell Resistance vs **detection spells only** |
+| Iron Will · True Sight · Temperature Tolerance · Rooting | MITS p.150-151 | mind control · illusion · temperature · knockdown |
+| Resilience | SOTA2 p.67 | stabilization, permanent damage, wound effects |
+| Side Step | SOTA2 p.67 | +1 Combat Pool **for Dodge / Full Dodge only** |
+| Penetrating Strike 1-3 | SOTA2 p.67 | −1 target Impact armour per level, **damage only** |
+| Kinesics 1-3 | SOTA2 p.66 | −1 TN social, +1 die Charisma, +2 to detect-lying |
+| Great Leap · Flexibility · Freefall · Sprint | MITS p.150, SOTA2 p.68 | jumping · Escape Artist · falling · running |
+
+⚠ **The scope is the work, not the arithmetic.** `skillBonusDice` promises "always applies" and
+cannot express "counterattacks only" or "Surprise only"; that promise is why
+`skillCategoryBonuses` had to exist as a separate opt-in channel ([#10](#10)). A third channel —
+or a per-power *situation tag* consumed by the dialog that already asks about category bonuses —
+is the actual design question. Do not solve it by widening `skillBonusDice`.
+
+**Not in scope here:** the ~40 powers that are correctly inert because they are narrative or
+GM-adjudicated (the twelve Improved Senses, Traceless Walk, Suspended State, Multi-Tasking, the
+nine TSS powers, …). Two borderline cases worth a second look if this ever lands: **Missile
+Parry** (SR3 p.170) is a fully specified opposed test, and **Quick Strike** (MITS p.151) reorders
+initiative.
 
 ---
 
