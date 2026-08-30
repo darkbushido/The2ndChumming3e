@@ -407,4 +407,32 @@ export const MUTANTS = [
           + 'it makes the charge do nothing at all',
     impl:   () => 0,
   },
+
+  {
+    id:     'martial-arts-not-a-combat-category',
+    suite:  'skill-category-bonus',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'skillCategoryBonus',
+    was:    'CC p.87 makes martial arts "considered a Combat skill", so a category bonus '
+          + 'covering Combat skills must reach MA:Aikido. Matching the category string alone '
+          + 'gave a martial artist Enhanced Articulation on Unarmed Combat and Edged Weapons '
+          + 'but not on the skill they actually roll - reported from play',
+    impl:   (bonuses, category) => {
+      const want = String(category ?? '').trim().toLowerCase();
+      if (!want) return { dice: 0, labels: [] };
+      let dice = 0;
+      const labels = [];
+      for (const b of (Array.isArray(bonuses) ? bonuses : [])) {
+        const n = Math.trunc(Number(b?.dice) || 0);
+        if (n <= 0) continue;
+        const cats = (Array.isArray(b?.categories) ? b.categories : [])
+          .map(c => String(c ?? '').trim().toLowerCase());
+        if (!cats.includes(want)) continue;
+        dice += n;
+        if (b.label) labels.push(b.label);
+      }
+      return { dice, labels };
+    },
+  },
 ];

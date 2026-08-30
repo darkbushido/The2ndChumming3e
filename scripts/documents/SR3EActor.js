@@ -4808,8 +4808,15 @@ _prepareCharacter(sys, attr) {
    * @returns {{dice: number, labels: string[]}} total dice offered, and what to call them
    */
   static skillCategoryBonus(bonuses, category) {
-    const want = String(category ?? '').trim().toLowerCase();
-    if (!want) return { dice: 0, labels: [] };
+    // ⚠ A skill matches its OWN category and anything that category COUNTS AS. Cannon
+    // Companion p.87 makes martial arts "considered a Combat skill", so Enhanced Articulation
+    // reaches MA:Aikido even though its category string is 'Martial Arts'. Without this a
+    // martial artist got the die on Unarmed Combat and Edged Weapons but not on the skill
+    // they actually roll — reported from play 2026-08-21. See SKILL_CATEGORY_COUNTS_AS.
+    const want = (game.sr3e?.SR3E?.skillCategoriesFor?.(category) ?? [category])
+      .map(c => String(c ?? '').trim().toLowerCase())
+      .filter(Boolean);
+    if (!want.length) return { dice: 0, labels: [] };
 
     let dice = 0;
     const labels = [];
@@ -4818,7 +4825,9 @@ _prepareCharacter(sys, attr) {
       if (n <= 0) continue;
       const cats = (Array.isArray(b?.categories) ? b.categories : [])
         .map(c => String(c ?? '').trim().toLowerCase());
-      if (!cats.includes(want)) continue;
+      // ⚠ `some`, not `includes` — one match anywhere is enough, and a bonus covering BOTH a
+      // category and something it counts as must still only pay out once.
+      if (!want.some(w => cats.includes(w))) continue;
       dice += n;
       if (b.label) labels.push(b.label);
     }

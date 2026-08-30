@@ -1112,6 +1112,11 @@ skill, actor and sheet, differing only in what the character is doing. Hence a p
 checkbox, on `SR3EActorSheet._promptSkillRollOptions`.
 
 ⚠ **FIVE categories, not four** — the Vehicle sentence is easy to miss and TODO 10 missed it.
+⚠ **`Martial Arts` COUNTS AS `Combat skills`** (`SKILL_CATEGORY_COUNTS_AS` in config.js). CC
+p.87: martial arts are *"considered a Combat skill"*. Without the alias a martial artist got
+Enhanced Articulation on Unarmed Combat and Edged Weapons but **not on `MA:Aikido`** — the one
+skill they roll. The alias lives on the CATEGORY, not on EA's list, so any later
+category-scoped bonus inherits it; it is one-way, and a bonus covering both pays once.
 ⚠ **Vehicle skills start UNTICKED**, everything else ticked: rigging is the exception, so it is
 what the player opts into.
 ⚠ **Parse the category field on COMMAS ONLY** — `Build/Repair skills` contains a slash.

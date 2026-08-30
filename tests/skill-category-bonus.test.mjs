@@ -48,6 +48,39 @@ export async function run(t) {
   }
   t.is('Enhanced Articulation covers five categories, not four', EA.categories.length, 5);
 
+  /* ==== "Counts as": martial arts ARE Combat skills — CC p.87 ====
+   *
+   * ⚠ THE CASE THAT WAS BROKEN, reported from play 2026-08-21. A martial artist got Enhanced
+   * Articulation's die on Unarmed Combat and Edged Weapons but NOT on `MA:Aikido` — the one
+   * skill they actually roll — because the match was on the category STRING and a martial
+   * art's category is 'Martial Arts'.
+   *
+   * CC p.87 settles it: "Each of these new martial arts skills is CONSIDERED A COMBAT SKILL
+   * and uses the standard rules for Active skills… boxed with Cyber-Implant Weaponry."
+   *
+   * ⚠ Fixed on the CATEGORY, not on Enhanced Articulation's list. The claim is about martial
+   * arts being Combat skills, so any future category-scoped bonus inherits it rather than
+   * rediscovering the same gap.
+   */
+  t.is('a martial art gets a Combat-skills bonus', bonus([EA], 'Martial Arts').dice, 1);
+  t.is('…and is named as the source',             bonus([EA], 'Martial Arts').labels.join(), 'Enhanced Articulation');
+  t.is('case is still ignored',                   bonus([EA], 'martial arts').dice, 1);
+
+  // A bonus that does NOT cover Combat skills must not leak through the alias.
+  const magicOnly = { label: 'Test', dice: 2, categories: ['Magical skills'] };
+  t.is('an unrelated bonus does not reach martial arts',
+    bonus([magicOnly], 'Martial Arts').dice, 0);
+
+  // ⚠ A bonus covering BOTH the category and what it counts as must pay ONCE, not twice.
+  const both = { label: 'Both', dice: 1, categories: ['Combat skills', 'Martial Arts'] };
+  t.is('covering both the category and its alias pays once',
+    bonus([both], 'Martial Arts').dice, 1);
+  t.is('…and once for a plain Combat skill too', bonus([both], 'Combat skills').dice, 1);
+
+  // The alias is one-way: a Combat skill is not a martial art.
+  const maOnly = { label: 'MA only', dice: 3, categories: ['Martial Arts'] };
+  t.is('the alias does not run backwards', bonus([maOnly], 'Combat skills').dice, 0);
+
   /* ==== Matching ==== */
   t.is('a Combat skill gets the die',     bonus([EA], 'Combat skills').dice, 1);
   t.is('a Physical skill too',            bonus([EA], 'Physical skills').dice, 1);

@@ -658,6 +658,43 @@ export const SKILL_REPLACED_BY_BOOK = {
   'Unarmed Combat': 'cc',
 };
 
+/**
+ * Categories that COUNT AS another category for the purposes of a category-wide bonus.
+ *
+ * ⚠ **Cannon Companion p.87 states it outright:** *"Each of these new martial arts skills is
+ * considered a **Combat skill** and uses the standard rules for Active skills… including the
+ * use of Combat Pool. Martial arts skills are linked to Strength and boxed with Cyber-Implant
+ * Weaponry."*
+ *
+ * So a martial art IS a Combat skill by rule. It has its own category here only because the
+ * skill list needs somewhere to put twelve styles with their own maneuver sets — a
+ * presentation choice, not a mechanical one.
+ *
+ * ⚠ **Found the hard way.** Enhanced Articulation (M&M p.66) grants a die on Combat, Physical,
+ * Technical and Build/Repair skills. Filing martial arts under their own category meant a
+ * martial artist got that die on Unarmed Combat and Edged Weapons but NOT on `MA:Aikido` — the
+ * one skill they actually roll. Reported from play on 2026-08-21.
+ *
+ * Expressed as an alias on the CATEGORY rather than by adding 'Martial Arts' to Enhanced
+ * Articulation's list, because the claim is about the category: any future category-scoped
+ * bonus covering Combat skills should reach martial arts too, without rediscovering this.
+ */
+export const SKILL_CATEGORY_COUNTS_AS = {
+  'Martial Arts': ['Combat skills'],
+};
+
+/**
+ * Every category a skill counts as, itself first.
+ * Case-insensitive in, canonical-case out.
+ */
+export function skillCategoriesFor(category) {
+  const name = String(category ?? '').trim();
+  if (!name) return [];
+  const key = Object.keys(SKILL_CATEGORY_COUNTS_AS)
+    .find(k => k.toLowerCase() === name.toLowerCase());
+  return [name, ...(key ? SKILL_CATEGORY_COUNTS_AS[key] : [])];
+}
+
 /** Derive 'active' | 'knowledge' | 'language' from a category name. */
 export function skillTypeForCategory(category) {
   if (category === 'Language') return 'language';
@@ -1100,6 +1137,8 @@ export const SR3E = {
   getSpecializationsForSkill,
   skillTypeForCategory,
   resolveMartialArt,
+  skillCategoriesFor,
+  skillCategoryCountsAs: SKILL_CATEGORY_COUNTS_AS,
   sourceBooks: SOURCE_BOOKS,
   defaultAllowedBooks,
 
