@@ -416,7 +416,11 @@ export class SR3EItem extends Item {
     // ACTUALLY behaved. Re-deriving it at the message would let the two drift: `CYB` maps
     // to Cyber Implant Combat but still accepts any MA: skill, so a message keyed on the
     // skill name alone would omit the martial arts that would have satisfied it.
+    // `skillCategory` rides along so the melee card can offer category-wide bonuses
+    // (Enhanced Articulation, M&M p.66) for the skill ACTUALLY used — which for unarmed may
+    // be a martial art, whose category counts as Combat skills. See SKILL_CATEGORY_COUNTS_AS.
     return { skillName: displayName, requiredSkill: skillName, unarmedContext: isUnarmedContext,
+             skillCategory: skill?.system?.category ?? '',
              skillRating: basePool, specName, specBonus, bonusDice, skillDice, availPool, isDefault };
   }
 

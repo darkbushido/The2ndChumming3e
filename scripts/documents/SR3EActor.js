@@ -1626,10 +1626,16 @@ _prepareCharacter(sys, attr) {
    * is silently dropped on the way to the dice. Consumers must trust this map.
    */
   const skillBonusDice = {};
-  const _addSkillDice = (name, dice) => {
+  // ⚠ The same dice, keyed the same way, but remembering WHO GAVE THEM. `skillBonusDice` is a
+  // flat total, so by the time anything renders "+6 augmentation" there is no way to say which
+  // items made the 6 — asked in play 2026-08-21 and unanswerable without this. Consumers that
+  // only need the number keep using the flat map; anything explaining itself reads this.
+  const skillBonusSources = {};
+  const _addSkillDice = (name, dice, label) => {
     const key = (name ?? '').trim();
     if (!key || !dice) return;
     skillBonusDice[key] = (skillBonusDice[key] ?? 0) + dice;
+    (skillBonusSources[key] ??= []).push({ label: label ?? 'augmentation', dice });
   };
 
   // Category-wide bonuses are a SEPARATE list, not entries in the map above. The map is
@@ -1660,7 +1666,7 @@ _prepareCharacter(sys, attr) {
     // Skill-specific augmentation dice. No item populates `improvedSkillName` yet — the
     // bonus fields are still being imported — but the channel is open, so an entry that
     // gains one starts working with no change to any roll path or to the sheet.
-    _addSkillDice(s.improvedSkillName, s.improvedSkillDice ?? 0);
+    _addSkillDice(s.improvedSkillName, s.improvedSkillDice ?? 0, item.name);
     _addSkillCategory(item.name, s.improvedSkillCategory, s.improvedSkillDice ?? 0);
   }
 
@@ -1680,7 +1686,10 @@ _prepareCharacter(sys, attr) {
       adeptBonus.rea      += s.bonusRea      ?? 0;
       adeptBonus.initDice += s.bonusInitDice ?? 0;
       // Improved Ability: a levelled power grants dice equal to its level, otherwise 1.
-      _addSkillDice(s.improvedSkillName, s.hasLevels ? (s.level ?? 1) : 1);
+      // A levelled Improved Ability contributes ITS LEVEL, so the label carries the level too
+      // — a bare "Improved Ability" beside 6 dice explains nothing.
+      _addSkillDice(s.improvedSkillName, s.hasLevels ? (s.level ?? 1) : 1,
+        s.hasLevels ? `${item.name} ${s.level ?? 1}` : item.name);
       _addSkillCategory(item.name, s.improvedSkillCategory, s.hasLevels ? (s.level ?? 1) : 1);
     }
   }
@@ -1822,6 +1831,8 @@ _prepareCharacter(sys, attr) {
     cyberBonus,
     adeptBonus,
     skillBonusDice,
+    // Who contributed each of those dice — for anything that has to explain itself.
+    skillBonusSources,
     // Opt-in, offered per roll — NOT auto-applied like skillBonusDice above.
     skillCategoryBonuses,
     // Legacy alias. `improvedAbility` named an adept-only map; the same data is now fed by
@@ -3753,6 +3764,74 @@ _prepareCharacter(sys, attr) {
         : '';
       const availPool = info?.availPool ?? 0;
       const skillDice = info?.skillDice ?? 1;
+
+      // Enhanced Articulation and friends (M&M p.66) — a category-wide bonus, opt-in per
+      // roll. ⚠ Until now this was read in ONE place, the Roll Skill dialog, so it reached a
+      // skill rolled from the sheet and never a melee attack — which is the case it most
+      // obviously applies to. Reported from play 2026-08-21.
+      const _catActor = game.actors.get(owner ?? '') ?? null;
+      const _cat = _catActor
+        ? SR3EActor.skillCategoryBonus(
+            _catActor.system?.derived?.skillCategoryBonuses ?? [], info?.skillCategory)
+        : { dice: 0, labels: [] };
+
+      // ── Where the dice came from ────────────────────────────────────────────────
+      //
+      // The Skill box used to show a bare total, so a player looking at "12" had no way to
+      // tell whether it included their specialisation, their augmentation dice, or neither.
+      // Reported from play 2026-08-21: "it's showing 12 dice but I don't see where they are
+      // all coming from". Every part is already in `info`; only the rendering was missing.
+      const _parts = [];
+      if (info?.isDefault) {
+        _parts.push(`${info.skillRating} attribute <span class="sr-bd-note">(defaulting)</span>`);
+      } else {
+        _parts.push(`${info?.skillRating ?? 0} ${info?.skillName ?? 'skill'}`);
+      }
+      if (info?.specBonus)  _parts.push(`+${info.specBonus} ${info.specName}`);
+
+      // ⚠ Each source NAMED, not lumped. "+6 augmentation" is exactly the line that prompted
+      // "where are they all coming from" — the number was right and unaccountable.
+      const _srcs = _catActor?.system?.derived?.skillBonusSources?.[info?.requiredSkill ?? '']
+                 ?? _catActor?.system?.derived?.skillBonusSources?.[info?.skillName ?? '']
+                 ?? [];
+      if (_srcs.length) {
+        for (const src of _srcs) _parts.push(`+${src.dice} ${src.label}`);
+      } else if (info?.bonusDice) {
+        // Fallback: dice with no recorded source. Says so rather than inventing a name.
+        _parts.push(`+${info.bonusDice} augmentation <span class="sr-bd-note">(source unrecorded)</span>`);
+      }
+      // ⚠ Rendered even when there is only ONE component. Gating on `length > 1` hid it in
+      // exactly the case that prompts the question — "why is this 12?" is asked most often
+      // when the 12 is all skill rating and nothing on the card says so.
+      //
+      // Lives in the corner's RIGHT column, beside the fields rather than under them: the
+      // field rows are a 52px label plus a 40px input, so the right half of every corner was
+      // dead space.
+      const _catRow = _cat.dice ? `
+            <label class="sr-bd-opt" title="${_cat.labels.join(' + ')}">
+              <input type="checkbox" class="sr-melee-${role === 'attacker' ? 'atk' : 'def'}-cat"
+                     data-dice="${_cat.dice}"/>
+              <span>+${_cat.dice} ${_cat.labels.join(' + ')}</span>
+            </label>` : '';
+
+      const _bdPayload = JSON.stringify({
+        actorId: owner ?? '', name, skillName: info?.skillName ?? '',
+        requiredSkill: info?.requiredSkill ?? '', skillCategory: info?.skillCategory ?? '',
+        skillRating: info?.skillRating ?? 0, specName: info?.specName ?? '',
+        specBonus: info?.specBonus ?? 0, skillDice, availPool,
+        isDefault: info?.isDefault === true,
+      }).replace(/'/g, '&#39;');
+
+      const breakdown = `
+          <div class="sr-melee-breakdown">
+            <div class="sr-bd-title">Dice
+              <button type="button" class="sr-dice-info-btn" data-payload='${_bdPayload}'
+                      title="Full breakdown">&#9432;</button>
+            </div>
+            ${_parts.map(p => `<div>${p}</div>`).join('')}
+            <div class="sr-bd-total">= ${skillDice} skill</div>
+            ${_catRow}
+          </div>`;
       const tnCalc    = [
         '4',
         reach > 0 ? ` −${reach} reach` : '',
@@ -3798,6 +3877,8 @@ _prepareCharacter(sys, attr) {
           <div class="sr-melee-weapon">${weaponName}
             ${reach > 0 ? `<span class="sr-melee-reach"> Reach ${reach}</span>` : ''}
           </div>
+          <div class="sr-melee-corner-body">
+          <div class="sr-melee-fields">
           <div class="sr-melee-field-row">
             <span>Damage:</span>
             <div><input type="text" class="${damageClass}" value="${displayDamage}" style="width:55px"/></div>
@@ -3822,6 +3903,9 @@ _prepareCharacter(sys, attr) {
               <input type="number" class="${tnClass}" value="${tn}" min="2" max="30" style="width:40px"/>
               <span style="font-size:10px">(${tnCalc})</span>
             </div>
+          </div>
+          </div>
+          ${breakdown}
           </div>
         </div>`;
     };
@@ -3925,6 +4009,19 @@ _prepareCharacter(sys, attr) {
   }
 
   /**
+   * One CHECKBOX for one side. Same submitted-first ordering as `cornerField`.
+   *
+   * ⚠ Separate from `cornerField` because that one falls back to `el.value`, and a
+   * checkbox's `.value` is the string "on" whether it is ticked or not — so the fallback
+   * path would read every box as checked.
+   */
+  static cornerChecked(submitted, role, cls, card) {
+    const v = submitted?.[role]?.data?.[cls];
+    if (typeof v === 'boolean') return v;
+    return card?.querySelector(`.${cls}`)?.checked === true;
+  }
+
+  /**
    * One field for one side: that side's submitted value, else this card's DOM.
    *
    * The order is the whole point — the DOM belongs to whichever client is resolving, which
@@ -3982,9 +4079,24 @@ _prepareCharacter(sys, attr) {
     }
     const atkSkillDice  = parseInt(f('attacker', 'sr-melee-atk-skill-dice')) || ctx.atkSkillDice || 1;
     const defSkillDice  = parseInt(f('defender', 'sr-melee-def-skill-dice')) || ctx.defSkillDice || 1;
+    // ── Category-wide bonuses, opted into per corner (M&M p.66) ──────────────────
+    //
+    // ⚠ Until 2026-08-21 `skillCategoryBonus` was read in ONE place — the Roll Skill dialog —
+    // so Enhanced Articulation never reached a melee attack, which is the case it most
+    // obviously covers. The tick lives in the corner because the choice is that fighter's,
+    // and the corner is already owner-gated.
+    const _catDice = (role, cls, actorId, category) => {
+      if (!SR3EActor.cornerChecked(sub, role, cls, card)) return 0;
+      const a = game.actors.get(actorId);
+      if (!a) return 0;
+      return SR3EActor.skillCategoryBonus(a.system?.derived?.skillCategoryBonuses ?? [], category).dice;
+    };
+    const atkCatDice = _catDice('attacker', 'sr-melee-atk-cat', ctx.attackerActorId, ctx.atkInfo?.skillCategory);
+    const defCatDice = _catDice('defender', 'sr-melee-def-cat', ctx.defenderActorId, ctx.defInfo?.skillCategory);
+
     // Provisional: the real dice come from what the pool actually GRANTS, below.
-    let atkPool = Math.max(1, atkSkillDice + atkCombatPool);
-    let defPool = Math.max(1, defSkillDice + defCombatPool);
+    let atkPool = Math.max(1, atkSkillDice + atkCatDice + atkCombatPool);
+    let defPool = Math.max(1, defSkillDice + defCatDice + defCombatPool);
     let atkTN = SR3EActor.cornerTN(f('attacker', 'sr-melee-atk-tn'), ctx.atkTN);
     let defTN = SR3EActor.cornerTN(f('defender', 'sr-melee-def-tn'), ctx.defTN);
 
@@ -4039,8 +4151,8 @@ _prepareCharacter(sys, attr) {
     if (defSpent !== defCombatPool) {
       ui.notifications.warn(`${defActor?.name ?? 'Defender'}: only ${defSpent} of ${defCombatPool} Combat Pool dice were available.`);
     }
-    atkPool = Math.max(1, atkSkillDice + atkSpent);
-    defPool = Math.max(1, defSkillDice + defSpent);
+    atkPool = Math.max(1, atkSkillDice + atkCatDice + atkSpent);
+    defPool = Math.max(1, defSkillDice + defCatDice + defSpent);
 
     const atk = game.actors.get(ctx.attackerActorId);
     const def = game.actors.get(ctx.defenderActorId);
@@ -4963,6 +5075,75 @@ _prepareCharacter(sys, attr) {
       isWeaponRoll:    false,
       isChargeRecovery: true,
       chargeContext:    { actorId: actor.id, tn },
+    });
+  }
+
+  /**
+   * The complete dice breakdown for one corner of an opposed card.
+   *
+   * The corner shows a summary in a column two inches wide; this is the whole story, including
+   * the parts the summary has to leave out — every augmentation named with the item it came
+   * from, category bonuses whether or not they are ticked, and what pool is still available.
+   *
+   * ⚠ READ-ONLY. It explains the numbers, it does not change them; the corner's own fields
+   * remain the only place anything is edited. So there is no permission gate beyond being able
+   * to see the card — a spectator learning why a number is 14 costs nothing.
+   */
+  static async showDiceBreakdown(btn) {
+    const ctx   = JSON.parse(btn.dataset.payload);
+    const actor = ctx.actorId ? game.actors.get(ctx.actorId) : null;
+    const d     = actor?.system?.derived ?? {};
+
+    const key   = ctx.requiredSkill || ctx.skillName || '';
+    const srcs  = d.skillBonusSources?.[key] ?? d.skillBonusSources?.[ctx.skillName] ?? [];
+    const auto  = d.skillBonusDice?.[key] ?? d.skillBonusDice?.[ctx.skillName] ?? 0;
+    const cat   = SR3EActor.skillCategoryBonus(d.skillCategoryBonuses ?? [], ctx.skillCategory);
+
+    const row = (label, value, note = '') => `
+      <tr>
+        <td style="padding:2px 8px 2px 0">${label}${note ? `<div style="font-size:10px;color:var(--sr-dim)">${note}</div>` : ''}</td>
+        <td style="padding:2px 0;text-align:right;white-space:nowrap"><strong>${value}</strong></td>
+      </tr>`;
+
+    const rows = [];
+    rows.push(ctx.isDefault
+      ? row(`${ctx.skillName}`, ctx.skillRating, 'defaulting — full attribute, no pool dice')
+      : row(`${ctx.skillName} rating`, ctx.skillRating,
+            ctx.skillCategory ? `category: ${ctx.skillCategory}` : ''));
+
+    if (ctx.specBonus) rows.push(row(`Specialisation — ${ctx.specName}`, `+${ctx.specBonus}`));
+
+    // ⚠ Named individually. A lump sum is what made this unanswerable in the first place.
+    for (const src of srcs) rows.push(row(src.label, `+${src.dice}`, 'always applies'));
+
+    // Sources should account for the whole of the flat total; if they do not, say so rather
+    // than let the two disagree in silence.
+    const accounted = srcs.reduce((a, x) => a + (x.dice ?? 0), 0);
+    if (auto !== accounted) {
+      rows.push(row('Unattributed augmentation', `+${auto - accounted}`,
+        'in the total but with no recorded source — likely an item edited by hand'));
+    }
+
+    rows.push(row('<strong>Skill dice</strong>', ctx.skillDice, 'the Skill box on the card'));
+
+    if (cat.dice) {
+      rows.push(row(`${cat.labels.join(' + ')}`, `+${cat.dice}`,
+        'OPTIONAL — tick it on the card when it applies'));
+    }
+    if (ctx.availPool) {
+      rows.push(row('Combat Pool available', ctx.availPool, 'allocate on the card; spent for the turn'));
+    }
+
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `${ctx.name} — dice breakdown` },
+      content: `
+        <table style="width:100%;font-size:12px;border-collapse:collapse">
+          ${rows.join('')}
+        </table>
+        <p style="margin:8px 0 0;font-size:10px;color:var(--sr-dim)">
+          Read-only. Edit the numbers in your own corner of the card.
+        </p>`,
+      buttons: [{ label: 'Close', action: 'close', default: true }],
     });
   }
 

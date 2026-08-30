@@ -70,6 +70,73 @@ background-color: var(--sr-surface) !important;
   padding: 1px 4px;
 }
 
+/* Where a corner's dice came from — rating + specialisation + augmentation. Shown because a
+   bare total gives a player no way to tell what is already included in it. Reported from play
+   2026-08-21: "showing 12 dice but I don't see where they are all coming from". */
+/* The corner is two columns: controls on the left, where the dice came from on the right.
+   The field rows are a 52px label plus a 40px input, so the right half was dead space. */
+.sr-melee-corner-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+}
+.sr-melee-fields { min-width: 0; }
+
+.sr-melee-breakdown {
+  min-width: 0;
+  font-size: 10px;
+  color: var(--sr-muted);
+  line-height: 1.45;
+  padding: 4px 6px;
+  border-left: 1px solid var(--sr-border);
+}
+/* ⓘ opens the full breakdown. NOT part of the chat-action family — it is an inline glyph in a
+   heading, so it is deliberately tiny and carries its own complete rule rather than the
+   full-width shared base. It still sets height/white-space, because core's fixed height would
+   clip it just the same. */
+.sr-dice-info-btn {
+  width: auto;
+  height: auto;
+  white-space: normal;
+  line-height: 1;
+  padding: 0 2px;
+  margin-left: 3px;
+  background: none;
+  border: none;
+  color: var(--sr-accent);
+  font-size: 11px;
+  cursor: pointer;
+  vertical-align: baseline;
+}
+.sr-dice-info-btn:hover { color: var(--sr-text); }
+
+.sr-bd-title {
+  font-size: 9px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--sr-dim);
+  margin-bottom: 2px;
+}
+.sr-bd-total {
+  color: var(--sr-text);
+  font-weight: 600;
+  margin-top: 2px;
+}
+.sr-bd-note { color: var(--sr-dim); }
+
+/* Opt-in category bonus (Enhanced Articulation). Unticked by default — it is the player's
+   judgement whether the bonus applies, the same contract as the Roll Skill dialog. */
+.sr-bd-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  margin-top: 4px;
+  color: var(--sr-gold);
+  cursor: pointer;
+}
+.sr-bd-opt input { margin: 2px 0 0; flex: none; }
+
 .sr-melee-field-row {
   display: grid;
   grid-template-columns: 52px auto;
@@ -153,7 +220,11 @@ background-color: var(--sr-surface) !important;
 .sr-icia-assign-btn,
 .sr-matrix-decker-resist-btn,
 .sr-matrix-decker-resist-roll-btn,
-.sr-miji-degradation-btn {
+.sr-miji-degradation-btn,
+.sr-knockdown-btn,
+.sr-fd-dodge-btn,
+.sr-charge-quickness-btn,
+.sr-prone-btn {
   width: 100%;
   height: auto;      /* core gives buttons a fixed height — grow with wrapped text */
   white-space: normal;
@@ -175,7 +246,9 @@ background-color: var(--sr-surface) !important;
 .sr-astral-soak-btn,
 .sr-astral-soak-roll-btn,
 .sr-ram-vehicle-soak-btn,
-.sr-ram-passenger-resist-btn {
+.sr-ram-passenger-resist-btn,
+.sr-knockdown-btn,
+.sr-charge-quickness-btn {
   background: linear-gradient(135deg, color-mix(in srgb, var(--sr-gold) 15%, transparent) 0%, color-mix(in srgb, var(--sr-gold) 5%, transparent) 100%);
   border: 1px solid var(--sr-gold);
   color: var(--sr-gold);
@@ -190,7 +263,9 @@ background-color: var(--sr-surface) !important;
 .sr-astral-soak-btn:hover:not(:disabled),
 .sr-astral-soak-roll-btn:hover:not(:disabled),
 .sr-ram-vehicle-soak-btn:hover:not(:disabled),
-.sr-ram-passenger-resist-btn:hover:not(:disabled) {
+.sr-ram-passenger-resist-btn:hover:not(:disabled),
+.sr-knockdown-btn:hover:not(:disabled),
+.sr-charge-quickness-btn:hover:not(:disabled) {
   background: color-mix(in srgb, var(--sr-gold) 25%, transparent);
   box-shadow: 0 0 10px color-mix(in srgb, var(--sr-gold) 30%, transparent);
 }
@@ -220,6 +295,7 @@ background-color: var(--sr-surface) !important;
 /* green — dodge / defense */
 .sr-dodge-roll-btn,
 .sr-dodge-declare-btn,
+.sr-fd-dodge-btn,
 .sr-spell-defense-btn {
   background: linear-gradient(135deg, color-mix(in srgb, var(--sr-green) 15%, transparent) 0%, color-mix(in srgb, var(--sr-green) 5%, transparent) 100%);
   border: 1px solid var(--sr-green);
@@ -228,9 +304,22 @@ background-color: var(--sr-surface) !important;
 
 .sr-dodge-roll-btn:hover:not(:disabled),
 .sr-dodge-declare-btn:hover:not(:disabled),
+.sr-fd-dodge-btn:hover:not(:disabled),
 .sr-spell-defense-btn:hover:not(:disabled) {
   background: color-mix(in srgb, var(--sr-green) 25%, transparent);
   box-shadow: 0 0 10px color-mix(in srgb, var(--sr-green) 30%, transparent);
+}
+
+/* muted — applies a STATUS rather than rolling. Deliberately quieter than the test button
+   it sits under, so "roll this" and "record the result" do not look like the same weight. */
+.sr-prone-btn {
+  background: color-mix(in srgb, var(--sr-muted) 12%, transparent);
+  border: 1px solid var(--sr-border-hi);
+  color: var(--sr-text);
+}
+.sr-prone-btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--sr-muted) 22%, transparent);
+  border-color: var(--sr-text);
 }
 
 /* accent/blue — roll actions */
@@ -535,6 +624,8 @@ background-color: var(--sr-surface) !important;
 
 .sr-explode-btn {
   width: 100%;
+  height: auto;      /* core gives buttons a fixed height — grow with wrapped text */
+  white-space: normal;
   padding: 6px 10px;
   background: linear-gradient(135deg, color-mix(in srgb, #3ad6ff 12%, var(--sr-bg)) 0%, color-mix(in srgb, #3ad6ff 15%, transparent) 100%);
   border: 1px solid #3ad6ff;

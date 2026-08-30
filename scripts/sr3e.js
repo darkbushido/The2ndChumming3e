@@ -2382,6 +2382,17 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
     });
   });
 
+  // ⓘ full dice breakdown. NO permission gate, deliberately: it is read-only and explains a
+  // number already printed on a public card. Gating it would hide the explanation from the
+  // people most likely to be confused by the roll.
+  html.querySelectorAll('.sr-dice-info-btn').forEach(btn => {
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      await SR3EActor.showDiceBreakdown(btn);
+    });
+  });
+
   // Knockdown Test (SR3 p.124). `_isDecider` — it rolls, so exactly one user owns it.
   html.querySelectorAll('.sr-knockdown-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'knockdown', i)) return;
@@ -2581,7 +2592,13 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       const mineHere = _isDeciderId(c.dataset.cornerOwner);
       if (mineHere && !acted[c.dataset.cornerRole]) continue;
       c.querySelectorAll('input, select, textarea').forEach(el => {
-        if (el.tagName === 'SELECT') el.disabled = true; else el.readOnly = true;
+        // ⚠ THREE branches, not two. `readOnly` is ignored by <select> AND by checkboxes —
+        // only `disabled` locks either. Adding a corner checkbox without this leaves it
+        // editable by every spectator, and nothing on screen would say so. CLAUDE.md records
+        // the select half of this trap; the checkbox half was found when Enhanced
+        // Articulation's opt-in moved into the corner on 2026-08-21.
+        if (el.tagName === 'SELECT' || el.type === 'checkbox') el.disabled = true;
+        else el.readOnly = true;
         el.style.opacity = '0.55';
         el.title = mineHere ? 'Already submitted.' : 'Only this participant may edit their own corner.';
       });
