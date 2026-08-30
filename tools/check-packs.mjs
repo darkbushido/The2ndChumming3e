@@ -33,7 +33,7 @@
  */
 import { readdirSync, existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname, join, basename } from 'node:path';
+import { dirname, join } from 'node:path';
 import { ClassicLevel } from 'classic-level';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
