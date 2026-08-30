@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | *(none)* |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **71** |
+| 🔴 Confirmed bugs, still open | **71** · **72** · **73** |
 | 📕 Rules not implemented | 3 · 4 · 30 · 47 · 48 · 49 · 53 · 57 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
@@ -3918,3 +3918,73 @@ ethos is that players drive their own sheet; the GM is the write authority, not 
 ⚠ Check the **Matrix tab's rigger EW block** and the Token-HUD vehicle tools for the same
 assumption while in there — they read `driverActorId` (`:1489`, `:2416`, `:3447`, `:3493`) but
 do not create, so they are probably fine.
+
+---
+
+<a id="72"></a>
+## 72. Reaction has no roll button — **CONFIRMED, and the handler already supports it**
+
+**Reported from play 2026-08-30.** Every other attribute carries a d6 icon; Reaction does not,
+so a player asked for a Reaction Test has nothing to click.
+
+### It is a UI gap, not a missing feature
+
+`SR3EActorSheet._onRollAttr` **already has a `reaction` branch** — it reads
+`attributes.reaction.value` and falls back to `floor((QUI + INT) / 2)` when the derived value is
+missing. Somebody wrote it deliberately. What is missing is the affordance:
+
+- The attribute grid iterates `coreAttrs` (`SR3EActorSheet.js:642`), which is exactly the six
+  bought attributes: Body, Quickness, Strength, Charisma, Intelligence, Willpower.
+- Reaction is rendered **separately** below it (`:686-700`) as a derived block, because it has a
+  different shape — a derived base, a manual bonus input, and adept/cyber contributions.
+- That separate block never got the `<i class="fas fa-dice-d6 rollable" data-action="rollAttr">`
+  the six grid entries get.
+
+**Fix:** add the icon to the Reaction block with `data-attr="reaction"`. The action is already
+registered (`:27`) and the handler already branches on it, so this is one element.
+
+⚠ **Reaction Tests are real and reachable.** Surprise (p.108) and Missile Parry (p.170) are both
+Reaction Tests, and the Chase and Driving flows lean on Reaction throughout. This is not a
+theoretical attribute.
+
+⚠ While in there: check whether **Essence and Magic** have the same gap. They are also rendered
+outside `coreAttrs`, and Magic at least is rolled — Attribute Boost's activation is a Magic Test.
+
+<a id="73"></a>
+## 73. No way to roll dice for something the system does not model — **CONFIRMED**
+
+**Reported from play 2026-08-30**, alongside [#72](#72). A player cannot simply roll a pool
+against a target number.
+
+### What exists, and why none of it covers this
+
+- **Foundry's `/r 5d6`** works for everyone, and produces a **sum**. SR3 is a success-counting
+  system with the Rule of Six, so the number it prints is meaningless here — the one thing a
+  player must not do is read it as a result.
+- **Every roll path in the system is anchored to a thing**: an attribute icon, a skill row, a
+  weapon, a spell. `rollPool(pool, tn, label, options)` is perfectly general, but nothing
+  reaches it without a document to hang off.
+- **The GM tools on the Rollable Tables tab** are the closest thing, and are either
+  situation-specific (Chase, Driving Test) or GM-only (Chunky Salsa, Barrier, Falling).
+
+So a GM who says *"roll 6 dice against a 4"* — for a houserule, a knowledge question, an
+improvised stunt, anything off-sheet — leaves the player with no correct way to do it.
+
+### Fix
+
+A **generic Success Test** dialog: pool, TN, an optional label, and the usual pool-dice offer,
+straight into `rollPool`. It should be available to players on their own sheet, since that is
+who needs it.
+
+⚠ **It must go through `rollPool`, not `Roll.create`.** The whole point is that the result is a
+success count with the Rule of Six, exploding interactively like every other roll in the system.
+A second, simpler roll path that prints a different-looking card would be worse than nothing —
+players would not know which of the two to trust.
+
+⚠ **Reuse `_promptRollOptions`** (`SR3EActorSheet.js:3791`) rather than writing a third dialog:
+it already handles the pool offer, the TN, physical dice and the wound modifier. This wants an
+entry point, not new machinery.
+
+⚠ Consider an **Open Test** mode while designing the dialog — no TN, report the highest die.
+SR3 uses them (the Chase Scene already is one), and they have the same "no document to hang
+off" problem.
