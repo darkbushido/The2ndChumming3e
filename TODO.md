@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | *(none)* |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | *(none — 54 fully closed)* |
+| 🔴 Confirmed bugs, still open | **71** |
 | 📕 Rules not implemented | 3 · 4 · 30 · 47 · 48 · 49 · 53 · 57 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
@@ -3854,3 +3854,67 @@ independently rejects any kill with zero failing assertions.
   typed each time — the whole point is the cases the tables do not cover.
 - **Not a replacement for the typed-TN escape.** With `gmApprovesTN` off there is no window at
   all and the TN field stays editable; that path is unaffected.
+
+---
+
+<a id="71"></a>
+## 71. Players cannot add a vehicle to their character sheet — **CONFIRMED**
+
+**Reported from play 2026-08-30.** The Vehicles tab offers **+ Create & Assign**
+(`SR3EActorSheet.js:2466`), the dialog opens, the player picks a drone, presses Create — and
+nothing happens except a Foundry permission error.
+
+### Why
+
+`SR3EActorSheet._onCreateLinkVehicle` (`:3667`) creates a **world Actor** on the clicking
+client:
+
+```js
+newActor = await Actor.implementation.create(data);
+…
+await newActor.update({ 'system.driverActorId': this.actor.id });
+```
+
+Creating a world Actor requires the **`ACTOR_CREATE`** permission, which the base Player role
+does **not** have in Foundry. So the whole flow is GM-only in practice, while the button is
+rendered unconditionally — there is no `game.user.isGM` gate anywhere on that path.
+
+The `update()` on the next line has the same problem from the other direction: even where
+creation succeeds, the player does not own the new actor.
+
+⚠ **This is the one place in the system that writes without going through the GM.** Every other
+authoritative write relays through `SR3EQuery.asGM` precisely because a player's client may not
+have permission — pools, damage, card state, Essence. This path predates that layer and was
+never brought across.
+
+### It is not just "create" — there is no way to link an EXISTING vehicle either
+
+The dialog offers *"Create blank"* or *"copy from a compendium"*. It cannot attach a vehicle
+that already exists, so a GM who has built the team's Bulldog cannot hand it to the rigger from
+the character sheet at all.
+
+**The workaround, and why it is not obvious:** the link lives on the VEHICLE. The vehicle
+sheet has a driver dropdown (`SR3EVehicleSheet.js:162`, `name="system.driverActorId"`), so a GM
+opens the vehicle and picks the character there. Nothing on the character sheet says so, which
+is why this reads as broken rather than as inverted.
+
+### Fix
+
+Three parts, and the first two are the actual bug:
+
+1. **Relay the creation through the GM** — a `sr3e.vehicle.create` verb alongside the existing
+   ones in `SR3EQuery`, taking `{ driverActorId, source }` and returning the new actor's id.
+   The GM is already the authority for every other write; this is the same shape.
+2. **Grant the player ownership** of the created vehicle, or it appears on their sheet and
+   refuses to roll. `ownership: { [game.user.id]: OWNER }` at create time.
+3. **Offer "link an existing vehicle"** beside the two create options — a dropdown of vehicles
+   the user can see. That alone would have made the reported case work, since the GM had
+   already made the vehicle.
+
+⚠ **Do not "fix" this by hiding the button from players.** The Vehicles tab is a rigger's main
+surface, and a player who cannot attach their own drone has to ask the GM for every change. The
+ethos is that players drive their own sheet; the GM is the write authority, not the operator.
+
+⚠ Check the **Matrix tab's rigger EW block** and the Token-HUD vehicle tools for the same
+assumption while in there — they read `driverActorId` (`:1489`, `:2416`, `:3447`, `:3493`) but
+do not create, so they are probably fine.
