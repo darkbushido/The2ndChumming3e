@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | *(none)* |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **71** · **72** · **73** |
+| 🔴 Confirmed bugs, still open | **71** · **72** · **73** · **74** |
 | 📕 Rules not implemented | 3 · 4 · 30 · 47 · 48 · 49 · 53 · 57 |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
@@ -3988,3 +3988,71 @@ entry point, not new machinery.
 ⚠ Consider an **Open Test** mode while designing the dialog — no TN, report the highest die.
 SR3 uses them (the Chase Scene already is one), and they have the same "no document to hang
 off" problem.
+
+---
+
+<a id="74"></a>
+## 74. A crash can only be reached from a Chase Scene — **CONFIRMED**
+
+**Reported from play 2026-08-30:** *"they were in a car accident and I need to handle the
+player damage to everyone in the car plus the damage to the car itself."*
+
+### The flow already exists, in full
+
+`SR3EActor._buildCrashDamageHtml` (`SR3EActor.js:3557`) does exactly what was asked:
+
+- Computes the crash damage from speed — Power `ceil(km-per-turn / 10)`, Level L/M/S/D at the
+  21 / 61 / 201 thresholds
+- Posts a **vehicle** soak button against the vehicle's Body
+- Posts a **per-passenger resist button** for the driver *and every passenger*
+  (`sr-ram-passenger-resist-btn` → `handleRamPassengerResist`), each carrying that actor's own
+  Body and the crash TN
+
+Nothing about it is missing or wrong. It is simply **unreachable**.
+
+### The one door into it
+
+`isCrashRoll: true` is set in exactly one place in the codebase —
+`SR3EVehicleChase.js:1529`, the Chase Scene's Crash Test action. To get a crash resolved you
+must therefore:
+
+1. have a **Chase Scene** open,
+2. have the vehicle **registered as a participant** in it,
+3. have every passenger **added to that participant**, because the roster lives on the chase
+   (`p.passengerActorIds`), and
+4. trigger the crash through the chase's own action dialog.
+
+A car accident that is not a chase — a rigger fumbling a Driving Test, a bomb, a patch of ice,
+someone driving into a wall — has no route to any of it. `runDrivingTest` even tells the GM
+*"0 successes → GM Crash Test"* and then offers nothing to click.
+
+### The deeper half: nobody knows who is in the car
+
+⚠ **`VehicleData` has `driverActorId` and `seating`, but no passenger roster.** The only list of
+who is aboard is `passengerActorIds` on a **chase participant** — a transient object that exists
+while a Chase Scene is open and is gone afterwards.
+
+So even a standalone crash dialog would have to ask "who is in the car?" every time, and the
+answer would not persist. Ramming has the same problem for the same reason.
+
+### Fix
+
+1. **A passenger roster on the vehicle** — `system.passengerActorIds`, edited on the vehicle
+   sheet next to the existing driver dropdown, capped for display by `seating`. A data-model
+   change, so a full Foundry restart.
+2. **A Crash Test that stands alone** — on the vehicle sheet beside Driving Test, and on the
+   Vehicle Tools Token-HUD menu. It should take speed (defaulting to the vehicle's current),
+   let the GM adjust Power and Level, and call the SAME `_buildCrashDamageHtml`.
+3. **Point `runDrivingTest` at it**, so *"0 successes → GM Crash Test"* becomes a button rather
+   than an instruction.
+4. **Have the Chase Scene read the vehicle's roster** as its default when a participant is
+   added, so the two lists stop being independent.
+
+⚠ **Do not write a second damage builder.** `_buildCrashDamageHtml` is the rule; a standalone
+crash needs an entry point and a passenger list, not new arithmetic. Two implementations of the
+speed-to-damage table would drift, and the one behind the Chase Scene is the one nobody would
+notice going wrong.
+
+⚠ **Check the speed unit at the new call site.** `speedKmct` is metres-per-Combat-Turn stored as
+`km/h ÷ 1.2` (see the Chase section in CLAUDE.md), and the damage table reads it directly. A
+dialog that collects plain km/h and passes it through would overstate every crash by ~20%.
