@@ -1087,6 +1087,45 @@ every token lands in `bonuses`, `flags`, `unmapped` or `unparsed`.
 ⚠ **`bonus*` fields on cyberware/bioware have NO `min`** — three entries carry a penalty
 (`-1RCT`), which a floor of 0 silently swallowed. AdeptPowerData keeps its floor deliberately.
 
+### Pack integrity — `npm run packs:check`
+
+Point it at any install; **read-only by default**, exits 1 on a fault so it can gate a release.
+
+```bash
+npm run packs:check                     # the local install
+npm run packs:check:repo                # this checkout's packs/
+node tools/check-packs.mjs <path>       # any other install (prod, a player's machine)
+npm run packs:fix                       # remove SAFE duplicates only
+```
+
+Checks: documents with a null/missing `_id`, pack keys that disagree with the document's own
+`_id`, duplicate `_id`s within a pack, and manifest packs missing from disk. Undeclared packs
+on disk are reported as **information, not a fault** — the maintainer's install still carries
+22 pre-split monolithic packs, which Foundry simply ignores.
+
+⚠ **Foundry must be closed even to READ.** A LevelDB allows one process to open a database;
+there is no shared-read mode. The tool reports a lock as "close Foundry" rather than a stack
+trace, because that is what it always means.
+
+⚠ **Why it exists.** On 2026-08-30 a sweep found **one malformed document in every pack** —
+92 of them, keyed `!items!null` / `!actors!null` with `_id: null`. Nothing was visibly broken
+and they had survived the entire per-book restructure. **The repo was clean**: the shipped
+packs are built by a node tool, which writes minimal documents, while every malformed record
+carried full Foundry scaffolding (`_stats`, `ownership`, `sort`, `folder`) — the signature of
+`pack.importDocument`, i.e. of running the populate macros against a live install. Several sat
+in packs that do not exist in the repo at all. So this is drift a **particular install**
+accumulates, which no test can see.
+
+⚠ **`--fix` deletes only what it can PROVE is redundant** — a malformed record goes only when
+some *other* properly-keyed record in the same pack is byte-identical in content. Anything
+else is reported and left. Two traps are already handled, both found the hard way:
+- **`prototypeToken` and the scaffolding fields are excluded from the comparison.** They
+  differ by construction between a built document and a Foundry-hydrated one, and comparing
+  them made all 92 look like genuine conflicts.
+- **Any identical twin counts, not the first name-match.** A name can legitimately repeat
+  within a pack — `sr3e-sr3-melee` carries three "Spur"s — and comparing against the wrong one
+  reported 23 false conflicts.
+
 ### World migrations — `scripts/SR3EMigrations.js`
 
 ⚠ **Foundry EMBEDS items, it does not link them.** An actor holding an item carries its **own
