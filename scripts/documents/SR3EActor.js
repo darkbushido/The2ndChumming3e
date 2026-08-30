@@ -1672,25 +1672,78 @@ _prepareCharacter(sys, attr) {
 
   // Adept power bonuses — summed from all adeptpower items
   const adeptBonus    = { bod: 0, qui: 0, str: 0, cha: 0, int: 0, wil: 0, mag: 0, rea: 0, initDice: 0 };
+  // Improved Ability is resolved LATER, not here: its cap is against effective Magic
+  // (p.169), and Magic is not derived until Essence and Bio Index are known, well below.
+  // Collect the raw claims now; a second pass past the Magic derivation applies the cap.
+  const pendingImprovedAbility = [];
   if (isAdept) {
+    // ⚠ `globalThis.game`, not bare `game` — an undeclared identifier is a ReferenceError,
+    // which optional chaining does NOT rescue. The unit tests call this with no Foundry
+    // globals at all, and `game?.x` throws there just as loudly as `game.x`.
+    const kindOf = globalThis.game?.sr3e?.SR3E?.adeptPowerKind;
     for (const item of (this.items ?? [])) {
       if (item.type !== 'adeptpower') continue;
-      const s = item.system;
-      adeptBonus.bod      += s.bonusBod      ?? 0;
-      adeptBonus.qui      += s.bonusQui      ?? 0;
-      adeptBonus.str      += s.bonusStr      ?? 0;
-      adeptBonus.cha      += s.bonusCha      ?? 0;
-      adeptBonus.int      += s.bonusInt      ?? 0;
-      adeptBonus.wil      += s.bonusWil      ?? 0;
-      adeptBonus.mag      += s.bonusMag      ?? 0;
-      adeptBonus.rea      += s.bonusRea      ?? 0;
-      adeptBonus.initDice += s.bonusInitDice ?? 0;
+      const s    = item.system;
+      const lvl  = s.hasLevels ? (s.level ?? 1) : 1;
+      const kind = kindOf ? kindOf(item.name) : 'other';
+
+      // ⚠ **A levelled power's bonus is PER LEVEL** — *"Each level of this power increases
+      // the Attribute by 1"* (p.169), and the upstream `Mods` string stores `+1STR` for a
+      // power with `hasLevels: true`. Multiplying was missing until 2026-08-29, so Improved
+      // Physical Attribute 3 would have granted +1 rather than +3 the moment the pack data
+      // landed. Powers with fixed levels (Improved Reflexes 1/2/3) ship as separate items
+      // with `hasLevels: false` and absolute values, so `lvl` is 1 and they are unaffected.
+      const mul = n => (n ?? 0) * lvl;
+
+      if (kind === 'attributeBoost') {
+        // ⚠ **Attribute Boost contributes NOTHING passively, by design** — TODO 63.
+        //
+        // It is activated with a Magic Test, lasts a number of Combat Turns equal to the
+        // successes, and costs Drain when it lapses (p.168-169). Letting it through this
+        // branch would make it permanent, always-on, untested and undrained, AND would stack
+        // with the cyberware the power is expressly incompatible with. The live boost is
+        // applied from `system.attributeBoost` further down.
+        //
+        // The shipped packs carry no `Mods` for these, so today this guard changes nothing.
+        // It exists so that an upstream edit, or a GM filling the bonus boxes by hand, cannot
+        // quietly turn the power into a permanent buff.
+        continue;
+      }
+
+      adeptBonus.bod      += mul(s.bonusBod);
+      adeptBonus.qui      += mul(s.bonusQui);
+      adeptBonus.str      += mul(s.bonusStr);
+      adeptBonus.cha      += mul(s.bonusCha);
+      adeptBonus.int      += mul(s.bonusInt);
+      adeptBonus.wil      += mul(s.bonusWil);
+      adeptBonus.mag      += mul(s.bonusMag);
+      adeptBonus.rea      += mul(s.bonusRea);
+      adeptBonus.initDice += mul(s.bonusInitDice);
+
       // Improved Ability: a levelled power grants dice equal to its level, otherwise 1.
-      // A levelled Improved Ability contributes ITS LEVEL, so the label carries the level too
-      // — a bare "Improved Ability" beside 6 dice explains nothing.
-      _addSkillDice(s.improvedSkillName, s.hasLevels ? (s.level ?? 1) : 1,
-        s.hasLevels ? `${item.name} ${s.level ?? 1}` : item.name);
-      _addSkillCategory(item.name, s.improvedSkillCategory, s.hasLevels ? (s.level ?? 1) : 1);
+      // The label carries the level too — a bare "Improved Ability" beside 6 dice explains
+      // nothing. Deferred so the p.169 cap can see Magic; see `pendingImprovedAbility`.
+      if (s.improvedSkillName) {
+        // ⚠ **Every adept power that names a skill is capped**, not only the ones whose name
+        // the classifier recognises. `improvedSkillName` on an adept power IS Improved
+        // Ability — no other adept power grants dice to a *named skill*; the rest grant them
+        // to a KIND of test (TODO 70), which this field cannot express.
+        //
+        // Gating the cap on `adeptPowerKind` was the first cut, and it would have made a
+        // rules limit depend on name-matching against four packs that spell the power four
+        // ways. A rename upstream would then un-cap it silently — failing in the direction
+        // that hands out dice the rules forbid, which is the defect this whole item exists
+        // to remove.
+        //
+        // ⚠ Cyber/bioware use the same field and are NOT capped: p.169 is an adept rule.
+        // That branch is above and untouched.
+        pendingImprovedAbility.push({
+          skill: s.improvedSkillName,
+          level: lvl,
+          label: s.hasLevels ? `${item.name} ${lvl}` : item.name,
+        });
+      }
+      _addSkillCategory(item.name, s.improvedSkillCategory, lvl);
     }
   }
 
@@ -1702,6 +1755,44 @@ _prepareCharacter(sys, attr) {
         + (cyberBonus[_cyberKey[key]] ?? 0)
         + (adeptBonus[_cyberKey[key]] ?? 0);
     }
+  }
+
+  /* ── Attribute Boost — the live, expiring boost · SR3 p.168-169 (TODO 63) ──────────
+   *
+   * Applied HERE, after the passive bonuses and before Reaction, Combat Pool and armour
+   * encumbrance, so a boosted Quickness flows through all three exactly as a bought point
+   * would. That is RAW for the neighbouring power — *"Improving Quickness improves Reaction
+   * and Combat Pool normally"* (p.169) — and there is no reason a temporary point behaves
+   * differently from a permanent one.
+   *
+   * ⚠ The boost is read off `system.attributeBoost`, NOT off the item. See the guard in the
+   * adept loop above for why.
+   * ⚠ Ceiling is 2× the Racial Modified Limit (p.169). Clamped rather than refused: the
+   * activation dialog already prevents overshoot, and a GM who edits an attribute upward
+   * afterwards should not silently lose the boost entirely.
+   */
+  const boostState = sys.attributeBoost ?? {};
+  const boostActive = {};
+  for (const key of ['body', 'quickness', 'strength']) {
+    const b = boostState[key];
+    if (!attr[key] || !b || (b.turns ?? 0) <= 0 || (b.level ?? 0) <= 0) continue;
+    const limit  = SR3EActor.racialLimit(sys.metatype, key);
+    const capped = Math.min(attr[key].value + b.level, SR3EActor.attributeBoostCap(limit));
+    boostActive[key] = {
+      level:   b.level,
+      turns:   b.turns,
+      applied: capped - attr[key].value,   // may be less than `level` at the ceiling
+      limit,
+      // The Drain this boost will cost when it lapses, computed from the value it actually
+      // reached. Shown on the sheet so the adept can see the bill before it arrives.
+      drainLevel: SR3EActor.attributeBoostDrainLevel({ boosted: capped, limit }),
+      drainTN:    SR3EActor.attributeBoostDrainTN(capped),
+      // ⚠ p.169: *"not compatible with any artificial (cyberware) enhancements, nor
+      // spell-based increases"*. Reported, not enforced — the system cannot see a
+      // sustained spell, so refusing on the half it CAN see would be arbitrary.
+      cyberConflict: (cyberBonus[_cyberKey[key]] ?? 0) > 0,
+    };
+    attr[key].value = capped;
   }
 
   // Armor encumbrance: per 2 pts (or fraction) that max(ballistic, impact) > QUI, reduce QUI by 1
@@ -1720,6 +1811,15 @@ _prepareCharacter(sys, attr) {
     }
   }
 
+  // Improved Reflexes does not stack with wired reflexes · SR3 p.169 — TODO 64.
+  // ⚠ One resolution, read by BOTH Reaction and the Initiative dice below. Deriving it twice
+  // is how the two could disagree — a character with the adept package for Reaction and the
+  // cyber package for dice, which is neither of the two things the rule allows.
+  const reflex = SR3EActor.reflexBonus({
+    adeptRea:  adeptBonus.rea,  adeptInit: adeptBonus.initDice,
+    cyberRea:  cyberBonus.rea,  cyberInit: cyberBonus.initDice,
+  });
+
   // Reaction — derived from force-enhanced QUI + INT per RAW, minimum 1
   if (attr.reaction) {
     const baseReaction = Math.max(1, Math.floor(
@@ -1730,8 +1830,7 @@ _prepareCharacter(sys, attr) {
     if (!attr.reaction.override) {
       attr.reaction.value = Math.max(1, baseReaction
         + (attr.reaction.reactionBonus ?? 0) + (attr.reaction.bonus ?? 0)
-        + adeptBonus.rea
-        + cyberBonus.rea);
+        + reflex.rea);
     }
   }
 
@@ -1777,6 +1876,30 @@ _prepareCharacter(sys, attr) {
       + adeptBonus.mag;
   }
   const magicSuppressed = magicBase > 0 && effectiveMagic < magicBase;
+
+  /* ── Improved Ability, capped · SR3 p.169 (TODO 60) ───────────────────────────────
+   *
+   * > "You cannot have more additional dice than your base skill rating or your Magic
+   * > Attribute, whichever is less."
+   *
+   * Deferred to here because the cap needs **effective** Magic, which is not known until
+   * Essence and Bio Index are. `SR3EActor.improvedAbilityDice` holds the rule.
+   *
+   * ⚠ A capped power still reports its FULL level in the label, with the cap noted, so the
+   * breakdown explains a number that is smaller than the sheet's power level. Silently
+   * showing the capped figure is how someone concludes their power is broken.
+   */
+  for (const claim of pendingImprovedAbility) {
+    const skillItem = (this.items ?? []).find(
+      i => i.type === 'skill' && i.name === claim.skill);
+    const rating = skillItem?.system?.rating ?? 0;
+    const dice   = SR3EActor.improvedAbilityDice({
+      level: claim.level, skillRating: rating, magic: attr.magic?.value ?? 0 });
+    const label = (dice < claim.level)
+      ? `${claim.label} (capped at ${dice} — p.169)`
+      : claim.label;
+    _addSkillDice(claim.skill, dice, label);
+  }
 
   // Derived pools — all use .value so adept force benefits every relevant pool
   const combatPoolBase = Math.max(0, Math.floor(
@@ -1827,9 +1950,15 @@ _prepareCharacter(sys, attr) {
 
   sys.derived = {
     initiative:         (attr.reaction?.value ?? 0) + wm,
-    initiativeDice:     1 + (sys.initiativeDiceBonus ?? 0) + (attr.reaction?.diceBonus ?? 0) + cyberBonus.initDice + adeptBonus.initDice,
+    initiativeDice:     1 + (sys.initiativeDiceBonus ?? 0) + (attr.reaction?.diceBonus ?? 0) + reflex.initDice,
     cyberBonus,
     adeptBonus,
+    // Live Attribute Boosts, keyed by attribute — `{level, turns, applied, limit,
+    // drainLevel, drainTN, cyberConflict}`. Empty when nothing is boosted.
+    attributeBoost: boostActive,
+    // Which Reaction/Initiative package survived the p.169 non-stacking rule, and what was
+    // dropped. `conflict` is true only when BOTH sources were present.
+    reflex,
     skillBonusDice,
     // Who contributed each of those dice — for anything that has to explain itself.
     skillBonusSources,
@@ -1936,6 +2065,8 @@ _prepareCharacter(sys, attr) {
         dispelContext:       options.dispelContext       ?? null,
         isConjuringRoll:     options.isConjuringRoll    ?? false,
         conjuringContext:    options.conjuringContext    ?? null,
+        isAttributeBoostRoll: options.isAttributeBoostRoll ?? false,
+        attributeBoostContext: options.attributeBoostContext ?? null,
         isBanishingRoll:     options.isBanishingRoll    ?? false,
         banishContext:       options.banishContext       ?? null,
         isWardCastRoll:      options.isWardCastRoll     ?? false,
@@ -2009,6 +2140,8 @@ _prepareCharacter(sys, attr) {
       dispelContext:         options.dispelContext         ?? null,
       isConjuringRoll:       options.isConjuringRoll       ?? false,
       conjuringContext:      options.conjuringContext      ?? null,
+      isAttributeBoostRoll:  options.isAttributeBoostRoll  ?? false,
+      attributeBoostContext: options.attributeBoostContext ?? null,
       isBanishingRoll:       options.isBanishingRoll       ?? false,
       banishContext:         options.banishContext         ?? null,
       isWardCastRoll:        options.isWardCastRoll        ?? false,
@@ -2532,6 +2665,43 @@ _prepareCharacter(sys, attr) {
             </button>
           </div>`;
 
+      } else if (state.isAttributeBoostRoll && state.attributeBoostContext) {
+        /* Attribute Boost · SR3 p.168-169 (TODO 63)
+         *
+         * > "If there are no successes, the Attribute is not boosted. Otherwise, the
+         * > Attribute is boosted by the level of the power. The boost lasts for a number of
+         * > Combat Turns equal to the number of successes."
+         *
+         * ⚠ **No successes means no Drain.** Drain is owed *"when the boost runs out"*, and
+         * a boost that never started never runs out. This is the opposite of Conjuring,
+         * whose Drain applies even on a failed test — the two branches sit next to each
+         * other and the asymmetry is deliberate, not an oversight.
+         */
+        const ab = state.attributeBoostContext;
+        if (successes === 0) {
+          stagingHtml = `<div class="sr-staging-result">
+            💪 Boost failed — ${ab.attrLabel} is not boosted. <em>No Drain.</em>
+          </div>`;
+        } else {
+          const capped  = Math.min(ab.current + ab.level, ab.cap);
+          const applied = capped - ab.current;
+          stagingHtml = `
+            <div class="sr-staging-result">
+              💪 <strong>${successes} success${successes !== 1 ? 'es' : ''}</strong> →
+              ${ab.attrLabel} <strong>${ab.current} → ${capped}</strong>
+              for <strong>${successes} Combat Turn${successes !== 1 ? 's' : ''}</strong>.
+              ${applied < ab.level
+                ? `<div class="sr-bd-note">Clipped by the ceiling of 2× Racial Modified Limit (${ab.cap}) — p.169.</div>`
+                : ''}
+              <div class="sr-bd-note">Drain when it lapses:
+                ${SR3EActor.attributeBoostDrainTN(capped)}${SR3EActor.attributeBoostDrainLevel({ boosted: capped, limit: ab.limit })}
+                Stun.</div>
+            </div>`;
+          await SR3EActor._commitAttributeBoost({
+            actorId: ab.actorId, attribute: ab.attribute, level: ab.level, turns: successes,
+          });
+        }
+
       } else if (state.isConjuringRoll && state.conjuringContext) {
         const cc       = state.conjuringContext;
         const conjurer = game.actors.get(cc.conjurerActorId);
@@ -2969,6 +3139,8 @@ _prepareCharacter(sys, attr) {
         dispelContext:      state.dispelContext       ?? null,
         isConjuringRoll:    state.isConjuringRoll     ?? false,
         conjuringContext:   state.conjuringContext    ?? null,
+        isAttributeBoostRoll:  state.isAttributeBoostRoll  ?? false,
+        attributeBoostContext: state.attributeBoostContext ?? null,
         isBanishingRoll:    state.isBanishingRoll     ?? false,
         banishContext:      state.banishContext       ?? null,
         isWardCastRoll:     state.isWardCastRoll      ?? false,
@@ -5103,6 +5275,360 @@ _prepareCharacter(sys, attr) {
     if (!attackFailed)     return { quicknessTN: null, knockdownTNMod: 0 };
     if (knockdownRequired) return { quicknessTN: null, knockdownTNMod: 2 };
     return { quicknessTN: 5, knockdownTNMod: 0 };
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+   *  Adept powers — pure rules.  TODO 60, 63, 64.
+   *
+   *  All of these are Foundry-free so they can be unit-tested and mutated. Each is the
+   *  single implementation of its rule; nothing below re-derives them inline.
+   * ══════════════════════════════════════════════════════════════════════════════ */
+
+  /**
+   * Racial Modified Limit for one attribute · *SR3 p.245*
+   *
+   * Unknown metatypes fall back to human, which is the table's baseline of 6 — a metavariant
+   * the GM has typed by hand reads as human rather than as zero, and zero would make every
+   * boost Serious drain immediately.
+   */
+  static racialLimit(metatype, attribute) {
+    const table = globalThis.game?.sr3e?.SR3E?.racialLimits ?? SR3EActor._RACIAL_LIMITS_FALLBACK;
+    const row   = table[String(metatype ?? 'human').toLowerCase()] ?? table.human;
+    return row?.[attribute] ?? 6;
+  }
+
+  /**
+   * Racial Attribute Maximum — *"equal to their Racial Modified Limit times 1.5"* (p.244).
+   *
+   * ⚠ Rounds HALF UP, which is what reproduces every printed cell of the Racial Attribute
+   * Limit Table: 7→11 (10.5), 9→14 (13.5), 11→17 (16.5), 5→8 (7.5). Rounding down would
+   * miss four of the twenty non-human entries — and always in the direction that makes
+   * Drain harsher.
+   */
+  static racialMax(limit) {
+    return Math.round((limit ?? 6) * 1.5);
+  }
+
+  /**
+   * The Attribute Boost activation TN · *SR3 p.168*
+   *
+   * > "make a Magic Test against a target number equal to one half the base (unaugmented)
+   * > rating of the Attribute being boosted (round up)"
+   *
+   * ⚠ **BASE, not current.** Boosting an already-augmented Strength does not get harder,
+   * which is the whole reason the book says "unaugmented" — reading `.value` here would
+   * punish the adept for their own cyberware and for a boost already running.
+   * ⚠ Rounds UP; the expiry TN below rounds up too, but off a different number.
+   */
+  static attributeBoostTN(baseRating) {
+    return Math.max(2, Math.ceil((baseRating ?? 0) / 2));
+  }
+
+  /**
+   * Ceiling on a boosted attribute · *SR3 p.169*
+   *
+   * > "No Attribute can be boosted to greater than twice its Racial Modified Limit"
+   */
+  static attributeBoostCap(limit) {
+    return (limit ?? 6) * 2;
+  }
+
+  /**
+   * The Drain Resistance TN when the boost lapses · *SR3 p.169*
+   *
+   * > "The target number is equal to one-half the boosted Attribute value (round up)"
+   *
+   * ⚠ **BOOSTED, not base** — the opposite of `attributeBoostTN`. The two are one page
+   * apart and read almost identically; using the base here makes a big boost free.
+   */
+  static attributeBoostDrainTN(boostedValue) {
+    return Math.max(2, Math.ceil((boostedValue ?? 0) / 2));
+  }
+
+  /**
+   * Attribute Boost Drain Table · *SR3 p.169*
+   *
+   * | Boosted Attribute Rating is | Drain Level |
+   * |---|---|
+   * | ≤ Racial Modified Limit | L |
+   * | up to Racial Attribute Maximum | M |
+   * | up to 2× Racial Modified Limit | S |
+   *
+   * ⚠ Graded on the **total boosted value**, not on the size of the boost. A troll boosting
+   * Strength 10→12 stays inside the limit table's first band far more easily than a human
+   * going 6→8, and that asymmetry is the point of the rule.
+   */
+  static attributeBoostDrainLevel({ boosted = 0, limit = 6 } = {}) {
+    if (boosted <= limit)                        return 'L';
+    if (boosted <= SR3EActor.racialMax(limit))   return 'M';
+    return 'S';
+  }
+
+  /**
+   * Improved Ability dice, capped · *SR3 p.169* — TODO 60
+   *
+   * > "You cannot have more additional dice than your base skill rating or your Magic
+   * > Attribute, whichever is less. For example, an adept with Pistols 4 and Magic 5 cannot
+   * > have more than 4 Improved Ability (Pistols) dice."
+   *
+   * ⚠ Against the **base skill rating**, not the rating plus a specialisation — a
+   * specialisation is not the skill getting better.
+   * ⚠ Against **effective** Magic, so it moves with Essence and Bio Index. An adept who
+   * loses Magic loses the dice, which is the same principle as losing the powers (p.168).
+   * ⚠ A skill the adept does not have at all is rating 0, so the cap is 0. That is RAW —
+   * there are no additional dice to add to a skill you cannot roll — and it is why the
+   * defaulting clause (TODO 61) is a separate question rather than a special case here.
+   */
+  static improvedAbilityDice({ level = 0, skillRating = 0, magic = 0 } = {}) {
+    return Math.max(0, Math.min(level, skillRating, magic));
+  }
+
+  /**
+   * Improved Reflexes does not stack with technology · *SR3 p.169* — TODO 64
+   *
+   * > "The maximum level of Improved Reflexes is 3, and the increase cannot be combined
+   * > with technological or other magical increases to Reaction or Initiative."
+   *
+   * Returns the package that applies, plus whether a conflict was suppressed so the sheet
+   * can say so.
+   *
+   * ⚠ **The book forbids combining; it does not say which side wins.** In play nobody buys
+   * both deliberately — it happens when a character is handed chrome, or the reverse — so
+   * this takes the BETTER package rather than refusing to derive anything. That follows the
+   * project ethos (warn, never silently sum, keep everything hand-editable): the character
+   * is not punished for a combination the rules simply do not allow, and the sheet reports
+   * what was dropped.
+   * ⚠ **Initiative dice decide it, then Reaction.** A die is worth far more than a point of
+   * Reaction across a Combat Turn, so comparing on Reaction first would pick wrong exactly
+   * when the two are close.
+   * ⚠ Ties go to the adept: it is the character's own Magic, and it cannot be removed
+   * surgically.
+   */
+  static reflexBonus({ adeptRea = 0, adeptInit = 0, cyberRea = 0, cyberInit = 0 } = {}) {
+    const adept = { rea: adeptRea, initDice: adeptInit };
+    const cyber = { rea: cyberRea, initDice: cyberInit };
+    const adeptHas = adept.rea !== 0 || adept.initDice !== 0;
+    const cyberHas = cyber.rea !== 0 || cyber.initDice !== 0;
+
+    // Only one source — no conflict, and summing is the same as choosing.
+    if (!adeptHas) return { ...cyber, conflict: false, source: cyberHas ? 'cyber' : 'none', dropped: null };
+    if (!cyberHas) return { ...adept, conflict: false, source: 'adept', dropped: null };
+
+    const adeptWins = adept.initDice > cyber.initDice
+      || (adept.initDice === cyber.initDice && adept.rea >= cyber.rea);
+    return adeptWins
+      ? { ...adept, conflict: true, source: 'adept', dropped: cyber }
+      : { ...cyber, conflict: true, source: 'cyber', dropped: adept };
+  }
+
+  /**
+   * Mirror of `SR3E.racialLimits`, for the pure rules to fall back on when there is no
+   * Foundry global — the unit tests import this class directly. Kept beside the rule that
+   * reads it; `config.js` remains the source a human edits.
+   */
+  static _RACIAL_LIMITS_FALLBACK = {
+    human: { body: 6, quickness: 6, strength: 6, charisma: 6, intelligence: 6, willpower: 6 },
+    elf:   { body: 6, quickness: 7, strength: 6, charisma: 8, intelligence: 6, willpower: 6 },
+    dwarf: { body: 7, quickness: 6, strength: 8, charisma: 6, intelligence: 6, willpower: 7 },
+    ork:   { body: 9, quickness: 6, strength: 8, charisma: 5, intelligence: 5, willpower: 6 },
+    troll: { body: 11, quickness: 5, strength: 10, charisma: 4, intelligence: 4, willpower: 6 },
+    other: { body: 6, quickness: 6, strength: 6, charisma: 6, intelligence: 6, willpower: 6 },
+  };
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+   *  Attribute Boost — the activated flow.  SR3 p.168-169, TODO 63.
+   * ══════════════════════════════════════════════════════════════════════════════ */
+
+  /**
+   * Ask for a Force… no: ask nothing, and roll the Magic Test.
+   *
+   * The only choice the adept has is *whether* to boost — the level is the power's, the TN
+   * is arithmetic, and the duration is the roll's. So the dialog states the bargain (TN,
+   * gain, the Drain it will cost) and asks for confirmation rather than pretending to
+   * collect input.
+   *
+   * ⚠ **No pool dice.** Spell Pool augments *"Spell Success Tests and Drain Resistance Tests
+   * in spellcasting, Dispelling, and for Spell Defense"* and explicitly *"cannot be used to
+   * augment Conjuring or any other magic-related tests"* (p.43). This is one of the others.
+   */
+  static async openAttributeBoost(actor, itemId) {
+    const item = actor?.items?.get(itemId);
+    if (!item) { ui.notifications.warn('SR3E: Attribute Boost power not found.'); return; }
+
+    const attribute = globalThis.game?.sr3e?.SR3E?.attributeBoostTarget?.(item.name);
+    if (!attribute) {
+      ui.notifications.warn(`SR3E: could not tell which Attribute "${item.name}" boosts.`);
+      return;
+    }
+
+    const attr    = actor.system.attributes ?? {};
+    const base    = attr[attribute]?.base  ?? 0;
+    const current = attr[attribute]?.value ?? 0;
+    const magic   = attr.magic?.value ?? 0;
+    if (magic < 1) { ui.notifications.warn('SR3E: no Magic dice to roll.'); return; }
+
+    const level = item.system?.hasLevels ? (item.system?.level ?? 1) : 1;
+    const limit = SR3EActor.racialLimit(actor.system.metatype, attribute);
+    const cap   = SR3EActor.attributeBoostCap(limit);
+    // ⚠ TN off the BASE rating (p.168 says "unaugmented"); the Drain TN below is off the
+    // BOOSTED value (p.169). Two different numbers, one page apart.
+    const tn      = SR3EActor.attributeBoostTN(base);
+    const wouldBe = Math.min(current + level, cap);
+    const label   = attribute.charAt(0).toUpperCase() + attribute.slice(1);
+
+    const already = actor.system.attributeBoost?.[attribute];
+    const running = (already?.turns ?? 0) > 0
+      ? `<div class="sr-alert sr-alert--danger" style="margin-bottom:6px">
+           ⚠ A boost is already running (${already.turns} turn${already.turns !== 1 ? 's' : ''} left).
+           Re-rolling replaces it, and only the new one will charge Drain.
+         </div>` : '';
+
+    const cyber = (actor.items ?? []).some(i =>
+      (i.type === 'cyberware' || i.type === 'bioware')
+      && (i.system?.[{ body: 'bonusBod', quickness: 'bonusQui', strength: 'bonusStr' }[attribute]] ?? 0) > 0);
+    const cyberWarn = cyber
+      ? `<div class="sr-alert sr-alert--danger" style="margin-bottom:6px">
+           ⚠ ${label} is already raised by cyberware or bioware. Attribute Boost is
+           <em>"not compatible with any artificial (cyberware) enhancements, nor spell-based
+           increases"</em> (p.169). Not blocked — the GM adjudicates.
+         </div>` : '';
+
+    let go = false;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `${item.name} — Magic Test` },
+      content: `
+        <div style="font-size:12px">
+          ${running}${cyberWarn}
+          <table style="width:100%;border-collapse:collapse">
+            <tr><td style="padding:2px 8px 2px 0">Magic Test</td>
+                <td style="text-align:right"><strong>${magic} dice vs TN ${tn}</strong></td></tr>
+            <tr><td style="padding:2px 8px 2px 0">TN is ½ the <em>base</em> ${label} (${base}), round up</td>
+                <td style="text-align:right">—</td></tr>
+            <tr><td style="padding:2px 8px 2px 0">${label} while boosted</td>
+                <td style="text-align:right"><strong>${current} → ${wouldBe}</strong></td></tr>
+            <tr><td style="padding:2px 8px 2px 0">Duration</td>
+                <td style="text-align:right">successes, in Combat Turns</td></tr>
+            <tr><td style="padding:2px 8px 2px 0">Drain when it lapses</td>
+                <td style="text-align:right"><strong>${SR3EActor.attributeBoostDrainTN(wouldBe)}${SR3EActor.attributeBoostDrainLevel({ boosted: wouldBe, limit })}</strong> Stun</td></tr>
+          </table>
+          <p style="margin:8px 0 0;font-size:10px;color:var(--sr-dim)">
+            No pool dice — Spell Pool cannot augment this test (p.43).
+            Ceiling is 2× Racial Modified Limit = ${cap}.
+          </p>
+        </div>`,
+      buttons: [
+        { label: '🎲 Roll Magic', action: 'go', default: true, callback: () => { go = true; } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (!go) return;
+
+    await actor.rollPool(magic, tn, `💪 ${item.name} — Magic Test`, {
+      isAttributeBoostRoll: true,
+      attributeBoostContext: {
+        actorId: actor.id, attribute, attrLabel: label, level, current, cap, limit,
+      },
+    });
+  }
+
+  /**
+   * Write the boost. Absolute values, so `sr3e.actor.set` is the right verb.
+   *
+   * ⚠ Routed through the GM like every other authoritative write — the roll happens on the
+   * player's client, and a player cannot update their own actor in every permission setup.
+   */
+  static async _commitAttributeBoost({ actorId, attribute, level, turns }) {
+    const actor = game.actors.get(actorId);
+    if (!actor) return;
+    const changes = {
+      [`system.attributeBoost.${attribute}.level`]: level,
+      [`system.attributeBoost.${attribute}.turns`]: turns,
+    };
+    if (!game.users.activeGM?.isSelf) {
+      await game.sr3e.SR3EQuery.asGM('sr3e.actor.set', { uuid: actor.uuid, changes });
+      return;
+    }
+    await actor.update(changes);
+  }
+
+  /**
+   * Count every running boost down by one Combat Turn, and bill the Drain for any that
+   * lapse. Called once per round from the `updateCombat` hook, GM client only.
+   *
+   * ⚠ **The Drain is computed from the boosted value BEFORE the boost is cleared.** Clearing
+   * first and then reading the attribute gives the unboosted number, which is a smaller TN
+   * and a lighter Drain Level — the bug this ordering exists to prevent.
+   * ⚠ A Foundry **round** is an SR3 Combat Turn, which is the unit p.168 counts in. Do not
+   * "fix" this to per-pass; a 3-success boost would then evaporate inside a single turn.
+   */
+  static async tickAttributeBoosts() {
+    for (const actor of game.actors) {
+      if (actor.type !== 'character' && actor.type !== 'npc') continue;
+      const state = actor.system?.attributeBoost;
+      if (!state) continue;
+
+      const changes = {};
+      const lapsed  = [];
+      for (const attribute of ['body', 'quickness', 'strength']) {
+        const turns = state[attribute]?.turns ?? 0;
+        if (turns <= 0) continue;
+        if (turns > 1) {
+          changes[`system.attributeBoost.${attribute}.turns`] = turns - 1;
+          continue;
+        }
+        // Last turn — snapshot what it reached, THEN clear.
+        const boosted = actor.system.attributes?.[attribute]?.value ?? 0;
+        const limit   = SR3EActor.racialLimit(actor.system.metatype, attribute);
+        lapsed.push({
+          attribute, boosted, limit,
+          drainTN:    SR3EActor.attributeBoostDrainTN(boosted),
+          drainLevel: SR3EActor.attributeBoostDrainLevel({ boosted, limit }),
+        });
+        changes[`system.attributeBoost.${attribute}.turns`] = 0;
+        changes[`system.attributeBoost.${attribute}.level`] = 0;
+      }
+      if (!Object.keys(changes).length) continue;
+      await actor.update(changes);
+      for (const l of lapsed) await SR3EActor._postAttributeBoostDrain(actor, l);
+    }
+  }
+
+  /**
+   * The Drain card for a lapsed boost · *SR3 p.169*
+   *
+   * > "When the boost runs out, you must make a Drain Resistance Test… To offset the Drain,
+   * > make a Drain Resistance Test using Willpower against the Drain target number. Every
+   * > two successes reduce the Drain Level by one. Any Drain damage taken is stun damage."
+   *
+   * Reuses `_postDrainCard`, which already implements "every two successes reduce the level"
+   * and the Willpower default. `drainTNOverride` is what lets it take a pre-computed pair
+   * instead of parsing a spell's drain formula.
+   *
+   * ⚠ **Always Stun**, unconditionally — unlike spell Drain, which turns Physical when Force
+   * exceeds Magic. The book says "Any Drain damage taken is stun damage" with no exception,
+   * so `drainIsPhysical` is hard-false here rather than derived from anything.
+   */
+  static async _postAttributeBoostDrain(actor, { attribute, boosted, drainTN, drainLevel }) {
+    const label = attribute.charAt(0).toUpperCase() + attribute.slice(1);
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="sr-roll-card">
+        <div class="sr-roll-header">💪 ${actor.name} — Attribute Boost lapsed</div>
+        <div class="sr-staging-result">
+          ${label} returns to normal. Drain <strong>${drainTN}${drainLevel}</strong> Stun,
+          from a boosted rating of ${boosted}.
+        </div>
+      </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    });
+    await actor._postDrainCard({
+      drainTNOverride: drainTN,
+      drainLevel,
+      drainIsPhysical: false,
+      spellName: `Attribute Boost (${label})`,
+      force: boosted,
+      sorceryRating: 0,
+    });
   }
 
   /** Power bonus for a charge that lands (CC p.86). Pure, and deliberately not inlined. */

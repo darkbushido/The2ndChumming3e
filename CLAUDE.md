@@ -547,6 +547,7 @@ ODM-\* rawdata), **`mat`** = this sourcebook, **`matrix-defragged`** = the commu
 >
 > **Audited against the books so far:** Rule of Six/One · Defaulting · Damage staging · Combat
 > Pool · pool refresh · initiative −10 · dodge resolution · Spell Pool · astral Initiative ·
+> **all 117 adept powers** (`audit/adept-powers-audit.md`) ·
 > **every lookup table** (`tests/tables.test.mjs`: Damage Modifiers and the Condition Monitor
 > thresholds, the Weapon Range Table, Impact Projectile multipliers, the Grenade Range Table,
 > Impact Damage Levels and crash Power, ammunition, R3 flux ranges).
@@ -1145,6 +1146,113 @@ what the player opts into.
 Both skill-roll paths go through the same dialog: the character sheet's skill row, and the
 **skill item sheet's own roll button** (unified 2026-08-20; it previously rolled at a hardcoded
 TN 4 with no dialog at all).
+
+### Adept powers  · *SR3 p.168-170*
+
+**117 powers ship across four packs** (`sr3` 42 · `mits` 26 · `sota2` 40 · `tss` 9). Until
+2026-08-29 **not one of them did anything** — every `bonus*` field was 0. Full inventory,
+per-power classification and citations: **`audit/adept-powers-audit.md`**.
+
+Only these channels exist. Everything else is reference-only by design, and correct as such.
+
+| Channel | Powers | Read at |
+|---|---|---|
+| `bonus*` attribute fields | Improved Physical Attribute, Improved Reflexes | `_prepareCharacter` |
+| `improvedSkillName` | **Improved Ability only** | `skillBonusDice` |
+| `improvedSkillCategory` | genuinely category-wide powers | `skillCategoryBonuses` |
+| `system.attributeBoost` | **Attribute Boost only** — activated, expiring | `_prepareCharacter` |
+
+⚠ **A levelled power's `bonus*` is PER LEVEL and must be multiplied.** Upstream stores `+1STR`
+on Improved Physical Attribute with `hasLevels: true`, meaning +1 *each*. Powers with fixed
+levels (Improved Reflexes 1/2/3) ship as **separate items** with `hasLevels: false` and
+absolute values. The same number therefore means two different things, correctly, by item.
+
+⚠ **`mods` had to be declared on `AdeptPowerData`.** A TypeDataModel drops undeclared keys, so
+the 14 powers shipping a `mods` string lost it at load — patching the packs alone could never
+have worked. Both halves are the fix (TODO 59).
+
+⚠ **`tools/build-mods-bonuses.mjs` now reads three files.** `AdeptPowers.json` was missing, and
+nothing said it had been considered. `SRCG_BONUSES` entries carry a **`type`**, which is a
+**guard, not a field**: the map is keyed by name alone and spans three item types, so both
+`_patchItemsByName` and the pack patcher must skip a name whose type does not match. There is
+no collision today; the guard is what stops the generator creating one silently.
+
+#### Attribute Boost is ACTIVATED — never a passive bonus  · *SR3 p.168-169*
+
+Four stages, all implemented (`SR3EActor.openAttributeBoost` → `tickAttributeBoosts` →
+`_postAttributeBoostDrain`):
+
+1. **Magic Test**, TN = ½ the **base (unaugmented)** rating, round up. No successes → no boost.
+2. Attribute + the power's level, ceiling **2× Racial Modified Limit**.
+3. Lasts **Combat Turns equal to the successes** — counted down by the `updateCombat` round hook.
+4. On expiry, a **Drain Resistance Test**: TN = ½ the **boosted** value (round up), Willpower,
+   2 successes per level reduced, **always Stun**.
+
+⚠ **The two TNs read off different numbers** — activation off the *base*, Drain off the
+*boosted* value, one page apart in near-identical wording. `tests/adept-powers.test.mjs`
+asserts they cannot silently converge.
+
+⚠ **Filling `bonusStr` for this power would be worse than leaving it inert** — permanent,
+always-on, untested, undrained, and stacking with the cyberware p.169 says it cannot combine
+with. `_prepareCharacter` has an explicit `continue` for `attributeBoost` powers; the shipped
+packs carry no `Mods` for them, so that guard exists purely to stop a future edit re-creating
+the bug.
+
+⚠ **No successes means NO Drain.** Drain is owed *"when the boost runs out"*, and a boost that
+never started never runs out. This is the **opposite** of Conjuring, whose Drain applies even
+on a failed test — the two branches sit next to each other in `_postWaveCard`.
+
+⚠ **Duration is per Combat TURN, i.e. per Foundry round** — not per Initiative Pass. Per-pass
+would evaporate a 3-success boost inside a single turn.
+
+⚠ Racial limits (`SR3E.racialLimits`, p.245) exist **only** to grade this Drain. They cap
+nothing — every stat stays hand-editable. `SR3EMods` still collapses the upstream racial
+encodings to plain attributes, deliberately.
+
+#### Improved Ability is capped  · *SR3 p.169* — TODO 60
+
+> "You cannot have more additional dice than your base skill rating or your Magic Attribute,
+> whichever is less."
+
+`SR3EActor.improvedAbilityDice({level, skillRating, magic})` = `min` of the three. Resolved
+**after** Magic is derived (it needs effective Magic, which depends on Essence and Bio Index),
+so the adept loop collects claims into `pendingImprovedAbility` and a second pass applies the
+cap. A capped power still shows its full level in the breakdown, with the cap noted.
+
+⚠ **Still not implemented:** the defaulting clause — *"only half (round down) of the Improved
+Ability dice may be used"* when defaulting to the improved skill. `defaultTiers` reads
+`rating` alone and contributes **none**. TODO 61.
+
+#### Improved Reflexes does not stack with technology  · *SR3 p.169* — TODO 64
+
+> "the increase cannot be combined with technological or other magical increases to Reaction
+> or Initiative"
+
+`SR3EActor.reflexBonus` returns **one** package, never a sum, and reports what it dropped
+(the sheet renders a notice). **Initiative dice decide, then Reaction** — a die is worth far
+more than a point of Reaction across a Combat Turn. Ties go to the adept.
+
+⚠ **Resolved ONCE and read by both** the Reaction derivation and `initiativeDice`. Deriving it
+twice is how a character ends up with the adept package for Reaction and the cyber package for
+dice — neither of the two things the rule allows.
+
+⚠ The book forbids combining but does not say which side wins; taking the better package (and
+saying so) follows the ethos rather than refusing to derive anything.
+
+#### The item sheet offers fields by POWER KIND
+
+`SR3E.adeptPowerKind(name)` classifies on the shipped name — the only join available, since
+the upstream data carries no type. The sheet used to render **"Improves Skill" on all 117
+powers**, so an `Attribute Boost(STR)` was configured to grant +4 dice to Unarmed Combat
+(reported in play). Offering a control is a claim that it does something.
+
+⚠ Migration `0.4.5.6` **clears** that field on Attribute Boost items — the only corrective
+migration in the file, via a new `fixItem` hook. Every other migration fills blanks and never
+overwrites; this one argues its case at the call site, and is scoped so Improved Ability's own
+`improvedSkillName` survives untouched.
+
+⚠ `QIC` is an upstream **typo** for Quickness that ships in the pack, so `attributeBoostTarget`
+accepts it beside `QCK`. Reading it as unknown leaves the Quickness boost silently inert.
 
 ### Charging Attack  · *Cannon Companion p.86* — and the source-book rule gate
 

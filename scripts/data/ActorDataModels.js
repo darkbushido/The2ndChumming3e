@@ -3,6 +3,28 @@ const {
   SchemaField, ArrayField, HTMLField, ObjectField,
 } = foundry.data.fields;
 
+/**
+ * Attribute Boost state, per boostable Physical Attribute · *SR3 p.168-169*
+ *
+ * The power is ACTIVATED, not passive: a Magic Test grants `level` points for `turns`
+ * Combat Turns, and when it lapses the adept owes a Drain Resistance Test.
+ *
+ * ⚠ **Deliberately NOT a `bonus*` field on the item.** That is the channel every other
+ * adept power uses, and using it here would make the boost permanent, always-on, untested
+ * and undrained — and would stack with the cyberware the power is expressly incompatible
+ * with (p.169). Getting this wrong is the entire content of TODO 63.
+ *
+ * `turns` counts DOWN once per Combat Turn. 0 means inactive; the drain fires on the
+ * transition to 0, not on every tick.
+ */
+function attributeBoostField() {
+  const one = () => new SchemaField({
+    level: new NumberField({ integer: true, initial: 0, min: 0 }),
+    turns: new NumberField({ integer: true, initial: 0, min: 0 }),
+  });
+  return new SchemaField({ body: one(), quickness: one(), strength: one() });
+}
+
 /** Basic persisted attribute: base, value, mod, force */
 function _attr(base = 3) {
   return new SchemaField({
@@ -80,6 +102,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       biography:               new HTMLField({ initial: '', required: false }),
       notes:                   new HTMLField({ initial: '', required: false }),
       metatype:                new StringField({ initial: 'human' }),
+      attributeBoost:          attributeBoostField(),
       gender:                  new StringField({ initial: '' }),
       age:                     new StringField({ initial: '' }),
       height:                  new StringField({ initial: '' }),
@@ -185,6 +208,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
       metatype:         new StringField({ initial: 'human' }),
+      attributeBoost:   attributeBoostField(),
       nuyen:            new NumberField({ integer: true, initial: 0, min: 0 }),
       notes:            new HTMLField({ initial: '', required: false }),
       equippedMelee:    new StringField({ initial: '' }),

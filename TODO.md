@@ -25,7 +25,7 @@ independent.
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | **71** · **72** · **73** · **74** |
 | 📕 Rules not implemented | 3 · 4 · 30 · 47 · 48 · 49 · 53 · 57 |
-| 🧙 Adept powers — see `audit/adept-powers-audit.md` | **59** · 60 · 61 · 62 · 63 · 64 · 65 · 66 · 67 · 68 · 69 · 70 |
+| 🧙 Adept powers — see `audit/adept-powers-audit.md` | 61 · 62 · 65 · 66 · 67 · 68 · 69 · 70 *(**59** · **60** · **63** · **64** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
 | 🧹 Housekeeping | 1 · 6 |
@@ -3869,7 +3869,7 @@ after.** Filling the pack data turns two currently-latent rules violations live 
 load. Everything else is independent.
 
 <a id="59"></a>
-## 59. Every adept power ships mechanically inert — **ROOT CAUSE**
+## 59. ✅ Every adept power ships mechanically inert — **DONE 2026-08-29**
 
 **117 powers across 4 packs. Zero have any bonus field set. Zero name a skill.**
 
@@ -3905,7 +3905,7 @@ wired reflexes the moment the data exists.
 (MITS p.22), not a Magic point; `bonusMag` would inflate Spell Pool and effective Magic.
 
 <a id="60"></a>
-## 60. Improved Ability has no cap — *SR3 p.169* — **live today**
+## 60. ✅ Improved Ability has no cap — *SR3 p.169* — **DONE 2026-08-29**
 
 > "You cannot have more additional dice than your base skill rating or your Magic Attribute,
 > whichever is less. For example, an adept with Pistols 4 and Magic 5 cannot have more than 4
@@ -3957,7 +3957,7 @@ skill for half a Power Point.
 Nimble Fingers). The fix is to stop Improved Ability using it, and to make the naming say so.
 
 <a id="63"></a>
-## 63. Attribute Boost — unimplemented, and the obvious fix is a trap — *SR3 p.168-169*
+## 63. ✅ Attribute Boost — unimplemented, and the obvious fix is a trap — **DONE 2026-08-29**
 
 Four stages, none of which exist:
 
@@ -3990,7 +3990,7 @@ triggered, expiring, levelled state — which is also what [#30](#30) needs for 
 Pain Editor, so the two should share a mechanism.
 
 <a id="64"></a>
-## 64. Improved Reflexes stacks with wired reflexes — *SR3 p.169* — **goes live with 59**
+## 64. ✅ Improved Reflexes stacks with wired reflexes — *SR3 p.169* — **DONE 2026-08-29**
 
 > "The maximum level of Improved Reflexes is 3, and the increase **cannot be combined with
 > technological or other magical increases** to Reaction or Initiative."
@@ -4111,6 +4111,52 @@ GM-adjudicated (the twelve Improved Senses, Traceless Walk, Suspended State, Mul
 nine TSS powers, …). Two borderline cases worth a second look if this ever lands: **Missile
 Parry** (SR3 p.170) is a fully specified opposed test, and **Quick Strike** (MITS p.151) reorders
 initiative.
+
+---
+
+## What landed on 2026-08-29 — 59, 60, 63, 64
+
+Released as **0.4.5.6**. Migration `0.4.5.6` carries it to worlds already in play.
+
+**59 — the pipeline.** `build-mods-bonuses.mjs` now reads `AdeptPowers.json`; `AdeptPowerData`
+declares `mods` (a TypeDataModel drops undeclared keys, so patching the packs alone could never
+have worked); `patch-pack-bonuses.mjs` covers the four adept packs. **9 powers gained real
+data** — Improved Physical Attribute ×6 and Improved Reflexes ×3. `SRCG_BONUSES` grew 142 → 151
+and each entry now carries a **`type` guard**, because one map keyed by name now spans three
+item types.
+
+⚠ **A defect found while doing it, not in the original audit:** the derived data never
+multiplied a levelled power's bonus by its level. Upstream stores `+1STR` on Improved Physical
+Attribute meaning *per level*, so the power would have granted +1 at level 3 the moment the data
+landed. `_prepareCharacter` multiplies when `hasLevels`.
+
+**60 — the cap.** `SR3EActor.improvedAbilityDice` = `min(level, base skill rating, Magic)`.
+Resolved in a second pass after Magic is derived, since effective Magic depends on Essence and
+Bio Index. A capped power still reports its full level, with the cap noted in the breakdown.
+
+**63 — Attribute Boost.** All four stages: Magic Test at TN ½ the base rating → boost by the
+power's level, ceiling 2× Racial Modified Limit → duration in Combat Turns equal to the
+successes, counted down by the `updateCombat` round hook → Drain Resistance Test at TN ½ the
+**boosted** value, Willpower, always Stun. State lives in `system.attributeBoost`, never in a
+`bonus*` field, and `_prepareCharacter` has an explicit guard so a future edit cannot make it
+passive. `SR3E.racialLimits` (p.245) was added for the Drain table and grades nothing else.
+
+**64 — non-stacking.** `SR3EActor.reflexBonus` returns one package, never a sum, chosen on
+Initiative dice then Reaction, ties to the adept. Resolved **once** and read by both the
+Reaction derivation and `initiativeDice`. The sheet says what was dropped.
+
+**Also fixed, reported in play while this was being built:** the item sheet rendered *"Improves
+Skill"* on all 117 powers, which is how an `Attribute Boost(STR)` came to grant +4 bogus dice to
+Unarmed Combat. Fields are now offered by `SR3E.adeptPowerKind`, and the migration **clears**
+the field on Attribute Boost items — the first corrective migration in the file, via a new
+`fixItem` hook that is deliberately harder to reach for than the fill-blanks path.
+
+**Coverage:** `tests/adept-powers.test.mjs`, 117 assertions — including every cell of the
+Racial Attribute Limit Table, which was reconstructed from a PDF whose row labels extract one
+line out of alignment. 7 new mutants, all killed; 34/34 overall.
+
+⚠ **Still open on Improved Ability:** [#61](#61) (the defaulting half) and [#62](#62) (the
+category channel). Neither was touched.
 
 ---
 

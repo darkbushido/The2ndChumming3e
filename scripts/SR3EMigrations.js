@@ -51,19 +51,47 @@ function _fillBlank(system, field, value) {
  *
  * @returns {object|null} an update payload for `actor.update`, or null when nothing changed
  */
-function _patchItemsByName(actor, byName) {
+function _patchItemsByName(actor, byName, fixItem = null) {
   const items = actor?.items ?? [];
   const changed = [];
 
   for (const item of items) {
     const patch = byName[item.name];
     if (!patch) continue;
+    // ⚠ `type` is a GUARD, not a field. This map is keyed by name alone and now spans
+    // cyberware, bioware and adept powers, so without it a shared name would write one
+    // type's bonuses onto another's item — and `system.type` is not a field any of them has.
+    // An entry with no `type` (a hand-written migration like Enhanced Articulation) matches
+    // any item, which is the old behaviour and stays correct for a name naming one thing.
+    if (patch.type && item.type !== patch.type) continue;
     const delta = {};
     for (const [field, value] of Object.entries(patch)) {
+      if (field === 'type') continue;
       const v = _fillBlank(item.system, field, value);
       if (v !== null) delta[`system.${field}`] = v;
     }
     if (Object.keys(delta).length) changed.push({ _id: item.id, ...delta });
+  }
+
+  /* ── The corrective pass ────────────────────────────────────────────────────────
+   *
+   * ⚠ **This is the only thing here that OVERWRITES.** Every other migration fills blanks
+   * and a GM who typed a value keeps it — that rule exists because a migration cannot tell
+   * a deliberate choice from a default.
+   *
+   * A fixer is for the case where it can: a value that is not merely different but
+   * *meaningless on that document*, and actively wrong. It runs separately, returns an
+   * explicit delta or null, and each one has to argue for itself at the call site.
+   */
+  if (fixItem) {
+    for (const item of items) {
+      const delta = fixItem(item);
+      if (delta && Object.keys(delta).length) {
+        const existing = changed.find(c => c._id === item.id);
+        if (existing) Object.assign(existing, delta);
+        else changed.push({ _id: item.id, ...delta });
+      }
+    }
   }
 
   return changed.length ? changed : null;
@@ -109,6 +137,47 @@ const MIGRATIONS = [
      * it. That matters more than usual at this size: this touches 142 item names at once.
      */
     items: SRCG_BONUSES,
+  },
+  {
+    version: '0.4.5.6',
+    label: 'Adept powers — bonuses, and clearing Attribute Boost skill dice (TODO 59, 63)',
+    /**
+     * All 117 shipped adept powers were mechanically inert: `build-mods-bonuses.mjs` read
+     * only Cyberware.json and Bioware.json, so no adept power reached `SRCG_BONUSES`, and
+     * `AdeptPowerData` declared no `mods` field, so the 14 that ship with a `mods` string
+     * lost it at load anyway. Both are fixed; this carries the result to worlds in play.
+     *
+     * ⚠ `SRCG_BONUSES` is re-applied wholesale rather than filtered to the 9 new adept
+     * entries. It fills blanks only, so re-running it over cyberware and bioware changes
+     * nothing — and naming a subset here would be a second list to keep in step with the
+     * generated one.
+     */
+    items: SRCG_BONUSES,
+    /**
+     * ⚠ **The one corrective migration.** It CLEARS a value a GM may have typed.
+     *
+     * The item sheet offered "Improves Skill" on all 117 powers, so an `Attribute Boost(STR)`
+     * could be — and in play was — configured to grant +4 dice to Unarmed Combat. Attribute
+     * Boost grants no skill dice under any reading of SR3 p.168: it is an activated,
+     * expiring boost to a Physical Attribute, paid for with Drain.
+     *
+     * So the field is not "a GM's preference this migration should respect". It is a control
+     * that should never have been rendered, and the dice it produces are dice the character
+     * is not entitled to roll. The sheet no longer offers it; this removes what it left
+     * behind.
+     *
+     * ⚠ Scoped to `attributeBoost` powers ONLY. Improved Ability's `improvedSkillName` is
+     * the whole point of that power and must survive untouched.
+     */
+    fixItem: (item) => {
+      if (item.type !== 'adeptpower') return null;
+      if (!item.system?.improvedSkillName) return null;
+      const kind = globalThis.game?.sr3e?.SR3E?.adeptPowerKind?.(item.name);
+      if (kind !== 'attributeBoost') return null;
+      console.log(`SR3E | clearing bogus "Improves Skill" on ${item.name} `
+        + `(was "${item.system.improvedSkillName}") — SR3 p.168 grants no skill dice`);
+      return { 'system.improvedSkillName': '' };
+    },
   },
 ];
 
@@ -187,11 +256,11 @@ export const SR3EMigrations = {
    */
   async _apply(m) {
     let count = 0;
-    if (!m.items) return count;
+    if (!m.items && !m.fixItem) return count;
 
     // ── World actors ────────────────────────────────────────────────────────
     for (const actor of game.actors) {
-      const updates = _patchItemsByName(actor, m.items);
+      const updates = _patchItemsByName(actor, m.items ?? {}, m.fixItem);
       if (!updates) continue;
       await actor.updateEmbeddedDocuments('Item', updates);
       count += updates.length;
@@ -206,7 +275,7 @@ export const SR3EMigrations = {
         if (token.actorLink) continue;
         const actor = token.actor;
         if (!actor) continue;
-        const updates = _patchItemsByName(actor, m.items);
+        const updates = _patchItemsByName(actor, m.items ?? {}, m.fixItem);
         if (!updates) continue;
         await actor.updateEmbeddedDocuments('Item', updates);
         count += updates.length;
@@ -215,15 +284,15 @@ export const SR3EMigrations = {
     }
 
     // ── World items sitting loose in the sidebar ────────────────────────────
+    // ⚠ Routed through `_patchItemsByName` rather than re-implementing it. This block used
+    // to carry its own copy of the fill-blanks loop, so it silently missed the type guard
+    // and the corrective fixer the moment either was added — a duplicate that only diverges
+    // when someone extends the original, which is the worst time to notice.
     for (const item of game.items) {
-      const patch = m.items[item.name];
-      if (!patch) continue;
-      const delta = {};
-      for (const [field, value] of Object.entries(patch)) {
-        const v = _fillBlank(item.system, field, value);
-        if (v !== null) delta[`system.${field}`] = v;
-      }
-      if (!Object.keys(delta).length) continue;
+      const updates = _patchItemsByName({ items: [item] }, m.items ?? {}, m.fixItem);
+      if (!updates) continue;
+      const { _id, ...delta } = updates[0];
+      void _id;
       await item.update(delta);
       count++;
       console.log(`SR3E | ${m.version}: world item ${item.name}`);

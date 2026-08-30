@@ -42,17 +42,22 @@ if (!existsSync(PACKS_DIR)) {
 }
 
 /**
- * Every cyberware/bioware pack the MANIFEST declares.
+ * Every cyberware / bioware / adept-power pack the MANIFEST declares.
  *
  * ⚠ Filtered by `system.json`, not by what is on disk. The install still carries
  * `sr3e-bioware` and `sr3e-cyberware` — the OLD monolithic packs from before the
  * per-book split. They are undeclared, so Foundry never loads them, and patching them
  * reports 253 matches instead of 111 while changing nothing anyone can see.
+ *
+ * ⚠ **Adept-power packs were added 2026-08-29 (TODO 59).** All 117 shipped powers had every
+ * bonus field at zero, because the generator never read `AdeptPowers.json`. Four packs join
+ * here: sr3, mits, sota2, tss.
  */
 const declared = new Set(
   (JSON.parse(readFileSync(join(ROOT, 'system.json'), 'utf8')).packs ?? []).map(x => x.name));
 
-const onDisk = readdirSync(PACKS_DIR).filter(d => /-(cyberware|bioware)$/.test(d)).sort();
+const onDisk = readdirSync(PACKS_DIR)
+  .filter(d => /-(cyberware|bioware|adept-powers)$/.test(d)).sort();
 const packs  = onDisk.filter(d => declared.has(d));
 const stale  = onDisk.filter(d => !declared.has(d));
 
@@ -83,6 +88,9 @@ for (const packName of packs) {
   for await (const [key, doc] of db.iterator()) {
     const want = SRCG_BONUSES[doc?.name];
     if (!want) continue;
+    // ⚠ `type` is a guard, not a field. The map spans three item types keyed by name alone,
+    // so a shared name would otherwise write one type's bonuses onto another's document.
+    if (want.type && doc.type !== want.type) continue;
     matched++;
     unmatchedNames.delete(doc.name);
 

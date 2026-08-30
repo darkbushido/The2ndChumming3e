@@ -29,6 +29,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       rollWeapon:     SR3EActorSheet._onRollWeapon,
       rollMelee:      SR3EActorSheet._onRollMelee,
       rollUnarmed:    SR3EActorSheet._onRollUnarmed,
+      attributeBoost: SR3EActorSheet._onAttributeBoost,
       rollInitiative: SR3EActorSheet._onRollInitiative,
       itemCreate:     SR3EActorSheet._onItemCreate,
       browseSkills:   SR3EActorSheet._onBrowseSkills,
@@ -2286,20 +2287,50 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         }, 0) * 100) / 100;
         const ppTotal = actor.system.attributes?.magic?.value ?? 0;
         const ppOver  = ppUsed > ppTotal;
+        const boostState = actor.system.derived?.attributeBoost ?? {};
         const pwRows  = powers.length ? powers.map(p => {
           const lvl      = p.system.hasLevels ? (p.system.level ?? 1) : '—';
           const cost     = p.system.powerCost ?? 0;
           const totalCost = p.system.hasLevels ? Math.round(cost * (p.system.level ?? 1) * 100) / 100 : cost;
+
+          // Attribute Boost is the only ACTIVATED power the system implements (SR3 p.168).
+          // It gets a trigger; everything else is passive or GM-adjudicated and gets none.
+          const kind = game.sr3e?.SR3E?.adeptPowerKind?.(p.name) ?? 'other';
+          const target = kind === 'attributeBoost'
+            ? game.sr3e?.SR3E?.attributeBoostTarget?.(p.name) : null;
+          const live   = target ? boostState[target] : null;
+          const boostBtn = kind !== 'attributeBoost' ? '' : `
+            <button type="button" class="sr-boost-btn" data-action="attributeBoost"
+                    data-item-id="${p.id}"
+                    title="Magic Test to activate (SR3 p.168)">${live ? `⚡ ${live.turns}T` : '⚡'}</button>`;
+
           return `
           <div class="item-row" data-item-id="${p.id}">
-            <span class="item-name">${p.name}</span>
+            <span class="item-name">${p.name}${live
+              ? ` <span class="sr-bd-note">+${live.applied} for ${live.turns} turn${live.turns !== 1 ? 's' : ''} · drain ${live.drainTN}${live.drainLevel}</span>`
+              : ''}</span>
             <span class="item-cell">${cost}</span>
             <span class="item-cell">${lvl}</span>
             <span class="item-cell">${totalCost}</span>
+            ${boostBtn}
             ${this._itemControls(p.id, false)}
           </div>`;
         }).join('') : '<p class="empty-list">No adept powers.</p>';
+
+        // Improved Reflexes cannot combine with technological or magical Reaction/Initiative
+        // gains (SR3 p.169). The derived data picks the better package; say so, or the
+        // character sheet just shows a number smaller than the sum of its parts.
+        const rx = actor.system.derived?.reflex;
+        const reflexWarn = rx?.conflict ? `
+        <div class="sr-alert sr-alert--danger" style="margin-bottom:6px">
+          ⚠ <strong>Improved Reflexes does not stack</strong> with technological or other
+          magical Reaction/Initiative increases (SR3 p.169). Applying the
+          ${rx.source === 'adept' ? 'adept' : 'cyberware'} package
+          (+${rx.rea} Reaction, +${rx.initDice} Initiative dice); ignoring
+          +${rx.dropped?.rea ?? 0} / +${rx.dropped?.initDice ?? 0} from the other.
+        </div>` : '';
         return `
+        ${reflexWarn}
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:8px">
           <h3 class="section-hdr" style="margin:0">Adept Powers</h3>
           <span style="font-size:12px;color:${ppOver ? 'var(--sr-red)' : 'var(--sr-muted)'}">
@@ -2960,6 +2991,16 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const item   = this.actor.items.get(itemId);
     if (!item) return;
     await item.rollMelee({ physicalDice: ev.shiftKey ?? false });
+  }
+
+  /**
+   * Activate an Attribute Boost (SR3 p.168-169) — a Magic Test, a duration, and a Drain
+   * bill when it lapses. The whole flow lives on the document; the sheet only triggers it.
+   */
+  static async _onAttributeBoost(event, target) {
+    event.preventDefault();
+    const itemId = target.dataset.itemId;
+    await game.sr3e.SR3EActor.openAttributeBoost(this.actor, itemId);
   }
 
   static async _onRollUnarmed(_ev, _target) {

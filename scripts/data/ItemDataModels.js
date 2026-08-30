@@ -382,6 +382,12 @@ export class AdeptPowerData extends foundry.abstract.TypeDataModel {
       improvedSkillName: new StringField({ initial: '' }),
       // As on cyber/bioware - comma-separated skill CATEGORIES, opt-in per roll.
       improvedSkillCategory: new StringField({ initial: '' }),
+      // The upstream SRCG `Mods` string, e.g. "+2RCT,+1INI". Declared for the same reason
+      // CyberwareData and BiowareData declare it: provenance for the derived bonus fields.
+      // ⚠ It was MISSING here until 2026-08-29, and a TypeDataModel drops keys it does not
+      // declare — so the 14 adept powers that ship with a `mods` string silently lost it at
+      // load, and patching the packs alone could never have worked (TODO 59).
+      mods:             new StringField({ initial: '' }),
       bookPage:         new StringField({ initial: '' }),
       description:      new HTMLField({ initial: '', required: false }),
       bonusBod:         new NumberField({ integer: true, initial: 0, min: 0 }),

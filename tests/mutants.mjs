@@ -542,4 +542,118 @@ export const MUTANTS = [
       return 'L';
     },
   },
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+   *  Adept powers — TODO 60, 63, 64
+   * ══════════════════════════════════════════════════════════════════════════════ */
+
+  {
+    id:     'improved-ability-uncapped',
+    suite:  'adept-powers',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'improvedAbilityDice',
+    was:    'p.169 caps the dice at the LOWER of the base skill rating and Magic - "an adept '
+          + 'with Pistols 4 and Magic 5 cannot have more than 4 Improved Ability (Pistols) '
+          + 'dice". This is the state the system actually shipped in: the power level was '
+          + 'applied with no clamp at all, so a level above the skill rating rolled dice the '
+          + 'rules forbid, and it was the ONE adept defect already reaching the table',
+    impl:   ({ level = 0 } = {}) => Math.max(0, level),
+  },
+
+  {
+    id:     'improved-ability-caps-on-the-larger',
+    suite:  'adept-powers',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'improvedAbilityDice',
+    was:    'the cap is "whichever is LESS" of skill rating and Magic. Taking the larger of '
+          + 'the two passes the book\'s own Pistols 4 / Magic 5 example by accident whenever '
+          + 'the level is small, and only diverges once a character invests',
+    impl:   ({ level = 0, skillRating = 0, magic = 0 } = {}) =>
+      Math.max(0, Math.min(level, Math.max(skillRating, magic))),
+  },
+
+  {
+    id:     'improved-reflexes-stacks-with-cyber',
+    suite:  'adept-powers',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'reflexBonus',
+    was:    'p.169 - "the increase cannot be combined with technological or other magical '
+          + 'increases to Reaction or Initiative". Summing is what the system did before '
+          + 'TODO 64, and it was invisible only because no adept power carried any data yet; '
+          + 'filling the packs would have made it live on the next world load',
+    impl:   ({ adeptRea = 0, adeptInit = 0, cyberRea = 0, cyberInit = 0 } = {}) => ({
+      rea: adeptRea + cyberRea, initDice: adeptInit + cyberInit,
+      conflict: false, source: 'both', dropped: null,
+    }),
+  },
+
+  {
+    id:     'reflex-conflict-resolved-on-reaction-first',
+    suite:  'adept-powers',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'reflexBonus',
+    was:    'an Initiative die is worth far more than a point of Reaction across a Combat '
+          + 'Turn, so the better package is chosen on DICE first. Comparing Reaction first '
+          + 'picks wrong exactly when the two packages are close - +6/+1 wired would beat '
+          + 'Improved Reflexes +2/+3',
+    impl:   ({ adeptRea = 0, adeptInit = 0, cyberRea = 0, cyberInit = 0 } = {}) => {
+      const adept = { rea: adeptRea, initDice: adeptInit };
+      const cyber = { rea: cyberRea, initDice: cyberInit };
+      const adeptHas = adept.rea !== 0 || adept.initDice !== 0;
+      const cyberHas = cyber.rea !== 0 || cyber.initDice !== 0;
+      if (!adeptHas) return { ...cyber, conflict: false, source: cyberHas ? 'cyber' : 'none', dropped: null };
+      if (!cyberHas) return { ...adept, conflict: false, source: 'adept', dropped: null };
+      const adeptWins = adept.rea > cyber.rea
+        || (adept.rea === cyber.rea && adept.initDice >= cyber.initDice);
+      return adeptWins
+        ? { ...adept, conflict: true, source: 'adept', dropped: cyber }
+        : { ...cyber, conflict: true, source: 'cyber', dropped: adept };
+    },
+  },
+
+  {
+    id:     'attribute-boost-tn-rounds-down',
+    suite:  'adept-powers',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'attributeBoostTN',
+    was:    'p.168 - "a target number equal to one half the base (unaugmented) rating of the '
+          + 'Attribute being boosted (ROUND UP)". Rounding down makes every odd-rated '
+          + 'attribute a full point easier to boost, and odd ratings are the common case',
+    impl:   (baseRating) => Math.max(2, Math.floor((baseRating ?? 0) / 2)),
+  },
+
+  {
+    id:     'attribute-boost-drain-band-is-exclusive',
+    suite:  'adept-powers',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'attributeBoostDrainLevel',
+    was:    'the Attribute Boost Drain Table reads "LESS THAN OR EQUAL TO Racial Modified '
+          + 'Limit" and "UP TO Racial Attribute Maximum" - both bands include their boundary. '
+          + 'Making them exclusive pushes a boost that lands exactly on the limit up a whole '
+          + 'Drain Level, and landing on the limit is the ordinary case',
+    impl:   ({ boosted = 0, limit = 6 } = {}) => {
+      if (boosted < limit) return 'L';
+      if (boosted < Math.round(limit * 1.5)) return 'M';
+      return 'S';
+    },
+  },
+
+  {
+    id:     'racial-max-rounds-down',
+    suite:  'adept-powers',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'racialMax',
+    was:    'p.244 - the Attribute Maximum is the Racial Modified Limit times 1.5, and the '
+          + 'printed table shows 7 -> 11, 9 -> 14, 11 -> 17, 5 -> 8. Flooring gives '
+          + '10/13/16/7 and is wrong for four of the twenty non-human cells, always in the '
+          + 'direction that makes Drain harsher',
+    impl:   (limit) => Math.floor((limit ?? 6) * 1.5),
+  },
 ];

@@ -1687,8 +1687,12 @@ Hooks.on('updateCombatant', (combatant, changed) => {
 // tracker's own buttons and the default next-turn arrow).
 Hooks.on('updateCombat', (_combat, changed) => {
   if ('turn' in changed || 'round' in changed) _actionTracker.clear();
-  // Per-combat-round upkeep (GM client only): count down infiltrations; refresh IVIS Pools.
+  // Per-combat-round upkeep (GM client only): count down infiltrations; refresh IVIS Pools;
+  // expire Attribute Boosts. ⚠ A Foundry ROUND is an SR3 Combat Turn, which is the unit
+  // p.168 counts a boost's duration in — per-pass would evaporate a 3-success boost inside
+  // a single turn.
   if ('round' in changed && game.users?.activeGM?.isSelf) {
+    SR3EActor.tickAttributeBoosts();
     for (const a of game.actors) {
       if (a.type === 'vehicle') {
         const left = a.system?.infiltration?.turnsRemaining ?? 0;

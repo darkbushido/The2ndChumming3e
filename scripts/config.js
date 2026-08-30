@@ -735,6 +735,41 @@ export function resolveMartialArt(name) {
   return null;
 }
 
+/**
+ * Classify an adept power by its name — `'improvedAbility'`, `'attributeBoost'`,
+ * `'improvedReflexes'`, `'improvedPhysical'`, or `'other'`.
+ *
+ * Drives which fields the item sheet offers and which channel the derived data uses. See
+ * `SR3E.adeptPowerPatterns` for why name-matching is the only join available.
+ *
+ * ⚠ Order matters: `improvedPhysical` is tested before `improvedAbility` would ever see it,
+ * but both begin `Imp`, so the patterns are checked in a fixed order rather than by
+ * `Object.entries` iteration order, which is stable but not obviously so to a reader.
+ */
+export function adeptPowerKind(name) {
+  const n = String(name ?? '').trim();
+  if (!n) return 'other';
+  const P = SR3E.adeptPowerPatterns;
+  if (P.attributeBoost.test(n))   return 'attributeBoost';
+  if (P.improvedReflexes.test(n)) return 'improvedReflexes';
+  if (P.improvedPhysical.test(n)) return 'improvedPhysical';
+  if (P.improvedAbility.test(n))  return 'improvedAbility';
+  return 'other';
+}
+
+/**
+ * Which Physical Attribute an `Attribute Boost(XXX)` power boosts, or `null`.
+ *
+ * ⚠ `QIC` is an upstream typo for Quickness and is shipped in the pack, so it is accepted
+ * alongside `QCK`. Getting this wrong means the power silently boosts nothing.
+ */
+export function attributeBoostTarget(name) {
+  const m = SR3E.adeptPowerPatterns.attributeBoost.exec(String(name ?? '').trim());
+  if (!m) return null;
+  return { bod: 'body', qic: 'quickness', qck: 'quickness', qui: 'quickness',
+           str: 'strength' }[m[1].toLowerCase()] ?? null;
+}
+
 /** All category names, in definition order. */
 export function getSkillCategories() {
   return Object.keys(SR3ESkills);
@@ -786,6 +821,58 @@ export const SR3E = {
   attributes: [
     'body', 'quickness', 'strength', 'charisma', 'intelligence', 'willpower', 'reaction',
   ],
+
+  /**
+   * Racial Attribute Limit Table · *SR3 p.245*
+   *
+   * `limit` is the **Racial Modified Limit**; the **Attribute Maximum** is that × 1.5
+   * (`SR3EActor.racialMax`), which reproduces every printed cell — 6→9, 7→11, 9→14, 11→17,
+   * 5→8, 4→6 — so the second number is derived rather than transcribed twice.
+   *
+   * ⚠ This is the FIRST place the system has ever tracked racial maxima. `SR3EMods` still
+   * collapses the upstream racial encodings (`RBOD`, `ROD`, …) to the plain attribute,
+   * deliberately: those flags mean "raises the LIMIT", which is a character-creation
+   * concern. This table is consumed by the Attribute Boost Drain Table (p.169) and nothing
+   * else. It does NOT cap attributes anywhere — the ethos is that every stat stays hand-editable.
+   *
+   * Reaction is absent because it is derived, not bought.
+   */
+  racialLimits: {
+    human: { body: 6, quickness: 6, strength: 6, charisma: 6, intelligence: 6, willpower: 6 },
+    elf:   { body: 6, quickness: 7, strength: 6, charisma: 8, intelligence: 6, willpower: 6 },
+    dwarf: { body: 7, quickness: 6, strength: 8, charisma: 6, intelligence: 6, willpower: 7 },
+    ork:   { body: 9, quickness: 6, strength: 8, charisma: 5, intelligence: 5, willpower: 6 },
+    troll: { body: 11, quickness: 5, strength: 10, charisma: 4, intelligence: 4, willpower: 6 },
+    // No table entry — treated as human. A GM playing a metavariant edits the sheet.
+    other: { body: 6, quickness: 6, strength: 6, charisma: 6, intelligence: 6, willpower: 6 },
+  },
+
+  /**
+   * What KIND of adept power this is, matched on the shipped name.
+   *
+   * ⚠ Exists because the powers are otherwise indistinguishable to the code, and that has
+   * already cost us. The item sheet used to offer **"Improves Skill" on all 117 powers**, so
+   * an `Attribute Boost(STR)` was configured to grant +4 dice to Unarmed Combat — a channel
+   * the power has under no reading of the rules. Reported from play 2026-08-29.
+   *
+   * Matching on names is fragile in general; here it is the only join available, because the
+   * upstream data carries no type of its own. The patterns are deliberately loose about
+   * punctuation and abbreviation (`Imp Abl` / `Imp. Ability` / `Improved Ability`) since the
+   * four packs spell them differently, and `QIC` is accepted beside `QCK` because the shipped
+   * `Attribute Boost(QIC)*` carries an upstream typo.
+   */
+  adeptPowerPatterns: {
+    // SR3 p.169 + the SOTA2 p.66 expanded list. The ONLY powers for which `improvedSkillName`
+    // means anything. ⚠ The trailing `->` in the pack names is the upstream generator's
+    // marker for "name the skill here", NOT a scope.
+    improvedAbility:  /^imp(?:roved)?\.?\s*ab(?:l|ility)\b/i,
+    // SR3 p.168-169. Activated, levelled, expiring, and it costs Drain. NEVER a passive bonus.
+    attributeBoost:   /^attribute\s+boost\s*\(\s*(bod|qic|qck|qui|str)\s*\)/i,
+    // SR3 p.169. Cannot be combined with technological or magical Reaction/Initiative gains.
+    improvedReflexes: /^imp(?:roved)?\.?\s*reflexes\b/i,
+    // SR3 p.169. Passive attribute gain, and the one power Attribute Boost DOES stack with.
+    improvedPhysical: /^imp(?:roved)?\.?\s*phys(?:ical)?\.?\s*attr/i,
+  },
 
   fireModes:      ['SS', 'SA', 'BF', 'FA'],
 
@@ -1152,6 +1239,8 @@ export const SR3E = {
   skillTypeForCategory,
   resolveMartialArt,
   skillCategoriesFor,
+  adeptPowerKind,
+  attributeBoostTarget,
   skillCategoryCountsAs: SKILL_CATEGORY_COUNTS_AS,
   sourceBooks: SOURCE_BOOKS,
   defaultAllowedBooks,

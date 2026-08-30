@@ -32,7 +32,21 @@ const SRCG   = process.env.SRCG_DIR
   ?? join(HERE, '..', '..', 'Shadowrun-Character-Generator', 'src', 'data', 'SR3');
 const OUT    = join(HERE, '..', 'scripts', 'data', 'srcg-bonuses.js');
 
-const FILES = { 'Cyberware.json': 'cyberware', 'Bioware.json': 'bioware' };
+// ⚠ **AdeptPowers.json was missing here until 2026-08-29 (TODO 59)**, so all 117 shipped
+// adept powers were mechanically inert — nothing in the tool or its comments said they had
+// been considered and excluded. Adding one line here is half the fix; the other half was
+// declaring `mods` on AdeptPowerData, which drops undeclared keys at load.
+//
+// ⚠ **An adept power's bonus is PER LEVEL when `HasLevels` is true.** Upstream stores
+// `+1STR` on a levelled Improved Physical Attribute, meaning +1 for each level;
+// `SR3EActor._prepareCharacter` does the multiplication. Cyberware has no equivalent —
+// its grades ship as separate entries with absolute values — so the same map is read two
+// different ways, correctly, by the type that owns each entry.
+const FILES = {
+  'Cyberware.json':  'cyberware',
+  'Bioware.json':    'bioware',
+  'AdeptPowers.json': 'adeptpower',
+};
 
 /** Upstream nests entries under category keys; find every object carrying a `Name`. */
 function flatten(json) {
@@ -101,15 +115,20 @@ if (!unparsed.length) console.log('  (none)');
 if (REPORT) { console.log('\n--report: nothing written.'); process.exit(0); }
 
 const entries = Object.entries(map).sort(([a], [b]) => a.localeCompare(b));
+// ⚠ `type` is EMITTED, not stripped. The map is keyed by name alone and is consumed by a
+// migration that walks every item an actor owns, so once adept powers joined cyberware and
+// bioware in one map, a shared name would cross-write bonuses onto the wrong item type.
+// There is no such collision today — the generator would have to be re-run to create one —
+// which is exactly why the guard belongs here rather than in a comment saying it is fine.
 const body = entries.map(([name, b]) => {
-  const fields = Object.entries(b).filter(([k]) => k !== 'type')
-    .map(([k, v]) => `${k}: ${v}`).join(', ');
+  const fields = Object.entries(b)
+    .map(([k, v]) => `${k}: ${typeof v === 'string' ? JSON.stringify(v) : v}`).join(', ');
   return `  ${JSON.stringify(name)}: { ${fields} },`;
 }).join('\n');
 
 fs.writeFileSync(OUT, `/**
- * Cyberware and bioware attribute bonuses, derived from the Shadowrun Character Generator's
- * \`Mods\` field.  **GENERATED — do not edit by hand.**
+ * Cyberware, bioware and adept-power attribute bonuses, derived from the Shadowrun
+ * Character Generator's \`Mods\` field.  **GENERATED — do not edit by hand.**
  *
  *   node tools/build-mods-bonuses.mjs
  *
@@ -124,6 +143,16 @@ fs.writeFileSync(OUT, `/**
  *
  * ⚠ Values may be NEGATIVE. Three entries carry a penalty; the bonus fields had to drop their
  * \`min: 0\` for these to survive being stored.
+ *
+ * ⚠ Each entry carries its \`type\`. Consumers match on NAME, and this map now spans three
+ * item types, so the type is the guard against a shared name writing cyberware bonuses onto
+ * an adept power. It is not a bonus field — skip it when applying.
+ *
+ * ⚠ An \`adeptpower\` entry's values are **PER LEVEL** when the power has levels: upstream
+ * stores \`+1STR\` for a levelled Improved Physical Attribute, and
+ * \`SR3EActor._prepareCharacter\` multiplies. Cyberware grades ship as separate entries with
+ * absolute values, so the same number means different things by type — deliberately, since
+ * it is what each source actually says.
  *
  * ${entries.length} items.
  */

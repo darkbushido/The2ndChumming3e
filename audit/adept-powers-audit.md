@@ -16,6 +16,11 @@ printed rules — citations are to the **book page**, not the PDF page.
 | The Shadowrun Supplemental (fan) | `tss` | 9 | *off by default* |
 | | | **117** | |
 
+> **STATUS 2026-08-29 — 59, 60, 63 and 64 are FIXED** (released as 0.4.5.6). The findings
+> below are preserved as written, because they are the record of what was wrong and why; see
+> *What landed* at the foot of the adept group in `TODO.md` for what each fix actually did.
+> **61, 62 and 65-70 remain open.**
+
 ## The headline
 
 > **117 adept powers ship. Not one of them does anything.**

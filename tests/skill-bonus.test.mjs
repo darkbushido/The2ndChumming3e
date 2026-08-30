@@ -25,14 +25,29 @@ const cyber = (skill, dice) =>
 const bio = (skill, dice) =>
   ({ type: 'bioware', system: { improvedSkillName: skill, improvedSkillDice: dice } });
 
-/** Run the real _prepareCharacter against a minimal actor and return the derived map. */
-function derive(magicType, items) {
+/**
+ * Run the real _prepareCharacter against a minimal actor and return the derived map.
+ *
+ * ⚠ **Every named skill is given a rating of 6, deliberately.** Adept Improved Ability dice
+ * are capped at `min(level, base skill rating, Magic)` since TODO 60, so an actor with no
+ * skill items has a cap of 0 and receives NOTHING. These cases are about the CHANNEL — that
+ * the dice reach the map at all — so the fixture has to clear the cap for the channel to be
+ * observable. The cap itself is tested in `adept-powers.test.mjs`.
+ *
+ * Before TODO 60 these passed with no skills present, which looked like the channel working
+ * and was really the cap not existing.
+ */
+function derive(magicType, items, skillRating = 6) {
   const sys  = { magicType, attributes: {}, wounds: {} };
   const attr = {};
   for (const k of ['body','quickness','strength','charisma','intelligence','willpower','reaction','essence','magic']) {
     attr[k] = { base: 4, value: 4 };
   }
-  SR3EActor.prototype._prepareCharacter.call({ items, system: sys }, sys, attr);
+  const named = [...new Set(items
+    .map(i => (i.system?.improvedSkillName ?? '').trim())
+    .filter(Boolean))];
+  const withSkills = [...items, ...named.map(n => makeSkill(n, skillRating))];
+  SR3EActor.prototype._prepareCharacter.call({ items: withSkills, system: sys }, sys, attr);
   return sys.derived?.skillBonusDice ?? {};
 }
 
@@ -53,6 +68,18 @@ export async function run(t) {
   t.eq('a blank skill name is ignored', derive('Adept', [adeptPower('   ', 2)]), {});
   t.eq('zero dice is ignored', derive('', [cyber('Negotiation', 0)]), {});
   t.eq('no items yields an empty map', derive('Adept', []), {});
+
+  /* ---- the p.169 cap reaches this path, not just the pure rule (TODO 60) ---- */
+  // Magic is 4 in this fixture (base 4, Essence 4, no bioware), so a level-6 power is
+  // capped by Magic even with a rating high enough not to bind.
+  t.eq('an adept power above Magic is capped by Magic',
+    derive('Adept', [adeptPower('Pistols', 6)]), { Pistols: 4 });
+  // …and by the skill rating when THAT is the smaller of the two.
+  t.eq('an adept power above the base skill rating is capped by the rating',
+    derive('Adept', [adeptPower('Pistols', 6)], 2), { Pistols: 2 });
+  // ⚠ Cyberware is NOT capped — p.169 is an adept rule, and the two share this field.
+  t.eq('cyberware dice on the same field stay uncapped',
+    derive('', [cyber('Pistols', 9)], 2), { Pistols: 9 });
 
   /* ---- the helper ---- */
   const actorWith = (map, magicType = 'Adept') =>

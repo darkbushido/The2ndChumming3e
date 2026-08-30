@@ -856,25 +856,46 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         ${this._notes(s.notes)}`;
 
       case 'adeptpower': {
+        /* ⚠ The fields offered depend on WHAT THE POWER IS.
+         *
+         * This sheet used to render every field for all 117 shipped powers, so an
+         * `Attribute Boost(STR)` was offered an "Improves Skill" picker — and, reported from
+         * play on 2026-08-29, someone reasonably filled it in and the character rolled +4
+         * bogus dice on Unarmed Combat. Attribute Boost grants no skill dice under any
+         * reading of p.168.
+         *
+         * Offering a control is a claim that it does something. Powers keep their own fields
+         * and lose the ones that would silently do nothing (or the wrong thing).
+         */
+        const kind = game.sr3e?.SR3E?.adeptPowerKind?.(this.item.name) ?? 'other';
+        const isBoost   = kind === 'attributeBoost';
+        const isAbility = kind === 'improvedAbility';
+
         const actorSkills = this.item.actor
           ? this.item.actor.items.filter(i => i.type === 'skill').sort((a,b) => a.name.localeCompare(b.name))
           : null;
         const currentSkill = s.improvedSkillName ?? '';
-        const skillPicker = actorSkills
+        // Only Improved Ability names a skill. Every other power that grants dice does so
+        // against a KIND of test, which `improvedSkillName` cannot express — see TODO 70.
+        const skillPicker = !isAbility ? '' : (actorSkills
           ? `<label class="form-field"><span class="field-label">Improves Skill</span>
                <select name="system.improvedSkillName">
                  <option value="">— None —</option>
                  ${actorSkills.map(sk => `<option value="${sk.name}"${sk.name === currentSkill ? ' selected' : ''}>${sk.name}</option>`).join('')}
                </select></label>`
-          : this._f('Improves Skill', 'improvedSkillName', currentSkill, 'text', 'placeholder="e.g. Pistols"');
-        return `<div class="form-grid">
-          ${this._f('Power Cost', 'powerCost', s.powerCost ?? 0.5, 'number', 'step="0.25" min="0"')}
-          ${this._check('Has Levels', 'hasLevels', s.hasLevels ?? false)}
-          ${s.hasLevels ? this._f('Level', 'level', s.level ?? 1, 'number', 'min="1"') : ''}
-          ${skillPicker}
-          ${this._f('Book / Page', 'bookPage', s.bookPage, 'text')}
-        </div>
-        <div class="form-section-hdr" style="margin:8px 0 4px;font-size:11px;font-weight:600;color:var(--sr-muted);letter-spacing:.05em;text-transform:uppercase">Attribute Bonuses</div>
+          : this._f('Improves Skill', 'improvedSkillName', currentSkill, 'text', 'placeholder="e.g. Pistols"'));
+
+        // Attribute Boost is activated, timed and drained — it must never carry a passive
+        // bonus. The derived data ignores these fields for it; hiding them stops a GM
+        // filling in a box that will be silently discarded.
+        const bonusGrid = isBoost ? `
+        <div class="sr-alert" style="margin:8px 0;font-size:11px">
+          💪 <strong>Activated power.</strong> Roll it from the character sheet's Magic tab:
+          a Magic Test at TN ½ the base Attribute grants the boost for a number of Combat
+          Turns equal to the successes, then costs a Drain Resistance Test (SR3 p.168-169).
+          It has no passive bonus, so there are no bonus fields to set.
+        </div>` : `
+        <div class="form-section-hdr" style="margin:8px 0 4px;font-size:11px;font-weight:600;color:var(--sr-muted);letter-spacing:.05em;text-transform:uppercase">Attribute Bonuses${s.hasLevels ? ' — per level' : ''}</div>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px 8px;margin-bottom:8px">
           ${[['BOD','bonusBod'],['QUI','bonusQui'],['STR','bonusStr'],['CHA','bonusCha'],
              ['INT','bonusInt'],['WIL','bonusWil'],['MAG','bonusMag'],['REA','bonusRea'],['Init Dice','bonusInitDice']]
@@ -884,7 +905,20 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
               <input type="number" name="system.${field}" value="${s[field] ?? 0}"
                      min="0" style="width:42px;text-align:center"/>
             </label>`).join('')}
+        </div>`;
+
+        return `<div class="form-grid">
+          ${this._f('Power Cost', 'powerCost', s.powerCost ?? 0.5, 'number', 'step="0.25" min="0"')}
+          ${this._check('Has Levels', 'hasLevels', s.hasLevels ?? false)}
+          ${s.hasLevels ? this._f('Level', 'level', s.level ?? 1, 'number', 'min="1"') : ''}
+          ${skillPicker}
+          ${this._f('Book / Page', 'bookPage', s.bookPage, 'text')}
         </div>
+        ${isAbility ? `<div class="sr-bd-note" style="margin:2px 0 6px">
+          Dice are capped at the lower of your base skill rating and your Magic Attribute
+          (SR3 p.169) — the sheet applies that automatically.
+        </div>` : ''}
+        ${bonusGrid}
         <div class="notes-field">
           <label class="bio-label">Description</label>
           <textarea name="system.description" class="bio-text">${s.description ?? ''}</textarea>
