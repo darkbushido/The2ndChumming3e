@@ -2362,6 +2362,36 @@ label.act-field input[type=number] {
 /* Attribute Boost trigger on the adept power row (SR3 p.168). A compact sheet control,
    not a chat action — it carries its own complete rule, including the height:auto that
    tests/chat-button-styles.test.mjs requires of every `sr-*-btn`. */
+/* Dice-breakdown rows in a two-corner card. Each component gets its own line with the
+   number in a fixed gutter, so the column reads as arithmetic rather than as prose — the
+   card has to answer "why is this 12?" at a glance, in about two inches. */
+.sr-bd-row {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  line-height: 1.35;
+}
+
+.sr-bd-n {
+  color: var(--sr-text);
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  min-width: 22px;
+  text-align: right;
+}
+
+.sr-bd-what {
+  color: var(--sr-muted);
+  overflow-wrap: anywhere;
+}
+
+/* The "why" line under a component — a cap that bit, or which kind of augmentation it is. */
+.sr-bd-why {
+  margin: 0 0 3px 28px;
+  opacity: .85;
+}
+
 .sr-boost-btn {
   background: transparent;
   border: 1px solid var(--sr-gold);

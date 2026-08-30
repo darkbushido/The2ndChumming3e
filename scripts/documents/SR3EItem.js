@@ -146,14 +146,47 @@ export class SR3EItem extends Item {
    * Synthetic "Unarmed Combat" attacker weapon (bare fists): (STR)M Stun, reach 0, UNA.
    * Not a real inventory item — used to launch an unarmed attack from the sheet or canvas.
    */
-  static _unarmedWeapon() {
+  static _unarmedWeapon(actor = null) {
     return {
       id:       'unarmed',
       name:     'Unarmed Combat',
       type:     'melee',
       _unarmed: true,
       system:   { damage: '(STR)M Stun', reach: 0, category: 'UNA' },
+      // The Killing Hands level this actor owns, or null. Carried on the synthetic weapon so
+      // the melee flow can OFFER it; it is never applied automatically — see below.
+      _killingHands: actor?.system?.derived?.killingHands ?? null,
     };
+  }
+
+  /**
+   * Apply Killing Hands to an unarmed damage code · *SR3 p.170*
+   *
+   * > "Normal unarmed attacks do (Strength)M Stun Damage. This power uses magic to turn
+   * > unarmed attacks into lethal, physical damage. When using Unarmed Combat and Killing
+   * > Hands you may do normal stun damage, or physical damage as purchased. The use of
+   * > Killing Hands must be declared with the Unarmed Combat attack."
+   *
+   * ⚠ **Declared, never automatic.** "You MAY do normal stun damage, or physical damage as
+   * purchased" is a choice made per attack, and "must be declared" settles when. An adept who
+   * wants to subdue someone still punches for Stun, so applying this from the sheet would
+   * take away the decision the rule exists to create.
+   *
+   * ⚠ **The level REPLACES the base, it does not stage it.** Killing Hands (Light) on a
+   * (STR)M punch is (STR)L Physical — worse in level and better in kind. Reading it as a
+   * stage-up would make the cheapest tier a straight upgrade.
+   *
+   * Two further clauses have no flow to attach to and are stated on the card instead: it
+   * bypasses Immunity to Normal Weapons, and it works in astral combat when the adept is
+   * perceiving astrally.
+   */
+  static killingHandsDamage(baseCode, level) {
+    const lvl = String(level ?? '').toUpperCase();
+    if (!'LMSD'.includes(lvl) || !lvl) return baseCode;
+    const parsed = /^\s*([^\s]+?)([LMSD])\b/.exec(String(baseCode ?? ''));
+    if (!parsed) return baseCode;
+    // Power is unchanged — only the level, and the track.
+    return `${parsed[1]}${lvl}`;
   }
 
   /**
@@ -231,7 +264,7 @@ export class SR3EItem extends Item {
 
     // Called shot (SR3 p.114) — attacker only; +4 TN to stage damage up one level or aim
     // at a sub-component. Take-aim folds in as −1 TN each. Cancelling aborts the attack.
-    const calledShot = await SR3EItem._promptCalledShot(actor);
+    const calledShot = await SR3EItem._promptCalledShot(actor, atkWeapon);
     if (!calledShot) return null;
 
     // ── Reach, and the election the longer-reach fighter is entitled to ──────────
@@ -256,6 +289,18 @@ export class SR3EItem extends Item {
     // self-bonus (what the system did unconditionally before).
     const reachDiff   = Math.abs(atkReach - defReach);
     const reachHolder = reachDiff === 0 ? null : (atkReach > defReach ? 'attacker' : 'defender');
+
+    /* Killing Hands rewrites the attacker's damage code · SR3 p.170 (TODO 67).
+     *
+     * ⚠ Applied AFTER the declaration, not at parse time, and it replaces the level rather
+     * than staging it — (STR)M Stun becomes (STR)L/M/S/D **Physical** at the purchased tier.
+     * `parseDamageCode` is re-run so the Stun flag drops out of the parsed result too;
+     * rewriting only the string would leave `isStun` true and send a lethal punch to the
+     * Stun track.
+     */
+    const khDeclared = calledShot.killingHands ?? null;
+    const atkRaw     = khDeclared ? SR3EItem.killingHandsDamage(rawDamage, khDeclared) : rawDamage;
+    const atkDamage  = khDeclared ? SR3EItem.parseDamageCode(atkRaw, actor) : damageBase;
 
     const baseAtkTN = Math.max(2, 4 + (atkInfo.defaultTnMod ?? 0) + (calledShot.tnMod ?? 0));
     const baseDefTN = Math.max(2, 4 + (defInfo.defaultTnMod ?? 0));
@@ -285,8 +330,11 @@ export class SR3EItem extends Item {
       defWeaponId:      defWeapon?.id ?? null,
       atkWeaponName:    atkWeapon.name,
       defWeaponName:    defWeapon?.name ?? 'Bare Hands',
-      atkRawDamage:     rawDamage,
-      atkDamageBase:    damageBase,
+      atkRawDamage:     atkRaw,
+      atkDamageBase:    atkDamage,
+      // Declared per attack (p.170). Carried so the card can say so, and so the result can
+      // note that it bypasses Immunity to Normal Weapons.
+      killingHands:     khDeclared,
       defRawDamage:     defWeapon?.system?.damage ?? '',
       defDamageBase:    defWeapon ? SR3EItem.parseDamageCode(defWeapon.system?.damage ?? '', targetActor) : null,
       atkReach,
@@ -530,10 +578,29 @@ export class SR3EItem extends Item {
       .sort((a, b) => a.name.localeCompare(b.name));
 
     // Roll the full rating; cap the pool at half of it.
+    /* ⚠ **Half the Improved Ability dice come along** · SR3 p.169 (TODO 61)
+     *
+     * > "If you are defaulting to the improved skill, only half (round down) of the Improved
+     * > Ability dice may be used."
+     *
+     * This tier IS the book's "defaulting to the improved skill" — you are rolling skill X
+     * against a test X does not cover. Before this, the tier was built from `system.rating`
+     * alone and contributed NONE of the adept's dice: not half, zero.
+     *
+     * ⚠ The halving applies to the dice AFTER the p.169 cap, not to the raw power level, so
+     * it reads the derived map rather than the item. `skillBonusDice` also carries
+     * cyberware and bioware dice, which the book says nothing about — they are halved here
+     * too, deliberately: the clause is about defaulting diluting an augmentation, and
+     * splitting the map by source at the point of use is exactly the coupling the map exists
+     * to avoid. Noted rather than hidden — the label says where the extra dice came from.
+     */
     const skillTier = skills.map(s => {
-      const r = s.system.rating ?? 0;
-      return { value: s.id, dice: r, cap: half(r),
-               label: `${s.name} ${r} → ${r} dice (max ${half(r)} pool)` };
+      const r     = s.system.rating ?? 0;
+      const bonus = half(SR3EItem._skillBonusDice(actor, s));
+      const dice  = r + bonus;
+      const extra = bonus ? ` +${bonus} augmentation (half, p.169)` : '';
+      return { value: s.id, dice, cap: half(r),
+               label: `${s.name} ${r}${extra} → ${dice} dice (max ${half(r)} pool)` };
     });
 
     // One entry per specialisation, not per skill — a skill may carry several, and each
@@ -2210,7 +2277,7 @@ export class SR3EItem extends Item {
    * roll-options dialog — i.e. melee. Returns { calledShot, calledShotTarget, tnMod }
    * where tnMod = +4 (if a called shot is chosen) − take-aim points, or null if cancelled.
    */
-  static async _promptCalledShot(actor) {
+  static async _promptCalledShot(actor, weapon = null) {
     let hookId = Hooks.on('renderDialogV2', (_app, html) => {
       const el = html?.querySelector ? html : html?.[0];
       if (!el?.querySelector?.('#sr-called-cs')) return; // not our dialog
@@ -2228,7 +2295,16 @@ export class SR3EItem extends Item {
     // rather than getting a settings list of their own.
     const chargingOffered = game.sr3e.SR3ESourceBooks.optionalRuleAllowed('cc');
 
-    let result = { calledShot: 'none', calledShotTarget: '', tnMod: 0, charging: false };
+    /* Killing Hands · SR3 p.170 — offered only for an UNARMED attack by an adept who bought
+     * it. "The use of Killing Hands must be declared with the Unarmed Combat attack", so this
+     * dialog is exactly the right moment: attacker-side, after defaulting, before the roll.
+     */
+    const khLevel = (weapon?.system?.category === 'UNA' || weapon?._unarmed)
+      ? (weapon?._killingHands ?? actor?.system?.derived?.killingHands ?? null)
+      : null;
+    const KH_NAME = { L: 'Light', M: 'Moderate', S: 'Serious', D: 'Deadly' };
+
+    let result = { calledShot: 'none', calledShotTarget: '', tnMod: 0, charging: false, killingHands: null };
     let cancelled = true;
     await foundry.applications.api.DialogV2.wait({
       window: { title: 'Called Shot (optional)' },
@@ -2262,6 +2338,20 @@ export class SR3EItem extends Item {
               Test is at +2 instead.
             </div>
           </div>` : ''}
+          ${khLevel ? `
+          <div style="margin-bottom:8px;padding:6px 8px;background:var(--sr-surface);border:1px solid var(--sr-gold);border-radius:var(--r)">
+            <label style="display:flex;align-items:center;gap:8px">
+              <input type="checkbox" id="sr-killinghands-cs"/>
+              <span>✊ <strong>Killing Hands</strong> — ${KH_NAME[khLevel]} <em>Physical</em>
+                <span style="color:var(--sr-muted);font-size:11px">(SR3 p.170)</span></span>
+            </label>
+            <div style="font-size:10px;color:var(--sr-muted);margin-top:3px;margin-left:22px">
+              Replaces the (STR)M Stun of a normal punch with (STR)${khLevel} Physical — the
+              purchased level, not a stage up. Leave unticked to punch for Stun.
+              Also bypasses Immunity to Normal Weapons, and works in astral combat if you are
+              perceiving astrally.
+            </div>
+          </div>` : ''}
           <div>
             <label>Take Aim (−1 TN each):
               <input type="number" id="sr-aim-cs" value="0" min="0" max="6" style="width:50px;margin-left:8px"/>
@@ -2282,7 +2372,9 @@ export class SR3EItem extends Item {
             const tnMod = (calledShot !== 'none' ? 4 : 0) - aim;
             // ⚠ Charging moves POWER, not the TN — it is deliberately absent from `tnMod`.
             const charging = html.querySelector('#sr-charging-cs')?.checked ?? false;
-            result = { calledShot, calledShotTarget, tnMod, charging };
+            const killingHands = (html.querySelector('#sr-killinghands-cs')?.checked && khLevel)
+              ? khLevel : null;
+            result = { calledShot, calledShotTarget, tnMod, charging, killingHands };
           }
         },
         { label: 'Cancel', action: 'cancel' },

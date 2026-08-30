@@ -1611,7 +1611,7 @@ _prepareVehicle(sys, attr) {
 }
 
 _prepareCharacter(sys, attr) {
-  const wm      = sys.woundMod ?? 0;
+  let wm        = sys.woundMod ?? 0;
   const isAdept = (sys.magicType ?? '') === 'Adept';
 
   /**
@@ -1631,11 +1631,19 @@ _prepareCharacter(sys, attr) {
   // items made the 6 — asked in play 2026-08-21 and unanswerable without this. Consumers that
   // only need the number keep using the flat map; anything explaining itself reads this.
   const skillBonusSources = {};
-  const _addSkillDice = (name, dice, label) => {
+  const _addSkillDice = (name, dice, label, meta = {}) => {
     const key = (name ?? '').trim();
     if (!key || !dice) return;
     skillBonusDice[key] = (skillBonusDice[key] ?? 0) + dice;
-    (skillBonusSources[key] ??= []).push({ label: label ?? 'augmentation', dice });
+    // ⚠ `note` and `kind` are structured, not baked into the label. An earlier version
+    // appended "(capped at 4 — p.169)" to the label string, which reads fine in one place and
+    // is unusable everywhere else — the card wants the note on its own line, the ⓘ dialog
+    // wants it in its own column, and neither can get it back out of a sentence.
+    (skillBonusSources[key] ??= []).push({
+      label: label ?? 'augmentation', dice,
+      kind: meta.kind ?? 'augmentation',   // 'adept' | 'cyber' | 'bio' | 'augmentation'
+      note: meta.note ?? null,             // why this number is what it is
+    });
   };
 
   // Category-wide bonuses are a SEPARATE list, not entries in the map above. The map is
@@ -1666,7 +1674,8 @@ _prepareCharacter(sys, attr) {
     // Skill-specific augmentation dice. No item populates `improvedSkillName` yet — the
     // bonus fields are still being imported — but the channel is open, so an entry that
     // gains one starts working with no change to any roll path or to the sheet.
-    _addSkillDice(s.improvedSkillName, s.improvedSkillDice ?? 0, item.name);
+    _addSkillDice(s.improvedSkillName, s.improvedSkillDice ?? 0, item.name,
+      { kind: item.type === 'bioware' ? 'bio' : 'cyber' });
     _addSkillCategory(item.name, s.improvedSkillCategory, s.improvedSkillDice ?? 0);
   }
 
@@ -1676,6 +1685,35 @@ _prepareCharacter(sys, attr) {
   // (p.169), and Magic is not derived until Essence and Bio Index are known, well below.
   // Collect the raw claims now; a second pass past the Magic derivation applies the cap.
   const pendingImprovedAbility = [];
+  /**
+   * Bonuses scoped to a SITUATION rather than to a skill or a category — TODO 70.
+   *
+   * `{ label, situation, dice, tn, pool }`. The third and last bonus channel: `skillBonusDice`
+   * promises "always applies" and `skillCategoryBonuses` is opt-in per roll, and neither can
+   * say *"these dice can only be used for counterattacks"* (MITS p.149) or *"these dice do not
+   * apply to any other type of Reaction Test"* (p.151). A flow that knows its situation claims
+   * the matching bonuses; everything else offers them as a checkbox.
+   */
+  const situationalBonuses = [];
+  /** Powers whose level exceeds Magic (p.168). Reported on the sheet, never clamped. */
+  const overLevelled = [];
+  // ⚠ The BASE Magic, deliberately. This cap is about what the character may have BOUGHT,
+  // which does not shrink when Essence or a bio index temporarily suppresses effective Magic
+  // — that is Magic loss, and the book handles it by making the adept give powers up, not by
+  // retroactively invalidating the sheet.
+  const magicForCaps = attr.magic?.base ?? 0;
+  /** Adept powers whose rule the system states but cannot resolve — surfaced on the sheet. */
+  const adeptNotes = [];
+  /** Extra COMBAT POOL dice (Combat Sense, p.169) — not skill dice, so not the map above. */
+  let adeptCombatPool = 0;
+  /** Pain Resistance levels (p.170) — offsets the wound modifier, resolved further down. */
+  let painResistance = 0;
+  /** Mystic Armor levels (p.170) — Impact armour, cumulative with worn. */
+  let mysticArmor = 0;
+  /** Killing Hands: the purchased Damage Level, or null. Declared per attack (p.170). */
+  let killingHands = null;
+  /** Penetrating Strike levels (SOTA2 p.67) — reduces the TARGET's Impact armour. */
+  let penetratingStrike = 0;
   if (isAdept) {
     // ⚠ `globalThis.game`, not bare `game` — an undeclared identifier is a ReferenceError,
     // which optional chaining does NOT rescue. The unit tests call this with no Foundry
@@ -1743,8 +1781,79 @@ _prepareCharacter(sys, attr) {
           label: s.hasLevels ? `${item.name} ${lvl}` : item.name,
         });
       }
-      _addSkillCategory(item.name, s.improvedSkillCategory, lvl);
+      /* ⚠ **Improved Ability may NOT use the category channel** · SR3 p.169 (TODO 62)
+       *
+       * The power applies to *"a specific Active Skill"*. The pack names invite the opposite
+       * reading — `Imp Abl Combat Skl*->` looks like a scope — but the book's **Improved
+       * Ability Costs Table** uses the category only to set the COST PER DIE (Physical .25,
+       * Combat .5), and the trailing `->` is the upstream generator's marker for "name the
+       * skill here". Left open, `Imp Abl Combat Skl` with category `Combat skills` buys dice
+       * across every combat skill for half a Power Point.
+       *
+       * The channel itself stays — it is right for genuinely category-wide powers — so this
+       * excludes one kind of power rather than removing the feature.
+       */
+      if (kind !== 'improvedAbility') {
+        _addSkillCategory(item.name, s.improvedSkillCategory, lvl);
+      }
+
+      /* ── What the power actually DOES · TODO 66-70 ──────────────────────────────
+       *
+       * ⚠ `effectLvl` is NOT `lvl`. Nineteen shipped powers carry their level in the NAME
+       * with `hasLevels: false` and `level: 1` — Combat Sense +3, Kinesics Level 3,
+       * Penetrating Strike Level 2 — so reading `system.level` makes every one of them
+       * level 1. `lvl` stays correct for Power Point cost, where a fixed-level item's cost
+       * already covers its level; the two must not be conflated.
+       */
+      // ⚠ Checked against `lvl` (the power's own level), not `effectLvl`. p.168 limits the
+      // LEVELS an adept may have in a power, and a fixed-level item like `Imp. Reflexes
+      // Level 3` is one purchase, not three levels of a levelled power.
+      if (s.hasLevels && lvl > magicForCaps) overLevelled.push({ name: item.name, level: lvl });
+      const effectLvl = globalThis.game?.sr3e?.SR3E?.adeptPowerLevel?.(item.name, s) ?? lvl;
+      const eff = globalThis.game?.sr3e?.SR3E?.adeptPowerEffect?.(item.name, effectLvl) ?? null;
+      if (eff) {
+        if (eff.note) adeptNotes.push({ label: item.name, note: eff.note });
+        adeptCombatPool += eff.situation ? 0 : (eff.pool ?? 0);
+        if (eff.situation && (eff.dice || eff.tn || eff.pool)) {
+          situationalBonuses.push({
+            label: item.name, situation: eff.situation,
+            dice: eff.dice ?? 0, tn: eff.tn ?? 0, pool: eff.pool ?? 0,
+            // Enhanced Perception is capped at min(Intelligence, Magic) exactly as Improved
+            // Ability is capped (p.169). Resolved with the others, once Magic is known.
+            capBy: eff.capBy ?? null,
+          });
+        }
+      }
+
+      // Direct effects — each changes a specific derived number rather than granting dice.
+      switch (kind === 'other' ? SR3EActor._directPowerKind(item.name) : null) {
+        case 'painResistance':    painResistance    += effectLvl; break;
+        case 'mysticArmor':       mysticArmor       += effectLvl; break;
+        case 'penetratingStrike': penetratingStrike += effectLvl; break;
+        case 'killingHands':      killingHands = SR3EActor.killingHandsLevel(item.name) ?? killingHands; break;
+        default: break;
+      }
     }
+  }
+
+  /* ── Pain Resistance · SR3 p.170 (TODO 69) ────────────────────────────────────────
+   *
+   * > "Subtract your level of Pain Resistance from your current damage before determining
+   * > your injury modifiers."
+   *
+   * ⚠ Recomputed HERE rather than in `prepareDerivedData`, because the level is not known
+   * until the adept items have been walked. `wm` is captured at the top of this method and
+   * feeds Initiative and the pools below, so it is reassigned too — leaving it stale would
+   * apply the power to the sheet's wound display and to nothing that rolls.
+   * ⚠ The wound TRACK is untouched. The power changes the effect of damage, not the damage.
+   */
+  if (painResistance > 0) {
+    const stunBoxes = SR3EActor.painAdjustedBoxes(sys.wounds?.stun?.value ?? 0, painResistance);
+    const physBoxes = SR3EActor.painAdjustedBoxes(sys.wounds?.physical?.value ?? 0, painResistance);
+    const raw = -(SR3EActor._trackMod(stunBoxes) + SR3EActor._trackMod(physBoxes));
+    sys.rawWoundMod = raw;
+    sys.woundMod    = Math.min(0, raw + (sys.stimBonus ?? 0));
+    wm = sys.woundMod;
   }
 
   // Apply cyber/bio + adept power bonuses to core attributes — derivations below use .value
@@ -1889,16 +1998,38 @@ _prepareCharacter(sys, attr) {
    * breakdown explains a number that is smaller than the sheet's power level. Silently
    * showing the capped figure is how someone concludes their power is broken.
    */
+  /* ── Enhanced Perception is capped too · SR3 p.169 ────────────────────────────────
+   *
+   * > "You cannot have more Enhanced Perception dice than your Intelligence or Magic
+   * > Attribute, whichever is less."
+   *
+   * The same shape as Improved Ability's cap and resolved in the same place for the same
+   * reason — it needs effective Magic. `capBy` names the OTHER attribute, so one line covers
+   * any future power the book caps this way rather than hard-coding Intelligence.
+   */
+  for (const b of situationalBonuses) {
+    if (!b.capBy) continue;
+    const other  = attr[b.capBy]?.value ?? 0;
+    const capped = SR3EActor.improvedAbilityDice({
+      level: b.dice, skillRating: other, magic: attr.magic?.value ?? 0 });
+    if (capped !== b.dice) b.cappedFrom = b.dice;
+    b.dice = capped;
+  }
+
   for (const claim of pendingImprovedAbility) {
     const skillItem = (this.items ?? []).find(
       i => i.type === 'skill' && i.name === claim.skill);
     const rating = skillItem?.system?.rating ?? 0;
     const dice   = SR3EActor.improvedAbilityDice({
       level: claim.level, skillRating: rating, magic: attr.magic?.value ?? 0 });
-    const label = (dice < claim.level)
-      ? `${claim.label} (capped at ${dice} — p.169)`
-      : claim.label;
-    _addSkillDice(claim.skill, dice, label);
+    // ⚠ The FULL level is still reported, with the cap as a note. Showing only the capped
+    // number is how someone concludes their power is broken — the sheet says level 6 and the
+    // card silently rolls 4.
+    const note = dice < claim.level
+      ? `level ${claim.level}, capped at ${dice} by the lower of your skill rating (${rating}) `
+        + `and Magic (${attr.magic?.value ?? 0}) — SR3 p.169`
+      : null;
+    _addSkillDice(claim.skill, dice, claim.label, { kind: 'adept', note });
   }
 
   // Derived pools — all use .value so adept force benefits every relevant pool
@@ -1907,7 +2038,9 @@ _prepareCharacter(sys, attr) {
      (attr.intelligence?.value ?? 0) +
      (attr.willpower?.value    ?? 0)) / 2
   ));
-  const combatPool          = combatPoolBase + (sys.combatPoolMod ?? 0);
+  // ⚠ Combat Sense grants Combat Pool dice, not skill dice (p.169) — a separate channel from
+  // `skillBonusDice`, and the reason `adeptCombatPool` is summed apart from everything else.
+  const combatPool          = combatPoolBase + (sys.combatPoolMod ?? 0) + adeptCombatPool;
   const combatPoolSpent     = sys.combatPoolSpent ?? 0;
   const availableCombatPool = Math.max(0, combatPool - combatPoolSpent);
 
@@ -1953,6 +2086,33 @@ _prepareCharacter(sys, attr) {
     initiativeDice:     1 + (sys.initiativeDiceBonus ?? 0) + (attr.reaction?.diceBonus ?? 0) + reflex.initDice,
     cyberBonus,
     adeptBonus,
+    /* Powers whose level exceeds the adept's Magic · SR3 p.168 (TODO 65).
+     *
+     * > "An adept cannot have more levels in a power than the adept's Magic Attribute."
+     *
+     * ⚠ Reported, never enforced — the same treatment as the Power Point budget beside it,
+     * which has flagged an overspend in red since it was written. Clamping would silently
+     * change a character sheet the GM built, and the ethos is that every stat stays
+     * hand-editable. The sheet renders this as a warning.
+     */
+    overLevelledPowers: overLevelled,
+    // Bonuses scoped to a SITUATION — read with SR3EActor.situationalBonus (TODO 70).
+    situationalBonuses,
+    // Powers whose rule the system states but cannot resolve; rendered on the Magic tab.
+    adeptNotes,
+    // Combat Pool dice from Combat Sense (p.169), already folded into `combatPool` above.
+    adeptCombatPool,
+    // Pain Resistance level (p.170) — already folded into `woundMod`.
+    painResistance,
+    // Mystic Armor level (p.170) — Impact armour, cumulative with worn, and it works in
+    // astral combat. Applied at soak time, not here, because the soak card is where armour
+    // is chosen and shown.
+    mysticArmor,
+    // Killing Hands Damage Level (p.170), or null. DECLARED per attack — the power lets you
+    // do "normal stun damage, or physical damage as purchased", so it is never automatic.
+    killingHands,
+    // Penetrating Strike (SOTA2 p.67) — reduces the TARGET's Impact armour, for damage only.
+    penetratingStrike,
     // Live Attribute Boosts, keyed by attribute — `{level, turns, applied, limit,
     // drainLevel, drainTN, cyberConflict}`. Empty when nothing is boosted.
     attributeBoost: boostActive,
@@ -4067,24 +4227,37 @@ _prepareCharacter(sys, attr) {
       // tell whether it included their specialisation, their augmentation dice, or neither.
       // Reported from play 2026-08-21: "it's showing 12 dice but I don't see where they are
       // all coming from". Every part is already in `info`; only the rendering was missing.
+      /* ── Why this corner rolls the dice it rolls ─────────────────────────────────
+       *
+       * Every component on its own row, each showing what it contributes and — where the
+       * number needed explaining — why. Reported from play twice: first "12 dice but I
+       * don't see where they are all coming from", then that a lump "+6 augmentation" named
+       * nothing. A row that cannot be accounted for is the thing this exists to prevent.
+       */
       const _parts = [];
       if (info?.isDefault) {
-        _parts.push(`${info.skillRating} attribute <span class="sr-bd-note">(defaulting)</span>`);
+        _parts.push({ n: info.skillRating, what: 'attribute', note: 'defaulting — no pool dice' });
       } else {
-        _parts.push(`${info?.skillRating ?? 0} ${info?.skillName ?? 'skill'}`);
+        _parts.push({ n: info?.skillRating ?? 0, what: info?.skillName ?? 'skill' });
       }
-      if (info?.specBonus)  _parts.push(`+${info.specBonus} ${info.specName}`);
+      if (info?.specBonus) {
+        _parts.push({ n: info.specBonus, what: info.specName, sign: '+' });
+      }
 
-      // ⚠ Each source NAMED, not lumped. "+6 augmentation" is exactly the line that prompted
-      // "where are they all coming from" — the number was right and unaccountable.
       const _srcs = _catActor?.system?.derived?.skillBonusSources?.[info?.requiredSkill ?? '']
                  ?? _catActor?.system?.derived?.skillBonusSources?.[info?.skillName ?? '']
                  ?? [];
+      const _kindLabel = { adept: 'adept power', cyber: 'cyberware', bio: 'bioware' };
       if (_srcs.length) {
-        for (const src of _srcs) _parts.push(`+${src.dice} ${src.label}`);
+        for (const src of _srcs) {
+          _parts.push({ n: src.dice, what: src.label, sign: '+',
+                        note: src.note ?? _kindLabel[src.kind] ?? null });
+        }
       } else if (info?.bonusDice) {
-        // Fallback: dice with no recorded source. Says so rather than inventing a name.
-        _parts.push(`+${info.bonusDice} augmentation <span class="sr-bd-note">(source unrecorded)</span>`);
+        // Dice with no recorded source. Says so rather than inventing a name — the honest
+        // answer to "where did these come from" is sometimes "an item edited by hand".
+        _parts.push({ n: info.bonusDice, what: 'augmentation', sign: '+',
+                      note: 'source unrecorded — likely an item edited by hand' });
       }
       // ⚠ Rendered even when there is only ONE component. Gating on `length > 1` hid it in
       // exactly the case that prompts the question — "why is this 12?" is asked most often
@@ -4106,6 +4279,9 @@ _prepareCharacter(sys, attr) {
         skillRating: info?.skillRating ?? 0, specName: info?.specName ?? '',
         specBonus: info?.specBonus ?? 0, skillDice, availPool,
         isDefault: info?.isDefault === true,
+        // The corner shows a summary; the dialog shows the whole story, so it is told which
+        // side of a melee this corner is — Counterstrike applies to the DEFENDER's roll only.
+        role,
       }).replace(/'/g, '&#39;');
 
       const breakdown = `
@@ -4114,8 +4290,13 @@ _prepareCharacter(sys, attr) {
               <button type="button" class="sr-dice-info-btn" data-payload='${_bdPayload}'
                       title="Full breakdown">&#9432;</button>
             </div>
-            ${_parts.map(p => `<div>${p}</div>`).join('')}
-            <div class="sr-bd-total">= ${skillDice} skill</div>
+            ${_parts.map(p => `
+              <div class="sr-bd-row">
+                <span class="sr-bd-n">${p.sign ?? ''}${p.n}</span>
+                <span class="sr-bd-what">${p.what}</span>
+              </div>
+              ${p.note ? `<div class="sr-bd-note sr-bd-why">${p.note}</div>` : ''}`).join('')}
+            <div class="sr-bd-total">= ${skillDice} skill dice</div>
             ${_catRow}
           </div>`;
       const tnCalc    = [
@@ -5285,6 +5466,81 @@ _prepareCharacter(sys, attr) {
    * ══════════════════════════════════════════════════════════════════════════════ */
 
   /**
+   * Powers that change a specific derived number rather than granting dice.
+   *
+   * Kept apart from `SR3E.adeptPowerEffects` because each lands somewhere different —
+   * armour, the wound modifier, an unarmed damage code — and a generic table that could
+   * express all of them would be harder to read than four named cases.
+   */
+  static _directPowerKind(name) {
+    const n = String(name ?? '').trim();
+    if (/^pain resistance/i.test(n))     return 'painResistance';
+    if (/^mystic armor/i.test(n))        return 'mysticArmor';
+    if (/^penetrating strike/i.test(n))  return 'penetratingStrike';
+    if (/^killing hands/i.test(n))       return 'killingHands';
+    return null;
+  }
+
+  /**
+   * The Damage Level a Killing Hands power was purchased at · *SR3 p.170*
+   *
+   * Ships as four separate items — `Killing Hands STR(Light)` through `(Deadly)` — at .5, 1,
+   * 2 and 4 Power Points, so the level is in the name and nowhere else.
+   */
+  static killingHandsLevel(name) {
+    const m = /killing hands.*\((light|medium|moderate|serious|deadly)\)/i.exec(String(name ?? ''));
+    if (!m) return null;
+    // ⚠ The pack says "Medium"; SR3's damage levels are L/M/S/D where M is *Moderate*. The
+    // shipped name is the odd one out, so both spellings map to M.
+    return { light: 'L', medium: 'M', moderate: 'M', serious: 'S', deadly: 'D' }[m[1].toLowerCase()] ?? null;
+  }
+
+  /**
+   * Collect the situational bonuses that apply to a given situation · TODO 70.
+   *
+   * @param {Array}  bonuses    `actor.system.derived.situationalBonuses`
+   * @param {string} situation  a key from `SR3E.adeptSituations`
+   * @returns {{dice:number, tn:number, pool:number, labels:string[]}}
+   *
+   * ⚠ **Summing is correct here, unlike the reflex packages.** Two powers covering the same
+   * situation are two separate purchases — Rooting and Enhanced Balance both resist knockdown,
+   * and an adept who paid for both gets both. Nothing in the rules makes them exclusive.
+   * ⚠ Returns zeroes rather than null for an unknown situation, so a caller can add the result
+   * unconditionally without a guard at every site.
+   */
+  static situationalBonus(bonuses, situation) {
+    const want = String(situation ?? '').trim();
+    const out = { dice: 0, tn: 0, pool: 0, labels: [] };
+    if (!want) return out;
+    for (const b of (Array.isArray(bonuses) ? bonuses : [])) {
+      if (b?.situation !== want) continue;
+      out.dice += Math.trunc(Number(b.dice) || 0);
+      out.tn   += Math.trunc(Number(b.tn)   || 0);
+      out.pool += Math.trunc(Number(b.pool) || 0);
+      if (b.label) out.labels.push(b.label);
+    }
+    return out;
+  }
+
+  /**
+   * The wound modifier, offset by Pain Resistance · *SR3 p.170*
+   *
+   * > "Subtract your level of Pain Resistance from your current damage before determining your
+   * > injury modifiers. For example, an adept with 3 levels of Pain Resistance does not suffer
+   * > any modifiers for being Lightly or Moderately wounded. At 4 boxes of damage, the adept
+   * > has only a +1 injury modifier."
+   *
+   * ⚠ **It reduces the damage used for the LOOKUP, never the wound track.** Touching the track
+   * would un-fill boxes the GM ticked and move the character further from unconscious, which
+   * the power does not do — *"It does not reduce actual damage, only its effect on you."*
+   * ⚠ Applies to BOTH tracks: *"Pain Resistance works equally on both the Physical and Stun
+   * Condition Monitors."*
+   */
+  static painAdjustedBoxes(boxes, painResistance = 0) {
+    return Math.max(0, (Math.trunc(Number(boxes) || 0)) - Math.max(0, Math.trunc(Number(painResistance) || 0)));
+  }
+
+  /**
    * Racial Modified Limit for one attribute · *SR3 p.245*
    *
    * Unknown metatypes fall back to human, which is the table's baseline of 6 — a metavariant
@@ -5739,48 +5995,93 @@ _prepareCharacter(sys, attr) {
     const auto  = d.skillBonusDice?.[key] ?? d.skillBonusDice?.[ctx.skillName] ?? 0;
     const cat   = SR3EActor.skillCategoryBonus(d.skillCategoryBonuses ?? [], ctx.skillCategory);
 
-    const row = (label, value, note = '') => `
-      <tr>
-        <td style="padding:2px 8px 2px 0">${label}${note ? `<div style="font-size:10px;color:var(--sr-dim)">${note}</div>` : ''}</td>
-        <td style="padding:2px 0;text-align:right;white-space:nowrap"><strong>${value}</strong></td>
+    const esc = v => String(v ?? '').replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+    const row = (label, value, note = '', cls = '') => `
+      <tr class="${cls}">
+        <td style="padding:3px 10px 3px 0;vertical-align:top">${label}
+          ${note ? `<div style="font-size:10px;color:var(--sr-dim);margin-top:1px">${note}</div>` : ''}</td>
+        <td style="padding:3px 0;text-align:right;white-space:nowrap;vertical-align:top"><strong>${value}</strong></td>
       </tr>`;
 
     const rows = [];
+
+    /* ── What is being rolled ─────────────────────────────────────────────────── */
     rows.push(ctx.isDefault
-      ? row(`${ctx.skillName}`, ctx.skillRating, 'defaulting — full attribute, no pool dice')
-      : row(`${ctx.skillName} rating`, ctx.skillRating,
-            ctx.skillCategory ? `category: ${ctx.skillCategory}` : ''));
+      ? row(esc(ctx.skillName) || 'Attribute', ctx.skillRating,
+            'Defaulting — the FULL attribute is rolled, and no pool dice are allowed (p.84)')
+      : row(`${esc(ctx.skillName)} — base rating`, ctx.skillRating,
+            ctx.skillCategory ? `category: ${esc(ctx.skillCategory)}` : ''));
 
-    if (ctx.specBonus) rows.push(row(`Specialisation — ${ctx.specName}`, `+${ctx.specBonus}`));
+    if (ctx.specBonus) {
+      rows.push(row(`Specialisation — ${esc(ctx.specName)}`, `+${ctx.specBonus}`,
+        'A specialisation rolls at base + its bonus'));
+    }
 
-    // ⚠ Named individually. A lump sum is what made this unanswerable in the first place.
-    for (const src of srcs) rows.push(row(src.label, `+${src.dice}`, 'always applies'));
+    /* ── Augmentations, each named and explained ──────────────────────────────── */
+    const KIND = { adept: '✨ Adept power', cyber: '⚙ Cyberware', bio: '🧬 Bioware' };
+    for (const src of srcs) {
+      rows.push(row(`${KIND[src.kind] ?? '⚙ Augmentation'} — ${esc(src.label)}`, `+${src.dice}`,
+        src.note ? esc(src.note) : 'Always applies — folded into the Skill box automatically'));
+    }
 
-    // Sources should account for the whole of the flat total; if they do not, say so rather
-    // than let the two disagree in silence.
+    // The named sources must account for the whole flat total. If they do not, say so
+    // rather than let the two disagree in silence.
     const accounted = srcs.reduce((a, x) => a + (x.dice ?? 0), 0);
     if (auto !== accounted) {
       rows.push(row('Unattributed augmentation', `+${auto - accounted}`,
-        'in the total but with no recorded source — likely an item edited by hand'));
+        'In the total but with no recorded source — likely an item edited by hand'));
     }
 
-    rows.push(row('<strong>Skill dice</strong>', ctx.skillDice, 'the Skill box on the card'));
+    rows.push(row('<strong>Skill dice rolled</strong>', ctx.skillDice,
+      'This is the Skill box on the card', 'sr-bd-total-row'));
 
+    /* ── Things that are OFFERED, not applied ─────────────────────────────────── */
+    const optional = [];
     if (cat.dice) {
-      rows.push(row(`${cat.labels.join(' + ')}`, `+${cat.dice}`,
-        'OPTIONAL — tick it on the card when it applies'));
+      optional.push(row(`${esc(cat.labels.join(' + '))}`, `+${cat.dice}`,
+        'OPTIONAL — tick it on the card. Category bonuses are conditional, so the system '
+        + 'will not decide for you (M&M p.66)'));
     }
+
+    // Situational adept bonuses relevant to THIS side of a melee.
+    // ⚠ Counterstrike is the defender's only — "these dice can only be used for
+    // counterattacks" (MITS p.149), and in SR3 melee the defender's roll IS the counterattack.
+    const sits = d.situationalBonuses ?? [];
+    const relevant = ctx.role === 'defender' ? ['counterattack'] : [];
+    for (const k of relevant) {
+      const b = SR3EActor.situationalBonus(sits, k);
+      if (!b.dice && !b.pool) continue;
+      optional.push(row(esc(b.labels.join(' + ')), `+${b.dice || b.pool}`,
+        `Applies to ${esc(game.sr3e.SR3E.adeptSituations[k] ?? k).toLowerCase()} only`));
+    }
+
     if (ctx.availPool) {
-      rows.push(row('Combat Pool available', ctx.availPool, 'allocate on the card; spent for the turn'));
+      const dodgeB = SR3EActor.situationalBonus(sits, 'dodge');
+      optional.push(row('Combat Pool available', ctx.availPool,
+        'Allocate on the card. Spent for the whole Combat Turn, and dice spent dodging are '
+        + 'gone from the Damage Resistance Test (p.113)'
+        + (dodgeB.pool ? ` · +${dodgeB.pool} more when dodging, from ${esc(dodgeB.labels.join(' + '))}` : '')));
     }
+
+    const reflex = d.reflex;
+    const warn = reflex?.conflict
+      ? `<div class="sr-alert sr-alert--danger" style="margin:8px 0 0;font-size:11px">
+           ⚠ Improved Reflexes does not combine with technological or other magical
+           Reaction/Initiative increases (SR3 p.169). The
+           ${reflex.source === 'adept' ? 'adept' : 'cyberware'} package is applied; the other
+           is ignored. This does not affect the dice above.
+         </div>` : '';
 
     await foundry.applications.api.DialogV2.wait({
-      window: { title: `${ctx.name} — dice breakdown` },
+      window: { title: `${ctx.name} — why these dice?` },
       content: `
-        <table style="width:100%;font-size:12px;border-collapse:collapse">
-          ${rows.join('')}
-        </table>
-        <p style="margin:8px 0 0;font-size:10px;color:var(--sr-dim)">
+        <table style="width:100%;font-size:12px;border-collapse:collapse">${rows.join('')}</table>
+        ${optional.length ? `
+          <div style="margin-top:10px;font-size:11px;font-weight:600;color:var(--sr-muted);
+                      text-transform:uppercase;letter-spacing:.05em">Available, not applied</div>
+          <table style="width:100%;font-size:12px;border-collapse:collapse">${optional.join('')}</table>` : ''}
+        ${warn}
+        <p style="margin:10px 0 0;font-size:10px;color:var(--sr-dim)">
           Read-only. Edit the numbers in your own corner of the card.
         </p>`,
       buttons: [{ label: 'Close', action: 'close', default: true }],
@@ -5814,7 +6115,16 @@ _prepareCharacter(sys, attr) {
       power: ctx.power, strength: atkStr, isMelee: ctx.isMelee, ammoType: ctx.ammoType,
     }) + Math.max(0, Math.trunc(Number(ctx.knockdownTNMod) || 0));
     const needed  = SR3EActor.knockdownOutcome({ level, tested: false }).needed ?? 2;
-    const bodyDef = target.system?.attributes?.body?.value ?? 1;
+    /* Rooting and Enhanced Balance add dice to *"all tests to resist being knocked down,
+     * thrown, levitated or otherwise moved against his will"* (MITS p.151, SOTA2 p.65).
+     *
+     * ⚠ Applied automatically, not offered: this flow IS the Knockdown Test, so there is
+     * nothing for a human to judge. That is the whole point of scoping a bonus by situation
+     * rather than by skill — the code already knows which situation it is in.
+     */
+    const kdBonus = SR3EActor.situationalBonus(
+      target.system?.derived?.situationalBonuses ?? [], 'knockdown');
+    const bodyDef = (target.system?.attributes?.body?.value ?? 1) + kdBonus.dice;
 
     // The target's CURRENT wound level, shown for context: p.124 can be read as using it
     // rather than the wound just taken, so the threshold is editable and this is the number a
@@ -5843,6 +6153,7 @@ _prepareCharacter(sys, attr) {
         <p style="margin-bottom:8px;font-size:11px;color:var(--sr-muted)">${tnNote}</p>
         <label style="display:block;margin-bottom:6px">Body dice
           <input type="number" id="kd-body" value="${bodyDef}" min="1" max="50" style="width:60px;margin-left:6px"/>
+          ${kdBonus.dice ? `<span style="font-size:11px;color:var(--sr-gold);margin-left:6px">includes +${kdBonus.dice} from ${kdBonus.labels.join(' + ')}</span>` : ''}
         </label>
         <label style="display:block;margin-bottom:6px">Target number
           <input type="number" id="kd-tn" value="${tnDefault}" min="2" max="30" style="width:60px;margin-left:6px"/>
@@ -5980,9 +6291,41 @@ _prepareCharacter(sys, attr) {
       ballistic = armorItem?.system?.ballistic ?? 0;
       impact    = armorItem?.system?.impact    ?? 0;
     }
+
+    /* ── Mystic Armor · SR3 p.170 (TODO 68) ───────────────────────────────────────────
+     *
+     * > "Each level provides you with 1 point of Impact Armor, cumulative with any worn
+     * > Impact Armor. Mystic Armor does not provide Ballistic Armor. Mystic Armor also
+     * > protects against damage done in astral combat."
+     *
+     * ⚠ **Impact only.** Adding it to Ballistic would make it the best armour in the game
+     * against the most common attack in it.
+     * ⚠ **Cumulative**, so it adds to worn armour rather than replacing it — and it applies
+     * with no armour worn at all, which is the case the power is bought for.
+     * ⚠ **It survives Flechette's doubling**, because it is added BEFORE the ammo rules run:
+     * the doubled figure is "the highest of ballistic/impact", and the adept's skin is part
+     * of that. Adding it afterwards would quietly halve the power against flechette.
+     */
+    const mysticArmor = Math.max(0, this.system.derived?.mysticArmor ?? 0);
+    if (mysticArmor > 0) impact += mysticArmor;
+
+    /* ── Penetrating Strike · SOTA2 p.67 ──────────────────────────────────────────────
+     *
+     * > "Each level of Penetrating Strike allows an adept to reduce the target's Impact
+     * > armor by 1 for the purposes of determining damage only."
+     *
+     * The ATTACKER's power reducing the DEFENDER's armour, so it rides in on the payload
+     * rather than being read off this actor. Floors at 0 — it cannot make armour negative
+     * and start adding to the soak TN.
+     */
+    const penetrating = Math.max(0, payload.penetratingStrike ?? 0);
+    if (penetrating > 0) impact = Math.max(0, impact - penetrating);
     // Ammo armour interactions (APDS / Flechette). Other types resolve at attack time.
     const ammoRules = game.sr3e.SR3E.ammoTypes[payload.ammoType] ?? {};
     let ammoNote = '';
+    const adeptArmorNotes = [];
+    if (mysticArmor > 0) adeptArmorNotes.push(`Mystic Armor +${mysticArmor} Impact (p.170)`);
+    if (penetrating > 0) adeptArmorNotes.push(`Penetrating Strike −${penetrating} Impact (SOTA2 p.67)`);
     if (ammoRules.armorEffect === 'gel') {
       ammoNote = `Gel — Impact armour applies (${impact}), not Ballistic`;
     } else if (ammoRules.armorEffect === 'apds') {
@@ -6037,6 +6380,7 @@ _prepareCharacter(sys, attr) {
             Incoming: <strong>${stagedPower}${effStagedLevel} ${trackLabel}</strong>
           </div>
           ${ammoNote ? `<div class="sr-roll-meta" style="color:var(--sr-gold);font-size:11px">🔸 ${ammoNote}</div>` : ''}
+          ${adeptArmorNotes.length ? `<div class="sr-roll-meta" style="color:var(--sr-gold);font-size:11px">✨ ${adeptArmorNotes.join(' · ')}</div>` : ''}
           <div class="sr-soak-fields">
             <label class="sr-soak-label">
               Body dice:

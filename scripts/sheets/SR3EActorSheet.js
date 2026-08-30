@@ -2329,8 +2329,29 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           (+${rx.rea} Reaction, +${rx.initDice} Initiative dice); ignoring
           +${rx.dropped?.rea ?? 0} / +${rx.dropped?.initDice ?? 0} from the other.
         </div>` : '';
+        /* Powers whose level exceeds Magic (SR3 p.168), and powers whose rule the system
+         * states but cannot resolve. Both are reported, never enforced — the same treatment
+         * as the Power Point budget above, and for the same reason: clamping would silently
+         * rewrite a sheet the GM built. */
+        const over = actor.system.derived?.overLevelledPowers ?? [];
+        const overWarn = over.length ? `
+        <div class="sr-alert sr-alert--danger" style="margin-bottom:6px">
+          ⚠ <strong>Above Magic:</strong> ${over.map(o => `${o.name} (level ${o.level})`).join(', ')}.
+          An adept cannot have more levels in a power than their Magic Attribute (SR3 p.168).
+        </div>` : '';
+
+        const notes = actor.system.derived?.adeptNotes ?? [];
+        const noteList = notes.length ? `
+        <div style="margin-bottom:8px;padding:6px 8px;background:var(--sr-surface);
+                    border:1px solid var(--sr-border);border-radius:var(--r);font-size:11px">
+          <div style="font-weight:600;color:var(--sr-muted);margin-bottom:3px">
+            Applied by the GM — the system states these but cannot resolve them
+          </div>
+          ${notes.map(n => `<div style="margin-top:2px"><strong>${n.label}</strong> — ${n.note}</div>`).join('')}
+        </div>` : '';
+
         return `
-        ${reflexWarn}
+        ${reflexWarn}${overWarn}${noteList}
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:8px">
           <h3 class="section-hdr" style="margin:0">Adept Powers</h3>
           <span style="font-size:12px;color:${ppOver ? 'var(--sr-red)' : 'var(--sr-muted)'}">
@@ -3005,7 +3026,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   static async _onRollUnarmed(_ev, _target) {
     const SR3EItem = game.sr3e.SR3EItem;
-    await SR3EItem.rollMeleeAttack(this.actor, SR3EItem._unarmedWeapon());
+    await SR3EItem.rollMeleeAttack(this.actor, SR3EItem._unarmedWeapon(this.actor));
   }
 
   static async _onRollSpell(ev, target) {

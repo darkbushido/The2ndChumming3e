@@ -1278,6 +1278,54 @@ dice — neither of the two things the rule allows.
 ⚠ The book forbids combining but does not say which side wins; taking the better package (and
 saying so) follows the ethos rather than refusing to derive anything.
 
+#### Three bonus channels, and a bonus belongs to exactly one
+
+| Channel | Scope | Applied |
+|---|---|---|
+| `derived.skillBonusDice` | one named skill | **automatically**, every roll path |
+| `derived.skillCategoryBonuses` | a skill CATEGORY | opt-in checkbox per roll |
+| `derived.situationalBonuses` | a **situation** (`SR3E.adeptSituations`) | auto where a flow knows its situation; checkbox otherwise |
+
+⚠ **The third channel exists because the first two could not carry the rule.** `skillBonusDice`
+promises "always applies" and every consumer trusts it, so it cannot express Counterstrike's
+*"these dice can only be used for counterattacks"* or Sixth Sense's *"these dice do not apply to
+any other type of Reaction Test"*. Do not widen `skillBonusDice` to fix a scoped power.
+
+⚠ **Situational bonuses SUM when two powers cover the same situation** — Rooting and Enhanced
+Balance both resist knockdown, and an adept who bought both gets both. This is the opposite of
+`reflexBonus`, where the book forbids combining. Both behaviours are asserted.
+
+⚠ **`adeptPowerLevel` is NOT `system.level`.** Nineteen shipped powers carry their level in the
+NAME with `hasLevels: false` — `Combat Sense +3`, `Kinesics Level 3`, `Penetrating Strike Level
+2`. Reading `system.level` makes every one of them level 1. **Effects only**: Power Point cost
+and the sheet's Level column keep using `system.level`, because a fixed-level item's cost
+already covers its level (`Imp. Reflexes Level 3` costs 5, not 15).
+
+#### Direct-effect powers
+
+| Power | Effect | Where |
+|---|---|---|
+| Combat Sense | +N **Combat Pool** dice · p.169 | `combatPool` derivation |
+| Pain Resistance | level off the damage used for the **injury-modifier lookup** · p.170 | `woundMod`, recomputed in `_prepareCharacter` |
+| Mystic Armor | +N **Impact** armour, cumulative, astral too · p.170 | soak card |
+| Penetrating Strike | −N the **target's** Impact armour · SOTA2 p.67 | soak card, from the payload |
+| Killing Hands | replaces unarmed (STR)M Stun with (STR)*level* **Physical** · p.170 | declared in the called-shot dialog |
+
+⚠ **Pain Resistance reduces the LOOKUP, never the wound track** — *"It does not reduce actual
+damage, only its effect on you."* Touching the track would un-fill boxes the GM ticked.
+⚠ **Killing Hands REPLACES the level, it does not stage it.** Light on a (STR)M punch is
+(STR)L — worse in level, better in kind. Staging would make the cheapest tier a free upgrade.
+⚠ **Killing Hands is DECLARED per attack** — *"you may do normal stun damage, or physical
+damage as purchased… must be declared with the Unarmed Combat attack."* Never automatic.
+⚠ **Mystic Armor is added BEFORE the ammo rules**, so it survives Flechette's doubling.
+
+#### Defaulting carries half the augmentation dice  · *SR3 p.169* — TODO 61
+
+`defaultTiers`' **Skill** tier is the book's "defaulting to the improved skill", so it adds
+`floor(bonus / 2)`. It previously contributed **none**. The halving applies to the dice *after*
+the p.169 cap, and it halves cyber/bio dice on the same skill too — the map is deliberately
+source-agnostic, and splitting it at the point of use is the coupling it exists to avoid.
+
 #### The item sheet offers fields by POWER KIND
 
 `SR3E.adeptPowerKind(name)` classifies on the shipped name — the only join available, since

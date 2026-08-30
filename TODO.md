@@ -25,7 +25,7 @@ independent.
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | **71** · **72** · **73** · **74** |
 | 📕 Rules not implemented | 3 · 4 · 30 · 47 · 48 · 49 · 53 · 57 |
-| 🧙 Adept powers — see `audit/adept-powers-audit.md` | 61 · 62 · 65 · 66 · 67 · 68 · 69 · 70 *(**59** · **60** · **63** · **64** done)* |
+| 🧙 Adept powers — see `audit/adept-powers-audit.md` | *(all closed: **59**-**70**)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
 | 🧹 Housekeeping | 1 · 6 |
@@ -3925,7 +3925,7 @@ piece of real work in this group.
 **Magic**, so it moves when Essence or Bio Index move.
 
 <a id="61"></a>
-## 61. Defaulting to an improved skill gives the wrong number, twice — *SR3 p.169*
+## 61. ✅ Defaulting to an improved skill gives the wrong number, twice — *SR3 p.169* — **DONE 2026-08-30**
 
 > "If you are defaulting to the improved skill, only half (round down) of the Improved Ability
 > dice may be used."
@@ -3940,7 +3940,7 @@ piece of real work in this group.
 Depends on [#60](#60): halve the capped number, not the raw level.
 
 <a id="62"></a>
-## 62. Improved Ability's category channel is not RAW — *SR3 p.169*
+## 62. ✅ Improved Ability's category channel is not RAW — *SR3 p.169* — **DONE 2026-08-30**
 
 `SR3EActor.js:1693` feeds `improvedSkillCategory` from adept powers into the opt-in category
 bonus. For Improved Ability that is wrong, and the packs actively invite the mistake: the entries
@@ -4010,7 +4010,7 @@ own text, so worth its own assertion.
 better of the two? Project ethos says **warn, take one, stay editable** — never silently sum.
 
 <a id="65"></a>
-## 65. No power may exceed Magic in levels — *SR3 p.168*
+## 65. ✅ No power may exceed Magic in levels — *SR3 p.168* — **DONE 2026-08-30**
 
 > "An adept cannot have more levels in a power than the adept's Magic Attribute."
 
@@ -4021,7 +4021,7 @@ is never checked, so Magic 4 with Improved Ability 6 passes silently whenever th
 Same treatment as the existing budget warning: a red note, not a block.
 
 <a id="66"></a>
-## 66. Combat Sense contributes nothing — *SR3 p.169*
+## 66. ✅ Combat Sense contributes nothing — *SR3 p.169* — **DONE 2026-08-30**
 
 Two effects, both absent.
 
@@ -4034,7 +4034,7 @@ Two effects, both absent.
 The first half is a data-model change plus one term. The second belongs with surprise.
 
 <a id="67"></a>
-## 67. Killing Hands never changes a punch — *SR3 p.170*
+## 67. ✅ Killing Hands never changes a punch — *SR3 p.170* — **DONE 2026-08-30**
 
 `SR3EItem._unarmedWeapon()` returns `(STR)M Stun` unconditionally. RAW:
 
@@ -4048,7 +4048,7 @@ The first half is a data-model change plus one term. The second belongs with sur
 Natural home: the same declaration point as the called-shot dialog on the melee path.
 
 <a id="68"></a>
-## 68. Mystic Armor adds no armour — *SR3 p.170*
+## 68. ✅ Mystic Armor adds no armour — *SR3 p.170* — **DONE 2026-08-30**
 
 Each level is **1 point of Impact armour, cumulative with worn Impact armour**, and *"Mystic
 Armor also protects against damage done in astral combat"*. It grants **no Ballistic**.
@@ -4060,7 +4060,7 @@ armour term at all. The pack's `+1IMP` is parsed and reported unmapped for exact
 them separately will produce two.
 
 <a id="69"></a>
-## 69. Pain Resistance does not reduce injury modifiers — *SR3 p.170*
+## 69. ✅ Pain Resistance does not reduce injury modifiers — *SR3 p.170* — **DONE 2026-08-30**
 
 > "Subtract your level of Pain Resistance from your current damage before determining your injury
 > modifiers."
@@ -4079,7 +4079,7 @@ The power's other half — level subtracted from TNs to resist torture, disease 
 is GM-adjudicated and correctly left alone.
 
 <a id="70"></a>
-## 70. The long tail: dice-granting powers with no test to attach to
+## 70. ✅ The long tail: dice-granting powers with no test to attach to — **DONE 2026-08-30**
 
 ~19 powers whose entire rule is "+N dice to test X". None are wired. Full table with book
 citations in `audit/adept-powers-audit.md`; the shape matters more than the list:

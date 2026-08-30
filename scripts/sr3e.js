@@ -1775,7 +1775,7 @@ function _sr3eReadyWeapons(actor) {
     }
   }
   // Built-in unarmed attack — always available (not a real item).
-  const unarmed = game.sr3e.SR3EItem._unarmedWeapon();
+  const unarmed = game.sr3e.SR3EItem._unarmedWeapon(actor);
   unarmed._actor = actor;
   out.push(unarmed);
   return out;

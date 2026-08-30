@@ -25,6 +25,7 @@ installGlobals();
 const { SR3E } = await import('../scripts/config.js');
 installGame({ sr3e: { SR3E } });
 const { SR3EActor } = await import('../scripts/documents/SR3EActor.js');
+const { SR3EItem } = await import('../scripts/documents/SR3EItem.js');
 
 export const name = 'adept-powers';
 
@@ -243,4 +244,111 @@ export async function run(t) {
   t.is('Attribute Boost(QIC) — the shipped typo — still targets quickness',
     target('Attribute Boost(QIC)*'), 'quickness');
   t.is('a non-boost power targets nothing', target('Imp. Reflexes Level 1'), null);
+
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  Effect resolution — the level, and what the power does (TODO 66-70)
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const lvlOf = SR3E.adeptPowerLevel;
+  const effOf = SR3E.adeptPowerEffect;
+
+  /* ==== 19 shipped powers carry their level in the NAME ==== */
+  // ⚠ Every one of these stores `hasLevels: false, level: 1`. Reading `system.level` makes
+  // all three Kinesics level 1 and all three Combat Senses one Combat Pool die.
+  const fixed = { hasLevels: false, level: 1 };
+  t.is('Combat Sense +3 resolves at level 3', lvlOf('Combat Sense +3', fixed), 3);
+  t.is('Kinesics Level 2 resolves at level 2', lvlOf('Kinesics Level 2', fixed), 2);
+  t.is('Penetrating Strike Level 3 → 3', lvlOf('Penetrating Strike Level 3', fixed), 3);
+  t.is('Flexibility 2 → 2', lvlOf('Flexibility 2', fixed), 2);
+  t.is('Imp. Reflexes Level 3 → 3', lvlOf('Imp. Reflexes Level 3', fixed), 3);
+  t.is('a name with no trailing number is level 1', lvlOf('Counterstrike*', fixed), 1);
+  // A genuinely levelled power reads its own field, and the NAME must not override it.
+  t.is('a levelled power uses system.level', lvlOf('Counterstrike*', { hasLevels: true, level: 4 }), 4);
+  t.is('…even when the name ends in a number',
+    lvlOf('Imp. Phys. Attr.(BOD)>RACMOD*  1', { hasLevels: true, level: 3 }), 3);
+  t.is('level 0 or missing floors at 1', lvlOf('Whatever', { hasLevels: true, level: 0 }), 1);
+
+  /* ==== the effects themselves ==== */
+  t.is('Counterstrike 3 gives 3 dice', effOf('Counterstrike*', 3).dice, 3);
+  t.is('…scoped to counterattacks only', effOf('Counterstrike*', 3).situation, 'counterattack');
+  t.is('Sixth Sense is scoped to surprise', effOf('Sixth Sense*', 2).situation, 'surprise');
+  t.is('Spell Shroud is scoped to detection spells only',
+    effOf('Spell Shroud*', 1).situation, 'detectionSpell');
+  // ⚠ Side Step grants COMBAT POOL dice, not skill dice — "one additional Combat Pool die
+  // only for the purposes of Dodge and Full Dodge attempts".
+  t.is('Side Step 2 gives 2 POOL dice', effOf('Side Step*', 2).pool, 2);
+  t.is('…and no skill dice', effOf('Side Step*', 2).dice, 0);
+  // ⚠ Flexibility and Kinesics move a TARGET NUMBER, and negative means easier.
+  t.is('Flexibility 2 is −2 TN', effOf('Flexibility 2', 2).tn, -2);
+  t.ok('…negative, i.e. easier', effOf('Flexibility 2', 2).tn < 0);
+  t.is('Kinesics 3 is −3 TN on social tests', effOf('Kinesics Level 3', 3).tn, -3);
+  t.is('Combat Sense +3 is 3 Combat Pool dice', effOf('Combat Sense +3', 3).pool, 3);
+  t.is('…with no situation, so it applies always', effOf('Combat Sense +3', 3).situation, null);
+  t.is('Enhanced Perception is capped by Intelligence', effOf('Enhanced Perception*', 4).capBy, 'intelligence');
+  t.is('a reference-only power has no effect at all', effOf('Astral Perception', 1), null);
+  t.is('…nor does an Improved Sense', effOf('Imp. Sense: Thermo Vision', 1), null);
+  // A power the system can state but not resolve still returns its note.
+  t.ok('Sprint carries a note even with no numbers', !!effOf('Sprint*', 3).note);
+
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  situationalBonus — the third channel (TODO 70)
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const BONUSES = [
+    { label: 'Counterstrike* 2', situation: 'counterattack', dice: 2, tn: 0, pool: 0 },
+    { label: 'Rooting* 3',       situation: 'knockdown',     dice: 3, tn: 0, pool: 0 },
+    { label: 'Enhanced Balance 2', situation: 'knockdown',   dice: 2, tn: 0, pool: 0 },
+    { label: 'Side Step* 1',     situation: 'dodge',         dice: 0, tn: 0, pool: 1 },
+    { label: 'Flexibility 2',    situation: 'escapeArtist',  dice: 0, tn: -2, pool: 0 },
+  ];
+  const sb = k => SR3EActor.situationalBonus(BONUSES, k);
+  t.is('counterattack picks up only Counterstrike', sb('counterattack').dice, 2);
+  // ⚠ Two powers covering the same situation SUM — they are separate purchases, and nothing
+  // in the rules makes them exclusive. This is the opposite of reflexBonus, where the book
+  // forbids combining.
+  t.is('two knockdown powers sum', sb('knockdown').dice, 5);
+  t.is('…and both are named', sb('knockdown').labels.length, 2);
+  t.is('dodge yields pool dice, not skill dice', sb('dodge').pool, 1);
+  t.is('…and no skill dice', sb('dodge').dice, 0);
+  t.is('a TN-moving power reports its modifier', sb('escapeArtist').tn, -2);
+  t.is('an unrelated situation yields nothing', sb('perception').dice, 0);
+  t.is('an unknown situation does not throw', sb('nonsense').dice, 0);
+  t.is('an empty situation yields nothing', sb('').dice, 0);
+  t.is('undefined bonuses do not throw', SR3EActor.situationalBonus(undefined, 'dodge').dice, 0);
+  t.is('a non-array does not throw', SR3EActor.situationalBonus('nope', 'dodge').dice, 0);
+
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  Pain Resistance · p.170 (TODO 69)
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const pain = SR3EActor.painAdjustedBoxes;
+  // The book's own worked example: 3 levels, 4 boxes → treated as 1 box, a Light modifier.
+  t.is('4 boxes with 3 levels reads as 1', pain(4, 3), 1);
+  t.is('3 boxes with 3 levels reads as 0 — no modifier at all', pain(3, 3), 0);
+  t.is('below zero clamps to zero', pain(1, 3), 0);
+  t.is('no Pain Resistance changes nothing', pain(7, 0), 7);
+  t.is('undefined level changes nothing', pain(7), 7);
+  t.is('undefined boxes is 0', pain(undefined, 3), 0);
+
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  Killing Hands · p.170 (TODO 67)
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const kh = SR3EItem.killingHandsDamage;
+  // ⚠ REPLACES the level, never stages it. Killing Hands (Light) on a (STR)M punch is
+  // (STR)L — worse in level, better in kind. Staging would make the cheapest tier an upgrade.
+  t.is('Light turns (STR)M Stun into (STR)L', kh('(STR)M Stun', 'L'), '(STR)L');
+  t.is('Deadly turns it into (STR)D', kh('(STR)M Stun', 'D'), '(STR)D');
+  t.is('the Stun suffix is dropped, so the damage goes physical', kh('(STR)M Stun', 'S'), '(STR)S');
+  t.ok('the POWER is untouched — only the level', kh('9M', 'D') === '9D');
+  t.is('no declaration leaves the code alone', kh('(STR)M Stun', null), '(STR)M Stun');
+  t.is('a nonsense level leaves the code alone', kh('(STR)M Stun', 'X'), '(STR)M Stun');
+
+  // ⚠ The two halves live on different classes, deliberately: `killingHandsLevel` parses a
+  // POWER NAME and feeds the actor's derived data, `killingHandsDamage` rewrites a WEAPON's
+  // damage code. Same rule, two sides of the attack.
+  const khl = SR3EActor.killingHandsLevel;
+  t.is('Killing Hands STR(Light) is L', khl('Killing Hands STR(Light)'), 'L');
+  // ⚠ The pack says "Medium"; SR3's level is Moderate. Both must map to M or the shipped
+  // 1-point tier silently does nothing.
+  t.is('the shipped "Medium" maps to M', khl('Killing Hands STR(Medium)'), 'M');
+  t.is('Moderate maps to M too', khl('Killing Hands STR(Moderate)'), 'M');
+  t.is('Deadly is D', khl('Killing Hands STR(Deadly)'), 'D');
+  t.is('another power is not Killing Hands', khl('Counterstrike*'), null);
 }

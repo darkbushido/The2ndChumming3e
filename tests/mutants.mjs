@@ -656,4 +656,62 @@ export const MUTANTS = [
           + 'direction that makes Drain harsher',
     impl:   (limit) => Math.floor((limit ?? 6) * 1.5),
   },
+
+  {
+    id:     'pain-resistance-reduces-the-track',
+    suite:  'adept-powers',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'painAdjustedBoxes',
+    was:    'p.170 - "It does not reduce actual damage, only its effect on you". The level '
+          + 'comes off the damage used for the injury-modifier LOOKUP, and clamps at zero. '
+          + 'Letting it go negative would start crediting an undamaged adept with negative '
+          + 'boxes, which reads as a bonus everywhere the number is summed',
+    impl:   (boxes, painResistance = 0) =>
+      (Math.trunc(Number(boxes) || 0)) - Math.max(0, Math.trunc(Number(painResistance) || 0)),
+  },
+
+  {
+    id:     'killing-hands-stages-instead-of-replacing',
+    suite:  'adept-powers',
+    module: '../scripts/documents/SR3EItem.js',
+    klass:  'SR3EItem',
+    method: 'killingHandsDamage',
+    was:    'p.170 - the purchased level REPLACES the base, it does not stage it. Killing '
+          + 'Hands (Light) on a (STR)M punch is (STR)L: worse in level, better in kind. '
+          + 'Staging would make the cheapest .5-point tier a straight upgrade over a normal '
+          + 'punch instead of a trade',
+    impl:   (baseCode, level) => {
+      const STAGES = ['L', 'M', 'S', 'D'];
+      const lvl = String(level ?? '').toUpperCase();
+      if (!'LMSD'.includes(lvl) || !lvl) return baseCode;
+      const parsed = /^\s*([^\s]+?)([LMSD])\b/.exec(String(baseCode ?? ''));
+      if (!parsed) return baseCode;
+      const i = STAGES.indexOf(parsed[2]);
+      return `${parsed[1]}${STAGES[Math.min(3, i + 1)]}`;
+    },
+  },
+
+  {
+    id:     'situational-bonuses-ignore-their-situation',
+    suite:  'adept-powers',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'situationalBonus',
+    was:    'the entire point of the third channel is that a bonus is SCOPED - Counterstrike '
+          + 'is "counterattacks only" (MITS p.149) and Sixth Sense "does not apply to any '
+          + 'other type of Reaction Test" (p.151). Summing every bonus regardless of '
+          + 'situation is what skillBonusDice already does, and is why it could not carry '
+          + 'these powers',
+    impl:   (bonuses, _situation) => {
+      const out = { dice: 0, tn: 0, pool: 0, labels: [] };
+      for (const b of (Array.isArray(bonuses) ? bonuses : [])) {
+        out.dice += Math.trunc(Number(b?.dice) || 0);
+        out.tn   += Math.trunc(Number(b?.tn)   || 0);
+        out.pool += Math.trunc(Number(b?.pool) || 0);
+        if (b?.label) out.labels.push(b.label);
+      }
+      return out;
+    },
+  },
 ];

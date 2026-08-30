@@ -770,6 +770,55 @@ export function attributeBoostTarget(name) {
            str: 'strength' }[m[1].toLowerCase()] ?? null;
 }
 
+/**
+ * The level to resolve a power's EFFECT at.
+ *
+ * ⚠ **19 shipped powers carry their level in the NAME with `hasLevels: false`** — `Combat
+ * Sense +2`, `Kinesics Level 3`, `Penetrating Strike Level 2`, `Flexibility 2`, `Enhanced
+ * Balance 2`, `Imp. Reflexes Level 3`, `Delay Damage 2`. Every one stores `level: 1`, so
+ * reading `system.level` treats all three Kinesics as level 1 and all three Combat Senses as
+ * one Combat Pool die. Upstream models fixed-level powers as separate items and puts the
+ * level only in the name, so the name is the only place it exists.
+ *
+ * ⚠ **For EFFECTS only.** Power Point cost and the sheet's Level column keep reading
+ * `system.level`, because a fixed-level item's cost is already the cost of that level —
+ * `Imp. Reflexes Level 3` costs 5, not 5 × 3. Using this for cost would triple it.
+ *
+ * ⚠ A trailing number on a power with no effect entry (`Imp. Sense: Vision Mag 3`) is read
+ * and then discarded, which is harmless: nothing consumes the level of a power that has no
+ * mechanical effect.
+ */
+export function adeptPowerLevel(name, system = {}) {
+  if (system?.hasLevels) return Math.max(1, Math.trunc(Number(system.level) || 1));
+  const m = /(?:\s|\+)(\d+)\s*$/.exec(String(name ?? ''));
+  return m ? Math.max(1, Number(m[1])) : 1;
+}
+
+/**
+ * The mechanical effect of one adept power, or `null` if it has none.
+ *
+ * Returns `{ situation, dice, tn, pool, capBy, note }` with the level already multiplied in.
+ * A power with only a `note` still returns an object — the note is the whole point for the
+ * handful of powers the system can state but not resolve (Freefall's metres, Sprint's running
+ * distance), and dropping it would leave the sheet silent about a power the adept paid for.
+ */
+export function adeptPowerEffect(name, level = 1) {
+  const n = String(name ?? '').trim();
+  if (!n) return null;
+  const e = SR3E.adeptPowerEffects.find(x => x.match.test(n));
+  if (!e) return null;
+  const lvl = Math.max(1, Math.trunc(Number(level) || 1));
+
+  return {
+    situation: e.situation ?? null,
+    dice: (e.dicePerLevel ?? 0) * lvl + (e.dice ?? 0),
+    tn:   (e.tnPerLevel   ?? 0) * lvl + (e.tn   ?? 0),
+    pool: (e.poolPerLevel ?? 0) * lvl,
+    capBy: e.capBy ?? null,
+    note:  e.note ?? null,
+  };
+}
+
 /** All category names, in definition order. */
 export function getSkillCategories() {
   return Object.keys(SR3ESkills);
@@ -846,6 +895,108 @@ export const SR3E = {
     // No table entry — treated as human. A GM playing a metavariant edits the sheet.
     other: { body: 6, quickness: 6, strength: 6, charisma: 6, intelligence: 6, willpower: 6 },
   },
+
+  /**
+   * Situations a bonus can be scoped to · the answer to TODO 70.
+   *
+   * ⚠ **This exists because `skillBonusDice` could not express it.** That map promises "always
+   * applies", and every consumer trusts it — so it cannot carry Counterstrike's *"these dice
+   * can only be used for counterattacks"* or Sixth Sense's *"these dice do not apply to any
+   * other type of Reaction Test"*. `skillCategoryBonuses` exists for the same reason one step
+   * earlier; this is the third and last channel, and it is scoped by SITUATION rather than by
+   * skill or category.
+   *
+   * A key is claimed by the flow that knows it is in that situation. `dodge` is passed by the
+   * dodge roll, `knockdown` by the Knockdown Test — the code already knows, so nothing has to
+   * ask. Keys with no flow yet are offered as a checkbox on the ordinary roll dialogs, which
+   * is where a human is the only thing that can judge whether a Body Test is *"against the
+   * symptoms of a painful disease"*.
+   */
+  adeptSituations: {
+    toxin:          'Resisting toxins or disease',
+    perception:     'Perception Tests',
+    spellResist:    'Spell Resistance Tests',
+    detectionSpell: 'Resisting detection spells',
+    healing:        'Healing Tests and crippling-injury tests',
+    counterattack:  'Counterattacks in melee',
+    mindControl:    'Resisting control or alteration of the mind',
+    surprise:       'Reaction Tests for Surprise',
+    knockdown:      'Resisting knockdown, throws and levitation',
+    temperature:    'Resisting extreme temperatures',
+    illusion:       'Resisting illusions',
+    jumping:        'Jumping Tests',
+    escapeArtist:   'Athletics (Escape Artist) Tests',
+    stabilization:  'Stabilization and permanent-damage tests',
+    dodge:          'Dodge and Full Dodge',
+    social:         'Social skill Tests',
+    detectLying:    'Tests to detect the adept lying',
+  },
+
+  /**
+   * What each adept power actually DOES · *SR3 p.168-170, MITS p.149-151, SOTA2 p.64-68*
+   *
+   * Keyed by a pattern matched against the shipped name, because the upstream data carries no
+   * type of its own — the same join `adeptPowerKind` uses, and the same caveat applies.
+   *
+   * Fields, all optional:
+   *   `situation`   a key from `adeptSituations`; makes this a scoped bonus
+   *   `dicePerLevel`/`dice`   extra dice
+   *   `tnPerLevel`/`tn`       target-number modifier (NEGATIVE is easier)
+   *   `poolPerLevel`          extra COMBAT POOL dice, not skill dice
+   *   `capBy`       `'intelligence'` etc — the attribute that, with Magic, caps the dice
+   *   `note`        rendered on the sheet for powers the system cannot resolve alone
+   *
+   * ⚠ **Absence from this table is a decision, not an omission.** ~40 powers are narrative or
+   * GM-adjudicated — the twelve Improved Senses, Traceless Walk, Suspended State, Distance
+   * Strike, the nine TSS powers — and an item carrying only its description is the correct
+   * implementation for them under the minimal-guardrails ethos. See
+   * `audit/adept-powers-audit.md` for the full inventory and why each one is where it is.
+   */
+  adeptPowerEffects: [
+    // ── SR3 core ────────────────────────────────────────────────────────────────
+    { match: /^body control/i,          situation: 'toxin',       dicePerLevel: 1 },
+    { match: /^enhanced perception/i,   situation: 'perception',  dicePerLevel: 1,
+      // p.169: "You cannot have more Enhanced Perception dice than your Intelligence or
+      // Magic Attribute, whichever is less." Same shape as Improved Ability's cap.
+      capBy: 'intelligence' },
+    { match: /^magic resistance/i,      situation: 'spellResist', dicePerLevel: 1 },
+    { match: /^rapid healing/i,         situation: 'healing',     dicePerLevel: 1 },
+    // Combat Sense ships as three fixed-level items (+1/+2/+3) rather than a levelled power,
+    // so the number is read off the NAME. p.169's second effect — spending a fraction of
+    // Combat Pool on the Reaction Test in surprise — has no flow to attach to; noted instead.
+    { match: /^combat sense/i,          poolPerLevel: 1,
+      note: 'Also allows ¼ / ½ / all of your Combat Pool on Reaction Tests for surprise (p.109).' },
+
+    // ── Magic in the Shadows ────────────────────────────────────────────────────
+    { match: /^counterstrike/i,         situation: 'counterattack', dicePerLevel: 1 },
+    { match: /^iron will/i,             situation: 'mindControl',   dicePerLevel: 1 },
+    { match: /^sixth sense/i,           situation: 'surprise',      dicePerLevel: 1 },
+    { match: /^rooting/i,               situation: 'knockdown',     dicePerLevel: 1,
+      note: 'While rooted you cannot move, and all your own target numbers are at +2.' },
+    { match: /^deep rooting/i,          situation: 'knockdown',     dicePerLevel: 1 },
+    { match: /^spell shroud/i,          situation: 'detectionSpell', dicePerLevel: 1 },
+    { match: /^temperature tolerance/i, situation: 'temperature',   dicePerLevel: 1 },
+    { match: /^true sight/i,            situation: 'illusion',      dicePerLevel: 1 },
+    { match: /^great leap/i,            situation: 'jumping',       dicePerLevel: 1,
+      note: 'Each level also adds 1 to Quickness for the maximum distance you can jump.' },
+    // ⚠ Flexibility moves a TARGET NUMBER, not dice — "reduce the target numbers for
+    // Athletics (Escape Artist) Tests by 1" per level. Negative is easier.
+    { match: /^flexibility/i,           situation: 'escapeArtist',  tnPerLevel: -1 },
+    { match: /^freefall/i,
+      note: 'Ignore 2 metres of falling per level before damage is calculated (MITS p.150).' },
+
+    // ── State of the Art 2064 ───────────────────────────────────────────────────
+    { match: /^resilience/i,            situation: 'stabilization', dicePerLevel: 1 },
+    // ⚠ COMBAT POOL dice, not skill dice, and only for dodging — "one additional Combat Pool
+    // die only for the purposes of Dodge and Full Dodge attempts".
+    { match: /^side step/i,             situation: 'dodge',         poolPerLevel: 1 },
+    { match: /^kinesics/i,              situation: 'social',        tnPerLevel: -1,
+      note: 'Also +1 die per level to social Charisma Success Tests, and +2 per level to any '
+          + 'test to discover whether you are lying.' },
+    { match: /^sprint/i,
+      note: 'Each level adds 1 to Quickness for determining running distance (SOTA2 p.68).' },
+    { match: /^enhanced balance/i,      situation: 'knockdown',     dicePerLevel: 1 },
+  ],
 
   /**
    * What KIND of adept power this is, matched on the shipped name.
@@ -1241,6 +1392,8 @@ export const SR3E = {
   skillCategoriesFor,
   adeptPowerKind,
   attributeBoostTarget,
+  adeptPowerEffect,
+  adeptPowerLevel,
   skillCategoryCountsAs: SKILL_CATEGORY_COUNTS_AS,
   sourceBooks: SOURCE_BOOKS,
   defaultAllowedBooks,

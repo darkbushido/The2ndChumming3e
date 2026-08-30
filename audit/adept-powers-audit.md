@@ -16,10 +16,15 @@ printed rules — citations are to the **book page**, not the PDF page.
 | The Shadowrun Supplemental (fan) | `tss` | 9 | *off by default* |
 | | | **117** | |
 
-> **STATUS 2026-08-29 — 59, 60, 63 and 64 are FIXED** (released as 0.4.5.6). The findings
-> below are preserved as written, because they are the record of what was wrong and why; see
-> *What landed* at the foot of the adept group in `TODO.md` for what each fix actually did.
-> **61, 62 and 65-70 remain open.**
+> **STATUS 2026-08-30 — ALL of 59-70 are FIXED.** The findings below are preserved exactly as
+> written, because they are the record of what was wrong and why; `TODO.md` carries what each
+> fix actually did. Two things the audit did not know, both found while implementing:
+>
+> - **A levelled power's `bonus*` is per level and was never multiplied**, so Improved Physical
+>   Attribute 3 would have granted +1 the moment the data landed.
+> - **Nineteen powers carry their level in the NAME** with `hasLevels: false` — `Combat Sense
+>   +3`, `Kinesics Level 3` — so every one of them resolved as level 1. `adeptPowerLevel`
+>   exists for that, and only for effects: Power Point cost still reads `system.level`.
 
 ## The headline
 
