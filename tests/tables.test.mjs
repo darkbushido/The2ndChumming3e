@@ -326,31 +326,77 @@ export async function run(t) {
    *  Matrix security tiers · Matrix Defragged
    *
    * ⚠ **No book to check against.** Matrix Defragged is a community supplement and is not in
-   * the PDF library, so the reference here is CLAUDE.md — the project's own specification.
-   * This asserts that the code and the documented spec agree, and that the two tier tables
-   * agree with each other. It is NOT independent verification.
+   * the PDF library, so the reference is CLAUDE.md — the project's own specification. This
+   * checks the CODE against that spec. It is NOT independent verification of the rules.
+   *
+   * ⚠ **Read out of the SOURCE, not retyped here.** The first version of this section
+   * declared the expected values as local constants and then asserted them against
+   * themselves — every check passed no matter what the code said, including if a tier had
+   * been given a threshold of 99. A test that cannot fail is worse than no test, because it
+   * reports coverage that does not exist. The tables are module-local constants in two
+   * different files and neither is exported, so they are parsed, the same approach
+   * `explosion-carry` and `chat-button-styles` take.
    * ════════════════════════════════════════════════════════════════════════════ */
-  // Documented: Ivory 0 · Blue 1 · Green 2 · Orange 3 · Red 4 · Black 5 · Ultraviolet 6
-  const DOC_THRESHOLDS = { Ivory: 0, Blue: 1, Green: 2, Orange: 3, Red: 4, Black: 5, Ultraviolet: 6 };
-  // Documented IC initiative dice: Ivory 0 · Blue 1 · Green 2 · Orange 3 · Red/Black/UV 4
-  const DOC_IC_DICE   = { Ivory: 0, Blue: 1, Green: 2, Orange: 3, Red: 4, Black: 4, Ultraviolet: 4 };
+  const fs = await import('node:fs');
+  const readSrc = f => fs.readFileSync(new URL(`../scripts/${f}`, import.meta.url), 'utf8');
 
-  // The threshold must rise by exactly one per tier — the tiers are a ladder, and a gap or a
-  // repeat would make two colours mean the same thing.
-  const names = Object.keys(DOC_THRESHOLDS);
-  let ladder = true;
-  names.forEach((n, i) => { if (DOC_THRESHOLDS[n] !== i) ladder = false; });
-  t.ok('security thresholds are 0-6, one per tier in order', ladder);
-  t.is('seven tiers', names.length, 7);
-  // IC dice must never exceed 4 and must never decrease as the tier hardens.
-  let icOk = true;
-  names.forEach((n, i) => {
-    if (DOC_IC_DICE[n] > 4) icOk = false;
-    if (i && DOC_IC_DICE[n] < DOC_IC_DICE[names[i - 1]]) icOk = false;
+  /** `Ivory: { color: '#…', threshold: 0 },` → { Ivory: 0, … } */
+  const hostSrc = readSrc('sheets/SR3EHostSheet.js');
+  const thresholds = {};
+  for (const m of hostSrc.matchAll(/(\w+):\s*\{[^}]*threshold:\s*(\d+)\s*\}/g)) {
+    thresholds[m[1]] = Number(m[2]);
+  }
+  t.is('the security-tier thresholds were found in the source', Object.keys(thresholds).length, 7);
+  t.eq('thresholds match the documented ladder', thresholds,
+    { Ivory: 0, Blue: 1, Green: 2, Orange: 3, Red: 4, Black: 5, Ultraviolet: 6 });
+
+  // SEC_TIERS is the ordered list the sheet renders; it must cover exactly the same names, or
+  // a tier is selectable with no threshold behind it.
+  const secList = /const SEC_TIERS = \[([^\]]+)\]/.exec(hostSrc)?.[1] ?? '';
+  const secNames = [...secList.matchAll(/'([^']+)'/g)].map(m => m[1]);
+  t.eq('SEC_TIERS lists the same seven tiers, in threshold order',
+    secNames, ['Ivory', 'Blue', 'Green', 'Orange', 'Red', 'Black', 'Ultraviolet']);
+  const orphanTier = secNames.filter(n => thresholds[n] === undefined);
+  t.is(orphanTier.length ? `tiers with no threshold: ${orphanTier.join(', ')}`
+                         : 'every listed tier has a threshold', orphanTier.length, 0);
+
+  /** The two `tierDice` maps in SR3EActor.js — Defragged, then Orthodox. */
+  const actorSrc = readSrc('documents/SR3EActor.js');
+  const diceMaps = [...actorSrc.matchAll(/tierDice\s*=\s*\{([^}]+)\}/g)].map(m => {
+    const out = {};
+    for (const e of m[1].matchAll(/(\w+):\s*(\d+)/g)) out[e[1]] = Number(e[2]);
+    return out;
   });
-  t.ok('IC initiative dice cap at 4 and never fall as the tier hardens', icOk);
+  // THREE, not two: the host (Defragged), the host (Orthodox), and the agent. The first
+  // version of this assertion expected two and failed — which is the check doing its job the
+  // moment it started reading the real source instead of a retyped copy.
+  t.is('all three tierDice maps were found in the source', diceMaps.length, 3);
+
+  const WANT_DICE = { Ivory: 0, Blue: 1, Green: 2, Orange: 3, Red: 4, Black: 4, Ultraviolet: 4 };
+  const fullMaps = diceMaps.filter(d => 'Ivory' in d);
+  t.is('two of them are the full seven-tier table', fullMaps.length, 2);
+  fullMaps.forEach((d, i) => t.eq(`full tier table #${i + 1} matches the documented dice`, d, WANT_DICE));
+  const mdfDice = fullMaps[0];
+  // ⚠ Every tier the sheet offers must appear here, or an IC of that tier silently falls back
+  // to the default of 2 — a wrong initiative with nothing on screen to show for it.
+  const missingDice = secNames.filter(n => mdfDice[n] === undefined);
+  t.is(missingDice.length ? `tiers with no initiative dice: ${missingDice.join(', ')}`
+                          : 'every tier has an IC initiative entry', missingDice.length, 0);
+
+  // The Orthodox map covers SR3's four security codes and must AGREE with the Defragged one
+  // wherever they overlap — the same colour cannot mean two different things.
+  const orthDice = diceMaps.find(d => !('Ivory' in d));
+  const disagree = Object.keys(orthDice).filter(k => mdfDice[k] !== orthDice[k]);
+  t.is(disagree.length ? `the two tier tables disagree on: ${disagree.join(', ')}`
+                       : 'the Orthodox and Defragged tier dice agree where they overlap',
+    disagree.length, 0);
+
+  t.ok('IC dice never exceed 4', Object.values(mdfDice).every(v => v <= 4));
+  let icRises = true;
+  secNames.forEach((n, i) => { if (i && mdfDice[n] < mdfDice[secNames[i - 1]]) icRises = false; });
+  t.ok('IC dice never fall as the tier hardens', icRises);
   t.is('the top three tiers all roll 4 dice',
-    new Set([DOC_IC_DICE.Red, DOC_IC_DICE.Black, DOC_IC_DICE.Ultraviolet]).size, 1);
+    new Set([mdfDice.Red, mdfDice.Black, mdfDice.Ultraviolet]).size, 1);
 
   /* ════════════════════════════════════════════════════════════════════════════
    *  MIJI operations · R3 p.37-40
