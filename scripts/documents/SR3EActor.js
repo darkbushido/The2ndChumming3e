@@ -1780,6 +1780,7 @@ _prepareCharacter(sys, attr) {
   let mysticArmor = 0;
   /** Killing Hands: the purchased Damage Level, or null. Declared per attack (p.170). */
   let killingHands = null;
+  let missileParry = false;
   /** Penetrating Strike levels (SOTA2 p.67) — reduces the TARGET's Impact armour. */
   let penetratingStrike = 0;
   if (isAdept) {
@@ -1899,6 +1900,8 @@ _prepareCharacter(sys, attr) {
         case 'mysticArmor':       mysticArmor       += effectLvl; break;
         case 'penetratingStrike': penetratingStrike += effectLvl; break;
         case 'killingHands':      killingHands = SR3EActor.killingHandsLevel(item.name) ?? killingHands; break;
+        // Cost 1, no levels — a capability, not a quantity (p.170).
+        case 'missileParry':      missileParry = true; break;
         default: break;
       }
     }
@@ -2247,6 +2250,9 @@ _prepareCharacter(sys, attr) {
     // Killing Hands Damage Level (p.170), or null. DECLARED per attack — the power lets you
     // do "normal stun damage, or physical damage as purchased", so it is never automatic.
     killingHands,
+    /* Missile Parry · SR3 p.170 — a capability flag, not a bonus. Read by the defence
+     * declaration to decide whether to offer the option at all. */
+    missileParry,
     // Penetrating Strike (SOTA2 p.67) — reduces the TARGET's Impact armour, for damage only.
     penetratingStrike,
     // Live Attribute Boosts, keyed by attribute — `{level, turns, applied, limit,
@@ -2833,6 +2839,9 @@ _prepareCharacter(sys, attr) {
               ammoType:        state.ammoType ?? null,
               burstRounds:     state.burstRounds ?? 0,
               shotgunSpread:   state.shotgunSpread ?? 0,
+              // Missile Parry (p.170): what kind of weapon, and from which range band.
+              weaponType:      state.weaponType ?? null,
+              rangeBandIdx:    state.rangeBandIdx ?? null,
               isMelee:         state.isMelee,
               attackSuccesses: successes,
               attackerName,
@@ -3420,6 +3429,11 @@ _prepareCharacter(sys, attr) {
         fallingContext:     state.fallingContext     ?? null,
         burstRounds:        state.burstRounds        ?? 0,
         shotgunSpread:      state.shotgunSpread      ?? 0,
+        // Missile Parry's two inputs (p.170). Dropped, the defender is never offered the
+        // power on an exploded attack roll — silently, since a missing option looks like a
+        // defender who simply does not have it.
+        weaponType:         state.weaponType         ?? null,
+        rangeBandIdx:       state.rangeBandIdx       ?? null,
         attackerActorId:    state.attackerActorId    ?? null,
         targetActorId:      state.targetActorId      ?? null,
         committedDodgeDice: state.committedDodgeDice ?? 0,
@@ -3568,14 +3582,27 @@ _prepareCharacter(sys, attr) {
       const dodgerName  = game.actors.get(dp.targetActorId)?.name   ?? 'Defender';
       const attackerName = game.actors.get(dp.attackerActorId)?.name ?? 'Attacker';
       const atkHits = dp.attackSuccesses ?? 0;
-      // Both SR3 rules live in SR3EActor.dodgeOutcome — see its doc comment.
-      const { cleanMiss, carried } = SR3EActor.dodgeOutcome(successes, atkHits);
+
+      /* ⚠ Two different rules, and the payload flag is what keeps them apart. A Missile
+       * Parry (p.170) is a Reaction Test whose failed successes carry NOTHING; a Dodge Test
+       * (p.113) is pool dice whose failed successes are added to the Damage Resistance
+       * Test. Both are strict on ties. See `missileParryOutcome` for why they are not one
+       * function. */
+      const isParry = dp.isMissileParry === true;
+      const { cleanMiss, carried } = isParry
+        ? { cleanMiss: SR3EActor.missileParryOutcome(successes, atkHits).caught, carried: 0 }
+        : SR3EActor.dodgeOutcome(successes, atkHits);
+
+      const verb = isParry ? 'parry' : 'dodge';
 
       if (cleanMiss) {
         dodgeResultHtml = `
           <div class="sr-dodge-result sr-dodge-success">
-            ✅ Dodge Successful! ${successes} dodge hit${successes !== 1 ? 's' : ''}
+            ${isParry ? '🖐 Caught it!' : '✅ Dodge Successful!'} ${successes} ${verb} hit${successes !== 1 ? 's' : ''}
             beat ${atkHits} attack hit${atkHits !== 1 ? 's' : ''} — no damage taken.
+            ${isParry ? `<div style="font-size:11px;color:var(--sr-muted);margin-top:3px">
+              ${dodgerName} plucks it out of the air. Missile Parry is a Free Action, so
+              ${dodgerName} has not spent an action doing it.</div>` : ''}
           </div>`;
       } else {
         // A failed dodge is NOT a wasted dodge: "Even if you don't dodge completely,
@@ -3591,7 +3618,7 @@ _prepareCharacter(sys, attr) {
           : '';
         dodgeResultHtml = `
           <div class="sr-dodge-result sr-dodge-fail">
-            ❌ Dodge Failed! ${successes} dodge hit${successes !== 1 ? 's' : ''}
+            ${isParry ? '❌ Missile Parry Failed!' : '❌ Dodge Failed!'} ${successes} ${verb} hit${successes !== 1 ? 's' : ''}
             vs ${atkHits} attack hit${atkHits !== 1 ? 's' : ''}${tieNote}.
             Incoming: <strong>${dp.stagedPower}${dp.stagedLevel} ${trackLabel}</strong>
           </div>
@@ -5183,7 +5210,9 @@ _prepareCharacter(sys, attr) {
     const reserved   = SR3EActor._fullDefenseDice(targetActor);
 
     // Full Defense is already declared — no question to ask.
-    let wanted = reserved;
+    let wanted  = reserved;
+    let mode    = 'dodge';
+    let parryTN = 0;
     if (reserved === 0) {
       const declared = await SR3EQuery.ask(deciderId, 'sr3e.dodge.declare', {
         exchangeId,
@@ -5195,8 +5224,22 @@ _prepareCharacter(sys, attr) {
         // ten-round burst while wounded is a very different call from a plain 4.
         burstRounds:     ctx.burstRounds   ?? 0,
         shotgunSpread:   ctx.shotgunSpread ?? 0,
-      }, { fallback: { dice: 0 } });   // AFK / unreachable → no dodge, resolution continues
+        // Missile Parry (p.170) needs both: it is offered only for a catchable weapon, and
+        // its TN is 10 minus the base TN of the band the attack came from.
+        weaponType:      ctx.weaponType    ?? null,
+        rangeBandIdx:    ctx.rangeBandIdx  ?? null,
+      }, { fallback: { dice: 0, mode: 'dodge' } });   // AFK → no defence, resolution continues
       wanted = Math.max(0, declared?.dice ?? 0);
+      mode   = declared?.mode === 'parry' ? 'parry' : 'dodge';
+      parryTN = declared?.parryTN ?? 0;
+    }
+
+    /* Missile Parry · SR3 p.170. A Free Action rolling REACTION plus any pool the defender
+     * chose, so — unlike a dodge — zero pool is a perfectly valid declaration and must not
+     * fall through to the soak. */
+    if (mode === 'parry') {
+      const committedPool = wanted > 0 ? await targetActor.spendCombatPool(wanted) : 0;
+      return SR3EActor._rollMissileParry(targetActor, committedPool, { ...ctx, parryTN });
     }
 
     let committed = 0;
@@ -5614,6 +5657,7 @@ _prepareCharacter(sys, attr) {
     if (/^mystic armor/i.test(n))        return 'mysticArmor';
     if (/^penetrating strike/i.test(n))  return 'penetratingStrike';
     if (/^killing hands/i.test(n))       return 'killingHands';
+    if (/^missile parry/i.test(n))       return 'missileParry';
     return null;
   }
 
@@ -5623,6 +5667,82 @@ _prepareCharacter(sys, attr) {
    * Ships as four separate items — `Killing Hands STR(Light)` through `(Deadly)` — at .5, 1,
    * 2 and 4 Power Points, so the level is in the name and nowhere else.
    */
+  /* ── Missile Parry · SR3 p.170 ─────────────────────────────────────────────────────
+   *
+   * > "You can catch slow-moving missile weapons such as arrows, thrown knives, or shuriken
+   * > out of the air. Make a Reaction Test (plus any Combat Pool dice you choose to allocate
+   * > to the test) against a Target Number of 10, minus the base target number for the range
+   * > of incoming attack… To successfully grab the missile weapon out of the air, you must
+   * > generate more successes with your Reaction Test than the attacker achieved on the
+   * > Attack Test. Ties go to the attacker. Using Missile Parry is a Free Action."
+   */
+
+  /**
+   * The Missile Parry target number — **pure**.  · *SR3 p.170*
+   *
+   * `10 − the base target number for the range the attack came from`, floored at 2 like every
+   * other TN (p.112). The Weapon Range Table's base numbers are 4 / 5 / 6 / 9, so a parry runs
+   * TN 6 at short range down to TN 2 at extreme: **the further away the archer, the easier the
+   * catch**, which is the point of the rule.
+   *
+   * ⚠ **The book's worked example contradicts the table it cites, and the table wins.** The
+   * example reads *"against an arrow coming from long range, the target number is 2 (10 − 8,
+   * the base Target Number for long range)"*. Long range on the WEAPON RANGE TABLE (p.111) is
+   * **6**, not 8 — 8 is the **Grenade** Range Table's long column (p.119), and grenades are
+   * not something you catch. The same sentence's short-range half (10 − 4 = 6) agrees with
+   * both tables, so only the long figure is wrong. Bow, Thrown Knife and Shuriken — the exact
+   * weapons this power names — are rows *in* the Weapon Range Table, which settles it.
+   * This implements the RULE sentence ("the base target number for the range of incoming
+   * attack"), giving TN 4 at long range where the example says 2. The number is shown with
+   * its derivation and stays editable, so a table that prefers the example can use it.
+   *
+   * @param {number} baseRangeTN  4 / 5 / 6 / 9 — the attack's own base range TN
+   * @returns {number} a target number of at least 2
+   */
+  static missileParryTN(baseRangeTN) {
+    return Math.max(2, 10 - (Number(baseRangeTN) || 0));
+  }
+
+  /**
+   * Resolve a Missile Parry against an Attack Test. **Pure — no Foundry, no I/O.**
+   *
+   * ⚠ **Strict, and the book says so twice over:** *"you must generate more successes… Ties
+   * go to the attacker."* Same trap as `dodgeOutcome` and `meleeOutcome` — do not relax to
+   * `>=`.
+   *
+   * ⚠ **A failed parry carries NOTHING.** This is the one place it differs from `dodgeOutcome`,
+   * and the difference is not an oversight. p.113 makes its carry rule specific to the Dodge
+   * Test — *"the successes still count and are added to the Damage Resistance Successes"* —
+   * and Missile Parry is a **Reaction Test**, not a Dodge Test. Its text says only what counts
+   * as catching the missile. Reusing `dodgeOutcome` here would silently invent a partial
+   * credit the power was never given, which matters because parrying and dodging draw on the
+   * same Combat Pool.
+   *
+   * @param {number} parryHits
+   * @param {number} attackHits
+   * @returns {{caught: boolean}}
+   */
+  static missileParryOutcome(parryHits, attackHits) {
+    return { caught: (parryHits ?? 0) > (attackHits ?? 0) };
+  }
+
+  /**
+   * May this defender parry this attack? **Pure.**
+   *
+   * ⚠ **"Slow-moving" is the whole restriction, and it excludes firearms.** The power names
+   * arrows, thrown knives and shuriken — the `projectile` and `thrown` item types. A bullet is
+   * not on the list and must never be offered, or the power becomes a general anti-ranged
+   * defence at Cost 1.
+   *
+   * ⚠ Grenades are `thrown` but never reach here: the AoE path resolves by scatter and posts
+   * soak cards directly, with no defence declaration. That is structural rather than checked,
+   * so it is worth knowing if the AoE flow is ever reworked.
+   */
+  static canMissileParry(defender, weaponType) {
+    if (!defender?.system?.derived?.missileParry) return false;
+    return ['projectile', 'thrown'].includes(String(weaponType ?? ''));
+  }
+
   static killingHandsLevel(name) {
     const m = /killing hands.*\((light|medium|moderate|serious|deadly)\)/i.exec(String(name ?? ''));
     if (!m) return null;
@@ -6169,6 +6289,46 @@ _prepareCharacter(sys, attr) {
     const a = Math.max(0, Number(attackHits) || 0);
     if (d > a) return { cleanMiss: true, carried: 0 };
     return { cleanMiss: false, carried: d };
+  }
+
+  /**
+   * Roll a Missile Parry.  · *SR3 p.170*
+   *
+   * > "Make a Reaction Test (plus any Combat Pool dice you choose to allocate to the test)"
+   *
+   * ⚠ **Reaction is the dice, pool is the optional extra** — the opposite way round from a
+   * dodge, which is pool dice only. A defender who allocated nothing still rolls their full
+   * Reaction, so `poolDice === 0` is a real parry and not a declination.
+   *
+   * Rides the `isDodgeRoll` card machinery deliberately: the wave/explosion plumbing and its
+   * carry are identical, and `dodgePayload.isMissileParry` picks the resolution rule apart at
+   * the one point where the two differ. A parallel branch would have to duplicate ~70 carried
+   * fields, which is exactly the class of bug `tests/explosion-carry.test.mjs` exists for.
+   */
+  static async _rollMissileParry(targetActor, poolDice, ctx) {
+    const rea   = targetActor.system.attributes?.reaction?.value ?? 0;
+    const dice  = Math.max(1, rea + Math.max(0, poolDice));
+    const TN    = Math.max(2, ctx?.parryTN || 4);
+    const label = `🖐 ${targetActor.name} parries — TN ${TN} (Reaction ${rea}`
+                + `${poolDice > 0 ? ` + ${poolDice} pool` : ''})`;
+
+    const rolled = targetActor._rollWave(dice, TN, true);
+    const ones   = rolled.filter(d => d.isOne).length;
+
+    await targetActor._postWaveCard({
+      actorId:      targetActor.id,
+      label,
+      tn:           TN,
+      pool:         dice,
+      wave:         0,
+      dice:         rolled,
+      ones,
+      glitch:       SR3EActor.isRuleOfOne(ones, dice),
+      isWeaponRoll: false,
+      isSoakRoll:   false,
+      isDodgeRoll:  true,
+      dodgePayload: { ...ctx, isMissileParry: true, parryPoolDice: poolDice, parryReaction: rea },
+    });
   }
 
   static async _rollDodge(targetActor, dodgeDice, dodgeContext, physicalDice = false) {

@@ -73,6 +73,32 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'missile-parry-tie-catches',
+    suite:  'adept-powers',
+    ...ACTOR, method: 'missileParryOutcome',
+    was:    '>= instead of > — SR3 p.170 says outright "Ties go to the attacker"',
+    impl:   (parryHits, attackHits) => ({ caught: (parryHits ?? 0) >= (attackHits ?? 0) }),
+  },
+  {
+    id:     'missile-parry-tn-from-the-erratum',
+    suite:  'adept-powers',
+    ...ACTOR, method: 'missileParryTN',
+    was:    "the book's worked example, whose long-range base of 8 is the GRENADE table's "
+          + 'column (p.119) and contradicts the Weapon Range Table (p.111) the rule cites',
+    impl:   () => 2,
+  },
+  {
+    id:     'missile-parry-carries-like-a-dodge',
+    suite:  'adept-powers',
+    ...ACTOR, method: 'missileParryOutcome',
+    was:    "p.113's carry rule applied to a Reaction Test — that rule is specific to the "
+          + 'DODGE Test, and Missile Parry (p.170) grants no partial credit',
+    impl:   (parryHits, attackHits) => ({
+      caught:  (parryHits ?? 0) > (attackHits ?? 0),
+      carried: (parryHits ?? 0) > (attackHits ?? 0) ? 0 : (parryHits ?? 0),
+    }),
+  },
+  {
     id:     'dodge-tie-goes-to-defender',
     suite:  'dodge-resolution',
     ...ACTOR, method: 'dodgeOutcome',

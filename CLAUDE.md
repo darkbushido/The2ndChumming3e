@@ -1351,6 +1351,37 @@ dice — neither of the two things the rule allows.
 ⚠ The book forbids combining but does not say which side wins; taking the better package (and
 saying so) follows the ethos rather than refusing to derive anything.
 
+#### Missile Parry  · *SR3 p.170*
+
+A third option in the defence declaration (step 4 of the ranged sequence), offered only when the
+defender holds the power and the incoming weapon is catchable. `SR3EActor.missileParryTN`,
+`missileParryOutcome` and `canMissileParry` are the pure rules.
+
+⚠ **The book's worked example contradicts the table it cites, and the table wins.** p.170 says
+*"against an arrow coming from long range, the target number is 2 (10 − 8, the base Target
+Number for long range)"* — but Long on the **Weapon Range Table** is **6**; **8 is the GRENADE
+table's** column (p.119), and a grenade is not something you catch. The short-range half of the
+same sentence (10 − 4 = 6) agrees with both tables, so only the long figure is astray, and Bow /
+Thrown Knife / Shuriken are rows *in* the Weapon Range Table. The rule sentence governs: TN =
+`10 − the attack's own base range TN`, floored at 2, **editable** on the card.
+
+⚠ **It rolls REACTION plus optional pool** — the opposite way round from a dodge, so **zero pool
+is a valid parry** and must not fall through to the soak.
+
+⚠ **A failed parry carries NOTHING into the soak** — the one place it differs from
+`dodgeOutcome`. p.113's carry rule is specific to the **Dodge Test**; this is a Reaction Test.
+Do not unify the two functions.
+
+⚠ **"Slow-moving" excludes firearms.** `projectile` and `thrown` only — on bullets it would be a
+general anti-ranged defence at Cost 1. Grenades are `thrown` but never reach the declaration
+(the AoE path posts soak cards directly), which is structural, not checked.
+
+⚠ **Ties go to the attacker**, stated outright — same strictness trap as `dodgeOutcome`.
+
+⚠ Its **Free Action** cost is not modelled (TODO 48); the card says so. **Quick Strike** (MITS
+p.151) is the other mechanically-real power still unimplemented — see TODO 78, and note it
+cannot be done as an initiative bonus.
+
 #### Three bonus channels, and a bonus belongs to exactly one
 
 | Channel | Scope | Applied |

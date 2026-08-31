@@ -430,14 +430,18 @@ export class SR3EQuery {
      * It performs NO writes; it returns a number and the GM commits it.
      */
     CONFIG.queries['sr3e.dodge.declare'] = async ({ rid, exchangeId, defenderUuid, attackerName,
-                                                    weaponName, attackSuccesses, burstRounds, shotgunSpread }) =>
+                                                    weaponName, attackSuccesses, burstRounds, shotgunSpread,
+                                                    weaponType, rangeBandIdx }) =>
       SR3EQuery.once(rid, async () => {
         const defender = SR3EQuery.resolve(defenderUuid);
-        if (!defender) return { dice: 0 };
-        const dice = await game.sr3e.SR3EItem._promptDodgeDeclaration(
+        if (!defender) return { dice: 0, mode: 'dodge' };
+        // ⚠ Returns a SHAPE, not a number — the defender may choose Missile Parry (p.170),
+        // which rolls Reaction rather than pool and resolves by a different rule.
+        const declared = await game.sr3e.SR3EItem._promptDodgeDeclaration(
           defender, attackerName, weaponName,
-          { exchangeId, attackSuccesses, burstRounds, shotgunSpread });
-        return { dice: dice ?? 0 };
+          { exchangeId, attackSuccesses, burstRounds, shotgunSpread, weaponType, rangeBandIdx });
+        return { dice: declared?.dice ?? 0, mode: declared?.mode ?? 'dodge',
+                 parryTN: declared?.parryTN ?? 0 };
       });
 
     /**

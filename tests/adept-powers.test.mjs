@@ -298,6 +298,106 @@ export async function run(t) {
   t.ok('the corrected Reaction never drops below 1', derive([ea]).d.reactionNoRigDeck >= 1);
 
   /* ════════════════════════════════════════════════════════════════════════════
+   *  Missile Parry · SR3 p.170 — TODO 77
+   *
+   *   "Make a Reaction Test (plus any Combat Pool dice you choose to allocate to the test)
+   *    against a Target Number of 10, minus the base target number for the range of incoming
+   *    attack… To successfully grab the missile weapon out of the air, you must generate more
+   *    successes with your Reaction Test than the attacker achieved on the Attack Test. Ties
+   *    go to the attacker. Using Missile Parry is a Free Action."
+   * ════════════════════════════════════════════════════════════════════════════ */
+
+  /* ==== the target number ==== */
+
+  /* The Weapon Range Table's base target numbers are 4 / 5 / 6 / 9 (p.111, asserted in
+   * tests/tables.test.mjs), so the parry runs from 6 down to 2 — the further the archer, the
+   * easier the catch. */
+  t.is('short range (base 4) parries at TN 6',   SR3EActor.missileParryTN(4), 6);
+  t.is('medium range (base 5) parries at TN 5',  SR3EActor.missileParryTN(5), 5);
+  t.is('long range (base 6) parries at TN 4',    SR3EActor.missileParryTN(6), 4);
+  t.is('extreme range (base 9) parries at TN 2', SR3EActor.missileParryTN(9), 2);
+
+  /* ⚠ THE BOOK'S OWN EXAMPLE IS WRONG HERE, and this assertion is the record of that.
+   * p.170 reads "against an arrow coming from long range, the target number is 2 (10 − 8, the
+   * base Target Number for long range)". Long range on the Weapon Range Table is 6, not 8; 8
+   * is the GRENADE Range Table's long column (p.119), and a grenade is not something you
+   * catch. The same sentence's short-range half (10 − 4 = 6) agrees with both tables, so only
+   * the long figure is astray — and Bow, Thrown Knife and Shuriken, the weapons this power
+   * names, are rows in the Weapon Range Table. The RULE sentence governs; the example does
+   * not. If someone "fixes" this to 2 they have implemented the erratum. */
+  t.is('the rule sentence gives 4 at long range, NOT the example\'s 2',
+    SR3EActor.missileParryTN(6), 4);
+
+  // p.112's floor applies like everywhere else, and a junk band cannot produce a junk TN.
+  t.is('a very high base range TN still floors at 2', SR3EActor.missileParryTN(20), 2);
+  t.is('a missing base range TN does not produce NaN', SR3EActor.missileParryTN(undefined), 10);
+  t.is('a non-numeric base does not throw', SR3EActor.missileParryTN('x'), 10);
+
+  /* ==== the outcome ==== */
+
+  t.ok('more successes catches it',  SR3EActor.missileParryOutcome(3, 2).caught);
+  t.ok('one over is enough',         SR3EActor.missileParryOutcome(1, 0).caught);
+
+  /* ⚠ "Ties go to the attacker" — stated outright, and the same trap as dodgeOutcome and
+   * meleeOutcome. A `>=` here silently makes the power strictly better than the book's. */
+  t.ok('a TIE does not catch it',   !SR3EActor.missileParryOutcome(3, 3).caught);
+  t.ok('fewer does not catch it',   !SR3EActor.missileParryOutcome(1, 3).caught);
+  t.ok('0 vs 0 does not catch it',  !SR3EActor.missileParryOutcome(0, 0).caught);
+  t.ok('undefined args do not throw', !SR3EActor.missileParryOutcome().caught);
+
+  /* ⚠ A failed parry carries NOTHING into the soak, and this is the ONE place it differs
+   * from a dodge. p.113's carry rule — "the successes still count and are added to the Damage
+   * Resistance Successes" — is specific to the DODGE Test; Missile Parry is a Reaction Test
+   * and its text says only what counts as catching. Asserted side by side on the same numbers
+   * so the divergence cannot be read as an oversight and "unified". */
+  t.is('a dodge of 2 vs 3 carries 2 successes', SR3EActor.dodgeOutcome(2, 3).carried, 2);
+  t.is('…but a parry of 2 vs 3 carries none',
+    SR3EActor.missileParryOutcome(2, 3).carried ?? 0, 0);
+  t.is('both agree the attack landed',
+    SR3EActor.dodgeOutcome(2, 3).cleanMiss, SR3EActor.missileParryOutcome(2, 3).caught);
+
+  /* ==== when it is offered ==== */
+  const parrier = { system: { derived: { missileParry: true } } };
+  const mundane = { system: { derived: { missileParry: false } } };
+
+  t.ok('an adept with the power may parry an arrow',
+    SR3EActor.canMissileParry(parrier, 'projectile'));
+  t.ok('…and a thrown knife',
+    SR3EActor.canMissileParry(parrier, 'thrown'));
+
+  /* ⚠ NEVER a firearm. "Slow-moving missile weapons such as arrows, thrown knives, or
+   * shuriken" is the whole scope; offering it on bullets turns a 1-point power into a general
+   * anti-ranged defence. */
+  t.ok('…but NEVER a bullet',      !SR3EActor.canMissileParry(parrier, 'firearm'));
+  t.ok('…and not a melee weapon',  !SR3EActor.canMissileParry(parrier, 'melee'));
+  t.ok('…and not a spell',         !SR3EActor.canMissileParry(parrier, 'spell'));
+  t.ok('an adept without the power cannot parry',
+    !SR3EActor.canMissileParry(mundane, 'projectile'));
+  t.ok('a defender with no derived data does not throw',
+    !SR3EActor.canMissileParry({}, 'projectile'));
+  t.ok('undefined defender does not throw',
+    !SR3EActor.canMissileParry(undefined, 'projectile'));
+  t.ok('a missing weapon type is not parryable',
+    !SR3EActor.canMissileParry(parrier, undefined));
+
+  /* ==== the power is detected off the shipped name ==== */
+  const parryPower = { id: 'mp', type: 'adeptpower', name: 'Missile Parry',
+                       system: { hasLevels: false, level: 1 } };
+  const withParry = (() => {
+    const sys = { magicType: 'Adept', attributes: {}, wounds: {} };
+    const attr = {};
+    for (const k of ['body','quickness','strength','charisma','intelligence','willpower','reaction','essence','magic'])
+      attr[k] = { base: 4, value: 4 };
+    SR3EActor.prototype._prepareCharacter.call({ items: [parryPower], system: sys }, sys, attr);
+    return sys.derived;
+  })();
+  t.ok('the shipped "Missile Parry" sets the capability flag', withParry.missileParry === true);
+
+  /* ⚠ Cost 1, no levels — it is a capability, not a quantity. Anything that reads a LEVEL off
+   * it is reading the wrong thing, so the derived value is deliberately a boolean. */
+  t.is('…as a boolean, not a level', typeof withParry.missileParry, 'boolean');
+
+  /* ════════════════════════════════════════════════════════════════════════════
    *  Move-by-Wire · M&M p.60 — TODO 4
    *
    *   "The Quickness bonus does not count when calculating the character's Reaction

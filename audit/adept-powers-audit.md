@@ -16,6 +16,12 @@ printed rules — citations are to the **book page**, not the PDF page.
 | The Shadowrun Supplemental (fan) | `tss` | 9 | *off by default* |
 | | | **117** | |
 
+> **STATUS 2026-08-31 — ALL of 59-70 are FIXED, and so is Missile Parry (TODO 77).**
+> The two powers this audit filed as "correctly inert" but flagged for a second look have
+> both been resolved: **Missile Parry** is implemented, and **Quick Strike** is documented as
+> TODO 78 with the reason it cannot be an initiative bonus. Nothing else in the 117 is
+> outstanding.
+>
 > **STATUS 2026-08-30 — ALL of 59-70 are FIXED.** The findings below are preserved exactly as
 > written, because they are the record of what was wrong and why; `TODO.md` carries what each
 > fix actually did. Two things the audit did not know, both found while implementing:

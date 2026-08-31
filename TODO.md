@@ -25,8 +25,8 @@ independent.
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | **71** · **73** · **74** *(**72** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **4** · **30** done)* |
-| 🧙 Adept powers — see `audit/adept-powers-audit.md` | *(all closed: **59**-**70**)* |
-| 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
+| 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
+| 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
 | 🧹 Housekeeping | 1 · 6 |
 | ✅ Done — kept for the record | **2** · **5** · **8** · **10** · 13 · **40** · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
@@ -4670,3 +4670,138 @@ either.
 
 ⚠ **Do not add the table to `SR3E` before there is a consumer.** An unused table is a claim
 nobody checks — which is exactly what this sweep found everywhere else.
+
+---
+
+<a id="77"></a>
+## 77. ✅ Missile Parry — *SR3 p.170* — **DONE 2026-08-31**
+
+The last genuinely unclaimed adept power. [#70](#70) filed it under "correctly inert" and then
+flagged it for a second look, which was the right instinct: it is a **fully specified opposed
+test**, not narrative colour, and it was the only one of the 117 in that category.
+
+> "You can catch slow-moving missile weapons such as arrows, thrown knives, or shuriken out of
+> the air. Make a Reaction Test (plus any Combat Pool dice you choose to allocate to the test)
+> against a Target Number of 10, minus the base target number for the range of incoming attack…
+> To successfully grab the missile weapon out of the air, you must generate more successes with
+> your Reaction Test than the attacker achieved on the Attack Test. Ties go to the attacker.
+> Using Missile Parry is a Free Action."
+
+Offered as a third option in the defence declaration the defender already sees at step 4 of the
+ranged sequence — beside "no dodge" and "dodge with N dice", and only when they hold the power
+and the incoming weapon is catchable.
+
+### The four things that are easy to get wrong
+
+⚠ **The book's own worked example contradicts the table it cites, and the table wins.** The
+example reads *"against an arrow coming from long range, the target number is 2 (10 − 8, the
+base Target Number for long range)"*. Long range on the **Weapon Range Table** (p.111) is **6**,
+not 8 — **8 is the Grenade Range Table's** long column (p.119), and a grenade is not something
+you catch. The same sentence's short-range half (10 − 4 = 6) agrees with both tables, so only
+the long figure is astray, and **Bow, Thrown Knife and Shuriken — the exact weapons this power
+names — are rows in the Weapon Range Table**. The rule sentence governs; the example is an
+erratum. Implemented as `10 − the attack's own base range TN` (TN 4 at long range), shown with
+its derivation and **editable**, so a table that prefers the printed 2 can use it.
+
+⚠ **It rolls REACTION, with pool as an optional extra** — the opposite way round from a dodge,
+which is pool dice only. So **zero pool is a valid parry**, not a declination, and the handler
+has a separate branch rather than sharing the dodge path's `dice > 0` gate.
+
+⚠ **A failed parry carries NOTHING into the soak.** This is the one place it differs from
+`dodgeOutcome`, and the difference is not an oversight. p.113's carry rule — *"the successes
+still count and are added to the Damage Resistance Successes"* — is specific to the **Dodge
+Test**; this is a **Reaction Test**, and its text says only what counts as catching the missile.
+Reusing `dodgeOutcome` would invent a partial credit the power was never given, which matters
+because both draw on the same Combat Pool. Asserted side by side on the same numbers.
+
+⚠ **"Slow-moving" is the whole scope, and it excludes firearms.** `canMissileParry` allows the
+`projectile` and `thrown` item types only. Offering it on bullets turns a 1-point power into a
+general anti-ranged defence. Grenades are `thrown` but never reach the declaration — the AoE
+path resolves by scatter and posts soak cards directly — which is structural rather than
+checked, and worth knowing if that flow is ever reworked.
+
+⚠ **Ties go to the attacker**, stated outright, same trap as `dodgeOutcome` and `meleeOutcome`.
+
+**Not modelled:** it is a **Free Action**, which the system cannot spend or account for
+([#48](#48)). The result card says so instead. And the range band had to be threaded from the
+attacker's roll-options dialog through to the defender — a new `rangeBandIdx` on the roll state,
+which means it is also in the **explosion carry** (`tests/explosion-carry.test.mjs` caught it
+being missing on the first attempt, as designed).
+
+Covered by `tests/adept-powers.test.mjs` (26 assertions) and 3 mutants.
+
+<a id="78"></a>
+## 78. Quick Strike acts first in a pass — *MITS p.151*
+
+The other borderline power from [#70](#70)'s "correctly inert" list, and the one that genuinely
+is not inert-by-nature: it has a hard mechanical effect on turn order. **Cost 3, no levels.**
+
+> "This power allows the adept to **act first in one Initiative Pass per Combat Turn**. This
+> action uses up the adept's action for that Initiative Pass. This power **cannot be used
+> during an Initiative Pass when the adept does not have an action**. The adept's **Initiative
+> Score is not affected**. The adept must be **unwounded** to use this ability."
+
+### Why it is not [#77](#77)-shaped
+
+⚠ **"The adept's Initiative Score is not affected."** So it cannot be modelled as an initiative
+bonus, which is the obvious cheap implementation and would be wrong in two visible ways: the
+tracker would show a number the character does not have, and the effect would persist across
+**every** pass instead of the one the player picks. It is a **turn-order override**, scoped to a
+single pass, chosen by the player at the moment they use it.
+
+⚠ **"Uses up the adept's action for that Initiative Pass"** and **"cannot be used during an
+Initiative Pass when the adept does not have an action"** are both action-economy statements,
+and the system does not model actions ([#48](#48)). `SR3ECombat` does know about passes — both
+`_nextTurnSR3` and `_nextTurnSR2` walk them — so *which* pass is answerable; whether the adept
+still has an action in it is not.
+
+⚠ **"Must be unwounded" is ambiguous in a way that matters.** It plainly is not "no wound
+modifier", or a single box of Stun would qualify and the restriction would be nearly free. Read
+literally it means **no damage at all on either track**, which is much harsher and is probably
+intended — this is a 3-point power. Whichever is chosen it should be **stated on the card**, not
+silently enforced, and the check reads the tracks directly rather than `woundMod`.
+
+⚠ **Once per Combat Turn** needs state that survives passes but not the turn — the same
+lifetime as `roundsFiredThisPhase` and the Full Defense flag, both cleared by
+`SR3ECombat._endOfTurnReset()`. That is the hook to use; do not invent a second reset path.
+
+### What it would take
+
+1. A capability flag off the name, exactly like [#77](#77)'s (`_directPowerKind` → `quickStrike`).
+2. A per-Combat-Turn `quickStrikeUsed` flag, cleared in `_endOfTurnReset()`.
+3. A button on the combat tracker's active-pass card, GM- or owner-gated, that moves the adept
+   to the front of the current pass **without touching `combatant.initiative`** — which is the
+   whole design problem, since Foundry orders by that field. Likely a sort override or a
+   temporary flag consumed by `_nextTurnSR3` / `_nextTurnSR2`, not an initiative write.
+4. Refuse (or warn) when wounded, and say which reading of "unwounded" is being applied.
+
+⚠ **Step 3 is the work; steps 1-2 are twenty minutes.** Do not start this before [#48](#48)
+unless the intent is to ship the ordering half and leave the action cost to the GM — which is
+defensible under the ethos, but should be a decision rather than a discovery.
+
+<a id="79"></a>
+## 79. No ledger for karma or nuyen — *low priority*
+
+**Raised 2026-08-31.** There is no record of what a character has earned or spent, only current
+totals — `system.karmaPool` and the nuyen field are numbers a player edits in place. So a GM
+cannot answer "where did that 40 karma go?", and a player who mistypes has nothing to restore
+from.
+
+⚠ **This is not the same item as karma SPENDING** (advancement — buying up an attribute or skill
+at the p.245 costs), which is separately unimplemented and is listed under "What is NOT yet
+implemented" in CLAUDE.md. This is the **audit trail**, and it is useful even with no
+advancement rules at all: awards, payouts, gear purchases and lifestyle all move these numbers
+today, by hand.
+
+Shape, roughly: an append-only array of `{ when, kind: 'karma'|'nuyen', delta, reason, by }` on
+the actor, a compact table on the sheet, and a **+/− with a reason field** replacing bare
+in-place editing of the totals. The existing Session Rewards tool (Rollable Tables sidebar) is
+the obvious first writer.
+
+⚠ **Keep the totals editable.** The ethos is that a GM is never fighting the system; a ledger
+that becomes the only way to change a number is a guardrail, not a record. Log an unexplained
+adjustment as an entry with an empty reason rather than blocking it.
+
+⚠ Append-only and GM-relayed, like `sr3e.card.mark` — a player must be able to see their own
+history without being able to rewrite it.
+

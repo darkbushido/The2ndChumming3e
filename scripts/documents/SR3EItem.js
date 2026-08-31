@@ -1354,6 +1354,12 @@ export class SR3EItem extends Item {
     ? (fireModeResult?.rounds ?? 0) : 0;
   options.shotgunSpread      = fireModeResult?.shotgunSpread ?? 0;
 
+  /* Missile Parry (p.170) needs two things the defender cannot see: what KIND of weapon is
+   * incoming — the power catches arrows and thrown knives, never bullets — and the range band,
+   * because its TN is 10 minus that band's base target number. */
+  options.weaponType         = this.type;
+  options.rangeBandIdx       = Number.isInteger(weaponOpts?.rangeBandIdx) ? weaponOpts.rangeBandIdx : null;
+
   // Commit recoil — update rounds fired counter before the roll
   if (fireModeRounds > 0) {
     const currentRounds = actor.system.roundsFiredThisPhase ?? 0;
@@ -2261,8 +2267,14 @@ export class SR3EItem extends Item {
               }
             }
             // avMunition is now driven by Anti-Vehicle ammo type, not a manual checkbox
+            /* The band the attack actually resolved at — the dropdown's value, since the
+             * shooter may have overridden the measured one. Carried to the defender for
+             * Missile Parry's TN (p.170), which is 10 minus this band's base TN. */
+            const bandSel  = dialog.element.querySelector('#sr-range');
+            const rangeBandIdx = bandSel ? (parseInt(bandSel.value) ?? null) : (rangeInfo?.bandIdx ?? null);
             result = { tn, damageCode, avMunition: false, useKarma, karmaReroll: useKarma,
-                       calledShot, calledShotTarget, poolDice };
+                       calledShot, calledShotTarget, poolDice,
+                       rangeBandIdx: Number.isInteger(rangeBandIdx) ? rangeBandIdx : null };
           }
         },
         { label: 'Cancel', action: 'cancel' }
@@ -2820,12 +2832,15 @@ export class SR3EItem extends Item {
    *   Callers under a relay treat null as 0 — see the reaper rule in the plan.
    */
   static async _promptDodgeDeclaration(defender, attackerName, weaponName, opts = {}) {
-    if (defender.type === 'vehicle') return 0;  // vehicles cannot dodge
+    const NONE = { dice: 0, mode: 'dodge', parryTN: 0 };
+    if (defender.type === 'vehicle') return NONE;  // vehicles cannot dodge
 
     // Full Defense: the reserve is already declared, so there is nothing to ask.
     // Read only — the announcement and the clear are the GM's job, after commit.
     const reserved = game.sr3e.SR3EActor._fullDefenseDice(defender);
-    if (reserved > 0) return reserved;
+    // ⚠ Full Defense returns a DODGE. It is a declared posture with pool already committed;
+    // Missile Parry is a Free Action taken in the moment, and the two are not interchangeable.
+    if (reserved > 0) return { dice: reserved, mode: 'dodge', parryTN: 0 };
 
     // p.113's Dodge Test TN, shown because it is decision-relevant: the trade is dodge
     // versus soak, and a TN of 9 makes spending pool here a much worse bet than a 4.
@@ -2837,13 +2852,24 @@ export class SR3EItem extends Item {
     const dodgeTN    = game.sr3e.SR3EActor.dodgeTN(tnOpts);
     const dodgeParts = game.sr3e.SR3EActor.dodgeTNParts(tnOpts);
 
+    /* Missile Parry · SR3 p.170 — offered only when the defender bought the power AND the
+     * incoming weapon is one you can catch. Reaction dice are free; Combat Pool is optional
+     * ("plus any Combat Pool dice you choose to allocate"). */
+    const canParry   = game.sr3e.SR3EActor.canMissileParry(defender, opts.weaponType);
+    const parryRea   = defender.system.attributes?.reaction?.value ?? 0;
+    const baseRngTN  = 4 + ((game.sr3e.SR3E.rangeTN ?? [0, 1, 2, 5])[opts.rangeBandIdx] ?? 0);
+    const parryTN    = game.sr3e.SR3EActor.missileParryTN(baseRngTN);
+    const rangeName  = ['Short', 'Medium', 'Long', 'Extreme'][opts.rangeBandIdx] ?? null;
+
     const availPool  = defender.system.derived?.availableCombatPool ?? 0;
     const fdNote     = (defender.system.fullDefense ?? false)
       ? '<p style="color:var(--sr-amber);font-size:11px;margin-top:8px">Full Defense active — pool already committed</p>'
       : '';
 
-    let dodgeDice = 0;
-    let cancelled = true;
+    let dodgeDice  = 0;
+    let mode       = 'dodge';
+    let parryTNOut = parryTN;
+    let cancelled  = true;
 
     await foundry.applications.api.DialogV2.wait({
       window: { title: `${defender.name} — Declare Response` },
@@ -2881,6 +2907,20 @@ export class SR3EItem extends Item {
                    ${availPool === 0 ? 'disabled' : ''}/>
             dice
           </label>
+          ${canParry ? `
+          <label style="display:flex;align-items:center;gap:8px">
+            <input type="radio" name="dodge-choice" value="parry"/>
+            🖐 Missile Parry — Reaction <strong>${parryRea}</strong> +
+            <input type="number" id="parry-dice" min="0" max="${availPool}"
+                   value="0" style="width:55px" ${availPool === 0 ? 'disabled' : ''}/>
+            pool, TN <input type="number" id="parry-tn" value="${parryTN}" min="2" max="20"
+                   style="width:48px"/>
+          </label>
+          <p style="font-size:11px;color:var(--sr-muted);margin:-4px 0 0 26px">
+            TN 10 − ${baseRngTN}${rangeName ? ` (${rangeName} range)` : ' (range unknown — assumed Short)'}.
+            You must BEAT ${opts.attackSuccesses ?? 0}; a tie goes to the attacker, and unlike a
+            dodge these successes do not carry into the soak. Free Action.
+          </p>` : ''}
         </div>
         ${availPool === 0
           ? '<p style="color:var(--sr-red);font-size:11px;margin-top:8px">No Combat Pool remaining — cannot dodge</p>'
@@ -2900,6 +2940,16 @@ export class SR3EItem extends Item {
                 parseInt(dialog.element.querySelector('#dodge-dice')?.value) || 0,
                 availPool
               );
+            } else if (choice === 'parry') {
+              mode      = 'parry';
+              parryTNOut = Math.max(2, parseInt(dialog.element.querySelector('#parry-tn')?.value) || parryTN);
+              // ⚠ Pool may legitimately be 0 here — the Reaction dice alone are a valid parry.
+              // The dodge branch above cannot say that, which is why this is a separate branch
+              // and not a shared `dodgeDice` read.
+              dodgeDice = Math.min(
+                Math.max(0, parseInt(dialog.element.querySelector('#parry-dice')?.value) || 0),
+                availPool
+              );
             }
           }
         },
@@ -2912,16 +2962,20 @@ export class SR3EItem extends Item {
       // without it, rather than leaving a stale modal to be answered later.
       render: (_event, dialog) => {
         game.sr3e.SR3EQuery.trackDialog(opts.exchangeId, dialog);
-        dialog.element.querySelector('#dodge-dice')?.addEventListener('focus', () => {
-          const radio = dialog.element.querySelector('input[name="dodge-choice"][value="dodge"]');
-          if (radio) radio.checked = true;   // typing dice implies you meant to dodge
-        });
+        const implies = (sel, value) =>
+          dialog.element.querySelector(sel)?.addEventListener('focus', () => {
+            const radio = dialog.element.querySelector(`input[name="dodge-choice"][value="${value}"]`);
+            if (radio) radio.checked = true;   // typing dice implies you meant that option
+          });
+        implies('#dodge-dice', 'dodge');
+        implies('#parry-dice', 'parry');
+        implies('#parry-tn',   'parry');
       },
     });
 
     game.sr3e.SR3EQuery.untrackDialog(opts.exchangeId);
     if (cancelled) return null;
-    return dodgeDice;
+    return { dice: dodgeDice, mode, parryTN: parryTNOut };
   }
 
   /**
