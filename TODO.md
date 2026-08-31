@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | *(none)* |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **71** · **73** · **74** *(**72** done)* |
+| 🔴 Confirmed bugs, still open | **71** · **73** · **74** · **80** *(**72** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **4** · **30** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** |
@@ -4787,11 +4787,12 @@ totals — `system.karmaPool` and the nuyen field are numbers a player edits in 
 cannot answer "where did that 40 karma go?", and a player who mistypes has nothing to restore
 from.
 
-⚠ **This is not the same item as karma SPENDING** (advancement — buying up an attribute or skill
-at the p.245 costs), which is separately unimplemented and is listed under "What is NOT yet
-implemented" in CLAUDE.md. This is the **audit trail**, and it is useful even with no
-advancement rules at all: awards, payouts, gear purchases and lifestyle all move these numbers
-today, by hand.
+⚠ **This is not the same item as karma SPENDING**, which — contrary to what this entry and
+CLAUDE.md both said when first written — **is implemented**. `_onAwardKarma` and
+`_onSpendKarmaCalculator` (`SR3EActorSheet.js`) award karma, track the Karma Pool at every 20
+total, and buy attribute and skill increases at the p.245 costs. Its remaining defects are
+[#80](#80). This entry is the **audit trail**, which is a separate want: the calculator writes
+the new totals and leaves no record of what was bought.
 
 Shape, roughly: an append-only array of `{ when, kind: 'karma'|'nuyen', delta, reason, by }` on
 the actor, a compact table on the sheet, and a **+/− with a reason field** replacing bare
@@ -4805,3 +4806,143 @@ adjustment as an entry with an empty reason rather than blocking it.
 ⚠ Append-only and GM-relayed, like `sr3e.card.mark` — a player must be able to see their own
 history without being able to rewrite it.
 
+<a id="80"></a>
+## 80. Karma advancement — seven defects, one reported and six found beside it — **CONFIRMED**
+
+**Reported from play 2026-08-31:** *"karma spending seems to be implemented, there isn't
+anything for a new skill but you can increase them."* Correct on both halves — and the reason
+this entry exists rather than a one-line fix is that auditing the button against p.244–245
+turned up **six more**, none of them reportable from play because every one of them is invisible
+without the book open.
+
+⚠ **This corrects TODO.md and CLAUDE.md, which both said karma spending was unimplemented.** It
+is implemented; `_onAwardKarma` and `_onSpendKarmaCalculator` in `SR3EActorSheet.js` have been
+there all along. Do not re-file this as "build advancement".
+
+---
+
+### Spend Karma button
+
+**1 — No way to learn a new skill** · *p.245* — *the reported half*
+
+> "**LEARNING NEW SKILLS.** New skills can be purchased at a skill rating of 1, by paying a cost
+> of **1 in Good Karma**. New skills only cost 1, whether they are Active, Knowledge, or
+> Language Skills. To raise the skill beyond Rating 1, follow the skill improvement rules above."
+
+⚠ **The obvious fix is wrong.** The loop opens with `if (rating === 0) continue;`, so deleting
+that line looks like the whole job — but `_skillCost(1, attrRating, isActive)` then charges
+`1 × 1.5 = 2` for an active skill where the book charges **1**. The flat rate is not on the
+Skill Improvement Cost Table at all; it is a separate rule that bypasses it, and the multiplier
+function cannot express it. A new skill needs its own cost path, not a loop condition.
+
+⚠ **And the item has to exist first.** A rating-0 skill only reaches the calculator if somebody
+already created it. Learning a *genuinely* new skill means creating one — so this also wants a
+picker over `SR3ESkills`, not just an extra row.
+
+**2 — Costs round the wrong way** · *p.245* — **overcharges roughly half of all purchases**
+
+> "Multiply the number given on the table by the new rating (**round fractions down**) to
+> determine the cost in Good Karma."
+
+`_skillCost` and `_specCost` both end in `Math.ceil`. It should be `Math.floor`.
+
+| Purchase | Book | Code |
+|---|---:|---:|
+| Active skill → 3, at or below the attribute (3 × 1.5) | **4** | 5 |
+| Active skill → 5, at or below the attribute (5 × 1.5) | **7** | 8 |
+| Active skill → 3, above 2× the attribute (3 × 2.5) | **7** | 8 |
+| Specialisation → 5, at or below the attribute (5 × .5) | **2** | 3 |
+| Specialisation → 7, above 2× the attribute (7 × 1.5) | **10** | 11 |
+
+⚠ **The book's own three worked examples cannot catch this**, which is why it survived: Brick's
+Sneaking at 6 (6 × .5 = 3), his raise to 7 (7 × 1 = 7) and Iris's Beretta 101T at 6 (6 × 1 = 6)
+all land on integers, where `ceil` and `floor` agree. A test written from the examples alone
+passes against the wrong function — so write the fractional cases explicitly.
+
+**3 — The specialisation cap reads the wrong rating** · *p.245*
+
+> "There may be more than one specialization to a base skill, up to a maximum number of
+> specializations equal to the base skill's **Linked Attribute Rating**."
+
+The code gates on `specs.length < rating` — the **skill** rating. It should be the linked
+attribute's. The two diverge both ways: Stealth 2 / Quickness 6 is allowed 2 where the book
+allows 6, and Stealth 6 / Quickness 3 is allowed 6 where the book allows 3.
+
+⚠ Brick, the book's example, has Stealth 5 and Quickness 6 — one apart, so the example reads
+correctly under either rule. Same shape as defect 2.
+
+**4 — Specialisations are hard-capped at level 2, and the book has no cap** · *p.245*
+
+> "To improve the specialization beyond that, follow the rules above as normal."
+
+The improve row is offered only when `(sp.level ?? 1) < 2`, and the handler hard-writes
+`level: 2`. Since `level` is the **bonus** over the base skill, that stops every specialisation
+at base + 2 permanently. Nothing in the rules stops it; the sentence above says the opposite.
+
+**5 — Attributes above the Racial Modified Limit cost 3×, not 2×** · *p.244*
+
+> "To improve an Attribute above the Racial Modified Limit has a cost equal to **3x the rating
+> to which the Attribute is being raised**… A character's Attribute Maximum is equal to their
+> Racial Modified Limit times 1.5."
+
+The calculator always charges `2 × new rating`. Above the racial limit that is a third off.
+
+⚠ **The data already exists** — `SR3E.racialLimits` (p.245) was added for Attribute Boost's
+Drain table ([#63](#63)) and grades nothing else today. This is the second consumer it was
+always going to need.
+
+⚠ **Cost, not cap.** Under the ethos the calculator should still *offer* the purchase past the
+Racial Modified Limit and past the Attribute Maximum — charge the right price and say which side
+of the line the character is on. Refusing the buy is a guardrail; charging 2× for a 3× purchase
+is a rules bug.
+
+---
+
+### Award Karma button — found while verifying the above
+
+**6 — The twentieth point is awarded twice** · *p.244*
+
+> "Shetani, an elf character, has a **Total Karma of 62**, **Good Karma of 10**, and **Karma
+> Pool of 4**… Every twentieth point has been added to the Karma Pool (each character starts
+> with 1 Karma Pool) and **the rest (59)** has gone to Good Karma."
+
+62 total → 3 points to the Pool (the 20th, 40th and 60th) → **59** to Good Karma. The pool point
+comes **instead of** the Good Karma point, not in addition to it.
+
+`_onAwardKarma` computes `poolGained` correctly but then writes `'system.karma': karma + amount`
+— the **full** award. So a character receives both, gaining one extra Good Karma per 20 earned.
+Shetani would come out with 62 Good Karma where the book gives 59.
+
+**7 — Every character starts with 1 Karma Pool, and the field initialises to 0** · *p.244*
+
+> "(each character starts with 1 Karma Pool)"
+
+`ActorDataModels.js:120` has `karmaPool: new NumberField({ integer: true, initial: 0, min: 0 })`.
+Shetani's 4 is `1 + floor(62 / 20)`; with an initial of 0 he reaches 3.
+
+⚠ **This one is a data-model change** — a full Foundry restart, and existing actors keep their
+stored 0, so it needs a migration to be worth anything. Fill-blanks will not do it: 0 is the
+schema default and indistinguishable from a GM who set it deliberately. This is the rare case
+that wants either a `fixItem`-style corrective migration (see `0.4.5.6`) or simply leaving
+existing characters alone and documenting it.
+
+---
+
+### What is correct, and should not be "fixed" while in there
+
+Verified line by line against the Skill Improvement Cost Table:
+
+- The three base-skill multipliers (1.5 / 2 / 2.5 active, 1 / 1.5 / 2 knowledge) — exact.
+- The three specialisation multipliers (.5 / 1 / 1.5) — exact, and correctly **identical for
+  active and knowledge skills**, which reads like an oversight in `_specCost` and is not one.
+- A new specialisation costs the base skill's rating **+1**, an existing one **+2** — matching
+  *"buy the specialization at rating 1 point higher than your base skill"* and Brick's 6-then-7.
+- Attribute increases at 2× the new rating, **below** the racial limit.
+- `poolGained` as a delta across the whole award, so one large award grants every point it
+  crosses rather than only one.
+- `_isActiveSkill` delegating to `skillTypeForCategory` — load-bearing, see its comment.
+
+⚠ **Not a rules defect but worth fixing in the same pass:** the spend path reads `karma` before
+the dialog opens and writes back `karma - chosenCost`, an **absolute**. A GM award landing while
+the dialog is open is silently clobbered. Everything else authoritative in this system relays a
+**delta** through the GM for exactly this reason (`sr3e.damage.apply` says so at its definition).

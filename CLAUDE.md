@@ -1633,6 +1633,72 @@ Wired in (Magic tab → summon). SR3 RAW:
 3. **Drain** (always, even on failure): **Level from the Force-vs-Charisma table** (`SR3ESpiritSummoning._conjuringDrainLevel`: F≤½C Light, ≤C Moderate, ≤1.5C Serious, else Deadly — computed at cast), **TN = Force**, resisted with **Charisma + held-back dice** (`_postDrainCard` with `resistAttr:'charisma'`, `bonusDice`). Physical if Force > Magic, else Stun.
 4. **Result** (`confirmSummoning`): "Confirm Summoning" button creates the spirit actor bound for *successes* services and adds it to the tracker **only if a combat is already running** (`game.combat?.started`) — summoning never starts/activates combat.
 
+### Karma & advancement  · *SR3 p.244-245*
+
+**This is implemented, and this file previously said it was not.** Two buttons on the sheet's
+karma block, both in `SR3EActorSheet`: **Award Karma** (`_onAwardKarma`) and **Spend Karma…**
+(`_onSpendKarmaCalculator`). Three persisted fields — `system.karma` (spendable Good Karma),
+`system.totalKarma` (career total, drives the Pool) and `system.karmaPool`.
+
+The Spend dialog lists every purchase the character can currently afford, with its cost, and
+buys the selected one: **attributes** at 2 × the new rating, **skill increases**, **new
+specialisations**, and **specialisation increases**. Two pure helpers hold the table:
+`_skillCost(newRating, attrRating, isActive)` and `_specCost(newRating, attrRating)`.
+
+**Skill Improvement Cost Table** (p.245) — multiply by the **new** rating:
+
+| New rating is… | Base: Active | Base: Knowledge/Language | Specialisation (both) |
+|---|---:|---:|---:|
+| ≤ the linked Attribute | 1.5 | 1 | .5 |
+| ≤ 2× the linked Attribute | 2 | 1.5 | 1 |
+| > 2× the linked Attribute | 2.5 | 2 | 1.5 |
+
+⚠ **A specialisation costs the same for active and knowledge skills.** `_specCost` ignoring the
+`isActive` flag looks like an oversight in a function sitting next to one that uses it. It is
+not — the table's two specialisation columns are identical.
+
+⚠ **A new specialisation is bought at the base skill's rating +1, an existing one at +2** —
+*"you must buy the specialization at rating 1 point higher than your base skill, as if you
+already had the specialization at the rating of the base skill"*. Brick (p.245) buys Sneaking at
+6 on Stealth 5, then raises it at 7. `system.specialisations[].level` is the **bonus**, so
+level 1 = base+1.
+
+⚠ **`_isActiveSkill` delegates to `skillTypeForCategory` and must keep doing so.** It once
+tested `!category.includes('knowledge')`, which is a different question: `Martial Arts` contains
+neither "knowledge" nor "language", so karma charged Aikido as an active skill while the sheet
+filed it under knowledge. One classifier.
+
+#### 🔴 DIVERGES FROM RAW — seven defects, tracked as TODO 80
+
+Audited 2026-08-31. **Do not read this section as a description of correct behaviour.**
+
+| # | Rule | Code |
+|---|---|---|
+| 1 | New skills cost a **flat 1 karma**, any type (p.245) | not offered at all; rating-0 skills are `continue`d |
+| 2 | *"round fractions down"* (p.245) | `Math.ceil` — **overcharges ~half of all purchases** |
+| 3 | Max specialisations = the **linked Attribute** rating | gates on the **skill** rating |
+| 4 | *"improve the specialization beyond that… as normal"* | hard-capped at level 2 |
+| 5 | Above the Racial Modified Limit costs **3×** (p.244) | always 2× |
+| 6 | The twentieth point goes to the Pool **instead of** Good Karma | awarded to both |
+| 7 | *"each character starts with 1 Karma Pool"* | `initial: 0` |
+
+⚠ **Defect 1's obvious fix is wrong.** Deleting the `rating === 0` guard makes `_skillCost`
+charge 2 for a new active skill. The flat rate is a separate rule that **bypasses** the cost
+table, so it needs its own path.
+
+⚠ **Defects 2 and 3 cannot be caught by the book's own worked examples**, which is why they
+survived: every printed example lands on an integer (where `ceil` and `floor` agree) and Brick's
+Stealth 5 / Quickness 6 is one apart (where either cap reads correctly). Any test written from
+the examples alone passes against the wrong code — write the fractional and divergent cases.
+
+⚠ **Defect 7 is a data-model change** (full restart) and existing actors keep their stored 0,
+which is also the schema default — so fill-blanks migration cannot tell it from a deliberate GM
+value. See TODO 80.
+
+⚠ **There is no ledger.** The calculator writes new totals and records nothing about what was
+bought, so "where did that 40 karma go?" has no answer. Tracked separately as TODO 79, because
+it is a want rather than a defect.
+
 ---
 
 ## Actor data model
@@ -2090,7 +2156,8 @@ at all, which is itself proof the tab predates the query.
 - Vehicle sheets
 - Matrix/hacking combat rolls (host sheet is GM reference/tracking only for now)
 - Magic combat (spellcasting rolls exist, combat application not wired)
-- Karma spending in character advancement
+- Learning a NEW skill with karma (increases and specialisations DO work — see TODO 80,
+  which also lists three costing bugs in the advancement that does exist)
 - Pool refresh prompts for astral/hacking pools (only combat pool currently)
 
 ---
