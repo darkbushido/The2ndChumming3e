@@ -2392,6 +2392,35 @@ label.act-field input[type=number] {
   opacity: .85;
 }
 
+/* Triggered cyber/bioware control on a Cyber-tab row (M&M p.63, p.71). Sibling of
+   .sr-boost-btn; amber rather than gold so a running augmentation is distinguishable at a
+   glance from an active Attribute Boost, which sits on a different tab but reads the same. */
+.sr-aug-btn {
+  background: transparent;
+  border: 1px solid var(--sr-border-hi);
+  border-radius: var(--r);
+  color: var(--sr-muted);
+  cursor: pointer;
+  flex: 0 0 auto;
+  font-size: 11px;
+  height: auto;
+  line-height: 1.2;
+  margin: 0 2px;
+  padding: 2px 6px;
+  white-space: nowrap;
+}
+
+.sr-aug-btn:hover {
+  background: color-mix(in srgb, var(--sr-amber) 18%, transparent);
+}
+
+/* Running: amber, so it reads as a live state rather than an available action. */
+.sr-aug-btn.sr-aug-on {
+  border-color: var(--sr-amber);
+  color: var(--sr-amber);
+  font-weight: 600;
+}
+
 .sr-boost-btn {
   background: transparent;
   border: 1px solid var(--sr-gold);

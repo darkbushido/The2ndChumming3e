@@ -1658,6 +1658,24 @@ _prepareCharacter(sys, attr) {
     skillCategoryBonuses.push({ label, dice, categories });
   };
 
+  /* ⚠ Declared ABOVE the cyber/bio loop, not with the adept block that first used them.
+   * Since TODO 30 the cyber/bio loop feeds these too, and leaving them below it is a
+   * temporal-dead-zone error the moment anything there touches one. */
+  /**
+   * Bonuses scoped to a SITUATION rather than to a skill or a category — TODO 70.
+   *
+   * `{ label, situation, dice, tn, pool }`. The third and last bonus channel: `skillBonusDice`
+   * promises "always applies" and `skillCategoryBonuses` is opt-in per roll, and neither can
+   * say *"these dice can only be used for counterattacks"* (MITS p.149) or *"these dice do not
+   * apply to any other type of Reaction Test"* (p.151). A flow that knows its situation claims
+   * the matching bonuses; everything else offers them as a checkbox.
+   */
+  const situationalBonuses = [];
+  /** Triggered cyber/bioware — every one the actor owns, active or not (TODO 30). */
+  const triggeredAugs = [];
+  /** Adept powers whose rule the system states but cannot resolve — surfaced on the sheet. */
+  const adeptNotes = [];
+
   // Cyber/bio augmentation bonuses — summed from all cyberware and bioware items
   const cyberBonus = { bod: 0, qui: 0, str: 0, cha: 0, int: 0, wil: 0, rea: 0, initDice: 0,
                        reaNotRigDeck: 0 };
@@ -1686,6 +1704,29 @@ _prepareCharacter(sys, attr) {
     _addSkillDice(s.improvedSkillName, s.improvedSkillDice ?? 0, item.name,
       { kind: item.type === 'bioware' ? 'bio' : 'cyber' });
     _addSkillCategory(item.name, s.improvedSkillCategory, s.improvedSkillDice ?? 0);
+
+    /* ── Cyber/bioware that is switched on, or scoped to a situation · TODO 30 ──────── */
+    const _cfg = globalThis.game?.sr3e?.SR3E ?? {};
+    // Situational: the same channel the adept powers use. Nothing new was needed.
+    for (const e of (_cfg.augmentationEffects ?? [])) {
+      if (!e.match.test(item.name ?? '')) continue;
+      if (e.note) adeptNotes.push({ label: item.name, note: e.note });
+      if (e.situation && (e.dice || e.tn)) {
+        situationalBonuses.push({ label: item.name, situation: e.situation,
+          dice: e.dice ?? 0, tn: e.tn ?? 0, pool: 0 });
+      }
+    }
+    // Triggered: collected whether active or not, so the sheet can offer the control.
+    for (const t of (_cfg.triggeredAugmentations ?? [])) {
+      if (!t.match.test(item.name ?? '')) continue;
+      // Level from the bracketed number the packs use — "Adrenal Pump [2](trig)".
+      const lvl   = Number(/\[(\d+)\]/.exec(item.name ?? '')?.[1] ?? 1) || 1;
+      const state = sys.augmentations?.[item.id] ?? {};
+      const on    = t.kind === 'toggle' ? state.active === true : (state.turns ?? 0) > 0;
+      triggeredAugs.push({ id: item.id, name: item.name, cfg: t, level: lvl,
+                           active: on, turns: state.turns ?? 0 });
+      if (t.note) adeptNotes.push({ label: item.name, note: t.note });
+    }
   }
 
   // Adept power bonuses — summed from all adeptpower items
@@ -1694,16 +1735,6 @@ _prepareCharacter(sys, attr) {
   // (p.169), and Magic is not derived until Essence and Bio Index are known, well below.
   // Collect the raw claims now; a second pass past the Magic derivation applies the cap.
   const pendingImprovedAbility = [];
-  /**
-   * Bonuses scoped to a SITUATION rather than to a skill or a category — TODO 70.
-   *
-   * `{ label, situation, dice, tn, pool }`. The third and last bonus channel: `skillBonusDice`
-   * promises "always applies" and `skillCategoryBonuses` is opt-in per roll, and neither can
-   * say *"these dice can only be used for counterattacks"* (MITS p.149) or *"these dice do not
-   * apply to any other type of Reaction Test"* (p.151). A flow that knows its situation claims
-   * the matching bonuses; everything else offers them as a checkbox.
-   */
-  const situationalBonuses = [];
   /** Powers whose level exceeds Magic (p.168). Reported on the sheet, never clamped. */
   const overLevelled = [];
   // ⚠ The BASE Magic, deliberately. This cap is about what the character may have BOUGHT,
@@ -1711,8 +1742,6 @@ _prepareCharacter(sys, attr) {
   // — that is Magic loss, and the book handles it by making the adept give powers up, not by
   // retroactively invalidating the sheet.
   const magicForCaps = attr.magic?.base ?? 0;
-  /** Adept powers whose rule the system states but cannot resolve — surfaced on the sheet. */
-  const adeptNotes = [];
   /** Extra COMBAT POOL dice (Combat Sense, p.169) — not skill dice, so not the map above. */
   let adeptCombatPool = 0;
   /** Pain Resistance levels (p.170) — offsets the wound modifier, resolved further down. */
@@ -2041,6 +2070,48 @@ _prepareCharacter(sys, attr) {
     _addSkillDice(claim.skill, dice, claim.label, { kind: 'adept', note });
   }
 
+  /* ── Triggered augmentations · M&M p.63, p.71 (TODO 30) ───────────────────────────
+   *
+   * ⚠ **Applied HERE, between the Reaction derivation and the pools, and the position is the
+   * rule.** M&M p.63 on the adrenal pump: *"The Quickness bonus does not affect Reaction, nor
+   * does the Reaction bonus affect the Control Pool. However, the Quickness and Willpower
+   * bonuses affect the Combat Pool."*
+   *
+   * Reaction is already computed above, so the Quickness bonus cannot reach it. Combat Pool is
+   * computed below, so Quickness and Willpower do. Control Pool is the Vehicle Skill rating in
+   * this system and never reads Reaction, so that clause needs nothing. Moving this block
+   * either way silently breaks one of the three.
+   */
+  const activeAugs = [];
+  for (const a of triggeredAugs) {
+    if (!a.active) continue;
+    const per = a.cfg.perLevel ?? null;
+    const flat = a.cfg.bonuses ?? null;
+    const add = per
+      ? Object.fromEntries(Object.entries(per).map(([k, v]) => [k, v * a.level]))
+      : (flat ?? {});
+    for (const [k, v] of Object.entries(add)) {
+      if (k === 'rea') { if (attr.reaction) attr.reaction.value = Math.max(1, attr.reaction.value + v); continue; }
+      const key = { qui: 'quickness', str: 'strength', wil: 'willpower', int: 'intelligence',
+                    bod: 'body', cha: 'charisma' }[k];
+      if (key && attr[key]) attr[key].value = Math.max(1, (attr[key].value ?? 0) + v);
+    }
+    activeAugs.push({ id: a.id, name: a.name, level: a.level, turns: a.turns,
+                      kind: a.cfg.kind, applied: add });
+
+    /* Pain Editor: "the character ignores all Initiative and target number penalties from Stun
+     * damage. Penalties from Physical damage are applied" (M&M p.71).
+     * ⚠ Recomputed from the PHYSICAL track alone — not zeroed. A character with a physical
+     * wound still suffers for it; only the Stun contribution goes. */
+    if (a.cfg.ignoresStunWoundMod) {
+      const physBoxes = SR3EActor.painAdjustedBoxes(sys.wounds?.physical?.value ?? 0, painResistance);
+      const raw = -SR3EActor._trackMod(physBoxes);
+      sys.rawWoundMod = raw;
+      sys.woundMod    = Math.min(0, raw + (sys.stimBonus ?? 0));
+      wm = sys.woundMod;
+    }
+  }
+
   // Derived pools — all use .value so adept force benefits every relevant pool
   const combatPoolBase = Math.max(0, Math.floor(
     ((attr.quickness?.value    ?? 0) +
@@ -2116,6 +2187,11 @@ _prepareCharacter(sys, attr) {
      * hand-editable. The sheet renders this as a warning.
      */
     overLevelledPowers: overLevelled,
+    // Triggered cyber/bioware the actor owns, and which of them are running (TODO 30).
+    triggeredAugmentations: triggeredAugs.map(a => ({
+      id: a.id, name: a.name, kind: a.cfg.kind, level: a.level,
+      active: a.active, turns: a.turns, label: a.cfg.label ?? a.name })),
+    activeAugmentations: activeAugs,
     // Bonuses scoped to a SITUATION — read with SR3EActor.situationalBonus (TODO 70).
     situationalBonuses,
     // Powers whose rule the system states but cannot resolve; rendered on the Magic tab.
@@ -5804,6 +5880,142 @@ _prepareCharacter(sys, attr) {
       attributeBoostContext: {
         actorId: actor.id, attribute, attrLabel: label, level, current, cap, limit,
       },
+    });
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+   *  Triggered cyber/bioware.  M&M p.63 (Adrenal Pump), p.71 (Pain Editor).  TODO 30.
+   * ══════════════════════════════════════════════════════════════════════════════ */
+
+  /**
+   * Switch a triggered augmentation on or off.
+   *
+   * A **toggle** flips and stays. A **duration** rolls its turns and starts counting down.
+   *
+   * ⚠ **The duration is ROLLED, not chosen** — *"roll 1D6 for each level; the die result
+   * indicates the number of Combat Turns"* (p.63). The dialog reports the roll rather than
+   * asking, because the character does not decide how long their own adrenaline lasts.
+   */
+  static async toggleAugmentation(actor, itemId) {
+    const info = (actor?.system?.derived?.triggeredAugmentations ?? []).find(a => a.id === itemId);
+    if (!info) { ui.notifications.warn('SR3E: that augmentation is not on this actor.'); return; }
+
+    const set = async changes => {
+      if (!game.users.activeGM?.isSelf) {
+        await game.sr3e.SR3EQuery.asGM('sr3e.actor.set', { uuid: actor.uuid, changes });
+        return;
+      }
+      await actor.update(changes);
+    };
+
+    // ── Toggle: on/off, no duration, no cost ───────────────────────────────────────
+    if (info.kind === 'toggle') {
+      const now = !info.active;
+      await set({ [`system.augmentations.${itemId}.active`]: now });
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor }),
+        content: `<div class="sr-roll-card">
+          <div class="sr-roll-header">⚙ ${actor.name} — ${info.label} ${now ? 'engaged' : 'disengaged'}</div>
+          ${now ? `<div class="sr-roll-meta">+1 Willpower, −1 Intelligence. Stun wound modifiers
+            are ignored; Physical still apply. ⚠ The player should not be told how much damage
+            the character has taken (M&M p.71).</div>` : ''}
+        </div>`,
+        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      });
+      return;
+    }
+
+    // ── Duration: already running? ─────────────────────────────────────────────────
+    if (info.active) {
+      ui.notifications.info(`${info.label} is already running (${info.turns} turn${info.turns !== 1 ? 's' : ''} left).`);
+      return;
+    }
+
+    const cfg   = game.sr3e.SR3E.triggeredAugmentations.find(t => t.match.test(info.name));
+    const dice  = (cfg?.durationDicePerLevel ?? 1) * info.level;
+    const rolls = Array.from({ length: dice }, () => Math.floor(Math.random() * 6) + 1);
+    const turns = rolls.reduce((a, b) => a + b, 0);
+
+    await set({
+      [`system.augmentations.${itemId}.turns`]: turns,
+      // The crash Power is the number of turns it RAN, so it is recorded at activation —
+      // by the time it lapses the counter is at zero and the number would be lost.
+      [`system.augmentations.${itemId}.rolledTurns`]: turns,
+    });
+
+    const per = cfg?.perLevel ?? {};
+    const gain = Object.entries(per).map(([k, v]) => `+${v * info.level} ${k.toUpperCase()}`).join(', ');
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="sr-roll-card">
+        <div class="sr-roll-header">⚡ ${actor.name} — ${info.label} triggered</div>
+        <div class="sr-roll-result">${dice}D6 → <strong>${turns}</strong> Combat Turn${turns !== 1 ? 's' : ''}
+          <span class="sr-roll-meta">(${rolls.join(' + ')})</span></div>
+        <div class="sr-staging-result">${gain} for ${turns} turn${turns !== 1 ? 's' : ''}.</div>
+        <div class="sr-roll-meta">⚠ When it ends: Body Test vs <strong>${turns}D Stun</strong> —
+          Power equals the turns it ran (M&M p.63).</div>
+      </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    });
+  }
+
+  /**
+   * Count every running augmentation down one Combat Turn, and bill the crash for any that
+   * lapse. Called from the `updateCombat` round hook alongside `tickAttributeBoosts`.
+   *
+   * ⚠ **The crash Power is the duration it RAN, not what is left** — *"a Power equal to the
+   * number of turns the hormones remained in the blood"*. Read from `rolledTurns`, recorded at
+   * activation, because by expiry the counter is zero.
+   */
+  static async tickAugmentations() {
+    for (const actor of game.actors) {
+      if (actor.type !== 'character' && actor.type !== 'npc') continue;
+      const state = actor.system?.augmentations;
+      if (!state || !Object.keys(state).length) continue;
+
+      const changes = {};
+      const lapsed  = [];
+      for (const [itemId, st] of Object.entries(state)) {
+        const turns = st?.turns ?? 0;
+        if (turns <= 0) continue;
+        if (turns > 1) { changes[`system.augmentations.${itemId}.turns`] = turns - 1; continue; }
+        changes[`system.augmentations.${itemId}.turns`] = 0;
+        lapsed.push({ itemId, ran: st?.rolledTurns ?? 1,
+                      name: actor.items.get(itemId)?.name ?? 'Augmentation' });
+      }
+      if (!Object.keys(changes).length) continue;
+      await actor.update(changes);
+      for (const l of lapsed) await SR3EActor._postAugmentationCrash(actor, l);
+    }
+  }
+
+  /**
+   * The crash when a duration augmentation lapses · *M&M p.63*
+   *
+   * > "the character crashes from system shock and fatigue. He must roll Body to resist Deadly
+   * > Stun damage with a Power equal to the number of turns the hormones remained in the blood."
+   *
+   * ⚠ **Body, not Willpower** — this is physical shock, not Drain, so it reuses the soak card
+   * rather than `_postDrainCard`. And it is **Deadly Stun** regardless of how long it ran; the
+   * duration sets the POWER, which is the resistance TN, not the level.
+   */
+  static async _postAugmentationCrash(actor, { name, ran }) {
+    const power = Math.max(1, Math.trunc(Number(ran) || 1));
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="sr-roll-card">
+        <div class="sr-roll-header">💥 ${actor.name} — ${name} wears off</div>
+        <div class="sr-staging-result">System shock: resist <strong>${power}D Stun</strong>
+          (Power = the ${power} turn${power !== 1 ? 's' : ''} it ran).</div>
+        <div class="sr-roll-meta">Regenerating takes 9 + 1D6 minutes; triggering again before
+          then halves the next duration (M&M p.63).</div>
+      </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    });
+    await actor._postSoakCard({
+      power, level: 'D', isStun: true,
+      label: `${name} — system shock`,
+      attackerName: name,
     });
   }
 

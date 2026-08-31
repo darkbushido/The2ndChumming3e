@@ -897,6 +897,70 @@ export const SR3E = {
   },
 
   /**
+   * Cyber/bioware that has to be SWITCHED ON · TODO 30
+   *
+   * The upstream `Mods` field is reserved for unconditional passives, so none of these carry
+   * one — their rules live in prose, and are transcribed here.
+   *
+   * `kind: 'duration'` — activated, runs for a rolled number of Combat Turns, and may cost
+   * something when it lapses. Same shape as Attribute Boost (SR3 p.168), and it reuses the
+   * same round tick.
+   * `kind: 'toggle'` — stays on until switched off. No duration, no cost.
+   *
+   * ⚠ **Adrenal Pump is a DURATION, not a toggle**, and that distinction is the whole reason
+   * this is not a boolean flag: a GM who forgets to switch it off leaves a character
+   * permanently boosted. Pain Editor genuinely is a toggle, so both shapes are needed.
+   */
+  triggeredAugmentations: [
+    {
+      match: /^adrenal pump/i,
+      kind: 'duration',
+      label: 'Adrenal Pump',
+      /* M&M p.63: "Each level of the pump adds 1 to Quickness, 2 to Strength, 1 to Willpower
+       * and 2 to Reaction for as long as the concentrates remain in the bloodstream."        */
+      perLevel: { qui: 1, str: 2, wil: 1, rea: 2 },
+      /* "Once active, roll 1D6 for each level; the die result indicates the number of Combat
+       * Turns the hormones stay in the blood."                                               */
+      durationDicePerLevel: 1,
+      /* "When the duration of the pump's effects ends, the character crashes from system
+       * shock and fatigue. He must roll Body to resist Deadly Stun damage with a Power equal
+       * to the number of turns the hormones remained in the blood."                          */
+      crash: { resistAttr: 'body', level: 'D', stun: true, powerIsDuration: true },
+      note: 'Normally triggered involuntarily by taking damage. Regenerating takes 9 + 1D6 '
+          + 'minutes; activating again before then halves the duration (M&M p.63).',
+    },
+    {
+      match: /^pain editor/i,
+      kind: 'toggle',
+      label: 'Pain Editor',
+      /* M&M p.71: "the subject gains +1 to Willpower when the editor is activated but suffers
+       * a -1 Intelligence loss for the duration."                                            */
+      bonuses: { wil: 1, int: -1 },
+      /* "the character ignores all Initiative and target number penalties from Stun damage.
+       * Penalties from Physical damage are applied, but without the player's knowledge."     */
+      ignoresStunWoundMod: true,
+      note: 'Also: +4 TN to tactile Perception, cannot be knocked unconscious by Stun, and '
+          + 'the player should not be told how much damage the character has taken.',
+    },
+  ],
+
+  /**
+   * Cyber/bioware bonuses scoped to a SITUATION · TODO 30
+   *
+   * The same channel the adept powers use (`derived.situationalBonuses`), which is why this is
+   * a table rather than a mechanism — nothing new was needed.
+   */
+  augmentationEffects: [
+    {
+      match: /^nephritic screen/i,
+      /* M&M: "-1 Power of pathogen and blood toxins, +1BOD to resist them" */
+      situation: 'toxin', dice: 1,
+      note: 'Also reduces the Power of pathogen and blood toxins by 1 — applied by the GM, '
+          + 'since the system does not model toxin Power.',
+    },
+  ],
+
+  /**
    * Cyber/bioware whose Reaction bonus does NOT apply to rigging or decking · *M&M p.66*
    *
    * Enhanced Articulation grants +1 Reaction, and the book excludes it from rigging and from

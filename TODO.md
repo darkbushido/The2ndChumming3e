@@ -24,7 +24,7 @@ independent.
 | 🔵 In progress | *(none)* |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | **71** · **73** · **74** *(**72** done)* |
-| 📕 Rules not implemented | 3 · 4 · 30 · 47 · 48 · 49 · 53 · 57 |
+| 📕 Rules not implemented | 3 · 4 · 47 · 48 · 49 · 53 · 57 *(**30** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | *(all closed: **59**-**70**)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
@@ -1646,7 +1646,7 @@ decking and does not affect the Control Pool"* — conditional in a different wa
 
 ---
 
-## 30. Support conditional and scoped cyber/bioware modifiers
+## 30. ✅ Support conditional and scoped cyber/bioware modifiers — **DONE 2026-08-31**
 
 **Rewritten 2026-08-31.** The original entry described five shapes and no mechanism for any of
 them. Three of the five now have one — built for the adept powers ([#59](#59)-[#70](#70)) and

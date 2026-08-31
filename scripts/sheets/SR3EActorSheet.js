@@ -30,6 +30,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       rollMelee:      SR3EActorSheet._onRollMelee,
       rollUnarmed:    SR3EActorSheet._onRollUnarmed,
       attributeBoost: SR3EActorSheet._onAttributeBoost,
+      toggleAugmentation: SR3EActorSheet._onToggleAugmentation,
       rollInitiative: SR3EActorSheet._onRollInitiative,
       itemCreate:     SR3EActorSheet._onItemCreate,
       browseSkills:   SR3EActorSheet._onBrowseSkills,
@@ -1411,13 +1412,31 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           <span class="item-cell">${c.system.grade ?? '—'}</span>
           <span class="item-cell">${c.system.essenceCost ?? 0}</span>
           <span class="item-cell">${rating}</span>
+          ${_trigBtn(c.id)}
           ${this._itemControls(c.id, false, 'rollWeapon', false)}
         </div>`;
     }).join('') : '<p class="empty-list">No cyberware.</p>';
 
+    // Triggered cyber/bioware (TODO 30) — Adrenal Pump runs on a rolled duration, Pain Editor
+    // is a toggle. Both need a control, because neither has any effect until switched on.
+    const _trig = new Map((actor.system.derived?.triggeredAugmentations ?? []).map(a => [a.id, a]));
+    const _trigBtn = id => {
+      const a = _trig.get(id);
+      if (!a) return '';
+      const on = a.active;
+      const lbl = a.kind === 'toggle'
+        ? (on ? 'Engaged' : 'Engage')
+        : (on ? `${a.turns}T` : 'Trigger');
+      return `<button type="button" class="sr-aug-btn${on ? ' sr-aug-on' : ''}"
+                data-action="toggleAugmentation" data-item-id="${id}"
+                title="${a.kind === 'toggle' ? 'Engage / disengage' : 'Trigger — duration is rolled'}"
+                >${on ? '⚡' : '○'} ${lbl}</button>`;
+    };
+
     const bwRows = bioware.length ? bioware.map(b => `
       <div class="item-row" data-item-id="${b.id}">
         <span class="item-name">${b.name}</span>
+        ${_trigBtn(b.id)}
         <span class="item-cell">${b.system.grade ?? '—'}</span>
         <span class="item-cell">${b.system.bioIndex ?? 0}</span>
         <span class="item-cell">${b.system.rating ?? 0}</span>
@@ -3036,6 +3055,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    * Activate an Attribute Boost (SR3 p.168-169) — a Magic Test, a duration, and a Drain
    * bill when it lapses. The whole flow lives on the document; the sheet only triggers it.
    */
+  /** Switch a triggered augmentation on or off (M&M p.63, p.71) — TODO 30. */
+  static async _onToggleAugmentation(event, target) {
+    event.preventDefault();
+    await game.sr3e.SR3EActor.toggleAugmentation(this.actor, target.dataset.itemId);
+  }
+
   static async _onAttributeBoost(event, target) {
     event.preventDefault();
     const itemId = target.dataset.itemId;

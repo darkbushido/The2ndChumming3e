@@ -103,6 +103,9 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       notes:                   new HTMLField({ initial: '', required: false }),
       metatype:                new StringField({ initial: 'human' }),
       attributeBoost:          attributeBoostField(),
+      // Triggered cyber/bioware, keyed by ITEM ID — see SR3E.triggeredAugmentations.
+      // ⚠ An ObjectField because the keys are item ids, which a SchemaField cannot declare.
+      augmentations:           new ObjectField(),
       gender:                  new StringField({ initial: '' }),
       age:                     new StringField({ initial: '' }),
       height:                  new StringField({ initial: '' }),
@@ -209,6 +212,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
     return {
       metatype:         new StringField({ initial: 'human' }),
       attributeBoost:   attributeBoostField(),
+      augmentations:    new ObjectField(),
       nuyen:            new NumberField({ integer: true, initial: 0, min: 0 }),
       notes:            new HTMLField({ initial: '', required: false }),
       equippedMelee:    new StringField({ initial: '' }),

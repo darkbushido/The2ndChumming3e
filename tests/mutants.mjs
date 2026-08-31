@@ -740,4 +740,19 @@ export const MUTANTS = [
         : { ...cyber, conflict: true, source: 'cyber', dropped: adept };
     },
   },
+
+  {
+    id:     'pain-editor-zeroes-all-wound-modifiers',
+    suite:  'adept-powers',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'painAdjustedBoxes',
+    was:    'M&M p.71 - the Pain Editor ignores penalties from STUN damage only; "Penalties '
+          + 'from Physical damage are applied, but without the player\'s knowledge". The '
+          + 'derivation recomputes the modifier from the PHYSICAL track rather than zeroing '
+          + 'it, and painAdjustedBoxes is what that recomputation runs through. Making it '
+          + 'return 0 for everything turns the editor into total immunity, and does the same '
+          + 'to Pain Resistance',
+    impl:   () => 0,
+  },
 ];

@@ -1186,6 +1186,51 @@ Both skill-roll paths go through the same dialog: the character sheet's skill ro
 **skill item sheet's own roll button** (unified 2026-08-20; it previously rolled at a hardcoded
 TN 4 with no dialog at all).
 
+### Triggered cyber/bioware  · *M&M p.63, p.71* — TODO 30
+
+Two shipped items do nothing until switched on. `SR3E.triggeredAugmentations` classifies them
+and `system.augmentations` (an ObjectField keyed by ITEM ID) holds the state.
+
+| | Kind | Effect |
+|---|---|---|
+| Adrenal Pump [1]/[2] | **duration** | +1 QCK / +2 STR / +1 WIL / +2 REA **per level** |
+| Pain Editor | **toggle** | +1 WIL, −1 INT, and Stun wound modifiers ignored |
+
+⚠ **Adrenal Pump is a DURATION, not a toggle** — *"roll 1D6 for each level; the die result
+indicates the number of Combat Turns"*. A boolean flag would let a GM forget to switch it off and
+leave a character permanently boosted. It counts down on the `updateCombat` round hook beside
+`tickAttributeBoosts`, and on expiry bills a **Body Test vs (turns it ran)D Stun** — Power is the
+duration, read from `rolledTurns` recorded at activation, because by expiry the counter is zero.
+
+⚠ **WHERE the bonuses are applied is the rule, not a detail.** p.63: *"The Quickness bonus does
+not affect Reaction, nor does the Reaction bonus affect the Control Pool. However, the Quickness
+and Willpower bonuses affect the Combat Pool."* They are applied **after** the Reaction
+derivation and **before** the pools, which satisfies all three for free — Reaction is already
+computed, Combat Pool is not yet, and Control Pool is the Vehicle Skill rating and never reads
+Reaction. Moving the block either way silently breaks one clause.
+⚠ Most attribute combinations round to the same Reaction either way; `tests/adept-powers.test.mjs`
+uses QUI 4 / INT 5 deliberately, because that is a pair where the two orderings differ.
+
+⚠ **The Pain Editor recomputes the wound modifier from the PHYSICAL track — it does not zero
+it.** *"Penalties from Physical damage are applied, but without the player's knowledge."* Zeroing
+would make it total immunity.
+
+⚠ **Nephritic Screen needed no mechanism at all** — it rides `situationalBonuses` with the
+`toxin` key, exactly as Body Control does. That is the point of keying those channels by
+situation rather than by source.
+
+### Enhanced Articulation's Reaction stops at rigging and decking  · *M&M p.66*
+
+`derived.reactionNoRigDeck` is Reaction with the exempt bonuses removed; only **remote-control
+rigging** and **TRM/AR/VR-Cold decking** read it. Jumped-in VCR, VR-Hot and Orthodox Matrix all
+read `reaction.base` and never saw a cyber bonus in the first place.
+
+⚠ **The exclusion is that BONUS, not cyberware at large** — wired reflexes apply to decking
+normally. Switching those paths to `reaction.base` would look tidier and would silently strip
+wired reflexes from every decker.
+⚠ **It subtracts only when the CYBER package actually landed.** `reflexBonus` picks one package
+or the other, so after an adept's Improved Reflexes wins there is nothing to take away.
+
 ### Adept powers  · *SR3 p.168-170*
 
 **117 powers ship across four packs** (`sr3` 42 · `mits` 26 · `sota2` 40 · `tss` 9). Until

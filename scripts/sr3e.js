@@ -1693,6 +1693,7 @@ Hooks.on('updateCombat', (_combat, changed) => {
   // a single turn.
   if ('round' in changed && game.users?.activeGM?.isSelf) {
     SR3EActor.tickAttributeBoosts();
+    SR3EActor.tickAugmentations();
     for (const a of game.actors) {
       if (a.type === 'vehicle') {
         const left = a.system?.infiltration?.turnsRemaining ?? 0;

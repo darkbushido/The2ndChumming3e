@@ -298,6 +298,81 @@ export async function run(t) {
   t.ok('the corrected Reaction never drops below 1', derive([ea]).d.reactionNoRigDeck >= 1);
 
   /* ════════════════════════════════════════════════════════════════════════════
+   *  Triggered cyber/bioware · M&M p.63 (Adrenal Pump), p.71 (Pain Editor) — TODO 30
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const bio = (name, id) => ({ id: id ?? name.replace(/\W/g, ''), type: 'bioware', name, system: {} });
+  const deriveAug = (items, augmentations = {}, base = {}) => {
+    const sys = { magicType: '', augmentations, attributes: {},
+                  wounds: { stun: { value: base.stun ?? 0 }, physical: { value: base.phys ?? 0 } } };
+    const attr = {};
+    for (const k of ['body','quickness','strength','charisma','intelligence','willpower','reaction','essence','magic'])
+      attr[k] = { base: base[k] ?? 4, value: base[k] ?? 4 };
+    sys.woundMod = Math.min(0, -(SR3EActor._trackMod(base.stun ?? 0) + SR3EActor._trackMod(base.phys ?? 0)));
+    SR3EActor.prototype._prepareCharacter.call({ items, system: sys }, sys, attr);
+    return { d: sys.derived, attr, sys };
+  };
+
+  const pump2  = bio('Adrenal Pump [2](trig)', 'pump');
+  const editor = bio('Pain Editor', 'editor');
+
+  /* ==== detected, and classified ==== */
+  const found = deriveAug([pump2, editor]).d.triggeredAugmentations;
+  t.is('both triggered augmentations are found', found.length, 2);
+  t.is('the pump is a rolled DURATION', found.find(a => a.id === 'pump').kind, 'duration');
+  t.is('…at level 2, read from the bracketed name', found.find(a => a.id === 'pump').level, 2);
+  t.is('the editor is a TOGGLE', found.find(a => a.id === 'editor').kind, 'toggle');
+  t.ok('neither is active until switched on', found.every(a => !a.active));
+
+  /* ==== inactive changes nothing ==== */
+  const off = deriveAug([pump2, editor]);
+  t.is('an untriggered pump adds no Strength', off.attr.strength.value, 4);
+  t.is('a disengaged editor does not touch Willpower', off.attr.willpower.value, 4);
+
+  /* ==== active · "Each level adds 1 to Quickness, 2 to Strength, 1 to Willpower and 2 to
+   *      Reaction" — at level 2 that is +2/+4/+2/+4 ==== */
+  const on = deriveAug([pump2, editor],
+    { pump: { turns: 7, rolledTurns: 7 }, editor: { active: true } });
+  t.is('pump 2 gives +2 Quickness', on.attr.quickness.value, 6);
+  t.is('…+4 Strength',              on.attr.strength.value, 8);
+  t.is('…+2 Willpower, and the editor another +1', on.attr.willpower.value, 7);
+  t.is('the editor costs 1 Intelligence',          on.attr.intelligence.value, 3);
+
+  /* ⚠ THE CONSTRAINT. "The Quickness bonus does not affect Reaction… However, the Quickness
+   * and Willpower bonuses affect the Combat Pool." (p.63)
+   *
+   * Base QUI 4 / INT 5 is chosen deliberately: Reaction is floor((4+5)/2) = 4, but with the
+   * pump's Quickness folded in first it would be floor((5+5)/2) = 5. Most attribute
+   * combinations round to the same number either way and prove nothing — this one separates
+   * them. Pump level 1 gives +2 Reaction, so the answer is 6, and 7 means the bonus leaked. */
+  const pump1 = bio('Adrenal Pump [1](trig)', 'p1');
+  const leak  = deriveAug([pump1], { p1: { turns: 3, rolledTurns: 3 } }, { quickness: 4, intelligence: 5 });
+  t.is('the pump\'s Quickness does NOT feed Reaction', leak.attr.reaction.value, 6);
+  t.ok('…and 7 would mean it leaked through the derivation', leak.attr.reaction.value !== 7);
+  // …but Quickness and Willpower DO reach the Combat Pool, which is derived afterwards.
+  const poolOff = deriveAug([pump1], {}, { quickness: 4, intelligence: 5 }).d.combatPool;
+  const poolOn  = leak.d.combatPool;
+  t.ok('Quickness and Willpower still reach the Combat Pool', poolOn > poolOff);
+
+  /* ==== Pain Editor ignores STUN wound modifiers, not physical · p.71 ==== */
+  const stunned = deriveAug([editor], {}, { stun: 6 });
+  t.is('6 stun boxes is a −3 modifier with the editor off', stunned.sys.woundMod, -3);
+  const stunnedOn = deriveAug([editor], { editor: { active: true } }, { stun: 6 });
+  t.is('…and nothing with it engaged', stunnedOn.sys.woundMod, 0);
+  // ⚠ Physical damage still counts — "Penalties from Physical damage are applied".
+  const hurtOn = deriveAug([editor], { editor: { active: true } }, { stun: 6, phys: 3 });
+  t.is('physical wounds still bite through the editor', hurtOn.sys.woundMod, -2);
+  t.ok('…so the editor is not simply zeroing the wound modifier', hurtOn.sys.woundMod !== 0);
+
+  /* ==== Nephritic Screen rides the SITUATIONAL channel — no new mechanism ==== */
+  const screen = deriveAug([bio('Nephritic Screen', 'neph')]);
+  t.is('Nephritic Screen gives +1 die against toxins',
+    SR3EActor.situationalBonus(screen.d.situationalBonuses, 'toxin').dice, 1);
+  t.is('…and nothing against anything else',
+    SR3EActor.situationalBonus(screen.d.situationalBonuses, 'perception').dice, 0);
+  t.ok('…and it is not a triggered augmentation',
+    !screen.d.triggeredAugmentations.some(a => a.id === 'neph'));
+
+  /* ════════════════════════════════════════════════════════════════════════════
    *  Effect resolution — the level, and what the power does (TODO 66-70)
    * ════════════════════════════════════════════════════════════════════════════ */
   const lvlOf = SR3E.adeptPowerLevel;
