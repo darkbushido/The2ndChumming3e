@@ -2395,6 +2395,35 @@ label.act-field input[type=number] {
 /* Triggered cyber/bioware control on a Cyber-tab row (M&M p.63, p.71). Sibling of
    .sr-boost-btn; amber rather than gold so a running augmentation is distinguishable at a
    glance from an active Attribute Boost, which sits on a different tab but reads the same. */
+/* A wound box concealed from its owner by an engaged Pain Editor (M&M p.71). Deliberately
+   NOT styled to look empty — an empty-looking track reads as "undamaged", which is a
+   different lie from "you cannot tell". Hatched and inert. */
+.wound-box-hidden {
+  background: repeating-linear-gradient(45deg,
+    var(--sr-surface) 0 3px, var(--sr-border) 3px 6px);
+  border: 1px solid var(--sr-border-hi);
+  cursor: not-allowed;
+  opacity: .7;
+}
+
+.wound-concealed-note {
+  color: var(--sr-amber);
+  font-size: 13px;
+  font-weight: 700;
+  margin-left: 6px;
+}
+
+/* GM-only reminder that the player's view is concealed. */
+.wound-gm-note {
+  background: color-mix(in srgb, var(--sr-amber) 12%, transparent);
+  border: 1px solid var(--sr-amber);
+  border-radius: var(--r);
+  color: var(--sr-amber);
+  font-size: 11px;
+  margin-bottom: 6px;
+  padding: 4px 8px;
+}
+
 .sr-aug-btn {
   background: transparent;
   border: 1px solid var(--sr-border-hi);

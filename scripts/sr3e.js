@@ -286,6 +286,31 @@ Hooks.once('init', () => {
     default: false,
   });
 
+  /* Pain Editor concealment · M&M p.71 — "the player should not be told how much damage has
+   * been inflicted upon his character. The gamemaster should secretly keep track."
+   *
+   * ⚠ **Off by default, and it is a CURTAIN, not a lock.** Foundry sends owned actor data to
+   * the client, so a player who opens the console can always read `actor.system.wounds`. This
+   * hides the sheet display; it cannot hide the data, and it is not trying to. The book asks
+   * for a GM bookkeeping convention, not enforcement — this just stops the number being the
+   * first thing a player sees when they open their own sheet mid-fight.
+   *
+   * ⚠ There is NO damage threshold in the rules. Concealment is total while the editor is
+   * engaged; the book's ways out are a Biotech (4) Test, a biomonitor, or falling unconscious
+   * at Deadly Physical. Stun never knocks the character out while it is running.
+   */
+  game.settings.register('The2ndChumming3e', 'painEditorHidesWounds', {
+    name: 'Pain Editor hides wounds from players',
+    hint: 'While a Pain Editor is engaged, that character\'s wound tracks are concealed on '
+        + 'their own sheet and the boxes cannot be clicked. The GM always sees the real '
+        + 'numbers. ⚠ A display convention only — a player who opens the browser console can '
+        + 'still read the values, so this works by agreement rather than by enforcement.',
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: false,
+  });
+
   // GM Threat Clocks — persisted shared state, edited via game.sr3e.SR3EClocks.open().
   // World migrations — see SR3EMigrations. Registered here so the stored version exists
   // before the `ready` hook tries to read it.

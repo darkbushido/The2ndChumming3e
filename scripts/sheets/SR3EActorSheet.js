@@ -530,6 +530,19 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             </div>
           </div>
           <div class="wound-tracks">
+            ${(() => {
+              // The GM needs to know the player is looking at "?" — otherwise they narrate
+              // "you're badly hurt" to someone whose sheet says nothing, or forget to narrate
+              // at all. Shown only to the GM, and only while it is actually in effect.
+              if (!game.user.isGM) return '';
+              let on = false;
+              try { on = game.settings.get('The2ndChumming3e', 'painEditorHidesWounds') === true; } catch { return ''; }
+              if (!on) return '';
+              const engaged = (actor.system?.derived?.activeAugmentations ?? [])
+                .some(a => a.kind === 'toggle' && /pain editor/i.test(a.name ?? ''));
+              return engaged ? `<div class="wound-gm-note">👁 Pain Editor engaged — the player
+                sees "?" here. You are keeping track (M&amp;M p.71).</div>` : '';
+            })()}
             ${this._woundTrack('stun', 'Stun', w.stun?.value ?? 0, 10)}
             ${this._woundTrack('physical', 'Physical', w.physical?.value ?? 0, 10)}
             <div class="overflow-track">
@@ -576,9 +589,30 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     </label>`;
   }
 
+ /**
+  * One wound track.
+  *
+  * ⚠ **A Pain Editor can conceal this from its owner** · M&M p.71 — "the player should not be
+  * told how much damage has been inflicted upon his character. The gamemaster should secretly
+  * keep track." Gated behind the `painEditorHidesWounds` world setting, OFF by default: a
+  * player who cannot see their own wounds is real friction if the GM forgets to narrate them.
+  *
+  * ⚠ **A CURTAIN, NOT A LOCK.** Foundry sends owned actor data to the client, so a player who
+  * opens the console reads `actor.system.wounds` regardless. This hides the display and
+  * nothing else — which is exactly what the book asks for, a GM bookkeeping convention rather
+  * than enforcement. Do not describe it to a table as though the numbers were protected.
+  *
+  * ⚠ **There is no damage threshold.** Concealment is total while engaged; the book's ways out
+  * are a Biotech (4) Test, a biomonitor implant, or falling unconscious at Deadly Physical.
+  */
  _woundTrack(track, label, value, max) {
+  const conceal = this._woundsConcealed();
   const boxes = Array.from({ length: max }, (_, i) => {
     const n = i + 1;
+    // ⚠ A concealed box carries NO data-action, so it cannot be clicked. A blank but still
+    // clickable box would let a player probe the real value one click at a time — a worse
+    // leak than simply showing them.
+    if (conceal) return `<div class="wound-box wound-box-hidden" title="Concealed by the Pain Editor"></div>`;
     const cls = n <= value ? 'wound-box filled' : 'wound-box';
     return `<div class="${cls}" data-action="woundBox" data-track="${track}" data-box="${n}"></div>`;
   }).join('');
@@ -587,16 +621,33 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     <div class="wound-track">
       <span class="wound-track-label">${label}</span>
       <div class="wound-boxes">${boxes}</div>
+      ${conceal ? `<span class="wound-concealed-note" title="Pain Editor engaged - M&amp;M p.71">?</span>` : ''}
     </div>
-    <div class="damage-buttons">
+    ${conceal ? '' : `<div class="damage-buttons">
       <button type="button" class="damage-btn" data-action="applyDamage" data-track="${track}" data-amount="1" title="Light (L)">L</button>
       <button type="button" class="damage-btn" data-action="applyDamage" data-track="${track}" data-amount="3" title="Moderate (M)">M</button>
       <button type="button" class="damage-btn" data-action="applyDamage" data-track="${track}" data-amount="6" title="Serious (S)">S</button>
       <button type="button" class="damage-btn" data-action="applyDamage" data-track="${track}" data-amount="10" title="Deadly (D)">D</button>
       <button type="button" class="damage-btn damage-btn-heal" data-action="healDamage" data-track="${track}" title="Heal 1 box">−</button>
-    </div>
+    </div>`}
   </div>`;
 }
+
+ /**
+  * Should this viewer see `?` instead of the wound track?
+  *
+  * Only when the setting is on, a Pain Editor is engaged, and the viewer is NOT a GM. The GM
+  * always sees the real numbers — they are the one keeping track.
+  */
+ _woundsConcealed() {
+   if (game.user.isGM) return false;
+   let on = false;
+   try { on = game.settings.get('The2ndChumming3e', 'painEditorHidesWounds') === true; }
+   catch { return false; }          // setting not registered yet during an early render
+   if (!on) return false;
+   return (this.actor.system?.derived?.activeAugmentations ?? [])
+     .some(a => a.kind === 'toggle' && /pain editor/i.test(a.name ?? ''));
+ }
 
   _tabs() {
     const tabs = [
@@ -1404,19 +1455,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const bioware     = actor.items.filter(i => i.type === 'bioware'   && !i.getFlag('The2ndChumming3e', 'stored'))
       .sort((a, b) => a.name.localeCompare(b.name));
 
-    const cwRows = cyberware.length ? cyberware.map(c => {
-      const rating = c.system.rating ?? 0;
-      return `
-        <div class="item-row" data-item-id="${c.id}" data-cyber-item-id="${c.id}">
-          <span class="item-name">${c.name}</span>
-          <span class="item-cell">${c.system.grade ?? '—'}</span>
-          <span class="item-cell">${c.system.essenceCost ?? 0}</span>
-          <span class="item-cell">${rating}</span>
-          ${_trigBtn(c.id)}
-          ${this._itemControls(c.id, false, 'rollWeapon', false)}
-        </div>`;
-    }).join('') : '<p class="empty-list">No cyberware.</p>';
-
+    /* ⚠ Declared BEFORE cwRows, which evaluates its map immediately. Declaring it
+     * after — beside the bioware rows that also use it — is a temporal-dead-zone
+     * ReferenceError for any actor that owns cyberware, and silent for one that does
+     * not, which is exactly the shape that survives a smoke test. */
     // Triggered cyber/bioware (TODO 30) — Adrenal Pump runs on a rolled duration, Pain Editor
     // is a toggle. Both need a control, because neither has any effect until switched on.
     const _trig = new Map((actor.system.derived?.triggeredAugmentations ?? []).map(a => [a.id, a]));
@@ -1432,6 +1474,20 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                 title="${a.kind === 'toggle' ? 'Engage / disengage' : 'Trigger — duration is rolled'}"
                 >${on ? '⚡' : '○'} ${lbl}</button>`;
     };
+
+    const cwRows = cyberware.length ? cyberware.map(c => {
+      const rating = c.system.rating ?? 0;
+      return `
+        <div class="item-row" data-item-id="${c.id}" data-cyber-item-id="${c.id}">
+          <span class="item-name">${c.name}</span>
+          <span class="item-cell">${c.system.grade ?? '—'}</span>
+          <span class="item-cell">${c.system.essenceCost ?? 0}</span>
+          <span class="item-cell">${rating}</span>
+          ${_trigBtn(c.id)}
+          ${this._itemControls(c.id, false, 'rollWeapon', false)}
+        </div>`;
+    }).join('') : '<p class="empty-list">No cyberware.</p>';
+
 
     const bwRows = bioware.length ? bioware.map(b => `
       <div class="item-row" data-item-id="${b.id}">
