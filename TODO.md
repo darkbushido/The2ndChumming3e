@@ -24,7 +24,7 @@ independent.
 | 🔵 In progress | *(none)* |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | **71** · **73** · **74** *(**72** done)* |
-| 📕 Rules not implemented | 4 · 47 · 48 · 49 · 53 · 57 *(**3** · **30** done)* |
+| 📕 Rules not implemented | 4 · 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **30** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | *(all closed: **59**-**70**)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
@@ -4534,3 +4534,83 @@ notice going wrong.
 ⚠ **Check the speed unit at the new call site.** `speedKmct` is metres-per-Combat-Turn stored as
 `km/h ÷ 1.2` (see the Chase section in CLAUDE.md), and the damage table reads it directly. A
 dialog that collects plain km/h and passes it through would overstate every crash by ~20%.
+
+---
+
+<a id="75"></a>
+## 75. Dermal armour negates flechette's damage-level increase — *SR3 p.116*
+
+**Found during the table sweep, 2026-08-30**, while fixing the flechette armour rule
+([tables.test.mjs](../tests/tables.test.mjs)). Recorded then in `flechetteArmor`'s doc comment
+but never given a number.
+
+> "Against unarmored targets, flechette rounds increase their Damage Codes by one level…
+> **Dermal armor negates the Damage Level increase of flechette ammunition.**"
+
+`_postSoakCard` stages the level up whenever `max(ballistic, impact) <= 0`. A character whose
+only protection is **dermal armour or a dermal sheath** is unarmoured by that test — worn armour
+is 0 — so they take the increase the book explicitly spares them.
+
+### Why it is not a one-line fix
+
+⚠ **Dermal armour is not tracked apart from other Impact sources.** It ships as cyberware and
+bioware whose `Mods` carry `IMP`, which `SR3EMods` reports as **unmapped** — there is no
+`bonusImpact` field for it to land in, so the system does not know a character has any. The same
+gap blocks Mystic Armor's Impact from stacking with worn armour, which is why that one is applied
+at the soak card from `derived.mysticArmor` rather than from an armour field.
+
+So this needs the armour channel that `IMP`/`BAL` have been waiting for since [#8](#8):
+
+1. `bonusImpact` / `bonusBallistic` on `CyberwareData` and `BiowareData` — a data-model change,
+   so a full Foundry restart.
+2. Teach `SR3EMods` to map `IMP` and `BAL` instead of reporting them unmapped, and regenerate
+   `srcg-bonuses.js`. **23 entries** report `IMP` or `BAL` as unmapped, so this is not one
+   item. (The generator's overall "unmapped" figure is larger — it also counts TAS/HAC/CPL and
+   the rigger codes, which are a different gap.)
+3. Track dermal sources separately from worn armour, because only they negate the increase —
+   a summed "total impact" cannot answer the question.
+4. `_postSoakCard`: skip the level increase when dermal armour is present.
+
+⚠ Step 3 is the real design. Everything else is plumbing.
+
+⚠ Getting steps 1-2 wrong would make **every** armour-granting implant apply twice, since
+Mystic Armor and Penetrating Strike already adjust Impact at the soak card. Check
+`SR3EActor._postSoakCard` before adding a second source.
+
+<a id="76"></a>
+## 76. The Wound Table has no flow to attach to — *SR3 p.126*
+
+Verified during the table sweep and left untested for the honest reason that **nothing reads
+it**. Recorded so it is not re-discovered.
+
+> "Have each physically damaged character make a Body Test against a target number set by his
+> or her overall wound level as noted on the **Wound Table**."
+
+| Wound Level | Target Number |
+|---|---|
+| Light | 2 |
+| Moderate | 4 |
+| Serious | 6 |
+
+⚠ **"Use only the character's natural Body Rating; cyberware offers no benefits for this test."**
+So it reads `body.base`, not `body.value` — the one place in the system where that distinction is
+stated outright rather than inferred. Rapid Healing's dice ([#70](#70)) ride the `healing`
+situation and DO apply, since the power is magic rather than cyberware.
+
+⚠ **Physical only.** *"Stun damage can only be recovered by taking the night off and sleeping
+in."* A healing flow that offers to heal Stun is offering something the rules do not have.
+
+⚠ **A test taken in combat costs the character their entire next Combat Turn** — *"If they do it
+during Combat they lose their entire next Combat Turn"* — which is the only reason the timing
+matters mechanically rather than narratively.
+
+### What it would take
+
+A Healing Test flow: pick the track, read the level, roll `body.base` + any `healing` situational
+dice against the Wound Table TN, and divide the successes into the base time from the Healing
+Table. The modifiers on p.127 (Awakened patient +2, bad conditions +1, terrible +3, the Body
+Attribute band −0/−1/−2/−3, no medkit +4) belong with it, and none of them are implemented
+either.
+
+⚠ **Do not add the table to `SR3E` before there is a consumer.** An unused table is a claim
+nobody checks — which is exactly what this sweep found everywhere else.
