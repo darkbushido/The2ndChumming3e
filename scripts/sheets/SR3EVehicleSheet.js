@@ -883,6 +883,15 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     // Vehicle stats
     const autonav  = sys.attributes?.autonav?.base ?? 0;
     const handling = (sys.attributes?.handling?.base ?? 4) + defTnMod;   // defaulting TN modifier baked in
+
+    /* Vehicle damage raises the target number of every test involving the vehicle
+     * (SR3 p.145) — the book's own Crash Test example opens with "Cruiser has taken Serious
+     * damage +3". Auto-filled from the damage track and editable, like every other row here.
+     */
+    const _vLevel = game.sr3e.SR3EActor.vehicleDamageLevel(
+      sys.damage?.value ?? 0, sys.derived?.damageMax ?? ((sys.attributes?.body?.base ?? 4) * 2));
+    const _vDmg   = game.sr3e.SR3EActor.vehicleDamageModifiers(_vLevel);
+    const _vLabel = { L: 'Light', M: 'Moderate', S: 'Serious', D: 'Destroyed' }[_vLevel] ?? 'Undamaged';
     const basePool = skillDice + autonav;
 
     // Check for VCR cyberware
@@ -928,6 +937,15 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
           ${vcrRating ? infoRow('VCR', `Rating ${vcrRating} — Control Pool = Vehicle Skill when rigging`) : ''}
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;">
+          <label style="${FIELD_S}">Vehicle damage (SR3 p.145)
+            <select id="drv-vdamage" style="${INPUT_S}">
+              <option value="${_vDmg.tn}" selected>${_vLabel}${_vDmg.tn ? ` (+${_vDmg.tn} TN)` : ' (0)'}</option>
+              <option value="0">Undamaged (0)</option>
+              <option value="1">Light (+1)</option>
+              <option value="2">Moderate (+2)</option>
+              <option value="3">Serious (+3)</option>
+            </select>
+          </label>
           <label style="${FIELD_S}">Unfamiliar Vehicle
             <select id="drv-unfamiliar" style="${INPUT_S}">
               <option value="0">No (0)</option>
@@ -994,7 +1012,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
         const update = () => {
           const baseTN     = parseInt(el.querySelector('#drv-tn')?.value   ?? handling);
           const basePoolEl = parseInt(el.querySelector('#drv-pool')?.value ?? basePool);
-          const selIds     = ['#drv-unfamiliar','#drv-stress','#drv-size',
+          const selIds     = ['#drv-vdamage','#drv-unfamiliar','#drv-stress','#drv-size',
                               '#drv-weather','#drv-terrain','#drv-combat',
                               '#drv-datajack','#drv-rigger'];
           const mods = selIds.reduce((sum, id) => {
@@ -1036,7 +1054,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
             const getInt = id => parseInt(el.querySelector(id)?.value ?? 0);
             const baseTN   = getInt('#drv-tn');
             const totalPool = getInt('#drv-pool');
-            const selIds   = ['#drv-unfamiliar','#drv-stress','#drv-size',
+            const selIds   = ['#drv-vdamage','#drv-unfamiliar','#drv-stress','#drv-size',
                               '#drv-weather','#drv-terrain','#drv-combat',
                               '#drv-datajack','#drv-rigger'];
             const mods = selIds.reduce((sum, id) => {

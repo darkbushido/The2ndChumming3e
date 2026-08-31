@@ -227,6 +227,98 @@ export async function run(t) {
                            : 'every nocked-ammo category has range bands', missingBands.length, 0);
 
   /* ════════════════════════════════════════════════════════════════════════════
+   *  VEHICLE DAMAGE MODIFIERS TABLE · p.145
+   *
+   *    Damage Level   Target Number   Initiative Penalty   Speed Rating Reduction
+   *    Light               +1                -1            No reduction
+   *    Moderate            +2                -2            25 percent
+   *    Serious             +3                -3            50 percent
+   *
+   * ⚠ Three rows only — Destroyed is an outcome, not a level carrying modifiers.
+   * ⚠ Extracted from `-raw` rather than `-layout`: the layout dump interleaves the TN and
+   *   Initiative columns so the penalties appear one row low, which reads as Light having no
+   *   Initiative penalty and a dangling −3 with no row. They are −1/−2/−3, mirroring the
+   *   character Damage Modifiers Table exactly.
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const vd = l => SR3EActor.vehicleDamageModifiers(l);
+  t.is('Light is +1 TN',            vd('L').tn, 1);
+  t.is('Moderate is +2 TN',         vd('M').tn, 2);
+  t.is('Serious is +3 TN',          vd('S').tn, 3);
+  t.is('Light is −1 Initiative',    vd('L').initiative, -1);
+  t.is('Moderate is −2 Initiative', vd('M').initiative, -2);
+  t.is('Serious is −3 Initiative',  vd('S').initiative, -3);
+  t.is('Light has NO speed reduction', vd('L').speedReduction, 0);
+  t.is('Moderate reduces speed 25%',   vd('M').speedReduction, 0.25);
+  t.is('Serious reduces speed 50%',    vd('S').speedReduction, 0.5);
+  // The TN modifier and the Initiative penalty mirror each other, as they do for characters.
+  t.ok('TN modifier and Initiative penalty are equal and opposite at every level',
+    ['L', 'M', 'S'].every(l => vd(l).tn === -vd(l).initiative));
+  t.is('an undamaged vehicle has no modifiers', vd(null).tn, 0);
+  t.is('…and no speed reduction', vd(null).speedReduction, 0);
+  t.is('Destroyed is not a modifier row', vd('D').tn, 0);
+  t.is('lower case works too', vd('m').tn, 2);
+  t.is('an unknown level does not throw', vd('zzz').tn, 0);
+
+  /* ==== A vehicle's track is Body × 2, NOT the character Condition Monitor ==== */
+  const vl = (b, m) => SR3EActor.vehicleDamageLevel(b, m);
+  t.is('undamaged is null, not L', vl(0, 12), null);
+  t.is('a Body 6 truck: 1 of 12 boxes is Light',    vl(1, 12),  'L');
+  t.is('…6 of 12 is Moderate (half)',               vl(6, 12),  'M');
+  t.is('…9 of 12 is Serious (three quarters)',      vl(9, 12),  'S');
+  t.is('…12 of 12 is Destroyed',                    vl(12, 12), 'D');
+  // ⚠ The bands are PROPORTIONAL because the track length varies with Body. Copying the
+  // character thresholds (1/3/6) onto a vehicle would make a Body 2 drone — a 4-box track —
+  // need 6 boxes to reach Serious, which it can never reach.
+  t.is('a Body 2 drone: 2 of 4 boxes is Moderate', vl(2, 4), 'M');
+  t.is('…3 of 4 is Serious',                       vl(3, 4), 'S');
+  t.is('…4 of 4 is Destroyed',                     vl(4, 4), 'D');
+  t.ok('a small drone CAN reach Serious', vl(3, 4) === 'S');
+  t.is('overkill is still Destroyed', vl(99, 4), 'D');
+  t.is('a zero-length track does not divide by zero', vl(1, 0), 'D');
+
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  BARRIER RATING TABLE · p.124
+   *
+   * ⚠ Read out of the SOURCE — the materials are a local array inside the Barrier Damage
+   * tool, not exported config, so retyping them here would assert nothing.
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const fsB = await import('node:fs');
+  const sr3eSrc = fsB.readFileSync(new URL('../scripts/sr3e.js', import.meta.url), 'utf8');
+  const matBlock = /const MATERIALS = \[([\s\S]*?)\];/.exec(sr3eSrc)?.[1] ?? '';
+  const materials = {};
+  for (const m of matBlock.matchAll(/name:\s*'([^']+)'[^}]*?br:\s*(\d+)/g)) {
+    materials[m[1]] = Number(m[2]);
+  }
+  t.is('the barrier materials were found in the source', Object.keys(materials).length, 9);
+  t.eq('every Barrier Rating matches the book', materials, {
+    'Standard Glass':                     2,
+    'Cheap Material / Regular Tires':     3,
+    'Average Material / Ballistic Glass': 4,
+    'Heavy Material':                     6,
+    'Reinforced / Armored Glass':         8,
+    'Structural Material':               12,
+    'Heavy Structural Material':         16,
+    'Armored / Reinforced Material':     24,
+    'Hardened Material':                 32,
+  });
+  // Ratings must ascend down the list, or the dropdown reads as unordered to a GM scanning it.
+  const brs = Object.values(materials);
+  t.ok('barrier ratings ascend', brs.every((v, i) => i === 0 || v > brs[i - 1]));
+
+  /* ⚠ **Blast doubles the barrier; Demolitions does not.** p.119: "compare the remaining
+   * Power of the blast … against TWICE the Barrier Rating", and "If a character uses
+   * Demolitions Skill to place explosive charges, treat the barrier as though it had a NORMAL
+   * Barrier Rating". The tool offers exactly these two and gets both right.
+   *
+   * ⚠ **Not modelled, and it is a scope gap rather than a wrong rule:** p.127 doubles the
+   * barrier against firearms and other ranged attacks, against melee, and against combat
+   * spells — while elemental manipulation spells use the normal rating. The Barrier Damage
+   * tool covers explosives only. */
+  t.ok('the tool offers blast and demolitions',
+    /value="blast"/.test(sr3eSrc) && /value="demo"/.test(sr3eSrc));
+  t.ok('blast doubles the Barrier Rating', /att === 'blast' \? br \* 2 : br/.test(sr3eSrc));
+
+  /* ════════════════════════════════════════════════════════════════════════════
    *  AMMUNITION · p.116
    *
    *   Explosive    "Increase the Power Rating of any attack made with explosive rounds by 1."

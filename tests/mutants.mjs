@@ -500,4 +500,46 @@ export const MUTANTS = [
           + 'is the common case for light armour and is why it survived',
     impl:   ({ ballistic = 0, impact = 0 } = {}) => Math.max(0, Math.max(ballistic, impact)) * 2,
   },
+
+  {
+    id:     'vehicle-damage-initiative-not-mirrored',
+    suite:  'tables',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'vehicleDamageModifiers',
+    was:    'the VEHICLE DAMAGE MODIFIERS TABLE (p.145) reads +1/-1, +2/-2, +3/-3 - the '
+          + 'Initiative penalty mirrors the target-number modifier exactly, as it does for '
+          + 'characters. The -layout PDF dump interleaves the two columns so the penalties '
+          + 'appear one row low, which reads as Light having no Initiative penalty at all and '
+          + 'a dangling -3 belonging to no row; that misreading is what this pins',
+    impl:   (level) => {
+      const L = String(level ?? '').trim().toUpperCase();
+      switch (L) {
+        case 'L': return { tn: 1, initiative:  0, speedReduction: 0    };
+        case 'M': return { tn: 2, initiative: -1, speedReduction: 0.25 };
+        case 'S': return { tn: 3, initiative: -2, speedReduction: 0.5  };
+        default:  return { tn: 0, initiative:  0, speedReduction: 0    };
+      }
+    },
+  },
+
+  {
+    id:     'vehicle-damage-uses-character-thresholds',
+    suite:  'tables',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'vehicleDamageLevel',
+    was:    'a vehicle track is Body x 2 boxes, so its damage bands are PROPORTIONAL to the '
+          + 'track. Using the character Condition Monitor thresholds (1/3/6) means a Body 2 '
+          + 'drone with a 4-box track needs 6 boxes to reach Serious and can never reach it, '
+          + 'while a Body 8 lorry is Serious at 6 of 16',
+    impl:   (boxes, _max) => {
+      const b = Math.max(0, Math.trunc(Number(boxes) || 0));
+      if (b <= 0) return null;
+      if (b >= 10) return 'D';
+      if (b >= 6)  return 'S';
+      if (b >= 3)  return 'M';
+      return 'L';
+    },
+  },
 ];

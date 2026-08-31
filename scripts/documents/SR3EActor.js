@@ -3580,6 +3580,64 @@ _prepareCharacter(sys, attr) {
   }
 
   /**
+   * VEHICLE DAMAGE MODIFIERS TABLE · *SR3 p.145*
+   *
+   * | Damage Level | Target Number | Initiative Penalty | Speed Rating Reduction |
+   * |---|---|---|---|
+   * | Light    | +1 | −1 | No reduction |
+   * | Moderate | +2 | −2 | 25 percent |
+   * | Serious  | +3 | −3 | 50 percent |
+   *
+   * > "The damage modifier to the target number applies to ALL TESTS THAT INVOLVE THE VEHICLE.
+   * > The Initiative penalty reduces Initiative results generated for the vehicle's driver. The
+   * > Speed Rating Reduction reduces the vehicle's Speed Rating."
+   *
+   * ⚠ **Three rows only.** Destroyed is not a row — a destroyed vehicle is not being driven,
+   * and the Impact Damage Levels Table's "Destroyed (D)" is its own outcome rather than a
+   * damage level carrying modifiers.
+   * ⚠ **The TN modifier applies to every test involving the vehicle**, not only to Driving —
+   * Gunnery from a damaged vehicle is affected too. Only the Driving Test consumes it today,
+   * so the rest is the GM's to apply; that is why this returns the numbers rather than
+   * folding them into a roll.
+   * ⚠ **Speed reduction also caps maximum speed**, because *"the vehicle's maximum speed is
+   * equal to its Speed Rating multiplied by 1.5"*, and the reduction applies before that.
+   *
+   * @param {string} level  'L' | 'M' | 'S' (case-insensitive), or a box count via
+   *                        `SR3EActor.vehicleDamageLevel`
+   * @returns {{tn:number, initiative:number, speedReduction:number}} — `speedReduction` is a
+   *          FRACTION (0, 0.25, 0.5), not a percentage.
+   */
+  static vehicleDamageModifiers(level) {
+    const L = String(level ?? '').trim().toUpperCase();
+    switch (L) {
+      case 'L': return { tn: 1, initiative: -1, speedReduction: 0    };
+      case 'M': return { tn: 2, initiative: -2, speedReduction: 0.25 };
+      case 'S': return { tn: 3, initiative: -3, speedReduction: 0.5  };
+      default:  return { tn: 0, initiative:  0, speedReduction: 0    };
+    }
+  }
+
+  /**
+   * A vehicle's damage level from its filled boxes.
+   *
+   * ⚠ Vehicles do NOT use the character Condition Monitor. Their track is `Body × 2` boxes
+   * (`_prepareVehicle`), with the vehicle disabled at `Body`. The bands are therefore
+   * proportional to the track rather than the fixed 1/3/6 a character uses — copying the
+   * character thresholds onto a vehicle would make a Body 6 truck Serious at 6 of 12 boxes
+   * and a Body 2 drone Serious at 6 of 4, which it can never reach.
+   */
+  static vehicleDamageLevel(boxes, maxBoxes) {
+    const b = Math.max(0, Math.trunc(Number(boxes) || 0));
+    const m = Math.max(1, Math.trunc(Number(maxBoxes) || 1));
+    if (b <= 0) return null;
+    const frac = b / m;
+    if (frac >= 1)    return 'D';
+    if (frac >= 0.75) return 'S';
+    if (frac >= 0.5)  return 'M';
+    return 'L';
+  }
+
+  /**
    * Crash / impact damage from speed · *SR3 p.145, p.147*
    *
    * > "The Power of a crash is equal to the vehicle's speed divided by 10 and rounded up"
