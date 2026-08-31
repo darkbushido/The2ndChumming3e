@@ -543,8 +543,23 @@ ODM-\* rawdata), **`mat`** = this sourcebook, **`matrix-defragged`** = the commu
 > **Delete the marker only when the code is fixed** — and check the book, not this file, when it is.
 >
 > Sections with no citation have **not been audited** against RAW yet. Absence of a flag is not
-> evidence of correctness. Audited so far: Rule of Six/One · Defaulting · Damage staging · Combat
-> Pool · pool refresh · initiative −10 · dodge resolution.
+> evidence of correctness.
+>
+> **Audited against the books so far:** Rule of Six/One · Defaulting · Damage staging · Combat
+> Pool · pool refresh · initiative −10 · dodge resolution · Spell Pool · astral Initiative ·
+> **every lookup table** (`tests/tables.test.mjs`: Damage Modifiers and the Condition Monitor
+> thresholds, the Weapon Range Table, Impact Projectile multipliers, the Grenade Range Table,
+> Impact Damage Levels and crash Power, ammunition, R3 flux ranges).
+>
+> ⚠ **THE MATRIX DEFRAGGED SECTION CANNOT BE AUDITED AT ALL.** *Matrix rules (Matrix Defragged
+> v2)* — System Rating, Security Tiers, Hacking Pool, User Modes, the hacking procedure,
+> Overwatch/Convergence, cybercombat, IC grading, the Matrix Condition Monitor and the Sys/Sec
+> modifiers — is a **community supplement that is not in the PDF library**, and carries one
+> citation across the whole block. Everything in it is unverifiable here: `rawdata/MDF-*.json`
+> holds its DATA but no rules text. So those sections are this project's own specification, not
+> a transcription anyone has checked. `tests/tables.test.mjs` asserts the tier tables agree with
+> **this file** and with each other, and says at the assertion that this is not independent
+> verification. Do not read a green suite there as "matches the book" — there is no book.
 
 ### Dice rolling — Rule of Six & Rule of One  · *SR3 p.38-39*
 - All rolls are d6 success-counting (result ≥ TN = success)
@@ -728,7 +743,9 @@ there is no surgery flow to hang it on; a GM applies it by editing the item's
 
 ⚠ Adding this field was a **data-model change**: it needs a full Foundry restart, not F5.
 
-### Astral state (Awakened characters)
+### Astral state (Awakened characters)  · *astral Initiative: SR3 p.41, p.62*
+> "In astral space, base Reaction for magicians is equal [to Intelligence]… and a +20
+> Initiative bonus" (p.41); worked at p.62 as "(Intelligence + 20) + 1D6".
 Toggled on the Magic tab. Stored as `system.astralMode` (persisted):
 - `''` — no state set (default)
 - `'physical'` — explicitly Physical Plane (grey badge in combat tracker)
@@ -931,7 +948,9 @@ inside the dialog's FA-only section, so SA's second shot and BF's second burst w
 
 **Vehicle-mounted weapons** keep their own AV-munition checkbox in the `🚗` firing dialog — they do **not** use the clip/reload system (built for vehicle-vs-vehicle). Character firearm dialogs no longer have a manual AV checkbox (driven by Anti-Vehicle ammo type).
 
-### Range (firearms, bows/crossbows, thrown)
+### Range (firearms, bows/crossbows, thrown)  · *SR3 p.111*
+Every band and Strength multiplier is asserted against the printed table in
+`tests/tables.test.mjs` — all 15 firearm rows and all 6 projectile rows match.
 Auto-measured from tokens when available, otherwise manual. Applies to `firearm`/`projectile`/`thrown` in the single-target `rollWeapon` path (AoE/grenades use the scatter flow instead).
 - **Distance**: `SR3EItem._measureDistance(aToken, tToken)` via `canvas.grid.measurePath` (scene units assumed **metres**). Attacker token = `actor.getActiveTokens()[0]`. Target token = the single canvas target (`game.user.targets`) if present, else the chosen actor's first token. Target acquisition: `SR3EItem._acquireCanvasTarget()` (one canvas target → skips the actor dialog), else `_promptTarget`.
 - **Bands**: `SR3EItem._getRangeBands(actor)` → weapon `rangeOverride` ("5/15/30/50") → fixed metre table `SR3E.weaponRanges[category]` (firearms) → Strength-scaled `SR3E.weaponRangeMultipliers[category]` × effective STR (bows/thrown).
@@ -1259,8 +1278,11 @@ Power (number) + Level (L/M/S/D) + optional Stun flag
   `startCombat()` gained its own reset, the next fight refreshed at round 1 either way, so declining
   achieved nothing. Do not restore it — it is a question with only one meaningful answer.
 
-### Spell pool (Awakened characters only)
-- Derived: ⌊(INT + WIL + MAG) / 3⌋ (effective Magic; SR3 RAW Spell Pool)
+### Spell pool (Awakened characters only)  · *SR3 p.43*
+> "A character's Spell Pool is equal to Intelligence plus Willpower plus Magic Rating,
+> divided by 3, rounded down."
+
+- Derived: ⌊(INT + WIL + MAG) / 3⌋ (effective Magic)
 - Tracked via `spellPoolSpent` on actor system (manual adjustment via `spellPoolMod`)
 - Available = derived − spent
 - Spent when allocated to spellcasting
