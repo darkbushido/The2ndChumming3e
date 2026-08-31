@@ -3554,11 +3554,42 @@ _prepareCharacter(sys, attr) {
     return html;
   }
 
+  /**
+   * Crash / impact damage from speed · *SR3 p.145, p.147*
+   *
+   * > "The Power of a crash is equal to the vehicle's speed divided by 10 and rounded up"
+   * > (p.145)
+   *
+   * **IMPACT DAMAGE LEVELS TABLE** (p.147), in metres per Combat Turn:
+   *
+   * | Speed | Level |
+   * |---|---|
+   * | 1–20 | Light |
+   * | 21–60 | Moderate |
+   * | 61–200 | Serious |
+   * | 201+ | Destroyed |
+   *
+   * ⚠ **The unit is METRES PER COMBAT TURN, not km/h.** Everything in the chase layer stores
+   * speed as `km/h ÷ 1.2`, and this reads it directly — so a dialog that collects km/h and
+   * passes it through overstates every crash by about 20%. The field is named `speedKmct` for
+   * that reason.
+   *
+   * ⚠ **Power floors at 1.** A vehicle barely moving still hits something; a Power of 0 would
+   * make the Damage Resistance Test automatic.
+   *
+   * ⚠ Pure and separated from the card so it can be tested — it was inline, and the whole
+   * crash path had no coverage of any kind. See `tests/tables.test.mjs`.
+   */
+  static crashDamage(speedMetresPerTurn) {
+    const speed = Math.max(0, Number(speedMetresPerTurn) || 0);
+    const power = Math.max(1, Math.ceil(speed / 10));
+    const level = speed >= 201 ? 'D' : speed >= 61 ? 'S' : speed >= 21 ? 'M' : 'L';
+    return { power, level };
+  }
+
   static _buildCrashDamageHtml(ctx) {
-    // speedKmct stored in km/ct; standard SR3 impact table
-    const speedKmct = ctx.speedKmct ?? 0;
-    const power     = Math.max(1, Math.ceil(speedKmct / 10));
-    const level     = speedKmct >= 201 ? 'D' : speedKmct >= 61 ? 'S' : speedKmct >= 21 ? 'M' : 'L';
+    const speedKmct       = ctx.speedKmct ?? 0;
+    const { power, level } = SR3EActor.crashDamage(speedKmct);
     const soakCtx   = JSON.stringify({
       vehicleActorId:    ctx.vehicleActorId,
       vehicleName:       ctx.vehicleName,

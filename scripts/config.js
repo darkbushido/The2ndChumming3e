@@ -863,6 +863,20 @@ export const SR3E = {
   // TN modifier per band relative to base TN 4 — book TNs are Short 4 / Medium 5 / Long 6 / Extreme 9.
   rangeTN: [0, 1, 2, 5], // Short, Medium, Long, Extreme
 
+  /**
+   * Grenades and grenade launchers use a DIFFERENT row of target numbers · *SR3 p.119*
+   *
+   * The GRENADE RANGE TABLE heads its columns **4 / 5 / 8 / 9**, not the 4 / 5 / 6 / 9 of the
+   * WEAPON RANGE TABLE — so a long throw is TN 8, two harder than a rifle shot at long range.
+   * The WEAPON RANGE TABLE says the same thing about the launcher from the other direction:
+   * its Long band carries the footnote *"** Target number 8: see page 119"*.
+   *
+   * ⚠ **The grenade flow used `rangeTN` until 2026-08-30**, making every long-range throw two
+   * points easier than the book allows. Nothing distinguished the two tables, and the shared
+   * array looked authoritative because every other weapon does use it.
+   */
+  grenadeRangeTN: [0, 1, 4, 5], // Short 4, Medium 5, Long 8, Extreme 9
+
   // Grenade types (Grenade Range/Scatter tables). scatterDice = Nd6 scatter; scatterReduction =
   // metres removed per net hit; range bands [S,M,L,E] are STR multipliers, or fixed metres for the
   // launcher. Damage code/level come from the weapon item; falloff is −1 power per metre.

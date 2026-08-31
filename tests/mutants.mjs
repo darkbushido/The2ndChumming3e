@@ -435,4 +435,53 @@ export const MUTANTS = [
       return { dice, labels };
     },
   },
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+   *  The lookup tables
+   * ══════════════════════════════════════════════════════════════════════════════ */
+
+  {
+    id:     'wound-modifier-thresholds-shifted',
+    suite:  'tables',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: '_trackMod',
+    was:    'the Condition Monitor puts Moderate at 3 boxes and Serious at 6 - the book states '
+          + 'both in worked prose ("should have only three boxes of damage filled in", and '
+          + 'Cybersushi filling 6 boxes for a Serious wound). Shifting either boundary by one '
+          + 'changes the target number of EVERY roll a wounded character makes',
+    impl:   (boxes) => (boxes >= 7 ? 3 : boxes >= 4 ? 2 : boxes >= 1 ? 1 : 0),
+  },
+
+  {
+    id:     'crash-power-rounds-down',
+    suite:  'tables',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'crashDamage',
+    was:    'p.145 - "The Power of a crash is equal to the vehicle\'s speed divided by 10 and '
+          + 'ROUNDED UP". Rounding down understates nine speeds in ten, and at low speed it '
+          + 'drops the Power to 0, which would make the Damage Resistance Test automatic',
+    impl:   (speed) => {
+      const s = Math.max(0, Number(speed) || 0);
+      return { power: Math.floor(s / 10),
+               level: s >= 201 ? 'D' : s >= 61 ? 'S' : s >= 21 ? 'M' : 'L' };
+    },
+  },
+
+  {
+    id:     'crash-damage-levels-off-by-one',
+    suite:  'tables',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'crashDamage',
+    was:    'the IMPACT DAMAGE LEVELS TABLE (p.147) breaks at 21, 61 and 201 metres per turn. '
+          + 'Reading the bands as 20/60/200 puts every boundary speed one level too low, and '
+          + 'boundary speeds are exactly where a GM types a round number',
+    impl:   (speed) => {
+      const s = Math.max(0, Number(speed) || 0);
+      return { power: Math.max(1, Math.ceil(s / 10)),
+               level: s > 201 ? 'D' : s > 61 ? 'S' : s > 21 ? 'M' : 'L' };
+    },
+  },
 ];

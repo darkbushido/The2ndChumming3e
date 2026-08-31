@@ -302,7 +302,6 @@ export class SR3EItem extends Item {
       gmSituational:     Math.trunc(Number(gm.situational) || 0),
       gmSituationalSide: gm.situationalSide ?? null,
       gmSetTN:          gm.adjudicated === true,
-      gmSituational:    Math.trunc(Number(gm.situational) || 0),
       calledShot:       calledShot.calledShot,
       charging:         calledShot.charging === true,
       calledShotTarget: calledShot.calledShotTarget,
@@ -1917,7 +1916,10 @@ export class SR3EItem extends Item {
     const throwDist  = opts.throwDistance ?? null;
     const str        = Math.max(1, actor?.system?.attributes?.strength?.value
                               ?? actor?.system?.attributes?.strength?.base ?? 1);
-    const rangeTNarr = SR3E.rangeTN ?? [0, 1, 2, 5];
+    // ⚠ GRENADES have their own target-number row — Long is 8, not 6 (SR3 p.119). This used
+    // to read `rangeTN`, which is the FIREARMS row, so every long throw was two points easier
+    // than the book allows.
+    const rangeTNarr = SR3E.grenadeRangeTN ?? [0, 1, 4, 5];
     const gTypes     = SR3E.grenadeTypes ?? {};
 
     // Range band for a grenade type at the throw distance → { label, tnMod, beyond } or null.
