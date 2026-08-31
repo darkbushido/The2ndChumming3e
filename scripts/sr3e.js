@@ -1956,7 +1956,17 @@ Hooks.on('updateActor', async (actor, changes) => {
     const physFull = (w.physical?.value ?? 0) >= (w.physical?.max ?? 10);
     const stunFull = (w.stun?.value ?? 0) >= (w.stun?.max ?? 10);
     const dead     = physFull && (w.overflow?.value ?? 0) >= body;
-    const down     = physFull || stunFull;
+
+    /* ⚠ An engaged Pain Editor prevents a Stun knockout · M&M p.71 — "The character will not
+     * be rendered unconscious from Stun damage, though he might fall unconscious if he
+     * reaches or surpasses Deadly Physical damage." A full PHYSICAL track still drops them.
+     *
+     * ⚠ This is the third and last clause of the editor's rule; the other two (ignoring Stun
+     * wound modifiers, and +1 WIL / -1 INT) live in the derivation. All three are the same
+     * item, so a future change to one should check the others. */
+    const painEditor = (actor.system.derived?.activeAugmentations ?? [])
+      .some(a => a.kind === 'toggle' && /pain editor/i.test(a.name ?? ''));
+    const down     = physFull || (stunFull && !painEditor);
 
     await set('dead', dead, true);                // skull overlay
     await set('unconscious', down && !dead);      // KO when down but not dead

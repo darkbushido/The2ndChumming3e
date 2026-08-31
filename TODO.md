@@ -24,7 +24,7 @@ independent.
 | 🔵 In progress | *(none)* |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | **71** · **73** · **74** *(**72** done)* |
-| 📕 Rules not implemented | 3 · 4 · 47 · 48 · 49 · 53 · 57 *(**30** done)* |
+| 📕 Rules not implemented | 4 · 47 · 48 · 49 · 53 · 57 *(**3** · **30** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | *(all closed: **59**-**70**)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
@@ -1541,7 +1541,7 @@ that drift item is picked up, not after.
 
 ### 📕 Rules not implemented
 
-## 3. Implement the Pain Editor
+## 3. ✅ Implement the Pain Editor — **DONE 2026-08-31, with TODO 30**
 
 **Data-present, mechanics-absent.** In the `sr3e-mm-bioware` pack; `scripts/` has zero hits
 for "pain editor".
@@ -1551,6 +1551,29 @@ downstream — TN penalties on every `rollPool`, Combat Pool derivation, initiat
 Check M&M for exact behaviour incl. interaction with overflow/unconsciousness thresholds,
 and whether boxes still track normally while the penalty is ignored. Keep the resulting
 wound modifier GM-overridable.
+
+### What landed
+
+Built as part of [#30](#30)'s triggered-augmentation mechanism, since the editor is one of the
+two shipped items that needed it. All three of the rule's clauses (M&M p.71):
+
+1. **+1 Willpower, −1 Intelligence** while engaged — applied in `_prepareCharacter`.
+2. **Stun wound modifiers ignored.** ⚠ The modifier is RECOMPUTED from the physical track, not
+   zeroed — *"Penalties from Physical damage are applied, but without the player's
+   knowledge."* Zeroing would make it total immunity. The boxes themselves are untouched, so
+   the track still records everything.
+3. **No Stun knockout** — the auto-defeated hook drops `stunFull` from `down` while engaged.
+   A full PHYSICAL track still drops them, per *"he might fall unconscious if he reaches or
+   surpasses Deadly Physical damage."*
+
+Plus the concealment the rule asks for: behind the `painEditorHidesWounds` world setting (off
+by default), the player's own sheet shows `?` and the GM sees the truth.
+
+⚠ **The three clauses are one item and should move together.** Two live in the derivation and
+one in the `updateActor` hook in `sr3e.js`; a change to any should check the others.
+
+⚠ **Not modelled:** the +4 TN to tactile Perception, and the Biotech (4) Test the character can
+make to learn their own condition. Both are stated on the item for the GM.
 
 ## 4. Review move-by-wire calculations
 
