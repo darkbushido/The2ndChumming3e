@@ -373,6 +373,137 @@ export async function run(t) {
   t.ok('heavy ballistic is NOT doubled', fl({ ballistic: 10, impact: 1 }) === 10);
 
   /* ════════════════════════════════════════════════════════════════════════════
+   *  ASSENSING TABLE · p.172
+   *
+   *    Successes   Information Gained
+   *        0       None.
+   *       1-2      health and cyberware presence · general emotional state · class of a
+   *                magical subject · mundane or Awakened · aura recognition
+   *       3-4      all of the above PLUS Essence/Magic comparison · implant locations ·
+   *                diagnosis · exact emotional state · Force comparison · astral signatures
+   *       5+       all of the above plus the deepest tier
+   *
+   * ⚠ Read out of the source: the tiers are template literals inside `_postAssensingResult`,
+   * so the BOUNDARIES are what can be checked, and they are what an off-by-one would break.
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const fsA = await import('node:fs');
+  const actorTxt = fsA.readFileSync(new URL('../scripts/documents/SR3EActor.js', import.meta.url), 'utf8');
+  // ⚠ the DEFINITION, not the first mention — `_postAssensingResult` is called ~4000 lines
+  // before it is declared, and slicing from the call site reads the wrong function entirely.
+  const assenBlock = actorTxt.slice(actorTxt.indexOf('static async _postAssensingResult'));
+  t.ok('the 1-2 band ends at 2',  /successes <= 2\)/.test(assenBlock.slice(0, 4000)));
+  t.ok('the 3-4 band ends at 4',  /successes <= 4\)/.test(assenBlock.slice(0, 4000)));
+  t.ok('0 successes is its own case, not folded into 1-2',
+    /successes === 0|successes <= 0|!successes/.test(assenBlock.slice(0, 4000)));
+  // The deeper tiers ADD to the shallower ones — "All of the above plus" — so the 3-4 body
+  // must include the 1-2 body rather than replacing it.
+  t.ok('the 3-4 tier includes the 1-2 tier rather than replacing it',
+    /TIER_1_2 \+/.test(assenBlock.slice(0, 4000)));
+  t.ok('…and the 5+ tier includes both',
+    /TIER_1_2 \+[\s\S]{0,400}TIER_3_4_EXTRA[\s\S]{0,200}TIER_5_EXTRA/.test(assenBlock.slice(0, 4000)));
+
+  /* ==== Aura Reading as a Complementary Skill · p.173 ====
+   *
+   * > "Roll the Complementary Skill against a Target Number 4. Every two successes add one
+   * > success to the Assensing Test"
+   */
+  t.ok('Aura Reading converts two successes into one, rounding down',
+    /bonus\s*=\s*Math\.floor\(successes \/ 2\)/.test(actorTxt));
+
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  Grenade scatter direction
+   *
+   * ⚠ **NOT verified against the book, and it cannot be.** The Scatter Diagram (p.118) is a
+   * GRAPHIC — `pdftotext` returns its heading and nothing else, in either layout or raw mode.
+   * The six labels are therefore unchecked. What is asserted is the shape: a 1d6 roll indexing
+   * six distinct directions, with slot 0 unused so the die value indexes directly.
+   *
+   * The scatter DISTANCE is separately verified against the Grenade Range Table above
+   * (1D6/2D6/3D6 by type), so the part that changes the damage is covered.
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const dirsSrc = /const DIRS = \[([^\]]+)\]/.exec(actorTxt)?.[1] ?? '';
+  const dirs = [...dirsSrc.matchAll(/'([^']*)'/g)].map(m => m[1]);
+  t.is('seven slots — index 0 unused so a 1d6 indexes directly', dirs.length, 7);
+  t.is('slot 0 is empty', dirs[0], '');
+  t.is('six real directions', dirs.slice(1).filter(Boolean).length, 6);
+  t.is('…all distinct', new Set(dirs.slice(1)).size, 6);
+  // A scatter that is neither long nor short would land on the aim point, which is not a
+  // scatter at all — every direction must displace along the throw axis.
+  t.ok('every direction is long or short',
+    dirs.slice(1).every(d => /long|short/i.test(d)));
+  t.ok('the roll is 1d6', /dirRoll\s*=\s*Math\.ceil\(Math\.random\(\) \* 6\)/.test(actorTxt));
+
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  Chase vehicle types · Rigger 3
+   *
+   * ⚠ Relative scores, not book values I could locate — R3's PDF is an OCR'd scan. Asserted
+   * as internal coherence only: unique keys, and an ordering that is not obviously wrong (a
+   * fighter jet must outscore a heavy truck).
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const chaseTxt = fsA.readFileSync(new URL('../scripts/SR3EVehicleChase.js', import.meta.url), 'utf8');
+  const vtBlock = /const VEHICLE_TYPES = \[([\s\S]*?)\];/.exec(chaseTxt)?.[1] ?? '';
+  const vtypes = [...vtBlock.matchAll(/key:\s*'([^']+)'[^}]*?score:\s*(-?\d+)/g)]
+    .map(m => [m[1], Number(m[2])]);
+  t.ok('chase vehicle types were found', vtypes.length > 8);
+  t.is('every chase vehicle key is unique', new Set(vtypes.map(v => v[0])).size, vtypes.length);
+  const score = k => vtypes.find(v => v[0] === k)?.[1];
+  t.ok('a fighter jet outscores a heavy truck', score('fighter_jet') > score('heavy_truck'));
+  t.ok('a motorcycle outscores a car',          score('motorcycle')  > score('car'));
+  t.ok('a car is the zero point',               score('car') === 0);
+
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  Enumerations — shape and completeness, not rules
+   *
+   * These are not lookup tables with numbers to get wrong; they are lists that other code
+   * indexes into. What breaks is a MISSING entry, so that is what is checked.
+   * ════════════════════════════════════════════════════════════════════════════ */
+  t.eq('the five metatypes plus "other"', SR3E.metatypes.map(m => m.value),
+    ['human', 'elf', 'dwarf', 'ork', 'troll', 'other']);
+  // ⚠ `SR3E.racialLimits` does not exist on this branch — it arrives with the adept-powers
+  // work, where Attribute Boost's Drain Table needs it. When that lands, every metatype here
+  // must have an entry or the Drain silently grades against a fallback. Asserted
+  // conditionally so it starts checking the moment the table appears.
+  if (SR3E.racialLimits) {
+    const noLimits = SR3E.metatypes.map(m => m.value).filter(v => !SR3E.racialLimits[v]);
+    t.is(noLimits.length ? `metatypes with no racial limits: ${noLimits.join(', ')}`
+                         : 'every metatype has racial limits', noLimits.length, 0);
+  }
+
+  t.eq('the four fire modes', SR3E.fireModes, ['SS', 'SA', 'BF', 'FA']);
+  t.eq('the five spell categories', SR3E.spellCategories,
+    ['Combat', 'Detection', 'Health', 'Illusion', 'Manipulation']);
+  t.eq('spells are Physical or Mana', SR3E.spellTypes, ['Physical', 'Mana']);
+  t.eq('the three spell durations', SR3E.spellDurations, ['Instant', 'Sustained', 'Permanent']);
+  // ⚠ "(A)" is the ONLY area-effect marker — there is no separate flag, so a range list
+  // missing its (A) variants makes area spells unbuildable.
+  t.ok('the spell ranges include both (A) variants',
+    SR3E.spellRanges.includes('LOS (A)') && SR3E.spellRanges.includes('Touch (A)'));
+  t.eq('the five cyberware grades', SR3E.cyberwareGrades,
+    ['Standard', 'Alpha', 'Beta', 'Delta', 'Used']);
+
+  // Load mechanisms: every nocked-ammo mechanism must exist in the master list, or reload
+  // matching silently finds nothing.
+  const mechs = new Set(Object.keys(SR3E.ammoLoadMechanisms));
+  const orphanMech = Object.values(SR3E.nockedAmmoByCategory).filter(m => !mechs.has(m));
+  t.is(orphanMech.length ? `nocked mechanisms missing from the master list: ${orphanMech.join(', ')}`
+                         : 'every nocked-ammo mechanism is a real load mechanism', orphanMech.length, 0);
+  t.ok('arrow and bolt are both load mechanisms', mechs.has('arrow') && mechs.has('bolt'));
+
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  Overwatch · Matrix Defragged
+   *
+   * ⚠ Community supplement, not in the PDF library — CLAUDE.md is the reference, as for the
+   * security tiers. Documented as a 10-box track with box 10 being Convergence.
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const modelsTxt = fsA.readFileSync(new URL('../scripts/data/ActorDataModels.js', import.meta.url), 'utf8');
+  const owMax = /overwatchCurrent:[^)]*max:\s*(\d+)/.exec(modelsTxt)?.[1];
+  t.is('the Overwatch track is 10 boxes', Number(owMax), 10);
+  // The Matrix Condition Monitor is also 10, and they are different tracks — a shared
+  // constant would couple two unrelated rules.
+  const mcmMax = /orthodoxMatrixCM[\s\S]{0,200}?max:\s*(\d+)/.exec(modelsTxt)?.[1];
+  t.is('the Matrix Condition Monitor is also 10 boxes', Number(mcmMax), 10);
+
+  /* ════════════════════════════════════════════════════════════════════════════
    *  FLUX RANGES · Rigger 3 Revised p.137
    *
    *    0 → 250m   1 → 1km   2 → 2km   3 → 4km   4 → 6km
