@@ -246,6 +246,58 @@ export async function run(t) {
   t.is('a non-boost power targets nothing', target('Imp. Reflexes Level 1'), null);
 
   /* ════════════════════════════════════════════════════════════════════════════
+   *  Enhanced Articulation's Reaction does not reach rigging or decking · M&M p.66
+   *  (TODO 30)
+   *
+   * The bonus is about how the body moves. A rigger jumped into a drone, or a decker in VR,
+   * is not using theirs — but the bonus is perfectly real for physical Reaction, dodging and
+   * ordinary Reaction Tests, so it cannot simply be removed from the attribute.
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const derive = (items, magicType = '') => {
+    const sys = { magicType, attributes: {}, wounds: {} };
+    const attr = {};
+    for (const k of ['body','quickness','strength','charisma','intelligence','willpower','reaction','essence','magic'])
+      attr[k] = { base: 4, value: 4 };
+    SR3EActor.prototype._prepareCharacter.call({ items, system: sys }, sys, attr);
+    return { d: sys.derived, attr };
+  };
+  const ea    = { type: 'bioware', name: 'Enhanced Articulation', system: { bonusRea: 1 } };
+  const wired = { type: 'cyberware', name: 'Wired Reflexes [2]', system: { bonusRea: 4, bonusInitDice: 2 } };
+
+  const withEA = derive([ea]);
+  t.is('Enhanced Articulation raises ordinary Reaction', withEA.attr.reaction.value,
+    withEA.d.reactionNoRigDeck + 1);
+  t.is('…and is removed for rigging and decking',
+    withEA.attr.reaction.value - withEA.d.reactionNoRigDeck, 1);
+
+  // ⚠ The exclusion is specific to THAT bonus, not to cyberware at large. Wired reflexes
+  // apply to decking perfectly well; only Enhanced Articulation is carved out.
+  const withWired = derive([wired]);
+  t.is('wired reflexes are NOT excluded from rigging or decking',
+    withWired.d.reactionNoRigDeck, withWired.attr.reaction.value);
+
+  const withBoth = derive([ea, wired]);
+  t.is('with both, exactly the Enhanced Articulation point comes off',
+    withBoth.attr.reaction.value - withBoth.d.reactionNoRigDeck, 1);
+
+  const plain = derive([]);
+  t.is('no augmentation means nothing to remove',
+    plain.d.reactionNoRigDeck, plain.attr.reaction.value);
+
+  // ⚠ When the ADEPT package wins the p.169 non-stacking contest, the cyber bonus was never
+  // applied — so subtracting its exempt portion would take away a bonus nobody received.
+  const adeptWins = derive(
+    [ea, { type: 'adeptpower', name: 'Imp. Reflexes Level 3',
+           system: { bonusRea: 6, bonusInitDice: 3, hasLevels: false, level: 1 } }],
+    'Adept');
+  t.is('when the adept package wins, nothing is subtracted',
+    adeptWins.d.reactionNoRigDeck, adeptWins.attr.reaction.value);
+  t.is('…and the reflex conflict was indeed resolved to the adept',
+    adeptWins.d.reflex.source, 'adept');
+
+  t.ok('the corrected Reaction never drops below 1', derive([ea]).d.reactionNoRigDeck >= 1);
+
+  /* ════════════════════════════════════════════════════════════════════════════
    *  Effect resolution — the level, and what the power does (TODO 66-70)
    * ════════════════════════════════════════════════════════════════════════════ */
   const lvlOf = SR3E.adeptPowerLevel;

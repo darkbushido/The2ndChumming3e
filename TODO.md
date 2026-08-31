@@ -1764,7 +1764,7 @@ derived data; making it mean "or somebody standing near you" would break every e
 Transparent Skin (`-2CHA if face transparent`). GM-adjudicated. An item carrying only its
 description is the right implementation, exactly as ~40 adept powers are.
 
-### Also here: Enhanced Articulation's Reaction must not reach rigging or decking
+### ✅ Enhanced Articulation's Reaction must not reach rigging or decking — **DONE 2026-08-31**
 
 M&M p.66. `cyberBonus.rea` is one flat number that flows into VCR and Matrix initiative alike.
 Splitting it is independent of everything above and is the smallest real fix in this entry.
@@ -1776,6 +1776,31 @@ Reaction.
 place both the Reaction derivation and `initiativeDice` read. Any split of `cyberBonus.rea` has to
 go through it, or the two will disagree again — which is the exact failure that function was
 written to prevent.
+
+**Narrower than this entry assumed.** Four initiative paths were checked; only two applied the
+bonus at all:
+
+| Mode | Reads | EA applied? |
+|---|---|---|
+| VCR, jumped in | `reaction.base` | no — already excluded |
+| **RCD, remote rigging** | `reaction.value` | **yes — fixed** |
+| Orthodox Matrix | `reaction.base` | no |
+| VR-Hot | `reaction.base` | no |
+| **TRM / AR / VR-Cold** | `derived.initiative` | **yes — fixed** |
+
+`derived.reactionNoRigDeck` now carries Reaction with the exempt bonuses removed, and those two
+sites read it. `SR3E.reactionNotForRigOrDeck` is a name-matched list rather than an item flag —
+a flag would be a data-model change with a migration and a restart, to express one rule about
+one shipped item.
+
+⚠ **The exclusion is that BONUS, not cyberware at large.** Wired reflexes apply to decking
+perfectly well; the carve-out is Enhanced Articulation's alone. That is why the fix subtracts a
+tracked portion rather than switching those paths to `reaction.base`.
+
+⚠ **It only subtracts when the CYBER package actually landed.** `reflexBonus` picks one package
+or the other, so when an adept's Improved Reflexes wins, `cyberBonus.rea` was never applied and
+subtracting its exempt portion would remove a point the character never had. A mutant pins that
+interaction.
 
 ### Suggested order
 

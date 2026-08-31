@@ -714,4 +714,30 @@ export const MUTANTS = [
       return out;
     },
   },
+
+  {
+    id:     'enhanced-articulation-reaches-rigging',
+    suite:  'adept-powers',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'reflexBonus',
+    was:    'M&M p.66 excludes Enhanced Articulation\'s +1 Reaction from rigging and decking, '
+          + 'and derived.reactionNoRigDeck subtracts it ONLY when the cyber package actually '
+          + 'landed. reflexBonus (p.169) picks one package or the other, so reporting the '
+          + 'adept win as a cyber one makes the subtraction fire against a bonus nobody '
+          + 'received - the character loses a point of Reaction they were never given',
+    impl:   ({ adeptRea = 0, adeptInit = 0, cyberRea = 0, cyberInit = 0 } = {}) => {
+      const adept = { rea: adeptRea, initDice: adeptInit };
+      const cyber = { rea: cyberRea, initDice: cyberInit };
+      const adeptHas = adept.rea !== 0 || adept.initDice !== 0;
+      const cyberHas = cyber.rea !== 0 || cyber.initDice !== 0;
+      if (!adeptHas) return { ...cyber, conflict: false, source: cyberHas ? 'cyber' : 'none', dropped: null };
+      if (!cyberHas) return { ...adept, conflict: false, source: 'cyber', dropped: null };
+      const adeptWins = adept.initDice > cyber.initDice
+        || (adept.initDice === cyber.initDice && adept.rea >= cyber.rea);
+      return adeptWins
+        ? { ...adept, conflict: true, source: 'cyber', dropped: cyber }
+        : { ...cyber, conflict: true, source: 'cyber', dropped: adept };
+    },
+  },
 ];

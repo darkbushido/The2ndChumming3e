@@ -1659,7 +1659,8 @@ _prepareCharacter(sys, attr) {
   };
 
   // Cyber/bio augmentation bonuses — summed from all cyberware and bioware items
-  const cyberBonus = { bod: 0, qui: 0, str: 0, cha: 0, int: 0, wil: 0, rea: 0, initDice: 0 };
+  const cyberBonus = { bod: 0, qui: 0, str: 0, cha: 0, int: 0, wil: 0, rea: 0, initDice: 0,
+                       reaNotRigDeck: 0 };
   for (const item of (this.items ?? [])) {
     if (item.type !== 'cyberware' && item.type !== 'bioware') continue;
     const s = item.system;
@@ -1670,6 +1671,14 @@ _prepareCharacter(sys, attr) {
     cyberBonus.int      += s.bonusInt      ?? 0;
     cyberBonus.wil      += s.bonusWil      ?? 0;
     cyberBonus.rea      += s.bonusRea      ?? 0;
+    // ⚠ Enhanced Articulation's +1 Reaction does not apply to rigging or decking (M&M p.66),
+    // so the portion of `rea` that comes from such items is tracked SEPARATELY rather than
+    // subtracted later by name — by the time initiative is rolled the items are long gone.
+    if ((s.bonusRea ?? 0) !== 0
+      && (globalThis.game?.sr3e?.SR3E?.reactionNotForRigOrDeck ?? [])
+        .some(re => re.test(item.name ?? ''))) {
+      cyberBonus.reaNotRigDeck += s.bonusRea ?? 0;
+    }
     cyberBonus.initDice += s.bonusInitDice ?? 0;
     // Skill-specific augmentation dice. No item populates `improvedSkillName` yet — the
     // bonus fields are still being imported — but the channel is open, so an entry that
@@ -2083,6 +2092,17 @@ _prepareCharacter(sys, attr) {
 
   sys.derived = {
     initiative:         (attr.reaction?.value ?? 0) + wm,
+    /* Reaction with the bonuses that do not apply to rigging or decking removed · M&M p.66.
+     *
+     * ⚠ Subtracted only when the CYBER package actually landed. `reflexBonus` (TODO 64) picks
+     * one package or the other, so when the adept's Improved Reflexes won, `cyberBonus.rea`
+     * was never applied and subtracting its exempt portion would take away a bonus nobody
+     * received.
+     * ⚠ Most initiative paths already read `reaction.base` and never see any cyber bonus —
+     * jumped-in VCR, VR-Hot and Orthodox Matrix. The two that read `.value` are remote-control
+     * rigging and TRM/AR/VR-Cold decking, and those are the ones that need this. */
+    reactionNoRigDeck:  Math.max(1, (attr.reaction?.value ?? 0)
+                          - (reflex.source === 'adept' ? 0 : (cyberBonus.reaNotRigDeck ?? 0))),
     initiativeDice:     1 + (sys.initiativeDiceBonus ?? 0) + (attr.reaction?.diceBonus ?? 0) + reflex.initDice,
     cyberBonus,
     adeptBonus,
@@ -7603,8 +7623,12 @@ _prepareCharacter(sys, attr) {
             });
             return score;
           } else {
-            // RCD: Rigger's Reaction + normal dice, no modifiers
-            const base = d.initiative ?? 0;
+            // RCD: Rigger's Reaction + normal dice, no modifiers.
+            // ⚠ This is RIGGING, so Enhanced Articulation's +1 Reaction does not apply
+            // (M&M p.66). Jumped-in VCR above already avoids it by reading reaction.BASE;
+            // remote control reads the derived value, so it needs the corrected one.
+            const base = (d.reactionNoRigDeck ?? d.initiative ?? 0)
+                       + (rigger.system.woundMod ?? 0);
             const dice = d.initiativeDice ?? 1;
 
             const rolls    = Array.from({ length: dice }, () => Math.floor(Math.random() * 6) + 1);
@@ -7724,8 +7748,11 @@ _prepareCharacter(sys, attr) {
       dice = 1 + response;
       modeNote = `<div class="sr-roll-meta" style="color:var(--sr-accent)">💻 VR-Hot Init — REA ${reactionBase} + Response ${response}×2</div>`;
     } else if (useMatrixJacked) {
-      // TRM / AR / VR-Cold: Reaction (with wired reflexes) + 1d6 (Response does not apply)
-      base = d.initiative ?? 0;
+      // TRM / AR / VR-Cold: Reaction (with wired reflexes) + 1d6 (Response does not apply).
+      // ⚠ This is DECKING, so Enhanced Articulation's +1 Reaction does not apply (M&M p.66).
+      // Wired reflexes DO — the exclusion is specific to that bonus, not to cyberware at
+      // large, which is why this uses the corrected Reaction rather than reaction.base.
+      base = (d.reactionNoRigDeck ?? 0) + (this.system.woundMod ?? 0);
       dice = 1;
       modeNote = `<div class="sr-roll-meta" style="color:var(--sr-accent)">🔌 Matrix Init (${matrixMode})</div>`;
     } else {

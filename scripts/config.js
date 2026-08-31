@@ -897,6 +897,23 @@ export const SR3E = {
   },
 
   /**
+   * Cyber/bioware whose Reaction bonus does NOT apply to rigging or decking · *M&M p.66*
+   *
+   * Enhanced Articulation grants +1 Reaction, and the book excludes it from rigging and from
+   * the Matrix — the bonus is about how the body moves, and a rigger jumped into a drone or a
+   * decker in VR is not using theirs.
+   *
+   * ⚠ **A LIST, not a flag on the item.** A flag would be a data-model change, needing a
+   * migration and a Foundry restart, to express one rule about one shipped item. Matched by
+   * name, the same join `adeptPowerKind` uses and with the same caveat: a rename upstream
+   * silently stops the exclusion.
+   *
+   * ⚠ Only the RIGGING and DECKING initiative paths consult this. The bonus is perfectly real
+   * for ordinary physical Reaction, dodging and Reaction Tests.
+   */
+  reactionNotForRigOrDeck: [/^enhanced articulation/i],
+
+  /**
    * Situations a bonus can be scoped to · the answer to TODO 70.
    *
    * ⚠ **This exists because `skillBonusDice` could not express it.** That map promises "always
