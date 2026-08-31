@@ -663,7 +663,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <span class="attr-aug" title="Cyber/bio augmentation">${aug}</span>` : ''}
         ${showTotal ? `<span class="attr-force-total" title="Effective">(${base + adept + aug})</span>` : ''}
         ${key === 'quickness' && (d.armorEncPenalty ?? 0) > 0 ? `<span class="attr-enc-penalty" title="Armor encumbrance penalty (equipped armor exceeds Quickness)">−${d.armorEncPenalty}</span>` : ''}
-        <i class="fas fa-dice-d6 rollable" data-action="rollAttr" data-attr="${key}" title="Shift-Click to use Phys. Dice" ${label}"></i>
+        <i class="fas fa-dice-d6 rollable" data-action="rollAttr" data-attr="${key}"
+           title="Roll ${label} — Shift-Click for physical dice"></i>
       </div>
     </div>`;
   }).join('');
@@ -681,6 +682,15 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           ${isAdept && (ab.mag ?? 0) > 0 ? `<span class="attr-force-sep" title="Adept power bonus">+</span>
           <span class="attr-adept" title="Adept power bonus">${ab.mag}</span>` : ''}
           <span class="attr-mod">${attr.magic?.value ?? 0}</span>
+          <!-- Magic Tests are real - Attribute Boost's activation is one (p.168) - and
+               _onRollAttr's generic branch already reads magic.value. Offered only to the
+               Awakened, since a Magic of 0 rolls nothing.
+               ⚠ Essence deliberately gets NO icon: it is a resource that is spent and
+               derived, never rolled. An icon there would be an affordance for a test that
+               does not exist. -->
+          ${(attr.magic?.value ?? 0) > 0 ? `<i class="fas fa-dice-d6 rollable"
+             data-action="rollAttr" data-attr="magic"
+             title="Roll Magic - Shift-Click for physical dice"></i>` : ''}
         </div>
       </div>
 
@@ -697,6 +707,14 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           <span class="attr-adept" title="Adept power bonus">${ab.rea}</span>` : ''}
           ${(cb.rea ?? 0) > 0 ? `<span class="attr-force-sep" title="Cyber/bio augmentation">+</span>
           <span class="attr-aug" title="Cyber/bio augmentation">${cb.rea}</span>` : ''}
+          <!-- TODO 72. Reaction is derived, so it renders outside the coreAttrs grid and
+               never got the grid's roll icon - but _onRollAttr has ALWAYS had a reaction
+               branch, reading reaction.value and falling back to floor((QUI+INT)/2). The
+               handler was written for this; only the affordance was missing.
+               Reaction Tests are ordinary: Surprise (p.108), Missile Parry (p.170), and the
+               Chase and Driving flows lean on Reaction throughout. -->
+          <i class="fas fa-dice-d6 rollable" data-action="rollAttr" data-attr="reaction"
+             title="Roll Reaction — Shift-Click for physical dice"></i>
         </div>
       </div>
 

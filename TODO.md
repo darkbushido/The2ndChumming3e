@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | *(none)* |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **71** · **72** · **73** · **74** |
+| 🔴 Confirmed bugs, still open | **71** · **73** · **74** *(**72** done)* |
 | 📕 Rules not implemented | 3 · 4 · 30 · 47 · 48 · 49 · 53 · 57 |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | *(all closed: **59**-**70**)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
@@ -4332,7 +4332,7 @@ do not create, so they are probably fine.
 ---
 
 <a id="72"></a>
-## 72. Reaction has no roll button — **CONFIRMED, and the handler already supports it**
+## 72. ✅ Reaction has no roll button — **DONE 2026-08-31**
 
 **Reported from play 2026-08-30.** Every other attribute carries a d6 icon; Reaction does not,
 so a player asked for a Reaction Test has nothing to click.
@@ -4359,6 +4359,26 @@ theoretical attribute.
 
 ⚠ While in there: check whether **Essence and Magic** have the same gap. They are also rendered
 outside `coreAttrs`, and Magic at least is rolled — Attribute Boost's activation is a Magic Test.
+
+### What landed
+
+The icon, with `data-attr="reaction"`. One element, as expected.
+
+**Magic got one too.** Magic Tests are real — Attribute Boost's activation is one (p.168) — and
+`_onRollAttr`'s generic branch already reads `magic.value`. Shown only to the Awakened, since a
+Magic of 0 rolls nothing.
+
+⚠ **Essence deliberately did NOT.** It is a resource that is spent and derived, never rolled; an
+icon there would be an affordance for a test that does not exist.
+
+⚠ **A pre-existing markup bug turned up next door.** Every attribute icon in the `coreAttrs` grid
+rendered as `title="Shift-Click to use Phys. Dice" Body"></i>` — the display name interpolated
+outside any attribute, leaving a stray attribute and an orphan quote on all six. Fixed to a real
+`title`; it now reads "Roll Body — Shift-Click for physical dice".
+
+⚠ **And a trap worth recording:** the explanatory HTML comment first written beside the new icon
+used backticks around identifiers. It sits INSIDE a template literal, where a backtick ends the
+string — it broke the parse immediately. No backticks in markup comments.
 
 <a id="73"></a>
 ## 73. No way to roll dice for something the system does not model — **CONFIRMED**
