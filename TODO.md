@@ -1648,38 +1648,145 @@ decking and does not affect the Control Pool"* — conditional in a different wa
 
 ## 30. Support conditional and scoped cyber/bioware modifiers
 
-Sibling of [#10](#10-support-category-wide-skill-bonuses-enhanced-articulation), which covers
-*category-wide* skill bonuses only (`improvedSkillCategory`). Conditional modifiers are a
-different shape and are not covered by it or by [#8](#8-ship-cyberwarebioware-with-their-bonuses-pre-filled).
+**Rewritten 2026-08-31.** The original entry described five shapes and no mechanism for any of
+them. Three of the five now have one — built for the adept powers ([#59](#59)-[#70](#70)) and
+deliberately source-agnostic — so most of this is no longer a design problem. What is left is
+smaller and sharper than it was, and the two genuinely undesigned shapes are named at the bottom.
 
-**14 upstream entries carry modifiers that only apply sometimes**, which is why they sit in `Notes`
-prose with an empty `Mods` — #8 reads `Mods`, so it will skip every one of them. They fall into
-distinct shapes needing distinct mechanisms:
+Sibling of [#10](#10), which covers *category-wide* skill bonuses only, and of [#8](#8), which
+ships *unconditional* attribute bonuses from the upstream `Mods` field.
 
-| Shape | Examples |
-|---|---|
-| **Triggered / toggled state** | Adrenal Pump [1]/[2] (`+1QCK,+2STR,+1WIL,+2RCT` while triggered); Pain Editor (`+1WIL,-1INT` while engaged) |
-| **Situational — specific tests only** | Nephritic Screen (`+1BOD` vs pathogens/toxins); Nitrogen Binder (`+2BOD` vs nitrogen narcosis); PACESETTER hearts (`+1BOD,+1QCK` *in Athletics*); Magnetic Cyberlimb (`+4STR` to hold items) |
-| **Movement-only Quickness** | Corvette CyberLegs Basic/Advanced (`+3QCK for mov.`); Extending Legs Unit (`+1QCK for walking speed`) |
-| **Affects bystanders, not the wearer** | Tailored Revolutionary Pheromones (Confusion) 1/2 — `-1INT,-1RCT for anyone within 1 meter` |
-| **Cosmetic / conditional** | Transparent Skin (`-2CHA if face transparent`) |
+### Why these entries are invisible to #8
 
-Also unexpressible and belonging here: **Enhanced Articulation's `+1 Reaction` must not apply to
-rigging or decking** (M&M p.66). `cyberBonus.rea` is one flat number that currently flows into VCR
-and Matrix initiative alike. Its Combat Pool caveat needs nothing — pool derives from QUI+INT+WIL
-and never reads Reaction.
-
-The toggled group resembles the existing `focusActive` pattern on melee weapons. Worth designing
-alongside #10 rather than separately — both want scoped modifiers instead of one flat number per
-attribute.
+**14 upstream entries carry modifiers that only apply sometimes.** They sit in `Notes` prose with
+an empty `Mods`, and `tools/build-mods-bonuses.mjs` reads `Mods`, so it skips every one.
 
 ⚠ Probably **not** an upstream data bug. The pattern is uniform enough that `Mods` looks
-deliberately reserved for unconditional passive modifiers, with everything else left as prose.
+deliberately reserved for unconditional passive modifiers, with everything conditional left as
+prose. So the data has to be authored here, not imported.
 
----
+### ⚠ Only THREE of them ship — checked against the packs, 2026-08-31
 
+| Entry | Pack | `mods` |
+|---|---|---|
+| Adrenal Pump [1](trig) / [2](trig) | `sr3e-mm-bioware` | empty |
+| Pain Editor | `sr3e-mm-bioware` | empty |
+| Nephritic Screen | `sr3e-mm-bioware` | empty |
 
----
+**Nitrogen Binder, Corvette CyberLegs, Extending Legs, Magnetic Cyberlimb, Transparent Skin and
+the Confusion Pheromones are in no shipped pack.** PACESETTER is `cb1.28`, archived fan content
+(`archive/non-sr3-content/sr3e-bioware.json`).
+
+That reorders the whole item. Shapes 3, 4 and 5 exist only for gear nobody can currently add to a
+character, so building machinery for them is speculative — **Shape 2 plus one entry of Shape 1 is
+the entire live surface.** Re-check this table before starting; a book toggle or a restore from
+`archive/` changes the answer.
+
+### What already exists to hang them on
+
+| Channel | Shape it carries | Read with |
+|---|---|---|
+| `derived.skillBonusDice` | one named skill, always applies | `SR3EItem._skillBonusDice` |
+| `derived.skillCategoryBonuses` | a skill CATEGORY, opt-in per roll | `SR3EActor.skillCategoryBonus` |
+| `derived.situationalBonuses` | a **situation** — dice, TN or pool | `SR3EActor.situationalBonus` |
+| `system.attributeBoost` + `SR3EActor.tickAttributeBoosts` | **activated, levelled, expiring** state | derived in `_prepareCharacter` |
+
+Seventeen situations are registered in `SR3E.adeptSituations`: `toxin` `perception` `spellResist`
+`detectionSpell` `healing` `counterattack` `mindControl` `surprise` `knockdown` `temperature`
+`illusion` `jumping` `escapeArtist` `stabilization` `dodge` `social` `detectLying`.
+
+⚠ **None of these channels is adept-specific.** They are keyed by skill, category or situation —
+never by where the bonus came from. That was deliberate, and it is why this item shrank.
+
+### Shape 1 — Situational · **mechanism exists, this is data entry**
+
+| Entry | Effect | Situation |
+|---|---|---|
+| Nephritic Screen | `+1BOD` vs pathogens and toxins | `toxin` |
+| Nitrogen Binder | `+2BOD` vs nitrogen narcosis | `toxin` |
+| PACESETTER hearts | `+1BOD,+1QCK` **in Athletics** | *needs a new key* |
+| Magnetic Cyberlimb | `+4STR` to hold on to items | *needs a new key* |
+
+Nephritic Screen vs toxins is the same shape as Body Control vs toxins, which already works.
+The other two need a situation key each — `athletics` and `grip` — which is one line apiece in
+`adeptSituations` plus a checkbox where no flow can know.
+
+⚠ **PACESETTER is `cb1.28`** — archived fan content that does not ship (see
+`archive/non-sr3-content/`). Do not add a situation key for an item nobody has.
+
+### Shape 2 — Triggered / toggled · **mechanism exists, and is stronger than this needs**
+
+| Entry | Effect |
+|---|---|
+| Adrenal Pump [1]/[2] | `+1QCK,+2STR,+1WIL,+2RCT` while triggered |
+| Pain Editor | `+1WIL,-1INT` while engaged |
+
+⚠ **The original entry proposed `focusActive` — a plain on/off flag — and that is now the wrong
+model.** Attribute Boost needed activate → levelled effect → expiring duration → Drain, and
+`system.attributeBoost` with the `updateCombat` round tick is that machinery. Adrenal Pump is a
+strictly simpler case of it: a duration with no activation test and no Drain.
+
+⚠ **Adrenal Pump is not a toggle, it is a duration**, which is why the flag model fails: a GM who
+forgets to switch it off leaves a character permanently boosted, and that is exactly the bug
+`tickAttributeBoosts` exists to prevent. Pain Editor genuinely *is* a toggle — it stays engaged
+until switched off — so the two want different halves of the same mechanism.
+
+⚠ **Pain Editor carries a PENALTY** (`-1INT`). The bonus fields on cyber/bioware dropped their
+`min: 0` in [#8](#8) precisely so negatives survive; whatever carries this must not re-introduce a
+floor. `AdeptPowerData` keeps its floor, deliberately — do not copy that model here.
+
+Both ship in `mm` and are live content, unlike PACESETTER.
+
+### Shape 3 — Movement-only Quickness · **needs a small new channel**
+
+Corvette CyberLegs Basic/Advanced (`+3QCK for mov.`), Extending Legs Unit (`+1QCK for walking
+speed`). A situation key would work mechanically, but movement is not a Test — nothing rolls it —
+so `situationalBonuses` would carry a bonus no flow ever reads. It wants a derived
+`movementQuickness` that the movement display consumes, and nothing else.
+
+⚠ It must NOT reach Reaction or Combat Pool. Both derive from Quickness, and a character who
+sprints faster does not dodge better.
+
+### Shape 4 — Affects bystanders · **UNDESIGNED, and the hard one**
+
+Tailored Revolutionary Pheromones (Confusion) 1/2 — `-1INT,-1RCT for anyone within 1 meter`.
+
+Every channel above modifies **the actor who owns the item**. This modifies *other actors, by
+proximity*, which none of them can express and no existing derivation looks for. It needs a
+notion of "auras from nearby actors" evaluated at roll time against canvas positions, and that is
+a real design, not a data entry.
+
+⚠ Do not bolt this onto `situationalBonuses`. That map is read off the rolling actor's own
+derived data; making it mean "or somebody standing near you" would break every existing consumer.
+
+### Shape 5 — Cosmetic / conditional · **reference-only is correct**
+
+Transparent Skin (`-2CHA if face transparent`). GM-adjudicated. An item carrying only its
+description is the right implementation, exactly as ~40 adept powers are.
+
+### Also here: Enhanced Articulation's Reaction must not reach rigging or decking
+
+M&M p.66. `cyberBonus.rea` is one flat number that flows into VCR and Matrix initiative alike.
+Splitting it is independent of everything above and is the smallest real fix in this entry.
+
+⚠ Its Combat Pool caveat needs nothing — the pool derives from QUI+INT+WIL and never reads
+Reaction.
+
+⚠ **`reflexBonus` already resolves a Reaction/Initiative conflict** ([#64](#64)) and is the one
+place both the Reaction derivation and `initiativeDice` read. Any split of `cyberBonus.rea` has to
+go through it, or the two will disagree again — which is the exact failure that function was
+written to prevent.
+
+### Suggested order
+
+1. **Enhanced Articulation's Reaction split** — smallest, independent, and a live rules error.
+2. **Shape 2** (Adrenal Pump, Pain Editor) — the machinery exists; this is wiring plus a sheet control.
+3. **Shape 1** for the two shipping entries — data plus at most one new situation key.
+4. **Shape 3** — a small derived value with one consumer.
+5. **Shape 4** — design first, and only if the Pheromones are ever restored from `archive/`.
+
+⚠ Steps 3-5 cover gear that does not ship. Doing 1 and 2 finishes everything a character can
+actually own today; the rest is worth doing only when the content arrives with it.
 
 ### 📦 Content gaps
 
