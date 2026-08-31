@@ -24,7 +24,7 @@ independent.
 | 🔵 In progress | *(none)* |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | **71** · **73** · **74** *(**72** done)* |
-| 📕 Rules not implemented | 4 · 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **30** done)* |
+| 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **4** · **30** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | *(all closed: **59**-**70**)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
@@ -1575,23 +1575,79 @@ one in the `updateActor` hook in `sr3e.js`; a change to any should check the oth
 ⚠ **Not modelled:** the +4 TN to tactile Perception, and the Biotech (4) Test the character can
 make to learn their own condition. Both are stated on the item for the GM.
 
-## 4. Review move-by-wire calculations
+## 4. ✅ Move-by-wire — **DONE 2026-08-31**
 
-Exists **only as compendium data**, `scripts/macros/populate-cyberware.js:71-85`. No
-dedicated calculation code.
+**The shipped data was already right; the derivation was not.** This entry's original table was
+copied from `scripts/macros/populate-cyberware.js`, a legacy macro the packs no longer use, and
+it disagreed with the book on Quickness, on initiative dice, on Essence, and by omitting Rating
+4 entirely. What actually ships in `sr3e-mm-cyberware` matches M&M p.60 exactly:
 
-| Level | Essence | bonusQui | bonusRea | bonusInitDice |
-|---|---|---|---|---|
-| MBW 1 | 3 | +2 | +2 | +2 |
-| MBW 2 | 4 | +4 | +4 | +3 |
-| MBW 3 | 5 | +6 | +6 | +4 |
+| Rating | Essence | QUI | REA | Init dice | Athletics / Stealth |
+|---|---|---|---|---|---|
+| Move-by-Wire [1] | 2.5 | +1 | +2 | +1D6 | +1 |
+| Move-by-Wire [2] | 4 | +2 | +4 | +2D6 | +2 |
+| Move-by-Wire [3] | 5.5 | +3 | +6 | +3D6 | +3 |
+| Move-by-Wire [4] | 7 | +4 | +8 | +4D6 | +4 |
 
-- Verify against Man & Machine.
-- **Quickness feeds Combat Pool** (⌊(QUI+INT+WIL)/2⌋) — `bonusQui: +6` silently moves the
-  pool. Confirm intended and that it flows through `prepareDerivedData`.
-- Descriptions claim "Incompatible with wired reflexes or boosted reflexes" but nothing
-  enforces or warns. Under minimal-guardrails a warning, not a block.
-- Confirm the bonus fields are actually consumed, not decorative.
+⚠ **Do not re-derive this from the populate macro.** It was corrected by [#8](#8)'s `Mods`
+parsing (`+1QCK,+2RCT,+1INI` and so on), and the macro was never updated to match. All four rows
+are now asserted in `tests/adept-powers.test.mjs` so the claim is falsifiable rather than a note.
+
+### The Quickness bonus does not reach Reaction
+
+> "The Quickness bonus does not count when calculating the character's **Reaction** Attribute."
+
+It did. `bonusQui` lands in the attribute loop, which runs before Reaction derives, so a
+move-by-wire [4] was quietly buying **+2 Reaction on top of its +8** — and then feeding those
+into initiative, dodge and every Reaction Test.
+
+⚠ **This is the same constraint as the Adrenal Pump's ([#30](#30)) and it needed a DIFFERENT
+fix.** The pump is activated, so it could be applied *after* the Reaction derivation and the
+ordering satisfied the rule for free. Move-by-wire is a passive implant applied with everything
+else, before Reaction exists — so the excluded portion is accumulated into
+`cyberBonus.quiNotForReaction` and subtracted at the derivation instead. Registry:
+`SR3E.quicknessNotForReaction`.
+
+⚠ **Reaction only — the Combat Pool is NOT excluded.** The book carves out Reaction and stops
+there, and the pool is ⌊(QUI + INT + WIL) / 2⌋, so the boosted Quickness genuinely does move it.
+The old entry asked whether that was intended: it is. Asserted, so the exclusion is not later
+"tidied" into a general one.
+
+⚠ **The carve-out is move-by-wire's, not Quickness cyberware at large** — muscle augmentation's
+Quickness feeds Reaction normally. Same shape as Enhanced Articulation's rigging/decking
+exclusion ([#30](#30)), which is that *bonus*, not cyberware generally.
+
+### Athletics and Stealth dice
+
+> "+N dice for Athletics and Stealth Tests"
+
+Not implemented at all. Now fed into `skillBonusDice` — the always-applies channel, since the
+book scopes them to two named skills rather than to a situation — via a new
+`SR3E.augmentationSkillDice` table.
+
+⚠ **A table rather than the `improvedSkillName` field**, because that field holds a single name
+and this is one item granting dice to two skills.
+
+⚠ **Two skills, not a category.** `Athletics` and `Stealth` are both Physical skills; using
+`improvedSkillCategory` would hand the dice to every Physical skill the character owns.
+
+### The incompatibility is reported, never enforced
+
+> "This system is **not compatible** with any other Reaction- or Initiative-enhancing cyber- or
+> bioware."
+
+`derived.reactionExclusiveConflict` names the exclusive implant and what it clashes with; the
+Cyber tab renders a warning. Both bonuses stay applied.
+
+⚠ **Contrast `SR3EActor.reflexBonus`, which DOES pick a winner.** There the conflict is between
+an adept power and technology, and leaving both applied would produce a total the rules forbid
+outright. Here both sides are cyberware the character paid Essence for, the book does not say
+which loses, and a GM who allowed the combination should not have it silently undone. Registry:
+`SR3E.reactionExclusive`.
+
+⚠ **Rating 3 and 4 force extra actions** — *"the character must take one extra Complex Action"*.
+Not implemented; it belongs with the action economy in [#48](#48), which is where the system
+would have to model actions at all.
 
 ## 10. ✅ Category-wide skill bonuses — **DONE 2026-08-20**
 

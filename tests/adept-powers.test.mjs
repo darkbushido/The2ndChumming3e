@@ -298,6 +298,107 @@ export async function run(t) {
   t.ok('the corrected Reaction never drops below 1', derive([ea]).d.reactionNoRigDeck >= 1);
 
   /* ════════════════════════════════════════════════════════════════════════════
+   *  Move-by-Wire · M&M p.60 — TODO 4
+   *
+   *   "The Quickness bonus does not count when calculating the character's Reaction
+   *    Attribute."
+   *   "This system is not compatible with any other Reaction- or Initiative-enhancing cyber-
+   *    or bioware."
+   *   "+N dice for Athletics and Stealth Tests"
+   *
+   * ⚠ The shipped pack data is CORRECT and asserted below against the book's own table —
+   * +N QUI, +2N REA, +N initiative dice at rating N, for N = 1..4. TODO 4's own table said
+   * otherwise; it was copied from the legacy populate macro, which the pack no longer uses.
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const mbw = (rating) => ({
+    id: `mbw${rating}`, type: 'cyberware', name: `Move-by-Wire [${rating}]`,
+    system: { bonusQui: rating, bonusRea: rating * 2, bonusInitDice: rating, rating },
+  });
+
+  /* ==== the Quickness bonus is excluded from Reaction, and ONLY from Reaction ==== */
+
+  /* ⚠ QUI 4 / INT 5 deliberately. Reaction is floor((4+5)/2) = 4 unaugmented; with move-by-wire
+   * [2]'s +2 Quickness wrongly included it is floor((6+5)/2) = 5, and with it correctly excluded
+   * it stays 4. Most attribute pairs round to the same number either way and would prove
+   * nothing — the same reason the Adrenal Pump test picks this pair. */
+  const mbwDerive = (items, base = {}) => {
+    const sys = { magicType: '', attributes: {}, wounds: {} };
+    const attr = {};
+    for (const k of ['body','quickness','strength','charisma','intelligence','willpower','reaction','essence','magic'])
+      attr[k] = { base: base[k] ?? 4, value: base[k] ?? 4 };
+    SR3EActor.prototype._prepareCharacter.call({ items, system: sys }, sys, attr);
+    return { d: sys.derived, attr };
+  };
+
+  const noMbw = mbwDerive([], { quickness: 4, intelligence: 5 });
+  t.is('baseline Reaction from QUI 4 / INT 5 is 4', noMbw.attr.reaction.value, 4);
+
+  const withMbw2 = mbwDerive([mbw(2)], { quickness: 4, intelligence: 5 });
+  t.is('move-by-wire [2] still raises Quickness itself', withMbw2.attr.quickness.value, 6);
+  // 4 (base) + 4 (the +2×2 Reaction bonus). NOT 5 + 4 = 9, which is what including the
+  // Quickness would give — this single assertion is the whole rule.
+  t.is('…but its Quickness does NOT feed Reaction', withMbw2.attr.reaction.value, 8);
+
+  /* ⚠ The Combat Pool is NOT excluded. The book carves out Reaction and says nothing else,
+   * and the pool is ⌊(QUI + INT + WIL) / 2⌋ — so the boosted Quickness moves it. Asserting
+   * this is what stops the exclusion being "tidied" into a general one. */
+  t.is('the Combat Pool DOES see the boosted Quickness',
+    withMbw2.d.combatPool, Math.floor((6 + 5 + 4) / 2));
+  t.is('…which is one more than it would be without the implant',
+    withMbw2.d.combatPool - noMbw.d.combatPool, 1);
+
+  // Another cyberware's Quickness bonus is NOT exempt — the carve-out is move-by-wire's.
+  const musc = { id: 'ma', type: 'bioware', name: 'Muscle Augmentation [2]',
+                 system: { bonusQui: 2 } };
+  t.is('an ordinary Quickness bonus still feeds Reaction',
+    mbwDerive([musc], { quickness: 4, intelligence: 5 }).attr.reaction.value, 5);
+
+  /* ==== the shipped table, all four rows · M&M p.60 ==== */
+  for (const r of [1, 2, 3, 4]) {
+    const d = mbwDerive([mbw(r)], { quickness: 4, intelligence: 4 });
+    t.is(`move-by-wire [${r}] grants +${r} Quickness`, d.attr.quickness.value, 4 + r);
+    t.is(`move-by-wire [${r}] grants +${r * 2} Reaction`, d.attr.reaction.value, 4 + r * 2);
+    t.ok(`move-by-wire [${r}] grants +${r} initiative dice`, d.d.initiativeDice >= 1 + r);
+    t.is(`move-by-wire [${r}] grants +${r} Athletics dice`,
+      d.d.skillBonusDice?.Athletics ?? 0, r);
+    t.is(`move-by-wire [${r}] grants +${r} Stealth dice`,
+      d.d.skillBonusDice?.Stealth ?? 0, r);
+  }
+
+  /* ⚠ Athletics and Stealth only. The book names two skills; granting the dice to a category
+   * would hand them to every Physical skill the character owns. */
+  t.is('…and nothing to an unrelated skill',
+    mbwDerive([mbw(4)]).d.skillBonusDice?.['Unarmed Combat'] ?? 0, 0);
+
+  /* ==== the incompatibility is REPORTED, not enforced ==== */
+  const wiredR = { id: 'wr', type: 'cyberware', name: 'Wired Reflexes [2]',
+                   system: { bonusRea: 4, bonusInitDice: 2 } };
+
+  t.is('move-by-wire alone reports no conflict',
+    mbwDerive([mbw(2)]).d.reactionExclusiveConflict, null);
+  t.is('wired reflexes alone report no conflict',
+    mbwDerive([wiredR]).d.reactionExclusiveConflict, null);
+
+  const clash = mbwDerive([mbw(2), wiredR]);
+  t.ok('together they report a conflict', !!clash.d.reactionExclusiveConflict);
+  t.is('…naming the exclusive implant',
+    clash.d.reactionExclusiveConflict?.exclusive?.[0], 'Move-by-Wire [2]');
+  t.is('…and what it clashes with',
+    clash.d.reactionExclusiveConflict?.others?.[0], 'Wired Reflexes [2]');
+
+  /* ⚠ REPORTED, NEVER ENFORCED. Both are cyberware the character paid Essence for, and the
+   * book does not say which side wins — so both stay applied and the GM decides. Contrast
+   * `reflexBonus`, which DOES pick a winner, because there one side is an adept power and
+   * leaving both would produce a total the rules forbid outright. */
+  t.is('both bonuses are still applied — the warning changes no number',
+    clash.attr.reaction.value, mbwDerive([mbw(2)]).attr.reaction.value + 4);
+
+  // A bonus-free implant is not "other Reaction enhancement" and must not trip the warning.
+  t.is('an implant with no Reaction or Initiative bonus does not trip it',
+    mbwDerive([mbw(2), { id: 'eye', type: 'cyberware', name: 'Cybereyes',
+                         system: { bonusQui: 0 } }]).d.reactionExclusiveConflict, null);
+
+  /* ════════════════════════════════════════════════════════════════════════════
    *  Triggered cyber/bioware · M&M p.63 (Adrenal Pump), p.71 (Pain Editor) — TODO 30
    * ════════════════════════════════════════════════════════════════════════════ */
   const bio = (name, id) => ({ id: id ?? name.replace(/\W/g, ''), type: 'bioware', name, system: {} });

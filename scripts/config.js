@@ -961,6 +961,50 @@ export const SR3E = {
   ],
 
   /**
+   * Cyber/bioware whose QUICKNESS bonus is excluded from the Reaction derivation · TODO 4
+   *
+   * Move-by-Wire · *M&M p.60*: *"The Quickness bonus does not count when calculating the
+   * character's Reaction Attribute."*
+   *
+   * ⚠ **Reaction only.** The book excludes it from Reaction and says nothing about the Combat
+   * Pool, which derives from ⌊(QUI + INT + WIL) / 2⌋ — so the Quickness bonus DOES move the
+   * pool, and that is correct. This is the same shape as the Adrenal Pump's clause (p.63),
+   * which spells out both halves; move-by-wire only states the exclusion.
+   *
+   * ⚠ Unlike the Adrenal Pump, move-by-wire is a PASSIVE always-on implant, so it cannot be
+   * fixed by ordering — it is applied with every other cyber bonus, before Reaction exists.
+   * The excluded portion is tracked and subtracted in the derivation instead.
+   */
+  quicknessNotForReaction: [/^move-?by-?wire/i],
+
+  /**
+   * Cyber/bioware granting dice to specific NAMED skills · TODO 4
+   *
+   * Move-by-Wire · *M&M p.60*: *"+N dice for Athletics and Stealth Tests"*, N = the rating.
+   *
+   * ⚠ Two skills from one item, which is why this is a table rather than the
+   * `improvedSkillName` field — that holds a single name. These feed `skillBonusDice`, the
+   * always-applies channel, because the book scopes them to skills rather than to situations.
+   */
+  augmentationSkillDice: [
+    { match: /^move-?by-?wire/i, skills: ['Athletics', 'Stealth'], perRating: 1 },
+  ],
+
+  /**
+   * Cyber/bioware that cannot be combined with other Reaction or Initiative enhancement.
+   *
+   * Move-by-Wire · *M&M p.60*: *"This system is not compatible with any other Reaction- or
+   * Initiative-enhancing cyber- or bioware."*
+   *
+   * ⚠ Reported, never enforced — the ethos is warn-and-stay-editable, and the book does not
+   * say which side wins. Contrast `SR3EActor.reflexBonus`, which DOES pick one package: there
+   * the conflict is between an adept power and technology, and leaving both applied would let
+   * a character have a rules-forbidden total. Here both are cyberware the character paid
+   * Essence for, and a GM who allowed the combination should not have it silently undone.
+   */
+  reactionExclusive: [/^move-?by-?wire/i],
+
+  /**
    * Cyber/bioware whose Reaction bonus does NOT apply to rigging or decking · *M&M p.66*
    *
    * Enhanced Articulation grants +1 Reaction, and the book excludes it from rigging and from

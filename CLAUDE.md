@@ -1219,6 +1219,34 @@ would make it total immunity.
 `toxin` key, exactly as Body Control does. That is the point of keying those channels by
 situation rather than by source.
 
+### Move-by-wire  · *M&M p.60*
+
+The **shipped pack data is correct** and asserted row-by-row — rating N gives **+N QUI, +2N REA,
++N initiative dice, +N Athletics/Stealth dice**, ratings 1-4. ⚠ `populate-cyberware.js` still
+carries the pre-[#8] numbers and disagrees with all four rows; the packs are the source of truth.
+
+⚠ **The Quickness bonus is excluded from Reaction and from nothing else.** *"The Quickness bonus
+does not count when calculating the character's Reaction Attribute."* The Combat Pool is
+⌊(QUI + INT + WIL) / 2⌋ and the book does not carve it out, so the bonus genuinely does move the
+pool. Both halves are asserted so the exclusion is not later widened.
+
+⚠ **It could NOT be fixed by ordering, the way the Adrenal Pump's identical clause was.** The
+pump is activated, so applying it after the Reaction derivation satisfies its rule for free.
+Move-by-wire is passive and lands with every other cyber bonus, before Reaction exists — so the
+exempt portion accumulates into `cyberBonus.quiNotForReaction` and is subtracted at the
+derivation. Registry: `SR3E.quicknessNotForReaction`.
+
+⚠ **The carve-out is this implant's, not Quickness cyberware at large** — muscle augmentation
+feeds Reaction normally. Same shape as Enhanced Articulation above.
+
+⚠ **The incompatibility is REPORTED, never enforced** (`derived.reactionExclusiveConflict`, warned
+on the Cyber tab). Contrast `reflexBonus`, which picks a winner: there one side is an adept power
+and keeping both would give a rules-forbidden total, whereas here both are cyberware the character
+paid Essence for and the book never says which loses. Registry: `SR3E.reactionExclusive`.
+
+⚠ **Rating 3/4's forced extra Complex Action is not modelled** — it needs the action economy
+(TODO 48).
+
 ### Enhanced Articulation's Reaction stops at rigging and decking  · *M&M p.66*
 
 `derived.reactionNoRigDeck` is Reaction with the exempt bonuses removed; only **remote-control

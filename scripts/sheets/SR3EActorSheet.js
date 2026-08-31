@@ -1540,7 +1540,20 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ${bioAlert}
       ${magicAlert}` : '';
 
+    /* Move-by-wire forbids other Reaction/Initiative enhancement · M&M p.60 (TODO 4).
+     * Reported, never enforced — see `SR3E.reactionExclusive` for why this one warns where
+     * `reflexBonus` picks a winner. */
+    const rxc = sys.derived?.reactionExclusiveConflict ?? null;
+    const rxcAlert = rxc ? `
+      <div class="sr-alert sr-alert--warn" style="margin-bottom:8px">
+        ⚠ <strong>${rxc.exclusive.join(', ')}</strong> is not compatible with any other Reaction-
+        or Initiative-enhancing cyber- or bioware (M&amp;M p.60), but this character also has
+        <strong>${rxc.others.join(', ')}</strong>. Both are still applied — remove one, or let it
+        stand as a houserule.
+      </div>` : '';
+
     return `<div class="tab ${this._activeTab === 'cyber' ? 'active' : ''}" data-tab="cyber" style="overflow-y:auto">
+      ${rxcAlert}
       ${vcrSlot}
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:6px 8px;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r)">
         <span class="field-label" style="margin:0">Recoil Compensation</span>

@@ -1678,7 +1678,11 @@ _prepareCharacter(sys, attr) {
 
   // Cyber/bio augmentation bonuses — summed from all cyberware and bioware items
   const cyberBonus = { bod: 0, qui: 0, str: 0, cha: 0, int: 0, wil: 0, rea: 0, initDice: 0,
-                       reaNotRigDeck: 0 };
+                       reaNotRigDeck: 0, quiNotForReaction: 0 };
+  const _sr3e = globalThis.game?.sr3e?.SR3E ?? null;
+  /** Items that forbid other Reaction/Initiative enhancement, and the ones that conflict. */
+  const reactionExclusiveItems = [];
+  const otherReactionEnhancers = [];
   for (const item of (this.items ?? [])) {
     if (item.type !== 'cyberware' && item.type !== 'bioware') continue;
     const s = item.system;
@@ -1696,6 +1700,32 @@ _prepareCharacter(sys, attr) {
       && (globalThis.game?.sr3e?.SR3E?.reactionNotForRigOrDeck ?? [])
         .some(re => re.test(item.name ?? ''))) {
       cyberBonus.reaNotRigDeck += s.bonusRea ?? 0;
+    }
+
+    /* ── Move-by-Wire · M&M p.60 (TODO 4) ─────────────────────────────────────────────
+     *
+     * "The Quickness bonus does not count when calculating the character's Reaction
+     * Attribute." Move-by-wire is a passive implant, so unlike the Adrenal Pump this cannot be
+     * fixed by applying it later — the excluded portion is tracked and subtracted below.
+     */
+    if ((s.bonusQui ?? 0) !== 0
+      && (_sr3e?.quicknessNotForReaction ?? []).some(re => re.test(item.name ?? ''))) {
+      cyberBonus.quiNotForReaction += s.bonusQui ?? 0;
+    }
+    // "not compatible with any other Reaction- or Initiative-enhancing cyber- or bioware"
+    if ((_sr3e?.reactionExclusive ?? []).some(re => re.test(item.name ?? ''))) {
+      reactionExclusiveItems.push(item.name);
+    } else if ((s.bonusRea ?? 0) !== 0 || (s.bonusInitDice ?? 0) !== 0) {
+      otherReactionEnhancers.push(item.name);
+    }
+    // Named-skill dice, e.g. move-by-wire's "+N dice for Athletics and Stealth Tests".
+    for (const e of (_sr3e?.augmentationSkillDice ?? [])) {
+      if (!e.match.test(item.name ?? '')) continue;
+      const rating = Number(/\[(\d+)\]/.exec(item.name ?? '')?.[1] ?? s.rating ?? 1) || 1;
+      for (const skill of e.skills) {
+        _addSkillDice(skill, (e.perRating ?? 1) * rating, item.name,
+          { kind: item.type === 'bioware' ? 'bio' : 'cyber' });
+      }
     }
     cyberBonus.initDice += s.bonusInitDice ?? 0;
     // Skill-specific augmentation dice. No item populates `improvedSkillName` yet — the
@@ -1969,8 +1999,13 @@ _prepareCharacter(sys, attr) {
 
   // Reaction — derived from force-enhanced QUI + INT per RAW, minimum 1
   if (attr.reaction) {
+    /* ⚠ Move-by-wire's Quickness is excluded here and ONLY here · M&M p.60 — "The Quickness
+     * bonus does not count when calculating the character's Reaction Attribute." It still
+     * reaches the Combat Pool below, which the book does not exclude, and it is still the
+     * character's real Quickness everywhere else. */
+    const quiForReaction = Math.max(0, (attr.quickness?.value ?? 0) - (cyberBonus.quiNotForReaction ?? 0));
     const baseReaction = Math.max(1, Math.floor(
-      ((attr.quickness?.value ?? 0) + (attr.intelligence?.value ?? 0)) / 2
+      (quiForReaction + (attr.intelligence?.value ?? 0)) / 2
     ));
     attr.reaction.base = baseReaction;
 
@@ -2187,6 +2222,11 @@ _prepareCharacter(sys, attr) {
      * hand-editable. The sheet renders this as a warning.
      */
     overLevelledPowers: overLevelled,
+    /* Move-by-wire forbids other Reaction/Initiative enhancement (M&M p.60). Reported, not
+     * enforced: both sides are cyberware the character paid Essence for, and a GM who
+     * allowed the combination should not have it silently undone. */
+    reactionExclusiveConflict: (reactionExclusiveItems.length && otherReactionEnhancers.length)
+      ? { exclusive: reactionExclusiveItems, others: otherReactionEnhancers } : null,
     // Triggered cyber/bioware the actor owns, and which of them are running (TODO 30).
     triggeredAugmentations: triggeredAugs.map(a => ({
       id: a.id, name: a.name, kind: a.cfg.kind, level: a.level,
