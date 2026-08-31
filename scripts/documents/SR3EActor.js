@@ -3555,6 +3555,31 @@ _prepareCharacter(sys, attr) {
   }
 
   /**
+   * Effective armour against flechette rounds · *SR3 p.116*
+   *
+   * > "Against armored targets, flechette rounds fare less well. For the target's Armor
+   * > Rating, use either **double its Impact Armor Rating** or its **normal Ballistic Armor
+   * > Rating**, whichever is higher."
+   *
+   * So it is `max(impact × 2, ballistic)` — the doubling applies to **Impact only**, and
+   * Ballistic competes with the result at its normal value.
+   *
+   * ⚠ **This was `max(ballistic, impact) × 2` until 2026-08-30**, which doubles the wrong
+   * number and then doubles it anyway. Against ballistic 8 / impact 2 the book gives
+   * `max(4, 8) = 8`; the old reading gave `8 × 2 = 16`, exactly twice the armour, making
+   * flechette useless against precisely the armour it is supposed to be merely poor against.
+   * The two agree only when Impact is the higher of the two, which is why it survived — that
+   * is the common case for the light armour flechette is usually fired at.
+   *
+   * ⚠ **Not modelled:** *"Dermal armor negates the Damage Level increase of flechette
+   * ammunition."* Dermal armour is not tracked apart from other Impact sources, so the GM
+   * applies that one by hand.
+   */
+  static flechetteArmor({ ballistic = 0, impact = 0 } = {}) {
+    return Math.max(Math.max(0, impact) * 2, Math.max(0, ballistic));
+  }
+
+  /**
    * Crash / impact damage from speed · *SR3 p.145, p.147*
    *
    * > "The Power of a crash is equal to the vehicle's speed divided by 10 and rounded up"
@@ -5380,19 +5405,18 @@ _prepareCharacter(sys, attr) {
       ballistic = Math.floor(ballistic / 2);
       ammoNote  = `APDS — ballistic armour halved (now ${ballistic})`;
     } else if (ammoRules.armorEffect === 'flechette') {
-      const maxArmor = Math.max(ballistic, impact);
-      if (maxArmor <= 0) {
+      if (Math.max(ballistic, impact) <= 0) {
         // Unarmoured target — damage level stages up one
         const STAGES = ['L', 'M', 'S', 'D'];
         const li = STAGES.indexOf(effStagedLevel);
         if (li >= 0) effStagedLevel = STAGES[Math.min(3, li + 1)];
         ammoNote = `Flechette vs unarmoured — damage level raised to ${effStagedLevel}`;
       } else {
-        // Armoured target — effective armour = highest of ballistic/impact, doubled
-        const doubled = maxArmor * 2;
-        ballistic = doubled;
-        impact    = doubled;
-        ammoNote  = `Flechette vs armour — effective armour ×2 (now ${doubled})`;
+        const eff = SR3EActor.flechetteArmor({ ballistic, impact });
+        ammoNote  = `Flechette vs armour — effective armour ${eff} `
+                  + `(max of Impact ${impact}×2 and Ballistic ${ballistic}, p.116)`;
+        ballistic = eff;
+        impact    = eff;
       }
     }
 

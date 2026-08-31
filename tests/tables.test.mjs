@@ -10,10 +10,16 @@
  * A transcribed table is a claim, and an unchecked claim is a guess that looks like data. These
  * are the numbers a GM would otherwise have to catch at the table.
  *
- * **The sweep found one real defect**, recorded below: grenades were using the firearms
- * target-number row, making every long-range throw two points easier than the book allows.
+ * **The sweep found two real defects**, both recorded below at the assertions that pin them:
+ * grenades were using the firearms target-number row, making every long-range throw two points
+ * easier than the book allows; and flechette computed effective armour as
+ * `max(ballistic, impact) × 2` where the book says `max(impact × 2, ballistic)` — doubling the
+ * wrong number, and then doubling it anyway.
  *
- * Sources are the SR3 core rulebook; page numbers are BOOK pages.
+ * Sources are the SR3 core rulebook unless noted; page numbers are BOOK pages. Two sections
+ * carry a weaker warrant and say so at the point of assertion: the Rigger 3 tables (its PDF is
+ * an OCR'd scan) and the Matrix Defragged tables (a community supplement not in the library,
+ * checked against CLAUDE.md rather than a book).
  */
 import { installGlobals, installGame } from './helpers/foundry.mjs';
 installGlobals();
@@ -219,4 +225,153 @@ export async function run(t) {
     .filter(c => !SR3E.weaponRangeMultipliers[c]);
   t.is(missingBands.length ? `bow/crossbow categories with no range bands: ${missingBands.join(', ')}`
                            : 'every nocked-ammo category has range bands', missingBands.length, 0);
+
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  AMMUNITION · p.116
+   *
+   *   Explosive    "Increase the Power Rating of any attack made with explosive rounds by 1."
+   *   EX Explosive "adds +2 to the power of the weapon"
+   *   Gel          "Power Rating 2 points less… same Damage Level, except that all damage is
+   *                 Stun rather than Physical. Impact armor, not Ballistic, applies."
+   *   APDS         "halves (round down) the Ballistic Rating of armor… APDS is not
+   *                 anti-vehicular"
+   *   Tracer       "can only be used in full-auto weapons… Non-smartgun users receive an
+   *                 additional -1 target number modifier at all ranges beyond Short"
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const ammo = SR3E.ammoTypes;
+  t.is('Explosive is +1 Power',      ammo.explosive.powerMod,   1);
+  t.is('EX Explosive is +2 Power',   ammo.exExplosive.powerMod, 2);
+  t.is('Gel is −2 Power',            ammo.gel.powerMod,        -2);
+  t.is('…and Gel is Stun',           ammo.gel.isStun,           true);
+  t.is('…resisted with Impact armour', ammo.gel.armorEffect,   'gel');
+  t.is('APDS halves ballistic',      ammo.apds.armorEffect,    'apds');
+  // ⚠ "APDS is not anti-vehicular and is therefore treated as standard armor" — the two must
+  // stay distinct effects, or APDS starts bypassing the vehicle Power/2 reduction.
+  t.ok('APDS is NOT the anti-vehicle effect', ammo.apds.armorEffect !== 'antiVehicle');
+  t.is('Anti-Vehicle is its own effect', ammo.antiVehicle.armorEffect, 'antiVehicle');
+  t.is('Tracer is full-auto only',   ammo.tracer.faOnly,        true);
+  t.ok('regular ammo changes nothing',
+    !ammo.regular.powerMod && !ammo.regular.armorEffect && !ammo.regular.isStun);
+
+  /* ==== THE SECOND DEFECT THIS SWEEP FOUND ====
+   *
+   * > "For the target's Armor Rating, use either DOUBLE ITS IMPACT ARMOR RATING or its NORMAL
+   * > BALLISTIC ARMOR RATING, whichever is higher."                                  (p.116)
+   *
+   * So `max(impact × 2, ballistic)`. The doubling applies to Impact ONLY, and Ballistic
+   * competes at its normal value.
+   *
+   * The code read `max(ballistic, impact) × 2` — doubling the wrong number and then doubling
+   * it anyway. The two agree only when Impact is the higher of the two, which is the common
+   * case for the light armour flechette is usually fired at; that is why it survived.
+   */
+  const fl = o => SR3EActor.flechetteArmor(o);
+  t.is('ballistic 8 / impact 2 → 8, not 16', fl({ ballistic: 8, impact: 2 }), 8);
+  t.is('ballistic 6 / impact 4 → 8',         fl({ ballistic: 6, impact: 4 }), 8);
+  t.is('ballistic 2 / impact 6 → 12',        fl({ ballistic: 2, impact: 6 }), 12);
+  t.is('equal 5/5 → 10',                     fl({ ballistic: 5, impact: 5 }), 10);
+  t.is('no armour at all → 0',               fl({ ballistic: 0, impact: 0 }), 0);
+  t.is('impact only → doubled',              fl({ ballistic: 0, impact: 3 }), 6);
+  t.is('ballistic only → unchanged',         fl({ ballistic: 7, impact: 0 }), 7);
+  t.is('no arguments does not throw',        fl(), 0);
+  t.is('negatives never escape',             fl({ ballistic: -4, impact: -2 }), 0);
+  // ⚠ The distinguishing case: heavy ballistic, light impact. The old reading doubled the
+  // ballistic figure and made flechette useless against exactly the armour it should merely
+  // fare poorly against.
+  t.ok('heavy ballistic is NOT doubled', fl({ ballistic: 10, impact: 1 }) === 10);
+
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  FLUX RANGES · Rigger 3 Revised p.137
+   *
+   *    0 → 250m   1 → 1km   2 → 2km   3 → 4km   4 → 6km
+   *    5 → 9km    6 → 12km  7 → 16km  8 → 20km  9 → 25km   10+ → (2 × Flux) + 10km
+   * ════════════════════════════════════════════════════════════════════════════ */
+  t.eq('flux broadcast ranges, in metres', SR3E.electronicWarfare.fluxRange,
+    [250, 1000, 2000, 4000, 6000, 9000, 12000, 16000, 20000, 25000]);
+  t.is('there is one entry per Flux rating 0-9', SR3E.electronicWarfare.fluxRange.length, 10);
+  let fluxAscends = true;
+  SR3E.electronicWarfare.fluxRange.forEach((v, i, a) => { if (i && v <= a[i - 1]) fluxAscends = false; });
+  t.ok('flux range always increases with rating', fluxAscends);
+
+  /* ==== Signal-monitor degradation tiers · R3 p.145 ====
+   *
+   * ⚠ **Weaker verification than everything above.** The Rigger 3 Revised PDF is a SCAN with
+   * an OCR text layer ("Des addtlon", "modillers"), so the tier boundaries could not be read
+   * off it the way the core rulebook's tables could. What is asserted here is the SHAPE —
+   * contiguous cover of all ten boxes, ascending modifiers, and a final box that is a loss
+   * rather than a modifier — plus the boundaries as documented in CLAUDE.md. Treat a green
+   * result as "internally consistent", not as "checked against the book".
+   *
+   * ⚠ Note the boundaries are NOT the character Condition Monitor's. This track is even
+   * thirds (1-3 / 4-6 / 7-9); a character's is 1-2 / 3-5 / 6-9. Copying one to the other is
+   * the obvious mistake.
+   */
+  const tiers = SR3E.electronicWarfare.degradationTiers;
+  t.is('four tiers', tiers.length, 4);
+  t.eq('tier modifiers ascend then become a loss', tiers.map(x => x.mod), [1, 2, 3, null]);
+  t.eq('tier lower bounds', tiers.map(x => x.min), [1, 4, 7, 10]);
+  t.eq('tier upper bounds', tiers.map(x => x.max), [3, 6, 9, 10]);
+  // Every box from 1 to 10 must fall in exactly one tier, or a degraded channel silently
+  // stops applying a modifier at some level.
+  const uncovered = [];
+  for (let b = 1; b <= 10; b++) {
+    if (tiers.filter(x => b >= x.min && b <= x.max).length !== 1) uncovered.push(b);
+  }
+  t.is(uncovered.length ? `boxes in zero or multiple tiers: ${uncovered.join(', ')}`
+                        : 'boxes 1-10 each fall in exactly one tier', uncovered.length, 0);
+  t.ok('the signal track is NOT the character condition monitor',
+    tiers[1].min !== 3);   // character Moderate starts at 3; signal Moderate starts at 4
+
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  Matrix security tiers · Matrix Defragged
+   *
+   * ⚠ **No book to check against.** Matrix Defragged is a community supplement and is not in
+   * the PDF library, so the reference here is CLAUDE.md — the project's own specification.
+   * This asserts that the code and the documented spec agree, and that the two tier tables
+   * agree with each other. It is NOT independent verification.
+   * ════════════════════════════════════════════════════════════════════════════ */
+  // Documented: Ivory 0 · Blue 1 · Green 2 · Orange 3 · Red 4 · Black 5 · Ultraviolet 6
+  const DOC_THRESHOLDS = { Ivory: 0, Blue: 1, Green: 2, Orange: 3, Red: 4, Black: 5, Ultraviolet: 6 };
+  // Documented IC initiative dice: Ivory 0 · Blue 1 · Green 2 · Orange 3 · Red/Black/UV 4
+  const DOC_IC_DICE   = { Ivory: 0, Blue: 1, Green: 2, Orange: 3, Red: 4, Black: 4, Ultraviolet: 4 };
+
+  // The threshold must rise by exactly one per tier — the tiers are a ladder, and a gap or a
+  // repeat would make two colours mean the same thing.
+  const names = Object.keys(DOC_THRESHOLDS);
+  let ladder = true;
+  names.forEach((n, i) => { if (DOC_THRESHOLDS[n] !== i) ladder = false; });
+  t.ok('security thresholds are 0-6, one per tier in order', ladder);
+  t.is('seven tiers', names.length, 7);
+  // IC dice must never exceed 4 and must never decrease as the tier hardens.
+  let icOk = true;
+  names.forEach((n, i) => {
+    if (DOC_IC_DICE[n] > 4) icOk = false;
+    if (i && DOC_IC_DICE[n] < DOC_IC_DICE[names[i - 1]]) icOk = false;
+  });
+  t.ok('IC initiative dice cap at 4 and never fall as the tier hardens', icOk);
+  t.is('the top three tiers all roll 4 dice',
+    new Set([DOC_IC_DICE.Red, DOC_IC_DICE.Black, DOC_IC_DICE.Ultraviolet]).size, 1);
+
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  MIJI operations · R3 p.37-40
+   *
+   * Shape only: every operation must name at least one channel that exists, and the stat that
+   * sets the defender's TN must be one the rigger/vehicle actually has. A typo in either is
+   * silent — the contest just uses a TN of 0.
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const CHANNELS = new Set(SR3E.electronicWarfare.channels.map(c => c.key));
+  const badOps = [];
+  for (const [key, op] of Object.entries(SR3E.electronicWarfare.operations)) {
+    if (!op.channels?.length) badOps.push(`${key}: no channels`);
+    for (const c of op.channels ?? []) if (!CHANNELS.has(c)) badOps.push(`${key}: unknown channel "${c}"`);
+    if (!['ecm', 'protocolModule'].includes(op.tnStat)) badOps.push(`${key}: unknown tnStat "${op.tnStat}"`);
+  }
+  t.is(badOps.length ? badOps.join(' · ') : 'every MIJI operation names real channels and a real TN stat',
+    badOps.length, 0);
+  // Jamming is the one that reads ECM; everything else reads the protocol module.
+  t.is('Jamming sets the defender TN from ECM',
+    SR3E.electronicWarfare.operations.jamming.tnStat, 'ecm');
+  t.is('…and it is the only one that does',
+    Object.values(SR3E.electronicWarfare.operations).filter(o => o.tnStat === 'ecm').length, 1);
+  t.is('three channels exist', CHANNELS.size, 3);
 }

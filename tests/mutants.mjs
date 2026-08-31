@@ -484,4 +484,20 @@ export const MUTANTS = [
                level: s > 201 ? 'D' : s > 61 ? 'S' : s > 21 ? 'M' : 'L' };
     },
   },
+
+  {
+    id:     'flechette-doubles-the-higher-armour',
+    suite:  'tables',
+    module: '../scripts/documents/SR3EActor.js',
+    klass:  'SR3EActor',
+    method: 'flechetteArmor',
+    was:    'p.116 - "use either DOUBLE ITS IMPACT ARMOR RATING or its NORMAL BALLISTIC ARMOR '
+          + 'RATING, whichever is higher", i.e. max(impact*2, ballistic). This is the state '
+          + 'the system actually shipped in: it doubled the HIGHER of the two, which against '
+          + 'ballistic 8 / impact 2 gives 16 where the book gives 8 - exactly twice the '
+          + 'armour, making flechette useless against precisely the armour it is meant to be '
+          + 'merely poor against. The two readings agree whenever Impact is the higher, which '
+          + 'is the common case for light armour and is why it survived',
+    impl:   ({ ballistic = 0, impact = 0 } = {}) => Math.max(0, Math.max(ballistic, impact)) * 2,
+  },
 ];
