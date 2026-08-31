@@ -137,4 +137,49 @@ export async function run(t) {
     /Vehicle skills/.test(ea.items['Enhanced Articulation'].improvedSkillCategory));
   t.ok('…and Build/Repair intact, slash and all',
     /Build\/Repair skills/.test(ea.items['Enhanced Articulation'].improvedSkillCategory));
+
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  0.4.5.7 — the Karma Pool's starting point · SR3 p.244 (TODO 80)
+   *
+   * The FIRST migration to touch the actor document rather than its items, via the `fixActor`
+   * hook. It is also only the second that can OVERWRITE — so what it declines to touch is
+   * more important than what it changes.
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const kp = list.find(m => m.version === '0.4.5.7');
+  t.ok('the Karma Pool migration exists', !!kp);
+  t.ok('…and uses fixActor, not items or fixItem', typeof kp?.fixActor === 'function');
+  t.ok('…and declares neither of the item hooks', !kp?.items && !kp?.fixItem);
+
+  const act = (over = {}) => ({ type: 'character', name: 'T', system: { karmaPool: 0, totalKarma: 0, ...over } });
+
+  t.is('a fresh character goes 0 → 1',
+    kp.fixActor(act())?.['system.karmaPool'], 1);
+  t.is("Shetani's 3 becomes 4",
+    kp.fixActor(act({ karmaPool: 3, totalKarma: 62 }))?.['system.karmaPool'], 4);
+  t.is('20 career karma goes 1 → 2',
+    kp.fixActor(act({ karmaPool: 1, totalKarma: 20 }))?.['system.karmaPool'], 2);
+
+  /* ⚠ **Fill-blanks cannot express this**, which is the whole difficulty: 0 is both "never
+   * touched" and a value a GM may have set deliberately. So the migration matches a Pool that
+   * still equals EXACTLY what the old, wrong formula produced — floor(total / 20) — and leaves
+   * anything else alone. These are the assertions that keep it from becoming a blunt +1. */
+  t.is('a hand-raised Pool is left alone',
+    kp.fixActor(act({ karmaPool: 7, totalKarma: 62 })), null);
+  t.is('a hand-LOWERED Pool is left alone too',
+    kp.fixActor(act({ karmaPool: 1, totalKarma: 62 })), null);
+  t.is('an already-correct Pool is not bumped again',
+    kp.fixActor(act({ karmaPool: 4, totalKarma: 62 })), null);
+
+  /* ⚠ Idempotent, and this is the assertion that proves it: run the migration's own output
+   * back through it and nothing more happens. Rule 2 of the file's contract. */
+  const once = kp.fixActor(act({ karmaPool: 3, totalKarma: 62 }));
+  t.is('running it twice changes nothing the second time',
+    kp.fixActor(act({ karmaPool: once['system.karmaPool'], totalKarma: 62 })), null);
+
+  t.is('a vehicle is not a character and is skipped',
+    kp.fixActor({ type: 'vehicle', system: { karmaPool: 0, totalKarma: 0 } }), null);
+  t.is('an npc IS corrected',
+    kp.fixActor({ type: 'npc', name: 'N', system: { karmaPool: 0, totalKarma: 0 } })?.['system.karmaPool'], 1);
+  t.is('an actor with no Pool field at all is skipped',
+    kp.fixActor({ type: 'character', system: {} }), null);
 }

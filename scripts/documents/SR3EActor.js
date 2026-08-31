@@ -5667,6 +5667,172 @@ _prepareCharacter(sys, attr) {
    * Ships as four separate items — `Killing Hands STR(Light)` through `(Deadly)` — at .5, 1,
    * 2 and 4 Power Points, so the level is in the name and nowhere else.
    */
+  /* ══════════════════════════════════════════════════════════════════════════════
+   *  Karma & advancement · SR3 p.244-245 — TODO 80
+   *
+   * Pure, and living here rather than on the sheet for the usual reason: the sheet cannot be
+   * imported without Foundry, and every one of these is a costing rule that a test should be
+   * able to pin. `SR3EActorSheet` delegates.
+   *
+   * ⚠ **The book's worked examples cannot distinguish right from wrong here**, which is how
+   * six defects survived. Every printed cost lands on an integer, where rounding up and
+   * rounding down agree; and Brick's Stealth 5 / Quickness 6 is one apart, where the
+   * skill-rating and attribute-rating specialisation caps agree. Tests must use the
+   * fractional and divergent cases deliberately.
+   * ══════════════════════════════════════════════════════════════════════════════ */
+
+  /**
+   * Cost to raise a skill to `newRating` · *SR3 p.245, Skill Improvement Cost Table*
+   *
+   * | New rating is… | Active | Knowledge/Language |
+   * |---|---|---|
+   * | ≤ the linked Attribute | 1.5 | 1 |
+   * | ≤ 2× the linked Attribute | 2 | 1.5 |
+   * | > 2× the linked Attribute | 2.5 | 2 |
+   *
+   * ⚠ **"Multiply the number given on the table by the new rating (round fractions DOWN)."**
+   * This was `Math.ceil` until 2026-08-31, overcharging roughly half of all purchases by one
+   * — an active skill to 3 at or below its attribute cost 5 where the book charges 4. Every
+   * worked example in the book lands on an integer, so none of them catch it.
+   */
+  static karmaSkillCost(newRating, attrRating, isActive) {
+    const n = Number(newRating) || 0;
+    const a = Number(attrRating) || 0;
+    const m = n <= a     ? (isActive ? 1.5 : 1)
+            : n <= 2 * a ? (isActive ? 2   : 1.5)
+            :              (isActive ? 2.5 : 2);
+    return Math.floor(n * m);
+  }
+
+  /**
+   * Cost to raise a specialisation to `newRating` · *SR3 p.245*
+   *
+   * ⚠ **Identical for active and knowledge skills** — the table's two specialisation columns
+   * are the same (.5 / 1 / 1.5). Taking no `isActive` argument looks like an omission beside
+   * `karmaSkillCost` and is not one; do not "fix" it.
+   *
+   * ⚠ Rounds DOWN, same clause as above.
+   */
+  static karmaSpecCost(newRating, attrRating) {
+    const n = Number(newRating) || 0;
+    const a = Number(attrRating) || 0;
+    const m = n <= a ? 0.5 : n <= 2 * a ? 1 : 1.5;
+    return Math.floor(n * m);
+  }
+
+  /**
+   * Cost to learn a skill you do not have · *SR3 p.245*
+   *
+   * > "New skills can be purchased at a skill rating of 1, by paying a cost of 1 in Good
+   * > Karma. New skills only cost 1, whether they are Active, Knowledge, or Language Skills."
+   *
+   * ⚠ **A flat rate that BYPASSES the cost table** — it is not `karmaSkillCost(1, …)`, which
+   * would charge 2 for an active skill. That is why this is its own function taking no
+   * arguments rather than a branch inside the table: there is nothing to compute, and any
+   * signature that accepted a rating or a skill type would invite someone to use them.
+   */
+  static karmaNewSkillCost() {
+    return 1;
+  }
+
+  /**
+   * Cost to raise an Attribute to `newRating` · *SR3 p.244*
+   *
+   * > "A character can increase Physical and Mental Attributes 1 point (at a time) by paying a
+   * > number of Good Karma points equal to **twice** the rating to which the Attribute is being
+   * > raised… To improve an Attribute above the Racial Modified Limit has a cost equal to **3x**
+   * > the rating to which the Attribute is being raised."
+   *
+   * ⚠ **The multiplier turns on the NEW rating against the limit, not the old one.** A human
+   * going 6 → 7 is already above the limit of 6 when they pay, so it is 21 rather than 14.
+   *
+   * ⚠ **Cost, not cap.** Nothing here refuses a purchase past the Racial Modified Limit or
+   * past the Attribute Maximum (`limit × 1.5`). The system's ethos is that a GM is never
+   * fighting it; charging the right price is a rule, refusing the buy would be a guardrail.
+   * `karmaAttributeMaximum` exists so the sheet can SAY which side of the line the buy is on.
+   */
+  static karmaAttributeCost(newRating, racialLimit) {
+    const n = Number(newRating) || 0;
+    const l = Number(racialLimit) || 0;
+    return n * (n > l ? 3 : 2);
+  }
+
+  /** `Racial Modified Limit × 1.5` · *SR3 p.244*. Reported, never enforced. */
+  static karmaAttributeMaximum(racialLimit) {
+    return Math.floor((Number(racialLimit) || 0) * 1.5);
+  }
+
+  /**
+   * How many specialisations a skill may carry · *SR3 p.245*
+   *
+   * > "There may be more than one specialization to a base skill, up to a maximum number of
+   * > specializations equal to the base skill's **Linked Attribute Rating**."
+   *
+   * ⚠ **The LINKED ATTRIBUTE's rating, not the skill's.** The code gated on the skill rating
+   * until 2026-08-31, which diverges in both directions: Stealth 2 / Quickness 6 was allowed
+   * 2 where the book allows 6, and Stealth 6 / Quickness 3 was allowed 6 where the book allows
+   * 3. Brick, the book's own example, has Stealth 5 and Quickness 6 — one apart, so the
+   * example reads correctly under either rule and proves nothing.
+   */
+  static karmaMaxSpecialisations(attrRating) {
+    return Math.max(0, Number(attrRating) || 0);
+  }
+
+  /**
+   * The rating a specialisation is bought or raised to · *SR3 p.245*
+   *
+   * > "To begin a new specialization, you must buy the specialization at rating 1 point higher
+   * > than your base skill… To improve the specialization beyond that, follow the rules above
+   * > as normal."
+   *
+   * `system.specialisations[].level` is the **bonus** over the base skill, so a spec at level
+   * L rolls `base + L` and the next purchase is `base + L + 1`. A brand-new one (level 0, not
+   * yet bought) costs `base + 1`.
+   *
+   * ⚠ **There is no cap.** The sheet stopped every specialisation at level 2 until
+   * 2026-08-31; the sentence above says the opposite.
+   */
+  static karmaSpecTargetRating(baseRating, currentLevel = 0) {
+    return (Number(baseRating) || 0) + (Number(currentLevel) || 0) + 1;
+  }
+
+  /**
+   * Split a karma award between the Karma Pool and Good Karma · *SR3 p.244*
+   *
+   * > "Shetani, an elf character, has a Total Karma of 62, Good Karma of 10, and Karma Pool of
+   * > 4… Every twentieth point has been added to the Karma Pool (each character starts with 1
+   * > Karma Pool) and **the rest (59)** has gone to Good Karma."
+   *
+   * ⚠ **The twentieth point goes to the Pool INSTEAD of Good Karma, not as well as.** 62 total
+   * yields 3 Pool points and **59** Good Karma. The sheet added the full award to Good Karma
+   * *and* granted the Pool points until 2026-08-31, so a character gained an extra point of
+   * Good Karma per 20 earned.
+   *
+   * ⚠ **`poolGained` is a DELTA across the whole award**, so one large award grants every
+   * twentieth point it crosses rather than only one. That part was always right.
+   *
+   * @returns {{newTotal:number, poolGained:number, goodKarma:number}} `goodKarma` is the
+   *          amount to ADD to the spendable pool, not the new total.
+   */
+  static karmaAward(totalKarma, amount) {
+    const t = Math.max(0, Number(totalKarma) || 0);
+    const a = Math.max(0, Number(amount) || 0);
+    const newTotal   = t + a;
+    const poolGained = Math.floor(newTotal / 20) - Math.floor(t / 20);
+    return { newTotal, poolGained, goodKarma: a - poolGained };
+  }
+
+  /**
+   * The Karma Pool a character with this career total should have · *SR3 p.244*
+   *
+   * `1 + ⌊total / 20⌋` — **"each character starts with 1 Karma Pool"**, which the data model
+   * initialised to 0 until 2026-08-31. Used by migration `0.4.5.7` to recognise an actor whose
+   * Pool still matches what the old, wrong formula produced.
+   */
+  static karmaPoolForTotal(totalKarma) {
+    return 1 + Math.floor(Math.max(0, Number(totalKarma) || 0) / 20);
+  }
+
   /* ── Missile Parry · SR3 p.170 ─────────────────────────────────────────────────────
    *
    * > "You can catch slow-moving missile weapons such as arrows, thrown knives, or shuriken

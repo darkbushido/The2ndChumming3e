@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | *(none)* |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **71** · **73** · **74** · **80** *(**72** done)* |
+| 🔴 Confirmed bugs, still open | **71** · **73** · **74** *(**72** · **80** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **4** · **30** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** |
@@ -4807,7 +4807,7 @@ adjustment as an entry with an empty reason rather than blocking it.
 history without being able to rewrite it.
 
 <a id="80"></a>
-## 80. Karma advancement — seven defects, one reported and six found beside it — **CONFIRMED**
+## 80. ✅ Karma advancement — seven defects — **DONE 2026-08-31**
 
 **Reported from play 2026-08-31:** *"karma spending seems to be implemented, there isn't
 anything for a new skill but you can increase them."* Correct on both halves — and the reason
@@ -4829,11 +4829,17 @@ there all along. Do not re-file this as "build advancement".
 > of **1 in Good Karma**. New skills only cost 1, whether they are Active, Knowledge, or
 > Language Skills. To raise the skill beyond Rating 1, follow the skill improvement rules above."
 
-⚠ **The obvious fix is wrong.** The loop opens with `if (rating === 0) continue;`, so deleting
-that line looks like the whole job — but `_skillCost(1, attrRating, isActive)` then charges
-`1 × 1.5 = 2` for an active skill where the book charges **1**. The flat rate is not on the
-Skill Improvement Cost Table at all; it is a separate rule that bypasses it, and the multiplier
-function cannot express it. A new skill needs its own cost path, not a loop condition.
+⚠ **This defect is ENTANGLED with defect 2, and the order of fixing matters.** The loop opens
+with `if (rating === 0) continue;`, so deleting that line looks like the whole job — and against
+the code as shipped it was wrong, because `_skillCost(1, attr, true)` returned `ceil(1 × 1.5)`
+= **2**. Once the rounding is corrected it returns `floor(1.5)` = **1**, which matches the flat
+rate for any attribute of 1 or more. So fixing this alone would have overcharged every new
+active skill; fixing both makes the two agree.
+
+⚠ **They agree by coincidence, which is not a reason to drop the flat rate.** The rule reads
+neither the attribute nor the skill type, and the cost table does; they diverge at an attribute
+of 0 (the table's third row charges 2). `karmaNewSkillCost()` therefore takes no arguments —
+any signature accepting a rating or a type would invite someone to use them.
 
 ⚠ **And the item has to exist first.** A rating-0 skill only reaches the calculator if somebody
 already created it. Learning a *genuinely* new skill means creating one — so this also wants a
@@ -4942,7 +4948,34 @@ Verified line by line against the Skill Improvement Cost Table:
   crosses rather than only one.
 - `_isActiveSkill` delegating to `skillTypeForCategory` — load-bearing, see its comment.
 
-⚠ **Not a rules defect but worth fixing in the same pass:** the spend path reads `karma` before
-the dialog opens and writes back `karma - chosenCost`, an **absolute**. A GM award landing while
-the dialog is open is silently clobbered. Everything else authoritative in this system relays a
-**delta** through the GM for exactly this reason (`sr3e.damage.apply` says so at its definition).
+---
+
+### What landed
+
+All seven fixed, released as **0.4.5.7**. The costing rules moved to `SR3EActor` as pure statics
+(`karmaSkillCost`, `karmaSpecCost`, `karmaNewSkillCost`, `karmaAttributeCost`,
+`karmaAttributeMaximum`, `karmaMaxSpecialisations`, `karmaSpecTargetRating`, `karmaAward`,
+`karmaPoolForTotal`) so they could be tested and mutated at all — the sheet cannot be imported
+without Foundry. `SR3EActorSheet._skillCost` / `_specCost` remain as delegating names.
+
+**Coverage:** `tests/karma.test.mjs`, 70 assertions, and **7 mutants — one per defect**, each
+reproducing the state the system actually shipped in. 55/55 killed.
+
+⚠ **`fixActor` is a new migration hook**, the third, and only the second thing in that file that
+can overwrite. Migration `0.4.5.7` cannot fill a blank, because 0 is both "never touched" and a
+value a GM may have chosen — so it matches a Pool equal to **exactly** what the old formula
+produced (`⌊total / 20⌋`) and leaves everything else alone. `tests/migrations.test.mjs` asserts
+both directions of hand-adjustment are declined, plus idempotency.
+
+⚠ **Defect 1 turned out to be entangled with defect 2** in a way the audit did not see: against
+the shipped `Math.ceil`, deleting the rating-0 guard would have charged 2 for a new active
+skill; with the rounding corrected the table returns 1 and agrees with the flat rate. Fixing
+either alone is wrong in one direction or the other. They agree only by coincidence — at an
+attribute of 0 the table charges 2 — so `karmaNewSkillCost()` stays argument-free.
+
+⚠ **Not a rules defect and deliberately NOT fixed:** the spend path reads `karma` before the
+dialog opens and writes back `karma - chosenCost`, an **absolute**, so a GM award landing while
+the dialog is open is clobbered. Everything else authoritative relays a **delta** through the GM
+for exactly this reason (`sr3e.damage.apply` says so at its definition). Left alone because it
+is a concurrency change touching the same write path as [#79](#79)'s ledger, and the two should
+land together rather than the second rewriting the first.

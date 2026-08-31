@@ -2954,8 +2954,29 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   static async _onBrowseSkills(_ev, _target) {
+    const actor = this.actor;
+    const def   = await SR3EActorSheet._pickSkillDefinition();
+    if (!def) return;
+
+    const existing = actor.items.find(i => i.type === 'skill' && i.name === def.name);
+    if (existing) {
+      ui.notifications.warn(`${def.name} is already on this character.`);
+      return;
+    }
+    const created = await SR3EActorSheet._createSkillItem(actor, def, 1);
+    created?.sheet?.render(true);
+  }
+
+  /**
+   * The skill browser, as a picker. Returns `{ name, category, attribute }` or `null`.
+   *
+   * ⚠ Extracted from `_onBrowseSkills` so the Spend Karma calculator can learn a skill the
+   * character does not own yet (SR3 p.245, TODO 80). Two copies of a 60-line dialog would
+   * drift, and the source-book filtering below is exactly the kind of thing that would drift
+   * out of one of them.
+   */
+  static async _pickSkillDefinition() {
     const allSkills = SR3E.skills;
-    const actor     = this.actor;
 
     // Build flat indexed list: { name, category, attribute }
     // Source-book filtering reaches SKILLS, not just packs (see SR3ESourceBooks.skillOffered).
@@ -3042,16 +3063,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ],
     });
 
-    if (selectedIdx == null || isNaN(selectedIdx)) return;
-    const def = entries[selectedIdx];
-    if (!def) return;
+    if (selectedIdx == null || isNaN(selectedIdx)) return null;
+    return entries[selectedIdx] ?? null;
+  }
 
-    const existing = actor.items.find(i => i.type === 'skill' && i.name === def.name);
-    if (existing) {
-      ui.notifications.warn(`${def.name} is already on this character.`);
-      return;
-    }
-
+  /** Create a skill item from a `_pickSkillDefinition` result. */
+  static async _createSkillItem(actor, def, rating) {
     const [created] = await actor.createEmbeddedDocuments('Item', [{
       name:   def.name,
       type:   'skill',
@@ -3060,10 +3077,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         skillType:       skillTypeForCategory(def.category),
         skillName:       def.name,
         linkedAttribute: def.attribute,
-        rating:          1,
+        rating,
       },
     }]);
-    created?.sheet?.render(true);
+    return created;
   }
 
   static _onItemEdit(ev, target) {
@@ -4230,18 +4247,16 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     return skillTypeForCategory(category) === 'active';
   }
 
+  /* The costing rules live on SR3EActor, pure and unit-tested — see its "Karma & advancement"
+   * block. These stay as the sheet's names so call sites read locally, but they must not
+   * re-derive anything: both used to round UP, which overcharged roughly half of all
+   * purchases (TODO 80). */
   static _skillCost(newRating, attrRating, isActive) {
-    const m = newRating <= attrRating        ? (isActive ? 1.5 : 1)
-            : newRating <= 2 * attrRating    ? (isActive ? 2   : 1.5)
-            :                                  (isActive ? 2.5 : 2);
-    return Math.ceil(newRating * m);
+    return game.sr3e.SR3EActor.karmaSkillCost(newRating, attrRating, isActive);
   }
 
   static _specCost(newRating, attrRating) {
-    const m = newRating <= attrRating     ? 0.5
-            : newRating <= 2 * attrRating ? 1
-            :                               1.5;
-    return Math.ceil(newRating * m);
+    return game.sr3e.SR3EActor.karmaSpecCost(newRating, attrRating);
   }
 
   static async _onAwardKarma() {
@@ -4268,17 +4283,24 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const karma      = actor.system.karma      ?? 0;
     const totalKarma = actor.system.totalKarma ?? 0;
     const karmaPool  = actor.system.karmaPool  ?? 0;
-    const newTotal   = totalKarma + amount;
-    const poolGained = Math.floor(newTotal / 20) - Math.floor(totalKarma / 20);
+
+    /* ⚠ p.244: every twentieth point goes to the Karma Pool **instead of** Good Karma, not as
+     * well as it. The book's Shetani has a Total Karma of 62 and Good Karma of 59. This used
+     * to add the full award to Good Karma AND grant the Pool points, so a character gained an
+     * extra spendable point per 20 earned. */
+    const { newTotal, poolGained, goodKarma } = game.sr3e.SR3EActor.karmaAward(totalKarma, amount);
 
     await actor.update({
-      'system.karma':      karma + amount,
+      'system.karma':      karma + goodKarma,
       'system.totalKarma': newTotal,
       'system.karmaPool':  karmaPool + poolGained,
     });
 
     let msg = `${actor.name} awarded ${amount} karma (total: ${newTotal}).`;
-    if (poolGained > 0) msg += ` +${poolGained} Karma Pool point${poolGained > 1 ? 's' : ''}!`;
+    if (poolGained > 0) {
+      msg += ` ${goodKarma} to Good Karma, +${poolGained} Karma Pool `
+           + `point${poolGained > 1 ? 's' : ''}!`;
+    }
     ui.notifications.info(msg);
   }
 
@@ -4306,42 +4328,74 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <span style="font-size:12px;color:${canAfford ? 'var(--sr-gold)' : 'var(--sr-dim)'};font-weight:600;white-space:nowrap">${cost}</span>
       </label>`;
 
+    /* p.244: 2× the new rating below the Racial Modified Limit, 3× above it. Reported, never
+     * refused — the sheet says which side of the line the buy is on and charges accordingly.
+     * `SR3E.racialLimits` was added for Attribute Boost's Drain (TODO 63); this is its second
+     * consumer. */
+    const metatype = sys.metatype ?? 'human';
     const attrHtml = IMPROVABLE_ATTRS.map(a => {
-      const cur  = attrs[a.key]?.base ?? 0;
-      const next = cur + 1;
-      const cost = 2 * next;
-      return row(`attr:${a.key}`, a.label, `${cur} → ${next}`, cost, cost <= karma);
+      const cur   = attrs[a.key]?.base ?? 0;
+      const next  = cur + 1;
+      const limit = game.sr3e.SR3EActor.racialLimit(metatype, a.key);
+      const cost  = game.sr3e.SR3EActor.karmaAttributeCost(next, limit);
+      const max   = game.sr3e.SR3EActor.karmaAttributeMaximum(limit);
+      const note  = next > max   ? ` <span style="color:var(--sr-red)">past max ${max}</span>`
+                  : next > limit ? ` <span style="color:var(--sr-amber)">above limit ${limit} — 3×</span>`
+                  : '';
+      return row(`attr:${a.key}`, a.label, `${cur} → ${next}${note}`, cost, cost <= karma);
     }).join('');
 
     const skillHtml = [];
     for (const sk of skills) {
       const s          = sk.system;
       const rating     = s.rating ?? 0;
-      if (rating === 0) continue;
       const linkedAttr = s.linkedAttribute ?? 'quickness';
       const attrRating = attrs[linkedAttr]?.base ?? 0;
       const isActive   = SR3EActorSheet._isActiveSkill(s.category);
       const specs      = s.specialisations ?? [];
 
+      /* ⚠ A skill sitting at rating 0 is UNLEARNED, and p.245 prices that as a flat 1 karma
+       * of any type — not `_skillCost(1, …)`, which would charge 2 for an active skill. The
+       * loop used to `continue` here, which is the reported half of TODO 80. */
+      if (rating === 0) {
+        const cost = game.sr3e.SR3EActor.karmaNewSkillCost();
+        skillHtml.push(row(`skill:${sk.id}:learn`, sk.name, 'learn at 1', cost, cost <= karma));
+        continue;
+      }
+
       // Raise base skill
       const skillCost = SR3EActorSheet._skillCost(rating + 1, attrRating, isActive);
       skillHtml.push(row(`skill:${sk.id}:rating`, sk.name, `${rating} → ${rating + 1}`, skillCost, skillCost <= karma));
 
-      // Add new specialisation (up to rating specs max)
-      if (specs.length < rating) {
-        const specRating = rating + 1;
+      /* Add a new specialisation. ⚠ The cap is the LINKED ATTRIBUTE's rating (p.245), not the
+       * skill's — this gated on `rating` until 2026-08-31 and diverged in both directions. */
+      const specCap = game.sr3e.SR3EActor.karmaMaxSpecialisations(attrRating);
+      if (specs.length < specCap) {
+        const specRating = game.sr3e.SR3EActor.karmaSpecTargetRating(rating, 0);
         const cost = SR3EActorSheet._specCost(specRating, attrRating);
-        skillHtml.push(row(`skill:${sk.id}:addspec`, `${sk.name} + specialisation`, `new (${specRating} dice)`, cost, cost <= karma));
+        skillHtml.push(row(`skill:${sk.id}:addspec`, `${sk.name} + specialisation`,
+          `new (${specRating} dice, ${specs.length + 1}/${specCap})`, cost, cost <= karma));
       }
 
-      // Improve existing lv1 specs to lv2
+      /* ⚠ Specialisations are NOT capped at level 2 — "to improve the specialization beyond
+       * that, follow the rules above as normal" (p.245). `level` is the BONUS over the base
+       * skill, so a level-2 spec rolls base+2 and its next purchase is base+3. */
       specs.forEach((sp, specIdx) => {
-        if ((sp.level ?? 1) >= 2) return;
-        const specRating = rating + 2;
+        const lvl        = sp.level ?? 1;
+        const specRating = game.sr3e.SR3EActor.karmaSpecTargetRating(rating, lvl);
         const cost = SR3EActorSheet._specCost(specRating, attrRating);
-        skillHtml.push(row(`skill:${sk.id}:improvespec:${specIdx}`, `${sk.name} — ${sp.name}`, `${rating+1} → ${rating+2} dice`, cost, cost <= karma));
+        skillHtml.push(row(`skill:${sk.id}:improvespec:${specIdx}`, `${sk.name} — ${sp.name}`,
+          `${rating + lvl} → ${specRating} dice`, cost, cost <= karma));
       });
     }
+
+    /* p.245: "New skills can be purchased at a skill rating of 1, by paying a cost of 1 in
+     * Good Karma. New skills only cost 1, whether they are Active, Knowledge, or Language
+     * Skills." A skill the character does not own has no item to list, so this row opens the
+     * skill browser and creates one — the other half of the reported gap in TODO 80. */
+    const learnCost = game.sr3e.SR3EActor.karmaNewSkillCost();
+    const learnRow  = row('learn:new', '<em>Learn a new skill…</em>', 'browse, at rating 1',
+      learnCost, learnCost <= karma);
 
     let chosen = null;
     let chosenCost = 0;
@@ -4354,7 +4408,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           <h4 style="margin:6px 0 4px;color:var(--sr-accent);font-size:12px;text-transform:uppercase;letter-spacing:.05em">Attributes (2 × new rating)</h4>
           <div style="display:flex;flex-direction:column;gap:1px">${attrHtml}</div>
           <h4 style="margin:10px 0 4px;color:var(--sr-accent);font-size:12px;text-transform:uppercase;letter-spacing:.05em">Skills</h4>
-          <div style="display:flex;flex-direction:column;gap:1px">${skillHtml.join('') || '<p style="color:var(--sr-muted);font-size:12px">No improvable skills.</p>'}</div>
+          <div style="display:flex;flex-direction:column;gap:1px">
+            ${learnRow}
+            ${skillHtml.join('') || '<p style="color:var(--sr-muted);font-size:12px">No improvable skills.</p>'}
+          </div>
         </div>`,
       buttons: [
         {
@@ -4376,6 +4433,23 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const parts  = chosen.split(':');
     const type   = parts[0];
 
+    if (type === 'learn') {
+      const def = await SR3EActorSheet._pickSkillDefinition();
+      if (!def) return;                       // cancelled — nothing is charged
+      const existing = actor.items.find(i => i.type === 'skill' && i.name === def.name);
+      /* ⚠ An existing skill at rating 0 is UNLEARNED, so learning it is legitimate and costs
+       * the same flat 1. Only a skill the character can already use is a duplicate. */
+      if (existing && (existing.system.rating ?? 0) > 0) {
+        ui.notifications.warn(`${def.name} is already known at rating ${existing.system.rating}.`);
+        return;
+      }
+      if (existing) await existing.update({ 'system.rating': 1 });
+      else          await SR3EActorSheet._createSkillItem(actor, def, 1);
+      await actor.update({ 'system.karma': karma - chosenCost });
+      ui.notifications.info(`${def.name} learned at rating 1 (${chosenCost} karma spent).`);
+      return;
+    }
+
     if (type === 'attr') {
       const key  = parts[1];
       const cur  = attrs[key]?.base ?? 0;
@@ -4390,7 +4464,13 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       const skill   = actor.items.get(skillId);
       if (!skill) return;
 
-      if (action === 'rating') {
+      if (action === 'learn') {
+        // p.245: a new skill is purchased AT rating 1 for a flat 1 karma.
+        await skill.update({ 'system.rating': 1 });
+        await actor.update({ 'system.karma': karma - chosenCost });
+        ui.notifications.info(`${skill.name} learned at rating 1 (${chosenCost} karma spent).`);
+
+      } else if (action === 'rating') {
         const newRating = (skill.system.rating ?? 0) + 1;
         await skill.update({ 'system.rating': newRating });
         await actor.update({ 'system.karma': karma - chosenCost });
@@ -4444,10 +4524,14 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         const specs   = [...(skill.system.specialisations ?? [])];
         if (isNaN(specIdx) || specIdx < 0 || specIdx >= specs.length) return;
         const specName = specs[specIdx].name;
-        specs[specIdx] = { ...specs[specIdx], level: 2 };
+        // ⚠ Increment, never assign 2 — p.245 puts no ceiling on a specialisation.
+        const newLevel = (specs[specIdx].level ?? 1) + 1;
+        specs[specIdx] = { ...specs[specIdx], level: newLevel };
         await skill.update({ 'system.specialisations': specs });
         await actor.update({ 'system.karma': karma - chosenCost });
-        ui.notifications.info(`${skill.name} "${specName}" improved to level 2 (${chosenCost} karma spent).`);
+        ui.notifications.info(
+          `${skill.name} "${specName}" raised to ${(skill.system.rating ?? 0) + newLevel} dice `
+          + `(${chosenCost} karma spent).`);
       }
     }
   }

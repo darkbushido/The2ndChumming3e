@@ -179,6 +179,41 @@ const MIGRATIONS = [
       return { 'system.improvedSkillName': '' };
     },
   },
+  {
+    version: '0.4.5.7',
+    label: 'Karma Pool starts at 1 (SR3 p.244, TODO 80)',
+    /**
+     * > "Every twentieth point has been added to the Karma Pool (**each character starts with
+     * > 1 Karma Pool**) and the rest has gone to Good Karma."   — p.244
+     *
+     * `karmaPool` initialised to 0, so every character has been a point short since the field
+     * existed. The schema default is now 1, which fixes new actors and does nothing for
+     * anyone already playing.
+     *
+     * ⚠ **Fill-blanks cannot do this**, and that is the whole difficulty: 0 is both "never
+     * touched" and a value a GM may have set on purpose. So this does not fill a blank — it
+     * recognises a Pool that still equals **exactly** what the old, wrong formula produced
+     * (`⌊total / 20⌋`, with no starting point) and moves it to the right one. A GM who has
+     * adjusted the Pool by hand — up or down, including to 0 on a character who should have
+     * more — no longer matches, and is left alone.
+     *
+     * ⚠ A brand-new character has total 0 and Pool 0 under the old formula, 1 under the new,
+     * so they are corrected too. That is the intended case, not a false positive.
+     */
+    fixActor: (actor) => {
+      if (actor.type !== 'character' && actor.type !== 'npc') return null;
+      const pool  = actor.system?.karmaPool;
+      const total = actor.system?.totalKarma ?? 0;
+      if (typeof pool !== 'number') return null;
+      const buggy   = Math.floor(Math.max(0, total) / 20);
+      const correct = globalThis.game?.sr3e?.SR3EActor?.karmaPoolForTotal?.(total)
+                      ?? (buggy + 1);
+      if (pool !== buggy || pool === correct) return null;   // hand-adjusted, or already right
+      console.log(`SR3E | ${actor.name}: Karma Pool ${pool} → ${correct} `
+        + '(p.244 — every character starts with 1)');
+      return { 'system.karmaPool': correct };
+    },
+  },
 ];
 
 export const SR3EMigrations = {
@@ -254,17 +289,41 @@ export const SR3EMigrations = {
    * a separate document living in `scene.tokens[].actor`, and skipping it means the fix works
    * everywhere except the token actually being played.
    */
+  /**
+   * One actor: its embedded items, then the actor document itself.
+   *
+   * ⚠ **`fixActor` is the third hook and it is NOT a fill-blanks pass.** `items` fills blank
+   * fields by item name and `fixItem` corrects one; both operate on embedded items, which is
+   * every migration written before 0.4.5.7. A rule living on the ACTOR — the Karma Pool's
+   * starting point — has nowhere to land in either. It returns a delta or `null`, and like
+   * `fixItem` it must argue its case at the call site, because it can overwrite.
+   */
+  async _applyToActor(m, actor, label) {
+    let count = 0;
+    const updates = _patchItemsByName(actor, m.items ?? {}, m.fixItem);
+    if (updates) {
+      await actor.updateEmbeddedDocuments('Item', updates);
+      count += updates.length;
+      console.log(`SR3E | ${m.version}: ${label} — ${updates.length} item(s)`);
+    }
+    if (m.fixActor) {
+      const delta = m.fixActor(actor);
+      if (delta) {
+        await actor.update(delta);
+        count++;
+        console.log(`SR3E | ${m.version}: ${label} — actor`, delta);
+      }
+    }
+    return count;
+  },
+
   async _apply(m) {
     let count = 0;
-    if (!m.items && !m.fixItem) return count;
+    if (!m.items && !m.fixItem && !m.fixActor) return count;
 
     // ── World actors ────────────────────────────────────────────────────────
     for (const actor of game.actors) {
-      const updates = _patchItemsByName(actor, m.items ?? {}, m.fixItem);
-      if (!updates) continue;
-      await actor.updateEmbeddedDocuments('Item', updates);
-      count += updates.length;
-      console.log(`SR3E | ${m.version}: ${actor.name} — ${updates.length} item(s)`);
+      count += await SR3EMigrations._applyToActor(m, actor, actor.name);
     }
 
     // ── Unlinked token actors, scene by scene ───────────────────────────────
@@ -275,11 +334,8 @@ export const SR3EMigrations = {
         if (token.actorLink) continue;
         const actor = token.actor;
         if (!actor) continue;
-        const updates = _patchItemsByName(actor, m.items ?? {}, m.fixItem);
-        if (!updates) continue;
-        await actor.updateEmbeddedDocuments('Item', updates);
-        count += updates.length;
-        console.log(`SR3E | ${m.version}: ${scene.name}/${token.name} (unlinked) — ${updates.length} item(s)`);
+        count += await SR3EMigrations._applyToActor(
+          m, actor, `${scene.name}/${token.name} (unlinked)`);
       }
     }
 

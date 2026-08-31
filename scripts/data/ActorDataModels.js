@@ -117,7 +117,9 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       nuyen:                   new NumberField({ integer: true, initial: 0, min: 0 }),
       karma:                   new NumberField({ integer: true, initial: 0 }),
       totalKarma:              new NumberField({ integer: true, initial: 0 }),
-      karmaPool:               new NumberField({ integer: true, initial: 0, min: 0 }),
+      // ⚠ SR3 p.244: "each character starts with 1 Karma Pool". This was 0 until
+      // 2026-08-31; migration 0.4.5.7 corrects actors already in play. See TODO 80.
+      karmaPool:               new NumberField({ integer: true, initial: 1, min: 0 }),
       hackingBonus:            new NumberField({ integer: true, initial: 0 }),
       initiativeDiceBonus:     new NumberField({ integer: true, initial: 0, min: 0 }),
       equippedArmor:           new StringField({ initial: '' }),

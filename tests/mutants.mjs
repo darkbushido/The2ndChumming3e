@@ -73,6 +73,76 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'karma-skill-cost-rounds-up',
+    suite:  'karma',
+    ...ACTOR, method: 'karmaSkillCost',
+    was:    'Math.ceil — the state the system shipped in. p.245 says "round fractions down", '
+          + 'so every fractional cost was one karma too expensive; the book prints no '
+          + 'fractional example, which is why it survived',
+    impl:   (newRating, attrRating, isActive) => {
+      const n = Number(newRating) || 0, a = Number(attrRating) || 0;
+      const m = n <= a ? (isActive ? 1.5 : 1) : n <= 2 * a ? (isActive ? 2 : 1.5) : (isActive ? 2.5 : 2);
+      return Math.ceil(n * m);
+    },
+  },
+  {
+    id:     'karma-spec-cost-rounds-up',
+    suite:  'karma',
+    ...ACTOR, method: 'karmaSpecCost',
+    was:    'Math.ceil on specialisations — same p.245 clause, same shipped bug',
+    impl:   (newRating, attrRating) => {
+      const n = Number(newRating) || 0, a = Number(attrRating) || 0;
+      return Math.ceil(n * (n <= a ? 0.5 : n <= 2 * a ? 1 : 1.5));
+    },
+  },
+  {
+    id:     'karma-attr-always-2x',
+    suite:  'karma',
+    ...ACTOR, method: 'karmaAttributeCost',
+    was:    'always 2x the new rating — p.244 charges 3x above the Racial Modified Limit, '
+          + 'so raising past the limit cost a third less than it should',
+    impl:   (newRating) => (Number(newRating) || 0) * 2,
+  },
+  {
+    id:     'karma-spec-cap-off-the-skill',
+    suite:  'karma',
+    ...ACTOR, method: 'karmaMaxSpecialisations',
+    was:    'gated on the SKILL rating — p.245 caps specialisations at the LINKED ATTRIBUTE '
+          + "rating. Brick's Stealth 5 / Quickness 6 is one apart, so the book's own example "
+          + 'reads correctly under either rule',
+    impl:   () => 5,
+  },
+  {
+    id:     'karma-award-double-counts-the-twentieth',
+    suite:  'karma',
+    ...ACTOR, method: 'karmaAward',
+    was:    'the full award going to Good Karma AND the pool points granted beside it — '
+          + "p.244's Shetani has 62 total karma and 59 Good Karma, so the twentieth point "
+          + 'goes to the Pool INSTEAD',
+    impl:   (totalKarma, amount) => {
+      const t = Math.max(0, Number(totalKarma) || 0), a = Math.max(0, Number(amount) || 0);
+      const newTotal = t + a;
+      return { newTotal, poolGained: Math.floor(newTotal / 20) - Math.floor(t / 20), goodKarma: a };
+    },
+  },
+  {
+    id:     'karma-pool-starts-at-zero',
+    suite:  'karma',
+    ...ACTOR, method: 'karmaPoolForTotal',
+    was:    'floor(total / 20) with no starting point — p.244 says "each character starts '
+          + 'with 1 Karma Pool", and the data model initialised to 0',
+    impl:   (totalKarma) => Math.floor(Math.max(0, Number(totalKarma) || 0) / 20),
+  },
+  {
+    id:     'karma-spec-capped-at-level-2',
+    suite:  'karma',
+    ...ACTOR, method: 'karmaSpecTargetRating',
+    was:    'the sheet hard-capping a specialisation at level 2 — p.245 says "to improve the '
+          + 'specialization beyond that, follow the rules above as normal"',
+    impl:   (baseRating, currentLevel = 0) =>
+      (Number(baseRating) || 0) + Math.min(1, Number(currentLevel) || 0) + 1,
+  },
+  {
     id:     'missile-parry-tie-catches',
     suite:  'adept-powers',
     ...ACTOR, method: 'missileParryOutcome',

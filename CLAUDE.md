@@ -1668,32 +1668,46 @@ tested `!category.includes('knowledge')`, which is a different question: `Martia
 neither "knowledge" nor "language", so karma charged Aikido as an active skill while the sheet
 filed it under knowledge. One classifier.
 
-#### 🔴 DIVERGES FROM RAW — seven defects, tracked as TODO 80
+#### Seven defects, found and fixed 2026-08-31 — TODO 80
 
-Audited 2026-08-31. **Do not read this section as a description of correct behaviour.**
+All corrected in **0.4.5.7**. Kept as the record of what was wrong, because six of the
+seven were invisible from play and the two marked ⚠ below cannot be caught by any test
+written from the book's own examples.
 
-| # | Rule | Code |
+| # | Rule | Was |
 |---|---|---|
-| 1 | New skills cost a **flat 1 karma**, any type (p.245) | not offered at all; rating-0 skills are `continue`d |
-| 2 | *"round fractions down"* (p.245) | `Math.ceil` — **overcharges ~half of all purchases** |
-| 3 | Max specialisations = the **linked Attribute** rating | gates on the **skill** rating |
+| 1 | New skills cost a **flat 1 karma**, any type (p.245) | not offered at all; rating-0 skills were `continue`d |
+| 2 | *"round fractions down"* (p.245) | `Math.ceil` — **overcharged ~half of all purchases** |
+| 3 | Max specialisations = the **linked Attribute** rating | gated on the **skill** rating |
 | 4 | *"improve the specialization beyond that… as normal"* | hard-capped at level 2 |
 | 5 | Above the Racial Modified Limit costs **3×** (p.244) | always 2× |
 | 6 | The twentieth point goes to the Pool **instead of** Good Karma | awarded to both |
 | 7 | *"each character starts with 1 Karma Pool"* | `initial: 0` |
 
-⚠ **Defect 1's obvious fix is wrong.** Deleting the `rating === 0` guard makes `_skillCost`
-charge 2 for a new active skill. The flat rate is a separate rule that **bypasses** the cost
-table, so it needs its own path.
+The rules are pure statics on `SR3EActor` — `karmaSkillCost`, `karmaSpecCost`,
+`karmaNewSkillCost`, `karmaAttributeCost`, `karmaAttributeMaximum`, `karmaMaxSpecialisations`,
+`karmaSpecTargetRating`, `karmaAward`, `karmaPoolForTotal`. They live there rather than on the
+sheet because the sheet cannot be imported without Foundry, so nothing on it can be tested or
+mutated. `tests/karma.test.mjs` + one mutant per defect.
+
+⚠ **Defects 1 and 2 are entangled.** Deleting the `rating === 0` guard alone made `_skillCost`
+charge `ceil(1 × 1.5)` = **2** for a new active skill; with the rounding fixed it returns 1 and
+agrees with the flat rate. Fixing either without the other is wrong in one direction or the
+other. They agree only by coincidence — the flat rate reads neither the attribute nor the skill
+type, and diverges at an attribute of 0 — so `karmaNewSkillCost()` stays argument-free.
 
 ⚠ **Defects 2 and 3 cannot be caught by the book's own worked examples**, which is why they
 survived: every printed example lands on an integer (where `ceil` and `floor` agree) and Brick's
 Stealth 5 / Quickness 6 is one apart (where either cap reads correctly). Any test written from
 the examples alone passes against the wrong code — write the fractional and divergent cases.
 
-⚠ **Defect 7 is a data-model change** (full restart) and existing actors keep their stored 0,
-which is also the schema default — so fill-blanks migration cannot tell it from a deliberate GM
-value. See TODO 80.
+⚠ **Defect 7 needed a new migration hook.** It is a data-model change (full restart), and
+existing actors keep their stored 0 — which is also the schema default, so a fill-blanks pass
+cannot tell it from a deliberate GM value. Migration `0.4.5.7` instead matches a Pool equal to
+**exactly** what the old formula produced (`⌊total / 20⌋`) and declines everything else, and it
+runs through **`fixActor`** — the third migration hook, and the first to touch the actor
+document rather than its embedded items. Like `fixItem` it can overwrite, so it argues its case
+at the call site.
 
 ⚠ **There is no ledger.** The calculator writes new totals and records nothing about what was
 bought, so "where did that 40 karma go?" has no answer. Tracked separately as TODO 79, because
