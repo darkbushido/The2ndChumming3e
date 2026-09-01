@@ -26,7 +26,7 @@ independent.
 | 🔴 Confirmed bugs, still open | **73** · **74** · **88** · **89** *(**71** · **72** · **80** · **81** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **4** · **30** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
-| 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **83** · **84** · **85** · **86** · **87** |
+| 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **83** · **84** · **85** · **86** · **87** · **90** |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
 | 🧹 Housekeeping | 1 · 6 |
 | ✅ Done — kept for the record | **2** · **5** · **8** · **10** · 13 · **40** · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
@@ -6018,4 +6018,68 @@ working through page by page, not a `--fix` flag.
 
 ⚠ **Do not fix Dock Worker in isolation** — or any single record found by accident. That
 produces exactly the false confidence [#84](#84) exists to avoid.
+
+<a id="90"></a>
+## 90. ✅ `SR3ESkills`' specialisations, cross-checked against the books — **MOSTLY CLEAN**
+
+**Run 2026-09-01** — `tools/audit-skill-specialisations.mjs`, report at
+`audit/skill-specialisations-audit.txt`.
+
+`SR3ESkills` ships **345 specialisations across 99 skills** and lives in a SYSTEM pack, so it
+reaches every table and no source-book toggle can hide it. It came from the upstream character
+generator and had never been compared to a printed page. Given [#84](#84) and [#89](#89) found
+85% and 79% defect rates in similarly-sourced data, the expectation going in was poor.
+
+**It is fine.** Five books give skills a `Specializations:` line — Core (45), Cannon Companion
+(15), MITS (5), Rigger 3 (4), M&M (1). Of the 56 that match a skill we ship:
+
+| | |
+|---|---:|
+| **clean** | **45** |
+| with differences | 11 |
+| …of which genuine gaps | ~6 |
+| …of which PDF prose bleed | ~5 |
+
+⚠ **This is the audit that came back GOOD**, and that is worth recording as loudly as the two
+that did not. The Little Black Book's problems are that book's transcription, not a property of
+everything the upstream generator produced.
+
+### The genuine gaps — specialisations a player cannot pick
+
+| Skill | Missing | Source |
+|---|---|---|
+| **Sorcery** | Spell Category | SR3 |
+| **Spell Design** | Spell Category | MITS |
+| **Spray Weapons** | Firehose, Flame-thrower | CC |
+| **Talismongering** | Analysis, Gathering | MITS |
+| **Etiquette** | Magical Groups | SR3 |
+| **Vectored Thrust Aircraft** | no specialisations and no `->` open marker | SR3 |
+
+⚠ **`Spray Weapons (Firehose)` is used by shipped content** — the Little Black Book's
+Firefighter has it — so a specialisation the system's own packs rely on is not in the list a
+player can choose from.
+
+### ⚠ The first run said 44 differences. It was wrong, and the reason matters
+
+**A skill NAME appears in several categories, and only one carries the specialisations.**
+`SR3ESkills` lists `Stealth` under *Physical skills* with all four of the book's
+specialisations, **and** under *Background knowledge* with none — the latter correctly, since a
+knowledge skill about stealth has no list. Keying by name alone let the empty duplicate
+overwrite the real entry, and the tool reported all four as missing.
+
+The tool now **unions** the specialisations across every category a name appears in, which
+answers the only question being asked: can a player pick this anywhere?
+
+⚠ **Anything reading `SR3ESkills` by name alone has this bug.** The duplicates are real data,
+not an error — worth checking wherever a skill is looked up by name.
+
+### What is left is mostly the PDF, not the data
+
+`MISSING Third Edition`, `MISSING as described on p. 160`, `MISSING or by body part (fists` —
+running heads and prose tails bleeding into a wrapped `Specializations:` line. Not worth
+chasing; the entries above were confirmed by reading them.
+
+⚠ **The 9 EXTRAs are probably right.** `Biotech (Magical Health)`, `Enchanting (Alchemy,
+Artificing)`, `Unarmed Combat (Fists, Head)` — later books add specialisations, and the tool
+only reports an extra where it judged the book's list closed, which it can misjudge.
 

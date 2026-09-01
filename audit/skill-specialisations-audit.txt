@@ -1,0 +1,45 @@
+
+Skills with a Specializations line in the books: 66
+  matched against SR3ESkills:  56
+  not in SR3ESkills at all:    10
+  clean:                       45
+  with differences:            11
+
+⚠ MISSING means the book lists a specialisation a player cannot pick here.
+  EXTRA is only reported for skills the book treats as a CLOSED list.
+
+Biotech  — Shadowrun 3e - Core Rules {FAN25000}.pdf
+    MISSING  Transimplant Surgery
+    EXTRA    Cybermancy
+    EXTRA    Magical Health
+    EXTRA    Transplant Surgery
+Electronics  — Shadowrun 3e - Core Rules {FAN25000}.pdf
+    EXTRA    Security Systems
+Enchanting  — Shadowrun 3e - Magic in the Shadows.pdf
+    EXTRA    Alchemy
+    EXTRA    Artificing
+Etiquette  (book: open-ended)  — Shadowrun 3e - Core Rules {FAN25000}.pdf
+    MISSING  Magical Groups
+    MISSING  Tribal or any other groups or sub-
+Leadership  — Shadowrun 3e - Core Rules {FAN25000}.pdf
+    MISSING  Third Edition
+    EXTRA    Morale
+Sorcery  — Shadowrun 3e - Core Rules {FAN25000}.pdf
+    MISSING  Spell Category
+Spell Design  — Shadowrun 3e - Magic in the Shadows.pdf
+    MISSING  Spell Category
+Spray Weapons  — Shadowrun 3e - Cannon Companion.pdf
+    MISSING  Firehose
+    MISSING  Flame-thrower
+Talismongering  — Shadowrun 3e - Magic in the Shadows.pdf
+    MISSING  Analysis
+    MISSING  Gathering
+    MISSING  as described on p. 160
+    MISSING  SR?. This boolt describes additional
+Unarmed Combat  — Shadowrun 3e - Core Rules {FAN25000}.pdf
+    MISSING  or by body part (fists
+    MISSING  head butts
+    EXTRA    Fists
+    EXTRA    Head
+Vectored Thrust Aircraft  (book: open-ended)  — Shadowrun 3e - Core Rules {FAN25000}.pdf
+    OPEN     the book says this is open-ended; we offer nothing and no "->" marker
