@@ -73,6 +73,37 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'grade-essence-rounds-down',
+    suite:  'essence',
+    ...ACTOR, method: 'gradedEssenceCost',
+    was:    'rounding the graded Essence cost DOWN. M&M p.45: "Round all numbers up." '
+          + 'Rounding down refunds Essence nobody paid for, and Essence is permanent',
+    impl:   (cost, grade) => {
+      const base = parseFloat(cost ?? 0);
+      if (!Number.isFinite(base) || base <= 0) return 0;
+      const t = { standard: 1, basic: 1, alpha: 0.8, alphaware: 0.8,
+                  beta: 0.6, betaware: 0.6, delta: 0.5, deltaware: 0.5 };
+      const m = t[String(grade ?? '').toLowerCase().replace(/\bused\b/g, '').trim()] ?? 1;
+      return m === 1 ? parseFloat(base.toFixed(2)) : Math.max(0.01, Math.floor(base * m * 100) / 100);
+    },
+  },
+  {
+    id:     'grade-unknown-gets-a-discount',
+    suite:  'essence',
+    ...ACTOR, method: 'gradedEssenceCost',
+    was:    "an unknown grade defaulting to alpha's 0.8 rather than full cost. Bioware's "
+          + 'Cultured/Exotic and any GM typo land there, and Essence is PERMANENT, so an '
+          + 'over-refund cannot be taken back',
+    impl:   (cost, grade) => {
+      const base = parseFloat(cost ?? 0);
+      if (!Number.isFinite(base) || base <= 0) return 0;
+      const t = { standard: 1, basic: 1, alpha: 0.8, alphaware: 0.8,
+                  beta: 0.6, betaware: 0.6, delta: 0.5, deltaware: 0.5 };
+      const m = t[String(grade ?? '').toLowerCase().replace(/\bused\b/g, '').trim()] ?? 0.8;
+      return m === 1 ? parseFloat(base.toFixed(2)) : Math.max(0.01, Math.ceil(base * m * 100) / 100);
+    },
+  },
+  {
     id:     'karma-skill-cost-rounds-up',
     suite:  'karma',
     ...ACTOR, method: 'karmaSkillCost',

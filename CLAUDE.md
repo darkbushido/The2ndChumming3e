@@ -1219,6 +1219,45 @@ would make it total immunity.
 `toxin` key, exactly as Body Control does. That is the point of keying those channels by
 situation rather than by source.
 
+### Cyberware grades  · *M&M p.45* — TODO 86
+
+`SR3EActor.gradedEssenceCost(cost, grade)` applies the Cyberware Grades Table before
+`installedEssenceCost` sums anything. Registry: `SR3E.cyberwareGradeEssence`.
+
+| Grade | Essence | Cost | Availability |
+|---|---|---|---|
+| Alpha | **× .8** | 2 | Standard |
+| Beta | **× .6** | 4 | +5 / × 1.5 |
+| Delta | **× .5** | 8 | +9 / × 3 |
+| Used | **by grade** | .5 | Standard |
+
+⚠ **Only the ESSENCE multiplier is implemented.** The cost multiplier and availability
+modifiers are real rules with nowhere to land — there is no purchasing flow (TODO 82).
+
+⚠ **Rounded UP, per item, to 2dp** — *"Round all numbers up."* Rounding the TOTAL instead would
+let several cheap alphaware implants come in under the book's price.
+
+⚠ **The .01 floor is on the REDUCTION, not on a free item.** A base cost of 0 stays 0; reading
+the floor as unconditional starts charging Essence for every cosmetic mod.
+
+⚠ **An unknown grade costs FULL Essence.** Bioware's `Cultured`/`Exotic`, a typo, or a grade
+from a book we lack all fall to ×1. Essence is **permanent**, so an over-refund cannot be taken
+back and is far worse than an over-charge.
+
+⚠ **"Used" is a modifier ON a grade, not a grade** — it halves the price and leaves Essence "by
+grade". The map has no `used` key; `gradedEssenceCost` strips the word, so `'Used Alpha'` reads
+as alpha and a bare `'Used'` reads as basic.
+
+⚠ **Bioware never reaches this** — `installedEssenceCost` skips it, because M&M charges bioware
+against the Bio Index.
+
+⚠ **`SR3E.cyberwareGrades` is a DIFFERENT thing** — the array of names the item sheet's grade
+dropdown offers. Do not conflate them; the multiplier map is `cyberwareGradeEssence`.
+
+⚠ **`CyberwareData.grade` is kept for more than this.** A player salvaging chrome off a corpse
+needs to know whether it is standard, alpha or beta — that is what the part is worth. Do not
+collapse the field into a pre-multiplied number.
+
 ### Move-by-wire  · *M&M p.60*
 
 The **shipped pack data is correct** and asserted row-by-row — rating N gives **+N QUI, +2N REA,

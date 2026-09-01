@@ -961,6 +961,46 @@ export const SR3E = {
   ],
 
   /**
+   * Cyberware grades — the Essence multiplier · *M&M p.45, Cyberware Grades Table* · TODO 86
+   *
+   * | Grade | Essence Cost Reduction | Cost | Availability |
+   * |---|---|---|---|
+   * | Alpha | −20% (× .8) | 2 | Standard |
+   * | Beta  | −40% (× .6) | 4 | +5 / × 1.5 |
+   * | Delta | −50% (× .5) | 8 | +9 / × 3 |
+   * | Used  | **by grade** | .5 | Standard |
+   *
+   * ⚠ **Only the ESSENCE multiplier lives here.** The cost multiplier and the availability
+   * modifiers are real rules with nowhere to land yet — there is no purchasing flow (TODO 82).
+   * Adding them to this map would imply they are applied somewhere.
+   *
+   * ⚠ **"Used" is not a grade, it is a modifier ON one** — *"Used cyberware … is available in
+   * all grades except delta"*, and its Essence is *"by grade"*, i.e. unchanged. Only its price
+   * halves. So it is deliberately absent: a `grade` of `'Used Alpha'` should read as alpha.
+   *
+   * ⚠ **BIOWARE GRADES ARE NOT THESE.** The shipped packs carry `Cultured` and `Exotic` on
+   * bioware, which are bioware qualities and cost Bio Index rather than Essence. They are
+   * absent here on purpose, and `installedEssenceCost` skips bioware entirely — but an unknown
+   * grade must still fall back to ×1, never to `undefined`.
+   *
+   * ⚠ **Keyed loosely on purpose.** The shipped data says `Standard` and `Alpha`; the books say
+   * `basic`, `alphaware`, `betaware`, `deltaware`. Both spellings map, matched
+   * case-insensitively, because `grade` is a free StringField a GM can type into.
+   *
+   * ⚠ **NOT `cyberwareGrades`**, which already exists further down as the ARRAY of names the
+   * item sheet's grade dropdown offers. That list includes `'Used'` as a pickable option, so a
+   * GM can select it — and this map deliberately has no `used` key, leaving it at ×1. Used
+   * BASIC ware is exactly that; a GM wanting used alphaware types "Used Alpha", which
+   * `gradedEssenceCost` strips to "alpha".
+   */
+  cyberwareGradeEssence: {
+    standard: 1, basic: 1,
+    alpha: 0.8, alphaware: 0.8,
+    beta: 0.6, betaware: 0.6,
+    delta: 0.5, deltaware: 0.5,
+  },
+
+  /**
    * Cyber/bioware whose QUICKNESS bonus is excluded from the Reaction derivation · TODO 4
    *
    * Move-by-Wire · *M&M p.60*: *"The Quickness bonus does not count when calculating the

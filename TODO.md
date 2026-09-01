@@ -5560,7 +5560,11 @@ identical carve-out in identical words, so without a second entry every Muscle R
 gains Reaction they are not entitled to. One line in `config.js`, and the [#4](#4) machinery
 already handles the rest.
 
-**3 — 🔴 GRADE IS STORED BUT NOTHING READS IT.**
+**3 — ✅ GRADE MULTIPLIER IMPLEMENTED 2026-09-01.** `SR3EActor.gradedEssenceCost` applies the
+M&M p.45 table before `installedEssenceCost` sums, so pack items can carry the book's own
+STANDARD costs and `grade` does the work. Rounded up per item to 2dp; unknown grades cost full
+Essence; bioware never reaches it. `tests/essence.test.mjs` + 2 mutants. **The remaining
+blocker on this item is gap 4, the conversion itself.**
 
 ⚠ **KEEP `CyberwareData.grade`. Maintainer's instruction, 2026-09-01.** It is not dead weight
 even while unread: a player looting a dead opponent's chrome needs to know whether it is

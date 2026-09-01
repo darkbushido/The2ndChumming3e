@@ -7269,11 +7269,57 @@ _prepareCharacter(sys, attr) {
     let total = 0;
     for (const item of (items ?? [])) {
       if (item?.type !== 'cyberware') continue;
-      const c = parseFloat(item.system?.essenceCost ?? 0);
+      const c = SR3EActor.gradedEssenceCost(item.system?.essenceCost, item.system?.grade);
       if (Number.isFinite(c)) total += c;
     }
     return parseFloat(total.toFixed(2));
   }
+
+  /**
+   * An implant's Essence cost after its grade · *M&M p.45* — **pure**.
+   *
+   * > "Reduce the Base Essence Cost by the percentage listed (or use the multiplier given in
+   * > parentheses). **Round all numbers up. Essence Cost may never be reduced below .01** in
+   * > this manner."
+   *
+   * ⚠ **Rounded UP, per item, to two decimals** — not on the total. Essence is tracked to 2dp
+   * throughout (`4.24`, `1.76`, `0.42`), and rounding a sum instead of each part would let a
+   * character with several cheap alphaware implants come out below what the book charges.
+   *
+   * ⚠ **The .01 floor applies to the REDUCTION, not to a free item.** A base cost of 0 stays 0
+   * — that is an implant with no Essence cost, not one reduced to nothing. Reading the floor as
+   * unconditional would silently charge for every cosmetic mod.
+   *
+   * ⚠ **An unknown grade costs FULL Essence.** Bioware's `Cultured`/`Exotic`, a GM's typo, or a
+   * grade from a book we do not have all fall to ×1 — the conservative direction. A default of
+   * "cheapest" would quietly hand back Essence nobody paid for, and Essence is permanent
+   * ([#5](TODO.md)), so an over-refund is far worse than an over-charge.
+   *
+   * ⚠ **`grade` is KEPT even though only this reads it**, because a player salvaging chrome off
+   * a corpse needs to know whether it is standard, alpha or beta — that is what the part is
+   * worth. Do not collapse the field into a pre-multiplied number.
+   *
+   * @param {number|string} cost   the item's base `essenceCost`
+   * @param {string} grade         the item's `grade`, free text
+   * @returns {number} Essence actually paid, to 2dp
+   */
+  static gradedEssenceCost(cost, grade) {
+    const base = parseFloat(cost ?? 0);
+    if (!Number.isFinite(base) || base <= 0) return 0;
+    const table = globalThis.game?.sr3e?.SR3E?.cyberwareGradeEssence ?? SR3EActor._GRADES_FALLBACK;
+    /* ⚠ "Used Alpha" must read as alpha: used halves the PRICE and leaves Essence "by grade"
+     * (M&M p.45), so the word is stripped rather than treated as a grade of its own. */
+    const key = String(grade ?? '').toLowerCase().replace(/\bused\b/g, '').trim();
+    const mult = table[key] ?? 1;
+    if (mult === 1) return parseFloat(base.toFixed(2));
+    return Math.max(0.01, Math.ceil(base * mult * 100) / 100);
+  }
+
+  /** Used when `game` is not available — tests, and any pre-`init` call. */
+  static _GRADES_FALLBACK = {
+    standard: 1, basic: 1, alpha: 0.8, alphaware: 0.8,
+    beta: 0.6, betaware: 0.6, delta: 0.5, deltaware: 0.5,
+  };
 
   /**
    * Current Essence from the persisted mark and what is installed. **Pure.**

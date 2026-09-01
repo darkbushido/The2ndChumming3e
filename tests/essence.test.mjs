@@ -119,4 +119,78 @@ export async function run(t) {
   t.is('the result is rounded to 2dp', ess({ base: 6, lost: 0.3, installed: 0 }), 5.7);
   t.is('and stays exact across several odd costs',
     ess({ base: 6, lost: cost([cyber(0.2), cyber(0.35), cyber(0.15)]) }), 5.3);
+
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  Cyberware grades · M&M p.45, Cyberware Grades Table — TODO 86
+   *
+   *   | Grade | Essence Cost Reduction | Cost | Availability |
+   *   | Alpha | −20% (× .8) | 2 | Standard |
+   *   | Beta  | −40% (× .6) | 4 | +5 / × 1.5 |
+   *   | Delta | −50% (× .5) | 8 | +9 / × 3 |
+   *   | Used  | by grade    | .5 | Standard |
+   *
+   *   "Reduce the Base Essence Cost by the percentage listed… Round all numbers up. Essence
+   *    Cost may never be reduced below .01 in this manner."
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const gec = SR3EActor.gradedEssenceCost;
+
+  t.is('standard grade costs full Essence',        gec(1, 'Standard'), 1);
+  t.is('alpha is ×0.8',                            gec(1, 'Alpha'), 0.8);
+  t.is('beta is ×0.6',                             gec(1, 'Beta'), 0.6);
+  t.is('delta is ×0.5',                            gec(1, 'Delta'), 0.5);
+
+  // The books' own spellings, alongside the shipped data's.
+  t.is('"alphaware" reads the same as "Alpha"',    gec(1, 'alphaware'), 0.8);
+  t.is('"basic" reads as standard',                gec(1, 'basic'), 1);
+  t.is('matching is case-insensitive',             gec(1, 'DELTAWARE'), 0.5);
+
+  /* ⚠ **Rounded UP, to two decimals, PER ITEM.** Essence is tracked to 2dp everywhere, and
+   * rounding the total instead of each part would let a character with several cheap alphaware
+   * implants come out below what the book charges. */
+  t.is('0.3 alpha rounds up to 0.24',   gec(0.3, 'Alpha'), 0.24);
+  t.is('0.25 beta rounds up to 0.15',   gec(0.25, 'Beta'), 0.15);
+  t.is('0.25 delta rounds UP to 0.13, not down to 0.12', gec(0.25, 'Delta'), 0.13);
+  t.is('0.35 delta rounds UP to 0.18',  gec(0.35, 'Delta'), 0.18);
+
+  /* ⚠ The .01 floor applies to the REDUCTION. A base cost of 0 is an implant with no Essence
+   * cost — not one reduced to nothing — and must stay 0, or every cosmetic mod starts charging. */
+  t.is('a reduction cannot go below .01', gec(0.01, 'Delta'), 0.01);
+  t.is('…but a FREE implant stays free',  gec(0, 'Delta'), 0);
+  t.is('…and so does a free standard one', gec(0, 'Standard'), 0);
+
+  /* ⚠ "Used" halves the PRICE and leaves Essence "by grade", so it is not a grade of its own.
+   * The item sheet offers it as a pickable option, so both forms must behave. */
+  t.is('"Used" alone reads as basic — full Essence', gec(1, 'Used'), 1);
+  t.is('"Used Alpha" reads as alpha',                gec(1, 'Used Alpha'), 0.8);
+
+  /* ⚠ An unknown grade costs FULL Essence — the conservative direction. Bioware's Cultured and
+   * Exotic land here, as would a GM's typo. Defaulting to a discount would hand back Essence
+   * nobody paid for, and Essence is PERMANENT, so an over-refund is far worse than a
+   * over-charge. */
+  t.is('bioware "Cultured" is not a cyberware grade', gec(1, 'Cultured'), 1);
+  t.is('"Exotic" likewise',                           gec(1, 'Exotic'), 1);
+  t.is('a typo costs full Essence',                   gec(1, 'Alfaware'), 1);
+  t.is('a missing grade costs full Essence',          gec(1, undefined), 1);
+  t.is('an empty grade costs full Essence',           gec(1, ''), 1);
+
+  /* ==== and it reaches the total ==== */
+  // ⚠ Named `graded` rather than `cyber` — this file already declares a `cyber` helper above,
+  // and shadowing it in the same scope is a temporal-dead-zone error, not a shadow.
+  const graded = (essenceCost, grade) => ({ type: 'cyberware', system: { essenceCost, grade } });
+
+  t.is('a standard implant costs its face value',
+    SR3EActor.installedEssenceCost([graded(2, 'Standard')]), 2);
+  t.is('the same implant in alpha costs 1.6',
+    SR3EActor.installedEssenceCost([graded(2, 'Alpha')]), 1.6);
+
+  /* Corp Bodyguard's shipped stub is 4.24, which is exactly 5.3 × 0.8 — the generator's author
+   * applied the alphaware discount by hand. With grades implemented, the parts can carry the
+   * book's standard costs and arrive at the same place. */
+  t.is("the Little Black Book's 5.3 of alphaware costs 4.24",
+    SR3EActor.installedEssenceCost([graded(5.3, 'Alpha')]), 4.24);
+
+  /* ⚠ **Bioware is excluded from Essence entirely** — M&M charges it against the Bio Index. Its
+   * Cultured/Exotic grades therefore never reach this arithmetic at all. */
+  t.is('bioware contributes no Essence whatever its grade',
+    SR3EActor.installedEssenceCost([{ type: 'bioware', system: { essenceCost: 2, grade: 'Cultured' } }]), 0);
 }
