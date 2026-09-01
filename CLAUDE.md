@@ -1744,8 +1744,12 @@ CHARGEN GAP** · *SR3 p.57*: *"Specializing gives you a rating in the specializa
 base skill rating +1. You then subtract one from the base skill rating."* Edged Weapons 6 →
 Katanas 7, Edged Weapons 5. `SkillData.migrateData` uses 2 when converting a legacy
 `specialisation` string for exactly this reason — it is not an arbitrary default, and changing
-it would re-rate every legacy specialisation in every world. An NPC read out of a book need not
-follow the gap (see TODO 88).
+it would re-rate every legacy specialisation in every world.
+
+⚠ **The gap of 2 is where a specialisation STARTS, not a ceiling.** p.245 raises it with karma
+with no limit, each raise widening the gap by one — so a printed `Etiquette 4 (Corporate 8)` is
+a chargen specialisation raised twice more, and `level: 4` is legitimate data. Nothing may clamp
+it at 2. ⚠ The item sheet's level dropdown still offers only Lv1 and Lv2 (TODO 88).
 
 ⚠ **A specialisation costs the same for active and knowledge skills.** `_specCost` ignoring the
 `isActive` flag looks like an oversight in a function sitting next to one that uses it. It is

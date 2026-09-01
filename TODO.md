@@ -5804,11 +5804,20 @@ single-specialisation entries follow it.
 
 ### Why it is still wrong HERE
 
-⚠ **These 62 are NPC stat blocks, not chargen-built characters.** The book printed whatever the
-designers wanted, so the gap between base and specialisation is 2 only sometimes —
-`Etiquette 4 (Corporate 8)` is +4, `Conjuring 5 (Summoning 8)` is +3, `Etiquette 2 (Matrix 6)`
-is +4. The chargen default cannot describe them, and **45 of 100** single-spec entries disagree
-with it.
+⚠ **A gap larger than 2 is LEGAL, not an error — these are characters who advanced.** The
+chargen gap of 2 is where a specialisation *starts*; p.245 then lets it be raised with karma
+with no ceiling (*"To improve the specialization beyond that, follow the rules above as
+normal"*), and each raise widens the gap by one. So `Etiquette 4 (Corporate 8)` is a chargen
+specialisation raised twice more, `Conjuring 5 (Summoning 8)` raised once. Nothing about them
+is arbitrary or errata.
+
+⚠ **So the BOOK is right and the STORED level is wrong** — we flattened every one of them to
+the chargen default. **45 of 100** single-spec entries have a gap other than 2, every one of
+them reachable in play.
+
+⚠ **This settles the shape of the fix:** derive `level = printed specialisation rating − base
+rating` and store it. A gap of 3, 4 or more is data to preserve, **not** a value to clamp or
+treat as suspicious.
 
 ⚠ **Their strings are the BOOK'S DISPLAY TEXT**, not specialisation names. `"Magic 6"` is a name
 plus a rating; `"Decking 8, Hardware 9"` is two specialisations. `migrateData` cannot know that
@@ -5838,6 +5847,32 @@ The data is the problem, not the machinery. In `populate-mr-johnsons-contacts.js
 2. Split the 31 multi-spec strings into separate entries.
 3. Rescue the sibling skills wrongly absorbed as specialisations (at least Car B/R).
 4. Regenerate, then patch both pack copies — `sync:install` never copies packs.
+
+⚠ **Do NOT clamp the derived level at 2.** See above: a wider gap is a character who spent
+karma, and clamping would silently delete advancement the book recorded.
+
+### 🔴 Blocked on a UI bug — the level dropdown stops at Lv2
+
+`SR3EItemSheet.js:590-591` offers exactly two options:
+
+```html
+<option value="1">Lv1 (${rating + 1} dice)</option>
+<option value="2">Lv2 (${rating + 2} dice)</option>
+```
+
+So a specialisation at level 3+ — which [#80](#80) already made the karma calculator produce,
+and which this fix will write for 45 contacts — **cannot be displayed or set on the item
+sheet**, and renders with neither option selected. A GM opening the skill sees a blank
+dropdown and, changing anything else, silently writes it back down to 1 or 2.
+
+⚠ This is the last remnant of the level-2 cap [#80](#80) removed from the costing side. Fix
+this **before** writing levels above 2 into the packs, or the data will look broken the first
+time anyone opens one of those skills.
+
+⚠ **The `level: 2` constant is DUPLICATED in two consumers** —
+`SR3EActorSheet.js:980` and `SR3EMIJI.js:78` both carry their own inline copy of
+`migrateData`'s legacy-string conversion. They are defensive, for documents not yet migrated,
+but the chargen gap now lives in three places. Collapse them to one helper when this is touched.
 
 ⚠ **DO NOT TOUCH `SkillData.migrateData`.** Its 2 is the SR3 chargen gap (p.57) and is right
 for the legacy data it exists to convert. It produces wrong numbers *here* only because these
