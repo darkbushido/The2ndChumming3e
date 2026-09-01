@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | *(none)* |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **71** · **73** · **74** *(**72** · **80** done)* |
+| 🔴 Confirmed bugs, still open | **71** · **73** · **74** · **81** *(**72** · **80** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **4** · **30** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** |
@@ -4788,16 +4788,20 @@ cannot answer "where did that 40 karma go?", and a player who mistypes has nothi
 from.
 
 ⚠ **This is not the same item as karma SPENDING**, which — contrary to what this entry and
-CLAUDE.md both said when first written — **is implemented**. `_onAwardKarma` and
-`_onSpendKarmaCalculator` (`SR3EActorSheet.js`) award karma, track the Karma Pool at every 20
-total, and buy attribute and skill increases at the p.245 costs. Its remaining defects are
-[#80](#80). This entry is the **audit trail**, which is a separate want: the calculator writes
-the new totals and leaves no record of what was bought.
+CLAUDE.md both said when first written — **is implemented**. `_onSpendKarmaCalculator`
+(`SR3EActorSheet.js`) buys attributes, skills and specialisations at the p.245 costs; its
+defects were [#80](#80). This entry is the **audit trail**, a separate want: the calculator
+writes new totals and leaves no record of what was bought.
+
+⚠ **AWARDING is a different story, and this entry used to overstate it too.** `_onAwardKarma`
+is correct but **unreachable** — nothing renders its button — so the only reachable award path
+is the Session Rewards tool, which writes to the wrong field entirely. See [#81](#81); a ledger
+should be built on top of a working award path, not before one.
 
 Shape, roughly: an append-only array of `{ when, kind: 'karma'|'nuyen', delta, reason, by }` on
 the actor, a compact table on the sheet, and a **+/− with a reason field** replacing bare
-in-place editing of the totals. The existing Session Rewards tool (Rollable Tables sidebar) is
-the obvious first writer.
+in-place editing of the totals. The Session Rewards tool (Rollable Tables sidebar) is the
+obvious first writer — **once [#81](#81) has made it write to the right fields**.
 
 ⚠ **Keep the totals editable.** The ethos is that a GM is never fighting the system; a ledger
 that becomes the only way to change a number is a guardrail, not a record. Log an unexplained
@@ -4904,7 +4908,11 @@ is a rules bug.
 
 ---
 
-### Award Karma button — found while verifying the above
+### `_onAwardKarma` — found while verifying the above
+
+⚠ **Both of these were fixed in the function, which turned out not to be enough:** the button
+that would call it is never rendered. Discovered 2026-09-01 and tracked as [#81](#81) — so on
+0.4.5.7 the corrections below are real but no one can reach them.
 
 **6 — The twentieth point is awarded twice** · *p.244*
 
@@ -4979,3 +4987,87 @@ the dialog is open is clobbered. Everything else authoritative relays a **delta*
 for exactly this reason (`sr3e.damage.apply` says so at its definition). Left alone because it
 is a concurrency change touching the same write path as [#79](#79)'s ledger, and the two should
 land together rather than the second rewriting the first.
+
+<a id="81"></a>
+## 81. No reachable way to award Good Karma — **CONFIRMED**
+
+**Found 2026-09-01**, answering "is there a way as the GM to award karma to all the current
+players?". The answer is that there are two award paths and **neither one works**: one cannot be
+clicked, and the other writes to the wrong field. So on 0.4.5.7 nothing in the system adds Good
+Karma to a character, and every point a GM has awarded has landed in the Karma Pool.
+
+⚠ **This is what [#80](#80) could not see.** That audit read `_onAwardKarma` and checked its
+arithmetic against p.244, which is genuinely wrong in two ways and is now fixed. It never asked
+whether anything *calls* it, and it never looked at the multi-character tool a GM actually uses
+at the end of a session. Auditing a function is not auditing a feature.
+
+### 1 — `_onAwardKarma` is registered but never rendered
+
+`SR3EActorSheet.js:92` registers `awardKarma: SR3EActorSheet._onAwardKarma` in `DEFAULT_OPTIONS.actions`, and the handler is complete and (since 0.4.5.7) correct. **No element anywhere carries
+`data-action="awardKarma"`.** The only two references in the entire codebase are that
+registration line and the dialog's own window title.
+
+The Bio tab's Resources block renders the Karma field and a **Spend Karma…** button beside it;
+the Award button was simply never added next to them.
+
+### 2 — Session Rewards awards karma into the Karma Pool
+
+`_openSessionRewardDialog` (`sr3e.js`) is the tool this question was really about: Rollable
+Tables sidebar → **🎖 Session Rewards**, GM-only, a checkbox list of every live PC, a karma
+amount, a nuyen amount and a gear/notes line. It is the right shape and the only reachable way
+to award anything. Its karma write is:
+
+```js
+if (karma) updates['system.karmaPool'] = (actor.system.karmaPool ?? 0) + karma;
+```
+
+`system.karmaPool` is the **luck dice pool** (p.246), not `system.karma` (spendable Good Karma)
+and not `system.totalKarma` (the career total that drives the Pool). So a 5-karma session award:
+
+- hands every player **5 extra Karma Pool dice** — a resource SR3 grows by *one* point per
+  twenty career karma, and which rerolls failures and buys off the Rule of One;
+- leaves **nothing** spendable, so Spend Karma… still shows 0 available;
+- never moves `totalKarma`, so the Pool never grows the way it should either.
+
+⚠ **The nuyen half is correct** and needs no change.
+
+⚠ **The dialog's own preview line shows the confusion**: ``(${a.system.karmaPool ?? 0} karma |
+¥…)`` labels the Pool as "karma". That is almost certainly where the mix-up started, and it is
+why the bug is invisible from the dialog itself.
+
+### 3 — Humans accrue Karma Pool at DOUBLE rate · *SR3 p.246*
+
+> "**One-twentieth (one-tenth for humans)** of all Karma earned goes into the character's Karma
+> Pool (every twentieth/tenth point earned)."
+
+`SR3EActor.karmaAward` uses a flat 20 for everyone. This is the classic SR3 human metatype
+advantage and it is missing entirely.
+
+⚠ **[#80](#80)'s tests could not catch it**, for the third time in this family: the only worked
+example on p.244 is **Shetani, an elf**, so every assertion pinned to the book is pinned to the
+twentieth-point case. The human rule appears two pages later, in the Karma Pool chapter rather
+than the advancement one.
+
+⚠ `karmaAward(totalKarma, amount)` takes no metatype, so this is a signature change, and
+`karmaPoolForTotal` needs the same divisor or the migration in `0.4.5.7` will disagree with it
+for humans.
+
+### The fix
+
+One pass, because all three touch the same function:
+
+1. Render the Award Karma button in the Bio tab's Resources block, beside Spend Karma….
+2. Route `_openSessionRewardDialog`'s karma write through `SR3EActor.karmaAward()` — the same
+   pure rule the sheet button uses — writing `system.karma`, `system.totalKarma` and
+   `system.karmaPool`. Fix the preview line to show Good Karma.
+3. Give `karmaAward` and `karmaPoolForTotal` the metatype, defaulting to the twentieth so a
+   missing one cannot silently double anybody's Pool.
+
+⚠ **Existing characters will need a manual correction and the system cannot do it for them.**
+Karma awarded so far went into the Pool and was never recorded in `totalKarma`, so there is no
+record of what was earned — nothing to migrate from. Say so in the release note rather than
+attempting a heuristic.
+
+⚠ **Do not fold [#79](#79)'s ledger into this.** The ledger wants a delta-based, GM-relayed
+write on the same path; this is a correctness fix that should land first and small.
+

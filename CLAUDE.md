@@ -1635,13 +1635,40 @@ Wired in (Magic tab → summon). SR3 RAW:
 
 ### Karma & advancement  · *SR3 p.244-245*
 
-**This is implemented, and this file previously said it was not.** Two buttons on the sheet's
-karma block, both in `SR3EActorSheet`: **Award Karma** (`_onAwardKarma`) and **Spend Karma…**
-(`_onSpendKarmaCalculator`). Three persisted fields — `system.karma` (spendable Good Karma),
-`system.totalKarma` (career total, drives the Pool) and `system.karmaPool`.
+**Spending is implemented, and this file previously said it was not.** **Awarding is not** —
+see the warning below, which is the more useful half.
 
-The Spend dialog lists every purchase the character can currently afford, with its cost, and
-buys the selected one: **attributes** at 2 × the new rating, **skill increases**, **new
+Three persisted fields, and conflating them is the mistake the code itself made:
+
+| Field | Is | Changes when |
+|---|---|---|
+| `system.totalKarma` | career odometer | only grows |
+| `system.karma` | **Good Karma** — the currency for advancement · p.244-245 | awards add, purchases subtract |
+| `system.karmaPool` | a **dice pool** of luck: rerolls, buying off the Rule of One, Hand of God · p.246 | refreshes per scene; burning is permanent |
+
+⚠ **The Pool is not a currency and does not refresh per Combat Turn** — unlike Combat and Spell
+Pool it refreshes "roughly every new scene", GM's call, and *burned* points never come back.
+
+⚠ **They are shown on two different tabs**, which is how the bug below stayed invisible: Karma
+Pool sits in the **Attributes** tab's derived grid beside Combat Pool, while Karma and Total
+Karma are on the **Bio** tab — and Total Karma is filed under *Reputation*, not beside Karma
+under *Resources*.
+
+#### 🔴 NOTHING CAN AWARD GOOD KARMA — TODO 81
+
+Two award paths, neither working, so on 0.4.5.7 every point a GM has awarded went to the Pool:
+
+- **`_onAwardKarma`** is correct but **unreachable**. `SR3EActorSheet.js:92` registers the
+  action; no element carries `data-action="awardKarma"`.
+- **Session Rewards** (`sr3e.js`, Rollable Tables sidebar — the multi-character tool a GM
+  actually uses) writes karma into **`system.karmaPool`**. Its nuyen half is correct.
+- **Humans accrue Pool at one-TENTH, not one-twentieth** (p.246). `karmaAward` uses a flat 20.
+
+⚠ TODO 80 audited `_onAwardKarma`'s arithmetic and never asked whether anything calls it, or
+looked at the tool beside it. **Auditing a function is not auditing a feature.**
+
+The Spend dialog (`_onSpendKarmaCalculator`) lists every purchase the character can currently
+afford, with its cost, and buys the selected one: **attributes** at 2 × the new rating, **skill increases**, **new
 specialisations**, and **specialisation increases**. Two pure helpers hold the table:
 `_skillCost(newRating, attrRating, isActive)` and `_specCost(newRating, attrRating)`.
 
