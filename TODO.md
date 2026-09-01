@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | *(none)* |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **73** · **74** · **88** *(**71** · **72** · **80** · **81** done)* |
+| 🔴 Confirmed bugs, still open | **73** · **74** · **88** · **89** *(**71** · **72** · **80** · **81** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **4** · **30** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **83** · **84** · **85** · **86** · **87** |
@@ -5851,7 +5851,42 @@ The data is the problem, not the machinery. In `populate-mr-johnsons-contacts.js
 ⚠ **Do NOT clamp the derived level at 2.** See above: a wider gap is a character who spent
 karma, and clamping would silently delete advancement the book recorded.
 
-### 🔴 Blocked on a UI bug — the level dropdown stops at Lv2
+### ✅ Partly done 2026-09-01
+
+**The generator now DERIVES the level** rather than storing the book's display text raw.
+`skill()` parses its `specialisation` argument — `'Magic 6'`, `'Decking 8, Hardware 9'` — into
+`{name, level}` entries with `level = printed − base`, splitting on commas. The call sites are
+untouched, so they still read like the page they were copied from. The raw string is kept for
+provenance.
+
+**Four sibling-skill absorptions rescued**, all verified against the printed page:
+
+| Contact | Was | The book prints |
+|---|---|---|
+| Taxi Driver p.67 | `Car 6 (Car B/R 3)` | `Car 6, Car B/R 3` |
+| Highway Patrol p.62 | `Bike or Car 6 (Bike or Car B/R 3)` | `Bike or Car 6, Bike or Car B/R 3` |
+| Squatter p.52 | `Car 2 (B/R 2)`, `Electronics 2 (B/R 2)` | `Car B/R 2, Electronics B/R 2` — **no plain Car or Electronics** |
+| City Services Worker p.67 | `Electronics 3 (Electronics B/R 4)` | `Electronics 3, Electronics B/R 4` |
+
+⚠ Squatter had **two skills invented that the book does not grant** — a plain Car and a plain
+Electronics, created only to hang "B/R 2" off as a specialisation.
+
+**The Lv2 cap is gone** — the item sheet's level dropdown now offers 1..max(4, current+1), so a
+specialisation at level 3+ displays and can be set.
+
+**`CHARGEN_SPEC_GAP` has one owner**, `scripts/data/skill-rules.mjs`, replacing three inline
+copies of `level: 2`. ⚠ It lives in a **dependency-free** module rather than `ItemDataModels`,
+which calls `foundry.data.fields` at load — importing that for one number broke
+`tests/ew-skill.test.mjs` immediately.
+
+### Still to do
+
+- **Patch the packs.** The generator is fixed; `packs/` and the install still carry the old
+  specialisations. `patch-johnson-stats.mjs` only handles attributes, so this needs the skills
+  half — or a macro re-run inside Foundry.
+- A test for `parseSpecialisations`, and a mutant for the derive-versus-default choice.
+
+### ~~🔴 Blocked on a UI bug — the level dropdown stops at Lv2~~ ✅ FIXED
 
 `SR3EItemSheet.js:590-591` offers exactly two options:
 
@@ -5884,4 +5919,49 @@ problem that lives in this pack's data.
 make the display right and leave the stored data wrong, and every other consumer — the karma
 calculator's specialisation costs ([#80](#80)), defaulting, the sheet — would still read the
 bad `level`.
+
+<a id="89"></a>
+## 89. Dock Worker has the wrong skill list entirely — **CONFIRMED**
+
+**Found 2026-09-01** while splitting sibling skills for [#88](#88). This is not a specialisation
+problem and is worse than one.
+
+`Dock Worker` (p.67) ships with:
+
+```
+Athletics 3 (Climbing 4), Car 2, Computer 2, Electronics 3 (Electronics B/R 4),
+Etiquette 3, Pistols 2, Unarmed Combat 2
+```
+
+The book gives:
+
+```
+Athletics 3, Car 2 (Forklift 4), Intimidation 3, Unarmed Combat 3
+```
+
+**Not one skill matches.** What it has is very nearly **City Services Worker's** list — the
+contact three entries later on the same page — differing only in Athletics.
+
+⚠ **So a whole skill block was duplicated onto the wrong contact.** That is a different class of
+error from anything [#84](#84) or [#88](#88) found: those were wrong VALUES on the right record.
+This is the wrong record.
+
+⚠ **Dock Worker was already one of the two hastily-entered records** — it shipped with no Karma
+Pool in its note and with Willpower and Charisma transposed ([#83](#83), [#84](#84)). Three
+independent defects on one contact is a strong hint that its whole entry was rushed, and its
+gear, cyberware and knowledge skills have **not** been checked.
+
+### What this implies for the other 61
+
+⚠ **[#84](#84) audited ATTRIBUTES only** — the stat-block row and the Dice Pools line. Skills,
+gear and cyberware were never compared to the book at all. This is the first evidence that the
+skill lists need their own pass, and there is no reason to assume Dock Worker is the only one.
+
+An audit is tractable the same way [#84](#84) was: the book prints `Active Skills:` and
+`Knowledge Skills:` lines in a fixed format, and the generator's `skill()` calls are trivially
+parseable. Report, never auto-apply — the same discipline, for the same reason.
+
+⚠ **Do not fix Dock Worker in isolation.** Fixing one record found by accident, while leaving
+the systematic check undone, produces exactly the false confidence [#84](#84) was written to
+avoid.
 

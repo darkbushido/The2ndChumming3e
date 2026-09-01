@@ -74,9 +74,48 @@ function _resolveSkillCategory(name, tier) {
   return tier === 'active' ? 'Combat skills' : 'Street knowledge';
 }
 
+/**
+ * ⚠ **The `specialisation` argument is the BOOK'S PRINTED TEXT**, e.g. `'Magic 6'` or
+ * `'Decking 8, Hardware 9'` — a name plus a rating, sometimes several. It is parsed here rather
+ * than at 131 call sites, so the calls keep reading like the page they were copied from.
+ *
+ * ⚠ **Until 2026-09-01 it was stored RAW.** `SkillData.migrateData` then converted the whole
+ * string into one specialisation named `"Decking 8, Hardware 9"` at the chargen gap of level 2
+ * — right for 55 of the 131 and wrong for 45, and displaying a number stuck on every name. See
+ * TODO 88.
+ *
+ * ⚠ **`level` is the BONUS over the base**, so it is derived (`printed − base`), never
+ * defaulted. A gap above 2 is a character who spent karma, not an error.
+ */
 function skill(name, rating, linkedAttribute, tier = 'active', specialisation = '') {
   const category = _resolveSkillCategory(name, tier);
-  return { name, type: 'skill', system: { skillName: name, rating, linkedAttribute, category, skillType: tier, specialisation } };
+  return {
+    name, type: 'skill',
+    system: {
+      skillName: name, rating, linkedAttribute, category, skillType: tier,
+      // Kept for provenance — it is the book's line, and the array is derived from it.
+      specialisation,
+      specialisations: specialisation ? _parseSpecs(specialisation, rating) : [],
+    },
+  };
+}
+
+/**
+ * `'Decking 8, Hardware 9'` + base 5 → `[{name:'Decking',level:3},{name:'Hardware',level:4}]`
+ *
+ * ⚠ Mirrors `parseSpecialisations` in `scripts/data/skill-rules.mjs`. It is duplicated here
+ * ON PURPOSE: this file is pasted into a Foundry macro window as standalone text and cannot
+ * import anything. If one changes, change both — the shared copy is the one under test.
+ */
+function _parseSpecs(text, base) {
+  const b = Number(base) || 0;
+  return String(text ?? '').split(',').map(x => x.trim()).filter(Boolean).map(part => {
+    const m = /^(.*?)\s+(\d+)$/.exec(part);
+    if (!m) return { name: part, level: 2 };
+    const level = Number(m[2]) - b;
+    // A specialisation is always better than its base; below 1 means the text was misread.
+    return { name: m[1].trim(), level: level >= 1 ? level : 2 };
+  });
 }
 
 function gear(name, quantity = 1, cost = 0) {
@@ -1033,8 +1072,10 @@ const CONTACTS = [
     }),
     items: [
       skill('Athletics', 2, 'quickness'),
-      skill('Car', 2, 'reaction', 'active', 'B/R 2'),
-      skill('Electronics', 2, 'intelligence', 'active', 'B/R 2'),
+      // ⚠ The book gives "Car B/R 2, Electronics B/R 2" and NO plain Car or Electronics.
+      // Both were invented, with "B/R 2" hung off them as a specialisation (TODO 88).
+      skill('Car B/R', 2, 'reaction'),
+      skill('Electronics B/R', 2, 'intelligence'),
       skill('Stealth', 3, 'quickness', 'active', 'Hiding 5, Sneaking 4'),
       skill('City Knowledge', 5, 'intelligence', 'knowledge'),
       skill('Homebrewing', 3, 'intelligence', 'knowledge'),
@@ -1687,7 +1728,9 @@ const CONTACTS = [
       essence: 0.2, reflex: boosted(1),
     }),
     items: [
-      skill('Bike or Car', 6, 'reaction', 'active', 'Bike or Car B/R 3'),
+      // ⚠ TWO SKILLS — "Bike or Car 6, Bike or Car B/R 3". Same mis-parse as Taxi Driver.
+      skill('Bike or Car', 6, 'reaction'),
+      skill('Bike or Car B/R', 3, 'reaction'),
       skill('Etiquette', 3, 'charisma', 'active', 'Police 5, Street 4'),
       skill('Pistols', 5, 'quickness'),
       skill('SMG', 5, 'quickness'),
@@ -2037,7 +2080,11 @@ const CONTACTS = [
     }),
     items: [
       skill('Biotech', 1, 'intelligence', 'active', 'First Aid 3'),
-      skill('Car', 6, 'reaction', 'active', 'Car B/R 3'),
+      // ⚠ TWO SKILLS, not a specialisation. The book prints "Car 6, Car B/R 3" —
+      // comma-separated siblings — and the data entry read the second as a parenthetical.
+      // The contact was rolling Car B/R at 8 while having no Car B/R skill at all (TODO 88).
+      skill('Car', 6, 'reaction'),
+      skill('Car B/R', 3, 'reaction'),
       skill('Etiquette', 3, 'charisma', 'active', 'Street 5'),
       skill('Pistols', 3, 'quickness'),
       skill('City Knowledge', 6, 'intelligence', 'knowledge'),
@@ -2059,10 +2106,13 @@ const CONTACTS = [
       essence: 6,
     }),
     items: [
-      skill('Athletics', 2, 'quickness'),
+      // ⚠ The book gives Athletics 2 (Climbing 4), and lists "Electronics 3, Electronics B/R 4"
+      // as SIBLING skills — the B/R was read as a parenthetical specialisation (TODO 88).
+      skill('Athletics', 2, 'quickness', 'active', 'Climbing 4'),
       skill('Car', 2, 'reaction'),
       skill('Computer', 2, 'intelligence'),
-      skill('Electronics', 3, 'intelligence', 'active', 'Electronics B/R 4'),
+      skill('Electronics', 3, 'intelligence'),
+      skill('Electronics B/R', 4, 'intelligence'),
       skill('Etiquette', 3, 'charisma'),
       skill('Pistols', 2, 'quickness'),
       skill('Unarmed Combat', 2, 'quickness'),

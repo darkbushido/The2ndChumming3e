@@ -584,11 +584,25 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
                     : specs.map((sp, i) => `
                         <div style="display:flex;align-items:center;gap:6px">
                           <span style="flex:1;font-size:12px">${sp.name}</span>
+                          ${/* ⚠ **NOT capped at Lv2** · SR3 p.245. The chargen gap of 2 is where a
+                              * specialisation STARTS; karma then raises it with no ceiling, each raise
+                              * widening the gap by one — an NPC printed as `Etiquette 4 (Corporate 8)`
+                              * is at level 4. Two hardcoded options meant such a specialisation showed
+                              * with NEITHER selected, and a GM changing anything else silently wrote it
+                              * back down to 1 or 2. The karma calculator has incremented past 2 since
+                              * TODO 80; this was the last remnant of that cap. */ ''}
                           <select class="spec-level-select" data-spec-idx="${i}"
                                   style="width:130px;flex:0 0 130px;font-size:11px;color:var(--sr-accent);background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);padding:1px 3px"
-                                  title="Specialisation level">
-                            <option value="1" ${(sp.level ?? 1) === 1 ? 'selected' : ''}>Lv1 (${rating + 1} dice)</option>
-                            <option value="2" ${(sp.level ?? 1) === 2 ? 'selected' : ''}>Lv2 (${rating + 2} dice)</option>
+                                  title="Specialisation level — the bonus over the base skill">
+                            ${(() => {
+                              const cur = sp.level ?? 1;
+                              // Always offer at least 1..4, and always far enough to include the
+                              // current value however high a GM or the karma calculator took it.
+                              const top = Math.max(4, cur + 1);
+                              return Array.from({ length: top }, (_, n) => n + 1).map(lv =>
+                                `<option value="${lv}" ${cur === lv ? 'selected' : ''}>`
+                                + `Lv${lv} (${rating + lv} dice)</option>`).join('');
+                            })()}
                           </select>
                           <button type="button" class="btn-xs spec-remove-btn" data-spec-idx="${i}"
                                   style="padding:0 5px;line-height:1.4" title="Remove">×</button>

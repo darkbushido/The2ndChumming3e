@@ -12,6 +12,11 @@
  * 2:1 second test. Granted to the MIJI Test and ECCM regeneration only; infiltration rolls
  * the EW skill alone (R3 p.36).
  */
+// ⚠ The only import in this file, which otherwise reaches everything through the `game.sr3e`
+// runtime registry to avoid cycles. `ItemDataModels` depends on nothing here, so a direct
+// import is safe — and the alternative was a third copy of SR3 p.57's chargen gap.
+import { CHARGEN_SPEC_GAP } from './data/skill-rules.mjs';
+
 export class SR3EMIJI {
 
   static get _cfg() { return game.sr3e.SR3E.electronicWarfare; }
@@ -75,7 +80,8 @@ export class SR3EMIJI {
         // array at load, but read both so a stale document is not silently downgraded.
         specialisations: i.system.specialisations?.length
           ? i.system.specialisations
-          : (i.system.specialisation ? [{ name: i.system.specialisation, level: 2 }] : []),
+          // ⚠ CHARGEN_SPEC_GAP — see ItemDataModels. Fallback for unmigrated documents.
+          : (i.system.specialisation ? [{ name: i.system.specialisation, level: CHARGEN_SPEC_GAP }] : []),
       })));
   }
 

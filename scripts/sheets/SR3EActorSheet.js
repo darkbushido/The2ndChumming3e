@@ -1,4 +1,5 @@
 import { SR3E, getSpecializationsForSkill, skillTypeForCategory } from '../config.js';
+import { CHARGEN_SPEC_GAP } from '../data/skill-rules.mjs';
 
 /**
  * SR3EActorSheet — V2 Application framework (Foundry v13+).
@@ -977,7 +978,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       // Normalise to a {name, level} list, falling back to the legacy singular field.
       const specList = specs.length > 0
         ? specs
-        : (s.system.specialisation ? [{ name: s.system.specialisation, level: 2 }] : []);
+        // ⚠ CHARGEN_SPEC_GAP, not a literal 2 — the constant is SR3 p.57's chargen gap and
+        // is owned by ItemDataModels. This fallback covers documents not yet migrated.
+        : (s.system.specialisation ? [{ name: s.system.specialisation, level: CHARGEN_SPEC_GAP }] : []);
       const forceCell = (level) => showBonusCol ? `
         <span class="item-cell">
           ${level == null && ia > 0

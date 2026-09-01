@@ -1,3 +1,4 @@
+import { CHARGEN_SPEC_GAP } from './skill-rules.mjs';
 const {
   StringField, NumberField, BooleanField,
   SchemaField, ArrayField, HTMLField, ObjectField,
@@ -197,7 +198,7 @@ export class GearData extends foundry.abstract.TypeDataModel {
 export class SkillData extends foundry.abstract.TypeDataModel {
   static migrateData(source) {
     if (typeof source.specialisation === 'string' && source.specialisation !== '' && !Array.isArray(source.specialisations)) {
-      source.specialisations = [{ name: source.specialisation, level: 2 }];
+      source.specialisations = [{ name: source.specialisation, level: CHARGEN_SPEC_GAP }];
     }
     return super.migrateData(source);
   }
