@@ -182,4 +182,59 @@ export async function run(t) {
     kp.fixActor({ type: 'npc', name: 'N', system: { karmaPool: 0, totalKarma: 0 } })?.['system.karmaPool'], 1);
   t.is('an actor with no Pool field at all is skipped',
     kp.fixActor({ type: 'character', system: {} }), null);
+
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  0.4.5.11 — Little Black Book stats out of prose · TODO 83
+   *
+   * ⚠ **Foundry EMBEDS, it does not link.** The pack is fixed by a tool, but anyone who
+   * already dragged one of these 62 into a world holds their own copy and a pack fix reaches
+   * them never. That is what this migration is for, and it is the rule most easily forgotten.
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const lbb = list.find(m => m.version === '0.4.5.11');
+  t.ok('the Little Black Book migration exists', !!lbb);
+  t.ok('…and uses fixActor', typeof lbb?.fixActor === 'function');
+
+  const NOTE = "<p>Mr. Johnson's Little Black Book, p.53. PR 3. Karma Pool 6.</p>";
+  const jn = (over = {}) => ({ type: 'character', name: 'Yakuza Elder',
+    system: { notes: NOTE, professionalRating: 0, karmaPool: 1, ...over } });
+
+  t.is('PR is lifted out of the note',
+    lbb.fixActor(jn())?.['system.professionalRating'], 3);
+  t.is('…and the Karma Pool with it',
+    lbb.fixActor(jn())?.['system.karmaPool'], 6);
+
+  /* ⚠ **The citation is the gate, not parseability.** The parser will find "Karma Pool 6" in
+   * anything; only the book reference makes it the book's data. A GM's own reminder must not
+   * be promoted into a field. */
+  t.is("a GM's own note with the same numbers is untouched",
+    lbb.fixActor(jn({ notes: '<p>Tough. PR 3. Karma Pool 6.</p>' })), null);
+
+  /* ⚠ `professionalRating` fills only at its schema default of 0 — unambiguous. */
+  t.is('a PR somebody already set is left alone',
+    lbb.fixActor(jn({ professionalRating: 5 }))?.['system.professionalRating'], undefined);
+
+  /* ⚠ The Karma Pool ambiguity, asserted in both directions: 0 (pre-0.4.5.7 default) and 1
+   * (current default) are filled; anything ABOVE 1 can only be a chosen value and is kept. */
+  t.is('a Pool at the old default of 0 is filled',
+    lbb.fixActor(jn({ karmaPool: 0 }))?.['system.karmaPool'], 6);
+  t.is('a Pool at the current default of 1 is filled',
+    lbb.fixActor(jn({ karmaPool: 1 }))?.['system.karmaPool'], 6);
+  t.is('a Pool a GM raised is NOT overwritten',
+    lbb.fixActor(jn({ karmaPool: 4 }))?.['system.karmaPool'], undefined);
+
+  /* Idempotent — rule 2 of this file's contract. */
+  t.is('a fully-migrated contact yields nothing',
+    lbb.fixActor(jn({ professionalRating: 3, karmaPool: 6 })), null);
+
+  /* The two records the book itself leaves incomplete: after the pack patch their notes are
+   * complete, but a world holding a pre-patch copy still has the short version. */
+  t.is('a note with no Karma Pool still yields the PR',
+    lbb.fixActor(jn({ notes: "<p>Mr. Johnson's Little Black Book, p.67. PR 2.</p>" }))
+      ?.['system.professionalRating'], 2);
+  t.is('…and does not invent a Pool',
+    lbb.fixActor(jn({ notes: "<p>Mr. Johnson's Little Black Book, p.67. PR 2.</p>" }))
+      ?.['system.karmaPool'], undefined);
+
+  t.is('a vehicle is skipped', lbb.fixActor({ type: 'vehicle', system: { notes: NOTE } }), null);
+  t.is('an actor with no notes is skipped', lbb.fixActor({ type: 'character', system: {} }), null);
 }

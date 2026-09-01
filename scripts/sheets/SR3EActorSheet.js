@@ -65,6 +65,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         toggleBurnSlot:    SR3EActorSheet._onToggleBurnSlot,
         rollSlotProgram:   SR3EActorSheet._onRollSlotProgram,
         createLinkVehicle: SR3EActorSheet._onCreateLinkVehicle,
+        linkArchetype:     SR3EActorSheet._onLinkArchetype,
+        openArchetype:     SR3EActorSheet._onOpenArchetype,
         toggleVehicleMode: SR3EActorSheet._onToggleVehicleMode,
         openVehicle:       SR3EActorSheet._onOpenVehicle,
         openHost:          SR3EActorSheet._onOpenHost,
@@ -2545,10 +2547,21 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       const dots = (val, max = 6) => Array.from({ length: max }, (_, i) =>
         `<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin:0 1px;background:${i < val ? 'var(--sr-gold,#c8a040)' : 'var(--sr-border)'};"></span>`
       ).join('');
+      /* ⚠ The 📖 opens the LINKED STAT BLOCK, and is only shown when one is linked. The
+       * pack ships 62 statted archetypes that nothing pointed at until TODO 83; without an
+       * affordance here the link is invisible and nobody would ever set it. */
+      const linked = c.system.archetypeUuid
+        ? `<i class="fas fa-book-open rollable" data-action="openArchetype" data-item-id="${c.id}"
+              title="Open the archetype's stat block" style="margin-right:6px"></i>`
+        : '';
       return `
         <div class="item-row" data-item-id="${c.id}">
           <span class="item-name">${c.name}</span>
-          <span class="item-cell" style="font-size:11px;color:var(--sr-muted)">${archetype}</span>
+          <span class="item-cell" style="font-size:11px;color:var(--sr-muted)">
+            ${linked}<span data-action="linkArchetype" data-item-id="${c.id}"
+              style="cursor:pointer;text-decoration:underline dotted"
+              title="Link this contact to a statted archetype">${archetype}</span>
+          </span>
           <span class="item-cell" title="Loyalty ${loyalty}/6">${dots(loyalty)}</span>
           <span class="item-cell" title="Connection ${connection}/6">${dots(connection)}</span>
           ${this._itemControls(c.id, false)}
@@ -3983,6 +3996,98 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     // client at the instant the query returns.
     const created = await fromUuid(result.uuid);
     if (created?.isOwner) created.sheet.render(true);
+  }
+
+  /**
+   * Link a contact to one of the statted archetypes · TODO 83
+   *
+   * `sr3e-mr-johnsons-contacts` ships 62 fully-statted archetypes — Bookie, Fence, Shark
+   * Lawyer, Yakuza Elder — and until now **nothing pointed at them**. The `contact` item's
+   * `archetype` was free text a GM typed, so the pack was a directory you had to browse by
+   * hand and re-type from.
+   *
+   * ⚠ **Reads every Actor pack, not just the Little Black Book one.** A GM's own archetype
+   * pack, or a future book's, should be linkable the same way. The Book's pack simply happens
+   * to be the one that ships.
+   *
+   * ⚠ **Fills the free-text `archetype` only when it is BLANK.** A GM who typed "Bartender who
+   * owes me" and links it to the Club Owner stat block keeps their own label; overwriting it
+   * would be the system arguing with them.
+   */
+  static async _onLinkArchetype(_ev, target) {
+    const item = this.actor.items.get(target.dataset.itemId);
+    if (!item) return;
+
+    const entries = [];
+    for (const pack of game.packs.filter(p => p.metadata.type === 'Actor')) {
+      for (const e of await pack.getIndex()) {
+        if (e.type !== 'character' && e.type !== 'npc') continue;
+        entries.push({ uuid: `Compendium.${pack.collection}.${e._id}`,
+                       name: e.name, pack: pack.metadata.label });
+      }
+    }
+    if (!entries.length) {
+      ui.notifications.warn('SR3E: no actor compendiums to link to.');
+      return;
+    }
+    entries.sort((a, b) => a.name.localeCompare(b.name));
+
+    const current = item.system.archetypeUuid ?? '';
+    let chosen = null, ok = false;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `Link Archetype — ${item.name}` },
+      content: `
+        <div style="padding:8px 0">
+          <input id="arch-filter" type="text" placeholder="Type to filter…" style="width:100%;margin-bottom:6px"/>
+          <select id="arch-sel" size="12" style="width:100%">
+            <option value="">— none —</option>
+            ${entries.map(e => `<option value="${e.uuid}" data-search="${e.name.toLowerCase()}"
+              ${e.uuid === current ? 'selected' : ''}>${e.name}  ·  ${e.pack}</option>`).join('')}
+          </select>
+        </div>`,
+      buttons: [
+        { label: 'Link', action: 'link', default: true,
+          callback: (_e, _b, d) => { ok = true; chosen = d.element.querySelector('#arch-sel')?.value ?? ''; } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+      // Per-dialog wiring — a global hook would cross-wire two of these. See CLAUDE.md.
+      render: (_event, dialog) => {
+        const el = dialog.element;
+        const f  = el.querySelector('#arch-filter');
+        const opts = [...el.querySelectorAll('#arch-sel option')];
+        f?.addEventListener('input', () => {
+          const q = f.value.toLowerCase();
+          opts.forEach(o => {
+            if (!o.value) return;                       // keep "— none —" always visible
+            o.hidden = !!q && !(o.dataset.search ?? '').includes(q);
+          });
+        });
+        f?.addEventListener('keydown', e => { if (e.key === 'Enter') e.preventDefault(); });
+        requestAnimationFrame(() => f?.focus());
+      },
+    });
+    if (!ok) return;
+
+    const changes = { 'system.archetypeUuid': chosen };
+    // Fill the label only if the GM has not written one.
+    if (chosen && !(item.system.archetype ?? '').trim()) {
+      const doc = await fromUuid(chosen);
+      if (doc?.name) changes['system.archetype'] = doc.name;
+    }
+    await item.update(changes);
+  }
+
+  /** Open the linked archetype's stat block. */
+  static async _onOpenArchetype(_ev, target) {
+    const item = this.actor.items.get(target.dataset.itemId);
+    const uuid = item?.system?.archetypeUuid;
+    if (!uuid) return;
+    const doc = await fromUuid(uuid);
+    if (!doc) {
+      ui.notifications.warn('SR3E: that archetype is no longer available — is its source book enabled?');
+      return;
+    }
+    doc.sheet.render(true);
   }
 
   static async _onToggleVehicleMode(_ev, target) {

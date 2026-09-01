@@ -120,6 +120,10 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       // ⚠ SR3 p.244: "each character starts with 1 Karma Pool". This was 0 until
       // 2026-08-31; migration 0.4.5.7 corrects actors already in play. See TODO 80.
       karmaPool:               new NumberField({ integer: true, initial: 1, min: 0 }),
+      /* Professional Rating · SR3 NPC stat, and the reason TODO 83 exists: all 62 actors in
+       * `sr3e-mr-johnsons-contacts` carry theirs as PROSE in `notes` because there was no
+       * field to put it in. 0 = not an archetype / not stated. */
+      professionalRating:      new NumberField({ integer: true, initial: 0, min: 0 }),
       hackingBonus:            new NumberField({ integer: true, initial: 0 }),
       initiativeDiceBonus:     new NumberField({ integer: true, initial: 0, min: 0 }),
       equippedArmor:           new StringField({ initial: '' }),
@@ -216,6 +220,10 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       attributeBoost:   attributeBoostField(),
       augmentations:    new ObjectField(),
       nuyen:            new NumberField({ integer: true, initial: 0, min: 0 }),
+      // ⚠ NpcData has no karma/totalKarma/karmaPool at all — see TODO 83. An NPC that needs
+      // a Karma Pool has to be built as a `character`, which is exactly what the 62 shipped
+      // Little Black Book contacts are.
+      professionalRating: new NumberField({ integer: true, initial: 0, min: 0 }),
       notes:            new HTMLField({ initial: '', required: false }),
       equippedMelee:    new StringField({ initial: '' }),
       activeVCRItemId:  new StringField({ initial: '' }),

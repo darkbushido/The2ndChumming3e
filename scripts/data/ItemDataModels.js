@@ -527,6 +527,17 @@ export class ContactData extends foundry.abstract.TypeDataModel {
       loyalty:    new NumberField({ integer: true, initial: 1, min: 1, max: 6 }),
       connection: new NumberField({ integer: true, initial: 1, min: 1, max: 6 }),
       archetype:  new StringField({ initial: '' }),
+      /* The statted archetype this contact is built on · TODO 83.
+       *
+       * ⚠ **A UUID into the COMPENDIUM, not a world actor id.** `sr3e-mr-johnsons-contacts`
+       * ships 62 fully-statted archetypes and nothing linked to them; `archetype` above is
+       * free text a GM types. This records which one, so a GM can open the stat block from
+       * the contact — and so a future gear-buying flow (TODO 82) has something to read.
+       *
+       * ⚠ **The free-text `archetype` is KEPT and stays authoritative for display.** A contact
+       * may legitimately be an archetype the book does not have, and a link that quietly
+       * renamed the row would fight the GM. Linking fills `archetype` only when it is blank. */
+      archetypeUuid: new StringField({ initial: '' }),
       notes:      new HTMLField({ initial: '', required: false }),
     };
   }

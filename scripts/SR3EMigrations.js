@@ -26,6 +26,7 @@
  */
 
 import { SRCG_BONUSES } from './data/srcg-bonuses.js';
+import { parseJohnsonNotes, isJohnsonNote } from './data/johnson-notes.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -217,6 +218,53 @@ const MIGRATIONS = [
       console.log(`SR3E | ${actor.name}: Karma Pool ${pool} → ${correct} `
         + '(p.244 — every character starts with 1)');
       return { 'system.karmaPool': correct };
+    },
+  },
+  {
+    version: '0.4.5.11',
+    label: "Little Black Book contacts — PR and Karma Pool out of prose (TODO 83)",
+    /**
+     * All 62 actors in `sr3e-mr-johnsons-contacts` carried their real numbers as PROSE:
+     *
+     *   > Mr. Johnson's Little Black Book, p.53. PR 3. Karma Pool 6.
+     *
+     * `system.karmaPool` was never written, and `professionalRating` did not exist. The pack
+     * is fixed (`tools/patch-johnson-contacts.mjs`) — **but Foundry EMBEDS, it does not link**,
+     * so anyone who already dragged one of these into a world holds their own stale copy and
+     * a pack fix reaches them never. Hence this.
+     *
+     * ⚠ **Gated on `isJohnsonNote`, not on parseability.** The parser will happily find a
+     * "Karma Pool 6" in any actor's notes; only the book citation makes it this book's data. A
+     * GM who typed that as a reminder on their own NPC must not have it written into a field.
+     *
+     * ⚠ **`karmaPool` is filled at 0 or 1 ONLY, and that ambiguity is real.** 0 is the
+     * pre-0.4.5.7 default and 1 is the current one — but several contacts legitimately have a
+     * Karma Pool of 1, so "1" cannot be told apart from a GM's deliberate value. Writing the
+     * book's number over a 1 is judged safe because these are shipped NPC archetypes whose own
+     * note states the value; anything ABOVE 1 is left alone, because that can only be a value
+     * somebody chose.
+     *
+     * ⚠ **`professionalRating` fills only at 0**, its schema default, which is unambiguous.
+     */
+    fixActor: (actor) => {
+      if (actor.type !== 'character' && actor.type !== 'npc') return null;
+      const notes = actor.system?.notes ?? '';
+      if (!isJohnsonNote(notes)) return null;
+
+      const { professionalRating, karmaPool } = parseJohnsonNotes(notes);
+      const delta = {};
+
+      if (professionalRating !== undefined && !(actor.system?.professionalRating ?? 0)) {
+        delta['system.professionalRating'] = professionalRating;
+      }
+      const pool = actor.system?.karmaPool ?? 0;
+      if (karmaPool !== undefined && pool <= 1 && pool !== karmaPool) {
+        delta['system.karmaPool'] = karmaPool;
+      }
+
+      if (!Object.keys(delta).length) return null;
+      console.log(`SR3E | ${actor.name}: Little Black Book stats out of notes`, delta);
+      return delta;
     },
   },
 ];

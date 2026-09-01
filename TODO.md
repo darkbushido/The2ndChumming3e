@@ -5198,3 +5198,70 @@ player-facing contact list, or the run-generation surface a Johnson implies?
 contact type and level, the contact data model wants to be settled once, by whichever of these
 lands first, rather than twice.
 
+---
+
+### Inventory, 2026-09-01
+
+**62 actors**, all type `character`, carrying **1,152 embedded items** between them — 741
+skills, 270 gear, 67 spells, 36 cyberware, 30 armor, 5 adept powers, 3 bioware. Averaging ~19
+each, from *Metroplex Guardsman* (7) to *Talislegger* (34). They are **archetypes, not named
+individuals**: Bookie, Fence, Shark Lawyer, Yakuza Elder, Troll Street Dealer.
+
+Attributes fully populated on all 62; **9 are Awakened**; 3 carry a Reaction dice bonus.
+Metatypes: 25 human, 11 each elf/ork/dwarf, 4 troll. **0/62 have a biography, an image or a
+folder** — every one is `mystery-man.svg`.
+
+⚠ The pack ships `PLAYER: OBSERVER`, so **players can already browse all 62 stat blocks**, gear
+and cyberware included. Fine for a contact directory; worth revisiting if their capabilities
+should be hidden.
+
+⚠ **The book is much broader than the pack.** Stat blocks are only p.36-67; p.5-35 is run
+structure — Types of Johnsons, Negotiation and Payment, Legwork, Contacts, Getting Paid,
+Reputation, Downtime. None of that is represented anywhere.
+
+### What landed — 0.4.5.11
+
+**All the structured data was trapped in `notes` as prose**, one shape across all 62:
+
+> `Mr. Johnson's Little Black Book, p.53. PR 3. Karma Pool 6.`
+
+So a Karma Pool the system **has a field for** was never written to it, and **Professional
+Rating** — a real SR3 NPC stat — had nowhere to go at all.
+
+1. **`professionalRating`** added to `CharacterData` and `NpcData`.
+2. **`scripts/data/johnson-notes.mjs`** — `parseJohnsonNotes` / `isJohnsonNote`, pure and
+   **Foundry-free**, because three consumers need it and only one runs inside Foundry.
+3. **`tools/patch-johnson-contacts.mjs`** — patched all **62**, idempotent, Foundry closed.
+4. **Migration `0.4.5.11`** via `fixActor`, because *Foundry embeds and does not link*: anyone
+   who already dragged one of these into a world holds a stale copy a pack fix never reaches.
+5. **`contact.archetypeUuid`** joins the two halves — a contact item can now point at a statted
+   archetype, with a 📖 to open the stat block. The free-text `archetype` is kept and is filled
+   only when blank.
+
+⚠ **Two records were incomplete AND THE BOOK HAS BOTH.** *Metroplex Guardsman* shipped with a
+page and nothing else, *Dock Worker* with no Karma Pool. Read back off the PDF, where the stat
+block puts PR as the ninth attribute column and the Pool under *"Dice Pools: Combat X, Karma Y"*:
+Guardsman **PR 3, Karma Pool 2**; Dock Worker **Karma Pool 2**. The tool completes the note as
+well as the fields, so the pack no longer disagrees with itself.
+
+⚠ **The parser makes every field independently optional, and that is what caught them.** A
+parser requiring all three would have silently skipped both — and "60 of 62 patched" is the kind
+of number nobody questions.
+
+⚠ **`isJohnsonNote` is the gate, not parseability.** The parser will find a "Karma Pool 6" in
+anyone's notes; only the citation makes it this book's data.
+
+⚠ **The migration's Karma Pool rule is a judgement call, documented at the call site.** It fills
+at 0 (the pre-0.4.5.7 default) and 1 (the current one) but never above — several contacts
+legitimately have a Pool of 1, so 1 cannot be distinguished from a GM's choice. Above 1 can only
+be a chosen value.
+
+### Still open
+
+- **The 62 have no images and no folders.** A directory of `mystery-man.svg` is a poor browse.
+- **`NpcData` has no karma fields at all** — no `karma`, `totalKarma` or `karmaPool`. An NPC
+  needing a Karma Pool must be a `character`, which is exactly what these 62 are.
+- **Nothing yet consumes `professionalRating`.** It is recorded, not read.
+- **The run-structure half of the book** (p.5-35) is untouched, and is probably what "the little
+  black book" most evokes.
+
