@@ -27,6 +27,13 @@
  *
  *   node tools/audit-johnson-contacts.mjs                 # report
  *   node tools/audit-johnson-contacts.mjs --all           # include matching records
+ *   node tools/audit-johnson-contacts.mjs --table         # markdown, for review
+ *   node tools/audit-johnson-contacts.mjs --table Bookie Fence   # just these
+ *
+ * ⚠ **Use --table rather than writing a throwaway script to re-extract this.** Two
+ * separate ad-hoc parsers written during this audit silently read every generator record
+ * as `baseActor`'s DEFAULTS — I3 W3 C3, karma null — and both produced confident, wrong
+ * tables. The extraction here is the one that has been checked against the book by hand.
  *
  * Requires `pdftotext` (ships with Git for Windows) and the PDF in the maintainer's library.
  * Override the location with SR3E_PDF_DIR.
@@ -38,6 +45,9 @@ import { dirname, join } from 'node:path';
 
 const HERE   = dirname(fileURLToPath(import.meta.url));
 const SHOW_OK = process.argv.includes('--all');
+const TABLE   = process.argv.includes('--table');
+// Bare arguments name specific contacts; everything else is a flag.
+const ONLY    = new Set(process.argv.slice(2).filter(a => !a.startsWith('--')));
 const PDF_DIR = process.env.SR3E_PDF_DIR
   ?? join(process.env.USERPROFILE ?? '', 'Documents', 'Shadowrun 3rd Edition PDFs');
 const PDF = join(PDF_DIR, "Shadowrun 3e - Mr. Johnson's Little Black Book {FPR25003 }.pdf");
@@ -135,6 +145,7 @@ for (let i = 0; i < lines.length; i++) {
   book.push({ name, metatype: (meta?.[1] ?? '').toLowerCase().trim(), awakened,
               body, quickness, strength, intelligence, willpower, charisma, essence, pr, karma,
               reaction, magic, quickNat, combatPool, spellPool,
+              rowText: (lines[i + 1] ?? '').trim(),
               natural: cols.natural, line: i + 1 });
 }
 
@@ -187,9 +198,12 @@ const problems = [], unmatched = [];
  */
 const rotation = { only: [], both: [], exactOnly: [], neither: [] };
 
+const tableRows = [];
+
 for (const b of book) {
   const g = b.name ? gen.get(b.name.toUpperCase()) : null;
   if (!g) { unmatched.push(`${b.name ?? '(name not found)'}  (book line ${b.line})`); continue; }
+  if (ONLY.size && !ONLY.has(g.name)) continue;
 
   // Which reading of the three mental columns does this record support?
   const isExact = g.intelligence === b.intelligence && g.willpower === b.willpower
@@ -301,8 +315,49 @@ for (const b of book) {
     }
   }
 
-  if (bad.length) problems.push({ name: g.name, page: g.page, bad });
+  if (bad.length) {
+    problems.push({ name: g.name, page: g.page, bad });
+    const fix = [];
+    if (g.intelligence !== b.intelligence) fix.push(`I ${g.intelligence}→${b.intelligence}`);
+    if (g.willpower    !== b.willpower)    fix.push(`W ${g.willpower}→${b.willpower}`);
+    if (g.charisma     !== b.charisma)     fix.push(`C ${g.charisma}→${b.charisma}`);
+    if (g.metatype     !== b.metatype)     fix.push(`metatype ${g.metatype}→${b.metatype}`);
+    if (g.essence      !== b.essence)      fix.push(`E ${g.essence}→${b.essence}`);
+    if (b.karma !== null && g.karma !== b.karma) fix.push(`karma ${g.karma ?? '—'}→${b.karma}`);
+    if (g.pr !== b.pr) fix.push(`PR ${g.pr ?? '—'}→${b.pr}`);
+    const verdictLine = bad.find(x => x.startsWith('  ->')) ?? '';
+    tableRows.push({
+      name: g.name, page: g.page, meta: b.metatype, row: b.rowText,
+      bookIWC: `${b.intelligence} ${b.willpower} ${b.charisma}`,
+      genIWC:  `${g.intelligence} ${g.willpower} ${g.charisma}`,
+      pools: [b.combatPool !== null ? `Combat ${b.combatPool}` : null,
+              b.spellPool  !== null ? `Spell ${b.spellPool}`   : null,
+              b.karma      !== null ? `Karma ${b.karma}`       : null]
+             .filter(Boolean).join(', '),
+      verdict: verdictLine.includes('BOOK is right') ? 'book'
+             : verdictLine.includes('GENERATOR is right') ? 'generator'
+             : verdictLine.includes('NEITHER') ? '⚠ neither'
+             : verdictLine.includes('cannot separate') ? 'tie'
+             : verdictLine ? '—' : '',
+      fix: fix.join(', ') || '—',
+    });
+  }
   else { clean++; if (SHOW_OK) console.log(`  ok  ${g.name} (p.${g.page})`); }
+}
+
+if (TABLE) {
+  console.log('| # | Contact | pg | Meta | Printed row `B Q S I W C E R PR` | Dice Pools | '
+    + 'book I W C | gen I W C | Evidence | Correction |');
+  console.log('|--:|---|--:|---|---|---|---|---|---|---|');
+  tableRows.forEach((r, i) => {
+    console.log(`| ${i + 1} | **${r.name}** | ${r.page} | ${r.meta} | \`${r.row}\` | `
+      + `${r.pools} | **${r.bookIWC}** | ${r.genIWC} | ${r.verdict} | ${r.fix} |`);
+  });
+  console.log(`\n${tableRows.length} record(s). `
+    + '**Evidence** — `book` = the book\'s values reproduce every printed derived value exactly '
+    + 'and the generator\'s do not; `tie` = both do; `⚠ neither` = neither does, so something '
+    + 'beyond the rotation is wrong.');
+  process.exit(0);
 }
 
 console.log('\n── Mental-attribute column order ─────────────────────────────────────────────');
