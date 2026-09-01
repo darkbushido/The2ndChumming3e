@@ -17,8 +17,14 @@
  *
  * ⚠ **TWO COPIES OF EVERY PACK, and Foundry reads the other one.** `scripts/`, `styles/` and
  * `lang/` in the install are junctions into this checkout; **`packs/` is not**. Patching the
- * repo fixes what ships and changes nothing in the running game. Both usually need doing —
- * though `npm run sync:install` copies changed packs, so the repo run plus a sync is enough.
+ * repo fixes what ships and changes nothing in the running game.
+ *
+ * ⚠ **`npm run sync:install` will NOT carry this over.** It syncs `system.json` only and
+ * *deliberately* never copies packs — they are LevelDB databases Foundry writes to, and
+ * overwriting one would clobber world state. Its "packs: 82, unchanged" line compares the
+ * manifest's declared pack NAMES, not their contents, so it reports success while the
+ * installed pack still holds the old data. **Run this tool twice — once plain, once with
+ * `--install`.**
  *
  *   node tools/patch-johnson-contacts.mjs           # the repo pack (what ships)
  *   node tools/patch-johnson-contacts.mjs --install  # the installed pack
@@ -160,4 +166,7 @@ if (partial.length) {
     + 'not state are left at their defaults:');
   partial.forEach(p => console.log(`  ${p}`));
 }
-if (!CHECK && patched) console.log('\nRun `npm run sync:install` to carry this to your install.');
+if (!CHECK && patched && !process.argv.includes('--install')) {
+  // ⚠ NOT sync:install — it never copies packs. See the header.
+  console.log('\nNow run the same command with --install to patch the pack Foundry reads.');
+}
