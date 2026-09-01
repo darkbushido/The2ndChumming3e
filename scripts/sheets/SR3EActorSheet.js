@@ -2716,7 +2716,20 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       <h3 class="section-hdr" style="margin-top:1rem">Resources</h3>
       <div class="bio-fields">
         ${this._inlineField('Nuyen (¥)', 'system.nuyen', sys.nuyen, 'number', 100)}
-        ${this._inlineField('Karma', 'system.karma', sys.karma, 'number', 80)}
+        ${this._inlineField('Good Karma', 'system.karma', sys.karma, 'number', 80)}
+        ${this._inlineField('Total Karma', 'system.totalKarma', sys.totalKarma, 'number', 80)}
+        ${/* ⚠ The Award button is registered in DEFAULT_OPTIONS.actions but was NEVER RENDERED
+            * — the only two references to `awardKarma` in the codebase were that registration
+            * and the dialog's own title, so the handler was unreachable and Session Rewards
+            * (which wrote to the wrong field) was the only way to award anything. TODO 81.
+            *
+            * ⚠ GM-only, matching Session Rewards. The Good Karma FIELD beside it stays
+            * editable by the owner — minimal guardrails — but a button captioned "Award" is a
+            * GM action, and it also writes `totalKarma` and the Pool, which a player editing
+            * their own sheet has no business doing silently. */ ''}
+        ${game.user.isGM
+          ? `<button type="button" class="btn-sm" data-action="awardKarma" style="align-self:flex-end">Award Karma…</button>`
+          : ''}
         <button type="button" class="btn-sm" data-action="spendKarmaCalculator" style="align-self:flex-end">Spend Karma…</button>
       </div>
 
@@ -2725,7 +2738,6 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         ${this._inlineField('Street Cred', 'system.streetCred', sys.streetCred, 'number', 55)}
         ${this._inlineField('Notoriety', 'system.notoriety', sys.notoriety, 'number', 55)}
         ${this._inlineField('Reputation', 'system.reputation', sys.reputation, 'number', 55)}
-        ${this._inlineField('Total Karma', 'system.totalKarma', sys.totalKarma, 'number', 55)}
       </div>
       
       <h3 class="section-hdr" style="margin-top:1rem">Notes</h3>
@@ -4287,8 +4299,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     /* ⚠ p.244: every twentieth point goes to the Karma Pool **instead of** Good Karma, not as
      * well as it. The book's Shetani has a Total Karma of 62 and Good Karma of 59. This used
      * to add the full award to Good Karma AND grant the Pool points, so a character gained an
-     * extra spendable point per 20 earned. */
-    const { newTotal, poolGained, goodKarma } = game.sr3e.SR3EActor.karmaAward(totalKarma, amount);
+     * extra spendable point per 20 earned.
+     * ⚠ The metatype is load-bearing: humans cross that threshold every TENTH point (p.246). */
+    const { newTotal, poolGained, goodKarma } =
+      game.sr3e.SR3EActor.karmaAward(totalKarma, amount, actor.system.metatype);
 
     await actor.update({
       'system.karma':      karma + goodKarma,

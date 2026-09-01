@@ -5814,23 +5814,58 @@ _prepareCharacter(sys, attr) {
    * @returns {{newTotal:number, poolGained:number, goodKarma:number}} `goodKarma` is the
    *          amount to ADD to the spendable pool, not the new total.
    */
-  static karmaAward(totalKarma, amount) {
+  static karmaAward(totalKarma, amount, metatype) {
     const t = Math.max(0, Number(totalKarma) || 0);
     const a = Math.max(0, Number(amount) || 0);
+    const d = SR3EActor.karmaPoolDivisor(metatype);
     const newTotal   = t + a;
-    const poolGained = Math.floor(newTotal / 20) - Math.floor(t / 20);
+    const poolGained = Math.floor(newTotal / d) - Math.floor(t / d);
     return { newTotal, poolGained, goodKarma: a - poolGained };
   }
 
   /**
-   * The Karma Pool a character with this career total should have · *SR3 p.244*
+   * How much Karma buys a Karma Pool point · *SR3 p.246*
    *
-   * `1 + ⌊total / 20⌋` — **"each character starts with 1 Karma Pool"**, which the data model
-   * initialised to 0 until 2026-08-31. Used by migration `0.4.5.7` to recognise an actor whose
-   * Pool still matches what the old, wrong formula produced.
+   * > "**One-twentieth (one-tenth for humans)** of all Karma earned goes into the character's
+   * > Karma Pool (every twentieth/tenth point earned)."
+   *
+   * ⚠ **Humans accrue at DOUBLE rate.** This is the metatype's whole mechanical compensation
+   * for having no attribute advantages, and it was missing until 2026-09-01 (TODO 81).
+   *
+   * ⚠ **[#80](TODO.md)'s tests could not have caught it.** The only worked example on p.244 is
+   * Shetani, an **elf**, so every assertion pinned to the book is pinned to the twentieth-point
+   * case — and the human clause lives two pages later, in the Karma Pool chapter rather than
+   * the advancement one. That is the third rule in this family the book's own examples cannot
+   * distinguish.
+   *
+   * ⚠ **An unknown or missing metatype gives 20, not 10.** The actor field defaults to
+   * `'human'`, so a real character gets the right answer; this default protects a CALL SITE
+   * that forgets to pass one, where guessing human would silently double someone's Pool.
+   * Matching is case-insensitive because the Bio tab renders `system.metatype` as free text
+   * ("Species") — a GM typing "Human" must not fall through to 20.
    */
-  static karmaPoolForTotal(totalKarma) {
-    return 1 + Math.floor(Math.max(0, Number(totalKarma) || 0) / 20);
+  static karmaPoolDivisor(metatype) {
+    return String(metatype ?? '').trim().toLowerCase() === 'human' ? 10 : 20;
+  }
+
+  /**
+   * The Karma Pool a character with this career total should have · *SR3 p.244, p.246*
+   *
+   * `1 + ⌊total / divisor⌋` — **"each character starts with 1 Karma Pool"**, which the data
+   * model initialised to 0 until 2026-08-31, over a divisor that is **10 for humans** and 20
+   * for everyone else.
+   *
+   * ⚠ **Migration `0.4.5.7` deliberately does NOT call this any more.** It corrects the
+   * starting point on characters already in play, and it must keep meaning exactly that: it
+   * compares against `⌊total / 20⌋`, the value the old code produced for every metatype, and
+   * adds one. Wiring it to a function whose divisor later changed would have turned a
+   * documented "+1" into a silent 3 → 7 jump for humans — and on a `totalKarma` that TODO 81
+   * shows was never reliably written in the first place. Correcting the human accrual
+   * retroactively is not something the data supports; new awards get it right.
+   */
+  static karmaPoolForTotal(totalKarma, metatype) {
+    const d = SR3EActor.karmaPoolDivisor(metatype);
+    return 1 + Math.floor(Math.max(0, Number(totalKarma) || 0) / d);
   }
 
   /* ── Missile Parry · SR3 p.170 ─────────────────────────────────────────────────────

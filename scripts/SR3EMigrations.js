@@ -205,9 +205,14 @@ const MIGRATIONS = [
       const pool  = actor.system?.karmaPool;
       const total = actor.system?.totalKarma ?? 0;
       if (typeof pool !== 'number') return null;
+      /* ⚠ Deliberately NOT `karmaPoolForTotal`, which since TODO 81 divides by 10 for
+       * humans. This migration corrects the STARTING POINT and nothing else, so it must stay
+       * pinned to the arithmetic the old code actually used — `⌊total / 20⌋` for every
+       * metatype — plus one. Calling the shared helper would silently turn a documented +1
+       * into a 3 → 7 jump for humans, computed from a `totalKarma` that TODO 81 shows was
+       * never reliably written. */
       const buggy   = Math.floor(Math.max(0, total) / 20);
-      const correct = globalThis.game?.sr3e?.SR3EActor?.karmaPoolForTotal?.(total)
-                      ?? (buggy + 1);
+      const correct = buggy + 1;
       if (pool !== buggy || pool === correct) return null;   // hand-adjusted, or already right
       console.log(`SR3E | ${actor.name}: Karma Pool ${pool} → ${correct} `
         + '(p.244 — every character starts with 1)');

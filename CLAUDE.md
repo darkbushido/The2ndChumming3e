@@ -1650,22 +1650,33 @@ Three persisted fields, and conflating them is the mistake the code itself made:
 Pool it refreshes "roughly every new scene", GM's call, and *burned* points never come back.
 
 ⚠ **They are shown on two different tabs**, which is how the bug below stayed invisible: Karma
-Pool sits in the **Attributes** tab's derived grid beside Combat Pool, while Karma and Total
-Karma are on the **Bio** tab — and Total Karma is filed under *Reputation*, not beside Karma
-under *Resources*.
+Pool sits in the **Attributes** tab's derived grid beside Combat Pool, while Good Karma and
+Total Karma are on the **Bio** tab under *Resources*. Total Karma used to render under
+*Reputation*, beside Street Cred and Notoriety — moved in 0.4.5.9, along with labelling the
+Karma field **Good Karma**.
 
-#### 🔴 NOTHING CAN AWARD GOOD KARMA — TODO 81
+#### Awarding — two paths, one rule
 
-Two award paths, neither working, so on 0.4.5.7 every point a GM has awarded went to the Pool:
+**Award Karma…** (GM-only, Bio tab → Resources) awards to one character; **🎖 Session Rewards**
+(GM-only, Rollable Tables sidebar) awards karma, nuyen and a gear note to a checkbox list of
+every live PC at once. Both go through `SR3EActor.karmaAward(totalKarma, amount, metatype)`.
 
-- **`_onAwardKarma`** is correct but **unreachable**. `SR3EActorSheet.js:92` registers the
-  action; no element carries `data-action="awardKarma"`.
-- **Session Rewards** (`sr3e.js`, Rollable Tables sidebar — the multi-character tool a GM
-  actually uses) writes karma into **`system.karmaPool`**. Its nuyen half is correct.
-- **Humans accrue Pool at one-TENTH, not one-twentieth** (p.246). `karmaAward` uses a flat 20.
+⚠ **Humans gain a Pool point every TENTH karma, not every twentieth** — *"One-twentieth
+(one-tenth for humans) of all Karma earned"* (p.246). `karmaPoolDivisor` owns that, matched
+case-insensitively because `system.metatype` is free text on the sheet. **A missing metatype
+gives 20**, the conservative direction — real actors default to `'human'` and get 10.
 
-⚠ TODO 80 audited `_onAwardKarma`'s arithmetic and never asked whether anything calls it, or
-looked at the tool beside it. **Auditing a function is not auditing a feature.**
+⚠ **Both paths were broken until 0.4.5.9, and the way they were broken is the lesson.**
+`_onAwardKarma` was correct but **unreachable** — registered in `DEFAULT_OPTIONS.actions`, never
+rendered — while Session Rewards, the tool a GM actually reaches for, wrote karma into
+**`system.karmaPool`**. So nothing in the system added Good Karma at all. TODO 80 had audited
+`_onAwardKarma`'s arithmetic a day earlier and never asked whether anything *calls* it, or
+looked at the tool beside it: **auditing a function is not auditing a feature.**
+
+⚠ **Migration `0.4.5.7` is deliberately NOT metatype-aware** and no longer calls
+`karmaPoolForTotal`. It fixes the starting point on existing characters and is pinned to
+`⌊total / 20⌋ + 1`; following the new divisor would turn a documented +1 into a silent 3 → 7
+jump for humans, off a `totalKarma` that was never reliably written.
 
 The Spend dialog (`_onSpendKarmaCalculator`) lists every purchase the character can currently
 afford, with its cost, and buys the selected one: **attributes** at 2 × the new rating, **skill increases**, **new

@@ -126,6 +126,14 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'karma-pool-flat-twentieth-for-humans',
+    suite:  'karma',
+    ...ACTOR, method: 'karmaPoolDivisor',
+    was:    'a flat 20 for every metatype — p.246 says "one-twentieth (one-tenth for humans)", '
+          + "and the book's only worked example is an ELF, so nothing pinned to it can tell",
+    impl:   () => 20,
+  },
+  {
     id:     'karma-pool-starts-at-zero',
     suite:  'karma',
     ...ACTOR, method: 'karmaPoolForTotal',

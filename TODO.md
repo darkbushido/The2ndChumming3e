@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | *(none)* |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **71** · **73** · **74** · **81** *(**72** · **80** done)* |
+| 🔴 Confirmed bugs, still open | **71** · **73** · **74** *(**72** · **80** · **81** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **4** · **30** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** |
@@ -4989,7 +4989,7 @@ is a concurrency change touching the same write path as [#79](#79)'s ledger, and
 land together rather than the second rewriting the first.
 
 <a id="81"></a>
-## 81. No reachable way to award Good Karma — **CONFIRMED**
+## 81. ✅ No reachable way to award Good Karma — **DONE 2026-09-01**
 
 **Found 2026-09-01**, answering "is there a way as the GM to award karma to all the current
 players?". The answer is that there are two award paths and **neither one works**: one cannot be
@@ -5070,4 +5070,41 @@ attempting a heuristic.
 
 ⚠ **Do not fold [#79](#79)'s ledger into this.** The ledger wants a delta-based, GM-relayed
 write on the same path; this is a correctness fix that should land first and small.
+
+---
+
+### What landed — 0.4.5.9
+
+1. **The Award Karma button is rendered**, in the Bio tab's Resources block beside Spend
+   Karma…. **GM-only**, matching Session Rewards: the Good Karma *field* stays owner-editable
+   under the usual ethos, but a button captioned "Award" also writes `totalKarma` and the Pool,
+   which a player should not be doing to their own sheet silently.
+2. **Session Rewards routes through `SR3EActor.karmaAward()`**, the same pure rule the sheet
+   button uses, writing `system.karma` / `system.totalKarma` / `system.karmaPool`. Its preview
+   line now reads Good Karma rather than the Pool, and the chat card names anyone whose award
+   crossed a Pool threshold — that point did *not* reach their Good Karma and the difference is
+   otherwise invisible.
+3. **`karmaPoolDivisor(metatype)`** — 10 for humans, 20 otherwise, matched case-insensitively
+   because `system.metatype` is free text on the sheet ("Species"). `karmaAward` and
+   `karmaPoolForTotal` both take it. An unknown or missing metatype gives **20**: the actor
+   field defaults to `'human'` so real characters are right, and the conservative default
+   protects a call site that forgets to pass one.
+
+**Also fixed while in there:** Total Karma moved out of the **Reputation** block, where it had
+been sitting beside Street Cred and Notoriety, and now renders next to Good Karma under
+Resources. The Karma field is labelled **Good Karma**. That grouping is why this bug survived —
+the field Session Rewards wrongly wrote to lives on a different tab from the two it should have.
+
+⚠ **Migration `0.4.5.7` was deliberately NOT made metatype-aware**, and it no longer calls
+`karmaPoolForTotal` at all — it is pinned to `⌊total / 20⌋ + 1`, the arithmetic the old code
+used. It corrects the *starting point* on characters already in play and must keep meaning only
+that; following the new divisor would turn a documented +1 into a silent 3 → 7 jump for humans,
+computed from a `totalKarma` this very entry shows was never reliably written.
+
+⚠ **Existing characters still need a manual correction**, exactly as predicted above: karma
+awarded before this went into the Pool and never touched `totalKarma`, so there is no record to
+migrate from. A GM should set Good Karma, Total Karma and the Pool by hand once.
+
+**Coverage:** 18 new assertions in `tests/karma.test.mjs` (88 total) and a mutant reproducing
+the flat-twentieth bug. 56/56 mutants.
 

@@ -224,6 +224,59 @@ export async function run(t) {
   t.is('undefined args do not throw',     award().newTotal, 0);
 
   /* ════════════════════════════════════════════════════════════════════════════
+   *  TODO 81 — humans accrue Karma Pool at DOUBLE rate · p.246
+   *
+   *   "One-twentieth (one-tenth for humans) of all Karma earned goes into the character's
+   *    Karma Pool (every twentieth/tenth point earned)."
+   *
+   * ⚠ **Nothing pinned to the book's examples could have caught this.** The only worked
+   * example is Shetani, an ELF, and the human clause lives two pages later in the Karma Pool
+   * chapter rather than the advancement one. Third rule in this family with that shape.
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const div = SR3EActor.karmaPoolDivisor;
+
+  t.is('a human crosses every tenth point',  div('human'), 10);
+  t.is('an elf every twentieth',             div('elf'),   20);
+  t.is('a troll every twentieth',            div('troll'), 20);
+
+  /* ⚠ `system.metatype` is rendered as free text ("Species") on the Bio tab, so the match
+   * must be case-insensitive or a GM typing "Human" silently halves their Pool. */
+  t.is('"Human" capitalised still matches',  div('Human'), 10);
+  t.is('…and with stray whitespace',         div(' human '), 10);
+
+  /* ⚠ A MISSING metatype gives 20, not 10 — the conservative direction. The actor field
+   * defaults to 'human' so a real character gets the right answer; this default protects a
+   * call site that forgets to pass one, where guessing human would double someone's Pool. */
+  t.is('an unknown metatype falls back to 20', div('sasquatch'), 20);
+  t.is('…and a missing one to 20, not 10',     div(undefined), 20);
+  t.is('…and an empty string to 20',           div(''), 20);
+
+  const human = award(0, 60, 'human');
+  t.is('a human earning 60 karma gains 6 Pool points', human.poolGained, 6);
+  t.is('…and 54 Good Karma',                           human.goodKarma, 54);
+  const elf = award(0, 60, 'elf');
+  t.is('an elf earning the same 60 gains 3',           elf.poolGained, 3);
+  t.is('…and 57 Good Karma',                           elf.goodKarma, 57);
+  t.ok('a human gets exactly twice the Pool of an elf',
+    human.poolGained === elf.poolGained * 2);
+
+  t.is('a human Pool at 60 career karma is 7', SR3EActor.karmaPoolForTotal(60, 'human'), 7);
+  t.is('an elf at the same total is 4',        SR3EActor.karmaPoolForTotal(60, 'elf'), 4);
+
+  /* ⚠ An award of 10 crosses a threshold for a human and none for anyone else — the smallest
+   * case where the two diverge, and the one a session-sized award actually hits. */
+  t.is('a 10-karma session gives a human 1 Pool point', award(0, 10, 'human').poolGained, 1);
+  t.is('…and an elf none',                              award(0, 10, 'elf').poolGained, 0);
+
+  /* ⚠ Migration 0.4.5.7 must NOT follow the human divisor. It corrects the starting point on
+   * characters already in play and is pinned to the arithmetic the old code used — floor(total
+   * / 20) for every metatype, plus one. Wiring it to karmaPoolForTotal would turn a documented
+   * +1 into a 3 → 7 jump for a human, computed from a totalKarma that TODO 81 shows was never
+   * reliably written. The assertion lives in migrations.test.mjs; this is the reason. */
+  t.ok('the human divisor genuinely differs from the migration\'s fixed 20',
+    div('human') !== 20);
+
+  /* ════════════════════════════════════════════════════════════════════════════
    *  DEFECT 7 — every character starts with 1 Karma Pool · p.244
    * ════════════════════════════════════════════════════════════════════════════ */
   t.is('a fresh character has 1 Karma Pool, not 0', SR3EActor.karmaPoolForTotal(0), 1);

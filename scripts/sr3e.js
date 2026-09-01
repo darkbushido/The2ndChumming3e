@@ -451,7 +451,7 @@ async function _openSessionRewardDialog() {
     <label style="display:flex;align-items:center;gap:8px;margin:3px 0;cursor:pointer;">
       <input type="checkbox" data-actor-id="${a.id}" checked/>
       <span>${a.name}</span>
-      <span style="color:var(--sr-muted);font-size:11px">(${a.system.karmaPool ?? 0} karma | ¥${(a.system.nuyen ?? 0).toLocaleString()})</span>
+      <span style="color:var(--sr-muted);font-size:11px">(${a.system.karma ?? 0} karma | ¥${(a.system.nuyen ?? 0).toLocaleString()})</span>
     </label>`).join('');
 
   let karma = 0, nuyen = 0, gearNotes = '', selectedIds = [], proceed = false;
@@ -493,16 +493,43 @@ async function _openSessionRewardDialog() {
 
   if (!proceed || !selectedIds.length) return;
 
+  /* ⚠ **This wrote karma into `system.karmaPool` until 2026-09-01** — the LUCK DICE POOL
+   * (p.246), not the spendable Good Karma the players were being awarded. A 5-karma session
+   * handed everyone 5 reroll dice, a resource SR3 grows by one point per twenty career karma,
+   * and left them nothing to spend. `_onAwardKarma` had the right shape all along but no
+   * button rendered, so this was the only reachable award path and nothing in the system added
+   * Good Karma at all. See TODO 81.
+   *
+   * Both paths now go through the same pure rule, which also applies p.244's split — the
+   * twentieth point (TENTH for humans, p.246) goes to the Pool INSTEAD of Good Karma. */
   const targets = allPCs.filter(a => selectedIds.includes(a.id));
+  const split   = [];
   for (const actor of targets) {
     const updates = {};
-    if (karma) updates['system.karmaPool'] = (actor.system.karmaPool ?? 0) + karma;
-    if (nuyen)  updates['system.nuyen']    = (actor.system.nuyen ?? 0) + nuyen;
+    if (karma) {
+      const r = game.sr3e.SR3EActor.karmaAward(actor.system.totalKarma ?? 0, karma, actor.system.metatype);
+      updates['system.karma']      = (actor.system.karma ?? 0) + r.goodKarma;
+      updates['system.totalKarma'] = r.newTotal;
+      if (r.poolGained) updates['system.karmaPool'] = (actor.system.karmaPool ?? 0) + r.poolGained;
+      split.push({ name: actor.name, ...r });
+    }
+    if (nuyen)  updates['system.nuyen'] = (actor.system.nuyen ?? 0) + nuyen;
     if (Object.keys(updates).length) await actor.update(updates);
   }
 
-  const lines = targets.map(a => `<li>${a.name}</li>`).join('');
-  const karmaLine = karma ? `<div><strong>Karma:</strong> +${karma}</div>` : '';
+  /* Name anyone whose award crossed a Karma Pool threshold, since that point did NOT reach
+   * their Good Karma and the difference is otherwise invisible on the card. */
+  const lines = targets.map(a => {
+    const sp = split.find(x => x.name === a.name);
+    return sp && sp.poolGained
+      ? `<li>${a.name} — ${sp.goodKarma} Good Karma, +${sp.poolGained} Karma Pool</li>`
+      : `<li>${a.name}</li>`;
+  }).join('');
+  const karmaLine = karma
+    ? `<div><strong>Karma:</strong> +${karma}
+         <span style="font-size:11px;color:var(--sr-muted)">to Good Karma, less any twentieth
+         point (tenth for humans) that goes to the Karma Pool instead — SR3 p.244, p.246</span></div>`
+    : '';
   const nuyenLine = nuyen ? `<div><strong>Nuyen:</strong> +¥${nuyen.toLocaleString()}</div>` : '';
   const gearLine  = gearNotes ? `<div><strong>Gear:</strong> ${gearNotes}</div>` : '';
 
