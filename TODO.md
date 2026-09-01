@@ -26,7 +26,7 @@ independent.
 | 🔴 Confirmed bugs, still open | **73** · **74** *(**71** · **72** · **80** · **81** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **4** · **30** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
-| 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **83** · **84** · **85** |
+| 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **83** · **84** · **85** · **86** |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
 | 🧹 Housekeeping | 1 · 6 |
 | ✅ Done — kept for the record | **2** · **5** · **8** · **10** · 13 · **40** · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
@@ -5428,4 +5428,87 @@ generation, and anything covering the run structure in Mr Johnson's Little Black
   from the GM would leave no way to set it in the first place.
 - **The run-structure half of the book** (p.5-35) is untouched, and is probably what "the little
   black book" most evokes.
+
+<a id="86"></a>
+## 86. The Little Black Book contacts' cyberware does nothing
+
+**Found 2026-09-01, going through [#84](#84) record by record.** Every implant a contact owns is
+consolidated into **one item that is a name and an Essence cost**, with every bonus field at
+zero. Corp Bodyguard's reads, in full:
+
+```
+"Cybereyes (Display Link, Flare Compensation, Low Light), Muscle Replacement 1,
+ Reaction Enhancers 2, Wired Reflexes 2 w/Reflex Trigger"
+ essenceCost=4.24  bonusQui=0  bonusStr=0  bonusRea=0  bonusInitDice=0
+```
+
+So she is missing **+1 Quickness, +1 Strength, +6 Reaction and +2D6 Initiative**. The generator's
+header describes the workaround — cyberware *"consolidated onto a single item … sized so the
+derived Essence matches the book's printed E column exactly"* — and it does hit 1.76. It just
+leaves the character weaker than the book everywhere else.
+
+### The engine is fine. This is content.
+
+⚠ **Everything needed already works**, which is what makes this worth doing rather than
+designing: `CyberwareData` carries `bonusBod/Qui/Str/Cha/Int/Wil/Rea/InitDice`,
+`_prepareCharacter` applies them (`attr.value = base + cyberBonus + adeptBonus`), `bonusRea` and
+`bonusInitDice` reach the Reaction derivation, and Essence already sums `essenceCost` across
+installed items.
+
+⚠ **Wired and Boosted Reflexes already ship CORRECTLY** in `sr3e-sr3-cyberware` — `Wired
+Reflexes [1] rea=2 d6=1`, `[2] rea=4 d6=2`, `[3] rea=6 d6=3`, exactly SR3's +2 Reaction and +1D6
+per level. Only the *generator's* `wired()` helper is wrong (see below).
+
+### Four gaps, and the third needs a decision before anything starts
+
+**1 — Muscle Replacement and Reaction Enhancers are in no pack at all.** Searched every cyberware
+and bioware pack. There is only `Muscle Augmentation` (M&M bioware, **+Strength only**), which is
+a different implant. Both need creating:
+
+- **Muscle Replacement** · *SR3* — *"Add the rating of the muscle replacement to Strength and
+  Quickness; this change does not affect Reaction."*
+- **Reaction Enhancer** · *SR3* — *"each increases the user's Reaction Attribute by 1 … The
+  reaction enhancer is compatible with other reaction/Initiative boosters."*
+
+⚠ **Reaction Enhancers are the stated EXCEPTION to non-stacking.** Wired and Boosted Reflexes do
+not combine with each other, and the adept's Improved Reflexes combines with neither
+([#64](#64)) — but the enhancer's own entry says outright that it stacks. Do not "fix" a
+character who has both.
+
+**2 — `SR3E.quicknessNotForReaction` lists only move-by-wire.** Muscle Replacement carries the
+identical carve-out in identical words, so without a second entry every Muscle Replacement user
+gains Reaction they are not entitled to. One line in `config.js`, and the [#4](#4) machinery
+already handles the rest.
+
+**3 — 🔴 GRADE DOES NOTHING, and this blocks the rest.** `_installedCyberwareCost` sums
+`essenceCost` raw; there is no Alphaware/Betaware/Deltaware multiplier anywhere in `config.js`
+or `SR3EActor`. `CyberwareData.grade` is a free string nothing reads. Corp Bodyguard's implants
+are *"all Alphaware"* (×0.8 Essence in SR3), so modelling them at standard cost puts her Essence
+in the wrong place. Three ways out, and it is the maintainer's call:
+
+  - implement the grade multiplier properly — correct, but it touches the Essence derivation,
+    which is load-bearing and carefully documented ([#5](#5));
+  - keep sizing a stub to the printed Essence, and accept that the parts do not sum;
+  - model at standard cost and let Essence drift from the book.
+
+**4 — The conversion itself.** 62 contacts, each with a free-text implant list to parse into
+real items — *"Bone Lacing (Plastic), Cybereyes (Thermographic, Flare Compensation, Muscle
+Replacement 2, Smartlink 2, Wired Reflexes 2)"* and so on, including at least one whose brackets
+are visibly unbalanced. This is data authoring, not engineering, and it is **larger than
+[#84](#84)'s rotation fix**: the rotations are a mechanical correction to numbers already
+verified, this is new content per contact.
+
+### Also found here — `wired()` in the generator is wrong
+
+```js
+function wired(n)   { return { reactionBonus: n, diceBonus: n }; }
+```
+
+SR3: *"Each level adds **+2** to the user's Reaction and gives +1D6 Initiative die."* So this
+delivers **half** the Reaction, under a comment claiming "real SR3 formulas". Only **Gunsmith**
+uses it (`wired(1)`), so the blast radius is one record — but it must be corrected before
+anything else leans on it.
+
+⚠ `boosted(n)` returning `reactionBonus: 0` is **right** — Boosted Reflexes give initiative dice
+and (at higher levels) some Reaction, and the shipped pack items carry the real numbers.
 
