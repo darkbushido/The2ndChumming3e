@@ -108,18 +108,34 @@ for (let i = 0; i < lines.length; i++) {
   const essence = cols.augmented[6];
   const pr      = cols.augmented[cols.augmented.length - 1];
 
-  // "Dice Pools: Combat 5, Karma 3" — the Karma Pool.
-  let karma = null;
+  /* "Dice Pools: Combat 8, Karma 3, Spell 5" — every one of these is a DERIVED value the
+   * book has already computed, which makes them independent evidence about the attributes
+   * that feed them. Combat Pool tests Intelligence AND Willpower together; Spell Pool tests
+   * the same pair for the Awakened. */
+  let karma = null, combatPool = null, spellPool = null;
   for (let j = i + 2; j < i + 6 && j < lines.length; j++) {
-    const m = /Dice Pools:.*?Karma\s+(\d+)/i.exec(lines[j] ?? '');
-    if (m) { karma = Number(m[1]); break; }
+    const dp = /Dice Pools:(.*)$/i.exec(lines[j] ?? '');
+    if (!dp) continue;
+    karma      = Number(/Karma\s+(\d+)/i.exec(dp[1])?.[1]  ?? NaN);
+    combatPool = Number(/Combat\s+(\d+)/i.exec(dp[1])?.[1] ?? NaN);
+    spellPool  = Number(/Spell\s+(\d+)/i.exec(dp[1])?.[1]  ?? NaN);
+    if (!Number.isFinite(karma))      karma = null;
+    if (!Number.isFinite(combatPool)) combatPool = null;
+    if (!Number.isFinite(spellPool))  spellPool = null;
+    break;
   }
 
   const reaction = cols.augmented[cols.augmented.length - 2];
   const magic    = awakened ? cols.augmented[7] : 0;   // the M column, Awakened only
+  /* ⚠ Reaction derives from the NATURAL Quickness, the Combat Pool from the AUGMENTED one.
+   * That is not a guess: Muscle Replacement adds Quickness and its entry says outright "this
+   * change does not affect Reaction", while nothing carves the pool out. Corp Bodyguard
+   * (p.48) is the proof — printed R 6 needs Q 7, printed Combat 8 needs Q 8. */
+  const quickNat = cols.natural[1];
   book.push({ name, metatype: (meta?.[1] ?? '').toLowerCase().trim(), awakened,
               body, quickness, strength, intelligence, willpower, charisma, essence, pr, karma,
-              reaction, magic, natural: cols.natural, line: i + 1 });
+              reaction, magic, quickNat, combatPool, spellPool,
+              natural: cols.natural, line: i + 1 });
 }
 
 /* ── The generator ─────────────────────────────────────────────────────────────────────── */
@@ -227,30 +243,61 @@ for (const b of book) {
 
   /* ── Independent corroboration ────────────────────────────────────────────────────────
    *
-   * ⚠ **The book PRINTS Reaction, and SR3 derives it: `floor((Quickness + Intelligence) / 2)`.**
-   * So Intelligence can be checked without trusting either transcription. Reaction may be
-   * RAISED by wired or boosted reflexes, so the test is `printed >= derived` — a derived value
-   * ABOVE the printed one is impossible, and convicts that reading.
+   * ⚠ **The book PRINTS three values SR3 derives from these very attributes**, so they can
+   * adjudicate a disagreement without trusting either transcription:
    *
-   * ⚠ **This exists because the first run reported 52 of 61 records differing**, which is far
-   * more likely to mean the auditor is misaligned than that the data is wrong. It is not:
-   * 58 of 61 book rows satisfy the check under the header's literal `B Q S I W C` order and
-   * only 53 under SR3's character-sheet order `B Q S C I W`. Rather than rest on that
-   * aggregate, every difference below carries its own verdict.
+   *   Reaction    = ⌊(Quickness + Intelligence) / 2⌋      — tests Intelligence
+   *   Combat Pool = ⌊(Quickness + Intelligence + Willpower) / 2⌋ — tests BOTH
+   *   Spell Pool  = ⌊(Intelligence + Willpower + Magic) / 3⌋     — tests both, Awakened only
+   *
+   * ⚠ **EXACT equality is the test, not "not impossible".** This originally only convicted a
+   * reading when its derived value EXCEEDED the printed one, which is a far weaker claim and
+   * left 19 records "undecidable" that the arithmetic actually settles. SR3 derives these
+   * exactly; a reading that reproduces the printed number is right, and one that misses it by
+   * any amount is wrong.
+   *
+   * ⚠ **Reaction takes the NATURAL Quickness, the Combat Pool the AUGMENTED one.** Muscle
+   * Replacement adds Quickness and its entry says "this change does not affect Reaction";
+   * nothing carves the pool out. Corp Bodyguard (p.48) proves both at once — printed R 6
+   * needs Q 7, printed Combat 8 needs Q 8. Getting this backwards would convict the wrong
+   * side on every augmented contact.
+   *
+   * ⚠ **Cyberware only ever RAISES Reaction**, so a printed Reaction ABOVE the derivation is
+   * ordinary and proves nothing; only a printed value BELOW it is impossible. The exact test
+   * is therefore applied to Reaction only when the record shows no Reaction parenthetical.
    */
-  if (g.intelligence !== b.intelligence && Number.isFinite(b.reaction)) {
-    const dBook = Math.floor((b.quickness + b.intelligence) / 2);
-    const dGen  = Math.floor((g.quickness + g.intelligence) / 2);
-    const okBook = b.reaction >= dBook, okGen = b.reaction >= dGen;
-    if (okBook && !okGen) {
-      bad.push(`  -> the BOOK is right: printed Reaction ${b.reaction} is impossible from the `
-        + `generator's Intelligence (would need >= ${dGen})`);
-    } else if (okGen && !okBook) {
-      bad.push(`  -> the GENERATOR is right: printed Reaction ${b.reaction} is impossible from `
-        + `the book reading (would need >= ${dBook})`);
+  const score = (int, wil, quickAug, quickNat) => {
+    let hit = 0, miss = 0;
+    // Reaction — skipped when augmented, since the printed figure then includes implants.
+    if (Number.isFinite(b.reaction) && b.reaction === b.natural[b.natural.length - 2]) {
+      (Math.floor((quickNat + int) / 2) === b.reaction ? hit++ : miss++);
+    }
+    if (Number.isFinite(b.combatPool)) {
+      (Math.floor((quickAug + int + wil) / 2) === b.combatPool ? hit++ : miss++);
+    }
+    if (b.awakened && Number.isFinite(b.spellPool)) {
+      (Math.floor((int + wil + (b.magic ?? 0)) / 3) === b.spellPool ? hit++ : miss++);
+    }
+    return { hit, miss };
+  };
+
+  if (g.intelligence !== b.intelligence || g.willpower !== b.willpower) {
+    const sB = score(b.intelligence, b.willpower, b.quickness, b.quickNat);
+    const sG = score(g.intelligence, g.willpower, g.quickness, g.quickNat ?? g.quickness);
+    const tested = sB.hit + sB.miss;
+    if (!tested) {
+      bad.push('  -> the book prints no derived value that can adjudicate this record');
+    } else if (sB.miss === 0 && sG.miss > 0) {
+      bad.push(`  -> the BOOK is right: its values reproduce all ${sB.hit} printed derived `
+        + `value(s) exactly; the generator's miss ${sG.miss}`);
+    } else if (sG.miss === 0 && sB.miss > 0) {
+      bad.push(`  -> the GENERATOR is right: its values reproduce all ${sG.hit} printed derived `
+        + `value(s) exactly; the book reading misses ${sB.miss}`);
+    } else if (sB.miss === 0 && sG.miss === 0) {
+      bad.push('  -> both readings reproduce the printed values — arithmetic cannot separate them');
     } else {
-      bad.push(`  -> Reaction cannot decide (printed ${b.reaction}; book implies >= ${dBook}, `
-        + `generator >= ${dGen})`);
+      bad.push(`  -> NEITHER reading fits: book misses ${sB.miss} of ${tested}, generator `
+        + `misses ${sG.miss}. Something else is wrong with this record.`);
     }
   }
 
@@ -310,13 +357,16 @@ if (problems.length) {
   for (const pr of problems) for (const line of pr.bad) {
     if (line.includes('the BOOK is right')) verdict.book++;
     else if (line.includes('the GENERATOR is right')) verdict.generator++;
-    else if (line.includes('cannot decide')) verdict.undecided++;
+    else if (line.includes('cannot separate') || line.includes('can adjudicate')) verdict.undecided++;
+    else if (line.includes('NEITHER reading fits')) verdict.neither = (verdict.neither ?? 0) + 1;
   }
   if (verdict.book || verdict.generator || verdict.undecided) {
-    console.log("\nIntelligence disagreements, judged against the book's printed Reaction:");
+    console.log('\nMental-attribute disagreements, judged against the printed Reaction, '
+      + 'Combat Pool and Spell Pool:');
     console.log(`  book is right:       ${verdict.book}`);
     console.log(`  generator is right:  ${verdict.generator}`);
     console.log(`  undecidable:         ${verdict.undecided}`);
+    if (verdict.neither) console.log(`  NEITHER fits:        ${verdict.neither}`);
   }
   console.log('\n── Differences ──────────────────────────────────────────────────────────────');
   console.log('⚠ NOT all of these are errors. The generator deliberately uses augmented values,');

@@ -81,10 +81,11 @@ With differences:        52
 ⚠ Book blocks with no generator entry (1) — a heading the name-finder could not read, or a genuinely missing contact:
   CORPORATE SECURITY  (book line 57)
 
-Intelligence disagreements, judged against the book's printed Reaction:
-  book is right:       4
-  generator is right:  1
-  undecidable:         19
+Mental-attribute disagreements, judged against the printed Reaction, Combat Pool and Spell Pool:
+  book is right:       28
+  generator is right:  0
+  undecidable:         15
+  NEITHER fits:        2
 
 ── Differences ──────────────────────────────────────────────────────────────
 ⚠ NOT all of these are errors. The generator deliberately uses augmented values,
@@ -94,62 +95,67 @@ Intelligence disagreements, judged against the book's printed Reaction:
 Rent-a-Cop (p.38)
     intelligence: generator 3, book 2
     willpower: generator 2, book 3
-      -> the BOOK is right: printed Reaction 2 is impossible from the generator's Intelligence (would need >= 3)
+      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
 Mercenary (p.40)
     charisma: generator 5, book 4
     PR: generator 4, book 3
 Security Rigger (p.40)
     willpower: generator 3, book 5
     charisma: generator 5, book 3
+      -> the BOOK is right: its values reproduce all 1 printed derived value(s) exactly; the generator's miss 1
 Trid Pirate (p.42)
     essence: generator 6, book 3
 Club Owner (p.42)
     body: generator 8, book 9 — matches the NATURAL value 8, so this is the parenthetical convention, not an error
     willpower: generator 4, book 3
     charisma: generator 3, book 4
+      -> both readings reproduce the printed values — arithmetic cannot separate them
 Club Hopper (p.43)
     charisma: generator 3, book 5
 Upright Humanis Member (p.44)
     intelligence: generator 4, book 5
     charisma: generator 5, book 4
-      -> Reaction cannot decide (printed 4; book implies >= 4, generator >= 3)
+      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 2
 Terra First! Activist (p.45)
     intelligence: generator 5, book 4
     willpower: generator 6, book 3
     charisma: generator 3, book 5
-      -> the BOOK is right: printed Reaction 4 is impossible from the generator's Intelligence (would need >= 5)
+      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 2
 Terrorist (p.46)
     intelligence: generator 2, book 3
     willpower: generator 3, book 2
-      -> Reaction cannot decide (printed 3; book implies >= 3, generator >= 3)
+      -> both readings reproduce the printed values — arithmetic cannot separate them
 Cult Member (p.46)
     intelligence: generator 2, book 3
     willpower: generator 3, book 2
-      -> Reaction cannot decide (printed 3; book implies >= 3, generator >= 2)
+      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
 Freedom Fighter (p.46)
     strength: generator 3, book 7
     willpower: generator 3, book 4
     charisma: generator 4, book 3
     essence: generator 6, book 3
+      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 2
 Corporate Headhunter (p.47)
     willpower: generator 6, book 5
     charisma: generator 5, book 6
+      -> NEITHER reading fits: book misses 1 of 2, generator misses 2. Something else is wrong with this record.
 Mr. Fix-It (p.47)
     body: generator 10, book 12 — matches the NATURAL value 10, so this is the parenthetical convention, not an error
     quickness: generator 5, book 7 — matches the NATURAL value 5, so this is the parenthetical convention, not an error
     strength: generator 9, book 11 — matches the NATURAL value 9, so this is the parenthetical convention, not an error
     intelligence: generator 4, book 3
     willpower: generator 3, book 4
-      -> the GENERATOR is right: printed Reaction 4 is impossible from the book reading (would need >= 5)
+      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
 Mixed-up Middle Manager (p.48)
     willpower: generator 3, book 4
     charisma: generator 4, book 3
+      -> both readings reproduce the printed values — arithmetic cannot separate them
 Corp Bodyguard (p.49)
     quickness: generator 7, book 8 — matches the NATURAL value 7, so this is the parenthetical convention, not an error
     strength: generator 6, book 7 — matches the NATURAL value 6, so this is the parenthetical convention, not an error
     intelligence: generator 3, book 5
     willpower: generator 5, book 3
-      -> Reaction cannot decide (printed 12; book implies >= 6, generator >= 5)
+      -> the BOOK is right: its values reproduce all 1 printed derived value(s) exactly; the generator's miss 1
 Corp Decker (p.49)
     charisma: generator 4, book 2
 Corp Scientist (p.49)
@@ -157,136 +163,152 @@ Corp Scientist (p.49)
     willpower: generator 3, book 4
     charisma: generator 6, book 3
     Karma Pool: generator 1, book 2
-      -> Reaction cannot decide (printed 4; book implies >= 4, generator >= 3)
+      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 2
 Pimp (p.50)
     willpower: generator 4, book 3
     charisma: generator 3, book 4
+      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
 Tamanous Member (p.50)
     willpower: generator 2, book 3
     charisma: generator 3, book 2
+      -> both readings reproduce the printed values — arithmetic cannot separate them
 Reluctant Ganger (p.51)
     willpower: generator 2, book 3
     charisma: generator 3, book 2
+      -> both readings reproduce the printed values — arithmetic cannot separate them
 Joygirl (p.51)
     willpower: generator 4, book 3
     charisma: generator 3, book 4
+      -> both readings reproduce the printed values — arithmetic cannot separate them
 Squatter (p.52)
     intelligence: generator 4, book 3
     willpower: generator 2, book 4
     charisma: generator 3, book 2
-      -> Reaction cannot decide (printed 3; book implies >= 3, generator >= 3)
+      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
 Street Vendor (p.52)
     charisma: generator 2, book 3
 Yakuza Elder (p.53)
     strength: generator 3, book 2
     intelligence: generator 5, book 6
     charisma: generator 6, book 5
-      -> Reaction cannot decide (printed 4; book implies >= 4, generator >= 3)
+      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
 Ambitious Mafia Lieutenant (p.53)
     quickness: generator 4, book 5 — matches the NATURAL value 4, so this is the parenthetical convention, not an error
     strength: generator 5, book 6 — matches the NATURAL value 5, so this is the parenthetical convention, not an error
     willpower: generator 5, book 4
     charisma: generator 4, book 5
+      -> both readings reproduce the printed values — arithmetic cannot separate them
 Triad Member (p.54)
     quickness: generator 6, book 7 — matches the NATURAL value 6, so this is the parenthetical convention, not an error
 Family Member (p.54)
     intelligence: generator 3, book 4
     willpower: generator 4, book 3
-      -> Reaction cannot decide (printed 3; book implies >= 3, generator >= 3)
+      -> both readings reproduce the printed values — arithmetic cannot separate them
 Bookie (p.55)
     willpower: generator 3, book 4
     charisma: generator 4, book 3
+      -> both readings reproduce the printed values — arithmetic cannot separate them
 Shark Lawyer (p.55)
     intelligence: generator 5, book 6
     charisma: generator 6, book 5
-      -> Reaction cannot decide (printed 5; book implies >= 5, generator >= 4)
+      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
 High Stakes Negotiator (p.56)
     intelligence: generator 5, book 6
     charisma: generator 6, book 5
-      -> Reaction cannot decide (printed 5; book implies >= 5, generator >= 4)
+      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
 Troll Street Dealer (p.57)
     body: generator 8, book 9 — matches the NATURAL value 8, so this is the parenthetical convention, not an error
     quickness: generator 4, book 6 — matches the NATURAL value 4, so this is the parenthetical convention, not an error
     strength: generator 9, book 11 — matches the NATURAL value 9, so this is the parenthetical convention, not an error
     intelligence: generator 3, book 4
-      -> Reaction cannot decide (printed 6; book implies >= 5, generator >= 3)
+      -> the BOOK is right: its values reproduce all 1 printed derived value(s) exactly; the generator's miss 1
 Talent Scout (p.57)
     willpower: generator 7, book 5
     charisma: generator 5, book 7
+      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
 ID Manufacturer (p.57)
     willpower: generator 3, book 4
     charisma: generator 4, book 3
+      -> both readings reproduce the printed values — arithmetic cannot separate them
 Gunsmith (p.58)
     intelligence: generator 3, book 4
     essence: generator 6, book 3
-      -> Reaction cannot decide (printed 6; book implies >= 4, generator >= 3)
+      -> the BOOK is right: its values reproduce all 1 printed derived value(s) exactly; the generator's miss 1
 Fence (p.58)
     willpower: generator 3, book 4
     charisma: generator 4, book 3
+      -> both readings reproduce the printed values — arithmetic cannot separate them
 Lorekeeper (p.59)
     intelligence: generator 5, book 6
     willpower: generator 6, book 5
     Karma Pool: generator 4, book (none)
-      -> Reaction cannot decide (printed 5; book implies >= 5, generator >= 5)
+      -> both readings reproduce the printed values — arithmetic cannot separate them
 Antiquities and Oddities Dealer (p.59)
     willpower: generator 3, book 6
     charisma: generator 6, book 3
+      -> NEITHER reading fits: book misses 1 of 2, generator misses 1. Something else is wrong with this record.
 Artificer/Enchanter (p.60)
     intelligence: generator 6, book 5
     willpower: generator 4, book 6
     charisma: generator 5, book 4
     Karma Pool: generator 6, book 3
-      -> Reaction cannot decide (printed 4; book implies >= 4, generator >= 4)
+      -> the BOOK is right: its values reproduce all 3 printed derived value(s) exactly; the generator's miss 2
 Talislegger (p.60)
     willpower: generator 5, book 4
     charisma: generator 4, book 5
     Karma Pool: generator 4, book (none)
+      -> both readings reproduce the printed values — arithmetic cannot separate them
 Wiz Kid Ganger (p.61)
     intelligence: generator 4, book 3
     willpower: generator 3, book 4
-      -> the BOOK is right: printed Reaction 3 is impossible from the generator's Intelligence (would need >= 4)
+      -> the BOOK is right: its values reproduce all 3 printed derived value(s) exactly; the generator's miss 1
 Hermetic Academic (p.61)
     willpower: generator 4, book 6
     charisma: generator 6, book 4
+      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
 Highway Patrol (p.62)
     body: generator 5, book 7 — matches the NATURAL value 5, so this is the parenthetical convention, not an error
     willpower: generator 3, book 4
     charisma: generator 4, book 3
+      -> the BOOK is right: its values reproduce all 1 printed derived value(s) exactly; the generator's miss 1
 SWAT Team Member (p.62)
     intelligence: generator 5, book 4
     willpower: generator 3, book 5
     charisma: generator 4, book 3
-      -> Reaction cannot decide (printed 6; book implies >= 4, generator >= 5)
+      -> the BOOK is right: its values reproduce all 1 printed derived value(s) exactly; the generator's miss 1
 Police Chief (p.63)
     intelligence: generator 4, book 5
     charisma: generator 5, book 4
-      -> Reaction cannot decide (printed 4; book implies >= 4, generator >= 3)
+      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 2
 Forensics Expert (p.64)
     willpower: generator 5, book 4
     charisma: generator 4, book 5
+      -> both readings reproduce the printed values — arithmetic cannot separate them
 Prison Guard (p.64)
     willpower: generator 2, book 3
     charisma: generator 3, book 2
+      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
 DocWagon Paramedic (p.65)
     willpower: generator 3, book 4
     charisma: generator 4, book 3
+      -> both readings reproduce the printed values — arithmetic cannot separate them
 Elite Black Clinic Cybersurgeon (p.65)
     intelligence: generator 5, book 7
     charisma: generator 6, book 3
-      -> Reaction cannot decide (printed 7; book implies >= 7, generator >= 6)
+      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 2
 Paramed Shaman (p.66)
     intelligence: generator 4, book 5
     willpower: generator 6, book 7
     charisma: generator 7, book 4
-      -> Reaction cannot decide (printed 4; book implies >= 4, generator >= 4)
+      -> the BOOK is right: its values reproduce all 3 printed derived value(s) exactly; the generator's miss 2
 Firefighter (p.66)
     intelligence: generator 4, book 3
     willpower: generator 3, book 4
-      -> the BOOK is right: printed Reaction 3 is impossible from the generator's Intelligence (would need >= 4)
+      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
 Dock Worker (p.67)
     body: generator 10, book 11 — matches the NATURAL value 10, so this is the parenthetical convention, not an error
 City Services Worker (p.67)
     intelligence: generator 4, book 3
     willpower: generator 2, book 4
     charisma: generator 3, book 2
-      -> Reaction cannot decide (printed 3; book implies >= 3, generator >= 3)
+      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
