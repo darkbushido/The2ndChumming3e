@@ -2615,6 +2615,20 @@ label.act-field input[type=number] {
   border-radius: var(--r);
   padding: 1px 5px;
 }
+/* Professional Rating · TODO 83. Read-only, rendered in the header only when set — it is the
+   first number a GM wants on one of the 62 Little Black Book archetypes and is meaningless on
+   a player character. Gold rather than the template badge's amber: this is a stat, not a
+   warning about the document's state. */
+.sr3e-pr-badge {
+  color: var(--sr-gold);
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: .07em;
+  border: 1px solid var(--sr-gold);
+  border-radius: var(--r);
+  padding: 1px 5px;
+  white-space: nowrap;
+}
 .sr3e-template-btn {
   background: transparent;
   border: 1px solid var(--sr-border);

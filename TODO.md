@@ -5259,9 +5259,22 @@ be a chosen value.
 ### Still open
 
 - **The 62 have no images and no folders.** A directory of `mystery-man.svg` is a poor browse.
+  AI-generated token/portrait art is being looked into — **not a today problem** (noted
+  2026-09-01). Whatever generates them, the pack write is the same shape as
+  `tools/patch-johnson-contacts.mjs`: set `img` and `prototypeToken.texture.src`, both copies
+  of the pack, Foundry closed.
 - **`NpcData` has no karma fields at all** — no `karma`, `totalKarma` or `karmaPool`. An NPC
   needing a Karma Pool must be a `character`, which is exactly what these 62 are.
-- **Nothing yet consumes `professionalRating`.** It is recorded, not read.
+- **Nothing yet consumes `professionalRating`.** It is *displayed* — an editable field in the
+  Bio tab's Personal Information block, and a read-only gold **PR n** badge in the sheet header
+  when it is set — but no roll or flow reads it.
+  ⚠ **Two places, one input.** The badge is deliberately read-only: a second element carrying
+  `name="system.professionalRating"` would give the form two fields with the same name, which
+  makes `FormDataExtended` return an array and silently breaks the save. Same trap as Recoil
+  Compensation, which is shown on two tabs and carries the `name` on only one.
+  ⚠ The field shows when PR > 0 **or** the viewer is a GM — both conditions are needed, not
+  alternatives: hiding at 0 keeps a meaningless "PR 0" off every player's sheet, and hiding it
+  from the GM would leave no way to set it in the first place.
 - **The run-structure half of the book** (p.5-35) is untouched, and is probably what "the little
   black book" most evokes.
 

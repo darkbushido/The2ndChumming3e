@@ -520,6 +520,16 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <div class="header-fields">
           <div class="header-top">
             <input class="actor-name" type="text" name="name" value="${actor.name}"/>
+            ${/* Professional Rating · TODO 83. A read-only badge, shown ONLY when set — it is
+                * the first number a GM wants when they open one of the 62 Little Black Book
+                * archetypes, and it is meaningless on a player character. Editing lives on the
+                * Bio tab; duplicating the input here would give the field two `name`
+                * attributes, which makes FormDataExtended return an array and breaks the
+                * save (the same trap as Recoil Compensation — see `_inlineField`'s callers). */ ''}
+            ${(sys.professionalRating ?? 0) > 0
+              ? `<span class="sr3e-pr-badge" title="Professional Rating — how capable this archetype is">
+                   PR ${sys.professionalRating}</span>`
+              : ''}
             <div class="sr3e-template-controls">
               ${isTemplate === true
                 ? `<span class="sr3e-template-badge">TEMPLATE</span>
@@ -2715,6 +2725,17 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   _tabBio(sys) {
+    /* Professional Rating · TODO 83 — how capable an NPC archetype is. All 62 Little Black
+     * Book contacts carry one; a player character does not.
+     *
+     * ⚠ **Shown when it is set, or to a GM.** Hiding it at 0 keeps a meaningless "PR 0" off
+     * every player's sheet, but hiding it from the GM would leave no way to SET it in the
+     * first place — so the two conditions are both needed, not alternatives. */
+    const pr = sys.professionalRating ?? 0;
+    const prField = (pr > 0 || game.user.isGM)
+      ? this._inlineField('Professional Rating', 'system.professionalRating', pr, 'number', 55)
+      : '';
+
     return `<div class="tab ${this._activeTab === 'bio' ? 'active' : ''}" data-tab="bio" style="overflow-y:auto">
       <h3 class="section-hdr">Personal Information</h3>
       <div class="bio-fields">
@@ -2724,6 +2745,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         ${this._inlineField('Height', 'system.height', sys.height, 'text', 80)}
         ${this._inlineField('Weight', 'system.weight', sys.weight, 'text', 80)}
         ${this._inlineField('Ethnicity', 'system.ethnicity', sys.ethnicity, 'text', 120)}
+        ${prField}
       </div>
       
       <h3 class="section-hdr" style="margin-top:1rem">Resources</h3>
