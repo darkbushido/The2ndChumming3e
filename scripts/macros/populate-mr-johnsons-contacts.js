@@ -21,8 +21,10 @@
 //    diceBonus to match RAW. Bespoke/unclear Reaction jumps are not hand-tuned.
 //  - "Karma" from the book's Dice Pools line maps to karmaPool (SR3 Karma Pool
 //    dice, not lifetime Karma — totalKarma/karma are unknown and left at 0).
-//  - The book's "PR" (Professional/Connection Rating) column has no equivalent
-//    system field; it's recorded verbatim in notes alongside the page cite.
+//  - The book's "PR" (Professional/Connection Rating) column now has a system
+//    field -- `professionalRating`, added 2026-09-01 for TODO 83. It is written
+//    there AND kept verbatim in the notes cite, so the note stays a faithful
+//    transcription of the book's line.
 //  - Spells are recorded by name with the printed Force rating in the item
 //    name (e.g. "Powerbolt (F4)"); type/range/drain aren't in the source and
 //    are left blank rather than guessed.
@@ -116,7 +118,7 @@ function noBonus()  { return { reactionBonus: 0, diceBonus: 0 }; }
 function baseActor(name, page, {
   metatype = 'human', pr = null, karma = null,
   body = 3, quickness = 3, strength = 3, charisma = 3, intelligence = 3, willpower = 3,
-  essence = 6, magic = 0, reflex = noBonus(), karmaPool = 0,
+  essence = 6, magic = 0, reflex = noBonus(), karmaPool = null,
 } = {}) {
   return {
     name,
@@ -126,7 +128,16 @@ function baseActor(name, page, {
       nuyen: 0,
       karma: 0,
       totalKarma: 0,
+      /* ⚠ **`karmaPool` DEFAULTED TO 0 AND `??` NEVER FELL THROUGH**, so every one of the 62
+       * shipped with an empty Karma Pool while the book's number sat in `notes` as prose.
+       * `0` is not nullish, so `0 ?? karma` is 0 — always. The default is `null` now.
+       * Fixed 2026-09-01; the shipped pack was repaired by
+       * `tools/patch-johnson-contacts.mjs` rather than by re-running this. */
       karmaPool: karmaPool ?? karma ?? 0,
+      /* ⚠ The header used to say PR had no equivalent system field. It does now —
+       * `professionalRating`, added for TODO 83. The citation still carries it as prose so
+       * the note stays a faithful transcription of the book's line. */
+      professionalRating: pr ?? 0,
       notes: cite(page, pr, karma),
       attributes: {
         body: attr(body),
@@ -1779,7 +1790,16 @@ const CONTACTS = [
     // source and was not legible in the extracted scan — only the tail of its
     // block (Knowledge Skills onward) survived. Metatype/attributes left at
     // schema defaults; skills/cyberware/gear below are verbatim from source.
-    ...baseActor('Metroplex Guardsman', 63, { metatype: 'elf', karma: null }),
+    /* ⚠ **This record was a stub**: metatype `elf`, no PR, no karma, and every attribute
+     * left at the function's default of 3. The book (p.63) gives Dwarf, `B Q S I W C E R PR
+     * = 4 4 5 3 4 2 4.3 3 3` and `Dice Pools: Combat 5, Karma 2`. Corrected 2026-09-01.
+     * ⚠ Essence 4.3 implies cyberware this entry does not list; left unstated rather than
+     * inventing an implant to carry the cost. */
+    ...baseActor('Metroplex Guardsman', 63, {
+      metatype: 'dwarf', pr: 3, karma: 2,
+      body: 4, quickness: 4, strength: 5, intelligence: 3, willpower: 4, charisma: 2,
+      essence: 4.3,
+    }),
     items: [
       skill('City Knowledge', 5, 'intelligence', 'knowledge'),
       skill('Matrix Games', 3, 'intelligence', 'knowledge'),
@@ -1975,8 +1995,14 @@ const CONTACTS = [
   // ── p.67 — Essential Services: Workers (cont.) ───────────────────────────
   {
     ...baseActor('Dock Worker', 67, {
-      metatype: 'troll', pr: 2, karma: null,
-      body: 10, quickness: 4, strength: 10, charisma: 3, intelligence: 3, willpower: 2,
+      /* ⚠ Willpower and Charisma were TRANSPOSED. The book's column order is
+       * `B Q S I W C E R PR`, and p.67 reads `10 (11) 4 10 3 3 2 6 3 2` — so W3, C2, not
+       * W2, C3. Corrected 2026-09-01.
+       * ⚠ Body is printed `10 (11)`. This file's stated convention is to use the effective
+       * value, but Essence 6 means no cyberware is paying for it, so the source of the +1 is
+       * unclear and the base is left at 10 rather than guessed. */
+      metatype: 'troll', pr: 2, karma: 2,
+      body: 10, quickness: 4, strength: 10, intelligence: 3, willpower: 3, charisma: 2,
       essence: 6,
     }),
     items: [

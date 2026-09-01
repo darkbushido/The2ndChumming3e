@@ -65,6 +65,41 @@ const SOURCE_CORRECTIONS = {
   'Dock Worker':         { professionalRating: 2, karmaPool: 2 },
 };
 
+/**
+ * Data-entry errors in the ORIGINAL GENERATOR, corrected against the book.
+ *
+ * ⚠ **The generator is `scripts/macros/populate-mr-johnsons-contacts.js` and it is fixed too.**
+ * Both have to change: the macro so a future re-populate does not reintroduce these, and the
+ * pack because re-running the macro means rebuilding all 62 inside Foundry, which is a far
+ * bigger operation than correcting two records in place.
+ *
+ * ⚠ **The two bad records are exactly the two whose NOTES were incomplete.** That is not a
+ * coincidence — both were entered hastily — and it is the reason to suspect others. A full
+ * audit of all 62 against p.36-67 is TODO 84; this fixes only what has been verified.
+ *
+ *   Metroplex Guardsman, p.63 — shipped as an `elf` with every attribute at the generator's
+ *     default of 3 and Essence 6. The book gives **Dwarf**, `B Q S I W C E R PR =
+ *     4 4 5 3 4 2 4.3 3 3`. Effectively an unentered record.
+ *   Dock Worker, p.67 — Willpower and Charisma **transposed**. The book's column order is
+ *     `B Q S I W C E R PR` and p.67 reads `10 (11) 4 10 3 3 2 6 3 2`: W3, C2.
+ *
+ * ⚠ **Body `10 (11)` is left at 10.** The generator's own convention is to use the effective
+ * value, but Dock Worker's Essence is 6, so nothing is paying for the +1 and its source is
+ * unclear. Not guessed.
+ *
+ * ⚠ **Essence 4.3 on the Guardsman implies cyberware the book's entry does not itemise.** The
+ * value is set; no implant is invented to carry the cost.
+ */
+const DATA_CORRECTIONS = {
+  'Metroplex Guardsman': {
+    metatype: 'dwarf', essence: 4.3,
+    attributes: { body: 4, quickness: 4, strength: 5, intelligence: 3, willpower: 4, charisma: 2 },
+  },
+  'Dock Worker': {
+    attributes: { willpower: 3, charisma: 2 },
+  },
+};
+
 console.log(`Pack:  ${PACK}`);
 console.log(CHECK ? 'Mode:  --check (nothing will be written)\n' : 'Mode:  apply\n');
 
@@ -80,7 +115,7 @@ try {
 }
 
 let patched = 0, already = 0, skipped = 0, noCitation = 0;
-const partial = [], recovered = [];
+const partial = [], recovered = [], corrected = [];
 
 /** Add a sentence inside the note's existing markup, without disturbing what is there. */
 function _appendSentence(html, sentence) {
@@ -125,6 +160,26 @@ for await (const [key, doc] of db.iterator()) {
 
   const changes = {};
   if (notesOut !== notes) changes.notes = notesOut;
+
+  /* Verified transcription errors. Applied unconditionally — unlike PR and Karma Pool these
+   * are not "fill a blank", they are "this value is wrong", and the book is the authority. */
+  const data = DATA_CORRECTIONS[doc.name];
+  if (data) {
+    if (data.metatype && doc.system.metatype !== data.metatype) changes.metatype = data.metatype;
+    for (const [k, v] of Object.entries(data.attributes ?? {})) {
+      const cur = doc.system.attributes?.[k];
+      if (cur && (cur.base !== v || cur.value !== v)) {
+        changes.attributes = { ...(changes.attributes ?? doc.system.attributes),
+                               [k]: { ...cur, base: v, value: v } };
+      }
+    }
+    if (data.essence !== undefined && doc.system.attributes?.essence?.value !== data.essence) {
+      const cur = changes.attributes ?? doc.system.attributes;
+      changes.attributes = { ...cur,
+        essence: { ...cur.essence, value: data.essence } };
+    }
+    if (changes.attributes || changes.metatype) corrected.push(doc.name);
+  }
   // ⚠ Only what the book actually states. An absent value is left at the schema default
   // rather than written as 0 — a stored 0 is indistinguishable from a deliberate one.
   if (professionalRating !== undefined && doc.system.professionalRating !== professionalRating) {
@@ -142,7 +197,9 @@ for await (const [key, doc] of db.iterator()) {
 
   console.log(`  ${doc.name.padEnd(38)} `
     + Object.entries(changes)
-        .map(([k, v]) => k === 'notes' ? 'notes(completed)' : `${k}=${v}`).join('  '));
+        .map(([k, v]) => k === 'notes' ? 'notes(completed)'
+                       : k === 'attributes' ? 'attributes(corrected)'
+                       : `${k}=${v}`).join('  '));
   patched++;
   if (CHECK) continue;
 
@@ -160,6 +217,11 @@ if (recovered.length) {
   console.log('\n✔ Recovered from the source PDF, where the shipped note was incomplete '
     + `(${recovered.length}):`);
   recovered.forEach(r => console.log(`  ${r}`));
+}
+if (corrected.length) {
+  console.log('\n✔ Transcription errors corrected against the book '
+    + `(${corrected.length}) — see DATA_CORRECTIONS:`);
+  corrected.forEach(c => console.log(`  ${c}`));
 }
 if (partial.length) {
   console.log(`\n⚠ Incomplete in the source book (${partial.length}) — the fields the book does `

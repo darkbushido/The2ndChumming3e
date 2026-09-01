@@ -26,7 +26,7 @@ independent.
 | 🔴 Confirmed bugs, still open | **73** · **74** *(**71** · **72** · **80** · **81** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **4** · **30** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
-| 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **83** |
+| 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **83** · **84** |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
 | 🧹 Housekeeping | 1 · 6 |
 | ✅ Done — kept for the record | **2** · **5** · **8** · **10** · 13 · **40** · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
@@ -5255,6 +5255,81 @@ anyone's notes; only the citation makes it this book's data.
 at 0 (the pre-0.4.5.7 default) and 1 (the current one) but never above — several contacts
 legitimately have a Pool of 1, so 1 cannot be distinguished from a GM's choice. Above 1 can only
 be a chosen value.
+
+### The generator explains all of it — 2026-09-01
+
+**The pack is built by `scripts/macros/populate-mr-johnsons-contacts.js`**, which this repo has
+had all along (all 27 `populate-*` macros are present and match upstream bar two we modified).
+Reading it settles what the inventory could only infer:
+
+⚠ **The data was STRUCTURED the whole time.** Each contact is declared
+`baseActor('Yakuza Elder', 53, { metatype: 'human', pr: 3, karma: 10, … })` and a `cite(page,
+pr, karma)` helper *stringifies* it into the note. The prose parsed above is a rendering of
+real arguments — not a transcription somebody typed.
+
+⚠ **The Karma Pool gap is a `??` default-parameter bug**, and it is worth remembering:
+
+```js
+karmaPool = 0,                        // ← the default
+karmaPool: karmaPool ?? karma ?? 0,   // ← 0 is NOT nullish, so karma NEVER reaches the field
+```
+
+Every one of the 62 shipped with an empty Karma Pool while its own note stated the number.
+`null` is the default now.
+
+⚠ **PR had nowhere to go, and the generator says so in its header** — *"has no equivalent
+system field; it's recorded verbatim in notes"*. It writes `professionalRating` now.
+
+⚠ **Both files had to be fixed.** The macro so a re-populate does not reintroduce the bugs, and
+the pack because re-running the macro rebuilds all 62 inside Foundry — far bigger than
+correcting records in place.
+
+⚠ It also calls PR the *"Professional/Connection Rating"*, which is a live question for
+[#82](#82): if PR is a connection rating, it and `contact.connection` may be the same number.
+
+<a id="84"></a>
+## 84. Audit all 62 Little Black Book contacts against the book — *p.36-67*
+
+**Raised 2026-09-01, while fixing [#83](#83).** Two of the 62 carried real data-entry errors,
+and **they were exactly the two whose notes were incomplete**. That is not a coincidence — both
+were entered hastily — and it is the reason to suspect the other 60.
+
+| Record | Shipped | The book (p.63 / p.67) |
+|---|---|---|
+| Metroplex Guardsman | `elf`, every attribute **3**, Essence 6, no PR, no Karma Pool | **Dwarf**, `B Q S I W C E R PR = 4 4 5 3 4 2 4.3 3 3`, Karma Pool 2 |
+| Dock Worker | W2 C3 | **W3 C2** — transposed |
+
+Both are corrected in the generator and in both copies of the pack. **The other 60 are
+unverified.**
+
+### Why it is worth doing, and cheap
+
+The book's stat block is rigidly formatted and machine-readable — `pdftotext -raw` gives:
+
+```
+Metatype: Ork
+B Q S I W C E R PR
+5 4 6 3 3 3 6 3 2
+INIT: 3 + 1D6
+Dice Pools: Combat 5, Karma 3
+```
+
+⚠ **The column order is `B Q S I W C`** — Intelligence and Willpower before Charisma. That is
+what the Dock Worker slip was, and it is the error a hand-transcriber makes repeatedly.
+
+⚠ **Body may carry a parenthetical** (`10 (11)`), which shifts every following token. Any
+parser must handle it or it will mis-assign the whole row.
+
+So: extract all 62 rows, compare against `baseActor(...)` in the generator, report mismatches.
+A one-off tool, the same shape as `tools/patch-johnson-contacts.mjs`.
+
+⚠ **Report, do not auto-apply.** The generator makes deliberate judgement calls — effective
+values over parentheticals, consolidated cyberware sized to hit the printed Essence — so a
+mismatch is not automatically an error. A human decides.
+
+⚠ **Dock Worker's Body `10 (11)` is a live example**: the file's convention says use the
+effective value, but its Essence is 6, so nothing pays for the +1 and the source is unclear.
+Left at 10 rather than guessed.
 
 ### Still open
 
