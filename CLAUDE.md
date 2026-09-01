@@ -2125,6 +2125,35 @@ button so the HUD never sprawls. (`runDrivingTest` warns if the vehicle has no l
 
 ---
 
+## Creating documents — `sr3e.actor.create`  · TODO 71
+
+**`Actor.create` requires `ACTOR_CREATE`, which the base Player role does not have.** A sheet
+calling it directly works for the GM and throws for everyone else — and since the buttons render
+unconditionally, it reads as a broken feature rather than a permission problem.
+
+Three sites did exactly that, and **only one was ever reported**: the Vehicles tab's add button,
+plus the "deploy template" button on *both* the character and vehicle sheets. The latter two
+were found the moment `tests/gm-writes.test.mjs` existed — a template is usually GM-owned, so a
+player rarely reaches one.
+
+- **`sr3e.actor.create`** takes a compendium entry, a blank vehicle, or **an existing actor to
+  copy**, and grants the requester `OWNER`.
+- **`sr3e.vehicle.link`** attaches an existing vehicle to a driver, and grants ownership.
+
+⚠ **The verb is `actor.create`, not `vehicle.create`** — template deploy copies characters and
+NPCs too, and a vehicle-shaped verb would have left both of those sites behind.
+
+⚠ **One verb rather than three, because the ownership grant is what gets forgotten**, and it
+fails *differently*: the actor is created, appears on the player's sheet, and then refuses to
+roll. That reads as a second bug.
+
+⚠ **Delete `_stats` when copying an actor.** It carries `compendiumSource`, which `preCreateActor`
+reads to set `isTemplate` — copy it and every deployed template is a template again. The flag is
+cleared after creation too, since that hook runs on the GM's client and beats the payload.
+
+⚠ **`tests/gm-writes.test.mjs` is a source-level invariant**, like `explosion-carry` and
+`pool-spend`: reproducing this behaviourally needs a live world, two clients and a non-GM user.
+
 ## Two-corner cards — each side edits only its own half
 
 Eight opposed-test cards (melee · astral · contested · cybercombat · MIJI · and the three

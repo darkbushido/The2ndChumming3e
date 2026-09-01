@@ -2621,7 +2621,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             <span>Vehicle</span><span>Stats</span><span class="col-sm">Mode</span>
            </div>${rows}`}
       <div style="display:flex;gap:8px;margin-top:8px">
-        <button type="button" class="btn-add" data-action="createLinkVehicle">+ Create &amp; Assign</button>
+        <button type="button" class="btn-add" data-action="createLinkVehicle">+ Add Vehicle</button>
       </div>
     </div>`;
   }
@@ -3867,31 +3867,59 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     actor?.sheet.render({ force: true });
   }
 
+  /**
+   * Create, or link, a vehicle for this character · TODO 71
+   *
+   * ⚠ **Every write here relays through the GM.** `Actor.create` needs `ACTOR_CREATE`, which
+   * the base Player role does not have, so this button rendered for everyone and threw for
+   * everyone but the GM — the last authoritative write in the system still running on the
+   * clicking client. `sr3e.vehicle.create` / `sr3e.vehicle.link` are the intent verbs.
+   *
+   * ⚠ **Linking an EXISTING vehicle is the option that was missing entirely.** The dialog only
+   * ever offered "blank" or "from a compendium", so a GM who had already built the team's
+   * Bulldog could not hand it to the rigger from the rigger's sheet at all. The link lives on
+   * the vehicle (`system.driverActorId`), so the only route was to open the vehicle and set its
+   * driver there — which is why this read as broken rather than inverted.
+   */
   static async _onCreateLinkVehicle(_ev, _target) {
-    // Build compendium options from Actor packs (vehicles and drones)
-    const vehiclePacks = game.packs.filter(p => p.metadata.type === 'Actor');
-    const packGroups = [];
-    for (const pack of vehiclePacks) {
-      const index = await pack.getIndex();
-      const entries = index.filter(e => e.type === 'vehicle');
-      if (entries.length) {
-        const opts = entries.map(e => `<option value="${pack.collection}|${e._id}">${e.name}</option>`).join('');
-        packGroups.push(`<optgroup label="${pack.metadata.label}">${opts}</optgroup>`);
-      }
-    }
-    const compendiumOpts = packGroups.join('');
+    const actor = this.actor;
 
-    let choice = null;  // 'packCollection|docId' if from compendium, null if blank
+    /* Existing world vehicles, minus the ones already driven by this character and minus
+     * compendium templates (the `preCreateActor` hook flags those so they stay out of
+     * targeting and selection dialogs — see CLAUDE.md). */
+    const existing = game.actors
+      .filter(a => a.type === 'vehicle'
+                && !a.getFlag('The2ndChumming3e', 'isTemplate')
+                && a.system?.driverActorId !== actor.id)
+      .sort((a, b) => a.name.localeCompare(b.name));
+    const existingOpts = existing.length
+      ? `<optgroup label="Link an existing vehicle">${existing
+          .map(a => `<option value="link|${a.id}">${a.name}</option>`).join('')}</optgroup>`
+      : '';
+
+    // Compendium entries, grouped by pack.
+    const packGroups = [];
+    for (const pack of game.packs.filter(p => p.metadata.type === 'Actor')) {
+      const entries = (await pack.getIndex()).filter(e => e.type === 'vehicle');
+      if (!entries.length) continue;
+      const opts = entries
+        .map(e => `<option value="pack|${pack.collection}|${e._id}">${e.name}</option>`).join('');
+      packGroups.push(`<optgroup label="${pack.metadata.label}">${opts}</optgroup>`);
+    }
+
+    let source = null;
     let name   = null;
+    let ok     = false;
+
     await foundry.applications.api.DialogV2.wait({
-      window: { title: 'Create & Link Vehicle' },
+      window: { title: 'Add a Vehicle' },
       content: `
         <div style="padding:8px 0">
           <label style="display:block;margin-bottom:6px">Source:
-            <select id="veh-src" style="width:100%;margin-top:4px"
-                    onchange="document.getElementById('veh-blank').style.display=this.value?'none':'block'">
-              <option value="">-- Create blank --</option>
-              ${compendiumOpts}
+            <select id="veh-src" style="width:100%;margin-top:4px">
+              ${existingOpts}
+              <option value="">— Create blank —</option>
+              ${packGroups.join('')}
             </select>
           </label>
           <div id="veh-blank" style="margin-top:6px">
@@ -3901,34 +3929,60 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           </div>
         </div>`,
       buttons: [
-        { label: 'Create', action: 'create', default: true,
+        { label: 'Add', action: 'add', default: true,
           callback: (_e, _b, d) => {
-            const el  = d.element;
-            const src = el.querySelector('#veh-src')?.value ?? '';
-            if (src) { choice = src; }
-            else     { name   = el.querySelector('#veh-name')?.value.trim() || 'New Vehicle'; }
+            ok     = true;
+            source = d.element.querySelector('#veh-src')?.value ?? '';
+            name   = d.element.querySelector('#veh-name')?.value.trim() || 'New Vehicle';
           } },
         { label: 'Cancel', action: 'cancel' },
       ],
+      /* ⚠ A `render` callback, NOT the inline `onchange="document.getElementById(…)"` this
+       * dialog used to carry — inline handlers reaching for `document` do not work in the
+       * ApplicationV2 rendering context (CLAUDE.md). Per-dialog, so two of these open at once
+       * cannot cross-wire. */
+      render: (_event, dialog) => {
+        const el    = dialog.element;
+        const src   = el.querySelector('#veh-src');
+        const blank = el.querySelector('#veh-blank');
+        const sync  = () => { if (blank) blank.style.display = src.value ? 'none' : 'block'; };
+        src?.addEventListener('change', sync);
+        sync();
+      },
     });
 
-    let newActor;
-    if (choice) {
-      const [collection, docId] = choice.split('|');
-      const pack = game.packs.get(collection);
-      const doc  = await pack.getDocument(docId);
-      const data = doc.toObject();
-      delete data._id;
-      foundry.utils.setProperty(data, `flags.The2ndChumming3e.isTemplate`, false);
-      newActor = await Actor.implementation.create(data);
-    } else if (name) {
-      newActor = await Actor.implementation.create({ name, type: 'vehicle' });
-    } else {
+    if (!ok) return;
+
+    const { SR3EQuery } = game.sr3e;
+    let result;
+    try {
+      if (source?.startsWith('link|')) {
+        result = await SR3EQuery.asGM('sr3e.vehicle.link',
+          { vehicleId: source.slice(5), driverActorId: actor.id });
+      } else {
+        result = await SR3EQuery.asGM('sr3e.actor.create', {
+          driverActorId: actor.id,
+          // 'pack|<collection>|<docId>' → the verb wants '<collection>|<docId>'.
+          source: source?.startsWith('pack|') ? source.slice(5) : null,
+          name:   source ? null : name,
+        });
+      }
+    } catch (err) {
+      console.error('SR3E | vehicle create/link failed:', err);
+      ui.notifications.error('Could not add the vehicle — is a GM connected?');
       return;
     }
+    if (!result?.uuid) return;
 
-    await newActor.update({ 'system.driverActorId': this.actor.id });
-    newActor.sheet.render(true);
+    /* ⚠ Re-render THIS sheet. The vehicle list is built from `game.actors`, and the actor that
+     * changed is the vehicle, not this character — so nothing would otherwise tell this sheet
+     * to redraw and the new row would not appear until the next unrelated render. */
+    this.render(false);
+
+    // Opening the sheet is a convenience the GM gets; a player may not own it yet on their
+    // client at the instant the query returns.
+    const created = await fromUuid(result.uuid);
+    if (created?.isOwner) created.sheet.render(true);
   }
 
   static async _onToggleVehicleMode(_ev, target) {
@@ -3976,15 +4030,28 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     await this.actor.setFlag('The2ndChumming3e', 'isTemplate', false);
   }
 
+  /**
+   * Copy this template into a live actor · TODO 71
+   *
+   * ⚠ **Relays through the GM.** `Actor.create` needs `ACTOR_CREATE`, which the base Player
+   * role does not have. Same defect as "+ Add Vehicle" above, and it was found by
+   * `tests/gm-writes.test.mjs` rather than from play — a template is usually GM-owned, so a
+   * player rarely reaches this button and nobody had reported it.
+   */
   static async _onDeployTemplate(_ev, _target) {
-    const actor = this.actor;
-    const data  = actor.toObject();
-    delete data._id;
-    delete data._stats;
-    data.name = `${data.name} (copy)`;
-    foundry.utils.setProperty(data, 'flags.The2ndChumming3e.isTemplate', false);
-    const newActor = await Actor.create(data);
-    newActor.sheet.render(true);
+    let result;
+    try {
+      result = await game.sr3e.SR3EQuery.asGM('sr3e.actor.create', {
+        fromActorId: this.actor.id,
+        name:        `${this.actor.name} (copy)`,
+      });
+    } catch (err) {
+      console.error('SR3E | template deploy failed:', err);
+      ui.notifications.error('Could not deploy the template — is a GM connected?');
+      return;
+    }
+    const created = result?.uuid ? await fromUuid(result.uuid) : null;
+    if (created?.isOwner) created.sheet.render(true);
   }
 
   /* ------------------------------------------------------------------ */

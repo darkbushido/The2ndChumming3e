@@ -23,10 +23,10 @@ independent.
 |---|---|
 | 🔵 In progress | *(none)* |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **71** · **73** · **74** *(**72** · **80** · **81** done)* |
+| 🔴 Confirmed bugs, still open | **73** · **74** *(**71** · **72** · **80** · **81** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **4** · **30** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
-| 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** |
+| 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **83** |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
 | 🧹 Housekeeping | 1 · 6 |
 | ✅ Done — kept for the record | **2** · **5** · **8** · **10** · 13 · **40** · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
@@ -4372,7 +4372,7 @@ category channel). Neither was touched.
 ---
 
 <a id="71"></a>
-## 71. Players cannot add a vehicle to their character sheet — **CONFIRMED**
+## 71. ✅ Players cannot add a vehicle to their character sheet — **DONE 2026-09-01**
 
 **Reported from play 2026-08-30.** The Vehicles tab offers **+ Create & Assign**
 (`SR3EActorSheet.js:2466`), the dialog opens, the player picks a drone, presses Create — and
@@ -4432,6 +4432,42 @@ ethos is that players drive their own sheet; the GM is the write authority, not 
 ⚠ Check the **Matrix tab's rigger EW block** and the Token-HUD vehicle tools for the same
 assumption while in there — they read `driverActorId` (`:1489`, `:2416`, `:3447`, `:3493`) but
 do not create, so they are probably fine.
+
+---
+
+### What landed — 0.4.5.10
+
+All three parts, plus **two more sites of the same bug that nobody had reported**.
+
+1. **`sr3e.actor.create`** — a GM-relayed intent verb taking one of three sources: a compendium
+   entry, a blank vehicle, or **an existing actor to copy**. It grants the requester `OWNER`.
+2. **`sr3e.vehicle.link`** — attaches an existing vehicle to a driver and grants ownership.
+3. **The dialog offers existing world vehicles**, filtered against the `isTemplate` flag and
+   against vehicles this character already drives. Relabelled "+ Add Vehicle", since "Create &
+   Assign" no longer describes it.
+
+⚠ **The verb is `actor.create`, not `vehicle.create`, and that matters.** `tests/gm-writes.test.mjs`
+— written to pin the reported fix — immediately failed on **two "deploy template" buttons**,
+one on the character sheet and one on the vehicle sheet, both calling `Actor.create` directly.
+Neither had been reported, because a template is usually GM-owned so a player rarely reaches
+one. A vehicle-shaped verb would have left both behind.
+
+⚠ **One verb rather than three, because the ownership grant is the half that gets forgotten** —
+and its failure mode is the reported bug's twin: the actor is created, appears on the player's
+sheet, and refuses to roll.
+
+⚠ **`_stats` is deleted when copying an actor.** It carries `compendiumSource`, which is what
+`preCreateActor` reads to set `isTemplate` — copy it and every deployed template is a template
+again. The flag is also cleared *after* creation, because that hook runs on the GM's client and
+wins the race against the payload.
+
+⚠ **The dialog's inline `onchange="document.getElementById(…)"` is gone**, replaced by
+`DialogV2.wait`'s `render` option. Inline handlers reaching for `document` do not work in the
+ApplicationV2 rendering context (CLAUDE.md), so it was a live failure, not style.
+
+⚠ **`tests/gm-writes.test.mjs` is a SOURCE-level invariant**, like `explosion-carry` and
+`pool-spend`. Reproducing this behaviourally needs a live world, two connected clients and a
+non-GM user; the defect is a shape in the source, so the source is what is checked.
 
 ---
 
@@ -5107,4 +5143,58 @@ migrate from. A GM should set Good Karma, Total Karma and the Pool by hand once.
 
 **Coverage:** 18 new assertions in `tests/karma.test.mjs` (88 total) and a mutant reproducing
 the flat-twentieth bug. 56/56 mutants.
+
+<a id="82"></a>
+## 82. Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*
+
+**Raised 2026-09-01.** Gear is acquired by hand today: a GM decides, a player edits `nuyen` and
+drags an item on. SR3 has actual rules for this and none of them are implemented.
+
+The shape wanted is the combat one — a dialog that gathers the modifiers, a roll, a chat card
+that says what happened and leaves the decision to the GM.
+
+### What the rules are
+
+Every gear item already ships the two fields this needs: **`availability`** (e.g. `8/14 days`)
+and **`streetIndex`**, alongside `cost`. Nothing reads either. An Availability Test is an
+opposed/threshold test against the availability rating, with the time code setting how long it
+takes, and the Street Index multiplying price outside normal channels.
+
+⚠ **Read the book before designing.** Availability, Street Index and the legality codes
+interact, and the numbers are already sitting in the packs — so this is mostly a matter of
+consuming data that is present rather than authoring any.
+
+### Contacts are the interesting half
+
+The player's **contacts** should modify this — a Fixer is not an Armourer is not a Talismonger,
+and a Level 3 contact is not a Level 1. The contact type gates *what* they can source, the
+level/quality gates *how well*. That is the part with no obvious existing model in the system
+and the part worth designing first.
+
+⚠ **Check what `contact` items actually carry** before assuming a level or type field exists.
+
+⚠ **Related: [#79](#79)'s ledger.** A purchase is the single best reason to want a nuyen audit
+trail, and a buy flow is its most natural writer. Neither blocks the other, but if the ledger
+lands first this should write to it rather than editing `system.nuyen` in place.
+
+<a id="83"></a>
+## 83. Mr Johnson's Little Black Book
+
+**Raised 2026-09-01, and named as the next thing to work on.**
+
+`sr3e-mr-johnsons-contacts` is one of exactly **three system packs** — the packs with no `book`
+flag, which no source-book toggle can hide (the other two are `sr3e-skills` and
+`sr3e-example-characters`). So the content ships to every table by design.
+
+⚠ **Inventory the pack before designing anything.** What it holds, what item type those
+documents are, and which fields are populated determines whether this is a UI on top of
+existing data or a data job first.
+
+⚠ **Establish what "set up" means here** — the request as recorded is a direction, not a spec.
+Worth settling before building: is this a GM-facing directory of Johnsons and their jobs, a
+player-facing contact list, or the run-generation surface a Johnson implies?
+
+⚠ **Sequencing with [#82](#82).** Both are about contacts. If gear-buying is going to read
+contact type and level, the contact data model wants to be settled once, by whichever of these
+lands first, rather than twice.
 

@@ -1111,14 +1111,28 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     await this.actor.setFlag('The2ndChumming3e', 'isTemplate', false);
   }
 
+  /**
+   * Copy this template into a live vehicle · TODO 71
+   *
+   * ⚠ **Relays through the GM.** `Actor.create` needs `ACTOR_CREATE`, which the base Player
+   * role does not have, so this threw for anyone but the GM — the same defect as the character
+   * sheet's "+ Add Vehicle", found by `tests/gm-writes.test.mjs` rather than from play. The
+   * verb also grants the requester ownership, which a bare create does not.
+   */
   static async _onDeployTemplate(_ev, _target) {
-    const data = this.actor.toObject();
-    delete data._id;
-    delete data._stats;
-    data.name = `${data.name} (copy)`;
-    foundry.utils.setProperty(data, 'flags.The2ndChumming3e.isTemplate', false);
-    const newActor = await Actor.create(data);
-    newActor.sheet.render(true);
+    let result;
+    try {
+      result = await game.sr3e.SR3EQuery.asGM('sr3e.actor.create', {
+        fromActorId: this.actor.id,
+        name:        `${this.actor.name} (copy)`,
+      });
+    } catch (err) {
+      console.error('SR3E | template deploy failed:', err);
+      ui.notifications.error('Could not deploy the template — is a GM connected?');
+      return;
+    }
+    const created = result?.uuid ? await fromUuid(result.uuid) : null;
+    if (created?.isOwner) created.sheet.render(true);
   }
 
   static async _onSetAutoMode(_ev, _target) {

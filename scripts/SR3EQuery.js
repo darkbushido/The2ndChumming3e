@@ -412,6 +412,114 @@ export class SR3EQuery {
     });
 
     /**
+     * Create an actor on the GM's client, optionally linking it as a driver · TODO 71
+     *
+     * ⚠ **The only document-CREATING verb in this file, and it exists because creation is a
+     * permission a player does not have.** `Actor.create` requires `ACTOR_CREATE`, which the
+     * base Player role lacks, so the Vehicles tab's "+ Create & Assign" button rendered for
+     * everyone and threw for everyone but the GM. This path predates the query layer and was
+     * the last authoritative write in the system still running on the clicking client.
+     *
+     * ⚠ **Ownership is the half that is easy to forget.** Creating the actor is not enough —
+     * without an ownership grant the vehicle appears on the player's sheet and refuses to
+     * roll, which looks like a *second* bug. The requester is given OWNER.
+     *
+     * ⚠ **`isTemplate` is force-cleared on a compendium copy.** The `preCreateActor` hook in
+     * `sr3e.js` flags anything with a `_stats.compendiumSource` as a template so it stays out
+     * of targeting dialogs — correct for the pack entry, wrong for a working vehicle made
+     * from one. The flag is set in the payload AND after creation, because the hook runs on
+     * the GM's client and wins the race against the payload.
+     *
+     * ⚠ **THREE call sites had this bug, and only one was reported.** The character sheet's
+     * "+ Add Vehicle" came from play; both "deploy template" buttons — on the character sheet
+     * and the vehicle sheet — were found by `tests/gm-writes.test.mjs` the moment it existed.
+     * That is why this is `actor.create` and not `vehicle.create`: template deploy copies
+     * characters and NPCs too, and a vehicle-shaped verb would have left those two behind.
+     *
+     * ⚠ **One verb, because the ownership grant is the half that gets forgotten.** Three
+     * variants would each have to remember it; the reported bug's twin is a vehicle that
+     * appears on a player's sheet and refuses to roll.
+     *
+     * @param {string} [driverActorId]  the character to link as driver, if any
+     * @param {string} [source]         `'packCollection|docId'`, or omitted
+     * @param {string} [fromActorId]    an existing actor to copy (template deploy)
+     * @param {string} [name]           name override, and the name for a blank vehicle
+     * @returns {{uuid: string, id: string}}
+     */
+    CONFIG.queries['sr3e.actor.create'] = async ({ rid, driverActorId, source, fromActorId,
+                                                     name, _requesterId }) =>
+      SR3EQuery.once(rid, async () => {
+        SR3EQuery.assertActiveGM();
+
+        let data;
+        if (fromActorId) {
+          const from = game.actors.get(fromActorId);
+          if (!from) throw new Error(`SR3E | vehicle.create: unknown actor '${fromActorId}'`);
+          data = from.toObject();
+          delete data._id;
+          // ⚠ `_stats` carries `compendiumSource`, which is what `preCreateActor` reads to flag
+          // a document as a template. Copying it makes every deployed copy a template again.
+          delete data._stats;
+          if (name) data.name = name;
+        } else if (source) {
+          const [collection, docId] = String(source).split('|');
+          const pack = game.packs.get(collection);
+          if (!pack) throw new Error(`SR3E | vehicle.create: unknown pack '${collection}'`);
+          const doc = await pack.getDocument(docId);
+          if (!doc) throw new Error(`SR3E | vehicle.create: '${docId}' not in ${collection}`);
+          data = doc.toObject();
+          delete data._id;
+        } else {
+          data = { name: String(name || 'New Vehicle').trim() || 'New Vehicle', type: 'vehicle' };
+        }
+
+        foundry.utils.setProperty(data, 'flags.The2ndChumming3e.isTemplate', false);
+        // ⚠ Only when asked. A template deploy of a CHARACTER must not acquire a driver field.
+        if (driverActorId) foundry.utils.setProperty(data, 'system.driverActorId', driverActorId);
+
+        // Grant the requester OWNER so the vehicle they just made is theirs to drive.
+        if (_requesterId && _requesterId !== game.user.id) {
+          data.ownership = { ...(data.ownership ?? {}),
+            [_requesterId]: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER };
+        }
+
+        const created = await Actor.implementation.create(data);
+        if (!created) throw new Error('SR3E | vehicle.create: creation returned nothing');
+
+        // ⚠ AFTER creation as well: `preCreateActor` sets isTemplate from the compendium
+        // source on this client, overwriting what the payload asked for.
+        if (created.getFlag('The2ndChumming3e', 'isTemplate')) {
+          await created.setFlag('The2ndChumming3e', 'isTemplate', false);
+        }
+        return { uuid: created.uuid, id: created.id };
+      });
+
+    /**
+     * Link an EXISTING vehicle to a driver · TODO 71
+     *
+     * ⚠ **Separate from `actor.set` because it also grants ownership**, which that verb has no
+     * business doing. A GM who has already built the team's Bulldog can hand it to the rigger
+     * from the rigger's own sheet; before this the link could only be made from the vehicle
+     * side, which is why the feature read as missing rather than inverted.
+     */
+    CONFIG.queries['sr3e.vehicle.link'] = async ({ rid, vehicleId, driverActorId, _requesterId }) =>
+      SR3EQuery.once(rid, async () => {
+        SR3EQuery.assertActiveGM();
+        const vehicle = game.actors.get(vehicleId);
+        if (!vehicle || vehicle.type !== 'vehicle') {
+          throw new Error(`SR3E | vehicle.link: '${vehicleId}' is not a vehicle`);
+        }
+        const changes = { 'system.driverActorId': driverActorId ?? '' };
+        if (_requesterId && _requesterId !== game.user.id
+            && !vehicle.testUserPermission(game.users.get(_requesterId), 'OWNER')) {
+          changes.ownership = { ...(vehicle.ownership ?? {}),
+            [_requesterId]: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER };
+        }
+        await SR3EQueue.run(vehicle.uuid, () => vehicle.update(changes));
+        return { uuid: vehicle.uuid, id: vehicle.id };
+      });
+
+    /**
      * Apply damage boxes. Relays the DELTA; the GM reads current/max and does
      * the `Math.min(max, current + boxes)` against live data.
      */
