@@ -1015,7 +1015,21 @@ export const SR3E = {
    * fixed by ordering — it is applied with every other cyber bonus, before Reaction exists.
    * The excluded portion is tracked and subtracted in the derivation instead.
    */
-  quicknessNotForReaction: [/^move-?by-?wire/i],
+  quicknessNotForReaction: [
+    /^move-?by-?wire/i,
+    /* ⚠ **Muscle Replacement carries the identical carve-out, in identical words** · *SR3*:
+     * "Add the rating of the muscle replacement to Strength and Quickness; **this change does
+     * not affect Reaction**." Missing until 2026-09-01, and reachable by anyone dragging the
+     * item onto a character — the shipped `Muscle Replac. [1..4]` genuinely grant +N Quickness.
+     *
+     * ⚠ **Matches the ABBREVIATION the packs actually use.** They ship as `Muscle Replac. [1]`,
+     * not "Muscle Replacement 1"; a pattern written from the book's spelling would match
+     * nothing at all. The stem covers both.
+     *
+     * ⚠ **`Muscle Augmentation` must NOT match** — that is M&M bioware granting Strength only,
+     * a different implant, and it has no Quickness to exclude. */
+    /^muscle\s*replac/i,
+  ],
 
   /**
    * Cyber/bioware granting dice to specific NAMED skills · TODO 4

@@ -1275,8 +1275,17 @@ Move-by-wire is passive and lands with every other cyber bonus, before Reaction 
 exempt portion accumulates into `cyberBonus.quiNotForReaction` and is subtracted at the
 derivation. Registry: `SR3E.quicknessNotForReaction`.
 
-⚠ **The carve-out is this implant's, not Quickness cyberware at large** — muscle augmentation
-feeds Reaction normally. Same shape as Enhanced Articulation above.
+⚠ **The carve-out is NAMED, not general** — it belongs to specific implants, and
+`SR3E.quicknessNotForReaction` is the registry. **Muscle Replacement shares it**, in the book's
+identical words: *"Add the rating of the muscle replacement to Strength and Quickness; this
+change does not affect Reaction."* Muscle **Augmentation** does not — that is M&M bioware
+granting Strength only. Same shape as Enhanced Articulation above.
+
+⚠ **The packs ABBREVIATE cyberware names**, so a pattern written from the book's spelling can
+match nothing. `Muscle Replacement` ships as **`Muscle Replac. [1..4]`** and `Reaction Enhancer`
+as **`Reaction Enhance [1..6]`**. I once reported both as "in no pack at all" on the strength of
+a full-name search. **Search a stem, never a full name**, and write registry patterns against
+what actually ships.
 
 ⚠ **The incompatibility is REPORTED, never enforced** (`derived.reactionExclusiveConflict`, warned
 on the Cyber tab). Contrast `reflexBonus`, which picks a winner: there one side is an adept power

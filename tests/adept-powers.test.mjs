@@ -447,11 +447,42 @@ export async function run(t) {
   t.is('…which is one more than it would be without the implant',
     withMbw2.d.combatPool - noMbw.d.combatPool, 1);
 
-  // Another cyberware's Quickness bonus is NOT exempt — the carve-out is move-by-wire's.
+  // Another cyberware's Quickness bonus is NOT exempt — the carve-out is named, not general.
   const musc = { id: 'ma', type: 'bioware', name: 'Muscle Augmentation [2]',
                  system: { bonusQui: 2 } };
   t.is('an ordinary Quickness bonus still feeds Reaction',
     mbwDerive([musc], { quickness: 4, intelligence: 5 }).attr.reaction.value, 5);
+
+  /* ⚠ **Muscle Replacement shares the carve-out** · *SR3*: "Add the rating of the muscle
+   * replacement to Strength and Quickness; **this change does not affect Reaction**." Missing
+   * from the registry until 2026-09-01, and reachable by anyone dragging the item onto a
+   * character — the shipped items genuinely grant +N Quickness.
+   *
+   * ⚠ **The pack ABBREVIATES the name** to `Muscle Replac. [N]`, so a pattern written from the
+   * book's spelling would match nothing. Asserted on the shipped form, not the book's. */
+  const mrepl = (n) => ({ id: `mr${n}`, type: 'cyberware', name: `Muscle Replac. [${n}]`,
+                          system: { bonusQui: n, bonusStr: n } });
+
+  const withMR = mbwDerive([mrepl(2)], { quickness: 4, intelligence: 5 });
+  t.is('Muscle Replacement raises Quickness',        withMR.attr.quickness.value, 6);
+  t.is('…and Strength',                              withMR.attr.strength.value, 6);
+  t.is('…but NOT Reaction — still floor((4+5)/2)',   withMR.attr.reaction.value, 4);
+
+  // The Combat Pool is not carved out, so the boosted Quickness does reach it.
+  t.is('the Combat Pool DOES see it',
+    withMR.d.combatPool, Math.floor((6 + 5 + 4) / 2));
+
+  /* ⚠ The book's own spelling must match too — a GM may type it, and another pack may not
+   * abbreviate. */
+  t.is('the un-abbreviated name is exempt as well',
+    mbwDerive([{ id: 'mr', type: 'cyberware', name: 'Muscle Replacement 2',
+                 system: { bonusQui: 2 } }], { quickness: 4, intelligence: 5 })
+      .attr.reaction.value, 4);
+
+  /* ⚠ **Muscle AUGMENTATION must not be caught by it** — different implant, M&M bioware,
+   * Strength only. Asserted above at reaction 5; restated here as the boundary of the pattern. */
+  t.ok('Muscle Augmentation is NOT treated as Muscle Replacement',
+    mbwDerive([musc], { quickness: 4, intelligence: 5 }).attr.reaction.value === 5);
 
   /* ==== the shipped table, all four rows · M&M p.60 ==== */
   for (const r of [1, 2, 3, 4]) {
