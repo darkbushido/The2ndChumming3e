@@ -5390,14 +5390,17 @@ audited; the tool compares the stat-block row and the Karma Pool line only.
 ## 85. Review `devdrawdiy/sr3e` for functionality we lack
 
 **Raised 2026-09-01.** <https://github.com/devdrawdiy/sr3e> — an independent Shadowrun 3rd
-Edition Foundry system. Read it for features worth having, not for code to lift.
+Edition Foundry system. Read it to find **functionality we are missing**, and write that up.
+
+⚠ **NO CODE MOVES FROM THAT REPO. The maintainer's instruction, 2026-09-01.** The deliverable
+is a documented list of capability gaps — features, flows, rules coverage — not a port, not a
+patch, not a "borrowed" helper. If something there is worth having, it gets designed and built
+here from the rules.
 
 ⚠ **A different project, not our upstream.** Ours forked from `williamdiffey/The2ndChumming3e`
 (still the `upstream` remote). This is a separate lineage, so expect different data shapes,
 different Foundry-version assumptions and different rules interpretations — a disagreement is
-as likely to be *their* reading as a gap in ours.
-
-⚠ **Check the licence before any code moves.** Reading for ideas is free; copying is not.
+as likely to be *their* reading as a gap in ours. Note which, when writing it up.
 
 Worth looking for specifically, since these are our known holes: a gear-acquisition flow
 ([#82](#82)), an action economy ([#48](#48)), a karma/nuyen ledger ([#79](#79)), character
