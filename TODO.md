@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | *(none)* |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **73** · **74** *(**71** · **72** · **80** · **81** done)* |
+| 🔴 Confirmed bugs, still open | **73** · **74** · **88** *(**71** · **72** · **80** · **81** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **4** · **30** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **83** · **84** · **85** · **86** · **87** |
@@ -5746,4 +5746,84 @@ effect — a re-import would then need a name map anyway.
 read it, upstream alignment survives, no migration is needed for existing characters. It does
 not improve what a player SEES in the compendium, which is the part of the ask this would not
 address.
+
+<a id="88"></a>
+## 88. Little Black Book specialisations roll the wrong dice — **CONFIRMED**
+
+**Found 2026-09-01** while checking whether a contact can take an opposed roll against a player.
+**131 of the 741** skills on the 62 contacts carry a specialisation, and every one of them is
+malformed. `system.specialisations[].level` is the **BONUS over the base skill**, so a
+specialised roll uses `rating + level`.
+
+| | Count |
+|---|---:|
+| specialisations in the pack | **131** |
+| …carrying `level: 2` | **131** (all of them) |
+| correct rating, by luck | 55 |
+| **wrong rating** | **45** — from −2 to +5 |
+| **several specialisations collapsed into ONE** | **31** |
+| **rating baked into the displayed name** | **131** |
+
+Examples, printed book value against what the pack rolls:
+
+```
+Instruction 5 (Magic 6)          rolls 7   book 6    +1
+Etiquette 4 (Corporate 8)        rolls 6   book 8    −2
+Conjuring 5 (Summoning 8)        rolls 7   book 8    −1
+Car 6 (Car B/R 3)                rolls 8   book 3    +5
+Computer 5 (Decking 8, Hardware 9)   one spec named "Decking 8, Hardware 9"
+Stealth 3 (Sneaking 5, Theft 6)      one spec named "Sneaking 5, Theft 6"
+```
+
+### The `level: 2` is a system-wide legacy shim, not the generator
+
+`SkillData.migrateData` (`scripts/data/ItemDataModels.js`) converts the legacy
+`specialisation` STRING into the modern array:
+
+```js
+source.specialisations = [{ name: source.specialisation, level: 2 }];
+```
+
+⚠ **So the 2 is fabricated for EVERY skill anywhere carrying a legacy string**, not only these
+contacts. For genuinely unknown legacy data that is defensible — SR3 buys a new specialisation
+at base **+1** and raises it to base **+2**, so 2 is "assume it was raised once". It is still a
+guess being written as though it were data, and it is silent.
+
+⚠ **The contacts make it visible because their strings are the BOOK'S DISPLAY TEXT**, not
+specialisation names. `"Magic 6"` is a name plus a rating; `"Decking 8, Hardware 9"` is two
+specialisations. The shim cannot know that, and dutifully stores the whole string as one name.
+
+⚠ **`Car 6 (Car B/R 3)` is a different mis-parse and the worst single case.** The book prints
+`Car 5, Car B/R 3` as two SIBLING SKILLS; the data entry read the second as a parenthetical
+specialisation of the first. Car Build/Repair is its own skill, and the contact now rolls it at
+8 instead of 3 — while having no Car B/R skill at all.
+
+### What it breaks
+
+Any specialised roll by a contact: the skill dialog offers the specialisation, and
+`SR3EItem.defaultTiers` and the roll paths read `rating + level`. **45 of 131 roll the wrong
+number of dice**, and all 131 display a name with a number stuck on the end.
+
+⚠ **The 55 that are right are right by ACCIDENT** — the book's specialisation happens to be
+base + 2. Nothing protects them; a base rating corrected by [#84](#84) silently moves them.
+
+### Fix
+
+The data is the problem, not the machinery. In `populate-mr-johnsons-contacts.js`:
+
+1. Give `skill()` a structured specialisation — `[{ name, rating }]` — and derive
+   `level = rating − base` at build time rather than defaulting it.
+2. Split the 31 multi-spec strings into separate entries.
+3. Rescue the sibling skills wrongly absorbed as specialisations (at least Car B/R).
+4. Regenerate, then patch both pack copies — `sync:install` never copies packs.
+
+⚠ **Leave `SkillData.migrateData` alone unless it is deliberately revisited.** Its 2 is wrong
+*here* because the input is malformed, but it is the only sensible default for a real legacy
+skill whose specialisation rating was never recorded. Changing it to 1 would silently re-rate
+every legacy specialisation in every existing world.
+
+⚠ **Do not "fix" this by parsing the trailing number out of the name at ROLL time.** That would
+make the display right and leave the stored data wrong, and every other consumer — the karma
+calculator's specialisation costs ([#80](#80)), defaulting, the sheet — would still read the
+bad `level`.
 
