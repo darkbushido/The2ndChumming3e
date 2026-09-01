@@ -5957,11 +5957,65 @@ gear, cyberware and knowledge skills have **not** been checked.
 gear and cyberware were never compared to the book at all. This is the first evidence that the
 skill lists need their own pass, and there is no reason to assume Dock Worker is the only one.
 
-An audit is tractable the same way [#84](#84) was: the book prints `Active Skills:` and
-`Knowledge Skills:` lines in a fixed format, and the generator's `skill()` calls are trivially
-parseable. Report, never auto-apply — the same discipline, for the same reason.
+### Audited 2026-09-01 — `tools/audit-johnson-skills.mjs`
 
-⚠ **Do not fix Dock Worker in isolation.** Fixing one record found by accident, while leaving
-the systematic check undone, produces exactly the false confidence [#84](#84) was written to
-avoid.
+Report checked in at **`audit/johnson-skills-audit.txt`**. Reports, never writes.
+
+## 🔴 49 OF 62 CONTACTS HAVE THE WRONG SKILLS — 130 differences
+
+| | |
+|---|---:|
+| contacts compared | 62 |
+| **clean** | **13** |
+| **with differences** | **49** |
+| skills the book gives and the generator lacks | **55** |
+| skills the generator has and the book does not | **26** |
+| wrong ratings | **31** |
+| wrong or missing specialisations | **18** |
+
+⚠ **The tool was checked before these numbers were believed.** A first run of the attribute
+audit reported 52 of 61 differing and that turned out to be one systematic cause, so three
+records were verified by hand against the page here before reporting: **Taxi Driver comes out
+clean**, and **Bookie** and **Shark Lawyer** are both genuinely wrong. Only **2 of the 130**
+differences involve the bracketed placeholder names the generator uses deliberately, so
+false positives from that source are negligible.
+
+### The errors are not one kind
+
+**Whole lists on the wrong contact.** `Dock Worker` carries `City Services Worker`'s skills —
+Computer, Electronics, Etiquette, Pistols, Card Games, Disco, Firefighting — and is missing
+Intimidation. Not one skill of its own survives.
+
+**Two skills merged into one.** `Shark Lawyer`: the book gives `Interrogation 6, Intimidation 4
+(Verbal 6)`. The generator has `Interrogation 4 (Verbal 6)` — Interrogation's name with
+Intimidation's rating and specialisation, and Intimidation gone.
+
+**Specialisations on the wrong skill.** One contact's `Pistols` carries *Sneaking 5, Hiding 6* —
+those are Stealth's.
+
+**Specialisations silently dropped.** `Bookie`'s `Etiquette 2 (Street 4, Gambling 5)` kept only
+Street; `Stealth (Alertness 4, Sneaking 4)` kept only Sneaking.
+
+**Plain wrong ratings**, in both directions — `Security Systems 5` for the book's 7,
+`Cybertechnology 3` for 5, `Local Bars 4` for 5.
+
+**Whole skills missing** — 55 of them, e.g. `Bookie`'s Psychology 3.
+
+### What this means
+
+⚠ **[#84](#84)'s green result covered attributes ONLY**, and this is the cost of reading it more
+broadly. The stat rows are now right; the skill lists were never checked until now.
+
+⚠ **Gear, cyberware, spells and knowledge-skill lists are STILL unaudited.** Given a 79% failure
+rate on skills, assuming the rest is sound would be unwarranted. [#86](#86)'s conversion will
+surface the cyberware half as a side effect, since a stub that does not match any pack entry has
+to be reported.
+
+⚠ **Fixing this is bigger than [#84](#84)'s rotation.** That was one mechanical transform over
+verified numbers. This is 130 individual differences of at least six distinct kinds, several
+needing a judgement about which of two skills a rating or specialisation belongs to. It wants
+working through page by page, not a `--fix` flag.
+
+⚠ **Do not fix Dock Worker in isolation** — or any single record found by accident. That
+produces exactly the false confidence [#84](#84) exists to avoid.
 

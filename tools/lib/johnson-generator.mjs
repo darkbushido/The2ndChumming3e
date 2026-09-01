@@ -56,7 +56,35 @@ export function parseGenerator(src) {
       // `baseActor` writes `karmaPool: karmaPool ?? karma ?? 0` and `pr` reaches only the note.
       pr:    num('pr'),
       karma: num('karma'),
+      /* Every `skill(...)` call in this contact's `items:` array, in file order.
+       *
+       * ⚠ **The block runs from this `baseActor(` to the NEXT one**, not to the closing brace.
+       * Counting braces would mean tracking the nested objects inside `items:`; the entries are
+       * strictly sequential in the file, so the next `baseActor(` is a reliable terminator and
+       * the last entry simply runs to end-of-file. */
+      skills: [],
     });
   }
+
+  // Second pass: slice each contact's block and pull its skill() calls out.
+  const entries = [...gen.values()].sort((a, z) => a._start - z._start);
+  entries.forEach((e, i) => {
+    const end = i + 1 < entries.length ? entries[i + 1]._start : src.length;
+    const block = src.slice(e._end, end);
+    /* ⚠ Single-quoted arguments with no escape handling — adequate because no skill name
+     * in this file contains an apostrophe. If one is ever added the call is simply not
+     * captured, which the audit reports as "missing from the generator" rather than silently
+     * mis-reading it. Deliberately the safe failure. */
+    const CALL = /\bskill\(\s*'([^']*)'\s*,\s*(\d+)\s*,\s*'([^']*)'\s*(?:,\s*'([^']*)'\s*)?(?:,\s*'([^']*)'\s*)?\)/g;
+    for (const sm of block.matchAll(CALL)) {
+      e.skills.push({
+        name:   sm[1],
+        rating: Number(sm[2]),
+        attr:   sm[3],
+        tier:   sm[4] ?? 'active',
+        spec:   sm[5] ?? '',
+      });
+    }
+  });
   return gen;
 }
