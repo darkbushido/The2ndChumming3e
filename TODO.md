@@ -5402,9 +5402,31 @@ would have sent a reviewer hunting a discrepancy that did not exist:
 Skills. Its Karma Pool is somebody's judgement, not a transcription, and the audit no longer
 reports the book's silence as a difference.
 
-⚠ **THE PACKS STILL HOLD THE OLD VALUES.** The generator is the source of truth, but the shipped
-packs are built from it by running the macro inside Foundry — and `npm run sync:install` does
-**not** copy packs. Until that is done, `packs/` and the install still carry the rotated stats.
+### The packs — `tools/patch-johnson-stats.mjs`
+
+The generator is the source of truth, but the shipped packs are built by **running the macro
+inside Foundry**, and `npm run sync:install` never copies packs. So a generator fix reaches
+nobody on its own.
+
+`patch-johnson-stats.mjs` applies the generator's attributes, metatype, Essence, Magic, PR and
+Karma Pool to the pack in place — narrower than a rebuild, reversible, and it disturbs nothing
+else in the documents. **50 records changed in each of the two copies; a re-run reports 0.**
+
+⚠ **It parses the generator with the SHARED parser**, `tools/lib/johnson-generator.mjs`. That
+module exists because the same parser was written three times during this audit and **two were
+wrong** — both silently read every record as `baseActor`'s defaults (I3 W3 C3, karma null) and
+produced confident, wrong tables. The audit was switched onto it too, and the report verified
+byte-identical afterwards.
+
+⚠ **`karmaPool` and `professionalRating` are written only where the generator states one.** A
+`null` must never blank a value recovered from the notes by [#83](#83)'s patcher.
+
+⚠ **Both `base` and `value` are written on each attribute.** `value` is recomputed on load, but
+`baseActor`'s own `attr()` helper sets them equal and a pack document disagreeing with itself is
+confusing to read raw. **Essence is the exception** — its persisted `base` stays 6 and only
+`value` moves, per the Essence rules in CLAUDE.md.
+
+⚠ **Run it TWICE** — once plain for `packs/`, once with `--install` for the copy Foundry reads.
 
 ⚠ **NOT auto-applied without review, and the tool still defaults to reporting.** 38 records want a mechanical rotation,
 5 are already right, 6 are unknowable from the numbers alone, and **11 fit neither reading** —

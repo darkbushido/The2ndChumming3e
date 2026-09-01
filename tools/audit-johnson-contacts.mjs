@@ -51,6 +51,7 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { parseGenerator } from './lib/johnson-generator.mjs';
 
 const HERE   = dirname(fileURLToPath(import.meta.url));
 const SHOW_OK = process.argv.includes('--all');
@@ -183,29 +184,7 @@ for (let i = 0; i < lines.length; i++) {
 const src = readFileSync(join(HERE, '..', 'scripts', 'macros',
   'populate-mr-johnsons-contacts.js'), 'utf8');
 
-const gen = new Map();
-// baseActor('Name', page, { … }) — the object runs to the matching close, so take everything
-// up to the `})` that ends the call and pull simple `key: value` pairs out of it.
-for (const m of src.matchAll(/baseActor\(\s*'([^']+)'\s*,\s*(\d+)\s*,\s*\{([\s\S]*?)\}\s*\)/g)) {
-  const [, name, page, bodyText] = m;
-  const num = (k) => {
-    const v = new RegExp(`\\b${k}\\s*:\\s*(-?\\d+(?:\\.\\d+)?|null)`).exec(bodyText);
-    return !v || v[1] === 'null' ? null : Number(v[1]);
-  };
-  const str = (k) => (new RegExp(`\\b${k}\\s*:\\s*'([^']*)'`).exec(bodyText) ?? [])[1] ?? null;
-  gen.set(name.toUpperCase(), {
-    // Where this entry's object literal lives, so --fix can rewrite exactly this span.
-    _start: m.index + m[0].indexOf('{') + 1,
-    _end:   m.index + m[0].lastIndexOf('}'),
-    name, page: Number(page), metatype: str('metatype') ?? 'human',
-    // ⚠ These defaults MUST match `baseActor`'s own, or an omitted attribute reads as a
-    // mismatch. That is how the Metroplex Guardsman stub hid: every value was the default.
-    body: num('body') ?? 3, quickness: num('quickness') ?? 3, strength: num('strength') ?? 3,
-    intelligence: num('intelligence') ?? 3, willpower: num('willpower') ?? 3,
-    charisma: num('charisma') ?? 3, essence: num('essence') ?? 6, magic: num('magic') ?? 0,
-    pr: num('pr'), karma: num('karma'),
-  });
-}
+const gen = parseGenerator(src);
 
 /* ── Compare ───────────────────────────────────────────────────────────────────────────── */
 
