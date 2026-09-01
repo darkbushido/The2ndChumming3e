@@ -5466,7 +5466,30 @@ generation, and anything covering the run structure in Mr Johnson's Little Black
 
 ### Still open
 
-- **The 62 have no images and no folders.** A directory of `mystery-man.svg` is a poor browse.
+- ✅ **Foldered by the book's own sections, 2026-09-01** — `tools/folder-johnson-contacts.mjs`.
+  Ten folders, all 62 filed, both pack copies, `packs:check` clean.
+
+  ⚠ **How v14 stores compendium folders was VERIFIED against the installed build**, not guessed:
+  `dist/database/backend/compendium-folder.mjs` gives the folder class `collectionName =
+  "folders"` and `sublevel = this._db.sublevels.folders`, so they are ordinary records under a
+  **`!folders!<id>`** key in the same LevelDB, and a document joins one via its own `folder`
+  field. A folder's **`type` must equal the pack's document type** (`Actor` here) or Foundry
+  throws on load.
+
+  ⚠ **Folder ids are derived from the section name, not random.** A random id would create a
+  second duplicate set on every run and orphan the first — tedious to clean out of a LevelDB.
+
+  ⚠ **The pack's names and the book's headings do not always match.** The book prints
+  "CORPORATE SECURITY" and "GHOUL"; the pack has "Corporate Security Guard" and "Ghoul (Human
+  Ghoul)". A heading that PREFIXES the pack name is accepted — one-directional and anchored at
+  the start, because a loose substring match would file "Corp Decker" and "Corp Scientist"
+  under whatever heading contained "Corp".
+
+  Sections, in printed order: Who Watches the Watchmen? · The Show Must Go On · By Any Means
+  Necessary · Here Come the Suits · Down and Dirty · Crime, Inc: The Underworld · Sinless in
+  Seattle · Workin' the Mojo · To Serve and Protect · Essential Services: Workers.
+
+- **The 62 still have no images.** A directory of `mystery-man.svg` is a poor browse.
   AI-generated token/portrait art is being looked into — **not a today problem** (noted
   2026-09-01). Whatever generates them, the pack write is the same shape as
   `tools/patch-johnson-contacts.mjs`: set `img` and `prototypeToken.texture.src`, both copies
@@ -5537,16 +5560,38 @@ identical carve-out in identical words, so without a second entry every Muscle R
 gains Reaction they are not entitled to. One line in `config.js`, and the [#4](#4) machinery
 already handles the rest.
 
-**3 — 🔴 GRADE DOES NOTHING, and this blocks the rest.** `_installedCyberwareCost` sums
-`essenceCost` raw; there is no Alphaware/Betaware/Deltaware multiplier anywhere in `config.js`
-or `SR3EActor`. `CyberwareData.grade` is a free string nothing reads. Corp Bodyguard's implants
-are *"all Alphaware"* (×0.8 Essence in SR3), so modelling them at standard cost puts her Essence
-in the wrong place. Three ways out, and it is the maintainer's call:
+**3 — 🔴 GRADE IS STORED BUT NOTHING READS IT.**
 
-  - implement the grade multiplier properly — correct, but it touches the Essence derivation,
-    which is load-bearing and carefully documented ([#5](#5));
-  - keep sizing a stub to the printed Essence, and accept that the parts do not sum;
-  - model at standard cost and let Essence drift from the book.
+⚠ **KEEP `CyberwareData.grade`. Maintainer's instruction, 2026-09-01.** It is not dead weight
+even while unread: a player looting a dead opponent's chrome needs to know whether it is
+standard, alpha or beta — that changes what it is worth and what it costs in Essence to fit.
+**So this wants a way to REPORT the grade, not just a multiplier**, and any future salvage flow
+is its first real consumer.
+
+⚠ **The book DOES state the grade** — on the `Cyberware:` line, in four different formats across
+the 62: `Cyberware:` (31, standard), `Cyberware (all Alphaware):`, `Cyberware (All Alphaware):`,
+`Cyberware [alphaware]:`, and `Cyberware (all betware):` — the last a typo for betaware. So the
+data is there to parse; only 4 of 62 are non-standard.
+
+⚠ **SR3 p.296:** *"reduce the Essence Cost of the cyberware by 20 percent (round up) and
+multiply the Cost of the item by 2."* Core carries standard and alpha only; beta and delta are
+M&M. The generator's author already applied it — Corp Bodyguard's stub is `4.24`, exactly
+`5.3 × 0.8`.
+
+ `_installedCyberwareCost` sums
+`essenceCost` raw; there is no Alphaware/Betaware/Deltaware multiplier anywhere in `config.js`
+or `SR3EActor`. Corp Bodyguard's implants
+are *"all Alphaware"*, so splitting her stub into real items pulled from `sr3e-sr3-cyberware` —
+which carry STANDARD costs — would land her Essence at 6 − 5.3 = 0.7 instead of the printed
+1.76. Two ways, and the first is preferred:
+
+  - **implement the multiplier** in the Essence derivation. ~5 lines, it is RAW, it makes
+    `grade` mean something system-wide rather than only here, and pack items can then carry the
+    book's own standard costs. It touches the Essence derivation, which is load-bearing and
+    carefully documented ([#5](#5)), but the change is additive and testable;
+  - store pre-discounted `essenceCost` per item and leave grade as a label — no engine change,
+    but the number on the item then disagrees with the book's printed cost for that implant,
+    and salvage would have to un-discount it to say what the part is worth.
 
 **4 — The conversion itself.** 62 contacts, each with a free-text implant list to parse into
 real items — *"Bone Lacing (Plastic), Cybereyes (Thermographic, Flare Compensation, Muscle
