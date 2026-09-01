@@ -27,7 +27,10 @@
  *
  *   node tools/audit-johnson-contacts.mjs                 # report
  *   node tools/audit-johnson-contacts.mjs --all           # include matching records
- *   node tools/audit-johnson-contacts.mjs --table         # markdown, for review
+ *   node tools/audit-johnson-contacts.mjs --table         # one row per contact
+ *   node tools/audit-johnson-contacts.mjs --stats         # one table PER contact,
+ *                                                         #   columns in the book's own
+ *                                                         #   B Q S I W C E (M) R PR order
  *   node tools/audit-johnson-contacts.mjs --table Bookie Fence   # just these
  *
  * ⚠ **Use --table rather than writing a throwaway script to re-extract this.** Two
@@ -46,6 +49,7 @@ import { dirname, join } from 'node:path';
 const HERE   = dirname(fileURLToPath(import.meta.url));
 const SHOW_OK = process.argv.includes('--all');
 const TABLE   = process.argv.includes('--table');
+const STATS   = process.argv.includes('--stats');
 // Bare arguments name specific contacts; everything else is a flag.
 const ONLY    = new Set(process.argv.slice(2).filter(a => !a.startsWith('--')));
 const PDF_DIR = process.env.SR3E_PDF_DIR
@@ -318,6 +322,18 @@ for (const b of book) {
   if (bad.length) {
     problems.push({ name: g.name, page: g.page, bad });
     const fix = [];
+    /* ⚠ B/Q/S differ only where the book prints a parenthetical, and then it is a CONVENTION
+     * question rather than a transcription error: the generator's header says to use the
+     * augmented value, and these records use the natural one. Marked `(aug)` so a reviewer can
+     * tell the two kinds apart at a glance — see TODO 86, which would make it moot by
+     * modelling the implants and letting the base stay natural. */
+    const phys = (label, gv, bv, idx) => {
+      if (gv === bv) return;
+      fix.push(`${label} ${gv}→${bv}` + (b.natural[idx] === gv ? ' (aug)' : ''));
+    };
+    phys('B', g.body, b.body, 0);
+    phys('Q', g.quickness, b.quickness, 1);
+    phys('S', g.strength, b.strength, 2);
     if (g.intelligence !== b.intelligence) fix.push(`I ${g.intelligence}→${b.intelligence}`);
     if (g.willpower    !== b.willpower)    fix.push(`W ${g.willpower}→${b.willpower}`);
     if (g.charisma     !== b.charisma)     fix.push(`C ${g.charisma}→${b.charisma}`);
@@ -334,6 +350,7 @@ for (const b of book) {
               b.spellPool  !== null ? `Spell ${b.spellPool}`   : null,
               b.karma      !== null ? `Karma ${b.karma}`       : null]
              .filter(Boolean).join(', '),
+      b, g,
       verdict: verdictLine.includes('BOOK is right') ? 'book'
              : verdictLine.includes('GENERATOR is right') ? 'generator'
              : verdictLine.includes('NEITHER') ? '⚠ neither'
@@ -343,6 +360,51 @@ for (const b of book) {
     });
   }
   else { clean++; if (SHOW_OK) console.log(`  ok  ${g.name} (p.${g.page})`); }
+}
+
+if (STATS) {
+  /* One table per contact, columns in the BOOK'S OWN ORDER so a row can be read straight off
+   * the page. Differences are bolded on both lines; a generator cell with no counterpart
+   * (Reaction, which the generator deliberately leaves to the system to derive) shows as —. */
+  for (const r of tableRows) {
+    const { b, g } = r;
+    const cols = [
+      ['B',  b.body,         g.body],
+      ['Q',  b.quickness,    g.quickness],
+      ['S',  b.strength,     g.strength],
+      ['I',  b.intelligence, g.intelligence],
+      ['W',  b.willpower,    g.willpower],
+      ['C',  b.charisma,     g.charisma],
+      ['E',  b.essence,      g.essence],
+      ...(b.awakened ? [['M', b.magic, g.magic]] : []),
+      /* ⚠ Reaction is shown for reference only. The generator deliberately does NOT store it —
+       * its header says Reaction and Initiative are left to the system's own derivation — so
+       * an absent generator value here is correct, not a difference. Printed as
+       * `natural (augmented)` when implants raise it, because only the natural figure can be
+       * checked against floor((Q + I) / 2). */
+      ['R',  (b.natural[b.natural.length - 2] !== b.reaction
+                ? `${b.natural[b.natural.length - 2]} (${b.reaction})` : b.reaction), null],
+      ['PR', b.pr,           g.pr],
+      ['Karma', b.karma,     g.karma],
+    ];
+    const cell = (v) => (v === null || v === undefined || Number.isNaN(v)) ? '—' : String(v);
+    // ⚠ Never bold an ABSENT value — "the generator does not store this" is not a difference.
+    const mark = (v, o) => (v !== null && v !== undefined && o !== null && o !== undefined
+                            && v !== o) ? `**${cell(v)}**` : cell(v);
+
+    console.log(`\n### ${r.name} — p.${r.page}, ${r.meta}`);
+    console.log('```');
+    console.log(r.row);
+    if (r.pools) console.log(`Dice Pools: ${r.pools}`);
+    console.log('```');
+    console.log('| | ' + cols.map(c => c[0]).join(' | ') + ' |');
+    console.log('|---|' + cols.map(() => '--:').join('|') + '|');
+    console.log('| **book** | ' + cols.map(c => mark(c[1], c[2])).join(' | ') + ' |');
+    console.log('| generator | ' + cols.map(c => mark(c[2], c[1])).join(' | ') + ' |');
+    console.log(`\n**Correction:** ${r.fix}${r.verdict ? `  ·  evidence: ${r.verdict}` : ''}`);
+  }
+  console.log(`\n${tableRows.length} record(s) differ.`);
+  process.exit(0);
 }
 
 if (TABLE) {
