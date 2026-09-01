@@ -5759,7 +5759,7 @@ specialised roll uses `rating + level`.
 |---|---:|
 | specialisations in the pack | **131** |
 | …carrying `level: 2` | **131** (all of them) |
-| correct rating, by luck | 55 |
+| …at the SR3 chargen gap of +2, and so correct | 55 |
 | **wrong rating** | **45** — from −2 to +5 |
 | **several specialisations collapsed into ONE** | **31** |
 | **rating baked into the displayed name** | **131** |
@@ -5775,23 +5775,45 @@ Computer 5 (Decking 8, Hardware 9)   one spec named "Decking 8, Hardware 9"
 Stealth 3 (Sneaking 5, Theft 6)      one spec named "Sneaking 5, Theft 6"
 ```
 
-### The `level: 2` is a system-wide legacy shim, not the generator
+### ✅ The `level: 2` is CORRECT, and it is not a guess — *SR3 p.57*
 
-`SkillData.migrateData` (`scripts/data/ItemDataModels.js`) converts the legacy
-`specialisation` STRING into the modern array:
+⚠ **Corrected 2026-09-01 by the maintainer.** This entry first called the 2 "a guess written as
+though it were data". It is not. It is exactly what SR3 character creation produces:
+
+> "To calculate the rating of a specialization and its related base skill, first buy the base
+> skill. Specializing gives you a rating in the specialization equal to the base skill **rating
+> +1**. You then **subtract one from the base skill rating**, because your character's focus on
+> the specialization means that he or she has not focused as much on the rest of the base skill."
+
+Edged Weapons 6, specialise in Katanas → **Katanas 7, Edged Weapons 5**. The gap is **2**, by
+construction, for every specialisation taken at character creation.
+
+`SkillData.migrateData` (`scripts/data/ItemDataModels.js`) converts a legacy `specialisation`
+STRING into the modern array with that gap:
 
 ```js
 source.specialisations = [{ name: source.specialisation, level: 2 }];
 ```
 
-⚠ **So the 2 is fabricated for EVERY skill anywhere carrying a legacy string**, not only these
-contacts. For genuinely unknown legacy data that is defensible — SR3 buys a new specialisation
-at base **+1** and raises it to base **+2**, so 2 is "assume it was raised once". It is still a
-guess being written as though it were data, and it is silent.
+⚠ **So the default is principled and should stay.** A legacy skill whose specialisation rating
+was never recorded almost certainly came from chargen, where the answer is 2.
 
-⚠ **The contacts make it visible because their strings are the BOOK'S DISPLAY TEXT**, not
-specialisation names. `"Magic 6"` is a name plus a rating; `"Decking 8, Hardware 9"` is two
-specialisations. The shim cannot know that, and dutifully stores the whole string as one name.
+⚠ **And the 55 "correct by luck" above are NOT luck** — they are contacts whose printed
+specialisation happens to sit at the chargen gap, which is the common case. Roughly 55% of the
+single-specialisation entries follow it.
+
+### Why it is still wrong HERE
+
+⚠ **These 62 are NPC stat blocks, not chargen-built characters.** The book printed whatever the
+designers wanted, so the gap between base and specialisation is 2 only sometimes —
+`Etiquette 4 (Corporate 8)` is +4, `Conjuring 5 (Summoning 8)` is +3, `Etiquette 2 (Matrix 6)`
+is +4. The chargen default cannot describe them, and **45 of 100** single-spec entries disagree
+with it.
+
+⚠ **Their strings are the BOOK'S DISPLAY TEXT**, not specialisation names. `"Magic 6"` is a name
+plus a rating; `"Decking 8, Hardware 9"` is two specialisations. `migrateData` cannot know that
+and dutifully stores the whole string as one name — which is why all 131 display a number stuck
+on the end regardless of whether the rating is right.
 
 ⚠ **`Car 6 (Car B/R 3)` is a different mis-parse and the worst single case.** The book prints
 `Car 5, Car B/R 3` as two SIBLING SKILLS; the data entry read the second as a parenthetical
@@ -5817,10 +5839,11 @@ The data is the problem, not the machinery. In `populate-mr-johnsons-contacts.js
 3. Rescue the sibling skills wrongly absorbed as specialisations (at least Car B/R).
 4. Regenerate, then patch both pack copies — `sync:install` never copies packs.
 
-⚠ **Leave `SkillData.migrateData` alone unless it is deliberately revisited.** Its 2 is wrong
-*here* because the input is malformed, but it is the only sensible default for a real legacy
-skill whose specialisation rating was never recorded. Changing it to 1 would silently re-rate
-every legacy specialisation in every existing world.
+⚠ **DO NOT TOUCH `SkillData.migrateData`.** Its 2 is the SR3 chargen gap (p.57) and is right
+for the legacy data it exists to convert. It produces wrong numbers *here* only because these
+inputs are book display text rather than specialisation names. Changing it to 1 — or deriving
+it — would silently re-rate every legacy specialisation in every existing world to fix a
+problem that lives in this pack's data.
 
 ⚠ **Do not "fix" this by parsing the trailing number out of the name at ROLL time.** That would
 make the display right and leave the stored data wrong, and every other consumer — the karma

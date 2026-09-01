@@ -1739,6 +1739,14 @@ specialisations**, and **specialisation increases**. Two pure helpers hold the t
 | ≤ 2× the linked Attribute | 2 | 1.5 | 1 |
 | > 2× the linked Attribute | 2.5 | 2 | 1.5 |
 
+⚠ **`specialisations[].level` is the BONUS over the base skill, and its default of 2 is the
+CHARGEN GAP** · *SR3 p.57*: *"Specializing gives you a rating in the specialization equal to the
+base skill rating +1. You then subtract one from the base skill rating."* Edged Weapons 6 →
+Katanas 7, Edged Weapons 5. `SkillData.migrateData` uses 2 when converting a legacy
+`specialisation` string for exactly this reason — it is not an arbitrary default, and changing
+it would re-rate every legacy specialisation in every world. An NPC read out of a book need not
+follow the gap (see TODO 88).
+
 ⚠ **A specialisation costs the same for active and knowledge skills.** `_specCost` ignoring the
 `isActive` flag looks like an oversight in a function sitting next to one that uses it. It is
 not — the table's two specialisation columns are identical.
