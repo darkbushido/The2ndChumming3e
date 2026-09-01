@@ -26,7 +26,7 @@ independent.
 | 🔴 Confirmed bugs, still open | **73** · **74** *(**71** · **72** · **80** · **81** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **4** · **30** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
-| 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **83** · **84** |
+| 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **83** · **84** · **85** |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
 | 🧹 Housekeeping | 1 · 6 |
 | ✅ Done — kept for the record | **2** · **5** · **8** · **10** · 13 · **40** · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
@@ -5330,6 +5330,79 @@ mismatch is not automatically an error. A human decides.
 ⚠ **Dock Worker's Body `10 (11)` is a live example**: the file's convention says use the
 effective value, but its Essence is 6, so nothing pays for the +1 and the source is unclear.
 Left at 10 rather than guessed.
+
+---
+
+### Audited 2026-09-01 — `tools/audit-johnson-contacts.mjs`
+
+Report checked in at **`audit/johnson-contacts-audit.txt`**. Regenerate with
+`node tools/audit-johnson-contacts.mjs`; exits 1 while differences remain.
+
+## 🔴 THE GENERATOR DID NOT MAKE FIFTY TYPOS. IT READ ONE COLUMN HEADING WRONG.
+
+**The book prints `B Q S I W C`. SR3's own character sheet orders attributes `B Q S C I W`** —
+physical three, then **Charisma first** among the mental three. Whoever entered this data used
+the sheet's order against the book's row, so every value landed one slot out:
+
+| The book's… | went into the generator's… |
+|---|---|
+| Intelligence | `charisma` |
+| Willpower | `intelligence` |
+| Charisma | `willpower` |
+
+| Reading | Records |
+|---|---:|
+| match **only under the rotation** | **38** |
+| match exactly (book order) | 5 |
+| all three equal, undecidable | 6 |
+| match neither — need a human | 11 |
+
+⚠ **The physical attributes are the control.** Across all 61 blocks the differences are
+charisma 38, willpower 37, intelligence 24 — against body 5, quickness 5, strength 6. `B Q S`
+is unambiguous in both orderings and duly agrees; the three that reorder are the three that
+break. That asymmetry is the finding.
+
+⚠ **Independently corroborated by the book's own printed Reaction.** SR3 derives
+`Reaction = ⌊(Quickness + Intelligence) / 2⌋`, and the book prints Reaction, so Intelligence can
+be checked without trusting either transcription. Reflexes only ever RAISE Reaction, so a
+derived value *above* the printed one is impossible. Under the header's literal `B Q S I W C`
+the check holds for **58 of 61** rows; under the sheet order, 53. Where a specific record's
+Intelligence is disputed the tool prints the verdict per record — the book wins 4 to 1.
+
+### What to do about it
+
+⚠ **NOT auto-applied, and the tool cannot be made to.** 38 records want a mechanical rotation,
+5 are already right, 6 are unknowable from the numbers alone, and **11 fit neither reading** —
+so a blanket transform would corrupt 22 of 60. The 11 are listed in the report and want eyes.
+
+⚠ **Both files must move together**, exactly as in [#83](#83): the generator
+(`scripts/macros/populate-mr-johnsons-contacts.js`) so a re-populate is correct, and **both
+copies of the pack** — `packs/` and the install — because re-running the macro rebuilds all 62
+inside Foundry. `npm run sync:install` does **not** carry packs.
+
+⚠ **Nine contacts are Awakened** and carry an extra `M` column (`B Q S I W C E M R PR`).
+Anything that touches these rows must read the header, not assume nine columns.
+
+⚠ **Attributes are only what has been checked.** Skills, gear, cyberware and spells are not
+audited; the tool compares the stat-block row and the Karma Pool line only.
+
+<a id="85"></a>
+## 85. Review `devdrawdiy/sr3e` for functionality we lack
+
+**Raised 2026-09-01.** <https://github.com/devdrawdiy/sr3e> — an independent Shadowrun 3rd
+Edition Foundry system. Read it for features worth having, not for code to lift.
+
+⚠ **A different project, not our upstream.** Ours forked from `williamdiffey/The2ndChumming3e`
+(still the `upstream` remote). This is a separate lineage, so expect different data shapes,
+different Foundry-version assumptions and different rules interpretations — a disagreement is
+as likely to be *their* reading as a gap in ours.
+
+⚠ **Check the licence before any code moves.** Reading for ideas is free; copying is not.
+
+Worth looking for specifically, since these are our known holes: a gear-acquisition flow
+([#82](#82)), an action economy ([#48](#48)), a karma/nuyen ledger ([#79](#79)), character
+generation, and anything covering the run structure in Mr Johnson's Little Black Book p.5-35
+([#83](#83)).
 
 ### Still open
 
