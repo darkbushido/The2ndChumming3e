@@ -9,7 +9,58 @@ charisma/intelligence/willpower — a rotation, not a scatter of typos.
   all three equal, so undecidable:          6
   match neither — look at these by hand:    11
 
-Neither reading fits:
+The 38 that match ONLY under the rotation. REA/CP/SP show what the derived value currently IS -> what it SHOULD be:
+
+Contact                             pg   book I W C  gen I W C         REA      CP     SP
+-----------------------------------------------------------------------------------------
+Rent-a-Cop                          38   2 3 2       3 2 2            3->2       =       
+Security Rigger                     40   5 5 3       5 3 5               =    6->7       
+Club Owner                          42   3 3 4       3 4 3               =       =       
+Upright Humanis Member              44   5 4 4       4 4 5            3->4    5->6       
+Terrorist                           46   3 2 3       2 3 3               =       =       
+Cult Member                         46   3 2 3       2 3 3            2->3       =       
+Corporate Headhunter                47   5 5 6       5 6 5               =    8->7       
+Mr. Fix-It                          47   3 4 3       4 3 3            4->5    6->7       
+Mixed-up Middle Manager             48   4 4 3       4 3 4               =       =       
+Corp Bodyguard                      49   5 3 5       3 5 5            5->6    7->8       
+Corp Scientist                      49   6 4 3       4 3 6            3->4    5->6       
+Pimp                                50   3 3 4       3 4 3               =    5->4       
+Tamanous Member                     50   3 3 2       3 2 3               =       =       
+Reluctant Ganger                    51   3 3 2       3 2 3               =       =       
+Joygirl                             51   3 3 4       3 4 3               =       =       
+Squatter                            52   3 4 2       4 2 3               =    4->5       
+Yakuza Elder                        53   6 5 5       5 5 6            3->4       =       
+Ambitious Mafia Lieutenant          53   4 4 5       4 5 4               =       =       
+Family Member                       54   4 3 4       3 4 4               =       =       
+Bookie                              55   4 4 3       4 3 4               =       =       
+Shark Lawyer                        55   6 5 5       5 5 6            4->5       =       
+High Stakes Negotiator              56   6 5 5       5 5 6            4->5       =       
+Talent Scout                        57   5 5 7       5 7 5               =    8->7       
+ID Manufacturer                     57   4 4 3       4 3 4               =       =       
+Fence                               58   4 4 3       4 3 4               =       =       
+Lorekeeper                          59   6 5 6       5 6 6               =       =       
+Antiquities and Oddities Dealer     59   6 6 3       6 3 6               =    6->8   6->7
+Artificer/Enchanter                 60   5 6 4       6 4 5               =    6->7   5->6
+Talislegger                         60   4 4 5       4 5 4               =    7->6       
+Wiz Kid Ganger                      61   3 4 3       4 3 3            4->3       =       
+Hermetic Academic                   61   6 6 4       6 4 6               =    7->8       
+Highway Patrol                      62   4 4 3       4 3 4               =    5->6       
+SWAT Team Member                    62   4 5 3       5 3 4            5->4    6->7       
+Police Chief                        63   5 4 4       4 4 5            3->4    5->6       
+Prison Guard                        64   3 3 2       3 2 3               =    4->5       
+DocWagon Paramedic                  65   4 4 3       4 3 4               =       =       
+Firefighter                         66   3 4 3       4 3 3            4->3       =       
+City Services Worker                67   3 4 2       4 2 3               =    4->5       
+
+  Reaction    wrong on 13 of 38
+  Combat Pool wrong on 18 of 38
+  Spell Pool  wrong on 2 of the Awakened among them
+
+  ⚠ A blank REA/CP means the two readings happen to derive the same number —
+    the stored Intelligence/Willpower are still wrong, and any test rolling
+    them directly (Drain, resistance, social) still uses the wrong value.
+
+Neither reading fits — these need a human:
   Mercenary (p.40) — book I5 W4 C4 | generator I5 W4 C5
   Club Hopper (p.43) — book I3 W3 C5 | generator I3 W3 C3
   Terra First! Activist (p.45) — book I4 W3 C5 | generator I5 W6 C3

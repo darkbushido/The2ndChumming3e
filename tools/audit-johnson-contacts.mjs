@@ -116,9 +116,10 @@ for (let i = 0; i < lines.length; i++) {
   }
 
   const reaction = cols.augmented[cols.augmented.length - 2];
+  const magic    = awakened ? cols.augmented[7] : 0;   // the M column, Awakened only
   book.push({ name, metatype: (meta?.[1] ?? '').toLowerCase().trim(), awakened,
               body, quickness, strength, intelligence, willpower, charisma, essence, pr, karma,
-              reaction, natural: cols.natural, line: i + 1 });
+              reaction, magic, natural: cols.natural, line: i + 1 });
 }
 
 /* ── The generator ─────────────────────────────────────────────────────────────────────── */
@@ -180,11 +181,32 @@ for (const b of book) {
   const isRot   = g.charisma === b.intelligence && g.intelligence === b.willpower
                   && g.willpower === b.charisma;
   const bucket  = (isExact && isRot) ? 'both' : isExact ? 'exactOnly' : isRot ? 'only' : 'neither';
-  rotation[bucket].push(`${g.name} (p.${g.page})`
-    + (bucket === 'neither'
-        ? ` — book I${b.intelligence} W${b.willpower} C${b.charisma}`
-          + ` | generator I${g.intelligence} W${g.willpower} C${g.charisma}`
-        : ''));
+
+  /* ⚠ **What the rotation actually breaks is DERIVED**, which is why it is worth quantifying
+   * rather than just counting. Intelligence feeds Reaction and the Combat Pool; Willpower feeds
+   * the Combat Pool and every Drain and resistance test; both feed the Spell Pool. A wrong
+   * Charisma is "only" wrong on social tests — but several of these contacts (Talent Scout,
+   * High Stakes Negotiator, Simsense Star) are defined by their Charisma and nothing else. */
+  const d = (q, i, w, m) => ({
+    rea: Math.floor((q + i) / 2),
+    cp:  Math.floor((q + i + w) / 2),
+    sp:  b.awakened ? Math.floor((i + w + (m ?? 0)) / 3) : null,
+  });
+  const dB = d(b.quickness, b.intelligence, b.willpower, b.magic);
+  const dG = d(g.quickness, g.intelligence, g.willpower, g.magic);
+
+  rotation[bucket].push(bucket === 'only'
+    ? { name: g.name, page: g.page,
+        book: `${b.intelligence} ${b.willpower} ${b.charisma}`,
+        gen:  `${g.intelligence} ${g.willpower} ${g.charisma}`,
+        rea: dB.rea !== dG.rea ? `${dG.rea}->${dB.rea}` : '',
+        cp:  dB.cp  !== dG.cp  ? `${dG.cp}->${dB.cp}`   : '',
+        sp:  dB.sp !== null && dB.sp !== dG.sp ? `${dG.sp}->${dB.sp}` : '' }
+    : `${g.name} (p.${g.page})`
+      + (bucket === 'neither'
+          ? ` — book I${b.intelligence} W${b.willpower} C${b.charisma}`
+            + ` | generator I${g.intelligence} W${g.willpower} C${g.charisma}`
+          : ''));
 
   const bad = [];
   if (g.metatype !== b.metatype) bad.push(`metatype: generator ${g.metatype}, book ${b.metatype}`);
@@ -244,8 +266,30 @@ console.log(`  match ONLY under the rotation:            ${rotation.only.length}
 console.log(`  match exactly (book order):               ${rotation.exactOnly.length}`);
 console.log(`  all three equal, so undecidable:          ${rotation.both.length}`);
 console.log(`  match neither — look at these by hand:    ${rotation.neither.length}`);
+if (rotation.only.length) {
+  console.log(`\nThe ${rotation.only.length} that match ONLY under the rotation. `
+    + 'REA/CP/SP show what the derived value currently IS -> what it SHOULD be:\n');
+  const H = 'Contact'.padEnd(34) + 'pg'.padStart(4) + '   '
+          + 'book I W C'.padEnd(12) + 'gen I W C'.padEnd(12)
+          + 'REA'.padStart(9) + 'CP'.padStart(8) + 'SP'.padStart(7);
+  console.log(H);
+  console.log('-'.repeat(H.length));
+  for (const r of rotation.only) {
+    console.log(r.name.padEnd(34) + String(r.page).padStart(4) + '   '
+      + r.book.padEnd(12) + r.gen.padEnd(12)
+      + (r.rea || '=').padStart(9) + (r.cp || '=').padStart(8) + (r.sp || '').padStart(7));
+  }
+  const n = (k) => rotation.only.filter(r => r[k]).length;
+  console.log(`\n  Reaction    wrong on ${n('rea')} of ${rotation.only.length}`);
+  console.log(`  Combat Pool wrong on ${n('cp')} of ${rotation.only.length}`);
+  console.log(`  Spell Pool  wrong on ${n('sp')} of the Awakened among them`);
+  console.log('\n  ⚠ A blank REA/CP means the two readings happen to derive the same number —');
+  console.log('    the stored Intelligence/Willpower are still wrong, and any test rolling');
+  console.log('    them directly (Drain, resistance, social) still uses the wrong value.');
+}
+
 if (rotation.neither.length) {
-  console.log('\nNeither reading fits:');
+  console.log('\nNeither reading fits — these need a human:');
   rotation.neither.forEach(r => console.log(`  ${r}`));
 }
 
