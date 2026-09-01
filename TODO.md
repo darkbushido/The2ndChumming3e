@@ -5617,12 +5617,69 @@ which carry STANDARD costs — would land her Essence at 6 − 5.3 = 0.7 instead
     but the number on the item then disagrees with the book's printed cost for that implant,
     and salvage would have to un-discount it to say what the part is worth.
 
-**4 — The conversion itself.** 62 contacts, each with a free-text implant list to parse into
-real items — *"Bone Lacing (Plastic), Cybereyes (Thermographic, Flare Compensation, Muscle
-Replacement 2, Smartlink 2, Wired Reflexes 2)"* and so on, including at least one whose brackets
-are visibly unbalanced. This is data authoring, not engineering, and it is **larger than
-[#84](#84)'s rotation fix**: the rotations are a mechanical correction to numbers already
-verified, this is new content per contact.
+**4 — The conversion: REPLACE THE STUBS WITH REAL IMPORTS.**
+
+⚠ **Nothing links, so there is no link to fix.** Checked 2026-09-01: of the **1,152 embedded
+items** across the 62 contacts, **zero** carry `_stats.compendiumSource` or
+`flags.core.sourceId`. Every one was fabricated inline by the generator's own `skill()` /
+`gear()` / `cyberware()` helpers. A stub is not a mis-pointed reference to a pack entry — it is
+a different shape entirely, so the job is **delete the stub, create from the pack entry**, not
+re-point anything.
+
+That is more work than relinking and a better outcome: an item created from a compendium entry
+arrives carrying `compendiumSource`, its `bookPage` citation ([#87](#87)), its
+`cyberwareCategory`, `cost`, `availability`, `legalCode` — and, for cyberware, the bonus fields
+that make it *do* something.
+
+⚠ **THE PROBLEM IS WIDER THAN CYBERWARE.** The same is true of every embedded type:
+
+| Type | Count | Linked | State |
+|---|---:|---:|---|
+| skill | 741 | 0 | **fine as-is** — skills are per-character ratings, not pack references |
+| gear | 270 | 0 | generic `gear()` entries; no stats |
+| spell | 67 | 0 | name + Force in the name; no drain, range or target |
+| cyberware | 36 | 0 | one consolidated stub per contact, all bonuses 0 |
+| armor | 30 | 0 | ballistic/impact only where the book bracketed them |
+| adeptpower | 5 | 0 | inert, like every adept power was before [#59](#59) |
+| bioware | 3 | 0 | as cyberware |
+
+⚠ **The generator says so itself**, and it was a reasonable call at the time: *"Most Gear-line
+items (weapons, vehicles, electronics) are recorded as generic `gear()` entries rather than
+statted firearm/melee/armor items, since the book doesn't give damage codes for them and
+fabricating SR3 canon stats risked errors."* So a contact's **Ares Predator is a name with no
+damage code** — it cannot be fired. Importing the real `sr3e-sr3-firearms` entry fixes that
+without fabricating anything, because the stats come from the book's own gear tables rather
+than from this book.
+
+⚠ **The 741 skills must be LEFT ALONE.** A skill is a rating on that character, not a reference
+to a shared object; they are correctly inline and correctly formed (checked: 0 malformed).
+"Relink everything" would be wrong here.
+
+### Shape of the work
+
+1. Parse each stub's name — they are lists (*"Cybereyes (Display Link, Flare Compensation, Low
+   Light), Muscle Replacement 1, Reaction Enhancers 2, Wired Reflexes 2 w/Reflex Trigger"*).
+2. Match each part to a pack entry. ⚠ **Search a STEM, never a full name** — the packs
+   abbreviate (`Muscle Replac.`, `Reaction Enhance`), which is [#87](#87) and which already
+   produced one false "these do not exist" finding.
+3. Create the real items, delete the stub, and let the grade multiplier ([#86](#86) gap 3, now
+   implemented) put Essence back where the book has it.
+4. **Report, do not auto-apply** — same discipline as [#84](#84). A name that matches nothing
+   must be listed, not guessed at.
+
+⚠ **Verify against the printed Essence.** Corp Bodyguard's parts sum to **5.3** standard, and
+`5.3 × .8` alphaware is the **4.24** her stub already carries — so the total is a checkable
+invariant per contact, not a leap of faith. Any contact whose parts do not reconcile has a
+part that was matched wrong.
+
+⚠ **Some stub names are malformed and cannot be parsed blindly.** At least one has unbalanced
+brackets — *"Bone Lacing (Plastic), Cybereyes (Thermographic, Flare Compensation, Muscle
+Replacement 2, Smartlink 2, Wired Reflexes 2)"* — where the closing bracket sits after
+`Wired Reflexes 2` rather than after the eye mods, so a naive split on commas-outside-brackets
+yields one item instead of five. These are the records the report must surface for a human.
+
+⚠ **Still the largest piece of [#86](#86)**, though smaller than first described: the parts all
+exist in the packs, so this is matching and importing rather than authoring.
 
 ### Also found here — `wired()` in the generator is wrong
 
