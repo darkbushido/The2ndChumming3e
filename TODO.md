@@ -26,7 +26,7 @@ independent.
 | 🔴 Confirmed bugs, still open | **73** · **74** *(**71** · **72** · **80** · **81** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **4** · **30** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
-| 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **83** · **84** · **85** · **86** |
+| 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **83** · **84** · **85** · **86** · **87** |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
 | 🧹 Housekeeping | 1 · 6 |
 | ✅ Done — kept for the record | **2** · **5** · **8** · **10** · 13 · **40** · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
@@ -5637,4 +5637,56 @@ anything else leans on it.
 
 ⚠ `boosted(n)` returning `reactionBonus: 0` is **right** — Boosted Reflexes give initiative dice
 and (at higher levels) some Reaction, and the shipped pack items carry the real numbers.
+
+<a id="87"></a>
+## 87. Cyberware names are abbreviated
+
+**Raised 2026-09-01.** `Muscle Replac. [1]`, `Reaction Enhance [2]`, `Eyes, Vis Mag Ele[1]`,
+`Obv.Cyb.Arm Semi.natCov.`, `Str Enh [3] (Pair)`. **~170 of 845** cyberware items carry a
+contracted name rather than the book's.
+
+⚠ **This is not only cosmetic — it has already caused a false finding.** Searching for
+`^muscle replacement` and `^reaction enhancer` returned nothing, and both were reported in
+[#86](#86) as *"in no pack at all"* and needing to be created. They ship, correctly, under the
+abbreviations. Anything matching cyberware by name must search a **stem**.
+
+### Citations are NOT part of this — they are nearly done
+
+**809 of 845 have a `bookPage`** (`sr3.304`, `ct.31`, `mm.064`), and the item sheet already
+renders it as *"Book / Page"*. Every item in a real cyberware pack has one.
+
+⚠ **The only 36 without are the Little Black Book contacts' embedded stubs**, and those are
+exactly what [#86](#86)'s conversion replaces. Swap a stub for `Muscle Replac. [1]` out of
+`sr3e-sr3-cyberware` and the citation arrives with it. **No separate work is needed for
+citations** — do not open a task for it.
+
+### Renaming is riskier than it looks
+
+⚠ **NAMES ARE KEYS.** `SRCG_BONUSES` (`scripts/data/srcg-bonuses.js`) is keyed by item name;
+`improvedSkillName` matches a skill by name; and `SR3E.quicknessNotForReaction` and
+`SR3E.reactionExclusive` match cyberware by name. A rename silently breaks every one, and the
+failure is invisible — a bonus simply stops applying.
+
+⚠ **Foundry EMBEDS items.** Every character already holding `Muscle Replac. [1]` keeps that
+name. A pack rename reaches nobody without a migration covering world actors, world items and
+**unlinked token actors on every scene**.
+
+⚠ **It diverges from upstream, permanently.** This data comes from the Shadowrun Character
+Generator, and the `BookPage` codes were deliberately kept *"so a future re-import lines up"*
+(CLAUDE.md, Source books). Renaming gives that up. Worth an explicit decision, not a side
+effect — a re-import would then need a name map anyway.
+
+### If it is done
+
+1. Build the map from the books — 170 canonical names. The `bookPage` on each item says exactly
+   which page to read, so this is mechanical rather than guesswork.
+2. Update every name-keyed registry in the same commit, and regenerate `srcg-bonuses.js`.
+3. Migration for the three populations, keyed old-name → new-name.
+4. Patch both pack copies (`packs/` and the install — `sync:install` never copies packs).
+
+⚠ **A cheaper alternative that solves the search problem without renaming anything:** add an
+`aka` / `bookName` field carrying the full name, leave `name` alone. Registries and searches
+read it, upstream alignment survives, no migration is needed for existing characters. It does
+not improve what a player SEES in the compendium, which is the part of the ask this would not
+address.
 
