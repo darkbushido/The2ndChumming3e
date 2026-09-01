@@ -5541,24 +5541,44 @@ per level. Only the *generator's* `wired()` helper is wrong (see below).
 
 ### Four gaps, and the third needs a decision before anything starts
 
-**1 — Muscle Replacement and Reaction Enhancers are in no pack at all.** Searched every cyberware
-and bioware pack. There is only `Muscle Augmentation` (M&M bioware, **+Strength only**), which is
-a different implant. Both need creating:
+**1 — ~~Muscle Replacement and Reaction Enhancers are in no pack at all.~~ ✅ FALSE — they ship,
+and correctly.** Corrected 2026-09-01 after the maintainer questioned the claim.
 
-- **Muscle Replacement** · *SR3* — *"Add the rating of the muscle replacement to Strength and
-  Quickness; this change does not affect Reaction."*
-- **Reaction Enhancer** · *SR3* — *"each increases the user's Reaction Attribute by 1 … The
-  reaction enhancer is compatible with other reaction/Initiative boosters."*
+```
+Muscle Replac. [1..4]    ess 1/2/3/4   qui +N  str +N    mods "+NQCK,+NSTR,"
+Reaction Enhance [1..6]  ess 0.3 × N   rea +N            mods "+NRCT,"
+```
+
+Both are in `sr3e-sr3-cyberware` with every bonus field populated, matching SR3 exactly —
+*"Add the rating of the muscle replacement to Strength and Quickness"* and *"each increases the
+user's Reaction Attribute by 1"*.
+
+⚠ **The search was wrong, not the pack.** It was anchored on the BOOK'S spelling —
+`/^muscle replacement/i`, `/^reaction enhancer/i` — and the pack ABBREVIATES: `Muscle Replac.`
+and `Reaction Enhance`. A prefix search on `muscle` or `reaction` finds both at once. Any future
+"is this implant missing?" question should search a stem, never a full name.
+
+⚠ **Everything Corp Bodyguard needs already exists**: `Eyes, Cyber Replacement` + `Eyes, Disp
+Link` + `Eyes, Flare Comp` + `Eyes, Low-Light`, `Muscle Replac. [1]`, `Reaction Enhance [2]`,
+`Wired Reflexes [2]`, `Reflex Trig`. Their standard Essence sums to the 5.3 that × .8 gives the
+shipped 4.24 — so the conversion is assembly from existing parts, not authoring.
+
+⚠ **`Muscle Augmentation` is a DIFFERENT implant** (M&M bioware, +Strength only) and is not a
+substitute.
 
 ⚠ **Reaction Enhancers are the stated EXCEPTION to non-stacking.** Wired and Boosted Reflexes do
 not combine with each other, and the adept's Improved Reflexes combines with neither
 ([#64](#64)) — but the enhancer's own entry says outright that it stacks. Do not "fix" a
 character who has both.
 
-**2 — `SR3E.quicknessNotForReaction` lists only move-by-wire.** Muscle Replacement carries the
-identical carve-out in identical words, so without a second entry every Muscle Replacement user
-gains Reaction they are not entitled to. One line in `config.js`, and the [#4](#4) machinery
-already handles the rest.
+**2 — 🔴 `SR3E.quicknessNotForReaction` lists only move-by-wire.** Muscle Replacement carries
+the identical carve-out in identical words — *"this change does not affect Reaction"* — so
+without a second entry every user gains Reaction they are not entitled to. One line in
+`config.js`; the [#4](#4) machinery does the rest.
+
+⚠ **This is now the ONLY live defect on this item**, and it is worse than it looked: the shipped
+`Muscle Replac.` items really do grant `+N` Quickness, so the bug is reachable today by anyone
+who drags one onto a character — it does not wait for the conversion.
 
 **3 — ✅ GRADE MULTIPLIER IMPLEMENTED 2026-09-01.** `SR3EActor.gradedEssenceCost` applies the
 M&M p.45 table before `installedEssenceCost` sums, so pack items can carry the book's own
