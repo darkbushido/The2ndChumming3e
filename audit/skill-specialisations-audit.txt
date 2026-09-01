@@ -2,8 +2,8 @@
 Skills with a Specializations line in the books: 66
   matched against SR3ESkills:  56
   not in SR3ESkills at all:    10
-  clean:                       45
-  with differences:            11
+  clean:                       46
+  with differences:            10
 
 ⚠ MISSING means the book lists a specialisation a player cannot pick here.
   EXTRA is only reported for skills the book treats as a CLOSED list.
@@ -24,8 +24,6 @@ Etiquette  (book: open-ended)  — Shadowrun 3e - Core Rules {FAN25000}.pdf
 Leadership  — Shadowrun 3e - Core Rules {FAN25000}.pdf
     MISSING  Third Edition
     EXTRA    Morale
-Sorcery  — Shadowrun 3e - Core Rules {FAN25000}.pdf
-    MISSING  Spell Category
 Spell Design  — Shadowrun 3e - Magic in the Shadows.pdf
     MISSING  Spell Category
 Spray Weapons  — Shadowrun 3e - Cannon Companion.pdf

@@ -6035,25 +6035,43 @@ generator and had never been compared to a printed page. Given [#84](#84) and [#
 
 | | |
 |---|---:|
-| **clean** | **45** |
-| with differences | 11 |
-| …of which genuine gaps | ~6 |
-| …of which PDF prose bleed | ~5 |
+| **clean** | **46** |
+| with differences | 10 |
+| …**verified genuine gaps** | **4** |
+| …false positives and PDF prose bleed | 6 |
 
 ⚠ **This is the audit that came back GOOD**, and that is worth recording as loudly as the two
 that did not. The Little Black Book's problems are that book's transcription, not a property of
 everything the upstream generator produced.
 
-### The genuine gaps — specialisations a player cannot pick
+### The genuine gaps — VERIFIED against the printed page, 2026-09-01
 
-| Skill | Missing | Source |
+⚠ **The tool's first list of six was checked page by page and THREE were false positives.** Only
+these four survive. Every line below was read off the PDF, not taken from the report.
+
+| Skill | Citation | The book prints | We ship |
+|---|---|---|---|
+| **Vectored Thrust Aircraft** | *SR3 p.89* | `By specific vehicle type, Remote Operations` | nothing, and no `->` marker |
+| **Spray Weapons** | *CC p.105* | `Firehose, Flame-thrower, Spray` | `weapon->` only |
+| **Talismongering** | *MITS p.29* | `Alchemy (the refinement of magical materials) and Artificing (manufacturing foci)` | nothing |
+| **Spell Design** | *MITS p.29* | `Spell Category` | nothing |
+
+⚠ **`Spray Weapons` gives THREE, not the two the tool reported** — it stopped at `Spray` because
+a section heading followed on the same line. Read the page, not the report.
+
+⚠ **`Talismongering`'s report was wrong about WHAT is missing** — it said "Analysis, Gathering";
+the book says **Alchemy and Artificing**. The gap is real, the contents were not. Note we ship
+Alchemy and Artificing under **Enchanting**, so check whether MITS treats these as one skill or
+two before adding them.
+
+### The three false positives, and why each fooled the tool
+
+| Skill | Citation | Why it was not a gap |
 |---|---|---|
-| **Sorcery** | Spell Category | SR3 |
-| **Spell Design** | Spell Category | MITS |
-| **Spray Weapons** | Firehose, Flame-thrower | CC |
-| **Talismongering** | Analysis, Gathering | MITS |
-| **Etiquette** | Magical Groups | SR3 |
-| **Vectored Thrust Aircraft** | no specialisations and no `->` open marker | SR3 |
+| **Sorcery** | *SR3 p.87* | We ship `Spell Category->`. The tool filtered every `->` entry out of the comparison, so a specialisation we DO offer read as missing. |
+| **Etiquette** | *SR3 p.87* | *"Etiquette is a wide-open skill… Examples include…"* — the entry is prose, and the tool split the examples into fake specialisations. |
+| **Unarmed Combat** | *SR3 p.86* | The book says `…or by body part (fists, head butts, kicks)`; we ENUMERATE Fists, Head, Kicks. Ours is the better data, and it reported as both missing and extra. |
+| **Leadership** | *SR3 p.87* | The book gives `…Tactics, Morale`. A watermark — `Gavin Lowry (order #24266)` — ran onto the line and truncated the book side, so our correct `Morale` read as an EXTRA. |
 
 ⚠ **`Spray Weapons (Firehose)` is used by shipped content** — the Little Black Book's
 Firefighter has it — so a specialisation the system's own packs rely on is not in the list a

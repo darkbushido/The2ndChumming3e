@@ -142,7 +142,12 @@ for (const [key, b] of [...book].sort((a, z) => a[1].name.localeCompare(z[1].nam
   const o = ours.get(key);
   if (!o) { notOurs++; continue; }
 
-  const oSpecs = o.specs.filter(x => !String(x).endsWith('->'));
+  /* ⚠ **An entry ending in `->` still has a NAME.** `Spell Category->` means "Spell Category,
+   * and pick which one" — it BOTH names the specialisation and marks it open. Filtering those
+   * out of the comparison reported Sorcery as missing `Spell Category` when we ship it, which
+   * is the third false-positive class this tool has produced. The marker is stripped for
+   * matching and only counted separately for openness. */
+  const oSpecs = o.specs.map(x => String(x).replace(/->$/, '').trim()).filter(Boolean);
   const oOpen  = o.specs.some(x => String(x).endsWith('->'));
   const bad = [];
 
