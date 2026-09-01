@@ -5371,7 +5371,42 @@ Intelligence is disputed the tool prints the verdict per record — the book win
 
 ### What to do about it
 
-⚠ **NOT auto-applied, and the tool cannot be made to.** 38 records want a mechanical rotation,
+### ✅ Applied 2026-09-01 — the generator now matches the book
+
+The maintainer read the printed pages against the tool's extraction and confirmed they agree;
+**that review is what authorised the write.** `--fix` then corrected **52 records**:
+
+- **50** for the mental-attribute rotation, plus Karma Pool, PR, metatype and Essence where
+  those differed.
+- **2 physical-attribute errors the rotation does not explain** — *Freedom Fighter* strength 3
+  (the function's default; the book gives 5) and *Yakuza Elder* strength 3 where the book gives
+  2. Neither matched either reading of the parentheticals, which is what marked them out.
+
+Audit now: **51 matching, 9 differing — and every one of the 9 is the parenthetical convention**,
+deliberately left for [#86](#86).
+
+⚠ **`--fix` never touches Body/Quickness/Strength where the generator holds the book's NATURAL
+value.** That is the convention question, not an error: setting the augmented figure now and
+modelling implants later ([#86](#86)) would double-count. Where a physical value matches
+*neither* reading it IS corrected — to the natural figure, so the file stays internally
+consistent rather than making one record the odd one out.
+
+⚠ **Three parser faults were found by records that looked like data errors and were not.** Each
+would have sent a reviewer hunting a discrepancy that did not exist:
+- the **Dice Pools line WRAPS**, and the continuation is often where Karma sits;
+- the book writes it **both** as `Karma 3` inline and `Karma Pool 4` on a continuation;
+- `Combat` matched inside **`Astral Combat`** — equal on the record that exposed it, which is
+  exactly how that survives.
+
+⚠ **Talislegger (p.60) has no Dice Pools line at all**, running straight from INIT to Active
+Skills. Its Karma Pool is somebody's judgement, not a transcription, and the audit no longer
+reports the book's silence as a difference.
+
+⚠ **THE PACKS STILL HOLD THE OLD VALUES.** The generator is the source of truth, but the shipped
+packs are built from it by running the macro inside Foundry — and `npm run sync:install` does
+**not** copy packs. Until that is done, `packs/` and the install still carry the rotated stats.
+
+⚠ **NOT auto-applied without review, and the tool still defaults to reporting.** 38 records want a mechanical rotation,
 5 are already right, 6 are unknowable from the numbers alone, and **11 fit neither reading** —
 so a blanket transform would corrupt 22 of 60. The 11 are listed in the report and want eyes.
 

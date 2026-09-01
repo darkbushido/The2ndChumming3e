@@ -203,7 +203,7 @@ const CONTACTS = [
   {
     ...baseActor('Rent-a-Cop', 38, {
       metatype: 'ork', pr: 2, karma: 2,
-      body: 7, quickness: 3, strength: 6, charisma: 2, intelligence: 3, willpower: 2,
+      body: 7, quickness: 3, strength: 6, charisma: 2, intelligence: 2, willpower: 3,
     }),
     items: [
       skill('Clubs', 3, 'quickness'),
@@ -278,8 +278,8 @@ const CONTACTS = [
   // ── p.40 — Who Watches the Watchmen? (cont.) ─────────────────────────────
   {
     ...baseActor('Mercenary', 40, {
-      metatype: 'human', pr: 4, karma: 4,
-      body: 7, quickness: 6, strength: 7, charisma: 5, intelligence: 5, willpower: 4,
+      metatype: 'human', pr: 3, karma: 4,
+      body: 7, quickness: 6, strength: 7, charisma: 4, intelligence: 5, willpower: 4,
       essence: 0.42,
     }),
     items: [
@@ -318,7 +318,7 @@ const CONTACTS = [
   {
     ...baseActor('Security Rigger', 40, {
       metatype: 'dwarf', pr: 3, karma: 3,
-      body: 5, quickness: 4, strength: 3, charisma: 5, intelligence: 5, willpower: 3,
+      body: 5, quickness: 4, strength: 3, charisma: 3, intelligence: 5, willpower: 5,
       essence: 0.3,
     }),
     items: [
@@ -427,7 +427,7 @@ const CONTACTS = [
   // ── p.42 — The Show Must Go On (cont.) ───────────────────────────────────
   {
     ...baseActor('Trid Pirate', 42, {
-      metatype: 'dwarf', pr: 3, karma: 2,
+      essence: 3, metatype: 'dwarf', pr: 3, karma: 2,
       body: 3, quickness: 4, strength: 5, charisma: 5, intelligence: 5, willpower: 5,
     }),
     items: [
@@ -461,7 +461,7 @@ const CONTACTS = [
   {
     ...baseActor('Club Owner', 42, {
       metatype: 'troll', pr: 2, karma: 3,
-      body: 8, quickness: 2, strength: 7, charisma: 3, intelligence: 3, willpower: 4,
+      body: 8, quickness: 2, strength: 7, charisma: 4, intelligence: 3, willpower: 3,
       essence: 6,
     }),
     items: [
@@ -486,7 +486,7 @@ const CONTACTS = [
   {
     ...baseActor('Club Hopper', 43, {
       metatype: 'human', pr: 1, karma: 1,
-      body: 2, quickness: 4, strength: 2, charisma: 3, intelligence: 3, willpower: 3,
+      body: 2, quickness: 4, strength: 2, charisma: 5, intelligence: 3, willpower: 3,
       essence: 5.8,
     }),
     items: [
@@ -562,7 +562,7 @@ const CONTACTS = [
   {
     ...baseActor('Upright Humanis Member', 44, {
       metatype: 'human', pr: 2, karma: 2,
-      body: 3, quickness: 3, strength: 3, charisma: 5, intelligence: 4, willpower: 4,
+      body: 3, quickness: 3, strength: 3, charisma: 4, intelligence: 5, willpower: 4,
       essence: 5.3,
     }),
     items: [
@@ -591,7 +591,7 @@ const CONTACTS = [
   {
     ...baseActor('Terra First! Activist', 45, {
       metatype: 'elf', pr: 3, karma: 2,
-      body: 4, quickness: 5, strength: 4, charisma: 3, intelligence: 5, willpower: 6,
+      body: 4, quickness: 5, strength: 4, charisma: 5, intelligence: 4, willpower: 3,
     }),
     items: [
       skill('Athletics', 3, 'quickness'),
@@ -614,7 +614,7 @@ const CONTACTS = [
   {
     ...baseActor('Terrorist', 46, {
       metatype: 'human', pr: 4, karma: 2,
-      body: 5, quickness: 4, strength: 5, charisma: 3, intelligence: 2, willpower: 3,
+      body: 5, quickness: 4, strength: 5, charisma: 3, intelligence: 3, willpower: 2,
       essence: 4.5,
     }),
     items: [
@@ -653,7 +653,7 @@ const CONTACTS = [
   {
     ...baseActor('Cult Member', 46, {
       metatype: 'human', pr: 3, karma: 1,
-      body: 2, quickness: 3, strength: 2, charisma: 3, intelligence: 2, willpower: 3,
+      body: 2, quickness: 3, strength: 2, charisma: 3, intelligence: 3, willpower: 2,
       essence: 6,
     }),
     items: [
@@ -676,8 +676,8 @@ const CONTACTS = [
   },
   {
     ...baseActor('Freedom Fighter', 46, {
-      metatype: 'dwarf', pr: 4, karma: 3,
-      body: 5, quickness: 5, strength: 3, charisma: 4, intelligence: 3, willpower: 3,
+      essence: 3, metatype: 'dwarf', pr: 4, karma: 3,
+      body: 5, quickness: 5, strength: 5, charisma: 3, intelligence: 3, willpower: 4,
     }),
     items: [
       skill('[Vehicle] B/R', 5, 'reaction'),
@@ -713,7 +713,7 @@ const CONTACTS = [
   {
     ...baseActor('Corporate Headhunter', 47, {
       metatype: 'elf', pr: 3, karma: 4,
-      body: 3, quickness: 5, strength: 3, charisma: 5, intelligence: 5, willpower: 6,
+      body: 3, quickness: 5, strength: 3, charisma: 6, intelligence: 5, willpower: 5,
       essence: 4.6,
     }),
     items: [
@@ -746,7 +746,7 @@ const CONTACTS = [
   {
     ...baseActor('Mr. Fix-It', 47, {
       metatype: 'troll', pr: 4, karma: 5,
-      body: 10, quickness: 5, strength: 9, charisma: 3, intelligence: 4, willpower: 3,
+      body: 10, quickness: 5, strength: 9, charisma: 3, intelligence: 3, willpower: 4,
       essence: 2,
     }),
     items: [
@@ -784,7 +784,7 @@ const CONTACTS = [
   {
     ...baseActor('Mixed-up Middle Manager', 48, {
       metatype: 'dwarf', pr: 2, karma: 2,
-      body: 5, quickness: 3, strength: 3, charisma: 4, intelligence: 4, willpower: 3,
+      body: 5, quickness: 3, strength: 3, charisma: 3, intelligence: 4, willpower: 4,
       essence: 5.3,
     }),
     items: [
@@ -809,7 +809,7 @@ const CONTACTS = [
   {
     ...baseActor('Corp Bodyguard', 49, {
       metatype: 'elf', pr: 4, karma: 3,
-      body: 5, quickness: 7, strength: 6, charisma: 5, intelligence: 3, willpower: 5,
+      body: 5, quickness: 7, strength: 6, charisma: 5, intelligence: 5, willpower: 3,
       essence: 1.76,
     }),
     items: [
@@ -851,7 +851,7 @@ const CONTACTS = [
   {
     ...baseActor('Corp Decker', 49, {
       metatype: 'human', pr: 2, karma: 2,
-      body: 3, quickness: 4, strength: 2, charisma: 4, intelligence: 6, willpower: 4,
+      body: 3, quickness: 4, strength: 2, charisma: 2, intelligence: 6, willpower: 4,
       essence: 2.55,
     }),
     items: [
@@ -878,8 +878,8 @@ const CONTACTS = [
   },
   {
     ...baseActor('Corp Scientist', 49, {
-      metatype: 'human', pr: 1, karma: 1,
-      body: 2, quickness: 3, strength: 2, charisma: 6, intelligence: 4, willpower: 3,
+      metatype: 'human', pr: 1, karma: 2,
+      body: 2, quickness: 3, strength: 2, charisma: 3, intelligence: 6, willpower: 4,
       essence: 4.6,
     }),
     items: [
@@ -910,7 +910,7 @@ const CONTACTS = [
   {
     ...baseActor('Pimp', 50, {
       metatype: 'ork', pr: 2, karma: 2,
-      body: 8, quickness: 3, strength: 8, charisma: 3, intelligence: 3, willpower: 4,
+      body: 8, quickness: 3, strength: 8, charisma: 4, intelligence: 3, willpower: 3,
       essence: 5.8,
     }),
     items: [
@@ -940,7 +940,7 @@ const CONTACTS = [
   {
     ...baseActor('Tamanous Member', 50, {
       metatype: 'ork', pr: 2, karma: 2,
-      body: 6, quickness: 3, strength: 7, charisma: 3, intelligence: 3, willpower: 2,
+      body: 6, quickness: 3, strength: 7, charisma: 2, intelligence: 3, willpower: 3,
       essence: 6,
     }),
     items: [
@@ -975,7 +975,7 @@ const CONTACTS = [
   {
     ...baseActor('Reluctant Ganger', 51, {
       metatype: 'human', pr: 2, karma: 2,
-      body: 4, quickness: 3, strength: 3, charisma: 3, intelligence: 3, willpower: 2,
+      body: 4, quickness: 3, strength: 3, charisma: 2, intelligence: 3, willpower: 3,
       essence: 6,
     }),
     items: [
@@ -1001,7 +1001,7 @@ const CONTACTS = [
   {
     ...baseActor('Joygirl', 51, {
       metatype: 'ork', pr: 1, karma: 1,
-      body: 6, quickness: 4, strength: 5, charisma: 3, intelligence: 3, willpower: 4,
+      body: 6, quickness: 4, strength: 5, charisma: 4, intelligence: 3, willpower: 3,
       essence: 5.8,
     }),
     items: [
@@ -1028,7 +1028,7 @@ const CONTACTS = [
   {
     ...baseActor('Squatter', 52, {
       metatype: 'dwarf', pr: 1, karma: 1,
-      body: 4, quickness: 3, strength: 3, charisma: 3, intelligence: 4, willpower: 2,
+      body: 4, quickness: 3, strength: 3, charisma: 2, intelligence: 3, willpower: 4,
       essence: 6,
     }),
     items: [
@@ -1049,7 +1049,7 @@ const CONTACTS = [
   {
     ...baseActor('Street Vendor', 52, {
       metatype: 'human', pr: 1, karma: 1,
-      body: 3, quickness: 3, strength: 3, charisma: 2, intelligence: 3, willpower: 2,
+      body: 3, quickness: 3, strength: 3, charisma: 3, intelligence: 3, willpower: 2,
       essence: 6,
     }),
     items: [
@@ -1093,7 +1093,7 @@ const CONTACTS = [
   {
     ...baseActor('Yakuza Elder', 53, {
       metatype: 'human', pr: 3, karma: 10,
-      body: 3, quickness: 2, strength: 3, charisma: 6, intelligence: 5, willpower: 5,
+      body: 3, quickness: 2, strength: 2, charisma: 5, intelligence: 6, willpower: 5,
       essence: 6,
     }),
     items: [
@@ -1119,7 +1119,7 @@ const CONTACTS = [
   {
     ...baseActor('Ambitious Mafia Lieutenant', 53, {
       metatype: 'human', pr: 3, karma: 6,
-      body: 6, quickness: 4, strength: 5, charisma: 4, intelligence: 4, willpower: 5,
+      body: 6, quickness: 4, strength: 5, charisma: 5, intelligence: 4, willpower: 4,
       essence: 1.5,
     }),
     items: [
@@ -1190,7 +1190,7 @@ const CONTACTS = [
   {
     ...baseActor('Family Member', 54, {
       metatype: 'human', pr: 1, karma: 1,
-      body: 2, quickness: 3, strength: 2, charisma: 4, intelligence: 3, willpower: 4,
+      body: 2, quickness: 3, strength: 2, charisma: 4, intelligence: 4, willpower: 3,
       essence: 6,
     }),
     items: [
@@ -1211,7 +1211,7 @@ const CONTACTS = [
   {
     ...baseActor('Bookie', 55, {
       metatype: 'dwarf', pr: 2, karma: 2,
-      body: 4, quickness: 3, strength: 4, charisma: 4, intelligence: 4, willpower: 3,
+      body: 4, quickness: 3, strength: 4, charisma: 3, intelligence: 4, willpower: 4,
       essence: 4.8,
     }),
     items: [
@@ -1237,7 +1237,7 @@ const CONTACTS = [
   {
     ...baseActor('Shark Lawyer', 55, {
       metatype: 'human', pr: 2, karma: 3,
-      body: 3, quickness: 4, strength: 2, charisma: 6, intelligence: 5, willpower: 5,
+      body: 3, quickness: 4, strength: 2, charisma: 5, intelligence: 6, willpower: 5,
       essence: 3.8,
     }),
     items: [
@@ -1264,7 +1264,7 @@ const CONTACTS = [
   {
     ...baseActor('High Stakes Negotiator', 56, {
       metatype: 'human', pr: 3, karma: 5,
-      body: 3, quickness: 4, strength: 3, charisma: 6, intelligence: 5, willpower: 5,
+      body: 3, quickness: 4, strength: 3, charisma: 5, intelligence: 6, willpower: 5,
       essence: 4.1,
     }),
     items: [
@@ -1293,7 +1293,7 @@ const CONTACTS = [
   {
     ...baseActor('Troll Street Dealer', 57, {
       metatype: 'troll', pr: 3, karma: 3,
-      body: 8, quickness: 4, strength: 9, charisma: 3, intelligence: 3, willpower: 3,
+      body: 8, quickness: 4, strength: 9, charisma: 3, intelligence: 4, willpower: 3,
       essence: 0.5,
     }),
     items: [
@@ -1325,7 +1325,7 @@ const CONTACTS = [
   {
     ...baseActor('Talent Scout', 57, {
       metatype: 'elf', pr: 3, karma: 3,
-      body: 3, quickness: 5, strength: 3, charisma: 5, intelligence: 5, willpower: 7,
+      body: 3, quickness: 5, strength: 3, charisma: 7, intelligence: 5, willpower: 5,
       essence: 4.2,
     }),
     items: [
@@ -1351,7 +1351,7 @@ const CONTACTS = [
   {
     ...baseActor('ID Manufacturer', 57, {
       metatype: 'dwarf', pr: 3, karma: 4,
-      body: 4, quickness: 5, strength: 3, charisma: 4, intelligence: 4, willpower: 3,
+      body: 4, quickness: 5, strength: 3, charisma: 3, intelligence: 4, willpower: 4,
       essence: 3.4,
     }),
     items: [
@@ -1388,8 +1388,8 @@ const CONTACTS = [
   {
     ...baseActor('Gunsmith', 58, {
       metatype: 'human', pr: 3, karma: 3,
-      body: 4, quickness: 4, strength: 4, charisma: 3, intelligence: 3, willpower: 4,
-      essence: 6,
+      body: 4, quickness: 4, strength: 4, charisma: 3, intelligence: 4, willpower: 4,
+      essence: 3,
       reflex: wired(1),
     }),
     items: [
@@ -1430,7 +1430,7 @@ const CONTACTS = [
   {
     ...baseActor('Fence', 58, {
       metatype: 'ork', pr: 2, karma: 3,
-      body: 7, quickness: 3, strength: 6, charisma: 4, intelligence: 4, willpower: 3,
+      body: 7, quickness: 3, strength: 6, charisma: 3, intelligence: 4, willpower: 4,
       essence: 5.7,
     }),
     items: [
@@ -1461,7 +1461,7 @@ const CONTACTS = [
   {
     ...baseActor('Lorekeeper', 59, {
       metatype: 'elf', pr: 2, karma: 4,
-      body: 2, quickness: 5, strength: 2, charisma: 6, intelligence: 5, willpower: 6,
+      body: 2, quickness: 5, strength: 2, charisma: 6, intelligence: 6, willpower: 5,
       magic: 8,
     }),
     items: [
@@ -1493,7 +1493,7 @@ const CONTACTS = [
   {
     ...baseActor('Antiquities and Oddities Dealer', 59, {
       metatype: 'dwarf', pr: 4, karma: 6,
-      body: 3, quickness: 4, strength: 3, charisma: 6, intelligence: 6, willpower: 3,
+      body: 3, quickness: 4, strength: 3, charisma: 3, intelligence: 6, willpower: 6,
       magic: 9,
     }),
     items: [
@@ -1532,8 +1532,8 @@ const CONTACTS = [
   // ── p.60 — Workin' the Mojo (cont.) ──────────────────────────────────────
   {
     ...baseActor('Artificer/Enchanter', 60, {
-      metatype: 'human', pr: 2, karma: 6,
-      body: 4, quickness: 3, strength: 3, charisma: 5, intelligence: 6, willpower: 4,
+      metatype: 'human', pr: 2, karma: 3,
+      body: 4, quickness: 3, strength: 3, charisma: 4, intelligence: 5, willpower: 6,
       magic: 7,
     }),
     items: [
@@ -1571,7 +1571,7 @@ const CONTACTS = [
   {
     ...baseActor('Talislegger', 60, {
       metatype: 'elf', pr: 2, karma: 4,
-      body: 3, quickness: 5, strength: 3, charisma: 4, intelligence: 4, willpower: 5,
+      body: 3, quickness: 5, strength: 3, charisma: 5, intelligence: 4, willpower: 4,
       magic: 7,
     }),
     items: [
@@ -1616,7 +1616,7 @@ const CONTACTS = [
   {
     ...baseActor('Wiz Kid Ganger', 61, {
       metatype: 'human', pr: 3, karma: 2,
-      body: 4, quickness: 4, strength: 4, charisma: 3, intelligence: 4, willpower: 3,
+      body: 4, quickness: 4, strength: 4, charisma: 3, intelligence: 3, willpower: 4,
       magic: 7,
     }),
     items: [
@@ -1649,7 +1649,7 @@ const CONTACTS = [
   {
     ...baseActor('Hermetic Academic', 61, {
       metatype: 'human', pr: 1, karma: 2,
-      body: 3, quickness: 4, strength: 2, charisma: 6, intelligence: 6, willpower: 4,
+      body: 3, quickness: 4, strength: 2, charisma: 4, intelligence: 6, willpower: 6,
       magic: 8,
     }),
     items: [
@@ -1683,7 +1683,7 @@ const CONTACTS = [
   {
     ...baseActor('Highway Patrol', 62, {
       metatype: 'human', pr: 3, karma: 3,
-      body: 5, quickness: 4, strength: 6, charisma: 4, intelligence: 4, willpower: 3,
+      body: 5, quickness: 4, strength: 6, charisma: 3, intelligence: 4, willpower: 4,
       essence: 0.2, reflex: boosted(1),
     }),
     items: [
@@ -1722,7 +1722,7 @@ const CONTACTS = [
   {
     ...baseActor('SWAT Team Member', 62, {
       metatype: 'ork', pr: 4, karma: 4,
-      body: 6, quickness: 5, strength: 7, charisma: 4, intelligence: 5, willpower: 3,
+      body: 6, quickness: 5, strength: 7, charisma: 3, intelligence: 4, willpower: 5,
       essence: 4.96,
     }),
     items: [
@@ -1758,7 +1758,7 @@ const CONTACTS = [
   {
     ...baseActor('Police Chief', 63, {
       metatype: 'human', pr: 3, karma: 4,
-      body: 3, quickness: 3, strength: 3, charisma: 5, intelligence: 4, willpower: 4,
+      body: 3, quickness: 3, strength: 3, charisma: 4, intelligence: 5, willpower: 4,
       essence: 3.75,
     }),
     items: [
@@ -1819,7 +1819,7 @@ const CONTACTS = [
   {
     ...baseActor('Forensics Expert', 64, {
       metatype: 'elf', pr: 3, karma: 2,
-      body: 3, quickness: 5, strength: 3, charisma: 4, intelligence: 5, willpower: 5,
+      body: 3, quickness: 5, strength: 3, charisma: 5, intelligence: 5, willpower: 4,
     }),
     items: [
       skill('Biotech', 5, 'intelligence'),
@@ -1843,7 +1843,7 @@ const CONTACTS = [
   {
     ...baseActor('Prison Guard', 64, {
       metatype: 'ork', pr: 3, karma: 2,
-      body: 7, quickness: 4, strength: 6, charisma: 3, intelligence: 3, willpower: 2,
+      body: 7, quickness: 4, strength: 6, charisma: 2, intelligence: 3, willpower: 3,
       essence: 6,
     }),
     items: [
@@ -1868,7 +1868,7 @@ const CONTACTS = [
   {
     ...baseActor('DocWagon Paramedic', 65, {
       metatype: 'human', pr: 3, karma: 2,
-      body: 5, quickness: 5, strength: 4, charisma: 4, intelligence: 4, willpower: 3,
+      body: 5, quickness: 5, strength: 4, charisma: 3, intelligence: 4, willpower: 4,
       essence: 4.55,
     }),
     items: [
@@ -1895,7 +1895,7 @@ const CONTACTS = [
   {
     ...baseActor('Elite Black Clinic Cybersurgeon', 65, {
       metatype: 'elf', pr: 2, karma: 4,
-      body: 3, quickness: 7, strength: 3, charisma: 6, intelligence: 5, willpower: 5,
+      body: 3, quickness: 7, strength: 3, charisma: 3, intelligence: 7, willpower: 5,
       essence: 5.16,
     }),
     items: [
@@ -1929,7 +1929,7 @@ const CONTACTS = [
   {
     ...baseActor('Paramed Shaman', 66, {
       metatype: 'dwarf', pr: 3, karma: 3,
-      body: 4, quickness: 4, strength: 3, charisma: 7, intelligence: 4, willpower: 6,
+      body: 4, quickness: 4, strength: 3, charisma: 4, intelligence: 5, willpower: 7,
       magic: 6,
     }),
     items: [
@@ -1965,7 +1965,7 @@ const CONTACTS = [
   {
     ...baseActor('Firefighter', 66, {
       metatype: 'ork', pr: 4, karma: 2,
-      body: 7, quickness: 4, strength: 6, charisma: 3, intelligence: 4, willpower: 3,
+      body: 7, quickness: 4, strength: 6, charisma: 3, intelligence: 3, willpower: 4,
       essence: 4.5,
     }),
     items: [
@@ -2055,7 +2055,7 @@ const CONTACTS = [
   {
     ...baseActor('City Services Worker', 67, {
       metatype: 'dwarf', pr: 2, karma: 2,
-      body: 5, quickness: 3, strength: 4, charisma: 3, intelligence: 4, willpower: 2,
+      body: 5, quickness: 3, strength: 4, charisma: 2, intelligence: 3, willpower: 4,
       essence: 6,
     }),
     items: [

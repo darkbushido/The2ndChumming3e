@@ -4,311 +4,45 @@ The book prints `B Q S I W C`. SR3's character sheet orders them `B Q S C I W`.
 If the entry was made against the sheet's order, the book's I/W/C values land in
 charisma/intelligence/willpower — a rotation, not a scatter of typos.
 
-  match ONLY under the rotation:            38
-  match exactly (book order):               5
+  match ONLY under the rotation:            0
+  match exactly (book order):               54
   all three equal, so undecidable:          6
-  match neither — look at these by hand:    11
-
-The 38 that match ONLY under the rotation. REA/CP/SP show what the derived value currently IS -> what it SHOULD be:
-
-Contact                             pg   book I W C  gen I W C         REA      CP     SP
------------------------------------------------------------------------------------------
-Rent-a-Cop                          38   2 3 2       3 2 2            3->2       =       
-Security Rigger                     40   5 5 3       5 3 5               =    6->7       
-Club Owner                          42   3 3 4       3 4 3               =       =       
-Upright Humanis Member              44   5 4 4       4 4 5            3->4    5->6       
-Terrorist                           46   3 2 3       2 3 3               =       =       
-Cult Member                         46   3 2 3       2 3 3            2->3       =       
-Corporate Headhunter                47   5 5 6       5 6 5               =    8->7       
-Mr. Fix-It                          47   3 4 3       4 3 3            4->5    6->7       
-Mixed-up Middle Manager             48   4 4 3       4 3 4               =       =       
-Corp Bodyguard                      49   5 3 5       3 5 5            5->6    7->8       
-Corp Scientist                      49   6 4 3       4 3 6            3->4    5->6       
-Pimp                                50   3 3 4       3 4 3               =    5->4       
-Tamanous Member                     50   3 3 2       3 2 3               =       =       
-Reluctant Ganger                    51   3 3 2       3 2 3               =       =       
-Joygirl                             51   3 3 4       3 4 3               =       =       
-Squatter                            52   3 4 2       4 2 3               =    4->5       
-Yakuza Elder                        53   6 5 5       5 5 6            3->4       =       
-Ambitious Mafia Lieutenant          53   4 4 5       4 5 4               =       =       
-Family Member                       54   4 3 4       3 4 4               =       =       
-Bookie                              55   4 4 3       4 3 4               =       =       
-Shark Lawyer                        55   6 5 5       5 5 6            4->5       =       
-High Stakes Negotiator              56   6 5 5       5 5 6            4->5       =       
-Talent Scout                        57   5 5 7       5 7 5               =    8->7       
-ID Manufacturer                     57   4 4 3       4 3 4               =       =       
-Fence                               58   4 4 3       4 3 4               =       =       
-Lorekeeper                          59   6 5 6       5 6 6               =       =       
-Antiquities and Oddities Dealer     59   6 6 3       6 3 6               =    6->8   6->7
-Artificer/Enchanter                 60   5 6 4       6 4 5               =    6->7   5->6
-Talislegger                         60   4 4 5       4 5 4               =    7->6       
-Wiz Kid Ganger                      61   3 4 3       4 3 3            4->3       =       
-Hermetic Academic                   61   6 6 4       6 4 6               =    7->8       
-Highway Patrol                      62   4 4 3       4 3 4               =    5->6       
-SWAT Team Member                    62   4 5 3       5 3 4            5->4    6->7       
-Police Chief                        63   5 4 4       4 4 5            3->4    5->6       
-Prison Guard                        64   3 3 2       3 2 3               =    4->5       
-DocWagon Paramedic                  65   4 4 3       4 3 4               =       =       
-Firefighter                         66   3 4 3       4 3 3            4->3       =       
-City Services Worker                67   3 4 2       4 2 3               =    4->5       
-
-  Reaction    wrong on 13 of 38
-  Combat Pool wrong on 18 of 38
-  Spell Pool  wrong on 2 of the Awakened among them
-
-  ⚠ A blank REA/CP means the two readings happen to derive the same number —
-    the stored Intelligence/Willpower are still wrong, and any test rolling
-    them directly (Drain, resistance, social) still uses the wrong value.
-
-Neither reading fits — these need a human:
-  Mercenary (p.40) — book I5 W4 C4 | generator I5 W4 C5
-  Club Hopper (p.43) — book I3 W3 C5 | generator I3 W3 C3
-  Terra First! Activist (p.45) — book I4 W3 C5 | generator I5 W6 C3
-  Freedom Fighter (p.46) — book I3 W4 C3 | generator I3 W3 C4
-  Corp Decker (p.49) — book I6 W4 C2 | generator I6 W4 C4
-  Street Vendor (p.52) — book I3 W2 C3 | generator I3 W2 C2
-  Troll Street Dealer (p.57) — book I4 W3 C3 | generator I3 W3 C3
-  Gunsmith (p.58) — book I4 W4 C3 | generator I3 W4 C3
-  Forensics Expert (p.64) — book I5 W4 C5 | generator I5 W5 C4
-  Elite Black Clinic Cybersurgeon (p.65) — book I7 W5 C3 | generator I5 W5 C6
-  Paramed Shaman (p.66) — book I5 W7 C4 | generator I4 W6 C7
+  match neither — look at these by hand:    0
 
 Book stat blocks parsed: 61
 Generator entries:       62
-Matching:                8
-With differences:        52
+Matching:                51
+With differences:        9
 
 ⚠ Book blocks with no generator entry (1) — a heading the name-finder could not read, or a genuinely missing contact:
   CORPORATE SECURITY  (book line 57)
-
-Mental-attribute disagreements, judged against the printed Reaction, Combat Pool and Spell Pool:
-  book is right:       28
-  generator is right:  0
-  undecidable:         15
-  NEITHER fits:        2
 
 ── Differences ──────────────────────────────────────────────────────────────
 ⚠ NOT all of these are errors. The generator deliberately uses augmented values,
   consolidates cyberware to hit the printed Essence, and leaves Reaction to the
   system except where the book names a known booster. Read each one.
 
-Rent-a-Cop (p.38)
-    intelligence: generator 3, book 2
-    willpower: generator 2, book 3
-      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
-Mercenary (p.40)
-    charisma: generator 5, book 4
-    PR: generator 4, book 3
-Security Rigger (p.40)
-    willpower: generator 3, book 5
-    charisma: generator 5, book 3
-      -> the BOOK is right: its values reproduce all 1 printed derived value(s) exactly; the generator's miss 1
-Trid Pirate (p.42)
-    essence: generator 6, book 3
 Club Owner (p.42)
     body: generator 8, book 9 — matches the NATURAL value 8, so this is the parenthetical convention, not an error
-    willpower: generator 4, book 3
-    charisma: generator 3, book 4
-      -> both readings reproduce the printed values — arithmetic cannot separate them
-Club Hopper (p.43)
-    charisma: generator 3, book 5
-Upright Humanis Member (p.44)
-    intelligence: generator 4, book 5
-    charisma: generator 5, book 4
-      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 2
-Terra First! Activist (p.45)
-    intelligence: generator 5, book 4
-    willpower: generator 6, book 3
-    charisma: generator 3, book 5
-      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 2
-Terrorist (p.46)
-    intelligence: generator 2, book 3
-    willpower: generator 3, book 2
-      -> both readings reproduce the printed values — arithmetic cannot separate them
-Cult Member (p.46)
-    intelligence: generator 2, book 3
-    willpower: generator 3, book 2
-      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
 Freedom Fighter (p.46)
-    strength: generator 3, book 7
-    willpower: generator 3, book 4
-    charisma: generator 4, book 3
-    essence: generator 6, book 3
-      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 2
-Corporate Headhunter (p.47)
-    willpower: generator 6, book 5
-    charisma: generator 5, book 6
-      -> NEITHER reading fits: book misses 1 of 2, generator misses 2. Something else is wrong with this record.
+    strength: generator 5, book 7 — matches the NATURAL value 5, so this is the parenthetical convention, not an error
 Mr. Fix-It (p.47)
     body: generator 10, book 12 — matches the NATURAL value 10, so this is the parenthetical convention, not an error
     quickness: generator 5, book 7 — matches the NATURAL value 5, so this is the parenthetical convention, not an error
     strength: generator 9, book 11 — matches the NATURAL value 9, so this is the parenthetical convention, not an error
-    intelligence: generator 4, book 3
-    willpower: generator 3, book 4
-      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
-Mixed-up Middle Manager (p.48)
-    willpower: generator 3, book 4
-    charisma: generator 4, book 3
-      -> both readings reproduce the printed values — arithmetic cannot separate them
 Corp Bodyguard (p.49)
     quickness: generator 7, book 8 — matches the NATURAL value 7, so this is the parenthetical convention, not an error
     strength: generator 6, book 7 — matches the NATURAL value 6, so this is the parenthetical convention, not an error
-    intelligence: generator 3, book 5
-    willpower: generator 5, book 3
-      -> the BOOK is right: its values reproduce all 1 printed derived value(s) exactly; the generator's miss 1
-Corp Decker (p.49)
-    charisma: generator 4, book 2
-Corp Scientist (p.49)
-    intelligence: generator 4, book 6
-    willpower: generator 3, book 4
-    charisma: generator 6, book 3
-    Karma Pool: generator 1, book 2
-      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 2
-Pimp (p.50)
-    willpower: generator 4, book 3
-    charisma: generator 3, book 4
-      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
-Tamanous Member (p.50)
-    willpower: generator 2, book 3
-    charisma: generator 3, book 2
-      -> both readings reproduce the printed values — arithmetic cannot separate them
-Reluctant Ganger (p.51)
-    willpower: generator 2, book 3
-    charisma: generator 3, book 2
-      -> both readings reproduce the printed values — arithmetic cannot separate them
-Joygirl (p.51)
-    willpower: generator 4, book 3
-    charisma: generator 3, book 4
-      -> both readings reproduce the printed values — arithmetic cannot separate them
-Squatter (p.52)
-    intelligence: generator 4, book 3
-    willpower: generator 2, book 4
-    charisma: generator 3, book 2
-      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
-Street Vendor (p.52)
-    charisma: generator 2, book 3
-Yakuza Elder (p.53)
-    strength: generator 3, book 2
-    intelligence: generator 5, book 6
-    charisma: generator 6, book 5
-      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
 Ambitious Mafia Lieutenant (p.53)
     quickness: generator 4, book 5 — matches the NATURAL value 4, so this is the parenthetical convention, not an error
     strength: generator 5, book 6 — matches the NATURAL value 5, so this is the parenthetical convention, not an error
-    willpower: generator 5, book 4
-    charisma: generator 4, book 5
-      -> both readings reproduce the printed values — arithmetic cannot separate them
 Triad Member (p.54)
     quickness: generator 6, book 7 — matches the NATURAL value 6, so this is the parenthetical convention, not an error
-Family Member (p.54)
-    intelligence: generator 3, book 4
-    willpower: generator 4, book 3
-      -> both readings reproduce the printed values — arithmetic cannot separate them
-Bookie (p.55)
-    willpower: generator 3, book 4
-    charisma: generator 4, book 3
-      -> both readings reproduce the printed values — arithmetic cannot separate them
-Shark Lawyer (p.55)
-    intelligence: generator 5, book 6
-    charisma: generator 6, book 5
-      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
-High Stakes Negotiator (p.56)
-    intelligence: generator 5, book 6
-    charisma: generator 6, book 5
-      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
 Troll Street Dealer (p.57)
     body: generator 8, book 9 — matches the NATURAL value 8, so this is the parenthetical convention, not an error
     quickness: generator 4, book 6 — matches the NATURAL value 4, so this is the parenthetical convention, not an error
     strength: generator 9, book 11 — matches the NATURAL value 9, so this is the parenthetical convention, not an error
-    intelligence: generator 3, book 4
-      -> the BOOK is right: its values reproduce all 1 printed derived value(s) exactly; the generator's miss 1
-Talent Scout (p.57)
-    willpower: generator 7, book 5
-    charisma: generator 5, book 7
-      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
-ID Manufacturer (p.57)
-    willpower: generator 3, book 4
-    charisma: generator 4, book 3
-      -> both readings reproduce the printed values — arithmetic cannot separate them
-Gunsmith (p.58)
-    intelligence: generator 3, book 4
-    essence: generator 6, book 3
-      -> the BOOK is right: its values reproduce all 1 printed derived value(s) exactly; the generator's miss 1
-Fence (p.58)
-    willpower: generator 3, book 4
-    charisma: generator 4, book 3
-      -> both readings reproduce the printed values — arithmetic cannot separate them
-Lorekeeper (p.59)
-    intelligence: generator 5, book 6
-    willpower: generator 6, book 5
-    Karma Pool: generator 4, book (none)
-      -> both readings reproduce the printed values — arithmetic cannot separate them
-Antiquities and Oddities Dealer (p.59)
-    willpower: generator 3, book 6
-    charisma: generator 6, book 3
-      -> NEITHER reading fits: book misses 1 of 2, generator misses 1. Something else is wrong with this record.
-Artificer/Enchanter (p.60)
-    intelligence: generator 6, book 5
-    willpower: generator 4, book 6
-    charisma: generator 5, book 4
-    Karma Pool: generator 6, book 3
-      -> the BOOK is right: its values reproduce all 3 printed derived value(s) exactly; the generator's miss 2
-Talislegger (p.60)
-    willpower: generator 5, book 4
-    charisma: generator 4, book 5
-    Karma Pool: generator 4, book (none)
-      -> both readings reproduce the printed values — arithmetic cannot separate them
-Wiz Kid Ganger (p.61)
-    intelligence: generator 4, book 3
-    willpower: generator 3, book 4
-      -> the BOOK is right: its values reproduce all 3 printed derived value(s) exactly; the generator's miss 1
-Hermetic Academic (p.61)
-    willpower: generator 4, book 6
-    charisma: generator 6, book 4
-      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
 Highway Patrol (p.62)
     body: generator 5, book 7 — matches the NATURAL value 5, so this is the parenthetical convention, not an error
-    willpower: generator 3, book 4
-    charisma: generator 4, book 3
-      -> the BOOK is right: its values reproduce all 1 printed derived value(s) exactly; the generator's miss 1
-SWAT Team Member (p.62)
-    intelligence: generator 5, book 4
-    willpower: generator 3, book 5
-    charisma: generator 4, book 3
-      -> the BOOK is right: its values reproduce all 1 printed derived value(s) exactly; the generator's miss 1
-Police Chief (p.63)
-    intelligence: generator 4, book 5
-    charisma: generator 5, book 4
-      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 2
-Forensics Expert (p.64)
-    willpower: generator 5, book 4
-    charisma: generator 4, book 5
-      -> both readings reproduce the printed values — arithmetic cannot separate them
-Prison Guard (p.64)
-    willpower: generator 2, book 3
-    charisma: generator 3, book 2
-      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
-DocWagon Paramedic (p.65)
-    willpower: generator 3, book 4
-    charisma: generator 4, book 3
-      -> both readings reproduce the printed values — arithmetic cannot separate them
-Elite Black Clinic Cybersurgeon (p.65)
-    intelligence: generator 5, book 7
-    charisma: generator 6, book 3
-      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 2
-Paramed Shaman (p.66)
-    intelligence: generator 4, book 5
-    willpower: generator 6, book 7
-    charisma: generator 7, book 4
-      -> the BOOK is right: its values reproduce all 3 printed derived value(s) exactly; the generator's miss 2
-Firefighter (p.66)
-    intelligence: generator 4, book 3
-    willpower: generator 3, book 4
-      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1
 Dock Worker (p.67)
     body: generator 10, book 11 — matches the NATURAL value 10, so this is the parenthetical convention, not an error
-City Services Worker (p.67)
-    intelligence: generator 4, book 3
-    willpower: generator 2, book 4
-    charisma: generator 3, book 2
-      -> the BOOK is right: its values reproduce all 2 printed derived value(s) exactly; the generator's miss 1

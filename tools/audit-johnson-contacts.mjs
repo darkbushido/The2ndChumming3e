@@ -9,10 +9,16 @@
  * It compares the **generator** — `scripts/macros/populate-mr-johnsons-contacts.js`, the source
  * of truth the pack is built from — against the stat blocks extracted from the PDF.
  *
- * ⚠ **REPORTS, NEVER WRITES.** The generator makes deliberate judgement calls that a mismatch
- * cannot be distinguished from an error: effective values over parentheticals, cyberware
- * consolidated onto one item sized to hit the printed Essence, Reaction left to the system's
- * own derivation except where the book names a known reflex booster. A human decides.
+ * ⚠ **Reports by default. `--fix` writes, and only because a human checked first.** The
+ * maintainer read the printed pages against this tool's extraction on 2026-09-01 and confirmed
+ * they agree; that review is what authorises the write, not the tool's own confidence.
+ *
+ * ⚠ **`--fix` touches ONLY what is unambiguously a transcription error** — Intelligence,
+ * Willpower, Charisma, metatype, Essence, Karma Pool and PR. It never touches Body, Quickness
+ * or Strength, because those differ only where the book prints a parenthetical and that is a
+ * CONVENTION question entangled with TODO 86: the generator's header says to use the augmented
+ * value, but modelling the implants would make the natural value correct instead. Setting them
+ * now and modelling implants later would double-count. See the `(aug)` tag in `--stats`.
  *
  * ⚠ **The column order is `B Q S I W C`** — Intelligence and Willpower BEFORE Charisma. That
  * is precisely the Dock Worker slip, and the mistake a hand-transcriber repeats.
@@ -42,7 +48,7 @@
  * Override the location with SR3E_PDF_DIR.
  */
 import { execFileSync } from 'node:child_process';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -50,6 +56,7 @@ const HERE   = dirname(fileURLToPath(import.meta.url));
 const SHOW_OK = process.argv.includes('--all');
 const TABLE   = process.argv.includes('--table');
 const STATS   = process.argv.includes('--stats');
+const FIX     = process.argv.includes('--fix');
 // Bare arguments name specific contacts; everything else is a flag.
 const ONLY    = new Set(process.argv.slice(2).filter(a => !a.startsWith('--')));
 const PDF_DIR = process.env.SR3E_PDF_DIR
@@ -130,9 +137,27 @@ for (let i = 0; i < lines.length; i++) {
   for (let j = i + 2; j < i + 6 && j < lines.length; j++) {
     const dp = /Dice Pools:(.*)$/i.exec(lines[j] ?? '');
     if (!dp) continue;
-    karma      = Number(/Karma\s+(\d+)/i.exec(dp[1])?.[1]  ?? NaN);
-    combatPool = Number(/Combat\s+(\d+)/i.exec(dp[1])?.[1] ?? NaN);
-    spellPool  = Number(/Spell\s+(\d+)/i.exec(dp[1])?.[1]  ?? NaN);
+    /* ⚠ **The line WRAPS**, and the continuation is where Karma often is. Lorekeeper reads
+     * "Dice Pools: Astral 2, Astral Combat 8, Combat 8, Spell 6," with Karma on the NEXT line;
+     * reading one line reported "the book gives no Karma Pool" for two Awakened contacts and
+     * would have had a reviewer hunting a data error that does not exist. A page footer can
+     * interrupt too, so continuations are gathered while the text keeps looking like a list. */
+    let text = dp[1];
+    for (let k = j + 1; k < j + 4 && k < lines.length; k++) {
+      const nxt = (lines[k] ?? '').trim();
+      if (!/,\s*$/.test(text.trim()) && !/^(Karma|Spell|Combat|Astral|Control|Hacking)\b/i.test(nxt)) break;
+      if (/^(Active|Knowledge|Cyberware|Bioware|Gear|Metatype|INIT)/i.test(nxt)) break;
+      text += ' ' + nxt.replace(/^\d+\s+Mr\. Johnson's Little Black Book\s*/i, '');
+    }
+    const dpText = text;
+    /* ⚠ The book writes the Karma Pool BOTH ways — "Karma 3" inline, "Karma Pool 4" on a
+     * wrapped continuation. Matching only the first reported "no Karma Pool in the book" for
+     * Lorekeeper, whose generator value was right all along. */
+    karma      = Number(/Karma(?:\s+Pool)?\s+(\d+)/i.exec(dpText)?.[1] ?? NaN);
+    /* ⚠ Anchored to a list separator so "Astral Combat 8" cannot be read as the Combat Pool.
+     * They happen to be equal on Lorekeeper, which is exactly how a bug like this survives. */
+    combatPool = Number(/(?:^|,)\s*Combat\s+(\d+)/i.exec(dpText)?.[1] ?? NaN);
+    spellPool  = Number(/(?:^|,)\s*Spell\s+(\d+)/i.exec(dpText)?.[1]  ?? NaN);
     if (!Number.isFinite(karma))      karma = null;
     if (!Number.isFinite(combatPool)) combatPool = null;
     if (!Number.isFinite(spellPool))  spellPool = null;
@@ -169,6 +194,9 @@ for (const m of src.matchAll(/baseActor\(\s*'([^']+)'\s*,\s*(\d+)\s*,\s*\{([\s\S
   };
   const str = (k) => (new RegExp(`\\b${k}\\s*:\\s*'([^']*)'`).exec(bodyText) ?? [])[1] ?? null;
   gen.set(name.toUpperCase(), {
+    // Where this entry's object literal lives, so --fix can rewrite exactly this span.
+    _start: m.index + m[0].indexOf('{') + 1,
+    _end:   m.index + m[0].lastIndexOf('}'),
     name, page: Number(page), metatype: str('metatype') ?? 'human',
     // ⚠ These defaults MUST match `baseActor`'s own, or an omitted attribute reads as a
     // mismatch. That is how the Metroplex Guardsman stub hid: every value was the default.
@@ -256,7 +284,13 @@ for (const b of book) {
   }
   if (g.essence !== b.essence) bad.push(`essence: generator ${g.essence}, book ${b.essence}`);
   if (g.pr !== b.pr)           bad.push(`PR: generator ${g.pr ?? '(none)'}, book ${b.pr}`);
-  if (g.karma !== b.karma)     bad.push(`Karma Pool: generator ${g.karma ?? '(none)'}, book ${b.karma ?? '(none)'}`);
+  /* ⚠ Only a difference when the BOOK states one. Talislegger (p.60) has no Dice Pools line
+   * at all — it runs straight from INIT to Active Skills — so the generator's value there is
+   * somebody's judgement, not a transcription error, and flagging it sends a reviewer looking
+   * for a discrepancy that does not exist. */
+  if (b.karma !== null && g.karma !== b.karma) {
+    bad.push(`Karma Pool: generator ${g.karma ?? '(none)'}, book ${b.karma}`);
+  }
   if (b.awakened && !g.magic)  bad.push('the book marks this contact AWAKENED (an M column) but the generator sets no Magic');
 
   /* ── Independent corroboration ────────────────────────────────────────────────────────
@@ -360,6 +394,71 @@ for (const b of book) {
     });
   }
   else { clean++; if (SHOW_OK) console.log(`  ok  ${g.name} (p.${g.page})`); }
+}
+
+if (FIX) {
+  /* ⚠ Edits are applied from the LAST entry in the file backwards, so every earlier span's
+   * offsets stay valid. Doing it forwards shifts everything after the first insertion. */
+  const edits = [];
+  for (const r of tableRows) {
+    const { b, g } = r;
+    const want = {
+      intelligence: b.intelligence, willpower: b.willpower, charisma: b.charisma,
+      essence: b.essence, pr: b.pr,
+      // ⚠ Only when the book actually states one. A Dice Pools line the parser could not read
+      // must never be taken as "the book gives no Karma Pool" and blank a real value.
+      ...(b.karma !== null ? { karma: b.karma } : {}),
+    };
+    /* ⚠ Body/Quickness/Strength are skipped ONLY where the generator holds the book's NATURAL
+     * value — that is the parenthetical convention (TODO 86), not an error. A value matching
+     * neither reading IS an error and is corrected to the NATURAL figure, keeping this file
+     * internally consistent: every other record stores naturals, so setting one augmented
+     * would make it the odd one out and double-count once implants are modelled. */
+    for (const [key, idx] of [['body', 0], ['quickness', 1], ['strength', 2]]) {
+      const nat = b.natural[idx];
+      if (g[key] === nat) continue;              // parenthetical convention — leave it
+      if (g[key] === b[key]) continue;           // already agrees
+      want[key] = nat;
+    }
+
+    const changed = [];
+    let text = src.slice(g._start, g._end);
+
+    for (const [key, val] of Object.entries(want)) {
+      if (g[key] === val) continue;
+      const re = new RegExp(`(\\b${key}\\s*:\\s*)(-?\\d+(?:\\.\\d+)?|null)`);
+      if (re.test(text)) {
+        text = text.replace(re, `$1${val}`);
+      } else {
+        /* ⚠ Absent, so INSERT rather than skip. `baseActor` defaults every attribute to 3 and
+         * karma to null, which is exactly how the Metroplex Guardsman stub hid in plain sight
+         * — a missing key is not "already correct". */
+        text = text.replace(/(\{?\s*)(metatype\s*:)/, `$1${key}: ${val}, $2`);
+        if (!new RegExp(`\\b${key}\\s*:`).test(text)) text = `\n      ${key}: ${val},` + text;
+      }
+      changed.push(`${key} ${g[key] ?? '—'}→${val}`);
+    }
+    // ⚠ metatype is a STRING, so it needs its own quoted replacement.
+    if (g.metatype !== b.metatype && b.metatype) {
+      text = text.replace(/(\bmetatype\s*:\s*)'[^']*'/, `$1'${b.metatype}'`);
+      changed.push(`metatype ${g.metatype}→${b.metatype}`);
+    }
+    if (changed.length) edits.push({ start: g._start, end: g._end, text, name: g.name, changed });
+  }
+
+  edits.sort((a, z) => z.start - a.start);
+  let out = src;
+  for (const e of edits) out = out.slice(0, e.start) + e.text + out.slice(e.end);
+
+  const path = join(HERE, '..', 'scripts', 'macros', 'populate-mr-johnsons-contacts.js');
+  writeFileSync(path, out, 'utf8');
+
+  edits.slice().reverse().forEach(e => console.log(`  ${e.name.padEnd(34)} ${e.changed.join(', ')}`));
+  console.log(`\n${edits.length} record(s) updated in ${path}`);
+  console.log('⚠ Body/Quickness/Strength deliberately untouched — see the header and TODO 86.');
+  console.log('⚠ The PACKS still hold the old values. Re-running the macro rebuilds all 62');
+  console.log('  inside Foundry; sync:install does NOT carry packs.');
+  process.exit(0);
 }
 
 if (STATS) {
