@@ -29,6 +29,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { parseGenerator } from './lib/johnson-generator.mjs';
+import { parseSpecialisations } from '../scripts/data/skill-rules.mjs';
 
 const HERE    = dirname(fileURLToPath(import.meta.url));
 const INSTALL = process.env.SR3E_INSTALL
@@ -37,6 +38,10 @@ const PACK = process.argv.includes('--install')
   ? join(INSTALL, 'packs', 'sr3e-mr-johnsons-contacts')
   : join(HERE, '..', 'packs', 'sr3e-mr-johnsons-contacts');
 const CHECK = process.argv.includes('--check');
+/* ⚠ Skills are rebuilt only when asked. They are 743 embedded documents across the 62 contacts
+ * and replacing them DELETES and RECREATES, so it is opt-in rather than folded into the
+ * attribute pass a GM might run casually. */
+const SKILLS = process.argv.includes('--skills');
 
 /**
  * ⚠ **The generator is parsed with the SHARED parser**, not a fresh regex. Two ad-hoc versions
@@ -48,6 +53,7 @@ const gen = parseGenerator(readFileSync(
 
 console.log(`Pack:      ${PACK}`);
 console.log(`Generator: ${gen.size} contacts`);
+console.log(`Skills:    ${SKILLS ? 'REBUILT from the generator' : 'untouched (pass --skills)'}`);
 console.log(CHECK ? 'Mode:      --check (nothing will be written)\n' : 'Mode:      apply\n');
 
 const db = new ClassicLevel(PACK, { valueEncoding: 'json' });
@@ -63,7 +69,70 @@ try {
 
 const ATTRS = ['body', 'quickness', 'strength', 'charisma', 'intelligence', 'willpower'];
 
+/* The generator resolves a skill's CATEGORY at run time from `game.sr3e.SR3E.skills`, which is
+ * not available here — so it is resolved the same way, directly from the config module. */
+const { SR3E } = await import(
+  `file://${join(HERE, '..', 'scripts', 'config.js').replace(/\\/g, '/')}`);
+const ACTIVE_CATS = new Set(['Combat skills', 'Physical skills', 'Social skills',
+  'Technical skills', 'Vehicle skills', 'Magical skills', 'Build/Repair skills']);
+function categoryFor(name, tier) {
+  if (tier === 'language') return 'Language';
+  const bare = String(name).replace(/\s*B\/R\s*$/i, '').trim();
+  for (const [cat, list] of Object.entries(SR3E.skills ?? {})) {
+    const isActive = ACTIVE_CATS.has(cat);
+    if (tier === 'active' ? !isActive : (isActive || cat === 'Language')) continue;
+    if (list.some(x => x.name === name || x.name === bare)) return cat;
+  }
+  // Same fallback the generator uses for placeholders and B/R variants.
+  return tier === 'active' ? 'Combat skills' : 'Street knowledge';
+}
+
 let changed = 0, already = 0, unmatched = [];
+
+/* ── Skills ────────────────────────────────────────────────────────────────────────────────
+ *
+ * The generator's skill lists were regenerated from the book (TODO 89, 62 of 62 now matching).
+ * The packs still carry the old ones, and because the packs are built by RUNNING the macro
+ * inside Foundry there is no other way to carry a fix across without a full rebuild.
+ *
+ * ⚠ **Embedded items live under their own `!actors.items!` keys**, and the actor's `items`
+ * array holds their ids. Both must change together: write the documents, then rewrite the
+ * array, or the actor points at ids that no longer exist.
+ *
+ * ⚠ **Non-skill items are preserved in order.** Gear, armour, cyberware, spells and adept
+ * powers belong to TODO 86 and are not this tool's business.
+ */
+function skillDoc(entry, ownership) {
+  const now = Date.now();
+  return {
+    // ⚠ Deterministic id from the contact and skill name, NOT random: re-running must reuse the
+    // same key rather than orphaning the previous document in the database.
+    _id: entry._id,
+    name: entry.name, type: 'skill',
+    system: {
+      skillName: entry.name, rating: entry.rating, linkedAttribute: entry.attr,
+      category: entry.category, skillType: entry.tier,
+      specialisation: entry.spec ?? '',
+      specialisations: entry.spec ? parseSpecialisations(entry.spec, entry.rating) : [],
+      force: 0, description: '',
+    },
+    img: 'icons/svg/item-bag.svg', effects: [], folder: null, sort: 0,
+    ownership: ownership ?? { default: 0 }, flags: {},
+    _stats: { compendiumSource: null, duplicateSource: null, coreVersion: '14',
+              systemId: 'The2ndChumming3e', systemVersion: null,
+              createdTime: now, modifiedTime: now, lastModifiedBy: null },
+  };
+}
+
+/** 16 hex chars derived from a string — stable across runs. */
+function idFor(text) {
+  let h1 = 0x811c9dc5, h2 = 0x01000193;
+  for (let i = 0; i < text.length; i++) {
+    h1 = Math.imul(h1 ^ text.charCodeAt(i), 16777619) >>> 0;
+    h2 = Math.imul(h2 + text.charCodeAt(i), 2246822519) >>> 0;
+  }
+  return (h1.toString(16).padStart(8, '0') + h2.toString(16).padStart(8, '0')).slice(0, 16);
+}
 
 for await (const [key, doc] of db.iterator()) {
   // ⚠ Actor documents only. Embedded items live under `!actors.items!` in the same database.
@@ -116,6 +185,39 @@ for await (const [key, doc] of db.iterator()) {
   if (g.karma !== null && (doc.system?.karmaPool ?? 0) !== g.karma) {
     diffs.push(`karmaPool ${doc.system?.karmaPool ?? 0}→${g.karma}`);
     sys.karmaPool = g.karma;
+  }
+
+  /* ── rebuild this contact's skills ─────────────────────────────────────────────────── */
+  if (SKILLS) {
+    const oldIds = doc.items ?? [];
+    const keep = [];                      // non-skill item ids, in order
+    const oldSkillIds = [];
+    for (const id of oldIds) {
+      const it = await db.get(`!actors.items!${doc._id}.${id}`).catch(() => undefined);
+      if (it && it.type === 'skill') oldSkillIds.push(id); else keep.push(id);
+    }
+
+    const built = g.skills.map(sk => ({
+      ...sk,
+      _id: idFor(`${doc.name}|${sk.name}|${sk.tier}`),
+      category: categoryFor(sk.name, sk.tier),
+    }));
+
+    const sameCount = oldSkillIds.length === built.length;
+    if (!sameCount || !CHECK) {
+      if (!CHECK) {
+        for (const id of oldSkillIds) await db.del(`!actors.items!${doc._id}.${id}`);
+        for (const b of built) {
+          await db.put(`!actors.items!${doc._id}.${b._id}`, skillDoc(b, doc.ownership));
+        }
+        doc.items = keep.concat(built.map(b => b._id));
+      }
+      if (oldSkillIds.length !== built.length) {
+        diffs.push(`skills ${oldSkillIds.length}→${built.length}`);
+      } else {
+        diffs.push(`skills rebuilt (${built.length})`);
+      }
+    }
   }
 
   if (!diffs.length) { already++; continue; }

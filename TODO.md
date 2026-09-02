@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | *(none)* |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **73** · **74** · **88** · **89** *(**71** · **72** · **80** · **81** done)* |
+| 🔴 Confirmed bugs, still open | **73** · **74** *(**71** · **72** · **80** · **81** · **88** · **89** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **4** · **30** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **83** · **84** · **85** · **86** · **87** · **90** |
@@ -5748,7 +5748,7 @@ not improve what a player SEES in the compendium, which is the part of the ask t
 address.
 
 <a id="88"></a>
-## 88. Little Black Book specialisations roll the wrong dice — **CONFIRMED**
+## 88. ✅ Little Black Book specialisations roll the wrong dice — **DONE 2026-09-01**
 
 **Found 2026-09-01** while checking whether a contact can take an opposed roll against a player.
 **131 of the 741** skills on the 62 contacts carry a specialisation, and every one of them is
@@ -5879,12 +5879,25 @@ copies of `level: 2`. ⚠ It lives in a **dependency-free** module rather than `
 which calls `foundry.data.fields` at load — importing that for one number broke
 `tests/ew-skill.test.mjs` immediately.
 
-### Still to do
+### ✅ Landed in the packs too
 
-- **Patch the packs.** The generator is fixed; `packs/` and the install still carry the old
-  specialisations. `patch-johnson-stats.mjs` only handles attributes, so this needs the skills
-  half — or a macro re-run inside Foundry.
-- A test for `parseSpecialisations`, and a mutant for the derive-versus-default choice.
+`patch-johnson-stats.mjs --skills` rebuilds every contact's skill documents from the generator
+— **62 contacts, 773 skills, 125 carrying specialisations, both pack copies, 0 dangling item
+references**, `packs:check` clean.
+
+Spot-checked against the page: *Shark Lawyer*'s `Etiquette 3 (Legal 6, Political 5)` now stores
+`Legal level 3` and `Political level 2`, i.e. 3+3 and 3+2 — the derived bonuses, not the flat
+chargen 2.
+
+⚠ **Item ids are DERIVED from contact + skill name, not random.** A re-run must reuse the same
+`!actors.items!` keys; random ids would orphan the previous documents inside the database.
+
+⚠ **The actor's `items` array and the item documents must move together.** Writing one without
+the other leaves an actor pointing at ids that no longer exist — checked explicitly, 0 dangling.
+
+⚠ **A GM who already dragged a contact into a world keeps their stale copy.** Foundry embeds.
+No migration was written: these are NPC reference sheets rather than system data, and
+re-dragging is the ordinary fix.
 
 ### ~~🔴 Blocked on a UI bug — the level dropdown stops at Lv2~~ ✅ FIXED
 
@@ -5921,7 +5934,7 @@ calculator's specialisation costs ([#80](#80)), defaulting, the sheet — would 
 bad `level`.
 
 <a id="89"></a>
-## 89. Dock Worker has the wrong skill list entirely — **CONFIRMED**
+## 89. ✅ Contacts' skill lists — regenerated from the book — **DONE 2026-09-01**
 
 **Found 2026-09-01** while splitting sibling skills for [#88](#88). This is not a specialisation
 problem and is worse than one.
@@ -6011,10 +6024,41 @@ rate on skills, assuming the rest is sound would be unwarranted. [#86](#86)'s co
 surface the cyberware half as a side effect, since a stub that does not match any pack entry has
 to be reported.
 
-⚠ **Fixing this is bigger than [#84](#84)'s rotation.** That was one mechanical transform over
-verified numbers. This is 130 individual differences of at least six distinct kinds, several
-needing a judgement about which of two skills a rating or specialisation belongs to. It wants
-working through page by page, not a `--fix` flag.
+### ✅ Regenerated rather than patched — `tools/regen-johnson-skills.mjs`
+
+130 differences across six kinds, several needing a judgement about which of two skills a rating
+belongs to, is not a `--fix` flag. **So the skill lists were re-extracted from the book instead**
+— every `skill(...)` call in the generator replaced with what the page prints.
+
+**Result: 62 of 62 contacts now match the book**, from 13 clean and 130 differences.
+
+Hand-verified on the three worst records:
+- *Dock Worker* — `Athletics 3, Car 2 (Forklift 4), Intimidation 3, Unarmed Combat 3`, its own
+  list back rather than City Services Worker's.
+- *Shark Lawyer* — `Interrogation 6, Intimidation 4 (Verbal 6)`, the merge undone.
+- *Bookie* — `Etiquette 2 (Street 4, Gambling 5)` and `Psychology 3` restored.
+
+⚠ **It replaces ONLY `skill(...)` calls.** Gear, armour, cyberware, spells and adept powers are
+left exactly where they are — those are [#86](#86), a different extraction.
+
+⚠ **The book does not print a LINKED ATTRIBUTE**, which `skill()` needs. It is resolved from
+`SR3ESkills`, then from whatever the generator already used for that name, then a tier default —
+and anything falling all the way through is REPORTED, because the linked attribute decides which
+pool a skill rolls. Nothing fell through on the final run.
+
+### ⚠ Four PDF faults it had to survive, each of which produced plausible garbage
+
+1. **A section header can lose its first word entirely.** Joygirl (p.51) extracts as
+   `…Unarmed Combat 2` / `Skills: Bunraku Parlors 3, …` — the word "Knowledge" is simply not in
+   the text. Untreated, the whole knowledge list merged into the active one and produced a skill
+   named *"Unarmed Combat 2 Skills: Bunraku Parlors"*. A bare `Skills:` is now both a terminator
+   and a knowledge header, and is reported when it happens.
+2. **The book's heading and the generator's name differ** — "CORPORATE SECURITY" vs "Corporate
+   Security Guard", "GHOUL" vs "Ghoul (Human Ghoul)". Anchored prefix match.
+3. **`Charge's Habits`** — a real skill with an apostrophe. The shared parser's
+   `'([^']*)'` could not read `'Charge\'s Habits'` back and reported it missing from a file that
+   plainly contained it. Fixed to handle escapes.
+4. **Page footers land mid-list** and parse as a skill called "39 Mr".
 
 ⚠ **Do not fix Dock Worker in isolation** — or any single record found by accident. That
 produces exactly the false confidence [#84](#84) exists to avoid.

@@ -45,6 +45,12 @@ const lines = execFileSync('pdftotext', ['-raw', '-f', '37', '-l', '68', PDF, '-
   { encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 }).split(/\r?\n/);
 
 /** Sections that END a skill list. */
+/* ⚠ **A bare `Skills:` is a section header whose first word the layout DROPPED.**
+ * Joygirl (p.51) renders as "…Unarmed Combat 2" / "Skills: Bunraku Parlors 3, …" —
+ * the word "Knowledge" is not in the extracted text at all. Without this the whole
+ * knowledge list merges into the active one and produces a skill named
+ * "Unarmed Combat 2 Skills: Bunraku Parlors". No real skill is called "Skills". */
+const ORPHAN_HEAD = /^Skills:/i;
 const STOP = /^(Knowledge Skills|Language Skills|Active Skills|Cyberware|Bioware|Gear|Spells|Powers|Metatype|INIT|Dice Pools|Notes|Hook|Interaction|Commentary|Vehicle)/i;
 
 /** Strip the running page footer, which serialises into the middle of a list. */
@@ -79,14 +85,23 @@ function parseEntry(text) {
 }
 
 /** Every skill the book gives a contact, keyed by UPPER-CASE contact name. */
+const orphanHeads = [];
 const book = new Map();
 for (let i = 0; i < lines.length; i++) {
-  const head = /^(Active|Knowledge|Language) Skills:(.*)$/i.exec(lines[i].trim());
+  /* An orphaned `Skills:` both ends the previous section and starts one. It is read as
+   * KNOWLEDGE — far and away the commonest of the three — and reported, because the
+   * alternative is losing the contact's knowledge skills silently. */
+  const orphan = ORPHAN_HEAD.test(lines[i].trim())
+    && !/^(Active|Knowledge|Language)/i.test(lines[i].trim());
+  const head = orphan
+    ? ['', 'Knowledge', lines[i].trim().replace(/^Skills:/i, '')]
+    : /^(Active|Knowledge|Language) Skills:(.*)$/i.exec(lines[i].trim());
   if (!head) continue;
+  if (orphan) orphanHeads.push(lines[i].trim().slice(0, 48));
 
   let text = head[2];
   for (let j = i + 1; j < i + 12 && j < lines.length; j++) {
-    if (STOP.test(lines[j].trim())) break;
+    if (STOP.test(lines[j].trim()) || ORPHAN_HEAD.test(lines[j].trim())) break;
     text += ' ' + lines[j];
   }
 
@@ -122,7 +137,15 @@ const problems = [];
 
 for (const [upper, g] of gen) {
   if (ONLY.size && !ONLY.has(g.name)) continue;
-  const b = book.get(upper);
+  /* ⚠ The book's heading and the generator's name are not always identical — "CORPORATE
+   * SECURITY" vs "Corporate Security Guard", "GHOUL" vs "Ghoul (Human Ghoul)". Anchored,
+   * one-directional prefix match, so "Corp Decker" cannot match a heading containing "Corp". */
+  let b = book.get(upper);
+  if (!b) {
+    for (const [heading, list] of book) {
+      if (upper.startsWith(heading + ' ') || upper.startsWith(heading + ' (')) { b = list; break; }
+    }
+  }
   if (!b) { problems.push({ name: g.name, page: g.page, bad: ['no skill list found in the book — check the heading'] }); continue; }
 
   const bMap = new Map(b.map(e => [key(e.name), e]));

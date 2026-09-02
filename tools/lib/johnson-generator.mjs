@@ -71,18 +71,23 @@ export function parseGenerator(src) {
   entries.forEach((e, i) => {
     const end = i + 1 < entries.length ? entries[i + 1]._start : src.length;
     const block = src.slice(e._end, end);
-    /* ⚠ Single-quoted arguments with no escape handling — adequate because no skill name
-     * in this file contains an apostrophe. If one is ever added the call is simply not
-     * captured, which the audit reports as "missing from the generator" rather than silently
-     * mis-reading it. Deliberately the safe failure. */
-    const CALL = /\bskill\(\s*'([^']*)'\s*,\s*(\d+)\s*,\s*'([^']*)'\s*(?:,\s*'([^']*)'\s*)?(?:,\s*'([^']*)'\s*)?\)/g;
+    /* ⚠ **Escaped apostrophes must be handled.** `Charge's Habits` is a real knowledge skill
+     * (Corp Bodyguard, p.48) and the generator writes it `'Charge\'s Habits'`. A naive
+     * `'([^']*)'` stops at the backslash-quote and the call is not captured at all — which the
+     * audit then reports as a skill missing from the generator when it is plainly there. This
+     * was the documented "safe failure" until the regeneration actually produced one. */
+    const STR = "'((?:[^'\\\\]|\\\\.)*)'";
+    const CALL = new RegExp(
+      `\\bskill\\(\\s*${STR}\\s*,\\s*(\\d+)\\s*,\\s*${STR}\\s*`
+      + `(?:,\\s*${STR}\\s*)?(?:,\\s*${STR}\\s*)?\\)`, 'g');
+    const unesc = (x) => String(x ?? '').replace(/\\(.)/g, '$1');
     for (const sm of block.matchAll(CALL)) {
       e.skills.push({
-        name:   sm[1],
+        name:   unesc(sm[1]),
         rating: Number(sm[2]),
-        attr:   sm[3],
-        tier:   sm[4] ?? 'active',
-        spec:   sm[5] ?? '',
+        attr:   unesc(sm[3]),
+        tier:   sm[4] ? unesc(sm[4]) : 'active',
+        spec:   unesc(sm[5]),
       });
     }
   });
