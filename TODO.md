@@ -6234,14 +6234,22 @@ flash-pak and asked whether that was one gap or a class. It is a class.
 one of `adept-powers · armor · bioware · cyberware · drones · drugs · firearms · melee ·
 projectiles · spells · vehicle-mods · vehicle-weapons · vehicles`.
 
-### ⚠ `ammunition` is the sharpest: a complete implementation with no data
+### ⚠ `ammunition` is the sharpest: a complete implementation with no shipped items
+
+⚠ **This is a PACK gap, not a book gap and not a rules gap** — three layers, and only the third
+is empty. The **books** print ammunition in full (SR3 core p.279; Cannon Companion devotes a
+chapter to it). The **rules** are implemented. What does not exist is a **compendium document a
+player can drag onto a sheet**, and a search by name under every item type confirms it did not
+merely ship mis-typed.
 
 `SR3E.ammoTypes` carries the real rules — APDS halving ballistic, flechette's
 `max(Impact × 2, Ballistic)`, gel's −2 Power and Stun, explosive/EX Power bonuses, tracer — beside
 `loadMechanism` matching, stockpile-and-magazine tracking, `SR3EItem.reload()` and a `trackAmmo`
-world setting gating all of it. **Not one ammunition item exists to load.** The book prints the
-table at p.279: APDS, explosive, EX explosive, flechette, gel, regular, tracer, assault cannon,
-taser dart.
+world setting gating all of it. **Not one ammunition item ships in any pack.** `SR3EItem.reload()`
+filters `actor.items` for `type === 'ammunition'`, finds none, warns *"No compatible ammo in
+stock"* and stops — so with `trackAmmo` on **every firearm in the system is unreloadable** until
+a GM hand-authors the items. Core's table is at p.279 (APDS, explosive, EX explosive, flechette,
+gel, regular, tracer, assault cannon, taser dart) and Cannon Companion has far more.
 
 ⚠ **Arrows and bolts are the same story** — the nocked-ammo flow matches them by `arrow`/`bolt`
 loading mechanism, and the book prints both rows. Neither ships, so a bow can never be re-nocked

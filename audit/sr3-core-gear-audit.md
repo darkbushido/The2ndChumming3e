@@ -105,15 +105,35 @@ the map names exists in `SR3ESkills` at all.
 spells · vehicle-mods · vehicle-weapons · vehicles`. That is the whole reason a flash-pak has
 nowhere to live.
 
-### 3a. ⚠ `ammunition` = 0 is the sharpest one — a complete model with no data
+### 3a. ⚠ `ammunition` = 0 is the sharpest one — a complete model with no shipped items
+
+**To be exact about what is and is not missing**, because these are three different layers and
+only the third is empty:
+
+| Layer | State |
+|---|---|
+| **The books** | Ammunition is fully printed — SR3 core p.279, and Cannon Companion carries a whole chapter of it. **Nothing is missing from the books.** |
+| **This system's rules** | Implemented. `SR3E.ammoTypes` covers `regular` `explosive` `exExplosive` `gel` `apds` `flechette` `tracer` `antiVehicle`; `ammoLoadMechanisms` covers `c` `m` `cy` `b` `d` `sb` `internal` `arrow` `bolt`; `AmmunitionData` is a real TypeDataModel. |
+| **The shipped compendium packs** | **Zero documents of `type: "ammunition"`.** This is the gap. |
+
+Searched by NAME under every type as well, in case ammunition shipped mis-typed: 31 hits, none of
+them ammunition — weapons named for the round they fire (`9mm Flechette SMG`, `Flechette Gun`), a
+French vehicle decoy (`Lure Ammo AM-56`), and spells (`Manabolt`, `Stunbolt`).
+
+So the claim is narrow: **nothing ships that a player can drag onto a sheet to represent owning
+rounds.**
 
 The system has a **full two-layer ammunition implementation**: `SR3E.ammoTypes` with the real
 rules (APDS halves ballistic, flechette's `max(Impact × 2, Ballistic)`, gel −2 Power and Stun,
 explosive/EX Power bonuses, tracer), `loadMechanism` matching, stockpile-and-magazine tracking,
 `SR3EItem.reload()`, and a `trackAmmo` world setting gating all of it.
 
-**There is not one ammunition item in any pack to reload from.** The book's table (p.279) lists
-APDS, explosive, EX explosive, flechette, gel, regular, tracer, assault cannon and taser dart.
+**There is not one ammunition item in any pack to reload from**, and `SR3EItem.reload()` filters
+`actor.items` for `type === 'ammunition'` matching the gun's load mechanism — finding none, it
+warns *"No compatible ammo in stock"* and stops. So with `trackAmmo` on, **every firearm in the
+system is unreloadable** until a GM hand-authors ammunition items in their own world.
+
+The rules to resolve APDS are all there; there is no APDS to load.
 
 The same is true of **arrows and bolts**, which the nocked-ammo flow matches by `arrow`/`bolt`
 loading mechanism — the book prints both rows and neither ships.
