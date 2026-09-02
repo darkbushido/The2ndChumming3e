@@ -643,4 +643,52 @@ export async function run(t) {
   t.is('…and it is the only one that does',
     Object.values(SR3E.electronicWarfare.operations).filter(o => o.tnStat === 'ecm').length, 1);
   t.is('three channels exist', CHANNELS.size, 3);
+
+  weaponCategorySkills(t, await import('node:fs'));
+}
+
+/**
+ * Weapon category → skill · SR3 p.91
+ *
+ * ⚠ **`Gunnery` is VEHICLE-MOUNTED ONLY** — *"Gunnery Skill governs the use of all
+ * vehicle-mounted weapons, whether in mounts, pintles or turrets."* A character carrying the
+ * weapon never rolls it, so no entry in the character-weapon map may name it.
+ *
+ * ⚠ **This was wrong for `ACan` and `MisLn` until 2026-09-02**, found by auditing the core
+ * rulebook's gear tables. A runner shouldering the Vigorous Assault Cannon rolled Gunnery
+ * (Intelligence) instead of Heavy Weapons (Strength) — wrong skill *and* wrong attribute. It
+ * stayed invisible because the **vehicle** path (`rollVehicleWeapon`) is a different flow that
+ * was always correct, so Gunnery genuinely is right one layer over.
+ *
+ * ⚠ Both replacements are scoped by the book with an explicit vehicle exclusion, which is the
+ * evidence that a hand-carried launcher is not a Gunnery weapon:
+ * Heavy Weapons is *"…but not in/on vehicles"*, Launch Weapons *"…but not in or on vehicles"*.
+ */
+function weaponCategorySkills(t, fs) {
+  const src = fs.readFileSync(
+    new URL('../scripts/documents/SR3EItem.js', import.meta.url), 'utf8');
+
+  // Pull the map entries straight out of the source: 'CODE': { skill: 'X', attribute: 'y' }
+  const map = {};
+  for (const m of src.matchAll(
+    /'([A-Za-z]{2,7})':\s*\{\s*skill:\s*'([^']+)',\s*attribute:\s*'([a-z]+)'\s*\}/g)) {
+    map[m[1]] = { skill: m[2], attribute: m[3] };
+  }
+  t.ok('the category→skill map was found in the source', Object.keys(map).length > 20);
+
+  const gunnery = Object.entries(map).filter(([, v]) => v.skill === 'Gunnery').map(([k]) => k);
+  t.is(gunnery.length ? `Gunnery must not appear: ${gunnery.join(', ')}`
+                      : 'no character-weapon category rolls Gunnery', gunnery.length, 0);
+
+  // The two that were wrong, pinned by name so a revert is loud.
+  t.is('ACan is Heavy Weapons — "larger than an assault rifle"', map.ACan?.skill, 'Heavy Weapons');
+  t.is('…on Strength, not Intelligence', map.ACan?.attribute, 'strength');
+  t.is('MisLn is Launch Weapons — "fires a missile, rocket"', map.MisLn?.skill, 'Launch Weapons');
+  t.is('GrLn is Launch Weapons — grenades are named in that rule', map.GrLn?.skill, 'Launch Weapons');
+
+  /* Every skill named must actually exist in SR3ESkills, or the roll silently defaults. */
+  const known = new Set(Object.values(SR3E.skills ?? {}).flat().map(s => s.name));
+  const missing = [...new Set(Object.values(map).map(v => v.skill))].filter(s => !known.has(s));
+  t.is(missing.length ? `skills named but not in SR3ESkills: ${missing.join(', ')}`
+                      : 'every mapped skill exists in SR3ESkills', missing.length, 0);
 }

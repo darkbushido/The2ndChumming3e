@@ -3085,11 +3085,31 @@ static get WEAPON_SKILL_MAP() {
     // Shotguns -> Shotguns skill
     'ShtG':   { skill: 'Shotguns', attribute: 'quickness' },
 
-    // Special Weapons
+    /* Special Weapons
+     *
+     * ⚠ **`Gunnery` is VEHICLE-MOUNTED ONLY** — *"Gunnery Skill governs the use of all
+     * vehicle-mounted weapons, whether in mounts, pintles or turrets"* (SR3 p.91). A character
+     * carrying the weapon never rolls it. The two categories below used to, so a runner
+     * shouldering the Vigorous Assault Cannon rolled Gunnery (Intelligence) rather than
+     * Heavy Weapons (Strength) — the wrong skill AND the wrong attribute.
+     *
+     * The book scopes the two replacements just as explicitly, each excluding vehicles:
+     *   Heavy Weapons (Strength) — *"anything larger than an assault rifle, including large
+     *     weapons when they are mounted on tripods, pintles, gyro-mounts or in fixed
+     *     emplacements (but not in/on vehicles)"*
+     *   Launch Weapons (Intelligence) — *"any device that fires a missile, rocket, or other
+     *     explosive projectile (such as grenades), including mortars (but not in or on
+     *     vehicles)"*
+     *
+     * ⚠ **Vehicle-mounted weapons are unaffected and must stay on Gunnery.** They are a
+     * separate item type reached through `rollVehicleWeapon`, not through this map, which is
+     * why this was invisible: the vehicle path was always right.
+     *
+     * 10 shipped items were affected — 2 `ACan` and 8 `MisLn`, across sr3/cc/sr2/sota2. */
     'Tasr':   { skill: 'Pistols',        attribute: 'quickness' },
-    'GrLn':   { skill: 'Launch Weapons', attribute: 'intelligence' },
-    'MisLn':  { skill: 'Gunnery',        attribute: 'intelligence' },
-    'ACan':   { skill: 'Gunnery',        attribute: 'intelligence' },
+    'GrLn':   { skill: 'Launch Weapons', attribute: 'intelligence' },   // grenades: named in the rule
+    'MisLn':  { skill: 'Launch Weapons', attribute: 'intelligence' },   // "fires a missile, rocket"
+    'ACan':   { skill: 'Heavy Weapons',  attribute: 'strength' },       // "larger than an assault rifle"
     'Las':    { skill: 'Laser Weapons',  attribute: 'quickness' },
     'Net':    { skill: 'Spray Weapons',  attribute: 'strength' },
     'NtGn':   { skill: 'Spray Weapons',  attribute: 'strength' },

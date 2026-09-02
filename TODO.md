@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | *(none)* |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **73** · **74** *(**71** · **72** · **80** · **81** · **88** · **89** done)* |
+| 🔴 Confirmed bugs, still open | **73** · **74** · **91** *(**71** · **72** · **80** · **81** · **88** · **89** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **4** · **30** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **83** · **84** · **85** · **86** · **87** · **90** |
@@ -6220,3 +6220,105 @@ chasing; the entries above were confirmed by reading them.
 Artificing)`, `Unarmed Combat (Fists, Head)` — later books add specialisations, and the tool
 only reports an extra where it judged the book's list closed, which it can misjudge.
 
+
+<a id="91"></a>
+
+## 91. Core gear that ships nowhere — eight item types with zero documents
+
+**Found by `audit/sr3-core-gear-audit.md` (2026-09-02),** which started from [#86](#86)'s
+flash-pak and asked whether that was one gap or a class. It is a class.
+
+`system.json` declares 22 Item types. **Eight have zero documents across all 82 packs**:
+`ammunition` · `gear` · `thrown` · `medical` · `contact` · `quality` · `complex_form` ·
+`summoning`. No book in the system ships a gear, ammunition or electronics pack — every pack is
+one of `adept-powers · armor · bioware · cyberware · drones · drugs · firearms · melee ·
+projectiles · spells · vehicle-mods · vehicle-weapons · vehicles`.
+
+### ⚠ `ammunition` is the sharpest: a complete implementation with no data
+
+`SR3E.ammoTypes` carries the real rules — APDS halving ballistic, flechette's
+`max(Impact × 2, Ballistic)`, gel's −2 Power and Stun, explosive/EX Power bonuses, tracer — beside
+`loadMechanism` matching, stockpile-and-magazine tracking, `SR3EItem.reload()` and a `trackAmmo`
+world setting gating all of it. **Not one ammunition item exists to load.** The book prints the
+table at p.279: APDS, explosive, EX explosive, flechette, gel, regular, tracer, assault cannon,
+taser dart.
+
+⚠ **Arrows and bolts are the same story** — the nocked-ammo flow matches them by `arrow`/`bolt`
+loading mechanism, and the book prints both rows. Neither ships, so a bow can never be re-nocked
+with `trackAmmo` on.
+
+### ⚠ The `sr3` pack has no grenades, and core-only is the DEFAULT configuration
+
+The AoE flow is fully built — cursor-aimed blast point, scatter, epicentre relocation, per-target
+falloff, Chunky Salsa. Grenades do ship (15 in `sr3e-sr2-projectiles`, 6 in
+`sr3e-cc-projectiles`, typed `projectile`/`GR`, which `SR3E.thrownCategories` accepts) —
+**but none in `sr3e-sr3-projectiles`**. A table with only the core book enabled has nothing to
+throw.
+
+### ⚠ Weapon accessories are mechanically live and entirely absent · *SR3 p.281*
+
+The system already models the effects — `recoilMod`, actor `recoilCompensation`, smartlink −2 TN,
+laser sight −1. None of the items exist: silencer, sound suppresser, smartgun (internal and
+external), smart goggles, laser sight, gas vent II/III, shock pads, tripod, bipod, imaging scopes,
+ultrasound sight/goggles, spare clips.
+
+### The rest — roughly 120-130 items
+
+Electronics (p.288) · Communications (p.290) · Surveillance & countermeasures (p.292) ·
+Security devices (p.293) · Survival gear (p.295) · Biotech & medical (p.304) ·
+Skillsofts & chips (p.296). Of ~200 names extracted, 42 already ship somewhere — armor rows,
+the cyberdecks in `sr3e-mdf-cyberdecks`, a few cyberware entries.
+
+### Order of work
+
+**Ammunition first** — it is the only one where finished mechanics are sitting idle, it is nine
+rows, and it unblocks `trackAmmo` for every firearm and bow already in the packs. Then core
+grenades, then accessories (the next-most mechanical), then the bulk gear.
+
+⚠ **A new pack per kind, per book** (`sr3e-sr3-ammo`, `sr3e-sr3-gear`, …), following the existing
+one-pack-per-book-per-type layout, and each **must declare its `book` flag** or the source-book
+filter cannot hide it. Adding a pack requires a **full Foundry restart**, not F5.
+
+⚠ **`sr3e-sr3-drones` and `sr3e-sr3-vehicles` are NOT empty** — 6 and 23 documents. They are
+**Actor** packs, so a sweep counting only `!items!` keys reports zero. That mistake was made and
+caught during this audit; do not re-file it.
+
+<a id="92"></a>
+
+## 92. Repeat the gear audit for the other default-on books
+
+[#91](#91) and `audit/sr3-core-gear-audit.md` cover **`sr3` only**. Fourteen other books are
+**on by default** and none has been checked against its printed tables.
+
+| Book | Ships | Not yet audited |
+|---|---|---|
+| `sr2` | armor · cyberware · firearms · melee · projectiles · vehicle-mods · vehicle-weapons | gear, ammo, electronics |
+| `mm` | armor · bioware · cyberware · drugs · firearms · melee | gear, medical |
+| `cc` | armor · cyberware · firearms · melee · projectiles | **accessories — CC is the weapons book** |
+| `r3` | drones · vehicle-mods · vehicle-weapons · vehicles | rigger gear |
+| `mits` | adept-powers · spells | foci, magical gear |
+| `sota` / `sota2` | bioware · drugs · vehicles / +adept-powers · armor · drones · firearms · spells · vehicle-mods | gear |
+| `twl` | armor · spells · vehicle-mods · vehicle-weapons · vehicles | gear |
+| `ct` · `fof` · `pna` · `ssc` · `st` · `tal` | 1-2 packs each | everything else |
+
+### How to run one — the method that worked, and its four traps
+
+1. `pdftotext -layout -f N -l N` the table pages. **Weapon tables extract cleanly**; two-column
+   prose pages need per-column cropping (`-x 0 -W 308`, then `-x 308 -W 320`; mediabox ~616×795pt).
+2. Dump the pack's own rows and diff **name, then every stat column**.
+3. Report; never auto-apply.
+
+⚠ **Count `!actors!` as well as `!items!`.** Drone and vehicle packs are Actor packs.
+
+⚠ **A repeated name is not necessarily a duplicate.** Bows, crossbows and slings ship one record
+per Strength-Minimum, all sharing a name.
+
+⚠ **The first weapon in each table section loses its own row** to the section header in a
+`-layout` dump — its name and its numbers land on different lines. Check every section's first
+entry by hand.
+
+⚠ **Names are abbreviated in the packs** ([#87](#87)), so match on a stem and confirm by stat.
+`Muscle Replacement` ships as `Muscle Replac. [1..4]`.
+
+**Do `cc` first.** Cannon Companion is the weapons-and-gear book, it is on by default, and it is
+where the accessories [#91](#91) wants most likely already exist in print.
