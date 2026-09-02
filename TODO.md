@@ -5694,11 +5694,17 @@ So **60% of the stubs name nothing that ships**, and a mechanical pass would sil
 
 ⚠ **AND THE STEM MATCHES ARE DANGEROUS — a naive conversion is worse than doing nothing.**
 Verified by hand:
-- **`Club Drugs of Choice` → `Club` (`sr3e-sr3-melee`).** The gear line says what the contact
-  takes recreationally; the import would hand them a bludgeon. This is the whole class of fault
-  in one example.
-- **`Flash-pak` → a `sr3e-mits-spells` entry.** The only real Flash-pak items are cybereye
-  mods (`Eyes, L /w Flash-pak`), not a spell and not a loose device.
+- **`Club Drugs of Choice` → `Club` (`sr3e-sr3-melee`).** Club Hopper, p.43 — the book's gear
+  line ends *"autograph book, club drugs of choice"*. It is **`Drugs, Type: Club`**, so the right
+  answer is the `drug` item type; the stem match would hand the contact a bludgeon instead.
+- **`Flash-pak` → the spell `Flash` (`sr3e-mits-spells`).** Corp Bodyguard, p.48. A flash-pak is
+  ordinary SR3 core gear (p.288: four quartz-halogen micro-flashes, **+4 TN to anyone facing it**,
+  +2 with flare compensation, and it negates poor-lighting modifiers at the cost of its own +2).
+  The stem rule matched it to a spell purely because `flash pak` begins with `flash`.
+
+⚠ **In BOTH cases the correct answer is "nothing in the packs fits", and the matcher returned a
+confident wrong one by a different mechanism each time** — which is the argument against
+automating the stem tier at all, not an argument for two more special cases.
 - **`Pocket Secretary` → `Pocket Secretary (Basic)`, typed `cyberware`.** It appears on **15
   contacts**, the single most common stub, and a pocket secretary is a handheld. Whether that is
   a mis-typed pack entry or a genuine headware variant has to be read, not guessed.
@@ -5712,6 +5718,19 @@ directly than the cyberware complaint this entry opens with.
 `Ares Predator`, `Ares Predator II` and `Ares Predator III`. The abbreviation problem runs in both
 directions and an exact-name pass cannot see through it.
 
+⚠ **Some unmatched stubs name a CATEGORY, not an item**, and no amount of matching will fix
+them. `Club Drugs of Choice` is the clearest: it says *what kind* of drug, for the GM to fill in.
+Nothing suitable ships either — the four drug packs hold 48 entries, categorised Pharmaceutical
+Compounds (26), Stimulants (9), Magical Compounds (7) and one each of Depressants, Hallucinogens
+and Narcotics; **there are no Designer Drugs at all**. These convert to a correctly-**typed**
+placeholder, which is still a real gain over a `gear` stub: a `drug` document reaches the drug
+fields and the GM knows what to replace it with.
+
+⚠ **A stub can also be real gear the system simply does not carry.** The flash-pak above is in
+the core rulebook with a mechanical effect, and ships in **no** pack — the only Flash-pak entries
+anywhere are two cybereye variants in `sr3e-ct-cyberware`, which are a different item. Authoring
+these is a fourth bucket, separate from matching.
+
 ⚠ **Many unmatched stubs are LISTS, not items** — `Cybereyes (Opticam), Data Compactor 2,
 Datajack, Headware Memory [300 Mp], Headware Radio` is one document holding five implants. These
 have to be split before anything can match them.
@@ -5719,6 +5738,15 @@ have to be split before anything can match them.
 **So the order of work is: [#87](#87) first (names), then split the compound stubs, then the 49
 type corrections, then match — with every stem match read by a human.** The 92 exact matches are
 the only part safe to automate.
+
+**The 192 unmatched split four ways**, and only the first is an import at all:
+
+| Bucket | Fix |
+|---|---|
+| named item, wrong/abbreviated name | [#87](#87), then match |
+| compound list in one stub | split, then match |
+| names a **category** (`Club Drugs of Choice`) | correct the **type**, leave as a GM placeholder |
+| real gear the packs do not carry (`Flash-pak`) | author the pack entry |
 
 ### ✅ Also found here — `wired()` in the generator was wrong — **FIXED 2026-09-01**
 
