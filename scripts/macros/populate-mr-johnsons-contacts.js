@@ -149,8 +149,16 @@ function adeptpower(name, hasLevels = false, level = 1) {
 /** attr(base) — matches the shared attribute schema { base, value } */
 function attr(base) { return { base, value: base }; }
 
-/** Wired/Boosted Reflexes shorthand — real SR3 formulas, applied only when explicitly named. */
-function wired(n)   { return { reactionBonus: n, diceBonus: n }; }
+/** Wired/Boosted Reflexes shorthand — real SR3 formulas, applied only when explicitly named.
+ *
+ * ⚠ **Wired Reflexes give +2 Reaction PER LEVEL, not +1** — *"Each level adds +2 to the user's
+ * Reaction and gives +1D6 Initiative die"* (SR3 p.300). This returned `reactionBonus: n` under a
+ * comment claiming "real SR3 formulas" and so delivered HALF the Reaction.
+ *
+ * The book proves it on the one record that uses this: **Gunsmith** (p.58) prints
+ * `R 4 (6)` and `INIT: 6 + 2D6` on Q4/I4 — an unaugmented Reaction of 4, so Wired 1 is worth
+ * +2 Reaction and +1 die exactly. */
+function wired(n)   { return { reactionBonus: n * 2, diceBonus: n }; }
 function boosted(n) { return { reactionBonus: 0, diceBonus: n }; }
 function noBonus()  { return { reactionBonus: 0, diceBonus: 0 }; }
 

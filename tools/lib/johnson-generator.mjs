@@ -56,6 +56,17 @@ export function parseGenerator(src) {
       // `baseActor` writes `karmaPool: karmaPool ?? karma ?? 0` and `pr` reaches only the note.
       pr:    num('pr'),
       karma: num('karma'),
+      /* Wired/Boosted Reflexes, written by the `wired()` / `boosted()` shorthands as
+       * `reflex: wired(1)`. ⚠ Read the CALL, not a literal — the numbers are computed by those
+       * helpers, and `wired()` was returning half the Reaction until 2026-09-01. */
+      reflex: (() => {
+        const m = /\breflex\s*:\s*(wired|boosted)\(\s*(\d+)\s*\)/.exec(bodyText);
+        if (!m) return { reactionBonus: 0, diceBonus: 0 };
+        const n = Number(m[2]);
+        return m[1] === 'wired'
+          ? { reactionBonus: n * 2, diceBonus: n }   // SR3 p.300: +2 Reaction per level
+          : { reactionBonus: 0,     diceBonus: n };
+      })(),
       /* Every `skill(...)` call in this contact's `items:` array, in file order.
        *
        * ⚠ **The block runs from this `baseActor(` to the NEXT one**, not to the closing brace.

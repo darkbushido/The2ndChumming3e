@@ -5678,19 +5678,66 @@ Replacement 2, Smartlink 2, Wired Reflexes 2)"* — where the closing bracket si
 `Wired Reflexes 2` rather than after the eye mods, so a naive split on commas-outside-brackets
 yields one item instead of five. These are the records the report must surface for a human.
 
-⚠ **Still the largest piece of [#86](#86)**, though smaller than first described: the parts all
-exist in the packs, so this is matching and importing rather than authoring.
+⚠ **Still the largest piece of [#86](#86), and it is NOT "matching and importing".** That was
+this entry's own claim and it was measured on 2026-09-01 against every shipped pack. It is wrong.
 
-### Also found here — `wired()` in the generator is wrong
+**411 non-skill embedded items, 319 distinct name+type pairs.** Indexing all 2,075 distinct item
+names across the other 81 packs and matching by normalised name:
+
+| | |
+|---|---:|
+| exact name match in a pack | **92** |
+| stem match (one name is a prefix of the other) | 35 |
+| **no match at all** | **192** |
+
+So **60% of the stubs name nothing that ships**, and a mechanical pass would silently drop them.
+
+⚠ **AND THE STEM MATCHES ARE DANGEROUS — a naive conversion is worse than doing nothing.**
+Verified by hand:
+- **`Club Drugs of Choice` → `Club` (`sr3e-sr3-melee`).** The gear line says what the contact
+  takes recreationally; the import would hand them a bludgeon. This is the whole class of fault
+  in one example.
+- **`Flash-pak` → a `sr3e-mits-spells` entry.** The only real Flash-pak items are cybereye
+  mods (`Eyes, L /w Flash-pak`), not a spell and not a loose device.
+- **`Pocket Secretary` → `Pocket Secretary (Basic)`, typed `cyberware`.** It appears on **15
+  contacts**, the single most common stub, and a pocket secretary is a handheld. Whether that is
+  a mis-typed pack entry or a genuine headware variant has to be read, not guessed.
+
+⚠ **49 of the matches would CHANGE THE DOCUMENT TYPE**, which is the useful half: everything
+in the generator is typed `gear`, so `Browning Max-Power` and `Ares Crusader` are gear rather than
+`firearm`, `Stun Baton` rather than `melee`. **That is why a contact cannot fire a gun** — more
+directly than the cyberware complaint this entry opens with.
+
+⚠ **[#87](#87) blocks part of this.** `Predator 2` matches nothing; the packs ship
+`Ares Predator`, `Ares Predator II` and `Ares Predator III`. The abbreviation problem runs in both
+directions and an exact-name pass cannot see through it.
+
+⚠ **Many unmatched stubs are LISTS, not items** — `Cybereyes (Opticam), Data Compactor 2,
+Datajack, Headware Memory [300 Mp], Headware Radio` is one document holding five implants. These
+have to be split before anything can match them.
+
+**So the order of work is: [#87](#87) first (names), then split the compound stubs, then the 49
+type corrections, then match — with every stem match read by a human.** The 92 exact matches are
+the only part safe to automate.
+
+### ✅ Also found here — `wired()` in the generator was wrong — **FIXED 2026-09-01**
 
 ```js
 function wired(n)   { return { reactionBonus: n, diceBonus: n }; }
 ```
 
-SR3: *"Each level adds **+2** to the user's Reaction and gives +1D6 Initiative die."* So this
-delivers **half** the Reaction, under a comment claiming "real SR3 formulas". Only **Gunsmith**
-uses it (`wired(1)`), so the blast radius is one record — but it must be corrected before
-anything else leans on it.
+SR3 p.300: *"Each level adds **+2** to the user's Reaction and gives +1D6 Initiative die."* So
+this delivered **half** the Reaction, under a comment claiming "real SR3 formulas".
+
+**The book proves it on the one record that uses this.** Gunsmith (p.58) prints
+`B4 Q4 S4 I4 W4 C3 E3`, **`R 4 (6)`** and **`INIT: 6 + 2D6`**. Unaugmented Reaction is
+(4 + 4) / 2 = 4, so the printed augmented 6 is **+2**, and the second die is **+1**. Wired
+Reflexes 1 exactly.
+
+Fixed to `reactionBonus: n * 2`, and `patch-johnson-stats.mjs` now carries reflex bonuses into the
+packs — **1 record changed, 61 already correct**, in both copies. `tools/lib/johnson-generator.mjs`
+reads the `wired()` / `boosted()` **call** rather than a literal, since the numbers are computed by
+those helpers and would otherwise have to be kept in step by hand.
 
 ⚠ `boosted(n)` returning `reactionBonus: 0` is **right** — Boosted Reflexes give initiative dice
 and (at higher levels) some Reaction, and the shipped pack items carry the real numbers.

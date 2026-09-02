@@ -164,6 +164,18 @@ for await (const [key, doc] of db.iterator()) {
     diffs.push(`essence ${attrs.essence.value}→${g.essence}`);
     attrs.essence = { ...attrs.essence, value: g.essence };
   }
+  /* ⚠ Wired/Boosted Reflexes. `wired()` in the generator returned HALF the Reaction until
+   * 2026-09-01 (SR3 p.300 gives +2 per level), so the shipped pack disagrees with the book and
+   * with the generator. Gunsmith (p.58) is the only affected record and the book prints its
+   * augmented Reaction outright: `R 4 (6)`. */
+  if (attrs.reaction && g.reflex) {
+    for (const f of ['reactionBonus', 'diceBonus']) {
+      if ((attrs.reaction[f] ?? 0) !== g.reflex[f]) {
+        diffs.push(`${f} ${attrs.reaction[f] ?? 0}→${g.reflex[f]}`);
+        attrs.reaction = { ...attrs.reaction, [f]: g.reflex[f] };
+      }
+    }
+  }
   if (attrs.magic && g.magic !== null && attrs.magic.base !== g.magic) {
     diffs.push(`magic ${attrs.magic.base}→${g.magic}`);
     attrs.magic = { ...attrs.magic, base: g.magic, value: g.magic };
