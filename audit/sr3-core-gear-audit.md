@@ -105,7 +105,18 @@ the map names exists in `SR3ESkills` at all.
 spells · vehicle-mods · vehicle-weapons · vehicles`. That is the whole reason a flash-pak has
 nowhere to live.
 
-### 3a. ⚠ `ammunition` = 0 is the sharpest one — a complete model with no shipped items
+### 3a. ⚠ `ammunition` = 0 — **already known as TODO 23, and this audit rediscovered it**
+
+⚠ **Recorded on 2026-08-05, *found in play*, a month before this sweep ran.** This audit reached
+it independently and first wrote it up as a new finding, which it is not. [TODO 23](../TODO.md#23)
+is the authority and is more complete — it inventories the implementation piece by piece, notes
+that it is **not a regression** (the pre-split monolithic packs had none either, the archive holds
+zero, and there is no upstream source data), and names a blocker this audit missed:
+**[TODO 12](../TODO.md#12-write-a-committed-pack-rebuild-script-and-vendor-its-sources) — the
+populate macros were retired, so the repo cannot currently build a pack at all.**
+
+What is genuinely new below: arrows and bolts share the gap, it did not ship mis-typed, and
+`ammunition` is one of *eight* empty declared types rather than a lone omission.
 
 **To be exact about what is and is not missing**, because these are three different layers and
 only the third is empty:

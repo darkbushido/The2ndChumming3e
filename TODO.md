@@ -2013,6 +2013,15 @@ merge offsets the stat rows against their labels, exactly like the Visibility Ta
 column (`pdftotext -x -y -W -H`, mediabox ~616×795pt, **book page = PDF page − 2**) rather than
 reading the merged dump. One figure is safe from prose: *"Standard ammo costs 20¥ for 10 rounds."*
 
+### Re-confirmed by the core gear audit, 2026-09-02 — see [#91](#91)
+
+`audit/sr3-core-gear-audit.md` reached this independently and adds three things: **arrows and
+bolts** are the same gap (the nocked-ammo flow matches them by loading mechanism, and a bow can
+never be re-nocked without them); ammunition did **not** ship mis-typed under some other item
+type (checked by name across all 82 packs); and `ammunition` is one of **eight** declared Item
+types with zero documents, so this is the sharpest case of a wider pattern rather than an
+isolated omission.
+
 ### ⚠ Blocked on [#12](#12-write-a-committed-pack-rebuild-script-and-vendor-its-sources)
 
 The populate macros were **retired**, so there is currently no supported way to build a pack. This
@@ -6234,7 +6243,17 @@ flash-pak and asked whether that was one gap or a class. It is a class.
 one of `adept-powers · armor · bioware · cyberware · drones · drugs · firearms · melee ·
 projectiles · spells · vehicle-mods · vehicle-weapons · vehicles`.
 
-### ⚠ `ammunition` is the sharpest: a complete implementation with no shipped items
+### ⚠ `ammunition` — **already tracked as [#23](#23), a month before this audit**
+
+⚠ **This audit REDISCOVERED [#23](#23) and first wrote it up as new.** That entry dates from
+**2026-08-05** and was *found in play*, which is a better warrant than a sweep. It is also more
+complete: it inventories every piece of the implementation, records that this is **not a
+regression** (the old monolithic packs on `main` had no ammunition either, the archive holds
+zero, and there is no source data in `rawdata/` or upstream), and it names a blocker this audit
+missed — **[#12](#12-write-a-committed-pack-rebuild-script-and-vendor-its-sources), because the
+populate macros were retired and there is currently no supported way to build a pack at all.**
+
+**Read [#23](#23) for the ammunition work.** Only the items below are new here.
 
 ⚠ **This is a PACK gap, not a book gap and not a rules gap** — three layers, and only the third
 is empty. The **books** print ammunition in full (SR3 core p.279; Cannon Companion devotes a
@@ -6248,8 +6267,15 @@ merely ship mis-typed.
 world setting gating all of it. **Not one ammunition item ships in any pack.** `SR3EItem.reload()`
 filters `actor.items` for `type === 'ammunition'`, finds none, warns *"No compatible ammo in
 stock"* and stops — so with `trackAmmo` on **every firearm in the system is unreloadable** until
-a GM hand-authors the items. Core's table is at p.279 (APDS, explosive, EX explosive, flechette,
-gel, regular, tracer, assault cannon, taser dart) and Cannon Companion has far more.
+a GM hand-authors the items.
+
+**What this audit adds to [#23](#23):**
+- **Arrows and bolts are the same gap.** The nocked-ammo flow matches them by `arrow`/`bolt`
+  loading mechanism and the book prints both rows; neither ships, so a bow can never be re-nocked.
+  [#23](#23) lists the 8 firearm types and does not mention these.
+- **Confirmed it did not merely ship MIS-TYPED.** Searched by name under every item type: 31
+  hits, none of them ammunition — weapons named for the round they fire (`9mm Flechette SMG`,
+  `Flechette Gun`), a French vehicle decoy (`Lure Ammo AM-56`), and spells.
 
 ⚠ **Arrows and bolts are the same story** — the nocked-ammo flow matches them by `arrow`/`bolt`
 loading mechanism, and the book prints both rows. Neither ships, so a bow can never be re-nocked
@@ -6279,9 +6305,16 @@ the cyberdecks in `sr3e-mdf-cyberdecks`, a few cyberware entries.
 
 ### Order of work
 
-**Ammunition first** — it is the only one where finished mechanics are sitting idle, it is nine
-rows, and it unblocks `trackAmmo` for every firearm and bow already in the packs. Then core
-grenades, then accessories (the next-most mechanical), then the bulk gear.
+⚠ **Nothing here can start until [#12](#12-write-a-committed-pack-rebuild-script-and-vendor-its-sources)
+is resolved.** The populate macros were retired and the per-book routing exists nowhere in git, so
+**the repo cannot currently build a pack at all** — and [#23](#23) already names itself as the
+first task to actually need that decision. An earlier draft of this entry recommended
+"ammunition first, it is only nine rows"; nine rows you have no committed way to build is not a
+starting point. **#12 is the starting point.**
+
+After that: **ammunition** ([#23](#23) — finished mechanics sitting idle, and it unblocks
+`trackAmmo` for every firearm and bow already shipped), then core grenades, then accessories (the
+next-most mechanical), then the bulk gear.
 
 ⚠ **A new pack per kind, per book** (`sr3e-sr3-ammo`, `sr3e-sr3-gear`, …), following the existing
 one-pack-per-book-per-type layout, and each **must declare its `book` flag** or the source-book
