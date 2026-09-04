@@ -236,6 +236,13 @@ export class QualityData extends foundry.abstract.TypeDataModel {
 export class CyberwareData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
+      /* ⚠ **The upstream (Shadowrun Character Generator) name, when `name` was expanded to the
+       * book's wording** — TODO 87. `SRCG_BONUSES` is keyed by the upstream name and is
+       * GENERATED from upstream data, so renaming the display name without keeping this would
+       * silently stop 151 bonus entries from matching on the next regeneration. Blank means the
+       * name was never abbreviated and `name` is already the join key.
+       * Read it through `SR3EActor.srcgKey(item)`, never directly. */
+      srcgName:     new StringField({ initial: '' }),
       essenceCost:       new NumberField({ initial: 0.5, min: 0 }),
       grade:             new StringField({ initial: 'Standard' }),
       rating:            new NumberField({ integer: true, initial: 0, min: 0 }),
@@ -288,6 +295,13 @@ export class CyberwareData extends foundry.abstract.TypeDataModel {
 export class BiowareData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
+      /* ⚠ **The upstream (Shadowrun Character Generator) name, when `name` was expanded to the
+       * book's wording** — TODO 87. `SRCG_BONUSES` is keyed by the upstream name and is
+       * GENERATED from upstream data, so renaming the display name without keeping this would
+       * silently stop 151 bonus entries from matching on the next regeneration. Blank means the
+       * name was never abbreviated and `name` is already the join key.
+       * Read it through `SR3EActor.srcgKey(item)`, never directly. */
+      srcgName:     new StringField({ initial: '' }),
       bioIndex:         new NumberField({ initial: 0.25, min: 0 }),
       grade:            new StringField({ initial: 'Standard' }),
       rating:           new NumberField({ integer: true, initial: 0, min: 0 }),

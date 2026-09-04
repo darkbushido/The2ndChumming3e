@@ -5817,7 +5817,7 @@ those helpers and would otherwise have to be kept in step by hand.
 and (at higher levels) some Reaction, and the shipped pack items carry the real numbers.
 
 <a id="87"></a>
-## 87. Cyberware names are abbreviated
+## 87. ✅ Cyberware names are abbreviated — **DONE 2026-09-03** (5 left, see below)
 
 **Raised 2026-09-01.** `Muscle Replac. [1]`, `Reaction Enhance [2]`, `Eyes, Vis Mag Ele[1]`,
 `Obv.Cyb.Arm Semi.natCov.`, `Str Enh [3] (Pair)`. **~170 of 845** cyberware items carry a
@@ -5854,7 +5854,51 @@ Generator, and the `BookPage` codes were deliberately kept *"so a future re-impo
 (CLAUDE.md, Source books). Renaming gives that up. Worth an explicit decision, not a side
 effect — a re-import would then need a name map anyway.
 
-### If it is done
+### ✅ Done — and the "cheaper alternative" was rejected on the ask
+
+**210 items renamed across both pack copies**, covering 102 of the 107 abbreviated stems.
+`Muscle Replac. [1]` → `Muscle Replacement [1]`, `Eyes, Vis Mag Ele[1]` →
+`Eyes, Vision Magnification, Electronic[1]`, `Str Enh [3] (Pair)` →
+`Strength Enhancement [3] (Pair)`.
+
+The `aka`-field alternative was rejected because it *"does not improve what a player SEES"*,
+and what a player sees was the ask. **But its safety argument was kept** — the upstream string
+lives on in `system.srcgName`, so this is a rename *plus* the field, not one instead of the other.
+
+⚠ **`srcgName` is the whole safety mechanism, and the failure it prevents is SILENT.**
+`SRCG_BONUSES` is keyed by the **upstream** name and is **generated** by
+`tools/build-mods-bonuses.mjs` from upstream data — so a bare rename would leave **43 of its
+151 entries** unable to match ever again, re-broken on every regeneration. Among them: **all
+four Muscle Replacement grades**, whose Quickness carve-out was wired only two days earlier.
+Nothing would have errored; the bonus would simply have stopped existing.
+`_patchItemsByName` now keys on `item.system.srcgName || item.name`.
+
+⚠ **The regex registries needed no change and that is by design.**
+`SR3E.quicknessNotForReaction` is `/^muscle\s*replac/i`, which matches the abbreviation *and*
+the expansion — so it covers both a migrated world and one still holding old embedded copies.
+This is the "search a stem, never a full name" rule paying off; `tests/cyberware-names.test.mjs`
+asserts the stem still matches both spellings so nobody tightens it later.
+
+⚠ **Migration `0.4.5.13` is corrective — it overwrites `name`.** Justified because a name is
+pack data rather than a GM's setting, and because the map is a closed list of 107 upstream
+strings: an item a GM actually named cannot match one. Idempotent on the presence of `srcgName`.
+
+⚠ **Every expansion was read off the printed page**, located by each item's own `bookPage`.
+Two would have been guessed wrong: `Eye, Laser Mic.` is a **Microphone**, not a microscope
+(M&M p.14), and `Nano-Bio sys.` is a **Nano-biomonitor**, not a "nano-bio system" (M&M p.91).
+
+### ⚠ 5 items deliberately NOT renamed — Cybertechnology is not in the PDF library
+
+`Syn. Cyb Arm/Leg Sem.natCov.` · `Pair.Obv.Cyb.Arm Sem.natCov.` · `Pair.Obv.Cyb.Leg Sem.natCov.`
+· `Pair Syn.Cyb.Arm Sem.natCov.` · `Pair Syn Cyb Leg Sem.natCov.` — all `ct.30`, plus
+`Eyes, L 1shot Flash P.rload` (`ct.21`) and `Body Enhance` (`ct.31`).
+
+They are expandable **by eye** — "Obvious Cyberarm, Semi-natural Covering" is obviously what is
+meant — but not **verifiably**, and a plausible invention printed as the book's wording is worse
+than a visible abbreviation. Add `Shadowrun 3e - Cybertechnology` to the library and they take
+ten minutes.
+
+### The original plan, for reference
 
 1. Build the map from the books — 170 canonical names. The `bookPage` on each item says exactly
    which page to read, so this is mechanical rather than guesswork.

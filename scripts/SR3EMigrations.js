@@ -26,6 +26,7 @@
  */
 
 import { SRCG_BONUSES } from './data/srcg-bonuses.js';
+import { expandCyberwareName } from './data/cyberware-names.js';
 import { parseJohnsonNotes, isJohnsonNote } from './data/johnson-notes.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
@@ -57,7 +58,13 @@ function _patchItemsByName(actor, byName, fixItem = null) {
   const changed = [];
 
   for (const item of items) {
-    const patch = byName[item.name];
+    /* ⚠ **`srcgName` FIRST, then `name`** — TODO 87. `byName` (i.e. `SRCG_BONUSES`) is keyed
+     * by the UPSTREAM name and is generated from upstream data, while `name` may since have
+     * been expanded to the book's wording (`Muscle Replac. [1]` → `Muscle Replacement [1]`).
+     * Matching on `name` alone would silently stop applying bonuses to every renamed item, with
+     * no error — the bonus would just not be there. Falling back to `name` keeps items that
+     * were never abbreviated, and characters whose embedded copies predate the rename, working. */
+    const patch = byName[item.system?.srcgName || item.name];
     if (!patch) continue;
     // ⚠ `type` is a GUARD, not a field. This map is keyed by name alone and now spans
     // cyberware, bioware and adept powers, so without it a shared name would write one
@@ -267,6 +274,39 @@ const MIGRATIONS = [
       return delta;
     },
   },
+  {
+    version: '0.4.5.13',
+    label: 'Cyberware names — expand the upstream abbreviations (TODO 87)',
+    /**
+     * The shipped packs inherited contracted names from the Shadowrun Character Generator's
+     * fixed-width UI — `Muscle Replac. [1]`, `Eyes, Vis Mag Ele[1]`, `Str Enh [3] (Pair)`.
+     * 107 stems across 221 items. The packs are fixed (`tools/rename-cyberware.mjs`), but
+     * **Foundry EMBEDS**, so every character already holding one keeps the abbreviation.
+     *
+     * ⚠ **This OVERWRITES `name`, so it argues its case.** A name is not a GM's setting; it
+     * is data that came from the pack, and every abbreviation in the map was read off the
+     * printed page. The map is a closed list of 107 upstream strings — an item whose name a
+     * GM actually chose cannot match one, because matching requires the exact upstream prefix.
+     *
+     * ⚠ **`srcgName` is written FIRST and is what makes this safe.** `SRCG_BONUSES` is keyed
+     * by the upstream name and generated from upstream data; **43 of its 151 entries** name an
+     * item this renames, including all four Muscle Replacement grades. Without the field the
+     * rename would silently stop those bonuses applying — no error, the bonus simply absent.
+     * `_patchItemsByName` reads `srcgName` before `name` for exactly this reason.
+     *
+     * ⚠ **Idempotent by the presence of `srcgName`**, not by the name having changed — an
+     * expanded name no longer matches any key, so re-running is a no-op either way, but the
+     * explicit guard is what stops a second run overwriting a `srcgName` already recorded.
+     */
+    fixItem: (item) => {
+      if (!['cyberware', 'bioware'].includes(item.type)) return null;
+      if (item.system?.srcgName) return null;                 // already migrated
+      const next = expandCyberwareName(item.name);
+      if (next === item.name) return null;                    // never abbreviated
+      return { name: next, 'system.srcgName': item.name };
+    },
+  },
+
 ];
 
 export const SR3EMigrations = {
