@@ -153,3 +153,57 @@ specialisation the content relies on cannot be picked.
 
 Of six "genuine gaps" first reported for the skill data, **three were false** and a fourth named
 the wrong specialisations. The four in the table above are what survived reading the pages.
+
+---
+
+## Found while splitting the contacts' cyberware (2026-09-03) · TODO 86
+
+Repo: **`williamdiffey/The2ndChumming3e`** — `scripts/macros/populate-mr-johnsons-contacts.js`.
+All verified against *Mr. Johnson's Little Black Book*.
+
+### 1. Corporate Security Guard (p.38) is missing an implant
+
+The book's Cyberware line reads **`Boosted Reflexes 1, Headware Radio [Rating 3], Smartlink 2,
+Subvocal Microphone`**. The generator carries only the last three. The missing implant was being
+compensated for with a hand-written `diceBonus: 1` on the actor, which reaches the printed
+`INIT: 3 + 2D6` by a different route and leaves the cyberware list wrong.
+
+### 2. Highway Patrol (p.62) has a reflex bonus the book does not support
+
+The generator sets `reflex: boosted(1)`. The book's Cyberware line is `Cybereyes (…),
+Cyberlegs (…), Smartlink 2, Vehicle Control Rig 2` — **no reflex cyberware of any kind** — and it
+prints **`INIT: 4 + 1D6`**. The bonus made the contact roll 2D6.
+
+⚠ Its `R 4 (8)` and `Rigged INIT: 8 + 3D6` come from the **Vehicle Control Rig 2**, which the
+rigging path derives at rig time. Reading those as initiative dice on the actor is the likely
+origin of the mistake.
+
+### 3. Mercenary (p.61) has a misplaced closing parenthesis
+
+```
+Cybereyes (Thermographic, Flare Compensation, Muscle Replacement 2, Smartlink 2, Wired Reflexes 2)
+```
+
+Muscle Replacement, Smartlink and Wired Reflexes are **not cybereye modifications**; the paren
+should close after *Flare Compensation*. Any parser reading the parenthesis as sub-mods loses
+three implants. `tools/lib/johnson-aliases.mjs` recovers them by falling back to the implant
+resolver, and says so.
+
+### 4. Trid Pirate (p.55) lists vision mods on an ear
+
+```
+Cyberear (Display Link, Image Link, Opticam)
+```
+
+Display Link, Image Link and Opticam are **cybereye** modifications. Almost certainly "Cybereyes"
+in the source. Recovered the same way.
+
+### 5. `Hot Potatoe` — a typo in the pack, not the book
+
+`sr3e-mits-spells` ships **`Hot Potatoe`**; the contacts (and MITS) call it *Hot Potato*. Aliased
+rather than renamed, because renaming a shipped pack entry needs [#87](../TODO.md#87)'s care.
+
+### Three spells the contacts use that ship in no pack
+
+`Clean Water` · `Clean Air` · `Use Smithing` — left as stubs. Not defects in the generator;
+they belong to the wider content gap in [#91](../TODO.md#91).

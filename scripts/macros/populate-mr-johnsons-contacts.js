@@ -214,7 +214,8 @@ const CONTACTS = [
     ...baseActor('Corporate Security Guard', 38, {
       metatype: 'human', pr: 3, karma: 3,
       body: 5, quickness: 4, strength: 4, charisma: 3, intelligence: 3, willpower: 2,
-      essence: 4.15, reflex: boosted(1),
+      essence: 4.15,   // reflex now comes from the Boosted Reflexes 1 item below
+      reflex: noBonus(),
     }),
     items: [
       skill('Athletics', 3, 'body'),
@@ -233,6 +234,10 @@ const CONTACTS = [
       skill('Psychology', 2, 'intelligence', 'knowledge'),
       skill('Security Systems', 3, 'intelligence', 'knowledge'),
       skill('Tactics', 4, 'intelligence', 'knowledge'),
+      /* ⚠ The book (p.38) lists Boosted Reflexes 1 FIRST on this contact's Cyberware line
+       * and it was missing here — which is why a hand-set diceBonus existed instead.
+       * INIT: 3 + 2D6 is reached by the implant alone. */
+      cyberware('Boosted Reflexes 1', 0.5),
       cyberware('Headware Radio [Rating 3]', 0),
       cyberware('Smartlink 2', 0),
       cyberware('Subvocal Microphone', 1.85),
@@ -1461,7 +1466,10 @@ const CONTACTS = [
       metatype: 'human', pr: 3, karma: 3,
       body: 4, quickness: 4, strength: 4, charisma: 3, intelligence: 4, willpower: 4,
       essence: 3,
-      reflex: wired(1),
+      /* ⚠ Wired Reflexes 1 is imported as a real ITEM now (TODO 86) and grants +2 Reaction
+       * and +1 die on its own. A hand-set bonus here would double it: the book prints
+       * R 4 (6) and INIT 6 + 2D6, which the item alone reaches. */
+      reflex: noBonus(),
     }),
     items: [
       skill('Computer B/R', 3, 'intelligence'),
@@ -1762,7 +1770,9 @@ const CONTACTS = [
     ...baseActor('Highway Patrol', 62, {
       metatype: 'human', pr: 3, karma: 3,
       body: 5, quickness: 4, strength: 6, charisma: 3, intelligence: 4, willpower: 4,
-      essence: 0.2, reflex: boosted(1),
+      essence: 0.2, /* ⚠ The book (p.62) lists NO reflex cyberware and prints INIT: 4 + 1D6, so the
+       * previous boosted(1) was unsupported — it made this contact roll 2D6. */
+      reflex: noBonus(),
     }),
     items: [
       // ⚠ TWO SKILLS — "Bike or Car 6, Bike or Car B/R 3". Same mis-parse as Taxi Driver.
