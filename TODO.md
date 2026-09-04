@@ -5833,10 +5833,25 @@ abbreviations. Anything matching cyberware by name must search a **stem**.
 **809 of 845 have a `bookPage`** (`sr3.304`, `ct.31`, `mm.064`), and the item sheet already
 renders it as *"Book / Page"*. Every item in a real cyberware pack has one.
 
-⚠ **The only 36 without are the Little Black Book contacts' embedded stubs**, and those are
-exactly what [#86](#86)'s conversion replaces. Swap a stub for `Muscle Replac. [1]` out of
-`sr3e-sr3-cyberware` and the citation arrives with it. **No separate work is needed for
-citations** — do not open a task for it.
+⚠ **This claim was WRONG and is corrected here (2026-09-03).** It said the only 36 without a
+citation were the contacts' embedded stubs and that [#86](#86)'s conversion would replace them,
+so no separate work was needed. **[#86](#86)'s conversion deliberately EXCLUDES cyberware** —
+converting a `gear` stub named `Radio` into 0.75-Essence headware would charge Essence the
+book's printed figure excludes. So those stubs were never going to be fixed by it, and they
+still carry no `bookPage`.
+
+The count is also larger than 36 once measured on the shipped pack: **39 cyber/bioware documents
+across the 62 contacts, and every one of them is inert** — zero bonus fields, so a contact whose
+sheet says *Boosted Reflexes 1* gains no initiative die.
+
+⚠ **And they are not items — they are LISTS.** One document reads
+`Cybereyes (Opticam), Data Compactor 2, Datajack, Headware Memory [300 Mp], Headware Radio`:
+five implants with a single summed `essenceCost`. No name match can ever resolve that, which is
+why it sits in [#86](#86)'s "compound list" bucket and needs splitting before anything else.
+
+**809 of 845 real pack cyberware items do carry a `bookPage`**, so the original point stands for
+the packs — it is only the contacts' embedded stubs that lack citations, and they need [#86](#86)
+finished, not this task.
 
 ### Renaming is riskier than it looks
 
