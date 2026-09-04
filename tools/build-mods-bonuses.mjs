@@ -25,6 +25,7 @@ import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { parseMods } from '../scripts/SR3EMods.js';
+import { expandCyberwareName } from '../scripts/data/cyberware-names.js';
 
 const HERE   = dirname(fileURLToPath(import.meta.url));
 const REPORT = process.argv.includes('--report');
@@ -83,7 +84,14 @@ for (const [file, type] of Object.entries(FILES)) {
     withMods++;
 
     const r = parseMods(raw);
-    const name = String(e.Name).trim();
+    /* ⚠ **Names are EXPANDED to the book's wording here** · TODO 87. Upstream ships the
+     * Character Generator's fixed-width contractions (`Muscle Replac. [1]`), and the packs no
+     * longer use them. Expanding at the point of GENERATION is what makes the map stable: the
+     * alternative — rewriting keys in the committed file — would be undone by the next run.
+     *
+     * ⚠ `expandCyberwareName` returns its input unchanged when nothing matches, so the 5
+     * unverified Cybertechnology names and every adept-power entry pass through untouched. */
+    const name = expandCyberwareName(String(e.Name).trim());
 
     if (Object.keys(r.bonuses).length) {
       // ⚠ Last writer wins on a duplicate name, and duplicates do occur across grades. The

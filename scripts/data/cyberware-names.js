@@ -11,18 +11,29 @@
  * abbreviations.
  *
  * ─────────────────────────────────────────────────────────────────────────────────────────────
- * ⚠ **THE ABBREVIATION IS KEPT, in `system.srcgName`. Renaming alone would break bonuses.**
+ * ⚠ **THIS FUNCTION IS THE NORMALISER FOR BOTH SIDES OF THE BONUS LOOKUP.**
  *
- * `SRCG_BONUSES` (`srcg-bonuses.js`) is keyed by the **upstream** name, and it is
- * **generated** by `tools/build-mods-bonuses.mjs` from upstream data. Rename the pack items
- * and the next regeneration silently stops matching 151 entries — a bonus just stops applying,
- * with no error. `CLAUDE.md`'s Source-books section also records that the upstream codes were
- * kept deliberately *"so a future re-import lines up"*.
+ * `SRCG_BONUSES` (`srcg-bonuses.js`) is **generated** by `tools/build-mods-bonuses.mjs`, which
+ * runs its keys through `expandCyberwareName` as it writes — so the committed map is keyed by
+ * the book's wording and stays that way across regenerations. Hand-editing those keys instead
+ * would have been undone by the next run.
  *
- * So the rule is: **`name` is what a player reads; `srcgName` is what code joins on.**
- * `SR3EActor._srcgKey(item)` returns `srcgName ?? name`, and every name-keyed consumer uses it.
- * Upstream alignment survives, and an un-migrated character keeps working because their
- * embedded copy still carries the old name in BOTH fields.
+ * `_patchItemsByName` passes the *item* through the same function, so all four cases land on
+ * one key regardless of whether migration `0.4.5.13` has reached that world:
+ *
+ *   pack item after the rename   name expanded, srcgName abbreviated → expand(srcgName) ✓
+ *   embedded copy before it      name abbreviated, no srcgName       → expand(name)     ✓
+ *   an item never abbreviated    expand() is the identity            ✓
+ *   a GM-renamed item            srcgName still carries the identity ✓
+ *
+ * ⚠ **`system.srcgName` still earns its place** even though the map no longer keys on it: it is
+ * the upstream identity, so it survives a GM renaming an item on their own sheet, and it is the
+ * join key for the future re-import that `CLAUDE.md` records the `BookPage` codes were kept for.
+ * **`name` is what a player reads; `srcgName` is what the item IS.**
+ *
+ * ⚠ **43 of the map's 151 entries changed name when this landed.** Had the packs been renamed
+ * without both halves of this, those would have stopped matching with no error at all — among
+ * them all four Muscle Replacement grades, whose Quickness carve-out was wired two days before.
  *
  * ⚠ **The regex registries were already safe and are untouched.**
  * `SR3E.quicknessNotForReaction` matches `/^muscle\s*replac/i`, which matches the abbreviation
@@ -141,14 +152,33 @@ export const CYBERWARE_NAMES = {
 const KEYS = Object.keys(CYBERWARE_NAMES).sort((a, z) => z.length - a.length);
 
 /**
+ * Expanded forms, longest-first — the idempotence guard.
+ *
+ * ⚠ **14 of the entries expand to something that STILL STARTS WITH THE KEY**, because the
+ * expansion only appends: `Reaction Enhance` → `Reaction Enhanc**er**`, `Cosmetic Mod` →
+ * `Cosmetic Mod**ification**`, `Spur, Retract` → `Spur, Retract**able**`. Re-running a naive
+ * prefix expansion over an already-expanded name therefore appends the tail a second time and
+ * produces `Reaction Enhancerr`, `Cosmetic Modificationification`, `Spur, Retractableable`.
+ */
+const VALUES = [...new Set(Object.values(CYBERWARE_NAMES))].sort((a, z) => z.length - a.length);
+
+/**
  * Expand an upstream name to the book's wording, keeping any trailing rating or qualifier.
- * Returns the input unchanged when nothing matches.
+ * Returns the input unchanged when nothing matches, **or when it is already expanded**.
  *
  * ⚠ **Prefix match, not equality** — `Muscle Replac. [1]`, `Str Enh [3] (Pair)` and
  * `Str Enh [4]  w/Torso` all resolve from three short keys rather than needing one entry each.
+ *
+ * ⚠ **IDEMPOTENT, and it has to be.** This is the normaliser on both sides of the
+ * `SRCG_BONUSES` lookup, and an item can reach it already carrying the expanded name — a pack
+ * entry after the rename, or anything a GM creates fresh. Without the `VALUES` pass those
+ * would expand a second time and miss the map entirely. Caught by
+ * `tests/cyberware-names.test.mjs` before it shipped; the packs were never affected, because
+ * `rename-cyberware.mjs` guards on `srcgName` rather than on the name.
  */
 export function expandCyberwareName(name) {
   const n = String(name ?? '');
-  for (const k of KEYS) if (n.startsWith(k)) return CYBERWARE_NAMES[k] + n.slice(k.length);
+  for (const v of VALUES) if (n.startsWith(v)) return n;   // already the book's wording
+  for (const k of KEYS)   if (n.startsWith(k)) return CYBERWARE_NAMES[k] + n.slice(k.length);
   return n;
 }

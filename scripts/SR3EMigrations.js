@@ -58,13 +58,22 @@ function _patchItemsByName(actor, byName, fixItem = null) {
   const changed = [];
 
   for (const item of items) {
-    /* ⚠ **`srcgName` FIRST, then `name`** — TODO 87. `byName` (i.e. `SRCG_BONUSES`) is keyed
-     * by the UPSTREAM name and is generated from upstream data, while `name` may since have
-     * been expanded to the book's wording (`Muscle Replac. [1]` → `Muscle Replacement [1]`).
-     * Matching on `name` alone would silently stop applying bonuses to every renamed item, with
-     * no error — the bonus would just not be there. Falling back to `name` keeps items that
-     * were never abbreviated, and characters whose embedded copies predate the rename, working. */
-    const patch = byName[item.system?.srcgName || item.name];
+    /* ⚠ **BOTH SIDES ARE NORMALISED THROUGH `expandCyberwareName`** — TODO 87.
+     *
+     * `SRCG_BONUSES` is keyed by the book's wording (the generator expands as it writes), and an
+     * item may carry either spelling depending on whether migration `0.4.5.13` has run for that
+     * world. Passing the item through the same function makes all four cases land on one key:
+     *
+     *   pack item after the rename   name expanded, srcgName abbreviated → expand(srcgName) ✓
+     *   embedded copy before it      name abbreviated, no srcgName       → expand(name)     ✓
+     *   an item never abbreviated    expand() is the identity            ✓
+     *   a GM-renamed item            srcgName still carries the identity ✓
+     *
+     * ⚠ **`srcgName` is read FIRST because it is the upstream identity**, and survives a GM
+     * renaming the item on their own sheet. `name` is only the fallback for items that predate
+     * the field. Matching on `name` alone would work today and break the moment someone edits
+     * a name — silently, since a missing bonus raises nothing. */
+    const patch = byName[expandCyberwareName(item.system?.srcgName || item.name)];
     if (!patch) continue;
     // ⚠ `type` is a GUARD, not a field. This map is keyed by name alone and now spans
     // cyberware, bioware and adept powers, so without it a shared name would write one

@@ -5,10 +5,14 @@
  * `name` is now the book's wording; the upstream string is kept in `system.srcgName`.
  *
  * ⚠ **The whole point of this file is the SECOND section.** Renaming is easy; the failure mode
- * is silent. `SRCG_BONUSES` is keyed by the UPSTREAM name and is *generated* from upstream data,
- * so a rename that did not keep the old string would stop 43 of its 151 entries from ever
- * matching again — including all four Muscle Replacement grades — with no error at all. The
- * bonus would simply not be applied.
+ * is silent. **43 of `SRCG_BONUSES`' 151 entries name an item this map renames** — including all
+ * four Muscle Replacement grades — and a mismatch between the two sides raises nothing at all.
+ * The bonus is simply not applied.
+ *
+ * `expandCyberwareName` is the normaliser on BOTH sides: `build-mods-bonuses.mjs` runs the map's
+ * keys through it when generating, and `_patchItemsByName` runs the item through it when looking
+ * up. The tests below pin that agreement, including the four combinations of
+ * abbreviated/expanded `name` and present/absent `srcgName` that occur in the wild.
  */
 import { readFileSync } from 'node:fs';
 const { CYBERWARE_NAMES, expandCyberwareName } = await import('../scripts/data/cyberware-names.js');
@@ -46,6 +50,25 @@ export async function run(t) {
   t.is('…including one already expanded (idempotent)',
     expandCyberwareName('Muscle Replacement [1]'), 'Muscle Replacement [1]');
 
+  /* ⚠ **IDEMPOTENCE IS NOT FREE HERE, and this caught a real bug before it shipped.**
+   * 14 entries expand by APPENDING, so the result still starts with the key:
+   * `Reaction Enhance` → `Reaction Enhancer`, `Cosmetic Mod` → `Cosmetic Modification`,
+   * `Spur, Retract` → `Spur, Retractable`. A naive prefix expansion run over an
+   * already-expanded name appends the tail twice — `Reaction Enhancerr`,
+   * `Cosmetic Modificationification` — and then matches nothing in `SRCG_BONUSES`.
+   * The function checks the expanded forms first for exactly this reason. */
+  const doubles = Object.entries(CYBERWARE_NAMES)
+    .filter(([, v]) => expandCyberwareName(v) !== v)
+    .map(([k, v]) => `${k} → ${v} → ${expandCyberwareName(v)}`);
+  t.is(doubles.length ? `entries that double-expand: ${doubles.slice(0, 3).join(' · ')}`
+                      : 'no entry double-expands — every expansion is a fixed point',
+    doubles.length, 0);
+  t.is('the sharpest case by name', expandCyberwareName('Reaction Enhancer [2]'), 'Reaction Enhancer [2]');
+  t.is('…and it still expands the ABBREVIATION it came from',
+    expandCyberwareName('Reaction Enhance [2]'), 'Reaction Enhancer [2]');
+  t.is('append-style expansion is a fixed point',
+    expandCyberwareName('Spur, Retractable'), 'Spur, Retractable');
+
   /* ── Two the book settled that a guess would get wrong ───────────────────────────────── */
   t.is('Laser Mic. is a MICROPHONE (M&M p.14), not a microscope',
     expandCyberwareName('Eye, Laser Mic. [1]'), 'Eye, Laser Microphone [1]');
@@ -57,26 +80,59 @@ export async function run(t) {
    * ════════════════════════════════════════════════════════════════════════════ */
 
   const bonusKeys = Object.keys(SRCG_BONUSES);
-  const wouldRename = bonusKeys.filter(k => expandCyberwareName(k) !== k);
 
-  t.ok('SRCG_BONUSES names items this map renames — so the hazard is real',
-    wouldRename.length > 20);
-  t.ok('…specifically, a large minority of all bonus entries',
-    wouldRename.length / bonusKeys.length > 0.2);
+  /* ⚠ **How many entries the rename touched** — measured by how many bonus keys are now an
+   * EXPANDED form, i.e. would have been abbreviated before. This is the size of the silent
+   * failure that `expandCyberwareName` on both sides prevents; it must not quietly shrink,
+   * because a drop means the generator stopped expanding and the map is drifting back. */
+  const VALUES = [...new Set(Object.values(CYBERWARE_NAMES))];
+  const touched = bonusKeys.filter(k => VALUES.some(v => k.startsWith(v)));
 
-  /* The four grades whose Quickness carve-out was wired in 2026-09-01. If the rename broke
-   * their lookup, Muscle Replacement would stop granting anything at all. */
+  t.ok(`SRCG_BONUSES entries that this map renames: ${touched.length} — the hazard is real`,
+    touched.length > 20);
+  t.ok('…a large minority of all bonus entries',
+    touched.length / bonusKeys.length > 0.2);
+
+  /* The four grades whose Quickness carve-out was wired in 2026-09-01. If the two sides
+   * disagreed, Muscle Replacement would stop granting anything at all. */
   for (const n of ['Muscle Replac. [1]', 'Muscle Replac. [2]',
                    'Muscle Replac. [3]', 'Muscle Replac. [4]']) {
-    t.ok(`${n} is keyed in SRCG_BONUSES by its UPSTREAM name`, Boolean(SRCG_BONUSES[n]));
-    t.ok(`…and is one this map renames`, expandCyberwareName(n) !== n);
+    t.ok(`${n} resolves through the expansion`, Boolean(SRCG_BONUSES[expandCyberwareName(n)]));
+    t.ok(`…and the raw upstream key is NOT what the map uses now`,
+      !Object.hasOwn(SRCG_BONUSES, n));
   }
 
-  /* ⚠ Source-level invariant: the matcher must consult `srcgName` BEFORE `name`. Reproducing
-   * this behaviourally needs a live world, so the check is on the source, like `pool-spend`. */
+  /* ⚠ **The generated map must never regress to upstream spellings.** Run
+   * `build-mods-bonuses.mjs` without the expansion and these come back abbreviated, at which
+   * point every renamed item silently loses its bonus. */
+  const stale = bonusKeys.filter(k => expandCyberwareName(k) !== k);
+  t.is(stale.length
+        ? `keys still abbreviated — regenerate with the expansion: ${stale.slice(0, 5).join(', ')}`
+        : 'every SRCG_BONUSES key is already the expanded form',
+    stale.length, 0);
+
+  /* The four real-world shapes an item can have. */
+  const look = it => SRCG_BONUSES[expandCyberwareName(it.system?.srcgName || it.name)];
+  t.ok('pack item after the rename resolves',
+    Boolean(look({ name: 'Muscle Replacement [1]', system: { srcgName: 'Muscle Replac. [1]' } })));
+  t.ok('an embedded copy from before the migration resolves',
+    Boolean(look({ name: 'Muscle Replac. [1]', system: {} })));
+  t.ok('an item that was never abbreviated resolves',
+    Boolean(look({ name: 'Bone Lace, Aluminium', system: {} })));
+  t.ok('a GM-renamed item still resolves through srcgName',
+    Boolean(look({ name: 'Bobs Chrome', system: { srcgName: 'Muscle Replac. [3]' } })));
+  t.ok('…and something genuinely unknown does not',
+    !look({ name: 'Nonexistent Widget', system: {} }));
+
+  /* ⚠ Source-level: the consumer must NORMALISE, not compare raw strings, and must read
+   * `srcgName` before `name` — it is the upstream identity and survives a GM rename.
+   * Reproducing this behaviourally needs a live world, so like `pool-spend` it is checked
+   * against the source. */
   const mig = readFileSync(new URL('../scripts/SR3EMigrations.js', import.meta.url), 'utf8');
-  t.ok('_patchItemsByName keys on srcgName before name',
-    /byName\[\s*item\.system\?\.srcgName\s*\|\|\s*item\.name\s*\]/.test(mig));
+  t.ok('_patchItemsByName passes the item through expandCyberwareName',
+    /byName\[\s*expandCyberwareName\(/.test(mig));
+  t.ok('…reading srcgName before name',
+    /item\.system\?\.srcgName\s*\|\|\s*item\.name/.test(mig));
 
   /* ⚠ The regex registries were already stem-based and must STAY that way — they have to match
    * the abbreviation (old embedded copies) and the expansion (the packs) at once. */
