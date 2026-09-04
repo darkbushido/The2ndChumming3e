@@ -5626,7 +5626,44 @@ which carry STANDARD costs — would land her Essence at 6 − 5.3 = 0.7 instead
     but the number on the item then disagrees with the book's printed cost for that implant,
     and salvage would have to un-discount it to say what the part is worth.
 
-**4 — The conversion: REPLACE THE STUBS WITH REAL IMPORTS.**
+**4 — ✅ The conversion — FIRST PASS DONE 2026-09-03 (`tools/import-johnson-gear.mjs`).**
+
+**37 stubs converted across 22 of the 62 contacts**, exact-name matches only. A Corporate
+Security Guard's `Browning Max-Power` is now a `firearm` carrying `9M / SA / HPist` instead of an
+inert `gear` stub with no damage code — **the GM can roll it**. `gear` fell 270 → 233; firearm
+0 → 19, melee 0 → 9, armor 30 → 37, cyberdeck 0 → 2. Each converted item carries a real
+`_stats.compendiumSource`, which is what "does their gear link back to the compendium" asked for.
+
+⚠ **NOT blocked on [#12](#12-write-a-committed-pack-rebuild-script-and-vendor-its-sources)**, as
+was assumed. #12 blocks *creating new packs*; this patches embedded documents inside a pack that
+already exists, exactly as the skills pass did.
+
+⚠ **Exact matches only — the stem tier is deliberately absent**, for the `Club Drugs of
+Choice` → `Club` and `Flash-pak` → `Flash` reasons above.
+
+⚠ **Three target types are refused by design**, each for a different reason:
+- **`skill`** — a live false match: the *Mercenary* carries a `gear` "Desert Wars" **and** a
+  knowledge skill "Desert Wars 4". Converting would duplicate it.
+- **`cyberware`/`bioware`** — Essence is permanent and the book prints it. Seven stub names match
+  cyberware with an Essence cost (`Radio` 0.75, `Biomonitor` 0.3, `Datajack` 0.2), but the Taxi
+  Driver's radio is on the book's **Gear** line, not its **Cyberware** line. Converting would
+  charge Essence the printed figure excludes, contradicting [#84](#84).
+- **`spell`/`adeptpower`** — nothing on a gear line is either.
+
+⚠ **Two faults were made on the first run and caught by diffing the two pack copies.** Both are
+now guarded in the tool, and both are the kind nothing else would have surfaced:
+1. **The index must read the REPO's packs even when writing the install's.** The install carries
+   22 unshipped pre-split packs; indexing them converted `Switchblade` in one copy only, and
+   stamped `compendiumSource` UUIDs naming `sr3e-firearms` — **dead links for every user but
+   this machine**.
+2. **Keep the CONTACT's name, not the pack's.** Taking the pack's name turned
+   `Light Security Armor [helmeted 7/6, unhelmeted 6/4]` into plain `Light Security Armor`,
+   colliding with the 7/6 entry already on that sheet — two identical names, helmeted
+   indistinguishable from unhelmeted.
+
+**173 gear stubs still unmatched**, in the four buckets below. Original analysis follows.
+
+**4b — The remainder: REPLACE THE STUBS WITH REAL IMPORTS.**
 
 ⚠ **Nothing links, so there is no link to fix.** Checked 2026-09-01: of the **1,152 embedded
 items** across the 62 contacts, **zero** carry `_stats.compendiumSource` or

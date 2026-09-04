@@ -156,12 +156,67 @@ callback assigns, and both Cancel and dismissal fall through as `null`.
 Never use inline `oninput=` / `onclick=` attributes with `document.querySelector` — these
 fail in the ApplicationV2 rendering context. Always wire through the hook's `html` reference.
 
-### Compendium population — correct pattern
+### Compendium population — how packs are ACTUALLY changed
 
-Do **not** use `Item.createDocuments(items, { pack: pack.collection })` — it imports 0 items.
+⚠ **This section previously documented an in-Foundry macro workflow as "the correct pattern".
+No pack in this repo was built that way.** Corrected 2026-09-03.
 
-The correct pattern is: create a temporary world document → import into the pack → delete the temp.
-Wrap in a macro script (see `scripts/macros/populate-*.js`):
+**What is true today:**
+
+| | |
+|---|---|
+| The 82 per-book packs | Built by **uncommitted scratchpad scripts** using `fvtt package`. The `bookPage`-prefix → per-book routing exists **nowhere in git** — see TODO 12. |
+| `scripts/macros/populate-*.js` | **24 of 27 are broken.** The book split renamed every pack from `sr3e-<type>` to `sr3e-<book>-<type>` and no macro was updated, so they fail at `game.packs.get()` returning undefined. The pipeline was **retired** by decision on 2026-08-04, not repaired. The files still exist pending TODO 1. |
+| Changing a shipped pack | **Direct LevelDB via `classic-level`, with Foundry CLOSED.** |
+
+**So the repo currently cannot rebuild its own pack structure.** That is TODO 12, and it blocks
+shipping any new content — ammunition (TODO 23), core gear (TODO 91), book restoration (TODO 9).
+
+#### Editing an existing pack — the working pattern
+
+This is what the shipped tools do. Read one before writing another: `tools/check-packs.mjs`,
+`tools/patch-johnson-stats.mjs`, `tools/import-johnson-gear.mjs`, `tools/patch-enhanced-articulation.mjs`.
+
+```js
+import { ClassicLevel } from 'classic-level';
+const db = new ClassicLevel(packPath, { valueEncoding: 'json' });
+await db.open();                       // throws if Foundry holds the lock
+for await (const [key, doc] of db.iterator()) { /* … */ }
+await db.put(key, doc);
+await db.close();
+```
+
+⚠ **Foundry must be CLOSED even to READ.** A LevelDB allows one process to open a database;
+there is no shared-read mode. Report a lock as "close Foundry", never as a stack trace.
+
+⚠ **THERE ARE TWO COPIES OF EVERY PACK AND FOUNDRY READS THE OTHER ONE.** The install's
+`scripts/`, `styles/` and `lang/` are junctions into this checkout; **`packs/` and `system.json`
+are NOT**, and `npm run sync:install` deliberately never copies packs. **Every pack tool must be
+run twice** — once plain, once `--install`.
+
+⚠ **Index against the REPO's packs, never the install's.** The maintainer's install still
+carries 22 **pre-split monolithic** packs that do not ship. `import-johnson-gear.mjs` indexed the
+install on its first run and stamped `compendiumSource` UUIDs naming `sr3e-firearms` — a pack no
+other user has, i.e. dead provenance links for everyone else. Caught only by diffing the two
+copies afterwards, so **diff them afterwards**.
+
+⚠ **Keys are structural.** `!items!<id>` · `!actors!<id>` · `!actors.items!<actorId>.<itemId>`
+· `!folders!<id>`. An embedded item lives under its own key **and** is referenced by id in the
+actor's `items` array — write both or the actor points at documents that no longer exist. A
+sweep counting only `!items!` **misses Actor packs entirely** (drones, vehicles, contacts); that
+mistake was made during the 2026-09-02 gear audit and briefly reported two packs as empty.
+
+⚠ **Derive ids, never randomise them.** A re-run must reuse the same keys or it orphans the
+previous documents inside the database. See `idFor()` in `patch-johnson-stats.mjs`.
+
+⚠ **Verify with `npm run packs:check:repo`** afterwards — it catches null `_id`s, key/`_id`
+disagreement and duplicates.
+
+#### The in-Foundry API, for reference only
+
+If you ever do need to create pack documents from inside a running Foundry — which **is not how
+this repo's packs are maintained** — the working call is a temporary world document imported and
+then deleted. `Item.createDocuments(items, { pack: pack.collection })` imports 0 items.
 
 ```js
 await pack.configure({ locked: false });
@@ -181,6 +236,10 @@ ui.notifications.info(`SR3E: ${created} items added.`);
 ```
 
 For Actor compendiums use `Actor.create(data, { renderSheet: false })` instead of `Item.create`.
+
+⚠ Documents made this way carry **full Foundry scaffolding** (`_stats`, `ownership`, `sort`,
+`folder`) while the shipped packs, built by tooling, carry minimal ones. That difference is the
+signature `tools/check-packs.mjs` uses to tell drift in a live install from what the repo ships.
 
 ### Filtering actors for dialog dropdowns
 
