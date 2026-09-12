@@ -6379,6 +6379,8 @@ with `trackAmmo` on.
 
 ### ⚠ The `sr3` pack has no grenades, and core-only is the DEFAULT configuration
 
+**Reported in play 2026-09-11:** *"grenades are all showing the second edition version. I don't see any 3rd edition grenades."* — exactly this gap, seen at the table.
+
 The AoE flow is fully built — cursor-aimed blast point, scatter, epicentre relocation, per-target
 falloff, Chunky Salsa. Grenades do ship (15 in `sr3e-sr2-projectiles`, 6 in
 `sr3e-cc-projectiles`, typed `projectile`/`GR`, which `SR3E.thrownCategories` accepts) —
@@ -6548,3 +6550,17 @@ Rewards as "a checkbox list of every live PC", which records the list, not the d
 **To check after the session:** which tools have a multi-actor checkbox list (Session Rewards,
 Chunky Salsa, Barrier Damage, …) and whether any should keep a pre-checked default. Session
 Rewards is the arguable case, since a reward usually goes to the whole party.
+
+<a id="97"></a>
+
+## 97. Cannot drag equipment from a compendium onto a character sheet — **reported in play 2026-09-11**
+
+**Observation only — not investigated** (reported mid-combat). Dragging equipment from a
+compendium onto a character sheet does not add it.
+
+**Triage: new** — no existing entry covers dropping items on the character sheet.
+
+**To check after the session:** which item types fail (all equipment, or only some); whether the
+drop fails silently or raises an error in the console; whether it fails for the GM, a player,
+or both; and whether dragging from the sidebar Items directory behaves differently from a
+compendium.
