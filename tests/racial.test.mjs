@@ -117,6 +117,44 @@ export async function run(t) {
   t.is('dermal armor is reported as racial', tr.racialBonus.bod, 1);
   t.is('…and does NOT appear as a cyber bonus', tr.cyberBonus.bod, 0);
 
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  Troll natural Reach · SR3 p.56, p.121 — "cumulative with weapon Reach"
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const club   = { system: { reach: 1 } };
+  const fists  = { system: { reach: 0 } };
+  const trollA = { system: { metatype: 'troll' } };
+  const human  = { system: { metatype: 'human' } };
+  const reach  = (w, a) => SR3EActor.meleeReach(w, a).total;
+  // The differential exactly as rollMeleeAttack takes it: |atk − def| of the two totals.
+  const diff   = (w1, a1, w2, a2) => Math.abs(reach(w1, a1) - reach(w2, a2));
+
+  t.is('a troll with a club fights at Reach 2', reach(club, trollA), 2);
+  t.is('a bare-handed troll fights at Reach 1', reach(fists, trollA), 1);
+  t.is('a human with a club fights at Reach 1', reach(club, human), 1);
+  t.is('…and reports the natural part separately', SR3EActor.meleeReach(club, trollA).natural, 1);
+  t.is('a missing weapon (bare hands) still gets natural Reach', reach(null, trollA), 1);
+  t.is('a vehicle or spirit (no metatype) gets none', reach(club, { system: {} }), 1);
+  t.is('matched however the free-text field was typed', reach(fists, { system: { metatype: ' Troll ' } }), 1);
+
+  /* The book's own example (p.121): a sword (Reach 1) against an unarmed opponent is 1. */
+  t.is('p.121: sword vs unarmed human is a difference of 1', diff(club, human, fists, human), 1);
+  t.is('troll with a club vs unarmed human is a difference of 2', diff(club, trollA, fists, human), 2);
+  t.is('unarmed troll vs human with a club: equal reach, difference 0', diff(fists, trollA, club, human), 0);
+  /* ⚠ Equal reach must cancel. Adding the natural point to the DIFFERENCE instead of to each
+   * fighter would give troll-vs-troll a phantom 1. */
+  t.is('troll vs troll, same weapons: difference 0', diff(club, trollA, club, trollA), 0);
+
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  Flechette vs dermal armor · SR3 p.116
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const F = SR3EActor.flechetteRaisesLevel;
+  t.is('an unarmoured human takes the level increase', F({ ballistic: 0, impact: 0, dermalArmor: 0 }), true);
+  t.is('an unarmoured troll does not — dermal armor negates it',
+    F({ ballistic: 0, impact: 0, dermalArmor: SR3EActor.racialDermalArmor('troll') }), false);
+  t.is('an armoured target never takes it (flechetteArmor applies instead)', F({ ballistic: 2, impact: 1 }), false);
+  t.is('impact alone counts as armoured', F({ ballistic: 0, impact: 1 }), false);
+  t.is('no arguments reads as unarmoured, no dermal', F(), true);
+
   /* ── Config and fallback must agree ───────────────────────────────────────────────── */
   t.is('SR3E.racialModifiers matches the fallback mirror',
     JSON.stringify(SR3E.racialModifiers), JSON.stringify(SR3EActor._RACIAL_MODS_FALLBACK));

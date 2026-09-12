@@ -923,8 +923,8 @@ export const SR3E = {
    *
    * Matches the generator's own table (`PriorityPanel.js`) row for row. Reaction is absent: it
    * is derived from Quickness and Intelligence, so it picks the modifiers up from those.
-   * The non-attribute traits (vision, a troll's +1 Reach and Dermal Armor, a dwarf's +2 Body
-   * against disease and toxins) are not modelled here.
+   * The non-attribute traits live elsewhere: a troll's Dermal Armor and +1 Reach below; vision
+   * (TODO 99) and a dwarf's +2 Body against disease and toxins (TODO 98) are not modelled yet.
    */
   /**
    * Natural dermal armor · *SR3 p.56, p.281*
@@ -942,10 +942,24 @@ export const SR3E = {
    * ⚠ **Kept OUT of `cyberBonus`.** Attribute Boost reads that to find the *technological*
    * increases it cannot combine with (p.169); a troll's hide is not technology.
    *
-   * ⚠ Not modelled: *"does not aid in healing"* — augmented Body is used everywhere, exactly as
-   * it already is for Dermal Plating.
+   * ⚠ *"does not aid in healing"* — there is no healing flow yet; the one planned in TODO 76
+   * reads `body.base`, which never carries this point.
+   *
+   * It also spares a troll flechette's Damage Level increase (p.116) — see
+   * `SR3EActor.flechetteRaisesLevel`.
    */
   racialDermalArmor: { troll: 1 },
+  /**
+   * Natural Reach · *SR3 p.56, p.121*
+   *
+   * > Troll — *"+1 Reach for Armed/Unarmed Combat"* (p.56)
+   * > *"Trolls have a natural Reach of 1 that is cumulative with weapon Reach."* (p.121)
+   *
+   * Added to the weapon's own Reach by `SR3EActor.meleeReach` before the p.121 differential is
+   * taken, so a troll with a club (Reach 1) fights at 2 and a bare-handed troll at 1.
+   * ⚠ Physical melee only — astral combat does not read it.
+   */
+  racialReach: { troll: 1 },
 
   racialModifiers: {
     human: { body: 0, quickness: 0,  strength: 0, charisma: 0,  intelligence: 0,  willpower: 0 },

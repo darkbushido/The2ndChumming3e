@@ -890,4 +890,25 @@ export const MUTANTS = [
           + 'to Pain Resistance',
     impl:   () => 0,
   },
+
+  {
+    id:     'melee-reach-ignores-troll',
+    suite:  'racial',
+    ...ACTOR, method: 'meleeReach',
+    was:    'SR3 p.121 - "Trolls have a natural Reach of 1 that is cumulative with weapon Reach". '
+          + 'Melee read weapon Reach alone until 2026-09-12, so a troll with a club fought at 1',
+    impl:   (weapon) => {
+      const w = Math.trunc(Number(weapon?.system?.reach) || 0);
+      return { total: w, weapon: w, natural: 0 };
+    },
+  },
+
+  {
+    id:     'flechette-ignores-dermal-armor',
+    suite:  'racial',
+    ...ACTOR, method: 'flechetteRaisesLevel',
+    was:    'SR3 p.116 - "Dermal armor negates the Damage Level increase of flechette '
+          + 'ammunition". Every unarmoured target took the increase until 2026-09-12',
+    impl:   ({ ballistic = 0, impact = 0 } = {}) => Math.max(ballistic, impact) <= 0,
+  },
 ];

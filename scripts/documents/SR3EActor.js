@@ -4073,9 +4073,8 @@ _prepareCharacter(sys, attr) {
    * The two agree only when Impact is the higher of the two, which is why it survived — that
    * is the common case for the light armour flechette is usually fired at.
    *
-   * ⚠ **Not modelled:** *"Dermal armor negates the Damage Level increase of flechette
-   * ammunition."* Dermal armour is not tracked apart from other Impact sources, so the GM
-   * applies that one by hand.
+   * *"Dermal armor negates the Damage Level increase of flechette ammunition"* is the
+   * unarmoured case, so it lives in `flechetteRaisesLevel`, not here.
    */
   static flechetteArmor({ ballistic = 0, impact = 0 } = {}) {
     return Math.max(Math.max(0, impact) * 2, Math.max(0, ballistic));
@@ -4512,7 +4511,11 @@ _prepareCharacter(sys, attr) {
           </div>
           ${specLine}
           <div class="sr-melee-weapon">${weaponName}
-            ${reach > 0 ? `<span class="sr-melee-reach"> Reach ${reach}</span>` : ''}
+            ${reach > 0 ? (() => {
+              const nat = (role === 'attacker' ? ctx.atkNaturalReach : ctx.defNaturalReach) ?? 0;
+              return `<span class="sr-melee-reach"${nat > 0 ? ' title="Includes troll natural Reach (SR3 p.121)"' : ''}>`
+                   + ` Reach ${reach}${nat > 0 ? ` (troll +${nat})` : ''}</span>`;
+            })() : ''}
           </div>
           <div class="sr-melee-corner-body">
           <div class="sr-melee-fields">
@@ -6040,6 +6043,50 @@ _prepareCharacter(sys, attr) {
   }
 
   /**
+   * Natural Reach · *SR3 p.56, p.121* — 1 for a troll, else 0. See `SR3E.racialReach`.
+   */
+  static racialReach(metatype) {
+    const table = globalThis.game?.sr3e?.SR3E?.racialReach ?? { troll: 1 };
+    return table[String(metatype ?? '').trim().toLowerCase()] ?? 0;
+  }
+
+  /**
+   * A fighter's melee Reach · *SR3 p.121* — the weapon's Reach plus natural Reach.
+   *
+   * > *"Trolls have a natural Reach of 1 that is cumulative with weapon Reach."*
+   *
+   * ⚠ This is each fighter's ABSOLUTE Reach; the differential is taken from the pair by the
+   * caller. Adding natural Reach to the difference instead would give a troll against a troll
+   * a phantom +1 — equal reach must still cancel.
+   *
+   * `actor` may be a vehicle or a spirit; no metatype reads as 0.
+   * @returns {{ total: number, weapon: number, natural: number }}
+   */
+  static meleeReach(weapon, actor) {
+    const w = Math.trunc(Number(weapon?.system?.reach) || 0);
+    const n = SR3EActor.racialReach(actor?.system?.metatype);
+    return { total: w + n, weapon: w, natural: n };
+  }
+
+  /**
+   * Does flechette raise this target's Damage Level? · *SR3 p.116*
+   *
+   * > *"Against unarmored targets, flechette rounds increase their Damage Codes by one level…
+   * > Dermal armor negates the Damage Level increase of flechette ammunition."*
+   *
+   * Only an UNARMOURED target takes the increase (an armoured one gets `flechetteArmor`
+   * instead), and dermal armour cancels it.
+   *
+   * ⚠ **Only natural dermal armour is known today** — a troll's (`racialDermalArmor`). Dermal
+   * Plating and similar cyberware still take the increase, which the GM corrects by hand;
+   * TODO 75 tracks recognising them.
+   */
+  static flechetteRaisesLevel({ ballistic = 0, impact = 0, dermalArmor = 0 } = {}) {
+    if (Math.max(ballistic, impact) > 0) return false;
+    return !(dermalArmor > 0);
+  }
+
+  /**
    * An imported character's finished attribute ratings · *SR3 p.56* — the importer's rule.
    *
    * The Shadowrun Character Generator exports a character's attributes in TWO parts: the points
@@ -7049,12 +7096,15 @@ _prepareCharacter(sys, attr) {
       ballistic = Math.floor(ballistic / 2);
       ammoNote  = `APDS — ballistic armour halved (now ${ballistic})`;
     } else if (ammoRules.armorEffect === 'flechette') {
-      if (Math.max(ballistic, impact) <= 0) {
+      const dermalArmor = this.type === 'vehicle' ? 0 : SR3EActor.racialDermalArmor(this.system.metatype);
+      if (SR3EActor.flechetteRaisesLevel({ ballistic, impact, dermalArmor })) {
         // Unarmoured target — damage level stages up one
         const STAGES = ['L', 'M', 'S', 'D'];
         const li = STAGES.indexOf(effStagedLevel);
         if (li >= 0) effStagedLevel = STAGES[Math.min(3, li + 1)];
         ammoNote = `Flechette vs unarmoured — damage level raised to ${effStagedLevel}`;
+      } else if (Math.max(ballistic, impact) <= 0) {
+        ammoNote = 'Flechette vs unarmoured — no level increase: troll dermal armor negates it (p.116)';
       } else {
         const eff = SR3EActor.flechetteArmor({ ballistic, impact });
         ammoNote  = `Flechette vs armour — effective armour ${eff} `

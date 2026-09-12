@@ -3137,10 +3137,9 @@ on the GM and **not** on the attacker.
 
 **Still open, deliberately:**
 
-- **Troll natural Reach 1** (p.121) is not folded in. The differential is computed from
-  `weapon.system.reach` alone, so a troll with a club reads as Reach 1 rather than 2. It
-  needs a metatype lookup, which is the same lookup [#36](#36) wants for vision — worth
-  doing together.
+- ✅ **Troll natural Reach 1** (p.121) — folded in 2026-09-12 on `fix/racial-mods`
+  (`SR3EActor.meleeReach`, `SR3E.racialReach`). The differential is taken from each fighter's
+  total, so troll-vs-troll still cancels.
 - **Contested rolls still have no GM window.** They are not a melee exchange and have no
   modifier table of their own; giving them one needs a decision about what it would
   *contain*, not a copy of this.
@@ -3201,8 +3200,8 @@ with it, and the choice has to move into this window or it is lost outright.
 **Shape:** a reach row that appears only when the differential is non-zero, naming the fighter who
 holds it and offering the two applications — *−N to my TN* / *+N to theirs*. Belongs to whoever has
 the longer reach, not to the GM, so on a two-corner card it renders in **that fighter's** corner.
-Trolls have natural Reach 1 cumulative with weapon reach (p.121) — check the differential is computed
-from the total, not the weapon field alone.
+Trolls have natural Reach 1 cumulative with weapon reach (p.121) — ✅ now computed from the total
+(`SR3EActor.meleeReach`, 2026-09-12).
 
 ### ✅ The data layer is built — `SR3E_MELEE_MODIFIERS` + `sumMeleeModifiers`
 
@@ -4673,6 +4672,15 @@ So this needs the armour channel that `IMP`/`BAL` have been waiting for since [#
 4. `_postSoakCard`: skip the level increase when dermal armour is present.
 
 ⚠ Step 3 is the real design. Everything else is plumbing.
+
+**Partly done 2026-09-12 (`fix/racial-mods`): a troll's natural dermal armor.** The rule now
+lives in a pure `SR3EActor.flechetteRaisesLevel({ ballistic, impact, dermalArmor })`, and the
+soak card passes `racialDermalArmor(metatype)`. What remains is recognising dermal **cyberware**
+— and note that step 3 may not need the armour channel at all: "does this character have
+dermal armour?" is a yes/no that a named registry of implants can answer (the shape of
+`SR3E.quicknessNotForReaction`), independent of whether Impact is ever tracked per source.
+Which implants count needs the book: Dermal Plating (SR3 p.281) certainly; Dermal Sheath and
+the M&M/bioware options to be checked.
 
 ⚠ Getting steps 1-2 wrong would make **every** armour-granting implant apply twice, since
 Mystic Armor and Penetrating Strike already adjust Impact at the soak card. Check
@@ -6466,7 +6474,7 @@ where the accessories [#91](#91) wants most likely already exist in print.
 
 <a id="93"></a>
 
-## 93. 🧪 Test in Foundry: racial modifiers, troll dermal armor, Species lock — branch `fix/racial-mods`
+## 93. 🧪 Test in Foundry: racial modifiers, troll dermal armor and Reach, Species lock — branch `fix/racial-mods`
 
 **Written 2026-09-11 and not yet run anywhere but the unit tests** (38/38). The maintainer does
 not run Foundry locally, so this waits for a hosted test. Reported in play: a troll allocated
@@ -6498,15 +6506,25 @@ B5 Q5 S4 C2 I3 W2 imported at those numbers instead of B10 Q4 S8 C0 I1 W2.
       when another field is edited.
 - [ ] **Attribute Boost on a troll** (if an adept troll is to hand) — the dermal +1 must not
       count as a technological increase that blocks the boost.
+- [ ] **Troll Reach in melee.** Troll with a club (Reach 1) attacks an unarmed human: the card
+      shows *Reach 2 (troll +1)* in the troll's corner and the reach election offers **2**. An
+      unarmed troll against a human with a club: no reach election at all (1 vs 1).
+- [ ] **Flechette at an unarmoured troll.** Shoot a troll wearing no armour with flechette
+      loaded: the soak card says *no level increase: troll dermal armor negates it* and the
+      level is **not** raised. The same shot at an unarmoured human still raises it.
 
 ### Known, not fixed here
 
 - Characters **already imported** before this branch keep their human-rated attributes. There
   is no way to tell an allocation from a finished rating after the fact, so there is no
   migration: re-import, or add the Racial Modifications Table (SR3 p.56) by hand.
-- Dermal armor counts for healing, which p.281 says it should not — same gap as Dermal Plating.
-- The other racial traits are not modelled: a troll's +1 Reach, vision types ([#99](#99)), a
-  dwarf's +2 Body against disease and toxins ([#98](#98)).
+- Dermal armor must not count for healing (p.281). There is no healing flow yet; the one
+  planned in [#76](#76) reads `body.base`, which never carries the dermal point. A Body roll
+  from the sheet does include it.
+- Dermal Plating and other dermal **cyberware** still take flechette's level increase — only a
+  troll's natural dermal armor is recognised. [#75](#75).
+- Not modelled: vision types ([#99](#99)), a dwarf's +2 Body against disease and toxins
+  ([#98](#98)).
 
 <a id="94"></a>
 

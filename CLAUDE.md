@@ -996,7 +996,7 @@ inside the dialog's FA-only section, so SA's second shot and BF's second burst w
 - *Reload*: prompts a compatible stockpile (matched by loading mechanism), full-swaps the magazine (leftovers discarded), and subtracts from the stockpile. When `trackAmmo` is off it only sets the loaded type (no stock math).
 - *Firing* uses whatever is loaded; decrements `loadedRounds` when `trackAmmo` is on (warns, never blocks, when empty).
 - *Type rules*: Explosive +1 / EX +2 power; Gel −2 power + Stun (attack time). APDS halves ballistic; Flechette unarmoured → level +1, armoured → **`max(Impact × 2, Ballistic)`** (`SR3EActor.flechetteArmor`, soak time via `ammoType` carried into `_postSoakCard`).
-  ⚠ **The doubling is on IMPACT ONLY** — *"use either double its Impact Armor Rating or its normal Ballistic Armor Rating, whichever is higher"* (p.116). This was `max(ballistic, impact) × 2` until 2026-08-30, which doubles the wrong number and then doubles it anyway: ballistic 8 / impact 2 gave 16 where the book gives 8. The two agree whenever Impact is the higher, which is the common case for light armour and is why it survived. ⚠ *"Dermal armor negates the Damage Level increase"* is **not modelled**. Anti-Vehicle sets `weaponOpts.avMunition` to bypass the vehicle Power/2. Tracer: FA-only, tracer rounds raise Level not Power, TN bonus shown as a manual note.
+  ⚠ **The doubling is on IMPACT ONLY** — *"use either double its Impact Armor Rating or its normal Ballistic Armor Rating, whichever is higher"* (p.116). This was `max(ballistic, impact) × 2` until 2026-08-30, which doubles the wrong number and then doubles it anyway: ballistic 8 / impact 2 gave 16 where the book gives 8. The two agree whenever Impact is the higher, which is the common case for light armour and is why it survived. ⚠ *"Dermal armor negates the Damage Level increase"* (`SR3EActor.flechetteRaisesLevel`) is modelled for a **troll's natural** dermal armor only; dermal cyberware still takes the increase (TODO 75). Anti-Vehicle sets `weaponOpts.avMunition` to bypass the vehicle Power/2. Tracer: FA-only, tracer rounds raise Level not Power, TN bonus shown as a manual note.
 - *Loading mechanisms*: c/m/cy/b/d/sb/internal + arrow/bolt (`SR3E.ammoLoadMechanisms`); for firearms parsed from the gun's capacity string by `SR3EItem._parseLoadMechanism`.
 - *Setting*: world setting `trackAmmo` (off by default) gates all counting/depletion.
 
@@ -1091,8 +1091,9 @@ defenses"* versus *"make himself harder to hit."*
 - ⚠ **At the TN floor the two branches stop being equivalent, and that is RAW.** No TN may
   fall below 2, so a bonus that would take you under it is simply lost while the same points
   pushed onto the opponent are not. Against a soft target the election is a real edge.
-- Trolls have natural Reach 1 cumulative with weapon reach (p.121) — **not yet folded in**;
-  the differential is computed from `weapon.system.reach` alone.
+- Trolls have natural Reach 1 cumulative with weapon reach (p.121) — `SR3EActor.meleeReach`
+  adds `SR3E.racialReach` to each fighter's weapon Reach **before** the differential is taken.
+  ⚠ Per fighter, never onto the difference: troll-vs-troll must still cancel.
 
 ### Full Defense  · *SR3 p.123-124*
 

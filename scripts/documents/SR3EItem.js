@@ -223,8 +223,12 @@ export class SR3EItem extends Item {
     // Build rich pool info for both sides
     const atkInfo  = SR3EItem._buildMeleePoolInfo(actor, atkWeapon);
     const defInfo  = SR3EItem._buildMeleePoolInfo(targetActor, defWeapon);
-    const atkReach = atkWeapon.system?.reach ?? 0;
-    const defReach = defWeapon?.system?.reach ?? 0;
+    // Weapon Reach plus a troll's natural Reach (p.121) — absolute, per fighter; the
+    // differential below is taken from the pair, so troll-vs-troll still cancels.
+    const atkR     = game.sr3e.SR3EActor.meleeReach(atkWeapon, actor);
+    const defR     = game.sr3e.SR3EActor.meleeReach(defWeapon, targetActor);
+    const atkReach = atkR.total;
+    const defReach = defR.total;
 
     // SR3 Default Table — either side may lack the skill. Prompt each defaulter
     // (attacker first, then defender) and patch their pool info / TN modifier.
@@ -339,6 +343,9 @@ export class SR3EItem extends Item {
       defDamageBase:    defWeapon ? SR3EItem.parseDamageCode(defWeapon.system?.damage ?? '', targetActor) : null,
       atkReach,
       defReach,
+      // The natural part of each Reach, so the card can show where the extra point came from.
+      atkNaturalReach:  atkR.natural,
+      defNaturalReach:  defR.natural,
       reachDiff,
       reachHolder,
       // The TNs as posted already carry the DEFAULT reach election (−N to the holder).
