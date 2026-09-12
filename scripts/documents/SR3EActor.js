@@ -1932,6 +1932,10 @@ _prepareCharacter(sys, attr) {
    * cannot combine with (p.169). See `SR3E.racialDermalArmor`. */
   const racialBonus = { bod: SR3EActor.racialDermalArmor(sys.metatype) };
 
+  /* A dwarf's +2 Body against disease and toxins (p.56) — a SITUATIONAL bonus, beside
+   * Nephritic Screen, not an attribute change. See `SR3E.racialSituational` · TODO 98. */
+  for (const b of SR3EActor.racialSituational(sys.metatype)) situationalBonuses.push(b);
+
   // Apply cyber/bio + adept power + racial dermal bonuses to core attributes — derivations below use .value
   const _cyberKey = { body: 'bod', quickness: 'qui', strength: 'str', charisma: 'cha', intelligence: 'int', willpower: 'wil' };
   for (const key of ['body', 'quickness', 'strength', 'charisma', 'intelligence', 'willpower']) {
@@ -6040,6 +6044,35 @@ _prepareCharacter(sys, attr) {
   static racialDermalArmor(metatype) {
     const table = globalThis.game?.sr3e?.SR3E?.racialDermalArmor ?? { troll: 1 };
     return table[String(metatype ?? '').trim().toLowerCase()] ?? 0;
+  }
+
+  /**
+   * What a Body roll may OFFER for resisting disease or toxin · TODO 98.
+   *
+   * Every `toxin` source summed — a dwarf's racial +2, Nephritic Screen, Body Control — since
+   * two sources covering one situation are two purchases (see `situationalBonus`). The roll
+   * dialog shows it as an unticked checkbox; nothing applies it automatically, because only a
+   * human knows the Body Test is against a toxin.
+   * @returns {{ dice: number, label: string }}  label is '' when there is nothing to offer
+   */
+  static toxinResistanceOffer(bonuses) {
+    const b = SR3EActor.situationalBonus(bonuses, 'toxin');
+    return {
+      dice:  b.dice,
+      label: b.dice ? `Resisting disease or toxin: +${b.dice} (${b.labels.join(' + ')})` : '',
+    };
+  }
+
+  /**
+   * Racial situational bonuses · *SR3 p.56* — a dwarf's +2 against disease and toxins.
+   * Returns fresh `situationalBonuses` entries (copies, so a derivation can never mutate the
+   * config table). See `SR3E.racialSituational` · TODO 98.
+   */
+  static racialSituational(metatype) {
+    const table = globalThis.game?.sr3e?.SR3E?.racialSituational
+      ?? { dwarf: [{ situation: 'toxin', dice: 2, label: 'Dwarf resistance (SR3 p.56)' }] };
+    return (table[String(metatype ?? '').trim().toLowerCase()] ?? [])
+      .map(b => ({ label: b.label, situation: b.situation, dice: b.dice ?? 0, tn: b.tn ?? 0, pool: 0 }));
   }
 
   /**

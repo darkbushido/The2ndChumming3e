@@ -155,6 +155,37 @@ export async function run(t) {
   t.is('impact alone counts as armoured', F({ ballistic: 0, impact: 1 }), false);
   t.is('no arguments reads as unarmoured, no dermal', F(), true);
 
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  Dwarf resistance to disease and toxins · SR3 p.56 · TODO 98
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const toxinOf = d => SR3EActor.situationalBonus(d.situationalBonuses, 'toxin');
+
+  t.is('a dwarf has +2 against disease and toxins', toxinOf(derive('dwarf', 4).d).dice, 2);
+  t.is('…matched however the free-text field was typed', toxinOf(derive(' Dwarf ', 4).d).dice, 2);
+  t.is('a troll has none', toxinOf(derive('troll', 10).d).dice, 0);
+  t.is('a human has none', toxinOf(derive('human', 4).d).dice, 0);
+
+  /* ⚠ Dice on the TEST, never the attribute — +2 Body would add to every soak and knockdown. */
+  t.is('a dwarf\'s Body attribute is unchanged by it', derive('dwarf', 4).attr.body.value, 4);
+
+  /* ⚠ It SUMS with Nephritic Screen (M&M, +1): two sources covering one situation are two
+   * purchases (see situationalBonus). */
+  const screen = { type: 'bioware', name: 'Nephritic Screen', system: {} };
+  t.is('dwarf + Nephritic Screen: +3', toxinOf(derive('dwarf', 4, [screen]).d).dice, 3);
+  t.is('a human with Nephritic Screen alone: +1', toxinOf(derive('human', 4, [screen]).d).dice, 1);
+
+  /* What the Body roll dialog offers. */
+  const offer = SR3EActor.toxinResistanceOffer(derive('dwarf', 4, [screen]).d.situationalBonuses);
+  t.is('the dialog offers the summed dice', offer.dice, 3);
+  t.ok('…and names every source', /Dwarf resistance/.test(offer.label) && /Nephritic Screen/.test(offer.label));
+  t.is('nothing to offer a human: empty label, so no checkbox is rendered',
+    SR3EActor.toxinResistanceOffer(derive('human', 4).d.situationalBonuses).label, '');
+
+  /* The config table must never be mutated through a derivation's copy. */
+  const firstCopy = SR3EActor.racialSituational('dwarf')[0];
+  if (firstCopy) firstCopy.dice = 99;
+  t.is('racialSituational returns copies', SR3EActor.racialSituational('dwarf')[0]?.dice, 2);
+
   /* ── Config and fallback must agree ───────────────────────────────────────────────── */
   t.is('SR3E.racialModifiers matches the fallback mirror',
     JSON.stringify(SR3E.racialModifiers), JSON.stringify(SR3EActor._RACIAL_MODS_FALLBACK));

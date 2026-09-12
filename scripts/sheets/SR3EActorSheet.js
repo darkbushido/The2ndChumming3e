@@ -3005,7 +3005,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const rollOptions = await SR3EActorSheet._promptRollOptions(actor, { defaultPool: val, rollAttr: attr, physicalDice });
     if (rollOptions) {
       const selectedAttr = rollOptions.selectedAttr ?? attr;
-      const label = selectedAttr.charAt(0).toUpperCase() + selectedAttr.slice(1);
+      const label = selectedAttr.charAt(0).toUpperCase() + selectedAttr.slice(1)
+        + (rollOptions.toxinDice ? ` — resisting disease or toxin (+${rollOptions.toxinDice})` : '');
       await actor.rollPool(rollOptions.pool ?? val, rollOptions.tn, label, rollOptions);
     }
   }
@@ -4251,13 +4252,25 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       `<option value="${a.key}" data-val="${a.val}"${a.key === selectedKey ? ' selected' : ''}>${a.label}</option>`
     ).join('');
 
+    /* Resisting disease or toxin · TODO 98 — a dwarf's +2 (SR3 p.56), Nephritic Screen, Body
+     * Control. Offered UNTICKED, and only while Body is the attribute: nothing here can tell a
+     * Body Test against a toxin from any other, so the roller decides — the same reason
+     * Enhanced Articulation is a checkbox on the skill dialog. Rendered only when the actor has
+     * such a bonus; a permanently disabled box on every roll would be noise. */
+    const toxin = game.sr3e.SR3EActor.toxinResistanceOffer(actor?.system.derived?.situationalBonuses ?? []);
+    const toxinRow = toxin.dice ? `
+            <label class="roll-opts-karma" id="sr-toxin-row">
+              <input type="checkbox" id="sr-toxin" ${selectedKey === 'body' ? '' : 'disabled'}/>
+              <span id="sr-toxin-lbl">${toxin.label}${selectedKey === 'body' ? '' : ' — Body Tests only'}</span>
+            </label>
+            <span></span>` : '';
+
     return new Promise(resolve => {
-      new foundry.applications.api.DialogV2({
+      const dialog = new foundry.applications.api.DialogV2({
         window: { title: 'Roll Options' },
         content: `
           <div class="sr3e-roll-opts">
-            <select id="sr-attr" class="roll-opts-attr"
-              onchange="document.getElementById('sr-pool').value=this.options[this.selectedIndex].dataset.val">
+            <select id="sr-attr" class="roll-opts-attr">
               ${optionsHtml}
             </select>
             <span class="roll-opts-colon">:</span>
@@ -4269,6 +4282,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             <input type="number" id="sr-tn" class="roll-opts-tn" value="${4 + woundPenalty}" min="2" max="30"/>
             ${woundNote}
             <span></span>
+            ${toxinRow}
             ${karmaPool > 0 ? `<label class="roll-opts-karma"><input type="checkbox" id="sr-karma"/> Use Karma Pool (${karmaPool} available)</label>` : ''}
             ${physicalDice ? `<p class="roll-opts-physical">📋 Physical dice mode</p>` : ''}
           </div>
@@ -4284,12 +4298,15 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
               const useKarma   = html.querySelector('#sr-karma')?.checked ?? false;
               const poolEl     = html.querySelector('#sr-pool');
               const attrEl     = html.querySelector('#sr-attr');
+              const toxinOn    = !!html.querySelector('#sr-toxin')?.checked && attrEl?.value === 'body';
               resolve({
                 tn:           Math.max(2, tn),
                 useKarma,
                 karmaReroll:  useKarma,
                 pool:         poolEl ? Math.max(1, parseInt(poolEl.value) || 1) : null,
                 selectedAttr: attrEl?.value ?? selectedKey,
+                // Already inside `pool`; carried so the card can say where the dice came from.
+                toxinDice:    toxinOn ? toxin.dice : 0,
                 physicalDice,
                 skipWoundMod: true,
               });
@@ -4301,7 +4318,37 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             callback: () => resolve(null)
           }
         ]
-      }).render(true);
+      });
+
+      /* Wired per render, not through inline handlers (see CLAUDE.md, Interactive dialogs).
+       * Changing the attribute resets the pool to that attribute, as it always did, plus the
+       * toxin dice if they are still ticked and still apply; ticking adjusts the pool by the
+       * bonus, so a hand-typed pool is kept rather than overwritten. */
+      dialog.addEventListener('render', () => {
+        const html   = dialog.element;
+        const attrEl = html.querySelector('#sr-attr');
+        const poolEl = html.querySelector('#sr-pool');
+        const tBox   = html.querySelector('#sr-toxin');
+        const tLbl   = html.querySelector('#sr-toxin-lbl');
+        if (!attrEl || !poolEl || attrEl.dataset.wired) return;
+        attrEl.dataset.wired = '1';
+
+        attrEl.addEventListener('change', () => {
+          const isBody = attrEl.value === 'body';
+          if (tBox) {
+            tBox.disabled = !isBody;
+            if (!isBody) tBox.checked = false;
+            tLbl.textContent = toxin.label + (isBody ? '' : ' — Body Tests only');
+          }
+          const base = parseInt(attrEl.options[attrEl.selectedIndex].dataset.val) || 1;
+          poolEl.value = base + (tBox?.checked ? toxin.dice : 0);
+        });
+        tBox?.addEventListener('change', () => {
+          const cur = parseInt(poolEl.value) || 0;
+          poolEl.value = Math.max(1, cur + (tBox.checked ? toxin.dice : -toxin.dice));
+        });
+      });
+      dialog.render(true);
     });
   }
 

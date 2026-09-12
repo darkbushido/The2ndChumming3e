@@ -960,6 +960,21 @@ export const SR3E = {
    * ⚠ Physical melee only — astral combat does not read it.
    */
   racialReach: { troll: 1 },
+  /**
+   * Racial bonuses scoped to a SITUATION · *SR3 p.56* · TODO 98
+   *
+   * > Dwarf — *"Resistance (+2 Body) to any disease or toxin"*
+   *
+   * Rides `derived.situationalBonuses` beside Nephritic Screen and Body Control, and is offered
+   * as an **unticked** checkbox on a Body roll — the system cannot tell a Body Test against a
+   * toxin from any other, so the roller decides (the Enhanced Articulation pattern).
+   *
+   * ⚠ **+2 dice on that test, never +2 to the attribute.** Raising `body.value` would add it to
+   * every Damage Resistance Test, knockdown and overflow, none of which the book grants.
+   */
+  racialSituational: {
+    dwarf: [{ situation: 'toxin', dice: 2, label: 'Dwarf resistance (SR3 p.56)' }],
+  },
 
   racialModifiers: {
     human: { body: 0, quickness: 0,  strength: 0, charisma: 0,  intelligence: 0,  willpower: 0 },

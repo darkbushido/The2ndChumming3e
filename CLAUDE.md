@@ -1277,7 +1277,10 @@ would make it total immunity.
 
 ⚠ **Nephritic Screen needed no mechanism at all** — it rides `situationalBonuses` with the
 `toxin` key, exactly as Body Control does. That is the point of keying those channels by
-situation rather than by source.
+situation rather than by source. A **dwarf's racial +2** (SR3 p.56, `SR3E.racialSituational`)
+joins them, and all three are offered on the **attribute-roll dialog** as one unticked checkbox,
+live only while Body is selected (`SR3EActor.toxinResistanceOffer`, TODO 98) — dice on the
+test, never added to `body.value`.
 
 ### Cyberware grades  · *M&M p.45* — TODO 86
 

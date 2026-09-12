@@ -911,4 +911,13 @@ export const MUTANTS = [
           + 'ammunition". Every unarmoured target took the increase until 2026-09-12',
     impl:   ({ ballistic = 0, impact = 0 } = {}) => Math.max(ballistic, impact) <= 0,
   },
+
+  {
+    id:     'dwarf-toxin-resistance-missing',
+    suite:  'racial',
+    ...ACTOR, method: 'racialSituational',
+    was:    'SR3 p.56 - a dwarf\'s "Resistance (+2 Body) to any disease or toxin". Not '
+          + 'modelled at all until 2026-09-12 (TODO 98)',
+    impl:   () => [],
+  },
 ];

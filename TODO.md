@@ -24,7 +24,7 @@ independent.
 | 🔵 In progress | **93** — awaiting a Foundry test, branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | **73** · **74** · **91** *(**71** · **72** · **80** · **81** · **88** · **89** done)* |
-| 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** · **98** *(**3** · **4** · **30** done)* |
+| 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **4** · **30** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** *(**83** · **84** · **87** done)* |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 · **99** |
@@ -6512,6 +6512,11 @@ B5 Q5 S4 C2 I3 W2 imported at those numbers instead of B10 Q4 S8 C0 I1 W2.
 - [ ] **Flechette at an unarmoured troll.** Shoot a troll wearing no armour with flechette
       loaded: the soak card says *no level increase: troll dermal armor negates it* and the
       level is **not** raised. The same shot at an unarmoured human still raises it.
+- [ ] **Dwarf toxin resistance.** On a dwarf, click Body's roll icon: an **unticked** box reads
+      *Resisting disease or toxin: +2 (Dwarf resistance (SR3 p.56))*. Tick it → pool +2; untick
+      → back. Switch the dropdown to Quickness → the box greys out and unticks, pool = Quickness.
+      Roll with it ticked → the card title ends *resisting disease or toxin (+2)*. A human with
+      no such bioware sees no box at all.
 
 ### Known, not fixed here
 
@@ -6523,8 +6528,7 @@ B5 Q5 S4 C2 I3 W2 imported at those numbers instead of B10 Q4 S8 C0 I1 W2.
   from the sheet does include it.
 - Dermal Plating and other dermal **cyberware** still take flechette's level increase — only a
   troll's natural dermal armor is recognised. [#75](#75).
-- Not modelled: vision types ([#99](#99)), a dwarf's +2 Body against disease and toxins
-  ([#98](#98)).
+- Not modelled: vision types ([#99](#99)).
 
 <a id="94"></a>
 
@@ -6616,7 +6620,16 @@ compendium.
 
 <a id="98"></a>
 
-## 98. Dwarf resistance to disease and toxins — *SR3 p.56*
+## 98. ✅ Dwarf resistance to disease and toxins — *SR3 p.56* — **DONE 2026-09-12** (`fix/racial-mods`, awaiting the Foundry check in [#93](#93))
+
+**Built as planned below.** `SR3E.racialSituational` → `SR3EActor.racialSituational` pushes the
+dwarf's +2 into `situationalBonuses`; `SR3EActor.toxinResistanceOffer` sums every `toxin` source;
+the attribute-roll dialog renders an unticked checkbox, enabled only while **Body** is selected,
+and the chat card's label says *"resisting disease or toxin (+N)"* when it was used. Nephritic
+Screen and Body Control, inert until now, come along for free. Tests in `racial.test.mjs`, one
+mutant. The dialog's DOM wiring has no unit test — it is covered by the #93 checklist.
+
+The plan as written:
 
 > Dwarf — *"Resistance (+2 Body) to any disease or toxin"* (Racial Modifications Table, p.56)
 
