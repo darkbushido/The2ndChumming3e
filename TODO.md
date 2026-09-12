@@ -21,7 +21,7 @@ independent.
 
 | Group | Items |
 |---|---|
-| 🔵 In progress | *(none)* |
+| 🔵 In progress | **93** — awaiting a Foundry test, branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | **73** · **74** · **91** *(**71** · **72** · **80** · **81** · **88** · **89** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **4** · **30** done)* |
@@ -6459,3 +6459,47 @@ entry by hand.
 
 **Do `cc` first.** Cannon Companion is the weapons-and-gear book, it is on by default, and it is
 where the accessories [#91](#91) wants most likely already exist in print.
+
+<a id="93"></a>
+
+## 93. 🧪 Test in Foundry: racial modifiers, troll dermal armor, Species lock — branch `fix/racial-mods`
+
+**Written 2026-09-11 and not yet run anywhere but the unit tests** (38/38). The maintainer does
+not run Foundry locally, so this waits for a hosted test. Reported in play: a troll allocated
+B5 Q5 S4 C2 I3 W2 imported at those numbers instead of B10 Q4 S8 C0 I1 W2.
+
+### Before testing
+
+1. `npm run manifest:branch` and commit, if the test server installs from this branch.
+2. **In the test world, DELETE the "Import Nullsheen 3e Character json" macro, then reload.**
+   The system copies that macro into a world once and never refreshes it, so the old version
+   stays in any world that already has it. It is recreated from the fixed file on the next load.
+3. A reload (F5) is enough — no data-model change on this branch.
+
+### Checks
+
+- [ ] **Import the reported troll.** Expect Body 10, Quickness 4, Strength 8, Charisma 0,
+      Intelligence 1, Willpower 2, and two notifications: one listing the modifiers applied,
+      and a **permanent** warning that Charisma is below 1.
+- [ ] **Import one other metahuman** (elf, dwarf or ork) and compare against the generator's
+      own sheet, which shows allocation + race as its total.
+- [ ] **Import a human.** Nothing changes, no racial notification.
+- [ ] **The troll's Body shows `10 + 1 (11)`** on the Attributes tab, the +1 tooltip reading
+      *Troll dermal armor*. Soak a hit — the Body dice should be 11.
+- [ ] **A shipped troll** (Dock Worker) dragged from Mr. Johnson's Contacts shows **10 (11)**.
+- [ ] **Species as a PLAYER:** a greyed dropdown showing the race; cannot be changed. Edit some
+      other Bio field and confirm Species is still the same afterwards.
+- [ ] **Species as the GM:** a working dropdown. An actor whose stored value is not one of the
+      five (e.g. typed "Hobgoblin" before this change) shows it as *(unrecognised)* and keeps it
+      when another field is edited.
+- [ ] **Attribute Boost on a troll** (if an adept troll is to hand) — the dermal +1 must not
+      count as a technological increase that blocks the boost.
+
+### Known, not fixed here
+
+- Characters **already imported** before this branch keep their human-rated attributes. There
+  is no way to tell an allocation from a finished rating after the fact, so there is no
+  migration: re-import, or add the Racial Modifications Table (SR3 p.56) by hand.
+- Dermal armor counts for healing, which p.281 says it should not — same gap as Dermal Plating.
+- The other racial traits are not modelled: a troll's +1 Reach, vision types, a dwarf's +2 Body
+  against disease and toxins.
