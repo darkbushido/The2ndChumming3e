@@ -6396,6 +6396,8 @@ ultrasound sight/goggles, spare clips.
 
 ### The rest — roughly 120-130 items
 
+**Reported in play 2026-09-11:** *"I can't find a medkit in the compendium."* — the `medical` type ships zero documents; Medkit, slap patches and the trauma patch are all in the Biotech & medical section above.
+
 Electronics (p.288) · Communications (p.290) · Surveillance & countermeasures (p.292) ·
 Security devices (p.293) · Survival gear (p.295) · Biotech & medical (p.304) ·
 Skillsofts & chips (p.296). Of ~200 names extracted, 42 already ship somewhere — armor rows,
