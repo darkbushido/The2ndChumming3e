@@ -78,6 +78,45 @@ export async function run(t) {
   t.ok('Reaction and Initative in raceBonuses are not attributes here',
     !('reaction' in withRea.attributes));
 
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  Troll dermal armor · SR3 p.56 / p.281 — an AUGMENTATION, added at derive time
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const derive = (metatype, body, items = []) => {
+    const sys = { metatype, attributes: {}, wounds: {} };
+    const attr = {};
+    for (const k of ['body','quickness','strength','charisma','intelligence','willpower','reaction','essence','magic'])
+      attr[k] = { base: 4, value: 4 };
+    attr.body = { base: body, value: body };
+    SR3EActor.prototype._prepareCharacter.call({ items, system: sys }, sys, attr);
+    return { d: sys.derived, attr };
+  };
+
+  t.is('a troll gets +1 dermal armor', SR3EActor.racialDermalArmor('troll'), 1);
+  t.is('…matched however the free-text field was typed', SR3EActor.racialDermalArmor(' Troll '), 1);
+  t.is('an ork gets none', SR3EActor.racialDermalArmor('ork'), 0);
+  t.is('a blank metatype gets none', SR3EActor.racialDermalArmor(undefined), 0);
+
+  /* The book's own trolls print it in parentheses (Mr. Johnson's Little Black Book). Stored at
+   * the unbracketed figure, each must come out at the bracketed one — no double count. */
+  for (const [name, stored, printed] of [
+    ['Dock Worker (p.67)', 10, 11], ['Club Owner (p.43)', 8, 9], ['Troll Street Dealer (p.57)', 8, 9],
+  ]) {
+    t.is(`${name}: Body ${stored} (${printed})`, derive('troll', stored).attr.body.value, printed);
+  }
+  t.is('…while the stored rating is untouched', derive('troll', 10).attr.body.base, 10);
+  t.is('a human at Body 10 stays 10', derive('human', 10).attr.body.value, 10);
+
+  /* ⚠ It stacks with Dermal Plating the way any two Body augmentations do — Mr. Fix-It (p.47)
+   * prints 10 (12): dermal armor plus plastic bone lacing. */
+  const lacing = { type: 'cyberware', system: { bonusBod: 1 } };
+  t.is('Mr. Fix-It (p.47): troll 10 + bone lacing → 12', derive('troll', 10, [lacing]).attr.body.value, 12);
+
+  /* ⚠ **Not in `cyberBonus`.** Attribute Boost reads that for the TECHNOLOGICAL increases it
+   * cannot combine with (p.169); a troll's hide is not technology. */
+  const tr = derive('troll', 10).d;
+  t.is('dermal armor is reported as racial', tr.racialBonus.bod, 1);
+  t.is('…and does NOT appear as a cyber bonus', tr.cyberBonus.bod, 0);
+
   /* ── Config and fallback must agree ───────────────────────────────────────────────── */
   t.is('SR3E.racialModifiers matches the fallback mirror',
     JSON.stringify(SR3E.racialModifiers), JSON.stringify(SR3EActor._RACIAL_MODS_FALLBACK));

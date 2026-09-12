@@ -1927,13 +1927,19 @@ _prepareCharacter(sys, attr) {
     wm = sys.woundMod;
   }
 
-  // Apply cyber/bio + adept power bonuses to core attributes — derivations below use .value
+  /* Natural dermal armor · SR3 p.56 — an augmentation of Body, like Dermal Plating, but kept
+   * apart from `cyberBonus` because Attribute Boost reads that for TECHNOLOGICAL increases it
+   * cannot combine with (p.169). See `SR3E.racialDermalArmor`. */
+  const racialBonus = { bod: SR3EActor.racialDermalArmor(sys.metatype) };
+
+  // Apply cyber/bio + adept power + racial dermal bonuses to core attributes — derivations below use .value
   const _cyberKey = { body: 'bod', quickness: 'qui', strength: 'str', charisma: 'cha', intelligence: 'int', willpower: 'wil' };
   for (const key of ['body', 'quickness', 'strength', 'charisma', 'intelligence', 'willpower']) {
     if (attr[key]) {
       attr[key].value = (attr[key].base ?? 0)
         + (cyberBonus[_cyberKey[key]] ?? 0)
-        + (adeptBonus[_cyberKey[key]] ?? 0);
+        + (adeptBonus[_cyberKey[key]] ?? 0)
+        + (racialBonus[_cyberKey[key]] ?? 0);
     }
   }
 
@@ -2215,6 +2221,7 @@ _prepareCharacter(sys, attr) {
     initiativeDice:     1 + (sys.initiativeDiceBonus ?? 0) + (attr.reaction?.diceBonus ?? 0) + reflex.initDice,
     cyberBonus,
     adeptBonus,
+    racialBonus,
     /* Powers whose level exceeds the adept's Magic · SR3 p.168 (TODO 65).
      *
      * > "An adept cannot have more levels in a power than the adept's Magic Attribute."
@@ -6020,6 +6027,16 @@ _prepareCharacter(sys, attr) {
    */
   static racialMax(limit) {
     return Math.round((limit ?? 6) * 1.5);
+  }
+
+  /**
+   * Natural dermal armor's Body augmentation · *SR3 p.56* — 1 for a troll, else 0.
+   * Matched case-insensitively and trimmed: `system.metatype` was free text until 2026-09-11,
+   * so older actors can carry "Troll" or "troll ". See `SR3E.racialDermalArmor`.
+   */
+  static racialDermalArmor(metatype) {
+    const table = globalThis.game?.sr3e?.SR3E?.racialDermalArmor ?? { troll: 1 };
+    return table[String(metatype ?? '').trim().toLowerCase()] ?? 0;
   }
 
   /**

@@ -915,6 +915,27 @@ export const SR3E = {
    * The non-attribute traits (vision, a troll's +1 Reach and Dermal Armor, a dwarf's +2 Body
    * against disease and toxins) are not modelled here.
    */
+  /**
+   * Natural dermal armor · *SR3 p.56, p.281*
+   *
+   * > Troll — *"Dermal Armor (+1 Body)"* (p.56)
+   * > *"Dermal armor works against any attack by increasing the character's Body Attribute. It
+   * > does not aid in healing."* (p.281)
+   *
+   * ⚠ **An AUGMENTATION, never part of the rating — the opposite of `racialModifiers` below.**
+   * The book prints it in parentheses: Mr. Johnson's Little Black Book's trolls read Dock Worker
+   * `10 (11)`, Club Owner `8 (9)`, Troll Street Dealer `8 (9)`, and Mr. Fix-It `10 (12)` (his
+   * second point is plastic bone lacing). So it is added at derive time, like Dermal Plating,
+   * and every shipped troll lands on its printed augmented figure with nothing double-counted.
+   *
+   * ⚠ **Kept OUT of `cyberBonus`.** Attribute Boost reads that to find the *technological*
+   * increases it cannot combine with (p.169); a troll's hide is not technology.
+   *
+   * ⚠ Not modelled: *"does not aid in healing"* — augmented Body is used everywhere, exactly as
+   * it already is for Dermal Plating.
+   */
+  racialDermalArmor: { troll: 1 },
+
   racialModifiers: {
     human: { body: 0, quickness: 0,  strength: 0, charisma: 0,  intelligence: 0,  willpower: 0 },
     dwarf: { body: 1, quickness: 0,  strength: 2, charisma: 0,  intelligence: 0,  willpower: 1 },

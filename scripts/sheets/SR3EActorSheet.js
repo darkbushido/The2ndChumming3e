@@ -599,10 +599,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   /**
    * Species — fixed at character generation, so NOT editable by players.
    *
-   * ⚠ **A player never gets an input at all**, only text. A disabled field would still be a
-   * form control; plain text cannot be submitted, so there is nothing to tamper with.
+   * ⚠ **A player sees the same dropdown, disabled and with NO `name`.** Disabled alone is
+   * not the guarantee: whether a disabled control is submitted is up to the form-data
+   * builder, and a tampered DOM can re-enable it. A control without a name cannot write to
+   * `system.metatype` at all.
    *
-   * ⚠ **The GM gets a dropdown**, because an NPC built in Foundry rather than imported has no
+   * ⚠ **The GM gets a working dropdown**, because an NPC built in Foundry rather than imported has no
    * other way to be anything but human, and two rules read this field — the karma-pool rate
    * and the racial limits. It used to be free text, so a typo ("Trol") silently read as human
    * in both.
@@ -615,16 +617,13 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const list  = game.sr3e?.SR3E?.metatypes ?? [];
     const cur   = String(metatype ?? '').trim().toLowerCase() || 'human';
     const known = list.find(m => m.value === cur);
-    const label = known?.label ?? (metatype || 'Human');
-    if (!game.user.isGM) {
-      return `<label class="inline-field">Species <span style="min-width:100px">${label}</span></label>`;
-    }
     const opts = list.map(m =>
       `<option value="${m.value}" ${m.value === cur ? 'selected' : ''}>${m.label}</option>`);
     if (!known) opts.unshift(`<option value="${metatype}" selected>${metatype} (unrecognised)</option>`);
+    const gm = game.user.isGM;
     return `<label class="inline-field">Species
-      <select name="system.metatype" style="width:100px"
-        data-tooltip="Fixed at character generation. GM only.">${opts.join('')}</select>
+      <select ${gm ? 'name="system.metatype"' : 'disabled'} style="width:100px"
+        data-tooltip="Fixed at character generation.${gm ? ' GM only.' : ''}">${opts.join('')}</select>
     </label>`;
   }
 
@@ -728,6 +727,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   const isAdept = (sys.magicType ?? '') === 'Adept';
   const cb      = d.cyberBonus  ?? {};
   const ab      = d.adeptBonus  ?? {};
+  const rb      = d.racialBonus ?? {};
 
   // Shorthands for tooltip formulas
   const _v = key => attr[key]?.value ?? 0;
@@ -747,7 +747,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const base     = attr[key]?.base ?? 3;
     const aug      = cb[_cyberKey[key]] ?? 0;
     const adept    = isAdept ? (ab[_cyberKey[key]] ?? 0) : 0;
-    const showTotal = aug > 0 || adept > 0;
+    const racial   = rb[_cyberKey[key]] ?? 0;
+    const showTotal = aug > 0 || adept > 0 || racial > 0;
     return `
     <div class="attr-block">
       <span class="attr-label">${label}</span>
@@ -758,7 +759,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <span class="attr-adept" title="Adept power bonus">${adept}</span>` : ''}
         ${aug > 0 ? `<span class="attr-force-sep" title="Cyber/bio augmentation">+</span>
         <span class="attr-aug" title="Cyber/bio augmentation">${aug}</span>` : ''}
-        ${showTotal ? `<span class="attr-force-total" title="Effective">(${base + adept + aug})</span>` : ''}
+        ${racial > 0 ? `<span class="attr-force-sep" title="Troll dermal armor (SR3 p.56)">+</span>
+        <span class="attr-aug" title="Troll dermal armor (SR3 p.56)">${racial}</span>` : ''}
+        ${showTotal ? `<span class="attr-force-total" title="Effective">(${base + adept + aug + racial})</span>` : ''}
         ${key === 'quickness' && (d.armorEncPenalty ?? 0) > 0 ? `<span class="attr-enc-penalty" title="Armor encumbrance penalty (equipped armor exceeds Quickness)">−${d.armorEncPenalty}</span>` : ''}
         <i class="fas fa-dice-d6 rollable" data-action="rollAttr" data-attr="${key}"
            title="Roll ${label} — Shift-Click for physical dice"></i>
