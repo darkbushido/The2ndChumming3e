@@ -24,10 +24,10 @@ independent.
 | 🔵 In progress | **93** — awaiting a Foundry test, branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | **73** · **74** · **91** *(**71** · **72** · **80** · **81** · **88** · **89** done)* |
-| 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **4** · **30** done)* |
+| 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** · **98** *(**3** · **4** · **30** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** *(**83** · **84** · **87** done)* |
-| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 |
+| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 · **99** |
 | 🧹 Housekeeping | 1 · 6 |
 | ✅ Done — kept for the record | **2** · **5** · **8** · **10** · 13 · **40** · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -6505,8 +6505,8 @@ B5 Q5 S4 C2 I3 W2 imported at those numbers instead of B10 Q4 S8 C0 I1 W2.
   is no way to tell an allocation from a finished rating after the fact, so there is no
   migration: re-import, or add the Racial Modifications Table (SR3 p.56) by hand.
 - Dermal armor counts for healing, which p.281 says it should not — same gap as Dermal Plating.
-- The other racial traits are not modelled: a troll's +1 Reach, vision types, a dwarf's +2 Body
-  against disease and toxins.
+- The other racial traits are not modelled: a troll's +1 Reach, vision types ([#99](#99)), a
+  dwarf's +2 Body against disease and toxins ([#98](#98)).
 
 <a id="94"></a>
 
@@ -6595,3 +6595,76 @@ compendium onto a character sheet does not add it.
 drop fails silently or raises an error in the console; whether it fails for the GM, a player,
 or both; and whether dragging from the sidebar Items directory behaves differently from a
 compendium.
+
+<a id="98"></a>
+
+## 98. Dwarf resistance to disease and toxins — *SR3 p.56*
+
+> Dwarf — *"Resistance (+2 Body) to any disease or toxin"* (Racial Modifications Table, p.56)
+
+Not modelled. Split out of [#93](#93)'s "known, not fixed here" list, 2026-09-12.
+
+**Decided (maintainer, 2026-09-12): handle it the way Enhanced Articulation is handled** — an
+**opt-in checkbox** on the roll dialog, never an automatic bonus. The system cannot tell a Body
+Test against a toxin from a Body Test against anything else, so like EA's *"physical use of
+Vehicle Skills"* it has to be the roller's call.
+
+### Where it lands
+
+- **The channel already exists.** `derived.situationalBonuses` with situation **`toxin`**
+  (`SR3E.adeptSituations.toxin` = *"Resisting toxins or disease"*) is where Nephritic Screen
+  (M&M) and Body Control already put their dice. Add a racial source the same way the troll's
+  dermal armour is keyed — a `SR3E` table by metatype (`{ dwarf: 2 }`), read case-insensitively,
+  pushed into `situationalBonuses` in `_prepareCharacter` with label *Dwarf resistance (SR3 p.56)*.
+- ⚠ **Nothing consumes `toxin` today.** The only readers of `situationalBonuses` are melee
+  (`counterattack`), dodge and knockdown. So Nephritic Screen and Body Control are equally inert
+  right now; this item fixes all three at once.
+- **The consumer:** the attribute-roll dialog (`SR3EActorSheet._promptRollOptions`, reached from
+  `_onRollAttr`). When the attribute is **Body** and the actor has any `toxin` bonus, show an
+  **unticked** checkbox — *"Resisting disease or toxin: +N (Dwarf resistance + Nephritic
+  Screen)"* — listing every source, since situational bonuses **sum** (see CLAUDE.md, *Three
+  bonus channels*).
+- A future drug/toxin flow ([#91](#91) notes; the `drug` item type is reference-only) should
+  read the same bonus and tick it automatically, the way dodge does for its situation.
+
+⚠ **"+2 Body" means +2 dice on the test, not +2 to the attribute.** Adding it to `body.value`
+would raise every Damage Resistance Test, the knockdown test and physical overflow — none of
+which the book grants.
+
+<a id="99"></a>
+
+## 99. Remind the GM which vision the attacker has — natural or cyberware
+
+Maintainer request, 2026-09-12. The GM's TN window ([#29](#29)) asks for the **Visibility**
+condition and which vision the attacker is using, with **nothing pre-selected** and no hint of
+what the character actually has. Wanted: a **helper line** beside the vision dropdown, e.g.
+*"Tor (troll): natural thermographic"* or *"Kestrel (elf, cybereyes): low-light
+(cybernetic) — natural low-light lost"*.
+
+This is a smaller, safer step than [#36](#36): it **informs** the GM rather than choosing for
+them. #36 (pre-selecting the dropdown) can build on the same detector later.
+
+### The detector
+
+| Source | Vision |
+|---|---|
+| Elf, ork | natural low-light (p.56) |
+| Dwarf, troll | natural thermographic (p.56) |
+| Installed cyberware | low-light / thermographic **(cybernetic)**, matched by name |
+
+⚠ **Cybereyes remove natural vision** — *"loses natural vision enhancements such as low light or
+thermographic vision"* (p.299, quoted in [#36](#36)). An elf with cybereyes and no low-light
+installed has **normal** vision. The reminder must say so rather than list the natural trait.
+
+⚠ **Cyber vision is the WORSE column** on the Visibility Table (cybernetic first, natural
+second, p.111). Name which one applies, because the GM will pick a different row.
+
+⚠ **Cyberware detection is name-matching** — the same gap as [#18](#18). The packs abbreviate
+names (see CLAUDE.md, *The packs ABBREVIATE cyberware names*), so match stems (`low.?light`,
+`thermo`), and test against what actually ships, including the Mr. Johnson's contacts entries
+(`Low Light`, `Thermographic`, `Low Light Vision`).
+
+⚠ **Worn gear** (goggles, glasses with low-light) is out of scope for the first pass. If
+included later it is its own column: gear vision reads as **cybernetic** on the table.
+
+Show it in the melee GM window too — melee uses the same table at half value (p.123).
