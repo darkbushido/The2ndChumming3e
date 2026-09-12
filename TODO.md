@@ -6532,3 +6532,19 @@ the character's **knowledge** skills rather than the active skills.
 **To check after the session:** where the character's copy came from (the character-generator
 import, the `sr3e-skills` pack, or added by hand), what its `category` / `skillType` fields say,
 and whether SR3 core treats it as an active skill.
+
+<a id="96"></a>
+
+## 96. Rollable Tables GM tools pre-check every actor — **reported in play 2026-09-11**
+
+**Observation only — not investigated** (reported mid-combat). The GM tools on the Rollable
+Tables sidebar open with **every actor already checked** in their target lists. They should
+start with **nothing checked**, so the GM opts actors in rather than having to untick everyone
+who isn't involved.
+
+**Triage: new** — no existing entry. The only related note is #81's description of Session
+Rewards as "a checkbox list of every live PC", which records the list, not the default.
+
+**To check after the session:** which tools have a multi-actor checkbox list (Session Rewards,
+Chunky Salsa, Barrier Damage, …) and whether any should keep a pre-checked default. Session
+Rewards is the arguable case, since a reward usually goes to the whole party.
