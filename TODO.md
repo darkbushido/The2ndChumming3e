@@ -6503,3 +6503,19 @@ B5 Q5 S4 C2 I3 W2 imported at those numbers instead of B10 Q4 S8 C0 I1 W2.
 - Dermal armor counts for healing, which p.281 says it should not — same gap as Dermal Plating.
 - The other racial traits are not modelled: a troll's +1 Reach, vision types, a dwarf's +2 Body
   against disease and toxins.
+
+<a id="94"></a>
+
+## 94. GM-initiated attack shows no GM difficulty modifiers — **reported in play 2026-09-11**
+
+**Observation only — not investigated** (reported mid-combat). When the GM initiates an attack,
+the GM difficulty-modifier window does not appear.
+
+⚠ **Triage: probably [#50](#50)'s by-design behaviour, not a new defect.** `gmApprovesTN`
+defaults to `'player'`, which skips the GM window when the *requester is a GM*. The fix in play
+is Configure Settings → **"Always, including GM attacks"**.
+
+**Confirm after the session:** what `gmApprovesTN` was set to. If it was already "Always", this is
+new — note whether the attack was ranged or melee, and whether the attacker was an NPC or a PC.
+If it was the default, close this as a duplicate and consider whether the default is wrong for
+this table.
