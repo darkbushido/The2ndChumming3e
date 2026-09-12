@@ -6519,3 +6519,16 @@ is Configure Settings → **"Always, including GM attacks"**.
 new — note whether the attack was ranged or melee, and whether the attacker was an NPC or a PC.
 If it was the default, close this as a duplicate and consider whether the default is wrong for
 this table.
+
+<a id="95"></a>
+
+## 95. Wilderness Survival shows up as a knowledge skill — **reported in play 2026-09-11**
+
+**Observation only — not investigated** (reported mid-combat). Wilderness Survival appears among
+the character's **knowledge** skills rather than the active skills.
+
+**Triage: new** — no existing entry mentions it.
+
+**To check after the session:** where the character's copy came from (the character-generator
+import, the `sr3e-skills` pack, or added by hand), what its `category` / `skillType` fields say,
+and whether SR3 core treats it as an active skill.
