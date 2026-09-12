@@ -6533,9 +6533,33 @@ the character's **knowledge** skills rather than the active skills.
 
 **Triage: new** — no existing entry mentions it.
 
-**To check after the session:** where the character's copy came from (the character-generator
-import, the `sr3e-skills` pack, or added by hand), what its `category` / `skillType` fields say,
-and whether SR3 core treats it as an active skill.
+### Diagnosed 2026-09-11 — two causes, one fixed
+
+Reproduced by running the real importer macro offline against the player's own troll export.
+**Five of the troll's six active skills imported as knowledge** — Shotguns 6, Gunnery,
+Car, Demolitions and Wilderness Survival — not just the one reported.
+
+**1 — The importer (FIXED on `fix/racial-mods`).** Every active skill also has a *Background
+knowledge* twin of the same name — that is RAW, SR3 p.90: *"Each Active Skill has a corresponding
+Background Skill."* The importer looked names up in a map that kept only the LAST category per
+name, and Background knowledge comes late in the config, so each of those skills landed there.
+It now picks the entry whose skill type matches what the export says the skill is. The same
+change routes knowledge prefixes to their categories (`ST:` Street, `SV:` Survival, `SF:` System
+familiarity… — the generator's own nine), fills a missing attribute from the config entry, and
+drops the generator's `weapon->` placeholder instead of importing it as a specialisation.
+
+**2 — The sheet's classifier (NOT fixed — needs a decision).** `ACTIVE_SKILL_CATEGORIES` in
+`config.js` omits two categories, so anything filed in them reads as KNOWLEDGE everywhere — the
+sheet's sections and karma pricing, not just import:
+- **Survival skills** — Wilderness Survival (`twl.105`) and Riding (`tss.17`). The generator
+  treats this as an active category, and keeps `BK:Wilderness Survival` as a separate background
+  skill, so this one is clear.
+- **Matrix skills** — Computer, Cybercombat, Hacking, Programming. Computer is an active
+  Technical skill in SR3 core (p.88); the other three are Matrix Defragged's and cannot be checked
+  against a book here.
+
+Even after fix 1, Wilderness Survival imports as active but under *Technical skills*, because
+its real category does not count as active.
 
 <a id="96"></a>
 

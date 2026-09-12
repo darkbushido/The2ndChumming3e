@@ -27,14 +27,29 @@ const SKILL_ATTR_FALLBACK = {
   Pilot:      'reaction',
 };
 
-// Reverse map: skill name (lowercase) → category group name, built from live SR3E config.
-// Used by _skillItem so the sheet's skillTypeForCategory() resolves to the right type.
-const _skillCatLookup = {};
+// Reverse map: skill name (lowercase) → EVERY config entry carrying that name, in config order.
+//
+// ⚠ **A name can appear in several categories, and the type decides which one is meant.**
+// Shotguns, Gunnery, Car, Demolitions and Wilderness Survival are each listed twice in
+// SR3E.skills — once in their real active category, and again under "Background knowledge".
+// This map used to keep only the LAST entry per name, and Background knowledge comes late in
+// the config, so every one of those imported as a KNOWLEDGE skill (TODO 95 — reported in play
+// as Wilderness Survival; the same troll's Shotguns 6 had gone the same way). `_skillItem`
+// now picks the entry whose skill type matches what the export says the skill IS.
+const _skillEntries = {};
 for (const [cat, skillList] of Object.entries(game.sr3e?.SR3E?.skills ?? {})) {
   for (const sk of (skillList ?? [])) {
-    if (sk.name) _skillCatLookup[sk.name.toLowerCase()] = cat;
+    if (sk.name) (_skillEntries[sk.name.toLowerCase()] ??= []).push({ cat, entry: sk });
   }
 }
+
+// The generator's knowledge-skill prefixes (SR3SkillsPanel.js, `KnowledgeSkills`) → our
+// knowledge categories. One to one; the generator lists exactly these nine.
+const KNOWLEDGE_PREFIX = {
+  SW: '6th World knowledge', AC: 'Academic skills',  AK: 'Area knowledge',
+  BK: 'Background knowledge', IN: 'Interests',        PD: 'Program design',
+  ST: 'Street knowledge',     SV: 'Survival knowledge', SF: 'System familiarity',
+};
 
 // Nullsheen spell Class codes → our category values
 const SPELL_CLASS_MAP = {
@@ -112,15 +127,24 @@ function _parseWeaponMods(mods) {
 
 function _skillItem(s) {
   const nsType  = _str(s.type);  // 'Active' | 'Knowledge' | 'Language'
+  const typeOf  = cat => game.sr3e?.SR3E?.skillTypeForCategory?.(cat);
+  const wanted  = nsType === 'Active' ? 'active' : nsType === 'Language' ? 'language' : 'knowledge';
 
-  // Resolve category group: look the skill up in our config data first,
-  // then fall back to a generic group that maps to the right skillType.
+  // Resolve the category. For a name listed in several categories, take the one whose skill
+  // type matches the export's own type — see `_skillEntries` above for why.
+  const entries = _skillEntries[_str(s.name).toLowerCase()] ?? [];
+  const match   = entries.find(e => typeOf(e.cat) === wanted);
+  const prefix  = /^([A-Z]{2}):/.exec(_str(s.name))?.[1];
+
   let category;
   if (nsType === 'Language') {
     category = 'Language';
+  } else if (match) {
+    category = match.cat;
+  } else if (nsType !== 'Active' && KNOWLEDGE_PREFIX[prefix]) {
+    category = KNOWLEDGE_PREFIX[prefix];                 // "ST:Arms Dealers" → Street knowledge
   } else {
-    category = _skillCatLookup[_str(s.name).toLowerCase()]
-      ?? (nsType === 'Active' ? 'Technical skills' : 'Academic skills');
+    category = nsType === 'Active' ? 'Technical skills' : 'Academic skills';
   }
 
   // skillType must be written explicitly — the schema defaults it to 'active', so leaving
@@ -131,9 +155,17 @@ function _skillItem(s) {
     ?? (nsType === 'Language' ? 'language' : nsType === 'Active' ? 'active' : 'knowledge');
 
   // Languages are rated against the Language slot, not a physical/mental attribute.
+  // When the export omits the attribute (it does for Bike and Armor B/R), the matched config
+  // entry knows it; the small table below is only the last resort.
   const attr = skillType === 'language'
     ? 'lan'
-    : (ATTR_MAP[s.attribute ?? ''] ?? SKILL_ATTR_FALLBACK[s.name] ?? 'intelligence');
+    : (ATTR_MAP[s.attribute ?? ''] ?? match?.entry?.linkedAttribute
+       ?? SKILL_ATTR_FALLBACK[s.name] ?? 'intelligence');
+
+  /* ⚠ The generator writes a PLACEHOLDER when no specialisation was chosen — `weapon->`,
+   * `vehicle->`. Imported as-is it became a specialisation literally named "weapon->", which
+   * the legacy-string migration then rated at +2. Anything ending in `->` is a picker prompt. */
+  const spec = /->\s*$/.test(_str(s.specialization)) ? '' : _str(s.specialization);
 
   return {
     name: s.name,
@@ -142,7 +174,7 @@ function _skillItem(s) {
       skillName:       s.name,
       rating:          _int(s.rating),
       linkedAttribute: attr,
-      specialisation:  _str(s.specialization),
+      specialisation:  spec,
       category,
       skillType,
     },
