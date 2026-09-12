@@ -12,7 +12,8 @@
  *
  * No Foundry stubs: this module is pure data and pure functions.
  */
-const { detectVision, visionReminder, escapeHTML, SR3E_RACIAL_VISION } =
+const { detectVision, visionReminder, escapeHTML, SR3E_RACIAL_VISION,
+        visionOptions, bestVisionKey } =
   await import('../scripts/SR3ECombatModifiers.js');
 
 export const name = 'vision';
@@ -84,6 +85,45 @@ export async function run(t) {
   t.ok("Cat's Eyes are reported as natural, with the loss",
     /Low-Light \(natural\) — Cat's Eyes · racial thermographic lost to Cat's Eyes/
       .test(visionReminder('Brokk', cat)));
+
+  /* ⚠ The retinal question (TODO 36) is surfaced, not settled. */
+  t.ok('a lone implant says the column is the GM\'s call',
+    /GM's call \(p\.111\)/.test(visionReminder('Joe', detectVision(actor('human', ['cyberware', 'Eyes, Low-Light'])))));
+  t.ok('…but not once the eyes are replaced — then it IS cybernetic',
+    !/GM's call/.test(visionReminder('Kestrel', replaced)));
+
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  Pre-selection · TODO 36 — the best row the character actually has
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const troll = detectVision(actor('troll'));
+  t.is('options always include Normal', visionOptions(detectVision(actor('human'))).join(), 'normal');
+  t.is('troll options', visionOptions(troll).join(), 'normal,thermoNat');
+
+  t.is('no condition: the headline vision is selected',      bestVisionKey(troll, ''), 'thermoNat');
+  t.is('human, no condition: Normal',                        bestVisionKey(detectVision(actor('human')), ''), 'normal');
+  t.is('troll in Full Darkness: thermographic (+2 vs +8)',    bestVisionKey(troll, 'Full Darkness'), 'thermoNat');
+  /* ⚠ Thermal Smoke exists to blind thermo: +6 natural against +4 normal. */
+  t.is('troll in Thermal Smoke: Normal beats thermographic',  bestVisionKey(troll, 'Thermal Smoke'), 'normal');
+
+  /* A character with both kinds uses whichever sees better. */
+  const both = detectVision(actor('troll', ['cyberware', 'Eyes, Low-Light']));
+  // Thermal Smoke: low-light +4 (single value, all vision), Normal +4, natural thermo +6.
+  // The tie goes to the enhanced row over Normal — the headline order.
+  t.is('troll + low-light implant in Thermal Smoke: low-light, not thermographic',
+    bestVisionKey(both, 'Thermal Smoke'), 'lowLightCyb');
+  // Partial Light: natural thermo +1, cyber low-light +1 (the slash's first half), Normal +2.
+  t.is('…in Partial Light: a +1 tie goes to the natural eyes',
+    bestVisionKey(both, 'Partial Light'), 'thermoNat');
+  t.is('…in Mist: thermographic 0', bestVisionKey(both, 'Mist'), 'thermoNat');
+
+  /* ⚠ Natural beats cyber of the same kind — the slash's second half. */
+  t.is('elf with a retinal low-light implant: the natural row',
+    bestVisionKey(retinal, 'Minimal Light'), 'lowLightNat');
+  t.is('elf with cybereyes: the cybernetic row (natural is gone)',
+    bestVisionKey(replaced, 'Minimal Light'), 'lowLightCyb');
+  t.is("Cat's Eyes: natural low-light", bestVisionKey(cat, 'Minimal Light'), 'lowLightNat');
+
+  t.is('nothing detected: Normal', bestVisionKey(null, 'Full Darkness'), 'normal');
 
   /* An actor with no system/items at all (a vehicle, a stub) must not throw. */
   t.is('no actor data: normal vision', visionReminder('Drone', detectVision({})), 'Drone: normal vision only');

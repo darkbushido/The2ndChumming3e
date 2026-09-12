@@ -92,6 +92,15 @@ export async function run(t) {
   t.is('Full Darkness penalises both in full',
     pair({ visibilityCondition: 'Full Darkness', visibilityVision: 'normal' }), '8/8');
 
+  // …but each fighter sees it through their OWN eyes (p.123 → Visibility Table, TODO 36).
+  // Troll (natural thermo) vs human in Full Darkness: +2 against +8.
+  t.is('each side reads its own vision',
+    pair({ visibilityCondition: 'Full Darkness',
+           visibilityVisionAtk: 'thermoNat', visibilityVisionDef: 'normal' }), '2/8');
+  t.is('the per-side key wins over the shared one',
+    pair({ visibilityCondition: 'Full Darkness', visibilityVision: 'normal',
+           visibilityVisionAtk: 'thermoNat' }), '2/8');
+
   /* ---- everything at once, since these compose ---- */
   {
     // Attacker: 2 friends up, on higher ground, opponent prone, striking 2 targets,

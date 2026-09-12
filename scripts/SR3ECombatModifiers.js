@@ -253,7 +253,48 @@ export function visionReminder(name, v) {
   } else if (v.racial && v.cyber.length) {
     line += ' · no eye replacement on the sheet, so racial vision is kept (retinal modification, p.299)';
   }
+  // The open question from TODO 36, surfaced rather than silently settled.
+  if (v.cyber.length && !v.replacedBy) {
+    line += ' · implants are pre-selected as cybernetic; if they are retinal mods, the column is the GM\'s call (p.111)';
+  }
   return line;
+}
+
+/**
+ * The Visibility-row keys (`SR3E_VISION_TYPES`) a character can actually use, from
+ * `detectVision`. **Normal is always available** — enhanced vision can be switched off or
+ * ignored, and in Thermal Smoke that is the better choice for thermographic eyes.
+ */
+export function visionOptions(v) {
+  const keyFor = (column, natural) =>
+    SR3E_VISION_TYPES.find(t => t.column === column && t.natural === natural)?.key;
+  const keys = ['normal',
+    ...(v?.natural ?? []).map(n => keyFor(n.column, true)),
+    ...(v?.cyber   ?? []).map(c => keyFor(c.column, false))];
+  return [...new Set(keys.filter(Boolean))];
+}
+
+/**
+ * Which Visibility row to PRE-SELECT for a character in a condition · TODO 36.
+ *
+ * The one of `visionOptions` with the lowest modifier — a character with several ways of
+ * seeing uses the best one. Ties prefer the natural eyes, then the order above, so an
+ * unimpaired condition (every option 0) still selects the character's headline vision.
+ *
+ * ⚠ **A pre-selection, never a decision.** The GM's dropdown stays free; the windows stop
+ * following the condition the moment the GM touches it.
+ *
+ * ⚠ **Implants read as CYBERNETIC**, including a low-light implant that might be a retinal
+ * modification — whether retinal mods take the natural column is not settled by the book
+ * (p.111 splits on *"cybernetic or electronic"*), and `visionReminder` says so.
+ */
+export function bestVisionKey(v, condition = '') {
+  const opts = visionOptions(v);
+  // Headline order when nothing distinguishes them: natural enhancement, cyber, then normal.
+  const rank = k => (k === 'normal' ? 2 : SR3E_VISION_TYPES.find(t => t.key === k)?.natural ? 0 : 1);
+  return opts
+    .map(k => ({ k, mod: visibilityModifier(condition, k), r: rank(k) }))
+    .sort((a, b) => a.mod - b.mod || a.r - b.r)[0]?.k ?? 'normal';
 }
 
 /** Escape text for interpolation into window markup — actor and item names are free text. */
@@ -484,7 +525,9 @@ export function meleeModifierGroups() {
  * @param {'attacker'|'defender'|null} [state.prone]   who is DOWN
  * @param {number} [state.multiTargetAtk]     additional targets the attacker is striking
  * @param {string} [state.visibilityCondition]
- * @param {string} [state.visibilityVision]
+ * @param {string} [state.visibilityVisionAtk]  the attacker's vision (TODO 36)
+ * @param {string} [state.visibilityVisionDef]  the defender's vision
+ * @param {string} [state.visibilityVision]     both, when the per-side keys are absent
  * @returns {{atk:number, def:number}}
  */
 export function sumMeleeModifiers(state = {}) {
@@ -508,10 +551,13 @@ export function sumMeleeModifiers(state = {}) {
   const extra = Math.max(0, Math.trunc(Number(state.multiTargetAtk) || 0));
   if (extra) atk += 2 * extra;
 
-  // Environmental: both sides are in the same murk.
+  // Environmental: both sides are in the same murk, but each sees it through their OWN eyes —
+  // the Melee Modifiers Table (p.123) sends each character to the Visibility Table. A troll's
+  // thermographic and a human's normal vision give different numbers in the same darkness.
   if (state.visibilityCondition) {
-    const v = meleeVisibilityModifier(state.visibilityCondition, state.visibilityVision ?? 'normal');
-    atk += v; def += v;
+    const both = state.visibilityVision ?? 'normal';
+    atk += meleeVisibilityModifier(state.visibilityCondition, state.visibilityVisionAtk ?? both);
+    def += meleeVisibilityModifier(state.visibilityCondition, state.visibilityVisionDef ?? both);
   }
 
   // The GM's free situational modifier. `situationalSide` is 'atk' | 'def' | 'both';

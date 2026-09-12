@@ -316,14 +316,19 @@ export class SR3EItem extends Item {
     // ── The GM sets both target numbers ─────────────────────────────────────────
     // Relayed, so the window opens on the GM rather than on whoever swung. Cancelling
     // aborts the exchange before any card is posted.
-    // What each fighter's eyes are (TODO 99), for the GM window's visibility row. Built HERE
-    // as text, because the negotiate payload carries names rather than actors.
+    // What each fighter's eyes are (TODO 99) and the detection behind it, for the GM window's
+    // per-fighter vision rows (TODO 36). Built HERE, because the negotiate payload carries
+    // names rather than actors. `detectVision`'s result is plain data, so it travels as is.
     const { detectVision, visionReminder } = await import('../SR3ECombatModifiers.js');
+    const atkVis = detectVision(actor);
+    const defVis = detectVision(targetActor);
     const gm = await game.sr3e.SR3EQuery.asGM('sr3e.melee.negotiate', {
       atkName:    actor.name,
       defName:    targetActor.name,
-      atkVision:  visionReminder(actor.name, detectVision(actor)),
-      defVision:  visionReminder(targetActor.name, detectVision(targetActor)),
+      atkVision:  visionReminder(actor.name, atkVis),
+      defVision:  visionReminder(targetActor.name, defVis),
+      atkVisionData: atkVis,
+      defVisionData: defVis,
       baseAtkTN:  dfltAtkTN,
       baseDefTN:  dfltDefTN,
       baseNote:   reachHolder
@@ -2484,7 +2489,7 @@ export class SR3EItem extends Item {
    */
   static async _promptGMMeleeWindow(ctx) {
     const { meleeModifierGroups, sumMeleeModifiers, meleeVisibilityModifier,
-            SR3E_VISIBILITY_TABLE, SR3E_VISION_TYPES, escapeHTML } =
+            SR3E_VISIBILITY_TABLE, SR3E_VISION_TYPES, bestVisionKey, escapeHTML } =
       await import('../SR3ECombatModifiers.js');
 
     const groups  = meleeModifierGroups();
@@ -2496,8 +2501,12 @@ export class SR3EItem extends Item {
     const condOpts = ['<option value="">— not impaired —</option>']
       .concat(Object.keys(SR3E_VISIBILITY_TABLE).map(c => `<option value="${c}">${c}</option>`))
       .join('');
-    const visOpts = SR3E_VISION_TYPES
-      .map(v => `<option value="${v.key}">${v.label}</option>`).join('');
+    // One vision dropdown PER FIGHTER, each pre-selected from their own eyes (TODO 36) — the
+    // Melee Modifiers Table (p.123) sends each character to the Visibility Table, so a troll's
+    // thermographic and a human's normal eyes give different numbers in the same darkness.
+    const visOpts = pre => SR3E_VISION_TYPES
+      .map(v => `<option value="${v.key}"${v.key === pre ? ' selected' : ''}>${v.label}</option>`).join('');
+    const preVis  = data => (data ? bestVisionKey(data, '') : 'normal');
 
     const sideSelect = (id, label) => `
       <label style="display:flex;align-items:center;gap:6px;margin:3px 0;font-size:12px">
@@ -2547,11 +2556,15 @@ export class SR3EItem extends Item {
               <div style="display:flex;align-items:center;gap:6px">
                 <span style="min-width:200px">${row.label}</span>
                 <select id="gmm-vis-cond" style="flex:1">${condOpts}</select>
-                <select id="gmm-vis-type" style="flex:1">${visOpts}</select>
               </div>
+              ${[['atk', atkName, ctx.atkVisionData, ctx.atkVision],
+                 ['def', defName, ctx.defVisionData, ctx.defVision]].map(([side, who, data, hint]) => `
+              <div style="display:flex;align-items:center;gap:6px;margin-top:2px">
+                <span style="min-width:200px;padding-left:12px">${escapeHTML(who)} sees with</span>
+                <select id="gmm-vis-type-${side}" style="flex:1">${visOpts(preVis(data))}</select>
+              </div>
+              ${hint ? `<div class="gmm-vis-hint" style="font-size:11px;color:var(--sr-muted);margin-left:206px">👁 ${escapeHTML(hint)}</div>` : ''}`).join('')}
               <div style="font-size:11px;color:var(--sr-muted);margin-left:206px">${row.note}</div>
-              ${[ctx.atkVision, ctx.defVision].filter(Boolean).map(v =>
-                `<div class="gmm-vis-hint" style="font-size:11px;color:var(--sr-muted);margin-left:206px">👁 ${escapeHTML(v)}</div>`).join('')}
             </div>`;
         default:
           // An unrecognised kind renders as a plain note rather than vanishing: a silently
@@ -2600,21 +2613,39 @@ export class SR3EItem extends Item {
           prone:               el.querySelector('#gmm-prone')?.value || null,
           multiTargetAtk:      parseInt(el.querySelector('#gmm-multi')?.value) || 0,
           visibilityCondition: el.querySelector('#gmm-vis-cond')?.value || '',
-          visibilityVision:    el.querySelector('#gmm-vis-type')?.value || 'normal',
+          visibilityVisionAtk: el.querySelector('#gmm-vis-type-atk')?.value || 'normal',
+          visibilityVisionDef: el.querySelector('#gmm-vis-type-def')?.value || 'normal',
           situational:         parseInt(el.querySelector('#gmm-sit')?.value) || 0,
           situationalSide:     el.querySelector('#gmm-sit-side')?.value || 'atk',
         });
+
+        // Each fighter's pre-selected vision follows the condition until the GM picks one for
+        // that fighter (TODO 36). Registered BEFORE `refresh` below so the TNs read the new
+        // rows; a programmatic `.value =` fires no `change`, so only a human sets `touched`.
+        const visCond = el.querySelector('#gmm-vis-cond');
+        for (const [side, data] of [['atk', ctx.atkVisionData], ['def', ctx.defVisionData]]) {
+          const sel = el.querySelector(`#gmm-vis-type-${side}`);
+          if (!sel || !data) continue;
+          let touched = false;
+          sel.addEventListener('change', () => { touched = true; });
+          visCond?.addEventListener('change', () => {
+            if (!touched) sel.value = bestVisionKey(data, visCond.value);
+          });
+        }
+
         const refresh = () => {
           const st = read();
           const d  = sumMeleeModifiers(st);
           el.querySelector('#gmm-atk-tn').value = Math.max(2, baseAtk + d.atk);
           el.querySelector('#gmm-def-tn').value = Math.max(2, baseDef + d.def);
           const sign = n => `${n >= 0 ? '+' : ''}${n}`;
-          const vis  = st.visibilityCondition
-            ? meleeVisibilityModifier(st.visibilityCondition, st.visibilityVision) : null;
+          const visA = st.visibilityCondition
+            ? meleeVisibilityModifier(st.visibilityCondition, st.visibilityVisionAtk) : null;
+          const visD = st.visibilityCondition
+            ? meleeVisibilityModifier(st.visibilityCondition, st.visibilityVisionDef) : null;
           el.querySelector('#gmm-note').textContent =
             `Δ ${sign(d.atk)} / ${sign(d.def)}`
-            + (vis === null ? '' : ` · visibility halves to ${sign(vis)}`);
+            + (visA === null ? '' : ` · visibility halves to ${sign(visA)} / ${sign(visD)}`);
         };
         el.querySelectorAll('input, select').forEach(i => {
           i.addEventListener('input',  refresh);
@@ -2648,16 +2679,16 @@ export class SR3EItem extends Item {
   static async _promptGMAttackWindow(ctx, opts = {}) {
     const { mvpModifierGroups, sumModifiers, clampTN, guessGearModifiers,
             SR3E_VISIBILITY_TABLE, SR3E_VISION_TYPES, visibilityModifier,
-            detectVision, visionReminder, escapeHTML } =
+            detectVision, visionReminder, bestVisionKey, escapeHTML } =
       await import('../SR3ECombatModifiers.js');
 
     const groups  = mvpModifierGroups();
     const guessed = guessGearModifiers(ctx.attacker, ctx.weapon);
     const baseTN  = Number(ctx.baseTN) || 4;
-    // A reminder of what the attacker's eyes actually are (TODO 99) — informs the vision
-    // dropdown, never sets it. No attacker resolved → no line.
-    const visionHint = ctx.attacker
-      ? visionReminder(ctx.attacker.name ?? 'Attacker', detectVision(ctx.attacker)) : '';
+    // What the attacker's eyes are (TODO 99), and the row pre-selected from them (TODO 36).
+    // No attacker resolved → no line and no pre-selection: Normal, as before.
+    const vision     = ctx.attacker ? detectVision(ctx.attacker) : null;
+    const visionHint = vision ? visionReminder(ctx.attacker.name ?? 'Attacker', vision) : '';
 
     // Two columns. Each row is ONE grid item — label and its note wrapped together,
     // or the note would become a separate cell and every row after it would land in
@@ -2667,15 +2698,17 @@ export class SR3EItem extends Item {
     const renderRow = m => {
       // Visibility is a two-axis table lookup, not a tick: the GM picks the CONDITION
       // and which vision the attacker is using, and the modifier derives from the
-      // Visibility Table. Nothing is pre-selected — cybernetic vision is only
-      // name-matchable (the same gap as TODO #18) — but the 👁 line says what the
-      // system found, so the GM is not choosing blind (TODO 99).
+      // Visibility Table. The vision is PRE-SELECTED from the attacker's metatype and
+      // implants (TODO 36) and follows the condition until the GM changes it; the 👁 line
+      // says what was found (TODO 99). Implants are name-matched — the TODO #18 gap — which
+      // is why it stays a pre-selection.
       if (m.select === 'visibility') {
         const condOpts = ['<option value="">— not impaired —</option>']
           .concat(Object.keys(SR3E_VISIBILITY_TABLE)
             .map(c => `<option value="${c}">${c}</option>`)).join('');
+        const pre     = vision ? bestVisionKey(vision, '') : 'normal';
         const visOpts = SR3E_VISION_TYPES
-          .map(v => `<option value="${v.key}">${v.label}</option>`).join('');
+          .map(v => `<option value="${v.key}"${v.key === pre ? ' selected' : ''}>${v.label}</option>`).join('');
         return `<div class="sr-gm-modrow" style="break-inside:avoid">
             <div style="display:flex;flex-direction:column;gap:3px;padding:2px 0">
               <span>${m.label}</span>
@@ -2798,6 +2831,18 @@ export class SR3EItem extends Item {
         const tnEl = el.querySelector('#sr-gm-tn');
         const note = el.querySelector('#sr-gm-tn-note');
         const visNote = el.querySelector('.sr-gm-vis-note');
+
+        // The pre-selected vision follows the condition — a character with thermographic and
+        // low-light uses whichever sees better in it — until the GM picks one themselves.
+        // Registered BEFORE the recompute listeners below, so the TN reads the new row.
+        // ⚠ A programmatic `.value =` fires no `change`, so only a human sets `touched`.
+        const visType = el.querySelector('.sr-gm-vis-type');
+        const visCond = el.querySelector('.sr-gm-vis-cond');
+        let visTouched = false;
+        visType?.addEventListener('change', () => { visTouched = true; });
+        visCond?.addEventListener('change', () => {
+          if (vision && visType && !visTouched) visType.value = bestVisionKey(vision, visCond.value);
+        });
 
         const recompute = () => {
           // Same reader the Confirm callback uses — two copies of this drifted apart

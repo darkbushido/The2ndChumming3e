@@ -27,7 +27,7 @@ independent.
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **4** · **30** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** *(**83** · **84** · **87** done)* |
-| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 *(**99** done)* |
+| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 56 *(**36** · **99** done)* |
 | 🧹 Housekeeping | 1 · 6 |
 | ✅ Done — kept for the record | **2** · **5** · **8** · **10** · 13 · **40** · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -3234,7 +3234,26 @@ mode — `Math.floor(v / 2)` with Full Darkness passed through at full value.
 whether the boxing card stays one card or splits, and a GM modifier surface has to attach to
 whichever wins.
 
-## 36. Detect which vision an attacker actually has
+## 36. ✅ Detect which vision an attacker actually has — **DONE 2026-09-12** (`fix/racial-mods`, awaiting the Foundry check in [#93](#93))
+
+**Built on [#99](#99)'s detector.** `visionOptions(v)` lists the rows a character can use
+(Normal always, plus their natural and cyber vision); `bestVisionKey(v, condition)` picks the
+lowest-modifier one, ties to the natural eyes. Both GM windows pre-select it and **follow the
+condition until the GM changes the dropdown** — so a troll in Thermal Smoke drops to Normal
+(+4 beats thermographic +6) without anyone asking.
+
+- **Melee now has one vision dropdown PER FIGHTER.** It had one for both, which was harmless
+  while nothing was pre-selected but would have put the attacker's eyes on the defender's TN.
+  p.123's table sends each character to the Visibility Table. `sumMeleeModifiers` takes
+  `visibilityVisionAtk` / `visibilityVisionDef`, falling back to the shared `visibilityVision`.
+- **The retinal question below is surfaced, not settled:** implants pre-select as
+  cybernetic, and the 👁 line says the column is the GM's call when there is no replacement
+  item on the sheet.
+- **Not done: the suggested `system.derived.vision`.** The two windows are the only consumers
+  and both call `detectVision` directly; a derived field would be a second place to keep in
+  step. Worth adding if a third consumer (Perception Tests) appears.
+
+The original analysis:
 
 The Visibility Table renders in the GM's TN window ([#29](#29)) as two dropdowns — condition, and
 which vision the attacker is using — with **nothing pre-selected**. The second dropdown is
@@ -6517,12 +6536,17 @@ B5 Q5 S4 C2 I3 W2 imported at those numbers instead of B10 Q4 S8 C0 I1 W2.
       → back. Switch the dropdown to Quickness → the box greys out and unticks, pool = Quickness.
       Roll with it ticked → the card title ends *resisting disease or toxin (+2)*. A human with
       no such bioware sees no box at all.
-- [ ] **Vision reminder, ranged.** Have the troll shoot (as a player, so the GM window opens):
-      under the vision dropdown, *👁 <name> (troll): Thermographic (natural)*. The dropdown itself
-      is still unselected. An elf with `Eyes, Cyber Replacement` + `Eyes, Low-Light` reads
-      *Low-Light (cybernetic) … racial low-light lost to Eyes, Cyber Replacement (SR3 p.299)*.
-- [ ] **Vision reminder, melee.** In the melee GM window, two 👁 lines under Visibility, one per
-      fighter.
+- [ ] **Vision, ranged.** Have the troll shoot (as a player, so the GM window opens): the vision
+      dropdown **opens on Thermographic (natural)**, with *👁 <name> (troll): Thermographic
+      (natural)* under it. Pick **Thermal Smoke** → it switches to **Normal** by itself and the
+      TN shows +4. Now pick a vision by hand, then change the condition again → it stays where
+      you put it.
+- [ ] An elf with `Eyes, Cyber Replacement` + `Eyes, Low-Light` opens on **Low-Light
+      (cybernetic)** and reads *… racial low-light lost to Eyes, Cyber Replacement (SR3 p.299)*.
+- [ ] **Vision, melee.** Troll vs human: the melee GM window has **two** vision dropdowns, one per
+      fighter, each with its 👁 line. Pick Full Darkness → the note reads *visibility halves to
+      +2 / +8* (Full Darkness is not halved; the troll's thermographic reads +2), and the two TNs
+      differ by 6.
 
 ### Known, not fixed here
 
@@ -6534,8 +6558,8 @@ B5 Q5 S4 C2 I3 W2 imported at those numbers instead of B10 Q4 S8 C0 I1 W2.
   from the sheet does include it.
 - Dermal Plating and other dermal **cyberware** still take flechette's level increase — only a
   troll's natural dermal armor is recognised. [#75](#75).
-- Vision is a reminder only ([#99](#99)); the GM still picks the row. Pre-selecting it is
-  [#36](#36).
+- Vision is detected by item NAME ([#99](#99), [#36](#36)) — the [#18](#18) gap — so it is a
+  pre-selection the GM can change, never a locked value. Worn goggles are not detected.
 
 <a id="94"></a>
 
