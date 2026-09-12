@@ -6023,6 +6023,64 @@ _prepareCharacter(sys, attr) {
   }
 
   /**
+   * An imported character's finished attribute ratings · *SR3 p.56* — the importer's rule.
+   *
+   * The Shadowrun Character Generator exports a character's attributes in TWO parts: the points
+   * the player allocated (`attributes`) and the Racial Modifications Table's contribution
+   * (`raceBonuses`). Its own sheet shows their sum. The importer read only the first until
+   * 2026-09-11, so a troll allocated Body 5 arrived as Body 5 instead of 10 — every imported
+   * metahuman came in at human ratings.
+   *
+   * @param {object} o
+   * @param {object} o.allocation   the export's `attributes`, keyed `Body`, `Quickness`, …
+   * @param {string} o.race         the export's `race` (`'Troll'`, …)
+   * @param {object} [o.raceBonuses] the export's `raceBonuses`
+   * @returns {{attributes: object, modifiers: object, source: string, belowOne: string[]}}
+   *
+   * ⚠ **The export's own `raceBonuses` wins when it carries anything**, because that is the
+   * character the player actually built. The book's table (`SR3E.racialModifiers`) is the
+   * fallback, used when the export's bonuses are absent or all zero for a non-human — the
+   * generator's default state is an all-zero `raceBonuses`, so zeros on a troll mean "never
+   * filled in", not "this troll has no modifiers". `source` says which was used.
+   *
+   * ⚠ **Only the six bought attributes.** `raceBonuses` also carries `Reaction`, `Initative`
+   * (sic) and a `Notes` string; Reaction is derived from Quickness and Intelligence here, so
+   * adding a racial Reaction on top would count those modifiers twice.
+   *
+   * ⚠ **A rating below 1 is REPORTED, not clamped** — p.56: *"Magic is the only Attribute that
+   * can have a value of 0."* A troll allocated 2 Charisma lands on 0, which is an illegal
+   * character the GM needs to see, not one the importer should quietly repair to 1.
+   */
+  static racialAttributes({ allocation = {}, race = '', raceBonuses } = {}) {
+    const KEYS = { body: 'Body', quickness: 'Quickness', strength: 'Strength',
+                   charisma: 'Charisma', intelligence: 'Intelligence', willpower: 'Willpower' };
+    const num  = v => (Number.isFinite(Number(v)) ? Number(v) : 0);
+    const key  = String(race ?? '').trim().toLowerCase() || 'human';
+    const table = globalThis.game?.sr3e?.SR3E?.racialModifiers ?? SR3EActor._RACIAL_MODS_FALLBACK;
+
+    const exported = {};
+    let exportedAny = false;
+    for (const [k, g] of Object.entries(KEYS)) {
+      exported[k] = num(raceBonuses?.[g]);
+      if (exported[k] !== 0) exportedAny = true;
+    }
+
+    let modifiers, source;
+    if (exportedAny)              { modifiers = exported;                   source = 'export'; }
+    else if (key === 'human')     { modifiers = { ...table.human };         source = 'none'; }
+    else if (table[key])          { modifiers = { ...table[key] };          source = 'table'; }
+    else                          { modifiers = { ...table.human };         source = 'unknown'; }
+
+    const attributes = {}, belowOne = [];
+    for (const [k, g] of Object.entries(KEYS)) {
+      // `?? 3` is the importer's long-standing default for a missing attribute.
+      attributes[k] = num(allocation?.[g] ?? 3) + (modifiers[k] ?? 0);
+      if (attributes[k] < 1) belowOne.push(k);
+    }
+    return { attributes, modifiers, source, belowOne };
+  }
+
+  /**
    * The Attribute Boost activation TN · *SR3 p.168*
    *
    * > "make a Magic Test against a target number equal to one half the base (unaugmented)
@@ -6146,6 +6204,15 @@ _prepareCharacter(sys, attr) {
     ork:   { body: 9, quickness: 6, strength: 8, charisma: 5, intelligence: 5, willpower: 6 },
     troll: { body: 11, quickness: 5, strength: 10, charisma: 4, intelligence: 4, willpower: 6 },
     other: { body: 6, quickness: 6, strength: 6, charisma: 6, intelligence: 6, willpower: 6 },
+  };
+
+  /** Mirror of `SR3E.racialModifiers` (SR3 p.56), for the same reason as the limits above. */
+  static _RACIAL_MODS_FALLBACK = {
+    human: { body: 0, quickness: 0,  strength: 0, charisma: 0,  intelligence: 0,  willpower: 0 },
+    dwarf: { body: 1, quickness: 0,  strength: 2, charisma: 0,  intelligence: 0,  willpower: 1 },
+    elf:   { body: 0, quickness: 1,  strength: 0, charisma: 2,  intelligence: 0,  willpower: 0 },
+    ork:   { body: 3, quickness: 0,  strength: 2, charisma: -1, intelligence: -1, willpower: 0 },
+    troll: { body: 5, quickness: -1, strength: 4, charisma: -2, intelligence: -2, willpower: 0 },
   };
 
   /* ══════════════════════════════════════════════════════════════════════════════

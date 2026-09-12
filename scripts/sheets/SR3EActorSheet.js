@@ -596,6 +596,38 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       </header>`;
   }
 
+  /**
+   * Species — fixed at character generation, so NOT editable by players.
+   *
+   * ⚠ **A player never gets an input at all**, only text. A disabled field would still be a
+   * form control; plain text cannot be submitted, so there is nothing to tamper with.
+   *
+   * ⚠ **The GM gets a dropdown**, because an NPC built in Foundry rather than imported has no
+   * other way to be anything but human, and two rules read this field — the karma-pool rate
+   * and the racial limits. It used to be free text, so a typo ("Trol") silently read as human
+   * in both.
+   *
+   * ⚠ **A value outside the list is kept as its own option.** Without that, a select showing
+   * "Human" for an unrecognised stored value would write "human" back the next time the GM
+   * edited ANY other field on the sheet, since submit-on-change sends the whole form.
+   */
+  _speciesField(metatype) {
+    const list  = game.sr3e?.SR3E?.metatypes ?? [];
+    const cur   = String(metatype ?? '').trim().toLowerCase() || 'human';
+    const known = list.find(m => m.value === cur);
+    const label = known?.label ?? (metatype || 'Human');
+    if (!game.user.isGM) {
+      return `<label class="inline-field">Species <span style="min-width:100px">${label}</span></label>`;
+    }
+    const opts = list.map(m =>
+      `<option value="${m.value}" ${m.value === cur ? 'selected' : ''}>${m.label}</option>`);
+    if (!known) opts.unshift(`<option value="${metatype}" selected>${metatype} (unrecognised)</option>`);
+    return `<label class="inline-field">Species
+      <select name="system.metatype" style="width:100px"
+        data-tooltip="Fixed at character generation. GM only.">${opts.join('')}</select>
+    </label>`;
+  }
+
   _inlineField(label, name, value, type = 'text', width = 80) {
     return `<label class="inline-field">${label}
       <input type="${type}" name="${name}" value="${value ?? ''}" style="width:${width}px"/>
@@ -2742,7 +2774,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     return `<div class="tab ${this._activeTab === 'bio' ? 'active' : ''}" data-tab="bio" style="overflow-y:auto">
       <h3 class="section-hdr">Personal Information</h3>
       <div class="bio-fields">
-        ${this._inlineField('Species', 'system.metatype', sys.metatype, 'text', 100)}
+        ${this._speciesField(sys.metatype)}
         ${this._inlineField('Age', 'system.age', sys.age, 'text', 60)}
         ${this._inlineField('Gender', 'system.gender', sys.gender, 'text', 70)}
         ${this._inlineField('Height', 'system.height', sys.height, 'text', 80)}

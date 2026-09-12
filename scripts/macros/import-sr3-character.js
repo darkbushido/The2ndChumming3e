@@ -440,6 +440,20 @@ catch (e) { return void ui.notifications.error(`SR3 Import — invalid JSON: ${e
 // ── Build actor data ──────────────────────────────────────────────────────────
 
 const a     = cj.attributes ?? {};
+
+/* ⚠ **Racial modifiers are ADDED here** · SR3 p.56. The generator exports the player's
+ * allocation in `attributes` and the Racial Modifications Table's part separately in
+ * `raceBonuses`; its own sheet shows the sum. Reading `attributes` alone — which this macro
+ * did until 2026-09-11 — imported every metahuman at human ratings: a troll's Body 10 as 5.
+ *
+ * The rule lives on SR3EActor rather than in this file on purpose. This macro is copied into
+ * each world as a Macro document on first load and never refreshed, so logic kept here only
+ * reaches a world whose GM deletes and recreates the macro. Kept in the system, a later fix to
+ * the rule reaches everyone. */
+const racial = game.sr3e.SR3EActor.racialAttributes({
+  allocation: a, race: cj.race, raceBonuses: cj.raceBonuses,
+});
+const ra = racial.attributes;
 const nuyen = Math.max(0, _int(cj.chargenCash) - _int(cj.cashSpent)) + _int(cj.cash);
 
 // magicalTradition may be a plain string or an object { name, description, ... }
@@ -460,12 +474,14 @@ const actorData = {
     notes:     notesText,
     biography: cj.description ? `<p>${cj.description}</p>` : '',
     attributes: {
-      body:         { base: a.Body         ?? 3, value: a.Body         ?? 3 },
-      quickness:    { base: a.Quickness    ?? 3, value: a.Quickness    ?? 3 },
-      strength:     { base: a.Strength     ?? 3, value: a.Strength     ?? 3 },
-      charisma:     { base: a.Charisma     ?? 3, value: a.Charisma     ?? 3 },
-      intelligence: { base: a.Intelligence ?? 3, value: a.Intelligence ?? 3 },
-      willpower:    { base: a.Willpower    ?? 3, value: a.Willpower    ?? 3 },
+      // `base` is the FINISHED rating — allocation plus race — which is how every shipped
+      // metahuman stores it too. Nothing adds the racial part again at derive time.
+      body:         { base: ra.body,         value: ra.body         },
+      quickness:    { base: ra.quickness,    value: ra.quickness    },
+      strength:     { base: ra.strength,     value: ra.strength     },
+      charisma:     { base: ra.charisma,     value: ra.charisma     },
+      intelligence: { base: ra.intelligence, value: ra.intelligence },
+      willpower:    { base: ra.willpower,    value: ra.willpower    },
       // Essence: `value` is derived, `lost` is the persisted permanent loss. Leaving
       // `lost` at 0 is correct here — the derivation takes max(lost, installed), so an
       // imported character reads the right Essence from their cyberware immediately, and
@@ -639,5 +655,23 @@ ui.notifications.info(
   `${count('contact')} contacts` +
   (vehicleCount ? ` · ${vehicleCount} vehicles/drones` : '')
 );
+
+/* Say what the racial step did, so a GM can check it against the generator's sheet. */
+const _ABBR = { body: 'BOD', quickness: 'QCK', strength: 'STR',
+                charisma: 'CHA', intelligence: 'INT', willpower: 'WIL' };
+if (racial.source === 'export' || racial.source === 'table') {
+  const mods = Object.entries(racial.modifiers).filter(([, v]) => v)
+    .map(([k, v]) => `${v > 0 ? '+' : ''}${v} ${_ABBR[k]}`).join(', ');
+  ui.notifications.info(`"${actor.name}": ${actorData.system.metatype} racial modifiers applied (${mods})`
+    + (racial.source === 'table' ? ' — from the SR3 p.56 table; the export carried none.' : '.'));
+} else if (racial.source === 'unknown') {
+  ui.notifications.warn(`"${actor.name}": race "${cj.race}" is not in the Racial Modifications Table `
+    + '— no racial modifiers applied. Set the attributes by hand.');
+}
+if (racial.belowOne.length) {
+  ui.notifications.warn(`"${actor.name}": ${racial.belowOne.map(k => _ABBR[k]).join(', ')} below 1 `
+    + 'after racial modifiers. Only Magic may be 0 (SR3 p.56) — the allocation needs changing.',
+    { permanent: true });
+}
 
 actor.sheet.render(true);

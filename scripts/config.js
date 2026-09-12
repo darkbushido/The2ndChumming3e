@@ -897,6 +897,33 @@ export const SR3E = {
   },
 
   /**
+   * Racial Modifications Table · *SR3 p.56*
+   *
+   * Applied ONCE, at character creation, to the points a player allocates — the book's troll
+   * Combat Mage puts 1 point into Body and records **Body 6**. So the rating on a finished sheet
+   * already includes these, and that is how every shipped metahuman stores it (Dock Worker, a
+   * troll, is printed and stored at B10 S10). They are therefore NOT added in
+   * `prepareDerivedData` — doing so would double-apply them to all 38 of those actors.
+   *
+   * ⚠ **The one place they must be added is the character IMPORT.** The Shadowrun Character
+   * Generator exports the allocation in `attributes` and the racial part separately in
+   * `raceBonuses`. The importer read only the first until 2026-09-11, so every imported
+   * metahuman arrived at human ratings — a troll's Body 10 as 5. See `SR3EActor.racialAttributes`.
+   *
+   * Matches the generator's own table (`PriorityPanel.js`) row for row. Reaction is absent: it
+   * is derived from Quickness and Intelligence, so it picks the modifiers up from those.
+   * The non-attribute traits (vision, a troll's +1 Reach and Dermal Armor, a dwarf's +2 Body
+   * against disease and toxins) are not modelled here.
+   */
+  racialModifiers: {
+    human: { body: 0, quickness: 0,  strength: 0, charisma: 0,  intelligence: 0,  willpower: 0 },
+    dwarf: { body: 1, quickness: 0,  strength: 2, charisma: 0,  intelligence: 0,  willpower: 1 },
+    elf:   { body: 0, quickness: 1,  strength: 0, charisma: 2,  intelligence: 0,  willpower: 0 },
+    ork:   { body: 3, quickness: 0,  strength: 2, charisma: -1, intelligence: -1, willpower: 0 },
+    troll: { body: 5, quickness: -1, strength: 4, charisma: -2, intelligence: -2, willpower: 0 },
+  },
+
+  /**
    * Cyber/bioware that has to be SWITCHED ON · TODO 30
    *
    * The upstream `Mods` field is reserved for unconditional passives, so none of these carry
