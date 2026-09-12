@@ -114,7 +114,9 @@ export const SR3ESkills = {
 
   "Survival skills": [
     { name: "Riding",              linkedAttribute: "reaction",  specializations: ["Animal->"] },
-    { name: "Wilderness Survival", linkedAttribute: "willpower", specializations: ["Forest", "Mountain", "Desert", "Jungle", "Polar"] },
+    // Target: Wastelands p.105 — "This Active skill governs…", default Willpower. The book adds
+    // "or appropriate wilderness terrain type" after the five, so the list is not closed.
+    { name: "Wilderness Survival", linkedAttribute: "willpower", specializations: ["Forest", "Mountains", "Desert", "Jungle", "Polar"] },
   ],
 
   "Technical skills": [

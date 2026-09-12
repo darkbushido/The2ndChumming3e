@@ -6553,7 +6553,12 @@ drops the generator's `weapon->` placeholder instead of importing it as a specia
 sheet's sections and karma pricing, not just import:
 - **Survival skills** — Wilderness Survival (`twl.105`) and Riding (`tss.17`). The generator
   treats this as an active category, and keeps `BK:Wilderness Survival` as a separate background
-  skill, so this one is clear.
+  skill, so this one is clear. **Confirmed from the book** — *Target: Wastelands* p.105, supplied
+  by the maintainer (the library copy has no text layer): *"Wilderness Survival (Willpower) —
+  This Active skill governs a character's proficiency in surviving the outdoors…"*, default
+  Willpower attribute, specializations Forest, Mountains, Desert, Jungle, Polar *"or appropriate
+  wilderness terrain type"*. No Background version is printed; `BK:Wilderness Survival` exists
+  only through SR3 p.90's general rule that every Active Skill has one.
 - **Matrix skills** — Computer, Cybercombat, Hacking, Programming. Computer is an active
   Technical skill in SR3 core (p.88); the other three are Matrix Defragged's and cannot be checked
   against a book here.
