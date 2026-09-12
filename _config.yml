@@ -10,7 +10,7 @@ baseurl: "/sr3-guides"
 permalink: pretty
 url: "https://darkbushido.github.io"
 
-color_scheme: dark
+color_scheme: sixthworld
 search_enabled: true
 heading_anchors: true
 back_to_top: true
