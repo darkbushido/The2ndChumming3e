@@ -181,10 +181,10 @@ export function resolveImplant(name, mods = []) {
  * ⚠ **It falls back to the OTHER host's map, and then to `resolveImplant`.** Both fallbacks
  * exist because the book's own data needs them, not for tidiness:
  *
- *   · **Trid Pirate (p.55) lists `Cyberear (Display Link, Image Link, Opticam)`** — three
+ *   · **Trid Pirate (p.42) lists `Cyberear (Display Link, Image Link, Opticam)`** — three
  *     *vision* mods on an ear. Almost certainly "Cybereyes" in the source; either way the mods
  *     are real and resolvable, so trying the eye map recovers them.
- *   · **Mercenary (p.61) has a MISPLACED CLOSING PAREN**:
+ *   · **Mercenary (p.40) has a MISPLACED CLOSING PAREN**:
  *     `Cybereyes (Thermographic, Flare Compensation, Muscle Replacement 2, Smartlink 2,
  *     Wired Reflexes 2)` — the last three are separate implants that ended up inside the
  *     parentheses. `resolveImplant` recovers them rather than dropping three pieces of chrome.

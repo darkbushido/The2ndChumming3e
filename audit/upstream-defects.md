@@ -178,7 +178,7 @@ prints **`INIT: 4 + 1D6`**. The bonus made the contact roll 2D6.
 rigging path derives at rig time. Reading those as initiative dice on the actor is the likely
 origin of the mistake.
 
-### 3. Mercenary (p.61) has a misplaced closing parenthesis
+### 3. Mercenary (p.40) has a misplaced closing parenthesis
 
 ```
 Cybereyes (Thermographic, Flare Compensation, Muscle Replacement 2, Smartlink 2, Wired Reflexes 2)
@@ -189,7 +189,7 @@ should close after *Flare Compensation*. Any parser reading the parenthesis as s
 three implants. `tools/lib/johnson-aliases.mjs` recovers them by falling back to the implant
 resolver, and says so.
 
-### 4. Trid Pirate (p.55) lists vision mods on an ear
+### 4. Trid Pirate (p.42) lists vision mods on an ear
 
 ```
 Cyberear (Display Link, Image Link, Opticam)

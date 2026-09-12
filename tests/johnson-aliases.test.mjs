@@ -79,9 +79,9 @@ export async function run(t) {
     resolveMod('Hearing Amplification', 'ear'), 'Ear Hearing Amplification');
 
   /* ⚠ **Two fallbacks, each for a real fault in the book's own data.** */
-  t.is('Trid Pirate p.55: vision mods listed on an EAR still resolve',
+  t.is('Trid Pirate p.42: vision mods listed on an EAR still resolve',
     resolveMod('Opticam', 'ear'), 'Eyes, Opticam');
-  t.is('Mercenary p.61: a misplaced paren puts an IMPLANT inside the eye mods',
+  t.is('Mercenary p.40: a misplaced paren puts an IMPLANT inside the eye mods',
     resolveMod('Smartlink 2', 'eye'), 'Smartlink II');
 
   t.is('an unknown mod is not invented', resolveMod('Cyberholster in right leg', 'eye'), null);

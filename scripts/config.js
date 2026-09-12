@@ -353,6 +353,9 @@ export const SR3ESkills = {
   ],
 
   "Survival knowledge": [
+    // Target: Wastelands p.105 — a Survival KNOWLEDGE skill, specialisations as listed; confirmed
+    // by the maintainer 2026-09-12. Mr. Johnson's Little Black Book prints it on the Mercenary's
+    // ACTIVE line (p.40), which the book that defines it overrides.
     { name: "Navigation", linkedAttribute: "intelligence", specializations: ["Land", "Sea", "Flight"] },
   ],
 
