@@ -1061,8 +1061,8 @@ async function _openFallingDamageCalculator() {
       let impactArmor = 0, athleticsPool = 0, isDefaulting = false;
       if (actor) {
         actor.prepareDerivedData();
-        const armorItem = actor.system.equippedArmor ? actor.items.get(actor.system.equippedArmor) : null;
-        impactArmor = armorItem?.system?.impact ?? 0;
+        // Worn + implant Impact armour (TODO 75) — the same figure the soak card uses.
+        impactArmor = game.sr3e.SR3EActor.armorRatings(actor).impact;
         const skill = actor.items.find(i => i.type === 'skill' && i.name.toLowerCase() === 'athletics');
         if (skill) {
           athleticsPool = skill.system.rating;
@@ -1131,8 +1131,7 @@ async function _openFallingDamageCalculator() {
           if (!actor || distance < 1) return;
 
           actor.prepareDerivedData();
-          const armorItem   = actor.system.equippedArmor ? actor.items.get(actor.system.equippedArmor) : null;
-          const impactArmor = armorItem?.system?.impact ?? 0;
+          const impactArmor = game.sr3e.SR3EActor.armorRatings(actor).impact;
           const netPower    = Math.max(0, Math.floor(distance / 2) - Math.floor(impactArmor / 2));
           const level       = distance >= 21 ? 'D' : distance >= 7 ? 'S' : distance >= 3 ? 'M' : 'L';
           const skill       = actor.items.find(i => i.type === 'skill' && i.name.toLowerCase() === 'athletics');

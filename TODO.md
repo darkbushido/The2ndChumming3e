@@ -24,7 +24,7 @@ independent.
 | 🔵 In progress | **93** — awaiting a Foundry test, branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | **73** · **74** · **91** *(**71** · **72** · **80** · **81** · **88** · **89** done)* |
-| 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **4** · **30** · **98** done)* |
+| 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** *(**3** · **4** · **30** · **75** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** *(**83** · **84** · **87** done)* |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 56 *(**36** · **99** done)* |
@@ -4657,7 +4657,7 @@ dialog that collects plain km/h and passes it through would overstate every cras
 ---
 
 <a id="75"></a>
-## 75. Dermal armour negates flechette's damage-level increase — *SR3 p.116* — ✅ **negation DONE 2026-09-12**; implant armour ratings still open
+## 75. ✅ Dermal armour negates flechette's damage-level increase; implant armour reaches the soak — *SR3 p.116* — **DONE 2026-09-12** (`fix/racial-mods`, awaiting the Foundry check in [#93](#93))
 
 **The rule the title names is done** (`fix/racial-mods`). `SR3EActor.dermalArmorSources(actor)`
 returns what gives a target dermal armor — a troll's hide, or cyberware matching
@@ -4673,12 +4673,36 @@ Chromebook 2; `Ruthenium Skin Implants`, tss) are left out for want of a rule.
 This proved the plan below was bigger than the rule needed: "does the target have dermal
 armor?" is a yes/no a named registry answers, with no armour channel at all.
 
-**What stays open is the armour channel itself** — steps 1-2 below. Dermal Sheath (`+1IMP`/`+2IMP`)
-and Orthoskin (`+1IMP` … `+2IMP,+1BAL`) carry real armour ratings that the soak card never sees,
-so a target protected only by them reads as **unarmoured**. With a sheath that no longer costs
-them the flechette level (it is dermal armor), but an Orthoskin user still takes the increase
-instead of `flechetteArmor`'s doubled Impact, and neither gets their Impact against ordinary
-melee. That is the rest of this item.
+**The armour channel is done too.** `SR3EActor.implantArmor(items)` sums the Impact/Ballistic
+that cyberware and bioware provide; `SR3EActor.armorRatings(actor)` adds it to worn armour, and
+the soak card, Falling Damage and the Body+armour stat picker all read that one answer. Every
+source is cumulative with worn armour by the book — Bone Lacing (SR3 p.300), Ceramic/Kevlar
+lacing (M&M p.27), Orthoskin (M&M p.68). The soak card names each implant's contribution; the
+Armor tab shows the implant total and the combined figure.
+
+**Differs from the plan below, deliberately:**
+- **No pack rewrite and no migration.** Every shipped implant already carries its `IMP`/`BAL`
+  codes in `system.mods` (checked against copies of the repo packs, 2026-09-12 — 11 items, all
+  matching the books). So the value is read from `mods` at derive time.
+- **The new fields are an OVERRIDE, and nullable** — `bonusImpact`/`bonusBallistic` on
+  `CyberwareData` and `BiowareData`, `null` = "from mods", a number including 0 = the GM's.
+  The `essence.lost` pattern: a plain 0 default could not tell "unset" from "the GM zeroed it".
+  The item sheet shows them under **Implant Armour**, blank with the `mods` value as the
+  placeholder. ⚠ Still a data-model change → **full Foundry restart**.
+- **`IMP`/`BAL` stay out of `SRCG_BONUSES`.** Mapping them in `SR3EMods` too would give the
+  same number two sources.
+
+**Found on the way:**
+- **Plastic Bone Lacing gives no armour** by the Bone Lacing **table** (SR3 p.303: *"+1 Body"*),
+  though the p.300 prose says plastic adds Impact. The pack follows the table; so does this.
+- **Dermal Plating gives no armour** — it raises Body (p.300). Correct in the pack.
+
+**Not modelled** (noted in `implantArmor`'s comment): M&M p.33's reduction of implant armour
+and Body bonuses for characters with three or more cyber replacements; cyberlimb body plating
+(M&M p.35); implant armour in the Quickness encumbrance check (no rule found that it counts).
+
+Tests in `tests/implant-armor.test.mjs`; mutants `implant-armor-ignored` and
+`implant-armor-zero-means-unset`.
 
 The original plan:
 
@@ -6528,7 +6552,9 @@ B5 Q5 S4 C2 I3 W2 imported at those numbers instead of B10 Q4 S8 C0 I1 W2.
 2. **In the test world, DELETE the "Import Nullsheen 3e Character json" macro, then reload.**
    The system copies that macro into a world once and never refreshes it, so the old version
    stays in any world that already has it. It is recreated from the fixed file on the next load.
-3. A reload (F5) is enough — no data-model change on this branch.
+3. ⚠ **Restart Foundry fully** (not F5) — TODO 75 added two item fields (`bonusImpact`,
+   `bonusBallistic`), and data-model changes are not hot-reloaded. Everything else on the branch
+   only needs a reload.
 
 ### Checks
 
@@ -6572,6 +6598,15 @@ B5 Q5 S4 C2 I3 W2 imported at those numbers instead of B10 Q4 S8 C0 I1 W2.
       fighter, each with its 👁 line. Pick Full Darkness → the note reads *visibility halves to
       +2 / +8* (Full Darkness is not halved; the troll's thermographic reads +2), and the two TNs
       differ by 6.
+- [ ] **Implant armour (after the full restart).** Give a character an Armor Vest (2B/1I) and
+      *Bone Lace, Titanium* from the SR3 cyberware pack. Armor tab: an **Implant Armour** block,
+      *+B 1 / +I 1*, total **B 3 / I 2**. Shoot them: the soak card's TN uses 3 Ballistic, with
+      a note naming the lacing.
+- [ ] **Override.** Open the lacing's item sheet: *Implant Armour* boxes are blank with 1 / 1 as
+      placeholders. Type **0** in Impact → the Armor tab drops to I 1. Clear the box → back to 2.
+- [ ] **Orthoskin vs flechette.** A human with only *Orthoskin[3]* (bioware) and no armour worn,
+      shot with flechette: the card says *Flechette vs armour — effective armour 4*, not *damage
+      level raised*.
 
 ### Known, not fixed here
 
@@ -6581,8 +6616,8 @@ B5 Q5 S4 C2 I3 W2 imported at those numbers instead of B10 Q4 S8 C0 I1 W2.
 - Dermal armor must not count for healing (p.281). There is no healing flow yet; the one
   planned in [#76](#76) reads `body.base`, which never carries the dermal point. A Body roll
   from the sheet does include it.
-- Armour ratings carried by implants (Dermal Sheath's Impact, Orthoskin) are still not seen by
-  the soak card — [#75](#75)'s remaining half. The flechette negation itself is done.
+- Implant armour ([#75](#75)) ignores M&M p.33's reduction for characters with three or more cyber
+  replacements, and cyberlimb body plating — the GM adjusts via the item's override boxes.
 - Vision is detected by item NAME ([#99](#99), [#36](#36)) — the [#18](#18) gap — so it is a
   pre-selection the GM can change, never a locked value. Worn goggles are not detected.
 

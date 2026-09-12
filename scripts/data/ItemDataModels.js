@@ -273,6 +273,14 @@ export class CyberwareData extends foundry.abstract.TypeDataModel {
       bonusWil:          new NumberField({ integer: true, initial: 0 }),
       bonusRea:          new NumberField({ integer: true, initial: 0 }),
       bonusInitDice:     new NumberField({ integer: true, initial: 0 }),
+      /* Armour the implant itself provides — Bone Lacing, Dermal Sheath (SR3 p.300, M&M p.27-28).
+       * ⚠ **NULLABLE, and null carries meaning** (the `essence.lost` pattern): `null` = take it
+       * from the upstream `mods` string (`+1IMP`, `+1BAL`), which every shipped item already
+       * carries — so no pack rewrite and no migration were needed. A number, **including 0**,
+       * is the GM's and wins outright. Read through `SR3EActor.implantArmor`, never directly.
+       * TODO 75. */
+      bonusImpact:       new NumberField({ integer: true, nullable: true, initial: null }),
+      bonusBallistic:    new NumberField({ integer: true, nullable: true, initial: null }),
       // Dice added to one named skill, e.g. Tailored Pheromones on Negotiation. Feeds the
       // same derived skillBonusDice map as adept Improved Ability, so every roll path and
       // the sheet's bonus column pick it up with no further wiring. The name must match the
@@ -320,6 +328,9 @@ export class BiowareData extends foundry.abstract.TypeDataModel {
       bonusWil:         new NumberField({ integer: true, initial: 0 }),
       bonusRea:         new NumberField({ integer: true, initial: 0 }),
       bonusInitDice:    new NumberField({ integer: true, initial: 0 }),
+      // Orthoskin's armour (M&M p.68). Nullable, null = from `mods` — see CyberwareData.
+      bonusImpact:      new NumberField({ integer: true, nullable: true, initial: null }),
+      bonusBallistic:   new NumberField({ integer: true, nullable: true, initial: null }),
       // See CyberwareData — same skill-dice channel (Enhanced Articulation, Tailored
       // Pheromones and friends all have this shape).
       improvedSkillName: new StringField({ initial: '' }),

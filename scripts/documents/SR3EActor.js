@@ -1,4 +1,5 @@
 import { SR3EItem } from './SR3EItem.js';
+import { parseMods } from '../SR3EMods.js';
 
 export class SR3EActor extends Actor {
 
@@ -6102,6 +6103,75 @@ _prepareCharacter(sys, attr) {
   }
 
   /**
+   * Armour the character's implants provide · *SR3 p.300; M&M p.27-28, p.68* · TODO 75.
+   *
+   * > *"Armor gained in this fashion is cumulative with worn armor."* (Bone Lacing, SR3 p.300)
+   * > *"Armor provided is cumulative with worn armor."* (Ceramic/Kevlar lacing, M&M p.27)
+   * > *"…cumulative with externally worn armor."* (Orthoskin, M&M p.68)
+   * > Dermal Sheath: *"impact armor equal to one-half the rating, rounded up"* (M&M p.28)
+   *
+   * Per item: `bonusImpact`/`bonusBallistic` when the GM has set a number (0 included), else
+   * the `IMP`/`BAL` codes in the item's upstream `mods` string, which the packs carry and
+   * which match the books row for row. Cyberware and bioware only.
+   *
+   * ⚠ **Plastic Bone Lacing gives none**, per the Bone Lacing TABLE (p.303: *"+1 Body"* only)
+   * — the p.300 prose says plastic adds impact armour too, and the table is what ships.
+   * ⚠ **Not modelled:** M&M p.33's reduction of implant armour/Body bonuses for a character
+   * with three or more cyber replacements, and cyberlimb body plating (M&M p.35).
+   *
+   * @returns {{ impact: number, ballistic: number,
+   *             sources: Array<{name: string, impact: number, ballistic: number}> }}
+   */
+  static implantArmor(items) {
+    const out = { impact: 0, ballistic: 0, sources: [] };
+    for (const i of (items ?? [])) {
+      if (i?.type !== 'cyberware' && i?.type !== 'bioware') continue;
+      const s = i.system ?? {};
+      let fromMods = null;
+      const mods = () => (fromMods ??= parseMods(s.mods).unmapped.reduce((a, u) => {
+        if (u.code === 'IMP') a.impact += u.value;
+        if (u.code === 'BAL') a.ballistic += u.value;
+        return a;
+      }, { impact: 0, ballistic: 0 }));
+      const impact    = Number.isFinite(s.bonusImpact)    ? s.bonusImpact    : mods().impact;
+      const ballistic = Number.isFinite(s.bonusBallistic) ? s.bonusBallistic : mods().ballistic;
+      if (!impact && !ballistic) continue;
+      out.impact    += impact;
+      out.ballistic += ballistic;
+      out.sources.push({ name: i.name, impact, ballistic });
+    }
+    return out;
+  }
+
+  /**
+   * The armour that resists damage — worn armour plus implant armour · TODO 75.
+   *
+   * One answer for every consumer (the soak card, Falling Damage, the Body+armour stat
+   * picker), so they cannot disagree. Vehicles use their Armor attribute for both.
+   *
+   * ⚠ **Damage resistance only.** Armour encumbrance (the Quickness penalty) still reads worn
+   * armour alone — no rule found says implant armour adds to it, and M&M p.35 says the one
+   * implant armour that does count (cyberlimb plating) *"does not count toward layering"*.
+   * @returns {{ ballistic: number, impact: number,
+   *             worn: {name: string|null, ballistic: number, impact: number},
+   *             implants: ReturnType<typeof SR3EActor.implantArmor> }}
+   */
+  static armorRatings(actor) {
+    if (actor?.type === 'vehicle') {
+      const v = actor.system?.attributes?.armor?.base ?? 0;
+      return { ballistic: v, impact: v, worn: { name: null, ballistic: v, impact: v },
+               implants: { impact: 0, ballistic: 0, sources: [] } };
+    }
+    const id    = actor?.system?.equippedArmor;
+    const armor = id ? [...(actor.items ?? [])].find(i => i.id === id && i.type === 'armor') : null;
+    const worn  = { name: armor?.name ?? null,
+                    ballistic: armor?.system?.ballistic ?? 0, impact: armor?.system?.impact ?? 0 };
+    const implants = SR3EActor.implantArmor(actor?.items);
+    return { ballistic: worn.ballistic + implants.ballistic, impact: worn.impact + implants.impact,
+             worn, implants };
+  }
+
+  /**
    * What gives this actor dermal armor, if anything · *SR3 p.116* · TODO 75.
    *
    * A troll's hide (`racialDermalArmor`) and any cyberware on `SR3E.dermalArmorImplants` —
@@ -7096,18 +7166,11 @@ _prepareCharacter(sys, attr) {
     // which to increase his odds of survival." Showing 0 left is the trade being visible.
     const availPool = this.type === 'vehicle' ? 0 : (this.system.derived?.availableCombatPool ?? 0);
 
-    let ballistic, impact;
-    if (this.type === 'vehicle') {
-      // Vehicles use their Armor attribute directly; no equipped-armor item
-      const vArmor = this.system.attributes?.armor?.base ?? 0;
-      ballistic = vArmor;
-      impact    = vArmor;
-    } else {
-      const equippedId = this.system.equippedArmor;
-      const armorItem  = equippedId ? this.items.get(equippedId) : null;
-      ballistic = armorItem?.system?.ballistic ?? 0;
-      impact    = armorItem?.system?.impact    ?? 0;
-    }
+    // Worn armour plus implant armour (Bone Lacing, Dermal Sheath, Orthoskin — cumulative,
+    // SR3 p.300 / M&M p.27-28, p.68). Vehicles use their Armor attribute. TODO 75.
+    const armorR = SR3EActor.armorRatings(this);
+    let ballistic = armorR.ballistic;
+    let impact    = armorR.impact;
 
     /* ── Mystic Armor · SR3 p.170 (TODO 68) ───────────────────────────────────────────
      *
@@ -7141,6 +7204,13 @@ _prepareCharacter(sys, attr) {
     const ammoRules = game.sr3e.SR3E.ammoTypes[payload.ammoType] ?? {};
     let ammoNote = '';
     const adeptArmorNotes = [];
+    // Implant armour is not an adept power, but it is the same kind of note: armour the card
+    // added on top of what is worn, named so nobody has to wonder where a point came from.
+    for (const src of armorR.implants.sources) {
+      const parts = [src.ballistic ? `+${src.ballistic} Ballistic` : '', src.impact ? `+${src.impact} Impact` : '']
+        .filter(Boolean).join(', ');
+      adeptArmorNotes.push(`${src.name} ${parts}`);
+    }
     if (mysticArmor > 0) adeptArmorNotes.push(`Mystic Armor +${mysticArmor} Impact (p.170)`);
     if (penetrating > 0) adeptArmorNotes.push(`Penetrating Strike −${penetrating} Impact (SOTA2 p.67)`);
     if (ammoRules.armorEffect === 'gel') {
@@ -9751,14 +9821,8 @@ _prepareCharacter(sys, attr) {
     const react = attr.reaction?.value     ?? 0;
     const mag   = attr.magic?.value        ?? attr.magic?.base        ?? 0;
 
-    let ball = 0, imp = 0;
-    if (this.type === 'vehicle') {
-      ball = imp = attr.armor?.base ?? 0;
-    } else {
-      const armorItem = sys.equippedArmor ? this.items.get(sys.equippedArmor) : null;
-      ball = armorItem?.system?.ballistic ?? 0;
-      imp  = armorItem?.system?.impact    ?? 0;
-    }
+    // Worn + implant armour, the same figure the soak card uses (TODO 75).
+    const { ballistic: ball, impact: imp } = SR3EActor.armorRatings(this);
 
     const statOpts = [
       { label: `Body (${body})`,                                                    dice: body,          ad: 0        },

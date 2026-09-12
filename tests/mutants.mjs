@@ -923,6 +923,37 @@ export const MUTANTS = [
   },
 
   {
+    id:     'implant-armor-ignored',
+    suite:  'implant-armor',
+    ...ACTOR, method: 'implantArmor',
+    was:    'SR3 p.300 / M&M p.27-28, p.68 - implant armour is "cumulative with worn armor". '
+          + 'The IMP/BAL codes had no field and the soak card read worn armour alone until '
+          + '2026-09-12 (TODO 75)',
+    impl:   () => ({ impact: 0, ballistic: 0, sources: [] }),
+  },
+
+  {
+    id:     'implant-armor-zero-means-unset',
+    suite:  'implant-armor',
+    ...ACTOR, method: 'implantArmor',
+    was:    'treating a GM override of 0 as "unset" - the fill-blanks trap the nullable field '
+          + 'exists to avoid (the essence.lost pattern)',
+    impl:   (items) => {
+      const out = { impact: 0, ballistic: 0, sources: [] };
+      for (const i of (items ?? [])) {
+        if (i?.type !== 'cyberware' && i?.type !== 'bioware') continue;
+        const m = String(i.system?.mods ?? '');
+        const imp = i.system?.bonusImpact || Number(/([+-]?\d+)IMP/.exec(m)?.[1] ?? 0);
+        const bal = i.system?.bonusBallistic || Number(/([+-]?\d+)BAL/.exec(m)?.[1] ?? 0);
+        if (!imp && !bal) continue;
+        out.impact += imp; out.ballistic += bal;
+        out.sources.push({ name: i.name, impact: imp, ballistic: bal });
+      }
+      return out;
+    },
+  },
+
+  {
     id:     'dwarf-toxin-resistance-missing',
     suite:  'racial',
     ...ACTOR, method: 'racialSituational',

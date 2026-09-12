@@ -1392,8 +1392,29 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       `;
     }).join('') : '<p class="empty-list">No armor. Add some below.</p>';
 
+    // Implant armour (TODO 75) — cumulative with what is worn, and added by the soak card, so
+    // it is shown here rather than appearing on a card from nowhere.
+    const ar = game.sr3e.SR3EActor.armorRatings(actor);
+    const implantArmorDisplay = ar.implants.sources.length ? `
+      <div class="active-armor-section">
+        <div class="active-armor-header">
+          <i class="fas fa-microchip"></i> Implant Armour — cumulative with worn armour
+        </div>
+        <div class="active-armor-card">
+          <span class="active-armor-name" style="font-size:11px">${ar.implants.sources.map(src => src.name).join(', ')}</span>
+          <div class="active-armor-stats">
+            <span class="armor-badge ballistic">+B: ${ar.implants.ballistic}</span>
+            <span class="armor-badge impact">+I: ${ar.implants.impact}</span>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--sr-muted);margin:2px 0 6px">
+          Total for damage resistance: <strong>B ${ar.ballistic} / I ${ar.impact}</strong>
+        </div>
+      </div>` : '';
+
     return `<div class="tab ${this._activeTab === 'armor' ? 'active' : ''}" data-tab="armor" style="overflow-y:auto">
       ${activeArmorDisplay}
+      ${implantArmorDisplay}
       <div class="list-header"><span>Name</span><span class="col-narrow">B / I</span><span class="col-xs" title="Concealability">Con.</span><span class="col-xs" title="Weight (kg)">KG</span><span></span></div>
       ${aRows}
       <button type="button" class="btn-add" data-action="itemCreate" data-type="armor">+ Add Armor</button>

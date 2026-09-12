@@ -75,6 +75,12 @@ const FLAG_CODES = new Set(['DJK', 'PCL', 'PCA', 'MNE', 'AST', 'MUL', 'DGX', 'ST
 /**
  * Real modifiers with no SR3E field on a cyberware/bioware item. Reported, never dropped.
  * `CPL` appears in the maintainer's Magic Panel map as Combat_Pool.
+ *
+ * ⚠ `IMP`/`BAL` are the exception now — they stay out of `bonuses` (and so out of the
+ * generated `SRCG_BONUSES`) on purpose, because `SR3EActor.implantArmor` reads them from the
+ * item's own `mods` string at derive time, with the nullable `bonusImpact`/`bonusBallistic`
+ * fields as the GM's override. Mapping them here as well would add a second source for the
+ * same number. TODO 75.
  */
 const UNMAPPED_CODES = {
   IMP: 'impact armour', BAL: 'ballistic armour',

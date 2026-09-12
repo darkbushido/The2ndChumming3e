@@ -686,6 +686,25 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
                      min="0" style="width:42px;text-align:center"/>
             </label>`).join('')}
         </div>
+        ${(() => {
+          /* Implant armour (TODO 75). Blank = read from the upstream `mods` string, shown as the
+           * placeholder; a typed number, 0 included, overrides it. Clearing the box returns it
+           * to the `mods` value. See SR3EActor.implantArmor. */
+          const fromMods = game.sr3e.SR3EActor.implantArmor([{ type, name: '', system: { mods: s.mods } }]);
+          const box = (lbl, field, dflt) => `
+            <label style="display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:var(--sr-muted)">
+              ${lbl}
+              <input type="number" name="system.${field}" value="${s[field] ?? ''}" placeholder="${dflt}"
+                     title="Blank = from Mods (${dflt}); a number, 0 included, overrides it"
+                     style="width:42px;text-align:center"/>
+            </label>`;
+          return `
+        <div class="form-section-hdr" style="margin:8px 0 4px;font-size:11px;font-weight:600;color:var(--sr-muted);letter-spacing:.05em;text-transform:uppercase">Implant Armour <span style="text-transform:none;font-weight:400">(cumulative with worn armour)</span></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px 8px;margin-bottom:8px">
+          ${box('Ballistic', 'bonusBallistic', fromMods.ballistic)}
+          ${box('Impact', 'bonusImpact', fromMods.impact)}
+        </div>`;
+        })()}
         <div class="notes-field">
           <label class="bio-label">Description</label>
           <textarea name="system.description" class="bio-text">${s.description ?? ''}</textarea>
