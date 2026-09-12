@@ -166,6 +166,102 @@ export function visibilityModifier(condition, visionKey) {
   return visibilityCell(row[vision.column], vision.natural);
 }
 
+/**
+ * Natural vision by metatype · *SR3 p.56* — Racial Modifications Table.
+ * Elves and orks have low-light vision; dwarves and trolls thermographic. Humans neither.
+ */
+export const SR3E_RACIAL_VISION = { elf: 'lowLight', ork: 'lowLight', dwarf: 'thermo', troll: 'thermo' };
+
+/**
+ * Which vision a character has, from metatype and implants · TODO 99.
+ *
+ * Feeds a REMINDER in the GM's TN windows, never a selection — the GM still picks the row
+ * (TODO 36 is pre-selecting). So a wrong guess costs a misleading hint, not a wrong TN.
+ *
+ * ⚠ **Replaced eyes lose racial vision.** SR3 p.299: *"If a metahuman has his or her eyes
+ * cybernetically replaced, he or she loses natural vision enhancements such as low light or
+ * thermographic vision."* **Cat's Eyes do the same** (M&M p.64: *"Like cybereyes, any racial
+ * benefits, such as thermographic vision, are lost"*).
+ *
+ * ⚠ **A low-light or thermographic IMPLANT does not by itself mean the eyes were replaced.**
+ * p.299 offers *"retinal modification, rather than eye replacement"*. Only an item that IS the
+ * replacement (`Eyes, Cyber Replacement`, `Cybereyes …`) or Cat's Eyes removes racial vision;
+ * otherwise both are reported and the GM knows which the character uses.
+ *
+ * ⚠ **Cat's Eyes count as NATURAL** on the Visibility Table (M&M p.64: *"this vision counts as
+ * natural, not cybernetic"*) — bioware, so the better column, unlike cybereyes.
+ *
+ * ⚠ **Thermosense Organs are not vision** (M&M p.75, a heat sense) and are excluded, though
+ * their name matches "thermo". Worn goggles are out of scope for now.
+ *
+ * Name-matched on stems, because the packs abbreviate and the contacts pack uses its own
+ * spellings (`Low Light`, `Thermographic Vision`, `Eyes, Low-Light`).
+ *
+ * @param {{metatype?: string, items?: Iterable<{type:string, name:string}>}} actor
+ * @returns {{ metatype: string, racial: string|null, replacedBy: string|null,
+ *             natural: Array<{column:string, source:string|null}>,
+ *             cyber:   Array<{column:string, source:string}> }}
+ *   `source` is the item granting it, or `null` for the metatype's own eyes.
+ */
+export function detectVision(actor) {
+  const metatype = String(actor?.system?.metatype ?? actor?.metatype ?? '').trim().toLowerCase();
+  const racial   = SR3E_RACIAL_VISION[metatype] ?? null;
+  const items    = [...(actor?.items ?? [])];
+
+  let replacedBy = null;
+  const natural = [];
+  const cyber   = [];
+  const LOW     = /low[\s-]?light/i;
+  const THERMO  = /thermograph/i;
+
+  for (const i of items) {
+    const name = String(i?.name ?? '');
+    if (i?.type === 'cyberware') {
+      if (/cyber\s*replacement|\bcybereyes?\b/i.test(name)) replacedBy ??= name;
+      if (LOW.test(name))    cyber.push({ column: 'lowLight', source: name });
+      if (THERMO.test(name)) cyber.push({ column: 'thermo',   source: name });
+    } else if (i?.type === 'bioware' && /cat'?s\s*eyes/i.test(name)) {
+      replacedBy ??= name;
+      natural.push({ column: 'lowLight', source: name });
+    }
+  }
+  if (racial && !replacedBy) natural.unshift({ column: racial, source: null });
+  return { metatype, racial, replacedBy, natural, cyber };
+}
+
+/**
+ * One line of plain text for the GM window, from `detectVision` — e.g.
+ * *"Tor (troll): Thermographic (natural)"* or
+ * *"Kestrel (elf): Low-Light (cybernetic) — Eyes, Low-Light · racial low-light lost to
+ * Eyes, Cyber Replacement (SR3 p.299)"*.
+ *
+ * ⚠ Plain text — it carries actor and item names, so callers must escape it.
+ */
+export function visionReminder(name, v) {
+  const label = (column, nat) =>
+    SR3E_VISION_TYPES.find(t => t.column === column && t.natural === nat)?.label ?? column;
+  const kind  = column => (column === 'thermo' ? 'thermographic' : 'low-light');
+
+  const parts = [
+    ...v.natural.map(n => label(n.column, true) + (n.source ? ` — ${n.source}` : '')),
+    ...v.cyber.map(c => `${label(c.column, false)} — ${c.source}`),
+  ];
+  const who  = v.metatype && v.metatype !== 'human' ? `${name} (${v.metatype})` : name;
+  let line   = `${who}: ${parts.length ? parts.join('; ') : 'normal vision only'}`;
+  if (v.racial && v.replacedBy) {
+    line += ` · racial ${kind(v.racial)} lost to ${v.replacedBy} (SR3 p.299)`;
+  } else if (v.racial && v.cyber.length) {
+    line += ' · no eye replacement on the sheet, so racial vision is kept (retinal modification, p.299)';
+  }
+  return line;
+}
+
+/** Escape text for interpolation into window markup — actor and item names are free text. */
+export function escapeHTML(s) {
+  return String(s ?? '').replace(/[&<>"']/g,
+    c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
 /** SR3 p.112: "No target number can ever be less than 2." */
 export const SR3E_MIN_TN = 2;
 

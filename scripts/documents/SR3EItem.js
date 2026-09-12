@@ -316,9 +316,14 @@ export class SR3EItem extends Item {
     // ── The GM sets both target numbers ─────────────────────────────────────────
     // Relayed, so the window opens on the GM rather than on whoever swung. Cancelling
     // aborts the exchange before any card is posted.
+    // What each fighter's eyes are (TODO 99), for the GM window's visibility row. Built HERE
+    // as text, because the negotiate payload carries names rather than actors.
+    const { detectVision, visionReminder } = await import('../SR3ECombatModifiers.js');
     const gm = await game.sr3e.SR3EQuery.asGM('sr3e.melee.negotiate', {
       atkName:    actor.name,
       defName:    targetActor.name,
+      atkVision:  visionReminder(actor.name, detectVision(actor)),
+      defVision:  visionReminder(targetActor.name, detectVision(targetActor)),
       baseAtkTN:  dfltAtkTN,
       baseDefTN:  dfltDefTN,
       baseNote:   reachHolder
@@ -2479,7 +2484,7 @@ export class SR3EItem extends Item {
    */
   static async _promptGMMeleeWindow(ctx) {
     const { meleeModifierGroups, sumMeleeModifiers, meleeVisibilityModifier,
-            SR3E_VISIBILITY_TABLE, SR3E_VISION_TYPES } =
+            SR3E_VISIBILITY_TABLE, SR3E_VISION_TYPES, escapeHTML } =
       await import('../SR3ECombatModifiers.js');
 
     const groups  = meleeModifierGroups();
@@ -2545,6 +2550,8 @@ export class SR3EItem extends Item {
                 <select id="gmm-vis-type" style="flex:1">${visOpts}</select>
               </div>
               <div style="font-size:11px;color:var(--sr-muted);margin-left:206px">${row.note}</div>
+              ${[ctx.atkVision, ctx.defVision].filter(Boolean).map(v =>
+                `<div class="gmm-vis-hint" style="font-size:11px;color:var(--sr-muted);margin-left:206px">👁 ${escapeHTML(v)}</div>`).join('')}
             </div>`;
         default:
           // An unrecognised kind renders as a plain note rather than vanishing: a silently
@@ -2640,12 +2647,17 @@ export class SR3EItem extends Item {
 
   static async _promptGMAttackWindow(ctx, opts = {}) {
     const { mvpModifierGroups, sumModifiers, clampTN, guessGearModifiers,
-            SR3E_VISIBILITY_TABLE, SR3E_VISION_TYPES, visibilityModifier } =
+            SR3E_VISIBILITY_TABLE, SR3E_VISION_TYPES, visibilityModifier,
+            detectVision, visionReminder, escapeHTML } =
       await import('../SR3ECombatModifiers.js');
 
     const groups  = mvpModifierGroups();
     const guessed = guessGearModifiers(ctx.attacker, ctx.weapon);
     const baseTN  = Number(ctx.baseTN) || 4;
+    // A reminder of what the attacker's eyes actually are (TODO 99) — informs the vision
+    // dropdown, never sets it. No attacker resolved → no line.
+    const visionHint = ctx.attacker
+      ? visionReminder(ctx.attacker.name ?? 'Attacker', detectVision(ctx.attacker)) : '';
 
     // Two columns. Each row is ONE grid item — label and its note wrapped together,
     // or the note would become a separate cell and every row after it would land in
@@ -2655,9 +2667,9 @@ export class SR3EItem extends Item {
     const renderRow = m => {
       // Visibility is a two-axis table lookup, not a tick: the GM picks the CONDITION
       // and which vision the attacker is using, and the modifier derives from the
-      // Visibility Table. Nothing is pre-selected — the system cannot reliably know
-      // which eyes are in play (metatype is stored, but cybernetic vision is only
-      // name-matchable, the same gap as TODO #18), so it asks rather than guesses.
+      // Visibility Table. Nothing is pre-selected — cybernetic vision is only
+      // name-matchable (the same gap as TODO #18) — but the 👁 line says what the
+      // system found, so the GM is not choosing blind (TODO 99).
       if (m.select === 'visibility') {
         const condOpts = ['<option value="">— not impaired —</option>']
           .concat(Object.keys(SR3E_VISIBILITY_TABLE)
@@ -2669,6 +2681,7 @@ export class SR3EItem extends Item {
               <span>${m.label}</span>
               <select class="sr-gm-vis-cond" style="width:100%">${condOpts}</select>
               <select class="sr-gm-vis-type" style="width:100%">${visOpts}</select>
+              ${visionHint ? `<div class="sr-gm-vis-hint" style="font-size:10px;color:var(--sr-muted);line-height:1.25">👁 ${escapeHTML(visionHint)}</div>` : ''}
               <div class="sr-gm-vis-note" style="font-size:10px;color:var(--sr-dim);line-height:1.25"></div>
             </div>
           </div>`;

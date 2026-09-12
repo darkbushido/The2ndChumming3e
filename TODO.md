@@ -27,7 +27,7 @@ independent.
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **75** · **76** *(**3** · **4** · **30** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** *(**83** · **84** · **87** done)* |
-| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 · **99** |
+| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 36 · 56 *(**99** done)* |
 | 🧹 Housekeeping | 1 · 6 |
 | ✅ Done — kept for the record | **2** · **5** · **8** · **10** · 13 · **40** · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -6517,6 +6517,12 @@ B5 Q5 S4 C2 I3 W2 imported at those numbers instead of B10 Q4 S8 C0 I1 W2.
       → back. Switch the dropdown to Quickness → the box greys out and unticks, pool = Quickness.
       Roll with it ticked → the card title ends *resisting disease or toxin (+2)*. A human with
       no such bioware sees no box at all.
+- [ ] **Vision reminder, ranged.** Have the troll shoot (as a player, so the GM window opens):
+      under the vision dropdown, *👁 <name> (troll): Thermographic (natural)*. The dropdown itself
+      is still unselected. An elf with `Eyes, Cyber Replacement` + `Eyes, Low-Light` reads
+      *Low-Light (cybernetic) … racial low-light lost to Eyes, Cyber Replacement (SR3 p.299)*.
+- [ ] **Vision reminder, melee.** In the melee GM window, two 👁 lines under Visibility, one per
+      fighter.
 
 ### Known, not fixed here
 
@@ -6528,7 +6534,8 @@ B5 Q5 S4 C2 I3 W2 imported at those numbers instead of B10 Q4 S8 C0 I1 W2.
   from the sheet does include it.
 - Dermal Plating and other dermal **cyberware** still take flechette's level increase — only a
   troll's natural dermal armor is recognised. [#75](#75).
-- Not modelled: vision types ([#99](#99)).
+- Vision is a reminder only ([#99](#99)); the GM still picks the row. Pre-selecting it is
+  [#36](#36).
 
 <a id="94"></a>
 
@@ -6664,7 +6671,25 @@ which the book grants.
 
 <a id="99"></a>
 
-## 99. Remind the GM which vision the attacker has — natural or cyberware
+## 99. ✅ Remind the GM which vision the attacker has — natural or cyberware — **DONE 2026-09-12** (`fix/racial-mods`, awaiting the Foundry check in [#93](#93))
+
+**Built.** `detectVision(actor)` and `visionReminder(name, v)` in `SR3ECombatModifiers.js`
+(pure, `tests/vision.test.mjs`). The ranged GM window shows a 👁 line under the vision dropdown
+for the attacker; the melee GM window shows one per fighter, built on the attacker's client and
+sent as text because the melee negotiate payload carries names, not actors. Nothing is
+pre-selected — that is still [#36](#36), which can reuse `detectVision`.
+
+Found while building it, and handled:
+- **Cat's Eyes** (bioware, **M&M p.64**) give low-light that *"counts as natural, not
+  cybernetic"* and, *"like cybereyes"*, cost the racial vision.
+- **Only an actual replacement removes racial vision** — `Eyes, Cyber Replacement`,
+  `Cybereyes …`, or Cat's Eyes. A lone `Eyes, Low-Light` may be a retinal modification (p.299),
+  so both are listed and the line says why natural vision was kept.
+- **Thermosense Organs** (M&M p.75) are a heat sense, not vision, and are excluded.
+- Every owned cyberware item counts — there is no "installed" flag, the same rule the Essence
+  total uses.
+
+The request as written:
 
 Maintainer request, 2026-09-12. The GM's TN window ([#29](#29)) asks for the **Visibility**
 condition and which vision the attacker is using, with **nothing pre-selected** and no hint of
