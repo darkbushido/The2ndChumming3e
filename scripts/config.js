@@ -961,6 +961,32 @@ export const SR3E = {
    */
   racialReach: { troll: 1 },
   /**
+   * Implants that ARE dermal armor · *SR3 p.116, p.300; M&M p.28, p.133* · TODO 75
+   *
+   * > *"Dermal armor negates the Damage Level increase of flechette ammunition."* (p.116)
+   * > *"a character with dermal armor (plating or sheath)"* (M&M p.133)
+   *
+   * M&M defines the term, so the list is exactly those two — **Dermal Plating** (SR3 p.300)
+   * and **Dermal Sheath**, plain or ruthenium (M&M p.28) — plus a troll's natural hide
+   * (`racialDermalArmor`), read separately.
+   *
+   * ⚠ **Orthoskin is NOT dermal armor.** It is bioware armour (M&M p.68), and M&M names it
+   * beside dermal armor as a different thing (*"Bone lacing, dermal armor, dermal sheaths …
+   * and orthoskin are not compatible"*). Its Impact/Ballistic would make a target ARMOURED
+   * instead — which the soak card cannot see yet, since `IMP`/`BAL` have no field (TODO 75's
+   * remaining half).
+   * ⚠ Excluded for want of a rule, not by judgement: `Grd. Subdermal Armor` (Chromebook 2, fan,
+   * archived) and `Ruthenium Skin Implants` (tss, fan, off by default).
+   *
+   * Name-matched on stems: `Dermal Plating [2]`, `Dermal Plating 2` (the old populate macro),
+   * `Dermal Sheath Ruthenium [1]`, and its pre-expansion spelling `D. Sheath Ruthenium`.
+   */
+  dermalArmorImplants: [
+    /^\s*dermal\s+(plating|sheath)\b/i,
+    /^\s*d\.\s*sheath\b/i,
+    /^\s*dermal\s+armou?r\b/i,
+  ],
+  /**
    * Racial bonuses scoped to a SITUATION · *SR3 p.56* · TODO 98
    *
    * > Dwarf — *"Resistance (+2 Body) to any disease or toxin"*

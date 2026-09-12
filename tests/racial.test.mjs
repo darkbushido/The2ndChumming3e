@@ -155,6 +155,33 @@ export async function run(t) {
   t.is('impact alone counts as armoured', F({ ballistic: 0, impact: 1 }), false);
   t.is('no arguments reads as unarmoured, no dermal', F(), true);
 
+  /* ── Which implants ARE dermal armor · M&M p.133: "dermal armor (plating or sheath)" ── */
+  const D = (metatype, ...names) => SR3EActor.dermalArmorSources({
+    system: { metatype }, items: names.map(n => (Array.isArray(n) ? { type: n[0], name: n[1] } : { type: 'cyberware', name: n })),
+  });
+  for (const n of ['Dermal Plating [1]', 'Dermal Plating 3', 'Dermal Sheath [2]',
+                   'Dermal Sheath Ruthenium [1]', 'D. Sheath Ruthenium [3]']) {
+    t.is(`"${n}" is dermal armor`, D('human', n).join(), n);
+  }
+  t.is('a troll is, by its hide', D('troll').join(), 'troll dermal armor');
+  t.is('a troll with plating lists both', D('troll', 'Dermal Plating [2]').length, 2);
+  t.is('a human with nothing has none', D('human').length, 0);
+  /* ⚠ Orthoskin is bioware ARMOUR, named beside dermal armor as a different thing (M&M). */
+  t.is('Orthoskin is not dermal armor', D('human', ['bioware', 'Orthoskin[2]']).length, 0);
+  t.is('Subdermal Speakers / Display are not armour',
+    D('human', 'Subdermal Speakers', '+Subdermal Display').length, 0);
+  t.is('a GEAR item named Dermal Plating does not count', D('human', ['gear', 'Dermal Plating [1]']).length, 0);
+
+  /* End to end as the soak card asks it: an unarmoured human with plating keeps the level. */
+  t.is('unarmoured human with Dermal Plating: no flechette increase',
+    F({ ballistic: 0, impact: 0, dermalArmor: D('human', 'Dermal Plating [1]').length }), false);
+  t.is('unarmoured human with Orthoskin only: still takes it (armour not tracked yet)',
+    F({ ballistic: 0, impact: 0, dermalArmor: D('human', ['bioware', 'Orthoskin[1]']).length }), true);
+
+  t.is('SR3E.dermalArmorImplants matches the fallback in dermalArmorSources',
+    SR3E.dermalArmorImplants.map(r => r.source).join(' | '),
+    [/^\s*dermal\s+(plating|sheath)\b/i, /^\s*d\.\s*sheath\b/i, /^\s*dermal\s+armou?r\b/i].map(r => r.source).join(' | '));
+
   /* ════════════════════════════════════════════════════════════════════════════
    *  Dwarf resistance to disease and toxins · SR3 p.56 · TODO 98
    * ════════════════════════════════════════════════════════════════════════════ */

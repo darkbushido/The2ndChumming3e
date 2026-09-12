@@ -4657,7 +4657,30 @@ dialog that collects plain km/h and passes it through would overstate every cras
 ---
 
 <a id="75"></a>
-## 75. Dermal armour negates flechette's damage-level increase — *SR3 p.116*
+## 75. Dermal armour negates flechette's damage-level increase — *SR3 p.116* — ✅ **negation DONE 2026-09-12**; implant armour ratings still open
+
+**The rule the title names is done** (`fix/racial-mods`). `SR3EActor.dermalArmorSources(actor)`
+returns what gives a target dermal armor — a troll's hide, or cyberware matching
+`SR3E.dermalArmorImplants` — and the soak card skips the flechette increase when there is any,
+naming the source on the card. Tests in `racial.test.mjs`; mutant `flechette-dermal-troll-only`.
+
+**Which implants, from the books:** M&M defines the term — *"a character with dermal armor
+(plating or sheath)"* (M&M p.133). So **Dermal Plating** (SR3 p.300) and **Dermal Sheath**,
+plain or ruthenium (M&M p.28). **Orthoskin is not**: M&M lists it beside dermal armor as a
+separate thing, and it is bioware armour (M&M p.68). Fan items (`Grd. Subdermal Armor`,
+Chromebook 2; `Ruthenium Skin Implants`, tss) are left out for want of a rule.
+
+This proved the plan below was bigger than the rule needed: "does the target have dermal
+armor?" is a yes/no a named registry answers, with no armour channel at all.
+
+**What stays open is the armour channel itself** — steps 1-2 below. Dermal Sheath (`+1IMP`/`+2IMP`)
+and Orthoskin (`+1IMP` … `+2IMP,+1BAL`) carry real armour ratings that the soak card never sees,
+so a target protected only by them reads as **unarmoured**. With a sheath that no longer costs
+them the flechette level (it is dermal armor), but an Orthoskin user still takes the increase
+instead of `flechetteArmor`'s doubled Impact, and neither gets their Impact against ordinary
+melee. That is the rest of this item.
+
+The original plan:
 
 **Found during the table sweep, 2026-08-30**, while fixing the flechette armour rule
 ([tables.test.mjs](../tests/tables.test.mjs)). Recorded then in `flechetteArmor`'s doc comment
@@ -6531,6 +6554,8 @@ B5 Q5 S4 C2 I3 W2 imported at those numbers instead of B10 Q4 S8 C0 I1 W2.
 - [ ] **Flechette at an unarmoured troll.** Shoot a troll wearing no armour with flechette
       loaded: the soak card says *no level increase: troll dermal armor negates it* and the
       level is **not** raised. The same shot at an unarmoured human still raises it.
+- [ ] **Flechette at an unarmoured human with Dermal Plating.** Same as above, the note naming
+      *Dermal Plating [n]*. Remove the plating → the level is raised again.
 - [ ] **Dwarf toxin resistance.** On a dwarf, click Body's roll icon: an **unticked** box reads
       *Resisting disease or toxin: +2 (Dwarf resistance (SR3 p.56))*. Tick it → pool +2; untick
       → back. Switch the dropdown to Quickness → the box greys out and unticks, pool = Quickness.
@@ -6556,8 +6581,8 @@ B5 Q5 S4 C2 I3 W2 imported at those numbers instead of B10 Q4 S8 C0 I1 W2.
 - Dermal armor must not count for healing (p.281). There is no healing flow yet; the one
   planned in [#76](#76) reads `body.base`, which never carries the dermal point. A Body roll
   from the sheet does include it.
-- Dermal Plating and other dermal **cyberware** still take flechette's level increase — only a
-  troll's natural dermal armor is recognised. [#75](#75).
+- Armour ratings carried by implants (Dermal Sheath's Impact, Orthoskin) are still not seen by
+  the soak card — [#75](#75)'s remaining half. The flechette negation itself is done.
 - Vision is detected by item NAME ([#99](#99), [#36](#36)) — the [#18](#18) gap — so it is a
   pre-selection the GM can change, never a locked value. Worn goggles are not detected.
 

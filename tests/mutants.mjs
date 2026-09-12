@@ -913,6 +913,16 @@ export const MUTANTS = [
   },
 
   {
+    id:     'flechette-dermal-troll-only',
+    suite:  'racial',
+    ...ACTOR, method: 'dermalArmorSources',
+    was:    'SR3 p.116 / M&M p.133 - dermal armor is "plating or sheath", not only a troll\'s '
+          + 'hide. Dermal Plating and Dermal Sheath were not recognised until 2026-09-12 (TODO 75)',
+    impl:   (actor) => (String(actor?.system?.metatype ?? '').trim().toLowerCase() === 'troll'
+      ? ['troll dermal armor'] : []),
+  },
+
+  {
     id:     'dwarf-toxin-resistance-missing',
     suite:  'racial',
     ...ACTOR, method: 'racialSituational',

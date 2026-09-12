@@ -6102,6 +6102,27 @@ _prepareCharacter(sys, attr) {
   }
 
   /**
+   * What gives this actor dermal armor, if anything · *SR3 p.116* · TODO 75.
+   *
+   * A troll's hide (`racialDermalArmor`) and any cyberware on `SR3E.dermalArmorImplants` —
+   * Dermal Plating or a Dermal Sheath. Returns labels so the soak card can say which one
+   * negated the flechette increase. Every owned item counts, as for Essence: there is no
+   * "installed" flag.
+   * @returns {string[]}  empty when the actor has none
+   */
+  static dermalArmorSources(actor) {
+    const out = [];
+    if (SR3EActor.racialDermalArmor(actor?.system?.metatype) > 0) out.push('troll dermal armor');
+    const pats = globalThis.game?.sr3e?.SR3E?.dermalArmorImplants
+      ?? [/^\s*dermal\s+(plating|sheath)\b/i, /^\s*d\.\s*sheath\b/i, /^\s*dermal\s+armou?r\b/i];
+    for (const i of (actor?.items ?? [])) {
+      if (i?.type !== 'cyberware') continue;
+      if (pats.some(re => re.test(String(i.name ?? '')))) out.push(i.name);
+    }
+    return out;
+  }
+
+  /**
    * Does flechette raise this target's Damage Level? · *SR3 p.116*
    *
    * > *"Against unarmored targets, flechette rounds increase their Damage Codes by one level…
@@ -6110,9 +6131,8 @@ _prepareCharacter(sys, attr) {
    * Only an UNARMOURED target takes the increase (an armoured one gets `flechetteArmor`
    * instead), and dermal armour cancels it.
    *
-   * ⚠ **Only natural dermal armour is known today** — a troll's (`racialDermalArmor`). Dermal
-   * Plating and similar cyberware still take the increase, which the GM corrects by hand;
-   * TODO 75 tracks recognising them.
+   * `dermalArmor` is a count of sources — see `dermalArmorSources`, which covers a troll's
+   * hide and Dermal Plating / Dermal Sheath (TODO 75).
    */
   static flechetteRaisesLevel({ ballistic = 0, impact = 0, dermalArmor = 0 } = {}) {
     if (Math.max(ballistic, impact) > 0) return false;
@@ -7129,15 +7149,16 @@ _prepareCharacter(sys, attr) {
       ballistic = Math.floor(ballistic / 2);
       ammoNote  = `APDS — ballistic armour halved (now ${ballistic})`;
     } else if (ammoRules.armorEffect === 'flechette') {
-      const dermalArmor = this.type === 'vehicle' ? 0 : SR3EActor.racialDermalArmor(this.system.metatype);
-      if (SR3EActor.flechetteRaisesLevel({ ballistic, impact, dermalArmor })) {
+      const dermal = this.type === 'vehicle' ? [] : SR3EActor.dermalArmorSources(this);
+      if (SR3EActor.flechetteRaisesLevel({ ballistic, impact, dermalArmor: dermal.length })) {
         // Unarmoured target — damage level stages up one
         const STAGES = ['L', 'M', 'S', 'D'];
         const li = STAGES.indexOf(effStagedLevel);
         if (li >= 0) effStagedLevel = STAGES[Math.min(3, li + 1)];
         ammoNote = `Flechette vs unarmoured — damage level raised to ${effStagedLevel}`;
       } else if (Math.max(ballistic, impact) <= 0) {
-        ammoNote = 'Flechette vs unarmoured — no level increase: troll dermal armor negates it (p.116)';
+        ammoNote = `Flechette vs unarmoured — no level increase: dermal armor negates it `
+                 + `(${dermal.join(', ')}; p.116)`;
       } else {
         const eff = SR3EActor.flechetteArmor({ ballistic, impact });
         ammoNote  = `Flechette vs armour — effective armour ${eff} `
