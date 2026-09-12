@@ -1,0 +1,22 @@
+<!-- Corrections toggle: set the class before first paint so hidden boxes never flash. -->
+<script>
+  try {
+    if (localStorage.getItem('showCorrections') === '1') {
+      document.documentElement.classList.add('show-corrections');
+    }
+  } catch (e) {}
+</script>
+<style>
+  html:not(.show-corrections) blockquote.fixed { display: none; }
+  .corrections-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  .corrections-toggle input { cursor: pointer; }
+</style>
