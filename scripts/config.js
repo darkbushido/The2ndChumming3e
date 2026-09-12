@@ -537,6 +537,11 @@ export const SR3ESkills = {
 export const ACTIVE_SKILL_CATEGORIES = new Set([
   'Combat skills', 'Build/Repair skills', 'Magical skills', 'Physical skills',
   'Social skills', 'Technical skills', 'Vehicle skills',
+  // ⚠ Survival skills was missing until 2026-09-12, so Wilderness Survival (and Riding) read as
+  // KNOWLEDGE everywhere — the sheet's sections, karma pricing, the defaulting list. Reported in
+  // play (TODO 95). Target: Wastelands p.105: "Wilderness Survival (Willpower) — This Active
+  // skill…". Its Background twin lives in 'Background knowledge' and stays knowledge.
+  'Survival skills',
   // ⚠ Martial Arts belongs HERE, not with the knowledge categories where it sat until
   // 2026-08-20. Cannon Companion p.87 is explicit: "Each of these new martial arts skills is
   // considered a Combat skill and uses the standard rules for Active skills (p. 81, SR3) and
@@ -549,7 +554,8 @@ export const ACTIVE_SKILL_CATEGORIES = new Set([
 ]);
 
 export const KNOWLEDGE_SKILL_CATEGORIES = new Set([
-  'Matrix skills', 'Survival skills', 'Otaku skills',
+  // 'Survival skills' moved to ACTIVE_SKILL_CATEGORIES 2026-09-12 — see there (TODO 95).
+  'Matrix skills', 'Otaku skills',
   'Street knowledge', 'Academic skills', 'System familiarity', 'Program design',
   '6th World knowledge', 'Interests', 'Area knowledge', 'Background',
 ]);

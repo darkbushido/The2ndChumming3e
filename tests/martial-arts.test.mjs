@@ -63,6 +63,13 @@ export async function run(t) {
   const both = [...ACTIVE_SKILL_CATEGORIES].filter(c => KNOWLEDGE_SKILL_CATEGORIES.has(c));
   t.is('no category is in both sets', both.join(), '');
 
+  /* Survival skills is ACTIVE — Target: Wastelands p.105, "Wilderness Survival (Willpower) — This
+   * Active skill…". It sat in the knowledge set until 2026-09-12, so Wilderness Survival showed
+   * in a character's knowledge section (TODO 95, reported in play). */
+  t.is("'Survival skills' is an active category", skillTypeForCategory('Survival skills'), 'active');
+  t.ok('…and NOT a knowledge one', !KNOWLEDGE_SKILL_CATEGORIES.has('Survival skills'));
+  t.is("…while its Background twin stays knowledge", skillTypeForCategory('Background knowledge'), 'knowledge');
+
   /* ==== 2. Exactly the book's twelve, no more ==== */
   t.is('twelve styles, matching CC p.87', styles.length, 12);
   const names = styles.map(s => s.name.replace('MA:', '')).sort();
