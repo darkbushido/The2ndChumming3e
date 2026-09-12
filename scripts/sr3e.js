@@ -447,9 +447,11 @@ async function _openSessionRewardDialog() {
     return;
   }
 
+  // TODO 96 — nobody starts ticked (reported in play: the GM had to untick everyone not
+  // involved). "All" is one click for the usual whole-party award.
   const pcRows = allPCs.map(a => `
     <label style="display:flex;align-items:center;gap:8px;margin:3px 0;cursor:pointer;">
-      <input type="checkbox" data-actor-id="${a.id}" checked/>
+      <input type="checkbox" data-actor-id="${a.id}"/>
       <span>${a.name}</span>
       <span style="color:var(--sr-muted);font-size:11px">(${a.system.karma ?? 0} karma | ¥${(a.system.nuyen ?? 0).toLocaleString()})</span>
     </label>`).join('');
@@ -471,9 +473,17 @@ async function _openSessionRewardDialog() {
         <label style="display:block;margin-bottom:12px">Gear / notes (text only):
           <textarea id="sr-gear-notes" rows="2" style="width:100%;margin-top:4px;box-sizing:border-box;resize:vertical;"></textarea>
         </label>
-        <p style="margin:0 0 6px;font-size:11px;color:var(--sr-muted)">Award to:</p>
+        <p style="margin:0 0 6px;font-size:11px;color:var(--sr-muted)">Award to:
+          <label style="margin-left:10px;cursor:pointer"><input type="checkbox" id="sr-reward-all"/> All</label>
+        </p>
         <div>${pcRows}</div>
       </div>`,
+    render: (_event, dialog) => {
+      const all = dialog.element.querySelector('#sr-reward-all');
+      const pcs = [...dialog.element.querySelectorAll('[data-actor-id]')];
+      all?.addEventListener('change', () => pcs.forEach(cb => { cb.checked = all.checked; }));
+      pcs.forEach(cb => cb.addEventListener('change', () => { if (all) all.checked = pcs.every(c => c.checked); }));
+    },
     buttons: [
       {
         label: 'Award',
@@ -491,7 +501,9 @@ async function _openSessionRewardDialog() {
     ],
   });
 
-  if (!proceed || !selectedIds.length) return;
+  if (!proceed) return;
+  // With nothing pre-ticked, Award with no one chosen is now a likely slip — say so.
+  if (!selectedIds.length) { ui.notifications.warn('Session Rewards: no characters were ticked, so nothing was awarded.'); return; }
 
   /* ⚠ **This wrote karma into `system.karmaPool` until 2026-09-01** — the LUCK DICE POOL
    * (p.246), not the spendable Good Karma the players were being awarded. A 5-karma session
@@ -606,8 +618,12 @@ async function _openChunkySalsaCalculator(opts = {}) {
   if (opts.actorIds?.length) eligible = eligible.filter(a => opts.actorIds.includes(a.id));
   const actors   = eligible.map((a, i) => {
     const angle = (2 * Math.PI * i / Math.max(eligible.length, 1)) - Math.PI / 2;
+    /* TODO 96 — opened from the Rollable Tables tab the list is EVERY live actor, so it starts
+     * unticked and the GM opts in the people actually near the blast. Opened by the grenade
+     * flow with `actorIds`, the list is already the actors the blast caught, so they start
+     * ticked. */
     return { id: a.id, name: a.name, color: ACTOR_COLORS[i % ACTOR_COLORS.length],
-             mx: 3 * Math.cos(angle), my: 3 * Math.sin(angle), checked: true };
+             mx: 3 * Math.cos(angle), my: 3 * Math.sin(angle), checked: !!opts.actorIds?.length };
   });
   const walls = [];
   let power = opts.power ?? 10, level = opts.level ?? 'S';
@@ -855,7 +871,7 @@ async function _openChunkySalsaCalculator(opts = {}) {
         <div id="cs-canvas-container"></div>
         ${actors.length ? `<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:5px 14px;">
           ${actors.map(a => `<label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;">
-            <input type="checkbox" class="cs-actor-toggle" data-id="${a.id}" checked/>
+            <input type="checkbox" class="cs-actor-toggle" data-id="${a.id}" ${a.checked ? 'checked' : ''}/>
             <span style="width:9px;height:9px;border-radius:50%;background:${a.color};display:inline-block;flex-shrink:0;"></span>${a.name}
           </label>`).join('')}
         </div>` : ''}
@@ -877,6 +893,11 @@ async function _openChunkySalsaCalculator(opts = {}) {
   });
 
   Hooks.off('renderDialogV2', salsaHookId);
+  // Nobody starts ticked from the sidebar (TODO 96), so posting with no one chosen is a likely
+  // slip rather than an intent — say so instead of doing nothing silently.
+  if (proceed && !opts.returnOnly && !actors.some(a => a.checked)) {
+    ui.notifications.warn('Chunky Salsa: no actors were ticked, so nothing was posted.');
+  }
   if (!proceed || !finalTargets.length) return opts.returnOnly ? [] : undefined;
 
   // Return the computed per-target damage codes to the caller (e.g. an AoE attack)
@@ -1896,6 +1917,7 @@ Hooks.on('renderTokenHUD', (hud, html) => {
 const _sr3eVehicleTools = [
   { label: '🚗 Driving Test',        run: (a) => SR3EVehicleSheet.runDrivingTest(a) },
   { label: '📡 Drone Comprehension', run: (a) => SR3EVehicleSheet.runDroneComprehension(a) },
+  { label: '💥 Crash',               run: (a) => SR3EVehicleSheet.runCrash(a) },
 ];
 
 async function _sr3eVehicleToolMenu(actor) {
@@ -2969,6 +2991,22 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'ramvehicle', i)) return;
       await SR3EActor.handleRamVehicleSoak(btn, event.shiftKey);
+    });
+  });
+
+  // A failed Driving Test's 💥 Crash button (TODO 74) — opens the crash dialog for that vehicle.
+  // Posts a card onward rather than rolling, so any owner of the vehicle (or the GM) may use it.
+  html.querySelectorAll('.sr-crash-open-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'crashopen', i)) return;
+    const vid = btn.dataset.vehicleId;
+    if (!_mineId(vid)) return _denyBtn(btn, 'Only the vehicle\'s owner (or the GM) resolves its crash.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      const vehicle = game.actors.get(vid);
+      if (!vehicle) { ui.notifications.warn('That vehicle no longer exists.'); return; }
+      if (!_claimBtn(btn, mid, 'crashopen', i)) return;
+      await SR3EVehicleSheet.runCrash(vehicle);
     });
   });
 

@@ -22,6 +22,9 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
       itemDelete:     SR3EVehicleSheet._onItemDelete,
       rollContested:  SR3EVehicleSheet._onRollContested,
       drivingTest:    SR3EVehicleSheet._onDrivingTest,
+      crash:          SR3EVehicleSheet._onCrash,
+      addPassenger:    SR3EVehicleSheet._onAddPassenger,
+      removePassenger: SR3EVehicleSheet._onRemovePassenger,
       droneComprehension: SR3EVehicleSheet._onDroneComprehension,
       openPilot:      SR3EVehicleSheet._onOpenPilot,
       rollWeapon:     SR3EVehicleSheet._onRollWeapon,
@@ -170,6 +173,33 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
                  </a>`
               : ''}
           </div>
+          ${(() => {
+            /* Passengers (TODO 74) — who else is aboard, so a crash can reach them without a
+             * Chase Scene. Seating is shown for reference; nothing enforces it. */
+            const ids  = sys.passengerActorIds ?? [];
+            const esc  = s => foundry.utils.escapeHTML(String(s ?? ''));
+            const tags = ids.map(id => {
+              const a = game.actors.get(id);
+              return `<span style="display:inline-flex;align-items:center;gap:3px;padding:0 6px;border:1px solid var(--sr-border);border-radius:var(--r);font-size:11px">
+                  ${esc(a?.name ?? '(missing actor)')}
+                  <a data-action="removePassenger" data-actor-id="${id}" title="Remove" style="cursor:pointer;color:var(--sr-muted)">✕</a>
+                </span>`;
+            }).join('');
+            const addOpts = game.actors
+              .filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)
+                && a.id !== _driverActorId && !ids.includes(a.id))
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map(a => `<option value="${a.id}">${esc(a.name)}</option>`).join('');
+            return `
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--sr-muted);margin-top:4px;">
+            <span>Passengers${sys.seating ? ` (${ids.length + (_driverActorId ? 1 : 0)}/${sys.seating} seats)` : ''}:</span>
+            ${tags || '<span style="font-size:11px">none</span>'}
+            <select class="veh-add-passenger" style="background:var(--sr-card);border:1px solid var(--sr-border);border-radius:var(--r);color:var(--sr-text);padding:1px 4px;font-size:11px;max-width:140px">
+              <option value="">+ add…</option>${addOpts}
+            </select>
+            <button type="button" data-action="addPassenger" style="padding:0 6px;font-size:11px;width:auto;flex:none">Add</button>
+          </div>`;
+          })()}
           <div style="display:flex;align-items:center;gap:6px;font-size:12px;margin-top:4px;">
             <span style="color:var(--sr-muted);">Mode:</span>
             ${(() => {
@@ -289,6 +319,11 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
                 style="background:var(--sr-surface);color:var(--sr-text);border:1px solid var(--sr-border)"
                 title="Drone Comprehension Test — Pilot vs GM TN (SR3 p.157)">
           📡 Drone Comprehension
+        </button>
+        <button type="button" class="btn-sm" data-action="crash"
+                style="background:var(--sr-surface);color:var(--sr-text);border:1px solid var(--sr-border)"
+                title="A crash outside a chase — roll the Crash Test, or post the damage to the vehicle and everyone aboard (SR3 p.145-147)">
+          💥 Crash
         </button>
       </div>
     </div>`;
@@ -682,6 +717,27 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     return SR3EVehicleSheet.runDrivingTest(this.actor);
   }
 
+  static async _onCrash(_ev, _target) {
+    return SR3EVehicleSheet.runCrash(this.actor);
+  }
+
+  /* Passenger roster (TODO 74). The <select> carries no `name`, so the sheet's submit-on-change
+   * ignores it; the + button reads it and writes the array itself. */
+  static async _onAddPassenger(_ev, _target) {
+    const sel = this.element.querySelector('.veh-add-passenger');
+    const id  = sel?.value;
+    if (!id) return;
+    const cur = this.actor.system.passengerActorIds ?? [];
+    if (cur.includes(id) || id === this.actor.system.driverActorId) return;
+    await this.actor.update({ 'system.passengerActorIds': [...cur, id] });
+  }
+
+  static async _onRemovePassenger(_ev, target) {
+    const id  = target.dataset.actorId;
+    const cur = this.actor.system.passengerActorIds ?? [];
+    await this.actor.update({ 'system.passengerActorIds': cur.filter(p => p !== id) });
+  }
+
   static async _onDroneComprehension(_ev, _target) {
     return SR3EVehicleSheet.runDroneComprehension(this.actor);
   }
@@ -811,10 +867,144 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   /**
+   * A crash, outside a Chase Scene · SR3 p.145-147 · TODO 74.
+   *
+   * Reported in play: *"they were in a car accident and I need to handle the player damage to
+   * everyone in the car plus the damage to the car itself."* The whole damage chain already
+   * existed — vehicle soak, then a resist button for the driver and every passenger — but the
+   * only way in was a Chase Scene's Crash Test.
+   *
+   * Two ways out of the dialog:
+   * - **🎲 Crash Test** — the driver rolls it. SR3 p.147: *"The Crash Test consists of a Driving
+   *   Test against a base target number equal to the vehicle's Handling Rating"*, so it IS
+   *   `runDrivingTest`, in crash mode; 0 successes posts the crash.
+   * - **💥 Post crash damage** — the accident already happened (a bomb, a wall, ice).
+   *
+   * ⚠ **No second damage builder.** Both routes end in `SR3EActor._buildCrashDamageHtml`, the
+   *   same one the Chase Scene uses. The GM's Power/Level edits ride in as overrides on its ctx.
+   * ⚠ **Speed is asked in km/h and converted ÷ 1.2** to metres per Combat Turn, the unit the
+   *   Impact Damage Levels Table (p.147) and the Chase Scene use. Passing km/h straight through
+   *   would overstate every crash by ~20%.
+   */
+  static async runCrash(vehicle) {
+    const sys      = vehicle.system;
+    const driver   = game.actors.get(sys.driverActorId?.trim() ?? '') ?? null;
+    const aboard   = [
+      ...(driver ? [{ id: driver.id, name: driver.name, role: 'Driver' }] : []),
+      ...(sys.passengerActorIds ?? []).map(id => game.actors.get(id)).filter(Boolean)
+        .filter(a => a.id !== driver?.id).map(a => ({ id: a.id, name: a.name, role: 'Passenger' })),
+    ];
+    const SA   = game.sr3e.SR3EActor;
+    const esc  = s => foundry.utils.escapeHTML(String(s ?? ''));
+    const FIELD_S = 'display:flex;flex-direction:column;gap:3px;color:var(--sr-muted);font-size:12px;';
+    const initKmh = 50;
+    const init    = SA.crashDamageFromKmh(initKmh);
+
+    // The people aboard ARE ticked — this list is the vehicle's own roster, not every actor in
+    // the world (contrast TODO 96). Untick anyone who got out first.
+    const aboardRows = aboard.length
+      ? aboard.map(a => `
+          <label style="display:flex;align-items:center;gap:6px;margin:2px 0;font-size:12px;cursor:pointer">
+            <input type="checkbox" class="cr-aboard" data-id="${a.id}" data-role="${a.role}" checked/>
+            ${esc(a.name)} <span style="color:var(--sr-muted)">(${a.role})</span>
+          </label>`).join('')
+      : `<p style="font-size:11px;color:var(--sr-muted);margin:2px 0">Nobody aboard — set a pilot and
+           passengers on the vehicle sheet.</p>`;
+
+    let choice = null;
+    await foundry.applications.api.DialogV2.wait({
+      window:   { title: `💥 Crash — ${vehicle.name}` },
+      position: { width: 420 },
+      content: `
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px 10px;padding:4px 0">
+          <label style="${FIELD_S}">Speed at impact (km/h)
+            <input id="cr-kmh" type="number" value="${initKmh}" min="0" step="1"/>
+          </label>
+          <label style="${FIELD_S}">Power
+            <input id="cr-power" type="number" value="${init.power}" min="1" max="99"/>
+          </label>
+          <label style="${FIELD_S}">Level
+            <select id="cr-level">${['L', 'M', 'S', 'D'].map(l =>
+              `<option value="${l}"${l === init.level ? ' selected' : ''}>${l}</option>`).join('')}</select>
+          </label>
+        </div>
+        <div id="cr-note" style="font-size:11px;color:var(--sr-muted);margin:2px 0 8px"></div>
+        <div style="font-size:12px;color:var(--sr-muted);margin-bottom:2px">Aboard — each resists the
+          same Power at the level the vehicle ends up taking (SR3 p.147):</div>
+        ${aboardRows}`,
+      render: (_e, dialog) => {
+        const el    = dialog.element;
+        const kmh   = el.querySelector('#cr-kmh');
+        const pw    = el.querySelector('#cr-power');
+        const lv    = el.querySelector('#cr-level');
+        const note  = el.querySelector('#cr-note');
+        // Power and Level follow the speed until the GM edits either — then they are the GM's.
+        let edited = false;
+        pw.addEventListener('input',  () => { edited = true; });
+        lv.addEventListener('change', () => { edited = true; });
+        const sync = () => {
+          const d   = SA.crashDamageFromKmh(kmh.value);
+          if (!edited) { pw.value = d.power; lv.value = d.level; }
+          note.textContent = `${Math.round(d.speedKmct)} m per Combat Turn → table gives ${d.power}${d.level} `
+            + '(Power = speed ÷ 10, round up; p.147)';
+        };
+        kmh.addEventListener('input', sync);
+        sync();
+      },
+      buttons: [
+        ...(driver ? [{ label: '🎲 Crash Test (driver rolls)', action: 'test',
+          callback: (_e, _b, d) => { choice = SR3EVehicleSheet._readCrashDialog(d.element, 'test'); } }] : []),
+        { label: '💥 Post crash damage', action: 'post', default: !driver,
+          callback: (_e, _b, d) => { choice = SR3EVehicleSheet._readCrashDialog(d.element, 'post'); } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (!choice) return;
+
+    const driverAboard = choice.aboard.some(a => a.role === 'Driver');
+    const crashContext = {
+      vehicleActorId:    vehicle.id,
+      vehicleName:       vehicle.name,
+      driverActorId:     driverAboard ? driver?.id ?? '' : '',
+      speedKmct:         choice.speedKmct,
+      vehicleBody:       sys.attributes?.body?.base ?? 4,
+      passengerActorIds: choice.aboard.filter(a => a.role === 'Passenger').map(a => a.id),
+      power:             choice.power,
+      level:             choice.level,
+    };
+
+    if (choice.mode === 'test') return SR3EVehicleSheet.runDrivingTest(vehicle, null, { crash: crashContext });
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: vehicle }),
+      content: `<div class="sr-roll-card">
+          <div class="sr-roll-header">💥 Crash — ${esc(vehicle.name)}</div>
+          ${SA._buildCrashDamageHtml(crashContext)}
+        </div>`,
+    });
+  }
+
+  /** Read the crash dialog. Pure DOM → plain data, shared by both of its buttons. */
+  static _readCrashDialog(el, mode) {
+    return {
+      mode,
+      speedKmct: game.sr3e.SR3EActor.crashDamageFromKmh(el.querySelector('#cr-kmh')?.value).speedKmct,
+      power:     Math.max(1, parseInt(el.querySelector('#cr-power')?.value) || 1),
+      level:     el.querySelector('#cr-level')?.value || 'L',
+      aboard:    [...el.querySelectorAll('.cr-aboard:checked')].map(cb => ({ id: cb.dataset.id, role: cb.dataset.role })),
+    };
+  }
+
+  /**
    * Run the driving-test dialog + roll for a vehicle. Driver is the override if given,
    * otherwise the vehicle's linked driverActorId.
+   *
+   * `crash` — a crash context from `runCrash`: the same test as a **Crash Test** (SR3 p.147),
+   * rolled so that 0 successes posts the crash damage. Otherwise a failed Driving Test offers a
+   * 💥 button into `runCrash` (TODO 74) — the card used to say "0 → GM Crash Test" and give the
+   * GM nothing to click.
    */
-  static async runDrivingTest(actor, driverOverride = null) {
+  static async runDrivingTest(actor, driverOverride = null, { crash = null } = {}) {
     const sys        = actor.system;
     const driver = driverOverride ?? game.actors.get(sys.driverActorId?.trim() ?? '');
     if (!driver) {
@@ -926,7 +1116,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     let result = null;
 
     await foundry.applications.api.DialogV2.wait({
-      window: { title: `Driving Test — ${actor.name}` },
+      window: { title: `${crash ? 'Crash Test' : 'Driving Test'} — ${actor.name}` },
       position: { width: 460 },
       content: `
         <div style="background:#1c2030;border-radius:4px;padding:8px;margin-bottom:10px;font-size:12px;">
@@ -1069,7 +1259,15 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     });
 
     if (!result) return;
-    await driver.rollPool(result.pool, result.tn, `Driving Test — ${actor.name}`);
+    if (crash) {
+      await driver.rollPool(result.pool, result.tn, `Crash Test — ${actor.name}`, {
+        isCrashRoll: true, crashContext: crash,
+      });
+      return;
+    }
+    await driver.rollPool(result.pool, result.tn, `Driving Test — ${actor.name}`, {
+      crashOnFailVehicleId: actor.id,
+    });
   }
 
   static async _onItemDelete(_ev, target) {

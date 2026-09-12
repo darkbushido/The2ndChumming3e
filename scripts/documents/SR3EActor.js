@@ -2413,6 +2413,7 @@ _prepareCharacter(sys, attr) {
         escapeContext:           options.escapeContext           ?? null,
         grenadeType:             options.grenadeType             ?? 'standard',
         footerNote:              options.footerNote              ?? null,
+        crashOnFailVehicleId:    options.crashOnFailVehicleId    ?? null,
       });
       return successes;
     }
@@ -2488,6 +2489,7 @@ _prepareCharacter(sys, attr) {
       escapeContext:           options.escapeContext           ?? null,
       grenadeType:           options.grenadeType           ?? 'standard',
       footerNote:            options.footerNote            ?? null,
+      crashOnFailVehicleId:  options.crashOnFailVehicleId  ?? null,
     });
   }
 
@@ -3374,6 +3376,15 @@ _prepareCharacter(sys, attr) {
       const footerNoteHtml = state.footerNote
         ? `<div class="sr-roll-note">${state.footerNote.replace('{successes}', successes)}</div>`
         : '';
+      // A failed Driving Test → the Crash dialog (TODO 74). Offered, never automatic: SR3
+      // p.147 lists when a Crash Test is required, and that is the GM's reading of the scene.
+      const crashOfferHtml = (state.crashOnFailVehicleId && successes === 0)
+        ? `<div class="sr-soak-action">
+             <button class="sr-crash-open-btn" data-vehicle-id="${state.crashOnFailVehicleId}">
+               💥 Crash — resolve for the vehicle and everyone aboard
+             </button>
+           </div>`
+        : '';
 
       resultHtml = `
         <div class="sr-roll-stats">
@@ -3387,6 +3398,7 @@ _prepareCharacter(sys, attr) {
         ${glitchHtml}
         ${postRollHtml}
         ${footerNoteHtml}
+        ${crashOfferHtml}
       `;
     } else {
       resultHtml = `
@@ -3491,6 +3503,7 @@ _prepareCharacter(sys, attr) {
         barrierContext:            state.barrierContext            ?? null,
         grenadeType:               state.grenadeType               ?? 'standard',
         footerNote:                state.footerNote                ?? null,
+        crashOnFailVehicleId:      state.crashOnFailVehicleId      ?? null,
       }).replace(/'/g, '&#39;');
       explodeBtn = `
         <div class="sr-explode-action">
@@ -4176,9 +4189,28 @@ _prepareCharacter(sys, attr) {
     return { power, level };
   }
 
+  /**
+   * Crash damage from a speed in **km/h** — the unit a GM thinks in (TODO 74).
+   *
+   * ⚠ The Impact Damage Levels Table (p.147) reads **metres per Combat Turn**, stored across the
+   * system as `km/h ÷ 1.2` (a 3-second turn). Feeding km/h straight to `crashDamage` overstates
+   * every crash by ~20% and can push it a whole level: 70 km/h is 58 m/turn (Moderate), but
+   * read raw it is 70 (Serious).
+   * @returns {{ speedKmct: number, power: number, level: string }}
+   */
+  static crashDamageFromKmh(kmh) {
+    const speedKmct = Math.max(0, Number(kmh) || 0) / 1.2;
+    return { speedKmct, ...SR3EActor.crashDamage(speedKmct) };
+  }
+
   static _buildCrashDamageHtml(ctx) {
-    const speedKmct       = ctx.speedKmct ?? 0;
-    const { power, level } = SR3EActor.crashDamage(speedKmct);
+    const speedKmct = ctx.speedKmct ?? 0;
+    // The table's answer, unless the GM adjusted it in the standalone crash dialog (TODO 74).
+    // Overrides, not a second table: the Chase Scene passes neither and gets the table.
+    const table = SR3EActor.crashDamage(speedKmct);
+    const power = Number.isFinite(ctx.power) ? ctx.power : table.power;
+    const level = ['L', 'M', 'S', 'D'].includes(ctx.level) ? ctx.level : table.level;
+    const adjusted = power !== table.power || level !== table.level;
     const soakCtx   = JSON.stringify({
       vehicleActorId:    ctx.vehicleActorId,
       vehicleName:       ctx.vehicleName,
@@ -4195,7 +4227,8 @@ _prepareCharacter(sys, attr) {
         💥 CRASH! ${ctx.vehicleName} has crashed — speed reduced to 0.
       </div>
       <div class="sr-staging-result">
-        Impact at ${Math.round(speedKmct * 1.2)} km/h (${speedKmct.toFixed(1)} km/ct) → Damage: <strong>${power}${level} Physical</strong>
+        Impact at ${Math.round(speedKmct * 1.2)} km/h (${speedKmct.toFixed(1)} m per Combat Turn) → Damage: <strong>${power}${level} Physical</strong>
+        ${adjusted ? `<span style="color:var(--sr-muted);font-size:11px"> — set by the GM; the table gives ${table.power}${table.level}</span>` : ''}
       </div>
       <div class="sr-soak-action">
         <button class="sr-ram-vehicle-soak-btn" data-payload='${soakCtx}'>

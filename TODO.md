@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | **93** — awaiting a Foundry test, branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **73** · **74** · **91** *(**71** · **72** · **80** · **81** · **88** · **89** done)* |
+| 🔴 Confirmed bugs, still open | **91** · **94** · **95** · **97** *(**71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **96** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** *(**3** · **4** · **30** · **75** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** *(**83** · **84** · **87** done)* |
@@ -4548,7 +4548,20 @@ used backticks around identifiers. It sits INSIDE a template literal, where a ba
 string — it broke the parse immediately. No backticks in markup comments.
 
 <a id="73"></a>
-## 73. No way to roll dice for something the system does not model — **CONFIRMED**
+## 73. ✅ No way to roll dice for something the system does not model — **DONE 2026-09-12** (`fix/racial-mods`, awaiting the Foundry check in [#93](#93))
+
+**Built.** A **🎲 Success Test** button beside ⚔ Contested Roll on the character sheet's
+Attributes tab → `SR3EActorSheet._onRollSuccessTest` → `_promptRollOptions` in a new
+`custom` mode (a *"What is this test for?"* label and a plain **Dice pool** choice at the top of
+the attribute dropdown) → `rollPool`. So it gets successes, the Rule of Six's interactive
+explosions, the Rule of One, wound modifiers, Karma Pool and shift-click physical dice, exactly
+like every other roll. The card title is the typed label (escaped), plus the attribute if one
+was picked. Source-level checks in `tests/gm-tools.test.mjs`.
+
+**Not built: Open Tests.** `rollPool` has no highest-die result mode, and adding one is a new
+branch in `_postWaveCard`, not an entry point. Still open if wanted.
+
+The report as written:
 
 **Reported from play 2026-08-30**, alongside [#72](#72). A player cannot simply roll a pool
 against a target number.
@@ -4589,7 +4602,37 @@ off" problem.
 ---
 
 <a id="74"></a>
-## 74. A crash can only be reached from a Chase Scene — **CONFIRMED**
+## 74. ✅ A crash can only be reached from a Chase Scene — **DONE 2026-09-12** (`fix/racial-mods`, awaiting the Foundry check in [#93](#93))
+
+**Built as the plan below, all four steps:**
+1. **`VehicleData.passengerActorIds`** — edited on the vehicle sheet under Pilot (tags with ✕,
+   an add dropdown, seats shown against `seating`). ⚠ Data-model change → full restart.
+2. **💥 Crash** — `SR3EVehicleSheet.runCrash(vehicle)`, on the vehicle Stats tab and the
+   Vehicle Tools Token-HUD menu. Speed in **km/h** (converted ÷ 1.2 by the new pure
+   `SR3EActor.crashDamageFromKmh`), Power and Level shown live and editable, and the people
+   aboard as a ticked list (the vehicle's own roster — untick anyone who got out). Two ways out:
+   **🎲 Crash Test** — `runDrivingTest` in crash mode, since p.147 defines the Crash Test as a
+   Driving Test against Handling, rolled with `isCrashRoll` so 0 successes posts the crash — or
+   **💥 Post crash damage** for an accident that already happened.
+3. **A failed Driving Test** (0 successes) now carries a **💥 Crash** button into that dialog —
+   offered, never automatic, since p.147 lists when a Crash Test is required. Rides the dice card
+   as `crashOnFailVehicleId`, carried at all three payload sites.
+4. **The Chase Scene** seeds a participant's passengers from the vehicle's roster when the
+   vehicle is chosen — only into an empty list.
+
+⚠ Still **one damage builder**: `_buildCrashDamageHtml` takes the GM's Power/Level as overrides
+on its ctx and says on the card when they differ from the table. Tests in
+`tests/gm-tools.test.mjs`, including the km/h unit trap (70 km/h is Moderate, not Serious).
+
+**Found, not fixed — passengers' own protection.** SR3 p.147: *"If a character is wearing a seat
+belt or other safety restraint during the collision, stage down the damage by an additional
+level"* and *"Only impact armor protects against crash damage"* (the book's cops go 15S → 15M
+belted → 12M in 4/3 vests). The existing passenger resist button (`handleRamPassengerResist`,
+shared with ramming) applies neither: it rolls Body against the full Power at the vehicle's
+level. The GM adjusts by hand for now. Also: Control Pool dice the rigger used on the Crash Test
+should add to passengers' resistance (same paragraph) — not modelled.
+
+The report as written:
 
 **Reported from play 2026-08-30:** *"they were in a car accident and I need to handle the
 player damage to everyone in the car plus the damage to the car itself."*
@@ -6553,8 +6596,8 @@ B5 Q5 S4 C2 I3 W2 imported at those numbers instead of B10 Q4 S8 C0 I1 W2.
    The system copies that macro into a world once and never refreshes it, so the old version
    stays in any world that already has it. It is recreated from the fixed file on the next load.
 3. ⚠ **Restart Foundry fully** (not F5) — TODO 75 added two item fields (`bonusImpact`,
-   `bonusBallistic`), and data-model changes are not hot-reloaded. Everything else on the branch
-   only needs a reload.
+   `bonusBallistic`) and TODO 74 a vehicle field (`passengerActorIds`), and data-model changes
+   are not hot-reloaded. Everything else on the branch only needs a reload.
 
 ### Checks
 
@@ -6598,6 +6641,21 @@ B5 Q5 S4 C2 I3 W2 imported at those numbers instead of B10 Q4 S8 C0 I1 W2.
       fighter, each with its 👁 line. Pick Full Darkness → the note reads *visibility halves to
       +2 / +8* (Full Darkness is not halved; the troll's thermographic reads +2), and the two TNs
       differ by 6.
+- [ ] **Success Test (TODO 73).** Attributes tab → 🎲 Success Test: a *What is this test for?*
+      box, the dropdown on **Dice pool**. Type "Climb the fence", 6 dice, TN 4 → the card is titled
+      *Climb the fence*, counts successes, and a 6 on a TN 7+ test explodes as usual. Pick
+      Strength instead → the pool fills from Strength and the title adds *(Strength)*.
+- [ ] **Crash (TODO 74, after the full restart).** Vehicle sheet: add two passengers under
+      Pilot. 💥 Crash → 50 km/h reads *42 m per Combat Turn → 5M*; the driver and both passengers
+      are listed, ticked. **Post crash damage** → a card with the vehicle soak button; roll it →
+      resist buttons for the driver and each passenger. Also try **Crash Test**: the Driving Test
+      dialog titled *Crash Test*; 0 successes posts the crash.
+- [ ] **Failed Driving Test** → the card shows *💥 Crash — resolve for the vehicle and everyone
+      aboard*; it opens the same dialog. A successful one shows no button.
+- [ ] **Chase Scene**: pick that vehicle for a participant → its passengers appear already.
+- [ ] **GM tools (TODO 96).** Session Rewards and Chunky Salsa open with **nobody ticked**;
+      Session Rewards' *All* ticks everyone. Award with nobody ticked → a warning, nothing
+      awarded. A grenade in a confined space still opens Chunky Salsa with the caught actors ticked.
 - [ ] **Implant armour (after the full restart).** Give a character an Armor Vest (2B/1I) and
       *Bone Lace, Titanium* from the SR3 cyberware pack. Armor tab: an **Implant Armour** block,
       *+B 1 / +I 1*, total **B 3 / I 2**. Shoot them: the soak card's TN uses 3 Ballistic, with
@@ -6681,7 +6739,18 @@ its real category does not count as active.
 
 <a id="96"></a>
 
-## 96. Rollable Tables GM tools pre-check every actor — **reported in play 2026-09-11**
+## 96. ✅ Rollable Tables GM tools pre-check every actor — **DONE 2026-09-12** (`fix/racial-mods`)
+
+**Two tools did it:** **Session Rewards** and **Chunky Salsa**. Both now open with nobody ticked.
+Session Rewards gains an **All** box for the usual whole-party award. Chunky Salsa keeps its
+ticks only when the **grenade flow** opens it with the actors the blast actually caught
+(`opts.actorIds`) — that list is not "every actor", it is the answer. Both warn when posted with
+no one ticked, since that is now a likely slip rather than an intent. (Barrier Damage, Falling
+Damage and Escape Artist pick one actor from a dropdown and had no checkbox list.) The combat
+tracker's *Begin Encounter* dialog also pre-ticks, deliberately left: it lists only combatants
+already added to the fight.
+
+The report as written:
 
 **Observation only — not investigated** (reported mid-combat). The GM tools on the Rollable
 Tables sidebar open with **every actor already checked** in their target lists. They should

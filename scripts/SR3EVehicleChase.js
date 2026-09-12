@@ -141,6 +141,13 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
       p.vehicleActorId = ev.target.value;
       const vActor = game.actors.get(p.vehicleActorId);
       if (vActor) p.chaseVehicleType = ACTOR_TYPE_DEFAULT[vActor.system.vehicleType] ?? 'car';
+      // Start from the vehicle's own passenger list (TODO 74), so the chase and the vehicle
+      // sheet stop keeping two unrelated rosters. Only into an empty list — never over names
+      // the GM already added here.
+      if (vActor && !p.passengerActorIds.length) {
+        p.passengerActorIds = (vActor.system.passengerActorIds ?? [])
+          .filter(id => id !== p.driverActorId && game.actors.get(id));
+      }
       p.driverPoints = null;
       this.render();
     });

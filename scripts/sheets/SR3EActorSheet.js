@@ -54,6 +54,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         rollAssensing:     SR3EActorSheet._onRollAssensing,
         castWard:          SR3EActorSheet._onCastWard,
         rollContested:     SR3EActorSheet._onRollContested,
+        rollSuccessTest:   SR3EActorSheet._onRollSuccessTest,
         rollResistDamage:  SR3EActorSheet._onRollResistDamage,
         clearVCR:          SR3EActorSheet._onClearVCR,
         equipCyberdeck:    SR3EActorSheet._onEquipCyberdeck,
@@ -923,6 +924,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     </div>
 
     <div style="margin-top:8px;padding:4px 0;border-top:1px solid var(--sr-border);display:flex;gap:6px;flex-wrap:wrap">
+      <button type="button" class="btn-sm" data-action="rollSuccessTest"
+              style="background:var(--sr-surface);color:var(--sr-text);border:1px solid var(--sr-border)"
+              title="Roll any number of dice against a target number — for anything the sheet has no button for. Shift-click to enter successes manually">
+        🎲 Success Test
+      </button>
       <button type="button" class="btn-sm" data-action="rollContested"
               style="background:var(--sr-surface);color:var(--sr-text);border:1px solid var(--sr-border)">
         ⚔ Contested Roll
@@ -4199,6 +4205,35 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     await vActor.update({ 'system.controlMode': mode });
   }
 
+  /**
+   * A Success Test with no document behind it · TODO 73.
+   *
+   * Every other roll path hangs off a thing — an attribute, a skill, a weapon — so a GM saying
+   * "roll 6 dice against a 4" for a houserule or an improvised stunt left the player with only
+   * Foundry's `/r 6d6`, which SUMS the dice: meaningless in a success-counting system.
+   *
+   * ⚠ **Through `rollPool`, like everything else** — successes, the Rule of Six's interactive
+   * explosions, the Rule of One, wound modifiers and physical dice all come with it. A second,
+   * simpler roll that printed a different-looking card would leave players unsure which to trust.
+   * ⚠ **Reuses `_promptRollOptions`** in its `custom` mode rather than a third dialog.
+   * Open Tests (highest die, no TN) are NOT offered — `rollPool` has no such result mode.
+   */
+  static async _onRollSuccessTest(ev, _target) {
+    const actor = this.actor;
+    actor.prepareDerivedData();
+    const r = await SR3EActorSheet._promptRollOptions(actor, {
+      defaultPool: 4, physicalDice: ev.shiftKey ?? false, custom: true,
+    });
+    if (!r) return;
+    const attrName = r.selectedAttr ? r.selectedAttr.charAt(0).toUpperCase() + r.selectedAttr.slice(1) : '';
+    const typed    = String(r.label ?? '').trim().replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const label    = typed
+      ? (attrName ? `${typed} (${attrName})` : typed)
+      : (attrName || 'Success Test');
+    await actor.rollPool(r.pool, r.tn, label
+      + (r.toxinDice ? ` — resisting disease or toxin (+${r.toxinDice})` : ''), r);
+  }
+
   static async _onRollContested(ev, _target) {
     await game.sr3e.SR3EActor.openContestedDialog(this.actor, ev.shiftKey);
   }
@@ -4245,7 +4280,13 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   /*  Shared roll-options dialog                                          */
   /* ------------------------------------------------------------------ */
 
-  static async _promptRollOptions(actor, { defaultPool = null, poolNote = '', physicalDice = false, rollAttr = null } = {}) {
+  /**
+   * `custom: true` — the Success Test (TODO 73): a "What for?" label, and a plain **Dice pool**
+   * choice at the top of the dropdown, selected, so the pool is whatever the player types
+   * rather than an attribute. Picking an attribute still fills the pool from it, as ever.
+   * The result then carries `label`, and `selectedAttr` is `''` for a plain pool.
+   */
+  static async _promptRollOptions(actor, { defaultPool = null, poolNote = '', physicalDice = false, rollAttr = null, custom = false } = {}) {
     const karmaPool    = actor?.system.karmaPool ?? 0;
     const woundPenalty = -(actor?.system.woundMod ?? 0);
     const woundNote    = woundPenalty > 0
@@ -4265,11 +4306,13 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       { key: 'magic',        label: 'Magic',        val: attrs.magic?.value        ?? attrs.magic?.base        ?? 0 },
     ];
 
-    const selectedKey = rollAttr?.toLowerCase() ?? attrList[0].key;
+    const selectedKey = rollAttr?.toLowerCase() ?? (custom ? '' : attrList[0].key);
     const selectedAttr = attrList.find(a => a.key === selectedKey) ?? attrList[0];
     const initialPool = defaultPool ?? selectedAttr.val;
 
-    const optionsHtml = attrList.map(a =>
+    const optionsHtml = (custom
+      ? `<option value="" data-val="${initialPool}"${selectedKey === '' ? ' selected' : ''}>Dice pool</option>` : '')
+      + attrList.map(a =>
       `<option value="${a.key}" data-val="${a.val}"${a.key === selectedKey ? ' selected' : ''}>${a.label}</option>`
     ).join('');
 
@@ -4288,9 +4331,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     return new Promise(resolve => {
       const dialog = new foundry.applications.api.DialogV2({
-        window: { title: 'Roll Options' },
+        window: { title: custom ? 'Success Test' : 'Roll Options' },
         content: `
           <div class="sr3e-roll-opts">
+            ${custom ? `<input type="text" id="sr-label" placeholder="What is this test for? (optional)"
+                               style="grid-column:1/-1" maxlength="80"/>` : ''}
             <select id="sr-attr" class="roll-opts-attr">
               ${optionsHtml}
             </select>
@@ -4326,6 +4371,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                 karmaReroll:  useKarma,
                 pool:         poolEl ? Math.max(1, parseInt(poolEl.value) || 1) : null,
                 selectedAttr: attrEl?.value ?? selectedKey,
+                label:        html.querySelector('#sr-label')?.value ?? '',
                 // Already inside `pool`; carried so the card can say where the dice came from.
                 toxinDice:    toxinOn ? toxin.dice : 0,
                 physicalDice,

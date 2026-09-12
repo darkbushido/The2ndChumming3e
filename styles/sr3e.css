@@ -212,6 +212,7 @@ background-color: var(--sr-surface) !important;
 .sr-astral-soak-roll-btn,
 .sr-aura-reading-btn,
 .sr-ram-vehicle-soak-btn,
+.sr-crash-open-btn,
 .sr-ram-passenger-resist-btn,
 .sr-summon-confirm-btn,
 .sr-matrix-ic-resist-btn,
@@ -246,6 +247,7 @@ background-color: var(--sr-surface) !important;
 .sr-astral-soak-btn,
 .sr-astral-soak-roll-btn,
 .sr-ram-vehicle-soak-btn,
+.sr-crash-open-btn,
 .sr-ram-passenger-resist-btn,
 .sr-knockdown-btn,
 .sr-charge-quickness-btn {
@@ -263,6 +265,7 @@ background-color: var(--sr-surface) !important;
 .sr-astral-soak-btn:hover:not(:disabled),
 .sr-astral-soak-roll-btn:hover:not(:disabled),
 .sr-ram-vehicle-soak-btn:hover:not(:disabled),
+.sr-crash-open-btn:hover:not(:disabled),
 .sr-ram-passenger-resist-btn:hover:not(:disabled),
 .sr-knockdown-btn:hover:not(:disabled),
 .sr-charge-quickness-btn:hover:not(:disabled) {
@@ -375,6 +378,7 @@ background-color: var(--sr-surface) !important;
 .sr-astral-soak-roll-btn:disabled,
 .sr-aura-reading-btn:disabled,
 .sr-ram-vehicle-soak-btn:disabled,
+.sr-crash-open-btn:disabled,
 .sr-ram-passenger-resist-btn:disabled,
 .sr-summon-confirm-btn:disabled,
 .sr-matrix-ic-resist-btn:disabled,

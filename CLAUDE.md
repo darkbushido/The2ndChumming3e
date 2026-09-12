@@ -713,6 +713,24 @@ the combat tracker. Chase Scene and Driving Test are available to all; the rest 
 Driving Test (`SR3EVehicleSheet.promptVehicleDrivingTest` → `runDrivingTest`) prompts for a vehicle
 + driver since there's no sheet context.
 
+⚠ **Multi-actor lists start UNTICKED** (TODO 96, reported in play) — Session Rewards (with an
+**All** box) and Chunky Salsa. The one exception is Chunky Salsa opened by the grenade flow with
+`opts.actorIds`: that list is the actors the blast caught, so they start ticked.
+
+**💥 Crash outside a chase** (TODO 74) — `SR3EVehicleSheet.runCrash(vehicle)`, from the vehicle
+Stats tab, the Vehicle Tools HUD menu, and a **💥 button on a failed Driving Test**
+(`crashOnFailVehicleId`, carried on the dice card). Speed is asked in **km/h** and converted by
+`SR3EActor.crashDamageFromKmh` (÷ 1.2 → m/turn — raw km/h would overstate every crash ~20%).
+The Crash Test **is** `runDrivingTest` in crash mode (p.147: *"a Driving Test against a base
+target number equal to the vehicle's Handling Rating"*). ⚠ One damage builder,
+`_buildCrashDamageHtml`, which takes the GM's Power/Level as ctx overrides. The people aboard come
+from **`VehicleData.passengerActorIds`**, the vehicle's own roster, which the Chase Scene now
+seeds from. ⚠ Passengers' seat belts and impact armour (p.147) are **not** applied by the shared
+passenger resist button — see TODO 74.
+
+**🎲 Success Test** (TODO 73) — on the character sheet beside ⚔ Contested Roll: any pool against
+any TN, through `_promptRollOptions`' `custom` mode and `rollPool`, never `Roll.create`.
+
 **Chase quarry & auto-distance** (`SR3EVehicleChase.js`): each participant has a **Quarry** checkbox
 next to its Distance box. Exactly one vehicle is the quarry (checking one clears the rest); its
 distance is the reference (0) and its box fades. All other distances are **relative to the quarry**:

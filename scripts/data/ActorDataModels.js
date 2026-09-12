@@ -417,6 +417,11 @@ export class VehicleData extends foundry.abstract.TypeDataModel {
     return {
       vehicleType:  new StringField({ initial: 'car' }),
       driverActorId: new StringField({ initial: '' }),
+      /* Who else is aboard — TODO 74. Before this the only passenger list lived on a Chase Scene
+       * participant, which exists only while a chase is open, so a crash outside a chase had no
+       * way to know who was in the car. The driver is `driverActorId`, never repeated here.
+       * `seating` is for display only; nothing caps this list. */
+      passengerActorIds: new ArrayField(new StringField()),
       controlMode:   new StringField({ initial: '' }),
       seating:      new NumberField({ integer: true, initial: 4, min: 0 }),
       entryPoints:  new StringField({ initial: '' }),
