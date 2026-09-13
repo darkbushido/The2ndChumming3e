@@ -26,7 +26,7 @@ independent.
 | 🔴 Confirmed bugs, still open | **91** · **97** · **101** *(**71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** *(**3** · **4** · **30** · **75** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
-| 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** *(**83** · **84** · **87** done)* |
+| 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** · **104** *(**83** · **84** · **87** done)* |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 56 · **100** · **103** *(**36** · **99** done)* |
 | 🧹 Housekeeping | 1 · 6 |
 | ✅ Done — kept for the record | **2** · **5** · **8** · **10** · 13 · **40** · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
@@ -7039,3 +7039,25 @@ been checked here, and the tooltip should quote it with a page rather than parap
 Also noted in the same run: Reaction's and Essence's numbers render in **yellow** — probably the
 existing styling for the three "special" attributes (the Magic/Essence/Reaction blocks), not a
 defect. Confirm when this is built, since the new colours will sit on top of it.
+
+<a id="104"></a>
+
+## 104. Art for the vehicles — **requested during the TODO 93 run, 2026-09-13**
+
+**Request, not started.** The maintainer: *"we need some art for the different vehicles. something
+generated matching the style from the books when available."*
+
+Vehicle and drone actors currently carry no art of their own. Wanted: a portrait per vehicle,
+generated, in keeping with the look of the sourcebooks' vehicle illustrations.
+
+**To settle before starting:**
+- **Which vehicles** — the \`sr3\`, \`r3\`, \`sota\`, \`sota2\`, \`twl\`, \`tss\`, \`ssg\`, \`fra\`, \`sr2\` vehicle and
+  drone packs. Count them first (Actor packs — key \`!actors!\`, see CLAUDE.md), then decide whether
+  every entry gets art or one image per chassis type.
+- **Original art only.** "Matching the style" should mean the setting's look — era, silhouettes,
+  palette — not copying or tracing the books' illustrations, which are FASA/Catalyst's.
+- **Where the files live and what they cost the download** — they ship with the system, so check
+  total size and format (WebP), and add the \`img\` paths through the pack tooling (Foundry closed,
+  both pack copies — CLAUDE.md, *Compendium population*), which is blocked on TODO 12 for new
+  content but not for editing an existing document's \`img\`.
+- **Tokens** — whether the same image serves as the token, or a top-down token is wanted too.
