@@ -6691,7 +6691,7 @@ cannot reach. If time is short, do these.
 - [x] ✅ **TODO 101** — Essence working as expected after re-import (maintainer, 2026-09-13). Original step: **TODO 101, re-import:** delete the import macro, reload, re-import the troll → Essence **5.12**;
       press **↺** → it **stays 5.12** (was 5.29). The CyGun Shotgun's sheet shows 0.88 (base 1.1), Alpha.
 - [ ] **TODO 108:** the melee Reach election keeps the option you pick.
-- [ ] **TODO 107:** a vehicle on the Vehicles tab has a **✕** that removes it; it can be added back.
+- [x] ✅ **TODO 107** — vehicles can be removed with the ✕ (maintainer, 2026-09-13).
 - [ ] **TODO 106:** Driving Test *Using VCR* reads **−(VCR Rating)**; the 💥 Crash Test dialog shows
       *Terrain (Crash Test)* (+2/+4) and a *Vehicle speed* row, no VCR row.
 - [ ] **Session Rewards / Chunky Salsa** open with nobody ticked; *All* ticks everyone; awarding
