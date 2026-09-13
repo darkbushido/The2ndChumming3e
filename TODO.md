@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | **93** — Foundry test of everything on branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **91** · **97** · **101** · **102** *(**71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** done)* |
+| 🔴 Confirmed bugs, still open | **91** · **97** · **101** *(**71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** *(**3** · **4** · **30** · **75** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** *(**83** · **84** · **87** done)* |
@@ -6629,7 +6629,9 @@ cannot reach. If time is short, do these.
       change the dropdown to another attribute → the pool follows it. The dropdown was rewired.
       On a **dwarf**, Body shows an **unticked** *Resisting disease or toxin: +2* box; tick → +2,
       switch off Body → it greys out.
-- [x] ✅ **🎲 Success Test** — passes, 2026-09-13. Charisma 0 rolls as 3 / 1 dice → [#102](#102).
+- [x] ✅ **🎲 Success Test** — passes, 2026-09-13. Charisma 0 rolled as 3 / 1 dice → [#102](#102), fixed.
+- [ ] **After reloading for #102:** the troll's **Charisma** block is **red** with ⚠, and its roll
+      dialog shows **0** dice (rolling says *dice pool is 0*); Magic 0 shows 0 but is **not** red.
       Original step: **🎲 Success Test** (Attributes tab): type "Climb the fence", 6 dice, TN 4 → the card is
       titled *Climb the fence* and counts successes.
 - [ ] **GM window (TODO 94):** as the GM, attack a **player's** character → the modifier window
@@ -6982,7 +6984,17 @@ bioware Bio Index. Any imported character with graded cyberware is affected, but
 
 <a id="102"></a>
 
-## 102. An attribute at 0 rolls as 3 dice, or 1 — never 0 — **found in the TODO 93 run, 2026-09-13**
+## 102. ✅ An attribute at 0 rolls as 3 dice, or 1 — never 0 — **DONE 2026-09-13** (`fix/racial-mods`)
+
+**Fixed at the maintainer's request mid-run.** A 0 is now shown and passed through as 0 in the
+roll button, the dropdown, the pool box (`min="0"`) and the Roll callback; `rollPool` refuses it
+with *"dice pool is 0"*. The default 3 remains only for a value that is not a number at all.
+**And an illegal rating is flagged:** Body, Quickness, Strength, Charisma, Intelligence or
+Willpower below 1 turns its block **red** with a ⚠ and a tooltip citing SR3 p.55 — shown, never
+corrected. Magic, Essence and Reaction are never flagged (they *"follow their own rules"*, and
+Magic 0 is every mundane character). Source-level checks in `tests/gm-tools.test.mjs`.
+
+The finding as logged:
 
 **Observation, triaged but not fixed** (found mid-test). The imported troll's Charisma is **0**
 (stored correctly — the schema allows it). Clicking Charisma's roll icon opens the dialog with

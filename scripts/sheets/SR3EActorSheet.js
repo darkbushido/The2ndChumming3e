@@ -750,12 +750,18 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const adept    = isAdept ? (ab[_cyberKey[key]] ?? 0) : 0;
     const racial   = rb[_cyberKey[key]] ?? 0;
     const showTotal = aug > 0 || adept > 0 || racial > 0;
+    /* ⚠ An illegal rating is shown, never corrected (TODO 102). SR3 p.55: *"none of a
+     * character's Physical or Mental Attributes can be lower than 1"* — these six. Magic,
+     * Essence and Reaction "follow their own rules", and Magic 0 is every mundane character, so
+     * they are never flagged. `min="0"` so a stored 0 is not an invalid control the form fights. */
+    const belowMin = base < 1;
     return `
-    <div class="attr-block">
-      <span class="attr-label">${label}</span>
+    <div class="attr-block${belowMin ? ' attr-below-min' : ''}"
+         ${belowMin ? `title="${label} ${base} — Physical and Mental Attributes may not be below 1 (SR3 p.55). Fix the build."` : ''}>
+      <span class="attr-label">${label}${belowMin ? ' ⚠' : ''}</span>
       <div class="attr-row">
         <input class="attr-input" type="number" name="system.attributes.${key}.base"
-               value="${base}" min="1" max="30" title="Base"/>
+               value="${base}" min="0" max="30" title="${belowMin ? 'Below the minimum of 1 (SR3 p.55)' : 'Base'}"/>
         ${adept > 0 ? `<span class="attr-force-sep" title="Adept power bonus">+</span>
         <span class="attr-adept" title="Adept power bonus">${adept}</span>` : ''}
         ${aug > 0 ? `<span class="attr-force-sep" title="Cyber/bio augmentation">+</span>
@@ -3024,10 +3030,15 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       val = 3;
     }
 
-    if (!val || val < 1 || isNaN(val)) {
-      console.warn(`SR3E | Attribute ${attr} has invalid value, using default`);
+    /* ⚠ 0 is a REAL rating, not a missing one (TODO 102). This used to test `!val || val < 1`,
+     * so a Charisma or Magic of 0 opened the dialog with 3 invented dice. The default stays for
+     * a value that is genuinely not a number; a 0 goes through and `rollPool` refuses a 0 pool
+     * itself ("dice pool is 0"). */
+    if (!Number.isFinite(Number(val))) {
+      console.warn(`SR3E | Attribute ${attr} has no usable value, using default`);
       val = 3;
     }
+    val = Math.max(0, Number(val));
 
     const rollOptions = await SR3EActorSheet._promptRollOptions(actor, { defaultPool: val, rollAttr: attr, physicalDice });
     if (rollOptions) {
@@ -4340,7 +4351,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
               ${optionsHtml}
             </select>
             <span class="roll-opts-colon">:</span>
-            <input type="number" id="sr-pool" class="roll-opts-pool" value="${initialPool}" min="1" max="30"/>
+            <input type="number" id="sr-pool" class="roll-opts-pool" value="${initialPool}" min="0" max="30"/>
             <span class="roll-opts-dice-label">dice</span>
             ${poolNote ? `<p class="roll-opts-note">${poolNote}</p>` : ''}
             <label class="roll-opts-label" for="sr-tn">Target Number</label>
@@ -4369,7 +4380,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                 tn:           Math.max(2, tn),
                 useKarma,
                 karmaReroll:  useKarma,
-                pool:         poolEl ? Math.max(1, parseInt(poolEl.value) || 1) : null,
+                // 0 is kept (TODO 102) — rollPool refuses it with "dice pool is 0" rather than
+                // this dialog quietly rolling one die the character does not have.
+                pool:         poolEl ? Math.max(0, parseInt(poolEl.value) || 0) : null,
                 selectedAttr: attrEl?.value ?? selectedKey,
                 label:        html.querySelector('#sr-label')?.value ?? '',
                 // Already inside `pool`; carried so the card can say where the dice came from.
@@ -4407,12 +4420,13 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             if (!isBody) tBox.checked = false;
             tLbl.textContent = toxin.label + (isBody ? '' : ' — Body Tests only');
           }
-          const base = parseInt(attrEl.options[attrEl.selectedIndex].dataset.val) || 1;
+          // ⚠ `|| 1` here turned a Charisma or Magic of 0 into one die (TODO 102).
+          const base = Math.max(0, parseInt(attrEl.options[attrEl.selectedIndex].dataset.val) || 0);
           poolEl.value = base + (tBox?.checked ? toxin.dice : 0);
         });
         tBox?.addEventListener('change', () => {
           const cur = parseInt(poolEl.value) || 0;
-          poolEl.value = Math.max(1, cur + (tBox.checked ? toxin.dice : -toxin.dice));
+          poolEl.value = Math.max(0, cur + (tBox.checked ? toxin.dice : -toxin.dice));
         });
       });
       dialog.render(true);

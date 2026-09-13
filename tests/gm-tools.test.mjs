@@ -114,6 +114,22 @@ export async function run(t) {
   t.ok('the player\'s label is escaped before it reaches the card', /&lt;/.test(handler.slice(0, 1500)));
 
   /* ════════════════════════════════════════════════════════════════════════════
+   *  102 — an attribute at 0 is shown and rolled as 0, and flagged if it is illegal
+   *  (found in the TODO 93 run: Charisma 0 opened as 3 dice, then 1 after the dropdown)
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const rollAttr = sheet.slice(sheet.indexOf('static async _onRollAttr'), sheet.indexOf('static async _onRollSkill'));
+  t.ok('the attribute roll no longer swaps a 0 for 3 dice', !/if \(!val \|\| val < 1/.test(rollAttr) && /Number\.isFinite\(Number\(val\)\)/.test(rollAttr));
+  const opts = sheet.slice(sheet.indexOf('static async _promptRollOptions'), sheet.indexOf('static async _promptSkillRollOptions'));
+  t.ok('the dropdown no longer turns 0 into 1',   !/dataset\.val\) \|\| 1/.test(opts));
+  t.ok('…nor the Roll button',                    !/Math\.max\(1, parseInt\(poolEl\.value\) \|\| 1\)/.test(opts));
+  t.ok('…and the pool box accepts 0',             /id="sr-pool"[^>]*min="0"/.test(opts));
+  t.ok('an illegal Physical/Mental rating is flagged, citing p.55',
+    /attr-below-min/.test(sheet) && /may not be below 1 \(SR3 p\.55\)/.test(sheet));
+  const coreBlock = sheet.slice(sheet.indexOf('const coreAttrs = ['), sheet.indexOf('<!-- Magic -->'));
+  t.ok('…only in the six-attribute block (Magic 0 is normal and never flagged)',
+    /attr-below-min/.test(coreBlock) && !/attr-below-min/.test(sheet.slice(sheet.indexOf('<!-- Magic -->'), sheet.indexOf('<!-- Magic -->') + 3000)));
+
+  /* ════════════════════════════════════════════════════════════════════════════
    *  96 — nobody starts ticked
    * ════════════════════════════════════════════════════════════════════════════ */
   const main = src('sr3e.js');
