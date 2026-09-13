@@ -6655,7 +6655,7 @@ cannot reach. If time is short, do these.
       vehicle soak → resist buttons for driver and passengers. Click one: a dialog with Body,
       Impact armour and *Seat belt*; Cancel leaves the button working; roll → *Assign Wound*
       names that passenger.
-- [ ] **Failed Driving Test** → a *💥 Crash* button on the card; a successful one shows none.
+- [x] ✅ **Failed Driving Test** → a *💥 Crash* button on the card (2026-09-13). A successful one shows none — not yet seen.
 - [ ] **Melee GM window, troll with a club vs unarmed human:** the troll's corner reads *Reach 2
       (troll +1)*; the GM window has **two** vision dropdowns, the troll's on *Thermographic
       (natural)*; Full Darkness → *visibility halves to +2 / +8*.
