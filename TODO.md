@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | **93** — Foundry test of everything on branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **91** · **97** · **101** · **106** · **107** *(**71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** done)* |
+| 🔴 Confirmed bugs, still open | **91** · **97** · **101** · **106** · **107** · **108** *(**71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** *(**3** · **4** · **30** · **75** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** · **104** *(**83** · **84** · **87** done)* |
@@ -7140,3 +7140,19 @@ nothing covers removing one.
 list keyed on "vehicles I drive"), and add an explicit, labelled unlink on the Vehicles tab. The
 unlink writes the VEHICLE's \`driverActorId\`, so it may need a GM route like \`sr3e.vehicle.link\`
 for a player who does not own the vehicle (CLAUDE.md, *Creating documents*).
+
+<a id="108"></a>
+
+## 108. The melee Reach election does not keep its choice — **reported in the TODO 93 run, 2026-09-13**
+
+**Observation only — not investigated.** Troll (club, Reach 2 with natural Reach) attacking Bruce
+Lee: the troll's corner of the melee card shows the **Reach 2** election dropdown with its two
+options (*−2 to my TN* / *+2 to their TN*), but after picking one the dropdown **goes back to
+blank**.
+
+**Triage: new.** The election is \`sr-melee-atk-reach\` / \`sr-melee-def-reach\`, read at resolution
+by \`handleMeleeRoll\` (CLAUDE.md, *Reach is a DIFFERENTIAL*). Unsubmitted corner edits are meant
+to survive card re-renders through \`_cornerDrafts\` (CLAUDE.md, *Two-corner cards*) — whether that
+covers this \`<select>\`, and whether "blank" means no option selected at all, is the first thing to
+check. Also confirm whether the choice still reaches the result even though the control shows
+blank, and whether it matters who is viewing (GM vs the troll's player).
