@@ -6630,7 +6630,7 @@ cannot reach. If time is short, do these.
       On a **dwarf**, Body shows an **unticked** *Resisting disease or toxin: +2* box; tick → +2,
       switch off Body → it greys out.
 - [x] ✅ **🎲 Success Test** — passes, 2026-09-13. Charisma 0 rolled as 3 / 1 dice → [#102](#102), fixed.
-- [ ] **After reloading for #102:** the troll's **Charisma** block is **red** with ⚠, and its roll
+- [x] ✅ Charisma block red (2026-09-13). **After reloading for #102:** the troll's **Charisma** block is **red** with ⚠, and its roll
       dialog shows **0** dice (rolling says *dice pool is 0*); Magic 0 shows 0 but is **not** red.
       Original step: **🎲 Success Test** (Attributes tab): type "Climb the fence", 6 dice, TN 4 → the card is
       titled *Climb the fence* and counts successes.
