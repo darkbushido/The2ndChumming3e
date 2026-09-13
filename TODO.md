@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | **93** — Foundry test of everything on branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **91** · **97** · **101** · **108** *(fixed, awaiting F5 check)* *(**71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** · **106** · **107** done)* |
+| 🔴 Confirmed bugs, still open | **91** · **97** · **108** *(fixed, awaiting F5 check)* *(**101** · **71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** · **106** · **107** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** *(**3** · **4** · **30** · **75** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** · **104** *(**83** · **84** · **87** done)* |
@@ -6688,6 +6688,12 @@ cannot reach. If time is short, do these.
 - [ ] **Ramming passengers:** if the rammed vehicle's soak staged the damage down, the passengers'
       buttons show the lower level; if it soaked it all, no buttons and a note saying so.
 - [ ] **Chase Scene:** pick the vehicle for a participant → its passengers are already listed.
+- [ ] **TODO 101, re-import:** delete the import macro, reload, re-import the troll → Essence **5.12**;
+      press **↺** → it **stays 5.12** (was 5.29). The CyGun Shotgun's sheet shows 0.88 (base 1.1), Alpha.
+- [ ] **TODO 108:** the melee Reach election keeps the option you pick.
+- [ ] **TODO 107:** a vehicle on the Vehicles tab has a **✕** that removes it; it can be added back.
+- [ ] **TODO 106:** Driving Test *Using VCR* reads **−(VCR Rating)**; the 💥 Crash Test dialog shows
+      *Terrain (Crash Test)* (+2/+4) and a *Vehicle speed* row, no VCR row.
 - [ ] **Session Rewards / Chunky Salsa** open with nobody ticked; *All* ticks everyone; awarding
       with nobody ticked warns. A grenade in a confined space still opens Chunky Salsa with the
       caught actors ticked.
@@ -6956,7 +6962,29 @@ Not investigated yet — which of these already carry a tooltip is the first thi
 
 <a id="101"></a>
 
-## 101. Graded cyberware counts its grade twice — imported OR graded on the item sheet — **found in the TODO 93 run, 2026-09-13**
+## 101. ✅ Graded cyberware counts its grade twice — imported OR graded on the item sheet — **DONE 2026-09-13** (`fix/racial-mods`)
+
+**Fixed by grading the BASE exactly once, whoever wrote the item.** The shipped data turned out
+to hold three shapes (read from copies of the repo packs): the Mr. Johnson's contacts store the
+**base** in `essenceCost` (7 alpha/beta implants, no base field); the item sheet's grade dropdown
+and the example Mercenary store the **graded** figure with the base in `essenceCostBase`; the
+importer stored the **graded** figure with no base. New `SR3EActor.baseEssenceCost(item)` —
+*a stored base wins, else `essenceCost` is the base* — handles the first two with no data
+change, and the importer now records the base too (`SR3EActor.importedCyberwareCosts`, in system
+code so a fix reaches worlds with an old macro copy: base = EssCost ÷ grade multiplier, cost
+likewise, grade renamed to the sheet's *Alpha/Beta/Delta*). The sheet's dropdown now rounds
+cyberware the book's way through the same `gradedEssenceCost`.
+
+**Found by its tests, fixed with it:** `gradedEssenceCost`'s round-UP hit binary float noise —
+0.2 × 0.8 = 0.16000000000000003 rounded up to **0.17**, so every alphaware eye implant in the
+contacts pack cost a hundredth too much, and the troll's 1.10 shotgun came out 0.89. The float
+noise is rounded off before rounding up.
+
+⚠ **An implant imported BEFORE this fix** still reads its graded cost as a base — re-import, or
+pick its grade again on its sheet (which records the base). Delete the import macro and reload
+first, as ever. Tests in `tests/essence.test.mjs`; mutant `essence-grades-the-graded-cost`.
+
+The finding as logged:
 
 **Observation, triaged but not fixed** (found mid-test). The imported troll read Essence **5.12**;
 pressing the Essence **↺** (clear the recorded loss, follow installed cyberware) moved it to

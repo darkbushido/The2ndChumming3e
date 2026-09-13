@@ -1020,7 +1020,12 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     const availBase = (s.availabilityBase ?? '') || (s.availability ?? '');
 
     // Recalculate essence/bioIndex and cost from base
-    const newEss  = Math.round(essBase  * essMult  * 100) / 100;
+    // Cyberware: the book's rounding — up, per item, .01 floor (M&M p.45) — through the same
+    // function the Essence total uses, so the sheet and the total cannot disagree (TODO 101).
+    // Bioware keeps the plain multiply: it is charged against the Bio Index, not Essence.
+    const newEss  = isBio
+      ? Math.round(essBase * essMult * 100) / 100
+      : game.sr3e.SR3EActor.gradedEssenceCost(essBase, grade);
     const newCost = Math.round(costBase * costMult);
 
     // Parse and adjust availability (format: "N/M unit" e.g. "8/36 hrs" or "12/7 days")

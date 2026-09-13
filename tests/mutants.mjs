@@ -974,6 +974,16 @@ export const MUTANTS = [
   },
 
   {
+    id:     'essence-grades-the-graded-cost',
+    suite:  'essence',
+    ...ACTOR, method: 'baseEssenceCost',
+    was:    'M&M p.45 grades the BASE Essence cost once. The total graded whatever sat in '
+          + 'essenceCost, which the item sheet and the importer fill with the already-graded '
+          + 'figure, so alphaware was discounted twice (TODO 101, found in play)',
+    impl:   (item) => item?.system?.essenceCost ?? 0,
+  },
+
+  {
     id:     'dwarf-toxin-resistance-missing',
     suite:  'racial',
     ...ACTOR, method: 'racialSituational',

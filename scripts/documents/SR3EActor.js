@@ -7684,10 +7684,64 @@ _prepareCharacter(sys, attr) {
     let total = 0;
     for (const item of (items ?? [])) {
       if (item?.type !== 'cyberware') continue;
-      const c = SR3EActor.gradedEssenceCost(item.system?.essenceCost, item.system?.grade);
+      const c = SR3EActor.gradedEssenceCost(SR3EActor.baseEssenceCost(item), item.system?.grade);
       if (Number.isFinite(c)) total += c;
     }
     return parseFloat(total.toFixed(2));
+  }
+
+  /**
+   * The implant's BASE (ungraded) Essence cost — what the grade multiplier applies to · TODO 101.
+   *
+   * Three writers disagree about what \`essenceCost\` holds, which is how a graded implant came to
+   * be discounted twice (found in play: an alpha CyGun Shotgun, 1.10 base, read 0.71 not 0.88):
+   *
+   * | Writer | \`essenceCost\` | \`essenceCostBase\` |
+   * |---|---|---|
+   * | Mr. Johnson's contacts (TODO 86) | the BASE | unset |
+   * | the item sheet's grade dropdown; the example Mercenary | the GRADED figure | the base |
+   * | the character importer, until this fix | the GRADED figure (the generator's \`EssCost\`) | unset |
+   *
+   * So: **a stored base wins; otherwise \`essenceCost\` is the base.** That covers the first two
+   * with no data change, and the importer now stores the base too. ⚠ An item imported BEFORE this
+   * fix still reads its graded cost as a base — re-import it, or set the item's grade again from
+   * its sheet (which records the base).
+   */
+  /**
+   * An imported implant's costs, un-graded · TODO 101 — the importer's rule, kept in system code
+   * so a fix reaches worlds whose copy of the import macro is old.
+   *
+   * The Shadowrun Character Generator exports **graded** figures: an alpha CyGun Shotgun comes
+   * across as \`EssCost\` 0.88 (base 1.10 × .8) and \`Cost\` 2400 (base 1200 × 2). Storing those as
+   * the implant's cost with its grade set made the Essence total grade it AGAIN. So keep the
+   * graded figures (what the sheet shows, what the book prints for that grade) AND record the base
+   * they came from, exactly as the item sheet's grade dropdown does.
+   *
+   * Grade multipliers · M&M p.45: Essence ×.8 / ×.6 / ×.5, cost ×2 / ×4 / ×8.
+   * @returns {{ grade: string, essenceCost: number, essenceCostBase: number, cost: number, costBase: number }}
+   */
+  static importedCyberwareCosts({ essCost = 0, cost = 0, grade = '' } = {}) {
+    const key  = String(grade ?? '').toLowerCase().replace(/\bused\b/g, '').replace(/ware$/, '').trim();
+    const ess  = globalThis.game?.sr3e?.SR3E?.cyberwareGradeEssence ?? SR3EActor._GRADES_FALLBACK;
+    const em   = ess[key] ?? 1;
+    const cm   = { alpha: 2, beta: 4, delta: 8 }[key] ?? 1;
+    const e    = Number(essCost) || 0;
+    const c    = Math.round(Number(cost) || 0);
+    // The item sheet's grade names ('Alpha', not the generator's 'alpha').
+    const named = !key || key === 'standard' || key === 'basic' ? 'Standard' : key[0].toUpperCase() + key.slice(1);
+    return {
+      grade:           named,
+      essenceCost:     parseFloat(e.toFixed(2)),
+      essenceCostBase: em !== 1 ? parseFloat((e / em).toFixed(2)) : 0,
+      cost:            c,
+      costBase:        cm !== 1 ? Math.round(c / cm) : 0,
+    };
+  }
+
+  static baseEssenceCost(item) {
+    const s = item?.system ?? {};
+    const base = parseFloat(s.essenceCostBase);
+    return Number.isFinite(base) && base > 0 ? base : (s.essenceCost ?? 0);
   }
 
   /**
@@ -7727,7 +7781,12 @@ _prepareCharacter(sys, attr) {
     const key = String(grade ?? '').toLowerCase().replace(/\bused\b/g, '').trim();
     const mult = table[key] ?? 1;
     if (mult === 1) return parseFloat(base.toFixed(2));
-    return Math.max(0.01, Math.ceil(base * mult * 100) / 100);
+    /* ⚠ Round the float noise off BEFORE rounding up. 0.2 × 0.8 is 0.16000000000000003 in
+     * binary floating point, and a bare Math.ceil turned it into 0.17 — every alphaware eye
+     * implant in the Mr. Johnson's pack cost a hundredth too much, and an alpha CyGun Shotgun
+     * (1.10) cost 0.89 instead of 0.88. Found by TODO 101's tests. */
+    const cents = Number((base * mult * 100).toFixed(6));
+    return Math.max(0.01, Math.ceil(cents) / 100);
   }
 
   /** Used when `game` is not available — tests, and any pre-`init` call. */

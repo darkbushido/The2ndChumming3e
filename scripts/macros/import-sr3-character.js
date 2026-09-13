@@ -549,13 +549,20 @@ for (const sp of cj.spells  ?? []) items.push(_spellItem(sp));
 for (const c of cj.contacts ?? []) items.push(_contactItem(c));
 
 for (const c of cj.cyberware ?? []) {
+  // ⚠ The generator exports GRADED Essence and cost (an alpha implant's EssCost is already ×.8).
+  // Keep those, and record the base they came from, or the Essence total grades them twice
+  // (TODO 101). The rule lives in system code so a fix reaches worlds with an old macro copy.
+  const graded = game.sr3e.SR3EActor.importedCyberwareCosts({
+    essCost: _num(c.EssCost ?? c.essCost, 0.5), cost: _int(c.Cost), grade: _str(c.Grade) });
   items.push({
     name: c.Name,
     type: 'cyberware',
     system: {
-      essenceCost:       _num(c.EssCost ?? c.essCost, 0.5),
-      grade:             _str(c.Grade) || 'Standard',
-      cost:              _int(c.Cost),
+      essenceCost:       graded.essenceCost,
+      essenceCostBase:   graded.essenceCostBase,
+      grade:             graded.grade,
+      cost:              graded.cost,
+      costBase:          graded.costBase,
       availability:      _str(c.Availability),
       streetIndex:       _num(c.StreetIndex ?? c['Street Index']),
       legalCode:         _str(c.LegalCode),

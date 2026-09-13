@@ -1336,6 +1336,14 @@ modifiers are real rules with nowhere to land — there is no purchasing flow (T
 
 ⚠ **Rounded UP, per item, to 2dp** — *"Round all numbers up."* Rounding the TOTAL instead would
 let several cheap alphaware implants come in under the book's price.
+⚠ **Round the float noise off first** — 0.2 × 0.8 is 0.16000000000000003, and a bare `Math.ceil`
+made it 0.17 (every alphaware eye in the contacts pack, until TODO 101).
+
+⚠ **Grade the BASE, once — `SR3EActor.baseEssenceCost(item)`** (TODO 101). Three writers disagree
+about `essenceCost`: the contacts pack stores the **base**; the item sheet's grade dropdown stores
+the **graded** figure with the base in `essenceCostBase`; the importer (via
+`importedCyberwareCosts`) now does the same. A stored base wins, else `essenceCost` is the base.
+Grading `essenceCost` blindly discounted sheet-graded and imported alphaware twice.
 
 ⚠ **The .01 floor is on the REDUCTION, not on a free item.** A base cost of 0 stays 0; reading
 the floor as unconditional starts charging Essence for every cosmetic mod.

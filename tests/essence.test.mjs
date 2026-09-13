@@ -193,4 +193,32 @@ export async function run(t) {
    * Cultured/Exotic grades therefore never reach this arithmetic at all. */
   t.is('bioware contributes no Essence whatever its grade',
     SR3EActor.installedEssenceCost([{ type: 'bioware', system: { essenceCost: 2, grade: 'Cultured' } }]), 0);
+
+  /* ==== TODO 101 — three writers, one answer: grade the BASE exactly once ====
+   * Found in the TODO 93 run: an imported alpha CyGun Shotgun (base 1.10) read 0.71, not 0.88 —
+   * the importer stored the generator's already-graded 0.88 and the total graded it again. */
+  const item = system => ({ type: 'cyberware', system });
+
+  // Mr. Johnson's contacts: essenceCost IS the base, no base field (TODO 86's shape).
+  t.is('contacts shape: base in essenceCost, graded once',
+    SR3EActor.installedEssenceCost([item({ essenceCost: 0.2, grade: 'Alphaware' })]), 0.16);
+  // The item sheet's grade dropdown and the example Mercenary: GRADED in essenceCost, base kept.
+  t.is('sheet shape: graded 0.4 with base 0.5 counts 0.4, not 0.32',
+    SR3EActor.installedEssenceCost([item({ essenceCost: 0.4, essenceCostBase: 0.5, grade: 'Alpha' })]), 0.4);
+  // The importer, now: graded + base, via importedCyberwareCosts.
+  const imp = SR3EActor.importedCyberwareCosts({ essCost: 0.8800000000000001, cost: 2400, grade: 'alpha' });
+  t.is('import: the CyGun Shotgun keeps its graded 0.88', imp.essenceCost, 0.88);
+  t.is('…records its base 1.10',                          imp.essenceCostBase, 1.1);
+  t.is('…and its base cost 1200 (×2 for alpha)',          imp.costBase, 1200);
+  t.is('…with the sheet\'s grade name',                   imp.grade, 'Alpha');
+  t.is('…so the installed total is 0.88 — Essence 5.12, as the generator says',
+    SR3EActor.installedEssenceCost([item(imp)]), 0.88);
+  t.is('a standard import records no base',
+    SR3EActor.importedCyberwareCosts({ essCost: 0.5, cost: 1000, grade: '' }).essenceCostBase, 0);
+  t.is('beta: 0.6 ×, 4 × cost',
+    JSON.stringify((({ essenceCostBase, costBase }) => ({ essenceCostBase, costBase }))(
+      SR3EActor.importedCyberwareCosts({ essCost: 0.3, cost: 4000, grade: 'Beta' }))),
+    JSON.stringify({ essenceCostBase: 0.5, costBase: 1000 }));
+  t.is('baseEssenceCost prefers a stored base', SR3EActor.baseEssenceCost(item({ essenceCost: 0.4, essenceCostBase: 0.5 })), 0.5);
+  t.is('…and falls back to essenceCost',        SR3EActor.baseEssenceCost(item({ essenceCost: 0.2 })), 0.2);
 }
