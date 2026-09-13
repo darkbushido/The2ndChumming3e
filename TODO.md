@@ -6646,7 +6646,11 @@ cannot reach. If time is short, do these.
       Armour* block, total **B 3 / I 2**; shoot them → the soak card uses 3 Ballistic and names
       the lacing. On the lacing's sheet, type **0** in *Implant Armour → Impact* → the total drops
       to I 1; **clear the box** → back to 2. (Clearing must store "empty", not 0.)
-- [ ] **💥 Crash:** vehicle sheet → add two passengers under Pilot → 💥 Crash → 50 km/h reads
+- [x] ✅ **💥 Crash** — 2026-09-13: the damage flow works, and Cancel on the passenger dialog leaves
+      the button usable. ⚠ **Layout bug (fix after the run):** in the Crash dialog the *Speed at
+      impact (km/h)* label wraps onto a second line while *Power* and *Level* do not, so the three
+      input boxes sit at different heights. Shorten the label or bottom-align the grid row.
+      Original step: **💥 Crash:** vehicle sheet → add two passengers under Pilot → 💥 Crash → 50 km/h reads
       *42 m per Combat Turn → 5M*, everyone aboard ticked → **Post crash damage** → roll the
       vehicle soak → resist buttons for driver and passengers. Click one: a dialog with Body,
       Impact armour and *Seat belt*; Cancel leaves the button working; roll → *Assign Wound*
