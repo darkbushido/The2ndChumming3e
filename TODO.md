@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | **93** — Foundry test of everything on branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **91** · **97** · **114** *(reloads counted in rounds, not reloads)* *(**112** · **113** fixed on `fix/armor-and-stacks`)* *(**101** · **71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** · **106** · **107** done)* |
+| 🔴 Confirmed bugs, still open | **91** · **97** · **114** *(reloads counted in rounds, not reloads)* · **116** *(Damage Compensators show damage despite the Pain Editor setting)* *(**112** · **113** fixed on `fix/armor-and-stacks`)* *(**101** · **71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** · **106** · **107** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** · **115** *(guided healing)* · **109** *(Stress)* · **110** *(TLE-x, needs 109)* · **111** *(CDS)* *(**3** · **4** · **30** · **75** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** · **104** *(**83** · **84** · **87** done)* |
@@ -7517,3 +7517,22 @@ Supersedes [#76](#76)'s "what it would take", which becomes one step of this.
 
 ⚠ Dwarf toxin/disease resistance and Rapid Healing's `healing` situational dice (TODO 98, TODO 70)
 already exist as channels this can read.
+
+<a id="116"></a>
+
+## 116. Damage Compensators still show damage with *Pain Editor hides wounds from players* on — **reported in play 2026-09-13**
+
+**Observation only — not investigated** (reported mid-session). With the world setting **"Pain
+Editor hides wounds from players"** (`painEditorHidesWounds`, `sr3e.js`) enabled, a character with
+**Damage Compensators** bioware still has their damage shown.
+
+**First things to check when this is picked up** (not verified):
+- Is the concealment keyed to the **Pain Editor** item only (`SR3E.triggeredAugmentations`, TODO 30)
+  and to whether it is switched on? Damage Compensators are a *different* bioware (M&M — they
+  ignore wound modifiers for a number of boxes) and nothing in the book says they hide damage from
+  the player. So first establish whether the character also had a Pain Editor, engaged — if not,
+  the display may be correct and the expectation is the thing to settle.
+- If a Pain Editor *was* engaged, where damage leaks: the sheet's wound track (`SR3EActorSheet.js`
+  ~l.554/691 gate), the token's wound bars (`bar1`/`bar2` on physical/stun — Foundry renders those
+  itself, outside the sheet), chat cards (soak results name the level), or the combat tracker.
+- Damage Compensators' own rule text and page, to state what they should and should not change.
