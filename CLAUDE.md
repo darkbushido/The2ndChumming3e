@@ -1983,6 +1983,17 @@ Attribute point.
 - ⚠ **Chat-card number boxes need `.sr-roll-card input[type="number"]`'s colours.** Foundry styles
   chat inputs for a light ground (`#222`), so on the dark cards the numbers were there but
   invisible — reported as the card "not filling in" Dice and TN.
+- ⚠ **A medic treats someone else's character** (reported in play: "player A can't heal player B").
+  `patientsFor` offers your own characters, every other player's, and anyone you can see (not
+  hidden NPCs); "Treat someone else…" in the menu, and an unhurt character's sheet button, open
+  that picker. Buttons a roll produces carry **`byId`** (the roller), gated `_mineAny(ownerId,
+  byId)`, so the medic can press *Lower*. Their client cannot write the patient, so every change
+  goes through **`applyToPatient`** → the owner writes directly, anyone else sends the INTENT to the
+  GM (`sr3e.heal.apply` → `_applyOp` in the actor's queue) — never a box count, since wounds are
+  accumulators that `sr3e.actor.set` refuses. Money, Attribute and Magic loss stay the patient's.
+- **⏱ Time boxes** (`_timeBox`, `_roadHtml`, `recoveryRoad`, `formatTurns` — a Combat Turn is 3
+  seconds, p.39): every roll and result card leads with how long it takes, and the menu and stage
+  cards show the Healing Table road — each stage's minimum to its 1-success time, and the total.
 - **`act()` returning `false` means "cancelled"**: `sr3e.js` then hands the one-shot button back
   (Charge's confirm, Next's form). Anything else keeps it spent.
 - ⚠ **The per-injury record is the actor flag `healing`** — `{stabilized, magicHealed,

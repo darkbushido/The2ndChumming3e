@@ -8,7 +8,7 @@ Two suites, and they cover different things. Neither replaces the other.
 
 ```bash
 npm test          # 16 suites, ~380 assertions. No browser, no server, seconds.
-npm run test:e2e  # 18 tests / 11 files, two real clients + a GM. Needs Foundry running.
+npm run test:e2e  # 19 tests / 12 files, two real clients + a GM. Needs Foundry running.
 npm run test:mutate  # proves the unit suites can FAIL. Seconds, no browser.
 ```
 
@@ -205,6 +205,7 @@ on 2026-09-13 five such failures all passed after a reboot.
 | `cybercombat`, `orthodox-matrix` | decker vs IC; both sides charged for the Hacking Pool they submit |
 | `miji` | rigger vs rigger; an unmanned drone's corner falls to the GM |
 | `player-sheet` | the sheet from **Player2's** seat: Species locked, Essence warning colours as the GM changes it, a Matrix skill priced as active in the karma dialog |
+| `healing` | **Player2's** medic treats **Player3's** character: picked as patient, Dice/TN read-only to the player and the GM's saved numbers rolled, the time box on the result, and *Lower* pressed by the medic with the GM making the write (`sr3e.heal.apply`). ⚠ Needs a GM tab loaded after this change — see *stale GM* |
 | `essence`, `migrations` | GM-only checks that ride the same harness |
 
 **To simulate something the specs do not cover**, write a new spec rather than driving three

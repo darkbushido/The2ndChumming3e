@@ -124,6 +124,21 @@ export const MUTANTS = [
     impl:   () => {},
   },
   {
+    id:     'heal-own-patients-only',
+    suite:  'healing',
+    ...HEAL, method: 'patientsFor',
+    was:    'the 0.5.1 patient list: only characters you own, so player A could not treat player B '
+          + '(reported in play)',
+    impl:   (user, actors) => actors.filter(a => (a.type === 'character' || a.type === 'npc') && (user.isGM || a.isOwner)),
+  },
+  {
+    id:     'heal-medic-writes-locally',
+    suite:  'healing',
+    ...HEAL, method: 'applyToPatient',
+    was:    'a medic writing another player\'s wounds from their own client, which has no permission to',
+    impl:   async function (patient, op) { return this._applyOp(patient, op); },
+  },
+  {
     id:     'armor-second-layer-not-halved',
     suite:  'armor-layering',
     ...ACTOR, method: 'layeredArmor',

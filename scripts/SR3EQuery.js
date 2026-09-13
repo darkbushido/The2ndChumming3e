@@ -567,6 +567,18 @@ export class SR3EQuery {
       return game.sr3e.SR3EActor._applyDamageBoxes({ uuid, kind, track, boxes });
     });
 
+    /**
+     * A healing step on a patient the clicker does not own — a medic lowering another player's
+     * wound (reported in play). Relays the INTENT ('lower', 'boxes', …), never a new box count:
+     * wound values accumulate, so the GM computes the result against live data, in the queue.
+     */
+    CONFIG.queries['sr3e.heal.apply'] = async ({ rid, uuid, op }) => SR3EQuery.once(rid, async () => {
+      SR3EQuery.assertActiveGM();
+      const doc = SR3EQuery.resolve(uuid);
+      if (!doc) throw new Error(`SR3E | heal.apply: unknown actor '${uuid}'`);
+      return SR3EQueue.run(doc.uuid, () => game.sr3e.SR3EHealing._applyOp(doc, op));
+    });
+
     /* ---------------------------------------------------------------- */
     /*  Decisions — run on the DECIDER's client, not the GM's             */
     /* ---------------------------------------------------------------- */

@@ -3024,7 +3024,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
     if (!_checkBtn(btn, mid, 'healact', i)) return;
     const pl = _payload(btn);
     if (!pl) return;
-    if (!_mineId(pl.ownerId)) return _denyBtn(btn, 'Only this character\'s owner (or the GM) can do this.');
+    // The patient's owner, or whoever made the roll that produced this button (`byId` — the medic).
+    if (!_mineAny(pl.ownerId, pl.byId)) return _denyBtn(btn, 'Only this character\'s owner, the medic who rolled it, or the GM can do this.');
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();

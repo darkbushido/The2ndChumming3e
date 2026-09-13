@@ -319,6 +319,33 @@ export class SR3EHealing {
     return [d ? `${d} day${d === 1 ? '' : 's'}` : '', h ? `${h} hour${h === 1 ? '' : 's'}` : ''].filter(Boolean).join(' ') || '0 hours';
   }
 
+  /** *"A Combat Turn is roughly three seconds long"* (SR3 p.39). */
+  static COMBAT_TURN_SECONDS = 3;
+
+  /** "15 Combat Turns (45 seconds)", "40 Combat Turns (2 minutes)". */
+  static formatTurns(turns) {
+    const t = Math.max(0, Number(turns) || 0);
+    const sec = t * SR3EHealing.COMBAT_TURN_SECONDS;
+    const real = sec < 60 ? `${sec} seconds` : `${Math.round(sec / 60)} minute${Math.round(sec / 60) === 1 ? '' : 's'}`;
+    return `${t} Combat Turn${t === 1 ? '' : 's'} (${real})`;
+  }
+
+  /**
+   * The road from this wound to healed, one Healing Table stage at a time (p.127): each stage
+   * takes at most its base time (1 success) and at least its minimum, then the organ multiplier.
+   * Zero successes has no time at all, so "at most" means "if every roll gets a success".
+   */
+  static recoveryRoad(level, { baseMultiplier = 1, timeMultiplier = 1 } = {}) {
+    const stages = [];
+    for (let lvl = level; SR3EHealing.HEALING_TABLE[lvl]; lvl = NEXT_DOWN[lvl]) {
+      const row = SR3EHealing.HEALING_TABLE[lvl];
+      stages.push({ from: lvl, to: NEXT_DOWN[lvl] ?? '', tn: row.tn, lifestyle: row.lifestyle,
+                    minH: SR3EHealing.stageHours({ level: lvl, successes: 1e9, baseMultiplier, timeMultiplier }),
+                    maxH: SR3EHealing.stageHours({ level: lvl, successes: 1, baseMultiplier, timeMultiplier }) });
+    }
+    return { stages, minH: stages.reduce((s, x) => s + x.minH, 0), maxH: stages.reduce((s, x) => s + x.maxH, 0) };
+  }
+
   /* ════════════════════════════════════════════════════════════════════════════════════════
    *  Reading actors (not pure, but plain-object friendly)
    * ════════════════════════════════════════════════════════════════════════════════════════ */
@@ -384,9 +411,21 @@ export class SR3EHealing {
    *  The menu
    * ════════════════════════════════════════════════════════════════════════════════════════ */
 
-  /** The GM-tools entry: pick a patient first. */
+  /**
+   * Who a user may pick as the patient: their own characters, and — because a medic treats other
+   * people — every other player's character and anyone they can see. Only owned patients used to
+   * be listed, so player A could not treat player B (reported in play). Hidden NPCs stay hidden.
+   */
+  static patientsFor(user, actors) {
+    const LIMITED = globalThis.CONST?.DOCUMENT_OWNERSHIP_LEVELS?.LIMITED ?? 1;
+    return actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)
+      && (user.isGM || a.isOwner || game.sr3e.SR3EQuery.isPlayerCharacter(a) || a.testUserPermission?.(user, LIMITED)));
+  }
+
+  /** The GM-tools entry (and "Treat someone else…"): pick a patient first. */
   static async openPicker() {
-    const actors = game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a) && a.isOwner);
+    const actors = SR3EHealing.patientsFor(game.user, game.actors.contents ?? [...game.actors])
+      .sort((a, b) => Number(b.isOwner) - Number(a.isOwner) || a.name.localeCompare(b.name));
     if (!actors.length) { ui.notifications.warn('No characters you can heal.'); return; }
     let id = null;
     await foundry.applications.api.DialogV2.wait({
@@ -399,11 +438,11 @@ export class SR3EHealing {
                 { label: 'Cancel', action: 'cancel' }],
     });
     const a = id ? game.actors.get(id) : null;
-    if (a) await SR3EHealing.open(a);
+    if (a) await SR3EHealing.open(a, { fromPicker: true });
   }
 
   /** The step menu for one patient — the book's order, with what each step needs. */
-  static async open(patient) {
+  static async open(patient, { fromPicker = false } = {}) {
     const s = SR3EHealing._state(patient);
     const rec = s.record;
     const hurt = s.physical > 0 || s.overflow > 0;
@@ -427,11 +466,23 @@ export class SR3EHealing {
       ${rec.stabilized ? ' · <span style="color:var(--sr-green)">stabilized</span>' : ''}
       ${rec.magicHealed ? ' · magically healed' : ''}${rec.timeMultiplier > 1 ? ` · healing time ×${rec.timeMultiplier}` : ''}${rec.baseMultiplier > 1 ? ` · base time ×${rec.baseMultiplier}` : ''}`;
 
-    if (!steps.length) { ui.notifications.info(`${patient.name} has nothing to heal.`); return; }
+    if (!steps.length) {
+      // From the sheet, an unhurt character is usually the MEDIC — ask who they are treating.
+      if (fromPicker) { ui.notifications.info(`${patient.name} has nothing to heal.`); return; }
+      ui.notifications.info(`${patient.name} has nothing to heal — who are you treating?`);
+      return SR3EHealing.openPicker();
+    }
     let pick = null;
     await foundry.applications.api.DialogV2.wait({
       window: { title: `🩹 Healing — ${patient.name}` },
       content: `<div style="font-size:12px;margin-bottom:8px">${status}</div>
+        ${hurt ? (() => {
+          const mult = { baseMultiplier: rec.baseMultiplier ?? 1, timeMultiplier: rec.timeMultiplier ?? 1 };
+          const road = SR3EHealing.recoveryRoad(s.level || 'L', mult);
+          return SR3EHealing._timeBox(`${SR3EHealing.formatHours(road.minH)} – ${SR3EHealing.formatHours(road.maxH)}`,
+            'to heal fully by the Healing Table, one stage at a time — first aid or magic first can take a stage off')
+            + SR3EHealing._roadHtml(s.level || 'L', mult);
+        })() : ''}
         <div style="display:flex;flex-direction:column;gap:4px">${steps.map((x, i) => `
           <label style="display:grid;grid-template-columns:16px 1fr;gap:6px;align-items:start;padding:3px 2px;cursor:pointer">
             <input type="radio" name="sr-heal-step" value="${x.key}" ${i === 0 ? 'checked' : ''}/>
@@ -441,11 +492,13 @@ export class SR3EHealing {
         magic (once) → does it need a doctor? → heal one stage at a time. Nothing is applied until someone clicks it on a card.</p>`,
       buttons: [{ label: 'Next', action: 'ok', default: true,
                   callback: (_e, _b, d) => { pick = d.element.querySelector('input[name="sr-heal-step"]:checked')?.value; } },
+                { label: 'Treat someone else…', action: 'other', callback: () => { pick = 'other'; } },
                 ...(game.user.isGM ? [{ label: 'New injuries (clear record)', action: 'reset',
                   callback: () => { pick = 'reset'; } }] : []),
                 { label: 'Cancel', action: 'cancel' }],
     });
     if (!pick) return;
+    if (pick === 'other') return SR3EHealing.openPicker();
     if (pick === 'reset') { await patient.unsetFlag(FLAG, 'healing'); ui.notifications.info(`${patient.name}: healing record cleared.`); return; }
     return SR3EHealing.setup(patient, pick);
   }
@@ -487,15 +540,18 @@ export class SR3EHealing {
         return H._post(patient, {
           step, rollerId: patient.id, pool: r.dice, tn: r.tn, skipWoundMod: true,
           title: `😴 Recover Stun — ${patient.name}`, rollLabel: `Roll ${r.attribute}`,
-          lines: [`${r.attribute} ${r.dice} (the higher of Body or Willpower) vs TN 2 + injury modifiers ${-Math.min(0, s.woundMod)} = <strong>${r.tn}</strong>`,
-                  'Resting completely. One box takes 60 minutes ÷ successes (p.126).',
+          lines: [H._timeBox('60 minutes ÷ successes', `for each box of Stun · ${s.stun} to recover · complete rest (p.126)`),
+                  `${r.attribute} ${r.dice} (the higher of Body or Willpower) vs TN 2 + injury modifiers ${-Math.min(0, s.woundMod)} = <strong>${r.tn}</strong>`,
                   s.stun >= 10 ? '⚠ Unconscious from Deadly Stun: does not wake until Stun is back to Serious.' : ''],
         });
       }
 
       case 'firstaid': {
-        const defMedic = game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a))
-          .sort((a, b) => biotechOf(b) - biotechOf(a))[0]?.id ?? patient.id;
+        // Treating someone else's character: the medic is, by default, your own character.
+        const mine = game.user.isGM ? null : game.user.character;
+        const defMedic = mine && mine.id !== patient.id ? mine.id
+          : game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a))
+            .sort((a, b) => biotechOf(b) - biotechOf(a))[0]?.id ?? patient.id;
         const medkit = H.findEquipment([patient, game.actors.get(defMedic)], 'medkit');
         const f = await H._form(`🩹 First aid — ${patient.name}`, `
           ${row('Medic', `<select data-f="medicId">${H._actorOptions(() => true, defMedic, (a, b) => biotechOf(b) - biotechOf(a))}</select>`)}
@@ -523,7 +579,9 @@ export class SR3EHealing {
           paramedic: f.paramedic ? (H.MEDICAL_COSTS.paramedic[s.level] ?? 0) : 0,
           withinHour: f.withinHour, stabilizeOnly: tn.stabilizeOnly,
           title: `🩹 First aid — ${medic.name} treats ${patient.name}`, rollLabel: `Roll Biotech (${medic.name})`,
-          lines: [`${dice.defaulting ? 'No Biotech and no medkit — you will choose how to default' : `${dice.dice} dice: ${dice.note}`} vs TN <strong>${tn.tn}</strong>: ${tn.parts.map(([l, v]) => `${l} ${v >= 0 && l !== tn.parts[0][0] ? '+' : ''}${v}`).join(', ')}`,
+          lines: [tn.stabilizeOnly ? H._timeBox('Stabilize now', 'Deadly: first aid stops the overflow — it cannot heal the wound')
+                    : H._timeBox(`up to ${H.formatTurns(H.FIRST_AID_TABLE[s.level]?.turns)}`, 'the First Aid Table time ÷ successes — uninterrupted (p.129)'),
+                  `${dice.defaulting ? 'No Biotech and no medkit — you will choose how to default' : `${dice.dice} dice: ${dice.note}`} vs TN <strong>${tn.tn}</strong>: ${tn.parts.map(([l, v]) => `${l} ${v >= 0 && l !== tn.parts[0][0] ? '+' : ''}${v}`).join(', ')}`,
                   medkitNow ? 'A medkit does not work by itself — it needs a living user (M&M p.138).' : '',
                   tn.stabilizeOnly ? '<strong>Deadly:</strong> one success stabilizes; it cannot heal.'
                     : `One success lowers the wound one level (never more). Time: ${H.FIRST_AID_TABLE[s.level]?.turns} Combat Turns ÷ successes.`,
@@ -593,6 +651,7 @@ export class SR3EHealing {
           <div style="font-size:12px;margin-bottom:4px">${LEVEL_NAME[lvl]} → ${LEVEL_NAME[NEXT_DOWN[lvl]] ?? 'healed'}.
           Healing Table: base ${H.formatHours(H.HEALING_TABLE[lvl].base)}, minimum ${H.formatHours(H.HEALING_TABLE[lvl].min)},
           TN ${H.HEALING_TABLE[lvl].tn}, minimum lifestyle <strong>${H.HEALING_TABLE[lvl].lifestyle}</strong> (p.127).</div>
+          ${H._roadHtml(lvl, { baseMultiplier: s.record.baseMultiplier ?? 1, timeMultiplier: s.record.timeMultiplier ?? 1 })}
           ${row('Care', sel('care', [['none', 'Resting (no doctor)'], ['doctor', `Doctor visits — ${yen(H.MEDICAL_COSTS.doctorPerDay[lvl])}/day`],
                                     ['hospital', `Hospital — ${yen(H.MEDICAL_COSTS.hospitalPerDay)}/day incl. doctor`],
                                     ...(lvl === 'D' ? [['icu', `Intensive care — ${yen(H.MEDICAL_COSTS.icuPerDay)}/day`]] : [])]))}
@@ -614,7 +673,12 @@ export class SR3EHealing {
           step, rollerId: patient.id, pool: s.bodyNatural, tn, skipWoundMod: true, level: lvl, care: f.care,
           baseMultiplier: s.record.baseMultiplier ?? 1, timeMultiplier: s.record.timeMultiplier ?? 1,
           title: `🛏 Healing ${LEVEL_NAME[lvl]} → ${LEVEL_NAME[NEXT_DOWN[lvl]] ?? 'healed'} — ${patient.name}`, rollLabel: 'Roll natural Body',
-          lines: [`Natural Body ${s.bodyNatural} vs TN <strong>${tn}</strong>: Healing Table ${H.HEALING_TABLE[lvl].tn}`
+          lines: [(() => {
+                    const x = H.recoveryRoad(lvl, { baseMultiplier: s.record.baseMultiplier ?? 1, timeMultiplier: s.record.timeMultiplier ?? 1 }).stages[0];
+                    return H._timeBox(`${H.formatHours(x.minH)} – ${H.formatHours(x.maxH)}`,
+                      `for ${LEVEL_NAME[lvl]} → ${LEVEL_NAME[NEXT_DOWN[lvl]] ?? 'healed'} · 1 success is the longest; more successes shorten it to the minimum (p.127)`);
+                  })(),
+                  `Natural Body ${s.bodyNatural} vs TN <strong>${tn}</strong>: Healing Table ${H.HEALING_TABLE[lvl].tn}`
                     + dm.parts.map(([l, v]) => `, ${l} ${v > 0 ? '+' : ''}${v}`).join('') + (f.unit ? ', stabilization unit −2' : ''),
                   `Base ${H.formatHours(H.HEALING_TABLE[lvl].base)} ÷ successes, never under ${H.formatHours(H.HEALING_TABLE[lvl].min)}.`],
         });
@@ -709,13 +773,36 @@ export class SR3EHealing {
 
   static _payload(o) { return esc(JSON.stringify(o)); }
 
+  /** The big "how long" box on a card — a time buried in a line of text was easy to miss (reported in play). */
+  static _timeBox(big, sub = '') {
+    return `<div class="sr-heal-time"><span class="sr-heal-time-big">⏱ ${big}</span>${sub ? `<span class="sr-heal-time-sub">${sub}</span>` : ''}</div>`;
+  }
+
+  /** The Healing Table stages still ahead, fastest to slowest (1 success), with each TN. */
+  static _roadHtml(level, mult = {}) {
+    const H = SR3EHealing;
+    const road = H.recoveryRoad(level, mult);
+    if (!road.stages.length) return '';
+    const span = (a, b) => (a === b ? H.formatHours(a) : `${H.formatHours(a)} – ${H.formatHours(b)}`);
+    return `<div class="sr-heal-road"><table>
+      <tr><th>Stage</th><th>Time</th><th>TN</th></tr>
+      ${road.stages.map(x => `<tr><td>${LEVEL_NAME[x.from]} → ${LEVEL_NAME[x.to] ?? 'healed'}</td><td>${span(x.minH, x.maxH)}</td><td>${x.tn}</td></tr>`).join('')}
+      ${road.stages.length > 1 ? `<tr class="sr-heal-road-total"><td>All of it</td><td>${span(road.minH, road.maxH)}</td><td></td></tr>` : ''}
+    </table></div>`;
+  }
+
+  /** Card lines: text is wrapped as a line; a ready-made block (a time box, the road) goes in as it is. */
+  static _lines(lines) {
+    return lines.filter(Boolean).map(l => (l.startsWith('<div') ? l : `<div class="sr-heal-line">${l}</div>`)).join('');
+  }
+
   /** A roll card: the numbers, editable pool and TN, and a Roll button for whoever rolls. */
   static async _post(patient, ctx) {
     const roller = game.actors.get(ctx.rollerId);
     const p = { ...ctx, patientId: patient.id, label: ctx.title };
     const content = `<div class="sr-roll-card sr-heal-card" data-heal-step="${esc(ctx.step)}">
       <div class="sr-roll-header">${esc(ctx.title)}</div>
-      ${ctx.lines.filter(Boolean).map(l => `<div class="sr-heal-line">${l}</div>`).join('')}
+      ${SR3EHealing._lines(ctx.lines)}
       <div class="sr-soak-pool-row">
         <span>Dice</span><input type="number" class="sr-heal-pool" value="${ctx.pool}" min="0"/>
         <span>TN</span><input type="number" class="sr-heal-tn" value="${ctx.tn}" min="2"/>
@@ -730,7 +817,7 @@ export class SR3EHealing {
   static async _postAction(patient, title, lines, actions, { color = '' } = {}) {
     const content = `<div class="sr-roll-card sr-heal-card">
       <div class="sr-roll-header"${color ? ` style="color:${color}"` : ''}>${esc(title)}</div>
-      ${lines.filter(Boolean).map(l => `<div class="sr-heal-line">${l}</div>`).join('')}
+      ${SR3EHealing._lines(lines)}
       ${SR3EHealing._buttons(actions)}
     </div>`;
     return ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: patient }), content,
@@ -803,8 +890,12 @@ export class SR3EHealing {
     const s = H._state(patient);
     const n = Number(successes) || 0;
     const nextBoxes = H.oneLevelDown(s.physical);
-    const lower = { act: 'lower', ownerId: patient.id, label: `✔ Lower the wound to ${LEVEL_NAME[H.woundLevel(nextBoxes)] ?? 'healed'} (Physical ${s.physical} → ${nextBoxes})` };
-    const next  = (step, label) => ({ act: 'next', ownerId: patient.id, step, label });
+    // `byId`: whoever made this roll (the medic, the caster) may press what it produced, as well as
+    // the patient's owner — a medic treating another player's character (reported in play).
+    const by = ctx.rollerId;
+    const lower = { act: 'lower', ownerId: patient.id, byId: by, label: `✔ Lower the wound to ${LEVEL_NAME[H.woundLevel(nextBoxes)] ?? 'healed'} (Physical ${s.physical} → ${nextBoxes})` };
+    const next  = (step, label) => ({ act: 'next', ownerId: patient.id, byId: by, step, label });
+    const stabilized = { act: 'stabilized', ownerId: patient.id, byId: by, label: '✔ Mark stabilized' };
     const charge = (amount, what, payerId = patient.id) => amount > 0
       ? { act: 'charge', ownerId: payerId, amount, what, label: `💴 Charge ${yen(amount)} — ${what}` } : null;
     const good = 'var(--sr-green)', bad = 'var(--sr-red)';
@@ -813,8 +904,10 @@ export class SR3EHealing {
       case 'stun': {
         const min = H.stunBoxMinutes(n);
         return H._postAction(patient, `😴 Stun recovery — ${patient.name}`,
-          [min ? `${n} success${n === 1 ? '' : 'es'}: <strong>1 box</strong> of Stun returns after <strong>${H.formatHours(min / 60)}</strong> of complete rest.`
-               : 'No successes — no Stun recovered this rest. Rest and try again.',
+          [min ? H._timeBox(H.formatHours(min / 60), `for 1 box of Stun, resting completely${s.stun > 1
+                   ? ` · about ${H.formatHours((min * s.stun) / 60)} for all ${s.stun} if every roll goes like this one` : ''}`)
+               : H._timeBox('No recovery this rest', 'no successes — rest and roll again'),
+           min ? `${n} success${n === 1 ? '' : 'es'}: <strong>1 box</strong> of Stun returns after ${H.formatHours(min / 60)}.` : '',
            'If the rest is interrupted, roll again: the new result can never be better than the first (p.126).'],
           [min ? { act: 'erase-stun', ownerId: patient.id, label: '✔ Erase 1 Stun box' } : null,
            s.stun > (min ? 1 : 0) ? next('stun', min ? '😴 Roll for the next box' : '😴 Rest and roll again') : null], { color: min ? good : bad });
@@ -829,11 +922,12 @@ export class SR3EHealing {
         else if (ctx.level === 'D') {
           lines.push(out.stabilized ? `${n} success${n === 1 ? '' : 'es'}: <strong>stabilized</strong> — no more boxes of overflow.`
                                     : 'No successes: not stabilized. The patient rolls natural Body against TN 10 (p.129).');
-          actions.push(out.stabilized ? { act: 'stabilized', ownerId: patient.id, label: '✔ Mark stabilized' } : next('stabilize', '🚑 Other ways to stabilize'));
+          actions.push(out.stabilized ? stabilized : next('stabilize', '🚑 Other ways to stabilize'));
           lines.push('When professional help arrives, make another Biotech Test and Body Test (p.129).');
         } else {
-          lines.push(out.lowered ? `${n} success${n === 1 ? '' : 'es'}: the wound drops <strong>one level</strong>. Treatment takes <strong>${out.turns}</strong> uninterrupted Combat Turns.`
-                                 : 'No successes: no improvement. A serious interruption means starting again.');
+          if (out.lowered) lines.push(H._timeBox(H.formatTurns(out.turns), `of uninterrupted treatment · then the wound is ${LEVEL_NAME[NEXT_DOWN[ctx.level]] ?? 'healed'}`));
+          lines.push(out.lowered ? `${n} success${n === 1 ? '' : 'es'}: the wound drops <strong>one level</strong>. A serious interruption means starting again.`
+                                 : 'No successes: no improvement.');
           if (out.lowered) actions.push(lower);
         }
         if (ctx.medkit) actions.push({ act: 'medkit', ownerId: ctx.rollerId, medkit: ctx.medkit, label: `🎲 Medkit supplies check (1D6) — ${ctx.medkit.name}` });
@@ -861,11 +955,13 @@ export class SR3EHealing {
             'Drain is still resisted (card above).'], [], { color: bad });
         }
         return H._postAction(patient, `✨ ${ctx.spell === 'treat' ? 'Treat' : 'Heal'} — ${n} success${n === 1 ? '' : 'es'}`, [
+          H._timeBox(`${r.boxes} box${r.boxes === 1 ? '' : 'es'} · ${H.formatTurns(r.turns)}`,
+            'healed now · sustained this long to become permanent (p.178) — it lapses if the caster stops first'),
           `Split the successes between <strong>boxes healed</strong> (up to Force ${ctx.force}) and the <strong>time</strong> to become permanent
            (${H.PERMANENT_SPELL_TURNS[ctx.level || 'L']} turns base${ctx.spell === 'treat' ? ', halved for Treat' : ''}, ÷ the rest).`,
           `As suggested: <strong>${r.boxes}</strong> box${r.boxes === 1 ? '' : 'es'}, permanent after <strong>${r.turns}</strong> Combat Turns of sustaining.`,
           'Precludes any further healing spell and first aid for these injuries.'],
-          [{ act: 'heal-boxes', ownerId: patient.id, label: '✔ Heal these boxes', input: { label: 'Boxes', value: r.boxes, max: Math.min(n, ctx.force) } }],
+          [{ act: 'heal-boxes', ownerId: patient.id, byId: by, label: '✔ Heal these boxes', input: { label: 'Boxes', value: r.boxes, max: Math.min(n, ctx.force) } }],
           { color: good });
       }
 
@@ -886,8 +982,13 @@ export class SR3EHealing {
         }
         const days = H.billableDays(hours);
         const cost = H.recoveryCost({ level: ctx.level, days, care: ctx.care });
-        return H._postAction(patient, `🛏 ${LEVEL_NAME[ctx.level]} heals to ${LEVEL_NAME[NEXT_DOWN[ctx.level]] ?? 'healed'} — ${patient.name}`, [
+        const after = NEXT_DOWN[ctx.level];
+        const rest = after ? H.recoveryRoad(after, { baseMultiplier: ctx.baseMultiplier, timeMultiplier: ctx.timeMultiplier }) : null;
+        return H._postAction(patient, `🛏 ${LEVEL_NAME[ctx.level]} heals to ${LEVEL_NAME[after] ?? 'healed'} — ${patient.name}`, [
+          H._timeBox(H.formatHours(hours), `until ${LEVEL_NAME[after] ?? 'fully healed'}${rest?.stages.length
+            ? ` · then ${H.formatHours(rest.minH)} – ${H.formatHours(rest.maxH)} more to heal fully` : ''}`),
           `${n} success${n === 1 ? '' : 'es'}: <strong>${H.formatHours(hours)}</strong>${ctx.timeMultiplier > 1 ? ` (×${ctx.timeMultiplier} for organ damage)` : ''}${ctx.baseMultiplier > 1 ? ` (base ×${ctx.baseMultiplier})` : ''}.`,
+          rest?.stages.length ? H._roadHtml(after, { baseMultiplier: ctx.baseMultiplier, timeMultiplier: ctx.timeMultiplier }) : '',
           `Minimum lifestyle while healing: <strong>${cost.minLifestyle}</strong>${ctx.care === 'hospital' || ctx.care === 'icu' ? ' — met by the hospital' : ` — ${yen(cost.lifePerDay)}/day (monthly ÷ 30)`}.`,
           `Bill for ${days} day${days === 1 ? '' : 's'}: care ${yen(cost.care)}${cost.lifestyle ? `, lifestyle ${yen(cost.lifestyle)}` : ''} (p.128).`,
           'Below the minimum lifestyle the GM may add modifiers (p.127).'],
@@ -923,7 +1024,7 @@ export class SR3EHealing {
       case 'selfstab':
         return H._postAction(patient, `🚑 ${n > 0 ? 'Stabilized' : 'Not stabilized'} — ${patient.name}`,
           [n > 0 ? 'Stabilized — the overflow stops growing.' : 'Failed — the patient dies once overflow exceeds their Body (p.129), unless help arrives.'],
-          [n > 0 ? { act: 'stabilized', ownerId: patient.id, label: '✔ Mark stabilized' } : next('stabilize', '🚑 Try another way')],
+          [n > 0 ? stabilized : next('stabilize', '🚑 Try another way')],
           { color: n > 0 ? good : bad });
 
       case 'stabspell': {
@@ -934,7 +1035,7 @@ export class SR3EHealing {
         return H._postAction(patient, `✨ Stabilize — ${ok ? 'stabilized' : 'no effect'}`,
           [ok ? 'Vital functions stabilized; no Body Test for death is needed (p.194).'
               : !ctx.effective ? 'Force below the overflow — no effect.' : 'No successes.'],
-          [ok ? { act: 'stabilized', ownerId: patient.id, label: '✔ Mark stabilized' } : next('stabilize', '🚑 Try another way')],
+          [ok ? stabilized : next('stabilize', '🚑 Try another way')],
           { color: ok ? good : bad });
       }
     }
@@ -944,6 +1045,52 @@ export class SR3EHealing {
    *  Action buttons — each is a person deciding to apply something
    * ════════════════════════════════════════════════════════════════════════════════════════ */
 
+  /**
+   * One change to a patient, computed from LIVE data. Runs on the patient's owner, or on the
+   * GM via `sr3e.heal.apply` when a medic treats someone else's character.
+   * ops: { kind: 'lower' } · { kind: 'boxes', n } · { kind: 'eraseStun' } · { kind: 'record', patch }
+   */
+  static async _applyOp(patient, op = {}) {
+    const H = SR3EHealing;
+    const s = H._state(patient);
+    const merge = async patch => patient.setFlag(FLAG, 'healing', { ...(patient.getFlag(FLAG, 'healing') ?? {}), ...patch });
+    switch (op.kind) {
+      case 'lower': {
+        const boxes = H.oneLevelDown(s.physical);
+        const upd = { 'system.wounds.physical.value': boxes };
+        if (s.level === 'D') upd['system.wounds.overflow.value'] = 0;
+        await patient.update(upd);
+        if (boxes === 0) await patient.unsetFlag(FLAG, 'healing');     // this set of injuries is over
+        return { before: s.physical, after: boxes };
+      }
+      case 'boxes': {
+        const r = H.healBoxes({ physical: s.physical, overflow: s.overflow, n: op.n });
+        await patient.update({ 'system.wounds.physical.value': r.physical, 'system.wounds.overflow.value': r.overflow });
+        // Fully healed ends this set of injuries (as 'lower' does); the next wound may be healed by magic again.
+        const done = r.physical === 0 && r.overflow === 0;
+        if (done) await patient.unsetFlag(FLAG, 'healing');
+        else await merge({ magicHealed: true });
+        return { before: s.physical, beforeOver: s.overflow, after: r.physical, afterOver: r.overflow, done };
+      }
+      case 'eraseStun': {
+        const v = Math.max(0, s.stun - 1);
+        await patient.update({ 'system.wounds.stun.value': v });
+        return { before: s.stun, after: v };
+      }
+      case 'record':
+        await merge(op.patch ?? {});
+        return { ok: true };
+      default:
+        throw new Error(`SR3E | healing: unknown op '${op.kind}'`);
+    }
+  }
+
+  /** The patient's owner (or the GM) writes directly; anyone else — the medic — asks the GM. */
+  static async applyToPatient(patient, op) {
+    if (patient.isOwner) return SR3EHealing._applyOp(patient, op);
+    return game.sr3e.SR3EQuery.asGM('sr3e.heal.apply', { uuid: patient.uuid, op });
+  }
+
   static async _d(formula) {
     const r = await new Roll(formula).evaluate();
     return { total: r.total, faces: r.dice.flatMap(d => d.results.map(x => x.result)) };
@@ -952,41 +1099,29 @@ export class SR3EHealing {
   static async act(btn, p) {
     const H = SR3EHealing;
     const patient = game.actors.get(p.ownerId);
-    const setRecord = async (patch) => {
-      const cur = patient.getFlag(FLAG, 'healing') ?? {};
-      await patient.setFlag(FLAG, 'healing', { ...cur, ...patch });
-    };
+    if (!patient) { ui.notifications.warn('That character no longer exists.'); return false; }
+    // Wounds and the record go through applyToPatient, so a medic can treat another player's
+    // character: their own client cannot write to it, the GM does (reported in play).
+    const apply = op => H.applyToPatient(patient, op);
     switch (p.act) {
       case 'lower': {
-        const s = H._state(patient);
-        const boxes = H.oneLevelDown(s.physical);
-        const upd = { 'system.wounds.physical.value': boxes };
-        if (s.level === 'D') upd['system.wounds.overflow.value'] = 0;
-        await patient.update(upd);
-        if (boxes === 0) await patient.unsetFlag(FLAG, 'healing');     // this set of injuries is over
-        return ChatMessage.create({ content: `<div class="sr-roll-card"><div class="sr-roll-result">✔ ${esc(patient.name)}: Physical ${s.physical} → <strong>${boxes}</strong>.</div></div>` });
+        const r = await apply({ kind: 'lower' });
+        return ChatMessage.create({ content: `<div class="sr-roll-card"><div class="sr-roll-result">✔ ${esc(patient.name)}: Physical ${r.before} → <strong>${r.after}</strong>.</div></div>` });
       }
       case 'heal-boxes': {
-        const s = H._state(patient);
         const nInput = parseInt(btn.closest('.sr-heal-card')?.querySelector('.sr-heal-n')?.value);
-        const r = H.healBoxes({ physical: s.physical, overflow: s.overflow, n: Number.isFinite(nInput) ? nInput : 0 });
-        await patient.update({ 'system.wounds.physical.value': r.physical, 'system.wounds.overflow.value': r.overflow });
-        // Fully healed ends this set of injuries (as 'lower' does); the next wound may be healed by magic again.
-        const done = r.physical === 0 && r.overflow === 0;
-        if (done) await patient.unsetFlag(FLAG, 'healing');
-        else await setRecord({ magicHealed: true });
-        return ChatMessage.create({ content: `<div class="sr-roll-card"><div class="sr-roll-result">✔ ${esc(patient.name)}: Physical ${s.physical}${s.overflow ? `+${s.overflow}` : ''} → <strong>${r.physical}${r.overflow ? `+${r.overflow}` : ''}</strong>. ${done ? 'Fully healed.' : 'Magically healed — no further healing spells or first aid for these injuries.'}</div></div>` });
+        const r = await apply({ kind: 'boxes', n: Number.isFinite(nInput) ? nInput : 0 });
+        return ChatMessage.create({ content: `<div class="sr-roll-card"><div class="sr-roll-result">✔ ${esc(patient.name)}: Physical ${r.before}${r.beforeOver ? `+${r.beforeOver}` : ''} → <strong>${r.after}${r.afterOver ? `+${r.afterOver}` : ''}</strong>. ${r.done ? 'Fully healed.' : 'Magically healed — no further healing spells or first aid for these injuries.'}</div></div>` });
       }
       case 'erase-stun': {
-        const v = Math.max(0, (patient.system?.wounds?.stun?.value ?? 0) - 1);
-        await patient.update({ 'system.wounds.stun.value': v });
-        return ChatMessage.create({ content: `<div class="sr-roll-card"><div class="sr-roll-result">✔ ${esc(patient.name)}: Stun → <strong>${v}</strong>.</div></div>` });
+        const r = await apply({ kind: 'eraseStun' });
+        return ChatMessage.create({ content: `<div class="sr-roll-card"><div class="sr-roll-result">✔ ${esc(patient.name)}: Stun → <strong>${r.after}</strong>.</div></div>` });
       }
       case 'stabilized':
-        await setRecord({ stabilized: true });
+        await apply({ kind: 'record', patch: { stabilized: true } });
         return ChatMessage.create({ content: `<div class="sr-roll-card"><div class="sr-roll-result" style="color:var(--sr-green)">✔ ${esc(patient.name)} is stabilized.</div></div>` });
       case 'record':
-        await setRecord({ [p.key]: p.value });
+        await apply({ kind: 'record', patch: { [p.key]: p.value } });
         return ChatMessage.create({ content: `<div class="sr-roll-card"><div class="sr-roll-result">✔ Recorded on ${esc(patient.name)}: ${p.key === 'timeMultiplier' ? `healing time ×${p.value}` : `base healing time ×${p.value}`}. Later stages use it.</div></div>` });
       case 'next':
         return (await H.setup(patient, p.step)) ? true : false;

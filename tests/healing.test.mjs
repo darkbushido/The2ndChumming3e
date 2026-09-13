@@ -172,11 +172,80 @@ export async function run(t) {
     t.is('a GM rolling reads their own boxes', JSON.stringify(rolled), '[30,2]');
   } finally { game.user = prevUser; game.messages = prevMessages; game.actors = prevActors; }
 
+  /* ── Changing the patient: one set of ops, run by the owner or by the GM ─────────── */
+  const patient = ({ physical = 0, overflow = 0, stun = 0, flag = null, owner = true } = {}) => ({
+    id: 'pt', uuid: 'Actor.pt', name: 'Pt', type: 'character', isOwner: owner, flag, updates: [],
+    system: { wounds: { physical: { value: physical }, overflow: { value: overflow }, stun: { value: stun } }, attributes: {} },
+    getFlag() { return this.flag; }, async setFlag(_s, _k, v) { this.flag = v; }, async unsetFlag() { this.flag = null; },
+    async update(d) {
+      this.updates.push(d);
+      for (const [k, v] of Object.entries(d)) { const [, , track] = k.split('.'); this.system.wounds[track].value = v; }
+    },
+  });
+  let pt = patient({ physical: 3, flag: { stabilized: true } });
+  let r = await H._applyOp(pt, { kind: 'lower' });
+  t.is('lower: Moderate drops to Light\'s one box', `${r.before}→${r.after}`, '3→1');
+  t.ok('…and the record stays while a wound remains', pt.flag?.stabilized === true);
+  r = await H._applyOp(pt, { kind: 'lower' });
+  t.is('lower from Light: healed, and the record is cleared', `${r.after}/${pt.flag}`, '0/null');
+  pt = patient({ physical: 6 });
+  r = await H._applyOp(pt, { kind: 'boxes', n: 2 });
+  t.is('Heal 2 boxes of Serious: 6 → 4, marked magically healed', `${r.after}/${pt.flag?.magicHealed}`, '4/true');
+  pt = patient({ physical: 2, overflow: 1, flag: { stabilized: true } });
+  r = await H._applyOp(pt, { kind: 'boxes', n: 5 });
+  t.is('healing every box by magic clears the record, so the next injury is a new set', `${r.after}+${r.afterOver}/${r.done}/${pt.flag}`, '0+0/true/null');
+  pt = patient({ stun: 2 });
+  r = await H._applyOp(pt, { kind: 'eraseStun' });
+  t.is('erase a Stun box', r.after, 1);
+  pt = patient({ physical: 10, flag: { stabilized: true } });
+  await H._applyOp(pt, { kind: 'record', patch: { timeMultiplier: 2 } });
+  t.is('record merges into the flag', JSON.stringify(pt.flag), '{"stabilized":true,"timeMultiplier":2}');
+
+  const prevSr3e = game.sr3e;
+  try {
+    let sent = null;
+    game.sr3e = { ...prevSr3e, SR3EQuery: { asGM: async (verb, data) => { sent = { verb, data }; return { before: 3, after: 1 }; } } };
+    pt = patient({ physical: 3, owner: true });
+    await H.applyToPatient(pt, { kind: 'lower' });
+    t.ok('the patient\'s owner writes directly, asking nobody', pt.updates.length === 1 && sent === null);
+    pt = patient({ physical: 3, owner: false });
+    await H.applyToPatient(pt, { kind: 'lower' });
+    t.ok('a medic treating someone else\'s character asks the GM, with the intent — not a box count',
+      sent?.verb === 'sr3e.heal.apply' && sent.data.uuid === 'Actor.pt' && sent.data.op.kind === 'lower' && pt.updates.length === 0);
+
+    // Who can be picked as the patient (reported in play: player A could not treat player B).
+    game.sr3e = { ...prevSr3e, isLiveActor: () => true, SR3EQuery: { isPlayerCharacter: a => !!a.pc } };
+    const cast = [
+      { name: 'Mine', type: 'character', isOwner: true },
+      { name: 'Other PC', type: 'character', isOwner: false, pc: true },
+      { name: 'Seen NPC', type: 'npc', isOwner: false, testUserPermission: () => true },
+      { name: 'Hidden NPC', type: 'npc', isOwner: false, testUserPermission: () => false },
+      { name: 'A car', type: 'vehicle', isOwner: true },
+    ];
+    t.is('a player may treat their own, other players\' characters and anyone they can see — not hidden NPCs',
+      H.patientsFor({ isGM: false }, cast).map(a => a.name).join(', '), 'Mine, Other PC, Seen NPC');
+    t.is('a GM may treat anyone (but not a vehicle)', H.patientsFor({ isGM: true }, cast).length, 4);
+  } finally { game.sr3e = prevSr3e; }
+
+  /* ── How long it takes ──────────────────────────────────────────────────────────── */
+  const road = H.recoveryRoad('M');
+  t.is('Moderate to healed: two stages', road.stages.map(x => `${x.from}→${x.to || 'healed'} ${x.minH}-${x.maxH}h TN${x.tn}`).join(' | '),
+    'M→L 24-240h TN6 | L→healed 2-24h TN4');
+  t.is('…and all of it: 26 hours at best, 264 at 1 success a stage', `${road.minH}-${road.maxH}`, '26-264');
+  t.is('organ damage doubles every stage of the road', H.recoveryRoad('D', { timeMultiplier: 2 }).stages[0].minH, 144);
+  t.is('a lost limb adds 50% to the base, not the minimum', `${H.recoveryRoad('S', { baseMultiplier: 1.5 }).stages[0].minH}/${H.recoveryRoad('S', { baseMultiplier: 1.5 }).stages[0].maxH}`, '48/720');
+  t.is('Combat Turns in real time (3 seconds each, p.39)', [1, 15, 40].map(H.formatTurns).join(' | '),
+    '1 Combat Turn (3 seconds) | 15 Combat Turns (45 seconds) | 40 Combat Turns (2 minutes)');
+  const lines = H._lines(['plain', H._timeBox('12 days', 'sub'), '']);
+  t.ok('a time box goes onto the card as a block, text as a line, blanks dropped',
+    lines.includes('<div class="sr-heal-line">plain</div>') && lines.includes('class="sr-heal-time"') && !lines.includes('sr-heal-line"></div>'));
+
   /* ── Wiring (source level — the sheets and hooks cannot be imported) ────────────── */
   const read = rel => readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
   const entry = read('scripts/sr3e.js'), actor = read('scripts/documents/SR3EActor.js'), sheet = read('scripts/sheets/SR3EActorSheet.js');
   t.ok('the roll button is the roller\'s alone', /\.sr-heal-roll-btn[\s\S]{0,300}_isDeciderId\(pl\.rollerId\)/.test(entry));
-  t.ok('action buttons need the character\'s owner or the GM', /\.sr-heal-act-btn[\s\S]{0,300}_mineId\(pl\.ownerId\)/.test(entry));
+  t.ok('action buttons need the patient\'s owner, the medic who rolled, or the GM', /\.sr-heal-act-btn[\s\S]{0,300}_mineAny\(pl\.ownerId, pl\.byId\)/.test(entry));
+  t.ok('the GM has a heal.apply verb that runs _applyOp in the actor\'s queue', /'sr3e\.heal\.apply'[\s\S]{0,300}SR3EQueue\.run\(doc\.uuid, \(\) => game\.sr3e\.SR3EHealing\._applyOp\(doc, op\)\)/.test(read('scripts/SR3EQuery.js')));
   t.ok('a cancelled Charge / Next hands the button back', /act\(btn, pl\) === false/.test(entry));
   t.ok('the final wave posts the result card', /allDone && state\.healingContext[\s\S]{0,120}SR3EHealing\.onRolled/.test(actor));
   t.ok('the character sheet has the 🩹 Healing button', /data-action="openHealing"/.test(sheet) && /openHealing:\s+SR3EActorSheet\._onOpenHealing/.test(sheet));
@@ -187,7 +256,6 @@ export async function run(t) {
   t.ok('chat-card number boxes get the system\'s text colour (they were #222 on a dark card — invisible)', /color:\s*var\(--sr-text\)/.test(numRule));
   const heal = read('scripts/SR3EHealing.js');
   t.ok('Spell Pool dice on a Heal card are spent from the caster when they roll', /static async rollFromCard[\s\S]{0,2000}p\.spellPool > 0[\s\S]{0,80}roller\.spendSpellPool\(p\.spellPool\)/.test(heal));
-  t.ok('healing every box by magic clears the record, so the next injury is a new set', /case 'heal-boxes'[\s\S]{0,700}r\.physical === 0 && r\.overflow === 0[\s\S]{0,80}unsetFlag\(FLAG, 'healing'\)/.test(heal));
   t.ok('"does it need a doctor?" at Deadly posts no roll (it posted "TN null" in play)', /case 'attention': \{\s*[\s\S]{0,200}attentionTN\(s\.level\) === null\)[\s\S]{0,40}return H\._postAction/.test(heal));
   t.ok('no card prints a bare "${n} boxes" (it read "(1 boxes)" in play)', !/\$\{[^}]+\} boxes\b/.test(heal));
 }
