@@ -1975,6 +1975,14 @@ Attribute point.
   `SR3EHealing.onRolled`. It is carried at all three explosion-carry sites (Deadly first aid is TN
   10, which explodes). `skipWoundMod` for the patient's own Body tests — the tables already price
   the wound in.
+- ⚠ **Dice and TN are the GM's, read-only to players** (`SR3EHealing.wireCard`, reported in play
+  on 0.5.1). A GM's edit is **saved on the message** (flag `healRoll`) — the roll usually runs on
+  the *player's* client, which never sees the GM's copy of the card, so an edit that only lived in
+  the GM's DOM was silently ignored. `rollFromCard` reads the boxes only for a GM; everyone else
+  rolls the saved numbers, else the posted ones.
+- ⚠ **Chat-card number boxes need `.sr-roll-card input[type="number"]`'s colours.** Foundry styles
+  chat inputs for a light ground (`#222`), so on the dark cards the numbers were there but
+  invisible — reported as the card "not filling in" Dice and TN.
 - **`act()` returning `false` means "cancelled"**: `sr3e.js` then hands the one-shot button back
   (Charge's confirm, Next's form). Anything else keeps it spent.
 - ⚠ **The per-injury record is the actor flag `healing`** — `{stabilized, magicHealed,

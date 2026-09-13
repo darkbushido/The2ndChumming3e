@@ -3007,6 +3007,7 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
    * roll (medic, patient or caster), so `_isDeciderId`. The ACTION buttons change a track, the
    * record or nuyen, so any owner of that character (or the GM) may press them — `_mineId`.
    * Both one-shot, like every card button. */
+  SR3EHealing.wireCard(message, html);   // Dice / TN: the GM's to change, read-only to players
   html.querySelectorAll('.sr-heal-roll-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'healroll', i)) return;
     const pl = _payload(btn);

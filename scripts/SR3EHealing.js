@@ -744,13 +744,35 @@ export class SR3EHealing {
       : `<button type="button" class="sr-heal-act-btn" data-payload='${H_payload(a)}'>${esc(a.label)}</button>`).join('');
   }
 
+  /**
+   * Dice and TN on a roll card are the GM's to change, not the player's (reported in play).
+   * ⚠ A GM's edit is SAVED ON THE MESSAGE (flag `healRoll`), not just typed into their own copy of
+   * the card: the roll usually runs on the player's client, which never sees another client's DOM.
+   * Called from `renderChatMessageHTML`, so every client shows the saved numbers.
+   */
+  static wireCard(message, html) {
+    const saved = message?.getFlag?.(FLAG, 'healRoll') ?? {};
+    for (const [cls, key] of [['.sr-heal-pool', 'pool'], ['.sr-heal-tn', 'tn']]) {
+      const input = html.querySelector(cls);
+      if (!input) continue;
+      if (Number.isFinite(saved[key])) input.value = saved[key];
+      if (!game.user.isGM) { input.readOnly = true; input.title = 'Set by the GM'; continue; }
+      input.addEventListener('change', () => {
+        const v = parseInt(input.value);
+        if (Number.isFinite(v)) message.setFlag(FLAG, 'healRoll', { ...(message.getFlag(FLAG, 'healRoll') ?? {}), [key]: v });
+      });
+    }
+  }
+
   /** The Roll button on a healing card. Runs on the roller's client. */
   static async rollFromCard(btn, p) {
     const card = btn.closest('.sr-heal-card');
-    let pool = parseInt(card?.querySelector('.sr-heal-pool')?.value);
-    let tn   = parseInt(card?.querySelector('.sr-heal-tn')?.value);
-    if (!Number.isFinite(pool)) pool = p.pool;
-    if (!Number.isFinite(tn))   tn = p.tn;
+    const saved = game.messages?.get(btn.closest('[data-message-id]')?.dataset.messageId)?.getFlag(FLAG, 'healRoll') ?? {};
+    // Only a GM's own box is read; everyone else rolls what the GM saved, else what was posted.
+    let pool = game.user.isGM ? parseInt(card?.querySelector('.sr-heal-pool')?.value) : NaN;
+    let tn   = game.user.isGM ? parseInt(card?.querySelector('.sr-heal-tn')?.value) : NaN;
+    if (!Number.isFinite(pool)) pool = saved.pool ?? p.pool;
+    if (!Number.isFinite(tn))   tn = saved.tn ?? p.tn;
     const roller = game.actors.get(p.rollerId);
     if (!roller) { ui.notifications.warn('That character no longer exists.'); return; }
     if (p.defaulting && pool <= 0) {

@@ -116,6 +116,14 @@ export const MUTANTS = [
     impl:   ({ body = 0, willpower = 0 } = {}) => ({ dice: Math.max(body, willpower), attribute: willpower > body ? 'Willpower' : 'Body', tn: 2 }),
   },
   {
+    id:     'heal-card-player-edits-dice',
+    suite:  'healing',
+    ...HEAL, method: 'wireCard',
+    was:    'the 0.5.1 card: Dice and TN editable by the player, and a GM edit never left the GM\'s '
+          + 'own screen (reported in play)',
+    impl:   () => {},
+  },
+  {
     id:     'armor-second-layer-not-halved',
     suite:  'armor-layering',
     ...ACTOR, method: 'layeredArmor',

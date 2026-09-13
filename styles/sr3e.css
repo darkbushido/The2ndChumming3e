@@ -344,6 +344,22 @@ background-color: var(--sr-surface) !important;
 .sr-soak-pool-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 12px; }
 .sr-soak-pool-row input { width: 50px; padding: 2px 4px; }
 
+/* Number boxes on chat cards — soak, drain, healing. Foundry styles chat inputs for a light
+   ground (#222 text), so on these dark cards the numbers were there but invisible: reported as
+   "the healing isn't filling in the dice and the TN box". A read-only box (a player's view of a
+   GM-set number) stays readable but plainly not a field. */
+.sr-roll-card input[type="number"] {
+  background: var(--sr-surface);
+  color: var(--sr-text);
+  border: 1px solid var(--sr-border);
+  border-radius: var(--r);
+}
+.sr-roll-card input[type="number"]:read-only {
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+}
+
 /* green — dodge / defense */
 .sr-dodge-roll-btn,
 .sr-dodge-declare-btn,

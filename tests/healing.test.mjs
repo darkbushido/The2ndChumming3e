@@ -133,6 +133,45 @@ export async function run(t) {
   t.is('ratings are read from "[N]" too', H.findEquipment([who('a', [kit('p', 'Antidote Patch [5]')])], 'antidote')?.rating, 5);
   t.is('times read like people write them', [H.formatHours(0.5), H.formatHours(80), H.formatHours(2)].join(' | '), '30 minutes | 3 days 8 hours | 2 hours');
 
+  /* ── Dice / TN on a roll card: the GM's, not the player's (reported in play) ────── */
+  const box = v => ({ value: String(v), readOnly: false, title: '', on: {}, addEventListener(e, f) { this.on[e] = f; } });
+  const cardHtml = (pool, tn) => { const b = { '.sr-heal-pool': box(pool), '.sr-heal-tn': box(tn) }; return { b, querySelector: s => b[s] ?? null }; };
+  const fakeMsg = (flag = null) => ({ id: 'm1', flag, getFlag() { return this.flag; }, async setFlag(_s, _k, v) { this.flag = v; } });
+  const prevUser = game.user, prevMessages = game.messages, prevActors = game.actors;
+  try {
+    game.user = { isGM: false };
+    let h = cardHtml(6, 5);
+    H.wireCard(fakeMsg({ tn: 3 }), h);
+    t.ok('a player\'s Dice and TN boxes are read-only', h.b['.sr-heal-pool'].readOnly && h.b['.sr-heal-tn'].readOnly);
+    t.is('…and show what the GM saved, not what was posted', String(h.b['.sr-heal-tn'].value), '3');
+    t.is('…and a player\'s box saves nothing', Object.keys(h.b['.sr-heal-tn'].on).length, 0);
+
+    game.user = { isGM: true };
+    const m = fakeMsg();
+    h = cardHtml(6, 5);
+    H.wireCard(m, h);
+    t.ok('the GM\'s boxes stay editable', !h.b['.sr-heal-pool'].readOnly && !h.b['.sr-heal-tn'].readOnly);
+    h.b['.sr-heal-tn'].value = '4'; h.b['.sr-heal-tn'].on.change?.();
+    h.b['.sr-heal-pool'].value = '8'; h.b['.sr-heal-pool'].on.change?.();
+    t.is('a GM edit is saved on the message, where the rolling client can read it', `${m.flag?.pool}/${m.flag?.tn}`, '8/4');
+
+    // The roll itself: a player rolls the saved numbers, whatever their own copy of the card says.
+    let rolled = null;
+    game.actors = { get: () => ({ name: 'R', rollPool: async (pool, tn) => { rolled = [pool, tn]; } }) };
+    game.messages = { get: () => fakeMsg({ pool: 8, tn: 4 }) };
+    const tampered = cardHtml(30, 2);
+    const btn = { closest: s => (s === '.sr-heal-card' ? tampered : { dataset: { messageId: 'm1' } }) };
+    game.user = { isGM: false };
+    await H.rollFromCard(btn, { rollerId: 'r', pool: 6, tn: 5, label: 'x' });
+    t.is('a player rolls the GM\'s saved Dice and TN, not a box typed into', JSON.stringify(rolled), '[8,4]');
+    game.messages = { get: () => fakeMsg(null) };
+    await H.rollFromCard(btn, { rollerId: 'r', pool: 6, tn: 5, label: 'x' });
+    t.is('…and with nothing saved, what was posted', JSON.stringify(rolled), '[6,5]');
+    game.user = { isGM: true };
+    await H.rollFromCard(btn, { rollerId: 'r', pool: 6, tn: 5, label: 'x' });
+    t.is('a GM rolling reads their own boxes', JSON.stringify(rolled), '[30,2]');
+  } finally { game.user = prevUser; game.messages = prevMessages; game.actors = prevActors; }
+
   /* ── Wiring (source level — the sheets and hooks cannot be imported) ────────────── */
   const read = rel => readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
   const entry = read('scripts/sr3e.js'), actor = read('scripts/documents/SR3EActor.js'), sheet = read('scripts/sheets/SR3EActorSheet.js');
@@ -142,8 +181,12 @@ export async function run(t) {
   t.ok('the final wave posts the result card', /allDone && state\.healingContext[\s\S]{0,120}SR3EHealing\.onRolled/.test(actor));
   t.ok('the character sheet has the 🩹 Healing button', /data-action="openHealing"/.test(sheet) && /openHealing:\s+SR3EActorSheet\._onOpenHealing/.test(sheet));
   t.ok('the GM tools list has it too, for everyone', /mk\('sr3e-heal-btn'[^\n]*false\)/.test(entry));
+  t.ok('every render wires the Dice / TN boxes', /SR3EHealing\.wireCard\(message, html\)/.test(entry));
+  const css = read('styles/sr3e.css');
+  const numRule = css.match(/\.sr-roll-card input\[type="number"\]\s*\{([^}]*)\}/)?.[1] ?? '';
+  t.ok('chat-card number boxes get the system\'s text colour (they were #222 on a dark card — invisible)', /color:\s*var\(--sr-text\)/.test(numRule));
   const heal = read('scripts/SR3EHealing.js');
-  t.ok('Spell Pool dice on a Heal card are spent from the caster when they roll', /rollFromCard[\s\S]{0,1200}p\.spellPool > 0[\s\S]{0,80}roller\.spendSpellPool\(p\.spellPool\)/.test(heal));
+  t.ok('Spell Pool dice on a Heal card are spent from the caster when they roll', /static async rollFromCard[\s\S]{0,2000}p\.spellPool > 0[\s\S]{0,80}roller\.spendSpellPool\(p\.spellPool\)/.test(heal));
   t.ok('healing every box by magic clears the record, so the next injury is a new set', /case 'heal-boxes'[\s\S]{0,700}r\.physical === 0 && r\.overflow === 0[\s\S]{0,80}unsetFlag\(FLAG, 'healing'\)/.test(heal));
   t.ok('"does it need a doctor?" at Deadly posts no roll (it posted "TN null" in play)', /case 'attention': \{\s*[\s\S]{0,200}attentionTN\(s\.level\) === null\)[\s\S]{0,40}return H\._postAction/.test(heal));
   t.ok('no card prints a bare "${n} boxes" (it read "(1 boxes)" in play)', !/\$\{[^}]+\} boxes\b/.test(heal));
