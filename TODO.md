@@ -6991,6 +6991,8 @@ bioware Bio Index. Any imported character with graded cyberware is affected, but
 - **3** — \`SR3EActorSheet._onRollAttr\` treats \`!val || val < 1\` as a missing attribute and
   substitutes 3 ("using default"). Pre-existing, not this branch. The worse of the two: a player
   rolls three dice they do not have.
+- **Magic 0 shows 1 too** when picked from the dropdown (confirmed in the run) — the same floor;
+  it is the ordinary case for every mundane character, so this is not only about illegal builds.
 - **1** — the attribute dropdown wiring added for TODO 98 on this branch does
   \`parseInt(dataset.val) || 1\`, so 0 becomes 1.
 
