@@ -4624,13 +4624,23 @@ off" problem.
 on its ctx and says on the card when they differ from the table. Tests in
 `tests/gm-tools.test.mjs`, including the km/h unit trap (70 km/h is Moderate, not Serious).
 
-**Found, not fixed — passengers' own protection.** SR3 p.147: *"If a character is wearing a seat
-belt or other safety restraint during the collision, stage down the damage by an additional
-level"* and *"Only impact armor protects against crash damage"* (the book's cops go 15S → 15M
-belted → 12M in 4/3 vests). The existing passenger resist button (`handleRamPassengerResist`,
-shared with ramming) applies neither: it rolls Body against the full Power at the vehicle's
-level. The GM adjusts by hand for now. Also: Control Pool dice the rigger used on the Crash Test
-should add to passengers' resistance (same paragraph) — not modelled.
+**✅ Passengers' own protection — done 2026-09-13.** SR3 p.147: *"If a character is wearing a
+seat belt or other safety restraint during the collision, stage down the damage by an additional
+level"* and *"Only impact armor protects against crash damage."* Clicking an occupant's resist
+button now opens a small dialog first — Body dice, **Impact armour** (pre-filled from worn +
+implant armour, `armorRatings`), and a **seat belt** box — with the resulting code shown live.
+The pure rule is `SR3EActor.collisionPassengerDamage`, asserted on the book's cops (15S → belted
+15M → Impact 3 → **12M at TN 12**); a belt on Light damage means none. Cancel leaves the button
+usable (the dialog opens before `_claimBtn`). Found on the way and fixed with it:
+- **Ramming handed passengers the ORIGINAL level** and made them roll even when the vehicle soaked
+  the hit to nothing. p.147's worked example of this very paragraph is a ramming, so both flows
+  now use the level the vehicle actually took, and nobody aboard rolls when it took none.
+- **The passenger roll's soak payload had no `actorId`**, so its *Assign Wound* button pointed at
+  no one and named them "Target".
+
+Still not modelled, same paragraph: *"Control Pool dice used by the rigger in the Crash Test also
+add to the dice rolled for passengers' Damage Resistance Tests"* — type them into the Body dice
+box. Mutant `collision-ignores-belt-and-armour`.
 
 The report as written:
 
@@ -6650,6 +6660,13 @@ B5 Q5 S4 C2 I3 W2 imported at those numbers instead of B10 Q4 S8 C0 I1 W2.
       are listed, ticked. **Post crash damage** → a card with the vehicle soak button; roll it →
       resist buttons for the driver and each passenger. Also try **Crash Test**: the Driving Test
       dialog titled *Crash Test*; 0 successes posts the crash.
+- [ ] **Crash passengers (belt and armour).** From a crash card, click a passenger's resist
+      button: a dialog with Body dice, Impact armour (their vest's Impact plus any implant
+      armour) and a *Seat belt* box. 15S with belt and Impact 3 reads *resist 12M … TN 12*.
+      Cancel → the button still works. Roll → the result's *Assign Wound* names that passenger.
+- [ ] **Ramming passengers.** Ram a vehicle with people aboard: if its soak staged the damage
+      down, the passengers' buttons show the lower level; if it soaked it all, the card says no
+      one aboard takes damage and there are no buttons.
 - [ ] **Failed Driving Test** → the card shows *💥 Crash — resolve for the vehicle and everyone
       aboard*; it opens the same dialog. A successful one shows no button.
 - [ ] **Chase Scene**: pick that vehicle for a participant → its passengers appear already.

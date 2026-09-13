@@ -725,8 +725,10 @@ The Crash Test **is** `runDrivingTest` in crash mode (p.147: *"a Driving Test ag
 target number equal to the vehicle's Handling Rating"*). ⚠ One damage builder,
 `_buildCrashDamageHtml`, which takes the GM's Power/Level as ctx overrides. The people aboard come
 from **`VehicleData.passengerActorIds`**, the vehicle's own roster, which the Chase Scene now
-seeds from. ⚠ Passengers' seat belts and impact armour (p.147) are **not** applied by the shared
-passenger resist button — see TODO 74.
+seeds from. **Occupants** (p.147, crash AND ramming) resist the Power the vehicle faced at the level it
+*actually took* — nobody aboard rolls if it took none — and their resist button first asks for
+**impact armour** (drops Power; prefilled from `armorRatings`) and a **seat belt** (drops a level):
+`SR3EActor.collisionPassengerDamage`, pinned to the book's cops, 15S → **12M at TN 12**.
 
 **🎲 Success Test** (TODO 73) — on the character sheet beside ⚔ Contested Roll: any pool against
 any TN, through `_promptRollOptions`' `custom` mode and `rollPool`, never `Roll.create`.

@@ -954,6 +954,16 @@ export const MUTANTS = [
   },
 
   {
+    id:     'collision-ignores-belt-and-armour',
+    suite:  'gm-tools',
+    ...ACTOR, method: 'collisionPassengerDamage',
+    was:    'SR3 p.147 - a seat belt stages collision damage down a level and "only impact '
+          + 'armor protects against crash damage". Occupants rolled Body against the full Power '
+          + 'at the vehicle\'s level with neither, until 2026-09-13 (TODO 74)',
+    impl:   ({ power = 0, level = 'L' } = {}) => ({ power, level, tn: Math.max(2, power) }),
+  },
+
+  {
     id:     'dwarf-toxin-resistance-missing',
     suite:  'racial',
     ...ACTOR, method: 'racialSituational',

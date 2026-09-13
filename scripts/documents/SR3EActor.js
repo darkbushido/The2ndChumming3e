@@ -4219,7 +4219,6 @@ _prepareCharacter(sys, attr) {
       power,
       level,
       passengerActorIds: ctx.passengerActorIds ?? [],
-      useStaged:         true,
     }).replace(/'/g, '&#39;');
 
     return `
@@ -4264,10 +4263,21 @@ _prepareCharacter(sys, attr) {
         </div>`;
     }
 
-    // Occupants resist the staged-down level (ctx.useStaged=true for crash)
-    // or the original level (ramming default).
-    const resistLevel = (ctx.useStaged && idx >= 0) ? STAGES[idx] : ctx.level;
+    /* Occupants · SR3 p.147 — *"If the vehicle takes damage, the driver and passengers must make
+     * the same Damage Resistance Test as the vehicle. Apply all vehicle-related Damage Level
+     * reductions before making these tests… the characters resist damage from an attack with a
+     * Power equal to what the vehicle faced, but at the level of damage that the vehicle
+     * actually took."*
+     *
+     * ⚠ **Ramming too, not just crashes.** The book's own worked example of this paragraph IS a
+     * ramming (Cruiser #2's cops). Ramming used to hand passengers the ORIGINAL level, and still
+     * made them roll after the vehicle had soaked the hit to nothing. TODO 74. */
+    const resistLevel = idx >= 0 ? STAGES[idx] : null;
     const resistLabel = resistLevel ? `${ctx.power}${resistLevel}` : 'No damage';
+    if (!resistLevel && (ctx.driverActorId || (ctx.passengerActorIds ?? []).length)) {
+      html += `<div class="sr-soak-result" style="font-size:11px;color:var(--sr-muted)">
+          The vehicle took no damage, so no one aboard does either (SR3 p.147).</div>`;
+    }
 
     // Driver resists damage as a passenger would
     const driverActor = game.actors.get(ctx.driverActorId);
@@ -4277,7 +4287,7 @@ _prepareCharacter(sys, attr) {
       html += `
         <div class="sr-soak-action">
           <button class="sr-ram-passenger-resist-btn" data-payload='${dCtx}'>
-            🧑 ${driverActor.name} (Driver): Resist Damage (${resistLabel}, ${body} Body, TN ${ctx.power})
+            🧑 ${driverActor.name} (Driver): Resist Damage (${resistLabel} before belt and armour, ${body} Body)
           </button>
         </div>`;
     }
@@ -4290,7 +4300,7 @@ _prepareCharacter(sys, attr) {
       html += `
         <div class="sr-soak-action">
           <button class="sr-ram-passenger-resist-btn" data-payload='${pCtx}'>
-            🧑 ${pActor.name}: Resist Passenger Damage (${resistLabel}, ${body} Body, TN ${ctx.power})
+            🧑 ${pActor.name}: Resist Passenger Damage (${resistLabel} before belt and armour, ${body} Body)
           </button>
         </div>`;
     }
@@ -4314,19 +4324,111 @@ _prepareCharacter(sys, attr) {
     });
   }
 
-  static async handleRamPassengerResist(btn, physicalDice = false) {
+  /**
+   * An occupant's damage in a collision, before their Body roll · SR3 p.147 · TODO 74.
+   *
+   * > *"If a character is wearing a seat belt or other safety restraint during the collision,
+   * > stage down the damage by an additional level."*
+   * > *"Only impact armor protects against crash damage."*
+   *
+   * The book's cops: 15S → belted 15M → armour vests (4/3, so Impact 3) → **12M**, resisted with
+   * Body against **TN 12**. So a seat belt drops the LEVEL and impact armour drops the POWER —
+   * two different axes, and Ballistic armour counts for nothing here.
+   *
+   * ⚠ A belt on Light damage stages it off the bottom: **no damage** (`level: null`), not Light.
+   * ⚠ Power floors at 0 and the TN at 2 — *"Target numbers cannot be reduced below 2"*.
+   * @returns {{ power: number, level: string|null, tn: number }}
+   */
+  static collisionPassengerDamage({ power = 0, level = 'L', impact = 0, belted = false } = {}) {
+    const STAGES = ['L', 'M', 'S', 'D'];
+    const p   = Math.max(0, Math.trunc(Number(power) || 0) - Math.max(0, Math.trunc(Number(impact) || 0)));
+    const idx = STAGES.indexOf(level) - (belted ? 1 : 0);
+    return { power: p, level: idx >= 0 ? STAGES[idx] : null, tn: Math.max(2, p) };
+  }
+
+  /**
+   * Ask the occupant for what the collision card cannot know — their Body dice, their impact
+   * armour, and whether they were belted in (SR3 p.147). Opened BEFORE the button is claimed, so
+   * cancelling leaves it usable. Impact armour starts from worn + implant armour
+   * (`armorRatings`); everything is editable.
+   * @returns {Promise<{body:number, impact:number, belted:boolean}|null>}
+   */
+  static async promptCollisionResist(ctx) {
+    const pActor = game.actors.get(ctx.passengerActorId);
+    if (!pActor) { ui.notifications.warn('Passenger actor not found.'); return null; }
+    const body   = pActor.system?.attributes?.body?.value ?? pActor.system?.attributes?.body?.base ?? ctx.body ?? 3;
+    const impact = SR3EActor.armorRatings(pActor).impact;
+    const esc    = s => foundry.utils.escapeHTML(String(s ?? ''));
+    let out = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `${pActor.name} — Resist Collision Damage` },
+      content: `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;padding:4px 0;font-size:12px">
+          <div style="grid-column:1/-1;color:var(--sr-muted)">
+            The vehicle took <strong>${ctx.power}${ctx.level}</strong>; ${esc(pActor.name)} resists the same.
+          </div>
+          <label style="display:flex;flex-direction:column;gap:3px">Body dice
+            <input id="cp-body" type="number" value="${body}" min="0" max="30"/></label>
+          <label style="display:flex;flex-direction:column;gap:3px"
+                 title="Only impact armour protects against crash damage (SR3 p.147). Worn + implant armour.">Impact armour
+            <input id="cp-impact" type="number" value="${impact}" min="0" max="30"/></label>
+          <label style="grid-column:1/-1;display:flex;align-items:center;gap:6px;cursor:pointer">
+            <input id="cp-belt" type="checkbox"/> Seat belt or other restraint — stage down one level</label>
+          <div id="cp-out" style="grid-column:1/-1;color:var(--sr-gold)"></div>
+        </div>`,
+      render: (_e, dialog) => {
+        const el  = dialog.element;
+        const show = () => {
+          const r = SR3EActor.collisionPassengerDamage({
+            power: ctx.power, level: ctx.level,
+            impact: el.querySelector('#cp-impact').value, belted: el.querySelector('#cp-belt').checked });
+          el.querySelector('#cp-out').textContent = r.level
+            ? `→ resist ${r.power}${r.level} with Body against TN ${r.tn}`
+            : '→ no damage: the belt stages Light damage away entirely';
+        };
+        el.querySelectorAll('input').forEach(i => { i.addEventListener('input', show); i.addEventListener('change', show); });
+        show();
+      },
+      buttons: [
+        { label: '🎲 Resist', action: 'ok', default: true, callback: (_e, _b, d) => {
+          const el = d.element;
+          out = { body:   Math.max(0, parseInt(el.querySelector('#cp-body').value) || 0),
+                  impact: Math.max(0, parseInt(el.querySelector('#cp-impact').value) || 0),
+                  belted: el.querySelector('#cp-belt').checked };
+        } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    return out;
+  }
+
+  static async handleRamPassengerResist(btn, physicalDice = false, choice = null) {
     const ctx    = JSON.parse(btn.dataset.payload);
     btn.disabled    = true;
     btn.textContent = '⏳ Rolling…';
     const pActor = game.actors.get(ctx.passengerActorId);
     if (!pActor) { ui.notifications.warn('Passenger actor not found.'); return; }
-    const pool = ctx.body ?? pActor.system?.attributes?.body?.value ?? pActor.system?.attributes?.body?.base ?? 3;
-    const tn   = Math.max(2, ctx.power ?? 4);
-    await pActor.rollPool(pool, tn, `🧑 ${pActor.name}: Resist Passenger Damage`, {
-      isSoakRoll:  true,
-      soakPayload: { stagedPower: ctx.power, stagedLevel: ctx.level, isStun: false },
-      physicalDice,
-    });
+    const c = choice ?? { body: ctx.body ?? 3, impact: 0, belted: false };
+    const r = SR3EActor.collisionPassengerDamage({ power: ctx.power, level: ctx.level, impact: c.impact, belted: c.belted });
+    const notes = [c.belted ? 'seat belt −1 level' : '', c.impact ? `impact armour −${c.impact} Power` : '']
+      .filter(Boolean).join(', ');
+
+    if (!r.level) {
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: pActor }),
+        content: `<div class="sr-roll-card"><div class="sr-roll-header">🧑 ${pActor.name}: Collision</div>
+          <div class="sr-soak-result sr-soak-blocked">🛡 No damage — ${ctx.power}${ctx.level}, ${notes} (SR3 p.147)</div></div>`,
+      });
+      return;
+    }
+    await pActor.rollPool(c.body, r.tn,
+      `🧑 ${pActor.name}: Resist Collision Damage — ${r.power}${r.level}${notes ? ` (${notes})` : ''}`, {
+        isSoakRoll:  true,
+        // ⚠ `actorId` was missing, so the Assign Wound button this roll produces named
+        // "Target" and pointed at no actor.
+        soakPayload: { actorId: pActor.id, stagedPower: r.power, stagedLevel: r.level, isStun: false },
+        physicalDice,
+      });
   }
 
   /**

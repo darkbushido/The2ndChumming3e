@@ -3018,8 +3018,14 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
+      const shift = event.shiftKey;
+      // Seat belt and impact armour are asked FIRST (SR3 p.147, TODO 74) and the button is
+      // claimed only once they answer — so Cancel leaves it usable, and a double-click that
+      // opens two dialogs still rolls once.
+      const choice = await SR3EActor.promptCollisionResist(_payload(btn) ?? {});
+      if (!choice) return;
       if (!_claimBtn(btn, mid, 'rampassenger', i)) return;
-      await SR3EActor.handleRamPassengerResist(btn, event.shiftKey);
+      await SR3EActor.handleRamPassengerResist(btn, shift, choice);
     });
   });
 

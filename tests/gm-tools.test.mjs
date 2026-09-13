@@ -52,6 +52,44 @@ export async function run(t) {
   t.ok('an invalid level falls back to the table',
     /Damage: <strong>5M/.test(SR3EActor._buildCrashDamageHtml({ ...ctx, level: 'X' })));
 
+  /* ── Occupants · SR3 p.147 — seat belts drop the LEVEL, impact armour drops the POWER ── */
+  const P = SR3EActor.collisionPassengerDamage;
+  const code = r => r.level ? `${r.power}${r.level} TN${r.tn}` : 'none';
+  /* The book's cops: 15S, belted → 15M, 4/3 vests → 12M, Body 4 against TN 12. */
+  t.is('p.147 cops: 15S, belted, Impact 3 → 12M at TN 12',
+    code(P({ power: 15, level: 'S', impact: 3, belted: true })), '12M TN12');
+  t.is('belt alone: 15S → 15M',            code(P({ power: 15, level: 'S', belted: true })), '15M TN15');
+  t.is('armour alone: 15S, Impact 3 → 12S', code(P({ power: 15, level: 'S', impact: 3 })),  '12S TN12');
+  t.is('nothing: unchanged',               code(P({ power: 15, level: 'S' })),              '15S TN15');
+  t.is('a belt stages Light damage away entirely', code(P({ power: 5, level: 'L', belted: true })), 'none');
+  t.is('Deadly belted is Serious',         code(P({ power: 20, level: 'D', belted: true })), '20S TN20');
+  t.is('armour cannot push the TN below 2', P({ power: 3, level: 'M', impact: 6 }).tn, 2);
+  t.is('…or the Power below 0',            P({ power: 3, level: 'M', impact: 6 }).power, 0);
+
+  /* Passengers take the level the VEHICLE took — for ramming too (the book's example is one). */
+  const soakRes = (successes, extra = {}) => SR3EActor._buildVehicleSoakResultHtml(successes, {
+    vehicleActorId: 'v', vehicleName: 'Cruiser', driverActorId: '', power: 15, level: 'S',
+    passengerActorIds: [], ...extra });
+  const passengerLevel = html => (html.match(/data-payload='([^']*passengerActorId[^']*)'/) || [])[1];
+  const _savedActors = globalThis.game.actors;
+  globalThis.game.actors = { get: id => (id === 'cop' ? { id: 'cop', name: 'Cop', system: { attributes: { body: { value: 4 } } } } : null) };
+  const ramNoStage = soakRes(0, { passengerActorIds: ['cop'] });      // ramming: no useStaged flag
+  t.is('ramming, vehicle staged nothing: the cop faces 15S',
+    JSON.parse(passengerLevel(ramNoStage).replace(/&#39;/g, "'")).level, 'S');
+  const ramStaged = soakRes(2, { passengerActorIds: ['cop'] });
+  t.is('ramming, vehicle staged to M: the cop faces 15M, not the original S',
+    JSON.parse(passengerLevel(ramStaged).replace(/&#39;/g, "'")).level, 'M');
+  const soakedAway = soakRes(8, { passengerActorIds: ['cop'] });
+  t.ok('vehicle soaked it all: no resist button for anyone aboard', !/sr-ram-passenger-resist-btn/.test(soakedAway));
+  t.ok('…and the card says why', /took no damage, so no one aboard does either/.test(soakedAway));
+  globalThis.game.actors = _savedActors;
+
+  const main0 = src('sr3e.js');
+  t.ok('the belt/armour dialog opens BEFORE the button is claimed (Cancel keeps it usable)',
+    /promptCollisionResist\([\s\S]{0,120}if \(!choice\) return;\s*if \(!_claimBtn\(btn, mid, 'rampassenger'/.test(main0));
+  t.ok('the passenger roll names its actor, so Assign Wound has somewhere to go',
+    /soakPayload: \{ actorId: pActor\.id, stagedPower: r\.power/.test(src('documents/SR3EActor.js')));
+
   const veh = src('sheets/SR3EVehicleSheet.js');
   t.ok('the Crash Test IS the Driving Test in crash mode (p.147), rolled through the crash path',
     /runDrivingTest\(vehicle, null, \{ crash: crashContext \}\)/.test(veh) && /isCrashRoll: true, crashContext: crash/.test(veh));
