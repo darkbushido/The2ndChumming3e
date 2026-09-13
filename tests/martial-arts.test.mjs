@@ -35,6 +35,7 @@ const {
   SKILL_CATEGORY_BOOK, SKILL_REPLACED_BY_BOOK,
 } = await import('../scripts/config.js');
 installGame({ sr3e: { SR3E } });
+const { SR3EActor } = await import('../scripts/documents/SR3EActor.js');
 
 // ⚠ Called through the SR3E aggregate, NOT as direct named imports. `sr3e.js` consumes them
 // that way (`SR3E.skillTypeForCategory`), and it is also the only form the mutation harness
@@ -69,6 +70,14 @@ export async function run(t) {
   t.is("'Survival skills' is an active category", skillTypeForCategory('Survival skills'), 'active');
   t.ok('…and NOT a knowledge one', !KNOWLEDGE_SKILL_CATEGORIES.has('Survival skills'));
   t.is("…while its Background twin stays knowledge", skillTypeForCategory('Background knowledge'), 'knowledge');
+
+  /* Matrix skills is ACTIVE — Computer is an Active Technical skill (SR3 p.88) and heads the Matrix
+   * sourcebook's "Active Skills" (p.24). Knowledge until 2026-09-13 (TODO 95, maintainer's call). */
+  t.is("'Matrix skills' is an active category", skillTypeForCategory('Matrix skills'), 'active');
+  t.ok('…and NOT a knowledge one', !KNOWLEDGE_SKILL_CATEGORIES.has('Matrix skills'));
+  // Karma: Computer 4 → 5 on Intelligence 5 is ⌊5 × 1.5⌋ = 7 as an active skill, not 5.
+  t.is('…so Computer 5 on INT 5 costs the active 7 karma, not the knowledge 5',
+    SR3EActor.karmaSkillCost(5, 5, skillTypeForCategory('Matrix skills') === 'active'), 7);
 
   /* ==== 2. Exactly the book's twelve, no more ==== */
   t.is('twelve styles, matching CC p.87', styles.length, 12);

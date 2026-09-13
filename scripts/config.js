@@ -545,6 +545,13 @@ export const ACTIVE_SKILL_CATEGORIES = new Set([
   // play (TODO 95). Target: Wastelands p.105: "Wilderness Survival (Willpower) — This Active
   // skill…". Its Background twin lives in 'Background knowledge' and stays knowledge.
   'Survival skills',
+  // ⚠ Matrix skills sat in the KNOWLEDGE list until 2026-09-13 (TODO 95, maintainer's call), so
+  // Computer, Cybercombat, Hacking and Programming showed under Knowledge and were charged
+  // knowledge karma. Computer is an Active Technical skill in core (SR3 p.88) and heads the
+  // Matrix sourcebook's "Active Skills" (p.24); Cybercombat/Hacking/Programming are Matrix
+  // Defragged's (not in the PDF library) but are the skills a decker ROLLS to act, which is
+  // what an active skill is.
+  'Matrix skills',
   // ⚠ Martial Arts belongs HERE, not with the knowledge categories where it sat until
   // 2026-08-20. Cannon Companion p.87 is explicit: "Each of these new martial arts skills is
   // considered a Combat skill and uses the standard rules for Active skills (p. 81, SR3) and
@@ -557,8 +564,9 @@ export const ACTIVE_SKILL_CATEGORIES = new Set([
 ]);
 
 export const KNOWLEDGE_SKILL_CATEGORIES = new Set([
-  // 'Survival skills' moved to ACTIVE_SKILL_CATEGORIES 2026-09-12 — see there (TODO 95).
-  'Matrix skills', 'Otaku skills',
+  // 'Survival skills' (2026-09-12) and 'Matrix skills' (2026-09-13) moved to
+  // ACTIVE_SKILL_CATEGORIES — see there (TODO 95).
+  'Otaku skills',
   'Street knowledge', 'Academic skills', 'System familiarity', 'Program design',
   '6th World knowledge', 'Interests', 'Area knowledge', 'Background',
 ]);

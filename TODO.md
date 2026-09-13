@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | **93** — Foundry test of everything on branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **91** · **95** *(Matrix decision)* · **97** *(**71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **96** done)* |
+| 🔴 Confirmed bugs, still open | **91** · **97** *(**71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** *(**3** · **4** · **30** · **75** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** *(**83** · **84** · **87** done)* |
@@ -6644,6 +6644,8 @@ cannot reach. If time is short, do these.
 - [ ] Import an elf, dwarf or ork and compare with the generator's own sheet; import a human →
       no racial notification.
 - [ ] Mr. Johnson's *Dock Worker* (troll) shows Body **10 (11)**.
+- [ ] A decker's **Computer / Hacking / Cybercombat** now sit in the **Active** skills section,
+      and the karma dialog prices raising them at the active rate.
 - [ ] **Species:** a player sees a greyed dropdown they cannot change; the GM gets a working one,
       and a stored "Hobgoblin" shows as *(unrecognised)* and survives editing another field.
 - [ ] Unarmed troll vs human with a club: no reach election (1 vs 1).
@@ -6713,16 +6715,19 @@ this table.
 
 <a id="95"></a>
 
-## 95. Wilderness Survival shows up as a knowledge skill — **reported in play 2026-09-11** — ✅ Survival fixed; **Matrix skills awaits a decision**
+## 95. ✅ Wilderness Survival shows up as a knowledge skill — **reported in play 2026-09-11** — **DONE 2026-09-13** (`fix/racial-mods`)
 
 **Status 2026-09-13.** Both Survival fixes are in (`fix/racial-mods`): the importer (commit
 `0ae4ad4`) and **Survival skills** now counting as an active category (`886740c`, cited to
 *Target: Wastelands* p.105). Verified offline against the reported troll's own export — all six
 of its active skills now import as active, Wilderness Survival under *Survival skills*.
-**One question remains, the maintainer's:** should the *Matrix skills* category (Computer,
-Cybercombat, Hacking, Programming) count as active? Computer is an active Technical skill in core
-(p.88); the other three are Matrix Defragged's and cannot be checked here. One line in
-`ACTIVE_SKILL_CATEGORIES` either way.
+**Matrix skills — decided 2026-09-13: ACTIVE** (maintainer's call). Computer is an Active
+Technical skill in core (SR3 p.88) and heads the Matrix sourcebook's *Active Skills* (p.24);
+Cybercombat, Hacking and Programming are Matrix Defragged's (not in the library) but are the skills
+a decker rolls to act. Moved into `ACTIVE_SKILL_CATEGORIES`. Existing characters' Matrix skills
+move to the Active section on their own — `skillTypeForCategory` reads the category first — and
+karma now charges the active rate (Computer 5 on INT 5: 7, was 5). Nothing already bought changes.
+Asserted in `tests/martial-arts.test.mjs`.
 
 The diagnosis as written at the time (causes 1 and 2's Survival half are both fixed):
 
