@@ -6671,7 +6671,11 @@ cannot reach. If time is short, do these.
 - [ ] Import an elf, dwarf or ork and compare with the generator's own sheet; import a human →
       no racial notification.
 - [ ] Mr. Johnson's *Dock Worker* (troll) shows Body **10 (11)**.
-- [ ] A decker's **Computer / Hacking / Cybercombat** now sit in the **Active** skills section,
+- [~] ✅ agent live check, 2026-09-13: no decker in the test world, so a temporary *Computer 4*
+      (category *Matrix skills*) was added to Ploder — it renders under **Active Skills**, and
+      `skillTypeForCategory('Matrix skills')` is `active` on the live client. Removed after. The
+      karma-dialog price not yet seen live (unit-tested in `martial-arts.test.mjs`). Original step:
+      A decker's **Computer / Hacking / Cybercombat** now sit in the **Active** skills section,
       and the karma dialog prices raising them at the active rate.
 - [ ] **Species:** a player sees a greyed dropdown they cannot change; the GM gets a working one,
       and a stored "Hobgoblin" shows as *(unrecognised)* and survives editing another field.
@@ -6697,7 +6701,11 @@ cannot reach. If time is short, do these.
       press **↺** → it **stays 5.12** (was 5.29). The CyGun Shotgun's sheet shows 0.88 (base 1.1), Alpha.
 - [ ] **TODO 108:** the melee Reach election keeps the option you pick.
 - [x] ✅ **TODO 107** — vehicles can be removed with the ✕ (maintainer, 2026-09-13).
-- [ ] **TODO 106:** Driving Test *Using VCR* reads **−(VCR Rating)**; the 💥 Crash Test dialog shows
+- [x] ✅ **TODO 106** — agent live check, 2026-09-13: Ploder given a temporary VCR rating 2, Toyota
+      Elite → Driving Test offers *Using VCR (−2 TN, SR3 p.134)* (was −4); crash mode is titled
+      *Crash Test*, has *Terrain (Crash Test)* Open −1 / Normal 0 / Restricted +2 / Tight +4, a
+      *Vehicle speed (SR3 p.148)* row (+0/+1/+2/+4) and **no** VCR row. VCR removed after.
+      Original step: **TODO 106:** Driving Test *Using VCR* reads **−(VCR Rating)**; the 💥 Crash Test dialog shows
       *Terrain (Crash Test)* (+2/+4) and a *Vehicle speed* row, no VCR row.
 - [~] **Session Rewards** ✅ agent live check, 2026-09-13: 4 rows, 0 ticked, *All* ticks all 4;
       cancelled. Chunky Salsa and the nobody-ticked warning not yet run live. Original step:
