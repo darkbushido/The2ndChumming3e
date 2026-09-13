@@ -6678,7 +6678,12 @@ cannot reach. If time is short, do these.
       karma-dialog price not yet seen live (unit-tested in `martial-arts.test.mjs`). Original step:
       A decker's **Computer / Hacking / Cybercombat** now sit in the **Active** skills section,
       and the karma dialog prices raising them at the active rate.
-- [ ] **Species:** a player sees a greyed dropdown they cannot change; the GM gets a working one,
+- [~] ✅ GM half — agent live check, 2026-09-13, on a throwaway character (deleted after): metatype
+      *hobgoblin* shows as **hobgoblin (unrecognised)**, selected, in a working dropdown; editing
+      another field (overflow 0 → 1) submits the form and metatype **stays hobgoblin**. The player
+      half (greyed, unchangeable) needs a player client — not run; `sheet-invariants` pins the
+      `disabled` branch. Original step:
+      **Species:** a player sees a greyed dropdown they cannot change; the GM gets a working one,
       and a stored "Hobgoblin" shows as *(unrecognised)* and survives editing another field.
 - [ ] Unarmed troll vs human with a club: no reach election (1 vs 1).
 - [x] ✅ **Flechette** — agent live check, 2026-09-13 (`_postSoakCard` with `ammoType: 'flechette'`,
@@ -6689,7 +6694,12 @@ cannot reach. If time is short, do these.
       **Flechette** at an unarmoured troll, and at an unarmoured human with Dermal Plating → *no
       level increase: dermal armor negates it*; the same shot at a plain unarmoured human raises
       the level. A human with only *Orthoskin[3]* → *Flechette vs armour — effective armour 4*.
-- [ ] **Ranged vision:** the troll shoots (as a player) → the vision dropdown opens on
+- [~] ✅ Troll half — agent live check, 2026-09-13 (`_promptGMAttackWindow` opened directly for Troll
+      Street Dealer): opens on **Thermographic (natural)** with *👁 Troll Street Dealer (troll):
+      Thermographic (natural)*; Thermal Smoke → **Normal**; condition cleared → back to
+      Thermographic; Low-Light picked by hand, then Thermal Smoke → **stays Low-Light**. The elf
+      with replacement eyes not run live (unit-tested in `vision.test.mjs`). Original step:
+      **Ranged vision:** the troll shoots (as a player) → the vision dropdown opens on
       *Thermographic (natural)* with a 👁 line; pick Thermal Smoke → it switches to Normal; pick
       one by hand → it stays. An elf with `Eyes, Cyber Replacement` + `Eyes, Low-Light` →
       *Low-Light (cybernetic) … racial low-light lost*.
