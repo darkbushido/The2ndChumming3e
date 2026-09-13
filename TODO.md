@@ -6670,7 +6670,8 @@ cannot reach. If time is short, do these.
 
 - [ ] Import an elf, dwarf or ork and compare with the generator's own sheet; import a human →
       no racial notification.
-- [ ] Mr. Johnson's *Dock Worker* (troll) shows Body **10 (11)**.
+- [x] ✅ Mr. Johnson's *Dock Worker* (troll) shows Body **10 (11)** — agent live check, 2026-09-13,
+      read from the pack document (base 10, value 11).
 - [~] ✅ agent live check, 2026-09-13: no decker in the test world, so a temporary *Computer 4*
       (category *Matrix skills*) was added to Ploder — it renders under **Active Skills**, and
       `skillTypeForCategory('Matrix skills')` is `active` on the live client. Removed after. The
@@ -6708,8 +6709,11 @@ cannot reach. If time is short, do these.
       *Vehicle speed (SR3 p.148)* row (+0/+1/+2/+4) and **no** VCR row. VCR removed after.
       Original step: **TODO 106:** Driving Test *Using VCR* reads **−(VCR Rating)**; the 💥 Crash Test dialog shows
       *Terrain (Crash Test)* (+2/+4) and a *Vehicle speed* row, no VCR row.
-- [~] **Session Rewards** ✅ agent live check, 2026-09-13: 4 rows, 0 ticked, *All* ticks all 4;
-      cancelled. Chunky Salsa and the nobody-ticked warning not yet run live. Original step:
+- [x] ✅ **Session Rewards / Chunky Salsa** — agent live check, 2026-09-13. Session Rewards: 4 rows,
+      0 ticked, *All* ticks all 4; Award with nobody ticked (5 karma typed) warns *no characters
+      were ticked* and no karma changes. Chunky Salsa from the sidebar: 4 rows, 0 ticked; Post with
+      nobody ticked warns, posts nothing. Opened as the grenade flow does (`actorIds`, `returnOnly`)
+      → its actor **ticked**. Original step:
       **Session Rewards / Chunky Salsa** open with nobody ticked; *All* ticks everyone; awarding
       with nobody ticked warns. A grenade in a confined space still opens Chunky Salsa with the
       caught actors ticked.
