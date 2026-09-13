@@ -6595,7 +6595,10 @@ where the accessories [#91](#91) wants most likely already exist in print.
 
 ## 93. 🧪 Test in Foundry — everything on branch `fix/racial-mods`
 
-**Not yet run anywhere but the unit tests** (41/41 suites). The branch started as the racial-
+**Status 2026-09-13:** first pass done by the maintainer; most of the second pass walked by the
+agent in the Browser pane (see each line). Still open: a real non-troll export, the Species
+lock as a **player**, the karma price of a Matrix skill, ramming passengers with a staged-down
+soak, an adept troll's Attribute Boost. Unit tests 43/43. The branch started as the racial-
 modifier fix reported in play (a troll allocated B5 Q5 S4 C2 I3 W2 imported at those numbers
 instead of B10 Q4 S8 C0 I1 W2) and grew to cover TODO 36, 73, 74, 75, 94, 96, 98 and 99.
 
@@ -6688,7 +6691,9 @@ cannot reach. If time is short, do these.
       `disabled` branch. Original step:
       **Species:** a player sees a greyed dropdown they cannot change; the GM gets a working one,
       and a stored "Hobgoblin" shows as *(unrecognised)* and survives editing another field.
-- [ ] Unarmed troll vs human with a club: no reach election (1 vs 1).
+- [ ] Unarmed troll vs human with a club: no reach election (1 vs 1). *Unit-covered*
+      (`racial.test.mjs`: difference 0), and the card renders the election only when
+      `reachDiff > 0`; not run live.
 - [x] ✅ **Flechette** — agent live check, 2026-09-13 (`_postSoakCard` with `ammoType: 'flechette'`,
       armour briefly unequipped, restored after): Troll Street Dealer stays **8M** with *no level
       increase: dermal armor negates it (troll dermal armor)*; SWAT Team Member (ork) raised to
