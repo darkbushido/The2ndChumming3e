@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | **93** — Foundry test of everything on branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **91** · **97** · **108** *(fixed, awaiting F5 check)* *(**101** · **71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** · **106** · **107** done)* |
+| 🔴 Confirmed bugs, still open | **91** · **97** · **112** *(one armour item only — coat + helmet is legal)* *(**101** · **71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** · **106** · **107** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** · **109** *(Stress)* · **110** *(TLE-x, needs 109)* · **111** *(CDS)* *(**3** · **4** · **30** · **75** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** · **104** *(**83** · **84** · **87** done)* |
@@ -7384,3 +7384,35 @@ Lifting that floor is part of this task — and `essenceState` (TODO 103) alread
 GM-only "CDS check" button when the flag is set; the CDS state as a status effect whose +4/+3 the
 GM applies. Scheduling (every N months) is campaign time the system does not track — show the
 interval, let the GM roll.
+
+<a id="112"></a>
+
+## 112. Only one armour item can be worn — a coat and a helmet together is legal — **reported in play 2026-09-13**
+
+**Observation.** A player tried to equip a **Secure Long Coat** and a **military helmet** at the same
+time; the sheet will not let both be worn.
+
+**The rule allows it** — *SR3 p.285, Layering Armor*:
+- Layering: *"add the rating of the highest-rated piece to one-half (round down) the rating of the
+  next highest-rated piece of clothing or armor"* — per armour type (Ballistic and Impact).
+- Movement: *"add together the Ballistic Armor Ratings of the armor pieces. Each point by which this
+  total exceeds the character's Quickness Attribute acts as a target number modifier to all
+  Quickness-related tests"*, and reduces Quickness for movement.
+- **Helmets and shields are not layering:** *"When a helmet or shield is used, the armor bonus it
+  provides is added to other armor. This does not count as layering, but does count toward
+  determining the Quickness penalty."* So coat + helmet = coat's ratings **plus** the helmet's, in full.
+- *"Generally, only a jacket or coat can be layered over clothing-style armor"* — guidance, not a cap
+  (minimal guardrails: warn, never block).
+
+**Likely cause (not investigated further):** the actor stores a single `system.equippedArmor`
+(`ActorDataModels.js`, a StringField — one item id), so equipping a second piece replaces the first.
+Every armour reader — `SR3EActor.armorRatings` (soak card, Falling Damage, the Body+armour picker),
+flechette, APDS, encumbrance — reads that one item.
+
+**Shape of a fix** (proposal): an `equipped` flag per armour item (or an array of ids, migrating the
+old field), a helmet/shield marker on the item, and one pure `SR3EActor.wornArmor(items)` →
+`{ballistic, impact, encumbranceBallistic, layered: [...]}` applying p.285 — highest + ½ next per
+type, helmets/shields added in full, all pieces summed for the Quickness penalty — that
+`armorRatings` then builds on (implant armour, TODO 75, stays additive on top). Unit tests pinned to
+p.285's Twitch example. ⚠ Data-model change → full restart; ⚠ `armorRatings` has several callers,
+all of which must keep one answer.
