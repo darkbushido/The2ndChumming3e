@@ -778,7 +778,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         ${racial > 0 ? `<span class="attr-force-sep" title="Troll dermal armor (SR3 p.56)">+</span>
         <span class="attr-aug" title="Troll dermal armor (SR3 p.56)">${racial}</span>` : ''}
         ${showTotal ? `<span class="attr-force-total" title="Effective">(${base + adept + aug + racial})</span>` : ''}
-        ${key === 'quickness' && (d.armorEncPenalty ?? 0) > 0 ? `<span class="attr-enc-penalty" title="Armor encumbrance penalty (equipped armor exceeds Quickness)">−${d.armorEncPenalty}</span>` : ''}
+        ${key === 'quickness' && (d.armorQuicknessTN ?? 0) > 0 ? `<span class="attr-enc-penalty" title="Layered armour: worn Ballistic ${d.armorSumBallistic} exceeds Quickness by ${d.armorQuicknessTN} — +${d.armorQuicknessTN} TN to Quickness tests and Quickness-linked skills, and Quickness counts ${d.armorQuicknessTN} lower for movement (SR3 p.285)">+${d.armorQuicknessTN} TN</span>` : ''}
         <i class="fas fa-dice-d6 rollable" data-action="rollAttr" data-attr="${key}"
            title="Roll ${label} — Shift-Click for physical dice"></i>
       </div>
@@ -888,9 +888,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         ${this._poolBlock('Combat Pool',
           d.availableCombatPool ?? d.combatPool ?? 0,
           d.combatPool ?? 0,
-          d.combatPoolBase ?? 0,
+          // Everything that is NOT the manual modifier, so typing a total stores only the
+          // modifier — armour dice lost (TODO 112) and adept dice must not be absorbed into it.
+          (d.combatPool ?? 0) - (sys.combatPoolMod ?? 0),
           'system.combatPoolSpent', 'system.combatPoolMod',
-          `floor((QUI ${qui} + INT ${intl} + WIL ${wil}) / 2) = ${d.combatPoolBase ?? 0}`)}
+          `floor((QUI ${qui} + INT ${intl} + WIL ${wil}) / 2) = ${d.combatPoolBase ?? 0}`
+            + ((d.armorPoolPenalty ?? 0) > 0 ? ` − ${d.armorPoolPenalty} armour (B ${d.armorSumBallistic} / I ${d.armorSumImpact} worn vs Quickness ${qui}, SR3 p.285)` : ''))}
         ${this._derivedBlock('Karma Pool',
           `<input type="number" name="system.karmaPool" value="${sys.karmaPool ?? 0}" class="pool-input" style="width:45px"/>`)}
         ${d.spellPool !== null && d.spellPool !== undefined
@@ -1357,24 +1360,37 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   _tabArmor(actor, sys) {
     const armors = actor.items.filter(i => i.type === 'armor' && !i.getFlag('The2ndChumming3e', 'stored'));
 
-    const equippedArmor = sys.equippedArmor ? actor.items.get(sys.equippedArmor) : null;
-    if (sys.equippedArmor && !equippedArmor) {
+    if (sys.equippedArmor && !actor.items.get(sys.equippedArmor)) {
       sys.equippedArmor = "";
       actor.update({ "system.equippedArmor": "" });
     }
 
-    const activeArmorDisplay = equippedArmor ? `
+    /* Everything worn, combined by SR3 p.285 (TODO 112): the best piece + half the next per
+     * type, helmets and shields added in full. One source — `armorRatings` — so this card and
+     * the soak card cannot disagree. */
+    const SA      = game.sr3e.SR3EActor;
+    const wornIds = new Set(SA.wornArmorItems(actor).map(i => i.id));
+    const worn    = SA.armorRatings(actor).worn;
+    const d       = sys.derived ?? {};
+    const roleTag = p => p.role === 'accessory' ? ' <span style="color:var(--sr-muted);font-size:10px">(added in full)</span>' : '';
+    const burden  = [
+      (d.armorPoolPenalty ?? 0) > 0 ? `Combat Pool −${d.armorPoolPenalty}` : '',
+      (d.armorQuicknessTN ?? 0) > 0 ? `Quickness tests +${d.armorQuicknessTN} TN (layered)` : '',
+    ].filter(Boolean).join(' · ');
+
+    const activeArmorDisplay = worn.pieces.length ? `
       <div class="active-armor-section">
         <div class="active-armor-header">
-          <i class="fas fa-shield-alt"></i> Currently Equipped
+          <i class="fas fa-shield-alt"></i> Currently Worn${worn.pieces.length > 1 ? ' — layered (SR3 p.285)' : ''}
         </div>
-        <div class="active-armor-card">
-          <span class="active-armor-name">${equippedArmor.name}</span>
+        <div class="active-armor-card" title="${worn.pieces.length > 1 ? 'Best piece + half the next best, per type; helmets and shields add in full. Worn totals ' + d.armorSumBallistic + 'B / ' + d.armorSumImpact + 'I count against Quickness.' : ''}">
+          <span class="active-armor-name">${worn.pieces.map(p => `${p.name} ${p.ballistic}/${p.impact}${roleTag(p)}`).join('<br>')}</span>
           <div class="active-armor-stats">
-            <span class="armor-badge ballistic">B: ${equippedArmor.system.ballistic ?? 0}</span>
-            <span class="armor-badge impact">I: ${equippedArmor.system.impact ?? 0}</span>
+            <span class="armor-badge ballistic">B: ${worn.ballistic}</span>
+            <span class="armor-badge impact">I: ${worn.impact}</span>
           </div>
         </div>
+        ${burden ? `<div class="armor-burden-note" style="font-size:11px;color:var(--sr-amber);margin:2px 0 6px">⚠ ${burden}</div>` : ''}
       </div>
     ` : `
       <div class="active-armor-section" style="opacity: 0.7;">
@@ -1392,7 +1408,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     `;
 
     const aRows = armors.length ? armors.map(a => {
-      const isEquipped = (sys.equippedArmor === a.id);
+      const isEquipped = wornIds.has(a.id);
       return `
         <div class="item-row ${isEquipped ? 'equipped' : ''}" data-item-id="${a.id}">
           <span class="item-name">${a.name}</span>
@@ -1403,8 +1419,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             <i class="fas fa-home" data-action="toggleStored" data-item-id="${a.id}"
                style="color:var(--sr-dim)" title="Put in storage"></i>
             ${isEquipped ?
-              `<i class="fas fa-shield-alt" style="color: var(--sr-accent);" title="Unequip" data-action="equipArmor" data-item-id="${a.id}"></i>` :
-              `<i class="fas fa-shield" title="Equip" data-action="equipArmor" data-item-id="${a.id}"></i>`
+              `<i class="fas fa-shield-alt" style="color: var(--sr-accent);" title="Take off" data-action="equipArmor" data-item-id="${a.id}"></i>` :
+              `<i class="fas fa-shield" title="Wear — several pieces may be worn at once (SR3 p.285)" data-action="equipArmor" data-item-id="${a.id}"></i>`
             }
             <i class="fas fa-edit" data-action="itemEdit" data-item-id="${a.id}" title="Edit"></i>
             <i class="fas fa-trash" data-action="itemDelete" data-item-id="${a.id}" title="Delete"></i>
@@ -3368,28 +3384,102 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     await item.update({ 'system.focusActive': !(item.system.focusActive ?? false) });
   }
 
+  /**
+   * Put an item into storage or take it out — the whole thing, or part of a stack · TODO 113.
+   *
+   * ⚠ A stack (gear/thrown/projectile `quantity`, ammunition `rounds`) of more than one asks
+   * HOW MANY. Moving part of it splits the stack; landing on an identical stack already on the
+   * other side (`SR3EActor.stackKey`) merges into it instead of duplicating. Reported in play:
+   * 10 stim patches in storage and no way to take out two. The arithmetic is the pure
+   * `SR3EActor.planStackMove`.
+   */
   static async _onToggleStored(_ev, target) {
     const actor  = this.actor;
     const itemId = target.dataset.itemId;
     const item   = actor.items.get(itemId);
     if (!item) return;
 
-    const storing     = !item.getFlag('The2ndChumming3e', 'stored');
-    const itemUpdates = { 'flags.The2ndChumming3e.stored': storing };
-    const actorUpdates = {};
+    const SA       = game.sr3e.SR3EActor;
+    const storing  = !item.getFlag('The2ndChumming3e', 'stored');
+    const field    = SA.stackField(item);
+    const have     = field ? Math.max(0, Math.floor(Number(item.system[field]) || 0)) : 0;
 
-    if (storing) {
+    let moving = have;
+    if (field && have > 1) {
+      moving = await SR3EActorSheet._promptStackCount(item, have, storing);
+      if (!moving) return;                                        // cancelled
+    }
+
+    // An identical stack already on the destination side is merged into, not duplicated.
+    const key  = field ? SA.stackKey(item) : null;
+    const dest = field ? actor.items.find(i => i.id !== item.id
+      && !!i.getFlag('The2ndChumming3e', 'stored') === storing && SA.stackKey(i) === key) : null;
+    const plan = field
+      ? SA.planStackMove({ have, moving, target: dest ? { id: dest.id, qty: dest.system[field] } : null })
+      : { flipSource: true };
+
+    // Clearing what the item was doing only matters when the item ITSELF leaves the character.
+    const leaving = storing && (plan.flipSource || plan.sourceQty === null);
+    const actorUpdates = {};
+    if (leaving) {
       const sys = actor.system;
       if (sys.equippedArmor     === itemId) actorUpdates['system.equippedArmor']     = '';
       if (sys.equippedMelee     === itemId) actorUpdates['system.equippedMelee']     = '';
       if (sys.activeVCRItemId   === itemId) actorUpdates['system.activeVCRItemId']   = '';
       if (sys.equippedCyberdeck === itemId) actorUpdates['system.equippedCyberdeck'] = '';
-      if (item.system.focusActive) itemUpdates['system.focusActive'] = false;
     }
 
-    const promises = [item.update(itemUpdates)];
-    if (Object.keys(actorUpdates).length) promises.push(actor.update(actorUpdates));
-    await Promise.all(promises);
+    const ops = [];
+    if (plan.flipSource) {
+      const itemUpdates = { 'flags.The2ndChumming3e.stored': storing };
+      if (storing) {
+        if (item.system.focusActive) itemUpdates['system.focusActive'] = false;
+        // Armour put away is taken off (TODO 112) — else it would come back out still worn.
+        if (item.type === 'armor') itemUpdates['flags.The2ndChumming3e.worn'] = false;
+      }
+      ops.push(item.update(itemUpdates));
+    } else {
+      if (plan.target) ops.push(actor.items.get(plan.target.id).update({ [`system.${field}`]: plan.target.qty }));
+      if (plan.createQty) {
+        const copy = item.toObject();
+        delete copy._id;
+        copy.system[field] = plan.createQty;
+        copy.flags ??= {};
+        copy.flags.The2ndChumming3e = { ...(copy.flags.The2ndChumming3e ?? {}), stored: storing, worn: false };
+        ops.push(actor.createEmbeddedDocuments('Item', [copy]));
+      }
+      if (plan.sourceQty === null) ops.push(item.delete());
+      else ops.push(item.update({ [`system.${field}`]: plan.sourceQty }));
+    }
+    if (Object.keys(actorUpdates).length) ops.push(actor.update(actorUpdates));
+    await Promise.all(ops);
+  }
+
+  /** How many of a stack to move · TODO 113. Resolves to a count, or null if cancelled. */
+  static async _promptStackCount(item, have, storing) {
+    let count = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `${storing ? 'Put into storage' : 'Take out of storage'} — ${item.name}` },
+      content: `
+        <div style="display:flex;align-items:center;gap:8px;padding:6px 0">
+          <label for="sr-stack-count">How many?</label>
+          <input type="number" id="sr-stack-count" value="${have}" min="1" max="${have}" style="width:64px"/>
+          <span style="color:var(--sr-muted)">of ${have}</span>
+        </div>`,
+      render: (_event, dialog) => {
+        const input = dialog.element.querySelector('#sr-stack-count');
+        input?.select();
+      },
+      buttons: [
+        { label: storing ? 'Store' : 'Take out', action: 'move', default: true,
+          callback: (_e, _b, dialog) => {
+            const n = Math.floor(Number(dialog.element.querySelector('#sr-stack-count')?.value) || 0);
+            count = Math.min(have, Math.max(0, n)) || null;
+          } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    return count;
   }
 
   static async _onEquipMelee(ev, target) {
@@ -3399,12 +3489,23 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     await actor.update({ 'system.equippedMelee': current === itemId ? '' : itemId });
   }
 
+  /**
+   * Put a piece of armour on, or take it off · TODO 112.
+   *
+   * ⚠ A TOGGLE PER PIECE, not a single slot. This used to write the one `system.equippedArmor`
+   * id, so wearing a helmet took the coat off — reported in play, and SR3 p.285 allows both.
+   * Worn state is the item's `worn` flag; the legacy field is cleared when its item comes off so
+   * the two can never disagree about a piece.
+   */
   static async _onEquipArmor(ev, target) {
-    const actor = this.actor;
+    const actor  = this.actor;
     const itemId = target.dataset.itemId;
-    const currentEquipped = actor.system.equippedArmor;
-    const newEquipped = (currentEquipped === itemId) ? "" : itemId;
-    await actor.update({ "system.equippedArmor": newEquipped });
+    const item   = actor.items.get(itemId);
+    if (!item) return;
+    const isWorn = game.sr3e.SR3EActor.wornArmorItems(actor).some(i => i.id === itemId);
+    const ops = [item.setFlag('The2ndChumming3e', 'worn', !isWorn)];
+    if (isWorn && actor.system.equippedArmor === itemId) ops.push(actor.update({ 'system.equippedArmor': '' }));
+    await Promise.all(ops);
   }
 
   static async _onApplyDamage(ev, target) {
@@ -4358,6 +4459,15 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const selectedAttr = attrList.find(a => a.key === selectedKey) ?? attrList[0];
     const initialPool = defaultPool ?? selectedAttr.val;
 
+    /* Layered armour · SR3 p.285 (TODO 112) — +N TN to Quickness Tests, pre-applied like the
+     * wound modifier and tracked as a delta on the TN box so a hand-typed TN survives a change
+     * of attribute. Never on a custom Success Test: nothing says what it is testing. */
+    const armorQTN  = custom ? 0 : (actor?.system.derived?.armorQuicknessTN ?? 0);
+    const qtnFor    = key => (key === 'quickness' ? armorQTN : 0);
+    const armorNote = armorQTN > 0
+      ? `<div class="roll-opts-wound-note" id="sr-armor-note" style="display:${selectedKey === 'quickness' ? 'block' : 'none'}">🛡 Layered armour TN +${armorQTN} (Quickness, SR3 p.285, pre-applied)</div>`
+      : '';
+
     const optionsHtml = (custom
       ? `<option value="" data-val="${initialPool}"${selectedKey === '' ? ' selected' : ''}>Dice pool</option>` : '')
       + attrList.map(a =>
@@ -4393,8 +4503,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             ${poolNote ? `<p class="roll-opts-note">${poolNote}</p>` : ''}
             <label class="roll-opts-label" for="sr-tn">Target Number</label>
             <span></span>
-            <input type="number" id="sr-tn" class="roll-opts-tn" value="${4 + woundPenalty}" min="2" max="30"/>
+            <input type="number" id="sr-tn" class="roll-opts-tn" value="${4 + woundPenalty + qtnFor(selectedKey)}" min="2" max="30" data-qtn="${qtnFor(selectedKey)}"/>
             ${woundNote}
+            ${armorNote}
             <span></span>
             ${toxinRow}
             ${karmaPool > 0 ? `<label class="roll-opts-karma"><input type="checkbox" id="sr-karma"/> Use Karma Pool (${karmaPool} available)</label>` : ''}
@@ -4460,6 +4571,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           // ⚠ `|| 1` here turned a Charisma or Magic of 0 into one die (TODO 102).
           const base = Math.max(0, parseInt(attrEl.options[attrEl.selectedIndex].dataset.val) || 0);
           poolEl.value = base + (tBox?.checked ? toxin.dice : 0);
+          // Layered armour: move the TN by the difference only, keeping any hand-typed TN.
+          const tnEl = html.querySelector('#sr-tn');
+          const prev = parseInt(tnEl?.dataset.qtn) || 0, next = qtnFor(attrEl.value);
+          if (tnEl && prev !== next) { tnEl.value = (parseInt(tnEl.value) || 0) - prev + next; tnEl.dataset.qtn = next; }
+          const aNote = html.querySelector('#sr-armor-note');
+          if (aNote) aNote.style.display = next ? 'block' : 'none';
         });
         tBox?.addEventListener('change', () => {
           const cur = parseInt(poolEl.value) || 0;
@@ -4496,6 +4613,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     if (!skills.length) return null;
 
+    // Layered armour · SR3 p.285 (TODO 112): +N TN to every Quickness-linked skill, pre-applied
+    // and tracked as a delta on the TN box (see recompute) so a hand-typed TN is kept.
+    const armorQTN = actor?.system.derived?.armorQuicknessTN ?? 0;
+    const qtnFor   = sk => (armorQTN > 0 && (sk?.system?.linkedAttribute ?? '') === 'quickness' ? armorQTN : 0);
+
     const defaultId = defaultItem?.id ?? skills[0].id;
 
     const optionsHtml = skills.map(sk => {
@@ -4508,7 +4630,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       const catLbl = cat.dice
         ? `${cat.labels.join(' + ')} (+${cat.dice} die${cat.dice === 1 ? '' : 's'})`
         : '';
-      return `<option value="${sk.id}" data-pool="${pool}" data-spec="${s.specialisation ?? ''}" data-default="${s.rating ? '0' : '1'}" data-cat="${cat.dice}" data-cat-lbl="${catLbl}" data-cat-on="${cat.dice && catDefaultOn(sk) ? '1' : '0'}"${sk.id === defaultId ? ' selected' : ''}>${sk.name}</option>`;
+      return `<option value="${sk.id}" data-pool="${pool}" data-spec="${s.specialisation ?? ''}" data-default="${s.rating ? '0' : '1'}" data-cat="${cat.dice}" data-cat-lbl="${catLbl}" data-cat-on="${cat.dice && catDefaultOn(sk) ? '1' : '0'}" data-qtn="${qtnFor(sk)}"${sk.id === defaultId ? ' selected' : ''}>${sk.name}</option>`;
     }).join('');
 
     const defSkill   = skills.find(sk => sk.id === defaultId) ?? skills[0];
@@ -4561,6 +4683,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         document.getElementById('sr-pool').value = pool + (cb.checked ? 2 : 0) + catDice;
         const note = document.getElementById('sr-default-note');
         if (note) note.style.display = opt.dataset.default === '1' ? 'block' : 'none';
+
+        const tn = document.getElementById('sr-tn');
+        const prevQ = parseInt(tn.dataset.qtn) || 0, nextQ = parseInt(opt.dataset.qtn) || 0;
+        if (prevQ !== nextQ) { tn.value = (parseInt(tn.value) || 0) - prevQ + nextQ; tn.dataset.qtn = nextQ; }
+        const an = document.getElementById('sr-armor-note');
+        if (an) an.style.display = nextQ ? 'block' : 'none';
       })()
     `.replace(/\s+/g, ' ');
 
@@ -4596,9 +4724,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             </div>
             <div class="skill-opts-tn-row">
               <label class="skill-opts-tn-label" for="sr-tn">Target Number</label>
-              <input type="number" id="sr-tn" class="skill-opts-tn" value="${4 + woundPenalty}" min="2" max="30"/>
+              <input type="number" id="sr-tn" class="skill-opts-tn" value="${4 + woundPenalty + qtnFor(defSkill)}" min="2" max="30" data-qtn="${qtnFor(defSkill)}"/>
             </div>
             ${woundPenalty > 0 ? `<div style="font-size:11px;color:var(--sr-amber);margin:4px 0 8px">⚡ Wound TN +${woundPenalty} (pre-applied)</div>` : ''}
+            ${armorQTN > 0 ? `<div id="sr-armor-note" style="font-size:11px;color:var(--sr-amber);margin:4px 0 8px;display:${qtnFor(defSkill) ? 'block' : 'none'}">🛡 Layered armour TN +${armorQTN} (Quickness-linked skill, SR3 p.285, pre-applied)</div>` : ''}
             <div id="sr-default-note" style="font-size:11px;color:var(--sr-amber);margin:4px 0 8px;display:${defS.rating ? 'none' : 'block'}">↩ No skill — you'll <strong>choose how to default</strong> (specialization / skill / attribute) when you roll.</div>
             ${karmaPool > 0 ? `
               <label class="skill-opts-karma">

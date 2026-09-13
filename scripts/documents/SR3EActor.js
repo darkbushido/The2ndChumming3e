@@ -1986,21 +1986,19 @@ _prepareCharacter(sys, attr) {
     attr[key].value = capped;
   }
 
-  // Armor encumbrance: per 2 pts (or fraction) that max(ballistic, impact) > QUI, reduce QUI by 1
-  let armorEncPenalty = 0;
-  {
-    const armorItem = sys.equippedArmor
-      ? (this.items ?? []).find(i => i.id === sys.equippedArmor && i.type === 'armor')
-      : null;
-    if (armorItem) {
-      const armorRating = Math.max(armorItem.system?.ballistic ?? 0, armorItem.system?.impact ?? 0);
-      const quickVal    = attr.quickness?.value ?? 0;
-      if (armorRating > quickVal) {
-        armorEncPenalty = Math.ceil((armorRating - quickVal) / 2);
-        if (attr.quickness) attr.quickness.value = Math.max(1, quickVal - armorEncPenalty);
-      }
-    }
-  }
+  /* Armour burden · SR3 p.285 — TODO 112. `layeredArmor` holds both rules: Combat Pool dice
+   * lost to the full ratings worn, and the Quickness TN penalty when layering.
+   * ⚠ Quickness itself is NOT lowered. It used to be (−1 per 2 points over), which also cut
+   * Reaction, the Combat Pool by half as much, and every Quickness roll — none of it the book's
+   * rule, which takes Combat Pool dice. Implant armour is excluded, as before (M&M p.35). */
+  const armorBurden = SR3EActor.layeredArmor(
+    SR3EActor.wornArmorItems(this).map(i => ({
+      name: i.name, ballistic: i.system?.ballistic ?? 0, impact: i.system?.impact ?? 0,
+      accessory: SR3EActor.isArmorAccessory(i),
+    })),
+    attr.quickness?.value ?? 0);
+  const armorPoolPenalty   = armorBurden.combatPoolPenalty;
+  const armorQuicknessTN   = armorBurden.quicknessTN;
 
   // Improved Reflexes does not stack with wired reflexes · SR3 p.169 — TODO 64.
   // ⚠ One resolution, read by BOTH Reaction and the Initiative dice below. Deriving it twice
@@ -2169,7 +2167,8 @@ _prepareCharacter(sys, attr) {
   ));
   // ⚠ Combat Sense grants Combat Pool dice, not skill dice (p.169) — a separate channel from
   // `skillBonusDice`, and the reason `adeptCombatPool` is summed apart from everything else.
-  const combatPool          = combatPoolBase + (sys.combatPoolMod ?? 0) + adeptCombatPool;
+  // ⚠ Armour takes Combat Pool dice (p.285) — floored at 0, never negative.
+  const combatPool          = Math.max(0, combatPoolBase + (sys.combatPoolMod ?? 0) + adeptCombatPool - armorPoolPenalty);
   const combatPoolSpent     = sys.combatPoolSpent ?? 0;
   const availableCombatPool = Math.max(0, combatPool - combatPoolSpent);
 
@@ -2304,7 +2303,13 @@ _prepareCharacter(sys, attr) {
     bioIndexOver,
     effectiveMagic:     Math.round(effectiveMagic * 100) / 100,
     magicSuppressed,
-    armorEncPenalty,
+    // Armour burden (p.285, TODO 112). `armorEncPenalty` is kept as the Combat Pool dice lost,
+    // under its old name, for anything reading it; it no longer lowers Quickness.
+    armorPoolPenalty,
+    armorEncPenalty:    armorPoolPenalty,
+    armorQuicknessTN,
+    armorSumBallistic:  armorBurden.sumBallistic,
+    armorSumImpact:     armorBurden.sumImpact,
   };
 }
 
@@ -6316,16 +6321,161 @@ _prepareCharacter(sys, attr) {
   static armorRatings(actor) {
     if (actor?.type === 'vehicle') {
       const v = actor.system?.attributes?.armor?.base ?? 0;
-      return { ballistic: v, impact: v, worn: { name: null, ballistic: v, impact: v },
+      return { ballistic: v, impact: v, worn: { name: null, ballistic: v, impact: v, pieces: [] },
                implants: { impact: 0, ballistic: 0, sources: [] } };
     }
-    const id    = actor?.system?.equippedArmor;
-    const armor = id ? [...(actor.items ?? [])].find(i => i.id === id && i.type === 'armor') : null;
-    const worn  = { name: armor?.name ?? null,
-                    ballistic: armor?.system?.ballistic ?? 0, impact: armor?.system?.impact ?? 0 };
+    const pieces = SR3EActor.wornArmorItems(actor).map(i => ({
+      name: i.name, ballistic: i.system?.ballistic ?? 0, impact: i.system?.impact ?? 0,
+      accessory: SR3EActor.isArmorAccessory(i),
+    }));
+    const lay  = SR3EActor.layeredArmor(pieces);
+    const worn = { name: pieces.length ? pieces.map(p => p.name).join(' + ') : null,
+                   ballistic: lay.ballistic, impact: lay.impact, pieces: lay.pieces };
     const implants = SR3EActor.implantArmor(actor?.items);
     return { ballistic: worn.ballistic + implants.ballistic, impact: worn.impact + implants.impact,
              worn, implants };
+  }
+
+  /* ── Stacks of items — splitting and merging · TODO 113 ─────────────────────────────── */
+
+  /**
+   * The field that counts a stack, or `null` for an item that is not a stack.
+   * Gear, thrown weapons and projectiles count in `quantity`; ammunition's stockpile in `rounds`.
+   */
+  static stackField(item) {
+    if (item?.type === 'ammunition') return 'rounds';
+    return Number.isFinite(Number(item?.system?.quantity)) && item?.system?.quantity !== null
+      && item?.system?.quantity !== undefined ? 'quantity' : null;
+  }
+
+  /**
+   * What makes two stacks "the same thing" and so safe to merge: type, name and every system
+   * field except the count. ⚠ Deliberately strict — two stim patches whose notes differ stay
+   * two stacks rather than one silently losing its notes.
+   */
+  static stackKey(item) {
+    const field = SR3EActor.stackField(item);
+    const sys = { ...(item?.system ?? {}) };
+    if (field) delete sys[field];
+    const sorted = Object.keys(sys).sort().reduce((o, k) => (o[k] = sys[k], o), {});
+    return `${item?.type}|${item?.name}|${JSON.stringify(sorted)}`;
+  }
+
+  /**
+   * Plan moving `moving` of a stack of `have` to the other side of storage · TODO 113. Pure.
+   *
+   * @param {{have:number, moving:number, target?:{id:string, qty:number}|null}} p
+   *   `target` — an identical stack already on the destination side, to merge into.
+   * @returns {{ moving:number, sourceQty:number|null, flipSource:boolean,
+   *             target:{id:string, qty:number}|null, createQty:number|null }}
+   *   `sourceQty: null` = delete the source (all of it merged away); `flipSource` = the whole
+   *   item changes side, as a non-stack always did; `createQty` = a new stack on the far side.
+   */
+  static planStackMove({ have, moving, target = null } = {}) {
+    const h = Math.max(0, Math.floor(Number(have) || 0));
+    const m = Math.min(h, Math.max(0, Math.floor(Number(moving) || 0)));
+    const plan = { moving: m, sourceQty: h, flipSource: false, target: null, createQty: null };
+    if (m <= 0) return plan;                                      // nothing moves
+    const whole = m >= h;
+    if (target) {
+      plan.target    = { id: target.id, qty: (Math.floor(Number(target.qty) || 0)) + m };
+      plan.sourceQty = whole ? null : h - m;                      // merged: source shrinks or goes
+    } else if (whole) {
+      plan.flipSource = true;                                      // the item itself moves
+    } else {
+      plan.sourceQty = h - m;
+      plan.createQty = m;                                          // a new stack on the far side
+    }
+    return plan;
+  }
+
+  /** Read one of this system's item flags from a Foundry Item or a plain test object. */
+  static _itemFlag(item, key) {
+    return typeof item?.getFlag === 'function'
+      ? item.getFlag('The2ndChumming3e', key)
+      : item?.flags?.The2ndChumming3e?.[key];
+  }
+
+  /** A helmet or shield — added to other armour in full, never layered · *SR3 p.285*. */
+  static isArmorAccessory(item) {
+    const pats = globalThis.game?.sr3e?.SR3E?.armorAccessories ?? [/\bhelmet\b/i, /\bshield\b/i];
+    return pats.some(re => re.test(String(item?.name ?? '')));
+  }
+
+  /**
+   * The armour pieces an actor is wearing · TODO 112.
+   *
+   * ⚠ **Any number of pieces.** The actor used to hold ONE `system.equippedArmor` id, so
+   * putting on a helmet took the coat off — reported in play; p.285 allows both. A piece is now
+   * worn when its item carries the `worn` flag. The old field is still honoured, so actors and
+   * macros that set it (the importer, the Chrome Threat generator) keep working with no
+   * migration: its item counts as worn too.
+   *
+   * ⚠ A **stored** item is never worn — storage is the character's stash, not their body.
+   */
+  static wornArmorItems(actor) {
+    const legacy = actor?.system?.equippedArmor || null;
+    return [...(actor?.items ?? [])].filter(i =>
+      i?.type === 'armor'
+      && !SR3EActor._itemFlag(i, 'stored')
+      && (SR3EActor._itemFlag(i, 'worn') === true || (legacy && i.id === legacy)));
+  }
+
+  /**
+   * Layered armour and what it costs the wearer · *SR3 p.285* — TODO 112. Pure.
+   *
+   * **Protection**, per armour type:
+   * > "add the rating of the highest-rated piece to one-half (round down) the rating of the
+   * > next highest-rated piece of clothing or armor"
+   * A third body piece adds nothing. Helmets and shields are **added in full** (*"This does not
+   * count as layering"*).
+   *
+   * **Combat Pool** — *ARMOR AND COMBAT POOL*, the same page: *"for every 2 full points that a
+   * character's separate Ballistic or Impact Armor Rating exceed Quickness Attribute, reduce his
+   * or her Combat Pool by one die."* Read off the **full** ratings of everything worn — the book's
+   * Twitch loses dice *"because he's wearing 9 points of ballistic and 7 of impact"*.
+   * ⚠ **Rounded UP**, against the text's "2 full points": Twitch's 9 against Quickness 6 is 3
+   * over and costs him **2** dice, which only rounding up gives; the armour-jacket example (2 over
+   * → 1 die) agrees either way. The worked example wins, as it did for the code before this.
+   * ⚠ **It is the Combat Pool, not Quickness.** The system used to lower Quickness itself —
+   * dragging Reaction and every Quickness test down with it — which the book never says.
+   *
+   * **Quickness penalty** — layering only: *"add together the Ballistic Armor Ratings of the
+   * armor pieces. Each point by which this total exceeds the character's Quickness Attribute
+   * acts as a target number modifier to all Quickness-related tests"*. Two or more BODY pieces
+   * make it layering; a helmet or shield does not, but its Ballistic still counts toward the
+   * total. So a coat and a helmet alone carry no Quickness penalty.
+   *
+   * @param {{name:string, ballistic:number, impact:number, accessory?:boolean}[]} pieces
+   * @param {number} [quickness]   omit to skip the two burdens
+   */
+  static layeredArmor(pieces = [], quickness = null) {
+    const n    = v => Math.max(0, Number(v) || 0);
+    const all  = (pieces ?? []).map(p => ({ ...p, ballistic: n(p.ballistic), impact: n(p.impact) }));
+    const body = all.filter(p => !p.accessory);
+    const acc  = all.filter(p => p.accessory);
+
+    const layer = key => {
+      const r = body.map(p => p[key]).sort((a, b) => b - a);
+      return (r[0] ?? 0) + Math.floor((r[1] ?? 0) / 2) + acc.reduce((s, p) => s + p[key], 0);
+    };
+    const sumBallistic = all.reduce((s, p) => s + p.ballistic, 0);
+    const sumImpact    = all.reduce((s, p) => s + p.impact, 0);
+    const layered      = body.length >= 2;
+
+    const q = Number(quickness);
+    const hasQ = quickness !== null && quickness !== undefined && Number.isFinite(q);
+    const over = hasQ ? Math.max(0, Math.max(sumBallistic, sumImpact) - q) : 0;
+
+    return {
+      ballistic: layer('ballistic'),
+      impact:    layer('impact'),
+      sumBallistic, sumImpact, layered,
+      combatPoolPenalty: Math.ceil(over / 2),
+      quicknessTN: hasQ && layered ? Math.max(0, sumBallistic - q) : 0,
+      pieces: all.map(p => ({ name: p.name, ballistic: p.ballistic, impact: p.impact,
+                              role: p.accessory ? 'accessory' : 'layer' })),
+    };
   }
 
   /**

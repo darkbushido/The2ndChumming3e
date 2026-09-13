@@ -994,6 +994,18 @@ export const SR3E = {
     /^\s*d\.\s*sheath\b/i,
     /^\s*dermal\s+armou?r\b/i,
   ],
+
+  /**
+   * Armour worn ON TOP of other armour, not layered · *SR3 p.285* — TODO 112.
+   *
+   * > "When a helmet or shield is used, the armor bonus it provides is added to other armor.
+   * > This does not count as layering, but does count toward determining the Quickness penalty."
+   *
+   * So its ratings are added IN FULL rather than halved as a second layer. Name-matched on the
+   * armour item (Security Helmet, Military Helmet, Riot Shield); a word match, so "Shieldwall
+   * Jacket" would not qualify and "Helmet Vision Enhancement" is not an armour item at all.
+   */
+  armorAccessories: [/\bhelmet\b/i, /\bshield\b/i],
   /**
    * Racial bonuses scoped to a SITUATION · *SR3 p.56* · TODO 98
    *

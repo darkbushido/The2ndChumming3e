@@ -1175,11 +1175,16 @@ export class SR3EItem extends Item {
   // --- Step 3: Roll options dialog (TN + damage code + range + vehicle modifier) ---
   const recoilTNMod  = fireModeResult?.recoilTN ?? 0;
   const woundPenalty = -(actor.system.woundMod ?? 0);
-  const extraTNMod   = recoilTNMod + (fireModeResult?.additionalTNPenalty ?? 0) + woundPenalty;
+  // Layered armour · SR3 p.285 (TODO 112): +N to "all skills linked to Quickness" — which most
+  // ranged weapon skills are. Pre-applied like the wound modifier, and itemised beside it.
+  const armorQTN     = this._getDefaultAttribute() === 'quickness'
+    ? (actor.system.derived?.armorQuicknessTN ?? 0) : 0;
+  const extraTNMod   = recoilTNMod + (fireModeResult?.additionalTNPenalty ?? 0) + woundPenalty + armorQTN;
   const tnBreakdownParts = [];
   if (recoilTNMod)                           tnBreakdownParts.push(`Recoil +${recoilTNMod}`);
   if (fireModeResult?.additionalTNPenalty)   tnBreakdownParts.push(`Multi-target +${fireModeResult.additionalTNPenalty}`);
   if (woundPenalty > 0)                      tnBreakdownParts.push(`Wound +${woundPenalty}`);
+  if (armorQTN > 0)                          tnBreakdownParts.push(`Layered armour +${armorQTN}`);
   // Tracer TN bonus is conditional (beyond Short range, non-smartgun) so it is shown
   // as a note for the GM to apply manually rather than baked into the TN.
   const tracerRules = game.sr3e.SR3E.ammoTypes[ammoType] ?? {};

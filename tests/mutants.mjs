@@ -73,6 +73,64 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'armor-second-layer-not-halved',
+    suite:  'armor-layering',
+    ...ACTOR, method: 'layeredArmor',
+    was:    'adding the second layer in full. SR3 p.285: "one-half (round down) the rating of the '
+          + 'next highest-rated piece" — Twitch is 7 ballistic, not 9',
+    impl:   (pieces = [], q = null) => {
+      const b = pieces.reduce((s, p) => s + (p.ballistic || 0), 0), i = pieces.reduce((s, p) => s + (p.impact || 0), 0);
+      const over = q == null ? 0 : Math.max(0, Math.max(b, i) - q);
+      return { ballistic: b, impact: i, sumBallistic: b, sumImpact: i, layered: pieces.filter(p => !p.accessory).length >= 2,
+               combatPoolPenalty: Math.ceil(over / 2), quicknessTN: q == null ? 0 : Math.max(0, b - q), pieces: [] };
+    },
+  },
+  {
+    id:     'armor-helmet-layered',
+    suite:  'armor-layering',
+    ...ACTOR, method: 'isArmorAccessory',
+    was:    'treating a helmet as a second layer (halved). p.285: its bonus "is added to other armor. '
+          + 'This does not count as layering" — the coat-and-helmet case reported in play',
+    impl:   () => false,
+  },
+  {
+    id:     'armor-pool-rounds-down',
+    suite:  'armor-layering',
+    ...ACTOR, method: 'layeredArmor',
+    was:    'rounding the Combat Pool loss DOWN. The text says "2 full points", but p.285\'s Twitch, '
+          + '3 over, loses 2 dice — only rounding up gives that',
+    impl:   (pieces = [], q = null) => {
+      const body = pieces.filter(p => !p.accessory), acc = pieces.filter(p => p.accessory);
+      const lay = k => { const r = body.map(p => p[k] || 0).sort((a, b) => b - a);
+        return (r[0] ?? 0) + Math.floor((r[1] ?? 0) / 2) + acc.reduce((s, p) => s + (p[k] || 0), 0); };
+      const b = pieces.reduce((s, p) => s + (p.ballistic || 0), 0), i = pieces.reduce((s, p) => s + (p.impact || 0), 0);
+      const over = q == null ? 0 : Math.max(0, Math.max(b, i) - q);
+      return { ballistic: lay('ballistic'), impact: lay('impact'), sumBallistic: b, sumImpact: i,
+               layered: body.length >= 2, combatPoolPenalty: Math.floor(over / 2),
+               quicknessTN: q == null || body.length < 2 ? 0 : Math.max(0, b - q), pieces: [] };
+    },
+  },
+  {
+    id:     'armor-one-slot-only',
+    suite:  'armor-layering',
+    ...ACTOR, method: 'wornArmorItems',
+    was:    'the single equippedArmor slot — putting on a helmet took the coat off (TODO 112)',
+    impl:   (actor) => [...(actor?.items ?? [])].filter(i => i?.type === 'armor' && i.id === actor?.system?.equippedArmor),
+  },
+  {
+    id:     'stack-merge-duplicates',
+    suite:  'armor-layering',
+    ...ACTOR, method: 'planStackMove',
+    was:    'ignoring an identical stack on the far side, so putting 10 stim patches back beside '
+          + 'the stored 3 left two stacks of the same thing (TODO 113)',
+    impl:   ({ have, moving } = {}) => {
+      const h = Math.floor(Number(have) || 0), m = Math.min(h, Math.max(0, Math.floor(Number(moving) || 0)));
+      if (m <= 0) return { moving: 0, sourceQty: h, flipSource: false, target: null, createQty: null };
+      return m >= h ? { moving: m, sourceQty: h, flipSource: true, target: null, createQty: null }
+                    : { moving: m, sourceQty: h - m, flipSource: false, target: null, createQty: m };
+    },
+  },
+  {
     id:     'essence-zero-reads-as-low',
     suite:  'essence',
     ...ACTOR, method: 'essenceState',

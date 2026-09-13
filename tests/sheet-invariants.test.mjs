@@ -69,6 +69,27 @@ export async function run(t) {
   t.ok('…and the CSS has both states',
     /\.attr-block\.essence-low \{/.test(css) && /\.attr-block\.essence-dead \{/.test(css));
 
+  /* ── Several armour pieces worn at once (TODO 112) ─────────────────────────────────── */
+  const equip = actorSheet.slice(actorSheet.indexOf('static async _onEquipArmor('), actorSheet.indexOf('static async _onApplyDamage('));
+  t.ok('Wear/Take off toggles the piece\'s own worn flag, not a single slot',
+    /setFlag\('The2ndChumming3e', 'worn', !isWorn\)/.test(equip) && !/'system\.equippedArmor': newEquipped/.test(equip));
+  t.ok('the Armor tab lists every worn piece from armorRatings', /wornArmorItems\(actor\)/.test(actorSheet) && /Currently Worn/.test(actorSheet));
+  t.ok('the Combat Pool box\'s base excludes only the manual modifier (armour dice not absorbed)',
+    /\(d\.combatPool \?\? 0\) - \(sys\.combatPoolMod \?\? 0\)/.test(actorSheet));
+  t.ok('attribute and skill roll dialogs pre-apply the layered-armour TN as a delta',
+    (actorSheet.match(/data-qtn=/g) ?? []).length >= 3 && /tn\.dataset\.qtn = nextQ/.test(actorSheet));
+  t.ok('ranged attacks itemise the layered-armour TN beside the wound modifier',
+    /Layered armour \+\$\{armorQTN\}/.test(item) && /woundPenalty \+ armorQTN/.test(item));
+  t.ok('Quickness is no longer lowered by armour (p.285 takes Combat Pool dice)',
+    !/attr\.quickness\.value = Math\.max\(1, quickVal - armorEncPenalty\)/.test(read('scripts/documents/SR3EActor.js')));
+
+  /* ── Splitting stacks out of storage (TODO 113) ───────────────────────────────────── */
+  const store = actorSheet.slice(actorSheet.indexOf('static async _onToggleStored('), actorSheet.indexOf('static async _onEquipMelee('));
+  t.ok('storage asks how many of a stack', /_promptStackCount\(item, have, storing\)/.test(store));
+  t.ok('…and moves it by planStackMove, merging into an identical stack by stackKey',
+    /SA\.planStackMove\(/.test(store) && /SA\.stackKey\(i\) === key/.test(store));
+  t.ok('a split-off copy is never born worn', /stored: storing, worn: false/.test(store));
+
   /* ── Citation (TODO 93 note): dermal armor's "does not aid in healing" is SR3 p.283 ─── */
   t.ok('racialDermalArmor cites p.283, not p.281', /Natural dermal armor · \*SR3 p\.56, p\.283\*/.test(config));
 }
