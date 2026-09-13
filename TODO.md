@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | **93** — Foundry test of everything on branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **91** · **97** · **101** *(**71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** done)* |
+| 🔴 Confirmed bugs, still open | **91** · **97** · **101** · **106** *(**71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** *(**3** · **4** · **30** · **75** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** · **104** *(**83** · **84** · **87** done)* |
@@ -7096,3 +7096,25 @@ Pin the tested version range in the \`recommends\` entry's \`compatibility\`.
 
 Related: TODO 104 (vehicle art and top-down tokens) — riders sit on the token, so its footprint
 matters there too.
+
+<a id="106"></a>
+
+## 106. 🔴 The Driving Test gives a VCR twice the modifier the book does — **found in the TODO 93 run, 2026-09-13**
+
+**Found while answering a question mid-run; not fixed.** SR3 has **two** VCR target modifiers and
+\`SR3EVehicleSheet.runDrivingTest\` uses the wrong one for a Driving Test:
+
+| Test | VCR modifier | Source (core, printed pages) |
+|---|---|---|
+| **Driving Test** | **−VCR Rating** | Driving Test Modifiers table p.134 (*"Rigger in Control −VCR Rating"*), and its worked example p.135: *"Rigger in control (VCR Rating 1) −1"* |
+| Vehicle combat / positioning / ramming / crash tables | **−(VCR Rating × 2)** | pp.141-144 (*"Driver has VCR implant −(VCR Rating x 2)"*) |
+
+The dialog's *Rigger — VCR Rating* select offers \`-vcrRating * 2\`, so a VCR 2 rigger gets −4 on a
+Driving Test where the book gives −2. CLAUDE.md's Driving Test section repeats the ×2 ("VCR
+−2×rating") and must be corrected with the code.
+
+⚠ **The Crash Test reuses this dialog** (TODO 74, crash mode). Check which table governs the
+Crash Test's VCR modifier — the ×2 tables sit in the crash/impact pages — and give crash mode the
+right one rather than flipping both. Also check the other VCR sites for the same confusion: the
+Chase Scene's action dialogs, and CLAUDE.md's *"TN −2 per VCR level on all skill tests"* under
+vehicle initiative. Pure helper + a test pinned to the p.135 worked example.
