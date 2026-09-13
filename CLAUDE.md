@@ -50,6 +50,9 @@ npm run test:e2e        # Playwright, two real clients (Foundry running)
 - A migration still needs `system.json` bumped in the same commit (see *World migrations*), so
   number it by the release it will ship in under these rules.
 - Never `git push` unless asked — the maintainer publishes.
+- **Going forward only.** The commits already on `main` for 0.5.2 (healing cards, cross-player
+  healing with its time boxes, gear ratings) predate these rules and ship as they are — do not
+  split or renumber them.
 
 ## Branch manifest URLs — `npm run manifest:branch`
 
