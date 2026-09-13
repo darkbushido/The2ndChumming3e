@@ -74,7 +74,7 @@ export async function run(t) {
   t.ok('the modifiers applied are announced',
     r.notes.some(([, m]) => /racial modifiers applied/i.test(m)));
   t.ok('Charisma below 1 is warned about, not clamped (p.55)',
-    r.notes.some(([l, m]) => l === 'warn' && /bCHAb.*below 1/.test(m)));
+    r.notes.some(([l, m]) => l === 'warn' && /CHA.*below 1/.test(m)));
 
   /* ── Skills land in the right place — TODO 95 ─────────────────────────────────────── */
   const skills = Object.fromEntries(r.embedded.filter(i => i.type === 'skill').map(s => [s.name, s.system]));
