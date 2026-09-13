@@ -142,4 +142,9 @@ export async function run(t) {
   t.ok('the final wave posts the result card', /allDone && state\.healingContext[\s\S]{0,120}SR3EHealing\.onRolled/.test(actor));
   t.ok('the character sheet has the 🩹 Healing button', /data-action="openHealing"/.test(sheet) && /openHealing:\s+SR3EActorSheet\._onOpenHealing/.test(sheet));
   t.ok('the GM tools list has it too, for everyone', /mk\('sr3e-heal-btn'[^\n]*false\)/.test(entry));
+  const heal = read('scripts/SR3EHealing.js');
+  t.ok('Spell Pool dice on a Heal card are spent from the caster when they roll', /rollFromCard[\s\S]{0,1200}p\.spellPool > 0[\s\S]{0,80}roller\.spendSpellPool\(p\.spellPool\)/.test(heal));
+  t.ok('healing every box by magic clears the record, so the next injury is a new set', /case 'heal-boxes'[\s\S]{0,700}r\.physical === 0 && r\.overflow === 0[\s\S]{0,80}unsetFlag\(FLAG, 'healing'\)/.test(heal));
+  t.ok('"does it need a doctor?" at Deadly posts no roll (it posted "TN null" in play)', /case 'attention': \{\s*[\s\S]{0,200}attentionTN\(s\.level\) === null\)[\s\S]{0,40}return H\._postAction/.test(heal));
+  t.ok('no card prints a bare "${n} boxes" (it read "(1 boxes)" in play)', !/\$\{[^}]+\} boxes\b/.test(heal));
 }

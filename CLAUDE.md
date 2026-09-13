@@ -1962,6 +1962,39 @@ at the call site.
 bought, so "where did that 40 karma go?" has no answer. Tracked separately as TODO 79, because
 it is a want rather than a defect.
 
+### Guided healing  · *SR3 pp.125-129, 178, 193-194, 304-305; M&M pp.95, 136, 138* — TODO 115
+
+`scripts/SR3EHealing.js`, opened by 🩹 **Healing** on the character sheet (wound-tracks area) and
+in the GM tools list. A step menu → a small form → a **roll card** (`.sr-heal-roll-btn`, editable
+`.sr-heal-pool` / `.sr-heal-tn`, gated `_isDeciderId(rollerId)`) → a **result card** whose
+`.sr-heal-act-btn` buttons *offer* each consequence (gated `_mineId(ownerId)`). Same ethos as
+combat: **nothing is applied until someone clicks** — lowering the wound, the bill, the lost
+Attribute point.
+
+- **The roll goes through `rollPool` with `healingContext`**, and `_postWaveCard`'s final wave calls
+  `SR3EHealing.onRolled`. It is carried at all three explosion-carry sites (Deadly first aid is TN
+  10, which explodes). `skipWoundMod` for the patient's own Body tests — the tables already price
+  the wound in.
+- **`act()` returning `false` means "cancelled"**: `sr3e.js` then hands the one-shot button back
+  (Charge's confirm, Next's form). Anything else keeps it spent.
+- ⚠ **The per-injury record is the actor flag `healing`** — `{stabilized, magicHealed,
+  timeMultiplier, baseMultiplier}` — and it is **cleared whenever Physical reaches 0**, by either
+  *Lower* or *Heal these boxes*. `magicHealed` blocks further Heal/Treat **and** first aid for *these*
+  injuries (p.129, p.194); left set after a full heal it silently blocked the next wound.
+- ⚠ **Medkit (M&M p.136/138):** no Biotech → the kit's rating **is** the skill; with Biotech → its
+  rating adds **complementary dice**. Not p.97's 2:1 complementary skill — same reading as R3's EW
+  dice. A kit flagged `suppliesOut` (a 1 on the 1D6, p.304) is invisible to `findEquipment` until
+  restocked (50¥). "Medkit Supplies" is not a medkit.
+- ⚠ **Spell Pool on a Heal card is spent on ROLL, on the caster's client** — an unrolled card costs
+  nothing. It was offered and never spent until the live test.
+- **Equipment is detected by name** (`SR3EHealing.EQUIPMENT` regexes): stabilization unit
+  (automatic stabilization, −2 on healing tests), trauma patch, antidote patch (its rating in dice on
+  stabilization tests). The forms pre-tick what the patient carries; the GM can untick.
+- **No successes on a healing stage returns `null`** — the Healing Table gives no time, so the card
+  says it is the GM's call rather than inventing one.
+- Costs come from the Medical Costs Table and the lifestyle table (monthly ÷ 30); a hospital or ICU
+  meets the minimum lifestyle. **Charge** confirms before deducting `system.nuyen`.
+
 ---
 
 ## Actor data model

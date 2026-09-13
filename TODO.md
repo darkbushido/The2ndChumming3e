@@ -24,7 +24,7 @@ independent.
 | 🔵 In progress | **93** — Foundry test of everything on branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | **91** · **97** · **114** *(reloads counted in rounds, not reloads)* · **116** *(Damage Compensators show damage despite the Pain Editor setting)* *(**112** · **113** fixed on `fix/armor-and-stacks`)* *(**101** · **71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** · **106** · **107** done)* |
-| 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** · **115** *(guided healing)* · **109** *(Stress)* · **110** *(TLE-x, needs 109)* · **111** *(CDS)* *(**3** · **4** · **30** · **75** · **98** done)* |
+| 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** *(now one step of 115)* · **109** *(Stress)* · **110** *(TLE-x, needs 109)* · **111** *(CDS)* *(**3** · **4** · **30** · **75** · **98** done; **115** built on `feature/healing`)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | **117** *(934 documents lack a book/page)* · 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** · **104** *(**83** · **84** · **87** done)* |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 56 · **100** · **103** · **105** *(**36** · **99** done)* |
@@ -7484,7 +7484,29 @@ into and out of storage ([#113](#113)), which should work with whichever unit is
 
 <a id="115"></a>
 
-## 115. Walk people through healing — **requested in play 2026-09-13**
+## 115. ✅ Walk people through healing — **requested in play 2026-09-13, BUILT 2026-09-13** (`feature/healing`)
+
+**Done — `scripts/SR3EHealing.js`.** A 🩹 **Healing** button on the character sheet (beside the
+wound tracks) and in the GM tools list opens a step menu; each step is a small form, then a chat
+card in the combat style: an editable Dice / TN roll card, then a result card whose buttons *offer*
+each consequence (lower the wound, erase a Stun box, charge the bill, record organ damage, roll the
+1D6 tables, roll Magic loss). Nothing is applied until someone clicks. Steps: Stabilize (unit, first
+aid, self, trauma patch, Stabilize spell) · First aid (Biotech + the M&M p.136/138 medkit rule — no
+Biotech: the kit's rating *is* the skill; with Biotech: its rating adds complementary dice — and the
+medkit supplies 1D6, restock 50¥) · Heal/Treat (Spell Pool spent on roll; Drain card) · Does it need
+a doctor? · Heal one stage (Healing + Doctoring Tables, stabilization unit −2, organ ×2 / limb ×1.5,
+days, minimum lifestyle, the bill) · Permanent damage · Magic loss · Stun recovery. Per-injury
+record in the actor flag `healing` (`stabilized`, `magicHealed`, multipliers); cleared when the
+wound reaches 0.
+
+**Live-tested 2026-09-13** (Browser pane, mcp-api): every step and every button above, including
+an exploding wave at TN 20 carrying `healingContext`. Found and fixed during it: `(1 boxes)`
+plurals; the Spell Pool offered on a Heal card was never spent; healing every box by magic left
+`magicHealed` set, blocking magic on the *next* injury; "Does it need a doctor?" at Deadly posted a
+`TN null` roll (the menu hides it, but an old card's Next button reached it). `tests/healing.test.mjs`
+(92 assertions) + 5 mutants.
+
+The original request and rules notes follow.
 
 **Request.** Something that guides a player and GM through the healing process step by step, rather
 than everyone reconstructing it from the book at the table. Broader than [#76](#76), which is only

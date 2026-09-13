@@ -557,13 +557,20 @@ export class SR3EHealing {
           title: `✨ ${f.spell === 'treat' ? 'Treat' : 'Heal'} (Force ${force}) — ${c.name} on ${patient.name}`,
           rollLabel: `Roll Sorcery (${c.name})`,
           lines: [`Sorcery ${sorc}${f.spellPool > 0 ? ` + ${f.spellPool} Spell Pool` : ''} vs TN <strong>${H.healSpellTN(s.essence)}</strong> (10 − Essence)`,
-                  `Up to ${force} boxes healed. Drain ${Math.max(2, Math.floor(force / 2) + (f.spell === 'treat' ? -1 : 0))}${s.level || 'L'} — the patient's wound level.`,
+                  `Up to ${force} box${force === 1 ? '' : 'es'} healed. Drain ${Math.max(2, Math.floor(force / 2) + (f.spell === 'treat' ? -1 : 0))}${s.level || 'L'} — the patient's wound level.`,
                   f.spell === 'treat' && !f.withinHour ? '⚠ Treat after an hour has no effect (p.194).' : '',
                   s.record.magicHealed ? '⚠ Already magically healed — no effect (p.194).' : ''],
         });
       }
 
       case 'attention': {
+        // No Wound Table row → no test. The menu hides this at Deadly, but an older card's
+        // "Next" button can still land here after the wound has got worse.
+        if (H.attentionTN(s.level) === null) {
+          return H._postAction(patient, `🩺 ${s.level === 'D' ? 'Needs medical attention' : 'No Physical wound'} — ${patient.name}`,
+            [s.level === 'D' ? 'A Deadly wound always needs medical attention — there is no test (p.127).' : 'Nothing to test.'],
+            [s.level === 'D' ? { act: 'next', ownerId: patient.id, step: 'stage', label: '🛏 Heal one stage' } : null], { color: s.level === 'D' ? 'var(--sr-red)' : '' });
+        }
         const unit = H.findEquipment([patient], 'stabilization');
         const f = await H._form(`🩺 Does it need a doctor? — ${patient.name}`, `
           <div style="font-size:12px">Body Test, <strong>natural Body only</strong> (${s.bodyNatural}), against the Wound Table:
@@ -753,6 +760,15 @@ export class SR3EHealing {
       if (!def) return;
       pool = def.pool; tn += def.tnMod;
     }
+    // Spell Pool is charged here, when the caster rolls, not when the card is posted — an unrolled
+    // card must cost nothing. A pool that has run dry since drops the dice it could not pay for.
+    if (p.spellPool > 0) {
+      const spent = await roller.spendSpellPool(p.spellPool);
+      if (spent < p.spellPool) {
+        pool = Math.max(0, pool - (p.spellPool - spent));
+        ui.notifications.info(`${roller.name} had only ${spent} Spell Pool left — rolling ${pool} dice.`);
+      }
+    }
     if (pool <= 0) { ui.notifications.warn(`${roller.name} has no dice for this.`); return; }
     await roller.rollPool(pool, tn, p.label, { healingContext: { ...p, pool, tn }, skipWoundMod: !!p.skipWoundMod });
   }
@@ -765,7 +781,7 @@ export class SR3EHealing {
     const s = H._state(patient);
     const n = Number(successes) || 0;
     const nextBoxes = H.oneLevelDown(s.physical);
-    const lower = { act: 'lower', ownerId: patient.id, label: `✔ Lower the wound to ${LEVEL_NAME[H.woundLevel(nextBoxes)] ?? 'healed'} (${nextBoxes} boxes)` };
+    const lower = { act: 'lower', ownerId: patient.id, label: `✔ Lower the wound to ${LEVEL_NAME[H.woundLevel(nextBoxes)] ?? 'healed'} (Physical ${s.physical} → ${nextBoxes})` };
     const next  = (step, label) => ({ act: 'next', ownerId: patient.id, step, label });
     const charge = (amount, what, payerId = patient.id) => amount > 0
       ? { act: 'charge', ownerId: payerId, amount, what, label: `💴 Charge ${yen(amount)} — ${what}` } : null;
@@ -779,7 +795,7 @@ export class SR3EHealing {
                : 'No successes — no Stun recovered this rest. Rest and try again.',
            'If the rest is interrupted, roll again: the new result can never be better than the first (p.126).'],
           [min ? { act: 'erase-stun', ownerId: patient.id, label: '✔ Erase 1 Stun box' } : null,
-           s.stun > (min ? 1 : 0) ? next('stun', '😴 Roll for the next box') : null], { color: min ? good : bad });
+           s.stun > (min ? 1 : 0) ? next('stun', min ? '😴 Roll for the next box' : '😴 Rest and roll again') : null], { color: min ? good : bad });
       }
 
       case 'firstaid': {
@@ -825,7 +841,7 @@ export class SR3EHealing {
         return H._postAction(patient, `✨ ${ctx.spell === 'treat' ? 'Treat' : 'Heal'} — ${n} success${n === 1 ? '' : 'es'}`, [
           `Split the successes between <strong>boxes healed</strong> (up to Force ${ctx.force}) and the <strong>time</strong> to become permanent
            (${H.PERMANENT_SPELL_TURNS[ctx.level || 'L']} turns base${ctx.spell === 'treat' ? ', halved for Treat' : ''}, ÷ the rest).`,
-          `As suggested: <strong>${r.boxes}</strong> boxes, permanent after <strong>${r.turns}</strong> Combat Turns of sustaining.`,
+          `As suggested: <strong>${r.boxes}</strong> box${r.boxes === 1 ? '' : 'es'}, permanent after <strong>${r.turns}</strong> Combat Turns of sustaining.`,
           'Precludes any further healing spell and first aid for these injuries.'],
           [{ act: 'heal-boxes', ownerId: patient.id, label: '✔ Heal these boxes', input: { label: 'Boxes', value: r.boxes, max: Math.min(n, ctx.force) } }],
           { color: good });
@@ -933,8 +949,11 @@ export class SR3EHealing {
         const nInput = parseInt(btn.closest('.sr-heal-card')?.querySelector('.sr-heal-n')?.value);
         const r = H.healBoxes({ physical: s.physical, overflow: s.overflow, n: Number.isFinite(nInput) ? nInput : 0 });
         await patient.update({ 'system.wounds.physical.value': r.physical, 'system.wounds.overflow.value': r.overflow });
-        await setRecord({ magicHealed: true });
-        return ChatMessage.create({ content: `<div class="sr-roll-card"><div class="sr-roll-result">✔ ${esc(patient.name)}: Physical ${s.physical}${s.overflow ? `+${s.overflow}` : ''} → <strong>${r.physical}${r.overflow ? `+${r.overflow}` : ''}</strong>. Magically healed — no further healing spells or first aid for these injuries.</div></div>` });
+        // Fully healed ends this set of injuries (as 'lower' does); the next wound may be healed by magic again.
+        const done = r.physical === 0 && r.overflow === 0;
+        if (done) await patient.unsetFlag(FLAG, 'healing');
+        else await setRecord({ magicHealed: true });
+        return ChatMessage.create({ content: `<div class="sr-roll-card"><div class="sr-roll-result">✔ ${esc(patient.name)}: Physical ${s.physical}${s.overflow ? `+${s.overflow}` : ''} → <strong>${r.physical}${r.overflow ? `+${r.overflow}` : ''}</strong>. ${done ? 'Fully healed.' : 'Magically healed — no further healing spells or first aid for these injuries.'}</div></div>` });
       }
       case 'erase-stun': {
         const v = Math.max(0, (patient.system?.wounds?.stun?.value ?? 0) - 1);
