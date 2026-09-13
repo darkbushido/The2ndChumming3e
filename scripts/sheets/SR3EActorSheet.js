@@ -1381,9 +1381,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const activeArmorDisplay = worn.pieces.length ? `
       <div class="active-armor-section">
         <div class="active-armor-header">
-          <i class="fas fa-shield-alt"></i> Currently Worn${worn.pieces.length > 1 ? ' — layered (SR3 p.285)' : ''}
+          <i class="fas fa-shield-alt"></i> Currently Worn${worn.pieces.filter(p => p.role === 'layer').length >= 2 ? ' — layered (SR3 p.285)' : ''}
         </div>
-        <div class="active-armor-card" title="${worn.pieces.length > 1 ? 'Best piece + half the next best, per type; helmets and shields add in full. Worn totals ' + d.armorSumBallistic + 'B / ' + d.armorSumImpact + 'I count against Quickness.' : ''}">
+        <div class="active-armor-card" title="${worn.pieces.length > 1 ? 'Best piece + half the next best, per type; helmets and shields add in full (not layering). Worn totals ' + d.armorSumBallistic + 'B / ' + d.armorSumImpact + 'I count against Quickness.' : ''}">
           <span class="active-armor-name">${worn.pieces.map(p => `${p.name} ${p.ballistic}/${p.impact}${roleTag(p)}`).join('<br>')}</span>
           <div class="active-armor-stats">
             <span class="armor-badge ballistic">B: ${worn.ballistic}</span>

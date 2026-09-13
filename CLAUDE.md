@@ -993,7 +993,19 @@ Consequences in the code, so they are not undone by accident:
   the GM, then rolls the dodge — or falls through to the soak card on a declaration of 0.
 - Full Defense is read (`_fullDefenseDice`) but only consumed at that point, never earlier.
 13. Soak card posts for target: editable Body pool, TN (power − armour), armour type dropdown (ballistic default, impact for melee). APDS/Flechette armour effects auto-applied here from the carried `ammoType` (editable; shows a gold note)
-   - **Armour = worn + implant** — `SR3EActor.armorRatings(actor)`, the one answer the soak card, Falling Damage and the Body+armour stat picker all read (TODO 75). Implant armour (`SR3EActor.implantArmor`) is **cumulative** by the book: Bone Lacing (SR3 p.300), Ceramic/Kevlar lacing (M&M p.27), Dermal Sheath (M&M p.28), Orthoskin (M&M p.68). ⚠ It is read from each item's upstream **`mods`** string (`+1IMP`, `+1BAL`) — every shipped implant carries it — with the **nullable** `bonusImpact`/`bonusBallistic` fields as the GM's override: `null` = from mods, a number **including 0** wins (the `essence.lost` pattern). ⚠ `IMP`/`BAL` are deliberately **not** mapped into `SRCG_BONUSES` — that would be a second source. ⚠ Plastic Bone Lacing gives **no** armour (p.303 table, against the p.300 prose). ⚠ Encumbrance still reads worn armour only.
+   - **Armour = worn + implant** — `SR3EActor.armorRatings(actor)`, the one answer the soak card, Falling Damage and the Body+armour stat picker all read (TODO 75). Implant armour (`SR3EActor.implantArmor`) is **cumulative** by the book: Bone Lacing (SR3 p.300), Ceramic/Kevlar lacing (M&M p.27), Dermal Sheath (M&M p.28), Orthoskin (M&M p.68). ⚠ It is read from each item's upstream **`mods`** string (`+1IMP`, `+1BAL`) — every shipped implant carries it — with the **nullable** `bonusImpact`/`bonusBallistic` fields as the GM's override: `null` = from mods, a number **including 0** wins (the `essence.lost` pattern). ⚠ `IMP`/`BAL` are deliberately **not** mapped into `SRCG_BONUSES` — that would be a second source. ⚠ Plastic Bone Lacing gives **no** armour (p.303 table, against the p.300 prose). ⚠ Encumbrance reads worn armour only.
+   - **Several pieces worn at once — SR3 p.285** (TODO 112). A piece is worn when its item has the
+     `worn` flag (`SR3EActor.wornArmorItems`; the legacy `system.equippedArmor` id still counts, and
+     a **stored** item never does). `SR3EActor.layeredArmor` is the one rule: **best piece + half the
+     next**, per type, a third body piece adding nothing; **helmets and shields add in full**
+     (`SR3E.armorAccessories` — *"This does not count as layering"*). ⚠ **Armour costs Combat Pool
+     dice, not Quickness** — *"for every 2 full points that… Ballistic or Impact… exceed Quickness,
+     reduce his or her Combat Pool by one die"*, off the **full** ratings worn, **rounded up** because
+     the book's Twitch (3 over) loses 2. The system used to lower Quickness itself, which also cut
+     Reaction; do not restore that. **Layering** (2+ body pieces) adds +(worn Ballistic − Quickness)
+     TN to Quickness tests and Quickness-linked skills (`derived.armorQuicknessTN`), pre-applied as
+     a delta in the attribute/skill roll dialogs and itemised in ranged attacks; a coat + helmet is
+     not layering. Movement-rate reduction is not modelled.
 14. Soak roll (interactive Rule of Six)
 15. Soak result: each 2 soak hits = stage down (D→S→M→L). Below L = completely soaked.
 16. GM applies damage manually using wound track buttons.
@@ -1053,7 +1065,8 @@ still the 1st. ⚠ The **GM window cannot supply this**: `multiTarget` carries n
 inside the dialog's FA-only section, so SA's second shot and BF's second burst were both free.
 
 **Ammunition** — two-layer model (see also the ammo-architecture memory):
-- *Stockpile*: ammo items are a reservoir (gear/ammo tabs show "Stock"). Fields: `ammoType`, `loadMechanism`, `rounds` (total owned). Rules live in `SR3E.ammoTypes` config, NOT on the item.
+- *Stockpile*: ammo items are a reservoir (gear/ammo tabs show "Stock"). Fields: `ammoType`, `loadMechanism`, `rounds` (total owned). Rules live in `SR3E.ammoTypes` config, NOT on the item. ⚠ Counted in **rounds**, which players reported does not match pre-filled reloads (a "7-round cy reload ×6" should read 6 and drop by one per reload) — TODO 114.
+- *Stacks and storage* (TODO 113): moving a stack of more than one (`quantity`, or ammunition `rounds`) into or out of storage asks how many; part of a stack splits off and an identical stack on the far side is merged into (`SR3EActor.stackKey`, strict — every field but the count). Pure rule: `SR3EActor.planStackMove`.
 - *Magazine*: each firearm tracks `loadedAmmoType` + `loadedRounds`; magazine size is parsed from its capacity string (`15(c)` → 15). The weapons-tab ammo cell shows the capacity, a loaded badge, and a ↻ **Reload** button (`SR3EItem.reload`).
 - *Reload*: prompts a compatible stockpile (matched by loading mechanism), full-swaps the magazine (leftovers discarded), and subtracts from the stockpile. When `trackAmmo` is off it only sets the loaded type (no stock math).
 - *Firing* uses whatever is loaded; decrements `loadedRounds` when `trackAmmo` is on (warns, never blocks, when empty).

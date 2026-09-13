@@ -23,8 +23,8 @@ independent.
 |---|---|
 | 🔵 In progress | **93** — Foundry test of everything on branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **91** · **97** · **112** *(one armour item only — coat + helmet is legal)* · **113** *(can't split a stack out of storage)* *(**101** · **71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** · **106** · **107** done)* |
-| 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** · **109** *(Stress)* · **110** *(TLE-x, needs 109)* · **111** *(CDS)* *(**3** · **4** · **30** · **75** · **98** done)* |
+| 🔴 Confirmed bugs, still open | **91** · **97** · **114** *(reloads counted in rounds, not reloads)* *(**112** · **113** fixed on `fix/armor-and-stacks`)* *(**101** · **71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** · **106** · **107** done)* |
+| 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** · **115** *(guided healing)* · **109** *(Stress)* · **110** *(TLE-x, needs 109)* · **111** *(CDS)* *(**3** · **4** · **30** · **75** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** · **104** *(**83** · **84** · **87** done)* |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 56 · **100** · **103** · **105** *(**36** · **99** done)* |
@@ -7387,7 +7387,21 @@ interval, let the GM roll.
 
 <a id="112"></a>
 
-## 112. Only one armour item can be worn — a coat and a helmet together is legal — **reported in play 2026-09-13**
+## 112. ✅ Only one armour item can be worn — a coat and a helmet together is legal — **FIXED 2026-09-13** (`fix/armor-and-stacks`)
+
+**Fixed.** Any number of pieces are worn (a per-item `worn` flag; the old `equippedArmor` field is
+still honoured, so the importer and the Chrome Threat macro need no change). `SR3EActor.layeredArmor`
+applies p.285 — best piece + half the next per type, helmets/shields added in full — and feeds
+`armorRatings`, so the soak card and the Armor tab agree. **Behaviour change:** armour now costs
+**Combat Pool dice** (the book's rule) instead of lowering Quickness, which also used to cut
+Reaction; layering (2+ body pieces) adds +N TN to Quickness tests and Quickness-linked skills,
+pre-applied in the attribute/skill roll dialogs and in ranged attacks. Melee skills are mostly
+Strength-linked and do not take it. Tests: `armor-layering.test.mjs` (the p.285 Twitch example,
+coat + helmet), 4 mutants, `sheet-invariants`. Checked live in the Browser pane: coat + helmet
+6/4 with Combat Pool −1; + vest 7/4, Quickness TN +3 in the roll dialog, Combat Pool −2.
+⚠ Not modelled: the movement-rate Quickness reduction (no movement rate in the system).
+
+The report as logged:
 
 **Observation.** A player tried to equip a **Secure Long Coat** and a **military helmet** at the same
 time; the sheet will not let both be worn.
@@ -7419,7 +7433,18 @@ all of which must keep one answer.
 
 <a id="113"></a>
 
-## 113. Cannot split a stack of items when taking them out of storage — **reported in play 2026-09-13**
+## 113. ✅ Cannot split a stack of items when taking them out of storage — **FIXED 2026-09-13** (`fix/armor-and-stacks`)
+
+**Fixed.** Moving a stack of more than one into or out of storage asks **how many** (default: all).
+Part of a stack splits off into a new item; landing on an identical stack already on the other side
+merges into it (`SR3EActor.stackKey` — type, name and every field but the count; deliberately
+strict). Counts are `quantity` (gear, thrown, projectile) or `rounds` (ammunition). Pure rule
+`SR3EActor.planStackMove`, tested in `armor-layering.test.mjs` with a mutant; checked live: 10 stim
+patches in storage → take 2 → 8 stored + 2 carried → put back → one stack of 10.
+⚠ Stim patches ship in no pack, so the player's were presumably made as **Gear** (which has
+`quantity`); a **drug** item has no quantity and still moves whole.
+
+The report as logged:
 
 **Observation only — not investigated** (reported mid-session). A player has **10 grade-2 stim
 patches** in storage and wants to take out only one or two. There is no visible way to split the
@@ -7433,3 +7458,62 @@ Wanted: take N of a stack out of storage (and presumably put N back), leaving th
 move vs a flag), whether stim patches carry a `quantity` field at all (drug items are reference-only,
 CLAUDE.md *Item types*), and whether thrown weapons' `quantity` (which *is* consumed, see *Thrown
 weapons / grenades*) should share the same split/merge path.
+
+<a id="114"></a>
+
+## 114. Reloading counts rounds where the player expects reloads — **reported in play 2026-09-13**
+
+**Observation only — not investigated** (reported mid-session). A player has a **"7-round cy reload
+×6"** — six pre-loaded cylinder reloads for a 7-round revolver. They expect:
+- the item to show a **quantity of 6** (reloads), and
+- each reload of the 7-round gun to take the quantity **down by one** (6 → 5).
+
+Instead the system expects the stockpile to hold **6 × 7 = 42** rounds and docks the **rounds** the
+gun takes on each reload.
+
+**Context, not a diagnosis:** that is the documented model today — CLAUDE.md *Ammunition*: the
+stockpile is one `rounds` count per ammunition item and *Reload* "subtracts from the stockpile" by
+rounds. So this is the model disagreeing with how a table thinks about pre-filled clips, speed-
+loaders and cylinder reloads, rather than a slip in the arithmetic.
+
+**To decide when picked up:** whether an ammunition item can be counted in **reloads** (clips / speed-
+loaders / cylinders, each holding the magazine size — `c`, `m`, `cy`) as well as in **loose rounds**
+(boxes, belts, `internal`/`b`), and what reloading from each does. Relates to [#55](#55) (the ammunition
+model before `trackAmmo` defaults on) and [#23](#23) (no ammunition compendium). Stacks can now be split
+into and out of storage ([#113](#113)), which should work with whichever unit is chosen.
+
+<a id="115"></a>
+
+## 115. Walk people through healing — **requested in play 2026-09-13**
+
+**Request.** Something that guides a player and GM through the healing process step by step, rather
+than everyone reconstructing it from the book at the table. Broader than [#76](#76), which is only
+the Wound Table's Body Test; this is the whole flow it would sit in. From the core rules (checked
+against the PDF text 2026-09-13):
+
+- **Stun** (*SR3 p.126*): rest completely; roll the **higher of Body or Willpower** against **TN 2**
+  (+ injury modifiers); each box takes **60 minutes ÷ successes**. Interrupted rest aborts and the
+  re-roll can never beat the first. *"No medical treatment really helps to recover Stun damage, nor
+  does any magical spell"* — stim patches only postpone it (Stimulant Patches, p.305).
+  Unconscious from Deadly Stun → does not wake until Stun is back to Serious.
+- **Physical** (*p.126-127*): the Body Test against the **Wound Table** (Light 2 / Moderate 4 /
+  Serious 6), **natural Body only — cyberware gives no benefit**; in combat it costs the next Combat
+  Turn. Then first aid / medical care (the *First Aid Table*, the *Biotech Success Test*), the
+  *Stages of Healing*, and the *Medical Costs Table* by lifestyle or hospitalisation.
+- **Deadly wounds and permanent damage** (*p.127-128*): a **Body (4) Test** (+2 with a trauma patch;
+  **dermal armor counts**): 0 successes → a vital organ lost, continuous Biotech care, **double
+  healing time**, a transplant, and 1D6 → a permanent Attribute point lost (which also lowers that
+  Attribute's Racial Modified Limit); 1 success → an eye or limb lost (1D6 which), +50% healing
+  time; 2+ → no lasting damage. Then *Pieces and Parts* / cyber replacements.
+- **Magical healing** — Heal/Treat spells and their limits (not re-read here; check Magic in the
+  Shadows and core Ch. Magic before building).
+
+**Shape** (proposal): a **Healing** button on the character sheet that asks what happened (Stun /
+Physical / Deadly) and walks the right branch — pre-filling the dice from the right attribute
+(natural Body where the book says so), the TN from the wound level, the time per box, and the
+permanent-damage roll with its tables — posting each step as a chat card the GM can adjust.
+**Never applies damage or healing by itself** (ethos); it offers the numbers and the boxes to clear.
+Supersedes [#76](#76)'s "what it would take", which becomes one step of this.
+
+⚠ Dwarf toxin/disease resistance and Rapid Healing's `healing` situational dice (TODO 98, TODO 70)
+already exist as channels this can read.
