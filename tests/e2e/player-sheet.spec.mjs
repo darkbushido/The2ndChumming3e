@@ -1,0 +1,118 @@
+/**
+ * The character sheet as a PLAYER sees it — the parts of `fix/racial-mods` a GM session cannot show.
+ *
+ * Every other live check on the branch ran as a GM, and the sheet renders differently for
+ * players on purpose: the Species dropdown is the GM's alone. A GM client can only ever prove
+ * the GM half, which is how TODO 93 was left with "the player half needs a player client".
+ *
+ * Covered here, on one throwaway character owned by Player2:
+ *   · Species (TODO 93) — a player gets a DISABLED dropdown with no field name, so the form
+ *     can neither show it as editable nor submit it; an unrecognised stored value is shown.
+ *   · Essence near the edge (TODO 103) — amber block below 1, red at 0 or less, changing on the
+ *     player's screen when the GM changes the number.
+ *   · Matrix skills are ACTIVE (TODO 93) — the karma dialog prices Computer 4 → 5 at INT 4 as an
+ *     active skill: 5 × 2 = 10. As a knowledge skill it would be ⌊5 × 1.5⌋ = 7, so the fixture
+ *     discriminates between the two readings.
+ */
+import { test, expect } from './fixtures.mjs';
+import { createTestActor, deleteActors, sweepTestActors, fireAndForget } from './foundry.mjs';
+
+const SUBJECT = '__TEST Player Sheet';
+
+/** Open the actor's sheet on this client and report what the player can see. */
+async function sheetView(page, name) {
+  return page.evaluate(async n => {
+    const a = game.actors.getName(n);
+    if (!a.sheet.rendered) await a.sheet.render(true);
+    await new Promise(r => setTimeout(r, 300));
+    const el = a.sheet.element;
+    const species = [...el.querySelectorAll('label.inline-field')]
+      .find(l => /Species/.test(l.textContent))?.querySelector('select');
+    const essInput = el.querySelector('input[name="system.attributes.essence.value"]');
+    const essBlock = essInput?.closest('.attr-block');
+    return {
+      isOwner:        a.isOwner,
+      speciesNamed:   species?.getAttribute('name') ?? null,
+      speciesDisabled: species?.disabled ?? null,
+      speciesShown:   species?.selectedOptions[0]?.textContent.trim() ?? null,
+      essValue:       Number(essInput?.value),
+      essClass:       essBlock ? [...essBlock.classList].filter(c => c.startsWith('essence-')) : null,
+      essTitle:       essBlock?.getAttribute('title') ?? '',
+    };
+  }, name);
+}
+
+test.describe('the character sheet from a player\'s seat', () => {
+  let created = [];
+
+  test.beforeEach(async ({ janitor }) => {
+    await sweepTestActors(janitor.page);
+    const a = await createTestActor(janitor.page, {
+      name: SUBJECT, ownerUserName: 'Player2', withToken: false,
+      system: {
+        metatype: 'hobgoblin', karma: 20,
+        attributes: { intelligence: { base: 4 }, essence: { base: 6, lost: 5.5 } },
+      },
+      items: [{ name: 'Computer', type: 'skill',
+                system: { skillName: 'Computer', category: 'Matrix skills', rating: 4,
+                          linkedAttribute: 'intelligence' } }],
+    });
+    created = [a.id];
+  });
+
+  test.afterEach(async ({ player2, janitor }) => {
+    await player2.page.evaluate(async n => {
+      const a = game.actors.getName(n);
+      await a?.sheet?.close();
+      for (const d of document.querySelectorAll('.application.dialog')) {
+        await foundry.applications.instances.get(d.id)?.close();
+      }
+    }, SUBJECT).catch(() => {});
+    await deleteActors(janitor.page, created);
+    created = [];
+    await sweepTestActors(janitor.page);
+  });
+
+  test('species is locked, Essence warns, and a Matrix skill costs karma as an active skill',
+    async ({ player2, janitor }) => {
+      const p = player2.page;
+
+      // ── Species: shown, not editable, not submitted ─────────────────────────────
+      const v = await sheetView(p, SUBJECT);
+      expect(v.isOwner, 'Player2 owns the test character').toBe(true);
+      expect(v.speciesDisabled, 'a player gets a disabled Species dropdown').toBe(true);
+      expect(v.speciesNamed, 'with no field name, so submit-on-change never sends it').toBeNull();
+      expect(v.speciesShown, 'an unrecognised stored value is shown as such').toBe('hobgoblin (unrecognised)');
+
+      // ── Essence 0.5: legal but low → amber ──────────────────────────────────────
+      expect(v.essValue, 'lost 5.5 from 6').toBe(0.5);
+      expect(v.essClass, 'below 1 is the LOW state').toEqual(['essence-low']);
+      expect(v.essTitle, 'and the tooltip quotes p.55').toMatch(/it may be less than 1/);
+
+      // ── The GM takes it to 0 → red, on the player's screen ──────────────────────
+      await janitor.page.evaluate(async n => {
+        await game.actors.getName(n).update({ 'system.attributes.essence.lost': 6 });
+      }, SUBJECT);
+      await expect.poll(async () => (await sheetView(p, SUBJECT)).essClass, { timeout: 15_000 })
+        .toEqual(['essence-dead']);
+      expect((await sheetView(p, SUBJECT)).essTitle).toMatch(/the spirit slips away/);
+
+      // ── Back above 1 → no warning at all ───────────────────────────────────────
+      await janitor.page.evaluate(async n => {
+        await game.actors.getName(n).update({ 'system.attributes.essence.lost': 2 });
+      }, SUBJECT);
+      await expect.poll(async () => (await sheetView(p, SUBJECT)).essClass, { timeout: 15_000 })
+        .toEqual([]);
+
+      // ── Matrix skill priced as ACTIVE in the karma dialog ──────────────────────
+      await fireAndForget(p, `
+        const a = game.actors.getName(${JSON.stringify(SUBJECT)});
+        await a.sheet.constructor._onSpendKarmaCalculator.call(a.sheet);`);
+      const cost = await p.waitForFunction(() => {
+        const r = [...document.querySelectorAll('input[name="karma-choice"]')]
+          .find(i => /^skill:.+:rating$/.test(i.value));
+        return r ? Number(r.dataset.cost) : null;
+      }, null, { timeout: 15_000 }).then(h => h.jsonValue());
+      expect(cost, 'Computer 4 → 5 at INT 4: active ×2 = 10 (knowledge would be 7)').toBe(10);
+    });
+});

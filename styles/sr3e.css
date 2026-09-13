@@ -1306,6 +1306,20 @@ background-color: var(--sr-surface) !important;
 .attr-block.attr-below-min .attr-input {
   border-color: var(--sr-red);
 }
+/* TODO 103 — Essence near the edge. Essence already renders amber, so the warning is the
+   BLOCK (border + ground), not the text; 0 or less goes red like an illegal attribute. */
+.attr-block.essence-low {
+  border-color: var(--sr-amber);
+  background: var(--sr-amber-bg);
+}
+.attr-block.essence-dead {
+  border-color: var(--sr-red);
+  background: var(--sr-red-bg);
+}
+.attr-block.essence-dead .attr-label,
+.attr-block.essence-dead .attr-input[name="system.attributes.essence.value"] {
+  color: var(--sr-red) !important;
+}
 
 .attr-block {
   background: var(--sr-card);

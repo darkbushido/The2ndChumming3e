@@ -6596,9 +6596,9 @@ where the accessories [#91](#91) wants most likely already exist in print.
 ## 93. 🧪 Test in Foundry — everything on branch `fix/racial-mods`
 
 **Status 2026-09-13:** first pass done by the maintainer; most of the second pass walked by the
-agent in the Browser pane (see each line). Still open: a real non-troll export, the Species
-lock as a **player**, the karma price of a Matrix skill, ramming passengers with a staged-down
-soak, an adept troll's Attribute Boost. Unit tests 43/43.
+agent in the Browser pane and Playwright (see each line). Still open: a real non-troll export,
+ramming passengers with a staged-down soak (dice-dependent; unit-tested), an adept troll's
+Attribute Boost (no such actor in the test world). Unit tests 43/43, mutants 69/69, e2e 19/19.
 
 **Simulated combat (e2e, `npx playwright test`) — ✅ 18/18 passed, 2026-09-13 (8.7 min)**, run by
 the agent with nobody else connected (Player2 attacking, Player3 defending, mcp-api as GM): ranged,
@@ -6685,17 +6685,17 @@ cannot reach. If time is short, do these.
       worth one real export per metatype, since the fixture is a troll's.
 - [x] ✅ Mr. Johnson's *Dock Worker* (troll) shows Body **10 (11)** — agent live check, 2026-09-13,
       read from the pack document (base 10, value 11).
-- [~] ✅ agent live check, 2026-09-13: no decker in the test world, so a temporary *Computer 4*
-      (category *Matrix skills*) was added to Ploder — it renders under **Active Skills**, and
-      `skillTypeForCategory('Matrix skills')` is `active` on the live client. Removed after. The
-      karma-dialog price not yet seen live (unit-tested in `martial-arts.test.mjs`). Original step:
+- [x] ✅ 2026-09-13: a temporary *Computer 4* (category *Matrix skills*) renders under **Active
+      Skills** (Browser pane, on Ploder, removed after), and in `player-sheet.spec.mjs` the karma
+      dialog prices Computer 4 → 5 at INT 4 at **10** — active ×2; as knowledge it would be 7.
+      Original step:
       A decker's **Computer / Hacking / Cybercombat** now sit in the **Active** skills section,
       and the karma dialog prices raising them at the active rate.
-- [~] ✅ GM half — agent live check, 2026-09-13, on a throwaway character (deleted after): metatype
-      *hobgoblin* shows as **hobgoblin (unrecognised)**, selected, in a working dropdown; editing
-      another field (overflow 0 → 1) submits the form and metatype **stays hobgoblin**. The player
-      half (greyed, unchangeable) needs a player client — not run; `sheet-invariants` pins the
-      `disabled` branch. Original step:
+- [x] ✅ Both halves, 2026-09-13. GM (Browser pane, throwaway character): *hobgoblin* shows as
+      **hobgoblin (unrecognised)** in a working dropdown; editing another field keeps it. Player
+      (`tests/e2e/player-sheet.spec.mjs`, Player2's own client): the dropdown is **disabled**, carries
+      **no field name** (so the form cannot submit it), and shows *hobgoblin (unrecognised)*.
+      Original step:
       **Species:** a player sees a greyed dropdown they cannot change; the GM gets a working one,
       and a stored "Hobgoblin" shows as *(unrecognised)* and survives editing another field.
 - [ ] Unarmed troll vs human with a club: no reach election (1 vs 1). *Unit-covered*
@@ -7111,9 +7111,23 @@ note: a Mental Attribute may not be below 1, SR3 p.55 — but the dialog must st
 
 <a id="103"></a>
 
-## 103. Essence box should change colour below 1 — **requested in the TODO 93 run, 2026-09-13**
+## 103. ✅ Essence box should change colour below 1 — **DONE 2026-09-13** (`fix/racial-mods`)
 
-**Request, not investigated.** The maintainer: *"we may want the essence box to change colors
+**Built.** `SR3EActor.essenceState(value)` → `ok` / `low` (0 < E < 1) / `dead` (E ≤ 0); the sheet's
+Essence block gets `essence-low` (amber border and ground, ⚠ on the label — the number was already
+amber, so the block is what changes) or `essence-dead` (red, like an illegal attribute), and its
+tooltip quotes the books. Shown, never enforced. Tests: `essence.test.mjs` (both boundaries), two
+mutants (0 read as low; 1 read as low), `sheet-invariants`, and `tests/e2e/player-sheet.spec.mjs`
+(Player2's screen goes amber at 0.5, red at 0, clear above 1 as the GM changes it). Looked at in
+the Browser pane: both states read clearly.
+
+**The book check:** the drug requirement is **not** a below-1 rule. Core p.55 — Essence *"may be
+less than 1. An Essence of 0 means you're dead."* M&M p.50 — at 0 or less *"the spirit slips away
+and the body dies"*; cybermancy (a delta clinic, M&M p.54) keeps a cyberzombie alive with implanted
+auto-injectors of drugs. So drugs belong to Essence 0 or less *via cybermancy*, and the tooltip says
+that instead of "below 1 needs drugs".
+
+The request as logged: *"we may want the essence box to change colors
 when it's below 1, since then you need drugs to keep your soul attached to your body."*
 
 Same idea as TODO 102's red highlight for an illegal Physical/Mental rating, but Essence has its

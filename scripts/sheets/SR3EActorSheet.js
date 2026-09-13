@@ -726,6 +726,14 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   // override has ever been recorded, so the value follows installed cyberware instead.
   const essLost      = attr.essence?.lost ?? null;
   const essInstalled = game.sr3e.SR3EActor.installedEssenceCost(this.actor.items);
+  // TODO 103: warn below 1, danger at 0 or less. Shown, never enforced. The wording quotes the
+  // books because the "below 1 needs drugs" reading does not survive them — see essenceState.
+  const essState   = game.sr3e.SR3EActor.essenceState(attr.essence?.value ?? 6);
+  const essWarning = essState === 'dead'
+    ? ' | ⚠ Essence 0 or less: “the spirit slips away and the body dies” unless done by cybermancy in a delta clinic (SR3 p.55; M&amp;M p.50, p.54).'
+    : essState === 'low'
+      ? ' | ⚠ Below 1: legal (“it may be less than 1”, SR3 p.55) but any further loss that reaches 0 kills.'
+      : '';
   const isAdept = (sys.magicType ?? '') === 'Adept';
   const cb      = d.cyberBonus  ?? {};
   const ab      = d.adeptBonus  ?? {};
@@ -834,9 +842,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         actually persists rather than inferring it from a subtraction. The reset arrow
         clears the override so Essence follows installed cyberware again.
       -->
-      <div class="attr-block attr-special"
-           title="Essence ${attr.essence?.value ?? 6} = base ${attr.essence?.base ?? 6} − ${essLost === null ? `${essInstalled} installed (not overridden)` : `${essLost} lost`}${(d.totalBioIndex??0) > 0 ? ` | Bio Index ${d.totalBioIndex} / ${d.bioIndexCapacity} capacity` : ''}">
-        <span class="attr-label" style="color:var(--sr-amber)">Essence</span>
+      <div class="attr-block attr-special${essState === 'ok' ? '' : ` essence-${essState}`}"
+           title="Essence ${attr.essence?.value ?? 6} = base ${attr.essence?.base ?? 6} − ${essLost === null ? `${essInstalled} installed (not overridden)` : `${essLost} lost`}${(d.totalBioIndex??0) > 0 ? ` | Bio Index ${d.totalBioIndex} / ${d.bioIndexCapacity} capacity` : ''}${essWarning}">
+        <span class="attr-label" style="color:var(--sr-amber)">Essence${essState === 'ok' ? '' : ' ⚠'}</span>
         <div class="attr-row">
           <input class="attr-input" type="number" name="system.attributes.essence.value"
                  value="${attr.essence?.value ?? 6}" min="0" max="6" step="0.1"

@@ -857,6 +857,11 @@ there is no surgery flow to hang it on; a GM applies it by editing the item's
 
 ⚠ Adding this field was a **data-model change**: it needs a full Foundry restart, not F5.
 
+**Near the edge** (TODO 103) — `SR3EActor.essenceState`: below 1 is **legal** (*"it may be less
+than 1"*, SR3 p.55) and the block turns **amber**; 0 or less is death (*"An Essence of 0 means
+you're dead"*) and it turns **red**. Shown, never enforced. ⚠ **Below 1 does not need drugs** —
+the drug cocktail belongs to **cybermancy** at 0 or less (M&M p.50, p.54), not to Essence under 1.
+
 ### Astral state (Awakened characters)  · *astral Initiative: SR3 p.41, p.62*
 > "In astral space, base Reaction for magicians is equal [to Intelligence]… and a +20
 > Initiative bonus" (p.41); worked at p.62 as "(Intelligence + 20) + 1D6".

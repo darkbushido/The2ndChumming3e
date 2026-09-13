@@ -52,6 +52,19 @@ const cost  = items => SR3EActor.installedEssenceCost(items);
 const ess   = o => SR3EActor.essenceValue(o);
 
 export async function run(t) {
+  // ── The sheet's warning states (TODO 103) — SR3 p.55 ────────────────────────
+  // "Essence cannot be lowered to 0 or less, though it may be less than 1. An Essence of 0
+  // means you're dead." Both boundaries are exact: 1 is fine, 0 is dead, not merely low.
+  const st = v => SR3EActor.essenceState(v);
+  t.is('Essence 6 is ok',                        st(6), 'ok');
+  t.is('exactly 1 is ok — "less than 1" is the line', st(1), 'ok');
+  t.is('0.99 is low',                            st(0.99), 'low');
+  t.is('0.01 is still only low (legal)',         st(0.01), 'low');
+  t.is('exactly 0 is DEAD, not low (p.55)',      st(0), 'dead');
+  t.is('below 0 is dead (a cyberzombie, M&M p.54)', st(-0.5), 'dead');
+  t.is('a numeric string reads as its number',   st('0.5'), 'low');
+  t.is('a missing value is not a death warning', st(undefined), 'ok');
+
   // ── What counts toward the cost ────────────────────────────────────────────
   t.is('no items costs nothing', cost([]), 0);
   t.is('undefined item list does not throw', cost(undefined), 0);

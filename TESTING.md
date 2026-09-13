@@ -204,6 +204,7 @@ on 2026-09-13 five such failures all passed after a reboot.
 | `spellcasting` | caster and target each roll only their own half |
 | `cybercombat`, `orthodox-matrix` | decker vs IC; both sides charged for the Hacking Pool they submit |
 | `miji` | rigger vs rigger; an unmanned drone's corner falls to the GM |
+| `player-sheet` | the sheet from **Player2's** seat: Species locked, Essence warning colours as the GM changes it, a Matrix skill priced as active in the karma dialog |
 | `essence`, `migrations` | GM-only checks that ride the same harness |
 
 **To simulate something the specs do not cover**, write a new spec rather than driving three

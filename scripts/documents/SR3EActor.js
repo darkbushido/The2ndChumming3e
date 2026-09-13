@@ -7789,6 +7789,32 @@ _prepareCharacter(sys, attr) {
     return Math.max(0.01, Math.ceil(cents) / 100);
   }
 
+  /**
+   * How close a character's Essence is to the edge — for the sheet's warning colour (TODO 103).
+   *
+   * > "Essence cannot be lowered to 0 or less, though it may be less than 1. An Essence of 0
+   * > means you're dead."  — *SR3 p.55*
+   *
+   * - `'ok'`   — 1 or more.
+   * - `'low'`  — above 0 but below 1: **legal**, one more implant from death. A warning, not an
+   *              error.
+   * - `'dead'` — 0 or less: *"the spirit slips away and the body dies"* unless the surgery was
+   *              cybermancy at a delta clinic (M&M p.50, p.54) — a cyberzombie.
+   *
+   * ⚠ **Below 1 does NOT need drugs.** The maintainer remembered it that way; the books tie the
+   * drug cocktail (an implanted auto-injector) to **cybermancy** — Essence 0 or less — not to
+   * Essence below 1. Checked 2026-09-13; the tooltip says so rather than paraphrasing.
+   *
+   * Shown, never enforced — a GM may be running a cyberzombie on purpose.
+   */
+  static essenceState(value) {
+    const v = Number(value);
+    if (!Number.isFinite(v)) return 'ok';
+    if (v <= 0) return 'dead';
+    if (v < 1)  return 'low';
+    return 'ok';
+  }
+
   /** Used when `game` is not available — tests, and any pre-`init` call. */
   static _GRADES_FALLBACK = {
     standard: 1, basic: 1, alpha: 0.8, alphaware: 0.8,

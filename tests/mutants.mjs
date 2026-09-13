@@ -73,6 +73,23 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'essence-zero-reads-as-low',
+    suite:  'essence',
+    ...ACTOR, method: 'essenceState',
+    was:    'treating Essence 0 as merely LOW. SR3 p.55: "An Essence of 0 means you\'re dead" — '
+          + 'the danger colour must start AT 0, not below it',
+    impl:   v => { const n = Number(v); if (!Number.isFinite(n)) return 'ok';
+                   return n < 0 ? 'dead' : n < 1 ? 'low' : 'ok'; },
+  },
+  {
+    id:     'essence-one-reads-as-low',
+    suite:  'essence',
+    ...ACTOR, method: 'essenceState',
+    was:    'warning at exactly 1. SR3 p.55 draws the line at "less than 1"',
+    impl:   v => { const n = Number(v); if (!Number.isFinite(n)) return 'ok';
+                   return n <= 0 ? 'dead' : n <= 1 ? 'low' : 'ok'; },
+  },
+  {
     id:     'grade-essence-rounds-down',
     suite:  'essence',
     ...ACTOR, method: 'gradedEssenceCost',

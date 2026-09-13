@@ -61,6 +61,14 @@ export async function run(t) {
   t.ok('the toxin checkbox is enabled only while Body is selected',
     /\$\{selectedKey === 'body' \? '' : 'disabled'\}/.test(actorSheet) && /tBox\.disabled = !isBody/.test(actorSheet));
 
+  /* ── Essence near the edge (TODO 103) ───────────────────────────────────────────── */
+  t.ok('the Essence block takes its state from SR3EActor.essenceState',
+    /essenceState\(attr\.essence\?\.value/.test(actorSheet) && /essence-\$\{essState\}/.test(actorSheet));
+  t.ok('…the tooltip quotes the books with curly quotes, so the title attribute is not cut short',
+    /“the spirit slips away and the body dies”/.test(actorSheet) && !/: "the spirit slips/.test(actorSheet));
+  t.ok('…and the CSS has both states',
+    /\.attr-block\.essence-low \{/.test(css) && /\.attr-block\.essence-dead \{/.test(css));
+
   /* ── Citation (TODO 93 note): dermal armor's "does not aid in healing" is SR3 p.283 ─── */
   t.ok('racialDermalArmor cites p.283, not p.281', /Natural dermal armor · \*SR3 p\.56, p\.283\*/.test(config));
 }
