@@ -6699,7 +6699,8 @@ cannot reach. If time is short, do these.
 - [ ] **Chase Scene:** pick the vehicle for a participant → its passengers are already listed.
 - [x] ✅ **TODO 101** — Essence working as expected after re-import (maintainer, 2026-09-13). Original step: **TODO 101, re-import:** delete the import macro, reload, re-import the troll → Essence **5.12**;
       press **↺** → it **stays 5.12** (was 5.29). The CyGun Shotgun's sheet shows 0.88 (base 1.1), Alpha.
-- [ ] **TODO 108:** the melee Reach election keeps the option you pick.
+- [x] ✅ **TODO 108** — agent live check, 2026-09-13: the election keeps *+2 to their TN* through a
+      blur and a re-render, and resolution rolled TN 5 / TN 6 (both +2). See [#108](#108).
 - [x] ✅ **TODO 107** — vehicles can be removed with the ✕ (maintainer, 2026-09-13).
 - [x] ✅ **TODO 106** — agent live check, 2026-09-13: Ploder given a temporary VCR rating 2, Toyota
       Elite → Driving Test offers *Using VCR (−2 TN, SR3 p.134)* (was −4); crash mode is titled
@@ -7206,7 +7207,13 @@ for a player who does not own the vehicle (CLAUDE.md, *Creating documents*).
 
 <a id="108"></a>
 
-## 108. ✅ The melee Reach election does not keep its choice — **FIXED, awaiting a check in Foundry** 2026-09-13
+## 108. ✅ The melee Reach election does not keep its choice — **FIXED 2026-09-13, confirmed live**
+
+**Live check (agent, 2026-09-13):** melee card Troll Street Dealer (reach 2) vs SWAT Team Member
+(0). The select renders styled, reading *−2 to my TN*; picked *+2 to their TN* by mouse and
+keyboard → it **shows and keeps** that choice, through a blur and a forced re-render of the
+message. Submit + *Resolve now* → attacker rolled **TN 5** (3 + 2), defender **TN 6** (4 + 2),
+i.e. the election reached resolution. Test messages deleted.
 
 **Likely cause, fixed without a live repro.** No code writes to that dropdown, and the corner
 draft code records it like any field. What differed: the two-corner cards styled their **text
