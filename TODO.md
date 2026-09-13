@@ -6634,7 +6634,12 @@ cannot reach. If time is short, do these.
       dialog shows **0** dice (rolling says *dice pool is 0*); Magic 0 shows 0 but is **not** red.
       Original step: **🎲 Success Test** (Attributes tab): type "Climb the fence", 6 dice, TN 4 → the card is
       titled *Climb the fence* and counts successes.
-- [ ] **GM window (TODO 94):** as the GM, attack a **player's** character → the modifier window
+- [x] ✅ **GM window (TODO 94)** — 2026-09-13: Troll Street Dealer (NPC) shot New Runner (PC) → window
+      opened ✅. Troll Street Dealer shot a SWAT Team Member (NPC vs NPC) → **window also opened**,
+      where the default should skip it. Maintainer is fine with it. Not investigated — first check
+      whether the setting is on *Always*, or either NPC has an explicit player Owner; if neither,
+      it is a bug in `SR3EQuery.isPlayerCharacter`/`gmWindowOpens`.
+      Original step: **GM window (TODO 94):** as the GM, attack a **player's** character → the modifier window
       opens. GM NPC against GM NPC → it does not. (Setting: *GM sets the Target Number* on its
       default, *Whenever a player's character is involved*.)
 - [ ] **Implant armour:** Armor Vest (2B/1I) + *Bone Lace, Titanium*. Armor tab → an *Implant
