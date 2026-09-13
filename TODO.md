@@ -24,7 +24,7 @@ independent.
 | 🔵 In progress | **93** — Foundry test of everything on branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
 | 🔴 Confirmed bugs, still open | **91** · **97** · **108** *(fixed, awaiting F5 check)* *(**101** · **71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** · **106** · **107** done)* |
-| 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** *(**3** · **4** · **30** · **75** · **98** done)* |
+| 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** · **109** *(Stress)* · **110** *(TLE-x, needs 109)* · **111** *(CDS)* *(**3** · **4** · **30** · **75** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** · **104** *(**83** · **84** · **87** done)* |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 56 · **100** · **103** · **105** *(**36** · **99** done)* |
@@ -7292,3 +7292,95 @@ blank, and whether it matters who is viewing (GM vs the troll's player).
 owns that corner), and the dropdown goes blank **as soon as an option is picked** — not later,
 when the other side submits. So it is not a re-render from the card updating; look at the
 change handler on the select itself.
+
+
+<a id="109"></a>
+
+## 109. Cyberware, bioware and Attribute Stress — **rules not implemented** (M&M p.124-131)
+
+**Filed 2026-09-13** at the maintainer's request, from a search of the PDF library for
+cyberpsychosis (none of the searchable books has such a rule — see [#110](#110)/[#111](#111) for the
+two nearest). Stress is the *foundation* both of those need, so it comes first.
+
+**What the book has** (*Man & Machine*, all verified against the PDF text):
+- **Stress Points** mark wear and damage on an **implant** or an **Attribute** (p.124). New
+  implants start at 0; **used cyberware starts with 1D6 ÷ 2 permanent** Stress, bioware with 1.
+- **Stress Level** (p.126): 1-2 Light · 3-5 Moderate · 6-9 Serious · **10+ Deadly = automatic
+  failure**.
+- **Stress Test** (p.126), every time Stress is taken: dice by grade — cyberware Basic 1 · Alpha 2 ·
+  Beta 3 · Delta 5; bioware Cosmetic 1 · Basic 2 · Cultured 4; an Attribute rolls
+  ½ unaugmented. **TN = current Stress total** (− cyberlimb Integrity Rating; + the boost for a
+  bioware-boosted Attribute). **One success** avoids failure; none = the system/Attribute fails.
+- **Wound effects** (p.126-129): on a Damage Resistance Test, the highest die compared with the
+  boxes of damage decides whether an implant or Attribute is hit — 1D6 ÷ 2 Stress, then a Stress
+  Test. Electrical damage automatically affects cyberware (p.127).
+- **Removal** of cyberware costs the implant 1D6 ÷ 2 Stress (p.147, already quoted in CLAUDE.md's
+  *Essence is permanent*).
+- **Repair** (p.130-131): cyberware via maintenance/surgery; bioware and Attributes heal; an
+  implant's Stress **never drops below 1** once taken; some becomes permanent. Therapeutic surgery
+  p.147.
+- Bioware **malfunctions by Stress Level** (thresholds per item).
+
+**Nothing exists yet** — no Stress field on any item or attribute (grepped 2026-09-13).
+
+**Shape, when built** (a proposal, not decided): a nullable-free `stress` NumberField on
+cyberware/bioware items and per-Attribute; a pure `SR3EActor.stressTest({grade, type, stress,
+integrity, boost})` → dice + TN, and `stressLevel(points)`; show Stress on the Cyber tab with the
+level; a **GM-invoked** "Apply Stress" (1D6 ÷ 2 + the test) rather than automating wound effects —
+the ethos is that the GM decides what a wound did. Wound-effect detection could come later as an
+offered button on the soak card. Unit tests pinned to the p.126 Leggy example (reaction enhancer
+3 Stress → 1D6 vs TN 3; nephritic screen 3+1 → 2D6 vs TN 4; Reaction ½ unaugmented vs TN 3).
+
+⚠ **Data-model change** — needs a full Foundry restart. The contacts pack's cyberware would need
+the field too (packs are not migrated; see *World migrations*).
+
+<a id="110"></a>
+
+## 110. Move-by-wire's TLE-x — **rules not implemented** (M&M p.60) — needs [#109](#109)
+
+**Filed 2026-09-13.** Move-by-wire's attribute bonuses are implemented (CLAUDE.md, *Move-by-wire*);
+its **side effect** is not:
+- Each time the system takes **Stress**, the character makes an **unaugmented Willpower Test, TN
+  (move-by-wire rating × 2)**. Failure → **TLE-x**: *"feelings of alienation and loss of his sense
+  of self"*.
+- Effects: **−1 Charisma and all Charisma-based skills** in important social situations; and, in
+  circumstances the GM deems dangerous or tactically crucial, **+2 to Perception target numbers,
+  −2 Initiative and −1D6 Reaction**.
+- The same page gives move-by-wire **automatic Stress** (the *Automatic Stress Table*), applied to
+  **both Quickness and Reaction**, removable only by therapeutic surgery (p.147).
+
+**Depends on #109** — there is no Stress to trigger the test until that exists. The flag itself is
+cheap: a per-actor `tlex` state (or a status effect) plus a pure rule for the test; the situational
+modifiers are GM-judged, so they belong in the GM's TN window as an offered row (like vision), not
+applied automatically.
+
+⚠ Rating 3/4's forced extra Complex Action is a separate, known gap (TODO 48).
+
+<a id="111"></a>
+
+## 111. Chronic Dissociation Syndrome — cyberzombies — **rules not implemented** (M&M p.59)
+
+**Filed 2026-09-13.** The nearest thing the books have to "cyberpsychosis", and it applies **only
+to cyberzombies** — characters kept alive at **Essence 0 or less** by cybermancy (M&M p.50-54).
+- The GM makes periodic **Willpower Tests**; frequency and TN come from the *Chronic Dissociation
+  Syndrome Table* by Essence: 0 to −0.50 every 6 months TN 3 · −0.51 to −1.00 TN 4 · −1.01 to
+  −1.50 TN 5 · −1.51 to −2.00 every 4 months TN 5 · −2.01 to −2.50 TN 6 · −2.51 to −3.00 every 3
+  months TN 6 · −3.01 to −3.50 every 2 months TN 6 · −3.51 or lower every 2 months TN 8, +1 per
+  further −0.5. Cybermantic Willpower modifiers apply; short-term magical ones do not.
+- **Failure:** the character *"is lost to the world"* — can only react, never initiate; **+4 to
+  Perception Tests, +3 to all other tests**; dies in **3 + Willpower weeks**.
+- **Treatment:** only a cybermancer, in a delta clinic — Spell Resistance (8) Test, where
+  *success* kills; TN drops by 1 (min 2) each repeat; recovery speed by Willpower (6).
+- Same section: a **cancer** roll at the cybermancy operation (2D6 < 2 × |Essence| → cancer in
+  10D6 months, fatal in 4 + 1D6 weeks), adjusted for Body and symbiotes.
+
+⚠ **Prerequisite: Essence below 0 cannot be stored today.** `SR3EActor.essenceValue` returns
+`Math.max(0, …)` and the sheet's Essence box has `min="0"`, so a cyberzombie reads as exactly 0.
+Lifting that floor is part of this task — and `essenceState` (TODO 103) already treats ≤ 0 as
+`dead`, which a cybermancy flag would need to relabel (*cyberzombie*, not *dead*).
+
+**Shape, when built** (proposal): a `cybermancy` flag on the actor; a pure
+`SR3EActor.cdsTest(essence)` → `{ months, tn }` from the table, unit-tested row by row; a
+GM-only "CDS check" button when the flag is set; the CDS state as a status effect whose +4/+3 the
+GM applies. Scheduling (every N months) is campaign time the system does not track — show the
+interval, let the GM roll.
