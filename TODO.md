@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | **93** — Foundry test of everything on branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **91** · **97** · **101** · **106** *(**71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** done)* |
+| 🔴 Confirmed bugs, still open | **91** · **97** · **101** · **106** · **107** *(**71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** *(**3** · **4** · **30** · **75** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** · **104** *(**83** · **84** · **87** done)* |
@@ -7118,3 +7118,20 @@ Crash Test's VCR modifier — the ×2 tables sit in the crash/impact pages — a
 right one rather than flipping both. Also check the other VCR sites for the same confusion: the
 Chase Scene's action dialogs, and CLAUDE.md's *"TN −2 per VCR level on all skill tests"* under
 vehicle initiative. Pure helper + a test pinned to the p.135 worked example.
+
+<a id="107"></a>
+
+## 107. No visible way to remove a vehicle from a character sheet — **reported in the TODO 93 run, 2026-09-13**
+
+**Observation only — not investigated.** The character sheet shows no control for removing a
+linked vehicle. Selecting **Auto** (the control-mode button) does remove it — so the unlink
+exists, but only as a side effect of a button whose label says something else.
+
+**Triage: new** — TODO 71 covers *adding* a vehicle (\`sr3e.actor.create\`, \`sr3e.vehicle.link\`);
+nothing covers removing one.
+
+**To check after the run:** whether Auto removing the vehicle is intended (it may clear
+\`driverActorId\` as part of handing control to the autopilot, which would drop the vehicle from a
+list keyed on "vehicles I drive"), and add an explicit, labelled unlink on the Vehicles tab. The
+unlink writes the VEHICLE's \`driverActorId\`, so it may need a GM route like \`sr3e.vehicle.link\`
+for a player who does not own the vehicle (CLAUDE.md, *Creating documents*).
