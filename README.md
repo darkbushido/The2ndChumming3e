@@ -341,4 +341,6 @@ degradation, ECCM repair and IVIS.)*
 
 **The Matrix Defragged** is a Shadowrun 3rd Edition Matrix rules supplement available at [DriveThruRPG](https://www.drivethrurpg.com/en/product/481686/the-matrix-defragged). The Matrix rules implementation in this system draws inspiration from this work. All rights to The Matrix Defragged belong to its respective author(s) and publisher. 
 
-All original code, design, and implementation in this system are released under the MIT License.
+All original code, design, and implementation in this system are released under the MIT License —
+see [`LICENSE`](LICENSE). That covers this project's own work, not the Shadowrun rules or setting
+above, nor *The Matrix Defragged*'s rules text.
