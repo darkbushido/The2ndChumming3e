@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | **93** — Foundry test of everything on branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **91** · **97** · **101** *(**71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** done)* |
+| 🔴 Confirmed bugs, still open | **91** · **97** · **101** · **102** *(**71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** *(**3** · **4** · **30** · **75** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** *(**83** · **84** · **87** done)* |
@@ -6629,7 +6629,8 @@ cannot reach. If time is short, do these.
       change the dropdown to another attribute → the pool follows it. The dropdown was rewired.
       On a **dwarf**, Body shows an **unticked** *Resisting disease or toxin: +2* box; tick → +2,
       switch off Body → it greys out.
-- [ ] **🎲 Success Test** (Attributes tab): type "Climb the fence", 6 dice, TN 4 → the card is
+- [x] ✅ **🎲 Success Test** — passes, 2026-09-13. Charisma 0 rolls as 3 / 1 dice → [#102](#102).
+      Original step: **🎲 Success Test** (Attributes tab): type "Climb the fence", 6 dice, TN 4 → the card is
       titled *Climb the fence* and counts successes.
 - [ ] **GM window (TODO 94):** as the GM, attack a **player's** character → the modifier window
       opens. GM NPC against GM NPC → it does not. (Setting: *GM sets the Target Number* on its
@@ -6978,3 +6979,23 @@ bioware Bio Index. Any imported character with graded cyberware is affected, but
 ↺ is pressed or the recorded loss is otherwise cleared.
 
 **Workaround in play:** type the generator's Essence into the Essence box.
+
+<a id="102"></a>
+
+## 102. An attribute at 0 rolls as 3 dice, or 1 — never 0 — **found in the TODO 93 run, 2026-09-13**
+
+**Observation, triaged but not fixed** (found mid-test). The imported troll's Charisma is **0**
+(stored correctly — the schema allows it). Clicking Charisma's roll icon opens the dialog with
+**3** dice; switching the dropdown away and back shows **1**. Neither is the character's 0.
+
+- **3** — \`SR3EActorSheet._onRollAttr\` treats \`!val || val < 1\` as a missing attribute and
+  substitutes 3 ("using default"). Pre-existing, not this branch. The worse of the two: a player
+  rolls three dice they do not have.
+- **1** — the attribute dropdown wiring added for TODO 98 on this branch does
+  \`parseInt(dataset.val) || 1\`, so 0 becomes 1.
+
+**Fix:** show the real value, 0 included, in both places, and let \`rollPool\` refuse a 0 pool as
+it already does (*"dice pool is 0"*). Keep the default only for an attribute that is genuinely
+MISSING (undefined), which is what that fallback was written for. Check the other callers of
+\`_promptRollOptions\` for the same floor. (The 0 itself is an illegal build — see TODO 93's check 1
+note: a Mental Attribute may not be below 1, SR3 p.55 — but the dialog must still tell the truth.)
