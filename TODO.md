@@ -26,7 +26,7 @@ independent.
 | 🔴 Confirmed bugs, still open | **91** · **97** · **114** *(reloads counted in rounds, not reloads)* · **116** *(Damage Compensators show damage despite the Pain Editor setting)* *(**112** · **113** fixed on `fix/armor-and-stacks`)* *(**101** · **71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** · **106** · **107** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** · **115** *(guided healing)* · **109** *(Stress)* · **110** *(TLE-x, needs 109)* · **111** *(CDS)* *(**3** · **4** · **30** · **75** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
-| 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** · **104** *(**83** · **84** · **87** done)* |
+| 📦 Content gaps | **117** *(934 documents lack a book/page)* · 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** · **104** *(**83** · **84** · **87** done)* |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 56 · **100** · **103** · **105** *(**36** · **99** done)* |
 | 🧹 Housekeeping | 1 · 6 |
 | ✅ Done — kept for the record | **2** · **5** · **8** · **10** · 13 · **40** · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
@@ -7536,3 +7536,43 @@ Editor hides wounds from players"** (`painEditorHidesWounds`, `sr3e.js`) enabled
   ~l.554/691 gate), the token's wound bars (`bar1`/`bar2` on physical/stun — Foundry renders those
   itself, outside the sheet), chat cards (soak results name the level), or the combat tracker.
 - Damage Compensators' own rule text and page, to state what they should and should not change.
+
+<a id="117"></a>
+
+## 117. Every shipped document must carry a book and page — **requested 2026-09-13**
+
+**Request (maintainer):** all gear we ship needs a book and page number. The field is
+`system.bookPage`, in the upstream generator's `code.page` form (`sr3.303`, `mm.025`; several
+sources comma-separated, `sr3.312,r3.172`, is fine).
+
+**Audit of the repo's packs, 2026-09-13** (a copy of `packs/`, so Foundry's open databases were not
+touched): **3,322 documents; 934 lack a usable book/page.**
+
+| Gap | Count | Where |
+|---|---:|---|
+| No `bookPage` at all | **620** | `sr3e-skills` 438 · `sr3e-mr-johnsons-contacts` 62 · the five `sr3e-mdf-*` packs 116 (cyberdecks 39, programs 30, IC 20, agents 17, hosts 10) · `sr3e-example-characters` 4 |
+| Placeholder page `???` | **314** | `sr3e-sr2-firearms` 176 · `-armor` 60 · `-melee` 40 · `-vehicle-mods` 17 · `-projectiles` 10 · `-vehicle-weapons` 10 · `sr3e-mm-drugs` 1 (Kamikaze) |
+| Two sources cited | 48 | `sr3e-sr3-vehicles`/`-vehicle-mods`/`-drones`, two SR2 grenades — **valid**, not a gap |
+
+Every other document (2,340) has a clean `code.page`.
+
+**The schema is part of the gap.** `GearData`, `CyberdeckData`, `ProgramData`, `ComplexFormData`,
+`QualityData`, `SkillData`, `SummoningData` and `ContactData` have **no `bookPage` field**, so an
+item of those types cannot carry one even when someone types it (a TypeDataModel drops undeclared
+keys — the lesson of TODO 59). No gear ships today (TODO 91), which is why it did not show up in the
+count; it would have the moment it did.
+
+**What it takes:**
+1. Add `bookPage` to the types above (**data-model change** → full restart).
+2. Fill the placeholders and gaps from the PDF library, which has a text layer for these books:
+   SR2 core for the 314 `sr2.???` (the SR2 core PDF is in the library), Mr. Johnson's Little Black
+   Book for the 62 contacts, the core rules for skills. ⚠ **The Matrix Defragged packs cannot be
+   sourced** — the community supplement is not in the library (CLAUDE.md, *Matrix Defragged*); cite
+   the supplement by name without a page, or ask the maintainer for a copy.
+3. Make it a rule the tooling enforces: `tools/check-packs.mjs` to report any document with an empty
+   or `???` `bookPage` (information for now, a fault once the backlog is cleared), so new content
+   cannot ship without one.
+4. Show it: the item sheet's `bookPage` should read as *"SR3 p.303"*, not the raw code.
+
+⚠ Pack edits need Foundry **closed** and must be run twice (repo + `--install`) — CLAUDE.md,
+*Editing an existing pack*.
