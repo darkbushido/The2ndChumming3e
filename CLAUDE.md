@@ -29,6 +29,11 @@ passwordless users (join as **mcp-api** or **Player2/3** — the maintainer hold
 dialogs, stale-GM caveats, what still needs a human — are in **`TESTING.md`**, *Agent-driven live
 checks*. This was lost once to a context compaction; that section exists so it is not lost again.
 
+**Simulated combat — a GM and two players at once — is `npx playwright test`** (one Chromium
+context each: Player2 attacks, Player3 defends, mcp-api is the GM). Release those seats first
+(the Browser pane often holds mcp-api). TESTING.md → *Simulated combat* has the whole procedure
+and how to write a spec for an exchange the suite does not cover.
+
 ```bash
 node tests/run.mjs      # unit + source-level suites (no Foundry)
 node tests/mutate.mjs   # every mutant must be killed

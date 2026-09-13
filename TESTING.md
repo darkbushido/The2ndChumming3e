@@ -150,9 +150,67 @@ authoritative writes run on **`game.users.activeGM`**, usually the maintainer's 
 `sr3e.debug.loadedAt` with the files' mtime; if it is older, GM-routed results are from old code.
 Say so in the results rather than reporting a false failure.
 
-**What still needs a human (or Playwright):** two clients at once (GM + player simultaneously —
-use `npm run test:e2e`, which opens a browser context per user); a **full Foundry restart** after
-a data-model change (the agent cannot restart the desktop app); anything behind a password.
+**What still needs a human (or Playwright):** a **full Foundry restart** after a data-model
+change (the agent cannot restart the desktop app); anything behind a password. Two clients at
+once — a GM plus players, i.e. **simulated combat** — is the next section, and the agent runs it.
+
+### Simulated combat — GM + two players, by the agent (Playwright)
+
+Added 2026-09-13 for the same reason as the section above: it had been done in several sessions
+and the *how* was not written down anywhere a fresh session would look. **"Simulate a combat" =
+run the e2e suite.** Each spec opens one real Chromium context per user and plays a full exchange
+with each person deciding their own part:
+
+| Client | Seat | Plays |
+|---|---|---|
+| `player2` | **Player2** | the attacker (owns the attacking PC) |
+| `player3` | **Player3** | the defender (owns the target PC) |
+| `janitor` | **mcp-api** (Assistant GM), or `FOUNDRY_JANITOR=Gamemaster` | the GM: TN window, resolve-now, cleanup |
+
+**Before running — who may be connected.** Foundry refuses a second session for a connected user.
+Check `Invoke-RestMethod http://localhost:30000/api/status` → `users` is the connected count.
+- **The Browser pane must NOT be holding mcp-api** (or Player2/3). Close it or navigate it to `/join`
+  first — the pane from the section above is the usual culprit.
+- If the maintainer is on **Gamemaster**, their tab is `activeGM` and runs every authoritative
+  write; the preflight refuses to start if that tab is older than the working tree ("reload
+  Gamemaster's tab"). With **nobody** connected, the Playwright mcp-api client becomes activeGM
+  on fresh code — the simplest case, and how the 2026-09-13 run was done.
+
+```bash
+npx playwright test                                   # every spec, ~18 tests, a few minutes
+npx playwright test tests/e2e/ranged.spec.mjs         # one exchange
+npx playwright test --headed tests/e2e/melee-two-corner.spec.mjs   # watch the three windows
+```
+
+From the agent: run it with `run_in_background`, redirecting output to a scratchpad file
+(`*> ...\e2e-run.txt` in PowerShell), and read the file when notified — the list reporter
+prints one line per test. A failure leaves a trace (`test-results/…/trace.zip`, open with
+`npx playwright show-trace`).
+
+**What one run plays out** (`tests/e2e/*.spec.mjs`):
+
+| Spec | The combat |
+|---|---|
+| `ranged` | attacker fires → **GM sets the TN** in the modifier window → attacker rolls → **defender declares a dodge after seeing the hits** → soak; each pays their own Combat Pool |
+| `melee-two-corner` | boxing card, each fighter submits their own corner, the last submission resolves |
+| `astral-two-corner` | the same between two mages |
+| `contested` | each side picks its own pool source; the GM can resolve with a side outstanding |
+| `spellcasting` | caster and target each roll only their own half |
+| `cybercombat`, `orthodox-matrix` | decker vs IC; both sides charged for the Hacking Pool they submit |
+| `miji` | rigger vs rigger; an unmanned drone's corner falls to the GM |
+| `essence`, `migrations` | GM-only checks that ride the same harness |
+
+**To simulate something the specs do not cover**, write a new spec rather than driving three
+tabs by hand: copy `ranged.spec.mjs`, keep its `arrangeActor` / `createTestActor` setup and its
+teardown, and use the helpers in `tests/e2e/foundry.mjs` — `fireAndForget` (never await a flow
+that opens a dialog), `selectTarget` (the target dialog pre-selects the FIRST actor — always
+pick by name), `answerDialog` / `answerDialogIfPresent`, `newestCardId` + `cardIn` (scope every
+card by message id; stale cards exist), `clickNewestChatButton` (dispatch in-page, never
+`locator.click()` on a card). Tests **mutate the world**: arrange, then put back
+(`resetPools`, `deleteActors`, `sweepTestActors('__TEST')`).
+
+⚠ The Browser pane (one user) and Playwright (three users) cannot both hold mcp-api — do the
+pane checks first, release the seat, then run the suite, or the reverse.
 
 **MCP servers** (`foundry-mcp` / `foundryvtt`, with the `foundry-mcp-bridge` module) have been
 used to read world state. They are optional and often disconnected; their credentials live in the
