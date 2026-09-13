@@ -8,7 +8,7 @@ Two suites, and they cover different things. Neither replaces the other.
 
 ```bash
 npm test          # 16 suites, ~380 assertions. No browser, no server, seconds.
-npm run test:e2e  # 19 tests / 12 files, two real clients + a GM. Needs Foundry running.
+npm run test:e2e  # 20 tests / 12 files, two real clients + a GM. Needs Foundry running.
 npm run test:mutate  # proves the unit suites can FAIL. Seconds, no browser.
 ```
 
