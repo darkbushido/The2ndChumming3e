@@ -6934,7 +6934,7 @@ Not investigated yet — which of these already carry a tooltip is the first thi
 
 <a id="101"></a>
 
-## 101. Imported graded cyberware counts its grade twice — **found in the TODO 93 run, 2026-09-13**
+## 101. Graded cyberware counts its grade twice — imported OR graded on the item sheet — **found in the TODO 93 run, 2026-09-13**
 
 **Observation, triaged but not fixed** (found mid-test). The imported troll read Essence **5.12**;
 pressing the Essence **↺** (clear the recorded loss, follow installed cyberware) moved it to
@@ -6948,7 +6948,26 @@ The troll's one implant is an **alpha** *CyGun Shotgun (ShtG)(CYB)*, mm.41:
   `SR3EActor.gradedEssenceCost` discounts it again: 0.88 × 0.8 = 0.704 → rounded up **0.71** →
   Essence 5.29. The recorded `essence.lost` (0.88) was right; the installed sum is wrong.
 
-**Fix direction:** the importer should store the implant's BASE cost (EssCost ÷ the grade
+### ⚠ Wider than the import — two designs disagree about what `essenceCost` holds
+
+- **The item sheet's grade dropdown** (`SR3EItemSheet`, the grade-change handler) treats
+  `essenceCost` as the **graded** cost: picking Alpha writes `base × 0.8` into `essenceCost`
+  and keeps the original in `essenceCostBase` (same for `cost`/`costBase`, availability, and
+  bioware's `bioIndex`/`bioIndexBase`).
+- **`SR3EActor.installedEssenceCost`** (TODO 86) treats `essenceCost` as the **base** cost and
+  runs it through `gradedEssenceCost(essenceCost, grade)` — applying the grade a second time.
+
+So **every** graded implant is discounted twice once Essence follows installed cyberware — not
+only imports. The importer is simply one more writer of the graded value.
+
+**Suggested fix (a design call, after the run):** make `installedEssenceCost` grade the BASE —
+`essenceCostBase` when set, else `essenceCost` with `grade` Standard — i.e. treat
+`essenceCost` as the book's graded figure everywhere, which is what the sheet shows and what the
+generator exports. Then have the importer fill `essenceCostBase` (EssCost ÷ multiplier) so the
+dropdown keeps working. Asserted in `tests/essence.test.mjs` alongside TODO 86's rounding rules.
+⚠ Keep `grade` either way — salvage value (CLAUDE.md, *CyberwareData.grade is kept*).
+
+**Earlier fix direction (import only, superseded by the above):** the importer should store the implant's BASE cost (EssCost ÷ the grade
 multiplier, or look the base up), keeping `grade` — the grade must survive for salvage (see
 CLAUDE.md, *CyberwareData.grade is kept for more than this*). Check the same for `Cost`, and for
 bioware Bio Index. Any imported character with graded cyberware is affected, but only once the
