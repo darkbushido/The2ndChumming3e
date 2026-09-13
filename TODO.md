@@ -6615,6 +6615,11 @@ cannot reach. If time is short, do these.
 
 - [x] **Import the reported troll** — Body `10 + 1 (11)` ✅ (2026-09-13). Quickness 4 shown as
       **4 − 1**: armour encumbrance, expected, but unexplained on the sheet → [#100](#100).
+      Strength 8, Charisma 0, Intelligence 1, Willpower 2, Magic 0, Reaction 2 ✅.
+      ⚠ **NEW — Essence disagrees with itself** (observation only, not investigated): imported at
+      **5.12**; the ↺ (clear recorded loss) button moved it to **5.29** "tracking installed
+      cyberware". So the recorded `essence.lost` was 0.88 against 0.71 summed from the implants.
+      Ask: what does the generator show? That says which figure is right.
       Body 10, Quickness 4, Strength 8, Charisma 0, Intelligence 1,
       Willpower 2; a notification listing the modifiers, and a **permanent** warning that
       Charisma is below 1. Attributes tab: Body reads `10 + 1 (11)` (*Troll dermal armor*).
