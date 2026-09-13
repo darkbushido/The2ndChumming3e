@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | **93** — Foundry test of everything on branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **91** · **97** · **112** *(one armour item only — coat + helmet is legal)* *(**101** · **71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** · **106** · **107** done)* |
+| 🔴 Confirmed bugs, still open | **91** · **97** · **112** *(one armour item only — coat + helmet is legal)* · **113** *(can't split a stack out of storage)* *(**101** · **71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** · **106** · **107** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** · **109** *(Stress)* · **110** *(TLE-x, needs 109)* · **111** *(CDS)* *(**3** · **4** · **30** · **75** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** · **104** *(**83** · **84** · **87** done)* |
@@ -7416,3 +7416,20 @@ type, helmets/shields added in full, all pieces summed for the Quickness penalty
 `armorRatings` then builds on (implant armour, TODO 75, stays additive on top). Unit tests pinned to
 p.285's Twitch example. ⚠ Data-model change → full restart; ⚠ `armorRatings` has several callers,
 all of which must keep one answer.
+
+<a id="113"></a>
+
+## 113. Cannot split a stack of items when taking them out of storage — **reported in play 2026-09-13**
+
+**Observation only — not investigated** (reported mid-session). A player has **10 grade-2 stim
+patches** in storage and wants to take out only one or two. There is no visible way to split the
+stack; the whole stack moves or nothing does.
+
+Wanted: take N of a stack out of storage (and presumably put N back), leaving the rest where it was
+— e.g. a quantity prompt on the move, splitting into two items that share everything but
+`quantity`, and merging back into an existing identical stack rather than duplicating it.
+
+**First things to check when this is picked up:** how the Storage tab moves an item (whole-document
+move vs a flag), whether stim patches carry a `quantity` field at all (drug items are reference-only,
+CLAUDE.md *Item types*), and whether thrown weapons' `quantity` (which *is* consumed, see *Thrown
+weapons / grenades*) should share the same split/merge path.
