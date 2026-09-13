@@ -27,7 +27,7 @@ independent.
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** *(**3** · **4** · **30** · **75** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** *(**83** · **84** · **87** done)* |
-| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 56 · **100** *(**36** · **99** done)* |
+| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 56 · **100** · **103** *(**36** · **99** done)* |
 | 🧹 Housekeeping | 1 · 6 |
 | ✅ Done — kept for the record | **2** · **5** · **8** · **10** · 13 · **40** · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -6630,7 +6630,7 @@ cannot reach. If time is short, do these.
       On a **dwarf**, Body shows an **unticked** *Resisting disease or toxin: +2* box; tick → +2,
       switch off Body → it greys out.
 - [x] ✅ **🎲 Success Test** — passes, 2026-09-13. Charisma 0 rolled as 3 / 1 dice → [#102](#102), fixed.
-- [x] ✅ Charisma block red (2026-09-13). **After reloading for #102:** the troll's **Charisma** block is **red** with ⚠, and its roll
+- [x] ✅ Charisma block red, its roll shows 0 dice, Magic 0 not red (2026-09-13); Essence colour → [#103](#103). **After reloading for #102:** the troll's **Charisma** block is **red** with ⚠, and its roll
       dialog shows **0** dice (rolling says *dice pool is 0*); Magic 0 shows 0 but is **not** red.
       Original step: **🎲 Success Test** (Attributes tab): type "Climb the fence", 6 dice, TN 4 → the card is
       titled *Climb the fence* and counts successes.
@@ -7013,3 +7013,24 @@ it already does (*"dice pool is 0"*). Keep the default only for an attribute tha
 MISSING (undefined), which is what that fallback was written for. Check the other callers of
 \`_promptRollOptions\` for the same floor. (The 0 itself is an illegal build — see TODO 93's check 1
 note: a Mental Attribute may not be below 1, SR3 p.55 — but the dialog must still tell the truth.)
+
+<a id="103"></a>
+
+## 103. Essence box should change colour below 1 — **requested in the TODO 93 run, 2026-09-13**
+
+**Request, not investigated.** The maintainer: *"we may want the essence box to change colors
+when it's below 1, since then you need drugs to keep your soul attached to your body."*
+
+Same idea as TODO 102's red highlight for an illegal Physical/Mental rating, but Essence has its
+own thresholds, so it needs its own states:
+- **Below 1** — legal (SR3 p.55: Essence *"cannot be lowered to 0 or less, though it may be less
+  than 1"*) but dangerous: a warning colour.
+- **0 or less** — *"An Essence of 0 means you're dead"* (p.55): the red/danger state.
+
+⚠ **Check the book before citing the drug requirement.** The maintainer's reading is that a
+character below 1 Essence needs drugs to stay alive; the source (likely Man & Machine) has not
+been checked here, and the tooltip should quote it with a page rather than paraphrase.
+
+Also noted in the same run: Reaction's and Essence's numbers render in **yellow** — probably the
+existing styling for the three "special" attributes (the Magic/Essence/Reaction blocks), not a
+defect. Confirm when this is built, since the new colours will sit on top of it.
