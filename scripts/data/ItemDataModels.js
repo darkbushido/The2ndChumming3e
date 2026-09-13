@@ -188,9 +188,17 @@ export class GearData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
       quantity:    new NumberField({ integer: true, initial: 1, min: 0 }),
-      cost:        new NumberField({ integer: true, initial: 0, min: 0 }),
-      weight:      new NumberField({ initial: 0, min: 0 }),
-      description: new HTMLField({ initial: '', required: false }),
+      // ⚠ **Gear had NO rating field until 0.5.2**, so a Medkit [6] carried its rating only in
+      // its name, and a TypeDataModel DROPS undeclared keys — the importer's Rating could not
+      // have survived even if it had been written. Read it through `itemRating()`
+      // (`scripts/data/item-rating.mjs`), which falls back to the name while this is 0.
+      rating:       new NumberField({ integer: true, initial: 0, min: 0 }),
+      cost:         new NumberField({ integer: true, initial: 0, min: 0 }),
+      weight:       new NumberField({ initial: 0, min: 0 }),
+      availability: new StringField({ initial: '' }),
+      streetIndex:  new StringField({ initial: '' }),
+      bookPage:     new StringField({ initial: '' }),   // TODO 117 — every shipped document needs one
+      description:  new HTMLField({ initial: '', required: false }),
     };
   }
 }

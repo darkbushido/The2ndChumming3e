@@ -23,9 +23,10 @@ independent.
 |---|---|
 | 🔵 In progress | **93** — Foundry test of everything on branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **91** · **97** · **114** *(reloads counted in rounds, not reloads)* · **116** *(Damage Compensators show damage despite the Pain Editor setting)* *(**112** · **113** fixed on `fix/armor-and-stacks`)* *(**101** · **71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** · **106** · **107** done)* |
+| 🔴 Confirmed bugs, still open | **91** · **97** · **114** *(reloads counted in rounds, not reloads)* · **116** *(Damage Compensators show damage despite the Pain Editor setting)* *(**112** · **113** fixed on `fix/armor-and-stacks`; **118** fixed in 0.5.2)* *(**101** · **71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** · **106** · **107** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** *(now one step of 115)* · **109** *(Stress)* · **110** *(TLE-x, needs 109)* · **111** *(CDS)* *(**3** · **4** · **30** · **75** · **98** done; **115** built on `feature/healing`)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
+| 🖥 Matrix | **119** *(audit The Matrix Defragged v2 — the book is now in the library)* · **120** *(HoloSuite Hacking adapter / fork)* |
 | 📦 Content gaps | **117** *(934 documents lack a book/page)* · 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** · **104** *(**83** · **84** · **87** done)* |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 56 · **100** · **103** · **105** *(**36** · **99** done)* |
 | 🧹 Housekeeping | 1 · 6 |
@@ -7588,9 +7589,9 @@ count; it would have the moment it did.
 1. Add `bookPage` to the types above (**data-model change** → full restart).
 2. Fill the placeholders and gaps from the PDF library, which has a text layer for these books:
    SR2 core for the 314 `sr2.???` (the SR2 core PDF is in the library), Mr. Johnson's Little Black
-   Book for the 62 contacts, the core rules for skills. ⚠ **The Matrix Defragged packs cannot be
-   sourced** — the community supplement is not in the library (CLAUDE.md, *Matrix Defragged*); cite
-   the supplement by name without a page, or ask the maintainer for a copy.
+   Book for the 62 contacts, the core rules for skills. The Matrix Defragged packs **can now be
+   sourced**: *Shadowrun 3e - The Matrix Defragged v2.pdf* was added to the library on 2026-09-13,
+   with a text layer — see [#119](#119).
 3. Make it a rule the tooling enforces: `tools/check-packs.mjs` to report any document with an empty
    or `???` `bookPage` (information for now, a fault once the backlog is cleared), so new content
    cannot ship without one.
@@ -7598,3 +7599,96 @@ count; it would have the moment it did.
 
 ⚠ Pack edits need Foundry **closed** and must be run twice (repo + `--install`) — CLAUDE.md,
 *Editing an existing pack*.
+
+**Progress:** `GearData` gained `bookPage` (with `rating`, `availability`, `streetIndex`) in 0.5.2
+— [#118](#118) — and the character importer now keeps the export's `BookPage` for plain gear.
+
+<a id="118"></a>
+
+## 118. ✅ Gear ratings live only in the name — **reported in play 2026-09-13, FIXED** (0.5.2, `main`)
+
+**Report (maintainer):** *"a lot of gear seems to have ratings but that doesn't seem to be stored in
+an editable way. its just [3]… two of my players have medkit [6]s"* — and make sure healing keeps
+doing the right thing when other gear is involved.
+
+**What was wrong** (measured against every shipped pack and the test world):
+- `GearData` had **no `rating` field** (nor book/page, availability, street index). A TypeDataModel
+  drops undeclared keys, so the importer could not have kept the export's `Rating` — and it did not
+  try: plain gear kept quantity, cost and weight only.
+- The packs keep ratings in NAMES: **537 of 540** bracketed cyberware store `rating: 0`, **all 72**
+  bracketed bioware do. Nothing disagrees with its name.
+- So every `system.rating` read gave 0. ⚠ **The core pack's Vehicle Control Rig [1]/[2]/[3] all
+  store 0** — a rigger with a compendium VCR got no VCR bonus to initiative or the Driving Test
+  (seven read sites: `SR3EActor` ×5, `SR3EItem`, the chase, the vehicle sheet).
+- Healing's medkit lookup took the **first** match, not the best, counted a medkit in **storage**,
+  and read any trailing number as a rating ("Predator 2").
+
+**Fixed:** `scripts/data/item-rating.mjs` is the one reader — `itemRating` (a stored rating above 0
+wins, else the name's `[N]` / `Rating N`, else 0), `vcrLevel` (a rig is at least 1),
+`ratingFromName`. Gear gained `rating`, `availability`, `streetIndex`, `bookPage`; the item sheet's
+Rating box (gear, cyberware, bioware) is blank with the name's rating as placeholder until someone
+types one. The importer keeps Rating/Availability/Street Index/BookPage. Healing picks the best
+usable kit. Migration **0.5.2** copies name ratings into blank fields (gear, cyberware, bioware,
+medical) — ran on the test world at load: Troll Street Dealer's Wired Reflexes [1] 0 → 1, Muscle
+Replacement [2] 0 → 2; set values untouched; a second run changes nothing.
+
+Tests: `tests/item-rating.test.mjs`, healing (best kit, storage, a GM-edited rating, Medkit [6] with
+and without Biotech), importer, migrations; mutants `rating-stored-field-only`, `rating-name-first`,
+`rating-trailing-number`, `medkit-first-not-best`. Live-checked in the test world 2026-09-13.
+
+**Not done:** the packs themselves still store 0 — every reader copes, and each world fills its own
+copies by migration. Patching the packs (Foundry closed, twice) would make the compendium sheets
+show the number too.
+
+<a id="119"></a>
+
+## 119. Audit *The Matrix Defragged v2* against what we have — **requested 2026-09-13**
+
+**Request (maintainer):** the book is now in the library — audit it against the system.
+
+*Shadowrun 3e - The Matrix Defragged v2.pdf* (Brinoceros, updated May 22, 2024; ~21,000 words, a
+**real text layer** — `pdftotext -layout` works). Until now CLAUDE.md said the whole *Matrix
+Defragged* section **cannot be audited** because the book was not in the library; that is no longer
+true, and this is the audit that section has been waiting for.
+
+**Scope, from its contents page:** the Architecture of Cyberspace (AROs, datastream, grid, hosts,
+icons, I/O ports, marks, movement, stealth, perception, nodes, pathways, PAN, prompts, RFID) ·
+User Modes (Tortoise, AR, VR cold/hot) · Running the Matrix (logon, Sys/Sec modifiers, hosts,
+legitimate use, prompting nodes; CPU/DS/SN/SPU/SAN prompts and the CPU Barrier) · Hacking · the
+Security Sheaf (Overwatch, stocking it, grading IC White/Gray/Black, Convergence, IC, IC agents) ·
+Available Programs (Analyze … Suppression).
+
+**Against:** CLAUDE.md *Matrix rules (Matrix Defragged v2)* — System Rating, Security Tiers and
+thresholds, Hacking Pool (`INT + ⌊MPCP/3⌋`), User Modes table, the 3-step hacking procedure,
+Overwatch/Convergence, cybercombat, IC initiative by tier, the official IC list, the Matrix
+Condition Monitor, Sys/Sec modifiers; the host/IC/agent sheets; the `MDF-*.json` rawdata and the
+five `sr3e-mdf-*` packs (116 documents with no `bookPage` — [#117](#117)); and
+`tests/tables.test.mjs`, which says outright that its tier tables are **not** independent
+verification. Output: a divergence list like the adept-power audit (`audit/`), each with page
+citations, 🔴 markers in CLAUDE.md for real divergences, and book/page on the MDF packs.
+
+<a id="120"></a>
+
+## 120. A Matrix Defragged adapter for HoloSuite Hacking (fork) — **requested 2026-09-13**
+
+**Request (maintainer):** work on a possible fork of
+[Thuurvdv/HoloSuite](https://github.com/Thuurvdv/HoloSuite) — specifically `holosuite-hacking` —
+to work with Matrix Defragged.
+
+**What it is** (read 2026-09-13): a Foundry module in a multi-module repo, `holosuite-hacking`
+v1.2.0, Foundry **12–14 verified**, requires `holosuite-core`, built with Vite (`src/` →
+`dist/main.js`). The GM launches a hacking challenge; the player accepts, rolls a skill check, then
+plays a timed puzzle whose difficulty scales with the roll. Native roll integration for D&D 5e, PF2e,
+SF2e, CoC7 and Cyberpunk RED; any other system falls back to custom dice or chat rolling. A public
+API — `configureHack()` / `runConfiguredHack()` — stores portable skill identifiers.
+
+**License:** `holosuite-hacking` is **GPL-3.0** — a fork may be published, and must stay GPL-3.0
+with modification notices. ⚠ The repo is **three-tier**: some modules are LGPL-3.0, some **PolyForm
+Noncommercial** (no redistribution); check `holosuite-core`'s own license before forking it too.
+
+**Shape to decide first:** (a) a fork adding a *Matrix Defragged* adapter next to the five native
+ones, or (b) no fork — a small bridge in this system that calls its public API. (b) avoids carrying
+a GPL fork and survives upstream updates; (a) is needed only if the adapter contract cannot express
+Defragged's rolls. Defragged-specific parts to map: the Hacking Pool, the Security Threshold (fail →
+Overwatch +1 — `SR3EHostSheet`'s track), System Rating as TN, and node prompts as the challenge.
+Depends on [#119](#119) for which rules are right.

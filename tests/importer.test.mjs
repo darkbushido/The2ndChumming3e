@@ -88,6 +88,21 @@ export async function run(t) {
     know.length >= 5 && know.every(s => SR3E.skillTypeForCategory(s.system.category) === 'knowledge'
       || SR3E.skillTypeForCategory(s.system.category) === 'language'));
 
+  /* ── Plain gear keeps its rating (reported in play: "it's just [3] in the name") ───── */
+  const stick = r.embedded.find(i => i.type === 'gear' && /Credstick/.test(i.name));
+  t.is('the credstick keeps the export\'s Rating 1', stick?.system.rating, 1);
+  t.is('…its book and page', stick?.system.bookPage, 'sr3.239');
+  t.is('…availability and street index', `${stick?.system.availability} / ${stick?.system.streetIndex}`, '1/24hrs / 1');
+  const kits = await runImport({ ...troll, gear: [
+    { Name: 'Medkit [6]', Rating: '-', Cost: '320', BookPage: 'mm.138', Type: 'Biotech', Amount: 1 },
+    { Name: 'Medkit Rating 4', Rating: '4', Cost: '240', Type: 'Biotech', Amount: 1 },
+    { Name: 'Wrist Phone', Rating: '-', Cost: '100', Type: 'Lifestyle Extras', Amount: 1 },
+  ] });
+  const g = n => kits.embedded.find(i => i.name === n)?.system;
+  t.is('a Medkit [6] whose Rating is "-" takes 6 from its name', g('Medkit [6]')?.rating, 6);
+  t.is('a numeric Rating is used as-is', g('Medkit Rating 4')?.rating, 4);
+  t.is('no rating anywhere: 0', g('Wrist Phone')?.rating, 0);
+
   /* ── Graded cyberware is graded once — TODO 101 ───────────────────────────────────── */
   const gun = r.embedded.find(i => i.type === 'cyberware');
   t.is('the alpha CyGun Shotgun keeps its graded 0.88', gun?.system.essenceCost, 0.88);

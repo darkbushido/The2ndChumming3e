@@ -28,6 +28,7 @@ const ACTOR = { module: '../scripts/documents/SR3EActor.js', klass: 'SR3EActor' 
 const ITEM  = { module: '../scripts/documents/SR3EItem.js',  klass: 'SR3EItem'  };
 const MIJI  = { module: '../scripts/SR3EMIJI.js',            klass: 'SR3EMIJI'  };
 const HEAL  = { module: '../scripts/SR3EHealing.js',         klass: 'SR3EHealing' };
+const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating' };
 
 export const MUTANTS = [
   {
@@ -122,6 +123,44 @@ export const MUTANTS = [
     was:    'the 0.5.1 card: Dice and TN editable by the player, and a GM edit never left the GM\'s '
           + 'own screen (reported in play)',
     impl:   () => {},
+  },
+  {
+    id:     'rating-stored-field-only',
+    suite:  'item-rating',
+    ...RATING, method: 'itemRating',
+    was:    'reading system.rating alone — the shipped VCR [2] (rating 0) added nothing to a rigger, '
+          + 'and a Medkit [6] read as no rating (reported in play)',
+    impl:   item => Number(item?.system?.rating) || 0,
+  },
+  {
+    id:     'rating-name-first',
+    suite:  'item-rating',
+    ...RATING, method: 'itemRating',
+    was:    'the name read before the stored field (the old cyberware-dice order) — a GM\'s edit to '
+          + 'the rating never counted',
+    impl:   function (item) { return this.ratingFromName(item?.name) ?? (Number(item?.system?.rating) || 0); },
+  },
+  {
+    id:     'rating-trailing-number',
+    suite:  'item-rating',
+    ...RATING, method: 'ratingFromName',
+    was:    'healing\'s old fallback: any trailing number counted, so "Predator 2" was Rating 2',
+    impl:   name => { const m = /\[(\d+)\]|\b(\d+)\s*$/.exec(String(name ?? '')); return m ? Number(m[1] ?? m[2]) : null; },
+  },
+  {
+    id:     'medkit-first-not-best',
+    suite:  'healing',
+    ...HEAL, method: 'findEquipment',
+    was:    'the first matching item, not the best — a Medkit [3] before a Medkit [6] won',
+    impl:   function (actors, kind) {
+      const re = this.EQUIPMENT[kind];
+      for (const a of actors.filter(Boolean)) for (const i of (a.items ?? [])) {
+        if (!re.test(String(i.name ?? ''))) continue;
+        if (kind === 'medkit' && i.flags?.The2ndChumming3e?.suppliesOut) continue;
+        return { actorId: a.id, itemId: i.id, name: i.name, rating: Number(i.system?.rating) || 0 };
+      }
+      return null;
+    },
   },
   {
     id:     'heal-own-patients-only',

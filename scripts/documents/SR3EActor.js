@@ -1,5 +1,6 @@
 import { SR3EItem } from './SR3EItem.js';
 import { parseMods } from '../SR3EMods.js';
+import { itemRating, vcrLevel as vcrLevelOf } from '../data/item-rating.mjs';
 
 export class SR3EActor extends Actor {
 
@@ -1722,7 +1723,7 @@ _prepareCharacter(sys, attr) {
     // Named-skill dice, e.g. move-by-wire's "+N dice for Athletics and Stealth Tests".
     for (const e of (_sr3e?.augmentationSkillDice ?? [])) {
       if (!e.match.test(item.name ?? '')) continue;
-      const rating = Number(/\[(\d+)\]/.exec(item.name ?? '')?.[1] ?? s.rating ?? 1) || 1;
+      const rating = itemRating(item) || 1;
       for (const skill of e.skills) {
         _addSkillDice(skill, (e.perRating ?? 1) * rating, item.name,
           { kind: item.type === 'bioware' ? 'bio' : 'cyber' });
@@ -1750,8 +1751,8 @@ _prepareCharacter(sys, attr) {
     // Triggered: collected whether active or not, so the sheet can offer the control.
     for (const t of (_cfg.triggeredAugmentations ?? [])) {
       if (!t.match.test(item.name ?? '')) continue;
-      // Level from the bracketed number the packs use — "Adrenal Pump [2](trig)".
-      const lvl   = Number(/\[(\d+)\]/.exec(item.name ?? '')?.[1] ?? 1) || 1;
+      // Level: the stored rating, else the bracketed number the packs use — "Adrenal Pump [2](trig)".
+      const lvl   = itemRating(item) || 1;
       const state = sys.augmentations?.[item.id] ?? {};
       const on    = t.kind === 'toggle' ? state.active === true : (state.turns ?? 0) > 0;
       triggeredAugs.push({ id: item.id, name: item.name, cfg: t, level: lvl,
@@ -2207,7 +2208,8 @@ _prepareCharacter(sys, attr) {
   const availableAstralPool = astralPool !== null ? Math.max(0, astralPool - astralPoolSpent) : null;
 
   const vcrItem   = sys.activeVCRItemId ? this.items?.get(sys.activeVCRItemId) : null;
-  const vcrRating = vcrItem ? (vcrItem.system?.rating ?? 0) : 0;
+  // ⚠ Through `vcrLevel`: the shipped rigs store `rating: 0` with the level in the NAME.
+  const vcrRating = vcrLevelOf(vcrItem);
 
   sys.derived = {
     initiative:         (attr.reaction?.value ?? 0) + wm,
@@ -8898,15 +8900,12 @@ _prepareCharacter(sys, attr) {
             // VCR: Rigger's reaction BASE (no wired reflexes) + vcrLevel + woundMod, (1 + vcrLevel)d6
             let vcrLevel = 0;
             const activeVCRId = rigger.system.activeVCRItemId ?? '';
-            if (activeVCRId) {
-              const vcrItem = rigger.items.get(activeVCRId);
-              if (vcrItem) vcrLevel = vcrItem.system.rating ?? 0;
-            }
+            if (activeVCRId) vcrLevel = vcrLevelOf(rigger.items.get(activeVCRId));
             if (!vcrLevel) {
-              const vcrItem = rigger.items.find(i =>
+              // ⚠ `vcrLevelOf`, not `system.rating`: the shipped rigs store 0 with the level in the name.
+              vcrLevel = vcrLevelOf(rigger.items.find(i =>
                 i.type === 'cyberware' && /vcr|vehicle\s*control\s*rig/i.test(i.name)
-              );
-              if (vcrItem) vcrLevel = vcrItem.system.rating ?? 1;
+              ));
             }
 
             // Wired reflexes excluded in VCR — use reaction.base not reaction.value
@@ -9021,15 +9020,12 @@ _prepareCharacter(sys, attr) {
     if (vcrVehicle) {
       let vcrLevel = 0;
       const activeVCRId = this.system.activeVCRItemId ?? '';
-      if (activeVCRId) {
-        const vcrItem = this.items.get(activeVCRId);
-        if (vcrItem) vcrLevel = vcrItem.system.rating ?? 0;
-      }
+      if (activeVCRId) vcrLevel = vcrLevelOf(this.items.get(activeVCRId));
       if (!vcrLevel) {
-        const vcrItem = this.items.find(i =>
+        // ⚠ `vcrLevelOf`, not `system.rating`: the shipped rigs store 0 with the level in the name.
+        vcrLevel = vcrLevelOf(this.items.find(i =>
           i.type === 'cyberware' && /vcr|vehicle\s*control\s*rig/i.test(i.name)
-        );
-        if (vcrItem) vcrLevel = vcrItem.system.rating ?? 1;
+        ));
       }
       const wm = this.system.woundMod ?? 0;
       const reactionBase = this.system.attributes?.reaction?.base ?? 0;

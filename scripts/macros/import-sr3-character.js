@@ -181,6 +181,21 @@ function _skillItem(s) {
   };
 }
 
+/**
+ * A gear row's rating: the export's `Rating` when it is a number ("-" means none), else the one
+ * in its name — `Medkit [6]`, `Medkit Rating 6`. 0 when there is neither.
+ *
+ * ⚠ The name half mirrors `ratingFromName` in `scripts/data/item-rating.mjs`, duplicated ON
+ * PURPOSE: this file is pasted into a Macro and cannot import. If one changes, change both.
+ */
+function _gearRating(g) {
+  const r = parseInt(_str(g.Rating), 10);
+  if (Number.isFinite(r) && r > 0) return r;
+  const s = _str(g.Name);
+  const m = /\[\s*(\d+)\s*\]/.exec(s) ?? /\brating\s*\[?\s*(\d+)/i.exec(s);
+  return m ? Number(m[1]) : 0;
+}
+
 function _gearItems(gear) {
   const items = [];
   for (const g of gear ?? []) {
@@ -318,14 +333,20 @@ function _gearItems(gear) {
       });
 
     } else {
-      // Plain gear: clothing without armour stats, lifestyles, misc
+      // Plain gear: clothing without armour stats, lifestyles, medkits, credsticks, misc.
+      // ⚠ The export's Rating, Availability, Street Index and BookPage used to be dropped, so a
+      // Medkit [6] kept its rating only in its name (reported in play, 2026-09-13).
       items.push({
         name: qty > 1 ? `${g.Name} ×${qty}` : g.Name,
         type: 'gear',
         system: {
-          quantity: qty,
-          cost:     _int(g.Cost),
-          weight:   _num(g.Weight) * qty,
+          quantity:     qty,
+          rating:       _gearRating(g),
+          cost:         _int(g.Cost),
+          weight:       _num(g.Weight) * qty,
+          availability: _str(g.Availability),
+          streetIndex:  _str(g['Street Index']),
+          bookPage:     _str(g.BookPage),
         },
       });
     }

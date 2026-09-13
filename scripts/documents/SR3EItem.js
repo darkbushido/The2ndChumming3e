@@ -1,3 +1,5 @@
+import { vcrLevel as vcrLevelOf } from '../data/item-rating.mjs';
+
 export class SR3EItem extends Item {
 
   /**
@@ -1495,7 +1497,8 @@ export class SR3EItem extends Item {
         const vcrItem = activeVCRId
           ? pilotActor.items.get(activeVCRId)
           : pilotActor.items.find(i => i.type === 'cyberware' && /vcr|vehicle\s*control\s*rig/i.test(i.name));
-        if (vcrItem) vcrLevel = vcrItem.system.rating ?? 1;
+        // ⚠ `vcrLevel()`, not `system.rating`: the shipped rigs store 0 with the level in the name.
+        if (vcrItem) vcrLevel = vcrLevelOf(vcrItem);
       }
     } else {
       const pilotRating = actor.system.attributes?.pilot?.base ?? 0;

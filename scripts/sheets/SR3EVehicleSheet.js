@@ -1,3 +1,5 @@
+import { vcrLevel } from '../data/item-rating.mjs';
+
 export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   _activeTab = 'stats';
@@ -1089,7 +1091,9 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
       i.type === 'cyberware' &&
       (i.name.toLowerCase().includes('vcr') || i.name.toLowerCase().includes('vehicle control rig'))
     );
-    const vcrRating = vcrItem ? (vcrItem.system.rating ?? 1) : 0;
+    // ⚠ `vcrLevel()`: the shipped rigs store rating 0 with the level in the name, so a VCR [2]
+    // from the compendium used to take −0 off the Driving Test instead of −2.
+    const vcrRating = vcrLevel(vcrItem);
 
     // Inline styles — DialogV2 does not reliably apply an injected <style> block.
     const FIELD_S = 'display:flex;flex-direction:column;gap:3px;color:#7880a0;font-size:12px;';

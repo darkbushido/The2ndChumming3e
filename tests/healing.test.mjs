@@ -131,6 +131,19 @@ export async function run(t) {
   t.is('a medkit whose supplies ran out does not count', H.findEquipment([who('a', [kit('k', 'Medkit', { suppliesOut: true })])], 'medkit'), null);
   t.is('a stabilization unit is found either spelling', H.findEquipment([who('a', [kit('u', 'Stabilisation Unit')])], 'stabilization')?.itemId, 'u');
   t.is('ratings are read from "[N]" too', H.findEquipment([who('a', [kit('p', 'Antidote Patch [5]')])], 'antidote')?.rating, 5);
+  // Reported in play: two players carry Medkit [6]s. With other gear about, the best must win.
+  t.is('the BEST medkit wins, not the first — [3] then [6] gives the 6',
+    H.findEquipment([who('a', [kit('k3', 'Medkit [3]'), kit('k6', 'Medkit [6]')])], 'medkit')?.itemId, 'k6');
+  t.is('…across the medic and the patient too',
+    H.findEquipment([who('medic', [kit('k3', 'Medkit [3]')]), who('patient', [kit('k6', 'Medkit [6]')])], 'medkit')?.actorId, 'patient');
+  t.is('a GM-edited rating counts — Medkit [6] set to 2 loses to a Medkit [3]',
+    H.findEquipment([who('a', [kit('k6', 'Medkit [6]', {}, 2), kit('k3', 'Medkit [3]')])], 'medkit')?.itemId, 'k3');
+  t.is('a medkit in storage is not on hand', H.findEquipment([who('a', [kit('k6', 'Medkit [6]', { stored: true }), kit('k3', 'Medkit [3]')])], 'medkit')?.rating, 3);
+  t.is('an empty [6] does not beat a stocked [3]',
+    H.findEquipment([who('a', [kit('k6', 'Medkit [6]', { suppliesOut: true }), kit('k3', 'Medkit [3]')])], 'medkit')?.rating, 3);
+  t.is('"Medkit Rating 6", the generator\'s spelling, reads 6', H.findEquipment([who('a', [kit('k', 'Medkit Rating 6')])], 'medkit')?.rating, 6);
+  t.is('first aid with a Medkit [6] and Biotech 4: 4 dice + 6 complementary', H.firstAidDice({ biotech: 4, medkitRating: 6 }).dice, 10);
+  t.is('…and with no Biotech the kit\'s 6 is the skill', H.firstAidDice({ biotech: 0, medkitRating: 6 }).dice, 6);
   t.is('times read like people write them', [H.formatHours(0.5), H.formatHours(80), H.formatHours(2)].join(' | '), '30 minutes | 3 days 8 hours | 2 hours');
 
   /* ── Dice / TN on a roll card: the GM's, not the player's (reported in play) ────── */

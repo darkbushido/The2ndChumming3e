@@ -26,6 +26,8 @@
  * half reads `game` only when called.
  */
 
+import { itemRating } from './data/item-rating.mjs';
+
 const LEVEL_NAME = { L: 'Light', M: 'Moderate', S: 'Serious', D: 'Deadly' };
 const NEXT_DOWN  = { D: 'S', S: 'M', M: 'L', L: '' };
 const FLOOR_BOX  = { D: 10, S: 6, M: 3, L: 1, '': 0 };
@@ -350,25 +352,26 @@ export class SR3EHealing {
    *  Reading actors (not pure, but plain-object friendly)
    * ════════════════════════════════════════════════════════════════════════════════════════ */
 
-  /** Find a usable piece of gear among these actors' items (a medkit out of supplies does not count). */
+  /**
+   * The best usable piece of this kind of gear among these actors' items.
+   * ⚠ **The BEST, not the first** — a character carrying a Medkit [3] and a Medkit [6] used to get
+   * whichever sorted first. Skipped: anything in storage (not on hand — TODO 113's `stored` flag)
+   * and a medkit out of supplies. The first actor listed wins a tie (the medic before the patient).
+   */
   static findEquipment(actors, kind) {
     const re = SR3EHealing.EQUIPMENT[kind];
+    const flag = (i, k) => (typeof i.getFlag === 'function' ? i.getFlag(FLAG, k) : i.flags?.[FLAG]?.[k]);
+    let best = null;
     for (const a of actors.filter(Boolean)) {
       for (const i of (a.items ?? [])) {
         if (!re.test(String(i.name ?? ''))) continue;
-        const out = typeof i.getFlag === 'function' ? i.getFlag(FLAG, 'suppliesOut') : i.flags?.[FLAG]?.suppliesOut;
-        if (kind === 'medkit' && out) continue;
-        return { actorId: a.id, itemId: i.id, name: i.name, rating: SR3EHealing._ratingOf(i) };
+        if (flag(i, 'stored')) continue;
+        if (kind === 'medkit' && flag(i, 'suppliesOut')) continue;
+        const rating = itemRating(i);
+        if (!best || rating > best.rating) best = { actorId: a.id, itemId: i.id, name: i.name, rating };
       }
     }
-    return null;
-  }
-
-  static _ratingOf(item) {
-    const r = Number(item?.system?.rating);
-    if (Number.isFinite(r) && r > 0) return r;
-    const m = String(item?.name ?? '').match(/\[(\d+)\]|\b(\d+)\s*$/);
-    return m ? Number(m[1] ?? m[2]) : 0;
+    return best;
   }
 
   /** Dermal armor rating for the permanent-damage and trauma-patch tests: a troll's hide + plating/sheath. */
@@ -377,7 +380,7 @@ export class SR3EHealing {
     let r = SA?.racialDermalArmor?.(actor?.system?.metatype) ?? 0;
     const pats = globalThis.game?.sr3e?.SR3E?.dermalArmorImplants ?? [/^\s*dermal\s+(plating|sheath)\b/i];
     for (const i of (actor?.items ?? [])) {
-      if (i.type === 'cyberware' && pats.some(re => re.test(String(i.name ?? '')))) r += SR3EHealing._ratingOf(i) || 1;
+      if (i.type === 'cyberware' && pats.some(re => re.test(String(i.name ?? '')))) r += itemRating(i) || 1;
     }
     return r;
   }

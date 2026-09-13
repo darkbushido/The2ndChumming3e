@@ -237,4 +237,20 @@ export async function run(t) {
 
   t.is('a vehicle is skipped', lbb.fixActor({ type: 'vehicle', system: { notes: NOTE } }), null);
   t.is('an actor with no notes is skipped', lbb.fixActor({ type: 'character', system: {} }), null);
+
+  /* ── 0.5.2: ratings out of names into the field (reported in play: "Medkit [6]") ─────── */
+  const rt = list.find(m => m.version === '0.5.2');
+  t.ok('0.5.2 exists and is a fixItem', typeof rt?.fixItem === 'function');
+  const typed = (type, name, system = {}) => ({ id: `i-${name}`, type, name, system });
+  t.is('a Medkit [6] with no rating gets 6',          rt.fixItem(typed('gear', 'Medkit [6]', { rating: 0 }))?.['system.rating'], 6);
+  t.is('gear saved before the field existed gets it', rt.fixItem(typed('gear', 'Medkit Rating 4', {}))?.['system.rating'], 4);
+  t.is('the shipped Vehicle Control Rig [2] (rating 0) gets 2',
+    rt.fixItem(typed('cyberware', 'Vehicle Control Rig [2]', { rating: 0 }))?.['system.rating'], 2);
+  t.is('bioware too', rt.fixItem(typed('bioware', 'Muscle Augmentation [3]', { rating: 0 }))?.['system.rating'], 3);
+  t.is('medical keeps its rating a string', rt.fixItem(typed('medical', 'Trauma Patch [5]', { rating: '' }))?.['system.rating'], '5');
+  t.is('a rating a GM typed is NOT overwritten', rt.fixItem(typed('gear', 'Medkit [6]', { rating: 4 })), null);
+  t.is('no rating in the name: nothing to copy', rt.fixItem(typed('gear', 'Predator 2', { rating: 0 })), null);
+  t.is('armour has no rating field — skipped', rt.fixItem(typed('armor', 'Helmet [2]', {})), null);
+  const rtOnce = rt.fixItem(typed('gear', 'Medkit [6]', { rating: 0 }));
+  t.is('idempotent: the migrated item yields nothing', rt.fixItem(typed('gear', 'Medkit [6]', { rating: rtOnce['system.rating'] })), null);
 }

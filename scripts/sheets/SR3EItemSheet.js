@@ -10,6 +10,7 @@ import {
   skillTypeForCategory,
 } from '../config.js';
 import { SPIRIT_TYPES } from '../documents/SR3ESpiritSummoning.js';
+import { ratingFromName } from '../data/item-rating.mjs';
 
 export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
 
@@ -196,6 +197,21 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       medical:      'Medical Equipment / Service',
     };
     return labels[this.item.type] ?? this.item.type;
+  }
+
+  /**
+   * The Rating box for items whose rating usually lives in the NAME ("Medkit [6]", "Wired
+   * Reflexes [2]" — the shipped packs store 0). With nothing saved the box is blank and shows the
+   * name's rating as its placeholder, which is what `itemRating()` uses; typing a number saves it
+   * and that number wins. Showing a bare 0 claimed the item had no rating at all.
+   */
+  _ratingField(s) {
+    const stored = Number(s.rating) || 0;
+    const fromName = ratingFromName(this.document?.name);
+    const hint = !stored && fromName !== null
+      ? `placeholder="${fromName}" title="Nothing saved — the name says ${fromName}, and that is what is used. Type a number to override it."`
+      : 'placeholder="—"';
+    return this._f('Rating', 'rating', stored || '', 'number', `min="0" ${hint}`);
   }
 
   _f(label, name, value, type = 'text', extra = '') {
@@ -668,7 +684,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
                    value="${essEff}" step="0.01" min="0"/>
           </label>
           ${this._sel('Grade', 'grade', grade, SR3E.cyberwareGrades, 'grade-select')}
-          ${this._f('Rating', 'rating', s.rating, 'number')}
+          ${this._ratingField(s)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
           ${this._f('Availability', 'availability', availEff, 'text', 'placeholder="8/36 hrs"')}
           ${this._f('Street Index', 'streetIndex', s.streetIndex, 'number', 'step="0.1" min="0"')}
@@ -738,9 +754,13 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
 
       case 'gear':
         return `<div class="form-grid">
+          ${this._ratingField(s)}
           ${this._f('Quantity', 'quantity', s.quantity, 'number', 'min="0"')}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
           ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
+          ${this._f('Availability', 'availability', s.availability)}
+          ${this._f('Street Index', 'streetIndex', s.streetIndex)}
+          ${this._f('Book / Page', 'bookPage', s.bookPage, 'text', 'placeholder="sr3.304"')}
         </div>
         <div class="notes-field">
           <label class="bio-label">Description</label>

@@ -28,6 +28,7 @@
 import { SRCG_BONUSES } from './data/srcg-bonuses.js';
 import { expandCyberwareName } from './data/cyberware-names.js';
 import { parseJohnsonNotes, isJohnsonNote } from './data/johnson-notes.mjs';
+import { ratingFromName } from './data/item-rating.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -313,6 +314,29 @@ const MIGRATIONS = [
       const next = expandCyberwareName(item.name);
       if (next === item.name) return null;                    // never abbreviated
       return { name: next, 'system.srcgName': item.name };
+    },
+  },
+  {
+    version: '0.5.2',
+    label: 'Ratings out of names into the editable field (reported in play)',
+    /**
+     * A Medkit [6], a Wired Reflexes [2], a Vehicle Control Rig [2] — the rating lived in the
+     * NAME. The shipped packs store `rating: 0` on 537 of 540 bracketed cyberware and all 72
+     * bracketed bioware, and gear had no rating field at all. `itemRating()` now reads the name
+     * when the field is 0, so play is already right; this copies the number into the field so
+     * the sheet shows it and a GM can change it.
+     *
+     * A fixer, but a FILL-BLANKS one: it writes only when the field is 0, null or '' and the
+     * name carries a rating, so a GM who typed a rating keeps it and a second run is a no-op.
+     * `medical` keeps its rating as a string ("+2" is a real value there).
+     */
+    fixItem: (item) => {
+      if (!['gear', 'cyberware', 'bioware', 'medical'].includes(item.type)) return null;
+      const cur = item.system?.rating;
+      if (!(cur === undefined || cur === null || cur === '' || Number(cur) === 0)) return null;
+      const r = ratingFromName(item.name);
+      if (!r) return null;
+      return { 'system.rating': item.type === 'medical' ? String(r) : r };
     },
   },
 

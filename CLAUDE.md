@@ -40,6 +40,17 @@ node tests/mutate.mjs   # every mutant must be killed
 npm run test:e2e        # Playwright, two real clients (Foundry running)
 ```
 
+## Versions and branches — the maintainer's rules (2026-09-13)
+
+- **`major.minor.patch`.** A **bug fix** bumps the **patch** (0.5.1 → 0.5.2). A **new feature** bumps
+  the **minor** (0.5.x → 0.6.0). **1.0.0** is reserved for "feature complete" — the maintainer calls it.
+- **New features are built on a branch; only bug fixes are made on `main`.** A reported defect
+  ("it won't let player A heal player B") is a fix; a request ("a larger info box would be nice")
+  is a feature, even when it arrives in the same message — split them.
+- A migration still needs `system.json` bumped in the same commit (see *World migrations*), so
+  number it by the release it will ship in under these rules.
+- Never `git push` unless asked — the maintainer publishes.
+
 ## Branch manifest URLs — `npm run manifest:branch`
 
 The three fields at the bottom of `system.json` (`url` / `manifest` / `download`) name a
@@ -635,6 +646,10 @@ ODM-\* rawdata), **`mat`** = this sourcebook, **`matrix-defragged`** = the commu
 > **every lookup table** (`tests/tables.test.mjs`: Damage Modifiers and the Condition Monitor
 > thresholds, the Weapon Range Table, Impact Projectile multipliers, the Grenade Range Table,
 > Impact Damage Levels and crash Power, ammunition, R3 flux ranges).
+>
+> ✅ **Update 2026-09-13: *Shadowrun 3e - The Matrix Defragged v2.pdf* is now in the library, with a
+> text layer — the audit below is TODO 119 and has not been done yet.** Until it is, the warning
+> stands:
 >
 > ⚠ **THE MATRIX DEFRAGGED SECTION CANNOT BE AUDITED AT ALL.** *Matrix rules (Matrix Defragged
 > v2)* — System Rating, Security Tiers, Hacking Pool, User Modes, the hacking procedure,
@@ -1362,6 +1377,24 @@ joins them, and all three are offered on the **attribute-roll dialog** as one un
 live only while Body is selected (`SR3EActor.toxinResistanceOffer`, TODO 98) — dice on the
 test, never added to `body.value`.
 
+### Item ratings — one reader  · TODO 118
+
+`scripts/data/item-rating.mjs`: `itemRating(item)` — a stored `system.rating` **above 0 wins**,
+else the name's `[N]` / `Rating N`, else 0; `vcrLevel(item)` — at least 1 for a rig that exists;
+`ratingFromName(name)`. **Never read `system.rating` directly on gear, cyberware, bioware or
+medical items.**
+
+⚠ **The rating usually lives in the NAME.** The packs inherited the generator's `Wired Reflexes [2]`
+naming: **537 of 540** bracketed cyberware and **all 72** bracketed bioware store `rating: 0`, and
+gear had no rating field until 0.5.2. Reading the field gave 0 — the core pack's **Vehicle Control
+Rig [1]/[2]/[3] all store 0**, so a compendium VCR added nothing to a rigger's initiative or Driving
+Test, at seven read sites (`tests/item-rating.test.mjs` now checks none read the field directly).
+⚠ **A bare trailing number is not a rating** — "Predator 2" is a model; a bracket must hold only
+digits — "[Initiate Grade 2]" is a note.
+⚠ The item sheet's Rating box is **blank with the name's rating as its placeholder** until someone
+types one; migration 0.5.2 copies name ratings into blank fields in each world. The packs still
+store 0 (every reader copes).
+
 ### Cyberware grades  · *M&M p.45* — TODO 86
 
 `SR3EActor.gradedEssenceCost(cost, grade)` applies the Cyberware Grades Table before
@@ -2000,6 +2033,9 @@ Attribute point.
   timeMultiplier, baseMultiplier}` — and it is **cleared whenever Physical reaches 0**, by either
   *Lower* or *Heal these boxes*. `magicHealed` blocks further Heal/Treat **and** first aid for *these*
   injuries (p.129, p.194); left set after a full heal it silently blocked the next wound.
+- ⚠ **Equipment ratings come from `itemRating()`** (`scripts/data/item-rating.mjs`, TODO 118) — a
+  stored rating above 0 wins, else the name's `[N]` / `Rating N`. `findEquipment` takes the **best**
+  usable item, not the first, and skips anything in storage.
 - ⚠ **Medkit (M&M p.136/138):** no Biotech → the kit's rating **is** the skill; with Biotech → its
   rating adds **complementary dice**. Not p.97's 2:1 complementary skill — same reading as R3's EW
   dice. A kit flagged `suppliesOut` (a 1 on the 1D6, p.304) is invisible to `findEquipment` until

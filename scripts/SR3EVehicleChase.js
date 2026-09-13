@@ -1,3 +1,5 @@
+import { vcrLevel as vcrLevelOf } from './data/item-rating.mjs';
+
 const VEHICLE_TYPES = [
   { key: 'car',          label: 'Car',                        score:   0 },
   { key: 'sports_car',   label: 'Sports Car',                 score:   3 },
@@ -508,7 +510,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
       i.type === 'cyberware' &&
       (i.name.toLowerCase().includes('vcr') || i.name.toLowerCase().includes('vehicle control rig'))
     );
-    return vcr ? (vcr.system.rating ?? 1) : 0;
+    return vcrLevelOf(vcr);   // the shipped rigs store rating 0 with the level in the name
   }
 
   _vehicleDamageInfo(vehicleActorId) {

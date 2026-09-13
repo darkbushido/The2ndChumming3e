@@ -1,5 +1,6 @@
 import { SR3E, getSpecializationsForSkill, skillTypeForCategory } from '../config.js';
 import { CHARGEN_SPEC_GAP } from '../data/skill-rules.mjs';
+import { itemRating, vcrLevel } from '../data/item-rating.mjs';
 
 /**
  * SR3EActorSheet — V2 Application framework (Foundry v13+).
@@ -1587,7 +1588,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     };
 
     const cwRows = cyberware.length ? cyberware.map(c => {
-      const rating = c.system.rating ?? 0;
+      const rating = itemRating(c);   // the packs keep most ratings in the name: "Wired Reflexes [2]"
       return `
         <div class="item-row" data-item-id="${c.id}" data-cyber-item-id="${c.id}">
           <span class="item-name">${c.name}</span>
@@ -1606,7 +1607,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         ${_trigBtn(b.id)}
         <span class="item-cell">${b.system.grade ?? '—'}</span>
         <span class="item-cell">${b.system.bioIndex ?? 0}</span>
-        <span class="item-cell">${b.system.rating ?? 0}</span>
+        <span class="item-cell">${itemRating(b)}</span>
         ${this._itemControls(b.id, false, 'rollWeapon', false)}
       </div>`).join('') : '<p class="empty-list">No bioware.</p>';
 
@@ -1623,7 +1624,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ? `<div class="sr-vcr-slot sr-vcr-slot--filled" data-vcr-drop>
            <span class="sr-vcr-slot-label">⚡ VCR</span>
            <span class="sr-vcr-slot-name">${activeVCRItem.name}</span>
-           <span class="sr-vcr-slot-rating">Rating ${activeVCRItem.system.rating ?? 0}</span>
+           <span class="sr-vcr-slot-rating">Rating ${vcrLevel(activeVCRItem)}</span>
            <button type="button" class="sr-vcr-slot-clear" data-action="clearVCR" title="Remove VCR">✕</button>
          </div>`
       : `<div class="sr-vcr-slot" data-vcr-drop>
@@ -2797,7 +2798,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       <div class="item-row" data-item-id="${i.id}">
         <span class="item-name">${i.name}</span>
         <span class="item-cell" style="color:var(--sr-muted);font-size:11px">${i.type}</span>
-        <span class="item-cell">${i.system.rating ? `Rtg ${i.system.rating}` : '—'}</span>
+        <span class="item-cell">${itemRating(i) ? `Rtg ${itemRating(i)}` : '—'}</span>
         ${_storeControls(i.id)}
       </div>`).join('');
 
