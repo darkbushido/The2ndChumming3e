@@ -27,7 +27,7 @@ independent.
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** *(**3** · **4** · **30** · **75** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** *(**83** · **84** · **87** done)* |
-| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 56 *(**36** · **99** done)* |
+| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 56 · **100** *(**36** · **99** done)* |
 | 🧹 Housekeeping | 1 · 6 |
 | ✅ Done — kept for the record | **2** · **5** · **8** · **10** · 13 · **40** · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -6613,7 +6613,9 @@ instead of B10 Q4 S8 C0 I1 W2) and grew to cover TODO 36, 73, 74, 75, 94, 96, 98
 These exercise new data fields, rewired dialogs and new chat buttons — the parts the unit tests
 cannot reach. If time is short, do these.
 
-- [ ] **Import the reported troll.** Body 10, Quickness 4, Strength 8, Charisma 0, Intelligence 1,
+- [x] **Import the reported troll** — Body `10 + 1 (11)` ✅ (2026-09-13). Quickness 4 shown as
+      **4 − 1**: armour encumbrance, expected, but unexplained on the sheet → [#100](#100).
+      Body 10, Quickness 4, Strength 8, Charisma 0, Intelligence 1,
       Willpower 2; a notification listing the modifiers, and a **permanent** warning that
       Charisma is below 1. Attributes tab: Body reads `10 + 1 (11)` (*Troll dermal armor*).
 - [ ] **Every attribute roll** (any character, not just a dwarf): click an attribute's roll icon,
@@ -6909,3 +6911,20 @@ names (see CLAUDE.md, *The packs ABBREVIATE cyberware names*), so match stems (`
 included later it is its own column: gear vision reads as **cybernetic** on the table.
 
 Show it in the melee GM window too — melee uses the same table at half value (p.123).
+
+<a id="100"></a>
+
+## 100. Explain every attribute modifier on hover — **requested in play 2026-09-13**
+
+**Observation, from the TODO 93 test run.** The imported troll's Attributes tab shows Quickness
+as **4 − 1**. The −1 is **armour encumbrance** (confirmed by the maintainer — armour equipped
+whose higher rating exceeds Quickness), and nothing on the sheet says so. Wanted: *"when you
+moused over the modifiers it explained what's going on."*
+
+**Scope — every number the sheet adds to or subtracts from an attribute**, each with a tooltip
+naming its source and, where there is one, the rule: armour encumbrance (the armour's name, its
+rating against Quickness, the per-2-points rule), cyberware and bioware bonuses (which items),
+adept powers, triggered augmentations (Adrenal Pump, Pain Editor), Attribute Boost, and the
+troll's dermal armor (already has one — *"Troll dermal armor (SR3 p.56)"*, the model to follow).
+
+Not investigated yet — which of these already carry a tooltip is the first thing to check.
