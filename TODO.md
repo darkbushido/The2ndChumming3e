@@ -6703,11 +6703,18 @@ cannot reach. If time is short, do these.
       *Thermographic (natural)* with a 👁 line; pick Thermal Smoke → it switches to Normal; pick
       one by hand → it stays. An elf with `Eyes, Cyber Replacement` + `Eyes, Low-Light` →
       *Low-Light (cybernetic) … racial low-light lost*.
-- [ ] **Crash Test** from the 💥 dialog → the Driving Test dialog titled *Crash Test*; 0 successes
+- [x] ✅ **Crash Test** — agent live check, 2026-09-13: crash-mode dialog titled *Crash Test — Toyota
+      Elite*; with the pool set to 1 and TN 30 it rolled 0 successes and posted *💥 CRASH! … Impact
+      at 50 km/h (42.0 m per Combat Turn) → 5M Physical* with the vehicle soak button. Soak rolled 1
+      hit (5M unchanged) → driver and both passengers offered **5M before belt and armour**. Messages
+      deleted; nothing written to the vehicle. Original step:
+      **Crash Test** from the 💥 dialog → the Driving Test dialog titled *Crash Test*; 0 successes
       posts the crash.
 - [ ] **Ramming passengers:** if the rammed vehicle's soak staged the damage down, the passengers'
       buttons show the lower level; if it soaked it all, no buttons and a note saying so.
-- [ ] **Chase Scene:** pick the vehicle for a participant → its passengers are already listed.
+- [x] ✅ **Chase Scene** — agent live check, 2026-09-13: + Add Vehicle, pick Toyota Elite → Bruce Lee
+      and SWAT Team Member listed, matching the vehicle's roster. Original step:
+      **Chase Scene:** pick the vehicle for a participant → its passengers are already listed.
 - [x] ✅ **TODO 101** — Essence working as expected after re-import (maintainer, 2026-09-13). Original step: **TODO 101, re-import:** delete the import macro, reload, re-import the troll → Essence **5.12**;
       press **↺** → it **stays 5.12** (was 5.29). The CyGun Shotgun's sheet shows 0.88 (base 1.1), Alpha.
 - [x] ✅ **TODO 108** — agent live check, 2026-09-13: the election keeps *+2 to their TN* through a
