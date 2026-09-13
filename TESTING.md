@@ -103,6 +103,68 @@ below are still the checklist for them.
 ⚠ **`- passed` markers below are historical.** They record a build nobody can identify now.
 Treat a section as verified only if it says AUTOMATED, or if you have just walked it.
 
+### Agent-driven live checks — the Browser pane (no maintainer needed)
+
+Added 2026-09-13, because this method was **lost once to a context compaction**: the next
+session concluded it could not test in Foundry and asked the maintainer to do it. It can. Most
+of the manual checklist below — and a branch's Foundry checklist (e.g. TODO 93) — can be walked
+by the agent in the in-app **Browser pane** (`mcp__Claude_Browser__*`), driving `game.sr3e.*`
+with `javascript_tool` exactly the way `tests/e2e/foundry.mjs` does.
+
+| | |
+|---|---|
+| Server | `http://localhost:30000` — the maintainer's Foundry desktop app (v14) |
+| World | **`test-shadowrun`** — the ONLY world on this machine, and a **test world, not a campaign** (New Runner, Troll Street Dealer, SWAT Team Member, Bruce Lee… are test actors). Changing it is fine in a development session; clean up afterwards. |
+| Users | **Gamemaster** (the maintainer's seat — usually connected), **Player2**, **Player3**, **mcp-api** (Assistant GM, for automation). **All passwordless.** |
+
+**1 — Is a world up?** Navigate the pane to `http://localhost:30000`. If it shows the setup screen:
+
+```js
+await fetch('/setup', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ action: 'launchWorld', world: 'test-shadowrun' }) }).then(r => r.text());
+```
+
+**2 — Join.** On `/join` (the form is built by JS — wait until `select[name="userid"]` exists):
+
+```js
+const sel = document.querySelector('select[name="userid"]');
+sel.value = [...sel.options].find(o => o.textContent.trim() === 'mcp-api').value;
+sel.dispatchEvent(new Event('change', { bubbles: true }));
+[...document.querySelectorAll('button')].find(b => /join game/i.test(b.textContent)).click();
+```
+
+Then wait for `game.ready`. Navigating to `/join` again logs out (to switch user).
+⚠ **One session per user** — the maintainer is usually on Gamemaster, so join as **mcp-api** (GM
+rights) or **Player2/Player3** (a player's view). Never try to take a connected seat.
+⚠ **Never type a password.** These accounts have none. If one ever gets a password, stop and ask.
+
+**3 — Drive the API, read state from `game`.** The rules from `tests/e2e/foundry.mjs` apply:
+drive `game.sr3e.*` rather than the WebGL canvas; **do not await a flow that opens a dialog**
+(fire it, then find `.application.dialog` in the DOM, fill it and click its button); scope chat
+selectors to `#chat` (every message renders twice); assert on `game.*` / `game.messages`; use a
+`computer` screenshot only for visual questions (colour, layout, a blank dropdown). Delete the
+chat messages and documents you created and restore fields you changed.
+
+**4 — Stale code.** Scripts are junctioned (above), so F5 in the pane loads your edit — but
+authoritative writes run on **`game.users.activeGM`**, usually the maintainer's tab. Compare its
+`sr3e.debug.loadedAt` with the files' mtime; if it is older, GM-routed results are from old code.
+Say so in the results rather than reporting a false failure.
+
+**What still needs a human (or Playwright):** two clients at once (GM + player simultaneously —
+use `npm run test:e2e`, which opens a browser context per user); a **full Foundry restart** after
+a data-model change (the agent cannot restart the desktop app); anything behind a password.
+
+**MCP servers** (`foundry-mcp` / `foundryvtt`, with the `foundry-mcp-bridge` module) have been
+used to read world state. They are optional and often disconnected; their credentials live in the
+MCP configuration (`~/.claude.json`), **never in this repository**.
+
+**Record results** in the branch's Foundry checklist (TODO 93 on `fix/racial-mods`): tick each
+step with the date and what was seen; log a new failure as its own TODO, observation only.
+
+⚠ **`packs/` churns under git whenever Foundry opens the packs** (LevelDB rotates its log and
+MANIFEST files). Never commit that churn; check integrity with `npm run packs:check:repo` with
+Foundry closed.
+
 ---
 
 ## 1. Dice / Rule of Six - passed

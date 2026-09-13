@@ -15,6 +15,26 @@ All sheet HTML is rendered directly from JavaScript using tagged template litera
 
 ---
 
+## Testing — read `TESTING.md` before saying a check "needs the maintainer"
+
+**Every change gets tests** (the maintainer's standing rule): a unit test for a rule, a
+source-level check for sheet/dialog code that cannot be imported without Foundry, a mutant in
+`tests/mutants.mjs` for a rules bug that shipped, and a step in the branch's Foundry checklist
+for anything only a live client can show.
+
+**The agent CAN test in a live Foundry.** The in-app Browser pane reaches the maintainer's
+Foundry at `http://localhost:30000`; the world `test-shadowrun` is a **test world** with
+passwordless users (join as **mcp-api** or **Player2/3** — the maintainer holds Gamemaster), and
+`javascript_tool` drives `game.sr3e.*`. Full steps — launching the world, joining, driving
+dialogs, stale-GM caveats, what still needs a human — are in **`TESTING.md`**, *Agent-driven live
+checks*. This was lost once to a context compaction; that section exists so it is not lost again.
+
+```bash
+node tests/run.mjs      # unit + source-level suites (no Foundry)
+node tests/mutate.mjs   # every mutant must be killed
+npm run test:e2e        # Playwright, two real clients (Foundry running)
+```
+
 ## Branch manifest URLs — `npm run manifest:branch`
 
 The three fields at the bottom of `system.json` (`url` / `manifest` / `download`) name a
