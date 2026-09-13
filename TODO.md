@@ -6621,7 +6621,11 @@ cannot reach. If time is short, do these.
       Body 10, Quickness 4, Strength 8, Charisma 0, Intelligence 1,
       Willpower 2; a notification listing the modifiers, and a **permanent** warning that
       Charisma is below 1. Attributes tab: Body reads `10 + 1 (11)` (*Troll dermal armor*).
-- [ ] **Every attribute roll** (any character, not just a dwarf): click an attribute's roll icon,
+- [x] ✅ **Every attribute roll** — dropdown follows the attribute (troll: Strength 8, Body 11),
+      2026-09-13. Dwarf checkbox not yet seen (no dwarf to hand). ⚠ After the run: dermal armor's
+      *"works against any attack… does not aid in healing"* is **SR3 p.283**, not p.281 as cited in
+      `config.js` (`racialDermalArmor`), CLAUDE.md and this file — fix the citations.
+      Original step: **Every attribute roll** (any character, not just a dwarf): click an attribute's roll icon,
       change the dropdown to another attribute → the pool follows it. The dropdown was rewired.
       On a **dwarf**, Body shows an **unticked** *Resisting disease or toxin: +2* box; tick → +2,
       switch off Body → it greys out.
