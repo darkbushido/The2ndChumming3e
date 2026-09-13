@@ -94,7 +94,7 @@ export class SR3EAgentSheet extends foundry.applications.sheets.ActorSheetV2 {
         <header class="ic-header">
           <img class="actor-portrait" src="${actor.img}" alt="${actor.name}" width="56" height="56">
           <div class="ic-name-block">
-            <input class="actor-name" type="text" name="name" value="${actor.name}" placeholder="Agent Name"/>
+            <input class="actor-name" type="text" name="name" value="${foundry.utils.escapeHTML(actor.name ?? "")}" placeholder="Agent Name"/>
             <div class="ic-subtitle">Programming Agent
               ${sys.graded ? '<span class="prog-graded-badge">Graded</span>' : ''}
             </div>

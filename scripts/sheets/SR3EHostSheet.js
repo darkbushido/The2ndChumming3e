@@ -273,7 +273,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
       <header class="host-header">
         <img class="actor-portrait" src="${actor.img}" alt="${actor.name}" width="56" height="56">
         <div class="host-name-block">
-          <input class="actor-name" type="text" name="name" value="${actor.name}" placeholder="Host Name"/>
+          <input class="actor-name" type="text" name="name" value="${foundry.utils.escapeHTML(actor.name ?? "")}" placeholder="Host Name"/>
           <div class="host-syssec" style="color:${tierColor}">
             <span class="host-syssec-badge">${sysSec}</span>
             ${sys.mainframeSupport ? '<span class="host-mainframe-badge">MAINFRAME</span>' : ''}

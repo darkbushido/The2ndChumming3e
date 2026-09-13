@@ -161,7 +161,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         <header class="item-sheet-header">
           <img class="item-img" src="${item.img}" title="${item.name}"/>
           <div class="item-header-text">
-            <input class="item-name-input" type="text" name="name" value="${item.name}"/>
+            <input class="item-name-input" type="text" name="name" value="${foundry.utils.escapeHTML(item.name ?? "")}"/>
             <span class="item-type-badge">${this._typeLabel()}</span>
           </div>
           ${this.isEditable && item.type !== 'skill' ? '<button type="button" class="btn-compendium-pick" data-action="pickFromCompendium" title="Fill from compendium">&#128218; Pick from compendium</button>' : ''}

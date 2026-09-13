@@ -124,7 +124,7 @@ export class SR3EHostSheetOrthodox extends foundry.applications.sheets.ActorShee
         <img src="${actor.img}"
           style="width:44px;height:44px;object-fit:cover;border-radius:4px;border:1px solid var(--sr-border);">
         <div style="flex:1;min-width:0;">
-          <input type="text" name="name" value="${actor.name}"
+          <input type="text" name="name" value="${foundry.utils.escapeHTML(actor.name ?? "")}"
             style="font-size:16px;font-weight:bold;background:none;border:none;color:var(--sr-text);width:100%;padding:0;">
           <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:5px;align-items:center;">
             <span style="font-size:11px;color:var(--sr-muted);margin-right:2px;">Security:</span>

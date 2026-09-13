@@ -60,7 +60,7 @@ export class SR3EWardSheet extends foundry.applications.sheets.ActorSheetV2 {
         <header class="ward-header">
           <img class="actor-portrait" src="${actor.img}" alt="${actor.name}" width="56" height="56">
           <div class="ward-name-block">
-            <input class="actor-name" type="text" name="name" value="${actor.name}" placeholder="Ward Name"/>
+            <input class="actor-name" type="text" name="name" value="${foundry.utils.escapeHTML(actor.name ?? "")}" placeholder="Ward Name"/>
             <div class="ward-subtitle">
               Astral Ward
               ${destroyed ? '<span class="ward-destroyed-badge">DESTROYED</span>' : `<span class="ward-force-badge">Force ${force}</span>`}

@@ -145,7 +145,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
         </div>
         <div class="header-fields">
           <div class="header-top">
-            <input class="actor-name" type="text" name="name" value="${actor.name}" style="flex:1"/>
+            <input class="actor-name" type="text" name="name" value="${foundry.utils.escapeHTML(actor.name ?? "")}" style="flex:1"/>
             ${isTemplate === true
               ? `<span class="sr3e-template-badge">TEMPLATE</span>
                  <button type="button" class="sr3e-template-btn" data-action="deployTemplate" title="Create a working copy with the template flag removed">Deploy Copy</button>

@@ -102,7 +102,7 @@ export class SR3EICSheetOrthodox extends foundry.applications.sheets.ActorSheetV
         <img src="${actor.img}"
           style="width:44px;height:44px;object-fit:cover;border-radius:4px;border:1px solid var(--sr-border);">
         <div style="flex:1;min-width:0;">
-          <input type="text" name="name" value="${actor.name}"
+          <input type="text" name="name" value="${foundry.utils.escapeHTML(actor.name ?? "")}"
             style="font-size:15px;font-weight:bold;background:none;border:none;color:var(--sr-text);width:100%;padding:0;">
           <div style="display:flex;align-items:center;gap:8px;margin-top:5px;">
             <select name="system.orthodoxIcType"

@@ -90,7 +90,7 @@ export class SR3EICSheet extends foundry.applications.sheets.ActorSheetV2 {
         <header class="ic-header">
           <img class="actor-portrait" src="${actor.img}" alt="${actor.name}" width="56" height="56">
           <div class="ic-name-block">
-            <input class="actor-name" type="text" name="name" value="${actor.name}" placeholder="IC Name"/>
+            <input class="actor-name" type="text" name="name" value="${foundry.utils.escapeHTML(actor.name ?? "")}" placeholder="IC Name"/>
             <div class="ic-subtitle">Intrusion Countermeasure
               <span class="ic-grading-badge" style="${gradingStyle}">[${grading}]</span>
             </div>

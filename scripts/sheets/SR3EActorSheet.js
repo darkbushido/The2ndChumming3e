@@ -521,7 +521,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         </div>
         <div class="header-fields">
           <div class="header-top">
-            <input class="actor-name" type="text" name="name" value="${actor.name}"/>
+            <input class="actor-name" type="text" name="name" value="${foundry.utils.escapeHTML(actor.name ?? "")}"/>
             ${/* Professional Rating · TODO 83. A read-only badge, shown ONLY when set — it is
                 * the first number a GM wants when they open one of the 62 Little Black Book
                 * archetypes, and it is meaningless on a player character. Editing lives on the
