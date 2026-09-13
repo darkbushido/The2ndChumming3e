@@ -7156,3 +7156,8 @@ to survive card re-renders through \`_cornerDrafts\` (CLAUDE.md, *Two-corner car
 covers this \`<select>\`, and whether "blank" means no option selected at all, is the first thing to
 check. Also confirm whether the choice still reaches the result even though the control shows
 blank, and whether it matters who is viewing (GM vs the troll's player).
+
+**Details from the maintainer, 2026-09-13:** seen **as the GM** (the troll is an NPC, so the GM
+owns that corner), and the dropdown goes blank **as soon as an option is picked** — not later,
+when the other side submits. So it is not a re-render from the card updating; look at the
+change handler on the select itself.
