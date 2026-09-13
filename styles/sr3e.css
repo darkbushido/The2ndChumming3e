@@ -69,6 +69,25 @@ background-color: var(--sr-surface) !important;
   border-radius: var(--r);
   padding: 1px 4px;
 }
+/* TODO 108 — dropdowns in a two-corner card got NO styling while its text boxes did, so they
+ * fell back to Foundry's defaults: in the chat card the Reach election read blank when closed
+ * (its list, drawn by the browser, still showed the options). Style every corner <select> the
+ * way the text boxes are, on every two-corner card, and give it room to show its text. */
+[data-corner-role] select {
+  background: var(--sr-surface);
+  color: var(--sr-text);
+  border: 1px solid var(--sr-border);
+  border-radius: var(--r);
+  padding: 1px 4px;
+  min-width: 0;
+  max-width: 100%;
+  height: auto;
+  font-size: 11px;
+}
+[data-corner-role] select option {
+  background: var(--sr-surface);
+  color: var(--sr-text);
+}
 
 /* Where a corner's dice came from — rating + specialisation + augmentation. Shown because a
    bare total gives a player no way to tell what is already included in it. Reported from play
@@ -2530,6 +2549,11 @@ label.act-field input[type=number] {
   font-weight: bold;
   padding: 2px 8px;
   transition: all 0.1s;
+  /* Short fixed labels (VCR / RCD / Auto / ✕) — never wrap, and never clip at core's fixed
+   * button height. Needed once the ✕ unlink button (TODO 107) made the class visible to
+   * tests/chat-button-styles; the other three always needed it too. */
+  height: auto;
+  white-space: nowrap;
 }
 .sr-veh-mode-btn:hover { border-color: var(--sr-border-hi); color: var(--sr-text); }
 .sr-veh-vcr-active {

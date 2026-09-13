@@ -546,7 +546,10 @@ export class SR3EQuery {
           throw new Error(`SR3E | vehicle.link: '${vehicleId}' is not a vehicle`);
         }
         const changes = { 'system.driverActorId': driverActorId ?? '' };
-        if (_requesterId && _requesterId !== game.user.id
+        // An empty driver is an UNLINK (TODO 107): it also clears the control mode, and it must
+        // NOT hand the requester ownership — that grant exists so a newly linked vehicle rolls.
+        if (!driverActorId) changes['system.controlMode'] = '';
+        if (driverActorId && _requesterId && _requesterId !== game.user.id
             && !vehicle.testUserPermission(game.users.get(_requesterId), 'OWNER')) {
           changes.ownership = { ...(vehicle.ownership ?? {}),
             [_requesterId]: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER };

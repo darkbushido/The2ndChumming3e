@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | **93** — Foundry test of everything on branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **91** · **97** · **101** · **106** · **107** · **108** *(**71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** done)* |
+| 🔴 Confirmed bugs, still open | **91** · **97** · **101** · **108** *(fixed, awaiting F5 check)* *(**71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** · **106** · **107** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** *(**3** · **4** · **30** · **75** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** · **104** *(**83** · **84** · **87** done)* |
@@ -4798,7 +4798,7 @@ soak card passes `racialDermalArmor(metatype)`. What remains is recognising derm
 — and note that step 3 may not need the armour channel at all: "does this character have
 dermal armour?" is a yes/no that a named registry of implants can answer (the shape of
 `SR3E.quicknessNotForReaction`), independent of whether Impact is ever tracked per source.
-Which implants count needs the book: Dermal Plating (SR3 p.281) certainly; Dermal Sheath and
+Which implants count needs the book: Dermal Plating (SR3 p.300) certainly; Dermal Sheath and
 the M&M/bioware options to be checked.
 
 ⚠ Getting steps 1-2 wrong would make **every** armour-granting implant apply twice, since
@@ -6624,7 +6624,7 @@ cannot reach. If time is short, do these.
 - [x] ✅ **Every attribute roll** — dropdown follows the attribute (troll: Strength 8, Body 11),
       2026-09-13. Dwarf checkbox not yet seen (no dwarf to hand). ⚠ After the run: dermal armor's
       *"works against any attack… does not aid in healing"* is **SR3 p.283**, not p.281 as cited in
-      `config.js` (`racialDermalArmor`), CLAUDE.md and this file — fix the citations.
+      `config.js` (`racialDermalArmor`), CLAUDE.md and this file — ✅ corrected 2026-09-13.
       Original step: **Every attribute roll** (any character, not just a dwarf): click an attribute's roll icon,
       change the dropdown to another attribute → the pool follows it. The dropdown was rewired.
       On a **dwarf**, Body shows an **unticked** *Resisting disease or toxin: +2* box; tick → +2,
@@ -6649,7 +6649,8 @@ cannot reach. If time is short, do these.
 - [x] ✅ **💥 Crash** — 2026-09-13: the damage flow works, and Cancel on the passenger dialog leaves
       the button usable. ⚠ **Layout bug (fix after the run):** in the Crash dialog the *Speed at
       impact (km/h)* label wraps onto a second line while *Power* and *Level* do not, so the three
-      input boxes sit at different heights. Shorten the label or bottom-align the grid row.
+      input boxes sit at different heights. ✅ Fixed 2026-09-13: label shortened to *Speed (km/h)*
+      (full wording in its tooltip) and the row bottom-aligned.
       Original step: **💥 Crash:** vehicle sheet → add two passengers under Pilot → 💥 Crash → 50 km/h reads
       *42 m per Combat Turn → 5M*, everyone aboard ticked → **Post crash damage** → roll the
       vehicle soak → resist buttons for driver and passengers. Click one: a dialog with Body,
@@ -6697,7 +6698,7 @@ cannot reach. If time is short, do these.
 - Characters **already imported** before this branch keep their human-rated attributes. There
   is no way to tell an allocation from a finished rating after the fact, so there is no
   migration: re-import, or add the Racial Modifications Table (SR3 p.56) by hand.
-- Dermal armor must not count for healing (p.281). There is no healing flow yet; the one
+- Dermal armor must not count for healing (p.283). There is no healing flow yet; the one
   planned in [#76](#76) reads `body.base`, which never carries the dermal point. A Body roll
   from the sheet does include it.
 - Implant armour ([#75](#75)) ignores M&M p.33's reduction for characters with three or more cyber
@@ -7104,7 +7105,16 @@ matters there too.
 
 <a id="106"></a>
 
-## 106. 🔴 The Driving Test gives a VCR twice the modifier the book does — **found in the TODO 93 run, 2026-09-13**
+## 106. ✅ The Driving Test gave a VCR twice the modifier the book does — **DONE 2026-09-13** (`fix/racial-mods`)
+
+**Fixed.** The Driving Test's *Using VCR* is now **−VCR Rating** (p.134-135). **Crash mode** no longer
+borrows the Driving Test's rows at all: the Crash Test has its **own table** (p.148 — vehicle
+damage, terrain −1/0/+2/+4, vehicle speed vs the driver's Reaction via the new pure
+`SR3EActor.crashSpeedModifier`) and **no VCR row**; per p.147 a rigger instead adds Control Pool
+dice up to the skill, which crash mode puts in the pool. CLAUDE.md's two ×2 claims corrected.
+Tests in `gm-tools.test.mjs`.
+
+The finding as logged:
 
 **Found while answering a question mid-run; not fixed.** SR3 has **two** VCR target modifiers and
 \`SR3EVehicleSheet.runDrivingTest\` uses the wrong one for a Driving Test:
@@ -7126,7 +7136,17 @@ vehicle initiative. Pure helper + a test pinned to the p.135 worked example.
 
 <a id="107"></a>
 
-## 107. No visible way to remove a vehicle from a character sheet — **reported in the TODO 93 run, 2026-09-13**
+## 107. ✅ No visible way to remove a vehicle from a character sheet — **DONE 2026-09-13** (`fix/racial-mods`)
+
+**Fixed.** The Vehicles tab has a **✕** beside VCR / RCD / Auto: *"Remove this vehicle from X. The
+vehicle itself is not deleted"*. It clears the vehicle's pilot and control mode — directly for an
+owner, otherwise through the GM's `sr3e.vehicle.link` with an empty driver, which now clears the
+mode too and **grants no ownership** on an unlink (the grant exists so a newly LINKED vehicle
+rolls). **Auto keeps its meaning** — in this system Auto is "no pilot" (the combat tracker labels
+a pilotless vehicle *Auto*, and initiative branches on it), so it still removes the vehicle from
+the list; it now says so in its tooltip.
+
+The report as logged:
 
 **Observation only — not investigated.** The character sheet shows no control for removing a
 linked vehicle. Selecting **Auto** (the control-mode button) does remove it — so the unlink
@@ -7143,7 +7163,18 @@ for a player who does not own the vehicle (CLAUDE.md, *Creating documents*).
 
 <a id="108"></a>
 
-## 108. The melee Reach election does not keep its choice — **reported in the TODO 93 run, 2026-09-13**
+## 108. ✅ The melee Reach election does not keep its choice — **FIXED, awaiting a check in Foundry** 2026-09-13
+
+**Likely cause, fixed without a live repro.** No code writes to that dropdown, and the corner
+draft code records it like any field. What differed: the two-corner cards styled their **text
+boxes** (`.sr-melee-corner input` — background, colour, border) and gave their **`<select>`s
+nothing**, so a dropdown fell back to Foundry's defaults — on the dark chat card its closed state
+read **blank** while its browser-drawn list still showed the options. Every corner `<select>`, on
+every two-corner card (`[data-corner-role] select`), is now styled like the text boxes, and the
+first option is explicitly `selected`. ⚠ **Confirm after F5**: pick *+2 to their TN* and it should
+stay visible. If it still blanks, the cause is elsewhere and this entry reopens.
+
+The report as logged:
 
 **Observation only — not investigated.** Troll (club, Reach 2 with natural Reach) attacking Bruce
 Lee: the troll's corner of the melee card shows the **Reach 2** election dropdown with its two

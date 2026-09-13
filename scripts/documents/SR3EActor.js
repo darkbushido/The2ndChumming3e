@@ -4190,6 +4190,28 @@ _prepareCharacter(sys, attr) {
   }
 
   /**
+   * The Crash Test's speed modifier · *SR3 p.148, Crash Test Modifiers Table* · TODO 106.
+   *
+   * | Vehicle Speed | Modifier |
+   * |---|---|
+   * | Less than driver's Reaction × 20 | 0 |
+   * | Less than Reaction × 30 | +1 |
+   * | Less than Reaction × 40 | +2 |
+   * | More than Reaction × 40 | +4 |
+   *
+   * Speed in **metres per Combat Turn** (the unit the rest of the vehicle rules use). The table
+   * says "more than" ×40 for the last row; exactly ×40 is read with it, since it is not "less than".
+   */
+  static crashSpeedModifier(speedMetresPerTurn, reaction) {
+    const s = Math.max(0, Number(speedMetresPerTurn) || 0);
+    const r = Math.max(0, Number(reaction) || 0);
+    if (s < r * 20) return 0;
+    if (s < r * 30) return 1;
+    if (s < r * 40) return 2;
+    return 4;
+  }
+
+  /**
    * Crash damage from a speed in **km/h** — the unit a GM thinks in (TODO 74).
    *
    * ⚠ The Impact Damage Levels Table (p.147) reads **metres per Combat Turn**, stored across the
@@ -4632,7 +4654,7 @@ _prepareCharacter(sys, attr) {
           <div class="sr-melee-field-row">
             <span>Reach ${reachDiff}:</span>
             <div><select class="sr-melee-${role === 'attacker' ? 'atk' : 'def'}-reach" style="width:100%">
-              <option value="self">−${reachDiff} to my TN</option>
+              <option value="self" selected>−${reachDiff} to my TN</option>
               <option value="opponent">+${reachDiff} to their TN</option>
             </select></div>
           </div>` : '';

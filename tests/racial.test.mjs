@@ -79,7 +79,7 @@ export async function run(t) {
     !('reaction' in withRea.attributes));
 
   /* ════════════════════════════════════════════════════════════════════════════
-   *  Troll dermal armor · SR3 p.56 / p.281 — an AUGMENTATION, added at derive time
+   *  Troll dermal armor · SR3 p.56 / p.283 — an AUGMENTATION, added at derive time
    * ════════════════════════════════════════════════════════════════════════════ */
   const derive = (metatype, body, items = []) => {
     const sys = { metatype, attributes: {}, wounds: {} };

@@ -935,11 +935,11 @@ export const SR3E = {
    * (TODO 99) and a dwarf's +2 Body against disease and toxins (TODO 98) are not modelled yet.
    */
   /**
-   * Natural dermal armor · *SR3 p.56, p.281*
+   * Natural dermal armor · *SR3 p.56, p.283*
    *
    * > Troll — *"Dermal Armor (+1 Body)"* (p.56)
    * > *"Dermal armor works against any attack by increasing the character's Body Attribute. It
-   * > does not aid in healing."* (p.281)
+   * > does not aid in healing."* (p.283 — the Armor section; cited as p.281 until 2026-09-13)
    *
    * ⚠ **An AUGMENTATION, never part of the rating — the opposite of `racialModifiers` below.**
    * The book prints it in parentheses: Mr. Johnson's Little Black Book's trolls read Dock Worker

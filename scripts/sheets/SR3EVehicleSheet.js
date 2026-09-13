@@ -916,8 +916,8 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
       window:   { title: `💥 Crash — ${vehicle.name}` },
       position: { width: 420 },
       content: `
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px 10px;padding:4px 0">
-          <label style="${FIELD_S}">Speed at impact (km/h)
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px 10px;padding:4px 0;align-items:end">
+          <label style="${FIELD_S}" title="Speed at the moment of impact">Speed (km/h)
             <input id="cr-kmh" type="number" value="${initKmh}" min="0" step="1"/>
           </label>
           <label style="${FIELD_S}">Power
@@ -1109,9 +1109,39 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
       <label style="${FULL_S}">Rigger — VCR Rating ${vcrRating}
         <select id="drv-rigger" style="${INPUT_S}">
           <option value="0">Not using VCR (0)</option>
-          <option value="${-vcrRating * 2}">Using VCR (−${vcrRating * 2} TN)</option>
+          <option value="${-vcrRating}">Using VCR (−${vcrRating} TN, SR3 p.134)</option>
         </select>
       </label>` : '';
+
+    /* Crash mode — the Crash Test Modifiers Table (SR3 p.148), NOT the Driving Test's (TODO 106).
+     * Its rows: driver wounded (already in every roll's TN via the wound modifier), vehicle
+     * damaged (the shared row above), terrain (−1 / 0 / +2 / +4 — NOT the Driving Test's
+     * +1 / +3) and the vehicle's speed against the driver's Reaction. There is no VCR row:
+     * p.147 lets the rigger add Control Pool dice (up to the Driving Skill) instead. */
+    let crashRows = '';
+    let crashPool = null;
+    if (crash) {
+      const reaction = driver.system?.attributes?.reaction?.value ?? driver.system?.attributes?.reaction?.base ?? 0;
+      const speedMct = Number(crash.speedKmct) || 0;
+      const spd      = game.sr3e.SR3EActor.crashSpeedModifier(speedMct, reaction);
+      crashRows = `
+          <label style="${FIELD_S}">Terrain (Crash Test)
+            <select id="drv-terrain" style="${INPUT_S}">
+              <option value="-1">Open (−1 TN)</option>
+              <option value="0" selected>Normal (0)</option>
+              <option value="2">Restricted (+2 TN)</option>
+              <option value="4">Tight (+4 TN)</option>
+            </select>
+          </label>
+          <label style="${FIELD_S}" title="${Math.round(speedMct)} m per Combat Turn against Reaction ${reaction}">Vehicle speed (SR3 p.148)
+            <select id="drv-cspeed" style="${INPUT_S}">
+              ${[[0, '< Reaction ×20'], [1, '< Reaction ×30'], [2, '< Reaction ×40'], [4, '≥ Reaction ×40']]
+                .map(([v, l]) => `<option value="${v}"${v === spd ? ' selected' : ''}>${l} (+${v} TN)</option>`).join('')}
+            </select>
+          </label>`;
+      // Autonav, plus Control Pool dice up to the Driving Skill for a rigger (p.147).
+      crashPool = skillDice + autonav + (vcrRating ? skillRating : 0);
+    }
 
     let result = null;
 
@@ -1136,7 +1166,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
               <option value="3">Serious (+3)</option>
             </select>
           </label>
-          <label style="${FIELD_S}">Unfamiliar Vehicle
+          ${crash ? crashRows : `<label style="${FIELD_S}">Unfamiliar Vehicle
             <select id="drv-unfamiliar" style="${INPUT_S}">
               <option value="0">No (0)</option>
               <option value="1">Yes (+1 TN)</option>
@@ -1182,17 +1212,17 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
             </select>
           </label>
           ${datajackRow}
-          ${riggerRow}
+          ${riggerRow}`}
           <label style="${FIELD_S}">Base TN
             <input id="drv-tn" type="number" value="${handling}" min="2" max="30" style="${INPUT_S}"/>
           </label>
           <label style="${FULL_S}">Total Pool Dice
-            <input id="drv-pool" type="number" value="${basePool}" min="1" max="30" style="${INPUT_S}"/>
+            <input id="drv-pool" type="number" value="${crashPool ?? basePool}" min="1" max="30" style="${INPUT_S}"/>
           </label>
         </div>
         <div style="margin-top:10px;padding:6px 10px;background:#1c2030;border-radius:4px;display:flex;gap:20px;font-size:12px;color:#7880a0;">
           <span>Final TN: <strong style="color:#dde1f0;" id="drv-tn-out">${handling}</strong></span>
-          <span>Pool: <strong style="color:#dde1f0;" id="drv-pool-out">${basePool}</strong></span>
+          <span>Pool: <strong style="color:#dde1f0;" id="drv-pool-out">${crashPool ?? basePool}</strong></span>
         </div>
       `,
       render: (_ev, dialog) => {
@@ -1204,7 +1234,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
           const basePoolEl = parseInt(el.querySelector('#drv-pool')?.value ?? basePool);
           const selIds     = ['#drv-vdamage','#drv-unfamiliar','#drv-stress','#drv-size',
                               '#drv-weather','#drv-terrain','#drv-combat',
-                              '#drv-datajack','#drv-rigger'];
+                              '#drv-datajack','#drv-rigger','#drv-cspeed'];
           const mods = selIds.reduce((sum, id) => {
             const node = el.querySelector(id);
             return sum + (node ? parseInt(node.value ?? 0) : 0);
@@ -1246,7 +1276,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
             const totalPool = getInt('#drv-pool');
             const selIds   = ['#drv-vdamage','#drv-unfamiliar','#drv-stress','#drv-size',
                               '#drv-weather','#drv-terrain','#drv-combat',
-                              '#drv-datajack','#drv-rigger'];
+                              '#drv-datajack','#drv-rigger','#drv-cspeed'];
             const mods = selIds.reduce((sum, id) => {
               const node = el.querySelector(id);
               return sum + (node ? parseInt(node.value ?? 0) : 0);

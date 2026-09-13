@@ -55,6 +55,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         castWard:          SR3EActorSheet._onCastWard,
         rollContested:     SR3EActorSheet._onRollContested,
         rollSuccessTest:   SR3EActorSheet._onRollSuccessTest,
+        unlinkVehicle:     SR3EActorSheet._onUnlinkVehicle,
         rollResistDamage:  SR3EActorSheet._onRollResistDamage,
         clearVCR:          SR3EActorSheet._onClearVCR,
         equipCyberdeck:    SR3EActorSheet._onEquipCyberdeck,
@@ -2703,7 +2704,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             <button type="button" class="sr-veh-mode-btn${rcdActive ? ' sr-veh-rcd-active' : ''}"
                     data-action="toggleVehicleMode" data-actor-id="${actorId}" data-mode="rcd">RCD</button>
             <button type="button" class="sr-veh-mode-btn${autoActive ? ' sr-veh-auto-active' : ''}"
-                    data-action="toggleVehicleMode" data-actor-id="${actorId}" data-mode="auto">Auto</button>
+                    data-action="toggleVehicleMode" data-actor-id="${actorId}" data-mode="auto"
+                    title="Autopilot — the vehicle runs on its own Pilot rating, and ${foundry.utils.escapeHTML(actor.name)} stops being its pilot, so it leaves this list">Auto</button>
+            <button type="button" class="sr-veh-mode-btn"
+                    data-action="unlinkVehicle" data-actor-id="${actorId}"
+                    title="Remove this vehicle from ${foundry.utils.escapeHTML(actor.name)}. The vehicle itself is not deleted — add it back with + Add Vehicle">✕</button>
           </div>
         </div>`;
     }).join('');
@@ -4187,6 +4192,30 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       return;
     }
     doc.sheet.render(true);
+  }
+
+  /**
+   * Remove a vehicle from this character — TODO 107 (reported in play: the only way was the
+   * **Auto** button, whose label says something else). Clears the vehicle's pilot and control
+   * mode; the vehicle itself stays in the world.
+   *
+   * ⚠ The write is to the VEHICLE, which a player may not own. An owner writes directly;
+   * anyone else goes through the GM's `sr3e.vehicle.link` with an empty driver — which, being
+   * an unlink, grants no ownership (CLAUDE.md, *Creating documents*).
+   */
+  static async _onUnlinkVehicle(_ev, target) {
+    const vehicle = game.actors.get(target.dataset.actorId);
+    if (!vehicle) return;
+    if (vehicle.isOwner) {
+      await vehicle.update({ 'system.driverActorId': '', 'system.controlMode': '' });
+      return;
+    }
+    try {
+      await game.sr3e.SR3EQuery.asGM('sr3e.vehicle.link', { vehicleId: vehicle.id, driverActorId: '' });
+    } catch (err) {
+      console.error('SR3E | vehicle unlink failed:', err);
+      ui.notifications.error('Could not remove the vehicle — is a GM connected?');
+    }
   }
 
   static async _onToggleVehicleMode(_ev, target) {

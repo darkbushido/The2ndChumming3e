@@ -90,7 +90,19 @@ export async function run(t) {
   t.ok('the passenger roll names its actor, so Assign Wound has somewhere to go',
     /soakPayload: \{ actorId: pActor\.id, stagedPower: r\.power/.test(src('documents/SR3EActor.js')));
 
-  const veh = src('sheets/SR3EVehicleSheet.js');
+  /* ── TODO 106 — the Crash Test has its own table (p.148), and a VCR is −Rating on a Driving Test ── */
+  const S = SR3EActor.crashSpeedModifier;
+  t.is('crash speed: under Reaction ×20 → 0',  S(99, 5), 0);
+  t.is('…under ×30 → +1',                      S(100, 5), 1);
+  t.is('…under ×40 → +2',                      S(199, 5), 2);
+  t.is('…at or over ×40 → +4',                 S(200, 5), 4);
+  const vehSrc = src('sheets/SR3EVehicleSheet.js');
+  t.ok('Driving Test VCR is −VCR Rating (p.134-135, Whiz Kid VCR 1 → −1), not ×2',
+    /value="\$\{-vcrRating\}"/.test(vehSrc) && !/-vcrRating \* 2/.test(vehSrc));
+  t.ok('Crash Test terrain uses its own +2 / +4 (p.148)',
+    /Terrain \(Crash Test\)[\s\S]{0,400}value="2">Restricted[\s\S]{0,80}value="4">Tight/.test(vehSrc));
+
+  const veh = vehSrc;
   t.ok('the Crash Test IS the Driving Test in crash mode (p.147), rolled through the crash path',
     /runDrivingTest\(vehicle, null, \{ crash: crashContext \}\)/.test(veh) && /isCrashRoll: true, crashContext: crash/.test(veh));
   t.ok('a failed Driving Test offers the crash dialog', /crashOnFailVehicleId: actor\.id/.test(veh));

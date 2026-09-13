@@ -744,7 +744,13 @@ card notes distances weren't auto-updated. State is in-memory (`isQuarry` on eac
 
 **Driving Test (SR3 p.134) — `runDrivingTest`.** Base TN = vehicle **Handling**; modifiers are TN
 dropdowns (unfamiliar +1, stress, size +2/+3, weather +2/+4, terrain −1/0/+1/+3, combat +2,
-datajack −1, **VCR −2×rating**). Dice **pool** (auto, editable): Vehicle Skill dice **+ Autonav
+datajack −1, **VCR −VCR Rating**). ⚠ **Not ×2** — p.134: *"reduce the target number by an amount
+equal to the VCR Rating"*, worked on p.135 as *"Rigger in control (VCR Rating 1) −1"*. The ×2
+(*"−(VCR Rating x 2)"*) belongs to the **vehicle-combat** tables (pp.141-146); the Driving Test
+used it until 2026-09-13 (TODO 106). **Crash mode** (the 💥 Crash Test, p.147) swaps in the
+**Crash Test Modifiers Table** (p.148): vehicle damage, terrain **−1/0/+2/+4**, and vehicle speed
+against the driver's Reaction (`SR3EActor.crashSpeedModifier`) — no VCR row; a rigger adds
+Control Pool dice (up to the skill) to the pool instead. Dice **pool** (auto, editable): Vehicle Skill dice **+ Autonav
 (only out of combat)**; a **jacked-in rigger ("Using VCR") adds Control Pool = Vehicle Skill
 *instead of* Autonav**. Selecting *Action During Combat* or *Using VCR* recomputes the pool live.
 No vehicle skill → the SR3 Default dialog. 1 success = manoeuvre succeeds (0 → GM Crash Test).
@@ -757,7 +763,10 @@ No vehicle skill → the SR3 Default dialog. 1 success = manoeuvre succeeds (0 �
 - Physical Plane / Dual Natured: use default formula
 
 **Vehicle initiative (read from `system.vcrMode` and `system.controlledBy`):**
-- VCR (jumped-in): Rigger's `Reaction + vcrLevel + woundMod` base + `(1 + vcrLevel)` d6; TN −2 per VCR level on all skill tests
+- VCR (jumped-in): Rigger's `Reaction + vcrLevel + woundMod` base + `(1 + vcrLevel)` d6. ⚠ This line
+  used to add *"TN −2 per VCR level on all skill tests"* — **unverified and at odds with p.134**, which
+  gives a Driving Test −VCR Rating; the ×2 is the vehicle-combat tables' (TODO 106). Check the book
+  before relying on a flat −2/level anywhere.
 - RCD (remote): Rigger's `Reaction + woundMod` base + `initiativeDice` d6 (no modifiers)
 - Auto (no pilot or pilot not found): `Pilot rating` base + `2d6`
 - VCR is exclusive: activating VCR sets all other linked vehicles to Auto (not locked — editable after)
