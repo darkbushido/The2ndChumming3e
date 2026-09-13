@@ -39,6 +39,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       itemDelete:     SR3EActorSheet._onItemDelete,
       woundBox:       SR3EActorSheet._onWoundBox,
       essenceRecalc:  SR3EActorSheet._onEssenceRecalc,
+      openHealing:    SR3EActorSheet._onOpenHealing,
       equipArmor:     SR3EActorSheet._onEquipArmor,
       equipMelee:     SR3EActorSheet._onEquipMelee,
         applyDamage:    SR3EActorSheet._onApplyDamage,
@@ -584,6 +585,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                 return `<span class="wound-mod-display" style="color:var(--sr-red)">TN+${-wm}, Init${wm}</span>`;
               return '';
             })()}
+            <button type="button" class="btn-sm" data-action="openHealing"
+                    title="Guided healing: stabilize, first aid, magic, a doctor, healing stages and the bill (SR3 pp.126-129)">🩹 Healing</button>
             <span class="wound-mod-display">
               Stim: <input type="number" name="system.stimBonus" value="${sys.stimBonus ?? 0}" min="0"
                 style="width:36px;text-align:center;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);color:var(--sr-text);padding:1px 2px;font-size:12px;"
@@ -3270,6 +3273,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    * Essence at all”, which is a different statement from “nobody has said”. Conflating them
    * would make the reset button read as “your chrome is free”.
    */
+  /** 🩹 Healing (TODO 115) — the guided flow, one card per roll. */
+  static async _onOpenHealing(_event, _target) {
+    await game.sr3e.SR3EHealing.open(this.actor);
+  }
+
   static async _onEssenceRecalc(_event, _target) {
     await this.actor.update({ 'system.attributes.essence.lost': null });
     ui.notifications.info(`${this.actor.name}: Essence now follows installed cyberware.`);

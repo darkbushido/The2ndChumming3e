@@ -2416,6 +2416,7 @@ _prepareCharacter(sys, attr) {
         barrierContext:          options.barrierContext          ?? null,
         fallingContext:          options.fallingContext          ?? null,
         escapeContext:           options.escapeContext           ?? null,
+        healingContext:          options.healingContext          ?? null,
         grenadeType:             options.grenadeType             ?? 'standard',
         footerNote:              options.footerNote              ?? null,
         crashOnFailVehicleId:    options.crashOnFailVehicleId    ?? null,
@@ -2492,6 +2493,7 @@ _prepareCharacter(sys, attr) {
       barrierContext:          options.barrierContext          ?? null,
       fallingContext:          options.fallingContext          ?? null,
       escapeContext:           options.escapeContext           ?? null,
+      healingContext:          options.healingContext          ?? null,
       grenadeType:           options.grenadeType           ?? 'standard',
       footerNote:            options.footerNote            ?? null,
       crashOnFailVehicleId:  options.crashOnFailVehicleId  ?? null,
@@ -3456,6 +3458,8 @@ _prepareCharacter(sys, attr) {
         // so a 7-metre fall already explodes. Both lose their entire result card.
         escapeContext:      state.escapeContext      ?? null,
         fallingContext:     state.fallingContext     ?? null,
+        // Healing (TODO 115): the Healing Table's Deadly stage is TN 10 — explodes routinely.
+        healingContext:     state.healingContext     ?? null,
         burstRounds:        state.burstRounds        ?? 0,
         shotgunSpread:      state.shotgunSpread      ?? 0,
         // Missile Parry's two inputs (p.170). Dropped, the defender is never offered the
@@ -3897,6 +3901,11 @@ _prepareCharacter(sys, attr) {
           });
         }
       }
+    }
+
+    // Healing (TODO 115) — the step's result card: next step, time, the bill. Nothing is applied here.
+    if (allDone && state.healingContext) {
+      await game.sr3e.SR3EHealing.onRolled(state.healingContext, successes);
     }
 
     // Hacking action threshold check — increment Overwatch if below Security Threshold

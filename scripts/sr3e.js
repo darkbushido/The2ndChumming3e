@@ -24,6 +24,7 @@ import { SR3EWard } from './documents/SR3EWard.js';
 import { SR3EVehicleChase } from './SR3EVehicleChase.js';
 import { SR3EMIJI } from './SR3EMIJI.js';
 import { SR3EClocks } from './SR3EClocks.js';
+import { SR3EHealing } from './SR3EHealing.js';
 import { SR3ESourceBooks } from './SR3ESourceBooks.js';
 import { SR3ECompendiumDirectory } from './SR3ECompendiumDirectory.js';
 import { SR3EQuery, SR3EQueue, SR3EGMUnavailable } from './SR3EQuery.js';
@@ -89,7 +90,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations };
 
   // When THIS client loaded the system's code.
   //
@@ -1812,6 +1813,7 @@ Hooks.on('renderRollTableDirectory', (_app, html) => {
   mk('sr3e-chase-btn',   '🚗 Chase Scene',     () => game.sr3e.SR3EVehicleChase.open(), false);
   mk('sr3e-driving-btn', '🏎 Driving Test',    () => SR3EVehicleSheet.promptVehicleDrivingTest(), false);
   mk('sr3e-clocks-btn',  '🕐 Threat Clocks',   () => game.sr3e.SR3EClocks.open(), false);
+  mk('sr3e-heal-btn',    '🩹 Healing',         () => SR3EHealing.openPicker(),    false);
   mk('sr3e-reward-btn',  '🎖 Session Rewards', _openSessionRewardDialog,     true);
   mk('sr3e-salsa-btn',   '💥 Chunky Salsa',    _openChunkySalsaCalculator,   true);
   mk('sr3e-barrier-btn', '🧱 Barrier Damage',  _openBarrierDamageCalculator, true);
@@ -2998,6 +3000,39 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'ramvehicle', i)) return;
       await SR3EActor.handleRamVehicleSoak(btn, event.shiftKey);
+    });
+  });
+
+  /* Healing cards (TODO 115). The ROLL button belongs to exactly one user — whoever makes that
+   * roll (medic, patient or caster), so `_isDeciderId`. The ACTION buttons change a track, the
+   * record or nuyen, so any owner of that character (or the GM) may press them — `_mineId`.
+   * Both one-shot, like every card button. */
+  html.querySelectorAll('.sr-heal-roll-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'healroll', i)) return;
+    const pl = _payload(btn);
+    if (!pl) return;
+    if (!_isDeciderId(pl.rollerId)) return _denyBtn(btn, 'Only the person making this roll (or the GM) rolls it.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'healroll', i)) return;
+      await SR3EHealing.rollFromCard(btn, pl);
+    });
+  });
+  html.querySelectorAll('.sr-heal-act-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'healact', i)) return;
+    const pl = _payload(btn);
+    if (!pl) return;
+    if (!_mineId(pl.ownerId)) return _denyBtn(btn, 'Only this character\'s owner (or the GM) can do this.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'healact', i)) return;
+      // A cancelled confirmation (Charge) or set-up dialog (Next) hands the button back.
+      if (await SR3EHealing.act(btn, pl) === false) {
+        _usedButtons.delete(`${mid}|healact|${i}`);
+        btn.disabled = false;
+      }
     });
   });
 

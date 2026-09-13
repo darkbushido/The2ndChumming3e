@@ -292,6 +292,36 @@ background-color: var(--sr-surface) !important;
   box-shadow: 0 0 10px color-mix(in srgb, var(--sr-gold) 30%, transparent);
 }
 
+/* Healing cards (TODO 115) — green rolls, gold for applying a result, like soak/assign. */
+.sr-heal-line { font-size: 12px; margin: 3px 0; line-height: 1.35; }
+.sr-heal-roll-btn,
+.sr-heal-act-btn {
+  width: 100%;
+  height: auto;
+  white-space: normal;
+  padding: 6px 10px;
+  margin-top: 4px;
+  border-radius: var(--r);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.sr-heal-roll-btn {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--sr-green) 15%, transparent) 0%, color-mix(in srgb, var(--sr-green) 5%, transparent) 100%);
+  border: 1px solid var(--sr-green);
+  color: var(--sr-green);
+}
+.sr-heal-act-btn {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--sr-gold) 15%, transparent) 0%, color-mix(in srgb, var(--sr-gold) 5%, transparent) 100%);
+  border: 1px solid var(--sr-gold);
+  color: var(--sr-gold);
+}
+.sr-heal-roll-btn:hover:not(:disabled) { background: color-mix(in srgb, var(--sr-green) 25%, transparent); }
+.sr-heal-act-btn:hover:not(:disabled)  { background: color-mix(in srgb, var(--sr-gold) 25%, transparent); }
+.sr-heal-roll-btn:disabled,
+.sr-heal-act-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
 /* cyan/accent — matrix combat */
 .sr-matrix-ic-resist-btn,
 .sr-matrix-ic-resist-roll-btn,

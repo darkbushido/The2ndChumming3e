@@ -27,6 +27,7 @@
 const ACTOR = { module: '../scripts/documents/SR3EActor.js', klass: 'SR3EActor' };
 const ITEM  = { module: '../scripts/documents/SR3EItem.js',  klass: 'SR3EItem'  };
 const MIJI  = { module: '../scripts/SR3EMIJI.js',            klass: 'SR3EMIJI'  };
+const HEAL  = { module: '../scripts/SR3EHealing.js',         klass: 'SR3EHealing' };
 
 export const MUTANTS = [
   {
@@ -71,6 +72,48 @@ export const MUTANTS = [
       const e = Math.max(Number(lost) || 0, Number(installed) || 0);
       return Math.max(0, parseFloat((b - e).toFixed(2)));
     },
+  },
+  {
+    id:     'heal-stage-drops-by-boxes',
+    suite:  'healing',
+    ...HEAL, method: 'oneLevelDown',
+    was:    'healing a level by removing boxes instead of dropping to the next level\'s lowest box. '
+          + 'p.127: a Serious wound healed to Moderate has "only three boxes of damage filled in"',
+    impl:   boxes => Math.max(0, (Number(boxes) || 0) - 3),
+  },
+  {
+    id:     'heal-stage-no-minimum',
+    suite:  'healing',
+    ...HEAL, method: 'stageHours',
+    was:    'dropping the Healing Table minimum. p.127: "the actual time can never be lower than the minimum time"',
+    impl:   ({ level, successes, baseMultiplier = 1, timeMultiplier = 1 } = {}) => {
+      const row = { D: 720, S: 480, M: 240, L: 24 }[level]; const s = Number(successes) || 0;
+      return !row || s <= 0 ? null : (row * baseMultiplier / s) * timeMultiplier;
+    },
+  },
+  {
+    id:     'magic-loss-deadly-untreated-once',
+    suite:  'healing',
+    ...HEAL, method: 'magicLossRolls',
+    was:    'rolling once for a Deadly wound treated without the +2. p.129: "roll 2D6 twice for magic loss"',
+    impl:   ({ awakened = false, deadly = false, treatedWithoutMod = false } = {}) => (awakened && (deadly || treatedWithoutMod) ? 1 : 0),
+  },
+  {
+    id:     'medkit-no-complementary-dice',
+    suite:  'healing',
+    ...HEAL, method: 'firstAidDice',
+    was:    'ignoring the medkit when the medic has Biotech. M&M p.138: it "provide[s] Complementary dice '
+          + 'for Biotech Tests equal to their rating"',
+    impl:   ({ biotech = 0, medkitRating = 0 } = {}) => biotech > 0 ? { dice: biotech, defaulting: false }
+      : medkitRating > 0 ? { dice: medkitRating, defaulting: false } : { dice: 0, defaulting: true },
+  },
+  {
+    id:     'stun-ignores-injury-modifiers',
+    suite:  'healing',
+    ...HEAL, method: 'stunRecovery',
+    was:    'a flat TN 2 for Stun recovery. p.126: "This target number is modified by any appropriate '
+          + 'Stun or Physical injury modifiers"',
+    impl:   ({ body = 0, willpower = 0 } = {}) => ({ dice: Math.max(body, willpower), attribute: willpower > body ? 'Willpower' : 'Body', tn: 2 }),
   },
   {
     id:     'armor-second-layer-not-halved',
