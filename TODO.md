@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | **93** — Foundry test of everything on branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **91** · **97** *(**71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** done)* |
+| 🔴 Confirmed bugs, still open | **91** · **97** · **101** *(**71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** *(**3** · **4** · **30** · **75** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** *(**83** · **84** · **87** done)* |
@@ -6616,10 +6616,8 @@ cannot reach. If time is short, do these.
 - [x] **Import the reported troll** — Body `10 + 1 (11)` ✅ (2026-09-13). Quickness 4 shown as
       **4 − 1**: armour encumbrance, expected, but unexplained on the sheet → [#100](#100).
       Strength 8, Charisma 0, Intelligence 1, Willpower 2, Magic 0, Reaction 2 ✅.
-      ⚠ **NEW — Essence disagrees with itself** (observation only, not investigated): imported at
-      **5.12**; the ↺ (clear recorded loss) button moved it to **5.29** "tracking installed
-      cyberware". So the recorded `essence.lost` was 0.88 against 0.71 summed from the implants.
-      Ask: what does the generator show? That says which figure is right.
+      ⚠ **Essence: imported 5.12 (correct); ↺ moved it to 5.29** — the import counts the alpha
+      grade twice → [#101](#101).
       Body 10, Quickness 4, Strength 8, Charisma 0, Intelligence 1,
       Willpower 2; a notification listing the modifiers, and a **permanent** warning that
       Charisma is below 1. Attributes tab: Body reads `10 + 1 (11)` (*Troll dermal armor*).
@@ -6933,3 +6931,27 @@ adept powers, triggered augmentations (Adrenal Pump, Pain Editor), Attribute Boo
 troll's dermal armor (already has one — *"Troll dermal armor (SR3 p.56)"*, the model to follow).
 
 Not investigated yet — which of these already carry a tooltip is the first thing to check.
+
+<a id="101"></a>
+
+## 101. Imported graded cyberware counts its grade twice — **found in the TODO 93 run, 2026-09-13**
+
+**Observation, triaged but not fixed** (found mid-test). The imported troll read Essence **5.12**;
+pressing the Essence **↺** (clear the recorded loss, follow installed cyberware) moved it to
+**5.29**. **5.12 is correct.**
+
+The troll's one implant is an **alpha** *CyGun Shotgun (ShtG)(CYB)*, mm.41:
+- Base Essence **1.10** (the generator's own `Cyberware.json`).
+- Alpha ×0.8 → **0.88** — the export's `EssCost` is **already graded** (its `Cost` 2400 is likewise
+  the base 1200 × 2).
+- The importer stores that 0.88 as `essenceCost` **and** sets `grade: 'alpha'`, so
+  `SR3EActor.gradedEssenceCost` discounts it again: 0.88 × 0.8 = 0.704 → rounded up **0.71** →
+  Essence 5.29. The recorded `essence.lost` (0.88) was right; the installed sum is wrong.
+
+**Fix direction:** the importer should store the implant's BASE cost (EssCost ÷ the grade
+multiplier, or look the base up), keeping `grade` — the grade must survive for salvage (see
+CLAUDE.md, *CyberwareData.grade is kept for more than this*). Check the same for `Cost`, and for
+bioware Bio Index. Any imported character with graded cyberware is affected, but only once the
+↺ is pressed or the recorded loss is otherwise cleared.
+
+**Workaround in play:** type the generator's Essence into the Essence box.
