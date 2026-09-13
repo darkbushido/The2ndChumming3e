@@ -350,6 +350,11 @@ Hooks.once('ready', async () => {
       img:  'icons/svg/mystery-man.svg',
     },
     {
+      name: 'SR3E Chrome Threat Generator',
+      path: 'scripts/macros/generate-chrome-threat.js',
+      img:  'icons/svg/skull.svg',
+    },
+    {
       name: 'Populate SR3E Programming Agents',
       path: 'scripts/macros/populate-agents.js',
       img:  'icons/svg/mystery-man.svg',
