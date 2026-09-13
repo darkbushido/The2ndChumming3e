@@ -6676,7 +6676,12 @@ cannot reach. If time is short, do these.
 - [ ] **Species:** a player sees a greyed dropdown they cannot change; the GM gets a working one,
       and a stored "Hobgoblin" shows as *(unrecognised)* and survives editing another field.
 - [ ] Unarmed troll vs human with a club: no reach election (1 vs 1).
-- [ ] **Flechette** at an unarmoured troll, and at an unarmoured human with Dermal Plating → *no
+- [x] ✅ **Flechette** — agent live check, 2026-09-13 (`_postSoakCard` with `ammoType: 'flechette'`,
+      armour briefly unequipped, restored after): Troll Street Dealer stays **8M** with *no level
+      increase: dermal armor negates it (troll dermal armor)*; SWAT Team Member (ork) raised to
+      **8S**. Dermal Plating / Orthoskin halves not run live (unit-tested in `racial.test.mjs`,
+      `implant-armor.test.mjs`). Original step:
+      **Flechette** at an unarmoured troll, and at an unarmoured human with Dermal Plating → *no
       level increase: dermal armor negates it*; the same shot at a plain unarmoured human raises
       the level. A human with only *Orthoskin[3]* → *Flechette vs armour — effective armour 4*.
 - [ ] **Ranged vision:** the troll shoots (as a player) → the vision dropdown opens on
@@ -6694,7 +6699,9 @@ cannot reach. If time is short, do these.
 - [x] ✅ **TODO 107** — vehicles can be removed with the ✕ (maintainer, 2026-09-13).
 - [ ] **TODO 106:** Driving Test *Using VCR* reads **−(VCR Rating)**; the 💥 Crash Test dialog shows
       *Terrain (Crash Test)* (+2/+4) and a *Vehicle speed* row, no VCR row.
-- [ ] **Session Rewards / Chunky Salsa** open with nobody ticked; *All* ticks everyone; awarding
+- [~] **Session Rewards** ✅ agent live check, 2026-09-13: 4 rows, 0 ticked, *All* ticks all 4;
+      cancelled. Chunky Salsa and the nobody-ticked warning not yet run live. Original step:
+      **Session Rewards / Chunky Salsa** open with nobody ticked; *All* ticks everyone; awarding
       with nobody ticked warns. A grenade in a confined space still opens Chunky Salsa with the
       caught actors ticked.
 - [ ] Attribute Boost on an adept troll (if one is to hand) — the dermal +1 must not block it.
