@@ -205,7 +205,7 @@ on 2026-09-13 five such failures all passed after a reboot.
 | `cybercombat`, `orthodox-matrix` | decker vs IC; both sides charged for the Hacking Pool they submit |
 | `miji` | rigger vs rigger; an unmanned drone's corner falls to the GM |
 | `player-sheet` | the sheet from **Player2's** seat: Species locked, Essence warning colours as the GM changes it, a Matrix skill priced as active in the karma dialog |
-| `healing` | **Player2's** medic treats **Player3's** character: picked as patient, Dice/TN read-only to the player and the GM's saved numbers rolled, the time box on the result, and *Lower* pressed by the medic with the GM making the write (`sr3e.heal.apply`). ⚠ Needs a GM tab loaded after this change — see *stale GM* |
+| `healing` | **Player2's** medic treats **Player3's** character: picked as patient, Dice/TN read-only to the player and the GM's saved numbers rolled, the time box on the result, and *Lower* pressed by the medic with the GM making the write (`sr3e.heal.apply`). ⚠ Needs a GM tab loaded after this change — see *stale GM*. **Not yet run by Playwright** (2026-09-13: Gamemaster was in use and the `foundryvtt` MCP connector held mcp-api); the same flow was checked by hand in the Browser pane as Player2 → Player3's Troll Street Dealer, with the maintainer's fresh Gamemaster tab making the write — Physical 3 → 1 |
 | `essence`, `migrations` | GM-only checks that ride the same harness |
 
 **To simulate something the specs do not cover**, write a new spec rather than driving three
