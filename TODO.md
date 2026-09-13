@@ -7060,4 +7060,7 @@ generated, in keeping with the look of the sourcebooks' vehicle illustrations.
   total size and format (WebP), and add the \`img\` paths through the pack tooling (Foundry closed,
   both pack copies — CLAUDE.md, *Compendium population*), which is blocked on TODO 12 for new
   content but not for editing an existing document's \`img\`.
-- **Tokens** — whether the same image serves as the token, or a top-down token is wanted too.
+- **Tokens — decided 2026-09-13: separate top-down tokens.** Each vehicle gets two images: a
+  portrait (the actor `img`) and a **top-down** token (`prototypeToken.texture.src`), drawn to
+  the vehicle's footprint so it reads on the grid. Vehicle footprints differ a lot (a bike vs a
+  bus), so the token also needs a sensible grid width/height per chassis.
