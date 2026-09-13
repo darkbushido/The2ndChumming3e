@@ -6642,7 +6642,7 @@ cannot reach. If time is short, do these.
       Original step: **GM window (TODO 94):** as the GM, attack a **player's** character → the modifier window
       opens. GM NPC against GM NPC → it does not. (Setting: *GM sets the Target Number* on its
       default, *Whenever a player's character is involved*.)
-- [ ] **Implant armour:** Armor Vest (2B/1I) + *Bone Lace, Titanium*. Armor tab → an *Implant
+- [x] ✅ **Implant armour** — 2026-09-13: block shows, total B 3 / I 2; Impact override 0 → drops, cleared → back to B 3 / I 2 (the nullable field clears to empty, not 0). Original step: **Implant armour:** Armor Vest (2B/1I) + *Bone Lace, Titanium*. Armor tab → an *Implant
       Armour* block, total **B 3 / I 2**; shoot them → the soak card uses 3 Ballistic and names
       the lacing. On the lacing's sheet, type **0** in *Implant Armour → Impact* → the total drops
       to I 1; **clear the box** → back to 2. (Clearing must store "empty", not 0.)
