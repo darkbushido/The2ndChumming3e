@@ -6688,7 +6688,7 @@ cannot reach. If time is short, do these.
 - [ ] **Ramming passengers:** if the rammed vehicle's soak staged the damage down, the passengers'
       buttons show the lower level; if it soaked it all, no buttons and a note saying so.
 - [ ] **Chase Scene:** pick the vehicle for a participant → its passengers are already listed.
-- [ ] **TODO 101, re-import:** delete the import macro, reload, re-import the troll → Essence **5.12**;
+- [x] ✅ **TODO 101** — Essence working as expected after re-import (maintainer, 2026-09-13). Original step: **TODO 101, re-import:** delete the import macro, reload, re-import the troll → Essence **5.12**;
       press **↺** → it **stays 5.12** (was 5.29). The CyGun Shotgun's sheet shows 0.88 (base 1.1), Alpha.
 - [ ] **TODO 108:** the melee Reach election keeps the option you pick.
 - [ ] **TODO 107:** a vehicle on the Vehicles tab has a **✕** that removes it; it can be added back.
