@@ -6656,7 +6656,11 @@ cannot reach. If time is short, do these.
       Impact armour and *Seat belt*; Cancel leaves the button working; roll → *Assign Wound*
       names that passenger.
 - [x] ✅ **Failed Driving Test** → a *💥 Crash* button on the card (2026-09-13). A successful one shows none — not yet seen.
-- [ ] **Melee GM window, troll with a club vs unarmed human:** the troll's corner reads *Reach 2
+- [x] ✅ **Troll Reach** — the melee card reads *Reach 2 (troll +1)* (2026-09-13). The Weapons tab shows
+      the club's own Reach 1 — expected (natural Reach is the character's, not the weapon's); a
+      combined display is a TODO 100 candidate. Reach is a TN modifier only (SR3 p.121), not a
+      distance — a target 2 m away gets the adjacency warning. Vision dropdowns: not yet checked.
+      Original step: **Melee GM window, troll with a club vs unarmed human:** the troll's corner reads *Reach 2
       (troll +1)*; the GM window has **two** vision dropdowns, the troll's on *Thermographic
       (natural)*; Full Darkness → *visibility halves to +2 / +8*.
 
