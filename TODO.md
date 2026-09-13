@@ -6669,7 +6669,10 @@ cannot reach. If time is short, do these.
 ### Second pass
 
 - [ ] Import an elf, dwarf or ork and compare with the generator's own sheet; import a human →
-      no racial notification.
+      no racial notification. *Covered by unit tests since 2026-09-13* (`importer.test.mjs` runs
+      the real macro: the troll allocation re-imported as Dwarf/Elf/Ork/Troll with `raceBonuses`
+      stripped matches the p.56 table; Human gets no notification; an unknown race warns). Still
+      worth one real export per metatype, since the fixture is a troll's.
 - [x] ✅ Mr. Johnson's *Dock Worker* (troll) shows Body **10 (11)** — agent live check, 2026-09-13,
       read from the pack document (base 10, value 11).
 - [~] ✅ agent live check, 2026-09-13: no decker in the test world, so a temporary *Computer 4*

@@ -94,4 +94,37 @@ export async function run(t) {
   t.is('…records its base 1.10',                         gun?.system.essenceCostBase, 1.1);
   t.is('…in the sheet\'s grade name',                    gun?.system.grade, 'Alpha');
   t.is('…and counts 0.88 installed, not 0.71',            SR3EActor.installedEssenceCost([gun]), 0.88);
+
+  /* ── The other metatypes, and an export that carries no raceBonuses (TODO 93, 2nd pass) ──
+   *
+   * No elf, dwarf or ork export is to hand, so the troll's own allocation (B5 Q5 S4 C2 I3 W2)
+   * is re-imported under each race with `raceBonuses` stripped — which also exercises the
+   * p.56 table fallback, the path an older generator export takes. Expected values are the
+   * book's Racial Modifications Table (SR3 p.56), not read back out of config.js. */
+  const as = (race, bonuses = {}) => ({ ...troll, race, raceBonuses: bonuses });
+  const attrs = r => { const x = r.created.system.attributes;
+    return [x.body.base, x.quickness.base, x.strength.base, x.charisma.base, x.intelligence.base, x.willpower.base].join(' '); };
+  const BOOK = {                                  //  B Q S C I W
+    Dwarf: '6 5 6 2 3 3',                         // +1 B, +2 S, +1 W
+    Elf:   '5 6 4 4 3 2',                         // +1 Q, +2 C
+    Ork:   '8 5 6 1 2 2',                         // +3 B, +2 S, −1 C, −1 I
+    Troll: '10 4 8 0 1 2',                        // the same figures as the export's own bonuses
+  };
+  for (const [race, want] of Object.entries(BOOK)) {
+    const ri = await runImport(as(race));
+    t.is(`${race} without raceBonuses: p.56 table applied (B Q S C I W)`, attrs(ri), want);
+    t.ok(`…and the notification says it came from the table`,
+      ri.notes.some(([l, m]) => l === 'info' && /from the SR3 p\.56 table/.test(m)));
+  }
+
+  const human = await runImport(as('Human'));
+  t.is('Human: the allocation is the rating',  attrs(human), '5 5 4 2 3 2');
+  t.ok('…with no racial notification', !human.notes.some(([, m]) => /racial modifiers applied/i.test(m)));
+  t.is('…and metatype human', human.created.system.metatype, 'human');
+
+  const odd = await runImport(as('Hobgoblin'));
+  t.is('An unknown race imports at the allocation', attrs(odd), '5 5 4 2 3 2');
+  t.ok('…and warns that nothing was applied',
+    odd.notes.some(([l, m]) => l === 'warn' && /not in the Racial Modifications Table/.test(m)));
+  t.is('…keeping the race it was given as the metatype', odd.created.system.metatype, 'hobgoblin');
 }
