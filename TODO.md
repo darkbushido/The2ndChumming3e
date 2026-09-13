@@ -27,7 +27,7 @@ independent.
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** *(**3** · **4** · **30** · **75** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** · **104** *(**83** · **84** · **87** done)* |
-| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 56 · **100** · **103** *(**36** · **99** done)* |
+| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 56 · **100** · **103** · **105** *(**36** · **99** done)* |
 | 🧹 Housekeeping | 1 · 6 |
 | ✅ Done — kept for the record | **2** · **5** · **8** · **10** · 13 · **40** · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -7068,3 +7068,31 @@ generated, in keeping with the look of the sourcebooks' vehicle illustrations.
   portrait (the actor `img`) and a **top-down** token (`prototypeToken.texture.src`), drawn to
   the vehicle's footprint so it reads on the grid. Vehicle footprints differ a lot (a bike vs a
   bus), so the token also needs a sensible grid width/height per chassis.
+
+<a id="105"></a>
+
+## 105. Tie vehicle passengers to the Rideable module — **requested during the TODO 93 run, 2026-09-13**
+
+**Request, not started.** The maintainer plays with the **Rideable** module (tokens riding other
+tokens) and wants it tied to the vehicle passenger roster from TODO 74 when it is installed:
+*"it would be nice to tie these together if it's installed (passengers in the car bit)."*
+
+**Shape:**
+- **Optional, never required.** Declare it under \`relationships.recommends\` in \`system.json\` (not
+  \`requires\` — a required module that stops being updated strands the system), and guard every
+  use with \`game.modules.get('<id>')?.active\`. Without it, the roster on the vehicle sheet works
+  exactly as now. (Confirm the module's exact id from its \`module.json\`.)
+- **Read, don't fight.** When a token rides a vehicle's token, its actor is aboard. Two places
+  that could use it: (a) the 💥 Crash dialog and the Chase Scene pre-fill the aboard list from
+  who is riding the vehicle's token; (b) optionally, keep \`VehicleData.passengerActorIds\` in step
+  when riders mount or dismount. (a) is read-only and the safer first step.
+- **The driver:** decide whether the first rider, or a rider flagged as pilot, fills
+  \`driverActorId\` — or leave the driver to the sheet.
+
+**First step:** read Rideable's source for how it records riders — a documented API, or token
+flags — and which hooks fire on mount/dismount. It is **not installed on the dev machine**
+(\`%LOCALAPPDATA%/FoundryVTT/Data/modules\`), so install it or read it from its repository first.
+Pin the tested version range in the \`recommends\` entry's \`compatibility\`.
+
+Related: TODO 104 (vehicle art and top-down tokens) — riders sit on the token, so its footprint
+matters there too.
