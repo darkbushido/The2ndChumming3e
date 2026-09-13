@@ -6600,11 +6600,12 @@ agent in the Browser pane (see each line). Still open: a real non-troll export, 
 lock as a **player**, the karma price of a Matrix skill, ramming passengers with a staged-down
 soak, an adept troll's Attribute Boost. Unit tests 43/43.
 
-**Simulated combat (e2e, `npx playwright test`) — interrupted 2026-09-13 ~09:05 for a reboot, to
-resume:** 7 of 18 ran before it was stopped. ✅ `essence` ×2. ❌ `astral-two-corner`, `contested`
-×2, `cybercombat` ×2 (the cybercombat pair failed in ~3 ms, i.e. in setup, not in play). Not yet
-investigated; the rest (melee, migrations, miji, orthodox-matrix, ranged, spellcasting) not run.
-Re-run the whole suite, then read the failure traces under `test-results/`. The branch started as the racial-
+**Simulated combat (e2e, `npx playwright test`) — ✅ 18/18 passed, 2026-09-13 (8.7 min)**, run by
+the agent with nobody else connected (Player2 attacking, Player3 defending, mcp-api as GM): ranged,
+melee, astral, contested ×2, spellcasting, cybercombat ×2, MIJI ×2, Orthodox Matrix ×3, essence ×2,
+migrations ×3. A first attempt earlier that morning showed 5 failures (astral, contested ×2,
+cybercombat ×2), each dying in 3 ms–7 s — before the clients had joined, so not a code fault; the
+run was stopped for a reboot and all five passed afterwards, alone and in the full run. The branch started as the racial-
 modifier fix reported in play (a troll allocated B5 Q5 S4 C2 I3 W2 imported at those numbers
 instead of B10 Q4 S8 C0 I1 W2) and grew to cover TODO 36, 73, 74, 75, 94, 96, 98 and 99.
 

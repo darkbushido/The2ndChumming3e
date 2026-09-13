@@ -8,7 +8,7 @@ Two suites, and they cover different things. Neither replaces the other.
 
 ```bash
 npm test          # 16 suites, ~380 assertions. No browser, no server, seconds.
-npm run test:e2e  # 13 tests / 8 files, two real clients + a GM. Needs Foundry running.
+npm run test:e2e  # 18 tests / 11 files, two real clients + a GM. Needs Foundry running.
 npm run test:mutate  # proves the unit suites can FAIL. Seconds, no browser.
 ```
 
@@ -183,9 +183,15 @@ npx playwright test --headed tests/e2e/melee-two-corner.spec.mjs   # watch the t
 ```
 
 From the agent: run it with `run_in_background`, redirecting output to a scratchpad file
-(`*> ...\e2e-run.txt` in PowerShell), and read the file when notified — the list reporter
-prints one line per test. A failure leaves a trace (`test-results/…/trace.zip`, open with
-`npx playwright show-trace`).
+(`$env:FORCE_COLOR='0'; npx playwright test *> ...\e2e-run.txt` in PowerShell), and read the
+file when notified — the list reporter prints one line per test, and the error details only at
+the END of the run (a run you stop early shows bare `x` lines). A failure leaves a trace
+(`test-results/…/trace.zip`, open with `npx playwright show-trace`). A full run took **8.7 min**
+for 18 tests on 2026-09-13, all passing.
+
+⚠ **A test that fails in milliseconds failed in the fixture, not in play** — the three clients
+never joined (a seat still held, Foundry not ready). Re-run that spec alone before touching code;
+on 2026-09-13 five such failures all passed after a reboot.
 
 **What one run plays out** (`tests/e2e/*.spec.mjs`):
 
