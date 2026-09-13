@@ -240,6 +240,22 @@ export async function run(t) {
     t.is('a GM may treat anyone (but not a vehicle)', H.patientsFor({ isGM: true }, cast).length, 4);
   } finally { game.sr3e = prevSr3e; }
 
+  /* ── Rapid Healing reaches the patient's Body tests (TODO 76) ──────────────────── */
+  const adept = { system: { derived: { situationalBonuses: [
+    { label: 'Rapid Healing', situation: 'healing', dice: 2 },
+    { label: 'Nephritic Screen', situation: 'toxin', dice: 1 },
+    { label: 'Nothing', situation: 'healing', dice: 0 },
+  ] } } };
+  t.is('only the healing situation counts: +2', H.healingSituationDice(adept).dice, 2);
+  t.is('…and it is named for the card', H.healingSituationDice(adept).labels.join(), 'Rapid Healing +2');
+  t.is('no derived data: nothing, and no throw', H.healingSituationDice({}).dice, 0);
+  const healSrc = readFileSync(new URL('../scripts/SR3EHealing.js', import.meta.url), 'utf8');
+  for (const [step, pool] of [['attention', 'pool: s.bodyNatural + hd.dice'], ['stage', 'pool: s.bodyNatural + hd.dice'],
+                              ['permanent', 'pool: s.bodyNatural + dermal + hd.dice']]) {
+    const body = healSrc.slice(healSrc.indexOf(`case '${step}': {`), healSrc.indexOf(`case '${step}': {`) + 4000);
+    t.ok(`the ${step} test adds the healing-situation dice`, body.includes(pool));
+  }
+
   /* ── How long it takes ──────────────────────────────────────────────────────────── */
   const road = H.recoveryRoad('M');
   t.is('Moderate to healed: two stages', road.stages.map(x => `${x.from}→${x.to || 'healed'} ${x.minH}-${x.maxH}h TN${x.tn}`).join(' | '),

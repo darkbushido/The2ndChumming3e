@@ -92,4 +92,22 @@ export async function run(t) {
 
   /* ── Citation (TODO 93 note): dermal armor's "does not aid in healing" is SR3 p.283 ─── */
   t.ok('racialDermalArmor cites p.283, not p.281', /Natural dermal armor · \*SR3 p\.56, p\.283\*/.test(config));
+
+  /* ── Drops never fail silently (TODO 97: "cannot drag equipment from a compendium") ─── */
+  const drops = actorSheet.slice(actorSheet.indexOf('async _onDrop(event)'), actorSheet.indexOf('static dropFailureMessage('));
+  t.ok('a drop that throws is caught and TOLD to the person, not left in the console',
+    /try \{\s*return await super\._onDrop\(event\);[\s\S]{0,200}ui\.notifications\.warn\(SR3EActorSheet\.dropFailureMessage\(err\)\)/.test(drops));
+  t.ok('a drop that resolves to nothing (a damaged, null-id pack entry) is told, not read .documentName off',
+    /async _onDropDocument\(event, document\) \{\s*if \(!document\)/.test(drops));
+  t.ok('a vehicle or drone dropped on a character is deployed or linked through the GM',
+    /dropped\?\.type !== 'vehicle'/.test(drops) && /asGM\('sr3e\.actor\.create', \{ driverActorId: this\.actor\.id, source: `\$\{dropped\.pack\}\|\$\{packId\}`/.test(drops)
+      && /getDragEventData\(event\)\?\.uuid/.test(drops)
+      && /asGM\('sr3e\.vehicle\.link', \{ vehicleId: dropped\.id, driverActorId: this\.actor\.id \}\)/.test(drops));
+  t.ok('the sheet still hands ordinary drops to core (items were never the problem)', /super\._onDropDocument\(event, document\)/.test(drops));
+
+  /* ── Damage Compensators are concealed like the Pain Editor (TODO 116, M&M p.71) ───── */
+  const conceal = actorSheet.slice(actorSheet.indexOf('_woundsConcealed() {'), actorSheet.indexOf('_tabs() {'));
+  t.ok('installed Damage Compensators conceal the tracks when the setting is on', /derived\?\.damageCompensators \?\? 0\) > 0\) return true/.test(conceal));
+  t.ok('…still never for the GM, and only with the setting on', /if \(game\.user\.isGM\) return false/.test(conceal) && /if \(!on\) return false/.test(conceal)
+    && conceal.indexOf('if (!on) return false') < conceal.indexOf('damageCompensators'));
 }

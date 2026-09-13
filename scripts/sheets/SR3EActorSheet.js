@@ -462,6 +462,79 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   /* ------------------------------------------------------------------ */
+  /*  Drops · TODO 97                                                     */
+  /* ------------------------------------------------------------------ */
+
+  /*
+   * Reported in play: "cannot drag equipment from a compendium onto a character sheet".
+   *
+   * ⚠ **Items already dropped fine** — from any compendium or the sidebar, onto any part of the
+   * sheet, as the GM and as a player (live-checked 2026-09-13). What failed, failed SILENTLY,
+   * the error going only to the browser console:
+   *   · **a damaged compendium entry** — an install can carry a malformed duplicate with a null
+   *     `_id` (CLAUDE.md, *Pack integrity*; this machine's install had one in 74 packs). It
+   *     cannot be resolved, so core's `_onDropDocument` read `.documentName` off null and threw.
+   *   · **a vehicle or drone** — an ACTOR, which core's `_onDropActor` ignores. The Vehicles
+   *     tab's "Add a Vehicle" did the job; dragging it did nothing at all.
+   */
+  async _onDrop(event) {
+    try {
+      return await super._onDrop(event);
+    } catch (err) {
+      console.error('SR3E | drop failed:', err);
+      ui.notifications.warn(SR3EActorSheet.dropFailureMessage(err));
+      return null;
+    }
+  }
+
+  async _onDropDocument(event, document) {
+    if (!document) {
+      ui.notifications.warn(SR3EActorSheet.dropFailureMessage(null));
+      return null;
+    }
+    return super._onDropDocument(event, document);
+  }
+
+  /** A vehicle or drone dropped on a character is theirs to drive: deploy it (from a
+   *  compendium) or link it (from the world), through the GM like "Add a Vehicle". */
+  async _onDropActor(event, dropped) {
+    if (dropped?.type !== 'vehicle') {
+      ui.notifications.info(`${dropped?.name ?? 'That'} is a character, not equipment — it can't be added to a sheet. `
+        + 'Contacts go on the Contacts tab.');
+      return null;
+    }
+    if (!this.actor.isOwner) return null;
+    // ⚠ The id comes from the DRAG DATA's uuid first: an install with drifted packs can load a
+    // compendium document whose own `_id` is null (seen on this machine's install, 2026-09-13)
+    // while its key — the id the uuid names — is fine.
+    const dragged = foundry.applications.ux.TextEditor.implementation.getDragEventData(event)?.uuid;
+    const packId = String(dragged ?? '').split('.').pop() || dropped.id;
+    const { SR3EQuery } = game.sr3e;
+    let result;
+    try {
+      result = dropped.pack
+        ? await SR3EQuery.asGM('sr3e.actor.create', { driverActorId: this.actor.id, source: `${dropped.pack}|${packId}`, name: null })
+        : await SR3EQuery.asGM('sr3e.vehicle.link', { vehicleId: dropped.id, driverActorId: this.actor.id });
+    } catch (err) {
+      console.error('SR3E | vehicle drop failed:', err);
+      ui.notifications.error('Could not add the vehicle — is a GM connected?');
+      return null;
+    }
+    this.render(false);
+    ui.notifications.info(`${dropped.name} ${dropped.pack ? 'added' : 'linked'} — see the Vehicles tab.`);
+    return result ?? null;
+  }
+
+  /** What to tell someone whose drop could not be read. Static so it can be tested. */
+  static dropFailureMessage(err) {
+    const msg = String(err?.message ?? '');
+    return /resolve Document|UUID|null/i.test(msg) || !err
+      ? 'That entry could not be read — it looks like a damaged duplicate. Use the other copy with the same name '
+        + 'in the compendium list. (GM: `npm run packs:check` finds these; `packs:fix` removes them with Foundry closed.)'
+      : `Could not add that: ${msg}`;
+  }
+
+  /* ------------------------------------------------------------------ */
   /*  HTML builders                                                       */
   /* ------------------------------------------------------------------ */
 
@@ -662,7 +735,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     // ⚠ A concealed box carries NO data-action, so it cannot be clicked. A blank but still
     // clickable box would let a player probe the real value one click at a time — a worse
     // leak than simply showing them.
-    if (conceal) return `<div class="wound-box wound-box-hidden" title="Concealed by the Pain Editor"></div>`;
+    if (conceal) return `<div class="wound-box wound-box-hidden" title="Concealed — Pain Editor or Damage Compensators (M&amp;M p.71)"></div>`;
     const cls = n <= value ? 'wound-box filled' : 'wound-box';
     return `<div class="${cls}" data-action="woundBox" data-track="${track}" data-box="${n}"></div>`;
   }).join('');
@@ -671,7 +744,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     <div class="wound-track">
       <span class="wound-track-label">${label}</span>
       <div class="wound-boxes">${boxes}</div>
-      ${conceal ? `<span class="wound-concealed-note" title="Pain Editor engaged - M&amp;M p.71">?</span>` : ''}
+      ${conceal ? `<span class="wound-concealed-note" title="Pain Editor engaged or Damage Compensators installed — M&amp;M p.71. A Perception (6) or Biotech (4) Test can reveal it.">?</span>` : ''}
     </div>
     ${conceal ? '' : `<div class="damage-buttons">
       <button type="button" class="damage-btn" data-action="applyDamage" data-track="${track}" data-amount="1" title="Light (L)">L</button>
@@ -695,6 +768,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    try { on = game.settings.get('The2ndChumming3e', 'painEditorHidesWounds') === true; }
    catch { return false; }          // setting not registered yet during an early render
    if (!on) return false;
+   // Damage Compensators too (TODO 116, reported in play): M&M p.71 suggests the GM track the
+   // damage *"letting the player know that a hit has occurred, but not the severity of it"* —
+   // the same curtain as the Pain Editor, but PASSIVE: installed is enough, nothing to engage.
+   if ((this.actor.system?.derived?.damageCompensators ?? 0) > 0) return true;
    return (this.actor.system?.derived?.activeAugmentations ?? [])
      .some(a => a.kind === 'toggle' && /pain editor/i.test(a.name ?? ''));
  }

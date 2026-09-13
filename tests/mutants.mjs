@@ -125,6 +125,13 @@ export const MUTANTS = [
     impl:   () => {},
   },
   {
+    id:     'damage-compensators-inert',
+    suite:  'adept-powers',
+    ...ACTOR, method: 'damageCompensatorLevel',
+    was:    'Damage Compensators did nothing — no code read them (M&M p.71; reported in play)',
+    impl:   () => 0,
+  },
+  {
     id:     'rating-stored-field-only',
     suite:  'item-rating',
     ...RATING, method: 'itemRating',
@@ -146,6 +153,13 @@ export const MUTANTS = [
     ...RATING, method: 'ratingFromName',
     was:    'healing\'s old fallback: any trailing number counted, so "Predator 2" was Rating 2',
     impl:   name => { const m = /\[(\d+)\]|\b(\d+)\s*$/.exec(String(name ?? '')); return m ? Number(m[1] ?? m[2]) : null; },
+  },
+  {
+    id:     'healing-ignores-rapid-healing',
+    suite:  'healing',
+    ...HEAL, method: 'healingSituationDice',
+    was:    'the healing flow ignored the `healing` situation, so Rapid Healing (SR3 p.170) added nothing',
+    impl:   () => ({ dice: 0, labels: [] }),
   },
   {
     id:     'medkit-first-not-best',

@@ -385,6 +385,18 @@ export class SR3EHealing {
     return r;
   }
 
+  /**
+   * Dice from the `healing` situation — Rapid Healing (SR3 p.170: Body *"for Healing Tests, and
+   * crippling-injury tests"*) and anything else a GM or item puts there. They ride the Wound
+   * Table test, each stage of healing and the permanent-damage test (TODO 76). ⚠ The Wound Table
+   * itself says *"cyberware offers no benefits"* — these are magic, and do.
+   * @returns {{dice:number, labels:string[]}}
+   */
+  static healingSituationDice(actor) {
+    const list = (actor?.system?.derived?.situationalBonuses ?? []).filter(b => b.situation === 'healing' && (b.dice ?? 0) > 0);
+    return { dice: list.reduce((s, b) => s + b.dice, 0), labels: list.map(b => `${b.label} +${b.dice}`) };
+  }
+
   static _skill(actor, re) {
     let best = null;
     for (const i of (actor?.items ?? [])) {
@@ -531,6 +543,10 @@ export class SR3EHealing {
   static async setup(patient, step) {
     const s = SR3EHealing._state(patient);
     const H = SR3EHealing;
+    // Rapid Healing and anything else in the `healing` situation — added to the patient's Body
+    // tests (Wound Table, each stage, permanent damage) and named on the card (TODO 76).
+    const hd = H.healingSituationDice(patient);
+    const hdText = hd.dice ? ` + ${hd.labels.join(', ')}` : '';
     const row = (label, inner) => `<label style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin:3px 0">${label}${inner}</label>`;
     const chk = (f, label, on, note = '') => `<label style="display:flex;gap:6px;align-items:center;margin:3px 0"><input type="checkbox" data-f="${f}" ${on ? 'checked' : ''}/> ${label}${note ? ` <span style="font-size:11px;color:var(--sr-muted)">${note}</span>` : ''}</label>`;
     const sel = (f, opts) => `<select data-f="${f}">${opts.map(([v, l, on]) => `<option value="${v}" ${on ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
@@ -640,9 +656,9 @@ export class SR3EHealing {
         if (!f) return;
         const tn = H.attentionTN(s.level, { stabilizationUnit: f.unit });
         return H._post(patient, {
-          step, rollerId: patient.id, pool: s.bodyNatural, tn, skipWoundMod: true, level: s.level,
+          step, rollerId: patient.id, pool: s.bodyNatural + hd.dice, tn, skipWoundMod: true, level: s.level,
           title: `🩺 Does it need a doctor? — ${patient.name}`, rollLabel: 'Roll natural Body',
-          lines: [`Natural Body ${s.bodyNatural} vs TN <strong>${tn}</strong>${f.unit ? ' (stabilization unit −2)' : ''}`,
+          lines: [`Natural Body ${s.bodyNatural}${hdText} vs TN <strong>${tn}</strong>${f.unit ? ' (stabilization unit −2)' : ''}`,
                   'Any success: heals without medical attention. None: needs medical attention to heal at all.'],
         });
       }
@@ -673,7 +689,7 @@ export class SR3EHealing {
           magician: s.awakened, body: s.bodyNatural, willpower: s.willNatural }) : { mod: 0, parts: [] };
         const tn = H.stageTN(lvl, { doctorMod: dm.mod, stabilizationUnit: f.unit });
         return H._post(patient, {
-          step, rollerId: patient.id, pool: s.bodyNatural, tn, skipWoundMod: true, level: lvl, care: f.care,
+          step, rollerId: patient.id, pool: s.bodyNatural + hd.dice, tn, skipWoundMod: true, level: lvl, care: f.care,
           baseMultiplier: s.record.baseMultiplier ?? 1, timeMultiplier: s.record.timeMultiplier ?? 1,
           title: `🛏 Healing ${LEVEL_NAME[lvl]} → ${LEVEL_NAME[NEXT_DOWN[lvl]] ?? 'healed'} — ${patient.name}`, rollLabel: 'Roll natural Body',
           lines: [(() => {
@@ -681,7 +697,7 @@ export class SR3EHealing {
                     return H._timeBox(`${H.formatHours(x.minH)} – ${H.formatHours(x.maxH)}`,
                       `for ${LEVEL_NAME[lvl]} → ${LEVEL_NAME[NEXT_DOWN[lvl]] ?? 'healed'} · 1 success is the longest; more successes shorten it to the minimum (p.127)`);
                   })(),
-                  `Natural Body ${s.bodyNatural} vs TN <strong>${tn}</strong>: Healing Table ${H.HEALING_TABLE[lvl].tn}`
+                  `Natural Body ${s.bodyNatural}${hdText} vs TN <strong>${tn}</strong>: Healing Table ${H.HEALING_TABLE[lvl].tn}`
                     + dm.parts.map(([l, v]) => `, ${l} ${v > 0 ? '+' : ''}${v}`).join('') + (f.unit ? ', stabilization unit −2' : ''),
                   `Base ${H.formatHours(H.HEALING_TABLE[lvl].base)} ÷ successes, never under ${H.formatHours(H.HEALING_TABLE[lvl].min)}.`],
         });
@@ -696,10 +712,10 @@ export class SR3EHealing {
         if (!f) return;
         const tn = H.permanentDamageTN({ traumaPatch: f.traumaUsed });
         return H._post(patient, {
-          step, rollerId: patient.id, pool: s.bodyNatural + dermal, tn, skipWoundMod: true,
+          step, rollerId: patient.id, pool: s.bodyNatural + dermal + hd.dice, tn, skipWoundMod: true,
           awakened: s.awakened,
           title: `💀 Deadly wound — permanent damage? ${patient.name}`, rollLabel: 'Roll Body',
-          lines: [`Natural Body ${s.bodyNatural}${dermal ? ` + dermal armor ${dermal}` : ''} vs TN <strong>${tn}</strong>${f.traumaUsed ? ' (trauma patch +2)' : ''}`,
+          lines: [`Natural Body ${s.bodyNatural}${dermal ? ` + dermal armor ${dermal}` : ''}${hdText} vs TN <strong>${tn}</strong>${f.traumaUsed ? ' (trauma patch +2)' : ''}`,
                   '0 successes: a vital organ (time ×2, an Attribute point lost) · 1: an eye or limb (base time +50%) · 2+: nothing lasting.'],
         });
       }

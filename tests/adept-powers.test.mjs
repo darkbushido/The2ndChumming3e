@@ -687,6 +687,25 @@ export async function run(t) {
   t.is('undefined boxes is 0', pain(undefined, 3), 0);
 
   /* ════════════════════════════════════════════════════════════════════════════
+   *  Damage Compensators · M&M p.71 (TODO 116 — they did nothing until 0.5.2)
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const dcLevel = SR3EActor.damageCompensatorLevel;
+  t.is('the shipped "Damage Compensators[3]" (rating 0) is level 3', dcLevel([bio('Damage Compensators[3]')]), 3);
+  t.is('a typed rating wins over the name', dcLevel([{ ...bio('Damage Compensators[3]'), system: { rating: 5 } }]), 5);
+  t.is('the highest set counts, not the sum', dcLevel([bio('Damage Compensators[2]', 'a'), bio('Damage Compensators[4]', 'b')]), 4);
+  t.is('none installed: 0', dcLevel([bio('Pain Editor')]), 0);
+  // The book's own example: "Ace has Level 3 damage compensators. He has Moderate Physical and
+  // Stun damage (three boxes each)… If Ace had four boxes of Physical and three Stun, he would be
+  // suffering only the effects of a Light Physical wound."
+  const dc3 = bio('Damage Compensators[3]', 'dc');
+  t.is('Ace: 3 Physical + 3 Stun with Level 3 — no modifier at all', deriveAug([dc3], {}, { phys: 3, stun: 3 }).sys.woundMod, 0);
+  t.is('Ace: 4 Physical + 3 Stun — only a Light wound (+1)', deriveAug([dc3], {}, { phys: 4, stun: 3 }).sys.woundMod, -1);
+  t.is('…where without them it is Moderate + Moderate (+4)', deriveAug([], {}, { phys: 4, stun: 3 }).sys.woundMod, -4);
+  t.is('the level is on the sheet\'s derived data (the hide-wounds setting reads it)', deriveAug([dc3]).d.damageCompensators, 3);
+  // With a Pain Editor engaged too, Stun is ignored and compensators still offset Physical.
+  t.is('Pain Editor + compensators: 6 Stun ignored, 4 Physical − 3 = Light', deriveAug([dc3, editor], { editor: { active: true } }, { phys: 4, stun: 6 }).sys.woundMod, -1);
+
+  /* ════════════════════════════════════════════════════════════════════════════
    *  Killing Hands · p.170 (TODO 67)
    * ════════════════════════════════════════════════════════════════════════════ */
   const kh = SR3EItem.killingHandsDamage;

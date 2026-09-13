@@ -1920,9 +1920,17 @@ _prepareCharacter(sys, attr) {
    * apply the power to the sheet's wound display and to nothing that rolls.
    * ⚠ The wound TRACK is untouched. The power changes the effect of damage, not the damage.
    */
-  if (painResistance > 0) {
-    const stunBoxes = SR3EActor.painAdjustedBoxes(sys.wounds?.stun?.value ?? 0, painResistance);
-    const physBoxes = SR3EActor.painAdjustedBoxes(sys.wounds?.physical?.value ?? 0, painResistance);
+  /* ── Damage Compensators · M&M p.71 (TODO 116) — the same subtraction, from bioware:
+   * > "Subtract the user's level in damage boxes from his current damage before determining
+   * > injury modifiers. Compensators work equally on Physical and Stun Condition Monitors."
+   * They did NOTHING until 0.5.2 — no code read them (reported in play).
+   * ⚠ The LARGER of the two, never the sum: M&M p.78 makes Pain Resistance *"incompatible with
+   * pain editors or damage compensators"*. Reported, not enforced — the better one applies. */
+  const damageCompensators = SR3EActor.damageCompensatorLevel(this.items);
+  const woundOffset = Math.max(painResistance, damageCompensators);
+  if (woundOffset > 0) {
+    const stunBoxes = SR3EActor.painAdjustedBoxes(sys.wounds?.stun?.value ?? 0, woundOffset);
+    const physBoxes = SR3EActor.painAdjustedBoxes(sys.wounds?.physical?.value ?? 0, woundOffset);
     const raw = -(SR3EActor._trackMod(stunBoxes) + SR3EActor._trackMod(physBoxes));
     sys.rawWoundMod = raw;
     sys.woundMod    = Math.min(0, raw + (sys.stimBonus ?? 0));
@@ -2152,7 +2160,7 @@ _prepareCharacter(sys, attr) {
      * ⚠ Recomputed from the PHYSICAL track alone — not zeroed. A character with a physical
      * wound still suffers for it; only the Stun contribution goes. */
     if (a.cfg.ignoresStunWoundMod) {
-      const physBoxes = SR3EActor.painAdjustedBoxes(sys.wounds?.physical?.value ?? 0, painResistance);
+      const physBoxes = SR3EActor.painAdjustedBoxes(sys.wounds?.physical?.value ?? 0, woundOffset);
       const raw = -SR3EActor._trackMod(physBoxes);
       sys.rawWoundMod = raw;
       sys.woundMod    = Math.min(0, raw + (sys.stimBonus ?? 0));
@@ -2256,6 +2264,9 @@ _prepareCharacter(sys, attr) {
     adeptCombatPool,
     // Pain Resistance level (p.170) — already folded into `woundMod`.
     painResistance,
+    // Damage Compensators level (M&M p.71) — folded into `woundMod` the same way (the larger of
+    // the two); also what lets `painEditorHidesWounds` conceal this character's tracks.
+    damageCompensators,
     // Mystic Armor level (p.170) — Impact armour, cumulative with worn, and it works in
     // astral combat. Applied at soak time, not here, because the soak card is where armour
     // is chosen and shown.
@@ -6183,6 +6194,19 @@ _prepareCharacter(sys, attr) {
    */
   static painAdjustedBoxes(boxes, painResistance = 0) {
     return Math.max(0, (Math.trunc(Number(boxes) || 0)) - Math.max(0, Math.trunc(Number(painResistance) || 0)));
+  }
+
+  /**
+   * Damage Compensators' level · *M&M p.71* — the bioware `Damage Compensators[1]`…`[9]`, level in
+   * the name (the pack stores `rating: 0`; `itemRating` reads either). The HIGHEST set counts,
+   * not the sum — one character, one nervous system.
+   */
+  static damageCompensatorLevel(items) {
+    let lvl = 0;
+    for (const i of items ?? []) {
+      if (i?.type === 'bioware' && /damage\s*comp/i.test(i.name ?? '')) lvl = Math.max(lvl, itemRating(i));
+    }
+    return lvl;
   }
 
   /**

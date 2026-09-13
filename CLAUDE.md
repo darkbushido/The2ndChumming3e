@@ -1120,6 +1120,12 @@ Two entry points besides the sheet (both fire ready weapons via `_sr3eReadyWeapo
 - **Token wound bars**: `preCreateActor` (sr3e.js) defaults character/npc prototype tokens to `bar1=wounds.physical`, `bar2=wounds.stun` (fill as damage rises), `OWNER_HOVER`. Only affects newly-created actors. Wounds are `{value,max}` so Foundry treats them as trackable.
 - **Status effects**: custom SR conditions appended to `CONFIG.statusEffects` (init): `sr3e-sustaining/-fulldefense/-dumpshock/-astral/-dual/-vr` + core (prone/unconscious/dead…). The `updateActor` hook (gated to `game.users.activeGM.isSelf`) auto-toggles `sr3e-astral`/`-dual` from `astralMode`, `sr3e-vr` from `matrixUserMode` (VR-Cold/Hot), `sr3e-fulldefense` from `fullDefense`, via `actor.toggleStatusEffect`.
 - **Auto-defeated**: same `updateActor` hook — when a wound track is full → combatant `defeated=true` + `unconscious` overlay; physical full AND overflow ≥ Body → `dead` overlay. Reversible on healing.
+- **Drops onto the character sheet** (TODO 97): items ride core's `ActorSheetV2` handling, which
+  works. `SR3EActorSheet._onDrop` / `_onDropDocument` catch what used to fail **silently** — a
+  damaged pack entry (null `_id`, install drift — see *Pack integrity*) now warns the person — and
+  `_onDropActor` deploys (compendium) or links (world) a dropped **vehicle/drone** to that character
+  through `sr3e.actor.create` / `sr3e.vehicle.link`, taking the id from the drag data's uuid, not the
+  document (a drifted install loads actor-pack documents with `_id: null`).
 - **Text enrichers**: actor Biography/Notes render as read-only enriched HTML (`_bioField` + `_enrichBioFields` in `_onRender`, via `TextEditor.enrichHTML`) with an ✎ Edit toggle revealing the textarea; submit-on-change re-renders back to enriched. Chat-card content is auto-enriched by core. Item/actor edit fields stay plain textareas by design.
 - **AoE / grenade flow (RAW scatter-first)**: requires a scene. `rollWeapon` AoE path:
   1. **Nominate** the blast point — `_placeBlastTemplate`: a plain **PIXI.Graphics circle** (added to `canvas.interface`) that follows the cursor — left-click detonates, right-click/Esc cancels, destroyed via PIXI. Records `aoeCenter` (scene coords) + the thrower token centre. *(Foundry v14 deprecated both the MeasuredTemplate **document** and **placeable** — merged into Region — so the aiming preview uses no MeasuredTemplate at all, avoiding every compatibility warning.)*
@@ -1372,6 +1378,13 @@ uses QUI 4 / INT 5 deliberately, because that is a pair where the two orderings 
 ⚠ **The Pain Editor recomputes the wound modifier from the PHYSICAL track — it does not zero
 it.** *"Penalties from Physical damage are applied, but without the player's knowledge."* Zeroing
 would make it total immunity.
+
+**Damage Compensators** (M&M p.71, TODO 116) are passive, not triggered:
+`SR3EActor.damageCompensatorLevel(items)` (the highest set, level via `itemRating`) is subtracted
+from both tracks before the injury-modifier lookup — the same offset as Pain Resistance, taking the
+**larger** of the two (M&M p.78: *"incompatible"*). They did nothing until 0.5.2. The
+`painEditorHidesWounds` setting also conceals a character with compensators installed, as p.71
+suggests. Stress (half at Serious, none at Deadly) is not modelled — TODO 109.
 
 ⚠ **Nephritic Screen needed no mechanism at all** — it rides `situationalBonuses` with the
 `toxin` key, exactly as Body Control does. That is the point of keying those channels by
@@ -2036,6 +2049,9 @@ Attribute point.
   timeMultiplier, baseMultiplier}` — and it is **cleared whenever Physical reaches 0**, by either
   *Lower* or *Heal these boxes*. `magicHealed` blocks further Heal/Treat **and** first aid for *these*
   injuries (p.129, p.194); left set after a full heal it silently blocked the next wound.
+- **The `healing` situation** (Rapid Healing, SR3 p.170) is added to the patient's Body tests — the
+  Wound Table test, each stage, permanent damage — by `healingSituationDice`, named on the card
+  (TODO 76, which this flow closed).
 - ⚠ **Equipment ratings come from `itemRating()`** (`scripts/data/item-rating.mjs`, TODO 118) — a
   stored rating above 0 wins, else the name's `[N]` / `Rating N`. `findEquipment` takes the **best**
   usable item, not the first, and skips anything in storage.

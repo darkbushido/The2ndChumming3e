@@ -23,8 +23,8 @@ independent.
 |---|---|
 | 🔵 In progress | **93** — Foundry test of everything on branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **91** · **97** · **114** *(reloads counted in rounds, not reloads)* · **116** *(Damage Compensators show damage despite the Pain Editor setting)* *(**112** · **113** fixed on `fix/armor-and-stacks`; **118** fixed in 0.5.2)* *(**101** · **71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** · **106** · **107** done)* |
-| 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** *(now one step of 115)* · **109** *(Stress)* · **110** *(TLE-x, needs 109)* · **111** *(CDS)* *(**3** · **4** · **30** · **75** · **98** done; **115** built on `feature/healing`)* |
+| 🔴 Confirmed bugs, still open | **91** · **114** *(reloads counted in rounds, not reloads)* *(**112** · **113** fixed on `fix/armor-and-stacks`; **97** · **116** · **118** fixed in 0.5.2)* *(**101** · **71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** · **106** · **107** done)* |
+| 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **109** *(Stress)* · **110** *(TLE-x, needs 109)* · **111** *(CDS)* *(**3** · **4** · **30** · **75** · **98** · **76** done; **115** built on `feature/healing`)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 🖥 Matrix | **119** *(audit The Matrix Defragged v2 — the book is now in the library)* · **120** *(HoloSuite Hacking adapter / fork)* |
 | 📦 Content gaps | **117** *(934 documents lack a book/page)* · 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** · **104** *(**83** · **84** · **87** done)* |
@@ -4807,7 +4807,17 @@ Mystic Armor and Penetrating Strike already adjust Impact at the soak card. Chec
 `SR3EActor._postSoakCard` before adding a second source.
 
 <a id="76"></a>
-## 76. The Wound Table has no flow to attach to — *SR3 p.126*
+## 76. ✅ The Wound Table has no flow to attach to — *SR3 p.126* — **CLOSED 2026-09-13** (0.5.2)
+
+**Closed by the guided healing flow ([#115](#115)).** Its "🩺 Does it need a doctor?" step is this
+test: natural Body (`body.base`) against Light 2 / Moderate 4 / Serious 6, Physical only, and the
+card says a test in combat costs the next Combat Turn. Deadly has no row and posts "always needs
+medical attention" instead of a roll. The one gap found on closing: **Rapid Healing's dice were
+not added** — the flow never read the `healing` situation. Now `SR3EHealing.healingSituationDice`
+adds them to the Wound Table test, each healing stage and the permanent-damage test, named on the
+card; tests in `healing.test.mjs`, mutant `healing-ignores-rapid-healing`.
+
+The original notes follow.
 
 Verified during the table sweep and left untested for the honest reason that **nothing reads
 it**. Recorded so it is not re-discovered.
@@ -6884,7 +6894,32 @@ Rewards is the arguable case, since a reward usually goes to the whole party.
 
 <a id="97"></a>
 
-## 97. Cannot drag equipment from a compendium onto a character sheet — **reported in play 2026-09-11**
+## 97. ✅ Cannot drag equipment from a compendium onto a character sheet — **reported in play 2026-09-11, FIXED 2026-09-13** (0.5.2)
+
+**Investigated live (test world, 2026-09-13).** Dragging ITEMS from a compendium already worked —
+firearms, armour, cyberware, melee, onto any part of the sheet, as the GM **and** as Player2. What
+failed, failed **silently** (the error only in the browser console):
+- **A damaged compendium entry.** This install carries one malformed duplicate with a null `_id` in
+  **74** packs (e.g. a second "Streetline Special" in `sr3e-sr3-firearms`) — the drift CLAUDE.md
+  *Pack integrity* describes. It cannot be resolved, and core then read `.documentName` off null.
+  Worse in the actor packs: **every** document in this install's vehicle, drone, IC, agent and host
+  packs loads with `_id: null` (the repo's copies are clean — 31/31 drones carry ids), so drops that
+  relied on the document's own id could not find it.
+- **A vehicle or drone** — an ACTOR, which core's `_onDropActor` ignores.
+
+**Fixed** (`SR3EActorSheet._onDrop` / `_onDropDocument` / `_onDropActor`): a failed drop now TELLS
+the person ("That entry could not be read — it looks like a damaged duplicate. Use the other copy…
+GM: `npm run packs:check`"); a dropped vehicle/drone is deployed from the compendium (or linked from
+the world) to that character through the GM, as "Add a Vehicle" does, taking the id from the drag
+data's uuid rather than the document; a dropped character says it cannot be added. Live-checked:
+the broken entry now warns; a Mesametric Kodiak dropped from `sr3e-r3-drones` is created, linked,
+not a template, and shows on the Vehicles tab. Source checks in `sheet-invariants.test.mjs`.
+
+**Still to do (not code):** clean this install — `npm run packs:check` then `npm run packs:fix`
+with Foundry closed; and run `node tools/check-packs.mjs <path>` against the **prod** install if the
+report came from there. Prod installs from GitHub, whose packs are clean, so it should pass.
+
+The original report follows.
 
 **Observation only — not investigated** (reported mid-combat). Dragging equipment from a
 compendium onto a character sheet does not add it.
@@ -7543,7 +7578,27 @@ already exist as channels this can read.
 
 <a id="116"></a>
 
-## 116. Damage Compensators still show damage with *Pain Editor hides wounds from players* on — **reported in play 2026-09-13**
+## 116. ✅ Damage Compensators still show damage with *Pain Editor hides wounds from players* on — **reported in play 2026-09-13, FIXED** (0.5.2)
+
+**Two gaps, both fixed.** M&M p.71 checked:
+1. **Damage Compensators did NOTHING** — no code read them. *"Subtract the user's level in damage
+   boxes from his current damage before determining injury modifiers. Compensators work equally on
+   Physical and Stun."* Now `SR3EActor.damageCompensatorLevel` (level via `itemRating` — the pack's
+   `Damage Compensators[1..9]` store rating 0) feeds the same offset as Pain Resistance, taking the
+   **larger** of the two (M&M p.78: Pain Resistance is *"incompatible with pain editors or damage
+   compensators"*). The book's Ace example is a test: level 3, 4 Physical + 3 Stun → Light (+1).
+2. **The concealment**: the book itself suggests it — the GM *"might want to track the damage
+   suffered… letting the player know that a hit has occurred, but not the severity of it. A
+   Perception (6) or Biotech (4) Test could reveal the Damage Level"*. The setting (renamed *Pain
+   Editor and Damage Compensators hide wounds from players*) now conceals a character with
+   compensators installed — passive, nothing to engage. Live-checked as Player2: 20 boxes hidden, no
+   damage buttons, the "?" note; the GM sees the real track and −1.
+
+**Not modelled:** Stress (Serious halves the level, Deadly disables them) — TODO 109.
+Tests: `adept-powers.test.mjs` (Ace, the highest set, a typed rating, Pain Editor alongside),
+`sheet-invariants.test.mjs`; mutant `damage-compensators-inert`.
+
+The original report follows.
 
 **Observation only — not investigated** (reported mid-session). With the world setting **"Pain
 Editor hides wounds from players"** (`painEditorHidesWounds`, `sr3e.js`) enabled, a character with

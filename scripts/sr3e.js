@@ -303,8 +303,9 @@ Hooks.once('init', () => {
    * at Deadly Physical. Stun never knocks the character out while it is running.
    */
   game.settings.register('The2ndChumming3e', 'painEditorHidesWounds', {
-    name: 'Pain Editor hides wounds from players',
-    hint: 'While a Pain Editor is engaged, that character\'s wound tracks are concealed on '
+    name: 'Pain Editor and Damage Compensators hide wounds from players',
+    hint: 'While a Pain Editor is engaged, or whenever Damage Compensators are installed (M&M '
+        + 'p.71), that character\'s wound tracks are concealed on '
         + 'their own sheet and the boxes cannot be clicked. The GM always sees the real '
         + 'numbers. ⚠ A display convention only — a player who opens the browser console can '
         + 'still read the values, so this works by agreement rather than by enforcement.',
