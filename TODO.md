@@ -21,9 +21,9 @@ independent.
 
 | Group | Items |
 |---|---|
-| 🔵 In progress | **93** — awaiting a Foundry test, branch `fix/racial-mods` |
+| 🔵 In progress | **93** — Foundry test of everything on branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **91** · **94** · **95** · **97** *(**71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **96** done)* |
+| 🔴 Confirmed bugs, still open | **91** · **95** *(Matrix decision)* · **97** *(**71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **96** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **76** *(**3** · **4** · **30** · **75** · **98** done)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** *(**83** · **84** · **87** done)* |
@@ -6593,95 +6593,76 @@ where the accessories [#91](#91) wants most likely already exist in print.
 
 <a id="93"></a>
 
-## 93. 🧪 Test in Foundry: racial modifiers, troll dermal armor and Reach, Species lock — branch `fix/racial-mods`
+## 93. 🧪 Test in Foundry — everything on branch `fix/racial-mods`
 
-**Written 2026-09-11 and not yet run anywhere but the unit tests** (38/38). The maintainer does
-not run Foundry locally, so this waits for a hosted test. Reported in play: a troll allocated
-B5 Q5 S4 C2 I3 W2 imported at those numbers instead of B10 Q4 S8 C0 I1 W2.
+**Not yet run anywhere but the unit tests** (41/41 suites). The branch started as the racial-
+modifier fix reported in play (a troll allocated B5 Q5 S4 C2 I3 W2 imported at those numbers
+instead of B10 Q4 S8 C0 I1 W2) and grew to cover TODO 36, 73, 74, 75, 94, 96, 98 and 99.
 
 ### Before testing
 
-1. `npm run manifest:branch` and commit, if the test server installs from this branch.
-2. **In the test world, DELETE the "Import Nullsheen 3e Character json" macro, then reload.**
-   The system copies that macro into a world once and never refreshes it, so the old version
-   stays in any world that already has it. It is recreated from the fixed file on the next load.
-3. ⚠ **Restart Foundry fully** (not F5) — TODO 75 added two item fields (`bonusImpact`,
-   `bonusBallistic`) and TODO 74 a vehicle field (`passengerActorIds`), and data-model changes
-   are not hot-reloaded. Everything else on the branch only needs a reload.
+1. ⚠ **Restart Foundry fully** (not F5) — TODO 75 added two item fields (`bonusImpact`,
+   `bonusBallistic`) and TODO 74 a vehicle field (`passengerActorIds`); data-model changes are
+   not hot-reloaded.
+2. **Delete the "Import Nullsheen 3e Character json" macro, then reload.** The system copies it
+   into a world once and never refreshes it; it is recreated from the fixed file on next load.
+3. Only if a server installs from this branch: `npm run manifest:branch` and commit.
 
-### Checks
+### First pass — what only Foundry can catch
 
-- [ ] **Import the reported troll.** Expect Body 10, Quickness 4, Strength 8, Charisma 0,
-      Intelligence 1, Willpower 2, and two notifications: one listing the modifiers applied,
-      and a **permanent** warning that Charisma is below 1.
-- [ ] **Import one other metahuman** (elf, dwarf or ork) and compare against the generator's
-      own sheet, which shows allocation + race as its total.
-- [ ] **Import a human.** Nothing changes, no racial notification.
-- [ ] **The troll's Body shows `10 + 1 (11)`** on the Attributes tab, the +1 tooltip reading
-      *Troll dermal armor*. Soak a hit — the Body dice should be 11.
-- [ ] **A shipped troll** (Dock Worker) dragged from Mr. Johnson's Contacts shows **10 (11)**.
-- [ ] **Species as a PLAYER:** a greyed dropdown showing the race; cannot be changed. Edit some
-      other Bio field and confirm Species is still the same afterwards.
-- [ ] **Species as the GM:** a working dropdown. An actor whose stored value is not one of the
-      five (e.g. typed "Hobgoblin" before this change) shows it as *(unrecognised)* and keeps it
-      when another field is edited.
-- [ ] **Attribute Boost on a troll** (if an adept troll is to hand) — the dermal +1 must not
-      count as a technological increase that blocks the boost.
-- [ ] **Troll Reach in melee.** Troll with a club (Reach 1) attacks an unarmed human: the card
-      shows *Reach 2 (troll +1)* in the troll's corner and the reach election offers **2**. An
-      unarmed troll against a human with a club: no reach election at all (1 vs 1).
-- [ ] **Flechette at an unarmoured troll.** Shoot a troll wearing no armour with flechette
-      loaded: the soak card says *no level increase: troll dermal armor negates it* and the
-      level is **not** raised. The same shot at an unarmoured human still raises it.
-- [ ] **Flechette at an unarmoured human with Dermal Plating.** Same as above, the note naming
-      *Dermal Plating [n]*. Remove the plating → the level is raised again.
-- [ ] **Dwarf toxin resistance.** On a dwarf, click Body's roll icon: an **unticked** box reads
-      *Resisting disease or toxin: +2 (Dwarf resistance (SR3 p.56))*. Tick it → pool +2; untick
-      → back. Switch the dropdown to Quickness → the box greys out and unticks, pool = Quickness.
-      Roll with it ticked → the card title ends *resisting disease or toxin (+2)*. A human with
-      no such bioware sees no box at all.
-- [ ] **Vision, ranged.** Have the troll shoot (as a player, so the GM window opens): the vision
-      dropdown **opens on Thermographic (natural)**, with *👁 <name> (troll): Thermographic
-      (natural)* under it. Pick **Thermal Smoke** → it switches to **Normal** by itself and the
-      TN shows +4. Now pick a vision by hand, then change the condition again → it stays where
-      you put it.
-- [ ] An elf with `Eyes, Cyber Replacement` + `Eyes, Low-Light` opens on **Low-Light
-      (cybernetic)** and reads *… racial low-light lost to Eyes, Cyber Replacement (SR3 p.299)*.
-- [ ] **Vision, melee.** Troll vs human: the melee GM window has **two** vision dropdowns, one per
-      fighter, each with its 👁 line. Pick Full Darkness → the note reads *visibility halves to
-      +2 / +8* (Full Darkness is not halved; the troll's thermographic reads +2), and the two TNs
-      differ by 6.
-- [ ] **Success Test (TODO 73).** Attributes tab → 🎲 Success Test: a *What is this test for?*
-      box, the dropdown on **Dice pool**. Type "Climb the fence", 6 dice, TN 4 → the card is titled
-      *Climb the fence*, counts successes, and a 6 on a TN 7+ test explodes as usual. Pick
-      Strength instead → the pool fills from Strength and the title adds *(Strength)*.
-- [ ] **Crash (TODO 74, after the full restart).** Vehicle sheet: add two passengers under
-      Pilot. 💥 Crash → 50 km/h reads *42 m per Combat Turn → 5M*; the driver and both passengers
-      are listed, ticked. **Post crash damage** → a card with the vehicle soak button; roll it →
-      resist buttons for the driver and each passenger. Also try **Crash Test**: the Driving Test
-      dialog titled *Crash Test*; 0 successes posts the crash.
-- [ ] **Crash passengers (belt and armour).** From a crash card, click a passenger's resist
-      button: a dialog with Body dice, Impact armour (their vest's Impact plus any implant
-      armour) and a *Seat belt* box. 15S with belt and Impact 3 reads *resist 12M … TN 12*.
-      Cancel → the button still works. Roll → the result's *Assign Wound* names that passenger.
-- [ ] **Ramming passengers.** Ram a vehicle with people aboard: if its soak staged the damage
-      down, the passengers' buttons show the lower level; if it soaked it all, the card says no
-      one aboard takes damage and there are no buttons.
-- [ ] **Failed Driving Test** → the card shows *💥 Crash — resolve for the vehicle and everyone
-      aboard*; it opens the same dialog. A successful one shows no button.
-- [ ] **Chase Scene**: pick that vehicle for a participant → its passengers appear already.
-- [ ] **GM tools (TODO 96).** Session Rewards and Chunky Salsa open with **nobody ticked**;
-      Session Rewards' *All* ticks everyone. Award with nobody ticked → a warning, nothing
-      awarded. A grenade in a confined space still opens Chunky Salsa with the caught actors ticked.
-- [ ] **Implant armour (after the full restart).** Give a character an Armor Vest (2B/1I) and
-      *Bone Lace, Titanium* from the SR3 cyberware pack. Armor tab: an **Implant Armour** block,
-      *+B 1 / +I 1*, total **B 3 / I 2**. Shoot them: the soak card's TN uses 3 Ballistic, with
-      a note naming the lacing.
-- [ ] **Override.** Open the lacing's item sheet: *Implant Armour* boxes are blank with 1 / 1 as
-      placeholders. Type **0** in Impact → the Armor tab drops to I 1. Clear the box → back to 2.
-- [ ] **Orthoskin vs flechette.** A human with only *Orthoskin[3]* (bioware) and no armour worn,
-      shot with flechette: the card says *Flechette vs armour — effective armour 4*, not *damage
-      level raised*.
+These exercise new data fields, rewired dialogs and new chat buttons — the parts the unit tests
+cannot reach. If time is short, do these.
+
+- [ ] **Import the reported troll.** Body 10, Quickness 4, Strength 8, Charisma 0, Intelligence 1,
+      Willpower 2; a notification listing the modifiers, and a **permanent** warning that
+      Charisma is below 1. Attributes tab: Body reads `10 + 1 (11)` (*Troll dermal armor*).
+- [ ] **Every attribute roll** (any character, not just a dwarf): click an attribute's roll icon,
+      change the dropdown to another attribute → the pool follows it. The dropdown was rewired.
+      On a **dwarf**, Body shows an **unticked** *Resisting disease or toxin: +2* box; tick → +2,
+      switch off Body → it greys out.
+- [ ] **🎲 Success Test** (Attributes tab): type "Climb the fence", 6 dice, TN 4 → the card is
+      titled *Climb the fence* and counts successes.
+- [ ] **GM window (TODO 94):** as the GM, attack a **player's** character → the modifier window
+      opens. GM NPC against GM NPC → it does not. (Setting: *GM sets the Target Number* on its
+      default, *Whenever a player's character is involved*.)
+- [ ] **Implant armour:** Armor Vest (2B/1I) + *Bone Lace, Titanium*. Armor tab → an *Implant
+      Armour* block, total **B 3 / I 2**; shoot them → the soak card uses 3 Ballistic and names
+      the lacing. On the lacing's sheet, type **0** in *Implant Armour → Impact* → the total drops
+      to I 1; **clear the box** → back to 2. (Clearing must store "empty", not 0.)
+- [ ] **💥 Crash:** vehicle sheet → add two passengers under Pilot → 💥 Crash → 50 km/h reads
+      *42 m per Combat Turn → 5M*, everyone aboard ticked → **Post crash damage** → roll the
+      vehicle soak → resist buttons for driver and passengers. Click one: a dialog with Body,
+      Impact armour and *Seat belt*; Cancel leaves the button working; roll → *Assign Wound*
+      names that passenger.
+- [ ] **Failed Driving Test** → a *💥 Crash* button on the card; a successful one shows none.
+- [ ] **Melee GM window, troll with a club vs unarmed human:** the troll's corner reads *Reach 2
+      (troll +1)*; the GM window has **two** vision dropdowns, the troll's on *Thermographic
+      (natural)*; Full Darkness → *visibility halves to +2 / +8*.
+
+### Second pass
+
+- [ ] Import an elf, dwarf or ork and compare with the generator's own sheet; import a human →
+      no racial notification.
+- [ ] Mr. Johnson's *Dock Worker* (troll) shows Body **10 (11)**.
+- [ ] **Species:** a player sees a greyed dropdown they cannot change; the GM gets a working one,
+      and a stored "Hobgoblin" shows as *(unrecognised)* and survives editing another field.
+- [ ] Unarmed troll vs human with a club: no reach election (1 vs 1).
+- [ ] **Flechette** at an unarmoured troll, and at an unarmoured human with Dermal Plating → *no
+      level increase: dermal armor negates it*; the same shot at a plain unarmoured human raises
+      the level. A human with only *Orthoskin[3]* → *Flechette vs armour — effective armour 4*.
+- [ ] **Ranged vision:** the troll shoots (as a player) → the vision dropdown opens on
+      *Thermographic (natural)* with a 👁 line; pick Thermal Smoke → it switches to Normal; pick
+      one by hand → it stays. An elf with `Eyes, Cyber Replacement` + `Eyes, Low-Light` →
+      *Low-Light (cybernetic) … racial low-light lost*.
+- [ ] **Crash Test** from the 💥 dialog → the Driving Test dialog titled *Crash Test*; 0 successes
+      posts the crash.
+- [ ] **Ramming passengers:** if the rammed vehicle's soak staged the damage down, the passengers'
+      buttons show the lower level; if it soaked it all, no buttons and a note saying so.
+- [ ] **Chase Scene:** pick the vehicle for a participant → its passengers are already listed.
+- [ ] **Session Rewards / Chunky Salsa** open with nobody ticked; *All* ticks everyone; awarding
+      with nobody ticked warns. A grenade in a confined space still opens Chunky Salsa with the
+      caught actors ticked.
+- [ ] Attribute Boost on an adept troll (if one is to hand) — the dermal +1 must not block it.
 
 ### Known, not fixed here
 
@@ -6698,7 +6679,25 @@ B5 Q5 S4 C2 I3 W2 imported at those numbers instead of B10 Q4 S8 C0 I1 W2.
 
 <a id="94"></a>
 
-## 94. GM-initiated attack shows no GM difficulty modifiers — **reported in play 2026-09-11**
+## 94. ✅ GM-initiated attack shows no GM difficulty modifiers — **DONE 2026-09-13** (`fix/racial-mods`, awaiting the Foundry check in [#93](#93))
+
+**Resolved as a design change, not a bug.** The maintainer did not remember the setting, and
+wants the window when the GM attacks a player — *"it helps when I'm figuring out what my
+difficulty is when attacking a player."* The default `player` mode keyed on **who asked**
+(skip whenever the requester is a GM); it now keys on **who is involved**: the window opens when a
+player attacks **or** when the GM attacks a player's character, and skips only NPC against NPC.
+The stored key stays `player`, so existing worlds keep their choice and simply get the new
+meaning; the setting's labels and hint were rewritten to match.
+
+`SR3EQuery.gmWindowOpens(mode, { requesterIsGM, playerInvolved })` is the pure rule, and
+`SR3EQuery.isPlayerCharacter(actor)` decides "a player's": an assigned character or an **explicit**
+Owner entry for a non-GM user. ⚠ **Not `actor.hasPlayerOwner`** — that counts `ownership.default`,
+so in a world whose Actors default to Owner every goon would read as a PC and the NPC-vs-NPC skip
+would vanish (the same trap `deciderFor` documents). Ranged already sent both actors' uuids;
+melee's negotiate payload now carries `atkUuid`/`defUuid`. Tests in
+`tests/attack-negotiate.test.mjs`; mutant `gm-window-skips-gm-attacking-pc`.
+
+The report as written:
 
 **Observation only — not investigated** (reported mid-combat). When the GM initiates an attack,
 the GM difficulty-modifier window does not appear.
@@ -6714,7 +6713,18 @@ this table.
 
 <a id="95"></a>
 
-## 95. Wilderness Survival shows up as a knowledge skill — **reported in play 2026-09-11**
+## 95. Wilderness Survival shows up as a knowledge skill — **reported in play 2026-09-11** — ✅ Survival fixed; **Matrix skills awaits a decision**
+
+**Status 2026-09-13.** Both Survival fixes are in (`fix/racial-mods`): the importer (commit
+`0ae4ad4`) and **Survival skills** now counting as an active category (`886740c`, cited to
+*Target: Wastelands* p.105). Verified offline against the reported troll's own export — all six
+of its active skills now import as active, Wilderness Survival under *Survival skills*.
+**One question remains, the maintainer's:** should the *Matrix skills* category (Computer,
+Cybercombat, Hacking, Programming) count as active? Computer is an active Technical skill in core
+(p.88); the other three are Matrix Defragged's and cannot be checked here. One line in
+`ACTIVE_SKILL_CATEGORIES` either way.
+
+The diagnosis as written at the time (causes 1 and 2's Survival half are both fixed):
 
 **Observation only — not investigated** (reported mid-combat). Wilderness Survival appears among
 the character's **knowledge** skills rather than the active skills.
@@ -6736,7 +6746,7 @@ change routes knowledge prefixes to their categories (`ST:` Street, `SV:` Surviv
 familiarity… — the generator's own nine), fills a missing attribute from the config entry, and
 drops the generator's `weapon->` placeholder instead of importing it as a specialisation.
 
-**2 — The sheet's classifier (NOT fixed — needs a decision).** `ACTIVE_SKILL_CATEGORIES` in
+**2 — The sheet's classifier (Survival FIXED; Matrix still needs a decision).** `ACTIVE_SKILL_CATEGORIES` in
 `config.js` omits two categories, so anything filed in them reads as KNOWLEDGE everywhere — the
 sheet's sections and karma pricing, not just import:
 - **Survival skills** — Wilderness Survival (`twl.105`) and Riding (`tss.17`). The generator
@@ -6751,8 +6761,8 @@ sheet's sections and karma pricing, not just import:
   Technical skill in SR3 core (p.88); the other three are Matrix Defragged's and cannot be checked
   against a book here.
 
-Even after fix 1, Wilderness Survival imports as active but under *Technical skills*, because
-its real category does not count as active.
+~~Even after fix 1, Wilderness Survival imports as active but under *Technical skills*, because
+its real category does not count as active.~~ Fixed by `886740c`.
 
 <a id="96"></a>
 

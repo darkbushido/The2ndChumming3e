@@ -265,14 +265,16 @@ Hooks.once('init', () => {
   // rounds-remaining counter. Off by default; behaves as before when disabled.
   game.settings.register('The2ndChumming3e', 'gmApprovesTN', {
     name: 'GM sets the Target Number',
-    hint: 'Who adjudicates the TN on a ranged attack. "Player attacks only" (default) opens the GM\'s modifier window when a player attacks, and costs the GM nothing when running NPC-vs-NPC. "Always" opens it for every attack including the GM\'s own. "Off" restores the old behaviour exactly — the attacker sets their own TN and no GM window opens.',
+    hint: 'When the GM\'s modifier window opens to set the TN of a ranged or melee attack. "Whenever a player\'s character is involved" (default) opens it when a player attacks AND when the GM attacks a player\'s character, and skips it for NPC against NPC. "Always" opens it for every attack. "Off" — the attacker sets their own TN and no GM window opens.',
     scope: 'world',
     config: true,
     type: String,
+    // ⚠ The stored key stays 'player' so existing worlds keep their choice; only its meaning
+    // widened (TODO 94) — from "a player is attacking" to "a player's character is involved".
     choices: {
-      off:    'Off — attacker sets the TN (as before)',
-      player: 'Player attacks only (recommended)',
-      always: 'Always, including GM attacks',
+      off:    'Off — attacker sets the TN',
+      player: 'Whenever a player\'s character is involved (recommended)',
+      always: 'Always, including NPC against NPC',
     },
     default: 'player',
   });

@@ -325,6 +325,9 @@ export class SR3EItem extends Item {
     const gm = await game.sr3e.SR3EQuery.asGM('sr3e.melee.negotiate', {
       atkName:    actor.name,
       defName:    targetActor.name,
+      // So the GM side can tell whether a player's character is in the fight (TODO 94).
+      atkUuid:    actor.uuid,
+      defUuid:    targetActor.uuid,
       atkVision:  visionReminder(actor.name, atkVis),
       defVision:  visionReminder(targetActor.name, defVis),
       atkVisionData: atkVis,

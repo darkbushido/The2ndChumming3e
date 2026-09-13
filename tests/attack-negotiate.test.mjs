@@ -104,6 +104,40 @@ export async function run(t) {
     t.is('and equals the base',                  res.tn, 4);
   }
 
+  /* ---- TODO 94: "player" mode is about who is INVOLVED, not who is asking ----
+   * Reported in play: the GM attacking a player got no modifier window, which is exactly when
+   * the GM wants to see why the number is what it is. */
+  const G = SR3EQuery.gmWindowOpens;
+  t.is('player mode: a player attacking opens it',          G('player', { requesterIsGM: false }), true);
+  t.is('player mode: the GM attacking a PC opens it',       G('player', { requesterIsGM: true, playerInvolved: true }), true);
+  t.is('player mode: NPC against NPC still skips it',       G('player', { requesterIsGM: true, playerInvolved: false }), false);
+  t.is('always: NPC against NPC opens it',                  G('always', { requesterIsGM: true }), true);
+  t.is('off: never, even with a PC involved',               G('off',    { requesterIsGM: false, playerInvolved: true }), false);
+
+  {
+    // End to end through the query: the GM attacks a PC → the window runs.
+    const pc  = { id: 'b', ownership: { default: 0, u1: 3 } };
+    const h   = harness({ mode: 'player', requesterIsGM: true });
+    globalThis.game.actors = { get: id => (id === 'Actor.b' ? pc : null) };
+    globalThis.game.users.some = fn => [{ id: 'u1', isGM: false }, { id: 'gm', isGM: true }].some(fn);
+    const res = await h.call();
+    t.is('the GM attacking a player\'s character opens the window', h.opened(), true);
+    t.is('…and it is an adjudication',                            res.adjudicated, true);
+  }
+
+  /* ⚠ Default ownership must not make every NPC a "player's character" — `hasPlayerOwner`'s trap. */
+  {
+    const users = [{ id: 'u1', isGM: false }, { id: 'gm', isGM: true }];
+    globalThis.game.users.some = fn => users.some(fn);
+    const goon = { id: 'g', ownership: { default: 3 } };            // world default: Owner
+    t.is('an NPC owned only through DEFAULT ownership is not a PC', SR3EQuery.isPlayerCharacter(goon), false);
+    t.is('an explicit Owner entry for a player is',
+      SR3EQuery.isPlayerCharacter({ id: 'p', ownership: { u1: 3 } }), true);
+    t.is('a player\'s assigned character is',
+      (() => { users[0].character = { id: 'c' }; return SR3EQuery.isPlayerCharacter({ id: 'c', ownership: {} }); })(), true);
+    t.is('an actor owned only by the GM is not', SR3EQuery.isPlayerCharacter({ id: 'n', ownership: { gm: 3 } }), false);
+  }
+
   /* ---- cancellation stays null, and must not read as an adjudication ---- */
   {
     const h = harness({ mode: 'always', requesterIsGM: true, windowResult: null });

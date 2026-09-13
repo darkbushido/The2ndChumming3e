@@ -145,6 +145,42 @@ export class SR3EQuery {
   }
 
   /**
+   * Does a player own this actor? — for the GM TN windows (TODO 94).
+   *
+   * ⚠ **Not `actor.hasPlayerOwner`.** That resolves through `ownership.default`, so in a world
+   * whose Actors directory defaults to Owner — a common setup — every goon reads as a player's,
+   * and "player" mode would open the window for every NPC-vs-NPC swing. Same trap, same fix, as
+   * `deciderFor` below: an assigned character, or an EXPLICIT Owner entry for a non-GM user.
+   * Offline players still count — the GM attacking an absent player's PC wants the breakdown too.
+   * @param {Actor|null} actor
+   */
+  static isPlayerCharacter(actor) {
+    if (!actor) return false;
+    const OWNER = globalThis.CONST?.DOCUMENT_OWNERSHIP_LEVELS?.OWNER ?? 3;
+    const users = typeof game.users?.some === 'function' ? game.users : [];
+    return users.some(u => !u.isGM
+      && (u.character?.id === actor.id || actor.ownership?.[u.id] === OWNER));
+  }
+
+  /**
+   * Does the GM's TN window open? · the `gmApprovesTN` setting (TODO 50, TODO 94)
+   *
+   * - `off`    — never.
+   * - `always` — every attack, the GM's own included.
+   * - `player` (default) — whenever a **player's character is involved on either side**: a player
+   *   attacking, OR the GM attacking a PC. It skips only NPC against NPC.
+   *
+   * ⚠ Keyed on who is INVOLVED, not who is asking. It used to skip whenever the requester was a
+   * GM, so the GM attacking a player got no breakdown of the difficulty — reported in play as
+   * TODO 94, when that breakdown is exactly what the GM wants in front of a player.
+   */
+  static gmWindowOpens(mode, { requesterIsGM = false, playerInvolved = false } = {}) {
+    if (mode === 'off')    return false;
+    if (mode === 'always') return true;
+    return !requesterIsGM || playerInvolved;
+  }
+
+  /**
    * The single user who decides for this actor.
    * Assigned character → EXPLICIT connected owner → active GM → null.
    *
@@ -608,11 +644,13 @@ export class SR3EQuery {
 
       const mode = game.settings.get('The2ndChumming3e', 'gmApprovesTN');
       const requesterIsGM = game.users.get(ctx._requesterId)?.isGM === true;
+      const playerInvolved = [ctx.atkUuid, ctx.defUuid]
+        .some(u => SR3EQuery.isPlayerCharacter(SR3EQuery.resolve(u)));
       // No window: the TNs the flow computed stand exactly as they are. `adjudicated:false`
       // is the caller’s only reliable signal that no GM looked — same trap as TODO 50, where
       // an empty-but-truthy payload was mistaken for a decision and locked a field nobody
       // could unlock.
-      if (mode === 'off' || (mode === 'player' && requesterIsGM)) {
+      if (!SR3EQuery.gmWindowOpens(mode, { requesterIsGM, playerInvolved })) {
         return { atkTN: ctx.baseAtkTN, defTN: ctx.baseDefTN, adjudicated: false };
       }
 
@@ -627,9 +665,12 @@ export class SR3EQuery {
 
       // Escape hatch: 'off' restores the pre-Stage-3 behaviour exactly — no GM
       // window, the attacker's own TN stands. 'player' (default) skips the window
-      // when the GM is attacking with their own NPCs, so GM-vs-NPC costs nothing.
+      // only for NPC against NPC, so a GM running a fight between their own NPCs pays
+      // nothing — but the GM attacking a PC does get it (TODO 94).
       const mode = game.settings.get('The2ndChumming3e', 'gmApprovesTN');
       const requesterIsGM = game.users.get(ctx._requesterId)?.isGM === true;
+      const playerInvolved = [ctx.attackerUuid, ctx.defenderUuid]
+        .some(u => SR3EQuery.isPlayerCharacter(SR3EQuery.resolve(u)));
       // No GM window: the attacker's own TN stands, unchanged.
       //
       // `adjudicated` is the caller's ONLY reliable signal that a GM actually looked at
@@ -637,7 +678,7 @@ export class SR3EQuery {
       // is truthy, so a caller testing the object itself concludes the GM set the TN and
       // locks the attacker's field — leaving a GM running NPC-vs-NPC with a number they
       // cannot change and no window to change it in. That was TODO 50.
-      if (mode === 'off' || (mode === 'player' && requesterIsGM)) {
+      if (!SR3EQuery.gmWindowOpens(mode, { requesterIsGM, playerInvolved })) {
         return { tn: ctx.baseTN, mods: {}, adjudicated: false };
       }
 

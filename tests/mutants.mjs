@@ -964,6 +964,16 @@ export const MUTANTS = [
   },
 
   {
+    id:     'gm-window-skips-gm-attacking-pc',
+    suite:  'attack-negotiate',
+    module: '../scripts/SR3EQuery.js', klass: 'SR3EQuery', method: 'gmWindowOpens',
+    was:    '"player" mode skipped the GM\'s TN window whenever a GM asked, so the GM attacking '
+          + 'a player got no breakdown of the difficulty - reported in play (TODO 94)',
+    impl:   (mode, { requesterIsGM = false } = {}) =>
+      mode === 'always' || (mode === 'player' && !requesterIsGM),
+  },
+
+  {
     id:     'dwarf-toxin-resistance-missing',
     suite:  'racial',
     ...ACTOR, method: 'racialSituational',

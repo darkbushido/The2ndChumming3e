@@ -1085,9 +1085,14 @@ fighter and hurts the other by the same amount. `sumMeleeModifiers` therefore re
 `{atk, def}` **pair of deltas**, not finished numbers: the base TNs already carry reach,
 defaulting tiers and any called shot, and handing back absolutes would silently discard them.
 
-Governed by the same `gmApprovesTN` setting as ranged, including `off` and the `player`
-mode that skips the window for GM-vs-GM NPCs. `adjudicated` is the caller's only reliable
-signal that a GM actually looked — do not infer it from the payload (TODO 50).
+Governed by the same `gmApprovesTN` setting as ranged — `SR3EQuery.gmWindowOpens`. Its default,
+`player`, opens the window **whenever a player's character is involved on either side** (a player
+attacking, or the GM attacking a PC) and skips only NPC against NPC (TODO 94; it used to skip
+whenever a GM asked, so the GM attacking a player saw no breakdown). ⚠ "A player's character" is
+`SR3EQuery.isPlayerCharacter` — assigned character or an **explicit** Owner entry — never
+`hasPlayerOwner`, which counts default ownership and would make every goon a PC in a world whose
+Actors default to Owner. `adjudicated` is the caller's only reliable signal that a GM actually
+looked — do not infer it from the payload (TODO 50).
 
 ⚠ **Visibility halves in melee.** p.123 applies the Visibility Table *"at half their value,
 rounding down, except for Full Darkness"* — `meleeVisibilityModifier`, not the ranged
