@@ -417,14 +417,17 @@ Then open the same dialog **twice at once** where that is possible — both copi
 
 ---
 
-## Attribute hover explanations — TODO 100 (`feature/modifier-tooltips`) — needs a live pass
+## Attribute hover explanations — TODO 100 (`feature/modifier-tooltips`)
 
-- [ ] A character with Muscle Replacement [2]: hovering Quickness's green **2** lists *+2 Muscle Replac. [2]*; hovering the bracketed total lists Base, the implant, and the total.
+**Walked by the agent 2026-09-14** (Browser pane, mcp-api) on a troll with Muscle Replac. [2], a running Adrenal Pump [1], a Pain Editor and Wired Reflexes [1]:
+- [x] Quickness: green **2** hovers *+2 Muscle Replac. [2]*; amber **1** hovers the pump *— 3 Combat Turns left (M&M p.63)*; the total reads **(7)**, the real value, and hovers Base 4 + both.
+- [x] Body's dermal armor chip reads *Troll dermal armor (SR3 p.56)*, total (4).
+- [x] Pain Editor: amber **− 1** on Intelligence, total (3).
+- [x] Initiative dice chip names *Wired Reflexes [1]*.
+- [x] Reaction hovers *(Quickness 4 + Intelligence 4) ÷ 2 = 4*, Wired Reflexes +2, the pump +2, and Muscle Replacement's Quickness as *does not count toward Reaction (M&M p.60)*. ⚠ Found live: it first printed the FINAL Quickness 7 / Intelligence 3, which did not add up — fixed with `derived.reactionInputs`.
 - [ ] An adept with Improved Physical Attribute 3: the gold chip names the power *and its level*.
-- [ ] A troll: Body's dermal armor chip still reads *Troll dermal armor (SR3 p.56)*.
-- [ ] Switch on an Adrenal Pump [2]: an **amber** chip appears on Quickness, Strength and Willpower naming the pump and its turns left, and the bracketed total rises with it. A Pain Editor shows **−1** on Intelligence.
 - [ ] An active Attribute Boost shows as an amber chip with its turns left.
-- [ ] Reaction hovers *(Quickness + Intelligence) ÷ 2*, then every bonus by name; with Wired Reflexes and Improved Reflexes both, the dropped one is listed as *not applied (SR3 p.169)*.
+- [ ] Wired Reflexes and Improved Reflexes both: the dropped one listed as *not applied (SR3 p.169)* (unit-tested).
 - [ ] Layered armour: the Quickness *+N TN* chip names the pieces worn.
 
 ---
