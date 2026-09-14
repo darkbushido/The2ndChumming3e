@@ -250,14 +250,19 @@ function _gearItems(gear, weapons = []) {
       // "10-Rnd Clip (Explosive)", Amount 2 — two pre-filled clips (TODO 114). Counted in
       // RELOADS, typed from the name, and fed by whichever gun the character owns that takes a
       // 10-round reload. Anything else (a box of rounds) keeps the old shape, and its rounds.
-      const reload = game.sr3e?.AmmoStock?.fromName(g.Name) ?? null;
-      const mech   = reload ? game.sr3e.AmmoStock.mechanismFor(reload.roundsPerReload, gunCapacities) : null;
+      // ⚠ Only a clip, drum, cylinder or belt has pre-filled reloads (SR3 p.280); a gun loaded by
+      // hand — an internal magazine, a break action — gets the same rounds as loose rounds.
+      const AS     = game.sr3e?.AmmoStock ?? null;
+      const reload = AS?.fromName(g.Name) ?? null;
+      const mech   = reload ? AS.mechanismFor(reload.roundsPerReload, gunCapacities) : null;
+      const byHand = reload && mech && AS.kind(mech) !== 'either';
       items.push({
         name: reload || qty <= 1 ? g.Name : `${g.Name} ×${qty}`,
         type: 'ammunition',
         system: {
-          ...(reload ? { countedIn: 'reloads', reloads: qty, roundsPerReload: reload.roundsPerReload,
-                         ammoType: reload.ammoType ?? 'regular', ...(mech ? { loadMechanism: mech } : {}) } : {}),
+          ...(reload ? { countedIn: 'reloads', ammoType: reload.ammoType ?? 'regular', ...(mech ? { loadMechanism: mech } : {}),
+                         ...(byHand ? { rounds: qty * reload.roundsPerReload }
+                                    : { reloads: qty, roundsPerReload: reload.roundsPerReload }) } : {}),
           concealability: _str(g.Concealability),
           damage:         _str(g.Damage),
           weight:         _num(g.Weight) * qty,

@@ -7514,12 +7514,22 @@ weapons / grenades*) should share the same split/merge path.
 
 ## 114. ✅ Reloading counts rounds where the player expects reloads — **reported in play 2026-09-13, FIXED** (0.5.2, `main`)
 
-**Fixed — an ammunition item is counted in loose ROUNDS or in RELOADS** (`system.countedIn`), chosen
-on its sheet. A stock of reloads holds `reloads` pre-filled clips / speed-loaders / cylinders, each
-`roundsPerReload` rounds (blank = fills the gun); reloading uses **one** and loads its rounds, never
-more than the magazine holds — a 10-round clip in an 8-round gun loads 8 and is gone. Loose rounds
-keep the old arithmetic. The sheet reads *"6 reloads of 7"*; storage splits and merges a stack of
-reloads by its count. Rules in `scripts/data/ammo-stock.mjs` (`AmmoStock`).
+**Fixed — the book's Ammo Reloading Table (SR3 p.280), which the maintainer chose as the model.**
+Clip, drum, cylinder and belt ammunition is counted in **reloads** (pre-filled clips, speed loaders,
+belts — `reloads` of `roundsPerReload`) or **loose rounds**, per item; internal-magazine, break-action,
+single-shot, arrow and bolt ammunition is loose rounds only. A reload is **swapped**: one is used, its
+rounds go in (never more than the gun holds — a 10-round clip in an 8-round gun loads 8 and is gone)
+and **the rounds left in the old one are lost** (the maintainer: *"if you swap mags you get the new
+amount and lose what was left in the old mag"*). Loose rounds **top up**, and the dialog asks how many
+go in this time. What it takes is said on the dialog and the notification — 2 Simple Actions for a
+clip, a Complex Action for a speed loader or belt, a Complex Action per (Quickness) rounds loose (2 for
+break action) — never enforced (TODO 48). The sheet reads *"6 reloads of 7"*; storage splits and
+merges a stack of reloads by its count. Rules in `scripts/data/ammo-stock.mjs` (`AmmoStock`).
+
+**Also found:** `config.js` labelled **`b` "Belt" and `m` "Magazine"**; the book's codes are break
+action and *internal* magazine (14 shipped guns are `(b)`, all break-action). Belt feed is now
+`belt`. And the reload dialog **offered stock from storage**. Both fixed. Live-walked 2026-09-13
+(TESTING.md, *Rounds or reloads*).
 
 **Found while fixing it:** the importer brought the generator's `10-Rnd Clip (Explosive)` (Amount 2)
 in with **0 rounds and type Regular** — unloadable with `trackAmmo` on, and the wrong ammunition off
@@ -7530,7 +7540,9 @@ already in a world when its stock is empty in both units and its name says it is
 someone typed is left alone. Names keep their "×6" — renaming is the GM's call.
 
 Tests: `tests/ammo-stock.test.mjs`, the importer (the troll's clips), migrations; mutants
-`reload-docks-rounds-for-reloads`, `reload-keeps-partial-clip`, `ammo-name-no-type`.
+`reload-docks-rounds-for-reloads`, `reload-keeps-partial-clip`, `ammo-name-no-type`,
+`swap-keeps-the-old-rounds`, `loose-rounds-swap-instead-of-topping-up`, `b-read-as-belt`,
+`loose-rounds-take-no-time`.
 
 The report as logged:
 

@@ -1460,13 +1460,20 @@ export const SR3E = {
   // ammunition-capacity string (e.g. "15(c)" → clip). Used to filter which ammo
   // a given gun can chamber. Order longest-code-first matters for parsing ("cy"/"sb"
   // before "c"/"s") — see SR3EItem._parseLoadMechanism.
+  //
+  // ⚠ The book's codes, SR3 p.280: "(c) means clip, (b) means break-action, (m) means maga-
+  // zine, (cy) means cylinder, and (belt) means belt feed" — and (m) is an INTERNAL magazine,
+  // "a small port inside the weapon in which rounds are inserted". This map said b = Belt and
+  // m = Magazine until 2026-09-13; 14 shipped guns use (b) and every one is break-action
+  // (Street Sweeper, Spike). How each one reloads is in `scripts/data/ammo-stock.mjs`.
   ammoLoadMechanisms: {
-    c:        'Clip',
-    m:        'Magazine',
+    c:        'Removable Clip',
+    m:        'Internal Magazine',
     cy:       'Cylinder',
-    b:        'Belt',
+    b:        'Break Action',
+    belt:     'Belt Feed',
     d:        'Drum',
-    sb:       'Single-Shot / Break',
+    sb:       'Single-Shot',
     internal: 'Internal',
     arrow:    'Arrow',   // bows (nocked one at a time)
     bolt:     'Bolt',    // crossbows (nocked one at a time)
