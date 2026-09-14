@@ -28,7 +28,7 @@ independent.
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 🖥 Matrix | **119** *(audit The Matrix Defragged v2 — the book is now in the library)* · **120** *(HoloSuite Hacking adapter / fork)* |
 | 📦 Content gaps | **117** *(934 documents lack a book/page)* · 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** · **104** *(**83** · **84** · **87** done)* |
-| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 20 · 56 · **100** · **103** · **105** *(**36** · **99** done)* |
+| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 56 · **100** · **103** · **105** *(**20** · **36** · **99** done)* |
 | 🧹 Housekeeping | 1 · 6 |
 | ✅ Done — kept for the record | **2** · **5** · **8** · **10** · 13 · **40** · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -3313,7 +3313,22 @@ structured fields #18 is about, or it is another guess.
 every consumer reads one resolved answer rather than each re-deriving it. Then pre-select the GM
 window's vision dropdown from it, still freely overridable.
 
-## 20. Migrate ~58 `renderDialogV2` hook sites to `DialogV2.wait`'s `render` option
+## 20. ✅ Migrate ~58 `renderDialogV2` hook sites to `DialogV2.wait`'s `render` option — **DONE 2026-09-13** (0.5.2, `main`)
+
+**All done.** The "~58" counted references; the live `Hooks.on('renderDialogV2', …)` sites numbered
+**18**, in seven files: defaulting, the vehicle-weapon shot type, the AoE throw, the called shot and
+the fire mode (`SR3EItem`); the ward attack; Browse Skills and the two Orthodox pickers (actor sheet);
+the compendium picker (item sheet); Drone Comprehension; Chunky Salsa, Barrier Damage, Falling Damage
+and Escape Artist (`sr3e.js`); infiltration and both IVIS dialogs (`SR3EMIJI`). Each hook body became a
+`const wireX = (app, html) => …` handed to `render: (_event, dialog) => wireX(dialog, dialog.element)`;
+the `Hooks.off` bookkeeping and the "not our dialog" guards went with the hook. None needed deleting
+outright (unlike the Orthodox IC one below) — each drove a control that should exist.
+
+**A leak it also closes:** the Fire Mode dialog never switched its hook off when dismissed, so the
+leftover hook sat waiting and wired the next dialog titled the same.
+
+`tests/dialog-wiring.test.mjs` fails on any global hook (comments ignored) and on a `wireX` that no
+`render` option calls. Needs one live pass over the 18 dialogs — TESTING.md, *Dialog wiring*.
 
 **Two down, 2026-08-13**, both while covering their cards in [#24](#24):
 

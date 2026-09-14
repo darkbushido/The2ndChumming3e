@@ -399,6 +399,24 @@ On the active combatant's card: **Complex** (full width) + two **Simple** button
 
 ---
 
+## Dialog wiring — TODO 20 (0.5.2) — needs a live pass
+
+Eighteen dialogs moved from the global `renderDialogV2` hook to their own `render` option. For
+each, open it and change the one control that recomputes something; the live value must follow.
+Then open the same dialog **twice at once** where that is possible — both copies must work.
+- [ ] Defaulting (a skill the actor lacks): switching Default to shows the right row and dice.
+- [ ] Vehicle weapon, Gunnery shot type (a degraded channel): Sig TN follows the shot type.
+- [ ] Grenade roll options: grenade type recomputes the range TN.
+- [ ] Called shot (melee): "Specific sub-target" shows the sub-target row.
+- [ ] Fire Mode: switching mode updates the recoil preview; dismiss it, open another, still works.
+- [ ] Ward attack: Sorcery / Spirit shows the extra row.
+- [ ] Browse Skills, Browse Orthodox Cyberdecks, Browse Orthodox Programs, the item sheet's compendium picker: the filter narrows the rows and a row click selects.
+- [ ] Drone Comprehension: the TN readout follows TN and secondary-drone.
+- [ ] Chunky Salsa (the canvas draws), Barrier Damage (effective BR), Falling Damage (preview), Escape Artist (preview).
+- [ ] MIJI Infiltration allocation counter; IVIS setup TN readout; IVIS split counter.
+
+---
+
 ## 5. Ranged Combat — **PARTLY AUTOMATED** (`npm run test:e2e`)
 
 Full flow: click weapon → target dialog → **GM's TN window** → roll options (TN, range,

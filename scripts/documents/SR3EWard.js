@@ -152,19 +152,18 @@ export class SR3EWard {
     if (!actorOpts) { ui.notifications.warn('No actors available to attack the ward.'); return; }
 
     const title = `Attack ${ward.name}`;
-    let hookId = Hooks.on('renderDialogV2', (app, html) => {
-      if (app.options?.window?.title !== title) return;
-      Hooks.off('renderDialogV2', hookId);
+    const wireDialog = (app, html) => {
       const el     = html?.querySelector ? html : html?.[0];
       const modeEl = el?.querySelector?.('#wa-mode');
       const rowEl  = el?.querySelector?.('#wa-force-row');
       modeEl?.addEventListener('change', () => {
         rowEl.style.display = (modeEl.value === 'sorcery' || modeEl.value === 'spirit') ? '' : 'none';
       });
-    });
+    };
 
     let result = null;
     await foundry.applications.api.DialogV2.wait({
+      render: (_event, dialog) => wireDialog(dialog, dialog.element),
       window: { title },
       content: `
         <div style="display:flex;flex-direction:column;gap:8px;padding:4px 0">
@@ -195,7 +194,6 @@ export class SR3EWard {
         { label: 'Cancel', action: 'cancel' },
       ],
     });
-    Hooks.off('renderDialogV2', hookId);
     if (!result) return;
 
     const attacker = game.actors.get(result.attackerActorId);

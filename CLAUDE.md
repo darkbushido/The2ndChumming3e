@@ -146,8 +146,10 @@ render — the correct place to wire live filters, row-click selection and live 
 > `wait` destructures `render` and, at `:420-422`, does
 > `if (typeof render === "function") dialog.addEventListener("render", event => render(event, dialog))`.
 > Core's own docs at `:154` say *"you must still use the `render` option to attach listeners"*.
-> **~58 sites across 8 files still use the old hook pattern** and should migrate — see the
-> dedicated TODO task. Do not add new ones.
+> **Every site is migrated** (TODO 20, 2026-09-13 — the "~58" was references, the live hook sites
+> numbered 18). `tests/dialog-wiring.test.mjs` fails on any `Hooks.on('renderDialogV2', …)` and
+> on a `const wireX` that no `render` option calls. The shape used throughout:
+> `const wireDialog = (app, html) => { … }` then `render: (_event, dialog) => wireDialog(dialog, dialog.element)`.
 
 ```js
 await foundry.applications.api.DialogV2.wait({
@@ -1110,7 +1112,7 @@ Auto-measured from tokens when available, otherwise manual. Applies to `firearm`
 - **Bands**: `SR3EItem._getRangeBands(actor)` → weapon `rangeOverride` ("5/15/30/50") → fixed metre table `SR3E.weaponRanges[category]` (firearms) → Strength-scaled `SR3E.weaponRangeMultipliers[category]` × effective STR (bows/thrown).
 - **Classify**: `SR3EItem._rangeBandForDistance(bands, metres)` → `{idx,label,tnMod,beyond}`. TN modifier from `SR3E.rangeTN` = `[0,1,2,5]` (Short 4 / Medium 5 / Long 6 / Extreme 9). Beyond Extreme warns but still allows.
   ⚠ **GRENADES USE A DIFFERENT ROW.** The Grenade Range Table (p.119) heads its columns **4 / 5 / 8 / 9** — Long is **8**, and the Weapon Range Table agrees from the other side (the launcher's Long band is footnoted *"Target number 8: see page 119"*). `SR3E.grenadeRangeTN` = `[0,1,4,5]` and the AoE flow reads it. Until 2026-08-30 the grenade path read `rangeTN`, so every long throw was two points easier than RAW — the shared array looked authoritative because every other weapon genuinely does use it.
-- **Override at fire time**: range is NOT pre-baked into `extraTNMod`; it's passed to `_promptWeaponRollOptions` as `rangeInfo` and rendered as an editable **Range dropdown** (pre-set to the measured band, shows measured metres). Changing it recomputes the TN live via a `renderDialogV2` hook guarded by `#sr-range`. The TN field stays the authoritative value on confirm.
+- **Override at fire time**: range is NOT pre-baked into `extraTNMod`; it's passed to `_promptWeaponRollOptions` as `rangeInfo` and rendered as an editable **Range dropdown** (pre-set to the measured band, shows measured metres). Changing it recomputes the TN live, wired through the dialog's own `render` option. The TN field stays the authoritative value on confirm.
 
 ### Attacking from the canvas
 Two entry points besides the sheet (both fire ready weapons via `_sr3eReadyWeapons`: firearms with ammo loaded when tracking, equipped melee, thrown w/ quantity, bows/crossbows with a nocked arrow/bolt when tracking, slings, **and combat/damaging spells — those with a damage code — for Awakened actors**):
@@ -1758,8 +1760,8 @@ mutually-exclusive options. **Take Aim** folds in as **−1 TN per point** (1 Si
 - **Specific sub-target**: a named component on a vehicle-sized+ target (tires, window, fuel tank…);
   normal damage rules, GM adjudicates destruction (usually Moderate+).
 - **Ranged**: built into `_promptWeaponRollOptions` (the `#sr-called` select + `#sr-aim` + sub-target
-  field). The +4/−aim is **folded live into the TN field** (same `renderDialogV2` hook as the range
-  dropdown, now guarded on `#sr-damage`); stage-up rewrites the returned `damageCode` **before** any
+  field). The +4/−aim is **folded live into the TN field** (the same per-dialog `render` wiring as the range
+  dropdown); stage-up rewrites the returned `damageCode` **before** any
   vehicle Power/2. The caller (`rollWeapon`) passes `calledShotAllowed = mode !== 'FA'` and appends a
   🎯 note to the card label.
 - **Melee**: a standalone `SR3EItem._promptCalledShot(actor)` dialog (attacker only) runs after
@@ -2370,7 +2372,7 @@ tiers (`SR3E.electronicWarfare.degradationTiers`): 1-3 +1, 4-6 +2, 7-9 +3, 10 = 
   helpers. Simsense full (10) → `applyDegradation` posts a **Dumpshock** pointer for the jacked rigger.
 - **Gunnery (vehicle weapons) — auto-prefilled, editable.** `_promptVehicleWeaponRollOptions` adds a
   "Shot type" select (Direct / Manual = Simsense / Indirect = System) that folds the firing vehicle's
-  matching channel tier into the TN live (renderDialogV2 hook on `#vw-shottype`); only shown when a
+  matching channel tier into the TN live (per-dialog `render` wiring on `#vw-shottype`); only shown when a
   relevant channel is degraded.
 - **Reference-only (no roll path / not modelled):** Command (Drone Comprehension, IVIS), Simsense
   Perception-through-drone, and System Smartlink-cancel. Surfaced via the vehicle EW tab's **Active

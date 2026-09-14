@@ -3249,10 +3249,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     let selectedIdx = null;
 
-    // DialogV2.wait() does not call its render option — use the Foundry hook instead
-    let hookId = Hooks.on('renderDialogV2', (app, html) => {
-      if (!html.querySelector?.('#sk-filter')) return;
-      Hooks.off('renderDialogV2', hookId);
+    // Wired per dialog through DialogV2.wait's `render` option (TODO 20) — never the global hook.
+    const wireDialog = (app, html) => {
 
       const filterInput = html.querySelector('#sk-filter');
       const idxInput    = html.querySelector('#sk-idx');
@@ -3280,9 +3278,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       // Foundry's own ApplicationV2 focus-management runs after this hook fires and
       // steals focus back to the default button — defer ours to win that race.
       requestAnimationFrame(() => filterInput.focus());
-    });
+    };
 
     await foundry.applications.api.DialogV2.wait({
+      render: (_event, dialog) => wireDialog(dialog, dialog.element),
       window: { title: 'Browse Skills' },
       content: `
         <div style="padding:4px 0">
@@ -3771,9 +3770,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     }).join('');
 
     let selectedIdx = null;
-    let hookId = Hooks.on('renderDialogV2', (_app, html) => {
-      if (!html.querySelector?.('#odm-deck-filter')) return;
-      Hooks.off('renderDialogV2', hookId);
+    const wireDialog = (_app, html) => {
       const filter = html.querySelector('#odm-deck-filter');
       const rows   = html.querySelectorAll('.sk-row');
       const idxIn  = html.querySelector('#odm-deck-idx');
@@ -3790,9 +3787,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         });
       });
       requestAnimationFrame(() => filter.focus());
-    });
+    };
 
     await foundry.applications.api.DialogV2.wait({
+      render: (_event, dialog) => wireDialog(dialog, dialog.element),
       window: { title: 'Browse Orthodox SR3 Cyberdecks' },
       position: { width: 560 },
       content: `
@@ -3874,9 +3872,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     }).join('');
 
     let selectedIdx = null;
-    let hookId = Hooks.on('renderDialogV2', (_app, html) => {
-      if (!html.querySelector?.('#odm-prog-filter')) return;
-      Hooks.off('renderDialogV2', hookId);
+    const wireDialog = (_app, html) => {
       const filter = html.querySelector('#odm-prog-filter');
       const rows   = html.querySelectorAll('.sk-row');
       const idxIn  = html.querySelector('#odm-prog-idx');
@@ -3893,9 +3889,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         });
       });
       requestAnimationFrame(() => filter.focus());
-    });
+    };
 
     await foundry.applications.api.DialogV2.wait({
+      render: (_event, dialog) => wireDialog(dialog, dialog.element),
       window: { title: 'Browse Orthodox SR3 Programs' },
       position: { width: 460 },
       content: `

@@ -756,10 +756,8 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     const pilot   = sys.attributes?.pilot?.base ?? 0;
     const cmdDeg  = game.sr3e.SR3EActor._signalTierMod(sys.signalMonitor?.command ?? 0);
 
-    let hookId = Hooks.on('renderDialogV2', (_app, html) => {
+    const wireDialog = (_app, html) => {
       const el = html?.querySelector ? html : html?.[0];
-      if (!el?.querySelector?.('#dc-tn')) return;
-      Hooks.off('renderDialogV2', hookId);
       const out = el.querySelector('#dc-tn-out');
       const recompute = () => {
         const tn  = parseInt(el.querySelector('#dc-tn')?.value) || 4;
@@ -772,10 +770,11 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
         n.addEventListener('change', recompute);
       });
       recompute();
-    });
+    };
 
     let result = null;
     await foundry.applications.api.DialogV2.wait({
+      render: (_event, dialog) => wireDialog(dialog, dialog.element),
       window: { title: `Drone Comprehension — ${vehicle.name}` },
       content: `
         <div style="display:flex;flex-direction:column;gap:8px;padding:4px 0;font-size:12px">
@@ -804,7 +803,6 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
         { label: 'Cancel', action: 'cancel' },
       ],
     });
-    if (hookId) Hooks.off('renderDialogV2', hookId);
     if (!result) return;
 
     return vehicle.rollPool(result.pool, result.tn, `📡 Drone Comprehension — ${vehicle.name}`, {

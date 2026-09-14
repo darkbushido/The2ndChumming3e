@@ -464,10 +464,8 @@ export class SR3EMIJI {
 
     // Live "spent / remaining" counter. Channels cost 1 each; time reduction and Intrusion
     // Factor are free inputs — the user allocates all three as they wish (unspent is allowed).
-    let hookId = Hooks.on('renderDialogV2', (_app, html) => {
+    const wireDialog = (_app, html) => {
       const el = html?.querySelector ? html : html?.[0];
-      if (!el?.querySelector?.('#inf-time')) return;
-      Hooks.off('renderDialogV2', hookId);
       const timeInp   = el.querySelector('#inf-time');
       const factorInp = el.querySelector('#inf-factor');
       const out       = el.querySelector('#inf-preview');
@@ -488,10 +486,11 @@ export class SR3EMIJI {
       timeInp.addEventListener('input', refresh);
       factorInp.addEventListener('input', refresh);
       refresh();
-    });
+    };
 
     let alloc = null;
     await foundry.applications.api.DialogV2.wait({
+      render: (_event, dialog) => wireDialog(dialog, dialog.element),
       window: { title: `Infiltration — ${total} successes` },
       content: `
         <div style="display:flex;flex-direction:column;gap:6px;padding:4px 0">
@@ -516,7 +515,6 @@ export class SR3EMIJI {
         { label: 'Cancel', action: 'cancel' },
       ],
     });
-    if (hookId) Hooks.off('renderDialogV2', hookId);
     if (!alloc) return;
 
     // Guard against over-allocation (channels are mandatory; trim Factor then Time to fit).
@@ -596,10 +594,8 @@ export class SR3EMIJI {
     const skill = this._smallUnitTactics(rigger);
 
     // Setup — pool (default SUT rating), TN (default 5), System-channel degradation (editable).
-    let hook1 = Hooks.on('renderDialogV2', (_app, html) => {
+    const wireIvisSetup = (_app, html) => {
       const el = html?.querySelector ? html : html?.[0];
-      if (!el?.querySelector?.('#ivis-tn')) return;
-      Hooks.off('renderDialogV2', hook1);
       const out = el.querySelector('#ivis-tn-out');
       const recompute = () => {
         const tn  = parseInt(el.querySelector('#ivis-tn')?.value)  || 5;
@@ -608,10 +604,11 @@ export class SR3EMIJI {
       };
       el.querySelectorAll('#ivis-tn, #ivis-deg').forEach(n => { n.addEventListener('input', recompute); });
       recompute();
-    });
+    };
 
     let setup = null;
     await foundry.applications.api.DialogV2.wait({
+      render: (_event, dialog) => wireIvisSetup(dialog, dialog.element),
       window: { title: `IVIS Test — ${rigger.name}` },
       content: `
         <div style="display:flex;flex-direction:column;gap:8px;padding:4px 0;font-size:12px">
@@ -638,7 +635,6 @@ export class SR3EMIJI {
         { label: 'Cancel', action: 'cancel' },
       ],
     });
-    if (hook1) Hooks.off('renderDialogV2', hook1);
     if (!setup) return;
 
     const res = this._resolveRoll(rigger, setup.pool, setup.tn);
@@ -653,10 +649,8 @@ export class SR3EMIJI {
 
     // Split successes: Comprehension bonus dice vs IVIS Pool.
     const total = res.successes;
-    let hook2 = Hooks.on('renderDialogV2', (_app, html) => {
+    const wireIvisSplit = (_app, html) => {
       const el = html?.querySelector ? html : html?.[0];
-      if (!el?.querySelector?.('#ivis-comp')) return;
-      Hooks.off('renderDialogV2', hook2);
       const compInp = el.querySelector('#ivis-comp');
       const poolInp = el.querySelector('#ivis-poolalloc');
       const out     = el.querySelector('#ivis-alloc-out');
@@ -670,10 +664,11 @@ export class SR3EMIJI {
       compInp.addEventListener('input', refresh);
       poolInp.addEventListener('input', refresh);
       refresh();
-    });
+    };
 
     let alloc = null;
     await foundry.applications.api.DialogV2.wait({
+      render: (_event, dialog) => wireIvisSplit(dialog, dialog.element),
       window: { title: `IVIS — ${total} successes` },
       content: `
         <div style="display:flex;flex-direction:column;gap:6px;padding:4px 0;font-size:12px">
@@ -695,7 +690,6 @@ export class SR3EMIJI {
         { label: 'Cancel', action: 'cancel' },
       ],
     });
-    if (hook2) Hooks.off('renderDialogV2', hook2);
     if (!alloc) return;
 
     // Trim Pool then Comprehension to fit the available successes.

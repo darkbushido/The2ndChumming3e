@@ -687,9 +687,7 @@ export class SR3EItem extends Item {
     const specOpts  = tiers.specializations.map(asOption).join('');
     const attrOpts  = tiers.attributes.map(asOption).join('');
 
-    let hookId = Hooks.on('renderDialogV2', (app, html) => {
-      if (!html.querySelector?.('#def-mode')) return;   // not our dialog
-      Hooks.off('renderDialogV2', hookId);
+    const wireDialog = (app, html) => {
       const modeSel  = html.querySelector('#def-mode');
       const rowSpec  = html.querySelector('#def-row-spec');
       const rowSkill = html.querySelector('#def-row-skill');
@@ -716,10 +714,11 @@ export class SR3EItem extends Item {
       modeSel.addEventListener('change', refresh);
       html.querySelectorAll('#def-spec,#def-skill,#def-attr').forEach(s => s.addEventListener('change', refresh));
       refresh();
-    });
+    };
 
     let result = null;
     await foundry.applications.api.DialogV2.wait({
+      render: (_event, dialog) => wireDialog(dialog, dialog.element),
       window: { title: opts.title ?? `Defaulting — ${actor.name}` },
       content: `
         <div style="padding:6px 0;font-size:13px;">
@@ -784,7 +783,6 @@ export class SR3EItem extends Item {
         { label: 'Cancel', action: 'cancel' },
       ],
     });
-    Hooks.off('renderDialogV2', hookId);
     return result;
   }
 
@@ -1578,20 +1576,19 @@ export class SR3EItem extends Item {
       ['indirect', sysMod, `Indirect fire (System +${sysMod})`],
     ];
 
-    let hookId = Hooks.on('renderDialogV2', (_app, html) => {
+    const wireDialog = (_app, html) => {
       const el = html?.querySelector ? html : html?.[0];
-      if (!el?.querySelector?.('#vw-shottype')) return;
-      Hooks.off('renderDialogV2', hookId);
       const sel = el.querySelector('#vw-shottype');
       const sig = el.querySelector('#vw-sig');
       sel.addEventListener('change', () => {
         const mod = parseInt(sel.selectedOptions[0]?.dataset.mod) || 0;
         if (sig) sig.value = defaultTN + mod;
       });
-    });
+    };
 
     let result = null;
     await foundry.applications.api.DialogV2.wait({
+      render: (_event, dialog) => wireDialog(dialog, dialog.element),
       window: { title: `${weapon.name} — Attack Options` },
       content: `
         <style>
@@ -1676,7 +1673,6 @@ export class SR3EItem extends Item {
         { label: 'Cancel', action: 'cancel' },
       ],
     });
-    if (hookId) Hooks.off('renderDialogV2', hookId);
     return result;
   }
 
@@ -2046,10 +2042,7 @@ export class SR3EItem extends Item {
     const defaultTN = 4 + (bandFor(initType)?.tnMod ?? 0);
 
     const AOE_TITLE = 'AoE Weapon Roll Options';
-    let aoeHookId;
-    aoeHookId = Hooks.on('renderDialogV2', (app, html) => {
-      if (app.options?.window?.title !== AOE_TITLE) return;
-      Hooks.off('renderDialogV2', aoeHookId);
+    const wireAoe = (app, html) => {
       const el = html?.querySelector ? html : (html?.[0] ?? null);
       if (!el) return;
       const sel  = el.querySelector('#sr-grenade-type');
@@ -2064,10 +2057,11 @@ export class SR3EItem extends Item {
       };
       sel?.addEventListener('change', recompute);
       recompute();
-    });
+    };
 
     let result = null;
     await foundry.applications.api.DialogV2.wait({
+      render: (_event, dialog) => wireAoe(dialog, dialog.element),
       window: { title: AOE_TITLE },
       content: `
         <div style="padding:8px 0">
@@ -2110,7 +2104,6 @@ export class SR3EItem extends Item {
         { label: 'Cancel', action: 'cancel' }
       ]
     });
-    if (aoeHookId) Hooks.off('renderDialogV2', aoeHookId);
     return result;
   }
 
@@ -2324,16 +2317,14 @@ export class SR3EItem extends Item {
    * where tnMod = +4 (if a called shot is chosen) − take-aim points, or null if cancelled.
    */
   static async _promptCalledShot(actor, weapon = null) {
-    let hookId = Hooks.on('renderDialogV2', (_app, html) => {
+    const wireDialog = (_app, html) => {
       const el = html?.querySelector ? html : html?.[0];
-      if (!el?.querySelector?.('#sr-called-cs')) return; // not our dialog
-      Hooks.off('renderDialogV2', hookId);
       const calledSel = el.querySelector('#sr-called-cs');
       const subRow    = el.querySelector('#sr-subtarget-row-cs');
       calledSel?.addEventListener('change', () => {
         if (subRow) subRow.style.display = calledSel.value === 'subtarget' ? '' : 'none';
       });
-    });
+    };
 
     // Charging Attack is Cannon Companion content (p.86), so it is offered only when that book
     // is in play — the first MECHANICAL use of the source-book filter. See
@@ -2353,6 +2344,7 @@ export class SR3EItem extends Item {
     let result = { calledShot: 'none', calledShotTarget: '', tnMod: 0, charging: false, killingHands: null };
     let cancelled = true;
     await foundry.applications.api.DialogV2.wait({
+      render: (_event, dialog) => wireDialog(dialog, dialog.element),
       window: { title: 'Called Shot (optional)' },
       content: `
         <div style="padding:8px 0">
@@ -2426,7 +2418,6 @@ export class SR3EItem extends Item {
         { label: 'Cancel', action: 'cancel' },
       ],
     });
-    if (hookId) Hooks.off('renderDialogV2', hookId);
     if (cancelled) return null;
     return result;
   }
@@ -3617,10 +3608,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     </div>`;
 
   const fireModeTitle = `${weaponName} — Fire Mode`;
-  let fireModeHookId;
-  fireModeHookId = Hooks.on('renderDialogV2', (app, html) => {
-    if (app.options?.window?.title !== fireModeTitle) return;
-    Hooks.off('renderDialogV2', fireModeHookId);
+  const wireFireMode = (app, html) => {
     const el = html?.querySelector ? html : (html?.[0] ?? null);
     if (!el) return;
     el.addEventListener('change', event => {
@@ -3658,10 +3646,11 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       el.querySelector('#sr-rounds-fired').textContent = '0';
       refreshPreviews();
     });
-  });
+  };
 
   let result = null;
   await foundry.applications.api.DialogV2.wait({
+    render: (_event, dialog) => wireFireMode(dialog, dialog.element),
     window: { title: fireModeTitle },
     content: `
       <div style="padding:8px 0">

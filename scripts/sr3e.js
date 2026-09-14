@@ -834,10 +834,7 @@ async function _openChunkySalsaCalculator(opts = {}) {
   let proceed = false, finalPower = 0, finalLevel = 'S', finalTargets = [];
 
   const SALSA_TITLE = '💥 Chunky Salsa — Confined Space Blast';
-  let salsaHookId;
-  salsaHookId = Hooks.on('renderDialogV2', (app, html) => {
-    if (app.options?.window?.title !== SALSA_TITLE) return;
-    Hooks.off('renderDialogV2', salsaHookId);
+  const wireSalsa = (app, html) => {
     const el = html?.querySelector ? html : (html?.[0] ?? null);
     if (!el) return;
     // Canvas stripped by Foundry's sanitizer — inject it programmatically
@@ -859,9 +856,10 @@ async function _openChunkySalsaCalculator(opts = {}) {
     canvas.addEventListener('mouseup',     e => onUp(e, canvas));
     canvas.addEventListener('contextmenu', e => e.preventDefault());
     draw(canvas);
-  });
+  };
 
   await foundry.applications.api.DialogV2.wait({
+    render: (_event, dialog) => wireSalsa(dialog, dialog.element),
     window:   { title: SALSA_TITLE },
     position: { width: 478 },
     content: `
@@ -902,7 +900,6 @@ async function _openChunkySalsaCalculator(opts = {}) {
     ],
   });
 
-  Hooks.off('renderDialogV2', salsaHookId);
   // Nobody starts ticked from the sidebar (TODO 96), so posting with no one chosen is a likely
   // slip rather than an intent — say so instead of doing nothing silently.
   if (proceed && !opts.returnOnly && !actors.some(a => a.checked)) {
@@ -961,10 +958,7 @@ async function _openBarrierDamageCalculator() {
     .map(a => `<option value="${a.id}">${a.name}</option>`).join('');
 
   const TITLE = '🧱 Barrier Damage';
-  let hookId;
-  hookId = Hooks.on('renderDialogV2', (app, html) => {
-    if (app.options?.window?.title !== TITLE) return;
-    Hooks.off('renderDialogV2', hookId);
+  const wireDialog = (app, html) => {
     const el = html?.querySelector ? html : (html?.[0] ?? null);
     if (!el) return;
 
@@ -990,10 +984,11 @@ async function _openBarrierDamageCalculator() {
     });
     el.addEventListener('input', updateEffLabel);
     updateEffLabel();
-  });
+  };
 
   let res = null;
   await foundry.applications.api.DialogV2.wait({
+    render: (_event, dialog) => wireDialog(dialog, dialog.element),
     window: { title: TITLE },
     content: `
       <div style="padding:4px 0">
@@ -1054,7 +1049,6 @@ async function _openBarrierDamageCalculator() {
     ],
   });
 
-  Hooks.off('renderDialogV2', hookId);
   if (!res) return;
 
   if (res.type === 'blast') {
@@ -1077,10 +1071,7 @@ async function _openFallingDamageCalculator() {
   if (!actorOpts) { ui.notifications.warn('No characters or NPCs in the world.'); return; }
 
   const TITLE = '🪂 Falling Damage';
-  let hookId;
-  hookId = Hooks.on('renderDialogV2', (app, html) => {
-    if (app.options?.window?.title !== TITLE) return;
-    Hooks.off('renderDialogV2', hookId);
+  const wireDialog = (app, html) => {
     const el = html?.querySelector ? html : (html?.[0] ?? null);
     if (!el) return;
 
@@ -1121,10 +1112,11 @@ async function _openFallingDamageCalculator() {
     el.querySelector('#fall-actor')?.addEventListener('change', updatePreview);
     el.querySelector('#fall-distance')?.addEventListener('input', updatePreview);
     updatePreview();
-  });
+  };
 
   let res = null;
   await foundry.applications.api.DialogV2.wait({
+    render: (_event, dialog) => wireDialog(dialog, dialog.element),
     window: { title: TITLE },
     content: `
       <div style="padding:4px 0">
@@ -1182,7 +1174,6 @@ async function _openFallingDamageCalculator() {
     ],
   });
 
-  Hooks.off('renderDialogV2', hookId);
   if (!res) return;
 
   const actor = game.actors.get(res.actorId);
@@ -1230,10 +1221,7 @@ async function _openEscapeArtistCalculator() {
   if (!actorOpts) { ui.notifications.warn('No characters or NPCs in the world.'); return; }
 
   const TITLE = '🔓 Escape Artist';
-  let hookId;
-  hookId = Hooks.on('renderDialogV2', (app, html) => {
-    if (app.options?.window?.title !== TITLE) return;
-    Hooks.off('renderDialogV2', hookId);
+  const wireDialog = (app, html) => {
     const el = html?.querySelector ? html : (html?.[0] ?? null);
     if (!el) return;
 
@@ -1275,12 +1263,13 @@ async function _openEscapeArtistCalculator() {
     el.querySelector('#ea-restraint')?.addEventListener('change', updatePreview);
     el.querySelector('#ea-tn-mod')?.addEventListener('input', updatePreview);
     updatePreview();
-  });
+  };
 
   const restraintOpts = RESTRAINTS.map((r, i) => `<option value="${i}">${r.name} (TN ${r.tn})</option>`).join('');
 
   let res = null;
   await foundry.applications.api.DialogV2.wait({
+    render: (_event, dialog) => wireDialog(dialog, dialog.element),
     window: { title: TITLE },
     content: `
       <div style="padding:4px 0">
@@ -1339,7 +1328,6 @@ async function _openEscapeArtistCalculator() {
     ],
   });
 
-  Hooks.off('renderDialogV2', hookId);
   if (!res) return;
 
   const actor = game.actors.get(res.actorId);

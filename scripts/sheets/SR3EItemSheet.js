@@ -1136,10 +1136,8 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
 
     let chosen = null;
 
-    // DialogV2.wait() does not call its render option — use the Foundry hook instead
-    let hookId = Hooks.on('renderDialogV2', (app, html) => {
-      if (!html.querySelector?.('#sr3e-pack-filter')) return; // not our dialog
-      Hooks.off('renderDialogV2', hookId);
+    // Wired per dialog through DialogV2.wait's `render` option (TODO 20) — never the global hook.
+    const wireDialog = (app, html) => {
 
       const filterEl = html.querySelector('#sr3e-pack-filter');
       const rows     = html.querySelectorAll('.sr3e-pack-item');
@@ -1168,9 +1166,10 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       // Foundry's own ApplicationV2 focus-management runs after this hook fires and
       // steals focus back to the default button — defer ours to win that race.
       requestAnimationFrame(() => filterEl.focus());
-    });
+    };
 
     await foundry.applications.api.DialogV2.wait({
+      render: (_event, dialog) => wireDialog(dialog, dialog.element),
       window: { title: `Pick ${type} from compendium` },
       content: `
         <div class="sr3e-pack-picker">
@@ -1198,8 +1197,6 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         { label: 'Cancel', action: 'cancel' },
       ],
     });
-
-    Hooks.off('renderDialogV2', hookId); // clean up if dialog was cancelled
 
     if (!chosen) return;
     const doc = await fromUuid(chosen);
