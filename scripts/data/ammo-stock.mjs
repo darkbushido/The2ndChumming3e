@@ -22,7 +22,9 @@
  * - **loose** — internal magazine, break action, single-shot, arrows and bolts: rounds only.
  *
  * Loose rounds **top up** the gun, a Complex Action per (Quickness) rounds (2 for break action),
- * and nothing is lost — unless a different ammunition type goes in, which replaces what was there.
+ * and **nothing is lost** (the maintainer: *"reloading a weapon using a clip should lose the old
+ * rounds. anything that's going round by round … shouldn't lose the unused rounds"*). Loading a
+ * different type round by round unloads the unfired rounds back into stock.
  *
  * ⚠ The action cost is SHOWN, never enforced — the system does not model the action economy
  * (TODO 48). A player in a firefight can load only part of a magazine; the reload dialog asks how
@@ -77,34 +79,39 @@ export const AmmoStock = {
    * ⚠ **Swapping loses what was in the old one** — the maintainer's rule and the physical fact.
    * ⚠ **A reload is used up whole**: a 10-round clip in an 8-round gun loads 8 and is gone.
    * ⚠ **Loose rounds TOP UP**; `want` caps how many go in this time (a Complex Action per
-   *   Quickness rounds). A different ammunition type cannot share the gun, so it replaces it.
+   *   Quickness rounds). A different ammunition type cannot share the gun, so the unfired rounds
+   *   come out and go back into stock (`returned`) — round by round never loses one.
    * @param {object} sys  the ammunition item's system data
    * @param {number} magSize
    * @param {{rounds?:number, type?:string|null}} [current]  what is in the gun now
    * @param {{want?:number|null}} [opts]  loose rounds to load this time (default: fill it)
-   * @returns {{unit, field, loaded, remaining, taken, discarded, short, mismatch, topUp}}
+   * @returns {{unit, field, loaded, remaining, taken, discarded, returned, short, mismatch, topUp}}
    *   `loaded` — rounds in the gun afterwards; `taken` — out of the stock, in its own unit;
-   *   `discarded` — rounds lost from the gun.
+   *   `discarded` — rounds lost with a swapped reload; `returned` — unfired rounds of another type
+   *   unloaded back into stock (loose rounds only).
    */
   reloadPlan(sys, magSize, current = {}, opts = {}) {
     const st  = AmmoStock.stock(sys);
     const mag = whole(magSize);
     const inGun = Math.min(mag, whole(current?.rounds));
     if (st.unit === 'reloads') {
-      if (st.count <= 0) return { unit: st.unit, field: st.field, loaded: inGun, remaining: 0, taken: 0, discarded: 0, short: inGun < mag, mismatch: false, topUp: false };
+      if (st.count <= 0) return { unit: st.unit, field: st.field, loaded: inGun, remaining: 0, taken: 0, discarded: 0, returned: 0, short: inGun < mag, mismatch: false, topUp: false };
       const per    = st.perReload > 0 ? st.perReload : mag;
       const loaded = Math.min(mag, per);
-      return { unit: st.unit, field: st.field, loaded, remaining: st.count - 1, taken: 1, discarded: inGun,
+      return { unit: st.unit, field: st.field, loaded, remaining: st.count - 1, taken: 1, discarded: inGun, returned: 0,
                short: loaded < mag, mismatch: st.perReload > 0 && st.perReload !== mag, topUp: false };
     }
+    // ⚠ Round by round NEVER loses a round (the maintainer, 2026-09-13: "anything that's going round
+    // by round … shouldn't lose the unused rounds"). A different type cannot share the gun, so the
+    // unfired ones are UNLOADED back into stock (`returned`) — never discarded.
     const same   = inGun > 0 && (current?.type ?? null) === (sys?.ammoType ?? 'regular');
     const kept   = same ? inGun : 0;
     const room   = mag - kept;
     const want   = opts?.want === null || opts?.want === undefined ? room : Math.min(room, whole(opts.want));
     const taken  = Math.min(want, st.count);
     const loaded = kept + taken;
-    return { unit: st.unit, field: st.field, loaded, remaining: st.count - taken, taken, discarded: same ? 0 : inGun,
-             short: loaded < mag, mismatch: false, topUp: same };
+    return { unit: st.unit, field: st.field, loaded, remaining: st.count - taken, taken, discarded: 0,
+             returned: same ? 0 : inGun, short: loaded < mag, mismatch: false, topUp: same };
   },
 
   /**

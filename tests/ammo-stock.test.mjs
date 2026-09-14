@@ -57,7 +57,10 @@ export async function run(t) {
   t.is('only 3 rounds this time: 5 in the gun', part.loaded, 5);
   const other = AmmoStock.reloadPlan(rounds(20, 'm', { ammoType: 'gel' }), 6, { rounds: 2, type: 'regular' });
   t.is('a different ammunition type replaces what was there', other.loaded, 6);
-  t.is('…and the 2 regular rounds are lost', other.discarded, 2);
+  t.is('…but round by round never LOSES a round — nothing discarded', other.discarded, 0);
+  t.is('…the 2 regular rounds are unloaded back into stock', other.returned, 2);
+  t.is('same type: nothing comes out', tube.returned, 0);
+  t.is('a clip swap unloads nothing — the old rounds go with the clip', swap.returned, 0);
   const short = AmmoStock.reloadPlan(rounds(3), 15);
   t.is('3 loose rounds into an empty 15-round clip: 3', short.loaded, 3);
   t.ok('…short', short.short);
@@ -108,6 +111,9 @@ export async function run(t) {
   t.ok('…says what the reload takes', /AmmoStock\.reloadActions\(/.test(reload));
   t.ok('…and what was lost', /plan\.discarded/.test(reload));
   t.ok('…never from storage (the stash is not on the character)', /!i\.getFlag\('The2ndChumming3e', 'stored'\)/.test(reload));
+  t.ok('…and puts unloaded rounds back into stock', /plan\.returned > 0 \? await SR3EItem\._returnRounds\(actor, gunMech, current\.type, plan\.returned\)/.test(reload));
+  const back = item.slice(item.indexOf('static async _returnRounds'), item.indexOf('static async _returnRounds') + 1200);
+  t.ok('_returnRounds adds to the loose stock of that type, or makes one', /'system\.rounds': \(home\.system\.rounds \?\? 0\) \+ n/.test(back) && /createEmbeddedDocuments\('Item'/.test(back));
   const dlg = item.slice(item.indexOf('static async _promptReloadChoice'), item.indexOf('static async _promptReloadChoice') + 5000);
   t.ok('the dialog asks how many loose rounds', /id="reload-rounds"/.test(dlg));
   t.ok('…wired per dialog', /render: \(_event, dialog\) => wireReload\(dialog, dialog\.element\)/.test(dlg));

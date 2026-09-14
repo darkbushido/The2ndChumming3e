@@ -70,6 +70,16 @@ export const MUTANTS = [
     impl:   function (sys, magSize, current, opts) { return this._reloadPlan(sys, magSize, {}, opts); },
   },
   {
+    id:     'loose-rounds-of-another-type-lost',
+    suite:  'ammo-stock',
+    ...AMMO, method: 'reloadPlan',
+    needsOriginal: '_reloadPlan',
+    was:    'loading a different type round by round threw the unfired rounds away — the maintainer: '
+          + '"anything that\'s going round by round … shouldn\'t lose the unused rounds"',
+    impl:   function (sys, magSize, current, opts) { const p = this._reloadPlan(sys, magSize, current, opts);
+      return p.returned ? { ...p, discarded: p.returned, returned: 0 } : p; },
+  },
+  {
     id:     'b-read-as-belt',
     suite:  'ammo-stock',
     ...AMMO, method: 'kind',

@@ -1901,6 +1901,7 @@ export class SR3EItem extends Item {
     }
     await ammo.update({ [`system.${plan.field}`]: plan.remaining });
     await this.update({ 'system.loadedAmmoType': type, 'system.loadedRounds': plan.loaded });
+    const returnedTo = plan.returned > 0 ? await SR3EItem._returnRounds(actor, gunMech, current.type, plan.returned) : null;
     const quickness = actor.system?.attributes?.quickness?.value ?? 1;
     const actions   = AmmoStock.reloadActions(ammo.system, { taken: plan.taken, quickness }).text;
     const parts = [
@@ -1908,9 +1909,31 @@ export class SR3EItem extends Item {
       plan.topUp ? `topped up with ${plan.taken}` : '',
       plan.mismatch ? `a ${ammo.system.roundsPerReload}-round reload in a gun that holds ${magSize}` : '',
       plan.discarded ? `${plan.discarded} unfired round${plan.discarded === 1 ? '' : 's'} lost with the old load` : '',
+      returnedTo ? `${plan.returned} unfired round${plan.returned === 1 ? '' : 's'} unloaded into ${returnedTo}` : '',
       `${AmmoStock.describe({ ...ammo.system, [plan.field]: plan.remaining })} left`,
     ].filter(Boolean);
     ui.notifications.info(`${parts.join(' — ')}.${actions ? ` Takes: ${actions}.` : ''}`);
+  }
+
+  /**
+   * Put unfired rounds taken OUT of a gun back into the character's loose-round stock of that
+   * type — the one it already carries, else a new item. Loading round by round never loses a round
+   * (the maintainer, 2026-09-13), and a gun holds one ammunition type, so switching type this way
+   * unloads the old rounds rather than discarding them. Returns the stock item's name.
+   */
+  static async _returnRounds(actor, mech, type, n) {
+    const t = type || 'regular';
+    const home = actor.items.find(i => i.type === 'ammunition' && !i.getFlag('The2ndChumming3e', 'stored')
+      && (i.system.loadMechanism ?? 'c') === mech && (i.system.ammoType ?? 'regular') === t
+      && AmmoStock.unit(i.system) === 'rounds');
+    if (home) {
+      await home.update({ 'system.rounds': (home.system.rounds ?? 0) + n });
+      return home.name;
+    }
+    const label = game.sr3e.SR3E.ammoTypes[t]?.label ?? 'Regular';
+    const [made] = await actor.createEmbeddedDocuments('Item', [{ name: `${label} rounds (unloaded)`, type: 'ammunition',
+      system: { ammoType: t, loadMechanism: mech || 'c', countedIn: 'rounds', rounds: n } }]);
+    return made?.name ?? `${label} rounds`;
   }
 
   /**
@@ -1952,7 +1975,7 @@ export class SR3EItem extends Item {
         const plan = AmmoStock.reloadPlan(ammo.system, magSize, current, { want });
         const act  = AmmoStock.reloadActions(ammo.system, { taken: plan.taken, quickness }).text;
         out.textContent = plan.taken <= 0 ? 'Already full.'
-          : `${plan.loaded}/${magSize} in the gun afterwards${plan.discarded ? ` — ${plan.discarded} unfired lost` : ''}.${act ? ` ${act}.` : ''}`;
+          : `${plan.loaded}/${magSize} in the gun afterwards${plan.discarded ? ` — ${plan.discarded} unfired lost` : ''}${plan.returned ? ` — ${plan.returned} unfired go back into stock` : ''}.${act ? ` ${act}.` : ''}`;
       };
       sel.addEventListener('change', () => refresh(true));
       inp?.addEventListener('input', () => refresh(false));
