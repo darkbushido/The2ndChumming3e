@@ -56,7 +56,8 @@ mage in Seattle knows about the world.
   - Every spell you're sustaining adds **+2** to Drain Power. *(SR3 p.162)*
 - **Spell Pool** = (INT + WIL + MAG) ÷ 3. *(SR3 p.44)*
 
-For the full procedure see [Actions & Combat](../../rules/combat/#spellcasting-and-drain).
+For the full step-by-step, including resistance, Spell Defense and Drain, see
+[Spellcasting, Resistance & Drain](../spellcasting/).
 
 ### Conjuring
 

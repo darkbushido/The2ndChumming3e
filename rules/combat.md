@@ -255,6 +255,9 @@ Physical and Stun damage each fill a **10-box** track.
 ## Spellcasting and Drain  *(summary)*
 {: #spellcasting-and-drain }
 
+The full step-by-step, with Spell Defense, elemental spells and sustaining, is
+on [Spellcasting, Resistance & Drain](../../magic/spellcasting/).
+
 Casting a spell is a **Complex Action**. *(SR3 p.107)*
 
 1. **Force**: you can cast a spell at any Force up to the one you learned it

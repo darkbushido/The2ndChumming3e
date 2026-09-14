@@ -35,14 +35,19 @@ printed page, verify against the PDF, and put non-book material in a `.house` bo
    Check any other use against the scans (`tools/pdf-jpegs.mjs`).
 10. ***Corporate Download*** isn't in the PDF library. If it's added, check the Face page
     against it.
+11. **Power of elemental spells.** SR3 p.183 and p.196 describe elemental spells
+    (Fireball and similar) as ranged attacks resisted with Body and half Impact armor,
+    but never state the damage Power. `magic/spellcasting.md` gives the usual reading,
+    Power = Force, in a note. Check *Magic in the Shadows* or the Street Grimoire entries
+    for an explicit statement.
 
 ## Site
 
-11. **Link the old gists to the new pages.** Add a line at the top of each of the 15 gists
+12. **Link the old gists to the new pages.** Add a line at the top of each of the 15 gists
     pointing to its corrected page. This edits public content, so wait for the go-ahead.
-12. **Check the theme on a phone and when scrolled.** Screenshots were only possible at
+13. **Check the theme on a phone and when scrolled.** Screenshots were only possible at
     the top of each page in the preview pane; mobile layout hasn't been checked.
-13. **Contrast check** for muted text (`$sw-muted` on obsidian) and the gold table headers.
-14. **Search results include hidden corrections.** Just the Docs indexes the whole page,
+14. **Contrast check** for muted text (`$sw-muted` on obsidian) and the gold table headers.
+15. **Search results include hidden corrections.** Just the Docs indexes the whole page,
     so a search can land on a correction box that's hidden. Probably fine; revisit if it
     confuses readers.
