@@ -28,7 +28,7 @@
 import { SRCG_BONUSES } from './data/srcg-bonuses.js';
 import { expandCyberwareName } from './data/cyberware-names.js';
 import { parseJohnsonNotes, isJohnsonNote } from './data/johnson-notes.mjs';
-import { ratingFromName } from './data/item-rating.mjs';
+import { knownRating } from './data/item-rating.mjs';
 import { AmmoStock } from './data/ammo-stock.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
@@ -330,13 +330,20 @@ const MIGRATIONS = [
      * A fixer, but a FILL-BLANKS one: it writes only when the field is 0, null or '' and the
      * name carries a rating, so a GM who typed a rating keeps it and a second run is a no-op.
      * `medical` keeps its rating as a string ("+2" is a real value there).
+     *
+     * ⚠ **For GEAR, the field is the rating and null means none** (the maintainer, 2026-09-14;
+     * cyberware and bioware are out of scope — TODO 122). So a gear item's legacy
+     * `0` with nothing to fill it from becomes `null` — the old default read as "look at the name",
+     * the new one reads as "no rating", and leaving a 0 would keep the two meanings mixed. The fill
+     * also reads the generator's Rating column (`GEAR_RATINGS`): a plain *Medkit* is 3 (SR3 p.304).
      */
     fixItem: (item) => {
       if (!['gear', 'cyberware', 'bioware', 'medical'].includes(item.type)) return null;
       const cur = item.system?.rating;
       if (!(cur === undefined || cur === null || cur === '' || Number(cur) === 0)) return null;
-      const r = ratingFromName(item.name);
-      if (!r) return null;
+      const r = knownRating(item.name);
+      // Gear only: its field is nullable and null is "none". Cyberware/bioware keep 0 (TODO 122).
+      if (!r) return item.type === 'gear' && cur === 0 ? { 'system.rating': null } : null;
       return { 'system.rating': item.type === 'medical' ? String(r) : r };
     },
   },

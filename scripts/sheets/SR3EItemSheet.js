@@ -10,7 +10,7 @@ import {
   skillTypeForCategory,
 } from '../config.js';
 import { SPIRIT_TYPES } from '../documents/SR3ESpiritSummoning.js';
-import { ratingFromName } from '../data/item-rating.mjs';
+import { knownRating } from '../data/item-rating.mjs';
 import { AmmoStock } from '../data/ammo-stock.mjs';
 
 export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
@@ -206,13 +206,18 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
    * name's rating as its placeholder, which is what `itemRating()` uses; typing a number saves it
    * and that number wins. Showing a bare 0 claimed the item had no rating at all.
    */
+  /**
+   * The Rating box (TODO 118). The field IS the rating and a blank box means NO rating — the
+   * maintainer's rule. A name or the generator's table that implies one is offered as a hint; the
+   * migration fills it in worlds, so the hint only shows on an item nobody has filled.
+   */
   _ratingField(s) {
-    const stored = Number(s.rating) || 0;
-    const fromName = ratingFromName(this.document?.name);
-    const hint = !stored && fromName !== null
-      ? `placeholder="${fromName}" title="Nothing saved — the name says ${fromName}, and that is what is used. Type a number to override it."`
-      : 'placeholder="—"';
-    return this._f('Rating', 'rating', stored || '', 'number', `min="0" ${hint}`);
+    const stored = Number(s.rating) > 0 ? Number(s.rating) : null;
+    const known  = stored === null ? knownRating(this.document?.name) : null;
+    const hint = known !== null
+      ? `placeholder="${known}?" title="No rating saved. The name (or the book) suggests ${known} — type it to use it; blank means no rating."`
+      : 'placeholder="—" title="Blank = no rating."';
+    return this._f('Rating', 'rating', stored ?? '', 'number', `min="0" ${hint}`);
   }
 
   _f(label, name, value, type = 'text', extra = '') {

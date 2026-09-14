@@ -129,5 +129,5 @@ export async function run(t) {
   const sheet = read('scripts/sheets/SR3EItemSheet.js');
   t.ok('the choice is offered only where the table gives two methods', /AmmoStock\.kind\(s\.loadMechanism\) === 'either' \?/.test(sheet));
   t.ok('the stock cell reads AmmoStock', /_ammoStockCell\(a\) \{[\s\S]{0,200}AmmoStock\.stock\(a\.system\)/.test(read('scripts/sheets/SR3EActorSheet.js')));
-  t.ok('the importer can reach AmmoStock', /AmmoStock \};/.test(read('scripts/sr3e.js')));
+  t.ok('the importer can reach AmmoStock', /game\.sr3e = \{[^}]*\bAmmoStock\b[^}]*\};/.test(read('scripts/sr3e.js')));
 }

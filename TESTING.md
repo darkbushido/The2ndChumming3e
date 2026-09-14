@@ -401,6 +401,18 @@ On the active combatant's card: **Complex** (full width) + two **Simple** button
 
 ---
 
+## Gear ratings in the field — TODO 118 (0.5.2) — needs a live pass
+
+Data-model change (gear's `rating` is nullable): **full Foundry restart** first.
+- [ ] A new gear item named *Medkit* (no bracket) → its sheet's Rating box shows **3**, and the gear tab reads *Medkit [3]*.
+- [ ] *Medkit [6]* created by hand → Rating 6; the gear tab reads *Medkit [6]* (not doubled).
+- [ ] Clearing the Rating box on a gear item → blank stays blank (no rating); healing no longer finds a rating on it.
+- [ ] *Stabilization Unit* → 2; the healing Stabilize form pre-ticks it.
+- [ ] `game.sr3e.SR3EMigrations.force()` on a world gear item with rating 0 and a name with none → rating becomes blank (null).
+- [ ] Cyberware is unchanged: *Wired Reflexes [2]* dragged from the pack still gives its bonus and shows no suffix.
+
+---
+
 ## Dialog wiring — TODO 20 (0.5.2) — needs a live pass
 
 Eighteen dialogs moved from the global `renderDialogV2` hook to their own `render` option. For

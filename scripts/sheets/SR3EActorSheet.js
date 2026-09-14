@@ -1,6 +1,6 @@
 import { SR3E, getSpecializationsForSkill, skillTypeForCategory } from '../config.js';
 import { CHARGEN_SPEC_GAP } from '../data/skill-rules.mjs';
-import { itemRating, vcrLevel } from '../data/item-rating.mjs';
+import { itemRating, vcrLevel, displayName } from '../data/item-rating.mjs';
 import { AmmoStock } from '../data/ammo-stock.mjs';
 
 /**
@@ -2384,7 +2384,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const gRows = gear.length ? gear.map(g => `
       <div class="item-row" data-item-id="${g.id}">
-        <span class="item-name">${g.name}</span>
+        <span class="item-name">${displayName(g)}</span>
         <span class="item-cell">×${g.system.quantity ?? 1}</span>
         <span class="item-cell">${g.system.cost ?? 0}¥</span>
         <span class="item-cell col-xs">${g.system.weight ?? 0}</span>
@@ -2871,7 +2871,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const gRows = gear.map(i => `
       <div class="item-row" data-item-id="${i.id}">
-        <span class="item-name">${i.name}</span>
+        <span class="item-name">${displayName(i)}</span>
         <span class="item-cell" style="color:var(--sr-muted);font-size:11px">${i.type}</span>
         <span class="item-cell"></span>
         ${_storeControls(i.id)}

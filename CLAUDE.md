@@ -1428,6 +1428,22 @@ types one; migration 0.5.2 copies name ratings into blank fields in each world, 
 `tools/patch-name-ratings.mjs` did the same to the shipped packs (623 items; a test sweeps them so
 new content cannot regress). ⚠ **A range is not a rating** — "Rating 4-8" reads as none.
 
+**GEAR: the field is the rating, and null means NO rating** (the maintainer, 2026-09-14: *"a column
+where nil means no rating"*). `GearData.rating` is **nullable, initial null**; `itemRating` reads a
+number as the rating, **null as none (the name is not consulted)**, and a `0` or missing field as
+**legacy** → the name, then `GEAR_RATINGS`. A `preCreateItem` hook (`ratingOnCreate`) fills a new
+gear item's field when its creator gave none, so nothing downstream reads a name; migration 0.5.2 and
+the pack tool turn a legacy `0` with nothing to fill it from into `null`.
+⚠ **`GEAR_RATINGS`** (`scripts/data/gear-ratings.mjs`, **generated** by `tools/build-gear-ratings.mjs`)
+— 253 upstream gear names rated only in the generator's **Rating column**, not the name: *Basic
+Medkit* 3, *Stabilization Unit* 2 / *Deluxe* 6, and a plain ***Medkit* 3 from SR3 p.304** (the one
+book entry). They read **0** before (reported: *"medkits for one"*). ⚠ Names upstream rates
+differently in different entries (Gyro Mount 5/6/7) are **left out** — a name cannot settle them.
+⚠ **`displayName(item)`** shows `Medkit [3]` for a plain-named rated gear item and never doubles a
+bracket — the path to storing names plainly.
+⚠ **Weapons, cyberware and bioware are OUT OF SCOPE** (the maintainer): their field still defaults
+to 0 and reads through the legacy row exactly as before. TODO 122.
+
 ### Cyberware grades  · *M&M p.45* — TODO 86
 
 `SR3EActor.gradedEssenceCost(cost, grade)` applies the Cyberware Grades Table before

@@ -198,7 +198,7 @@ export class GearData extends foundry.abstract.TypeDataModel {
       // its name, and a TypeDataModel DROPS undeclared keys — the importer's Rating could not
       // have survived even if it had been written. Read it through `itemRating()`
       // (`scripts/data/item-rating.mjs`), which falls back to the name while this is 0.
-      rating:       new NumberField({ integer: true, initial: 0, min: 0 }),
+      rating:       new NumberField({ integer: true, nullable: true, initial: null, min: 0 }),   // null = no rating (TODO 118)
       cost:         new NumberField({ integer: true, initial: 0, min: 0 }),
       weight:       new NumberField({ initial: 0, min: 0 }),
       availability: new StringField({ initial: '' }),

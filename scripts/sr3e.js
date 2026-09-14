@@ -8,6 +8,7 @@ import {
 import { SR3EActor } from './documents/SR3EActor.js';
 import { SR3EMigrations } from './SR3EMigrations.js';
 import { AmmoStock } from './data/ammo-stock.mjs';
+import { ItemRating, ratingOnCreate } from './data/item-rating.mjs';
 import { SR3EItem } from './documents/SR3EItem.js';
 import { SR3EActorSheet } from './sheets/SR3EActorSheet.js';
 import { SR3EVehicleSheet } from './sheets/SR3EVehicleSheet.js';
@@ -91,7 +92,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock, ItemRating };
 
   // When THIS client loaded the system's code.
   //
@@ -405,6 +406,19 @@ Hooks.once('ready', async () => {
 Hooks.on('deleteActor', async (actor) => {
   if (actor.type !== 'ward') return;
   await SR3EWard._clearBoundary(actor);
+});
+
+/* A new GEAR item gets its rating in the FIELD (TODO 118).
+ *
+ * Gear's `system.rating` is nullable and null means no rating (the maintainer, 2026-09-14), so a
+ * gear item created with none — imported, typed by hand as "Medkit [6]", or dragged from a not-yet-
+ * patched install pack (legacy `0`) — would read as unrated. One hook fills every path: when the
+ * creator gave NO rating (absent, or the legacy 0), take the name's `[N]`, else the generator's
+ * Rating column (`knownRating`: a plain *Medkit* is 3). An explicit null is left alone. Cyberware
+ * and bioware are out of scope (TODO 122). Pure rule: `ratingOnCreate`. */
+Hooks.on('preCreateItem', (document, data) => {
+  const fill = ratingOnCreate(document.type, data?.system?.rating, document.name);
+  if (fill !== undefined) document.updateSource({ 'system.rating': fill });
 });
 
 // Auto-assign newly created Matrix/vehicle actors to their organisational folder,

@@ -249,7 +249,11 @@ export async function run(t) {
   t.is('bioware too', rt.fixItem(typed('bioware', 'Muscle Augmentation [3]', { rating: 0 }))?.['system.rating'], 3);
   t.is('medical keeps its rating a string', rt.fixItem(typed('medical', 'Trauma Patch [5]', { rating: '' }))?.['system.rating'], '5');
   t.is('a rating a GM typed is NOT overwritten', rt.fixItem(typed('gear', 'Medkit [6]', { rating: 4 })), null);
-  t.is('no rating in the name: nothing to copy', rt.fixItem(typed('gear', 'Predator 2', { rating: 0 })), null);
+  t.is('gear with no rating anywhere: its legacy 0 becomes null, "no rating" (2026-09-14)',
+    rt.fixItem(typed('gear', 'Predator 2', { rating: 0 }))?.['system.rating'], null);
+  t.is('…a plain Medkit is filled from the table: 3 (SR3 p.304)', rt.fixItem(typed('gear', 'Medkit', { rating: 0 }))?.['system.rating'], 3);
+  t.is('…an unrated CYBERWARE keeps its 0 (out of scope, TODO 122)', rt.fixItem(typed('cyberware', 'Datajack', { rating: 0 })), null);
+  t.is('…a gear null is already "none": nothing to do', rt.fixItem(typed('gear', 'Wrist Phone', { rating: null })), null);
   t.is('armour has no rating field — skipped', rt.fixItem(typed('armor', 'Helmet [2]', {})), null);
   const rtOnce = rt.fixItem(typed('gear', 'Medkit [6]', { rating: 0 }));
   t.is('idempotent: the migrated item yields nothing', rt.fixItem(typed('gear', 'Medkit [6]', { rating: rtOnce['system.rating'] })), null);

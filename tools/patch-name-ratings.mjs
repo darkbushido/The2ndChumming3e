@@ -20,7 +20,7 @@ import { ClassicLevel } from 'classic-level';
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
-import { ratingFromName } from '../scripts/data/item-rating.mjs';
+import { knownRating } from '../scripts/data/item-rating.mjs';
 import { copyPacks } from './lib/pack-copy.mjs';
 
 const HERE    = dirname(fileURLToPath(import.meta.url));
@@ -33,14 +33,19 @@ const CHECK   = process.argv.includes('--check');
 /** The types whose rating lives in the name. `medical` keeps its rating as a string ("+2" is real). */
 export const RATED_TYPES = ['gear', 'cyberware', 'bioware', 'medical'];
 
-/** The patch for one item document, or null when there is nothing to fill. Pure. */
+/**
+ * The new `system.rating` for one item document, or `undefined` when nothing changes. Pure.
+ * Fills a blank from the name or the generator's Rating column (`knownRating`); a GEAR item's
+ * legacy `0` with nothing to fill it from becomes `null`, "no rating" (the maintainer, 2026-09-14 —
+ * gear only; cyberware and bioware keep their 0, TODO 122).
+ */
 export function ratingPatch(doc) {
-  if (!RATED_TYPES.includes(doc?.type)) return null;
+  if (!RATED_TYPES.includes(doc?.type)) return undefined;
   const cur = doc.system?.rating;
-  if (!(cur === undefined || cur === null || cur === '' || Number(cur) === 0)) return null;
-  const r = ratingFromName(doc.name);
-  if (!r) return null;
-  return doc.type === 'medical' ? String(r) : r;
+  if (!(cur === undefined || cur === null || cur === '' || Number(cur) === 0)) return undefined;
+  const r = knownRating(doc.name);
+  if (r) return doc.type === 'medical' ? String(r) : r;
+  return doc.type === 'gear' && cur !== null ? null : undefined;
 }
 
 // Only the packs this system declares — an install may still carry undeclared pre-split packs.
@@ -70,7 +75,7 @@ async function main() {
       for await (const [key, doc] of scan.iterator()) {
         if (!/^!(items|actors\.items)!/.test(key)) continue;
         const r = ratingPatch(doc);
-        if (r === null) continue;
+        if (r === undefined) continue;
         doc.system.rating = r;
         writes.push([key, doc]);
       }

@@ -232,6 +232,21 @@ export const MUTANTS = [
     impl:   name => { const s = String(name ?? ''); const m = /\[\s*(\d+)\s*\]/.exec(s) ?? /\brating\s*\[?\s*(\d+)/i.exec(s); return m ? Number(m[1]) : null; },
   },
   {
+    id:     'gear-null-rating-reads-the-name',
+    suite:  'item-rating',
+    ...RATING, method: 'itemRating',
+    was:    'null read as "look at the name" — the maintainer: "a column where nil means no rating"',
+    impl:   function (item) { const s = Number(item?.system?.rating); return s > 0 ? s : (this.knownRating(item?.name) ?? 0); },
+  },
+  {
+    id:     'gear-rating-column-ignored',
+    suite:  'item-rating',
+    ...RATING, method: 'knownRating',
+    was:    'only the name was read, so a plain Medkit (SR3 p.304: rating 3) or a Basic Medkit read 0 '
+          + '(reported 2026-09-14: "do we have reliable ratings for all gear? medkits for one")',
+    impl:   function (name) { return this.ratingFromName(name); },
+  },
+  {
     id:     'healing-ignores-rapid-healing',
     suite:  'healing',
     ...HEAL, method: 'healingSituationDice',

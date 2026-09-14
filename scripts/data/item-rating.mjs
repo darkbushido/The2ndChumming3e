@@ -8,13 +8,31 @@
  * reading `system.rating` alone gave **0** — a Vehicle Control Rig [2] from the compendium added
  * nothing to a rigger's initiative or Driving Test (reported with medkits, 2026-09-13).
  *
- * **A stored rating above 0 wins** — it is the editable field, and a GM who changes a Medkit [6]
- * to 4 means 4. Otherwise the name is read. Checked against every shipped pack: no item stores a
- * rating that disagrees with its name, so the order changes nothing already correct.
+ * **The FIELD is the rating, and no value means no rating** (the maintainer, 2026-09-14: *"I would
+ * prefer that it were in a column where nil means no rating"*). `system.rating` is nullable on
+ * **gear** — weapons, cyberware and bioware are out of scope for now (TODO 122); their field still
+ * defaults to 0, which reads through the legacy row below exactly as before:
+ *
+ * | `system.rating` | reads as |
+ * |---|---|
+ * | a number above 0 | that rating — a GM who changes a Medkit [6] to 4 means 4 |
+ * | `null` | **no rating** — the name is NOT consulted |
+ * | `0` or missing | **legacy** (the old default, before the field was filled) → the name, then
+ * |   | `GEAR_RATINGS` — gear rated only in the generator's Rating column (plain *Medkit* 3, SR3 p.304) |
+ *
+ * The legacy row is how the migration and `tools/patch-name-ratings.mjs` FILL the field; after
+ * that nothing reads a name. Checked against every shipped pack: no item stores a rating that
+ * disagrees with its name.
  *
  * The functions live on `ItemRating` and the named exports call through it, so
  * `tests/mutants.mjs` can reinstate a shipped bug by replacing one (ES exports are read-only).
  */
+import { GEAR_RATINGS } from './gear-ratings.mjs';
+import { parseRatingFromName } from './rating-name.mjs';
+
+/** Lower case, punctuation to spaces — the key `GEAR_RATINGS` is written with. */
+const normName = s => String(s ?? '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+
 export const ItemRating = {
   /**
    * The rating written in a name: `[6]`, `Rating 6`, `(Rating 8)`, `Rating [3]`.
@@ -24,16 +42,49 @@ export const ItemRating = {
    * @returns {number|null}
    */
   ratingFromName(name) {
-    const s = String(name ?? '');
-    const m = /\[\s*(\d+)\s*\]/.exec(s) ?? /\brating\s*\[?\s*(\d+)\b(?!\s*[-–]\s*\d)/i.exec(s);
-    return m ? Number(m[1]) : null;
+    return parseRatingFromName(name);
   },
 
-  /** The item's rating: the stored field when above 0, else the name, else 0. */
+  /**
+   * The rating a name implies, for FILLING an empty field: the name's own `[N]` / `Rating N`, else
+   * the generator's Rating column for a name that carries none (`GEAR_RATINGS`). Null for neither.
+   */
+  knownRating(name) {
+    return ItemRating.ratingFromName(name) ?? GEAR_RATINGS[normName(name)] ?? null;
+  },
+
+  /** The item's rating (0 = none). See the table above: a number wins, null is none, 0/missing is legacy. */
   itemRating(item) {
-    const stored = Number(item?.system?.rating);
+    const raw = item?.system?.rating;
+    if (raw === null) return 0;                                   // explicitly no rating
+    const stored = Number(raw);
     if (Number.isFinite(stored) && stored > 0) return stored;
-    return ItemRating.ratingFromName(item?.name) ?? 0;
+    return ItemRating.knownRating(item?.name) ?? 0;              // legacy 0 / missing / ''
+  },
+
+  /**
+   * What a NEW item's rating should be set to, or `undefined` to leave it (the `preCreateItem`
+   * hook). Gear only; only when the creator gave none — absent, or the legacy 0. An explicit null
+   * (a shipped unrated item) stays null, and so does a number.
+   */
+  ratingOnCreate(type, given, name) {
+    // ⚠ GEAR only — the maintainer, 2026-09-14: weapons, cyberware and bioware are out of scope
+    // (TODO 122). Their field still defaults to 0 and is read with the name, as before.
+    if (type !== 'gear') return undefined;
+    if (given === null || Number(given) > 0) return undefined;
+    return ItemRating.knownRating(name) ?? null;
+  },
+
+  /**
+   * The name an item is SHOWN with: its name, plus `[N]` when it has a rating the name does not
+   * already carry. Lets a name be stored plainly ("Wired Reflexes") with the rating in the field
+   * and still read "Wired Reflexes [2]" — and never doubles one ("Wired Reflexes [2] [2]").
+   */
+  displayName(item) {
+    const name = String(item?.name ?? '');
+    if (!['gear', 'medical'].includes(item?.type)) return name;       // gear only for now (TODO 122)
+    const r = ItemRating.itemRating(item);
+    return r > 0 && ItemRating.ratingFromName(name) === null ? `${name} [${r}]` : name;
   },
 
   /**
@@ -46,5 +97,8 @@ export const ItemRating = {
 };
 
 export const ratingFromName = name => ItemRating.ratingFromName(name);
+export const knownRating    = name => ItemRating.knownRating(name);
+export const ratingOnCreate = (type, given, name) => ItemRating.ratingOnCreate(type, given, name);
+export const displayName    = item => ItemRating.displayName(item);
 export const itemRating     = item => ItemRating.itemRating(item);
 export const vcrLevel       = item => ItemRating.vcrLevel(item);
