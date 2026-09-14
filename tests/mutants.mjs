@@ -1305,6 +1305,22 @@ export const MUTANTS = [
     impl:   (attr, key = 'willpower') => attr?.[key]?.base ?? attr?.[key]?.value ?? 1,
   },
   {
+    id:     'next-step-before-the-explosions',
+    suite:  'interactive-explosions',
+    ...ACTOR, method: 'rollThen',
+    was:    'SR3 p.38 — above TN 6 a 6 is rolled again. MIJI, banishing and the rest rolled those waves '
+          + 'in a silent loop and went straight on to the next dialog (2026-09-14)',
+    impl:   async function (actor, pool, tn, { followUp }) {
+      let dice = actor._rollWave(pool, tn, true);
+      for (let g = 0; g < 50; g++) {
+        const idx = dice.flatMap((d, i) => d.needsExplosion ? [i] : []);
+        if (!idx.length) break;
+        dice = actor._rollWave(pool, tn, false, dice, idx) ?? dice.map(d => ({ ...d, needsExplosion: false }));
+      }
+      return this.runFollowUp(followUp, dice);
+    },
+  },
+  {
     id:     'opposed-resolves-before-both-explode',
     suite:  'opposed-explosions',
     ...ACTOR, method: 'settleOpposed',

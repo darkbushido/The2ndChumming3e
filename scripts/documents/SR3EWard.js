@@ -277,19 +277,6 @@ export class SR3EWard {
   /*  3. Fooling (Masking metamagic, MitS p.88-89) — no alert posted     */
   /* ------------------------------------------------------------------ */
 
-  static _resolveRoll(actor, pool, tn) {
-    pool = Math.max(1, pool | 0);
-    tn   = Math.max(2, tn | 0);
-    let dice = actor._rollWave(pool, tn, true);
-    let guard = 0;
-    while (guard++ < 50) {
-      const idx = dice.map((d, i) => (d.needsExplosion && !d.done) ? i : -1).filter(i => i >= 0);
-      if (!idx.length) break;
-      dice = actor._rollWave(pool, tn, false, dice, idx);
-    }
-    return { successes: dice.filter(d => d.success).length, dice };
-  }
-
   static async openFoolDialog(ward) {
     const actorOpts = game.sr3e.sceneFirst(game.actors
       .filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)))   // F2
@@ -320,8 +307,21 @@ export class SR3EWard {
     const grade    = Math.max(0, attacker?.system?.initiateGrade ?? 0);
     if (grade <= 0) ui.notifications.warn(`${attacker?.name ?? 'Attacker'} has no Initiate Grade — proceeding anyway (minimal guardrails).`);
 
-    const atkRes = SR3EWard._resolveRoll(attacker, Math.max(1, grade * 2), Math.max(2, ward.system.force));
-    const wardRes = SR3EWard._resolveRoll(ward, Math.max(1, ward.system.force), Math.max(2, grade));
+    // A ward of Force 7+ explodes the Initiate's 6s — rolled on wave cards; the result waits (F4).
+    const ctx = { attackerActorId: attacker.id, wardActorId: ward.id, grade };
+    await game.sr3e.SR3EActor.rollOpposedPair('ward-fool', ctx,
+      { actor: attacker, pool: grade * 2,         tn: ward.system.force, label: `🌫 ${attacker.name} tries to fool ${ward.name}` },
+      { actor: ward,     pool: ward.system.force, tn: grade,             label: `🛡 ${ward.name} resists` });
+  }
+
+  static async _postFoolResult(ctx, atkDice, wardDice) {
+    const A        = game.sr3e.SR3EActor;
+    const attacker = game.actors.get(ctx.attackerActorId);
+    const ward     = game.actors.get(ctx.wardActorId);
+    if (!attacker || !ward) return;
+    const grade    = ctx.grade;
+    const atkRes   = A.diceResult(atkDice);
+    const wardRes  = A.diceResult(wardDice);
 
     const _dice = (r) => r.dice.map(d => `<span class="chase-die${d.success ? ' chase-die-best' : ''}">${d.total}</span>`).join('');
     const won = atkRes.successes > wardRes.successes;

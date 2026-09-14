@@ -2442,6 +2442,28 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
     });
   });
 
+  // Chase Scene Driver Points — an Open Test's 💥 (SR3 p.40). The chase's state lives in the
+  // window of the user who rolled, so only that user's click can land it.
+  html.querySelectorAll('.sr-chase-open-explode-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'chaseexplode', i)) return;
+    let pl;
+    try { pl = JSON.parse(btn.dataset.payload ?? '{}'); } catch { return; }
+    if (pl.userId !== game.user.id) {
+      return _denyBtn(btn, 'Only the player who rolled can roll these explosions — the Chase Scene is open on their screen.');
+    }
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'chaseexplode', i)) return;
+      btn.textContent = '⏳ Rolling…';
+      if (await game.sr3e.SR3EVehicleChase.handleOpenTestExplode(pl) === false) {
+        _usedButtons.delete(`${mid}|chaseexplode|${i}`);   // chase window closed — try again once it is open
+        btn.disabled = false;
+        btn.textContent = '💥 Roll explosions';
+      }
+    });
+  });
+
   // "Resist Damage" button — posts soak card for the identified target
   html.querySelectorAll('.sr-soak-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'soak', i)) return;

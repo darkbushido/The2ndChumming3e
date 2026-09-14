@@ -1,4 +1,5 @@
 import { vcrLevel as vcrLevelOf } from './data/item-rating.mjs';
+import { openTestFirstWave, openTestExplode, openTestPending, openTestHighest } from './data/open-test.mjs';
 
 const VEHICLE_TYPES = [
   { key: 'car',          label: 'Car',                        score:   0 },
@@ -532,19 +533,61 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
   /*  Open test roll                                                      */
   /* ------------------------------------------------------------------ */
 
-  static _openTestRoll(pool) {
-    const dice = Array.from({ length: Math.max(1, pool) }, () => {
-      const faces = [];
-      let total = 0, roll;
-      do {
-        roll = Math.ceil(Math.random() * 6);
-        faces.push(roll);
-        total += roll;
-      } while (roll === 6);
-      return { faces, total };
+  /*
+   * Driver Points are an Open Test (SR3 p.40): every 6 is rolled again, as often as it comes up.
+   * That used to be a silent loop; each wave of 6s is now a 💥 on the card, and the Driver Points
+   * land on the chase only after the last one. The chase's state lives in THIS client's window, so
+   * the 💥 is gated to the user who rolled (`userId`) — nobody else's click could reach it.
+   */
+
+  /** Post one wave of a Driver Points roll; when nothing is left to explode, record the result. */
+  async _postDriverPointsWave({ pid, dice, wave = 0, header }) {
+    const p       = this._participants.find(x => x.id === pid);
+    const driver  = game.actors.get(p?.driverActorId);
+    const pending = openTestPending(dice);
+    const highest = openTestHighest(dice);
+
+    const diceHtml = dice.map(d => {
+      const exploded = d.faces.length > 1;
+      const isBest   = !pending && d.total === highest;
+      return `<span class="chase-die${isBest ? ' chase-die-best' : ''}${exploded ? ' chase-die-exploded' : ''}${d.pending ? ' sr-exploding' : ''}"
+                    title="${d.faces.join('+')}">${d.total}</span>`;
+    }).join('');
+
+    const payload = JSON.stringify({ pid, dice, wave: wave + 1, header, userId: game.user.id }).replace(/'/g, '&#39;');
+    const tail = pending
+      ? `<div class="sr-roll-result" style="margin-top:8px;">Highest so far: <strong>${highest}</strong> — the 6s roll again</div>
+         <div class="sr-explode-action">
+           <button class="sr-chase-open-explode-btn" data-payload='${payload}'>
+             💥 Roll explosions (${pending} ${pending === 1 ? 'die' : 'dice'})
+           </button>
+         </div>`
+      : `<div class="sr-roll-result" style="margin-top:8px;">
+           Driver Points: <strong style="color:#3a9fd6;font-size:16px;">${highest}</strong>
+         </div>`;
+
+    await ChatMessage.create({
+      content: `
+        <div class="sr-roll-card">
+          <div class="sr-roll-header" style="color:#3a9fd6">Open Test — Driver Points${wave ? ` (wave ${wave})` : ''}</div>
+          ${header}
+          <div class="chase-dice-row">${diceHtml}</div>
+          ${tail}
+        </div>`,
+      speaker: ChatMessage.getSpeaker({ actor: driver }),
     });
-    const highest = Math.max(...dice.map(d => d.total));
-    return { dice, highest };
+
+    if (pending || !p) return;
+    p.driverPoints = highest;
+    this._refreshScores(p);
+    this.render(); // full re-render to update driver points row
+  }
+
+  /** 💥 on a Driver Points card — this client's chase window rolls the next wave. */
+  static async handleOpenTestExplode(payload) {
+    const chase = SR3EVehicleChase.instance;
+    if (!chase?.rendered) { ui.notifications.warn('Open the Chase Scene to finish this roll.'); return false; }
+    await chase._postDriverPointsWave({ ...payload, dice: openTestExplode(payload.dice) });
   }
 
   _driverSkillPool(p) {
@@ -611,40 +654,17 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
       return;
     }
 
-    const { dice, highest } = SR3EVehicleChase._openTestRoll(totalPool);
-    p.driverPoints   = highest;
-    p.controlAlloc   = controlAlloc;
-
-    const diceHtml = dice.map(d => {
-      const exploded  = d.faces.length > 1;
-      const isBest    = d.total === highest;
-      const facesStr  = d.faces.join('+');
-      return `<span class="chase-die${isBest ? ' chase-die-best' : ''}${exploded ? ' chase-die-exploded' : ''}"
-                    title="${facesStr}">${d.total}</span>`;
-    }).join('');
-
-    await ChatMessage.create({
-      content: `
-        <div class="sr-roll-card">
-          <div class="sr-roll-header" style="color:#3a9fd6">Open Test — Driver Points</div>
-          <div style="font-size:12px;color:#7880a0;margin:2px 0">
-            ${driver?.name ?? '?'} — ${vehicle?.name ?? 'Unknown Vehicle'}
-          </div>
-          <div style="font-size:11px;color:#7880a0;margin-bottom:6px;">
-            ${skillLabel} + ${controlAlloc} control = ${totalPool} dice
-          </div>
-          <div class="chase-dice-row">${diceHtml}</div>
-          <div class="sr-roll-result" style="margin-top:8px;">
-            Driver Points: <strong style="color:#3a9fd6;font-size:16px;">${highest}</strong>
-          </div>
-        </div>`,
-      speaker: ChatMessage.getSpeaker({ actor: driver }),
-    });
-
-    this._refreshScores(p);
-    // Update the driver points display in-place
-    const dpEls = this.element.querySelectorAll(`[id^="p-${pid}-"] .chase-score-row strong`);
-    this.render(); // full re-render to update driver points row
+    p.driverPoints = null;   // not known until the last 💥 is rolled
+    p.controlAlloc = controlAlloc;
+    const header = `
+      <div style="font-size:12px;color:#7880a0;margin:2px 0">
+        ${driver?.name ?? '?'} — ${vehicle?.name ?? 'Unknown Vehicle'}
+      </div>
+      <div style="font-size:11px;color:#7880a0;margin-bottom:6px;">
+        ${skillLabel} + ${controlAlloc} control = ${totalPool} dice
+      </div>`;
+    await this._postDriverPointsWave({ pid, dice: openTestFirstWave(totalPool), header });
+    this.render();
   }
 
   async _rollInitiative(pid) {

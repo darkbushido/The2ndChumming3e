@@ -708,7 +708,8 @@ background-color: var(--sr-surface) !important;
   margin-top: 8px;
 }
 
-.sr-explode-btn {
+.sr-explode-btn,
+.sr-chase-open-explode-btn {
   width: 100%;
   height: auto;      /* core gives buttons a fixed height — grow with wrapped text */
   white-space: normal;
@@ -723,12 +724,14 @@ background-color: var(--sr-surface) !important;
   transition: all 0.15s;
 }
 
-.sr-explode-btn:hover:not(:disabled) {
+.sr-explode-btn:hover:not(:disabled),
+.sr-chase-open-explode-btn:hover:not(:disabled) {
   background: color-mix(in srgb, #3ad6ff 25%, transparent);
   box-shadow: 0 0 10px color-mix(in srgb, #3ad6ff 30%, transparent);
 }
 
-.sr-explode-btn:disabled {
+.sr-explode-btn:disabled,
+.sr-chase-open-explode-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

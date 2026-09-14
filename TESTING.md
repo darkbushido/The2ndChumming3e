@@ -2153,9 +2153,27 @@ buttons): the ⏳ card held; the attacker's two 6s exploded to 12/11, the defend
 the settle now runs after the wave card is posted.
 - [ ] A real melee exchange with a called shot (TN 8) between two players: roll the 💥 on both cards → one result, after the last explosion.
 
-**Still open — MIJI** resolves both sides' explosions silently (`_resolveRoll`), which the original
-note flagged for the same reason. Its result is correct (the explosions ARE rolled); only the
-clicks are missing. The maintainer's call whether to make it interactive.
+**MIJI and the other silent resolvers — FIXED 2026-09-14 (0.5.2).** The maintainer: *"all explosions
+should be interactive, we should wait for dice explosions to finish before queing up other things."*
+Every roll that looped `_rollWave` itself now goes through `SR3EActor.rollOpposedPair` (the ⏳ card)
+or `SR3EActor.rollThen` (one roll, then its next step on the final wave):
+
+| Was silent | Now |
+|---|---|
+| MIJI contest · Orthodox System Test · Orthodox IC attack · Orthodox cybercombat · fooling a ward | `rollOpposedPair` — the result waits for both sides |
+| MIJI infiltration (allocation dialog) · detect infiltration · ECCM repair · reduce footprint · IVIS (split dialog) | `rollThen` — the dialog / result waits |
+| A spirit resisting banishment | its own wave card when it explodes; the outcome posts after |
+| Chase Scene Driver Points (an Open Test, p.40) | a 💥 per wave of 6s, for the user who rolled; Driver Points land after the last |
+
+Nothing to explode → exactly as before, no extra cards. `tests/interactive-explosions.test.mjs` (58
+assertions, through the real registry and settle handler) + the `next-step-before-the-explosions` mutant.
+
+**Walked by the agent 2026-09-14** (mcp-api): Reduce Footprint at TN 8 through `rollThen` — one wave
+card with a 💥, Flux untouched; the click exploded the 6 to 10, then the result card posted below it
+(Flux 20 → 19, restored after). A MIJI pair at TN 8 — the ⏳ card and a 💥 card for the intruder only;
+the click (6 → 7), then the MIJI result once, below it.
+- [ ] Infiltration with a rigger at TN 7+ (Protocol below the target's Deck): the allocation dialog opens only after the last 💥.
+- [ ] Chase Scene: roll Driver Points until a 6 comes up → the card offers 💥, the chase shows the points only after the last wave, and another player's copy of the card shows the button disabled.
 
 **Found during the live check — old 💥 buttons re-roll after a reload.** The one-shot guard
 (`_usedButtons`) is in memory and resets on reload by design, so after an F5 an old wave card's 💥

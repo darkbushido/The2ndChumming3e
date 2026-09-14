@@ -706,6 +706,19 @@ ODM-\* rawdata), **`mat`** = this sourcebook, **`matrix-defragged`** = the commu
   clients. ⚠ The settle runs **after** the wave card is posted, or the result lands above the dice
   that decided it. A new opposed roll must go through `_openOpposed` — `tests/opposed-explosions.test.mjs`
   checks all four.
+- ⚠ **EVERY explosion is a 💥 click, and the next step waits for it** (the maintainer, 2026-09-14:
+  *"we should wait for dice explosions to finish before queing up other things"*). Never loop
+  `_rollWave` yourself — MIJI, Orthodox Matrix, ward fooling and banishing all did (`_resolveRoll`),
+  rolling the 6s silently and opening the next dialog before anyone saw them. Two helpers on
+  `SR3EActor`, both a no-op change when nothing explodes (no extra cards):
+  `rollOpposedPair(kind, ctx, atk, def)` — two rolls compared, on the ⏳ card, result by
+  `OPPOSED_RESULTS[kind]`; `rollThen(actor, pool, tn, {label, followUp: {kind, ctx}})` — one roll, then
+  `FOLLOW_UPS[kind](ctx, res)`, run by `_postWaveCard` on the final wave, on the client that rolled it.
+  Both registries name `[class on game.sr3e, method]`, so `ctx` must be plain JSON (ids, not actors).
+  `tests/interactive-explosions.test.mjs` ratchets it: the only `_rollWave(…, false, …)` call in
+  `scripts/` is the 💥 handler. The Chase Scene's Driver Points (an Open Test, p.40 — every 6 rolls
+  again, no TN) do the same through `scripts/data/open-test.mjs`; its 💥 is gated to the user who
+  rolled, because the chase's state lives in that user's window.
 
 ### Defaulting (SR3 Default Table) — interactive  · *SR3 p.84-85*
 
@@ -2436,8 +2449,8 @@ cloned from the melee boxing card. `openAttackDialog(targetVehicle)` (vehicle EW
 Attack) picks intruder vehicle + operation + channel; `SR3E.electronicWarfare.operations` maps each
 operation to its allowed channels and the stat that sets the **defender TN** (`ecm` for Jamming,
 `protocolModule` otherwise). Intruder TN = defender deck rating. Both sides get Flux complementary
-dice. `postMIJICard` → `.sr-miji-roll-btn` → `handleMIJIRoll` resolves both rolls
-(`_resolveRoll` loops `_rollWave` for full Rule-of-Six) → net successes; intruder win posts a
+dice. `postMIJICard` → `.sr-miji-roll-btn` → `handleMIJIRoll` rolls both sides through
+`SR3EActor.rollOpposedPair('miji', …)` (6s at TN 7+ are 💥 clicks; the result waits) → net successes; intruder win posts a
 `.sr-miji-degradation-btn` → `applyDegradation` fills `signalMonitor[channel]`. Both buttons use the
 `_checkBtn`/`_claimBtn` one-shot guards.
 
