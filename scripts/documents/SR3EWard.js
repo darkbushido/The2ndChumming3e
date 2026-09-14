@@ -48,8 +48,9 @@ export class SR3EWard {
   /* ------------------------------------------------------------------ */
 
   static async openCastDialog(caster) {
-    const magicBase = caster.system.attributes?.magic?.base ?? 0;
-    if (magicBase <= 0) { ui.notifications.warn(`${caster.name} is not Awakened and cannot cast a ward.`); return; }
+    if ((caster.system.attributes?.magic?.base ?? 0) <= 0) { ui.notifications.warn(`${caster.name} is not Awakened and cannot cast a ward.`); return; }
+    // "the maximum Force you can give a ward equals your Magic Attribute" — the EFFECTIVE rating (F5).
+    const magicBase = caster.system.attributes?.magic?.value ?? caster.system.attributes?.magic?.base ?? 0;
 
     let result = null;
     await foundry.applications.api.DialogV2.wait({
@@ -146,8 +147,8 @@ export class SR3EWard {
   /* ------------------------------------------------------------------ */
 
   static async openAttackDialog(ward) {
-    const actorOpts = game.actors
-      .filter(a => (a.type === 'character' || a.type === 'npc') && !a.getFlag('The2ndChumming3e', 'isTemplate'))
+    const actorOpts = game.sr3e.sceneFirst(game.actors
+      .filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)))   // F2
       .map(a => `<option value="${a.id}">${a.name}</option>`).join('');
     if (!actorOpts) { ui.notifications.warn('No actors available to attack the ward.'); return; }
 
@@ -202,7 +203,7 @@ export class SR3EWard {
     let damageBase, rawDamage;
     if (result.mode === 'focus') {
       const focus = SR3EWard._activeWeaponFocus(attacker);
-      rawDamage  = focus?.system?.damage ?? `${attacker.system.attributes?.magic?.base ?? 1}M`;
+      rawDamage  = focus?.system?.damage ?? `${attacker.system.attributes?.magic?.value ?? attacker.system.attributes?.magic?.base ?? 1}M`;   // F5
       damageBase = game.sr3e.SR3EItem.parseDamageCode(rawDamage, attacker) ?? { power: 1, level: 'M', isStun: true };
     } else if (result.mode === 'sorcery') {
       rawDamage  = `${result.force}M`;
@@ -211,7 +212,7 @@ export class SR3EWard {
       rawDamage  = `${result.force}M`;
       damageBase = { power: result.force, level: 'M', isStun: true };
     } else {
-      const magicBase = attacker.system.attributes?.magic?.base ?? 1;
+      const magicBase = attacker.system.attributes?.magic?.value ?? attacker.system.attributes?.magic?.base ?? 1;   // F5
       rawDamage  = `${magicBase}M`;
       damageBase = { power: magicBase, level: 'M', isStun: true };
     }
@@ -261,7 +262,7 @@ export class SR3EWard {
     btn.disabled = true;
     btn.textContent = '⏳ Resisting…';
 
-    const attackerMagic = attacker?.system?.attributes?.magic?.base ?? attacker?.system?.attributes?.magic?.value ?? 1;
+    const attackerMagic = attacker?.system?.attributes?.magic?.value ?? attacker?.system?.attributes?.magic?.base ?? 1;   // F5: effective first
     await ward.rollPool(Math.max(1, ward.system.force), Math.max(2, attackerMagic), `🛡 ${ward.name} Resists`, {
       isWardSoakRoll: true,
       wardSoakContext: {
@@ -276,22 +277,9 @@ export class SR3EWard {
   /*  3. Fooling (Masking metamagic, MitS p.88-89) — no alert posted     */
   /* ------------------------------------------------------------------ */
 
-  static _resolveRoll(actor, pool, tn) {
-    pool = Math.max(1, pool | 0);
-    tn   = Math.max(2, tn | 0);
-    let dice = actor._rollWave(pool, tn, true);
-    let guard = 0;
-    while (guard++ < 50) {
-      const idx = dice.map((d, i) => (d.needsExplosion && !d.done) ? i : -1).filter(i => i >= 0);
-      if (!idx.length) break;
-      dice = actor._rollWave(pool, tn, false, dice, idx);
-    }
-    return { successes: dice.filter(d => d.success).length, dice };
-  }
-
   static async openFoolDialog(ward) {
-    const actorOpts = game.actors
-      .filter(a => (a.type === 'character' || a.type === 'npc') && !a.getFlag('The2ndChumming3e', 'isTemplate'))
+    const actorOpts = game.sr3e.sceneFirst(game.actors
+      .filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)))   // F2
       .map(a => `<option value="${a.id}">${a.name} (Grade ${a.system.initiateGrade ?? 0})</option>`).join('');
     if (!actorOpts) { ui.notifications.warn('No actors available to attempt this.'); return; }
 
@@ -319,8 +307,21 @@ export class SR3EWard {
     const grade    = Math.max(0, attacker?.system?.initiateGrade ?? 0);
     if (grade <= 0) ui.notifications.warn(`${attacker?.name ?? 'Attacker'} has no Initiate Grade — proceeding anyway (minimal guardrails).`);
 
-    const atkRes = SR3EWard._resolveRoll(attacker, Math.max(1, grade * 2), Math.max(2, ward.system.force));
-    const wardRes = SR3EWard._resolveRoll(ward, Math.max(1, ward.system.force), Math.max(2, grade));
+    // A ward of Force 7+ explodes the Initiate's 6s — rolled on wave cards; the result waits (F4).
+    const ctx = { attackerActorId: attacker.id, wardActorId: ward.id, grade };
+    await game.sr3e.SR3EActor.rollOpposedPair('ward-fool', ctx,
+      { actor: attacker, pool: grade * 2,         tn: ward.system.force, label: `🌫 ${attacker.name} tries to fool ${ward.name}` },
+      { actor: ward,     pool: ward.system.force, tn: grade,             label: `🛡 ${ward.name} resists` });
+  }
+
+  static async _postFoolResult(ctx, atkDice, wardDice) {
+    const A        = game.sr3e.SR3EActor;
+    const attacker = game.actors.get(ctx.attackerActorId);
+    const ward     = game.actors.get(ctx.wardActorId);
+    if (!attacker || !ward) return;
+    const grade    = ctx.grade;
+    const atkRes   = A.diceResult(atkDice);
+    const wardRes  = A.diceResult(wardDice);
 
     const _dice = (r) => r.dice.map(d => `<span class="chase-die${d.success ? ' chase-die-best' : ''}">${d.total}</span>`).join('');
     const won = atkRes.successes > wardRes.successes;

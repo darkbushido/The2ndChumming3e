@@ -404,6 +404,33 @@ export class SR3EQuery {
         return { acted, already: false };
       });
 
+    /**
+     * One side of an opposed roll has finished its explosions (F4) — or the GM resolves now.
+     *
+     * The ⏳ card's flag holds both sides' dice. The two sides usually explode on DIFFERENT
+     * clients, so only a single serialised writer can see when both are in: the GM, queued
+     * per message so two sides settling at once cannot overwrite each other. The side that
+     * completes the set posts the result, once — `resolved` makes a late or repeated settle
+     * a no-op.
+     */
+    CONFIG.queries['sr3e.opposed.settle'] = async ({ rid, messageId, side, dice, force = false }) =>
+      SR3EQuery.once(rid, () => SR3EQueue.run(`opposed:${messageId}`, async () => {
+        SR3EQuery.assertActiveGM();
+        const msg = game.messages.get(messageId);
+        if (!msg) throw new Error(`SR3E | opposed.settle: unknown message '${messageId}'`);
+        const record = msg.getFlag('The2ndChumming3e', 'opposed');
+        if (!record) throw new Error(`SR3E | opposed.settle: '${messageId}' is not an opposed roll`);
+        const A = game.sr3e.SR3EActor;
+        const { record: next, complete, changed } = A.settleOpposed(record, side, dice, { force });
+        if (!changed) return { resolved: !!record.resolved };
+        await msg.update({
+          content: A._opposedPendingHtml(next),
+          'flags.The2ndChumming3e.opposed': next,
+        });
+        if (complete) await A.postOpposedResult(next.kind, next.ctx, next.atk.dice, next.def.dice);
+        return { resolved: complete };
+      }));
+
     /** Reset a pool to zero. Idempotent, but routed for consistency. */
     CONFIG.queries['sr3e.pool.refresh'] = async ({ rid, uuid, pool }) => SR3EQuery.once(rid, async () => {
       SR3EQuery.assertActiveGM();

@@ -437,7 +437,9 @@ export function clampTN(raw) {
  * would double-count:
  *   - Reach          differential, baked into atkTN/defTN by rollMeleeAttack
  *   - Called Shot    +4, declared by the attacker in _promptCalledShot
- *   - Wounded        folded in by rollPool from system.woundMod
+ *   - Wounded        baked into atkTN/defTN by rollMeleeAttack (`SR3EActor.woundTN`, per fighter).
+ *                    ⚠ NOT by rollPool — the boxing card rolls through `_rollWave`, and this line
+ *                    saying "rollPool" is how melee went without wound modifiers until 0.5.2 (F3).
  */
 export const SR3E_MELEE_MODIFIERS = [
   {

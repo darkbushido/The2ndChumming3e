@@ -523,7 +523,11 @@ export class SR3EHealing {
    * ════════════════════════════════════════════════════════════════════════════════════════ */
 
   static _actorOptions(filterFn = () => true, selectedId = null, sortFn = null) {
-    let list = game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a) && filterFn(a));
+    // Whoever is on the scene — a medic works at the patient's side (F2) — and always the one
+    // already chosen, so a default from off the canvas is never silently dropped.
+    let list = game.sr3e.sceneFirst(game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a) && filterFn(a)));
+    const chosen = selectedId ? game.actors.get(selectedId) : null;
+    if (chosen && !list.includes(chosen)) list = [chosen, ...list];
     if (sortFn) list = list.sort(sortFn);
     return list.map(a => `<option value="${a.id}" ${a.id === selectedId ? 'selected' : ''}>${esc(a.name)}</option>`).join('');
   }
@@ -569,7 +573,7 @@ export class SR3EHealing {
         // Treating someone else's character: the medic is, by default, your own character.
         const mine = game.user.isGM ? null : game.user.character;
         const defMedic = mine && mine.id !== patient.id ? mine.id
-          : game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a))
+          : game.sr3e.sceneFirst(game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)))
             .sort((a, b) => biotechOf(b) - biotechOf(a))[0]?.id ?? patient.id;
         const medkit = H.findEquipment([patient, game.actors.get(defMedic)], 'medkit');
         const f = await H._form(`🩹 First aid — ${patient.name}`, `
@@ -610,8 +614,8 @@ export class SR3EHealing {
       }
 
       case 'magic': {
-        const caster = game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)
-          && H._skill(a, /^sorcery/i)).sort((a, b) => (H._skill(b, /^sorcery/i).rating) - (H._skill(a, /^sorcery/i).rating));
+        const caster = game.sr3e.sceneFirst(game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)
+          && H._skill(a, /^sorcery/i))).sort((a, b) => (H._skill(b, /^sorcery/i).rating) - (H._skill(a, /^sorcery/i).rating));
         if (!caster.length) { ui.notifications.warn('Nobody in the world has Sorcery.'); return; }
         const f = await H._form(`✨ Magical healing — ${patient.name}`, `
           ${row('Caster', `<select data-f="casterId">${caster.map(a => `<option value="${a.id}">${esc(a.name)} (Sorcery ${H._skill(a, /^sorcery/i).rating})</option>`).join('')}</select>`)}
@@ -755,7 +759,7 @@ export class SR3EHealing {
         }
         if (f.how === 'firstaid') return H.setup(patient, 'firstaid');
         if (f.how === 'spell') {
-          const casters = game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a) && H._skill(a, /^sorcery/i));
+          const casters = game.sr3e.sceneFirst(game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a) && H._skill(a, /^sorcery/i)));
           if (!casters.length) { ui.notifications.warn('Nobody in the world has Sorcery.'); return; }
           const g = await H._form('✨ Stabilize spell', `
             ${row('Caster', `<select data-f="casterId">${casters.map(a => `<option value="${a.id}">${esc(a.name)}</option>`).join('')}</select>`)}

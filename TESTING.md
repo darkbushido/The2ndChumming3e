@@ -2115,60 +2115,115 @@ compendium-imported actors crashed on render.
 **Verify:** import an actor from any compendium (e.g. Mr. Johnson's Contacts) → open its sheet →
 renders normally. "Mark as Live"/"Mark as Template" toggles show/hide it in targeting dialogs.
 
-## F2. Missing template filter in some actor dropdowns — OPEN (user approved adding the filter)
+## F2. Actor lists wider than they should be — FIXED 2026-09-14 (0.5.2)
 
-- **Barrier Damage** (`scripts/sr3e.js` ~line 831) filters only by type — no `isLiveActor` —
-  unlike siblings Falling Damage and Escape Artist.
-- **IC picker** (`SR3EHostSheet.js` ~1438, `SR3EHostSheetOrthodox.js` ~356) and **host picker**
-  (`SR3EActorSheet.js` ~3087) also skip the filter.
+Widened in play: *"they also show up on the rewards rollable table and a few other things they
+probably shouldn't"* and *"chunky salsa lists everything, not just the actors on the scene."*
+Three rules now, one per question a list answers — `tests/actor-lists.test.mjs` pins each site and
+**ratchets**: every `game.actors` list in `scripts/` must use one, or be a named internal lookup.
 
-**Repro:** template-flagged character appears in the 🧱 Barrier Damage dropdown (it shouldn't).
+| Rule | Lists |
+|---|---|
+| **No templates** — `game.sr3e.isLiveActor` (one rule; five sites used a bare `isTemplate` flag, which lets an unflagged compendium import through) | Barrier Damage · both IC pickers (deploying puts the stocked actor itself into combat) · Orthodox host pickers · Driving Test · MIJI vehicles · vehicle link · ward dialogs · matrix targets |
+| **The party** — `SR3EQuery.isPlayerCharacter` | **Session Rewards** — it listed every live character, the GM's Chrome Threats and contacts included |
+| **The scene** — `sceneFirst` (`scripts/data/actor-scope.mjs`): tokens on the drawn canvas, else the viewed/active scene's token documents, else everyone (theatre of the mind) | **Chunky Salsa** (unless the grenade flow passed its own list) · Barrier Damage · Falling Damage · Escape Artist · contested roll (plus the actor it was opened from; it also offered hosts, IC and vehicles) · healing medic and casters · ward attack / fool · the target pickers (which already worked this way — now the shared rule) |
+| **Narrower** | Orthodox IC attack → the deckers on its host (`orthodoxRunState.currentHostId`), else every live character |
 
-## F3. Melee boxing-card TNs omit the wound modifier — OPEN
+⚠ **Rosters stay world-wide on purpose** — pilot/passengers, agent operator, chase, Driving Test,
+and the healing *patient* picker (downtime care is off the map).
 
-`SR3EItem.js` (melee ctx build, ~line 229) pre-fills `atkTN`/`defTN` as
-`max(2, 4 − reach + defaulting (+ called shot))` with **no wound term**, and `handleMeleeRoll`
-rolls via `_rollWave` directly so `rollPool`'s wound fold-in never runs. §6 above says
-TN = `4 − own reach + woundMod`; the ranged path applies it. Astral combat may share the gap.
+**Walked by the agent 2026-09-14** (mcp-api): Session Rewards lists only SWAT Team Member and
+Troll Street Dealer (was five); `sceneFirst` against *Test Map*'s tokens gives its four and drops
+Windage; the empty active scene falls back to everyone.
+- [x] **Automated — `tests/e2e/actor-lists.spec.mjs`** (the GM's Playwright client draws the canvas the
+  agent's pane cannot): a disposable actor with a token on the active scene is offered by 💥 Chunky
+  Salsa, and every live character with no token there is not. Passing 2026-09-14.
+- [ ] Falling Damage / Escape Artist / Barrier Damage the same (same `sceneFirst` call; not automated).
 
-**Proposed fix:** bake `− (actor.system.woundMod ?? 0)` (woundMod is negative) into both
-pre-filled TNs; fields stay GM-editable.
+## F3. Melee boxing-card TNs omit the wound modifier — FIXED 2026-09-14 (0.5.2)
 
-**Repro:** give the attacker 3 stun boxes (wound mod −2) → melee attack → boxing card TN
-shows **4** (should pre-fill **6**).
+The Melee Modifiers Table (SR3 p.123) has *"Character is wounded — Damage Modifier (see p. 126)"*;
+astral combat *"uses the same rules as Melee Combat"* (p.174). Both boxing cards roll through
+`_rollWave`, which never adds `woundMod` — and `SR3ECombatModifiers.js` said `rollPool` did. Each
+fighter's own wounds now go into their own TN (`SR3EActor.woundTN`), melee and astral, and the GM
+window's note says so. `tests/melee-wounds.test.mjs` + a mutant.
+- [x] **Automated — `tests/e2e/melee-wounds.spec.mjs`**: Player2's attacker with 3 Stun boxes (−2)
+  attacks Player3's troll; the GM window on the GM's client starts the attacker **+2** over an unhurt
+  baseline run, the defender's TN does not move, and the note reads *"… wounded +2"*. Passing 2026-09-14.
+- [ ] The same from 🌀 astral combat (same `woundTN`; not automated).
 
-## F4. Melee / cybercombat / contested results ignore explosion waves (TN > 6 only) — OPEN
+## F4. Melee / cybercombat / contested results ignore explosion waves (TN > 6 only) — FIXED 2026-09-14 (0.5.2)
 
-When an opposed roll's TN exceeds 6 (defaulting +4, called shot +4…), the wave cards **do**
-show the 💥 explosion button — but the winner/damage comparison card is posted immediately
-from wave-0 successes (`_postMeleeResult`, `_postCCResult`, `_postContestedResult`), and the
-explosion payload drops the melee/CC context, so clicking 💥 re-rolls the dice **but can never
-update the result**. With TN ≤ 6 nothing is wrong (a 6 is already a success).
+At TN 7+ (defaulting +4, a called shot +4, a System Rating of 7) the result card was posted off
+the FIRST wave, so 💥 changed the dice and never the winner (the Rule of Six, SR3 p.38). Melee,
+astral, contested and cybercombat now open a **⏳ card** when either side has dice to explode; its
+message flag holds both sides' dice, each side's 💥 payload carries a reference to it, and a side's
+final wave reports its dice to the GM (`sr3e.opposed.settle`), who serialises the writes and posts
+the real result once both are in. **Not an in-memory map** as first proposed: the two sides usually
+explode on different clients, so only a shared record can see both. **⚔ Resolve with the dice as
+they stand (GM)** is the AFK escape. Nothing to explode → the result posts at once, as before.
+`tests/opposed-explosions.test.mjs` drives it end to end through the registered handler; a mutant.
 
-**Proposed fix (interactive, not silent):** carry the context through the explosion payload and
-defer the comparison card until **both** sides' dice fully resolve (in-memory pending map, same
-pattern as `_actionTracker`). TN ≤ 6 keeps posting immediately as today.
+**Walked by the agent 2026-09-14** (mcp-api, a contested roll at TN 8 through real wave cards and 💥
+buttons): the ⏳ card held; the attacker's two 6s exploded to 12/11, the defender's to 10; the result
+(2 vs 1) posted once, **below** both wave-1 cards. The first run put it above the deciding wave —
+the settle now runs after the wave card is posted.
+- [ ] A real melee exchange with a called shot (TN 8) between two players: roll the 💥 on both cards → one result, after the last explosion.
 
-**Repro:** melee attack with a called shot (TN 8), roll until a 6 shows → result card has
-already declared the winner; click 💥 → dice update, result card doesn't.
+**MIJI and the other silent resolvers — FIXED 2026-09-14 (0.5.2).** The maintainer: *"all explosions
+should be interactive, we should wait for dice explosions to finish before queing up other things."*
+Every roll that looped `_rollWave` itself now goes through `SR3EActor.rollOpposedPair` (the ⏳ card)
+or `SR3EActor.rollThen` (one roll, then its next step on the final wave):
 
-**Related:** MIJI resolves both sides' explosions silently (`_resolveRoll`) — flagged as wrong
-for the same reason; confirm desired behaviour.
+| Was silent | Now |
+|---|---|
+| MIJI contest · Orthodox System Test · Orthodox IC attack · Orthodox cybercombat · fooling a ward | `rollOpposedPair` — the result waits for both sides |
+| MIJI infiltration (allocation dialog) · detect infiltration · ECCM repair · reduce footprint · IVIS (split dialog) | `rollThen` — the dialog / result waits |
+| A spirit resisting banishment | its own wave card when it explodes; the outcome posts after |
+| Chase Scene Driver Points (an Open Test, p.40) | a 💥 per wave of 6s, for the user who rolled; Driver Points land after the last |
 
-## F5. Drain track (Stun vs Physical) inconsistent between casting and dispelling — OPEN
+Nothing to explode → exactly as before, no extra cards. `tests/interactive-explosions.test.mjs` (58
+assertions, through the real registry and settle handler) + the `next-step-before-the-explosions` mutant.
 
-Spellcasting decides Physical drain with **effective** Magic (`magic.value`); dispelling and
-banishing use **base** Magic (`magic.base`, three sites in SR3EActor.js). A caster with reduced
-effective Magic (Essence loss) gets Stun drain in one flow and Physical in the other at the
-same Force.
+**Walked by the agent 2026-09-14** (mcp-api): Reduce Footprint at TN 8 through `rollThen` — one wave
+card with a 💥, Flux untouched; the click exploded the 6 to 10, then the result card posted below it
+(Flux 20 → 19, restored after). A MIJI pair at TN 8 — the ⏳ card and a 💥 card for the intruder only;
+the click (6 → 7), then the MIJI result once, below it.
+- [ ] Infiltration with a rigger at TN 7+ (Protocol below the target's Deck): the allocation dialog opens only after the last 💥.
+- [ ] Chase Scene: roll Driver Points until a 6 comes up → the card offers 💥, the chase shows the points only after the last wave, and another player's copy of the card shows the button disabled.
 
-**Proposed fix:** standardize all on `magic.value ?? magic.base` (RAW: the caster's Magic).
+**Found during the live check — old 💥 buttons re-roll after a reload.** The one-shot guard
+(`_usedButtons`) is in memory and resets on reload by design, so after an F5 an old wave card's 💥
+can be clicked again and posts a new wave for a roll long since resolved. It cannot change an opposed
+result any more (a resolved ⏳ card ignores it), but it does for a plain roll's own card. A fix is
+`sr3e.card.mark` on the 💥, as the two-corner cards do — not done here.
 
-**Repro:** character with magic.base 6, magic.value 4 → cast at Force 5 → drain is Physical;
-dispel at Force 5 → drain is Stun. They should match (both Physical).
+## F5. Drain track (Stun vs Physical) inconsistent between casting and dispelling — FIXED 2026-09-14 (0.5.2)
 
-## F6. Wrong range-TN fallback array — OPEN
+The book says **Magic Attribute** every time — casting (*"If the Force of the spell is greater than
+the caster's Magic Attribute, the Drain causes physical damage"*, SR3 p.183), dispelling, summoning,
+and a ward's maximum Force — and Essence loss lowers that attribute (*"a magician with an Essence
+Rating of 4.5 has a Magic Rating of 4"*). That is `magic.value`. Casting read it; these read
+`magic.base`, all now `SR3EActor.magicAttribute`:
 
-`SR3EItem.js` (`_rangeBandForDistance` area) — one fallback reads `?? [0, 1, 2, 3]`; the
-Extreme value should be **5** (`[0, 1, 2, 5]`, as in `config.js` and the other two fallbacks).
-Inert unless `SR3E.rangeTN` is ever undefined — consistency fix only. No repro needed.
+- **Drain track** — dispelling, conjuring (all three uses), and the Drain card's "Force > Magic" warning.
+- **Banishing** — the spirit resisted against base Magic.
+- **Spell Pool** — `spendSpellPool`, `rollDispel` and the casting flow each recounted it from base
+  INT/WIL/Magic, so a caster whose Magic had dropped could spend dice the sheet did not show. One
+  formula now, `SR3EActor.spellPoolFor`, which the derivation uses too.
+- **Wards** (default/max Force, an attacker's Magic damage and resist TN) and the contested roll's
+  *Magic* source.
+
+⚠ **Kept on `base` by design:** the "is this character Awakened?" gates, adept power-level caps
+(documented at the call site), and permanent Magic loss (a write). `tests/magic-attribute.test.mjs`
+ratchets every other read; two mutants.
+
+**Checked live 2026-09-14:** *Bruce Lee* in the test world is the repro — base 6, effective 5; a
+Force 6 dispel now takes Physical Drain as a Force 6 cast does, and `spellPoolFor` equals the sheet's
+Spell Pool for every actor.
+
+## F6. Wrong range-TN fallback array — FIXED 2026-09-14 (0.5.2)
+
+`SR3EItem._rangeBandForDistance` fell back to `[0, 1, 2, 3]` and `tn[3] ?? 3` — Extreme at TN 7,
+not 9 (SR3 p.111). Both now **5**; inert unless `SR3E.rangeTN` is undefined. Pinned in
+`tests/tables.test.mjs` with the config table removed.

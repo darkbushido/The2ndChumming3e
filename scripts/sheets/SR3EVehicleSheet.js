@@ -816,14 +816,14 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
    */
   static async promptVehicleDrivingTest() {
     const vehicles = game.actors
-      .filter(a => a.type === 'vehicle' && a.getFlag('The2ndChumming3e', 'isTemplate') !== true)
+      .filter(a => a.type === 'vehicle' && game.sr3e.isLiveActor(a))
       .sort((a, b) => a.name.localeCompare(b.name));
     if (!vehicles.length) {
       ui.notifications.warn('No vehicles available.');
       return;
     }
     const drivers = game.actors
-      .filter(a => (a.type === 'character' || a.type === 'npc') && a.getFlag('The2ndChumming3e', 'isTemplate') !== true)
+      .filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a))
       .sort((a, b) => a.name.localeCompare(b.name));
 
     const vehOpts = vehicles.map(v => `<option value="${v.id}">${v.name}</option>`).join('');

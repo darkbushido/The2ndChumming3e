@@ -1270,6 +1270,80 @@ export const MUTANTS = [
   },
 
   {
+    id:     'drain-reads-base-magic',
+    suite:  'magic-attribute',
+    ...ACTOR, method: 'magicAttribute',
+    was:    'SR3 p.183 — Physical Drain when Force exceeds the caster\'s Magic ATTRIBUTE, which '
+          + 'Essence loss lowers. Dispelling, banishing and conjuring read magic.base, so one caster '
+          + 'at one Force took Physical Drain in one flow and Stun in another (F5)',
+    impl:   (attr) => attr?.magic?.base ?? 0,
+  },
+  {
+    id:     'spell-pool-recount-reads-base',
+    suite:  'magic-attribute',
+    ...ACTOR, method: 'spellPoolFor',
+    was:    'spendSpellPool and rollDispel recounted Spell Pool from base INT/WIL/Magic, so a caster '
+          + 'whose Magic had dropped could spend dice the sheet did not show (F5)',
+    impl:   (attr) => (attr?.magic?.base ?? 0) > 0
+      ? Math.floor(((attr.intelligence?.base ?? 0) + (attr.willpower?.base ?? 0) + attr.magic.base) / 3) : null,
+  },
+
+  {
+    id:     'astral-casting-drain-stays-stun',
+    suite:  'magic-attribute',
+    ...ACTOR, method: 'drainIsPhysical',
+    was:    'SR3 p.183 — "All spells cast while astrally projecting cause physical damage, regardless '
+          + 'of Force." Casting only compared Force with Magic, so an astral mage took Stun Drain',
+    impl:   (force, attr) => (Number(force) || 0) > (attr?.magic?.value ?? attr?.magic?.base ?? 0),
+  },
+  {
+    id:     'drain-resisted-with-base-willpower',
+    suite:  'magic-attribute',
+    ...ACTOR, method: 'drainResistRating',
+    was:    'the Drain card read base Willpower first, so a Pain Editor\'s or Adrenal Pump\'s +1 '
+          + 'Willpower never reached the Drain Resistance Test (SR3 p.183)',
+    impl:   (attr, key = 'willpower') => attr?.[key]?.base ?? attr?.[key]?.value ?? 1,
+  },
+  {
+    id:     'next-step-before-the-explosions',
+    suite:  'interactive-explosions',
+    ...ACTOR, method: 'rollThen',
+    was:    'SR3 p.38 — above TN 6 a 6 is rolled again. MIJI, banishing and the rest rolled those waves '
+          + 'in a silent loop and went straight on to the next dialog (2026-09-14)',
+    impl:   async function (actor, pool, tn, { followUp }) {
+      let dice = actor._rollWave(pool, tn, true);
+      for (let g = 0; g < 50; g++) {
+        const idx = dice.flatMap((d, i) => d.needsExplosion ? [i] : []);
+        if (!idx.length) break;
+        dice = actor._rollWave(pool, tn, false, dice, idx) ?? dice.map(d => ({ ...d, needsExplosion: false }));
+      }
+      return this.runFollowUp(followUp, dice);
+    },
+  },
+  {
+    id:     'opposed-resolves-before-both-explode',
+    suite:  'opposed-explosions',
+    ...ACTOR, method: 'settleOpposed',
+    was:    'SR3 p.38 — above TN 6 a 6 is rolled again. The opposed result was posted off the first '
+          + 'wave, so the winner was decided before anyone rolled their explosions (F4)',
+    impl:   (record, side, dice) => {
+      const r = JSON.parse(JSON.stringify(record));
+      if (r.resolved) return { record: r, complete: false, changed: false };
+      if (side) r[side] = { dice, done: true };
+      r.resolved = true;
+      return { record: r, complete: true, changed: true };
+    },
+  },
+  {
+    id:     'melee-ignores-wounds',
+    suite:  'melee-wounds',
+    ...ACTOR, method: 'woundTN',
+    was:    'SR3 p.123 — "Character is wounded" is a Melee Modifiers Table row. Both boxing cards '
+          + 'roll through _rollWave, which never adds woundMod, so a Serious wound swung at TN 4 (F3)',
+    impl:   () => 0,
+  },
+
+  {
     id:     'dwarf-toxin-resistance-missing',
     suite:  'racial',
     ...ACTOR, method: 'racialSituational',

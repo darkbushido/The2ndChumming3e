@@ -76,6 +76,19 @@ export async function run(t) {
    * ════════════════════════════════════════════════════════════════════════════ */
   t.eq('range TN modifiers are 0/+1/+2/+5 for TN 4/5/6/9', SR3E.rangeTN, [0, 1, 2, 5]);
 
+  // F6 — `_rangeBandForDistance` carried its own fallback, [0,1,2,3]: Extreme at TN 7, not 9.
+  {
+    const { SR3EItem } = await import('../scripts/documents/SR3EItem.js');
+    const bands = [5, 15, 30, 50];
+    const saved = SR3E.rangeTN;
+    try {
+      delete SR3E.rangeTN;
+      t.is('with no config table, Extreme is still +5 (TN 9)', SR3EItem._rangeBandForDistance(bands, 40).tnMod, 5);
+      t.is('…and beyond Extreme too', SR3EItem._rangeBandForDistance(bands, 99).tnMod, 5);
+    } finally { SR3E.rangeTN = saved; }
+    t.is('with the table, Extreme reads it (+5)', SR3EItem._rangeBandForDistance(bands, 40).tnMod, 5);
+  }
+
   const BOOK_RANGES = {
     HOPist: [5, 15, 30, 50],        // Hold-out Pistol   0-5   6-15    16-30   31-50
     LPist:  [5, 15, 30, 50],        // Light Pistol      0-5   6-15    16-30   31-50

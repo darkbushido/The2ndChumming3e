@@ -281,7 +281,7 @@ export class SR3EActor extends Actor {
       // Deployed IC bypass the template filter — deployment is an explicit GM action
       if (a.type === 'ic') return (a.system.activeHostId ?? '') === hostId && (a.system.deployed ?? false);
       // All other types: respect the template flag
-      if (a.getFlag('The2ndChumming3e', 'isTemplate') === true) return false;
+      if (!game.sr3e.isLiveActor(a)) return false;
       if (a.type === 'agent')
         return (a.system.activeHostId ?? '') === hostId;
       if (a.type === 'character' || a.type === 'npc')
@@ -559,6 +559,16 @@ export class SR3EActor extends Actor {
     const atkGlitch = SR3EActor.isRuleOfOne(atkOnes, atkPool);
     const defGlitch = SR3EActor.isRuleOfOne(defOnes, defPool);
 
+    const ccCtx = {
+      ...ctx,
+      atkPool, atkTN, defPool, defTN,
+      atkDamageCode: atkDmgCode, atkDamageBase: atkDmgBase,
+      defDamageCode: defDmgCode, defDamageBase: defDmgBase,
+    };
+    // F4 — at TN 7+ (a System Rating of 7 is ordinary) the result waits for the explosions.
+    const opposed = await SR3EActor._openOpposed('cybercombat', ccCtx, atkDice, defDice,
+      { atkName: atkActor.name, defName: defActor.name });
+
     // Post wave cards for both sides
     await atkActor._postWaveCard({
       actorId: ctx.attackerActorId,
@@ -566,6 +576,7 @@ export class SR3EActor extends Actor {
       tn: atkTN, pool: atkPool, wave: 0,
       dice: atkDice, ones: atkOnes, glitch: atkGlitch,
       isWeaponRoll: false, isMeleeAtk: true, meleeCtx: null,
+      opposed: opposed?.atk ?? null,
     });
     await defActor._postWaveCard({
       actorId: ctx.defenderActorId,
@@ -573,15 +584,11 @@ export class SR3EActor extends Actor {
       tn: defTN, pool: defPool, wave: 0,
       dice: defDice, ones: defOnes, glitch: defGlitch,
       isWeaponRoll: false, isMeleeDef: true, meleeCtx: null,
+      opposed: opposed?.def ?? null,
     });
 
-    // Post result
-    await SR3EActor._postCCResult({
-      ...ctx,
-      atkPool, atkTN, defPool, defTN,
-      atkDamageCode: atkDmgCode, atkDamageBase: atkDmgBase,
-      defDamageCode: defDmgCode, defDamageBase: defDmgBase,
-    }, atkDice, defDice);
+    // Post result — now only if nothing explodes; otherwise the ⏳ card posts it (F4).
+    if (!opposed) await SR3EActor._postCCResult(ccCtx, atkDice, defDice);
   }
 
   static async _postCCResult(ctx, atkDice, defDice) {
@@ -2182,14 +2189,7 @@ _prepareCharacter(sys, attr) {
   const combatPoolSpent     = sys.combatPoolSpent ?? 0;
   const availableCombatPool = Math.max(0, combatPool - combatPoolSpent);
 
-  const magicEff      = attr.magic?.value ?? 0;
-  const spellPoolBase = magicBase > 0
-    ? Math.max(0, Math.floor(
-        ((attr.intelligence?.value ?? 0) +
-         (attr.willpower?.value    ?? 0) +
-         magicEff) / 3
-      ))
-    : null;
+  const spellPoolBase = SR3EActor.spellPoolFor(attr);
   const spellPool          = spellPoolBase !== null ? spellPoolBase + (sys.spellPoolMod ?? 0) : null;
   const spellPoolSpent     = magicBase > 0 ? (sys.spellPoolSpent ?? 0) : 0;
   const availableSpellPool = spellPool !== null ? Math.max(0, spellPool - spellPoolSpent) : null;
@@ -2515,6 +2515,69 @@ _prepareCharacter(sys, attr) {
   }
 
   /**
+   * The caster's Magic ATTRIBUTE — the effective rating, not the starting one · F5.
+   *
+   * > "If the Force of the spell is greater than the caster's Magic Attribute, the Drain causes
+   * > physical damage." — *SR3 p.183*
+   *
+   * and Essence loss lowers that attribute itself (*"a magician with an Essence Rating of 4.5 has a
+   * Magic Rating of 4"*), which is what `magic.value` holds. Casting read `value`; dispelling, the
+   * Drain card's warning and banishing read `magic.base`, so the same caster at the same Force took
+   * Physical Drain in one flow and Stun in another. Falls back to `base` for an actor not yet derived.
+   */
+  static magicAttribute(attr) {
+    return attr?.magic?.value ?? attr?.magic?.base ?? 0;
+  }
+
+  /**
+   * Is a spell's Drain Physical? · SR3 p.183, both sentences of the rule:
+   *
+   * > "If the Force of the spell is greater than the caster's Magic Attribute, the Drain causes
+   * > physical damage. All spells cast while astrally projecting cause physical damage,
+   * > regardless of Force."
+   *
+   * The astral half was never implemented. `astral` is for CASTING only — the sentence is about
+   * spells cast; dispelling and conjuring have their own Force-vs-Magic lines and pass false.
+   */
+  static drainIsPhysical(force, attr, { astral = false } = {}) {
+    return !!astral || (Number(force) || 0) > SR3EActor.magicAttribute(attr);
+  }
+
+  /**
+   * The attribute that resists Drain — Willpower for spells (p.183: *"the caster's Willpower
+   * dice"*), Charisma for conjuring — at its EFFECTIVE rating. The Drain card read `base` first,
+   * so a Pain Editor's or an Adrenal Pump's +1 Willpower (M&M p.73, p.63) never reached the test.
+   */
+  static drainResistRating(attr, key = 'willpower') {
+    return attr?.[key]?.value ?? attr?.[key]?.base ?? 1;
+  }
+
+  /**
+   * What a fighter's own wounds add to their melee or astral target number · F3.
+   *
+   * The Melee Modifiers Table (SR3 p.123) has the row *"Character is wounded — Damage Modifier
+   * (see p. 126)"*, and astral combat *"uses the same rules as Melee Combat"* (p.174). `rollPool`
+   * folds `woundMod` into a TN, but both boxing cards roll through `_rollWave`, which takes the TN
+   * as given — so a Serious wound never touched a melee TN. `woundMod` is NEGATIVE (−3 at Serious);
+   * this returns the positive TN increase. Never below 0.
+   */
+  static woundTN(actor) {
+    return Math.max(0, -Math.min(0, Number(actor?.system?.woundMod) || 0));
+  }
+
+  /**
+   * Spell Pool before `spellPoolMod` — ⌊(INT + WIL + Magic) ÷ 3⌋, off the EFFECTIVE values · SR3 p.43.
+   * The one formula: the derivation, `spendSpellPool` and `rollDispel` each had their own, and the
+   * two recomputations read `base`, so a caster whose Magic had dropped could spend Spell Pool dice
+   * the sheet did not show (F5). null for someone not Awakened.
+   */
+  static spellPoolFor(attr) {
+    if (!((attr?.magic?.base ?? 0) > 0)) return null;
+    const v = k => attr?.[k]?.value ?? attr?.[k]?.base ?? 0;
+    return Math.max(0, Math.floor((v('intelligence') + v('willpower') + SR3EActor.magicAttribute(attr)) / 3));
+  }
+
+  /**
    * SR3's Rule of One (p.38) — true only when EVERY die rolled comes up 1:
    *
    *   "If ALL the dice rolled for a test come up 1s, it means that the character
@@ -2731,6 +2794,8 @@ _prepareCharacter(sys, attr) {
     const successes     = state.physicalDice ? (state.physicalSuccesses ?? 0) : dice.filter(d => d.success).length;
     const explodingDice = state.physicalDice ? [] : dice.filter(d => d.needsExplosion);
     const allDone       = state.physicalDice || explodingDice.length === 0;
+    // Steps that must land BELOW this wave card (a second roller's own wave card) — run after it posts.
+    const afterCard     = [];
 
     // Build dice display — exploding dice get a pending style (no glyph, just the running total).
     const diceHtml = state.physicalDice
@@ -3090,73 +3155,21 @@ _prepareCharacter(sys, attr) {
           </div>`;
 
       } else if (state.isBanishingRoll && state.banishContext) {
-        const bc           = state.banishContext;
-        const banisher     = game.actors.get(bc.banisherActorId);
-        const spirit       = game.actors.get(bc.spiritActorId);
-        const banisherName = banisher?.name ?? 'Banisher';
-        const spiritName   = spirit?.name   ?? bc.spiritLabel;
-
-        // Auto-resolve spirit resistance: Force dice vs TN = banisher's effective Magic
-        const spiritForce = bc.spiritForce;
-        const miji        = game.sr3e?.SR3EMIJI;
-        const spiritRes   = miji
-          ? miji._resolveRoll(spirit ?? banisher, spiritForce, bc.effectiveMagic)
-          : { successes: 0, dice: [] };
-        const spiritHits  = spiritRes.successes;
-
-        const net = successes - spiritHits;
-
-        let outcomeHtml = '';
-        let newForce    = spiritForce;
-
-        if (net > 0) {
-          // Banisher wins — reduce spirit's Force
-          newForce = Math.max(0, spiritForce - net);
-          await spirit?.setFlag('The2ndChumming3e', 'force', newForce);
-          if (newForce === 0) {
-            outcomeHtml = `<div class="sr-staging-result" style="color:var(--sr-green)">
-              💀 <strong>${spiritName}</strong> is destroyed — Force reduced to 0.
-              Remove it from the tracker when ready.
-            </div>`;
-          } else {
-            outcomeHtml = `<div class="sr-staging-result" style="color:var(--sr-green)">
-              🌀 <strong>${banisherName}</strong> wins by ${net} — ${spiritName}'s Force reduced to <strong>${newForce}</strong>.
-            </div>
-            <div style="font-size:11px;color:var(--sr-muted);margin-top:4px">
-              ⚔ Both locked in magical combat until <strong>${banisherName}'s</strong> next Combat Phase.
-            </div>`;
-          }
-        } else if (net < 0) {
-          // Spirit wins — temporary Magic loss for banisher
-          const magicLost = Math.abs(net);
-          const prev      = banisher ? (banisher.getFlag('The2ndChumming3e', 'tempMagicLoss') ?? 0) : 0;
-          await banisher?.setFlag('The2ndChumming3e', 'tempMagicLoss', prev + magicLost);
-          outcomeHtml = `<div class="sr-staging-result" style="color:var(--sr-red)">
-            🌀 <strong>${spiritName}</strong> wins by ${magicLost} — ${banisherName}'s effective Magic reduced by ${magicLost} for this combat (now ${Math.max(0, bc.effectiveMagic - magicLost)}).
-            ${Math.max(0, bc.effectiveMagic - magicLost) === 0
-              ? `<br><strong>⚠ Magic reached 0 — ${banisherName} takes Deadly Stun damage, passes out. Spirit goes free. Check for Magic Loss!</strong>`
-              : ''}
-          </div>
-          <div style="font-size:11px;color:var(--sr-muted);margin-top:4px">
-            ⚔ Both locked in magical combat until <strong>${spiritName}'s</strong> next Combat Phase.
-          </div>`;
+        const bc      = { ...state.banishContext, banisherHits: successes };
+        const spirit  = game.actors.get(bc.spiritActorId);
+        const roller  = spirit ?? this;
+        // The spirit resists: Force dice vs TN = the banisher's effective Magic. At Magic 7+ its 6s
+        // explode — rolled on its own wave card, and the outcome waits for them.
+        const spiritRoll = SR3EActor._firstWave(roller, bc.spiritForce, bc.effectiveMagic);
+        if (SR3EActor.opposedNeedsExplosion(spiritRoll.dice)) {
+          const spiritName = spirit?.name ?? bc.spiritLabel;
+          stagingHtml = `<div class="sr-staging-result">🌀 ${successes} hit${successes !== 1 ? 's' : ''} —
+            ${spiritName} resists below; the outcome posts when its 💥 explosions are rolled.</div>`;
+          afterCard.push(() => SR3EActor._postSideWave(roller, spiritRoll, `🌀 ${spiritName} resists banishing`,
+            { followUp: { kind: 'banish', ctx: bc } }));
         } else {
-          // Tie
-          outcomeHtml = `<div class="sr-staging-result" style="color:var(--sr-muted)">
-            🌀 Tie — no change. Contest may continue.
-          </div>
-          <div style="font-size:11px;color:var(--sr-muted);margin-top:4px">
-            ⚔ Both locked in magical combat. Winner decides whether to continue.
-          </div>`;
+          stagingHtml = await SR3EActor._banishOutcomeHtml(bc, SR3EActor.diceResult(spiritRoll.dice));
         }
-
-        stagingHtml = `
-          <div class="sr-staging-result" style="font-size:12px;color:var(--sr-muted);margin-bottom:4px">
-            ${banisherName}: <strong>${successes}</strong> hit${successes !== 1 ? 's' : ''} &nbsp;|&nbsp;
-            ${spiritName} resists (${spiritForce}d vs TN ${bc.effectiveMagic}): <strong>${spiritHits}</strong> hit${spiritHits !== 1 ? 's' : ''}
-          </div>
-          ${outcomeHtml}`;
-
       } else if (state.isWardCastRoll && state.wardCastContext) {
         // Magic Attribute Test vs TN = desired Force. Successes = weeks the ward lasts
         // (0 successes = it fails to form). Drain is always (Force)L Stun, win or lose.
@@ -3527,6 +3540,11 @@ _prepareCharacter(sys, attr) {
         grenadeType:               state.grenadeType               ?? 'standard',
         footerNote:                state.footerNote                ?? null,
         crashOnFailVehicleId:      state.crashOnFailVehicleId      ?? null,
+        // F4 — which opposed roll this side belongs to. Dropped, the side's explosions would
+        // roll and the ⏳ card would wait for ever.
+        opposed:                   state.opposed                   ?? null,
+        // A single roller's next step (`rollThen`) — dropped, the dialog or result never comes.
+        followUp:                  state.followUp                  ?? null,
       }).replace(/'/g, '&#39;');
       explodeBtn = `
         <div class="sr-explode-action">
@@ -3834,6 +3852,19 @@ _prepareCharacter(sys, attr) {
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
 
+    // ── F4: an opposed side's explosions are done — report its final dice ─────────
+    // AFTER this wave card is posted, so the result it may trigger lands below the dice that
+    // decided it (settling first put the result above the wave — seen in the live check).
+    // Wave 0 is already on the ⏳ card; only a side that exploded has anything new.
+    if (allDone && state.opposed && (state.wave ?? 0) > 0) {
+      await SR3EActor._settleOpposedSide(state.opposed, dice);
+    }
+    // A single roller's explosions are done — the step that waited for them (`rollThen`).
+    if (allDone && state.followUp) {
+      await SR3EActor.runFollowUp(state.followUp, dice);
+    }
+    for (const step of afterCard) await step();
+
     // Post the Spell Defense phase card after the wave card so messages are in order
     if (state._pendingDefenseCard) {
       await SR3EActor.postSpellDefenseCard(state._pendingDefenseCard);
@@ -4044,6 +4075,288 @@ _prepareCharacter(sys, attr) {
       ...state,
       dice: newDice,
       wave: state.wave,
+    });
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Opposed rolls wait for their explosions — F4                        */
+  /* ------------------------------------------------------------------ */
+
+  /*
+   * An opposed test (melee, astral, contested, cybercombat) compares two rolls. Above TN 6 a 6 is
+   * not yet a success and must be rolled again (the Rule of Six, SR3 p.38) — interactively, one 💥
+   * click per wave. The result card used to be posted straight after the FIRST wave, so at TN 7+
+   * the winner was decided before anyone rolled their explosions, and clicking 💥 changed the dice
+   * but never the result (F4). Defaulting (+4) and a called shot (+4) both reach TN 7+.
+   *
+   * Now, when either side has dice to explode, a ⏳ card holds the two sides' dice as a message
+   * FLAG. Each side's explosion payload carries a reference to it, and the side's final wave
+   * reports its dice to the GM (`sr3e.opposed.settle`), who serialises the writes and posts the
+   * real result once both are in. The sides are usually rolled on DIFFERENT clients — an
+   * in-memory map could never see both. ⚔ Resolve (GM) settles with the dice as they stand, the
+   * same AFK escape the two-corner cards have. Nothing to explode → the result posts at once,
+   * exactly as before.
+   */
+
+  /**
+   * Every opposed result, by kind → `[class on game.sr3e, method]`. Each poster takes
+   * `(ctx, atkDice, defDice)`. Strings rather than functions so SR3EMIJI and SR3EWard need not be
+   * imported here (they reach this class through `game.sr3e`), and so the record on the ⏳ card
+   * stays plain JSON.
+   */
+  static OPPOSED_RESULTS = {
+    melee:          ['SR3EActor', '_postMeleeResult'],
+    astral:         ['SR3EActor', '_postAstralResult'],
+    contested:      ['SR3EActor', '_postContestedResult'],
+    cybercombat:    ['SR3EActor', '_postCCResult'],
+    miji:           ['SR3EMIJI',  '_postMIJIOpposed'],
+    'ward-fool':    ['SR3EWard',  '_postFoolResult'],
+    'ortho-system': ['SR3EActor', '_postOrthoSystemResult'],
+    'ortho-ic':     ['SR3EActor', '_postOrthoICAttackResult'],
+    'ortho-cc':     ['SR3EActor', '_postOrthoCCResult'],
+  };
+
+  /**
+   * What happens after a SINGLE roller's final wave, by kind → `[class, method]`. Each takes
+   * `(ctx, res)` with `res` the shape the silent resolvers used to return (`diceResult`).
+   */
+  static FOLLOW_UPS = {
+    banish:           ['SR3EActor', '_postBanishFollowUp'],
+    'miji.infiltrate': ['SR3EMIJI', '_infiltrationRolled'],
+    'miji.detect':     ['SR3EMIJI', '_detectRolled'],
+    'miji.ivis':       ['SR3EMIJI', '_ivisRolled'],
+    'miji.eccm':       ['SR3EMIJI', '_eccmRolled'],
+    'miji.footprint':  ['SR3EMIJI', '_footprintRolled'],
+  };
+
+  static _registryFn([cls, fn] = [], what) {
+    const owner = cls === 'SR3EActor' ? SR3EActor : game.sr3e?.[cls];
+    if (typeof owner?.[fn] !== 'function') throw new Error(`SR3E | unknown ${what}`);
+    return owner[fn].bind(owner);
+  }
+
+  /** Post an opposed result, by kind. */
+  static postOpposedResult(kind, ctx, atkDice, defDice) {
+    return SR3EActor._registryFn(SR3EActor.OPPOSED_RESULTS[kind], `opposed kind '${kind}'`)(ctx, atkDice, defDice);
+  }
+
+  /** Does this first wave leave dice to explode? Physical dice never do. */
+  static opposedNeedsExplosion(dice, physicalDice = false) {
+    return !physicalDice && (dice ?? []).some(d => d.needsExplosion);
+  }
+
+  /**
+   * Record one side's final dice. PURE — the GM handler applies the result to the message.
+   * `force` (⚔ Resolve, GM) takes whatever dice each side has as final.
+   * @returns {{record: object, complete: boolean, changed: boolean}}
+   */
+  static settleOpposed(record, side, dice, { force = false } = {}) {
+    const r = foundry.utils?.deepClone ? foundry.utils.deepClone(record) : JSON.parse(JSON.stringify(record));
+    if (!r || r.resolved) return { record: r, complete: false, changed: false };
+    let changed = false;
+    if (side === 'atk' || side === 'def') {
+      if (!r[side].done) { r[side] = { dice: dice ?? r[side].dice, done: true }; changed = true; }
+    }
+    const complete = force || (r.atk.done && r.def.done);
+    if (complete) { r.resolved = true; changed = true; }
+    return { record: r, complete, changed };
+  }
+
+  /** The ⏳ card's body, from the record. */
+  static _opposedPendingHtml(record) {
+    const side = (s, name) => {
+      const hits = (record[s].dice ?? []).filter(d => d.success).length;
+      return `<div style="font-size:12px">${name}: <strong>${hits}</strong> success${hits !== 1 ? 'es' : ''}
+        ${record[s].done ? '✔ final' : '<span style="color:var(--sr-gold)">💥 explosions still to roll</span>'}</div>`;
+    };
+    if (record.resolved) {
+      return `<div class="sr-roll-card"><div class="sr-roll-header">⚔ Opposed roll — resolved</div>
+        ${side('atk', record.atkName)}${side('def', record.defName)}</div>`;
+    }
+    return `<div class="sr-roll-card">
+      <div class="sr-roll-header">⏳ Waiting on explosions — the result posts when both sides are final</div>
+      ${side('atk', record.atkName)}${side('def', record.defName)}
+      <div style="font-size:11px;color:var(--sr-muted);margin-top:4px">At TN 7+ a 6 is not yet a success (SR3 p.38) — roll the 💥 on each card.</div>
+      <div class="sr-soak-action"><button class="sr-opposed-resolve-btn">⚔ Resolve with the dice as they stand (GM)</button></div>
+    </div>`;
+  }
+
+  /**
+   * Called by each resolver after rolling the first waves. Returns `null` when nothing
+   * explodes (post the result now), else the per-side references to put on the wave cards.
+   */
+  static async _openOpposed(kind, ctx, atkDice, defDice, { atkName, defName, physicalDice = false } = {}) {
+    const atkNeeds = SR3EActor.opposedNeedsExplosion(atkDice, physicalDice);
+    const defNeeds = SR3EActor.opposedNeedsExplosion(defDice, physicalDice);
+    if (!atkNeeds && !defNeeds) return null;
+    const record = {
+      kind, ctx, atkName: atkName ?? 'Attacker', defName: defName ?? 'Defender', resolved: false,
+      atk: { dice: atkDice, done: !atkNeeds },
+      def: { dice: defDice, done: !defNeeds },
+    };
+    const msg = await ChatMessage.create({
+      content: SR3EActor._opposedPendingHtml(record),
+      style:   CONST.CHAT_MESSAGE_STYLES.OTHER,
+      flags:   { The2ndChumming3e: { opposed: record } },
+    });
+    return { atk: { messageId: msg.id, side: 'atk' }, def: { messageId: msg.id, side: 'def' } };
+  }
+
+  /** A side's last wave landed — report it (through the GM, who owns the write). */
+  static async _settleOpposedSide(opposed, dice, { force = false } = {}) {
+    if (!opposed?.messageId) return;
+    try {
+      await game.sr3e.SR3EQuery.asGM('sr3e.opposed.settle',
+        { messageId: opposed.messageId, side: opposed.side ?? null, dice, force });
+    } catch (err) {
+      console.error('SR3E | opposed.settle failed', err);
+      ui.notifications?.error('SR3E: could not reach the GM to finish the opposed roll — the GM can use ⚔ Resolve on the ⏳ card.');
+    }
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Every explosion is interactive — the resolvers that rolled silently */
+  /* ------------------------------------------------------------------ */
+
+  /*
+   * MIJI, Orthodox Matrix, fooling a ward and a spirit resisting banishment rolled their explosions
+   * in a silent loop (`_resolveRoll`) and went straight on to the next step. The dice were right;
+   * nobody got to roll them, and the next dialog or card arrived before anyone saw a 6. The
+   * maintainer (2026-09-14): "all explosions should be interactive, we should wait for dice
+   * explosions to finish before queing up other things."
+   *
+   * Two shapes, both built on the F4 machinery above:
+   *   · `rollOpposedPair` — two rolls compared. The ⏳ card holds both; the result posts when both
+   *     sides' 💥 are done (through the GM, since the sides are rolled on different clients).
+   *   · `rollThen` — one roll, then a step (a result card, a dialog). The step runs on the client
+   *     that rolls the last wave — the roller's own, since 💥 is gated to the actor's owner.
+   * Nothing to explode → exactly the old behaviour, no extra cards. A side with dice to explode
+   * gets an ordinary wave card to click.
+   */
+
+  /** A finished roll, in the shape the silent resolvers returned. */
+  static diceResult(dice) {
+    const d = dice ?? [];
+    return { successes: d.filter(x => x.success).length, ones: d.filter(x => x.isOne).length, dice: d };
+  }
+
+  /** The first wave, with the same clamps `_resolveRoll` applied (1 die, TN 2). */
+  static _firstWave(actor, pool, tn) {
+    const p = Math.max(1, pool | 0), t = Math.max(2, tn | 0);
+    return { pool: p, tn: t, dice: actor._rollWave(p, t, true) };
+  }
+
+  /** A wave card for a first wave that still has dice to explode. */
+  static async _postSideWave(actor, roll, label, extra = {}) {
+    const ones = roll.dice.filter(d => d.isOne).length;
+    await actor._postWaveCard({
+      actorId: actor.id, label, tn: roll.tn, pool: roll.pool, wave: 0,
+      dice: roll.dice, ones, glitch: SR3EActor.isRuleOfOne(ones, roll.pool),
+      isWeaponRoll: false, ...extra,
+    });
+  }
+
+  /**
+   * Two rolls compared. `atk`/`def` = `{ actor, pool, tn, label, name? }`.
+   * The result posts now when nothing explodes, else once both sides' explosions are rolled.
+   */
+  static async rollOpposedPair(kind, ctx, atk, def) {
+    const a = SR3EActor._firstWave(atk.actor, atk.pool, atk.tn);
+    const d = SR3EActor._firstWave(def.actor, def.pool, def.tn);
+    const opposed = await SR3EActor._openOpposed(kind, ctx, a.dice, d.dice,
+      { atkName: atk.name ?? atk.actor.name, defName: def.name ?? def.actor.name });
+    if (!opposed) return SR3EActor.postOpposedResult(kind, ctx, a.dice, d.dice);
+    // Only a side with dice to explode needs a card to click; the other's dice are on the ⏳ card.
+    if (SR3EActor.opposedNeedsExplosion(a.dice)) await SR3EActor._postSideWave(atk.actor, a, atk.label, { opposed: opposed.atk });
+    if (SR3EActor.opposedNeedsExplosion(d.dice)) await SR3EActor._postSideWave(def.actor, d, def.label, { opposed: opposed.def });
+  }
+
+  /**
+   * One roll, then `followUp` = `{ kind, ctx }` (see FOLLOW_UPS) with its result — now when
+   * nothing explodes, else after the last 💥 (`_postWaveCard` runs it once the wave card is posted).
+   */
+  static async rollThen(actor, pool, tn, { label, followUp }) {
+    const r = SR3EActor._firstWave(actor, pool, tn);
+    if (!SR3EActor.opposedNeedsExplosion(r.dice)) return SR3EActor.runFollowUp(followUp, r.dice);
+    await SR3EActor._postSideWave(actor, r, label, { followUp });
+  }
+
+  static runFollowUp(followUp, dice) {
+    return SR3EActor._registryFn(SR3EActor.FOLLOW_UPS[followUp?.kind], `follow-up '${followUp?.kind}'`)(
+      followUp.ctx, SR3EActor.diceResult(dice));
+  }
+
+  /**
+   * Banishing's outcome, once the spirit's resistance is final — the banisher's hits against the
+   * spirit's (Force dice vs the banisher's effective Magic). Writes the Force / Magic-loss flag and
+   * returns the card body. Inline on the banisher's wave card when nothing exploded.
+   */
+  static async _banishOutcomeHtml(bc, spiritRes) {
+    const banisher     = game.actors.get(bc.banisherActorId);
+    const spirit       = game.actors.get(bc.spiritActorId);
+    const banisherName = banisher?.name ?? 'Banisher';
+    const spiritName   = spirit?.name   ?? bc.spiritLabel;
+    const successes    = bc.banisherHits ?? 0;
+    const spiritForce  = bc.spiritForce;
+    const spiritHits   = spiritRes.successes;
+    const net          = successes - spiritHits;
+
+    let outcomeHtml;
+    if (net > 0) {
+      // Banisher wins — reduce spirit's Force
+      const newForce = Math.max(0, spiritForce - net);
+      await spirit?.setFlag('The2ndChumming3e', 'force', newForce);
+      if (newForce === 0) {
+        outcomeHtml = `<div class="sr-staging-result" style="color:var(--sr-green)">
+          💀 <strong>${spiritName}</strong> is destroyed — Force reduced to 0.
+          Remove it from the tracker when ready.
+        </div>`;
+      } else {
+        outcomeHtml = `<div class="sr-staging-result" style="color:var(--sr-green)">
+          🌀 <strong>${banisherName}</strong> wins by ${net} — ${spiritName}'s Force reduced to <strong>${newForce}</strong>.
+        </div>
+        <div style="font-size:11px;color:var(--sr-muted);margin-top:4px">
+          ⚔ Both locked in magical combat until <strong>${banisherName}'s</strong> next Combat Phase.
+        </div>`;
+      }
+    } else if (net < 0) {
+      // Spirit wins — temporary Magic loss for banisher
+      const magicLost = Math.abs(net);
+      const prev      = banisher ? (banisher.getFlag('The2ndChumming3e', 'tempMagicLoss') ?? 0) : 0;
+      await banisher?.setFlag('The2ndChumming3e', 'tempMagicLoss', prev + magicLost);
+      outcomeHtml = `<div class="sr-staging-result" style="color:var(--sr-red)">
+        🌀 <strong>${spiritName}</strong> wins by ${magicLost} — ${banisherName}'s effective Magic reduced by ${magicLost} for this combat (now ${Math.max(0, bc.effectiveMagic - magicLost)}).
+        ${Math.max(0, bc.effectiveMagic - magicLost) === 0
+          ? `<br><strong>⚠ Magic reached 0 — ${banisherName} takes Deadly Stun damage, passes out. Spirit goes free. Check for Magic Loss!</strong>`
+          : ''}
+      </div>
+      <div style="font-size:11px;color:var(--sr-muted);margin-top:4px">
+        ⚔ Both locked in magical combat until <strong>${spiritName}'s</strong> next Combat Phase.
+      </div>`;
+    } else {
+      // Tie
+      outcomeHtml = `<div class="sr-staging-result" style="color:var(--sr-muted)">
+        🌀 Tie — no change. Contest may continue.
+      </div>
+      <div style="font-size:11px;color:var(--sr-muted);margin-top:4px">
+        ⚔ Both locked in magical combat. Winner decides whether to continue.
+      </div>`;
+    }
+
+    return `
+      <div class="sr-staging-result" style="font-size:12px;color:var(--sr-muted);margin-bottom:4px">
+        ${banisherName}: <strong>${successes}</strong> hit${successes !== 1 ? 's' : ''} &nbsp;|&nbsp;
+        ${spiritName} resists (${spiritForce}d vs TN ${bc.effectiveMagic}): <strong>${spiritHits}</strong> hit${spiritHits !== 1 ? 's' : ''}
+      </div>
+      ${outcomeHtml}`;
+  }
+
+  /** The spirit's resistance exploded — its outcome as a card of its own, below its last wave. */
+  static async _postBanishFollowUp(bc, spiritRes) {
+    await ChatMessage.create({
+      content: `<div class="sr-roll-card"><div class="sr-roll-header">🌀 Banishing — result</div>
+        ${await SR3EActor._banishOutcomeHtml(bc, spiritRes)}</div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
   }
 
@@ -5016,6 +5329,10 @@ _prepareCharacter(sys, attr) {
       defFullDefense: _defFullDefense,
     };
 
+    // F4 — at TN 7+ the result waits for both sides' explosions (null: nothing explodes).
+    const opposed = await SR3EActor._openOpposed('melee', meleeCtx, atkDice, defDice,
+      { atkName: atk.name, defName: def.name, physicalDice });
+
     await atk._postWaveCard({
       actorId:          ctx.attackerActorId,
       label:            `⚔ ${atk.name} attacks`,
@@ -5030,6 +5347,7 @@ _prepareCharacter(sys, attr) {
       isWeaponRoll:     false,
       isMeleeAtk:       true,
       meleeCtx,
+      opposed:          opposed?.atk ?? null,
     });
 
     await def._postWaveCard({
@@ -5046,10 +5364,11 @@ _prepareCharacter(sys, attr) {
       isWeaponRoll:     false,
       isMeleeDef:       true,
       meleeCtx,
+      opposed:          opposed?.def ?? null,
     });
 
-    // Post comparison card once both are done
-    await SR3EActor._postMeleeResult(meleeCtx, atkDice, defDice);
+    // Post the comparison now only if nothing explodes; otherwise the ⏳ card posts it (F4).
+    if (!opposed) await SR3EActor._postMeleeResult(meleeCtx, atkDice, defDice);
   }
 
   /**
@@ -8098,13 +8417,9 @@ _prepareCharacter(sys, attr) {
     }
     return game.sr3e.SR3EQueue.run(this.uuid, async () => {
       // Compute available directly — derived cache may be stale
-      const attr       = this.system.attributes ?? {};
-      const magicBase  = attr.magic?.base ?? 0;
+      const spBase     = SR3EActor.spellPoolFor(this.system.attributes ?? {});   // the sheet's formula (F5)
       let available    = 0;
-      if (magicBase > 0) {
-        const int2     = attr.intelligence?.base ?? 0;
-        const wil2     = attr.willpower?.base    ?? 0;
-        const spBase   = Math.max(0, Math.floor((int2 + wil2 + magicBase) / 3));
+      if (spBase !== null) {
         const spTotal  = spBase + (this.system.spellPoolMod ?? 0);
         available      = Math.max(0, spTotal - (this.system.spellPoolSpent ?? 0));
       }
@@ -8771,10 +9086,10 @@ _prepareCharacter(sys, attr) {
     const attr2      = this.system.attributes ?? {};
     const resistAttr = payload.resistAttr ?? 'willpower';
     const resistName = payload.resistName ?? 'Willpower';
-    const attrVal    = attr2[resistAttr]?.base ?? attr2[resistAttr]?.value ?? 1;
+    const attrVal    = SR3EActor.drainResistRating(attr2, resistAttr);   // effective, not base
     const bonusDice  = Math.max(0, payload.bonusDice ?? 0);
     const basePool   = Math.max(1, attrVal + bonusDice);
-    const magicBase  = attr2.magic?.base ?? 0;
+    const magicAttr  = SR3EActor.magicAttribute(attr2);   // the number the Physical test used (F5)
 
     // Use the spell pool count computed at roll time and carried in the payload.
     // This avoids any stale-derived-cache or wrong-actor-reference issues.
@@ -8792,7 +9107,7 @@ _prepareCharacter(sys, attr) {
     }).replace(/'/g, '&#39;');
 
     const physWarning = drainIsPhysical
-      ? `<div style="color:var(--sr-red);font-size:11px;margin-top:4px">⚠ Force (${force}) &gt; Magic (${magicBase}) — Drain is Physical!</div>`
+      ? `<div style="color:var(--sr-red);font-size:11px;margin-top:4px">⚠ Force (${force}) &gt; Magic (${magicAttr}) — Drain is Physical!</div>`
       : '';
 
     // ⚠ Spell Pool may augment a Drain Resistance Test — but only for SORCERY.
@@ -9228,9 +9543,7 @@ _prepareCharacter(sys, attr) {
     const specBonus   = hasDispelSpec ? 2 : 0;
     const sorceryDice = Math.max(0, sorceryRating + specBonus);
 
-    const intVal  = this.system.attributes?.intelligence?.base ?? 0;
-    const wilVal  = this.system.attributes?.willpower?.base    ?? 0;
-    const spBase  = Math.max(0, Math.floor((intVal + wilVal + magicBase) / 3));
+    const spBase    = SR3EActor.spellPoolFor(this.system.attributes ?? {}) ?? 0;   // F5
     const spTotal   = spBase + (this.system.spellPoolMod ?? 0);
     const spSpent   = this.system.spellPoolSpent ?? 0;
     const availSpell = Math.max(0, spTotal - spSpent);
@@ -9273,8 +9586,8 @@ _prepareCharacter(sys, attr) {
       : `Sorcery ${sorceryRating}`;
     const label = `✦ ${this.name} — Dispel [F${force}] ${sorceryLabel}`;
 
-    // Drain is Physical if Force > Magic attribute (same rule as casting)
-    const drainIsPhysical = force > magicBase;
+    // Drain is Physical if Force > the Magic ATTRIBUTE — the effective one, as casting reads it (F5)
+    const drainIsPhysical = SR3EActor.drainIsPhysical(force, this.system.attributes);
 
     return this.rollPool(pool, force, label, {
       isDispelRoll:  true,
@@ -9335,7 +9648,9 @@ _prepareCharacter(sys, attr) {
     const spiritForce  = game.sr3e.SR3ESpiritSummoning._spiritFlag(spirit, 'force') ?? 4;
     const isSummoner   = game.sr3e.SR3ESpiritSummoning._spiritFlag(spirit, 'conjurerId') === this.id;
     const tempLoss     = this.getFlag('The2ndChumming3e', 'tempMagicLoss') ?? 0;
-    const effectiveMagic = Math.max(1, magicBase - tempLoss);
+    // The spirit resists against the banisher's Magic ATTRIBUTE — the effective one (F5) — less
+    // anything a spirit has already taken off it this combat.
+    const effectiveMagic = Math.max(1, SR3EActor.magicAttribute(this.system.attributes) - tempLoss);
 
     // Conjuring skill
     const conjSkill   = this.items.find(i => i.type === 'skill' && /conjuring/i.test(i.name));
@@ -9500,8 +9815,10 @@ _prepareCharacter(sys, attr) {
     if (!await _applyAstralDefault(atkInfo, this, 'attacker'))         return null;
     if (!await _applyAstralDefault(defInfo, targetActor, 'defender'))  return null;
 
-    const atkTN = 4 + (atkInfo.defaultTnMod ?? 0);   // defaulting TN modifier
-    const defTN = 4 + (defInfo.defaultTnMod ?? 0);
+    // Defaulting, plus each fighter's own wounds — astral combat uses the melee rules (p.174), and
+    // the Melee Modifiers Table carries "Character is wounded" (F3).
+    const atkTN = 4 + (atkInfo.defaultTnMod ?? 0) + SR3EActor.woundTN(this);
+    const defTN = 4 + (defInfo.defaultTnMod ?? 0) + SR3EActor.woundTN(targetActor);
 
     await SR3EActor.postAstralCard({
       attackerActorId: this.id,
@@ -9641,6 +9958,9 @@ _prepareCharacter(sys, attr) {
     const defGlitch = SR3EActor.isRuleOfOne(defOnes, defPool);
 
     const astralCtx = { ...ctx, atkPool, atkTN, defPool, defTN, atkRawDamage, defRawDamage, isPhysical };
+    // F4 — at TN 7+ the result waits for both sides' explosions.
+    const opposed = await SR3EActor._openOpposed('astral', astralCtx, atkDice, defDice,
+      { atkName: atk.name, defName: def.name, physicalDice });
 
     await atk._postWaveCard({
       actorId: atk.id, label: `✦ ${atk.name} — Astral Combat`,
@@ -9648,6 +9968,7 @@ _prepareCharacter(sys, attr) {
       dice: atkDice, ones: atkOnes, glitch: atkGlitch,
       physicalDice, physicalSuccesses: physicalDice ? atkDice.filter(d => d.success).length : undefined,
       isWeaponRoll: false, isMeleeAtk: true, meleeCtx: astralCtx,
+      opposed: opposed?.atk ?? null,
     });
 
     await def._postWaveCard({
@@ -9656,9 +9977,10 @@ _prepareCharacter(sys, attr) {
       dice: defDice, ones: defOnes, glitch: defGlitch,
       physicalDice, physicalSuccesses: physicalDice ? defDice.filter(d => d.success).length : undefined,
       isWeaponRoll: false, isMeleeDef: true, meleeCtx: astralCtx,
+      opposed: opposed?.def ?? null,
     });
 
-    await SR3EActor._postAstralResult(astralCtx, atkDice, defDice);
+    if (!opposed) await SR3EActor._postAstralResult(astralCtx, atkDice, defDice);
   }
 
   static async _postAstralResult(ctx, atkDice, defDice) {
@@ -10007,7 +10329,7 @@ _prepareCharacter(sys, attr) {
       if (a.type === 'vehicle' || val > 0) sources.push({ group: 'attr', label: `${label} (${val})`, value: val });
     }
     if (a.type !== 'vehicle') {
-      const mag = attr.magic?.base ?? 0;
+      const mag = SR3EActor.magicAttribute(attr);   // the effective rating, not the starting one (F5)
       if (mag > 0) sources.push({ group: 'attr', label: `Magic (${mag})`, value: mag });
     }
     for (const sk of a.items.filter(i => i.type === 'skill').sort((x,y) => x.name.localeCompare(y.name))) {
@@ -10042,7 +10364,10 @@ _prepareCharacter(sys, attr) {
               ${so.length ? `<optgroup label="Skills">${so}</optgroup>` : ''}`;
     };
 
-    const allActors    = game.actors.contents;
+    // The actor the dialog was opened from, then live characters and NPCs on the scene — it listed
+    // EVERY actor in the world, hosts, IC, vehicles and templates included (F2).
+    const allActors    = [...new Set([defaultActor, ...game.sr3e.sceneFirst(game.actors.contents
+      .filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)))])];
     const allActorData = {};
     for (const a of allActors) {
       const srcs = buildSources(a);
@@ -10399,6 +10724,9 @@ _prepareCharacter(sys, attr) {
     }
 
     const updatedCtx = { ...ctx, atkPool, oppPool, atkTN, oppTN, atkDamage, oppDamage };
+    // F4 — at TN 7+ the result waits for both sides' explosions.
+    const opposed = await SR3EActor._openOpposed('contested', updatedCtx, atkDice, oppDice,
+      { atkName: ctx.atkActorName, defName: ctx.oppActorName, physicalDice: usePhysical });
 
     const atkOnes   = atkDice.filter(d => d.isOne).length;
     const oppOnes   = oppDice.filter(d => d.isOne).length;
@@ -10411,6 +10739,7 @@ _prepareCharacter(sys, attr) {
       dice: atkDice, ones: atkOnes, glitch: atkGlitch,
       physicalDice: usePhysical, physicalSuccesses: usePhysical ? atkDice.filter(d => d.success).length : undefined,
       isWeaponRoll: false, isMeleeAtk: true, meleeCtx: updatedCtx,
+      opposed: opposed?.atk ?? null,
     });
 
     const oppCardActorId = oppActor ? ctx.oppActorId : ctx.atkActorId;
@@ -10420,9 +10749,10 @@ _prepareCharacter(sys, attr) {
       dice: oppDice, ones: oppOnes, glitch: oppGlitch,
       physicalDice: usePhysical, physicalSuccesses: usePhysical ? oppDice.filter(d => d.success).length : undefined,
       isWeaponRoll: false, isMeleeDef: true, meleeCtx: updatedCtx,
+      opposed: opposed?.def ?? null,
     });
 
-    await SR3EActor._postContestedResult(updatedCtx, atkDice, oppDice);
+    if (!opposed) await SR3EActor._postContestedResult(updatedCtx, atkDice, oppDice);
   }
 
   static async _postContestedResult(ctx, atkDice, oppDice) {
@@ -10509,19 +10839,6 @@ _prepareCharacter(sys, attr) {
 
   /** Damage level IC programs inflict (SR3 p.224). */
   static _orthoICDmgLevel = { Blue: 'Moderate', Green: 'Moderate', Orange: 'Serious', Red: 'Serious' };
-
-  /** Resolve a full Rule-of-Six roll silently (no chat cards). */
-  static _resolveOrthoRoll(actor, pool, tn) {
-    pool = Math.max(1, pool | 0);
-    tn   = Math.max(2, tn   | 0);
-    let dice = actor._rollWave(pool, tn, true);
-    for (let guard = 0; guard < 50; guard++) {
-      const idx = dice.flatMap((d, i) => (!d.done && d.needsExplosion) ? [i] : []);
-      if (!idx.length) break;
-      dice = actor._rollWave(pool, tn, false, dice, idx);
-    }
-    return { successes: dice.filter(d => d.success).length, dice };
-  }
 
   // ── Orthodox System Test ────────────────────────────────────────────────────
 
@@ -10685,14 +11002,22 @@ _prepareCharacter(sys, attr) {
     const hostActor   = game.actors.get(ctx.hostActorId);
     if (!deckerActor || !hostActor) { ui.notifications.warn('Orthodox System Test: missing actor.'); return; }
 
-    const dRes = SR3EActor._resolveOrthoRoll(deckerActor, deckerDice, deckerTN);
-    const hRes = SR3EActor._resolveOrthoRoll(hostActor,   hostDice,   hostTN);
+    // Explosions are rolled on wave cards, and the result waits for them.
+    await SR3EActor.rollOpposedPair('ortho-system', ctx,
+      { actor: deckerActor, pool: deckerDice, tn: deckerTN, label: `💻 ${ctx.deckerName} — ${ctx.opName}` },
+      { actor: hostActor,   pool: hostDice,   tn: hostTN,   label: `💻 ${ctx.hostName} — System Test` });
+  }
+
+  static async _postOrthoSystemResult(ctx, deckerDice, hostDice) {
+    const deckerActor = game.actors.get(ctx.deckerActorId);
+    const dRes = SR3EActor.diceResult(deckerDice);
+    const hRes = SR3EActor.diceResult(hostDice);
 
     const dHits = dRes.successes, hHits = hRes.successes;
     const won   = dHits >= hHits;
 
     // Update Security Tally on decker actor if host scored any successes
-    if (hHits > 0) {
+    if (hHits > 0 && deckerActor) {
       const curTally = deckerActor.system.orthodoxRunState?.securityTally ?? 0;
       await deckerActor.update({ 'system.orthodoxRunState.securityTally': curTally + hHits });
     }
@@ -10705,7 +11030,7 @@ _prepareCharacter(sys, attr) {
       ? `<div class="sr-staging-result" style="color:var(--sr-green)">✓ Success — ${ctx.deckerName} wins by ${dHits - hHits} (${dHits} vs ${hHits})</div>`
       : `<div class="sr-staging-result" style="color:var(--sr-red)">✗ Failure — host wins by ${hHits - dHits} (${dHits} vs ${hHits})</div>`;
     const tallyNote = hHits > 0
-      ? `<div style="font-size:11px;color:var(--sr-amber);margin-top:4px">⚠ Security Tally +${hHits} → now ${(deckerActor.system.orthodoxRunState?.securityTally ?? 0)}</div>`
+      ? `<div style="font-size:11px;color:var(--sr-amber);margin-top:4px">⚠ Security Tally +${hHits} → now ${(deckerActor?.system.orthodoxRunState?.securityTally ?? 0)}</div>`
       : `<div style="font-size:11px;color:var(--sr-muted);margin-top:4px">Security Tally unchanged.</div>`;
 
     await ChatMessage.create({
@@ -10898,10 +11223,13 @@ _prepareCharacter(sys, attr) {
 
     if (!secVal) return void ui.notifications.warn('Host Security Value is 0 — set it on the host sheet first.');
 
-    // Target decker selection
-    const deckers = game.actors.filter(a =>
-      (a.type === 'character' || a.type === 'npc') && !a.getFlag('The2ndChumming3e', 'isTemplate')
+    // Target decker selection — the deckers running THIS host (Set Host writes
+    // `orthodoxRunState.currentHostId`); every live character only when nobody is on it (F2).
+    const live    = game.actors.filter(a =>
+      (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)
     );
+    const onHost  = live.filter(a => a.system.orthodoxRunState?.currentHostId === host.id);
+    const deckers = onHost.length ? onHost : live;
     if (!deckers.length) return void ui.notifications.warn('No valid decker targets in world.');
 
     // Name only. The `data-cc` / `data-hp` attributes that used to ride along existed
@@ -11061,8 +11389,14 @@ _prepareCharacter(sys, attr) {
     const defHpWant  = Math.max(0, parseInt(f('defender', 'sr-icia-def-hp')) || 0);
     const defHpSpent = defHpWant > 0 ? await deckerActor.spendHackingPool(defHpWant) : 0;
 
-    const aRes = SR3EActor._resolveOrthoRoll(icActor,     atkDice, atkTN);
-    const dRes = SR3EActor._resolveOrthoRoll(deckerActor, defDice + defHpSpent, defTN);
+    await SR3EActor.rollOpposedPair('ortho-ic', ctx,
+      { actor: icActor,     pool: atkDice,              tn: atkTN, label: `⚔ ${ctx.icName} attacks` },
+      { actor: deckerActor, pool: defDice + defHpSpent, tn: defTN, label: `⚔ ${ctx.deckerName} defends` });
+  }
+
+  static async _postOrthoICAttackResult(ctx, icDice, deckerDice) {
+    const aRes = SR3EActor.diceResult(icDice);
+    const dRes = SR3EActor.diceResult(deckerDice);
 
     const aHits = aRes.successes, dHits = dRes.successes;
     const net   = aHits - dHits;
@@ -11180,8 +11514,14 @@ _prepareCharacter(sys, attr) {
     const icActor     = game.actors.get(ctx.icActorId);
     if (!deckerActor || !icActor) { ui.notifications.warn('Orthodox Cybercombat: missing actor.'); return; }
 
-    const aRes = SR3EActor._resolveOrthoRoll(deckerActor, atkDice,  atkTN);
-    const sRes = SR3EActor._resolveOrthoRoll(icActor,     soakDice, soakTN);
+    await SR3EActor.rollOpposedPair('ortho-cc', ctx,
+      { actor: deckerActor, pool: atkDice,  tn: atkTN,  label: `⚔ ${ctx.deckerName} — ${ctx.atkName}` },
+      { actor: icActor,     pool: soakDice, tn: soakTN, label: `⚔ ${ctx.icName} soaks` });
+  }
+
+  static async _postOrthoCCResult(ctx, deckerDice, icDice) {
+    const aRes = SR3EActor.diceResult(deckerDice);
+    const sRes = SR3EActor.diceResult(icDice);
 
     const aHits = aRes.successes, sHits = sRes.successes;
     const net   = aHits - sHits;

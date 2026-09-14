@@ -309,8 +309,14 @@ export class SR3EItem extends Item {
     const atkRaw     = khDeclared ? SR3EItem.killingHandsDamage(rawDamage, khDeclared) : rawDamage;
     const atkDamage  = khDeclared ? SR3EItem.parseDamageCode(atkRaw, actor) : damageBase;
 
-    const baseAtkTN = Math.max(2, 4 + (atkInfo.defaultTnMod ?? 0) + (calledShot.tnMod ?? 0));
-    const baseDefTN = Math.max(2, 4 + (defInfo.defaultTnMod ?? 0));
+    // Each fighter's OWN wounds raise their own TN — the Melee Modifiers Table's "Character is
+    // wounded" row (p.123). The card rolls through `_rollWave`, so nothing else adds them (F3).
+    const atkWound  = game.sr3e.SR3EActor.woundTN(actor);
+    const defWound  = game.sr3e.SR3EActor.woundTN(targetActor);
+    const baseAtkTN = Math.max(2, 4 + (atkInfo.defaultTnMod ?? 0) + (calledShot.tnMod ?? 0) + atkWound);
+    const baseDefTN = Math.max(2, 4 + (defInfo.defaultTnMod ?? 0) + defWound);
+    const woundNote = [atkWound && `${actor.name} wounded +${atkWound}`, defWound && `${targetActor.name} wounded +${defWound}`]
+      .filter(Boolean).join(' · ');
 
     // Default election: the holder takes the bonus themselves.
     const dfltAtkTN = Math.max(2, baseAtkTN - (reachHolder === 'attacker' ? reachDiff : 0));
@@ -337,9 +343,8 @@ export class SR3EItem extends Item {
       defVisionData: defVis,
       baseAtkTN:  dfltAtkTN,
       baseDefTN:  dfltDefTN,
-      baseNote:   reachHolder
-        ? `Reach ${reachDiff} to ${reachHolder === 'attacker' ? actor.name : targetActor.name}`
-        : null,
+      baseNote:   [reachHolder && `Reach ${reachDiff} to ${reachHolder === 'attacker' ? actor.name : targetActor.name}`, woundNote]
+        .filter(Boolean).join(' · ') || null,
     }, { timeout: 300_000 });
     if (gm === null) return null;
 
@@ -1784,11 +1789,12 @@ export class SR3EItem extends Item {
    */
   static _rangeBandForDistance(bands, metres) {
     const labels = ['Short', 'Medium', 'Long', 'Extreme'];
-    const tn     = game.sr3e.SR3E.rangeTN ?? [0, 1, 2, 3];
+    // F6 — Extreme is TN 9, i.e. +5 (SR3 p.111); this fallback said +3 until 0.5.2.
+    const tn     = game.sr3e.SR3E?.rangeTN ?? [0, 1, 2, 5];
     for (let i = 0; i < 4; i++) {
       if (metres <= bands[i]) return { idx: i, label: labels[i], tnMod: tn[i] ?? 0, beyond: false };
     }
-    return { idx: 3, label: 'Beyond Extreme', tnMod: tn[3] ?? 3, beyond: true };
+    return { idx: 3, label: 'Beyond Extreme', tnMod: tn[3] ?? 5, beyond: true };
   }
 
   /**
@@ -3160,10 +3166,9 @@ export class SR3EItem extends Item {
     const others = game.actors.contents.filter(a =>
       a.id !== attacker.id && game.sr3e.isLiveActor(a)
     );
-    // Prefer actors with a token on the current scene; fall back to the full
-    // world list when nothing is on canvas (theatre-of-the-mind).
-    const onCanvas   = canvas?.ready ? others.filter(a => a.getActiveTokens().length > 0) : [];
-    const candidates = [...(onCanvas.length ? onCanvas : others)];
+    // Actors with a token on the current scene; the full world list when nothing is on canvas
+    // (theatre-of-the-mind) — the shared rule, `sceneFirst` (F2).
+    const candidates = [...game.sr3e.sceneFirst(others)];
 
     // Self is appended AFTER the canvas filter, so a caster with no token placed can
     // still be picked, and goes LAST so it is never the pre-checked default — a stray
@@ -3916,10 +3921,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
   static async _promptTargetsMulti(attacker, spellType, spellTarget, force) {
     const all = game.actors.contents
       .filter(a => a.id !== attacker.id && a.type !== 'vehicle' && game.sr3e.isLiveActor(a));
-    // Prefer actors with a token on the current scene; fall back to the full
-    // world list when nothing is on canvas (theatre-of-the-mind).
-    const onCanvas   = canvas?.ready ? all.filter(a => a.getActiveTokens().length > 0) : [];
-    const candidates = onCanvas.length ? onCanvas : all;
+    const candidates = game.sr3e.sceneFirst(all);   // on the scene, else everyone (F2)
     if (candidates.length === 0) {
       ui.notifications.warn('No valid targets found.');
       return null;
@@ -4043,9 +4045,9 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
             : (sorceryRating || '(none)')
           }</strong>
           <div style="color:var(--sr-muted);margin-top:4px">
-            Force &gt; Magic ${magicAttr} → Drain is
-            <strong style="color:var(--sr-red)">Physical</strong>
-            instead of Stun
+            ${actor.system.astralMode === 'astral'
+              ? `Astrally projecting → Drain is <strong style="color:var(--sr-red)">Physical</strong> at any Force (p.183)`
+              : `Force &gt; Magic ${magicAttr} → Drain is <strong style="color:var(--sr-red)">Physical</strong> instead of Stun`}
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
@@ -4084,8 +4086,10 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     });
     if (castCancelled || force === null) return null;
 
-    // SR3 RAW: Drain is Physical when the spell's Force exceeds the caster's Magic attribute.
-    const drainIsPhysical = force > magicAttr;
+    // SR3 p.183: Physical when Force exceeds the Magic Attribute — or, whatever the Force, when the
+    // caster is astrally projecting. The astral half was missing.
+    const drainIsPhysical = game.sr3e.SR3EActor.drainIsPhysical(force, actor.system.attributes,
+      { astral: actor.system.astralMode === 'astral' });
 
     // Step 2: Select target(s)
     const spellType   = this.system.type ?? 'Mana';
@@ -4129,10 +4133,8 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     const specBonus   = hasSpellcastingSpec ? 2 : 0;
     const sorceryDice = Math.max(0, sorceryRating + specBonus);
 
-    const magicBase2 = sAttr.magic?.base ?? 0;
-    const intVal     = sAttr.intelligence?.base ?? 0;
-    const wilVal     = sAttr.willpower?.base    ?? 0;
-    const spBase2    = Math.max(0, Math.floor((intVal + wilVal + magicBase2) / 3));
+    // The sheet's Spell Pool — SR3EActor.spellPoolFor, effective values (F5; this read `base`).
+    const spBase2    = game.sr3e.SR3EActor.spellPoolFor(sAttr) ?? 0;
     const spTotal2   = spBase2 + (actor.system.spellPoolMod ?? 0);
     const availMagic = Math.max(0, spTotal2 - (actor.system.spellPoolSpent ?? 0));
 

@@ -349,7 +349,7 @@ export class SR3EHostSheetOrthodox extends foundry.applications.sheets.ActorShee
   }
 
   static async _onAddIC() {
-    const icActors = game.actors.filter(a => a.type === 'ic');
+    const icActors = game.actors.filter(a => a.type === 'ic' && game.sr3e.isLiveActor(a));   // F2
     if (!icActors.length) {
       return void ui.notifications.warn('No IC actors found. Create IC actors in the Actors directory first.');
     }

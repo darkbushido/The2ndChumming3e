@@ -290,20 +290,26 @@ signature `tools/check-packs.mjs` uses to tell drift in a live install from what
 
 ### Filtering actors for dialog dropdowns
 
-Actors imported from compendiums are flagged as templates (`flags.The2ndChumming3e.isTemplate`)
-so they don't pollute targeting and selection dialogs. **Always** apply this filter when
-building an actor option list:
+Every list a person picks an actor from answers three questions (F2, 2026-09-14 — reported in play:
+templates in Session Rewards, Chunky Salsa listing the whole world):
+
+| Question | Rule |
+|---|---|
+| No templates — **always** | `game.sr3e.isLiveActor(a)` — never a bare `getFlag('isTemplate')`, which lets an unflagged compendium import through |
+| Is it about what is happening NOW (a blast, a fall, a target, a medic)? | `game.sr3e.sceneFirst(list)` (`scripts/data/actor-scope.mjs`) — tokens on the scene, else everyone |
+| Is it the party only? | `game.sr3e.SR3EQuery.isPlayerCharacter(a)` (Session Rewards) |
 
 ```js
-const actorOpts = game.actors
-  .filter(a => (a.type === 'character' || a.type === 'npc') && !a.getFlag('The2ndChumming3e', 'isTemplate'))
+const actorOpts = game.sr3e.sceneFirst(game.actors
+  .filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)))
   .map(a => `<option value="${a.id}">${a.name}</option>`)
   .join('');
 ```
 
-Add `|| a.type === 'vehicle'` if vehicles are also valid targets. The flag is set
-automatically by the `preCreateActor` hook in `sr3e.js` whenever an actor's
-`_stats.compendiumSource` is set.
+Rosters (pilot, passengers, agent operator, chase, the healing patient picker) stay world-wide on
+purpose. ⚠ **`tests/actor-lists.test.mjs` ratchets every `game.actors` list in `scripts/`** — a new
+one must use `isLiveActor`, or be named there as an internal lookup with its reason. The template
+flag is set by the `preCreateActor` hook in `sr3e.js` whenever `_stats.compendiumSource` is set.
 
 ### ApplicationV2 sheet form handling — critical
 
@@ -710,6 +716,29 @@ ODM-\* rawdata), **`mat`** = this sourcebook, **`matrix-defragged`** = the commu
 - A single 1 is only *that die* failing — *"the test can still succeed as long as other dice
   succeed"* — so it needs no special handling beyond comparing against the TN
 - Initiative never explodes interactively — resolved silently as a sum
+- ⚠ **Opposed rolls wait for BOTH sides' explosions** (F4, 0.5.2) — melee, astral, contested and
+  cybercombat. At TN 7+ the result used to post off the first wave, so 💥 changed the dice and never
+  the winner. Now `SR3EActor._openOpposed` posts a **⏳ card** whose message flag holds both sides'
+  dice; each wave card carries `opposed: {messageId, side}` through its 💥 payload; a side's final
+  wave settles through the GM (`sr3e.opposed.settle`, serialised per message), and the side that
+  completes the set posts the result (`postOpposedResult`). ⚔ Resolve (GM) settles with the dice as
+  they stand. ⚠ **A shared record, not an in-memory map** — the two sides explode on different
+  clients. ⚠ The settle runs **after** the wave card is posted, or the result lands above the dice
+  that decided it. A new opposed roll must go through `_openOpposed` — `tests/opposed-explosions.test.mjs`
+  checks all four.
+- ⚠ **EVERY explosion is a 💥 click, and the next step waits for it** (the maintainer, 2026-09-14:
+  *"we should wait for dice explosions to finish before queing up other things"*). Never loop
+  `_rollWave` yourself — MIJI, Orthodox Matrix, ward fooling and banishing all did (`_resolveRoll`),
+  rolling the 6s silently and opening the next dialog before anyone saw them. Two helpers on
+  `SR3EActor`, both a no-op change when nothing explodes (no extra cards):
+  `rollOpposedPair(kind, ctx, atk, def)` — two rolls compared, on the ⏳ card, result by
+  `OPPOSED_RESULTS[kind]`; `rollThen(actor, pool, tn, {label, followUp: {kind, ctx}})` — one roll, then
+  `FOLLOW_UPS[kind](ctx, res)`, run by `_postWaveCard` on the final wave, on the client that rolled it.
+  Both registries name `[class on game.sr3e, method]`, so `ctx` must be plain JSON (ids, not actors).
+  `tests/interactive-explosions.test.mjs` ratchets it: the only `_rollWave(…, false, …)` call in
+  `scripts/` is the 💥 handler. The Chase Scene's Driver Points (an Open Test, p.40 — every 6 rolls
+  again, no TN) do the same through `scripts/data/open-test.mjs`; its 💥 is gated to the user who
+  rolled, because the chase's state lives in that user's window.
 
 ### Defaulting (SR3 Default Table) — interactive  · *SR3 p.84-85*
 
@@ -1924,7 +1953,14 @@ card so the GM can see what was taken.
    - **Level** = the nominated Damage Level + the **modifier inside the brackets** (`(+1)` or `(DL+1)`/`(Damage Level +1)` both = +1 stage; `(DL)`/`()` = +0; `(DL-1)` = −1).
    - e.g. **Manaball `(DL+1)`** at Force 6 / Serious → TN ⌊6/2⌋=3, level Serious+1 = **Deadly** → "3D".
    - *Legacy:* a code with an explicit `F` formula (e.g. `(F/2+1)S`) uses that as the TN; level = nominated level (or a bare letter for non-damaging spells). Stage down by Willpower successes.
-   - Remaining drain = **Stun if Force ≤ Magic, Physical if Force > Magic** (SR3 RAW — the caster's Magic attribute, not Sorcery)
+   - Remaining drain = **Stun if Force ≤ Magic, Physical if Force > Magic** — the caster's **Magic
+     Attribute**, the *effective* rating (`SR3EActor.magicAttribute`), not Sorcery — **and always
+     Physical while astrally projecting** (*"All spells cast while astrally projecting cause physical
+     damage, regardless of Force"*, SR3 p.183). One rule: `SR3EActor.drainIsPhysical(force, attr,
+     { astral })`; the astral half is for casting only, not dispelling or conjuring.
+   - ⚠ Drain is resisted with the **effective** Willpower (Charisma for conjuring) —
+     `SR3EActor.drainResistRating`. It read `base` until 0.5.2, so a Pain Editor's or Adrenal
+     Pump's +1 Willpower never counted.
 - Sheet displays as "available / total"
 
 ### Conjuring / Summoning flow (`SR3ESpiritSummoning.js`)
@@ -2433,8 +2469,8 @@ cloned from the melee boxing card. `openAttackDialog(targetVehicle)` (vehicle EW
 Attack) picks intruder vehicle + operation + channel; `SR3E.electronicWarfare.operations` maps each
 operation to its allowed channels and the stat that sets the **defender TN** (`ecm` for Jamming,
 `protocolModule` otherwise). Intruder TN = defender deck rating. Both sides get Flux complementary
-dice. `postMIJICard` → `.sr-miji-roll-btn` → `handleMIJIRoll` resolves both rolls
-(`_resolveRoll` loops `_rollWave` for full Rule-of-Six) → net successes; intruder win posts a
+dice. `postMIJICard` → `.sr-miji-roll-btn` → `handleMIJIRoll` rolls both sides through
+`SR3EActor.rollOpposedPair('miji', …)` (6s at TN 7+ are 💥 clicks; the result waits) → net successes; intruder win posts a
 `.sr-miji-degradation-btn` → `applyDegradation` fills `signalMonitor[channel]`. Both buttons use the
 `_checkBtn`/`_claimBtn` one-shot guards.
 

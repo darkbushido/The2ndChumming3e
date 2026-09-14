@@ -227,6 +227,7 @@ background-color: var(--sr-surface) !important;
 .sr-spell-defense-proceed-btn,
 .sr-corner-submit-btn,
 .sr-corner-resolve-btn,
+.sr-opposed-resolve-btn,
 .sr-astral-soak-btn,
 .sr-astral-soak-roll-btn,
 .sr-aura-reading-btn,
@@ -406,6 +407,7 @@ background-color: var(--sr-surface) !important;
 /* accent/blue — roll actions */
 .sr-corner-submit-btn,
 .sr-corner-resolve-btn,
+.sr-opposed-resolve-btn,
 .sr-aura-reading-btn,
 .sr-spell-defense-proceed-btn,
 .sr-summon-confirm-btn {
@@ -429,6 +431,7 @@ background-color: var(--sr-surface) !important;
 
 .sr-corner-submit-btn:hover:not(:disabled),
 .sr-corner-resolve-btn:hover:not(:disabled),
+.sr-opposed-resolve-btn:hover:not(:disabled),
 .sr-aura-reading-btn:hover:not(:disabled),
 .sr-spell-defense-proceed-btn:hover:not(:disabled),
 .sr-summon-confirm-btn:hover:not(:disabled) {
@@ -452,6 +455,7 @@ background-color: var(--sr-surface) !important;
 .sr-spell-defense-proceed-btn:disabled,
 .sr-corner-submit-btn:disabled,
 .sr-corner-resolve-btn:disabled,
+.sr-opposed-resolve-btn:disabled,
 .sr-astral-soak-btn:disabled,
 .sr-astral-soak-roll-btn:disabled,
 .sr-aura-reading-btn:disabled,
@@ -704,7 +708,8 @@ background-color: var(--sr-surface) !important;
   margin-top: 8px;
 }
 
-.sr-explode-btn {
+.sr-explode-btn,
+.sr-chase-open-explode-btn {
   width: 100%;
   height: auto;      /* core gives buttons a fixed height — grow with wrapped text */
   white-space: normal;
@@ -719,12 +724,14 @@ background-color: var(--sr-surface) !important;
   transition: all 0.15s;
 }
 
-.sr-explode-btn:hover:not(:disabled) {
+.sr-explode-btn:hover:not(:disabled),
+.sr-chase-open-explode-btn:hover:not(:disabled) {
   background: color-mix(in srgb, #3ad6ff 25%, transparent);
   box-shadow: 0 0 10px color-mix(in srgb, #3ad6ff 30%, transparent);
 }
 
-.sr-explode-btn:disabled {
+.sr-explode-btn:disabled,
+.sr-chase-open-explode-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

@@ -6,8 +6,9 @@
  * (character/npc), while ECM / ECCM / Footprint / the 3-channel Signal Monitor / infiltration
  * state live on the vehicle (the network hub).
  *
- * Registered on game.sr3e as SR3EMIJI; launched from the vehicle EW tab. Rolls reuse the
- * actor `_rollWave` Rule-of-Six engine (resolved here in `_resolveRoll`). "Complementary
+ * Registered on game.sr3e as SR3EMIJI; launched from the vehicle EW tab. Rolls go through
+ * `SR3EActor.rollOpposedPair` / `rollThen`, so every explosion is a 💥 click and the next step
+ * waits for the last one (they used to be rolled silently, in `_resolveRoll`). "Complementary
  * dice" = the full rating as extra pool dice, uncapped (R3 p.37, p.40) — not SR3 p.97’s
  * 2:1 second test. Granted to the MIJI Test and ECCM regeneration only; infiltration rolls
  * the EW skill alone (R3 p.36).
@@ -115,28 +116,10 @@ export class SR3EMIJI {
     return id ? game.actors.get(id) : null;
   }
 
-  /** Fully resolve a Rule-of-Six roll (loops explosions) → { successes, ones, dice }. */
-  static _resolveRoll(actor, pool, tn) {
-    pool = Math.max(1, pool | 0);
-    tn   = Math.max(2, tn | 0);
-    let dice = actor._rollWave(pool, tn, true);
-    let guard = 0;
-    while (guard++ < 50) {
-      const idx = dice.map((d, i) => (d.needsExplosion && !d.done) ? i : -1).filter(i => i >= 0);
-      if (!idx.length) break;
-      dice = actor._rollWave(pool, tn, false, dice, idx);
-    }
-    return {
-      successes: dice.filter(d => d.success).length,
-      ones:      dice.filter(d => d.isOne).length,
-      dice,
-    };
-  }
-
   static _liveVehicles(excludeId = null) {
     return game.actors
       .filter(a => a.type === 'vehicle' && a.id !== excludeId
-        && a.getFlag('The2ndChumming3e', 'isTemplate') !== true)
+        && game.sr3e.isLiveActor(a))
       .sort((a, b) => a.name.localeCompare(b.name));
   }
 
@@ -307,16 +290,24 @@ export class SR3EMIJI {
     const defActor = game.actors.get(ctx.defenderRiggerId) ?? game.actors.get(ctx.targetVehicleId);
     if (!intActor || !defActor) { ui.notifications.warn('MIJI: missing intruder or defender actor.'); return; }
 
-    const intRes = this._resolveRoll(intActor, intDice, intTN);
-    const defRes = this._resolveRoll(defActor, defDice, defTN);
-    await this._postMIJIResult(ctx, intRes, defRes);
+    // Explosions are rolled on wave cards and the result waits for them (see `rollOpposedPair`).
+    await _A.rollOpposedPair('miji', ctx,
+      { actor: intActor, pool: intDice, tn: intTN, label: `⚡ ${ctx.intruderName} — ${ctx.operationLabel}`, name: ctx.intruderName },
+      { actor: defActor, pool: defDice, tn: defTN, label: `⚡ ${ctx.defenderName ?? ctx.targetVehicleName} defends`,
+        name: ctx.defenderName ?? ctx.targetVehicleName });
+  }
+
+  /** The opposed registry's entry point: final dice → the result card. */
+  static _postMIJIOpposed(ctx, intDice, defDice) {
+    const res = game.sr3e.SR3EActor.diceResult;
+    return this._postMIJIResult(ctx, res(intDice), res(defDice));
   }
 
   static async _postMIJIResult(ctx, intRes, defRes) {
     const net = intRes.successes - defRes.successes;
     const _dice = (r) => r.dice.map(d => `<span class="chase-die${d.success ? ' chase-die-best' : ''}">${d.total}</span>`).join('');
 
-    // Rule of One was being computed and thrown away — `_resolveRoll` has returned `ones`
+    // Rule of One was being computed and thrown away — the roll has returned `ones`
     // all along and nothing read it, so a MIJI sweep looked like an ordinary zero-success
     // failure. It is not: SR3 p.38 (Rule of One) hands the outcome to the GM to narrate.
     const _A     = game.sr3e.SR3EActor;
@@ -444,7 +435,19 @@ export class SR3EMIJI {
     const deck  = defRigger?.system?.ew?.deckRating ?? 0;
     const tn    = Math.max(2, 6 - (proto - deck));
 
-    const res = this._resolveRoll(intRigger, pool, tn);
+    // The allocation dialog waits for the explosions (TN 6 + a deck advantage reaches 7).
+    await game.sr3e.SR3EActor.rollThen(intRigger, pool, tn, {
+      label:    `📡 ${intVehicle.name} — Infiltration`,
+      followUp: { kind: 'miji.infiltrate', ctx: {
+        intRiggerId: intRigger.id, intVehicleId: intVehicle.id, targetVehicleId: targetVehicle.id, tn, skill } },
+    });
+  }
+
+  static async _infiltrationRolled({ intRiggerId, intVehicleId, targetVehicleId, tn, skill }, res) {
+    const intRigger     = game.actors.get(intRiggerId);
+    const intVehicle    = game.actors.get(intVehicleId);
+    const targetVehicle = game.actors.get(targetVehicleId);
+    if (!intRigger || !intVehicle || !targetVehicle) return;
 
     if (res.successes <= 0) {
       await ChatMessage.create({
@@ -561,7 +564,17 @@ export class SR3EMIJI {
     const skill = this._ewSkill(defRigger);
     const pool  = Math.max(1, skill.rating);
     const tn    = Math.max(2, inf.intrusionFactor ?? 0);
-    const res   = this._resolveRoll(defRigger, pool, tn);
+    // The Intrusion Factor is the TN, and it starts at the intruder's skill — 7+ is ordinary.
+    await game.sr3e.SR3EActor.rollThen(defRigger, pool, tn, {
+      label:    `🔍 ${defRigger.name} — Detect Infiltration`,
+      followUp: { kind: 'miji.detect', ctx: { defRiggerId: defRigger.id, targetVehicleId: targetVehicle.id, pool, tn } },
+    });
+  }
+
+  static async _detectRolled({ defRiggerId, targetVehicleId, pool, tn }, res) {
+    const defRigger     = game.actors.get(defRiggerId);
+    const targetVehicle = game.actors.get(targetVehicleId);
+    if (!defRigger || !targetVehicle) return;
     const found = res.successes > 0;
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: defRigger }),
@@ -637,7 +650,16 @@ export class SR3EMIJI {
     });
     if (!setup) return;
 
-    const res = this._resolveRoll(rigger, setup.pool, setup.tn);
+    // The split dialog waits for the explosions (TN 5 + System degradation reaches 7).
+    await game.sr3e.SR3EActor.rollThen(rigger, setup.pool, setup.tn, {
+      label:    `📶 ${rigger.name} — IVIS Test`,
+      followUp: { kind: 'miji.ivis', ctx: { riggerId: rigger.id, setup, skill } },
+    });
+  }
+
+  static async _ivisRolled({ riggerId, setup, skill }, res) {
+    const rigger = game.actors.get(riggerId);
+    if (!rigger) return;
     if (res.successes <= 0) {
       await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor: rigger }),
@@ -738,7 +760,19 @@ export class SR3EMIJI {
     const tn = Math.max(2, attackerStat + 3);
 
     const roller = rigger ?? targetVehicle;
-    const res    = this._resolveRoll(roller, pool, tn);
+    // TN = the attacker's stat + 3 — a stat of 4 already makes it 7, where 6s explode.
+    await game.sr3e.SR3EActor.rollThen(roller, pool, tn, {
+      label:    `🛡 ${roller.name} — ECCM Repair`,
+      followUp: { kind: 'miji.eccm', ctx: { rollerId: roller.id, targetVehicleId: targetVehicle.id, channel, pool, tn } },
+    });
+  }
+
+  static async _eccmRolled({ rollerId, targetVehicleId, channel, pool, tn }, res) {
+    const roller        = game.actors.get(rollerId);
+    const targetVehicle = game.actors.get(targetVehicleId);
+    if (!roller || !targetVehicle) return;
+    // Read the channel NOW — it may have changed while the explosions were rolled.
+    const cur     = targetVehicle.system?.signalMonitor?.[channel] ?? 0;
     const removed = Math.min(cur, res.successes);
     const newVal  = Math.max(0, cur - removed);
     await targetVehicle.update({ [`system.signalMonitor.${channel}`]: newVal });
@@ -760,7 +794,19 @@ export class SR3EMIJI {
     const pool    = Math.max(1, skill.rating);
     const tn      = Math.max(2, fp + 4);
     const roller  = rigger ?? targetVehicle;
-    const res     = this._resolveRoll(roller, pool, tn);
+    // TN = Footprint + 4.
+    await game.sr3e.SR3EActor.rollThen(roller, pool, tn, {
+      label:    `📉 ${roller.name} — Reduce Footprint`,
+      followUp: { kind: 'miji.footprint', ctx: { rollerId: roller.id, targetVehicleId: targetVehicle.id, pool, tn } },
+    });
+  }
+
+  static async _footprintRolled({ rollerId, targetVehicleId, pool, tn }, res) {
+    const roller        = game.actors.get(rollerId);
+    const targetVehicle = game.actors.get(targetVehicleId);
+    if (!roller || !targetVehicle) return;
+    const ew     = targetVehicle.system?.ew ?? {};
+    const rigger = this._riggerOf(targetVehicle);
 
     // Each success lowers total Flux by 1 — applied to the vehicle's own Flux field — then recompute.
     const newFlux = Math.max(0, (ew.fluxRating ?? 0) - res.successes);
