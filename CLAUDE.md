@@ -696,6 +696,16 @@ ODM-\* rawdata), **`mat`** = this sourcebook, **`matrix-defragged`** = the commu
 - A single 1 is only *that die* failing — *"the test can still succeed as long as other dice
   succeed"* — so it needs no special handling beyond comparing against the TN
 - Initiative never explodes interactively — resolved silently as a sum
+- ⚠ **Opposed rolls wait for BOTH sides' explosions** (F4, 0.5.2) — melee, astral, contested and
+  cybercombat. At TN 7+ the result used to post off the first wave, so 💥 changed the dice and never
+  the winner. Now `SR3EActor._openOpposed` posts a **⏳ card** whose message flag holds both sides'
+  dice; each wave card carries `opposed: {messageId, side}` through its 💥 payload; a side's final
+  wave settles through the GM (`sr3e.opposed.settle`, serialised per message), and the side that
+  completes the set posts the result (`postOpposedResult`). ⚔ Resolve (GM) settles with the dice as
+  they stand. ⚠ **A shared record, not an in-memory map** — the two sides explode on different
+  clients. ⚠ The settle runs **after** the wave card is posted, or the result lands above the dice
+  that decided it. A new opposed roll must go through `_openOpposed` — `tests/opposed-explosions.test.mjs`
+  checks all four.
 
 ### Defaulting (SR3 Default Table) — interactive  · *SR3 p.84-85*
 

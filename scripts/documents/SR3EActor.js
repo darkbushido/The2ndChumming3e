@@ -559,6 +559,16 @@ export class SR3EActor extends Actor {
     const atkGlitch = SR3EActor.isRuleOfOne(atkOnes, atkPool);
     const defGlitch = SR3EActor.isRuleOfOne(defOnes, defPool);
 
+    const ccCtx = {
+      ...ctx,
+      atkPool, atkTN, defPool, defTN,
+      atkDamageCode: atkDmgCode, atkDamageBase: atkDmgBase,
+      defDamageCode: defDmgCode, defDamageBase: defDmgBase,
+    };
+    // F4 — at TN 7+ (a System Rating of 7 is ordinary) the result waits for the explosions.
+    const opposed = await SR3EActor._openOpposed('cybercombat', ccCtx, atkDice, defDice,
+      { atkName: atkActor.name, defName: defActor.name });
+
     // Post wave cards for both sides
     await atkActor._postWaveCard({
       actorId: ctx.attackerActorId,
@@ -566,6 +576,7 @@ export class SR3EActor extends Actor {
       tn: atkTN, pool: atkPool, wave: 0,
       dice: atkDice, ones: atkOnes, glitch: atkGlitch,
       isWeaponRoll: false, isMeleeAtk: true, meleeCtx: null,
+      opposed: opposed?.atk ?? null,
     });
     await defActor._postWaveCard({
       actorId: ctx.defenderActorId,
@@ -573,15 +584,11 @@ export class SR3EActor extends Actor {
       tn: defTN, pool: defPool, wave: 0,
       dice: defDice, ones: defOnes, glitch: defGlitch,
       isWeaponRoll: false, isMeleeDef: true, meleeCtx: null,
+      opposed: opposed?.def ?? null,
     });
 
-    // Post result
-    await SR3EActor._postCCResult({
-      ...ctx,
-      atkPool, atkTN, defPool, defTN,
-      atkDamageCode: atkDmgCode, atkDamageBase: atkDmgBase,
-      defDamageCode: defDmgCode, defDamageBase: defDmgBase,
-    }, atkDice, defDice);
+    // Post result — now only if nothing explodes; otherwise the ⏳ card posts it (F4).
+    if (!opposed) await SR3EActor._postCCResult(ccCtx, atkDice, defDice);
   }
 
   static async _postCCResult(ctx, atkDice, defDice) {
@@ -3583,6 +3590,9 @@ _prepareCharacter(sys, attr) {
         grenadeType:               state.grenadeType               ?? 'standard',
         footerNote:                state.footerNote                ?? null,
         crashOnFailVehicleId:      state.crashOnFailVehicleId      ?? null,
+        // F4 — which opposed roll this side belongs to. Dropped, the side's explosions would
+        // roll and the ⏳ card would wait for ever.
+        opposed:                   state.opposed                   ?? null,
       }).replace(/'/g, '&#39;');
       explodeBtn = `
         <div class="sr-explode-action">
@@ -3890,6 +3900,14 @@ _prepareCharacter(sys, attr) {
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
 
+    // ── F4: an opposed side's explosions are done — report its final dice ─────────
+    // AFTER this wave card is posted, so the result it may trigger lands below the dice that
+    // decided it (settling first put the result above the wave — seen in the live check).
+    // Wave 0 is already on the ⏳ card; only a side that exploded has anything new.
+    if (allDone && state.opposed && (state.wave ?? 0) > 0) {
+      await SR3EActor._settleOpposedSide(state.opposed, dice);
+    }
+
     // Post the Spell Defense phase card after the wave card so messages are in order
     if (state._pendingDefenseCard) {
       await SR3EActor.postSpellDefenseCard(state._pendingDefenseCard);
@@ -4101,6 +4119,108 @@ _prepareCharacter(sys, attr) {
       dice: newDice,
       wave: state.wave,
     });
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Opposed rolls wait for their explosions — F4                        */
+  /* ------------------------------------------------------------------ */
+
+  /*
+   * An opposed test (melee, astral, contested, cybercombat) compares two rolls. Above TN 6 a 6 is
+   * not yet a success and must be rolled again (the Rule of Six, SR3 p.38) — interactively, one 💥
+   * click per wave. The result card used to be posted straight after the FIRST wave, so at TN 7+
+   * the winner was decided before anyone rolled their explosions, and clicking 💥 changed the dice
+   * but never the result (F4). Defaulting (+4) and a called shot (+4) both reach TN 7+.
+   *
+   * Now, when either side has dice to explode, a ⏳ card holds the two sides' dice as a message
+   * FLAG. Each side's explosion payload carries a reference to it, and the side's final wave
+   * reports its dice to the GM (`sr3e.opposed.settle`), who serialises the writes and posts the
+   * real result once both are in. The sides are usually rolled on DIFFERENT clients — an
+   * in-memory map could never see both. ⚔ Resolve (GM) settles with the dice as they stand, the
+   * same AFK escape the two-corner cards have. Nothing to explode → the result posts at once,
+   * exactly as before.
+   */
+
+  /** The four opposed results, by kind. */
+  static postOpposedResult(kind, ctx, atkDice, defDice) {
+    const fn = { melee: '_postMeleeResult', astral: '_postAstralResult',
+      contested: '_postContestedResult', cybercombat: '_postCCResult' }[kind];
+    if (!fn) throw new Error(`SR3E | unknown opposed kind '${kind}'`);
+    return SR3EActor[fn](ctx, atkDice, defDice);
+  }
+
+  /** Does this first wave leave dice to explode? Physical dice never do. */
+  static opposedNeedsExplosion(dice, physicalDice = false) {
+    return !physicalDice && (dice ?? []).some(d => d.needsExplosion);
+  }
+
+  /**
+   * Record one side's final dice. PURE — the GM handler applies the result to the message.
+   * `force` (⚔ Resolve, GM) takes whatever dice each side has as final.
+   * @returns {{record: object, complete: boolean, changed: boolean}}
+   */
+  static settleOpposed(record, side, dice, { force = false } = {}) {
+    const r = foundry.utils?.deepClone ? foundry.utils.deepClone(record) : JSON.parse(JSON.stringify(record));
+    if (!r || r.resolved) return { record: r, complete: false, changed: false };
+    let changed = false;
+    if (side === 'atk' || side === 'def') {
+      if (!r[side].done) { r[side] = { dice: dice ?? r[side].dice, done: true }; changed = true; }
+    }
+    const complete = force || (r.atk.done && r.def.done);
+    if (complete) { r.resolved = true; changed = true; }
+    return { record: r, complete, changed };
+  }
+
+  /** The ⏳ card's body, from the record. */
+  static _opposedPendingHtml(record) {
+    const side = (s, name) => {
+      const hits = (record[s].dice ?? []).filter(d => d.success).length;
+      return `<div style="font-size:12px">${name}: <strong>${hits}</strong> success${hits !== 1 ? 'es' : ''}
+        ${record[s].done ? '✔ final' : '<span style="color:var(--sr-gold)">💥 explosions still to roll</span>'}</div>`;
+    };
+    if (record.resolved) {
+      return `<div class="sr-roll-card"><div class="sr-roll-header">⚔ Opposed roll — resolved</div>
+        ${side('atk', record.atkName)}${side('def', record.defName)}</div>`;
+    }
+    return `<div class="sr-roll-card">
+      <div class="sr-roll-header">⏳ Waiting on explosions — the result posts when both sides are final</div>
+      ${side('atk', record.atkName)}${side('def', record.defName)}
+      <div style="font-size:11px;color:var(--sr-muted);margin-top:4px">At TN 7+ a 6 is not yet a success (SR3 p.38) — roll the 💥 on each card.</div>
+      <div class="sr-soak-action"><button class="sr-opposed-resolve-btn">⚔ Resolve with the dice as they stand (GM)</button></div>
+    </div>`;
+  }
+
+  /**
+   * Called by each resolver after rolling the first waves. Returns `null` when nothing
+   * explodes (post the result now), else the per-side references to put on the wave cards.
+   */
+  static async _openOpposed(kind, ctx, atkDice, defDice, { atkName, defName, physicalDice = false } = {}) {
+    const atkNeeds = SR3EActor.opposedNeedsExplosion(atkDice, physicalDice);
+    const defNeeds = SR3EActor.opposedNeedsExplosion(defDice, physicalDice);
+    if (!atkNeeds && !defNeeds) return null;
+    const record = {
+      kind, ctx, atkName: atkName ?? 'Attacker', defName: defName ?? 'Defender', resolved: false,
+      atk: { dice: atkDice, done: !atkNeeds },
+      def: { dice: defDice, done: !defNeeds },
+    };
+    const msg = await ChatMessage.create({
+      content: SR3EActor._opposedPendingHtml(record),
+      style:   CONST.CHAT_MESSAGE_STYLES.OTHER,
+      flags:   { The2ndChumming3e: { opposed: record } },
+    });
+    return { atk: { messageId: msg.id, side: 'atk' }, def: { messageId: msg.id, side: 'def' } };
+  }
+
+  /** A side's last wave landed — report it (through the GM, who owns the write). */
+  static async _settleOpposedSide(opposed, dice, { force = false } = {}) {
+    if (!opposed?.messageId) return;
+    try {
+      await game.sr3e.SR3EQuery.asGM('sr3e.opposed.settle',
+        { messageId: opposed.messageId, side: opposed.side ?? null, dice, force });
+    } catch (err) {
+      console.error('SR3E | opposed.settle failed', err);
+      ui.notifications?.error('SR3E: could not reach the GM to finish the opposed roll — the GM can use ⚔ Resolve on the ⏳ card.');
+    }
   }
 
   /* ------------------------------------------------------------------ */
@@ -5072,6 +5192,10 @@ _prepareCharacter(sys, attr) {
       defFullDefense: _defFullDefense,
     };
 
+    // F4 — at TN 7+ the result waits for both sides' explosions (null: nothing explodes).
+    const opposed = await SR3EActor._openOpposed('melee', meleeCtx, atkDice, defDice,
+      { atkName: atk.name, defName: def.name, physicalDice });
+
     await atk._postWaveCard({
       actorId:          ctx.attackerActorId,
       label:            `⚔ ${atk.name} attacks`,
@@ -5086,6 +5210,7 @@ _prepareCharacter(sys, attr) {
       isWeaponRoll:     false,
       isMeleeAtk:       true,
       meleeCtx,
+      opposed:          opposed?.atk ?? null,
     });
 
     await def._postWaveCard({
@@ -5102,10 +5227,11 @@ _prepareCharacter(sys, attr) {
       isWeaponRoll:     false,
       isMeleeDef:       true,
       meleeCtx,
+      opposed:          opposed?.def ?? null,
     });
 
-    // Post comparison card once both are done
-    await SR3EActor._postMeleeResult(meleeCtx, atkDice, defDice);
+    // Post the comparison now only if nothing explodes; otherwise the ⏳ card posts it (F4).
+    if (!opposed) await SR3EActor._postMeleeResult(meleeCtx, atkDice, defDice);
   }
 
   /**
@@ -9695,6 +9821,9 @@ _prepareCharacter(sys, attr) {
     const defGlitch = SR3EActor.isRuleOfOne(defOnes, defPool);
 
     const astralCtx = { ...ctx, atkPool, atkTN, defPool, defTN, atkRawDamage, defRawDamage, isPhysical };
+    // F4 — at TN 7+ the result waits for both sides' explosions.
+    const opposed = await SR3EActor._openOpposed('astral', astralCtx, atkDice, defDice,
+      { atkName: atk.name, defName: def.name, physicalDice });
 
     await atk._postWaveCard({
       actorId: atk.id, label: `✦ ${atk.name} — Astral Combat`,
@@ -9702,6 +9831,7 @@ _prepareCharacter(sys, attr) {
       dice: atkDice, ones: atkOnes, glitch: atkGlitch,
       physicalDice, physicalSuccesses: physicalDice ? atkDice.filter(d => d.success).length : undefined,
       isWeaponRoll: false, isMeleeAtk: true, meleeCtx: astralCtx,
+      opposed: opposed?.atk ?? null,
     });
 
     await def._postWaveCard({
@@ -9710,9 +9840,10 @@ _prepareCharacter(sys, attr) {
       dice: defDice, ones: defOnes, glitch: defGlitch,
       physicalDice, physicalSuccesses: physicalDice ? defDice.filter(d => d.success).length : undefined,
       isWeaponRoll: false, isMeleeDef: true, meleeCtx: astralCtx,
+      opposed: opposed?.def ?? null,
     });
 
-    await SR3EActor._postAstralResult(astralCtx, atkDice, defDice);
+    if (!opposed) await SR3EActor._postAstralResult(astralCtx, atkDice, defDice);
   }
 
   static async _postAstralResult(ctx, atkDice, defDice) {
@@ -10456,6 +10587,9 @@ _prepareCharacter(sys, attr) {
     }
 
     const updatedCtx = { ...ctx, atkPool, oppPool, atkTN, oppTN, atkDamage, oppDamage };
+    // F4 — at TN 7+ the result waits for both sides' explosions.
+    const opposed = await SR3EActor._openOpposed('contested', updatedCtx, atkDice, oppDice,
+      { atkName: ctx.atkActorName, defName: ctx.oppActorName, physicalDice: usePhysical });
 
     const atkOnes   = atkDice.filter(d => d.isOne).length;
     const oppOnes   = oppDice.filter(d => d.isOne).length;
@@ -10468,6 +10602,7 @@ _prepareCharacter(sys, attr) {
       dice: atkDice, ones: atkOnes, glitch: atkGlitch,
       physicalDice: usePhysical, physicalSuccesses: usePhysical ? atkDice.filter(d => d.success).length : undefined,
       isWeaponRoll: false, isMeleeAtk: true, meleeCtx: updatedCtx,
+      opposed: opposed?.atk ?? null,
     });
 
     const oppCardActorId = oppActor ? ctx.oppActorId : ctx.atkActorId;
@@ -10477,9 +10612,10 @@ _prepareCharacter(sys, attr) {
       dice: oppDice, ones: oppOnes, glitch: oppGlitch,
       physicalDice: usePhysical, physicalSuccesses: usePhysical ? oppDice.filter(d => d.success).length : undefined,
       isWeaponRoll: false, isMeleeDef: true, meleeCtx: updatedCtx,
+      opposed: opposed?.def ?? null,
     });
 
-    await SR3EActor._postContestedResult(updatedCtx, atkDice, oppDice);
+    if (!opposed) await SR3EActor._postContestedResult(updatedCtx, atkDice, oppDice);
   }
 
   static async _postContestedResult(ctx, atkDice, oppDice) {

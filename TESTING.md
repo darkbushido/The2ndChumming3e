@@ -2129,23 +2129,33 @@ fighter's own wounds now go into their own TN (`SR3EActor.woundTN`), melee and a
 window's note says so. `tests/melee-wounds.test.mjs` + a mutant.
 - [ ] Give the attacker 3 Stun boxes (−2) → melee attack → the GM window and the boxing card start the attacker at **6**, the unhurt defender at 4, and the note reads *"… wounded +2"*. Same from 🌀 astral combat.
 
-## F4. Melee / cybercombat / contested results ignore explosion waves (TN > 6 only) — OPEN
+## F4. Melee / cybercombat / contested results ignore explosion waves (TN > 6 only) — FIXED 2026-09-14 (0.5.2)
 
-When an opposed roll's TN exceeds 6 (defaulting +4, called shot +4…), the wave cards **do**
-show the 💥 explosion button — but the winner/damage comparison card is posted immediately
-from wave-0 successes (`_postMeleeResult`, `_postCCResult`, `_postContestedResult`), and the
-explosion payload drops the melee/CC context, so clicking 💥 re-rolls the dice **but can never
-update the result**. With TN ≤ 6 nothing is wrong (a 6 is already a success).
+At TN 7+ (defaulting +4, a called shot +4, a System Rating of 7) the result card was posted off
+the FIRST wave, so 💥 changed the dice and never the winner (the Rule of Six, SR3 p.38). Melee,
+astral, contested and cybercombat now open a **⏳ card** when either side has dice to explode; its
+message flag holds both sides' dice, each side's 💥 payload carries a reference to it, and a side's
+final wave reports its dice to the GM (`sr3e.opposed.settle`), who serialises the writes and posts
+the real result once both are in. **Not an in-memory map** as first proposed: the two sides usually
+explode on different clients, so only a shared record can see both. **⚔ Resolve with the dice as
+they stand (GM)** is the AFK escape. Nothing to explode → the result posts at once, as before.
+`tests/opposed-explosions.test.mjs` drives it end to end through the registered handler; a mutant.
 
-**Proposed fix (interactive, not silent):** carry the context through the explosion payload and
-defer the comparison card until **both** sides' dice fully resolve (in-memory pending map, same
-pattern as `_actionTracker`). TN ≤ 6 keeps posting immediately as today.
+**Walked by the agent 2026-09-14** (mcp-api, a contested roll at TN 8 through real wave cards and 💥
+buttons): the ⏳ card held; the attacker's two 6s exploded to 12/11, the defender's to 10; the result
+(2 vs 1) posted once, **below** both wave-1 cards. The first run put it above the deciding wave —
+the settle now runs after the wave card is posted.
+- [ ] A real melee exchange with a called shot (TN 8) between two players: roll the 💥 on both cards → one result, after the last explosion.
 
-**Repro:** melee attack with a called shot (TN 8), roll until a 6 shows → result card has
-already declared the winner; click 💥 → dice update, result card doesn't.
+**Still open — MIJI** resolves both sides' explosions silently (`_resolveRoll`), which the original
+note flagged for the same reason. Its result is correct (the explosions ARE rolled); only the
+clicks are missing. The maintainer's call whether to make it interactive.
 
-**Related:** MIJI resolves both sides' explosions silently (`_resolveRoll`) — flagged as wrong
-for the same reason; confirm desired behaviour.
+**Found during the live check — old 💥 buttons re-roll after a reload.** The one-shot guard
+(`_usedButtons`) is in memory and resets on reload by design, so after an F5 an old wave card's 💥
+can be clicked again and posts a new wave for a roll long since resolved. It cannot change an opposed
+result any more (a resolved ⏳ card ignores it), but it does for a plain roll's own card. A fix is
+`sr3e.card.mark` on the 💥, as the two-corner cards do — not done here.
 
 ## F5. Drain track (Stun vs Physical) inconsistent between casting and dispelling — FIXED 2026-09-14 (0.5.2)
 

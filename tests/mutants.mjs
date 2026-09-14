@@ -1305,6 +1305,20 @@ export const MUTANTS = [
     impl:   (attr, key = 'willpower') => attr?.[key]?.base ?? attr?.[key]?.value ?? 1,
   },
   {
+    id:     'opposed-resolves-before-both-explode',
+    suite:  'opposed-explosions',
+    ...ACTOR, method: 'settleOpposed',
+    was:    'SR3 p.38 — above TN 6 a 6 is rolled again. The opposed result was posted off the first '
+          + 'wave, so the winner was decided before anyone rolled their explosions (F4)',
+    impl:   (record, side, dice) => {
+      const r = JSON.parse(JSON.stringify(record));
+      if (r.resolved) return { record: r, complete: false, changed: false };
+      if (side) r[side] = { dice, done: true };
+      r.resolved = true;
+      return { record: r, complete: true, changed: true };
+    },
+  },
+  {
     id:     'melee-ignores-wounds',
     suite:  'melee-wounds',
     ...ACTOR, method: 'woundTN',

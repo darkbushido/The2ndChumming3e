@@ -2764,6 +2764,21 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
     _renderActedStrip(message, card, roles);
   });
 
+  // F4 — an opposed roll waiting on explosions. GM-only: it settles with the dice as they stand,
+  // the same AFK escape as ⚔ Resolve now on the two-corner cards.
+  html.querySelectorAll('.sr-opposed-resolve-btn').forEach((btn, i) => {
+    if (!game.user.isGM) return _denyBtn(btn, 'Only the GM can force a resolution.');
+    if (!_checkBtn(btn, mid, 'oresolve', i)) return;
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'oresolve', i)) return;
+      btn.disabled    = true;
+      btn.textContent = '⏳ Resolving…';
+      await SR3EActor._settleOpposedSide({ messageId: mid, side: null }, null, { force: true });
+    });
+  });
+
   // MIJI test (electronic warfare) — roll both sides + apply degradation
   // (MIJI's roll button is gone - the two-corner block above handles it via
   //  data-twocorner="miji". TODO 24.)
