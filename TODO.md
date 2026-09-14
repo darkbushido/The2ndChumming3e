@@ -7908,9 +7908,11 @@ rules.
    projecting cause physical damage, regardless of Force"*, p.183).
 
 **Leads found while writing this — verify, don't assume:**
-- **Sustained spells are not modelled** beyond the `sr3e-sustaining` status icon. p.180: *"Each spell
-  sustained at the moment adds +2 to the Power of the Drain"*; p.183 also has sustaining raise target
-  numbers. Nothing in the casting or Drain code reads either.
+- ✅ **Sustained spells — BUILT on `feature/sustained-spells`** (2026-09-14; CLAUDE.md → *Sustained
+  spells*). p.178's +2 per spell on all tests (Drain included, Damage Resistance not; p.180 and p.183
+  are the same modifier restated), the Sorcery limit (shown), the damage test to keep one. The audit
+  should still check the reading that the **Spell Resistance Test** does not take it (p.183: *"No target
+  modifiers apply to this test except where specifically noted"*).
 - ✅ **The astral clause — FIXED 2026-09-14** (`SR3EActor.drainIsPhysical`): casting while projecting
   is Physical Drain at any Force (p.183), and the Force dialog says so.
 - ✅ **Drain resistance read base Willpower — FIXED 2026-09-14** (`SR3EActor.drainResistRating`):

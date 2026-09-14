@@ -311,11 +311,16 @@ export class SR3EItem extends Item {
 
     // Each fighter's OWN wounds raise their own TN — the Melee Modifiers Table's "Character is
     // wounded" row (p.123). The card rolls through `_rollWave`, so nothing else adds them (F3).
-    const atkWound  = game.sr3e.SR3EActor.woundTN(actor);
-    const defWound  = game.sr3e.SR3EActor.woundTN(targetActor);
-    const baseAtkTN = Math.max(2, 4 + (atkInfo.defaultTnMod ?? 0) + (calledShot.tnMod ?? 0) + atkWound);
-    const baseDefTN = Math.max(2, 4 + (defInfo.defaultTnMod ?? 0) + defWound);
-    const woundNote = [atkWound && `${actor.name} wounded +${atkWound}`, defWound && `${targetActor.name} wounded +${defWound}`]
+    // Sustained spells likewise: +2 each on "all tests" (p.178), and nothing else adds them here.
+    const A         = game.sr3e.SR3EActor;
+    const atkWound  = A.woundTN(actor);
+    const defWound  = A.woundTN(targetActor);
+    const atkSust   = A.sustainingTN(actor);
+    const defSust   = A.sustainingTN(targetActor);
+    const baseAtkTN = Math.max(2, 4 + (atkInfo.defaultTnMod ?? 0) + (calledShot.tnMod ?? 0) + atkWound + atkSust);
+    const baseDefTN = Math.max(2, 4 + (defInfo.defaultTnMod ?? 0) + defWound + defSust);
+    const woundNote = [atkWound && `${actor.name} wounded +${atkWound}`, defWound && `${targetActor.name} wounded +${defWound}`,
+      atkSust && `${actor.name} sustaining +${atkSust}`, defSust && `${targetActor.name} sustaining +${defSust}`]
       .filter(Boolean).join(' · ');
 
     // Default election: the holder takes the bonus themselves.
@@ -1185,12 +1190,16 @@ export class SR3EItem extends Item {
   // ranged weapon skills are. Pre-applied like the wound modifier, and itemised beside it.
   const armorQTN     = this._getDefaultAttribute() === 'quickness'
     ? (actor.system.derived?.armorQuicknessTN ?? 0) : 0;
-  const extraTNMod   = recoilTNMod + (fireModeResult?.additionalTNPenalty ?? 0) + woundPenalty + armorQTN;
+  // Sustained spells, +2 each on all tests (p.178) — pre-applied with the wound modifier, so
+  // `rollPool` is told to skip both.
+  const sustainTN    = game.sr3e.SR3EActor.sustainingTN(actor);
+  const extraTNMod   = recoilTNMod + (fireModeResult?.additionalTNPenalty ?? 0) + woundPenalty + armorQTN + sustainTN;
   const tnBreakdownParts = [];
   if (recoilTNMod)                           tnBreakdownParts.push(`Recoil +${recoilTNMod}`);
   if (fireModeResult?.additionalTNPenalty)   tnBreakdownParts.push(`Multi-target +${fireModeResult.additionalTNPenalty}`);
   if (woundPenalty > 0)                      tnBreakdownParts.push(`Wound +${woundPenalty}`);
   if (armorQTN > 0)                          tnBreakdownParts.push(`Layered armour +${armorQTN}`);
+  if (sustainTN > 0)                         tnBreakdownParts.push(game.sr3e.SR3EActor.sustainingNote(actor));
   // Tracer TN bonus is conditional (beyond Short range, non-smartgun) so it is shown
   // as a note for the GM to apply manually rather than baked into the TN.
   const tracerRules = game.sr3e.SR3E.ammoTypes[ammoType] ?? {};
@@ -1375,6 +1384,7 @@ export class SR3EItem extends Item {
   options.isMelee            = ['melee'].includes(this.type);
   options.committedDodgeDice = committedDodgeDice;
   options.skipWoundMod       = true;
+  options.skipSustainMod     = true;   // pre-applied in the roll-options TN, beside the wound
   options.ammoType           = ammoType;   // carried to the soak card for APDS/Flechette
 
   // p.113's Dodge Test modifiers, carried to the defender. Rounds are those sent at THIS
@@ -3010,6 +3020,7 @@ export class SR3EItem extends Item {
       burstRounds:   opts.burstRounds   ?? 0,
       shotgunSpread: opts.shotgunSpread ?? 0,
       woundMod:      defender.system.woundMod ?? 0,
+      sustain:       game.sr3e.SR3EActor.sustainingTN(defender),
     };
     const dodgeTN    = game.sr3e.SR3EActor.dodgeTN(tnOpts);
     const dodgeParts = game.sr3e.SR3EActor.dodgeTNParts(tnOpts);
@@ -4206,6 +4217,12 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       drainIsPhysical,
       spellPoolForDrain,
       committedDodgeDice,
+      // Sustained spells AT THE MOMENT of casting — this spell's Drain (p.180) counts these, never
+      // the spell itself, even if its 🔒 Sustain is clicked before Resist Drain.
+      sustainTN:         game.sr3e.SR3EActor.sustainingTN(actor),
+      // For the 🔒 Sustain offer on the result card (Sustained and Permanent spells, p.178).
+      duration:          this.system.duration ?? '',
+      targetNames,
     };
 
     return actor.rollPool(pool, tn, label, {

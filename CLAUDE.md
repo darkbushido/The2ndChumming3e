@@ -1163,7 +1163,7 @@ Two entry points besides the sheet (both fire ready weapons via `_sr3eReadyWeapo
 
 ### Foundry integrations (tokens / statuses / enrichers)
 - **Token wound bars**: `preCreateActor` (sr3e.js) defaults character/npc prototype tokens to `bar1=wounds.physical`, `bar2=wounds.stun` (fill as damage rises), `OWNER_HOVER`. Only affects newly-created actors. Wounds are `{value,max}` so Foundry treats them as trackable.
-- **Status effects**: custom SR conditions appended to `CONFIG.statusEffects` (init): `sr3e-sustaining/-fulldefense/-dumpshock/-astral/-dual/-vr` + core (prone/unconscious/dead…). The `updateActor` hook (gated to `game.users.activeGM.isSelf`) auto-toggles `sr3e-astral`/`-dual` from `astralMode`, `sr3e-vr` from `matrixUserMode` (VR-Cold/Hot), `sr3e-fulldefense` from `fullDefense`, via `actor.toggleStatusEffect`.
+- **Status effects**: custom SR conditions appended to `CONFIG.statusEffects` (init): `sr3e-sustaining/-fulldefense/-dumpshock/-astral/-dual/-vr` + core (prone/unconscious/dead…). The `updateActor` hook (gated to `game.users.activeGM.isSelf`) auto-toggles `sr3e-astral`/`-dual` from `astralMode`, `sr3e-vr` from `matrixUserMode` (VR-Cold/Hot), `sr3e-fulldefense` from `fullDefense`, `sr3e-sustaining` from `sustainedSpells` (any held), via `actor.toggleStatusEffect`.
 - **Auto-defeated**: same `updateActor` hook — when a wound track is full → combatant `defeated=true` + `unconscious` overlay; physical full AND overflow ≥ Body → `dead` overlay. Reversible on healing.
 - **Drops onto the character sheet** (TODO 97): items ride core's `ActorSheetV2` handling, which
   works. `SR3EActorSheet._onDrop` / `_onDropDocument` catch what used to fail **silently** — a
@@ -1886,6 +1886,37 @@ Power (number) + Level (L/M/S/D) + optional Stun flag
   ⚠ This used to **ask** ("Refresh all combat pools?"). The prompt was removed 2026-08-11: once
   `startCombat()` gained its own reset, the next fight refreshed at round 1 either way, so declining
   achieved nothing. Do not restore it — it is a question with only one meaningful answer.
+
+### Sustained spells  · *SR3 p.178, p.180, p.183* — `feature/sustained-spells`
+
+> "Characters sustaining spells have a +2 target modifier per sustained spell applied to all tests,
+> including Drain Resistance Tests (but not normal Damage Resistance Tests). You can simultaneously
+> sustain a number of spells equal to your Sorcery rating." — p.178
+
+`system.sustainedSpells` (characters and NPCs) — `[{ id, name, force, spellItemId, target, focus }]`.
+The rule is `scripts/data/sustaining.mjs` (pure); `SR3EActor.sustainingTN(actor)` reads it.
+
+| Where | How |
+|---|---|
+| `rollPool` (skills, attributes, casting, weapons, healing…) | added unless `skipSustainMod` — **its own opt-out**, not `skipWoundMod` (healing skips the wound, not the spells) |
+| Ranged roll options · sheet attribute/skill dialogs | pre-applied in the TN beside the wound, then `skipSustainMod` |
+| Melee (GM window base TNs + note) · astral · both dodge prompts | beside `woundTN`, each fighter's own |
+| Drain Resistance | added to the card's TN — a spell's own Drain counts what was held **at casting** (`spellContext.sustainTN`), never itself |
+| Damage Resistance (soak) | **never** (p.178) |
+| Spell Resistance Test | **never** — p.183: *"No target modifiers apply to this test except where specifically noted"*, and p.178 notes Drain only. A reading; TODO 123 checks it |
+
+- ⚠ **One modifier, stated three times.** p.180's *"+2 to the Power of the Drain"* and p.183's cast
+  TN are p.178's "all tests" restated. Adding p.180 on top charges +4 per spell on Drain.
+- ⚠ **A focus-held spell costs nothing** (`focus`, a tick on the Magic tab) and does not count
+  against the limit. The **Sorcery limit is shown, never enforced**.
+- **Starting:** the cast card offers **🔒 Sustain** for a Sustained/Permanent spell that took effect
+  (`_mine`), or *+ Sustain a spell* on the Magic tab. **Offered, never automatic** — it costs +2 on
+  everything. **Stopping:** ✕ (a Free Action).
+- **Taking damage** (`preUpdateActor` sees the old boxes on the client making the change, which then
+  posts the card — no GM needed): a card with one 🎲 **Keep** per concentration-held spell, *Sorcery
+  vs Force + injury modifiers* through `rollPool`. Nothing drops by itself.
+- Not modelled: Exclusive actions forcing a drop (TODO 48, the action economy), Permanent spells'
+  base time (the GM tracks it).
 
 ### Spell pool (Awakened characters only)  · *SR3 p.43*
 > "A character's Spell Pool is equal to Intelligence plus Willpower plus Magic Rating,

@@ -31,6 +31,7 @@ import { SR3EHealing } from './SR3EHealing.js';
 import { SR3ESourceBooks } from './SR3ESourceBooks.js';
 import { SR3ECompendiumDirectory } from './SR3ECompendiumDirectory.js';
 import { SR3EQuery, SR3EQueue, SR3EGMUnavailable } from './SR3EQuery.js';
+import * as Sustaining from './data/sustaining.mjs';
 
 Hooks.once('init', () => {
   console.log('SR3E | Initialising');
@@ -2015,6 +2016,9 @@ Hooks.on('updateActor', async (actor, changes) => {
   if ('fullDefense' in sys) {
     await set('sr3e-fulldefense', !!sys.fullDefense);
   }
+  if ('sustainedSpells' in sys) {
+    await set('sr3e-sustaining', (actor.system.sustainedSpells ?? []).length > 0);
+  }
 
   // Auto-defeated / down / dead from the wound tracks (reversible on healing).
   if (sys.wounds && ['character', 'npc'].includes(actor.type)) {
@@ -2043,6 +2047,18 @@ Hooks.on('updateActor', async (actor, changes) => {
   }
 });
 
+
+// Took damage while sustaining a spell → the Sorcery Test to keep each one (SR3 p.178). Detected in
+// preUpdate, which still sees the old boxes, on the client MAKING the change; that same client posts
+// the card, so it needs no GM. Nothing drops by itself — the card offers the tests.
+Hooks.on('preUpdateActor', (actor, changes, options) => {
+  const w = changes.system?.wounds;
+  if (!w || !(actor.system?.sustainedSpells ?? []).length) return;
+  if (Sustaining.woundsRose(actor.system.wounds, w)) options.sr3eSustainCheck = true;
+});
+Hooks.on('updateActor', (actor, _changes, options, userId) => {
+  if (options?.sr3eSustainCheck && userId === game.user.id) SR3EActor.postSustainCheckCard(actor);
+});
 
 // Re-render combat tracker when a vehicle actor's control mode changes so the
 // VCR / RCD / Auto badge in the sidebar stays current without needing a turn advance.
@@ -2940,6 +2956,36 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       btn.disabled    = true;
       btn.textContent = '⏳ Preparing…';
       await SR3EActor.postDrainCard(p.actorId, p);
+    });
+  });
+
+  // 🔒 Sustain — start holding the spell just cast (SR3 p.178). The caster's choice, so theirs to click.
+  html.querySelectorAll('.sr-sustain-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'sustain', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_mine(pl)) return _denyBtn(btn, 'Only the caster\'s owner (or the GM) can sustain this spell.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'sustain', i)) return;
+      const actor = game.actors.get(pl?.actorId);
+      if (!actor) return;
+      await actor.sustainSpell({ name: pl.name, force: pl.force, spellItemId: pl.spellItemId, target: pl.target });
+      btn.textContent = `🔒 Sustaining ${pl.name}`;
+    });
+  });
+
+  // 🎲 Keep — the Sorcery Test after taking damage while sustaining (SR3 p.178). It rolls.
+  html.querySelectorAll('.sr-sustain-check-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'sustaincheck', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_isDecider(pl)) return _denyBtn(btn, 'Only the caster (or the GM) rolls this test.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'sustaincheck', i)) return;
+      btn.textContent = '⏳ Rolling…';
+      await SR3EActor.rollSustainCheck(pl);
     });
   });
 
