@@ -3359,6 +3359,10 @@ label.act-field input[type=number] {
 
 .attr-aug   { font-size: 14px; font-weight: 600; color: var(--sr-green);  min-width: 18px; text-align: center; }
 .attr-adept { font-size: 14px; font-weight: 600; color: var(--sr-gold);   min-width: 18px; text-align: center; }
+/* Running now — Attribute Boost, Adrenal Pump, Pain Editor (TODO 100): changes that expire or are switched off. */
+.attr-live  { font-size: 14px; font-weight: 600; color: var(--sr-amber);  min-width: 18px; text-align: center; }
+/* Every modifier explains itself on hover (TODO 100) — say so with the cursor. */
+.attr-aug[title], .attr-adept[title], .attr-live[title], .attr-force-total[title], .attr-enc-penalty[title] { cursor: help; }
 
 /* ── Electronic Warfare — Signal Monitor + MIJI ─────────────────────────────── */
 .signal-monitor { display: flex; flex-direction: column; gap: 8px; }

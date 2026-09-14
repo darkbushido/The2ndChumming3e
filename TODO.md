@@ -28,7 +28,7 @@ independent.
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 🖥 Matrix | **119** *(audit The Matrix Defragged v2 — the book is now in the library)* · **120** *(HoloSuite Hacking adapter / fork)* |
 | 📦 Content gaps | **117** *(934 documents lack a book/page)* · 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** · **104** *(**83** · **84** · **87** done)* |
-| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 56 · **100** · **103** · **105** *(**20** · **36** · **99** done)* |
+| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 56 · **103** · **105** *(**20** · **36** · **99** done; **100** built on `feature/modifier-tooltips`)* |
 | 🧹 Housekeeping | 1 · 6 |
 | ✅ Done — kept for the record | **2** · **5** · **8** · **10** · 13 · **40** · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -7048,7 +7048,24 @@ Show it in the melee GM window too — melee uses the same table at half value (
 
 <a id="100"></a>
 
-## 100. Explain every attribute modifier on hover — **requested in play 2026-09-13**
+## 100. ✅ Explain every attribute modifier on hover — **requested in play 2026-09-13, BUILT** (`feature/modifier-tooltips`)
+
+**Built.** `_prepareCharacter` records `derived.attributeSources` — every bonus by name as it is
+applied (cyberware, bioware, adept powers with their level, troll dermal armor, Attribute Boost with
+its turns left, a running Adrenal Pump or Pain Editor, and on Reaction and Initiative dice the
+package p.169 keeps, the one it drops, and move-by-wire's Quickness that skips Reaction). Each chip
+on the Attributes tab names its items on hover; the total in brackets hovers the whole breakdown
+(`SR3EActor.attributeBreakdown`); Reaction hovers its formula and sources; the armour TN chip names
+the armour worn and says Quickness itself is not lowered.
+
+**A display bug it fixed:** the sheet summed its own total from base + adept + cyber + racial, so an
+Attribute Boost or a running Adrenal Pump raised the attribute every roll used without the total
+changing — and nothing showed a Pain Editor's −1 Intelligence. The total is now the real value, and
+those effects have their own amber chip.
+
+Tests: `tests/attribute-sources.test.mjs` — including **base + sources = the value rolled** for every
+attribute in five builds; mutant `attribute-hover-says-nothing`. The "4 − 1" from the report predates
+TODO 112 (armour no longer lowers Quickness); its chip is now the "+N TN" one.
 
 **Observation, from the TODO 93 test run.** The imported troll's Attributes tab shows Quickness
 as **4 − 1**. The −1 is **armour encumbrance** (confirmed by the maintainer — armour equipped

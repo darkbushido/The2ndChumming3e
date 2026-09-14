@@ -1679,6 +1679,22 @@ _prepareCharacter(sys, attr) {
   /** Adept powers whose rule the system states but cannot resolve — surfaced on the sheet. */
   const adeptNotes = [];
 
+  /* Where every attribute modifier comes from · TODO 100 (requested in play). The sheet shows
+   * the sums; hovering one names what made it. Recorded as each bonus is applied, so the
+   * explanation cannot drift from the arithmetic. `kind` groups them for the sheet's chips. */
+  const attributeSources = { body: [], quickness: [], strength: [], charisma: [], intelligence: [],
+                             willpower: [], reaction: [], magic: [], initiativeDice: [] };
+  const _SRC_KEY = { bod: 'body', qui: 'quickness', str: 'strength', cha: 'charisma', int: 'intelligence',
+                     wil: 'willpower', rea: 'reaction', mag: 'magic' };
+  const _source = (short, amount, label, kind, note = '') => {
+    const key = _SRC_KEY[short] ?? short;
+    if (amount && attributeSources[key]) attributeSources[key].push({ label, amount, kind, note });
+  };
+  const _BONUS_FIELDS = [['bod', 'bonusBod'], ['qui', 'bonusQui'], ['str', 'bonusStr'], ['cha', 'bonusCha'],
+                         ['int', 'bonusInt'], ['wil', 'bonusWil']];
+  /** Reaction bonuses by package — only the one `reflexBonus` keeps is credited (p.169). */
+  const reactionFrom = { cyber: [], adept: [], quiExcluded: [], initCyber: [], initAdept: [] };
+
   // Cyber/bio augmentation bonuses — summed from all cyberware and bioware items
   const cyberBonus = { bod: 0, qui: 0, str: 0, cha: 0, int: 0, wil: 0, rea: 0, initDice: 0,
                        reaNotRigDeck: 0, quiNotForReaction: 0 };
@@ -1696,6 +1712,9 @@ _prepareCharacter(sys, attr) {
     cyberBonus.int      += s.bonusInt      ?? 0;
     cyberBonus.wil      += s.bonusWil      ?? 0;
     cyberBonus.rea      += s.bonusRea      ?? 0;
+    for (const [k, f] of _BONUS_FIELDS) _source(k, s[f] ?? 0, item.name, item.type === 'bioware' ? 'bio' : 'cyber');
+    if ((s.bonusRea ?? 0) !== 0) reactionFrom.cyber.push({ label: item.name, amount: s.bonusRea, kind: item.type === 'bioware' ? 'bio' : 'cyber' });
+    if ((s.bonusInitDice ?? 0) !== 0) reactionFrom.initCyber.push({ label: item.name, amount: s.bonusInitDice, kind: item.type === 'bioware' ? 'bio' : 'cyber' });
     // ⚠ Enhanced Articulation's +1 Reaction does not apply to rigging or decking (M&M p.66),
     // so the portion of `rea` that comes from such items is tracked SEPARATELY rather than
     // subtracted later by name — by the time initiative is rolled the items are long gone.
@@ -1714,6 +1733,7 @@ _prepareCharacter(sys, attr) {
     if ((s.bonusQui ?? 0) !== 0
       && (_sr3e?.quicknessNotForReaction ?? []).some(re => re.test(item.name ?? ''))) {
       cyberBonus.quiNotForReaction += s.bonusQui ?? 0;
+      reactionFrom.quiExcluded.push(`${item.name} +${s.bonusQui}`);
     }
     // "not compatible with any other Reaction- or Initiative-enhancing cyber- or bioware"
     if ((_sr3e?.reactionExclusive ?? []).some(re => re.test(item.name ?? ''))) {
@@ -1829,6 +1849,12 @@ _prepareCharacter(sys, attr) {
       adeptBonus.mag      += mul(s.bonusMag);
       adeptBonus.rea      += mul(s.bonusRea);
       adeptBonus.initDice += mul(s.bonusInitDice);
+      {
+        const label = s.hasLevels ? `${item.name} ${lvl}` : item.name;
+        for (const [k, f] of [..._BONUS_FIELDS, ['mag', 'bonusMag']]) _source(k, mul(s[f]), label, 'adept');
+        if (mul(s.bonusRea)) reactionFrom.adept.push({ label, amount: mul(s.bonusRea), kind: 'adept' });
+        if (mul(s.bonusInitDice)) reactionFrom.initAdept.push({ label, amount: mul(s.bonusInitDice), kind: 'adept' });
+      }
 
       // Improved Ability: a levelled power grants dice equal to its level, otherwise 1.
       // The label carries the level too — a bare "Improved Ability" beside 6 dice explains
@@ -1942,6 +1968,7 @@ _prepareCharacter(sys, attr) {
    * apart from `cyberBonus` because Attribute Boost reads that for TECHNOLOGICAL increases it
    * cannot combine with (p.169). See `SR3E.racialDermalArmor`. */
   const racialBonus = { bod: SR3EActor.racialDermalArmor(sys.metatype) };
+  _source('bod', racialBonus.bod, 'Troll dermal armor', 'racial', 'SR3 p.56');
 
   /* A dwarf's +2 Body against disease and toxins (p.56) — a SITUATIONAL bonus, beside
    * Nephritic Screen, not an attribute change. See `SR3E.racialSituational` · TODO 98. */
@@ -1993,6 +2020,8 @@ _prepareCharacter(sys, attr) {
       // sustained spell, so refusing on the half it CAN see would be arbitrary.
       cyberConflict: (cyberBonus[_cyberKey[key]] ?? 0) > 0,
     };
+    _source(key, capped - attr[key].value, `Attribute Boost — ${b.turns} Combat Turn${b.turns === 1 ? '' : 's'} left`,
+      'boost', capped - attr[key].value < b.level ? `SR3 p.168, capped at ${SR3EActor.attributeBoostCap(limit)}` : 'SR3 p.168');
     attr[key].value = capped;
   }
 
@@ -2018,6 +2047,23 @@ _prepareCharacter(sys, attr) {
     adeptRea:  adeptBonus.rea,  adeptInit: adeptBonus.initDice,
     cyberRea:  cyberBonus.rea,  cyberInit: cyberBonus.initDice,
   });
+
+  // The Reaction package that counts, and the one p.169 drops (TODO 100 names both on the sheet).
+  for (const r of (reflex.source === 'adept' ? reactionFrom.adept : reflex.source === 'cyber' ? reactionFrom.cyber : [])) {
+    attributeSources.reaction.push(r);
+  }
+  for (const r of (reflex.source === 'adept' ? reactionFrom.initAdept : reflex.source === 'cyber' ? reactionFrom.initCyber : [])) {
+    attributeSources.initiativeDice.push(r);
+  }
+  if (reflex.dropped) {
+    const why = r => ({ ...r, amount: 0, note: `+${r.amount} not applied — does not stack with ${reflex.source === 'adept' ? 'Improved Reflexes' : 'the cyberware'} (SR3 p.169)` });
+    for (const r of (reflex.source === 'adept' ? reactionFrom.cyber : reactionFrom.adept)) attributeSources.reaction.push(why(r));
+    for (const r of (reflex.source === 'adept' ? reactionFrom.initCyber : reactionFrom.initAdept)) attributeSources.initiativeDice.push(why(r));
+  }
+  if (cyberBonus.quiNotForReaction) {
+    attributeSources.reaction.push({ label: reactionFrom.quiExcluded.join(', '), amount: 0,
+      kind: 'note', note: 'Quickness that does not count toward Reaction (M&M p.60)' });
+  }
 
   // Reaction — derived from force-enhanced QUI + INT per RAW, minimum 1
   if (attr.reaction) {
@@ -2148,6 +2194,8 @@ _prepareCharacter(sys, attr) {
       ? Object.fromEntries(Object.entries(per).map(([k, v]) => [k, v * a.level]))
       : (flat ?? {});
     for (const [k, v] of Object.entries(add)) {
+      _source(k, v, a.cfg.kind === 'duration' ? `${a.name} — ${a.turns} Combat Turn${a.turns === 1 ? '' : 's'} left` : a.name,
+        'triggered', a.cfg.kind === 'duration' ? 'M&M p.63' : 'M&M p.71');
       if (k === 'rea') { if (attr.reaction) attr.reaction.value = Math.max(1, attr.reaction.value + v); continue; }
       const key = { qui: 'quickness', str: 'strength', wil: 'willpower', int: 'intelligence',
                     bod: 'body', cha: 'charisma' }[k];
@@ -2237,6 +2285,8 @@ _prepareCharacter(sys, attr) {
     cyberBonus,
     adeptBonus,
     racialBonus,
+    // Every attribute modifier by source — the sheet's hover explanations (TODO 100).
+    attributeSources,
     /* Powers whose level exceeds the adept's Magic · SR3 p.168 (TODO 65).
      *
      * > "An adept cannot have more levels in a power than the adept's Magic Attribute."
@@ -6609,6 +6659,42 @@ _prepareCharacter(sys, attr) {
       if (attributes[k] < 1) belowOne.push(k);
     }
     return { attributes, modifiers, source, belowOne };
+  }
+
+  /* ── Explaining an attribute on hover · TODO 100 (requested in play) ───────────────── */
+
+  /** What a source `kind` reads as on the sheet. */
+  static ATTRIBUTE_SOURCE_KINDS = {
+    cyber: 'cyberware', bio: 'bioware', adept: 'adept power', racial: 'racial',
+    boost: 'Attribute Boost', triggered: 'switched on', note: '',
+  };
+
+  /** Sum of the sources of the given kinds — what one chip on the sheet shows. */
+  static attributeSourceSum(sources = [], kinds = []) {
+    return (sources ?? []).filter(x => kinds.includes(x.kind)).reduce((a, x) => a + (Number(x.amount) || 0), 0);
+  }
+
+  /**
+   * The hover text for one attribute: its base, every modifier by name, and the total.
+   * `sources` are `derived.attributeSources[key]` — recorded as each bonus was applied, so this
+   * explains the arithmetic rather than re-deriving it. A source with no amount is a NOTE
+   * (a bonus that did not apply, and why). Pure.
+   *   Quickness 7
+   *   Base 4
+   *   +2  Muscle Replacement [2] (cyberware)
+   *   +1  Adrenal Pump [1](trig) — 3 Combat Turns left (switched on · M&M p.63)
+   */
+  static attributeBreakdown({ label = '', base = 0, sources = [], total = null, baseLabel = 'Base' } = {}) {
+    const sign = n => (n >= 0 ? `+${n}` : `−${Math.abs(n)}`);
+    const lines = [`${label}${total !== null ? ` ${total}` : ''}`, `${baseLabel} ${base}`];
+    for (const x of sources ?? []) {
+      const kind = SR3EActor.ATTRIBUTE_SOURCE_KINDS[x.kind] ?? x.kind ?? '';
+      const tag  = [kind, x.note && x.amount ? x.note : ''].filter(Boolean).join(' · ');
+      lines.push(x.amount
+        ? `${sign(x.amount)}  ${x.label}${tag ? ` (${tag})` : ''}`
+        : `—  ${x.label}${x.note ? `: ${x.note}` : ''}`);
+    }
+    return lines.join('\n');
   }
 
   /**

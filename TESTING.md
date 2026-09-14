@@ -399,6 +399,18 @@ On the active combatant's card: **Complex** (full width) + two **Simple** button
 
 ---
 
+## Attribute hover explanations — TODO 100 (`feature/modifier-tooltips`) — needs a live pass
+
+- [ ] A character with Muscle Replacement [2]: hovering Quickness's green **2** lists *+2 Muscle Replac. [2]*; hovering the bracketed total lists Base, the implant, and the total.
+- [ ] An adept with Improved Physical Attribute 3: the gold chip names the power *and its level*.
+- [ ] A troll: Body's dermal armor chip still reads *Troll dermal armor (SR3 p.56)*.
+- [ ] Switch on an Adrenal Pump [2]: an **amber** chip appears on Quickness, Strength and Willpower naming the pump and its turns left, and the bracketed total rises with it. A Pain Editor shows **−1** on Intelligence.
+- [ ] An active Attribute Boost shows as an amber chip with its turns left.
+- [ ] Reaction hovers *(Quickness + Intelligence) ÷ 2*, then every bonus by name; with Wired Reflexes and Improved Reflexes both, the dropped one is listed as *not applied (SR3 p.169)*.
+- [ ] Layered armour: the Quickness *+N TN* chip names the pieces worn.
+
+---
+
 ## Dialog wiring — TODO 20 (0.5.2) — needs a live pass
 
 Eighteen dialogs moved from the global `renderDialogV2` hook to their own `render` option. For

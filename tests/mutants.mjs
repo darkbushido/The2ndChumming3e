@@ -33,6 +33,13 @@ const AMMO   = { module: '../scripts/data/ammo-stock.mjs',   klass: 'AmmoStock' 
 
 export const MUTANTS = [
   {
+    id:     'attribute-hover-says-nothing',
+    suite:  'attribute-sources',
+    ...ACTOR, method: 'attributeBreakdown',
+    was:    'the generic tooltips the sheet had — "Cyber/bio augmentation" with no item named (TODO 100, reported in play)',
+    impl:   ({ label = '', total = null } = {}) => `${label}${total !== null ? ` ${total}` : ''}`,
+  },
+  {
     id:     'reload-docks-rounds-for-reloads',
     suite:  'ammo-stock',
     ...AMMO, method: 'reloadPlan',
