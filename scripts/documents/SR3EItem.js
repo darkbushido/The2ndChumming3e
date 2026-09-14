@@ -1,4 +1,5 @@
 import { vcrLevel as vcrLevelOf } from '../data/item-rating.mjs';
+import { AmmoStock } from '../data/ammo-stock.mjs';
 
 export class SR3EItem extends Item {
 
@@ -1852,6 +1853,7 @@ export class SR3EItem extends Item {
    * Magazine size comes from the gun's ammo-capacity string; compatible stock is
    * filtered by loading mechanism. Full-swap: any rounds left in the old mag are
    * discarded. When ammo tracking is off, only the loaded type is set (no stock math).
+   * A stock is counted in loose rounds or in reloads (clips, speed-loaders) — `AmmoStock`, TODO 114.
    */
   async reload() {
     if (this.type !== 'firearm' && !this._usesNockedAmmo()) return;
@@ -1869,7 +1871,7 @@ export class SR3EItem extends Item {
 
     let stock = actor.items.filter(i =>
       i.type === 'ammunition' && (!gunMech || (i.system.loadMechanism ?? 'c') === gunMech));
-    if (trackOn) stock = stock.filter(i => (i.system.rounds ?? 0) > 0);
+    if (trackOn) stock = stock.filter(i => AmmoStock.stock(i.system).count > 0);
     if (stock.length === 0) {
       ui.notifications.warn(`No compatible ammo in stock for ${this.name}.`);
       return;
@@ -1883,11 +1885,15 @@ export class SR3EItem extends Item {
     const typeLabel = SR3E.ammoTypes[type]?.label ?? 'Regular';
 
     if (trackOn) {
-      const avail  = ammo.system.rounds ?? 0;
-      const loaded = Math.min(magSize, avail);
-      await ammo.update({ 'system.rounds': Math.max(0, avail - loaded) });
-      await this.update({ 'system.loadedAmmoType': type, 'system.loadedRounds': loaded });
-      ui.notifications.info(`${this.name} loaded: ${loaded} × ${typeLabel}${loaded < magSize ? ` (stock ran short of ${magSize})` : ''}.`);
+      // Rounds or reloads — TODO 114. A reload is used up whole; loose rounds fill the magazine.
+      const plan = AmmoStock.reloadPlan(ammo.system, magSize);
+      await ammo.update({ [`system.${plan.field}`]: plan.remaining });
+      await this.update({ 'system.loadedAmmoType': type, 'system.loadedRounds': plan.loaded });
+      const why = plan.unit === 'reloads'
+        ? (plan.mismatch ? ` (a ${ammo.system.roundsPerReload}-round reload in a ${magSize}-round magazine)` : '')
+          + ` — ${AmmoStock.describe({ ...ammo.system, reloads: plan.remaining })} left`
+        : (plan.short ? ` (stock ran short of ${magSize})` : '');
+      ui.notifications.info(`${this.name} loaded: ${plan.loaded} × ${typeLabel}${why}.`);
     } else {
       await this.update({ 'system.loadedAmmoType': type, 'system.loadedRounds': magSize });
       ui.notifications.info(`${this.name} loaded with ${typeLabel}.`);
@@ -1903,7 +1909,7 @@ export class SR3EItem extends Item {
     const mechLabel = mech ? (SR3E.ammoLoadMechanisms[mech] ?? mech) : '';
     const opts = stock.map((a, i) => {
       const typeLabel = SR3E.ammoTypes[a.system.ammoType ?? 'regular']?.label ?? 'Regular';
-      const stockTxt  = trackOn ? ` — ${a.system.rounds ?? 0} in stock` : '';
+      const stockTxt  = trackOn ? ` — ${AmmoStock.describe(a.system)}` : '';
       return `<option value="${a.id}" ${i === 0 ? 'selected' : ''}>${a.name} (${typeLabel})${stockTxt}</option>`;
     }).join('');
 
@@ -1913,7 +1919,7 @@ export class SR3EItem extends Item {
       content: `
         <div style="padding:8px 0">
           <p style="margin:0 0 8px;font-size:12px;color:var(--sr-muted)">
-            Choose ammo to load${mechLabel ? ` (only <strong>${mechLabel}</strong>-fed ammo shown)` : ''}.${trackOn ? ` Loads up to <strong>${magSize}</strong> rounds; any in the current magazine are discarded.` : ''}
+            Choose ammo to load${mechLabel ? ` (only <strong>${mechLabel}</strong>-fed ammo shown)` : ''}.${trackOn ? ` Loads up to <strong>${magSize}</strong> rounds — one reload, or that many loose rounds; any in the current magazine are discarded.` : ''}
           </p>
           <select id="reload-select" style="width:100%">${opts}</select>
         </div>`,

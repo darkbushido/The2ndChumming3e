@@ -253,4 +253,25 @@ export async function run(t) {
   t.is('armour has no rating field — skipped', rt.fixItem(typed('armor', 'Helmet [2]', {})), null);
   const rtOnce = rt.fixItem(typed('gear', 'Medkit [6]', { rating: 0 }));
   t.is('idempotent: the migrated item yields nothing', rt.fixItem(typed('gear', 'Medkit [6]', { rating: rtOnce['system.rating'] })), null);
+
+  /* ── 0.5.2: pre-filled clips counted in reloads (TODO 114, reported in play) ─────────── */
+  const am = list.find(m => m.version === '0.5.2' && /reloads/i.test(m.label));
+  t.ok('the reloads migration exists and is a fixItem', typeof am?.fixItem === 'function');
+  const clip = (name, system = {}, parent = null) => ({ ...typed('ammunition', name, { countedIn: 'rounds', rounds: 0, reloads: 0, ammoType: 'regular', loadMechanism: 'c', ...system }), parent });
+  const rev = { items: [{ type: 'firearm', system: { ammunition: '7(cy)' } }] };
+  const cyl = am.fixItem(clip('7-round cy reload ×6', {}, rev));
+  t.is('the reported "7-round cy reload ×6" becomes reloads', cyl?.['system.countedIn'], 'reloads');
+  t.is('…6 of them', cyl?.['system.reloads'], 6);
+  t.is('…7 rounds each', cyl?.['system.roundsPerReload'], 7);
+  t.is('…fed to the 7(cy) revolver the character owns', cyl?.['system.loadMechanism'], 'cy');
+  const imp = am.fixItem(clip('10-Rnd Clip (Explosive) ×2'));
+  t.is('an imported Explosive clip left as Regular becomes Explosive', imp?.['system.ammoType'], 'explosive');
+  t.is('…with no guns to go on, the mechanism is not guessed', imp?.['system.loadMechanism'], undefined);
+  t.is('a single clip with no "×N" is one reload', am.fixItem(clip('15-Rnd Clip (Regular)'))?.['system.reloads'], 1);
+  t.is('a GM\'s 42 rounds are NOT converted', am.fixItem(clip('7-round cy reload ×6', { rounds: 42 })), null);
+  t.is('a type a GM chose is kept', am.fixItem(clip('10-Rnd Clip (Explosive)', { ammoType: 'gel' }))?.['system.ammoType'], undefined);
+  t.is('a box of rounds is not a reload', am.fixItem(clip('Box of 50 rounds')), null);
+  t.is('not ammunition: skipped', am.fixItem(typed('gear', '10-Rnd Clip (Regular)')), null);
+  t.is('idempotent: an item already counted in reloads yields nothing',
+    am.fixItem(clip('7-round cy reload ×6', { countedIn: 'reloads', reloads: 6, roundsPerReload: 7 })), null);
 }

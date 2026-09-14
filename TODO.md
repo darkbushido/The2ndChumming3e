@@ -23,7 +23,7 @@ independent.
 |---|---|
 | 🔵 In progress | **93** — Foundry test of everything on branch `fix/racial-mods` |
 | 🟢 Socket combat — follow-ups | *(24 complete — see Done)* |
-| 🔴 Confirmed bugs, still open | **91** · **114** *(reloads counted in rounds, not reloads)* *(**112** · **113** fixed on `fix/armor-and-stacks`; **97** · **116** · **118** fixed in 0.5.2)* *(**101** · **71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** · **106** · **107** done)* |
+| 🔴 Confirmed bugs, still open | **91** *(**112** · **113** fixed on `fix/armor-and-stacks`; **97** · **114** · **116** · **118** fixed in 0.5.2)* *(**101** · **71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** · **106** · **107** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **109** *(Stress)* · **110** *(TLE-x, needs 109)* · **111** *(CDS)* *(**3** · **4** · **30** · **75** · **98** · **76** done; **115** built on `feature/healing`)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 🖥 Matrix | **119** *(audit The Matrix Defragged v2 — the book is now in the library)* · **120** *(HoloSuite Hacking adapter / fork)* |
@@ -7497,7 +7497,27 @@ weapons / grenades*) should share the same split/merge path.
 
 <a id="114"></a>
 
-## 114. Reloading counts rounds where the player expects reloads — **reported in play 2026-09-13**
+## 114. ✅ Reloading counts rounds where the player expects reloads — **reported in play 2026-09-13, FIXED** (0.5.2, `main`)
+
+**Fixed — an ammunition item is counted in loose ROUNDS or in RELOADS** (`system.countedIn`), chosen
+on its sheet. A stock of reloads holds `reloads` pre-filled clips / speed-loaders / cylinders, each
+`roundsPerReload` rounds (blank = fills the gun); reloading uses **one** and loads its rounds, never
+more than the magazine holds — a 10-round clip in an 8-round gun loads 8 and is gone. Loose rounds
+keep the old arithmetic. The sheet reads *"6 reloads of 7"*; storage splits and merges a stack of
+reloads by its count. Rules in `scripts/data/ammo-stock.mjs` (`AmmoStock`).
+
+**Found while fixing it:** the importer brought the generator's `10-Rnd Clip (Explosive)` (Amount 2)
+in with **0 rounds and type Regular** — unloadable with `trackAmmo` on, and the wrong ammunition off
+it. It now imports as 2 reloads of 10, Explosive, fed to whichever of the character's guns takes a
+10-round reload (the troll's Ares Thunderer, `10(c)`). Migration **0.5.2** converts ammunition
+already in a world when its stock is empty in both units and its name says it is a reload
+(`7-round cy reload ×6` → 6 reloads of 7, `cy` when the character owns a `7(cy)` revolver); a stock
+someone typed is left alone. Names keep their "×6" — renaming is the GM's call.
+
+Tests: `tests/ammo-stock.test.mjs`, the importer (the troll's clips), migrations; mutants
+`reload-docks-rounds-for-reloads`, `reload-keeps-partial-clip`, `ammo-name-no-type`.
+
+The report as logged:
 
 **Observation only — not investigated** (reported mid-session). A player has a **"7-round cy reload
 ×6"** — six pre-loaded cylinder reloads for a 7-round revolver. They expect:

@@ -401,7 +401,17 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
             <span class="field-label">Loading Mechanism</span>
             <select name="system.loadMechanism" title="Must match the weapon's loading mechanism (the code in its ammo-capacity, e.g. 15(c))">${mechOpts}</select>
           </div>
-          ${this._f('Rounds in Stock', 'rounds', s.rounds ?? 0, 'number', 'min="0" title="Total rounds of this ammo you own (the stockpile). Reloading a weapon draws from this; the weapon\'s magazine size comes from its own ammo-capacity (e.g. 15(c))."')}
+          <div class="form-field">
+            <span class="field-label">Counted In</span>
+            <select name="system.countedIn" title="Loose rounds (a box, a belt) or pre-filled reloads (clips, speed-loaders, cylinders). Reloading uses one reload, or a magazine's worth of loose rounds.">
+              <option value="rounds" ${s.countedIn !== 'reloads' ? 'selected' : ''}>Loose rounds</option>
+              <option value="reloads" ${s.countedIn === 'reloads' ? 'selected' : ''}>Reloads (clips, speed-loaders)</option>
+            </select>
+          </div>
+          ${s.countedIn === 'reloads'
+            ? `${this._f('Reloads', 'reloads', s.reloads ?? 0, 'number', 'min="0" title="How many pre-filled reloads you own. Each reload of a weapon uses one."')}
+               ${this._f('Rounds per Reload', 'roundsPerReload', s.roundsPerReload || '', 'number', `min="0" placeholder="fills the gun" title="Rounds in each reload. Blank = whatever the weapon's magazine holds."`)}`
+            : this._f('Rounds in Stock', 'rounds', s.rounds ?? 0, 'number', 'min="0" title="Total rounds of this ammo you own (the stockpile). Reloading a weapon draws from this; the weapon\'s magazine size comes from its own ammo-capacity (e.g. 15(c))."')}
           ${this._f('Description', 'damage', s.damage, 'text', 'placeholder="Ex-Explosive, Hollow Point…"')}
           ${this._f('Concealability', 'concealability', s.concealability)}
           ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}

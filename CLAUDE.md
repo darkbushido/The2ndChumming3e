@@ -1083,10 +1083,11 @@ still the 1st. ⚠ The **GM window cannot supply this**: `multiTarget` carries n
 inside the dialog's FA-only section, so SA's second shot and BF's second burst were both free.
 
 **Ammunition** — two-layer model (see also the ammo-architecture memory):
-- *Stockpile*: ammo items are a reservoir (gear/ammo tabs show "Stock"). Fields: `ammoType`, `loadMechanism`, `rounds` (total owned). Rules live in `SR3E.ammoTypes` config, NOT on the item. ⚠ Counted in **rounds**, which players reported does not match pre-filled reloads (a "7-round cy reload ×6" should read 6 and drop by one per reload) — TODO 114.
+- *Stockpile*: ammo items are a reservoir (gear/ammo tabs show "Stock"). Fields: `ammoType`, `loadMechanism`, and the count. Rules live in `SR3E.ammoTypes` config, NOT on the item.
+- *Rounds or reloads* (TODO 114, reported in play): `countedIn` is **`rounds`** (a box, a belt — `rounds` total) or **`reloads`** (pre-filled clips, speed-loaders, cylinders — `reloads` of them, each `roundsPerReload`, 0 = fills the gun). All of it in `scripts/data/ammo-stock.mjs` (`AmmoStock`, on `game.sr3e` for the importer). ⚠ **A reload is used up whole** — a 10-round clip in an 8-round gun loads 8 and is gone. ⚠ The importer reads the generator's `N-Rnd Clip (Type)` as reloads, typed from the name and fitted to whichever of the character's guns takes that size (`mechanismFor`); it used to import them with **0 rounds and type Regular** — unloadable. Migration 0.5.2 converts such items where the stock is empty in both units.
 - *Stacks and storage* (TODO 113): moving a stack of more than one (`quantity`, or ammunition `rounds`) into or out of storage asks how many; part of a stack splits off and an identical stack on the far side is merged into (`SR3EActor.stackKey`, strict — every field but the count). Pure rule: `SR3EActor.planStackMove`.
 - *Magazine*: each firearm tracks `loadedAmmoType` + `loadedRounds`; magazine size is parsed from its capacity string (`15(c)` → 15). The weapons-tab ammo cell shows the capacity, a loaded badge, and a ↻ **Reload** button (`SR3EItem.reload`).
-- *Reload*: prompts a compatible stockpile (matched by loading mechanism), full-swaps the magazine (leftovers discarded), and subtracts from the stockpile. When `trackAmmo` is off it only sets the loaded type (no stock math).
+- *Reload*: prompts a compatible stockpile (matched by loading mechanism), full-swaps the magazine (leftovers discarded), and subtracts from the stockpile — one reload, or a magazine's worth of rounds (`AmmoStock.reloadPlan`). When `trackAmmo` is off it only sets the loaded type (no stock math).
 - *Firing* uses whatever is loaded; decrements `loadedRounds` when `trackAmmo` is on (warns, never blocks, when empty).
 - *Type rules*: Explosive +1 / EX +2 power; Gel −2 power + Stun (attack time). APDS halves ballistic; Flechette unarmoured → level +1, armoured → **`max(Impact × 2, Ballistic)`** (`SR3EActor.flechetteArmor`, soak time via `ammoType` carried into `_postSoakCard`).
   ⚠ **The doubling is on IMPACT ONLY** — *"use either double its Impact Armor Rating or its normal Ballistic Armor Rating, whichever is higher"* (p.116). This was `max(ballistic, impact) × 2` until 2026-08-30, which doubles the wrong number and then doubles it anyway: ballistic 8 / impact 2 gave 16 where the book gives 8. The two agree whenever Impact is the higher, which is the common case for light armour and is why it survived. ⚠ *"Dermal armor negates the Damage Level increase"* — `SR3EActor.flechetteRaisesLevel`, fed by `dermalArmorSources`: a troll's hide, **Dermal Plating** or a **Dermal Sheath** (`SR3E.dermalArmorImplants`; M&M p.133 defines dermal armor as *"plating or sheath"*). ⚠ **Orthoskin is not dermal armor** — it is bioware armour, and now counts as armour instead (below). Anti-Vehicle sets `weaponOpts.avMunition` to bypass the vehicle Power/2. Tracer: FA-only, tracer rounds raise Level not Power, TN bonus shown as a manual note.
@@ -2562,7 +2563,16 @@ at all, which is itself proof the tab predates the query.
 ---
 
 ## Known issues / watch out for
+- **Reading the checkout's packs must go through a copy** — `tools/lib/pack-copy.mjs`. Opening a
+  LevelDB rewrites its log, MANIFEST and CURRENT even for a read, so every test run used to leave
+  all 82 packs "modified" in git with identical content (~410 files, found 2026-09-13).
+  `tests/pack-churn.test.mjs` fails any test that opens a LevelDB without it, and
+  `npm run packs:check:repo` reads a copy. Tools that WRITE a pack still open the real one, and
+  those changes are committed — the download is the branch zip, so the LevelDB files ship from git.
 - 🔴 **`node --check` is USELESS on this codebase — use `npx eslint <file>` instead.**
+  `tests/syntax.test.mjs` now parses every file under `scripts/` with ESLint's parser, so
+  `node tests/run.mjs` catches a broken string in a sheet too (one slipped past every other suite
+  on 2026-09-13, because the sheets cannot be imported without Foundry).
   Every file under `scripts/` is an ES module in a `.js` file, and for those `node --check`
   **exits 0 on genuine syntax errors, printing nothing.** Verified 2026-08-10 against Node
   v24.18.0: a two-line `.js` containing `import {a} from './x.js'` plus an unescaped

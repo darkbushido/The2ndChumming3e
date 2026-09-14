@@ -478,13 +478,22 @@ Both are editable inline in the fire-mode dialog and persist on confirm.
 
 World setting **Track Ammunition** (Configure Settings → System) gates all counting (off by default).
 
-**Stockpile (gear/ammo tabs):** ammo items are a reservoir. Each has Ammo Type, Loading Mechanism (c/m/cy/b/d/sb/internal), and Rounds in Stock. The tab shows Type / Load / Stock
+**Stockpile (gear/ammo tabs):** ammo items are a reservoir. Each has Ammo Type, Loading Mechanism (c/m/cy/b/d/sb/internal), and its stock — loose rounds or reloads. The tab shows Type / Load / Stock
 
 **Magazine (weapons tab):** each firearm shows its capacity, a loaded badge (type + `loaded/magSize` when tracking), and a ↻ **Reload** button. Magazine size is parsed from the gun's capacity string (`15(c)` → 15).
 
 **Reload:** ↻ → prompts compatible stockpiles (matched by loading mechanism; with rounds, when tracking on) → loads up to magazine size, subtracts from the stockpile, **discards any rounds left in the old mag** (full swap). Tracking off → only sets the loaded type, no stock math.
 
 **Firing** uses whatever is loaded — no per-shot picker. When tracking on, the magazine decrements (1 SS/SA, 3 BF, N FA + walking-fire waste) and warns (never blocks) when empty.
+
+**Rounds or reloads (TODO 114, 0.5.2) — needs a live check.** Tracking on.
+- [ ] An ammunition item's sheet has **Counted In**: *Loose rounds* shows Rounds in Stock; *Reloads* shows Reloads and Rounds per Reload (blank = fills the gun). Switching re-renders the fields.
+- [ ] A revolver `7(cy)` and ammunition *7-round cy reload*, `cy`, Reloads 6, Rounds per Reload 7 → the ammo tab reads **6 reloads of 7**; ↻ Reload offers it as "6 reloads of 7"; after reloading the gun shows 7/7 and the stock reads **5 reloads of 7**.
+- [ ] A 10-round reload into an 8-round gun loads 8 and the notification names the mismatch; the stock drops by one.
+- [ ] Loose rounds unchanged: 42 rounds into a 7-round gun → 7 loaded, 35 left.
+- [ ] Storage: a stack of 6 reloads asks how many to store; storing 2 leaves 4 out and 2 in storage.
+- [ ] Import the troll fixture (`tests/fixtures/troll-export.json`): *10-Rnd Clip (Explosive)* arrives as **2 reloads of 10**, Explosive, `c`, and loads the Ares Thunderer.
+- [ ] Migration: an ammunition item named *7-round cy reload ×6* with 0 rounds, on an actor with a `7(cy)` gun, becomes 6 reloads of 7, `cy`, after `game.sr3e.SR3EMigrations.force()`.
 
 **Loading-mechanism filter:** a clip-fed gun (`(c)`) only offers clip-mechanism ammo on reload. **In:** gun `15(c)`, stockpiles of clip-APDS and belt-FMJ → only clip-APDS is offered.
 

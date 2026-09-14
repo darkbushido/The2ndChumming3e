@@ -1,6 +1,7 @@
 import { SR3E, getSpecializationsForSkill, skillTypeForCategory } from '../config.js';
 import { CHARGEN_SPEC_GAP } from '../data/skill-rules.mjs';
 import { itemRating, vcrLevel } from '../data/item-rating.mjs';
+import { AmmoStock } from '../data/ammo-stock.mjs';
 
 /**
  * SR3EActorSheet — V2 Application framework (Foundry v13+).
@@ -1589,10 +1590,15 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    * magazine — they are never reloaded here; weapons draw from them.
    */
   _ammoStockCell(a) {
-    const rounds  = a.system.rounds ?? 0;
+    // Loose rounds show a number; a stock of clips / speed-loaders shows "6 reloads" (TODO 114).
+    const stock   = AmmoStock.stock(a.system);
     const trackOn = game.settings.get('The2ndChumming3e', 'trackAmmo');
-    const color   = (trackOn && rounds === 0) ? 'var(--sr-red)' : 'var(--sr-text)';
-    return `<span style="color:${color}">${rounds}</span>`;
+    const color   = (trackOn && stock.count === 0) ? 'var(--sr-red)' : 'var(--sr-text)';
+    const text    = stock.unit === 'reloads' ? AmmoStock.describe(a.system) : String(stock.count);
+    const title   = stock.unit === 'reloads'
+      ? `Pre-filled reloads — each reload uses one${stock.perReload ? ` and loads ${stock.perReload} rounds` : ' and fills the magazine'}`
+      : 'Loose rounds — a reload takes a magazine-full';
+    return `<span style="color:${color}" title="${title}">${text}</span>`;
   }
 
   /** "Ammo" column for a firearm row — the capacity string (e.g. "60(c)"). */
@@ -3473,7 +3479,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   /**
    * Put an item into storage or take it out — the whole thing, or part of a stack · TODO 113.
    *
-   * ⚠ A stack (gear/thrown/projectile `quantity`, ammunition `rounds`) of more than one asks
+   * ⚠ A stack (gear/thrown/projectile `quantity`, ammunition `rounds` or `reloads`) of more than one asks
    * HOW MANY. Moving part of it splits the stack; landing on an identical stack already on the
    * other side (`SR3EActor.stackKey`) merges into it instead of duplicating. Reported in play:
    * 10 stim patches in storage and no way to take out two. The arithmetic is the pure

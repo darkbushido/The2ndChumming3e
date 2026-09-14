@@ -29,8 +29,35 @@ const ITEM  = { module: '../scripts/documents/SR3EItem.js',  klass: 'SR3EItem'  
 const MIJI  = { module: '../scripts/SR3EMIJI.js',            klass: 'SR3EMIJI'  };
 const HEAL  = { module: '../scripts/SR3EHealing.js',         klass: 'SR3EHealing' };
 const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating' };
+const AMMO   = { module: '../scripts/data/ammo-stock.mjs',   klass: 'AmmoStock' };
 
 export const MUTANTS = [
+  {
+    id:     'reload-docks-rounds-for-reloads',
+    suite:  'ammo-stock',
+    ...AMMO, method: 'reloadPlan',
+    was:    'every stock counted in rounds — a "7-round cy reload ×6" wanted 42 rounds and docked 7 '
+          + 'per reload (TODO 114, reported in play)',
+    impl:   (sys, magSize) => { const have = Number(sys?.rounds) || 0; const loaded = Math.min(magSize, have);
+      return { unit: 'rounds', field: 'rounds', loaded, remaining: have - loaded, short: loaded < magSize, mismatch: false }; },
+  },
+  {
+    id:     'reload-keeps-partial-clip',
+    suite:  'ammo-stock',
+    ...AMMO, method: 'reloadPlan',
+    needsOriginal: '_reloadPlan',
+    was:    'a reload bigger than the magazine left the clip in stock, so an 8-round gun could draw '
+          + 'from one 10-round clip for ever',
+    impl:   function (sys, magSize) { const p = this._reloadPlan(sys, magSize);
+      return p.mismatch && sys.roundsPerReload > magSize ? { ...p, remaining: p.remaining + 1 } : p; },
+  },
+  {
+    id:     'ammo-name-no-type',
+    suite:  'ammo-stock',
+    ...AMMO, method: 'typeFromLabel',
+    was:    'the importer\'s old behaviour — an Explosive clip arrived as Regular',
+    impl:   () => null,
+  },
   {
     id:     'complementary-capped',
     suite:  'ew-skill',

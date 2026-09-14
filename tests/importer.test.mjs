@@ -22,7 +22,8 @@ installGlobals();
 const { SR3E } = await import('../scripts/config.js');
 installGame({ sr3e: { SR3E } });
 const { SR3EActor } = await import('../scripts/documents/SR3EActor.js');
-globalThis.game.sr3e = { ...(globalThis.game.sr3e ?? {}), SR3E, SR3EActor };
+const { AmmoStock } = await import('../scripts/data/ammo-stock.mjs');
+globalThis.game.sr3e = { ...(globalThis.game.sr3e ?? {}), SR3E, SR3EActor, AmmoStock };
 globalThis.game.user = { isGM: true };
 
 export const name = 'importer';
@@ -102,6 +103,15 @@ export async function run(t) {
   t.is('a Medkit [6] whose Rating is "-" takes 6 from its name', g('Medkit [6]')?.rating, 6);
   t.is('a numeric Rating is used as-is', g('Medkit Rating 4')?.rating, 4);
   t.is('no rating anywhere: 0', g('Wrist Phone')?.rating, 0);
+
+  /* ── Pre-filled clips are counted in reloads — TODO 114 ───────────────────────────── */
+  const ex = r.embedded.find(i => i.type === 'ammunition' && /Explosive/.test(i.name));
+  t.is('the troll\'s "10-Rnd Clip (Explosive)" ×2 is counted in reloads', ex?.system.countedIn, 'reloads');
+  t.is('…2 of them (it used to arrive with 0 rounds, unloadable)', ex?.system.reloads, 2);
+  t.is('…10 rounds each', ex?.system.roundsPerReload, 10);
+  t.is('…Explosive, not Regular', ex?.system.ammoType, 'explosive');
+  t.is('…clip-fed, from the Ares Thunderer\'s 10(c)', ex?.system.loadMechanism, 'c');
+  t.is('…and the count is not also in the name', ex?.name, '10-Rnd Clip (Explosive)');
 
   /* ── Graded cyberware is graded once — TODO 101 ───────────────────────────────────── */
   const gun = r.embedded.find(i => i.type === 'cyberware');

@@ -196,8 +196,11 @@ function _gearRating(g) {
   return m ? Number(m[1]) : 0;
 }
 
-function _gearItems(gear) {
+function _gearItems(gear, weapons = []) {
   const items = [];
+  // Every magazine the character's guns take ("10(c)/10(c)") — to tell a clip which gun it fits.
+  const gunCapacities = [...(gear ?? []).filter(g => _str(g.Type) === 'Firearms'), ...(weapons ?? [])]
+    .map(g => _str(g.Ammunition)).filter(Boolean);
   for (const g of gear ?? []) {
     const qty      = Math.max(1, _int(g.Amount, 1));
     const type     = _str(g.Type);
@@ -244,10 +247,17 @@ function _gearItems(gear) {
       });
 
     } else if (type === 'Ammunition') {
+      // "10-Rnd Clip (Explosive)", Amount 2 — two pre-filled clips (TODO 114). Counted in
+      // RELOADS, typed from the name, and fed by whichever gun the character owns that takes a
+      // 10-round reload. Anything else (a box of rounds) keeps the old shape, and its rounds.
+      const reload = game.sr3e?.AmmoStock?.fromName(g.Name) ?? null;
+      const mech   = reload ? game.sr3e.AmmoStock.mechanismFor(reload.roundsPerReload, gunCapacities) : null;
       items.push({
-        name: qty > 1 ? `${g.Name} ×${qty}` : g.Name,
+        name: reload || qty <= 1 ? g.Name : `${g.Name} ×${qty}`,
         type: 'ammunition',
         system: {
+          ...(reload ? { countedIn: 'reloads', reloads: qty, roundsPerReload: reload.roundsPerReload,
+                         ammoType: reload.ammoType ?? 'regular', ...(mech ? { loadMechanism: mech } : {}) } : {}),
           concealability: _str(g.Concealability),
           damage:         _str(g.Damage),
           weight:         _num(g.Weight) * qty,
@@ -564,7 +574,7 @@ if (!actor) return void ui.notifications.error('SR3 Import — failed to create 
 const items = [];
 
 for (const s of cj.skills   ?? []) items.push(_skillItem(s));
-items.push(..._gearItems(cj.gear));
+items.push(..._gearItems(cj.gear, cj.weapons));
 items.push(..._weaponItems(cj.weapons));
 for (const sp of cj.spells  ?? []) items.push(_spellItem(sp));
 for (const c of cj.contacts ?? []) items.push(_contactItem(c));

@@ -1,6 +1,7 @@
 import { SR3EItem } from './SR3EItem.js';
 import { parseMods } from '../SR3EMods.js';
 import { itemRating, vcrLevel as vcrLevelOf } from '../data/item-rating.mjs';
+import { AmmoStock } from '../data/ammo-stock.mjs';
 
 export class SR3EActor extends Actor {
 
@@ -6375,10 +6376,11 @@ _prepareCharacter(sys, attr) {
 
   /**
    * The field that counts a stack, or `null` for an item that is not a stack.
-   * Gear, thrown weapons and projectiles count in `quantity`; ammunition's stockpile in `rounds`.
+   * Gear, thrown weapons and projectiles count in `quantity`; ammunition's stockpile in `rounds`,
+   * or in `reloads` when it is a stock of clips / speed-loaders (TODO 114).
    */
   static stackField(item) {
-    if (item?.type === 'ammunition') return 'rounds';
+    if (item?.type === 'ammunition') return AmmoStock.stock(item.system).field;
     return Number.isFinite(Number(item?.system?.quantity)) && item?.system?.quantity !== null
       && item?.system?.quantity !== undefined ? 'quantity' : null;
   }

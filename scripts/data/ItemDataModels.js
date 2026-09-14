@@ -140,6 +140,12 @@ export class AmmunitionData extends foundry.abstract.TypeDataModel {
       ammoType:       new StringField({ initial: 'regular' }),
       loadMechanism:  new StringField({ initial: 'c' }),
       rounds:         new NumberField({ integer: true, initial: 0, min: 0 }),  // stockpile total owned
+      // TODO 114 — a stock of pre-filled clips / speed-loaders / cylinders is counted in RELOADS,
+      // not rounds: `reloads` of them, each holding `roundsPerReload` (0 = fills the gun).
+      // Rules in scripts/data/ammo-stock.mjs.
+      countedIn:      new StringField({ initial: 'rounds', choices: ['rounds', 'reloads'] }),
+      reloads:        new NumberField({ integer: true, initial: 0, min: 0 }),
+      roundsPerReload: new NumberField({ integer: true, initial: 0, min: 0 }),
       weight:         new NumberField({ initial: 0, min: 0 }),
       availability:   new StringField({ initial: '' }),
       cost:           new NumberField({ integer: true, initial: 0, min: 0 }),

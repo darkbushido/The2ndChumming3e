@@ -29,6 +29,7 @@ import { SRCG_BONUSES } from './data/srcg-bonuses.js';
 import { expandCyberwareName } from './data/cyberware-names.js';
 import { parseJohnsonNotes, isJohnsonNote } from './data/johnson-notes.mjs';
 import { ratingFromName } from './data/item-rating.mjs';
+import { AmmoStock } from './data/ammo-stock.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -337,6 +338,36 @@ const MIGRATIONS = [
       const r = ratingFromName(item.name);
       if (!r) return null;
       return { 'system.rating': item.type === 'medical' ? String(r) : r };
+    },
+  },
+  {
+    version: '0.5.2',
+    label: 'Pre-filled clips and reloads counted in reloads, not rounds (TODO 114, reported in play)',
+    /**
+     * A "7-round cy reload ×6" or an imported "10-Rnd Clip (Explosive) ×2" was counted in
+     * ROUNDS — and the importer never set any, so it sat at 0 and could not be loaded at all.
+     *
+     * A fixer, but a FILL-BLANKS one: it acts only on ammunition whose stock is EMPTY in both
+     * units (`rounds` 0 and `reloads` 0) and whose name says it is a reload. A GM who typed a
+     * stock of 42 rounds keeps it, counted as before. `ammoType` is set only from its schema
+     * default, Regular — an Explosive clip stored as Regular is not a choice anyone made — and
+     * `loadMechanism` only from its default `c`, when exactly one of the character's guns takes
+     * a reload of that size. The name keeps its "×6"; renaming is the GM's call.
+     */
+    fixItem: (item) => {
+      if (item.type !== 'ammunition') return null;
+      const sys = item.system ?? {};
+      if (sys.countedIn === 'reloads' || Number(sys.rounds) > 0 || Number(sys.reloads) > 0) return null;
+      const r = AmmoStock.fromName(item.name);
+      if (!r) return null;
+      const delta = { 'system.countedIn': 'reloads', 'system.reloads': r.reloads ?? 1, 'system.roundsPerReload': r.roundsPerReload };
+      if (r.ammoType && r.ammoType !== 'regular' && (sys.ammoType ?? 'regular') === 'regular') delta['system.ammoType'] = r.ammoType;
+      if ((sys.loadMechanism ?? 'c') === 'c') {
+        const caps = [...(item.parent?.items ?? [])].filter(i => i.type === 'firearm').map(i => i.system?.ammunition);
+        const mech = AmmoStock.mechanismFor(r.roundsPerReload, caps);
+        if (mech && mech !== 'c') delta['system.loadMechanism'] = mech;
+      }
+      return delta;
     },
   },
 
