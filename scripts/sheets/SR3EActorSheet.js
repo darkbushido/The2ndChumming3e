@@ -916,7 +916,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       <!-- Reaction (derived: floor((QUI+INT)/2) + bonus) -->
       <div class="attr-block attr-special"
            title="${_title(SA.attributeBreakdown({ label: 'Reaction', total: rea, base: reactionBase,
-             baseLabel: `(Quickness ${qui} + Intelligence ${intl}) ÷ 2 =`,
+             baseLabel: `(Quickness ${d.reactionInputs?.quickness ?? qui} + Intelligence ${d.reactionInputs?.intelligence ?? intl}) ÷ 2 =`,
              sources: [...(reactionBonus ? [{ label: 'Manual bonus (drugs, etc.)', amount: reactionBonus, kind: '' }] : []),
                        ...(d.attributeSources?.reaction ?? [])] }))}">
         <span class="attr-label" style="color:var(--sr-amber)">Reaction</span>

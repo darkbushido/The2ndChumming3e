@@ -2066,6 +2066,7 @@ _prepareCharacter(sys, attr) {
   }
 
   // Reaction — derived from force-enhanced QUI + INT per RAW, minimum 1
+  let reactionInputs = null;
   if (attr.reaction) {
     /* ⚠ Move-by-wire's Quickness is excluded here and ONLY here · M&M p.60 — "The Quickness
      * bonus does not count when calculating the character's Reaction Attribute." It still
@@ -2076,6 +2077,10 @@ _prepareCharacter(sys, attr) {
       (quiForReaction + (attr.intelligence?.value ?? 0)) / 2
     ));
     attr.reaction.base = baseReaction;
+    // The numbers actually used, for the sheet's hover (TODO 100). They are NOT the attributes'
+    // final values: move-by-wire's Quickness is excluded above, and a running Adrenal Pump or Pain
+    // Editor lands after this line — the sheet printed the final values and did not add up.
+    reactionInputs = { quickness: quiForReaction, intelligence: attr.intelligence?.value ?? 0 };
 
     if (!attr.reaction.override) {
       attr.reaction.value = Math.max(1, baseReaction
@@ -2287,6 +2292,7 @@ _prepareCharacter(sys, attr) {
     racialBonus,
     // Every attribute modifier by source — the sheet's hover explanations (TODO 100).
     attributeSources,
+    reactionInputs,
     /* Powers whose level exceeds the adept's Magic · SR3 p.168 (TODO 65).
      *
      * > "An adept cannot have more levels in a power than the adept's Magic Attribute."

@@ -86,6 +86,18 @@ export async function run(t) {
   t.ok('…and the dropped one is named', dice.some(x => !x.amount && /p\.169/.test(x.note ?? '')));
   t.is('wired reflexes alone: its dice are named', derive([wired]).d.attributeSources.initiativeDice[0]?.label, 'Wired Reflexes [2]');
 
+  /* ── Reaction's hover shows the numbers Reaction was built from ─────────────────── */
+  // Found live 2026-09-14: the sheet printed the FINAL Quickness 7 and Intelligence 3 above a base
+  // of 4 — Muscle Replacement's Quickness skips Reaction, and the pump and Pain Editor land after it.
+  const mr = { id: 'mr', type: 'cyberware', name: 'Muscle Replac. [2]', system: { bonusQui: 2, bonusStr: 2 } };
+  const busy = derive([mr, pump, editor], { augmentations: { pump: { turns: 3 }, ed: { active: true } } });
+  const ri = busy.d.reactionInputs;
+  t.is('Reaction was built from Quickness 4 (the implant\'s +2 excluded, the pump\'s +1 not yet on)', ri?.quickness, 4);
+  t.is('…and Intelligence 4 (the Pain Editor\'s −1 not yet on)', ri?.intelligence, 4);
+  t.is('…so the hover adds up to the base', Math.max(1, Math.floor((ri.quickness + ri.intelligence) / 2)), busy.attr.reaction.base);
+  t.ok('…while the final values differ — which is why they are recorded', busy.attr.quickness.value !== ri.quickness && busy.attr.intelligence.value !== ri.intelligence);
+  t.ok('the sheet reads the recorded inputs', /d\.reactionInputs\?\.quickness/.test(readFileSync(new URL('../scripts/sheets/SR3EActorSheet.js', import.meta.url), 'utf8')));
+
   /* ── The invariant: base + sources = value ──────────────────────────────────────── */
   for (const [what, r] of [['cyber + bio', a], ['adept', ad], ['troll', troll], ['pump + editor', run2], ['boost', boosted]]) {
     for (const k of CORE) {
