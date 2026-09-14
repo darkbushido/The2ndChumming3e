@@ -1305,6 +1305,14 @@ export const MUTANTS = [
     impl:   (attr, key = 'willpower') => attr?.[key]?.base ?? attr?.[key]?.value ?? 1,
   },
   {
+    id:     'grenade-throw-ignores-wounds',
+    suite:  'aoe-throw-tn',
+    ...ITEM, method: 'throwPreTN',
+    was:    'SR3 p.126 — wound modifiers apply to every test. The grenade dialog built its TN from 4 + '
+          + 'range while the throw skipped rollPool\'s wound modifier, so wounds never reached a throw',
+    impl:   ({ armorQTN = 0 } = {}) => ({ mod: Math.max(0, Number(armorQTN) || 0), parts: [] }),
+  },
+  {
     id:     'next-step-before-the-explosions',
     suite:  'interactive-explosions',
     ...ACTOR, method: 'rollThen',

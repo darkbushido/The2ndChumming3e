@@ -763,6 +763,17 @@ Needs a scene with tokens. Flow: **nominate** the blast point (drag the template
 - Per-target power = base damage − distance from the (scattered) epicentre. Damage is **not** staged up by successes.
 - **Confined Space (Chunky Salsa):** tick the box → after the throw + scatter, the Chunky Salsa GUI opens seeded with whoever was caught; draw walls / drag positions → it returns each target's code into the soak cards.
 
+### The thrower's wounds — FIXED 2026-09-14 (0.5.2)
+The throw rolls with `skipWoundMod` (the single-target path's convention: the roll-options TN
+already holds the wound), but the grenade dialog built its TN as 4 + range alone, so a wounded
+thrower never paid the wound modifier (SR3 p.126). Layered armour (p.285) was missing the same way.
+`SR3EItem.throwPreTN` now feeds the dialog; `tests/aoe-throw-tn.test.mjs` + the
+`grenade-throw-ignores-wounds` mutant.
+**Walked by the agent 2026-09-14** (mcp-api, the dialog opened directly — the pane draws no canvas):
+a Moderate wound at 12 m starts at **TN 6** (4 + 2, Short), says *"Wound +2 (pre-applied)"*, and keeps
+the +2 when the grenade type changes.
+- [ ] A real throw on a drawn canvas by a wounded character: the dialog's TN includes the wound, and the throw card rolls at that TN (not +2 again).
+
 ### Blast power at distance - passed
 `Power at target = weapon power − distance in metres` (from the scattered epicentre).
 
