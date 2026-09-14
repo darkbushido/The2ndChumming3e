@@ -38,7 +38,7 @@ rule.
 
 | Section | Pages |
 | :--- | :--- |
-| **Rules** | [Actions & Combat](rules/combat/) · [Grenades](rules/grenades/) · [Healing](rules/healing/) |
+| **Rules** | [Actions & Combat](rules/combat/) · [Reloading](rules/reloading/) · [Grenades](rules/grenades/) · [Healing](rules/healing/) |
 | **Magic** | [Primer for the Awakened](magic/awakened-primer/) |
 | **The Street** | [SINs & the SINless](street/sins/) · [Buying Gear & Fencing](street/gear-and-fencing/) · [Cyberware Grades & Used Chrome](street/cyberware-grades/) |
 | **Hiring** | [What the Books Say](hiring/) · [Decker](hiring/decker/) · [Rigger](hiring/rigger/) · [Combat Mage](hiring/combat-mage/) · [Shaman](hiring/shaman/) · [Physical Adept](hiring/physical-adept/) · [Street Samurai](hiring/street-samurai/) · [Face](hiring/face/) · [Infiltrator](hiring/infiltrator/) |
