@@ -309,8 +309,14 @@ export class SR3EItem extends Item {
     const atkRaw     = khDeclared ? SR3EItem.killingHandsDamage(rawDamage, khDeclared) : rawDamage;
     const atkDamage  = khDeclared ? SR3EItem.parseDamageCode(atkRaw, actor) : damageBase;
 
-    const baseAtkTN = Math.max(2, 4 + (atkInfo.defaultTnMod ?? 0) + (calledShot.tnMod ?? 0));
-    const baseDefTN = Math.max(2, 4 + (defInfo.defaultTnMod ?? 0));
+    // Each fighter's OWN wounds raise their own TN — the Melee Modifiers Table's "Character is
+    // wounded" row (p.123). The card rolls through `_rollWave`, so nothing else adds them (F3).
+    const atkWound  = game.sr3e.SR3EActor.woundTN(actor);
+    const defWound  = game.sr3e.SR3EActor.woundTN(targetActor);
+    const baseAtkTN = Math.max(2, 4 + (atkInfo.defaultTnMod ?? 0) + (calledShot.tnMod ?? 0) + atkWound);
+    const baseDefTN = Math.max(2, 4 + (defInfo.defaultTnMod ?? 0) + defWound);
+    const woundNote = [atkWound && `${actor.name} wounded +${atkWound}`, defWound && `${targetActor.name} wounded +${defWound}`]
+      .filter(Boolean).join(' · ');
 
     // Default election: the holder takes the bonus themselves.
     const dfltAtkTN = Math.max(2, baseAtkTN - (reachHolder === 'attacker' ? reachDiff : 0));
@@ -337,9 +343,8 @@ export class SR3EItem extends Item {
       defVisionData: defVis,
       baseAtkTN:  dfltAtkTN,
       baseDefTN:  dfltDefTN,
-      baseNote:   reachHolder
-        ? `Reach ${reachDiff} to ${reachHolder === 'attacker' ? actor.name : targetActor.name}`
-        : null,
+      baseNote:   [reachHolder && `Reach ${reachDiff} to ${reachHolder === 'attacker' ? actor.name : targetActor.name}`, woundNote]
+        .filter(Boolean).join(' · ') || null,
     }, { timeout: 300_000 });
     if (gm === null) return null;
 

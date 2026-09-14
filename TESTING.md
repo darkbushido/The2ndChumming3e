@@ -2120,18 +2120,14 @@ Troll Street Dealer (was five); `sceneFirst` against *Test Map*'s tokens gives i
 Windage; the empty active scene falls back to everyone.
 - [ ] **Needs a drawn canvas** (the agent's pane cannot draw one): with tokens on the viewed scene, open 💥 Chunky Salsa from Rollable Tables → only those actors; Falling Damage / Escape Artist / Barrier Damage the same.
 
-## F3. Melee boxing-card TNs omit the wound modifier — OPEN
+## F3. Melee boxing-card TNs omit the wound modifier — FIXED 2026-09-14 (0.5.2)
 
-`SR3EItem.js` (melee ctx build, ~line 229) pre-fills `atkTN`/`defTN` as
-`max(2, 4 − reach + defaulting (+ called shot))` with **no wound term**, and `handleMeleeRoll`
-rolls via `_rollWave` directly so `rollPool`'s wound fold-in never runs. §6 above says
-TN = `4 − own reach + woundMod`; the ranged path applies it. Astral combat may share the gap.
-
-**Proposed fix:** bake `− (actor.system.woundMod ?? 0)` (woundMod is negative) into both
-pre-filled TNs; fields stay GM-editable.
-
-**Repro:** give the attacker 3 stun boxes (wound mod −2) → melee attack → boxing card TN
-shows **4** (should pre-fill **6**).
+The Melee Modifiers Table (SR3 p.123) has *"Character is wounded — Damage Modifier (see p. 126)"*;
+astral combat *"uses the same rules as Melee Combat"* (p.174). Both boxing cards roll through
+`_rollWave`, which never adds `woundMod` — and `SR3ECombatModifiers.js` said `rollPool` did. Each
+fighter's own wounds now go into their own TN (`SR3EActor.woundTN`), melee and astral, and the GM
+window's note says so. `tests/melee-wounds.test.mjs` + a mutant.
+- [ ] Give the attacker 3 Stun boxes (−2) → melee attack → the GM window and the boxing card start the attacker at **6**, the unhurt defender at 4, and the note reads *"… wounded +2"*. Same from 🌀 astral combat.
 
 ## F4. Melee / cybercombat / contested results ignore explosion waves (TN > 6 only) — OPEN
 

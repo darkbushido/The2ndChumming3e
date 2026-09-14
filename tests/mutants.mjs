@@ -1289,6 +1289,15 @@ export const MUTANTS = [
   },
 
   {
+    id:     'melee-ignores-wounds',
+    suite:  'melee-wounds',
+    ...ACTOR, method: 'woundTN',
+    was:    'SR3 p.123 — "Character is wounded" is a Melee Modifiers Table row. Both boxing cards '
+          + 'roll through _rollWave, which never adds woundMod, so a Serious wound swung at TN 4 (F3)',
+    impl:   () => 0,
+  },
+
+  {
     id:     'dwarf-toxin-resistance-missing',
     suite:  'racial',
     ...ACTOR, method: 'racialSituational',

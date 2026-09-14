@@ -2523,6 +2523,19 @@ _prepareCharacter(sys, attr) {
   }
 
   /**
+   * What a fighter's own wounds add to their melee or astral target number · F3.
+   *
+   * The Melee Modifiers Table (SR3 p.123) has the row *"Character is wounded — Damage Modifier
+   * (see p. 126)"*, and astral combat *"uses the same rules as Melee Combat"* (p.174). `rollPool`
+   * folds `woundMod` into a TN, but both boxing cards roll through `_rollWave`, which takes the TN
+   * as given — so a Serious wound never touched a melee TN. `woundMod` is NEGATIVE (−3 at Serious);
+   * this returns the positive TN increase. Never below 0.
+   */
+  static woundTN(actor) {
+    return Math.max(0, -Math.min(0, Number(actor?.system?.woundMod) || 0));
+  }
+
+  /**
    * Spell Pool before `spellPoolMod` — ⌊(INT + WIL + Magic) ÷ 3⌋, off the EFFECTIVE values · SR3 p.43.
    * The one formula: the derivation, `spendSpellPool` and `rollDispel` each had their own, and the
    * two recomputations read `base`, so a caster whose Magic had dropped could spend Spell Pool dice
@@ -9516,8 +9529,10 @@ _prepareCharacter(sys, attr) {
     if (!await _applyAstralDefault(atkInfo, this, 'attacker'))         return null;
     if (!await _applyAstralDefault(defInfo, targetActor, 'defender'))  return null;
 
-    const atkTN = 4 + (atkInfo.defaultTnMod ?? 0);   // defaulting TN modifier
-    const defTN = 4 + (defInfo.defaultTnMod ?? 0);
+    // Defaulting, plus each fighter's own wounds — astral combat uses the melee rules (p.174), and
+    // the Melee Modifiers Table carries "Character is wounded" (F3).
+    const atkTN = 4 + (atkInfo.defaultTnMod ?? 0) + SR3EActor.woundTN(this);
+    const defTN = 4 + (defInfo.defaultTnMod ?? 0) + SR3EActor.woundTN(targetActor);
 
     await SR3EActor.postAstralCard({
       attackerActorId: this.id,
