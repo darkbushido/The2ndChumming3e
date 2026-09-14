@@ -22,6 +22,9 @@ export async function run(t) {
   t.is('a bare trailing number is a model, not a rating ("Predator 2")', ratingFromName('Predator 2'), null);
   t.is('a bracket must hold only digits ("[Initiate Grade 2]")', ratingFromName('Metamagic [Initiate Grade 2]: Centering'), null);
   t.is('no rating at all', ratingFromName('Medkit'), null);
+  t.is('a range is not a rating ("Rating 4-8" is the GM\'s pick)', ratingFromName('Appropriate Utilities at Rating 4-8'), null);
+  t.is('…nor a two-digit one ("Rating 12-16")', ratingFromName('Utilities at Rating 12-16'), null);
+  t.is('a rating followed by other words still reads', ratingFromName('Radio (Rating 6) w/ scrambler'), 6);
   t.is('an undefined name does not throw', ratingFromName(undefined), null);
 
   /* ── The item's rating ──────────────────────────────────────────────────────────── */
@@ -60,4 +63,35 @@ export async function run(t) {
   t.ok('the gear sheet has a Rating box', /this\._ratingField\(s\)/.test(gearCase));
   t.ok('…and Book / Page', /'bookPage'/.test(gearCase));
   t.ok('cyberware and bioware use the same Rating box', /case 'bioware'[\s\S]{0,2500}this\._ratingField\(s\)/.test(sheet));
+
+  /* ── The packs carry the rating too (tools/patch-name-ratings.mjs) ──────────────── */
+  const { ratingPatch } = await import('../tools/patch-name-ratings.mjs');
+  t.is('the pack patch fills a bracketed cyberware\'s 0', ratingPatch({ type: 'cyberware', name: 'Wired Reflexes [2]', system: { rating: 0 } }), 2);
+  t.is('…keeps a rating someone set', ratingPatch({ type: 'cyberware', name: 'Wired Reflexes [2]', system: { rating: 3 } }), null);
+  t.is('…writes medical as a string', ratingPatch({ type: 'medical', name: 'Trauma Patch [5]', system: { rating: '' } }), '5');
+  t.is('…leaves a range alone', ratingPatch({ type: 'gear', name: 'Utilities at Rating 4-8', system: { rating: 0 } }), null);
+  t.is('…and skips types without a rating', ratingPatch({ type: 'armor', name: 'Helmet [2]', system: {} }), null);
+
+  /* ⚠ Every shipped item with a rating in its name stores it — new content cannot ship the old
+   * way unnoticed. Read from a COPY (tools/lib/pack-copy.mjs); skipped if the packs are locked. */
+  const { ClassicLevel } = await import('classic-level');
+  const { readdirSync } = await import('node:fs');
+  const { join } = await import('node:path');
+  const { copyPacks } = await import('../tools/lib/pack-copy.mjs');
+  const { fileURLToPath } = await import('node:url');
+  const copy = copyPacks(fileURLToPath(new URL('../packs', import.meta.url)));
+  const left = [];
+  let readable = true;
+  try {
+    for (const p of readdirSync(copy.dir)) {
+      const db = new ClassicLevel(join(copy.dir, p), { valueEncoding: 'json' });
+      try { await db.open(); } catch { readable = false; continue; }
+      for await (const [k, d] of db.iterator()) {
+        if (/^!(items|actors\.items)!/.test(k) && ratingPatch(d) !== null) left.push(`${p}: ${d.name}`);
+      }
+      await db.close();
+    }
+  } finally { copy.cleanup(); }
+  if (readable) t.is(`no shipped item keeps its rating only in its name${left.length ? ` — ${left.slice(0, 5).join('; ')}` : ''}`, left.length, 0);
+  else t.ok('pack sweep SKIPPED — could not open the packs', true);
 }

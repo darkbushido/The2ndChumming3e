@@ -192,7 +192,7 @@ function _gearRating(g) {
   const r = parseInt(_str(g.Rating), 10);
   if (Number.isFinite(r) && r > 0) return r;
   const s = _str(g.Name);
-  const m = /\[\s*(\d+)\s*\]/.exec(s) ?? /\brating\s*\[?\s*(\d+)/i.exec(s);
+  const m = /\[\s*(\d+)\s*\]/.exec(s) ?? /\brating\s*\[?\s*(\d+)\b(?!\s*[-–]\s*\d)/i.exec(s);
   return m ? Number(m[1]) : 0;
 }
 

@@ -182,6 +182,13 @@ export const MUTANTS = [
     impl:   name => { const m = /\[(\d+)\]|\b(\d+)\s*$/.exec(String(name ?? '')); return m ? Number(m[1] ?? m[2]) : null; },
   },
   {
+    id:     'rating-range-reads-low',
+    suite:  'item-rating',
+    ...RATING, method: 'ratingFromName',
+    was:    'a range read as its low end — a contact\'s "Utilities at Rating 4-8" became Rating 4',
+    impl:   name => { const s = String(name ?? ''); const m = /\[\s*(\d+)\s*\]/.exec(s) ?? /\brating\s*\[?\s*(\d+)/i.exec(s); return m ? Number(m[1]) : null; },
+  },
+  {
     id:     'healing-ignores-rapid-healing',
     suite:  'healing',
     ...HEAL, method: 'healingSituationDice',

@@ -1409,8 +1409,9 @@ Test, at seven read sites (`tests/item-rating.test.mjs` now checks none read the
 ⚠ **A bare trailing number is not a rating** — "Predator 2" is a model; a bracket must hold only
 digits — "[Initiate Grade 2]" is a note.
 ⚠ The item sheet's Rating box is **blank with the name's rating as its placeholder** until someone
-types one; migration 0.5.2 copies name ratings into blank fields in each world. The packs still
-store 0 (every reader copes).
+types one; migration 0.5.2 copies name ratings into blank fields in each world, and
+`tools/patch-name-ratings.mjs` did the same to the shipped packs (623 items; a test sweeps them so
+new content cannot regress). ⚠ **A range is not a rating** — "Rating 4-8" reads as none.
 
 ### Cyberware grades  · *M&M p.45* — TODO 86
 

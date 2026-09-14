@@ -7711,9 +7711,13 @@ Tests: `tests/item-rating.test.mjs`, healing (best kit, storage, a GM-edited rat
 and without Biotech), importer, migrations; mutants `rating-stored-field-only`, `rating-name-first`,
 `rating-trailing-number`, `medkit-first-not-best`. Live-checked in the test world 2026-09-13.
 
-**Not done:** the packs themselves still store 0 — every reader copes, and each world fills its own
-copies by migration. Patching the packs (Foundry closed, twice) would make the compendium sheets
-show the number too.
+**The packs too (2026-09-13):** `tools/patch-name-ratings.mjs` filled `system.rating` from the name
+on **623** shipped items (537 cyberware, 72 bioware, 14 gear on the contacts) in 12 packs — repo and
+install, verified that `system.rating` is the only field that changed — so compendium sheets show
+the number. It shares `ratingFromName` with the migration. Found doing it: *"Appropriate Utilities
+at Rating 4-8"* read as Rating 4 — a range is not a rating, and `ratingFromName` (and the importer's
+copy) now reject one. `tests/item-rating.test.mjs` sweeps the packs so new content cannot ship with
+its rating only in the name; mutant `rating-range-reads-low`.
 
 <a id="119"></a>
 
