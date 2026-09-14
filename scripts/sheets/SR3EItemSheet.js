@@ -770,8 +770,10 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
 
       case 'gear':
         return `<div class="form-grid">
+          ${this._f('Category', 'category', s.category, 'text', 'placeholder="Surveillance and Security"')}
           ${this._ratingField(s)}
           ${this._f('Quantity', 'quantity', s.quantity, 'number', 'min="0"')}
+          ${this._f('Concealability', 'concealability', s.concealability)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
           ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
           ${this._f('Availability', 'availability', s.availability)}

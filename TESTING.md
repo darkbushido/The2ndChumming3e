@@ -413,6 +413,23 @@ Data-model change (gear's `rating` is nullable): **full Foundry restart** first.
 
 ---
 
+## Default-book gear — TODO 91/92, branch `feature/default-books-gear` — needs a live pass
+
+First, **with Foundry closed**: `node tools/build-default-gear.mjs --install` (writes the install's
+packs and `system.json`), then `npm run packs:check`. New packs and a data-model change (gear
+`category` / `concealability`) → **full restart**.
+- [ ] The Compendium sidebar shows *Weapons & Gear → Gear / Ammunition / Medical* folders, one pack per book, labelled with the book's name.
+- [ ] Configure Source Books → untick Cannon Companion → `sr3e-cc-gear` and `sr3e-cc-ammunition` disappear; re-tick → back.
+- [ ] Drag *Medkit* (Shadowrun 3rd → Medical) onto a character → the 🩹 Healing flow finds it.
+- [ ] Drag *15-Rnd Clip (APDS)* onto a character with an Ares Predator, tracking on → ↻ Reload offers it as one reload of 15, and the gun loads 15 APDS.
+- [ ] Drag *APDS Rnds* → it is 10 rounds at 70¥; reloading a break-action or internal-magazine gun from it tops up round by round.
+- [ ] Drag *Arrows* onto a bow-user → ↻ Reload on the bow nocks one.
+- [ ] Open *Gyro Mount* (SR3 gear) → two entries, reading *Gyro Mount [5]* and *[6]*; the sheet shows Category *Firearms Accessories*, the Rating field filled.
+- [ ] Open *ACTH* (Man & Machine drugs) → one item carrying tolerance **and** vector, with *Also listed* in its notes.
+- [ ] Nothing already shipped was duplicated — search *Armor Jacket* in Shadowrun 3rd: one result.
+
+---
+
 ## Dialog wiring — TODO 20 (0.5.2) — needs a live pass
 
 Eighteen dialogs moved from the global `renderDialogV2` hook to their own `render` option. For

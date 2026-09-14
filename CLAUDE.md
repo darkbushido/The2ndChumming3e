@@ -463,7 +463,7 @@ sr3e/
 ├── system.json                       ← Foundry manifest + documentTypes declaration
 ├── lang/en.json                      ← Localisation strings
 ├── styles/sr3e.css                   ← All styles, CSS custom properties
-├── packs/                            ← 82 compendium packs, `sr3e-<book>-<type>` (see Source books)
+├── packs/                            ← 102 compendium packs, `sr3e-<book>-<type>` (see Source books)
 ├── archive/non-sr3-content/          ← 1,703 documents split out of the packs, held for future modules
 │   ├── README.md                     ← ⚠ STALE — predates the SR2 restore; see Source books
 │   └── sr3e-<pack>.json              ← one file per ORIGINAL pack: [{ _key, bucket, doc }]
@@ -529,7 +529,7 @@ Compendium content is **one pack per source book**, named `sr3e-<book>-<type>`
 as `flags.The2ndChumming3e.book`; packs **without** that flag are system content
 (exactly three: `sr3e-skills`, `sr3e-example-characters`, `sr3e-mr-johnsons-contacts`).
 
-**82 packs, 20 books, 3 system packs.** This layout is **Shadowfork's** — `main` still carries
+**102 packs, 20 books, 3 system packs** (82 until the default-book gear, 2026-09-14). This layout is **Shadowfork's** — `main` still carries
 the old monolithic packs (27 of them: one `sr3e-cyberware`, one `sr3e-firearms`, …) with no
 book flags and no `archive/`. Don't assume a pack name from `main` exists here.
 
@@ -545,14 +545,34 @@ lines up. They are *not* from that repo's `Books.json`, which holds only
 | | Codes |
 |---|---|
 | SR2, on by default | `sr2` (core) `ct` `ssc` `st` `fof` `pna` |
-| SR3, on by default | `sr3` (core) `cc` `mm` `mits` `r3` `sota` `sota2` `tal` `twl` `matrix-defragged` |
-| Off by default | `fra` `ger` `ssg` `tss` (tss is a fan publication) |
+| SR3, on by default | `sr3` (core) `cc` `mm` `mits` `r3` `matrix-defragged` |
+| Off by default | `sota` `sota2` `tal` `twl` `fra` `ger` `ssg` `tss` (tss is a fan publication) |
+
+⚠ **This table said `sota` `sota2` `tal` `twl` were on by default until 2026-09-14.** `config.js`
+has them **off**; `tests/default-gear.test.mjs` now pins the default-on set against `SOURCE_BOOKS`.
+
+### Default-book gear — `tools/build-default-gear.mjs` (TODO 91/92)
+
+**2,926 gear / ammunition / medical / drug / armour documents in 25 packs** (20 of them new:
+`sr3e-<book>-gear` · `-ammunition` · `-medical`, plus `sr3e-sr2-drugs`, `sr3e-sr3-drugs`,
+`sr3e-ssc-armor`), **generated** from the vendored generator data in `rawdata/SRCG-*-Gear.json` for
+every default-on book. Full account: `audit/default-books-gear-audit.md`.
+
+- **Generated, so never hand-edit a document flagged `generatedBy: build-default-gear`** —
+  `tests/default-gear.test.mjs` rebuilds the plan and fails on any document that differs. Change the
+  builder (or the vendored data) and re-run it, repo then `--install`.
+- It **skips a name the book already ships** under any gear-like type, so the hand-built armour and
+  drug packs keep their data; re-running replaces only its own documents (derived ids).
+- ⚠ **Upstream prices loose ammunition per ROUND**; the book's table is *"Ammunition, Per 10
+  Shots"* (SR3 p.281). A `… Rnds` row becomes a box of 10 at the per-10 price.
+- ⚠ **Weapons, cyberware, bioware and vehicles are out of scope** (the maintainer) — arrows and bolts
+  are in, as ammunition.
 
 Packs per book, as declared in `system.json`:
 
-`sr3` 11 · `tss` 9 · `sota2` 7 · `sr2` 7 · `mm` 6 · `cc` 5 · `twl` 5 · `matrix-defragged` 5 ·
-`fra` 4 · `r3` 4 · `sota` 3 · `ct` 2 · `fof` 2 · `mits` 2 · `st` 2 · `ger` 1 · `pna` 1 ·
-`ssc` 1 · `ssg` 1 · `tal` 1
+`sr3` 15 · `sr2` 11 · `mm` 9 · `tss` 9 · `cc` 7 · `sota2` 7 · `matrix-defragged` 5 · `twl` 5 ·
+`fof` 4 · `fra` 4 · `r3` 4 · `ssc` 4 · `mits` 3 · `sota` 3 · `st` 3 · `ct` 2 · `ger` 1 ·
+`pna` 1 · `ssg` 1 · `tal` 1
 
 ### The book split and the archive
 
