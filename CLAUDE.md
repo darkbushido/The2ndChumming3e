@@ -51,9 +51,11 @@ npm run test:e2e        # Playwright, two real clients (Foundry running)
   number it by the release it will ship in under these rules.
 - Never `git push` unless asked — the maintainer publishes.
 - **Every version bump, before the release: check the code's rules against *sr3-guides***
-  (`C:\Users\lance\Documents\sr3-guides`, the maintainer's rules reference site) — TODO 121. A
-  divergence becomes a bug fix before the release goes out. The first run waits until the 0.6
-  branches are merged to `main`.
+  (`C:\Users\lance\Documents\sr3-guides`, the maintainer's rules reference site) — TODO 121.
+  ⚠ **The PDFs are the source, not the guide and not the code.** Every difference is verified
+  against the PDF (quoted, with its printed page) and/or brought to the maintainer — never settled
+  by picking a side. A verified code divergence becomes a bug fix before the release goes out. The
+  first run waits until the 0.6 branches are merged to `main`.
 - **Going forward only.** The commits already on `main` for 0.5.2 (healing cards, cross-player
   healing with its time boxes, gear ratings) predate these rules and ship as they are — do not
   split or renumber them.

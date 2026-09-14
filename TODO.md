@@ -7817,12 +7817,21 @@ the Gemini gists it began from, `{: .house }` boxes mark house rules (not in any
 **The check, each release:**
 1. For each guide page, list its cited rules (a rule + *(BOOK p.N)*), skipping `.house` boxes.
 2. Find where the system implements each — CLAUDE.md's section, the pure function, its test.
-3. Compare. Three outcomes: **agree** · **the code diverges** (a bug, or a 🔴 DIVERGES FROM RAW
-   marker if deliberate) · **the guide and the code cite different pages or readings** (settle
-   against the PDF, then fix whichever is wrong — the guide is a second reading, not the authority).
-4. Record the run: date, version, guide commit, one line per rule, in `audit/guides-crosscheck.md`
-   (created by the first run), so the next run diffs against it and only re-reads what changed.
-5. A divergence becomes a TODO (bug on `main`) before the release goes out.
+3. Compare. **Agree** → record it and move on. **Any difference at all** — the code and the guide
+   disagree on a number, a reading, a page, or one covers something the other does not — is
+   **never settled by picking a side**.
+4. ⚠ **The PDFs are the source** (the maintainer, 2026-09-14). Neither the code nor the guide is the
+   authority; the book is (`C:\Users\lance\Documents\Shadowrun 3rd Edition PDFs`, real text layer).
+   Every difference is **verified against the PDF** — quote the book's sentence and its printed page
+   — and/or **brought to the maintainer**. Report each one as: the rule, what the code does, what
+   the guide says, what the PDF says (quoted, with page), and which side is wrong. Bring it to the
+   maintainer when the PDF does not settle it (ambiguous wording, two passages disagreeing, a book
+   not in the library, a `.house` rule the code implements) — do not decide those alone.
+5. Record the run: date, version, guide commit, one line per rule with its outcome and the PDF
+   quote for every difference, in `audit/guides-crosscheck.md` (created by the first run), so the
+   next run diffs against it and only re-reads what changed.
+6. A verified divergence in the code becomes a TODO (bug on `main`) before the release goes out; one
+   in the guide is reported to the maintainer, whose site it is.
 
 **Make it repeatable:** a `tools/guides-crosscheck.mjs` that extracts the cited rules from the guide
 pages into a checklist (rule text, citation, page, `.house`/`.fixed` excluded) and diffs it against
