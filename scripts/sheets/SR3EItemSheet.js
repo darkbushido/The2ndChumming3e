@@ -11,6 +11,7 @@ import {
 } from '../config.js';
 import { SPIRIT_TYPES } from '../documents/SR3ESpiritSummoning.js';
 import { ratingFromName } from '../data/item-rating.mjs';
+import { BookPage } from '../data/book-page.mjs';
 
 export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
 
@@ -168,7 +169,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this.isEditable && item.type !== 'skill' ? '<button type="button" class="btn-compendium-pick" data-action="pickFromCompendium" title="Fill from compendium">&#128218; Pick from compendium</button>' : ''}
         </header>
         <div class="item-body">
-          ${this._details()}
+          ${this._withBookPage(this._details())}
           ${canRoll ? '<button type="button" class="btn-roll item-roll">Roll</button>' : ''}
         </div>
       </div>`;
@@ -240,6 +241,31 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     </label>`;
   }
 
+  /**
+   * Book / Page — the raw code stays editable (`sr3.304`, several comma-separated), and what it
+   * means is shown beneath it: "SR3 p.304" (TODO 117). One reader, `BookPage.format`.
+   */
+  _bookPageField(s) {
+    const shown = BookPage.format(s.bookPage);
+    const title = 'Book code and page as the generator writes them: sr3.304, mm.64 — several comma-separated';
+    return `<label class="form-field">
+      <span class="field-label">Book / Page</span>
+      <input type="text" name="system.bookPage" value="${s.bookPage ?? ''}" placeholder="sr3.304" title="${title}"/>
+      ${shown ? `<span class="sr-bookpage">${shown}</span>` : ''}
+    </label>`;
+  }
+
+  /**
+   * Every type whose data model carries `bookPage` shows it — TODO 117 gave it to skills, qualities,
+   * programs, cyberdecks, contacts, summonings and complex forms, whose layouts never had a place
+   * for it. A layout that already renders the field is left alone.
+   */
+  _withBookPage(html) {
+    if (!this.item.system || !('bookPage' in this.item.system)) return html;
+    if (/name="system\.bookPage"/.test(html)) return html;
+    return `${html}<div class="form-grid">${this._bookPageField(this.item.system)}</div>`;
+  }
+
   _notes(value) {
     return `<div class="notes-field">
       <label class="bio-label">Notes</label>
@@ -279,7 +305,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Availability', 'availability', s.availability)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
           ${this._f('Street Index', 'streetIndex', s.streetIndex)}
-          ${this._f('Book / Page', 'bookPage', s.bookPage)}
+          ${this._bookPageField(s)}
           ${this._check('Legal', 'legal', s.legal)}
         </div>
         ${this._notes(s.notes)}`;
@@ -306,7 +332,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     ${this._f('Availability', 'availability', s.availability)}
     ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
     ${this._f('Street Index', 'streetIndex', s.streetIndex)}
-    ${this._f('Book / Page', 'bookPage', s.bookPage)}
+    ${this._bookPageField(s)}
     ${this._check('Legal', 'legal', s.legal)}
     ${this._check('Area of Effect (AoE)', 'isAoE', s.isAoE)}
   </div>
@@ -335,7 +361,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     ${this._f('Availability', 'availability', s.availability)}
     ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
     ${this._f('Street Index', 'streetIndex', s.streetIndex)}
-    ${this._f('Book / Page', 'bookPage', s.bookPage)}
+    ${this._bookPageField(s)}
     ${this._check('Legal', 'legal', s.legal)}
     ${this._check('Area of Effect (AoE)', 'isAoE', s.isAoE)}
   </div>
@@ -380,7 +406,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
           ${this._f('Street Index', 'streetIndex', s.streetIndex)}
           ${this._f('Accessories', 'accessories', s.accessories)}
-          ${this._f('Book / Page', 'bookPage', s.bookPage)}
+          ${this._bookPageField(s)}
           ${this._check('Area of Effect (AoE)', 'isAoE', s.isAoE)}
         </div>
         ${this._notes(s.notes)}`;
@@ -418,7 +444,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Availability', 'availability', s.availability)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
           ${this._f('Street Index', 'streetIndex', s.streetIndex)}
-          ${this._f('Book / Page', 'bookPage', s.bookPage)}
+          ${this._bookPageField(s)}
         </div>
         ${this._notes(s.notes)}`;
       }
@@ -432,7 +458,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Availability', 'availability', s.availability)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
           ${this._f('Street Index', 'streetIndex', s.streetIndex)}
-          ${this._f('Book / Page', 'bookPage', s.bookPage)}
+          ${this._bookPageField(s)}
         </div>
         ${this._notes(s.notes)}`;
 
@@ -699,7 +725,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Availability', 'availability', availEff, 'text', 'placeholder="8/36 hrs"')}
           ${this._f('Street Index', 'streetIndex', s.streetIndex, 'number', 'step="0.1" min="0"')}
           ${isBio ? '' : this._f('Legal Code', 'legalCode', s.legalCode, 'text', 'placeholder="R / Legal"')}
-          ${this._f('Book / Page', 'bookPage', s.bookPage, 'text')}
+          ${this._bookPageField(s)}
         </div>
         <div class="form-section-hdr" style="margin:8px 0 4px;font-size:11px;font-weight:600;color:var(--sr-muted);letter-spacing:.05em;text-transform:uppercase">Attribute Bonuses</div>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px 8px;margin-bottom:8px">
@@ -770,7 +796,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
           ${this._f('Availability', 'availability', s.availability)}
           ${this._f('Street Index', 'streetIndex', s.streetIndex)}
-          ${this._f('Book / Page', 'bookPage', s.bookPage, 'text', 'placeholder="sr3.304"')}
+          ${this._bookPageField(s)}
         </div>
         <div class="notes-field">
           <label class="bio-label">Description</label>
@@ -788,7 +814,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Availability', 'availability', s.availability)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
           ${this._f('Street Index', 'streetIndex', s.streetIndex)}
-          ${this._f('Book / Page', 'bookPage', s.bookPage)}
+          ${this._bookPageField(s)}
         </div>
         ${this._notes(s.notes)}`;
 
@@ -800,7 +826,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Weight (kg)', 'weight', s.weight)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
           ${this._f('Street Index', 'streetIndex', s.streetIndex)}
-          ${this._f('Book / Page', 'bookPage', s.bookPage)}
+          ${this._bookPageField(s)}
         </div>
         ${this._notes(s.notes)}`;
 
@@ -975,7 +1001,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._check('Has Levels', 'hasLevels', s.hasLevels ?? false)}
           ${s.hasLevels ? this._f('Level', 'level', s.level ?? 1, 'number', 'min="1"') : ''}
           ${skillPicker}
-          ${this._f('Book / Page', 'bookPage', s.bookPage, 'text')}
+          ${this._bookPageField(s)}
         </div>
         ${isAbility ? `<div class="sr-bd-note" style="margin:2px 0 6px">
           Dice are capped at the lower of your base skill rating and your Magic Attribute

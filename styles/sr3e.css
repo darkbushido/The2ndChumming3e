@@ -646,6 +646,14 @@ background-color: var(--sr-surface) !important;
   letter-spacing: 0.05em;
 }
 
+/* Book / Page read as a citation beneath the raw code — "SR3 p.303" (TODO 117). */
+.sr-bookpage {
+  font-size: 11px;
+  color: var(--sr-muted);
+  font-style: italic;
+  margin-top: 2px;
+}
+
 .form-field input[type="text"],
 .form-field input[type="number"],
 .form-field select {

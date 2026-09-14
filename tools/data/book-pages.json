@@ -1,0 +1,3698 @@
+{
+ "sr3e-mr-johnsons-contacts": {
+  "!actors!0ZnsivKcKAAnsgb1": {
+   "name": "Lorekeeper",
+   "bookPage": "lbb.59",
+   "why": "the note's own citation"
+  },
+  "!actors!0yhDmnZRQKj25SJW": {
+   "name": "Taxi Driver",
+   "bookPage": "lbb.67",
+   "why": "the note's own citation"
+  },
+  "!actors!2jURt6imZxENHGtX": {
+   "name": "ID Manufacturer",
+   "bookPage": "lbb.57",
+   "why": "the note's own citation"
+  },
+  "!actors!58lM7NwVxNAtpySt": {
+   "name": "Pimp",
+   "bookPage": "lbb.50",
+   "why": "the note's own citation"
+  },
+  "!actors!5l10yIunpBTTxUrk": {
+   "name": "Firefighter",
+   "bookPage": "lbb.66",
+   "why": "the note's own citation"
+  },
+  "!actors!6Q1TFpWK2bccDRm6": {
+   "name": "Terra First! Activist",
+   "bookPage": "lbb.45",
+   "why": "the note's own citation"
+  },
+  "!actors!6bktOJD4XNkiYpqW": {
+   "name": "Terrorist",
+   "bookPage": "lbb.46",
+   "why": "the note's own citation"
+  },
+  "!actors!6vxWCIyiUQ7PDA9c": {
+   "name": "Trid Pirate",
+   "bookPage": "lbb.42",
+   "why": "the note's own citation"
+  },
+  "!actors!9BdiJphXIGFuZs8e": {
+   "name": "Talislegger",
+   "bookPage": "lbb.60",
+   "why": "the note's own citation"
+  },
+  "!actors!Ad2B9jOhpHuO6MZG": {
+   "name": "Corporate Headhunter",
+   "bookPage": "lbb.47",
+   "why": "the note's own citation"
+  },
+  "!actors!BNFhAogDxlAk3cj5": {
+   "name": "Corporate Security Guard",
+   "bookPage": "lbb.38",
+   "why": "the note's own citation"
+  },
+  "!actors!D552NWQPG3MHFNvg": {
+   "name": "Police Chief",
+   "bookPage": "lbb.63",
+   "why": "the note's own citation"
+  },
+  "!actors!DgWqCefrFmAodnTC": {
+   "name": "Corp Bodyguard",
+   "bookPage": "lbb.49",
+   "why": "the note's own citation"
+  },
+  "!actors!DozAuAXwjpOSooQF": {
+   "name": "Rent-a-Cop",
+   "bookPage": "lbb.38",
+   "why": "the note's own citation"
+  },
+  "!actors!E75RdSBD50bLjG7W": {
+   "name": "Corp Scientist",
+   "bookPage": "lbb.49",
+   "why": "the note's own citation"
+  },
+  "!actors!EWjdPB35st93LwNI": {
+   "name": "Street Vendor",
+   "bookPage": "lbb.52",
+   "why": "the note's own citation"
+  },
+  "!actors!Fd0ooBP6bzFZJCjW": {
+   "name": "Prison Guard",
+   "bookPage": "lbb.64",
+   "why": "the note's own citation"
+  },
+  "!actors!GYTt86WFUcPhaeTa": {
+   "name": "Club Hopper",
+   "bookPage": "lbb.43",
+   "why": "the note's own citation"
+  },
+  "!actors!IknZhjbhtsmRfTHE": {
+   "name": "Security Rigger",
+   "bookPage": "lbb.40",
+   "why": "the note's own citation"
+  },
+  "!actors!J3F5JsEWYlMfbZp5": {
+   "name": "Metroplex Guardsman",
+   "bookPage": "lbb.63",
+   "why": "the note's own citation"
+  },
+  "!actors!JaY2wBr97Xu1JdNC": {
+   "name": "Parasecurity Expert",
+   "bookPage": "lbb.39",
+   "why": "the note's own citation"
+  },
+  "!actors!K7iNkwexmt89TB3u": {
+   "name": "Ork Nation Organizer",
+   "bookPage": "lbb.44",
+   "why": "the note's own citation"
+  },
+  "!actors!OAkZb0VzsiBVAUUw": {
+   "name": "Cult Member",
+   "bookPage": "lbb.46",
+   "why": "the note's own citation"
+  },
+  "!actors!RgH7zkZW0SR6TVVc": {
+   "name": "Squatter",
+   "bookPage": "lbb.52",
+   "why": "the note's own citation"
+  },
+  "!actors!TljlYTW1J7Yzv8yO": {
+   "name": "Triad Member",
+   "bookPage": "lbb.54",
+   "why": "the note's own citation"
+  },
+  "!actors!U7hLBhYLaMu45UkI": {
+   "name": "Tamanous Member",
+   "bookPage": "lbb.50",
+   "why": "the note's own citation"
+  },
+  "!actors!UPEylREjjKD6B7xV": {
+   "name": "Ambitious Mafia Lieutenant",
+   "bookPage": "lbb.53",
+   "why": "the note's own citation"
+  },
+  "!actors!UhjHYVx2fmCAgbZA": {
+   "name": "Hermetic Academic",
+   "bookPage": "lbb.61",
+   "why": "the note's own citation"
+  },
+  "!actors!XOLmdhzKWv8IX1pe": {
+   "name": "Corp Decker",
+   "bookPage": "lbb.49",
+   "why": "the note's own citation"
+  },
+  "!actors!ZAYOZptSrv7kUZ1e": {
+   "name": "Ghoul (Human Ghoul)",
+   "bookPage": "lbb.52",
+   "why": "the note's own citation"
+  },
+  "!actors!Zmiz3WpBXzKorPqQ": {
+   "name": "Mixed-up Middle Manager",
+   "bookPage": "lbb.48",
+   "why": "the note's own citation"
+  },
+  "!actors!a2hy3yS7zpRRcNmv": {
+   "name": "Talent Scout",
+   "bookPage": "lbb.57",
+   "why": "the note's own citation"
+  },
+  "!actors!b6lYBmECTs8jtKHL": {
+   "name": "Mercenary",
+   "bookPage": "lbb.40",
+   "why": "the note's own citation"
+  },
+  "!actors!bE3UwQjpQuNxohRz": {
+   "name": "Forensics Expert",
+   "bookPage": "lbb.64",
+   "why": "the note's own citation"
+  },
+  "!actors!evde7uJkZD9DBlpe": {
+   "name": "DocWagon Paramedic",
+   "bookPage": "lbb.65",
+   "why": "the note's own citation"
+  },
+  "!actors!fKFQnxIBePvklU8Y": {
+   "name": "Upright Humanis Member",
+   "bookPage": "lbb.44",
+   "why": "the note's own citation"
+  },
+  "!actors!gpA8WF1Kdu5GXDUQ": {
+   "name": "Antiquities and Oddities Dealer",
+   "bookPage": "lbb.59",
+   "why": "the note's own citation"
+  },
+  "!actors!hPvZjFzjf1poThFZ": {
+   "name": "Joygirl",
+   "bookPage": "lbb.51",
+   "why": "the note's own citation"
+  },
+  "!actors!i9Xj7a03tQrOWxNE": {
+   "name": "Artificer/Enchanter",
+   "bookPage": "lbb.60",
+   "why": "the note's own citation"
+  },
+  "!actors!iSnbkIgiqhed9M7K": {
+   "name": "Sleazy Tabloid Reporter",
+   "bookPage": "lbb.41",
+   "why": "the note's own citation"
+  },
+  "!actors!jAqRwHXJihqCkeUX": {
+   "name": "Highway Patrol",
+   "bookPage": "lbb.62",
+   "why": "the note's own citation"
+  },
+  "!actors!jJEwpVzET0w3A58T": {
+   "name": "Fence",
+   "bookPage": "lbb.58",
+   "why": "the note's own citation"
+  },
+  "!actors!k7VeWlTwyxBNtoSJ": {
+   "name": "Paramed Shaman",
+   "bookPage": "lbb.66",
+   "why": "the note's own citation"
+  },
+  "!actors!mkgTYtiI1WRsWt4e": {
+   "name": "High Stakes Negotiator",
+   "bookPage": "lbb.56",
+   "why": "the note's own citation"
+  },
+  "!actors!n8sEdmrXXrdH0oK4": {
+   "name": "Wiz Kid Ganger",
+   "bookPage": "lbb.61",
+   "why": "the note's own citation"
+  },
+  "!actors!oETiCqM9UZymWdxs": {
+   "name": "Freedom Fighter",
+   "bookPage": "lbb.46",
+   "why": "the note's own citation"
+  },
+  "!actors!pP0slyC5QO1ul8kq": {
+   "name": "Elite Black Clinic Cybersurgeon",
+   "bookPage": "lbb.65",
+   "why": "the note's own citation"
+  },
+  "!actors!pSnLnQy7OlfSdub5": {
+   "name": "Bookie",
+   "bookPage": "lbb.55",
+   "why": "the note's own citation"
+  },
+  "!actors!ppuq7ZVD1W4j62Be": {
+   "name": "City Services Worker",
+   "bookPage": "lbb.67",
+   "why": "the note's own citation"
+  },
+  "!actors!ptwRxSOpDXfqtGX0": {
+   "name": "Reluctant Ganger",
+   "bookPage": "lbb.51",
+   "why": "the note's own citation"
+  },
+  "!actors!qOL3jvPrikd5An3y": {
+   "name": "Supply Sergeant",
+   "bookPage": "lbb.39",
+   "why": "the note's own citation"
+  },
+  "!actors!qxq5dnZ1ybETg2CL": {
+   "name": "Troll Street Dealer",
+   "bookPage": "lbb.57",
+   "why": "the note's own citation"
+  },
+  "!actors!rZvnofVa9YtF5AGO": {
+   "name": "Earnest Muckraker",
+   "bookPage": "lbb.42",
+   "why": "the note's own citation"
+  },
+  "!actors!rpxXt0N3xAUA4MbU": {
+   "name": "Simsense Star",
+   "bookPage": "lbb.43",
+   "why": "the note's own citation"
+  },
+  "!actors!tbtvlzQdRGhdu9kn": {
+   "name": "Shark Lawyer",
+   "bookPage": "lbb.55",
+   "why": "the note's own citation"
+  },
+  "!actors!uMiGWAP42oex9rPw": {
+   "name": "Mr. Fix-It",
+   "bookPage": "lbb.47",
+   "why": "the note's own citation"
+  },
+  "!actors!vXzh7aisKArLKvJ8": {
+   "name": "SWAT Team Member",
+   "bookPage": "lbb.62",
+   "why": "the note's own citation"
+  },
+  "!actors!vyiNFe9COrRk6CUw": {
+   "name": "Dock Worker",
+   "bookPage": "lbb.67",
+   "why": "the note's own citation"
+  },
+  "!actors!wVjquKkp9WRbtIL9": {
+   "name": "Yakuza Elder",
+   "bookPage": "lbb.53",
+   "why": "the note's own citation"
+  },
+  "!actors!y1NKVzNHEXoUXVuP": {
+   "name": "Gunsmith",
+   "bookPage": "lbb.58",
+   "why": "the note's own citation"
+  },
+  "!actors!yHnq9GyQocJmTjfi": {
+   "name": "Club Owner",
+   "bookPage": "lbb.42",
+   "why": "the note's own citation"
+  },
+  "!actors!zkYoNlI3grTYkC26": {
+   "name": "Family Member",
+   "bookPage": "lbb.54",
+   "why": "the note's own citation"
+  }
+ },
+ "sr3e-skills": {
+  "!items!02OPqy8yO5IlEKRo": {
+   "name": "Physics",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!0OpnZdUJgWCDz8H7": {
+   "name": "Electronic Intelligence",
+   "bookPage": "tss.13",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!0PbJ2b5cHKoiMvO3": {
+   "name": "Rifles",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!15CdOjFJmwyAz5vw": {
+   "name": "Fixed Wing",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Background Knowledge — upstream gives no page"
+  },
+  "!items!1As2gOW6EwyI4zad": {
+   "name": "Spray Weapons",
+   "bookPage": "cc.105",
+   "why": "upstream ActiveSkills.json (Background (BK))"
+  },
+  "!items!1HDbegKXZtvMLxlB": {
+   "name": "Ship B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!1Q104imJmkKdhzJN": {
+   "name": "Leadership",
+   "bookPage": "sr3.87",
+   "why": "upstream ActiveSkills.json (Social skills)"
+  },
+  "!items!1iJhPdfgxQKHhThl": {
+   "name": "Champagne",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Interests — upstream gives no page"
+  },
+  "!items!2GFRMHsnPJWh4Adh": {
+   "name": "MA:Jujitsu",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!2LQiFmjem3St3ecy": {
+   "name": "MA:Wildcat",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!2Pptb0raxmQrHCT5": {
+   "name": "MA:Hapkido",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!2USpTRk1EbRKPUQv": {
+   "name": "Heavy Weapons",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!2ZrwpUPwPusOe8yc": {
+   "name": "Motorboat",
+   "bookPage": "sr3.89",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!2o0BG3t9NhCyOcUx": {
+   "name": "Vector Thrust Aircraft B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!2u8zhlTvP2zI5ENs": {
+   "name": "Frame Core Design",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (Program Design (PD))"
+  },
+  "!items!2yt6wDNhK8Crkp6a": {
+   "name": "Gyrojet Pistol",
+   "bookPage": "cc.105",
+   "why": "upstream ActiveSkills.json (Background (BK))"
+  },
+  "!items!31OVTeQARCQC6cy6": {
+   "name": "Gang Turf",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Street Knowledge — upstream gives no page"
+  },
+  "!items!3IEPal3taGnbzYNz": {
+   "name": "Security Devices",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Academic Knowledge — upstream gives no page"
+  },
+  "!items!3cYd491gRFNNR9Et": {
+   "name": "Laser Weapons",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!3dNWDdiFQkp0WuMt": {
+   "name": "Data Havens",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!3iBnNUbZK9W4apgp": {
+   "name": "Security Procedures",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!3uVc0dmpUcMAAl6S": {
+   "name": "Japanese Culture",
+   "bookPage": "sr3.68",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!4BREeIydaOt4CfOt": {
+   "name": "Security Design",
+   "bookPage": "sota.104",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!4Citra0AqQZJsK0j": {
+   "name": "Computer",
+   "bookPage": "sr3.88",
+   "why": "upstream ActiveSkills.json (Technical skills)"
+  },
+  "!items!4Dbr9E6BCMwSFccf": {
+   "name": "Motorboat",
+   "bookPage": "sr3.89",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!4NFeauLHVbJZ940v": {
+   "name": "Greek",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!4Og4lYZWSoHqrWUi": {
+   "name": "Smuggling Routes",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!4YF15e15MF5isVt1": {
+   "name": "Negotiation",
+   "bookPage": "sr3.88",
+   "why": "upstream ActiveSkills.json (Social skills)"
+  },
+  "!items!4ecn5qli6TbNebeD": {
+   "name": "Disguise",
+   "bookPage": "sota.104",
+   "why": "upstream ActiveSkills.json (Technical skills)"
+  },
+  "!items!4lCHvqlObTDyzSlI": {
+   "name": "Gun Cane",
+   "bookPage": "cc.105",
+   "why": "upstream ActiveSkills.json (Background (BK))"
+  },
+  "!items!4nv1AYe0VMtv1STb": {
+   "name": "Trace IC Design",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (Program Design (PD))"
+  },
+  "!items!5084PTHQZB4ZNXeu": {
+   "name": "MA:Capoeira",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!5DRJkRQ5F3MqBXIQ": {
+   "name": "Russian",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!5LQ8ldf8qH0NzJKD": {
+   "name": "Archeology",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!5bvXmoZPWWsQtw04": {
+   "name": "Finnish",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!5dVJiDA05XVmt60F": {
+   "name": "Submachine Guns B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!5sYMV9xf1XPARNrR": {
+   "name": "Electronics B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!5wwyCx70sDkfR0bc": {
+   "name": "Japanese",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!6Z4mYTU2oR6aLtBt": {
+   "name": "MA:Pitfighting",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!764HQTnR5O6Cgihx": {
+   "name": "Athletics",
+   "bookPage": "sr3.87",
+   "why": "upstream ActiveSkills.json (Physical skills)"
+  },
+  "!items!7K0zIKpT5leKYBU1": {
+   "name": "Fringe Cults",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!7KxnffOdV70UvuoQ": {
+   "name": "Leadership",
+   "bookPage": "sr3.87",
+   "why": "upstream ActiveSkills.json (Social skills)"
+  },
+  "!items!7PrY21SV2pi82SUv": {
+   "name": "Interrogation",
+   "bookPage": "sr3.87",
+   "why": "upstream ActiveSkills.json (Social skills)"
+  },
+  "!items!7RC9hTAwhcowyaWr": {
+   "name": "Mafia Controlled Establishments",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!7biz7tLdcZ7U849p": {
+   "name": "Sailboat",
+   "bookPage": "sr3.89",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!7i94vccMVnXAf1o2": {
+   "name": "Corporate Politics",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Sixth World Knowledge — upstream gives no page"
+  },
+  "!items!8EbukMMmrTWXQ459": {
+   "name": "MA:Tae Kwon Do",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!8SLsYrXy2Vhv2z1I": {
+   "name": "Programming",
+   "bookPage": "matrix-defragged.11",
+   "why": "Matrix Defragged p.11, Matrix Skills — upstream gives no page"
+  },
+  "!items!8TmWXSkDWmdAZkf1": {
+   "name": "Entertainment Politics",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Sixth World Knowledge — upstream gives no page"
+  },
+  "!items!8VFqqn5GYzo2rCS6": {
+   "name": "Magic Background",
+   "bookPage": "sr3.78",
+   "why": "upstream ActiveSkills.json (Background (BK))"
+  },
+  "!items!8ZRwyUlK6Wdy4otA": {
+   "name": "Paranormal Animals",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!8ivSEL55sr2a1KRC": {
+   "name": "Otaku: Info Sortilege",
+   "bookPage": "mat.25",
+   "why": "Matrix p.25, Program Design — upstream gives no page"
+  },
+  "!items!8kIWuKddmpDYCgdf": {
+   "name": "Defensive Utility Design",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (Program Design (PD))"
+  },
+  "!items!8q1Y3AnVIPWQhjNt": {
+   "name": "Seattle LTG",
+   "bookPage": "mat.26",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!9ARzeBFBYnLoBD6Y": {
+   "name": "Lock Picking",
+   "bookPage": "sota.104",
+   "why": "upstream ActiveSkills.json (Technical skills)"
+  },
+  "!items!9I2lEwogWKFIApEp": {
+   "name": "Launch Weapons B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!9hw4FE5WhsLsKSWj": {
+   "name": "Cyber Implant Combat",
+   "bookPage": "sr3.85",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!9l1tTecmyd97K9fF": {
+   "name": "Combat Biking",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!9vF6qlXSiSlbNWRr": {
+   "name": "Parachuting",
+   "bookPage": "cc.102",
+   "why": "upstream ActiveSkills.json (Physical skills)"
+  },
+  "!items!9y9ff8VLkr2OwSWa": {
+   "name": "Corporate Hosts",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!A2bpEidsxhwtggFK": {
+   "name": "Swedish",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!A4exATbAZp0wcfPO": {
+   "name": "Unarmed Combat",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Background Knowledge — upstream gives no page"
+  },
+  "!items!AFJnYAkhlkTIaYVm": {
+   "name": "Submachine Guns",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!AFPpeDPq534ssGLW": {
+   "name": "Megacorporate Politics",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!AIuqSMNPdLByPvRT": {
+   "name": "Security Companies",
+   "bookPage": "sota.104",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!ARFrOF9K7R5LxKzk": {
+   "name": "Cybertechnology",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!AVYeVB2MkU9IKKXy": {
+   "name": "MA:Sambo",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!AgKSxNxrvEvxZYcJ": {
+   "name": "Lighter Than Air",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Background Knowledge — upstream gives no page"
+  },
+  "!items!AsJ3gx8mVdE8ROEG": {
+   "name": "Roleplaying Games of 20th Cen.",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!Ats9lgBHAjQdg8k4": {
+   "name": "Bushido Philosophy",
+   "bookPage": "sr3.75",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!Au1wbmIUpvgmEhn2": {
+   "name": "Forgery",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Background Knowledge — upstream gives no page"
+  },
+  "!items!B2PDV2QqglWKpgbh": {
+   "name": "Submarines",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Background Knowledge — upstream gives no page"
+  },
+  "!items!B2dHiS0W4XLgevWx": {
+   "name": "Criminal Organizations",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!BFQ5O1IMmbENotmS": {
+   "name": "Mechanical Arm Operation",
+   "bookPage": "r3.24",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!BJJ4zWqwtEjzUpVu": {
+   "name": "Or'zet",
+   "bookPage": "sta2.167",
+   "why": "upstream ActiveSkills.json (Language)"
+  },
+  "!items!BPMQjNI18JPZSrE6": {
+   "name": "Dutch",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!BWRNHcx62P5H7Noj": {
+   "name": "Pharmacology",
+   "bookPage": "tss.13",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!BeOdg1OLlW16P5hI": {
+   "name": "Forensic Medicine",
+   "bookPage": "sr3.71",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!BlqDYxnFK8DRmsLJ": {
+   "name": "Gunnery B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!BpLCIvPpEkKubinu": {
+   "name": "Divining",
+   "bookPage": "mits.30",
+   "why": "upstream ActiveSkills.json (Magical skills)"
+  },
+  "!items!BtaOqrHZHgeZxPqZ": {
+   "name": "Pistols B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!CNWbfncXzZC3CRaf": {
+   "name": "Popular Culture",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Interests — upstream gives no page"
+  },
+  "!items!CPKblQmZ1IUF7qPN": {
+   "name": "French",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!CQwuVcPAZk15k5Cj": {
+   "name": "Artificial Intelligence",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!CVl0sG19Q4D4Vhgn": {
+   "name": "Miltech Manufacturers",
+   "bookPage": "sr3.80",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!CW683js6yGAJ9S8S": {
+   "name": "Botany",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!CcF8XHoEFmviuK9r": {
+   "name": "MA:Karate",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!Cph9MzsLLSBseL9Z": {
+   "name": "Corporate Finance",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Sixth World Knowledge — upstream gives no page"
+  },
+  "!items!CwD92TY2vSjigV6A": {
+   "name": "Blowgun",
+   "bookPage": "cc.105",
+   "why": "upstream ActiveSkills.json (Background (BK))"
+  },
+  "!items!D6G1rwDnY1WPILTl": {
+   "name": "Diving",
+   "bookPage": "sr3.87",
+   "why": "upstream ActiveSkills.json (Physical skills)"
+  },
+  "!items!DbGa3zb3zlmuicKz": {
+   "name": "Data Archive Familiarity",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (System Familiarity (SF))"
+  },
+  "!items!DeXb3atx1QLls4Ac": {
+   "name": "Yakuza Territory",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!Discz4wXwpLuyEBr": {
+   "name": "Thai",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!DsbBoIcK9Bwd08U7": {
+   "name": "Semiballistic",
+   "bookPage": "r3.24",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!E2YkpuMBDHhV7xxv": {
+   "name": "Automated Factory Familiarity",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (System Familiarity (SF))"
+  },
+  "!items!E37eQvgoTRsBEQ2F": {
+   "name": "Negotiation",
+   "bookPage": "sr3.88",
+   "why": "upstream ActiveSkills.json (Social skills)"
+  },
+  "!items!EDUCM0gUoYwOTSZa": {
+   "name": "Forensics",
+   "bookPage": "tss.13",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!EGhV0IRdvwMzQ38E": {
+   "name": "Computer",
+   "bookPage": "sr3.88",
+   "why": "upstream ActiveSkills.json (Technical skills)"
+  },
+  "!items!EIRrfy41Gv13hE9b": {
+   "name": "Tir Tairngire Politics",
+   "bookPage": "sr3.74",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!EX4XJX43ciZcg1Bt": {
+   "name": "Sorcery",
+   "bookPage": "sr3.87",
+   "why": "upstream ActiveSkills.json (Magical skills)"
+  },
+  "!items!Ei8FXXR3UwXLWl22": {
+   "name": "Korean",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!Ep2xMEe5hwFlq27D": {
+   "name": "Diving B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!EvrfJe0rTKAmS5Gf": {
+   "name": "Fixed-Wing Aircraft",
+   "bookPage": "sr3.89",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!EwqEphe0pbUcAG1H": {
+   "name": "Hacking",
+   "bookPage": "matrix-defragged.11",
+   "why": "Matrix Defragged p.11, Matrix Skills — upstream gives no page"
+  },
+  "!items!FCpN7H2eejNtZQIE": {
+   "name": "Literature",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!FFEwwkLNINCdc8RQ": {
+   "name": "Armor B/R",
+   "bookPage": "cc.104",
+   "why": "upstream ActiveSkills.json (Build/Repair skills)"
+  },
+  "!items!FGEriN5kQa1QItdB": {
+   "name": "Shotguns B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!FcIxf5qr5Y5VDCDh": {
+   "name": "Spray Weapons B/R",
+   "bookPage": "cc.105",
+   "why": "upstream ActiveSkills.json (Build/Repair skills)"
+  },
+  "!items!FsuFOvSfZYlBUUJW": {
+   "name": "Sailboat B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!Ftw42AcibPyP9WTM": {
+   "name": "Stealth",
+   "bookPage": "sr3.87",
+   "why": "upstream ActiveSkills.json (Physical skills)"
+  },
+  "!items!G2KBV3rGnMUK7F81": {
+   "name": "Chat Rooms",
+   "bookPage": "mat.26",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!G7EM4qsDlBcD2IiA": {
+   "name": "Throwing Weapons B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!GEROlLEQyymVRSaM": {
+   "name": "Parachuting",
+   "bookPage": "cc.102",
+   "why": "upstream ActiveSkills.json (Background (BK))"
+  },
+  "!items!GIRqHV5J79JpPoNS": {
+   "name": "Local Neighborhood",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!GQPoZsmyKe99jJTz": {
+   "name": "Divining",
+   "bookPage": "mits.30",
+   "why": "upstream ActiveSkills.json (Background (BK))"
+  },
+  "!items!GRoTHAEgQ8Kv4Y30": {
+   "name": "Flatvid Movies",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!Ge7RyNIJJinIeSP1": {
+   "name": "Chokepoint Familiarity",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (System Familiarity (SF))"
+  },
+  "!items!GgUlecc3YFTv2vzV": {
+   "name": "Pole Arms/Staffs B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!Gk0tyKJ0Iq1fkGzn": {
+   "name": "Fences",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!GpbC47p8c0ZjUqhF": {
+   "name": "Economics",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!Gt1Twe9ooPTjI5Dk": {
+   "name": "Bracer",
+   "bookPage": "cc.105",
+   "why": "upstream ActiveSkills.json (Background (BK))"
+  },
+  "!items!H2ftRkbl1KiS43om": {
+   "name": "Rotor Aircraft B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!HCZlSk8od5LSxRjf": {
+   "name": "Seattle Matrix",
+   "bookPage": "sr3.77",
+   "why": "upstream ActiveSkills.json (Area Knowledge (AK))"
+  },
+  "!items!HHoaBLM79Txc4XK1": {
+   "name": "Edged Weapons",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!HIgYiEUbZICwnXbu": {
+   "name": "Handyman",
+   "bookPage": "tss.14",
+   "why": "upstream ActiveSkills.json (Background (BK))"
+  },
+  "!items!HQF5zsvo6TWTXOjU": {
+   "name": "MA:Pentjak-Silat",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!HfTeOoWlLufXFNAP": {
+   "name": "Megacorporate Operations",
+   "bookPage": "tss.13",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!HjYWvHJTRVq2WnRP": {
+   "name": "Troll Thrash Metal Bands",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!HoNJ3Om25u0ePOHj": {
+   "name": "Dowsing",
+   "bookPage": "sota.53",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!I6Xzs0CobTiVpFyz": {
+   "name": "Athletics",
+   "bookPage": "sr3.87",
+   "why": "upstream ActiveSkills.json (Physical skills)"
+  },
+  "!items!IPpA3tiShUAwZRxZ": {
+   "name": "Dragons",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!IqGw3PPs51t67zio": {
+   "name": "Desert Wars",
+   "bookPage": "sr3.72",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!IrvI5IJAqIef025v": {
+   "name": "Aura Reading",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Magical skills)"
+  },
+  "!items!JIZOjAss5HjjvFDv": {
+   "name": "Cyber Implant Weapons B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!JW9odSRHJMSpP0eO": {
+   "name": "Folklore and Mythology",
+   "bookPage": "tss.17",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!JaqI7Tn13nIDcURM": {
+   "name": "Cyberterminal Code Design",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (Program Design (PD))"
+  },
+  "!items!JbruLj1GQHN2dv27": {
+   "name": "Oral Strike",
+   "bookPage": "cc.105",
+   "why": "upstream ActiveSkills.json (Background (BK))"
+  },
+  "!items!JhGab0nVS9fUcFuP": {
+   "name": "Pole Arms",
+   "bookPage": "sr3.86",
+   "why": "upstream \"Pole Arms:Staffs\" is sr3.86"
+  },
+  "!items!JxgR6GE94MyYIKLu": {
+   "name": "Talismongering",
+   "bookPage": "mits.30",
+   "why": "upstream ActiveSkills.json (Background (BK))"
+  },
+  "!items!KKBmp798iXMfPCuN": {
+   "name": "Vehicle Security",
+   "bookPage": "tss.14",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!KahIasDVgxJuoh7t": {
+   "name": "Riding",
+   "bookPage": "tss.17",
+   "why": "upstream ActiveSkills.json (Survival skills)"
+  },
+  "!items!KqFk8MGv1IeXlnWb": {
+   "name": "Hindi",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!KtZmFnU0yOffHw1C": {
+   "name": "Ship",
+   "bookPage": "sr3.89",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!Ktk3NqrYlHdcdpev": {
+   "name": "Communication Satellite Familiarity",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (System Familiarity (SF))"
+  },
+  "!items!KuX3O7QwYlw9iQcj": {
+   "name": "Cooking",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!KwIkaZykDCu6Iw3g": {
+   "name": "Underworld Politics",
+   "bookPage": "sr3.70",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!Kzx3GRse2lPnkwUm": {
+   "name": "Artisan",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Background Knowledge — upstream gives no page"
+  },
+  "!items!L1n0IgZmDrebbvkl": {
+   "name": "Latin",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!LBXwVtnfzs1FRD0b": {
+   "name": "Biotech",
+   "bookPage": "sr3.88",
+   "why": "upstream ActiveSkills.json (Technical skills)"
+  },
+  "!items!LLCyAshkOxqRPnME": {
+   "name": "Navigation",
+   "bookPage": "twl.105",
+   "why": "upstream ActiveSkills.json (Survival (SV))"
+  },
+  "!items!LOi9RYMXKDe58r3V": {
+   "name": "Deckmeisters",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!LY9s15TMYeAptNJX": {
+   "name": "Small Unit Tactics",
+   "bookPage": "cc.105",
+   "why": "upstream ActiveSkills.json (Technical skills)"
+  },
+  "!items!LaBGb8qhen7Scf0D": {
+   "name": "Yakuza Politics",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!MJGDBNUJR6Rqe1q4": {
+   "name": "Worm Design",
+   "bookPage": "mat.25",
+   "why": "Matrix p.25, Program Design — upstream gives no page"
+  },
+  "!items!MOsqppG1FCXlmG9m": {
+   "name": "Submarine B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!MY9lOvuRE1Xd5pUW": {
+   "name": "Cyberterminal Design",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!Mii2rRVljGo9t7ip": {
+   "name": "MA:Arnis De Mano",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!MlwiOt0AHMEQVgoe": {
+   "name": "Interrogation",
+   "bookPage": "sr3.87",
+   "why": "upstream ActiveSkills.json (Social skills)"
+  },
+  "!items!Mzr7GT6EoKwAk8Pg": {
+   "name": "Small Unit Tactics",
+   "bookPage": "cc.105",
+   "why": "upstream ActiveSkills.json (Background (BK))"
+  },
+  "!items!NKyABSjmEN3ZTyAB": {
+   "name": "Investing",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!NQofemS5MwZfVYqX": {
+   "name": "Whips B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!NT5ol4N4zVmXjce9": {
+   "name": "Application Design",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (Program Design (PD))"
+  },
+  "!items!Nt3zHDtiCGQ9n0Ut": {
+   "name": "Safehouse Locations",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!OCFQNKVc5fYJAK56": {
+   "name": "Trace Utility Design",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (Program Design (PD))"
+  },
+  "!items!OGArrN3bLuFo8Y8R": {
+   "name": "Black IC Design",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (Program Design (PD))"
+  },
+  "!items!OKQBFesAtjAPX0oI": {
+   "name": "Accounting",
+   "bookPage": "tss.12",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!OR7iJJlD0pXa5s3O": {
+   "name": "Mechanical Traps",
+   "bookPage": "sr3.76",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!OUxVB0FEEzQM88KR": {
+   "name": "Security Systems",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Academic Knowledge — upstream gives no page"
+  },
+  "!items!PAcSYgWwrGSGuGUk": {
+   "name": "Game Host Familiarity",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (System Familiarity (SF))"
+  },
+  "!items!PAvxZV4kuABQupWB": {
+   "name": "Car",
+   "bookPage": "sr3.89",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!PHKSqtN0PuiC7rLl": {
+   "name": "Journalism",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Academic Knowledge — upstream gives no page"
+  },
+  "!items!PQf1wYmHhfxLo0wA": {
+   "name": "Computer B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!PlxUEqET4P2Saki0": {
+   "name": "Offensive Utility Design",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (Program Design (PD))"
+  },
+  "!items!PuOJSYbtYJHe149d": {
+   "name": "Gambling Card Games",
+   "bookPage": "sr3.80",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!Pzy98NwMMhyqedAh": {
+   "name": "Underwater Combat",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!Q2Nsgf0AaSOnmiyf": {
+   "name": "Sailboat",
+   "bookPage": "sr3.89",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!QBTYF7ye9RYaB5Od": {
+   "name": "Clubs",
+   "bookPage": "sr3.85",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!QHmNJdSvWWdNzUgi": {
+   "name": "Medicine",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!QTYG6do3MlazWLVy": {
+   "name": "MA:Aikido",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!QcpDqVGOdo1W6TlR": {
+   "name": "Assault Rifles",
+   "bookPage": "sr3.85",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!QfM9Nmc391HWs7KA": {
+   "name": "Hovercraft",
+   "bookPage": "sr3.89",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!QkkMXQWxoLjcfC9L": {
+   "name": "Assault Rifles B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!R0vFFnkYLNa3FRgV": {
+   "name": "Stealth",
+   "bookPage": "sr3.87",
+   "why": "upstream ActiveSkills.json (Physical skills)"
+  },
+  "!items!R2CgWEi03KyChxLH": {
+   "name": "Operational Utility Design",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (Program Design (PD))"
+  },
+  "!items!RJjTrrVg8PQETchB": {
+   "name": "Politics",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!ROBNnq8NwGDDoDcs": {
+   "name": "Norwegian",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!RTu49O2nq9OEjL2H": {
+   "name": "Judicial Procedures",
+   "bookPage": "tss.14",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!Rchn0FHv6dvyBshr": {
+   "name": "Satellite Networks",
+   "bookPage": "mat.26",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!RelhUFPKTpT3DWBZ": {
+   "name": "Clubs (background)",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Background Knowledge — upstream gives no page"
+  },
+  "!items!Rfq8QEom6pbanFwu": {
+   "name": "Sim Starlets",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!Ri1c5QimNp6xwhb2": {
+   "name": "Acting",
+   "bookPage": "tss.13",
+   "why": "upstream ActiveSkills.json (Social skills)"
+  },
+  "!items!RpCmH8ZQdtEsFzm7": {
+   "name": "Polish",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!S85sbGCDsZQI12gP": {
+   "name": "Rotor Aircraft",
+   "bookPage": "sr3.89",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!S8SxMndbQMAmaA43": {
+   "name": "Vector Thrust Aircraft",
+   "bookPage": "sr3.89",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!SCNTVqB3TdSx9xja": {
+   "name": "Urdu",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!SSRoIxvmh1t0lMhN": {
+   "name": "Vietnamese",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!SSeefZ14iarPtrbI": {
+   "name": "Portuguese",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!SkTjALbLL4UerqZd": {
+   "name": "Legendary Martial Artists",
+   "bookPage": "sr3.65",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!T2GAy5eqKNtuucnP": {
+   "name": "LTG Familiarity",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (System Familiarity (SF))"
+  },
+  "!items!TD1abeHZGkiCULq5": {
+   "name": "Filipino",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!TNFk9gg0qy8UkxXb": {
+   "name": "Rifles",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!TTw5wbiEij8B2OBt": {
+   "name": "Italian",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!TrjhGPRT6G09Ljak": {
+   "name": "Centering",
+   "bookPage": "mits.30",
+   "why": "upstream ActiveSkills.json (Magical skills)"
+  },
+  "!items!Tsl6SsXEhLWCDI1p": {
+   "name": "Special Utility Design",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (Program Design (PD))"
+  },
+  "!items!Ttms9ZkPxflJxnNX": {
+   "name": "Poetry",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!TuMztjTdjZMxASjC": {
+   "name": "Matrix Security Procedures",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!U7zlFuUxQrz4TuX2": {
+   "name": "Insect Spirits",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Sixth World Knowledge — upstream gives no page"
+  },
+  "!items!UHWJSFqMDOReH5RP": {
+   "name": "MA:Escrima",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!UKMgNjTI9oPIZir4": {
+   "name": "Mandarin",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!USUAeHpsoGEJcnGg": {
+   "name": "Cantonese",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!UTPEN8JxUxLwY0Sv": {
+   "name": "MA:Muay Thai",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!UTzqaS4v8JqGeRUG": {
+   "name": "MA:Boxing",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!Uce2Q6GJYewnhN6p": {
+   "name": "Legerdemain",
+   "bookPage": "tss.13",
+   "why": "upstream ActiveSkills.json (Social skills)"
+  },
+  "!items!UfQKenH1kenPTCj7": {
+   "name": "Data Brokerage",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!Umef193zIEixGk0A": {
+   "name": "Instruction",
+   "bookPage": "sr3.87",
+   "why": "upstream ActiveSkills.json (Social skills)"
+  },
+  "!items!UyBE0ArhGabvuzvp": {
+   "name": "MA:Kenpo",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!V3smPVXG8zZgq24E": {
+   "name": "Linguistics",
+   "bookPage": "tss.10",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!VFNzgTuoTN6f66ZH": {
+   "name": "Conspiracy Theories",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!VNzEmdRAd6a6zS3c": {
+   "name": "Anthropology",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!VPCy1AGzeV5HG86x": {
+   "name": "Aura Reading",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Magical skills)"
+  },
+  "!items!VPftFQ2DDF0P3vZp": {
+   "name": "Spanish",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!VgABu9CvzgXPOrcp": {
+   "name": "Pistols",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!VilZoqd7j6PPQ5Fl": {
+   "name": "Whips",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!VzFKQiiXvNjIeB5w": {
+   "name": "Meditation",
+   "bookPage": "sr3.65",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!WDKb46T4XWvnuZd9": {
+   "name": "Walkers",
+   "bookPage": "r3.24",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!WDyOVzkv8TdGLlWK": {
+   "name": "Unarmed Combat",
+   "bookPage": "sr3.86",
+   "why": "upstream \"Unarmed Combat-SR3\" is sr3.86"
+  },
+  "!items!WF3ChKACqD4PcFNt": {
+   "name": "Chinese",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!WVJLHP0PmlyLMZeC": {
+   "name": "Electronics",
+   "bookPage": "sr3.88",
+   "why": "upstream ActiveSkills.json (Technical skills)"
+  },
+  "!items!WVKFmzbdX28LrK0z": {
+   "name": "Car B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!WkRk7kmpJcb4gHT6": {
+   "name": "Geology",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!X1Cy9tTHbnurBdY0": {
+   "name": "Cuisine",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!X6QohbnrHvi8CDvn": {
+   "name": "MA:Tai Chi Chen",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!XDYN0xUhZeuFB68B": {
+   "name": "Wilderness Survival",
+   "bookPage": "twl.105",
+   "why": "upstream ActiveSkills.json (Background (BK))"
+  },
+  "!items!XNIE4QZlWQTu7uGL": {
+   "name": "Underwater Combat",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!XW1awUL5eRwCMwLj": {
+   "name": "Jackpoint Locations",
+   "bookPage": "sr3.66,mat.25",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!Xcpqpcfuq9mFaQ1W": {
+   "name": "Ship",
+   "bookPage": "sr3.89",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!XebF0RgyM0h620ZA": {
+   "name": "Bike B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!XfyWQrKcuIhTjPMM": {
+   "name": "Pornography",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Interests — upstream gives no page"
+  },
+  "!items!Xx2mFjry0bTnIjo8": {
+   "name": "Prostitution Rackets",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!YJO14sPA4eKOqHAk": {
+   "name": "Military Theory",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Academic Knowledge — upstream gives no page"
+  },
+  "!items!YPJ7Cpz7w3zZCCpG": {
+   "name": "Programming Suite Design",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (Program Design (PD))"
+  },
+  "!items!YaoXbN4prymGcfoo": {
+   "name": "Hypnotism",
+   "bookPage": "tss.17",
+   "why": "upstream ActiveSkills.json (Background (BK))"
+  },
+  "!items!Yp5ORXIaBewjKIKZ": {
+   "name": "MA:Hwarang-do",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!YshnBxBDBLCpAPKL": {
+   "name": "Conjuring",
+   "bookPage": "sr3.87",
+   "why": "upstream ActiveSkills.json (Magical skills)"
+  },
+  "!items!YxQ77zwcjiANmjja": {
+   "name": "Databases",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!ZD1Q9sHHt2uhd2AK": {
+   "name": "History",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!ZVyolxW0W6F0rhwG": {
+   "name": "Matrix Bank Familiarity",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (System Familiarity (SF))"
+  },
+  "!items!ZYUjZpFi3IFfdV8E": {
+   "name": "Philosophy",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!ZbNKcRZ1GbtMGubh": {
+   "name": "MA:Tai Chi Ch'uan",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!aAqzGMHOrYrijRqL": {
+   "name": "Sperethiel",
+   "bookPage": "sr3.91",
+   "why": "upstream ActiveSkills.json (Language)"
+  },
+  "!items!aGPivkhyEvESKOol": {
+   "name": "Zulu",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!aQbsTu4NOpcvOITw": {
+   "name": "Heavy Weapons",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!aW0TrSvUxNEYyKXw": {
+   "name": "Salish",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!aoGH34Fs0bu9ZxMH": {
+   "name": "Throwing Weapons",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!ax5RFJ0G6Kavcw4S": {
+   "name": "Welsh",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!ayeKB3Ybf2q5Q0Pp": {
+   "name": "Swahili",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!b1Deavd4jd2M61Pg": {
+   "name": "Metahuman Politics",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Sixth World Knowledge — upstream gives no page"
+  },
+  "!items!b3cpEGj3HjUnYvCh": {
+   "name": "Art",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!bIVHMPU4DKNgA2rf": {
+   "name": "Launch Weapons",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!bTmjAg77njVDLJtP": {
+   "name": "Psychology",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!bbz52nQTTWX8rsw9": {
+   "name": "Pirate Trid Broadcasters",
+   "bookPage": "sr3.69",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!bd7ShtNboe1YFLMC": {
+   "name": "Tribal Politics",
+   "bookPage": "sr3.78",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!bolu0Y9NFHG3EtoP": {
+   "name": "Edged Weapons B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!bvm6MO6Pa6txQWow": {
+   "name": "Iconography",
+   "bookPage": "mat.26",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!bxxoApjVvTjTye4N": {
+   "name": "Eye Gun",
+   "bookPage": "cc.105",
+   "why": "upstream ActiveSkills.json (Background (BK))"
+  },
+  "!items!cHGrakPG17Qn8CLd": {
+   "name": "Civil Engineering",
+   "bookPage": "sota.104",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!cHMNOGyPjrxXv6Zz": {
+   "name": "MA:Juijitsu",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!cSccjMICxcwCRVWW": {
+   "name": "MA:Brawling",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!chSUtpi7dg9iPQNa": {
+   "name": "Legendary Deckers",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!cmnr7KbLRUeA84PL": {
+   "name": "Leadership-Tactics",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Background Knowledge — upstream gives no page"
+  },
+  "!items!dCS5Eluq2Zokvols": {
+   "name": "Structural Engineering",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Academic Knowledge — upstream gives no page"
+  },
+  "!items!dDA07qISnDhJZViM": {
+   "name": "Lone Star Tactics",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!dYiHk27ORXh7ML2i": {
+   "name": "Cybercombat",
+   "bookPage": "matrix-defragged.11",
+   "why": "Matrix Defragged p.11, Matrix Skills — upstream gives no page"
+  },
+  "!items!dcJFHaBOixlEpkVD": {
+   "name": "Metahumanity",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!dkd49kn02fAdCqQE": {
+   "name": "Body Armor Fabrication",
+   "bookPage": "sr3.80",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!dks4NM9RWMb7Uvm7": {
+   "name": "Sci-Fi Simchips",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!dmy9STPBU97yseTP": {
+   "name": "Lock Picking",
+   "bookPage": "sota.104",
+   "why": "upstream ActiveSkills.json (Background (BK))"
+  },
+  "!items!dsMnNDMrtqqoQC7K": {
+   "name": "Shotguns",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!dsicRCPtqWcVddCH": {
+   "name": "German",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!eDI16bYEAbzcAiyZ": {
+   "name": "Shotguns",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!eINKSNhpOZKUOizQ": {
+   "name": "Security Network Familiarity",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (System Familiarity (SF))"
+  },
+  "!items!eLTBpmeTnDkzYOnd": {
+   "name": "Rifles B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!eQQ25MucoBjopITl": {
+   "name": "Motorboat B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!eRWmAO3KGAlK8D1q": {
+   "name": "Turkish",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!eT6pT3qwt1MDGfeJ": {
+   "name": "Conjuring",
+   "bookPage": "sr3.87",
+   "why": "upstream ActiveSkills.json (Magical skills)"
+  },
+  "!items!eqFGaYyhS9sVSl6G": {
+   "name": "Corporate Procedures",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Sixth World Knowledge — upstream gives no page"
+  },
+  "!items!erbXL2NV0uierTV4": {
+   "name": "Gunnery",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!exPb87B38DAIrkXv": {
+   "name": "Computer",
+   "bookPage": "sr3.88",
+   "why": "upstream ActiveSkills.json (Technical skills)"
+  },
+  "!items!f7P7jJPPineRLf4c": {
+   "name": "Otaku",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!fNL1pIl99K1viB2u": {
+   "name": "Chat Room Familiarity",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (System Familiarity (SF))"
+  },
+  "!items!g7RMoKPrkmEn9dKV": {
+   "name": "Astrology",
+   "bookPage": "sota.53",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!gMv5EHppO4LoFziR": {
+   "name": "Stockbroking",
+   "bookPage": "tss.12",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!gvVoGn7v5VOFrInH": {
+   "name": "Cellular Network Familiarity",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (System Familiarity (SF))"
+  },
+  "!items!gxYJVsK6r2FuQFxr": {
+   "name": "Rotor Aircraft",
+   "bookPage": "sr3.89",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!hCQV62Q4O1Rp9D6Q": {
+   "name": "Wilderness Survival",
+   "bookPage": "twl.105",
+   "why": "upstream ActiveSkills.json (Survival skills)"
+  },
+  "!items!hDbYccpvIBiOKLzw": {
+   "name": "Pole Arms & Staffs",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!hKjvfzz5hC42xwJP": {
+   "name": "Cybertechnology",
+   "bookPage": "sr3.77",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!hLAAedoJkuDvTEEO": {
+   "name": "Zoology",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!hWCV2zbYe75Yb41S": {
+   "name": "Laser Weapons",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!hfAnkHJHw1FOam2n": {
+   "name": "Tracks",
+   "bookPage": "r3.24",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!hfCZtJG8fMZhJETX": {
+   "name": "Riding",
+   "bookPage": "tss.17",
+   "why": "upstream ActiveSkills.json (Background (BK))"
+  },
+  "!items!hg14LEkderZBUzyO": {
+   "name": "Performance",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Background Knowledge — upstream gives no page"
+  },
+  "!items!hg7k7cl3eCBOOzzE": {
+   "name": "Car",
+   "bookPage": "sr3.89",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!hkSbiNzsq80Oc2PO": {
+   "name": "Launch Weapons",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!hpzu4XmjWERynXqI": {
+   "name": "Political Science",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Academic Knowledge — upstream gives no page"
+  },
+  "!items!hubnLjjdsxH3zuAl": {
+   "name": "MA:Kung Fu",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!i63i45GVc4NUsxBK": {
+   "name": "Prison Operations",
+   "bookPage": "tss.14",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!icmOSm5Oc024NSNU": {
+   "name": "Etiquette",
+   "bookPage": "sr3.87",
+   "why": "upstream ActiveSkills.json (Social skills)"
+  },
+  "!items!im08LIdK48RUBO2v": {
+   "name": "Seattle High Society",
+   "bookPage": "sr3.70",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!irM3Wxvt8tC3D1DM": {
+   "name": "Gunnery",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!jBBcrKdX28X6h7q5": {
+   "name": "Arms Dealers",
+   "bookPage": "sr3.80",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!jIajOPIsfD0lAP6K": {
+   "name": "Music",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!jZTj29MLZgBzNbxM": {
+   "name": "Megacorporate Security",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!jmYiRWJfMU0KDEjl": {
+   "name": "Hovercraft",
+   "bookPage": "sr3.89",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!kJOyXiFQ1iXTU4Za": {
+   "name": "Elven Wines",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!knX7qo9P5umL2NQj": {
+   "name": "Centering",
+   "bookPage": "mits.30",
+   "why": "upstream ActiveSkills.json (Background (BK))"
+  },
+  "!items!kp7bFrt6oW7Fij9I": {
+   "name": "English",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!l2ZMqsgurvjEgb9G": {
+   "name": "SWAT Team Tactics",
+   "bookPage": "sr3.80",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!l9xHIdfxbwlooMdF": {
+   "name": "RTG Familiarity",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (System Familiarity (SF))"
+  },
+  "!items!l9y46Y3apIExzfLs": {
+   "name": "Assault Rifles",
+   "bookPage": "sr3.85",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!lAcZaWaT6ZBJ1RJv": {
+   "name": "Submachine Guns",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!lRtHpEGja9nvVVZP": {
+   "name": "Enchanting",
+   "bookPage": "mits.30",
+   "why": "upstream ActiveSkills.json (Magical skills)"
+  },
+  "!items!lS03ZDAGlr27yKrM": {
+   "name": "Pistols",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!lS3lk5QRy6huba1K": {
+   "name": "Current Affairs",
+   "bookPage": "tss.12",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!lttQdb8u2jKC62oM": {
+   "name": "Architecture",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!m0vDVlHIm67LjnwW": {
+   "name": "Whips",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!m1nlSPIjnKcKhAf6": {
+   "name": "Sign Language",
+   "bookPage": "tss.12",
+   "why": "upstream ActiveSkills.json (Language)"
+  },
+  "!items!mPsWBGvUdY8ujXXU": {
+   "name": "Gunsmithing",
+   "bookPage": "sr3.80",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!mdm1WznB23dVMmRm": {
+   "name": "Seattle Ork Underground",
+   "bookPage": "sr3.67",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!miB00DoOpBtTiccV": {
+   "name": "Cyber Implant Combat",
+   "bookPage": "sr3.85",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!mtksfzz3y3kyBId9": {
+   "name": "Parazoology",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!mwMKEEdkXmrPS6xp": {
+   "name": "MA:Kali",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!n3Z5yNy6AnTP9CEZ": {
+   "name": "Woodworking",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!n7sgnKZCam5b6U5a": {
+   "name": "Laser Weapons B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!nBywrGFHBC01Hvbg": {
+   "name": "Megacorporate Research",
+   "bookPage": "sr3.77",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!nK13GLMnohFVgwuA": {
+   "name": "Etiquette",
+   "bookPage": "sr3.87",
+   "why": "upstream ActiveSkills.json (Social skills)"
+  },
+  "!items!nL7Oj0btdYqByryQ": {
+   "name": "Heavy Weapons B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!nLREjKDwWQ3pKMjL": {
+   "name": "Police Procedures",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!nZYzBLLSmGWfgjIc": {
+   "name": "Virtual Meeting Spots",
+   "bookPage": "mat.26",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!ndCsEWjzFIkl6g4b": {
+   "name": "Metallurgy",
+   "bookPage": "sr3.77",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!nqF8dgS5TQHjVDs2": {
+   "name": "Spray Weapons",
+   "bookPage": "cc.105",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!nv2WFxdc88bNnQA7": {
+   "name": "MA:Kickboxing",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!oJeQO0XAneUIBHpT": {
+   "name": "Biotech",
+   "bookPage": "sr3.88",
+   "why": "upstream ActiveSkills.json (Technical skills)"
+  },
+  "!items!oZcUzD2FRRMIbJ9L": {
+   "name": "Smuggler Havens",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!obJQWqsYoWGYvxR2": {
+   "name": "IC Construct Design",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (Program Design (PD))"
+  },
+  "!items!okTNObYZvHmMgrZw": {
+   "name": "Instruction",
+   "bookPage": "sr3.87",
+   "why": "upstream ActiveSkills.json (Social skills)"
+  },
+  "!items!ozqLLTe2LnP6W3QT": {
+   "name": "Weightlifting",
+   "bookPage": "sr3.72",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!pB3tiWI7SxjbmA6f": {
+   "name": "Triad Society",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Street Knowledge — upstream gives no page"
+  },
+  "!items!pDkS7Wx6CPTXXQzb": {
+   "name": "White IC Design",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (Program Design (PD))"
+  },
+  "!items!pNr4Km26LrD1AJza": {
+   "name": "Projectile Weapons B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!pYpZ3EHORHw9lzZA": {
+   "name": "Seattle Junkyards",
+   "bookPage": "sr3.69",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!q2C4QZwJmAwrxnp8": {
+   "name": "Matrix Gangs",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!q2RcfSTpqwA5JE6i": {
+   "name": "Arabic",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!q96janW7ULp3DrDW": {
+   "name": "Fashion",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!qAr5MYqSinS7K1LX": {
+   "name": "MA:Savate",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!qEUTwSR7BU41xe6i": {
+   "name": "Hypnotism",
+   "bookPage": "tss.17",
+   "why": "upstream ActiveSkills.json (Social skills)"
+  },
+  "!items!qWJ62ymfcuPCLtS4": {
+   "name": "Japanese Society",
+   "bookPage": "sr3.75",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!qYx4ZvQAlD16tfb3": {
+   "name": "Parabotany",
+   "bookPage": "tss.17",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!qeLcsjxWjpvAkAuw": {
+   "name": "Oral Gun",
+   "bookPage": "cc.105",
+   "why": "upstream ActiveSkills.json (Background (BK))"
+  },
+  "!items!qnSuFYINTlFgVcuF": {
+   "name": "Matrix Topography",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!qpKdv1LT1LQLb2BE": {
+   "name": "Magic",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!qq1aHtvEX3lnXcRn": {
+   "name": "Urban Brawl",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!r6wkIx4LhJ9v6YQN": {
+   "name": "Hebrew",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!rKN9KwCHySds371L": {
+   "name": "LTA Aircraft",
+   "bookPage": "sr3.89",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!rYDsyQrm9irESRsb": {
+   "name": "Demolitions",
+   "bookPage": "sr3.88",
+   "why": "upstream ActiveSkills.json (Technical skills)"
+  },
+  "!items!rZANIKrsmn4zW1no": {
+   "name": "Legerdemain",
+   "bookPage": "tss.13",
+   "why": "upstream ActiveSkills.json (Background (BK))"
+  },
+  "!items!rrcZ56Rqrp5X2oJH": {
+   "name": "Disguise",
+   "bookPage": "sota.104",
+   "why": "upstream ActiveSkills.json (Background (BK))"
+  },
+  "!items!rtIXtHUyVaAv3D1Y": {
+   "name": "Shadowrunner Haunts",
+   "bookPage": "sr3.75",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!rxFqQSaEyIhka1Ws": {
+   "name": "Mafia Politics",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!rxVHb3z8ssBcFTcV": {
+   "name": "Demolitions",
+   "bookPage": "sr3.88",
+   "why": "upstream ActiveSkills.json (Technical skills)"
+  },
+  "!items!rxY8uSvFUML0b0Yp": {
+   "name": "Grey IC Design",
+   "bookPage": "mat.25",
+   "why": "upstream ActiveSkills.json (Program Design (PD))"
+  },
+  "!items!sH3bnBLBZEtCcJQM": {
+   "name": "Intimidation",
+   "bookPage": "sr3.87",
+   "why": "upstream ActiveSkills.json (Social skills)"
+  },
+  "!items!su1J8HSYRfdSuTbh": {
+   "name": "BTL Production",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!svT8YTJBUEme6y6T": {
+   "name": "Sorcery (background)",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Background Knowledge — upstream gives no page"
+  },
+  "!items!t3NjHm6K4L9Njn0R": {
+   "name": "Gang Identification",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!t4QIOkzWwQA5RZUa": {
+   "name": "Elven Society",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!t7MT3xJvuORltZL8": {
+   "name": "Bike",
+   "bookPage": "sr3.88",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!tmQ7Fi3L3gZLGyVM": {
+   "name": "Throwing Weapons",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!u0gNwCisd4UbekF9": {
+   "name": "Suborbital",
+   "bookPage": "r3.24",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!u5r6ceDzYHuoeHBB": {
+   "name": "Hovercraft B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!u62MZoA4sYUOofxC": {
+   "name": "Diving",
+   "bookPage": "sr3.87",
+   "why": "upstream ActiveSkills.json (Physical skills)"
+  },
+  "!items!uRYfWuBezP7Tdmnb": {
+   "name": "Submarine",
+   "bookPage": "sr3.89",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!uZZvYSrPl5scnibE": {
+   "name": "MA:Tai Chi Wu",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!v2fIBfpa6Z92qs59": {
+   "name": "Intimidation",
+   "bookPage": "sr3.87",
+   "why": "upstream ActiveSkills.json (Social skills)"
+  },
+  "!items!v9ngaO9CsZNMa4DJ": {
+   "name": "Electronics",
+   "bookPage": "sr3.88",
+   "why": "upstream ActiveSkills.json (Technical skills)"
+  },
+  "!items!vECza2jdaWfkpiPC": {
+   "name": "Spell Design",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Academic Knowledge — upstream gives no page"
+  },
+  "!items!vUUQPqwYegW39WJR": {
+   "name": "Projectile Weapons",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!vVPtaYNJoBZDFF6v": {
+   "name": "Danish",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!velwCjYxTl4MZ6le": {
+   "name": "MA:Carromeleg",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!vhANfK3wsXuaARGz": {
+   "name": "Fixed Wing Aircraft B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!vnBXkQl9CvgKUgFd": {
+   "name": "Humanis Policlub",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!vuDH7NV38bV5ygbC": {
+   "name": "NAN Border Patrol Tactics",
+   "bookPage": "sr3.79",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  },
+  "!items!vzG6zq2o7K37sC0b": {
+   "name": "Ukrainian",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!w52GSPPCxaUGSlN2": {
+   "name": "Chemistry",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!w5mB24ApupWuIpyU": {
+   "name": "LTA Aircraft B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!wDPXsZhl7jBoWC74": {
+   "name": "Parabotany",
+   "bookPage": "tss.17",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!wSgpOzulMC0lEHij": {
+   "name": "MA:Ninjutsu",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!wYopLhxFm2OBKJdp": {
+   "name": "Edged Weapons",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!wcmYwrvIzC1Z8rhL": {
+   "name": "Megacorporate Policies",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!wiCJ11RFwASeaHx0": {
+   "name": "MA:Wushu",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!wjImmokpK0p7PT92": {
+   "name": "Yoruba",
+   "bookPage": "sr3.91",
+   "why": "SR3 p.91, About Language Skills — upstream gives no page"
+  },
+  "!items!wjR9OQwA4XsHCk6C": {
+   "name": "MA:Kick Boxing",
+   "bookPage": "cc.88",
+   "why": "upstream ActiveSkills.json (Martial Arts(MA))"
+  },
+  "!items!x0BScWdOtGyDdQZz": {
+   "name": "Opera",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!xIeO4B7cYYF2Ukav": {
+   "name": "Engineering",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!xTQ4TSz4isq73Ru2": {
+   "name": "Atlantis Research",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (6th World (SW))"
+  },
+  "!items!xYd2an6zbR9oVUj3": {
+   "name": "Classical Music",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Interests — upstream gives no page"
+  },
+  "!items!xd9K23JRqryEoVfK": {
+   "name": "Bike",
+   "bookPage": "sr3.88",
+   "why": "upstream ActiveSkills.json (Vehicle skills)"
+  },
+  "!items!xuoOkBNJXG7hKHz7": {
+   "name": "Handyman",
+   "bookPage": "tss.14",
+   "why": "upstream ActiveSkills.json (Build/Repair skills)"
+  },
+  "!items!y0nfazSIqm9X1cpg": {
+   "name": "Biology",
+   "bookPage": "sr3.90",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!y6B1OlbVHhWQMVRv": {
+   "name": "Corporate Security",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Sixth World Knowledge — upstream gives no page"
+  },
+  "!items!yCK0uYiulUSG2yf7": {
+   "name": "Clubs Weapons B/R",
+   "bookPage": "sr3.85",
+   "why": "SR3 p.85, Build/Repair Skills — upstream gives no page"
+  },
+  "!items!yFHLVW9KRyWRV1xr": {
+   "name": "Vectored Thrust Aircraft",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Background Knowledge — upstream gives no page"
+  },
+  "!items!yFjXPrECIxzHiaEC": {
+   "name": "Tourist Trivia",
+   "bookPage": "tss.13",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!yhUEwHpQ0T7rH36h": {
+   "name": "20th Century Comic Books",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Interests — upstream gives no page"
+  },
+  "!items!yhwcxlj6xrRykzYH": {
+   "name": "Occult Knowledge",
+   "bookPage": "tss.17",
+   "why": "upstream ActiveSkills.json (Interests (IN))"
+  },
+  "!items!ypnew8oN8NgYdgqT": {
+   "name": "Acting",
+   "bookPage": "tss.13",
+   "why": "upstream ActiveSkills.json (Background (BK))"
+  },
+  "!items!z2jdc5KE9CpIv6YV": {
+   "name": "Law",
+   "bookPage": "tss.13",
+   "why": "upstream ActiveSkills.json (Academic Skills (AC))"
+  },
+  "!items!zMfHCf6IxOvibE9z": {
+   "name": "Projectile Weapons",
+   "bookPage": "sr3.86",
+   "why": "upstream ActiveSkills.json (Combat skills)"
+  },
+  "!items!zeQJZDjCNyF97BtA": {
+   "name": "Mythos & Folklore",
+   "bookPage": "sr3.90",
+   "why": "SR3 p.90, Academic Knowledge — upstream gives no page"
+  },
+  "!items!zq8x52baKmqGuZHc": {
+   "name": "Scrounging",
+   "bookPage": "sr3.76",
+   "why": "upstream ActiveSkills.json (Street (ST))"
+  }
+ },
+ "sr3e-example-characters": {
+  "!actors!SSFORWvZ3Orji6oU": {
+   "name": "Parasecurity Expert Elf",
+   "bookPage": "lbb.39",
+   "why": "Little Black Book contents page"
+  },
+  "!actors!e6hEWEVm4CWUqJh7": {
+   "name": "Corporate Security Human",
+   "bookPage": "lbb.38",
+   "why": "the note's own citation"
+  },
+  "!actors!h5MpeU0ws0L2oFYL": {
+   "name": "Security Rigger Dwarf",
+   "bookPage": "lbb.40",
+   "why": "Little Black Book contents page"
+  },
+  "!actors!ltiJ2SPBBe9G2pd2": {
+   "name": "Mercenary Human",
+   "bookPage": "lbb.40",
+   "why": "Little Black Book contents page"
+  }
+ },
+ "sr3e-mm-drugs": {
+  "!items!MWF8RVro9g0TJhoH": {
+   "name": "Kamikaze",
+   "bookPage": "sr2.246",
+   "why": "upstream SR2 data"
+  }
+ },
+ "sr3e-mdf-cyberdecks": {
+  "!items!sr3e-deck-0000": {
+   "name": "Fuchi CDT-1000",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0001": {
+   "name": "Radio Shack PCD-100",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0002": {
+   "name": "Allegiance Alpha",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0003": {
+   "name": "Sony CTY-360",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0004": {
+   "name": "Fuchi Cyber-4",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0005": {
+   "name": "Fuchi Cyber-6",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0006": {
+   "name": "Fuchi Cyber-7",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0007": {
+   "name": "Allegiance Sigma",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0008": {
+   "name": "Sony CTY-360-D",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0009": {
+   "name": "Novatech Hyperdeck-6",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0010": {
+   "name": "CMT Avatar",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0011": {
+   "name": "Renraku Kraftwerk-8",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0012": {
+   "name": "Transys Highlander",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0013": {
+   "name": "Novatech Slimcase-10",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0014": {
+   "name": "Fairlight Excalibur",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0015": {
+   "name": "Spinrad Falcon",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0016": {
+   "name": "Erika MCD-2",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0017": {
+   "name": "MCT-360",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0018": {
+   "name": "Renraku Kitsune",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0019": {
+   "name": "Shiawase Cyber-6",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0020": {
+   "name": "Fairlight Excalibur III",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0021": {
+   "name": "Meta Link",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0022": {
+   "name": "CMT Clip",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0023": {
+   "name": "Sony Emperor",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0024": {
+   "name": "Renraku Sensei",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0025": {
+   "name": "Novatech Airware",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0026": {
+   "name": "Erika Elite",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0028": {
+   "name": "Transys Avalon",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0029": {
+   "name": "Fairlight Caliban",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0030": {
+   "name": "Erika MCD-1",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0031": {
+   "name": "Microdeck Summit",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0032": {
+   "name": "Microtrónica Azteca 200",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0033": {
+   "name": "Hermes Chariot",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0034": {
+   "name": "Novatech Navigator",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0035": {
+   "name": "Renraku Tsurugi",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0036": {
+   "name": "Sony CTY-720",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0037": {
+   "name": "Shiawase Cyber-X",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  },
+  "!items!sr3e-deck-0038": {
+   "name": "Fairlight Excalibur II",
+   "bookPage": "matrix-defragged.35",
+   "why": "MDF p.35, the cyberdeck table"
+  }
+ },
+ "sr3e-mdf-programs": {
+  "!items!sr3e-prog-0001": {
+   "name": "Passcode",
+   "bookPage": "matrix-defragged.28",
+   "why": "MDF p.28, Passcodes"
+  },
+  "!items!sr3e-prog-0002": {
+   "name": "Analyze",
+   "bookPage": "matrix-defragged.30",
+   "why": "MDF p.30, Available Programs"
+  },
+  "!items!sr3e-prog-0003": {
+   "name": "Armor",
+   "bookPage": "matrix-defragged.30",
+   "why": "MDF p.30, Available Programs"
+  },
+  "!items!sr3e-prog-0004": {
+   "name": "Attack",
+   "bookPage": "matrix-defragged.30",
+   "why": "MDF p.30, Available Programs"
+  },
+  "!items!sr3e-prog-0005": {
+   "name": "Baby Monitor",
+   "bookPage": "matrix-defragged.30",
+   "why": "MDF p.30, Available Programs"
+  },
+  "!items!sr3e-prog-0006": {
+   "name": "Biofeedback Filtering",
+   "bookPage": "matrix-defragged.30",
+   "why": "MDF p.30, Available Programs"
+  },
+  "!items!sr3e-prog-0007": {
+   "name": "Browse",
+   "bookPage": "matrix-defragged.30",
+   "why": "MDF p.30, Available Programs"
+  },
+  "!items!sr3e-prog-0008": {
+   "name": "Decrypt",
+   "bookPage": "matrix-defragged.30",
+   "why": "MDF p.30, Available Programs"
+  },
+  "!items!sr3e-prog-0009": {
+   "name": "Encrypt",
+   "bookPage": "matrix-defragged.30",
+   "why": "MDF p.30, Available Programs"
+  },
+  "!items!sr3e-prog-0010": {
+   "name": "Evasion",
+   "bookPage": "matrix-defragged.31",
+   "why": "MDF p.31, Available Programs"
+  },
+  "!items!sr3e-prog-0011": {
+   "name": "Exploit",
+   "bookPage": "matrix-defragged.29",
+   "why": "MDF p.29, Available Programs"
+  },
+  "!items!sr3e-prog-0012": {
+   "name": "Jackpot",
+   "bookPage": "matrix-defragged.31",
+   "why": "MDF p.31, Available Programs"
+  },
+  "!items!sr3e-prog-0013": {
+   "name": "Jamboree",
+   "bookPage": "matrix-defragged.31",
+   "why": "MDF p.31, Available Programs"
+  },
+  "!items!sr3e-prog-0014": {
+   "name": "Kill Switch",
+   "bookPage": "matrix-defragged.31",
+   "why": "MDF p.31, Available Programs"
+  },
+  "!items!sr3e-prog-0015": {
+   "name": "Lock-On",
+   "bookPage": "matrix-defragged.31",
+   "why": "MDF p.31, Available Programs"
+  },
+  "!items!sr3e-prog-0016": {
+   "name": "Medic",
+   "bookPage": "matrix-defragged.31",
+   "why": "MDF p.31, Available Programs"
+  },
+  "!items!sr3e-prog-0017": {
+   "name": "Mirrors",
+   "bookPage": "matrix-defragged.31",
+   "why": "MDF p.31, Available Programs"
+  },
+  "!items!sr3e-prog-0018": {
+   "name": "Read/Write",
+   "bookPage": "matrix-defragged.31",
+   "why": "MDF p.31, Available Programs"
+  },
+  "!items!sr3e-prog-0019": {
+   "name": "Redirect",
+   "bookPage": "matrix-defragged.29",
+   "why": "MDF p.29, Available Programs"
+  },
+  "!items!sr3e-prog-0020": {
+   "name": "Saboteur",
+   "bookPage": "matrix-defragged.32",
+   "why": "MDF p.32, Available Programs"
+  },
+  "!items!sr3e-prog-0021": {
+   "name": "Shield",
+   "bookPage": "matrix-defragged.32",
+   "why": "MDF p.32, Available Programs"
+  },
+  "!items!sr3e-prog-0022": {
+   "name": "Signal Booster",
+   "bookPage": "matrix-defragged.32",
+   "why": "MDF p.32, Available Programs"
+  },
+  "!items!sr3e-prog-0023": {
+   "name": "Sleaze",
+   "bookPage": "matrix-defragged.32",
+   "why": "MDF p.32, Available Programs"
+  },
+  "!items!sr3e-prog-0024": {
+   "name": "Slow",
+   "bookPage": "matrix-defragged.32",
+   "why": "MDF p.32, Available Programs"
+  },
+  "!items!sr3e-prog-0025": {
+   "name": "Smoke Screen",
+   "bookPage": "matrix-defragged.32",
+   "why": "MDF p.32, Available Programs"
+  },
+  "!items!sr3e-prog-0026": {
+   "name": "Snoop",
+   "bookPage": "matrix-defragged.32",
+   "why": "MDF p.32, Available Programs"
+  },
+  "!items!sr3e-prog-0027": {
+   "name": "Suppression",
+   "bookPage": "matrix-defragged.32",
+   "why": "MDF p.32, Available Programs"
+  },
+  "!items!sr3e-prog-0028": {
+   "name": "Dewormer",
+   "bookPage": "matrix-defragged.29",
+   "why": "MDF p.29, Available Programs"
+  },
+  "!items!sr3e-prog-0029": {
+   "name": "Nexus",
+   "bookPage": "matrix-defragged.29",
+   "why": "MDF p.29, Available Programs"
+  },
+  "!items!sr3e-prog-0030": {
+   "name": "Shadownet",
+   "bookPage": "matrix-defragged.29",
+   "why": "MDF p.29, Available Programs"
+  }
+ },
+ "sr3e-mdf-ic": {
+  "!actors!sr3e-ic-0000": {
+   "name": "ARis",
+   "bookPage": "matrix-defragged.40",
+   "why": "MDF p.40, the IC's entry"
+  },
+  "!actors!sr3e-ic-0001": {
+   "name": "Authenticator",
+   "bookPage": "matrix-defragged.40",
+   "why": "MDF p.40, the IC's entry"
+  },
+  "!actors!sr3e-ic-0002": {
+   "name": "Looper",
+   "bookPage": "matrix-defragged.43",
+   "why": "MDF p.43, the IC's entry"
+  },
+  "!actors!sr3e-ic-0003": {
+   "name": "Mr. Medkit",
+   "bookPage": "matrix-defragged.43",
+   "why": "MDF p.43, the IC's entry"
+  },
+  "!actors!sr3e-ic-0004": {
+   "name": "Scrambler",
+   "bookPage": "matrix-defragged.44",
+   "why": "MDF p.44, the IC's entry"
+  },
+  "!actors!sr3e-ic-0005": {
+   "name": "Blaster",
+   "bookPage": "matrix-defragged.41",
+   "why": "MDF p.41, the IC's entry"
+  },
+  "!actors!sr3e-ic-0006": {
+   "name": "Crippler",
+   "bookPage": "matrix-defragged.41",
+   "why": "MDF p.41, the IC's entry"
+  },
+  "!actors!sr3e-ic-0007": {
+   "name": "Dataworm",
+   "bookPage": "matrix-defragged.34",
+   "why": "MDF p.34, the IC table"
+  },
+  "!actors!sr3e-ic-0008": {
+   "name": "Gemini",
+   "bookPage": "matrix-defragged.42",
+   "why": "MDF p.42, the IC's entry"
+  },
+  "!actors!sr3e-ic-0009": {
+   "name": "Hydra",
+   "bookPage": "matrix-defragged.42",
+   "why": "MDF p.42, the IC's entry"
+  },
+  "!actors!sr3e-ic-0010": {
+   "name": "Sparky",
+   "bookPage": "matrix-defragged.44",
+   "why": "MDF p.44, the IC's entry"
+  },
+  "!actors!sr3e-ic-0011": {
+   "name": "Tar Baby",
+   "bookPage": "matrix-defragged.44",
+   "why": "MDF p.44, the IC's entry"
+  },
+  "!actors!sr3e-ic-0012": {
+   "name": "Tracker",
+   "bookPage": "matrix-defragged.44",
+   "why": "MDF p.44, the IC's entry"
+  },
+  "!actors!sr3e-ic-0013": {
+   "name": "Killer",
+   "bookPage": "matrix-defragged.42",
+   "why": "MDF p.42, the IC's entry"
+  },
+  "!actors!sr3e-ic-0014": {
+   "name": "Ripper",
+   "bookPage": "matrix-defragged.43",
+   "why": "MDF p.43, the IC's entry"
+  },
+  "!actors!sr3e-ic-0015": {
+   "name": "Alert (Passive)",
+   "bookPage": "matrix-defragged.25",
+   "why": "MDF p.25, Alerts / Barriers / Data Protections / System Sweep"
+  },
+  "!actors!sr3e-ic-0016": {
+   "name": "Barrier (Passive)",
+   "bookPage": "matrix-defragged.25",
+   "why": "MDF p.25, Alerts / Barriers / Data Protections / System Sweep"
+  },
+  "!actors!sr3e-ic-0017": {
+   "name": "Encryption (Passive)",
+   "bookPage": "matrix-defragged.25",
+   "why": "MDF p.25, Alerts / Barriers / Data Protections / System Sweep"
+  },
+  "!actors!sr3e-ic-0018": {
+   "name": "Databomb (Passive)",
+   "bookPage": "matrix-defragged.25",
+   "why": "MDF p.25, Alerts / Barriers / Data Protections / System Sweep"
+  },
+  "!actors!sr3e-ic-0019": {
+   "name": "System Sweep (Passive)",
+   "bookPage": "matrix-defragged.25",
+   "why": "MDF p.25, Alerts / Barriers / Data Protections / System Sweep"
+  }
+ },
+ "sr3e-sr2-armor": {
+  "!items!sr3e-armor-0017": {
+   "name": "Armor Street Clothes Type 1",
+   "bookPage": "sr2.256",
+   "why": "upstream SR2 data"
+  },
+  "!items!sr3e-armor-0018": {
+   "name": "Armor Street Clothes Type 2",
+   "bookPage": "sr2.256",
+   "why": "upstream SR2 data"
+  },
+  "!items!sr3e-armor-0021": {
+   "name": "Forearm Guards",
+   "bookPage": "ssc.37",
+   "why": "upstream SR2 data — ⚠ ssc, not SR2 core"
+  },
+  "!items!sr3e-armor-0110": {
+   "name": "Vashon Island Houndstooth Set",
+   "bookPage": "fof.94",
+   "why": "upstream SR2 data — ⚠ fof, not SR2 core"
+  },
+  "!items!sr3e-armor-0111": {
+   "name": "Vashon Island Hunt Ball Set",
+   "bookPage": "fof.94",
+   "why": "upstream SR2 data — ⚠ fof, not SR2 core"
+  },
+  "!items!sr3e-armor-0150": {
+   "name": "Form-fitting Armor Lvl [1]",
+   "bookPage": "sr2.279",
+   "why": "upstream SR2 data"
+  },
+  "!items!sr3e-armor-0151": {
+   "name": "Form-fitting Armor Lvl [2]",
+   "bookPage": "sr2.279",
+   "why": "upstream SR2 data"
+  },
+  "!items!sr3e-armor-0152": {
+   "name": "Form-fitting Armor Lvl [3]",
+   "bookPage": "sr2.279",
+   "why": "upstream SR2 data"
+  },
+  "!items!sr3e-armor-0229": {
+   "name": "Full Suit",
+   "bookPage": "sr2.256",
+   "why": "upstream SR2 data"
+  },
+  "!items!sr3e-armor-0230": {
+   "name": "Helmet",
+   "bookPage": "sr2.241",
+   "why": "upstream SR2 data"
+  },
+  "!items!sr3e-armor-0310": {
+   "name": "Military Chemsuit",
+   "bookPage": "pw.17",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  }
+ },
+ "sr3e-sr2-firearms": {
+  "!items!sr3e-firearm-0000": {
+   "name": "Barton Arms Bracer",
+   "bookPage": "pw.20",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0001": {
+   "name": "Barton Arms Gun Cane",
+   "bookPage": "pw.20",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0002": {
+   "name": "BudgetArms C13",
+   "bookPage": "pw.14",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0004": {
+   "name": "Ceska Diplomat",
+   "bookPage": "pw.14",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0005": {
+   "name": "Colt Take-Down",
+   "bookPage": "pw.14",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0006": {
+   "name": "Dai Lung Cybermag 15",
+   "bookPage": "pw.14",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0007": {
+   "name": "Federated Arms X-22",
+   "bookPage": "pw.14",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0010": {
+   "name": "H&K P48",
+   "bookPage": "pw.20",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0015": {
+   "name": "Star Model DWT",
+   "bookPage": "pw.14",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0028": {
+   "name": "Dai Lung Streetmaster",
+   "bookPage": "pw.15",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0031": {
+   "name": "Federated Arms X-9mm",
+   "bookPage": "pw.16",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0037": {
+   "name": "H&K Cavaet",
+   "bookPage": "pw.16",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0038": {
+   "name": "H&K P7S15",
+   "bookPage": "pw.16",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0039": {
+   "name": "H&K P11M8",
+   "bookPage": "pw.22",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0040": {
+   "name": "H&K P11M13",
+   "bookPage": "pw.22",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0042": {
+   "name": "Mauser Ladyline",
+   "bookPage": "pw.14",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0043": {
+   "name": "Militech Arms Avenger",
+   "bookPage": "pw.15",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0047": {
+   "name": "Powell Knife Pistol",
+   "bookPage": "pw.9",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0048": {
+   "name": "Ruger P-8",
+   "bookPage": "pw.16",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0051": {
+   "name": "S&W Model 6739",
+   "bookPage": "pw.16",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0058": {
+   "name": "Beretta Model 200ST",
+   "bookPage": "ssc.19",
+   "why": "upstream SR2 data — ⚠ ssc, not SR2 core"
+  },
+  "!items!sr3e-firearm-0063": {
+   "name": "H&K VP80Z",
+   "bookPage": "pw.23",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0064": {
+   "name": "Micro Uzi III",
+   "bookPage": "pw.22",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0066": {
+   "name": "Seco Quickfire",
+   "bookPage": "pw.17",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0068": {
+   "name": "Altmayr SP",
+   "bookPage": "pw.15",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0078": {
+   "name": "Armalite 44",
+   "bookPage": "pw.21",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0080": {
+   "name": "Beretta Model 95S-B",
+   "bookPage": "pw.15",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0082": {
+   "name": "Beretta 100S Smart",
+   "bookPage": "pw.15",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0083": {
+   "name": "Beretta Model 110-T",
+   "bookPage": "pw.15",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0086": {
+   "name": "Browning Defender 10",
+   "bookPage": "pw.15",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0090": {
+   "name": "BudgetArms Auto      (HPist) 3",
+   "bookPage": "pw.19",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0094": {
+   "name": "Colt AMT Model 2000",
+   "bookPage": "pw.21",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0096": {
+   "name": "Colt Manhunter S",
+   "bookPage": "ssc.23",
+   "why": "upstream SR2 data — ⚠ ssc, not SR2 core"
+  },
+  "!items!sr3e-firearm-0097": {
+   "name": "Colt Manhunter S+",
+   "bookPage": "ssc.23",
+   "why": "upstream SR2 data — ⚠ ssc, not SR2 core"
+  },
+  "!items!sr3e-firearm-0098": {
+   "name": "Colt Peacemaker",
+   "bookPage": "pw.17",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0099": {
+   "name": "Colt Penetrator",
+   "bookPage": "pw.21",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0100": {
+   "name": "DinaTech F5A",
+   "bookPage": "pw.15",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0101": {
+   "name": "DinaTech F5B",
+   "bookPage": "pw.15",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0104": {
+   "name": "Fichetti Hurricane",
+   "bookPage": "pw.17",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0105": {
+   "name": "Fichetti Military XI",
+   "bookPage": "fof.89",
+   "why": "upstream SR2 data — ⚠ fof, not SR2 core"
+  },
+  "!items!sr3e-firearm-0117": {
+   "name": "H&K OHWS",
+   "bookPage": "pw.22",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0121": {
+   "name": "Ingram Mk IV",
+   "bookPage": "pw.15",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0129": {
+   "name": "Nova .338 City Gun",
+   "bookPage": "pw.20",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0134": {
+   "name": "Riot Gun",
+   "bookPage": "pw.19",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0135": {
+   "name": "Ruger M45",
+   "bookPage": "pw.21",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0136": {
+   "name": "Ruger P-105",
+   "bookPage": "pw.17",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0139": {
+   "name": "Ruger Warhawk",
+   "bookPage": "pw.21",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0143": {
+   "name": "Sig Sauer P300",
+   "bookPage": "pw.17",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0146": {
+   "name": "SternMeyer Type5     (HPist) 3",
+   "bookPage": "pw.17",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0147": {
+   "name": "SuperEagle",
+   "bookPage": "pw.21",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0148": {
+   "name": "Syrko Wolf",
+   "bookPage": "pw.24",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0149": {
+   "name": "Walther Secura",
+   "bookPage": "pw.17",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0641": {
+   "name": "Colt TP-6A",
+   "bookPage": "pw.13",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0653": {
+   "name": "Techtronica Model 009",
+   "bookPage": "pw.13",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0657": {
+   "name": "Arasaka Minami 10",
+   "bookPage": "pw.23",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0675": {
+   "name": "FN P55",
+   "bookPage": "pw.23",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0676": {
+   "name": "FN P55 Smart",
+   "bookPage": "pw.23",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0679": {
+   "name": "H&K MP-9",
+   "bookPage": "pw.22",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0680": {
+   "name": "H&K MP-2013",
+   "bookPage": "pw.23",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0681": {
+   "name": "H&K MPK9",
+   "bookPage": "pw.22",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0682": {
+   "name": "H&K MPK-11",
+   "bookPage": "pw.24",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0686": {
+   "name": "Ingram MAC-14",
+   "bookPage": "pw.24",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0687": {
+   "name": "Ingram MAC-20",
+   "bookPage": "pw.24",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0696": {
+   "name": "Sandler Model II",
+   "bookPage": "pw.24",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0701": {
+   "name": "Sternmeyer SMG 21",
+   "bookPage": "pw.24",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0702": {
+   "name": "Steyr MP i 25",
+   "bookPage": "pw.23",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0703": {
+   "name": "Syrko Eagle",
+   "bookPage": "pw.24",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0705": {
+   "name": "UziS                   (SMG) 3",
+   "bookPage": "pw.22",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0706": {
+   "name": "Uzi IV",
+   "bookPage": "pw.22",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0707": {
+   "name": "Uzi IV Smart",
+   "bookPage": "pw.22",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0708": {
+   "name": "Uzi Miniauto 9",
+   "bookPage": "pw.22",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0709": {
+   "name": "Walther S900",
+   "bookPage": "pw.24",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0763": {
+   "name": "AKR-20",
+   "bookPage": "pw.26",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0764": {
+   "name": "Anti-Vehicular Rifle",
+   "bookPage": "pw.28",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0771": {
+   "name": "FN AGRL",
+   "bookPage": "pw.27",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0773": {
+   "name": "FN RAL",
+   "bookPage": "pw.26",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0779": {
+   "name": "Honda AR-1",
+   "bookPage": "pw.26",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0780": {
+   "name": "Kalashnikov A-80",
+   "bookPage": "pw.27",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0781": {
+   "name": "Kalishnikov AK-100",
+   "bookPage": "pw.27",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0782": {
+   "name": "Kalishnikov AK-100 Smart",
+   "bookPage": "pw.27",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0783": {
+   "name": "Kalishnikov AK-101",
+   "bookPage": "pw.27",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0784": {
+   "name": "Kalishnikov AK-101 Smart",
+   "bookPage": "pw.27",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0787": {
+   "name": "Maremont LR",
+   "bookPage": "pw.30",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0788": {
+   "name": "Militech Cyborg Rifle",
+   "bookPage": "pw.29",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0791": {
+   "name": "Parker Carbine",
+   "bookPage": "pw.27",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0794": {
+   "name": "SIG 880",
+   "bookPage": "pw.27",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0795": {
+   "name": "SIG 882",
+   "bookPage": "pw.27",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0797": {
+   "name": "Seco M-995 Smart",
+   "bookPage": "pw.26",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0891": {
+   "name": "Chandler Capture 100",
+   "bookPage": "pw.25",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0893": {
+   "name": "Syrko Cobra",
+   "bookPage": "pw.24",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0895": {
+   "name": "Eichiro Hatamoto II",
+   "bookPage": "pw.25",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0899": {
+   "name": "Holland&Holland .600 NE",
+   "bookPage": "pw.25",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0900": {
+   "name": "Kimatsuhama UBS-5",
+   "bookPage": "pw.25",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0901": {
+   "name": "Kimatsuhama UBS-6",
+   "bookPage": "pw.25",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0902": {
+   "name": "Kimatsuhama UBS-7",
+   "bookPage": "pw.25",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0915": {
+   "name": "Ranger Arms Security 12",
+   "bookPage": "pw.25",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0918": {
+   "name": "Remington 1628",
+   "bookPage": "pw.25",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0923": {
+   "name": "Sternmeyer Stakeout 10",
+   "bookPage": "pw.25",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0929": {
+   "name": "Wirtz SW3i DemoControl",
+   "bookPage": "pw.25",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0964": {
+   "name": "H&K PSG-65",
+   "bookPage": "pw.28",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-0967": {
+   "name": "SMF K6",
+   "bookPage": "pw.28",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-1006": {
+   "name": "SIG 883 SP",
+   "bookPage": "pw.31",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-1126": {
+   "name": "Mossberg M-712",
+   "bookPage": "pw.25",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-1127": {
+   "name": "Steyr AUG-CSL",
+   "bookPage": "ssc.54",
+   "why": "upstream SR2 data — ⚠ ssc, not SR2 core"
+  },
+  "!items!sr3e-firearm-1128": {
+   "name": "Syrko Panther",
+   "bookPage": "pw.24",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-1131": {
+   "name": "GE Vindicator Minigun",
+   "bookPage": "ssc.58",
+   "why": "upstream SR2 data — ⚠ ssc, not SR2 core"
+  },
+  "!items!sr3e-firearm-1133": {
+   "name": "H&K MG4/46",
+   "bookPage": "pw.30",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-1135": {
+   "name": "IWS Mini-5",
+   "bookPage": "pw.34",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-1136": {
+   "name": "IWS Mini-5 Smart",
+   "bookPage": "pw.34",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-1137": {
+   "name": "SIG 883",
+   "bookPage": "pw.31",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-1138": {
+   "name": "Syrko Tiger",
+   "bookPage": "pw.24",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-1155": {
+   "name": "NR-10 Multi-Barrel HMG",
+   "bookPage": "pw.31",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-1158": {
+   "name": "Ruhrmetall SF20",
+   "bookPage": "pw.33",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-1185": {
+   "name": "Generic Under-Barrel",
+   "bookPage": "pw.32",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-1186": {
+   "name": "Grenade Launcher",
+   "bookPage": "pw.32",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-1191": {
+   "name": "Rockwell AGL-113",
+   "bookPage": "pw.32",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-1206": {
+   "name": "Militech RPG-A",
+   "bookPage": "pw.33",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-1207": {
+   "name": "Ruhrmetall GPRL-Alpha",
+   "bookPage": "pw.33",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-1235": {
+   "name": "Ares MP Laser",
+   "bookPage": "ssc.55",
+   "why": "upstream SR2 data — ⚠ ssc, not SR2 core"
+  },
+  "!items!sr3e-firearm-1236": {
+   "name": "Ares MP Laser III",
+   "bookPage": "ssc.55",
+   "why": "upstream SR2 data — ⚠ ssc, not SR2 core"
+  },
+  "!items!sr3e-firearm-1241": {
+   "name": "Infrared Laser",
+   "bookPage": "pw.13",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-1242": {
+   "name": "Laser LAW",
+   "bookPage": "pw.32",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-firearm-1243": {
+   "name": "Laser VLAW",
+   "bookPage": "pw.32",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  }
+ },
+ "sr3e-sr2-melee": {
+  "!items!sr3e-melee-0009": {
+   "name": "Centurion Laser Axe",
+   "bookPage": "ssc.7",
+   "why": "upstream SR2 data — ⚠ ssc, not SR2 core"
+  },
+  "!items!sr3e-melee-0035": {
+   "name": "Rapier",
+   "bookPage": "fof.81",
+   "why": "upstream SR2 data — ⚠ fof, not SR2 core"
+  },
+  "!items!sr3e-melee-0039": {
+   "name": "Slamdance Inc. Spawnblade",
+   "bookPage": "pw.10",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-melee-0084": {
+   "name": "Bullwhip",
+   "bookPage": "fof.88",
+   "why": "upstream SR2 data — ⚠ fof, not SR2 core"
+  },
+  "!items!sr3e-melee-0088": {
+   "name": "Flogger whip",
+   "bookPage": "fof.88",
+   "why": "upstream SR2 data — ⚠ fof, not SR2 core"
+  },
+  "!items!sr3e-melee-0100": {
+   "name": "Brass Knuckles",
+   "bookPage": "sr2.235",
+   "why": "upstream SR2 data"
+  },
+  "!items!sr3e-melee-0102": {
+   "name": "DinaTech F5C",
+   "bookPage": "pw.15",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-melee-0103": {
+   "name": "Drug-A-Thug",
+   "bookPage": "pw.13",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  }
+ },
+ "sr3e-sr2-projectiles": {
+  "!items!sr3e-projectile-0068": {
+   "name": "Spraypaint Grenade",
+   "bookPage": "pw.37",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  },
+  "!items!sr3e-projectile-0069": {
+   "name": "Stench Bomb",
+   "bookPage": "pw.37",
+   "why": "upstream SR2 data — ⚠ pw, not SR2 core"
+  }
+ },
+ "sr3e-sr2-vehicle-mods": {
+  "!items!sr3e-vehiclemod-0263": {
+   "name": "Boat Hull Modification",
+   "bookPage": "sr2.264",
+   "why": "upstream SR2 data"
+  },
+  "!items!sr3e-vehiclemod-0268": {
+   "name": "External Luggage",
+   "bookPage": "sr2.264",
+   "why": "upstream SR2 data"
+  },
+  "!items!sr3e-vehiclemod-0270": {
+   "name": "Life Support (10 man-hours)",
+   "bookPage": "sr2.264",
+   "why": "upstream SR2 data"
+  },
+  "!items!sr3e-vehiclemod-0271": {
+   "name": "Reinforced Seating",
+   "bookPage": "sr2.264",
+   "why": "upstream SR2 data"
+  },
+  "!items!sr3e-vehiclemod-0277": {
+   "name": "External Rack Mount(1 missile)",
+   "bookPage": "fof.46",
+   "why": "upstream SR2 data — ⚠ fof, not SR2 core"
+  },
+  "!items!sr3e-vehiclemod-0280": {
+   "name": "Ring Mount with Hatch",
+   "bookPage": "fof.46",
+   "why": "upstream SR2 data — ⚠ fof, not SR2 core"
+  }
+ },
+ "sr3e-sr2-vehicle-weapons": {
+  "!items!sr3e-vehicleweapon-0011": {
+   "name": "Flechette Gun",
+   "bookPage": "sr2.265",
+   "why": "upstream SR2 data"
+  },
+  "!items!sr3e-vehicleweapon-0012": {
+   "name": "Gauss Gun",
+   "bookPage": "sr2.265",
+   "why": "upstream SR2 data"
+  },
+  "!items!sr3e-vehicleweapon-0018": {
+   "name": "Rocket Launcher",
+   "bookPage": "sr2.265",
+   "why": "upstream SR2 data"
+  },
+  "!items!sr3e-vehicleweapon-0019": {
+   "name": "Ruhrmetall GPRL for vehicles",
+   "bookPage": "sr2.265",
+   "why": "upstream SR2 data"
+  },
+  "!items!sr3e-vehicleweapon-0020": {
+   "name": "Ruhrmetall SF20 for vehicles",
+   "bookPage": "sr2.265",
+   "why": "upstream SR2 data"
+  },
+  "!items!sr3e-vehicleweapon-0024": {
+   "name": "Twin Laser",
+   "bookPage": "sr2.265",
+   "why": "upstream SR2 data"
+  },
+  "!items!sr3e-vehicleweapon-0026": {
+   "name": "Vehicular Shotgun",
+   "bookPage": "sr2.265",
+   "why": "upstream SR2 data"
+  },
+  "!items!sr3e-vehicleweapon-0027": {
+   "name": "Victory Rotary Assault Cannon",
+   "bookPage": "r2.92",
+   "why": "upstream SR2 data — ⚠ r2, not SR2 core"
+  },
+  "!items!sr3e-vehicleweapon-0028": {
+   "name": "Vigilant Rotary Autocannon",
+   "bookPage": "r2.92",
+   "why": "upstream SR2 data — ⚠ r2, not SR2 core"
+  }
+ }
+}

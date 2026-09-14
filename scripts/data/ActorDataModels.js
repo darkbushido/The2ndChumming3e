@@ -99,6 +99,7 @@ function _wounds() {
 export class CharacterData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
+      bookPage:     new StringField({ initial: '' }),   // TODO 117 — every shipped document carries a book and pageL
       biography:               new HTMLField({ initial: '', required: false }),
       notes:                   new HTMLField({ initial: '', required: false }),
       metatype:                new StringField({ initial: 'human' }),
@@ -216,6 +217,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
 export class NpcData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
+      bookPage:     new StringField({ initial: '' }),   // TODO 117 — every shipped document carries a book and pageL
       metatype:         new StringField({ initial: 'human' }),
       attributeBoost:   attributeBoostField(),
       augmentations:    new ObjectField(),
@@ -298,6 +300,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
 export class ICData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
+      bookPage:     new StringField({ initial: '' }),   // TODO 117 — every shipped document carries a book and pageL
       icType:           new StringField({ initial: 'Scrambler' }),
       grading:          new StringField({ initial: 'White' }),   // 'White' | 'Gray' | 'Black'
       rating:           new NumberField({ integer: true, initial: 1, min: 1 }),
@@ -325,6 +328,7 @@ export class ICData extends foundry.abstract.TypeDataModel {
 export class AgentData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
+      bookPage:     new StringField({ initial: '' }),   // TODO 117 — every shipped document carries a book and pageL
       rating:           new NumberField({ integer: true, initial: 1, min: 1 }),
       graded:           new BooleanField({ initial: false }),
       hostSecurityTier: new StringField({ initial: 'Green' }),
@@ -344,6 +348,7 @@ export class AgentData extends foundry.abstract.TypeDataModel {
 export class HostData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
+      bookPage:     new StringField({ initial: '' }),   // TODO 117 — every shipped document carries a book and pageL
       systemRating:          new NumberField({ integer: true, initial: 6, min: 1, max: 12 }),
       securityTierName:      new StringField({ initial: 'Green' }),
       securityTierThreshold: new NumberField({ integer: true, initial: 2, min: 0 }),

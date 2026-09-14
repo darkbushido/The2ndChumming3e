@@ -2,6 +2,7 @@ import { SR3E, getSpecializationsForSkill, skillTypeForCategory } from '../confi
 import { CHARGEN_SPEC_GAP } from '../data/skill-rules.mjs';
 import { itemRating, vcrLevel } from '../data/item-rating.mjs';
 import { AmmoStock } from '../data/ammo-stock.mjs';
+import { BookPage } from '../data/book-page.mjs';
 
 /**
  * SR3EActorSheet — V2 Application framework (Foundry v13+).
@@ -2923,6 +2924,14 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ? this._inlineField('Professional Rating', 'system.professionalRating', pr, 'number', 55)
       : '';
 
+    /* Book / Page · TODO 117 — where a shipped archetype comes from (every Little Black Book
+     * contact carries one). Same rule as PR: shown when set, or to a GM who may need to set it. */
+    const bpShown = BookPage.format(sys.bookPage);
+    const bpField = (sys.bookPage || game.user.isGM)
+      ? `${this._inlineField('Book / Page', 'system.bookPage', sys.bookPage ?? '', 'text', 90)}`
+        + (bpShown ? `<span class="sr-bookpage" style="align-self:flex-end">${bpShown}</span>` : '')
+      : '';
+
     return `<div class="tab ${this._activeTab === 'bio' ? 'active' : ''}" data-tab="bio" style="overflow-y:auto">
       <h3 class="section-hdr">Personal Information</h3>
       <div class="bio-fields">
@@ -2933,6 +2942,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         ${this._inlineField('Weight', 'system.weight', sys.weight, 'text', 80)}
         ${this._inlineField('Ethnicity', 'system.ethnicity', sys.ethnicity, 'text', 120)}
         ${prField}
+        ${bpField}
       </div>
       
       <h3 class="section-hdr" style="margin-top:1rem">Resources</h3>

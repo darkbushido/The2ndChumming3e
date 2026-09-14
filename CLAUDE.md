@@ -1270,6 +1270,15 @@ Checks: documents with a null/missing `_id`, pack keys that disagree with the do
 on disk are reported as **information, not a fault** — the maintainer's install still carries
 22 pre-split monolithic packs, which Foundry simply ignores.
 
+**Book and page (TODO 117)** — also information, not yet a fault: documents with a blank or `???`
+`system.bookPage`, and documents whose page names a different book from their pack (fan `pw`
+items in the SR2 core packs, say — shipping content the book toggle cannot hide). One reader,
+`scripts/data/book-page.mjs` (`BookPage.missing` / `codes` / `format` / `namesOtherBook`), shared
+with the sheets, which show the raw code with *"SR3 p.303"* beneath it. ⚠ Upstream writes SOTA 2064
+as **`sta2`**; `CODE_ALIASES` maps it to the registry's `sota2`. Pages are filled from
+`tools/data/book-pages.json` by `tools/fill-book-pages.mjs` — each entry records *why* its page is
+what it is. `tests/book-page.test.mjs` ratchets the count still missing (200 on 2026-09-13).
+
 ⚠ **Foundry must be closed even to READ.** A LevelDB allows one process to open a database;
 there is no shared-read mode. The tool reports a lock as "close Foundry" rather than a stack
 trace, because that is what it always means.

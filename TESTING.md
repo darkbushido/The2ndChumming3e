@@ -399,6 +399,17 @@ On the active combatant's card: **Complex** (full width) + two **Simple** button
 
 ---
 
+## Book and page — TODO 117 (`feature/book-pages`) — needs a live pass
+
+Data-model change: **full Foundry restart** first.
+- [ ] Compendium sheet of a skill (*Physics*), a program (*Analyze*), a cyberdeck (*Fuchi Cyber-6*) and a quality: each shows a **Book / Page** box with the citation beneath it — *SR3 p.90*, *Matrix Defragged p.30*, *Matrix Defragged p.35*.
+- [ ] A cyberware item (*Wired Reflexes [2]*): the existing box now shows *SR3 p.…* beneath the code.
+- [ ] Typing `sr3.312,r3.172` into the box shows *SR3 p.312 · R3 p.172* after it saves.
+- [ ] A Little Black Book contact's Bio tab (as GM): Book / Page `lbb.53` with *Little Black Book p.53*; as a player, shown only when set.
+- [ ] A skill dragged onto a character keeps its page.
+
+---
+
 ## Dialog wiring — TODO 20 (0.5.2) — needs a live pass
 
 Eighteen dialogs moved from the global `renderDialogV2` hook to their own `render` option. For

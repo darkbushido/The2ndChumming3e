@@ -30,8 +30,23 @@ const MIJI  = { module: '../scripts/SR3EMIJI.js',            klass: 'SR3EMIJI'  
 const HEAL  = { module: '../scripts/SR3EHealing.js',         klass: 'SR3EHealing' };
 const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating' };
 const AMMO   = { module: '../scripts/data/ammo-stock.mjs',   klass: 'AmmoStock' };
+const BOOKPAGE = { module: '../scripts/data/book-page.mjs',  klass: 'BookPage' };
 
 export const MUTANTS = [
+  {
+    id:     'bookpage-sta2-not-aliased',
+    suite:  'book-page',
+    ...BOOKPAGE, method: 'codes',
+    was:    'upstream\'s `sta2` read as its own book — all 63 SOTA 2064 documents reported as filed under the wrong one',
+    impl:   bp => String(bp ?? '').split(',').map(s => /^([a-z0-9-]+)\./i.exec(s.trim())?.[1]?.toLowerCase()).filter(Boolean),
+  },
+  {
+    id:     'bookpage-placeholder-counts',
+    suite:  'book-page',
+    ...BOOKPAGE, method: 'missing',
+    was:    'only a blank page counted as missing — the SR2 import\'s 314 "sr2.???" looked sourced',
+    impl:   bp => !String(bp ?? '').trim(),
+  },
   {
     id:     'reload-docks-rounds-for-reloads',
     suite:  'ammo-stock',
