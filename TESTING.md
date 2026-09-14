@@ -401,14 +401,15 @@ On the active combatant's card: **Complex** (full width) + two **Simple** button
 
 ---
 
-## Book and page — TODO 117 (`feature/book-pages`) — needs a live pass
+## Book and page — TODO 117 (`feature/book-pages`)
 
-Data-model change: **full Foundry restart** first.
-- [ ] Compendium sheet of a skill (*Physics*), a program (*Analyze*), a cyberdeck (*Fuchi Cyber-6*) and a quality: each shows a **Book / Page** box with the citation beneath it — *SR3 p.90*, *Matrix Defragged p.30*, *Matrix Defragged p.35*.
-- [ ] A cyberware item (*Wired Reflexes [2]*): the existing box now shows *SR3 p.…* beneath the code.
-- [ ] Typing `sr3.312,r3.172` into the box shows *SR3 p.312 · R3 p.172* after it saves.
-- [ ] A Little Black Book contact's Bio tab (as GM): Book / Page `lbb.53` with *Little Black Book p.53*; as a player, shown only when set.
-- [ ] A skill dragged onto a character keeps its page.
+Data-model change: **full Foundry restart** first. **Walked by the agent 2026-09-14** (Browser pane, mcp-api, after a restart on a local branch merging main + both 0.6 features):
+- [x] Compendium sheets show the Book / Page box with the citation beneath: *Physics* SR3 p.90 · *Analyze* Matrix Defragged p.30 · *Fuchi Cyber-6* Matrix Defragged p.35 · *Wired Reflexes [1]* SR3 p.302 — one box each.
+- [x] A quality (a layout that never had the field) gets the box; typing `sr3.312,r3.172` saves and shows *SR3 p.312 · R3 p.172*.
+- [x] A Little Black Book contact's Bio tab (as GM): `lbb.59` with *Little Black Book p.59*.
+- [ ] …as a player, shown only when set.
+- [x] A skill added to a character from the pack keeps `sr3.90`.
+- ⚠ Looking pack entries up by name in the install can land on its **null-`_id` duplicate** (install drift, `npm run packs:fix`) — filter `x._id`.
 
 ---
 
