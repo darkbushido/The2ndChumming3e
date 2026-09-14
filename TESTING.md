@@ -513,6 +513,7 @@ World setting **Track Ammunition** (Configure Settings → System) gates all cou
 - [x] Loose rounds into an 8(c) gun holding 2: the dialog asks how many (default 6 = full, *2 Complex Actions* at Quickness 4); 3 chosen → 5/8, *1 Complex Action to insert 3 rounds into the clip*, box 34 → 31.
 - [x] Item sheet: clip ammo offers *Loose rounds / Pre-filled clips*; internal-magazine (`m`) shells show Rounds only, even with `countedIn: reloads` stored.
 - [x] Storage: a stack of 5 reloads asks "of 5"; storing 2 leaves 3 out, 2 stored — and the **stored stack is no longer offered** by the reload dialog (it was; fixed).
+- [x] Round by round never loses a round (2026-09-14): a 6(m) shotgun holding 4 regular, loaded with gel shells → 6 gel, and the 4 regular **unloaded** into a new *Regular rounds (unloaded)* item; loading regular back → the 3 gel shells returned to the existing gel item (6 → 9).
 - [ ] Import the troll fixture in a live world (covered end-to-end by `tests/importer.test.mjs`).
 
 **Loading-mechanism filter:** a clip-fed gun (`(c)`) only offers clip-mechanism ammo on reload. **In:** gun `15(c)`, stockpiles of clip-APDS and belt-FMJ → only clip-APDS is offered.

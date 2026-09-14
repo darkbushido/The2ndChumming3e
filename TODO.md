@@ -28,7 +28,7 @@ independent.
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
 | 🖥 Matrix | **119** *(audit The Matrix Defragged v2 — the book is now in the library)* · **120** *(HoloSuite Hacking adapter / fork)* |
 | 📦 Content gaps | **117** *(934 documents lack a book/page)* · 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** · **104** *(**83** · **84** · **87** done)* |
-| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 56 · **100** · **103** · **105** *(**20** · **36** · **99** done)* |
+| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 56 · **100** · **103** · **105** · **121** *(rules vs sr3-guides, every release)* *(**20** · **36** · **99** done)* |
 | 🧹 Housekeeping | 1 · 6 |
 | ✅ Done — kept for the record | **2** · **5** · **8** · **10** · 13 · **40** · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -7798,3 +7798,38 @@ a GPL fork and survives upstream updates; (a) is needed only if the adapter cont
 Defragged's rolls. Defragged-specific parts to map: the Hacking Pool, the Security Threshold (fail →
 Overwatch +1 — `SR3EHostSheet`'s track), System Rating as TN, and node prompts as the challenge.
 Depends on [#119](#119) for which rules are right.
+
+<a id="121"></a>
+
+## 121. Check the code's rules against *sr3-guides* on every version bump — **requested 2026-09-14**
+
+**Request (maintainer):** a repeatable task that makes sure our interpretation of the rules in code
+matches the rules as explained in `C:\Users\lance\Documents\sr3-guides` — and it is **part of every
+release**: run it on each version bump. **The first run waits until the 0.6 branches (100, 117, and
+119) are merged back to `main`** (the maintainer, 2026-09-14: not before).
+
+**What sr3-guides is:** the maintainer's own GitHub Pages site (Jekyll, its own repo), *SR3 Table
+Reference*. Every rule on it cites a book and printed page; `{: .fixed }` boxes record corrections to
+the Gemini gists it began from, `{: .house }` boxes mark house rules (not in any book). Pages today:
+`rules/` combat, grenades, healing, reloading · `street/` cyberware grades, gear and fencing, SINs ·
+`magic/` awakened primer · `hiring/` (house rates). `sources.md` holds its abbreviations and method.
+
+**The check, each release:**
+1. For each guide page, list its cited rules (a rule + *(BOOK p.N)*), skipping `.house` boxes.
+2. Find where the system implements each — CLAUDE.md's section, the pure function, its test.
+3. Compare. Three outcomes: **agree** · **the code diverges** (a bug, or a 🔴 DIVERGES FROM RAW
+   marker if deliberate) · **the guide and the code cite different pages or readings** (settle
+   against the PDF, then fix whichever is wrong — the guide is a second reading, not the authority).
+4. Record the run: date, version, guide commit, one line per rule, in `audit/guides-crosscheck.md`
+   (created by the first run), so the next run diffs against it and only re-reads what changed.
+5. A divergence becomes a TODO (bug on `main`) before the release goes out.
+
+**Make it repeatable:** a `tools/guides-crosscheck.mjs` that extracts the cited rules from the guide
+pages into a checklist (rule text, citation, page, `.house`/`.fixed` excluded) and diffs it against
+the last run's record — the comparison itself is a reading task, so the tool's job is to make sure
+nothing is skipped and nothing unchanged is re-done. Then a step in the release checklist (CLAUDE.md,
+*Versions and branches*).
+
+Known overlaps to expect on the first run: reloading (TODO 114, SR3 p.280), healing (TODO 115),
+grenades (the Grenade Range Table, SR3 p.119), cyberware grades (TODO 86, M&M p.45), combat (the
+ranged sequence, dodge, staging).
