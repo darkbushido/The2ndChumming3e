@@ -2118,7 +2118,10 @@ and the healing *patient* picker (downtime care is off the map).
 **Walked by the agent 2026-09-14** (mcp-api): Session Rewards lists only SWAT Team Member and
 Troll Street Dealer (was five); `sceneFirst` against *Test Map*'s tokens gives its four and drops
 Windage; the empty active scene falls back to everyone.
-- [ ] **Needs a drawn canvas** (the agent's pane cannot draw one): with tokens on the viewed scene, open 💥 Chunky Salsa from Rollable Tables → only those actors; Falling Damage / Escape Artist / Barrier Damage the same.
+- [x] **Automated — `tests/e2e/actor-lists.spec.mjs`** (the GM's Playwright client draws the canvas the
+  agent's pane cannot): a disposable actor with a token on the active scene is offered by 💥 Chunky
+  Salsa, and every live character with no token there is not. Passing 2026-09-14.
+- [ ] Falling Damage / Escape Artist / Barrier Damage the same (same `sceneFirst` call; not automated).
 
 ## F3. Melee boxing-card TNs omit the wound modifier — FIXED 2026-09-14 (0.5.2)
 
@@ -2127,7 +2130,10 @@ astral combat *"uses the same rules as Melee Combat"* (p.174). Both boxing cards
 `_rollWave`, which never adds `woundMod` — and `SR3ECombatModifiers.js` said `rollPool` did. Each
 fighter's own wounds now go into their own TN (`SR3EActor.woundTN`), melee and astral, and the GM
 window's note says so. `tests/melee-wounds.test.mjs` + a mutant.
-- [ ] Give the attacker 3 Stun boxes (−2) → melee attack → the GM window and the boxing card start the attacker at **6**, the unhurt defender at 4, and the note reads *"… wounded +2"*. Same from 🌀 astral combat.
+- [x] **Automated — `tests/e2e/melee-wounds.spec.mjs`**: Player2's attacker with 3 Stun boxes (−2)
+  attacks Player3's troll; the GM window on the GM's client starts the attacker **+2** over an unhurt
+  baseline run, the defender's TN does not move, and the note reads *"… wounded +2"*. Passing 2026-09-14.
+- [ ] The same from 🌀 astral combat (same `woundTN`; not automated).
 
 ## F4. Melee / cybercombat / contested results ignore explosion waves (TN > 6 only) — FIXED 2026-09-14 (0.5.2)
 
