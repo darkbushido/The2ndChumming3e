@@ -95,21 +95,24 @@ export async function run(t) {
   /* ── Every alias must name something that actually ships ─────────────────────────────── */
   const names = new Set();
   let readable = true;
+  let copy = null;
   try {
     const { ClassicLevel } = await import('classic-level');
     const { readdirSync } = await import('node:fs');
     const { fileURLToPath } = await import('node:url');
     const { dirname, join } = await import('node:path');
-    const packs = join(dirname(fileURLToPath(import.meta.url)), '..', 'packs');
-    for (const p of readdirSync(packs)) {
-      const db = new ClassicLevel(join(packs, p), { valueEncoding: 'json' });
+    const { copyPacks } = await import('../tools/lib/pack-copy.mjs');
+    // ⚠ A COPY — opening the checkout's own packs rewrites their log files (tools/lib/pack-copy.mjs).
+    copy = copyPacks(join(dirname(fileURLToPath(import.meta.url)), '..', 'packs'));
+    for (const p of readdirSync(copy.dir)) {
+      const db = new ClassicLevel(join(copy.dir, p), { valueEncoding: 'json' });
       try { await db.open(); } catch { readable = false; continue; }
       for await (const [k, v] of db.iterator()) {
         if (String(k).startsWith('!items!') && v?.name) names.add(v.name);
       }
       await db.close();
     }
-  } catch { readable = false; }
+  } catch { readable = false; } finally { copy?.cleanup(); }
 
   if (!readable || names.size === 0) {
     // ⚠ Not a failure: a LevelDB allows one process, so an open Foundry legitimately blocks this.

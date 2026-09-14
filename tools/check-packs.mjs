@@ -26,12 +26,19 @@
  * database — there is no shared-read mode. A lock error is reported as "close Foundry" rather
  * than as a stack trace, because that is what it always means.
  *
+ * ⚠ **`--repo` without `--fix` reads a COPY.** Merely opening a LevelDB rewrites its log and
+ * MANIFEST files, so checking the checkout's packs used to leave all 82 of them "modified" in
+ * git with byte-for-byte identical content — churn nobody should commit. A read-only check of
+ * the repo therefore opens a throwaway copy in the temp directory. (An install is not in git,
+ * and must stay the real thing so a running Foundry still reports as a lock.)
+ *
  * ⚠ **`--fix` deletes only what it can prove is redundant.** A malformed record is removed
  * only when some *other*, properly-keyed record in the same pack is byte-identical in
  * content. Anything else is reported and left alone. See `CONTENT_KEYS` for what "content"
  * means and, just as importantly, what it excludes and why.
  */
 import { readdirSync, existsSync, readFileSync } from 'node:fs';
+import { copyPacks } from './lib/pack-copy.mjs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { ClassicLevel } from 'classic-level';
@@ -48,12 +55,18 @@ const target = process.argv.includes('--repo')
     ?? process.env.SR3E_INSTALL
     ?? join(process.env.LOCALAPPDATA ?? '', 'FoundryVTT', 'Data', 'systems', 'The2ndChumming3e'));
 
-const PACKS = join(target, 'packs');
-if (!existsSync(PACKS)) {
-  console.error(`\nNo packs directory at ${PACKS}`);
+const SOURCE_PACKS = join(target, 'packs');
+if (!existsSync(SOURCE_PACKS)) {
+  console.error(`\nNo packs directory at ${SOURCE_PACKS}`);
   console.error('Pass the path to a Foundry system directory, or set SR3E_INSTALL.\n');
   process.exit(2);
 }
+
+/* A read-only look at the checkout opens a copy, so git sees no churn (see the header). */
+const READ_COPY = process.argv.includes('--repo') && !FIX;
+const copy      = READ_COPY ? copyPacks(SOURCE_PACKS) : null;
+if (copy) process.on('exit', copy.cleanup);
+const PACKS = copy ? copy.dir : SOURCE_PACKS;
 
 /**
  * The fields that make a document what it IS, for the redundancy test.
