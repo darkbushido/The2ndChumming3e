@@ -125,7 +125,8 @@ export class SR3ESpiritSummoning {
    * @param {string} [defaultSpiritType]  Pre-select this spirit type key.
    */
   static async openSummonDialog(conjurer, defaultSpiritType = 'earth_elemental') {
-    const magicBase      = conjurer.system?.attributes?.magic?.base ?? 0;
+    // "Force is greater than the summoner's Magic Attribute" — the EFFECTIVE rating (F5; it read `base`).
+    const magicBase      = conjurer.system?.attributes?.magic?.value ?? conjurer.system?.attributes?.magic?.base ?? 0;
     const charisma       = conjurer.system?.attributes?.charisma?.base ?? conjurer.system?.attributes?.charisma?.value ?? 1;
     const conjuringSkill = SR3ESpiritSummoning._getConjuringRating(conjurer);
     const maxHold        = Math.max(0, conjuringSkill - 1);   // keep ≥1 die for the Conjuring Test

@@ -48,8 +48,9 @@ export class SR3EWard {
   /* ------------------------------------------------------------------ */
 
   static async openCastDialog(caster) {
-    const magicBase = caster.system.attributes?.magic?.base ?? 0;
-    if (magicBase <= 0) { ui.notifications.warn(`${caster.name} is not Awakened and cannot cast a ward.`); return; }
+    if ((caster.system.attributes?.magic?.base ?? 0) <= 0) { ui.notifications.warn(`${caster.name} is not Awakened and cannot cast a ward.`); return; }
+    // "the maximum Force you can give a ward equals your Magic Attribute" — the EFFECTIVE rating (F5).
+    const magicBase = caster.system.attributes?.magic?.value ?? caster.system.attributes?.magic?.base ?? 0;
 
     let result = null;
     await foundry.applications.api.DialogV2.wait({
@@ -202,7 +203,7 @@ export class SR3EWard {
     let damageBase, rawDamage;
     if (result.mode === 'focus') {
       const focus = SR3EWard._activeWeaponFocus(attacker);
-      rawDamage  = focus?.system?.damage ?? `${attacker.system.attributes?.magic?.base ?? 1}M`;
+      rawDamage  = focus?.system?.damage ?? `${attacker.system.attributes?.magic?.value ?? attacker.system.attributes?.magic?.base ?? 1}M`;   // F5
       damageBase = game.sr3e.SR3EItem.parseDamageCode(rawDamage, attacker) ?? { power: 1, level: 'M', isStun: true };
     } else if (result.mode === 'sorcery') {
       rawDamage  = `${result.force}M`;
@@ -211,7 +212,7 @@ export class SR3EWard {
       rawDamage  = `${result.force}M`;
       damageBase = { power: result.force, level: 'M', isStun: true };
     } else {
-      const magicBase = attacker.system.attributes?.magic?.base ?? 1;
+      const magicBase = attacker.system.attributes?.magic?.value ?? attacker.system.attributes?.magic?.base ?? 1;   // F5
       rawDamage  = `${magicBase}M`;
       damageBase = { power: magicBase, level: 'M', isStun: true };
     }
@@ -261,7 +262,7 @@ export class SR3EWard {
     btn.disabled = true;
     btn.textContent = '⏳ Resisting…';
 
-    const attackerMagic = attacker?.system?.attributes?.magic?.base ?? attacker?.system?.attributes?.magic?.value ?? 1;
+    const attackerMagic = attacker?.system?.attributes?.magic?.value ?? attacker?.system?.attributes?.magic?.base ?? 1;   // F5: effective first
     await ward.rollPool(Math.max(1, ward.system.force), Math.max(2, attackerMagic), `🛡 ${ward.name} Resists`, {
       isWardSoakRoll: true,
       wardSoakContext: {

@@ -1270,6 +1270,25 @@ export const MUTANTS = [
   },
 
   {
+    id:     'drain-reads-base-magic',
+    suite:  'magic-attribute',
+    ...ACTOR, method: 'magicAttribute',
+    was:    'SR3 p.182 — Physical Drain when Force exceeds the caster\'s Magic ATTRIBUTE, which '
+          + 'Essence loss lowers. Dispelling, banishing and conjuring read magic.base, so one caster '
+          + 'at one Force took Physical Drain in one flow and Stun in another (F5)',
+    impl:   (attr) => attr?.magic?.base ?? 0,
+  },
+  {
+    id:     'spell-pool-recount-reads-base',
+    suite:  'magic-attribute',
+    ...ACTOR, method: 'spellPoolFor',
+    was:    'spendSpellPool and rollDispel recounted Spell Pool from base INT/WIL/Magic, so a caster '
+          + 'whose Magic had dropped could spend dice the sheet did not show (F5)',
+    impl:   (attr) => (attr?.magic?.base ?? 0) > 0
+      ? Math.floor(((attr.intelligence?.base ?? 0) + (attr.willpower?.base ?? 0) + attr.magic.base) / 3) : null,
+  },
+
+  {
     id:     'dwarf-toxin-resistance-missing',
     suite:  'racial',
     ...ACTOR, method: 'racialSituational',

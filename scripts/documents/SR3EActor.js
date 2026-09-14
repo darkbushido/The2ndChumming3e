@@ -2182,14 +2182,7 @@ _prepareCharacter(sys, attr) {
   const combatPoolSpent     = sys.combatPoolSpent ?? 0;
   const availableCombatPool = Math.max(0, combatPool - combatPoolSpent);
 
-  const magicEff      = attr.magic?.value ?? 0;
-  const spellPoolBase = magicBase > 0
-    ? Math.max(0, Math.floor(
-        ((attr.intelligence?.value ?? 0) +
-         (attr.willpower?.value    ?? 0) +
-         magicEff) / 3
-      ))
-    : null;
+  const spellPoolBase = SR3EActor.spellPoolFor(attr);
   const spellPool          = spellPoolBase !== null ? spellPoolBase + (sys.spellPoolMod ?? 0) : null;
   const spellPoolSpent     = magicBase > 0 ? (sys.spellPoolSpent ?? 0) : 0;
   const availableSpellPool = spellPool !== null ? Math.max(0, spellPool - spellPoolSpent) : null;
@@ -2512,6 +2505,33 @@ _prepareCharacter(sys, attr) {
       footerNote:            options.footerNote            ?? null,
       crashOnFailVehicleId:  options.crashOnFailVehicleId  ?? null,
     });
+  }
+
+  /**
+   * The caster's Magic ATTRIBUTE — the effective rating, not the starting one · F5.
+   *
+   * > "If the Force of the spell is greater than the caster's Magic Attribute, the Drain causes
+   * > physical damage." — *SR3 p.182*
+   *
+   * and Essence loss lowers that attribute itself (*"a magician with an Essence Rating of 4.5 has a
+   * Magic Rating of 4"*), which is what `magic.value` holds. Casting read `value`; dispelling, the
+   * Drain card's warning and banishing read `magic.base`, so the same caster at the same Force took
+   * Physical Drain in one flow and Stun in another. Falls back to `base` for an actor not yet derived.
+   */
+  static magicAttribute(attr) {
+    return attr?.magic?.value ?? attr?.magic?.base ?? 0;
+  }
+
+  /**
+   * Spell Pool before `spellPoolMod` — ⌊(INT + WIL + Magic) ÷ 3⌋, off the EFFECTIVE values · SR3 p.43.
+   * The one formula: the derivation, `spendSpellPool` and `rollDispel` each had their own, and the
+   * two recomputations read `base`, so a caster whose Magic had dropped could spend Spell Pool dice
+   * the sheet did not show (F5). null for someone not Awakened.
+   */
+  static spellPoolFor(attr) {
+    if (!((attr?.magic?.base ?? 0) > 0)) return null;
+    const v = k => attr?.[k]?.value ?? attr?.[k]?.base ?? 0;
+    return Math.max(0, Math.floor((v('intelligence') + v('willpower') + SR3EActor.magicAttribute(attr)) / 3));
   }
 
   /**
@@ -8098,13 +8118,9 @@ _prepareCharacter(sys, attr) {
     }
     return game.sr3e.SR3EQueue.run(this.uuid, async () => {
       // Compute available directly — derived cache may be stale
-      const attr       = this.system.attributes ?? {};
-      const magicBase  = attr.magic?.base ?? 0;
+      const spBase     = SR3EActor.spellPoolFor(this.system.attributes ?? {});   // the sheet's formula (F5)
       let available    = 0;
-      if (magicBase > 0) {
-        const int2     = attr.intelligence?.base ?? 0;
-        const wil2     = attr.willpower?.base    ?? 0;
-        const spBase   = Math.max(0, Math.floor((int2 + wil2 + magicBase) / 3));
+      if (spBase !== null) {
         const spTotal  = spBase + (this.system.spellPoolMod ?? 0);
         available      = Math.max(0, spTotal - (this.system.spellPoolSpent ?? 0));
       }
@@ -8774,7 +8790,7 @@ _prepareCharacter(sys, attr) {
     const attrVal    = attr2[resistAttr]?.base ?? attr2[resistAttr]?.value ?? 1;
     const bonusDice  = Math.max(0, payload.bonusDice ?? 0);
     const basePool   = Math.max(1, attrVal + bonusDice);
-    const magicBase  = attr2.magic?.base ?? 0;
+    const magicAttr  = SR3EActor.magicAttribute(attr2);   // the number the Physical test used (F5)
 
     // Use the spell pool count computed at roll time and carried in the payload.
     // This avoids any stale-derived-cache or wrong-actor-reference issues.
@@ -8792,7 +8808,7 @@ _prepareCharacter(sys, attr) {
     }).replace(/'/g, '&#39;');
 
     const physWarning = drainIsPhysical
-      ? `<div style="color:var(--sr-red);font-size:11px;margin-top:4px">⚠ Force (${force}) &gt; Magic (${magicBase}) — Drain is Physical!</div>`
+      ? `<div style="color:var(--sr-red);font-size:11px;margin-top:4px">⚠ Force (${force}) &gt; Magic (${magicAttr}) — Drain is Physical!</div>`
       : '';
 
     // ⚠ Spell Pool may augment a Drain Resistance Test — but only for SORCERY.
@@ -9228,9 +9244,7 @@ _prepareCharacter(sys, attr) {
     const specBonus   = hasDispelSpec ? 2 : 0;
     const sorceryDice = Math.max(0, sorceryRating + specBonus);
 
-    const intVal  = this.system.attributes?.intelligence?.base ?? 0;
-    const wilVal  = this.system.attributes?.willpower?.base    ?? 0;
-    const spBase  = Math.max(0, Math.floor((intVal + wilVal + magicBase) / 3));
+    const spBase    = SR3EActor.spellPoolFor(this.system.attributes ?? {}) ?? 0;   // F5
     const spTotal   = spBase + (this.system.spellPoolMod ?? 0);
     const spSpent   = this.system.spellPoolSpent ?? 0;
     const availSpell = Math.max(0, spTotal - spSpent);
@@ -9273,8 +9287,8 @@ _prepareCharacter(sys, attr) {
       : `Sorcery ${sorceryRating}`;
     const label = `✦ ${this.name} — Dispel [F${force}] ${sorceryLabel}`;
 
-    // Drain is Physical if Force > Magic attribute (same rule as casting)
-    const drainIsPhysical = force > magicBase;
+    // Drain is Physical if Force > the Magic ATTRIBUTE — the effective one, as casting reads it (F5)
+    const drainIsPhysical = force > SR3EActor.magicAttribute(this.system.attributes);
 
     return this.rollPool(pool, force, label, {
       isDispelRoll:  true,
@@ -9335,7 +9349,9 @@ _prepareCharacter(sys, attr) {
     const spiritForce  = game.sr3e.SR3ESpiritSummoning._spiritFlag(spirit, 'force') ?? 4;
     const isSummoner   = game.sr3e.SR3ESpiritSummoning._spiritFlag(spirit, 'conjurerId') === this.id;
     const tempLoss     = this.getFlag('The2ndChumming3e', 'tempMagicLoss') ?? 0;
-    const effectiveMagic = Math.max(1, magicBase - tempLoss);
+    // The spirit resists against the banisher's Magic ATTRIBUTE — the effective one (F5) — less
+    // anything a spirit has already taken off it this combat.
+    const effectiveMagic = Math.max(1, SR3EActor.magicAttribute(this.system.attributes) - tempLoss);
 
     // Conjuring skill
     const conjSkill   = this.items.find(i => i.type === 'skill' && /conjuring/i.test(i.name));
@@ -10007,7 +10023,7 @@ _prepareCharacter(sys, attr) {
       if (a.type === 'vehicle' || val > 0) sources.push({ group: 'attr', label: `${label} (${val})`, value: val });
     }
     if (a.type !== 'vehicle') {
-      const mag = attr.magic?.base ?? 0;
+      const mag = SR3EActor.magicAttribute(attr);   // the effective rating, not the starting one (F5)
       if (mag > 0) sources.push({ group: 'attr', label: `Magic (${mag})`, value: mag });
     }
     for (const sk of a.items.filter(i => i.type === 'skill').sort((x,y) => x.name.localeCompare(y.name))) {

@@ -2151,17 +2151,29 @@ already declared the winner; click 💥 → dice update, result card doesn't.
 **Related:** MIJI resolves both sides' explosions silently (`_resolveRoll`) — flagged as wrong
 for the same reason; confirm desired behaviour.
 
-## F5. Drain track (Stun vs Physical) inconsistent between casting and dispelling — OPEN
+## F5. Drain track (Stun vs Physical) inconsistent between casting and dispelling — FIXED 2026-09-14 (0.5.2)
 
-Spellcasting decides Physical drain with **effective** Magic (`magic.value`); dispelling and
-banishing use **base** Magic (`magic.base`, three sites in SR3EActor.js). A caster with reduced
-effective Magic (Essence loss) gets Stun drain in one flow and Physical in the other at the
-same Force.
+The book says **Magic Attribute** every time — casting (*"If the Force of the spell is greater than
+the caster's Magic Attribute, the Drain causes physical damage"*, SR3 p.182), dispelling, summoning,
+and a ward's maximum Force — and Essence loss lowers that attribute (*"a magician with an Essence
+Rating of 4.5 has a Magic Rating of 4"*). That is `magic.value`. Casting read it; these read
+`magic.base`, all now `SR3EActor.magicAttribute`:
 
-**Proposed fix:** standardize all on `magic.value ?? magic.base` (RAW: the caster's Magic).
+- **Drain track** — dispelling, conjuring (all three uses), and the Drain card's "Force > Magic" warning.
+- **Banishing** — the spirit resisted against base Magic.
+- **Spell Pool** — `spendSpellPool`, `rollDispel` and the casting flow each recounted it from base
+  INT/WIL/Magic, so a caster whose Magic had dropped could spend dice the sheet did not show. One
+  formula now, `SR3EActor.spellPoolFor`, which the derivation uses too.
+- **Wards** (default/max Force, an attacker's Magic damage and resist TN) and the contested roll's
+  *Magic* source.
 
-**Repro:** character with magic.base 6, magic.value 4 → cast at Force 5 → drain is Physical;
-dispel at Force 5 → drain is Stun. They should match (both Physical).
+⚠ **Kept on `base` by design:** the "is this character Awakened?" gates, adept power-level caps
+(documented at the call site), and permanent Magic loss (a write). `tests/magic-attribute.test.mjs`
+ratchets every other read; two mutants.
+
+**Checked live 2026-09-14:** *Bruce Lee* in the test world is the repro — base 6, effective 5; a
+Force 6 dispel now takes Physical Drain as a Force 6 cast does, and `spellPoolFor` equals the sheet's
+Spell Pool for every actor.
 
 ## F6. Wrong range-TN fallback array — FIXED 2026-09-14 (0.5.2)
 

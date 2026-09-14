@@ -4126,10 +4126,8 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     const specBonus   = hasSpellcastingSpec ? 2 : 0;
     const sorceryDice = Math.max(0, sorceryRating + specBonus);
 
-    const magicBase2 = sAttr.magic?.base ?? 0;
-    const intVal     = sAttr.intelligence?.base ?? 0;
-    const wilVal     = sAttr.willpower?.base    ?? 0;
-    const spBase2    = Math.max(0, Math.floor((intVal + wilVal + magicBase2) / 3));
+    // The sheet's Spell Pool — SR3EActor.spellPoolFor, effective values (F5; this read `base`).
+    const spBase2    = game.sr3e.SR3EActor.spellPoolFor(sAttr) ?? 0;
     const spTotal2   = spBase2 + (actor.system.spellPoolMod ?? 0);
     const availMagic = Math.max(0, spTotal2 - (actor.system.spellPoolSpent ?? 0));
 
