@@ -26,6 +26,7 @@ independent.
 | 🔴 Confirmed bugs, still open | **91** *(**112** · **113** fixed on `fix/armor-and-stacks`; **97** · **114** · **116** · **118** fixed in 0.5.2)* *(**101** · **71** · **72** · **73** · **74** · **80** · **81** · **88** · **89** · **94** · **95** · **96** · **102** · **106** · **107** done)* |
 | 📕 Rules not implemented | 47 · 48 · 49 · 53 · 57 · **109** *(Stress)* · **110** *(TLE-x, needs 109)* · **111** *(CDS)* *(**3** · **4** · **30** · **75** · **98** · **76** done; **115** built on `feature/healing`)* |
 | 🧙 Adept powers — see `audit/adept-powers-audit.md` | **78** *(**59**-**70**, **77** done)* |
+| 🪄 Spells & drugs | **123** *(audit every shipped spell and the casting rules)* · **124** *(drug rules — addiction, tolerance, effects)* |
 | 🖥 Matrix | **119** *(audit The Matrix Defragged v2 — the book is now in the library)* · **120** *(HoloSuite Hacking adapter / fork)* |
 | 📦 Content gaps | **117** *(934 documents lack a book/page)* · 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(gear stubs only)* · **90** · **92** · **104** *(**83** · **84** · **87** done)* |
 | 🔧 Tooling & infrastructure | 7 · 12 · 18 · 56 · **100** · **103** · **105** · **121** *(rules vs sr3-guides, every release)* · **122** *(ratings in the field for weapons/cyber/bio)* *(**20** · **36** · **99** done)* |
@@ -7881,3 +7882,72 @@ null; `displayName(item)` showing `Name [N]` without doubling a bracket (answeri
   Reflexes*;
 - `displayName` on every sheet row and chat card that prints these names;
 - the rename itself in the packs (derived ids, repo + install) and a migration for world copies.
+
+<a id="123"></a>
+
+## 123. Audit every shipped spell and the casting rules — **requested 2026-09-14**
+
+**Request (maintainer):** *"add a todo for a spell audit."* Raised while fixing F5 (Drain read the
+wrong Magic in three flows) and alongside the maintainer's *"we probably need a spell casting
+helper just like the healing helper"* — the audit comes first, so the helper is built on verified
+rules.
+
+**Scope — two halves, the same method as `audit/adept-powers-audit.md`:**
+
+1. **The data — 244 spells in five packs:** `sr3e-sr3-spells` 96 · `sr3e-mits-spells` 99 ·
+   `sr3e-tss-spells` 40 · `sr3e-twl-spells` 7 · `sr3e-sota2-spells` 2. For each: type (Mana/Physical),
+   target, range and the `(A)` area marker, duration, **drain code**, category, and book/page, against
+   the printed spell entry. `parseDrainFormula` must parse every shipped drain code — list any it
+   cannot, and any spell whose drain parses to something other than the book.
+2. **The rules the code applies** — each checked against the PDF, quoted with its printed page:
+   Force and the Physical/Stun Drain line (p.180/182, now `SR3EActor.magicAttribute`), the Drain
+   Resistance Test (p.183: *"the caster's Willpower dice, plus any Spell Pool dice"*, TN ⌊Force ÷ 2⌋
+   + the Drain Modifier), the Spell Pool cap (*"No more Spell Pool dice can be used than the number
+   of Sorcery dice allocated"*, p.180), target numbers and resistance (p.182-183), area spells,
+   counterspelling/Spell Defense, dispelling, and astral casting (*"All spells cast while astrally
+   projecting cause physical damage, regardless of Force"*, p.182).
+
+**Leads found while writing this — verify, don't assume:**
+- **Sustained spells are not modelled** beyond the `sr3e-sustaining` status icon. p.180: *"Each spell
+  sustained at the moment adds +2 to the Power of the Drain"*; p.183 also has sustaining raise target
+  numbers. Nothing in the casting or Drain code reads either.
+- **The astral clause** — casting while projecting should always be Physical Drain; check whether
+  `drainIsPhysical` looks at `astralMode`.
+- **Drain resistance reads base Willpower** (`SR3EActor.js`, the Drain card's `attrVal`), so a Pain
+  Editor or Adrenal Pump's +1 WIL is not counted. The maintainer, 2026-09-14: not a big problem
+  unless something augments Willpower — M&M p.63/p.73, the Increase Willpower spell (SR3 p.194) and
+  three drugs do. Decide here.
+- **Increase Attribute spells** (SR3 p.194 — Physical *or* Mental, +1 per 2 successes up to Force, not
+  on cybered Attributes) have no effect path; a GM edits the attribute by hand.
+
+**Deliverable:** `audit/spells-audit.md` (per-spell table + rules checklist), pack fixes through a
+committed tool, a TODO per verified code divergence (bug fixes on `main`), and a proposed step list
+for the spellcasting helper for the maintainer to review before anything is built.
+
+<a id="124"></a>
+
+## 124. Drug rules — addiction, tolerance and effects — **requested 2026-09-14**
+
+**Request (maintainer):** *"add … another for drug implementation."*
+
+**Today:** `drug` is a **reference-only** item type (`DrugData`: category, addiction, tolerance,
+effect, speed, vector, availability, cost, street index, notes). 48 drugs ship in four packs
+(`sr3e-mm-drugs` 40 · `sr3e-st-drugs` 3 · `sr3e-tal-drugs` 3 · `sr3e-sota-drugs` 2), plus the
+default-book gear branch's `sr3e-sr2-drugs` / `sr3e-sr3-drugs` and M&M's merged listings. The actor
+sheet lists drugs; **nothing rolls or applies anything.**
+
+**What the books define — audit first, quoting each page:**
+- **Effects** with game numbers, e.g. M&M: Kamikaze (+1 Quickness, +2 Strength, +1 Willpower, +1D6
+  Initiative, p.119), Zen (+1 Willpower, −2 Reaction, p.122), Deepweed (+1 Willpower, p.123), Laés
+  (a Body (6) Test against memory loss); SR3 core's toxins and compounds.
+- **Onset (Speed), duration, and the crash** after it wears off.
+- **Addiction and Tolerance** — the Addiction ratings (`2M`, `4M+3P`, `5M/5P` — Mental/Physical)
+  and the tests they drive.
+- **Toxin resistance** — already partly modelled: the `toxin` situational bonus (Body Control,
+  Nephritic Screen, a dwarf's +2) on the attribute-roll dialog (TODO 98).
+
+**Shape it would take** (a feature — a branch, the minor version): a "💊 Take" action on a drug item
+that applies its effects as a timed boost (the Adrenal Pump's `augmentations` pattern: rolled
+duration, counted down on the round hook, a crash card on expiry), a resistance/addiction roll card
+in the healing helper's style, and the effects as data on the item rather than parsed from prose.
+Effects offered and applied only on a click — nothing automatic, per the design ethos.
