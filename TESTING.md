@@ -406,16 +406,16 @@ On the active combatant's card: **Complex** (full width) + two **Simple** button
 Eighteen dialogs moved from the global `renderDialogV2` hook to their own `render` option. For
 each, open it and change the one control that recomputes something; the live value must follow.
 Then open the same dialog **twice at once** where that is possible — both copies must work.
-- [ ] Defaulting (a skill the actor lacks): switching Default to shows the right row and dice.
+- [x] Defaulting — **two open at once**, each followed only its own dropdown (Quickness 4 / Strength 5 → Willpower 6 / Body 2). 2026-09-13.
 - [ ] Vehicle weapon, Gunnery shot type (a degraded channel): Sig TN follows the shot type.
-- [ ] Grenade roll options: grenade type recomputes the range TN.
-- [ ] Called shot (melee): "Specific sub-target" shows the sub-target row.
-- [ ] Fire Mode: switching mode updates the recoil preview; dismiss it, open another, still works.
+- [x] Grenade roll options: at 60 m, Standard / Aerodynamic / Launcher → TN 9 / 8 / 5. 2026-09-13.
+- [x] Called shot: "Specific sub-target" shows the sub-target row. 2026-09-13.
+- [x] Fire Mode: FA shows its section; the recoil preview follows rounds and compensation. 2026-09-13.
 - [ ] Ward attack: Sorcery / Spirit shows the extra row.
-- [ ] Browse Skills, Browse Orthodox Cyberdecks, Browse Orthodox Programs, the item sheet's compendium picker: the filter narrows the rows and a row click selects.
-- [ ] Drone Comprehension: the TN readout follows TN and secondary-drone.
-- [ ] Chunky Salsa (the canvas draws), Barrier Damage (effective BR), Falling Damage (preview), Escape Artist (preview).
-- [ ] MIJI Infiltration allocation counter; IVIS setup TN readout; IVIS split counter.
+- [ ] Browse Orthodox Cyberdecks, Browse Orthodox Programs (Orthodox ruleset). *(Browse Skills 419 → 4 on "pistol", the compendium picker 132 → 18 on "ares" ✓ 2026-09-13)*
+- [x] Drone Comprehension: the TN readout follows TN. 2026-09-13.
+- [x] Chunky Salsa (the canvas draws), Barrier Damage, Falling Damage, Escape Artist (each readout recomputes). 2026-09-13.
+- [ ] MIJI Infiltration allocation counter; IVIS split counter. *(IVIS setup TN readout ✓ 2026-09-13)*
 
 ---
 
