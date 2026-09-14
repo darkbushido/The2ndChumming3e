@@ -360,13 +360,19 @@ const MIGRATIONS = [
       if (sys.countedIn === 'reloads' || Number(sys.rounds) > 0 || Number(sys.reloads) > 0) return null;
       const r = AmmoStock.fromName(item.name);
       if (!r) return null;
-      const delta = { 'system.countedIn': 'reloads', 'system.reloads': r.reloads ?? 1, 'system.roundsPerReload': r.roundsPerReload };
-      if (r.ammoType && r.ammoType !== 'regular' && (sys.ammoType ?? 'regular') === 'regular') delta['system.ammoType'] = r.ammoType;
-      if ((sys.loadMechanism ?? 'c') === 'c') {
+      const delta = {};
+      let mech = sys.loadMechanism ?? 'c';
+      if (mech === 'c') {
         const caps = [...(item.parent?.items ?? [])].filter(i => i.type === 'firearm').map(i => i.system?.ammunition);
-        const mech = AmmoStock.mechanismFor(r.roundsPerReload, caps);
-        if (mech && mech !== 'c') delta['system.loadMechanism'] = mech;
+        const found = AmmoStock.mechanismFor(r.roundsPerReload, caps);
+        if (found && found !== 'c') delta['system.loadMechanism'] = mech = found;
       }
+      // ⚠ Only a clip, drum, cylinder or belt has pre-filled reloads (SR3 p.280). Anything else is
+      // loaded by hand, so the same stock goes in as loose rounds — still marked, so it is migrated once.
+      const count = r.reloads ?? 1;
+      if (AmmoStock.kind(mech) === 'either') Object.assign(delta, { 'system.countedIn': 'reloads', 'system.reloads': count, 'system.roundsPerReload': r.roundsPerReload });
+      else Object.assign(delta, { 'system.countedIn': 'reloads', 'system.rounds': count * r.roundsPerReload });
+      if (r.ammoType && r.ammoType !== 'regular' && (sys.ammoType ?? 'regular') === 'regular') delta['system.ammoType'] = r.ammoType;
       return delta;
     },
   },

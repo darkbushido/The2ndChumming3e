@@ -1845,11 +1845,15 @@ export class SR3EItem extends Item {
   }
 
   /**
-   * Reload this firearm from the actor's ammo stockpile.
-   * Magazine size comes from the gun's ammo-capacity string; compatible stock is
-   * filtered by loading mechanism. Full-swap: any rounds left in the old mag are
-   * discarded. When ammo tracking is off, only the loaded type is set (no stock math).
-   * A stock is counted in loose rounds or in reloads (clips, speed-loaders) — `AmmoStock`, TODO 114.
+   * Reload this firearm (or nock a bow/crossbow) from the actor's ammo stock · SR3 p.280, TODO 114.
+   *
+   * Magazine size comes from the gun's ammo-capacity string; compatible stock is filtered by
+   * loading mechanism. `AmmoStock` holds the rule — the book's Ammo Reloading Table:
+   * - **a reload** (pre-filled clip, speed loader, belt) is SWAPPED — one is used, and the rounds
+   *   left in the old one are lost;
+   * - **loose rounds** TOP UP, a Complex Action per (Quickness) rounds (2 for break action), and the
+   *   dialog asks how many go in this time.
+   * The action it takes is said, never enforced (TODO 48). Ammo tracking off: only the type is set.
    */
   async reload() {
     if (this.type !== 'firearm' && !this._usesNockedAmmo()) return;
@@ -1865,59 +1869,111 @@ export class SR3EItem extends Item {
       return;
     }
 
+    // ⚠ Not from storage — the stash is not on the character (TODO 113), the same rule as worn
+    // armour and a medkit. A stack split into storage used to be offered here.
     let stock = actor.items.filter(i =>
-      i.type === 'ammunition' && (!gunMech || (i.system.loadMechanism ?? 'c') === gunMech));
+      i.type === 'ammunition' && !i.getFlag('The2ndChumming3e', 'stored')
+      && (!gunMech || (i.system.loadMechanism ?? 'c') === gunMech));
     if (trackOn) stock = stock.filter(i => AmmoStock.stock(i.system).count > 0);
     if (stock.length === 0) {
       ui.notifications.warn(`No compatible ammo in stock for ${this.name}.`);
       return;
     }
 
-    const chosenId = await SR3EItem._promptReloadChoice(stock, this, magSize, trackOn);
-    if (!chosenId) return;
-    const ammo = actor.items.get(chosenId);
+    const current = { rounds: this.system.loadedRounds ?? 0, type: this.system.loadedAmmoType ?? null };
+    const choice  = await SR3EItem._promptReloadChoice(stock, this, magSize, trackOn, current);
+    if (!choice?.id) return;
+    const ammo = actor.items.get(choice.id);
     if (!ammo) return;
     const type      = ammo.system.ammoType ?? 'regular';
     const typeLabel = SR3E.ammoTypes[type]?.label ?? 'Regular';
 
-    if (trackOn) {
-      // Rounds or reloads — TODO 114. A reload is used up whole; loose rounds fill the magazine.
-      const plan = AmmoStock.reloadPlan(ammo.system, magSize);
-      await ammo.update({ [`system.${plan.field}`]: plan.remaining });
-      await this.update({ 'system.loadedAmmoType': type, 'system.loadedRounds': plan.loaded });
-      const why = plan.unit === 'reloads'
-        ? (plan.mismatch ? ` (a ${ammo.system.roundsPerReload}-round reload in a ${magSize}-round magazine)` : '')
-          + ` — ${AmmoStock.describe({ ...ammo.system, reloads: plan.remaining })} left`
-        : (plan.short ? ` (stock ran short of ${magSize})` : '');
-      ui.notifications.info(`${this.name} loaded: ${plan.loaded} × ${typeLabel}${why}.`);
-    } else {
+    if (!trackOn) {
       await this.update({ 'system.loadedAmmoType': type, 'system.loadedRounds': magSize });
       ui.notifications.info(`${this.name} loaded with ${typeLabel}.`);
+      return;
     }
+
+    const plan = AmmoStock.reloadPlan(ammo.system, magSize, current, { want: choice.want });
+    if (plan.taken <= 0) {
+      ui.notifications.info(`${this.name} is already full — nothing loaded.`);
+      return;
+    }
+    await ammo.update({ [`system.${plan.field}`]: plan.remaining });
+    await this.update({ 'system.loadedAmmoType': type, 'system.loadedRounds': plan.loaded });
+    const quickness = actor.system?.attributes?.quickness?.value ?? 1;
+    const actions   = AmmoStock.reloadActions(ammo.system, { taken: plan.taken, quickness }).text;
+    const parts = [
+      `${this.name}: ${plan.loaded}/${magSize} × ${typeLabel}`,
+      plan.topUp ? `topped up with ${plan.taken}` : '',
+      plan.mismatch ? `a ${ammo.system.roundsPerReload}-round reload in a gun that holds ${magSize}` : '',
+      plan.discarded ? `${plan.discarded} unfired round${plan.discarded === 1 ? '' : 's'} lost with the old load` : '',
+      `${AmmoStock.describe({ ...ammo.system, [plan.field]: plan.remaining })} left`,
+    ].filter(Boolean);
+    ui.notifications.info(`${parts.join(' — ')}.${actions ? ` Takes: ${actions}.` : ''}`);
   }
 
   /**
-   * Reload dialog — pick which compatible stockpile to load. Returns ammo item id or null.
+   * Reload dialog — pick the stock to load and, for loose rounds, how many go in this time.
+   * Returns `{ id, want }` (`want` null = fill it) or null when cancelled. The action each choice
+   * takes (SR3 p.280) is shown live.
    */
-  static async _promptReloadChoice(stock, weapon, magSize, trackOn) {
+  static async _promptReloadChoice(stock, weapon, magSize, trackOn, current = {}) {
     const SR3E      = game.sr3e.SR3E;
     const mech      = weapon._weaponLoadMechanism();
     const mechLabel = mech ? (SR3E.ammoLoadMechanisms[mech] ?? mech) : '';
+    const quickness = weapon.actor?.system?.attributes?.quickness?.value ?? 1;
     const opts = stock.map((a, i) => {
       const typeLabel = SR3E.ammoTypes[a.system.ammoType ?? 'regular']?.label ?? 'Regular';
       const stockTxt  = trackOn ? ` — ${AmmoStock.describe(a.system)}` : '';
       return `<option value="${a.id}" ${i === 0 ? 'selected' : ''}>${a.name} (${typeLabel})${stockTxt}</option>`;
     }).join('');
+    const inGun = trackOn && (current.rounds ?? 0) > 0
+      ? ` In the gun now: <strong>${current.rounds}/${magSize}</strong> ${SR3E.ammoTypes[current.type ?? 'regular']?.label ?? ''}.` : '';
+
+    // Per dialog, never the global renderDialogV2 hook (TODO 20).
+    const wireReload = (_app, html) => {
+      const sel = html.querySelector('#reload-select');
+      const row = html.querySelector('#reload-rounds-row');
+      const inp = html.querySelector('#reload-rounds');
+      const out = html.querySelector('#reload-plan');
+      if (!sel || !out) return;
+      const refresh = (fromSelect = false) => {
+        const ammo = stock.find(a => a.id === sel.value);
+        if (!ammo || !trackOn) { out.textContent = ''; if (row) row.style.display = 'none'; return; }
+        const loose = AmmoStock.stock(ammo.system).unit === 'rounds';
+        const full  = AmmoStock.reloadPlan(ammo.system, magSize, current);   // fill it
+        if (row) row.style.display = loose ? '' : 'none';
+        if (loose && inp) {
+          inp.max = String(full.taken);
+          if (fromSelect || inp.value === '') inp.value = String(full.taken);
+        }
+        const want = loose && inp ? Number(inp.value) : null;
+        const plan = AmmoStock.reloadPlan(ammo.system, magSize, current, { want });
+        const act  = AmmoStock.reloadActions(ammo.system, { taken: plan.taken, quickness }).text;
+        out.textContent = plan.taken <= 0 ? 'Already full.'
+          : `${plan.loaded}/${magSize} in the gun afterwards${plan.discarded ? ` — ${plan.discarded} unfired lost` : ''}.${act ? ` ${act}.` : ''}`;
+      };
+      sel.addEventListener('change', () => refresh(true));
+      inp?.addEventListener('input', () => refresh(false));
+      refresh(true);
+    };
 
     let result = null;
     await foundry.applications.api.DialogV2.wait({
+      render: (_event, dialog) => wireReload(dialog, dialog.element),
       window: { title: `${weapon.name} — Reload` },
       content: `
         <div style="padding:8px 0">
           <p style="margin:0 0 8px;font-size:12px;color:var(--sr-muted)">
-            Choose ammo to load${mechLabel ? ` (only <strong>${mechLabel}</strong>-fed ammo shown)` : ''}.${trackOn ? ` Loads up to <strong>${magSize}</strong> rounds — one reload, or that many loose rounds; any in the current magazine are discarded.` : ''}
+            Choose ammo to load${mechLabel ? ` (only <strong>${mechLabel}</strong> ammo shown)` : ''}.${inGun}
           </p>
           <select id="reload-select" style="width:100%">${opts}</select>
+          <label id="reload-rounds-row" style="display:none;margin-top:6px;font-size:12px">
+            Loose rounds to insert:
+            <input type="number" id="reload-rounds" min="0" step="1" style="width:60px"/>
+          </label>
+          <p id="reload-plan" style="margin:6px 0 0;font-size:12px;color:var(--sr-muted)"></p>
         </div>`,
       buttons: [
         {
@@ -1925,7 +1981,11 @@ export class SR3EItem extends Item {
           action: 'reload',
           default: true,
           callback: (_e, _b, dialog) => {
-            result = dialog.element.querySelector('#reload-select')?.value ?? null;
+            const el   = dialog.element;
+            const id   = el.querySelector('#reload-select')?.value ?? null;
+            const row  = el.querySelector('#reload-rounds-row');
+            const want = row && row.style.display !== 'none' ? Math.max(0, parseInt(el.querySelector('#reload-rounds')?.value) || 0) : null;
+            result = id ? { id, want } : null;
           },
         },
         { label: 'Cancel', action: 'cancel' },

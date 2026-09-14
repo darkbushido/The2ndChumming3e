@@ -272,6 +272,11 @@ export async function run(t) {
   t.is('a type a GM chose is kept', am.fixItem(clip('10-Rnd Clip (Explosive)', { ammoType: 'gel' }))?.['system.ammoType'], undefined);
   t.is('a box of rounds is not a reload', am.fixItem(clip('Box of 50 rounds')), null);
   t.is('not ammunition: skipped', am.fixItem(typed('gear', '10-Rnd Clip (Regular)')), null);
+  const tube = { items: [{ type: 'firearm', system: { ammunition: '5(m)' } }] };
+  const byHand = am.fixItem(clip('5-Rnd Clip (Regular) ×3', {}, tube));
+  t.is('a reload named for a hand-loaded gun (5(m)) becomes 15 loose rounds (SR3 p.280)', byHand?.['system.rounds'], 15);
+  t.is('…fed to the internal magazine', byHand?.['system.loadMechanism'], 'm');
+  t.is('…and is not given reloads', byHand?.['system.reloads'], undefined);
   t.is('idempotent: an item already counted in reloads yields nothing',
     am.fixItem(clip('7-round cy reload ×6', { countedIn: 'reloads', reloads: 6, roundsPerReload: 7 })), null);
 }

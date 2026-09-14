@@ -227,9 +227,11 @@ MCP configuration (`~/.claude.json`), **never in this repository**.
 **Record results** in the branch's Foundry checklist (TODO 93 on `fix/racial-mods`): tick each
 step with the date and what was seen; log a new failure as its own TODO, observation only.
 
-⚠ **`packs/` churns under git whenever Foundry opens the packs** (LevelDB rotates its log and
-MANIFEST files). Never commit that churn; check integrity with `npm run packs:check:repo` with
-Foundry closed.
+⚠ **Opening a LevelDB rewrites its log and MANIFEST files, even to read.** Foundry opens the
+*install's* copy, not the checkout's; the churn in `packs/` came from our own tests and checks, which
+now read a temporary copy (`tools/lib/pack-copy.mjs`, enforced by `tests/pack-churn.test.mjs`).
+If `git status` ever shows pack files you did not mean to change, the content is almost certainly
+identical — verify, then `git checkout -- packs && git clean -f packs`.
 
 ---
 
@@ -415,16 +417,16 @@ Data-model change: **full Foundry restart** first.
 Eighteen dialogs moved from the global `renderDialogV2` hook to their own `render` option. For
 each, open it and change the one control that recomputes something; the live value must follow.
 Then open the same dialog **twice at once** where that is possible — both copies must work.
-- [ ] Defaulting (a skill the actor lacks): switching Default to shows the right row and dice.
+- [x] Defaulting — **two open at once**, each followed only its own dropdown (Quickness 4 / Strength 5 → Willpower 6 / Body 2). 2026-09-13.
 - [ ] Vehicle weapon, Gunnery shot type (a degraded channel): Sig TN follows the shot type.
-- [ ] Grenade roll options: grenade type recomputes the range TN.
-- [ ] Called shot (melee): "Specific sub-target" shows the sub-target row.
-- [ ] Fire Mode: switching mode updates the recoil preview; dismiss it, open another, still works.
+- [x] Grenade roll options: at 60 m, Standard / Aerodynamic / Launcher → TN 9 / 8 / 5. 2026-09-13.
+- [x] Called shot: "Specific sub-target" shows the sub-target row. 2026-09-13.
+- [x] Fire Mode: FA shows its section; the recoil preview follows rounds and compensation. 2026-09-13.
 - [ ] Ward attack: Sorcery / Spirit shows the extra row.
-- [ ] Browse Skills, Browse Orthodox Cyberdecks, Browse Orthodox Programs, the item sheet's compendium picker: the filter narrows the rows and a row click selects.
-- [ ] Drone Comprehension: the TN readout follows TN and secondary-drone.
-- [ ] Chunky Salsa (the canvas draws), Barrier Damage (effective BR), Falling Damage (preview), Escape Artist (preview).
-- [ ] MIJI Infiltration allocation counter; IVIS setup TN readout; IVIS split counter.
+- [ ] Browse Orthodox Cyberdecks, Browse Orthodox Programs (Orthodox ruleset). *(Browse Skills 419 → 4 on "pistol", the compendium picker 132 → 18 on "ares" ✓ 2026-09-13)*
+- [x] Drone Comprehension: the TN readout follows TN. 2026-09-13.
+- [x] Chunky Salsa (the canvas draws), Barrier Damage, Falling Damage, Escape Artist (each readout recomputes). 2026-09-13.
+- [ ] MIJI Infiltration allocation counter; IVIS split counter. *(IVIS setup TN readout ✓ 2026-09-13)*
 
 ---
 
@@ -515,14 +517,14 @@ World setting **Track Ammunition** (Configure Settings → System) gates all cou
 
 **Firing** uses whatever is loaded — no per-shot picker. When tracking on, the magazine decrements (1 SS/SA, 3 BF, N FA + walking-fire waste) and warns (never blocks) when empty.
 
-**Rounds or reloads (TODO 114, 0.5.2) — needs a live check.** Tracking on.
-- [ ] An ammunition item's sheet has **Counted In**: *Loose rounds* shows Rounds in Stock; *Reloads* shows Reloads and Rounds per Reload (blank = fills the gun). Switching re-renders the fields.
-- [ ] A revolver `7(cy)` and ammunition *7-round cy reload*, `cy`, Reloads 6, Rounds per Reload 7 → the ammo tab reads **6 reloads of 7**; ↻ Reload offers it as "6 reloads of 7"; after reloading the gun shows 7/7 and the stock reads **5 reloads of 7**.
-- [ ] A 10-round reload into an 8-round gun loads 8 and the notification names the mismatch; the stock drops by one.
-- [ ] Loose rounds unchanged: 42 rounds into a 7-round gun → 7 loaded, 35 left.
-- [ ] Storage: a stack of 6 reloads asks how many to store; storing 2 leaves 4 out and 2 in storage.
-- [ ] Import the troll fixture (`tests/fixtures/troll-export.json`): *10-Rnd Clip (Explosive)* arrives as **2 reloads of 10**, Explosive, `c`, and loads the Ares Thunderer.
-- [ ] Migration: an ammunition item named *7-round cy reload ×6* with 0 rounds, on an actor with a `7(cy)` gun, becomes 6 reloads of 7, `cy`, after `game.sr3e.SR3EMigrations.force()`.
+**Rounds or reloads — the Ammo Reloading Table (TODO 114, 0.5.2).** Tracking on. **Walked by the agent 2026-09-13**, Browser pane as mcp-api:
+- [x] Migration via `force()`: *7-round cy reload ×6* (0 rounds) on an actor with a `7(cy)` revolver → 6 reloads of 7, `cy`; *10-Rnd Clip (Explosive) ×2* → 2 reloads of 10, Explosive; a *Box* of 42 untouched.
+- [x] Ammo tab reads **6 reloads of 7**; the reload dialog offers "6 reloads of 7", shows *In the gun now: 3/7*; after the swap: 7/7, **3 unfired rounds lost**, one speed loader used, *Complex Action to use a speed loader (SR3 p.280)*.
+- [x] A 10-round clip into an 8(c) gun loads 8, names the mismatch, uses the whole clip.
+- [x] Loose rounds into an 8(c) gun holding 2: the dialog asks how many (default 6 = full, *2 Complex Actions* at Quickness 4); 3 chosen → 5/8, *1 Complex Action to insert 3 rounds into the clip*, box 34 → 31.
+- [x] Item sheet: clip ammo offers *Loose rounds / Pre-filled clips*; internal-magazine (`m`) shells show Rounds only, even with `countedIn: reloads` stored.
+- [x] Storage: a stack of 5 reloads asks "of 5"; storing 2 leaves 3 out, 2 stored — and the **stored stack is no longer offered** by the reload dialog (it was; fixed).
+- [ ] Import the troll fixture in a live world (covered end-to-end by `tests/importer.test.mjs`).
 
 **Loading-mechanism filter:** a clip-fed gun (`(c)`) only offers clip-mechanism ammo on reload. **In:** gun `15(c)`, stockpiles of clip-APDS and belt-FMJ → only clip-APDS is offered.
 

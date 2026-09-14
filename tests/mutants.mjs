@@ -63,8 +63,41 @@ export const MUTANTS = [
     needsOriginal: '_reloadPlan',
     was:    'a reload bigger than the magazine left the clip in stock, so an 8-round gun could draw '
           + 'from one 10-round clip for ever',
-    impl:   function (sys, magSize) { const p = this._reloadPlan(sys, magSize);
+    impl:   function (sys, magSize, current, opts) { const p = this._reloadPlan(sys, magSize, current, opts);
       return p.mismatch && sys.roundsPerReload > magSize ? { ...p, remaining: p.remaining + 1 } : p; },
+  },
+  {
+    id:     'swap-keeps-the-old-rounds',
+    suite:  'ammo-stock',
+    ...AMMO, method: 'reloadPlan',
+    needsOriginal: '_reloadPlan',
+    was:    'a clip swap that kept the old clip\'s rounds — the maintainer\'s rule is "if you swap mags you '
+          + 'get the new amount and lose what was left in the old mag"',
+    impl:   function (sys, magSize, current, opts) { const p = this._reloadPlan(sys, magSize, current, opts);
+      return p.unit === 'reloads' ? { ...p, discarded: 0 } : p; },
+  },
+  {
+    id:     'loose-rounds-swap-instead-of-topping-up',
+    suite:  'ammo-stock',
+    ...AMMO, method: 'reloadPlan',
+    needsOriginal: '_reloadPlan',
+    was:    'the first cut: loose rounds emptied the gun and refilled it, so a shotgun\'s unfired shells vanished',
+    impl:   function (sys, magSize, current, opts) { return this._reloadPlan(sys, magSize, {}, opts); },
+  },
+  {
+    id:     'b-read-as-belt',
+    suite:  'ammo-stock',
+    ...AMMO, method: 'kind',
+    needsOriginal: '_kind',
+    was:    'config.js labelled (b) "Belt"; SR3 p.280 makes it break action — 14 shipped guns, all break-action',
+    impl:   function (mech) { return String(mech).toLowerCase() === 'b' ? 'either' : this._kind(mech); },
+  },
+  {
+    id:     'loose-rounds-take-no-time',
+    suite:  'ammo-stock',
+    ...AMMO, method: 'reloadActions',
+    was:    'no action cost shown — loose rounds loaded as fast as a clip (SR3 p.280: a Complex Action per Quickness rounds)',
+    impl:   () => ({ complex: 0, simple: 0, text: '' }),
   },
   {
     id:     'ammo-name-no-type',
