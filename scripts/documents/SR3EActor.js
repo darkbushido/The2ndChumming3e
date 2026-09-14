@@ -281,7 +281,7 @@ export class SR3EActor extends Actor {
       // Deployed IC bypass the template filter — deployment is an explicit GM action
       if (a.type === 'ic') return (a.system.activeHostId ?? '') === hostId && (a.system.deployed ?? false);
       // All other types: respect the template flag
-      if (a.getFlag('The2ndChumming3e', 'isTemplate') === true) return false;
+      if (!game.sr3e.isLiveActor(a)) return false;
       if (a.type === 'agent')
         return (a.system.activeHostId ?? '') === hostId;
       if (a.type === 'character' || a.type === 'npc')
@@ -10042,7 +10042,10 @@ _prepareCharacter(sys, attr) {
               ${so.length ? `<optgroup label="Skills">${so}</optgroup>` : ''}`;
     };
 
-    const allActors    = game.actors.contents;
+    // The actor the dialog was opened from, then live characters and NPCs on the scene — it listed
+    // EVERY actor in the world, hosts, IC, vehicles and templates included (F2).
+    const allActors    = [...new Set([defaultActor, ...game.sr3e.sceneFirst(game.actors.contents
+      .filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)))])];
     const allActorData = {};
     for (const a of allActors) {
       const srcs = buildSources(a);
@@ -10898,10 +10901,13 @@ _prepareCharacter(sys, attr) {
 
     if (!secVal) return void ui.notifications.warn('Host Security Value is 0 — set it on the host sheet first.');
 
-    // Target decker selection
-    const deckers = game.actors.filter(a =>
-      (a.type === 'character' || a.type === 'npc') && !a.getFlag('The2ndChumming3e', 'isTemplate')
+    // Target decker selection — the deckers running THIS host (Set Host writes
+    // `orthodoxRunState.currentHostId`); every live character only when nobody is on it (F2).
+    const live    = game.actors.filter(a =>
+      (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)
     );
+    const onHost  = live.filter(a => a.system.orthodoxRunState?.currentHostId === host.id);
+    const deckers = onHost.length ? onHost : live;
     if (!deckers.length) return void ui.notifications.warn('No valid decker targets in world.');
 
     // Name only. The `data-cc` / `data-hp` attributes that used to ride along existed

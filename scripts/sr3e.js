@@ -9,6 +9,7 @@ import { SR3EActor } from './documents/SR3EActor.js';
 import { SR3EMigrations } from './SR3EMigrations.js';
 import { AmmoStock } from './data/ammo-stock.mjs';
 import { ItemRating, ratingOnCreate } from './data/item-rating.mjs';
+import { sceneFirst } from './data/actor-scope.mjs';
 import { SR3EItem } from './documents/SR3EItem.js';
 import { SR3EActorSheet } from './sheets/SR3EActorSheet.js';
 import { SR3EVehicleSheet } from './sheets/SR3EVehicleSheet.js';
@@ -92,7 +93,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock, ItemRating };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock, ItemRating };
 
   // When THIS client loaded the system's code.
   //
@@ -464,10 +465,13 @@ Hooks.on('preCreateActor', (document, _data, options, _userId) => {
 });
 
 async function _openSessionRewardDialog() {
-  const allPCs = game.actors.filter(a => a.type === 'character' && game.sr3e.isLiveActor(a));
+  // F2 (reported in play, 2026-09-14): PLAYER characters only. `isLiveActor` alone listed every
+  // character the GM keeps — Chrome Threats, deployed contacts — beside the party.
+  const allPCs = game.actors.filter(a => (a.type === 'character' || a.type === 'npc')
+    && game.sr3e.isLiveActor(a) && game.sr3e.SR3EQuery.isPlayerCharacter(a));
 
   if (!allPCs.length) {
-    ui.notifications.warn('No character actors found in this world.');
+    ui.notifications.warn('No player characters found — assign a character to a player, or give a player Owner of it.');
     return;
   }
 
@@ -639,11 +643,13 @@ async function _openChunkySalsaCalculator(opts = {}) {
 
   // ── Mutable state ──────────────────────────────────────────────────────────
   let eligible = game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a));
-  if (opts.actorIds?.length) eligible = eligible.filter(a => opts.actorIds.includes(a.id));
+  // The blast's own list when the grenade flow opened it; otherwise whoever is on the scene (F2).
+  eligible = opts.actorIds?.length ? eligible.filter(a => opts.actorIds.includes(a.id)) : game.sr3e.sceneFirst(eligible);
   const actors   = eligible.map((a, i) => {
     const angle = (2 * Math.PI * i / Math.max(eligible.length, 1)) - Math.PI / 2;
-    /* TODO 96 — opened from the Rollable Tables tab the list is EVERY live actor, so it starts
-     * unticked and the GM opts in the people actually near the blast. Opened by the grenade
+    /* TODO 96 — opened from the Rollable Tables tab the list is everyone on the scene (everyone
+     * at all with no tokens down), so it starts unticked and the GM opts in the people actually
+     * near the blast. Opened by the grenade
      * flow with `actorIds`, the list is already the actors the blast caught, so they start
      * ticked. */
     return { id: a.id, name: a.name, color: ACTOR_COLORS[i % ACTOR_COLORS.length],
@@ -968,7 +974,7 @@ async function _openBarrierDamageCalculator() {
   ];
 
   const matOpts   = MATERIALS.map((m, i) => `<option value="${i}">${m.name} (BR ${m.br})</option>`).join('');
-  const actorOpts = game.actors.filter(a => a.type === 'character' || a.type === 'npc')
+  const actorOpts = game.sr3e.sceneFirst(game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)))
     .map(a => `<option value="${a.id}">${a.name}</option>`).join('');
 
   const TITLE = '🧱 Barrier Damage';
@@ -1078,8 +1084,8 @@ async function _openBarrierDamageCalculator() {
 }
 
 async function _openFallingDamageCalculator() {
-  const actorOpts = game.actors
-    .filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a))
+  const actorOpts = game.sr3e.sceneFirst(game.actors
+    .filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)))
     .map(a => `<option value="${a.id}">${a.name}</option>`).join('');
 
   if (!actorOpts) { ui.notifications.warn('No characters or NPCs in the world.'); return; }
@@ -1228,8 +1234,8 @@ async function _openEscapeArtistCalculator() {
     { name: 'Containment Manacles', tn: 10 },
   ];
 
-  const actorOpts = game.actors
-    .filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a))
+  const actorOpts = game.sr3e.sceneFirst(game.actors
+    .filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)))
     .map(a => `<option value="${a.id}">${a.name}</option>`).join('');
 
   if (!actorOpts) { ui.notifications.warn('No characters or NPCs in the world.'); return; }

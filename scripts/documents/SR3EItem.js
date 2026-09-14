@@ -3160,10 +3160,9 @@ export class SR3EItem extends Item {
     const others = game.actors.contents.filter(a =>
       a.id !== attacker.id && game.sr3e.isLiveActor(a)
     );
-    // Prefer actors with a token on the current scene; fall back to the full
-    // world list when nothing is on canvas (theatre-of-the-mind).
-    const onCanvas   = canvas?.ready ? others.filter(a => a.getActiveTokens().length > 0) : [];
-    const candidates = [...(onCanvas.length ? onCanvas : others)];
+    // Actors with a token on the current scene; the full world list when nothing is on canvas
+    // (theatre-of-the-mind) — the shared rule, `sceneFirst` (F2).
+    const candidates = [...game.sr3e.sceneFirst(others)];
 
     // Self is appended AFTER the canvas filter, so a caster with no token placed can
     // still be picked, and goes LAST so it is never the pre-checked default — a stray
@@ -3916,10 +3915,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
   static async _promptTargetsMulti(attacker, spellType, spellTarget, force) {
     const all = game.actors.contents
       .filter(a => a.id !== attacker.id && a.type !== 'vehicle' && game.sr3e.isLiveActor(a));
-    // Prefer actors with a token on the current scene; fall back to the full
-    // world list when nothing is on canvas (theatre-of-the-mind).
-    const onCanvas   = canvas?.ready ? all.filter(a => a.getActiveTokens().length > 0) : [];
-    const candidates = onCanvas.length ? onCanvas : all;
+    const candidates = game.sr3e.sceneFirst(all);   // on the scene, else everyone (F2)
     if (candidates.length === 0) {
       ui.notifications.warn('No valid targets found.');
       return null;

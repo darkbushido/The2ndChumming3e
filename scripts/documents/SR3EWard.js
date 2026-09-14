@@ -146,8 +146,8 @@ export class SR3EWard {
   /* ------------------------------------------------------------------ */
 
   static async openAttackDialog(ward) {
-    const actorOpts = game.actors
-      .filter(a => (a.type === 'character' || a.type === 'npc') && !a.getFlag('The2ndChumming3e', 'isTemplate'))
+    const actorOpts = game.sr3e.sceneFirst(game.actors
+      .filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)))   // F2
       .map(a => `<option value="${a.id}">${a.name}</option>`).join('');
     if (!actorOpts) { ui.notifications.warn('No actors available to attack the ward.'); return; }
 
@@ -290,8 +290,8 @@ export class SR3EWard {
   }
 
   static async openFoolDialog(ward) {
-    const actorOpts = game.actors
-      .filter(a => (a.type === 'character' || a.type === 'npc') && !a.getFlag('The2ndChumming3e', 'isTemplate'))
+    const actorOpts = game.sr3e.sceneFirst(game.actors
+      .filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)))   // F2
       .map(a => `<option value="${a.id}">${a.name} (Grade ${a.system.initiateGrade ?? 0})</option>`).join('');
     if (!actorOpts) { ui.notifications.warn('No actors available to attempt this.'); return; }
 

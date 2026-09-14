@@ -3690,7 +3690,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   static async _onSetOrthoHost(_ev, _target) {
     const actor   = this.actor;
-    const hosts   = game.actors.filter(a => a.type === 'host');
+    const hosts   = game.actors.filter(a => a.type === 'host' && game.sr3e.isLiveActor(a));
     if (!hosts.length) { ui.notifications.warn('No host actors found.'); return; }
     const opts    = hosts.map(h => `<option value="${h.id}">${h.name}</option>`).join('');
     let chosen    = null;
@@ -4204,7 +4204,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
      * targeting and selection dialogs — see CLAUDE.md). */
     const existing = game.actors
       .filter(a => a.type === 'vehicle'
-                && !a.getFlag('The2ndChumming3e', 'isTemplate')
+                && game.sr3e.isLiveActor(a)
                 && a.system?.driverActorId !== actor.id)
       .sort((a, b) => a.name.localeCompare(b.name));
     const existingOpts = existing.length

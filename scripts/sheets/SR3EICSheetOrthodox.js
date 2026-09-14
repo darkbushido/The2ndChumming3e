@@ -290,7 +290,7 @@ export class SR3EICSheetOrthodox extends foundry.applications.sheets.ActorSheetV
 
   static async _onSetHost() {
     const hostActors = game.actors
-      .filter(a => a.type === 'host' && !a.getFlag('The2ndChumming3e', 'isTemplate'));
+      .filter(a => a.type === 'host' && game.sr3e.isLiveActor(a));
     if (!hostActors.length) return void ui.notifications.warn('No host actors found in the world.');
 
     const opts = hostActors.map(a => `<option value="${a.id}">${a.name}</option>`).join('');

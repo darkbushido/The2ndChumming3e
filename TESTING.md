@@ -2098,14 +2098,27 @@ compendium-imported actors crashed on render.
 **Verify:** import an actor from any compendium (e.g. Mr. Johnson's Contacts) → open its sheet →
 renders normally. "Mark as Live"/"Mark as Template" toggles show/hide it in targeting dialogs.
 
-## F2. Missing template filter in some actor dropdowns — OPEN (user approved adding the filter)
+## F2. Actor lists wider than they should be — FIXED 2026-09-14 (0.5.2)
 
-- **Barrier Damage** (`scripts/sr3e.js` ~line 831) filters only by type — no `isLiveActor` —
-  unlike siblings Falling Damage and Escape Artist.
-- **IC picker** (`SR3EHostSheet.js` ~1438, `SR3EHostSheetOrthodox.js` ~356) and **host picker**
-  (`SR3EActorSheet.js` ~3087) also skip the filter.
+Widened in play: *"they also show up on the rewards rollable table and a few other things they
+probably shouldn't"* and *"chunky salsa lists everything, not just the actors on the scene."*
+Three rules now, one per question a list answers — `tests/actor-lists.test.mjs` pins each site and
+**ratchets**: every `game.actors` list in `scripts/` must use one, or be a named internal lookup.
 
-**Repro:** template-flagged character appears in the 🧱 Barrier Damage dropdown (it shouldn't).
+| Rule | Lists |
+|---|---|
+| **No templates** — `game.sr3e.isLiveActor` (one rule; five sites used a bare `isTemplate` flag, which lets an unflagged compendium import through) | Barrier Damage · both IC pickers (deploying puts the stocked actor itself into combat) · Orthodox host pickers · Driving Test · MIJI vehicles · vehicle link · ward dialogs · matrix targets |
+| **The party** — `SR3EQuery.isPlayerCharacter` | **Session Rewards** — it listed every live character, the GM's Chrome Threats and contacts included |
+| **The scene** — `sceneFirst` (`scripts/data/actor-scope.mjs`): tokens on the drawn canvas, else the viewed/active scene's token documents, else everyone (theatre of the mind) | **Chunky Salsa** (unless the grenade flow passed its own list) · Barrier Damage · Falling Damage · Escape Artist · contested roll (plus the actor it was opened from; it also offered hosts, IC and vehicles) · healing medic and casters · ward attack / fool · the target pickers (which already worked this way — now the shared rule) |
+| **Narrower** | Orthodox IC attack → the deckers on its host (`orthodoxRunState.currentHostId`), else every live character |
+
+⚠ **Rosters stay world-wide on purpose** — pilot/passengers, agent operator, chase, Driving Test,
+and the healing *patient* picker (downtime care is off the map).
+
+**Walked by the agent 2026-09-14** (mcp-api): Session Rewards lists only SWAT Team Member and
+Troll Street Dealer (was five); `sceneFirst` against *Test Map*'s tokens gives its four and drops
+Windage; the empty active scene falls back to everyone.
+- [ ] **Needs a drawn canvas** (the agent's pane cannot draw one): with tokens on the viewed scene, open 💥 Chunky Salsa from Rollable Tables → only those actors; Falling Damage / Escape Artist / Barrier Damage the same.
 
 ## F3. Melee boxing-card TNs omit the wound modifier — OPEN
 

@@ -136,7 +136,7 @@ export class SR3EMIJI {
   static _liveVehicles(excludeId = null) {
     return game.actors
       .filter(a => a.type === 'vehicle' && a.id !== excludeId
-        && a.getFlag('The2ndChumming3e', 'isTemplate') !== true)
+        && game.sr3e.isLiveActor(a))
       .sort((a, b) => a.name.localeCompare(b.name));
   }
 

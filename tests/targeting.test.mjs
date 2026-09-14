@@ -23,6 +23,7 @@ globalThis.foundry.applications.api.DialogV2 = {
 };
 
 const { SR3EItem } = await import('../scripts/documents/SR3EItem.js');
+const { sceneFirst } = await import('../scripts/data/actor-scope.mjs');
 
 export const name = 'targeting';
 
@@ -37,7 +38,7 @@ export async function run(t) {
   async function offer(actors, { casterHasToken = true, canvasReady = true, allowSelf } = {}) {
     caster.getActiveTokens = () => (casterHasToken ? [{}] : []);
     const all = [caster, ...actors];
-    installGame({ actors: all, sr3e: { isLiveActor: () => true } });
+    installGame({ actors: all, sr3e: { isLiveActor: () => true, sceneFirst } });
     globalThis.canvas = { ready: canvasReady };
     rendered = null;
 

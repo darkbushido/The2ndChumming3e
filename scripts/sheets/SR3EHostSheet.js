@@ -1435,7 +1435,9 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   static async _onAddStockedIC(_e, _t) {
     // Pick from existing IC actors in the world
-    const icActors = game.actors.filter(a => a.type === 'ic');
+    // Live IC only — deploying puts the stocked ACTOR itself into combat, so a template here would
+    // enter the fight and be marked deployed (F2).
+    const icActors = game.actors.filter(a => a.type === 'ic' && game.sr3e.isLiveActor(a));
     let entry = null;
 
     if (icActors.length) {

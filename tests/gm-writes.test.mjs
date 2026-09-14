@@ -116,7 +116,7 @@ export async function run(t) {
                            sheet.indexOf('static async _onToggleVehicleMode'));
   t.ok('the flow was located', flow.length > 200 && flow.length < 12000);
 
-  t.ok('…filtered against the isTemplate flag', /isTemplate/.test(flow));
+  t.ok('…filtered through isLiveActor, the one template rule (F2)', /isLiveActor/.test(flow));
 
   /* ── No inline handlers in that dialog ───────────────────────────────────────────────── */
 
