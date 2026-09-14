@@ -2163,8 +2163,8 @@ same Force.
 **Repro:** character with magic.base 6, magic.value 4 → cast at Force 5 → drain is Physical;
 dispel at Force 5 → drain is Stun. They should match (both Physical).
 
-## F6. Wrong range-TN fallback array — OPEN
+## F6. Wrong range-TN fallback array — FIXED 2026-09-14 (0.5.2)
 
-`SR3EItem.js` (`_rangeBandForDistance` area) — one fallback reads `?? [0, 1, 2, 3]`; the
-Extreme value should be **5** (`[0, 1, 2, 5]`, as in `config.js` and the other two fallbacks).
-Inert unless `SR3E.rangeTN` is ever undefined — consistency fix only. No repro needed.
+`SR3EItem._rangeBandForDistance` fell back to `[0, 1, 2, 3]` and `tn[3] ?? 3` — Extreme at TN 7,
+not 9 (SR3 p.111). Both now **5**; inert unless `SR3E.rangeTN` is undefined. Pinned in
+`tests/tables.test.mjs` with the config table removed.

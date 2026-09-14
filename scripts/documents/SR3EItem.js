@@ -1784,11 +1784,12 @@ export class SR3EItem extends Item {
    */
   static _rangeBandForDistance(bands, metres) {
     const labels = ['Short', 'Medium', 'Long', 'Extreme'];
-    const tn     = game.sr3e.SR3E.rangeTN ?? [0, 1, 2, 3];
+    // F6 — Extreme is TN 9, i.e. +5 (SR3 p.111); this fallback said +3 until 0.5.2.
+    const tn     = game.sr3e.SR3E?.rangeTN ?? [0, 1, 2, 5];
     for (let i = 0; i < 4; i++) {
       if (metres <= bands[i]) return { idx: i, label: labels[i], tnMod: tn[i] ?? 0, beyond: false };
     }
-    return { idx: 3, label: 'Beyond Extreme', tnMod: tn[3] ?? 3, beyond: true };
+    return { idx: 3, label: 'Beyond Extreme', tnMod: tn[3] ?? 5, beyond: true };
   }
 
   /**
