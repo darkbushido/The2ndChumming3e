@@ -2,7 +2,7 @@
  * The Magic ATTRIBUTE is the effective rating — F5 (TESTING.md).
  *
  * > "If the Force of the spell is greater than the caster's Magic Attribute, the Drain causes
- * > physical damage." — SR3 p.182; the same words for dispelling and for summoning, and a ward's
+ * > physical damage." — SR3 p.183; the same words for dispelling and for summoning, and a ward's
  * > maximum Force "equals your Magic Attribute".
  *
  * Essence loss lowers that attribute itself (*"a magician with an Essence Rating of 4.5 has a
@@ -39,7 +39,23 @@ export async function run(t) {
   /* ── Every flow uses them ──────────────────────────────────────────────────────── */
   const actor = read('scripts/documents/SR3EActor.js');
   const method = name => { const i = actor.indexOf(name); return i < 0 ? '' : actor.slice(i, i + 6000); };
-  t.ok('dispelling decides Physical Drain off the Magic Attribute', /drainIsPhysical = force > SR3EActor\.magicAttribute/.test(method('async rollDispel()')));
+  t.ok('dispelling decides Physical Drain off the Magic Attribute — and not the astral clause, which is for casting',
+    /drainIsPhysical = SR3EActor\.drainIsPhysical\(force, this\.system\.attributes\);/.test(method('async rollDispel()')));
+
+  /* ── The two Drain fixes, 2026-09-14 ─────────────────────────────────────────── */
+  // p.183: "All spells cast while astrally projecting cause physical damage, regardless of Force."
+  t.is('Force 3 against Magic 4 is Stun on the physical plane', SR3EActor.drainIsPhysical(3, drained), false);
+  t.is('…and Physical while astrally projecting, whatever the Force', SR3EActor.drainIsPhysical(3, drained, { astral: true }), true);
+  t.is('Force 5 against Magic 4 is Physical either way', SR3EActor.drainIsPhysical(5, drained), true);
+  t.ok('casting passes the astral state', /drainIsPhysical\(force, actor\.system\.attributes,\s*\{ astral: actor\.system\.astralMode === 'astral' \}\)/.test(read('scripts/documents/SR3EItem.js')));
+  t.ok('…and the Force dialog says so when projecting', /Astrally projecting → Drain is/.test(read('scripts/documents/SR3EItem.js')));
+  // p.183: "the caster's Willpower dice" — the effective Willpower, so a Pain Editor's +1 counts.
+  const editor = { willpower: { base: 4, value: 5 }, charisma: { base: 3, value: 3 } };
+  t.is('Drain is resisted with the EFFECTIVE Willpower (Pain Editor +1: 5, not 4)', SR3EActor.drainResistRating(editor), 5);
+  t.is('…conjuring with the effective Charisma', SR3EActor.drainResistRating(editor, 'charisma'), 3);
+  t.is('…base for an actor not yet derived', SR3EActor.drainResistRating({ willpower: { base: 4 } }), 4);
+  t.ok('the Drain card rolls it', /const attrVal\s*= SR3EActor\.drainResistRating\(attr2, resistAttr\)/.test(actor));
+  t.ok('conjuring\'s Drain level reads the same Charisma', /charisma\?\.value \?\? conjurer\.system\?\.attributes\?\.charisma\?\.base/.test(read('scripts/documents/SR3ESpiritSummoning.js')));
   t.ok('…and counts its Spell Pool with the one formula', /SR3EActor\.spellPoolFor/.test(method('async rollDispel()')));
   t.ok('banishing: the spirit resists against the Magic Attribute', /effectiveMagic = Math\.max\(1, SR3EActor\.magicAttribute/.test(method('async rollBanish()')));
   t.ok('spending Spell Pool caps at the pool the sheet shows', /SR3EActor\.spellPoolFor/.test(method('async spendSpellPool(')));

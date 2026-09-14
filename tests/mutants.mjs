@@ -1273,7 +1273,7 @@ export const MUTANTS = [
     id:     'drain-reads-base-magic',
     suite:  'magic-attribute',
     ...ACTOR, method: 'magicAttribute',
-    was:    'SR3 p.182 — Physical Drain when Force exceeds the caster\'s Magic ATTRIBUTE, which '
+    was:    'SR3 p.183 — Physical Drain when Force exceeds the caster\'s Magic ATTRIBUTE, which '
           + 'Essence loss lowers. Dispelling, banishing and conjuring read magic.base, so one caster '
           + 'at one Force took Physical Drain in one flow and Stun in another (F5)',
     impl:   (attr) => attr?.magic?.base ?? 0,
@@ -1288,6 +1288,22 @@ export const MUTANTS = [
       ? Math.floor(((attr.intelligence?.base ?? 0) + (attr.willpower?.base ?? 0) + attr.magic.base) / 3) : null,
   },
 
+  {
+    id:     'astral-casting-drain-stays-stun',
+    suite:  'magic-attribute',
+    ...ACTOR, method: 'drainIsPhysical',
+    was:    'SR3 p.183 — "All spells cast while astrally projecting cause physical damage, regardless '
+          + 'of Force." Casting only compared Force with Magic, so an astral mage took Stun Drain',
+    impl:   (force, attr) => (Number(force) || 0) > (attr?.magic?.value ?? attr?.magic?.base ?? 0),
+  },
+  {
+    id:     'drain-resisted-with-base-willpower',
+    suite:  'magic-attribute',
+    ...ACTOR, method: 'drainResistRating',
+    was:    'the Drain card read base Willpower first, so a Pain Editor\'s or Adrenal Pump\'s +1 '
+          + 'Willpower never reached the Drain Resistance Test (SR3 p.183)',
+    impl:   (attr, key = 'willpower') => attr?.[key]?.base ?? attr?.[key]?.value ?? 1,
+  },
   {
     id:     'melee-ignores-wounds',
     suite:  'melee-wounds',

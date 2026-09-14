@@ -2511,7 +2511,7 @@ _prepareCharacter(sys, attr) {
    * The caster's Magic ATTRIBUTE — the effective rating, not the starting one · F5.
    *
    * > "If the Force of the spell is greater than the caster's Magic Attribute, the Drain causes
-   * > physical damage." — *SR3 p.182*
+   * > physical damage." — *SR3 p.183*
    *
    * and Essence loss lowers that attribute itself (*"a magician with an Essence Rating of 4.5 has a
    * Magic Rating of 4"*), which is what `magic.value` holds. Casting read `value`; dispelling, the
@@ -2520,6 +2520,29 @@ _prepareCharacter(sys, attr) {
    */
   static magicAttribute(attr) {
     return attr?.magic?.value ?? attr?.magic?.base ?? 0;
+  }
+
+  /**
+   * Is a spell's Drain Physical? · SR3 p.183, both sentences of the rule:
+   *
+   * > "If the Force of the spell is greater than the caster's Magic Attribute, the Drain causes
+   * > physical damage. All spells cast while astrally projecting cause physical damage,
+   * > regardless of Force."
+   *
+   * The astral half was never implemented. `astral` is for CASTING only — the sentence is about
+   * spells cast; dispelling and conjuring have their own Force-vs-Magic lines and pass false.
+   */
+  static drainIsPhysical(force, attr, { astral = false } = {}) {
+    return !!astral || (Number(force) || 0) > SR3EActor.magicAttribute(attr);
+  }
+
+  /**
+   * The attribute that resists Drain — Willpower for spells (p.183: *"the caster's Willpower
+   * dice"*), Charisma for conjuring — at its EFFECTIVE rating. The Drain card read `base` first,
+   * so a Pain Editor's or an Adrenal Pump's +1 Willpower (M&M p.73, p.63) never reached the test.
+   */
+  static drainResistRating(attr, key = 'willpower') {
+    return attr?.[key]?.value ?? attr?.[key]?.base ?? 1;
   }
 
   /**
@@ -8800,7 +8823,7 @@ _prepareCharacter(sys, attr) {
     const attr2      = this.system.attributes ?? {};
     const resistAttr = payload.resistAttr ?? 'willpower';
     const resistName = payload.resistName ?? 'Willpower';
-    const attrVal    = attr2[resistAttr]?.base ?? attr2[resistAttr]?.value ?? 1;
+    const attrVal    = SR3EActor.drainResistRating(attr2, resistAttr);   // effective, not base
     const bonusDice  = Math.max(0, payload.bonusDice ?? 0);
     const basePool   = Math.max(1, attrVal + bonusDice);
     const magicAttr  = SR3EActor.magicAttribute(attr2);   // the number the Physical test used (F5)
@@ -9301,7 +9324,7 @@ _prepareCharacter(sys, attr) {
     const label = `✦ ${this.name} — Dispel [F${force}] ${sorceryLabel}`;
 
     // Drain is Physical if Force > the Magic ATTRIBUTE — the effective one, as casting reads it (F5)
-    const drainIsPhysical = force > SR3EActor.magicAttribute(this.system.attributes);
+    const drainIsPhysical = SR3EActor.drainIsPhysical(force, this.system.attributes);
 
     return this.rollPool(pool, force, label, {
       isDispelRoll:  true,

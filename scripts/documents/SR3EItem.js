@@ -4045,9 +4045,9 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
             : (sorceryRating || '(none)')
           }</strong>
           <div style="color:var(--sr-muted);margin-top:4px">
-            Force &gt; Magic ${magicAttr} → Drain is
-            <strong style="color:var(--sr-red)">Physical</strong>
-            instead of Stun
+            ${actor.system.astralMode === 'astral'
+              ? `Astrally projecting → Drain is <strong style="color:var(--sr-red)">Physical</strong> at any Force (p.183)`
+              : `Force &gt; Magic ${magicAttr} → Drain is <strong style="color:var(--sr-red)">Physical</strong> instead of Stun`}
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
@@ -4086,8 +4086,10 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     });
     if (castCancelled || force === null) return null;
 
-    // SR3 RAW: Drain is Physical when the spell's Force exceeds the caster's Magic attribute.
-    const drainIsPhysical = force > magicAttr;
+    // SR3 p.183: Physical when Force exceeds the Magic Attribute — or, whatever the Force, when the
+    // caster is astrally projecting. The astral half was missing.
+    const drainIsPhysical = game.sr3e.SR3EActor.drainIsPhysical(force, actor.system.attributes,
+      { astral: actor.system.astralMode === 'astral' });
 
     // Step 2: Select target(s)
     const spellType   = this.system.type ?? 'Mana';

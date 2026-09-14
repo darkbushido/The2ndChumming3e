@@ -2150,7 +2150,7 @@ for the same reason; confirm desired behaviour.
 ## F5. Drain track (Stun vs Physical) inconsistent between casting and dispelling — FIXED 2026-09-14 (0.5.2)
 
 The book says **Magic Attribute** every time — casting (*"If the Force of the spell is greater than
-the caster's Magic Attribute, the Drain causes physical damage"*, SR3 p.182), dispelling, summoning,
+the caster's Magic Attribute, the Drain causes physical damage"*, SR3 p.183), dispelling, summoning,
 and a ward's maximum Force — and Essence loss lowers that attribute (*"a magician with an Essence
 Rating of 4.5 has a Magic Rating of 4"*). That is `magic.value`. Casting read it; these read
 `magic.base`, all now `SR3EActor.magicAttribute`:

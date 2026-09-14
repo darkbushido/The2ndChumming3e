@@ -7900,23 +7900,21 @@ rules.
    the printed spell entry. `parseDrainFormula` must parse every shipped drain code — list any it
    cannot, and any spell whose drain parses to something other than the book.
 2. **The rules the code applies** — each checked against the PDF, quoted with its printed page:
-   Force and the Physical/Stun Drain line (p.180/182, now `SR3EActor.magicAttribute`), the Drain
+   Force and the Physical/Stun Drain line (p.183, now `SR3EActor.magicAttribute`), the Drain
    Resistance Test (p.183: *"the caster's Willpower dice, plus any Spell Pool dice"*, TN ⌊Force ÷ 2⌋
    + the Drain Modifier), the Spell Pool cap (*"No more Spell Pool dice can be used than the number
    of Sorcery dice allocated"*, p.180), target numbers and resistance (p.182-183), area spells,
    counterspelling/Spell Defense, dispelling, and astral casting (*"All spells cast while astrally
-   projecting cause physical damage, regardless of Force"*, p.182).
+   projecting cause physical damage, regardless of Force"*, p.183).
 
 **Leads found while writing this — verify, don't assume:**
 - **Sustained spells are not modelled** beyond the `sr3e-sustaining` status icon. p.180: *"Each spell
   sustained at the moment adds +2 to the Power of the Drain"*; p.183 also has sustaining raise target
   numbers. Nothing in the casting or Drain code reads either.
-- **The astral clause** — casting while projecting should always be Physical Drain; check whether
-  `drainIsPhysical` looks at `astralMode`.
-- **Drain resistance reads base Willpower** (`SR3EActor.js`, the Drain card's `attrVal`), so a Pain
-  Editor or Adrenal Pump's +1 WIL is not counted. The maintainer, 2026-09-14: not a big problem
-  unless something augments Willpower — M&M p.63/p.73, the Increase Willpower spell (SR3 p.194) and
-  three drugs do. Decide here.
+- ✅ **The astral clause — FIXED 2026-09-14** (`SR3EActor.drainIsPhysical`): casting while projecting
+  is Physical Drain at any Force (p.183), and the Force dialog says so.
+- ✅ **Drain resistance read base Willpower — FIXED 2026-09-14** (`SR3EActor.drainResistRating`):
+  the effective Willpower (Charisma for conjuring), so a Pain Editor's or Adrenal Pump's +1 counts.
 - **Increase Attribute spells** (SR3 p.194 — Physical *or* Mental, +1 per 2 successes up to Force, not
   on cybered Attributes) have no effect path; a GM edits the attribute by hand.
 
