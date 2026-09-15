@@ -2189,8 +2189,14 @@ the click (6 → 7), then the MIJI result once, below it.
 **Found during the live check — old 💥 buttons re-roll after a reload.** The one-shot guard
 (`_usedButtons`) is in memory and resets on reload by design, so after an F5 an old wave card's 💥
 can be clicked again and posts a new wave for a roll long since resolved. It cannot change an opposed
-result any more (a resolved ⏳ card ignores it), but it does for a plain roll's own card. A fix is
-`sr3e.card.mark` on the 💥, as the two-corner cards do — not done here.
+result any more (a resolved ⏳ card ignores it), but it does for a plain roll's own card.
+**FIXED 2026-09-14 (0.5.2):** a 💥 click is claimed on the message through `sr3e.card.mark` (append-only,
+GM-serialised) before it rolls; a claimed 💥 renders *"💥 Explosions rolled"* on every client and after
+any reload, and a second click — the owner and the GM at once, say — stops. The Chase Scene's 💥 too,
+which checks its window is open before claiming. GM unreachable → it rolls anyway.
+`tests/interactive-explosions.test.mjs`.
+- [ ] Roll at TN 8 until a 💥 appears → click it → F5 → the old card's 💥 shows *Explosions rolled*, disabled.
+- [ ] The actor's owner and the GM click the same 💥 together → one wave posts, not two.
 
 ## F5. Drain track (Stun vs Physical) inconsistent between casting and dispelling — FIXED 2026-09-14 (0.5.2)
 
@@ -2215,6 +2221,29 @@ ratchets every other read; two mutants.
 **Checked live 2026-09-14:** *Bruce Lee* in the test world is the repro — base 6, effective 5; a
 Force 6 dispel now takes Physical Drain as a Force 6 cast does, and `spellPoolFor` equals the sheet's
 Spell Pool for every actor.
+
+## F7. Wound modifiers missing from the tests that roll outside `rollPool` — FIXED 2026-09-14 (0.5.2)
+
+SR3 p.125: *"The Injury Modifier is a universal target number modifier that applies to nearly all
+Success Tests the injured character may attempt, except those for resisting or avoiding damage."*
+`rollPool` adds it; these roll through `_rollWave` and never did. Each TN is pre-filled (and stays
+editable):
+
+| Test | Now takes the wound |
+|---|---|
+| Contested roll | both sides — the initiator's TN follows the actor picked, the opponent's corner starts with theirs |
+| Cybercombat (Defragged) · Orthodox cybercombat | the **attacker**; the defence avoids damage |
+| Orthodox System Test | the decker |
+| MIJI contest | both riggers |
+| Infiltration · detect · ECCM repair · reduce footprint · IVIS | the rigger |
+
+⚠ **Left alone on purpose:** **Missile Parry** avoids damage (excluded by p.125, and not the dodge,
+whose own example works the wound in, p.113). **Knockdown** — p.124 gives no injury modifier and its
+threshold already scales with the wound, so adding it may count the wound twice: **the maintainer's
+call.** `tests/wound-modifiers.test.mjs` + the `cybercombat-attack-ignores-wounds` mutant.
+- [ ] Give a decker 3 Stun boxes → Cybercombat → their corner starts at TN 6, the defender's at 4.
+- [ ] Contested roll from a wounded actor's sheet → the TN box starts at 4 + the wound; pick another actor and it follows.
+- [ ] MIJI with a wounded intruder rigger → the intruder corner's TN is the deck rating + the wound.
 
 ## F6. Wrong range-TN fallback array — FIXED 2026-09-14 (0.5.2)
 

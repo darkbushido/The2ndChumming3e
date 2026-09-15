@@ -1305,6 +1305,14 @@ export const MUTANTS = [
     impl:   (attr, key = 'willpower') => attr?.[key]?.base ?? attr?.[key]?.value ?? 1,
   },
   {
+    id:     'cybercombat-attack-ignores-wounds',
+    suite:  'wound-modifiers',
+    ...ACTOR, method: '_buildCCParticipant', needsOriginal: '_buildCCParticipantReal',
+    was:    'SR3 p.125 — the Injury Modifier applies to nearly all tests except resisting or avoiding '
+          + 'damage. The cybercombat card rolls through _rollWave and never added it to the attack',
+    impl:   async function (actor) { return this._buildCCParticipantReal(actor, { attacking: false }); },
+  },
+  {
     id:     'grenade-throw-ignores-wounds',
     suite:  'aoe-throw-tn',
     ...ITEM, method: 'throwPreTN',
