@@ -45,6 +45,9 @@ export async function run(t) {
   const track = progs.find(p => p.name === 'Track');
   t.ok('program: category and multiplier where the picker reads them', track.system.category === 'utility' && track.system.multiplier === 8);
   t.ok('program: the page is in the description', /SR3 p\.221/.test(track.system.description));
+  t.is('deck: book and page (TODO 117) — its stats and its price', excal.system.bookPage, 'sr3.207,sr3.304');
+  t.is('program: book and page — its own', track.system.bookPage, 'sr3.221');
+  t.ok('every document carries one, naming the core book', decks.concat(progs).every(d => /^sr3\.\d+(,sr3\.\d+)?$/.test(d.system.bookPage)));
 
   /* ── It refuses to ship numbers that disagree with the book ─────────────────── */
   const badDeck = clone(rawDecks); badDeck.find(r => r.Name === 'CMT Avatar').Persona = '8';

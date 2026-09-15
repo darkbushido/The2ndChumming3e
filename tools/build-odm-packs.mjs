@@ -22,9 +22,9 @@
  * ⚠ **The packs carry `matrixRuleset: 'orthodox'`** — `SR3ESourceBooks.rulesetAllows` hides them
  * unless the world plays the Orthodox Matrix (the maintainer, 2026-09-14).
  *
- * ⚠ **The page lives in the notes/description, not a `bookPage` field** — neither `CyberdeckData`
- * nor `ProgramData` declares one (a TypeDataModel drops undeclared keys); TODO 117 owns book and page
- * fields.
+ * ⚠ **Book and page (TODO 117)** — `bookPage`, which both item models declare since the book-pages
+ * merge: a deck cites its stats and its price (`sr3.207,sr3.304`), a utility its own page. The item
+ * sheet shows it as "SR3 p.207 · SR3 p.304".
  *
  * ⚠ **Ids are DERIVED** (`idFor`), so a re-run rewrites the same keys, and keys the build no longer
  * produces are deleted — the database never accumulates orphans.
@@ -113,7 +113,7 @@ export function deckDocs(raw) {
     return {
       _id: idFor(`odm-deck:${r.Name}`), name: r.Name, type: 'cyberdeck', img: DECK_IMG,
       system: {
-        cost: b.cost, availability: b.avail, streetIndex: int(r['Street Index']),
+        cost: b.cost, availability: b.avail, streetIndex: int(r['Street Index']), bookPage: 'sr3.207,sr3.304',
         notes: `<p>Stock cyberdeck — SR3 p.207 (stats), p.304 (availability, cost). MPCP ${b.mpcp}, Hardening ${b.hardening}, `
              + `Active Memory ${b.memory} Mp, Storage ${b.storage} Mp, I/O ${b.io} Mp/turn, Response Increase ${b.response}.</p>`
              + `<p>Orthodox Matrix: load it from the Matrix tab's cyberdeck picker.</p>`,
@@ -140,7 +140,7 @@ export function programDocs(raw) {
     return {
       _id: idFor(`odm-program:${name}`), name: label, type: 'program', img: PROGRAM_IMG,
       system: {
-        name: label, category: b.cat, multiplier: b.mult, rating: 0,
+        name: label, category: b.cat, multiplier: b.mult, rating: 0, bookPage: `sr3.${b.page}`,
         description: `<p><strong>${CAT_LABEL[b.cat]}</strong> · Multiplier ${b.mult} — size in Mp = Rating² × ${b.mult} `
                    + `(Program Size Table). See SR3 p.${b.page} for what it does.</p>`,
       },

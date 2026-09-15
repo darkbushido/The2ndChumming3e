@@ -1084,6 +1084,7 @@ the Defragged decks and programs only under Defragged. `tests/odm-packs.test.mjs
 - [ ] Switch to Orthodox (reload) → the folder shows *Cyberdecks (Orthodox)* and *Programs (Orthodox)*, not the Defragged ones.
 - [ ] Orthodox, a decker's Matrix tab → pick a cyberdeck → the 8 stock decks; pick Fairlight Excalibur → MPCP 12, Hardening 6, 3000/5000 Mp, I/O 600, Response 3 fill in.
 - [ ] Orthodox → add a program → the 22 utilities, Attack at four levels; Track shows multiplier 8.
+- [ ] Open *Fairlight Excalibur* from the pack → the Book / Page box reads *SR3 p.207 · SR3 p.304*; *Track* reads *SR3 p.221*.
 
 ### User modes (Matrix tab)
 

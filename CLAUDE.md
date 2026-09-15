@@ -2301,8 +2301,8 @@ The character sheet (`SR3EActorSheet`) renders its Matrix tab differently depend
 2026-09-14; the old `sr3e-odm-*` packs shipped EMPTY and were dropped in `f457d3c`). Built by
 **`node tools/build-odm-packs.mjs`** (`--install` for the install, Foundry closed; then
 `npm run sync:install -- --force` for the manifest) from the ODM-\* rawdata, **core book only**: the 8
-stock decks (stats p.207, cost/availability p.304) and the 22 core utilities (pp.220-222, Attack at
-each damage level). The rawdata's other rows — Cyberpunk 2020 (`cp`), `cd.130`, the Matrix sourcebook
+stock decks (stats p.207, cost/availability p.304 — `bookPage: sr3.207,sr3.304`) and the 22 core
+utilities (pp.220-222, Attack at each damage level, each with its own `bookPage`). The rawdata's other rows — Cyberpunk 2020 (`cp`), `cd.130`, the Matrix sourcebook
 (`mat`, 23 programs + 5 decks), 4 Erosion variants in neither PDF — are left in rawdata. The tool
 **refuses to write** if a row disagrees with the book; `tests/odm-packs.test.mjs` diffs the committed
 packs against it.
