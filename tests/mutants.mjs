@@ -1401,4 +1401,11 @@ export const MUTANTS = [
           + 'modelled at all until 2026-09-12 (TODO 98)',
     impl:   () => [],
   },
+  {
+    id:     'attribute-hover-says-nothing',
+    suite:  'attribute-sources',
+    ...ACTOR, method: 'attributeBreakdown',
+    was:    'the generic tooltips the sheet had — "Cyber/bio augmentation" with no item named (TODO 100, reported in play)',
+    impl:   ({ label = '', total = null } = {}) => `${label}${total !== null ? ` ${total}` : ''}`,
+  },
 ];

@@ -840,12 +840,31 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   ];
   const _cyberKey = { body: 'bod', quickness: 'qui', strength: 'str', charisma: 'cha', intelligence: 'int', willpower: 'wil' };
 
+  /* Hover explanations · TODO 100 (requested in play: "when you moused over the modifiers it
+   * explained what's going on"). Every chip names the items behind it, read from
+   * `derived.attributeSources` — recorded as each bonus was applied, so the words cannot
+   * disagree with the sums. */
+  const SA      = game.sr3e.SR3EActor;
+  const _title  = text => String(text).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/\n/g, '&#10;');
+  const _named  = (srcs, kinds, head) => {
+    const hits = (srcs ?? []).filter(x => kinds.includes(x.kind) && x.amount);
+    return _title([head, ...hits.map(x => `${x.amount > 0 ? '+' : '−'}${Math.abs(x.amount)}  ${x.label}${x.note ? ` (${x.note})` : ''}`)].join('\n'));
+  };
+  const _signed = n => (n > 0 ? `+${n}` : `−${Math.abs(n)}`);
+  const wornArmour = SA.wornArmorItems(this.actor).map(i => `${i.name} (${i.system?.ballistic ?? 0}/${i.system?.impact ?? 0})`);
+
   const attrBlocks = coreAttrs.map(([key, label]) => {
     const base     = attr[key]?.base ?? 3;
     const aug      = cb[_cyberKey[key]] ?? 0;
     const adept    = isAdept ? (ab[_cyberKey[key]] ?? 0) : 0;
     const racial   = rb[_cyberKey[key]] ?? 0;
-    const showTotal = aug > 0 || adept > 0 || racial > 0;
+    const srcs     = d.attributeSources?.[key] ?? [];
+    // Attribute Boost and switched-on cyberware (Adrenal Pump, Pain Editor) change the VALUE but
+    // had no chip, so the sheet's total disagreed with what every roll used. Shown now.
+    const live     = SA.attributeSourceSum(srcs, ['boost', 'triggered']);
+    const total    = attr[key]?.value ?? (base + adept + aug + racial);
+    const showTotal = aug !== 0 || adept !== 0 || racial !== 0 || live !== 0;
+    const breakdown = _title(SA.attributeBreakdown({ label, base, sources: srcs, total }));
     /* ⚠ An illegal rating is shown, never corrected (TODO 102). SR3 p.55: *"none of a
      * character's Physical or Mental Attributes can be lower than 1"* — these six. Magic,
      * Essence and Reaction "follow their own rules", and Magic 0 is every mundane character, so
@@ -858,14 +877,16 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       <div class="attr-row">
         <input class="attr-input" type="number" name="system.attributes.${key}.base"
                value="${base}" min="0" max="30" title="${belowMin ? 'Below the minimum of 1 (SR3 p.55)' : 'Base'}"/>
-        ${adept > 0 ? `<span class="attr-force-sep" title="Adept power bonus">+</span>
-        <span class="attr-adept" title="Adept power bonus">${adept}</span>` : ''}
-        ${aug > 0 ? `<span class="attr-force-sep" title="Cyber/bio augmentation">+</span>
-        <span class="attr-aug" title="Cyber/bio augmentation">${aug}</span>` : ''}
-        ${racial > 0 ? `<span class="attr-force-sep" title="Troll dermal armor (SR3 p.56)">+</span>
+        ${adept !== 0 ? `<span class="attr-force-sep">${adept > 0 ? '+' : '−'}</span>
+        <span class="attr-adept" title="${_named(srcs, ['adept'], 'Adept powers')}">${Math.abs(adept)}</span>` : ''}
+        ${aug !== 0 ? `<span class="attr-force-sep">${aug > 0 ? '+' : '−'}</span>
+        <span class="attr-aug" title="${_named(srcs, ['cyber', 'bio'], 'Cyberware and bioware')}">${Math.abs(aug)}</span>` : ''}
+        ${racial > 0 ? `<span class="attr-force-sep">+</span>
         <span class="attr-aug" title="Troll dermal armor (SR3 p.56)">${racial}</span>` : ''}
-        ${showTotal ? `<span class="attr-force-total" title="Effective">(${base + adept + aug + racial})</span>` : ''}
-        ${key === 'quickness' && (d.armorQuicknessTN ?? 0) > 0 ? `<span class="attr-enc-penalty" title="Layered armour: worn Ballistic ${d.armorSumBallistic} exceeds Quickness by ${d.armorQuicknessTN} — +${d.armorQuicknessTN} TN to Quickness tests and Quickness-linked skills, and Quickness counts ${d.armorQuicknessTN} lower for movement (SR3 p.285)">+${d.armorQuicknessTN} TN</span>` : ''}
+        ${live !== 0 ? `<span class="attr-force-sep">${live > 0 ? '+' : '−'}</span>
+        <span class="attr-live" title="${_named(srcs, ['boost', 'triggered'], 'Running now')}">${Math.abs(live)}</span>` : ''}
+        ${showTotal ? `<span class="attr-force-total" title="${breakdown}">(${total})</span>` : ''}
+        ${key === 'quickness' && (d.armorQuicknessTN ?? 0) > 0 ? `<span class="attr-enc-penalty" title="${_title(`Layered armour — ${wornArmour.join(' + ')}\nWorn Ballistic ${d.armorSumBallistic} exceeds Quickness by ${d.armorQuicknessTN}: ${_signed(d.armorQuicknessTN)} TN to Quickness tests and Quickness-linked skills, and Quickness counts ${d.armorQuicknessTN} lower for movement (SR3 p.285).\nQuickness itself is not lowered — armour costs Combat Pool dice instead.`)}">+${d.armorQuicknessTN} TN</span>` : ''}
         <i class="fas fa-dice-d6 rollable" data-action="rollAttr" data-attr="${key}"
            title="Roll ${label} — Shift-Click for physical dice"></i>
       </div>
@@ -882,8 +903,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <div class="attr-row">
           <input class="attr-input" type="number" name="system.attributes.magic.base"
                  value="${attr.magic?.base ?? 0}" min="0" max="12" title="Base"/>
-          ${isAdept && (ab.mag ?? 0) > 0 ? `<span class="attr-force-sep" title="Adept power bonus">+</span>
-          <span class="attr-adept" title="Adept power bonus">${ab.mag}</span>` : ''}
+          ${isAdept && (ab.mag ?? 0) > 0 ? `<span class="attr-force-sep">+</span>
+          <span class="attr-adept" title="${_named(d.attributeSources?.magic, ['adept'], 'Adept powers')}">${ab.mag}</span>` : ''}
           <span class="attr-mod">${attr.magic?.value ?? 0}</span>
           <!-- Magic Tests are real - Attribute Boost's activation is one (p.168) - and
                _onRollAttr's generic branch already reads magic.value. Offered only to the
@@ -899,17 +920,20 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
       <!-- Reaction (derived: floor((QUI+INT)/2) + bonus) -->
       <div class="attr-block attr-special"
-           title="floor((QUI ${qui} + INT ${intl}) / 2) = ${reactionBase}${reactionBonus ? ` + bonus ${reactionBonus}` : ''}${(cb.rea??0) ? ` + cyber ${cb.rea}` : ''}${isAdept&&(ab.rea??0) ? ` + adept ${ab.rea}` : ''} = ${rea}">
+           title="${_title(SA.attributeBreakdown({ label: 'Reaction', total: rea, base: reactionBase,
+             baseLabel: `(Quickness ${d.reactionInputs?.quickness ?? qui} + Intelligence ${d.reactionInputs?.intelligence ?? intl}) ÷ 2 =`,
+             sources: [...(reactionBonus ? [{ label: 'Manual bonus (drugs, etc.)', amount: reactionBonus, kind: '' }] : []),
+                       ...(d.attributeSources?.reaction ?? [])] }))}">
         <span class="attr-label" style="color:var(--sr-amber)">Reaction</span>
         <div class="attr-row">
           <span class="attr-derived" style="color:var(--sr-amber)">${attr.reaction?.base ?? 0}</span>
           <span class="attr-force-sep" title="Manual bonus (drugs, etc.)">+</span>
           <input class="attr-input attr-force" type="number" name="system.attributes.reaction.reactionBonus"
                  value="${attr.reaction?.reactionBonus ?? 0}" title="Manual reaction bonus (drugs, etc.)"/>
-          ${isAdept && (ab.rea ?? 0) > 0 ? `<span class="attr-force-sep" title="Adept power bonus">+</span>
-          <span class="attr-adept" title="Adept power bonus">${ab.rea}</span>` : ''}
-          ${(cb.rea ?? 0) > 0 ? `<span class="attr-force-sep" title="Cyber/bio augmentation">+</span>
-          <span class="attr-aug" title="Cyber/bio augmentation">${cb.rea}</span>` : ''}
+          ${isAdept && (ab.rea ?? 0) > 0 ? `<span class="attr-force-sep">+</span>
+          <span class="attr-adept" title="${_named(d.attributeSources?.reaction, ['adept'], 'Adept powers')}">${ab.rea}</span>` : ''}
+          ${(cb.rea ?? 0) > 0 ? `<span class="attr-force-sep">+</span>
+          <span class="attr-aug" title="${_named(d.attributeSources?.reaction, ['cyber', 'bio'], 'Cyberware and bioware')}">${cb.rea}</span>` : ''}
           <!-- TODO 72. Reaction is derived, so it renders outside the coreAttrs grid and
                never got the grid's roll icon - but _onRollAttr has ALWAYS had a reaction
                branch, reading reaction.value and falling back to floor((QUI+INT)/2). The
@@ -954,10 +978,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <div class="attr-row">
           <input class="attr-input" type="number" name="system.initiativeDiceBonus"
                  value="${sys.initiativeDiceBonus ?? 0}" min="0" max="10" title="Manual init dice bonus"/>
-          ${isAdept && (ab.initDice ?? 0) > 0 ? `<span class="attr-force-sep" title="Adept power bonus">+</span>
-          <span class="attr-adept" title="Adept power bonus">${ab.initDice}</span>` : ''}
-          ${(cb.initDice ?? 0) > 0 ? `<span class="attr-force-sep" title="Cyber/bio augmentation">+</span>
-          <span class="attr-aug" title="Cyber/bio augmentation">${cb.initDice}</span>` : ''}
+          ${isAdept && (ab.initDice ?? 0) > 0 ? `<span class="attr-force-sep">+</span>
+          <span class="attr-adept" title="${_named(d.attributeSources?.initiativeDice, ['adept'], 'Adept powers — Initiative dice')}">${ab.initDice}</span>` : ''}
+          ${(cb.initDice ?? 0) > 0 ? `<span class="attr-force-sep">+</span>
+          <span class="attr-aug" title="${_named(d.attributeSources?.initiativeDice, ['cyber', 'bio'], 'Cyberware and bioware — Initiative dice')}">${cb.initDice}</span>` : ''}
         </div>
       </div>
     </div>

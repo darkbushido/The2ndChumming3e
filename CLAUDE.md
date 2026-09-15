@@ -1598,6 +1598,19 @@ wired reflexes from every decker.
 ⚠ **It subtracts only when the CYBER package actually landed.** `reflexBonus` picks one package
 or the other, so after an adept's Improved Reflexes wins there is nothing to take away.
 
+### Where an attribute's modifiers come from — `derived.attributeSources` · TODO 100
+
+`_prepareCharacter` records every attribute bonus **as it is applied** — `{ label, amount, kind,
+note }` per attribute, plus `initiativeDice` — and the Attributes tab renders them on hover
+(`SR3EActor.attributeBreakdown`, `attributeSourceSum`). Kinds: `cyber` `bio` `adept` `racial`
+`boost` `triggered`, and `note` for a bonus that did **not** apply (the p.169 package dropped,
+move-by-wire's Quickness skipping Reaction).
+⚠ **base + sources = the value every roll uses**, asserted in `tests/attribute-sources.test.mjs`.
+Add a new bonus to an attribute and you must record it with `_source(…)` beside the arithmetic, or
+that invariant fails.
+⚠ The sheet's bracketed total is `attr[key].value`, never a sum it makes up — it used to add base +
+adept + cyber + racial itself, so a boost or a running Adrenal Pump never showed.
+
 ### Adept powers  · *SR3 p.168-170*
 
 **117 powers ship across four packs** (`sr3` 42 · `mits` 26 · `sota2` 40 · `tss` 9). Until
