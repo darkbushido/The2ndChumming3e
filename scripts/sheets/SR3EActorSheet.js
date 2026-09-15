@@ -19,7 +19,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   static DEFAULT_OPTIONS = {
     classes: ['sr3e', 'sheet', 'actor'],
     tag: 'form',
-    position: { width: 780, height: 740 },
+    // 860 (was 780, widened 2026-09-15 at the maintainer's request) — the Gear tab's rows had grown a
+    // 💊 and a Substance use block, and the wider tabs were wrapping. Resizable either way.
+    position: { width: 860, height: 740 },
     resizable: true,
     window: { resizable: true },
     form: {

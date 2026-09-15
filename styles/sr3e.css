@@ -3701,7 +3701,9 @@ label.act-field input[type=number] {
 .item-controls .sr-equip-melee.is-equipped { color: var(--sr-accent); }
 
 /* ── Substance use · M&M pp.105-110 (TODO 124) ─────────────────────────────────────────── */
-.sr-drug-take { background: none; border: none; padding: 0 4px 0 0; cursor: pointer; font-size: 13px; line-height: 1; width: auto; }
+/* ⚠ inline-flex, not just width:auto — Foundry styles every button `display: flex`, which is block-level,
+   so the 💊 took a line of its own above the drug's name (found in the live check, 2026-09-15). */
+.sr3e .item-name .sr-drug-take { display: inline-flex; vertical-align: middle; background: none; border: none; padding: 0 4px 0 0; margin: 0; cursor: pointer; font-size: 13px; line-height: 1; width: auto; height: auto; min-height: 0; }
 .sr-drug-take:hover { filter: drop-shadow(0 0 3px var(--sr-accent)); }
 .sr-drug-rec { border: 1px solid var(--sr-border); border-radius: var(--r); padding: 4px 6px; margin: 4px 0; background: var(--sr-card); }
 .sr-drug-rec-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
