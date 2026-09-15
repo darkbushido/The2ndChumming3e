@@ -20,7 +20,9 @@
       "accessories": "Gas Vent (2), Laser Sight",
       "bookPage": "pw.24",
       "notes": "",
-      "hands": 1
+      "hands": 1,
+      "smartgun": false,
+      "laserSight": true
     },
     "effects": []
   },

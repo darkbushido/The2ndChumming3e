@@ -20,7 +20,9 @@
       "accessories": "Accessory-Underbarrel Rifle Mod. + 200 nuyen (see rules)",
       "bookPage": "cc.30",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

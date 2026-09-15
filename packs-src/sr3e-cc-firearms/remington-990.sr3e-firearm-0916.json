@@ -20,7 +20,9 @@
       "accessories": "Slug(8S),Shot(10D(f))",
       "bookPage": "cc.23",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

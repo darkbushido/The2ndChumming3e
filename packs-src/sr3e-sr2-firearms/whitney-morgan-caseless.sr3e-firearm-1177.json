@@ -20,7 +20,9 @@
       "accessories": "Caseless",
       "bookPage": "sr2.???",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

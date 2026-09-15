@@ -20,7 +20,9 @@
       "accessories": "Gas Vent (2), Mag:(2)",
       "bookPage": "pw.23",
       "notes": "",
-      "hands": 1
+      "hands": 1,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

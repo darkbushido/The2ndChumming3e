@@ -856,6 +856,15 @@ initiative is rolled only through the "Begin Encounter" dialog. Re-enabled once 
   ready. ⚠ **p.112 is a class whitelist, not free hands** — only pistol/SMG classes one in each hand
   (`DUAL_WIELD_CATEGORIES`). `guessGearModifiers` guesses `secondFirearm` (+2) when a second ready gun of
   that class is held and withdraws smartlink / goggles / laser (*"negates"*); the row renders now.
+- **Weapon accessories and the gyro** (TODO 18, SR3 p.113, p.282):
+  - `smartgun` / `laserSight` on firearms (nullable; blank reads `accessories`). Read through
+    `WeaponAccessories.flag`; the packs store them (`tools/fill-weapon-accessories.mjs`).
+  - ⚠ **Read the text per ITEM.** A designator or a laser weapon is not a laser sight.
+  - A worn *Gyro Mount* gear item: `SR3EActor.gyroMount` / `gyroRating`.
+  - ⚠ **One allowance against p.113's TOTAL.** `gyroOnRecoil` spends it on recoil in `rollWeapon`, and
+    the rest goes to the GM window as `gyroLeft`, where `gyroOffset` takes it off the ticked movement rows.
+  - Costs: +1/+1 armour in `armorRatings`, +4 melee TN (`gyroMeleeTN`), half the Combat Pool
+    (`derived.combatPoolBeforeGyro` keeps the full figure).
 - Not yet: Take Aim across phases (#48's note); one Simple for two guns, recoil crossover (#49).
 
 ### GM tools — Rollable Tables sidebar
@@ -2343,7 +2352,7 @@ system.roundsFiredThisPhase        ← persisted, recoil accumulator; reset each
 ```
 
 ### Item types and key fields
-- `firearm`: `damage` (string e.g. "9M"), `category` (weapon code), `mode` (e.g. "SA/BF/FA"), `ammunition` (capacity string e.g. "15(c)"), `recoilMod` (weapon-mounted comp), `rangeOverride` ("S/M/L/E" metres, e.g. "5/15/30/50"), `loadedAmmoType` / `loadedRounds` (current magazine)
+- `firearm`: `damage` (string e.g. "9M"), `category` (weapon code), `mode` (e.g. "SA/BF/FA"), `ammunition` (capacity string e.g. "15(c)"), `recoilMod` (weapon-mounted comp), `smartgun` / `laserSight` (nullable booleans, TODO 18), `rangeOverride` ("S/M/L/E" metres, e.g. "5/15/30/50"), `loadedAmmoType` / `loadedRounds` (current magazine)
 - `melee`: `damage` (string e.g. "9M"), `reach` (number), `category` (weapon code)
 - `projectile` / `thrown`: `damage`, `category`, `quantity` (thrown weapons consume `quantity`; bows/crossbows instead nock a single arrow/bolt via `loadedAmmoType`/`loadedRounds` — see Bows & crossbows above). `projectile`/`thrown` use Strength-scaled range bands.
 - `ammunition`: `ammoType` (key into `SR3E.ammoTypes`), `loadMechanism` (c/m/cy/b/d/sb/internal + arrow/bolt), `rounds` (stockpile total) + descriptive fields. NO power/armour data fields — rules are in config

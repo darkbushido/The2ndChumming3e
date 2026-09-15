@@ -20,7 +20,9 @@
       "accessories": "Smartlink, Heavy pistol ranges",
       "bookPage": "cc.23",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": true,
+      "laserSight": false
     },
     "effects": []
   },

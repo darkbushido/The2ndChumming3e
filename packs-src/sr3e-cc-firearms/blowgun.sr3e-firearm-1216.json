@@ -20,7 +20,9 @@
       "accessories": "2xImpact Armor for needles or darts",
       "bookPage": "cc.31",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

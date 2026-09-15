@@ -20,7 +20,9 @@
       "accessories": "Smartlink",
       "bookPage": "pw.24",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": true,
+      "laserSight": false
     },
     "effects": []
   },

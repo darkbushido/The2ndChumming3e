@@ -20,7 +20,9 @@
       "accessories": "Bipod, Mag:(3), RC:(1), Smartlink-2",
       "bookPage": "sr2.???",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": true,
+      "laserSight": false
     },
     "effects": []
   },

@@ -24,6 +24,7 @@
  */
 import { Hands } from './data/hands.mjs';
 import { ReadyWeapon } from './data/ready-weapon.mjs';
+import { WeaponAccessories } from './data/weapon-accessories.mjs';
 
 /**
  * The full p.112 table. Reference + future automation; only `mvp:true` rows render.
@@ -342,14 +343,26 @@ export function mvpModifierGroups() {
 }
 
 /**
+ * What is left of a worn gyro after recoil takes its share, spent on the Attacker movement rows the GM
+ * ticked — p.113: *"The total recoil and movement modifiers are reduced by -1 for every point of
+ * gyro-stabilization"*. One allowance; the fire dialog spent it on recoil first. Pure.
+ */
+export const GYRO_MOVEMENT_KEYS = ['atkRunning', 'atkRunningDiff', 'atkWalking', 'atkWalkingDiff'];
+export function gyroOffset(state = {}, gyroLeft = 0) {
+  const left = Math.max(0, Number(gyroLeft) || 0);
+  if (!left) return 0;
+  const movement = SR3E_RANGED_MODIFIERS.filter(m => GYRO_MOVEMENT_KEYS.includes(m.key) && state[m.key])
+    .reduce((a, m) => a + (m.mod ?? 0), 0);
+  return Math.min(left, movement);
+}
+
+/**
  * Guess which gear modifiers apply, so the GM window can pre-tick them.
  *
- * **This is a guess, and deliberately so.** There is no structured gear data:
- * `accessories` on a firearm is a free-text StringField, the Smartgun Link
- * cyberware is never read for TN maths, and laser sight and gyro have no
- * mechanical representation at all (TODO #18 replaces this with real fields).
- * Every result is presented as a pre-ticked, freely overridable checkbox rather
- * than as a silently applied number.
+ * **This is a guess, and deliberately so.** The weapon's side is structured now
+ * (`smartgun` / `laserSight`, TODO 18 — `WeaponAccessories.flag`), but the actor's side is
+ * still read from item names. Every result is presented as a pre-ticked, freely
+ * overridable checkbox rather than as a silently applied number.
  *
  * Smartlink and smart goggles are PAIR conditions — core p.112 says "with a
  * properly equipped smart-weapon" — so the cyberware alone earns nothing. A
@@ -360,8 +373,7 @@ export function mvpModifierGroups() {
  * @returns {{smartlink:boolean, smartGoggles:boolean, laserSight:boolean}}
  */
 export function guessGearModifiers(actor, weapon) {
-  const acc = String(weapon?.system?.accessories ?? '').toLowerCase();
-  const gunIsSmart = /smart/.test(acc);
+  const gunIsSmart = WeaponAccessories.flag(weapon, 'smartgun');
 
   const hasItem = re => (actor?.items ?? []).some(i => re.test(String(i.name ?? '').toLowerCase()));
 
@@ -379,7 +391,7 @@ export function guessGearModifiers(actor, weapon) {
     smartlink:    !dual && gunIsSmart && hasSmartlink,
     // Never both — smartlink (−2) supersedes goggles (−1) on the same shot.
     smartGoggles: !dual && gunIsSmart && hasGoggles && !(gunIsSmart && hasSmartlink),
-    laserSight:   !dual && /laser/.test(acc),
+    laserSight:   !dual && WeaponAccessories.flag(weapon, 'laserSight'),
     secondFirearm: dual,
   };
 }

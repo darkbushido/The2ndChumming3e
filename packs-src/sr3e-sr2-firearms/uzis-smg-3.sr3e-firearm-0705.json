@@ -20,7 +20,9 @@
       "accessories": "Laser Sight, Sound Suppressor",
       "bookPage": "pw.22",
       "notes": "",
-      "hands": 1
+      "hands": 1,
+      "smartgun": false,
+      "laserSight": true
     },
     "effects": []
   },

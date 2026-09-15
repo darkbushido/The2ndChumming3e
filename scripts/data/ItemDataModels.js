@@ -142,6 +142,10 @@ export class FirearmData extends foundry.abstract.TypeDataModel {
       cost:            new NumberField({ integer: true, initial: 0, min: 0 }),
       streetIndex:     new StringField({ initial: '' }),
       accessories:     new StringField({ initial: '' }),
+      // Built-in smartgun system / laser sight (TODO 18). Null = not recorded, and the free-text
+      // `accessories` is read instead (WeaponAccessories.flag); the shipped packs store true/false.
+      smartgun:        new BooleanField({ nullable: true, initial: null }),
+      laserSight:      new BooleanField({ nullable: true, initial: null }),
       bookPage:        new StringField({ initial: '' }),
       notes:           new HTMLField({ initial: '', required: false }),
       isAoE:           new BooleanField({ initial: false }),

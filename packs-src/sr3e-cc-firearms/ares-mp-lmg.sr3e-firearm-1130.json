@@ -20,7 +20,9 @@
       "accessories": "Gas Vent II(2RC), Hip Pad Brace(1RC), Laser Sight",
       "bookPage": "cc.26",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": true
     },
     "effects": []
   },

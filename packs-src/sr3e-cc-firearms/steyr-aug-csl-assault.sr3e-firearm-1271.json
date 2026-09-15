@@ -20,7 +20,9 @@
       "accessories": "Laser sight, Gas Vent I(1RC), See Rules",
       "bookPage": "cc.22",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": true
     },
     "effects": []
   },

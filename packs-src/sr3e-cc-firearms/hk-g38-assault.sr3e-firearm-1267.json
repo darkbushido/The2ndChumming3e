@@ -20,7 +20,9 @@
       "accessories": "Dual Laser sight & Low Light Mag:(2) Scope, Gas Vent II(2RC) See Rules",
       "bookPage": "cc.22",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": true
     },
     "effects": []
   },

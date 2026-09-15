@@ -20,7 +20,9 @@
       "accessories": "Smartlink, Fold. Stock(1RC), Gas Vent II(2RC)",
       "bookPage": "sr3.278",
       "notes": "",
-      "hands": 1
+      "hands": 1,
+      "smartgun": true,
+      "laserSight": false
     },
     "effects": []
   },

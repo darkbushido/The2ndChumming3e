@@ -20,7 +20,9 @@
       "accessories": "RC(3), Smartlink-2, Fires LPist rnds, BF 6 rnds = 12D",
       "bookPage": "cc.26",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": true,
+      "laserSight": false
     },
     "effects": []
   },

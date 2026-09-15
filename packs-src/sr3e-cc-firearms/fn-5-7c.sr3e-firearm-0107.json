@@ -20,7 +20,9 @@
       "accessories": "RC(1)",
       "bookPage": "cc.19",
       "notes": "",
-      "hands": 1
+      "hands": 1,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

@@ -381,8 +381,9 @@ export class SR3EItem extends Item {
     // wounded" row (p.123). The card rolls through `_rollWave`, so nothing else adds them (F3).
     // Sustained spells likewise: +2 each on "all tests" (p.178), and nothing else adds them here.
     const A         = game.sr3e.SR3EActor;
-    const atkWound  = A.woundTN(actor);
-    const defWound  = A.woundTN(targetActor);
+    // A gyro harness adds +4 to its wearer's melee TNs (p.282, TODO 18) — folded in with the wound.
+    const atkWound  = A.woundTN(actor) + A.gyroMeleeTN(actor);
+    const defWound  = A.woundTN(targetActor) + A.gyroMeleeTN(targetActor);
     const atkSust   = A.standingTN(actor);
     const defSust   = A.standingTN(targetActor);
     const baseAtkTN = Math.max(2, 4 + (atkInfo.defaultTnMod ?? 0) + (calledShot.tnMod ?? 0) + atkWound + atkSust);
@@ -1267,7 +1268,10 @@ export class SR3EItem extends Item {
   }
 
   // --- Step 3: Roll options dialog (TN + damage code + range + vehicle modifier) ---
-  const recoilTNMod  = fireModeResult?.recoilTN ?? 0;
+  // A worn gyro soaks recoil first — p.113's one allowance against recoil + movement, cumulative with
+  // compensation (already inside recoilTN). What is left offsets movement in the GM window (TODO 18).
+  const gyro         = game.sr3e.SR3EActor.gyroOnRecoil(game.sr3e.SR3EActor.gyroRating(actor), fireModeResult?.recoilTN ?? 0);
+  const recoilTNMod  = gyro.recoil;
   const woundPenalty = -(actor.system.woundMod ?? 0);
   // Layered armour · SR3 p.285 (TODO 112): +N to "all skills linked to Quickness" — which most
   // ranged weapon skills are. Pre-applied like the wound modifier, and itemised beside it.
@@ -1279,6 +1283,7 @@ export class SR3EItem extends Item {
   const extraTNMod   = recoilTNMod + (fireModeResult?.additionalTNPenalty ?? 0) + woundPenalty + armorQTN + sustainTN;
   const tnBreakdownParts = [];
   if (recoilTNMod)                           tnBreakdownParts.push(`Recoil +${recoilTNMod}`);
+  if (gyro.used)                             tnBreakdownParts.push(`Gyro −${gyro.used} of recoil${gyro.left ? ` (${gyro.left} left for movement)` : ''}`);
   if (fireModeResult?.additionalTNPenalty)   tnBreakdownParts.push(`Multi-target +${fireModeResult.additionalTNPenalty}`);
   if (woundPenalty > 0)                      tnBreakdownParts.push(`Wound +${woundPenalty}`);
   if (armorQTN > 0)                          tnBreakdownParts.push(`Layered armour +${armorQTN}`);
@@ -1320,6 +1325,7 @@ export class SR3EItem extends Item {
     weaponName:   this.name,
     baseTN:       _baseTNForGM,
     baseNote:     tnBreakdownParts.length ? tnBreakdownParts.join(' | ') : null,
+    gyroLeft:     gyro.left,   // TODO 18 — offsets the Attacker movement rows (p.113)
   }, { timeout: 300_000 });
 
   if (negotiation === null) return null;   // GM cancelled the attack — nothing written
@@ -2917,7 +2923,7 @@ export class SR3EItem extends Item {
   }
 
   static async _promptGMAttackWindow(ctx, opts = {}) {
-    const { mvpModifierGroups, sumModifiers, clampTN, guessGearModifiers,
+    const { mvpModifierGroups, sumModifiers, clampTN, guessGearModifiers, gyroOffset,
             SR3E_VISIBILITY_TABLE, SR3E_VISION_TYPES, visibilityModifier,
             detectVision, visionReminder, bestVisionKey, escapeHTML } =
       await import('../SR3ECombatModifiers.js');
@@ -3042,6 +3048,7 @@ export class SR3EItem extends Item {
           <input type="number" id="sr-gm-tn" value="${baseTN}" min="2" max="30" style="width:60px"/>
         </label>
         <div id="sr-gm-tn-note" style="font-size:11px;color:var(--sr-dim);margin-top:4px"></div>
+        <div id="sr-gm-gyro-note" style="font-size:11px;color:var(--sr-dim)"></div>
       `,
       buttons: [
         // NOT "Roll" — the GM sets the target number, the ATTACKER rolls. Labelling
@@ -3070,6 +3077,7 @@ export class SR3EItem extends Item {
         const el   = dialog.element;
         const tnEl = el.querySelector('#sr-gm-tn');
         const note = el.querySelector('#sr-gm-tn-note');
+        const gyroNote = el.querySelector('#sr-gm-gyro-note');
         const visNote = el.querySelector('.sr-gm-vis-note');
 
         // The pre-selected vision follows the condition — a character with thermographic and
@@ -3098,7 +3106,10 @@ export class SR3EItem extends Item {
               : '';
           }
 
-          const { tn, floored, raw } = clampTN(baseTN + sumModifiers(state));
+          // A worn gyro's remainder offsets the movement rows ticked (p.113, TODO 18).
+          const gyroOff = gyroOffset(state, ctx.gyroLeft ?? 0);
+          const { tn, floored, raw } = clampTN(baseTN + sumModifiers(state) - gyroOff);
+          if (gyroNote) gyroNote.textContent = ctx.gyroLeft ? `Gyro ${ctx.gyroLeft} left after recoil — offsetting ${gyroOff} of movement (SR3 p.113).` : '';
           tnEl.value      = tn;
           note.textContent = floored
             ? `Floored at ${tn} — modifiers summed to ${raw}. No target number can be less than 2 (SR3 p.112).`

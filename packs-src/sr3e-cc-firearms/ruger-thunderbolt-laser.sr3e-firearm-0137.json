@@ -20,7 +20,9 @@
       "accessories": "Laser, special recoil, damage code is for Burst",
       "bookPage": "cc.19",
       "notes": "",
-      "hands": 1
+      "hands": 1,
+      "smartgun": false,
+      "laserSight": true
     },
     "effects": []
   },

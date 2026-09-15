@@ -20,7 +20,9 @@
       "accessories": "Laser sight, Gas Vent II(2RC), Fold Stock, Mag:(2)",
       "bookPage": "cc.22",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": true
     },
     "effects": []
   },

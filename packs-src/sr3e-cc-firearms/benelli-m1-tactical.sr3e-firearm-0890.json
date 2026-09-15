@@ -20,7 +20,9 @@
       "accessories": "Pistol Grip stock, -1 Recoil",
       "bookPage": "cc.0",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

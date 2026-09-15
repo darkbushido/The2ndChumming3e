@@ -20,7 +20,9 @@
       "accessories": "Grenade Launcher 8(m), RC(2), Smartlink-2",
       "bookPage": "cc.22",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": true,
+      "laserSight": false
     },
     "effects": []
   },

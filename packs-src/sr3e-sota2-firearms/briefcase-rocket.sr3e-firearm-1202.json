@@ -21,7 +21,9 @@
       "bookPage": "sta2.35",
       "notes": "",
       "isAoE": true,
-      "hands": 2
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

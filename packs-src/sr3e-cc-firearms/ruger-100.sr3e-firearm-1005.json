@@ -20,7 +20,9 @@
       "accessories": "Mag:(3)",
       "bookPage": "cc.21",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

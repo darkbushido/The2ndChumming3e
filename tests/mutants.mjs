@@ -31,8 +31,17 @@ const HEAL  = { module: '../scripts/SR3EHealing.js',         klass: 'SR3EHealing
 const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating' };
 const AMMO   = { module: '../scripts/data/ammo-stock.mjs',   klass: 'AmmoStock' };
 const BOOKPAGE = { module: '../scripts/data/book-page.mjs',  klass: 'BookPage' };
+const ACCESSORIES = { module: '../scripts/data/weapon-accessories.mjs', klass: 'WeaponAccessories' };
 
 export const MUTANTS = [
+  {
+    id:     'laser-read-over-whole-text',
+    suite:  'gyro',
+    ...ACCESSORIES, method: 'fromText',
+    was:    '`/laser/` over the whole accessories text — the Ballista\'s Laser Designator and the Sonic Beam '
+          + 'Rifle\'s "MP Laser III" battery note were guessed as laser sights (TODO 18)',
+    impl:   text => ({ smartgun: /smart/i.test(String(text ?? '')), laserSight: /laser/i.test(String(text ?? '')) }),
+  },
   {
     id:     'bookpage-sta2-not-aliased',
     suite:  'book-page',

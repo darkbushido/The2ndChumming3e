@@ -20,7 +20,9 @@
       "accessories": "Either: Folding Bipod(2RC) or Shoulder Strap & Hip Brace(1RC)",
       "bookPage": "cc.26",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

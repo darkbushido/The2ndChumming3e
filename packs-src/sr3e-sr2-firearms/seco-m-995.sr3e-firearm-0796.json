@@ -20,7 +20,9 @@
       "accessories": "Gas Vent (3), Grenade Launcher (6-shot), Laser Sight, Rangefinder Grenade Link",
       "bookPage": "sr2.???",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": true
     },
     "effects": []
   },

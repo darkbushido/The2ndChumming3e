@@ -20,7 +20,9 @@
       "accessories": "Low-Light or Thermo Mag:(3) Scope, Gas Vent II(2RC), Silencer",
       "bookPage": "sr3.278",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

@@ -20,7 +20,9 @@
       "accessories": "Low power \"less-than-lethal\" ammo can be manually cycled with the ext. bolt handle. Collapsible stock(1RC)",
       "bookPage": "cc.0",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

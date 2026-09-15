@@ -20,7 +20,9 @@
       "accessories": "Gas Vent (2), Smartlink",
       "bookPage": "pw.24",
       "notes": "",
-      "hands": 1
+      "hands": 1,
+      "smartgun": true,
+      "laserSight": false
     },
     "effects": []
   },

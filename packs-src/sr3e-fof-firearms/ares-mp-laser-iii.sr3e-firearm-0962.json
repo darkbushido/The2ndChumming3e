@@ -20,7 +20,9 @@
       "accessories": "Power decrease by distance",
       "bookPage": "fof.49",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

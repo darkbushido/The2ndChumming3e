@@ -27,7 +27,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | [48](#48) | The action ledger | ✅ built — `c03025c5`; Take Aim across phases still open inside it |
 | [47](#47) | Ready Weapon, an equip control for firearms, Quick Draw | ✅ built — two-gun Quick Draw waits on #49 |
 | [49](#49) | Hands | ✅ built — dual-wield billing, recoil crossover and matched razors still open inside it |
-| [18](#18) | Structured weapon-accessory data (smartlink, smart goggles, laser) | the maintainer's gate for everything below |
+| [18](#18) | Structured weapon-accessory data (smartlink, smart goggles, laser) + gyro | ✅ built — `smartgun`/`laserSight` fields; gyro on recoil, then movement |
 | [23](#23) | Ammunition compendium | easiest — likely already met: 661 ammunition docs ship in 6 default-gear packs; verify and close |
 | [55](#55) | `trackAmmo` on by default | small switch; audit what it exposes |
 | [57](#57) | Shotgun choke and spread (p.117) | self-contained rule and one dialog input |
@@ -2121,6 +2121,26 @@ Three harness facts worth knowing before writing another spec — each cost a wr
 is the most-played path in the system and the one with the most moving parts.
 
 ## 18. Structured gear data for weapon-accessory TN modifiers
+
+> **Built 2026-09-15 on `feature/action-economy`** (0.6; not merged).
+> - **Weapon side:** `smartgun` / `laserSight` on `FirearmData` (nullable; blank reads the text). The
+>   shipped packs store them — `tools/fill-weapon-accessories.mjs`, 343 firearms: 59 smartguns, 56 laser
+>   sights. One reader, `WeaponAccessories` (`scripts/data/weapon-accessories.mjs`), which reads the text
+>   per item. The old `/laser/` guess ticked the Ballista's *Laser Designator* and the Sonic Beam Rifle's
+>   battery note as laser sights (mutant `laser-read-over-whole-text`).
+> - **Gyro (p.113, p.282):** a worn *Gyro Mount* gear item (not stored). Its rating (standard 5, deluxe 6)
+>   comes off recoil first in the fire flow (`SR3EActor.gyroOnRecoil`). What is left offsets the Attacker
+>   movement rows the GM ticks (`gyroOffset`). It also gives +1 impact and ballistic armour and +4 to the
+>   wearer's melee TNs, and halves the Combat Pool (rounded down).
+> - **The p.113 reading:** *"The **total** recoil and movement modifiers are reduced by -1 for every point"*
+>   means ONE allowance against the sum. The rating is not taken off each modifier separately. Flagged for
+>   the maintainer.
+> - TESTING.md §40.
+> - **Not modelled:**
+>   - The actor side still reads item names (smartlink cyberware, smart goggles). That is the pair
+>     condition, and the names are reliable.
+>   - M&M's *Cyberarm Gyromount* (cyberware; its own rules).
+>   - Vehicle gyro gear.
 
 Four SR3 p.112 modifiers depend on gear the system **cannot currently detect** — verified 2026-08-05:
 

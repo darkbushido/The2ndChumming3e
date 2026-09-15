@@ -20,7 +20,9 @@
       "accessories": "Laser Sight, Gas Vent II(2RC), Retr. Stock(1RC)",
       "bookPage": "sr3.278",
       "notes": "",
-      "hands": 1
+      "hands": 1,
+      "smartgun": false,
+      "laserSight": true
     },
     "effects": []
   },

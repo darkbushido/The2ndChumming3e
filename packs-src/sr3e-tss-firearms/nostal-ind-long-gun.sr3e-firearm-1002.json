@@ -20,7 +20,9 @@
       "accessories": "None",
       "bookPage": "tss.2",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

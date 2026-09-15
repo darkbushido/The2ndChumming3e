@@ -20,7 +20,9 @@
       "accessories": "use battery back from MP Laser III, shotgun ranges - single target /choke 2-10, stun wears off @1 box/combat turn",
       "bookPage": "sta2.35",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

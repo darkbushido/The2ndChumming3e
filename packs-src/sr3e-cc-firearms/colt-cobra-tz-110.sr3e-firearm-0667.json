@@ -20,7 +20,9 @@
       "accessories": "Gas Vent II(2RC), Fold Stock(1RC)",
       "bookPage": "cc.21",
       "notes": "",
-      "hands": 1
+      "hands": 1,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

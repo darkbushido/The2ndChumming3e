@@ -20,7 +20,9 @@
       "accessories": "High-power Laser Sight, Low-Light, Mag:(3), Shock Pads, Silencer",
       "bookPage": "sr2.???",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": true
     },
     "effects": []
   },

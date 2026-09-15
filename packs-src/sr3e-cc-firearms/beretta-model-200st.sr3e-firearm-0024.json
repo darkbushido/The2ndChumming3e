@@ -20,7 +20,9 @@
       "accessories": "BF = Complex Action, Detach. Stock(1RC)",
       "bookPage": "cc.18",
       "notes": "",
-      "hands": 1
+      "hands": 1,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

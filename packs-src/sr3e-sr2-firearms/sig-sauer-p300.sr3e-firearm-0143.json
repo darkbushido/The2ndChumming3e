@@ -20,7 +20,9 @@
       "accessories": "Caseless, Laser Sight, Silencer",
       "bookPage": "pw.17",
       "notes": "",
-      "hands": 1
+      "hands": 1,
+      "smartgun": false,
+      "laserSight": true
     },
     "effects": []
   },

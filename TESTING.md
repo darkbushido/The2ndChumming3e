@@ -2382,3 +2382,18 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
 - [ ] Two ready pistols, fire one → the GM window's Gear group pre-ticks "Using a second firearm +2" and
       does NOT tick smartlink/laser; holster the second → neither. Two assault rifles → never ticked.
 - [ ] After merging, `npm run packs:install` (Foundry closed) so the install's weapons carry `hands`.
+- [ ] **Gyro (TODO 18):**
+  - [ ] Give a character a compendium *Gyro Mount* (sr3 gear, rating 5). The Combat Pool halves, rounded
+        down. The soak card's armour rises by 1/1.
+  - [ ] Fire SA twice (+1 recoil on the second shot). The breakdown says "Gyro −1 of recoil (4 left for
+        movement)".
+  - [ ] In the GM window, tick "Attacker running". The TN does not rise (4 offset), and the gyro note
+        says so.
+  - [ ] Put the gyro in storage. All of the above goes away.
+  - [ ] Melee with the gyro worn: the GM window's base TN for that fighter is 4 higher.
+- [ ] **Accessories (TODO 18):**
+  - [ ] A compendium Ares Predator shows smartgun/laser as the packs store them.
+  - [ ] Fire a smartgun with Smartlink cyberware: −2 is pre-ticked.
+  - [ ] The Ballista (Laser Designator) never pre-ticks a laser sight.
+  - [ ] After merging, run `npm run packs:install` (Foundry closed), then restart Foundry fully: the data
+        model changed.

@@ -20,7 +20,9 @@
       "accessories": "Gas Vent (2), Grenade Launcher (6-shot), Laser Sight, Mag:(2)",
       "bookPage": "pw.27",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": true
     },
     "effects": []
   },

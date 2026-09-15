@@ -20,7 +20,9 @@
       "accessories": "+1 TN when firing",
       "bookPage": "cc.31",
       "notes": "",
-      "hands": 1
+      "hands": 1,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

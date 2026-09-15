@@ -20,7 +20,9 @@
       "accessories": "Smartlink-2, Fold Stock(1RC,-2Conc)",
       "bookPage": "cc.23",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "smartgun": true,
+      "laserSight": false
     },
     "effects": []
   },

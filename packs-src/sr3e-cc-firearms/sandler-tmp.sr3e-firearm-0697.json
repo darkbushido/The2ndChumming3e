@@ -20,7 +20,9 @@
       "accessories": "Laser sight, Fold Stock(1RC)",
       "bookPage": "cc.21",
       "notes": "",
-      "hands": 1
+      "hands": 1,
+      "smartgun": false,
+      "laserSight": true
     },
     "effects": []
   },

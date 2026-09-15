@@ -20,7 +20,9 @@
       "accessories": "Improved Gas Vent (2)",
       "bookPage": "sr2.???",
       "notes": "",
-      "hands": 1
+      "hands": 1,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },
