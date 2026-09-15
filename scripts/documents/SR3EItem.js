@@ -1,5 +1,6 @@
 import { vcrLevel as vcrLevelOf } from '../data/item-rating.mjs';
 import { AmmoStock } from '../data/ammo-stock.mjs';
+import { Shotgun, CHOKE_MIN, CHOKE_MAX } from '../data/shotgun.mjs';
 
 export class SR3EItem extends Item {
 
@@ -1236,6 +1237,9 @@ export class SR3EItem extends Item {
       if (ammoRules.faOnly && fireModeResult.mode !== 'FA') {
         ui.notifications.warn(`${ammoRules.label} ammo can only be used in Full Auto.`);
       }
+      if (ammoRules.shotgunOnly && !isShotgun) {
+        ui.notifications.warn(`${ammoRules.label} is shotgun ammunition (SR3 p.117) — ${this.name} is not a shotgun.`);
+      }
       // Apply mode damage modifiers to rawDamage
       const parsed = SR3EItem.parseDamageCode(rawDamage, actor);
       if (parsed) {
@@ -1267,6 +1271,25 @@ export class SR3EItem extends Item {
     }
   }
 
+  // Shot spreads (SR3 p.117, TODO 57): from the measured distance and the choke; else what was declared.
+  // Each spread is −1 Power, −1 to the attacker's TN and +1 to the defender's Dodge TN (p.113).
+  let shot = null;
+  if (this.type === 'firearm' && Shotgun.firesShot(this)) {
+    const choke    = fireModeResult?.choke ?? Shotgun.choke(this.system.choke);
+    const measured = rangeInfo?.distance != null;
+    const spreads  = measured ? Shotgun.spreads(rangeInfo.distance, choke) : (fireModeResult?.shotgunSpread ?? 0);
+    shot = { choke, measured, ...Shotgun.effects(spreads) };
+    if (fireModeResult) fireModeResult.shotgunSpread = shot.dodge;
+    const p = SR3EItem.parseDamageCode(rawDamage, actor);
+    if (p && shot.power) {
+      if (p.power + shot.power <= 0) {
+        ui.notifications.warn(`${this.name}: at choke ${choke} the shot has spread ${spreads} times and its Power is gone — ineffective (SR3 p.117).`);
+        return null;
+      }
+      rawDamage = `${p.power + shot.power}${p.level}${p.isStun ? ' Stun' : ''}`;
+    }
+  }
+
   // --- Step 3: Roll options dialog (TN + damage code + range + vehicle modifier) ---
   // A worn gyro soaks recoil first — p.113's one allowance against recoil + movement, cumulative with
   // compensation (already inside recoilTN). What is left offsets movement in the GM window (TODO 18).
@@ -1280,7 +1303,7 @@ export class SR3EItem extends Item {
   // Sustained spells, +2 each on all tests (p.178) — pre-applied with the wound modifier, so
   // `rollPool` is told to skip both.
   const sustainTN    = game.sr3e.SR3EActor.standingTN(actor);
-  const extraTNMod   = recoilTNMod + (fireModeResult?.additionalTNPenalty ?? 0) + woundPenalty + armorQTN + sustainTN;
+  const extraTNMod   = recoilTNMod + (fireModeResult?.additionalTNPenalty ?? 0) + woundPenalty + armorQTN + sustainTN + (shot?.tn ?? 0);
   const tnBreakdownParts = [];
   if (recoilTNMod)                           tnBreakdownParts.push(`Recoil +${recoilTNMod}`);
   if (gyro.used)                             tnBreakdownParts.push(`Gyro −${gyro.used} of recoil${gyro.left ? ` (${gyro.left} left for movement)` : ''}`);
@@ -1288,6 +1311,8 @@ export class SR3EItem extends Item {
   if (woundPenalty > 0)                      tnBreakdownParts.push(`Wound +${woundPenalty}`);
   if (armorQTN > 0)                          tnBreakdownParts.push(`Layered armour +${armorQTN}`);
   if (sustainTN > 0)                         tnBreakdownParts.push(game.sr3e.SR3EActor.standingNote(actor));
+  if (shot?.spreads) tnBreakdownParts.push(`Shot spread −${shot.spreads} (choke ${shot.choke}, ${shot.spreads + 1} m wide; Power −${shot.spreads}, their Dodge +${shot.spreads})`);
+  if (shot) tnBreakdownParts.push('Shot: everyone in the spread is a valid target, and each gets +1 Damage Resistance die per other target in front of them (p.117 — GM)');
   // Tracer TN bonus is conditional (beyond Short range, non-smartgun) so it is shown
   // as a note for the GM to apply manually rather than baked into the TN.
   const tracerRules = game.sr3e.SR3E.ammoTypes[ammoType] ?? {};
@@ -3841,15 +3866,20 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       <span style="font-size:11px;color:var(--sr-muted);margin-left:4px">(a further shot at the SAME target is still the 1st)</span>
     </label>`;
 
-  // p.113: "+1 per meter of shotgun spread at the target's position". Choke is not modelled
-  // (TODO 57), so the spread is declared rather than derived — the attacker knows their choke
-  // setting and the range, and p.117 has the table. Shotguns only, and zero by default so it
-  // costs nothing to ignore.
-  const spreadRow = isShotgun ? `
-    <label style="display:block;margin-top:8px;font-size:12px">Shot <strong>spread</strong> at the target (m)
+  // Shot spreads by the choke (p.117, TODO 57): the shooter sets it here and it is remembered on the gun.
+  // With tokens on the scene the spread is worked out from the distance (scripts/data/shotgun.mjs); the
+  // box below is what counts when there is no distance to measure. Slugs do not spread.
+  const firesShot = Shotgun.firesShot(weapon);
+  const spreadRow = isShotgun ? (firesShot ? `
+    <label style="display:block;margin-top:8px;font-size:12px"><strong>Choke</strong>
+      <input type="number" id="sr-shot-choke" value="${Shotgun.choke(weapon.system.choke)}" min="${CHOKE_MIN}" max="${CHOKE_MAX}" style="width:50px;margin-left:6px"/>
+      <span style="font-size:11px;color:var(--sr-muted)">(2-10: the shot widens 1 m every choke metres — p.117)</span>
+    </label>
+    <label style="display:block;margin-top:4px;font-size:12px">Spreads at the target, if no distance is measured
       <input type="number" id="sr-shot-spread" value="0" min="0" max="10" style="width:55px;margin-left:6px"/>
-      <span style="font-size:11px;color:var(--sr-muted)">(p.117 — raises the target's Dodge TN by 1 per metre; 0 for slugs)</span>
-    </label>` : '';
+      <span style="font-size:11px;color:var(--sr-muted)">(each: −1 Power, −1 your TN, +1 their Dodge TN)</span>
+    </label>` : `
+    <div style="margin-top:8px;font-size:11px;color:var(--sr-muted)">Slugs loaded — no spread. Load Shot ammunition to use the choke (p.117).</div>`) : '';
 
   const recoilState = `
     <div style="margin-top:10px;padding:6px 8px;background:#0a0a0a;border:1px solid var(--sr-border);border-radius:var(--r);font-size:11px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
@@ -3955,7 +3985,10 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
           const recoilTN = recoilForMode(mode, roundsBefore, aComp + wComp,
                                          SR3EItem.roundsExpended({ rounds, roundsWasted }));
           const shotgunSpread = Math.max(0, parseInt(el.querySelector('#sr-shot-spread')?.value) || 0);
-          result = { mode, rounds, roundsWasted, recoilTN, additionalTNPenalty, shotgunSpread };
+          const chokeEl = el.querySelector('#sr-shot-choke');
+          const choke   = chokeEl ? Shotgun.choke(chokeEl.value) : null;
+          if (choke !== null && choke !== weapon.system.choke) await weapon.update({ 'system.choke': choke });
+          result = { mode, rounds, roundsWasted, recoilTN, additionalTNPenalty, shotgunSpread, choke };
         },
       },
       { label: 'Cancel', action: 'cancel' },

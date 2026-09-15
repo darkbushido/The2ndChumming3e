@@ -2402,3 +2402,13 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
         "trackAmmo: default changed in 0.6.0; this world keeps false".
   - [ ] A brand-new world has it ON (after the 0.6.0 bump; before it, the second load pins it off).
   - [ ] Its hint describes empty guns and ↻ Reload.
+- [ ] **Shotgun shot (TODO 57):**
+  - [ ] Give a character an ammunition item of type Shot with a clip load mechanism, then reload a
+        shotgun with it.
+  - [ ] Fire at a token 15 m away with choke 5. The breakdown shows "Shot spread −2 (choke 5, 3 m wide…)",
+        the damage Power is 2 lower, and the defender's Dodge TN is 6.
+  - [ ] Fire again: the choke box remembers 5.
+  - [ ] Load slugs (Regular): no choke box, no spread.
+  - [ ] With a smartlink and a smartgun shotgun firing shot, the GM window pre-ticks "Smartlink, shotgun
+        firing shot −1", not −2.
+  - [ ] Choke 2 at 20 m against a 6-Power gun stops with "ineffective".

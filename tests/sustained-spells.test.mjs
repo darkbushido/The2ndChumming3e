@@ -115,7 +115,7 @@ export async function run(t) {
   t.ok('dodge: both dodge prompts pass the defender\'s', /sustain:\s+SR3EActor\.sustainingTN\(targetActor\)/.test(actor)
     && /sustain:\s+game\.sr3e\.SR3EActor\.sustainingTN\(defender\)/.test(item));
   t.ok('ranged: pre-applied in the roll-options TN, and rollPool told to skip it',
-    /extraTNMod\s+= [^;]*\+ sustainTN;/.test(item) && /options\.skipSustainMod\s+= true/.test(item));
+    /extraTNMod\s+= [^;]*\+ sustainTN(;| \+)/.test(item) && /options\.skipSustainMod\s+= true/.test(item));
   t.is('the sheet\'s attribute and skill dialogs pre-apply it and skip it in rollPool',
     (sheet.match(/skipSustainMod: true/g) ?? []).length, 2);
   t.ok('…both pre-fill the TN with it', (sheet.match(/4 \+ woundPenalty \+ sustainTN \+ qtnFor/g) ?? []).length === 2);

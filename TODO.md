@@ -30,7 +30,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | [18](#18) | Structured weapon-accessory data (smartlink, smart goggles, laser) + gyro | ✅ built — `smartgun`/`laserSight` fields; gyro on recoil, then movement |
 | [23](TODO-DONE.md#23) | Ammunition compendium | ✅ closed — 661 docs, all 8 types; found and fixed loose rounds not loading non-clip guns (`c8e04eff`, main) |
 | [55](TODO-DONE.md#55) | `trackAmmo` on by default | ✅ — new worlds on; existing worlds pinned off; weight raised as #126 |
-| [57](#57) | Shotgun choke and spread (p.117) | self-contained rule and one dialog input |
+| [57](TODO-DONE.md#57) | Shotgun choke and spread (p.117) | ✅ — shot ammo type, choke on the gun, spread from the range |
 | [56.1](#56) | Smartguns waste no rounds (p.116) | easy once #18 gives a smartgun flag |
 | [56.2](#56) | Remember who you shot at this phase | per-phase state — the #48 ledger is its home; closes #56 |
 | [78](#78) | Quick Strike acts first in a pass (MITS p.151) | touches the initiative queue |
@@ -38,12 +38,12 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 
 ## Contents
 
-**36 open.** 90 done — see [TODO-DONE.md](TODO-DONE.md).
+**35 open.** 91 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[53](#53) The "Essence hole" surgery option is not modelled — *M&M p.150*<br>[57](#57) Shotgun choke and spread are not modelled — *SR3 p.117*<br>[109](#109) Cyberware, bioware and Attribute Stress<br>[110](#110) Move-by-wire's TLE-x<br>[111](#111) Chronic Dissociation Syndrome — cyberzombies |
+| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[53](#53) The "Essence hole" surgery option is not modelled — *M&M p.150*<br>[109](#109) Cyberware, bioware and Attribute Stress<br>[110](#110) Move-by-wire's TLE-x<br>[111](#111) Chronic Dissociation Syndrome — cyberzombies |
 | 🧙 Adept powers | [78](#78) Quick Strike acts first in a pass — *MITS p.151* |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [119](#119) Audit *The Matrix Defragged v2* against what we have<br>[120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork) |
@@ -547,45 +547,6 @@ without the cost.
 procedure options) rather than as a special case bolted onto the install hook — and it needs
 to track WHICH hole is being filled, since a 0.5 implant cannot borrow 2.0 of hole and then
 lend the remainder to the next one for free.
-
-## 57. Shotgun choke and spread are not modelled — *SR3 p.117*
-
-Split out of [#52](TODO-DONE.md#52), which needed the spread as an input and found nothing to read it from.
-
-A shotgun firing shot rounds throws a cone. The user sets a **choke** from 2 to 10, and *"for
-every number of meters equal to the choke setting that the shot travels, it will spread one
-meter"*. So the width at distance *d* is `ceil(d / choke)` metres, and the number of times it
-has spread is that minus one.
-
-Three separate effects hang off that count, and **the system implements none of them**:
-
-| Effect | Rule |
-|---|---|
-| Power | −1 per spread — *"Every time a shot round increases its spread, it loses 1 point of power"* |
-| Attacker's TN | −1 per spread — *"Every time the shot spreads, subtract -1 from the attacker's target number"* |
-| Defender's Dodge TN | **+1 per metre of spread** (p.113) — the only one currently reachable, and only by hand |
-
-The book's own worked line pins the arithmetic: at choke 5 it is **−2/−2 at fifteen metres**
-(width 3, so two spreads) and **−3/−3 at twenty** (width 4). Also: *"Everything and everyone
-within the area of spread is considered a valid target"*, so a full implementation is a cone
-template, not a number.
-
-**What exists today** is a "Shot spread at the target (m)" field in the fire dialog, shown only
-for `ShtG`, defaulting to 0, feeding `dodgeTN`. That makes the p.113 modifier reachable without
-pretending to model choke. The attacker knows their choke and their range; p.117 has the table.
-
-⚠ **The dodge modifier is +1 per METRE OF SPREAD, which is the width minus one** — the amount
-by which the cone has widened, matching the attacker's −1 per spread. Reading it as the raw
-width would penalise a point-blank shotgun that has not spread at all.
-
-**To finish it:** a `choke` NumberField (2–10) on the firearm — a data-model change, so a full
-Foundry restart — plus a shot-vs-slug distinction (shot rounds use the flechette rules, so
-`ammoType` is close but not the same question), and then all three effects derive from the
-range that `_measureDistance` already computes on every shot.
-
----
-
-<a id="58"></a>
 
 ## 109. Cyberware, bioware and Attribute Stress — **rules not implemented** (M&M p.124-131)
 

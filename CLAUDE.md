@@ -1056,9 +1056,26 @@ Adding it makes wounded defenders harder to hit; there is a mutant for exactly t
 waste counts for recoil, the phase cap and the magazine, but travels *between* targets, so it
 is excluded here for the same reason it is excluded from damage.
 
-Shotgun spread is **declared** in the fire dialog (`ShtG` only, default 0) because choke is not
-modelled — see TODO 57. The declaration dialog shows the TN and its breakdown, so the
-dodge-versus-soak trade is made against the real number.
+**Shotgun shot, choke and spread — SR3 p.117** (TODO 57; `scripts/data/shotgun.mjs`). Shot is an
+ammunition type, `shot`: flechette rules on the gun's Damage Code, shotguns only. The choke (2-10) is set in
+the fire dialog and remembered on the gun (`system.choke`, blank = 5). From the measured distance:
+- the width is `ceil(d / choke)`, at least 1;
+- each **spread** (width − 1) is −1 Power, −1 to the attacker's TN, and +1 to the defender's Dodge TN;
+- Power 0 is "ineffective", and the attack stops.
+
+With no distance to measure, the spreads typed in the fire dialog stand in.
+
+⚠ **The Dodge modifier counts spreads, not the width**, so a point-blank shot adds nothing. p.113's "per
+meter of shotgun spread" is the maintainer's to confirm.
+
+Gear, p.117: a smartlink is worth **−1** firing shot (the `smartlinkShot` row), and shotguns get nothing from
+smart goggles or laser sights.
+
+Not modelled: the cone as a template, where everyone inside it is a target, and the +1 Damage Resistance
+die per other target in front. Both are stated on the card for the GM.
+
+The declaration dialog shows the TN and its breakdown, so the dodge-versus-soak trade is made against the
+real number.
 
 #### ⚠ Resolving the Dodge Test — RAW, and where the code diverges
 
@@ -1214,7 +1231,7 @@ inside the dialog's FA-only section, so SA's second shot and BF's second burst w
 - *Magazine*: each firearm tracks `loadedAmmoType` + `loadedRounds`; magazine size is parsed from its capacity string (`15(c)` → 15). The weapons-tab ammo cell shows the capacity, a loaded badge, and a ↻ **Reload** button (`SR3EItem.reload`).
 - *Reload*: prompts a compatible stock (`AmmoStock.fits`: ⚠ **loose rounds fit any firearm** — every shipped box says `c`; a pre-filled reload only its own mechanism; arrows/bolts only their bow/crossbow — never from storage) and applies `AmmoStock.reloadPlan` with what is already in the gun — swap a reload, or top up with loose rounds — then reports what was lost and what it takes (`reloadActions`). When `trackAmmo` is off it only sets the loaded type (no stock math).
 - *Firing* uses whatever is loaded; decrements `loadedRounds` when `trackAmmo` is on (warns, never blocks, when empty).
-- *Type rules*: Explosive +1 / EX +2 power; Gel −2 power + Stun (attack time). APDS halves ballistic; Flechette unarmoured → level +1, armoured → **`max(Impact × 2, Ballistic)`** (`SR3EActor.flechetteArmor`, soak time via `ammoType` carried into `_postSoakCard`).
+- *Type rules*: Explosive +1 / EX +2 power; Gel −2 power + Stun (attack time). **Shot** (shotguns, p.117): flechette rules + choke spread (above). APDS halves ballistic; Flechette unarmoured → level +1, armoured → **`max(Impact × 2, Ballistic)`** (`SR3EActor.flechetteArmor`, soak time via `ammoType` carried into `_postSoakCard`).
   ⚠ **The doubling is on IMPACT ONLY** — *"use either double its Impact Armor Rating or its normal Ballistic Armor Rating, whichever is higher"* (p.116). This was `max(ballistic, impact) × 2` until 2026-08-30, which doubles the wrong number and then doubles it anyway: ballistic 8 / impact 2 gave 16 where the book gives 8. The two agree whenever Impact is the higher, which is the common case for light armour and is why it survived. ⚠ *"Dermal armor negates the Damage Level increase"* — `SR3EActor.flechetteRaisesLevel`, fed by `dermalArmorSources`: a troll's hide, **Dermal Plating** or a **Dermal Sheath** (`SR3E.dermalArmorImplants`; M&M p.133 defines dermal armor as *"plating or sheath"*). ⚠ **Orthoskin is not dermal armor** — it is bioware armour, and now counts as armour instead (below). Anti-Vehicle sets `weaponOpts.avMunition` to bypass the vehicle Power/2. Tracer: FA-only, tracer rounds raise Level not Power, TN bonus shown as a manual note.
 - *Loading mechanisms*: c/m/cy/b/belt/d/sb/internal + arrow/bolt (`SR3E.ammoLoadMechanisms`); for firearms parsed from the gun's capacity string by `SR3EItem._parseLoadMechanism`. ⚠ **`b` is BREAK ACTION and `m` an INTERNAL magazine** (SR3 p.280) — the map said Belt and Magazine until 2026-09-13; 14 shipped guns are `(b)`, all break-action. Belt feed is `belt`.
 - *Setting*: world setting `trackAmmo` gates all counting/depletion — **on** for a new world (TODO 55).

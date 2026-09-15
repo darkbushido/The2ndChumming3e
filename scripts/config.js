@@ -1498,6 +1498,9 @@ export const SR3E = {
     flechette:   { label: 'Flechette',    armorEffect: 'flechette' },
     tracer:      { label: 'Tracer',       faOnly: true, tracer: true },
     antiVehicle: { label: 'Anti-Vehicle', armorEffect: 'antiVehicle' },
+    // Shotgun shot (p.117): "apply the flechette ammunition rules to the Damage Code indicated for the
+    // weapon", and it spreads by the choke (scripts/data/shotgun.mjs). Shotguns only.
+    shot:        { label: 'Shot',         armorEffect: 'flechette', shotgunOnly: true },
   },
   spellCategories: ['Combat', 'Detection', 'Health', 'Illusion', 'Manipulation'],
   spellTypes:      ['Physical', 'Mana'],

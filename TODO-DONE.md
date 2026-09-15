@@ -3173,7 +3173,7 @@ breakdown, because the trade is dodge-versus-soak and a TN of 9 makes spending p
 much worse bet than a 4 — the dialog previously showed the attack's successes but never the
 number the dodge would be rolled against.
 
-**Shotgun spread is declared, not derived** — choke is not modelled at all. See [#57](TODO.md#57).
+**Shotgun spread is declared, not derived** — choke is not modelled at all. See [#57](#57).
 
 ### Found while wiring it: `ammoType` was lost on every exploding roll
 
@@ -3321,6 +3321,63 @@ outcome is that people turn it straight back off.
 
 So: **model first, default second.** [#23](#23) (ship an ammunition compendium) is the other
 half of this — the code is complete and the content is missing.
+
+## 57. Shotgun choke and spread are not modelled — *SR3 p.117* ✅ 2026-09-15, `feature/action-economy`
+
+> **Built 2026-09-15 on `feature/action-economy`** (0.6), from the PDF (p.117, p.113).
+> - **Shot is an ammunition type**, `shot`: flechette rules, shotguns only. Slugs are the default,
+>   because the Street Gear shotguns fire slugs.
+> - `choke` on the firearm (2-10, blank = 5). It is set in the fire dialog and remembered.
+> - `Shotgun.spreads(distance, choke)` drives all three effects from the measured range. The book's
+>   −2/−2 at 6 m (choke 2), −2/−2 at 15 m and −3/−3 at 20 m (choke 5) are asserted.
+> - Power 0 stops the attack ("ineffective"). With no tokens, the typed spreads stand in.
+> - **Also from p.117:**
+>   - A smartlink firing shot is −1: a new GM-window row, `smartlinkShot`.
+>   - Shotguns get nothing from smart goggles or laser sights.
+> - **For the maintainer:** p.113's Dodge modifier is read as the *spreads*. It could also be read as the
+>   width, which would add +1 even at point blank.
+> - **Not modelled:**
+>   - The cone as a template, where everyone inside is a valid target.
+>   - The +1 Damage Resistance die per other target in front.
+>   - Both are stated on the card for the GM.
+> - Tests: `tests/shotgun.test.mjs`. Checklist: TESTING.md §40.
+
+Split out of [#52](#52), which needed the spread as an input and found nothing to read it from.
+
+A shotgun firing shot rounds throws a cone. The user sets a **choke** from 2 to 10, and *"for
+every number of meters equal to the choke setting that the shot travels, it will spread one
+meter"*. So the width at distance *d* is `ceil(d / choke)` metres, and the number of times it
+has spread is that minus one.
+
+Three separate effects hang off that count, and **the system implements none of them**:
+
+| Effect | Rule |
+|---|---|
+| Power | −1 per spread — *"Every time a shot round increases its spread, it loses 1 point of power"* |
+| Attacker's TN | −1 per spread — *"Every time the shot spreads, subtract -1 from the attacker's target number"* |
+| Defender's Dodge TN | **+1 per metre of spread** (p.113) — the only one currently reachable, and only by hand |
+
+The book's own worked line pins the arithmetic: at choke 5 it is **−2/−2 at fifteen metres**
+(width 3, so two spreads) and **−3/−3 at twenty** (width 4). Also: *"Everything and everyone
+within the area of spread is considered a valid target"*, so a full implementation is a cone
+template, not a number.
+
+**What exists today** is a "Shot spread at the target (m)" field in the fire dialog, shown only
+for `ShtG`, defaulting to 0, feeding `dodgeTN`. That makes the p.113 modifier reachable without
+pretending to model choke. The attacker knows their choke and their range; p.117 has the table.
+
+⚠ **The dodge modifier is +1 per METRE OF SPREAD, which is the width minus one** — the amount
+by which the cone has widened, matching the attacker's −1 per spread. Reading it as the raw
+width would penalise a point-blank shotgun that has not spread at all.
+
+**To finish it:** a `choke` NumberField (2–10) on the firearm — a data-model change, so a full
+Foundry restart — plus a shot-vs-slug distinction (shot rounds use the flechette rules, so
+`ammoType` is close but not the same question), and then all three effects derive from the
+range that `_measureDistance` already computes on every shot.
+
+---
+
+<a id="58"></a>
 
 ## 58. ✅ A free situational row in the GM windows — **DONE 2026-08-20**
 

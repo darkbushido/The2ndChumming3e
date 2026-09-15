@@ -146,6 +146,8 @@ export class FirearmData extends foundry.abstract.TypeDataModel {
       // `accessories` is read instead (WeaponAccessories.flag); the shipped packs store true/false.
       smartgun:        new BooleanField({ nullable: true, initial: null }),
       laserSight:      new BooleanField({ nullable: true, initial: null }),
+      // Shotgun choke, 2-10 (SR3 p.117, TODO 57) — set in the fire dialog and remembered. Blank = 5.
+      choke:           new NumberField({ integer: true, nullable: true, initial: null, min: 2, max: 10 }),
       bookPage:        new StringField({ initial: '' }),
       notes:           new HTMLField({ initial: '', required: false }),
       isAoE:           new BooleanField({ initial: false }),

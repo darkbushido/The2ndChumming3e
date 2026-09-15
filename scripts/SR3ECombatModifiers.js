@@ -25,6 +25,7 @@
 import { Hands } from './data/hands.mjs';
 import { ReadyWeapon } from './data/ready-weapon.mjs';
 import { WeaponAccessories } from './data/weapon-accessories.mjs';
+import { Shotgun } from './data/shotgun.mjs';
 
 /**
  * The full p.112 table. Reference + future automation; only `mvp:true` rows render.
@@ -57,6 +58,10 @@ export const SR3E_RANGED_MODIFIERS = [
   { key: 'smartlink',      label: 'Smartlink (with smartgun)',     mod: -2,   mvp: true,  group: 'gear', gear: true },
   { key: 'smartGoggles',   label: 'Smart goggles (with smartgun)', mod: -1,   mvp: true,  group: 'gear', gear: true },
   { key: 'laserSight',     label: 'Laser sight',                   mod: -1,   mvp: true,  group: 'gear', gear: true },
+  // p.117: "Shotguns equipped with smartlinks that fire shot rounds receive a -1 target number modifier."
+  // In place of the smartlink row, never with it (TODO 57).
+  { key: 'smartlinkShot',  label: 'Smartlink, shotgun firing shot', mod: -1,  mvp: true,  group: 'gear', gear: true,
+    note: 'p.117 — instead of −2; shotguns get nothing from smart goggles or laser sights' },
   // TODO 49 — rendered now (it had no `mvp` flag, so the GM window never showed it) and GUESSED: the
   // attacker holds a second ready pistol/SMG-class gun (p.112). The GM unticks it when only one is fired.
   { key: 'secondFirearm',  label: 'Using a second firearm',        mod: +2,   mvp: true,  group: 'gear', gear: true,
@@ -387,11 +392,18 @@ export function guessGearModifiers(actor, weapon) {
   // or laser sights" — so those guesses are withdrawn, and the GM restores them if only one is fired.
   const dual = !!(actor && weapon && Hands.secondGun(actor.items ?? [], weapon, i => ReadyWeapon.isReady(i)));
 
+  // Shotguns (p.117): "Shotguns get no benefits from smart goggles or laser sights", and a smartlink is
+  // worth −1, not −2, while it fires shot. TODO 57.
+  const shotgun = weapon?.system?.category === 'ShtG';
+  const shot    = Shotgun.firesShot(weapon);
+  const linked  = !dual && gunIsSmart && hasSmartlink;
+
   return {
-    smartlink:    !dual && gunIsSmart && hasSmartlink,
+    smartlink:     linked && !shot,
+    smartlinkShot: linked && shot,
     // Never both — smartlink (−2) supersedes goggles (−1) on the same shot.
-    smartGoggles: !dual && gunIsSmart && hasGoggles && !(gunIsSmart && hasSmartlink),
-    laserSight:   !dual && WeaponAccessories.flag(weapon, 'laserSight'),
+    smartGoggles:  !dual && !shotgun && gunIsSmart && hasGoggles && !(gunIsSmart && hasSmartlink),
+    laserSight:    !dual && !shotgun && WeaponAccessories.flag(weapon, 'laserSight'),
     secondFirearm: dual,
   };
 }
