@@ -36,6 +36,32 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | [78](TODO-DONE.md#78) | Quick Strike acts first in a pass (MITS p.151) | ✅ — ⚡ on the tracker row; a queue move, no initiative write |
 | [38](TODO-DONE.md#38) | Multiple targets — the leftovers (melee, per-attack pool) | ✅ — both were already done (the archive's intro was stale); the melee count is now prefilled from #56.2's record |
 
+**All of the above is merged to `main` (`783025cc`) and awaits the live check in TESTING.md §40** — 47, 48,
+49 and 18 (and 124) stay open until it is done.
+
+### The rest of 0.6 — added by the maintainer, 2026-09-15
+
+| # | Item | Status |
+|---|---|---|
+| [119](#119) | Audit *The Matrix Defragged v2* | **the 0.6 feature bump** (the maintainer, earlier) |
+| [126](#126) | Ammunition weight and a carried load | in 0.6 |
+| [53](#53) | The "Essence hole" surgery option — *M&M p.150* | in 0.6 |
+| [109](#109) | Cyberware, bioware and Attribute Stress — *M&M pp.124-131* | in 0.6 — the foundation 110 and 111 need |
+| [110](#110) | Move-by-wire's TLE-x | in 0.6 — after 109 |
+| [111](#111) | Chronic Dissociation Syndrome — cyberzombies | in 0.6 — after 109 |
+| [79](#79) | A ledger for karma and nuyen | nice to have |
+| [82](#82) | A flow for buying gear — *Availability, SR3 pp.284-286* | nice to have |
+| [7](#7) | More test coverage for combat, initiative and pools | nice to have |
+
+### Release tasks — before `system.json` becomes 0.6.0
+
+1. **[121](#121) — check the code's rules against *sr3-guides*.** It is the maintainer's standing rule for
+   every version bump, and it is **part of this release**. Run it after the last code change, so the audit
+   covers what actually ships. The PDFs are the authority, and every difference goes to the maintainer.
+2. The live checks in TESTING.md §40 are done, and 47, 48, 49, 18 and 124 are archived.
+3. **Only then bump `system.json` to 0.6.0** — the maintainer: *"don't bump the version to 0.6 until we are
+   ready to push it up"*. Nothing is pushed unless the maintainer asks.
+
 ## Contents
 
 **33 open.** 93 done — see [TODO-DONE.md](TODO-DONE.md).
