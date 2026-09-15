@@ -19,7 +19,10 @@
       "streetIndex": "2.5",
       "accessories": "Laser Sight, Mag:(1)",
       "bookPage": "pw.30",
-      "notes": ""
+      "notes": "",
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": true
     },
     "effects": []
   },

@@ -1014,6 +1014,73 @@ Add `"lint": "eslint scripts"` to `scripts`, and wire it into `npm test` so it r
 triage pass and consider starting with only the rules above rather than a full recommended set —
 a wall of 500 style warnings gets ignored, and the correctness rules are what matter.
 
+## 23. Ship an ammunition compendium — **found in play 2026-08-05** ✅ `b925730d`, `c8e04eff`
+
+> **Closed 2026-09-15.** Checked against what ships:
+> - **661 ammunition documents** in six packs, all built by `build-default-gear` from the vendored data
+>   (#91/#92): `sr3` 189, `cc` 219, `sr2` 199, `fof` 47, `mm` 6, `ssc` 1.
+> - **All 8 of `SR3E.ammoTypes`:** regular 382, APDS / Explosive / EX / Gel / Flechette 50 each,
+>   Anti-Vehicle 27, Tracer 2.
+> - Priced per 10 rounds (p.281), plus 4 arrows and 5 bolts.
+> - **The check found a defect, fixed on main (`c8e04eff`).** Every box of rounds says `c`, and reload
+>   matched stock by mechanism alone. So 74 guns (revolvers, tube-fed shotguns, break actions) had
+>   nothing to load. `AmmoStock.fits` now lets loose rounds load any firearm; a pre-filled reload still
+>   fits only its own mechanism.
+> - "Blocked on #12" is moot: #12 is done.
+> - **Not shipped:** pre-filled reloads (clips, speed loaders, belts) as compendium items. The generator
+>   has none; the importer makes them from a character's `N-Rnd Clip`, and a player can set any ammunition
+>   item to count reloads.
+
+**The code is complete; there is simply no content.** Verified:
+
+| Piece | State |
+|---|---|
+| `ammunition` in `system.json` → `documentTypes.Item` | ✅ present |
+| `AmmunitionData` model (`ItemDataModels.js:127`) | ✅ full schema |
+| `CONFIG.Item.dataModels.ammunition` (`sr3e.js:107`) | ✅ registered |
+| "+ Add Ammunition" buttons (`SR3EActorSheet.js:1323`, `:2069`) | ✅ present |
+| `SR3E.ammoTypes` rules (8 types) + `ammoLoadMechanisms` (9) | ✅ in `config.js` |
+| **Any ammunition item, anywhere** | ❌ **zero** |
+
+**Not a regression — it never existed.** `main`'s 24 monolithic packs had none either, the
+archive holds **0** ammunition documents, and there is no source data in `rawdata/` or the
+upstream character generator. Of 82 packs across 20 books, not one is ammunition.
+
+The practical effect is what got reported: to use ammo at all, someone must hand-create an item
+and fill in `ammoType`, `loadMechanism`, `rounds`, `cost`, `availability`, `streetIndex` and
+`bookPage` — **per type, per gun class** — before `reload()` has any stockpile to match against.
+Everything downstream (magazine tracking, APDS/flechette armour effects, the `trackAmmo` setting)
+is dead until that content exists.
+
+### What the pack needs
+
+8 types from `SR3E.ammoTypes`: Regular · Explosive · EX Explosive · Gel · APDS · Flechette ·
+Tracer · Anti-Vehicle. Load mechanism matters because `reload()` matches on it, so a Belt entry is
+distinct from a Clip entry.
+
+Pricing is core p.281, *Ammunition, Per 10 Shots*. ⚠ **That table extracts badly** — the two-column
+merge offsets the stat rows against their labels, exactly like the Visibility Table, so crop per
+column (`pdftotext -x -y -W -H`, mediabox ~616×795pt, **book page = PDF page − 2**) rather than
+reading the merged dump. One figure is safe from prose: *"Standard ammo costs 20¥ for 10 rounds."*
+
+### Re-confirmed by the core gear audit, 2026-09-02 — see [#91](TODO.md#91)
+
+`audit/sr3-core-gear-audit.md` reached this independently and adds three things: **arrows and
+bolts** are the same gap (the nocked-ammo flow matches them by loading mechanism, and a bow can
+never be re-nocked without them); ammunition did **not** ship mis-typed under some other item
+type (checked by name across all 82 packs); and `ammunition` is one of **eight** declared Item
+types with zero documents, so this is the sharpest case of a wider pattern rather than an
+isolated omission.
+
+### ⚠ Blocked on [#12](#12-write-a-committed-pack-rebuild-script-and-vendor-its-sources)
+
+The populate macros were **retired**, so there is currently no supported way to build a pack. This
+is the first task to actually need that decision, and it should not be resolved by quietly
+resurrecting a one-off macro.
+
+
+---
+
 ## 24. ✅ Revise the two-corner cards onto the socket layer — **ALL EIGHT DONE 2026-08-13**
 
 ### ✅ Melee — the decided flow is built
@@ -2204,11 +2271,17 @@ whichever wins.
 
 **Raised in play 2026-08-10.**
 
+> ✅ **Checked 2026-09-15:** both halves below ARE done. The paragraph that follows was written at the
+> start of 2026-08-19 and was not updated when the melee and pool work landed later that day, so it
+> reads as open when it is not. The one real leftover was deriving the melee *count*: the GM window's
+> "additional targets" was typed by hand. That is now prefilled from `system.targetsThisPhase` (#56.2),
+> and applied by the flow when no window opens (`feature/action-economy`).
+>
 > ⚠ **This item was re-discovered and half-fixed on 2026-08-19 without noticing it was already
 > here**, which is worth recording as a process failure rather than quietly tidying away: the
 > ranged fix went in as commit `4368847` and its rationale was re-derived from scratch. The
 > ranged half below is now done; **the melee half and the pool-allocation clause were never
-> touched** and are the reason this item stays open. [#56](TODO.md#56) was also filed that day and
+> touched** and are the reason this item stays open. [#56](#56) was also filed that day and
 > overlaps the "why it is not simply a checkbox" section — see the cross-reference there.
 
 ### ✅ Ranged — done (`4368847`, `376faa8`)
@@ -2277,7 +2350,7 @@ last clause is a second, separate gap: nothing enforces per-attack pool allocati
 ### Why it is not simply "add a checkbox"
 
 ⚠ **The ranged fix did NOT solve this** — it asks the player for the ordinal rather than deriving
-it, which is [#56.2](TODO.md#56). Both items describe the same missing per-phase memory; #56.2 owns the
+it, which is [#56.2](#56). Both items describe the same missing per-phase memory; #56.2 owns the
 derivation work, this one owns the rules still unapplied.
 
 The penalty is **cumulative across a Combat Phase**, so something has to remember how many distinct
@@ -3012,7 +3085,7 @@ So a 2-round burst is a distinct case, not "a burst that happens to fire two". N
 and counts 3 rounds, whatever the magazine holds.
 
 **Only reachable with `trackAmmo` ON**, which is off by default — which is presumably why it
-was never noticed. See [#55](TODO.md#55) for the decision to flip that default, and what has to be
+was never noticed. See [#55](#55) for the decision to flip that default, and what has to be
 modelled first.
 
 ### What was built
@@ -3106,7 +3179,7 @@ breakdown, because the trade is dodge-versus-soak and a TN of 9 makes spending p
 much worse bet than a 4 — the dialog previously showed the attack's successes but never the
 number the dodge would be rolled against.
 
-**Shotgun spread is declared, not derived** — choke is not modelled at all. See [#57](TODO.md#57).
+**Shotgun spread is declared, not derived** — choke is not modelled at all. See [#57](#57).
 
 ### Found while wiring it: `ammoType` was lost on every exploding roll
 
@@ -3207,6 +3280,201 @@ of their 8 dice. Trixie is on Flux 8.
 ⚠ SR3 p.97's mechanic (a separate test at 2 successes → 1) is NOT what this is, and switching
 to it later would be a different shape — a second roll — not a tweak to this number. Pinned
 in `tests/ew-skill.test.mjs`.
+
+## 55. Default `trackAmmo` ON — and the ammunition model it needs first ✅ 2026-09-15, `feature/action-economy`
+
+> **Done 2026-09-15 on `feature/action-economy`** (0.6).
+> - `trackAmmo` defaults **on** for a new world.
+> - ⚠ **An existing world that never set it stays off.** Foundry stores only a value someone set, so
+>   flipping the default would flip every such world, and every gun there reads 0 rounds and cannot fire.
+>   `SR3EMigrations.DEFAULT_CHANGES` writes the old `false` into a world stamped before 0.6.0.
+> - The hint is rewritten; it said an empty gun still fires, and has not since the ammo rework.
+> - The three worries below, as they stand now:
+>   - **Which ammunition goes in:** answered by #114. The reload dialog picks the stock and asks how many
+>     rounds, and each type is its own item.
+>   - **The content:** #23 (661 documents). The `c8e04eff` fix lets revolvers and shotguns load them.
+>   - **Weight and carried load:** not modelled. It needs encumbrance, which does not exist, so it does
+>     not block the default. Raised as [#126](TODO.md#126).
+>   - **Special arrows:** the flow already carries an arrow's type. No typed arrows ship because the data
+>     has none.
+
+Decided 2026-08-14. `trackAmmo` currently defaults **off**, so the whole magazine/reload
+layer is dormant for a new world, and rules that depend on it ([#51](#51) short bursts) can
+never fire. It should be on by default.
+
+⚠ **Flipping the default is one line; the reason it is not done yet is what it exposes.**
+With tracking off, nobody notices that ammunition is modelled thinly.
+
+### What needs deciding before the flip
+
+- **Ammo types.** `SR3E.ammoTypes` holds the rules (APDS, explosive, EX, gel, flechette,
+  tracer, anti-vehicle), and firearms carry `loadedAmmoType`, but the **stockpile is one
+  undifferentiated `rounds` count per ammo item**. A runner carrying regular, APDS and
+  explosive for the same gun has three items and no notion of which is in the clip beyond a
+  single string. Reloading picks a stockpile by loading mechanism, not by what the player
+  wants loaded.
+- **Weight / encumbrance.** Ammunition has none. There is no weight field on the ammo item
+  and no carried-load calculation anywhere in the system, so "how much can this character
+  actually carry" cannot be answered — which is half the point of tracking ammo at all.
+- **Bows and crossbows** already nock a single arrow/bolt with no types at all (always
+  `regular`), so arrowheads would need the same treatment.
+
+### Sequencing
+
+Turning tracking on before the model is right would make every table meet the thin parts at
+once — empty-clip bails, reload prompts that cannot express "load the APDS" — and the likely
+outcome is that people turn it straight back off.
+
+So: **model first, default second.** [#23](#23) (ship an ammunition compendium) is the other
+half of this — the code is complete and the content is missing.
+
+## 56. Full auto still asks the player for what the system could work out ✅ 2026-09-15, `feature/action-economy`
+
+> **Both halves built 2026-09-15 on `feature/action-economy`.**
+> - **56.1 (`74372f9d`):** a *Smartgun* tick in the full-auto section, pre-ticked from the gun.
+> - **56.2:** `system.targetsThisPhase` records who was shot at, keyed to the action ledger's phase
+>   (`round|turn`, p.111's "single Combat Phase"), and `resetRecoil` clears it. The fire dialog prefills
+>   from it:
+>   - the target ordinal — targets, not shots, so shooting Brian again keeps his place;
+>   - the walking-fire metres, measured from the last target's token.
+>   Both fields stay editable.
+> - An SS-only gun (no dialog) now charges the +2 too.
+> - The GM's ↺ undo puts the record back with the rest of the action.
+> - ⚠ It is an ObjectField, so an update MERGES. The code clears it with the full empty record
+>   (`PhaseTargets.EMPTY`), never `{}`.
+> - Tests: `tests/phase-targets.test.mjs`. Checklist: TESTING.md §40.
+
+Raised 2026-08-18, alongside the walking-fire fix. Both numbers that make a multi-target
+full-auto attack correct are typed in by hand, and each has a source of truth already sitting
+in the code that nothing consults.
+
+### 56.1 Smartguns waste no rounds — and the system cannot tell
+
+> **Built 2026-09-15 on `feature/action-economy`.**
+> - The full-auto section has a *Smartgun* tick, pre-ticked from the gun's `smartgun` field (#18).
+> - `SR3EItem.walkingWaste(metres, smartgun)` makes it 0 wasted rounds. The recoil preview and the shot
+>   both read it; the player can untick it.
+> - Mutant `smartgun-walking-waste`.
+
+*SR3 p.116*, flatly: **"Smartguns never waste rounds."**
+
+Not a discount — the round is simply never fired. A smartgun slews to the next target without
+spending anything crossing the gap, so the saving lands on all three of the things
+`roundsExpended` feeds: the magazine, recoil, and the 10-round phase budget. It is the
+difference between Able's three targets at a metre costing **11 rounds** (illegal, over the
+cap) and **9** (fine).
+
+Today the player has to know to leave "metres to previous target" at 0. Nothing in the dialog
+even hints at it.
+
+⚠ **Blocked on [#18](TODO.md#18), and not worth faking around.** Smartgun detection is the
+free-text `accessories` StringField guess in `guessGearModifiers` — good enough to
+pre-tick an overridable TN checkbox the GM is looking at, nowhere near good enough to
+silently zero a player's ammunition. A wrong guess here is invisible and costs rounds.
+
+**Interim, cheap, honest:** a one-line note under the metres field — *"Smartguns waste no
+rounds (p.116) — leave at 0."* Costs nothing and does not pretend to know.
+
+**Once #18 lands:** default the field to 0 and disable it when a smartgun is detected, with
+the reason shown. Still overridable — minimal guardrails.
+
+### 56.2 Nothing remembers who you already shot at this phase
+
+⚠ **[#38](#38) raised this first, on 2026-08-10**, under "Why it is not simply add a checkbox".
+This section is the same gap seen from the other end: #38 owns the multi-target rules still
+unapplied (melee, and per-attack pool allocation), this owns deriving the two dialog inputs.
+
+Two controls in the fire dialog are manual for the same missing reason:
+
+| Control | Asks for | Could be derived from |
+|---|---|---|
+| "Which target this Combat Phase?" | the ordinal, driving +2 each (SR3 p.111) | the set of targets fired at this phase |
+| "Metres to previous target" | walking-fire waste | `_measureDistance` between this target's token and the previous one |
+
+`_measureDistance` already exists and already runs — it is what classifies the range band on
+every shot. What is missing is a per-phase record of **which actors have been engaged**, in
+order. `roundsFiredThisPhase` counts rounds and nothing else, so each `rollWeapon` call is
+blind to the ones before it.
+
+A `system.targetsThisPhase` array (actor ids, in order, cleared by `resetRecoil` alongside
+`roundsFiredThisPhase`) would let both fields prefill:
+- ordinal = index of this target in the list + 1, or `length + 1` for a new one
+- metres = measured distance from the previous entry's token
+
+⚠ **Prefill, do not enforce.** The ordinal counts **targets, not shots** — a second burst at
+someone already shot is still their ordinal, not a new one — and that is exactly the sort of
+judgement a GM overrides. Both fields stay editable.
+
+⚠ **The failure mode today is silent under-reporting**, not cheating: a player forgets they
+already shot at Brian and leaves the ordinal at 1, and the attack is simply 2 points easier
+than it should be. Nothing warns, because nothing knows.
+
+### Not in scope here
+
+The magazine arithmetic is correct and was correct before the walking-fire fix — each
+declaration spends only its own rounds plus its own waste. This item is about the two inputs
+to that arithmetic being hand-entered, not about the arithmetic.
+
+---
+
+<a id="57"></a>
+
+## 57. Shotgun choke and spread are not modelled — *SR3 p.117* ✅ 2026-09-15, `feature/action-economy`
+
+> **Built 2026-09-15 on `feature/action-economy`** (0.6), from the PDF (p.117, p.113).
+> - **Shot is an ammunition type**, `shot`: flechette rules, shotguns only. Slugs are the default,
+>   because the Street Gear shotguns fire slugs.
+> - `choke` on the firearm (2-10, blank = 5). It is set in the fire dialog and remembered.
+> - `Shotgun.spreads(distance, choke)` drives all three effects from the measured range. The book's
+>   −2/−2 at 6 m (choke 2), −2/−2 at 15 m and −3/−3 at 20 m (choke 5) are asserted.
+> - Power 0 stops the attack ("ineffective"). With no tokens, the typed spreads stand in.
+> - **Also from p.117:**
+>   - A smartlink firing shot is −1: a new GM-window row, `smartlinkShot`.
+>   - Shotguns get nothing from smart goggles or laser sights.
+> - **For the maintainer:** p.113's Dodge modifier is read as the *spreads*. It could also be read as the
+>   width, which would add +1 even at point blank.
+> - **Not modelled:**
+>   - The cone as a template, where everyone inside is a valid target.
+>   - The +1 Damage Resistance die per other target in front.
+>   - Both are stated on the card for the GM.
+> - Tests: `tests/shotgun.test.mjs`. Checklist: TESTING.md §40.
+
+Split out of [#52](#52), which needed the spread as an input and found nothing to read it from.
+
+A shotgun firing shot rounds throws a cone. The user sets a **choke** from 2 to 10, and *"for
+every number of meters equal to the choke setting that the shot travels, it will spread one
+meter"*. So the width at distance *d* is `ceil(d / choke)` metres, and the number of times it
+has spread is that minus one.
+
+Three separate effects hang off that count, and **the system implements none of them**:
+
+| Effect | Rule |
+|---|---|
+| Power | −1 per spread — *"Every time a shot round increases its spread, it loses 1 point of power"* |
+| Attacker's TN | −1 per spread — *"Every time the shot spreads, subtract -1 from the attacker's target number"* |
+| Defender's Dodge TN | **+1 per metre of spread** (p.113) — the only one currently reachable, and only by hand |
+
+The book's own worked line pins the arithmetic: at choke 5 it is **−2/−2 at fifteen metres**
+(width 3, so two spreads) and **−3/−3 at twenty** (width 4). Also: *"Everything and everyone
+within the area of spread is considered a valid target"*, so a full implementation is a cone
+template, not a number.
+
+**What exists today** is a "Shot spread at the target (m)" field in the fire dialog, shown only
+for `ShtG`, defaulting to 0, feeding `dodgeTN`. That makes the p.113 modifier reachable without
+pretending to model choke. The attacker knows their choke and their range; p.117 has the table.
+
+⚠ **The dodge modifier is +1 per METRE OF SPREAD, which is the width minus one** — the amount
+by which the cone has widened, matching the attacker's −1 per spread. Reading it as the raw
+width would penalise a point-blank shotgun that has not spread at all.
+
+**To finish it:** a `choke` NumberField (2–10) on the firearm — a data-model change, so a full
+Foundry restart — plus a shot-vs-slug distinction (shot rounds use the flechette rules, so
+`ammoType` is close but not the same question), and then all three effects derive from the
+range that `_measureDistance` already computes on every shot.
+
+---
+
+<a id="58"></a>
 
 ## 58. ✅ A free situational row in the GM windows — **DONE 2026-08-20**
 
@@ -4125,6 +4393,74 @@ being missing on the first attempt, as designed).
 Covered by `tests/adept-powers.test.mjs` (26 assertions) and 3 mutants.
 
 <a id="78"></a>
+
+## 78. Quick Strike acts first in a pass — *MITS p.151* ✅ 2026-09-15, `feature/action-economy`
+
+> **Built 2026-09-15 on `feature/action-economy`**, from the PDF (MITS p.151).
+> - A ⚡ button sits on the tracker row of any combatant holding the power, for its owner and the GM.
+> - It moves the adept's own pending slot in the current pass to the front of the queue
+>   (`SR3ECombat.quickStrike`, `scripts/data/quick-strike.mjs`). Players reach it through the GM
+>   query `sr3e.combat.quickStrike`.
+> - Each clause of the text:
+>   - **The score is never written.**
+>   - **The slot is moved, not copied**, so it is the pass's action.
+>   - **Refused without an action in this pass.**
+>   - **Once per Combat Turn**, via a combatant flag holding the round.
+> - Step 3's "design problem" did not arise: turn order is already the stored queue, not Foundry's
+>   initiative sort.
+> - **For the maintainer:** "unwounded" is read as *no boxes on either track*. A wounded adept gets a
+>   confirm the GM or player can accept, and the card says it was allowed.
+> - Used after the pass began, it plays the adept next, and the card says RAW wants it first.
+> - A mid-round initiative edit rebuilds the queue and drops the move.
+> - Tests: `tests/quick-strike.test.mjs`. Checklist: TESTING.md §40.
+
+The other borderline power from [#70](#70)'s "correctly inert" list, and the one that genuinely
+is not inert-by-nature: it has a hard mechanical effect on turn order. **Cost 3, no levels.**
+
+> "This power allows the adept to **act first in one Initiative Pass per Combat Turn**. This
+> action uses up the adept's action for that Initiative Pass. This power **cannot be used
+> during an Initiative Pass when the adept does not have an action**. The adept's **Initiative
+> Score is not affected**. The adept must be **unwounded** to use this ability."
+
+### Why it is not [#77](#77)-shaped
+
+⚠ **"The adept's Initiative Score is not affected."** So it cannot be modelled as an initiative
+bonus, which is the obvious cheap implementation and would be wrong in two visible ways: the
+tracker would show a number the character does not have, and the effect would persist across
+**every** pass instead of the one the player picks. It is a **turn-order override**, scoped to a
+single pass, chosen by the player at the moment they use it.
+
+⚠ **"Uses up the adept's action for that Initiative Pass"** and **"cannot be used during an
+Initiative Pass when the adept does not have an action"** are both action-economy statements,
+and the system does not model actions ([#48](TODO.md#48)). `SR3ECombat` does know about passes — both
+`_nextTurnSR3` and `_nextTurnSR2` walk them — so *which* pass is answerable; whether the adept
+still has an action in it is not.
+
+⚠ **"Must be unwounded" is ambiguous in a way that matters.** It plainly is not "no wound
+modifier", or a single box of Stun would qualify and the restriction would be nearly free. Read
+literally it means **no damage at all on either track**, which is much harsher and is probably
+intended — this is a 3-point power. Whichever is chosen it should be **stated on the card**, not
+silently enforced, and the check reads the tracks directly rather than `woundMod`.
+
+⚠ **Once per Combat Turn** needs state that survives passes but not the turn — the same
+lifetime as `roundsFiredThisPhase` and the Full Defense flag, both cleared by
+`SR3ECombat._endOfTurnReset()`. That is the hook to use; do not invent a second reset path.
+
+### What it would take
+
+1. A capability flag off the name, exactly like [#77](#77)'s (`_directPowerKind` → `quickStrike`).
+2. A per-Combat-Turn `quickStrikeUsed` flag, cleared in `_endOfTurnReset()`.
+3. A button on the combat tracker's active-pass card, GM- or owner-gated, that moves the adept
+   to the front of the current pass **without touching `combatant.initiative`** — which is the
+   whole design problem, since Foundry orders by that field. Likely a sort override or a
+   temporary flag consumed by `_nextTurnSR3` / `_nextTurnSR2`, not an initiative write.
+4. Refuse (or warn) when wounded, and say which reading of "unwounded" is being applied.
+
+⚠ **Step 3 is the work; steps 1-2 are twenty minutes.** Do not start this before [#48](TODO.md#48)
+unless the intent is to ship the ordering half and leave the action cost to the GM — which is
+defensible under the ethos, but should be a decision rather than a discovery.
+
+<a id="79"></a>
 
 ## 80. ✅ Karma advancement — seven defects — **DONE 2026-08-31**
 
@@ -5582,8 +5918,8 @@ loaders and cylinder reloads, rather than a slip in the arithmetic.
 
 **To decide when picked up:** whether an ammunition item can be counted in **reloads** (clips / speed-
 loaders / cylinders, each holding the magazine size — `c`, `m`, `cy`) as well as in **loose rounds**
-(boxes, belts, `internal`/`b`), and what reloading from each does. Relates to [#55](TODO.md#55) (the ammunition
-model before `trackAmmo` defaults on) and [#23](TODO.md#23) (no ammunition compendium). Stacks can now be split
+(boxes, belts, `internal`/`b`), and what reloading from each does. Relates to [#55](#55) (the ammunition
+model before `trackAmmo` defaults on) and [#23](#23) (no ammunition compendium). Stacks can now be split
 into and out of storage ([#113](#113)), which should work with whichever unit is chosen.
 
 <a id="115"></a>

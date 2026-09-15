@@ -50,8 +50,9 @@ export async function run(t) {
   // judgement the GM is making, and putting it there would mislabel it as a guess.
   t.is('Conditions holds visibility and the GM situational row',
     keysIn('conditions'), 'situational,visibility');
-  t.is('Gear holds the three detectable items',
-    keysIn('gear'), 'laserSight,smartGoggles,smartlink');
+  // A second firearm joined in TODO 49 — guessed from the guns the attacker holds ready (p.112).
+  t.is('Gear holds the four detectable items',
+    keysIn('gear'), 'laserSight,secondFirearm,smartGoggles,smartlink,smartlinkShot');
   t.ok('every gear row is flagged as guessable from the kit',
     (groups.find(g => g.key === 'gear')?.rows ?? []).every(m => m.gear === true));
 

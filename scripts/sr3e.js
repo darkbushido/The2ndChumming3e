@@ -29,6 +29,9 @@ import { SR3EMIJI } from './SR3EMIJI.js';
 import { SR3EClocks } from './SR3EClocks.js';
 import { SR3EHealing } from './SR3EHealing.js';
 import { SR3EDrugs } from './SR3EDrugs.js';
+import { SR3EActionLedger } from './SR3EActionLedger.js';
+import { ReadyWeapon } from './data/ready-weapon.mjs';
+import { Hands } from './data/hands.mjs';
 import { SR3ESourceBooks } from './SR3ESourceBooks.js';
 import { SR3ECompendiumDirectory } from './SR3ECompendiumDirectory.js';
 import { SR3EQuery, SR3EQueue, SR3EGMUnavailable } from './SR3EQuery.js';
@@ -41,6 +44,8 @@ Hooks.once('init', () => {
   // than `ready`: a fast click during world load must not reach a verb that
   // nobody is listening for.
   SR3EQuery.register();
+  SR3EActionLedger.register();   // sr3e.action.charge — TODO 48
+  SR3ECombat.registerQuickStrike();   // sr3e.combat.quickStrike — TODO 78
 
   async function buildSkillsCompendium() {
     const PACK_ID = 'The2ndChumming3e.sr3e-skills';
@@ -95,7 +100,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock, ItemRating };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock, ItemRating };
 
   // When THIS client loaded the system's code.
   //
@@ -287,11 +292,13 @@ Hooks.once('init', () => {
 
   game.settings.register('The2ndChumming3e', 'trackAmmo', {
     name: 'Track Ammunition',
-    hint: 'When enabled, firing decrements the selected ammo\'s rounds-remaining counter (1 SS/SA, 3 BF, N FA). Warns when empty but never blocks a shot. Reload by editing the rounds field on the ammo item.',
+    hint: 'Guns hold what was loaded into them: firing spends rounds (1 SS/SA, 3 BF, N FA, plus walked rounds), an empty gun cannot fire, and ↻ Reload loads from the ammunition the character carries. Off: ammunition is not counted.',
     scope: 'world',
     config: true,
     type: Boolean,
-    default: false,
+    // ON for a new world (TODO 55). A world from before 0.6 that never set it keeps OFF —
+    // SR3EMigrations.DEFAULT_CHANGES writes the old default into it, or every gun there would read empty.
+    default: true,
   });
 
   /* Pain Editor concealment · M&M p.71 — "the player should not be told how much damage has
@@ -1687,70 +1694,11 @@ Hooks.on('renderCombatTracker', (_app, html) => {
     }, true); // capture phase — intercepts before Foundry's bubble handler
   }
 
-  // Action Tracker — GM-only, on the active combatant's card.
-  // Complex (full width) advances the turn; clicking the first Simple toggles Complex off
-  // (one simple action used); the second Simple advances the turn.
-  if (game.user.isGM && combat?.started && combat.combatant) {
-    const activeId = combat.combatant.id;
-    const row = el.querySelector(`[data-combatant-id="${activeId}"]`);
-    if (row && !row.querySelector('.sr3e-action-tracker')) {
-      const btnStyle = 'box-sizing:border-box;padding:2px 4px;font-size:11px;cursor:pointer;border:1px solid var(--sr-border,#444);border-radius:3px;background:var(--sr-surface,#1a1a1a);color:var(--sr-text,#ddd);';
-
-      // Combat rows are usually flex; let the tracker wrap to a full-width line below the row content.
-      row.style.flexWrap = 'wrap';
-      const wrap = document.createElement('div');
-      wrap.className = 'sr3e-action-tracker';
-      wrap.style.cssText = 'flex-basis:100%;margin:6px 6px 2px;display:flex;flex-direction:column;gap:3px;';
-
-      const label = document.createElement('div');
-      label.textContent = 'Action Tracker';
-      label.style.cssText = 'font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:var(--sr-muted,#999);text-align:center;';
-
-      const complexBtn = document.createElement('button');
-      complexBtn.type = 'button';
-      complexBtn.className = 'sr3e-act-complex';
-      complexBtn.textContent = 'Complex';
-      complexBtn.style.cssText = btnStyle + 'width:100%;';
-
-      const simpleRow = document.createElement('div');
-      simpleRow.style.cssText = 'display:flex;gap:3px;';
-      const simple1 = document.createElement('button');
-      simple1.type = 'button'; simple1.className = 'sr3e-act-simple1';
-      simple1.textContent = 'Simple'; simple1.style.cssText = btnStyle + 'flex:1;';
-      const simple2 = document.createElement('button');
-      simple2.type = 'button'; simple2.className = 'sr3e-act-simple2';
-      simple2.textContent = 'Simple'; simple2.style.cssText = btnStyle + 'flex:1;';
-      simpleRow.append(simple1, simple2);
-
-      const applyState = () => {
-        const used = (_actionTracker.get(activeId) ?? {}).firstSimpleUsed;
-        complexBtn.style.opacity = used ? '0.35' : '1';
-        complexBtn.style.cursor  = used ? 'not-allowed' : 'pointer';
-        simple1.style.background = used ? 'var(--sr-accent,#3a6ea5)' : 'var(--sr-surface,#1a1a1a)';
-        simple1.style.color      = used ? '#fff' : 'var(--sr-text,#ddd)';
-      };
-
-      complexBtn.addEventListener('click', async () => {
-        if ((_actionTracker.get(activeId) ?? {}).firstSimpleUsed) return; // greyed out
-        _actionTracker.delete(activeId);
-        await combat.nextTurn();
-      });
-      simple1.addEventListener('click', () => {
-        const s = _actionTracker.get(activeId) ?? { firstSimpleUsed: false };
-        s.firstSimpleUsed = !s.firstSimpleUsed;
-        _actionTracker.set(activeId, s);
-        applyState();
-      });
-      simple2.addEventListener('click', async () => {
-        _actionTracker.delete(activeId);
-        await combat.nextTurn();
-      });
-
-      applyState();
-      wrap.append(label, complexBtn, simpleRow);
-      row.appendChild(wrap);
-    }
-  }
+  // Action Tracker (TODO 48) — pips for everyone, the GM's buttons beside them. The state is a
+  // combatant flag (SR3EActionLedger), so a player sees what they have spent and a reload keeps it.
+  SR3EActionLedger.renderTracker(combat, el);
+  // ⚡ Quick Strike (MITS p.151, TODO 78) — on each row whose adept holds it.
+  SR3ECombat.renderQuickStrike(combat, el);
 
   // GM tool buttons (Chase Scene, Session Rewards, Chunky Salsa, Barrier/Falling Damage,
   // Escape Artist) live on the Rollable Tables sidebar tab — see renderRollTableDirectory below.
@@ -1771,7 +1719,6 @@ Hooks.on('updateCombatant', (combatant, changed) => {
 // Action Tracker state resets whenever the combat turn or round changes (covers both the
 // tracker's own buttons and the default next-turn arrow).
 Hooks.on('updateCombat', (_combat, changed) => {
-  if ('turn' in changed || 'round' in changed) _actionTracker.clear();
   // Per-combat-round upkeep (GM client only): count down infiltrations; refresh IVIS Pools;
   // expire Attribute Boosts. ⚠ A Foundry ROUND is an SR3 Combat Turn, which is the unit
   // p.168 counts a boost's duration in — per-pass would evaporate a 3-success boost inside
@@ -2112,7 +2059,6 @@ const _cornerDrafts = new Map();
 
 // Action Tracker state — per active combatant, this turn only. Keyed by combatant id,
 // value { firstSimpleUsed }. Cleared whenever the combat turn/round changes (below).
-const _actionTracker = new Map();
 
 function _checkBtn(btn, mid, cls, idx) {
   if (!_usedButtons.has(`${mid}|${cls}|${idx}`)) return true;
@@ -3128,6 +3074,19 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
    * one user who makes that test (`_isDeciderId`); the consequence buttons change the character's
    * record, Body or wounds, so any owner of the character (or the GM) may press them (`_mineId`). */
   SR3EDrugs.wireCard(message, html);
+  // Quick Draw cleared (TODO 47): 🎯 fires the drawn gun — a roll, so the one decider.
+  html.querySelectorAll('.sr-quickdraw-fire-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'qdfire', i)) return;
+    const pl = _payload(btn);
+    if (!pl) return;
+    if (!_isDeciderId(pl.actorId)) return _denyBtn(btn, 'Only the person who drew it (or the GM) fires it.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'qdfire', i)) return;
+      await game.actors.get(pl.actorId)?.items.get(pl.itemId)?.rollWeapon({ quickDrawn: true });
+    });
+  });
   html.querySelectorAll('.sr-drug-roll-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'drugroll', i)) return;
     const pl = _payload(btn);

@@ -19,7 +19,10 @@
       "streetIndex": "4",
       "accessories": "Gas Vent (2), Low-Light, Mag:(3), Smartlink, Thermographic",
       "bookPage": "pw.28",
-      "notes": ""
+      "notes": "",
+      "hands": 2,
+      "smartgun": true,
+      "laserSight": false
     },
     "effects": []
   },

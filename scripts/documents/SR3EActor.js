@@ -2280,7 +2280,11 @@ _prepareCharacter(sys, attr) {
   // ⚠ Combat Sense grants Combat Pool dice, not skill dice (p.169) — a separate channel from
   // `skillBonusDice`, and the reason `adeptCombatPool` is summed apart from everything else.
   // ⚠ Armour takes Combat Pool dice (p.285) — floored at 0, never negative.
-  const combatPool          = Math.max(0, combatPoolBase + (sys.combatPoolMod ?? 0) + adeptCombatPool - armorPoolPenalty);
+  // ⚠ A worn gyro harness "only allow[s] him to use half his Combat Pool dice" (p.282, TODO 18) —
+  // halved after everything else, rounded down.
+  const gyroWorn            = !!SR3EActor.gyroMount(this);
+  const combatPoolFull      = Math.max(0, combatPoolBase + (sys.combatPoolMod ?? 0) + adeptCombatPool - armorPoolPenalty);
+  const combatPool          = gyroWorn ? Math.floor(combatPoolFull / 2) : combatPoolFull;
   const combatPoolSpent     = sys.combatPoolSpent ?? 0;
   const availableCombatPool = Math.max(0, combatPool - combatPoolSpent);
 
@@ -2331,6 +2335,9 @@ _prepareCharacter(sys, attr) {
     initiativeDice:     1 + (sys.initiativeDiceBonus ?? 0) + (attr.reaction?.diceBonus ?? 0) + reflex.initDice + drugs.initDice,
     /* Drugs · M&M p.110, p.122 (TODO 124) — the standing TN (withdrawal, Bliss) that `standingTN`
      * adds to every test, what concentration costs on top, and every drug figure by source. */
+    // Gyro stabilization (p.113, p.282 — TODO 18): its rating, and the pool it halved (0 = none worn).
+    gyroRating:         SR3EActor.gyroRating(this),
+    combatPoolBeforeGyro: gyroWorn ? combatPoolFull : null,
     drugTN:             drugs.tn,
     drugConcentrationTN: drugs.concentration,
     drugSources:        drugs.sources,
@@ -4380,6 +4387,7 @@ _prepareCharacter(sys, attr) {
     'miji.ivis':       ['SR3EMIJI', '_ivisRolled'],
     'miji.eccm':       ['SR3EMIJI', '_eccmRolled'],
     'miji.footprint':  ['SR3EMIJI', '_footprintRolled'],
+    quickDraw:         ['SR3EItem', '_quickDrawRolled'],   // TODO 47 — Reaction (4), p.107
   };
 
   static _registryFn([cls, fn] = [], what) {
@@ -6433,6 +6441,8 @@ _prepareCharacter(sys, attr) {
     if (/^penetrating strike/i.test(n))  return 'penetratingStrike';
     if (/^killing hands/i.test(n))       return 'killingHands';
     if (/^missile parry/i.test(n))       return 'missileParry';
+    // A turn-order move, not a number — the tracker's ⚡ reads the item (scripts/data/quick-strike.mjs).
+    if (/^quick\s*strike/i.test(n))      return 'quickStrike';
     return null;
   }
 
@@ -6943,8 +6953,49 @@ _prepareCharacter(sys, attr) {
     const worn = { name: pieces.length ? pieces.map(p => p.name).join(' + ') : null,
                    ballistic: lay.ballistic, impact: lay.impact, pieces: lay.pieces };
     const implants = SR3EActor.implantArmor(actor?.items);
-    return { ballistic: worn.ballistic + implants.ballistic, impact: worn.impact + implants.impact,
-             worn, implants };
+    // A worn gyro harness "provides an additional point of impact and ballistic armor" (p.282, TODO 18).
+    const gyro = SR3EActor.gyroMount(actor) ? 1 : 0;
+    return { ballistic: worn.ballistic + implants.ballistic + gyro, impact: worn.impact + implants.impact + gyro,
+             worn, implants, gyro };
+  }
+
+  /* ── Gyro stabilization · SR3 p.113, p.282 (TODO 18) ─────────────────────────────────────
+   *
+   * > "The total recoil and movement modifiers are reduced by -1 for every point of gyro-
+   * > stabilization the system provides … cumulative with recoil compensation." — p.113
+   * > "Gyro systems add +4 to the wearer's target numbers in melee combat, and only allow him to
+   * > use half his Combat Pool dice." — p.282 (standard Rating 5, deluxe 6)
+   * ⚠ **The FULL rating on EACH — the maintainer's ruling, 2026-09-15.** p.112 ("recoil or movement")
+   * and p.113 ("the total recoil and movement modifiers") disagree; the maintainer read them as mixing
+   * gyros up with recoil compensators. Ordinary recoil compensation affects recoil only; a gyro affects
+   * both, in full. Cannon Companion p.34 words its Max-Gyro that way: *"provides 7 points of recoil
+   * compensation and reduces movement modifiers by 7."* So recoil never uses up the movement offset,
+   * which matters: difficult-terrain running alone is +6.
+   * ⚠ A gyro is a worn harness: a Gyro Mount (or CC Max-Gyro) gear item not in storage. Its drawbacks
+   * come with it. */
+  static GYRO_RE = /gyro[\s-]*(mount|stabili)|max[\s-]*gyro/i;
+
+  /** The worn gyro harness, or null. Gear only (the FN-AAL Gyrojet is a pistol), never from storage. */
+  static gyroMount(actor) {
+    return (actor?.items ?? []).find(i => i.type === 'gear' && SR3EActor.GYRO_RE.test(i.name ?? '')
+      && !SR3EActor._itemFlag(i, 'stored')) ?? null;
+  }
+
+  /** Its rating (standard 5, deluxe 6 — the packs store it); 0 when none is worn. */
+  static gyroRating(actor) {
+    const g = SR3EActor.gyroMount(actor);
+    return g ? Math.max(0, itemRating(g) || 5) : 0;
+  }
+
+  /** +4 to the wearer's melee target numbers (p.282). */
+  static gyroMeleeTN(actor) { return SR3EActor.gyroMount(actor) ? 4 : 0; }
+
+  /** The gyro against recoil, with its full rating still there for movement (the ruling above):
+   *  `{ recoil, used, left }` — `left` is what the GM window offsets movement with, always the rating. */
+  static gyroOnRecoil(rating, recoil) {
+    const r = Math.max(0, Number(recoil) || 0), g = Math.max(0, Number(rating) || 0);
+    const used = Math.min(g, r);
+    return { recoil: r - used, used, left: g };
   }
 
   /* ── Stacks of items — splitting and merging · TODO 113 ─────────────────────────────── */
@@ -8830,10 +8881,10 @@ _prepareCharacter(sys, attr) {
   async resetRecoil() {
     if (!game.users.activeGM?.isSelf) {
       await game.sr3e.SR3EQuery.asGM('sr3e.actor.set',
-        { uuid: this.uuid, changes: { 'system.roundsFiredThisPhase': 0 } });
+        { uuid: this.uuid, changes: { 'system.roundsFiredThisPhase': 0, 'system.targetsThisPhase': { phase: '', targets: [] } } });
       return;
     }
-    await this.update({ 'system.roundsFiredThisPhase': 0 });
+    await this.update({ 'system.roundsFiredThisPhase': 0, 'system.targetsThisPhase': { phase: '', targets: [] } });
   }
 
   /**

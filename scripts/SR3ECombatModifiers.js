@@ -22,6 +22,10 @@
  * the modifiers given on the Visibility Table" — so this checkbox is PHYSICAL
  * obstruction only.
  */
+import { Hands } from './data/hands.mjs';
+import { ReadyWeapon } from './data/ready-weapon.mjs';
+import { WeaponAccessories } from './data/weapon-accessories.mjs';
+import { Shotgun } from './data/shotgun.mjs';
 
 /**
  * The full p.112 table. Reference + future automation; only `mvp:true` rows render.
@@ -54,7 +58,14 @@ export const SR3E_RANGED_MODIFIERS = [
   { key: 'smartlink',      label: 'Smartlink (with smartgun)',     mod: -2,   mvp: true,  group: 'gear', gear: true },
   { key: 'smartGoggles',   label: 'Smart goggles (with smartgun)', mod: -1,   mvp: true,  group: 'gear', gear: true },
   { key: 'laserSight',     label: 'Laser sight',                   mod: -1,   mvp: true,  group: 'gear', gear: true },
-  { key: 'secondFirearm',  label: 'Using a second firearm',        mod: +2,               group: 'attacker' },
+  // p.117: "Shotguns equipped with smartlinks that fire shot rounds receive a -1 target number modifier."
+  // In place of the smartlink row, never with it (TODO 57).
+  { key: 'smartlinkShot',  label: 'Smartlink, shotgun firing shot', mod: -1,  mvp: true,  group: 'gear', gear: true,
+    note: 'p.117 — instead of −2; shotguns get nothing from smart goggles or laser sights' },
+  // TODO 49 — rendered now (it had no `mvp` flag, so the GM window never showed it) and GUESSED: the
+  // attacker holds a second ready pistol/SMG-class gun (p.112). The GM unticks it when only one is fired.
+  { key: 'secondFirearm',  label: 'Using a second firearm',        mod: +2,   mvp: true,  group: 'gear', gear: true,
+    note: 'p.112 — +2 each gun; cancels smartlink, smart goggles and laser' },
   // NOT an mvp checkbox: the attacker declares Take Aim on their own roll screen
   // (they are the one spending the Simple Actions). Rendering it here too would
   // double-count every aimed shot.
@@ -337,14 +348,26 @@ export function mvpModifierGroups() {
 }
 
 /**
+ * What is left of a worn gyro after recoil takes its share, spent on the Attacker movement rows the GM
+ * ticked — p.113: *"The total recoil and movement modifiers are reduced by -1 for every point of
+ * gyro-stabilization"*. One allowance; the fire dialog spent it on recoil first. Pure.
+ */
+export const GYRO_MOVEMENT_KEYS = ['atkRunning', 'atkRunningDiff', 'atkWalking', 'atkWalkingDiff'];
+export function gyroOffset(state = {}, gyroLeft = 0) {
+  const left = Math.max(0, Number(gyroLeft) || 0);
+  if (!left) return 0;
+  const movement = SR3E_RANGED_MODIFIERS.filter(m => GYRO_MOVEMENT_KEYS.includes(m.key) && state[m.key])
+    .reduce((a, m) => a + (m.mod ?? 0), 0);
+  return Math.min(left, movement);
+}
+
+/**
  * Guess which gear modifiers apply, so the GM window can pre-tick them.
  *
- * **This is a guess, and deliberately so.** There is no structured gear data:
- * `accessories` on a firearm is a free-text StringField, the Smartgun Link
- * cyberware is never read for TN maths, and laser sight and gyro have no
- * mechanical representation at all (TODO #18 replaces this with real fields).
- * Every result is presented as a pre-ticked, freely overridable checkbox rather
- * than as a silently applied number.
+ * **This is a guess, and deliberately so.** The weapon's side is structured now
+ * (`smartgun` / `laserSight`, TODO 18 — `WeaponAccessories.flag`), but the actor's side is
+ * still read from item names. Every result is presented as a pre-ticked, freely
+ * overridable checkbox rather than as a silently applied number.
  *
  * Smartlink and smart goggles are PAIR conditions — core p.112 says "with a
  * properly equipped smart-weapon" — so the cyberware alone earns nothing. A
@@ -355,8 +378,7 @@ export function mvpModifierGroups() {
  * @returns {{smartlink:boolean, smartGoggles:boolean, laserSight:boolean}}
  */
 export function guessGearModifiers(actor, weapon) {
-  const acc = String(weapon?.system?.accessories ?? '').toLowerCase();
-  const gunIsSmart = /smart/.test(acc);
+  const gunIsSmart = WeaponAccessories.flag(weapon, 'smartgun');
 
   const hasItem = re => (actor?.items ?? []).some(i => re.test(String(i.name ?? '').toLowerCase()));
 
@@ -365,11 +387,24 @@ export function guessGearModifiers(actor, weapon) {
   // Goggles/glasses are gear rather than cyber; same pair requirement.
   const hasGoggles   = hasItem(/smart\s*(goggle|glasses|display)/);
 
+  // A gun in each hand (p.112, TODO 49): this one is pistol/SMG class and another of that class is
+  // ready in the other hand. It "negates any target number reductions from smartlinks, smart goggles
+  // or laser sights" — so those guesses are withdrawn, and the GM restores them if only one is fired.
+  const dual = !!(actor && weapon && Hands.secondGun(actor.items ?? [], weapon, i => ReadyWeapon.isReady(i)));
+
+  // Shotguns (p.117): "Shotguns get no benefits from smart goggles or laser sights", and a smartlink is
+  // worth −1, not −2, while it fires shot. TODO 57.
+  const shotgun = weapon?.system?.category === 'ShtG';
+  const shot    = Shotgun.firesShot(weapon);
+  const linked  = !dual && gunIsSmart && hasSmartlink;
+
   return {
-    smartlink:    gunIsSmart && hasSmartlink,
+    smartlink:     linked && !shot,
+    smartlinkShot: linked && shot,
     // Never both — smartlink (−2) supersedes goggles (−1) on the same shot.
-    smartGoggles: gunIsSmart && hasGoggles && !(gunIsSmart && hasSmartlink),
-    laserSight:   /laser/.test(acc),
+    smartGoggles:  !dual && !shotgun && gunIsSmart && hasGoggles && !(gunIsSmart && hasSmartlink),
+    laserSight:    !dual && !shotgun && WeaponAccessories.flag(weapon, 'laserSight'),
+    secondFirearm: dual,
   };
 }
 

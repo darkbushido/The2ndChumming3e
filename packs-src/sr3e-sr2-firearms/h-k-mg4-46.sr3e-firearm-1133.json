@@ -19,7 +19,10 @@
       "streetIndex": "4",
       "accessories": "Laser Sight, Mag:(3), Shock Pads, Thermographic",
       "bookPage": "pw.30",
-      "notes": ""
+      "notes": "",
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": true
     },
     "effects": []
   },

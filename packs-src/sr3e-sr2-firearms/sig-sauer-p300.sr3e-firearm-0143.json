@@ -19,7 +19,10 @@
       "streetIndex": "2",
       "accessories": "Caseless, Laser Sight, Silencer",
       "bookPage": "pw.17",
-      "notes": ""
+      "notes": "",
+      "hands": 1,
+      "smartgun": false,
+      "laserSight": true
     },
     "effects": []
   },

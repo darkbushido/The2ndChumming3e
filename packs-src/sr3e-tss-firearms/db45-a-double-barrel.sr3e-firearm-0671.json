@@ -19,7 +19,10 @@
       "streetIndex": "2",
       "accessories": "Will not accept underbarrel accessories; 6 round bursts; double recoil",
       "bookPage": "tss.7",
-      "notes": ""
+      "notes": "",
+      "hands": 1,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

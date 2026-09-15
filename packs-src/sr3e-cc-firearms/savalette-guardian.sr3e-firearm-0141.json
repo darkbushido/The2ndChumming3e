@@ -19,7 +19,10 @@
       "streetIndex": "2.5",
       "accessories": "RC(1), Smartlink, BF = Complex Action",
       "bookPage": "cc.19",
-      "notes": ""
+      "notes": "",
+      "hands": 1,
+      "smartgun": true,
+      "laserSight": false
     },
     "effects": []
   },

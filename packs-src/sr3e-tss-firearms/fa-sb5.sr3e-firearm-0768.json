@@ -19,7 +19,10 @@
       "streetIndex": "2",
       "accessories": "drum fed, can also accept belted ammo, heavy weapon recoil applies",
       "bookPage": "tss.7",
-      "notes": ""
+      "notes": "",
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

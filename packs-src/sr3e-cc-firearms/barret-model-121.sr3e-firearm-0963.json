@@ -19,7 +19,10 @@
       "streetIndex": "5",
       "accessories": "Folding Bipod(2RC), Silencer, Smartlink, +2 Recoil/Rnd, Use ONLY 121 Rnds",
       "bookPage": "cc.21",
-      "notes": ""
+      "notes": "",
+      "hands": 2,
+      "smartgun": true,
+      "laserSight": false
     },
     "effects": []
   },

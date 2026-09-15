@@ -19,7 +19,10 @@
       "streetIndex": "3",
       "accessories": "Power decrease by distance",
       "bookPage": "fof.49",
-      "notes": ""
+      "notes": "",
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

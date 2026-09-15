@@ -19,7 +19,10 @@
       "streetIndex": "3",
       "accessories": "Laser sight, Gas Vent II(2RC), Tele. Stock, Can have UB GrLn.(-1 Conc)",
       "bookPage": "cc.22",
-      "notes": ""
+      "notes": "",
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": true
     },
     "effects": []
   },

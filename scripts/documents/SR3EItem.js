@@ -1,5 +1,8 @@
 import { vcrLevel as vcrLevelOf } from '../data/item-rating.mjs';
 import { AmmoStock } from '../data/ammo-stock.mjs';
+import { Shotgun, CHOKE_MIN, CHOKE_MAX } from '../data/shotgun.mjs';
+import { WeaponAccessories } from '../data/weapon-accessories.mjs';
+import { PhaseTargets } from '../data/phase-targets.mjs';
 
 export class SR3EItem extends Item {
 
@@ -76,6 +79,7 @@ export class SR3EItem extends Item {
    */
   async rollSkill(tn = 4, options = {}) {
     const actor = this.actor;
+    game.sr3e.SR3EActionLedger?.begin(actor);   // snapshot for the GM's undo (TODO 48)
     if (!actor) {
       ui.notifications.warn('This skill is not owned by an actor.');
       return null;
@@ -126,6 +130,7 @@ export class SR3EItem extends Item {
     }
 
     // TN modifier from defaulting is baked in here.
+    game.sr3e.SR3EActionLedger?.charge(actor, 'useSkill', this.name);   // Use Skill — Complex, SR3 p.108 (TODO 48)
     return actor.rollPool(pool, tn + defTnMod, label, { ...options });
   }
 
@@ -149,6 +154,70 @@ export class SR3EItem extends Item {
    * Synthetic "Unarmed Combat" attacker weapon (bare fists): (STR)M Stun, reach 0, UNA.
    * Not a real inventory item — used to launch an unarmed attack from the sheet or canvas.
    */
+  /**
+   * A weapon must be ready before it can be used (SR3 p.107, TODO 47). Called at the top of the
+   * attack flows. Returns 'ready' (already, or readied now), 'anyway' (the GM waves it through), or
+   * null (cancelled, or a Quick Draw roll was posted — its card fires the weapon if it clears).
+   * ⚠ Warns and offers; never refuses (minimal guardrails). Readying charges Ready Weapon (Simple).
+   */
+  static async _ensureReady(actor, item) {
+    const RW = game.sr3e.ReadyWeapon;
+    if (!item || item._unarmed || RW.isReady(item)) return 'ready';
+    const quick = RW.canQuickDraw(item);
+    let choice = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `${item.name} is not ready` },
+      content: `<p><strong>${item.name}</strong> is holstered, sheathed or put away — <em>"A weapon must be
+        ready before it can be used"</em> (SR3 p.107).</p>
+        ${quick ? `<label style="display:block;margin-top:6px"><input type="checkbox" id="sr-qd-holster" checked/>
+          In a proper holster (otherwise +2 to the Quick Draw test)</label>` : ''}`,
+      buttons: [
+        { label: '✋ Ready it (Simple Action)', action: 'ready', default: true, callback: () => { choice = { how: 'ready' }; } },
+        ...(quick ? [{ label: '⚡ Quick Draw — Reaction (4)', action: 'quick',
+          callback: (_e, _b, d) => { choice = { how: 'quick', holstered: !!d.element.querySelector('#sr-qd-holster')?.checked }; } }] : []),
+        { label: 'Attack anyway', action: 'anyway', callback: () => { choice = { how: 'anyway' }; } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (!choice) return null;
+    if (choice.how === 'anyway') return 'anyway';
+    if (choice.how === 'ready') {
+      await item.update({ 'system.ready': true });
+      game.sr3e.SR3EActionLedger?.charge(actor, 'readyWeapon', item.name);
+      return 'ready';
+    }
+    // Quick Draw: draw AND fire in one Simple Action, on one success at Reaction (4) (+2 unholstered).
+    const tn   = RW.quickDrawTN({ holstered: choice.holstered });
+    const pool = actor.system.attributes?.reaction?.value ?? 1;
+    game.sr3e.SR3EActionLedger?.charge(actor, 'quickDraw', item.name);
+    await game.sr3e.SR3EActor.rollThen(actor, pool, tn, {
+      label: `⚡ ${actor.name} — Quick Draw ${item.name}: Reaction (${tn})`,
+      followUp: { kind: 'quickDraw', ctx: { actorId: actor.id, itemId: item.id, tn } },
+    });
+    return null;
+  }
+
+  /** Quick Draw's outcome, after any 💥 — one success clears the weapon (p.107). */
+  static async _quickDrawRolled(ctx, res) {
+    const actor = game.actors.get(ctx.actorId);
+    const item  = actor?.items.get(ctx.itemId);
+    if (!actor || !item) return;
+    const cleared = game.sr3e.ReadyWeapon.quickDrawCleared(res?.successes);
+    if (cleared) await item.update({ 'system.ready': true });
+    const pay = JSON.stringify({ actorId: actor.id, itemId: item.id }).replace(/'/g, '&#39;');
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="sr-roll-card">
+        <div class="sr-roll-header">⚡ ${actor.name} — Quick Draw ${item.name}</div>
+        <div class="sr-roll-result" style="color:var(${cleared ? '--sr-green' : '--sr-red'})">${res?.successes ?? 0} success${res?.successes === 1 ? '' : 'es'} vs ${ctx.tn} —
+          ${cleared ? 'drawn. Fire it now, in the same action.' : 'fumbled — it cannot be fired this Combat Phase (SR3 p.107).'}</div>
+        ${cleared ? `<div class="sr-roll-meta">Only a Simple Action shot — no full auto.</div>
+          <button type="button" class="sr-quickdraw-fire-btn" data-payload='${pay}'>🎯 Fire ${item.name}</button>` : ''}
+      </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    });
+  }
+
   static _unarmedWeapon(actor = null) {
     return {
       id:       'unarmed',
@@ -198,6 +267,8 @@ export class SR3EItem extends Item {
    */
   static async rollMeleeAttack(actor, atkWeapon) {
     if (!actor || !atkWeapon) return null;
+    game.sr3e.SR3EActionLedger?.begin(actor);   // snapshot for the GM's undo (TODO 48)
+    if (!(await SR3EItem._ensureReady(actor, atkWeapon))) return null;   // p.107 — TODO 47
 
     // Parse attacker damage code (resolve STR against attacker)
     const rawDamage  = atkWeapon.system?.damage || '';
@@ -313,8 +384,9 @@ export class SR3EItem extends Item {
     // wounded" row (p.123). The card rolls through `_rollWave`, so nothing else adds them (F3).
     // Sustained spells likewise: +2 each on "all tests" (p.178), and nothing else adds them here.
     const A         = game.sr3e.SR3EActor;
-    const atkWound  = A.woundTN(actor);
-    const defWound  = A.woundTN(targetActor);
+    // A gyro harness adds +4 to its wearer's melee TNs (p.282, TODO 18) — folded in with the wound.
+    const atkWound  = A.woundTN(actor) + A.gyroMeleeTN(actor);
+    const defWound  = A.woundTN(targetActor) + A.gyroMeleeTN(targetActor);
     const atkSust   = A.standingTN(actor);
     const defSust   = A.standingTN(targetActor);
     const baseAtkTN = Math.max(2, 4 + (atkInfo.defaultTnMod ?? 0) + (calledShot.tnMod ?? 0) + atkWound + atkSust);
@@ -336,7 +408,14 @@ export class SR3EItem extends Item {
     const { detectVision, visionReminder } = await import('../SR3ECombatModifiers.js');
     const atkVis = detectVision(actor);
     const defVis = detectVision(targetActor);
+    // Multiple targets, p.122: "+2 per additional target struck in that Combat Phase". Who this attacker
+    // already engaged is the same per-phase record the fire dialog reads (TODO 56.2); the GM window's
+    // count is PREFILLED from it, never enforced.
+    const _mPhase   = game.combat ? game.sr3e.SR3EActionLedger?.phase(game.combat) ?? 'none' : 'none';
+    const _mKey     = tgtTok?.id ?? targetActor.id;
+    const _mExtra   = PhaseTargets.ordinal(PhaseTargets.current(actor.system.targetsThisPhase, _mPhase), _mKey) - 1;
     const gm = await game.sr3e.SR3EQuery.asGM('sr3e.melee.negotiate', {
+      multiPrefill: _mExtra,
       atkName:    actor.name,
       defName:    targetActor.name,
       // So the GM side can tell whether a player's character is in the fight (TODO 94).
@@ -352,6 +431,15 @@ export class SR3EItem extends Item {
         .filter(Boolean).join(' · ') || null,
     }, { timeout: 300_000 });
     if (gm === null) return null;
+    if (gm.adjudicated === false && _mExtra > 0) {
+      // No window to prefill, so the flow applies the +2s itself (p.122) — the ranged SS shortcut's rule.
+      gm.atkTN = Math.max(2, (Number(gm.atkTN) || 0) + 2 * _mExtra);
+    }
+    await actor.update({ 'system.targetsThisPhase': PhaseTargets.add(actor.system.targetsThisPhase, _mPhase, _mKey, tgtTok?.id ?? null) });
+
+    // Melee/Unarmed Attack — Complex, SR3 p.108 (TODO 48). The ATTACKER only: the defender's
+    // half of the exchange is reactive and costs them nothing from their own phase.
+    game.sr3e.SR3EActionLedger?.charge(actor, 'meleeAttack', atkWeapon?.name ?? 'Unarmed');
 
     await game.sr3e.SR3EActor.postMeleeCard({
       attackerActorId:  actor.id,
@@ -914,10 +1002,14 @@ export class SR3EItem extends Item {
   if (this.type === 'vehicleweapon') return this.rollVehicleWeapon(options);
 
   const actor = this.actor;
+  game.sr3e.SR3EActionLedger?.begin(actor);   // snapshot for the GM's undo (TODO 48)
   if (!actor) {
     ui.notifications.warn('No actor for this weapon.');
     return null;
   }
+  // A weapon must be ready before it can be used (SR3 p.107, TODO 47) — a Quick Draw card's 🎯 Fire
+  // arrives already drawn (`quickDrawn`), so it skips the gate.
+  if (!options.quickDrawn && !(await SR3EItem._ensureReady(actor, this))) return null;
 
   // Out-of-ammo guard (only when tracking) — empty weapons are inoperable.
   if (game.settings.get('The2ndChumming3e', 'trackAmmo')) {
@@ -1058,6 +1150,8 @@ export class SR3EItem extends Item {
     options.grenadeType      = weaponOpts.grenadeType ?? 'standard';
     options.skipWoundMod     = true;   // pre-applied in the roll-options TN (throwPreTN)
 
+    // A thrown grenade is Throw Weapon; a launcher is Fire Weapon — Simple, SR3 p.106-107 (TODO 48).
+    game.sr3e.SR3EActionLedger?.charge(actor, this._isConsumable() ? 'throwWeapon' : 'fireWeapon', this.name);
     await this._consumeThrown();
     return actor.rollPool(pool, tn, label, options);
   }
@@ -1074,6 +1168,17 @@ export class SR3EItem extends Item {
     if (!targetActor) return null;
     targetToken = targetActor.getActiveTokens?.()[0] ?? null;
   }
+
+  // Who this character has already shot at this Combat Phase (TODO 56.2) — prefills the fire dialog's
+  // target ordinal (+2 each, p.111) and the metres the fire walks from the last one (p.116).
+  const _phase     = game.combat ? game.sr3e.SR3EActionLedger?.phase(game.combat) ?? 'none' : 'none';
+  const _targetKey = targetToken?.id ?? targetActor.id;
+  const _engaged   = PhaseTargets.current(actor.system.targetsThisPhase, _phase);
+  const _prevTgt   = PhaseTargets.previous(_engaged, _targetKey);
+  const _prevTok   = _prevTgt?.tokenId ? canvas?.tokens?.get?.(_prevTgt.tokenId) ?? null : null;
+  const _walkM     = _prevTok && targetToken ? SR3EItem._measureDistance(_prevTok, targetToken) : null;
+  const targetPrefill = { ordinal: PhaseTargets.ordinal(_engaged, _targetKey), engaged: _engaged.length,
+                          metres: _walkM != null ? Math.round(_walkM) : null };
 
   // --- Step 1.5: Loaded ammo (firearms only) ---
   // Ammo is loaded into the weapon via the Reload button; firing uses whatever is loaded.
@@ -1103,9 +1208,11 @@ export class SR3EItem extends Item {
       const isHeavy   = HEAVY_CATS.has(this.system.category ?? '');
       const isShotgun = (this.system.category ?? '') === 'ShtG';
       if (availableModes.length === 1 && availableModes[0] === 'SS') {
-        fireModeResult = { mode: 'SS', rounds: 0, roundsWasted: 0, recoilTN: 0, additionalTNPenalty: 0, shotgunSpread: 0 };
+        fireModeResult = { mode: 'SS', rounds: 0, roundsWasted: 0, recoilTN: 0, shotgunSpread: 0,
+          // No dialog to ask, so the ordinal comes from who was already shot at (TODO 56.2).
+          additionalTNPenalty: SR3EItem.multiTargetTN(targetPrefill.ordinal) };
       } else {
-        fireModeResult = await SR3EItem._promptFireMode(availableModes, actor, this, isHeavy, isShotgun);
+        fireModeResult = await SR3EItem._promptFireMode(availableModes, actor, this, isHeavy, isShotgun, targetPrefill);
         if (!fireModeResult) return null;
       }
 
@@ -1157,6 +1264,9 @@ export class SR3EItem extends Item {
       if (ammoRules.faOnly && fireModeResult.mode !== 'FA') {
         ui.notifications.warn(`${ammoRules.label} ammo can only be used in Full Auto.`);
       }
+      if (ammoRules.shotgunOnly && !isShotgun) {
+        ui.notifications.warn(`${ammoRules.label} is shotgun ammunition (SR3 p.117) — ${this.name} is not a shotgun.`);
+      }
       // Apply mode damage modifiers to rawDamage
       const parsed = SR3EItem.parseDamageCode(rawDamage, actor);
       if (parsed) {
@@ -1188,8 +1298,31 @@ export class SR3EItem extends Item {
     }
   }
 
+  // Shot spreads (SR3 p.117, TODO 57): from the measured distance and the choke; else what was declared.
+  // Each spread is −1 Power, −1 to the attacker's TN and +1 to the defender's Dodge TN (p.113).
+  let shot = null;
+  if (this.type === 'firearm' && Shotgun.firesShot(this)) {
+    const choke    = fireModeResult?.choke ?? Shotgun.choke(this.system.choke);
+    const measured = rangeInfo?.distance != null;
+    const spreads  = measured ? Shotgun.spreads(rangeInfo.distance, choke) : (fireModeResult?.shotgunSpread ?? 0);
+    shot = { choke, measured, ...Shotgun.effects(spreads) };
+    if (fireModeResult) fireModeResult.shotgunSpread = shot.dodge;
+    const p = SR3EItem.parseDamageCode(rawDamage, actor);
+    if (p && shot.power) {
+      if (p.power + shot.power <= 0) {
+        ui.notifications.warn(`${this.name}: at choke ${choke} the shot has spread ${spreads} times and its Power is gone — ineffective (SR3 p.117).`);
+        return null;
+      }
+      rawDamage = `${p.power + shot.power}${p.level}${p.isStun ? ' Stun' : ''}`;
+    }
+  }
+
   // --- Step 3: Roll options dialog (TN + damage code + range + vehicle modifier) ---
-  const recoilTNMod  = fireModeResult?.recoilTN ?? 0;
+  // A worn gyro soaks recoil first — p.113's one allowance against recoil + movement, cumulative with
+  // compensation (already inside recoilTN). Its full rating also offsets movement in the GM window — the
+  // maintainer's ruling (TODO 18), CC p.34's Max-Gyro wording.
+  const gyro         = game.sr3e.SR3EActor.gyroOnRecoil(game.sr3e.SR3EActor.gyroRating(actor), fireModeResult?.recoilTN ?? 0);
+  const recoilTNMod  = gyro.recoil;
   const woundPenalty = -(actor.system.woundMod ?? 0);
   // Layered armour · SR3 p.285 (TODO 112): +N to "all skills linked to Quickness" — which most
   // ranged weapon skills are. Pre-applied like the wound modifier, and itemised beside it.
@@ -1198,13 +1331,16 @@ export class SR3EItem extends Item {
   // Sustained spells, +2 each on all tests (p.178) — pre-applied with the wound modifier, so
   // `rollPool` is told to skip both.
   const sustainTN    = game.sr3e.SR3EActor.standingTN(actor);
-  const extraTNMod   = recoilTNMod + (fireModeResult?.additionalTNPenalty ?? 0) + woundPenalty + armorQTN + sustainTN;
+  const extraTNMod   = recoilTNMod + (fireModeResult?.additionalTNPenalty ?? 0) + woundPenalty + armorQTN + sustainTN + (shot?.tn ?? 0);
   const tnBreakdownParts = [];
   if (recoilTNMod)                           tnBreakdownParts.push(`Recoil +${recoilTNMod}`);
+  if (gyro.used)                             tnBreakdownParts.push(`Gyro −${gyro.used} of recoil (up to ${gyro.left} off movement too)`);
   if (fireModeResult?.additionalTNPenalty)   tnBreakdownParts.push(`Multi-target +${fireModeResult.additionalTNPenalty}`);
   if (woundPenalty > 0)                      tnBreakdownParts.push(`Wound +${woundPenalty}`);
   if (armorQTN > 0)                          tnBreakdownParts.push(`Layered armour +${armorQTN}`);
   if (sustainTN > 0)                         tnBreakdownParts.push(game.sr3e.SR3EActor.standingNote(actor));
+  if (shot?.spreads) tnBreakdownParts.push(`Shot spread −${shot.spreads} (choke ${shot.choke}, ${shot.spreads + 1} m wide; Power −${shot.spreads}, their Dodge +${shot.spreads})`);
+  if (shot) tnBreakdownParts.push('Shot: everyone in the spread is a valid target, and each gets +1 Damage Resistance die per other target in front of them (p.117 — GM)');
   // Tracer TN bonus is conditional (beyond Short range, non-smartgun) so it is shown
   // as a note for the GM to apply manually rather than baked into the TN.
   const tracerRules = game.sr3e.SR3E.ammoTypes[ammoType] ?? {};
@@ -1242,6 +1378,9 @@ export class SR3EItem extends Item {
     weaponName:   this.name,
     baseTN:       _baseTNForGM,
     baseNote:     tnBreakdownParts.length ? tnBreakdownParts.join(' | ') : null,
+    gyroLeft:     gyro.left,   // TODO 18 — offsets the Attacker movement rows (p.113)
+    gyroRating:   game.sr3e.SR3EActor.gyroRating(actor),
+    gyroUsed:     gyro.used,
   }, { timeout: 300_000 });
 
   if (negotiation === null) return null;   // GM cancelled the attack — nothing written
@@ -1406,10 +1545,11 @@ export class SR3EItem extends Item {
   options.weaponType         = this.type;
   options.rangeBandIdx       = Number.isInteger(weaponOpts?.rangeBandIdx) ? weaponOpts.rangeBandIdx : null;
 
-  // Commit recoil — update rounds fired counter before the roll
-  if (fireModeRounds > 0) {
-    const currentRounds = actor.system.roundsFiredThisPhase ?? 0;
-    await actor.update({ 'system.roundsFiredThisPhase': currentRounds + fireModeRounds });
+  // Commit recoil — update rounds fired counter before the roll — and who was shot at (TODO 56.2).
+  {
+    const changes = { 'system.targetsThisPhase': PhaseTargets.add(actor.system.targetsThisPhase, _phase, _targetKey, targetToken?.id ?? null) };
+    if (fireModeRounds > 0) changes['system.roundsFiredThisPhase'] = (actor.system.roundsFiredThisPhase ?? 0) + fireModeRounds;
+    await actor.update(changes);
   }
 
   // Decrement the weapon's loaded magazine when tracking is enabled. Bullets fired =
@@ -1437,6 +1577,10 @@ export class SR3EItem extends Item {
     }
   }
 
+  // The action it is (TODO 48): thrown — Throw Weapon; a gun or bow — by FIRE MODE, because full
+  // auto is a different action (Fire Automatic Weapon, Complex, p.108) from SS/SA/BF (Simple, p.106).
+  if (!options.quickDrawn) game.sr3e.SR3EActionLedger?.charge(actor, this._isConsumable() ? 'throwWeapon' : game.sr3e.SR3EActionLedger.rules.fireAction(fireModeResult?.mode),
+    `${this.name}${fireModeResult?.mode ? ` (${fireModeResult.mode})` : ''}`);
   await this._consumeThrown();
   return actor.rollPool(pool, tn, label, options);
 }
@@ -1453,6 +1597,7 @@ export class SR3EItem extends Item {
    */
   async rollVehicleWeapon(options = {}) {
     const actor = this.actor;
+    game.sr3e.SR3EActionLedger?.begin(actor);   // snapshot for the GM's undo (TODO 48)
     if (!actor) { ui.notifications.warn('No actor for this weapon.'); return null; }
 
     const rawDamage = this.system.damage || '';
@@ -1577,6 +1722,10 @@ export class SR3EItem extends Item {
     options.isWeaponRoll       = true;
     options.isMelee            = false;
     options.committedDodgeDice = 0;
+
+    // Fire Mounted or Vehicle Weapon — Complex, SR3 p.108 (TODO 48). Charged to whichever of the
+    // vehicle and its pilot holds the Combat Phase; the ledger ignores the one that does not.
+    for (const who of new Set([actor, pilotActor].filter(Boolean))) game.sr3e.SR3EActionLedger?.charge(who, 'fireVehicleWeapon', this.name);
 
     return actor.rollPool(finalPool, tn, label, options);
   }
@@ -1886,6 +2035,7 @@ export class SR3EItem extends Item {
     if (this.type !== 'firearm' && !this._usesNockedAmmo()) return;
     const actor = this.actor;
     if (!actor) return;
+    game.sr3e.SR3EActionLedger?.begin(actor);   // snapshot for the GM's undo (TODO 48)
     const SR3E    = game.sr3e.SR3E;
     const trackOn = game.settings.get('The2ndChumming3e', 'trackAmmo');
     const gunMech = this._weaponLoadMechanism();
@@ -1931,6 +2081,16 @@ export class SR3EItem extends Item {
     const returnedTo = plan.returned > 0 ? await SR3EItem._returnRounds(actor, gunMech, current.type, plan.returned) : null;
     const quickness = actor.system?.attributes?.quickness?.value ?? 1;
     const actions   = AmmoStock.reloadActions(ammo.system, { taken: plan.taken, quickness, gunMech }).text;
+    // Charge what the Ammo Reloading Table says it took (TODO 48): a clip swap is Remove Clip + Insert
+    // Clip (two Simple, p.107/106), loose rounds a Complex each (Reload Firearm, p.108), and nocking an
+    // arrow or bolt is Ready Weapon (p.106 — "a bow … previously made ready using … Ready Weapon").
+    {
+      const cost = AmmoStock.reloadActions(ammo.system, { taken: plan.taken, quickness, gunMech });
+      const LG = game.sr3e.SR3EActionLedger;
+      if (/^(arrow|bolt)$/.test(gunMech)) LG?.charge(actor, 'readyWeapon', this.name);
+      else if (cost.simple >= 2) { LG?.charge(actor, 'removeClip', this.name).then(() => LG?.charge(actor, 'insertClip', this.name)); }
+      else for (let i = 0; i < cost.complex; i++) LG?.charge(actor, 'reloadFirearm', this.name);
+    }
     const parts = [
       `${this.name}: ${plan.loaded}/${magSize} × ${typeLabel}`,
       plan.topUp ? `topped up with ${plan.taken}` : '',
@@ -2660,17 +2820,18 @@ export class SR3EItem extends Item {
         </select>
       </label>`;
 
-    const numberRow = (id, label, note, min, max) => `
+    const numberRow = (id, label, note, min, max, value = 0) => `
       <label style="display:flex;align-items:center;gap:6px;margin:3px 0;font-size:12px">
         <span style="min-width:200px">${label}</span>
-        <input type="number" id="${id}" value="0" min="${min}" max="${max}" style="width:56px"/>
+        <input type="number" id="${id}" value="${value}" min="${min}" max="${max}" style="width:56px"/>
         <span style="font-size:11px;color:var(--sr-muted)">${note}</span>
       </label>`;
 
     const rowHtml = (row) => {
       switch (row.kind) {
         case 'diff':       return numberRow('gmm-friends', row.label, row.note, -9, 9);
-        case 'perAtk':     return numberRow('gmm-multi',   row.label, row.note, 0, 9);
+        // Prefilled from who the attacker already struck this phase (TODO 56.2 / 38).
+        case 'perAtk':     return numberRow('gmm-multi',   row.label, row.note, 0, 9, Math.max(0, Number(ctx.multiPrefill) || 0));
         case 'side':       return sideSelect('gmm-superior', row.label);
         case 'sideOpposed': return sideSelect('gmm-prone', `${row.label} — who is DOWN`);
         case 'situational':
@@ -2819,7 +2980,7 @@ export class SR3EItem extends Item {
   }
 
   static async _promptGMAttackWindow(ctx, opts = {}) {
-    const { mvpModifierGroups, sumModifiers, clampTN, guessGearModifiers,
+    const { mvpModifierGroups, sumModifiers, clampTN, guessGearModifiers, gyroOffset,
             SR3E_VISIBILITY_TABLE, SR3E_VISION_TYPES, visibilityModifier,
             detectVision, visionReminder, bestVisionKey, escapeHTML } =
       await import('../SR3ECombatModifiers.js');
@@ -2944,6 +3105,14 @@ export class SR3EItem extends Item {
           <input type="number" id="sr-gm-tn" value="${baseTN}" min="2" max="30" style="width:60px"/>
         </label>
         <div id="sr-gm-tn-note" style="font-size:11px;color:var(--sr-dim);margin-top:4px"></div>
+        ${ctx.gyroRating ? `
+        <!-- The gyro's full rating offsets movement as well as recoil (the maintainer's ruling, TODO 18;
+             CC p.34). Still a number the GM can change. -->
+        <label style="display:flex;align-items:center;gap:8px;margin-top:6px;font-size:12px">
+          Gyro ${ctx.gyroRating} — off movement
+          <input type="number" id="sr-gm-gyro" value="${ctx.gyroLeft ?? 0}" min="0" max="${ctx.gyroRating}" style="width:50px"/>
+        </label>` : ''}
+        <div id="sr-gm-gyro-note" style="font-size:11px;color:var(--sr-dim)"></div>
       `,
       buttons: [
         // NOT "Roll" — the GM sets the target number, the ATTACKER rolls. Labelling
@@ -2972,6 +3141,8 @@ export class SR3EItem extends Item {
         const el   = dialog.element;
         const tnEl = el.querySelector('#sr-gm-tn');
         const note = el.querySelector('#sr-gm-tn-note');
+        const gyroNote = el.querySelector('#sr-gm-gyro-note');
+        const gyroEl   = el.querySelector('#sr-gm-gyro');
         const visNote = el.querySelector('.sr-gm-vis-note');
 
         // The pre-selected vision follows the condition — a character with thermographic and
@@ -3000,7 +3171,13 @@ export class SR3EItem extends Item {
               : '';
           }
 
-          const { tn, floored, raw } = clampTN(baseTN + sumModifiers(state));
+          // A worn gyro's remainder offsets the movement rows ticked (p.113, TODO 18).
+          const gyroLeft = gyroEl ? Math.max(0, parseInt(gyroEl.value) || 0) : 0;
+          const gyroOff = gyroOffset(state, gyroLeft);
+          const { tn, floored, raw } = clampTN(baseTN + sumModifiers(state) - gyroOff);
+          if (gyroNote) gyroNote.textContent = ctx.gyroRating
+            ? `Offsetting ${gyroOff} of movement${ctx.gyroUsed ? ` (and ${ctx.gyroUsed} came off recoil)` : ''} — a gyro works on both, in full (house ruling; CC p.34).`
+            : '';
           tnEl.value      = tn;
           note.textContent = floored
             ? `Floored at ${tn} — modifiers summed to ${raw}. No target number can be less than 2 (SR3 p.112).`
@@ -3011,7 +3188,7 @@ export class SR3EItem extends Item {
           .forEach(i => i.addEventListener('change', recompute));
         // `change` alone does not fire until the number input loses focus, so the TN would
         // lag behind what the GM has typed. `input` keeps the two in step.
-        el.querySelectorAll('.sr-gm-mod-sit, .sr-gm-mod-per')
+        el.querySelectorAll('.sr-gm-mod-sit, .sr-gm-mod-per, #sr-gm-gyro')
           .forEach(i => i.addEventListener('input', recompute));
         recompute();
       },
@@ -3511,6 +3688,16 @@ static roundsExpended({ rounds = 0, roundsWasted = 0 } = {}) {
 }
 
 /**
+ * Rounds wasted walking full-auto fire `metres` to the next target — **pure**. · *SR3 p.116*
+ * One per metre — *"Smartguns never waste rounds."* (TODO 56.1). The player used to have to know to
+ * leave the metres at 0; the fire dialog now ticks "Smartgun" from the gun's own `smartgun` field
+ * (TODO 18), and the tick stays the player's to change.
+ */
+static walkingWaste(metres, smartgun = false) {
+  return smartgun ? 0 : Math.max(0, Math.trunc(Number(metres) || 0));
+}
+
+/**
  * TN penalty for engaging a fresh target this Combat Phase — **pure**.  · *SR3 p.111*
  *
  * The rule sentence is unrestricted, and the mode appears only in its example:
@@ -3639,7 +3826,7 @@ static fireModeDamage({ power, level = 'M', mode, rounds = 0, isTracer = false,
   return { power: pwr, level: STAGES[lvlIdx] };
 }
 
-static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isShotgun = false) {
+static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isShotgun = false, prefill = {}) {
   const weaponName   = weapon.name;
   const actorComp    = actor.system.recoilCompensation ?? 0;
   const weaponComp   = weapon.system.recoilMod ?? 0;
@@ -3697,9 +3884,13 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
         <input type="number" id="fa-rounds" value="3" min="3" max="10" style="width:55px;margin-left:6px"/>
         <span style="font-size:11px;color:var(--sr-muted)">(3–10, Complex Action)</span>
       </label>
-      <div style="font-size:11px;color:var(--sr-muted);margin-bottom:6px">Walking fire: 1 wasted round per metre between targets (smartguns: 0). Full-auto only — the +2 per target above applies to every mode.</div>
+      <div style="font-size:11px;color:var(--sr-muted);margin-bottom:6px">Walking fire: 1 wasted round per metre between targets. Full-auto only — the +2 per target above applies to every mode.</div>
       <label style="display:block">Metres to previous target (wasted rounds):
-        <input type="number" id="fa-metres" value="0" min="0" max="30" style="width:55px;margin-left:6px"/>
+        <input type="number" id="fa-metres" value="${prefill.metres ?? 0}" min="0" max="30" style="width:55px;margin-left:6px"/>${prefill.metres != null ? '<span style="font-size:11px;color:var(--sr-muted);margin-left:4px">(measured from the last target)</span>' : ''}
+      </label>
+      <label style="display:block;margin-top:4px;font-size:12px">
+        <input type="checkbox" id="fa-smartgun" ${WeaponAccessories.flag(weapon, 'smartgun') ? 'checked' : ''}/>
+        Smartgun — wastes no rounds walking the fire <span style="font-size:11px;color:var(--sr-muted)">(p.116; ticked from the gun)</span>
       </label>
     </div>` : '';
 
@@ -3709,24 +3900,27 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
   const targetOrdinal = `
     <label style="display:block;margin-top:8px;font-size:12px">Which <strong>target</strong> this Combat Phase?
       <select id="sr-target-num" style="margin-left:6px">
-        <option value="1">1st (no penalty)</option>
-        <option value="2">2nd (+2 TN)</option>
-        <option value="3">3rd (+4 TN)</option>
-        <option value="4">4th (+6 TN)</option>
-        <option value="5">5th+ (+8 TN)</option>
+        ${[['1', '1st (no penalty)'], ['2', '2nd (+2 TN)'], ['3', '3rd (+4 TN)'], ['4', '4th (+6 TN)'], ['5', '5th+ (+8 TN)']]
+          .map(([v, l]) => `<option value="${v}" ${Number(v) === Math.min(5, prefill.ordinal ?? 1) ? 'selected' : ''}>${l}</option>`).join('')}
       </select>
-      <span style="font-size:11px;color:var(--sr-muted);margin-left:4px">(a further shot at the SAME target is still the 1st)</span>
+      <span style="font-size:11px;color:var(--sr-muted);margin-left:4px">(a further shot at the SAME target keeps its place)</span>
+      ${prefill.engaged ? `<div style="font-size:11px;color:var(--sr-muted)">Already shot at this phase: ${prefill.engaged} target${prefill.engaged === 1 ? '' : 's'} — set from that (TODO 56.2).</div>` : ''}
     </label>`;
 
-  // p.113: "+1 per meter of shotgun spread at the target's position". Choke is not modelled
-  // (TODO 57), so the spread is declared rather than derived — the attacker knows their choke
-  // setting and the range, and p.117 has the table. Shotguns only, and zero by default so it
-  // costs nothing to ignore.
-  const spreadRow = isShotgun ? `
-    <label style="display:block;margin-top:8px;font-size:12px">Shot <strong>spread</strong> at the target (m)
+  // Shot spreads by the choke (p.117, TODO 57): the shooter sets it here and it is remembered on the gun.
+  // With tokens on the scene the spread is worked out from the distance (scripts/data/shotgun.mjs); the
+  // box below is what counts when there is no distance to measure. Slugs do not spread.
+  const firesShot = Shotgun.firesShot(weapon);
+  const spreadRow = isShotgun ? (firesShot ? `
+    <label style="display:block;margin-top:8px;font-size:12px"><strong>Choke</strong>
+      <input type="number" id="sr-shot-choke" value="${Shotgun.choke(weapon.system.choke)}" min="${CHOKE_MIN}" max="${CHOKE_MAX}" style="width:50px;margin-left:6px"/>
+      <span style="font-size:11px;color:var(--sr-muted)">(2-10: the shot widens 1 m every choke metres — p.117)</span>
+    </label>
+    <label style="display:block;margin-top:4px;font-size:12px">Spreads at the target, if no distance is measured
       <input type="number" id="sr-shot-spread" value="0" min="0" max="10" style="width:55px;margin-left:6px"/>
-      <span style="font-size:11px;color:var(--sr-muted)">(p.117 — raises the target's Dodge TN by 1 per metre; 0 for slugs)</span>
-    </label>` : '';
+      <span style="font-size:11px;color:var(--sr-muted)">(each: −1 Power, −1 your TN, +1 their Dodge TN)</span>
+    </label>` : `
+    <div style="margin-top:8px;font-size:11px;color:var(--sr-muted)">Slugs loaded — no spread. Load Shot ammunition to use the choke (p.117).</div>`) : '';
 
   const recoilState = `
     <div style="margin-top:10px;padding:6px 8px;background:#0a0a0a;border:1px solid var(--sr-border);border-radius:var(--r);font-size:11px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
@@ -3767,7 +3961,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       el.querySelectorAll('.sr-recoil-preview').forEach(span => {
         const m = span.dataset.mode;
         // Walking-fire waste is fired, so it is priced here as well — see roundsExpended.
-        const faMetres = Math.max(0, parseInt(el.querySelector('#fa-metres')?.value) || 0);
+        const faMetres = SR3EItem.walkingWaste(el.querySelector('#fa-metres')?.value, !!el.querySelector('#fa-smartgun')?.checked);
         const r = recoilForMode(m, rounds, total, m === 'FA' ? faRounds + faMetres : faRounds);
         span.textContent = `+${r}`;
       });
@@ -3776,6 +3970,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     el.querySelector('#sr-weapon-comp')?.addEventListener('input', refreshPreviews);
     el.querySelector('#fa-rounds')?.addEventListener('input', refreshPreviews);
     el.querySelector('#fa-metres')?.addEventListener('input', refreshPreviews);
+    el.querySelector('#fa-smartgun')?.addEventListener('change', refreshPreviews);
 
     el.querySelector('#sr-reset-recoil')?.addEventListener('click', async () => {
       await actor.update({ 'system.roundsFiredThisPhase': 0 });
@@ -3816,8 +4011,8 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
           if (mode === 'FA') {
             rounds = Math.min(10, Math.max(3, parseInt(el.querySelector('#fa-rounds')?.value) || 3));
             // Walking the fire IS full-auto-only (p.116).
-            const metres = Math.max(0, parseInt(el.querySelector('#fa-metres')?.value) || 0);
-            if (metres > 0) roundsWasted = metres;
+            // Smartguns never waste rounds (p.116, TODO 56.1).
+            roundsWasted = SR3EItem.walkingWaste(el.querySelector('#fa-metres')?.value, !!el.querySelector('#fa-smartgun')?.checked);
           }
 
           // Read (possibly edited) compensation values and persist them so they stick for next time.
@@ -3832,7 +4027,10 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
           const recoilTN = recoilForMode(mode, roundsBefore, aComp + wComp,
                                          SR3EItem.roundsExpended({ rounds, roundsWasted }));
           const shotgunSpread = Math.max(0, parseInt(el.querySelector('#sr-shot-spread')?.value) || 0);
-          result = { mode, rounds, roundsWasted, recoilTN, additionalTNPenalty, shotgunSpread };
+          const chokeEl = el.querySelector('#sr-shot-choke');
+          const choke   = chokeEl ? Shotgun.choke(chokeEl.value) : null;
+          if (choke !== null && choke !== weapon.system.choke) await weapon.update({ 'system.choke': choke });
+          result = { mode, rounds, roundsWasted, recoilTN, additionalTNPenalty, shotgunSpread, choke };
         },
       },
       { label: 'Cancel', action: 'cancel' },
@@ -4052,6 +4250,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
    */
   async rollSpell(options = {}) {
     const actor = this.actor;
+    game.sr3e.SR3EActionLedger?.begin(actor);   // snapshot for the GM's undo (TODO 48)
     if (!actor) { ui.notifications.warn('No actor for this spell.'); return null; }
 
     const magicBase = actor.system.attributes?.magic?.base ?? 0;
@@ -4262,6 +4461,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       targetNames,
     };
 
+    game.sr3e.SR3EActionLedger?.charge(actor, 'castSpell', this.name);   // Cast Spell — Complex, SR3 p.108 (TODO 48)
     return actor.rollPool(pool, tn, label, {
       isSpellRoll:        true,
       spellContext,

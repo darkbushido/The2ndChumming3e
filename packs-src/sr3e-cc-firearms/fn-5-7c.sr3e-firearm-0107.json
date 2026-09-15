@@ -19,7 +19,10 @@
       "streetIndex": "2",
       "accessories": "RC(1)",
       "bookPage": "cc.19",
-      "notes": ""
+      "notes": "",
+      "hands": 1,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

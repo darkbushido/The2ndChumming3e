@@ -20,7 +20,10 @@
       "accessories": "None",
       "bookPage": "sr3.279",
       "notes": "",
-      "isAoE": true
+      "isAoE": true,
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

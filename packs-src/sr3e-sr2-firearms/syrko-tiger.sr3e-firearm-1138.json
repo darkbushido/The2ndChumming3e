@@ -19,7 +19,10 @@
       "streetIndex": "2",
       "accessories": "Caseless, Gas Vent (3), Smartlink",
       "bookPage": "pw.24",
-      "notes": ""
+      "notes": "",
+      "hands": 2,
+      "smartgun": true,
+      "laserSight": false
     },
     "effects": []
   },

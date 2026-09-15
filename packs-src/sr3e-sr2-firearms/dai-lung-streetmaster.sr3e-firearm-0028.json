@@ -19,7 +19,10 @@
       "streetIndex": ".8",
       "accessories": "None",
       "bookPage": "pw.15",
-      "notes": ""
+      "notes": "",
+      "hands": 1,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

@@ -826,10 +826,51 @@ physical dice dialog — shows the formula, lets the user type in the result dir
 roll icons in the tracker are dimmed + `pointer-events:none` (and the shift handler bails) so
 initiative is rolled only through the "Begin Encounter" dialog. Re-enabled once combat starts.
 
-**Action Tracker** (GM-only, on the active combatant's card, `renderCombatTracker`): a "Complex"
-(full-width) button advances the turn (`combat.nextTurn()`); the first "Simple" button toggles
-Complex off (one simple action used, can toggle back); the second "Simple" advances the turn.
-Per-turn state is in-memory (`_actionTracker` map), cleared on any `updateCombat` turn/round change.
+**Action Tracker / the action ledger** (TODO 48, `feature/action-economy`) — SR3 pp.105-108. Rules:
+`scripts/data/action-economy.mjs` (`ActionEconomy`, `ACTIONS` with a page each); storage and UI:
+`scripts/SR3EActionLedger.js`. The ledger is a **combatant flag** keyed to the phase it was written in
+(`round|turn`, so it needs no clearing), written by the GM through **`sr3e.action.charge`**.
+- A phase holds **two Simple or one Complex, plus one Free** (p.105, p.107). Over-spending is recorded
+  and flagged ⚠, **never refused**.
+- **The flows charge themselves** (`SR3EActionLedger.charge`, only when it is that actor's phase):
+  a firearm by **fire mode** (SS/SA/BF Simple, FA Complex), thrown = Throw Weapon, melee (attacker
+  only), spells, vehicle weapons, skills, nature-spirit summoning, reloads per the Ammo Reloading Table.
+  ⚠ **Nothing reactive is ever charged** (dodge, soak, resistance, initiative) — charge the actor who
+  OPENED the action. ⚠ **Auto-mark, never auto-advance**: only the GM's Complex / second Simple end a turn.
+- **Pips for everyone** on the active combatant's row (action economy is public at the table); the GM's
+  buttons beside them: Complex (ends turn), Simple (toggle), Simple (ends turn), **↺ Undo**.
+- ⚠ **The GM's undo restores what the action SPENT.** Each flow calls `SR3EActionLedger.begin(actor)`
+  at its very start (before any dialog) to snapshot pool dice spent, the recoil count, Karma Pool and
+  every weapon/ammunition item's rounds and quantity; the charge carries it. ↺ lists every snapshotted
+  value changed since and every chat card posted since, all ticked, each untickable (the same
+  character's dodge in between) — then puts back, deletes, and frees the slot. Damage is never
+  auto-applied, so nothing else needs reversing.
+- **Ready Weapon** (TODO 47, SR3 p.107): `system.ready` on firearm/melee/projectile/thrown (initial **true**),
+  rules in `scripts/data/ready-weapon.mjs`. ✋ on each weapon row toggles it (readying charges a Simple
+  Action). `SR3EItem._ensureReady` runs at the top of `rollWeapon` and `rollMeleeAttack`: Ready / Quick Draw
+  (Concealability 4+ firearms, Reaction (4) +2 unholstered via `rollThen` → `_quickDrawRolled` → a 🎯
+  Fire card that calls `rollWeapon({ quickDrawn: true })`, uncharged) / Attack anyway. ⚠ Warns, never
+  refuses — Quick Draw is the book's answer to "not drawn yet". Fists and cyber-melee are always ready.
+- **Hands** (TODO 49, SR3 p.112): `system.hands` on weapons (0-2, blank = `Hands.defaultHands(type, category)`;
+  the shipped packs store it — `tools/fill-weapon-hands.mjs`), `system.extraHands` on actors (GM). In hand =
+  ready. ⚠ **p.112 is a class whitelist, not free hands** — only pistol/SMG classes one in each hand
+  (`DUAL_WIELD_CATEGORIES`). `guessGearModifiers` guesses `secondFirearm` (+2) when a second ready gun of
+  that class is held and withdraws smartlink / goggles / laser (*"negates"*); the row renders now.
+- **Weapon accessories and the gyro** (TODO 18, SR3 p.113, p.282):
+  - `smartgun` / `laserSight` on firearms (nullable; blank reads `accessories`). Read through
+    `WeaponAccessories.flag`; the packs store them (`tools/fill-weapon-accessories.mjs`).
+  - ⚠ **Read the text per ITEM.** A designator or a laser weapon is not a laser sight.
+  - A worn *Gyro Mount* gear item: `SR3EActor.gyroMount` / `gyroRating`.
+  - ⚠ **The full rating on EACH — the maintainer's ruling (2026-09-15), CC p.34's Max-Gyro wording.**
+    - Recoil compensators affect recoil only; a gyro affects recoil and movement.
+    - `gyroOnRecoil` takes it off recoil in `rollWeapon`.
+    - The whole rating goes to the GM window as `gyroLeft`, where `gyroOffset` takes it off the ticked
+      movement rows.
+    - Do not restore p.113's "one allowance against the total"; the mutant `gyro-shared-allowance` guards
+      against it.
+  - Costs: +1/+1 armour in `armorRatings`, +4 melee TN (`gyroMeleeTN`), half the Combat Pool
+    (`derived.combatPoolBeforeGyro` keeps the full figure).
+- Not yet: Take Aim across phases (#48's note); one Simple for two guns, recoil crossover (#49).
 
 ### GM tools — Rollable Tables sidebar
 Chase Scene, Driving Test, Session Rewards, Chunky Salsa, Barrier Damage, Falling Damage and
@@ -1020,9 +1061,26 @@ Adding it makes wounded defenders harder to hit; there is a mutant for exactly t
 waste counts for recoil, the phase cap and the magazine, but travels *between* targets, so it
 is excluded here for the same reason it is excluded from damage.
 
-Shotgun spread is **declared** in the fire dialog (`ShtG` only, default 0) because choke is not
-modelled — see TODO 57. The declaration dialog shows the TN and its breakdown, so the
-dodge-versus-soak trade is made against the real number.
+**Shotgun shot, choke and spread — SR3 p.117** (TODO 57; `scripts/data/shotgun.mjs`). Shot is an
+ammunition type, `shot`: flechette rules on the gun's Damage Code, shotguns only. The choke (2-10) is set in
+the fire dialog and remembered on the gun (`system.choke`, blank = 5). From the measured distance:
+- the width is `ceil(d / choke)`, at least 1;
+- each **spread** (width − 1) is −1 Power, −1 to the attacker's TN, and +1 to the defender's Dodge TN;
+- Power 0 is "ineffective", and the attack stops.
+
+With no distance to measure, the spreads typed in the fire dialog stand in.
+
+⚠ **The Dodge modifier counts spreads, not the width**, so a point-blank shot adds nothing. p.113's "per
+meter of shotgun spread" is the maintainer's to confirm.
+
+Gear, p.117: a smartlink is worth **−1** firing shot (the `smartlinkShot` row), and shotguns get nothing from
+smart goggles or laser sights.
+
+Not modelled: the cone as a template, where everyone inside it is a target, and the +1 Damage Resistance
+die per other target in front. Both are stated on the card for the GM.
+
+The declaration dialog shows the TN and its breakdown, so the dodge-versus-soak trade is made against the
+real number.
 
 #### ⚠ Resolving the Dodge Test — RAW, and where the code diverges
 
@@ -1147,7 +1205,8 @@ round, so it counts against the **10-round phase budget**, against **recoil**, a
 ⚠ **Damage is the exception**: Power rises "for every round in that full-auto burst", and a
 round spent walking is not in the burst that arrives, so `fireModeDamage` keeps using `rounds`
 alone. ⚠ **Each burst is ≥3 rounds** (p.116), so three targets a metre apart costs
-3+1+3+1+3 = **11** and is *not legal* without a smartgun. Previously the magazine was
+3+1+3+1+3 = **11** and is *not legal* without a smartgun. The fire dialog's *Smartgun* tick (pre-ticked
+from the gun's `smartgun` field) zeroes the waste — `SR3EItem.walkingWaste` (TODO 56.1). Previously the magazine was
 decremented by rounds+waste while the cap and recoil saw `rounds` alone, so waste was invisible
 to the leg that spent it and Able's 11-round walk never warned.
 
@@ -1160,7 +1219,10 @@ Actions at two targets is the ordinary way there (a second SA shot, a second bur
 each hand). It reads as full-auto-only because p.116 restates the +2 beneath a *Multiple
 Targets* heading inside FULL-AUTO MODE; what is genuinely full-auto-only there is **walking the
 fire** (1 wasted round per metre; smartguns waste none). The ordinal counts **targets, not shots** — a second burst at the same target is
-still the 1st. ⚠ The **GM window cannot supply this**: `multiTarget` carries no `mvp` flag, so
+still the 1st. The dialog **prefills** the ordinal and the walking-fire metres from `system.targetsThisPhase`
+(TODO 56.2, `scripts/data/phase-targets.mjs`): who was shot at, keyed to the ledger's `round|turn` phase,
+cleared by `resetRecoil` with the full empty record, never `{}` (an ObjectField update merges). It is
+snapshotted for the GM's ↺ undo. ⚠ The **GM window cannot supply this**: `multiTarget` carries no `mvp` flag, so
 `mvpModifierGroups()` never renders it and the fire dialog is the only source. It used to live
 inside the dialog's FA-only section, so SA's second shot and BF's second burst were both free.
 
@@ -1178,10 +1240,13 @@ inside the dialog's FA-only section, so SA's second shot and BF's second burst w
 - *Magazine*: each firearm tracks `loadedAmmoType` + `loadedRounds`; magazine size is parsed from its capacity string (`15(c)` → 15). The weapons-tab ammo cell shows the capacity, a loaded badge, and a ↻ **Reload** button (`SR3EItem.reload`).
 - *Reload*: prompts a compatible stock (`AmmoStock.fits`: ⚠ **loose rounds fit any firearm** — every shipped box says `c`; a pre-filled reload only its own mechanism; arrows/bolts only their bow/crossbow — never from storage) and applies `AmmoStock.reloadPlan` with what is already in the gun — swap a reload, or top up with loose rounds — then reports what was lost and what it takes (`reloadActions`). When `trackAmmo` is off it only sets the loaded type (no stock math).
 - *Firing* uses whatever is loaded; decrements `loadedRounds` when `trackAmmo` is on (warns, never blocks, when empty).
-- *Type rules*: Explosive +1 / EX +2 power; Gel −2 power + Stun (attack time). APDS halves ballistic; Flechette unarmoured → level +1, armoured → **`max(Impact × 2, Ballistic)`** (`SR3EActor.flechetteArmor`, soak time via `ammoType` carried into `_postSoakCard`).
+- *Type rules*: Explosive +1 / EX +2 power; Gel −2 power + Stun (attack time). **Shot** (shotguns, p.117): flechette rules + choke spread (above). APDS halves ballistic; Flechette unarmoured → level +1, armoured → **`max(Impact × 2, Ballistic)`** (`SR3EActor.flechetteArmor`, soak time via `ammoType` carried into `_postSoakCard`).
   ⚠ **The doubling is on IMPACT ONLY** — *"use either double its Impact Armor Rating or its normal Ballistic Armor Rating, whichever is higher"* (p.116). This was `max(ballistic, impact) × 2` until 2026-08-30, which doubles the wrong number and then doubles it anyway: ballistic 8 / impact 2 gave 16 where the book gives 8. The two agree whenever Impact is the higher, which is the common case for light armour and is why it survived. ⚠ *"Dermal armor negates the Damage Level increase"* — `SR3EActor.flechetteRaisesLevel`, fed by `dermalArmorSources`: a troll's hide, **Dermal Plating** or a **Dermal Sheath** (`SR3E.dermalArmorImplants`; M&M p.133 defines dermal armor as *"plating or sheath"*). ⚠ **Orthoskin is not dermal armor** — it is bioware armour, and now counts as armour instead (below). Anti-Vehicle sets `weaponOpts.avMunition` to bypass the vehicle Power/2. Tracer: FA-only, tracer rounds raise Level not Power, TN bonus shown as a manual note.
 - *Loading mechanisms*: c/m/cy/b/belt/d/sb/internal + arrow/bolt (`SR3E.ammoLoadMechanisms`); for firearms parsed from the gun's capacity string by `SR3EItem._parseLoadMechanism`. ⚠ **`b` is BREAK ACTION and `m` an INTERNAL magazine** (SR3 p.280) — the map said Belt and Magazine until 2026-09-13; 14 shipped guns are `(b)`, all break-action. Belt feed is `belt`.
-- *Setting*: world setting `trackAmmo` (off by default) gates all counting/depletion.
+- *Setting*: world setting `trackAmmo` gates all counting/depletion — **on** for a new world (TODO 55).
+  ⚠ A world from before 0.6 that never set it stays **off**. `SR3EMigrations.DEFAULT_CHANGES` writes the
+  old default in, because Foundry stores only a value someone set, so a changed default would silently
+  empty every gun in that world. Changing another setting's default goes there too.
 
 **Bows & crossbows — nocked arrows/bolts** (`projectile` type, bow/crossbow categories per `SR3E.nockedAmmoByCategory`; `SR3EItem._usesNockedAmmo`): treated like firearms with a **magazine of 1**. Each draws from the same `ammunition` stockpile, matched by loading mechanism — **bows ↔ `arrow`, crossbows ↔ `bolt`** (the mechanism is inferred from the weapon category, not a capacity string; see `_weaponLoadMechanism` / `_weaponMagazineSize`). Reload nocks one round (subtracts 1 from stock); firing spends it (`loadedRounds` 1→0) so you must re-nock. The weapons-tab projectile section shows a **Nocked** column (Arrow/Bolt or empty) + ↻ Reload, only when `trackAmmo` is on. **Slings (SL) and any non-mapped category never deplete.** No special arrow/bolt types yet (always `regular`).
 
@@ -1244,6 +1309,12 @@ Two entry points besides the sheet (both fire ready weapons via `_sr3eReadyWeapo
    the net successes; the loser gets a Resist Damage button into the usual soak flow.
 
 #### The GM's melee TN window — separate from the ranged one on purpose
+
+**Multiple targets** (p.122: *"+2 per additional target struck in that Combat Phase"*):
+- The window's count is **prefilled** from the attacker's `system.targetsThisPhase`, the same record
+  the fire dialog reads (TODO 56.2).
+- Each melee attack records its target there.
+- With no window (NPC against NPC), the flow adds the +2s to the attacker's TN itself.
 
 Ranged resolves **one** target number; melee resolves **two**, and most p.123 rows move both
 at once in opposite directions — "friends in the melee" is a single fact that helps one
@@ -1758,9 +1829,18 @@ general anti-ranged defence at Cost 1. Grenades are `thrown` but never reach the
 
 ⚠ **Ties go to the attacker**, stated outright — same strictness trap as `dodgeOutcome`.
 
-⚠ Its **Free Action** cost is not modelled (TODO 48); the card says so. **Quick Strike** (MITS
-p.151) is the other mechanically-real power still unimplemented — see TODO 78, and note it
-cannot be done as an initiative bonus.
+⚠ Its **Free Action** cost is not modelled (TODO 48); the card says so.
+
+**Quick Strike** (MITS p.151, TODO 78):
+- A ⚡ on the adept's tracker row (`SR3ECombat.renderQuickStrike`).
+- It moves the adept's pending slot in the current pass to the front of the round's stored queue
+  (`SR3ECombat.quickStrike`, rules in `scripts/data/quick-strike.mjs`). Players reach it through
+  `sr3e.combat.quickStrike`.
+- ⚠ **Never an initiative write**: *"The adept's Initiative Score is not affected."*
+- ⚠ The slot is **moved, not copied** — it uses the pass's action.
+- Once per Combat Turn, via the combatant flag `quickStrikeRound`.
+- "Unwounded" is read as no boxes on either track. The code confirms rather than refuses, and
+  the card says so.
 
 #### Three bonus channels, and a bonus belongs to exactly one
 
@@ -2316,7 +2396,7 @@ system.roundsFiredThisPhase        ← persisted, recoil accumulator; reset each
 ```
 
 ### Item types and key fields
-- `firearm`: `damage` (string e.g. "9M"), `category` (weapon code), `mode` (e.g. "SA/BF/FA"), `ammunition` (capacity string e.g. "15(c)"), `recoilMod` (weapon-mounted comp), `rangeOverride` ("S/M/L/E" metres, e.g. "5/15/30/50"), `loadedAmmoType` / `loadedRounds` (current magazine)
+- `firearm`: `damage` (string e.g. "9M"), `category` (weapon code), `mode` (e.g. "SA/BF/FA"), `ammunition` (capacity string e.g. "15(c)"), `recoilMod` (weapon-mounted comp), `smartgun` / `laserSight` (nullable booleans, TODO 18), `rangeOverride` ("S/M/L/E" metres, e.g. "5/15/30/50"), `loadedAmmoType` / `loadedRounds` (current magazine)
 - `melee`: `damage` (string e.g. "9M"), `reach` (number), `category` (weapon code)
 - `projectile` / `thrown`: `damage`, `category`, `quantity` (thrown weapons consume `quantity`; bows/crossbows instead nock a single arrow/bolt via `loadedAmmoType`/`loadedRounds` — see Bows & crossbows above). `projectile`/`thrown` use Strength-scaled range bands.
 - `ammunition`: `ammoType` (key into `SR3E.ammoTypes`), `loadMechanism` (c/m/cy/b/d/sb/internal + arrow/bolt), `rounds` (stockpile total) + descriptive fields. NO power/armour data fields — rules are in config

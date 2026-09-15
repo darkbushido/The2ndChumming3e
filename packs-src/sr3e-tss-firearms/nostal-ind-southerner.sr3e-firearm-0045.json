@@ -19,7 +19,10 @@
       "streetIndex": "2.5",
       "accessories": "None",
       "bookPage": "tss.2",
-      "notes": ""
+      "notes": "",
+      "hands": 1,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

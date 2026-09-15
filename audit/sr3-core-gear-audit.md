@@ -108,7 +108,7 @@ nowhere to live.
 ### 3a. ⚠ `ammunition` = 0 — **already known as TODO 23, and this audit rediscovered it**
 
 ⚠ **Recorded on 2026-08-05, *found in play*, a month before this sweep ran.** This audit reached
-it independently and first wrote it up as a new finding, which it is not. [TODO 23](../TODO.md#23)
+it independently and first wrote it up as a new finding, which it is not. [TODO 23](../TODO-DONE.md#23)
 is the authority and is more complete — it inventories the implementation piece by piece, notes
 that it is **not a regression** (the pre-split monolithic packs had none either, the archive holds
 zero, and there is no upstream source data), and names a blocker this audit missed:

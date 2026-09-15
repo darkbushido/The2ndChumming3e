@@ -21,6 +21,12 @@ export class MeleeData extends foundry.abstract.TypeDataModel {
     return {
       category:       new StringField({ initial: '' }),
       concealability: new StringField({ initial: '' }),
+      // In hand, drawn, nocked (SR3 p.107, TODO 47). Initial TRUE: everything already on a sheet reads
+      // as ready — a world of characters who suddenly cannot fight would be worse than the bug.
+      ready:          new BooleanField({ initial: true }),
+      // Hands it takes — 0, 1 or 2 (TODO 49). Blank = the category's default (scripts/data/hands.mjs);
+      // the shipped packs store it, and a GM sets it for the edges (a one-handed crossbow).
+      hands:          new NumberField({ integer: true, nullable: true, initial: null, min: 0, max: 2 }),
       reach:          new NumberField({ integer: true, initial: 0, min: 0 }),
       damage:         new StringField({ initial: '' }),
       weight:         new NumberField({ initial: 0, min: 0 }),
@@ -48,6 +54,12 @@ export class ProjectileData extends foundry.abstract.TypeDataModel {
     return {
       category:       new StringField({ initial: '' }),
       concealability: new StringField({ initial: '' }),
+      // In hand, drawn, nocked (SR3 p.107, TODO 47). Initial TRUE: everything already on a sheet reads
+      // as ready — a world of characters who suddenly cannot fight would be worse than the bug.
+      ready:          new BooleanField({ initial: true }),
+      // Hands it takes — 0, 1 or 2 (TODO 49). Blank = the category's default (scripts/data/hands.mjs);
+      // the shipped packs store it, and a GM sets it for the edges (a one-handed crossbow).
+      hands:          new NumberField({ integer: true, nullable: true, initial: null, min: 0, max: 2 }),
       strMin:         new NumberField({ integer: true, initial: 0, min: 0 }),
       damage:         new StringField({ initial: '' }),
       quantity:       new NumberField({ integer: true, initial: 0, min: 0 }),
@@ -78,6 +90,12 @@ export class ThrownData extends foundry.abstract.TypeDataModel {
     return {
       category:       new StringField({ initial: '' }),
       concealability: new StringField({ initial: '' }),
+      // In hand, drawn, nocked (SR3 p.107, TODO 47). Initial TRUE: everything already on a sheet reads
+      // as ready — a world of characters who suddenly cannot fight would be worse than the bug.
+      ready:          new BooleanField({ initial: true }),
+      // Hands it takes — 0, 1 or 2 (TODO 49). Blank = the category's default (scripts/data/hands.mjs);
+      // the shipped packs store it, and a GM sets it for the edges (a one-handed crossbow).
+      hands:          new NumberField({ integer: true, nullable: true, initial: null, min: 0, max: 2 }),
       strMin:         new NumberField({ integer: true, initial: 0, min: 0 }),
       damage:         new StringField({ initial: '' }),
       quantity:       new NumberField({ integer: true, initial: 0, min: 0 }),
@@ -105,6 +123,12 @@ export class FirearmData extends foundry.abstract.TypeDataModel {
     return {
       category:        new StringField({ initial: '' }),
       concealability:  new StringField({ initial: '' }),
+      // In hand, drawn, nocked (SR3 p.107, TODO 47). Initial TRUE: everything already on a sheet reads
+      // as ready — a world of characters who suddenly cannot fight would be worse than the bug.
+      ready:          new BooleanField({ initial: true }),
+      // Hands it takes — 0, 1 or 2 (TODO 49). Blank = the category's default (scripts/data/hands.mjs);
+      // the shipped packs store it, and a GM sets it for the edges (a one-handed crossbow).
+      hands:          new NumberField({ integer: true, nullable: true, initial: null, min: 0, max: 2 }),
       ammunition:      new StringField({ initial: '' }),
       equippedAmmoId:  new StringField({ initial: '' }),
       mode:            new StringField({ initial: '' }),
@@ -118,6 +142,12 @@ export class FirearmData extends foundry.abstract.TypeDataModel {
       cost:            new NumberField({ integer: true, initial: 0, min: 0 }),
       streetIndex:     new StringField({ initial: '' }),
       accessories:     new StringField({ initial: '' }),
+      // Built-in smartgun system / laser sight (TODO 18). Null = not recorded, and the free-text
+      // `accessories` is read instead (WeaponAccessories.flag); the shipped packs store true/false.
+      smartgun:        new BooleanField({ nullable: true, initial: null }),
+      laserSight:      new BooleanField({ nullable: true, initial: null }),
+      // Shotgun choke, 2-10 (SR3 p.117, TODO 57) — set in the fire dialog and remembered. Blank = 5.
+      choke:           new NumberField({ integer: true, nullable: true, initial: null, min: 2, max: 10 }),
       bookPage:        new StringField({ initial: '' }),
       notes:           new HTMLField({ initial: '', required: false }),
       isAoE:           new BooleanField({ initial: false }),

@@ -19,7 +19,10 @@
       "streetIndex": "2.5",
       "accessories": "Fully functioning Telcom unit, half taser range",
       "bookPage": "tss.5",
-      "notes": ""
+      "notes": "",
+      "hands": 1,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

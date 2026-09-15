@@ -19,7 +19,10 @@
       "streetIndex": "1.5",
       "accessories": "Smartlink",
       "bookPage": "pw.21",
-      "notes": ""
+      "notes": "",
+      "hands": 1,
+      "smartgun": true,
+      "laserSight": false
     },
     "effects": []
   },

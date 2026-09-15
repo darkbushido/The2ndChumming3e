@@ -386,6 +386,27 @@ const MIGRATIONS = [
 
 ];
 
+/**
+ * World settings whose DEFAULT changed · TODO 55.
+ *
+ * ⚠ **Foundry stores only a value someone set.** Changing a setting's default therefore changes every
+ * world that never touched it — and for `trackAmmo` that means every gun in an existing world reads 0
+ * rounds and cannot fire. So a world stamped BEFORE `version` with nothing stored gets the OLD default
+ * written in, and keeps behaving as it did; a new world takes the new default.
+ * ⚠ Not a `MIGRATIONS` entry: those must not be numbered above `system.json` (tests/migrations), and
+ * 0.6 is not bumped until release. Until then a world CREATED on the branch stamps 0.5.2 and is pinned
+ * OFF on its second load — harmless, and correct from the bump on.
+ */
+export const DEFAULT_CHANGES = [
+  { key: 'trackAmmo', version: '0.6.0', was: false },
+];
+
+/** The settings to pin for a world stamped `stored` ('' = new world: none). `isSet(key)` — stored already? Pure. */
+export function defaultsToPin(stored, isSet, isNewer, changes = DEFAULT_CHANGES) {
+  if (!stored) return [];
+  return changes.filter(c => isNewer(c.version, stored) && !isSet(c.key));
+}
+
 export const SR3EMigrations = {
 
   /** Register the stored version. World-scoped and hidden, like `clocks`. */
@@ -421,6 +442,13 @@ export const SR3EMigrations = {
       await game.settings.set(SYSTEM, SETTING, current);
       console.log(`SR3E | Migration baseline set to ${current}`);
       return;
+    }
+
+    // Keep an existing world's old default where one changed (TODO 55) — idempotent: once written, it is set.
+    const store = game.settings.storage?.get('world');
+    for (const c of defaultsToPin(stored, key => !!store?.getSetting(`${SYSTEM}.${key}`), foundry.utils.isNewerVersion)) {
+      await game.settings.set(SYSTEM, c.key, c.was);
+      console.log(`SR3E | ${c.key}: default changed in ${c.version}; this world keeps ${c.was}`);
     }
 
     const pending = MIGRATIONS.filter(m => foundry.utils.isNewerVersion(m.version, stored));

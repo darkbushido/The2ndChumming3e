@@ -21,7 +21,7 @@ import { installGlobals, installGame } from './helpers/foundry.mjs';
 installGlobals();
 const { SR3E } = await import('../scripts/config.js');
 installGame({ sr3e: { SR3E } });
-const { SR3EMigrations } = await import('../scripts/SR3EMigrations.js');
+const { SR3EMigrations, defaultsToPin, DEFAULT_CHANGES } = await import('../scripts/SR3EMigrations.js');
 
 export const name = 'migrations';
 
@@ -32,6 +32,24 @@ const actor = (...items) => ({ name: 'Test', items });
 
 export async function run(t) {
   const fill  = (sys, field, value) => SR3EMigrations._fillBlank(sys, field, value);
+
+  /* ==== A changed DEFAULT keeps existing worlds as they were (TODO 55) ==== */
+  const newer = (a, b) => { const p = v => v.split('.').map(Number); const [x, y] = [p(a), p(b)];
+    for (let i = 0; i < Math.max(x.length, y.length); i++) { if ((x[i] ?? 0) !== (y[i] ?? 0)) return (x[i] ?? 0) > (y[i] ?? 0); } return false; };
+  const unset = () => false;
+  t.eq('a 0.5.2 world that never set trackAmmo keeps it OFF', defaultsToPin('0.5.2', unset, newer).map(c => [c.key, c.was]), [['trackAmmo', false]]);
+  t.eq('…one that set it keeps its own choice', defaultsToPin('0.5.2', k => k === 'trackAmmo', newer), []);
+  t.eq('a new world (no stamp) takes the new default', defaultsToPin('', unset, newer), []);
+  t.eq('a world stamped 0.6.0 takes the new default', defaultsToPin('0.6.0', unset, newer), []);
+  t.eq('trackAmmo\'s default changed in 0.6.0, from off', DEFAULT_CHANGES.find(c => c.key === 'trackAmmo'), { key: 'trackAmmo', version: '0.6.0', was: false });
+  const main = fs.readFileSync(new URL('../scripts/sr3e.js', import.meta.url), 'utf8');
+  const reg  = main.slice(main.indexOf("register('The2ndChumming3e', 'trackAmmo'"), main.indexOf("register('The2ndChumming3e', 'trackAmmo'") + 900);
+  t.ok('trackAmmo is registered ON by default', /default: true,/.test(reg) && !/default: false/.test(reg));
+  t.ok('…and its hint no longer says an empty gun still fires', !/never blocks a shot/.test(reg));
+  const mig = fs.readFileSync(new URL('../scripts/SR3EMigrations.js', import.meta.url), 'utf8');
+  t.ok('migrate() pins the old default before looking at migrations', mig.indexOf('defaultsToPin(stored') > 0
+    && mig.indexOf('defaultsToPin(stored') < mig.indexOf('const pending = MIGRATIONS.filter'));
+  t.ok('…reading whether the world stored one, not the value (which is the default when unset)', /store\?\.getSetting\(`\$\{SYSTEM\}\.\$\{key\}`\)/.test(mig));
   const patch = (a, byName) => SR3EMigrations._patchItemsByName(a, byName);
 
   /* ==== Rule 1: fill blanks, never overwrite ==== */

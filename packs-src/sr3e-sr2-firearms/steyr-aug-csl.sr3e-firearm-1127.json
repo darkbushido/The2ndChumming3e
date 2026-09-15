@@ -19,7 +19,10 @@
       "streetIndex": "3",
       "accessories": "Laser Sight",
       "bookPage": "ssc.54",
-      "notes": ""
+      "notes": "",
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": true
     },
     "effects": []
   },

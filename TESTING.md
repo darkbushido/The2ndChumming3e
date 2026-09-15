@@ -2352,3 +2352,83 @@ then `npm run packs:install` with Foundry closed so the rebuilt M&M drug pack re
 - [ ] **Jazz** → Quickness +2 (and Reaction with it); wears off → a **🩸 Resist 8L Stun** button → the
       soak card shows *armour does not apply*.
 - [ ] A second player cannot press another character's ✔ buttons or 🎲 (greyed with a reason).
+
+## 40. The action ledger (TODO 48, `feature/action-economy`)
+
+**Prerequisites:** the branch's code live in the install (the install's `scripts/` is a junction to the
+MAIN checkout, so merge first or point it at the branch), then F5. A combat with two PCs, started.
+
+- [ ] The active combatant's row shows pips (one wide Complex, two Simple, one small Free) to **every**
+      user; the GM also sees Complex / Simple / Simple / ↺.
+- [ ] On their phase a player fires a pistol **SA** → one Simple pip fills; a second SA → both; a
+      third → ⚠ and a GM warning, recorded not refused. The turn does **not** advance by itself.
+- [ ] Full auto → the Complex pip, not a Simple. A skill roll, a spell, a melee attack → Complex.
+- [ ] The defender's dodge, soak and spell resistance fill **nothing** on the defender.
+- [ ] An actor who is not the active combatant rolls → nothing is charged.
+- [ ] ↺ (GM): pick the SA shot → the dialog lists `combatPoolSpent`, `roundsFiredThisPhase`, the gun's
+      `loadedRounds` and the chat cards since, all ticked → **↩ Undo** puts them back, deletes the
+      cards and frees the pip. Untick one row → that value is left alone.
+- [ ] Reload: a clip swap fills both Simples; loose rounds a Complex each; nocking an arrow one Simple.
+- [ ] F5 on any client keeps the pips (they are a combatant flag); the next combatant's phase starts empty.
+- [ ] **Ready (TODO 47):** a weapon row's ✋ puts it away (grey) and readies it (green); readying fills
+      a Simple pip on the character's phase, putting away does not.
+- [ ] Fire a put-away pistol → the dialog offers Ready / ⚡ Quick Draw / Attack anyway. Quick Draw rolls
+      Reaction vs 4 (6 with the holster box unticked); a success posts 🎯 Fire, which attacks without a
+      second charge; a failure says it cannot fire this phase. A rifle (Concealability < 4) offers no
+      Quick Draw. A put-away sword gets the same dialog without it; fists never ask.
+- [ ] **Hands (TODO 49):** the Weapons tab says "✋ In hand: N of 2 hands — …"; ready a rifle and a
+      pistol → amber and a warning; the GM's extra-hands box set to 1 → it clears. A weapon's item
+      sheet shows its Hands (a compendium rifle 2, a pistol 1).
+- [ ] Two ready pistols, fire one → the GM window's Gear group pre-ticks "Using a second firearm +2" and
+      does NOT tick smartlink/laser; holster the second → neither. Two assault rifles → never ticked.
+- [ ] After merging, `npm run packs:install` (Foundry closed) so the install's weapons carry `hands`.
+- [ ] **Gyro (TODO 18):**
+  - [ ] Give a character a compendium *Gyro Mount* (sr3 gear, rating 5). The Combat Pool halves, rounded
+        down. The soak card's armour rises by 1/1.
+  - [ ] Fire SA twice (+1 recoil on the second shot). The breakdown says "Gyro −1 of recoil (up to 5 off
+        movement)".
+  - [ ] In the GM window, "Gyro 5 — off movement" reads 5. Tick "Attacker running": the TN does not
+        rise (4 offset). Set the box to 2: the TN rises by 2.
+  - [ ] Put the gyro in storage. All of the above goes away.
+  - [ ] Melee with the gyro worn: the GM window's base TN for that fighter is 4 higher.
+- [ ] **Accessories (TODO 18):**
+  - [ ] A compendium Ares Predator shows smartgun/laser as the packs store them.
+  - [ ] Fire a smartgun with Smartlink cyberware: −2 is pre-ticked.
+  - [ ] The Ballista (Laser Designator) never pre-ticks a laser sight.
+  - [ ] After merging, run `npm run packs:install` (Foundry closed), then restart Foundry fully: the data
+        model changed.
+- [ ] **trackAmmo default (TODO 55):**
+  - [ ] In `test-shadowrun`, open Configure Settings. Track Ammunition is still OFF, and the console logged
+        "trackAmmo: default changed in 0.6.0; this world keeps false".
+  - [ ] A brand-new world has it ON (after the 0.6.0 bump; before it, the second load pins it off).
+  - [ ] Its hint describes empty guns and ↻ Reload.
+- [ ] **Shotgun shot (TODO 57):**
+  - [ ] Give a character an ammunition item of type Shot with a clip load mechanism, then reload a
+        shotgun with it.
+  - [ ] Fire at a token 15 m away with choke 5. The breakdown shows "Shot spread −2 (choke 5, 3 m wide…)",
+        the damage Power is 2 lower, and the defender's Dodge TN is 6.
+  - [ ] Fire again: the choke box remembers 5.
+  - [ ] Load slugs (Regular): no choke box, no spread.
+  - [ ] With a smartlink and a smartgun shotgun firing shot, the GM window pre-ticks "Smartlink, shotgun
+        firing shot −1", not −2.
+  - [ ] Choke 2 at 20 m against a 6-Power gun stops with "ineffective".
+- [ ] **Smartgun walking fire (TODO 56.1):** Fire FA from a compendium smartgun (e.g. an Ares Alpha).
+      The Smartgun box is ticked, and metres 2 wastes nothing: the recoil preview does not change.
+      Untick it and the preview rises by 2.
+- [ ] **Who was shot at (TODO 56.2):** in combat, shoot token A with SA, then target token B.
+  - [ ] The fire dialog selects "2nd (+2 TN)" and says one target was already shot at.
+  - [ ] In FA, the metres box holds the measured A-to-B distance.
+  - [ ] Target A again: back to 1st.
+  - [ ] Next phase: 1st again.
+  - [ ] GM ↺ on B's shot lists "targetsThisPhase: 2 targets shot at → 1 target shot at".
+- [ ] **Quick Strike (TODO 78):**
+  - [ ] Give an adept the MITS Quick Strike power and start combat with two faster combatants.
+  - [ ] At the start of pass 1, the ⚡ on the adept's row is enabled for its owner. Press it: the adept
+        becomes the active combatant, the card posts, and the initiative number is unchanged.
+  - [ ] The other two still act in pass 1, and the adept does not act again in that pass.
+  - [ ] ⚡ is disabled for the rest of the round, and enabled again next round.
+  - [ ] With a box of Stun, ⚡ asks for confirmation.
+  - [ ] Player3 cannot see the ⚡ on Player2's adept.
+- [ ] **Melee multiple targets (TODO 38 / 56.2):** in combat, punch token A, then attack B in the same
+      phase. The GM melee window's "additional targets" starts at 1 and the attacker's TN includes +2.
+      Attacking A again starts at 0.

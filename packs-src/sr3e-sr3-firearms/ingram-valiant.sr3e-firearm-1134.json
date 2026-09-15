@@ -19,7 +19,10 @@
       "streetIndex": "2",
       "accessories": "Hip Brace(1RC), Gas Vent II(2RC)",
       "bookPage": "sr3.279",
-      "notes": ""
+      "notes": "",
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

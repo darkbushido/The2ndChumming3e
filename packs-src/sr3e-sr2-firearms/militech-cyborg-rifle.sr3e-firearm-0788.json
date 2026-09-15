@@ -19,7 +19,10 @@
       "streetIndex": "2.5",
       "accessories": "Gas Vent (2)",
       "bookPage": "pw.29",
-      "notes": ""
+      "notes": "",
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

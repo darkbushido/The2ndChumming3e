@@ -19,7 +19,10 @@
       "streetIndex": "2.75",
       "accessories": "Gas Vent (2), Smartlink",
       "bookPage": "pw.23",
-      "notes": ""
+      "notes": "",
+      "hands": 1,
+      "smartgun": true,
+      "laserSight": false
     },
     "effects": []
   },

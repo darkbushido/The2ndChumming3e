@@ -19,7 +19,10 @@
       "streetIndex": "2.5",
       "accessories": "LPist uses HPist ranges,Gas Vent I(1RC)",
       "bookPage": "cc.18",
-      "notes": ""
+      "notes": "",
+      "hands": 1,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

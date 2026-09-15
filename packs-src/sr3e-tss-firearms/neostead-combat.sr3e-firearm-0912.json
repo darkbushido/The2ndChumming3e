@@ -19,7 +19,10 @@
       "streetIndex": "3",
       "accessories": "2 different types of ammo w/ selector switch",
       "bookPage": "tss.2",
-      "notes": ""
+      "notes": "",
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

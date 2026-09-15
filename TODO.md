@@ -16,19 +16,38 @@ heading with the commit that closed it and run `npm run todo:archive`: it moves 
 table below is regenerated — do not edit the table by hand. Grouping is by *kind of work*
 (the `###` headings); a new item goes under its group.
 
+## Work order for 0.6 — set by the maintainer, 2026-09-15
+
+The maintainer's order: finish the action economy, then #18, then the rest **easiest first** (the order
+below is the agent's estimate). Built on `feature/action-economy` in the worktree
+`The2ndChumming3e-work` unless noted; nothing is merged without the maintainer.
+
+| # | Item | State / why it sits here |
+|---|---|---|
+| [48](#48) | The action ledger | ✅ built — `c03025c5`; Take Aim across phases still open inside it |
+| [47](#47) | Ready Weapon, an equip control for firearms, Quick Draw | ✅ built — two-gun Quick Draw waits on #49 |
+| [49](#49) | Hands | ✅ built — dual-wield billing, recoil crossover and matched razors still open inside it |
+| [18](#18) | Structured weapon-accessory data (smartlink, smart goggles, laser) + gyro | ✅ built — `smartgun`/`laserSight` fields; gyro on recoil, then movement |
+| [23](TODO-DONE.md#23) | Ammunition compendium | ✅ closed — 661 docs, all 8 types; found and fixed loose rounds not loading non-clip guns (`c8e04eff`, main) |
+| [55](TODO-DONE.md#55) | `trackAmmo` on by default | ✅ — new worlds on; existing worlds pinned off; weight raised as #126 |
+| [57](TODO-DONE.md#57) | Shotgun choke and spread (p.117) | ✅ — shot ammo type, choke on the gun, spread from the range |
+| [56.1](TODO-DONE.md#56) | Smartguns waste no rounds (p.116) | ✅ `74372f9d` |
+| [56.2](TODO-DONE.md#56) | Remember who you shot at this phase | ✅ — prefills the ordinal and the walking metres |
+| [78](TODO-DONE.md#78) | Quick Strike acts first in a pass (MITS p.151) | ✅ — ⚡ on the tracker row; a queue move, no initiative write |
+| [38](TODO-DONE.md#38) | Multiple targets — the leftovers (melee, per-attack pool) | ✅ — both were already done (the archive's intro was stale); the melee count is now prefilled from #56.2's record |
+
 ## Contents
 
-**37 open.** 88 done — see [TODO-DONE.md](TODO-DONE.md).
+**33 open.** 93 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[53](#53) The "Essence hole" surgery option is not modelled — *M&M p.150*<br>[57](#57) Shotgun choke and spread are not modelled — *SR3 p.117*<br>[109](#109) Cyberware, bioware and Attribute Stress<br>[110](#110) Move-by-wire's TLE-x<br>[111](#111) Chronic Dissociation Syndrome — cyberzombies |
-| 🧙 Adept powers | [78](#78) Quick Strike acts first in a pass — *MITS p.151* |
+| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[53](#53) The "Essence hole" surgery option is not modelled — *M&M p.150*<br>[109](#109) Cyberware, bioware and Attribute Stress<br>[110](#110) Move-by-wire's TLE-x<br>[111](#111) Chronic Dissociation Syndrome — cyberzombies |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [119](#119) Audit *The Matrix Defragged v2* against what we have<br>[120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork) |
-| 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[23](#23) Ship an ammunition compendium<br>[55](#55) Default `trackAmmo` ON — and the ammunition model it needs first<br>[79](#79) No ledger for karma or nuyen — *low priority*<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
-| 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[56](#56) Full auto still asks the player for what the system could work out<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[122](#122) Ratings in the field, not the name, for weapons, cyberware and bioware |
+| 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[79](#79) No ledger for karma or nuyen — *low priority*<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear<br>[126](#126) Ammunition has no weight, and nothing adds up a carried load |
+| 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[122](#122) Ratings in the field, not the name, for weapons, cyberware and bioware |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
@@ -211,6 +230,14 @@ cannot reach. If time is short, do these.
 
 ## 47. Ready Weapon is unmodelled — you can attack with a weapon you never drew
 
+> **Built 2026-09-15 on `feature/action-economy`** (0.6; not merged). `ready` on every weapon (initial
+> true, so nothing already on a sheet stops fighting); a ✋ toggle on each weapon row (readying charges
+> Ready Weapon, putting away is free); firing or swinging an unready weapon offers **Ready**, **Quick
+> Draw** (Concealability 4+ firearms: Reaction (4), +2 unholstered, one success draws and fires in one
+> Simple Action, a card's 🎯 Fire) or **Attack anyway** — never refuses. Rules: `scripts/data/ready-weapon.mjs`.
+> **Still open here:** quick-drawing two guns at once (+2 each) waits on #49's hands; readying a batch
+> of throwing weapons is shown in the tooltip (½ Quickness) but the stack is one item. TESTING.md §40.
+
 **Reported 2026-08-11:** *"you shouldn't be able to attack with a weapon you don't have equipped."*
 Correct, and RAW says so outright. Core **p.107**, Simple Actions:
 
@@ -275,6 +302,12 @@ of that would not gate melee, it would abolish it. #46 first, always.
 - Throwing weapons ready in **batches**: one action readies ½ Quickness (round down) of them.
 
 ## 48. The GM hand-charges every action — most of them are knowable
+
+> **Built 2026-09-15 on `feature/action-economy`** (0.6; not merged). See CLAUDE.md → *Action Tracker /
+> the action ledger*: combatant-flag ledger, self-charging flows, pips for everyone, and the GM's
+> ↺ undo that also puts back what the action spent (ammo, pool dice, recoil) and deletes its cards
+> (the maintainer, 2026-09-15). **Still open here:** Take Aim as cross-phase state (below); dual
+> wield billing one Simple for two guns waits on #49. Live check: TESTING.md §40.
 
 **Asked 2026-08-11:** *"right now the GM decides if a player does a simple or complex action. Some of
 these should auto apply. Is that possible?"* **Yes**, and for most combat actions the answer is not
@@ -416,6 +449,17 @@ with one click, and the existing three buttons stay as the manual path.
 
 ## 49. Nothing models hands — what is held, and how many can be held
 
+> **Built 2026-09-15 on `feature/action-economy`** (0.6; not merged). `hands` on every weapon (0-2,
+> blank = the category default — the maintainer's decision), filled into all 517 shipped weapons by
+> `tools/fill-weapon-hands.mjs`; `extraHands` on the actor (the GM's box). "In hand" = readied (#47):
+> the Weapons tab says what is held and warns when it is more than the hands. **p.112's second gun is a
+> guess in the GM's TN window** — the row now renders (it had no `mvp` flag), pre-ticked when a second
+> ready pistol/SMG-class gun is in hand, withdrawing the smartlink / goggles / laser guesses. Rules:
+> `scripts/data/hands.mjs`. TESTING.md §40.
+> **Still open here:** firing both guns for ONE Simple Action (each shot is charged; the GM ↺s one),
+> uncompensated recoil crossing to the other gun, matched hand razors/spurs +½ Strength (p.121), quick-
+> drawing two (+2 each), and folding `equippedMelee` into the hand slots.
+
 **Requested 2026-08-11:** *"a person has two hands (unless there is a cyberware option to add more)
 and you can have two one-handed weapons equipped or a two-handed weapon equipped."* Nothing in the
 system tracks this. `equippedMelee` is a single `StringField`, there is no `equippedFirearm` at all
@@ -502,45 +546,6 @@ without the cost.
 procedure options) rather than as a special case bolted onto the install hook — and it needs
 to track WHICH hole is being filled, since a 0.5 implant cannot borrow 2.0 of hole and then
 lend the remainder to the next one for free.
-
-## 57. Shotgun choke and spread are not modelled — *SR3 p.117*
-
-Split out of [#52](TODO-DONE.md#52), which needed the spread as an input and found nothing to read it from.
-
-A shotgun firing shot rounds throws a cone. The user sets a **choke** from 2 to 10, and *"for
-every number of meters equal to the choke setting that the shot travels, it will spread one
-meter"*. So the width at distance *d* is `ceil(d / choke)` metres, and the number of times it
-has spread is that minus one.
-
-Three separate effects hang off that count, and **the system implements none of them**:
-
-| Effect | Rule |
-|---|---|
-| Power | −1 per spread — *"Every time a shot round increases its spread, it loses 1 point of power"* |
-| Attacker's TN | −1 per spread — *"Every time the shot spreads, subtract -1 from the attacker's target number"* |
-| Defender's Dodge TN | **+1 per metre of spread** (p.113) — the only one currently reachable, and only by hand |
-
-The book's own worked line pins the arithmetic: at choke 5 it is **−2/−2 at fifteen metres**
-(width 3, so two spreads) and **−3/−3 at twenty** (width 4). Also: *"Everything and everyone
-within the area of spread is considered a valid target"*, so a full implementation is a cone
-template, not a number.
-
-**What exists today** is a "Shot spread at the target (m)" field in the fire dialog, shown only
-for `ShtG`, defaulting to 0, feeding `dodgeTN`. That makes the p.113 modifier reachable without
-pretending to model choke. The attacker knows their choke and their range; p.117 has the table.
-
-⚠ **The dodge modifier is +1 per METRE OF SPREAD, which is the width minus one** — the amount
-by which the cone has widened, matching the attacker's −1 per spread. Reading it as the raw
-width would penalise a point-blank shotgun that has not spread at all.
-
-**To finish it:** a `choke` NumberField (2–10) on the firearm — a data-model change, so a full
-Foundry restart — plus a shot-vs-slug distinction (shot rounds use the flechette rules, so
-`ammoType` is close but not the same question), and then all three effects derive from the
-range that `_measureDistance` already computes on every shot.
-
----
-
-<a id="58"></a>
 
 ## 109. Cyberware, bioware and Attribute Stress — **rules not implemented** (M&M p.124-131)
 
@@ -632,58 +637,6 @@ GM applies. Scheduling (every N months) is campaign time the system does not tra
 interval, let the GM roll.
 
 <a id="112"></a>
-
-### 🧙 Adept powers
-
-## 78. Quick Strike acts first in a pass — *MITS p.151*
-
-The other borderline power from [#70](TODO-DONE.md#70)'s "correctly inert" list, and the one that genuinely
-is not inert-by-nature: it has a hard mechanical effect on turn order. **Cost 3, no levels.**
-
-> "This power allows the adept to **act first in one Initiative Pass per Combat Turn**. This
-> action uses up the adept's action for that Initiative Pass. This power **cannot be used
-> during an Initiative Pass when the adept does not have an action**. The adept's **Initiative
-> Score is not affected**. The adept must be **unwounded** to use this ability."
-
-### Why it is not [#77](TODO-DONE.md#77)-shaped
-
-⚠ **"The adept's Initiative Score is not affected."** So it cannot be modelled as an initiative
-bonus, which is the obvious cheap implementation and would be wrong in two visible ways: the
-tracker would show a number the character does not have, and the effect would persist across
-**every** pass instead of the one the player picks. It is a **turn-order override**, scoped to a
-single pass, chosen by the player at the moment they use it.
-
-⚠ **"Uses up the adept's action for that Initiative Pass"** and **"cannot be used during an
-Initiative Pass when the adept does not have an action"** are both action-economy statements,
-and the system does not model actions ([#48](#48)). `SR3ECombat` does know about passes — both
-`_nextTurnSR3` and `_nextTurnSR2` walk them — so *which* pass is answerable; whether the adept
-still has an action in it is not.
-
-⚠ **"Must be unwounded" is ambiguous in a way that matters.** It plainly is not "no wound
-modifier", or a single box of Stun would qualify and the restriction would be nearly free. Read
-literally it means **no damage at all on either track**, which is much harsher and is probably
-intended — this is a 3-point power. Whichever is chosen it should be **stated on the card**, not
-silently enforced, and the check reads the tracks directly rather than `woundMod`.
-
-⚠ **Once per Combat Turn** needs state that survives passes but not the turn — the same
-lifetime as `roundsFiredThisPhase` and the Full Defense flag, both cleared by
-`SR3ECombat._endOfTurnReset()`. That is the hook to use; do not invent a second reset path.
-
-### What it would take
-
-1. A capability flag off the name, exactly like [#77](TODO-DONE.md#77)'s (`_directPowerKind` → `quickStrike`).
-2. A per-Combat-Turn `quickStrikeUsed` flag, cleared in `_endOfTurnReset()`.
-3. A button on the combat tracker's active-pass card, GM- or owner-gated, that moves the adept
-   to the front of the current pass **without touching `combatant.initiative`** — which is the
-   whole design problem, since Foundry orders by that field. Likely a sort override or a
-   temporary flag consumed by `_nextTurnSR3` / `_nextTurnSR2`, not an initiative write.
-4. Refuse (or warn) when wounded, and say which reading of "unwounded" is being applied.
-
-⚠ **Step 3 is the work; steps 1-2 are twenty minutes.** Do not start this before [#48](#48)
-unless the intent is to ship the ordering half and leave the action cost to the GM — which is
-defensible under the ethos, but should be a decision rather than a discovery.
-
-<a id="79"></a>
 
 ### 🪄 Spells & drugs
 
@@ -924,90 +877,6 @@ toggle can hide the GM's reference material — and remember a new pack in `syst
 Foundry restart, not an F5.
 
 ---
-
-## 23. Ship an ammunition compendium — **found in play 2026-08-05**
-
-**The code is complete; there is simply no content.** Verified:
-
-| Piece | State |
-|---|---|
-| `ammunition` in `system.json` → `documentTypes.Item` | ✅ present |
-| `AmmunitionData` model (`ItemDataModels.js:127`) | ✅ full schema |
-| `CONFIG.Item.dataModels.ammunition` (`sr3e.js:107`) | ✅ registered |
-| "+ Add Ammunition" buttons (`SR3EActorSheet.js:1323`, `:2069`) | ✅ present |
-| `SR3E.ammoTypes` rules (8 types) + `ammoLoadMechanisms` (9) | ✅ in `config.js` |
-| **Any ammunition item, anywhere** | ❌ **zero** |
-
-**Not a regression — it never existed.** `main`'s 24 monolithic packs had none either, the
-archive holds **0** ammunition documents, and there is no source data in `rawdata/` or the
-upstream character generator. Of 82 packs across 20 books, not one is ammunition.
-
-The practical effect is what got reported: to use ammo at all, someone must hand-create an item
-and fill in `ammoType`, `loadMechanism`, `rounds`, `cost`, `availability`, `streetIndex` and
-`bookPage` — **per type, per gun class** — before `reload()` has any stockpile to match against.
-Everything downstream (magazine tracking, APDS/flechette armour effects, the `trackAmmo` setting)
-is dead until that content exists.
-
-### What the pack needs
-
-8 types from `SR3E.ammoTypes`: Regular · Explosive · EX Explosive · Gel · APDS · Flechette ·
-Tracer · Anti-Vehicle. Load mechanism matters because `reload()` matches on it, so a Belt entry is
-distinct from a Clip entry.
-
-Pricing is core p.281, *Ammunition, Per 10 Shots*. ⚠ **That table extracts badly** — the two-column
-merge offsets the stat rows against their labels, exactly like the Visibility Table, so crop per
-column (`pdftotext -x -y -W -H`, mediabox ~616×795pt, **book page = PDF page − 2**) rather than
-reading the merged dump. One figure is safe from prose: *"Standard ammo costs 20¥ for 10 rounds."*
-
-### Re-confirmed by the core gear audit, 2026-09-02 — see [#91](#91)
-
-`audit/sr3-core-gear-audit.md` reached this independently and adds three things: **arrows and
-bolts** are the same gap (the nocked-ammo flow matches them by loading mechanism, and a bow can
-never be re-nocked without them); ammunition did **not** ship mis-typed under some other item
-type (checked by name across all 82 packs); and `ammunition` is one of **eight** declared Item
-types with zero documents, so this is the sharpest case of a wider pattern rather than an
-isolated omission.
-
-### ⚠ Blocked on [#12](TODO-DONE.md#12-write-a-committed-pack-rebuild-script-and-vendor-its-sources)
-
-The populate macros were **retired**, so there is currently no supported way to build a pack. This
-is the first task to actually need that decision, and it should not be resolved by quietly
-resurrecting a one-off macro.
-
-
----
-
-## 55. Default `trackAmmo` ON — and the ammunition model it needs first
-
-Decided 2026-08-14. `trackAmmo` currently defaults **off**, so the whole magazine/reload
-layer is dormant for a new world, and rules that depend on it ([#51](TODO-DONE.md#51) short bursts) can
-never fire. It should be on by default.
-
-⚠ **Flipping the default is one line; the reason it is not done yet is what it exposes.**
-With tracking off, nobody notices that ammunition is modelled thinly.
-
-### What needs deciding before the flip
-
-- **Ammo types.** `SR3E.ammoTypes` holds the rules (APDS, explosive, EX, gel, flechette,
-  tracer, anti-vehicle), and firearms carry `loadedAmmoType`, but the **stockpile is one
-  undifferentiated `rounds` count per ammo item**. A runner carrying regular, APDS and
-  explosive for the same gun has three items and no notion of which is in the clip beyond a
-  single string. Reloading picks a stockpile by loading mechanism, not by what the player
-  wants loaded.
-- **Weight / encumbrance.** Ammunition has none. There is no weight field on the ammo item
-  and no carried-load calculation anywhere in the system, so "how much can this character
-  actually carry" cannot be answered — which is half the point of tracking ammo at all.
-- **Bows and crossbows** already nock a single arrow/bolt with no types at all (always
-  `regular`), so arrowheads would need the same treatment.
-
-### Sequencing
-
-Turning tracking on before the model is right would make every table meet the thin parts at
-once — empty-clip bails, reload prompts that cannot express "load the APDS" — and the likely
-outcome is that people turn it straight back off.
-
-So: **model first, default second.** [#23](#23) (ship an ammunition compendium) is the other
-half of this — the code is complete and the content is missing.
 
 ## 79. No ledger for karma or nuyen — *low priority*
 
@@ -1742,7 +1611,7 @@ and (at higher levels) some Reaction, and the shipped pack items carry the real 
 > packs, generated by `tools/build-default-gear.mjs` from vendored generator data, pinned by
 > `tests/default-gear.test.mjs`. Full account: `audit/default-books-gear-audit.md`. This also
 > answers [#12](TODO-DONE.md#12-write-a-committed-pack-rebuild-script-and-vendor-its-sources) for this content —
-> a committed builder over committed sources — and [#23](#23)'s missing ammunition.
+> a committed builder over committed sources — and [#23](TODO-DONE.md#23)'s missing ammunition.
 >
 > **Still open from this entry:** core **grenades** (weapons — out of scope by the maintainer's
 > ruling, 2026-09-14) and the `thrown` · `contact` · `quality` · `complex_form` · `summoning`
@@ -1758,9 +1627,9 @@ flash-pak and asked whether that was one gap or a class. It is a class.
 one of `adept-powers · armor · bioware · cyberware · drones · drugs · firearms · melee ·
 projectiles · spells · vehicle-mods · vehicle-weapons · vehicles`.
 
-### ⚠ `ammunition` — **already tracked as [#23](#23), a month before this audit**
+### ⚠ `ammunition` — **already tracked as [#23](TODO-DONE.md#23), a month before this audit**
 
-⚠ **This audit REDISCOVERED [#23](#23) and first wrote it up as new.** That entry dates from
+⚠ **This audit REDISCOVERED [#23](TODO-DONE.md#23) and first wrote it up as new.** That entry dates from
 **2026-08-05** and was *found in play*, which is a better warrant than a sweep. It is also more
 complete: it inventories every piece of the implementation, records that this is **not a
 regression** (the old monolithic packs on `main` had no ammunition either, the archive holds
@@ -1768,7 +1637,7 @@ zero, and there is no source data in `rawdata/` or upstream), and it names a blo
 missed — **[#12](TODO-DONE.md#12-write-a-committed-pack-rebuild-script-and-vendor-its-sources), because the
 populate macros were retired and there is currently no supported way to build a pack at all.**
 
-**Read [#23](#23) for the ammunition work.** Only the items below are new here.
+**Read [#23](TODO-DONE.md#23) for the ammunition work.** Only the items below are new here.
 
 ⚠ **This is a PACK gap, not a book gap and not a rules gap** — three layers, and only the third
 is empty. The **books** print ammunition in full (SR3 core p.279; Cannon Companion devotes a
@@ -1784,10 +1653,10 @@ filters `actor.items` for `type === 'ammunition'`, finds none, warns *"No compat
 stock"* and stops — so with `trackAmmo` on **every firearm in the system is unreloadable** until
 a GM hand-authors the items.
 
-**What this audit adds to [#23](#23):**
+**What this audit adds to [#23](TODO-DONE.md#23):**
 - **Arrows and bolts are the same gap.** The nocked-ammo flow matches them by `arrow`/`bolt`
   loading mechanism and the book prints both rows; neither ships, so a bow can never be re-nocked.
-  [#23](#23) lists the 8 firearm types and does not mention these.
+  [#23](TODO-DONE.md#23) lists the 8 firearm types and does not mention these.
 - **Confirmed it did not merely ship MIS-TYPED.** Searched by name under every item type: 31
   hits, none of them ammunition — weapons named for the round they fire (`9mm Flechette SMG`,
   `Flechette Gun`), a French vehicle decoy (`Lure Ammo AM-56`), and spells.
@@ -1826,12 +1695,12 @@ the cyberdecks in `sr3e-mdf-cyberdecks`, a few cyberware entries.
 
 ⚠ **Nothing here can start until [#12](TODO-DONE.md#12-write-a-committed-pack-rebuild-script-and-vendor-its-sources)
 is resolved.** The populate macros were retired and the per-book routing exists nowhere in git, so
-**the repo cannot currently build a pack at all** — and [#23](#23) already names itself as the
+**the repo cannot currently build a pack at all** — and [#23](TODO-DONE.md#23) already names itself as the
 first task to actually need that decision. An earlier draft of this entry recommended
 "ammunition first, it is only nine rows"; nine rows you have no committed way to build is not a
 starting point. **#12 is the starting point.**
 
-After that: **ammunition** ([#23](#23) — finished mechanics sitting idle, and it unblocks
+After that: **ammunition** ([#23](TODO-DONE.md#23) — finished mechanics sitting idle, and it unblocks
 `trackAmmo` for every firearm and bow already shipped), then core grenades, then accessories (the
 next-most mechanical), then the bulk gear.
 
@@ -2030,6 +1899,19 @@ something from 2nd edition"*
 4. **The outcome:** a list of candidate additions per book, each with its page, for the maintainer to
    approve. Nothing is added to the packs without that approval.
 
+## 126. Ammunition has no weight, and nothing adds up a carried load
+
+Raised 2026-09-15 as the remainder of [#55](TODO-DONE.md#55).
+
+- `AmmunitionData` has no weight, and nothing in the system totals what a character carries.
+- SR3 gives weights on the gear tables. Encumbrance itself needs checking in the book; don't assume it.
+- So the question "how much can this character carry" has no answer. #55 named this as half the point
+  of tracking ammunition.
+- **Shape:**
+  - A weight on ammunition, per box or reload.
+  - A carried total on the Gear tab, excluding storage (TODO 113).
+  - Whatever the book's encumbrance rule is, shown and never enforced.
+
 ### 🔧 Tooling & infrastructure
 
 ## 7. Expand test coverage for combat, initiative and pools
@@ -2076,6 +1958,31 @@ Three harness facts worth knowing before writing another spec — each cost a wr
 is the most-played path in the system and the one with the most moving parts.
 
 ## 18. Structured gear data for weapon-accessory TN modifiers
+
+> **Built 2026-09-15 on `feature/action-economy`** (0.6; not merged).
+> - **Weapon side:** `smartgun` / `laserSight` on `FirearmData` (nullable; blank reads the text). The
+>   shipped packs store them — `tools/fill-weapon-accessories.mjs`, 343 firearms: 59 smartguns, 56 laser
+>   sights. One reader, `WeaponAccessories` (`scripts/data/weapon-accessories.mjs`), which reads the text
+>   per item. The old `/laser/` guess ticked the Ballista's *Laser Designator* and the Sonic Beam Rifle's
+>   battery note as laser sights (mutant `laser-read-over-whole-text`).
+> - **Gyro (p.113, p.282):** a worn *Gyro Mount* gear item (not stored). Its rating (standard 5, deluxe 6)
+>   comes off recoil first in the fire flow (`SR3EActor.gyroOnRecoil`). What is left offsets the Attacker
+>   movement rows the GM ticks (`gyroOffset`). It also gives +1 impact and ballistic armour and +4 to the
+>   wearer's melee TNs, and halves the Combat Pool (rounded down).
+> - **RULED by the maintainer, 2026-09-15:**
+>   - The books mix gyros up with recoil compensators. **Ordinary recoil compensation affects recoil
+>     only. A gyro affects both, its full rating on each.**
+>   - Cannon Companion p.34 words its Max-Gyro that way: *"provides 7 points of recoil compensation and
+>     reduces movement modifiers by 7."*
+>   - So recoil never uses up the movement offset, and difficult-terrain running alone is +6.
+>   - The GM window's *Gyro N — off movement* is pre-filled with the full rating and stays editable.
+>   - The shared-allowance reading it replaced is kept as a mutant (`gyro-shared-allowance`).
+> - TESTING.md §40.
+> - **Not modelled:**
+>   - The actor side still reads item names (smartlink cyberware, smart goggles). That is the pair
+>     condition, and the names are reliable.
+>   - M&M's *Cyberarm Gyromount* (cyberware; its own rules).
+>   - Vehicle gyro gear.
 
 Four SR3 p.112 modifiers depend on gear the system **cannot currently detect** — verified 2026-08-05:
 
@@ -2144,77 +2051,6 @@ model; a vision-gear flag reachable from the actor for goggles; keep `accessorie
 description. Then delete the guessing in `SR3ECombatModifiers` and read the fields.
 
 See [audit/socket-combat-plan.md](audit/socket-combat-plan.md) — "Maintainer decisions — 2026-08-05".
-
-## 56. Full auto still asks the player for what the system could work out
-
-Raised 2026-08-18, alongside the walking-fire fix. Both numbers that make a multi-target
-full-auto attack correct are typed in by hand, and each has a source of truth already sitting
-in the code that nothing consults.
-
-### 56.1 Smartguns waste no rounds — and the system cannot tell
-
-*SR3 p.116*, flatly: **"Smartguns never waste rounds."**
-
-Not a discount — the round is simply never fired. A smartgun slews to the next target without
-spending anything crossing the gap, so the saving lands on all three of the things
-`roundsExpended` feeds: the magazine, recoil, and the 10-round phase budget. It is the
-difference between Able's three targets at a metre costing **11 rounds** (illegal, over the
-cap) and **9** (fine).
-
-Today the player has to know to leave "metres to previous target" at 0. Nothing in the dialog
-even hints at it.
-
-⚠ **Blocked on [#18](#18), and not worth faking around.** Smartgun detection is the
-free-text `accessories` StringField guess in `guessGearModifiers` — good enough to
-pre-tick an overridable TN checkbox the GM is looking at, nowhere near good enough to
-silently zero a player's ammunition. A wrong guess here is invisible and costs rounds.
-
-**Interim, cheap, honest:** a one-line note under the metres field — *"Smartguns waste no
-rounds (p.116) — leave at 0."* Costs nothing and does not pretend to know.
-
-**Once #18 lands:** default the field to 0 and disable it when a smartgun is detected, with
-the reason shown. Still overridable — minimal guardrails.
-
-### 56.2 Nothing remembers who you already shot at this phase
-
-⚠ **[#38](TODO-DONE.md#38) raised this first, on 2026-08-10**, under "Why it is not simply add a checkbox".
-This section is the same gap seen from the other end: #38 owns the multi-target rules still
-unapplied (melee, and per-attack pool allocation), this owns deriving the two dialog inputs.
-
-Two controls in the fire dialog are manual for the same missing reason:
-
-| Control | Asks for | Could be derived from |
-|---|---|---|
-| "Which target this Combat Phase?" | the ordinal, driving +2 each (SR3 p.111) | the set of targets fired at this phase |
-| "Metres to previous target" | walking-fire waste | `_measureDistance` between this target's token and the previous one |
-
-`_measureDistance` already exists and already runs — it is what classifies the range band on
-every shot. What is missing is a per-phase record of **which actors have been engaged**, in
-order. `roundsFiredThisPhase` counts rounds and nothing else, so each `rollWeapon` call is
-blind to the ones before it.
-
-A `system.targetsThisPhase` array (actor ids, in order, cleared by `resetRecoil` alongside
-`roundsFiredThisPhase`) would let both fields prefill:
-- ordinal = index of this target in the list + 1, or `length + 1` for a new one
-- metres = measured distance from the previous entry's token
-
-⚠ **Prefill, do not enforce.** The ordinal counts **targets, not shots** — a second burst at
-someone already shot is still their ordinal, not a new one — and that is exactly the sort of
-judgement a GM overrides. Both fields stay editable.
-
-⚠ **The failure mode today is silent under-reporting**, not cheating: a player forgets they
-already shot at Brian and leaves the ordinal at 1, and the attack is simply 2 points easier
-than it should be. Nothing warns, because nothing knows.
-
-### Not in scope here
-
-The magazine arithmetic is correct and was correct before the walking-fire fix — each
-declaration spends only its own rounds plus its own waste. This item is about the two inputs
-to that arithmetic being hand-entered, not about the arithmetic.
-
----
-
-<a id="57"></a>
 
 ## 105. Tie vehicle passengers to the Rideable module — **requested during the TODO 93 run, 2026-09-13**
 

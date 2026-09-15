@@ -19,7 +19,10 @@
       "streetIndex": "3",
       "accessories": "Gas Vent (3), Grenade Launcher (6-shot), Rangefinder Grenade Link, Smartlink",
       "bookPage": "pw.26",
-      "notes": ""
+      "notes": "",
+      "hands": 2,
+      "smartgun": true,
+      "laserSight": false
     },
     "effects": []
   },

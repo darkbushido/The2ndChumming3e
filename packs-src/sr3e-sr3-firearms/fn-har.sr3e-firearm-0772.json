@@ -19,7 +19,10 @@
       "streetIndex": "2",
       "accessories": "Laser Sight, Gas Vent II(2RC), Fold Stock(1RC)",
       "bookPage": "sr3.278",
-      "notes": ""
+      "notes": "",
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": true
     },
     "effects": []
   },

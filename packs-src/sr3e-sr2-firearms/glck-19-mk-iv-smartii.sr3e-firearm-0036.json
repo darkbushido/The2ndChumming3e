@@ -19,7 +19,10 @@
       "streetIndex": "2",
       "accessories": "Smartlink-2, RC:(1)",
       "bookPage": "sr2.???",
-      "notes": ""
+      "notes": "",
+      "hands": 1,
+      "smartgun": true,
+      "laserSight": false
     },
     "effects": []
   },

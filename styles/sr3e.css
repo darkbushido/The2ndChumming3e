@@ -313,7 +313,8 @@ background-color: var(--sr-surface) !important;
 .sr-heal-roll-btn,
 .sr-heal-act-btn,
 .sr-drug-roll-btn,
-.sr-drug-act-btn {
+.sr-drug-act-btn,
+.sr-quickdraw-fire-btn {
   width: 100%;
   height: auto;
   white-space: normal;
@@ -326,7 +327,8 @@ background-color: var(--sr-surface) !important;
   transition: all 0.15s;
 }
 .sr-heal-roll-btn,
-.sr-drug-roll-btn {
+.sr-drug-roll-btn,
+.sr-quickdraw-fire-btn {
   background: linear-gradient(135deg, color-mix(in srgb, var(--sr-green) 15%, transparent) 0%, color-mix(in srgb, var(--sr-green) 5%, transparent) 100%);
   border: 1px solid var(--sr-green);
   color: var(--sr-green);
@@ -3716,3 +3718,32 @@ label.act-field input[type=number] {
 .sr-drug-ops { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
 .sr-drug-op { width: auto; flex: 0 0 auto; font-size: 11px; padding: 1px 6px; line-height: 1.4; }
 .sr-drug-standing { color: var(--sr-amber); font-size: 11px; margin: 2px 0 4px; }
+
+/* ── Action Tracker · SR3 pp.105-108 (TODO 48) — pips for everyone, buttons for the GM ─────── */
+.sr3e-action-tracker { flex-basis: 100%; margin: 4px 6px 2px; display: flex; flex-direction: column; gap: 3px; }
+.sr3e-pips { display: flex; align-items: center; justify-content: center; gap: 4px; cursor: help; }
+.sr3e-pip { display: inline-block; width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--sr-border-hi, #555); background: transparent; }
+.sr3e-pip.complex { width: 26px; border-radius: 5px; }
+.sr3e-pip.free { width: 7px; height: 7px; }
+.sr3e-pip.on { background: var(--sr-accent, #3a6ea5); border-color: var(--sr-accent, #3a6ea5); }
+.sr3e-pip.free.on { background: var(--sr-gold, #c8a040); border-color: var(--sr-gold, #c8a040); }
+.sr3e-pip-over { color: var(--sr-amber, #d9a020); font-size: 11px; }
+.sr3e-act-buttons { display: flex; gap: 3px; }
+/* ⚡ Quick Strike (TODO 78) — on the adept's tracker row. */
+.sr3e-quick-strike { flex: 0 0 auto; width: 22px; height: 22px; padding: 0; font-size: 12px; line-height: 1; cursor: pointer; border: 1px solid var(--sr-gold, #c8a040); border-radius: 3px; background: var(--sr-surface, #1a1a1a); color: var(--sr-gold, #c8a040); }
+.sr3e-quick-strike:disabled { opacity: .35; cursor: default; border-color: var(--sr-border, #444); }
+.sr3e-act-buttons button { flex: 1; box-sizing: border-box; padding: 2px 4px; font-size: 11px; line-height: 1.3; height: auto; cursor: pointer; border: 1px solid var(--sr-border, #444); border-radius: 3px; background: var(--sr-surface, #1a1a1a); color: var(--sr-text, #ddd); }
+.sr3e-act-buttons button.used { background: var(--sr-accent, #3a6ea5); color: #fff; }
+.sr3e-act-buttons button:disabled { opacity: 0.35; cursor: not-allowed; }
+.sr3e-act-buttons .sr3e-act-undo { flex: 0 0 26px; }
+.sr3e-undo-row { display: block; font-size: 12px; margin: 2px 0; }
+
+/* ── Ready Weapon · SR3 p.107 (TODO 47) — ✋ in hand or put away ─────────────────────────── */
+.item-controls .sr-ready-toggle { color: var(--sr-dim); cursor: pointer; }
+.item-controls .sr-ready-toggle.is-ready { color: var(--sr-green); }
+.item-controls .sr-ready-toggle:hover { color: var(--sr-accent); }
+
+/* ── Hands · SR3 p.112 (TODO 49) — what is in hand, on the Weapons tab ───────────────────── */
+.sr-hands-line { font-size: 11px; color: var(--sr-muted); margin: 2px 0 6px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.sr-hands-line.is-over { color: var(--sr-amber); }
+.sr-hands-extra { margin-left: auto; }

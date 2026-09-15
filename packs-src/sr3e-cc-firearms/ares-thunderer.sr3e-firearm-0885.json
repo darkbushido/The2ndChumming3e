@@ -19,7 +19,10 @@
       "streetIndex": "3",
       "accessories": "Troll Designed, Heavy Barrel(1RC), Shock Pads(1RC), Foregrip(1RC)",
       "bookPage": "cc.78",
-      "notes": ""
+      "notes": "",
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

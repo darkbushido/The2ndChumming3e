@@ -20,7 +20,10 @@
       "accessories": "Imaging Scope(1)",
       "bookPage": "cc.28",
       "notes": "",
-      "isAoE": true
+      "isAoE": true,
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

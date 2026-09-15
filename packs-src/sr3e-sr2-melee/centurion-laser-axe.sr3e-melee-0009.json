@@ -17,7 +17,8 @@
       "streetIndex": ".5",
       "legal": true,
       "bookPage": "ssc.7",
-      "notes": ""
+      "notes": "",
+      "hands": 1
     },
     "effects": [],
     "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"

@@ -19,7 +19,10 @@
       "streetIndex": "1.5",
       "accessories": "Sound Suppressor, Fold Stock(1RC) -(Briefcase SMG)",
       "bookPage": "cc.31",
-      "notes": ""
+      "notes": "",
+      "hands": 1,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

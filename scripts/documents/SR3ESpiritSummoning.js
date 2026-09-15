@@ -125,6 +125,7 @@ export class SR3ESpiritSummoning {
    * @param {string} [defaultSpiritType]  Pre-select this spirit type key.
    */
   static async openSummonDialog(conjurer, defaultSpiritType = 'earth_elemental') {
+    game.sr3e.SR3EActionLedger?.begin(conjurer);   // snapshot for the GM's undo (TODO 48)
     // "Force is greater than the summoner's Magic Attribute" — the EFFECTIVE rating (F5; it read `base`).
     const magicBase      = conjurer.system?.attributes?.magic?.value ?? conjurer.system?.attributes?.magic?.base ?? 0;
     // Drain's level (Force vs Charisma) and its resistance read the same, EFFECTIVE Charisma — the
@@ -243,6 +244,9 @@ export class SR3ESpiritSummoning {
 
     const drainIsPhysical = force > magicBase;
     const drainLevel      = SR3ESpiritSummoning._conjuringDrainLevel(force, charisma);
+
+    // Summon Nature Spirit — Complex, SR3 p.108 (TODO 48). Elementals take hours of ritual, not a phase.
+    if (spiritDef.category === 'nature') game.sr3e.SR3EActionLedger?.charge(conjurer, 'summonSpirit', spiritDef.label);
 
     await conjurer.rollPool(
       pool,

@@ -19,7 +19,10 @@
       "streetIndex": "2",
       "accessories": "Fold Stock, available 30 round banana clip",
       "bookPage": "tss.3",
-      "notes": ""
+      "notes": "",
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

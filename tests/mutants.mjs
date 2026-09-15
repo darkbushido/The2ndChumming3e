@@ -31,8 +31,33 @@ const HEAL  = { module: '../scripts/SR3EHealing.js',         klass: 'SR3EHealing
 const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating' };
 const AMMO   = { module: '../scripts/data/ammo-stock.mjs',   klass: 'AmmoStock' };
 const BOOKPAGE = { module: '../scripts/data/book-page.mjs',  klass: 'BookPage' };
+const ACCESSORIES = { module: '../scripts/data/weapon-accessories.mjs', klass: 'WeaponAccessories' };
 
 export const MUTANTS = [
+  {
+    id:     'gyro-shared-allowance',
+    suite:  'gyro',
+    ...ACTOR, method: 'gyroOnRecoil',
+    was:    'one gyro allowance shared by recoil and movement (p.113 "total") — recoil ate the movement offset; '
+          + 'the maintainer ruled the full rating applies to each (2026-09-15, CC p.34)',
+    impl:   (rating, recoil) => { const r = Math.max(0, Number(recoil) || 0), g = Math.max(0, Number(rating) || 0);
+      const used = Math.min(g, r); return { recoil: r - used, used, left: g - used }; },
+  },
+  {
+    id:     'smartgun-walking-waste',
+    suite:  'fire-modes',
+    ...ITEM, method: 'walkingWaste',
+    was:    'every metre walked wasted a round, smartgun or not — the player had to know p.116 and leave it at 0 (TODO 56.1)',
+    impl:   metres => Math.max(0, Math.trunc(Number(metres) || 0)),
+  },
+  {
+    id:     'laser-read-over-whole-text',
+    suite:  'gyro',
+    ...ACCESSORIES, method: 'fromText',
+    was:    '`/laser/` over the whole accessories text — the Ballista\'s Laser Designator and the Sonic Beam '
+          + 'Rifle\'s "MP Laser III" battery note were guessed as laser sights (TODO 18)',
+    impl:   text => ({ smartgun: /smart/i.test(String(text ?? '')), laserSight: /laser/i.test(String(text ?? '')) }),
+  },
   {
     id:     'ammo-fits-by-mechanism-only',
     suite:  'ammo-stock',

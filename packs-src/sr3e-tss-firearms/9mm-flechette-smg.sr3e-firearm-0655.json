@@ -19,7 +19,10 @@
       "streetIndex": "2",
       "accessories": "6 round burst; uses flachette rules",
       "bookPage": "tss.7",
-      "notes": ""
+      "notes": "",
+      "hands": 1,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },

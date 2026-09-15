@@ -19,7 +19,10 @@
       "streetIndex": "3",
       "accessories": "Tripod, Backpack Battery Case",
       "bookPage": "cc.30",
-      "notes": ""
+      "notes": "",
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false
     },
     "effects": []
   },
