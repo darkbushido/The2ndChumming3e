@@ -1305,6 +1305,12 @@ Two entry points besides the sheet (both fire ready weapons via `_sr3eReadyWeapo
 
 #### The GM's melee TN window — separate from the ranged one on purpose
 
+**Multiple targets** (p.122: *"+2 per additional target struck in that Combat Phase"*):
+- The window's count is **prefilled** from the attacker's `system.targetsThisPhase`, the same record
+  the fire dialog reads (TODO 56.2).
+- Each melee attack records its target there.
+- With no window (NPC against NPC), the flow adds the +2s to the attacker's TN itself.
+
 Ranged resolves **one** target number; melee resolves **two**, and most p.123 rows move both
 at once in opposite directions — "friends in the melee" is a single fact that helps one
 fighter and hurts the other by the same amount. `sumMeleeModifiers` therefore returns an

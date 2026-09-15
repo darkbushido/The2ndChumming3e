@@ -2271,6 +2271,12 @@ whichever wins.
 
 **Raised in play 2026-08-10.**
 
+> ✅ **Checked 2026-09-15:** both halves below ARE done. The paragraph that follows was written at the
+> start of 2026-08-19 and was not updated when the melee and pool work landed later that day, so it
+> reads as open when it is not. The one real leftover was deriving the melee *count*: the GM window's
+> "additional targets" was typed by hand. That is now prefilled from `system.targetsThisPhase` (#56.2),
+> and applied by the flow when no window opens (`feature/action-economy`).
+>
 > ⚠ **This item was re-discovered and half-fixed on 2026-08-19 without noticing it was already
 > here**, which is worth recording as a process failure rather than quietly tidying away: the
 > ranged fix went in as commit `4368847` and its rationale was re-derived from scratch. The

@@ -46,5 +46,9 @@ export async function run(t) {
   t.ok('…measured from the last target\'s token', /SR3EItem\._measureDistance\(_prevTok, targetToken\)/.test(item));
   t.ok('…charges the +2 on an SS-only gun that has no dialog', /additionalTNPenalty: SR3EItem\.multiTargetTN\(targetPrefill\.ordinal\)/.test(item));
   t.ok('…and records the target with the rounds fired', /'system\.targetsThisPhase': PhaseTargets\.add\(/.test(item));
+  t.ok('melee: the GM window\'s extra-targets count is prefilled from the same record (p.122)',
+    /multiPrefill: _mExtra/.test(item) && /numberRow\('gmm-multi',[^\n]*Number\(ctx\.multiPrefill\)/.test(item));
+  t.ok('…the +2s are applied by the flow when no GM window opens', /gm\.adjudicated === false && _mExtra > 0/.test(item) && /gm\.atkTN = Math\.max\(2, \(Number\(gm\.atkTN\) \|\| 0\) \+ 2 \* _mExtra\)/.test(item));
+  t.ok('…and the melee target is recorded too', /PhaseTargets\.add\(actor\.system\.targetsThisPhase, _mPhase, _mKey/.test(item));
   t.ok('resetRecoil clears it with the full empty record', (read('scripts/documents/SR3EActor.js').match(/'system\.targetsThisPhase': \{ phase: '', targets: \[\] \}/g) ?? []).length === 2);
 }

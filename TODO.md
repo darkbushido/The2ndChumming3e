@@ -34,7 +34,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | [56.1](TODO-DONE.md#56) | Smartguns waste no rounds (p.116) | ✅ `74372f9d` |
 | [56.2](TODO-DONE.md#56) | Remember who you shot at this phase | ✅ — prefills the ordinal and the walking metres |
 | [78](TODO-DONE.md#78) | Quick Strike acts first in a pass (MITS p.151) | ✅ — ⚡ on the tracker row; a queue move, no initiative write |
-| [38](TODO-DONE.md#38) | Multiple targets — the leftovers (melee, per-attack pool) | hardest; #38 is archived but names these as unapplied |
+| [38](TODO-DONE.md#38) | Multiple targets — the leftovers (melee, per-attack pool) | ✅ — both were already done (the archive's intro was stale); the melee count is now prefilled from #56.2's record |
 
 ## Contents
 

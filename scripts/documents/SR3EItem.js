@@ -408,7 +408,14 @@ export class SR3EItem extends Item {
     const { detectVision, visionReminder } = await import('../SR3ECombatModifiers.js');
     const atkVis = detectVision(actor);
     const defVis = detectVision(targetActor);
+    // Multiple targets, p.122: "+2 per additional target struck in that Combat Phase". Who this attacker
+    // already engaged is the same per-phase record the fire dialog reads (TODO 56.2); the GM window's
+    // count is PREFILLED from it, never enforced.
+    const _mPhase   = game.combat ? game.sr3e.SR3EActionLedger?.phase(game.combat) ?? 'none' : 'none';
+    const _mKey     = tgtTok?.id ?? targetActor.id;
+    const _mExtra   = PhaseTargets.ordinal(PhaseTargets.current(actor.system.targetsThisPhase, _mPhase), _mKey) - 1;
     const gm = await game.sr3e.SR3EQuery.asGM('sr3e.melee.negotiate', {
+      multiPrefill: _mExtra,
       atkName:    actor.name,
       defName:    targetActor.name,
       // So the GM side can tell whether a player's character is in the fight (TODO 94).
@@ -424,6 +431,11 @@ export class SR3EItem extends Item {
         .filter(Boolean).join(' · ') || null,
     }, { timeout: 300_000 });
     if (gm === null) return null;
+    if (gm.adjudicated === false && _mExtra > 0) {
+      // No window to prefill, so the flow applies the +2s itself (p.122) — the ranged SS shortcut's rule.
+      gm.atkTN = Math.max(2, (Number(gm.atkTN) || 0) + 2 * _mExtra);
+    }
+    await actor.update({ 'system.targetsThisPhase': PhaseTargets.add(actor.system.targetsThisPhase, _mPhase, _mKey, tgtTok?.id ?? null) });
 
     // Melee/Unarmed Attack — Complex, SR3 p.108 (TODO 48). The ATTACKER only: the defender's
     // half of the exchange is reactive and costs them nothing from their own phase.
@@ -2807,17 +2819,18 @@ export class SR3EItem extends Item {
         </select>
       </label>`;
 
-    const numberRow = (id, label, note, min, max) => `
+    const numberRow = (id, label, note, min, max, value = 0) => `
       <label style="display:flex;align-items:center;gap:6px;margin:3px 0;font-size:12px">
         <span style="min-width:200px">${label}</span>
-        <input type="number" id="${id}" value="0" min="${min}" max="${max}" style="width:56px"/>
+        <input type="number" id="${id}" value="${value}" min="${min}" max="${max}" style="width:56px"/>
         <span style="font-size:11px;color:var(--sr-muted)">${note}</span>
       </label>`;
 
     const rowHtml = (row) => {
       switch (row.kind) {
         case 'diff':       return numberRow('gmm-friends', row.label, row.note, -9, 9);
-        case 'perAtk':     return numberRow('gmm-multi',   row.label, row.note, 0, 9);
+        // Prefilled from who the attacker already struck this phase (TODO 56.2 / 38).
+        case 'perAtk':     return numberRow('gmm-multi',   row.label, row.note, 0, 9, Math.max(0, Number(ctx.multiPrefill) || 0));
         case 'side':       return sideSelect('gmm-superior', row.label);
         case 'sideOpposed': return sideSelect('gmm-prone', `${row.label} — who is DOWN`);
         case 'situational':

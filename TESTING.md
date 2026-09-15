@@ -2429,3 +2429,6 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
   - [ ] ⚡ is disabled for the rest of the round, and enabled again next round.
   - [ ] With a box of Stun, ⚡ asks for confirmation.
   - [ ] Player3 cannot see the ⚡ on Player2's adept.
+- [ ] **Melee multiple targets (TODO 38 / 56.2):** in combat, punch token A, then attack B in the same
+      phase. The GM melee window's "additional targets" starts at 1 and the attacker's TN includes +2.
+      Attacking A again starts at 0.
