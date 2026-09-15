@@ -2327,3 +2327,28 @@ whose own example works the wound in, p.113). `tests/wound-modifiers.test.mjs` +
 `SR3EItem._rangeBandForDistance` fell back to `[0, 1, 2, 3]` and `tn[3] ?? 3` — Extreme at TN 7,
 not 9 (SR3 p.111). Both now **5**; inert unless `SR3E.rangeTN` is undefined. Pinned in
 `tests/tables.test.mjs` with the config table removed.
+
+## 39. Drugs — addiction, tolerance, withdrawal (TODO 124, `feature/drug-rules`)
+
+**Prerequisites:** a **full Foundry restart** (new `substances` actor field and new drug item fields),
+then `npm run packs:install` with Foundry closed so the rebuilt M&M drug pack reaches the install.
+
+- [ ] Compendium → M&M drugs: **one** Jazz, Kamikaze, Psyche, Long Haul, ACTH, Anabolic Steroids; no
+      "CS" or "Neurostun"; Kamikaze reads **5P**; CS/Tear Gas reads Speed *1 Combat Turn*.
+- [ ] Drag **Cram** onto a character → Gear tab → **💊** → a dose card (Dose 1, +1 Reaction, +1D6
+      Initiative for 12 − Body hours) and a roll card *Willpower (4)* with the **unaugmented** dice.
+      The Attributes tab: Reaction up by 1 with a live chip naming Cram; Initiative dice +1.
+- [ ] A player rolls it; with 0 successes the result card offers **✔ Mark addicted** → the record reads
+      Addiction 5M• and *addicted*. The GM can change Dice/TN on the roll card; a player cannot.
+- [ ] **⏳ Wears off** → the crash card (Moderate Stun for the same duration), the tolerance roll card
+      *Body (2)*; the Reaction chip is gone; Stun modifiers show as Moderate while crashing; **✔ Crash
+      over** clears them.
+- [ ] Take Cram four more times → on the 5th dose the dose card says *Edge reached* and a Willpower (5)
+      card appears (only if not already addicted).
+- [ ] Addicted: **⛓ No fix** → *Forced withdrawal +3*; every roll card label reads *Drugs +3*; the
+      Stun modifier is Moderate with an empty Stun track. **⏭ A day passes** lowers the rating by 1.
+- [ ] **🎲 Kick it** → Willpower vs current + 1; success offers **✔ Begin withdrawal** (+2); a dose
+      taken during withdrawal says *Relapse* and raises the rating by 1.
+- [ ] **Jazz** → Quickness +2 (and Reaction with it); wears off → a **🩸 Resist 8L Stun** button → the
+      soak card shows *armour does not apply*.
+- [ ] A second player cannot press another character's ✔ buttons or 🎲 (greyed with a reason).

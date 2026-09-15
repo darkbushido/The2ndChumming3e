@@ -124,7 +124,7 @@ export async function run(t) {
   const sheet = readFileSync(new URL('../scripts/sheets/SR3EActorSheet.js', import.meta.url), 'utf8');
   t.ok('the total is the attribute\'s real value, not a sum the sheet makes up', /const total\s+= attr\[key\]\?\.value/.test(sheet));
   t.ok('…and hovers the full breakdown', /SA\.attributeBreakdown\(\{ label, base, sources: srcs, total \}\)/.test(sheet));
-  t.ok('boost and switched-on cyberware have their own chip', /SA\.attributeSourceSum\(srcs, \['boost', 'triggered'\]\)/.test(sheet) && /class="attr-live"/.test(sheet));
+  t.ok('boost, switched-on cyberware and running drugs have their own chip', /SA\.attributeSourceSum\(srcs, \['boost', 'triggered', 'drug'\]\)/.test(sheet) && /class="attr-live"/.test(sheet));
   t.ok('the cyber chip names the items', /_named\(srcs, \['cyber', 'bio'\]/.test(sheet));
   t.ok('the armour TN chip names the armour worn', /Layered armour — \$\{wornArmour\.join/.test(sheet));
   t.ok('Reaction hovers its breakdown', /label: 'Reaction', total: rea/.test(sheet));

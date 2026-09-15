@@ -311,7 +311,9 @@ background-color: var(--sr-surface) !important;
 .sr-heal-road td { padding: 1px 4px; }
 .sr-heal-road-total td { border-top: 1px solid var(--sr-border); font-weight: 700; }
 .sr-heal-roll-btn,
-.sr-heal-act-btn {
+.sr-heal-act-btn,
+.sr-drug-roll-btn,
+.sr-drug-act-btn {
   width: 100%;
   height: auto;
   white-space: normal;
@@ -323,20 +325,26 @@ background-color: var(--sr-surface) !important;
   cursor: pointer;
   transition: all 0.15s;
 }
-.sr-heal-roll-btn {
+.sr-heal-roll-btn,
+.sr-drug-roll-btn {
   background: linear-gradient(135deg, color-mix(in srgb, var(--sr-green) 15%, transparent) 0%, color-mix(in srgb, var(--sr-green) 5%, transparent) 100%);
   border: 1px solid var(--sr-green);
   color: var(--sr-green);
 }
-.sr-heal-act-btn {
+.sr-heal-act-btn,
+.sr-drug-act-btn {
   background: linear-gradient(135deg, color-mix(in srgb, var(--sr-gold) 15%, transparent) 0%, color-mix(in srgb, var(--sr-gold) 5%, transparent) 100%);
   border: 1px solid var(--sr-gold);
   color: var(--sr-gold);
 }
 .sr-heal-roll-btn:hover:not(:disabled) { background: color-mix(in srgb, var(--sr-green) 25%, transparent); }
 .sr-heal-act-btn:hover:not(:disabled)  { background: color-mix(in srgb, var(--sr-gold) 25%, transparent); }
+.sr-drug-roll-btn:hover:not(:disabled) { background: color-mix(in srgb, var(--sr-green) 25%, transparent); }
+.sr-drug-act-btn:hover:not(:disabled)  { background: color-mix(in srgb, var(--sr-gold) 25%, transparent); }
 .sr-heal-roll-btn:disabled,
-.sr-heal-act-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.sr-heal-act-btn:disabled,
+.sr-drug-roll-btn:disabled,
+.sr-drug-act-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* cyan/accent — matrix combat */
 .sr-matrix-ic-resist-btn,
@@ -3691,3 +3699,18 @@ label.act-field input[type=number] {
    section, which states the consequence in words and needs no hover to be read. */
 .item-controls .sr-equip-melee:hover      { color: var(--sr-accent); }
 .item-controls .sr-equip-melee.is-equipped { color: var(--sr-accent); }
+
+/* ── Substance use · M&M pp.105-110 (TODO 124) ─────────────────────────────────────────── */
+.sr-drug-take { background: none; border: none; padding: 0 4px 0 0; cursor: pointer; font-size: 13px; line-height: 1; width: auto; }
+.sr-drug-take:hover { filter: drop-shadow(0 0 3px var(--sr-accent)); }
+.sr-drug-rec { border: 1px solid var(--sr-border); border-radius: var(--r); padding: 4px 6px; margin: 4px 0; background: var(--sr-card); }
+.sr-drug-rec-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.sr-drug-meta { color: var(--sr-muted); font-size: 11px; }
+.sr-drug-badge { font-size: 10px; padding: 0 5px; border-radius: 8px; border: 1px solid var(--sr-border-hi); color: var(--sr-muted); }
+.sr-drug-badge.sr-drug-on     { color: var(--sr-green); border-color: var(--sr-green); }
+.sr-drug-badge.sr-drug-crash  { color: var(--sr-amber); border-color: var(--sr-amber); }
+.sr-drug-badge.sr-drug-hooked { color: var(--sr-red);   border-color: var(--sr-red); }
+.sr-drug-badge.sr-drug-wd     { color: var(--sr-amber); border-color: var(--sr-amber); }
+.sr-drug-ops { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.sr-drug-op { width: auto; flex: 0 0 auto; font-size: 11px; padding: 1px 6px; line-height: 1.4; }
+.sr-drug-standing { color: var(--sr-amber); font-size: 11px; margin: 2px 0 4px; }

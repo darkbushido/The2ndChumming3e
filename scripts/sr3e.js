@@ -28,6 +28,7 @@ import { SR3EVehicleChase } from './SR3EVehicleChase.js';
 import { SR3EMIJI } from './SR3EMIJI.js';
 import { SR3EClocks } from './SR3EClocks.js';
 import { SR3EHealing } from './SR3EHealing.js';
+import { SR3EDrugs } from './SR3EDrugs.js';
 import { SR3ESourceBooks } from './SR3ESourceBooks.js';
 import { SR3ECompendiumDirectory } from './SR3ECompendiumDirectory.js';
 import { SR3EQuery, SR3EQueue, SR3EGMUnavailable } from './SR3EQuery.js';
@@ -94,7 +95,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock, ItemRating };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock, ItemRating };
 
   // When THIS client loaded the system's code.
   //
@@ -3127,6 +3128,38 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'ramvehicle', i)) return;
       await SR3EActor.handleRamVehicleSoak(btn, event.shiftKey);
+    });
+  });
+
+  /* Drug cards (TODO 124) — the healing cards' gates, for the same reasons: the 🎲 belongs to the
+   * one user who makes that test (`_isDeciderId`); the consequence buttons change the character's
+   * record, Body or wounds, so any owner of the character (or the GM) may press them (`_mineId`). */
+  SR3EDrugs.wireCard(message, html);
+  html.querySelectorAll('.sr-drug-roll-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'drugroll', i)) return;
+    const pl = _payload(btn);
+    if (!pl) return;
+    if (!_isDeciderId(pl.rollerId)) return _denyBtn(btn, 'Only the person making this roll (or the GM) rolls it.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'drugroll', i)) return;
+      await SR3EDrugs.rollFromCard(btn, pl);
+    });
+  });
+  html.querySelectorAll('.sr-drug-act-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'drugact', i)) return;
+    const pl = _payload(btn);
+    if (!pl) return;
+    if (!_mineId(pl.ownerId)) return _denyBtn(btn, 'Only this character\'s owner (or the GM) can do this.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'drugact', i)) return;
+      if (await SR3EDrugs.act(btn, pl) === false) {
+        _usedButtons.delete(`${mid}|drugact|${i}`);
+        btn.disabled = false;
+      }
     });
   });
 

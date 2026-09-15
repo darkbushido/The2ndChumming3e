@@ -129,6 +129,9 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       // Triggered cyber/bioware, keyed by ITEM ID — see SR3E.triggeredAugmentations.
       // ⚠ An ObjectField because the keys are item ids, which a SchemaField cannot declare.
       augmentations:           new ObjectField(),
+      // Drug use, keyed by `DrugRules.drugKey(name)` — doses, Addiction, Tolerance, withdrawal,
+      // what is running (M&M pp.108-110, TODO 124). See scripts/data/drug-rules.mjs.
+      substances:              new ObjectField(),
       sustainedSpells:         sustainedSpellsField(),
       gender:                 new StringField({ initial: '' }),
       age:                     new StringField({ initial: '' }),
@@ -244,6 +247,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       metatype:         new StringField({ initial: 'human' }),
       attributeBoost:   attributeBoostField(),
       augmentations:    new ObjectField(),
+      substances:       new ObjectField(),   // drug use — see CharacterData (TODO 124)
       sustainedSpells:  sustainedSpellsField(),
       nuyen:           new NumberField({ integer: true, initial: 0, min: 0 }),
       // ⚠ NpcData has no karma/totalKarma/karmaPool at all — see TODO 83. An NPC that needs

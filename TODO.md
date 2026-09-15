@@ -8059,7 +8059,28 @@ for the spellcasting helper for the maintainer to review before anything is buil
 
 <a id="124"></a>
 
-## 124. Drug rules — addiction, tolerance and effects — **requested 2026-09-14**
+## 124. Drug rules — addiction, tolerance and effects — **built 2026-09-15 on `feature/drug-rules`**
+
+> **Built** (0.6 feature, not yet merged). See CLAUDE.md → *Drugs*. Addiction, tolerance, Edge,
+> fixes, the monthly test, kicking, withdrawal/forced/recovery and relapse (M&M pp.108-110); effects
+> and crashes for the drugs whose text gives numbers (pp.117-123); a standing TN that rides with
+> sustaining everywhere; the M&M drug pack rebuilt as one item per drug. Live check: TESTING.md §39.
+>
+> **For the maintainer — the book disagrees with itself or is silent:**
+> 1. **Voluntary withdrawal's example vs its rule (p.110).** The rule drops the rating 1 per two
+>    days *to the base*; the example gives Twitch (13, base 4) *"26 days (2 x 13)"*. The rule is
+>    implemented (18 days); the forced example (14 − 4 = 10) agrees with it.
+> 2. **Kicking with two addictions (p.109).** "+4 if both" names one Addiction Rating; Jazz has two
+>    (4M/5P). The higher is used; the card's TN is editable.
+> 3. **Withdrawal's "+2 to all his target numbers" (p.110)** is given sustaining's scope — every test
+>    but Damage Resistance. The book does not say whether the soak takes it.
+> 4. **Drug pain resistance with the adept power** takes the larger, not the sum (unstated).
+> 5. **Cram's crash, "Moderate Stun damage for an equivalent duration" (p.122)**, is modelled as a
+>    Moderate wound's modifier that ends with the crash, not boxes ticked on the track.
+> 6. **Addiction tests take no wound or sustaining modifier** — the TN is the rating p.108 names.
+> 7. **Pack corrections made from the book** (reported by `tools/fix-mm-drugs.mjs`): Kamikaze 4P → 5P
+>    (the M&M item carried SR2's rating), CS Speed/Vector un-swapped, nine availabilities that were
+>    another column's value, Novocoke → Novacoke.
 
 **Request (maintainer):** *"add … another for drug implementation."*
 

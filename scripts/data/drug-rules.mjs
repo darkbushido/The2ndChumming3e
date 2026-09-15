@@ -139,7 +139,7 @@ export const DrugRules = {
     const tol  = num(String(sys?.tolerance ?? '').trim());
     return {
       name, doses: 0, base, current: { ...base },
-      toleranceBase: tol, tolerance: tol, edge: DrugRules.drugEdge(sys),
+      toleranceBase: tol, tolerance: tol, edge: DrugRules.drugEdge(sys), fixFactor: String(sys?.fixFactor ?? ''),
       addicted: { M: false, P: false }, formerly: { M: false, P: false },
       tolerant: false, toleranceDue: null,
       withdrawal: '', days: 0, recoveryDays: 0, active: null, crash: null,
