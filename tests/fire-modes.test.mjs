@@ -35,6 +35,16 @@ const recoil = o => SR3EItem.recoilTN(o);
 const dmg    = o => { const r = SR3EItem.fireModeDamage(o); return `${r.power}${r.level}`; };
 
 export async function run(t) {
+  /* ── Smartguns never waste rounds (p.116, TODO 56.1) ─────────────────────── */
+  t.is('walking fire wastes a round a metre', SR3EItem.walkingWaste(2, false), 2);
+  t.is('…and a smartgun wastes none', SR3EItem.walkingWaste(2, true), 0);
+  t.is('Able\'s three targets a metre apart: 11 rounds, a smartgun 9', SR3EItem.roundsExpended({ rounds: 9, roundsWasted: SR3EItem.walkingWaste(2, true) }), 9);
+  {
+    const src = (await import('node:fs')).readFileSync(new URL('../scripts/documents/SR3EItem.js', import.meta.url), 'utf8');
+    t.ok('the fire dialog ticks Smartgun from the gun\'s own field', /id="fa-smartgun" \$\{WeaponAccessories\.flag\(weapon, 'smartgun'\)/.test(src));
+    t.ok('…and both the preview and the shot read it', (src.match(/SR3EItem\.walkingWaste\(el\.querySelector\('#fa-metres'\)\?\.value, !!el\.querySelector\('#fa-smartgun'\)\?\.checked\)/g) ?? []).length === 2);
+  }
+
   // ── The first shot of a phase is free ──────────────────────────────────────
   t.is('SS with nothing fired yet is recoil-free',
     recoil({ mode: 'SS', roundsBefore: 0, totalComp: 0 }), 0);

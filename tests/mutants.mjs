@@ -35,6 +35,13 @@ const ACCESSORIES = { module: '../scripts/data/weapon-accessories.mjs', klass: '
 
 export const MUTANTS = [
   {
+    id:     'smartgun-walking-waste',
+    suite:  'fire-modes',
+    ...ITEM, method: 'walkingWaste',
+    was:    'every metre walked wasted a round, smartgun or not — the player had to know p.116 and leave it at 0 (TODO 56.1)',
+    impl:   metres => Math.max(0, Math.trunc(Number(metres) || 0)),
+  },
+  {
     id:     'laser-read-over-whole-text',
     suite:  'gyro',
     ...ACCESSORIES, method: 'fromText',

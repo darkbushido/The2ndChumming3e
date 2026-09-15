@@ -2110,6 +2110,12 @@ in the code that nothing consults.
 
 ### 56.1 Smartguns waste no rounds — and the system cannot tell
 
+> **Built 2026-09-15 on `feature/action-economy`.**
+> - The full-auto section has a *Smartgun* tick, pre-ticked from the gun's `smartgun` field (#18).
+> - `SR3EItem.walkingWaste(metres, smartgun)` makes it 0 wasted rounds. The recoil preview and the shot
+>   both read it; the player can untick it.
+> - Mutant `smartgun-walking-waste`.
+
 *SR3 p.116*, flatly: **"Smartguns never waste rounds."**
 
 Not a discount — the round is simply never fired. A smartgun slews to the next target without

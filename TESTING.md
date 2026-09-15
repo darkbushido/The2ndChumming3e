@@ -2412,3 +2412,6 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
   - [ ] With a smartlink and a smartgun shotgun firing shot, the GM window pre-ticks "Smartlink, shotgun
         firing shot −1", not −2.
   - [ ] Choke 2 at 20 m against a 6-Power gun stops with "ineffective".
+- [ ] **Smartgun walking fire (TODO 56.1):** Fire FA from a compendium smartgun (e.g. an Ares Alpha).
+      The Smartgun box is ticked, and metres 2 wastes nothing: the recoil preview does not change.
+      Untick it and the preview rises by 2.

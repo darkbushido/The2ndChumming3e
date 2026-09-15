@@ -1200,7 +1200,8 @@ round, so it counts against the **10-round phase budget**, against **recoil**, a
 ⚠ **Damage is the exception**: Power rises "for every round in that full-auto burst", and a
 round spent walking is not in the burst that arrives, so `fireModeDamage` keeps using `rounds`
 alone. ⚠ **Each burst is ≥3 rounds** (p.116), so three targets a metre apart costs
-3+1+3+1+3 = **11** and is *not legal* without a smartgun. Previously the magazine was
+3+1+3+1+3 = **11** and is *not legal* without a smartgun. The fire dialog's *Smartgun* tick (pre-ticked
+from the gun's `smartgun` field) zeroes the waste — `SR3EItem.walkingWaste` (TODO 56.1). Previously the magazine was
 decremented by rounds+waste while the cap and recoil saw `rounds` alone, so waste was invisible
 to the leg that spent it and Able's 11-round walk never warned.
 

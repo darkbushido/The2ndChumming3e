@@ -1,6 +1,7 @@
 import { vcrLevel as vcrLevelOf } from '../data/item-rating.mjs';
 import { AmmoStock } from '../data/ammo-stock.mjs';
 import { Shotgun, CHOKE_MIN, CHOKE_MAX } from '../data/shotgun.mjs';
+import { WeaponAccessories } from '../data/weapon-accessories.mjs';
 
 export class SR3EItem extends Item {
 
@@ -3659,6 +3660,16 @@ static roundsExpended({ rounds = 0, roundsWasted = 0 } = {}) {
 }
 
 /**
+ * Rounds wasted walking full-auto fire `metres` to the next target — **pure**. · *SR3 p.116*
+ * One per metre — *"Smartguns never waste rounds."* (TODO 56.1). The player used to have to know to
+ * leave the metres at 0; the fire dialog now ticks "Smartgun" from the gun's own `smartgun` field
+ * (TODO 18), and the tick stays the player's to change.
+ */
+static walkingWaste(metres, smartgun = false) {
+  return smartgun ? 0 : Math.max(0, Math.trunc(Number(metres) || 0));
+}
+
+/**
  * TN penalty for engaging a fresh target this Combat Phase — **pure**.  · *SR3 p.111*
  *
  * The rule sentence is unrestricted, and the mode appears only in its example:
@@ -3845,9 +3856,13 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
         <input type="number" id="fa-rounds" value="3" min="3" max="10" style="width:55px;margin-left:6px"/>
         <span style="font-size:11px;color:var(--sr-muted)">(3–10, Complex Action)</span>
       </label>
-      <div style="font-size:11px;color:var(--sr-muted);margin-bottom:6px">Walking fire: 1 wasted round per metre between targets (smartguns: 0). Full-auto only — the +2 per target above applies to every mode.</div>
+      <div style="font-size:11px;color:var(--sr-muted);margin-bottom:6px">Walking fire: 1 wasted round per metre between targets. Full-auto only — the +2 per target above applies to every mode.</div>
       <label style="display:block">Metres to previous target (wasted rounds):
         <input type="number" id="fa-metres" value="0" min="0" max="30" style="width:55px;margin-left:6px"/>
+      </label>
+      <label style="display:block;margin-top:4px;font-size:12px">
+        <input type="checkbox" id="fa-smartgun" ${WeaponAccessories.flag(weapon, 'smartgun') ? 'checked' : ''}/>
+        Smartgun — wastes no rounds walking the fire <span style="font-size:11px;color:var(--sr-muted)">(p.116; ticked from the gun)</span>
       </label>
     </div>` : '';
 
@@ -3920,7 +3935,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       el.querySelectorAll('.sr-recoil-preview').forEach(span => {
         const m = span.dataset.mode;
         // Walking-fire waste is fired, so it is priced here as well — see roundsExpended.
-        const faMetres = Math.max(0, parseInt(el.querySelector('#fa-metres')?.value) || 0);
+        const faMetres = SR3EItem.walkingWaste(el.querySelector('#fa-metres')?.value, !!el.querySelector('#fa-smartgun')?.checked);
         const r = recoilForMode(m, rounds, total, m === 'FA' ? faRounds + faMetres : faRounds);
         span.textContent = `+${r}`;
       });
@@ -3929,6 +3944,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     el.querySelector('#sr-weapon-comp')?.addEventListener('input', refreshPreviews);
     el.querySelector('#fa-rounds')?.addEventListener('input', refreshPreviews);
     el.querySelector('#fa-metres')?.addEventListener('input', refreshPreviews);
+    el.querySelector('#fa-smartgun')?.addEventListener('change', refreshPreviews);
 
     el.querySelector('#sr-reset-recoil')?.addEventListener('click', async () => {
       await actor.update({ 'system.roundsFiredThisPhase': 0 });
@@ -3969,8 +3985,8 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
           if (mode === 'FA') {
             rounds = Math.min(10, Math.max(3, parseInt(el.querySelector('#fa-rounds')?.value) || 3));
             // Walking the fire IS full-auto-only (p.116).
-            const metres = Math.max(0, parseInt(el.querySelector('#fa-metres')?.value) || 0);
-            if (metres > 0) roundsWasted = metres;
+            // Smartguns never waste rounds (p.116, TODO 56.1).
+            roundsWasted = SR3EItem.walkingWaste(el.querySelector('#fa-metres')?.value, !!el.querySelector('#fa-smartgun')?.checked);
           }
 
           // Read (possibly edited) compensation values and persist them so they stick for next time.
