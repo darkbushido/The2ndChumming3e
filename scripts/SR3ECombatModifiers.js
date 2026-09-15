@@ -22,6 +22,8 @@
  * the modifiers given on the Visibility Table" — so this checkbox is PHYSICAL
  * obstruction only.
  */
+import { Hands } from './data/hands.mjs';
+import { ReadyWeapon } from './data/ready-weapon.mjs';
 
 /**
  * The full p.112 table. Reference + future automation; only `mvp:true` rows render.
@@ -54,7 +56,10 @@ export const SR3E_RANGED_MODIFIERS = [
   { key: 'smartlink',      label: 'Smartlink (with smartgun)',     mod: -2,   mvp: true,  group: 'gear', gear: true },
   { key: 'smartGoggles',   label: 'Smart goggles (with smartgun)', mod: -1,   mvp: true,  group: 'gear', gear: true },
   { key: 'laserSight',     label: 'Laser sight',                   mod: -1,   mvp: true,  group: 'gear', gear: true },
-  { key: 'secondFirearm',  label: 'Using a second firearm',        mod: +2,               group: 'attacker' },
+  // TODO 49 — rendered now (it had no `mvp` flag, so the GM window never showed it) and GUESSED: the
+  // attacker holds a second ready pistol/SMG-class gun (p.112). The GM unticks it when only one is fired.
+  { key: 'secondFirearm',  label: 'Using a second firearm',        mod: +2,   mvp: true,  group: 'gear', gear: true,
+    note: 'p.112 — +2 each gun; cancels smartlink, smart goggles and laser' },
   // NOT an mvp checkbox: the attacker declares Take Aim on their own roll screen
   // (they are the one spending the Simple Actions). Rendering it here too would
   // double-count every aimed shot.
@@ -365,11 +370,17 @@ export function guessGearModifiers(actor, weapon) {
   // Goggles/glasses are gear rather than cyber; same pair requirement.
   const hasGoggles   = hasItem(/smart\s*(goggle|glasses|display)/);
 
+  // A gun in each hand (p.112, TODO 49): this one is pistol/SMG class and another of that class is
+  // ready in the other hand. It "negates any target number reductions from smartlinks, smart goggles
+  // or laser sights" — so those guesses are withdrawn, and the GM restores them if only one is fired.
+  const dual = !!(actor && weapon && Hands.secondGun(actor.items ?? [], weapon, i => ReadyWeapon.isReady(i)));
+
   return {
-    smartlink:    gunIsSmart && hasSmartlink,
+    smartlink:    !dual && gunIsSmart && hasSmartlink,
     // Never both — smartlink (−2) supersedes goggles (−1) on the same shot.
-    smartGoggles: gunIsSmart && hasGoggles && !(gunIsSmart && hasSmartlink),
-    laserSight:   /laser/.test(acc),
+    smartGoggles: !dual && gunIsSmart && hasGoggles && !(gunIsSmart && hasSmartlink),
+    laserSight:   !dual && /laser/.test(acc),
+    secondFirearm: dual,
   };
 }
 

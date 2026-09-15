@@ -20,7 +20,8 @@
       "accessories": "One use ONLY",
       "bookPage": "cc.28",
       "notes": "",
-      "isAoE": true
+      "isAoE": true,
+      "hands": 2
     },
     "effects": []
   },

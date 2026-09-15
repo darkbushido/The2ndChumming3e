@@ -19,7 +19,8 @@
       "streetIndex": "2",
       "accessories": "Gas Vent I(1RC), Mag:(2), Grenade Launcher 6(m)",
       "bookPage": "cc.22",
-      "notes": ""
+      "notes": "",
+      "hands": 2
     },
     "effects": []
   },

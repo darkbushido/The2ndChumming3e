@@ -3739,3 +3739,8 @@ label.act-field input[type=number] {
 .item-controls .sr-ready-toggle { color: var(--sr-dim); cursor: pointer; }
 .item-controls .sr-ready-toggle.is-ready { color: var(--sr-green); }
 .item-controls .sr-ready-toggle:hover { color: var(--sr-accent); }
+
+/* ── Hands · SR3 p.112 (TODO 49) — what is in hand, on the Weapons tab ───────────────────── */
+.sr-hands-line { font-size: 11px; color: var(--sr-muted); margin: 2px 0 6px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.sr-hands-line.is-over { color: var(--sr-amber); }
+.sr-hands-extra { margin-left: auto; }

@@ -851,7 +851,12 @@ initiative is rolled only through the "Begin Encounter" dialog. Re-enabled once 
   (Concealability 4+ firearms, Reaction (4) +2 unholstered via `rollThen` → `_quickDrawRolled` → a 🎯
   Fire card that calls `rollWeapon({ quickDrawn: true })`, uncharged) / Attack anyway. ⚠ Warns, never
   refuses — Quick Draw is the book's answer to "not drawn yet". Fists and cyber-melee are always ready.
-- Not yet: Take Aim across phases (#48's note), dual wield's one Simple for two guns (#49).
+- **Hands** (TODO 49, SR3 p.112): `system.hands` on weapons (0-2, blank = `Hands.defaultHands(type, category)`;
+  the shipped packs store it — `tools/fill-weapon-hands.mjs`), `system.extraHands` on actors (GM). In hand =
+  ready. ⚠ **p.112 is a class whitelist, not free hands** — only pistol/SMG classes one in each hand
+  (`DUAL_WIELD_CATEGORIES`). `guessGearModifiers` guesses `secondFirearm` (+2) when a second ready gun of
+  that class is held and withdraws smartlink / goggles / laser (*"negates"*); the row renders now.
+- Not yet: Take Aim across phases (#48's note); one Simple for two guns, recoil crossover (#49).
 
 ### GM tools — Rollable Tables sidebar
 Chase Scene, Driving Test, Session Rewards, Chunky Salsa, Barrier Damage, Falling Damage and

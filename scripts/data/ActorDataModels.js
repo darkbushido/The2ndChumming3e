@@ -132,6 +132,8 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       // Drug use, keyed by `DrugRules.drugKey(name)` — doses, Addiction, Tolerance, withdrawal,
       // what is running (M&M pp.108-110, TODO 124). See scripts/data/drug-rules.mjs.
       substances:              new ObjectField(),
+      // Hands beyond the two everyone has — extra cyber-limbs (TODO 49; SR3 core has no rule, the GM sets it).
+      extraHands:              new NumberField({ integer: true, initial: 0, min: 0 }),
       sustainedSpells:         sustainedSpellsField(),
       gender:                 new StringField({ initial: '' }),
       age:                     new StringField({ initial: '' }),
@@ -248,6 +250,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       attributeBoost:   attributeBoostField(),
       augmentations:    new ObjectField(),
       substances:       new ObjectField(),   // drug use — see CharacterData (TODO 124)
+      extraHands:       new NumberField({ integer: true, initial: 0, min: 0 }),   // TODO 49
       sustainedSpells:  sustainedSpellsField(),
       nuyen:           new NumberField({ integer: true, initial: 0, min: 0 }),
       // ⚠ NpcData has no karma/totalKarma/karmaPool at all — see TODO 83. An NPC that needs

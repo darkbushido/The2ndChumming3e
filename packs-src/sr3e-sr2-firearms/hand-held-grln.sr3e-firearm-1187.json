@@ -20,7 +20,8 @@
       "accessories": "None",
       "bookPage": "sr2.???",
       "notes": "",
-      "isAoE": true
+      "isAoE": true,
+      "hands": 2
     },
     "effects": []
   },

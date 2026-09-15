@@ -18,7 +18,8 @@
       "legal": false,
       "bookPage": "sr2.283,fof.48",
       "notes": "",
-      "isAoE": true
+      "isAoE": true,
+      "hands": 1
     },
     "effects": [],
     "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"

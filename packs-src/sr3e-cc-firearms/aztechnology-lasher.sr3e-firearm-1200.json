@@ -20,7 +20,8 @@
       "accessories": "Low-light Mag:(2)",
       "bookPage": "cc.27",
       "notes": "",
-      "isAoE": true
+      "isAoE": true,
+      "hands": 2
     },
     "effects": []
   },

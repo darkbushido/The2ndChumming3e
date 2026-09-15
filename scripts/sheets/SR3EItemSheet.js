@@ -305,6 +305,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       </select>
     </div>
           ${this._f('Concealability', 'concealability', s.concealability)}
+          ${this._f('Hands', 'hands', s.hands ?? '', 'number', `min="0" max="2" step="1" placeholder="${game.sr3e.Hands?.defaultHands(type, s.category) ?? ''}" title="Hands it takes — blank = the category's default (TODO 49)"`)}
           ${this._f('Reach', 'reach', s.reach, 'number', 'min="0"')}
           ${this._f('Damage', 'damage', s.damage, 'text', 'placeholder="(STR+2)M"')}
           ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
@@ -331,6 +332,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       </select>
     </div>
     ${this._f('Concealability', 'concealability', s.concealability)}
+          ${this._f('Hands', 'hands', s.hands ?? '', 'number', `min="0" max="2" step="1" placeholder="${game.sr3e.Hands?.defaultHands(type, s.category) ?? ''}" title="Hands it takes — blank = the category's default (TODO 49)"`)}
     ${this._f('Str. Min.', 'strMin', s.strMin, 'text', 'placeholder="3 or -"')}
     ${this._f('Damage', 'damage', s.damage, 'text', 'placeholder="(STR)L or 6M"')}
     ${this._f('Quantity', 'quantity', s.quantity ?? 0, 'number', 'min="0" title="How many you carry. Thrown weapons (not bows) are consumed on use when ammo tracking is enabled."')}
@@ -360,6 +362,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       </select>
     </div>
     ${this._f('Concealability', 'concealability', s.concealability)}
+          ${this._f('Hands', 'hands', s.hands ?? '', 'number', `min="0" max="2" step="1" placeholder="${game.sr3e.Hands?.defaultHands(type, s.category) ?? ''}" title="Hands it takes — blank = the category's default (TODO 49)"`)}
     ${this._f('Str. Min.', 'strMin', s.strMin, 'text', 'placeholder="3 or -"')}
     ${this._f('Damage', 'damage', s.damage, 'text', 'placeholder="(STR)L or 6M"')}
     ${this._f('Quantity', 'quantity', s.quantity ?? 0, 'number', 'min="0" title="How many you carry. Consumed on use when ammo tracking is enabled."')}
@@ -402,6 +405,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       </select>
     </div>
           ${this._f('Concealability', 'concealability', s.concealability)}
+          ${this._f('Hands', 'hands', s.hands ?? '', 'number', `min="0" max="2" step="1" placeholder="${game.sr3e.Hands?.defaultHands(type, s.category) ?? ''}" title="Hands it takes — blank = the category's default (TODO 49)"`)}
           ${this._f('Ammunition', 'ammunition', s.ammunition, 'text', 'placeholder="15(c)"')}
           ${this._f('Mode', 'mode', s.mode, 'text', 'placeholder="SA/BF/FA"')}
           ${this._f('Damage', 'damage', s.damage, 'text', 'placeholder="9M"')}

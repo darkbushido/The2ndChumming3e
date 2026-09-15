@@ -20,7 +20,8 @@
       "accessories": "half ranges, resembles ordinary briefcase",
       "bookPage": "sta2.35",
       "notes": "",
-      "isAoE": true
+      "isAoE": true,
+      "hands": 2
     },
     "effects": []
   },

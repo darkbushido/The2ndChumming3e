@@ -31,6 +31,7 @@ import { SR3EHealing } from './SR3EHealing.js';
 import { SR3EDrugs } from './SR3EDrugs.js';
 import { SR3EActionLedger } from './SR3EActionLedger.js';
 import { ReadyWeapon } from './data/ready-weapon.mjs';
+import { Hands } from './data/hands.mjs';
 import { SR3ESourceBooks } from './SR3ESourceBooks.js';
 import { SR3ECompendiumDirectory } from './SR3ECompendiumDirectory.js';
 import { SR3EQuery, SR3EQueue, SR3EGMUnavailable } from './SR3EQuery.js';
@@ -98,7 +99,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, ReadyWeapon, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock, ItemRating };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock, ItemRating };
 
   // When THIS client loaded the system's code.
   //

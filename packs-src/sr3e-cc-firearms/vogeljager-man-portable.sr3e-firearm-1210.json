@@ -20,7 +20,8 @@
       "accessories": "Sensor Unit(2), Notes - Anti Air Missile Launcher:See Rules",
       "bookPage": "cc.27",
       "notes": "",
-      "isAoE": true
+      "isAoE": true,
+      "hands": 2
     },
     "effects": []
   },

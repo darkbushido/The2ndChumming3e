@@ -19,7 +19,8 @@
       "streetIndex": "3",
       "accessories": "Must be mounted, uses Heavy Weapon recoil",
       "bookPage": "tss.6",
-      "notes": ""
+      "notes": "",
+      "hands": 2
     },
     "effects": []
   },

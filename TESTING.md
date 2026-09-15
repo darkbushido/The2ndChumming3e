@@ -2376,3 +2376,9 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
       Reaction vs 4 (6 with the holster box unticked); a success posts 🎯 Fire, which attacks without a
       second charge; a failure says it cannot fire this phase. A rifle (Concealability < 4) offers no
       Quick Draw. A put-away sword gets the same dialog without it; fists never ask.
+- [ ] **Hands (TODO 49):** the Weapons tab says "✋ In hand: N of 2 hands — …"; ready a rifle and a
+      pistol → amber and a warning; the GM's extra-hands box set to 1 → it clears. A weapon's item
+      sheet shows its Hands (a compendium rifle 2, a pistol 1).
+- [ ] Two ready pistols, fire one → the GM window's Gear group pre-ticks "Using a second firearm +2" and
+      does NOT tick smartlink/laser; holster the second → neither. Two assault rifles → never ticked.
+- [ ] After merging, `npm run packs:install` (Foundry closed) so the install's weapons carry `hands`.

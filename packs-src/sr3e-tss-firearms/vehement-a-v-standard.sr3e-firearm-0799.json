@@ -19,7 +19,8 @@
       "streetIndex": "3",
       "accessories": "Uses Gunnery skill and Heavy Weapons recoil",
       "bookPage": "tss.6",
-      "notes": ""
+      "notes": "",
+      "hands": 2
     },
     "effects": []
   },

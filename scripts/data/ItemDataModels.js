@@ -24,6 +24,9 @@ export class MeleeData extends foundry.abstract.TypeDataModel {
       // In hand, drawn, nocked (SR3 p.107, TODO 47). Initial TRUE: everything already on a sheet reads
       // as ready — a world of characters who suddenly cannot fight would be worse than the bug.
       ready:          new BooleanField({ initial: true }),
+      // Hands it takes — 0, 1 or 2 (TODO 49). Blank = the category's default (scripts/data/hands.mjs);
+      // the shipped packs store it, and a GM sets it for the edges (a one-handed crossbow).
+      hands:          new NumberField({ integer: true, nullable: true, initial: null, min: 0, max: 2 }),
       reach:          new NumberField({ integer: true, initial: 0, min: 0 }),
       damage:         new StringField({ initial: '' }),
       weight:         new NumberField({ initial: 0, min: 0 }),
@@ -54,6 +57,9 @@ export class ProjectileData extends foundry.abstract.TypeDataModel {
       // In hand, drawn, nocked (SR3 p.107, TODO 47). Initial TRUE: everything already on a sheet reads
       // as ready — a world of characters who suddenly cannot fight would be worse than the bug.
       ready:          new BooleanField({ initial: true }),
+      // Hands it takes — 0, 1 or 2 (TODO 49). Blank = the category's default (scripts/data/hands.mjs);
+      // the shipped packs store it, and a GM sets it for the edges (a one-handed crossbow).
+      hands:          new NumberField({ integer: true, nullable: true, initial: null, min: 0, max: 2 }),
       strMin:         new NumberField({ integer: true, initial: 0, min: 0 }),
       damage:         new StringField({ initial: '' }),
       quantity:       new NumberField({ integer: true, initial: 0, min: 0 }),
@@ -87,6 +93,9 @@ export class ThrownData extends foundry.abstract.TypeDataModel {
       // In hand, drawn, nocked (SR3 p.107, TODO 47). Initial TRUE: everything already on a sheet reads
       // as ready — a world of characters who suddenly cannot fight would be worse than the bug.
       ready:          new BooleanField({ initial: true }),
+      // Hands it takes — 0, 1 or 2 (TODO 49). Blank = the category's default (scripts/data/hands.mjs);
+      // the shipped packs store it, and a GM sets it for the edges (a one-handed crossbow).
+      hands:          new NumberField({ integer: true, nullable: true, initial: null, min: 0, max: 2 }),
       strMin:         new NumberField({ integer: true, initial: 0, min: 0 }),
       damage:         new StringField({ initial: '' }),
       quantity:       new NumberField({ integer: true, initial: 0, min: 0 }),
@@ -117,6 +126,9 @@ export class FirearmData extends foundry.abstract.TypeDataModel {
       // In hand, drawn, nocked (SR3 p.107, TODO 47). Initial TRUE: everything already on a sheet reads
       // as ready — a world of characters who suddenly cannot fight would be worse than the bug.
       ready:          new BooleanField({ initial: true }),
+      // Hands it takes — 0, 1 or 2 (TODO 49). Blank = the category's default (scripts/data/hands.mjs);
+      // the shipped packs store it, and a GM sets it for the edges (a one-handed crossbow).
+      hands:          new NumberField({ integer: true, nullable: true, initial: null, min: 0, max: 2 }),
       ammunition:      new StringField({ initial: '' }),
       equippedAmmoId:  new StringField({ initial: '' }),
       mode:            new StringField({ initial: '' }),

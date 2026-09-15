@@ -20,7 +20,8 @@
       "accessories": "breech loading",
       "bookPage": "tss.3",
       "notes": "",
-      "isAoE": true
+      "isAoE": true,
+      "hands": 2
     },
     "effects": []
   },

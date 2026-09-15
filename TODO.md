@@ -26,7 +26,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 |---|---|---|
 | [48](#48) | The action ledger | ✅ built — `c03025c5`; Take Aim across phases still open inside it |
 | [47](#47) | Ready Weapon, an equip control for firearms, Quick Draw | ✅ built — two-gun Quick Draw waits on #49 |
-| [49](#49) | Hands | after #47 — decided: a `hands` field on weapons, **filled from the category**, editable per weapon |
+| [49](#49) | Hands | ✅ built — dual-wield billing, recoil crossover and matched razors still open inside it |
 | [18](#18) | Structured weapon-accessory data (smartlink, smart goggles, laser) | the maintainer's gate for everything below |
 | [23](#23) | Ammunition compendium | easiest — likely already met: 661 ammunition docs ship in 6 default-gear packs; verify and close |
 | [55](#55) | `trackAmmo` on by default | small switch; audit what it exposes |
@@ -449,6 +449,17 @@ Action economy is **bookkeeping**, not an outcome, so tracking it does not cross
 with one click, and the existing three buttons stay as the manual path.
 
 ## 49. Nothing models hands — what is held, and how many can be held
+
+> **Built 2026-09-15 on `feature/action-economy`** (0.6; not merged). `hands` on every weapon (0-2,
+> blank = the category default — the maintainer's decision), filled into all 517 shipped weapons by
+> `tools/fill-weapon-hands.mjs`; `extraHands` on the actor (the GM's box). "In hand" = readied (#47):
+> the Weapons tab says what is held and warns when it is more than the hands. **p.112's second gun is a
+> guess in the GM's TN window** — the row now renders (it had no `mvp` flag), pre-ticked when a second
+> ready pistol/SMG-class gun is in hand, withdrawing the smartlink / goggles / laser guesses. Rules:
+> `scripts/data/hands.mjs`. TESTING.md §40.
+> **Still open here:** firing both guns for ONE Simple Action (each shot is charged; the GM ↺s one),
+> uncompensated recoil crossing to the other gun, matched hand razors/spurs +½ Strength (p.121), quick-
+> drawing two (+2 each), and folding `equippedMelee` into the hand slots.
 
 **Requested 2026-08-11:** *"a person has two hands (unless there is a cyberware option to add more)
 and you can have two one-handed weapons equipped or a two-handed weapon equipped."* Nothing in the

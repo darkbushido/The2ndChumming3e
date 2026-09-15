@@ -1474,6 +1474,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   const fullOrder = [...order.filter(id => sections[id]), ...DEFAULT_ORDER.filter(id => !order.includes(id))];
 
   return `<div class="tab ${this._activeTab === 'weapons' ? 'active' : ''}" data-tab="weapons" style="overflow-y:auto">
+    ${this._handsLine(actor)}
     ${fullOrder.map(id => sections[id]).join('')}
   </div>`;
 }
@@ -3159,6 +3160,25 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const now = !game.sr3e.ReadyWeapon.isReady(item);
     await item.update({ 'system.ready': now });
     if (now) game.sr3e.SR3EActionLedger?.charge(this.actor, 'readyWeapon', item.name);
+    // More in hand than there are hands (TODO 49) — said, never refused.
+    const u = game.sr3e.Hands?.usage(this.actor.items, this.actor.system, i => game.sr3e.ReadyWeapon.isReady(i));
+    if (now && u?.over) ui.notifications.warn(`${this.actor.name} is holding ${u.used} hands' worth with ${u.have} hands — put something away.`);
+  }
+
+  /**
+   * What is in hand (TODO 49): the readied weapons, the hands they take, and the hands the character
+   * has — 2 + `extraHands` (the GM's box, for extra cyber-limbs). Over-full is REPORTED, never refused.
+   */
+  _handsLine(actor) {
+    const H = game.sr3e.Hands, RW = game.sr3e.ReadyWeapon;
+    if (!H || !RW) return '';
+    const u = H.usage(actor.items, actor.system, i => RW.isReady(i));
+    const held = u.held.map(h => `${h.name}${h.hands === 2 ? ' (2)' : ''}`).join(', ') || 'nothing';
+    const gm = game.user.isGM;
+    return `<div class="sr-hands-line${u.over ? ' is-over' : ''}" title="In hand = readied (✋). SR3 p.112: only pistol- or SMG-class guns one in each hand.">
+      ✋ In hand: <strong>${u.used}</strong> of ${u.have} hands — ${held}${u.over ? ' — more than the character has; put something away' : ''}
+      <span class="sr-hands-extra">extra hands <input type="number" ${gm ? 'name="system.extraHands"' : 'disabled'} value="${actor.system.extraHands ?? 0}" min="0" max="4" style="width:36px" title="Extra cyber-limbs — the GM's call"/></span>
+    </div>`;
   }
 
   /** True when a weapon is empty and ammo tracking is on (so its roll icon is disabled). */
