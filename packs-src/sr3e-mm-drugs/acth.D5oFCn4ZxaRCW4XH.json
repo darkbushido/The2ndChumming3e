@@ -6,15 +6,17 @@
     "system": {
       "category": "Pharmaceutical Compounds",
       "addiction": "",
-      "tolerance": "",
+      "tolerance": "3",
       "effect": "",
       "speed": "Instant",
       "vector": "Inhalation",
-      "availability": "14/21 days",
+      "availability": "5/12 hrs",
       "cost": 100,
       "streetIndex": "1",
       "bookPage": "mm.118",
-      "notes": ""
+      "notes": "",
+      "edge": "10/--",
+      "legality": "Legal"
     },
     "_id": "D5oFCn4ZxaRCW4XH",
     "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",

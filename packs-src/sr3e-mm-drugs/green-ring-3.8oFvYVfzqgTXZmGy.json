@@ -10,11 +10,13 @@
       "effect": "",
       "speed": "Immediate",
       "vector": "Contact or Inhalation",
-      "availability": "500",
-      "cost": 0,
+      "availability": "14/2 wks",
+      "cost": 500,
       "streetIndex": "5",
       "bookPage": "mm.119",
-      "notes": ""
+      "notes": "",
+      "damage": "8S",
+      "legality": "2-K"
     },
     "_id": "8oFvYVfzqgTXZmGy",
     "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",

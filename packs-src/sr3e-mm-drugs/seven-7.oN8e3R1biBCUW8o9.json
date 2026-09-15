@@ -14,7 +14,9 @@
       "cost": 1000,
       "streetIndex": "5",
       "bookPage": "mm.121",
-      "notes": ""
+      "notes": "",
+      "damage": "10D",
+      "legality": "2-K"
     },
     "_id": "oN8e3R1biBCUW8o9",
     "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",

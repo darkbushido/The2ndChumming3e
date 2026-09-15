@@ -9,12 +9,14 @@
       "tolerance": "",
       "effect": "",
       "speed": "Immediate or 1 min",
-      "vector": "Ingestion, Injection, Inhalation",
+      "vector": "Ingestion, inhalation, injection",
       "availability": "3/48 hrs",
       "cost": 360,
       "streetIndex": "1",
       "bookPage": "mm.119",
-      "notes": ""
+      "notes": "",
+      "damage": "7D",
+      "legality": "4P-X"
     },
     "_id": "qFI1bFMnhslVdAU6",
     "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",

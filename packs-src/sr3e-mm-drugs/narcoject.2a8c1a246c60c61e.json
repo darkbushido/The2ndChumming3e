@@ -17,14 +17,16 @@
       "category": "Toxins",
       "addiction": "",
       "tolerance": "",
-      "effect": "6D stun",
+      "effect": "",
       "speed": "Immediate",
       "vector": "Injection",
       "cost": 150,
       "availability": "3/48hrs",
       "streetIndex": "1",
       "bookPage": "mm.119",
-      "notes": ""
+      "notes": "",
+      "damage": "6D stun",
+      "legality": "Legal"
     }
   },
   "embedded": {}
