@@ -2055,9 +2055,9 @@ and look, rather than roll dice.
 ## 38. Orthodox SR3 Matrix
 
 **Prerequisites:** Switch Configure Settings → System → Matrix Ruleset to **Orthodox SR3** and do a
-full Foundry restart (not just F5). Then run the `populate-odm-cyberdecks` and
-`populate-odm-programs` macros to fill the two compendiums (confirm both show the expected counts:
-18 cyberdecks, 55 programs).
+full Foundry restart (not just F5). The two compendiums ship built (`sr3e-sr3-odm-cyberdecks`,
+`sr3e-sr3-odm-programs`, from `tools/build-odm-packs.mjs`) and appear only under this ruleset —
+confirm both are listed and populated; there is no macro to run.
 
 ### Settings warning
 

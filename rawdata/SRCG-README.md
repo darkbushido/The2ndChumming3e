@@ -23,7 +23,7 @@ checkout:
 | `SRCG-SR3-VehicleMods.json` | `src/data/SR3/VehicleMods.json` | reference |
 | `SRCG-SR3-VehicleWeapons.json` | `src/data/SR3/VehicleWeapons.json` | reference |
 
-**"Reference"** — these are the files the retired `populate-*-v2.js` macros fetched live. The shipped
+**"Reference"** — these are the files the retired `populate-*-v2.js` macros (deleted, TODO 1) fetched live. The shipped
 packs are no longer rebuilt from them: since TODO 12 every pack's exact content lives in
 `packs-src/` (see `tools/packs.mjs`), which carries every correction made since the import. They are
 pinned so a future re-import is a reviewable diff against a known snapshot, not a live fetch.

@@ -74,7 +74,7 @@ export async function run(t) {
     /name:\s*'SR3E Chrome Threat Generator',\s*path:\s*'scripts\/macros\/generate-chrome-threat\.js'/.test(list));
   const paths = [...list.matchAll(/path:\s*'([^']+)'/g)].map(m => m[1]);
   t.ok('every auto-created macro path exists on disk (a 404 there fails silently in play)',
-    paths.length >= 4 && paths.every(p => existsSync(new URL(`../${p}`, import.meta.url))));
+    paths.length >= 2 && paths.every(p => existsSync(new URL(`../${p}`, import.meta.url))));
 
   /* ── Cancel makes nothing ────────────────────────────────────────────────────────── */
   const none = await generate(null);
