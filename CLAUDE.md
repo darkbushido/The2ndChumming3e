@@ -1818,9 +1818,18 @@ general anti-ranged defence at Cost 1. Grenades are `thrown` but never reach the
 
 ⚠ **Ties go to the attacker**, stated outright — same strictness trap as `dodgeOutcome`.
 
-⚠ Its **Free Action** cost is not modelled (TODO 48); the card says so. **Quick Strike** (MITS
-p.151) is the other mechanically-real power still unimplemented — see TODO 78, and note it
-cannot be done as an initiative bonus.
+⚠ Its **Free Action** cost is not modelled (TODO 48); the card says so.
+
+**Quick Strike** (MITS p.151, TODO 78):
+- A ⚡ on the adept's tracker row (`SR3ECombat.renderQuickStrike`).
+- It moves the adept's pending slot in the current pass to the front of the round's stored queue
+  (`SR3ECombat.quickStrike`, rules in `scripts/data/quick-strike.mjs`). Players reach it through
+  `sr3e.combat.quickStrike`.
+- ⚠ **Never an initiative write**: *"The adept's Initiative Score is not affected."*
+- ⚠ The slot is **moved, not copied** — it uses the pass's action.
+- Once per Combat Turn, via the combatant flag `quickStrikeRound`.
+- "Unwounded" is read as no boxes on either track. The code confirms rather than refuses, and
+  the card says so.
 
 #### Three bonus channels, and a bonus belongs to exactly one
 

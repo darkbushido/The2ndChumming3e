@@ -4388,6 +4388,74 @@ Covered by `tests/adept-powers.test.mjs` (26 assertions) and 3 mutants.
 
 <a id="78"></a>
 
+## 78. Quick Strike acts first in a pass — *MITS p.151* ✅ 2026-09-15, `feature/action-economy`
+
+> **Built 2026-09-15 on `feature/action-economy`**, from the PDF (MITS p.151).
+> - A ⚡ button sits on the tracker row of any combatant holding the power, for its owner and the GM.
+> - It moves the adept's own pending slot in the current pass to the front of the queue
+>   (`SR3ECombat.quickStrike`, `scripts/data/quick-strike.mjs`). Players reach it through the GM
+>   query `sr3e.combat.quickStrike`.
+> - Each clause of the text:
+>   - **The score is never written.**
+>   - **The slot is moved, not copied**, so it is the pass's action.
+>   - **Refused without an action in this pass.**
+>   - **Once per Combat Turn**, via a combatant flag holding the round.
+> - Step 3's "design problem" did not arise: turn order is already the stored queue, not Foundry's
+>   initiative sort.
+> - **For the maintainer:** "unwounded" is read as *no boxes on either track*. A wounded adept gets a
+>   confirm the GM or player can accept, and the card says it was allowed.
+> - Used after the pass began, it plays the adept next, and the card says RAW wants it first.
+> - A mid-round initiative edit rebuilds the queue and drops the move.
+> - Tests: `tests/quick-strike.test.mjs`. Checklist: TESTING.md §40.
+
+The other borderline power from [#70](#70)'s "correctly inert" list, and the one that genuinely
+is not inert-by-nature: it has a hard mechanical effect on turn order. **Cost 3, no levels.**
+
+> "This power allows the adept to **act first in one Initiative Pass per Combat Turn**. This
+> action uses up the adept's action for that Initiative Pass. This power **cannot be used
+> during an Initiative Pass when the adept does not have an action**. The adept's **Initiative
+> Score is not affected**. The adept must be **unwounded** to use this ability."
+
+### Why it is not [#77](#77)-shaped
+
+⚠ **"The adept's Initiative Score is not affected."** So it cannot be modelled as an initiative
+bonus, which is the obvious cheap implementation and would be wrong in two visible ways: the
+tracker would show a number the character does not have, and the effect would persist across
+**every** pass instead of the one the player picks. It is a **turn-order override**, scoped to a
+single pass, chosen by the player at the moment they use it.
+
+⚠ **"Uses up the adept's action for that Initiative Pass"** and **"cannot be used during an
+Initiative Pass when the adept does not have an action"** are both action-economy statements,
+and the system does not model actions ([#48](TODO.md#48)). `SR3ECombat` does know about passes — both
+`_nextTurnSR3` and `_nextTurnSR2` walk them — so *which* pass is answerable; whether the adept
+still has an action in it is not.
+
+⚠ **"Must be unwounded" is ambiguous in a way that matters.** It plainly is not "no wound
+modifier", or a single box of Stun would qualify and the restriction would be nearly free. Read
+literally it means **no damage at all on either track**, which is much harsher and is probably
+intended — this is a 3-point power. Whichever is chosen it should be **stated on the card**, not
+silently enforced, and the check reads the tracks directly rather than `woundMod`.
+
+⚠ **Once per Combat Turn** needs state that survives passes but not the turn — the same
+lifetime as `roundsFiredThisPhase` and the Full Defense flag, both cleared by
+`SR3ECombat._endOfTurnReset()`. That is the hook to use; do not invent a second reset path.
+
+### What it would take
+
+1. A capability flag off the name, exactly like [#77](#77)'s (`_directPowerKind` → `quickStrike`).
+2. A per-Combat-Turn `quickStrikeUsed` flag, cleared in `_endOfTurnReset()`.
+3. A button on the combat tracker's active-pass card, GM- or owner-gated, that moves the adept
+   to the front of the current pass **without touching `combatant.initiative`** — which is the
+   whole design problem, since Foundry orders by that field. Likely a sort override or a
+   temporary flag consumed by `_nextTurnSR3` / `_nextTurnSR2`, not an initiative write.
+4. Refuse (or warn) when wounded, and say which reading of "unwounded" is being applied.
+
+⚠ **Step 3 is the work; steps 1-2 are twenty minutes.** Do not start this before [#48](TODO.md#48)
+unless the intent is to ship the ordering half and leave the action cost to the GM — which is
+defensible under the ethos, but should be a decision rather than a discovery.
+
+<a id="79"></a>
+
 ## 80. ✅ Karma advancement — seven defects — **DONE 2026-08-31**
 
 **Reported from play 2026-08-31:** *"karma spending seems to be implemented, there isn't

@@ -2421,3 +2421,11 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
   - [ ] Target A again: back to 1st.
   - [ ] Next phase: 1st again.
   - [ ] GM ↺ on B's shot lists "targetsThisPhase: 2 targets shot at → 1 target shot at".
+- [ ] **Quick Strike (TODO 78):**
+  - [ ] Give an adept the MITS Quick Strike power and start combat with two faster combatants.
+  - [ ] At the start of pass 1, the ⚡ on the adept's row is enabled for its owner. Press it: the adept
+        becomes the active combatant, the card posts, and the initiative number is unchanged.
+  - [ ] The other two still act in pass 1, and the adept does not act again in that pass.
+  - [ ] ⚡ is disabled for the rest of the round, and enabled again next round.
+  - [ ] With a box of Stun, ⚡ asks for confirmation.
+  - [ ] Player3 cannot see the ⚡ on Player2's adept.

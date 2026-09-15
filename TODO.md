@@ -33,18 +33,17 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | [57](TODO-DONE.md#57) | Shotgun choke and spread (p.117) | ✅ — shot ammo type, choke on the gun, spread from the range |
 | [56.1](TODO-DONE.md#56) | Smartguns waste no rounds (p.116) | ✅ `74372f9d` |
 | [56.2](TODO-DONE.md#56) | Remember who you shot at this phase | ✅ — prefills the ordinal and the walking metres |
-| [78](#78) | Quick Strike acts first in a pass (MITS p.151) | touches the initiative queue |
+| [78](TODO-DONE.md#78) | Quick Strike acts first in a pass (MITS p.151) | ✅ — ⚡ on the tracker row; a queue move, no initiative write |
 | [38](TODO-DONE.md#38) | Multiple targets — the leftovers (melee, per-attack pool) | hardest; #38 is archived but names these as unapplied |
 
 ## Contents
 
-**34 open.** 92 done — see [TODO-DONE.md](TODO-DONE.md).
+**33 open.** 93 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[53](#53) The "Essence hole" surgery option is not modelled — *M&M p.150*<br>[109](#109) Cyberware, bioware and Attribute Stress<br>[110](#110) Move-by-wire's TLE-x<br>[111](#111) Chronic Dissociation Syndrome — cyberzombies |
-| 🧙 Adept powers | [78](#78) Quick Strike acts first in a pass — *MITS p.151* |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [119](#119) Audit *The Matrix Defragged v2* against what we have<br>[120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork) |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[79](#79) No ledger for karma or nuyen — *low priority*<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear<br>[126](#126) Ammunition has no weight, and nothing adds up a carried load |
@@ -638,58 +637,6 @@ GM applies. Scheduling (every N months) is campaign time the system does not tra
 interval, let the GM roll.
 
 <a id="112"></a>
-
-### 🧙 Adept powers
-
-## 78. Quick Strike acts first in a pass — *MITS p.151*
-
-The other borderline power from [#70](TODO-DONE.md#70)'s "correctly inert" list, and the one that genuinely
-is not inert-by-nature: it has a hard mechanical effect on turn order. **Cost 3, no levels.**
-
-> "This power allows the adept to **act first in one Initiative Pass per Combat Turn**. This
-> action uses up the adept's action for that Initiative Pass. This power **cannot be used
-> during an Initiative Pass when the adept does not have an action**. The adept's **Initiative
-> Score is not affected**. The adept must be **unwounded** to use this ability."
-
-### Why it is not [#77](TODO-DONE.md#77)-shaped
-
-⚠ **"The adept's Initiative Score is not affected."** So it cannot be modelled as an initiative
-bonus, which is the obvious cheap implementation and would be wrong in two visible ways: the
-tracker would show a number the character does not have, and the effect would persist across
-**every** pass instead of the one the player picks. It is a **turn-order override**, scoped to a
-single pass, chosen by the player at the moment they use it.
-
-⚠ **"Uses up the adept's action for that Initiative Pass"** and **"cannot be used during an
-Initiative Pass when the adept does not have an action"** are both action-economy statements,
-and the system does not model actions ([#48](#48)). `SR3ECombat` does know about passes — both
-`_nextTurnSR3` and `_nextTurnSR2` walk them — so *which* pass is answerable; whether the adept
-still has an action in it is not.
-
-⚠ **"Must be unwounded" is ambiguous in a way that matters.** It plainly is not "no wound
-modifier", or a single box of Stun would qualify and the restriction would be nearly free. Read
-literally it means **no damage at all on either track**, which is much harsher and is probably
-intended — this is a 3-point power. Whichever is chosen it should be **stated on the card**, not
-silently enforced, and the check reads the tracks directly rather than `woundMod`.
-
-⚠ **Once per Combat Turn** needs state that survives passes but not the turn — the same
-lifetime as `roundsFiredThisPhase` and the Full Defense flag, both cleared by
-`SR3ECombat._endOfTurnReset()`. That is the hook to use; do not invent a second reset path.
-
-### What it would take
-
-1. A capability flag off the name, exactly like [#77](TODO-DONE.md#77)'s (`_directPowerKind` → `quickStrike`).
-2. A per-Combat-Turn `quickStrikeUsed` flag, cleared in `_endOfTurnReset()`.
-3. A button on the combat tracker's active-pass card, GM- or owner-gated, that moves the adept
-   to the front of the current pass **without touching `combatant.initiative`** — which is the
-   whole design problem, since Foundry orders by that field. Likely a sort override or a
-   temporary flag consumed by `_nextTurnSR3` / `_nextTurnSR2`, not an initiative write.
-4. Refuse (or warn) when wounded, and say which reading of "unwounded" is being applied.
-
-⚠ **Step 3 is the work; steps 1-2 are twenty minutes.** Do not start this before [#48](#48)
-unless the intent is to ship the ordering half and leave the action cost to the GM — which is
-defensible under the ethos, but should be a decision rather than a discovery.
-
-<a id="79"></a>
 
 ### 🪄 Spells & drugs
 

@@ -6441,6 +6441,8 @@ _prepareCharacter(sys, attr) {
     if (/^penetrating strike/i.test(n))  return 'penetratingStrike';
     if (/^killing hands/i.test(n))       return 'killingHands';
     if (/^missile parry/i.test(n))       return 'missileParry';
+    // A turn-order move, not a number — the tracker's ⚡ reads the item (scripts/data/quick-strike.mjs).
+    if (/^quick\s*strike/i.test(n))      return 'quickStrike';
     return null;
   }
 

@@ -1,3 +1,5 @@
+import { QuickStrike } from '../data/quick-strike.mjs';
+
 /**
  * SR3ECombat - Custom Combat with SR2/SR3 initiative modes
  */
@@ -324,6 +326,42 @@ export class SR3ECombat extends Combat {
    * was silently dropped.
    * @private
    */
+  /**
+   * ⚡ Quick Strike (MITS p.151, TODO 78) — the adept's pending slot in this pass plays now. A queue
+   * MOVE, never an initiative write (see scripts/data/quick-strike.mjs). Runs on the GM (it updates the
+   * Combat); players reach it through `sr3e.combat.quickStrike`. Returns `{ ok, reason }`.
+   */
+  async quickStrike(combatantId, { by = '', force = false } = {}) {
+    const cbt = this.combatants.get(combatantId);
+    if (!cbt) return { ok: false, reason: 'not in this combat' };
+    const flags = this.flags?.The2ndChumming3e ?? {};
+    const queue = flags.queue ?? [];
+    const index = flags.queueIndex ?? 0;
+    if (QuickStrike.usedThisTurn(cbt.flags?.The2ndChumming3e?.quickStrikeRound, this.round)) {
+      return { ok: false, reason: 'already used this Combat Turn' };
+    }
+    const wounded = !QuickStrike.unwounded(cbt.actor?.system);
+    if (wounded && !force) return { ok: false, reason: 'wounded', wounded: true };
+    const r = QuickStrike.apply(queue, index, combatantId);
+    if (!r.ok) return r;
+    await cbt.update({ flags: { The2ndChumming3e: { quickStrikeRound: this.round } } });
+    await this.update({ flags: { The2ndChumming3e: { queue: r.queue } } });
+    await this._applySlot(r.queue, index);
+    const pass = r.queue[index]?.pass ?? 1;
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: cbt.actor }),
+      content: `<div class="sr-roll-card">
+        <div class="sr-roll-header">⚡ Quick Strike — ${foundry.utils.escapeHTML(cbt.name)}</div>
+        <div class="sr-roll-meta">Acts now in Initiative Pass ${pass}. That is the adept's action for this pass, and
+          the Initiative Score is unchanged (${QuickStrike.PAGE}). Once per Combat Turn.</div>
+        ${r.first ? '' : '<div class="sr-roll-meta" style="color:var(--sr-amber)">Used after the pass began: RAW says <em>first</em> in the pass, so the adept acts next instead.</div>'}
+        ${wounded ? '<div class="sr-roll-meta" style="color:var(--sr-amber)">⚠ The adept is not unwounded (read here as no boxes on either track). The GM allowed it.</div>' : ''}
+        ${by ? `<div class="sr-roll-meta">Declared by ${foundry.utils.escapeHTML(by)}.</div>` : ''}
+      </div>`,
+    });
+    return { ok: true };
+  }
+
   async _applySlot(queue, index) {
     const slot      = queue[index];
     const turnIndex = this.turns.findIndex(t => t.id === slot.id);
@@ -379,6 +417,67 @@ export class SR3ECombat extends Combat {
    * unconditional, so a confirmation every round would be pure noise.
    * @private
    */
+  /** `sr3e.combat.quickStrike` — a player's declaration, carried out on the GM. */
+  static registerQuickStrike() {
+    CONFIG.queries['sr3e.combat.quickStrike'] = async ({ rid, combatId, combatantId, force, _requesterId }) =>
+      game.sr3e.SR3EQuery.once(rid, async () => {
+        game.sr3e.SR3EQuery.assertActiveGM();
+        const combat = game.combats.get(combatId);
+        if (!combat) return { ok: false, reason: 'no such combat' };
+        const cbt  = combat.combatants.get(combatantId);
+        const user = game.users.get(_requesterId);
+        // Owner or GM only — a spectator cannot move someone else's adept.
+        if (!user?.isGM && !cbt?.actor?.testUserPermission?.(user, 'OWNER')) return { ok: false, reason: 'not yours' };
+        return combat.quickStrike(combatantId, { by: user?.name ?? '', force: !!force });
+      });
+  }
+
+  /**
+   * ⚡ on each tracker row whose actor holds Quick Strike — for its owner and the GM, while it is
+   * usable (in combat, not used this turn, a pending slot in this pass). Called from renderCombatTracker.
+   */
+  static renderQuickStrike(combat, el) {
+    if (!combat?.started) return;
+    const flags = combat.flags?.The2ndChumming3e ?? {};
+    const queue = flags.queue ?? [];
+    const index = flags.queueIndex ?? 0;
+    for (const cbt of combat.combatants) {
+      const actor = cbt.actor;
+      if (!actor || !(actor.items ?? []).some(i => QuickStrike.isPower(i))) continue;
+      if (!game.user.isGM && !actor.isOwner) continue;
+      const row = el.querySelector(`[data-combatant-id="${cbt.id}"]`);
+      if (!row || row.querySelector('.sr3e-quick-strike')) continue;
+      const used   = QuickStrike.usedThisTurn(cbt.flags?.The2ndChumming3e?.quickStrikeRound, combat.round);
+      const slot   = QuickStrike.pendingSlot(queue, index, cbt.id);
+      const usable = !used && slot > index;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'sr3e-quick-strike';
+      btn.textContent = '⚡';
+      btn.disabled = !usable;
+      btn.title = used ? 'Quick Strike — already used this Combat Turn'
+        : slot < 0 ? 'Quick Strike — no action left in this Initiative Pass'
+        : slot === index ? 'Quick Strike — already acting'
+        : `Quick Strike: act first in this Initiative Pass (${QuickStrike.PAGE}) — uses this pass's action; must be unwounded`;
+      btn.addEventListener('click', async ev => {
+        ev.preventDefault(); ev.stopPropagation();
+        const ask = force => game.sr3e.SR3EQuery.asGM('sr3e.combat.quickStrike', { combatId: combat.id, combatantId: cbt.id, force });
+        let res = await ask(false);
+        if (res?.wounded) {
+          const go = await foundry.applications.api.DialogV2.confirm({
+            window: { title: 'Quick Strike — wounded' },
+            content: `<p>${foundry.utils.escapeHTML(cbt.name)} has damage on a track. Quick Strike needs the adept
+              <em>unwounded</em> (${QuickStrike.PAGE}), read here as no boxes on either track. Use it anyway?</p>`,
+          });
+          if (!go) return;
+          res = await ask(true);
+        }
+        if (res && !res.ok) ui.notifications.warn(`Quick Strike: ${res.reason}.`);
+      });
+      row.appendChild(btn);
+    }
+  }
+
   async _endOfTurnReset() {
     for (const c of this.combatants.contents) {
       const actor = c.actor;

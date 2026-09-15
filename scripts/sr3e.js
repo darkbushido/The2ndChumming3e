@@ -45,6 +45,7 @@ Hooks.once('init', () => {
   // nobody is listening for.
   SR3EQuery.register();
   SR3EActionLedger.register();   // sr3e.action.charge — TODO 48
+  SR3ECombat.registerQuickStrike();   // sr3e.combat.quickStrike — TODO 78
 
   async function buildSkillsCompendium() {
     const PACK_ID = 'The2ndChumming3e.sr3e-skills';
@@ -1696,6 +1697,8 @@ Hooks.on('renderCombatTracker', (_app, html) => {
   // Action Tracker (TODO 48) — pips for everyone, the GM's buttons beside them. The state is a
   // combatant flag (SR3EActionLedger), so a player sees what they have spent and a reload keeps it.
   SR3EActionLedger.renderTracker(combat, el);
+  // ⚡ Quick Strike (MITS p.151, TODO 78) — on each row whose adept holds it.
+  SR3ECombat.renderQuickStrike(combat, el);
 
   // GM tool buttons (Chase Scene, Session Rewards, Chunky Salsa, Barrier/Falling Damage,
   // Escape Artist) live on the Rollable Tables sidebar tab — see renderRollTableDirectory below.
