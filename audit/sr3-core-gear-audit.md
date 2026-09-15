@@ -22,7 +22,7 @@ Spot values, book → pack: Ares Predator `5 / 15(c) / SA / 9M` · Ranger Arms S
 `6(-3) / 6(m) / SS / grenade`.
 
 Only the **names** drift, never the numbers: `Enfield AS7` (book *AS-7*),
-`Rmngton Roomsweeper ShG`, `Ingram Smartgun Mod. 20t`. That is [TODO 87](../TODO.md#87), and it is
+`Rmngton Roomsweeper ShG`, `Ingram Smartgun Mod. 20t`. That is [TODO 87](../TODO-DONE.md#87), and it is
 the reason `Predator 2` on a contact matches nothing.
 
 ### Melee — every book entry present · *SR3 p.274*
@@ -112,7 +112,7 @@ it independently and first wrote it up as a new finding, which it is not. [TODO 
 is the authority and is more complete — it inventories the implementation piece by piece, notes
 that it is **not a regression** (the pre-split monolithic packs had none either, the archive holds
 zero, and there is no upstream source data), and names a blocker this audit missed:
-**[TODO 12](../TODO.md#12-write-a-committed-pack-rebuild-script-and-vendor-its-sources) — the
+**[TODO 12](../TODO-DONE.md#12-write-a-committed-pack-rebuild-script-and-vendor-its-sources) — the
 populate macros were retired, so the repo cannot currently build a pack at all.**
 
 What is genuinely new below: arrows and bolts share the gap, it did not ship mis-typed, and

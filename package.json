@@ -20,6 +20,8 @@
     "packs:install": "node tools/packs.mjs build --install",
     "packs:extract": "node tools/packs.mjs extract",
     "packs:src:check": "node tools/packs.mjs check",
+    "todo:archive": "node tools/todo-archive.mjs",
+    "todo:check": "node tools/todo-archive.mjs --check",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
     "test:mutate": "node tests/mutate.mjs"

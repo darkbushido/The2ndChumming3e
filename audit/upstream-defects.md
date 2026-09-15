@@ -201,7 +201,7 @@ in the source. Recovered the same way.
 ### 5. `Hot Potatoe` — a typo in the pack, not the book
 
 `sr3e-mits-spells` ships **`Hot Potatoe`**; the contacts (and MITS) call it *Hot Potato*. Aliased
-rather than renamed, because renaming a shipped pack entry needs [#87](../TODO.md#87)'s care.
+rather than renamed, because renaming a shipped pack entry needs [#87](../TODO-DONE.md#87)'s care.
 
 ### Three spells the contacts use that ship in no pack
 
