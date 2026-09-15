@@ -1,0 +1,30 @@
+{
+  "_key": "!items!ef1b29ae460678dc",
+  "doc": {
+    "_id": "ef1b29ae460678dc",
+    "name": "Micro-Recorder [2]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "9",
+      "rating": 2,
+      "cost": 1000,
+      "weight": 0,
+      "availability": "6/48hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.292",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

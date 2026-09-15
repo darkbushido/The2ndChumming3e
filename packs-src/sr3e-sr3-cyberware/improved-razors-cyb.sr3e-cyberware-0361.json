@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0361",
+  "doc": {
+    "_id": "sr3e-cyberware-0361",
+    "name": "+Improved Razors(CYB)",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberweapons",
+      "essenceCost": 0,
+      "cost": 8500,
+      "availability": "6/72 hours",
+      "streetIndex": 1,
+      "legalCode": "3-N",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.302",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Must be added to either the razors or retractable razors, (STR+2)L"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

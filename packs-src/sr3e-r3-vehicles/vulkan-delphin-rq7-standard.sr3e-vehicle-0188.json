@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0188",
+  "doc": {
+    "_id": "sr3e-vehicle-0188",
+    "name": "Vulkan Delphin RQ7(standard)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "boat",
+      "cost": 546000,
+      "streetIndex": 1,
+      "availability": "27/27 days",
+      "bookPage": "r3.188",
+      "seating": 4,
+      "notes": "Water & Engine EnviroSeal, Life Support (100 man-hours), 8 Basic Living Amenities | Alt-mode Speed/Accel: 50(30)/3(4) | Alt-mode Sig/Autonav: (8(8)/6(4))/2 | Alt-mode Cargo/Load: 26[198 PS]/575[1200 PS] | Alt-mode Pilot/Sensor: -/1(1)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 50,
+          "base": 50
+        },
+        "accel": {
+          "value": 3,
+          "base": 3
+        },
+        "body": {
+          "value": 6,
+          "base": 6
+        },
+        "armor": {
+          "value": 2,
+          "base": 2
+        },
+        "sig": {
+          "value": 0,
+          "base": 0
+        },
+        "autonav": {
+          "value": 6,
+          "base": 6
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 26,
+          "base": 26
+        },
+        "load": {
+          "value": 575,
+          "base": 575
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

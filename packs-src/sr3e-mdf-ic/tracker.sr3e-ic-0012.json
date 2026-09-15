@@ -1,0 +1,24 @@
+{
+  "_key": "!actors!sr3e-ic-0012",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/agent-default.webp",
+    "_id": "sr3e-ic-0012",
+    "name": "Tracker",
+    "type": "ic",
+    "system": {
+      "icType": "Tracker",
+      "grading": "Gray",
+      "rating": 6,
+      "systemRating": 6,
+      "memoryRequired": 15,
+      "damage": "6L Stun",
+      "hostSecurityTier": "Orange",
+      "notes": "<p>Traces decker icons to their physical location and marks them for Security response. Abilities: Authenticate, Infiltration.</p>",
+      "woundValue": 0,
+      "bookPage": "matrix-defragged.44"
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

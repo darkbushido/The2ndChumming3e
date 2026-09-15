@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-vehicleweapon-0008",
+  "doc": {
+    "_id": "sr3e-vehicleweapon-0008",
+    "name": "Aztech Xicohtencatl L. Railgun",
+    "type": "vehicleweapon",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "system": {
+      "weaponType": "Railgun",
+      "mode": "SS",
+      "damage": "6LN",
+      "ammunition": "Belt",
+      "weight": 135,
+      "cost": 135000,
+      "availability": "GM",
+      "streetIndex": "GM",
+      "bookPage": "r3.91",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0277",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0277",
+    "name": "External Rack Mount(1 missile)",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 1000,
+      "availability": "1/?",
+      "streetIndex": "1",
+      "installEquipment": "-",
+      "installTime": "0/0",
+      "cfCost": "0",
+      "load": "0",
+      "bookPage": "fof.46",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

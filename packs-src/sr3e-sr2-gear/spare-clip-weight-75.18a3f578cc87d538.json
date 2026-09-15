@@ -1,0 +1,30 @@
+{
+  "_key": "!items!18a3f578cc87d538",
+  "doc": {
+    "_id": "18a3f578cc87d538",
+    "name": "Spare Clip (Weight .75)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-",
+      "rating": null,
+      "cost": 5,
+      "weight": 0.75,
+      "availability": "2/24hrs",
+      "streetIndex": ".75",
+      "bookPage": "sr2.240",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

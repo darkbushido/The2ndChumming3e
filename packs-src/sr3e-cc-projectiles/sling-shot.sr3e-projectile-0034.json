@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-projectile-0034",
+  "doc": {
+    "_id": "sr3e-projectile-0034",
+    "name": "Sling Shot",
+    "type": "projectile",
+    "system": {
+      "category": "SH",
+      "skill": "Throwing Weapons",
+      "attribute": "strength",
+      "concealability": "8",
+      "strMin": 4,
+      "damage": "6L Stun",
+      "weight": ".5",
+      "availability": "2/12hrs",
+      "cost": 20,
+      "streetIndex": "1",
+      "legal": false,
+      "bookPage": "cc.13",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0030",
+  "doc": {
+    "_id": "sr3e-spell-0030",
+    "name": "Detect Individual",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Detection",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "T/A",
+      "drain": "(L)",
+      "target": "DT(R)",
+      "bookPage": "sr3.192",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

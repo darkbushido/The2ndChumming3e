@@ -1,0 +1,28 @@
+{
+  "_key": "!items!fd5911490a1b284d",
+  "doc": {
+    "_id": "fd5911490a1b284d",
+    "name": "Medical Clinic Rating 7",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "7",
+      "weight": "-",
+      "cost": 266200,
+      "availability": "9/1wk",
+      "streetIndex": "2",
+      "bookPage": "mm.138",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

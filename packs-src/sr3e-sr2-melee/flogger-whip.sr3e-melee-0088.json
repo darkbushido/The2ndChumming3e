@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0088",
+  "doc": {
+    "_id": "sr3e-melee-0088",
+    "name": "Flogger whip",
+    "type": "melee",
+    "system": {
+      "category": "WHP",
+      "skill": "Whips/Flails",
+      "attribute": "strength",
+      "concealability": "6",
+      "reach": "2",
+      "damage": "(STR)M",
+      "weight": "1",
+      "availability": "6/48hrs",
+      "cost": 500,
+      "streetIndex": "3",
+      "legal": true,
+      "bookPage": "fof.88",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

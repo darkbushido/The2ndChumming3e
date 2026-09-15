@@ -1,0 +1,30 @@
+{
+  "_key": "!items!426073593dc703cf",
+  "doc": {
+    "_id": "426073593dc703cf",
+    "name": "Voice Mask Lv [9]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "6",
+      "rating": 9,
+      "cost": 27000,
+      "weight": 0,
+      "availability": "9/72hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr3.292",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

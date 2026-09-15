@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0646",
+  "doc": {
+    "_id": "sr3e-firearm-0646",
+    "name": "Jupiter Taser Club",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "Tasr",
+      "skill": "Tasers",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "-/1",
+      "mode": "-/SS",
+      "damage": "10S stun/8S stun",
+      "weight": "3",
+      "availability": "12/14days",
+      "cost": 1800,
+      "streetIndex": "3",
+      "accessories": "None",
+      "bookPage": "sta2.98",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

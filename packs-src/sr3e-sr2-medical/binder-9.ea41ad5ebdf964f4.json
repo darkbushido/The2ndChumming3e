@@ -1,0 +1,28 @@
+{
+  "_key": "!items!ea41ad5ebdf964f4",
+  "doc": {
+    "_id": "ea41ad5ebdf964f4",
+    "name": "Binder 9",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "9",
+      "weight": "-",
+      "cost": 900,
+      "availability": "4/32hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.258",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

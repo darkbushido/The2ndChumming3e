@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-projectile-0044",
+  "doc": {
+    "_id": "sr3e-projectile-0044",
+    "name": "Net",
+    "type": "projectile",
+    "system": {
+      "category": "other",
+      "skill": "Projectile Weapons",
+      "attribute": "strength",
+      "concealability": "2",
+      "strMin": 0,
+      "damage": "None",
+      "weight": "4",
+      "availability": "5/48hrs",
+      "cost": 500,
+      "streetIndex": "2",
+      "legal": true,
+      "bookPage": "cc.14",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

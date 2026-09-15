@@ -1,0 +1,30 @@
+{
+  "_key": "!items!ffe5603ec970375c",
+  "doc": {
+    "_id": "ffe5603ec970375c",
+    "name": "Scanner [6]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "8",
+      "rating": 6,
+      "cost": 600,
+      "weight": 1,
+      "availability": "6/24hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.290",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

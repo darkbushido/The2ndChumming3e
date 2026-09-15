@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0072",
+  "doc": {
+    "_id": "sr3e-adeptpower-0072",
+    "name": "Killing Hands STR(Serious)",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 2,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sr3.170",
+      "description": "This power uses magic to turn unarmed attacks into serious physical damage."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

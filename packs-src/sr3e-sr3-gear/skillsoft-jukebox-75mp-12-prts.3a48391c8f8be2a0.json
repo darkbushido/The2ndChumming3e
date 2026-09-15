@@ -1,0 +1,30 @@
+{
+  "_key": "!items!3a48391c8f8be2a0",
+  "doc": {
+    "_id": "3a48391c8f8be2a0",
+    "name": "SkillSoft Jukebox 75MP 12 prts",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 18000,
+      "weight": 0,
+      "availability": "3/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Juk<br><strong>Memory:</strong> 75</p>"
+    }
+  },
+  "embedded": {}
+}

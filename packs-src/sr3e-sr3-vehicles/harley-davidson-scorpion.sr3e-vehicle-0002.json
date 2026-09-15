@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0002",
+  "doc": {
+    "_id": "sr3e-vehicle-0002",
+    "name": "Harley-Davidson Scorpion",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "motorcycle",
+      "cost": 13500,
+      "streetIndex": 1,
+      "availability": "2/24hrs",
+      "bookPage": "sr3.308, r3.158",
+      "seating": 2,
+      "notes": "Seating: 2m",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 120,
+          "base": 120
+        },
+        "accel": {
+          "value": 6,
+          "base": 6
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 1,
+          "base": 1
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 4,
+          "base": 4
+        },
+        "load": {
+          "value": 60,
+          "base": 60
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

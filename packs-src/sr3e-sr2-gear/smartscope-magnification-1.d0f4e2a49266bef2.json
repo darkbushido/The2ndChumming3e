@@ -1,0 +1,30 @@
+{
+  "_key": "!items!d0f4e2a49266bef2",
+  "doc": {
+    "_id": "d0f4e2a49266bef2",
+    "name": "Smartscope (Magnification 1)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-2)",
+      "rating": null,
+      "cost": 3500,
+      "weight": 1,
+      "availability": "5/60hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.240",
+      "description": "<p><strong>Mount:</strong> Top</p>"
+    }
+  },
+  "embedded": {}
+}

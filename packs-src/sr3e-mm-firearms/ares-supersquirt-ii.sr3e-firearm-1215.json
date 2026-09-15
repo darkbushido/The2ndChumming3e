@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1215",
+  "doc": {
+    "_id": "sr3e-firearm-1215",
+    "name": "Ares SuperSquirt II",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "7",
+      "ammunition": "20",
+      "mode": "SA",
+      "damage": "(Special)Gel Weapon use DMSO ammo",
+      "weight": "2",
+      "availability": "9/14days",
+      "cost": 800,
+      "streetIndex": "1.5",
+      "accessories": "None",
+      "bookPage": "mm.115",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,28 @@
+{
+  "_key": "!items!f9b3427728bc2741",
+  "doc": {
+    "_id": "f9b3427728bc2741",
+    "name": "Stimulant Patch 5",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "5",
+      "weight": "-",
+      "cost": 125,
+      "availability": "2/24hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.258",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0891",
+  "doc": {
+    "_id": "sr3e-firearm-0891",
+    "name": "Chandler Capture 100",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "ShtG",
+      "skill": "Shotguns",
+      "attribute": "quickness",
+      "concealability": "3",
+      "ammunition": "10(m)",
+      "mode": "SA",
+      "damage": "10S",
+      "weight": "4",
+      "availability": "4/24hrs",
+      "cost": 1500,
+      "streetIndex": "2",
+      "accessories": "Gas Vent (2), Shock Pads",
+      "bookPage": "pw.25",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

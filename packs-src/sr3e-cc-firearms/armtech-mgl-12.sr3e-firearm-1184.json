@@ -1,0 +1,28 @@
+{
+  "_key": "!items!sr3e-firearm-1184",
+  "doc": {
+    "_id": "sr3e-firearm-1184",
+    "name": "ArmTech MGL-12",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "GrLn",
+      "skill": "Grenade Launchers",
+      "attribute": "quickness",
+      "concealability": "3",
+      "ammunition": "12(c)",
+      "mode": "SA",
+      "damage": "(Grenade)",
+      "weight": "5",
+      "availability": "6/36hrs",
+      "cost": 2200,
+      "streetIndex": "3",
+      "accessories": "None",
+      "bookPage": "cc.26",
+      "notes": "",
+      "isAoE": true
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

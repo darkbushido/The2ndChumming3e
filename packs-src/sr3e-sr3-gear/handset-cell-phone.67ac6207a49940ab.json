@@ -1,0 +1,30 @@
+{
+  "_key": "!items!67ac6207a49940ab",
+  "doc": {
+    "_id": "67ac6207a49940ab",
+    "name": "Handset Cell Phone",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "10",
+      "rating": null,
+      "cost": 50,
+      "weight": 0,
+      "availability": "Always",
+      "streetIndex": ".75",
+      "bookPage": "sr3.287",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

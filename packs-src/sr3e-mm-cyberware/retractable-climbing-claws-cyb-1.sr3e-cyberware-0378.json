@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0378",
+  "doc": {
+    "_id": "sr3e-cyberware-0378",
+    "name": "Retractable Climbing Claws(CYB) 1",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberweapons",
+      "essenceCost": 0.3,
+      "cost": 10000,
+      "availability": "5/72 hours",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.31",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "(Str-1)L, -2 climbing TNs",
+      "srcgName": "Retract. Climbing Claws(CYB) 1"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

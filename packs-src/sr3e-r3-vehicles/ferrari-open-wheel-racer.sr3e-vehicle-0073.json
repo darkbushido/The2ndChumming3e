@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0073",
+  "doc": {
+    "_id": "sr3e-vehicle-0073",
+    "name": "Ferrari Open-Wheel Racer",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 210300,
+      "streetIndex": 3,
+      "availability": "11/11days",
+      "bookPage": "r3.167",
+      "seating": 1,
+      "notes": "Smart Materials, Nitrous Oxide Injectors 6, Datajack Port, Rigger Adaptation, Crash Cage",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 2,
+          "base": 2
+        },
+        "handlingOffRoad": {
+          "value": 7,
+          "base": 7
+        },
+        "speed": {
+          "value": 311,
+          "base": 311
+        },
+        "accel": {
+          "value": 21,
+          "base": 21
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 2,
+          "base": 2
+        },
+        "cargo": {
+          "value": 6,
+          "base": 6
+        },
+        "load": {
+          "value": 95,
+          "base": 95
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

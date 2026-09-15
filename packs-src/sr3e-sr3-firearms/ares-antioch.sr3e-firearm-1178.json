@@ -1,0 +1,28 @@
+{
+  "_key": "!items!sr3e-firearm-1178",
+  "doc": {
+    "_id": "sr3e-firearm-1178",
+    "name": "Ares Antioch",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "GrLn",
+      "skill": "Grenade Launchers",
+      "attribute": "quickness",
+      "concealability": "6(-3)",
+      "ammunition": "6(m)",
+      "mode": "SS",
+      "damage": "(Grenade)",
+      "weight": "+2",
+      "availability": "8/4days",
+      "cost": 1700,
+      "streetIndex": "3",
+      "accessories": "Standalone or Acc for Gun",
+      "bookPage": "sr3.279",
+      "notes": "",
+      "isAoE": true
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

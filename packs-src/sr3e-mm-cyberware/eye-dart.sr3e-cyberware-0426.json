@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0426",
+  "doc": {
+    "_id": "sr3e-cyberware-0426",
+    "name": "Eye, Dart",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Eyeware",
+      "essenceCost": 0.25,
+      "cost": 4200,
+      "availability": "8/2 weeks",
+      "streetIndex": 2,
+      "legalCode": "7P-Q",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.16",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Half power toxin/narcojet rounds, half range"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

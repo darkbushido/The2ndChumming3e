@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0445",
+  "doc": {
+    "_id": "sr3e-cyberware-0445",
+    "name": "Eye, Tool Laser",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Eyeware",
+      "essenceCost": 0.15,
+      "cost": 3000,
+      "availability": "8/2 weeks",
+      "streetIndex": 2,
+      "legalCode": "5P-N",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.14",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Requires High Power, but uses Low Power range, cut through thin objects"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

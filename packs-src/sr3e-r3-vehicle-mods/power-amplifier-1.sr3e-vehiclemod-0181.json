@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0181",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0181",
+    "name": "Power Amplifier [1]",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 250,
+      "availability": "1/12hrs",
+      "streetIndex": "1.5",
+      "installEquipment": "Vehicle Shop",
+      "installTime": "8 hrs/Electronics B/R(4)",
+      "cfCost": "0.5",
+      "load": "1kg",
+      "bookPage": "r3.146",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

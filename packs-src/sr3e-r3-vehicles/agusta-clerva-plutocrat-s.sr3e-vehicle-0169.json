@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0169",
+  "doc": {
+    "_id": "sr3e-vehicle-0169",
+    "name": "Agusta-Clerva Plutocrat (S)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "helicopter",
+      "cost": 517000,
+      "streetIndex": 2,
+      "availability": "-",
+      "bookPage": "r3.184",
+      "seating": 3,
+      "notes": "2 Folding Bucket Seats, Reinforced Bench Seats, Partial High Living Amenities, Electronics Port w/Satelite uplink, Small Turret | Seating: 2+1b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 290,
+          "base": 290
+        },
+        "accel": {
+          "value": 17,
+          "base": 17
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 2,
+          "base": 2
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 4,
+          "base": 4
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 8,
+          "base": 8
+        },
+        "load": {
+          "value": 140,
+          "base": 140
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

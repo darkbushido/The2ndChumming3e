@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0145",
+  "doc": {
+    "_id": "sr3e-firearm-0145",
+    "name": "SMF 'Interdictor'",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "3",
+      "ammunition": "5(cy)",
+      "mode": "SS",
+      "damage": "11M",
+      "weight": "3.5",
+      "availability": "10/7days",
+      "cost": 950,
+      "streetIndex": "2",
+      "accessories": "None",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

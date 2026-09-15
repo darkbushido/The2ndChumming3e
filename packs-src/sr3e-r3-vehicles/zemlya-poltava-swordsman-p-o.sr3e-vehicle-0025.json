@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0025",
+  "doc": {
+    "_id": "sr3e-vehicle-0025",
+    "name": "Zemlya Poltava Swordsman(P.O.)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "boat",
+      "cost": 37000,
+      "streetIndex": 1,
+      "availability": "2/48hrs",
+      "bookPage": "r3.161",
+      "seating": 5,
+      "notes": "Folding Bench Seats | Alt-mode Sig/Autonav: 3(3)/2 | Alt-mode Pilot/Sensor: -/1(0) | Seating: 2+3b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 90,
+          "base": 90
+        },
+        "accel": {
+          "value": 6,
+          "base": 6
+        },
+        "body": {
+          "value": 5,
+          "base": 5
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 30,
+          "base": 30
+        },
+        "load": {
+          "value": 300,
+          "base": 300
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!60e672b66340944e",
+  "doc": {
+    "_id": "60e672b66340944e",
+    "name": "Improved Gas Vent III",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-1)",
+      "rating": 3,
+      "cost": 800,
+      "weight": 0.5,
+      "availability": "2/24hrs",
+      "streetIndex": ".9",
+      "bookPage": "sr2.239",
+      "description": "<p><strong>Mount:</strong> Barrel</p>"
+    }
+  },
+  "embedded": {}
+}

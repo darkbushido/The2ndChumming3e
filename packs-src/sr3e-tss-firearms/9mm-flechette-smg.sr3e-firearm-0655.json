@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0655",
+  "doc": {
+    "_id": "sr3e-firearm-0655",
+    "name": "9mm Flechette SMG",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "6",
+      "ammunition": "30(c)",
+      "mode": "SA/BF",
+      "damage": "6M(f)",
+      "weight": "3",
+      "availability": "6/4days",
+      "cost": 2000,
+      "streetIndex": "2",
+      "accessories": "6 round burst; uses flachette rules",
+      "bookPage": "tss.7",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

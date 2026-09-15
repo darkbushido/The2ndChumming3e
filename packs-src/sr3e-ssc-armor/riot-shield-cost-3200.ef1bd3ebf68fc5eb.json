@@ -1,0 +1,29 @@
+{
+  "_key": "!items!ef1bd3ebf68fc5eb",
+  "doc": {
+    "_id": "ef1bd3ebf68fc5eb",
+    "name": "Riot Shield (Cost 3200¥)",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "-",
+      "ballistic": 2,
+      "impact": 0,
+      "weight": 3,
+      "cost": 3200,
+      "availability": "-",
+      "streetIndex": "-",
+      "bookPage": "ssc.67",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

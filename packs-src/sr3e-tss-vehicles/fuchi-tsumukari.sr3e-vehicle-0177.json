@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0177",
+  "doc": {
+    "_id": "sr3e-vehicle-0177",
+    "name": "Fuchi Tsumukari",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "helicopter",
+      "cost": 7500000,
+      "streetIndex": 3,
+      "availability": "260/130 Days",
+      "bookPage": "tss.6",
+      "seating": 15,
+      "notes": "cargo space for 12 men and a manned APC, medium remote turret(rotary autocannon), 4 remote micro-turrets(2xTwin LMG), 4CF AA missiles, 8CF AG rockets, 4CF AG missiles, 4CF air-drop AP mines | Seating: 3+12",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 6,
+          "base": 6
+        },
+        "handlingOffRoad": {
+          "value": 6,
+          "base": 6
+        },
+        "speed": {
+          "value": 400,
+          "base": 400
+        },
+        "accel": {
+          "value": 20,
+          "base": 20
+        },
+        "body": {
+          "value": 6,
+          "base": 6
+        },
+        "armor": {
+          "value": 12,
+          "base": 12
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 4,
+          "base": 4
+        },
+        "pilot": {
+          "value": 4,
+          "base": 4
+        },
+        "sensor": {
+          "value": 8,
+          "base": 8
+        },
+        "cargo": {
+          "value": 505,
+          "base": 505
+        },
+        "load": {
+          "value": 800,
+          "base": 800
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

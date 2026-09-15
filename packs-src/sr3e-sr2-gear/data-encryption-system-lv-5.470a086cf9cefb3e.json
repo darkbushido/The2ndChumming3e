@@ -1,0 +1,30 @@
+{
+  "_key": "!items!470a086cf9cefb3e",
+  "doc": {
+    "_id": "470a086cf9cefb3e",
+    "name": "Data Encryption System Lv 5",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "2",
+      "rating": 5,
+      "cost": 5000,
+      "weight": 6,
+      "availability": "5/14days",
+      "streetIndex": "2",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

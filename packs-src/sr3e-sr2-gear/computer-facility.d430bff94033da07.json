@@ -1,0 +1,30 @@
+{
+  "_key": "!items!d430bff94033da07",
+  "doc": {
+    "_id": "d430bff94033da07",
+    "name": "Computer Facility",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 300000,
+      "weight": 0,
+      "availability": "14/7days",
+      "streetIndex": "4",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

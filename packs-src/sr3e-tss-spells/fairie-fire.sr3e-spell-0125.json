@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0125",
+  "doc": {
+    "_id": "sr3e-spell-0125",
+    "name": "Fairie Fire",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Illusion",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "LOS",
+      "drain": "+2(M)",
+      "target": "W(R)",
+      "bookPage": "tss.4",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

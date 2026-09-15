@@ -1,0 +1,30 @@
+{
+  "_key": "!items!4318b5792218ebf1",
+  "doc": {
+    "_id": "4318b5792218ebf1",
+    "name": "Signal Locator (AOD) Lv [9]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "3",
+      "rating": 9,
+      "cost": 4500,
+      "weight": 2,
+      "availability": "9/48hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr3.292",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

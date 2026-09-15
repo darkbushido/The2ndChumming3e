@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1155",
+  "doc": {
+    "_id": "sr3e-firearm-1155",
+    "name": "NR-10 Multi-Barrel HMG",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HMG",
+      "skill": "Gunnery",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "35(c) or belt",
+      "mode": "FA",
+      "damage": "10S",
+      "weight": "41",
+      "availability": "28/30days",
+      "cost": 75000,
+      "streetIndex": "3",
+      "accessories": "None",
+      "bookPage": "pw.31",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

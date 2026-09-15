@@ -1,0 +1,31 @@
+{
+  "_key": "!items!e802f76e631708e8",
+  "doc": {
+    "_id": "e802f76e631708e8",
+    "name": "Diamond-Four",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "2P",
+      "tolerance": "2",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 1500,
+      "availability": "10/48hrs",
+      "streetIndex": "3.5",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 10</p>"
+    }
+  },
+  "embedded": {}
+}

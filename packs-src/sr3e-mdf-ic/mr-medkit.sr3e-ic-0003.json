@@ -1,0 +1,24 @@
+{
+  "_key": "!actors!sr3e-ic-0003",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/agent-default.webp",
+    "_id": "sr3e-ic-0003",
+    "name": "Mr. Medkit",
+    "type": "ic",
+    "system": {
+      "icType": "Mr. Medkit",
+      "grading": "White",
+      "rating": 6,
+      "systemRating": 6,
+      "memoryRequired": 10,
+      "damage": "6L Stun",
+      "hostSecurityTier": "Green",
+      "notes": "<p>Repairs damage to other IC and patches security holes between passes. Ability: Guardian.</p>",
+      "woundValue": 0,
+      "bookPage": "matrix-defragged.43"
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

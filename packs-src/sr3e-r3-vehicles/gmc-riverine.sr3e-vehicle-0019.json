@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0019",
+  "doc": {
+    "_id": "sr3e-vehicle-0019",
+    "name": "GMC Riverine",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "boat",
+      "cost": 100000,
+      "streetIndex": 1,
+      "availability": "5/5days",
+      "bookPage": "r3.161",
+      "seating": 7,
+      "notes": "Partial Basic Living Amenities, folding Bench Seats, Ring Mount | Alt-mode Sig/Autonav: 2(2)/2 | Alt-mode Pilot/Sensor: -/1(0) | Seating: 2+5b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 90,
+          "base": 90
+        },
+        "accel": {
+          "value": 5,
+          "base": 5
+        },
+        "body": {
+          "value": 5,
+          "base": 5
+        },
+        "armor": {
+          "value": 6,
+          "base": 6
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 16,
+          "base": 16
+        },
+        "load": {
+          "value": 175,
+          "base": 175
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

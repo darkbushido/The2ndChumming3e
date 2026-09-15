@@ -1,0 +1,30 @@
+{
+  "_key": "!items!9d6eb3f735cc62ff",
+  "doc": {
+    "_id": "9d6eb3f735cc62ff",
+    "name": "Laser Detector Lvl 5",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "6",
+      "rating": 5,
+      "cost": 25000,
+      "weight": 0.3,
+      "availability": "8/72hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

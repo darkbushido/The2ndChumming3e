@@ -1,0 +1,25 @@
+{
+  "_key": "!folders!57ff5b318a23b144",
+  "doc": {
+    "_id": "57ff5b318a23b144",
+    "name": "Crime, Inc: The Underworld",
+    "type": "Actor",
+    "description": "",
+    "folder": null,
+    "sorting": "a",
+    "sort": 600000,
+    "color": null,
+    "flags": {},
+    "_stats": {
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "coreVersion": "14",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": null,
+      "createdTime": 1788274787556,
+      "modifiedTime": 1788274787556,
+      "lastModifiedBy": null
+    }
+  },
+  "embedded": {}
+}

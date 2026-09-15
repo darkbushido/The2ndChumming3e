@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0008",
+  "doc": {
+    "_id": "sr3e-prog-0008",
+    "name": "Decrypt",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Decrypt",
+      "type": "Program",
+      "category": "Offensive",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 4,
+      "degradable": false,
+      "description": "<p>Decreases the user's target number by its rating while utilizing the Crack Protections prompt to decode an Encrypted target.</p><p><em>Base Decrypt time = Encryption Rating x 10 minutes.</em></p>",
+      "associatedPrompt": "Crack Protections (Encryption)",
+      "effect": "TN Reduction",
+      "bookPage": "matrix-defragged.30"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

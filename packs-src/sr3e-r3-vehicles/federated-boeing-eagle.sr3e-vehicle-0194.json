@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0194",
+  "doc": {
+    "_id": "sr3e-vehicle-0194",
+    "name": "Federated Boeing Eagle",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "fixedwing",
+      "cost": 12102000,
+      "streetIndex": 3,
+      "availability": "-",
+      "bookPage": "r3.190",
+      "seating": 1,
+      "notes": "Gas Enviroseal, ECM 7, ECCM 8, RAM 2 (factored in), 2 External Fixed Hardpoints (1 CF ammo bin each), Missile Launch System, 6 Missile Mounts (Total Ordinance Weight 1800 kg) | Seating: 1e",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 1800,
+          "base": 1800
+        },
+        "accel": {
+          "value": 75,
+          "base": 75
+        },
+        "body": {
+          "value": 7,
+          "base": 7
+        },
+        "armor": {
+          "value": 10,
+          "base": 10
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 8,
+          "base": 8
+        },
+        "cargo": {
+          "value": 2.5,
+          "base": 2.5
+        },
+        "load": {
+          "value": 500,
+          "base": 500
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

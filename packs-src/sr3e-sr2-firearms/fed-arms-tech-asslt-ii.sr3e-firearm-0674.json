@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0674",
+  "doc": {
+    "_id": "sr3e-firearm-0674",
+    "name": "Fed. Arms Tech Asslt II",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "50(c)",
+      "mode": "SA/FA",
+      "damage": "6L",
+      "weight": "2.5",
+      "availability": "4/36hrs",
+      "cost": 600,
+      "streetIndex": "1",
+      "accessories": "None",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

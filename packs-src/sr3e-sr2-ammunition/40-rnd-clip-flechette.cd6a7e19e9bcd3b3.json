@@ -1,0 +1,34 @@
+{
+  "_key": "!items!cd6a7e19e9bcd3b3",
+  "doc": {
+    "_id": "cd6a7e19e9bcd3b3",
+    "name": "40-Rnd Clip (Flechette)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "flechette",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 40,
+      "rounds": 0,
+      "weight": 2.75,
+      "cost": 405,
+      "availability": "3/36hrs",
+      "streetIndex": ".8",
+      "bookPage": "sr2.281",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

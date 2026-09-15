@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1146",
+  "doc": {
+    "_id": "sr3e-firearm-1146",
+    "name": "FN MAG-5 MMG",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "MMG",
+      "skill": "Gunnery",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "50(box)/Belt",
+      "mode": "FA",
+      "damage": "9S",
+      "weight": "9.5",
+      "availability": "18/14days",
+      "cost": 3200,
+      "streetIndex": "3",
+      "accessories": "Laser sight, Gas Vent II(2RC) Folding Tripod(6RC)",
+      "bookPage": "cc.26",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

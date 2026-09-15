@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0116",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0116",
+    "name": "Remote Ex-Large Turret",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 2000000,
+      "availability": "GM",
+      "streetIndex": "GM",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "72 hrs/Vehicle B/R(4)",
+      "cfCost": "120",
+      "load": "75000kg",
+      "bookPage": "r3.141",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

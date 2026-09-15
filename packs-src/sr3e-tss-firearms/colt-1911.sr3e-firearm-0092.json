@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0092",
+  "doc": {
+    "_id": "sr3e-firearm-0092",
+    "name": "Colt 1911",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "6",
+      "ammunition": "7(c)",
+      "mode": "SS",
+      "damage": "10M",
+      "weight": "3.2",
+      "availability": "4/8days",
+      "cost": 780,
+      "streetIndex": "2.8",
+      "accessories": "None",
+      "bookPage": "tss.3",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

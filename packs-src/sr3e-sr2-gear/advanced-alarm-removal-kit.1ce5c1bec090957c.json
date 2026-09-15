@@ -1,0 +1,30 @@
+{
+  "_key": "!items!1ce5c1bec090957c",
+  "doc": {
+    "_id": "1ce5c1bec090957c",
+    "name": "Advanced Alarm Removal Kit",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "2",
+      "rating": null,
+      "cost": 2900,
+      "weight": 3,
+      "availability": "8/12hrs",
+      "streetIndex": "5",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0035",
+  "doc": {
+    "_id": "sr3e-melee-0035",
+    "name": "Rapier",
+    "type": "melee",
+    "system": {
+      "category": "EDG",
+      "skill": "Edged Weapons",
+      "attribute": "strength",
+      "concealability": "5",
+      "reach": "1",
+      "damage": "(STR+2)M",
+      "weight": "2",
+      "availability": "6/48hrs",
+      "cost": 1000,
+      "streetIndex": "3",
+      "legal": true,
+      "bookPage": "fof.81",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

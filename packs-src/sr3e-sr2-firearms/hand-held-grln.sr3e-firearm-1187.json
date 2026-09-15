@@ -1,0 +1,28 @@
+{
+  "_key": "!items!sr3e-firearm-1187",
+  "doc": {
+    "_id": "sr3e-firearm-1187",
+    "name": "Hand-Held GrLn",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "GrLn",
+      "skill": "Grenade Launchers",
+      "attribute": "quickness",
+      "concealability": "2",
+      "ammunition": "5(c)",
+      "mode": "SS",
+      "damage": "(Grenade)",
+      "weight": "2.5",
+      "availability": "9/5days",
+      "cost": 2300,
+      "streetIndex": "3",
+      "accessories": "None",
+      "bookPage": "sr2.???",
+      "notes": "",
+      "isAoE": true
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

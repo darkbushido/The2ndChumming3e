@@ -1,0 +1,30 @@
+{
+  "_key": "!items!6a92080ee7a2ec28",
+  "doc": {
+    "_id": "6a92080ee7a2ec28",
+    "name": "Reusable fetishes - Manipulation",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Magical Equipment"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Magical Equipment",
+      "concealability": "",
+      "rating": null,
+      "cost": 300,
+      "weight": 0,
+      "availability": "3/24hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.158",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

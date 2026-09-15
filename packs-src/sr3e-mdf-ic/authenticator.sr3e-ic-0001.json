@@ -1,0 +1,24 @@
+{
+  "_key": "!actors!sr3e-ic-0001",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/agent-default.webp",
+    "_id": "sr3e-ic-0001",
+    "name": "Authenticator",
+    "type": "ic",
+    "system": {
+      "icType": "Authenticator",
+      "grading": "White",
+      "rating": 6,
+      "systemRating": 6,
+      "memoryRequired": 12,
+      "damage": "6L Stun",
+      "hostSecurityTier": "Green",
+      "notes": "<p>Validates access credentials at every node. Invalid users are flagged and locked out. Ability: Authenticate.</p>",
+      "woundValue": 0,
+      "bookPage": "matrix-defragged.40"
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

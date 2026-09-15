@@ -1,0 +1,34 @@
+{
+  "_key": "!items!ac52fb93f9c13dad",
+  "doc": {
+    "_id": "ac52fb93f9c13dad",
+    "name": "10-Rnd Clip (Big D",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 10,
+      "rounds": 0,
+      "weight": 1.75,
+      "cost": 205,
+      "availability": "16/14days",
+      "streetIndex": "5",
+      "bookPage": "cc.39",
+      "notes": "<p>Big D rounds — a type this system does not model; its rules are the GM's (cc.39).</p>"
+    }
+  },
+  "embedded": {}
+}

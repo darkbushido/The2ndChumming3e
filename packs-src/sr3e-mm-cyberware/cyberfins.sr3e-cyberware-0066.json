@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0066",
+  "doc": {
+    "_id": "sr3e-cyberware-0066",
+    "name": "Cyberfins",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0.3,
+      "cost": 10500,
+      "availability": "5/48 hours",
+      "streetIndex": 1.25,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.27",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Swim at half normal walking or running, treat as Hand Razors -1 Power for combat"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0000",
+  "doc": {
+    "_id": "sr3e-adeptpower-0000",
+    "name": "Adhesion",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 1,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "tss.1",
+      "description": "Works similar to magentism but on all materials. Instant on/off and can be used with only some parts of the body if desired."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

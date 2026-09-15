@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0534",
+  "doc": {
+    "_id": "sr3e-cyberware-0534",
+    "name": "Data Filter",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Headware",
+      "essenceCost": 0.3,
+      "cost": 5000,
+      "availability": "6/36 hours",
+      "streetIndex": 1.5,
+      "legalCode": "2P-R",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.21",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "While active, +2 perception modifier, not remember anything afterwards"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!1ef650c5bedd6c69",
+  "doc": {
+    "_id": "1ef650c5bedd6c69",
+    "name": "Telecom (250Mp)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "-",
+      "rating": null,
+      "cost": 7500,
+      "weight": 5,
+      "availability": "Always",
+      "streetIndex": "1",
+      "bookPage": "sr3.286",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

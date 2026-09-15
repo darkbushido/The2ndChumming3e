@@ -1,0 +1,30 @@
+{
+  "_key": "!items!ff3e1113adbcd5e7",
+  "doc": {
+    "_id": "ff3e1113adbcd5e7",
+    "name": "Personal Comm Unit (TacComm)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 12,
+      "weight": 14,
+      "availability": ".5",
+      "streetIndex": "18500",
+      "bookPage": "sr2.252",
+      "description": "<p><strong>:</strong> 2</p>"
+    }
+  },
+  "embedded": {}
+}

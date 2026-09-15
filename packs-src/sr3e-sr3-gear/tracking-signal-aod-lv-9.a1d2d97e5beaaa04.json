@@ -1,0 +1,30 @@
+{
+  "_key": "!items!a1d2d97e5beaaa04",
+  "doc": {
+    "_id": "a1d2d97e5beaaa04",
+    "name": "Tracking Signal (AOD) Lv [9]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "9",
+      "rating": 9,
+      "cost": 5400,
+      "weight": 0,
+      "availability": "9/72hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.292",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

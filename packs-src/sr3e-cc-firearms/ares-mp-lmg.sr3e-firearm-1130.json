@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1130",
+  "doc": {
+    "_id": "sr3e-firearm-1130",
+    "name": "Ares MP-LMG",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LMG",
+      "skill": "Gunnery",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "50(c)/Belt",
+      "mode": "BF/FA",
+      "damage": "7S",
+      "weight": "7.5",
+      "availability": "6/5days",
+      "cost": 2200,
+      "streetIndex": "2",
+      "accessories": "Gas Vent II(2RC), Hip Pad Brace(1RC), Laser Sight",
+      "bookPage": "cc.26",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0190",
+  "doc": {
+    "_id": "sr3e-vehicle-0190",
+    "name": "Vulkan Electronaut",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "ship",
+      "cost": 45000,
+      "streetIndex": 1,
+      "availability": "3/3 days",
+      "bookPage": "r3.188",
+      "seating": 2,
+      "notes": "Water and Engine EnviroSeal, Life support (10 man hours) | Alt-mode Sig/Autonav: 8(8)/2 | Alt-mode Pilot/Sensor: -/0(0)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 15,
+          "base": 15
+        },
+        "accel": {
+          "value": 4,
+          "base": 4
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 8,
+          "base": 8
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 4,
+          "base": 4
+        },
+        "load": {
+          "value": 150,
+          "base": 150
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

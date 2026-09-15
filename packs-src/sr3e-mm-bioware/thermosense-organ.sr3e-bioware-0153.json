@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0153",
+  "doc": {
+    "_id": "sr3e-bioware-0153",
+    "name": "Thermosense Organ",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Cultured",
+      "grade": "Cultured",
+      "bioIndex": 0.5,
+      "cost": 25000,
+      "availability": "10/12 days",
+      "streetIndex": 2,
+      "mods": "",
+      "bookPage": "mm.075",
+      "rating": 0,
+      "description": "Sense heat nearby, table on MM75"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0097",
+  "doc": {
+    "_id": "sr3e-adeptpower-0097",
+    "name": "Pheromone Control",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "tss.4",
+      "description": "Each level adds 1 die to Charisma and social skill rolls."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

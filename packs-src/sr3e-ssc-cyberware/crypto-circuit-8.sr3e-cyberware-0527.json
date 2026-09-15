@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0527",
+  "doc": {
+    "_id": "sr3e-cyberware-0527",
+    "name": "Crypto Circuit  [8]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Headware",
+      "essenceCost": 0.1,
+      "cost": 240000,
+      "availability": "8/36 hours",
+      "streetIndex": 1.5,
+      "legalCode": "3P-CA",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "ssc.77",
+      "grade": "Standard",
+      "rating": 8,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,34 @@
+{
+  "_key": "!items!18fa87bb2215256d",
+  "doc": {
+    "_id": "18fa87bb2215256d",
+    "name": "Anti-Vehicle Mine",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "6",
+      "damage": "12D",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "rounds",
+      "rounds": 1,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 5,
+      "cost": 500,
+      "availability": "10/1wk",
+      "streetIndex": "3",
+      "bookPage": "cc.42",
+      "notes": "<p>Not one of the types this system models, or a combination of them — its rules are the GM's.</p><p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>"
+    }
+  },
+  "embedded": {}
+}

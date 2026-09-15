@@ -1,0 +1,24 @@
+{
+  "_key": "!actors!sr3e-ic-0005",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/agent-default.webp",
+    "_id": "sr3e-ic-0005",
+    "name": "Blaster",
+    "type": "ic",
+    "system": {
+      "icType": "Blaster",
+      "grading": "Gray",
+      "rating": 6,
+      "systemRating": 6,
+      "memoryRequired": 18,
+      "damage": "6S Stun",
+      "hostSecurityTier": "Orange",
+      "notes": "<p>Hammers decker icons with heavy overload pulses. Can attack multiple targets simultaneously. Ability: Instance.</p>",
+      "woundValue": 0,
+      "bookPage": "matrix-defragged.41"
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

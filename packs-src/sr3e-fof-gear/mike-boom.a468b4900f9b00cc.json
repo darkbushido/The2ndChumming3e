@@ -1,0 +1,30 @@
+{
+  "_key": "!items!a468b4900f9b00cc",
+  "doc": {
+    "_id": "a468b4900f9b00cc",
+    "name": "Mike Boom",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "-",
+      "rating": null,
+      "cost": 75,
+      "weight": 3,
+      "availability": "3/36hrs",
+      "streetIndex": "1",
+      "bookPage": "fof.98",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

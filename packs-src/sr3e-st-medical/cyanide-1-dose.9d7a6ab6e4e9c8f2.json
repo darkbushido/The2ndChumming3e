@@ -1,0 +1,28 @@
+{
+  "_key": "!items!9d7a6ab6e4e9c8f2",
+  "doc": {
+    "_id": "9d7a6ab6e4e9c8f2",
+    "name": "Cyanide (1 dose)",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "",
+      "weight": "-",
+      "cost": 360,
+      "availability": "3/48hrs",
+      "streetIndex": ".5",
+      "bookPage": "st.97",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

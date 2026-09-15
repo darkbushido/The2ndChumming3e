@@ -1,0 +1,30 @@
+{
+  "_key": "!items!db69499e38d45372",
+  "doc": {
+    "_id": "db69499e38d45372",
+    "name": "Timer",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Explosives"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Explosives",
+      "concealability": "6",
+      "rating": null,
+      "cost": 100,
+      "weight": 0.5,
+      "availability": "4/48hrs",
+      "streetIndex": "2",
+      "bookPage": "sr2.241",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

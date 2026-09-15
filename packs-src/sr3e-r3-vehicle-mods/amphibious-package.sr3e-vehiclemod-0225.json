@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0225",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0225",
+    "name": "Amphibious Package",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 15000,
+      "availability": "6/12days",
+      "streetIndex": "1.5",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "80 hrs/Vehicle B/R(6)",
+      "cfCost": "4",
+      "load": "0",
+      "bookPage": "r3.149",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

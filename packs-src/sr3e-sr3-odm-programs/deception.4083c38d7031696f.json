@@ -1,0 +1,19 @@
+{
+  "_key": "!items!4083c38d7031696f",
+  "doc": {
+    "_id": "4083c38d7031696f",
+    "name": "Deception",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Deception",
+      "category": "utility",
+      "multiplier": 2,
+      "rating": 0,
+      "bookPage": "sr3.220",
+      "description": "<p><strong>Operational utility</strong> · Multiplier 2 — size in Mp = Rating² × 2 (Program Size Table). See SR3 p.220 for what it does.</p>"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

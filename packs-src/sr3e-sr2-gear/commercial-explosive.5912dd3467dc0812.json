@@ -1,0 +1,30 @@
+{
+  "_key": "!items!5912dd3467dc0812",
+  "doc": {
+    "_id": "5912dd3467dc0812",
+    "name": "Commercial Explosive",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Explosives"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Explosives",
+      "concealability": "6",
+      "rating": 3,
+      "cost": 60,
+      "weight": 1,
+      "availability": "6/48hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.241",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

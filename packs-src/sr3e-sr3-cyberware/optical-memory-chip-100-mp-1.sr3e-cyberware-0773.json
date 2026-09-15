@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0773",
+  "doc": {
+    "_id": "sr3e-cyberware-0773",
+    "name": "Optical Memory Chip (100 mp) 1",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0,
+      "cost": 750,
+      "availability": "Always",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.296",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Must have DNI implanted in the limb to function."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

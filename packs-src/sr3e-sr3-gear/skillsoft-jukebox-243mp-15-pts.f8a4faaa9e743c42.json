@@ -1,0 +1,30 @@
+{
+  "_key": "!items!f8a4faaa9e743c42",
+  "doc": {
+    "_id": "f8a4faaa9e743c42",
+    "name": "SkillSoft Jukebox 243MP 15 pts",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 72900,
+      "weight": 0,
+      "availability": "3/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Juk<br><strong>Memory:</strong> 243</p>"
+    }
+  },
+  "embedded": {}
+}

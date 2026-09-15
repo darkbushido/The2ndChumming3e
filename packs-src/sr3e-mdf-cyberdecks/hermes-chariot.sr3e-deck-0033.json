@@ -1,0 +1,90 @@
+{
+  "_key": "!items!sr3e-deck-0033",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/cyberdeck-default.webp",
+    "_id": "sr3e-deck-0033",
+    "name": "Hermes Chariot",
+    "type": "cyberdeck",
+    "system": {
+      "era": "2070s Cyberdecks (5e)",
+      "cost": 35200,
+      "streetIndex": 0,
+      "availability": "14/7 days",
+      "legalityCode": "4P-S",
+      "weight": 0,
+      "notes": "Reliable starter deck from Hermes.",
+      "damage": {
+        "matrixConditionMonitor": {
+          "boxes": 10,
+          "current": 0,
+          "woundPenalties": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        "burnedSlots": []
+      },
+      "attributes": {
+        "mpcp": {
+          "value": 3,
+          "base": 3,
+          "multiplier": 8,
+          "costPerMp": 300
+        },
+        "firewall": {
+          "value": 1,
+          "base": 1,
+          "multiplier": 8,
+          "costPerMp": 200
+        },
+        "response": {
+          "value": 1,
+          "base": 1,
+          "maxLevel": 0,
+          "initiativeDice": 0,
+          "reactionBonus": 0
+        },
+        "memory": {
+          "total": 1500,
+          "used": 0,
+          "unit": "Mp"
+        },
+        "utilitySlots": {
+          "total": 0,
+          "available": 0
+        },
+        "dataTransferRate": {
+          "value": 30,
+          "unit": "Mp per Combat Turn"
+        },
+        "fluxRating": {
+          "value": 1,
+          "wireless": false
+        }
+      },
+      "derivedStats": {
+        "matrixInitiative": {
+          "base": 0,
+          "dice": "0d6",
+          "userModeRequired": "VR-Hot"
+        },
+        "hackingPoolBonus": 0,
+        "personaStorage": 0,
+        "iconPhysicalStats": {
+          "strength": 0,
+          "quickness": 0
+        }
+      },
+      "modules": [],
+      "utilitySlotsArray": [],
+      "storedUtilities": [],
+      "bookPage": "matrix-defragged.35"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

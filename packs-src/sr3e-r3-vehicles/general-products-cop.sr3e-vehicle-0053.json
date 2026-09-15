@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0053",
+  "doc": {
+    "_id": "sr3e-vehicle-0053",
+    "name": "General Products COP",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 34800,
+      "streetIndex": 2,
+      "availability": "8/8days",
+      "bookPage": "r3.165",
+      "seating": 2,
+      "notes": "Gridlink, Superconductive Drive 1",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 8,
+          "base": 8
+        },
+        "speed": {
+          "value": 90,
+          "base": 90
+        },
+        "accel": {
+          "value": 6,
+          "base": 6
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 1,
+          "base": 1
+        },
+        "sig": {
+          "value": 4,
+          "base": 4
+        },
+        "autonav": {
+          "value": 1,
+          "base": 1
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 18,
+          "base": 18
+        },
+        "load": {
+          "value": 155,
+          "base": 155
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

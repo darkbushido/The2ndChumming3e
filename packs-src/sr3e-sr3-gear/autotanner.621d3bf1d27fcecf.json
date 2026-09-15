@@ -1,0 +1,30 @@
+{
+  "_key": "!items!621d3bf1d27fcecf",
+  "doc": {
+    "_id": "621d3bf1d27fcecf",
+    "name": "Autotanner",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "3",
+      "rating": null,
+      "cost": 200,
+      "weight": 1,
+      "availability": "always",
+      "streetIndex": ".9",
+      "bookPage": "sr3.240",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

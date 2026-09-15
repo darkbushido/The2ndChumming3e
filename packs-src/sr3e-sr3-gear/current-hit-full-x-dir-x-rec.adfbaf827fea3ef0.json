@@ -1,0 +1,30 @@
+{
+  "_key": "!items!adfbaf827fea3ef0",
+  "doc": {
+    "_id": "adfbaf827fea3ef0",
+    "name": "Current Hit Full-X Dir-X Rec",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "10",
+      "rating": null,
+      "cost": 450,
+      "weight": 0,
+      "availability": "always",
+      "streetIndex": ".75",
+      "bookPage": "sr3.285",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

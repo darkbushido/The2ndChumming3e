@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0125",
+  "doc": {
+    "_id": "sr3e-firearm-0125",
+    "name": "Mal. Arms Hvy Flech.",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "special",
+      "mode": "SA",
+      "damage": "9M",
+      "weight": "2.5",
+      "availability": "9/48hrs",
+      "cost": 1595,
+      "streetIndex": "2",
+      "accessories": "Smartlink",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

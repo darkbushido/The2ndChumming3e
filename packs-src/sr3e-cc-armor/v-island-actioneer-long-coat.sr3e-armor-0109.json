@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0109",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0109",
+    "name": "V-Island \"Actioneer\" Long Coat",
+    "type": "armor",
+    "system": {
+      "concealability": "13",
+      "ballistic": 2,
+      "impact": 2,
+      "weight": 2,
+      "availability": "5/48hrs",
+      "cost": 1500,
+      "streetIndex": ".75",
+      "bookPage": "cc.49",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

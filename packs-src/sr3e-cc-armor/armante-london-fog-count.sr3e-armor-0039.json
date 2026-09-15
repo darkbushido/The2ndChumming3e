@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0039",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0039",
+    "name": "Armante \"London Fog\" Count",
+    "type": "armor",
+    "system": {
+      "concealability": "12",
+      "ballistic": 2,
+      "impact": 2,
+      "weight": 1,
+      "availability": "4/48hrs",
+      "cost": 600,
+      "streetIndex": ".75",
+      "bookPage": "cc.46",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

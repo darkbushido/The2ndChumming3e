@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0267",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0267",
+    "name": "EnviroSeal (Engine)",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 1000,
+      "availability": "1/?",
+      "streetIndex": "1",
+      "installEquipment": "Facility",
+      "installTime": "0/0",
+      "cfCost": "1",
+      "load": "0",
+      "bookPage": "sr2.???",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

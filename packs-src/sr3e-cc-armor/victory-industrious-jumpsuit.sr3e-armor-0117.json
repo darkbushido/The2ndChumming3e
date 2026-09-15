@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0117",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0117",
+    "name": "Victory \"Industrious\" Jumpsuit",
+    "type": "armor",
+    "system": {
+      "concealability": "11",
+      "ballistic": 2,
+      "impact": 0,
+      "weight": 1,
+      "availability": "2/24hrs",
+      "cost": 540,
+      "streetIndex": ".5",
+      "bookPage": "cc.49",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

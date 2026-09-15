@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-bioware-0181",
+  "doc": {
+    "_id": "sr3e-bioware-0181",
+    "name": "Calcitonin",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Genetech",
+      "grade": "Exotic",
+      "bioIndex": 0.4,
+      "cost": 60000,
+      "availability": "6/30 days",
+      "streetIndex": 2,
+      "mods": "+1BOD",
+      "bookPage": "sota.027",
+      "rating": 0,
+      "description": "+1 Body for damage resistance test barrier rating 6 for bones",
+      "bonusBod": 1
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

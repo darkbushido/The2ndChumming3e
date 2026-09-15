@@ -1,0 +1,30 @@
+{
+  "_key": "!items!5ed6acb125da1e25",
+  "doc": {
+    "_id": "5ed6acb125da1e25",
+    "name": "Stock (Rigid",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-1)",
+      "rating": 1,
+      "cost": 200,
+      "weight": 0.5,
+      "availability": "2/24hrs",
+      "streetIndex": ".75",
+      "bookPage": "cc.35",
+      "description": "<p><strong>Notes:</strong> for SMG or smaller weapons</p>"
+    }
+  },
+  "embedded": {}
+}

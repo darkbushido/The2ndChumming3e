@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0148",
+  "doc": {
+    "_id": "sr3e-bioware-0148",
+    "name": "Sleep Regulator",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Cultured",
+      "grade": "Cultured",
+      "bioIndex": 0.3,
+      "cost": 20000,
+      "availability": "4/4 days",
+      "streetIndex": 1,
+      "mods": "",
+      "bookPage": "mm.074",
+      "rating": 0,
+      "description": "Only require 3 hours of sleep, 48 hours of wakefulness before TN modifiers occur"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

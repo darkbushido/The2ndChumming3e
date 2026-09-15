@@ -1,0 +1,30 @@
+{
+  "_key": "!items!b9aad1c0ca3a091a",
+  "doc": {
+    "_id": "b9aad1c0ca3a091a",
+    "name": "Dataline Tap Lv 4",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "12",
+      "rating": null,
+      "cost": 20000,
+      "weight": 0,
+      "availability": "4/8days",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!ad0bc7a30c150bdd",
+  "doc": {
+    "_id": "ad0bc7a30c150bdd",
+    "name": "Microwave Link",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "3",
+      "rating": null,
+      "cost": 5000,
+      "weight": 1,
+      "availability": "14/2wks",
+      "streetIndex": "2",
+      "bookPage": "cc.55",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

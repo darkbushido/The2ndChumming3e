@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0129",
+  "doc": {
+    "_id": "sr3e-vehicle-0129",
+    "name": "Fiat-Fokker Cloud Nine",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "fixedwing",
+      "cost": 315000,
+      "streetIndex": 1,
+      "availability": "16/16 days",
+      "bookPage": "r3.179",
+      "seating": 4,
+      "notes": "Floatation Package, 2 Folding Bucket Seats | Alt-mode Speed/Accel: 60(200)/21 | Seating: 2+2b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 60,
+          "base": 60
+        },
+        "accel": {
+          "value": 21,
+          "base": 21
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 4,
+          "base": 4
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 9,
+          "base": 9
+        },
+        "load": {
+          "value": 325,
+          "base": 325
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

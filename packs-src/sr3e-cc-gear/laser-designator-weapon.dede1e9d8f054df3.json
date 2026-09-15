@@ -1,0 +1,30 @@
+{
+  "_key": "!items!dede1e9d8f054df3",
+  "doc": {
+    "_id": "dede1e9d8f054df3",
+    "name": "Laser Designator (Weapon)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-2)",
+      "rating": null,
+      "cost": 3000,
+      "weight": 0.5,
+      "availability": "12/2wks",
+      "streetIndex": "2",
+      "bookPage": "cc.35",
+      "description": "<p><strong>Mount:</strong> Top/Under</p>"
+    }
+  },
+  "embedded": {}
+}

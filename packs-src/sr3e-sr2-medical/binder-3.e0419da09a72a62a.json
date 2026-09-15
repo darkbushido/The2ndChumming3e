@@ -1,0 +1,28 @@
+{
+  "_key": "!items!e0419da09a72a62a",
+  "doc": {
+    "_id": "e0419da09a72a62a",
+    "name": "Binder 3",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "3",
+      "weight": "-",
+      "cost": 300,
+      "availability": "4/32hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.258",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

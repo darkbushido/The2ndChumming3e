@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0011",
+  "doc": {
+    "_id": "sr3e-spell-0011",
+    "name": "Slaughter(Race/Species)->",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Combat",
+      "type": "Mana",
+      "duration": "Instant",
+      "range": "LOS(A)",
+      "drain": "+1(D)",
+      "target": "W(R)",
+      "bookPage": "mits.140",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

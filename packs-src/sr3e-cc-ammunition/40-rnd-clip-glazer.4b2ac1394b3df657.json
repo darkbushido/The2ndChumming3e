@@ -1,0 +1,34 @@
+{
+  "_key": "!items!4b2ac1394b3df657",
+  "doc": {
+    "_id": "4b2ac1394b3df657",
+    "name": "40-Rnd Clip (Glazer)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 40,
+      "rounds": 0,
+      "weight": 2.75,
+      "cost": 305,
+      "availability": "10/1wk",
+      "streetIndex": "3",
+      "bookPage": "cc.38",
+      "notes": "<p>Glazer rounds — a type this system does not model; its rules are the GM's (cc.38).</p>"
+    }
+  },
+  "embedded": {}
+}

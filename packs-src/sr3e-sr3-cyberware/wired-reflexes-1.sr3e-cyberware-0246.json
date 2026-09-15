@@ -1,0 +1,28 @@
+{
+  "_key": "!items!sr3e-cyberware-0246",
+  "doc": {
+    "_id": "sr3e-cyberware-0246",
+    "name": "Wired Reflexes [1]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 2,
+      "cost": 55000,
+      "availability": "4/8 days",
+      "streetIndex": 1,
+      "legalCode": "5P-Q",
+      "mods": "+2RCT,+1INI,",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.302",
+      "grade": "Standard",
+      "rating": 1,
+      "description": "+2RCT, +1INI",
+      "bonusRea": 2,
+      "bonusInitDice": 1
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

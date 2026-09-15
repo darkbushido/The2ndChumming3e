@@ -1,0 +1,30 @@
+{
+  "_key": "!items!3deb7b8fd3273815",
+  "doc": {
+    "_id": "3deb7b8fd3273815",
+    "name": "Satellite Uplink (TacComm)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 12,
+      "weight": 0,
+      "availability": "2",
+      "streetIndex": "7500",
+      "bookPage": "sr2.252",
+      "description": "<p><strong>:</strong> 2</p>"
+    }
+  },
+  "embedded": {}
+}

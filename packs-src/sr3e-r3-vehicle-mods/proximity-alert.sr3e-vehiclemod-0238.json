@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0238",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0238",
+    "name": "Proximity Alert",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 250,
+      "availability": "",
+      "streetIndex": "1.00",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "40 hrs/Vehicle B/R(4)",
+      "cfCost": "0",
+      "load": "",
+      "bookPage": "r3.150",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

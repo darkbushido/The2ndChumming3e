@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0015",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0015",
+    "name": "Autonavigation System [2]",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 1000,
+      "availability": "3/6days",
+      "streetIndex": "1",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "32 hrs/Vehicle B/R(8-Handling)",
+      "cfCost": "0",
+      "load": "",
+      "bookPage": "r3.127",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

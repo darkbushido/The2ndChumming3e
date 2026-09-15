@@ -1,0 +1,30 @@
+{
+  "_key": "!items!fa2a059ce187d9bc",
+  "doc": {
+    "_id": "fa2a059ce187d9bc",
+    "name": "Auditory Recognition Chip 1",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 7500,
+      "weight": 0,
+      "availability": "7/4days",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.244",
+      "description": "<p><strong>Type:</strong> Know<br><strong>Memory:</strong> 50</p>"
+    }
+  },
+  "embedded": {}
+}

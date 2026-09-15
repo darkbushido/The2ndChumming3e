@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0678",
+  "doc": {
+    "_id": "sr3e-firearm-0678",
+    "name": "H&K MP7z Urb. Comb.Smart",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "6/18",
+      "ammunition": "36(c)",
+      "mode": "SA/BF/FA",
+      "damage": "7M",
+      "weight": "2",
+      "availability": "8/8days",
+      "cost": 4000,
+      "streetIndex": "2",
+      "accessories": "Gas Vent (3), Silencer, Smartlink",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

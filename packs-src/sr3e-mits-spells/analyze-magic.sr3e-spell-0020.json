@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0020",
+  "doc": {
+    "_id": "sr3e-spell-0020",
+    "name": "Analyze Magic",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Detection",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "T/D",
+      "drain": "(L)",
+      "target": "F(R)",
+      "bookPage": "mits.140",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

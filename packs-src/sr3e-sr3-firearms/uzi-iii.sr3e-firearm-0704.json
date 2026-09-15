@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0704",
+  "doc": {
+    "_id": "sr3e-firearm-0704",
+    "name": "Uzi III",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "24(c)",
+      "mode": "BF",
+      "damage": "6M",
+      "weight": "2",
+      "availability": "4/24hrs",
+      "cost": 600,
+      "streetIndex": ".75",
+      "accessories": "Laser Sight, Fold Stock(1RC)",
+      "bookPage": "sr3.278",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

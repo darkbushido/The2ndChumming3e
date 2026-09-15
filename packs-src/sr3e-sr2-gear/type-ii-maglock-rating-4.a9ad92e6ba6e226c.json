@@ -1,0 +1,30 @@
+{
+  "_key": "!items!a9ad92e6ba6e226c",
+  "doc": {
+    "_id": "a9ad92e6ba6e226c",
+    "name": "Type II Maglock (rating 4)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 4,
+      "cost": 400,
+      "weight": 0,
+      "availability": "4/3days",
+      "streetIndex": "1",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

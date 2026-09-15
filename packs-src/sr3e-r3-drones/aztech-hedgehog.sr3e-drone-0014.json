@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0014",
+  "doc": {
+    "_id": "sr3e-drone-0014",
+    "name": "Aztech Hedgehog",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 200000,
+      "streetIndex": 2,
+      "availability": "16/16 days",
+      "seating": 0,
+      "bookPage": "r3.172",
+      "notes": "Remote-control interface, Rigger Adaption, 2 Electronics Ports (Rigger Decryption 4 Rigger Protocol Emulation 4 0.2 CF total), Autosoft Interpretation System, Autosoft: Electronic Warfare 5",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 15,
+          "base": 15
+        },
+        "accel": {
+          "value": 3,
+          "base": 3
+        },
+        "body": {
+          "value": 1,
+          "base": 1
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 8,
+          "base": 8
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 5,
+          "base": 5
+        },
+        "sensor": {
+          "value": 4,
+          "base": 4
+        },
+        "cargo": {
+          "value": 1,
+          "base": 1
+        },
+        "load": {
+          "value": 16,
+          "base": 16
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

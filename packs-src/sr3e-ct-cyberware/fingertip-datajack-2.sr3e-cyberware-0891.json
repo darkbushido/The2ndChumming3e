@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0891",
+  "doc": {
+    "_id": "sr3e-cyberware-0891",
+    "name": "Fingertip Datajack [2]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Hands",
+      "essenceCost": 0.15,
+      "cost": 1000,
+      "availability": "AsDatajack",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "+1DJK",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "ct.29",
+      "grade": "Standard",
+      "rating": 2,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

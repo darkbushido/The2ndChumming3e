@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0004",
+  "doc": {
+    "_id": "sr3e-firearm-0004",
+    "name": "Ceska Diplomat",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HOPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "8",
+      "ammunition": "6(cy)",
+      "mode": "SS",
+      "damage": "4L",
+      "weight": ".5",
+      "availability": "3/12hrs",
+      "cost": 250,
+      "streetIndex": "1",
+      "accessories": "None",
+      "bookPage": "pw.14",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

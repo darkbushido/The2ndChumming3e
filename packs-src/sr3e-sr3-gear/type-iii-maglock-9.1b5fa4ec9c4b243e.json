@@ -1,0 +1,30 @@
+{
+  "_key": "!items!1b5fa4ec9c4b243e",
+  "doc": {
+    "_id": "1b5fa4ec9c4b243e",
+    "name": "Type III Maglock [9]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 9,
+      "cost": 1350,
+      "weight": 0,
+      "availability": "9/3.5days",
+      "streetIndex": "1.25",
+      "bookPage": "sr3.294",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

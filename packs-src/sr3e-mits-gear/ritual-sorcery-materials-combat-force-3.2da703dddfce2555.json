@@ -1,0 +1,30 @@
+{
+  "_key": "!items!2da703dddfce2555",
+  "doc": {
+    "_id": "2da703dddfce2555",
+    "name": "Ritual Sorcery Materials - Combat Force 3",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ritual Sorcery Materials"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Ritual Sorcery Materials",
+      "concealability": "",
+      "rating": null,
+      "cost": 3000,
+      "weight": 0,
+      "availability": "3/24hrs",
+      "streetIndex": "1",
+      "bookPage": "mits.170",
+      "description": "<p><strong>KarmaCost:</strong> 0</p>"
+    }
+  },
+  "embedded": {}
+}

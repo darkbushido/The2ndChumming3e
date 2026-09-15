@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0168",
+  "doc": {
+    "_id": "sr3e-bioware-0168",
+    "name": "Cellular Repair",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Genetech",
+      "grade": "Exotic",
+      "bioIndex": 0,
+      "cost": 50000,
+      "availability": "6/21 days",
+      "streetIndex": 2,
+      "mods": "",
+      "bookPage": "sota.026",
+      "rating": 0,
+      "description": "Incompatible with Boosted Reflexes"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

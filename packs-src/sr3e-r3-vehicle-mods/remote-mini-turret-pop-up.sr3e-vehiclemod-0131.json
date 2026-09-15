@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0131",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0131",
+    "name": "Remote Mini Turret(Pop-Up)",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 6000,
+      "availability": "GM",
+      "streetIndex": "2",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "72 hrs/Vehicle B/R(4)",
+      "cfCost": "8",
+      "load": "25kg",
+      "bookPage": "r3.141",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

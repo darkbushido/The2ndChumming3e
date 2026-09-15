@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-projectile-0028",
+  "doc": {
+    "_id": "sr3e-projectile-0028",
+    "name": "Pistol Crossbow",
+    "type": "projectile",
+    "system": {
+      "category": "LCB",
+      "skill": "Projectile Weapons",
+      "attribute": "strength",
+      "concealability": "5",
+      "strMin": 2,
+      "damage": "4L",
+      "weight": "1",
+      "availability": "3/36hrs",
+      "cost": 200,
+      "streetIndex": "1",
+      "legal": false,
+      "bookPage": "cc.13",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

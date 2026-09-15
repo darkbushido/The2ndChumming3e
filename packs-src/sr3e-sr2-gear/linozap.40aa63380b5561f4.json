@@ -1,0 +1,30 @@
+{
+  "_key": "!items!40aa63380b5561f4",
+  "doc": {
+    "_id": "40aa63380b5561f4",
+    "name": "Linozap",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "5",
+      "rating": null,
+      "cost": 350,
+      "weight": 0.75,
+      "availability": "6/4 days",
+      "streetIndex": "2",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

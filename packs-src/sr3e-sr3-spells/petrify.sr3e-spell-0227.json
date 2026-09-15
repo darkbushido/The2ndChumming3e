@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0227",
+  "doc": {
+    "_id": "sr3e-spell-0227",
+    "name": "Petrify",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Manipulation",
+      "type": "Physical",
+      "duration": "Sustained",
+      "range": "LOS",
+      "drain": "+1(S)",
+      "target": "B(T)",
+      "bookPage": "sr3.198",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

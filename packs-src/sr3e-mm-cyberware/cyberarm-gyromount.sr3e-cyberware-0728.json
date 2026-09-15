@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0728",
+  "doc": {
+    "_id": "sr3e-cyberware-0728",
+    "name": "Cyberarm Gyromount",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0,
+      "cost": 40000,
+      "availability": "10/3 weeks",
+      "streetIndex": 2,
+      "legalCode": "3-N",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.36",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "3 points of Recoil Reduction, -1 Conceal when inactive, -6 Conceal when active"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!13862e5477e0394a",
+  "doc": {
+    "_id": "13862e5477e0394a",
+    "name": "Camera — Trideo",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Miscellaneous Components"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Miscellaneous Components",
+      "concealability": "",
+      "rating": null,
+      "cost": 200,
+      "weight": 0,
+      "availability": "Always",
+      "streetIndex": "1",
+      "bookPage": "sr3.302",
+      "description": "<p>Cost 200-2000¥ (a range — the book's).</p><p><strong>Legal:</strong> Legal</p>"
+    }
+  },
+  "embedded": {}
+}

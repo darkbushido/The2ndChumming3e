@@ -1,0 +1,31 @@
+{
+  "_key": "!items!343808393a3a5001",
+  "doc": {
+    "_id": "343808393a3a5001",
+    "name": "FoolKiller",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "5P",
+      "tolerance": "2",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 35,
+      "availability": "8/3hrs",
+      "streetIndex": "2.5",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 10</p>"
+    }
+  },
+  "embedded": {}
+}

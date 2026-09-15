@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0127",
+  "doc": {
+    "_id": "sr3e-vehicle-0127",
+    "name": "Aztech Halcon GAA",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "fixedwing",
+      "cost": 4500000,
+      "streetIndex": 3,
+      "availability": "NA",
+      "bookPage": "r3.179",
+      "seating": 1,
+      "notes": "Gas Enviroseal, 2 External Fixed Hardpoints, 7 External Missile Mounts, Thermal Baffles 4 (factored in), ECM 9, ECCM 9, 3 Medium Launch Control Systems | Alt-mode Speed/Accel: 150(1800)/80 | Seating: 1e",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 150,
+          "base": 150
+        },
+        "accel": {
+          "value": 80,
+          "base": 80
+        },
+        "body": {
+          "value": 7,
+          "base": 7
+        },
+        "armor": {
+          "value": 12,
+          "base": 12
+        },
+        "sig": {
+          "value": 6,
+          "base": 6
+        },
+        "autonav": {
+          "value": 4,
+          "base": 4
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 9,
+          "base": 9
+        },
+        "cargo": {
+          "value": 3,
+          "base": 3
+        },
+        "load": {
+          "value": 2600,
+          "base": 2600
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

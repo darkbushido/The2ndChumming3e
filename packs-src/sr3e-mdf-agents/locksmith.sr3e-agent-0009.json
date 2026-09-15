@@ -1,0 +1,35 @@
+{
+  "_key": "!actors!sr3e-agent-0009",
+  "doc": {
+    "_id": "sr3e-agent-0009",
+    "name": "Locksmith",
+    "type": "agent",
+    "img": "systems/The2ndChumming3e/styles/textures/agent-default.webp",
+    "system": {
+      "rating": 4,
+      "graded": false,
+      "hostSecurityTier": "Green",
+      "additionalSkills": [
+        {
+          "category": "Hacking"
+        }
+      ],
+      "utilities": [
+        {
+          "name": "Exploit",
+          "multiplier": 5
+        },
+        {
+          "name": "Decrypt",
+          "multiplier": 4
+        }
+      ],
+      "specialAbilities": [],
+      "woundValue": 0,
+      "notes": "<p>Dual-purpose access and cracking agent. Exploit for forced entry via Access Node; Decrypt for peeling encrypted datafiles. Multiplier 10, 160 Mp.</p><p>A common decker companion for data-theft runs — it opens doors and reads what's inside.</p>"
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

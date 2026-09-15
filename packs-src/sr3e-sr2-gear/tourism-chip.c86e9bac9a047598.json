@@ -1,0 +1,30 @@
+{
+  "_key": "!items!c86e9bac9a047598",
+  "doc": {
+    "_id": "c86e9bac9a047598",
+    "name": "Tourism Chip",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 4,
+      "cost": 42500,
+      "weight": 0,
+      "availability": "4/24hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.244",
+      "description": "<p><strong>Type:</strong> Active/Lingua<br><strong>Memory:</strong> 344</p>"
+    }
+  },
+  "embedded": {}
+}

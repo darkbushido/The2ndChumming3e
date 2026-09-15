@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0060",
+  "doc": {
+    "_id": "sr3e-melee-0060",
+    "name": "Long Spear",
+    "type": "melee",
+    "system": {
+      "category": "POL",
+      "skill": "Pole Arms/Staff",
+      "attribute": "strength",
+      "concealability": "2",
+      "reach": "2",
+      "damage": "(STR)S",
+      "weight": "4",
+      "availability": "6/48hrs",
+      "cost": 1000,
+      "streetIndex": "3",
+      "legal": true,
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

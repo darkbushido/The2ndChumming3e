@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0898",
+  "doc": {
+    "_id": "sr3e-cyberware-0898",
+    "name": "Flex Hands",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Hands",
+      "essenceCost": 0.4,
+      "cost": 0,
+      "availability": "6/72 hours",
+      "streetIndex": 2,
+      "legalCode": "7P-N",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.28",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "-2 Escape Artist TNs"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1230",
+  "doc": {
+    "_id": "sr3e-firearm-1230",
+    "name": "Flame Thrower",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "Flthr",
+      "skill": "Firearms",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "10",
+      "mode": "SS",
+      "damage": "8M",
+      "weight": "21",
+      "availability": "10/1wk",
+      "cost": 1000,
+      "streetIndex": "3",
+      "accessories": "Accessory-Underbarrel Rifle Mod. + 200 nuyen (see rules)",
+      "bookPage": "cc.30",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

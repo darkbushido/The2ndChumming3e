@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0033",
+  "doc": {
+    "_id": "sr3e-cyberware-0033",
+    "name": "Body Enhance [5]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0,
+      "cost": 375000,
+      "availability": "6/4 days",
+      "streetIndex": 1,
+      "legalCode": "6P-CB",
+      "mods": "+5BOD,",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "ct.31",
+      "grade": "Standard",
+      "rating": 5,
+      "description": "",
+      "bonusBod": 5
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

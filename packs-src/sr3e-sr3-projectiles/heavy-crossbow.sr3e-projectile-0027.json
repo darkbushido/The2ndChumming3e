@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-projectile-0027",
+  "doc": {
+    "_id": "sr3e-projectile-0027",
+    "name": "Heavy Crossbow",
+    "type": "projectile",
+    "system": {
+      "category": "HCB",
+      "skill": "Projectile Weapons",
+      "attribute": "strength",
+      "concealability": "-",
+      "strMin": 5,
+      "damage": "8S",
+      "weight": "4",
+      "availability": "6/36hrs",
+      "cost": 750,
+      "streetIndex": "1",
+      "legal": false,
+      "bookPage": "sr3.276",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

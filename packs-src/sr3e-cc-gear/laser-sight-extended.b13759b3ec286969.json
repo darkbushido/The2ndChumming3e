@@ -1,0 +1,30 @@
+{
+  "_key": "!items!b13759b3ec286969",
+  "doc": {
+    "_id": "b13759b3ec286969",
+    "name": "Laser Sight (Extended)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-1)",
+      "rating": null,
+      "cost": 1500,
+      "weight": 0.25,
+      "availability": "8/48hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.35",
+      "description": "<p><strong>Mount:</strong> Top/Under</p>"
+    }
+  },
+  "embedded": {}
+}

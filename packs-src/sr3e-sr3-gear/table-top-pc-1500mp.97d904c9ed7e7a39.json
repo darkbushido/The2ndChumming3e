@@ -1,0 +1,30 @@
+{
+  "_key": "!items!97d904c9ed7e7a39",
+  "doc": {
+    "_id": "97d904c9ed7e7a39",
+    "name": "Table Top PC (1500Mp)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "4",
+      "rating": null,
+      "cost": 30000,
+      "weight": 3,
+      "availability": "Always",
+      "streetIndex": ".75",
+      "bookPage": "sr3.287",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,29 @@
+{
+  "_key": "!items!sr3e-cyberware-0144",
+  "doc": {
+    "_id": "sr3e-cyberware-0144",
+    "name": "Muscle Replacement [4]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 4,
+      "cost": 80000,
+      "availability": "4/4 days",
+      "streetIndex": 1,
+      "legalCode": "5P-Q",
+      "mods": "+4QCK,+4STR,",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.302",
+      "grade": "Standard",
+      "rating": 4,
+      "description": "+4QCK, +4STR",
+      "bonusQui": 4,
+      "bonusStr": 4,
+      "srcgName": "Muscle Replac. [4]"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,29 @@
+{
+  "_key": "!items!a82c1776866935a8",
+  "doc": {
+    "_id": "a82c1776866935a8",
+    "name": "Vashon Island Houndstooth Set",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "varies",
+      "ballistic": 0,
+      "impact": 0,
+      "weight": 0,
+      "cost": 2000,
+      "availability": "6/48hrs",
+      "streetIndex": ".75",
+      "bookPage": "fof.94",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

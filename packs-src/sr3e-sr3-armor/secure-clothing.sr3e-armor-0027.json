@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0027",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0027",
+    "name": "Secure Clothing",
+    "type": "armor",
+    "system": {
+      "concealability": "12",
+      "ballistic": 3,
+      "impact": 0,
+      "weight": 1.5,
+      "availability": "3/36hrs",
+      "cost": 450,
+      "streetIndex": ".9",
+      "bookPage": "sr3.284",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

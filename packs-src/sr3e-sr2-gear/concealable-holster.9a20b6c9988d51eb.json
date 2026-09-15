@@ -1,0 +1,30 @@
+{
+  "_key": "!items!9a20b6c9988d51eb",
+  "doc": {
+    "_id": "9a20b6c9988d51eb",
+    "name": "Concealable Holster",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(+2)",
+      "rating": null,
+      "cost": 100,
+      "weight": 0.1,
+      "availability": "2/24hrs",
+      "streetIndex": ".75",
+      "bookPage": "sr2.239",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

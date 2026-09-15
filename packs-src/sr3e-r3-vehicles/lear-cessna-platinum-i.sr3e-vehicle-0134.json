@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0134",
+  "doc": {
+    "_id": "sr3e-vehicle-0134",
+    "name": "Lear-Cessna Platinum I",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "fixedwing",
+      "cost": 213000,
+      "streetIndex": 2,
+      "availability": "15/15 days",
+      "bookPage": "r3.180",
+      "seating": 5,
+      "notes": "3 Folding Bench Seats | Alt-mode Speed/Accel: 135(330)/24 | Seating: 2+3b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 135,
+          "base": 135
+        },
+        "accel": {
+          "value": 24,
+          "base": 24
+        },
+        "body": {
+          "value": 6,
+          "base": 6
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 4,
+          "base": 4
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 2,
+          "base": 2
+        },
+        "cargo": {
+          "value": 29,
+          "base": 29
+        },
+        "load": {
+          "value": 400,
+          "base": 400
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

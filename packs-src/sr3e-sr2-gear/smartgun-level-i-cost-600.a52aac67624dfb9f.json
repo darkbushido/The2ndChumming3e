@@ -1,0 +1,30 @@
+{
+  "_key": "!items!a52aac67624dfb9f",
+  "doc": {
+    "_id": "a52aac67624dfb9f",
+    "name": "Smartgun level I (Cost 600¥)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-2)",
+      "rating": null,
+      "cost": 600,
+      "weight": 1,
+      "availability": "4/48hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.240",
+      "description": "<p><strong>Mount:</strong> Top/Under</p>"
+    }
+  },
+  "embedded": {}
+}

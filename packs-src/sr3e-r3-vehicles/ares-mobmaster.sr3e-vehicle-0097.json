@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0097",
+  "doc": {
+    "_id": "sr3e-vehicle-0097",
+    "name": "Ares Mobmaster",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "military",
+      "cost": 173000,
+      "streetIndex": 3,
+      "availability": "19/19days",
+      "bookPage": "r3.169",
+      "seating": 7,
+      "notes": "Gas Enviroseal, Life Support(30 man-hrs), Small Turret(1 CF Ammo Bin) | Seating: 2+5b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 6,
+          "base": 6
+        },
+        "handlingOffRoad": {
+          "value": 12,
+          "base": 12
+        },
+        "speed": {
+          "value": 120,
+          "base": 120
+        },
+        "accel": {
+          "value": 3,
+          "base": 3
+        },
+        "body": {
+          "value": 5,
+          "base": 5
+        },
+        "armor": {
+          "value": 14,
+          "base": 14
+        },
+        "sig": {
+          "value": 1,
+          "base": 1
+        },
+        "autonav": {
+          "value": 4,
+          "base": 4
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 40,
+          "base": 40
+        },
+        "load": {
+          "value": 575,
+          "base": 575
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

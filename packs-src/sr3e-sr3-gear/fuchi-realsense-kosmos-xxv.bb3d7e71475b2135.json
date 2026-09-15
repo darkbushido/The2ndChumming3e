@@ -1,0 +1,30 @@
+{
+  "_key": "!items!bb3d7e71475b2135",
+  "doc": {
+    "_id": "bb3d7e71475b2135",
+    "name": "Fuchi RealSense Kosmos XXV",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "-",
+      "rating": null,
+      "cost": 250000,
+      "weight": 30,
+      "availability": "8/2weeks",
+      "streetIndex": "3",
+      "bookPage": "sr3.290",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0020",
+  "doc": {
+    "_id": "sr3e-adeptpower-0020",
+    "name": "Delay Damage 2",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 2,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "mits.149",
+      "description": "An adept with the silent form of this power merely needs to bump into, brush against, or otherwise touch the target unobtrusively."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,28 @@
+{
+  "_key": "!items!456ecbaa9ef08a6a",
+  "doc": {
+    "_id": "456ecbaa9ef08a6a",
+    "name": "Ruthenium Polymers (1 m^3)",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "",
+      "weight": "-",
+      "cost": 10000,
+      "availability": "5/14days",
+      "streetIndex": "7.5",
+      "bookPage": "sr2.258",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

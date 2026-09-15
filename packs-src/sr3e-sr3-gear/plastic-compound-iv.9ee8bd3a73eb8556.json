@@ -1,0 +1,30 @@
+{
+  "_key": "!items!9ee8bd3a73eb8556",
+  "doc": {
+    "_id": "9ee8bd3a73eb8556",
+    "name": "Plastic Compound IV",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Explosives"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Explosives",
+      "concealability": "6",
+      "rating": 6,
+      "cost": 80,
+      "weight": 1,
+      "availability": "8/48hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.283",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

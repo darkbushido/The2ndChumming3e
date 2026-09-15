@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-vehicleweapon-0006",
+  "doc": {
+    "_id": "sr3e-vehicleweapon-0006",
+    "name": "Ares Vigilant Autocannon",
+    "type": "vehicleweapon",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "system": {
+      "weaponType": "Autocannon",
+      "mode": "SS/FA",
+      "damage": "18D",
+      "ammunition": "Belt",
+      "weight": 90,
+      "cost": 90000,
+      "availability": "20/45days",
+      "streetIndex": "5",
+      "bookPage": "r3.91",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

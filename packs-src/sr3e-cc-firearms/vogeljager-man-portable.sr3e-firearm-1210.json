@@ -1,0 +1,28 @@
+{
+  "_key": "!items!sr3e-firearm-1210",
+  "doc": {
+    "_id": "sr3e-firearm-1210",
+    "name": "Vogeljager Man Portable",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "VJMP",
+      "skill": "Gunnery",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "1",
+      "mode": "SS",
+      "damage": "(As Vogeljager Missle)",
+      "weight": "8",
+      "availability": "18/28days",
+      "cost": 12500,
+      "streetIndex": "4",
+      "accessories": "Sensor Unit(2), Notes - Anti Air Missile Launcher:See Rules",
+      "bookPage": "cc.27",
+      "notes": "",
+      "isAoE": true
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-vehicleweapon-0029",
+  "doc": {
+    "_id": "sr3e-vehicleweapon-0029",
+    "name": "Water Cannon",
+    "type": "vehicleweapon",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "system": {
+      "weaponType": "Shotgun",
+      "mode": "SA",
+      "damage": "6M Stun",
+      "ammunition": "20",
+      "weight": 12,
+      "cost": 20000,
+      "availability": "GM",
+      "streetIndex": "GM",
+      "bookPage": "sr3.312",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

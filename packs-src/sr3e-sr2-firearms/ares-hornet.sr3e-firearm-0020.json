@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0020",
+  "doc": {
+    "_id": "sr3e-firearm-0020",
+    "name": "Ares Hornet",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "8",
+      "ammunition": "7(cy)",
+      "mode": "DAR(SA)",
+      "damage": "7L",
+      "weight": "2",
+      "availability": "4/48hrs",
+      "cost": 250,
+      "streetIndex": ".8",
+      "accessories": "None",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

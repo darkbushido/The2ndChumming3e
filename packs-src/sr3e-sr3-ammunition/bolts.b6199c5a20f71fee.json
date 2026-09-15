@@ -1,0 +1,34 @@
+{
+  "_key": "!items!b6199c5a20f71fee",
+  "doc": {
+    "_id": "b6199c5a20f71fee",
+    "name": "Bolts",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Bow and crossbow"
+      }
+    },
+    "system": {
+      "concealability": "4",
+      "damage": "(As crossbow)",
+      "ammoType": "regular",
+      "loadMechanism": "bolt",
+      "countedIn": "rounds",
+      "rounds": 1,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 0.05,
+      "cost": 5,
+      "availability": "5/36hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.276",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

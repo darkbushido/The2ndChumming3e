@@ -1,0 +1,30 @@
+{
+  "_key": "!items!e1e51b62440b1b7c",
+  "doc": {
+    "_id": "e1e51b62440b1b7c",
+    "name": "Low-wattage Gun-Flashlight",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 100,
+      "weight": 0,
+      "availability": "2/24hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

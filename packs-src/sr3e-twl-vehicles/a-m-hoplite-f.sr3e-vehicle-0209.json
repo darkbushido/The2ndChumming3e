@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0209",
+  "doc": {
+    "_id": "sr3e-vehicle-0209",
+    "name": "A-M Hoplite (F)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "motorcycle",
+      "cost": 23600,
+      "streetIndex": 2,
+      "availability": "2/24hrs",
+      "bookPage": "twl.133",
+      "seating": 1,
+      "notes": "Amphibious Operation 1, Electronics Port w/Personal Com Unit (Rationg 4, 1.2 CF), Environmental Adaptation (Artic), Externeal Fixed Firmpoint (1 CF Ammo Bin), Turbocharging 1 (factored in) | Seating: 1m",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 0,
+          "base": 0
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 65,
+          "base": 65
+        },
+        "accel": {
+          "value": 5,
+          "base": 5
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 4,
+          "base": 4
+        },
+        "sig": {
+          "value": 4,
+          "base": 4
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 0.3,
+          "base": 0.3
+        },
+        "load": {
+          "value": 20,
+          "base": 20
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

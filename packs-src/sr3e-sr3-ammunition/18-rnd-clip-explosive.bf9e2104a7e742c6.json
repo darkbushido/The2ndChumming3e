@@ -1,0 +1,34 @@
+{
+  "_key": "!items!bf9e2104a7e742c6",
+  "doc": {
+    "_id": "bf9e2104a7e742c6",
+    "name": "18-Rnd Clip (Explosive)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "explosive",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 18,
+      "rounds": 0,
+      "weight": 2.1,
+      "cost": 95,
+      "availability": "3/36hrs",
+      "streetIndex": ".8",
+      "bookPage": "sr3.281",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

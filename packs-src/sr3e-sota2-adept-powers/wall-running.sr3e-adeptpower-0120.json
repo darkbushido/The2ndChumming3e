@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0120",
+  "doc": {
+    "_id": "sr3e-adeptpower-0120",
+    "name": "Wall Running",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 1,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.68",
+      "description": "The adept can run up to Magic attribute meters on walls or other vertical surfaces."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

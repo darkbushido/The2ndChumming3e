@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0179",
+  "doc": {
+    "_id": "sr3e-bioware-0179",
+    "name": "Pollution",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Genetech",
+      "grade": "Exotic",
+      "bioIndex": 0.2,
+      "cost": 50000,
+      "availability": "6/30 days",
+      "streetIndex": 2,
+      "mods": "",
+      "bookPage": "sota.027",
+      "rating": 0,
+      "description": "+3 body dice for resisting chemical attacks"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

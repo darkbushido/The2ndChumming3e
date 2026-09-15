@@ -1,0 +1,42 @@
+{
+  "_key": "!items!kqqwHEpj7uLEbCPL",
+  "doc": {
+    "name": "Gamma-Anthrax (1 dose)",
+    "type": "drug",
+    "system": {
+      "category": "Pharmaceutical Compounds",
+      "addiction": "",
+      "tolerance": "",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "availability": "16/30days",
+      "cost": 1250,
+      "streetIndex": "5",
+      "bookPage": "sota.30",
+      "notes": ""
+    },
+    "_id": "kqqwHEpj7uLEbCPL",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "ge55aFMax5sNd2Ho": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.3.1",
+      "createdTime": 1782280826134,
+      "modifiedTime": 1782889914231,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

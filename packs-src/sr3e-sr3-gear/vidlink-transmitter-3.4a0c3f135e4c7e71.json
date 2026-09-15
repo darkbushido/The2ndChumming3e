@@ -1,0 +1,30 @@
+{
+  "_key": "!items!4a0c3f135e4c7e71",
+  "doc": {
+    "_id": "4a0c3f135e4c7e71",
+    "name": "Vidlink Transmitter[3]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "9",
+      "rating": 3,
+      "cost": 6000,
+      "weight": 1,
+      "availability": "4/1week",
+      "streetIndex": "2",
+      "bookPage": "sr3.290",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

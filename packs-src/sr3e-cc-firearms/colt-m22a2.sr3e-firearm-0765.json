@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0765",
+  "doc": {
+    "_id": "sr3e-firearm-0765",
+    "name": "Colt M22A2",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "AsRf",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "3",
+      "ammunition": "40(c)",
+      "mode": "SA/BF/FA",
+      "damage": "8M",
+      "weight": "4.75",
+      "availability": "4/3days",
+      "cost": 1600,
+      "streetIndex": "2",
+      "accessories": "Gas Vent I(1RC), Mag:(2), Grenade Launcher 6(m)",
+      "bookPage": "cc.22",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

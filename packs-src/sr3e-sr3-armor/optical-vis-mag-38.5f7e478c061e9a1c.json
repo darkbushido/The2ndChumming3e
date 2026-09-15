@@ -1,0 +1,29 @@
+{
+  "_key": "!items!5f7e478c061e9a1c",
+  "doc": {
+    "_id": "5f7e478c061e9a1c",
+    "name": "+Optical Vis. Mag 38",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "-",
+      "ballistic": 0,
+      "impact": 0,
+      "weight": 0,
+      "cost": 1200,
+      "availability": "-",
+      "streetIndex": "2",
+      "bookPage": "sr3.284",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

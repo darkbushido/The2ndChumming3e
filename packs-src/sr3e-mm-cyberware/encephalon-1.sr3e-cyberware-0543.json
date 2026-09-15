@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0543",
+  "doc": {
+    "_id": "sr3e-cyberware-0543",
+    "name": "Encephalon [1]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Headware",
+      "essenceCost": 0.75,
+      "cost": 40000,
+      "availability": "6/12 days",
+      "streetIndex": 2,
+      "legalCode": "Legal",
+      "mods": "+1HAC,+1TAS",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.20",
+      "grade": "Standard",
+      "rating": 1,
+      "description": "+1 Hacking Pool, +1 Task Pool, +1Int for learning new skills"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0070",
+  "doc": {
+    "_id": "sr3e-firearm-0070",
+    "name": "Ares Constrictor",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "6",
+      "ammunition": "6(cy)",
+      "mode": "DAR",
+      "damage": "10M",
+      "weight": "2.5",
+      "availability": "7/7days",
+      "cost": 400,
+      "streetIndex": "2",
+      "accessories": "Smartlink",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

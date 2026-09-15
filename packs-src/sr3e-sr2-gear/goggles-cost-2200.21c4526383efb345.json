@@ -1,0 +1,30 @@
+{
+  "_key": "!items!21c4526383efb345",
+  "doc": {
+    "_id": "21c4526383efb345",
+    "name": "Goggles (Cost 2200¥)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "S+S Vision Enhancers"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "S+S Vision Enhancers",
+      "concealability": "6",
+      "rating": null,
+      "cost": 2200,
+      "weight": 0,
+      "availability": "6/48hrs",
+      "streetIndex": "2",
+      "bookPage": "sr2.253",
+      "description": "<p><strong>Magnification:</strong> 20x</p>"
+    }
+  },
+  "embedded": {}
+}

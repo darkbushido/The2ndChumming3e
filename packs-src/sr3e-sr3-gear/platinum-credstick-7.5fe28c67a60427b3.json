@@ -1,0 +1,30 @@
+{
+  "_key": "!items!5fe28c67a60427b3",
+  "doc": {
+    "_id": "5fe28c67a60427b3",
+    "name": "Platinum Credstick[7]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Credstick"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Credstick",
+      "concealability": "-",
+      "rating": 7,
+      "cost": 35000,
+      "weight": 0,
+      "availability": "7/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.239",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

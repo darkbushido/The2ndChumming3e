@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0894",
+  "doc": {
+    "_id": "sr3e-firearm-0894",
+    "name": "Defiance T-250",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "ShtG",
+      "skill": "Shotguns",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "5(m)",
+      "mode": "SA",
+      "damage": "10S",
+      "weight": "3",
+      "availability": "3/24hrs",
+      "cost": 500,
+      "streetIndex": "1",
+      "accessories": "None",
+      "bookPage": "sr3.278",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

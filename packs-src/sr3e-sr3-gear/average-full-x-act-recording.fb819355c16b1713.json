@@ -1,0 +1,30 @@
+{
+  "_key": "!items!fb819355c16b1713",
+  "doc": {
+    "_id": "fb819355c16b1713",
+    "name": "Average Full-X ACT Recording",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "10",
+      "rating": null,
+      "cost": 6,
+      "weight": 0,
+      "availability": "always",
+      "streetIndex": ".75",
+      "bookPage": "sr3.285",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

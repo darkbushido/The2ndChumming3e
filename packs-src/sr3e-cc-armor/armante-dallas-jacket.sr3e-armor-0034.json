@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0034",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0034",
+    "name": "Armante \"Dallas\" Jacket",
+    "type": "armor",
+    "system": {
+      "concealability": "14",
+      "ballistic": 2,
+      "impact": 2,
+      "weight": 0.3,
+      "availability": "2/48hrs",
+      "cost": 1000,
+      "streetIndex": ".75",
+      "bookPage": "cc.46",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

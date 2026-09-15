@@ -1,0 +1,31 @@
+{
+  "_key": "!items!d13e3c2876566754",
+  "doc": {
+    "_id": "d13e3c2876566754",
+    "name": "J",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "1M",
+      "tolerance": "1",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 600,
+      "availability": "10/3hrs",
+      "streetIndex": "4",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 50</p>"
+    }
+  },
+  "embedded": {}
+}

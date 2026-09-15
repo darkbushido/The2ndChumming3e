@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0096",
+  "doc": {
+    "_id": "sr3e-firearm-0096",
+    "name": "Colt Manhunter S",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "16(c)",
+      "mode": "SA",
+      "damage": "9M",
+      "weight": "2.25",
+      "availability": "4/24hrs",
+      "cost": 600,
+      "streetIndex": "1",
+      "accessories": "Smartlink",
+      "bookPage": "ssc.23",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

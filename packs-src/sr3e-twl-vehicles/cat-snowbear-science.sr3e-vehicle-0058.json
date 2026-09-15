@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0058",
+  "doc": {
+    "_id": "sr3e-vehicle-0058",
+    "name": "CAT Snowbear Science",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 407445,
+      "streetIndex": 1,
+      "availability": "10/10days",
+      "bookPage": "twl.133",
+      "seating": 3,
+      "notes": "Amphibious Operation 2, Datajack Port, Shop, Thermal Baffles 2 (factored in), 2 Basic Living Amenities | Alt-mode Cargo/Load: 478 (378PS)/8950 (700PS) | Seating: 2b+1B",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 40,
+          "base": 40
+        },
+        "accel": {
+          "value": 1,
+          "base": 1
+        },
+        "body": {
+          "value": 6,
+          "base": 6
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 478,
+          "base": 478
+        },
+        "load": {
+          "value": 8950,
+          "base": 8950
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!5246fe1c161a54f0",
+  "doc": {
+    "_id": "5246fe1c161a54f0",
+    "name": "Gas Detector Lvl 2",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "4",
+      "rating": 2,
+      "cost": 20000,
+      "weight": 0.5,
+      "availability": "6/7days",
+      "streetIndex": "2",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

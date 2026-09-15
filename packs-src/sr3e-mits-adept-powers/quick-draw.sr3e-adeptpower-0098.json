@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0098",
+  "doc": {
+    "_id": "sr3e-adeptpower-0098",
+    "name": "Quick Draw",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "mits.151",
+      "description": "The quick draw power allows an adept to use the quick drawing rules (P. 107, SR3) to quickdraw weapons other than pistols."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

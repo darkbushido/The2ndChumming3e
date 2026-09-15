@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0238",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0238",
+    "name": "Light Security Armor",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 6,
+      "impact": 4,
+      "weight": 0,
+      "availability": "12/10days",
+      "cost": 7500,
+      "streetIndex": "2",
+      "bookPage": "sr3.284",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0067",
+  "doc": {
+    "_id": "sr3e-vehicle-0067",
+    "name": "Aztechnology Atalante",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 400000,
+      "streetIndex": 2,
+      "availability": "4/8days",
+      "bookPage": "tss.6",
+      "seating": 1,
+      "notes": "APPS, Anti-theft IV, Enviroseal (gas), Optional Crash Cage and Datajack Port",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 8,
+          "base": 8
+        },
+        "speed": {
+          "value": 200,
+          "base": 200
+        },
+        "accel": {
+          "value": 12,
+          "base": 12
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 6,
+          "base": 6
+        },
+        "load": {
+          "value": 40,
+          "base": 40
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

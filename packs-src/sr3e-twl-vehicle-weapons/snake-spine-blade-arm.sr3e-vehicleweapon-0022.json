@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-vehicleweapon-0022",
+  "doc": {
+    "_id": "sr3e-vehicleweapon-0022",
+    "name": "Snake-Spine Blade Arm",
+    "type": "vehicleweapon",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "system": {
+      "weaponType": "Mechanical Tentacle",
+      "mode": "SA",
+      "damage": "10M",
+      "ammunition": "NA",
+      "weight": 25,
+      "cost": 2000,
+      "availability": "NA",
+      "streetIndex": "0,00",
+      "bookPage": "twl.131",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1235",
+  "doc": {
+    "_id": "sr3e-firearm-1235",
+    "name": "Ares MP Laser",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "Las",
+      "skill": "Firearms",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "20(Pack)",
+      "mode": "SA",
+      "damage": "15M",
+      "weight": "30",
+      "availability": "NA",
+      "cost": 2500000,
+      "streetIndex": "NA",
+      "accessories": "None",
+      "bookPage": "ssc.55",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

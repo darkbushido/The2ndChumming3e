@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0112",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0112",
+    "name": "Remote Mini Turret",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 6000,
+      "availability": "GM",
+      "streetIndex": "2",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "72 hrs/Vehicle B/R(4)",
+      "cfCost": "4",
+      "load": "25kg",
+      "bookPage": "r3.141",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

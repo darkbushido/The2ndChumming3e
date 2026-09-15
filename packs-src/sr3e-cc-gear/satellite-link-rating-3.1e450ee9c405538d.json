@@ -1,0 +1,30 @@
+{
+  "_key": "!items!1e450ee9c405538d",
+  "doc": {
+    "_id": "1e450ee9c405538d",
+    "name": "Satellite Link Rating [3]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 3,
+      "cost": 3000,
+      "weight": 2,
+      "availability": "10/2wks",
+      "streetIndex": "2",
+      "bookPage": "cc.55",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

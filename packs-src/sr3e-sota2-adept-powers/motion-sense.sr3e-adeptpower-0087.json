@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0087",
+  "doc": {
+    "_id": "sr3e-adeptpower-0087",
+    "name": "Motion Sense",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.67",
+      "description": "The adept can sense any movement within Magic attribute meters, but not behind astral barriers."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

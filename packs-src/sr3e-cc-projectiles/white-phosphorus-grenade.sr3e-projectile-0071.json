@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-projectile-0071",
+  "doc": {
+    "_id": "sr3e-projectile-0071",
+    "name": "White Phosphorus Grenade",
+    "type": "projectile",
+    "system": {
+      "category": "GR",
+      "skill": "Throwing Weapons",
+      "attribute": "strength",
+      "concealability": "6",
+      "strMin": 0,
+      "damage": "14M/10L",
+      "weight": ".25",
+      "availability": "6/5days",
+      "cost": 120,
+      "streetIndex": "3",
+      "legal": false,
+      "bookPage": "cc.41",
+      "notes": "",
+      "isAoE": true
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0144",
+  "doc": {
+    "_id": "sr3e-vehicle-0144",
+    "name": "Chrysler-Nissan G14",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 750000,
+      "streetIndex": 2,
+      "availability": "10/10 days",
+      "bookPage": "tss.6",
+      "seating": 0,
+      "notes": "medium turret (weapon n/i), provisions for 2 drone racks or 4CF AA missiles",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 120,
+          "base": 120
+        },
+        "accel": {
+          "value": 5,
+          "base": 5
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 12,
+          "base": 12
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 4,
+          "base": 4
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 21,
+          "base": 21
+        },
+        "load": {
+          "value": 400,
+          "base": 400
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

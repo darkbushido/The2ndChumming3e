@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0001",
+  "doc": {
+    "_id": "sr3e-prog-0001",
+    "name": "Passcode",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Passcode",
+      "type": "Passcode",
+      "category": "",
+      "rating": 1,
+      "sizeMp": 0,
+      "multiplier": 1,
+      "degradable": false,
+      "description": "<p>Legitimate access credentials. Allows automatic marking of specified nodes without Hacking roll or Overwatch accrual.</p><p><em>Rating indicates breadth/restrictiveness of access. Can be as narrow as a single datafile or as broad as an entire host.</em></p><p><strong>Function:</strong> Access</p>",
+      "associatedPrompt": "",
+      "effect": "",
+      "bookPage": "matrix-defragged.28"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

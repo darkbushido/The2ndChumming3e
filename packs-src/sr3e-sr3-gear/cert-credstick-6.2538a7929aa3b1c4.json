@@ -1,0 +1,30 @@
+{
+  "_key": "!items!2538a7929aa3b1c4",
+  "doc": {
+    "_id": "2538a7929aa3b1c4",
+    "name": "Cert. Credstick[6]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Credstick"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Credstick",
+      "concealability": "-",
+      "rating": 6,
+      "cost": 30000,
+      "weight": 0,
+      "availability": "6/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.239",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

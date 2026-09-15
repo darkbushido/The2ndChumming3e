@@ -1,0 +1,28 @@
+{
+  "_key": "!items!bac75d59d762f979",
+  "doc": {
+    "_id": "bac75d59d762f979",
+    "name": "Cybercast",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "+2",
+      "weight": "3/12hrs",
+      "cost": 3000,
+      "availability": "1.5",
+      "streetIndex": "2",
+      "bookPage": "sr2.258",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

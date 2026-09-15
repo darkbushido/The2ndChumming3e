@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-vehicleweapon-0035",
+  "doc": {
+    "_id": "sr3e-vehicleweapon-0035",
+    "name": "Lure Launcher AM-56 [6]",
+    "type": "vehicleweapon",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "system": {
+      "weaponType": "Lure Launcher",
+      "mode": "SS",
+      "damage": "-",
+      "ammunition": "2",
+      "weight": 6,
+      "cost": 120000,
+      "availability": "9/12 days",
+      "streetIndex": "4",
+      "bookPage": "fra.141",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

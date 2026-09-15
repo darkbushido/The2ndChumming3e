@@ -1,0 +1,30 @@
+{
+  "_key": "!items!7a4345f2b71cb340",
+  "doc": {
+    "_id": "7a4345f2b71cb340",
+    "name": "Elemental Conjuring Materials Rating 3",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Magical Equipment"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Magical Equipment",
+      "concealability": "",
+      "rating": 3,
+      "cost": 3000,
+      "weight": 0,
+      "availability": "3/24hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.305",
+      "description": "<p><strong>KarmaCost:</strong> 0</p>"
+    }
+  },
+  "embedded": {}
+}

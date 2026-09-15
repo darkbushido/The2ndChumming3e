@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0233",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0233",
+    "name": "MedicGear Combat Medical Armor",
+    "type": "armor",
+    "system": {
+      "concealability": "5",
+      "ballistic": 3,
+      "impact": 1,
+      "weight": 4,
+      "availability": "10/14days",
+      "cost": 3400,
+      "streetIndex": "2",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

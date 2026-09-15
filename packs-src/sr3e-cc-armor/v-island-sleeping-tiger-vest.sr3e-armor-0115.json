@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0115",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0115",
+    "name": "V-Island \"Sleeping Tiger\" Vest",
+    "type": "armor",
+    "system": {
+      "concealability": "10",
+      "ballistic": 1,
+      "impact": 1,
+      "weight": 0.75,
+      "availability": "5/48hrs",
+      "cost": 500,
+      "streetIndex": ".75",
+      "bookPage": "cc.49",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

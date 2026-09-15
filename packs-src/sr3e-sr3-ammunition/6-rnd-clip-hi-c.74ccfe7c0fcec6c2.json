@@ -1,0 +1,34 @@
+{
+  "_key": "!items!74ccfe7c0fcec6c2",
+  "doc": {
+    "_id": "74ccfe7c0fcec6c2",
+    "name": "6-Rnd Clip (Hi-C)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 6,
+      "rounds": 0,
+      "weight": 0.9,
+      "cost": 95,
+      "availability": "6/1wk",
+      "streetIndex": "3",
+      "bookPage": "sr3.281",
+      "notes": "<p>Hi-C rounds — a type this system does not model; its rules are the GM's (sr3.281).</p>"
+    }
+  },
+  "embedded": {}
+}

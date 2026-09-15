@@ -1,0 +1,28 @@
+{
+  "_key": "!items!sr3e-firearm-1199",
+  "doc": {
+    "_id": "sr3e-firearm-1199",
+    "name": "Arbelast II MAW",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "MisLn",
+      "skill": "Gunnery",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "1",
+      "mode": "SS",
+      "damage": "(As Arbelast II MAW Rocket)",
+      "weight": "2.75",
+      "availability": "8/48hrs",
+      "cost": 1200,
+      "streetIndex": "2",
+      "accessories": "Imaging Scope(1)",
+      "bookPage": "cc.28",
+      "notes": "",
+      "isAoE": true
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0154",
+  "doc": {
+    "_id": "sr3e-bioware-0154",
+    "name": "Trauma Damper",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Cultured",
+      "grade": "Cultured",
+      "bioIndex": 0.4,
+      "cost": 40000,
+      "availability": "6/8 days",
+      "streetIndex": 2,
+      "mods": "",
+      "bookPage": "mm.075",
+      "rating": 0,
+      "description": "-1 box Stun wounds, shift 1 box of Physical wounds to Stun"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

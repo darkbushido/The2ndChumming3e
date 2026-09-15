@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0077",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0077",
+    "name": "Mortimer \"Summit\" Coat",
+    "type": "armor",
+    "system": {
+      "concealability": "12",
+      "ballistic": 3,
+      "impact": 2,
+      "weight": 3,
+      "availability": "6/48hrs",
+      "cost": 2500,
+      "streetIndex": ".75",
+      "bookPage": "cc.48",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

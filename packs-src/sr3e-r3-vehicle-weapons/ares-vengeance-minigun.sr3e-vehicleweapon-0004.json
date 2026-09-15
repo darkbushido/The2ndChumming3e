@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-vehicleweapon-0004",
+  "doc": {
+    "_id": "sr3e-vehicleweapon-0004",
+    "name": "Ares Vengeance Minigun",
+    "type": "vehicleweapon",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "system": {
+      "weaponType": "MMG",
+      "mode": "FA",
+      "damage": "9S",
+      "ammunition": "Belt",
+      "weight": 30,
+      "cost": 50000,
+      "availability": "18/28days",
+      "streetIndex": "3.5",
+      "bookPage": "r3.89",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

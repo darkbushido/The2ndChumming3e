@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0660",
+  "doc": {
+    "_id": "sr3e-firearm-0660",
+    "name": "Ares Tommy Gun Heavy",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "160(c)",
+      "mode": "BF/FA",
+      "damage": "7M",
+      "weight": "6.4",
+      "availability": "10/60days",
+      "cost": 2900,
+      "streetIndex": "2",
+      "accessories": "RC(6)[Gas Vent III, Foregrip and Stock], drum feed, Smartlink-2",
+      "bookPage": "tss.16",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

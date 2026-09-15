@@ -1,0 +1,30 @@
+{
+  "_key": "!items!c98f9af4f50da068",
+  "doc": {
+    "_id": "c98f9af4f50da068",
+    "name": "Gold Credstick[13]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Credstick"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Credstick",
+      "concealability": "-",
+      "rating": 13,
+      "cost": 650000,
+      "weight": 0,
+      "availability": "13/30days",
+      "streetIndex": "1",
+      "bookPage": "sr3.239",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

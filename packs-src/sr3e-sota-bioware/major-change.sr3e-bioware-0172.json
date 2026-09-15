@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0172",
+  "doc": {
+    "_id": "sr3e-bioware-0172",
+    "name": "Major Change",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Genetech",
+      "grade": "Exotic",
+      "bioIndex": 0.5,
+      "cost": 65000,
+      "availability": "5/21 days",
+      "streetIndex": 2,
+      "mods": "",
+      "bookPage": "sota.026",
+      "rating": 0,
+      "description": "Includes any change not normal to metatype"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

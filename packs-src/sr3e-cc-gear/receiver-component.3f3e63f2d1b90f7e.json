@@ -1,0 +1,30 @@
+{
+  "_key": "!items!3f3e63f2d1b90f7e",
+  "doc": {
+    "_id": "3f3e63f2d1b90f7e",
+    "name": "Receiver Component",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "4",
+      "rating": null,
+      "cost": 10000,
+      "weight": 1,
+      "availability": "12/3wks",
+      "streetIndex": "2",
+      "bookPage": "cc.55",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

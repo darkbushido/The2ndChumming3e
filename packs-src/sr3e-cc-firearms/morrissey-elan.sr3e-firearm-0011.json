@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0011",
+  "doc": {
+    "_id": "sr3e-firearm-0011",
+    "name": "Morrissey Elan",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HOPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "8",
+      "ammunition": "5(c)",
+      "mode": "SA",
+      "damage": "5L",
+      "weight": ".5",
+      "availability": "8/7days",
+      "cost": 500,
+      "streetIndex": "2",
+      "accessories": "None",
+      "bookPage": "cc.16",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0179",
+  "doc": {
+    "_id": "sr3e-vehicle-0179",
+    "name": "Doc Wagon Hughes WK-2",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "helicopter",
+      "cost": 828750,
+      "streetIndex": 2.5,
+      "availability": "-",
+      "bookPage": "r3.184",
+      "seating": 2,
+      "notes": "Anti-Theft System (Rating 6), 2 External Hardpoints, Medical Treatment Gear (2 patients) | Alt-mode Cargo/Load: 4[84 PS]/200[200 PS]",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 190,
+          "base": 190
+        },
+        "accel": {
+          "value": 14,
+          "base": 14
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 6,
+          "base": 6
+        },
+        "sig": {
+          "value": 1,
+          "base": 1
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 4,
+          "base": 4
+        },
+        "load": {
+          "value": 200,
+          "base": 200
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

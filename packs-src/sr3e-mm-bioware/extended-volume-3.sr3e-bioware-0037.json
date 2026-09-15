@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0037",
+  "doc": {
+    "_id": "sr3e-bioware-0037",
+    "name": "Extended Volume[3]",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Standard",
+      "grade": "Standard",
+      "bioIndex": 0.4,
+      "cost": 25000,
+      "availability": "4/4 days",
+      "streetIndex": 1,
+      "mods": "",
+      "bookPage": "mm.066",
+      "rating": 3,
+      "description": "+135 seconds of air, -3 fatigue TNs"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

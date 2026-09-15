@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0656",
+  "doc": {
+    "_id": "sr3e-firearm-0656",
+    "name": "AK-97 SMG/Carbine",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "30(c)",
+      "mode": "SA/BF/FA",
+      "damage": "6M",
+      "weight": "4",
+      "availability": "5/3days",
+      "cost": 800,
+      "streetIndex": "1",
+      "accessories": "Fold. Stock(1RC)",
+      "bookPage": "sr3.278",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

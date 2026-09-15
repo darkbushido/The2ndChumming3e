@@ -1,0 +1,34 @@
+{
+  "_key": "!items!6e4189b3b7491015",
+  "doc": {
+    "_id": "6e4189b3b7491015",
+    "name": "Claymore",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "4",
+      "damage": "10D/10S",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "rounds",
+      "rounds": 1,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 1.5,
+      "cost": 175,
+      "availability": "8/6days",
+      "streetIndex": "3",
+      "bookPage": "fof.48",
+      "notes": "<p>Not one of the types this system models, or a combination of them — its rules are the GM's.</p><p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>"
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0410",
+  "doc": {
+    "_id": "sr3e-cyberware-0410",
+    "name": "Eyes, Cyber Replacement",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Eyeware",
+      "essenceCost": 0.2,
+      "cost": 5000,
+      "availability": "2/24 hours",
+      "streetIndex": 0.75,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0.5,
+      "isReplacement": true,
+      "bookPage": "sr3.300",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Holds .5 Essence of eye mods free of Essence cost"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

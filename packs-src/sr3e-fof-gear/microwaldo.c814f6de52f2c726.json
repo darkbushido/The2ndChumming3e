@@ -1,0 +1,30 @@
+{
+  "_key": "!items!c814f6de52f2c726",
+  "doc": {
+    "_id": "c814f6de52f2c726",
+    "name": "Microwaldo",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": null,
+      "cost": 7000,
+      "weight": 2,
+      "availability": "6/72hrs",
+      "streetIndex": "3",
+      "bookPage": "fof.90",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

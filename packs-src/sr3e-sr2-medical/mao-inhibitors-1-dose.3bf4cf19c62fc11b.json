@@ -1,0 +1,28 @@
+{
+  "_key": "!items!3bf4cf19c62fc11b",
+  "doc": {
+    "_id": "3bf4cf19c62fc11b",
+    "name": "MAO Inhibitors (1 dose)",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "",
+      "weight": "60",
+      "cost": 3,
+      "availability": "?",
+      "streetIndex": "",
+      "bookPage": "sr2.258",
+      "notes": "<p>Cost 2.5¥ in the book.</p>"
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0166",
+  "doc": {
+    "_id": "sr3e-vehicle-0166",
+    "name": "Doc Wagon Osprey II",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "helicopter",
+      "cost": 935000,
+      "streetIndex": 2.5,
+      "availability": "-",
+      "bookPage": "sr3.311,r3.184",
+      "seating": 2,
+      "notes": "VTOL, Anti-Theft System (Rating 6), 2 External Hardpoints, Medical Clinic(2 patients Rating 4) | Alt-mode Cargo/Load: 12[168 PS]/300[400 PS]",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 380,
+          "base": 380
+        },
+        "accel": {
+          "value": 10,
+          "base": 10
+        },
+        "body": {
+          "value": 5,
+          "base": 5
+        },
+        "armor": {
+          "value": 3,
+          "base": 3
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 12,
+          "base": 12
+        },
+        "load": {
+          "value": 300,
+          "base": 300
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

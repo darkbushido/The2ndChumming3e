@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0046",
+  "doc": {
+    "_id": "sr3e-vehicle-0046",
+    "name": "Rover Ascot",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 50000,
+      "streetIndex": 2,
+      "availability": "3/72hrs",
+      "bookPage": "tss.6",
+      "seating": 2,
+      "notes": "Amphibious OPs Package I, Enviroseal (Water), optional Underwater Package includes Enviroseal (engine) and Amphibious ops Package II",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 2,
+          "base": 2
+        },
+        "speed": {
+          "value": 90,
+          "base": 90
+        },
+        "accel": {
+          "value": 9,
+          "base": 9
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 6,
+          "base": 6
+        },
+        "sig": {
+          "value": 5,
+          "base": 5
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 3,
+          "base": 3
+        },
+        "load": {
+          "value": 120,
+          "base": 120
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

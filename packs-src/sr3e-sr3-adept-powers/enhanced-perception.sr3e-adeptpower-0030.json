@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0030",
+  "doc": {
+    "_id": "sr3e-adeptpower-0030",
+    "name": "Enhanced Perception*",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": true,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sr3.169",
+      "description": "Each level provides an additional die for all Perception Tests SR3-231, including astral perception, if you have that power."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

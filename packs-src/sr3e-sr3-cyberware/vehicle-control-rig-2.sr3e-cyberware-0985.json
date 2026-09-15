@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0985",
+  "doc": {
+    "_id": "sr3e-cyberware-0985",
+    "name": "Vehicle Control Rig [2]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Rigger",
+      "essenceCost": 3,
+      "cost": 60000,
+      "availability": "8/48 hours",
+      "streetIndex": 1.25,
+      "legalCode": "6P-N",
+      "mods": "+4VCT,+2VNI,+2VCR,",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.302",
+      "grade": "Standard",
+      "rating": 2,
+      "description": "Mods only apply when rigging",
+      "srcgName": "Vehicle Ctrl Rig [2]"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

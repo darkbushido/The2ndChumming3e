@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0888",
+  "doc": {
+    "_id": "sr3e-firearm-0888",
+    "name": "Benelli M1014",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "ShtG",
+      "skill": "Shotguns",
+      "attribute": "quickness",
+      "concealability": "2",
+      "ammunition": "6(m)",
+      "mode": "SA",
+      "damage": "10S/10D(f)",
+      "weight": "3.82",
+      "availability": "6/48hours",
+      "cost": 980,
+      "streetIndex": "1",
+      "accessories": "Low power \"less-than-lethal\" ammo can be manually cycled with the ext. bolt handle. Collapsible stock(1RC)",
+      "bookPage": "cc.0",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

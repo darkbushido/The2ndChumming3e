@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0832",
+  "doc": {
+    "_id": "sr3e-cyberware-0832",
+    "name": "Rigger Decryption Module [9]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0,
+      "cost": 157500,
+      "availability": "11/9 days",
+      "streetIndex": 3,
+      "legalCode": "8P-W",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.23",
+      "grade": "Standard",
+      "rating": 9,
+      "description": "",
+      "srcgName": "Rigger Decrypt. Mod [9]"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

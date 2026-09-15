@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0071",
+  "doc": {
+    "_id": "sr3e-firearm-0071",
+    "name": "Ares Jaguar",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "6(cy)",
+      "mode": "DAR",
+      "damage": "10M",
+      "weight": "2.5",
+      "availability": "5/4days",
+      "cost": 300,
+      "streetIndex": "1",
+      "accessories": "Laser Sight",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

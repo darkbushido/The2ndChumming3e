@@ -1,0 +1,28 @@
+{
+  "_key": "!items!39a0d38d21e98837",
+  "doc": {
+    "_id": "39a0d38d21e98837",
+    "name": "Stabilization Unit Deluxe",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "6",
+      "weight": "35",
+      "cost": 20000,
+      "availability": "16/1mth",
+      "streetIndex": "3",
+      "bookPage": "sr2.258",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

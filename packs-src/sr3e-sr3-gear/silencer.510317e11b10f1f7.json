@@ -1,0 +1,30 @@
+{
+  "_key": "!items!510317e11b10f1f7",
+  "doc": {
+    "_id": "510317e11b10f1f7",
+    "name": "Silencer",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-2)",
+      "rating": null,
+      "cost": 500,
+      "weight": 0.2,
+      "availability": "4/48hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.282",
+      "description": "<p><strong>Mount:</strong> Barrel</p>"
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0067",
+  "doc": {
+    "_id": "sr3e-adeptpower-0067",
+    "name": "Iron Gut",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.66",
+      "description": "An adept can eat anything, his body will digest anything without harm. The Power of ingested toxins is reduced by 2."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

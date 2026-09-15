@@ -1,0 +1,30 @@
+{
+  "_key": "!items!b375d71e701ac95e",
+  "doc": {
+    "_id": "b375d71e701ac95e",
+    "name": "Laser Sights",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-1)",
+      "rating": null,
+      "cost": 500,
+      "weight": 0.25,
+      "availability": "6/36hrs",
+      "streetIndex": ".9",
+      "bookPage": "sr2.240",
+      "description": "<p><strong>Mount:</strong> Top</p>"
+    }
+  },
+  "embedded": {}
+}

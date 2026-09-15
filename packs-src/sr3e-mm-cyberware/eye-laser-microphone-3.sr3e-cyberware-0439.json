@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0439",
+  "doc": {
+    "_id": "sr3e-cyberware-0439",
+    "name": "Eye, Laser Microphone [3]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Eyeware",
+      "essenceCost": 0.1,
+      "cost": 6000,
+      "availability": "3/72 hours",
+      "streetIndex": 2,
+      "legalCode": "5P-N",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.14",
+      "grade": "Standard",
+      "rating": 3,
+      "description": "Requires Medium or High Power",
+      "srcgName": "Eye, Laser Mic. [3]"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

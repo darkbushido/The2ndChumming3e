@@ -1,0 +1,30 @@
+{
+  "_key": "!items!d25f979f1eb5aa9d",
+  "doc": {
+    "_id": "d25f979f1eb5aa9d",
+    "name": "Body Mike",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "10",
+      "rating": null,
+      "cost": 100,
+      "weight": 0.1,
+      "availability": "2/36hrs",
+      "streetIndex": "1",
+      "bookPage": "fof.98",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

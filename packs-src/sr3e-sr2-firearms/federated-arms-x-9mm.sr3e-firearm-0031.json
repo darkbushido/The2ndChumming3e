@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0031",
+  "doc": {
+    "_id": "sr3e-firearm-0031",
+    "name": "Federated Arms X-9mm",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "12(c)",
+      "mode": "SA",
+      "damage": "6L",
+      "weight": "1",
+      "availability": "3/12hrs",
+      "cost": 450,
+      "streetIndex": ".75",
+      "accessories": "None",
+      "bookPage": "pw.16",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

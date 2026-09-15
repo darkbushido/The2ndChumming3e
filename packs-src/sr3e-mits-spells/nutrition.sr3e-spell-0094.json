@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0094",
+  "doc": {
+    "_id": "sr3e-spell-0094",
+    "name": "Nutrition",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Health",
+      "type": "Physical",
+      "duration": "Permanent",
+      "range": "T",
+      "drain": "+1(M)",
+      "target": "4(V)",
+      "bookPage": "mits.142",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

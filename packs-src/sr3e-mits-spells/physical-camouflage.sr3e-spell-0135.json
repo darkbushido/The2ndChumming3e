@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0135",
+  "doc": {
+    "_id": "sr3e-spell-0135",
+    "name": "Physical Camouflage",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Illusion",
+      "type": "Physical",
+      "duration": "Sustained",
+      "range": "LOS",
+      "drain": "+1(L)",
+      "target": "4(R)",
+      "bookPage": "mits.143",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

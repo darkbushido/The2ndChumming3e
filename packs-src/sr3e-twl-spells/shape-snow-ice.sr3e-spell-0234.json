@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0234",
+  "doc": {
+    "_id": "sr3e-spell-0234",
+    "name": "Shape Snow/Ice",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Manipulation",
+      "type": "Physical",
+      "duration": "Sustained",
+      "range": "LOS",
+      "drain": "+2(M)",
+      "target": "4",
+      "bookPage": "twl.124",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

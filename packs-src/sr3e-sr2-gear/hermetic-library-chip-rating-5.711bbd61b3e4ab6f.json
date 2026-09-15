@@ -1,0 +1,30 @@
+{
+  "_key": "!items!711bbd61b3e4ab6f",
+  "doc": {
+    "_id": "711bbd61b3e4ab6f",
+    "name": "Hermetic library - Chip - Rating 5",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Magical Equipment"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Magical Equipment",
+      "concealability": "",
+      "rating": 5,
+      "cost": 30000,
+      "weight": 0,
+      "availability": "5/7days",
+      "streetIndex": "2",
+      "bookPage": "sr2.158",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

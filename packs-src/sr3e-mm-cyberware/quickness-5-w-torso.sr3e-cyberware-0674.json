@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0674",
+  "doc": {
+    "_id": "sr3e-cyberware-0674",
+    "name": "Quickness [5] w/Torso",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimbs",
+      "essenceCost": 0.3,
+      "cost": 180000,
+      "availability": "8/4 days",
+      "streetIndex": 1.5,
+      "legalCode": "6P-Q",
+      "mods": "+5QCK,",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.28",
+      "grade": "Standard",
+      "rating": 5,
+      "description": "",
+      "bonusQui": 5
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

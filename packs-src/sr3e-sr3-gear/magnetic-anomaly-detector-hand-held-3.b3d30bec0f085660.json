@@ -1,0 +1,30 @@
+{
+  "_key": "!items!b3d30bec0f085660",
+  "doc": {
+    "_id": "b3d30bec0f085660",
+    "name": "Magnetic Anomaly Detector - Hand-held [3]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "6",
+      "rating": 3,
+      "cost": 7500,
+      "weight": 1,
+      "availability": "3/36hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.294",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

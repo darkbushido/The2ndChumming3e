@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0185",
+  "doc": {
+    "_id": "sr3e-vehicle-0185",
+    "name": "USS New Hampshire Attack Sub",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "submarine",
+      "cost": 860000000,
+      "streetIndex": 1,
+      "availability": "-",
+      "bookPage": "r3.187",
+      "seating": 0,
+      "notes": "Water and Engine Enviroseal, Oxygen Generator, 6 Torpedo Tubes, 12 Heavy Launch Control Systems, 36  Torpedoes, 16 Heavy Internal Missile Mounts, 105 Basic Living Amenities | Alt-mode Speed/Accel: (50(35)/22(15))/4(2) | Alt-mode Sig/Autonav: (7(7)/6(4))/4 | Alt-mode Cargo/Load: 358[11700 PS]/2282360[236250 PS] | Alt-mode Pilot/Sensor: -/7(9)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 0,
+          "base": 0
+        },
+        "accel": {
+          "value": 22,
+          "base": 22
+        },
+        "body": {
+          "value": 5,
+          "base": 5
+        },
+        "armor": {
+          "value": 9,
+          "base": 9
+        },
+        "sig": {
+          "value": 0,
+          "base": 0
+        },
+        "autonav": {
+          "value": 6,
+          "base": 6
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 7,
+          "base": 7
+        },
+        "cargo": {
+          "value": 358,
+          "base": 358
+        },
+        "load": {
+          "value": 2282360,
+          "base": 2282360
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0294",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0294",
+    "name": "Heavy Military Armor",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 14,
+      "impact": 9,
+      "weight": 0,
+      "availability": "28/1mth",
+      "cost": 70000,
+      "streetIndex": "3",
+      "bookPage": "fof.54",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

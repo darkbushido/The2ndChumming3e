@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0115",
+  "doc": {
+    "_id": "sr3e-spell-0115",
+    "name": "Mirror",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Illusion",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "LOS",
+      "drain": "+1(S)",
+      "target": "W(R)",
+      "bookPage": "tss.9",
+      "damage": "",
+      "description": "Target changed to fit with other Direct Illusions"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

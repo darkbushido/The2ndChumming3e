@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0069",
+  "doc": {
+    "_id": "sr3e-adeptpower-0069",
+    "name": "Iron Will*",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": true,
+      "level": 1,
+      "mods": "",
+      "bookPage": "mits.150",
+      "description": "Each level provides an additional die when resisting any attempt to control or alter the adept's mind, including manipulation spells and critter powers."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

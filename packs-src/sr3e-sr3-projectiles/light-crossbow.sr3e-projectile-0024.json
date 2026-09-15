@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-projectile-0024",
+  "doc": {
+    "_id": "sr3e-projectile-0024",
+    "name": "Light Crossbow",
+    "type": "projectile",
+    "system": {
+      "category": "LCB",
+      "skill": "Projectile Weapons",
+      "attribute": "strength",
+      "concealability": "2",
+      "strMin": 3,
+      "damage": "6L",
+      "weight": "2",
+      "availability": "4/36hrs",
+      "cost": 300,
+      "streetIndex": "1",
+      "legal": false,
+      "bookPage": "sr3.276",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!a9a87a68779e5800",
+  "doc": {
+    "_id": "a9a87a68779e5800",
+    "name": "Gun Cam Transmitter [6]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-1)",
+      "rating": 6,
+      "cost": 15000,
+      "weight": 0.25,
+      "availability": "4/48hrs",
+      "streetIndex": "1.5",
+      "bookPage": "cc.35",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

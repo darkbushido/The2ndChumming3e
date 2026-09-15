@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0031",
+  "doc": {
+    "_id": "sr3e-adeptpower-0031",
+    "name": "Enthralling Performance",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.65",
+      "description": "The adept enthralls an audience with a performance (chosen when power is purchased) such as singing or dancing."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

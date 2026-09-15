@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0247",
+  "doc": {
+    "_id": "sr3e-cyberware-0247",
+    "name": "Reflex Trigger [1]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0.2,
+      "cost": 13000,
+      "availability": "4/8 days",
+      "streetIndex": 1,
+      "legalCode": "4P-Q",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.302",
+      "grade": "Standard",
+      "rating": 1,
+      "description": "",
+      "srcgName": "Reflex Trig [1]"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

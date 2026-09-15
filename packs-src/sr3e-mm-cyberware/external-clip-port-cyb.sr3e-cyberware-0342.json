@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0342",
+  "doc": {
+    "_id": "sr3e-cyberware-0342",
+    "name": "+External Clip Port(CYB)",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberweapons",
+      "essenceCost": 0.1,
+      "cost": 100,
+      "availability": "8/7 days",
+      "streetIndex": 2,
+      "legalCode": "As Gu",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.41",
+      "grade": "Standard",
+      "rating": 0,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

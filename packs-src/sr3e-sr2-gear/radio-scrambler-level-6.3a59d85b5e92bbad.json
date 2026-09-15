@@ -1,0 +1,30 @@
+{
+  "_key": "!items!3a59d85b5e92bbad",
+  "doc": {
+    "_id": "3a59d85b5e92bbad",
+    "name": "Radio Scrambler Level 6",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 6,
+      "cost": 12000,
+      "weight": 0,
+      "availability": "5/24hrs",
+      "streetIndex": "1.25",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

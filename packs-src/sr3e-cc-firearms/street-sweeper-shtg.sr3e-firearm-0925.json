@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0925",
+  "doc": {
+    "_id": "sr3e-firearm-0925",
+    "name": "Street Sweeper ShtG",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "Tasr",
+      "skill": "Tasers",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "1(b)",
+      "mode": "SS",
+      "damage": "10S(f)",
+      "weight": "3",
+      "availability": "5/24hrs",
+      "cost": 200,
+      "streetIndex": "2",
+      "accessories": "None",
+      "bookPage": "cc.23",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

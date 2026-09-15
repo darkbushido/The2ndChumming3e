@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0060",
+  "doc": {
+    "_id": "sr3e-firearm-0060",
+    "name": "Ceska Black Scorpion",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "MaPist",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "35(c)",
+      "mode": "SA/BF",
+      "damage": "6L",
+      "weight": "3",
+      "availability": "5/36hrs",
+      "cost": 850,
+      "streetIndex": "2",
+      "accessories": "Fold. Stock(1RC)",
+      "bookPage": "sr3.278",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0100",
+  "doc": {
+    "_id": "sr3e-firearm-0100",
+    "name": "DinaTech F5A",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "10",
+      "ammunition": "1",
+      "mode": "SS",
+      "damage": "10M",
+      "weight": "-",
+      "availability": "10/14days",
+      "cost": 500,
+      "streetIndex": "3",
+      "accessories": "None",
+      "bookPage": "pw.15",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

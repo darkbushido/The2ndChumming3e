@@ -1,0 +1,28 @@
+{
+  "_key": "!items!d723aab79cae4d9f",
+  "doc": {
+    "_id": "d723aab79cae4d9f",
+    "name": "Alpha Hospital Rating 2",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "2",
+      "weight": "-",
+      "cost": 32768000,
+      "availability": "4/1mo",
+      "streetIndex": "3",
+      "bookPage": "mm.138",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

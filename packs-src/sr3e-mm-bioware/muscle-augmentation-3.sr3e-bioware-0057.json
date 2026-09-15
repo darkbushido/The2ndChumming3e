@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-bioware-0057",
+  "doc": {
+    "_id": "sr3e-bioware-0057",
+    "name": "Muscle Augmentation[3]",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Standard",
+      "grade": "Standard",
+      "bioIndex": 1.2,
+      "cost": 60000,
+      "availability": "6/6 days",
+      "streetIndex": 0.9,
+      "mods": "+3RTR,",
+      "bookPage": "mm.067",
+      "rating": 3,
+      "description": "+3STR",
+      "bonusStr": 3
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

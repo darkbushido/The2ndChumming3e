@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0004",
+  "doc": {
+    "_id": "sr3e-melee-0004",
+    "name": "Black Whistle Butterfly Knife",
+    "type": "melee",
+    "system": {
+      "category": "other",
+      "skill": "Armed Combat",
+      "attribute": "strength",
+      "concealability": "3/4",
+      "reach": "0",
+      "damage": "(STR+2)L",
+      "weight": ".75",
+      "availability": "7/65ays",
+      "cost": 350,
+      "streetIndex": "1.5",
+      "legal": true,
+      "bookPage": "tss.2",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

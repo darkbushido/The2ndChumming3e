@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0149",
+  "doc": {
+    "_id": "sr3e-cyberware-0149",
+    "name": "P Hair Implants",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0.05,
+      "cost": 1000,
+      "availability": "3/24 hours",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "tss.5",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Maximum length change of 10%, use with a PMP SPU to cybernetically change styling and length; requires PMP SPU [1]"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

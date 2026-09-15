@@ -29,7 +29,7 @@ independent.
 | 🪄 Spells & drugs | **123** *(audit every shipped spell and the casting rules)* · **124** *(drug rules — addiction, tolerance, effects)* |
 | 🖥 Matrix | **119** *(audit The Matrix Defragged v2 — the book is now in the library)* · **120** *(HoloSuite Hacking adapter / fork)* |
 | 📦 Content gaps | 9 · 11 · 19 · 23 · 55 · **79** · **82** · **85** · **86** *(160 gear stubs for a human)* · **90** · **92** · **104** *(**83** · **84** · **87** · **91** · **117** done)* |
-| 🔧 Tooling & infrastructure | 7 · 12 · 18 · 56 · **103** · **105** · **121** *(rules vs sr3-guides, every release)* · **122** *(ratings in the field for weapons/cyber/bio)* *(**20** · **36** · **99** · **100** done)* |
+| 🔧 Tooling & infrastructure | 7 · 18 · 56 · **103** · **105** · **121** *(rules vs sr3-guides, every release)* · **122** *(ratings in the field for weapons/cyber/bio)* *(**12** · **20** · **36** · **99** · **100** done)* |
 | 🧹 Housekeeping | 1 · 6 |
 | ✅ Done — kept for the record | **2** · **5** · **8** · **10** · 13 · **40** · **41** · **58** · **14** · **38** · **39** · **51** · **52** · 15 · 16 · 17 · 21 · 22 · **24** · **37** · **43** · 25 · 26 · 27 · 28 · 29 · 31 · 32 · 33 · 34 · 35 · 42 · 44 · 45 · 46 · 50 |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -2359,7 +2359,26 @@ outcome is that people turn it straight back off.
 So: **model first, default second.** [#23](#23) (ship an ammunition compendium) is the other
 half of this — the code is complete and the content is missing.
 
-## 12. Write a committed pack rebuild script and vendor its sources — *keystone; blocks #1*
+## 12. ✅ Write a committed pack rebuild script and vendor its sources — **DONE 2026-09-14** (`feature/pack-sources`)
+
+> **The repo can rebuild every pack it ships.** `packs-src/` holds all 7,692 documents of the 104
+> declared packs as JSON (exact LevelDB keys and values, embedded items with their parent);
+> `tools/packs.mjs build` compiles them into `packs/` and `build --install` copies them one-way into
+> the install. `tests/pack-sources.test.mjs` compiles every pack from source and checks it reads back
+> identical, and fails if the committed LevelDB drifts from the source.
+>
+> **Why not the plan below (rebuild from upstream through a map).** The shipped packs carry a year of
+> corrections — name ratings, bonuses, Little Black Book stats, book pages, TODO 86's conversions,
+> abbreviation fixes — that a from-upstream rebuild would silently drop unless every patch tool were
+> re-run in order. Keeping the exact documents as source loses nothing. The upstream route survives
+> where it earns its keep: `build-default-gear` and `build-odm-packs` generate from vendored data
+> into `packs-src`, and **step 1 is done** — all ten generator files the old macros fetched are
+> vendored in `rawdata/SRCG-SR3-*.json` at a recorded commit (`rawdata/SRCG-README.md`).
+>
+> **Unblocked:** #1 (the populate macros are superseded — their output is in `packs-src`) · #9 (a
+> restored book is JSON written into `packs-src`, then built). **Still open, and now cheap:** stop
+> committing `packs/` altogether, building the LevelDB at release — needs a release zip instead of
+> the branch-zip download, the maintainer's call.
 
 **The repo cannot currently rebuild its own pack structure.** The book split used throwaway
 scratchpad scripts never committed (`3437608`, `39f8946` touched only `system.json`,

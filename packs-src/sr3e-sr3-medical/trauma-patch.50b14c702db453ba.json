@@ -1,0 +1,28 @@
+{
+  "_key": "!items!50b14c702db453ba",
+  "doc": {
+    "_id": "50b14c702db453ba",
+    "name": "Trauma Patch",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "",
+      "weight": "-",
+      "cost": 500,
+      "availability": "4/48hrs",
+      "streetIndex": "4",
+      "bookPage": "sr3.304",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

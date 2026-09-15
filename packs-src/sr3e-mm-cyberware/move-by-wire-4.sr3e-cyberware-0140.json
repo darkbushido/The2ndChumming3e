@@ -1,0 +1,29 @@
+{
+  "_key": "!items!sr3e-cyberware-0140",
+  "doc": {
+    "_id": "sr3e-cyberware-0140",
+    "name": "Move-by-Wire [4]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 7,
+      "cost": 2000000,
+      "availability": "20/45 days",
+      "streetIndex": 3.5,
+      "legalCode": "3P-R",
+      "mods": "+4QCK,+8RCT,+4INI",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.30",
+      "grade": "Standard",
+      "rating": 4,
+      "description": "+4QCK, +8RCT, +4INI, must take 2 extra actions",
+      "bonusQui": 4,
+      "bonusRea": 8,
+      "bonusInitDice": 4
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0062",
+  "doc": {
+    "_id": "sr3e-vehicle-0062",
+    "name": "Land Rover Model 2046(Pickup)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 29000,
+      "streetIndex": 1,
+      "availability": "2/48hrs",
+      "bookPage": "r3.166",
+      "seating": 4,
+      "notes": "2 Folding Bench Seats | Seating: 2+2b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 100,
+          "base": 100
+        },
+        "accel": {
+          "value": 7,
+          "base": 7
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 1,
+          "base": 1
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 18,
+          "base": 18
+        },
+        "load": {
+          "value": 700,
+          "base": 700
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

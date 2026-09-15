@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-1009",
+  "doc": {
+    "_id": "sr3e-cyberware-1009",
+    "name": "Orientation System",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Senseware",
+      "essenceCost": 0.25,
+      "cost": 15000,
+      "availability": "5/6 days",
+      "streetIndex": 2.5,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.17",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Mapping unit, display/use/record map data"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

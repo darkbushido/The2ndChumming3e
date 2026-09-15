@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0052",
+  "doc": {
+    "_id": "sr3e-melee-0052",
+    "name": "Claymore",
+    "type": "melee",
+    "system": {
+      "category": "POL",
+      "skill": "Pole Arms/Staff",
+      "attribute": "strength",
+      "concealability": "-",
+      "reach": "2",
+      "damage": "(STR+1)S",
+      "weight": "6",
+      "availability": "4/48hrs",
+      "cost": 1000,
+      "streetIndex": "2",
+      "legal": true,
+      "bookPage": "cc.10",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!9e0c285c56ae9cfa",
+  "doc": {
+    "_id": "9e0c285c56ae9cfa",
+    "name": "Business Trip Chip",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 4,
+      "cost": 42500,
+      "weight": 0,
+      "availability": "4/24hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.244",
+      "description": "<p><strong>Type:</strong> Active/Lingua<br><strong>Memory:</strong> 424</p>"
+    }
+  },
+  "embedded": {}
+}

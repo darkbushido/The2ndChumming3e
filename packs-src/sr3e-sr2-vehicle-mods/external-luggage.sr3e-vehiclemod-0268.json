@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0268",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0268",
+    "name": "External Luggage",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 250,
+      "availability": "1/?",
+      "streetIndex": "1",
+      "installEquipment": "Shop",
+      "installTime": "0/0",
+      "cfCost": "0",
+      "load": "0",
+      "bookPage": "sr2.264",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

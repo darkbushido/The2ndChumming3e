@@ -1,0 +1,25 @@
+{
+  "_key": "!items!sr3e-bioware-0151",
+  "doc": {
+    "_id": "sr3e-bioware-0151",
+    "name": "Cultured Tailored Pheromones[1]",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Cultured",
+      "grade": "Cultured",
+      "bioIndex": 0.3,
+      "cost": 80000,
+      "availability": "12/14 days",
+      "streetIndex": 2,
+      "mods": "+2CHA,",
+      "bookPage": "mm.070",
+      "rating": 1,
+      "description": "+2CHA,+2 Die Social Test",
+      "bonusCha": 2,
+      "srcgName": "Cult. Tailored Pherom.[1]"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

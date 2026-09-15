@@ -1,0 +1,29 @@
+{
+  "_key": "!items!08aad5f81248f748",
+  "doc": {
+    "_id": "08aad5f81248f748",
+    "name": "Zoe \"Futura\" Slacks",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "13",
+      "ballistic": 1,
+      "impact": 1,
+      "weight": 1,
+      "cost": 1500,
+      "availability": "4/48hrs",
+      "streetIndex": ".75",
+      "bookPage": "cc.49",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0766",
+  "doc": {
+    "_id": "sr3e-firearm-0766",
+    "name": "Colt M-23",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "AsRf",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "3",
+      "ammunition": "40(c)",
+      "mode": "SA/BF/FA",
+      "damage": "8M",
+      "weight": "4.5",
+      "availability": "6/36hrs",
+      "cost": 950,
+      "streetIndex": "2",
+      "accessories": "None",
+      "bookPage": "cc.22",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

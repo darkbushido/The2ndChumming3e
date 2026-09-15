@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0205",
+  "doc": {
+    "_id": "sr3e-cyberware-0205",
+    "name": "Skillwires [7]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 2.1,
+      "cost": 7000000,
+      "availability": "12/20 days",
+      "streetIndex": 1,
+      "legalCode": "4P-CB",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr2.248",
+      "grade": "Standard",
+      "rating": 7,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

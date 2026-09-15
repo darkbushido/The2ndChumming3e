@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0177",
+  "doc": {
+    "_id": "sr3e-spell-0177",
+    "name": "Bind",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Transformation",
+      "type": "Physical",
+      "duration": "Sustained",
+      "range": "LOS",
+      "drain": "+2(M)",
+      "target": "Q(R)",
+      "bookPage": "mits.145",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

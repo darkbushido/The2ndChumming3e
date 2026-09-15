@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0077",
+  "doc": {
+    "_id": "sr3e-vehicle-0077",
+    "name": "Lone Star Honda-GM 3220 Turbo",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 49000,
+      "streetIndex": 2,
+      "availability": "9/9days",
+      "bookPage": "r3.167",
+      "seating": 4,
+      "notes": "Turbocharging 2(factored in)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 8,
+          "base": 8
+        },
+        "speed": {
+          "value": 190,
+          "base": 190
+        },
+        "accel": {
+          "value": 14,
+          "base": 14
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 1,
+          "base": 1
+        },
+        "sig": {
+          "value": 1,
+          "base": 1
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 3,
+          "base": 3
+        },
+        "load": {
+          "value": 15,
+          "base": 15
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

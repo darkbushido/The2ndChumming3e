@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0189",
+  "doc": {
+    "_id": "sr3e-spell-0189",
+    "name": "Natural Armor",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Transformation",
+      "type": "Physical",
+      "duration": "Sustained",
+      "range": "LOS",
+      "drain": "+3(D)",
+      "target": "6",
+      "bookPage": "tss.9",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

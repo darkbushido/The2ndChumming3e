@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-1002",
+  "doc": {
+    "_id": "sr3e-cyberware-1002",
+    "name": "Internal GPS",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Senseware",
+      "essenceCost": 0.1,
+      "cost": 2000,
+      "availability": "6/8 days",
+      "streetIndex": 1.5,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.17",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Same as NavDAT GPS"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

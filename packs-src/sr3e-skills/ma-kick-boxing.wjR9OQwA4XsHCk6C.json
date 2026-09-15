@@ -1,0 +1,41 @@
+{
+  "_key": "!items!wjR9OQwA4XsHCk6C",
+  "doc": {
+    "name": "MA:Kick Boxing",
+    "type": "skill",
+    "system": {
+      "category": "Martial Arts",
+      "skillType": "knowledge",
+      "skillName": "MA:Kick Boxing",
+      "linkedAttribute": "strength",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": "",
+      "bookPage": "cc.88"
+    },
+    "_id": "wjR9OQwA4XsHCk6C",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192936690,
+      "modifiedTime": 1782889914451,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

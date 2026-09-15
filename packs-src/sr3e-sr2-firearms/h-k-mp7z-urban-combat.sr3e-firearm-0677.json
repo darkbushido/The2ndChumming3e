@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0677",
+  "doc": {
+    "_id": "sr3e-firearm-0677",
+    "name": "H&K MP7z Urban Combat",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "6/18",
+      "ammunition": "36(c)",
+      "mode": "SA/BF/FA",
+      "damage": "7M",
+      "weight": "1.75",
+      "availability": "6/6days",
+      "cost": 2200,
+      "streetIndex": "2",
+      "accessories": "Gas Vent (3), Silencer",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

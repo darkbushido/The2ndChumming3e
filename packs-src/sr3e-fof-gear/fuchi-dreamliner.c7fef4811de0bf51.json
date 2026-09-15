@@ -1,0 +1,30 @@
+{
+  "_key": "!items!c7fef4811de0bf51",
+  "doc": {
+    "_id": "c7fef4811de0bf51",
+    "name": "Fuchi Dreamliner",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "2",
+      "rating": null,
+      "cost": 2500,
+      "weight": 5.5,
+      "availability": "always",
+      "streetIndex": "1",
+      "bookPage": "fof.95",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

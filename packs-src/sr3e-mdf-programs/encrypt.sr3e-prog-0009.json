@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0009",
+  "doc": {
+    "_id": "sr3e-prog-0009",
+    "name": "Encrypt",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Encrypt",
+      "type": "Program",
+      "category": "Operational",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 3,
+      "degradable": false,
+      "description": "<p>Encrypts a target up to the rating of the utility when using Configure Protections prompt.</p><p><strong>Protection Type:</strong> Encryption</p>",
+      "associatedPrompt": "Configure Protections",
+      "effect": "Apply Protection",
+      "bookPage": "matrix-defragged.30"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

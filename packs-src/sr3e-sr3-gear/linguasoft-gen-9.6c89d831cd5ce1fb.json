@@ -1,0 +1,30 @@
+{
+  "_key": "!items!6c89d831cd5ce1fb",
+  "doc": {
+    "_id": "6c89d831cd5ce1fb",
+    "name": "LinguaSoft Gen. [9]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 9,
+      "cost": 12150,
+      "weight": 0,
+      "availability": "6/36hrs",
+      "streetIndex": "1.25",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Lingua<br><strong>Memory:</strong> 243</p>"
+    }
+  },
+  "embedded": {}
+}

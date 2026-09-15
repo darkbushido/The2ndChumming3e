@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0229",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0229",
+    "name": "Full Suit",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 8,
+      "impact": 6,
+      "weight": 0,
+      "availability": "16/14days",
+      "cost": 20000,
+      "streetIndex": "3",
+      "bookPage": "sr2.256",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

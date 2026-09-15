@@ -1,0 +1,30 @@
+{
+  "_key": "!items!63e7ae72145abb44",
+  "doc": {
+    "_id": "63e7ae72145abb44",
+    "name": "Improved Gas Vent IV",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-2)",
+      "rating": 4,
+      "cost": 1000,
+      "weight": 0.75,
+      "availability": "2/24hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.239",
+      "description": "<p><strong>Mount:</strong> Barrel</p>"
+    }
+  },
+  "embedded": {}
+}

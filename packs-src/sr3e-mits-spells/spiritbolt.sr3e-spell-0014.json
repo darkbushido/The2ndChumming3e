@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0014",
+  "doc": {
+    "_id": "sr3e-spell-0014",
+    "name": "Spiritbolt",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Combat",
+      "type": "Mana",
+      "duration": "Instant",
+      "range": "LOS",
+      "drain": "-1(DL)",
+      "target": "F(R)",
+      "bookPage": "mits.140",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

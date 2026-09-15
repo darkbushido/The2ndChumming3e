@@ -1,0 +1,30 @@
+{
+  "_key": "!items!5e2c9ad0a3106e1e",
+  "doc": {
+    "_id": "5e2c9ad0a3106e1e",
+    "name": "External Simlink Rating [9]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "8",
+      "rating": 9,
+      "cost": 70000,
+      "weight": 0.5,
+      "availability": "8/2weeks",
+      "streetIndex": "2",
+      "bookPage": "sr3.290",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

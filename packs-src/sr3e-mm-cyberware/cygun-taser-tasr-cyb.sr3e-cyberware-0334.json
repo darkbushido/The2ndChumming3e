@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0334",
+  "doc": {
+    "_id": "sr3e-cyberware-0334",
+    "name": "CyGun Taser(Tasr)(CYB)",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberweapons",
+      "essenceCost": 0.3,
+      "cost": 2000,
+      "availability": "6/4 days",
+      "streetIndex": 1.5,
+      "legalCode": "5P-Q",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.41",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "10S Stun"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

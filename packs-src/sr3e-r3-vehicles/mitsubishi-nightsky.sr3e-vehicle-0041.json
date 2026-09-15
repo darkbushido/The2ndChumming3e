@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0041",
+  "doc": {
+    "_id": "sr3e-vehicle-0041",
+    "name": "Mitsubishi Nightsky",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 171200,
+      "streetIndex": 2,
+      "availability": "13/13days",
+      "bookPage": "r3.164",
+      "seating": 8,
+      "notes": "APPS, Concealed Armor, Roll Bars, Gas Enviroseal, Electronics Port w/Sat Uplink",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 8,
+          "base": 8
+        },
+        "speed": {
+          "value": 120,
+          "base": 120
+        },
+        "accel": {
+          "value": 8,
+          "base": 8
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 2,
+          "base": 2
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 4,
+          "base": 4
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 10,
+          "base": 10
+        },
+        "load": {
+          "value": 60,
+          "base": 60
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

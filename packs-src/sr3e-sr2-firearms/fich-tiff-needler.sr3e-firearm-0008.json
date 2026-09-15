@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0008",
+  "doc": {
+    "_id": "sr3e-firearm-0008",
+    "name": "Fich. Tiff. Needler",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HOPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "8",
+      "ammunition": "4(c)",
+      "mode": "SA",
+      "damage": "5L",
+      "weight": ".5",
+      "availability": "7/48hrs",
+      "cost": 650,
+      "streetIndex": "2",
+      "accessories": "None",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

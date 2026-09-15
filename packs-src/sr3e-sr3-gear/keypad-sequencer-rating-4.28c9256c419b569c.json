@@ -1,0 +1,30 @@
+{
+  "_key": "!items!28c9256c419b569c",
+  "doc": {
+    "_id": "28c9256c419b569c",
+    "name": "Keypad Sequencer Rating [4]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "8",
+      "rating": 4,
+      "cost": 8000,
+      "weight": 2,
+      "availability": "8/2wks",
+      "streetIndex": "3",
+      "bookPage": "sr3.294",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!d476e84ea0d02766",
+  "doc": {
+    "_id": "d476e84ea0d02766",
+    "name": "Master Unit Rating [1]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 1,
+      "cost": 4000,
+      "weight": 60,
+      "availability": "12/2wks",
+      "streetIndex": "2",
+      "bookPage": "cc.55",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

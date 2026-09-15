@@ -1,0 +1,30 @@
+{
+  "_key": "!items!6bcb2d2f0e4bb5b3",
+  "doc": {
+    "_id": "6bcb2d2f0e4bb5b3",
+    "name": "Type IV Biometric Maglock (10)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 10,
+      "cost": 3500,
+      "weight": 0,
+      "availability": "10/5days",
+      "streetIndex": "2",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

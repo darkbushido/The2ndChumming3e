@@ -1,0 +1,42 @@
+{
+  "_key": "!items!3Ne7qhgAWAuf4XV3",
+  "doc": {
+    "name": "Nausea Gas",
+    "type": "drug",
+    "system": {
+      "category": "Pharmaceutical Compounds",
+      "addiction": "",
+      "tolerance": "",
+      "effect": "",
+      "speed": "5 Combat Turns",
+      "vector": "Inhalation",
+      "availability": "4/48 hrs",
+      "cost": 10,
+      "streetIndex": "2",
+      "bookPage": "mm.121",
+      "notes": ""
+    },
+    "_id": "3Ne7qhgAWAuf4XV3",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "ge55aFMax5sNd2Ho": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.3.1",
+      "createdTime": 1782280826154,
+      "modifiedTime": 1782889914230,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

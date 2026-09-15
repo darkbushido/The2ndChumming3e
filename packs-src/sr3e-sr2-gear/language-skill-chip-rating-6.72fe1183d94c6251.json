@@ -1,0 +1,30 @@
+{
+  "_key": "!items!72fe1183d94c6251",
+  "doc": {
+    "_id": "72fe1183d94c6251",
+    "name": "Language skill Chip Rating 6",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 6,
+      "cost": 3600,
+      "weight": 0,
+      "availability": "5/36hrs",
+      "streetIndex": "1.25",
+      "bookPage": "sr2.244",
+      "description": "<p><strong>Type:</strong> Lingua<br><strong>Memory:</strong> 36</p>"
+    }
+  },
+  "embedded": {}
+}

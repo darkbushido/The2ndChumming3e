@@ -1,0 +1,41 @@
+{
+  "_key": "!items!yFjXPrECIxzHiaEC",
+  "doc": {
+    "name": "Tourist Trivia",
+    "type": "skill",
+    "system": {
+      "category": "Interests",
+      "skillType": "knowledge",
+      "skillName": "Tourist Trivia",
+      "linkedAttribute": "intelligence",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": "",
+      "bookPage": "tss.13"
+    },
+    "_id": "yFjXPrECIxzHiaEC",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192993460,
+      "modifiedTime": 1782889914451,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

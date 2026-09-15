@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0060",
+  "doc": {
+    "_id": "sr3e-spell-0060",
+    "name": "Decrease Attribute (W)",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Health",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "T",
+      "drain": "+1(S)",
+      "target": "10-E(R)",
+      "bookPage": "sr3.193",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0083",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0083",
+    "name": "Gunnery Recoil Adjuster [12]",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 6000,
+      "availability": "6/48hrs",
+      "streetIndex": "1.5",
+      "installEquipment": "Vehicle Kit",
+      "installTime": "24 hrs/Vehicle B/R(4)",
+      "cfCost": "1",
+      "load": "36kg",
+      "bookPage": "r3.137",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

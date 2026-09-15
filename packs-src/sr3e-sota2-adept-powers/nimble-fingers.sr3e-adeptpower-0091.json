@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0091",
+  "doc": {
+    "_id": "sr3e-adeptpower-0091",
+    "name": "Nimble Fingers",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.67",
+      "description": "The adept can perform simple reflex and timing tricks (such as inserting a clip into a gun) more efficiently."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

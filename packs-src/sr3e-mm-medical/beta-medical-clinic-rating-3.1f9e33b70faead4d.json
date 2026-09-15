@@ -1,0 +1,28 @@
+{
+  "_key": "!items!1f9e33b70faead4d",
+  "doc": {
+    "_id": "1f9e33b70faead4d",
+    "name": "Beta Medical Clinic Rating 3",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "3",
+      "weight": "-",
+      "cost": 274400,
+      "availability": "10/1wk",
+      "streetIndex": "2",
+      "bookPage": "mm.138",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

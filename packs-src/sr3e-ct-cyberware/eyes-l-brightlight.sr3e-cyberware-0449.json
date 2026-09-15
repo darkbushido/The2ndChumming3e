@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0449",
+  "doc": {
+    "_id": "sr3e-cyberware-0449",
+    "name": "Eyes, L BrightLight",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Eyeware",
+      "essenceCost": 0.4,
+      "cost": 1200,
+      "availability": "8/2 weeks",
+      "streetIndex": 2,
+      "legalCode": "3.00",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "ct.21",
+      "grade": "Standard",
+      "rating": 0,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

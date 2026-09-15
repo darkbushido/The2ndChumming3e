@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0433",
+  "doc": {
+    "_id": "sr3e-cyberware-0433",
+    "name": "Eye Laser (Low Power)",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Eyeware",
+      "essenceCost": 0.2,
+      "cost": 3000,
+      "availability": "8/72 hours",
+      "streetIndex": 2,
+      "legalCode": "5P-N",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.14",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Range: 5m, 100min Battery, +1 Blinding Dice"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

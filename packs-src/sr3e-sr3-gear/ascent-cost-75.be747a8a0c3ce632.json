@@ -1,0 +1,30 @@
+{
+  "_key": "!items!be747a8a0c3ce632",
+  "doc": {
+    "_id": "be747a8a0c3ce632",
+    "name": "Ascent (Cost 75¥)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "3",
+      "rating": null,
+      "cost": 75,
+      "weight": 0.25,
+      "availability": "always",
+      "streetIndex": "1",
+      "bookPage": "sr3.295,fof.56",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

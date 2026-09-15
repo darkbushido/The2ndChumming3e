@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0002",
+  "doc": {
+    "_id": "sr3e-prog-0002",
+    "name": "Analyze",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Analyze",
+      "type": "Program",
+      "category": "Offensive",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 3,
+      "degradable": false,
+      "description": "<p>Decreases the user's target number by its rating while utilizing the Search and Render prompt.</p>",
+      "associatedPrompt": "Search and Render",
+      "effect": "TN Reduction",
+      "bookPage": "matrix-defragged.30"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

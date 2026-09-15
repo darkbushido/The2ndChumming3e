@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0228",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0228",
+    "name": "Flack Vest",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 4,
+      "impact": 4,
+      "weight": 2,
+      "availability": "6/4days",
+      "cost": 1000,
+      "streetIndex": "1",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

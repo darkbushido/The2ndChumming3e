@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-vehicleweapon-0003",
+  "doc": {
+    "_id": "sr3e-vehicleweapon-0003",
+    "name": "Ares Vaporizer Heavy Railgun",
+    "type": "vehicleweapon",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "system": {
+      "weaponType": "Railgun",
+      "mode": "SS",
+      "damage": "15MN",
+      "ammunition": "Belt",
+      "weight": 1540,
+      "cost": 1000000,
+      "availability": "GM",
+      "streetIndex": "GM",
+      "bookPage": "r3.89",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

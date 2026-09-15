@@ -1,0 +1,29 @@
+{
+  "_key": "!items!1a5e9cd158267b4b",
+  "doc": {
+    "_id": "1a5e9cd158267b4b",
+    "name": "Secure Long Coat",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "10",
+      "ballistic": 4,
+      "impact": 2,
+      "weight": 2,
+      "cost": 650,
+      "availability": "3/24hrs",
+      "streetIndex": ".9",
+      "bookPage": "sr2.279",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

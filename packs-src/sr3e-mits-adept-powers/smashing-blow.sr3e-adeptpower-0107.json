@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0107",
+  "doc": {
+    "_id": "sr3e-adeptpower-0107",
+    "name": "Smashing Blow",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 1,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "mits.151",
+      "description": "Smashing blow allows an adept to focus magical energy into a devastating strike designed to smash through barriers."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!9a6eaf3ea409039a",
+  "doc": {
+    "_id": "9a6eaf3ea409039a",
+    "name": "Laser Detector Lvl 2",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "6",
+      "rating": 2,
+      "cost": 10000,
+      "weight": 0.3,
+      "availability": "8/72hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

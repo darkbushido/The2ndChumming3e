@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0095",
+  "doc": {
+    "_id": "sr3e-adeptpower-0095",
+    "name": "Penetrating Strike Level 2",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 1.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.67",
+      "description": "An adept can bypass a target's impact armor. Cannot be used with Distance Strike."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

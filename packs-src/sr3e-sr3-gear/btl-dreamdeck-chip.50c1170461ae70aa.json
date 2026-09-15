@@ -1,0 +1,30 @@
+{
+  "_key": "!items!50c1170461ae70aa",
+  "doc": {
+    "_id": "50c1170461ae70aa",
+    "name": "BTL DreamDeck Chip",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 100,
+      "weight": 0,
+      "availability": "3/12hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> BTL<br><strong>Memory:</strong> ?</p>"
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0775",
+  "doc": {
+    "_id": "sr3e-firearm-0775",
+    "name": "Heckler & Koch G12A3z",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "AsRf",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "2",
+      "ammunition": "32(c)",
+      "mode": "SA/BF/FA",
+      "damage": "8M",
+      "weight": "5.25",
+      "availability": "8/4days",
+      "cost": 2200,
+      "streetIndex": "3",
+      "accessories": "Laser sight, Gas Vent II(2RC), Tele. Stock, Can have UB GrLn.(-1 Conc)",
+      "bookPage": "cc.22",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

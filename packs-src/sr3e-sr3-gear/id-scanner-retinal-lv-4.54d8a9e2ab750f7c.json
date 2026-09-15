@@ -1,0 +1,30 @@
+{
+  "_key": "!items!54d8a9e2ab750f7c",
+  "doc": {
+    "_id": "54d8a9e2ab750f7c",
+    "name": "ID Scanner - Retinal Lv [4]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 4,
+      "cost": 4000,
+      "weight": 0,
+      "availability": "6/72hrs",
+      "streetIndex": "3",
+      "bookPage": "sr3.294",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

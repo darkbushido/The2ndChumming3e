@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0034",
+  "doc": {
+    "_id": "sr3e-spell-0034",
+    "name": "Detect(Object)->",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Detection",
+      "type": "Physical",
+      "duration": "Sustained",
+      "range": "T/A",
+      "drain": "+1(M)",
+      "target": "DT",
+      "bookPage": "sr3.193",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

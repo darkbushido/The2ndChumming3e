@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0091",
+  "doc": {
+    "_id": "sr3e-firearm-0091",
+    "name": "Cavalier Deputy",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "7(cy)",
+      "mode": "SA",
+      "damage": "9M",
+      "weight": "2.25",
+      "availability": "3/24hrs",
+      "cost": 300,
+      "streetIndex": ".5",
+      "accessories": "None",
+      "bookPage": "cc.19",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

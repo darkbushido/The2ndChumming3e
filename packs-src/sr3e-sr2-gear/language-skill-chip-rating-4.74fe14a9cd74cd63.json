@@ -1,0 +1,30 @@
+{
+  "_key": "!items!74fe14a9cd74cd63",
+  "doc": {
+    "_id": "74fe14a9cd74cd63",
+    "name": "Language skill Chip Rating 4",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 4,
+      "cost": 2400,
+      "weight": 0,
+      "availability": "5/36hrs",
+      "streetIndex": "1.25",
+      "bookPage": "sr2.244",
+      "description": "<p><strong>Type:</strong> Lingua<br><strong>Memory:</strong> 24</p>"
+    }
+  },
+  "embedded": {}
+}

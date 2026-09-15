@@ -1,0 +1,30 @@
+{
+  "_key": "!items!70298feae6b9c2c4",
+  "doc": {
+    "_id": "70298feae6b9c2c4",
+    "name": "Personalized Grip",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-",
+      "rating": null,
+      "cost": 200,
+      "weight": 0,
+      "availability": "1/24hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.82",
+      "description": "<p><strong>Notes:</strong> 1 RC for one user only, Available at GM option</p>"
+    }
+  },
+  "embedded": {}
+}

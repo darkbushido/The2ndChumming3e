@@ -1,0 +1,34 @@
+{
+  "_key": "!items!e821c8cf43e7f083",
+  "doc": {
+    "_id": "e821c8cf43e7f083",
+    "name": "Gyrojet Seeker Heads Plus.(10)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "7",
+      "damage": "(As Rocket)",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "rounds",
+      "rounds": 10,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 0.25,
+      "cost": 240,
+      "availability": "15/4.5wks",
+      "streetIndex": "4",
+      "bookPage": "cc.40",
+      "notes": "<p>Not one of the types this system models, or a combination of them — its rules are the GM's.</p><p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>"
+    }
+  },
+  "embedded": {}
+}

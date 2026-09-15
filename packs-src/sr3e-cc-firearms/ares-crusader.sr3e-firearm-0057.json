@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0057",
+  "doc": {
+    "_id": "sr3e-firearm-0057",
+    "name": "Ares Crusader",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "MaPist",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "6",
+      "ammunition": "40(c)",
+      "mode": "SA/BF",
+      "damage": "6L",
+      "weight": "3.25",
+      "availability": "5/36hrs",
+      "cost": 950,
+      "streetIndex": "2",
+      "accessories": "Gas Vent II(2RC)",
+      "bookPage": "cc.18",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!56ac78c59b5422ff",
+  "doc": {
+    "_id": "56ac78c59b5422ff",
+    "name": "Chemical Seal Rating [9]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 9,
+      "cost": 2250,
+      "weight": 0,
+      "availability": "+1/+12hrs",
+      "streetIndex": "+.25",
+      "bookPage": "cc.53",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

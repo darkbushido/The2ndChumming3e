@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0685",
+  "doc": {
+    "_id": "sr3e-firearm-0685",
+    "name": "Heckler & Koch MP-5 TX",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "20(c)",
+      "mode": "SA/BF/FA",
+      "damage": "6M",
+      "weight": "3.25",
+      "availability": "5/36hrs",
+      "cost": 850,
+      "streetIndex": "1",
+      "accessories": "Gas Vent II(2RC), Laser Sight",
+      "bookPage": "cc.21",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

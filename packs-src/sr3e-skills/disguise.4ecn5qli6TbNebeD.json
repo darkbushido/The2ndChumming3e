@@ -1,0 +1,41 @@
+{
+  "_key": "!items!4ecn5qli6TbNebeD",
+  "doc": {
+    "name": "Disguise",
+    "type": "skill",
+    "system": {
+      "category": "Technical skills",
+      "skillType": "active",
+      "skillName": "Disguise",
+      "linkedAttribute": "intelligence",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": "",
+      "bookPage": "sota.104"
+    },
+    "_id": "4ecn5qli6TbNebeD",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192942738,
+      "modifiedTime": 1782889914445,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

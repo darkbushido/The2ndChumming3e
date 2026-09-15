@@ -1,0 +1,30 @@
+{
+  "_key": "!items!889086bb74b43ca9",
+  "doc": {
+    "_id": "889086bb74b43ca9",
+    "name": "Sony Beautiful Dreamer II",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "2",
+      "rating": null,
+      "cost": 1800,
+      "weight": 5,
+      "availability": "always",
+      "streetIndex": "1",
+      "bookPage": "fof.95",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

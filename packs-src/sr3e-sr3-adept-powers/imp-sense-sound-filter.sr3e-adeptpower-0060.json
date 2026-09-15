@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0060",
+  "doc": {
+    "_id": "sr3e-adeptpower-0060",
+    "name": "Imp. Sense: Sound Filter",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.25,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sr3.169",
+      "description": "This power provides sound filtering, functioning like the cyberear Sound Filter SR3-299."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

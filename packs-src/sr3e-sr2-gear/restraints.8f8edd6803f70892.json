@@ -1,0 +1,30 @@
+{
+  "_key": "!items!8f8edd6803f70892",
+  "doc": {
+    "_id": "8f8edd6803f70892",
+    "name": "Restraints",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "4",
+      "rating": null,
+      "cost": 100,
+      "weight": 0,
+      "availability": "6/72hrs",
+      "streetIndex": "2",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

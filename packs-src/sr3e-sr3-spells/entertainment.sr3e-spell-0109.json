@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0109",
+  "doc": {
+    "_id": "sr3e-spell-0109",
+    "name": "Entertainment",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Illusion",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "LOS(A)",
+      "drain": "(L)",
+      "target": "W(V)",
+      "bookPage": "sr3.195",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

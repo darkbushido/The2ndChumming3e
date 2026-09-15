@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0028",
+  "doc": {
+    "_id": "sr3e-drone-0028",
+    "name": "Sikorsky-Bell Microskimmer II",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 18300,
+      "streetIndex": 0.5,
+      "availability": "2/24hrs",
+      "seating": 0,
+      "bookPage": "r3.174",
+      "notes": "Remote-Control Interface, Rigger Adaptation, Ballast Tanks, Engine Enviroseal, Auxiliary Engine(Electric Battery) | Alt-mode Speed/Accel: 90(45)/5(3) | Alt-mode Sig/Autonav: 7(7)/0",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 90,
+          "base": 90
+        },
+        "accel": {
+          "value": 5,
+          "base": 5
+        },
+        "body": {
+          "value": 1,
+          "base": 1
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 7,
+          "base": 7
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 1,
+          "base": 1
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 1,
+          "base": 1
+        },
+        "load": {
+          "value": 5,
+          "base": 5
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

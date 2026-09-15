@@ -1,0 +1,30 @@
+{
+  "_key": "!items!6fb9b169a90ff1c7",
+  "doc": {
+    "_id": "6fb9b169a90ff1c7",
+    "name": "Stress Chip",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": null,
+      "cost": 3500,
+      "weight": 0,
+      "availability": "4/36hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.244",
+      "description": "<p><strong>Type:</strong> (Special)<br><strong>Memory:</strong> 20</p>"
+    }
+  },
+  "embedded": {}
+}

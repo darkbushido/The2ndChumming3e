@@ -1,0 +1,29 @@
+{
+  "_key": "!items!6f11f4d80afb2724",
+  "doc": {
+    "_id": "6f11f4d80afb2724",
+    "name": "Armor Clothing",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "10",
+      "ballistic": 3,
+      "impact": 0,
+      "weight": 2,
+      "cost": 500,
+      "availability": "3/36hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.241",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,34 @@
+{
+  "_key": "!items!42a796c5aad3406d",
+  "doc": {
+    "_id": "42a796c5aad3406d",
+    "name": "40-Rnd Clip (AV)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "antiVehicle",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 40,
+      "rounds": 0,
+      "weight": 4.75,
+      "cost": 785,
+      "availability": "16/14days",
+      "streetIndex": "4",
+      "bookPage": "cc.37",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

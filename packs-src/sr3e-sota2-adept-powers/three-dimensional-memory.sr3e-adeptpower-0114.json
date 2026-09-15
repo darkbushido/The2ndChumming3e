@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0114",
+  "doc": {
+    "_id": "sr3e-adeptpower-0114",
+    "name": "Three Dimensional Memory",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.68",
+      "description": "The adept can remember a scene in a three-dimensional way and mentally walk through his memory at a later time."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

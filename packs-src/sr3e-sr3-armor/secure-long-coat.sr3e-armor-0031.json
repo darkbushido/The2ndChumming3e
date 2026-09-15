@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0031",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0031",
+    "name": "Secure Long Coat",
+    "type": "armor",
+    "system": {
+      "concealability": "10",
+      "ballistic": 4,
+      "impact": 2,
+      "weight": 2,
+      "availability": "3/24hrs",
+      "cost": 650,
+      "streetIndex": ".9",
+      "bookPage": "sr3.284",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

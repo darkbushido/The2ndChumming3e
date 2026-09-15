@@ -1,0 +1,30 @@
+{
+  "_key": "!items!83a31eb43e81e8c4",
+  "doc": {
+    "_id": "83a31eb43e81e8c4",
+    "name": "Virt Instr Spec Inst4Lev10",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 10,
+      "cost": 24800,
+      "weight": 0,
+      "availability": "14/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 248</p>"
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!ff79d0f14611e5cb",
+  "doc": {
+    "_id": "ff79d0f14611e5cb",
+    "name": "Signal Locator Lv [1]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "3",
+      "rating": 1,
+      "cost": 200,
+      "weight": 2,
+      "availability": "1/48hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr3.292",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0201",
+  "doc": {
+    "_id": "sr3e-spell-0201",
+    "name": "Clean(Element)->",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Manipulation",
+      "type": "Physical",
+      "duration": "Permanent",
+      "range": "LOS(A)",
+      "drain": "+1(S)",
+      "target": "6",
+      "bookPage": "mits.146",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

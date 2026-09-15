@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-vehicleweapon-0026",
+  "doc": {
+    "_id": "sr3e-vehicleweapon-0026",
+    "name": "Vehicular Shotgun",
+    "type": "vehicleweapon",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "system": {
+      "weaponType": "Shotgun",
+      "mode": "SA",
+      "damage": "9S",
+      "ammunition": "10(c)",
+      "weight": 8.5,
+      "cost": 2500,
+      "availability": "8/72hrs",
+      "streetIndex": "1.75",
+      "bookPage": "sr2.265",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

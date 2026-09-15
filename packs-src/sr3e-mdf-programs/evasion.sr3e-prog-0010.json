@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0010",
+  "doc": {
+    "_id": "sr3e-prog-0010",
+    "name": "Evasion",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Evasion",
+      "type": "Program",
+      "category": "Operational",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 4,
+      "degradable": true,
+      "description": "<p>Allows user to utilize Toggle Visibility prompt to become Hidden, even while currently Link-Locked.</p>",
+      "associatedPrompt": "Toggle Visibility",
+      "effect": "Stealth",
+      "bookPage": "matrix-defragged.31"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

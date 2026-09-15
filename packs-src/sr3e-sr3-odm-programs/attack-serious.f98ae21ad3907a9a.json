@@ -1,0 +1,19 @@
+{
+  "_key": "!items!f98ae21ad3907a9a",
+  "doc": {
+    "_id": "f98ae21ad3907a9a",
+    "name": "Attack (Serious)",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Attack (Serious)",
+      "category": "attack",
+      "multiplier": 4,
+      "rating": 0,
+      "bookPage": "sr3.221",
+      "description": "<p><strong>Offensive utility</strong> · Multiplier 4 — size in Mp = Rating² × 4 (Program Size Table). See SR3 p.221 for what it does.</p>"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

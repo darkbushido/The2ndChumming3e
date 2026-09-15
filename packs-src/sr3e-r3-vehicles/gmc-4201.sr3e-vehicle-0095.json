@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0095",
+  "doc": {
+    "_id": "sr3e-vehicle-0095",
+    "name": "GMC 4201",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 80000,
+      "streetIndex": 1,
+      "availability": "4/4days",
+      "bookPage": "r3.169",
+      "seating": 3,
+      "notes": "Seating: 2d+1x",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 7,
+          "base": 7
+        },
+        "speed": {
+          "value": 85,
+          "base": 85
+        },
+        "accel": {
+          "value": 3,
+          "base": 3
+        },
+        "body": {
+          "value": 6,
+          "base": 6
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 130,
+          "base": 130
+        },
+        "load": {
+          "value": 6500,
+          "base": 6500
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

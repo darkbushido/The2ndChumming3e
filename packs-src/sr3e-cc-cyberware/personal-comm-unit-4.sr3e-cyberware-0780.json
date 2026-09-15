@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0780",
+  "doc": {
+    "_id": "sr3e-cyberware-0780",
+    "name": "Personal Comm Unit 4",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0,
+      "cost": 6000,
+      "availability": "8/2wks",
+      "streetIndex": 2,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "cc.55",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "number of channels equal to rating * 2, Flux equal to Rating/2, ECCM equal to Rating, and Encryption equal to Rating."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

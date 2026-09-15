@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0732",
+  "doc": {
+    "_id": "sr3e-cyberware-0732",
+    "name": "CyGun Light(LPist)(CYB)",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0,
+      "cost": 650,
+      "availability": "8/7 days",
+      "streetIndex": 2,
+      "legalCode": "6P-Q",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.41",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "6L"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

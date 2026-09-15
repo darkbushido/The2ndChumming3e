@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0176",
+  "doc": {
+    "_id": "sr3e-cyberware-0176",
+    "name": "Skillwires [3] MP 27",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0.6,
+      "cost": 40500,
+      "availability": "3/10 days",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.302",
+      "grade": "Standard",
+      "rating": 3,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

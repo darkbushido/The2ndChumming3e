@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0178",
+  "doc": {
+    "_id": "sr3e-bioware-0178",
+    "name": "Low Oxygen",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Genetech",
+      "grade": "Exotic",
+      "bioIndex": 0.3,
+      "cost": 50000,
+      "availability": "6/30 days",
+      "streetIndex": 2,
+      "mods": "",
+      "bookPage": "sota.027",
+      "rating": 0,
+      "description": "Each success on holding breath adds 10 combat turns, normal oxygen levels cause hyperoxia (Oxygen Toxicity Pg 109 CC)"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

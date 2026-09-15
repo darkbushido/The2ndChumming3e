@@ -1,0 +1,30 @@
+{
+  "_key": "!items!2c2a050da8df86b1",
+  "doc": {
+    "_id": "2c2a050da8df86b1",
+    "name": "Fuchi I-C-U Autocam Controller",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "5",
+      "rating": null,
+      "cost": 400,
+      "weight": 1.5,
+      "availability": "5/72hrs",
+      "streetIndex": "2",
+      "bookPage": "fof.96",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

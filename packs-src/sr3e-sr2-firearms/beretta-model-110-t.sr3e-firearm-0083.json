@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0083",
+  "doc": {
+    "_id": "sr3e-firearm-0083",
+    "name": "Beretta Model 110-T",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "16(c)",
+      "mode": "SA",
+      "damage": "9M",
+      "weight": "2",
+      "availability": "3/24hrs",
+      "cost": 400,
+      "streetIndex": "1",
+      "accessories": "Laser Sight",
+      "bookPage": "pw.15",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

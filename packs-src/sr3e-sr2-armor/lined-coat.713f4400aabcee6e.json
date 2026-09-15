@@ -1,0 +1,29 @@
+{
+  "_key": "!items!713f4400aabcee6e",
+  "doc": {
+    "_id": "713f4400aabcee6e",
+    "name": "Lined Coat",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "ballistic": 4,
+      "impact": 2,
+      "weight": 1,
+      "cost": 700,
+      "availability": "2/24hrs",
+      "streetIndex": ".75",
+      "bookPage": "sr2.241",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

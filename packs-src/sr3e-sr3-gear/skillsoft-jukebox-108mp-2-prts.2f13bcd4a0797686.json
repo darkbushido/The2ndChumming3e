@@ -1,0 +1,30 @@
+{
+  "_key": "!items!2f13bcd4a0797686",
+  "doc": {
+    "_id": "2f13bcd4a0797686",
+    "name": "SkillSoft Jukebox 108MP 2 prts",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 4320,
+      "weight": 0,
+      "availability": "3/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Juk<br><strong>Memory:</strong> 108</p>"
+    }
+  },
+  "embedded": {}
+}

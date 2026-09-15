@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-projectile-0070",
+  "doc": {
+    "_id": "sr3e-projectile-0070",
+    "name": "Thermal Smoke",
+    "type": "projectile",
+    "system": {
+      "category": "GR",
+      "skill": "Throwing Weapons",
+      "attribute": "strength",
+      "concealability": "6",
+      "strMin": 0,
+      "damage": "-",
+      "weight": ".25",
+      "availability": "5/4days",
+      "cost": 40,
+      "streetIndex": "2",
+      "legal": false,
+      "bookPage": "sr2.???",
+      "notes": "",
+      "isAoE": true
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

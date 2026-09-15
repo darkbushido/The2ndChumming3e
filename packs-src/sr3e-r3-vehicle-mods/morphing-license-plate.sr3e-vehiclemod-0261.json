@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0261",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0261",
+    "name": "Morphing License Plate",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 5000,
+      "availability": "8/14days",
+      "streetIndex": "2",
+      "installEquipment": "Electronics Kit",
+      "installTime": "2 hrs/Electronics B/R(4)",
+      "cfCost": "0",
+      "load": "1kg",
+      "bookPage": "r3.100",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,34 @@
+{
+  "_key": "!items!751954c8013ba940",
+  "doc": {
+    "_id": "751954c8013ba940",
+    "name": "Assault Cannon Belt (100)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "-",
+      "damage": "-",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "rounds",
+      "rounds": 100,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 12.5,
+      "cost": 4250,
+      "availability": "6/3days",
+      "streetIndex": "2",
+      "bookPage": "sr3.281",
+      "notes": "<p>Not one of the types this system models, or a combination of them — its rules are the GM's.</p><p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>"
+    }
+  },
+  "embedded": {}
+}

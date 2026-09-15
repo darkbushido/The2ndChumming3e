@@ -1,0 +1,42 @@
+{
+  "_key": "!items!BMH3gF8TVBcUAIWZ",
+  "doc": {
+    "name": "Burn",
+    "type": "drug",
+    "system": {
+      "category": "Depressants",
+      "addiction": "2M",
+      "tolerance": "2",
+      "effect": "20/100",
+      "speed": "",
+      "vector": "",
+      "availability": "2/30min",
+      "cost": 5,
+      "streetIndex": "1",
+      "bookPage": "mm.121",
+      "notes": ""
+    },
+    "_id": "BMH3gF8TVBcUAIWZ",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "ge55aFMax5sNd2Ho": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.3.1",
+      "createdTime": 1782280826175,
+      "modifiedTime": 1782889914230,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

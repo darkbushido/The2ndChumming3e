@@ -1,0 +1,30 @@
+{
+  "_key": "!items!a5f06181a11ac0dd",
+  "doc": {
+    "_id": "a5f06181a11ac0dd",
+    "name": "Safe Target System (Beacon)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "10",
+      "rating": null,
+      "cost": 0,
+      "weight": 0.25,
+      "availability": "Rating/48hrs",
+      "streetIndex": "2",
+      "bookPage": "cc.33",
+      "description": "<p>Cost Rating x 200¥ — by rating; set the cost for the rating bought.</p>"
+    }
+  },
+  "embedded": {}
+}

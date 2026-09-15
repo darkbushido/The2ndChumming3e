@@ -1,0 +1,28 @@
+{
+  "_key": "!items!sr3e-cyberware-0678",
+  "doc": {
+    "_id": "sr3e-cyberware-0678",
+    "name": "Strength Enhancement [6]  w/Torso",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimbs",
+      "essenceCost": 0.6,
+      "cost": 375000,
+      "availability": "8/4 days",
+      "streetIndex": 1.5,
+      "legalCode": "6P-R",
+      "mods": "+6STR,",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.28",
+      "grade": "Standard",
+      "rating": 6,
+      "description": "",
+      "bonusStr": 6,
+      "srcgName": "Str Enh [6]  w/Torso"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

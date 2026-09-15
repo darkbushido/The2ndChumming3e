@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-projectile-0056",
+  "doc": {
+    "_id": "sr3e-projectile-0056",
+    "name": "IPE Offensive HE Grenade",
+    "type": "projectile",
+    "system": {
+      "category": "GR",
+      "skill": "Throwing Weapons",
+      "attribute": "strength",
+      "concealability": "6",
+      "strMin": 0,
+      "damage": "15S",
+      "weight": ".5",
+      "availability": "8/1wk",
+      "cost": 60,
+      "streetIndex": "2",
+      "legal": false,
+      "bookPage": "cc.41",
+      "notes": "",
+      "isAoE": true
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

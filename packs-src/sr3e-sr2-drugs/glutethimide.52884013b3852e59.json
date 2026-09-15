@@ -1,0 +1,31 @@
+{
+  "_key": "!items!52884013b3852e59",
+  "doc": {
+    "_id": "52884013b3852e59",
+    "name": "Glutethimide",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "3M+4P",
+      "tolerance": "4",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 3,
+      "availability": "5/4hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 3</p>"
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0030",
+  "doc": {
+    "_id": "sr3e-firearm-0030",
+    "name": "Executive Action",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "6",
+      "ammunition": "24(c)",
+      "mode": "SA/BF",
+      "damage": "6L",
+      "weight": "1.5",
+      "availability": "14/7days",
+      "cost": 1150,
+      "streetIndex": "3",
+      "accessories": "None",
+      "bookPage": "cc.18",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

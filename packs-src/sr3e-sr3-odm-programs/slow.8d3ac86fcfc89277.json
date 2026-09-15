@@ -1,0 +1,19 @@
+{
+  "_key": "!items!8d3ac86fcfc89277",
+  "doc": {
+    "_id": "8d3ac86fcfc89277",
+    "name": "Slow",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Slow",
+      "category": "attack",
+      "multiplier": 4,
+      "rating": 0,
+      "bookPage": "sr3.222",
+      "description": "<p><strong>Offensive utility</strong> · Multiplier 4 — size in Mp = Rating² × 4 (Program Size Table). See SR3 p.222 for what it does.</p>"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!8e940c371064d219",
+  "doc": {
+    "_id": "8e940c371064d219",
+    "name": "General Knowledge Skill Chip Rating 6",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 6,
+      "cost": 45000,
+      "weight": 0,
+      "availability": "5/4days",
+      "streetIndex": "1.25",
+      "bookPage": "sr2.244",
+      "description": "<p><strong>Type:</strong> Know<br><strong>Memory:</strong> 300</p>"
+    }
+  },
+  "embedded": {}
+}

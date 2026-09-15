@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0168",
+  "doc": {
+    "_id": "sr3e-cyberware-0168",
+    "name": "Ruthenium Skin Implants [1]  1",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0.2,
+      "cost": 5000,
+      "availability": "2/24 hours",
+      "streetIndex": 0.75,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "tss.5",
+      "grade": "Standard",
+      "rating": 1,
+      "description": "Partial skin coverage, reprogrammed using handheld unit [included]"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

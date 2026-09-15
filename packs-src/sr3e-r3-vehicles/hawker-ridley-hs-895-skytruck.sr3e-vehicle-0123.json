@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0123",
+  "doc": {
+    "_id": "sr3e-vehicle-0123",
+    "name": "Hawker-Ridley HS-895 Skytruck",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "fixedwing",
+      "cost": 1131250,
+      "streetIndex": 1,
+      "availability": "-",
+      "bookPage": "r3.178",
+      "seating": 42,
+      "notes": "Alt-mode Speed/Accel: 135(320)/22 | Seating: 2+40b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 135,
+          "base": 135
+        },
+        "accel": {
+          "value": 22,
+          "base": 22
+        },
+        "body": {
+          "value": 9,
+          "base": 9
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 260,
+          "base": 260
+        },
+        "load": {
+          "value": 9000,
+          "base": 9000
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

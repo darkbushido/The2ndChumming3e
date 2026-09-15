@@ -1,0 +1,30 @@
+{
+  "_key": "!items!228b1a34e4faf580",
+  "doc": {
+    "_id": "228b1a34e4faf580",
+    "name": "Ares CyberMed Psychscanner",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "-",
+      "rating": null,
+      "cost": 25000,
+      "weight": 10,
+      "availability": "8/2weeks",
+      "streetIndex": "3",
+      "bookPage": "fof.96",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0707",
+  "doc": {
+    "_id": "sr3e-firearm-0707",
+    "name": "Uzi IV Smart",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "30(c)",
+      "mode": "SA/BF/FA",
+      "damage": "6M",
+      "weight": "3.25",
+      "availability": "8/60hrs",
+      "cost": 1200,
+      "streetIndex": "1.25",
+      "accessories": "Gas Vent (2), Smartlink",
+      "bookPage": "pw.22",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

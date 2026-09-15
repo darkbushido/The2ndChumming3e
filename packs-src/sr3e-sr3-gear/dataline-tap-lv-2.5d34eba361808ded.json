@@ -1,0 +1,30 @@
+{
+  "_key": "!items!5d34eba361808ded",
+  "doc": {
+    "_id": "5d34eba361808ded",
+    "name": "Dataline Tap Lv [2]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "12",
+      "rating": 2,
+      "cost": 2000,
+      "weight": 0,
+      "availability": "2/8days",
+      "streetIndex": "1.5",
+      "bookPage": "sr3.292",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0097",
+  "doc": {
+    "_id": "sr3e-firearm-0097",
+    "name": "Colt Manhunter S+",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "16(c)",
+      "mode": "SA",
+      "damage": "9M",
+      "weight": "2.25",
+      "availability": "6/48hrs",
+      "cost": 800,
+      "streetIndex": "1",
+      "accessories": "Smartlink-2",
+      "bookPage": "ssc.23",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

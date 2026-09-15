@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0275",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0275",
+    "name": "VAUBAN Vehicle A.T. Lvl [3]",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 240000,
+      "availability": "1/?",
+      "streetIndex": "1",
+      "installEquipment": "Sensor +3",
+      "installTime": "0/0",
+      "cfCost": "Upgrade",
+      "load": "0",
+      "bookPage": "fra.141",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0164",
+  "doc": {
+    "_id": "sr3e-vehicle-0164",
+    "name": "Ares TR-55 Class T",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "helicopter",
+      "cost": 350000,
+      "streetIndex": 1,
+      "availability": "18/18Days",
+      "bookPage": "r3.184",
+      "seating": 14,
+      "notes": "VTOL",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 350,
+          "base": 350
+        },
+        "accel": {
+          "value": 12,
+          "base": 12
+        },
+        "body": {
+          "value": 5,
+          "base": 5
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 4,
+          "base": 4
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 7,
+          "base": 7
+        },
+        "load": {
+          "value": 500,
+          "base": 500
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

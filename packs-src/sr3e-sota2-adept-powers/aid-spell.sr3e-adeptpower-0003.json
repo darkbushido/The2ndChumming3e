@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0003",
+  "doc": {
+    "_id": "sr3e-adeptpower-0003",
+    "name": "Aid Spell*",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": true,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.64",
+      "description": "1 die per level to support magician casting a spell in same Initiative Phase"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0102",
+  "doc": {
+    "_id": "sr3e-adeptpower-0102",
+    "name": "Ricochet",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 1,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "tss.12",
+      "description": "Allows the adept the ability to bounce bullets off of hard surfaces.  Each such ricochet takes 2 from the power of the bullet and adds 2 to the target number of the shot."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

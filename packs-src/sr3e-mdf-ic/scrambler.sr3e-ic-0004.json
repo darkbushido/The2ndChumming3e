@@ -1,0 +1,24 @@
+{
+  "_key": "!actors!sr3e-ic-0004",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/agent-default.webp",
+    "_id": "sr3e-ic-0004",
+    "name": "Scrambler",
+    "type": "ic",
+    "system": {
+      "icType": "Scrambler",
+      "grading": "White",
+      "rating": 6,
+      "systemRating": 6,
+      "memoryRequired": 15,
+      "damage": "6M Stun",
+      "hostSecurityTier": "Green",
+      "notes": "<p>Scrambles and corrupts the decker's active programs, reducing their effectiveness. Ability: Erosion.</p>",
+      "woundValue": 0,
+      "bookPage": "matrix-defragged.44"
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

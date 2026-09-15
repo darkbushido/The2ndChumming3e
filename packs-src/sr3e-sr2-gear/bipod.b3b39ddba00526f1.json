@@ -1,0 +1,30 @@
+{
+  "_key": "!items!b3b39ddba00526f1",
+  "doc": {
+    "_id": "b3b39ddba00526f1",
+    "name": "Bipod",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-",
+      "rating": 2,
+      "cost": 400,
+      "weight": 2,
+      "availability": "6/12hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.239",
+      "description": "<p><strong>Mount:</strong> Under</p>"
+    }
+  },
+  "embedded": {}
+}

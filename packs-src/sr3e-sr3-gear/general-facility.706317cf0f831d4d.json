@@ -1,0 +1,30 @@
+{
+  "_key": "!items!706317cf0f831d4d",
+  "doc": {
+    "_id": "706317cf0f831d4d",
+    "name": "General Facility",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 100000,
+      "weight": 0,
+      "availability": "14/7days",
+      "streetIndex": "4",
+      "bookPage": "sr3.288",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

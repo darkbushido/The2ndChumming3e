@@ -1,0 +1,30 @@
+{
+  "_key": "!items!8952acb1bdc2da1d",
+  "doc": {
+    "_id": "8952acb1bdc2da1d",
+    "name": "Zetatech Credit Transactor",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "-",
+      "rating": null,
+      "cost": 750,
+      "weight": 0,
+      "availability": "2/24hrs",
+      "streetIndex": "1",
+      "bookPage": "fof.95",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

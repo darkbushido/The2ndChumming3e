@@ -1,0 +1,34 @@
+{
+  "_key": "!items!9aa6c70db49b5159",
+  "doc": {
+    "_id": "9aa6c70db49b5159",
+    "name": "4-Rnd Clip (AV)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "antiVehicle",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 4,
+      "rounds": 0,
+      "weight": 1.15,
+      "cost": 85,
+      "availability": "16/14days",
+      "streetIndex": "4",
+      "bookPage": "cc.37",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

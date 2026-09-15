@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1002",
+  "doc": {
+    "_id": "sr3e-firearm-1002",
+    "name": "Nostal. Ind. Long Gun",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SptR",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "5(c)",
+      "mode": "SS",
+      "damage": "10M",
+      "weight": "5",
+      "availability": "6/24hrs",
+      "cost": 400,
+      "streetIndex": "2",
+      "accessories": "None",
+      "bookPage": "tss.2",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

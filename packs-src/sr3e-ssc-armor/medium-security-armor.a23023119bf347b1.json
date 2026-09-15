@@ -1,0 +1,29 @@
+{
+  "_key": "!items!a23023119bf347b1",
+  "doc": {
+    "_id": "a23023119bf347b1",
+    "name": "Medium Security Armor",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "-",
+      "ballistic": 6,
+      "impact": 5,
+      "weight": 11,
+      "cost": 9000,
+      "availability": "14/10days",
+      "streetIndex": "2.5",
+      "bookPage": "ssc.68",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

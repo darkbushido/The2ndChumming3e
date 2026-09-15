@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1272",
+  "doc": {
+    "_id": "sr3e-firearm-1272",
+    "name": "Steyr AUG-CSL Carbine",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SptR",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "2",
+      "ammunition": "32(c)",
+      "mode": "SA/BF",
+      "damage": "7S",
+      "weight": "3.75",
+      "availability": "10/4days",
+      "cost": 0,
+      "streetIndex": "3",
+      "accessories": "-",
+      "bookPage": "cc.22",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!337354d645d22506",
+  "doc": {
+    "_id": "337354d645d22506",
+    "name": "Table Top PC (1000Mp)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "4",
+      "rating": null,
+      "cost": 20000,
+      "weight": 3,
+      "availability": "Always",
+      "streetIndex": ".75",
+      "bookPage": "sr3.287",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

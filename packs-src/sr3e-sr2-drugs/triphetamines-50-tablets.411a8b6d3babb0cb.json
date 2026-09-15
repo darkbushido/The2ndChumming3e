@@ -1,0 +1,31 @@
+{
+  "_key": "!items!411a8b6d3babb0cb",
+  "doc": {
+    "_id": "411a8b6d3babb0cb",
+    "name": "Triphetamines (50 tablets)",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "2M",
+      "tolerance": "4",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 25,
+      "availability": "5/3hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 5</p>"
+    }
+  },
+  "embedded": {}
+}

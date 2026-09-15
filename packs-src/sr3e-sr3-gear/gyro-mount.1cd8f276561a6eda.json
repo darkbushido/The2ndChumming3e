@@ -1,0 +1,30 @@
+{
+  "_key": "!items!1cd8f276561a6eda",
+  "doc": {
+    "_id": "1cd8f276561a6eda",
+    "name": "Gyro Mount",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-5)",
+      "rating": 5,
+      "cost": 2500,
+      "weight": 6,
+      "availability": "4/48hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.282",
+      "description": "<p><strong>Mount:</strong> Under<br><strong>Notes:</strong> RC:5,+1IMP,+1BAL, (Melee:TN+4,1/2CP)</p>"
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0166",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0166",
+    "name": "Heavy Combat Biker Armor",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 6,
+      "impact": 5,
+      "weight": 2.75,
+      "availability": "4/48hrs",
+      "cost": 1200,
+      "streetIndex": "1",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

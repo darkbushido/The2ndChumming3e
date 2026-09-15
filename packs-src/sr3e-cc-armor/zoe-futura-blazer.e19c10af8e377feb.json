@@ -1,0 +1,29 @@
+{
+  "_key": "!items!e19c10af8e377feb",
+  "doc": {
+    "_id": "e19c10af8e377feb",
+    "name": "Zoe \"Futura\" Blazer",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "13",
+      "ballistic": 2,
+      "impact": 1,
+      "weight": 1.5,
+      "cost": 2500,
+      "availability": "4/48hrs",
+      "streetIndex": ".75",
+      "bookPage": "cc.49",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

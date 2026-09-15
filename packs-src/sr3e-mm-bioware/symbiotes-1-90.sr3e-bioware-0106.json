@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0106",
+  "doc": {
+    "_id": "sr3e-bioware-0106",
+    "name": "Symbiotes[1](90%)",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Standard",
+      "grade": "Standard",
+      "bioIndex": 0.4,
+      "cost": 15000,
+      "availability": "5/10 days",
+      "streetIndex": 1,
+      "mods": "",
+      "bookPage": "mm.069",
+      "rating": 1,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

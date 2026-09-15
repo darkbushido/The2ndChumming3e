@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0131",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0131",
+    "name": "Plastic Restraint Melters-Acc",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 0,
+      "impact": 0,
+      "weight": 0,
+      "availability": "(As Jumpsuit)",
+      "cost": 50,
+      "streetIndex": "1",
+      "bookPage": "cc.49",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0511",
+  "doc": {
+    "_id": "sr3e-cyberware-0511",
+    "name": "Chipjack",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Headware",
+      "essenceCost": 0.2,
+      "cost": 1000,
+      "availability": "3/72 hours",
+      "streetIndex": 0.9,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.298",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Holds 1 chip, access to datasofts and knowsofts"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

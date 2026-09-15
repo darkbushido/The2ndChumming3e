@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0089",
+  "doc": {
+    "_id": "sr3e-firearm-0089",
+    "name": "Browning Ultra-Power",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "6",
+      "ammunition": "10(c)",
+      "mode": "SA",
+      "damage": "9M",
+      "weight": "2.25",
+      "availability": "4/24hrs",
+      "cost": 525,
+      "streetIndex": "1.5",
+      "accessories": "Laser Sight",
+      "bookPage": "cc.19",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

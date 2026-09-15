@@ -1,0 +1,30 @@
+{
+  "_key": "!items!0d670ec785c7a0d3",
+  "doc": {
+    "_id": "0d670ec785c7a0d3",
+    "name": "DataSoft Spec.[6]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 6,
+      "cost": 7200,
+      "weight": 0,
+      "availability": "4/4days",
+      "streetIndex": "1.25",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Data<br><strong>Memory:</strong> 72</p>"
+    }
+  },
+  "embedded": {}
+}

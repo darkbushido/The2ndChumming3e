@@ -1,0 +1,30 @@
+{
+  "_key": "!items!559a1915a1c18ef7",
+  "doc": {
+    "_id": "559a1915a1c18ef7",
+    "name": "Type III Biometric Maglock [8]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 8,
+      "cost": 2800,
+      "weight": 0,
+      "availability": "8/5days",
+      "streetIndex": "2",
+      "bookPage": "sr3.294",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

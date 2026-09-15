@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0108",
+  "doc": {
+    "_id": "sr3e-melee-0108",
+    "name": "Kitchen Sink",
+    "type": "melee",
+    "system": {
+      "category": "other",
+      "skill": "Armed Combat",
+      "attribute": "strength",
+      "concealability": "-",
+      "reach": "0",
+      "damage": "((2x STR)-6)S Stun",
+      "weight": "10",
+      "availability": "always",
+      "cost": 100,
+      "streetIndex": "1",
+      "legal": true,
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

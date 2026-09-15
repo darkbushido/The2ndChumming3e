@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0236",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0236",
+    "name": "Kelmar Heavy Police Armor",
+    "type": "armor",
+    "system": {
+      "concealability": "1",
+      "ballistic": 5,
+      "impact": 7,
+      "weight": 4,
+      "availability": "24/20days",
+      "cost": 12500,
+      "streetIndex": "3.5",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

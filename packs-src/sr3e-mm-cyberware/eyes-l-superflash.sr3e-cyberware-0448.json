@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0448",
+  "doc": {
+    "_id": "sr3e-cyberware-0448",
+    "name": "Eyes, L Superflash",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Eyeware",
+      "essenceCost": 0,
+      "cost": 1000,
+      "availability": "8/2 weeks",
+      "streetIndex": 3,
+      "legalCode": "7P-Q",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.15",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "12M Stun, range modifiers on MM15, 1 use"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

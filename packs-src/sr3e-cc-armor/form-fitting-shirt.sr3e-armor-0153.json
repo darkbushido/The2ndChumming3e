@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0153",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0153",
+    "name": "Form-fitting Shirt",
+    "type": "armor",
+    "system": {
+      "concealability": "14",
+      "ballistic": 2,
+      "impact": 0,
+      "weight": 0.75,
+      "availability": "6/1wk",
+      "cost": 500,
+      "streetIndex": "1",
+      "bookPage": "cc.51",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

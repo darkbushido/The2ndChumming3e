@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0067",
+  "doc": {
+    "_id": "sr3e-firearm-0067",
+    "name": "Steyr TMP",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "MaPist",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "6",
+      "ammunition": "30(c)",
+      "mode": "SA/BF/FA",
+      "damage": "6L",
+      "weight": "2",
+      "availability": "8/48hrs",
+      "cost": 900,
+      "streetIndex": "2",
+      "accessories": "None",
+      "bookPage": "cc.18",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0176",
+  "doc": {
+    "_id": "sr3e-bioware-0176",
+    "name": "Cold",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Genetech",
+      "grade": "Exotic",
+      "bioIndex": 0.4,
+      "cost": 60000,
+      "availability": "6/30 days",
+      "streetIndex": 2,
+      "mods": "",
+      "bookPage": "sota.027",
+      "rating": 0,
+      "description": "+2 Dice Vs cold damage, -2 modifier cold survival tests"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

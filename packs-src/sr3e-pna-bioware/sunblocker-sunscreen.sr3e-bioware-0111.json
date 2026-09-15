@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0111",
+  "doc": {
+    "_id": "sr3e-bioware-0111",
+    "name": "Sunblocker Sunscreen",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Standard",
+      "grade": "Standard",
+      "bioIndex": 0.9,
+      "cost": 20000,
+      "availability": "3/5 days",
+      "streetIndex": 0.8,
+      "mods": "",
+      "bookPage": "pna.43",
+      "rating": 0,
+      "description": "see book"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0006",
+  "doc": {
+    "_id": "sr3e-prog-0006",
+    "name": "Biofeedback Filtering",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Biofeedback Filtering",
+      "type": "Program",
+      "category": "Operational",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 3,
+      "degradable": true,
+      "description": "<p>May be used to soak Biofeedback Damage on a point-for-point basis.</p><p><strong>Soak Type:</strong> Biofeedback</p>",
+      "associatedPrompt": "Attack an Icon (Defense)",
+      "effect": "Damage Soak",
+      "bookPage": "matrix-defragged.30"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

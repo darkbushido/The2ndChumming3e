@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0023",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0023",
+    "name": "Cont. Manu. Contr. [6]",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 30000,
+      "availability": "6/14days",
+      "streetIndex": "2",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "80 hrs/Vehicle B/R(10-Handling)",
+      "cfCost": "2",
+      "load": "30kg",
+      "bookPage": "r3.128",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

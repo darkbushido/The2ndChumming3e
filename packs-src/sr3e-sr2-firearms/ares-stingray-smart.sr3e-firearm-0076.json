@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0076",
+  "doc": {
+    "_id": "sr3e-firearm-0076",
+    "name": "Ares Stingray Smart",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "6(cy)",
+      "mode": "DAR",
+      "damage": "10M",
+      "weight": "2.75",
+      "availability": "7/7days",
+      "cost": 500,
+      "streetIndex": "3",
+      "accessories": "Smartlink, RC:(1)",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

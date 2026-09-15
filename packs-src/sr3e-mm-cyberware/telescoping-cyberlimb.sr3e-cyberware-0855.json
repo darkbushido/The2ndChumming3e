@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0855",
+  "doc": {
+    "_id": "sr3e-cyberware-0855",
+    "name": "Telescoping Cyberlimb",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0,
+      "cost": 10000,
+      "availability": "6/72 hours",
+      "streetIndex": 1.5,
+      "legalCode": "3-N",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.40",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Increase height or reach by 1 meter, reduce enemy Reach bonus by -1"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

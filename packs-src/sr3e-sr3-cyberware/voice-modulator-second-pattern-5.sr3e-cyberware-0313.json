@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0313",
+  "doc": {
+    "_id": "sr3e-cyberware-0313",
+    "name": "Voice Modulator, Second Pattern [5]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Communications",
+      "essenceCost": 0,
+      "cost": 130000,
+      "availability": "6/7 days",
+      "streetIndex": 2,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.302",
+      "grade": "Standard",
+      "rating": 5,
+      "description": "Second voice pattern",
+      "srcgName": "V Mod Second Pattern [5]"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

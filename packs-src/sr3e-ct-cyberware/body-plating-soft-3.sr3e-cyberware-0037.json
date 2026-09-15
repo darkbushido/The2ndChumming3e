@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0037",
+  "doc": {
+    "_id": "sr3e-cyberware-0037",
+    "name": "Body Plating Soft [3]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0,
+      "cost": 30000,
+      "availability": "12/2 weeks",
+      "streetIndex": 2,
+      "legalCode": "6P-CA",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "ct.37",
+      "grade": "Standard",
+      "rating": 3,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

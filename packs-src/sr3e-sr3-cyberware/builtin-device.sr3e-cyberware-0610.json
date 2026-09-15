@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0610",
+  "doc": {
+    "_id": "sr3e-cyberware-0610",
+    "name": "Builtin Device",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimbs",
+      "essenceCost": 0,
+      "cost": 0,
+      "availability": "varies",
+      "streetIndex": 1,
+      "legalCode": "Var.",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.303",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Must build/input your own via DATeditor"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

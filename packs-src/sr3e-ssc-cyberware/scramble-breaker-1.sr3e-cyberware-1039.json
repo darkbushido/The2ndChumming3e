@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-1039",
+  "doc": {
+    "_id": "sr3e-cyberware-1039",
+    "name": "Scramble Breaker [1]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Various",
+      "essenceCost": 0.2,
+      "cost": 20000,
+      "availability": "6/48 hours",
+      "streetIndex": 1.5,
+      "legalCode": "3-CB",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "ssc.81",
+      "grade": "Standard",
+      "rating": 1,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

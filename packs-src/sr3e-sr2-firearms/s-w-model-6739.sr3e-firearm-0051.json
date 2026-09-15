@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0051",
+  "doc": {
+    "_id": "sr3e-firearm-0051",
+    "name": "S&W Model 6739",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "8",
+      "ammunition": "5(cy)",
+      "mode": "SS",
+      "damage": "6L",
+      "weight": ".75",
+      "availability": "3/36hrs",
+      "cost": 250,
+      "streetIndex": ".9",
+      "accessories": "None",
+      "bookPage": "pw.16",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0264",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0264",
+    "name": "Convertible Top",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 250010,
+      "availability": "1/?",
+      "streetIndex": "1",
+      "installEquipment": "Shop",
+      "installTime": "0/0",
+      "cfCost": "0",
+      "load": "0",
+      "bookPage": "sr2.???",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

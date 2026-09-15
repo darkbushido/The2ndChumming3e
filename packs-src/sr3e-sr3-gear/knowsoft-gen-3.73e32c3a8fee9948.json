@@ -1,0 +1,30 @@
+{
+  "_key": "!items!73e32c3a8fee9948",
+  "doc": {
+    "_id": "73e32c3a8fee9948",
+    "name": "KnowSoft Gen.[3]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 3,
+      "cost": 2700,
+      "weight": 0,
+      "availability": "4/4days",
+      "streetIndex": "1.25",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Know<br><strong>Memory:</strong> 27</p>"
+    }
+  },
+  "embedded": {}
+}

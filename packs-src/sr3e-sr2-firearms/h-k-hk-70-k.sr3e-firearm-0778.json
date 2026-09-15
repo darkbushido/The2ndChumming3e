@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0778",
+  "doc": {
+    "_id": "sr3e-firearm-0778",
+    "name": "H&K HK 70 K",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "AsRf",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "3(2)",
+      "ammunition": "20(45)(c)",
+      "mode": "SA/BF/FA",
+      "damage": "8M",
+      "weight": "4",
+      "availability": "8/7days",
+      "cost": 950,
+      "streetIndex": "2.25",
+      "accessories": "Gas Vent (2)",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!809cd7e73160c71b",
+  "doc": {
+    "_id": "809cd7e73160c71b",
+    "name": "Shades - Low Light + Thermographic",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "S+S Vision Enhancers"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "S+S Vision Enhancers",
+      "concealability": "6",
+      "rating": null,
+      "cost": 5400,
+      "weight": 0,
+      "availability": "6/48hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.XXX",
+      "description": "<p><strong>Mag:</strong> 20x</p>"
+    }
+  },
+  "embedded": {}
+}

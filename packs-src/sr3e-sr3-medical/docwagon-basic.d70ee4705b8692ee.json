@@ -1,0 +1,28 @@
+{
+  "_key": "!items!d70ee4705b8692ee",
+  "doc": {
+    "_id": "d70ee4705b8692ee",
+    "name": "DocWagon Basic",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "",
+      "weight": "-",
+      "cost": 5000,
+      "availability": "On Payment",
+      "streetIndex": "1",
+      "bookPage": "sr3.304",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

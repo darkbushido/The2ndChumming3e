@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0192",
+  "doc": {
+    "_id": "sr3e-vehicle-0192",
+    "name": "Mitsuhama Anago(standard)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "submarine",
+      "cost": 13750,
+      "streetIndex": 1,
+      "availability": "2/24 hrs",
+      "bookPage": "r3.186",
+      "seating": 2,
+      "notes": "6 Handholds | Alt-mode Sig/Autonav: 9(9)/1 | Alt-mode Pilot/Sensor: 1/1(1)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 35,
+          "base": 35
+        },
+        "accel": {
+          "value": 4,
+          "base": 4
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 9,
+          "base": 9
+        },
+        "autonav": {
+          "value": 1,
+          "base": 1
+        },
+        "pilot": {
+          "value": 1,
+          "base": 1
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 2,
+          "base": 2
+        },
+        "load": {
+          "value": 450,
+          "base": 450
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

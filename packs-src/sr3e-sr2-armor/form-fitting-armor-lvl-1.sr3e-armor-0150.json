@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0150",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0150",
+    "name": "Form-fitting Armor Lvl [1]",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 2,
+      "impact": 0,
+      "weight": 0.75,
+      "availability": "3/48hrs",
+      "cost": 150,
+      "streetIndex": "1",
+      "bookPage": "sr2.279",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0164",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0164",
+    "name": "Fire-Resistant Coveralls",
+    "type": "armor",
+    "system": {
+      "concealability": "10",
+      "ballistic": 0,
+      "impact": 3,
+      "weight": 3.5,
+      "availability": "10/48hrs",
+      "cost": 2000,
+      "streetIndex": "1",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

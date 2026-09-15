@@ -1,0 +1,41 @@
+{
+  "_key": "!items!wiCJ11RFwASeaHx0",
+  "doc": {
+    "name": "MA:Wushu",
+    "type": "skill",
+    "system": {
+      "category": "Martial Arts",
+      "skillType": "knowledge",
+      "skillName": "MA:Wushu",
+      "linkedAttribute": "strength",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": "",
+      "bookPage": "cc.88"
+    },
+    "_id": "wiCJ11RFwASeaHx0",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192938760,
+      "modifiedTime": 1782889914451,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

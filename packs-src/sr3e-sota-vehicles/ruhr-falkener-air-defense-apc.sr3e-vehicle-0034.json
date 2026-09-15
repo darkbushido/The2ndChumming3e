@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0034",
+  "doc": {
+    "_id": "sr3e-vehicle-0034",
+    "name": "Ruhr. Falkener Air Defense APC",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "military",
+      "cost": 619600,
+      "streetIndex": 3,
+      "availability": "31/1month",
+      "bookPage": "sota.78",
+      "seating": 4,
+      "notes": "ECCM 6, ECD 4, EnviroSeal (Gas with Cabin Overpressure), Medium Turret (Vigilant Autocannon on AA-mount 15 CF Ammo Bin Medium Launch Control System 8 Internal Missile Mounts), Radar Absorbent Materials 1 (factored in), Electronics Port (with Rating 3 Radio), Thermal Baffles 1 (factored in) | Seating: 1+2+1b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 90,
+          "base": 90
+        },
+        "accel": {
+          "value": 7,
+          "base": 7
+        },
+        "body": {
+          "value": 7,
+          "base": 7
+        },
+        "armor": {
+          "value": 6,
+          "base": 6
+        },
+        "sig": {
+          "value": 4,
+          "base": 4
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 8,
+          "base": 8
+        },
+        "cargo": {
+          "value": 22.5,
+          "base": 22.5
+        },
+        "load": {
+          "value": 1010,
+          "base": 1010
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

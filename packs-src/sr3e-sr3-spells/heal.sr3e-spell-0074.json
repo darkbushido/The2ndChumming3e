@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0074",
+  "doc": {
+    "_id": "sr3e-spell-0074",
+    "name": "Heal",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Health",
+      "type": "Mana",
+      "duration": "Permanent",
+      "range": "T",
+      "drain": "(DL)",
+      "target": "10-E(V)",
+      "bookPage": "sr3.193",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!22a6f28c7d6919a8",
+  "doc": {
+    "_id": "22a6f28c7d6919a8",
+    "name": "Ritual Sorcery Materials - Combat Force 8",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ritual Sorcery Materials"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Ritual Sorcery Materials",
+      "concealability": "",
+      "rating": null,
+      "cost": 8000,
+      "weight": 0,
+      "availability": "3/24hrs",
+      "streetIndex": "1",
+      "bookPage": "mits.170",
+      "description": "<p><strong>KarmaCost:</strong> 0</p>"
+    }
+  },
+  "embedded": {}
+}

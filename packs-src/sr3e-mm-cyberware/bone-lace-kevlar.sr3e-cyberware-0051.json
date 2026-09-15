@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0051",
+  "doc": {
+    "_id": "sr3e-cyberware-0051",
+    "name": "Bone Lace, Kevlar",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 1,
+      "cost": 20000,
+      "availability": "6/21 days",
+      "streetIndex": 2,
+      "legalCode": "6P-Q",
+      "mods": "+1BOD,+1BAL,",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.27",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Unarmed = (STR)M Stun, +1BOD, +1BAL",
+      "bonusBod": 1
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

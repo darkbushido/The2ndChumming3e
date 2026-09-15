@@ -1,0 +1,30 @@
+{
+  "_key": "!items!85134d647d346c5c",
+  "doc": {
+    "_id": "85134d647d346c5c",
+    "name": "Type I Maglock [3]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 3,
+      "cost": 225,
+      "weight": 0,
+      "availability": "3/2days",
+      "streetIndex": ".75",
+      "bookPage": "sr3.294",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

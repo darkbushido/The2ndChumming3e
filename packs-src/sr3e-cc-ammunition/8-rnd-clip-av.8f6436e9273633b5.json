@@ -1,0 +1,34 @@
+{
+  "_key": "!items!8f6436e9273633b5",
+  "doc": {
+    "_id": "8f6436e9273633b5",
+    "name": "8-Rnd Clip (AV)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "antiVehicle",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 8,
+      "rounds": 0,
+      "weight": 1.55,
+      "cost": 165,
+      "availability": "16/14days",
+      "streetIndex": "4",
+      "bookPage": "cc.37",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-1050",
+  "doc": {
+    "_id": "sr3e-cyberware-1050",
+    "name": "Video Link (Trans)",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Various",
+      "essenceCost": 0.4,
+      "cost": 4500,
+      "availability": "4/48 hours",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "ssc.84",
+      "grade": "Standard",
+      "rating": 0,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

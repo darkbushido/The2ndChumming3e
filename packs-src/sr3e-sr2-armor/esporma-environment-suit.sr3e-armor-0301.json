@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0301",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0301",
+    "name": "Esporma Environment Suit",
+    "type": "armor",
+    "system": {
+      "concealability": "1",
+      "ballistic": 2,
+      "impact": 1,
+      "weight": 5,
+      "availability": "6/4days",
+      "cost": 7250,
+      "streetIndex": "3",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

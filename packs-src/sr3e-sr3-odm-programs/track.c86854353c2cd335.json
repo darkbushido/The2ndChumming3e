@@ -1,0 +1,19 @@
+{
+  "_key": "!items!c86854353c2cd335",
+  "doc": {
+    "_id": "c86854353c2cd335",
+    "name": "Track",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Track",
+      "category": "utility",
+      "multiplier": 8,
+      "rating": 0,
+      "bookPage": "sr3.221",
+      "description": "<p><strong>Operational utility</strong> · Multiplier 8 — size in Mp = Rating² × 8 (Program Size Table). See SR3 p.221 for what it does.</p>"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

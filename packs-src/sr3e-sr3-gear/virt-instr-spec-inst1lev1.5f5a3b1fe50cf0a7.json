@@ -1,0 +1,30 @@
+{
+  "_key": "!items!5f5a3b1fe50cf0a7",
+  "doc": {
+    "_id": "5f5a3b1fe50cf0a7",
+    "name": "Virt Instr Spec Inst1Lev1",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 500,
+      "weight": 0,
+      "availability": "2/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 5</p>"
+    }
+  },
+  "embedded": {}
+}

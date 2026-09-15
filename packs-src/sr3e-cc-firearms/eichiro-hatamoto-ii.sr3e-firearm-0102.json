@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0102",
+  "doc": {
+    "_id": "sr3e-firearm-0102",
+    "name": "Eichiro Hatamoto II",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "6",
+      "ammunition": "1(m)",
+      "mode": "SS",
+      "damage": "8S",
+      "weight": "2.5",
+      "availability": "12/7days",
+      "cost": 1200,
+      "streetIndex": "2",
+      "accessories": "Fires as Shotgun",
+      "bookPage": "cc.19",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

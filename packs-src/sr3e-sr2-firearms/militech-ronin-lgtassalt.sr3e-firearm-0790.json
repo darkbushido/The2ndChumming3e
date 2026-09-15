@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0790",
+  "doc": {
+    "_id": "sr3e-firearm-0790",
+    "name": "Militech Ronin LgtAssalt",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "AsRf",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "1",
+      "ammunition": "35(c)",
+      "mode": "SA/BF/FA",
+      "damage": "8M",
+      "weight": "3.5",
+      "availability": "4/48hrs",
+      "cost": 900,
+      "streetIndex": "2",
+      "accessories": "Laser Sight",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

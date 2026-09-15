@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0072",
+  "doc": {
+    "_id": "sr3e-firearm-0072",
+    "name": "Ares Predator",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "15(c)",
+      "mode": "SA",
+      "damage": "9M",
+      "weight": "2.25",
+      "availability": "3/24hrs",
+      "cost": 450,
+      "streetIndex": ".5",
+      "accessories": "None",
+      "bookPage": "sr3.278",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

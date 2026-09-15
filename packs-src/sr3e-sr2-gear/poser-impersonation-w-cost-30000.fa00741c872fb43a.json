@@ -1,0 +1,30 @@
+{
+  "_key": "!items!fa00741c872fb43a",
+  "doc": {
+    "_id": "fa00741c872fb43a",
+    "name": "Poser Impersonation W (Cost 30000¥)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": null,
+      "cost": 30000,
+      "weight": 0,
+      "availability": "20/20days",
+      "streetIndex": "1",
+      "bookPage": "sr2.244",
+      "description": "<p><strong>Type:</strong> Active<br><strong>Memory:</strong> 320 Mp</p>"
+    }
+  },
+  "embedded": {}
+}

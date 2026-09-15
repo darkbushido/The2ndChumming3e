@@ -1,0 +1,41 @@
+{
+  "_key": "!items!ZbNKcRZ1GbtMGubh",
+  "doc": {
+    "name": "MA:Tai Chi Ch'uan",
+    "type": "skill",
+    "system": {
+      "category": "Martial Arts",
+      "skillType": "knowledge",
+      "skillName": "MA:Tai Chi Ch'uan",
+      "linkedAttribute": "strength",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": "",
+      "bookPage": "cc.88"
+    },
+    "_id": "ZbNKcRZ1GbtMGubh",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192938166,
+      "modifiedTime": 1782889914449,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

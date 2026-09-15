@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0138",
+  "doc": {
+    "_id": "sr3e-firearm-0138",
+    "name": "Ruger Thunderbolt/Smart",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "12(c)",
+      "mode": "BF",
+      "damage": "12S",
+      "weight": "2.75",
+      "availability": "14/12days",
+      "cost": 1400,
+      "streetIndex": "6",
+      "accessories": "Smartlink, special recoil, damage code is for Burst",
+      "bookPage": "cc.19",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

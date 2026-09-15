@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0714",
+  "doc": {
+    "_id": "sr3e-cyberware-0714",
+    "name": "Armor: Ballistic [8]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0,
+      "cost": 20000,
+      "availability": "8/2 weeks",
+      "streetIndex": 1,
+      "legalCode": "3-N",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.36",
+      "grade": "Standard",
+      "rating": 8,
+      "description": "+8 BAL, ECU: 4, Conceal: -4"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

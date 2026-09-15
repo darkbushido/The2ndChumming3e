@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0397",
+  "doc": {
+    "_id": "sr3e-cyberware-0397",
+    "name": "Ears Cyber Replacement",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Earware",
+      "essenceCost": 0.3,
+      "cost": 4000,
+      "availability": "2/24 hours",
+      "streetIndex": 0.75,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0.5,
+      "isReplacement": false,
+      "bookPage": "sr3.299",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Holds .5 Essence of ear mods free of Essence cost",
+      "srcgName": "Ears Cyber Repl"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

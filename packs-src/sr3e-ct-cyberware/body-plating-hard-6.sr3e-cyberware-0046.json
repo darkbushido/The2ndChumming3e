@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0046",
+  "doc": {
+    "_id": "sr3e-cyberware-0046",
+    "name": "Body Plating Hard [6]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0,
+      "cost": 150000,
+      "availability": "14/3 weeks",
+      "streetIndex": 2,
+      "legalCode": "5P-CA",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "ct.37",
+      "grade": "Standard",
+      "rating": 6,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

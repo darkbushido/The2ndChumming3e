@@ -1,0 +1,30 @@
+{
+  "_key": "!items!3a8f3e7754a9f7dd",
+  "doc": {
+    "_id": "3a8f3e7754a9f7dd",
+    "name": "Ebony Credstick[4]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Credstick"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Credstick",
+      "concealability": "-",
+      "rating": 4,
+      "cost": 16000,
+      "weight": 0,
+      "availability": "4/24hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.239",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

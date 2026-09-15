@@ -1,0 +1,24 @@
+{
+  "_key": "!actors!sr3e-ic-0009",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/agent-default.webp",
+    "_id": "sr3e-ic-0009",
+    "name": "Hydra",
+    "type": "ic",
+    "system": {
+      "icType": "Hydra",
+      "grading": "Gray",
+      "rating": 6,
+      "systemRating": 6,
+      "memoryRequired": 20,
+      "damage": "6M Stun",
+      "hostSecurityTier": "Orange",
+      "notes": "<p>Respawns from a hidden backup copy each time it is destroyed. Ability: Respawn.</p>",
+      "woundValue": 0,
+      "bookPage": "matrix-defragged.42"
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

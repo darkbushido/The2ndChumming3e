@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0001",
+  "doc": {
+    "_id": "sr3e-spell-0001",
+    "name": "Death Touch",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Combat",
+      "type": "Mana",
+      "duration": "Instant",
+      "range": "T",
+      "drain": "(DL-1)",
+      "target": "W(R)",
+      "bookPage": "sr3.191",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

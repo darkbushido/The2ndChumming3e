@@ -1,0 +1,30 @@
+{
+  "_key": "!items!c799be06d732291c",
+  "doc": {
+    "_id": "c799be06d732291c",
+    "name": "Under Barrel Weight",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-1)",
+      "rating": 1,
+      "cost": 50,
+      "weight": 1,
+      "availability": "2/24hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.35",
+      "description": "<p><strong>Mount:</strong> Under</p>"
+    }
+  },
+  "embedded": {}
+}

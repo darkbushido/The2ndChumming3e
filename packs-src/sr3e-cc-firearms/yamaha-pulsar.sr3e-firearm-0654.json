@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0654",
+  "doc": {
+    "_id": "sr3e-firearm-0654",
+    "name": "Yamaha Pulsar",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "Tasr",
+      "skill": "Tasers",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "4(m)",
+      "mode": "SA",
+      "damage": "8D Stun",
+      "weight": "2",
+      "availability": "12/7days",
+      "cost": 1350,
+      "streetIndex": "2",
+      "accessories": "None",
+      "bookPage": "cc.19",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

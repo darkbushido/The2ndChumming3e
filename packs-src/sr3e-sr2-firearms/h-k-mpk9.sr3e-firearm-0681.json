@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0681",
+  "doc": {
+    "_id": "sr3e-firearm-0681",
+    "name": "H&K MPK9",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "35(c)",
+      "mode": "SA/BF",
+      "damage": "7M",
+      "weight": "3",
+      "availability": "5/36hrs",
+      "cost": 1040,
+      "streetIndex": ".8",
+      "accessories": "None",
+      "bookPage": "pw.22",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

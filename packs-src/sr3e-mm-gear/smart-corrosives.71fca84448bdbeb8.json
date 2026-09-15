@@ -1,0 +1,30 @@
+{
+  "_key": "!items!71fca84448bdbeb8",
+  "doc": {
+    "_id": "71fca84448bdbeb8",
+    "name": "Smart Corrosives",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": null,
+      "cost": 7000,
+      "weight": 0,
+      "availability": "12/1mo",
+      "streetIndex": "3",
+      "bookPage": "mm.96",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

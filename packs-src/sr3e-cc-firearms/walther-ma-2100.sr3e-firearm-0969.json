@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0969",
+  "doc": {
+    "_id": "sr3e-firearm-0969",
+    "name": "Walther MA-2100",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "Snip",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "10(m)",
+      "mode": "SA",
+      "damage": "14S",
+      "weight": "4.5",
+      "availability": "12/7days",
+      "cost": 6500,
+      "streetIndex": "4",
+      "accessories": "Smartlink",
+      "bookPage": "cc.21",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

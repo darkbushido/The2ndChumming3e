@@ -1,0 +1,19 @@
+{
+  "_key": "!items!a4bf4a4cb2ab3a06",
+  "doc": {
+    "_id": "a4bf4a4cb2ab3a06",
+    "name": "Browse",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Browse",
+      "category": "utility",
+      "multiplier": 1,
+      "rating": 0,
+      "bookPage": "sr3.220",
+      "description": "<p><strong>Operational utility</strong> · Multiplier 1 — size in Mp = Rating² × 1 (Program Size Table). See SR3 p.220 for what it does.</p>"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

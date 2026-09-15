@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0016",
+  "doc": {
+    "_id": "sr3e-firearm-0016",
+    "name": "Streetline Special",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HOPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "8",
+      "ammunition": "6(c)",
+      "mode": "SS",
+      "damage": "4L",
+      "weight": ".5",
+      "availability": "2/12hrs",
+      "cost": 100,
+      "streetIndex": ".75",
+      "accessories": "None",
+      "bookPage": "sr3.278",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

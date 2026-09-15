@@ -1,0 +1,42 @@
+{
+  "_key": "!items!fMTEJzK0vY9S9AvT",
+  "doc": {
+    "name": "Neuro-stun X",
+    "type": "drug",
+    "system": {
+      "category": "Pharmaceutical Compounds",
+      "addiction": "",
+      "tolerance": "",
+      "effect": "",
+      "speed": "1 Combat Turn",
+      "vector": "Contact or Inhalation",
+      "availability": "6/36 hrs",
+      "cost": 30,
+      "streetIndex": "2",
+      "bookPage": "mm.121",
+      "notes": ""
+    },
+    "_id": "fMTEJzK0vY9S9AvT",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "ge55aFMax5sNd2Ho": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.3.1",
+      "createdTime": 1782280826158,
+      "modifiedTime": 1782889914231,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

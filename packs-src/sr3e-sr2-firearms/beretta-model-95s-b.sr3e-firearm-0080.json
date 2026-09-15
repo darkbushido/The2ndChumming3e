@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0080",
+  "doc": {
+    "_id": "sr3e-firearm-0080",
+    "name": "Beretta Model 95S-B",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "15(c)",
+      "mode": "SA/BF",
+      "damage": "9M",
+      "weight": "2.5",
+      "availability": "6/72hrs",
+      "cost": 750,
+      "streetIndex": "1.75",
+      "accessories": "Smartlink-2",
+      "bookPage": "pw.15",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

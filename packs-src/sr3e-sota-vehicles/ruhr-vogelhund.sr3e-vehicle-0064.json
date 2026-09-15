@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0064",
+  "doc": {
+    "_id": "sr3e-vehicle-0064",
+    "name": "Ruhr. Vogelhund",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 257000,
+      "streetIndex": 3,
+      "availability": "13/13days",
+      "bookPage": "sota.78",
+      "seating": 3,
+      "notes": "ECCM 4, ECD 3, Small Turret(2 medium launch control systems 8 internal missile mounts), Radar Abosorbent Materials 1(factored in), Electronics Port (w Radio Rating 3), Thermal Baffles 1(factored in) | Seating: 2+1",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 120,
+          "base": 120
+        },
+        "accel": {
+          "value": 9,
+          "base": 9
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 3,
+          "base": 3
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 8,
+          "base": 8
+        },
+        "cargo": {
+          "value": 7.5,
+          "base": 7.5
+        },
+        "load": {
+          "value": 253,
+          "base": 253
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

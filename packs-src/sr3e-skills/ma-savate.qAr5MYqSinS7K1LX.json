@@ -1,0 +1,41 @@
+{
+  "_key": "!items!qAr5MYqSinS7K1LX",
+  "doc": {
+    "name": "MA:Savate",
+    "type": "skill",
+    "system": {
+      "category": "Martial Arts",
+      "skillType": "knowledge",
+      "skillName": "MA:Savate",
+      "linkedAttribute": "strength",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": "",
+      "bookPage": "cc.88"
+    },
+    "_id": "qAr5MYqSinS7K1LX",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192937882,
+      "modifiedTime": 1782889914450,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

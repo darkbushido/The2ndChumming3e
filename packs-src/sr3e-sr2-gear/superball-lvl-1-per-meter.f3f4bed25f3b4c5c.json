@@ -1,0 +1,30 @@
+{
+  "_key": "!items!f3f4bed25f3b4c5c",
+  "doc": {
+    "_id": "f3f4bed25f3b4c5c",
+    "name": "Superball Lvl 1 (per meter)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 1,
+      "cost": 50,
+      "weight": 0,
+      "availability": "2/48hrs",
+      "streetIndex": "3",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

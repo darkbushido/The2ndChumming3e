@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0120",
+  "doc": {
+    "_id": "sr3e-vehicle-0120",
+    "name": "V-W Superkombi III(RV)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 50300,
+      "streetIndex": 1,
+      "availability": "3/72hrs",
+      "bookPage": "r3.171",
+      "seating": 6,
+      "notes": "Folding Bench Seat, RV | Seating: 4+2b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 8,
+          "base": 8
+        },
+        "speed": {
+          "value": 105,
+          "base": 105
+        },
+        "accel": {
+          "value": 7,
+          "base": 7
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 1,
+          "base": 1
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 24,
+          "base": 24
+        },
+        "load": {
+          "value": 800,
+          "base": 800
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!3c59db8152bb26bf",
+  "doc": {
+    "_id": "3c59db8152bb26bf",
+    "name": "Radio Scrambler Level 4",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 4,
+      "cost": 4000,
+      "weight": 0,
+      "availability": "5/24hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

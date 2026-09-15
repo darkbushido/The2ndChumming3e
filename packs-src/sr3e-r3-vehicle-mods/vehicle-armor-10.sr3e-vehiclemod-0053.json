@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0053",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0053",
+    "name": "Vehicle Armor [10]",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 13750,
+      "availability": "6/12days",
+      "streetIndex": "2.5",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "80 hrs/Vehicle B/R(4)",
+      "cfCost": "0",
+      "load": "Body^2*50kg",
+      "bookPage": "r3.131",
+      "description": "Handling+1"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0163",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0163",
+    "name": "Fireproof Suit",
+    "type": "armor",
+    "system": {
+      "concealability": "4",
+      "ballistic": 0,
+      "impact": 0,
+      "weight": 3,
+      "availability": "6/72hrs",
+      "cost": 500,
+      "streetIndex": "2.5",
+      "bookPage": "sr2.???",
+      "notes": "Ballistic: (Special) | Impact: (Special)"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

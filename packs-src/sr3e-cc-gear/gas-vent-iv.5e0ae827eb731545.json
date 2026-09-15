@@ -1,0 +1,30 @@
+{
+  "_key": "!items!5e0ae827eb731545",
+  "doc": {
+    "_id": "5e0ae827eb731545",
+    "name": "Gas Vent IV",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-2)",
+      "rating": 4,
+      "cost": 1000,
+      "weight": 0.75,
+      "availability": "2/24hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.35",
+      "description": "<p><strong>Mount:</strong> Barrel</p>"
+    }
+  },
+  "embedded": {}
+}

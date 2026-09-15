@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0097",
+  "doc": {
+    "_id": "sr3e-melee-0097",
+    "name": "Whip",
+    "type": "melee",
+    "system": {
+      "category": "WHP",
+      "skill": "Whips/Flails",
+      "attribute": "strength",
+      "concealability": "5",
+      "reach": "2",
+      "damage": "(STR)L",
+      "weight": ".5",
+      "availability": "5/24hrs",
+      "cost": 300,
+      "streetIndex": "2",
+      "legal": true,
+      "bookPage": "sr3.275",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

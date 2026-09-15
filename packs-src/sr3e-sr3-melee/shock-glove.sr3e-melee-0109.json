@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0109",
+  "doc": {
+    "_id": "sr3e-melee-0109",
+    "name": "Shock Glove",
+    "type": "melee",
+    "system": {
+      "category": "UNA",
+      "skill": "Unarmed Combat",
+      "attribute": "strength",
+      "concealability": "9",
+      "reach": "-",
+      "damage": "7S Stun",
+      "weight": ".5",
+      "availability": "5/48hrs",
+      "cost": 950,
+      "streetIndex": "2",
+      "legal": true,
+      "bookPage": "sr3.275",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!cb6c6643c1b6f58f",
+  "doc": {
+    "_id": "cb6c6643c1b6f58f",
+    "name": "Wire Cutters",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "12",
+      "rating": null,
+      "cost": 25,
+      "weight": 1,
+      "availability": "Always",
+      "streetIndex": "1",
+      "bookPage": "sr3.294",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

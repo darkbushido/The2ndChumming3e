@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0769",
+  "doc": {
+    "_id": "sr3e-cyberware-0769",
+    "name": "Mount, Tracking (retractable)",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0,
+      "cost": 40000,
+      "availability": "8/7 days",
+      "streetIndex": 2,
+      "legalCode": "3P-R",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.40",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Track targets if linked to target designator",
+      "srcgName": "Mount, Tracking (retr.)"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

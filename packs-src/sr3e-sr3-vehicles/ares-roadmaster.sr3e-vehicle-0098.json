@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0098",
+  "doc": {
+    "_id": "sr3e-vehicle-0098",
+    "name": "Ares Roadmaster",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "military",
+      "cost": 45000,
+      "streetIndex": 1,
+      "availability": "3/3days",
+      "bookPage": "sr3.309, r3.169",
+      "seating": 3,
+      "notes": "Seating: 2+1b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 10,
+          "base": 10
+        },
+        "speed": {
+          "value": 90,
+          "base": 90
+        },
+        "accel": {
+          "value": 3,
+          "base": 3
+        },
+        "body": {
+          "value": 5,
+          "base": 5
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 80,
+          "base": 80
+        },
+        "load": {
+          "value": 2000,
+          "base": 2000
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

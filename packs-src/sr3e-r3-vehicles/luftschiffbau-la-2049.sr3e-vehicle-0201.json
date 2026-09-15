@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0201",
+  "doc": {
+    "_id": "sr3e-vehicle-0201",
+    "name": "Luftschiffbau LA-2049",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "airship",
+      "cost": 318000,
+      "streetIndex": 1,
+      "availability": "16/16 days",
+      "bookPage": "r3.191",
+      "seating": 3,
+      "notes": "Seating: 2+1b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 200,
+          "base": 200
+        },
+        "accel": {
+          "value": 10,
+          "base": 10
+        },
+        "body": {
+          "value": 8,
+          "base": 8
+        },
+        "armor": {
+          "value": 4,
+          "base": 4
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 128,
+          "base": 128
+        },
+        "load": {
+          "value": 2400,
+          "base": 2400
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

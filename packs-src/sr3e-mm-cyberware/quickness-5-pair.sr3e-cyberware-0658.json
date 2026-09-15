@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0658",
+  "doc": {
+    "_id": "sr3e-cyberware-0658",
+    "name": "Quickness [5] (Pair)",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimbs",
+      "essenceCost": 1.2,
+      "cost": 360000,
+      "availability": "8/4 days",
+      "streetIndex": 1.5,
+      "legalCode": "6P-Q",
+      "mods": "+5QCK,",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.40",
+      "grade": "Standard",
+      "rating": 5,
+      "description": "+5QCK",
+      "bonusQui": 5
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

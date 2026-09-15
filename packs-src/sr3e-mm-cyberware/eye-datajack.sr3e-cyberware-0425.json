@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0425",
+  "doc": {
+    "_id": "sr3e-cyberware-0425",
+    "name": "Eye, Datajack",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Eyeware",
+      "essenceCost": 0.25,
+      "cost": 2200,
+      "availability": "6/48 hours",
+      "streetIndex": 2,
+      "legalCode": "4P-N",
+      "mods": "+1DJK",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.13",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Conceal 10"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

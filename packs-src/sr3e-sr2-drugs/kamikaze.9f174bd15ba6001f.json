@@ -1,0 +1,31 @@
+{
+  "_key": "!items!9f174bd15ba6001f",
+  "doc": {
+    "_id": "9f174bd15ba6001f",
+    "name": "Kamikaze",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "4P",
+      "tolerance": "2",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 50,
+      "availability": "5/4days",
+      "streetIndex": "5",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 4</p>"
+    }
+  },
+  "embedded": {}
+}

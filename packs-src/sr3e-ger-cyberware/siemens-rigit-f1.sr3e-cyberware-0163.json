@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0163",
+  "doc": {
+    "_id": "sr3e-cyberware-0163",
+    "name": "Siemens Rigit!F1",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0.5,
+      "cost": 25000,
+      "availability": "4/48 hours",
+      "streetIndex": 1,
+      "legalCode": "6P-N",
+      "mods": "+1INI,",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "ger.184",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "",
+      "bonusInitDice": 1
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

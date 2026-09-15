@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0979",
+  "doc": {
+    "_id": "sr3e-cyberware-0979",
+    "name": "SimLink Simrig [6]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Rigger",
+      "essenceCost": 0.6,
+      "cost": 130000,
+      "availability": "3/5 days",
+      "streetIndex": 2,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.302",
+      "grade": "Standard",
+      "rating": 6,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0052",
+  "doc": {
+    "_id": "sr3e-drone-0052",
+    "name": "MCT Hachiman",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 70000,
+      "streetIndex": 2,
+      "availability": "NA",
+      "seating": 0,
+      "bookPage": "r3.173",
+      "notes": "Ablative Armor 1, Robot-Pilot Advanced Programming, Adaptation Pool 3, Robotic Reflexes 3, Remote-Control Gear, Remote Mini-turret w/Ultimax MMG, Rigger Interface, Spotlight | Alt-mode Body/Armor: 2/5(7)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 10,
+          "base": 10
+        },
+        "accel": {
+          "value": 2,
+          "base": 2
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 5,
+          "base": 5
+        },
+        "sig": {
+          "value": 7,
+          "base": 7
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 3,
+          "base": 3
+        },
+        "sensor": {
+          "value": 5,
+          "base": 5
+        },
+        "cargo": {
+          "value": 4,
+          "base": 4
+        },
+        "load": {
+          "value": 125,
+          "base": 125
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0741",
+  "doc": {
+    "_id": "sr3e-cyberware-0741",
+    "name": "Cyberskates",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0,
+      "cost": 1000,
+      "availability": "3/24 hours",
+      "streetIndex": 1,
+      "legalCode": "3-N",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.38",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "QCK*2 Walking, QCK*6 Running"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

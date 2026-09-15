@@ -1,0 +1,31 @@
+{
+  "_key": "!items!6dc5d1ac4144a49a",
+  "doc": {
+    "_id": "6dc5d1ac4144a49a",
+    "name": "Gamma-Scopolamine",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Toxins"
+      }
+    },
+    "system": {
+      "category": "Toxins",
+      "addiction": "",
+      "tolerance": "",
+      "effect": "10D stun",
+      "speed": "Immediate",
+      "vector": "Injected",
+      "cost": 300,
+      "availability": "8/2weeks",
+      "streetIndex": "3",
+      "bookPage": "sr3.250",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

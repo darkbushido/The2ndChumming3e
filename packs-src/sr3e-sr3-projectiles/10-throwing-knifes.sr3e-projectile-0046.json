@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-projectile-0046",
+  "doc": {
+    "_id": "sr3e-projectile-0046",
+    "name": "10 Throwing Knifes",
+    "type": "projectile",
+    "system": {
+      "category": "TK",
+      "skill": "Throwing Weapons",
+      "attribute": "strength",
+      "concealability": "9",
+      "strMin": 0,
+      "damage": "(STR)L",
+      "weight": ".25",
+      "availability": "2/24hrs",
+      "cost": 200,
+      "streetIndex": "1",
+      "legal": false,
+      "bookPage": "sr3.276",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

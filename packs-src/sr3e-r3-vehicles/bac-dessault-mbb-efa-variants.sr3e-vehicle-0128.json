@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0128",
+  "doc": {
+    "_id": "sr3e-vehicle-0128",
+    "name": "Bac-Dessault-MBB EFA Variants",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "fixedwing",
+      "cost": 2137500,
+      "streetIndex": 3,
+      "availability": "NA",
+      "bookPage": "r3.179",
+      "seating": 1,
+      "notes": "Gas Enviroseal, External Fixed Hardpoint, 4 External Missile Mounts, Thermal Baffles 2 (factored in), ECM 4, ECCM 5, 2 Medium Launch Control Systems | Alt-mode Speed/Accel: 150(2000)/150 | Seating: 1e",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 150,
+          "base": 150
+        },
+        "accel": {
+          "value": 150,
+          "base": 150
+        },
+        "body": {
+          "value": 7,
+          "base": 7
+        },
+        "armor": {
+          "value": 6,
+          "base": 6
+        },
+        "sig": {
+          "value": 5,
+          "base": 5
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 7,
+          "base": 7
+        },
+        "cargo": {
+          "value": 2,
+          "base": 2
+        },
+        "load": {
+          "value": 1700,
+          "base": 1700
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0011",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0011",
+    "name": "Advanced Drone Pilot [3]",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 25000,
+      "availability": "6/14days",
+      "streetIndex": "2",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "64 hrs/Computer B/R(8-Handling)",
+      "cfCost": "0",
+      "load": "",
+      "bookPage": "r3.127",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

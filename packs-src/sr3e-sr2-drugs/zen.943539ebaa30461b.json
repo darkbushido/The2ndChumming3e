@@ -1,0 +1,31 @@
+{
+  "_key": "!items!943539ebaa30461b",
+  "doc": {
+    "_id": "943539ebaa30461b",
+    "name": "Zen",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "5M",
+      "tolerance": "3",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 120,
+      "availability": "5/10hrs",
+      "streetIndex": "3",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 10</p>"
+    }
+  },
+  "embedded": {}
+}

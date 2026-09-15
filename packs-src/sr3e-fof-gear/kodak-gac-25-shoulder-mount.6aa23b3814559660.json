@@ -1,0 +1,30 @@
+{
+  "_key": "!items!6aa23b3814559660",
+  "doc": {
+    "_id": "6aa23b3814559660",
+    "name": "Kodak GAC-25 Shoulder Mount",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "-",
+      "rating": null,
+      "cost": 200,
+      "weight": 1,
+      "availability": "3/48hrs",
+      "streetIndex": "2",
+      "bookPage": "fof.96",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

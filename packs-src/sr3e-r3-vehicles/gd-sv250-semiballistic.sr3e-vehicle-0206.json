@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0206",
+  "doc": {
+    "_id": "sr3e-vehicle-0206",
+    "name": "GD SV250 Semiballistic",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "fixedwing",
+      "cost": 76000000,
+      "streetIndex": 1,
+      "availability": "-",
+      "bookPage": "r3.192",
+      "seating": 126,
+      "notes": "Rigger Adaption, 8 Partial Basic Living Amenities | Alt-mode Speed/Accel: 200(1500)/60",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 200,
+          "base": 200
+        },
+        "accel": {
+          "value": 60,
+          "base": 60
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 1,
+          "base": 1
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 4,
+          "base": 4
+        },
+        "pilot": {
+          "value": 4,
+          "base": 4
+        },
+        "sensor": {
+          "value": 4,
+          "base": 4
+        },
+        "cargo": {
+          "value": 250,
+          "base": 250
+        },
+        "load": {
+          "value": 8000,
+          "base": 8000
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

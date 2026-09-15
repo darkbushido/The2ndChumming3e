@@ -1,0 +1,30 @@
+{
+  "_key": "!items!7af163586fde669c",
+  "doc": {
+    "_id": "7af163586fde669c",
+    "name": "Restraints (Cost 50¥)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "3",
+      "rating": null,
+      "cost": 50,
+      "weight": 0,
+      "availability": "4/48hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.294",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

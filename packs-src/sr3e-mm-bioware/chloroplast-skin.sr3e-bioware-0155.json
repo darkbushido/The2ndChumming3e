@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0155",
+  "doc": {
+    "_id": "sr3e-bioware-0155",
+    "name": "Chloroplast Skin",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Cosmetic",
+      "grade": "Exotic",
+      "bioIndex": 0.2,
+      "cost": 10000,
+      "availability": "6/8 days",
+      "streetIndex": 2,
+      "mods": "",
+      "bookPage": "mm.075",
+      "rating": 0,
+      "description": "Green skin, less need to eat"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

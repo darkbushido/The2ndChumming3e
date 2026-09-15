@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0013",
+  "doc": {
+    "_id": "sr3e-firearm-0013",
+    "name": "Nova Infranat. OneShot",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HOPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "9/14",
+      "ammunition": "1",
+      "mode": "SS",
+      "damage": "5M",
+      "weight": ".25",
+      "availability": "10/7days",
+      "cost": 80,
+      "streetIndex": "1.5",
+      "accessories": "None",
+      "bookPage": "tss.5",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

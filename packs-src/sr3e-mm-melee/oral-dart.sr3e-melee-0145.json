@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0145",
+  "doc": {
+    "_id": "sr3e-melee-0145",
+    "name": "Oral Dart",
+    "type": "melee",
+    "system": {
+      "category": "CYB",
+      "skill": "Unarmed Combat",
+      "attribute": "strength",
+      "concealability": "",
+      "reach": "0",
+      "damage": "DAM",
+      "weight": "",
+      "availability": "",
+      "cost": 0,
+      "streetIndex": "1",
+      "legal": true,
+      "bookPage": "mm.17",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

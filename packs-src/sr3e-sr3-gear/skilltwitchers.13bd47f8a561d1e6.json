@@ -1,0 +1,30 @@
+{
+  "_key": "!items!13bd47f8a561d1e6",
+  "doc": {
+    "_id": "13bd47f8a561d1e6",
+    "name": "Skilltwitchers",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "9",
+      "rating": null,
+      "cost": 200,
+      "weight": 0,
+      "availability": "6/72hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.294",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!458901db80f6431f",
+  "doc": {
+    "_id": "458901db80f6431f",
+    "name": "Adrenalin",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 12500,
+      "weight": 0,
+      "availability": "6/72hrs",
+      "streetIndex": "2",
+      "bookPage": "sr2.244",
+      "description": "<p><strong>Type:</strong> (Special)<br><strong>Memory:</strong> 150</p>"
+    }
+  },
+  "embedded": {}
+}

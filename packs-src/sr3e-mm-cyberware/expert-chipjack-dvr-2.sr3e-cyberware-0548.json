@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0548",
+  "doc": {
+    "_id": "sr3e-cyberware-0548",
+    "name": "Expert Chipjack Dvr [2]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Headware",
+      "essenceCost": 0.2,
+      "cost": 10000,
+      "availability": "4/48 hours",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.19",
+      "grade": "Standard",
+      "rating": 2,
+      "description": "+2 Pool for Skillsofts"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

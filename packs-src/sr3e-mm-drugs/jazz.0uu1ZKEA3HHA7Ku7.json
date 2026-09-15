@@ -1,0 +1,42 @@
+{
+  "_key": "!items!0uu1ZKEA3HHA7Ku7",
+  "doc": {
+    "name": "Jazz",
+    "type": "drug",
+    "system": {
+      "category": "Stimulants",
+      "addiction": "4M/5P",
+      "tolerance": "2",
+      "effect": "2/8",
+      "speed": "",
+      "vector": "",
+      "availability": "8/4days",
+      "cost": 40,
+      "streetIndex": "3",
+      "bookPage": "mm.119",
+      "notes": ""
+    },
+    "_id": "0uu1ZKEA3HHA7Ku7",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "ge55aFMax5sNd2Ho": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.3.1",
+      "createdTime": 1782280826280,
+      "modifiedTime": 1782889914230,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

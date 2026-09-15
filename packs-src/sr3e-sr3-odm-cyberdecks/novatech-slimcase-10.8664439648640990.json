@@ -1,0 +1,41 @@
+{
+  "_key": "!items!8664439648640990",
+  "doc": {
+    "_id": "8664439648640990",
+    "name": "Novatech Slimcase-10",
+    "type": "cyberdeck",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberdeck-default.webp",
+    "system": {
+      "cost": 960000,
+      "availability": "18/7days",
+      "streetIndex": 1,
+      "bookPage": "sr3.207,sr3.304",
+      "notes": "<p>Stock cyberdeck — SR3 p.207 (stats), p.304 (availability, cost). MPCP 10, Hardening 5, Active Memory 2000 Mp, Storage 2500 Mp, I/O 480 Mp/turn, Response Increase 2.</p><p>Orthodox Matrix: load it from the Matrix tab's cyberdeck picker.</p>",
+      "modules": [
+        {
+          "_odmType": "orthodox",
+          "hardening": 5,
+          "storageMemory": 2500,
+          "responseIncrease": 2
+        }
+      ],
+      "attributes": {
+        "mpcp": {
+          "base": 10,
+          "value": 10
+        },
+        "memory": {
+          "total": 2000,
+          "used": 0,
+          "unit": "Mp"
+        },
+        "dataTransferRate": {
+          "value": 480,
+          "unit": "Mp per Combat Turn"
+        }
+      }
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

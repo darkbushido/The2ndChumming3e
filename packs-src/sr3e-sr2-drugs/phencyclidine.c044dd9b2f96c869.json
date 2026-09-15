@@ -1,0 +1,31 @@
+{
+  "_key": "!items!c044dd9b2f96c869",
+  "doc": {
+    "_id": "c044dd9b2f96c869",
+    "name": "Phencyclidine",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "5M",
+      "tolerance": "4",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 25,
+      "availability": "8/14hrs",
+      "streetIndex": "2.5",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 2</p>"
+    }
+  },
+  "embedded": {}
+}

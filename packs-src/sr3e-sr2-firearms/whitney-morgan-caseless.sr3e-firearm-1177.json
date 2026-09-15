@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1177",
+  "doc": {
+    "_id": "sr3e-firearm-1177",
+    "name": "Whitney-Morgan Caseless",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "MMG",
+      "skill": "Gunnery",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "belt",
+      "mode": "FA",
+      "damage": "9S",
+      "weight": "35",
+      "availability": "26/30days",
+      "cost": 25000,
+      "streetIndex": "4",
+      "accessories": "Caseless",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

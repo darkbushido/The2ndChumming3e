@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1147",
+  "doc": {
+    "_id": "sr3e-firearm-1147",
+    "name": "Ultimax MMG",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "MMG",
+      "skill": "Gunnery",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "40(c)/Belt",
+      "mode": "FA",
+      "damage": "9S",
+      "weight": "12",
+      "availability": "14/14days",
+      "cost": 2500,
+      "streetIndex": "2",
+      "accessories": "None",
+      "bookPage": "sr3.279",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

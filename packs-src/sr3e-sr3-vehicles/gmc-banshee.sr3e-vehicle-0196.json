@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0196",
+  "doc": {
+    "_id": "sr3e-vehicle-0196",
+    "name": "GMC Banshee",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "fixedwing",
+      "cost": 2560000,
+      "streetIndex": 3,
+      "availability": "NA",
+      "bookPage": "sr3.311,r3.190",
+      "seating": 3,
+      "notes": "ECM 5, ECCM 5, RAM 2 (factored in), Thermal Baffles 1 (factored in), External Fixed Hardpoint, Small Turret (1 CF Ammo Bin), Gas Enviroseal | Alt-mode Speed/Accel: 250(1000)/50 | Seating: 3e",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 6,
+          "base": 6
+        },
+        "handlingOffRoad": {
+          "value": 6,
+          "base": 6
+        },
+        "speed": {
+          "value": 250,
+          "base": 250
+        },
+        "accel": {
+          "value": 50,
+          "base": 50
+        },
+        "body": {
+          "value": 6,
+          "base": 6
+        },
+        "armor": {
+          "value": 18,
+          "base": 18
+        },
+        "sig": {
+          "value": 5,
+          "base": 5
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 7,
+          "base": 7
+        },
+        "cargo": {
+          "value": 29,
+          "base": 29
+        },
+        "load": {
+          "value": 805,
+          "base": 805
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

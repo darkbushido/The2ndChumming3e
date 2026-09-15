@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0452",
+  "doc": {
+    "_id": "sr3e-cyberware-0452",
+    "name": "Eyes, L 1shot Flash P.rload  1",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Eyeware",
+      "essenceCost": 0,
+      "cost": 500,
+      "availability": "8/2 weeks",
+      "streetIndex": 3,
+      "legalCode": "7P-CB",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "ct.21",
+      "grade": "Standard",
+      "rating": 0,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

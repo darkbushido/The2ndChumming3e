@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-projectile-0013",
+  "doc": {
+    "_id": "sr3e-projectile-0013",
+    "name": "Ranger-X Bow",
+    "type": "projectile",
+    "system": {
+      "category": "Bow",
+      "skill": "Projectile Weapons",
+      "attribute": "strength",
+      "concealability": "2",
+      "strMin": 2,
+      "damage": "6M",
+      "weight": "1.5",
+      "availability": "5/36hrs",
+      "cost": 240,
+      "streetIndex": "2",
+      "legal": false,
+      "bookPage": "cc.13",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

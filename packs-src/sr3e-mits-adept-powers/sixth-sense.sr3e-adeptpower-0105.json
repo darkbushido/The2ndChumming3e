@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0105",
+  "doc": {
+    "_id": "sr3e-adeptpower-0105",
+    "name": "Sixth Sense*",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.25,
+      "hasLevels": true,
+      "level": 1,
+      "mods": "",
+      "bookPage": "mits.151",
+      "description": "Each level allows the adept to roll an additional die when making Reaction Tests forsurprise SR3-108"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

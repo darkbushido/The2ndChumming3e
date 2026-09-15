@@ -1,0 +1,29 @@
+{
+  "_key": "!items!fc62c5e6e500abfe",
+  "doc": {
+    "_id": "fc62c5e6e500abfe",
+    "name": "Armor Jacket",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "6",
+      "ballistic": 5,
+      "impact": 3,
+      "weight": 2,
+      "cost": 900,
+      "availability": "3/36hrs",
+      "streetIndex": ".75",
+      "bookPage": "sr2.241",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

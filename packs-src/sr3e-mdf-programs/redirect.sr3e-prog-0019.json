@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0019",
+  "doc": {
+    "_id": "sr3e-prog-0019",
+    "name": "Redirect",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Redirect",
+      "type": "Program",
+      "category": "Defensive",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 5,
+      "degradable": true,
+      "description": "<p>Increases target number by its rating for enemy icons attempting to target the user with the Trace Signal prompt.</p>",
+      "associatedPrompt": "Defense vs Trace Signal",
+      "effect": "TN Increase (Enemy)",
+      "bookPage": "matrix-defragged.29"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

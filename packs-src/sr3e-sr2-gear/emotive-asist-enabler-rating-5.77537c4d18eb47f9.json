@@ -1,0 +1,30 @@
+{
+  "_key": "!items!77537c4d18eb47f9",
+  "doc": {
+    "_id": "77537c4d18eb47f9",
+    "name": "Emotive ASIST Enabler Rating 5",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "5",
+      "rating": 5,
+      "cost": 125000,
+      "weight": 6,
+      "availability": "8/1week",
+      "streetIndex": "2",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

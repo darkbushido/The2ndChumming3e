@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0145",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0145",
+    "name": "Camo Jacket (Desert)",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 3,
+      "impact": 1,
+      "weight": 1.5,
+      "availability": "4/36hrs",
+      "cost": 800,
+      "streetIndex": "1",
+      "bookPage": "sr3.284",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0219",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0219",
+    "name": "Enhanced Sensors [9]",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 100000,
+      "availability": "16/6months",
+      "streetIndex": "GM",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "144 hrs/Electronics B/R(4)",
+      "cfCost": "16",
+      "load": "200kg",
+      "bookPage": "sta2.39",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

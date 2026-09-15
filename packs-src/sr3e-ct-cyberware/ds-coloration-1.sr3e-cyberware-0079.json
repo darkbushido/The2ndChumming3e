@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0079",
+  "doc": {
+    "_id": "sr3e-cyberware-0079",
+    "name": "DS Coloration [1]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0,
+      "cost": 30000,
+      "availability": "8/18 days",
+      "streetIndex": 1.75,
+      "legalCode": "Legal",
+      "mods": "+2BOD,",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "ct.28",
+      "grade": "Standard",
+      "rating": 1,
+      "description": "",
+      "bonusBod": 2
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

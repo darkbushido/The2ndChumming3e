@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0084",
+  "doc": {
+    "_id": "sr3e-spell-0084",
+    "name": "Increased Cyber Attribute (C)  1",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Health",
+      "type": "Physical",
+      "duration": "Sustained",
+      "range": "T",
+      "drain": "+2(M)",
+      "target": "Att(V)",
+      "bookPage": "sr3.194",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!a96314b23e2c7d1c",
+  "doc": {
+    "_id": "a96314b23e2c7d1c",
+    "name": "Music (Cost 20¥)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "8",
+      "rating": null,
+      "cost": 20,
+      "weight": 0,
+      "availability": "Always",
+      "streetIndex": ".75",
+      "bookPage": "fof.94",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

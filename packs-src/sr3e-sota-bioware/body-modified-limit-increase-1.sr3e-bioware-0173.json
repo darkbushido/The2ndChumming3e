@@ -1,0 +1,25 @@
+{
+  "_key": "!items!sr3e-bioware-0173",
+  "doc": {
+    "_id": "sr3e-bioware-0173",
+    "name": "Body Modified Limit Increase    1",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Genetech",
+      "grade": "Exotic",
+      "bioIndex": 0.5,
+      "cost": 65000,
+      "availability": "5/21 days",
+      "streetIndex": 2,
+      "mods": "+1XOD",
+      "bookPage": "sota.026",
+      "rating": 0,
+      "description": "+1 to Racial Modified Limit",
+      "bonusBod": 1,
+      "srcgName": "Bod Modified Limit Increase    1"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0106",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0106",
+    "name": "V-Island \"Actioneer\" Jacket",
+    "type": "armor",
+    "system": {
+      "concealability": "13",
+      "ballistic": 2,
+      "impact": 1,
+      "weight": 1,
+      "availability": "5/48hrs",
+      "cost": 500,
+      "streetIndex": ".75",
+      "bookPage": "cc.49",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

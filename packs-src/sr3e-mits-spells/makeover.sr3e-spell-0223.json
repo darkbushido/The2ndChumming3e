@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0223",
+  "doc": {
+    "_id": "sr3e-spell-0223",
+    "name": "Makeover",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Manipulation",
+      "type": "Physical",
+      "duration": "Permanent",
+      "range": "LOS",
+      "drain": "+1(M)",
+      "target": "6(V)",
+      "bookPage": "mits.147",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

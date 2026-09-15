@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0916",
+  "doc": {
+    "_id": "sr3e-firearm-0916",
+    "name": "Remington 990",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "ShtG",
+      "skill": "Shotguns",
+      "attribute": "quickness",
+      "concealability": "2",
+      "ammunition": "8(m)",
+      "mode": "SA",
+      "damage": "8S/10D(f)",
+      "weight": "4",
+      "availability": "3/48hrs",
+      "cost": 650,
+      "streetIndex": "2",
+      "accessories": "Slug(8S),Shot(10D(f))",
+      "bookPage": "cc.23",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

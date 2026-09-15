@@ -1,0 +1,30 @@
+{
+  "_key": "!items!9d7a9d2cd15da122",
+  "doc": {
+    "_id": "9d7a9d2cd15da122",
+    "name": "Rappelling Gloves",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "9",
+      "rating": null,
+      "cost": 70,
+      "weight": 0,
+      "availability": "always",
+      "streetIndex": "1",
+      "bookPage": "sr3.295,fof.56",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

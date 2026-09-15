@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0049",
+  "doc": {
+    "_id": "sr3e-melee-0049",
+    "name": "ACB Harmony Telescoping Staff",
+    "type": "melee",
+    "system": {
+      "category": "other",
+      "skill": "Armed Combat",
+      "attribute": "strength",
+      "concealability": "8/-",
+      "reach": "0/2",
+      "damage": "(STR+3)M Stun",
+      "weight": "2",
+      "availability": "20/60days",
+      "cost": 14000,
+      "streetIndex": "3.6",
+      "legal": true,
+      "bookPage": "tss.3",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

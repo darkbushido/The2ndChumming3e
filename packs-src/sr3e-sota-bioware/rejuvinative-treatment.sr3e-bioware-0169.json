@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0169",
+  "doc": {
+    "_id": "sr3e-bioware-0169",
+    "name": "Rejuvinative Treatment",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Genetech",
+      "grade": "Exotic",
+      "bioIndex": 1,
+      "cost": 2000000,
+      "availability": "8/30 days",
+      "streetIndex": 2.5,
+      "mods": "",
+      "bookPage": "sota.026",
+      "rating": 0,
+      "description": "Require Maintainence sessions every 6 months for the next 3 years"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

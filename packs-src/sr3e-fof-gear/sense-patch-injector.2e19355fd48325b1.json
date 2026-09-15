@@ -1,0 +1,30 @@
+{
+  "_key": "!items!2e19355fd48325b1",
+  "doc": {
+    "_id": "2e19355fd48325b1",
+    "name": "Sense Patch Injector",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "4",
+      "rating": null,
+      "cost": 25000,
+      "weight": 5,
+      "availability": "8/1week",
+      "streetIndex": "2",
+      "bookPage": "fof.97",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

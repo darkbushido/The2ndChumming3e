@@ -1,0 +1,30 @@
+{
+  "_key": "!items!7d6e085b7cc2c1e7",
+  "doc": {
+    "_id": "7d6e085b7cc2c1e7",
+    "name": "Low Power Laser Sight",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-1)",
+      "rating": null,
+      "cost": 500,
+      "weight": 0.25,
+      "availability": "6/36hrs",
+      "streetIndex": ".9",
+      "bookPage": "sr3.282,fof.60",
+      "description": "<p><strong>Mount:</strong> Top/Under/Hand</p>"
+    }
+  },
+  "embedded": {}
+}

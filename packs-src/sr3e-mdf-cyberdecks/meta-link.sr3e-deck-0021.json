@@ -1,0 +1,90 @@
+{
+  "_key": "!items!sr3e-deck-0021",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/cyberdeck-default.webp",
+    "_id": "sr3e-deck-0021",
+    "name": "Meta Link",
+    "type": "cyberdeck",
+    "system": {
+      "era": "2070s Commlinks (4e)",
+      "cost": 4000,
+      "streetIndex": 0,
+      "availability": "4/7 days",
+      "legalityCode": "4P-S",
+      "weight": 0,
+      "notes": "Disposable consumer commlink. Barely functional for hacking.",
+      "damage": {
+        "matrixConditionMonitor": {
+          "boxes": 10,
+          "current": 0,
+          "woundPenalties": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        "burnedSlots": []
+      },
+      "attributes": {
+        "mpcp": {
+          "value": 1,
+          "base": 1,
+          "multiplier": 8,
+          "costPerMp": 300
+        },
+        "firewall": {
+          "value": 1,
+          "base": 1,
+          "multiplier": 8,
+          "costPerMp": 200
+        },
+        "response": {
+          "value": 0,
+          "base": 0,
+          "maxLevel": 0,
+          "initiativeDice": 0,
+          "reactionBonus": 0
+        },
+        "memory": {
+          "total": 500,
+          "used": 0,
+          "unit": "Mp"
+        },
+        "utilitySlots": {
+          "total": 0,
+          "available": 0
+        },
+        "dataTransferRate": {
+          "value": 10,
+          "unit": "Mp per Combat Turn"
+        },
+        "fluxRating": {
+          "value": 1,
+          "wireless": false
+        }
+      },
+      "derivedStats": {
+        "matrixInitiative": {
+          "base": 0,
+          "dice": "0d6",
+          "userModeRequired": "VR-Hot"
+        },
+        "hackingPoolBonus": 0,
+        "personaStorage": 0,
+        "iconPhysicalStats": {
+          "strength": 0,
+          "quickness": 0
+        }
+      },
+      "modules": [],
+      "utilitySlotsArray": [],
+      "storedUtilities": [],
+      "bookPage": "matrix-defragged.35"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

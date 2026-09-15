@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0112",
+  "doc": {
+    "_id": "sr3e-spell-0112",
+    "name": "Mass Agony",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Illusion",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "LOS(A)",
+      "drain": "(S)",
+      "target": "W(R)",
+      "bookPage": "mits.142",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

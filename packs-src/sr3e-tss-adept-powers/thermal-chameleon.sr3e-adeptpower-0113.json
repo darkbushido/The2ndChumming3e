@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0113",
+  "doc": {
+    "_id": "sr3e-adeptpower-0113",
+    "name": "Thermal Chameleon",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "tss.12",
+      "description": "Heat radiated from the adepts body becomes similar to it's surroundings. TN for perception tests to find adept with thermal vision/sensors get +1 per level."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

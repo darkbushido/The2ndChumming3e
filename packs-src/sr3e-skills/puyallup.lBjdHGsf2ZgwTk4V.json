@@ -1,0 +1,40 @@
+{
+  "_key": "!items!lBjdHGsf2ZgwTk4V",
+  "doc": {
+    "name": "Puyallup",
+    "type": "skill",
+    "system": {
+      "category": "Area knowledge",
+      "skillType": "knowledge",
+      "skillName": "Puyallup",
+      "linkedAttribute": "intelligence",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": ""
+    },
+    "_id": "lBjdHGsf2ZgwTk4V",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192995406,
+      "modifiedTime": 1782889914450,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

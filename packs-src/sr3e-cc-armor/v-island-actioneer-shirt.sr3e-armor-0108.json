@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0108",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0108",
+    "name": "V-Island \"Actioneer\" Shirt",
+    "type": "armor",
+    "system": {
+      "concealability": "14",
+      "ballistic": 2,
+      "impact": 1,
+      "weight": 0.75,
+      "availability": "5/48hrs",
+      "cost": 300,
+      "streetIndex": ".75",
+      "bookPage": "cc.49",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

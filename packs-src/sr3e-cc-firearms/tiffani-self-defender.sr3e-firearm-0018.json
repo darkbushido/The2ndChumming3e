@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0018",
+  "doc": {
+    "_id": "sr3e-firearm-0018",
+    "name": "Tiffani Self-Defender",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HOPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "8",
+      "ammunition": "4(c)",
+      "mode": "SS",
+      "damage": "4L",
+      "weight": ".5",
+      "availability": "2/12hrs",
+      "cost": 450,
+      "streetIndex": ".75",
+      "accessories": "None",
+      "bookPage": "cc.16",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

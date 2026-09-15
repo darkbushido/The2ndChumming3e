@@ -1,0 +1,41 @@
+{
+  "_key": "!items!vECza2jdaWfkpiPC",
+  "doc": {
+    "name": "Spell Design",
+    "type": "skill",
+    "system": {
+      "category": "Academic skills",
+      "skillType": "knowledge",
+      "skillName": "Spell Design",
+      "linkedAttribute": "intelligence",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": "",
+      "bookPage": "sr3.90"
+    },
+    "_id": "vECza2jdaWfkpiPC",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192964205,
+      "modifiedTime": 1782889914451,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

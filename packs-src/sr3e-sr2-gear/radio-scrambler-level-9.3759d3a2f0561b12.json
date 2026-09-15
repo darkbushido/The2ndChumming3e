@@ -1,0 +1,30 @@
+{
+  "_key": "!items!3759d3a2f0561b12",
+  "doc": {
+    "_id": "3759d3a2f0561b12",
+    "name": "Radio Scrambler Level 9",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 9,
+      "cost": 27000,
+      "weight": 0,
+      "availability": "6/36hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0113",
+  "doc": {
+    "_id": "sr3e-spell-0113",
+    "name": "Mass Blindness",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Illusion",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "LOS(A)",
+      "drain": "+1(S)",
+      "target": "I(R)",
+      "bookPage": "mits.143",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

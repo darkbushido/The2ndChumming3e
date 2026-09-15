@@ -1,0 +1,30 @@
+{
+  "_key": "!items!dd95de3623a9d6c6",
+  "doc": {
+    "_id": "dd95de3623a9d6c6",
+    "name": "Voice Activation",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-",
+      "rating": null,
+      "cost": 400,
+      "weight": 0.1,
+      "availability": "1/24hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.81",
+      "description": "<p><strong>Notes:</strong> Available at GM option</p>"
+    }
+  },
+  "embedded": {}
+}

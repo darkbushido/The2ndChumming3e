@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0041",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0041",
+    "name": "Artic",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 0,
+      "availability": "5/1wk",
+      "streetIndex": "1,50",
+      "installEquipment": "Vehicle Shop",
+      "installTime": "16 hrs/Vehicle B/R(4)",
+      "cfCost": "1",
+      "load": "0kg",
+      "bookPage": "twl.132",
+      "description": "Parts Cost for Ground Vehicle: Body x 250; Parts Cost for Air Vehicle: Body x 500"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

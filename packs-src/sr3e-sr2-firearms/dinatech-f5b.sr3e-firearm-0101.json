@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0101",
+  "doc": {
+    "_id": "sr3e-firearm-0101",
+    "name": "DinaTech F5B",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "10",
+      "ammunition": "1",
+      "mode": "SS",
+      "damage": "7S",
+      "weight": "-",
+      "availability": "12/14days",
+      "cost": 700,
+      "streetIndex": "3",
+      "accessories": "None",
+      "bookPage": "pw.15",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

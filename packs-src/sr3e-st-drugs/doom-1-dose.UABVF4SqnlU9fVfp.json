@@ -1,0 +1,42 @@
+{
+  "_key": "!items!UABVF4SqnlU9fVfp",
+  "doc": {
+    "name": "Doom (1 dose)",
+    "type": "drug",
+    "system": {
+      "category": "Pharmaceutical Compounds",
+      "addiction": "",
+      "tolerance": "",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "availability": "14/30days",
+      "cost": 500,
+      "streetIndex": "5",
+      "bookPage": "st.80",
+      "notes": ""
+    },
+    "_id": "UABVF4SqnlU9fVfp",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "ge55aFMax5sNd2Ho": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.3.1",
+      "createdTime": 1782280826164,
+      "modifiedTime": 1782889914231,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

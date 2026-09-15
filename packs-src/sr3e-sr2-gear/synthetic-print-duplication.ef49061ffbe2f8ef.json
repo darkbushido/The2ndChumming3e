@@ -1,0 +1,30 @@
+{
+  "_key": "!items!ef49061ffbe2f8ef",
+  "doc": {
+    "_id": "ef49061ffbe2f8ef",
+    "name": "Synthetic Print Duplication",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 500,
+      "weight": 0,
+      "availability": "4/12hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

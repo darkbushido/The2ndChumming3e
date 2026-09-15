@@ -1,0 +1,28 @@
+{
+  "_key": "!items!sr3e-cyberware-0665",
+  "doc": {
+    "_id": "sr3e-cyberware-0665",
+    "name": "Strength Enhancement [3]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimbs",
+      "essenceCost": 0,
+      "cost": 150000,
+      "availability": "6/4 days",
+      "streetIndex": 1.5,
+      "legalCode": "6P-Q",
+      "mods": "+3STR,",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.303",
+      "grade": "Standard",
+      "rating": 3,
+      "description": "+3STR",
+      "bonusStr": 3,
+      "srcgName": "Str Enh [3]"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

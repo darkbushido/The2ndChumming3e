@@ -1,0 +1,28 @@
+{
+  "_key": "!items!45282889395a1183",
+  "doc": {
+    "_id": "45282889395a1183",
+    "name": "Archaesthetic",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "-1",
+      "weight": "6/7days",
+      "cost": 10000,
+      "availability": "1",
+      "streetIndex": "4",
+      "bookPage": "sr2.258",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

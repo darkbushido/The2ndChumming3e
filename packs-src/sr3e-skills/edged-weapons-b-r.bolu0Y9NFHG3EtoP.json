@@ -1,0 +1,41 @@
+{
+  "_key": "!items!bolu0Y9NFHG3EtoP",
+  "doc": {
+    "name": "Edged Weapons B/R",
+    "type": "skill",
+    "system": {
+      "category": "Build/Repair skills",
+      "skillType": "active",
+      "skillName": "Edged Weapons B/R",
+      "linkedAttribute": "intelligence",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": "",
+      "bookPage": "sr3.85"
+    },
+    "_id": "bolu0Y9NFHG3EtoP",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192947536,
+      "modifiedTime": 1782889914449,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

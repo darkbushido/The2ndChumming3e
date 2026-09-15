@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0245",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0245",
+    "name": "White-Light",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 600,
+      "availability": "4/96hrs",
+      "streetIndex": "1.5",
+      "installEquipment": "Vehicle Shop",
+      "installTime": "24 hrs/Vehicle B/R(4)",
+      "cfCost": "0",
+      "load": "",
+      "bookPage": "r3.154",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

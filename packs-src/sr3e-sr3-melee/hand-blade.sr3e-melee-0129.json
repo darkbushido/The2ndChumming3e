@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0129",
+  "doc": {
+    "_id": "sr3e-melee-0129",
+    "name": "Hand Blade",
+    "type": "melee",
+    "system": {
+      "category": "other",
+      "skill": "Armed Combat",
+      "attribute": "strength",
+      "concealability": "",
+      "reach": "0",
+      "damage": "(STR+3)L",
+      "weight": "",
+      "availability": "",
+      "cost": 0,
+      "streetIndex": "1",
+      "legal": true,
+      "bookPage": "sr3.302",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

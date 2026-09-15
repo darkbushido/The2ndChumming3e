@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0045",
+  "doc": {
+    "_id": "sr3e-spell-0045",
+    "name": "Ranged Private Conversation    1",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Detection",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "LOS",
+      "drain": "+1(D)",
+      "target": "W",
+      "bookPage": "tss.9",
+      "damage": "",
+      "description": "I assume the published range is a typo"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

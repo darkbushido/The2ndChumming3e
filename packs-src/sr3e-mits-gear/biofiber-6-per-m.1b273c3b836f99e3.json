@@ -1,0 +1,30 @@
+{
+  "_key": "!items!1b273c3b836f99e3",
+  "doc": {
+    "_id": "1b273c3b836f99e3",
+    "name": "Biofiber 6 per m",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Magical Equipment"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Magical Equipment",
+      "concealability": "",
+      "rating": null,
+      "cost": 600,
+      "weight": 0,
+      "availability": "6/1wk",
+      "streetIndex": "2",
+      "bookPage": "mits.169",
+      "description": "<p><strong>KarmaCost:</strong> 0</p>"
+    }
+  },
+  "embedded": {}
+}

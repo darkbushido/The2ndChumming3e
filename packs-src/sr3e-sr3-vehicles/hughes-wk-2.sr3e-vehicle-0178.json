@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0178",
+  "doc": {
+    "_id": "sr3e-vehicle-0178",
+    "name": "Hughes WK-2",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "helicopter",
+      "cost": 257500,
+      "streetIndex": 1,
+      "availability": "13/13 Days",
+      "bookPage": "sr3.310,r3.184",
+      "seating": 2,
+      "notes": "",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 190,
+          "base": 190
+        },
+        "accel": {
+          "value": 14,
+          "base": 14
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 70,
+          "base": 70
+        },
+        "load": {
+          "value": 1250,
+          "base": 1250
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

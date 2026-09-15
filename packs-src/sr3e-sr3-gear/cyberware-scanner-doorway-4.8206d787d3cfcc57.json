@@ -1,0 +1,30 @@
+{
+  "_key": "!items!8206d787d3cfcc57",
+  "doc": {
+    "_id": "8206d787d3cfcc57",
+    "name": "Cyberware Scanner - Doorway [4]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "8",
+      "rating": 4,
+      "cost": 16000,
+      "weight": 0,
+      "availability": "4/2wks",
+      "streetIndex": "3",
+      "bookPage": "sr3.294",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0408",
+  "doc": {
+    "_id": "sr3e-cyberware-0408",
+    "name": "Spatial Recognizer",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Earware",
+      "essenceCost": 0.2,
+      "cost": 1200,
+      "availability": "4/48 hours",
+      "streetIndex": 2,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.18",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "-2 TNs on sound Perception tests"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

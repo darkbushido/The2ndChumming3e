@@ -1,0 +1,30 @@
+{
+  "_key": "!items!45b93b8a42eb14d8",
+  "doc": {
+    "_id": "45b93b8a42eb14d8",
+    "name": "Knowledge Specialization Chip Rating 3",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 3,
+      "cost": 1800,
+      "weight": 0,
+      "availability": "5/4days",
+      "streetIndex": "1.25",
+      "bookPage": "sr2.244",
+      "description": "<p><strong>Type:</strong> Know<br><strong>Memory:</strong> 12</p>"
+    }
+  },
+  "embedded": {}
+}

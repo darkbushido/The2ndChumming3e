@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0138",
+  "doc": {
+    "_id": "sr3e-vehicle-0138",
+    "name": "Renraku Tendai LAV",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "fixedwing",
+      "cost": 20000000,
+      "streetIndex": 3,
+      "availability": "-",
+      "bookPage": "tss.6",
+      "seating": 15,
+      "notes": "ECM/ECCM Military, level unknown.  2 external drone racks, 2 small remote turrets, 20 Naga AP mines, 4 automatic grenade launchers | Seating: 3+12",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 700,
+          "base": 700
+        },
+        "accel": {
+          "value": 30,
+          "base": 30
+        },
+        "body": {
+          "value": 7,
+          "base": 7
+        },
+        "armor": {
+          "value": 15,
+          "base": 15
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 4,
+          "base": 4
+        },
+        "pilot": {
+          "value": 4,
+          "base": 4
+        },
+        "sensor": {
+          "value": 8,
+          "base": 8
+        },
+        "cargo": {
+          "value": 36,
+          "base": 36
+        },
+        "load": {
+          "value": 15000,
+          "base": 15000
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

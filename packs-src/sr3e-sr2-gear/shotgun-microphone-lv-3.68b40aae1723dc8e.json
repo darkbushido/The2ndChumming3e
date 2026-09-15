@@ -1,0 +1,30 @@
+{
+  "_key": "!items!68b40aae1723dc8e",
+  "doc": {
+    "_id": "68b40aae1723dc8e",
+    "name": "Shotgun Microphone Lv 3",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "5",
+      "rating": null,
+      "cost": 3000,
+      "weight": 1,
+      "availability": "3/36hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!4983f00019760854",
+  "doc": {
+    "_id": "4983f00019760854",
+    "name": "Voice Identifier Lv [10]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "2",
+      "rating": 10,
+      "cost": 20000,
+      "weight": 5,
+      "availability": "10/72hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.292",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

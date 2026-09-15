@@ -1,0 +1,34 @@
+{
+  "_key": "!items!aa4c76d6ddfdfc88",
+  "doc": {
+    "_id": "aa4c76d6ddfdfc88",
+    "name": "Flare Rnds (1)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "(See Rules)",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "rounds",
+      "rounds": 1,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 0.1,
+      "cost": 3,
+      "availability": "4/48hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.39",
+      "notes": "<p>Cost 2.5¥ in the book.</p><p>Not one of the types this system models, or a combination of them — its rules are the GM's.</p><p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>"
+    }
+  },
+  "embedded": {}
+}

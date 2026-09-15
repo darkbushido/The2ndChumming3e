@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0704",
+  "doc": {
+    "_id": "sr3e-cyberware-0704",
+    "name": "Armor: Ablative [3]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0,
+      "cost": 21000,
+      "availability": "12/3 weeks",
+      "streetIndex": 2,
+      "legalCode": "3-N",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.36",
+      "grade": "Standard",
+      "rating": 3,
+      "description": "+6 BAL, +6 IMP, ECU: 3, Conceal: -3"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

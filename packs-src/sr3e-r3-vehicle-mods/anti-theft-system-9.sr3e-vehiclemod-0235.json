@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0235",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0235",
+    "name": "Anti-Theft System [9]",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 9000,
+      "availability": "5/10days",
+      "streetIndex": "1.50",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "40 hrs/Vehicle B/R(4)",
+      "cfCost": "0",
+      "load": "",
+      "bookPage": "r3.150",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

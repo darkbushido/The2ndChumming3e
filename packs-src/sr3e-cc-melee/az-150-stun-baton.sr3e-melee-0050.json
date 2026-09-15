@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0050",
+  "doc": {
+    "_id": "sr3e-melee-0050",
+    "name": "AZ-150 Stun Baton",
+    "type": "melee",
+    "system": {
+      "category": "CLB",
+      "skill": "Clubs",
+      "attribute": "strength",
+      "concealability": "5",
+      "reach": "1",
+      "damage": "8S Stun",
+      "weight": "1",
+      "availability": "3/36hrs",
+      "cost": 1500,
+      "streetIndex": "2",
+      "legal": true,
+      "bookPage": "cc.10",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0141",
+  "doc": {
+    "_id": "sr3e-vehicle-0141",
+    "name": "NT Vodianoi Assault Craft",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "boat",
+      "cost": 489600,
+      "streetIndex": 3,
+      "availability": "25/25days",
+      "bookPage": "sota.78",
+      "seating": 7,
+      "notes": "EnviroSeal (Gas with Cabin Overpressure), Radar Absorbent Materials 1 (factored in), Electronics Port (with Rating 3 Radio), Thermal Baffles 1 (factored in), Small Turret (5 CF Ammo Bin), Medium Launch Control System, 8 Internal Missle Mounts | Seating: 1+2+2b+2b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 150,
+          "base": 150
+        },
+        "accel": {
+          "value": 10,
+          "base": 10
+        },
+        "body": {
+          "value": 5,
+          "base": 5
+        },
+        "armor": {
+          "value": 6,
+          "base": 6
+        },
+        "sig": {
+          "value": 4,
+          "base": 4
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 4,
+          "base": 4
+        },
+        "cargo": {
+          "value": 26.5,
+          "base": 26.5
+        },
+        "load": {
+          "value": 2375,
+          "base": 2375
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

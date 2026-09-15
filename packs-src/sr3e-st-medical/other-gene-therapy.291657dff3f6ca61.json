@@ -1,0 +1,28 @@
+{
+  "_key": "!items!291657dff3f6ca61",
+  "doc": {
+    "_id": "291657dff3f6ca61",
+    "name": "Other Gene Therapy",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "",
+      "weight": "-",
+      "cost": 50000,
+      "availability": "6/30days",
+      "streetIndex": "2.5",
+      "bookPage": "st.74",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0910",
+  "doc": {
+    "_id": "sr3e-firearm-0910",
+    "name": "Mossberg SM-CMDT",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "ShtG",
+      "skill": "Shotguns",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "8(c)",
+      "mode": "SA/BF",
+      "damage": "8S",
+      "weight": "4.5",
+      "availability": "12/8days",
+      "cost": 1500,
+      "streetIndex": "2",
+      "accessories": "Smartlink, Heavy pistol ranges",
+      "bookPage": "cc.23",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

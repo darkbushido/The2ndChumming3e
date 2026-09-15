@@ -1,0 +1,30 @@
+{
+  "_key": "!items!3e026ec536ff9e09",
+  "doc": {
+    "_id": "3e026ec536ff9e09",
+    "name": "Shotgun Microphone Lv [9]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "5",
+      "rating": 9,
+      "cost": 9000,
+      "weight": 1,
+      "availability": "9/36hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.292",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

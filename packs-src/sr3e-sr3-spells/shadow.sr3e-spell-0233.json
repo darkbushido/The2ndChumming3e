@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0233",
+  "doc": {
+    "_id": "sr3e-spell-0233",
+    "name": "Shadow",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Manipulation",
+      "type": "Physical",
+      "duration": "Sustained",
+      "range": "LOS(A)",
+      "drain": "+2(M)",
+      "target": "4",
+      "bookPage": "sr3.198",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

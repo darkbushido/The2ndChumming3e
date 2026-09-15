@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0022",
+  "doc": {
+    "_id": "sr3e-vehicle-0022",
+    "name": "Samuvani-Criscraft Otter",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 32500,
+      "streetIndex": 1,
+      "availability": "2/48hrs",
+      "bookPage": "sr3.309, r3.161",
+      "seating": 2,
+      "notes": "Alt-mode Sig/Autonav: 3(3)/2 | Alt-mode Pilot/Sensor: -/1(0)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 45,
+          "base": 45
+        },
+        "accel": {
+          "value": 6,
+          "base": 6
+        },
+        "body": {
+          "value": 5,
+          "base": 5
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 48,
+          "base": 48
+        },
+        "load": {
+          "value": 650,
+          "base": 650
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

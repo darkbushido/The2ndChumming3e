@@ -1,0 +1,24 @@
+{
+  "_key": "!actors!sr3e-ic-0000",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/agent-default.webp",
+    "_id": "sr3e-ic-0000",
+    "name": "ARis",
+    "type": "ic",
+    "system": {
+      "icType": "ARis",
+      "grading": "White",
+      "rating": 6,
+      "systemRating": 6,
+      "memoryRequired": 12,
+      "damage": "6L Stun",
+      "hostSecurityTier": "Green",
+      "notes": "<p>Marks and tracks unauthorized decker icons. Each detected intruder raises Overwatch. Ability: Authenticate.</p>",
+      "woundValue": 0,
+      "bookPage": "matrix-defragged.40"
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

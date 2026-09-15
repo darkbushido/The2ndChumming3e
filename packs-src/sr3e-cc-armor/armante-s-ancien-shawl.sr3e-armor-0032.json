@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0032",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0032",
+    "name": "Armante's \"Ancien\" Shawl",
+    "type": "armor",
+    "system": {
+      "concealability": "14",
+      "ballistic": 1,
+      "impact": 0,
+      "weight": 0.3,
+      "availability": "2/48hrs",
+      "cost": 750,
+      "streetIndex": ".75",
+      "bookPage": "cc.46",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

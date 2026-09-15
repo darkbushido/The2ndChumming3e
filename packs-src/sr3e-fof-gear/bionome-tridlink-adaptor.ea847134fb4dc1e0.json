@@ -1,0 +1,30 @@
+{
+  "_key": "!items!ea847134fb4dc1e0",
+  "doc": {
+    "_id": "ea847134fb4dc1e0",
+    "name": "Bionome Tridlink Adaptor",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "6",
+      "rating": null,
+      "cost": 700,
+      "weight": 1,
+      "availability": "2/72hrs",
+      "streetIndex": "1",
+      "bookPage": "fof.96",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

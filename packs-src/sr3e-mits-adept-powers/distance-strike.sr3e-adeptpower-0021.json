@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0021",
+  "doc": {
+    "_id": "sr3e-adeptpower-0021",
+    "name": "Distance Strike",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 2,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "mits.149",
+      "description": "Adept can \"transmit\"an unarmed attack over a short distance (range in meters equal to the adept's magic) and inflicts the adept's standard unarmed damage."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

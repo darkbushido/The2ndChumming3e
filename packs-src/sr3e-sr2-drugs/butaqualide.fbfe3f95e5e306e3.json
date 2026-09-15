@@ -1,0 +1,31 @@
+{
+  "_key": "!items!fbfe3f95e5e306e3",
+  "doc": {
+    "_id": "fbfe3f95e5e306e3",
+    "name": "Butaqualide",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "5M",
+      "tolerance": "3",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 20,
+      "availability": "5/1hr",
+      "streetIndex": "2.5",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 10</p>"
+    }
+  },
+  "embedded": {}
+}

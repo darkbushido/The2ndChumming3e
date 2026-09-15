@@ -1,0 +1,42 @@
+{
+  "_key": "!items!kfBEilJkQvmNkfe8",
+  "doc": {
+    "name": "MAO",
+    "type": "drug",
+    "system": {
+      "category": "Pharmaceutical Compounds",
+      "addiction": "",
+      "tolerance": "",
+      "effect": "",
+      "speed": "Immediate",
+      "vector": "Injection",
+      "availability": "5/36 hrs",
+      "cost": 280,
+      "streetIndex": "2",
+      "bookPage": "mm.120",
+      "notes": ""
+    },
+    "_id": "kfBEilJkQvmNkfe8",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "ge55aFMax5sNd2Ho": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.3.1",
+      "createdTime": 1782280826152,
+      "modifiedTime": 1782889914231,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0103",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0103",
+    "name": "Pintle Mount",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 50,
+      "availability": "4/96hrs",
+      "streetIndex": "1.5",
+      "installEquipment": "Vehicle Shop",
+      "installTime": "12 hrs/Vehicle B/R(2)",
+      "cfCost": "0",
+      "load": "",
+      "bookPage": "sr3.312,r3.138",
+      "description": "-2 Recoil"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

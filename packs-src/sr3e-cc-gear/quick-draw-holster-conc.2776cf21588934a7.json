@@ -1,0 +1,30 @@
+{
+  "_key": "!items!2776cf21588934a7",
+  "doc": {
+    "_id": "2776cf21588934a7",
+    "name": "Quick Draw Holster (Conc.)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(+2)",
+      "rating": null,
+      "cost": 150,
+      "weight": 0.1,
+      "availability": "5/72hrs",
+      "streetIndex": ".75",
+      "bookPage": "cc.33",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

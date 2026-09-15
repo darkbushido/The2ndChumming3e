@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0067",
+  "doc": {
+    "_id": "sr3e-cyberware-0067",
+    "name": "Cybergill",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0.75,
+      "cost": 12500,
+      "availability": "5/72 hours",
+      "streetIndex": 1.75,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.31",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Breathe underwater"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

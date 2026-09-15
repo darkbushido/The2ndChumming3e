@@ -1,0 +1,30 @@
+{
+  "_key": "!items!dec0ab5875377334",
+  "doc": {
+    "_id": "dec0ab5875377334",
+    "name": "Scanner — Finger/Thumbprint (per Rating)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Miscellaneous Components"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Miscellaneous Components",
+      "concealability": "",
+      "rating": null,
+      "cost": 0,
+      "weight": 0,
+      "availability": "Rating/72 hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.302",
+      "description": "<p>Cost Rating×200¥ — by rating; set the cost for the rating bought.</p><p><strong>Legal:</strong> Legal</p>"
+    }
+  },
+  "embedded": {}
+}

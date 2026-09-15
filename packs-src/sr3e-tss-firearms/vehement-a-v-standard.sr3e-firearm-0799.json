@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0799",
+  "doc": {
+    "_id": "sr3e-firearm-0799",
+    "name": "Vehement A-V Standard",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "AsRf",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "2",
+      "ammunition": "8(c)",
+      "mode": "SA/BF",
+      "damage": "8S",
+      "weight": "6",
+      "availability": "12/7days",
+      "cost": 8000,
+      "streetIndex": "3",
+      "accessories": "Uses Gunnery skill and Heavy Weapons recoil",
+      "bookPage": "tss.6",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

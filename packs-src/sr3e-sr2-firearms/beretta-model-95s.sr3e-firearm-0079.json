@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0079",
+  "doc": {
+    "_id": "sr3e-firearm-0079",
+    "name": "Beretta Model 95S",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "15(c)",
+      "mode": "SA",
+      "damage": "9M",
+      "weight": "2.5",
+      "availability": "3/24hrs",
+      "cost": 500,
+      "streetIndex": "1",
+      "accessories": "Smartlink-2",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

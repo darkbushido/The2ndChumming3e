@@ -1,0 +1,30 @@
+{
+  "_key": "!items!e7da1525ae7622e5",
+  "doc": {
+    "_id": "e7da1525ae7622e5",
+    "name": "Transceiver [7]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "8",
+      "rating": 7,
+      "cost": 3500,
+      "weight": 1,
+      "availability": "7/48hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.290",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

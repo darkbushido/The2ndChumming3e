@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0019",
+  "doc": {
+    "_id": "sr3e-firearm-0019",
+    "name": "Walther Palm Pistol",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HOPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "9",
+      "ammunition": "2(b)",
+      "mode": "SS",
+      "damage": "4L",
+      "weight": ".25",
+      "availability": "3/12hrs",
+      "cost": 200,
+      "streetIndex": ".75",
+      "accessories": "None",
+      "bookPage": "sr3.278",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

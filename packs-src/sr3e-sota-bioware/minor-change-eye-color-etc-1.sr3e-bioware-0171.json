@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0171",
+  "doc": {
+    "_id": "sr3e-bioware-0171",
+    "name": "Minor Change (eye color etc.)  1",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Genetech",
+      "grade": "Exotic",
+      "bioIndex": 0.1,
+      "cost": 50000,
+      "availability": "5/21 days",
+      "streetIndex": 2,
+      "mods": "",
+      "bookPage": "sota.026",
+      "rating": 0,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

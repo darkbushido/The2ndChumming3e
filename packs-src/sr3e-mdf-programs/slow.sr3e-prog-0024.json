@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0024",
+  "doc": {
+    "_id": "sr3e-prog-0024",
+    "name": "Slow",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Slow",
+      "type": "Program",
+      "category": "Combat",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 4,
+      "degradable": false,
+      "description": "<p>Specialized combat program that reduces target icon's Initiative by 3 points per net success instead of staging damage.</p><p><em>Icon crashes if Initiative reduced to 0 within a single turn.</em></p>",
+      "associatedPrompt": "Attack an Icon",
+      "effect": "Initiative Reduction",
+      "bookPage": "matrix-defragged.32"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

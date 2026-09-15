@@ -1,0 +1,30 @@
+{
+  "_key": "!items!efd91d1969f42c33",
+  "doc": {
+    "_id": "efd91d1969f42c33",
+    "name": "Average Baseline Dir-X Rec.",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "10",
+      "rating": null,
+      "cost": 90,
+      "weight": 0,
+      "availability": "always",
+      "streetIndex": ".75",
+      "bookPage": "sr3.285",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

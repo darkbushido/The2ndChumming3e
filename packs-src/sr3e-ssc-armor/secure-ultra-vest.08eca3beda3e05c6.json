@@ -1,0 +1,29 @@
+{
+  "_key": "!items!08eca3beda3e05c6",
+  "doc": {
+    "_id": "08eca3beda3e05c6",
+    "name": "Secure Ultra-Vest",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "14",
+      "ballistic": 4,
+      "impact": 3,
+      "weight": 2.5,
+      "cost": 350,
+      "availability": "3/36hrs",
+      "streetIndex": ".9",
+      "bookPage": "ssc.39",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

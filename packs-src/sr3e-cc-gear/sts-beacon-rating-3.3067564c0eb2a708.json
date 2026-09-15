@@ -1,0 +1,30 @@
+{
+  "_key": "!items!3067564c0eb2a708",
+  "doc": {
+    "_id": "3067564c0eb2a708",
+    "name": "STS (Beacon) Rating [3]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "10",
+      "rating": 3,
+      "cost": 600,
+      "weight": 0.25,
+      "availability": "3/48hrs",
+      "streetIndex": "2",
+      "bookPage": "cc.33",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

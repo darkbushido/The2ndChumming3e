@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0099",
+  "doc": {
+    "_id": "sr3e-adeptpower-0099",
+    "name": "Quick Strike",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 3,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "mits.151",
+      "description": "This power allows the adept to act first in one initiative pass per combat turn."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

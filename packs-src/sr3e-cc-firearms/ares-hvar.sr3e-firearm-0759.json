@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0759",
+  "doc": {
+    "_id": "sr3e-firearm-0759",
+    "name": "Ares HVAR",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "AsRf",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "2",
+      "ammunition": "50(c)",
+      "mode": "SA/BF/FA",
+      "damage": "6M",
+      "weight": "5",
+      "availability": "14/7days",
+      "cost": 3200,
+      "streetIndex": "4",
+      "accessories": "RC(3), Smartlink-2, 6 rnd BF = 12D, See Rules",
+      "bookPage": "cc.22",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

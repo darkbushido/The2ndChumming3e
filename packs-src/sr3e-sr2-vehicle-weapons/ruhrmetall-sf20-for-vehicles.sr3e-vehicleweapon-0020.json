@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-vehicleweapon-0020",
+  "doc": {
+    "_id": "sr3e-vehicleweapon-0020",
+    "name": "Ruhrmetall SF20 for vehicles",
+    "type": "vehicleweapon",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "system": {
+      "weaponType": "HMG",
+      "mode": "BF/FA",
+      "damage": "10S",
+      "ammunition": "200(beltbox)",
+      "weight": 16,
+      "cost": 8500,
+      "availability": "18/30days",
+      "streetIndex": ".5",
+      "bookPage": "sr2.265",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

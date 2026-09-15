@@ -1,0 +1,28 @@
+{
+  "_key": "!items!1ef1d37316e155fb",
+  "doc": {
+    "_id": "1ef1d37316e155fb",
+    "name": "Stabilization Unit",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "2",
+      "weight": "30",
+      "cost": 10000,
+      "availability": "12/1mth",
+      "streetIndex": "3",
+      "bookPage": "sr3.304",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

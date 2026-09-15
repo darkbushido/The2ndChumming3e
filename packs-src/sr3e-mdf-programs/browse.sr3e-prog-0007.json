@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0007",
+  "doc": {
+    "_id": "sr3e-prog-0007",
+    "name": "Browse",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Browse",
+      "type": "Program",
+      "category": "Offensive",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 1,
+      "degradable": false,
+      "description": "<p>Decreases the user's target number by its rating while utilizing any Index prompts.</p>",
+      "associatedPrompt": "Index Data Store, Index Subscribed Devices, Index Users and Scheduling",
+      "effect": "TN Reduction",
+      "bookPage": "matrix-defragged.30"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

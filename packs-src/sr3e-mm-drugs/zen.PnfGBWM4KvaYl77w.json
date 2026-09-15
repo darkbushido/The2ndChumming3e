@@ -1,0 +1,42 @@
+{
+  "_key": "!items!PnfGBWM4KvaYl77w",
+  "doc": {
+    "name": "Zen",
+    "type": "drug",
+    "system": {
+      "category": "Hallucinogens",
+      "addiction": "3M",
+      "tolerance": "2",
+      "effect": "5/50",
+      "speed": "",
+      "vector": "",
+      "availability": "3/36hrs",
+      "cost": 5,
+      "streetIndex": "1",
+      "bookPage": "mm.121",
+      "notes": ""
+    },
+    "_id": "PnfGBWM4KvaYl77w",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "ge55aFMax5sNd2Ho": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.3.1",
+      "createdTime": 1782280826229,
+      "modifiedTime": 1782889914231,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

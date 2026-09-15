@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0048",
+  "doc": {
+    "_id": "sr3e-vehicle-0048",
+    "name": "Chrysler-Nissan Cirrus",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 30000,
+      "streetIndex": 1,
+      "availability": "2/24hrs",
+      "bookPage": "tss.6",
+      "seating": 4,
+      "notes": "APPS | Seating: 2+2",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 8,
+          "base": 8
+        },
+        "speed": {
+          "value": 105,
+          "base": 105
+        },
+        "accel": {
+          "value": 8,
+          "base": 8
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 8,
+          "base": 8
+        },
+        "load": {
+          "value": 150,
+          "base": 150
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

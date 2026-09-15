@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0027",
+  "doc": {
+    "_id": "sr3e-prog-0027",
+    "name": "Suppression",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Suppression",
+      "type": "Program",
+      "category": "Operational",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 5,
+      "degradable": true,
+      "description": "<p>May be used when crashing an icon. Instead of accruing Overwatch, degrade Suppression to suppress the crash.</p>",
+      "associatedPrompt": "Attack an Icon (On Crash)",
+      "effect": "Overwatch Prevention",
+      "bookPage": "matrix-defragged.32"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

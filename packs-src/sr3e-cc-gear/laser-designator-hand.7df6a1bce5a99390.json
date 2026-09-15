@@ -1,0 +1,30 @@
+{
+  "_key": "!items!7df6a1bce5a99390",
+  "doc": {
+    "_id": "7df6a1bce5a99390",
+    "name": "Laser Designator (Hand)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "8",
+      "rating": null,
+      "cost": 3000,
+      "weight": 0.5,
+      "availability": "12/2wks",
+      "streetIndex": "2",
+      "bookPage": "cc.35",
+      "description": "<p><strong>Mount:</strong> Hand</p>"
+    }
+  },
+  "embedded": {}
+}

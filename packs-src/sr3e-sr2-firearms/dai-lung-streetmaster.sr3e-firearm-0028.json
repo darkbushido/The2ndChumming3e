@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0028",
+  "doc": {
+    "_id": "sr3e-firearm-0028",
+    "name": "Dai Lung Streetmaster",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "6",
+      "ammunition": "12(c)",
+      "mode": "SA",
+      "damage": "6L",
+      "weight": "1",
+      "availability": "3/12hrs",
+      "cost": 325,
+      "streetIndex": ".8",
+      "accessories": "None",
+      "bookPage": "pw.15",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

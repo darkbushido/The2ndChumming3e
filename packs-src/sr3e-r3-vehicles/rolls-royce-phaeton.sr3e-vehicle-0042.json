@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0042",
+  "doc": {
+    "_id": "sr3e-vehicle-0042",
+    "name": "Rolls-Royce Phaeton",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 218800,
+      "streetIndex": 2,
+      "availability": "15/15days",
+      "bookPage": "r3.164",
+      "seating": 9,
+      "notes": "APPS, Concealed Armor, Roll Bars, Gas Enviroseal, Electronics Port w/Sat Uplink, 3 Folding Bucket Seats | Seating: 8+1b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 140,
+          "base": 140
+        },
+        "accel": {
+          "value": 8,
+          "base": 8
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 4,
+          "base": 4
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 4,
+          "base": 4
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 6,
+          "base": 6
+        },
+        "load": {
+          "value": 30,
+          "base": 30
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

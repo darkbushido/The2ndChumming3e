@@ -1,0 +1,30 @@
+{
+  "_key": "!items!1053e0df909f78af",
+  "doc": {
+    "_id": "1053e0df909f78af",
+    "name": "Thermal Dampening Rating [6]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 6,
+      "cost": 9000,
+      "weight": 0,
+      "availability": "x2/x4",
+      "streetIndex": "+2",
+      "bookPage": "cc.53",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

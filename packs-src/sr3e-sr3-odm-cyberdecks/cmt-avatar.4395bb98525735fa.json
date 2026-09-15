@@ -1,0 +1,41 @@
+{
+  "_key": "!items!4395bb98525735fa",
+  "doc": {
+    "_id": "4395bb98525735fa",
+    "name": "CMT Avatar",
+    "type": "cyberdeck",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberdeck-default.webp",
+    "system": {
+      "cost": 250000,
+      "availability": "6/7days",
+      "streetIndex": 1,
+      "bookPage": "sr3.207,sr3.304",
+      "notes": "<p>Stock cyberdeck — SR3 p.207 (stats), p.304 (availability, cost). MPCP 7, Hardening 4, Active Memory 700 Mp, Storage 1400 Mp, I/O 300 Mp/turn, Response Increase 1.</p><p>Orthodox Matrix: load it from the Matrix tab's cyberdeck picker.</p>",
+      "modules": [
+        {
+          "_odmType": "orthodox",
+          "hardening": 4,
+          "storageMemory": 1400,
+          "responseIncrease": 1
+        }
+      ],
+      "attributes": {
+        "mpcp": {
+          "base": 7,
+          "value": 7
+        },
+        "memory": {
+          "total": 700,
+          "used": 0,
+          "unit": "Mp"
+        },
+        "dataTransferRate": {
+          "value": 300,
+          "unit": "Mp per Combat Turn"
+        }
+      }
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

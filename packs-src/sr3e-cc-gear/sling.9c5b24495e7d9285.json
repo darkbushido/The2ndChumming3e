@@ -1,0 +1,30 @@
+{
+  "_key": "!items!9c5b24495e7d9285",
+  "doc": {
+    "_id": "9c5b24495e7d9285",
+    "name": "Sling",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-",
+      "rating": null,
+      "cost": 20,
+      "weight": 0.1,
+      "availability": "2/12hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.33",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

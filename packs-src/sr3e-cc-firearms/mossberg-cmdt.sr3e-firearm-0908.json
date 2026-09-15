@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0908",
+  "doc": {
+    "_id": "sr3e-firearm-0908",
+    "name": "Mossberg CMDT",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "ShtG",
+      "skill": "Shotguns",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "8(c)",
+      "mode": "SA/BF",
+      "damage": "8S",
+      "weight": "4.25",
+      "availability": "8/8days",
+      "cost": 1000,
+      "streetIndex": "1",
+      "accessories": "Laser sight, Heavy pistol ranges",
+      "bookPage": "cc.23",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

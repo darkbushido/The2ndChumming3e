@@ -1,0 +1,31 @@
+{
+  "_key": "!items!2a8c1a246c60c61e",
+  "doc": {
+    "_id": "2a8c1a246c60c61e",
+    "name": "Narcoject",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Toxins"
+      }
+    },
+    "system": {
+      "category": "Toxins",
+      "addiction": "",
+      "tolerance": "",
+      "effect": "6D stun",
+      "speed": "Immediate",
+      "vector": "Injection",
+      "cost": 150,
+      "availability": "3/48hrs",
+      "streetIndex": "1",
+      "bookPage": "mm.119",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

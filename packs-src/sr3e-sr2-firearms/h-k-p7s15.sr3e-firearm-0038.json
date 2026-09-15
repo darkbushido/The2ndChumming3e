@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0038",
+  "doc": {
+    "_id": "sr3e-firearm-0038",
+    "name": "H&K P7S15",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "6",
+      "ammunition": "15(c)",
+      "mode": "SA",
+      "damage": "6L",
+      "weight": "1",
+      "availability": "4/24hrs",
+      "cost": 400,
+      "streetIndex": "1",
+      "accessories": "None",
+      "bookPage": "pw.16",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

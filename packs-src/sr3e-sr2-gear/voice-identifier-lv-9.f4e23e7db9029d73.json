@@ -1,0 +1,30 @@
+{
+  "_key": "!items!f4e23e7db9029d73",
+  "doc": {
+    "_id": "f4e23e7db9029d73",
+    "name": "Voice Identifier Lv 9",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "2",
+      "rating": null,
+      "cost": 18000,
+      "weight": 5,
+      "availability": "9/72hrs",
+      "streetIndex": "2",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

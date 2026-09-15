@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0054",
+  "doc": {
+    "_id": "sr3e-cyberware-0054",
+    "name": "Boosted Reflexes [1]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0.5,
+      "cost": 15000,
+      "availability": "3/24 hours",
+      "streetIndex": 1,
+      "legalCode": "8P-Q",
+      "mods": "+1INI,",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.302",
+      "grade": "Standard",
+      "rating": 1,
+      "description": "+1INI",
+      "bonusInitDice": 1
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

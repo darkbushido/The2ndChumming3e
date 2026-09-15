@@ -1,0 +1,29 @@
+{
+  "_key": "!items!e2b34a66ec125196",
+  "doc": {
+    "_id": "e2b34a66ec125196",
+    "name": "Zoe \"Second Skin\" Bodysuit",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "15",
+      "ballistic": 2,
+      "impact": 2,
+      "weight": 0.25,
+      "cost": 5000,
+      "availability": "10/1month",
+      "streetIndex": ".75",
+      "bookPage": "cc.49",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

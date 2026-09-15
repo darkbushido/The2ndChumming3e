@@ -1,0 +1,34 @@
+{
+  "_key": "!items!ca8abeedb459cecd",
+  "doc": {
+    "_id": "ca8abeedb459cecd",
+    "name": "AV Assault Cannon Belt (100)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "-",
+      "damage": "(As Weapon)",
+      "ammoType": "antiVehicle",
+      "loadMechanism": "c",
+      "countedIn": "rounds",
+      "rounds": 100,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 15,
+      "cost": 9500,
+      "availability": "16/2wks",
+      "streetIndex": "4",
+      "bookPage": "cc.40",
+      "notes": "<p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>"
+    }
+  },
+  "embedded": {}
+}

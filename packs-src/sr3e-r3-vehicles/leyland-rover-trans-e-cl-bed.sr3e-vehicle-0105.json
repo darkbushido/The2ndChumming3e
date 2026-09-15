@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0105",
+  "doc": {
+    "_id": "sr3e-vehicle-0105",
+    "name": "Leyland-Rover Trans(E Cl Bed)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 49000,
+      "streetIndex": 1,
+      "availability": "3/72hrs",
+      "bookPage": "r3.170",
+      "seating": 3,
+      "notes": "Folding Bench Seat, Electric, Closed Bed | Seating: 2+1b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 8,
+          "base": 8
+        },
+        "speed": {
+          "value": 90,
+          "base": 90
+        },
+        "accel": {
+          "value": 5,
+          "base": 5
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 5,
+          "base": 5
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 70,
+          "base": 70
+        },
+        "load": {
+          "value": 430,
+          "base": 430
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

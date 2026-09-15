@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0092",
+  "doc": {
+    "_id": "sr3e-melee-0092",
+    "name": "Monofilament Whip",
+    "type": "melee",
+    "system": {
+      "category": "WHP",
+      "skill": "Whips/Flails",
+      "attribute": "strength",
+      "concealability": "10",
+      "reach": "1",
+      "damage": "10S",
+      "weight": "0",
+      "availability": "24/14days",
+      "cost": 3000,
+      "streetIndex": "3",
+      "legal": true,
+      "bookPage": "sr3.275",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

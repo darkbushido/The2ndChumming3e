@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0054",
+  "doc": {
+    "_id": "sr3e-spell-0054",
+    "name": "Cure Disease",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Health",
+      "type": "Mana",
+      "duration": "Permanent",
+      "range": "T",
+      "drain": "(DIS DL)",
+      "target": "DP(T)",
+      "bookPage": "sr3.193",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

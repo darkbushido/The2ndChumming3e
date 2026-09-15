@@ -1,0 +1,28 @@
+{
+  "_key": "!items!95139ec871bac55c",
+  "doc": {
+    "_id": "95139ec871bac55c",
+    "name": "DocWagon Gold",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "",
+      "weight": "-",
+      "cost": 25000,
+      "availability": "On Payment",
+      "streetIndex": "1",
+      "bookPage": "sr3.304",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

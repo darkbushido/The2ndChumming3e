@@ -1,0 +1,30 @@
+{
+  "_key": "!items!4a0654c738308575",
+  "doc": {
+    "_id": "4a0654c738308575",
+    "name": "Spare Clip (no weight)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Ammunition",
+      "concealability": "-",
+      "rating": null,
+      "cost": 5,
+      "weight": 0,
+      "availability": ".75",
+      "streetIndex": ".75",
+      "bookPage": "sr2.282",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

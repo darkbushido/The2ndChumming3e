@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0436",
+  "doc": {
+    "_id": "sr3e-cyberware-0436",
+    "name": "Eye, Laser Designator",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Eyeware",
+      "essenceCost": 0.1,
+      "cost": 6000,
+      "availability": "12/1 month",
+      "streetIndex": 3,
+      "legalCode": "5P-R",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.14",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Requires High Power Laser, lock on with appropriate weapons"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

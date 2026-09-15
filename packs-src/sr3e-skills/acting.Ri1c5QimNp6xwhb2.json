@@ -1,0 +1,41 @@
+{
+  "_key": "!items!Ri1c5QimNp6xwhb2",
+  "doc": {
+    "name": "Acting",
+    "type": "skill",
+    "system": {
+      "category": "Social skills",
+      "skillType": "active",
+      "skillName": "Acting",
+      "linkedAttribute": "charisma",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": "",
+      "bookPage": "tss.13"
+    },
+    "_id": "Ri1c5QimNp6xwhb2",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192940358,
+      "modifiedTime": 1782889914448,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

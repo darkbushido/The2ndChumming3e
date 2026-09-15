@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0456",
+  "doc": {
+    "_id": "sr3e-cyberware-0456",
+    "name": "Eyes, Optical Scan Datajack  1",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Eyeware",
+      "essenceCost": 0.3,
+      "cost": 5500,
+      "availability": "6/48 hours",
+      "streetIndex": 3,
+      "legalCode": "3U-CD",
+      "mods": "+1DJK",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "ct.20",
+      "grade": "Standard",
+      "rating": 0,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

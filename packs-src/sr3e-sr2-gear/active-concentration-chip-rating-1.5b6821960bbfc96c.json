@@ -1,0 +1,30 @@
+{
+  "_key": "!items!5b6821960bbfc96c",
+  "doc": {
+    "_id": "5b6821960bbfc96c",
+    "name": "Active Concentration Chip Rating 1",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 600,
+      "weight": 0,
+      "availability": "6/4days",
+      "streetIndex": "1.25",
+      "bookPage": "sr2.244",
+      "description": "<p><strong>Type:</strong> Active<br><strong>Memory:</strong> 6</p>"
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,41 @@
+{
+  "_key": "!items!DbGa3zb3zlmuicKz",
+  "doc": {
+    "name": "Data Archive Familiarity",
+    "type": "skill",
+    "system": {
+      "category": "System familiarity",
+      "skillType": "knowledge",
+      "skillName": "Data Archive Familiarity",
+      "linkedAttribute": "intelligence",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": "",
+      "bookPage": "mat.25"
+    },
+    "_id": "DbGa3zb3zlmuicKz",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192965822,
+      "modifiedTime": 1782889914447,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

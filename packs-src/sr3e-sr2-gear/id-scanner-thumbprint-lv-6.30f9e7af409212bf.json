@@ -1,0 +1,30 @@
+{
+  "_key": "!items!30f9e7af409212bf",
+  "doc": {
+    "_id": "30f9e7af409212bf",
+    "name": "ID Scanner: Thumbprint Lv 6",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 1200,
+      "weight": 0,
+      "availability": "6/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

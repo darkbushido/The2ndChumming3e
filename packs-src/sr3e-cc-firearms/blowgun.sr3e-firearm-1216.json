@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1216",
+  "doc": {
+    "_id": "sr3e-firearm-1216",
+    "name": "Blowgun",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "BG",
+      "skill": "Projectile Weapons",
+      "attribute": "strength",
+      "concealability": "7",
+      "ammunition": "1(b)",
+      "mode": "SS",
+      "damage": "-",
+      "weight": ".25",
+      "availability": "4/12hrs",
+      "cost": 10,
+      "streetIndex": "1",
+      "accessories": "2xImpact Armor for needles or darts",
+      "bookPage": "cc.31",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

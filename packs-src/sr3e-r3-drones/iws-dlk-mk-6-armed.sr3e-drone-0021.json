@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0021",
+  "doc": {
+    "_id": "sr3e-drone-0021",
+    "name": "IWS DLK MK 6(Armed)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 22000,
+      "streetIndex": 2,
+      "availability": "8/8 days",
+      "seating": 0,
+      "bookPage": "r3.173",
+      "notes": "Remote-Control Interface, Rigger Adaptation, Mechanical Arm(STR 6), External Fixed Firmpoint(1 CF Ammo Bin)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 35,
+          "base": 35
+        },
+        "accel": {
+          "value": 3,
+          "base": 3
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 4,
+          "base": 4
+        },
+        "sig": {
+          "value": 6,
+          "base": 6
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 2,
+          "base": 2
+        },
+        "sensor": {
+          "value": 3,
+          "base": 3
+        },
+        "cargo": {
+          "value": 1.5,
+          "base": 1.5
+        },
+        "load": {
+          "value": 280,
+          "base": 280
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

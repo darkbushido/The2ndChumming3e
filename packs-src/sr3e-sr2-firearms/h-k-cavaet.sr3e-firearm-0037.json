@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0037",
+  "doc": {
+    "_id": "sr3e-firearm-0037",
+    "name": "H&K Cavaet",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "9(c)",
+      "mode": "SA",
+      "damage": "6L",
+      "weight": "1.25",
+      "availability": "4/24hrs",
+      "cost": 500,
+      "streetIndex": "1",
+      "accessories": "None",
+      "bookPage": "pw.16",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

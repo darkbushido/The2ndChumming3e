@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0032",
+  "doc": {
+    "_id": "sr3e-vehicle-0032",
+    "name": "LAV-93 Devil Rat",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "military",
+      "cost": 260100,
+      "streetIndex": 3,
+      "availability": "23/23days",
+      "bookPage": "r3.163",
+      "seating": 4,
+      "notes": "Amphibious Operation 1, Electronics Port w/Radio(Rating 2 0.6CF), Gas Enviroseal, Small Remote Turret(2 CF Ammo Bin), Improved Sig 1(factored in), Thermal Baffles 1(factored in), 2 Folding Bench Seats | Seating: 2+2b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 75,
+          "base": 75
+        },
+        "accel": {
+          "value": 5,
+          "base": 5
+        },
+        "body": {
+          "value": 7,
+          "base": 7
+        },
+        "armor": {
+          "value": 12,
+          "base": 12
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 12,
+          "base": 12
+        },
+        "load": {
+          "value": 2800,
+          "base": 2800
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

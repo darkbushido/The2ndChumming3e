@@ -1,0 +1,30 @@
+{
+  "_key": "!items!6ed1fc1fc15f666f",
+  "doc": {
+    "_id": "6ed1fc1fc15f666f",
+    "name": "Rope (50 meters)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "3",
+      "rating": null,
+      "cost": 125,
+      "weight": 1,
+      "availability": "always",
+      "streetIndex": "1",
+      "bookPage": "sr3.295,fof.56",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

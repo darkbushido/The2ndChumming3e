@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0110",
+  "doc": {
+    "_id": "sr3e-firearm-0110",
+    "name": "Glock 22 Mk. III",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "15(c)",
+      "mode": "SA",
+      "damage": "9M",
+      "weight": "2.5",
+      "availability": "6/24hrs",
+      "cost": 600,
+      "streetIndex": "1.5",
+      "accessories": "Laser Sight",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

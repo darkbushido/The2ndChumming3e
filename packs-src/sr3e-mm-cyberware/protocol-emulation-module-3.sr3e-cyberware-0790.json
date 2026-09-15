@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0790",
+  "doc": {
+    "_id": "sr3e-cyberware-0790",
+    "name": "Protocol Emulation Module [3]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0,
+      "cost": 15000,
+      "availability": "5/3 days",
+      "streetIndex": 2,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.23",
+      "grade": "Standard",
+      "rating": 3,
+      "description": "",
+      "srcgName": "Protocol Emulation Mod [3]"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

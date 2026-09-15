@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0019",
+  "doc": {
+    "_id": "sr3e-adeptpower-0019",
+    "name": "Delay Damage 1",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 1,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "mits.149",
+      "description": "The obvious form of this power is handled as a normal attack, it just appears to do no damage at the time."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

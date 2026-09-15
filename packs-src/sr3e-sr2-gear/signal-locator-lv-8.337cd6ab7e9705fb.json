@@ -1,0 +1,30 @@
+{
+  "_key": "!items!337cd6ab7e9705fb",
+  "doc": {
+    "_id": "337cd6ab7e9705fb",
+    "name": "Signal Locator Lv 8",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "3",
+      "rating": null,
+      "cost": 8000,
+      "weight": 2,
+      "availability": "8/48hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

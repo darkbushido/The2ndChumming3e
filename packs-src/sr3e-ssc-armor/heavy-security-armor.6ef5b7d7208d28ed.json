@@ -1,0 +1,29 @@
+{
+  "_key": "!items!6ef5b7d7208d28ed",
+  "doc": {
+    "_id": "6ef5b7d7208d28ed",
+    "name": "Heavy Security Armor",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "-",
+      "ballistic": 7,
+      "impact": 5,
+      "weight": 13,
+      "cost": 12000,
+      "availability": "16/14days",
+      "streetIndex": "3",
+      "bookPage": "ssc.68",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,19 @@
+{
+  "_key": "!items!87f41b5d806af11f",
+  "doc": {
+    "_id": "87f41b5d806af11f",
+    "name": "Lock-On",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Lock-On",
+      "category": "defense",
+      "multiplier": 3,
+      "rating": 0,
+      "bookPage": "sr3.222",
+      "description": "<p><strong>Defensive utility</strong> · Multiplier 3 — size in Mp = Rating² × 3 (Program Size Table). See SR3 p.222 for what it does.</p>"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

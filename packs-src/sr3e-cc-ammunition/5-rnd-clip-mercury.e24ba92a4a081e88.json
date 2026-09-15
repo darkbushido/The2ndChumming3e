@@ -1,0 +1,34 @@
+{
+  "_key": "!items!e24ba92a4a081e88",
+  "doc": {
+    "_id": "e24ba92a4a081e88",
+    "name": "5-Rnd Clip (Mercury)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 5,
+      "rounds": 0,
+      "weight": 1.125,
+      "cost": 30,
+      "availability": "6/48hrs",
+      "streetIndex": "2",
+      "bookPage": "cc.38",
+      "notes": "<p>Mercury rounds — a type this system does not model; its rules are the GM's (cc.38).</p>"
+    }
+  },
+  "embedded": {}
+}

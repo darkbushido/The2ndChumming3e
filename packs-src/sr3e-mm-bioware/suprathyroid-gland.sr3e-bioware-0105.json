@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-bioware-0105",
+  "doc": {
+    "_id": "sr3e-bioware-0105",
+    "name": "Suprathyroid Gland",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Standard",
+      "grade": "Standard",
+      "bioIndex": 1.4,
+      "cost": 50000,
+      "availability": "8/12 days",
+      "streetIndex": 2.5,
+      "mods": "+1NCT,+1RTR,+1RCK,+1ROD,+1STG,",
+      "bookPage": "mm.069",
+      "rating": 0,
+      "description": "+1RCT,+1STR,+1QCK,+1BOD",
+      "bonusBod": 1,
+      "bonusQui": 1,
+      "bonusStr": 1,
+      "bonusRea": 1
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

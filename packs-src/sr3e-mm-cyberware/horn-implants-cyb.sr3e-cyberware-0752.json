@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0752",
+  "doc": {
+    "_id": "sr3e-cyberware-0752",
+    "name": "Horn Implants(CYB)",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0,
+      "cost": 12000,
+      "availability": "4/48 hours",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.43",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "(STR)M, -1 Reach"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

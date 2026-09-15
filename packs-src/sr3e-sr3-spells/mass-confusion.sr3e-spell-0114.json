@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0114",
+  "doc": {
+    "_id": "sr3e-spell-0114",
+    "name": "Mass Confusion",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Illusion",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "LOS(A)",
+      "drain": "(D)",
+      "target": "W(R)",
+      "bookPage": "sr3.195",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

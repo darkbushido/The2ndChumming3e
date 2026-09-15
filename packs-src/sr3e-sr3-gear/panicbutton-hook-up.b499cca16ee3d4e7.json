@@ -1,0 +1,30 @@
+{
+  "_key": "!items!b499cca16ee3d4e7",
+  "doc": {
+    "_id": "b499cca16ee3d4e7",
+    "name": "PANICBUTTON Hook-Up",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 1000,
+      "weight": 0,
+      "availability": "Call Lone Star",
+      "streetIndex": "1",
+      "bookPage": "sr3.294",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

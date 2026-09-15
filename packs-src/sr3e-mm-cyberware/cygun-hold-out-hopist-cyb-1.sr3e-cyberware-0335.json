@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0335",
+  "doc": {
+    "_id": "sr3e-cyberware-0335",
+    "name": "CyGun Hold-Out(HOPist)(CYB)  1",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberweapons",
+      "essenceCost": 0.15,
+      "cost": 250,
+      "availability": "8/7 days",
+      "streetIndex": 2,
+      "legalCode": "8P-Q",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.41",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "4L"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

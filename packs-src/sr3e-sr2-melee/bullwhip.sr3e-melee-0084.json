@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0084",
+  "doc": {
+    "_id": "sr3e-melee-0084",
+    "name": "Bullwhip",
+    "type": "melee",
+    "system": {
+      "category": "WHP",
+      "skill": "Whips/Flails",
+      "attribute": "strength",
+      "concealability": "8",
+      "reach": "2",
+      "damage": "(STR)L",
+      "weight": "1",
+      "availability": "6/48hrs",
+      "cost": 100,
+      "streetIndex": "1",
+      "legal": true,
+      "bookPage": "fof.88",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

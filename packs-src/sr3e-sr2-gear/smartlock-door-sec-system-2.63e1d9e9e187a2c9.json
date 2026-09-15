@@ -1,0 +1,30 @@
+{
+  "_key": "!items!63e1d9e9e187a2c9",
+  "doc": {
+    "_id": "63e1d9e9e187a2c9",
+    "name": "Smartlock Door Sec. System 2",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 2,
+      "cost": 500,
+      "weight": 0,
+      "availability": "5/72hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

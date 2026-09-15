@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0057",
+  "doc": {
+    "_id": "sr3e-vehicle-0057",
+    "name": "CAT Snowbear Standard",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 186300,
+      "streetIndex": 1,
+      "availability": "10/10days",
+      "bookPage": "twl.133",
+      "seating": 3,
+      "notes": "Amphibious Operation 1 | Seating: 2b+1B",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 40,
+          "base": 40
+        },
+        "accel": {
+          "value": 1,
+          "base": 1
+        },
+        "body": {
+          "value": 6,
+          "base": 6
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 250,
+          "base": 250
+        },
+        "load": {
+          "value": 9700,
+          "base": 9700
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

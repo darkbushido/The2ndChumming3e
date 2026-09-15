@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0052",
+  "doc": {
+    "_id": "sr3e-firearm-0052",
+    "name": "Taurus Multi-6",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "6",
+      "ammunition": "6(cy)",
+      "mode": "SA/SS",
+      "damage": "6L/7M",
+      "weight": "1",
+      "availability": "5/24hrs",
+      "cost": 500,
+      "streetIndex": ".75",
+      "accessories": "None",
+      "bookPage": "cc.18",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

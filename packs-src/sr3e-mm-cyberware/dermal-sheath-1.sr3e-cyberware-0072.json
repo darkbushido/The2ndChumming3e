@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0072",
+  "doc": {
+    "_id": "sr3e-cyberware-0072",
+    "name": "Dermal Sheath [1]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0.7,
+      "cost": 24000,
+      "availability": "6/14 days",
+      "streetIndex": 1.5,
+      "legalCode": "6P-N",
+      "mods": "+2BOD,+1IMP,",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.28",
+      "grade": "Standard",
+      "rating": 1,
+      "description": "+2BOD, +1IMP",
+      "bonusBod": 2
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

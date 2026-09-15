@@ -1,0 +1,31 @@
+{
+  "_key": "!items!86c889001dff5c50",
+  "doc": {
+    "_id": "86c889001dff5c50",
+    "name": "Paxium",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "2M",
+      "tolerance": "4",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 5,
+      "availability": "3/1hr",
+      "streetIndex": "2.5",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 20</p>"
+    }
+  },
+  "embedded": {}
+}

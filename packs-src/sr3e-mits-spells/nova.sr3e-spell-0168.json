@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0168",
+  "doc": {
+    "_id": "sr3e-spell-0168",
+    "name": "Nova",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Elemental",
+      "type": "Physical",
+      "duration": "Instant",
+      "range": "LOS(A)",
+      "drain": "+1(DL+2)",
+      "target": "4(RC)",
+      "bookPage": "mits.145",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

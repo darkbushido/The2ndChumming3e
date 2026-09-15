@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0702",
+  "doc": {
+    "_id": "sr3e-firearm-0702",
+    "name": "Steyr MP i 25",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "35(c)",
+      "mode": "SA/BF/FA",
+      "damage": "6M",
+      "weight": "3.75",
+      "availability": "5/60hrs",
+      "cost": 725,
+      "streetIndex": "2",
+      "accessories": "Gas Vent (1), Laser Sight",
+      "bookPage": "pw.23",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

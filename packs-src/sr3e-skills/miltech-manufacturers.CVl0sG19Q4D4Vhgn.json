@@ -1,0 +1,41 @@
+{
+  "_key": "!items!CVl0sG19Q4D4Vhgn",
+  "doc": {
+    "name": "Miltech Manufacturers",
+    "type": "skill",
+    "system": {
+      "category": "6th World knowledge",
+      "skillType": "knowledge",
+      "skillName": "Miltech Manufacturers",
+      "linkedAttribute": "intelligence",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": "",
+      "bookPage": "sr3.80"
+    },
+    "_id": "CVl0sG19Q4D4Vhgn",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192975101,
+      "modifiedTime": 1782889914447,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

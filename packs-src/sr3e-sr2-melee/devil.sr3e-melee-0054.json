@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0054",
+  "doc": {
+    "_id": "sr3e-melee-0054",
+    "name": "Devil",
+    "type": "melee",
+    "system": {
+      "category": "other",
+      "skill": "Armed Combat",
+      "attribute": "strength",
+      "concealability": "-",
+      "reach": "2",
+      "damage": "(STR)S",
+      "weight": "10",
+      "availability": "6/48hrs",
+      "cost": 1500,
+      "streetIndex": "3",
+      "legal": true,
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

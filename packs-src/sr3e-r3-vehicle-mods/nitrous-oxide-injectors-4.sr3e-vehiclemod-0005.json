@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0005",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0005",
+    "name": "Nitrous Oxide Injectors [4]",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 28000,
+      "availability": "4/48hrs",
+      "streetIndex": "1",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "51 hrs/Vehicle B/R(4)",
+      "cfCost": "2",
+      "load": "15kg",
+      "bookPage": "r3.126",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0154",
+  "doc": {
+    "_id": "sr3e-vehicle-0154",
+    "name": "Ilyushin-Greifswald Argus",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "fixedwing",
+      "cost": 200000,
+      "streetIndex": 2,
+      "availability": "7/7Days",
+      "bookPage": "tss.6",
+      "seating": 1,
+      "notes": "Remote Popup Micro-Turret (weapon n/i), optional pintle mount for pilot",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 275,
+          "base": 275
+        },
+        "accel": {
+          "value": 20,
+          "base": 20
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 6,
+          "base": 6
+        },
+        "sig": {
+          "value": 4,
+          "base": 4
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 5,
+          "base": 5
+        },
+        "cargo": {
+          "value": 1,
+          "base": 1
+        },
+        "load": {
+          "value": 25,
+          "base": 25
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

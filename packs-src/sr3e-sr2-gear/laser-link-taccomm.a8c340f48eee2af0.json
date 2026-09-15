@@ -1,0 +1,30 @@
+{
+  "_key": "!items!a8c340f48eee2af0",
+  "doc": {
+    "_id": "a8c340f48eee2af0",
+    "name": "Laser Link (TacComm)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "4",
+      "rating": null,
+      "cost": 14,
+      "weight": 0,
+      "availability": "1",
+      "streetIndex": "2700",
+      "bookPage": "sr2.252",
+      "description": "<p><strong>:</strong> 2</p>"
+    }
+  },
+  "embedded": {}
+}

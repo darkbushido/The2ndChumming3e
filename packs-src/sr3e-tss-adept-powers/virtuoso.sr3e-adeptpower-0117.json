@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0117",
+  "doc": {
+    "_id": "sr3e-adeptpower-0117",
+    "name": "Virtuoso",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "tss.4",
+      "description": "+1 per level to Perfoamnce ratring when physically playing an instrument."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

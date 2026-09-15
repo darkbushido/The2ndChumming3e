@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0782",
+  "doc": {
+    "_id": "sr3e-firearm-0782",
+    "name": "Kalishnikov AK-100 Smart",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "AsRf",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "30(c)",
+      "mode": "SA/BF/FA",
+      "damage": "8M",
+      "weight": "5.75",
+      "availability": "5/36hrs",
+      "cost": 2000,
+      "streetIndex": "2",
+      "accessories": "Gas Vent (2), Smartlink",
+      "bookPage": "pw.27",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

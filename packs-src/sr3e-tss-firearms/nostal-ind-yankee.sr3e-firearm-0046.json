@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0046",
+  "doc": {
+    "_id": "sr3e-firearm-0046",
+    "name": "Nostal. Ind. Yankee",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "13(c)",
+      "mode": "SS",
+      "damage": "7M",
+      "weight": "4",
+      "availability": "8/48hrs",
+      "cost": 375,
+      "streetIndex": "2.5",
+      "accessories": "None",
+      "bookPage": "tss.2",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

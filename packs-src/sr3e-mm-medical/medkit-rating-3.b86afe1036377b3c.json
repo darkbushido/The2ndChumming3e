@@ -1,0 +1,28 @@
+{
+  "_key": "!items!b86afe1036377b3c",
+  "doc": {
+    "_id": "b86afe1036377b3c",
+    "name": "Medkit Rating 3",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "3",
+      "weight": "3",
+      "cost": 200,
+      "availability": "2/24hrs",
+      "streetIndex": "1.5",
+      "bookPage": "mm.138",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

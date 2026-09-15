@@ -1,0 +1,30 @@
+{
+  "_key": "!items!b75931e97a19fff3",
+  "doc": {
+    "_id": "b75931e97a19fff3",
+    "name": "Tracking Signal Lv 5",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "7",
+      "rating": null,
+      "cost": 700,
+      "weight": 0,
+      "availability": "5/72hrs",
+      "streetIndex": "2",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

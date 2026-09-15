@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0119",
+  "doc": {
+    "_id": "sr3e-adeptpower-0119",
+    "name": "Voice Control",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.68",
+      "description": "The adept can mask her voice, imitate sounds in the range of metahuman vocalisation and even copy another persons' voice."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

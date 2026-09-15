@@ -1,0 +1,34 @@
+{
+  "_key": "!items!1513ed1b9683b8d3",
+  "doc": {
+    "_id": "1513ed1b9683b8d3",
+    "name": "4-Rnd Clip (Explosive)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "explosive",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 4,
+      "rounds": 0,
+      "weight": 1.05,
+      "cost": 25,
+      "availability": "3/36hrs",
+      "streetIndex": ".8",
+      "bookPage": "sr3.281",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

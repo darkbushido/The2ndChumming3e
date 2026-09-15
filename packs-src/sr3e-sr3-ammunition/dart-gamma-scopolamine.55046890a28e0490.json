@@ -1,0 +1,34 @@
+{
+  "_key": "!items!55046890a28e0490",
+  "doc": {
+    "_id": "55046890a28e0490",
+    "name": "Dart, Gamma-Scopolamine",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "10D stun",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "rounds",
+      "rounds": 1,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 0.01,
+      "cost": 320,
+      "availability": "8/2weeks",
+      "streetIndex": "3",
+      "bookPage": "sr3.250",
+      "notes": "<p>Not one of the types this system models, or a combination of them — its rules are the GM's.</p><p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>"
+    }
+  },
+  "embedded": {}
+}

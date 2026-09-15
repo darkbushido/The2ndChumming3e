@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0121",
+  "doc": {
+    "_id": "sr3e-bioware-0121",
+    "name": "Toxin Extractor[2]",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Standard",
+      "grade": "Standard",
+      "bioIndex": 0.8,
+      "cost": 90000,
+      "availability": "4/4 days",
+      "streetIndex": 1,
+      "mods": "",
+      "bookPage": "mm.071",
+      "rating": 2,
+      "description": "Max half BOD, -2 power to blood toxins"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

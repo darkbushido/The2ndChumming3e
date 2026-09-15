@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0768",
+  "doc": {
+    "_id": "sr3e-firearm-0768",
+    "name": "FA-SB5",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "AsRf",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "2",
+      "ammunition": "30(c)",
+      "mode": "SA/BF",
+      "damage": "10S",
+      "weight": "6.2",
+      "availability": "14/7days",
+      "cost": 3000,
+      "streetIndex": "2",
+      "accessories": "drum fed, can also accept belted ammo, heavy weapon recoil applies",
+      "bookPage": "tss.7",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

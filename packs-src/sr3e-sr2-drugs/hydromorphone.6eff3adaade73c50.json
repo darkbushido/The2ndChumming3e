@@ -1,0 +1,31 @@
+{
+  "_key": "!items!6eff3adaade73c50",
+  "doc": {
+    "_id": "6eff3adaade73c50",
+    "name": "Hydromorphone",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "4M+4P",
+      "tolerance": "5",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 250,
+      "availability": "5/6hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 7</p>"
+    }
+  },
+  "embedded": {}
+}

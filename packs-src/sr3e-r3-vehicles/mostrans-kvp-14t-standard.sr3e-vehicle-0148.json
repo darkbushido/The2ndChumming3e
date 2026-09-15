@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0148",
+  "doc": {
+    "_id": "sr3e-vehicle-0148",
+    "name": "Mostrans KVP-14T(standard)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "hovercraft",
+      "cost": 124000,
+      "streetIndex": 1,
+      "availability": "7/7 days",
+      "bookPage": "r3.182",
+      "seating": 2,
+      "notes": "",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 180,
+          "base": 180
+        },
+        "accel": {
+          "value": 9,
+          "base": 9
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 1,
+          "base": 1
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 72,
+          "base": 72
+        },
+        "load": {
+          "value": 800,
+          "base": 800
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

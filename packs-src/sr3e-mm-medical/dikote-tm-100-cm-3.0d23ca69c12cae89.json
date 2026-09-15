@@ -1,0 +1,28 @@
+{
+  "_key": "!items!0d23ca69c12cae89",
+  "doc": {
+    "_id": "0d23ca69c12cae89",
+    "name": "Dikote TM (100 cm^3)",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "",
+      "weight": "-",
+      "cost": 1000,
+      "availability": "6/14days",
+      "streetIndex": "2",
+      "bookPage": "mm.111",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

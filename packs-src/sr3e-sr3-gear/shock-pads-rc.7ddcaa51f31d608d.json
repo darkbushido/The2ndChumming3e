@@ -1,0 +1,30 @@
+{
+  "_key": "!items!7ddcaa51f31d608d",
+  "doc": {
+    "_id": "7ddcaa51f31d608d",
+    "name": "Shock Pads (RC",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-",
+      "rating": 1,
+      "cost": 200,
+      "weight": 0.25,
+      "availability": "2/24hrs",
+      "streetIndex": ".75",
+      "bookPage": "sr3.282",
+      "description": "<p><strong>Notes:</strong> for shotgun, rifle or Hip Brace</p>"
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0304",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0304",
+    "name": "\"Ghostsuit\"",
+    "type": "armor",
+    "system": {
+      "concealability": "+4",
+      "ballistic": 2,
+      "impact": 1,
+      "weight": 3,
+      "availability": "6/14days",
+      "cost": 53000,
+      "streetIndex": "8",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

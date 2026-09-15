@@ -1,0 +1,30 @@
+{
+  "_key": "!items!5ffabed506eb9459",
+  "doc": {
+    "_id": "5ffabed506eb9459",
+    "name": "Scanner — Palmprint (per Rating)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Miscellaneous Components"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Miscellaneous Components",
+      "concealability": "",
+      "rating": null,
+      "cost": 0,
+      "weight": 0,
+      "availability": "(Rating+1)/72 hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.302",
+      "description": "<p>Cost Rating×300¥ — by rating; set the cost for the rating bought.</p><p><strong>Legal:</strong> Legal</p>"
+    }
+  },
+  "embedded": {}
+}

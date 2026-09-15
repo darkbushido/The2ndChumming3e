@@ -1,0 +1,28 @@
+{
+  "_key": "!items!sr3e-firearm-1201",
+  "doc": {
+    "_id": "sr3e-firearm-1201",
+    "name": "Ballista Mis. Launcher",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "BlsTa",
+      "skill": "Gunnery",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "4(m)",
+      "mode": "SS",
+      "damage": "(As Ballista Missile)",
+      "weight": "6.5",
+      "availability": "18/30days",
+      "cost": 10500,
+      "streetIndex": "4",
+      "accessories": "Laser Designator",
+      "bookPage": "cc.28",
+      "notes": "",
+      "isAoE": true
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

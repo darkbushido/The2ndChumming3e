@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0959",
+  "doc": {
+    "_id": "sr3e-cyberware-0959",
+    "name": "Remote Control ECCM [8]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Rigger",
+      "essenceCost": 0.4,
+      "cost": 600000,
+      "availability": "12/28 days",
+      "streetIndex": 4,
+      "legalCode": "5P-R",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.23",
+      "grade": "Standard",
+      "rating": 8,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

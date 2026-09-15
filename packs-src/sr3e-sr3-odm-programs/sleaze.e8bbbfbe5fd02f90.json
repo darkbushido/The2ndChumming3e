@@ -1,0 +1,19 @@
+{
+  "_key": "!items!e8bbbfbe5fd02f90",
+  "doc": {
+    "_id": "e8bbbfbe5fd02f90",
+    "name": "Sleaze",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Sleaze",
+      "category": "utility",
+      "multiplier": 3,
+      "rating": 0,
+      "bookPage": "sr3.221",
+      "description": "<p><strong>Operational utility</strong> · Multiplier 3 — size in Mp = Rating² × 3 (Program Size Table). See SR3 p.221 for what it does.</p>"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

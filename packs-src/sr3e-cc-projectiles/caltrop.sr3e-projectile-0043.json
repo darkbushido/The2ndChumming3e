@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-projectile-0043",
+  "doc": {
+    "_id": "sr3e-projectile-0043",
+    "name": "Caltrop",
+    "type": "projectile",
+    "system": {
+      "category": "Ctrp",
+      "skill": "Throwing Weapons",
+      "attribute": "strength",
+      "concealability": "8",
+      "strMin": 0,
+      "damage": "(Body)L",
+      "weight": ".5",
+      "availability": "3/36hrs",
+      "cost": 5,
+      "streetIndex": "1",
+      "legal": false,
+      "bookPage": "cc.14",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

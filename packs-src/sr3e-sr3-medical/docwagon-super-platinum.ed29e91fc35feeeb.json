@@ -1,0 +1,28 @@
+{
+  "_key": "!items!ed29e91fc35feeeb",
+  "doc": {
+    "_id": "ed29e91fc35feeeb",
+    "name": "DocWagon Super Platinum",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "",
+      "weight": "-",
+      "cost": 100000,
+      "availability": "On Payment",
+      "streetIndex": "1",
+      "bookPage": "sr3.304",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

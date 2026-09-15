@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0929",
+  "doc": {
+    "_id": "sr3e-firearm-0929",
+    "name": "Wirtz SW3i DemoControl",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "ShtG",
+      "skill": "Shotguns",
+      "attribute": "quickness",
+      "concealability": "3",
+      "ammunition": "4(m)",
+      "mode": "SS",
+      "damage": "(special)",
+      "weight": "3",
+      "availability": "9/16days",
+      "cost": 600,
+      "streetIndex": "4",
+      "accessories": "None",
+      "bookPage": "pw.25",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

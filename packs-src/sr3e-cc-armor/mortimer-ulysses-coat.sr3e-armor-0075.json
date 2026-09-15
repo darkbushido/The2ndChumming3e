@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0075",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0075",
+    "name": "Mortimer \"Ulysses\" Coat",
+    "type": "armor",
+    "system": {
+      "concealability": "10",
+      "ballistic": 4,
+      "impact": 2,
+      "weight": 4,
+      "availability": "6/48hrs",
+      "cost": 4000,
+      "streetIndex": ".75",
+      "bookPage": "cc.48",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-bioware-0060",
+  "doc": {
+    "_id": "sr3e-bioware-0060",
+    "name": "Muscle Toner[2]",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Standard",
+      "grade": "Standard",
+      "bioIndex": 0.8,
+      "cost": 50000,
+      "availability": "6/6 days",
+      "streetIndex": 0.9,
+      "mods": "+2RCK,",
+      "bookPage": "mm.067",
+      "rating": 2,
+      "description": "+2QCK",
+      "bonusQui": 2
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

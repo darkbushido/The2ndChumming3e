@@ -1,0 +1,34 @@
+{
+  "_key": "!items!add7c1d2a4491ef4",
+  "doc": {
+    "_id": "add7c1d2a4491ef4",
+    "name": "5-Rnd Clip (Explosive)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "explosive",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 5,
+      "rounds": 0,
+      "weight": 1.125,
+      "cost": 30,
+      "availability": "3/36hrs",
+      "streetIndex": ".8",
+      "bookPage": "sr3.281",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

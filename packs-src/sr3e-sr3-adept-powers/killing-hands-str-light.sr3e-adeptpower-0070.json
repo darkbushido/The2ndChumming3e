@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0070",
+  "doc": {
+    "_id": "sr3e-adeptpower-0070",
+    "name": "Killing Hands STR(Light)",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sr3.170",
+      "description": "This power uses magic to turn unarmed attacks into light physical damage."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

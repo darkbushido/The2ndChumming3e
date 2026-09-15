@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0258",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0258",
+    "name": "Ejection Seat(Reinforced)",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 6000,
+      "availability": "5/10days",
+      "streetIndex": "2",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "16 hrs/Vehicle B/R(4)",
+      "cfCost": "7",
+      "load": "250kg",
+      "bookPage": "r3.150",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!6d873dae90a32ed4",
+  "doc": {
+    "_id": "6d873dae90a32ed4",
+    "name": "Ultrasound Detector",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "8",
+      "rating": null,
+      "cost": 1500,
+      "weight": 0.2,
+      "availability": "8/48hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0060",
+  "doc": {
+    "_id": "sr3e-vehicle-0060",
+    "name": "GMC MPUV",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 70000,
+      "streetIndex": 3,
+      "availability": "13/13days",
+      "bookPage": "r3.166",
+      "seating": 3,
+      "notes": "Electronics Port w/Radio(Rating 3 0.9CF), Pintle Mount, Spotlight | Seating: 2+1b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 120,
+          "base": 120
+        },
+        "accel": {
+          "value": 8,
+          "base": 8
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 6,
+          "base": 6
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 11,
+          "base": 11
+        },
+        "load": {
+          "value": 750,
+          "base": 750
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

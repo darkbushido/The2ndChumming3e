@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0090",
+  "doc": {
+    "_id": "sr3e-adeptpower-0090",
+    "name": "Nerve Strike",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 1,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "mits.150",
+      "description": "Nerve strike allows an adept to inflict damage that effects a targets nervous system . . .Every two net success reduces quickness by one. If targets quickness is reduced to 0, the target is paralyzed."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

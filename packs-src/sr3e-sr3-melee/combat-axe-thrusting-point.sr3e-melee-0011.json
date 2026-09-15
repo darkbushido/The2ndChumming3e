@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0011",
+  "doc": {
+    "_id": "sr3e-melee-0011",
+    "name": "Combat Axe Thrusting Point",
+    "type": "melee",
+    "system": {
+      "category": "other",
+      "skill": "Armed Combat",
+      "attribute": "strength",
+      "concealability": "-",
+      "reach": "-",
+      "damage": "(STR+2)L",
+      "weight": "0",
+      "availability": "0",
+      "cost": 0,
+      "streetIndex": "1",
+      "legal": true,
+      "bookPage": "sr3.275",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

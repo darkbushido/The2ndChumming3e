@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0514",
+  "doc": {
+    "_id": "sr3e-cyberware-0514",
+    "name": "Chipjack, Multi-slot 4",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Headware",
+      "essenceCost": 0.35,
+      "cost": 4000,
+      "availability": "3/72 hours",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.22",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Holds 4 chips, access to datasofts and knowsofts"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

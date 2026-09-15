@@ -1,0 +1,30 @@
+{
+  "_key": "!items!9c09bd3b8656589d",
+  "doc": {
+    "_id": "9c09bd3b8656589d",
+    "name": "Insulated Gloves",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "9",
+      "rating": null,
+      "cost": 100,
+      "weight": 0,
+      "availability": "Always",
+      "streetIndex": "1",
+      "bookPage": "sr3.XXX",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

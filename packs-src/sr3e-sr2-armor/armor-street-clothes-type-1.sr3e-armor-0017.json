@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0017",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0017",
+    "name": "Armor Street Clothes Type 1",
+    "type": "armor",
+    "system": {
+      "concealability": "12",
+      "ballistic": 3,
+      "impact": 1,
+      "weight": 1.5,
+      "availability": "3/24hrs",
+      "cost": 500,
+      "streetIndex": ".8",
+      "bookPage": "sr2.256",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

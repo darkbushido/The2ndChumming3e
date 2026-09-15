@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0541",
+  "doc": {
+    "_id": "sr3e-cyberware-0541",
+    "name": "Data Lock",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Headware",
+      "essenceCost": 0.2,
+      "cost": 1000,
+      "availability": "6/36 hours",
+      "streetIndex": 1.5,
+      "legalCode": "AsEnc",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.298",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Code to access datajack or headware memory, Must Buy Encryption Separate (See Gear)"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

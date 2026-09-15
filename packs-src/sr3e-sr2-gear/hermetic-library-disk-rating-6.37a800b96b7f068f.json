@@ -1,0 +1,30 @@
+{
+  "_key": "!items!37a800b96b7f068f",
+  "doc": {
+    "_id": "37a800b96b7f068f",
+    "name": "Hermetic library - Disk - Rating 6",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Magical Equipment"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Magical Equipment",
+      "concealability": "",
+      "rating": 6,
+      "cost": 36000,
+      "weight": 0,
+      "availability": "6/7days",
+      "streetIndex": "2",
+      "bookPage": "sr2.158",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

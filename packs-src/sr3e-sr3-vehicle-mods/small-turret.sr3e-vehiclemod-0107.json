@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0107",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0107",
+    "name": "Small Turret",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 7500,
+      "availability": "GM",
+      "streetIndex": "3",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "72 hrs/Vehicle B/R(4)",
+      "cfCost": "8",
+      "load": "100kg",
+      "bookPage": "sr3.312,r3.139",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

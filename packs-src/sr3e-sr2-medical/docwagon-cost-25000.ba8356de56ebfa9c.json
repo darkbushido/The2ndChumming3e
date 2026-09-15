@@ -1,0 +1,28 @@
+{
+  "_key": "!items!ba8356de56ebfa9c",
+  "doc": {
+    "_id": "ba8356de56ebfa9c",
+    "name": "DocWagon (Cost 25000¥)",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "",
+      "weight": "-",
+      "cost": 25000,
+      "availability": "On Payment",
+      "streetIndex": "-",
+      "bookPage": "sr2.258",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

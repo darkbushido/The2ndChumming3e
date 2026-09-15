@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0099",
+  "doc": {
+    "_id": "sr3e-firearm-0099",
+    "name": "Colt Penetrator",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "12(c)",
+      "mode": "SA",
+      "damage": "9M",
+      "weight": "2",
+      "availability": "4/24hrs",
+      "cost": 600,
+      "streetIndex": "1.5",
+      "accessories": "None",
+      "bookPage": "pw.21",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

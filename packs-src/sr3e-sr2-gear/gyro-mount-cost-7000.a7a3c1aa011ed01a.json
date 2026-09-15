@@ -1,0 +1,30 @@
+{
+  "_key": "!items!a7a3c1aa011ed01a",
+  "doc": {
+    "_id": "a7a3c1aa011ed01a",
+    "name": "Gyro Mount (Cost 7000¥)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-6)",
+      "rating": 6,
+      "cost": 7000,
+      "weight": 8,
+      "availability": "4/48hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.240",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

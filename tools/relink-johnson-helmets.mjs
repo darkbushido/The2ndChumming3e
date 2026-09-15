@@ -20,6 +20,9 @@
  * Everything else — cost, availability, concealability, book and page, the link — is the Security
  * Helmet's.
  *
+ * ⚠ **Refreshes `packs-src/` itself** after writing the repo (TODO 12: the JSON source is the truth);
+ *   `--install` writes only the install.
+ *
  * Idempotent: an item already linked to the Security Helmet at these values is left alone.
  * Indexes the REPO's armour pack through a copy (tools/lib/pack-copy.mjs); only the contacts pack
  * being written is opened for real, and `--check` reads a copy of that too.
@@ -28,6 +31,7 @@ import { ClassicLevel } from 'classic-level';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { copyPacks } from './lib/pack-copy.mjs';
+import { extractPack } from './lib/pack-source.mjs';
 
 const HERE    = dirname(fileURLToPath(import.meta.url));
 const REPO    = join(HERE, '..');
@@ -92,6 +96,7 @@ for await (const [k, it] of db.iterator()) {
 }
 await db.close();
 contactsCopy?.cleanup();
+if (!CHECK && ROOT === REPO) await extractPack(REPO, 'sr3e-mr-johnsons-contacts');
 
 const missing = Object.keys(PRINTED).filter(n => !seen.has(n));
 if (missing.length) console.log(`  ! no "Helmet" item found on: ${missing.join(', ')}`);

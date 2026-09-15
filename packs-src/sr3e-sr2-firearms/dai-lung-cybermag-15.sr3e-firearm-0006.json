@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0006",
+  "doc": {
+    "_id": "sr3e-firearm-0006",
+    "name": "Dai Lung Cybermag 15",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HOPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "7",
+      "ammunition": "10(c)",
+      "mode": "SA",
+      "damage": "4L",
+      "weight": ".5",
+      "availability": "3/12hrs",
+      "cost": 100,
+      "streetIndex": ".7",
+      "accessories": "None",
+      "bookPage": "pw.14",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!2cbfc42ef8445b30",
+  "doc": {
+    "_id": "2cbfc42ef8445b30",
+    "name": "Maglock Passkey Lvl 1",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 1,
+      "cost": 10000,
+      "weight": 1,
+      "availability": "2/10days",
+      "streetIndex": "3",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!c5aae4a4e1e932f6",
+  "doc": {
+    "_id": "c5aae4a4e1e932f6",
+    "name": "Dataline Tap Lv 8",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "12",
+      "rating": null,
+      "cost": 40000,
+      "weight": 0,
+      "availability": "8/8days",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

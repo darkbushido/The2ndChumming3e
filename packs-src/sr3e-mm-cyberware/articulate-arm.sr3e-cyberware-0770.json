@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0770",
+  "doc": {
+    "_id": "sr3e-cyberware-0770",
+    "name": "Articulate Arm",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0,
+      "cost": 110000,
+      "availability": "12/24 days",
+      "streetIndex": 2,
+      "legalCode": "2P-R",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.40",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Extends from back, full range of targetting"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

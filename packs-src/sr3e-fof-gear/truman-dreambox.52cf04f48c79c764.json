@@ -1,0 +1,30 @@
+{
+  "_key": "!items!52cf04f48c79c764",
+  "doc": {
+    "_id": "52cf04f48c79c764",
+    "name": "Truman Dreambox",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "3",
+      "rating": null,
+      "cost": 350,
+      "weight": 3,
+      "availability": "always",
+      "streetIndex": ".75",
+      "bookPage": "fof.95",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

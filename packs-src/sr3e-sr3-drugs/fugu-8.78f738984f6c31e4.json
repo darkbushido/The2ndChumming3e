@@ -1,0 +1,31 @@
+{
+  "_key": "!items!78f738984f6c31e4",
+  "doc": {
+    "_id": "78f738984f6c31e4",
+    "name": "Fugu 8",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Toxins"
+      }
+    },
+    "system": {
+      "category": "Toxins",
+      "addiction": "",
+      "tolerance": "",
+      "effect": "8D",
+      "speed": "Immediate",
+      "vector": "Injection/Ingestion",
+      "cost": 30000,
+      "availability": "8/2weeks",
+      "streetIndex": ".5",
+      "bookPage": "sr3.250",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

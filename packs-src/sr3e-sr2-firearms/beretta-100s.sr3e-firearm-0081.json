@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0081",
+  "doc": {
+    "_id": "sr3e-firearm-0081",
+    "name": "Beretta 100S",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "15(c)",
+      "mode": "SA",
+      "damage": "9M",
+      "weight": "2.5",
+      "availability": "5/36hrs",
+      "cost": 650,
+      "streetIndex": "1.5",
+      "accessories": "Laser Sight, Silencer",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!1d27ecd3c02f2281",
+  "doc": {
+    "_id": "1d27ecd3c02f2281",
+    "name": "Maglock Passkey [3]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "9",
+      "rating": 3,
+      "cost": 30000,
+      "weight": 1,
+      "availability": "6/10days",
+      "streetIndex": "3",
+      "bookPage": "sr3.294",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

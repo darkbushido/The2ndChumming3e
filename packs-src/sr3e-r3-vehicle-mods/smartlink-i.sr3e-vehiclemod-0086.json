@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0086",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0086",
+    "name": "Smartlink-I",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 650,
+      "availability": "4/48hrs",
+      "streetIndex": "1",
+      "installEquipment": "Vehicle Kit",
+      "installTime": "24 hrs/Vehicle B/R(4)",
+      "cfCost": "1",
+      "load": "",
+      "bookPage": "r3.139",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

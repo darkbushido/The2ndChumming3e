@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0255",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0255",
+    "name": "Library Transponder Chip [9]",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 4860,
+      "availability": "5/48hrs",
+      "streetIndex": "2",
+      "installEquipment": "Electronics Kit",
+      "installTime": "2 hrs/Electronics B/R(4)",
+      "cfCost": "0",
+      "load": "",
+      "bookPage": "r3.100",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

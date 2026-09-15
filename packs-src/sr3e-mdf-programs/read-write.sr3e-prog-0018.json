@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0018",
+  "doc": {
+    "_id": "sr3e-prog-0018",
+    "name": "Read/Write",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Read/Write",
+      "type": "Program",
+      "category": "Offensive",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 2,
+      "degradable": false,
+      "description": "<p>Decreases the user's target number by its rating while utilizing any Datafile prompts.</p>",
+      "associatedPrompt": "Access Datafile, Duplicate/Download Datafile, Edit/Upload Datafile",
+      "effect": "TN Reduction",
+      "bookPage": "matrix-defragged.31"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

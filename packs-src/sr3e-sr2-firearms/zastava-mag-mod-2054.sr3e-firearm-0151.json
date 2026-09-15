@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0151",
+  "doc": {
+    "_id": "sr3e-firearm-0151",
+    "name": "Zastava Mag. Mod.2054",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "7(cy)",
+      "mode": "SS",
+      "damage": "9M",
+      "weight": "1.75",
+      "availability": "4/36hrs",
+      "cost": 350,
+      "streetIndex": ".9",
+      "accessories": "None",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

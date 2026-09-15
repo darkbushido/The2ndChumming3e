@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0129",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0129",
+    "name": "Victory \"Rapid Transit\" Helmet",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 0,
+      "impact": 2,
+      "weight": 0.5,
+      "availability": "4/24hrs",
+      "cost": 50,
+      "streetIndex": "1",
+      "bookPage": "cc.49",
+      "notes": "Impact +2 (additive modifier)"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

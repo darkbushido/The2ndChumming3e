@@ -1,0 +1,30 @@
+{
+  "_key": "!items!8e7fccc3652a0c11",
+  "doc": {
+    "_id": "8e7fccc3652a0c11",
+    "name": "Ultrasound Sight",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-2)",
+      "rating": null,
+      "cost": 1300,
+      "weight": 0.25,
+      "availability": "8/4days",
+      "streetIndex": ".8",
+      "bookPage": "ssc.34",
+      "description": "<p><strong>Mount:</strong> Top</p>"
+    }
+  },
+  "embedded": {}
+}

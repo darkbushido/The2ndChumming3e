@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0780",
+  "doc": {
+    "_id": "sr3e-firearm-0780",
+    "name": "Kalashnikov A-80",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "AsRf",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "1",
+      "ammunition": "35(c)",
+      "mode": "SA/FA",
+      "damage": "8M",
+      "weight": "4.5",
+      "availability": "4/36hrs",
+      "cost": 1100,
+      "streetIndex": "2.5",
+      "accessories": "None",
+      "bookPage": "pw.27",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

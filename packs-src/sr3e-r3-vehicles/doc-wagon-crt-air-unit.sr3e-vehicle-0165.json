@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0165",
+  "doc": {
+    "_id": "sr3e-vehicle-0165",
+    "name": "Doc Wagon CRT Air Unit",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "helicopter",
+      "cost": 1266750,
+      "streetIndex": 2.5,
+      "availability": "-",
+      "bookPage": "r3.184",
+      "seating": 2,
+      "notes": "VTOL, Anti-Theft System (Rating 6), 2 External Hardpoints, Medical Clinic(2 patients Rating 4) | Alt-mode Cargo/Load: 2[336 PS]/350[800 PS]",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 320,
+          "base": 320
+        },
+        "accel": {
+          "value": 8,
+          "base": 8
+        },
+        "body": {
+          "value": 7,
+          "base": 7
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 1,
+          "base": 1
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 2,
+          "base": 2
+        },
+        "load": {
+          "value": 350,
+          "base": 350
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

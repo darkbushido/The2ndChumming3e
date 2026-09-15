@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0464",
+  "doc": {
+    "_id": "sr3e-cyberware-0464",
+    "name": "Eyes, Retinal Duplication [2]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Eyeware",
+      "essenceCost": 0.1,
+      "cost": 50000,
+      "availability": "8/7 days",
+      "streetIndex": 2,
+      "legalCode": "3-Q",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.300",
+      "grade": "Standard",
+      "rating": 2,
+      "description": "",
+      "srcgName": "Eyes, Ret Dup. [2]"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

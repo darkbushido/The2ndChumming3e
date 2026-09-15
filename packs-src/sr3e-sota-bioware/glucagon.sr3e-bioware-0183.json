@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0183",
+  "doc": {
+    "_id": "sr3e-bioware-0183",
+    "name": "Glucagon",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Genetech",
+      "grade": "Exotic",
+      "bioIndex": 0.3,
+      "cost": 40000,
+      "availability": "6/30 days",
+      "streetIndex": 2,
+      "mods": "",
+      "bookPage": "sota.028",
+      "rating": 0,
+      "description": "Double times when dealing with fatigue effects"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

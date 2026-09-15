@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0006",
+  "doc": {
+    "_id": "sr3e-cyberware-0006",
+    "name": "Biomonitor Processor",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0.2,
+      "cost": 2500,
+      "availability": "6/72 hours",
+      "streetIndex": 2,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.25",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Biotech skill of 5, triggers/alerts"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

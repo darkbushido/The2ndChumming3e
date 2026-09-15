@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0694",
+  "doc": {
+    "_id": "sr3e-cyberware-0694",
+    "name": "Pair Syn.Cyb.Arm Sem.natCov. 1",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimbs",
+      "essenceCost": 2,
+      "cost": 220000,
+      "availability": "AsLimb",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "+1BOD,+1PCA",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "ct.30",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "",
+      "bonusBod": 1
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

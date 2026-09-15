@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0024",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0024",
+    "name": "Kevlar Armor Jacket, Heavy",
+    "type": "armor",
+    "system": {
+      "concealability": "5",
+      "ballistic": 5,
+      "impact": 4,
+      "weight": 2,
+      "availability": "3/36hrs",
+      "cost": 1000,
+      "streetIndex": ".8",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

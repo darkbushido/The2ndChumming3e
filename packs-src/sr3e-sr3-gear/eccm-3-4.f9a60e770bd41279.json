@@ -1,0 +1,30 @@
+{
+  "_key": "!items!f9a60e770bd41279",
+  "doc": {
+    "_id": "f9a60e770bd41279",
+    "name": "ECCM +3 [4]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 4,
+      "cost": 3000,
+      "weight": 0,
+      "availability": "+3",
+      "streetIndex": "+1.5",
+      "bookPage": "sr3.290",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-vehicleweapon-0027",
+  "doc": {
+    "_id": "sr3e-vehicleweapon-0027",
+    "name": "Victory Rotary Assault Cannon",
+    "type": "vehicleweapon",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "system": {
+      "weaponType": "Cannon",
+      "mode": "FA",
+      "damage": "18D",
+      "ammunition": "50",
+      "weight": 90,
+      "cost": 90000,
+      "availability": "GM",
+      "streetIndex": "GM",
+      "bookPage": "r2.92",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

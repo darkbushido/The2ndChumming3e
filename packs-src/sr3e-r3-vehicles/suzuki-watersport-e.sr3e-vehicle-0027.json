@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0027",
+  "doc": {
+    "_id": "sr3e-vehicle-0027",
+    "name": "Suzuki Watersport(E)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "boat",
+      "cost": 11000,
+      "streetIndex": 1,
+      "availability": "2/24hrs",
+      "bookPage": "r3.162",
+      "seating": 1,
+      "notes": "Electric | Alt-mode Sig/Autonav: 5(5)/0",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 2,
+          "base": 2
+        },
+        "handlingOffRoad": {
+          "value": 2,
+          "base": 2
+        },
+        "speed": {
+          "value": 30,
+          "base": 30
+        },
+        "accel": {
+          "value": 4,
+          "base": 4
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 5,
+          "base": 5
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 1,
+          "base": 1
+        },
+        "load": {
+          "value": 37,
+          "base": 37
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

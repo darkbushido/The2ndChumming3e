@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0106",
+  "doc": {
+    "_id": "sr3e-adeptpower-0106",
+    "name": "Sprint*",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.25,
+      "hasLevels": true,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.68",
+      "description": "The adept gains +1 quickness for determining running distance."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

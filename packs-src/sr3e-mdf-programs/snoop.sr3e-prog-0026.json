@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0026",
+  "doc": {
+    "_id": "sr3e-prog-0026",
+    "name": "Snoop",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Snoop",
+      "type": "Program",
+      "category": "Offensive",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 3,
+      "degradable": false,
+      "description": "<p>Decreases the user's target number by its rating while utilizing Tap Datastream or Spoof Datastream prompts.</p>",
+      "associatedPrompt": "Tap Datastream, Spoof Datastream",
+      "effect": "TN Reduction",
+      "bookPage": "matrix-defragged.32"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

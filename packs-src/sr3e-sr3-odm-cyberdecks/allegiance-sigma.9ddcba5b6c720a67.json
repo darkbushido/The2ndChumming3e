@@ -1,0 +1,41 @@
+{
+  "_key": "!items!9ddcba5b6c720a67",
+  "doc": {
+    "_id": "9ddcba5b6c720a67",
+    "name": "Allegiance Sigma",
+    "type": "cyberdeck",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberdeck-default.webp",
+    "system": {
+      "cost": 14000,
+      "availability": "4/7days",
+      "streetIndex": 1,
+      "bookPage": "sr3.207,sr3.304",
+      "notes": "<p>Stock cyberdeck — SR3 p.207 (stats), p.304 (availability, cost). MPCP 3, Hardening 1, Active Memory 200 Mp, Storage 500 Mp, I/O 100 Mp/turn, Response Increase 0.</p><p>Orthodox Matrix: load it from the Matrix tab's cyberdeck picker.</p>",
+      "modules": [
+        {
+          "_odmType": "orthodox",
+          "hardening": 1,
+          "storageMemory": 500,
+          "responseIncrease": 0
+        }
+      ],
+      "attributes": {
+        "mpcp": {
+          "base": 3,
+          "value": 3
+        },
+        "memory": {
+          "total": 200,
+          "used": 0,
+          "unit": "Mp"
+        },
+        "dataTransferRate": {
+          "value": 100,
+          "unit": "Mp per Combat Turn"
+        }
+      }
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

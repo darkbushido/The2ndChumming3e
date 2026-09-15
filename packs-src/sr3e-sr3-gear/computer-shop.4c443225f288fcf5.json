@@ -1,0 +1,30 @@
+{
+  "_key": "!items!4c443225f288fcf5",
+  "doc": {
+    "_id": "4c443225f288fcf5",
+    "name": "Computer Shop",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 15000,
+      "weight": 0,
+      "availability": "8/72hrs",
+      "streetIndex": "3",
+      "bookPage": "sr3.288",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

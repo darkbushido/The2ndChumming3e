@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0006",
+  "doc": {
+    "_id": "sr3e-spell-0006",
+    "name": "Piercing Meow",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Combat",
+      "type": "Physical",
+      "duration": "Sustained",
+      "range": "LOS",
+      "drain": "(S)",
+      "target": "W(R)",
+      "bookPage": "tss.9",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

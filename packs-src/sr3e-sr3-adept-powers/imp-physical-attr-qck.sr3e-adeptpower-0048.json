@@ -1,0 +1,20 @@
+{
+  "_key": "!items!sr3e-adeptpower-0048",
+  "doc": {
+    "_id": "sr3e-adeptpower-0048",
+    "name": "Imp. Physical Attr.(QCK)*",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": true,
+      "level": 1,
+      "mods": "+1QCK",
+      "bookPage": "sr3.169",
+      "description": "With this power you can improve a physical attribute.  Each level of the power increases the attribute by 1.",
+      "bonusQui": 1
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

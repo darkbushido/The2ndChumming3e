@@ -1,0 +1,30 @@
+{
+  "_key": "!items!ac2c21fbad00f8e5",
+  "doc": {
+    "_id": "ac2c21fbad00f8e5",
+    "name": "Virt Instr Gen. Inst4Lev9",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 9,
+      "cost": 29100,
+      "weight": 0,
+      "availability": "13/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 291</p>"
+    }
+  },
+  "embedded": {}
+}

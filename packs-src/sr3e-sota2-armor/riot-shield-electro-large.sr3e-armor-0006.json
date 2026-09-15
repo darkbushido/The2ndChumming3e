@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0006",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0006",
+    "name": "Riot Shield, Electro (large)",
+    "type": "armor",
+    "system": {
+      "concealability": "2",
+      "ballistic": 2,
+      "impact": 3,
+      "weight": 3,
+      "availability": "12/14days",
+      "cost": 2200,
+      "streetIndex": "3",
+      "bookPage": "sta2.98",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

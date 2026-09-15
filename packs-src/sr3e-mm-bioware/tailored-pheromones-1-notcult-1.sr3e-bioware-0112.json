@@ -1,0 +1,25 @@
+{
+  "_key": "!items!sr3e-bioware-0112",
+  "doc": {
+    "_id": "sr3e-bioware-0112",
+    "name": "Tailored Pheromones[1](NotCult.)  1",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Standard",
+      "grade": "Standard",
+      "bioIndex": 0.4,
+      "cost": 20000,
+      "availability": "12/14 days",
+      "streetIndex": 2,
+      "mods": "+1CHA,",
+      "bookPage": "mm.070",
+      "rating": 1,
+      "description": "+1CHA,+1 Die Social Test",
+      "bonusCha": 1,
+      "srcgName": "Tailored Pherom.[1](NotCult.)  1"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

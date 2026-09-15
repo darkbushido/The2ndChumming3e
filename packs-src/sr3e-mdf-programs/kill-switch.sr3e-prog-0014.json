@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0014",
+  "doc": {
+    "_id": "sr3e-prog-0014",
+    "name": "Kill Switch",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Kill Switch",
+      "type": "Program",
+      "category": "Offensive",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 5,
+      "degradable": false,
+      "description": "<p>Decreases the user's target number by its rating while utilizing the Crack Protections prompt to disarm a Databombed target.</p><p><em>Failure results in self-destruction of target icon.</em></p>",
+      "associatedPrompt": "Crack Protections (Databomb)",
+      "effect": "TN Reduction",
+      "bookPage": "matrix-defragged.31"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

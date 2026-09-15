@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0003",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0003",
+    "name": "Riot Shield, Small",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 1,
+      "impact": 2,
+      "weight": 2,
+      "availability": "8/14hrs",
+      "cost": 1500,
+      "streetIndex": "2",
+      "bookPage": "sr3.284",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

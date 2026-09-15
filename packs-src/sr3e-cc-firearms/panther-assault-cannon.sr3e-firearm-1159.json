@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1159",
+  "doc": {
+    "_id": "sr3e-firearm-1159",
+    "name": "Panther Assault Cannon",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "ACan",
+      "skill": "Gunnery",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "22(c)/Belt",
+      "mode": "SS",
+      "damage": "18D",
+      "weight": "18",
+      "availability": "16/14days",
+      "cost": 7200,
+      "streetIndex": "2",
+      "accessories": "Either: Folding Bipod(2RC) or Shoulder Strap & Hip Brace(1RC)",
+      "bookPage": "cc.26",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

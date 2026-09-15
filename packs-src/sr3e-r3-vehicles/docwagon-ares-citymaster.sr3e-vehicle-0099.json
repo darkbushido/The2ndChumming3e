@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0099",
+  "doc": {
+    "_id": "sr3e-vehicle-0099",
+    "name": "DocWagon Ares Citymaster",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "military",
+      "cost": 677000,
+      "streetIndex": 2.5,
+      "availability": "-",
+      "bookPage": "r3.169",
+      "seating": 4,
+      "notes": "Anti-Theft System 6, Gas Enviroseal, Life Suport(20 man-hrs), Small Turret(1 CF Ammo Bin), Medical Clinic(3p/3t 4) | Alt-mode Cargo/Load: 327[320 PS]/630[600 PS] | Seating: 2+2b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 11,
+          "base": 11
+        },
+        "speed": {
+          "value": 120,
+          "base": 120
+        },
+        "accel": {
+          "value": 3,
+          "base": 3
+        },
+        "body": {
+          "value": 5,
+          "base": 5
+        },
+        "armor": {
+          "value": 10,
+          "base": 10
+        },
+        "sig": {
+          "value": 1,
+          "base": 1
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 327,
+          "base": 327
+        },
+        "load": {
+          "value": 630,
+          "base": 630
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

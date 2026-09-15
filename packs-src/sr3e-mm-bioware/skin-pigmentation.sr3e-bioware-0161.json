@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0161",
+  "doc": {
+    "_id": "sr3e-bioware-0161",
+    "name": "Skin Pigmentation",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Cosmetic",
+      "grade": "Exotic",
+      "bioIndex": 0.1,
+      "cost": 5000,
+      "availability": "6/6 days",
+      "streetIndex": 1,
+      "mods": "",
+      "bookPage": "mm.076",
+      "rating": 0,
+      "description": "Skin can be any color, anywhere, even eye iris can be changed"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

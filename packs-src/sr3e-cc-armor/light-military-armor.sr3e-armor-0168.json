@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0168",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0168",
+    "name": "Light Military Armor",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 7,
+      "impact": 6,
+      "weight": 0,
+      "availability": "18/1mth",
+      "cost": 25000,
+      "streetIndex": "3",
+      "bookPage": "cc.51",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

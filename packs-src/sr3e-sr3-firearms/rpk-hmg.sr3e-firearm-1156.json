@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1156",
+  "doc": {
+    "_id": "sr3e-firearm-1156",
+    "name": "RPK HMG",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HMG",
+      "skill": "Gunnery",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "40(c)/Belt",
+      "mode": "FA",
+      "damage": "10S",
+      "weight": "15",
+      "availability": "18/18days",
+      "cost": 4000,
+      "streetIndex": "2",
+      "accessories": "fold-out tripod(6RC)",
+      "bookPage": "sr3.279",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

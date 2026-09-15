@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0241",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0241",
+    "name": "Bucket Seat",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 700,
+      "availability": "3/48hrs",
+      "streetIndex": "1",
+      "installEquipment": "Vehicle Shop",
+      "installTime": "4 hrs/Vehicle B/R(4)",
+      "cfCost": "6",
+      "load": "100kg",
+      "bookPage": "r3.153",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

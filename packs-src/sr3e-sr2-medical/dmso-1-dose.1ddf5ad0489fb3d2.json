@@ -1,0 +1,28 @@
+{
+  "_key": "!items!1ddf5ad0489fb3d2",
+  "doc": {
+    "_id": "1ddf5ad0489fb3d2",
+    "name": "DMSO (1 dose)",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "",
+      "weight": "-",
+      "cost": 10,
+      "availability": "2/12hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.258",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

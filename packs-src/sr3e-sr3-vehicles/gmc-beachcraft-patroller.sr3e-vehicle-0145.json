@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0145",
+  "doc": {
+    "_id": "sr3e-vehicle-0145",
+    "name": "GMC Beachcraft Patroller",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "hovercraft",
+      "cost": 176000,
+      "streetIndex": 2,
+      "availability": "15/15 days",
+      "bookPage": "sr3.311,r3.182",
+      "seating": 2,
+      "notes": "External Fixed Hardpoint (1 CF Ammo Bin)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 165,
+          "base": 165
+        },
+        "accel": {
+          "value": 9,
+          "base": 9
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 6,
+          "base": 6
+        },
+        "sig": {
+          "value": 1,
+          "base": 1
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 65,
+          "base": 65
+        },
+        "load": {
+          "value": 510,
+          "base": 510
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

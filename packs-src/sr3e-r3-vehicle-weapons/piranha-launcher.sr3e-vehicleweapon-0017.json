@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-vehicleweapon-0017",
+  "doc": {
+    "_id": "sr3e-vehicleweapon-0017",
+    "name": "Piranha Launcher",
+    "type": "vehicleweapon",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "system": {
+      "weaponType": "Piranha Launcher",
+      "mode": "SS",
+      "damage": "As rocket/missle",
+      "ammunition": "8",
+      "weight": 120,
+      "cost": 15000,
+      "availability": "16/21days",
+      "streetIndex": "3",
+      "bookPage": "r3.88",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

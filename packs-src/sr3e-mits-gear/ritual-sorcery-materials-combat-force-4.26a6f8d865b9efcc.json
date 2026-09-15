@@ -1,0 +1,30 @@
+{
+  "_key": "!items!26a6f8d865b9efcc",
+  "doc": {
+    "_id": "26a6f8d865b9efcc",
+    "name": "Ritual Sorcery Materials - Combat Force 4",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ritual Sorcery Materials"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Ritual Sorcery Materials",
+      "concealability": "",
+      "rating": null,
+      "cost": 4000,
+      "weight": 0,
+      "availability": "3/24hrs",
+      "streetIndex": "1",
+      "bookPage": "mits.170",
+      "description": "<p><strong>KarmaCost:</strong> 0</p>"
+    }
+  },
+  "embedded": {}
+}

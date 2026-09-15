@@ -1,0 +1,30 @@
+{
+  "_key": "!items!ccbe3944e4a4727c",
+  "doc": {
+    "_id": "ccbe3944e4a4727c",
+    "name": "STS (Gun Mod.) Rating [5]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-1)",
+      "rating": 5,
+      "cost": 5000,
+      "weight": 1,
+      "availability": "5/48hrs",
+      "streetIndex": "2",
+      "bookPage": "cc.33",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!f34b8eac576f667c",
+  "doc": {
+    "_id": "f34b8eac576f667c",
+    "name": "Broadcast Decryption [2]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 2,
+      "cost": 4000,
+      "weight": 0,
+      "availability": "1",
+      "streetIndex": "1",
+      "bookPage": "sr3.290",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

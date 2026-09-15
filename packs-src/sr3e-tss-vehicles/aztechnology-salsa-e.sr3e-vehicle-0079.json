@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0079",
+  "doc": {
+    "_id": "sr3e-vehicle-0079",
+    "name": "Aztechnology Salsa (E)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 12500,
+      "streetIndex": 1,
+      "availability": "3/48hrs",
+      "bookPage": "tss.6",
+      "seating": 4,
+      "notes": "Modula design comes with Hardtop Module.  Flatback/Pickup module adds 15CF and costs 500, Transport Module adds 10CF ad costs 750.  any module adds 1/1 to handling | Seating: 2+2b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 8,
+          "base": 8
+        },
+        "speed": {
+          "value": 75,
+          "base": 75
+        },
+        "accel": {
+          "value": 5,
+          "base": 5
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 5,
+          "base": 5
+        },
+        "autonav": {
+          "value": 1,
+          "base": 1
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 3,
+          "base": 3
+        },
+        "load": {
+          "value": 60,
+          "base": 60
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!5664ea03b9960457",
+  "doc": {
+    "_id": "5664ea03b9960457",
+    "name": "Sony Beautiful Dreamer",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "3",
+      "rating": null,
+      "cost": 200,
+      "weight": 3,
+      "availability": "always",
+      "streetIndex": "1",
+      "bookPage": "fof.95",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

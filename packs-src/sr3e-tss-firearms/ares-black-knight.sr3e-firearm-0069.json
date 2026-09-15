@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0069",
+  "doc": {
+    "_id": "sr3e-firearm-0069",
+    "name": "Ares Black Knight",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "15(c)",
+      "mode": "SA/BF",
+      "damage": "10M",
+      "weight": "5",
+      "availability": "7/48hrs",
+      "cost": 2500,
+      "streetIndex": "1.5",
+      "accessories": "Smartlink, RC(2)",
+      "bookPage": "tss.16",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,24 @@
+{
+  "_key": "!actors!sr3e-ic-0014",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/agent-default.webp",
+    "_id": "sr3e-ic-0014",
+    "name": "Ripper",
+    "type": "ic",
+    "system": {
+      "icType": "Ripper",
+      "grading": "Black",
+      "rating": 6,
+      "systemRating": 6,
+      "memoryRequired": 30,
+      "damage": "6D",
+      "hostSecurityTier": "Red",
+      "notes": "<p>The most dangerous IC in existence. Tears through neural wetware as easily as code. Treat as kill-on-sight. Deals physical damage in hot-sim VR.</p>",
+      "woundValue": 0,
+      "bookPage": "matrix-defragged.43"
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

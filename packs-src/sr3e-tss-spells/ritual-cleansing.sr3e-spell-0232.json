@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0232",
+  "doc": {
+    "_id": "sr3e-spell-0232",
+    "name": "Ritual Cleansing",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Manipulation",
+      "type": "Mana",
+      "duration": "Permanent",
+      "range": "LOS",
+      "drain": "(S)",
+      "target": "4",
+      "bookPage": "tss.12",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!bdb5adf0b716ca7e",
+  "doc": {
+    "_id": "bdb5adf0b716ca7e",
+    "name": "Enclosed Helmet",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 960,
+      "weight": 1,
+      "availability": "5/96hrs",
+      "streetIndex": "1.5",
+      "bookPage": "cc.57",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

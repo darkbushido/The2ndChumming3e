@@ -1,0 +1,29 @@
+{
+  "_key": "!items!f3af98c0756ad512",
+  "doc": {
+    "_id": "f3af98c0756ad512",
+    "name": "Heavy Leather(Jacket or Pants)",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "-",
+      "ballistic": 0,
+      "impact": 2,
+      "weight": 1,
+      "cost": 750,
+      "availability": "always",
+      "streetIndex": ".75",
+      "bookPage": "sr2.256",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0140",
+  "doc": {
+    "_id": "sr3e-firearm-0140",
+    "name": "S&W \"Tri-Star\"",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "3",
+      "ammunition": "6(cy)",
+      "mode": "SS",
+      "damage": "10M",
+      "weight": "2.5",
+      "availability": "6/24hrs",
+      "cost": 375,
+      "streetIndex": "1.5",
+      "accessories": "Laser Sight",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

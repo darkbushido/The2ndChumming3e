@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0074",
+  "doc": {
+    "_id": "sr3e-firearm-0074",
+    "name": "Ares Predator III",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "15(c)",
+      "mode": "SA",
+      "damage": "9M",
+      "weight": "2.25",
+      "availability": "5/24hrs",
+      "cost": 650,
+      "streetIndex": "1",
+      "accessories": "Smartlink-2",
+      "bookPage": "cc.19",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

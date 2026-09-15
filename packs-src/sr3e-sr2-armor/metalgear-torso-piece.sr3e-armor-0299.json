@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0299",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0299",
+    "name": "MetalGear Torso Piece",
+    "type": "armor",
+    "system": {
+      "concealability": "2",
+      "ballistic": 2,
+      "impact": 1,
+      "weight": 2,
+      "availability": "10/7days",
+      "cost": 2000,
+      "streetIndex": "3",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

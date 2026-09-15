@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0241",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0241",
+    "name": "Security Helmet",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 1,
+      "impact": 2,
+      "weight": 0,
+      "availability": "12/14days",
+      "cost": 250,
+      "streetIndex": "2",
+      "bookPage": "sr3.284",
+      "notes": "Ballistic +1 (additive modifier) | Impact +2 (additive modifier)"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

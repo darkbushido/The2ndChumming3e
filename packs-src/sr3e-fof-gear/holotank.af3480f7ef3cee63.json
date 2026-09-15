@@ -1,0 +1,30 @@
+{
+  "_key": "!items!af3480f7ef3cee63",
+  "doc": {
+    "_id": "af3480f7ef3cee63",
+    "name": "Holotank",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "-",
+      "rating": null,
+      "cost": 5000,
+      "weight": 100,
+      "availability": "5/48hrs",
+      "streetIndex": "1.2",
+      "bookPage": "fof.96",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

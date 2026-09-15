@@ -1,0 +1,30 @@
+{
+  "_key": "!items!ea0eb43982b60ac9",
+  "doc": {
+    "_id": "ea0eb43982b60ac9",
+    "name": "Secondary Weapon (trap)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-",
+      "rating": null,
+      "cost": 3600,
+      "weight": 0.5,
+      "availability": "1/48hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.81",
+      "description": "<p><strong>Notes:</strong> Available at GM option</p>"
+    }
+  },
+  "embedded": {}
+}

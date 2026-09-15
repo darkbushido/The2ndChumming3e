@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0092",
+  "doc": {
+    "_id": "sr3e-adeptpower-0092",
+    "name": "Pain Relief",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 1,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.67",
+      "description": "The adept is able to cure one level of stun damage by channeling his energies."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

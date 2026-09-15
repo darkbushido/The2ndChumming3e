@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0926",
+  "doc": {
+    "_id": "sr3e-firearm-0926",
+    "name": "VC Boxlock Hammerless",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "ShtG",
+      "skill": "Shotguns",
+      "attribute": "quickness",
+      "concealability": "6",
+      "ammunition": "2(b)",
+      "mode": "SS",
+      "damage": "12S",
+      "weight": "3.6",
+      "availability": "24/48hrs",
+      "cost": 700,
+      "streetIndex": "1.8",
+      "accessories": "Collapsible stock",
+      "bookPage": "tss.3",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

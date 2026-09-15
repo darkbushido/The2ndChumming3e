@@ -1,0 +1,30 @@
+{
+  "_key": "!items!9ac51e1894f7843a",
+  "doc": {
+    "_id": "9ac51e1894f7843a",
+    "name": "Ration Bars (10 Days)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 30,
+      "weight": 1,
+      "availability": "2/48hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0655",
+  "doc": {
+    "_id": "sr3e-cyberware-0655",
+    "name": "Quickness [4]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimbs",
+      "essenceCost": 0.3,
+      "cost": 135000,
+      "availability": "8/4 days",
+      "streetIndex": 1.5,
+      "legalCode": "6P-Q",
+      "mods": "+4QCK,",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.40",
+      "grade": "Standard",
+      "rating": 4,
+      "description": "+4QCK",
+      "bonusQui": 4
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0003",
+  "doc": {
+    "_id": "sr3e-melee-0003",
+    "name": "Bear-Knife",
+    "type": "melee",
+    "system": {
+      "category": "EDG",
+      "skill": "Edged Weapons",
+      "attribute": "strength",
+      "concealability": "3",
+      "reach": "0",
+      "damage": "(STR+2)M",
+      "weight": "1",
+      "availability": "6/48hrs",
+      "cost": 2000,
+      "streetIndex": "1",
+      "legal": true,
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

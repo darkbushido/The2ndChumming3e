@@ -1,0 +1,30 @@
+{
+  "_key": "!items!8ce6bdc538b11983",
+  "doc": {
+    "_id": "8ce6bdc538b11983",
+    "name": "SkillSoft Jukebox 192MP 6 prts",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 23040,
+      "weight": 0,
+      "availability": "3/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Juk<br><strong>Memory:</strong> 192</p>"
+    }
+  },
+  "embedded": {}
+}

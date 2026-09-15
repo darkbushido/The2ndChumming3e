@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0127",
+  "doc": {
+    "_id": "sr3e-bioware-0127",
+    "name": "Tracheal Filter[4]",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Standard",
+      "grade": "Standard",
+      "bioIndex": 1.6,
+      "cost": 240000,
+      "availability": "4/4 days",
+      "streetIndex": 1,
+      "mods": "",
+      "bookPage": "mm.071",
+      "rating": 4,
+      "description": "Max half BOD, -4 power airborne toxins"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

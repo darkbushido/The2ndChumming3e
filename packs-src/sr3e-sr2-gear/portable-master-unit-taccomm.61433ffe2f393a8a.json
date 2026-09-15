@@ -1,0 +1,30 @@
+{
+  "_key": "!items!61433ffe2f393a8a",
+  "doc": {
+    "_id": "61433ffe2f393a8a",
+    "name": "Portable Master Unit (TacComm)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "8",
+      "rating": null,
+      "cost": 18,
+      "weight": 14,
+      "availability": "20",
+      "streetIndex": "120000",
+      "bookPage": "sr2.252",
+      "description": "<p><strong>:</strong> 2</p>"
+    }
+  },
+  "embedded": {}
+}

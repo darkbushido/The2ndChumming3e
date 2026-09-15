@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0074",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0074",
+    "name": "Mortimer \"Greatcoat\" Coat",
+    "type": "armor",
+    "system": {
+      "concealability": "11",
+      "ballistic": 4,
+      "impact": 2,
+      "weight": 3,
+      "availability": "6/48hrs",
+      "cost": 2000,
+      "streetIndex": ".75",
+      "bookPage": "cc.48",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0184",
+  "doc": {
+    "_id": "sr3e-cyberware-0184",
+    "name": "Skillwires [7] MP 147",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 1.4,
+      "cost": 700000,
+      "availability": "7/10 days",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.302",
+      "grade": "Standard",
+      "rating": 7,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

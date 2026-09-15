@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0928",
+  "doc": {
+    "_id": "sr3e-firearm-0928",
+    "name": "Win. 1300 Defender SS",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "ShtG",
+      "skill": "Shotguns",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "6(m)",
+      "mode": "SA",
+      "damage": "11S",
+      "weight": "3.6",
+      "availability": "4/24hrs",
+      "cost": 950,
+      "streetIndex": "2.5",
+      "accessories": "Collapsible stock",
+      "bookPage": "tss.3",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

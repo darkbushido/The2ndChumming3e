@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0027",
+  "doc": {
+    "_id": "sr3e-adeptpower-0027",
+    "name": "Enhanced Balance 1",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.65",
+      "description": "Reduce target number by one for each level of this power when performing acts of balance or knockdowns."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

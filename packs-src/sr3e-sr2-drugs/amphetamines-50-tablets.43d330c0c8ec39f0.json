@@ -1,0 +1,31 @@
+{
+  "_key": "!items!43d330c0c8ec39f0",
+  "doc": {
+    "_id": "43d330c0c8ec39f0",
+    "name": "Amphetamines (50 tablets)",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "5P",
+      "tolerance": "3",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 75,
+      "availability": "4/3hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 6</p>"
+    }
+  },
+  "embedded": {}
+}

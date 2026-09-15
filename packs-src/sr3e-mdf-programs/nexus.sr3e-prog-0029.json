@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0029",
+  "doc": {
+    "_id": "sr3e-prog-0029",
+    "name": "Nexus",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Nexus",
+      "type": "Protocol",
+      "category": "",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 4,
+      "degradable": false,
+      "description": "<p>Grants priority access to Denver Data Haven. Decreases TN by rating while conducting Matrix legwork or using Etiquette: Matrix.</p><p><strong>Function:</strong> Legwork</p><p><strong>Skill:</strong> Etiquette: Matrix</p>",
+      "associatedPrompt": "",
+      "effect": "TN Reduction",
+      "bookPage": "matrix-defragged.29"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

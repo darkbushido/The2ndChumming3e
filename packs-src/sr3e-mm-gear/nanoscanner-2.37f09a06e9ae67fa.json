@@ -1,0 +1,30 @@
+{
+  "_key": "!items!37f09a06e9ae67fa",
+  "doc": {
+    "_id": "37f09a06e9ae67fa",
+    "name": "Nanoscanner [2]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "6",
+      "rating": 2,
+      "cost": 10000,
+      "weight": 1,
+      "availability": "2/1wk",
+      "streetIndex": "2",
+      "bookPage": "mm.95",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

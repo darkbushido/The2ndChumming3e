@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0232",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0232",
+    "name": "Helmet, Steel",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 1,
+      "impact": 2,
+      "weight": 0,
+      "availability": "14/14days",
+      "cost": 250,
+      "streetIndex": "1.75",
+      "bookPage": "sr2.???",
+      "notes": "Ballistic +1 (additive modifier) | Impact +2 (additive modifier)"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

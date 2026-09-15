@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0015",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0015",
+    "name": "Armor Jacket",
+    "type": "armor",
+    "system": {
+      "concealability": "6",
+      "ballistic": 5,
+      "impact": 3,
+      "weight": 2,
+      "availability": "3/36hrs",
+      "cost": 900,
+      "streetIndex": ".75",
+      "bookPage": "sr3.284",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

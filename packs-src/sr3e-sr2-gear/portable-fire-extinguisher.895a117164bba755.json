@@ -1,0 +1,30 @@
+{
+  "_key": "!items!895a117164bba755",
+  "doc": {
+    "_id": "895a117164bba755",
+    "name": "Portable Fire Extinguisher",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "2",
+      "rating": 4,
+      "cost": 150,
+      "weight": 9,
+      "availability": "2/12 hrs",
+      "streetIndex": ".8",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

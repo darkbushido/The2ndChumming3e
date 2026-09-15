@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0035",
+  "doc": {
+    "_id": "sr3e-vehicle-0035",
+    "name": "Ruhr. Frettchen",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "military",
+      "cost": 16800000,
+      "streetIndex": 4,
+      "availability": "-",
+      "bookPage": "sota.78",
+      "seating": 4,
+      "notes": "Amphibious Operation 3, Contingency Maneuver Controls 3, Drive-by-Wire 2, ECD 6, ECCM 9, ED 6, EnviroSeal (gas water engine), Large Smoke Projector, Life Support(100 man-hours), Medium Turret(AA capable 6 CF for 6000 rounds of HMG ammo), Radar Absorbent Materials 3, Rigger Adaptation, Ruthenium Polymer Masking (with 40 picture files), Smart Materials",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 85,
+          "base": 85
+        },
+        "accel": {
+          "value": 6,
+          "base": 6
+        },
+        "body": {
+          "value": 10,
+          "base": 10
+        },
+        "armor": {
+          "value": 22,
+          "base": 22
+        },
+        "sig": {
+          "value": 11,
+          "base": 11
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 10,
+          "base": 10
+        },
+        "cargo": {
+          "value": 10,
+          "base": 10
+        },
+        "load": {
+          "value": 1445,
+          "base": 1445
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

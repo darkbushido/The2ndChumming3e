@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1233",
+  "doc": {
+    "_id": "sr3e-firearm-1233",
+    "name": "Ares Heavy Laser Plus",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "Snip",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "50",
+      "mode": "SA",
+      "damage": "18M",
+      "weight": "30",
+      "availability": "27/1month",
+      "cost": 300000,
+      "streetIndex": "3",
+      "accessories": "Tripod, Backpack Battery Case",
+      "bookPage": "cc.30",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

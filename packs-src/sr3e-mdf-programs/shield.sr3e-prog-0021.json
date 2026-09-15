@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0021",
+  "doc": {
+    "_id": "sr3e-prog-0021",
+    "name": "Shield",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Shield",
+      "type": "Program",
+      "category": "Operational",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 3,
+      "degradable": true,
+      "description": "<p>Mitigates special IC attacks targeting hardware (MPCP, Memory, utility slots). Degrade Shield instead of hardware.</p><p><strong>Protects Against:</strong> Corruption, Corrupt and Burn, Erosion</p>",
+      "associatedPrompt": "Defense vs IC Special Abilities",
+      "effect": "Hardware Protection",
+      "bookPage": "matrix-defragged.32"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

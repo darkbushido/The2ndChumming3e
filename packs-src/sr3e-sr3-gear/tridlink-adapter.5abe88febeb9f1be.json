@@ -1,0 +1,30 @@
+{
+  "_key": "!items!5abe88febeb9f1be",
+  "doc": {
+    "_id": "5abe88febeb9f1be",
+    "name": "Tridlink Adapter",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "6",
+      "rating": null,
+      "cost": 700,
+      "weight": 1,
+      "availability": "2/72hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.292",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

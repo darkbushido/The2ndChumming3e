@@ -1,0 +1,30 @@
+{
+  "_key": "!items!e5588ddef2155fa8",
+  "doc": {
+    "_id": "e5588ddef2155fa8",
+    "name": "Remove Safety",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-",
+      "rating": null,
+      "cost": 240,
+      "weight": 0,
+      "availability": "1/18hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.82",
+      "description": "<p><strong>Notes:</strong> Available at GM option</p>"
+    }
+  },
+  "embedded": {}
+}

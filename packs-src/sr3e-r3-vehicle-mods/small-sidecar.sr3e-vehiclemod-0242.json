@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0242",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0242",
+    "name": "Small Sidecar",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 1000,
+      "availability": "Always",
+      "streetIndex": "1",
+      "installEquipment": "-",
+      "installTime": "-",
+      "cfCost": "0",
+      "load": "",
+      "bookPage": "r3.154",
+      "description": "+1 Hand, CF 6"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

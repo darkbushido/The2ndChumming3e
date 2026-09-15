@@ -1,0 +1,19 @@
+{
+  "_key": "!items!f6b9d3f6a4a0afd4",
+  "doc": {
+    "_id": "f6b9d3f6a4a0afd4",
+    "name": "Analyze",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Analyze",
+      "category": "utility",
+      "multiplier": 3,
+      "rating": 0,
+      "bookPage": "sr3.220",
+      "description": "<p><strong>Operational utility</strong> · Multiplier 3 — size in Mp = Rating² × 3 (Program Size Table). See SR3 p.220 for what it does.</p>"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

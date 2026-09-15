@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0650",
+  "doc": {
+    "_id": "sr3e-firearm-0650",
+    "name": "Nova Inf. Telcom Taser",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "Tasr",
+      "skill": "Tasers",
+      "attribute": "quickness",
+      "concealability": "8/12",
+      "ammunition": "1",
+      "mode": "SS",
+      "damage": "6S Stun",
+      "weight": ".75",
+      "availability": "12/7days",
+      "cost": 750,
+      "streetIndex": "2.5",
+      "accessories": "Fully functioning Telcom unit, half taser range",
+      "bookPage": "tss.5",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0066",
+  "doc": {
+    "_id": "sr3e-adeptpower-0066",
+    "name": "Inertia Strike",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.66",
+      "description": "The adept strikes a target with a base Damage Level reduced by one but the target must resist a Knockdown as if the Damage Level was one level higher, even if no damage was taken."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0109",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0109",
+    "name": "Large Turret",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 300000,
+      "availability": "GM",
+      "streetIndex": "GM",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "72 hrs/Vehicle B/R(4)",
+      "cfCost": "36",
+      "load": "6000kg",
+      "bookPage": "r3.139",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

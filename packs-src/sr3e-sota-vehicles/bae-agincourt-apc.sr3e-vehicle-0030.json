@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0030",
+  "doc": {
+    "_id": "sr3e-vehicle-0030",
+    "name": "BAE Agincourt APC",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "military",
+      "cost": 256700,
+      "streetIndex": 3,
+      "availability": "13/13days",
+      "bookPage": "sota.78",
+      "seating": 4,
+      "notes": "Medium turret (heavy mortar 5 CF Ammo Bin), Electronics port (with Rating 3 radio) | Seating: 1+1+2b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 80,
+          "base": 80
+        },
+        "accel": {
+          "value": 6,
+          "base": 6
+        },
+        "body": {
+          "value": 7,
+          "base": 7
+        },
+        "armor": {
+          "value": 6,
+          "base": 6
+        },
+        "sig": {
+          "value": 5,
+          "base": 5
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 48,
+          "base": 48
+        },
+        "load": {
+          "value": 1000,
+          "base": 1000
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

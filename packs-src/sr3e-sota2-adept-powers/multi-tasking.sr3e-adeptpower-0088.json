@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0088",
+  "doc": {
+    "_id": "sr3e-adeptpower-0088",
+    "name": "Multi-Tasking",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.67",
+      "description": "The adept is able to concentrate on seperate actions at the same time and can gather information from multiple senses simultaneously."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0127",
+  "doc": {
+    "_id": "sr3e-firearm-0127",
+    "name": "Morrissey Alta",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "6",
+      "ammunition": "12(c)",
+      "mode": "SA",
+      "damage": "9M",
+      "weight": "1",
+      "availability": "8/48hrs",
+      "cost": 1200,
+      "streetIndex": "2",
+      "accessories": "Laser Sight",
+      "bookPage": "cc.19",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

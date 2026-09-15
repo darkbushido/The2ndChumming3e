@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0014",
+  "doc": {
+    "_id": "sr3e-adeptpower-0014",
+    "name": "Combat Sense +3",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 3,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "+3CPL",
+      "bookPage": "sr3.169",
+      "description": "Combat sense provides an instinctive sense about an area and any potential threats nearby. See table (SR3-169)."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

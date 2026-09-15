@@ -1,0 +1,29 @@
+{
+  "_key": "!items!6c6e1c56c38b64ec",
+  "doc": {
+    "_id": "6c6e1c56c38b64ec",
+    "name": "Light Security Armor",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "-",
+      "ballistic": 6,
+      "impact": 4,
+      "weight": 9,
+      "cost": 7500,
+      "availability": "12/10days",
+      "streetIndex": "2",
+      "bookPage": "ssc.68",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

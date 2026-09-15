@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0938",
+  "doc": {
+    "_id": "sr3e-cyberware-0938",
+    "name": "Remote Control Deck [3]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Rigger",
+      "essenceCost": 0.3,
+      "cost": 75000,
+      "availability": "4/72 hours",
+      "streetIndex": 2,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.23",
+      "grade": "Standard",
+      "rating": 3,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

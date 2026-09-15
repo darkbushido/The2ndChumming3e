@@ -1,0 +1,28 @@
+{
+  "_key": "!items!72844537639c7c3d",
+  "doc": {
+    "_id": "72844537639c7c3d",
+    "name": "RapiDetox",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "5",
+      "weight": "5/4days",
+      "cost": 1500,
+      "availability": "5",
+      "streetIndex": "3",
+      "bookPage": "sr2.258",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

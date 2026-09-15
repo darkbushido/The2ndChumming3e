@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0176",
+  "doc": {
+    "_id": "sr3e-vehicle-0176",
+    "name": "E-D Dorocilo(Drone Carrier)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "helicopter",
+      "cost": 1050000,
+      "streetIndex": 3,
+      "availability": "260/130 Days",
+      "bookPage": "tss.6",
+      "seating": 2,
+      "notes": "4 external drone racks, internal storage for 2 cars or 4 Steel Lynx-sized vehicles or drones, drone rearmament and recharge facility, Speed 250 when loaded",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 350,
+          "base": 350
+        },
+        "accel": {
+          "value": 15,
+          "base": 15
+        },
+        "body": {
+          "value": 5,
+          "base": 5
+        },
+        "armor": {
+          "value": 9,
+          "base": 9
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 4,
+          "base": 4
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 305,
+          "base": 305
+        },
+        "load": {
+          "value": 2400,
+          "base": 2400
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

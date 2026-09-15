@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-vehicleweapon-0028",
+  "doc": {
+    "_id": "sr3e-vehicleweapon-0028",
+    "name": "Vigilant Rotary Autocannon",
+    "type": "vehicleweapon",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "system": {
+      "weaponType": "Cannon",
+      "mode": "FA",
+      "damage": "20D",
+      "ammunition": "25",
+      "weight": 60,
+      "cost": 125000,
+      "availability": "GM",
+      "streetIndex": "GM",
+      "bookPage": "r2.92",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

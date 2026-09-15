@@ -1,0 +1,30 @@
+{
+  "_key": "!items!1598aee1310d0c39",
+  "doc": {
+    "_id": "1598aee1310d0c39",
+    "name": "Embossing",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-",
+      "rating": null,
+      "cost": 160,
+      "weight": 0,
+      "availability": "1/12hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.80",
+      "description": "<p><strong>Notes:</strong> Available at GM option</p>"
+    }
+  },
+  "embedded": {}
+}

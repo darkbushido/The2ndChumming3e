@@ -1,0 +1,30 @@
+{
+  "_key": "!items!3e3f050cd34752a0",
+  "doc": {
+    "_id": "3e3f050cd34752a0",
+    "name": "SkillSoft Jukebox 192MP 10 pts",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 38400,
+      "weight": 0,
+      "availability": "3/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Juk<br><strong>Memory:</strong> 192</p>"
+    }
+  },
+  "embedded": {}
+}

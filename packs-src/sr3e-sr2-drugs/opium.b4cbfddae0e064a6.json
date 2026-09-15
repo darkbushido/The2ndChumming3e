@@ -1,0 +1,31 @@
+{
+  "_key": "!items!b4cbfddae0e064a6",
+  "doc": {
+    "_id": "b4cbfddae0e064a6",
+    "name": "Opium",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "4M+4P",
+      "tolerance": "3",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 50,
+      "availability": "6/24hrs",
+      "streetIndex": "1.25",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 15</p>"
+    }
+  },
+  "embedded": {}
+}

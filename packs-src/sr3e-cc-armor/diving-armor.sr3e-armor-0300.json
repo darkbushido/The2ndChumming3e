@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0300",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0300",
+    "name": "Diving Armor",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 4,
+      "impact": 2,
+      "weight": 2,
+      "availability": "5/48hrs",
+      "cost": 1750,
+      "streetIndex": "1.25",
+      "bookPage": "cc.51",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

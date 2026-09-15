@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0022",
+  "doc": {
+    "_id": "sr3e-drone-0022",
+    "name": "Saab-Thyssen Bloodhound",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 23500,
+      "streetIndex": 2,
+      "availability": "2/48hrs",
+      "seating": 0,
+      "bookPage": "r3.173",
+      "notes": "Remote-Control Interface, Rigger Adaptation, Amphibious Operation 1, Mechanical Arm(STR 6 Cybersquirt Implant), Special Storage Area(Liquid Tank 10 liters 1 CF), Special Machinery(HAZMAT Sensors)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 90,
+          "base": 90
+        },
+        "accel": {
+          "value": 6,
+          "base": 6
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 4,
+          "base": 4
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 2,
+          "base": 2
+        },
+        "sensor": {
+          "value": 4,
+          "base": 4
+        },
+        "cargo": {
+          "value": 2,
+          "base": 2
+        },
+        "load": {
+          "value": 5,
+          "base": 5
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

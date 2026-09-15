@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0061",
+  "doc": {
+    "_id": "sr3e-firearm-0061",
+    "name": "FAM 95",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "MaPist",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "2",
+      "ammunition": "40(c)",
+      "mode": "SA/BF/FA",
+      "damage": "8M",
+      "weight": "3",
+      "availability": "9/7 days",
+      "cost": 5000,
+      "streetIndex": "3",
+      "accessories": "-",
+      "bookPage": "fra.141",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

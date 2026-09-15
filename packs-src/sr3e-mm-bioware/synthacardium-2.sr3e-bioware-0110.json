@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0110",
+  "doc": {
+    "_id": "sr3e-bioware-0110",
+    "name": "Synthacardium[2]",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Standard",
+      "grade": "Standard",
+      "bioIndex": 0.3,
+      "cost": 15000,
+      "availability": "4/10 days",
+      "streetIndex": 1.5,
+      "mods": "",
+      "bookPage": "mm.070",
+      "rating": 2,
+      "description": "+2 die Athletics and heart resistance test"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

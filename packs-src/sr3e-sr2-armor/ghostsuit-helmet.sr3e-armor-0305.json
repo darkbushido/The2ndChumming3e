@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0305",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0305",
+    "name": "\"Ghostsuit\" Helmet",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 1,
+      "impact": 0,
+      "weight": 1.5,
+      "availability": "8/14days",
+      "cost": 6000,
+      "streetIndex": "8",
+      "bookPage": "sr2.???",
+      "notes": "Ballistic +1 (additive modifier)"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}
