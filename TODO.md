@@ -5823,6 +5823,29 @@ now guarded in the tool, and both are the kind nothing else would have surfaced:
 
 **173 gear stubs still unmatched**, in the four buckets below. Original analysis follows.
 
+**4a — ✅ SECOND PASS DONE 2026-09-14 (on `feature/default-books-gear`, with TODO 91's packs).**
+**13 more converted** — `gear`/`medical` are now allowed targets: Survival Kit ×2, Binoculars,
+Jackstopper, Wrist Phone, Gunsmith Shop, BTL-modified Simdeck, low-light/thermo Goggles, and five
+medkits. Rules added to the tool, each pinned by `tests/johnson-gear-import.test.mjs`:
+- **SR2 packs are never targets** — the Little Black Book is an SR3 book.
+- **The contact's own rating wins** (`Medkit [Rating 5]` → M&M's *Medkit Rating 5*, rating 5); a
+  bracket's words count as part of the name.
+- **One reviewed alias**: plain `Medkit` → *Basic Medkit* (the pack's name for SR3 p.304's medkit).
+- **Rated variants without a rating are reported, not guessed.**
+- The index reads through a copy (a `--check` had churned 582 pack files), and a converted item's
+  `compendiumSource` makes a second run a no-op (gear → gear keeps the type).
+
+**For the maintainer:**
+1. **Three `Helmet`s link to `sr3e-sr2-armor`** (1/1, SR2 p.241) from the first pass. SR3 core
+   prints no plain helmet, only a *Security Helmet* (1/2, p.284). Keep, re-point (changes stats),
+   or unlink?
+2. **Rated variants with no rating on the contact's line**: *Micro-transceiver* (Ork Nation Organizer,
+   Earnest Muckraker) and *Micro-recorder* (Earnest Muckraker) — the SR3 packs ship ratings 1-10.
+3. **160 distinct stubs still unmatched** — compound lists, categories (*Club Drugs of Choice*), and
+   gear no pack carries (*Flash-pak*). These need a human reading each line, per the rules above.
+4. The install's 13 new links point at TODO 91's packs, which reach the install with its
+   `build-default-gear --install` step.
+
 **4b — The remainder: REPLACE THE STUBS WITH REAL IMPORTS.**
 
 ⚠ **Nothing links, so there is no link to fix.** Checked 2026-09-01: of the **1,152 embedded
