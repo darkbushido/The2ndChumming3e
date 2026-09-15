@@ -8129,3 +8129,27 @@ that applies its effects as a timed boost (the Adrenal Pump's `augmentations` pa
 duration, counted down on the round hook, a crash card on expiry), a resistance/addiction roll card
 in the healing helper's style, and the effects as data on the item rather than parsed from prose.
 Effects offered and applied only on a click — nothing automatic, per the design ethos.
+
+## 125. Evaluate shadowrun2e.com as a source for 2nd-edition gear — **requested 2026-09-15**
+
+**Request (maintainer):** *"evaluate https://www.shadowrun2e.com/index.html for gear. incase we need
+something from 2nd edition"*
+
+**What 2nd edition gear the system has today:**
+- **The default-on SR2 books** are `sr2` (core), `ct`, `ssc`, `st`, `fof` and `pna`. Their gear is
+  generated from the vendored upstream `rawdata/SRCG-SR2-Gear.json` by `tools/build-default-gear.mjs`
+  (TODO 91/92). The hand-restored SR2 packs come from the `sr2` archive bucket.
+- **No SR2 book is in the PDF library**, so SR2 stats cannot be verified the way the SR3 ones are.
+  SR2's Kamikaze (4P, `sr2.246`) came in through upstream, for example.
+
+**Evaluate:**
+1. **Coverage.** Which SR2 books and gear categories does the site hold that upstream's
+   `SRCG-SR2-Gear.json` lacks, or has blank (Edge, Fix Factor, Speed, Vector — upstream's SR2 drugs
+   carry only Addiction and Tolerance)?
+2. **Reliability.** Does each entry cite a book and page? Spot-check it against any SR2 stats we can
+   verify: SR3's conversions and the M&M rows that restate SR2 items.
+3. **Use it as a reference, not a source to copy.** It is a fan site reproducing book data. Use it to
+   find gaps and page numbers; ship only what can be attributed to a book and page, per TODO 117.
+   Check its terms before scraping anything.
+4. **The outcome:** a list of candidate additions per book, each with its page, for the maintainer to
+   approve. Nothing is added to the packs without that approval.
