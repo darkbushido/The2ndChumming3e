@@ -56,13 +56,19 @@ export async function run(t) {
     else t.ok(`tools/${f} --check opens packs through copyPacks, not the checkout's own`, copies);
   }
 
-  /* The two Johnson importers: the index ALWAYS from a copy, the contacts from a copy under --check. */
-  for (const f of ['import-johnson-cyberware.mjs', 'import-johnson-gear.mjs']) {
-    const s = read(`tools/${f}`);
-    t.ok(`${f} indexes a copy of the repo packs`, /copyPacks\(PACKDIR\)/.test(s) && !/new ClassicLevel\(join\(PACKDIR/.test(s));
-    t.ok(`${f} --check reads the contacts from a copy`, /contactsCopy\s*=\s*CHECK\s*\?\s*copyPacks\(/.test(s)
-      && /new ClassicLevel\(CHECK \? /.test(s) && /contactsCopy\?\.cleanup\(\)/.test(s));
-  }
+  /* import-johnson-gear: the index ALWAYS from a copy, the contacts from a copy under --check. */
+  const gear = read('tools/import-johnson-gear.mjs');
+  t.ok('import-johnson-gear indexes a copy of the repo packs', /copyPacks\(PACKDIR\)/.test(gear) && !/new ClassicLevel\(join\(PACKDIR/.test(gear));
+  t.ok('import-johnson-gear --check reads the contacts from a copy', /contactsCopy\s*=\s*CHECK\s*\?\s*copyPacks\(/.test(gear)
+    && /new ClassicLevel\(CHECK \? /.test(gear) && /contactsCopy\?\.cleanup\(\)/.test(gear));
+
+  /* import-johnson-cyberware works on packs-src (TODO 12) and never opens a LevelDB itself: it
+   * reads the JSON source, and only an apply writes it back and rebuilds the one pack. */
+  const cyber = read('tools/import-johnson-cyberware.mjs');
+  t.ok('import-johnson-cyberware opens no LevelDB', !/ClassicLevel/.test(cyber));
+  t.ok('…it reads packs-src', /readSourceDir\(/.test(cyber) && /join\(REPO, 'packs-src'\)/.test(cyber));
+  t.ok('…and writes packs-src then rebuilds, only when not --check',
+    /if \(!CHECK && writes\.length\) \{[^}]*\}[^}]*writeSourceDir\(CONTACTS, entries\);\s*rebuilt = await rebuildPack\(REPO, PACK\);/.test(cyber));
 
   /* ── The pack check reads a copy of the repo unless it is fixing ────────────────────── */
   const check = read('tools/check-packs.mjs');

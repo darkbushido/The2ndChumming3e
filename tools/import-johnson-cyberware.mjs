@@ -8,11 +8,16 @@
  * differently from the packs.
  *
  *   node tools/import-johnson-cyberware.mjs --check     # report, write nothing
- *   node tools/import-johnson-cyberware.mjs             # the repo pack (what ships)
- *   node tools/import-johnson-cyberware.mjs --install   # the pack Foundry reads
+ *   node tools/import-johnson-cyberware.mjs             # packs-src, then rebuild packs/
+ *   npm run packs:install                               # then copy to the install (Foundry CLOSED)
  *
- * ⚠ **Foundry must be CLOSED.** ⚠ **Run it twice.** ⚠ **Idempotent** — a converted implant
- * carries `_stats.compendiumSource`, and anything that already has one is skipped.
+ * ⚠ **Reads and writes `packs-src/` only** (TODO 12: the JSON source is the truth, `packs/` is
+ *   build output). It never opens a LevelDB itself — `rebuildPack` compiles the contacts pack from
+ *   source, and only when its content changed — so a `--check` cannot churn the checkout (it used
+ *   to open every repo pack directly and leave ~590 files "modified" in git).
+ * ⚠ **No `--install`** — the install is a one-way copy from packs-src (`npm run packs:install`).
+ * ⚠ **Idempotent** — a converted implant carries `_stats.compendiumSource`, and anything that
+ *   already has one is skipped.
  *
  * ─────────────────────────────────────────────────────────────────────────────────────────────
  * ⚠ **THE CONTACT'S PRINTED ESSENCE IS PRESERVED, and this is the whole risk of the job.**
@@ -32,65 +37,49 @@
  * GM needs when a player wants to salvage a piece — the reason `CyberwareData.grade` was kept.
  * The per-item costs and the actor's Essence are answering different questions.
  */
-import { ClassicLevel } from 'classic-level';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { readdirSync } from 'node:fs';
-import { copyPacks } from './lib/pack-copy.mjs';
+import { readSourceDir, writeSourceDir, rebuildPack } from './lib/pack-source.mjs';
 import { splitCyberware } from './lib/cyberware-split.mjs';
 import { resolveImplant, resolveMod, resolveSpell, MODS_CONSUMED_BY } from './lib/johnson-aliases.mjs';
 
-const HERE    = dirname(fileURLToPath(import.meta.url));
-const REPO    = join(HERE, '..');
-const INSTALL = process.env.SR3E_INSTALL
-  ?? join(process.env.LOCALAPPDATA ?? '', 'FoundryVTT', 'Data', 'systems', 'The2ndChumming3e');
-const ROOT    = process.argv.includes('--install') ? INSTALL : REPO;
-const CHECK   = process.argv.includes('--check');
-
-/* ⚠ Index the REPO's packs even when writing the install's — the install carries 22 unshipped
- * pre-split packs, and stamping a `compendiumSource` naming one is a dead link for every other
- * user. Learned the hard way in `import-johnson-gear.mjs`. */
-const PACKDIR  = join(REPO, 'packs');
-const CONTACTS = join(ROOT, 'packs', 'sr3e-mr-johnsons-contacts');
-
-const norm = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-
-/* ⚠ Read through a COPY (tools/lib/pack-copy.mjs). Opening a LevelDB rewrites its files even to
- * read, so indexing the repo's packs directly left ~400 pack files "modified" in git after a mere
- * `--check`. Only the contacts pack is opened for real, and only when writing. */
-const idx = new Map();
-const indexCopy = copyPacks(PACKDIR);
-try {
-  for (const p of readdirSync(indexCopy.dir)) {
-    if (p === 'sr3e-mr-johnsons-contacts') continue;
-    const db = new ClassicLevel(join(indexCopy.dir, p), { valueEncoding: 'json' });
-    try { await db.open(); } catch { continue; }
-    for await (const [k, v] of db.iterator()) {
-      if (!String(k).startsWith('!items!') || !v?.name) continue;
-      if (!['cyberware', 'bioware', 'spell'].includes(v.type)) continue;
-      const n = norm(v.name);
-      if (!idx.has(n)) idx.set(n, { doc: v, pack: p });
-    }
-    await db.close();
-  }
-} finally { indexCopy.cleanup(); }
-console.log(`Pack index: ${idx.size} cyberware/bioware/spell names (from ${PACKDIR})`);
-console.log(CHECK ? 'Mode:       --check (nothing will be written)\n' : 'Mode:       apply\n');
-
-// --check reads a copy too, so a report never touches the checkout.
-const contactsCopy = CHECK ? copyPacks(CONTACTS) : null;
-const db = new ClassicLevel(CHECK ? contactsCopy.dir : CONTACTS, { valueEncoding: 'json' });
-try { await db.open(); } catch (err) {
-  if (/LOCK|lock/i.test(String(err?.message))) {
-    console.error('ERROR: the pack is locked — close Foundry and try again.'); process.exit(1);
-  }
-  throw err;
+const HERE     = dirname(fileURLToPath(import.meta.url));
+const REPO     = join(HERE, '..');
+const SRC      = join(REPO, 'packs-src');
+const PACK     = 'sr3e-mr-johnsons-contacts';
+const CONTACTS = join(SRC, PACK);
+const CHECK    = process.argv.includes('--check');
+if (process.argv.includes('--install')) {
+  console.error('--install is gone: run this plain (it writes packs-src and rebuilds packs/), then `npm run packs:install`.');
+  process.exit(2);
 }
 
+const norm = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+/* Key order, as a LevelDB iterates — so the first match for a name repeated within a pack is the
+ * same document the LevelDB-reading version of this tool picked. */
+const byKey = m => [...m].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
+
+/* Index every other pack's SOURCE — the repo's, which is what ships, so `compendiumSource` never
+ * names one of the install's unshipped pre-split packs (learned in import-johnson-gear.mjs). */
+const idx = new Map();
+for (const p of readdirSync(SRC).sort()) {
+  if (p === PACK) continue;
+  for (const [k, v] of byKey(readSourceDir(join(SRC, p)))) {
+    if (!k.startsWith('!items!') || !v?.name) continue;
+    if (!['cyberware', 'bioware', 'spell'].includes(v.type)) continue;
+    const n = norm(v.name);
+    if (!idx.has(n)) idx.set(n, { doc: v, pack: p });
+  }
+}
+console.log(`Pack index: ${idx.size} cyberware/bioware/spell names (from ${SRC})`);
+console.log(CHECK ? 'Mode:       --check (nothing will be written)\n' : 'Mode:       apply\n');
+
+const entries = readSourceDir(CONTACTS);
 const actors = [], embedded = new Map();
-for await (const [k, v] of db.iterator()) {
-  if (String(k).startsWith('!actors.items!')) embedded.set(String(k), v);
-  else if (String(k).startsWith('!actors!')) actors.push(v);
+for (const [k, v] of byKey(entries)) {
+  if (k.startsWith('!actors.items!')) embedded.set(k, v);
+  else if (k.startsWith('!actors!')) actors.push(v);
 }
 
 /** 16 hex chars from a string — stable, so a re-run reuses keys instead of orphaning documents. */
@@ -215,11 +204,12 @@ for (const a of actors) {
   console.log(`  ${a.name.padEnd(30)} ${made.length} implants`);
 }
 
-if (!CHECK) {
-  for (const [k, v] of writes) { if (v === null) await db.del(k); else await db.put(k, v); }
+let rebuilt = false;
+if (!CHECK && writes.length) {
+  for (const [k, v] of writes) { if (v === null) entries.delete(k); else entries.set(k, v); }
+  writeSourceDir(CONTACTS, entries);
+  rebuilt = await rebuildPack(REPO, PACK);
 }
-await db.close();
-contactsCopy?.cleanup();
 
 console.log(`\n${CHECK ? 'Would import' : 'Imported'}: ${implants} implants across ${contactsTouched} contacts`);
 console.log(`Spells relinked: ${spellsFixed}`);
@@ -232,6 +222,4 @@ if (unresolved.size) {
   console.log(`\nUNRESOLVED — no pack entry, left in place (${unresolved.size} distinct):`);
   [...unresolved].sort((a, z) => z[1] - a[1]).forEach(([n, c]) => console.log(`  ${String(c).padStart(3)}  ${n}`));
 }
-if (!CHECK && implants && !process.argv.includes('--install')) {
-  console.log('\nNow run the same command with --install.');
-}
+if (rebuilt) console.log(`\nRebuilt packs/${PACK} from source. Close Foundry, then: npm run packs:install`);
