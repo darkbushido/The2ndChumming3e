@@ -1864,8 +1864,9 @@ general anti-ranged defence at Cost 1. Grenades are `thrown` but never reach the
 - ⚠ **Never an initiative write**: *"The adept's Initiative Score is not affected."*
 - ⚠ The slot is **moved, not copied** — it uses the pass's action.
 - Once per Combat Turn, via the combatant flag `quickStrikeRound`.
-- "Unwounded" is read as no boxes on either track. The code confirms rather than refuses, and
-  the card says so.
+- **"Unwounded" = no injury modifier** — the maintainer's ruling (2026-09-15), because MITS p.151 does
+  not define it. Revisit if another book does. It reads the derived `woundMod`, so Pain Resistance and
+  Damage Compensators count. The code confirms rather than refuses, and the card says so.
 
 #### Three bonus channels, and a bonus belongs to exactly one
 

@@ -4408,8 +4408,9 @@ Covered by `tests/adept-powers.test.mjs` (26 assertions) and 3 mutants.
 >   - **Once per Combat Turn**, via a combatant flag holding the round.
 > - Step 3's "design problem" did not arise: turn order is already the stored queue, not Foundry's
 >   initiative sort.
-> - **For the maintainer:** "unwounded" is read as *no boxes on either track*. A wounded adept gets a
->   confirm the GM or player can accept, and the card says it was allowed.
+> - **RULED by the maintainer, 2026-09-15:** "unwounded" means **no injury modifier** (it reads
+>   `woundMod`). MITS p.151 does not define it, so revisit this if another book does. A wounded adept gets
+>   a confirm the GM or player can accept, and the card says it was allowed.
 > - Used after the pass began, it plays the adept next, and the card says RAW wants it first.
 > - A mid-round initiative edit rebuilds the queue and drops the move.
 > - Tests: `tests/quick-strike.test.mjs`. Checklist: TESTING.md §40.

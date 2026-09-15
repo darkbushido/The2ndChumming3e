@@ -35,6 +35,13 @@ const ACCESSORIES = { module: '../scripts/data/weapon-accessories.mjs', klass: '
 
 export const MUTANTS = [
   {
+    id:     'quick-strike-unwounded-boxes',
+    suite:  'quick-strike',
+    module: '../scripts/data/quick-strike.mjs', klass: 'QuickStrike', method: 'unwounded',
+    was:    '"unwounded" read as no boxes on either track; the maintainer ruled it is no injury modifier (MITS p.151, 2026-09-15)',
+    impl:   sys => !((sys?.wounds?.physical?.value ?? 0) > 0) && !((sys?.wounds?.stun?.value ?? 0) > 0),
+  },
+  {
     id:     'gyro-shared-allowance',
     suite:  'gyro',
     ...ACTOR, method: 'gyroOnRecoil',

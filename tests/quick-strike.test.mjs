@@ -35,9 +35,11 @@ export async function run(t) {
   t.ok('used in round 2 → used in round 2', Q.usedThisTurn(2, 2));
   t.ok('…free again in round 3', !Q.usedThisTurn(2, 3));
   t.ok('never used', !Q.usedThisTurn(undefined, 1));
-  t.ok('no damage: unwounded', Q.unwounded({ wounds: { physical: { value: 0 }, stun: { value: 0 } } }));
-  t.ok('one box of Stun is wounded — the reading applied, stated on the card', !Q.unwounded({ wounds: { physical: { value: 0 }, stun: { value: 1 } } }));
-  t.ok('…as is Physical', !Q.unwounded({ wounds: { physical: { value: 2 }, stun: { value: 0 } } }));
+  // The maintainer's ruling (2026-09-15): "unwounded" (MITS p.151) = no injury modifier.
+  t.ok('no injury modifier: unwounded', Q.unwounded({ woundMod: 0 }));
+  t.ok('…including boxes that Pain Resistance takes below the first modifier', Q.unwounded({ woundMod: 0, wounds: { stun: { value: 2 } } }));
+  t.ok('an injury modifier of −1 is wounded', !Q.unwounded({ woundMod: -1 }));
+  t.ok('nothing derived yet reads as unwounded', Q.unwounded({}));
 
   /* ── The shipped power ────────────────────────────────────────────────────── */
   const doc = JSON.parse(read('packs-src/sr3e-mits-adept-powers/quick-strike.sr3e-adeptpower-0099.json')).doc;

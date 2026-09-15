@@ -14,9 +14,10 @@
  * - ⚠ **Moved, not copied.** "Uses up the adept's action for that Initiative Pass." Nobody gains a slot.
  * - ⚠ **Only with an action in this pass.** No pending slot → refused.
  * - **Once per Combat Turn:** a combatant flag holding the round it was used in.
- * - ⚠ **"Unwounded" is read as NO boxes on either track.** "No wound modifier" would let a box of Stun
- *   qualify, which is near-free for a 3-point power. It is a question for the maintainer, so it is
- *   stated on the card and the GM can go ahead anyway.
+ * - ⚠ **"Unwounded" = NO INJURY MODIFIER — the maintainer's ruling, 2026-09-15.** MITS p.151 does not
+ *   define it; the ruling may be revisited if another book does. Read off the derived `woundMod`
+ *   (Damage Modifiers, SR3 p.126), so what lowers that modifier — Pain Resistance (SR3 p.170), Damage
+ *   Compensators (M&M p.71), a stim — counts. A wounded adept still gets a confirm the GM can accept.
  * - It is meant for the START of a pass. Used later, it plays the adept next, which is the nearest the
  *   tracker can come; the card says so.
  * - A mid-round initiative edit rebuilds the queue from the scores and drops the move.
@@ -30,9 +31,9 @@ export const QuickStrike = {
     return item?.type === 'adeptpower' && /^quick\s*strike/i.test(String(item?.name ?? '').trim());
   },
 
-  /** No damage on either track — the reading applied (see above). */
+  /** No injury modifier — the maintainer's ruling (see above). `woundMod` is 0 or negative. */
   unwounded(sys) {
-    return !((sys?.wounds?.physical?.value ?? 0) > 0) && !((sys?.wounds?.stun?.value ?? 0) > 0);
+    return (Number(sys?.woundMod) || 0) === 0;
   },
 
   /** Already used this Combat Turn? `usedRound` is the combatant's flag. */

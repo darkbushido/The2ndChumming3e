@@ -355,7 +355,7 @@ export class SR3ECombat extends Combat {
         <div class="sr-roll-meta">Acts now in Initiative Pass ${pass}. That is the adept's action for this pass, and
           the Initiative Score is unchanged (${QuickStrike.PAGE}). Once per Combat Turn.</div>
         ${r.first ? '' : '<div class="sr-roll-meta" style="color:var(--sr-amber)">Used after the pass began: RAW says <em>first</em> in the pass, so the adept acts next instead.</div>'}
-        ${wounded ? '<div class="sr-roll-meta" style="color:var(--sr-amber)">⚠ The adept is not unwounded (read here as no boxes on either track). The GM allowed it.</div>' : ''}
+        ${wounded ? '<div class="sr-roll-meta" style="color:var(--sr-amber)">⚠ The adept has an injury modifier, so is not unwounded (house ruling on MITS p.151). The GM allowed it.</div>' : ''}
         ${by ? `<div class="sr-roll-meta">Declared by ${foundry.utils.escapeHTML(by)}.</div>` : ''}
       </div>`,
     });
@@ -466,8 +466,8 @@ export class SR3ECombat extends Combat {
         if (res?.wounded) {
           const go = await foundry.applications.api.DialogV2.confirm({
             window: { title: 'Quick Strike — wounded' },
-            content: `<p>${foundry.utils.escapeHTML(cbt.name)} has damage on a track. Quick Strike needs the adept
-              <em>unwounded</em> (${QuickStrike.PAGE}), read here as no boxes on either track. Use it anyway?</p>`,
+            content: `<p>${foundry.utils.escapeHTML(cbt.name)} has an injury modifier. Quick Strike needs the adept
+              <em>unwounded</em> (${QuickStrike.PAGE}) — ruled here as no injury modifier, and this adept has one. Use it anyway?</p>`,
           });
           if (!go) return;
           res = await ask(true);
