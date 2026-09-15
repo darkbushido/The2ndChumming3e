@@ -4380,6 +4380,7 @@ _prepareCharacter(sys, attr) {
     'miji.ivis':       ['SR3EMIJI', '_ivisRolled'],
     'miji.eccm':       ['SR3EMIJI', '_eccmRolled'],
     'miji.footprint':  ['SR3EMIJI', '_footprintRolled'],
+    quickDraw:         ['SR3EItem', '_quickDrawRolled'],   // TODO 47 — Reaction (4), p.107
   };
 
   static _registryFn([cls, fn] = [], what) {

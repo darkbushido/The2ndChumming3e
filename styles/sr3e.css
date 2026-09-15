@@ -313,7 +313,8 @@ background-color: var(--sr-surface) !important;
 .sr-heal-roll-btn,
 .sr-heal-act-btn,
 .sr-drug-roll-btn,
-.sr-drug-act-btn {
+.sr-drug-act-btn,
+.sr-quickdraw-fire-btn {
   width: 100%;
   height: auto;
   white-space: normal;
@@ -326,7 +327,8 @@ background-color: var(--sr-surface) !important;
   transition: all 0.15s;
 }
 .sr-heal-roll-btn,
-.sr-drug-roll-btn {
+.sr-drug-roll-btn,
+.sr-quickdraw-fire-btn {
   background: linear-gradient(135deg, color-mix(in srgb, var(--sr-green) 15%, transparent) 0%, color-mix(in srgb, var(--sr-green) 5%, transparent) 100%);
   border: 1px solid var(--sr-green);
   color: var(--sr-green);
@@ -3732,3 +3734,8 @@ label.act-field input[type=number] {
 .sr3e-act-buttons button:disabled { opacity: 0.35; cursor: not-allowed; }
 .sr3e-act-buttons .sr3e-act-undo { flex: 0 0 26px; }
 .sr3e-undo-row { display: block; font-size: 12px; margin: 2px 0; }
+
+/* ── Ready Weapon · SR3 p.107 (TODO 47) — ✋ in hand or put away ─────────────────────────── */
+.item-controls .sr-ready-toggle { color: var(--sr-dim); cursor: pointer; }
+.item-controls .sr-ready-toggle.is-ready { color: var(--sr-green); }
+.item-controls .sr-ready-toggle:hover { color: var(--sr-accent); }

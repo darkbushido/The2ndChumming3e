@@ -25,7 +25,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | # | Item | State / why it sits here |
 |---|---|---|
 | [48](#48) | The action ledger | ✅ built — `c03025c5`; Take Aim across phases still open inside it |
-| [47](#47) | Ready Weapon, an equip control for firearms, Quick Draw | next — needs #48's ledger to charge Ready |
+| [47](#47) | Ready Weapon, an equip control for firearms, Quick Draw | ✅ built — two-gun Quick Draw waits on #49 |
 | [49](#49) | Hands | after #47 — decided: a `hands` field on weapons, **filled from the category**, editable per weapon |
 | [18](#18) | Structured weapon-accessory data (smartlink, smart goggles, laser) | the maintainer's gate for everything below |
 | [23](#23) | Ammunition compendium | easiest — likely already met: 661 ammunition docs ship in 6 default-gear packs; verify and close |
@@ -230,6 +230,14 @@ cannot reach. If time is short, do these.
 ### 📕 Rules not implemented
 
 ## 47. Ready Weapon is unmodelled — you can attack with a weapon you never drew
+
+> **Built 2026-09-15 on `feature/action-economy`** (0.6; not merged). `ready` on every weapon (initial
+> true, so nothing already on a sheet stops fighting); a ✋ toggle on each weapon row (readying charges
+> Ready Weapon, putting away is free); firing or swinging an unready weapon offers **Ready**, **Quick
+> Draw** (Concealability 4+ firearms: Reaction (4), +2 unholstered, one success draws and fires in one
+> Simple Action, a card's 🎯 Fire) or **Attack anyway** — never refuses. Rules: `scripts/data/ready-weapon.mjs`.
+> **Still open here:** quick-drawing two guns at once (+2 each) waits on #49's hands; readying a batch
+> of throwing weapons is shown in the tooltip (½ Quickness) but the stack is one item. TESTING.md §40.
 
 **Reported 2026-08-11:** *"you shouldn't be able to attack with a weapon you don't have equipped."*
 Correct, and RAW says so outright. Core **p.107**, Simple Actions:

@@ -38,6 +38,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       attributeBoost: SR3EActorSheet._onAttributeBoost,
       toggleAugmentation: SR3EActorSheet._onToggleAugmentation,
       takeDrug:       SR3EActorSheet._onTakeDrug,
+      toggleReady:    SR3EActorSheet._onToggleReady,
       drugRecord:     SR3EActorSheet._onDrugRecord,
       rollInitiative: SR3EActorSheet._onRollInitiative,
       itemCreate:     SR3EActorSheet._onItemCreate,
@@ -3123,14 +3124,41 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       : rollDisabled
         ? `<i class="fas fa-dice-d6" style="opacity:0.25;cursor:not-allowed;text-decoration:line-through" title="Out of ammo — reload / restock"></i>`
         : `<i class="fas fa-dice-d6 rollable" data-action="${rollAction}" data-item-id="${itemId}" title="Shift+Click to use Real Dice"></i>`;
-    // Order: reload, dice, edit, house (store), trash
+    // Order: ready, reload, dice, edit, house (store), trash
     return `<div class="item-controls">
+      ${this._readyIcon(itemId)}
       ${reloadIcon}
       ${rollIcon}
       <i class="fas fa-edit" data-action="itemEdit" data-item-id="${itemId}" title="Edit"></i>
       ${storeIcon}
       <i class="fas fa-trash" data-action="itemDelete" data-item-id="${itemId}" title="Delete"></i>
     </div>`;
+  }
+
+  /**
+   * ✋ In hand or put away (SR3 p.107, TODO 47) — only for weapons that can be holstered; the body's
+   * own weapons (unarmed, cyber-melee) and non-weapons get nothing. Readying costs a Simple Action.
+   */
+  _readyIcon(itemId) {
+    const item = this.actor?.items?.get(itemId);
+    const RW = game.sr3e.ReadyWeapon;
+    if (!item || !RW || !RW.READY_TYPES.includes(item.type)
+      || ['UNA', 'CYB'].includes(String(item.system?.category ?? '').toUpperCase())) return '';
+    const ready = RW.isReady(item);
+    return `<i class="fas fa-hand sr-ready-toggle${ready ? ' is-ready' : ''}" data-action="toggleReady" data-item-id="${itemId}"
+      title="${ready ? 'Ready — in hand. Click to put it away (holster, sheathe, sling).'
+                     : 'Put away. Click to ready it — a Simple Action (SR3 p.107).'}${item.type === 'thrown'
+        ? ` One Ready Weapon readies ${RW.thrownPerReady(this.actor.system.attributes?.quickness?.value)} throwing weapons (½ Quickness).` : ''}"></i>`;
+  }
+
+  /** ✋ Toggle ready. Readying is a Simple Action (charged if it is this character's phase); putting away is free. */
+  static async _onToggleReady(event, target) {
+    event.preventDefault();
+    const item = this.actor.items.get(target.dataset.itemId);
+    if (!item) return;
+    const now = !game.sr3e.ReadyWeapon.isReady(item);
+    await item.update({ 'system.ready': now });
+    if (now) game.sr3e.SR3EActionLedger?.charge(this.actor, 'readyWeapon', item.name);
   }
 
   /** True when a weapon is empty and ammo tracking is on (so its roll icon is disabled). */
@@ -3186,6 +3214,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
               style="${focusActive ? 'background:var(--sr-green);color:#fff' : ''}">Active?</button>` : ''}
     ` : '';
     return `<div class="item-controls">
+      ${this._readyIcon(itemId)}
       ${storeIcon}
       ${focusBtns}
       <i class="fas fa-dice-d6 rollable" data-action="rollMelee" data-item-id="${itemId}" title="Melee attack"></i>

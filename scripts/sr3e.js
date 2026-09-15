@@ -30,6 +30,7 @@ import { SR3EClocks } from './SR3EClocks.js';
 import { SR3EHealing } from './SR3EHealing.js';
 import { SR3EDrugs } from './SR3EDrugs.js';
 import { SR3EActionLedger } from './SR3EActionLedger.js';
+import { ReadyWeapon } from './data/ready-weapon.mjs';
 import { SR3ESourceBooks } from './SR3ESourceBooks.js';
 import { SR3ECompendiumDirectory } from './SR3ECompendiumDirectory.js';
 import { SR3EQuery, SR3EQueue, SR3EGMUnavailable } from './SR3EQuery.js';
@@ -97,7 +98,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock, ItemRating };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, ReadyWeapon, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock, ItemRating };
 
   // When THIS client loaded the system's code.
   //
@@ -3067,6 +3068,19 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
    * one user who makes that test (`_isDeciderId`); the consequence buttons change the character's
    * record, Body or wounds, so any owner of the character (or the GM) may press them (`_mineId`). */
   SR3EDrugs.wireCard(message, html);
+  // Quick Draw cleared (TODO 47): 🎯 fires the drawn gun — a roll, so the one decider.
+  html.querySelectorAll('.sr-quickdraw-fire-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'qdfire', i)) return;
+    const pl = _payload(btn);
+    if (!pl) return;
+    if (!_isDeciderId(pl.actorId)) return _denyBtn(btn, 'Only the person who drew it (or the GM) fires it.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'qdfire', i)) return;
+      await game.actors.get(pl.actorId)?.items.get(pl.itemId)?.rollWeapon({ quickDrawn: true });
+    });
+  });
   html.querySelectorAll('.sr-drug-roll-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'drugroll', i)) return;
     const pl = _payload(btn);

@@ -151,6 +151,70 @@ export class SR3EItem extends Item {
    * Synthetic "Unarmed Combat" attacker weapon (bare fists): (STR)M Stun, reach 0, UNA.
    * Not a real inventory item — used to launch an unarmed attack from the sheet or canvas.
    */
+  /**
+   * A weapon must be ready before it can be used (SR3 p.107, TODO 47). Called at the top of the
+   * attack flows. Returns 'ready' (already, or readied now), 'anyway' (the GM waves it through), or
+   * null (cancelled, or a Quick Draw roll was posted — its card fires the weapon if it clears).
+   * ⚠ Warns and offers; never refuses (minimal guardrails). Readying charges Ready Weapon (Simple).
+   */
+  static async _ensureReady(actor, item) {
+    const RW = game.sr3e.ReadyWeapon;
+    if (!item || item._unarmed || RW.isReady(item)) return 'ready';
+    const quick = RW.canQuickDraw(item);
+    let choice = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `${item.name} is not ready` },
+      content: `<p><strong>${item.name}</strong> is holstered, sheathed or put away — <em>"A weapon must be
+        ready before it can be used"</em> (SR3 p.107).</p>
+        ${quick ? `<label style="display:block;margin-top:6px"><input type="checkbox" id="sr-qd-holster" checked/>
+          In a proper holster (otherwise +2 to the Quick Draw test)</label>` : ''}`,
+      buttons: [
+        { label: '✋ Ready it (Simple Action)', action: 'ready', default: true, callback: () => { choice = { how: 'ready' }; } },
+        ...(quick ? [{ label: '⚡ Quick Draw — Reaction (4)', action: 'quick',
+          callback: (_e, _b, d) => { choice = { how: 'quick', holstered: !!d.element.querySelector('#sr-qd-holster')?.checked }; } }] : []),
+        { label: 'Attack anyway', action: 'anyway', callback: () => { choice = { how: 'anyway' }; } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (!choice) return null;
+    if (choice.how === 'anyway') return 'anyway';
+    if (choice.how === 'ready') {
+      await item.update({ 'system.ready': true });
+      game.sr3e.SR3EActionLedger?.charge(actor, 'readyWeapon', item.name);
+      return 'ready';
+    }
+    // Quick Draw: draw AND fire in one Simple Action, on one success at Reaction (4) (+2 unholstered).
+    const tn   = RW.quickDrawTN({ holstered: choice.holstered });
+    const pool = actor.system.attributes?.reaction?.value ?? 1;
+    game.sr3e.SR3EActionLedger?.charge(actor, 'quickDraw', item.name);
+    await game.sr3e.SR3EActor.rollThen(actor, pool, tn, {
+      label: `⚡ ${actor.name} — Quick Draw ${item.name}: Reaction (${tn})`,
+      followUp: { kind: 'quickDraw', ctx: { actorId: actor.id, itemId: item.id, tn } },
+    });
+    return null;
+  }
+
+  /** Quick Draw's outcome, after any 💥 — one success clears the weapon (p.107). */
+  static async _quickDrawRolled(ctx, res) {
+    const actor = game.actors.get(ctx.actorId);
+    const item  = actor?.items.get(ctx.itemId);
+    if (!actor || !item) return;
+    const cleared = game.sr3e.ReadyWeapon.quickDrawCleared(res?.successes);
+    if (cleared) await item.update({ 'system.ready': true });
+    const pay = JSON.stringify({ actorId: actor.id, itemId: item.id }).replace(/'/g, '&#39;');
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="sr-roll-card">
+        <div class="sr-roll-header">⚡ ${actor.name} — Quick Draw ${item.name}</div>
+        <div class="sr-roll-result" style="color:var(${cleared ? '--sr-green' : '--sr-red'})">${res?.successes ?? 0} success${res?.successes === 1 ? '' : 'es'} vs ${ctx.tn} —
+          ${cleared ? 'drawn. Fire it now, in the same action.' : 'fumbled — it cannot be fired this Combat Phase (SR3 p.107).'}</div>
+        ${cleared ? `<div class="sr-roll-meta">Only a Simple Action shot — no full auto.</div>
+          <button type="button" class="sr-quickdraw-fire-btn" data-payload='${pay}'>🎯 Fire ${item.name}</button>` : ''}
+      </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    });
+  }
+
   static _unarmedWeapon(actor = null) {
     return {
       id:       'unarmed',
@@ -201,6 +265,7 @@ export class SR3EItem extends Item {
   static async rollMeleeAttack(actor, atkWeapon) {
     if (!actor || !atkWeapon) return null;
     game.sr3e.SR3EActionLedger?.begin(actor);   // snapshot for the GM's undo (TODO 48)
+    if (!(await SR3EItem._ensureReady(actor, atkWeapon))) return null;   // p.107 — TODO 47
 
     // Parse attacker damage code (resolve STR against attacker)
     const rawDamage  = atkWeapon.system?.damage || '';
@@ -926,6 +991,9 @@ export class SR3EItem extends Item {
     ui.notifications.warn('No actor for this weapon.');
     return null;
   }
+  // A weapon must be ready before it can be used (SR3 p.107, TODO 47) — a Quick Draw card's 🎯 Fire
+  // arrives already drawn (`quickDrawn`), so it skips the gate.
+  if (!options.quickDrawn && !(await SR3EItem._ensureReady(actor, this))) return null;
 
   // Out-of-ammo guard (only when tracking) — empty weapons are inoperable.
   if (game.settings.get('The2ndChumming3e', 'trackAmmo')) {
@@ -1449,7 +1517,7 @@ export class SR3EItem extends Item {
 
   // The action it is (TODO 48): thrown — Throw Weapon; a gun or bow — by FIRE MODE, because full
   // auto is a different action (Fire Automatic Weapon, Complex, p.108) from SS/SA/BF (Simple, p.106).
-  game.sr3e.SR3EActionLedger?.charge(actor, this._isConsumable() ? 'throwWeapon' : game.sr3e.SR3EActionLedger.rules.fireAction(fireModeResult?.mode),
+  if (!options.quickDrawn) game.sr3e.SR3EActionLedger?.charge(actor, this._isConsumable() ? 'throwWeapon' : game.sr3e.SR3EActionLedger.rules.fireAction(fireModeResult?.mode),
     `${this.name}${fireModeResult?.mode ? ` (${fireModeResult.mode})` : ''}`);
   await this._consumeThrown();
   return actor.rollPool(pool, tn, label, options);

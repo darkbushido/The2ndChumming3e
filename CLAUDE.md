@@ -845,7 +845,13 @@ initiative is rolled only through the "Begin Encounter" dialog. Re-enabled once 
   value changed since and every chat card posted since, all ticked, each untickable (the same
   character's dodge in between) — then puts back, deletes, and frees the slot. Damage is never
   auto-applied, so nothing else needs reversing.
-- Not yet: Take Aim across phases (#48's note), dual wield's one Simple for two guns (#49), Ready (#47).
+- **Ready Weapon** (TODO 47, SR3 p.107): `system.ready` on firearm/melee/projectile/thrown (initial **true**),
+  rules in `scripts/data/ready-weapon.mjs`. ✋ on each weapon row toggles it (readying charges a Simple
+  Action). `SR3EItem._ensureReady` runs at the top of `rollWeapon` and `rollMeleeAttack`: Ready / Quick Draw
+  (Concealability 4+ firearms, Reaction (4) +2 unholstered via `rollThen` → `_quickDrawRolled` → a 🎯
+  Fire card that calls `rollWeapon({ quickDrawn: true })`, uncharged) / Attack anyway. ⚠ Warns, never
+  refuses — Quick Draw is the book's answer to "not drawn yet". Fists and cyber-melee are always ready.
+- Not yet: Take Aim across phases (#48's note), dual wield's one Simple for two guns (#49).
 
 ### GM tools — Rollable Tables sidebar
 Chase Scene, Driving Test, Session Rewards, Chunky Salsa, Barrier Damage, Falling Damage and

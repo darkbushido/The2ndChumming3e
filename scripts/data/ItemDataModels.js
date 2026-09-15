@@ -21,6 +21,9 @@ export class MeleeData extends foundry.abstract.TypeDataModel {
     return {
       category:       new StringField({ initial: '' }),
       concealability: new StringField({ initial: '' }),
+      // In hand, drawn, nocked (SR3 p.107, TODO 47). Initial TRUE: everything already on a sheet reads
+      // as ready — a world of characters who suddenly cannot fight would be worse than the bug.
+      ready:          new BooleanField({ initial: true }),
       reach:          new NumberField({ integer: true, initial: 0, min: 0 }),
       damage:         new StringField({ initial: '' }),
       weight:         new NumberField({ initial: 0, min: 0 }),
@@ -48,6 +51,9 @@ export class ProjectileData extends foundry.abstract.TypeDataModel {
     return {
       category:       new StringField({ initial: '' }),
       concealability: new StringField({ initial: '' }),
+      // In hand, drawn, nocked (SR3 p.107, TODO 47). Initial TRUE: everything already on a sheet reads
+      // as ready — a world of characters who suddenly cannot fight would be worse than the bug.
+      ready:          new BooleanField({ initial: true }),
       strMin:         new NumberField({ integer: true, initial: 0, min: 0 }),
       damage:         new StringField({ initial: '' }),
       quantity:       new NumberField({ integer: true, initial: 0, min: 0 }),
@@ -78,6 +84,9 @@ export class ThrownData extends foundry.abstract.TypeDataModel {
     return {
       category:       new StringField({ initial: '' }),
       concealability: new StringField({ initial: '' }),
+      // In hand, drawn, nocked (SR3 p.107, TODO 47). Initial TRUE: everything already on a sheet reads
+      // as ready — a world of characters who suddenly cannot fight would be worse than the bug.
+      ready:          new BooleanField({ initial: true }),
       strMin:         new NumberField({ integer: true, initial: 0, min: 0 }),
       damage:         new StringField({ initial: '' }),
       quantity:       new NumberField({ integer: true, initial: 0, min: 0 }),
@@ -105,6 +114,9 @@ export class FirearmData extends foundry.abstract.TypeDataModel {
     return {
       category:        new StringField({ initial: '' }),
       concealability:  new StringField({ initial: '' }),
+      // In hand, drawn, nocked (SR3 p.107, TODO 47). Initial TRUE: everything already on a sheet reads
+      // as ready — a world of characters who suddenly cannot fight would be worse than the bug.
+      ready:          new BooleanField({ initial: true }),
       ammunition:      new StringField({ initial: '' }),
       equippedAmmoId:  new StringField({ initial: '' }),
       mode:            new StringField({ initial: '' }),

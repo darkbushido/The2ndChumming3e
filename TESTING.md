@@ -2370,3 +2370,9 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
       cards and frees the pip. Untick one row → that value is left alone.
 - [ ] Reload: a clip swap fills both Simples; loose rounds a Complex each; nocking an arrow one Simple.
 - [ ] F5 on any client keeps the pips (they are a combatant flag); the next combatant's phase starts empty.
+- [ ] **Ready (TODO 47):** a weapon row's ✋ puts it away (grey) and readies it (green); readying fills
+      a Simple pip on the character's phase, putting away does not.
+- [ ] Fire a put-away pistol → the dialog offers Ready / ⚡ Quick Draw / Attack anyway. Quick Draw rolls
+      Reaction vs 4 (6 with the holster box unticked); a success posts 🎯 Fire, which attacks without a
+      second charge; a failure says it cannot fire this phase. A rifle (Concealability < 4) offers no
+      Quick Draw. A put-away sword gets the same dialog without it; fists never ask.
