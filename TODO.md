@@ -16,6 +16,26 @@ heading with the commit that closed it and run `npm run todo:archive`: it moves 
 table below is regenerated — do not edit the table by hand. Grouping is by *kind of work*
 (the `###` headings); a new item goes under its group.
 
+## Work order for 0.6 — set by the maintainer, 2026-09-15
+
+The maintainer's order: finish the action economy, then #18, then the rest **easiest first** (the order
+below is the agent's estimate). Built on `feature/action-economy` in the worktree
+`The2ndChumming3e-work` unless noted; nothing is merged without the maintainer.
+
+| # | Item | State / why it sits here |
+|---|---|---|
+| [48](#48) | The action ledger | ✅ built — `c03025c5`; Take Aim across phases still open inside it |
+| [47](#47) | Ready Weapon, an equip control for firearms, Quick Draw | next — needs #48's ledger to charge Ready |
+| [49](#49) | Hands | after #47 — decided: a `hands` field on weapons, **filled from the category**, editable per weapon |
+| [18](#18) | Structured weapon-accessory data (smartlink, smart goggles, laser) | the maintainer's gate for everything below |
+| [23](#23) | Ammunition compendium | easiest — likely already met: 661 ammunition docs ship in 6 default-gear packs; verify and close |
+| [55](#55) | `trackAmmo` on by default | small switch; audit what it exposes |
+| [57](#57) | Shotgun choke and spread (p.117) | self-contained rule and one dialog input |
+| [56.1](#56) | Smartguns waste no rounds (p.116) | easy once #18 gives a smartgun flag |
+| [56.2](#56) | Remember who you shot at this phase | per-phase state — the #48 ledger is its home; closes #56 |
+| [78](#78) | Quick Strike acts first in a pass (MITS p.151) | touches the initiative queue |
+| [38](TODO-DONE.md#38) | Multiple targets — the leftovers (melee, per-attack pool) | hardest; #38 is archived but names these as unapplied |
+
 ## Contents
 
 **37 open.** 88 done — see [TODO-DONE.md](TODO-DONE.md).
