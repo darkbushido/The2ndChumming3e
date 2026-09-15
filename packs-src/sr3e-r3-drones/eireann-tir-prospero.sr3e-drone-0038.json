@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0038",
+  "doc": {
+    "_id": "sr3e-drone-0038",
+    "name": "Eireann-Tir Prospero",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 8125,
+      "streetIndex": 1,
+      "availability": "2/24hrs",
+      "seating": 0,
+      "bookPage": "r3.176",
+      "notes": "Remote-Control Interface, Rigger Adaptation",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 70,
+          "base": 70
+        },
+        "accel": {
+          "value": 9,
+          "base": 9
+        },
+        "body": {
+          "value": 1,
+          "base": 1
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 5,
+          "base": 5
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 2,
+          "base": 2
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 0,
+          "base": 0
+        },
+        "load": {
+          "value": 10,
+          "base": 10
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

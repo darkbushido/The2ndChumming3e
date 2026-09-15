@@ -1,0 +1,34 @@
+{
+  "_key": "!items!7304984a0a1994ac",
+  "doc": {
+    "_id": "7304984a0a1994ac",
+    "name": "25-Rnd Clip (APDS)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "apds",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 25,
+      "rounds": 0,
+      "weight": 1.375,
+      "cost": 180,
+      "availability": "14/14days",
+      "streetIndex": "4",
+      "bookPage": "sr2.281",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

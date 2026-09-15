@@ -1,0 +1,30 @@
+{
+  "_key": "!items!786b4fd88fde9c1c",
+  "doc": {
+    "_id": "786b4fd88fde9c1c",
+    "name": "SkillSoft Jukebox 3MP 12 ports",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 720,
+      "weight": 0,
+      "availability": "3/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Juk<br><strong>Memory:</strong> 3</p>"
+    }
+  },
+  "embedded": {}
+}

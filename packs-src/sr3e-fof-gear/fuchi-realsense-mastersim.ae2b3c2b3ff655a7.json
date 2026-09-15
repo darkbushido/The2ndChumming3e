@@ -1,0 +1,30 @@
+{
+  "_key": "!items!ae2b3c2b3ff655a7",
+  "doc": {
+    "_id": "ae2b3c2b3ff655a7",
+    "name": "Fuchi RealSense MasterSim",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "-",
+      "rating": null,
+      "cost": 125000,
+      "weight": 12,
+      "availability": "8/1week",
+      "streetIndex": "3",
+      "bookPage": "fof.95",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0121",
+  "doc": {
+    "_id": "sr3e-spell-0121",
+    "name": "Chasm",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Illusion",
+      "type": "Physical",
+      "duration": "Sustained",
+      "range": "LOS",
+      "drain": "+2(D)",
+      "target": "4(R)",
+      "bookPage": "tss.9",
+      "damage": "",
+      "description": "Target changed to fit with other Indirect Illusions"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

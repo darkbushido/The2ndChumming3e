@@ -1,0 +1,30 @@
+{
+  "_key": "!items!54fa5f1837bc187c",
+  "doc": {
+    "_id": "54fa5f1837bc187c",
+    "name": "Scuba Tank",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 3000,
+      "weight": 18,
+      "availability": "4/12hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.57",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

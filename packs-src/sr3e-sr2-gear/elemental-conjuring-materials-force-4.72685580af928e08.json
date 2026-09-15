@@ -1,0 +1,30 @@
+{
+  "_key": "!items!72685580af928e08",
+  "doc": {
+    "_id": "72685580af928e08",
+    "name": "Elemental Conjuring Materials - Force 4",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Magical Equipment"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Magical Equipment",
+      "concealability": "",
+      "rating": null,
+      "cost": 4000,
+      "weight": 0,
+      "availability": "4/24hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.158",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

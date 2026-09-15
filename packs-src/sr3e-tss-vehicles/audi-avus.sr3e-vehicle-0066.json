@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0066",
+  "doc": {
+    "_id": "sr3e-vehicle-0066",
+    "name": "Audi Avus",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 195000,
+      "streetIndex": 2,
+      "availability": "4/7days",
+      "bookPage": "tss.6",
+      "seating": 2,
+      "notes": "Crash Cage, datajack link, optional Rigger Control Gear (does not require CF)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 8,
+          "base": 8
+        },
+        "speed": {
+          "value": 250,
+          "base": 250
+        },
+        "accel": {
+          "value": 15,
+          "base": 15
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 1,
+          "base": 1
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 3,
+          "base": 3
+        },
+        "load": {
+          "value": 40,
+          "base": 40
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

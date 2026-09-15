@@ -1,0 +1,848 @@
+{
+  "_key": "!actors!J3F5JsEWYlMfbZp5",
+  "doc": {
+    "name": "Metroplex Guardsman",
+    "type": "character",
+    "system": {
+      "metatype": "dwarf",
+      "nuyen": 0,
+      "karma": 0,
+      "totalKarma": 0,
+      "karmaPool": 2,
+      "notes": "<p>Mr. Johnson's Little Black Book, p.63. PR 3. Karma Pool 2.</p>",
+      "attributes": {
+        "body": {
+          "base": 4,
+          "value": 4,
+          "mod": 0,
+          "force": 0
+        },
+        "quickness": {
+          "base": 4,
+          "value": 4,
+          "mod": 0,
+          "force": 0
+        },
+        "strength": {
+          "base": 5,
+          "value": 5,
+          "mod": 0,
+          "force": 0
+        },
+        "charisma": {
+          "base": 2,
+          "value": 2,
+          "mod": 0,
+          "force": 0
+        },
+        "intelligence": {
+          "base": 3,
+          "value": 3,
+          "mod": 0,
+          "force": 0
+        },
+        "willpower": {
+          "base": 4,
+          "value": 4,
+          "mod": 0,
+          "force": 0
+        },
+        "essence": {
+          "base": 6,
+          "value": 4.3,
+          "force": 0,
+          "lost": 1.7
+        },
+        "magic": {
+          "base": 0,
+          "value": 0,
+          "mod": 0,
+          "force": 0
+        },
+        "reaction": {
+          "base": 3,
+          "value": 3,
+          "reactionBonus": 0,
+          "diceBonus": 0,
+          "override": false,
+          "force": 0
+        }
+      },
+      "biography": "",
+      "gender": "",
+      "age": "",
+      "height": "",
+      "weight": "",
+      "ethnicity": "",
+      "reputation": 0,
+      "notoriety": 0,
+      "streetCred": 0,
+      "hackingBonus": 0,
+      "initiativeDiceBonus": 0,
+      "equippedArmor": "",
+      "equippedMelee": "",
+      "activeVCRItemId": "",
+      "equippedCyberdeck": "",
+      "matrixUserMode": "",
+      "activeHostId": "",
+      "currentMatrixNode": "",
+      "matrixMarks": [],
+      "linkLocked": false,
+      "astralMode": "",
+      "magicTradition": "",
+      "magicType": "",
+      "magicTotem": "",
+      "magicElement": "",
+      "initiateGrade": 0,
+      "combatPoolSpent": 0,
+      "combatPoolMod": 0,
+      "spellPoolSpent": 0,
+      "spellPoolMod": 0,
+      "astralPoolSpent": 0,
+      "astralPoolMod": 0,
+      "hackingPoolSpent": 0,
+      "spellDefensePool": 0,
+      "spellDefenseSorceryDice": 0,
+      "fullDefense": false,
+      "fullDefensePool": 0,
+      "recoilCompensation": 0,
+      "roundsFiredThisPhase": 0,
+      "stimBonus": 0,
+      "wounds": {
+        "stun": {
+          "value": 0,
+          "max": 10
+        },
+        "physical": {
+          "value": 0,
+          "max": 10
+        },
+        "overflow": {
+          "value": 0
+        }
+      },
+      "ew": {
+        "deckRating": 0,
+        "fluxRating": 0,
+        "protocolModule": 0,
+        "ivisPool": {
+          "value": 0,
+          "max": 0
+        }
+      },
+      "orthodoxDeck": {
+        "deckModel": "",
+        "mccp": 0,
+        "bod": 0,
+        "evasion": 0,
+        "masking": 0,
+        "sensor": 0,
+        "hardening": 0,
+        "activeMemory": 0,
+        "storageMemory": 0,
+        "ioSpeed": 0,
+        "responseIncrease": 0,
+        "sleazeRating": 0
+      },
+      "orthodoxRunState": {
+        "securityTally": 0,
+        "alertLevel": "none",
+        "currentHostId": ""
+      },
+      "orthodoxMatrixCM": {
+        "value": 0
+      },
+      "professionalRating": 3,
+      "bookPage": "lbb.63"
+    },
+    "_id": "J3F5JsEWYlMfbZp5",
+    "img": "icons/svg/mystery-man.svg",
+    "prototypeToken": {
+      "name": "Metroplex Guardsman",
+      "displayName": 0,
+      "actorLink": true,
+      "width": 1,
+      "height": 1,
+      "depth": 1,
+      "texture": {
+        "src": "icons/svg/mystery-man.svg",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "fit": "contain",
+        "scaleX": 1,
+        "scaleY": 1,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "lockRotation": false,
+      "rotation": 0,
+      "alpha": 1,
+      "disposition": -1,
+      "displayBars": 20,
+      "bar1": {
+        "attribute": "wounds.physical"
+      },
+      "bar2": {
+        "attribute": "wounds.stun"
+      },
+      "light": {
+        "negative": false,
+        "priority": 0,
+        "alpha": 0.5,
+        "angle": 360,
+        "bright": 0,
+        "color": null,
+        "coloration": 1,
+        "dim": 0,
+        "attenuation": 0.5,
+        "luminosity": 0.5,
+        "saturation": 0,
+        "contrast": 0,
+        "shadows": 0,
+        "animation": {
+          "type": null,
+          "speed": 5,
+          "intensity": 5,
+          "reverse": false
+        },
+        "darkness": {
+          "min": 0,
+          "max": 1
+        }
+      },
+      "sight": {
+        "enabled": false,
+        "range": 0,
+        "angle": 360,
+        "visionMode": "basic",
+        "color": null,
+        "attenuation": 0.1,
+        "brightness": 0,
+        "saturation": 0,
+        "contrast": 0
+      },
+      "detectionModes": {},
+      "occludable": {
+        "radius": 0
+      },
+      "ring": {
+        "enabled": false,
+        "colors": {
+          "ring": null,
+          "background": null
+        },
+        "effects": 1,
+        "subject": {
+          "scale": 1,
+          "texture": null
+        }
+      },
+      "turnMarker": {
+        "mode": 1,
+        "animation": null,
+        "src": null,
+        "disposition": false
+      },
+      "movementAction": null,
+      "flags": {},
+      "randomImg": false,
+      "appendNumber": false,
+      "prependAdjective": false
+    },
+    "items": [
+      "2Ybsc5cYaEMj6e2t",
+      "SDngUiIUSarnvv5W",
+      "c58dc7669be218b6",
+      "632d6679a1094b27",
+      "1413753b57127755",
+      "f551fa312f82c38d",
+      "f4ed9190ae988228",
+      "934d81cd56219c27",
+      "b3b8c0c5d256150b",
+      "de425a2ca9a3bcc8",
+      "cf028b06d698c7e4",
+      "d01633ed55715b73",
+      "c37e02309ce3c1b6",
+      "961bf1068afab9f6",
+      "5af3e8225e56539e"
+    ],
+    "effects": [],
+    "folder": "fe70c65016c647bf",
+    "ownership": {
+      "default": 0,
+      "ge55aFMax5sNd2Ho": 3
+    },
+    "flags": {
+      "The2ndChumming3e": {
+        "isTemplate": false
+      }
+    },
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.4.5",
+      "createdTime": 1784690543655,
+      "modifiedTime": 1784690543655,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {
+    "!actors.items!J3F5JsEWYlMfbZp5.1413753b57127755": {
+      "_id": "1413753b57127755",
+      "name": "Submachine Guns",
+      "type": "skill",
+      "system": {
+        "skillName": "Submachine Guns",
+        "rating": 5,
+        "linkedAttribute": "quickness",
+        "category": "Combat skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811681,
+        "modifiedTime": 1788319811681,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!J3F5JsEWYlMfbZp5.2Ybsc5cYaEMj6e2t": {
+      "name": "Ingram Smartgun",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_id": "2Ybsc5cYaEMj6e2t",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543655,
+        "modifiedTime": 1784690543655,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!J3F5JsEWYlMfbZp5.5af3e8225e56539e": {
+      "_id": "5af3e8225e56539e",
+      "name": "Smartlink II",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Bodyware",
+        "essenceCost": 0.5,
+        "cost": 3500,
+        "availability": "6/48 hours",
+        "streetIndex": 2,
+        "legalCode": "5P-N",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "mm.31",
+        "grade": "Standard",
+        "rating": 0,
+        "description": "-2 to TNs for firing a Smartlink-II weapon, +2 Called Shot modifier"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-mm-cyberware.Item.sr3e-cyberware-0225",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621571,
+        "modifiedTime": 1788537621571,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!J3F5JsEWYlMfbZp5.632d6679a1094b27": {
+      "_id": "632d6679a1094b27",
+      "name": "Etiquette",
+      "type": "skill",
+      "system": {
+        "skillName": "Etiquette",
+        "rating": 1,
+        "linkedAttribute": "charisma",
+        "category": "Social skills",
+        "skillType": "active",
+        "specialisation": "Corporate 2, Street 2",
+        "specialisations": [
+          {
+            "name": "Corporate",
+            "level": 1
+          },
+          {
+            "name": "Street",
+            "level": 1
+          }
+        ],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811681,
+        "modifiedTime": 1788319811681,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!J3F5JsEWYlMfbZp5.934d81cd56219c27": {
+      "_id": "934d81cd56219c27",
+      "name": "Matrix Games",
+      "type": "skill",
+      "system": {
+        "skillName": "Matrix Games",
+        "rating": 3,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811682,
+        "modifiedTime": 1788319811682,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!J3F5JsEWYlMfbZp5.961bf1068afab9f6": {
+      "_id": "961bf1068afab9f6",
+      "name": "Eyes, Thermographic",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Eyeware",
+        "essenceCost": 0.2,
+        "cost": 3000,
+        "availability": "4/36 hours",
+        "streetIndex": 1.25,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.300",
+        "grade": "Standard",
+        "rating": 0,
+        "description": "Thermographic vision"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0470",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621571,
+        "modifiedTime": 1788537621571,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!J3F5JsEWYlMfbZp5.SDngUiIUSarnvv5W": {
+      "name": "Armor Jacket",
+      "type": "armor",
+      "system": {
+        "ballistic": 5,
+        "impact": 3,
+        "concealability": "",
+        "cost": 0,
+        "weight": 0,
+        "availability": "",
+        "streetIndex": "",
+        "bookPage": "",
+        "notes": ""
+      },
+      "_id": "SDngUiIUSarnvv5W",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543655,
+        "modifiedTime": 1784690543655,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!J3F5JsEWYlMfbZp5.b3b8c0c5d256150b": {
+      "_id": "b3b8c0c5d256150b",
+      "name": "Military Theory",
+      "type": "skill",
+      "system": {
+        "skillName": "Military Theory",
+        "rating": 2,
+        "linkedAttribute": "intelligence",
+        "category": "Academic skills",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811682,
+        "modifiedTime": 1788319811682,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!J3F5JsEWYlMfbZp5.c37e02309ce3c1b6": {
+      "_id": "c37e02309ce3c1b6",
+      "name": "Eyes, Low-Light",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Eyeware",
+        "essenceCost": 0.2,
+        "cost": 3000,
+        "availability": "4/36 hours",
+        "streetIndex": 1.25,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.300",
+        "grade": "Standard",
+        "rating": 0,
+        "description": "Low-light vision"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0453",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621571,
+        "modifiedTime": 1788537621571,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!J3F5JsEWYlMfbZp5.c58dc7669be218b6": {
+      "_id": "c58dc7669be218b6",
+      "name": "Clubs",
+      "type": "skill",
+      "system": {
+        "skillName": "Clubs",
+        "rating": 3,
+        "linkedAttribute": "strength",
+        "category": "Combat skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811681,
+        "modifiedTime": 1788319811681,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!J3F5JsEWYlMfbZp5.cf028b06d698c7e4": {
+      "_id": "cf028b06d698c7e4",
+      "name": "Eyes, Cyber Replacement",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Eyeware",
+        "essenceCost": 0.2,
+        "cost": 5000,
+        "availability": "2/24 hours",
+        "streetIndex": 0.75,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0.5,
+        "isReplacement": true,
+        "bookPage": "sr3.300",
+        "grade": "Standard",
+        "rating": 0,
+        "description": "Holds .5 Essence of eye mods free of Essence cost"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0410",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621571,
+        "modifiedTime": 1788537621571,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!J3F5JsEWYlMfbZp5.d01633ed55715b73": {
+      "_id": "d01633ed55715b73",
+      "name": "Eyes, Flare Compensation",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Eyeware",
+        "essenceCost": 0.1,
+        "cost": 2000,
+        "availability": "5/48 hours",
+        "streetIndex": 1.25,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.300",
+        "grade": "Standard",
+        "rating": 0,
+        "description": "Eliminate glare modifiers",
+        "srcgName": "Eyes, Flare Comp"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0428",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621571,
+        "modifiedTime": 1788537621571,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!J3F5JsEWYlMfbZp5.de425a2ca9a3bcc8": {
+      "_id": "de425a2ca9a3bcc8",
+      "name": "Tactics",
+      "type": "skill",
+      "system": {
+        "skillName": "Tactics",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811683,
+        "modifiedTime": 1788319811683,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!J3F5JsEWYlMfbZp5.f4ed9190ae988228": {
+      "_id": "f4ed9190ae988228",
+      "name": "City Knowledge",
+      "type": "skill",
+      "system": {
+        "skillName": "City Knowledge",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811682,
+        "modifiedTime": 1788319811682,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!J3F5JsEWYlMfbZp5.f551fa312f82c38d": {
+      "_id": "f551fa312f82c38d",
+      "name": "Unarmed Combat",
+      "type": "skill",
+      "system": {
+        "skillName": "Unarmed Combat",
+        "rating": 4,
+        "linkedAttribute": "strength",
+        "category": "Combat skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811681,
+        "modifiedTime": 1788319811681,
+        "lastModifiedBy": null
+      }
+    }
+  }
+}

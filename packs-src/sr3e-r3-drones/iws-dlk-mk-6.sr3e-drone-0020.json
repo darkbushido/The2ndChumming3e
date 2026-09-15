@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0020",
+  "doc": {
+    "_id": "sr3e-drone-0020",
+    "name": "IWS DLK MK 6",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 21000,
+      "streetIndex": 1,
+      "availability": "2/48hrs",
+      "seating": 0,
+      "bookPage": "r3.173",
+      "notes": "Remote-Control Interface, Rigger Adaptation, 2 Mechanical Arms(STR 6)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 35,
+          "base": 35
+        },
+        "accel": {
+          "value": 3,
+          "base": 3
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 7,
+          "base": 7
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 2,
+          "base": 2
+        },
+        "sensor": {
+          "value": 3,
+          "base": 3
+        },
+        "cargo": {
+          "value": 1,
+          "base": 1
+        },
+        "load": {
+          "value": 350,
+          "base": 350
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

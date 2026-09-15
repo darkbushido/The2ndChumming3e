@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0695",
+  "doc": {
+    "_id": "sr3e-firearm-0695",
+    "name": "Nostalgia Ind. Big Bore",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "20(c)",
+      "mode": "SS/BF",
+      "damage": "8M",
+      "weight": "4.5",
+      "availability": "4/24hrs",
+      "cost": 500,
+      "streetIndex": "3",
+      "accessories": "None",
+      "bookPage": "tss.2",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

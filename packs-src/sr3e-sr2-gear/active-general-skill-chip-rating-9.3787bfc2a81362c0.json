@@ -1,0 +1,30 @@
+{
+  "_key": "!items!3787bfc2a81362c0",
+  "doc": {
+    "_id": "3787bfc2a81362c0",
+    "name": "Active General Skill Chip Rating 9",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 9,
+      "cost": 90000,
+      "weight": 0,
+      "availability": "6/4days",
+      "streetIndex": "1.25",
+      "bookPage": "sr2.244",
+      "description": "<p><strong>Type:</strong> Active<br><strong>Memory:</strong> 900</p>"
+    }
+  },
+  "embedded": {}
+}

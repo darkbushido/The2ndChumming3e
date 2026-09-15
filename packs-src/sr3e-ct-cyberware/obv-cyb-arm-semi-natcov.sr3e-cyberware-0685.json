@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0685",
+  "doc": {
+    "_id": "sr3e-cyberware-0685",
+    "name": "Obv.Cyb.Arm Semi.natCov.",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimbs",
+      "essenceCost": 1,
+      "cost": 83500,
+      "availability": "AsLimb",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "ct.30",
+      "grade": "Standard",
+      "rating": 0,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

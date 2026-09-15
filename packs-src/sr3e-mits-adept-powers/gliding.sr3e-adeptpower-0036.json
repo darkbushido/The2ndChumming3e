@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0036",
+  "doc": {
+    "_id": "sr3e-adeptpower-0036",
+    "name": "Gliding",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 1,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "mits.150",
+      "description": "The adept can run a distance of (Magic) meters on tangible surfaces such as water, tree limbs or thin ice. Attempts for running longer distances require break points."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

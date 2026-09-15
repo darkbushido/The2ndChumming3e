@@ -1,0 +1,41 @@
+{
+  "_key": "!items!4Dbr9E6BCMwSFccf",
+  "doc": {
+    "name": "Motorboat",
+    "type": "skill",
+    "system": {
+      "category": "Background knowledge",
+      "skillType": "knowledge",
+      "skillName": "Motorboat",
+      "linkedAttribute": "intelligence",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": "",
+      "bookPage": "sr3.89"
+    },
+    "_id": "4Dbr9E6BCMwSFccf",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192987466,
+      "modifiedTime": 1782889914445,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

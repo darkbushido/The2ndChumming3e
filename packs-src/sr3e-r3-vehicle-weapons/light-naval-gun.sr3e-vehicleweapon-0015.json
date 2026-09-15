@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-vehicleweapon-0015",
+  "doc": {
+    "_id": "sr3e-vehicleweapon-0015",
+    "name": "Light Naval Gun",
+    "type": "vehicleweapon",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "system": {
+      "weaponType": "Light Naval Gun",
+      "mode": "SA",
+      "damage": "8LN",
+      "ammunition": "500",
+      "weight": 250,
+      "cost": 225000,
+      "availability": "GM",
+      "streetIndex": "GM",
+      "bookPage": "r3.88",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

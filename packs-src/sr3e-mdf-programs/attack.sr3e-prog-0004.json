@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0004",
+  "doc": {
+    "_id": "sr3e-prog-0004",
+    "name": "Attack",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Attack",
+      "type": "Program",
+      "category": "Combat",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 0,
+      "degradable": false,
+      "description": "<p>Operational combat program designed to inflict damage upon other icons.</p><p><strong>Variants:</strong></p><ul><li>Light Overload (×2)</li><li>Moderate Overload (×3)</li><li>Severe Overload (×4)</li><li>Deadly Overload (×5)</li><li>Nosebleed — Light Biofeedback (×5)</li><li>Blackout — Moderate Biofeedback (×10)</li><li>Killjoy — Severe Biofeedback (×15)</li><li>Black Hammer — Deadly Biofeedback (×20)</li></ul>",
+      "associatedPrompt": "Attack an Icon",
+      "effect": "Damage",
+      "bookPage": "matrix-defragged.30"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

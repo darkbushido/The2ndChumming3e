@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0014",
+  "doc": {
+    "_id": "sr3e-vehicle-0014",
+    "name": "Surfstar Marine Seacop",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "boat",
+      "cost": 170000,
+      "streetIndex": 2,
+      "availability": "15/15days",
+      "bookPage": "r3.160",
+      "seating": 3,
+      "notes": "Elctronics Port w/Radio(Rating 4 1.2CF), External Fixed Firmpoint(1 CF Ammo Bin), Spotlight | Alt-mode Sig/Autonav: 3(3)/2 | Seating: 1+2b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 90,
+          "base": 90
+        },
+        "accel": {
+          "value": 7,
+          "base": 7
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 1,
+          "base": 1
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 10,
+          "base": 10
+        },
+        "load": {
+          "value": 45,
+          "base": 45
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

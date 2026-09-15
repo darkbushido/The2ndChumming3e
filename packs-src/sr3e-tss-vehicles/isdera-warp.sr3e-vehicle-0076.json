@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0076",
+  "doc": {
+    "_id": "sr3e-vehicle-0076",
+    "name": "Isdera Warp",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 400000,
+      "streetIndex": 2,
+      "availability": "4/73hrs",
+      "bookPage": "tss.6",
+      "seating": 2,
+      "notes": "Roll Bars, Datajack Port, Rigger Controls, APPS, Performance Runflat Tires, Remote mini-popup, Satt Uplink | Seating: 1+1b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 7,
+          "base": 7
+        },
+        "speed": {
+          "value": 240,
+          "base": 240
+        },
+        "accel": {
+          "value": 18,
+          "base": 18
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 6,
+          "base": 6
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 2,
+          "base": 2
+        },
+        "cargo": {
+          "value": 0,
+          "base": 0
+        },
+        "load": {
+          "value": 50,
+          "base": 50
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

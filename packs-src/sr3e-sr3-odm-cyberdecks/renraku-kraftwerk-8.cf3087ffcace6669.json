@@ -1,0 +1,41 @@
+{
+  "_key": "!items!cf3087ffcace6669",
+  "doc": {
+    "_id": "cf3087ffcace6669",
+    "name": "Renraku Kraftwerk-8",
+    "type": "cyberdeck",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberdeck-default.webp",
+    "system": {
+      "cost": 400000,
+      "availability": "10/7days",
+      "streetIndex": 1,
+      "bookPage": "sr3.207,sr3.304",
+      "notes": "<p>Stock cyberdeck — SR3 p.207 (stats), p.304 (availability, cost). MPCP 8, Hardening 4, Active Memory 1000 Mp, Storage 2000 Mp, I/O 360 Mp/turn, Response Increase 2.</p><p>Orthodox Matrix: load it from the Matrix tab's cyberdeck picker.</p>",
+      "modules": [
+        {
+          "_odmType": "orthodox",
+          "hardening": 4,
+          "storageMemory": 2000,
+          "responseIncrease": 2
+        }
+      ],
+      "attributes": {
+        "mpcp": {
+          "base": 8,
+          "value": 8
+        },
+        "memory": {
+          "total": 1000,
+          "used": 0,
+          "unit": "Mp"
+        },
+        "dataTransferRate": {
+          "value": 360,
+          "unit": "Mp per Combat Turn"
+        }
+      }
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

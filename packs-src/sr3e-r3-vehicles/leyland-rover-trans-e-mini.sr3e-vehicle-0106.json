@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0106",
+  "doc": {
+    "_id": "sr3e-vehicle-0106",
+    "name": "Leyland-Rover Trans(E Mini)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 52000,
+      "streetIndex": 1,
+      "availability": "3/72hrs",
+      "bookPage": "r3.170",
+      "seating": 5,
+      "notes": "Folding Bench Seat, Electric, Minibus | Seating: 2+3b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 8,
+          "base": 8
+        },
+        "speed": {
+          "value": 90,
+          "base": 90
+        },
+        "accel": {
+          "value": 5,
+          "base": 5
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 5,
+          "base": 5
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 64,
+          "base": 64
+        },
+        "load": {
+          "value": 130,
+          "base": 130
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

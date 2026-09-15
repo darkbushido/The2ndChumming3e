@@ -1,0 +1,30 @@
+{
+  "_key": "!items!a729dbc4523cb0a8",
+  "doc": {
+    "_id": "a729dbc4523cb0a8",
+    "name": "Galil Ruach-Aleph Reprogrammer",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "3",
+      "rating": null,
+      "cost": 10000,
+      "weight": 2,
+      "availability": "8/1week",
+      "streetIndex": "3",
+      "bookPage": "fof.96",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

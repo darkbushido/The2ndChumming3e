@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1232",
+  "doc": {
+    "_id": "sr3e-firearm-1232",
+    "name": "Shiawase Blazer",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "4",
+      "mode": "SS",
+      "damage": "6M",
+      "weight": "6",
+      "availability": "12/2wks",
+      "cost": 750,
+      "streetIndex": "3",
+      "accessories": "Uses light pistol ranges",
+      "bookPage": "cc.30",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

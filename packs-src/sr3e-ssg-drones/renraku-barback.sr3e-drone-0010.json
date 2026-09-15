@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0010",
+  "doc": {
+    "_id": "sr3e-drone-0010",
+    "name": "Renraku Barback",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 44000,
+      "streetIndex": 1,
+      "availability": "3/72hrs",
+      "seating": 0,
+      "bookPage": "ssg.122",
+      "notes": "Remote-Control Interface, Rigger Adaptation, Robotic Pilot, Adaptation Pool 2, Fuzzy Logic Augmentation, 2 Mechanical Arms (Strength 6)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 10,
+          "base": 10
+        },
+        "accel": {
+          "value": 0,
+          "base": 0
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 6,
+          "base": 6
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 2,
+          "base": 2
+        },
+        "sensor": {
+          "value": 2,
+          "base": 2
+        },
+        "cargo": {
+          "value": 0,
+          "base": 0
+        },
+        "load": {
+          "value": 20,
+          "base": 20
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

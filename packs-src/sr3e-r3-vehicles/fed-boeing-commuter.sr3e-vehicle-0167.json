@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0167",
+  "doc": {
+    "_id": "sr3e-vehicle-0167",
+    "name": "Fed-Boeing Commuter",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "helicopter",
+      "cost": 318000,
+      "streetIndex": 1,
+      "availability": "16/16Days",
+      "bookPage": "r3.184",
+      "seating": 17,
+      "notes": "",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 320,
+          "base": 320
+        },
+        "accel": {
+          "value": 10,
+          "base": 10
+        },
+        "body": {
+          "value": 5,
+          "base": 5
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 4,
+          "base": 4
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 6,
+          "base": 6
+        },
+        "load": {
+          "value": 850,
+          "base": 850
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0012",
+  "doc": {
+    "_id": "sr3e-cyberware-0012",
+    "name": "Biopower Implants [3]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 3,
+      "cost": 125000,
+      "availability": "12/16 days",
+      "streetIndex": 2,
+      "legalCode": "6P-CA",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "tss.5",
+      "grade": "Standard",
+      "rating": 3,
+      "description": "Charges at Body/5 per Hr, max = Body*1.5"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

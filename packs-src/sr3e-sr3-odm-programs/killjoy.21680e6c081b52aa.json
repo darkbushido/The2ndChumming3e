@@ -1,0 +1,19 @@
+{
+  "_key": "!items!21680e6c081b52aa",
+  "doc": {
+    "_id": "21680e6c081b52aa",
+    "name": "Killjoy",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Killjoy",
+      "category": "attack",
+      "multiplier": 10,
+      "rating": 0,
+      "bookPage": "sr3.221",
+      "description": "<p><strong>Offensive utility</strong> · Multiplier 10 — size in Mp = Rating² × 10 (Program Size Table). See SR3 p.221 for what it does.</p>"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!b2f5e812a43ab232",
+  "doc": {
+    "_id": "b2f5e812a43ab232",
+    "name": "Micro-Camcorder",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "8",
+      "rating": null,
+      "cost": 2500,
+      "weight": 0,
+      "availability": "6/48hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.292",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!8c98575cdb2e850e",
+  "doc": {
+    "_id": "8c98575cdb2e850e",
+    "name": "Smart Goggles II (Cost 4500¥)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-",
+      "rating": null,
+      "cost": 4500,
+      "weight": 0.1,
+      "availability": "4/36hrs",
+      "streetIndex": "2",
+      "bookPage": "mm.32",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

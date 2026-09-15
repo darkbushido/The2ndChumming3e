@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0038",
+  "doc": {
+    "_id": "sr3e-vehicle-0038",
+    "name": "Ruhrmetall Wolf II AFV APC",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "military",
+      "cost": 332200,
+      "streetIndex": 3,
+      "availability": "26/26days",
+      "bookPage": "sota.78",
+      "seating": 6,
+      "notes": "EnviroSeal (with gas seal and cabin overpressure), Life Support (60 man-hours), Runflat Tires, Small Turret (AA capable), Thermal Baffles 2, Turbocharging 2",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 105,
+          "base": 105
+        },
+        "accel": {
+          "value": 8,
+          "base": 8
+        },
+        "body": {
+          "value": 6,
+          "base": 6
+        },
+        "armor": {
+          "value": 12,
+          "base": 12
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 9,
+          "base": 9
+        },
+        "load": {
+          "value": 900,
+          "base": 900
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

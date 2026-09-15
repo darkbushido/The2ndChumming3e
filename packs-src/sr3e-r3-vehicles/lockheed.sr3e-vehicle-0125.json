@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0125",
+  "doc": {
+    "_id": "sr3e-vehicle-0125",
+    "name": "Lockheed",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 8275000,
+      "streetIndex": 1,
+      "availability": "NA",
+      "bookPage": "r3.178",
+      "seating": 204,
+      "notes": "6 Partial Basic Living Amenities | Alt-mode Speed/Accel: 125(2500)/60",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 6,
+          "base": 6
+        },
+        "handlingOffRoad": {
+          "value": 6,
+          "base": 6
+        },
+        "speed": {
+          "value": 125,
+          "base": 125
+        },
+        "accel": {
+          "value": 60,
+          "base": 60
+        },
+        "body": {
+          "value": 10,
+          "base": 10
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 4,
+          "base": 4
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 3,
+          "base": 3
+        },
+        "cargo": {
+          "value": 250,
+          "base": 250
+        },
+        "load": {
+          "value": 15000,
+          "base": 15000
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

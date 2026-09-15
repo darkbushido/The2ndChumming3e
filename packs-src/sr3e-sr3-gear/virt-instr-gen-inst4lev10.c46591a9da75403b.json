@@ -1,0 +1,30 @@
+{
+  "_key": "!items!c46591a9da75403b",
+  "doc": {
+    "_id": "c46591a9da75403b",
+    "name": "Virt Instr Gen. Inst4Lev10",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 10,
+      "cost": 34800,
+      "weight": 0,
+      "availability": "14/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 348</p>"
+    }
+  },
+  "embedded": {}
+}

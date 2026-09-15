@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0043",
+  "doc": {
+    "_id": "sr3e-drone-0043",
+    "name": "Cyberspace Designs Dalmatian",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 16000,
+      "streetIndex": 1,
+      "availability": "2/24hrs",
+      "seating": 0,
+      "bookPage": "sr3.312,r3.177",
+      "notes": "Remote-Control Interface, Rigger Adaptation",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 105,
+          "base": 105
+        },
+        "accel": {
+          "value": 8,
+          "base": 8
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 6,
+          "base": 6
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 2,
+          "base": 2
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 3,
+          "base": 3
+        },
+        "load": {
+          "value": 80,
+          "base": 80
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

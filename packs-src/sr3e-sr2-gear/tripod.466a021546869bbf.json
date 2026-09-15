@@ -1,0 +1,30 @@
+{
+  "_key": "!items!466a021546869bbf",
+  "doc": {
+    "_id": "466a021546869bbf",
+    "name": "Tripod",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-",
+      "rating": 6,
+      "cost": 600,
+      "weight": 8,
+      "availability": "10/12hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.240",
+      "description": "<p><strong>Mount:</strong> Under</p>"
+    }
+  },
+  "embedded": {}
+}

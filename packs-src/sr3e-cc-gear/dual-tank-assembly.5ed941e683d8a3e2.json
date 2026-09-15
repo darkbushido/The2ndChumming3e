@@ -1,0 +1,30 @@
+{
+  "_key": "!items!5ed941e683d8a3e2",
+  "doc": {
+    "_id": "5ed941e683d8a3e2",
+    "name": "Dual Tank Assembly",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 200,
+      "weight": 0.1,
+      "availability": "4/18hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.57",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

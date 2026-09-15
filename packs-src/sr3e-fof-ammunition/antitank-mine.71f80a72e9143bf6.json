@@ -1,0 +1,34 @@
+{
+  "_key": "!items!71f80a72e9143bf6",
+  "doc": {
+    "_id": "71f80a72e9143bf6",
+    "name": "Antitank Mine",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "4",
+      "damage": "14D",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "rounds",
+      "rounds": 1,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 0.5,
+      "cost": 40,
+      "availability": "10/7days",
+      "streetIndex": "3",
+      "bookPage": "fof.48",
+      "notes": "<p>Not one of the types this system models, or a combination of them — its rules are the GM's.</p><p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>"
+    }
+  },
+  "embedded": {}
+}

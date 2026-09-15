@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0195",
+  "doc": {
+    "_id": "sr3e-spell-0195",
+    "name": "Use(Skill)->",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Transformation",
+      "type": "Physical",
+      "duration": "Sustained",
+      "range": "LOS",
+      "drain": "+2(L)",
+      "target": "6",
+      "bookPage": "mits.146",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0021",
+  "doc": {
+    "_id": "sr3e-vehicle-0021",
+    "name": "GMC Riverine(Police)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "boat",
+      "cost": 125000,
+      "streetIndex": 2,
+      "availability": "13/13days",
+      "bookPage": "r3.160",
+      "seating": 4,
+      "notes": "Partial Basic Living Amenities, folding Bench Seats, Ring Mount, External Fixed Hardpoint(1 CF Ammo Bin) | Alt-mode Sig/Autonav: 2(2)/2 | Alt-mode Pilot/Sensor: -/1(0) | Seating: 2+2b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 90,
+          "base": 90
+        },
+        "accel": {
+          "value": 5,
+          "base": 5
+        },
+        "body": {
+          "value": 5,
+          "base": 5
+        },
+        "armor": {
+          "value": 6,
+          "base": 6
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 55,
+          "base": 55
+        },
+        "load": {
+          "value": 1345,
+          "base": 1345
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

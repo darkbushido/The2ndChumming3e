@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0637",
+  "doc": {
+    "_id": "sr3e-cyberware-0637",
+    "name": "Obvious Cyber Forearm",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimbs",
+      "essenceCost": 0.65,
+      "cost": 40000,
+      "availability": "4/4 days",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.39",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "",
+      "srcgName": "Obv. Cyber ForeArm"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

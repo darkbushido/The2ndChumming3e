@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0047",
+  "doc": {
+    "_id": "sr3e-drone-0047",
+    "name": "Renraku Scorpion",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 25000,
+      "streetIndex": 3,
+      "availability": "4/24hrs",
+      "seating": 0,
+      "bookPage": "tss.6",
+      "notes": "Alternate stats while in ground mode, micro-turret (weapon n/i), 6CF reserved for more electronics and 4CF for ammo",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 180,
+          "base": 180
+        },
+        "accel": {
+          "value": 18,
+          "base": 18
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 9,
+          "base": 9
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 2,
+          "base": 2
+        },
+        "sensor": {
+          "value": 4,
+          "base": 4
+        },
+        "cargo": {
+          "value": 10,
+          "base": 10
+        },
+        "load": {
+          "value": 75,
+          "base": 75
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

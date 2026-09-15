@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0210",
+  "doc": {
+    "_id": "sr3e-vehicle-0210",
+    "name": "F-B China Clipper Suborbital",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "fixedwing",
+      "cost": 32000000,
+      "streetIndex": 1,
+      "availability": "NA",
+      "bookPage": "r3.192",
+      "seating": 156,
+      "notes": "Rigger Adaption, 8 Partial Basic Living Amenities | Alt-mode Speed/Accel: 150(1250)/150",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 150,
+          "base": 150
+        },
+        "accel": {
+          "value": 150,
+          "base": 150
+        },
+        "body": {
+          "value": 1,
+          "base": 1
+        },
+        "armor": {
+          "value": 2,
+          "base": 2
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 4,
+          "base": 4
+        },
+        "pilot": {
+          "value": 4,
+          "base": 4
+        },
+        "sensor": {
+          "value": 4,
+          "base": 4
+        },
+        "cargo": {
+          "value": 400,
+          "base": 400
+        },
+        "load": {
+          "value": 12500,
+          "base": 12500
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

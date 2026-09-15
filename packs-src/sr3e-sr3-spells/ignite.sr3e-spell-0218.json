@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0218",
+  "doc": {
+    "_id": "sr3e-spell-0218",
+    "name": "Ignite",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Manipulation",
+      "type": "Physical",
+      "duration": "Permanent",
+      "range": "LOS",
+      "drain": "+1(D)",
+      "target": "4(T)",
+      "bookPage": "sr3.198",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

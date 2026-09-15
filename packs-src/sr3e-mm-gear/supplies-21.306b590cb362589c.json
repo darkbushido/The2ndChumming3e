@@ -1,0 +1,30 @@
+{
+  "_key": "!items!306b590cb362589c",
+  "doc": {
+    "_id": "306b590cb362589c",
+    "name": "Supplies 21",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "8",
+      "rating": 6,
+      "cost": 300,
+      "weight": 0,
+      "availability": "6/1wk",
+      "streetIndex": "2",
+      "bookPage": "mm.96",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

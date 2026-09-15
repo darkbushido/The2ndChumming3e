@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0123",
+  "doc": {
+    "_id": "sr3e-firearm-0123",
+    "name": "LeMat Revolver",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "3",
+      "ammunition": "8(cy)[1(BR)]",
+      "mode": "SA[SS]",
+      "damage": "9M[9S]",
+      "weight": "3.5",
+      "availability": "18/14days",
+      "cost": 1500,
+      "streetIndex": "3",
+      "accessories": "Secondary Weapon",
+      "bookPage": "tss.7",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

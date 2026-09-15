@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0131",
+  "doc": {
+    "_id": "sr3e-cyberware-0131",
+    "name": "Jolt-Alert",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0.1,
+      "cost": 1500,
+      "availability": "4/48 hours",
+      "streetIndex": 1.5,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.29",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Wake with no ill effects"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

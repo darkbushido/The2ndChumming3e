@@ -1,0 +1,31 @@
+{
+  "_key": "!items!f7476bed99010cf3",
+  "doc": {
+    "_id": "f7476bed99010cf3",
+    "name": "Heroin",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "5M+5P",
+      "tolerance": "3",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 20,
+      "availability": "5/2hrs",
+      "streetIndex": "2.5",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 3</p>"
+    }
+  },
+  "embedded": {}
+}

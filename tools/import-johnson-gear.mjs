@@ -17,6 +17,8 @@
  *
  * ⚠ **Foundry must be CLOSED.** A LevelDB allows one writer.
  * ⚠ **Run it TWICE**, once plain and once `--install` — `npm run sync:install` never copies packs.
+ * ⚠ **Refreshes `packs-src/` itself** after writing the repo (TODO 12: the JSON source is the truth);
+ *   `--install` writes only the install.
  * ⚠ **Idempotent** — a second run reports 0 changes: a converted item carries
  *   `_stats.compendiumSource` and is skipped (its type alone is not enough since gear → gear).
  *
@@ -36,6 +38,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { readdirSync } from 'node:fs';
 import { copyPacks } from './lib/pack-copy.mjs';
+import { extractPack } from './lib/pack-source.mjs';
 import { ratingFromName } from '../scripts/data/item-rating.mjs';
 
 const HERE    = dirname(fileURLToPath(import.meta.url));
@@ -228,6 +231,7 @@ for (const a of actors) {
 }
 await db.close();
 contactsCopy?.cleanup();
+if (!CHECK && ROOT === REPO) await extractPack(REPO, 'sr3e-mr-johnsons-contacts');
 
 for (const [name, list] of [...perContact].sort()) {
   console.log(`  ${name}`);

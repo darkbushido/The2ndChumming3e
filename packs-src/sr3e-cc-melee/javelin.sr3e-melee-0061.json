@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0061",
+  "doc": {
+    "_id": "sr3e-melee-0061",
+    "name": "Javelin",
+    "type": "melee",
+    "system": {
+      "category": "POL",
+      "skill": "Pole Arms/Staff",
+      "attribute": "strength",
+      "concealability": "3",
+      "reach": "2",
+      "damage": "(STR+2)L",
+      "weight": "2",
+      "availability": "4/48hrs",
+      "cost": 100,
+      "streetIndex": "2",
+      "legal": true,
+      "bookPage": "cc.10",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

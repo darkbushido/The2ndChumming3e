@@ -1,0 +1,30 @@
+{
+  "_key": "!items!c75688e98715abbb",
+  "doc": {
+    "_id": "c75688e98715abbb",
+    "name": "Type III Maglock (rating 8)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 8,
+      "cost": 1200,
+      "weight": 0,
+      "availability": "8/3.5days",
+      "streetIndex": "1.25",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

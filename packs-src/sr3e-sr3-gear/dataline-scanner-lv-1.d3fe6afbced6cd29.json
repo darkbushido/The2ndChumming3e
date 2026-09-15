@@ -1,0 +1,30 @@
+{
+  "_key": "!items!d3fe6afbced6cd29",
+  "doc": {
+    "_id": "d3fe6afbced6cd29",
+    "name": "Dataline Scanner Lv [1]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "2",
+      "rating": 1,
+      "cost": 100,
+      "weight": 6,
+      "availability": "1/14days",
+      "streetIndex": "2",
+      "bookPage": "sr3.292",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

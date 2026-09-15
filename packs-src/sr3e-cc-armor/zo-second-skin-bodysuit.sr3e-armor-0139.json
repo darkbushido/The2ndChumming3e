@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0139",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0139",
+    "name": "Zo� \"Second Skin\" Bodysuit",
+    "type": "armor",
+    "system": {
+      "concealability": "15",
+      "ballistic": 2,
+      "impact": 2,
+      "weight": 0.25,
+      "availability": "10/1month",
+      "cost": 5000,
+      "streetIndex": ".75",
+      "bookPage": "cc.49",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

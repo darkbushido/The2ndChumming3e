@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0764",
+  "doc": {
+    "_id": "sr3e-cyberware-0764",
+    "name": "Magnetic Cyberlimb",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0,
+      "cost": 2800,
+      "availability": "6/7 days",
+      "streetIndex": 2,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.30",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "+4STR to hold items, support 25 kgs"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

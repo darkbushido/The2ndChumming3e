@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0515",
+  "doc": {
+    "_id": "sr3e-cyberware-0515",
+    "name": "Tooth Compartment (breakable)",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Headware",
+      "essenceCost": 0,
+      "cost": 700,
+      "availability": "3/48 hours",
+      "streetIndex": 1.5,
+      "legalCode": "10P-Q",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.301",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "",
+      "srcgName": "Tooth Comp. (breakable)"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

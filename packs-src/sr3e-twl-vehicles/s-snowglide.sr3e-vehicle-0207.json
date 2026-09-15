@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0207",
+  "doc": {
+    "_id": "sr3e-vehicle-0207",
+    "name": "S Snowglide",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "motorcycle",
+      "cost": 28600,
+      "streetIndex": 1,
+      "availability": "2/24hrs",
+      "bookPage": "twl.133",
+      "seating": 2,
+      "notes": "Environmental Adaptation (Artic) | Seating: 2m",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 0,
+          "base": 0
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 70,
+          "base": 70
+        },
+        "accel": {
+          "value": 3,
+          "base": 3
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 5,
+          "base": 5
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 2,
+          "base": 2
+        },
+        "load": {
+          "value": 20,
+          "base": 20
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

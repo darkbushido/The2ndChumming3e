@@ -1,0 +1,30 @@
+{
+  "_key": "!items!327cd5180482d072",
+  "doc": {
+    "_id": "327cd5180482d072",
+    "name": "Signal Locator Lv 9",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "3",
+      "rating": null,
+      "cost": 9000,
+      "weight": 2,
+      "availability": "9/48hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

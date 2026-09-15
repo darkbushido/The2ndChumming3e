@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0079",
+  "doc": {
+    "_id": "sr3e-melee-0079",
+    "name": "Spiked Mace",
+    "type": "melee",
+    "system": {
+      "category": "CLB",
+      "skill": "Clubs",
+      "attribute": "strength",
+      "concealability": "3",
+      "reach": "1",
+      "damage": "(STR+1)M",
+      "weight": "2",
+      "availability": "5/48hrs",
+      "cost": 150,
+      "streetIndex": "2",
+      "legal": true,
+      "bookPage": "cc.10",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

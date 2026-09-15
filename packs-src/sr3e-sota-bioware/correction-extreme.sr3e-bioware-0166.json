@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0166",
+  "doc": {
+    "_id": "sr3e-bioware-0166",
+    "name": "Correction (extreme)",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Genetech",
+      "grade": "Exotic",
+      "bioIndex": 0.5,
+      "cost": 60000,
+      "availability": "6/21 days",
+      "streetIndex": 2,
+      "mods": "",
+      "bookPage": "sota.026",
+      "rating": 0,
+      "description": "Degree of change up to GM"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

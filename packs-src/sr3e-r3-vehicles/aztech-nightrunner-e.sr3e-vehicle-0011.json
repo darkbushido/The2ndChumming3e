@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0011",
+  "doc": {
+    "_id": "sr3e-vehicle-0011",
+    "name": "Aztech Nightrunner (E)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 45625,
+      "streetIndex": 1,
+      "availability": "3/72hrs",
+      "bookPage": "r3.160",
+      "seating": 2,
+      "notes": "Electric | Alt-mode Sig/Autonav: 5(5)/3",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 45,
+          "base": 45
+        },
+        "accel": {
+          "value": 5,
+          "base": 5
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 5,
+          "base": 5
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 14,
+          "base": 14
+        },
+        "load": {
+          "value": 250,
+          "base": 250
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

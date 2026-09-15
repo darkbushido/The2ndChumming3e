@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0150",
+  "doc": {
+    "_id": "sr3e-melee-0150",
+    "name": "Retract. Climbing Claws",
+    "type": "melee",
+    "system": {
+      "category": "CYB",
+      "skill": "Unarmed Combat",
+      "attribute": "strength",
+      "concealability": "",
+      "reach": "0",
+      "damage": "(STR-1)L",
+      "weight": "",
+      "availability": "",
+      "cost": 0,
+      "streetIndex": "1",
+      "legal": true,
+      "bookPage": "mm.31",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

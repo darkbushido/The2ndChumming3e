@@ -1,0 +1,30 @@
+{
+  "_key": "!items!8d31bd18a775c578",
+  "doc": {
+    "_id": "8d31bd18a775c578",
+    "name": "Ultrasound Emtr",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "8",
+      "rating": 2,
+      "cost": 800,
+      "weight": 0.5,
+      "availability": "4/72hrs",
+      "streetIndex": "3",
+      "bookPage": "sr3.294",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

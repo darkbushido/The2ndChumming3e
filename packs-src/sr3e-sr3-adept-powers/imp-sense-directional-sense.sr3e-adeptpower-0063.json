@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0063",
+  "doc": {
+    "_id": "sr3e-adeptpower-0063",
+    "name": "Imp. Sense: Directional Sense",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.25,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sr3.169",
+      "description": "You know what direction you are facing, and whether you are above or below the localground level, with a successful Perception 4 test."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

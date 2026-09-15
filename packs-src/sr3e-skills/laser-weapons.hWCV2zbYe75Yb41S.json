@@ -1,0 +1,41 @@
+{
+  "_key": "!items!hWCV2zbYe75Yb41S",
+  "doc": {
+    "name": "Laser Weapons",
+    "type": "skill",
+    "system": {
+      "category": "Combat skills",
+      "skillType": "active",
+      "skillName": "Laser Weapons",
+      "linkedAttribute": "quickness",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": "",
+      "bookPage": "sr3.86"
+    },
+    "_id": "hWCV2zbYe75Yb41S",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192934002,
+      "modifiedTime": 1782889914450,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!abb49163e75d9b4d",
+  "doc": {
+    "_id": "abb49163e75d9b4d",
+    "name": "Truman Inner-I",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "-",
+      "rating": null,
+      "cost": 200000,
+      "weight": 28,
+      "availability": "8/2weeks",
+      "streetIndex": "3",
+      "bookPage": "fof.97",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

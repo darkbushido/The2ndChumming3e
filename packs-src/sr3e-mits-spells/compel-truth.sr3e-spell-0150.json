@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0150",
+  "doc": {
+    "_id": "sr3e-spell-0150",
+    "name": "Compel Truth",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Manipulation",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "LOS",
+      "drain": "+1(M)",
+      "target": "W(T)",
+      "bookPage": "mits.144",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

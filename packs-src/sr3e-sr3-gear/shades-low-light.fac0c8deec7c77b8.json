@@ -1,0 +1,30 @@
+{
+  "_key": "!items!fac0c8deec7c77b8",
+  "doc": {
+    "_id": "fac0c8deec7c77b8",
+    "name": "Shades - Low Light",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "S+S Vision Enhancers"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "S+S Vision Enhancers",
+      "concealability": "6",
+      "rating": null,
+      "cost": 4000,
+      "weight": 0,
+      "availability": "6/48hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.XXX",
+      "description": "<p><strong>Mag:</strong> 20x</p>"
+    }
+  },
+  "embedded": {}
+}

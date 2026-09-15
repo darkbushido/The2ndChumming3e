@@ -1,0 +1,30 @@
+{
+  "_key": "!items!3a53c4fab6ef6306",
+  "doc": {
+    "_id": "3a53c4fab6ef6306",
+    "name": "Copper Radical",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Magical Equipment"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Magical Equipment",
+      "concealability": "",
+      "rating": null,
+      "cost": 400,
+      "weight": 0,
+      "availability": "-",
+      "streetIndex": "-",
+      "bookPage": "sr2.158",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

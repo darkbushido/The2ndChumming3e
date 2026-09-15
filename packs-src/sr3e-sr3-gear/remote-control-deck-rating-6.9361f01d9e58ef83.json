@@ -1,0 +1,30 @@
+{
+  "_key": "!items!9361f01d9e58ef83",
+  "doc": {
+    "_id": "9361f01d9e58ef83",
+    "name": "Remote Control Deck Rating [6]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "3",
+      "rating": 6,
+      "cost": 30000,
+      "weight": 4,
+      "availability": "4/72hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.306",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

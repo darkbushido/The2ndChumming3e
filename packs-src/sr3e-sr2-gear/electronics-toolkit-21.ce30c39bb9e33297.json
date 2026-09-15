@@ -1,0 +1,30 @@
+{
+  "_key": "!items!ce30c39bb9e33297",
+  "doc": {
+    "_id": "ce30c39bb9e33297",
+    "name": "Electronics Toolkit 21",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "3",
+      "rating": null,
+      "cost": 1350,
+      "weight": 5,
+      "availability": "5/48hrs",
+      "streetIndex": "2",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

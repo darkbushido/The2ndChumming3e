@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0031",
+  "doc": {
+    "_id": "sr3e-drone-0031",
+    "name": "CAS Wandjina RPV",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 119000,
+      "streetIndex": 2,
+      "availability": "12/12days",
+      "seating": 0,
+      "bookPage": "r3.175",
+      "notes": "Remote-Control Interface, Rigger Adaptation, External Fixed Hardpoint, External Missle Mount | Alt-mode Speed/Accel: 60(500)/40",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 60,
+          "base": 60
+        },
+        "accel": {
+          "value": 40,
+          "base": 40
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 6,
+          "base": 6
+        },
+        "sig": {
+          "value": 5,
+          "base": 5
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 4,
+          "base": 4
+        },
+        "sensor": {
+          "value": 3,
+          "base": 3
+        },
+        "cargo": {
+          "value": 1,
+          "base": 1
+        },
+        "load": {
+          "value": 325,
+          "base": 325
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

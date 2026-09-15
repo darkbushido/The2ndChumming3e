@@ -26,6 +26,9 @@
  * merge: a deck cites its stats and its price (`sr3.207,sr3.304`), a utility its own page. The item
  * sheet shows it as "SR3 p.207 · SR3 p.304".
  *
+ * ⚠ **Refreshes `packs-src/` itself** after writing the repo (TODO 12: the JSON source is the truth);
+ *   `--install` writes only the install.
+ *
  * ⚠ **Ids are DERIVED** (`idFor`), so a re-run rewrites the same keys, and keys the build no longer
  * produces are deleted — the database never accumulates orphans.
  */
@@ -33,6 +36,7 @@ import { readFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ClassicLevel } from 'classic-level';
+import { extractPack } from './lib/pack-source.mjs';
 
 const ROOT    = join(dirname(fileURLToPath(import.meta.url)), '..');
 const INSTALL = process.env.SR3E_INSTALL
@@ -176,5 +180,6 @@ if (isMain) {
   for (const [pack, docs] of [[DECK_PACK, decks], [PROGRAM_PACK, programs]]) {
     const r = await writePack(join(base, pack), docs);
     console.log(`${install ? 'install' : 'repo'} ${pack}: ${r.written} written, ${r.removed} stale removed`);
+    if (!install) await extractPack(ROOT, pack);
   }
 }

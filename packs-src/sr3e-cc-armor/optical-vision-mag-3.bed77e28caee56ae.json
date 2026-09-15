@@ -1,0 +1,29 @@
+{
+  "_key": "!items!bed77e28caee56ae",
+  "doc": {
+    "_id": "bed77e28caee56ae",
+    "name": "+Optical Vision Mag 3",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "-",
+      "ballistic": 0,
+      "impact": 0,
+      "weight": 0,
+      "cost": 1200,
+      "availability": "-",
+      "streetIndex": "2",
+      "bookPage": "cc.51",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

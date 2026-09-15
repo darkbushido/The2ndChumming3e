@@ -1,0 +1,30 @@
+{
+  "_key": "!items!68f02258556f95d6",
+  "doc": {
+    "_id": "68f02258556f95d6",
+    "name": "Temp. Satellite Dish — Electronics",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Miscellaneous Components"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Miscellaneous Components",
+      "concealability": "",
+      "rating": null,
+      "cost": 1000,
+      "weight": 0,
+      "availability": "4/24 hrs",
+      "streetIndex": ".5",
+      "bookPage": "sr3.302",
+      "description": "<p><strong>Legal:</strong> Legal</p>"
+    }
+  },
+  "embedded": {}
+}

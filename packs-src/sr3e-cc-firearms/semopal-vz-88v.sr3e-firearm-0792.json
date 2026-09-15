@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0792",
+  "doc": {
+    "_id": "sr3e-firearm-0792",
+    "name": "Semopal vz/88V",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "AsRf",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "2",
+      "ammunition": "35(c)",
+      "mode": "SA/BF/FA",
+      "damage": "8M",
+      "weight": "5.5",
+      "availability": "5/36hrs",
+      "cost": 1800,
+      "streetIndex": "2",
+      "accessories": "Laser sight, Gas Vent II(2RC), Fold Stock, Mag:(2)",
+      "bookPage": "cc.22",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

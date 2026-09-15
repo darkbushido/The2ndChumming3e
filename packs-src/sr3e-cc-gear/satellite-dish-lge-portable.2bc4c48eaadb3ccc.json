@@ -1,0 +1,30 @@
+{
+  "_key": "!items!2bc4c48eaadb3ccc",
+  "doc": {
+    "_id": "2bc4c48eaadb3ccc",
+    "name": "Satellite Dish - Lge. Portable",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 1200,
+      "weight": 8,
+      "availability": "6/48hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.55",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

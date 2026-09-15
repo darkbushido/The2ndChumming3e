@@ -1,0 +1,41 @@
+{
+  "_key": "!items!EwqEphe0pbUcAG1H",
+  "doc": {
+    "name": "Hacking",
+    "type": "skill",
+    "system": {
+      "category": "Matrix skills",
+      "skillType": "knowledge",
+      "skillName": "Hacking",
+      "linkedAttribute": "intelligence",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": "",
+      "bookPage": "matrix-defragged.11"
+    },
+    "_id": "EwqEphe0pbUcAG1H",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192946268,
+      "modifiedTime": 1782889914447,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

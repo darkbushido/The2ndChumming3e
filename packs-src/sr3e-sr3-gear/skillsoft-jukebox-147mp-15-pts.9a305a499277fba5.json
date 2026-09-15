@@ -1,0 +1,30 @@
+{
+  "_key": "!items!9a305a499277fba5",
+  "doc": {
+    "_id": "9a305a499277fba5",
+    "name": "SkillSoft Jukebox 147MP 15 pts",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 44100,
+      "weight": 0,
+      "availability": "3/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Juk<br><strong>Memory:</strong> 147</p>"
+    }
+  },
+  "embedded": {}
+}

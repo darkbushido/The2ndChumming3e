@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0032",
+  "doc": {
+    "_id": "sr3e-adeptpower-0032",
+    "name": "Facial Sculpt",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 1,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.66",
+      "description": "The adpet can sculpt his face as desired for a number of hours equal to his Magic attribute"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

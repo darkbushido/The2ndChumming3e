@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0662",
+  "doc": {
+    "_id": "sr3e-firearm-0662",
+    "name": "Baretta Model 70",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "3",
+      "ammunition": "35(c)",
+      "mode": "BF/FA",
+      "damage": "6M",
+      "weight": "3.75",
+      "availability": "5/72hrs",
+      "cost": 900,
+      "streetIndex": "1",
+      "accessories": "Laser sight, Sound Suppressor",
+      "bookPage": "cc.21",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

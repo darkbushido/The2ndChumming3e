@@ -1,0 +1,28 @@
+{
+  "_key": "!items!sr3e-firearm-1203",
+  "doc": {
+    "_id": "sr3e-firearm-1203",
+    "name": "Great Dragon ATGM",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "GATGM",
+      "skill": "Gunnery",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "1",
+      "mode": "SS",
+      "damage": "(As Great Dragon AGTM Missile)",
+      "weight": "2.75",
+      "availability": "8/48hrs",
+      "cost": 1200,
+      "streetIndex": "2",
+      "accessories": "Optical Imaging Scope(2)",
+      "bookPage": "cc.28",
+      "notes": "",
+      "isAoE": true
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

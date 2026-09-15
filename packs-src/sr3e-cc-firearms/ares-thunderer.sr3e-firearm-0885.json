@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0885",
+  "doc": {
+    "_id": "sr3e-firearm-0885",
+    "name": "Ares Thunderer",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "ShtG",
+      "skill": "Shotguns",
+      "attribute": "quickness",
+      "concealability": "0",
+      "ammunition": "10(c)/10(c)",
+      "mode": "SA/BF",
+      "damage": "10S",
+      "weight": "6.1",
+      "availability": "8/1month",
+      "cost": 2925,
+      "streetIndex": "3",
+      "accessories": "Troll Designed, Heavy Barrel(1RC), Shock Pads(1RC), Foregrip(1RC)",
+      "bookPage": "cc.78",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

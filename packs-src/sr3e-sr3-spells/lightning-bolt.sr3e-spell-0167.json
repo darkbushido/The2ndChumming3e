@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0167",
+  "doc": {
+    "_id": "sr3e-spell-0167",
+    "name": "Lightning Bolt",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Elemental",
+      "type": "Physical",
+      "duration": "Instant",
+      "range": "LOS",
+      "drain": "+1(DL+1)",
+      "target": "4(RC)",
+      "bookPage": "sr3.197",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

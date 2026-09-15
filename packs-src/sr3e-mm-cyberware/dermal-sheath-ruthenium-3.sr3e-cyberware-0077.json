@@ -1,0 +1,28 @@
+{
+  "_key": "!items!sr3e-cyberware-0077",
+  "doc": {
+    "_id": "sr3e-cyberware-0077",
+    "name": "Dermal Sheath Ruthenium [3]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 2.1,
+      "cost": 270000,
+      "availability": "10/18 days",
+      "streetIndex": 1.5,
+      "legalCode": "4P-N",
+      "mods": "+4BOD,+2IMP,",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.28",
+      "grade": "Standard",
+      "rating": 3,
+      "description": "+4BOD, +2IMP, change color",
+      "bonusBod": 4,
+      "srcgName": "D. Sheath Ruthenium [3]"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

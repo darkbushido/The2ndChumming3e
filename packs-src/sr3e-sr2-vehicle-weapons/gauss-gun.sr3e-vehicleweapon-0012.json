@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-vehicleweapon-0012",
+  "doc": {
+    "_id": "sr3e-vehicleweapon-0012",
+    "name": "Gauss Gun",
+    "type": "vehicleweapon",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "system": {
+      "weaponType": "Cannon",
+      "mode": "SS",
+      "damage": "11S",
+      "ammunition": "10(c)",
+      "weight": 135,
+      "cost": 500000,
+      "availability": "-",
+      "streetIndex": "-",
+      "bookPage": "sr2.265",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

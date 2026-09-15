@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0016",
+  "doc": {
+    "_id": "sr3e-adeptpower-0016",
+    "name": "Cool Resolve*",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": true,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.65",
+      "description": "Protection against intimidation, manipulation, or fooling in social situations. +1 die per level against any of such rolls. No protection against magic or critter powers, but against other adepts powers."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

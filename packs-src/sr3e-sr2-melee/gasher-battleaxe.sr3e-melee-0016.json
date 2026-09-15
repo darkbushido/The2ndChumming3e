@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0016",
+  "doc": {
+    "_id": "sr3e-melee-0016",
+    "name": "Gasher battleaxe",
+    "type": "melee",
+    "system": {
+      "category": "EDG",
+      "skill": "Edged Weapons",
+      "attribute": "strength",
+      "concealability": "2",
+      "reach": "1",
+      "damage": "(STR)S",
+      "weight": "2",
+      "availability": "6/48hrs",
+      "cost": 1000,
+      "streetIndex": "3",
+      "legal": true,
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

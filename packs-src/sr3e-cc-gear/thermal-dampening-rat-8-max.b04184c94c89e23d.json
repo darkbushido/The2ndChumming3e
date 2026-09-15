@@ -1,0 +1,30 @@
+{
+  "_key": "!items!b04184c94c89e23d",
+  "doc": {
+    "_id": "b04184c94c89e23d",
+    "name": "Thermal Dampening Rat[8]MAX",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 8,
+      "cost": 12000,
+      "weight": 0,
+      "availability": "x2/x4",
+      "streetIndex": "+2",
+      "bookPage": "cc.53",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

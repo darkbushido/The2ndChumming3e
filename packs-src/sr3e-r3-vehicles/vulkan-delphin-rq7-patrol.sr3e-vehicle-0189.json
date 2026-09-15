@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0189",
+  "doc": {
+    "_id": "sr3e-vehicle-0189",
+    "name": "Vulkan Delphin RQ7(patrol)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "boat",
+      "cost": 1262000,
+      "streetIndex": 2,
+      "availability": "-",
+      "bookPage": "r3.188",
+      "seating": 4,
+      "notes": "Water & Engine EnviroSeal, Life Support (100 man-hours), 8 Basic Living Amenities, 4 Medium Launch Control Systems (Piranha mini-torpedo system), 12 Internal Mini Torpedo Mounts, Mini-turret (1 CF Ammo Bin and HMG) | Alt-mode Speed/Accel: 50(30)/3(4) | Alt-mode Sig/Autonav: (7(7)/5(5))/2 | Alt-mode Cargo/Load: 3[198 PS]/120[1200 PS] | Alt-mode Pilot/Sensor: -/5(3)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 50,
+          "base": 50
+        },
+        "accel": {
+          "value": 3,
+          "base": 3
+        },
+        "body": {
+          "value": 6,
+          "base": 6
+        },
+        "armor": {
+          "value": 9,
+          "base": 9
+        },
+        "sig": {
+          "value": 0,
+          "base": 0
+        },
+        "autonav": {
+          "value": 5,
+          "base": 5
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 5,
+          "base": 5
+        },
+        "cargo": {
+          "value": 3,
+          "base": 3
+        },
+        "load": {
+          "value": 120,
+          "base": 120
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

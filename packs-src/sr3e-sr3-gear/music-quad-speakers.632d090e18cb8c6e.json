@@ -1,0 +1,30 @@
+{
+  "_key": "!items!632d090e18cb8c6e",
+  "doc": {
+    "_id": "632d090e18cb8c6e",
+    "name": "Music - Quad Speakers",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "-",
+      "rating": null,
+      "cost": 100,
+      "weight": 5,
+      "availability": "Always",
+      "streetIndex": ".75",
+      "bookPage": "sr3.285",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

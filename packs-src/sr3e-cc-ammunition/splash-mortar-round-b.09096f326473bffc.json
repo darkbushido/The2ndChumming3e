@@ -1,0 +1,34 @@
+{
+  "_key": "!items!09096f326473bffc",
+  "doc": {
+    "_id": "09096f326473bffc",
+    "name": "Splash Mortar Round B",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "3",
+      "damage": "(Special)",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "rounds",
+      "rounds": 1,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 5,
+      "cost": 300,
+      "availability": "18/1wk",
+      "streetIndex": "3",
+      "bookPage": "cc.43",
+      "notes": "<p>Not one of the types this system models, or a combination of them — its rules are the GM's.</p><p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>"
+    }
+  },
+  "embedded": {}
+}

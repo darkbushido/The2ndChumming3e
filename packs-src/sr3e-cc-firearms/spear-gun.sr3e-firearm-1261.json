@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1261",
+  "doc": {
+    "_id": "sr3e-firearm-1261",
+    "name": "Spear Gun",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SpGn",
+      "skill": "Projectile Weapons",
+      "attribute": "strength",
+      "concealability": "-",
+      "ammunition": "-",
+      "mode": "SS",
+      "damage": "6M",
+      "weight": "2",
+      "availability": "3/24hrs",
+      "cost": 800,
+      "streetIndex": "1",
+      "accessories": "None",
+      "bookPage": "cc.31",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0185",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0185",
+    "name": "+Signal Locator 5",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 0,
+      "impact": 0,
+      "weight": 0,
+      "availability": "-",
+      "cost": 5000,
+      "streetIndex": "2",
+      "bookPage": "cc.51",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

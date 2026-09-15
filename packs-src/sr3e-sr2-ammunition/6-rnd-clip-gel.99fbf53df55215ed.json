@@ -1,0 +1,34 @@
+{
+  "_key": "!items!99fbf53df55215ed",
+  "doc": {
+    "_id": "99fbf53df55215ed",
+    "name": "6-Rnd Clip (Gel)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "gel",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 6,
+      "rounds": 0,
+      "weight": 0.9,
+      "cost": 23,
+      "availability": "4/48hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.281",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

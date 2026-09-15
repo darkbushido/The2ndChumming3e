@@ -1,0 +1,30 @@
+{
+  "_key": "!items!737e1487ed921b81",
+  "doc": {
+    "_id": "737e1487ed921b81",
+    "name": "SIN CredStick Checker Rating 8-9",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": null,
+      "cost": 0,
+      "weight": 1,
+      "availability": "Restricted",
+      "streetIndex": "NA",
+      "bookPage": "sr3.287",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

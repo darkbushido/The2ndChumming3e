@@ -1,0 +1,815 @@
+{
+  "_key": "!actors!vyiNFe9COrRk6CUw",
+  "doc": {
+    "name": "Dock Worker",
+    "type": "character",
+    "system": {
+      "metatype": "troll",
+      "nuyen": 0,
+      "karma": 0,
+      "totalKarma": 0,
+      "karmaPool": 2,
+      "notes": "<p>Mr. Johnson's Little Black Book, p.67. PR 2. Karma Pool 2.</p>",
+      "attributes": {
+        "body": {
+          "base": 10,
+          "value": 10,
+          "mod": 0,
+          "force": 0
+        },
+        "quickness": {
+          "base": 4,
+          "value": 4,
+          "mod": 0,
+          "force": 0
+        },
+        "strength": {
+          "base": 10,
+          "value": 10,
+          "mod": 0,
+          "force": 0
+        },
+        "charisma": {
+          "base": 2,
+          "value": 2,
+          "mod": 0,
+          "force": 0
+        },
+        "intelligence": {
+          "base": 3,
+          "value": 3,
+          "mod": 0,
+          "force": 0
+        },
+        "willpower": {
+          "base": 3,
+          "value": 3,
+          "mod": 0,
+          "force": 0
+        },
+        "essence": {
+          "base": 6,
+          "value": 6,
+          "force": 0
+        },
+        "magic": {
+          "base": 0,
+          "value": 0,
+          "mod": 0,
+          "force": 0
+        },
+        "reaction": {
+          "base": 3,
+          "value": 3,
+          "reactionBonus": 0,
+          "diceBonus": 0,
+          "override": false,
+          "force": 0
+        }
+      },
+      "biography": "",
+      "gender": "",
+      "age": "",
+      "height": "",
+      "weight": "",
+      "ethnicity": "",
+      "reputation": 0,
+      "notoriety": 0,
+      "streetCred": 0,
+      "hackingBonus": 0,
+      "initiativeDiceBonus": 0,
+      "equippedArmor": "",
+      "equippedMelee": "",
+      "activeVCRItemId": "",
+      "equippedCyberdeck": "",
+      "matrixUserMode": "",
+      "activeHostId": "",
+      "currentMatrixNode": "",
+      "matrixMarks": [],
+      "linkLocked": false,
+      "astralMode": "",
+      "magicTradition": "",
+      "magicType": "",
+      "magicTotem": "",
+      "magicElement": "",
+      "initiateGrade": 0,
+      "combatPoolSpent": 0,
+      "combatPoolMod": 0,
+      "spellPoolSpent": 0,
+      "spellPoolMod": 0,
+      "astralPoolSpent": 0,
+      "astralPoolMod": 0,
+      "hackingPoolSpent": 0,
+      "spellDefensePool": 0,
+      "spellDefenseSorceryDice": 0,
+      "fullDefense": false,
+      "fullDefensePool": 0,
+      "recoilCompensation": 0,
+      "roundsFiredThisPhase": 0,
+      "stimBonus": 0,
+      "wounds": {
+        "stun": {
+          "value": 0,
+          "max": 10
+        },
+        "physical": {
+          "value": 0,
+          "max": 10
+        },
+        "overflow": {
+          "value": 0
+        }
+      },
+      "ew": {
+        "deckRating": 0,
+        "fluxRating": 0,
+        "protocolModule": 0,
+        "ivisPool": {
+          "value": 0,
+          "max": 0
+        }
+      },
+      "orthodoxDeck": {
+        "deckModel": "",
+        "mccp": 0,
+        "bod": 0,
+        "evasion": 0,
+        "masking": 0,
+        "sensor": 0,
+        "hardening": 0,
+        "activeMemory": 0,
+        "storageMemory": 0,
+        "ioSpeed": 0,
+        "responseIncrease": 0,
+        "sleazeRating": 0
+      },
+      "orthodoxRunState": {
+        "securityTally": 0,
+        "alertLevel": "none",
+        "currentHostId": ""
+      },
+      "orthodoxMatrixCM": {
+        "value": 0
+      },
+      "professionalRating": 2,
+      "bookPage": "lbb.67"
+    },
+    "_id": "vyiNFe9COrRk6CUw",
+    "img": "icons/svg/mystery-man.svg",
+    "prototypeToken": {
+      "name": "Dock Worker",
+      "displayName": 0,
+      "actorLink": true,
+      "width": 1,
+      "height": 1,
+      "depth": 1,
+      "texture": {
+        "src": "icons/svg/mystery-man.svg",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "fit": "contain",
+        "scaleX": 1,
+        "scaleY": 1,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "lockRotation": false,
+      "rotation": 0,
+      "alpha": 1,
+      "disposition": -1,
+      "displayBars": 20,
+      "bar1": {
+        "attribute": "wounds.physical"
+      },
+      "bar2": {
+        "attribute": "wounds.stun"
+      },
+      "light": {
+        "negative": false,
+        "priority": 0,
+        "alpha": 0.5,
+        "angle": 360,
+        "bright": 0,
+        "color": null,
+        "coloration": 1,
+        "dim": 0,
+        "attenuation": 0.5,
+        "luminosity": 0.5,
+        "saturation": 0,
+        "contrast": 0,
+        "shadows": 0,
+        "animation": {
+          "type": null,
+          "speed": 5,
+          "intensity": 5,
+          "reverse": false
+        },
+        "darkness": {
+          "min": 0,
+          "max": 1
+        }
+      },
+      "sight": {
+        "enabled": false,
+        "range": 0,
+        "angle": 360,
+        "visionMode": "basic",
+        "color": null,
+        "attenuation": 0.1,
+        "brightness": 0,
+        "saturation": 0,
+        "contrast": 0
+      },
+      "detectionModes": {},
+      "occludable": {
+        "radius": 0
+      },
+      "ring": {
+        "enabled": false,
+        "colors": {
+          "ring": null,
+          "background": null
+        },
+        "effects": 1,
+        "subject": {
+          "scale": 1,
+          "texture": null
+        }
+      },
+      "turnMarker": {
+        "mode": 1,
+        "animation": null,
+        "src": null,
+        "disposition": false
+      },
+      "movementAction": null,
+      "flags": {},
+      "randomImg": false,
+      "appendNumber": false,
+      "prependAdjective": false
+    },
+    "items": [
+      "XZs7CFujZHW4J6W3",
+      "HCi5t7feLlcy63QJ",
+      "hMtqdsc6aj5DQbCd",
+      "7d7f79951d0b57d3",
+      "bfb53bb4230c0bc4",
+      "c111333b5958f4d3",
+      "fc8bff703c2fb606",
+      "d555c3d33de9d2eb",
+      "3e870703de501683",
+      "4703559aafa5db56",
+      "edb9b05087b84128",
+      "69a33b099a2772eb",
+      "77ed3acbd02aaebf",
+      "020e279efd660416",
+      "bf4ace6d29c87919"
+    ],
+    "effects": [],
+    "folder": "4a28a67b368b6226",
+    "ownership": {
+      "default": 0,
+      "ge55aFMax5sNd2Ho": 3
+    },
+    "flags": {
+      "The2ndChumming3e": {
+        "isTemplate": false
+      }
+    },
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.4.5",
+      "createdTime": 1784690543743,
+      "modifiedTime": 1784690543743,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {
+    "!actors.items!vyiNFe9COrRk6CUw.020e279efd660416": {
+      "_id": "020e279efd660416",
+      "name": "Urban Brawl Teams",
+      "type": "skill",
+      "system": {
+        "skillName": "Urban Brawl Teams",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812159,
+        "modifiedTime": 1788319812159,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!vyiNFe9COrRk6CUw.3e870703de501683": {
+      "_id": "3e870703de501683",
+      "name": "Local Bars",
+      "type": "skill",
+      "system": {
+        "skillName": "Local Bars",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812158,
+        "modifiedTime": 1788319812158,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!vyiNFe9COrRk6CUw.4703559aafa5db56": {
+      "_id": "4703559aafa5db56",
+      "name": "Maritime Lore",
+      "type": "skill",
+      "system": {
+        "skillName": "Maritime Lore",
+        "rating": 3,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812158,
+        "modifiedTime": 1788319812158,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!vyiNFe9COrRk6CUw.69a33b099a2772eb": {
+      "_id": "69a33b099a2772eb",
+      "name": "Smuggling",
+      "type": "skill",
+      "system": {
+        "skillName": "Smuggling",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812159,
+        "modifiedTime": 1788319812159,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!vyiNFe9COrRk6CUw.77ed3acbd02aaebf": {
+      "_id": "77ed3acbd02aaebf",
+      "name": "Union Organizing",
+      "type": "skill",
+      "system": {
+        "skillName": "Union Organizing",
+        "rating": 2,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812159,
+        "modifiedTime": 1788319812159,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!vyiNFe9COrRk6CUw.7d7f79951d0b57d3": {
+      "_id": "7d7f79951d0b57d3",
+      "name": "Athletics",
+      "type": "skill",
+      "system": {
+        "skillName": "Athletics",
+        "rating": 3,
+        "linkedAttribute": "body",
+        "category": "Physical skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812157,
+        "modifiedTime": 1788319812157,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!vyiNFe9COrRk6CUw.HCi5t7feLlcy63QJ": {
+      "name": "Ford Americar",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_id": "HCi5t7feLlcy63QJ",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543743,
+        "modifiedTime": 1784690543743,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!vyiNFe9COrRk6CUw.XZs7CFujZHW4J6W3": {
+      "name": "Forklift",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_id": "XZs7CFujZHW4J6W3",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543743,
+        "modifiedTime": 1784690543743,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!vyiNFe9COrRk6CUw.bf4ace6d29c87919": {
+      "_id": "bf4ace6d29c87919",
+      "name": "Warehouse Practices",
+      "type": "skill",
+      "system": {
+        "skillName": "Warehouse Practices",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812160,
+        "modifiedTime": 1788319812160,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!vyiNFe9COrRk6CUw.bfb53bb4230c0bc4": {
+      "_id": "bfb53bb4230c0bc4",
+      "name": "Car",
+      "type": "skill",
+      "system": {
+        "skillName": "Car",
+        "rating": 2,
+        "linkedAttribute": "reaction",
+        "category": "Vehicle skills",
+        "skillType": "active",
+        "specialisation": "Forklift 4",
+        "specialisations": [
+          {
+            "name": "Forklift",
+            "level": 2
+          }
+        ],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812157,
+        "modifiedTime": 1788319812157,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!vyiNFe9COrRk6CUw.c111333b5958f4d3": {
+      "_id": "c111333b5958f4d3",
+      "name": "Intimidation",
+      "type": "skill",
+      "system": {
+        "skillName": "Intimidation",
+        "rating": 3,
+        "linkedAttribute": "charisma",
+        "category": "Social skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812157,
+        "modifiedTime": 1788319812157,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!vyiNFe9COrRk6CUw.d555c3d33de9d2eb": {
+      "_id": "d555c3d33de9d2eb",
+      "name": "Hard Liquor",
+      "type": "skill",
+      "system": {
+        "skillName": "Hard Liquor",
+        "rating": 3,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812158,
+        "modifiedTime": 1788319812158,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!vyiNFe9COrRk6CUw.edb9b05087b84128": {
+      "_id": "edb9b05087b84128",
+      "name": "Shipping Routes",
+      "type": "skill",
+      "system": {
+        "skillName": "Shipping Routes",
+        "rating": 3,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812159,
+        "modifiedTime": 1788319812159,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!vyiNFe9COrRk6CUw.fc8bff703c2fb606": {
+      "_id": "fc8bff703c2fb606",
+      "name": "Unarmed Combat",
+      "type": "skill",
+      "system": {
+        "skillName": "Unarmed Combat",
+        "rating": 3,
+        "linkedAttribute": "strength",
+        "category": "Combat skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812158,
+        "modifiedTime": 1788319812158,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!vyiNFe9COrRk6CUw.hMtqdsc6aj5DQbCd": {
+      "name": "Hard Hat",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_id": "hMtqdsc6aj5DQbCd",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543743,
+        "modifiedTime": 1784690543743,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    }
+  }
+}

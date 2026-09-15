@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0039",
+  "doc": {
+    "_id": "sr3e-vehicle-0039",
+    "name": "S-D Kreuzritter Propelled Gun",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "military",
+      "cost": 279400,
+      "streetIndex": 3,
+      "availability": "14/14days",
+      "bookPage": "sota.78",
+      "seating": 5,
+      "notes": "EnviroSeal (with gas seal and cabin overpressure), Medium Turret (Light Howitzer 10 CF Ammo Bin), Electronics Port (with Rating 3 Radio) | Seating: 1+1+3b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 75,
+          "base": 75
+        },
+        "accel": {
+          "value": 6,
+          "base": 6
+        },
+        "body": {
+          "value": 7,
+          "base": 7
+        },
+        "armor": {
+          "value": 6,
+          "base": 6
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 2,
+          "base": 2
+        },
+        "cargo": {
+          "value": 16,
+          "base": 16
+        },
+        "load": {
+          "value": 2000,
+          "base": 2000
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

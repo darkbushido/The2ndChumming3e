@@ -1,0 +1,30 @@
+{
+  "_key": "!items!d908620302004e3d",
+  "doc": {
+    "_id": "d908620302004e3d",
+    "name": "Portable Master Unit [8]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 8,
+      "cost": 112000,
+      "weight": 23,
+      "availability": "18/4wks",
+      "streetIndex": "3",
+      "bookPage": "cc.55",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

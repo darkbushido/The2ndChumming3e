@@ -1,0 +1,28 @@
+{
+  "_key": "!items!sr3e-firearm-1192",
+  "doc": {
+    "_id": "sr3e-firearm-1192",
+    "name": "US M79",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "GrLn",
+      "skill": "Grenade Launchers",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "1",
+      "mode": "SS",
+      "damage": "(Grenade)",
+      "weight": "3.4",
+      "availability": "48/72hrs",
+      "cost": 1250,
+      "streetIndex": "4",
+      "accessories": "breech loading",
+      "bookPage": "tss.3",
+      "notes": "",
+      "isAoE": true
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1267",
+  "doc": {
+    "_id": "sr3e-firearm-1267",
+    "name": "HK G38 Assault",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "AsRf",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "2",
+      "ammunition": "30(c)",
+      "mode": "SA/BF/FA",
+      "damage": "8M",
+      "weight": "3.25",
+      "availability": "12/1wk",
+      "cost": 4000,
+      "streetIndex": "3",
+      "accessories": "Dual Laser sight & Low Light Mag:(2) Scope, Gas Vent II(2RC) See Rules",
+      "bookPage": "cc.22",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

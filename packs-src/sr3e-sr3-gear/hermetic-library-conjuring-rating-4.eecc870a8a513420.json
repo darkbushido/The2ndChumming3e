@@ -1,0 +1,30 @@
+{
+  "_key": "!items!eecc870a8a513420",
+  "doc": {
+    "_id": "eecc870a8a513420",
+    "name": "Hermetic Library (Conjuring) Rating 4",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Magical Equipment"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Magical Equipment",
+      "concealability": "",
+      "rating": 4,
+      "cost": 16000,
+      "weight": 0,
+      "availability": "4/7days",
+      "streetIndex": "1",
+      "bookPage": "sr3.305",
+      "description": "<p><strong>KarmaCost:</strong> 0</p>"
+    }
+  },
+  "embedded": {}
+}

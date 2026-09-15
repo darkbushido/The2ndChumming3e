@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0103",
+  "doc": {
+    "_id": "sr3e-adeptpower-0103",
+    "name": "Rooting*",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.25,
+      "hasLevels": true,
+      "level": 1,
+      "mods": "",
+      "bookPage": "mits.151",
+      "description": "Each level adds 1die to all tests to resist being knocked down, thrown, levitated or otherwise moved against his will."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

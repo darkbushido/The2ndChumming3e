@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0289",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0289",
+    "name": "Lure Ammo AM-56 [8]",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 128000,
+      "availability": "1/?",
+      "streetIndex": "1",
+      "installEquipment": "Missile jammer",
+      "installTime": "0/0",
+      "cfCost": "1",
+      "load": "0",
+      "bookPage": "fra.141",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

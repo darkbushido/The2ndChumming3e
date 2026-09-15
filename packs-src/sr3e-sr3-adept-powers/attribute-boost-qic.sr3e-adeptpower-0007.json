@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0007",
+  "doc": {
+    "_id": "sr3e-adeptpower-0007",
+    "name": "Attribute Boost(QIC)*",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.25,
+      "hasLevels": true,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sr3.168",
+      "description": "Make a Magic Test against a target number equal to one half the base (unaugmented) rating of the attribute being boosted (round up) . . . When the boost runs outyou must make a Drain Resistance Test."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

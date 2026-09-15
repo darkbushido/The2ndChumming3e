@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0089",
+  "doc": {
+    "_id": "sr3e-bioware-0089",
+    "name": "Platelet Factories",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Standard",
+      "grade": "Standard",
+      "bioIndex": 0.4,
+      "cost": 30000,
+      "availability": "5/8 days",
+      "streetIndex": 1.5,
+      "mods": "",
+      "bookPage": "mm.068",
+      "rating": 0,
+      "description": "-1 box for any higher than M wound, anticoagulents needed"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

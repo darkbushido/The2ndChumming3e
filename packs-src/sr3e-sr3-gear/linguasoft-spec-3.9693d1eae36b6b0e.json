@@ -1,0 +1,30 @@
+{
+  "_key": "!items!9693d1eae36b6b0e",
+  "doc": {
+    "_id": "9693d1eae36b6b0e",
+    "name": "LinguaSoft Spec [3]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 3,
+      "cost": 900,
+      "weight": 0,
+      "availability": "6/36hrs",
+      "streetIndex": "1.25",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Lingua<br><strong>Memory:</strong> 18</p>"
+    }
+  },
+  "embedded": {}
+}

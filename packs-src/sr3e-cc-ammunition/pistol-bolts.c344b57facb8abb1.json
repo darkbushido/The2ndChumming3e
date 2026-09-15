@@ -1,0 +1,34 @@
+{
+  "_key": "!items!c344b57facb8abb1",
+  "doc": {
+    "_id": "c344b57facb8abb1",
+    "name": "Pistol Bolts",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Bow and crossbow"
+      }
+    },
+    "system": {
+      "concealability": "6",
+      "damage": "(As pistol crossbow)",
+      "ammoType": "regular",
+      "loadMechanism": "bolt",
+      "countedIn": "rounds",
+      "rounds": 1,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 0.04,
+      "cost": 3,
+      "availability": "4/36hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.13",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0043",
+  "doc": {
+    "_id": "sr3e-melee-0043",
+    "name": "Sword",
+    "type": "melee",
+    "system": {
+      "category": "EDG",
+      "skill": "Edged Weapons",
+      "attribute": "strength",
+      "concealability": "4",
+      "reach": "1",
+      "damage": "(STR+2)M",
+      "weight": "1",
+      "availability": "3/24hrs",
+      "cost": 500,
+      "streetIndex": "1",
+      "legal": true,
+      "bookPage": "sr3.275",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

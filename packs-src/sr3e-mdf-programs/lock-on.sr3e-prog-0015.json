@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0015",
+  "doc": {
+    "_id": "sr3e-prog-0015",
+    "name": "Lock-On",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Lock-On",
+      "type": "Program",
+      "category": "Offensive",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 6,
+      "degradable": false,
+      "description": "<p>Decreases user's TN by rating while using Trace Signal. Even one success establishes a Link-Lock.</p>",
+      "associatedPrompt": "Trace Signal",
+      "effect": "TN Reduction + Link-Lock",
+      "bookPage": "matrix-defragged.31"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

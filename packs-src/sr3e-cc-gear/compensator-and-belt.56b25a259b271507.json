@@ -1,0 +1,30 @@
+{
+  "_key": "!items!56b25a259b271507",
+  "doc": {
+    "_id": "56b25a259b271507",
+    "name": "Compensator and Belt",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 475,
+      "weight": 12,
+      "availability": "4/12hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.57",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

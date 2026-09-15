@@ -1,0 +1,30 @@
+{
+  "_key": "!items!54ed655ebe57f004",
+  "doc": {
+    "_id": "54ed655ebe57f004",
+    "name": "Containment Manacles",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "5",
+      "rating": null,
+      "cost": 2500,
+      "weight": 0,
+      "availability": "8/1week",
+      "streetIndex": "2",
+      "bookPage": "sr3.294",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

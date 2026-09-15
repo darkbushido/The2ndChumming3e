@@ -1,0 +1,30 @@
+{
+  "_key": "!items!317cd38572bf710d",
+  "doc": {
+    "_id": "317cd38572bf710d",
+    "name": "Signal Locator Lv 6",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "3",
+      "rating": null,
+      "cost": 6000,
+      "weight": 2,
+      "availability": "6/48hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!106b7cbdfbbc4bff",
+  "doc": {
+    "_id": "106b7cbdfbbc4bff",
+    "name": "Gas Spectrometer Lvl 6",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "5",
+      "rating": 6,
+      "cost": 22500,
+      "weight": 0.5,
+      "availability": "4/5days",
+      "streetIndex": "1",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

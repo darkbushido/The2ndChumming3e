@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0128",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0128",
+    "name": "Victory \"Rapid Transit\" Hvy J.",
+    "type": "armor",
+    "system": {
+      "concealability": "6",
+      "ballistic": 2,
+      "impact": 4,
+      "weight": 2,
+      "availability": "4/24hrs",
+      "cost": 500,
+      "streetIndex": "1",
+      "bookPage": "cc.49",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

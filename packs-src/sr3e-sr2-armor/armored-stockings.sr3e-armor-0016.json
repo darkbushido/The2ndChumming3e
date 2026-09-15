@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0016",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0016",
+    "name": "Armored Stockings",
+    "type": "armor",
+    "system": {
+      "concealability": "15",
+      "ballistic": 1,
+      "impact": 0,
+      "weight": 0,
+      "availability": "6/72hrs",
+      "cost": 110,
+      "streetIndex": "1.1",
+      "bookPage": "sr2.???",
+      "notes": "Ballistic +1 (additive modifier)"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

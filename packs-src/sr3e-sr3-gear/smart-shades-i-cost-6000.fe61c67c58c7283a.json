@@ -1,0 +1,30 @@
+{
+  "_key": "!items!fe61c67c58c7283a",
+  "doc": {
+    "_id": "fe61c67c58c7283a",
+    "name": "Smart Shades I (Cost 6000¥)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-",
+      "rating": null,
+      "cost": 6000,
+      "weight": 0.1,
+      "availability": "3/36hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.282",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

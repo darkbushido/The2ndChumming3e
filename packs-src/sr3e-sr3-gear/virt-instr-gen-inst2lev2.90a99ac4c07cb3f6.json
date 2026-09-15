@@ -1,0 +1,30 @@
+{
+  "_key": "!items!90a99ac4c07cb3f6",
+  "doc": {
+    "_id": "90a99ac4c07cb3f6",
+    "name": "Virt Instr Gen. Inst2Lev2",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 2,
+      "cost": 2400,
+      "weight": 0,
+      "availability": "4/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 24</p>"
+    }
+  },
+  "embedded": {}
+}

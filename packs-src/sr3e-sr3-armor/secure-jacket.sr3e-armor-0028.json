@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0028",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0028",
+    "name": "Secure Jacket",
+    "type": "armor",
+    "system": {
+      "concealability": "9",
+      "ballistic": 5,
+      "impact": 3,
+      "weight": 3,
+      "availability": "4/36hrs",
+      "cost": 850,
+      "streetIndex": ".8",
+      "bookPage": "sr3.284",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

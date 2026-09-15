@@ -1,0 +1,42 @@
+{
+  "_key": "!items!l7HcDNeNplHYLVUF",
+  "doc": {
+    "name": "CS/Tear Gas",
+    "type": "drug",
+    "system": {
+      "category": "Pharmaceutical Compounds",
+      "addiction": "",
+      "tolerance": "",
+      "effect": "",
+      "speed": "Contact or Inhalation",
+      "vector": "1 Combat Turn",
+      "availability": "4/36 hrs",
+      "cost": 10,
+      "streetIndex": "1",
+      "bookPage": "mm.118",
+      "notes": ""
+    },
+    "_id": "l7HcDNeNplHYLVUF",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "ge55aFMax5sNd2Ho": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.3.1",
+      "createdTime": 1782280826122,
+      "modifiedTime": 1782889914231,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

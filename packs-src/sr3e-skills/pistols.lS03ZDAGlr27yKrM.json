@@ -1,0 +1,41 @@
+{
+  "_key": "!items!lS03ZDAGlr27yKrM",
+  "doc": {
+    "name": "Pistols",
+    "type": "skill",
+    "system": {
+      "category": "Combat skills",
+      "skillType": "active",
+      "skillName": "Pistols",
+      "linkedAttribute": "quickness",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": "",
+      "bookPage": "sr3.86"
+    },
+    "_id": "lS03ZDAGlr27yKrM",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192932938,
+      "modifiedTime": 1782889914450,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

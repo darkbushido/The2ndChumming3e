@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0013",
+  "doc": {
+    "_id": "sr3e-vehicle-0013",
+    "name": "Sendako Marlin",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "boat",
+      "cost": 18750,
+      "streetIndex": 1,
+      "availability": "2/24hrs",
+      "bookPage": "sr3.309, r3.160",
+      "seating": 3,
+      "notes": "Alt-mode Sig/Autonav: 6(6)/0 | Seating: 2+1b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 30,
+          "base": 30
+        },
+        "accel": {
+          "value": 3,
+          "base": 3
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 6,
+          "base": 6
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 12,
+          "base": 12
+        },
+        "load": {
+          "value": 150,
+          "base": 150
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

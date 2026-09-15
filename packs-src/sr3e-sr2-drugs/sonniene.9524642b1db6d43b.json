@@ -1,0 +1,31 @@
+{
+  "_key": "!items!9524642b1db6d43b",
+  "doc": {
+    "_id": "9524642b1db6d43b",
+    "name": "Sonniene",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "4M",
+      "tolerance": "3",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 80,
+      "availability": "4/1hr",
+      "streetIndex": "3",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 5</p>"
+    }
+  },
+  "embedded": {}
+}

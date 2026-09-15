@@ -1,0 +1,30 @@
+{
+  "_key": "!items!0d30e5d04cbb011e",
+  "doc": {
+    "_id": "0d30e5d04cbb011e",
+    "name": "ID Scanner: Retinal Lv 9",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 9000,
+      "weight": 0,
+      "availability": "11/72hrs",
+      "streetIndex": "3",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

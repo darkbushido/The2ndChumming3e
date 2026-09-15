@@ -1,0 +1,19 @@
+{
+  "_key": "!items!bd2bbad51e748521",
+  "doc": {
+    "_id": "bd2bbad51e748521",
+    "name": "Armor",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Armor",
+      "category": "defense",
+      "multiplier": 3,
+      "rating": 0,
+      "bookPage": "sr3.222",
+      "description": "<p><strong>Defensive utility</strong> · Multiplier 3 — size in Mp = Rating² × 3 (Program Size Table). See SR3 p.222 for what it does.</p>"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0153",
+  "doc": {
+    "_id": "sr3e-vehicle-0153",
+    "name": "M-K Sperber Security Variant",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "helicopter",
+      "cost": 1123250,
+      "streetIndex": 2,
+      "availability": "-",
+      "bookPage": "sota.78",
+      "seating": 2,
+      "notes": "ECM 2, ECCM 2, 2x3 External Rocket Mounts (Wingtip), Medium Launch Control System, Mini-Turret (located under chin)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 350,
+          "base": 350
+        },
+        "accel": {
+          "value": 32,
+          "base": 32
+        },
+        "body": {
+          "value": 5,
+          "base": 5
+        },
+        "armor": {
+          "value": 5,
+          "base": 5
+        },
+        "sig": {
+          "value": 4,
+          "base": 4
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 5,
+          "base": 5
+        },
+        "cargo": {
+          "value": 5,
+          "base": 5
+        },
+        "load": {
+          "value": 880,
+          "base": 880
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

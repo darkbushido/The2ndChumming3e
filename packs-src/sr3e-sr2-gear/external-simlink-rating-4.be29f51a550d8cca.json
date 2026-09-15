@@ -1,0 +1,30 @@
+{
+  "_key": "!items!be29f51a550d8cca",
+  "doc": {
+    "_id": "be29f51a550d8cca",
+    "name": "External Simlink Rating 4",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "8",
+      "rating": 4,
+      "cost": 45000,
+      "weight": 0.5,
+      "availability": "8/2weeks",
+      "streetIndex": "2",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

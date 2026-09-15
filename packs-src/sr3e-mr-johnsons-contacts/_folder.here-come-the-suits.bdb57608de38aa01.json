@@ -1,0 +1,25 @@
+{
+  "_key": "!folders!bdb57608de38aa01",
+  "doc": {
+    "_id": "bdb57608de38aa01",
+    "name": "Here Come the Suits",
+    "type": "Actor",
+    "description": "",
+    "folder": null,
+    "sorting": "a",
+    "sort": 400000,
+    "color": null,
+    "flags": {},
+    "_stats": {
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "coreVersion": "14",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": null,
+      "createdTime": 1788274787556,
+      "modifiedTime": 1788274787556,
+      "lastModifiedBy": null
+    }
+  },
+  "embedded": {}
+}

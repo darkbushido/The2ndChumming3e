@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0107",
+  "doc": {
+    "_id": "sr3e-firearm-0107",
+    "name": "FN 5-7C",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "20(c)",
+      "mode": "SA/BF",
+      "damage": "6L",
+      "weight": "2.5",
+      "availability": "9/48hrs",
+      "cost": 700,
+      "streetIndex": "2",
+      "accessories": "RC(1)",
+      "bookPage": "cc.19",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

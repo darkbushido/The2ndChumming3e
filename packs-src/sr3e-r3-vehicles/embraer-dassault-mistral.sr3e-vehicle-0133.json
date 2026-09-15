@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0133",
+  "doc": {
+    "_id": "sr3e-vehicle-0133",
+    "name": "Embraer-Dassault Mistral",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "fixedwing",
+      "cost": 362000,
+      "streetIndex": 1,
+      "availability": "18/18 days",
+      "bookPage": "r3.180",
+      "seating": 17,
+      "notes": "Alt-mode Speed/Accel: 135(300)/21",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 135,
+          "base": 135
+        },
+        "accel": {
+          "value": 21,
+          "base": 21
+        },
+        "body": {
+          "value": 6,
+          "base": 6
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 4,
+          "base": 4
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 12,
+          "base": 12
+        },
+        "load": {
+          "value": 600,
+          "base": 600
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

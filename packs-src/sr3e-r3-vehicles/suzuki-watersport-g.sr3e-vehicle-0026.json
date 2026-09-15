@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0026",
+  "doc": {
+    "_id": "sr3e-vehicle-0026",
+    "name": "Suzuki Watersport(G)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "boat",
+      "cost": 10000,
+      "streetIndex": 1,
+      "availability": "2/24hrs",
+      "bookPage": "r3.162",
+      "seating": 1,
+      "notes": "Gasoline | Alt-mode Sig/Autonav: 3(3)/0",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 2,
+          "base": 2
+        },
+        "handlingOffRoad": {
+          "value": 2,
+          "base": 2
+        },
+        "speed": {
+          "value": 45,
+          "base": 45
+        },
+        "accel": {
+          "value": 7,
+          "base": 7
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 4,
+          "base": 4
+        },
+        "load": {
+          "value": 38,
+          "base": 38
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

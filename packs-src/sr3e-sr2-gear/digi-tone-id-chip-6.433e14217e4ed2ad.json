@@ -1,0 +1,30 @@
+{
+  "_key": "!items!433e14217e4ed2ad",
+  "doc": {
+    "_id": "433e14217e4ed2ad",
+    "name": "Digi-Tone ID Chip 6",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 6,
+      "cost": 420,
+      "weight": 0,
+      "availability": "6/4days",
+      "streetIndex": "1",
+      "bookPage": "sr2.244",
+      "description": "<p><strong>Type:</strong> Know<br><strong>Memory:</strong> 12</p>"
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1239",
+  "doc": {
+    "_id": "sr3e-firearm-1239",
+    "name": "Ares Redline",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "3",
+      "ammunition": "10",
+      "mode": "SA",
+      "damage": "12M",
+      "weight": "5",
+      "availability": "18/3wks",
+      "cost": 75000,
+      "streetIndex": "3",
+      "accessories": "None",
+      "bookPage": "cc.30",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

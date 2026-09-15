@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-projectile-0068",
+  "doc": {
+    "_id": "sr3e-projectile-0068",
+    "name": "Spraypaint Grenade",
+    "type": "projectile",
+    "system": {
+      "category": "GR",
+      "skill": "Throwing Weapons",
+      "attribute": "strength",
+      "concealability": "6",
+      "strMin": 0,
+      "damage": "-",
+      "weight": ".25",
+      "availability": "2/3days",
+      "cost": 20,
+      "streetIndex": ".9",
+      "legal": false,
+      "bookPage": "pw.37",
+      "notes": "",
+      "isAoE": true
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

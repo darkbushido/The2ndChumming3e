@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0008",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0008",
+    "name": "Adjusted Controls(Troll)",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 3500,
+      "availability": "3/72hrs",
+      "streetIndex": "1",
+      "installEquipment": "40 hrs/Vehicle B/R(4)",
+      "installTime": "Vehicle Facility",
+      "cfCost": "0",
+      "load": "",
+      "bookPage": "r3.127",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0223",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0223",
+    "name": "Medium Urban Brawl Armor",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 4,
+      "impact": 3,
+      "weight": 1.5,
+      "availability": "4/48hrs",
+      "cost": 750,
+      "streetIndex": "1",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

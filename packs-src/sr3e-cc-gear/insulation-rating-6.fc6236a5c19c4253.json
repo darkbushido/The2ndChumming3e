@@ -1,0 +1,30 @@
+{
+  "_key": "!items!fc6236a5c19c4253",
+  "doc": {
+    "_id": "fc6236a5c19c4253",
+    "name": "Insulation Rating [6]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-3",
+      "rating": 6,
+      "cost": 900,
+      "weight": 3,
+      "availability": "+1/+12hrs",
+      "streetIndex": "+.25",
+      "bookPage": "cc.53",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

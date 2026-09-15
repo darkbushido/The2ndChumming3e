@@ -1,0 +1,29 @@
+{
+  "_key": "!items!f49a41875c21af8d",
+  "doc": {
+    "_id": "f49a41875c21af8d",
+    "name": "+Elec. Vis. Mag 38",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "-",
+      "ballistic": 0,
+      "impact": 0,
+      "weight": 0,
+      "cost": 900,
+      "availability": "-",
+      "streetIndex": "2",
+      "bookPage": "sr3.284",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

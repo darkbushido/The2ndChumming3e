@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0171",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0171",
+    "name": "Military Helmet",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 2,
+      "impact": 3,
+      "weight": 3,
+      "availability": "18/1mth",
+      "cost": 2500,
+      "streetIndex": "3",
+      "bookPage": "cc.51",
+      "notes": "Ballistic +2 (additive modifier) | Impact +3 (additive modifier)"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

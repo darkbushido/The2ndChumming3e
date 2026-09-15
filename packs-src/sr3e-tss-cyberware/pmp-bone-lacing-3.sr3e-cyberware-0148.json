@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0148",
+  "doc": {
+    "_id": "sr3e-cyberware-0148",
+    "name": "PMP Bone Lacing [3]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 2.25,
+      "cost": 150000,
+      "availability": "14/20 days",
+      "streetIndex": 2,
+      "legalCode": "4-CC",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "tss.5",
+      "grade": "Standard",
+      "rating": 3,
+      "description": "+6 Disguise, Change apparent height up to 15%, 3 boxes of damage per use; requires PMP SPU [3]"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

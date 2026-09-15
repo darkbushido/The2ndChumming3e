@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0155",
+  "doc": {
+    "_id": "sr3e-vehicle-0155",
+    "name": "Northrup Mosquito PRC-51F",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "helicopter",
+      "cost": 250000,
+      "streetIndex": 2,
+      "availability": "4/4Days",
+      "bookPage": "tss.6",
+      "seating": 1,
+      "notes": "ECM 1, ECCM 2, Micro-Turret (weapon n/i), optional missile pods",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 2,
+          "base": 2
+        },
+        "handlingOffRoad": {
+          "value": 2,
+          "base": 2
+        },
+        "speed": {
+          "value": 120,
+          "base": 120
+        },
+        "accel": {
+          "value": 18,
+          "base": 18
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 3,
+          "base": 3
+        },
+        "sig": {
+          "value": 5,
+          "base": 5
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 4,
+          "base": 4
+        },
+        "cargo": {
+          "value": 1,
+          "base": 1
+        },
+        "load": {
+          "value": 20,
+          "base": 20
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

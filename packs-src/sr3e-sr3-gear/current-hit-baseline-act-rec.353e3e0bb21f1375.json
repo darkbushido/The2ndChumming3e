@@ -1,0 +1,30 @@
+{
+  "_key": "!items!353e3e0bb21f1375",
+  "doc": {
+    "_id": "353e3e0bb21f1375",
+    "name": "Current Hit Baseline ACT Rec.",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "10",
+      "rating": null,
+      "cost": 3,
+      "weight": 0,
+      "availability": "always",
+      "streetIndex": ".75",
+      "bookPage": "sr3.285",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

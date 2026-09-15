@@ -1,0 +1,30 @@
+{
+  "_key": "!items!caf014b676b89736",
+  "doc": {
+    "_id": "caf014b676b89736",
+    "name": "DataSoft Gen.[6]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 6,
+      "cost": 10800,
+      "weight": 0,
+      "availability": "4/4days",
+      "streetIndex": "1.25",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Data<br><strong>Memory:</strong> 108</p>"
+    }
+  },
+  "embedded": {}
+}

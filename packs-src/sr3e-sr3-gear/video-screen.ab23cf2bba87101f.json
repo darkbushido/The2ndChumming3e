@@ -1,0 +1,30 @@
+{
+  "_key": "!items!ab23cf2bba87101f",
+  "doc": {
+    "_id": "ab23cf2bba87101f",
+    "name": "Video Screen",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "-",
+      "rating": null,
+      "cost": 150,
+      "weight": 3,
+      "availability": "always",
+      "streetIndex": ".75",
+      "bookPage": "sr3.285",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

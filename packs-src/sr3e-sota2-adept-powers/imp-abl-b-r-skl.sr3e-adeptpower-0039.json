@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0039",
+  "doc": {
+    "_id": "sr3e-adeptpower-0039",
+    "name": "Imp Abl B/R Skl*->",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": true,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.66",
+      "description": "This power gives you additional dice for use with a specific B/R Skill."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

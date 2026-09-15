@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0237",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0237",
+    "name": "Kelmar Police Helmet",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 0,
+      "impact": 1,
+      "weight": 0.75,
+      "availability": "20/14days",
+      "cost": 2000,
+      "streetIndex": "3.5",
+      "bookPage": "sr2.???",
+      "notes": "Impact +1 (additive modifier)"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

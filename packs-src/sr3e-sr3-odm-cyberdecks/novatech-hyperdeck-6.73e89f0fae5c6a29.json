@@ -1,0 +1,41 @@
+{
+  "_key": "!items!73e89f0fae5c6a29",
+  "doc": {
+    "_id": "73e89f0fae5c6a29",
+    "name": "Novatech Hyperdeck-6",
+    "type": "cyberdeck",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberdeck-default.webp",
+    "system": {
+      "cost": 125000,
+      "availability": "4/7days",
+      "streetIndex": 1,
+      "bookPage": "sr3.207,sr3.304",
+      "notes": "<p>Stock cyberdeck — SR3 p.207 (stats), p.304 (availability, cost). MPCP 6, Hardening 4, Active Memory 500 Mp, Storage 1000 Mp, I/O 240 Mp/turn, Response Increase 1.</p><p>Orthodox Matrix: load it from the Matrix tab's cyberdeck picker.</p>",
+      "modules": [
+        {
+          "_odmType": "orthodox",
+          "hardening": 4,
+          "storageMemory": 1000,
+          "responseIncrease": 1
+        }
+      ],
+      "attributes": {
+        "mpcp": {
+          "base": 6,
+          "value": 6
+        },
+        "memory": {
+          "total": 500,
+          "used": 0,
+          "unit": "Mp"
+        },
+        "dataTransferRate": {
+          "value": 240,
+          "unit": "Mp per Combat Turn"
+        }
+      }
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

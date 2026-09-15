@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0017",
+  "doc": {
+    "_id": "sr3e-drone-0017",
+    "name": "FMC TADS Salamander",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 24500,
+      "streetIndex": 2,
+      "availability": "2/48 hrs",
+      "seating": 0,
+      "bookPage": "r3.172",
+      "notes": "Remote-Control Interface, Rigger Adaptation, BattleTac FDDM Receiver",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 60,
+          "base": 60
+        },
+        "accel": {
+          "value": 6,
+          "base": 6
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 4,
+          "base": 4
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 2,
+          "base": 2
+        },
+        "sensor": {
+          "value": 3,
+          "base": 3
+        },
+        "cargo": {
+          "value": 4,
+          "base": 4
+        },
+        "load": {
+          "value": 125,
+          "base": 125
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0040",
+  "doc": {
+    "_id": "sr3e-melee-0040",
+    "name": "Stiletto",
+    "type": "melee",
+    "system": {
+      "category": "EDG",
+      "skill": "Edged Weapons",
+      "attribute": "strength",
+      "concealability": "10",
+      "reach": "0",
+      "damage": "(STR)L",
+      "weight": ".3",
+      "availability": "6/48hrs",
+      "cost": 1000,
+      "streetIndex": "1",
+      "legal": true,
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

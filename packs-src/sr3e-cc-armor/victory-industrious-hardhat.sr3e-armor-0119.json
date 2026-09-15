@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0119",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0119",
+    "name": "Victory \"Industrious\" Hardhat",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 0,
+      "impact": 1,
+      "weight": 0.5,
+      "availability": "2/24hrs",
+      "cost": 300,
+      "streetIndex": ".5",
+      "bookPage": "cc.49",
+      "notes": "Impact +1 (additive modifier)"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!607fc57607eac324",
+  "doc": {
+    "_id": "607fc57607eac324",
+    "name": "Personal Body Alarm",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 0,
+      "weight": 0,
+      "availability": "on payment",
+      "streetIndex": "-",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

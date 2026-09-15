@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0536",
+  "doc": {
+    "_id": "sr3e-cyberware-0536",
+    "name": "Datajack [1]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Headware",
+      "essenceCost": 0.1,
+      "cost": 500,
+      "availability": "0/0",
+      "streetIndex": 0.9,
+      "legalCode": "Legal",
+      "mods": "+1DJK",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "st.45",
+      "grade": "Standard",
+      "rating": 1,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

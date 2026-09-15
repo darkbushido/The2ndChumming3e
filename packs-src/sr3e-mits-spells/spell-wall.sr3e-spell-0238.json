@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0238",
+  "doc": {
+    "_id": "sr3e-spell-0238",
+    "name": "Spell Wall",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Manipulation",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "LOS(A)",
+      "drain": "(S)",
+      "target": "6",
+      "bookPage": "mits.148",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

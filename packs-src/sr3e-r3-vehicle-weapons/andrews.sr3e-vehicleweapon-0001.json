@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-vehicleweapon-0001",
+  "doc": {
+    "_id": "sr3e-vehicleweapon-0001",
+    "name": "ANDREWS",
+    "type": "vehicleweapon",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "system": {
+      "weaponType": "LASER",
+      "mode": "SA/BF",
+      "damage": "9LN",
+      "ammunition": "50",
+      "weight": 1200,
+      "cost": 600000,
+      "availability": "GM",
+      "streetIndex": "GM",
+      "bookPage": "r3.88",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

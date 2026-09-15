@@ -1,0 +1,30 @@
+{
+  "_key": "!items!c2240df7f8cf24cb",
+  "doc": {
+    "_id": "c2240df7f8cf24cb",
+    "name": "Subvocal Microphone",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "12",
+      "rating": null,
+      "cost": 500,
+      "weight": 0,
+      "availability": "3/48hrs",
+      "streetIndex": "1.25",
+      "bookPage": "sr3.290",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

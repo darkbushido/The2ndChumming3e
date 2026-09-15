@@ -1,0 +1,30 @@
+{
+  "_key": "!items!1a30fa47af200ccb",
+  "doc": {
+    "_id": "1a30fa47af200ccb",
+    "name": "ID Scanner: Retinal Lv 4",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 4000,
+      "weight": 0,
+      "availability": "6/72hrs",
+      "streetIndex": "3",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0726",
+  "doc": {
+    "_id": "sr3e-cyberware-0726",
+    "name": "Armor: Impact [10]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0,
+      "cost": 40000,
+      "availability": "8/2 weeks",
+      "streetIndex": 1,
+      "legalCode": "3-N",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.36",
+      "grade": "Standard",
+      "rating": 10,
+      "description": "+10 IMP, ECU: 5, Conceal: -5"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

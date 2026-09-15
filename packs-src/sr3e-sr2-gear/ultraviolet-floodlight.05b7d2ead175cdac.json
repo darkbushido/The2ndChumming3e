@@ -1,0 +1,30 @@
+{
+  "_key": "!items!05b7d2ead175cdac",
+  "doc": {
+    "_id": "05b7d2ead175cdac",
+    "name": "Ultraviolet Floodlight",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 750,
+      "weight": 0,
+      "availability": "8/4days",
+      "streetIndex": "2",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

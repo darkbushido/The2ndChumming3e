@@ -1,0 +1,30 @@
+{
+  "_key": "!items!05fc15c16211a1c3",
+  "doc": {
+    "_id": "05fc15c16211a1c3",
+    "name": "Sony HB500 Portacam",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 2200,
+      "weight": 3.5,
+      "availability": "4/72hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.292",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

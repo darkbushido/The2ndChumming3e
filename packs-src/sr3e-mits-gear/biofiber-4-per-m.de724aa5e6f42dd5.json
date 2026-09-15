@@ -1,0 +1,30 @@
+{
+  "_key": "!items!de724aa5e6f42dd5",
+  "doc": {
+    "_id": "de724aa5e6f42dd5",
+    "name": "Biofiber 4 per m",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Magical Equipment"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Magical Equipment",
+      "concealability": "",
+      "rating": null,
+      "cost": 400,
+      "weight": 0,
+      "availability": "4/1wk",
+      "streetIndex": "2",
+      "bookPage": "mits.169",
+      "description": "<p><strong>KarmaCost:</strong> 0</p>"
+    }
+  },
+  "embedded": {}
+}

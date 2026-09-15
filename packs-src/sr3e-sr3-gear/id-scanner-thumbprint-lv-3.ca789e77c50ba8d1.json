@@ -1,0 +1,30 @@
+{
+  "_key": "!items!ca789e77c50ba8d1",
+  "doc": {
+    "_id": "ca789e77c50ba8d1",
+    "name": "ID Scanner - Thumbprint Lv [3]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 3,
+      "cost": 600,
+      "weight": 0,
+      "availability": "3/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.294",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

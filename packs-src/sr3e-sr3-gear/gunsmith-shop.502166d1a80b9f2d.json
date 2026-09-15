@@ -1,0 +1,30 @@
+{
+  "_key": "!items!502166d1a80b9f2d",
+  "doc": {
+    "_id": "502166d1a80b9f2d",
+    "name": "Gunsmith Shop",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 10000,
+      "weight": 0,
+      "availability": "8/72hrs",
+      "streetIndex": "3",
+      "bookPage": "sr3.288,cc.72",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

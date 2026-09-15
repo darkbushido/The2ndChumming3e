@@ -1,0 +1,30 @@
+{
+  "_key": "!items!af44590532e4a029",
+  "doc": {
+    "_id": "af44590532e4a029",
+    "name": "Fuchi Holo-Edit 7200",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "-",
+      "rating": null,
+      "cost": 10000,
+      "weight": 9,
+      "availability": "4/72hrs",
+      "streetIndex": "2",
+      "bookPage": "fof.96",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

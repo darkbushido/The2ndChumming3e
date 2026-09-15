@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1274",
+  "doc": {
+    "_id": "sr3e-firearm-1274",
+    "name": "Steyr AUG-CSL LMG",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LMG",
+      "skill": "Gunnery",
+      "attribute": "quickness",
+      "concealability": "2",
+      "ammunition": "32(c)",
+      "mode": "SA/BF/FA",
+      "damage": "8M",
+      "weight": "5.5",
+      "availability": "10/4days",
+      "cost": 0,
+      "streetIndex": "3",
+      "accessories": "-",
+      "bookPage": "cc.22",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

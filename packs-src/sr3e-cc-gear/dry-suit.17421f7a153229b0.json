@@ -1,0 +1,30 @@
+{
+  "_key": "!items!17421f7a153229b0",
+  "doc": {
+    "_id": "17421f7a153229b0",
+    "name": "Dry Suit",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 1500,
+      "weight": 3.5,
+      "availability": "4/36hrs",
+      "streetIndex": "1.25",
+      "bookPage": "cc.57",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

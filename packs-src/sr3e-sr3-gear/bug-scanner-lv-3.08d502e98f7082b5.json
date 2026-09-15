@@ -1,0 +1,30 @@
+{
+  "_key": "!items!08d502e98f7082b5",
+  "doc": {
+    "_id": "08d502e98f7082b5",
+    "name": "Bug Scanner Lv [3]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "3",
+      "rating": 3,
+      "cost": 1500,
+      "weight": 1,
+      "availability": "3/48hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr3.292",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

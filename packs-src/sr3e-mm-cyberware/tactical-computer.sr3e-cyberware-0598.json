@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0598",
+  "doc": {
+    "_id": "sr3e-cyberware-0598",
+    "name": "Tactical Computer",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Headware",
+      "essenceCost": 1.5,
+      "cost": 400000,
+      "availability": "12/60 days",
+      "streetIndex": 4,
+      "legalCode": "2P-R",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.22",
+      "grade": "Standard",
+      "rating": 0,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

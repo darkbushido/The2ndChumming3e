@@ -1,0 +1,30 @@
+{
+  "_key": "!items!c6e97b03089fea8d",
+  "doc": {
+    "_id": "c6e97b03089fea8d",
+    "name": "White Noise Generator Lv [7]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "3",
+      "rating": 7,
+      "cost": 10500,
+      "weight": 1,
+      "availability": "7/72hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr3.292",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

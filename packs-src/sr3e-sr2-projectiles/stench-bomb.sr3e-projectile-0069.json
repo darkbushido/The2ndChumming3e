@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-projectile-0069",
+  "doc": {
+    "_id": "sr3e-projectile-0069",
+    "name": "Stench Bomb",
+    "type": "projectile",
+    "system": {
+      "category": "GR",
+      "skill": "Throwing Weapons",
+      "attribute": "strength",
+      "concealability": "6",
+      "strMin": 0,
+      "damage": "-",
+      "weight": ".25",
+      "availability": "3/48hrs",
+      "cost": 20,
+      "streetIndex": ".8",
+      "legal": false,
+      "bookPage": "pw.37",
+      "notes": "",
+      "isAoE": true
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

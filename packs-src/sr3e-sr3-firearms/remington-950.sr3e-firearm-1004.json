@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1004",
+  "doc": {
+    "_id": "sr3e-firearm-1004",
+    "name": "Remington 950",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SptR",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "2",
+      "ammunition": "5(m)",
+      "mode": "SA",
+      "damage": "9S",
+      "weight": "4",
+      "availability": "3/24hrs",
+      "cost": 800,
+      "streetIndex": "1",
+      "accessories": "Mag:(1)",
+      "bookPage": "sr3.278",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

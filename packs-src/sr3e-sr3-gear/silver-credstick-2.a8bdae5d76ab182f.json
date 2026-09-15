@@ -1,0 +1,30 @@
+{
+  "_key": "!items!a8bdae5d76ab182f",
+  "doc": {
+    "_id": "a8bdae5d76ab182f",
+    "name": "Silver Credstick[2]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Credstick"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Credstick",
+      "concealability": "-",
+      "rating": 2,
+      "cost": 4000,
+      "weight": 0,
+      "availability": "2/24hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.239",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

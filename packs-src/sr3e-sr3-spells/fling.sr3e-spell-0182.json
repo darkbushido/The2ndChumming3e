@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0182",
+  "doc": {
+    "_id": "sr3e-spell-0182",
+    "name": "Fling",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Transformation",
+      "type": "Physical",
+      "duration": "Instant",
+      "range": "T",
+      "drain": "+1(M)",
+      "target": "4(RC)",
+      "bookPage": "sr3.197",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

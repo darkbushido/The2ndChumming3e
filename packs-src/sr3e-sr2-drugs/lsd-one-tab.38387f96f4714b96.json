@@ -1,0 +1,31 @@
+{
+  "_key": "!items!38387f96f4714b96",
+  "doc": {
+    "_id": "38387f96f4714b96",
+    "name": "LSD (one tab)",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "1M",
+      "tolerance": "2",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 5,
+      "availability": "4/7hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 4</p>"
+    }
+  },
+  "embedded": {}
+}

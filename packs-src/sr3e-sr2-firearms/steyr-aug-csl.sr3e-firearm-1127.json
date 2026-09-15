@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1127",
+  "doc": {
+    "_id": "sr3e-firearm-1127",
+    "name": "Steyr AUG-CSL",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "MulWea",
+      "skill": "Firearms",
+      "attribute": "quickness",
+      "concealability": "varies",
+      "ammunition": "40(c)",
+      "mode": "varies",
+      "damage": "varies",
+      "weight": "varies",
+      "availability": "10/4days",
+      "cost": 4500,
+      "streetIndex": "3",
+      "accessories": "Laser Sight",
+      "bookPage": "ssc.54",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0040",
+  "doc": {
+    "_id": "sr3e-vehicle-0040",
+    "name": "U-D Semaphore Command Center",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "military",
+      "cost": 1196500,
+      "streetIndex": 3,
+      "availability": "NA",
+      "bookPage": "sota.78",
+      "seating": 6,
+      "notes": "ECM8, ECCM8, ED5, ECD6, Electronics Port (with Remote Control Deck 6 Rigger Protocol Emulation Module 6 Signal Amplifier 6), Remote Control Encryption Unit 6, Small Remote Turret (2 CF Ammo Bin), 4 Additional Electronics Ports | Seating: 1+2+1+2",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 90,
+          "base": 90
+        },
+        "accel": {
+          "value": 7,
+          "base": 7
+        },
+        "body": {
+          "value": 7,
+          "base": 7
+        },
+        "armor": {
+          "value": 6,
+          "base": 6
+        },
+        "sig": {
+          "value": 4,
+          "base": 4
+        },
+        "autonav": {
+          "value": 4,
+          "base": 4
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 7,
+          "base": 7
+        },
+        "cargo": {
+          "value": 18.75,
+          "base": 18.75
+        },
+        "load": {
+          "value": 3507,
+          "base": 3507
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

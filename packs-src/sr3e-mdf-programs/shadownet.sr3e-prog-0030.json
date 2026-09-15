@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0030",
+  "doc": {
+    "_id": "sr3e-prog-0030",
+    "name": "Shadownet",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Shadownet",
+      "type": "Protocol",
+      "category": "",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 5,
+      "degradable": false,
+      "description": "<p>Grants passcode access to Shadownet LTG. Delays Convergence trace information and physical security response by minutes equal to rating.</p><p><strong>Function:</strong> Access + Safety</p>",
+      "associatedPrompt": "",
+      "effect": "Delay Convergence",
+      "bookPage": "matrix-defragged.29"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,28 @@
+{
+  "_key": "!items!69826cc99fe2a255",
+  "doc": {
+    "_id": "69826cc99fe2a255",
+    "name": "Antibac Level 6",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "",
+      "weight": "-",
+      "cost": 1000,
+      "availability": "4/48hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.258",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

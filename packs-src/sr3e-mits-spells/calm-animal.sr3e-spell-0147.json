@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0147",
+  "doc": {
+    "_id": "sr3e-spell-0147",
+    "name": "Calm Animal",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Manipulation",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "LOS",
+      "drain": "(M)",
+      "target": "W(T)",
+      "bookPage": "mits.144",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0026",
+  "doc": {
+    "_id": "sr3e-adeptpower-0026",
+    "name": "Empathic Sense",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "mits.149",
+      "description": "Empathic Sense grants a limited form of magical awareness that allows an adept to sensethe feelings of those he can see with his unaided vision."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

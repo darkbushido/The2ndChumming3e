@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0208",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0208",
+    "name": "Sensors [8]",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 50000,
+      "availability": "14/3months",
+      "streetIndex": "GM",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "128 hrs/Electronics B/R(4)",
+      "cfCost": "12",
+      "load": "150kg",
+      "bookPage": "r3.147",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

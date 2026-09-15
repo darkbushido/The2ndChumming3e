@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0101",
+  "doc": {
+    "_id": "sr3e-vehicle-0101",
+    "name": "DocWagon SRT Ambulance",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 341250,
+      "streetIndex": 1.5,
+      "availability": "18/18days",
+      "bookPage": "r3.170",
+      "seating": 2,
+      "notes": "Anti-Theft System 6, Medical Clinic(1p/1t 4) | Alt-mode Cargo/Load: 100[84 PS]/250[200 PS]",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 10,
+          "base": 10
+        },
+        "speed": {
+          "value": 80,
+          "base": 80
+        },
+        "accel": {
+          "value": 8,
+          "base": 8
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 1,
+          "base": 1
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 100,
+          "base": 100
+        },
+        "load": {
+          "value": 250,
+          "base": 250
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

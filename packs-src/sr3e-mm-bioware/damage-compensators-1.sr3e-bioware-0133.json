@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-bioware-0133",
+  "doc": {
+    "_id": "sr3e-bioware-0133",
+    "name": "Damage Compensators[1]",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Cultured",
+      "grade": "Cultured",
+      "bioIndex": 0.2,
+      "cost": 25000,
+      "availability": "6/6 days",
+      "streetIndex": 2.5,
+      "mods": "",
+      "bookPage": "mm.072",
+      "rating": 1,
+      "description": "-1 box injury modifiers",
+      "srcgName": "Damage Comp.[1]"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,34 @@
+{
+  "_key": "!items!83f57d5d112995b7",
+  "doc": {
+    "_id": "83f57d5d112995b7",
+    "name": "Anti-Personnel LRR Grenade",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "5",
+      "damage": "12S(f)",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "rounds",
+      "rounds": 1,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 3,
+      "cost": 150,
+      "availability": "5/36hrs",
+      "streetIndex": "3",
+      "bookPage": "fof.48",
+      "notes": "<p>Not one of the types this system models, or a combination of them — its rules are the GM's.</p><p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>"
+    }
+  },
+  "embedded": {}
+}

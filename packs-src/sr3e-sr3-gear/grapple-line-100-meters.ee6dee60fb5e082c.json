@@ -1,0 +1,30 @@
+{
+  "_key": "!items!ee6dee60fb5e082c",
+  "doc": {
+    "_id": "ee6dee60fb5e082c",
+    "name": "Grapple Line (100 meters)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 50,
+      "weight": 2,
+      "availability": "4/36hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.295",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

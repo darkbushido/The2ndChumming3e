@@ -1,0 +1,30 @@
+{
+  "_key": "!items!cd11d8ad6cb09063",
+  "doc": {
+    "_id": "cd11d8ad6cb09063",
+    "name": "Rangefinder",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-",
+      "rating": null,
+      "cost": 150,
+      "weight": 0.1,
+      "availability": "2/24hrs",
+      "streetIndex": ".8",
+      "bookPage": "cc.33",
+      "description": "<p><strong>Mount:</strong> Top/Under</p>"
+    }
+  },
+  "embedded": {}
+}

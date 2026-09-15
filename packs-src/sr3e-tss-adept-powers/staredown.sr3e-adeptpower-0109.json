@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0109",
+  "doc": {
+    "_id": "sr3e-adeptpower-0109",
+    "name": "Staredown",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 2,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "tss.18",
+      "description": "Opposed Will(4) test with opponent, for every 2 net successes the winner rolls, the loser hesitates 1 phase.  Tie results in deadlock; either both lose phase and start again or someone forfeits one to end."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

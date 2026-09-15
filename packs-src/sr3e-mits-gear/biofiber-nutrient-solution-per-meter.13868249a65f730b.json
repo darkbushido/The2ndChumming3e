@@ -1,0 +1,30 @@
+{
+  "_key": "!items!13868249a65f730b",
+  "doc": {
+    "_id": "13868249a65f730b",
+    "name": "Biofiber Nutrient Solution per meter",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Magical Equipment"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Magical Equipment",
+      "concealability": "",
+      "rating": null,
+      "cost": 5,
+      "weight": 0,
+      "availability": "6/1wk",
+      "streetIndex": "1",
+      "bookPage": "mits.170",
+      "description": "<p><strong>KarmaCost:</strong> 0</p>"
+    }
+  },
+  "embedded": {}
+}

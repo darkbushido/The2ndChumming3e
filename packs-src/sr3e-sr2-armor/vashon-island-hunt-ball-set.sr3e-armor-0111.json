@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0111",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0111",
+    "name": "Vashon Island Hunt Ball Set",
+    "type": "armor",
+    "system": {
+      "concealability": "varies",
+      "ballistic": 0,
+      "impact": 0,
+      "weight": 0,
+      "availability": "5/48hrs",
+      "cost": 3000,
+      "streetIndex": ".75",
+      "bookPage": "fof.94",
+      "notes": "Ballistic: varies | Impact: varies"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0150",
+  "doc": {
+    "_id": "sr3e-vehicle-0150",
+    "name": "Aztechnology Aguilar-EX",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "helicopter",
+      "cost": 1508250,
+      "streetIndex": 3,
+      "availability": "NA",
+      "bookPage": "r3.183",
+      "seating": 2,
+      "notes": "External Fixed Hardpoint, 5 External Missle Mounts, ECM 6, ECCM 7, 2 Medium Launch Control Systems",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 350,
+          "base": 350
+        },
+        "accel": {
+          "value": 27,
+          "base": 27
+        },
+        "body": {
+          "value": 5,
+          "base": 5
+        },
+        "armor": {
+          "value": 5,
+          "base": 5
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 4,
+          "base": 4
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 7,
+          "base": 7
+        },
+        "cargo": {
+          "value": 2,
+          "base": 2
+        },
+        "load": {
+          "value": 1560,
+          "base": 1560
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

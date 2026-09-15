@@ -1,0 +1,30 @@
+{
+  "_key": "!items!2ed71b84e4e74cfe",
+  "doc": {
+    "_id": "2ed71b84e4e74cfe",
+    "name": "Mind Games Chip",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": null,
+      "cost": 750,
+      "weight": 0,
+      "availability": "always",
+      "streetIndex": ".6",
+      "bookPage": "sr2.244",
+      "description": "<p><strong>Type:</strong> Know<br><strong>Memory:</strong> depends on game</p>"
+    }
+  },
+  "embedded": {}
+}

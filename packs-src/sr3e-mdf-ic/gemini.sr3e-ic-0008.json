@@ -1,0 +1,24 @@
+{
+  "_key": "!actors!sr3e-ic-0008",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/agent-default.webp",
+    "_id": "sr3e-ic-0008",
+    "name": "Gemini",
+    "type": "ic",
+    "system": {
+      "icType": "Gemini",
+      "grading": "Gray",
+      "rating": 6,
+      "systemRating": 6,
+      "memoryRequired": 20,
+      "damage": "6M Stun",
+      "hostSecurityTier": "Orange",
+      "notes": "<p>Splits into multiple instances to overwhelm deckers with simultaneous attacks. Ability: Instance.</p>",
+      "woundValue": 0,
+      "bookPage": "matrix-defragged.42"
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

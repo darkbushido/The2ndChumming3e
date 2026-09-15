@@ -1,0 +1,30 @@
+{
+  "_key": "!items!55a2231612a385f2",
+  "doc": {
+    "_id": "55a2231612a385f2",
+    "name": "Bow Accessory Mount",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-1)",
+      "rating": null,
+      "cost": 100,
+      "weight": 0.1,
+      "availability": "2/24hrs",
+      "streetIndex": ".9",
+      "bookPage": "ssc.13",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

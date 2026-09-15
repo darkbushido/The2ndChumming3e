@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0147",
+  "doc": {
+    "_id": "sr3e-firearm-0147",
+    "name": "SuperEagle",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "7(c)",
+      "mode": "SA",
+      "damage": "11M",
+      "weight": "2.75",
+      "availability": "6/48hrs",
+      "cost": 600,
+      "streetIndex": "1.5",
+      "accessories": "Smartlink",
+      "bookPage": "pw.21",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

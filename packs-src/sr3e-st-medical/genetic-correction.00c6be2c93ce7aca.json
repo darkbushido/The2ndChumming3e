@@ -1,0 +1,28 @@
+{
+  "_key": "!items!00c6be2c93ce7aca",
+  "doc": {
+    "_id": "00c6be2c93ce7aca",
+    "name": "Genetic Correction",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "",
+      "weight": "-",
+      "cost": 60000,
+      "availability": "6/30days",
+      "streetIndex": "2.5",
+      "bookPage": "st.74",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

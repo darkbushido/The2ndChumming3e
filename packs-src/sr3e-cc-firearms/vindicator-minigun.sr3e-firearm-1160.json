@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1160",
+  "doc": {
+    "_id": "sr3e-firearm-1160",
+    "name": "Vindicator Minigun",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "MinG",
+      "skill": "Gunnery",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "50(c)/Belt",
+      "mode": "FA",
+      "damage": "7S",
+      "weight": "15",
+      "availability": "24/14days",
+      "cost": 2500,
+      "streetIndex": "2",
+      "accessories": "None",
+      "bookPage": "cc.26",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

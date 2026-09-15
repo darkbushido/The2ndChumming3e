@@ -1,0 +1,30 @@
+{
+  "_key": "!items!fb6c3ede531babee",
+  "doc": {
+    "_id": "fb6c3ede531babee",
+    "name": "Wrist Computer (25Mp)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "6",
+      "rating": null,
+      "cost": 10000,
+      "weight": 0,
+      "availability": "Always",
+      "streetIndex": "1.5",
+      "bookPage": "sr3.287",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

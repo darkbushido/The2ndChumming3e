@@ -1,0 +1,19 @@
+{
+  "_key": "!items!db8ab2e0b009bbd0",
+  "doc": {
+    "_id": "db8ab2e0b009bbd0",
+    "name": "Attack (Moderate)",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Attack (Moderate)",
+      "category": "attack",
+      "multiplier": 3,
+      "rating": 0,
+      "bookPage": "sr3.221",
+      "description": "<p><strong>Offensive utility</strong> · Multiplier 3 — size in Mp = Rating² × 3 (Program Size Table). See SR3 p.221 for what it does.</p>"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

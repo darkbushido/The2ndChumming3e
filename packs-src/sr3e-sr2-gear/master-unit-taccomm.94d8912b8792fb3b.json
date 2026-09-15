@@ -1,0 +1,30 @@
+{
+  "_key": "!items!94d8912b8792fb3b",
+  "doc": {
+    "_id": "94d8912b8792fb3b",
+    "name": "Master Unit (TacComm",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 24,
+      "weight": 14,
+      "availability": "75",
+      "streetIndex": "60000",
+      "bookPage": "sr2.252",
+      "description": "<p><strong>:</strong> 3</p>"
+    }
+  },
+  "embedded": {}
+}

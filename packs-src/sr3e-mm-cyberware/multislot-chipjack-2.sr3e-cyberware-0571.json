@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0571",
+  "doc": {
+    "_id": "sr3e-cyberware-0571",
+    "name": "MultiSlot Chipjack 2",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Headware",
+      "essenceCost": 0.25,
+      "cost": 2000,
+      "availability": "3/72 hours",
+      "streetIndex": 0.9,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.21",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Holds 2 chips, access to datasofts and knowsofts"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

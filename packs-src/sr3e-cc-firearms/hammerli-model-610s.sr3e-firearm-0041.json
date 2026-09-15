@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0041",
+  "doc": {
+    "_id": "sr3e-firearm-0041",
+    "name": "Hammerli Model 610S",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "6(c)",
+      "mode": "SA",
+      "damage": "6L",
+      "weight": "2.5",
+      "availability": "8/24hrs",
+      "cost": 1300,
+      "streetIndex": "2.5",
+      "accessories": "LPist uses HPist ranges,Gas Vent I(1RC)",
+      "bookPage": "cc.18",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

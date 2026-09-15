@@ -1,0 +1,29 @@
+{
+  "_key": "!items!cf3a7579e7079ce1",
+  "doc": {
+    "_id": "cf3a7579e7079ce1",
+    "name": "+Heads Up Display - 100 MPs",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "-",
+      "ballistic": 0,
+      "impact": 0,
+      "weight": 0,
+      "cost": 1000,
+      "availability": "-",
+      "streetIndex": "2",
+      "bookPage": "cc.51",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

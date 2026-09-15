@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0172",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0172",
+    "name": "ED [4]",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 75000,
+      "availability": "10/3months",
+      "streetIndex": "4.5",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "64 hrs/Electronics B/R(4)",
+      "cfCost": "6",
+      "load": "45kg",
+      "bookPage": "r3.145",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

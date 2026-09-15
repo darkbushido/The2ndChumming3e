@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0170",
+  "doc": {
+    "_id": "sr3e-bioware-0170",
+    "name": "Maintainance session",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Genetech",
+      "grade": "Exotic",
+      "bioIndex": 0,
+      "cost": 100000,
+      "availability": "8/30 days",
+      "streetIndex": 2.5,
+      "mods": "",
+      "bookPage": "sota.026",
+      "rating": 0,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

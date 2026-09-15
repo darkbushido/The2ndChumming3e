@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0079",
+  "doc": {
+    "_id": "sr3e-adeptpower-0079",
+    "name": "Magical Power(Path:Magician)*",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 1,
+      "hasLevels": true,
+      "level": 1,
+      "mods": "+1MAG",
+      "bookPage": "mits.022",
+      "description": "MagicLevel=Total"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,28 @@
+{
+  "_key": "!items!767f83daee90eea0",
+  "doc": {
+    "_id": "767f83daee90eea0",
+    "name": "Beta Hospital Rating 3",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "3",
+      "weight": "-",
+      "cost": 104976000,
+      "availability": "11/1mo",
+      "streetIndex": "3",
+      "bookPage": "mm.138",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

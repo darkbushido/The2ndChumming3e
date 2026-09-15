@@ -1,0 +1,30 @@
+{
+  "_key": "!items!0095a422b38a6776",
+  "doc": {
+    "_id": "0095a422b38a6776",
+    "name": "Corporate Officer VisRec Chip2",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 2,
+      "cost": 12000,
+      "weight": 0,
+      "availability": "10/4days",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.244",
+      "description": "<p><strong>Type:</strong> Know<br><strong>Memory:</strong> 80</p>"
+    }
+  },
+  "embedded": {}
+}

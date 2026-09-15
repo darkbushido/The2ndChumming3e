@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0108",
+  "doc": {
+    "_id": "sr3e-firearm-0108",
+    "name": "FN 5-7 [TSS version]",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "20(c)",
+      "mode": "SS",
+      "damage": "8M",
+      "weight": "2.5",
+      "availability": "2/3weeks",
+      "cost": 800,
+      "streetIndex": "3",
+      "accessories": "None",
+      "bookPage": "tss.2",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

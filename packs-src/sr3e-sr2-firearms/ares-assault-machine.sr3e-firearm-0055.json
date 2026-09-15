@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0055",
+  "doc": {
+    "_id": "sr3e-firearm-0055",
+    "name": "Ares Assault Machine",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "MaPist",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "6",
+      "ammunition": "40(c)",
+      "mode": "SA/BF/FA",
+      "damage": "6L",
+      "weight": "2.75",
+      "availability": "8/36hrs",
+      "cost": 1000,
+      "streetIndex": "2",
+      "accessories": "Improved Gas Vent (2)",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

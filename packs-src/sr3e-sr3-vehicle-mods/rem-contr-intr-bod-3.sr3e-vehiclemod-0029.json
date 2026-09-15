@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0029",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0029",
+    "name": "Rem-Contr. Intr.  Bod[3]",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 7500,
+      "availability": "4/72hrs",
+      "streetIndex": "2",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "16 hrs/Vehicle B/R(4), Electronics B/R(4)",
+      "cfCost": "0",
+      "load": "",
+      "bookPage": "sr3.306,r3.130",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

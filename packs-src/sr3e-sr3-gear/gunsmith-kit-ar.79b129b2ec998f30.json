@@ -1,0 +1,30 @@
+{
+  "_key": "!items!79b129b2ec998f30",
+  "doc": {
+    "_id": "79b129b2ec998f30",
+    "name": "Gunsmith Kit (AR)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "3",
+      "rating": null,
+      "cost": 1000,
+      "weight": 5,
+      "availability": "5/48hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.288,cc.72",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

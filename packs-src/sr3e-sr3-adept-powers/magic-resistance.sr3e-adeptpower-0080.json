@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0080",
+  "doc": {
+    "_id": "sr3e-adeptpower-0080",
+    "name": "Magic Resistance*",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 1,
+      "hasLevels": true,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sr3.170",
+      "description": "You posses an inherent resistance to sorcery.  Add 1 die per level of this power toall you Spell Resistance Tests."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

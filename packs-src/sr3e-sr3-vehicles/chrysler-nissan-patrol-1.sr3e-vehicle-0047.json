@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0047",
+  "doc": {
+    "_id": "sr3e-vehicle-0047",
+    "name": "Chrysler-Nissan Patrol-1",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 43700,
+      "streetIndex": 2,
+      "availability": "9/9days",
+      "bookPage": "sr3.310,r3.165",
+      "seating": 3,
+      "notes": "Gas Enviroseal, Turbocharging 2(factored in), Electronics Port w/Radio(Rating 4 1.2CF), 2 Pintle Mounts | Seating: 2+1b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 8,
+          "base": 8
+        },
+        "speed": {
+          "value": 180,
+          "base": 180
+        },
+        "accel": {
+          "value": 12,
+          "base": 12
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 2,
+          "base": 2
+        },
+        "sig": {
+          "value": 1,
+          "base": 1
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 11,
+          "base": 11
+        },
+        "load": {
+          "value": 40,
+          "base": 40
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

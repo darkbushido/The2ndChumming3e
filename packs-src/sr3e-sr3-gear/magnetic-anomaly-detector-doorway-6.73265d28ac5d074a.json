@@ -1,0 +1,30 @@
+{
+  "_key": "!items!73265d28ac5d074a",
+  "doc": {
+    "_id": "73265d28ac5d074a",
+    "name": "Magnetic Anomaly Detector - Doorway [6]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "8",
+      "rating": 6,
+      "cost": 30000,
+      "weight": 0,
+      "availability": "6/2wks",
+      "streetIndex": "3",
+      "bookPage": "sr3.294",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

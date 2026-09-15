@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0146",
+  "doc": {
+    "_id": "sr3e-firearm-0146",
+    "name": "SternMeyer Type5     (HPist) 3",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "8(c)",
+      "mode": "SA",
+      "damage": "9M",
+      "weight": "2.5",
+      "availability": "4/36hrs",
+      "cost": 400,
+      "streetIndex": "1",
+      "accessories": "None",
+      "bookPage": "pw.17",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

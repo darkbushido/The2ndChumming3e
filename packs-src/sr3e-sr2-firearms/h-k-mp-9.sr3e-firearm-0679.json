@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0679",
+  "doc": {
+    "_id": "sr3e-firearm-0679",
+    "name": "H&K MP-9",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "25(c)",
+      "mode": "SA/BF",
+      "damage": "7M",
+      "weight": "3.75",
+      "availability": "5/36hrs",
+      "cost": 900,
+      "streetIndex": "1",
+      "accessories": "Gas Vent (3), Smartlink",
+      "bookPage": "pw.22",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

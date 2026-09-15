@@ -1,0 +1,30 @@
+{
+  "_key": "!items!fa469c9b15512861",
+  "doc": {
+    "_id": "fa469c9b15512861",
+    "name": "Imaging Scope",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-1)",
+      "rating": 2,
+      "cost": 800,
+      "weight": 0.25,
+      "availability": "3/36hrs",
+      "streetIndex": ".9",
+      "bookPage": "sr3.282",
+      "description": "<p><strong>Mount:</strong> Top</p>"
+    }
+  },
+  "embedded": {}
+}

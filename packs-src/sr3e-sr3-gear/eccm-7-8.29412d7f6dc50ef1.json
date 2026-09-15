@@ -1,0 +1,30 @@
+{
+  "_key": "!items!29412d7f6dc50ef1",
+  "doc": {
+    "_id": "29412d7f6dc50ef1",
+    "name": "ECCM +7 [8]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 8,
+      "cost": 7000,
+      "weight": 0,
+      "availability": "+7",
+      "streetIndex": "+3.5",
+      "bookPage": "sr3.290",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

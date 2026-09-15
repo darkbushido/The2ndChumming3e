@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0029",
+  "doc": {
+    "_id": "sr3e-vehicle-0029",
+    "name": "Marine Technologies Dolphin II",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "boat",
+      "cost": 125000,
+      "streetIndex": 2,
+      "availability": "11/11days",
+      "bookPage": "r3.162",
+      "seating": 1,
+      "notes": "6 Improved Living Amenities, 10-man Life Raft | Alt-mode Sig/Autonav: 2(2)/4 | Alt-mode Cargo/Load: 9[210PS]/1200 | Alt-mode Pilot/Sensor: -/1(0)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 45,
+          "base": 45
+        },
+        "accel": {
+          "value": 4,
+          "base": 4
+        },
+        "body": {
+          "value": 8,
+          "base": 8
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 4,
+          "base": 4
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 9,
+          "base": 9
+        },
+        "load": {
+          "value": 1200,
+          "base": 1200
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

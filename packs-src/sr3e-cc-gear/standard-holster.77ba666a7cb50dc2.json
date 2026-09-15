@@ -1,0 +1,30 @@
+{
+  "_key": "!items!77ba666a7cb50dc2",
+  "doc": {
+    "_id": "77ba666a7cb50dc2",
+    "name": "Standard Holster",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-",
+      "rating": null,
+      "cost": 40,
+      "weight": 0.1,
+      "availability": "2/12hrs",
+      "streetIndex": ".75",
+      "bookPage": "cc.33",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

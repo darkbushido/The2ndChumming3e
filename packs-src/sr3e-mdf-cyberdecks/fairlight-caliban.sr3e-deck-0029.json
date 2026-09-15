@@ -1,0 +1,90 @@
+{
+  "_key": "!items!sr3e-deck-0029",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/cyberdeck-default.webp",
+    "_id": "sr3e-deck-0029",
+    "name": "Fairlight Caliban",
+    "type": "cyberdeck",
+    "system": {
+      "era": "2070s Commlinks (4e)",
+      "cost": 604800,
+      "streetIndex": 0,
+      "availability": "20/7 days",
+      "legalityCode": "4P-S",
+      "weight": 0,
+      "notes": "Fairlight's commlink masterpiece. Astronomical price.",
+      "damage": {
+        "matrixConditionMonitor": {
+          "boxes": 10,
+          "current": 0,
+          "woundPenalties": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        "burnedSlots": []
+      },
+      "attributes": {
+        "mpcp": {
+          "value": 11,
+          "base": 11,
+          "multiplier": 8,
+          "costPerMp": 300
+        },
+        "firewall": {
+          "value": 3,
+          "base": 3,
+          "multiplier": 8,
+          "costPerMp": 200
+        },
+        "response": {
+          "value": 5,
+          "base": 5,
+          "maxLevel": 0,
+          "initiativeDice": 0,
+          "reactionBonus": 0
+        },
+        "memory": {
+          "total": 5500,
+          "used": 0,
+          "unit": "Mp"
+        },
+        "utilitySlots": {
+          "total": 0,
+          "available": 0
+        },
+        "dataTransferRate": {
+          "value": 110,
+          "unit": "Mp per Combat Turn"
+        },
+        "fluxRating": {
+          "value": 1,
+          "wireless": false
+        }
+      },
+      "derivedStats": {
+        "matrixInitiative": {
+          "base": 0,
+          "dice": "0d6",
+          "userModeRequired": "VR-Hot"
+        },
+        "hackingPoolBonus": 0,
+        "personaStorage": 0,
+        "iconPhysicalStats": {
+          "strength": 0,
+          "quickness": 0
+        }
+      },
+      "modules": [],
+      "utilitySlotsArray": [],
+      "storedUtilities": [],
+      "bookPage": "matrix-defragged.35"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

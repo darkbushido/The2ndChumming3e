@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0112",
+  "doc": {
+    "_id": "sr3e-firearm-0112",
+    "name": "Glck22 Mk. III SmartII",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "15(c)",
+      "mode": "SA",
+      "damage": "9M",
+      "weight": "2.5",
+      "availability": "6/24hrs",
+      "cost": 1000,
+      "streetIndex": "1.5",
+      "accessories": "Smartlink-2",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

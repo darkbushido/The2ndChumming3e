@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0089",
+  "doc": {
+    "_id": "sr3e-adeptpower-0089",
+    "name": "Mystic Armor*",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": true,
+      "level": 1,
+      "mods": "+1IMP",
+      "bookPage": "sr3.170",
+      "description": "This power magically toughens your skin to resist the effects of damage. Each level providesyou with 1 point of Impact Armor, cumulative with any worn Impact Armor."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

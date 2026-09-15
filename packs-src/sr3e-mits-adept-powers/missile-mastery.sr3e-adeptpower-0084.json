@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0084",
+  "doc": {
+    "_id": "sr3e-adeptpower-0084",
+    "name": "Missile Mastery",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 1,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "mits.150",
+      "description": "Masy use as throwing weapons such normally harmless items such as pens, credsticks and ID cards become deadly weapons in the adepts hands . . ."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

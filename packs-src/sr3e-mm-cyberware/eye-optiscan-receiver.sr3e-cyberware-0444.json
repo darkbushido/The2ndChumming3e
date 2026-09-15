@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0444",
+  "doc": {
+    "_id": "sr3e-cyberware-0444",
+    "name": "Eye, Optiscan Receiver",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Eyeware",
+      "essenceCost": 0,
+      "cost": 2000,
+      "availability": "8/2 weeks",
+      "streetIndex": 2,
+      "legalCode": "5P-N",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.14",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Communicate with eye lasers"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

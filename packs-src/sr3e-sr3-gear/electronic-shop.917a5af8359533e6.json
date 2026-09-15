@@ -1,0 +1,30 @@
+{
+  "_key": "!items!917a5af8359533e6",
+  "doc": {
+    "_id": "917a5af8359533e6",
+    "name": "Electronic Shop",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 15000,
+      "weight": 0,
+      "availability": "8/72hrs",
+      "streetIndex": "3",
+      "bookPage": "sr3.288",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

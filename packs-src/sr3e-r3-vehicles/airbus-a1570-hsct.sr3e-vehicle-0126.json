@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0126",
+  "doc": {
+    "_id": "sr3e-vehicle-0126",
+    "name": "Airbus A1570 HSCT",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "fixedwing",
+      "cost": 8040000,
+      "streetIndex": 1,
+      "availability": "NA",
+      "bookPage": "r3.178",
+      "seating": 124,
+      "notes": "Rigger Adaption, 6 Partial Basic Living Amenities | Alt-mode Speed/Accel: 125(3000)/80",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 6,
+          "base": 6
+        },
+        "handlingOffRoad": {
+          "value": 6,
+          "base": 6
+        },
+        "speed": {
+          "value": 125,
+          "base": 125
+        },
+        "accel": {
+          "value": 80,
+          "base": 80
+        },
+        "body": {
+          "value": 10,
+          "base": 10
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 4,
+          "base": 4
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 4,
+          "base": 4
+        },
+        "cargo": {
+          "value": 360,
+          "base": 360
+        },
+        "load": {
+          "value": 10000,
+          "base": 10000
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

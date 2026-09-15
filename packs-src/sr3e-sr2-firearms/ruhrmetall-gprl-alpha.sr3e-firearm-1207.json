@@ -1,0 +1,28 @@
+{
+  "_key": "!items!sr3e-firearm-1207",
+  "doc": {
+    "_id": "sr3e-firearm-1207",
+    "name": "Ruhrmetall GPRL-Alpha",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "MisLn",
+      "skill": "Gunnery",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "4(m)",
+      "mode": "SS",
+      "damage": "(Missile)",
+      "weight": "9.5",
+      "availability": "13/28days",
+      "cost": 9000,
+      "streetIndex": "2",
+      "accessories": "None",
+      "bookPage": "pw.33",
+      "notes": "",
+      "isAoE": true
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

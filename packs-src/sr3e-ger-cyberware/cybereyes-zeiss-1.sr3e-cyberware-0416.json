@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0416",
+  "doc": {
+    "_id": "sr3e-cyberware-0416",
+    "name": "Cybereyes Zeiss [1]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Eyeware",
+      "essenceCost": 0.15,
+      "cost": 31000,
+      "availability": "4/48 hours",
+      "streetIndex": 1.25,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "ger.184",
+      "grade": "Standard",
+      "rating": 1,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

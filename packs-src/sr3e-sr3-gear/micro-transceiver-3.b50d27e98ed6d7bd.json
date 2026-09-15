@@ -1,0 +1,30 @@
+{
+  "_key": "!items!b50d27e98ed6d7bd",
+  "doc": {
+    "_id": "b50d27e98ed6d7bd",
+    "name": "Micro-Transceiver [3]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "10",
+      "rating": 3,
+      "cost": 3000,
+      "weight": 0,
+      "availability": "3/48hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.290",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

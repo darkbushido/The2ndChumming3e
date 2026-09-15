@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0090",
+  "doc": {
+    "_id": "sr3e-vehicle-0090",
+    "name": "Volkswagen Beetle III",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 12000,
+      "streetIndex": 1,
+      "availability": "2/24hrs",
+      "bookPage": "tss.6",
+      "seating": 2,
+      "notes": "Gridlink",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 6,
+          "base": 6
+        },
+        "speed": {
+          "value": 90,
+          "base": 90
+        },
+        "accel": {
+          "value": 5,
+          "base": 5
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 6,
+          "base": 6
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 5,
+          "base": 5
+        },
+        "load": {
+          "value": 50,
+          "base": 50
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

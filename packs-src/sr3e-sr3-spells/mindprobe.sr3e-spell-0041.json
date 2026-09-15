@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0041",
+  "doc": {
+    "_id": "sr3e-spell-0041",
+    "name": "Mindprobe",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Detection",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "T/D",
+      "drain": "(S)",
+      "target": "W(R)",
+      "bookPage": "sr3.193",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

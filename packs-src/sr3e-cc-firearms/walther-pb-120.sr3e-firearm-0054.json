@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0054",
+  "doc": {
+    "_id": "sr3e-firearm-0054",
+    "name": "Walther PB-120",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "8(6)",
+      "ammunition": "10(15)(c)",
+      "mode": "SA",
+      "damage": "6L",
+      "weight": ".75",
+      "availability": "6/36hrs",
+      "cost": 700,
+      "streetIndex": "2",
+      "accessories": "None",
+      "bookPage": "cc.18",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

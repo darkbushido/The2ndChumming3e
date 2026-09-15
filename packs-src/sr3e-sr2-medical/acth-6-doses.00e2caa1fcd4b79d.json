@@ -1,0 +1,28 @@
+{
+  "_key": "!items!00e2caa1fcd4b79d",
+  "doc": {
+    "_id": "00e2caa1fcd4b79d",
+    "name": "ACTH (6 doses)",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "",
+      "weight": "-",
+      "cost": 100,
+      "availability": "5/12hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.258",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0313",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0313",
+    "name": "\"Mirage Gear\"",
+    "type": "armor",
+    "system": {
+      "concealability": "+2",
+      "ballistic": 1,
+      "impact": 0,
+      "weight": 1.5,
+      "availability": "5/48hrs",
+      "cost": 1050,
+      "streetIndex": "3",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

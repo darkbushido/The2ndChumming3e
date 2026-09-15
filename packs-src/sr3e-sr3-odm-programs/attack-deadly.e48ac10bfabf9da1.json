@@ -1,0 +1,19 @@
+{
+  "_key": "!items!e48ac10bfabf9da1",
+  "doc": {
+    "_id": "e48ac10bfabf9da1",
+    "name": "Attack (Deadly)",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Attack (Deadly)",
+      "category": "attack",
+      "multiplier": 5,
+      "rating": 0,
+      "bookPage": "sr3.221",
+      "description": "<p><strong>Offensive utility</strong> · Multiplier 5 — size in Mp = Rating² × 5 (Program Size Table). See SR3 p.221 for what it does.</p>"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

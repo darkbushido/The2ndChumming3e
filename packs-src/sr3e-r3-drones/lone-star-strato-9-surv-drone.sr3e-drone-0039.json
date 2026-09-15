@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0039",
+  "doc": {
+    "_id": "sr3e-drone-0039",
+    "name": "Lone Star Strato-9 Surv. Drone",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 34500,
+      "streetIndex": 2,
+      "availability": "8/8 days",
+      "seating": 0,
+      "bookPage": "r3.176",
+      "notes": "ECM 2, External Fixed Hardpoint w/MMG(w/GasVent-III and 500 rds. ammo), Remote-Control Interface, Rigger Adaptation",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 100,
+          "base": 100
+        },
+        "accel": {
+          "value": 9,
+          "base": 9
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 4,
+          "base": 4
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 2,
+          "base": 2
+        },
+        "sensor": {
+          "value": 5,
+          "base": 5
+        },
+        "cargo": {
+          "value": 1,
+          "base": 1
+        },
+        "load": {
+          "value": 20,
+          "base": 20
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

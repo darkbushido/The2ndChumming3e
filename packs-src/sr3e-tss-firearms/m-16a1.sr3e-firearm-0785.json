@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0785",
+  "doc": {
+    "_id": "sr3e-firearm-0785",
+    "name": "M-16A1",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "AsRf",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "3",
+      "ammunition": "20(c)",
+      "mode": "SA/BF/FA",
+      "damage": "9M",
+      "weight": "4",
+      "availability": "8/4days",
+      "cost": 1500,
+      "streetIndex": "2",
+      "accessories": "available 30 round banana clips",
+      "bookPage": "tss.3",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

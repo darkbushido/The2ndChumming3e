@@ -1,0 +1,28 @@
+{
+  "_key": "!items!8d25d6a1b9310243",
+  "doc": {
+    "_id": "8d25d6a1b9310243",
+    "name": "Delta Medical Clinic Rating 1",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "1",
+      "weight": "-",
+      "cost": 200000,
+      "availability": "12/1wk",
+      "streetIndex": "2",
+      "bookPage": "mm.138",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

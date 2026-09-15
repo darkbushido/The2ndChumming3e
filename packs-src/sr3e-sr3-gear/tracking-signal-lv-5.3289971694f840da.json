@@ -1,0 +1,30 @@
+{
+  "_key": "!items!3289971694f840da",
+  "doc": {
+    "_id": "3289971694f840da",
+    "name": "Tracking Signal Lv [5]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "9",
+      "rating": 5,
+      "cost": 2500,
+      "weight": 0,
+      "availability": "5/72hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.292",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

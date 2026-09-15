@@ -1,0 +1,30 @@
+{
+  "_key": "!items!e2c7eb97a6626f0d",
+  "doc": {
+    "_id": "e2c7eb97a6626f0d",
+    "name": "Herbals Refined",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Magical Equipment"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Magical Equipment",
+      "concealability": "",
+      "rating": null,
+      "cost": 100,
+      "weight": 0,
+      "availability": "-",
+      "streetIndex": "-",
+      "bookPage": "sr2.158",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

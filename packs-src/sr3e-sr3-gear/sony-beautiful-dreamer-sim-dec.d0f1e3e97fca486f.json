@@ -1,0 +1,30 @@
+{
+  "_key": "!items!d0f1e3e97fca486f",
+  "doc": {
+    "_id": "d0f1e3e97fca486f",
+    "name": "Sony Beautiful Dreamer Sim Dec",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "8",
+      "rating": null,
+      "cost": 200,
+      "weight": 0.5,
+      "availability": "always",
+      "streetIndex": "1",
+      "bookPage": "sr3.285",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

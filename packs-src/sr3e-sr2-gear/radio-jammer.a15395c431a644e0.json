@@ -1,0 +1,30 @@
+{
+  "_key": "!items!a15395c431a644e0",
+  "doc": {
+    "_id": "a15395c431a644e0",
+    "name": "Radio Jammer",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 5,
+      "weight": 0,
+      "availability": "-",
+      "streetIndex": "100",
+      "bookPage": "sr2.252",
+      "description": "<p><strong>:</strong> 1</p>"
+    }
+  },
+  "embedded": {}
+}

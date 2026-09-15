@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0112",
+  "doc": {
+    "_id": "sr3e-vehicle-0112",
+    "name": "Renault-Fiat Eurovan(Camper)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 53000,
+      "streetIndex": 1,
+      "availability": "3/72hrs",
+      "bookPage": "r3.171",
+      "seating": 5,
+      "notes": "Folding Bench Seat, Camper | Seating: 2+3b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 10,
+          "base": 10
+        },
+        "speed": {
+          "value": 105,
+          "base": 105
+        },
+        "accel": {
+          "value": 6,
+          "base": 6
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 90,
+          "base": 90
+        },
+        "load": {
+          "value": 550,
+          "base": 550
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

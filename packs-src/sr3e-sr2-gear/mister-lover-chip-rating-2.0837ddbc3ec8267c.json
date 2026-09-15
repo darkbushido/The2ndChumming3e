@@ -1,0 +1,30 @@
+{
+  "_key": "!items!0837ddbc3ec8267c",
+  "doc": {
+    "_id": "0837ddbc3ec8267c",
+    "name": "Mister Lover Chip Rating 2",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 2,
+      "cost": 200,
+      "weight": 0,
+      "availability": "5/48hrs",
+      "streetIndex": ".9",
+      "bookPage": "sr2.244",
+      "description": "<p><strong>Type:</strong> Active<br><strong>Memory:</strong> 10</p>"
+    }
+  },
+  "embedded": {}
+}

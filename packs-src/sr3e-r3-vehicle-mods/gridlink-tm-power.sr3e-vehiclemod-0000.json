@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0000",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0000",
+    "name": "GridLink(TM)  Power",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 600,
+      "availability": "3/96hrs",
+      "streetIndex": "1",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "16 hrs/Vehicle B/R(4)",
+      "cfCost": "1",
+      "load": "",
+      "bookPage": "r3.126",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

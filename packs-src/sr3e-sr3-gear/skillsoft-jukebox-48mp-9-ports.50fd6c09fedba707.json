@@ -1,0 +1,30 @@
+{
+  "_key": "!items!50fd6c09fedba707",
+  "doc": {
+    "_id": "50fd6c09fedba707",
+    "name": "SkillSoft Jukebox 48MP 9 ports",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 8640,
+      "weight": 0,
+      "availability": "3/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Juk<br><strong>Memory:</strong> 48</p>"
+    }
+  },
+  "embedded": {}
+}

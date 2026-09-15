@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1129",
+  "doc": {
+    "_id": "sr3e-firearm-1129",
+    "name": "Ares HV MP-LMG",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LMG",
+      "skill": "Gunnery",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "80(c)/Belt",
+      "mode": "SA/BF/FA",
+      "damage": "6S",
+      "weight": "8",
+      "availability": "20/14days",
+      "cost": 4500,
+      "streetIndex": "4",
+      "accessories": "RC(3), Smartlink-2, Fires LPist rnds, BF 6 rnds = 12D",
+      "bookPage": "cc.26",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

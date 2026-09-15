@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0104",
+  "doc": {
+    "_id": "sr3e-cyberware-0104",
+    "name": "Filter: Blood [10]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 2,
+      "cost": 100000,
+      "availability": "6/4 days",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.302",
+      "grade": "Standard",
+      "rating": 10,
+      "description": "-10 Power to blood toxins"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

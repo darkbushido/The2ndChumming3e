@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0108",
+  "doc": {
+    "_id": "sr3e-cyberware-0108",
+    "name": "Filter: Ingested Toxin [4]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0.8,
+      "cost": 40000,
+      "availability": "6/4 days",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.302",
+      "grade": "Standard",
+      "rating": 4,
+      "description": "-4 Power to ingested toxins"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

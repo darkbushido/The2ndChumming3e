@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0100",
+  "doc": {
+    "_id": "sr3e-vehicle-0100",
+    "name": "DocWagon CRT Ambulance",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 537000,
+      "streetIndex": 1.5,
+      "availability": "27/27days",
+      "bookPage": "r3.170",
+      "seating": 2,
+      "notes": "Anti-Theft System 6, Medical Clinic(4p/4t 4) | Alt-mode Cargo/Load: 348[336 PS]/1750[800 PS]",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 10,
+          "base": 10
+        },
+        "speed": {
+          "value": 75,
+          "base": 75
+        },
+        "accel": {
+          "value": 6,
+          "base": 6
+        },
+        "body": {
+          "value": 5,
+          "base": 5
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 348,
+          "base": 348
+        },
+        "load": {
+          "value": 1750,
+          "base": 1750
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

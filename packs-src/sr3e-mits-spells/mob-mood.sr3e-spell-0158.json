@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0158",
+  "doc": {
+    "_id": "sr3e-spell-0158",
+    "name": "Mob Mood",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Manipulation",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "LOS(A)",
+      "drain": "+1(S)",
+      "target": "W(T)",
+      "bookPage": "mits.145",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0078",
+  "doc": {
+    "_id": "sr3e-vehicle-0078",
+    "name": "Saab Dynamit 778 TI",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 92000,
+      "streetIndex": 2,
+      "availability": "5/5days",
+      "bookPage": "r3.167",
+      "seating": 3,
+      "notes": "APPS, Roll Bars, Turbocharging 2(factored in) | Seating: 2+1b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 8,
+          "base": 8
+        },
+        "speed": {
+          "value": 250,
+          "base": 250
+        },
+        "accel": {
+          "value": 15,
+          "base": 15
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 1,
+          "base": 1
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 3,
+          "base": 3
+        },
+        "load": {
+          "value": 45,
+          "base": 45
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

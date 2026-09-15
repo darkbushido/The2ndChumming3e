@@ -14,12 +14,16 @@
  * rest are not left "modified" in git (tools/lib/pack-copy.mjs).
  *
  *   node tools/fill-book-pages.mjs [--install] [--check]
+ *
+ * ⚠ **Refreshes `packs-src/` itself** after writing the repo (TODO 12: the JSON source is the truth);
+ *   `--install` writes only the install.
  */
 import { ClassicLevel } from 'classic-level';
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { copyPacks } from './lib/pack-copy.mjs';
+import { extractPack } from './lib/pack-source.mjs';
 import { BookPage } from '../scripts/data/book-page.mjs';
 
 const HERE    = dirname(fileURLToPath(import.meta.url));
@@ -70,6 +74,7 @@ async function main() {
       const db = copy ? await open(join(ROOT, 'packs', pack)) : scan;
       for (const [k, d] of writes) await db.put(k, d);
       await db.close();
+      if (ROOT === REPO) await extractPack(REPO, pack);
     }
   } finally { copy?.cleanup(); }
   console.log(`\n${total} document${total === 1 ? '' : 's'} ${CHECK ? 'would be given' : 'given'} a book and page.`);

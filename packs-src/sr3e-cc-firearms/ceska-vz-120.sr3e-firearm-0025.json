@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0025",
+  "doc": {
+    "_id": "sr3e-firearm-0025",
+    "name": "Ceska vz/120",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "7",
+      "ammunition": "18(c)",
+      "mode": "SA",
+      "damage": "6L",
+      "weight": "1",
+      "availability": "3/12hrs",
+      "cost": 500,
+      "streetIndex": ".8",
+      "accessories": "None",
+      "bookPage": "cc.18",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0082",
+  "doc": {
+    "_id": "sr3e-adeptpower-0082",
+    "name": "Mask",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "tss.4",
+      "description": "Can not be used to reproduce unnatural features, cyberware appears unaltered.  Roll [rating] dice against a TN, which depends on the changes."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

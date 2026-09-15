@@ -1,0 +1,1099 @@
+{
+  "_key": "!actors!qxq5dnZ1ybETg2CL",
+  "doc": {
+    "name": "Troll Street Dealer",
+    "type": "character",
+    "system": {
+      "metatype": "troll",
+      "nuyen": 0,
+      "karma": 0,
+      "totalKarma": 0,
+      "karmaPool": 3,
+      "notes": "<p>Mr. Johnson's Little Black Book, p.57. PR 3. Karma Pool 3.</p>",
+      "attributes": {
+        "body": {
+          "base": 8,
+          "value": 8,
+          "mod": 0,
+          "force": 0
+        },
+        "quickness": {
+          "base": 4,
+          "value": 4,
+          "mod": 0,
+          "force": 0
+        },
+        "strength": {
+          "base": 9,
+          "value": 9,
+          "mod": 0,
+          "force": 0
+        },
+        "charisma": {
+          "base": 3,
+          "value": 3,
+          "mod": 0,
+          "force": 0
+        },
+        "intelligence": {
+          "base": 4,
+          "value": 4,
+          "mod": 0,
+          "force": 0
+        },
+        "willpower": {
+          "base": 3,
+          "value": 3,
+          "mod": 0,
+          "force": 0
+        },
+        "essence": {
+          "base": 6,
+          "value": 0.5,
+          "force": 0,
+          "lost": 5.5
+        },
+        "magic": {
+          "base": 0,
+          "value": 0,
+          "mod": 0,
+          "force": 0
+        },
+        "reaction": {
+          "base": 3,
+          "value": 3,
+          "reactionBonus": 0,
+          "diceBonus": 0,
+          "override": false,
+          "force": 0
+        }
+      },
+      "biography": "",
+      "gender": "",
+      "age": "",
+      "height": "",
+      "weight": "",
+      "ethnicity": "",
+      "reputation": 0,
+      "notoriety": 0,
+      "streetCred": 0,
+      "hackingBonus": 0,
+      "initiativeDiceBonus": 0,
+      "equippedArmor": "",
+      "equippedMelee": "",
+      "activeVCRItemId": "",
+      "equippedCyberdeck": "",
+      "matrixUserMode": "",
+      "activeHostId": "",
+      "currentMatrixNode": "",
+      "matrixMarks": [],
+      "linkLocked": false,
+      "astralMode": "",
+      "magicTradition": "",
+      "magicType": "",
+      "magicTotem": "",
+      "magicElement": "",
+      "initiateGrade": 0,
+      "combatPoolSpent": 0,
+      "combatPoolMod": 0,
+      "spellPoolSpent": 0,
+      "spellPoolMod": 0,
+      "astralPoolSpent": 0,
+      "astralPoolMod": 0,
+      "hackingPoolSpent": 0,
+      "spellDefensePool": 0,
+      "spellDefenseSorceryDice": 0,
+      "fullDefense": false,
+      "fullDefensePool": 0,
+      "recoilCompensation": 0,
+      "roundsFiredThisPhase": 0,
+      "stimBonus": 0,
+      "wounds": {
+        "stun": {
+          "value": 0,
+          "max": 10
+        },
+        "physical": {
+          "value": 0,
+          "max": 10
+        },
+        "overflow": {
+          "value": 0
+        }
+      },
+      "ew": {
+        "deckRating": 0,
+        "fluxRating": 0,
+        "protocolModule": 0,
+        "ivisPool": {
+          "value": 0,
+          "max": 0
+        }
+      },
+      "orthodoxDeck": {
+        "deckModel": "",
+        "mccp": 0,
+        "bod": 0,
+        "evasion": 0,
+        "masking": 0,
+        "sensor": 0,
+        "hardening": 0,
+        "activeMemory": 0,
+        "storageMemory": 0,
+        "ioSpeed": 0,
+        "responseIncrease": 0,
+        "sleazeRating": 0
+      },
+      "orthodoxRunState": {
+        "securityTally": 0,
+        "alertLevel": "none",
+        "currentHostId": ""
+      },
+      "orthodoxMatrixCM": {
+        "value": 0
+      },
+      "professionalRating": 3,
+      "bookPage": "lbb.57"
+    },
+    "_id": "qxq5dnZ1ybETg2CL",
+    "img": "icons/svg/mystery-man.svg",
+    "prototypeToken": {
+      "name": "Troll Street Dealer",
+      "displayName": 0,
+      "actorLink": true,
+      "width": 1,
+      "height": 1,
+      "depth": 1,
+      "texture": {
+        "src": "icons/svg/mystery-man.svg",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "fit": "contain",
+        "scaleX": 1,
+        "scaleY": 1,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "lockRotation": false,
+      "rotation": 0,
+      "alpha": 1,
+      "disposition": -1,
+      "displayBars": 20,
+      "bar1": {
+        "attribute": "wounds.physical"
+      },
+      "bar2": {
+        "attribute": "wounds.stun"
+      },
+      "light": {
+        "negative": false,
+        "priority": 0,
+        "alpha": 0.5,
+        "angle": 360,
+        "bright": 0,
+        "color": null,
+        "coloration": 1,
+        "dim": 0,
+        "attenuation": 0.5,
+        "luminosity": 0.5,
+        "saturation": 0,
+        "contrast": 0,
+        "shadows": 0,
+        "animation": {
+          "type": null,
+          "speed": 5,
+          "intensity": 5,
+          "reverse": false
+        },
+        "darkness": {
+          "min": 0,
+          "max": 1
+        }
+      },
+      "sight": {
+        "enabled": false,
+        "range": 0,
+        "angle": 360,
+        "visionMode": "basic",
+        "color": null,
+        "attenuation": 0.1,
+        "brightness": 0,
+        "saturation": 0,
+        "contrast": 0
+      },
+      "detectionModes": {},
+      "occludable": {
+        "radius": 0
+      },
+      "ring": {
+        "enabled": false,
+        "colors": {
+          "ring": null,
+          "background": null
+        },
+        "effects": 1,
+        "subject": {
+          "scale": 1,
+          "texture": null
+        }
+      },
+      "turnMarker": {
+        "mode": 1,
+        "animation": null,
+        "src": null,
+        "disposition": false
+      },
+      "movementAction": null,
+      "flags": {},
+      "randomImg": false,
+      "appendNumber": false,
+      "prependAdjective": false
+    },
+    "items": [
+      "v09OBSOkZPu6tsmm",
+      "EGL9QCTAxSkIN8zZ",
+      "2UGnQLMSnNSo6X3X",
+      "7RZoaIIYs7IbagKA",
+      "8cd6c3fddc6ffe39",
+      "363605ededac8c17",
+      "8e7303d02bec401a",
+      "40b7df42ce49079a",
+      "3ca215cfbd24597b",
+      "3bd7323519b879ad",
+      "7ac51a2bc6d8f1f3",
+      "d9c029b937f01797",
+      "5a8ecf3c17284adc",
+      "287f537a2540d2e2",
+      "de66536031bf9092",
+      "db1dbef391f1235d",
+      "be0a52c5285023d3",
+      "7dabf61fd97dbd51",
+      "0aca51d1f652d565",
+      "65b4dad58c73f64f",
+      "e0128f53b2d86af3",
+      "e70e789094375240"
+    ],
+    "effects": [],
+    "folder": "425f7b74c0d73d88",
+    "ownership": {
+      "default": 0,
+      "ge55aFMax5sNd2Ho": 3
+    },
+    "flags": {
+      "The2ndChumming3e": {
+        "isTemplate": false
+      }
+    },
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.4.5",
+      "createdTime": 1784690543452,
+      "modifiedTime": 1784690543452,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {
+    "!actors.items!qxq5dnZ1ybETg2CL.0aca51d1f652d565": {
+      "_id": "0aca51d1f652d565",
+      "name": "Rumor Mill",
+      "type": "skill",
+      "system": {
+        "skillName": "Rumor Mill",
+        "rating": 7,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812088,
+        "modifiedTime": 1788319812088,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!qxq5dnZ1ybETg2CL.287f537a2540d2e2": {
+      "_id": "287f537a2540d2e2",
+      "name": "Fencing",
+      "type": "skill",
+      "system": {
+        "skillName": "Fencing",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812087,
+        "modifiedTime": 1788319812087,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!qxq5dnZ1ybETg2CL.2UGnQLMSnNSo6X3X": {
+      "name": "Gaz-Willys Nomad",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_id": "2UGnQLMSnNSo6X3X",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543452,
+        "modifiedTime": 1784690543452,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!qxq5dnZ1ybETg2CL.363605ededac8c17": {
+      "_id": "363605ededac8c17",
+      "name": "Athletics",
+      "type": "skill",
+      "system": {
+        "skillName": "Athletics",
+        "rating": 5,
+        "linkedAttribute": "body",
+        "category": "Physical skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812085,
+        "modifiedTime": 1788319812085,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!qxq5dnZ1ybETg2CL.3bd7323519b879ad": {
+      "_id": "3bd7323519b879ad",
+      "name": "Negotiation",
+      "type": "skill",
+      "system": {
+        "skillName": "Negotiation",
+        "rating": 7,
+        "linkedAttribute": "charisma",
+        "category": "Social skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812086,
+        "modifiedTime": 1788319812086,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!qxq5dnZ1ybETg2CL.3ca215cfbd24597b": {
+      "_id": "3ca215cfbd24597b",
+      "name": "Interrogation",
+      "type": "skill",
+      "system": {
+        "skillName": "Interrogation",
+        "rating": 6,
+        "linkedAttribute": "charisma",
+        "category": "Social skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812086,
+        "modifiedTime": 1788319812086,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!qxq5dnZ1ybETg2CL.40b7df42ce49079a": {
+      "_id": "40b7df42ce49079a",
+      "name": "Etiquette",
+      "type": "skill",
+      "system": {
+        "skillName": "Etiquette",
+        "rating": 4,
+        "linkedAttribute": "charisma",
+        "category": "Social skills",
+        "skillType": "active",
+        "specialisation": "Street 7",
+        "specialisations": [
+          {
+            "name": "Street",
+            "level": 3
+          }
+        ],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812086,
+        "modifiedTime": 1788319812086,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!qxq5dnZ1ybETg2CL.5a8ecf3c17284adc": {
+      "_id": "5a8ecf3c17284adc",
+      "name": "Data Brokerage",
+      "type": "skill",
+      "system": {
+        "skillName": "Data Brokerage",
+        "rating": 3,
+        "linkedAttribute": "intelligence",
+        "category": "6th World knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812087,
+        "modifiedTime": 1788319812087,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!qxq5dnZ1ybETg2CL.65b4dad58c73f64f": {
+      "_id": "65b4dad58c73f64f",
+      "name": "Muscle Replacement [2]",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Bodyware",
+        "essenceCost": 2,
+        "cost": 40000,
+        "availability": "4/4 days",
+        "streetIndex": 1,
+        "legalCode": "5P-Q",
+        "mods": "+2QCK,+2STR,",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.302",
+        "grade": "Standard",
+        "rating": 2,
+        "description": "+2QCK, +2STR",
+        "bonusQui": 2,
+        "bonusStr": 2,
+        "srcgName": "Muscle Replac. [2]"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0142",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621576,
+        "modifiedTime": 1788537621576,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!qxq5dnZ1ybETg2CL.7RZoaIIYs7IbagKA": {
+      "name": "Pocket Secretary",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_id": "7RZoaIIYs7IbagKA",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543452,
+        "modifiedTime": 1784690543452,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!qxq5dnZ1ybETg2CL.7ac51a2bc6d8f1f3": {
+      "_id": "7ac51a2bc6d8f1f3",
+      "name": "Appraisal",
+      "type": "skill",
+      "system": {
+        "skillName": "Appraisal",
+        "rating": 6,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812086,
+        "modifiedTime": 1788319812086,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!qxq5dnZ1ybETg2CL.7dabf61fd97dbd51": {
+      "_id": "7dabf61fd97dbd51",
+      "name": "Local Yakuza Clans",
+      "type": "skill",
+      "system": {
+        "skillName": "Local Yakuza Clans",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812088,
+        "modifiedTime": 1788319812088,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!qxq5dnZ1ybETg2CL.8cd6c3fddc6ffe39": {
+      "_id": "8cd6c3fddc6ffe39",
+      "name": "Assault Rifle",
+      "type": "skill",
+      "system": {
+        "skillName": "Assault Rifle",
+        "rating": 6,
+        "linkedAttribute": "quickness",
+        "category": "Combat skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812085,
+        "modifiedTime": 1788319812085,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!qxq5dnZ1ybETg2CL.8e7303d02bec401a": {
+      "_id": "8e7303d02bec401a",
+      "name": "Edged Weapons",
+      "type": "skill",
+      "system": {
+        "skillName": "Edged Weapons",
+        "rating": 6,
+        "linkedAttribute": "strength",
+        "category": "Combat skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812086,
+        "modifiedTime": 1788319812086,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!qxq5dnZ1ybETg2CL.EGL9QCTAxSkIN8zZ": {
+      "name": "FN HAR",
+      "type": "firearm",
+      "system": {
+        "category": "AsRf",
+        "skill": "Rifles",
+        "attribute": "quickness",
+        "concealability": "2",
+        "ammunition": "35(c)",
+        "mode": "SA/BF/FA",
+        "damage": "8M",
+        "weight": "4.5",
+        "availability": "4/48hrs",
+        "cost": 1200,
+        "streetIndex": "2",
+        "accessories": "Laser Sight, Gas Vent II(2RC), Fold Stock(1RC)",
+        "bookPage": "sr3.278",
+        "notes": ""
+      },
+      "_id": "EGL9QCTAxSkIN8zZ",
+      "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543452,
+        "modifiedTime": 1788492295845,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-firearms.Item.sr3e-firearm-0772",
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!qxq5dnZ1ybETg2CL.be0a52c5285023d3": {
+      "_id": "be0a52c5285023d3",
+      "name": "Local Mafia",
+      "type": "skill",
+      "system": {
+        "skillName": "Local Mafia",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812088,
+        "modifiedTime": 1788319812088,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!qxq5dnZ1ybETg2CL.d9c029b937f01797": {
+      "_id": "d9c029b937f01797",
+      "name": "City Speak",
+      "type": "skill",
+      "system": {
+        "skillName": "City Speak",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812087,
+        "modifiedTime": 1788319812087,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!qxq5dnZ1ybETg2CL.db1dbef391f1235d": {
+      "_id": "db1dbef391f1235d",
+      "name": "Local Gangs",
+      "type": "skill",
+      "system": {
+        "skillName": "Local Gangs",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812088,
+        "modifiedTime": 1788319812088,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!qxq5dnZ1ybETg2CL.de66536031bf9092": {
+      "_id": "de66536031bf9092",
+      "name": "Goblin Rock",
+      "type": "skill",
+      "system": {
+        "skillName": "Goblin Rock",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812087,
+        "modifiedTime": 1788319812087,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!qxq5dnZ1ybETg2CL.e0128f53b2d86af3": {
+      "_id": "e0128f53b2d86af3",
+      "name": "Smartlink II",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Bodyware",
+        "essenceCost": 0.5,
+        "cost": 3500,
+        "availability": "6/48 hours",
+        "streetIndex": 2,
+        "legalCode": "5P-N",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "mm.31",
+        "grade": "Standard",
+        "rating": 0,
+        "description": "-2 to TNs for firing a Smartlink-II weapon, +2 Called Shot modifier"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-mm-cyberware.Item.sr3e-cyberware-0225",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621576,
+        "modifiedTime": 1788537621576,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!qxq5dnZ1ybETg2CL.e70e789094375240": {
+      "_id": "e70e789094375240",
+      "name": "Wired Reflexes [1]",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Bodyware",
+        "essenceCost": 2,
+        "cost": 55000,
+        "availability": "4/8 days",
+        "streetIndex": 1,
+        "legalCode": "5P-Q",
+        "mods": "+2RCT,+1INI,",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.302",
+        "grade": "Standard",
+        "rating": 1,
+        "description": "+2RCT, +1INI",
+        "bonusRea": 2,
+        "bonusInitDice": 1
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0246",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621576,
+        "modifiedTime": 1788537621576,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!qxq5dnZ1ybETg2CL.v09OBSOkZPu6tsmm": {
+      "name": "Combat Axe",
+      "type": "melee",
+      "system": {
+        "category": "EDG",
+        "skill": "Edged Weapons",
+        "attribute": "strength",
+        "concealability": "2",
+        "reach": "2",
+        "damage": "(STR)S",
+        "weight": "2",
+        "availability": "3/24hrs",
+        "cost": 750,
+        "streetIndex": "2",
+        "legal": true,
+        "bookPage": "sr3.275",
+        "notes": ""
+      },
+      "_id": "v09OBSOkZPu6tsmm",
+      "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543452,
+        "modifiedTime": 1788492295844,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-melee.Item.sr3e-melee-0010",
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    }
+  }
+}

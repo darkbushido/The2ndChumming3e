@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0003",
+  "doc": {
+    "_id": "sr3e-prog-0003",
+    "name": "Armor",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Armor",
+      "type": "Program",
+      "category": "Operational",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 3,
+      "degradable": true,
+      "description": "<p>May be used to soak Overload Damage. Instead of applying damage to Matrix Condition Monitor, degrade Armor on a point-for-point basis.</p><p><strong>Soak Type:</strong> Overload</p>",
+      "associatedPrompt": "Attack an Icon (Defense)",
+      "effect": "Damage Soak",
+      "bookPage": "matrix-defragged.30"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

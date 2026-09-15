@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0014",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0014",
+    "name": "Armor Clothing",
+    "type": "armor",
+    "system": {
+      "concealability": "10",
+      "ballistic": 3,
+      "impact": 0,
+      "weight": 2,
+      "availability": "2/36hrs",
+      "cost": 500,
+      "streetIndex": "1",
+      "bookPage": "sr3.284",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

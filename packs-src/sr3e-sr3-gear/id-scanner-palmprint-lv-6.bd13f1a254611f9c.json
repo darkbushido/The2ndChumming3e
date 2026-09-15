@@ -1,0 +1,30 @@
+{
+  "_key": "!items!bd13f1a254611f9c",
+  "doc": {
+    "_id": "bd13f1a254611f9c",
+    "name": "ID Scanner - Palmprint Lv [6]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 6,
+      "cost": 1800,
+      "weight": 0,
+      "availability": "7/72hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.294",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!6ed338b1f96d9a9d",
+  "doc": {
+    "_id": "6ed338b1f96d9a9d",
+    "name": "Satellite Dish - Std. Portable",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 800,
+      "weight": 5,
+      "availability": "5/48hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.55",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

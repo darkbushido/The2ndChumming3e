@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0966",
+  "doc": {
+    "_id": "sr3e-firearm-0966",
+    "name": "Ranger Arms SM-3",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "Snip",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "6(m)",
+      "mode": "SA",
+      "damage": "14S",
+      "weight": "4",
+      "availability": "12/7days",
+      "cost": 4000,
+      "streetIndex": "4",
+      "accessories": "Low-Light or Thermo Mag:(3) Scope, Gas Vent II(2RC), Silencer",
+      "bookPage": "sr3.278",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

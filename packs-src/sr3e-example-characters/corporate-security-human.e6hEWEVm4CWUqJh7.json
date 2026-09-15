@@ -1,0 +1,1132 @@
+{
+  "_key": "!actors!e6hEWEVm4CWUqJh7",
+  "doc": {
+    "folder": null,
+    "name": "Corporate Security Human",
+    "type": "character",
+    "_id": "e6hEWEVm4CWUqJh7",
+    "img": "assets/Human%20Corp%20Enforcer.png",
+    "system": {
+      "biography": "",
+      "notes": "Mr J's LBB page 38",
+      "metatype": "Human",
+      "gender": "",
+      "age": "",
+      "height": "",
+      "weight": "",
+      "ethnicity": "",
+      "reputation": 0,
+      "notoriety": 0,
+      "streetCred": 0,
+      "nuyen": 0,
+      "karma": 0,
+      "totalKarma": 0,
+      "karmaPool": 0,
+      "hackingBonus": 0,
+      "initiativeDiceBonus": 0,
+      "equippedArmor": "37qKCsTuXN5ECJJ0",
+      "equippedMelee": "1cAiZwo8D2OC03gB",
+      "activeVCRItemId": "",
+      "equippedCyberdeck": "",
+      "matrixUserMode": "",
+      "activeHostId": "",
+      "currentMatrixNode": "",
+      "matrixMarks": [],
+      "linkLocked": false,
+      "astralMode": "",
+      "magicTradition": "",
+      "magicType": "",
+      "magicTotem": "",
+      "magicElement": "",
+      "initiateGrade": 0,
+      "combatPoolSpent": 0,
+      "combatPoolMod": 0,
+      "spellPoolSpent": 0,
+      "spellPoolMod": 0,
+      "astralPoolSpent": 0,
+      "astralPoolMod": 0,
+      "hackingPoolSpent": 0,
+      "spellDefensePool": 0,
+      "spellDefenseSorceryDice": 0,
+      "fullDefense": false,
+      "fullDefensePool": 0,
+      "recoilCompensation": 0,
+      "roundsFiredThisPhase": 0,
+      "stimBonus": 0,
+      "attributes": {
+        "body": {
+          "base": 5,
+          "value": 3,
+          "mod": 0,
+          "force": 0
+        },
+        "quickness": {
+          "base": 4,
+          "value": 3,
+          "mod": 0,
+          "force": 0
+        },
+        "strength": {
+          "base": 4,
+          "value": 3,
+          "mod": 0,
+          "force": 0
+        },
+        "charisma": {
+          "base": 2,
+          "value": 3,
+          "mod": 0,
+          "force": 0
+        },
+        "intelligence": {
+          "base": 3,
+          "value": 3,
+          "mod": 0,
+          "force": 0
+        },
+        "willpower": {
+          "base": 3,
+          "value": 3,
+          "mod": 0,
+          "force": 0
+        },
+        "essence": {
+          "value": 4.15,
+          "base": 6,
+          "force": 0
+        },
+        "magic": {
+          "value": 0,
+          "base": 0,
+          "mod": 0,
+          "force": 0
+        },
+        "reaction": {
+          "value": 3,
+          "base": 3,
+          "reactionBonus": 0,
+          "diceBonus": 0,
+          "override": false,
+          "force": 0
+        }
+      },
+      "wounds": {
+        "stun": {
+          "value": 0,
+          "max": 10
+        },
+        "physical": {
+          "value": 0,
+          "max": 10
+        },
+        "overflow": {
+          "value": 0
+        }
+      },
+      "ew": {
+        "deckRating": 0,
+        "fluxRating": 0,
+        "protocolModule": 0,
+        "ivisPool": {
+          "value": 0,
+          "max": 0
+        }
+      },
+      "bookPage": "lbb.38"
+    },
+    "prototypeToken": {
+      "name": "Corporate Security",
+      "displayName": 0,
+      "actorLink": true,
+      "width": 1,
+      "height": 1,
+      "depth": 1,
+      "texture": {
+        "src": "assets/Human%20Corp%20Enforcer.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "fit": "contain",
+        "scaleX": 1,
+        "scaleY": 1,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "lockRotation": false,
+      "rotation": 0,
+      "alpha": 1,
+      "disposition": -1,
+      "displayBars": 20,
+      "bar1": {
+        "attribute": "wounds.physical"
+      },
+      "bar2": {
+        "attribute": "wounds.stun"
+      },
+      "light": {
+        "negative": false,
+        "priority": 0,
+        "alpha": 0.5,
+        "angle": 360,
+        "bright": 0,
+        "color": null,
+        "coloration": 1,
+        "dim": 0,
+        "attenuation": 0.5,
+        "luminosity": 0.5,
+        "saturation": 0,
+        "contrast": 0,
+        "shadows": 0,
+        "animation": {
+          "type": null,
+          "speed": 5,
+          "intensity": 5,
+          "reverse": false
+        },
+        "darkness": {
+          "min": 0,
+          "max": 1
+        }
+      },
+      "sight": {
+        "enabled": false,
+        "range": 0,
+        "angle": 360,
+        "visionMode": "basic",
+        "color": null,
+        "attenuation": 0.1,
+        "brightness": 0,
+        "saturation": 0,
+        "contrast": 0
+      },
+      "detectionModes": {},
+      "occludable": {
+        "radius": 0
+      },
+      "ring": {
+        "enabled": false,
+        "colors": {
+          "ring": null,
+          "background": null
+        },
+        "effects": 1,
+        "subject": {
+          "scale": 1,
+          "texture": null
+        }
+      },
+      "turnMarker": {
+        "mode": 1,
+        "animation": null,
+        "src": null,
+        "disposition": false
+      },
+      "movementAction": null,
+      "flags": {},
+      "randomImg": false,
+      "appendNumber": false,
+      "prependAdjective": false
+    },
+    "items": [
+      "9Ckkk7pHb0EFbUJ9",
+      "uLD0zmEBDbKqZ8WR",
+      "LeZv6gTS9lANrmED",
+      "n7PdGstIpJxZz57R",
+      "flTKm8mwrnVU2Xwa",
+      "09Poi3EFAj2vejRs",
+      "uUAXTLSvQ73reFaa",
+      "DXCMktMw26lHNs9O",
+      "zpUhtH8Fh53nMrw7",
+      "FDKDNwpzXUjjbxCZ",
+      "N5n6IIwWRiSLhBrg",
+      "NhS2GpZZ4i8X1FsD",
+      "oK1r4Ny5viYA9cZR",
+      "YmAglHEwBGSNdMJQ",
+      "DqyLImPUIJYaQE6j",
+      "y3HyTPuGQLPa1oBQ",
+      "qXSnLa5XiRY4TS6h",
+      "9GvQAatxWOElWg0r",
+      "CTXyXncdksszWNDx",
+      "37qKCsTuXN5ECJJ0",
+      "1cAiZwo8D2OC03gB",
+      "3zkHnjVVeOtmOQQv"
+    ],
+    "effects": [],
+    "flags": {
+      "The2ndChumming3e": {
+        "isTemplate": false
+      }
+    },
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.3.1",
+      "createdTime": 1782901676417,
+      "modifiedTime": 1782901676417,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "ownership": {
+      "default": 0
+    },
+    "sort": 0
+  },
+  "embedded": {
+    "!actors.items!e6hEWEVm4CWUqJh7.09Poi3EFAj2vejRs": {
+      "name": "Leadership",
+      "type": "skill",
+      "system": {
+        "category": "Social skills",
+        "skillType": "active",
+        "skillName": "Leadership",
+        "linkedAttribute": "charisma",
+        "rating": 3,
+        "force": 0,
+        "specialisation": "",
+        "specialisations": [],
+        "description": ""
+      },
+      "_id": "09Poi3EFAj2vejRs",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.3.1",
+        "createdTime": 1782901676417,
+        "modifiedTime": 1782901676417,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "ownership": {
+        "default": 0
+      }
+    },
+    "!actors.items!e6hEWEVm4CWUqJh7.1cAiZwo8D2OC03gB": {
+      "name": "Club",
+      "type": "melee",
+      "_id": "1cAiZwo8D2OC03gB",
+      "img": "icons/svg/item-bag.svg",
+      "system": {
+        "reach": 1,
+        "category": "CLB",
+        "concealability": "5",
+        "damage": "(STR+1)M Stun",
+        "weight": 1,
+        "availability": "2/6hrs",
+        "cost": 10,
+        "streetIndex": "1",
+        "bookPage": "sr3.275",
+        "legal": true,
+        "notes": "",
+        "isFocus": false,
+        "focusActive": false
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.3.1",
+        "createdTime": 1782901676418,
+        "modifiedTime": 1782901676418,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "ownership": {
+        "default": 0
+      }
+    },
+    "!actors.items!e6hEWEVm4CWUqJh7.37qKCsTuXN5ECJJ0": {
+      "name": "Light Security Armor",
+      "type": "armor",
+      "_id": "37qKCsTuXN5ECJJ0",
+      "img": "icons/svg/item-bag.svg",
+      "system": {
+        "concealability": "-",
+        "ballistic": 6,
+        "impact": 4,
+        "weight": 0,
+        "availability": "12/10days",
+        "cost": 7500,
+        "streetIndex": "2",
+        "bookPage": "sr3.284",
+        "notes": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.3.1",
+        "createdTime": 1782901676418,
+        "modifiedTime": 1782901676418,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "ownership": {
+        "default": 0
+      }
+    },
+    "!actors.items!e6hEWEVm4CWUqJh7.3zkHnjVVeOtmOQQv": {
+      "name": "Pistol Clip Ammo",
+      "type": "ammunition",
+      "_id": "3zkHnjVVeOtmOQQv",
+      "img": "icons/svg/item-bag.svg",
+      "system": {
+        "concealability": "",
+        "damage": "",
+        "ammoType": "regular",
+        "loadMechanism": "c",
+        "rounds": 100,
+        "weight": 0,
+        "availability": "",
+        "cost": 0,
+        "streetIndex": "",
+        "bookPage": "",
+        "notes": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.3.1",
+        "createdTime": 1782901676418,
+        "modifiedTime": 1782901676418,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "ownership": {
+        "default": 0
+      }
+    },
+    "!actors.items!e6hEWEVm4CWUqJh7.9Ckkk7pHb0EFbUJ9": {
+      "name": "Athletics",
+      "type": "skill",
+      "system": {
+        "category": "Physical skills",
+        "skillType": "active",
+        "skillName": "Athletics",
+        "linkedAttribute": "body",
+        "rating": 3,
+        "force": 0,
+        "specialisation": "",
+        "specialisations": [],
+        "description": ""
+      },
+      "_id": "9Ckkk7pHb0EFbUJ9",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.3.1",
+        "createdTime": 1782901676417,
+        "modifiedTime": 1782901676417,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "ownership": {
+        "default": 0
+      }
+    },
+    "!actors.items!e6hEWEVm4CWUqJh7.9GvQAatxWOElWg0r": {
+      "name": "Subvocal Microphone",
+      "type": "cyberware",
+      "_id": "9GvQAatxWOElWg0r",
+      "img": "icons/svg/item-bag.svg",
+      "system": {
+        "essenceCost": 0.1,
+        "grade": "Standard",
+        "rating": 0,
+        "cost": 850,
+        "availability": "4/72 hours",
+        "streetIndex": 2,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0,
+        "cyberwareCategory": "Communications",
+        "isReplacement": false,
+        "bookPage": "sr3.298",
+        "description": "Use headware/datajacked radio/telephone without talking aloud",
+        "bonusBod": 0,
+        "bonusQui": 0,
+        "bonusStr": 0,
+        "bonusCha": 0,
+        "bonusInt": 0,
+        "bonusWil": 0,
+        "bonusRea": 0,
+        "bonusInitDice": 0,
+        "essenceCostBase": 0,
+        "costBase": 0,
+        "availabilityBase": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.3.1",
+        "createdTime": 1782901676418,
+        "modifiedTime": 1782901676418,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "ownership": {
+        "default": 0
+      }
+    },
+    "!actors.items!e6hEWEVm4CWUqJh7.CTXyXncdksszWNDx": {
+      "name": "Browning Max-Power",
+      "type": "firearm",
+      "_id": "CTXyXncdksszWNDx",
+      "img": "icons/svg/item-bag.svg",
+      "system": {
+        "category": "HPist",
+        "concealability": "6",
+        "ammunition": "10(c)",
+        "equippedAmmoId": "",
+        "mode": "SA",
+        "damage": "9M",
+        "recoilMod": 0,
+        "rangeOverride": "",
+        "loadedAmmoType": "regular",
+        "loadedRounds": 10,
+        "weight": 2,
+        "availability": "3/24hrs",
+        "cost": 450,
+        "streetIndex": "1",
+        "accessories": "None",
+        "bookPage": "sr3.278",
+        "notes": "",
+        "isAoE": false
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.3.1",
+        "createdTime": 1782901676418,
+        "modifiedTime": 1782901676418,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "ownership": {
+        "default": 0
+      }
+    },
+    "!actors.items!e6hEWEVm4CWUqJh7.DXCMktMw26lHNs9O": {
+      "name": "Submachine Guns",
+      "type": "skill",
+      "system": {
+        "category": "Combat skills",
+        "skillType": "active",
+        "skillName": "Submachine Guns",
+        "linkedAttribute": "quickness",
+        "rating": 2,
+        "force": 0,
+        "specialisation": "",
+        "specialisations": [],
+        "description": ""
+      },
+      "_id": "DXCMktMw26lHNs9O",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.3.1",
+        "createdTime": 1782901676417,
+        "modifiedTime": 1782901676417,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "ownership": {
+        "default": 0
+      }
+    },
+    "!actors.items!e6hEWEVm4CWUqJh7.DqyLImPUIJYaQE6j": {
+      "name": "Boosted Reflexes [1]",
+      "type": "cyberware",
+      "_id": "DqyLImPUIJYaQE6j",
+      "img": "icons/svg/item-bag.svg",
+      "system": {
+        "essenceCost": 0.5,
+        "grade": "Standard",
+        "rating": 1,
+        "cost": 15000,
+        "availability": "3/24 hours",
+        "streetIndex": 1,
+        "legalCode": "8P-Q",
+        "mods": "+1INI,",
+        "capacity": 0,
+        "cyberwareCategory": "Bodyware",
+        "isReplacement": false,
+        "bookPage": "sr3.302",
+        "description": "+1INI",
+        "bonusBod": 0,
+        "bonusQui": 0,
+        "bonusStr": 0,
+        "bonusCha": 0,
+        "bonusInt": 0,
+        "bonusWil": 0,
+        "bonusRea": 0,
+        "bonusInitDice": 1,
+        "essenceCostBase": 0,
+        "costBase": 0,
+        "availabilityBase": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.3.1",
+        "createdTime": 1782901676417,
+        "modifiedTime": 1782901676417,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "ownership": {
+        "default": 0
+      }
+    },
+    "!actors.items!e6hEWEVm4CWUqJh7.FDKDNwpzXUjjbxCZ": {
+      "name": "History",
+      "type": "skill",
+      "system": {
+        "category": "Academic skills",
+        "skillType": "knowledge",
+        "skillName": "History",
+        "linkedAttribute": "intelligence",
+        "rating": 3,
+        "force": 0,
+        "specialisation": "",
+        "specialisations": [],
+        "description": ""
+      },
+      "_id": "FDKDNwpzXUjjbxCZ",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.3.1",
+        "createdTime": 1782901676417,
+        "modifiedTime": 1782901676417,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "ownership": {
+        "default": 0
+      }
+    },
+    "!actors.items!e6hEWEVm4CWUqJh7.LeZv6gTS9lANrmED": {
+      "name": "Computer",
+      "type": "skill",
+      "system": {
+        "category": "Technical skills",
+        "skillType": "active",
+        "skillName": "Computer",
+        "linkedAttribute": "intelligence",
+        "rating": 2,
+        "force": 0,
+        "specialisation": "",
+        "specialisations": [],
+        "description": ""
+      },
+      "_id": "LeZv6gTS9lANrmED",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.3.1",
+        "createdTime": 1782901676417,
+        "modifiedTime": 1782901676417,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "ownership": {
+        "default": 0
+      }
+    },
+    "!actors.items!e6hEWEVm4CWUqJh7.N5n6IIwWRiSLhBrg": {
+      "name": "Corporate Security",
+      "type": "skill",
+      "system": {
+        "category": "6th World knowledge",
+        "skillType": "knowledge",
+        "skillName": "Corporate Security",
+        "linkedAttribute": "intelligence",
+        "rating": 3,
+        "force": 0,
+        "specialisation": "",
+        "specialisations": [],
+        "description": ""
+      },
+      "_id": "N5n6IIwWRiSLhBrg",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.3.1",
+        "createdTime": 1782901676417,
+        "modifiedTime": 1782901676417,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "ownership": {
+        "default": 0
+      }
+    },
+    "!actors.items!e6hEWEVm4CWUqJh7.NhS2GpZZ4i8X1FsD": {
+      "name": "Law",
+      "type": "skill",
+      "system": {
+        "category": "Academic skills",
+        "skillType": "knowledge",
+        "skillName": "Law",
+        "linkedAttribute": "intelligence",
+        "rating": 1,
+        "force": 0,
+        "specialisation": "Corporate Law",
+        "specialisations": [
+          {
+            "name": "Corporate Law",
+            "level": 2
+          }
+        ],
+        "description": ""
+      },
+      "_id": "NhS2GpZZ4i8X1FsD",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.3.1",
+        "createdTime": 1782901676417,
+        "modifiedTime": 1782901676417,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "ownership": {
+        "default": 0
+      }
+    },
+    "!actors.items!e6hEWEVm4CWUqJh7.YmAglHEwBGSNdMJQ": {
+      "name": "Small Unit Tactics",
+      "type": "skill",
+      "system": {
+        "category": "Background knowledge",
+        "skillType": "knowledge",
+        "skillName": "Small Unit Tactics",
+        "linkedAttribute": "intelligence",
+        "rating": 4,
+        "force": 0,
+        "specialisation": "",
+        "specialisations": [],
+        "description": ""
+      },
+      "_id": "YmAglHEwBGSNdMJQ",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.3.1",
+        "createdTime": 1782901676417,
+        "modifiedTime": 1782901676417,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "ownership": {
+        "default": 0
+      }
+    },
+    "!actors.items!e6hEWEVm4CWUqJh7.flTKm8mwrnVU2Xwa": {
+      "name": "Interrogation",
+      "type": "skill",
+      "system": {
+        "category": "Social skills",
+        "skillType": "active",
+        "skillName": "Interrogation",
+        "linkedAttribute": "charisma",
+        "rating": 3,
+        "force": 0,
+        "specialisation": "",
+        "specialisations": [],
+        "description": ""
+      },
+      "_id": "flTKm8mwrnVU2Xwa",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.3.1",
+        "createdTime": 1782901676417,
+        "modifiedTime": 1782901676417,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "ownership": {
+        "default": 0
+      }
+    },
+    "!actors.items!e6hEWEVm4CWUqJh7.n7PdGstIpJxZz57R": {
+      "name": "Etiquette",
+      "type": "skill",
+      "system": {
+        "category": "Social skills",
+        "skillType": "active",
+        "skillName": "Etiquette",
+        "linkedAttribute": "charisma",
+        "rating": 2,
+        "force": 0,
+        "specialisation": "",
+        "specialisations": [
+          {
+            "name": "Corporate",
+            "level": 1
+          }
+        ],
+        "description": ""
+      },
+      "_id": "n7PdGstIpJxZz57R",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.3.1",
+        "createdTime": 1782901676417,
+        "modifiedTime": 1782901676417,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "ownership": {
+        "default": 0
+      }
+    },
+    "!actors.items!e6hEWEVm4CWUqJh7.oK1r4Ny5viYA9cZR": {
+      "name": "Security Systems",
+      "type": "skill",
+      "system": {
+        "category": "Academic skills",
+        "skillType": "knowledge",
+        "skillName": "Security Systems",
+        "linkedAttribute": "intelligence",
+        "rating": 3,
+        "force": 0,
+        "specialisation": "",
+        "specialisations": [],
+        "description": ""
+      },
+      "_id": "oK1r4Ny5viYA9cZR",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.3.1",
+        "createdTime": 1782901676417,
+        "modifiedTime": 1782901676417,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "ownership": {
+        "default": 0
+      }
+    },
+    "!actors.items!e6hEWEVm4CWUqJh7.qXSnLa5XiRY4TS6h": {
+      "name": "Smartlink II",
+      "type": "cyberware",
+      "_id": "qXSnLa5XiRY4TS6h",
+      "img": "icons/svg/item-bag.svg",
+      "system": {
+        "essenceCost": 0.5,
+        "grade": "Standard",
+        "rating": 0,
+        "cost": 3500,
+        "availability": "6/48 hours",
+        "streetIndex": 2,
+        "legalCode": "5P-N",
+        "mods": "",
+        "capacity": 0,
+        "cyberwareCategory": "Bodyware",
+        "isReplacement": false,
+        "bookPage": "mm.31",
+        "description": "-2 to TNs for firing a Smartlink-II weapon, +2 Called Shot modifier",
+        "bonusBod": 0,
+        "bonusQui": 0,
+        "bonusStr": 0,
+        "bonusCha": 0,
+        "bonusInt": 0,
+        "bonusWil": 0,
+        "bonusRea": 0,
+        "bonusInitDice": 0,
+        "essenceCostBase": 0,
+        "costBase": 0,
+        "availabilityBase": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.3.1",
+        "createdTime": 1782901676418,
+        "modifiedTime": 1782901676418,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "ownership": {
+        "default": 0
+      }
+    },
+    "!actors.items!e6hEWEVm4CWUqJh7.uLD0zmEBDbKqZ8WR": {
+      "name": "Clubs",
+      "type": "skill",
+      "system": {
+        "category": "Combat skills",
+        "skillType": "active",
+        "skillName": "Clubs",
+        "linkedAttribute": "strength",
+        "rating": 3,
+        "force": 0,
+        "specialisation": "",
+        "specialisations": [],
+        "description": ""
+      },
+      "_id": "uLD0zmEBDbKqZ8WR",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.3.1",
+        "createdTime": 1782901676417,
+        "modifiedTime": 1782901676417,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "ownership": {
+        "default": 0
+      }
+    },
+    "!actors.items!e6hEWEVm4CWUqJh7.uUAXTLSvQ73reFaa": {
+      "name": "Pistols",
+      "type": "skill",
+      "system": {
+        "category": "Combat skills",
+        "skillType": "active",
+        "skillName": "Pistols",
+        "linkedAttribute": "quickness",
+        "rating": 4,
+        "force": 0,
+        "specialisation": "",
+        "specialisations": [],
+        "description": ""
+      },
+      "_id": "uUAXTLSvQ73reFaa",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.3.1",
+        "createdTime": 1782901676417,
+        "modifiedTime": 1782901676417,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "ownership": {
+        "default": 0
+      }
+    },
+    "!actors.items!e6hEWEVm4CWUqJh7.y3HyTPuGQLPa1oBQ": {
+      "name": "Radio [3]",
+      "type": "cyberware",
+      "_id": "y3HyTPuGQLPa1oBQ",
+      "img": "icons/svg/item-bag.svg",
+      "system": {
+        "essenceCost": 0.75,
+        "grade": "Standard",
+        "rating": 3,
+        "cost": 6000,
+        "availability": "2/24 hours",
+        "streetIndex": 0.8,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0,
+        "cyberwareCategory": "Communications",
+        "isReplacement": false,
+        "bookPage": "sr3.298",
+        "description": "6 programmed frequencies",
+        "bonusBod": 0,
+        "bonusQui": 0,
+        "bonusStr": 0,
+        "bonusCha": 0,
+        "bonusInt": 0,
+        "bonusWil": 0,
+        "bonusRea": 0,
+        "bonusInitDice": 0,
+        "essenceCostBase": 0,
+        "costBase": 0,
+        "availabilityBase": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.3.1",
+        "createdTime": 1782901676418,
+        "modifiedTime": 1782901676418,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "ownership": {
+        "default": 0
+      }
+    },
+    "!actors.items!e6hEWEVm4CWUqJh7.zpUhtH8Fh53nMrw7": {
+      "name": "Unarmed Combat",
+      "type": "skill",
+      "system": {
+        "category": "Combat skills",
+        "skillType": "active",
+        "skillName": "Unarmed Combat",
+        "linkedAttribute": "strength",
+        "rating": 4,
+        "force": 0,
+        "specialisation": "",
+        "specialisations": [],
+        "description": ""
+      },
+      "_id": "zpUhtH8Fh53nMrw7",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.3.1",
+        "createdTime": 1782901676417,
+        "modifiedTime": 1782901676417,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "ownership": {
+        "default": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0025",
+  "doc": {
+    "_id": "sr3e-prog-0025",
+    "name": "Smoke Screen",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Smoke Screen",
+      "type": "Program",
+      "category": "Defensive",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 4,
+      "degradable": true,
+      "description": "<p>Increases target number by its current rating for enemy icons attempting to target the user with Search and Render.</p>",
+      "associatedPrompt": "Defense vs Search and Render",
+      "effect": "TN Increase (Enemy)",
+      "bookPage": "matrix-defragged.32"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

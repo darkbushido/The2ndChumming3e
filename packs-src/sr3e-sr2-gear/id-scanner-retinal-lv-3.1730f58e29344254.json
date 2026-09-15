@@ -1,0 +1,30 @@
+{
+  "_key": "!items!1730f58e29344254",
+  "doc": {
+    "_id": "1730f58e29344254",
+    "name": "ID Scanner: Retinal Lv 3",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 3000,
+      "weight": 0,
+      "availability": "5/72hrs",
+      "streetIndex": "3",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

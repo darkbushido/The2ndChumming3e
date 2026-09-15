@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0179",
+  "doc": {
+    "_id": "sr3e-spell-0179",
+    "name": "Cat Leap",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Transformation",
+      "type": "Physical",
+      "duration": "Instant",
+      "range": "P",
+      "drain": "+1(M)",
+      "target": "4",
+      "bookPage": "tss.9",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1131",
+  "doc": {
+    "_id": "sr3e-firearm-1131",
+    "name": "GE Vindicator Minigun",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LMG",
+      "skill": "Gunnery",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "belt/50(c)",
+      "mode": "FA",
+      "damage": "7S",
+      "weight": "15",
+      "availability": "24/14days",
+      "cost": 2500,
+      "streetIndex": "2",
+      "accessories": "None",
+      "bookPage": "ssc.58",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0100",
+  "doc": {
+    "_id": "sr3e-melee-0100",
+    "name": "Brass Knuckles",
+    "type": "melee",
+    "system": {
+      "category": "UNA",
+      "skill": "Unarmed Combat",
+      "attribute": "strength",
+      "concealability": "16/4",
+      "reach": "0",
+      "damage": "(STR+1)M Stun",
+      "weight": ".2",
+      "availability": "2/24hrs",
+      "cost": 20,
+      "streetIndex": ".75",
+      "legal": true,
+      "bookPage": "sr2.235",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

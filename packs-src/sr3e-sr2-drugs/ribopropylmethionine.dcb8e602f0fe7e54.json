@@ -1,0 +1,31 @@
+{
+  "_key": "!items!dcb8e602f0fe7e54",
+  "doc": {
+    "_id": "dcb8e602f0fe7e54",
+    "name": "Ribopropylmethionine",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "8P",
+      "tolerance": "2",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 100,
+      "availability": "10/7hrs",
+      "streetIndex": "3",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 2</p>"
+    }
+  },
+  "embedded": {}
+}

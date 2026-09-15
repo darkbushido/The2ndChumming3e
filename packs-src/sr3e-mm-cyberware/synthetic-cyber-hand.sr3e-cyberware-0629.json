@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0629",
+  "doc": {
+    "_id": "sr3e-cyberware-0629",
+    "name": "Synthetic Cyber Hand",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimbs",
+      "essenceCost": 0.35,
+      "cost": 25000,
+      "availability": "3/4 days",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.39",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "",
+      "srcgName": "Synth. Cyber Hand"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

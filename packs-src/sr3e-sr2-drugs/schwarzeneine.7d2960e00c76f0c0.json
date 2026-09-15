@@ -1,0 +1,31 @@
+{
+  "_key": "!items!7d2960e00c76f0c0",
+  "doc": {
+    "_id": "7d2960e00c76f0c0",
+    "name": "Schwarzeneine",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "6P",
+      "tolerance": "4",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 45,
+      "availability": "8/3hrs",
+      "streetIndex": "3.5",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 5</p>"
+    }
+  },
+  "embedded": {}
+}

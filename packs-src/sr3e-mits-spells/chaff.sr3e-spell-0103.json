@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0103",
+  "doc": {
+    "_id": "sr3e-spell-0103",
+    "name": "Chaff",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Illusion",
+      "type": "Physical",
+      "duration": "Sustained",
+      "range": "LOS",
+      "drain": "(S)",
+      "target": "OR",
+      "bookPage": "mits.143",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

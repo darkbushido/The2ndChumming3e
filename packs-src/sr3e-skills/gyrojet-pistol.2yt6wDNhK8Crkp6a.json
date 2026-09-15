@@ -1,0 +1,41 @@
+{
+  "_key": "!items!2yt6wDNhK8Crkp6a",
+  "doc": {
+    "name": "Gyrojet Pistol",
+    "type": "skill",
+    "system": {
+      "category": "Background knowledge",
+      "skillType": "knowledge",
+      "skillName": "Gyrojet Pistol",
+      "linkedAttribute": "intelligence",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": "",
+      "bookPage": "cc.105"
+    },
+    "_id": "2yt6wDNhK8Crkp6a",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192978093,
+      "modifiedTime": 1782889914445,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

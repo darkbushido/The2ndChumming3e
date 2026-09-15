@@ -1,0 +1,30 @@
+{
+  "_key": "!items!2507dcbf8428a38d",
+  "doc": {
+    "_id": "2507dcbf8428a38d",
+    "name": "DataScope",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "S+S Vision Enhancers"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "S+S Vision Enhancers",
+      "concealability": "8",
+      "rating": null,
+      "cost": 5000,
+      "weight": 0.25,
+      "availability": "4/36hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.253",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

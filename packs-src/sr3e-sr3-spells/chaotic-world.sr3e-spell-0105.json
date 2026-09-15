@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0105",
+  "doc": {
+    "_id": "sr3e-spell-0105",
+    "name": "Chaotic World",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Illusion",
+      "type": "Physical",
+      "duration": "Sustained",
+      "range": "LOS(A)",
+      "drain": "+1(D)",
+      "target": "I(R)",
+      "bookPage": "sr3.195",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

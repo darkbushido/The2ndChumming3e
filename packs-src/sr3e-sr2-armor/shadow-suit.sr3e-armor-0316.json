@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0316",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0316",
+    "name": "Shadow Suit",
+    "type": "armor",
+    "system": {
+      "concealability": "12",
+      "ballistic": 4,
+      "impact": 1,
+      "weight": 1.5,
+      "availability": "6/48hrs",
+      "cost": 800,
+      "streetIndex": "1",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

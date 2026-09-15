@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0170",
+  "doc": {
+    "_id": "sr3e-vehicle-0170",
+    "name": "Doc Wagon SRT",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "helicopter",
+      "cost": 773750,
+      "streetIndex": 1.5,
+      "availability": "-",
+      "bookPage": "r3.184",
+      "seating": 1,
+      "notes": "Anti-Theft System (Rating 6),Medical Treatment Gear (1 patient), Carries 1 patient 1 medtech and a pilot | Alt-mode Cargo/Load: 5[84 PS]/500[200 PS]",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 250,
+          "base": 250
+        },
+        "accel": {
+          "value": 18,
+          "base": 18
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 5,
+          "base": 5
+        },
+        "load": {
+          "value": 500,
+          "base": 500
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!9c6eb264afe09888",
+  "doc": {
+    "_id": "9c6eb264afe09888",
+    "name": "Laser Detector Lvl 4",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "6",
+      "rating": 4,
+      "cost": 20000,
+      "weight": 0.3,
+      "availability": "8/72hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

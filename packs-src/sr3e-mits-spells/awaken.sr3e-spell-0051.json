@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0051",
+  "doc": {
+    "_id": "sr3e-spell-0051",
+    "name": "Awaken",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Health",
+      "type": "Mana",
+      "duration": "Instant",
+      "range": "T",
+      "drain": "-2(SDL)",
+      "target": "4(V)",
+      "bookPage": "mits.141",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

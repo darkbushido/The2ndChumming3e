@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0075",
+  "doc": {
+    "_id": "sr3e-spell-0075",
+    "name": "Healthy Glow",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Health",
+      "type": "Mana",
+      "duration": "Permanent",
+      "range": "T",
+      "drain": "(L)",
+      "target": "4(V)",
+      "bookPage": "sr3.194",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

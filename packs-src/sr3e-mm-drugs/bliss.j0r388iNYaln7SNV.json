@@ -1,0 +1,42 @@
+{
+  "_key": "!items!j0r388iNYaln7SNV",
+  "doc": {
+    "name": "Bliss",
+    "type": "drug",
+    "system": {
+      "category": "Narcotics",
+      "addiction": "5M/5P",
+      "tolerance": "2",
+      "effect": "2/30",
+      "speed": "",
+      "vector": "",
+      "availability": "2/30min",
+      "cost": 15,
+      "streetIndex": "2",
+      "bookPage": "mm.121",
+      "notes": ""
+    },
+    "_id": "j0r388iNYaln7SNV",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "ge55aFMax5sNd2Ho": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.3.1",
+      "createdTime": 1782280826250,
+      "modifiedTime": 1782889914231,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

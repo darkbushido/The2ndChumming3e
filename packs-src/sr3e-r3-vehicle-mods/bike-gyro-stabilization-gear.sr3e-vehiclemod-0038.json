@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0038",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0038",
+    "name": "Bike Gyro-Stabilization Gear",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 125,
+      "availability": "6/10days",
+      "streetIndex": "1.5",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "48 hrs/Bike B/R(5)",
+      "cfCost": "0",
+      "load": "5kg",
+      "bookPage": "r3.129",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

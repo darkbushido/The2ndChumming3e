@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0042",
+  "doc": {
+    "_id": "sr3e-firearm-0042",
+    "name": "Mauser Ladyline",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "7",
+      "ammunition": "8(c)",
+      "mode": "SA",
+      "damage": "6L",
+      "weight": ".75",
+      "availability": "4/24hrs",
+      "cost": 350,
+      "streetIndex": "1",
+      "accessories": "None",
+      "bookPage": "pw.14",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

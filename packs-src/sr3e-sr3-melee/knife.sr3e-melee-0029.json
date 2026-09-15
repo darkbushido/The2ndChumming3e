@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0029",
+  "doc": {
+    "_id": "sr3e-melee-0029",
+    "name": "Knife",
+    "type": "melee",
+    "system": {
+      "category": "EDG",
+      "skill": "Edged Weapons",
+      "attribute": "strength",
+      "concealability": "8",
+      "reach": "-",
+      "damage": "(STR)L",
+      "weight": ".5",
+      "availability": "2/4hrs",
+      "cost": 30,
+      "streetIndex": ".75",
+      "legal": true,
+      "bookPage": "sr3.275",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

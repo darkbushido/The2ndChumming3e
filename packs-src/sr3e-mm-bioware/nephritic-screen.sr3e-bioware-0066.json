@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0066",
+  "doc": {
+    "_id": "sr3e-bioware-0066",
+    "name": "Nephritic Screen",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Standard",
+      "grade": "Standard",
+      "bioIndex": 0.4,
+      "cost": 20000,
+      "availability": "4/4 days",
+      "streetIndex": 1,
+      "mods": "",
+      "bookPage": "mm.067",
+      "rating": 0,
+      "description": "-1 Power of pathogen and blood toxins, +1BOD to resist them"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0194",
+  "doc": {
+    "_id": "sr3e-bioware-0194",
+    "name": "Genetic Immunization",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Genetech",
+      "grade": "Exotic",
+      "bioIndex": 0.1,
+      "cost": 25000,
+      "availability": "6/18 days",
+      "streetIndex": 2,
+      "mods": "",
+      "bookPage": "sota.029",
+      "rating": 0,
+      "description": "Does not work against Neuro-toxins and fast acting compounds, that requires cellular repair"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

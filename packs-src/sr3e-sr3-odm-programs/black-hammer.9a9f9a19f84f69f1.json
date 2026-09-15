@@ -1,0 +1,19 @@
+{
+  "_key": "!items!9a9f9a19f84f69f1",
+  "doc": {
+    "_id": "9a9f9a19f84f69f1",
+    "name": "Black Hammer",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Black Hammer",
+      "category": "attack",
+      "multiplier": 20,
+      "rating": 0,
+      "bookPage": "sr3.221",
+      "description": "<p><strong>Offensive utility</strong> · Multiplier 20 — size in Mp = Rating² × 20 (Program Size Table). See SR3 p.221 for what it does.</p>"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

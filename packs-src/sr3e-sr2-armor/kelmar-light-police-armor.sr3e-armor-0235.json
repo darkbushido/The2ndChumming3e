@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0235",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0235",
+    "name": "Kelmar Light Police Armor",
+    "type": "armor",
+    "system": {
+      "concealability": "2",
+      "ballistic": 3,
+      "impact": 5,
+      "weight": 2.5,
+      "availability": "20/14days",
+      "cost": 10000,
+      "streetIndex": "3",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

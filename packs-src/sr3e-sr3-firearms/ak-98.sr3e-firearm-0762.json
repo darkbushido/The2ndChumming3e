@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0762",
+  "doc": {
+    "_id": "sr3e-firearm-0762",
+    "name": "AK-98",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "AsRf",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "2",
+      "ammunition": "38(c)",
+      "mode": "SA/BF/FA",
+      "damage": "8M",
+      "weight": "6",
+      "availability": "8/4days",
+      "cost": 2500,
+      "streetIndex": "4",
+      "accessories": "Grenade Launcher (6-shot)",
+      "bookPage": "sr3.278",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

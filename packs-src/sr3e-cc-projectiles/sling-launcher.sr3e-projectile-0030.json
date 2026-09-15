@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-projectile-0030",
+  "doc": {
+    "_id": "sr3e-projectile-0030",
+    "name": "Sling Launcher",
+    "type": "projectile",
+    "system": {
+      "category": "SL",
+      "skill": "Projectile Weapons",
+      "attribute": "strength",
+      "concealability": "-",
+      "strMin": 5,
+      "damage": "Per object",
+      "weight": "7",
+      "availability": "1/14hrs",
+      "cost": 40,
+      "streetIndex": "1",
+      "legal": false,
+      "bookPage": "cc.13",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0764",
+  "doc": {
+    "_id": "sr3e-firearm-0764",
+    "name": "Anti-Vehicular Rifle",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "AsRf",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "3",
+      "ammunition": "10(c)",
+      "mode": "SA/BF",
+      "damage": "8S",
+      "weight": "5.3",
+      "availability": "14/16days",
+      "cost": 6000,
+      "streetIndex": "3.2",
+      "accessories": "Mag:(2)",
+      "bookPage": "pw.28",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

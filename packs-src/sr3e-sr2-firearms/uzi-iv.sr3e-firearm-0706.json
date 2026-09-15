@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0706",
+  "doc": {
+    "_id": "sr3e-firearm-0706",
+    "name": "Uzi IV",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "30(c)",
+      "mode": "SA/BF/FA",
+      "damage": "6M",
+      "weight": "3",
+      "availability": "6/60hrs",
+      "cost": 1000,
+      "streetIndex": "1",
+      "accessories": "Gas Vent (2), Laser Sight",
+      "bookPage": "pw.22",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

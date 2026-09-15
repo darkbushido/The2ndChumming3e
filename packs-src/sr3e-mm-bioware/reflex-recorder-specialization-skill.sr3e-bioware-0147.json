@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-bioware-0147",
+  "doc": {
+    "_id": "sr3e-bioware-0147",
+    "name": "Reflex Recorder (specialization skill)",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Cultured",
+      "grade": "Cultured",
+      "bioIndex": 0.1,
+      "cost": 10000,
+      "availability": "5/6 days",
+      "streetIndex": 1.5,
+      "mods": "",
+      "bookPage": "mm.074",
+      "rating": 0,
+      "description": "+1 die specialized skill, only once per skill",
+      "srcgName": "Reflex Rec. (spec skill)"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-vehicleweapon-0023",
+  "doc": {
+    "_id": "sr3e-vehicleweapon-0023",
+    "name": "Snake-Spine Hull Cutters",
+    "type": "vehicleweapon",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "system": {
+      "weaponType": "Mechanical Tentacle",
+      "mode": "SA",
+      "damage": "6MN",
+      "ammunition": "NA",
+      "weight": 50,
+      "cost": 5000,
+      "availability": "NA",
+      "streetIndex": "0,00",
+      "bookPage": "twl.131",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

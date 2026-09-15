@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0772",
+  "doc": {
+    "_id": "sr3e-firearm-0772",
+    "name": "FN HAR",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "AsRf",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "2",
+      "ammunition": "35(c)",
+      "mode": "SA/BF/FA",
+      "damage": "8M",
+      "weight": "4.5",
+      "availability": "4/48hrs",
+      "cost": 1200,
+      "streetIndex": "2",
+      "accessories": "Laser Sight, Gas Vent II(2RC), Fold Stock(1RC)",
+      "bookPage": "sr3.278",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

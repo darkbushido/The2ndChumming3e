@@ -1,0 +1,34 @@
+{
+  "_key": "!items!fc380aacdb1028ba",
+  "doc": {
+    "_id": "fc380aacdb1028ba",
+    "name": "32-Rnd Clip (Hi-C)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 32,
+      "rounds": 0,
+      "weight": 1.55,
+      "cost": 485,
+      "availability": "6/1wk",
+      "streetIndex": "3",
+      "bookPage": "sr2.281",
+      "notes": "<p>Hi-C rounds — a type this system does not model; its rules are the GM's (sr2.281).</p>"
+    }
+  },
+  "embedded": {}
+}

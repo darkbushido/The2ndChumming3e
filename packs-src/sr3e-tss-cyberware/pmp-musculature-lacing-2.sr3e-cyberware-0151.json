@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0151",
+  "doc": {
+    "_id": "sr3e-cyberware-0151",
+    "name": "PMP Musculature Lacing [2]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 1.6,
+      "cost": 95000,
+      "availability": "12/16 days",
+      "streetIndex": 1.5,
+      "legalCode": "5-CB",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "tss.5",
+      "grade": "Standard",
+      "rating": 2,
+      "description": "+4 Disguise, More drastic changes then level 1; requires PMP SPU [2]"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

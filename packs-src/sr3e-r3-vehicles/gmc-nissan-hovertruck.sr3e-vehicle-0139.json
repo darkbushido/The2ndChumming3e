@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0139",
+  "doc": {
+    "_id": "sr3e-vehicle-0139",
+    "name": "GMC-Nissan Hovertruck",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "hovercraft",
+      "cost": 200000,
+      "streetIndex": 1,
+      "availability": "10/10 days",
+      "bookPage": "r3.181",
+      "seating": 3,
+      "notes": "Folding Bench Seat | Seating: 2+1b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 120,
+          "base": 120
+        },
+        "accel": {
+          "value": 5,
+          "base": 5
+        },
+        "body": {
+          "value": 5,
+          "base": 5
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 1,
+          "base": 1
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 94,
+          "base": 94
+        },
+        "load": {
+          "value": 1850,
+          "base": 1850
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

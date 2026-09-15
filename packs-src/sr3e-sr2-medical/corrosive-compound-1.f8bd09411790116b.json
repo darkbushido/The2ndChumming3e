@@ -1,0 +1,28 @@
+{
+  "_key": "!items!f8bd09411790116b",
+  "doc": {
+    "_id": "f8bd09411790116b",
+    "name": "Corrosive Compound 1",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "4",
+      "weight": "1000",
+      "cost": 2,
+      "availability": "5/48hrs",
+      "streetIndex": "",
+      "bookPage": "sr2.258",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

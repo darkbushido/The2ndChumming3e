@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0017",
+  "doc": {
+    "_id": "sr3e-prog-0017",
+    "name": "Mirrors",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Mirrors",
+      "type": "Program",
+      "category": "Defensive",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 4,
+      "degradable": true,
+      "description": "<p>Decreases user's TN by rating while being scrutinized by System Sweep or Authenticate ability.</p><p><em>Works by spamming fake token icons (falsified records, timestamps).</em></p>",
+      "associatedPrompt": "Defense vs System Sweep / Authenticate",
+      "effect": "TN Reduction",
+      "bookPage": "matrix-defragged.31"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

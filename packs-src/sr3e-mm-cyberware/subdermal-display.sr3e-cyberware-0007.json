@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0007",
+  "doc": {
+    "_id": "sr3e-cyberware-0007",
+    "name": "+Subdermal Display",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0.1,
+      "cost": 500,
+      "availability": "4/48 hours",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.25",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Displays body info"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

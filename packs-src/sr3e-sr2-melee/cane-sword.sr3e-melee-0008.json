@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0008",
+  "doc": {
+    "_id": "sr3e-melee-0008",
+    "name": "Cane Sword",
+    "type": "melee",
+    "system": {
+      "category": "EDG",
+      "skill": "Edged Weapons",
+      "attribute": "strength",
+      "concealability": "2",
+      "reach": "1",
+      "damage": "(STR+1)M",
+      "weight": "1",
+      "availability": "10/7days",
+      "cost": 600,
+      "streetIndex": "2",
+      "legal": true,
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

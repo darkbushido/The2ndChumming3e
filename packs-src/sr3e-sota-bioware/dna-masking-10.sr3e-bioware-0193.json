@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0193",
+  "doc": {
+    "_id": "sr3e-bioware-0193",
+    "name": "DNA Masking[10]",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Genetech",
+      "grade": "Exotic",
+      "bioIndex": 0.2,
+      "cost": 200000,
+      "availability": "18/28 days",
+      "streetIndex": 2,
+      "mods": "",
+      "bookPage": "sota.028",
+      "rating": 10,
+      "description": "Roll opposed test between masking rating and scanner"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

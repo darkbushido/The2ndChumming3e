@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0130",
+  "doc": {
+    "_id": "sr3e-cyberware-0130",
+    "name": "+Tracheal Vent",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0.1,
+      "cost": 750,
+      "availability": "4/5 days",
+      "streetIndex": 1.5,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.29",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Contents can be released without passing through respiratory system"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

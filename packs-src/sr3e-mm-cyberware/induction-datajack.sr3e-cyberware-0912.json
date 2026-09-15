@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0912",
+  "doc": {
+    "_id": "sr3e-cyberware-0912",
+    "name": "Induction Datajack",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Matrixware",
+      "essenceCost": 0.3,
+      "cost": 3000,
+      "availability": "5/4 days",
+      "streetIndex": 2,
+      "legalCode": "Legal",
+      "mods": "+1DJK",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.21",
+      "grade": "Standard",
+      "rating": 0,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

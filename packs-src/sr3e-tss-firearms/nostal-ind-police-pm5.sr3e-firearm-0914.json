@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0914",
+  "doc": {
+    "_id": "sr3e-firearm-0914",
+    "name": "Nostal. Ind. Police PM5",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "ShtG",
+      "skill": "Shotguns",
+      "attribute": "quickness",
+      "concealability": "1",
+      "ammunition": "7(c)",
+      "mode": "SA",
+      "damage": "9S(f)",
+      "weight": "5",
+      "availability": "5/72hrs",
+      "cost": 650,
+      "streetIndex": "2.5",
+      "accessories": "Requires special clips",
+      "bookPage": "tss.2",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,31 @@
+{
+  "_key": "!items!08845b62779c0f36",
+  "doc": {
+    "_id": "08845b62779c0f36",
+    "name": "NuYou",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "6M",
+      "tolerance": "3",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 350,
+      "availability": "4/2hrs",
+      "streetIndex": "3",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 10</p>"
+    }
+  },
+  "embedded": {}
+}

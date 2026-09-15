@@ -1,0 +1,30 @@
+{
+  "_key": "!items!a16484a83e29fb80",
+  "doc": {
+    "_id": "a16484a83e29fb80",
+    "name": "Autonav Chip",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 25,
+      "weight": 0,
+      "availability": "Always",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Nav</p>"
+    }
+  },
+  "embedded": {}
+}

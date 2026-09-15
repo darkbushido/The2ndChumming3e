@@ -1,0 +1,829 @@
+{
+  "_key": "!actors!JaY2wBr97Xu1JdNC",
+  "doc": {
+    "name": "Parasecurity Expert",
+    "type": "character",
+    "system": {
+      "metatype": "elf",
+      "nuyen": 0,
+      "karma": 0,
+      "totalKarma": 0,
+      "karmaPool": 4,
+      "notes": "<p>Mr. Johnson's Little Black Book, p.39. PR 3. Karma Pool 4.</p>",
+      "attributes": {
+        "body": {
+          "base": 3,
+          "value": 3,
+          "mod": 0,
+          "force": 0
+        },
+        "quickness": {
+          "base": 5,
+          "value": 5,
+          "mod": 0,
+          "force": 0
+        },
+        "strength": {
+          "base": 3,
+          "value": 3,
+          "mod": 0,
+          "force": 0
+        },
+        "charisma": {
+          "base": 6,
+          "value": 6,
+          "mod": 0,
+          "force": 0
+        },
+        "intelligence": {
+          "base": 5,
+          "value": 5,
+          "mod": 0,
+          "force": 0
+        },
+        "willpower": {
+          "base": 5,
+          "value": 5,
+          "mod": 0,
+          "force": 0
+        },
+        "essence": {
+          "base": 6,
+          "value": 6,
+          "force": 0
+        },
+        "magic": {
+          "base": 6,
+          "value": 6,
+          "mod": 0,
+          "force": 0
+        },
+        "reaction": {
+          "base": 3,
+          "value": 3,
+          "reactionBonus": 0,
+          "diceBonus": 0,
+          "override": false,
+          "force": 0
+        }
+      },
+      "biography": "",
+      "gender": "",
+      "age": "",
+      "height": "",
+      "weight": "",
+      "ethnicity": "",
+      "reputation": 0,
+      "notoriety": 0,
+      "streetCred": 0,
+      "hackingBonus": 0,
+      "initiativeDiceBonus": 0,
+      "equippedArmor": "",
+      "equippedMelee": "",
+      "activeVCRItemId": "",
+      "equippedCyberdeck": "",
+      "matrixUserMode": "",
+      "activeHostId": "",
+      "currentMatrixNode": "",
+      "matrixMarks": [],
+      "linkLocked": false,
+      "astralMode": "",
+      "magicTradition": "",
+      "magicType": "",
+      "magicTotem": "",
+      "magicElement": "",
+      "initiateGrade": 0,
+      "combatPoolSpent": 0,
+      "combatPoolMod": 0,
+      "spellPoolSpent": 0,
+      "spellPoolMod": 0,
+      "astralPoolSpent": 0,
+      "astralPoolMod": 0,
+      "hackingPoolSpent": 0,
+      "spellDefensePool": 0,
+      "spellDefenseSorceryDice": 0,
+      "fullDefense": false,
+      "fullDefensePool": 0,
+      "recoilCompensation": 0,
+      "roundsFiredThisPhase": 0,
+      "stimBonus": 0,
+      "wounds": {
+        "stun": {
+          "value": 0,
+          "max": 10
+        },
+        "physical": {
+          "value": 0,
+          "max": 10
+        },
+        "overflow": {
+          "value": 0
+        }
+      },
+      "ew": {
+        "deckRating": 0,
+        "fluxRating": 0,
+        "protocolModule": 0,
+        "ivisPool": {
+          "value": 0,
+          "max": 0
+        }
+      },
+      "orthodoxDeck": {
+        "deckModel": "",
+        "mccp": 0,
+        "bod": 0,
+        "evasion": 0,
+        "masking": 0,
+        "sensor": 0,
+        "hardening": 0,
+        "activeMemory": 0,
+        "storageMemory": 0,
+        "ioSpeed": 0,
+        "responseIncrease": 0,
+        "sleazeRating": 0
+      },
+      "orthodoxRunState": {
+        "securityTally": 0,
+        "alertLevel": "none",
+        "currentHostId": ""
+      },
+      "orthodoxMatrixCM": {
+        "value": 0
+      },
+      "professionalRating": 3,
+      "bookPage": "lbb.39"
+    },
+    "_id": "JaY2wBr97Xu1JdNC",
+    "img": "icons/svg/mystery-man.svg",
+    "prototypeToken": {
+      "name": "Parasecurity Expert",
+      "displayName": 0,
+      "actorLink": true,
+      "width": 1,
+      "height": 1,
+      "depth": 1,
+      "texture": {
+        "src": "icons/svg/mystery-man.svg",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "fit": "contain",
+        "scaleX": 1,
+        "scaleY": 1,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "lockRotation": false,
+      "rotation": 0,
+      "alpha": 1,
+      "disposition": -1,
+      "displayBars": 20,
+      "bar1": {
+        "attribute": "wounds.physical"
+      },
+      "bar2": {
+        "attribute": "wounds.stun"
+      },
+      "light": {
+        "negative": false,
+        "priority": 0,
+        "alpha": 0.5,
+        "angle": 360,
+        "bright": 0,
+        "color": null,
+        "coloration": 1,
+        "dim": 0,
+        "attenuation": 0.5,
+        "luminosity": 0.5,
+        "saturation": 0,
+        "contrast": 0,
+        "shadows": 0,
+        "animation": {
+          "type": null,
+          "speed": 5,
+          "intensity": 5,
+          "reverse": false
+        },
+        "darkness": {
+          "min": 0,
+          "max": 1
+        }
+      },
+      "sight": {
+        "enabled": false,
+        "range": 0,
+        "angle": 360,
+        "visionMode": "basic",
+        "color": null,
+        "attenuation": 0.1,
+        "brightness": 0,
+        "saturation": 0,
+        "contrast": 0
+      },
+      "detectionModes": {},
+      "occludable": {
+        "radius": 0
+      },
+      "ring": {
+        "enabled": false,
+        "colors": {
+          "ring": null,
+          "background": null
+        },
+        "effects": 1,
+        "subject": {
+          "scale": 1,
+          "texture": null
+        }
+      },
+      "turnMarker": {
+        "mode": 1,
+        "animation": null,
+        "src": null,
+        "disposition": false
+      },
+      "movementAction": null,
+      "flags": {},
+      "randomImg": false,
+      "appendNumber": false,
+      "prependAdjective": false
+    },
+    "items": [
+      "MT7jiyqtvnXPOruw",
+      "VdtxuprztekKLm2O",
+      "84DLB6OPqhmccj2N",
+      "eeff96a89c97d28a",
+      "08a3c721c6a81a7d",
+      "befaeb329e507934",
+      "a62eabcf7d344e0d",
+      "a18af157bd10360d",
+      "5f9adac42cd78428",
+      "ac7c5422bd5ee0e8",
+      "eb9560d81939e84e",
+      "7ae43487d9b95c95",
+      "1603d1c919c16083",
+      "c824799e616ddf1c",
+      "e2ed12cc5249e84e"
+    ],
+    "effects": [],
+    "folder": "20e4db2a3174fd08",
+    "ownership": {
+      "default": 0,
+      "ge55aFMax5sNd2Ho": 3
+    },
+    "flags": {
+      "The2ndChumming3e": {
+        "isTemplate": false
+      }
+    },
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.4.5",
+      "createdTime": 1784690542984,
+      "modifiedTime": 1784690542984,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {
+    "!actors.items!JaY2wBr97Xu1JdNC.08a3c721c6a81a7d": {
+      "_id": "08a3c721c6a81a7d",
+      "name": "Biotech",
+      "type": "skill",
+      "system": {
+        "skillName": "Biotech",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "Technical skills",
+        "skillType": "active",
+        "specialisation": "Paracritters 5",
+        "specialisations": [
+          {
+            "name": "Paracritters",
+            "level": 1
+          }
+        ],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811692,
+        "modifiedTime": 1788319811692,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!JaY2wBr97Xu1JdNC.1603d1c919c16083": {
+      "_id": "1603d1c919c16083",
+      "name": "Spirits",
+      "type": "skill",
+      "system": {
+        "skillName": "Spirits",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811695,
+        "modifiedTime": 1788319811695,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!JaY2wBr97Xu1JdNC.5f9adac42cd78428": {
+      "_id": "5f9adac42cd78428",
+      "name": "Rifles",
+      "type": "skill",
+      "system": {
+        "skillName": "Rifles",
+        "rating": 3,
+        "linkedAttribute": "quickness",
+        "category": "Combat skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811693,
+        "modifiedTime": 1788319811693,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!JaY2wBr97Xu1JdNC.7ae43487d9b95c95": {
+      "_id": "7ae43487d9b95c95",
+      "name": "Security Procedures",
+      "type": "skill",
+      "system": {
+        "skillName": "Security Procedures",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811694,
+        "modifiedTime": 1788319811694,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!JaY2wBr97Xu1JdNC.84DLB6OPqhmccj2N": {
+      "name": "Tranquilizer Rifle",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_id": "84DLB6OPqhmccj2N",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690542984,
+        "modifiedTime": 1784690542984,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!JaY2wBr97Xu1JdNC.MT7jiyqtvnXPOruw": {
+      "name": "Spirit Focus (Rating 2)",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": 2
+      },
+      "_id": "MT7jiyqtvnXPOruw",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690542984,
+        "modifiedTime": 1784690542984,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!JaY2wBr97Xu1JdNC.VdtxuprztekKLm2O": {
+      "name": "Lined Coat",
+      "type": "armor",
+      "system": {
+        "ballistic": 4,
+        "impact": 2,
+        "concealability": "",
+        "cost": 0,
+        "weight": 0,
+        "availability": "",
+        "streetIndex": "",
+        "bookPage": "",
+        "notes": ""
+      },
+      "_id": "VdtxuprztekKLm2O",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690542984,
+        "modifiedTime": 1784690542984,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!JaY2wBr97Xu1JdNC.a18af157bd10360d": {
+      "_id": "a18af157bd10360d",
+      "name": "Instruction",
+      "type": "skill",
+      "system": {
+        "skillName": "Instruction",
+        "rating": 4,
+        "linkedAttribute": "charisma",
+        "category": "Social skills",
+        "skillType": "active",
+        "specialisation": "Animals 5",
+        "specialisations": [
+          {
+            "name": "Animals",
+            "level": 1
+          }
+        ],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811693,
+        "modifiedTime": 1788319811693,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!JaY2wBr97Xu1JdNC.a62eabcf7d344e0d": {
+      "_id": "a62eabcf7d344e0d",
+      "name": "Etiquette",
+      "type": "skill",
+      "system": {
+        "skillName": "Etiquette",
+        "rating": 3,
+        "linkedAttribute": "charisma",
+        "category": "Social skills",
+        "skillType": "active",
+        "specialisation": "Corporate 4",
+        "specialisations": [
+          {
+            "name": "Corporate",
+            "level": 1
+          }
+        ],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811693,
+        "modifiedTime": 1788319811693,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!JaY2wBr97Xu1JdNC.ac7c5422bd5ee0e8": {
+      "_id": "ac7c5422bd5ee0e8",
+      "name": "Animal Psychology",
+      "type": "skill",
+      "system": {
+        "skillName": "Animal Psychology",
+        "rating": 6,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811694,
+        "modifiedTime": 1788319811694,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!JaY2wBr97Xu1JdNC.befaeb329e507934": {
+      "_id": "befaeb329e507934",
+      "name": "Conjuring",
+      "type": "skill",
+      "system": {
+        "skillName": "Conjuring",
+        "rating": 7,
+        "linkedAttribute": "willpower",
+        "category": "Magical skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811693,
+        "modifiedTime": 1788319811693,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!JaY2wBr97Xu1JdNC.c824799e616ddf1c": {
+      "_id": "c824799e616ddf1c",
+      "name": "Veterinary Medicine",
+      "type": "skill",
+      "system": {
+        "skillName": "Veterinary Medicine",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811695,
+        "modifiedTime": 1788319811695,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!JaY2wBr97Xu1JdNC.e2ed12cc5249e84e": {
+      "_id": "e2ed12cc5249e84e",
+      "name": "Wards",
+      "type": "skill",
+      "system": {
+        "skillName": "Wards",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811695,
+        "modifiedTime": 1788319811695,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!JaY2wBr97Xu1JdNC.eb9560d81939e84e": {
+      "_id": "eb9560d81939e84e",
+      "name": "Parazoology",
+      "type": "skill",
+      "system": {
+        "skillName": "Parazoology",
+        "rating": 6,
+        "linkedAttribute": "intelligence",
+        "category": "Academic skills",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811694,
+        "modifiedTime": 1788319811694,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!JaY2wBr97Xu1JdNC.eeff96a89c97d28a": {
+      "_id": "eeff96a89c97d28a",
+      "name": "Athletics",
+      "type": "skill",
+      "system": {
+        "skillName": "Athletics",
+        "rating": 3,
+        "linkedAttribute": "body",
+        "category": "Physical skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811692,
+        "modifiedTime": 1788319811692,
+        "lastModifiedBy": null
+      }
+    }
+  }
+}

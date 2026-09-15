@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0667",
+  "doc": {
+    "_id": "sr3e-firearm-0667",
+    "name": "Colt Cobra TZ-110",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "32(c)",
+      "mode": "SA/BF/FA",
+      "damage": "6M",
+      "weight": "3",
+      "availability": "6/36hrs",
+      "cost": 800,
+      "streetIndex": "2",
+      "accessories": "Gas Vent II(2RC), Fold Stock(1RC)",
+      "bookPage": "cc.21",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

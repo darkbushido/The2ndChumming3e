@@ -1,0 +1,30 @@
+{
+  "_key": "!items!5dc305cac9982e3a",
+  "doc": {
+    "_id": "5dc305cac9982e3a",
+    "name": "Table Top PC (50Mp)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "4",
+      "rating": null,
+      "cost": 1000,
+      "weight": 3,
+      "availability": "Always",
+      "streetIndex": ".75",
+      "bookPage": "sr3.287",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

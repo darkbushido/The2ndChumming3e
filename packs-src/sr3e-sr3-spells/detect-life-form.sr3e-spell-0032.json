@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0032",
+  "doc": {
+    "_id": "sr3e-spell-0032",
+    "name": "Detect(Life Form)->",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Detection",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "T/A",
+      "drain": "-1(L)",
+      "target": "DT(R)",
+      "bookPage": "sr3.193",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

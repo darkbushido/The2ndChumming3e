@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0110",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0110",
+    "name": "Vashon Island Houndstooth Set",
+    "type": "armor",
+    "system": {
+      "concealability": "varies",
+      "ballistic": 0,
+      "impact": 0,
+      "weight": 0,
+      "availability": "6/48hrs",
+      "cost": 2000,
+      "streetIndex": ".75",
+      "bookPage": "fof.94",
+      "notes": "Ballistic: varies | Impact: varies"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0068",
+  "doc": {
+    "_id": "sr3e-firearm-0068",
+    "name": "Altmayr SP",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "7(m)",
+      "mode": "SS",
+      "damage": "(Special)",
+      "weight": "3",
+      "availability": "4/48hrs",
+      "cost": 900,
+      "streetIndex": "1.5",
+      "accessories": "None",
+      "bookPage": "pw.15",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

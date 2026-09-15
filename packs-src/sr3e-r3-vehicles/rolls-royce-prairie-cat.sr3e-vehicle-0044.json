@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0044",
+  "doc": {
+    "_id": "sr3e-vehicle-0044",
+    "name": "Rolls-Royce Prairie Cat",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 113400,
+      "streetIndex": 2,
+      "availability": "10/10days",
+      "bookPage": "r3.164",
+      "seating": 6,
+      "notes": "APPS, Amphibious Operation 1, Concealed Armor, Electronics Port(Standard Portable Satellite Uplink 2CF), Roll Bars, 2 Improved Living Amenities | Seating: 2+4b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 2,
+          "base": 2
+        },
+        "speed": {
+          "value": 120,
+          "base": 120
+        },
+        "accel": {
+          "value": 4,
+          "base": 4
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 4,
+          "base": 4
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 36,
+          "base": 36
+        },
+        "load": {
+          "value": 1008,
+          "base": 1008
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

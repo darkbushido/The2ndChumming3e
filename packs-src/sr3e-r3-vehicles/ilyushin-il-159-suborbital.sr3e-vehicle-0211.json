@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0211",
+  "doc": {
+    "_id": "sr3e-vehicle-0211",
+    "name": "Ilyushin IL-159 Suborbital",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "fixedwing",
+      "cost": 30000000,
+      "streetIndex": 1,
+      "availability": "NA",
+      "bookPage": "r3.192",
+      "seating": 154,
+      "notes": "Rigger Adaption, 8 Partial Basic Living Amenities | Alt-mode Speed/Accel: 150(750)/80",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 6,
+          "base": 6
+        },
+        "handlingOffRoad": {
+          "value": 6,
+          "base": 6
+        },
+        "speed": {
+          "value": 150,
+          "base": 150
+        },
+        "accel": {
+          "value": 80,
+          "base": 80
+        },
+        "body": {
+          "value": 1,
+          "base": 1
+        },
+        "armor": {
+          "value": 2,
+          "base": 2
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 4,
+          "base": 4
+        },
+        "pilot": {
+          "value": 4,
+          "base": 4
+        },
+        "sensor": {
+          "value": 4,
+          "base": 4
+        },
+        "cargo": {
+          "value": 580,
+          "base": 580
+        },
+        "load": {
+          "value": 20000,
+          "base": 20000
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

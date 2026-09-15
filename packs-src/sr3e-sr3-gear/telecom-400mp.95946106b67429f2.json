@@ -1,0 +1,30 @@
+{
+  "_key": "!items!95946106b67429f2",
+  "doc": {
+    "_id": "95946106b67429f2",
+    "name": "Telecom (400Mp)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "-",
+      "rating": null,
+      "cost": 12000,
+      "weight": 5,
+      "availability": "Always",
+      "streetIndex": "1",
+      "bookPage": "sr3.286",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

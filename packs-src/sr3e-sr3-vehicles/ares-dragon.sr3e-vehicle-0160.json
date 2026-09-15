@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0160",
+  "doc": {
+    "_id": "sr3e-vehicle-0160",
+    "name": "Ares Dragon",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "helicopter",
+      "cost": 590000,
+      "streetIndex": 1,
+      "availability": "30/1Month",
+      "bookPage": "sr3.310,r3.184",
+      "seating": 3,
+      "notes": "",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 260,
+          "base": 260
+        },
+        "accel": {
+          "value": 10,
+          "base": 10
+        },
+        "body": {
+          "value": 7,
+          "base": 7
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 95,
+          "base": 95
+        },
+        "load": {
+          "value": 3250,
+          "base": 3250
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

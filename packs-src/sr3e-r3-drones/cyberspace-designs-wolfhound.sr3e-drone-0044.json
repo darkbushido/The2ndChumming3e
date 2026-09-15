@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0044",
+  "doc": {
+    "_id": "sr3e-drone-0044",
+    "name": "Cyberspace Designs Wolfhound",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 60000,
+      "streetIndex": 1,
+      "availability": "3/72hrs",
+      "seating": 0,
+      "bookPage": "r3.177",
+      "notes": "Remote-Control Interface, Rigger Adaptation, Robotic Pilot, Adaptation Pool 2",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 210,
+          "base": 210
+        },
+        "accel": {
+          "value": 12,
+          "base": 12
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 6,
+          "base": 6
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 2,
+          "base": 2
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 3,
+          "base": 3
+        },
+        "load": {
+          "value": 80,
+          "base": 80
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

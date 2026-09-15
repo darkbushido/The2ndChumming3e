@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0697",
+  "doc": {
+    "_id": "sr3e-firearm-0697",
+    "name": "Sandler TMP",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "20(c)",
+      "mode": "BF/FA",
+      "damage": "6M",
+      "weight": "3.25",
+      "availability": "5/36hrs",
+      "cost": 500,
+      "streetIndex": "1",
+      "accessories": "Laser sight, Fold Stock(1RC)",
+      "bookPage": "cc.21",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

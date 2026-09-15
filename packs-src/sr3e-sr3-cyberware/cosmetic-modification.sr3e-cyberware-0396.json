@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0396",
+  "doc": {
+    "_id": "sr3e-cyberware-0396",
+    "name": "Cosmetic Modification",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Earware",
+      "essenceCost": 0,
+      "cost": 1000,
+      "availability": "2/24 hours",
+      "streetIndex": 0.8,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.299",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "",
+      "srcgName": "Cosmetic Mod"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

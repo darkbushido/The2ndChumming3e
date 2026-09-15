@@ -1,0 +1,34 @@
+{
+  "_key": "!items!f83b20aa94806798",
+  "doc": {
+    "_id": "f83b20aa94806798",
+    "name": "8-Rnd Clip (Bola)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 8,
+      "rounds": 0,
+      "weight": 1.55,
+      "cost": 85,
+      "availability": "5/72hrs",
+      "streetIndex": "2",
+      "bookPage": "cc.39",
+      "notes": "<p>Bola rounds — a type this system does not model; its rules are the GM's (cc.39).</p>"
+    }
+  },
+  "embedded": {}
+}

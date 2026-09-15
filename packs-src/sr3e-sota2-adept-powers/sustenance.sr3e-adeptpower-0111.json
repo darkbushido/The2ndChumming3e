@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0111",
+  "doc": {
+    "_id": "sr3e-adeptpower-0111",
+    "name": "Sustenance",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.25,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.68",
+      "description": "The adept only needs to have 3 hours of sleep and one full meal per day."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

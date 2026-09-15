@@ -1,0 +1,30 @@
+{
+  "_key": "!items!857bdff700edae85",
+  "doc": {
+    "_id": "857bdff700edae85",
+    "name": "Data Encryption System Lv [10]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "2",
+      "rating": 10,
+      "cost": 10000,
+      "weight": 6,
+      "availability": "10/14days",
+      "streetIndex": "2",
+      "bookPage": "sr3.292",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

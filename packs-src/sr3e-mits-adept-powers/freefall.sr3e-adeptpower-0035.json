@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0035",
+  "doc": {
+    "_id": "sr3e-adeptpower-0035",
+    "name": "Freefall*",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.25,
+      "hasLevels": true,
+      "level": 1,
+      "mods": "",
+      "bookPage": "mits.150",
+      "description": "For each level of freefall, an adept can fall a distance of 2 meters without suffering an injury or making a damage resistance . . ."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

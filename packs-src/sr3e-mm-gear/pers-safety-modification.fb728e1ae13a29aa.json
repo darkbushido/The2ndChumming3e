@@ -1,0 +1,30 @@
+{
+  "_key": "!items!fb728e1ae13a29aa",
+  "doc": {
+    "_id": "fb728e1ae13a29aa",
+    "name": "Pers. Safety Modification",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-",
+      "rating": null,
+      "cost": 1000,
+      "weight": 0.1,
+      "availability": "3/36hrs",
+      "streetIndex": "1.5",
+      "bookPage": "mm.33",
+      "description": "<p><strong>Notes:</strong> Legal</p>"
+    }
+  },
+  "embedded": {}
+}

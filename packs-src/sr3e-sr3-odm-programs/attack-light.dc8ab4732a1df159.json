@@ -1,0 +1,19 @@
+{
+  "_key": "!items!dc8ab4732a1df159",
+  "doc": {
+    "_id": "dc8ab4732a1df159",
+    "name": "Attack (Light)",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Attack (Light)",
+      "category": "attack",
+      "multiplier": 2,
+      "rating": 0,
+      "bookPage": "sr3.221",
+      "description": "<p><strong>Offensive utility</strong> · Multiplier 2 — size in Mp = Rating² × 2 (Program Size Table). See SR3 p.221 for what it does.</p>"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

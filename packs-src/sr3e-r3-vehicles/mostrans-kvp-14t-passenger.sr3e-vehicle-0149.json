@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0149",
+  "doc": {
+    "_id": "sr3e-vehicle-0149",
+    "name": "Mostrans KVP-14T(passenger)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "hovercraft",
+      "cost": 143000,
+      "streetIndex": 1,
+      "availability": "8/8 days",
+      "bookPage": "r3.182",
+      "seating": 11,
+      "notes": "Seating: 11b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 180,
+          "base": 180
+        },
+        "accel": {
+          "value": 9,
+          "base": 9
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 1,
+          "base": 1
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 18,
+          "base": 18
+        },
+        "load": {
+          "value": 300,
+          "base": 300
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0064",
+  "doc": {
+    "_id": "sr3e-adeptpower-0064",
+    "name": "Imp. Sense: Improved Scent",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.25,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sr3.169",
+      "description": "You can identify scents in the same way as a bloodhound."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

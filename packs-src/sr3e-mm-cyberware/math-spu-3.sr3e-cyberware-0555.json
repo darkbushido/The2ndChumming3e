@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0555",
+  "doc": {
+    "_id": "sr3e-cyberware-0555",
+    "name": "Math SPU [3]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Headware",
+      "essenceCost": 0.2,
+      "cost": 11000,
+      "availability": "6/60 hours",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "+3HAC",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.21",
+      "grade": "Standard",
+      "rating": 3,
+      "description": "+3 Hacking Pool, Complementary Math Skill (6), stopwatch, alarm clock, chronometer"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

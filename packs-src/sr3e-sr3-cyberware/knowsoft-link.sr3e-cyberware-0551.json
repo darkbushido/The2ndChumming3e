@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0551",
+  "doc": {
+    "_id": "sr3e-cyberware-0551",
+    "name": "Knowsoft Link",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Headware",
+      "essenceCost": 0.1,
+      "cost": 1000,
+      "availability": "3/24 hours",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.298",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Access headware/datajack knowsofts"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

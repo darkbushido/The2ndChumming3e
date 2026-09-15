@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0641",
+  "doc": {
+    "_id": "sr3e-firearm-0641",
+    "name": "Colt TP-6A",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "Tasr",
+      "skill": "Tasers",
+      "attribute": "quickness",
+      "concealability": "7",
+      "ammunition": "6(m)",
+      "mode": "SS",
+      "damage": "8S",
+      "weight": ".75",
+      "availability": "6/24hrs",
+      "cost": 550,
+      "streetIndex": "1",
+      "accessories": "None",
+      "bookPage": "pw.13",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

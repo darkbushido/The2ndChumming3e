@@ -1,0 +1,28 @@
+{
+  "_key": "!items!02cb86e693ff6d50",
+  "doc": {
+    "_id": "02cb86e693ff6d50",
+    "name": "Antidote Patch 1",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "1",
+      "weight": "-",
+      "cost": 50,
+      "availability": "6/72hrs",
+      "streetIndex": "2",
+      "bookPage": "sr2.258",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

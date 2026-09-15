@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0768",
+  "doc": {
+    "_id": "sr3e-cyberware-0768",
+    "name": "Mount, Tracking",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0,
+      "cost": 24000,
+      "availability": "8/7 days",
+      "streetIndex": 2,
+      "legalCode": "3P-R",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.40",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Track targets if linked to target designator"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0311",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0311",
+    "name": "\"Mirage Gear\" Combat Helmet",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 1,
+      "impact": 0,
+      "weight": 1,
+      "availability": "9/4days",
+      "cost": 700,
+      "streetIndex": "2.5",
+      "bookPage": "sr2.???",
+      "notes": "Ballistic +1 (additive modifier)"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

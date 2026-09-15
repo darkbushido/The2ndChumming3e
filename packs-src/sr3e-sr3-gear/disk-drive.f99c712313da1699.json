@@ -1,0 +1,30 @@
+{
+  "_key": "!items!f99c712313da1699",
+  "doc": {
+    "_id": "f99c712313da1699",
+    "name": "Disk Drive",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Miscellaneous Components"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Miscellaneous Components",
+      "concealability": "",
+      "rating": null,
+      "cost": 200,
+      "weight": 0,
+      "availability": "Always",
+      "streetIndex": ".75",
+      "bookPage": "sr3.302",
+      "description": "<p><strong>Legal:</strong> Legal</p>"
+    }
+  },
+  "embedded": {}
+}

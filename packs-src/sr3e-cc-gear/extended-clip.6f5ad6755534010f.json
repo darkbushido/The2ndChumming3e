@@ -1,0 +1,30 @@
+{
+  "_key": "!items!6f5ad6755534010f",
+  "doc": {
+    "_id": "6f5ad6755534010f",
+    "name": "Extended Clip (",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-",
+      "rating": null,
+      "cost": 16,
+      "weight": 0,
+      "availability": "1/8hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.81",
+      "description": "<p><strong>Notes:</strong> Maximum clip size of 50, Available at GM option</p>"
+    }
+  },
+  "embedded": {}
+}

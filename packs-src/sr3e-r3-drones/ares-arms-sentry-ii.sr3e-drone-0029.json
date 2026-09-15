@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0029",
+  "doc": {
+    "_id": "sr3e-drone-0029",
+    "name": "Ares Arms Sentry II",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 43500,
+      "streetIndex": 2,
+      "availability": "9/9 days",
+      "seating": 0,
+      "bookPage": "r3.175",
+      "notes": "Remote-Control Interface, Rigger Adaptation, Micro-Turret(Anti-Aircraft Capability; 1 CF Ammo Bin), Generator(12hrs of power)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 0,
+          "base": 0
+        },
+        "handlingOffRoad": {
+          "value": 0,
+          "base": 0
+        },
+        "speed": {
+          "value": 0,
+          "base": 0
+        },
+        "accel": {
+          "value": 0,
+          "base": 0
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 7,
+          "base": 7
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 4,
+          "base": 4
+        },
+        "sensor": {
+          "value": 4,
+          "base": 4
+        },
+        "cargo": {
+          "value": 1,
+          "base": 1
+        },
+        "load": {
+          "value": 145,
+          "base": 145
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

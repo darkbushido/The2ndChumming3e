@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0180",
+  "doc": {
+    "_id": "sr3e-vehicle-0180",
+    "name": "MF Akihito-Class Supercarrier",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "ship",
+      "cost": 999999999,
+      "streetIndex": 1,
+      "availability": "-",
+      "bookPage": "r3.186",
+      "seating": 0,
+      "notes": "Actual cost: 9 BILLION NUYEN,Aircraft Facilities (10 facilities 80 planes), Flight Deck (325m Angled Catapult/Arrestor), ECCM 10, ECD 6, 2 Remote Large Turrets (12 medium Internal Missle Mounts Each), 4 Medium Launch Control Systems, 4 Remote Medium Turrets w/ANDREWS System, 5500 Basic Living Amenities, 500 Improved Amenities | Alt-mode Speed/Accel: 45(20)/3 | Alt-mode Sig/Autonav: 1(2)/4 | Alt-mode Cargo/Load: 2984748[158500 PS]/8424995[1425000 PS] | Alt-mode Pilot/Sensor: -/10(2)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 45,
+          "base": 45
+        },
+        "accel": {
+          "value": 3,
+          "base": 3
+        },
+        "body": {
+          "value": 9,
+          "base": 9
+        },
+        "armor": {
+          "value": 12,
+          "base": 12
+        },
+        "sig": {
+          "value": 1,
+          "base": 1
+        },
+        "autonav": {
+          "value": 4,
+          "base": 4
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 10,
+          "base": 10
+        },
+        "cargo": {
+          "value": 2984748,
+          "base": 2984748
+        },
+        "load": {
+          "value": 8424995,
+          "base": 8424995
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

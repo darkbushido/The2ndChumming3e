@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1237",
+  "doc": {
+    "_id": "sr3e-firearm-1237",
+    "name": "Ares MP Laser III",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SptR",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "20",
+      "mode": "SA",
+      "damage": "15M",
+      "weight": "20",
+      "availability": "24/3wks",
+      "cost": 120000,
+      "streetIndex": "3",
+      "accessories": "None",
+      "bookPage": "cc.30",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0155",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0155",
+    "name": "ECM [7]",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 200000,
+      "availability": "14/60days",
+      "streetIndex": "GM",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "112 hrs/Electronics B/R(4)",
+      "cfCost": "9",
+      "load": "75kg",
+      "bookPage": "r3.143",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

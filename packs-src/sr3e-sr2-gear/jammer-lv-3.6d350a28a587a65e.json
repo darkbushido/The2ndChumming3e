@@ -1,0 +1,30 @@
+{
+  "_key": "!items!6d350a28a587a65e",
+  "doc": {
+    "_id": "6d350a28a587a65e",
+    "name": "Jammer Lv 3",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "2",
+      "rating": null,
+      "cost": 3000,
+      "weight": 5,
+      "availability": "3/72hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

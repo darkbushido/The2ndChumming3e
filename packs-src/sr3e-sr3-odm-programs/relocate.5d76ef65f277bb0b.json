@@ -1,0 +1,19 @@
+{
+  "_key": "!items!5d76ef65f277bb0b",
+  "doc": {
+    "_id": "5d76ef65f277bb0b",
+    "name": "Relocate",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Relocate",
+      "category": "utility",
+      "multiplier": 2,
+      "rating": 0,
+      "bookPage": "sr3.220",
+      "description": "<p><strong>Operational utility</strong> · Multiplier 2 — size in Mp = Rating² × 2 (Program Size Table). See SR3 p.220 for what it does.</p>"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

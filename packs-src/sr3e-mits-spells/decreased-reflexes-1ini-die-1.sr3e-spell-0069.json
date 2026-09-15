@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0069",
+  "doc": {
+    "_id": "sr3e-spell-0069",
+    "name": "Decreased Reflexes -1INI DIE   1",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Health",
+      "type": "Physical",
+      "duration": "Sustained",
+      "range": "T",
+      "drain": "+2(D)",
+      "target": "10-E(R)",
+      "bookPage": "mits.142",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!c1d70cdd15947a03",
+  "doc": {
+    "_id": "c1d70cdd15947a03",
+    "name": "Microwave Designator",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "4",
+      "rating": null,
+      "cost": 12500,
+      "weight": 4.5,
+      "availability": "24/1month",
+      "streetIndex": "2",
+      "bookPage": "cc.35",
+      "description": "<p><strong>Mount:</strong> Hand</p>"
+    }
+  },
+  "embedded": {}
+}

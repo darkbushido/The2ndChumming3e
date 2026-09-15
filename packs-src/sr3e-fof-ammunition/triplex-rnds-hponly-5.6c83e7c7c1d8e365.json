@@ -1,0 +1,34 @@
+{
+  "_key": "!items!6c83e7c7c1d8e365",
+  "doc": {
+    "_id": "6c83e7c7c1d8e365",
+    "name": "Triplex Rnds(HPonly) 5",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "9",
+      "damage": "(see rules)",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "rounds",
+      "rounds": 1,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 0.05,
+      "cost": 5,
+      "availability": "4/60hrs",
+      "streetIndex": "1.25",
+      "bookPage": "fof.51",
+      "notes": "<p>Not one of the types this system models, or a combination of them — its rules are the GM's.</p><p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>"
+    }
+  },
+  "embedded": {}
+}

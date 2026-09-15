@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0004",
+  "doc": {
+    "_id": "sr3e-drone-0004",
+    "name": "Renraku StreetCleaner",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 7000,
+      "streetIndex": 1,
+      "availability": "2/24hrs",
+      "seating": 0,
+      "bookPage": "ssg.122",
+      "notes": "Remote-Control Interface, Rigger Adaptation, Special Machinery (sweep and brush system), Special Storage Area (10 liter water tank)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 6,
+          "base": 6
+        },
+        "speed": {
+          "value": 10,
+          "base": 10
+        },
+        "accel": {
+          "value": 2,
+          "base": 2
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 7,
+          "base": 7
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 2,
+          "base": 2
+        },
+        "sensor": {
+          "value": 2,
+          "base": 2
+        },
+        "cargo": {
+          "value": 0,
+          "base": 0
+        },
+        "load": {
+          "value": 5,
+          "base": 5
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

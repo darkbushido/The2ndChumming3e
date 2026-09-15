@@ -1,0 +1,42 @@
+{
+  "_key": "!items!oN8e3R1biBCUW8o9",
+  "doc": {
+    "name": "Seven-7",
+    "type": "drug",
+    "system": {
+      "category": "Pharmaceutical Compounds",
+      "addiction": "",
+      "tolerance": "",
+      "effect": "",
+      "speed": "1 Combat Turn",
+      "vector": "Contact or Inhalation",
+      "availability": "20/2 wks",
+      "cost": 1000,
+      "streetIndex": "5",
+      "bookPage": "mm.121",
+      "notes": ""
+    },
+    "_id": "oN8e3R1biBCUW8o9",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "ge55aFMax5sNd2Ho": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.3.1",
+      "createdTime": 1782280826163,
+      "modifiedTime": 1782889914231,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0884",
+  "doc": {
+    "_id": "sr3e-firearm-0884",
+    "name": "Arasaka Rapid Ass.Shot12",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "ShtG",
+      "skill": "Shotguns",
+      "attribute": "quickness",
+      "concealability": "1",
+      "ammunition": "20(c)",
+      "mode": "SA/FA",
+      "damage": "8S",
+      "weight": "5.5",
+      "availability": "8/10days",
+      "cost": 1800,
+      "streetIndex": "2.25",
+      "accessories": "None",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

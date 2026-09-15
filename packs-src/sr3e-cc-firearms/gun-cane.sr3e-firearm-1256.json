@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1256",
+  "doc": {
+    "_id": "sr3e-firearm-1256",
+    "name": "Gun Cane",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HOPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "2/9",
+      "ammunition": "1(b)",
+      "mode": "SS",
+      "damage": "6L",
+      "weight": "1",
+      "availability": "10/7days",
+      "cost": 500,
+      "streetIndex": "2",
+      "accessories": "None",
+      "bookPage": "cc.31",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

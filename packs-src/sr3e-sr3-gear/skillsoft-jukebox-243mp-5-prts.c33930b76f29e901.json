@@ -1,0 +1,30 @@
+{
+  "_key": "!items!c33930b76f29e901",
+  "doc": {
+    "_id": "c33930b76f29e901",
+    "name": "SkillSoft Jukebox 243MP 5 prts",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 24300,
+      "weight": 0,
+      "availability": "3/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Juk<br><strong>Memory:</strong> 243</p>"
+    }
+  },
+  "embedded": {}
+}

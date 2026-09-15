@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0337",
+  "doc": {
+    "_id": "sr3e-cyberware-0337",
+    "name": "Cybergun Machine Gun(MaPist)(CYB)  1",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberweapons",
+      "essenceCost": 0.4,
+      "cost": 900,
+      "availability": "8/7 days",
+      "streetIndex": 2,
+      "legalCode": "4P-Q",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.41",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "6L",
+      "srcgName": "CyGun Mach.Gun(MaPist)(CYB)  1"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

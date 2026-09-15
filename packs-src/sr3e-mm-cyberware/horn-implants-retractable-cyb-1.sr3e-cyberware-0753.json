@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0753",
+  "doc": {
+    "_id": "sr3e-cyberware-0753",
+    "name": "Horn Implants, Retractable(CYB)  1",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0.1,
+      "cost": 16000,
+      "availability": "5/48 hours",
+      "streetIndex": 1,
+      "legalCode": "5P-N",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.43",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "(STR)M, -1 Reach",
+      "srcgName": "Horn Implants, Retract(CYB)  1"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

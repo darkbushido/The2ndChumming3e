@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0303",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0303",
+    "name": "Geck Tape Gloves",
+    "type": "armor",
+    "system": {
+      "concealability": "8",
+      "ballistic": 0,
+      "impact": 0,
+      "weight": 0,
+      "availability": "6/72hrs",
+      "cost": 250,
+      "streetIndex": "1.5",
+      "bookPage": "sta2.36",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

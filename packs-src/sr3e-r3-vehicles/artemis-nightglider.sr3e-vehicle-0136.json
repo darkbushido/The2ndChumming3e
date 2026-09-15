@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0136",
+  "doc": {
+    "_id": "sr3e-vehicle-0136",
+    "name": "Artemis Nightglider",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "fixedwing",
+      "cost": 46500,
+      "streetIndex": 1,
+      "availability": "3/72 hrs",
+      "bookPage": "r3.181",
+      "seating": 1,
+      "notes": "Alt-mode Speed/Accel: 10(60)/4",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 10,
+          "base": 10
+        },
+        "accel": {
+          "value": 4,
+          "base": 4
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 9,
+          "base": 9
+        },
+        "autonav": {
+          "value": 1,
+          "base": 1
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 4,
+          "base": 4
+        },
+        "load": {
+          "value": 190,
+          "base": 190
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

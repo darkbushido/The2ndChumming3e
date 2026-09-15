@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0049",
+  "doc": {
+    "_id": "sr3e-cyberware-0049",
+    "name": "Bone Lace, Aluminium",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 1.15,
+      "cost": 25000,
+      "availability": "5/14 days",
+      "streetIndex": 1.5,
+      "legalCode": "6P-Q",
+      "mods": "+1BOD,+1IMP,",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.302",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Unarmed = (STR+3)M Stun, +1BOD, +1IMP",
+      "bonusBod": 1
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

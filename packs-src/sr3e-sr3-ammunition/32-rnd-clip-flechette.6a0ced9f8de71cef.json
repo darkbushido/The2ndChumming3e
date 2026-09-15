@@ -1,0 +1,34 @@
+{
+  "_key": "!items!6a0ced9f8de71cef",
+  "doc": {
+    "_id": "6a0ced9f8de71cef",
+    "name": "32-Rnd Clip (Flechette)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "flechette",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 32,
+      "rounds": 0,
+      "weight": 2.35,
+      "cost": 325,
+      "availability": "3/36hrs",
+      "streetIndex": ".8",
+      "bookPage": "sr3.281",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0597",
+  "doc": {
+    "_id": "sr3e-cyberware-0597",
+    "name": "SPU - Math [4]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Headware",
+      "essenceCost": 0.25,
+      "cost": 23000,
+      "availability": "6/60 hours",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "st.52",
+      "grade": "Standard",
+      "rating": 4,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

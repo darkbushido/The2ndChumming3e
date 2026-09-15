@@ -1,0 +1,28 @@
+{
+  "_key": "!items!9e660debc023b78d",
+  "doc": {
+    "_id": "9e660debc023b78d",
+    "name": "Hospital Rating 2",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "2",
+      "weight": "-",
+      "cost": 16384000,
+      "availability": "4/1mo",
+      "streetIndex": "3",
+      "bookPage": "mm.138",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

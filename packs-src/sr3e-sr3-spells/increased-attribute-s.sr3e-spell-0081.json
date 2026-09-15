@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0081",
+  "doc": {
+    "_id": "sr3e-spell-0081",
+    "name": "Increased Attribute (S)",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Health",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "T",
+      "drain": "+1(M)",
+      "target": "Att(V)",
+      "bookPage": "sr3.194",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

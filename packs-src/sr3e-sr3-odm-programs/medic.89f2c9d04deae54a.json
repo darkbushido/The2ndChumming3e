@@ -1,0 +1,19 @@
+{
+  "_key": "!items!89f2c9d04deae54a",
+  "doc": {
+    "_id": "89f2c9d04deae54a",
+    "name": "Medic",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Medic",
+      "category": "defense",
+      "multiplier": 4,
+      "rating": 0,
+      "bookPage": "sr3.222",
+      "description": "<p><strong>Defensive utility</strong> · Multiplier 4 — size in Mp = Rating² × 4 (Program Size Table). See SR3 p.222 for what it does.</p>"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

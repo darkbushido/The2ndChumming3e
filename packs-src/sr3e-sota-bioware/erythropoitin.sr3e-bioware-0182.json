@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0182",
+  "doc": {
+    "_id": "sr3e-bioware-0182",
+    "name": "Erythropoitin",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Genetech",
+      "grade": "Exotic",
+      "bioIndex": 0.4,
+      "cost": 40000,
+      "availability": "6/30 days",
+      "streetIndex": 2,
+      "mods": "",
+      "bookPage": "sota.028",
+      "rating": 0,
+      "description": "+2 Dice for Athletics Tests"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

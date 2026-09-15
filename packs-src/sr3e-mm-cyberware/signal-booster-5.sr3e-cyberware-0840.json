@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0840",
+  "doc": {
+    "_id": "sr3e-cyberware-0840",
+    "name": "Signal Booster [5]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0,
+      "cost": 75000,
+      "availability": "6/72 hours",
+      "streetIndex": 1.5,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.40",
+      "grade": "Standard",
+      "rating": 5,
+      "description": "Increase Flux Rating of linked systems by 5"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0068",
+  "doc": {
+    "_id": "sr3e-spell-0068",
+    "name": "Decrease Reaction",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Health",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "T",
+      "drain": "+1(D)",
+      "target": "10-E(R)",
+      "bookPage": "mits.142",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

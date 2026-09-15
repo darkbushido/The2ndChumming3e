@@ -1,0 +1,30 @@
+{
+  "_key": "!items!4368e8a6969ed8be",
+  "doc": {
+    "_id": "4368e8a6969ed8be",
+    "name": "Chemsuit Lv 9",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 1800,
+      "weight": 1,
+      "availability": "9/9days",
+      "streetIndex": "1",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

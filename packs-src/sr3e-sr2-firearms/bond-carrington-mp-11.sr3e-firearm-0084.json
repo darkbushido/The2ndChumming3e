@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0084",
+  "doc": {
+    "_id": "sr3e-firearm-0084",
+    "name": "Bond&Carrington MP-11",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "15(30)(c)",
+      "mode": "SA/BF",
+      "damage": "9M",
+      "weight": "3",
+      "availability": "8/36hrs",
+      "cost": 1200,
+      "streetIndex": "2",
+      "accessories": "Gas Vent (2), Laser Sight",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

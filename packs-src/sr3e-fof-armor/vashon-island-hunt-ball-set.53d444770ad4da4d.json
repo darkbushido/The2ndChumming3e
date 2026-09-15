@@ -1,0 +1,29 @@
+{
+  "_key": "!items!53d444770ad4da4d",
+  "doc": {
+    "_id": "53d444770ad4da4d",
+    "name": "Vashon Island Hunt Ball Set",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "varies",
+      "ballistic": 0,
+      "impact": 0,
+      "weight": 0,
+      "cost": 3000,
+      "availability": "5/48hrs",
+      "streetIndex": ".75",
+      "bookPage": "fof.94",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

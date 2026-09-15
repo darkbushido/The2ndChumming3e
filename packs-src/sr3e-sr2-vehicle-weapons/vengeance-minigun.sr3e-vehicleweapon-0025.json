@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-vehicleweapon-0025",
+  "doc": {
+    "_id": "sr3e-vehicleweapon-0025",
+    "name": "Vengeance Minigun",
+    "type": "vehicleweapon",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "system": {
+      "weaponType": "HMG",
+      "mode": "FA",
+      "damage": "9S",
+      "ammunition": "100",
+      "weight": 30,
+      "cost": 50000,
+      "availability": "GM",
+      "streetIndex": "GM",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

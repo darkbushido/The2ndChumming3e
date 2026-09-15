@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0015",
+  "doc": {
+    "_id": "sr3e-vehicle-0015",
+    "name": "Colorado Craft Cigarette Hydro",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "boat",
+      "cost": 35000,
+      "streetIndex": 1,
+      "availability": "2/48hrs",
+      "bookPage": "r3.161",
+      "seating": 2,
+      "notes": "Hydrofoil Capability | Alt-mode Speed/Accel: 75(105)/10(15) | Alt-mode Sig/Autonav: 3(1)/2",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 75,
+          "base": 75
+        },
+        "accel": {
+          "value": 10,
+          "base": 10
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 8,
+          "base": 8
+        },
+        "load": {
+          "value": 240,
+          "base": 240
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

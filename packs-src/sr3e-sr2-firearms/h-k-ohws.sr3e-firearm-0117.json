@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0117",
+  "doc": {
+    "_id": "sr3e-firearm-0117",
+    "name": "H&K OHWS",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "12(c)",
+      "mode": "SA",
+      "damage": "9M",
+      "weight": "1.2",
+      "availability": "18/14 days",
+      "cost": 2500,
+      "streetIndex": "2",
+      "accessories": "Flashlight, Laser Sight",
+      "bookPage": "pw.22",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

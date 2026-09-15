@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0024",
+  "doc": {
+    "_id": "sr3e-spell-0024",
+    "name": "Catalog",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Detection",
+      "type": "Physical",
+      "duration": "Sustained",
+      "range": "T/A",
+      "drain": "+1(M)",
+      "target": "6",
+      "bookPage": "mits.141",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

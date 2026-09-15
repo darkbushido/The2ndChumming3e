@@ -1,0 +1,30 @@
+{
+  "_key": "!items!cc5d1be5a71eea27",
+  "doc": {
+    "_id": "cc5d1be5a71eea27",
+    "name": "Data Codebreaker Lv [8]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "2",
+      "rating": 8,
+      "cost": 80000,
+      "weight": 5,
+      "availability": "8/10days",
+      "streetIndex": "1.5",
+      "bookPage": "sr3.292",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

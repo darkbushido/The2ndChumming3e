@@ -1,0 +1,30 @@
+{
+  "_key": "!items!48c93a1eb8c44648",
+  "doc": {
+    "_id": "48c93a1eb8c44648",
+    "name": "Weapon Focus 6 (Cost 740000¥)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Magical Equipment"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Magical Equipment",
+      "concealability": "",
+      "rating": null,
+      "cost": 740000,
+      "weight": 0,
+      "availability": "8/72hrs",
+      "streetIndex": "3",
+      "bookPage": "sr2.158",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

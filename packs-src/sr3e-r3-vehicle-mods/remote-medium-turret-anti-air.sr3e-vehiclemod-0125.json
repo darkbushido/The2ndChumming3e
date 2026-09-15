@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0125",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0125",
+    "name": "Remote Medium Turret(Anti-Air)",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 26250,
+      "availability": "GM",
+      "streetIndex": "GM",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "72 hrs/Vehicle B/R(4)",
+      "cfCost": "9",
+      "load": "1000kg",
+      "bookPage": "r3.141",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

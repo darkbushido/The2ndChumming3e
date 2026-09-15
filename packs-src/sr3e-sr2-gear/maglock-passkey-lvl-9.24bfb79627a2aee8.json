@@ -1,0 +1,30 @@
+{
+  "_key": "!items!24bfb79627a2aee8",
+  "doc": {
+    "_id": "24bfb79627a2aee8",
+    "name": "Maglock Passkey Lvl 9",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 9,
+      "cost": 90000,
+      "weight": 1,
+      "availability": "18/10days",
+      "streetIndex": "3",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

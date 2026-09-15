@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0517",
+  "doc": {
+    "_id": "sr3e-cyberware-0517",
+    "name": "Cranial Bomb Kink",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Headware",
+      "essenceCost": 0,
+      "cost": 28000,
+      "availability": "12/14 days",
+      "streetIndex": 1.5,
+      "legalCode": "2-R",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.298",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Damage specific section of head"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0028",
+  "doc": {
+    "_id": "sr3e-vehicle-0028",
+    "name": "Harland",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "boat",
+      "cost": 207500,
+      "streetIndex": 2,
+      "availability": "15/15days",
+      "bookPage": "r3.162",
+      "seating": 2,
+      "notes": "10 High Living amenities, 10-man Life Raft | Alt-mode Sig/Autonav: 2(2)/2 | Alt-mode Cargo/Load: 120[210PS]/2500 | Alt-mode Pilot/Sensor: -/1(0)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 45,
+          "base": 45
+        },
+        "accel": {
+          "value": 4,
+          "base": 4
+        },
+        "body": {
+          "value": 8,
+          "base": 8
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 120,
+          "base": 120
+        },
+        "load": {
+          "value": 2500,
+          "base": 2500
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

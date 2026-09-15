@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0125",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0125",
+    "name": "Victory \"Wild Hunt\" Hvy Armor",
+    "type": "armor",
+    "system": {
+      "concealability": "10",
+      "ballistic": 4,
+      "impact": 0,
+      "weight": 3,
+      "availability": "4/24hrs",
+      "cost": 600,
+      "streetIndex": "1",
+      "bookPage": "cc.49",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

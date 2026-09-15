@@ -1,0 +1,30 @@
+{
+  "_key": "!items!9cb0f21caa6e9a54",
+  "doc": {
+    "_id": "9cb0f21caa6e9a54",
+    "name": "Wrist Phone w",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "8",
+      "rating": null,
+      "cost": 150,
+      "weight": 0,
+      "availability": "Always",
+      "streetIndex": "1",
+      "bookPage": "sr3.287",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

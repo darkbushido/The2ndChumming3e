@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-projectile-0051",
+  "doc": {
+    "_id": "sr3e-projectile-0051",
+    "name": "CS Grenade",
+    "type": "projectile",
+    "system": {
+      "category": "GR",
+      "skill": "Throwing Weapons",
+      "attribute": "strength",
+      "concealability": "5",
+      "strMin": 0,
+      "damage": "tear gas",
+      "weight": ".5",
+      "availability": "6/4 days",
+      "cost": 75,
+      "streetIndex": "2.5",
+      "legal": false,
+      "bookPage": "sr2.???",
+      "notes": "",
+      "isAoE": true
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

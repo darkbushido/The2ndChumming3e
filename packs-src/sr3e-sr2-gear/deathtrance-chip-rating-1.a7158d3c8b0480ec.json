@@ -1,0 +1,30 @@
+{
+  "_key": "!items!a7158d3c8b0480ec",
+  "doc": {
+    "_id": "a7158d3c8b0480ec",
+    "name": "DeathTrance Chip Rating 1",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 5000,
+      "weight": 0,
+      "availability": "20/10days",
+      "streetIndex": ".9",
+      "bookPage": "sr2.244",
+      "description": "<p><strong>Type:</strong> Active<br><strong>Memory:</strong> 50</p>"
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,28 @@
+{
+  "_key": "!items!sr3e-firearm-1209",
+  "doc": {
+    "_id": "sr3e-firearm-1209",
+    "name": "Spike",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "MisLn",
+      "skill": "Gunnery",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "1(b)",
+      "mode": "SS",
+      "damage": "(As Rocket/Missle)",
+      "weight": "1",
+      "availability": "10/1wk",
+      "cost": 800,
+      "streetIndex": "2",
+      "accessories": "One use ONLY",
+      "bookPage": "cc.27",
+      "notes": "",
+      "isAoE": true
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

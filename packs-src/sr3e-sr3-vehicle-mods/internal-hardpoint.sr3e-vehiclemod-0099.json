@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0099",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0099",
+    "name": "Internal Hardpoint",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 3000,
+      "availability": "6/7days",
+      "streetIndex": "2",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "24 hrs/Vehicle B/R(4)",
+      "cfCost": "7",
+      "load": "10kg+Weapon",
+      "bookPage": "sr3.312,r3.136",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

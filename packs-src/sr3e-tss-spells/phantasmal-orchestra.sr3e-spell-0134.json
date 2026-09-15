@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0134",
+  "doc": {
+    "_id": "sr3e-spell-0134",
+    "name": "Phantasmal Orchestra",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Illusion",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "L",
+      "drain": "+1(S)",
+      "target": "4(R)",
+      "bookPage": "tss.9",
+      "damage": "",
+      "description": "Target changed to fit with other Indirect Illusions"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

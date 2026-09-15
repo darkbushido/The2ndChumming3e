@@ -1,0 +1,30 @@
+{
+  "_key": "!items!363016f653961aac",
+  "doc": {
+    "_id": "363016f653961aac",
+    "name": "Chem Sniffer - Doorway [3]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "4",
+      "rating": 3,
+      "cost": 60000,
+      "weight": 0,
+      "availability": "3/2wks",
+      "streetIndex": "3",
+      "bookPage": "sr3.294",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

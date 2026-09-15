@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0030",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0030",
+    "name": "Secure Ultra-Vest",
+    "type": "armor",
+    "system": {
+      "concealability": "14",
+      "ballistic": 3,
+      "impact": 2,
+      "weight": 2.5,
+      "availability": "3/36hrs",
+      "cost": 350,
+      "streetIndex": ".9",
+      "bookPage": "sr3.284",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

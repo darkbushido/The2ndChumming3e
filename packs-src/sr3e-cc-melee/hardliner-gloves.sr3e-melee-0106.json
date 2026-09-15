@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0106",
+  "doc": {
+    "_id": "sr3e-melee-0106",
+    "name": "Hardliner Gloves",
+    "type": "melee",
+    "system": {
+      "category": "UNA",
+      "skill": "Unarmed Combat",
+      "attribute": "strength",
+      "concealability": "9",
+      "reach": "-",
+      "damage": "(STR+1)M Stun",
+      "weight": ".5",
+      "availability": "2/24hrs",
+      "cost": 300,
+      "streetIndex": ".75",
+      "legal": true,
+      "bookPage": "cc.49",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

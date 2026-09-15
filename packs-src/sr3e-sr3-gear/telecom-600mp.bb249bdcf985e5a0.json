@@ -1,0 +1,30 @@
+{
+  "_key": "!items!bb249bdcf985e5a0",
+  "doc": {
+    "_id": "bb249bdcf985e5a0",
+    "name": "Telecom (600Mp)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "-",
+      "rating": null,
+      "cost": 18000,
+      "weight": 5,
+      "availability": "Always",
+      "streetIndex": "1",
+      "bookPage": "sr3.286",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

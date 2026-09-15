@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0137",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0137",
+    "name": "Autosoft Interpretation [4]",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 4000,
+      "availability": "8/14days",
+      "streetIndex": "2",
+      "installEquipment": "Electronics Shop",
+      "installTime": "72 hrs/Electronics B/R(4)",
+      "cfCost": "1",
+      "load": "2kg",
+      "bookPage": "r3.142",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

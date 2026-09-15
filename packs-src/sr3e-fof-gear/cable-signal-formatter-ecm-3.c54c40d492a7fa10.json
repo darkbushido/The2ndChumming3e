@@ -1,0 +1,30 @@
+{
+  "_key": "!items!c54c40d492a7fa10",
+  "doc": {
+    "_id": "c54c40d492a7fa10",
+    "name": "Cable Signal Formatter ECM 3",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "3",
+      "rating": null,
+      "cost": 6500,
+      "weight": 3,
+      "availability": "11/1week",
+      "streetIndex": "3",
+      "bookPage": "fof.96",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

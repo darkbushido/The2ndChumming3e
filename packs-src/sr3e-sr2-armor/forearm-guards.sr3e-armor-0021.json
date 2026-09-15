@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0021",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0021",
+    "name": "Forearm Guards",
+    "type": "armor",
+    "system": {
+      "concealability": "12",
+      "ballistic": 0,
+      "impact": 1,
+      "weight": 0.2,
+      "availability": "5/36hrs",
+      "cost": 250,
+      "streetIndex": ".75",
+      "bookPage": "ssc.37",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

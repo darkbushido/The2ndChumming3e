@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0183",
+  "doc": {
+    "_id": "sr3e-vehicle-0183",
+    "name": "Cunard Princess Victoria Liner",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "ship",
+      "cost": 40000000,
+      "streetIndex": 2,
+      "availability": "-",
+      "bookPage": "r3.187",
+      "seating": 0,
+      "notes": "30 Basic Living Amenities, 200 Improved Living Amenities, 100 High Living Amenities | Alt-mode Speed/Accel: 50(15)/2 | Alt-mode Sig/Autonav: 3(2)/4 | Alt-mode Cargo/Load: 39300[35700 PS]/734995[750000 PS] | Alt-mode Pilot/Sensor: -/4(1)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 50,
+          "base": 50
+        },
+        "accel": {
+          "value": 2,
+          "base": 2
+        },
+        "body": {
+          "value": 5,
+          "base": 5
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 4,
+          "base": 4
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 4,
+          "base": 4
+        },
+        "cargo": {
+          "value": 39300,
+          "base": 39300
+        },
+        "load": {
+          "value": 734995,
+          "base": 734995
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

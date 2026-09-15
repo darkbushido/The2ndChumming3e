@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0107",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0107",
+    "name": "V-Island \"Actioneer\" Slacks",
+    "type": "armor",
+    "system": {
+      "concealability": "14",
+      "ballistic": 1,
+      "impact": 1,
+      "weight": 1,
+      "availability": "5/48hrs",
+      "cost": 350,
+      "streetIndex": ".75",
+      "bookPage": "cc.49",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,28 @@
+{
+  "_key": "!items!sr3e-cyberware-0157",
+  "doc": {
+    "_id": "sr3e-cyberware-0157",
+    "name": "Reaction Enhancer [1]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0.3,
+      "cost": 60000,
+      "availability": "6/7 days",
+      "streetIndex": 2,
+      "legalCode": "6P-R",
+      "mods": "+1RCT,",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.302",
+      "grade": "Standard",
+      "rating": 1,
+      "description": "+1RCT",
+      "bonusRea": 1,
+      "srcgName": "Reaction Enhance [1]"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

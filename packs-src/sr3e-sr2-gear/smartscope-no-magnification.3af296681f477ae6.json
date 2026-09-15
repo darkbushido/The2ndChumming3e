@@ -1,0 +1,30 @@
+{
+  "_key": "!items!3af296681f477ae6",
+  "doc": {
+    "_id": "3af296681f477ae6",
+    "name": "Smartscope (No magnification)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-2)",
+      "rating": null,
+      "cost": 3250,
+      "weight": 1,
+      "availability": "5/60hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.240",
+      "description": "<p><strong>Mount:</strong> Top</p>"
+    }
+  },
+  "embedded": {}
+}

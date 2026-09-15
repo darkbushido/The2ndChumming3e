@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-projectile-0063",
+  "doc": {
+    "_id": "sr3e-projectile-0063",
+    "name": "Offensive HE Grenade B",
+    "type": "projectile",
+    "system": {
+      "category": "GR",
+      "skill": "Throwing Weapons",
+      "attribute": "strength",
+      "concealability": "6",
+      "strMin": 0,
+      "damage": "10S",
+      "weight": ".25",
+      "availability": "4/4days",
+      "cost": 30,
+      "streetIndex": "2",
+      "legal": false,
+      "bookPage": "sr2.283",
+      "notes": "",
+      "isAoE": true
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

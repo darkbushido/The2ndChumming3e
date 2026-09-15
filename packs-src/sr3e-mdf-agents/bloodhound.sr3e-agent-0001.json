@@ -1,0 +1,27 @@
+{
+  "_key": "!actors!sr3e-agent-0001",
+  "doc": {
+    "_id": "sr3e-agent-0001",
+    "name": "Bloodhound",
+    "type": "agent",
+    "img": "systems/The2ndChumming3e/styles/textures/agent-default.webp",
+    "system": {
+      "rating": 4,
+      "graded": false,
+      "hostSecurityTier": "Green",
+      "additionalSkills": [],
+      "utilities": [
+        {
+          "name": "Analyze",
+          "multiplier": 3
+        }
+      ],
+      "specialAbilities": [],
+      "woundValue": 0,
+      "notes": "<p>Search specialist. Analyze reduces the TN for Search and Render by its rating. Multiplier 4, 64 Mp.</p><p>Deploy to locate hidden users, mapped datafiles, or concealed IC in a node.</p>"
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

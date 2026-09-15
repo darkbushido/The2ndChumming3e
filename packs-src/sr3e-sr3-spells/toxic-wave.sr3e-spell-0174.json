@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0174",
+  "doc": {
+    "_id": "sr3e-spell-0174",
+    "name": "Toxic Wave",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Elemental",
+      "type": "Physical",
+      "duration": "Instant",
+      "range": "LOS(A)",
+      "drain": "+1(DL+2)",
+      "target": "4(RC)",
+      "bookPage": "sr3.196",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

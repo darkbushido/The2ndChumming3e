@@ -1,0 +1,31 @@
+{
+  "_key": "!items!c380978bed75f137",
+  "doc": {
+    "_id": "c380978bed75f137",
+    "name": "Methadone",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "2M+3P",
+      "tolerance": "3",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 50,
+      "availability": "5/6hrs",
+      "streetIndex": "2",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 5</p>"
+    }
+  },
+  "embedded": {}
+}

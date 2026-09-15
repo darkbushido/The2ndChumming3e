@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0130",
+  "doc": {
+    "_id": "sr3e-vehicle-0130",
+    "name": "CASA J-239 Raven",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "fixedwing",
+      "cost": 331000,
+      "streetIndex": 1,
+      "availability": "17/17 days",
+      "bookPage": "r3.180",
+      "seating": 2,
+      "notes": "Customised Engine(factored in), 2 External Hardpoints | Alt-mode Speed/Accel: 135(400)/30",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 135,
+          "base": 135
+        },
+        "accel": {
+          "value": 30,
+          "base": 30
+        },
+        "body": {
+          "value": 6,
+          "base": 6
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 1,
+          "base": 1
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 4,
+          "base": 4
+        },
+        "cargo": {
+          "value": 44,
+          "base": 44
+        },
+        "load": {
+          "value": 450,
+          "base": 450
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

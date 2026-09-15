@@ -1,0 +1,28 @@
+{
+  "_key": "!items!6281356b93cdcc2d",
+  "doc": {
+    "_id": "6281356b93cdcc2d",
+    "name": "Alpha Medical Clinic Rating 9",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "9",
+      "weight": "-",
+      "cost": 878800,
+      "availability": "11/1wk",
+      "streetIndex": "2",
+      "bookPage": "mm.138",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

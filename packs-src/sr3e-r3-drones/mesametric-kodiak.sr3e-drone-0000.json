@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0000",
+  "doc": {
+    "_id": "sr3e-drone-0000",
+    "name": "Mesametric Kodiak",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 75500,
+      "streetIndex": 2,
+      "availability": "4/4days",
+      "seating": 0,
+      "bookPage": "r3.163",
+      "notes": "Remote-Control Interface, Rigger Adaptation, Off-Road Suspension 2(factored in), Improved Suspension 2(factored in), Crane(Scoop 1000kg), Dozer Blade",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 20,
+          "base": 20
+        },
+        "accel": {
+          "value": 2,
+          "base": 2
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 12,
+          "base": 12
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 2,
+          "base": 2
+        },
+        "sensor": {
+          "value": 3,
+          "base": 3
+        },
+        "cargo": {
+          "value": 0,
+          "base": 0
+        },
+        "load": {
+          "value": 1025,
+          "base": 1025
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

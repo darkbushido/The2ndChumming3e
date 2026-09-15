@@ -1,0 +1,30 @@
+{
+  "_key": "!items!c878ad7c13e5fd04",
+  "doc": {
+    "_id": "c878ad7c13e5fd04",
+    "name": "Barbed Wire (per 100 meters)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": null,
+      "cost": 25,
+      "weight": 20,
+      "availability": "always",
+      "streetIndex": ".75",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-vehicleweapon-0007",
+  "doc": {
+    "_id": "sr3e-vehicleweapon-0007",
+    "name": "Ares Victory Autocannon",
+    "type": "vehicleweapon",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "system": {
+      "weaponType": "Autocannon",
+      "mode": "SS/FA",
+      "damage": "20D",
+      "ammunition": "Belt",
+      "weight": 105,
+      "cost": 125000,
+      "availability": "20/45days",
+      "streetIndex": "5",
+      "bookPage": "r3.91",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!cf30143bb2aaf9a1",
+  "doc": {
+    "_id": "cf30143bb2aaf9a1",
+    "name": "Sprawl Blaster",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "-",
+      "rating": null,
+      "cost": 200,
+      "weight": 3.5,
+      "availability": "always",
+      "streetIndex": ".75",
+      "bookPage": "fof.98",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

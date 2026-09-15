@@ -1,0 +1,31 @@
+{
+  "_key": "!items!73bc0b78ccbc510e",
+  "doc": {
+    "_id": "73bc0b78ccbc510e",
+    "name": "Phenmetrazine (10 tablets)",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "5P",
+      "tolerance": "4",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 75,
+      "availability": "5/3hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 5</p>"
+    }
+  },
+  "embedded": {}
+}

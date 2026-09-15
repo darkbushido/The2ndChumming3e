@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0026",
+  "doc": {
+    "_id": "sr3e-spell-0026",
+    "name": "Clairaudience",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Detection",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "T/D",
+      "drain": "(M)",
+      "target": "6(R)",
+      "bookPage": "sr3.192",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

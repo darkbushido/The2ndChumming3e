@@ -1,0 +1,30 @@
+{
+  "_key": "!items!1197b2b27a848afc",
+  "doc": {
+    "_id": "1197b2b27a848afc",
+    "name": "Standard Parachute",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 500,
+      "weight": 20,
+      "availability": "6/1wk",
+      "streetIndex": "1",
+      "bookPage": "cc.56",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

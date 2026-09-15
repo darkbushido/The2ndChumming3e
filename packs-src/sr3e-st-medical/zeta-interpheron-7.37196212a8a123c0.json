@@ -1,0 +1,28 @@
+{
+  "_key": "!items!37196212a8a123c0",
+  "doc": {
+    "_id": "37196212a8a123c0",
+    "name": "Zeta-Interpheron 7",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "7",
+      "weight": "-",
+      "cost": 1200,
+      "availability": "4/32hrs",
+      "streetIndex": "2",
+      "bookPage": "st.77",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

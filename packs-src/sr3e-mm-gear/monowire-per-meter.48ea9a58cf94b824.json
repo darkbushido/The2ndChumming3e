@@ -1,0 +1,30 @@
+{
+  "_key": "!items!48ea9a58cf94b824",
+  "doc": {
+    "_id": "48ea9a58cf94b824",
+    "name": "Monowire (per meter)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "8",
+      "rating": null,
+      "cost": 2000,
+      "weight": 0,
+      "availability": "24/14days",
+      "streetIndex": "3",
+      "bookPage": "mm.95",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!b27689563f2eae58",
+  "doc": {
+    "_id": "b27689563f2eae58",
+    "name": "Satellite Dish - Fixed Base",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 900,
+      "weight": 60,
+      "availability": "5/1wk",
+      "streetIndex": "1",
+      "bookPage": "cc.55",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

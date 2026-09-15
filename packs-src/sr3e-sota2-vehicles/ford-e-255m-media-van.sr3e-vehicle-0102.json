@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0102",
+  "doc": {
+    "_id": "sr3e-vehicle-0102",
+    "name": "Ford E-255M Media Van",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 37900,
+      "streetIndex": 1,
+      "availability": "2/48hrs",
+      "bookPage": "sta2.39",
+      "seating": 2,
+      "notes": "Electronics Port, Large Portable Satellite Dish, Power Amplifiers 4, Satellite Link 3 | Seating: 1+1b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 8,
+          "base": 8
+        },
+        "speed": {
+          "value": 85,
+          "base": 85
+        },
+        "accel": {
+          "value": 4,
+          "base": 4
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 40,
+          "base": 40
+        },
+        "load": {
+          "value": 1180,
+          "base": 1180
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

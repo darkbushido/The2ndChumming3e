@@ -1,0 +1,24 @@
+{
+  "_key": "!actors!sr3e-ic-0013",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/agent-default.webp",
+    "_id": "sr3e-ic-0013",
+    "name": "Killer",
+    "type": "ic",
+    "system": {
+      "icType": "Killer",
+      "grading": "Black",
+      "rating": 6,
+      "systemRating": 6,
+      "memoryRequired": 25,
+      "damage": "6S",
+      "hostSecurityTier": "Red",
+      "notes": "<p>Elite lethal IC that delivers lethal biofeedback through the decker's neural interface. Deals physical damage in hot-sim VR.</p>",
+      "woundValue": 0,
+      "bookPage": "matrix-defragged.42"
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

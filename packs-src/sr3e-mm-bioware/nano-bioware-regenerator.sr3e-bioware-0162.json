@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0162",
+  "doc": {
+    "_id": "sr3e-bioware-0162",
+    "name": "Nano Bioware Regenerator->",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Nanoware",
+      "grade": "Exotic",
+      "bioIndex": 0,
+      "cost": 0,
+      "availability": "8/2 weeks",
+      "streetIndex": 2,
+      "mods": "",
+      "bookPage": "mm.92",
+      "rating": 0,
+      "description": "add your own entry via DATeditor | Cost: ? 10% of implant cost"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

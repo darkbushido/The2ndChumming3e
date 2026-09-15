@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0048",
+  "doc": {
+    "_id": "sr3e-firearm-0048",
+    "name": "Ruger P-8",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "8",
+      "ammunition": "10(c)",
+      "mode": "SA",
+      "damage": "7L",
+      "weight": ".75",
+      "availability": "4/24hrs",
+      "cost": 395,
+      "streetIndex": "1",
+      "accessories": "None",
+      "bookPage": "pw.16",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

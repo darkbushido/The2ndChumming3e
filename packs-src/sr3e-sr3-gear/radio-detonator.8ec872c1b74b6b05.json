@@ -1,0 +1,30 @@
+{
+  "_key": "!items!8ec872c1b74b6b05",
+  "doc": {
+    "_id": "8ec872c1b74b6b05",
+    "name": "Radio Detonator",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Explosives"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Explosives",
+      "concealability": "8",
+      "rating": null,
+      "cost": 250,
+      "weight": 0.25,
+      "availability": "4/48hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.283",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

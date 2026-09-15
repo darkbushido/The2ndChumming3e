@@ -1,0 +1,30 @@
+{
+  "_key": "!items!8fe1bb3a190039a0",
+  "doc": {
+    "_id": "8fe1bb3a190039a0",
+    "name": "Maglock Passkey Lvl 10",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 10,
+      "cost": 100000,
+      "weight": 1,
+      "availability": "20/10days",
+      "streetIndex": "3",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

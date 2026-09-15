@@ -1,0 +1,25 @@
+{
+  "_key": "!items!sr3e-bioware-0150",
+  "doc": {
+    "_id": "sr3e-bioware-0150",
+    "name": "Synaptic Accelerator[2]",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Cultured",
+      "grade": "Cultured",
+      "bioIndex": 1,
+      "cost": 200000,
+      "availability": "6/12 days",
+      "streetIndex": 2,
+      "mods": "+2NNI,",
+      "bookPage": "mm.074",
+      "rating": 2,
+      "description": "+2INI",
+      "bonusInitDice": 2,
+      "srcgName": "Synaptic Accel.[2]"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

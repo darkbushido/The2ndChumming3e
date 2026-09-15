@@ -1,0 +1,30 @@
+{
+  "_key": "!items!4287454141a76283",
+  "doc": {
+    "_id": "4287454141a76283",
+    "name": "Shock Pads",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-",
+      "rating": 1,
+      "cost": 200,
+      "weight": 0.25,
+      "availability": "2/24hrs",
+      "streetIndex": ".75",
+      "bookPage": "sr2.240",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

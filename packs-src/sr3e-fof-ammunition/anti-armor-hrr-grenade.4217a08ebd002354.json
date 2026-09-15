@@ -1,0 +1,34 @@
+{
+  "_key": "!items!4217a08ebd002354",
+  "doc": {
+    "_id": "4217a08ebd002354",
+    "name": "Anti-Armor HRR Grenade",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "5",
+      "damage": "18D",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "rounds",
+      "rounds": 1,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 3,
+      "cost": 200,
+      "availability": "5/36hrs",
+      "streetIndex": "3",
+      "bookPage": "fof.48",
+      "notes": "<p>Not one of the types this system models, or a combination of them — its rules are the GM's.</p><p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>"
+    }
+  },
+  "embedded": {}
+}

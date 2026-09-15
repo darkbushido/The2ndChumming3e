@@ -1,0 +1,30 @@
+{
+  "_key": "!items!0f1fcdce5cd3ef2e",
+  "doc": {
+    "_id": "0f1fcdce5cd3ef2e",
+    "name": "Bug Scanner Lv 3",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "3",
+      "rating": null,
+      "cost": 1500,
+      "weight": 1,
+      "availability": "3/48hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

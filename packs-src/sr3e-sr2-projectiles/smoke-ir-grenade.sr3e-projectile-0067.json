@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-projectile-0067",
+  "doc": {
+    "_id": "sr3e-projectile-0067",
+    "name": "Smoke (IR) Grenade",
+    "type": "projectile",
+    "system": {
+      "category": "other",
+      "skill": "Projectile Weapons",
+      "attribute": "strength",
+      "concealability": "6",
+      "strMin": 0,
+      "damage": "-",
+      "weight": ".25",
+      "availability": "4/48hrs",
+      "cost": 40,
+      "streetIndex": "2",
+      "legal": false,
+      "bookPage": "sr2.283,fof.48",
+      "notes": "",
+      "isAoE": true
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

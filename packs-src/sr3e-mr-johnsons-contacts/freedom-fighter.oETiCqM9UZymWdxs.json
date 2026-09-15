@@ -1,0 +1,1242 @@
+{
+  "_key": "!actors!oETiCqM9UZymWdxs",
+  "doc": {
+    "name": "Freedom Fighter",
+    "type": "character",
+    "system": {
+      "metatype": "dwarf",
+      "nuyen": 0,
+      "karma": 0,
+      "totalKarma": 0,
+      "karmaPool": 3,
+      "notes": "<p>Mr. Johnson's Little Black Book, p.46. PR 4. Karma Pool 3.</p>",
+      "attributes": {
+        "body": {
+          "base": 5,
+          "value": 5,
+          "mod": 0,
+          "force": 0
+        },
+        "quickness": {
+          "base": 5,
+          "value": 5,
+          "mod": 0,
+          "force": 0
+        },
+        "strength": {
+          "base": 5,
+          "value": 5,
+          "mod": 0,
+          "force": 0
+        },
+        "charisma": {
+          "base": 3,
+          "value": 3,
+          "mod": 0,
+          "force": 0
+        },
+        "intelligence": {
+          "base": 3,
+          "value": 3,
+          "mod": 0,
+          "force": 0
+        },
+        "willpower": {
+          "base": 4,
+          "value": 4,
+          "mod": 0,
+          "force": 0
+        },
+        "essence": {
+          "base": 6,
+          "value": 3,
+          "force": 0,
+          "lost": 3
+        },
+        "magic": {
+          "base": 0,
+          "value": 0,
+          "mod": 0,
+          "force": 0
+        },
+        "reaction": {
+          "base": 3,
+          "value": 3,
+          "reactionBonus": 0,
+          "diceBonus": 0,
+          "override": false,
+          "force": 0
+        }
+      },
+      "biography": "",
+      "gender": "",
+      "age": "",
+      "height": "",
+      "weight": "",
+      "ethnicity": "",
+      "reputation": 0,
+      "notoriety": 0,
+      "streetCred": 0,
+      "hackingBonus": 0,
+      "initiativeDiceBonus": 0,
+      "equippedArmor": "",
+      "equippedMelee": "",
+      "activeVCRItemId": "",
+      "equippedCyberdeck": "",
+      "matrixUserMode": "",
+      "activeHostId": "",
+      "currentMatrixNode": "",
+      "matrixMarks": [],
+      "linkLocked": false,
+      "astralMode": "",
+      "magicTradition": "",
+      "magicType": "",
+      "magicTotem": "",
+      "magicElement": "",
+      "initiateGrade": 0,
+      "combatPoolSpent": 0,
+      "combatPoolMod": 0,
+      "spellPoolSpent": 0,
+      "spellPoolMod": 0,
+      "astralPoolSpent": 0,
+      "astralPoolMod": 0,
+      "hackingPoolSpent": 0,
+      "spellDefensePool": 0,
+      "spellDefenseSorceryDice": 0,
+      "fullDefense": false,
+      "fullDefensePool": 0,
+      "recoilCompensation": 0,
+      "roundsFiredThisPhase": 0,
+      "stimBonus": 0,
+      "wounds": {
+        "stun": {
+          "value": 0,
+          "max": 10
+        },
+        "physical": {
+          "value": 0,
+          "max": 10
+        },
+        "overflow": {
+          "value": 0
+        }
+      },
+      "ew": {
+        "deckRating": 0,
+        "fluxRating": 0,
+        "protocolModule": 0,
+        "ivisPool": {
+          "value": 0,
+          "max": 0
+        }
+      },
+      "orthodoxDeck": {
+        "deckModel": "",
+        "mccp": 0,
+        "bod": 0,
+        "evasion": 0,
+        "masking": 0,
+        "sensor": 0,
+        "hardening": 0,
+        "activeMemory": 0,
+        "storageMemory": 0,
+        "ioSpeed": 0,
+        "responseIncrease": 0,
+        "sleazeRating": 0
+      },
+      "orthodoxRunState": {
+        "securityTally": 0,
+        "alertLevel": "none",
+        "currentHostId": ""
+      },
+      "orthodoxMatrixCM": {
+        "value": 0
+      },
+      "professionalRating": 4,
+      "bookPage": "lbb.46"
+    },
+    "_id": "oETiCqM9UZymWdxs",
+    "img": "icons/svg/mystery-man.svg",
+    "prototypeToken": {
+      "name": "Freedom Fighter",
+      "displayName": 0,
+      "actorLink": true,
+      "width": 1,
+      "height": 1,
+      "depth": 1,
+      "texture": {
+        "src": "icons/svg/mystery-man.svg",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "fit": "contain",
+        "scaleX": 1,
+        "scaleY": 1,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "lockRotation": false,
+      "rotation": 0,
+      "alpha": 1,
+      "disposition": -1,
+      "displayBars": 20,
+      "bar1": {
+        "attribute": "wounds.physical"
+      },
+      "bar2": {
+        "attribute": "wounds.stun"
+      },
+      "light": {
+        "negative": false,
+        "priority": 0,
+        "alpha": 0.5,
+        "angle": 360,
+        "bright": 0,
+        "color": null,
+        "coloration": 1,
+        "dim": 0,
+        "attenuation": 0.5,
+        "luminosity": 0.5,
+        "saturation": 0,
+        "contrast": 0,
+        "shadows": 0,
+        "animation": {
+          "type": null,
+          "speed": 5,
+          "intensity": 5,
+          "reverse": false
+        },
+        "darkness": {
+          "min": 0,
+          "max": 1
+        }
+      },
+      "sight": {
+        "enabled": false,
+        "range": 0,
+        "angle": 360,
+        "visionMode": "basic",
+        "color": null,
+        "attenuation": 0.1,
+        "brightness": 0,
+        "saturation": 0,
+        "contrast": 0
+      },
+      "detectionModes": {},
+      "occludable": {
+        "radius": 0
+      },
+      "ring": {
+        "enabled": false,
+        "colors": {
+          "ring": null,
+          "background": null
+        },
+        "effects": 1,
+        "subject": {
+          "scale": 1,
+          "texture": null
+        }
+      },
+      "turnMarker": {
+        "mode": 1,
+        "animation": null,
+        "src": null,
+        "disposition": false
+      },
+      "movementAction": null,
+      "flags": {},
+      "randomImg": false,
+      "appendNumber": false,
+      "prependAdjective": false
+    },
+    "items": [
+      "SfC1pJsyCRRUhOZ4",
+      "TFmQcUf4KwXeWTRA",
+      "ogpsKkPKoGPXPXom",
+      "sc01VVeriPxIDba4",
+      "ZuOrbdTP7LtbONlt",
+      "HBxb8HM9qCSeLUcQ",
+      "Ct0P6wMsZYr8Jf5A",
+      "5IOsNJiK5mrjMeb5",
+      "4f497a4515a6b809",
+      "30d9d66336d8e6cf",
+      "b48d9f7c9e68907a",
+      "0bd0b89b12b32c5b",
+      "5d82e9eb83c75d71",
+      "4e2d142661445d44",
+      "100c2a103831e00e",
+      "964e8abe50201b3c",
+      "8f6927b101ce0fd7",
+      "23bbb170d03c4302",
+      "0ddec47729435305",
+      "35c56007b03187bf",
+      "f50c06e6f88d49c8",
+      "cf55870640acde1a",
+      "585c4bd9de725e95",
+      "159788ad47d67fc9",
+      "9461773dfcac94fb",
+      "fdf391fbb3293cdf"
+    ],
+    "effects": [],
+    "folder": "837acc16547f1aaf",
+    "ownership": {
+      "default": 0,
+      "ge55aFMax5sNd2Ho": 3
+    },
+    "flags": {
+      "The2ndChumming3e": {
+        "isTemplate": false
+      }
+    },
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.4.5",
+      "createdTime": 1784690543191,
+      "modifiedTime": 1784690543191,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {
+    "!actors.items!oETiCqM9UZymWdxs.0bd0b89b12b32c5b": {
+      "_id": "0bd0b89b12b32c5b",
+      "name": "Intimidation",
+      "type": "skill",
+      "system": {
+        "skillName": "Intimidation",
+        "rating": 4,
+        "linkedAttribute": "charisma",
+        "category": "Social skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812018,
+        "modifiedTime": 1788319812018,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.0ddec47729435305": {
+      "_id": "0ddec47729435305",
+      "name": "Mechanics",
+      "type": "skill",
+      "system": {
+        "skillName": "Mechanics",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812019,
+        "modifiedTime": 1788319812019,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.100c2a103831e00e": {
+      "_id": "100c2a103831e00e",
+      "name": "Unarmed Combat",
+      "type": "skill",
+      "system": {
+        "skillName": "Unarmed Combat",
+        "rating": 5,
+        "linkedAttribute": "strength",
+        "category": "Combat skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812019,
+        "modifiedTime": 1788319812019,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.159788ad47d67fc9": {
+      "_id": "159788ad47d67fc9",
+      "name": "Boosted Reflexes [1]",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Bodyware",
+        "essenceCost": 0.5,
+        "cost": 15000,
+        "availability": "3/24 hours",
+        "streetIndex": 1,
+        "legalCode": "8P-Q",
+        "mods": "+1INI,",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.302",
+        "grade": "Standard",
+        "rating": 1,
+        "description": "+1INI",
+        "bonusInitDice": 1
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0054",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621575,
+        "modifiedTime": 1788537621575,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.23bbb170d03c4302": {
+      "_id": "23bbb170d03c4302",
+      "name": "Guerrilla Tactics",
+      "type": "skill",
+      "system": {
+        "skillName": "Guerrilla Tactics",
+        "rating": 6,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812019,
+        "modifiedTime": 1788319812019,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.30d9d66336d8e6cf": {
+      "_id": "30d9d66336d8e6cf",
+      "name": "[Firearm] B/R",
+      "type": "skill",
+      "system": {
+        "skillName": "[Firearm] B/R",
+        "rating": 5,
+        "linkedAttribute": "quickness",
+        "category": "Combat skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812017,
+        "modifiedTime": 1788319812017,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.35c56007b03187bf": {
+      "_id": "35c56007b03187bf",
+      "name": "Politics",
+      "type": "skill",
+      "system": {
+        "skillName": "Politics",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "Academic skills",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812020,
+        "modifiedTime": 1788319812020,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.4e2d142661445d44": {
+      "_id": "4e2d142661445d44",
+      "name": "Pistols",
+      "type": "skill",
+      "system": {
+        "skillName": "Pistols",
+        "rating": 3,
+        "linkedAttribute": "quickness",
+        "category": "Combat skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812018,
+        "modifiedTime": 1788319812018,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.4f497a4515a6b809": {
+      "_id": "4f497a4515a6b809",
+      "name": "[Vehicle] B/R",
+      "type": "skill",
+      "system": {
+        "skillName": "[Vehicle] B/R",
+        "rating": 5,
+        "linkedAttribute": "reaction",
+        "category": "Combat skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812017,
+        "modifiedTime": 1788319812017,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.585c4bd9de725e95": {
+      "_id": "585c4bd9de725e95",
+      "name": "Trid Pirates",
+      "type": "skill",
+      "system": {
+        "skillName": "Trid Pirates",
+        "rating": 3,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812020,
+        "modifiedTime": 1788319812020,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.5IOsNJiK5mrjMeb5": {
+      "name": "WW Infiltrator",
+      "type": "firearm",
+      "system": {
+        "category": "HPist",
+        "skill": "Pistols",
+        "attribute": "quickness",
+        "concealability": "5",
+        "ammunition": "15(c)",
+        "mode": "SA",
+        "damage": "9M",
+        "weight": "2",
+        "availability": "9/1wk",
+        "cost": 1200,
+        "streetIndex": "2",
+        "accessories": "None",
+        "bookPage": "cc.19",
+        "notes": ""
+      },
+      "_id": "5IOsNJiK5mrjMeb5",
+      "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543191,
+        "modifiedTime": 1788492295844,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-cc-firearms.Item.sr3e-firearm-0150",
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.5d82e9eb83c75d71": {
+      "_id": "5d82e9eb83c75d71",
+      "name": "Leadership",
+      "type": "skill",
+      "system": {
+        "skillName": "Leadership",
+        "rating": 4,
+        "linkedAttribute": "charisma",
+        "category": "Social skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812018,
+        "modifiedTime": 1788319812018,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.8f6927b101ce0fd7": {
+      "_id": "8f6927b101ce0fd7",
+      "name": "[Relevant Language]",
+      "type": "skill",
+      "system": {
+        "skillName": "[Relevant Language]",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812019,
+        "modifiedTime": 1788319812019,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.9461773dfcac94fb": {
+      "_id": "9461773dfcac94fb",
+      "name": "Muscle Replacement [2]",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Bodyware",
+        "essenceCost": 2,
+        "cost": 40000,
+        "availability": "4/4 days",
+        "streetIndex": 1,
+        "legalCode": "5P-Q",
+        "mods": "+2QCK,+2STR,",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.302",
+        "grade": "Standard",
+        "rating": 2,
+        "description": "+2QCK, +2STR",
+        "bonusQui": 2,
+        "bonusStr": 2,
+        "srcgName": "Muscle Replac. [2]"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0142",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621575,
+        "modifiedTime": 1788537621575,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.964e8abe50201b3c": {
+      "_id": "964e8abe50201b3c",
+      "name": "[Relevant Cause]",
+      "type": "skill",
+      "system": {
+        "skillName": "[Relevant Cause]",
+        "rating": 6,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812019,
+        "modifiedTime": 1788319812019,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.Ct0P6wMsZYr8Jf5A": {
+      "name": "Jeep",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_id": "Ct0P6wMsZYr8Jf5A",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543191,
+        "modifiedTime": 1784690543191,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.HBxb8HM9qCSeLUcQ": {
+      "name": "MREs",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_id": "HBxb8HM9qCSeLUcQ",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543191,
+        "modifiedTime": 1784690543191,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.SfC1pJsyCRRUhOZ4": {
+      "name": "Vest with Plates",
+      "type": "armor",
+      "system": {
+        "ballistic": 4,
+        "impact": 3,
+        "concealability": "",
+        "cost": 0,
+        "weight": 0,
+        "availability": "",
+        "streetIndex": "",
+        "bookPage": "",
+        "notes": ""
+      },
+      "_id": "SfC1pJsyCRRUhOZ4",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543191,
+        "modifiedTime": 1784690543191,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.TFmQcUf4KwXeWTRA": {
+      "name": "Colt M-23",
+      "type": "firearm",
+      "system": {
+        "category": "AsRf",
+        "skill": "Rifles",
+        "attribute": "quickness",
+        "concealability": "3",
+        "ammunition": "40(c)",
+        "mode": "SA/BF/FA",
+        "damage": "8M",
+        "weight": "4.5",
+        "availability": "6/36hrs",
+        "cost": 950,
+        "streetIndex": "2",
+        "accessories": "None",
+        "bookPage": "cc.22",
+        "notes": ""
+      },
+      "_id": "TFmQcUf4KwXeWTRA",
+      "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543191,
+        "modifiedTime": 1788492295844,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-cc-firearms.Item.sr3e-firearm-0766",
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.ZuOrbdTP7LtbONlt": {
+      "name": "Helmet",
+      "type": "armor",
+      "system": {
+        "concealability": "-",
+        "ballistic": 2,
+        "impact": 1,
+        "weight": 0,
+        "availability": "12/14days",
+        "cost": 250,
+        "streetIndex": "2",
+        "bookPage": "sr3.284",
+        "notes": "Ballistic +1 (additive modifier) | Impact +2 (additive modifier)"
+      },
+      "_id": "ZuOrbdTP7LtbONlt",
+      "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543191,
+        "modifiedTime": 1789436857044,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-armor.Item.sr3e-armor-0241",
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.b48d9f7c9e68907a": {
+      "_id": "b48d9f7c9e68907a",
+      "name": "Assault Rifles",
+      "type": "skill",
+      "system": {
+        "skillName": "Assault Rifles",
+        "rating": 5,
+        "linkedAttribute": "quickness",
+        "category": "Combat skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812018,
+        "modifiedTime": 1788319812018,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.cf55870640acde1a": {
+      "_id": "cf55870640acde1a",
+      "name": "Survival",
+      "type": "skill",
+      "system": {
+        "skillName": "Survival",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812020,
+        "modifiedTime": 1788319812020,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.f50c06e6f88d49c8": {
+      "_id": "f50c06e6f88d49c8",
+      "name": "Small Unit Tactics",
+      "type": "skill",
+      "system": {
+        "skillName": "Small Unit Tactics",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "Background knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319812020,
+        "modifiedTime": 1788319812020,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.fdf391fbb3293cdf": {
+      "_id": "fdf391fbb3293cdf",
+      "name": "Smartlink II",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Bodyware",
+        "essenceCost": 0.5,
+        "cost": 3500,
+        "availability": "6/48 hours",
+        "streetIndex": 2,
+        "legalCode": "5P-N",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "mm.31",
+        "grade": "Standard",
+        "rating": 0,
+        "description": "-2 to TNs for firing a Smartlink-II weapon, +2 Called Shot modifier"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-mm-cyberware.Item.sr3e-cyberware-0225",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621575,
+        "modifiedTime": 1788537621575,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.ogpsKkPKoGPXPXom": {
+      "name": "Survival Knife",
+      "type": "melee",
+      "system": {
+        "category": "EDG",
+        "skill": "Edged Weapons",
+        "attribute": "strength",
+        "concealability": "6",
+        "reach": "-",
+        "damage": "(STR+2)L",
+        "weight": ".75",
+        "availability": "3/6hrs",
+        "cost": 450,
+        "streetIndex": "1",
+        "legal": true,
+        "bookPage": "sr3.275",
+        "notes": ""
+      },
+      "_id": "ogpsKkPKoGPXPXom",
+      "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543191,
+        "modifiedTime": 1788492295844,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-melee.Item.sr3e-melee-0042",
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!oETiCqM9UZymWdxs.sc01VVeriPxIDba4": {
+      "name": "Slap Patches",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_id": "sc01VVeriPxIDba4",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543191,
+        "modifiedTime": 1784690543191,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    }
+  }
+}

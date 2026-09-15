@@ -1,0 +1,30 @@
+{
+  "_key": "!items!4a68f3abed2c4f7d",
+  "doc": {
+    "_id": "4a68f3abed2c4f7d",
+    "name": "Chemsuit Lv 2",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 400,
+      "weight": 1,
+      "availability": "2/2days",
+      "streetIndex": "1",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

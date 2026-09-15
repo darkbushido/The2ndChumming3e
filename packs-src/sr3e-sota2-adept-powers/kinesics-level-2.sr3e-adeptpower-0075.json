@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0075",
+  "doc": {
+    "_id": "sr3e-adeptpower-0075",
+    "name": "Kinesics Level 2",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 2,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.66",
+      "description": "The adept has complete control over his non-verbal and subconscious communication."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0078",
+  "doc": {
+    "_id": "sr3e-cyberware-0078",
+    "name": "+DS Scanner",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0.05,
+      "cost": 8000,
+      "availability": "1/1 hours",
+      "streetIndex": 1,
+      "legalCode": "4P-N",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.28",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Scan images"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

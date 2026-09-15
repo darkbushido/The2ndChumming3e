@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0018",
+  "doc": {
+    "_id": "sr3e-vehicle-0018",
+    "name": "Biohm",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "boat",
+      "cost": 260000,
+      "streetIndex": 2,
+      "availability": "19/19days",
+      "bookPage": "r3.161",
+      "seating": 3,
+      "notes": "3 Micro-Turrets(1 CF Ammo Bin each), Mini-Turret(1 CF Ammo Bin) | Alt-mode Sig/Autonav: 1(1)/3 | Alt-mode Pilot/Sensor: -/1(0) | Seating: 2+1b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 75,
+          "base": 75
+        },
+        "accel": {
+          "value": 4,
+          "base": 4
+        },
+        "body": {
+          "value": 5,
+          "base": 5
+        },
+        "armor": {
+          "value": 9,
+          "base": 9
+        },
+        "sig": {
+          "value": 1,
+          "base": 1
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 55,
+          "base": 55
+        },
+        "load": {
+          "value": 800,
+          "base": 800
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

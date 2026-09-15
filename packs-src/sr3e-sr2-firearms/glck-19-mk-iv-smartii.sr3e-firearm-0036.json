@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0036",
+  "doc": {
+    "_id": "sr3e-firearm-0036",
+    "name": "Glck 19 Mk.IV SmartII",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "17(c)",
+      "mode": "SA",
+      "damage": "6L",
+      "weight": "1",
+      "availability": "8/24hrs",
+      "cost": 1150,
+      "streetIndex": "2",
+      "accessories": "Smartlink-2, RC:(1)",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

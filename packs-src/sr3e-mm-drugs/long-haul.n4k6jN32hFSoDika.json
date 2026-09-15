@@ -1,0 +1,42 @@
+{
+  "_key": "!items!n4k6jN32hFSoDika",
+  "doc": {
+    "name": "Long Haul",
+    "type": "drug",
+    "system": {
+      "category": "Stimulants",
+      "addiction": "2M",
+      "tolerance": "2",
+      "effect": "10/10",
+      "speed": "",
+      "vector": "",
+      "availability": "6/600",
+      "cost": 500,
+      "streetIndex": "2",
+      "bookPage": "mm.120",
+      "notes": ""
+    },
+    "_id": "n4k6jN32hFSoDika",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "ge55aFMax5sNd2Ho": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.3.1",
+      "createdTime": 1782280826284,
+      "modifiedTime": 1782889914231,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

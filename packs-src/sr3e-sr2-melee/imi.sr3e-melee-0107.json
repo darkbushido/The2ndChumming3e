@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0107",
+  "doc": {
+    "_id": "sr3e-melee-0107",
+    "name": "IMI",
+    "type": "melee",
+    "system": {
+      "category": "other",
+      "skill": "Armed Combat",
+      "attribute": "strength",
+      "concealability": "6",
+      "reach": "0",
+      "damage": "(STR+5)L",
+      "weight": ".75",
+      "availability": "6/48hrs",
+      "cost": 120,
+      "streetIndex": "1.2",
+      "legal": true,
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!76bc9cf92a44f737",
+  "doc": {
+    "_id": "76bc9cf92a44f737",
+    "name": "SkillSoft Jukebox 147MP 8 prts",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 23520,
+      "weight": 0,
+      "availability": "3/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Juk<br><strong>Memory:</strong> 147</p>"
+    }
+  },
+  "embedded": {}
+}

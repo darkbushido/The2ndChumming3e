@@ -1,0 +1,30 @@
+{
+  "_key": "!items!d2489ff38cb51503",
+  "doc": {
+    "_id": "d2489ff38cb51503",
+    "name": "Chemsuit Lv [5]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 5,
+      "cost": 1000,
+      "weight": 1,
+      "availability": "5/5days",
+      "streetIndex": "1",
+      "bookPage": "sr3.295",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

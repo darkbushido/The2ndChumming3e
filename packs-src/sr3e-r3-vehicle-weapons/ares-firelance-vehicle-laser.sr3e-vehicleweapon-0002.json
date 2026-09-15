@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-vehicleweapon-0002",
+  "doc": {
+    "_id": "sr3e-vehicleweapon-0002",
+    "name": "Ares Firelance Vehicle Laser",
+    "type": "vehicleweapon",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "system": {
+      "weaponType": "LASER",
+      "mode": "SA",
+      "damage": "15S",
+      "ammunition": "40",
+      "weight": 48,
+      "cost": 300000,
+      "availability": "GM",
+      "streetIndex": "GM",
+      "bookPage": "r3.88",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

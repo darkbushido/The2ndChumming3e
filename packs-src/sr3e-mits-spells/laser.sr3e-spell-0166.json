@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0166",
+  "doc": {
+    "_id": "sr3e-spell-0166",
+    "name": "Laser",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Elemental",
+      "type": "Physical",
+      "duration": "Instant",
+      "range": "LOS",
+      "drain": "+1(DL+1)",
+      "target": "4(RC)",
+      "bookPage": "mits.145",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

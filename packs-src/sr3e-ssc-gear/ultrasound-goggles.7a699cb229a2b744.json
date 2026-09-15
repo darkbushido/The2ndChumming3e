@@ -1,0 +1,30 @@
+{
+  "_key": "!items!7a699cb229a2b744",
+  "doc": {
+    "_id": "7a699cb229a2b744",
+    "name": "Ultrasound Goggles",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-",
+      "rating": null,
+      "cost": 1100,
+      "weight": 0,
+      "availability": "3/36hrs",
+      "streetIndex": "1",
+      "bookPage": "ssc.34",
+      "description": "<p><strong>Mount:</strong> NA</p>"
+    }
+  },
+  "embedded": {}
+}

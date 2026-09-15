@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0086",
+  "doc": {
+    "_id": "sr3e-vehicle-0086",
+    "name": "Leyland-Zil Tsarina(M)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 12500,
+      "streetIndex": 1,
+      "availability": "2/24hrs",
+      "bookPage": "r3.168",
+      "seating": 2,
+      "notes": "Methane",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 8,
+          "base": 8
+        },
+        "speed": {
+          "value": 100,
+          "base": 100
+        },
+        "accel": {
+          "value": 6,
+          "base": 6
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 4,
+          "base": 4
+        },
+        "autonav": {
+          "value": 1,
+          "base": 1
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 3,
+          "base": 3
+        },
+        "load": {
+          "value": 100,
+          "base": 100
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

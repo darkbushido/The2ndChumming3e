@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0195",
+  "doc": {
+    "_id": "sr3e-vehicle-0195",
+    "name": "Aztech Lobo Medium Scout LAV",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "fixedwing",
+      "cost": 2420000,
+      "streetIndex": 3,
+      "availability": "NA",
+      "bookPage": "r3.190",
+      "seating": 3,
+      "notes": "ECM 6, ECCM 5, Medium Turret (1 CF Ammo Bin), Gas Enviroseal | Alt-mode Speed/Accel: 250(850)/35 | Seating: 3e",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 6,
+          "base": 6
+        },
+        "handlingOffRoad": {
+          "value": 6,
+          "base": 6
+        },
+        "speed": {
+          "value": 250,
+          "base": 250
+        },
+        "accel": {
+          "value": 35,
+          "base": 35
+        },
+        "body": {
+          "value": 6,
+          "base": 6
+        },
+        "armor": {
+          "value": 21,
+          "base": 21
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 7,
+          "base": 7
+        },
+        "cargo": {
+          "value": 24,
+          "base": 24
+        },
+        "load": {
+          "value": 800,
+          "base": 800
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

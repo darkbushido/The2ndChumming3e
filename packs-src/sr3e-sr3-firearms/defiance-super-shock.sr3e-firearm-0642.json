@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0642",
+  "doc": {
+    "_id": "sr3e-firearm-0642",
+    "name": "Defiance Super Shock",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "Tasr",
+      "skill": "Tasers",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "4(m)",
+      "mode": "SA",
+      "damage": "10S Stun",
+      "weight": "2",
+      "availability": "5/24hrs",
+      "cost": 1000,
+      "streetIndex": "1",
+      "accessories": "Low-light Scope",
+      "bookPage": "sr3.278",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

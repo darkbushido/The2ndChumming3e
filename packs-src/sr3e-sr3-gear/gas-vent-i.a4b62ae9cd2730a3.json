@@ -1,0 +1,30 @@
+{
+  "_key": "!items!a4b62ae9cd2730a3",
+  "doc": {
+    "_id": "a4b62ae9cd2730a3",
+    "name": "Gas Vent I",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-1)",
+      "rating": 1,
+      "cost": 250,
+      "weight": 0.5,
+      "availability": "2/24hrs",
+      "streetIndex": ".5",
+      "bookPage": "sr3.282",
+      "description": "<p><strong>Mount:</strong> Barrel</p>"
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!c135620afa29ab48",
+  "doc": {
+    "_id": "c135620afa29ab48",
+    "name": "KnowSoft Spec.[2]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 2,
+      "cost": 800,
+      "weight": 0,
+      "availability": "4/4days",
+      "streetIndex": "1.25",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Know<br><strong>Memory:</strong> 8</p>"
+    }
+  },
+  "embedded": {}
+}

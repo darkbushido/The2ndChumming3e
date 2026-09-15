@@ -1,0 +1,30 @@
+{
+  "_key": "!items!af491f093d90c023",
+  "doc": {
+    "_id": "af491f093d90c023",
+    "name": "Breathing Regulator",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "7",
+      "rating": null,
+      "cost": 720,
+      "weight": 2.5,
+      "availability": "4/12hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.57",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

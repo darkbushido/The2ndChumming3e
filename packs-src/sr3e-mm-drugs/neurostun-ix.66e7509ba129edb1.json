@@ -1,0 +1,31 @@
+{
+  "_key": "!items!66e7509ba129edb1",
+  "doc": {
+    "_id": "66e7509ba129edb1",
+    "name": "Neurostun IX",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Toxins"
+      }
+    },
+    "system": {
+      "category": "Toxins",
+      "addiction": "",
+      "tolerance": "",
+      "effect": "6S",
+      "speed": "1 Combat Turn",
+      "vector": "Contact/Inhalation",
+      "cost": 20,
+      "availability": "6/36hrs",
+      "streetIndex": "2",
+      "bookPage": "mm.121",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

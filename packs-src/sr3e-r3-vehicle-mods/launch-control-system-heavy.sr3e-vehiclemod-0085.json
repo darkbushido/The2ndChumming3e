@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0085",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0085",
+    "name": "Launch Control System(Heavy)",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 2000,
+      "availability": "6/7days",
+      "streetIndex": "2",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "24 hrs/Vehcile B/R(4)",
+      "cfCost": "2",
+      "load": "10kg",
+      "bookPage": "r3.137",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

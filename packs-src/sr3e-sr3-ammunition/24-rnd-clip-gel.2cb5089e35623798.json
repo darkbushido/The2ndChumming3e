@@ -1,0 +1,34 @@
+{
+  "_key": "!items!2cb5089e35623798",
+  "doc": {
+    "_id": "2cb5089e35623798",
+    "name": "24-Rnd Clip (Gel)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "gel",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 24,
+      "rounds": 0,
+      "weight": 1.35,
+      "cost": 77,
+      "availability": "4/48hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.281",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

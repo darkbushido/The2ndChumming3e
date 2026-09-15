@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0067",
+  "doc": {
+    "_id": "sr3e-bioware-0067",
+    "name": "Nictitating Membranes",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Standard",
+      "grade": "Standard",
+      "bioIndex": 0.1,
+      "cost": 8000,
+      "availability": "4/6 days",
+      "streetIndex": 1,
+      "mods": "",
+      "bookPage": "mm.067",
+      "rating": 0,
+      "description": "-1 eye irritance mods, flare comp"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

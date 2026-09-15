@@ -1,0 +1,25 @@
+{
+  "_key": "!folders!4a28a67b368b6226",
+  "doc": {
+    "_id": "4a28a67b368b6226",
+    "name": "Essential Services: Workers",
+    "type": "Actor",
+    "description": "",
+    "folder": null,
+    "sorting": "a",
+    "sort": 1000000,
+    "color": null,
+    "flags": {},
+    "_stats": {
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "coreVersion": "14",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": null,
+      "createdTime": 1788274787556,
+      "modifiedTime": 1788274787556,
+      "lastModifiedBy": null
+    }
+  },
+  "embedded": {}
+}

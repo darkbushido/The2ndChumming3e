@@ -1,0 +1,30 @@
+{
+  "_key": "!items!34f4692f70401571",
+  "doc": {
+    "_id": "34f4692f70401571",
+    "name": "SumnerTech Gyro-Mount 1S",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-3)",
+      "rating": 3,
+      "cost": 2000,
+      "weight": 2.5,
+      "availability": "6/48hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.240",
+      "description": "<p><strong>Mount:</strong> Under</p>"
+    }
+  },
+  "embedded": {}
+}

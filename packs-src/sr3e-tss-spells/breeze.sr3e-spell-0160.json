@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0160",
+  "doc": {
+    "_id": "sr3e-spell-0160",
+    "name": "Breeze",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Elemental",
+      "type": "Physical",
+      "duration": "Sustained",
+      "range": "LOS",
+      "drain": "(L)",
+      "target": "2",
+      "bookPage": "tss.18",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0798",
+  "doc": {
+    "_id": "sr3e-firearm-0798",
+    "name": "Shadow Arms Bullpup AR",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "AsRf",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "40(c)",
+      "mode": "SA/BF/FA",
+      "damage": "8M",
+      "weight": "3.5",
+      "availability": "8/7days",
+      "cost": 3700,
+      "streetIndex": "2",
+      "accessories": "1 point recoil comp",
+      "bookPage": "tss.7",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

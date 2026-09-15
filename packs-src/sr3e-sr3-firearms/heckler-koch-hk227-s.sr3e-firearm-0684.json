@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0684",
+  "doc": {
+    "_id": "sr3e-firearm-0684",
+    "name": "Heckler & Koch HK227-S",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "28(c)",
+      "mode": "SA/BF",
+      "damage": "7M",
+      "weight": "3",
+      "availability": "10/7days",
+      "cost": 1200,
+      "streetIndex": "2",
+      "accessories": "Laser Sight, Suppressor, Retr. Stock(1RC)",
+      "bookPage": "sr3.278",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

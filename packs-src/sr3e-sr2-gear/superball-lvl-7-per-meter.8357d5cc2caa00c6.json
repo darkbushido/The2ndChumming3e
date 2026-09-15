@@ -1,0 +1,30 @@
+{
+  "_key": "!items!8357d5cc2caa00c6",
+  "doc": {
+    "_id": "8357d5cc2caa00c6",
+    "name": "Superball Lvl 7 (per meter)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 7,
+      "cost": 350,
+      "weight": 0,
+      "availability": "14/48hrs",
+      "streetIndex": "3",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

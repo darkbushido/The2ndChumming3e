@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0801",
+  "doc": {
+    "_id": "sr3e-cyberware-0801",
+    "name": "Remote Control Deck [4]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0,
+      "cost": 100000,
+      "availability": "4/72 hours",
+      "streetIndex": 2,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.23",
+      "grade": "Standard",
+      "rating": 4,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

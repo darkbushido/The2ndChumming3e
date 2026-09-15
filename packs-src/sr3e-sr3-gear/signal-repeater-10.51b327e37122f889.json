@@ -1,0 +1,30 @@
+{
+  "_key": "!items!51b327e37122f889",
+  "doc": {
+    "_id": "51b327e37122f889",
+    "name": "Signal Repeater [10]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "3",
+      "rating": 10,
+      "cost": 10000,
+      "weight": 20,
+      "availability": "20/48hrs",
+      "streetIndex": "3",
+      "bookPage": "sr3.290",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

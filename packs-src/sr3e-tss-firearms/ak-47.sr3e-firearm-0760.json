@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0760",
+  "doc": {
+    "_id": "sr3e-firearm-0760",
+    "name": "AK-47",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "AsRf",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "30(c)",
+      "mode": "SA/BF/FA",
+      "damage": "9M",
+      "weight": "6",
+      "availability": "24/14days",
+      "cost": 900,
+      "streetIndex": "2",
+      "accessories": "None",
+      "bookPage": "tss.3",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

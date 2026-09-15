@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0012",
+  "doc": {
+    "_id": "sr3e-prog-0012",
+    "name": "Jackpot",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Jackpot",
+      "type": "Program",
+      "category": "Offensive",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 5,
+      "degradable": true,
+      "description": "<p>Decreases the user's target number by its rating while utilizing the Siphon Paydata prompt.</p>",
+      "associatedPrompt": "Siphon Paydata",
+      "effect": "TN Reduction",
+      "bookPage": "matrix-defragged.31"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0016",
+  "doc": {
+    "_id": "sr3e-vehicle-0016",
+    "name": "Aztech Tiburon",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "boat",
+      "cost": 650000,
+      "streetIndex": 2,
+      "availability": "-",
+      "bookPage": "r3.161",
+      "seating": 3,
+      "notes": "2 Mini-Turrets (1 CF Ammo Bin each), Improved Signature 1 (factored in) | Alt-mode Sig/Autonav: 3(3)/3 | Alt-mode Pilot/Sensor: -/7(0) | Seating: 2+1b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 90,
+          "base": 90
+        },
+        "accel": {
+          "value": 5,
+          "base": 5
+        },
+        "body": {
+          "value": 5,
+          "base": 5
+        },
+        "armor": {
+          "value": 4,
+          "base": 4
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 7,
+          "base": 7
+        },
+        "cargo": {
+          "value": 20,
+          "base": 20
+        },
+        "load": {
+          "value": 505,
+          "base": 505
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0920",
+  "doc": {
+    "_id": "sr3e-firearm-0920",
+    "name": "Sandler \"Mad Max\"",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "ShtG",
+      "skill": "Shotguns",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "2(b)",
+      "mode": "SA",
+      "damage": "6S",
+      "weight": "2.25",
+      "availability": "4/48hrs",
+      "cost": 400,
+      "streetIndex": "1",
+      "accessories": "None",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

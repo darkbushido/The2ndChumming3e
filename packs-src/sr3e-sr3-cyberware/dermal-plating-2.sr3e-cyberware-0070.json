@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0070",
+  "doc": {
+    "_id": "sr3e-cyberware-0070",
+    "name": "Dermal Plating [2]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 1,
+      "cost": 15000,
+      "availability": "4/12 days",
+      "streetIndex": 1,
+      "legalCode": "6P-N",
+      "mods": "+2BOD,",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.302",
+      "grade": "Standard",
+      "rating": 2,
+      "description": "+2BOD",
+      "bonusBod": 2
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

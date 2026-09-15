@@ -1,0 +1,28 @@
+{
+  "_key": "!items!2d3f07af8682713b",
+  "doc": {
+    "_id": "2d3f07af8682713b",
+    "name": "Delta Hospital Rating 4",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "4",
+      "weight": "-",
+      "cost": 320000000,
+      "availability": "17/1mo",
+      "streetIndex": "3",
+      "bookPage": "mm.138",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!68c09ee175a78e35",
+  "doc": {
+    "_id": "68c09ee175a78e35",
+    "name": "Shades - Thermographic",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "S+S Vision Enhancers"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "S+S Vision Enhancers",
+      "concealability": "6",
+      "rating": null,
+      "cost": 4400,
+      "weight": 0,
+      "availability": "6/48hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.XXX",
+      "description": "<p><strong>Mag:</strong> 20x</p>"
+    }
+  },
+  "embedded": {}
+}

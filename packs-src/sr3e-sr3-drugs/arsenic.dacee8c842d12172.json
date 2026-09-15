@@ -1,0 +1,31 @@
+{
+  "_key": "!items!dacee8c842d12172",
+  "doc": {
+    "_id": "dacee8c842d12172",
+    "name": "Arsenic",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Toxins"
+      }
+    },
+    "system": {
+      "category": "Toxins",
+      "addiction": "",
+      "tolerance": "",
+      "effect": "10D",
+      "speed": "1D6 Hours",
+      "vector": "Injection",
+      "cost": 40,
+      "availability": "4/12hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.250",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

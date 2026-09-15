@@ -1,0 +1,30 @@
+{
+  "_key": "!items!aabe6213f32bee71",
+  "doc": {
+    "_id": "aabe6213f32bee71",
+    "name": "Smartlink level II",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-2",
+      "rating": null,
+      "cost": 800,
+      "weight": 0.75,
+      "availability": "6/48hrs",
+      "streetIndex": "2",
+      "bookPage": "mm.32",
+      "description": "<p><strong>Mount:</strong> Top/Under</p>"
+    }
+  },
+  "embedded": {}
+}

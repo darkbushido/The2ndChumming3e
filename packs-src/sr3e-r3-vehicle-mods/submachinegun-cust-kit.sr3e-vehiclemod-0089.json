@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0089",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0089",
+    "name": "Submachinegun Cust. Kit",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 350,
+      "availability": "5/48hrs",
+      "streetIndex": "2",
+      "installEquipment": "Weapon Kit",
+      "installTime": "24 hrs/Vehicle B/R(4)",
+      "cfCost": "0",
+      "load": "0.25",
+      "bookPage": "r3.136",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!2a7cc880d5247cba",
+  "doc": {
+    "_id": "2a7cc880d5247cba",
+    "name": "Signal Locator Lv 1",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "3",
+      "rating": null,
+      "cost": 1000,
+      "weight": 2,
+      "availability": "1/48hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

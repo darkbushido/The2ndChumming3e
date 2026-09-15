@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0197",
+  "doc": {
+    "_id": "sr3e-vehicle-0197",
+    "name": "GMC Harpy Scout LAV",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "fixedwing",
+      "cost": 2210000,
+      "streetIndex": 3,
+      "availability": "NA",
+      "bookPage": "r3.190",
+      "seating": 3,
+      "notes": "ECM 3, ECCM 3, RAM 2 (factored in), Thermal Baffles 2 (factored in), Gas Enviroseal, Medium Launch Control System, 2 External Missile Mounts, Small Turret (1 CF Ammo Bin) | Alt-mode Speed/Accel: 250(850)/45 | Seating: 3e",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 250,
+          "base": 250
+        },
+        "accel": {
+          "value": 45,
+          "base": 45
+        },
+        "body": {
+          "value": 6,
+          "base": 6
+        },
+        "armor": {
+          "value": 15,
+          "base": 15
+        },
+        "sig": {
+          "value": 6,
+          "base": 6
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 5,
+          "base": 5
+        },
+        "cargo": {
+          "value": 24,
+          "base": 24
+        },
+        "load": {
+          "value": 1000,
+          "base": 1000
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

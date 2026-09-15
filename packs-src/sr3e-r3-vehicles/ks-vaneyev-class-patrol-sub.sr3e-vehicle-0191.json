@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0191",
+  "doc": {
+    "_id": "sr3e-vehicle-0191",
+    "name": "KS Vaneyev Class Patrol Sub",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "submarine",
+      "cost": 210000000,
+      "streetIndex": 1,
+      "availability": "-",
+      "bookPage": "r3.189",
+      "seating": 0,
+      "notes": "Water and Engine EnviroSeal, Oxygen Generator, 4 Torpedo Tubes, 4 Heavy Launch Control Systems, 24 Torpedoes, 85 Basic Living Amenities | Alt-mode Speed/Accel: (45(30)/20(17))/3(2) | Alt-mode Sig/Autonav: (6(4)/8(8))/3 | Alt-mode Cargo/Load: 823[6600 PS]/41985[127500 PS] | Alt-mode Pilot/Sensor: -/4(4)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 0,
+          "base": 0
+        },
+        "accel": {
+          "value": 20,
+          "base": 20
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 9,
+          "base": 9
+        },
+        "sig": {
+          "value": 0,
+          "base": 0
+        },
+        "autonav": {
+          "value": 8,
+          "base": 8
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 4,
+          "base": 4
+        },
+        "cargo": {
+          "value": 823,
+          "base": 823
+        },
+        "load": {
+          "value": 41985,
+          "base": 41985
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

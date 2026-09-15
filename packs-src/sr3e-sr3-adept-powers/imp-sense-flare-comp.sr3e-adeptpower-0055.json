@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0055",
+  "doc": {
+    "_id": "sr3e-adeptpower-0055",
+    "name": "Imp. Sense: Flare Comp.",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.25,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sr3.169",
+      "description": "This power provides flare compensation SR3-300."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

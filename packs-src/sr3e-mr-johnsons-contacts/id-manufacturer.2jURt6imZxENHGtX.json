@@ -1,0 +1,1352 @@
+{
+  "_key": "!actors!2jURt6imZxENHGtX",
+  "doc": {
+    "name": "ID Manufacturer",
+    "type": "character",
+    "system": {
+      "metatype": "dwarf",
+      "nuyen": 0,
+      "karma": 0,
+      "totalKarma": 0,
+      "karmaPool": 4,
+      "notes": "<p>Mr. Johnson's Little Black Book, p.57. PR 3. Karma Pool 4.</p>",
+      "attributes": {
+        "body": {
+          "base": 4,
+          "value": 4,
+          "mod": 0,
+          "force": 0
+        },
+        "quickness": {
+          "base": 5,
+          "value": 5,
+          "mod": 0,
+          "force": 0
+        },
+        "strength": {
+          "base": 3,
+          "value": 3,
+          "mod": 0,
+          "force": 0
+        },
+        "charisma": {
+          "base": 3,
+          "value": 3,
+          "mod": 0,
+          "force": 0
+        },
+        "intelligence": {
+          "base": 4,
+          "value": 4,
+          "mod": 0,
+          "force": 0
+        },
+        "willpower": {
+          "base": 4,
+          "value": 4,
+          "mod": 0,
+          "force": 0
+        },
+        "essence": {
+          "base": 6,
+          "value": 3.4,
+          "force": 0,
+          "lost": 2.6
+        },
+        "magic": {
+          "base": 0,
+          "value": 0,
+          "mod": 0,
+          "force": 0
+        },
+        "reaction": {
+          "base": 3,
+          "value": 3,
+          "reactionBonus": 0,
+          "diceBonus": 0,
+          "override": false,
+          "force": 0
+        }
+      },
+      "biography": "",
+      "gender": "",
+      "age": "",
+      "height": "",
+      "weight": "",
+      "ethnicity": "",
+      "reputation": 0,
+      "notoriety": 0,
+      "streetCred": 0,
+      "hackingBonus": 0,
+      "initiativeDiceBonus": 0,
+      "equippedArmor": "",
+      "equippedMelee": "",
+      "activeVCRItemId": "",
+      "equippedCyberdeck": "",
+      "matrixUserMode": "",
+      "activeHostId": "",
+      "currentMatrixNode": "",
+      "matrixMarks": [],
+      "linkLocked": false,
+      "astralMode": "",
+      "magicTradition": "",
+      "magicType": "",
+      "magicTotem": "",
+      "magicElement": "",
+      "initiateGrade": 0,
+      "combatPoolSpent": 0,
+      "combatPoolMod": 0,
+      "spellPoolSpent": 0,
+      "spellPoolMod": 0,
+      "astralPoolSpent": 0,
+      "astralPoolMod": 0,
+      "hackingPoolSpent": 0,
+      "spellDefensePool": 0,
+      "spellDefenseSorceryDice": 0,
+      "fullDefense": false,
+      "fullDefensePool": 0,
+      "recoilCompensation": 0,
+      "roundsFiredThisPhase": 0,
+      "stimBonus": 0,
+      "wounds": {
+        "stun": {
+          "value": 0,
+          "max": 10
+        },
+        "physical": {
+          "value": 0,
+          "max": 10
+        },
+        "overflow": {
+          "value": 0
+        }
+      },
+      "ew": {
+        "deckRating": 0,
+        "fluxRating": 0,
+        "protocolModule": 0,
+        "ivisPool": {
+          "value": 0,
+          "max": 0
+        }
+      },
+      "orthodoxDeck": {
+        "deckModel": "",
+        "mccp": 0,
+        "bod": 0,
+        "evasion": 0,
+        "masking": 0,
+        "sensor": 0,
+        "hardening": 0,
+        "activeMemory": 0,
+        "storageMemory": 0,
+        "ioSpeed": 0,
+        "responseIncrease": 0,
+        "sleazeRating": 0
+      },
+      "orthodoxRunState": {
+        "securityTally": 0,
+        "alertLevel": "none",
+        "currentHostId": ""
+      },
+      "orthodoxMatrixCM": {
+        "value": 0
+      },
+      "professionalRating": 3,
+      "bookPage": "lbb.57"
+    },
+    "_id": "2jURt6imZxENHGtX",
+    "img": "icons/svg/mystery-man.svg",
+    "prototypeToken": {
+      "name": "ID Manufacturer",
+      "displayName": 0,
+      "actorLink": true,
+      "width": 1,
+      "height": 1,
+      "depth": 1,
+      "texture": {
+        "src": "icons/svg/mystery-man.svg",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "fit": "contain",
+        "scaleX": 1,
+        "scaleY": 1,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "lockRotation": false,
+      "rotation": 0,
+      "alpha": 1,
+      "disposition": -1,
+      "displayBars": 20,
+      "bar1": {
+        "attribute": "wounds.physical"
+      },
+      "bar2": {
+        "attribute": "wounds.stun"
+      },
+      "light": {
+        "negative": false,
+        "priority": 0,
+        "alpha": 0.5,
+        "angle": 360,
+        "bright": 0,
+        "color": null,
+        "coloration": 1,
+        "dim": 0,
+        "attenuation": 0.5,
+        "luminosity": 0.5,
+        "saturation": 0,
+        "contrast": 0,
+        "shadows": 0,
+        "animation": {
+          "type": null,
+          "speed": 5,
+          "intensity": 5,
+          "reverse": false
+        },
+        "darkness": {
+          "min": 0,
+          "max": 1
+        }
+      },
+      "sight": {
+        "enabled": false,
+        "range": 0,
+        "angle": 360,
+        "visionMode": "basic",
+        "color": null,
+        "attenuation": 0.1,
+        "brightness": 0,
+        "saturation": 0,
+        "contrast": 0
+      },
+      "detectionModes": {},
+      "occludable": {
+        "radius": 0
+      },
+      "ring": {
+        "enabled": false,
+        "colors": {
+          "ring": null,
+          "background": null
+        },
+        "effects": 1,
+        "subject": {
+          "scale": 1,
+          "texture": null
+        }
+      },
+      "turnMarker": {
+        "mode": 1,
+        "animation": null,
+        "src": null,
+        "disposition": false
+      },
+      "movementAction": null,
+      "flags": {},
+      "randomImg": false,
+      "appendNumber": false,
+      "prependAdjective": false
+    },
+    "items": [
+      "1y8bBLM6jwb2EkRL",
+      "uS8vK665IGFiZ9qf",
+      "xfXaQeWEGQpYHHrr",
+      "x38VlAi7I0AnSdnN",
+      "F26SF43ipWqtOHBi",
+      "8byWQLGeSxGVk8ZG",
+      "706806e081b5082c",
+      "f333a9b58147ee19",
+      "4feed90425acfaca",
+      "9ef9ba113aa6e577",
+      "77c9b44d04f43a91",
+      "53f0b9ef9cc10af1",
+      "7412eb90f9e108ae",
+      "2cd33784d34ffe9e",
+      "0707f7af10ea0093",
+      "b6b7f5874caf3503",
+      "7ef6afdceac833cc",
+      "d89e50a0b3f5b096",
+      "325c8c01d1d8dc79",
+      "0f7fefda2f21de2c",
+      "99bfedb6e11572aa",
+      "d1b5edb212a70fce",
+      "4aab8dbcb7913714",
+      "14cb42c5bad3dc2d",
+      "f610848c73b8bea0",
+      "8b1a3cb2aa37fb26",
+      "dd169f3b4deef18b"
+    ],
+    "effects": [],
+    "folder": "425f7b74c0d73d88",
+    "ownership": {
+      "default": 0,
+      "ge55aFMax5sNd2Ho": 3
+    },
+    "flags": {
+      "The2ndChumming3e": {
+        "isTemplate": false
+      }
+    },
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.4.5",
+      "createdTime": 1784690543479,
+      "modifiedTime": 1784690543479,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {
+    "!actors.items!2jURt6imZxENHGtX.0707f7af10ea0093": {
+      "_id": "0707f7af10ea0093",
+      "name": "Data Brokerage",
+      "type": "skill",
+      "system": {
+        "skillName": "Data Brokerage",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "6th World knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811432,
+        "modifiedTime": 1788319811432,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.0f7fefda2f21de2c": {
+      "_id": "0f7fefda2f21de2c",
+      "name": "Photography",
+      "type": "skill",
+      "system": {
+        "skillName": "Photography",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811434,
+        "modifiedTime": 1788319811434,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.14cb42c5bad3dc2d": {
+      "_id": "14cb42c5bad3dc2d",
+      "name": "Data Compactor [2]",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Headware",
+        "essenceCost": 0.15,
+        "cost": 19000,
+        "availability": "6/60 hours",
+        "streetIndex": 1,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "mm.22",
+        "grade": "Standard",
+        "rating": 2,
+        "description": "Headware memory is +40% when compressed"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-mm-cyberware.Item.sr3e-cyberware-0531",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621566,
+        "modifiedTime": 1788537621566,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.1y8bBLM6jwb2EkRL": {
+      "name": "Transys Highlander",
+      "type": "cyberdeck",
+      "system": {
+        "era": "2060s (3e)",
+        "cost": 280000,
+        "streetIndex": 0,
+        "availability": "14/7 days",
+        "legalityCode": "4P-S",
+        "weight": 0,
+        "notes": "Premium Transys craftsmanship.",
+        "damage": {
+          "matrixConditionMonitor": {
+            "boxes": 10,
+            "current": 0,
+            "woundPenalties": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "burnedSlots": []
+        },
+        "attributes": {
+          "mpcp": {
+            "value": 9,
+            "base": 9,
+            "multiplier": 8,
+            "costPerMp": 300
+          },
+          "firewall": {
+            "value": 4,
+            "base": 4,
+            "multiplier": 8,
+            "costPerMp": 200
+          },
+          "response": {
+            "value": 4,
+            "base": 4,
+            "maxLevel": 0,
+            "initiativeDice": 0,
+            "reactionBonus": 0
+          },
+          "memory": {
+            "total": 4500,
+            "used": 0,
+            "unit": "Mp"
+          },
+          "utilitySlots": {
+            "total": 0,
+            "available": 0
+          },
+          "dataTransferRate": {
+            "value": 90,
+            "unit": "Mp per Combat Turn"
+          },
+          "fluxRating": {
+            "value": 1,
+            "wireless": false
+          }
+        },
+        "derivedStats": {
+          "matrixInitiative": {
+            "base": 0,
+            "dice": "0d6",
+            "userModeRequired": "VR-Hot"
+          },
+          "hackingPoolBonus": 0,
+          "personaStorage": 0,
+          "iconPhysicalStats": {
+            "strength": 0,
+            "quickness": 0
+          }
+        },
+        "modules": [],
+        "utilitySlotsArray": [],
+        "storedUtilities": []
+      },
+      "_id": "1y8bBLM6jwb2EkRL",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberdeck-default.webp",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543479,
+        "modifiedTime": 1788492295838,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-mdf-cyberdecks.Item.sr3e-deck-0012",
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.2cd33784d34ffe9e": {
+      "_id": "2cd33784d34ffe9e",
+      "name": "Data Archive Familiarity",
+      "type": "skill",
+      "system": {
+        "skillName": "Data Archive Familiarity",
+        "rating": 8,
+        "linkedAttribute": "intelligence",
+        "category": "System familiarity",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811432,
+        "modifiedTime": 1788319811432,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.325c8c01d1d8dc79": {
+      "_id": "325c8c01d1d8dc79",
+      "name": "Image Manipulation",
+      "type": "skill",
+      "system": {
+        "skillName": "Image Manipulation",
+        "rating": 7,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811434,
+        "modifiedTime": 1788319811434,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.4aab8dbcb7913714": {
+      "_id": "4aab8dbcb7913714",
+      "name": "Eyes, Opticam",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Eyeware",
+        "essenceCost": 0.5,
+        "cost": 20000,
+        "availability": "5/72 hours",
+        "streetIndex": 2,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.300",
+        "grade": "Standard",
+        "rating": 0,
+        "description": "Record video footage"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0457",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621566,
+        "modifiedTime": 1788537621566,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.4feed90425acfaca": {
+      "_id": "4feed90425acfaca",
+      "name": "Electronics",
+      "type": "skill",
+      "system": {
+        "skillName": "Electronics",
+        "rating": 7,
+        "linkedAttribute": "intelligence",
+        "category": "Technical skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811431,
+        "modifiedTime": 1788319811431,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.53f0b9ef9cc10af1": {
+      "_id": "53f0b9ef9cc10af1",
+      "name": "Shotgun",
+      "type": "skill",
+      "system": {
+        "skillName": "Shotgun",
+        "rating": 4,
+        "linkedAttribute": "quickness",
+        "category": "Combat skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811432,
+        "modifiedTime": 1788319811432,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.706806e081b5082c": {
+      "_id": "706806e081b5082c",
+      "name": "Computer",
+      "type": "skill",
+      "system": {
+        "skillName": "Computer",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "Technical skills",
+        "skillType": "active",
+        "specialisation": "Decking 8, Hardware 9",
+        "specialisations": [
+          {
+            "name": "Decking",
+            "level": 3
+          },
+          {
+            "name": "Hardware",
+            "level": 4
+          }
+        ],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811430,
+        "modifiedTime": 1788319811430,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.7412eb90f9e108ae": {
+      "_id": "7412eb90f9e108ae",
+      "name": "Stealth",
+      "type": "skill",
+      "system": {
+        "skillName": "Stealth",
+        "rating": 3,
+        "linkedAttribute": "quickness",
+        "category": "Physical skills",
+        "skillType": "active",
+        "specialisation": "Sneaking 5, Theft 6",
+        "specialisations": [
+          {
+            "name": "Sneaking",
+            "level": 2
+          },
+          {
+            "name": "Theft",
+            "level": 3
+          }
+        ],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811432,
+        "modifiedTime": 1788319811432,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.77c9b44d04f43a91": {
+      "_id": "77c9b44d04f43a91",
+      "name": "Etiquette",
+      "type": "skill",
+      "system": {
+        "skillName": "Etiquette",
+        "rating": 2,
+        "linkedAttribute": "charisma",
+        "category": "Social skills",
+        "skillType": "active",
+        "specialisation": "Matrix 6",
+        "specialisations": [
+          {
+            "name": "Matrix",
+            "level": 4
+          }
+        ],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811431,
+        "modifiedTime": 1788319811431,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.7ef6afdceac833cc": {
+      "_id": "7ef6afdceac833cc",
+      "name": "Handwriting Analysis",
+      "type": "skill",
+      "system": {
+        "skillName": "Handwriting Analysis",
+        "rating": 3,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811433,
+        "modifiedTime": 1788319811433,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.8b1a3cb2aa37fb26": {
+      "_id": "8b1a3cb2aa37fb26",
+      "name": "Memory (300 Mps)",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Headware",
+        "essenceCost": 1,
+        "cost": 45000,
+        "availability": "3/24 hours",
+        "streetIndex": 0.8,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.298",
+        "grade": "Standard",
+        "rating": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0563",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621566,
+        "modifiedTime": 1788537621566,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.8byWQLGeSxGVk8ZG": {
+      "name": "Credstick Reader/Writer",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_id": "8byWQLGeSxGVk8ZG",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543479,
+        "modifiedTime": 1784690543479,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.99bfedb6e11572aa": {
+      "_id": "99bfedb6e11572aa",
+      "name": "Matrix Security Procedures",
+      "type": "skill",
+      "system": {
+        "skillName": "Matrix Security Procedures",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "6th World knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811434,
+        "modifiedTime": 1788319811434,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.9ef9ba113aa6e577": {
+      "_id": "9ef9ba113aa6e577",
+      "name": "Electronics B/R",
+      "type": "skill",
+      "system": {
+        "skillName": "Electronics B/R",
+        "rating": 8,
+        "linkedAttribute": "intelligence",
+        "category": "Technical skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811431,
+        "modifiedTime": 1788319811431,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.F26SF43ipWqtOHBi": {
+      "name": "Chip Burner",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_id": "F26SF43ipWqtOHBi",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543479,
+        "modifiedTime": 1784690543479,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.b6b7f5874caf3503": {
+      "_id": "b6b7f5874caf3503",
+      "name": "Forgery",
+      "type": "skill",
+      "system": {
+        "skillName": "Forgery",
+        "rating": 8,
+        "linkedAttribute": "intelligence",
+        "category": "Background knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811433,
+        "modifiedTime": 1788319811433,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.d1b5edb212a70fce": {
+      "_id": "d1b5edb212a70fce",
+      "name": "Eyes, Cyber Replacement",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Eyeware",
+        "essenceCost": 0.2,
+        "cost": 5000,
+        "availability": "2/24 hours",
+        "streetIndex": 0.75,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0.5,
+        "isReplacement": true,
+        "bookPage": "sr3.300",
+        "grade": "Standard",
+        "rating": 0,
+        "description": "Holds .5 Essence of eye mods free of Essence cost"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0410",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621566,
+        "modifiedTime": 1788537621566,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.d89e50a0b3f5b096": {
+      "_id": "d89e50a0b3f5b096",
+      "name": "Holography",
+      "type": "skill",
+      "system": {
+        "skillName": "Holography",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811433,
+        "modifiedTime": 1788319811433,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.dd169f3b4deef18b": {
+      "_id": "dd169f3b4deef18b",
+      "name": "Radio [1]",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Communications",
+        "essenceCost": 0.75,
+        "cost": 2000,
+        "availability": "2/24 hours",
+        "streetIndex": 0.8,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.298",
+        "grade": "Standard",
+        "rating": 1,
+        "description": "2 programmed frequencies"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0281",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621566,
+        "modifiedTime": 1788537621566,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.f333a9b58147ee19": {
+      "_id": "f333a9b58147ee19",
+      "name": "Computer B/R",
+      "type": "skill",
+      "system": {
+        "skillName": "Computer B/R",
+        "rating": 8,
+        "linkedAttribute": "intelligence",
+        "category": "Technical skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811430,
+        "modifiedTime": 1788319811430,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.f610848c73b8bea0": {
+      "_id": "f610848c73b8bea0",
+      "name": "Datajack",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Headware",
+        "essenceCost": 0.2,
+        "cost": 1000,
+        "availability": "0/0",
+        "streetIndex": 0.9,
+        "legalCode": "Legal",
+        "mods": "+1DJK",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.298",
+        "grade": "Standard",
+        "rating": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0535",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621566,
+        "modifiedTime": 1788537621566,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.uS8vK665IGFiZ9qf": {
+      "name": "Various Cameras (hold and photo)",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_id": "uS8vK665IGFiZ9qf",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543479,
+        "modifiedTime": 1784690543479,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.x38VlAi7I0AnSdnN": {
+      "name": "Supply of Real and Fake IDs from Various Places",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_id": "x38VlAi7I0AnSdnN",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543479,
+        "modifiedTime": 1784690543479,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!2jURt6imZxENHGtX.xfXaQeWEGQpYHHrr": {
+      "name": "Printing Apparatus (including magnetic encoder)",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_id": "xfXaQeWEGQpYHHrr",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543479,
+        "modifiedTime": 1784690543479,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    }
+  }
+}

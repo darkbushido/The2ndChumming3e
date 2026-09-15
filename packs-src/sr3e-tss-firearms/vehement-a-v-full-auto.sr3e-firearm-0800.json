@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0800",
+  "doc": {
+    "_id": "sr3e-firearm-0800",
+    "name": "Vehement A-V Full Auto",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "AsRf",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "2",
+      "ammunition": "8(c)",
+      "mode": "SA/BF/FA",
+      "damage": "8S",
+      "weight": "6",
+      "availability": "12/7days",
+      "cost": 8500,
+      "streetIndex": "3",
+      "accessories": "Must be mounted, uses Heavy Weapon recoil",
+      "bookPage": "tss.6",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

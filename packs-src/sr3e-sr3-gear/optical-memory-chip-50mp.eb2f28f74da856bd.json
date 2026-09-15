@@ -1,0 +1,30 @@
+{
+  "_key": "!items!eb2f28f74da856bd",
+  "doc": {
+    "_id": "eb2f28f74da856bd",
+    "name": "Optical Memory Chip 50MP",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 250,
+      "weight": 0,
+      "availability": "Always",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Mem<br><strong>Memory:</strong> 50</p>"
+    }
+  },
+  "embedded": {}
+}

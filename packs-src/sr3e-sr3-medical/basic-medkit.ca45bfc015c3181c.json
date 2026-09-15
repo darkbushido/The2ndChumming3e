@@ -1,0 +1,28 @@
+{
+  "_key": "!items!ca45bfc015c3181c",
+  "doc": {
+    "_id": "ca45bfc015c3181c",
+    "name": "Basic Medkit",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "3",
+      "weight": "3",
+      "cost": 200,
+      "availability": "2/24hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr3.304",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

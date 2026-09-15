@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0457",
+  "doc": {
+    "_id": "sr3e-cyberware-0457",
+    "name": "Eyes, Opticam",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Eyeware",
+      "essenceCost": 0.5,
+      "cost": 20000,
+      "availability": "5/72 hours",
+      "streetIndex": 2,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.300",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Record video footage"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

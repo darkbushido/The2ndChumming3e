@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0045",
+  "doc": {
+    "_id": "sr3e-firearm-0045",
+    "name": "Nostal. Ind. Southerner",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "10(c)",
+      "mode": "SS",
+      "damage": "3M",
+      "weight": "3.5",
+      "availability": "9/50hrs",
+      "cost": 300,
+      "streetIndex": "2.5",
+      "accessories": "None",
+      "bookPage": "tss.2",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

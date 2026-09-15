@@ -1,0 +1,30 @@
+{
+  "_key": "!items!16bbaa33f29771dd",
+  "doc": {
+    "_id": "16bbaa33f29771dd",
+    "name": "Minicorder",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "6",
+      "rating": null,
+      "cost": 700,
+      "weight": 0.1,
+      "availability": "4/24hrs",
+      "streetIndex": "1",
+      "bookPage": "fof.98",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

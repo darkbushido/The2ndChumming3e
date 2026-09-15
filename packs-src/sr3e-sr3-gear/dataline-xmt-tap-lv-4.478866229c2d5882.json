@@ -1,0 +1,30 @@
+{
+  "_key": "!items!478866229c2d5882",
+  "doc": {
+    "_id": "478866229c2d5882",
+    "name": "Dataline XMT Tap Lv [4]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "12",
+      "rating": 4,
+      "cost": 6000,
+      "weight": 0,
+      "availability": "4/8days",
+      "streetIndex": "1.5",
+      "bookPage": "sr3.292",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

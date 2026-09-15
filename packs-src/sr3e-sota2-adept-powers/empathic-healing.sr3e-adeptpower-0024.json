@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0024",
+  "doc": {
+    "_id": "sr3e-adeptpower-0024",
+    "name": "Empathic Healing",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.65",
+      "description": "Empathic Healing grants the adept the ability to heal others by transferring their damage onto himself."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

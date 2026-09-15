@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0688",
+  "doc": {
+    "_id": "sr3e-firearm-0688",
+    "name": "Ingram Smartgun Mod. 20t",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "32(c)",
+      "mode": "BF/FA",
+      "damage": "7M",
+      "weight": "3",
+      "availability": "4/24hrs",
+      "cost": 950,
+      "streetIndex": "1",
+      "accessories": "Smartlink, Fold. Stock(1RC), Gas Vent II(2RC)",
+      "bookPage": "sr3.278",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

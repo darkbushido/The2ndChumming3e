@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0375",
+  "doc": {
+    "_id": "sr3e-cyberware-0375",
+    "name": "Oral Slasher(CYB)",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberweapons",
+      "essenceCost": 0.25,
+      "cost": 10500,
+      "availability": "8/1 week",
+      "streetIndex": 2.5,
+      "legalCode": "6P-Q",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.17",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "6M, 1 meter range"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

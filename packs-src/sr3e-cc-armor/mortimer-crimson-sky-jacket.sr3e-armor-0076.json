@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0076",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0076",
+    "name": "Mortimer \"Crimson Sky\" Jacket",
+    "type": "armor",
+    "system": {
+      "concealability": "12",
+      "ballistic": 2,
+      "impact": 2,
+      "weight": 2,
+      "availability": "6/48hrs",
+      "cost": 1500,
+      "streetIndex": ".75",
+      "bookPage": "cc.48",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

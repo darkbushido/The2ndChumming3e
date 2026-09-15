@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1251",
+  "doc": {
+    "_id": "sr3e-firearm-1251",
+    "name": "Ares Sonic Beam Rifle",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "Las",
+      "skill": "Firearms",
+      "attribute": "quickness",
+      "concealability": "3",
+      "ammunition": "15",
+      "mode": "SS",
+      "damage": "10S stun",
+      "weight": "6",
+      "availability": "24/3 wks",
+      "cost": 120000,
+      "streetIndex": "3",
+      "accessories": "use battery back from MP Laser III, shotgun ranges - single target /choke 2-10, stun wears off @1 box/combat turn",
+      "bookPage": "sta2.35",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

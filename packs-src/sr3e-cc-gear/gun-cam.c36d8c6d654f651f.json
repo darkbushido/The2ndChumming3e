@@ -1,0 +1,30 @@
+{
+  "_key": "!items!c36d8c6d654f651f",
+  "doc": {
+    "_id": "c36d8c6d654f651f",
+    "name": "Gun Cam",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-1)",
+      "rating": null,
+      "cost": 1000,
+      "weight": 0.25,
+      "availability": "4/48hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.35",
+      "description": "<p><strong>Mount:</strong> Top/Under</p>"
+    }
+  },
+  "embedded": {}
+}

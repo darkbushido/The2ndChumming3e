@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0200",
+  "doc": {
+    "_id": "sr3e-vehicle-0200",
+    "name": "Goodyear Commuter-47",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "airship",
+      "cost": 360000,
+      "streetIndex": 1,
+      "availability": "18/18 days",
+      "bookPage": "r3.191",
+      "seating": 9,
+      "notes": "This model is a dirigible | Seating: 8+1b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 250,
+          "base": 250
+        },
+        "accel": {
+          "value": 15,
+          "base": 15
+        },
+        "body": {
+          "value": 8,
+          "base": 8
+        },
+        "armor": {
+          "value": 1,
+          "base": 1
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 50,
+          "base": 50
+        },
+        "load": {
+          "value": 1500,
+          "base": 1500
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

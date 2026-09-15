@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0007",
+  "doc": {
+    "_id": "sr3e-bioware-0007",
+    "name": "Chemical Gland NarcoJet",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Standard",
+      "grade": "Standard",
+      "bioIndex": 0.6,
+      "cost": 45000,
+      "availability": "10/4 days",
+      "streetIndex": 3,
+      "mods": "",
+      "bookPage": "mm.064",
+      "rating": 0,
+      "description": "Narcojet toxin"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

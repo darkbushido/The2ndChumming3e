@@ -1,0 +1,34 @@
+{
+  "_key": "!items!294675379fb0dccf",
+  "doc": {
+    "_id": "294675379fb0dccf",
+    "name": "11-Rnd Clip (Regular)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 11,
+      "rounds": 0,
+      "weight": 1.3,
+      "cost": 27,
+      "availability": "2/24hrs",
+      "streetIndex": ".75",
+      "bookPage": "sr2.281",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,34 @@
+{
+  "_key": "!items!a2cf3327cfa31a45",
+  "doc": {
+    "_id": "a2cf3327cfa31a45",
+    "name": "16-Rnd Clip (Incendiary)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 16,
+      "rounds": 0,
+      "weight": 1.95,
+      "cost": 245,
+      "availability": "10/1wk",
+      "streetIndex": "2",
+      "bookPage": "cc.38",
+      "notes": "<p>Incendiary rounds — a type this system does not model; its rules are the GM's (cc.38).</p>"
+    }
+  },
+  "embedded": {}
+}

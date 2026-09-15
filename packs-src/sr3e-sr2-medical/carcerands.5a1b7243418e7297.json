@@ -1,0 +1,28 @@
+{
+  "_key": "!items!5a1b7243418e7297",
+  "doc": {
+    "_id": "5a1b7243418e7297",
+    "name": "Carcerands",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "",
+      "weight": "-",
+      "cost": 0,
+      "availability": "4/10days",
+      "streetIndex": "2",
+      "bookPage": "sr2.258",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

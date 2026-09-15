@@ -1,0 +1,30 @@
+{
+  "_key": "!items!820c63b38c4a08bf",
+  "doc": {
+    "_id": "820c63b38c4a08bf",
+    "name": "ID Scanner: Palmprint Lv 2",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 600,
+      "weight": 0,
+      "availability": "3/72hrs",
+      "streetIndex": "2",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

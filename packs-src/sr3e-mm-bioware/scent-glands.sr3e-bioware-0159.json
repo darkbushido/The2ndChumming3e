@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0159",
+  "doc": {
+    "_id": "sr3e-bioware-0159",
+    "name": "Scent Glands",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Cosmetic",
+      "grade": "Exotic",
+      "bioIndex": 0.1,
+      "cost": 5000,
+      "availability": "4/4 days",
+      "streetIndex": 1,
+      "mods": "",
+      "bookPage": "mm.076",
+      "rating": 0,
+      "description": "Change smell and taste of sweat, even to smell like a perfume"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!1797d5adb0e41ec7",
+  "doc": {
+    "_id": "1797d5adb0e41ec7",
+    "name": "Grapple Gun",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-1)",
+      "rating": null,
+      "cost": 500,
+      "weight": 2,
+      "availability": "5/48hrs",
+      "streetIndex": "1.25",
+      "bookPage": "cc.33",
+      "description": "<p><strong>Mount:</strong> Under</p>"
+    }
+  },
+  "embedded": {}
+}

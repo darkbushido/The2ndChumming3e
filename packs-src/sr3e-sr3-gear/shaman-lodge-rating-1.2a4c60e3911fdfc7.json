@@ -1,0 +1,30 @@
+{
+  "_key": "!items!2a4c60e3911fdfc7",
+  "doc": {
+    "_id": "2a4c60e3911fdfc7",
+    "name": "Shaman Lodge Rating 1",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Magical Equipment"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Magical Equipment",
+      "concealability": "",
+      "rating": 1,
+      "cost": 500,
+      "weight": 0,
+      "availability": "1/24hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.305",
+      "description": "<p><strong>KarmaCost:</strong> 0</p>"
+    }
+  },
+  "embedded": {}
+}

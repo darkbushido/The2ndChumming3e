@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0048",
+  "doc": {
+    "_id": "sr3e-spell-0048",
+    "name": "Word Recognition",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Detection",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "LOS",
+      "drain": "(M)",
+      "target": "W",
+      "bookPage": "sta2.033",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

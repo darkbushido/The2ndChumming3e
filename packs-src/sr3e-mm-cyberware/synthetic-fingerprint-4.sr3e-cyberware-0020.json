@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0020",
+  "doc": {
+    "_id": "sr3e-cyberware-0020",
+    "name": "+Synthetic Fingerprint [4]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0,
+      "cost": 8000,
+      "availability": "8/1 week",
+      "streetIndex": 3,
+      "legalCode": "4P-Q",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.23",
+      "grade": "Standard",
+      "rating": 4,
+      "description": "",
+      "srcgName": "+Synth. Fingerprint [4]"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

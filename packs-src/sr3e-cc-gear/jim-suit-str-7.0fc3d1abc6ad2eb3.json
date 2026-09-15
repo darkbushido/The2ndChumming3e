@@ -1,0 +1,30 @@
+{
+  "_key": "!items!0fc3d1abc6ad2eb3",
+  "doc": {
+    "_id": "0fc3d1abc6ad2eb3",
+    "name": "JIM Suit (STR 7)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 25000,
+      "weight": 300,
+      "availability": "6/2wks",
+      "streetIndex": "2",
+      "bookPage": "cc.57",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

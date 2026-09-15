@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0314",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0314",
+    "name": "Null Suit",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 0,
+      "impact": 0,
+      "weight": 20,
+      "availability": "16/14days",
+      "cost": 15000,
+      "streetIndex": "3",
+      "bookPage": "sta2.36",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

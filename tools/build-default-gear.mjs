@@ -36,6 +36,7 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { copyPacks } from './lib/pack-copy.mjs';
+import { readSourceDir, writeSourceDir, rebuildPack } from './lib/pack-source.mjs';
 import { AmmoStock } from '../scripts/data/ammo-stock.mjs';
 // The system's own rating reader — the name, then GEAR_RATINGS — so a generated item agrees with
 // `itemRating`, migration 0.5.2 and `tools/patch-name-ratings.mjs`, which would otherwise fill it later.
@@ -378,6 +379,29 @@ async function main() {
   for (const [k, v] of Object.entries(report)) console.log(`  ${k}:`, Array.isArray(v) ? `${v.length}\n    ${v.join('\n    ')}` : JSON.stringify(Object.fromEntries(Object.entries(v).sort())));
   if (REPORT) return;
 
+  /* The REPO: write the documents into `packs-src/` (the source of truth, TODO 12), then rebuild only
+   * the packs whose content actually changed — the old path rewrote all 25 packs' LevelDB files on
+   * every run, content-identical, which is what made the 2026-09-14 merges painful. */
+  if (ROOT === REPO) {
+    let rebuilt = 0;
+    for (const [name, { docs }] of byPack) {
+      const srcDir  = join(REPO, 'packs-src', name);
+      const entries = existsSync(srcDir) ? readSourceDir(srcDir) : new Map();
+      const want = new Map(docs.map(d => [`!items!${d._id}`, d]));
+      for (const [k, d] of [...entries]) {                    // drop our own documents no longer produced
+        if (/^!items!/.test(k) && d?.flags?.The2ndChumming3e?.generatedBy === GENERATOR && !want.has(k)) entries.delete(k);
+      }
+      for (const [k, d] of want) entries.set(k, d);
+      writeSourceDir(srcDir, entries);
+      if (await rebuildPack(REPO, name)) { rebuilt++; console.log(`  rebuilt ${name}: ${docs.length}`); }
+    }
+    console.log(`  ${rebuilt} of ${byPack.size} packs changed`);
+    writeFileSync(manifestPath, JSON.stringify(declarePacks(manifest, byPack), null, 2) + '\n');
+    console.log(`declared in ${manifestPath}`);
+    return;
+  }
+
+  // The INSTALL: written directly, as before — a one-way copy (Foundry CLOSED).
   for (const [name, { docs }] of byPack) {
     const db = new ClassicLevel(join(ROOT, 'packs', name), { valueEncoding: 'json' });
     try { await db.open(); } catch (err) { console.error(`${name}: could not open — close Foundry.\n${err.message}`); process.exit(2); }

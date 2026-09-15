@@ -1,0 +1,30 @@
+{
+  "_key": "!items!c72a1d97fd3a1f67",
+  "doc": {
+    "_id": "c72a1d97fd3a1f67",
+    "name": "Truman Reality-500",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "-",
+      "rating": null,
+      "cost": 25000,
+      "weight": 15,
+      "availability": "8/1week",
+      "streetIndex": "2",
+      "bookPage": "fof.97",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

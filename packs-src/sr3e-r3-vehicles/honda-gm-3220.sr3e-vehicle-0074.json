@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0074",
+  "doc": {
+    "_id": "sr3e-vehicle-0074",
+    "name": "Honda-GM 3220",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 28000,
+      "streetIndex": 1,
+      "availability": "2/48hrs",
+      "bookPage": "r3.167",
+      "seating": 4,
+      "notes": "",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 8,
+          "base": 8
+        },
+        "speed": {
+          "value": 160,
+          "base": 160
+        },
+        "accel": {
+          "value": 10,
+          "base": 10
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 1,
+          "base": 1
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 3,
+          "base": 3
+        },
+        "load": {
+          "value": 40,
+          "base": 40
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

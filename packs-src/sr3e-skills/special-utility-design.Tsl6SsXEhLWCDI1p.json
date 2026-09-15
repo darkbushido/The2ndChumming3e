@@ -1,0 +1,41 @@
+{
+  "_key": "!items!Tsl6SsXEhLWCDI1p",
+  "doc": {
+    "name": "Special Utility Design",
+    "type": "skill",
+    "system": {
+      "category": "Program design",
+      "skillType": "knowledge",
+      "skillName": "Special Utility Design",
+      "linkedAttribute": "intelligence",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": "",
+      "bookPage": "mat.25"
+    },
+    "_id": "Tsl6SsXEhLWCDI1p",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192968668,
+      "modifiedTime": 1782889914448,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0044",
+  "doc": {
+    "_id": "sr3e-firearm-0044",
+    "name": "Nostal. Ind. Gentleman",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "7",
+      "ammunition": "8(c)",
+      "mode": "SS",
+      "damage": "6L",
+      "weight": "2.5",
+      "availability": "8/48hrs",
+      "cost": 250,
+      "streetIndex": "2.5",
+      "accessories": "None",
+      "bookPage": "tss.2",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

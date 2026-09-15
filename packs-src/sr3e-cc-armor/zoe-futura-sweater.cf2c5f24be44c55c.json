@@ -1,0 +1,29 @@
+{
+  "_key": "!items!cf2c5f24be44c55c",
+  "doc": {
+    "_id": "cf2c5f24be44c55c",
+    "name": "Zoe \"Futura\" Sweater",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "13",
+      "ballistic": 2,
+      "impact": 1,
+      "weight": 1.5,
+      "cost": 1000,
+      "availability": "4/48hrs",
+      "streetIndex": ".75",
+      "bookPage": "cc.49",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

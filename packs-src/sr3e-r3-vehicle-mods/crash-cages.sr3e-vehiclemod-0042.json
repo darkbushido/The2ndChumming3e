@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0042",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0042",
+    "name": "Crash Cages",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 3500,
+      "availability": "4/96hrs",
+      "streetIndex": "2",
+      "installEquipment": "Vehicle Shop",
+      "installTime": "16 hrs/Vehicle B/R(4)",
+      "cfCost": "2",
+      "load": "25kg",
+      "bookPage": "r3.132",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

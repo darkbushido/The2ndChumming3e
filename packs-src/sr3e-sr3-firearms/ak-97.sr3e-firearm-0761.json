@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0761",
+  "doc": {
+    "_id": "sr3e-firearm-0761",
+    "name": "AK-97",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "AsRf",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "3",
+      "ammunition": "38(c)",
+      "mode": "SA/BF/FA",
+      "damage": "8M",
+      "weight": "4.5",
+      "availability": "3/36hrs",
+      "cost": 700,
+      "streetIndex": "2",
+      "accessories": "None",
+      "bookPage": "sr3.278",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

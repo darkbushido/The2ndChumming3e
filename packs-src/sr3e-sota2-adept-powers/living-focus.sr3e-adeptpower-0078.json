@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0078",
+  "doc": {
+    "_id": "sr3e-adeptpower-0078",
+    "name": "Living Focus",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 1,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.67",
+      "description": "Adept can sustain a spell cast at him."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

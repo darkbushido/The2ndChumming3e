@@ -1,0 +1,30 @@
+{
+  "_key": "!items!b47bc3ab6aa76579",
+  "doc": {
+    "_id": "b47bc3ab6aa76579",
+    "name": "Standard Credstick[8]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Credstick"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Credstick",
+      "concealability": "-",
+      "rating": 8,
+      "cost": 40000,
+      "weight": 0,
+      "availability": "8/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.239",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,28 @@
+{
+  "_key": "!items!cb40de06590f54d6",
+  "doc": {
+    "_id": "cb40de06590f54d6",
+    "name": "Tranq Patch [4]",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "4",
+      "weight": "-",
+      "cost": 80,
+      "availability": "4/48hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.304",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

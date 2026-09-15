@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-projectile-0010",
+  "doc": {
+    "_id": "sr3e-projectile-0010",
+    "name": "Standard Bow",
+    "type": "projectile",
+    "system": {
+      "category": "Bow",
+      "skill": "Projectile Weapons",
+      "attribute": "strength",
+      "concealability": "10",
+      "strMin": 1,
+      "damage": "12M",
+      "weight": "1",
+      "availability": "3/36hrs",
+      "cost": 1000,
+      "streetIndex": "1",
+      "legal": false,
+      "bookPage": "sr3.276",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

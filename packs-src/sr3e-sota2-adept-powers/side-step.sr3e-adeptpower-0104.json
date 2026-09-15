@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0104",
+  "doc": {
+    "_id": "sr3e-adeptpower-0104",
+    "name": "Side Step*",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": true,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.67",
+      "description": "The adept gains one additional Combat Pool die per level for Dodge and Full Dodge attempts."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

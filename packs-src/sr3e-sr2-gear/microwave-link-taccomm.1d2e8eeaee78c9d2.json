@@ -1,0 +1,30 @@
+{
+  "_key": "!items!1d2e8eeaee78c9d2",
+  "doc": {
+    "_id": "1d2e8eeaee78c9d2",
+    "name": "Microwave Link (TacComm)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "3",
+      "rating": null,
+      "cost": 18,
+      "weight": 0,
+      "availability": "1",
+      "streetIndex": "4800",
+      "bookPage": "sr2.252",
+      "description": "<p><strong>:</strong> 2</p>"
+    }
+  },
+  "embedded": {}
+}

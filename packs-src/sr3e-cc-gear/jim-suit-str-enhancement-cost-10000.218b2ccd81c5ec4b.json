@@ -1,0 +1,30 @@
+{
+  "_key": "!items!218b2ccd81c5ec4b",
+  "doc": {
+    "_id": "218b2ccd81c5ec4b",
+    "name": "JIM Suit STR Enhancement (Cost 10000¥)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 10000,
+      "weight": 50,
+      "availability": "6/2wks",
+      "streetIndex": "2",
+      "bookPage": "cc.57",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

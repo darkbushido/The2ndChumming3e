@@ -1,0 +1,30 @@
+{
+  "_key": "!items!f0150420a645505e",
+  "doc": {
+    "_id": "f0150420a645505e",
+    "name": "Voice Mask Lv 9",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "6",
+      "rating": null,
+      "cost": 27000,
+      "weight": 0,
+      "availability": "9/72hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

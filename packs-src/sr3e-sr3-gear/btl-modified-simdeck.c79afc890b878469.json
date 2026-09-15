@@ -1,0 +1,30 @@
+{
+  "_key": "!items!c79afc890b878469",
+  "doc": {
+    "_id": "c79afc890b878469",
+    "name": "BTL-modified simdeck",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 250,
+      "weight": 0,
+      "availability": "3/12hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> BTL<br><strong>Memory:</strong> ?</p>"
+    }
+  },
+  "embedded": {}
+}

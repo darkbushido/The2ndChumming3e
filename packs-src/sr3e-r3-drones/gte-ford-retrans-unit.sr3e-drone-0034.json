@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0034",
+  "doc": {
+    "_id": "sr3e-drone-0034",
+    "name": "GTE-Ford Retrans Unit",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 40300,
+      "streetIndex": 1,
+      "availability": "2/48hrs",
+      "seating": 0,
+      "bookPage": "r3.175",
+      "notes": "Remote-Control Interface, Rigger Adaptation, Retrans Mission Unit | Alt-mode Speed/Accel: 40(105)/30",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 40,
+          "base": 40
+        },
+        "accel": {
+          "value": 30,
+          "base": 30
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 6,
+          "base": 6
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 2,
+          "base": 2
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 4,
+          "base": 4
+        },
+        "load": {
+          "value": 115,
+          "base": 115
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

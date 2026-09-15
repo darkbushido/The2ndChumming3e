@@ -1,0 +1,31 @@
+{
+  "_key": "!items!2da92fdc9b51db86",
+  "doc": {
+    "_id": "2da92fdc9b51db86",
+    "name": "Ecstacy",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "4M",
+      "tolerance": "4",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 150,
+      "availability": "5/7hrs",
+      "streetIndex": "4",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 20</p>"
+    }
+  },
+  "embedded": {}
+}

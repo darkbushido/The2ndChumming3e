@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0147",
+  "doc": {
+    "_id": "sr3e-vehicle-0147",
+    "name": "Lone Star SWAT Hovertruck",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "hovercraft",
+      "cost": 214000,
+      "streetIndex": 2,
+      "availability": "17/17 days",
+      "bookPage": "r3.182",
+      "seating": 7,
+      "notes": "Seating: 2+5b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 120,
+          "base": 120
+        },
+        "accel": {
+          "value": 8,
+          "base": 8
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 6,
+          "base": 6
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 28,
+          "base": 28
+        },
+        "load": {
+          "value": 870,
+          "base": 870
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

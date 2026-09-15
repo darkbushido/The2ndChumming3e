@@ -1,0 +1,30 @@
+{
+  "_key": "!items!a2a60e3bb5178d5f",
+  "doc": {
+    "_id": "a2a60e3bb5178d5f",
+    "name": "Superball Lvl 6 (per meter)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 6,
+      "cost": 300,
+      "weight": 0,
+      "availability": "12/48hrs",
+      "streetIndex": "3",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

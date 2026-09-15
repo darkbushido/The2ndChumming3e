@@ -1,0 +1,30 @@
+{
+  "_key": "!items!59328d841ced1ad6",
+  "doc": {
+    "_id": "59328d841ced1ad6",
+    "name": "Micro Hearing Amplifier Lvl 6",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "6",
+      "rating": 6,
+      "cost": 3000,
+      "weight": 0.6,
+      "availability": "6/36hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

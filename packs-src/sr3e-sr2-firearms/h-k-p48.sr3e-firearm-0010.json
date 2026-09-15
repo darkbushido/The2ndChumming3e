@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0010",
+  "doc": {
+    "_id": "sr3e-firearm-0010",
+    "name": "H&K P48",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HOPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "8",
+      "ammunition": "6(c)",
+      "mode": "SA/BF",
+      "damage": "4L",
+      "weight": ".45",
+      "availability": "4/24hrs",
+      "cost": 300,
+      "streetIndex": "1.5",
+      "accessories": "None",
+      "bookPage": "pw.20",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

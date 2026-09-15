@@ -1,0 +1,30 @@
+{
+  "_key": "!items!a2d46ca4f4afad84",
+  "doc": {
+    "_id": "a2d46ca4f4afad84",
+    "name": "Tabletop Holotank",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "-",
+      "rating": null,
+      "cost": 500,
+      "weight": 5,
+      "availability": "4/48hrs",
+      "streetIndex": "1.2",
+      "bookPage": "fof.96",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

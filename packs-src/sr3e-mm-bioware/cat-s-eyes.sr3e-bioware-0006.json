@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0006",
+  "doc": {
+    "_id": "sr3e-bioware-0006",
+    "name": "Cat's Eyes",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Standard",
+      "grade": "Standard",
+      "bioIndex": 0.2,
+      "cost": 15000,
+      "availability": "4/6 days",
+      "streetIndex": 1,
+      "mods": "",
+      "bookPage": "mm.064",
+      "rating": 0,
+      "description": "Lowlight vision"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

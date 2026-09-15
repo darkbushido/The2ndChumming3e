@@ -1,0 +1,30 @@
+{
+  "_key": "!items!b3a935a2be1c402c",
+  "doc": {
+    "_id": "b3a935a2be1c402c",
+    "name": "Nav-Dat GPS",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "8",
+      "rating": null,
+      "cost": 700,
+      "weight": 0.5,
+      "availability": "6/48hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.295,cc.122",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

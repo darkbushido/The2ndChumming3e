@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0671",
+  "doc": {
+    "_id": "sr3e-firearm-0671",
+    "name": "DB45-A Double Barrel",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "50(c)",
+      "mode": "SA/BF",
+      "damage": "7M",
+      "weight": "3.5",
+      "availability": "5/72hrs",
+      "cost": 1500,
+      "streetIndex": "2",
+      "accessories": "Will not accept underbarrel accessories; 6 round bursts; double recoil",
+      "bookPage": "tss.7",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

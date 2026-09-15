@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0131",
+  "doc": {
+    "_id": "sr3e-firearm-0131",
+    "name": "Polymer One-ShotCannon",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "1",
+      "mode": "SS",
+      "damage": "5S",
+      "weight": "1.5",
+      "availability": "3/12hrs",
+      "cost": 190,
+      "streetIndex": ".6",
+      "accessories": "None",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

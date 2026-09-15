@@ -1,0 +1,41 @@
+{
+  "_key": "!items!8kIWuKddmpDYCgdf",
+  "doc": {
+    "name": "Defensive Utility Design",
+    "type": "skill",
+    "system": {
+      "category": "Program design",
+      "skillType": "knowledge",
+      "skillName": "Defensive Utility Design",
+      "linkedAttribute": "intelligence",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": "",
+      "bookPage": "mat.25"
+    },
+    "_id": "8kIWuKddmpDYCgdf",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192967315,
+      "modifiedTime": 1782889914445,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

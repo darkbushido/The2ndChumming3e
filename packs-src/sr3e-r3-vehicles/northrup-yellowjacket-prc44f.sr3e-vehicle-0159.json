@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0159",
+  "doc": {
+    "_id": "sr3e-vehicle-0159",
+    "name": "Northrup YellowJacket PRC44F",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "helicopter",
+      "cost": 76000,
+      "streetIndex": 2,
+      "availability": "10/10 Days",
+      "bookPage": "r3.183",
+      "seating": 1,
+      "notes": "ECCM 1,Mini-Turret (weapon n/i)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 130,
+          "base": 130
+        },
+        "accel": {
+          "value": 15,
+          "base": 15
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 2,
+          "base": 2
+        },
+        "sig": {
+          "value": 4,
+          "base": 4
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 2,
+          "base": 2
+        },
+        "cargo": {
+          "value": 1,
+          "base": 1
+        },
+        "load": {
+          "value": 27,
+          "base": 27
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

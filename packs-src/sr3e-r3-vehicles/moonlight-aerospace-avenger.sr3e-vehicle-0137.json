@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0137",
+  "doc": {
+    "_id": "sr3e-vehicle-0137",
+    "name": "Moonlight Aerospace Avenger",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "fixedwing",
+      "cost": 50000,
+      "streetIndex": 2,
+      "availability": "3/72 hrs",
+      "bookPage": "r3.181",
+      "seating": 1,
+      "notes": "2 External Firmpoints | Alt-mode Speed/Accel: 40(200)/21",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 40,
+          "base": 40
+        },
+        "accel": {
+          "value": 21,
+          "base": 21
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 4,
+          "base": 4
+        },
+        "sig": {
+          "value": 6,
+          "base": 6
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 0,
+          "base": 0
+        },
+        "load": {
+          "value": 58,
+          "base": 58
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

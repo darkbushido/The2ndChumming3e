@@ -1,0 +1,31 @@
+{
+  "_key": "!items!75f733dfbda8d27f",
+  "doc": {
+    "_id": "75f733dfbda8d27f",
+    "name": "Fugu 5",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Toxins"
+      }
+    },
+    "system": {
+      "category": "Toxins",
+      "addiction": "",
+      "tolerance": "",
+      "effect": "3D",
+      "speed": "Immediate",
+      "vector": "Injection/Ingestion",
+      "cost": 10000,
+      "availability": "4/72hrs",
+      "streetIndex": ".5",
+      "bookPage": "sr3.250",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

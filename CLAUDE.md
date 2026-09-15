@@ -208,16 +208,24 @@ fail in the ApplicationV2 rendering context. Always wire through the hook's `htm
 ⚠ **This section previously documented an in-Foundry macro workflow as "the correct pattern".
 No pack in this repo was built that way.** Corrected 2026-09-03.
 
-**What is true today:**
+**What is true today (TODO 12, 2026-09-14):**
 
 | | |
 |---|---|
-| The 82 per-book packs | Built by **uncommitted scratchpad scripts** using `fvtt package`. The `bookPage`-prefix → per-book routing exists **nowhere in git** — see TODO 12. |
-| `scripts/macros/populate-*.js` | **24 of 27 are broken.** The book split renamed every pack from `sr3e-<type>` to `sr3e-<book>-<type>` and no macro was updated, so they fail at `game.packs.get()` returning undefined. The pipeline was **retired** by decision on 2026-08-04, not repaired. The files still exist pending TODO 1. |
-| Changing a shipped pack | **Direct LevelDB via `classic-level`, with Foundry CLOSED.** |
+| **`packs-src/<pack>/`** | **The source of truth.** Every shipped document as JSON — one file per item/actor/folder, `{ _key, doc, embedded }`, its exact LevelDB key and value, an actor's items in its file. Readable, diffable, text-mergeable. `tools/lib/pack-source.mjs`. |
+| **`packs/<pack>/`** (LevelDB) | **Build output**, still committed because Foundry installs from the branch zip. `npm run packs:build` compiles `packs-src` → `packs/`, rebuilding only packs whose content changed. |
+| The install | **`npm run packs:install`** — a one-way copy from `packs-src` (Foundry CLOSED). Never link the install to the checkout. |
+| Upstream data | Vendored in `rawdata/SRCG-*` (`rawdata/SRCG-README.md`). `tools/build-default-gear.mjs` and `tools/build-odm-packs.mjs` generate their packs from it; everything else was imported once and is now maintained in `packs-src`. |
+| `scripts/macros/populate-*.js` | **Retired** (2026-08-04) and superseded — every document they ever produced is in `packs-src`. Deletable (TODO 1). |
 
-**So the repo currently cannot rebuild its own pack structure.** That is TODO 12, and it blocks
-shipping any new content — ammunition (TODO 23), core gear (TODO 91), book restoration (TODO 9).
+**The workflow:**
+- ⚠ **After a merge with a conflict in `packs/`**: merge the JSON in `packs-src/`, then
+  `npm run packs:build` — never hand-pick LevelDB files (the 2026-09-14 merges show why).
+- ⚠ **A tool that writes LevelDB** refreshes `packs-src` itself (`extractPack`) — the builders,
+  `fill-book-pages`, `import-johnson-gear`, `relink-johnson-helmets`. Any OTHER tool that writes a
+  repo pack must be followed by `npm run packs:extract`. `tests/pack-sources.test.mjs` fails on any
+  drift, and also compiles every pack from source to prove the build reproduces it.
+- `npm run packs:src:check` — the same comparison, read-only.
 
 #### Editing an existing pack — the working pattern
 

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-projectile-0050",
+  "doc": {
+    "_id": "sr3e-projectile-0050",
+    "name": "Crawler Grenade",
+    "type": "projectile",
+    "system": {
+      "category": "GR",
+      "skill": "Throwing Weapons",
+      "attribute": "strength",
+      "concealability": "6",
+      "strMin": 0,
+      "damage": "(see rules)",
+      "weight": ".25",
+      "availability": "20/14 days",
+      "cost": 150,
+      "streetIndex": "6",
+      "legal": false,
+      "bookPage": "sr2.???",
+      "notes": "",
+      "isAoE": true
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

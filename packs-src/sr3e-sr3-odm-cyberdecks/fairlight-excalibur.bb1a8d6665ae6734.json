@@ -1,0 +1,41 @@
+{
+  "_key": "!items!bb1a8d6665ae6734",
+  "doc": {
+    "_id": "bb1a8d6665ae6734",
+    "name": "Fairlight Excalibur",
+    "type": "cyberdeck",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberdeck-default.webp",
+    "system": {
+      "cost": 1500000,
+      "availability": "22/7days",
+      "streetIndex": 1,
+      "bookPage": "sr3.207,sr3.304",
+      "notes": "<p>Stock cyberdeck — SR3 p.207 (stats), p.304 (availability, cost). MPCP 12, Hardening 6, Active Memory 3000 Mp, Storage 5000 Mp, I/O 600 Mp/turn, Response Increase 3.</p><p>Orthodox Matrix: load it from the Matrix tab's cyberdeck picker.</p>",
+      "modules": [
+        {
+          "_odmType": "orthodox",
+          "hardening": 6,
+          "storageMemory": 5000,
+          "responseIncrease": 3
+        }
+      ],
+      "attributes": {
+        "mpcp": {
+          "base": 12,
+          "value": 12
+        },
+        "memory": {
+          "total": 3000,
+          "used": 0,
+          "unit": "Mp"
+        },
+        "dataTransferRate": {
+          "value": 600,
+          "unit": "Mp per Combat Turn"
+        }
+      }
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

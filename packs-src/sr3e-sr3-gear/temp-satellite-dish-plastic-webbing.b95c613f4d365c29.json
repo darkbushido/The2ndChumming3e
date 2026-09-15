@@ -1,0 +1,30 @@
+{
+  "_key": "!items!b95c613f4d365c29",
+  "doc": {
+    "_id": "b95c613f4d365c29",
+    "name": "Temp. Satellite Dish — Plastic Webbing",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Miscellaneous Components"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Miscellaneous Components",
+      "concealability": "",
+      "rating": null,
+      "cost": 5,
+      "weight": 0,
+      "availability": "4/24 hrs",
+      "streetIndex": ".5",
+      "bookPage": "sr3.302",
+      "description": "<p><strong>Legal:</strong> Legal</p>"
+    }
+  },
+  "embedded": {}
+}

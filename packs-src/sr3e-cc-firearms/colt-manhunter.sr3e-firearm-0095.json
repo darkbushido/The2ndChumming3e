@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0095",
+  "doc": {
+    "_id": "sr3e-firearm-0095",
+    "name": "Colt Manhunter",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "16(c)",
+      "mode": "SA",
+      "damage": "9M",
+      "weight": "2.5",
+      "availability": "4/24hrs",
+      "cost": 425,
+      "streetIndex": "1",
+      "accessories": "Laser Sight",
+      "bookPage": "cc.19",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

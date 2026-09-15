@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0270",
+  "doc": {
+    "_id": "sr3e-cyberware-0270",
+    "name": "Commlink [8](Radio/Phone)",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Communications",
+      "essenceCost": 0.15,
+      "cost": 40000,
+      "availability": "3/48 hours",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.298",
+      "grade": "Standard",
+      "rating": 8,
+      "description": "Monitor 16 radio or telephone frequencies"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

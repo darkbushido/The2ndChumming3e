@@ -1,0 +1,31 @@
+{
+  "_key": "!items!5fdeb9e2264f703e",
+  "doc": {
+    "_id": "5fdeb9e2264f703e",
+    "name": "Nicotine (pack of cigarettes)",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "3M",
+      "tolerance": "1",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 2,
+      "availability": "always",
+      "streetIndex": ".8",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 20</p>"
+    }
+  },
+  "embedded": {}
+}

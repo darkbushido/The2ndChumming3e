@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0299",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0299",
+    "name": "Rigger Adaptation",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 2800,
+      "availability": "4/7days",
+      "streetIndex": "2",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "40 hrs/Vehicle B/R(4)",
+      "cfCost": "1",
+      "load": "10kg",
+      "bookPage": "r3.130",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

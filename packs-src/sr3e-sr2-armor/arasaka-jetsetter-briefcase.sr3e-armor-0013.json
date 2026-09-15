@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0013",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0013",
+    "name": "Arasaka Jetsetter Briefcase",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 3,
+      "impact": 3,
+      "weight": 4.5,
+      "availability": "4/36hrs",
+      "cost": 2000,
+      "streetIndex": "1.2",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

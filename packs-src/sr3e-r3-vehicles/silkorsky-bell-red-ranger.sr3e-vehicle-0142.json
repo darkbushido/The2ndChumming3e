@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0142",
+  "doc": {
+    "_id": "sr3e-vehicle-0142",
+    "name": "Silkorsky-Bell Red Ranger",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "hovercraft",
+      "cost": 336000,
+      "streetIndex": 1,
+      "availability": "17/17 days",
+      "bookPage": "r3.181",
+      "seating": 2,
+      "notes": "Amphibious Operation 3",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 270,
+          "base": 270
+        },
+        "accel": {
+          "value": 16,
+          "base": 16
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 2,
+          "base": 2
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 10,
+          "base": 10
+        },
+        "load": {
+          "value": 98,
+          "base": 98
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

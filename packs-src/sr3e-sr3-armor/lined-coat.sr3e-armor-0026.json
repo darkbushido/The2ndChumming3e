@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0026",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0026",
+    "name": "Lined Coat",
+    "type": "armor",
+    "system": {
+      "concealability": "8",
+      "ballistic": 4,
+      "impact": 2,
+      "weight": 1,
+      "availability": "2/24hrs",
+      "cost": 700,
+      "streetIndex": ".75",
+      "bookPage": "sr3.284",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

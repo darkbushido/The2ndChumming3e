@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0005",
+  "doc": {
+    "_id": "sr3e-adeptpower-0005",
+    "name": "Astral Perception",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 2,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sr3.168",
+      "description": "You have the ability to see and reach into the astral plane via astral perception."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

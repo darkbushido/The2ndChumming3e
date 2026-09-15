@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0198",
+  "doc": {
+    "_id": "sr3e-vehicle-0198",
+    "name": "Nizhinyi BMV-2",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "military",
+      "cost": 1844750,
+      "streetIndex": 3,
+      "availability": "NA",
+      "bookPage": "sota.78",
+      "seating": 7,
+      "notes": "Small Turret (10 CF Ammo Bin), Medium Launch System, 4 Internal Missle Mounts | Alt-mode Speed/Accel: 250(750)/40 | Seating: 1e+2e+2b+2b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 250,
+          "base": 250
+        },
+        "accel": {
+          "value": 40,
+          "base": 40
+        },
+        "body": {
+          "value": 6,
+          "base": 6
+        },
+        "armor": {
+          "value": 9,
+          "base": 9
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 4,
+          "base": 4
+        },
+        "cargo": {
+          "value": 27.5,
+          "base": 27.5
+        },
+        "load": {
+          "value": 2375,
+          "base": 2375
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

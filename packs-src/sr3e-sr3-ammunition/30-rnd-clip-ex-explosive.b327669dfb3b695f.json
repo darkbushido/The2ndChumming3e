@@ -1,0 +1,34 @@
+{
+  "_key": "!items!b327669dfb3b695f",
+  "doc": {
+    "_id": "b327669dfb3b695f",
+    "name": "30-Rnd Clip (EX Explosive)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "exExplosive",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 30,
+      "rounds": 0,
+      "weight": 3,
+      "cost": 305,
+      "availability": "6/72hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr3.281",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

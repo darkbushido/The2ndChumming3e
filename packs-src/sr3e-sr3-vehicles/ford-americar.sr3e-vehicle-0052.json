@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0052",
+  "doc": {
+    "_id": "sr3e-vehicle-0052",
+    "name": "Ford Americar",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 20000,
+      "streetIndex": 1,
+      "availability": "2/24hrs",
+      "bookPage": "sr3.308, r3.165",
+      "seating": 3,
+      "notes": "Seating: 2+1b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 8,
+          "base": 8
+        },
+        "speed": {
+          "value": 105,
+          "base": 105
+        },
+        "accel": {
+          "value": 8,
+          "base": 8
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 12,
+          "base": 12
+        },
+        "load": {
+          "value": 110,
+          "base": 110
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

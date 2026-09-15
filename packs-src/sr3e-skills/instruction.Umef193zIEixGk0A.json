@@ -1,0 +1,41 @@
+{
+  "_key": "!items!Umef193zIEixGk0A",
+  "doc": {
+    "name": "Instruction",
+    "type": "skill",
+    "system": {
+      "category": "Background knowledge",
+      "skillType": "knowledge",
+      "skillName": "Instruction",
+      "linkedAttribute": "intelligence",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": "",
+      "bookPage": "sr3.87"
+    },
+    "_id": "Umef193zIEixGk0A",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192983491,
+      "modifiedTime": 1782889914448,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

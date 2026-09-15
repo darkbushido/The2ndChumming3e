@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0068",
+  "doc": {
+    "_id": "sr3e-adeptpower-0068",
+    "name": "Iron Lungs",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.25,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.66",
+      "description": "With each level of this power an adept can hold his breath for another 45 seconds. Each level reduces fatigue tests by 2."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

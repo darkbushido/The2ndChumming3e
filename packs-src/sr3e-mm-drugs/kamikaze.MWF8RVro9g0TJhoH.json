@@ -1,0 +1,42 @@
+{
+  "_key": "!items!MWF8RVro9g0TJhoH",
+  "doc": {
+    "name": "Kamikaze",
+    "type": "drug",
+    "system": {
+      "category": "Stimulants",
+      "addiction": "4P",
+      "tolerance": "2",
+      "effect": "2/10",
+      "speed": "",
+      "vector": "",
+      "availability": "5/4days",
+      "cost": 50,
+      "streetIndex": "5",
+      "bookPage": "sr2.246",
+      "notes": ""
+    },
+    "_id": "MWF8RVro9g0TJhoH",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "ge55aFMax5sNd2Ho": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.3.1",
+      "createdTime": 1782280826282,
+      "modifiedTime": 1782889914230,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

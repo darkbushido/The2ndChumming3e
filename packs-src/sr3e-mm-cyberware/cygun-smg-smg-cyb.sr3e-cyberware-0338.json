@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0338",
+  "doc": {
+    "_id": "sr3e-cyberware-0338",
+    "name": "CyGun SMG(SMG)(CYB)",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberweapons",
+      "essenceCost": 1,
+      "cost": 1800,
+      "availability": "8/7 days",
+      "streetIndex": 2,
+      "legalCode": "3P-Q",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.41",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "7M"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

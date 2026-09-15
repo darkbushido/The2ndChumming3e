@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0758",
+  "doc": {
+    "_id": "sr3e-firearm-0758",
+    "name": "Ares Alpha",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "AsRf",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "2",
+      "ammunition": "42(c)",
+      "mode": "SA/BF/FA",
+      "damage": "8M",
+      "weight": "5.25",
+      "availability": "8/48hrs",
+      "cost": 2000,
+      "streetIndex": "4",
+      "accessories": "Grenade Launcher 8(m), RC(2), Smartlink-2",
+      "bookPage": "cc.22",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

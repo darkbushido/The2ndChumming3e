@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0886",
+  "doc": {
+    "_id": "sr3e-firearm-0886",
+    "name": "Ares Wippet",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "ShtG",
+      "skill": "Shotguns",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "6(m)",
+      "mode": "SA",
+      "damage": "6M/9M",
+      "weight": "2",
+      "availability": "5/36hrs",
+      "cost": 1500,
+      "streetIndex": "1.5",
+      "accessories": "None",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0116",
+  "doc": {
+    "_id": "sr3e-firearm-0116",
+    "name": "H&K \"Blaster\"",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "6(m)",
+      "mode": "SS",
+      "damage": "12M",
+      "weight": "3",
+      "availability": "-",
+      "cost": 0,
+      "streetIndex": "-",
+      "accessories": "None",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

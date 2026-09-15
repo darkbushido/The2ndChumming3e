@@ -1,0 +1,28 @@
+{
+  "_key": "!items!f710c6a1376aca6d",
+  "doc": {
+    "_id": "f710c6a1376aca6d",
+    "name": "Medkit Supplies",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "",
+      "weight": "-",
+      "cost": 50,
+      "availability": "2/24hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr3.304",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

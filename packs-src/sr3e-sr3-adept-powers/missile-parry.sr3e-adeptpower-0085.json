@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0085",
+  "doc": {
+    "_id": "sr3e-adeptpower-0085",
+    "name": "Missile Parry",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 1,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sr3.170",
+      "description": "You can catch slow-moving missile weapons such as arrows, thrown knives and shuriken out of the air."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

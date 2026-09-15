@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0186",
+  "doc": {
+    "_id": "sr3e-vehicle-0186",
+    "name": "KM Triton Class Submarine",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "submarine",
+      "cost": 435000000,
+      "streetIndex": 1,
+      "availability": "-",
+      "bookPage": "r3.188",
+      "seating": 0,
+      "notes": "Water and Engine EnviroSeal, Oxygen Generator, 24 Basic Living Amenities | Alt-mode Speed/Accel: (30(20)/10(2))/1(1) | Alt-mode Sig/Autonav: (5(4)/5(3))/3 | Alt-mode Cargo/Load: 200000[2940 PS]/15000000[36000 PS] | Alt-mode Pilot/Sensor: -/2(2)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 0,
+          "base": 0
+        },
+        "accel": {
+          "value": 10,
+          "base": 10
+        },
+        "body": {
+          "value": 7,
+          "base": 7
+        },
+        "armor": {
+          "value": 3,
+          "base": 3
+        },
+        "sig": {
+          "value": 0,
+          "base": 0
+        },
+        "autonav": {
+          "value": 5,
+          "base": 5
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 2,
+          "base": 2
+        },
+        "cargo": {
+          "value": 200000,
+          "base": 200000
+        },
+        "load": {
+          "value": 15000000,
+          "base": 15000000
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

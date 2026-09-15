@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-bioware-0143",
+  "doc": {
+    "_id": "sr3e-bioware-0143",
+    "name": "Mnemonic Enhancer[2]",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Cultured",
+      "grade": "Cultured",
+      "bioIndex": 0.4,
+      "cost": 30000,
+      "availability": "6/7 days",
+      "streetIndex": 1,
+      "mods": "+2MNE",
+      "bookPage": "mm.072",
+      "rating": 2,
+      "description": "+2 die Memory and Language tests, -1 Karma cost to learn/improve skills, +3 default to INT for Knowledge Skills",
+      "srcgName": "Mnemonic Enhanc.[2]"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

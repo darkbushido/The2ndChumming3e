@@ -1,0 +1,30 @@
+{
+  "_key": "!items!b3deb5f2047d85cc",
+  "doc": {
+    "_id": "b3deb5f2047d85cc",
+    "name": "Touchpad w/Trackball Adapter",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Miscellaneous Components"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Miscellaneous Components",
+      "concealability": "",
+      "rating": null,
+      "cost": 60,
+      "weight": 0,
+      "availability": "Always",
+      "streetIndex": "1",
+      "bookPage": "sr3.302",
+      "description": "<p><strong>Legal:</strong> Legal</p>"
+    }
+  },
+  "embedded": {}
+}

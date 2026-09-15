@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0165",
+  "doc": {
+    "_id": "sr3e-cyberware-0165",
+    "name": "Ruthenium Occular Mods [1]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0.1,
+      "cost": 2000,
+      "availability": "3/24 hours",
+      "streetIndex": 0.75,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "tss.5",
+      "grade": "Standard",
+      "rating": 1,
+      "description": "Obvious pattern changes, programmable with included wireless unit (or datajack or Chromasync SPU [not included])"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

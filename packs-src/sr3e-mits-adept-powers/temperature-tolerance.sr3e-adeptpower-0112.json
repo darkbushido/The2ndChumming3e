@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0112",
+  "doc": {
+    "_id": "sr3e-adeptpower-0112",
+    "name": "Temperature Tolerance*",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.25,
+      "hasLevels": true,
+      "level": 1,
+      "mods": "",
+      "bookPage": "mits.151",
+      "description": "For each level of temperature tolerance, the adept gains an extra die for resisting the effects and damage of exposure to extreme temperature."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

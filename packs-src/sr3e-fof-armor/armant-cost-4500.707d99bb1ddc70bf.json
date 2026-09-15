@@ -1,0 +1,29 @@
+{
+  "_key": "!items!707d99bb1ddc70bf",
+  "doc": {
+    "_id": "707d99bb1ddc70bf",
+    "name": "Armant (Cost 4500¥)",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "13",
+      "ballistic": 1,
+      "impact": 1,
+      "weight": 0.75,
+      "cost": 4500,
+      "availability": "2/48hrs",
+      "streetIndex": ".75",
+      "bookPage": "fof.93",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0018",
+  "doc": {
+    "_id": "sr3e-drone-0018",
+    "name": "Gaz-Niki GNRD-71 BIS Snooper",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 8500,
+      "streetIndex": 1,
+      "availability": "2/24hrs",
+      "seating": 0,
+      "bookPage": "sr3.312,r3.172",
+      "notes": "Remote-Control Interface, Rigger Adaptation",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 75,
+          "base": 75
+        },
+        "accel": {
+          "value": 3,
+          "base": 3
+        },
+        "body": {
+          "value": 1,
+          "base": 1
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 8,
+          "base": 8
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 1,
+          "base": 1
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 2,
+          "base": 2
+        },
+        "load": {
+          "value": 30,
+          "base": 30
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

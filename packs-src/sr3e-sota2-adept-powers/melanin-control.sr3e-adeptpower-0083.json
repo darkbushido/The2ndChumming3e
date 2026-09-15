@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0083",
+  "doc": {
+    "_id": "sr3e-adeptpower-0083",
+    "name": "Melanin Control",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 1,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.67",
+      "description": "The character can shift hair and skin colours within natural limits."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

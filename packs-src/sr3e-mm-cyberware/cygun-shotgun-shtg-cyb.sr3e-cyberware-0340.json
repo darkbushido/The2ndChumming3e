@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0340",
+  "doc": {
+    "_id": "sr3e-cyberware-0340",
+    "name": "CyGun Shotgun(ShtG)(CYB)",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberweapons",
+      "essenceCost": 1.1,
+      "cost": 1200,
+      "availability": "8/7 days",
+      "streetIndex": 2,
+      "legalCode": "4P-Q",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.41",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "8S"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

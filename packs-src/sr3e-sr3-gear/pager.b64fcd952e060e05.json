@@ -1,0 +1,30 @@
+{
+  "_key": "!items!b64fcd952e060e05",
+  "doc": {
+    "_id": "b64fcd952e060e05",
+    "name": "Pager",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "10",
+      "rating": null,
+      "cost": 10,
+      "weight": 0,
+      "availability": "Always",
+      "streetIndex": "1",
+      "bookPage": "sr3.287",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

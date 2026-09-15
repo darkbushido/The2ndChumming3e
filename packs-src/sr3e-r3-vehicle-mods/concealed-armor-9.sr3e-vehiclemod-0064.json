@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0064",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0064",
+    "name": "Concealed Armor [9]",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 18000,
+      "availability": "8/21days",
+      "streetIndex": "3.5",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "72 hrs/Vehicle B/R(3)",
+      "cfCost": "37",
+      "load": "Body^2*5kg",
+      "bookPage": "r3.132",
+      "description": "Handling+1"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

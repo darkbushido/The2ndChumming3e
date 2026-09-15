@@ -1,0 +1,41 @@
+{
+  "_key": "!items!4b30ecbd08e61201",
+  "doc": {
+    "_id": "4b30ecbd08e61201",
+    "name": "Transys Highlander",
+    "type": "cyberdeck",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberdeck-default.webp",
+    "system": {
+      "cost": 600000,
+      "availability": "14/7days",
+      "streetIndex": 1,
+      "bookPage": "sr3.207,sr3.304",
+      "notes": "<p>Stock cyberdeck — SR3 p.207 (stats), p.304 (availability, cost). MPCP 9, Hardening 4, Active Memory 1500 Mp, Storage 2500 Mp, I/O 400 Mp/turn, Response Increase 2.</p><p>Orthodox Matrix: load it from the Matrix tab's cyberdeck picker.</p>",
+      "modules": [
+        {
+          "_odmType": "orthodox",
+          "hardening": 4,
+          "storageMemory": 2500,
+          "responseIncrease": 2
+        }
+      ],
+      "attributes": {
+        "mpcp": {
+          "base": 9,
+          "value": 9
+        },
+        "memory": {
+          "total": 1500,
+          "used": 0,
+          "unit": "Mp"
+        },
+        "dataTransferRate": {
+          "value": 400,
+          "unit": "Mp per Combat Turn"
+        }
+      }
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0040",
+  "doc": {
+    "_id": "sr3e-adeptpower-0040",
+    "name": "Imp Abl Combat Skl*->",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": true,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sr3.169",
+      "description": "This power gives you additional dice for use with a specific Active Skill."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

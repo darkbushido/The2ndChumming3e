@@ -1,0 +1,30 @@
+{
+  "_key": "!items!187cd6b10369aaad",
+  "doc": {
+    "_id": "187cd6b10369aaad",
+    "name": "Chemical Detection System 2",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "3",
+      "rating": 2,
+      "cost": 140000,
+      "weight": 1,
+      "availability": "12/6 days",
+      "streetIndex": "1.25",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

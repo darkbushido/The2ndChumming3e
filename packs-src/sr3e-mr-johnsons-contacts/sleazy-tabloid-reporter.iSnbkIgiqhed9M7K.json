@@ -1,0 +1,1330 @@
+{
+  "_key": "!actors!iSnbkIgiqhed9M7K",
+  "doc": {
+    "name": "Sleazy Tabloid Reporter",
+    "type": "character",
+    "system": {
+      "metatype": "human",
+      "nuyen": 0,
+      "karma": 0,
+      "totalKarma": 0,
+      "karmaPool": 2,
+      "notes": "<p>Mr. Johnson's Little Black Book, p.41. PR 2. Karma Pool 2.</p>",
+      "attributes": {
+        "body": {
+          "base": 2,
+          "value": 2,
+          "mod": 0,
+          "force": 0
+        },
+        "quickness": {
+          "base": 4,
+          "value": 4,
+          "mod": 0,
+          "force": 0
+        },
+        "strength": {
+          "base": 2,
+          "value": 2,
+          "mod": 0,
+          "force": 0
+        },
+        "charisma": {
+          "base": 4,
+          "value": 4,
+          "mod": 0,
+          "force": 0
+        },
+        "intelligence": {
+          "base": 4,
+          "value": 4,
+          "mod": 0,
+          "force": 0
+        },
+        "willpower": {
+          "base": 4,
+          "value": 4,
+          "mod": 0,
+          "force": 0
+        },
+        "essence": {
+          "base": 6,
+          "value": 4.2,
+          "force": 0,
+          "lost": 1.8
+        },
+        "magic": {
+          "base": 0,
+          "value": 0,
+          "mod": 0,
+          "force": 0
+        },
+        "reaction": {
+          "base": 3,
+          "value": 3,
+          "reactionBonus": 0,
+          "diceBonus": 0,
+          "override": false,
+          "force": 0
+        }
+      },
+      "biography": "",
+      "gender": "",
+      "age": "",
+      "height": "",
+      "weight": "",
+      "ethnicity": "",
+      "reputation": 0,
+      "notoriety": 0,
+      "streetCred": 0,
+      "hackingBonus": 0,
+      "initiativeDiceBonus": 0,
+      "equippedArmor": "",
+      "equippedMelee": "",
+      "activeVCRItemId": "",
+      "equippedCyberdeck": "",
+      "matrixUserMode": "",
+      "activeHostId": "",
+      "currentMatrixNode": "",
+      "matrixMarks": [],
+      "linkLocked": false,
+      "astralMode": "",
+      "magicTradition": "",
+      "magicType": "",
+      "magicTotem": "",
+      "magicElement": "",
+      "initiateGrade": 0,
+      "combatPoolSpent": 0,
+      "combatPoolMod": 0,
+      "spellPoolSpent": 0,
+      "spellPoolMod": 0,
+      "astralPoolSpent": 0,
+      "astralPoolMod": 0,
+      "hackingPoolSpent": 0,
+      "spellDefensePool": 0,
+      "spellDefenseSorceryDice": 0,
+      "fullDefense": false,
+      "fullDefensePool": 0,
+      "recoilCompensation": 0,
+      "roundsFiredThisPhase": 0,
+      "stimBonus": 0,
+      "wounds": {
+        "stun": {
+          "value": 0,
+          "max": 10
+        },
+        "physical": {
+          "value": 0,
+          "max": 10
+        },
+        "overflow": {
+          "value": 0
+        }
+      },
+      "ew": {
+        "deckRating": 0,
+        "fluxRating": 0,
+        "protocolModule": 0,
+        "ivisPool": {
+          "value": 0,
+          "max": 0
+        }
+      },
+      "orthodoxDeck": {
+        "deckModel": "",
+        "mccp": 0,
+        "bod": 0,
+        "evasion": 0,
+        "masking": 0,
+        "sensor": 0,
+        "hardening": 0,
+        "activeMemory": 0,
+        "storageMemory": 0,
+        "ioSpeed": 0,
+        "responseIncrease": 0,
+        "sleazeRating": 0
+      },
+      "orthodoxRunState": {
+        "securityTally": 0,
+        "alertLevel": "none",
+        "currentHostId": ""
+      },
+      "orthodoxMatrixCM": {
+        "value": 0
+      },
+      "professionalRating": 2,
+      "bookPage": "lbb.41"
+    },
+    "_id": "iSnbkIgiqhed9M7K",
+    "img": "icons/svg/mystery-man.svg",
+    "prototypeToken": {
+      "name": "Sleazy Tabloid Reporter",
+      "displayName": 0,
+      "actorLink": true,
+      "width": 1,
+      "height": 1,
+      "depth": 1,
+      "texture": {
+        "src": "icons/svg/mystery-man.svg",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "fit": "contain",
+        "scaleX": 1,
+        "scaleY": 1,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "lockRotation": false,
+      "rotation": 0,
+      "alpha": 1,
+      "disposition": -1,
+      "displayBars": 20,
+      "bar1": {
+        "attribute": "wounds.physical"
+      },
+      "bar2": {
+        "attribute": "wounds.stun"
+      },
+      "light": {
+        "negative": false,
+        "priority": 0,
+        "alpha": 0.5,
+        "angle": 360,
+        "bright": 0,
+        "color": null,
+        "coloration": 1,
+        "dim": 0,
+        "attenuation": 0.5,
+        "luminosity": 0.5,
+        "saturation": 0,
+        "contrast": 0,
+        "shadows": 0,
+        "animation": {
+          "type": null,
+          "speed": 5,
+          "intensity": 5,
+          "reverse": false
+        },
+        "darkness": {
+          "min": 0,
+          "max": 1
+        }
+      },
+      "sight": {
+        "enabled": false,
+        "range": 0,
+        "angle": 360,
+        "visionMode": "basic",
+        "color": null,
+        "attenuation": 0.1,
+        "brightness": 0,
+        "saturation": 0,
+        "contrast": 0
+      },
+      "detectionModes": {},
+      "occludable": {
+        "radius": 0
+      },
+      "ring": {
+        "enabled": false,
+        "colors": {
+          "ring": null,
+          "background": null
+        },
+        "effects": 1,
+        "subject": {
+          "scale": 1,
+          "texture": null
+        }
+      },
+      "turnMarker": {
+        "mode": 1,
+        "animation": null,
+        "src": null,
+        "disposition": false
+      },
+      "movementAction": null,
+      "flags": {},
+      "randomImg": false,
+      "appendNumber": false,
+      "prependAdjective": false
+    },
+    "items": [
+      "JuMkEAlx5lJ1j5Zq",
+      "dUpawquk8G9HyxT8",
+      "Qoa4XTHMMjaleyVa",
+      "LebC7MooN4TaIR9v",
+      "9GlW3bUEkTcRlvp9",
+      "MnWynbP8t6d7QUWc",
+      "JxoK9IaQZpikIJzj",
+      "nwdqDvdui8pGtVuL",
+      "88984b26436f4828",
+      "2f2adbd4af506c38",
+      "1fe8c343b158d0b5",
+      "39062aa295adb876",
+      "b46c3d024b240b92",
+      "414165b27a920e5c",
+      "a6e25463db13ceb7",
+      "c159dc8b68663675",
+      "f152759c1daf2d4a",
+      "ef2b4043ddc8434f",
+      "4d8b53b1749c197f",
+      "ecc01b550793c58d",
+      "d1933c13641fbf73",
+      "9da6abf71656e99d",
+      "7d676b1115d1548b",
+      "e7c4e8e493701af2",
+      "33cc389aad334744",
+      "205e315608d439f8",
+      "f6664e4a60ec4e5c",
+      "081bf184b27e2de2"
+    ],
+    "effects": [],
+    "folder": "f9e325c54986605b",
+    "ownership": {
+      "default": 0,
+      "ge55aFMax5sNd2Ho": 3
+    },
+    "flags": {
+      "The2ndChumming3e": {
+        "isTemplate": false
+      }
+    },
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.4.5",
+      "createdTime": 1784690543044,
+      "modifiedTime": 1784690543044,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {
+    "!actors.items!iSnbkIgiqhed9M7K.081bf184b27e2de2": {
+      "_id": "081bf184b27e2de2",
+      "name": "Memory (300 Mps)",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Headware",
+        "essenceCost": 1,
+        "cost": 45000,
+        "availability": "3/24 hours",
+        "streetIndex": 0.8,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.298",
+        "grade": "Standard",
+        "rating": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0563",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621574,
+        "modifiedTime": 1788537621574,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.1fe8c343b158d0b5": {
+      "_id": "1fe8c343b158d0b5",
+      "name": "Etiquette",
+      "type": "skill",
+      "system": {
+        "skillName": "Etiquette",
+        "rating": 3,
+        "linkedAttribute": "charisma",
+        "category": "Social skills",
+        "skillType": "active",
+        "specialisation": "Entertainment 4",
+        "specialisations": [
+          {
+            "name": "Entertainment",
+            "level": 1
+          }
+        ],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811940,
+        "modifiedTime": 1788319811940,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.205e315608d439f8": {
+      "_id": "205e315608d439f8",
+      "name": "Eyes, Opticam",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Eyeware",
+        "essenceCost": 0.5,
+        "cost": 20000,
+        "availability": "5/72 hours",
+        "streetIndex": 2,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.300",
+        "grade": "Standard",
+        "rating": 0,
+        "description": "Record video footage"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0457",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621574,
+        "modifiedTime": 1788537621574,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.2f2adbd4af506c38": {
+      "_id": "2f2adbd4af506c38",
+      "name": "Negotiation",
+      "type": "skill",
+      "system": {
+        "skillName": "Negotiation",
+        "rating": 5,
+        "linkedAttribute": "charisma",
+        "category": "Social skills",
+        "skillType": "active",
+        "specialisation": "Bargain 6",
+        "specialisations": [
+          {
+            "name": "Bargain",
+            "level": 1
+          }
+        ],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811939,
+        "modifiedTime": 1788319811939,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.33cc389aad334744": {
+      "_id": "33cc389aad334744",
+      "name": "Eyes, Low-Light",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Eyeware",
+        "essenceCost": 0.2,
+        "cost": 3000,
+        "availability": "4/36 hours",
+        "streetIndex": 1.25,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.300",
+        "grade": "Standard",
+        "rating": 0,
+        "description": "Low-light vision"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0453",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621574,
+        "modifiedTime": 1788537621574,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.39062aa295adb876": {
+      "_id": "39062aa295adb876",
+      "name": "Interrogation",
+      "type": "skill",
+      "system": {
+        "skillName": "Interrogation",
+        "rating": 5,
+        "linkedAttribute": "charisma",
+        "category": "Social skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811940,
+        "modifiedTime": 1788319811940,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.414165b27a920e5c": {
+      "_id": "414165b27a920e5c",
+      "name": "Celebrities",
+      "type": "skill",
+      "system": {
+        "skillName": "Celebrities",
+        "rating": 6,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811941,
+        "modifiedTime": 1788319811941,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.4d8b53b1749c197f": {
+      "_id": "4d8b53b1749c197f",
+      "name": "Reporting",
+      "type": "skill",
+      "system": {
+        "skillName": "Reporting",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811942,
+        "modifiedTime": 1788319811942,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.7d676b1115d1548b": {
+      "_id": "7d676b1115d1548b",
+      "name": "Ear Recorder",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Earware",
+        "essenceCost": 0.3,
+        "cost": 7000,
+        "availability": "8/48 hours",
+        "streetIndex": 2,
+        "legalCode": "12P-N",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.299",
+        "grade": "Standard",
+        "rating": 0,
+        "description": "Record what is heard"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0402",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621574,
+        "modifiedTime": 1788537621574,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.88984b26436f4828": {
+      "_id": "88984b26436f4828",
+      "name": "Computer",
+      "type": "skill",
+      "system": {
+        "skillName": "Computer",
+        "rating": 3,
+        "linkedAttribute": "intelligence",
+        "category": "Technical skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811937,
+        "modifiedTime": 1788319811937,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.9GlW3bUEkTcRlvp9": {
+      "name": "Tiffani Needler",
+      "type": "firearm",
+      "system": {
+        "category": "HOPist",
+        "skill": "Pistols",
+        "attribute": "quickness",
+        "concealability": "8",
+        "ammunition": "4(c)",
+        "mode": "SA",
+        "damage": "5M(f)",
+        "weight": ".5",
+        "availability": "7/48hrs",
+        "cost": 650,
+        "streetIndex": "2",
+        "accessories": "None",
+        "bookPage": "cc.16",
+        "notes": ""
+      },
+      "_id": "9GlW3bUEkTcRlvp9",
+      "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543044,
+        "modifiedTime": 1788492295843,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-cc-firearms.Item.sr3e-firearm-0017",
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.9da6abf71656e99d": {
+      "_id": "9da6abf71656e99d",
+      "name": "Ear Hearing Amplification",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Earware",
+        "essenceCost": 0.2,
+        "cost": 3500,
+        "availability": "4/48 hours",
+        "streetIndex": 1.25,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.299",
+        "grade": "Standard",
+        "rating": 0,
+        "description": "Similar to shotgun microphone",
+        "srcgName": "Ear Hearing Amp"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0399",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621574,
+        "modifiedTime": 1788537621574,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.JuMkEAlx5lJ1j5Zq": {
+      "name": "Lined Coat",
+      "type": "armor",
+      "system": {
+        "ballistic": 4,
+        "impact": 2,
+        "concealability": "",
+        "cost": 0,
+        "weight": 0,
+        "availability": "",
+        "streetIndex": "",
+        "bookPage": "",
+        "notes": ""
+      },
+      "_id": "JuMkEAlx5lJ1j5Zq",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543044,
+        "modifiedTime": 1784690543044,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.JxoK9IaQZpikIJzj": {
+      "name": "Tracking Signal and Locator",
+      "type": "gear",
+      "system": {
+        "quantity": 4,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_id": "JxoK9IaQZpikIJzj",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543044,
+        "modifiedTime": 1784690543044,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.LebC7MooN4TaIR9v": {
+      "name": "Wristphone",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_id": "LebC7MooN4TaIR9v",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543044,
+        "modifiedTime": 1784690543044,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.MnWynbP8t6d7QUWc": {
+      "name": "Pocket Secretary",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_id": "MnWynbP8t6d7QUWc",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543044,
+        "modifiedTime": 1784690543044,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.Qoa4XTHMMjaleyVa": {
+      "name": "Dataline Tap",
+      "type": "gear",
+      "system": {
+        "quantity": 5,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_id": "Qoa4XTHMMjaleyVa",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543044,
+        "modifiedTime": 1784690543044,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.a6e25463db13ceb7": {
+      "_id": "a6e25463db13ceb7",
+      "name": "Current Events",
+      "type": "skill",
+      "system": {
+        "skillName": "Current Events",
+        "rating": 3,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811941,
+        "modifiedTime": 1788319811941,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.b46c3d024b240b92": {
+      "_id": "b46c3d024b240b92",
+      "name": "Stealth",
+      "type": "skill",
+      "system": {
+        "skillName": "Stealth",
+        "rating": 3,
+        "linkedAttribute": "quickness",
+        "category": "Physical skills",
+        "skillType": "active",
+        "specialisation": "Alertness 4, Sneaking 4",
+        "specialisations": [
+          {
+            "name": "Alertness",
+            "level": 1
+          },
+          {
+            "name": "Sneaking",
+            "level": 1
+          }
+        ],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811941,
+        "modifiedTime": 1788319811941,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.c159dc8b68663675": {
+      "_id": "c159dc8b68663675",
+      "name": "Entertainment Society",
+      "type": "skill",
+      "system": {
+        "skillName": "Entertainment Society",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811941,
+        "modifiedTime": 1788319811941,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.d1933c13641fbf73": {
+      "_id": "d1933c13641fbf73",
+      "name": "Ears Cyber Replacement",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Earware",
+        "essenceCost": 0.3,
+        "cost": 4000,
+        "availability": "2/24 hours",
+        "streetIndex": 0.75,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0.5,
+        "isReplacement": false,
+        "bookPage": "sr3.299",
+        "grade": "Standard",
+        "rating": 0,
+        "description": "Holds .5 Essence of ear mods free of Essence cost",
+        "srcgName": "Ears Cyber Repl"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0397",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621573,
+        "modifiedTime": 1788537621573,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.dUpawquk8G9HyxT8": {
+      "name": "Shotgun Microphone",
+      "type": "gear",
+      "system": {
+        "quantity": 4,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_id": "dUpawquk8G9HyxT8",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543044,
+        "modifiedTime": 1784690543044,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.e7c4e8e493701af2": {
+      "_id": "e7c4e8e493701af2",
+      "name": "Eyes, Cyber Replacement",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Eyeware",
+        "essenceCost": 0.2,
+        "cost": 5000,
+        "availability": "2/24 hours",
+        "streetIndex": 0.75,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0.5,
+        "isReplacement": true,
+        "bookPage": "sr3.300",
+        "grade": "Standard",
+        "rating": 0,
+        "description": "Holds .5 Essence of eye mods free of Essence cost"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0410",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621574,
+        "modifiedTime": 1788537621574,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.ecc01b550793c58d": {
+      "_id": "ecc01b550793c58d",
+      "name": "Urban Legends",
+      "type": "skill",
+      "system": {
+        "skillName": "Urban Legends",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811942,
+        "modifiedTime": 1788319811942,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.ef2b4043ddc8434f": {
+      "_id": "ef2b4043ddc8434f",
+      "name": "Recreational Drugs",
+      "type": "skill",
+      "system": {
+        "skillName": "Recreational Drugs",
+        "rating": 3,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811942,
+        "modifiedTime": 1788319811942,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.f152759c1daf2d4a": {
+      "_id": "f152759c1daf2d4a",
+      "name": "News Industry",
+      "type": "skill",
+      "system": {
+        "skillName": "News Industry",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788319811942,
+        "modifiedTime": 1788319811942,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.f6664e4a60ec4e5c": {
+      "_id": "f6664e4a60ec4e5c",
+      "name": "Datajack",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Headware",
+        "essenceCost": 0.2,
+        "cost": 1000,
+        "availability": "0/0",
+        "streetIndex": 0.9,
+        "legalCode": "Legal",
+        "mods": "+1DJK",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.298",
+        "grade": "Standard",
+        "rating": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0535",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621574,
+        "modifiedTime": 1788537621574,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!iSnbkIgiqhed9M7K.nwdqDvdui8pGtVuL": {
+      "name": "Nissan Jackrabbit",
+      "type": "gear",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_id": "nwdqDvdui8pGtVuL",
+      "img": "icons/svg/item-bag.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.364",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.4.5",
+        "createdTime": 1784690543044,
+        "modifiedTime": 1784690543044,
+        "lastModifiedBy": "ge55aFMax5sNd2Ho",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!1aa45599d499b565",
+  "doc": {
+    "_id": "1aa45599d499b565",
+    "name": "Hip Pad Bracing System",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-4)",
+      "rating": 1,
+      "cost": 250,
+      "weight": 2,
+      "availability": "4/48hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.35",
+      "description": "<p><strong>Notes:</strong> for Heavy Weapons</p>"
+    }
+  },
+  "embedded": {}
+}

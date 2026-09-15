@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-projectile-0052",
+  "doc": {
+    "_id": "sr3e-projectile-0052",
+    "name": "IPE Concussion Grenade",
+    "type": "projectile",
+    "system": {
+      "category": "GR",
+      "skill": "Throwing Weapons",
+      "attribute": "strength",
+      "concealability": "6",
+      "strMin": 0,
+      "damage": "16M Stun",
+      "weight": ".5",
+      "availability": "8/1wk",
+      "cost": 70,
+      "streetIndex": "2",
+      "legal": false,
+      "bookPage": "cc.41",
+      "notes": "",
+      "isAoE": true
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

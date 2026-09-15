@@ -1,0 +1,30 @@
+{
+  "_key": "!items!e5f6ff2d4757e2c3",
+  "doc": {
+    "_id": "e5f6ff2d4757e2c3",
+    "name": "Gas Vent II",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-1)",
+      "rating": 1,
+      "cost": 450,
+      "weight": 0.5,
+      "availability": "2/24hrs",
+      "streetIndex": ".8",
+      "bookPage": "sr2.239",
+      "description": "<p><strong>Mount:</strong> Barrel</p>"
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0155",
+  "doc": {
+    "_id": "sr3e-cyberware-0155",
+    "name": "PMP SPU [3]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0.2,
+      "cost": 27000,
+      "availability": "14/20 days",
+      "streetIndex": 2,
+      "legalCode": "4-CC",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "tss.5",
+      "grade": "Standard",
+      "rating": 3,
+      "description": "Required to use any Rating 3 PMP cyberware"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

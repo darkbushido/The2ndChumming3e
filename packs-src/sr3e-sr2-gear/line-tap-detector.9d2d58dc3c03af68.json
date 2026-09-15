@@ -1,0 +1,30 @@
+{
+  "_key": "!items!9d2d58dc3c03af68",
+  "doc": {
+    "_id": "9d2d58dc3c03af68",
+    "name": "Line Tap Detector",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "7",
+      "rating": 1,
+      "cost": 60,
+      "weight": 0,
+      "availability": "4/24hrs",
+      "streetIndex": ".8",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

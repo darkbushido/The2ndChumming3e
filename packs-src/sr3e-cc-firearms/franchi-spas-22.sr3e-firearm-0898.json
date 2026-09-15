@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0898",
+  "doc": {
+    "_id": "sr3e-firearm-0898",
+    "name": "Franchi SPAS-22",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "ShtG",
+      "skill": "Shotguns",
+      "attribute": "quickness",
+      "concealability": "2(4)",
+      "ammunition": "10(m)",
+      "mode": "SA/BF",
+      "damage": "10S",
+      "weight": "4",
+      "availability": "8/8days",
+      "cost": 1000,
+      "streetIndex": "2",
+      "accessories": "Smartlink-2, Fold Stock(1RC,-2Conc)",
+      "bookPage": "cc.23",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0037",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0037",
+    "name": "Armante \"Dallas\" Vest",
+    "type": "armor",
+    "system": {
+      "concealability": "14",
+      "ballistic": 3,
+      "impact": 1,
+      "weight": 0.3,
+      "availability": "2/48hrs",
+      "cost": 250,
+      "streetIndex": ".75",
+      "bookPage": "cc.46",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!8a2e726e2ac2bd02",
+  "doc": {
+    "_id": "8a2e726e2ac2bd02",
+    "name": "Signal Peak Controller",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "4",
+      "rating": null,
+      "cost": 15000,
+      "weight": 5.5,
+      "availability": "8/1week",
+      "streetIndex": "2",
+      "bookPage": "fof.97",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

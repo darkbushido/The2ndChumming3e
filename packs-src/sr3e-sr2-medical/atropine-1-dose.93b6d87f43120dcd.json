@@ -1,0 +1,28 @@
+{
+  "_key": "!items!93b6d87f43120dcd",
+  "doc": {
+    "_id": "93b6d87f43120dcd",
+    "name": "Atropine (1 dose)",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "",
+      "weight": "-",
+      "cost": 600,
+      "availability": "5/12hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.258",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

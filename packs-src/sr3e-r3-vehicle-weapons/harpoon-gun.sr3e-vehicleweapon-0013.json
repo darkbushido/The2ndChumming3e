@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-vehicleweapon-0013",
+  "doc": {
+    "_id": "sr3e-vehicleweapon-0013",
+    "name": "Harpoon Gun",
+    "type": "vehicleweapon",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "system": {
+      "weaponType": "Ship",
+      "mode": "SS",
+      "damage": "(Harpoon)",
+      "ammunition": "1",
+      "weight": 20,
+      "cost": 6500,
+      "availability": "3/24hrs",
+      "streetIndex": "2",
+      "bookPage": "r3.88",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

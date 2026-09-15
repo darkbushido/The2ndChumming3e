@@ -1,0 +1,30 @@
+{
+  "_key": "!items!9943e18591fd1d93",
+  "doc": {
+    "_id": "9943e18591fd1d93",
+    "name": "Spell formulae - Force D",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Magical Equipment"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Magical Equipment",
+      "concealability": "",
+      "rating": null,
+      "cost": 1000,
+      "weight": 0,
+      "availability": "-",
+      "streetIndex": "-",
+      "bookPage": "sr2.158",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

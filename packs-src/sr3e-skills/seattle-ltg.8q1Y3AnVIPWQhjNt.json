@@ -1,0 +1,41 @@
+{
+  "_key": "!items!8q1Y3AnVIPWQhjNt",
+  "doc": {
+    "name": "Seattle LTG",
+    "type": "skill",
+    "system": {
+      "category": "6th World knowledge",
+      "skillType": "knowledge",
+      "skillName": "Seattle LTG",
+      "linkedAttribute": "intelligence",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": "",
+      "bookPage": "mat.26"
+    },
+    "_id": "8q1Y3AnVIPWQhjNt",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192975902,
+      "modifiedTime": 1782889914445,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

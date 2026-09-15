@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0025",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0025",
+    "name": "Kevlar T-Shirt/Vest",
+    "type": "armor",
+    "system": {
+      "concealability": "11",
+      "ballistic": 2,
+      "impact": 0,
+      "weight": 1,
+      "availability": "4/48hrs",
+      "cost": 220,
+      "streetIndex": "2",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

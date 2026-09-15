@@ -1,0 +1,30 @@
+{
+  "_key": "!items!bc32022c0d2b59ae",
+  "doc": {
+    "_id": "bc32022c0d2b59ae",
+    "name": "Comp.Soft.Decrypt Rating [5]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 5,
+      "cost": 5000,
+      "weight": 0,
+      "availability": "-",
+      "streetIndex": "1",
+      "bookPage": "sr3.293",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

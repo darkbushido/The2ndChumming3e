@@ -1,0 +1,30 @@
+{
+  "_key": "!items!b2c14196fd95a5ec",
+  "doc": {
+    "_id": "b2c14196fd95a5ec",
+    "name": "Radar Designator",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-",
+      "rating": null,
+      "cost": 48000,
+      "weight": 25,
+      "availability": "24/3months",
+      "streetIndex": "2",
+      "bookPage": "cc.35",
+      "description": "<p><strong>Mount:</strong> Tripod</p>"
+    }
+  },
+  "embedded": {}
+}

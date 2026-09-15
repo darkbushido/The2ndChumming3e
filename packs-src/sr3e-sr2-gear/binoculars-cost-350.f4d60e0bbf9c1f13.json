@@ -1,0 +1,30 @@
+{
+  "_key": "!items!f4d60e0bbf9c1f13",
+  "doc": {
+    "_id": "f4d60e0bbf9c1f13",
+    "name": "Binoculars (Cost 350¥)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "S+S Vision Enhancers"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "S+S Vision Enhancers",
+      "concealability": "5",
+      "rating": null,
+      "cost": 350,
+      "weight": 1,
+      "availability": "4/48hrs",
+      "streetIndex": "1.25",
+      "bookPage": "sr2.253",
+      "description": "<p><strong>Magnification:</strong> 50x</p>"
+    }
+  },
+  "embedded": {}
+}

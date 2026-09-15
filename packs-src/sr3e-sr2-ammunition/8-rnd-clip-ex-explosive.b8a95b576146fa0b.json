@@ -1,0 +1,34 @@
+{
+  "_key": "!items!b8a95b576146fa0b",
+  "doc": {
+    "_id": "b8a95b576146fa0b",
+    "name": "8-Rnd Clip (EX Explosive)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "exExplosive",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 8,
+      "rounds": 0,
+      "weight": 1.35,
+      "cost": 85,
+      "availability": "6/72hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.281",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

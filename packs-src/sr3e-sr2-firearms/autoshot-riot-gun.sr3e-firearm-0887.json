@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0887",
+  "doc": {
+    "_id": "sr3e-firearm-0887",
+    "name": "Autoshot Riot Gun",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "ShtG",
+      "skill": "Shotguns",
+      "attribute": "quickness",
+      "concealability": "2",
+      "ammunition": "20(c)",
+      "mode": "SA/FA",
+      "damage": "9S",
+      "weight": "4.5",
+      "availability": "10/7days",
+      "cost": 1500,
+      "streetIndex": "2",
+      "accessories": "None",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

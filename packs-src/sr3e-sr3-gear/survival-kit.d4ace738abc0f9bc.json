@@ -1,0 +1,30 @@
+{
+  "_key": "!items!d4ace738abc0f9bc",
+  "doc": {
+    "_id": "d4ace738abc0f9bc",
+    "name": "Survival Kit",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 100,
+      "weight": 2,
+      "availability": "2/48hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.295",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

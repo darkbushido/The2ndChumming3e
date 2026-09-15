@@ -1,0 +1,30 @@
+{
+  "_key": "!items!03507c2c3d4fdfa4",
+  "doc": {
+    "_id": "03507c2c3d4fdfa4",
+    "name": "Laser Microphone Lv [9]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "5",
+      "rating": 9,
+      "cost": 13500,
+      "weight": 1,
+      "availability": "9/48hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr3.292",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0004",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0004",
+    "name": "Riot Shield, Large",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 2,
+      "impact": 3,
+      "weight": 2,
+      "availability": "8/14days",
+      "cost": 1500,
+      "streetIndex": "2",
+      "bookPage": "sr3.284",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

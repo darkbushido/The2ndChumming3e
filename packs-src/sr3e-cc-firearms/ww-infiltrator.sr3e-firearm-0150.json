@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0150",
+  "doc": {
+    "_id": "sr3e-firearm-0150",
+    "name": "WW Infiltrator",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "15(c)",
+      "mode": "SA",
+      "damage": "9M",
+      "weight": "2",
+      "availability": "9/1wk",
+      "cost": 1200,
+      "streetIndex": "2",
+      "accessories": "None",
+      "bookPage": "cc.19",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

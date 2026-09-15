@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-1047",
+  "doc": {
+    "_id": "sr3e-cyberware-1047",
+    "name": "Sense Link",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Various",
+      "essenceCost": 2,
+      "cost": 300000,
+      "availability": "2/5 days",
+      "streetIndex": 1,
+      "legalCode": "10P-C",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "ssc.83",
+      "grade": "Standard",
+      "rating": 0,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

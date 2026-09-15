@@ -1,0 +1,31 @@
+{
+  "_key": "!items!b85f4fd7cba65399",
+  "doc": {
+    "_id": "b85f4fd7cba65399",
+    "name": "Green Ring 3",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chemicals"
+      }
+    },
+    "system": {
+      "category": "Chemicals",
+      "addiction": "",
+      "tolerance": "",
+      "effect": "8D",
+      "speed": "Immediate",
+      "vector": "Contact/Inhalation",
+      "cost": 500,
+      "availability": "14/2weeks",
+      "streetIndex": "5",
+      "bookPage": "sr3.250",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

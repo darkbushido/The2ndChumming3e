@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0455",
+  "doc": {
+    "_id": "sr3e-cyberware-0455",
+    "name": "Eyes, Microscopic Vision",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Eyeware",
+      "essenceCost": 0.1,
+      "cost": 5000,
+      "availability": "5/48 hours",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.17",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "-2 TNs to fine manipulation tests (ex. elec + comp b/r)",
+      "srcgName": "Eyes, Microscopic Vis."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

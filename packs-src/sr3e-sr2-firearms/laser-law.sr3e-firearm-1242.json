@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1242",
+  "doc": {
+    "_id": "sr3e-firearm-1242",
+    "name": "Laser LAW",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "Las",
+      "skill": "Firearms",
+      "attribute": "quickness",
+      "concealability": "2",
+      "ammunition": "1(m)",
+      "mode": "SS",
+      "damage": "12M",
+      "weight": "5",
+      "availability": "24/21days",
+      "cost": 75000,
+      "streetIndex": "3",
+      "accessories": "None",
+      "bookPage": "pw.32",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

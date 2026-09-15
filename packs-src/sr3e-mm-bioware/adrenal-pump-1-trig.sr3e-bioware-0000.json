@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0000",
+  "doc": {
+    "_id": "sr3e-bioware-0000",
+    "name": "Adrenal Pump [1](trig)",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Standard",
+      "grade": "Standard",
+      "bioIndex": 1.25,
+      "cost": 60000,
+      "availability": "10/16 days",
+      "streetIndex": 3,
+      "mods": "",
+      "bookPage": "mm.064",
+      "rating": 1,
+      "description": "+1QCK,+2STR,+1WIL,+2RCT, damage taken"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

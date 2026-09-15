@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0110",
+  "doc": {
+    "_id": "sr3e-adeptpower-0110",
+    "name": "Suspended State",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 1,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sr3.170",
+      "description": "Roll Willpower vs target of 4 and see the Hibernate spell description SR3-194."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

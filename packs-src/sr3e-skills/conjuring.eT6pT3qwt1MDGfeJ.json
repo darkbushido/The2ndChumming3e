@@ -1,0 +1,41 @@
+{
+  "_key": "!items!eT6pT3qwt1MDGfeJ",
+  "doc": {
+    "name": "Conjuring",
+    "type": "skill",
+    "system": {
+      "category": "Background knowledge",
+      "skillType": "knowledge",
+      "skillName": "Conjuring",
+      "linkedAttribute": "intelligence",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": "",
+      "bookPage": "sr3.87"
+    },
+    "_id": "eT6pT3qwt1MDGfeJ",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192981320,
+      "modifiedTime": 1782889914449,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

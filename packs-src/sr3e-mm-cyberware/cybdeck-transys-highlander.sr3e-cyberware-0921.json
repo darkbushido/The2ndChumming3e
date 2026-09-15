@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0921",
+  "doc": {
+    "_id": "sr3e-cyberware-0921",
+    "name": "CybDeck Transys Highlander",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Matrixware",
+      "essenceCost": 3,
+      "cost": 700000,
+      "availability": "14/1 month",
+      "streetIndex": 1,
+      "legalCode": "4P-S",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.19",
+      "grade": "Standard",
+      "rating": 0,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

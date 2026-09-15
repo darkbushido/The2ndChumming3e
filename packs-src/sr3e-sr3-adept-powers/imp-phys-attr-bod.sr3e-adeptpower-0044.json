@@ -1,0 +1,20 @@
+{
+  "_key": "!items!sr3e-adeptpower-0044",
+  "doc": {
+    "_id": "sr3e-adeptpower-0044",
+    "name": "Imp. Phys. Attr.(BOD)*",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": true,
+      "level": 1,
+      "mods": "+1BOD",
+      "bookPage": "sr3.169",
+      "description": "With this power you can improve a physical attribute.  Each level of the power increases the attribute by 1.",
+      "bonusBod": 1
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

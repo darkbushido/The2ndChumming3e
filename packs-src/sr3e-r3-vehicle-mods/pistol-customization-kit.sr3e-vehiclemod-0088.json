@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0088",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0088",
+    "name": "Pistol Customization Kit",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 150,
+      "availability": "4/36hrs",
+      "streetIndex": "2",
+      "installEquipment": "Weapon Kit",
+      "installTime": "24 hrs/Vehicle B/R(4)",
+      "cfCost": "0",
+      "load": "",
+      "bookPage": "r3.136",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!c6a735824804bd54",
+  "doc": {
+    "_id": "c6a735824804bd54",
+    "name": "Gel Packs (See Rules)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "(See Rules)",
+      "rating": null,
+      "cost": 5,
+      "weight": 25,
+      "availability": "x2/x4",
+      "streetIndex": "+2",
+      "bookPage": "cc.53",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

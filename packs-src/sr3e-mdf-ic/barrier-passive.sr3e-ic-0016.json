@@ -1,0 +1,24 @@
+{
+  "_key": "!actors!sr3e-ic-0016",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/agent-default.webp",
+    "_id": "sr3e-ic-0016",
+    "name": "Barrier (Passive)",
+    "type": "ic",
+    "system": {
+      "icType": "Scrambler",
+      "grading": "White",
+      "rating": 6,
+      "systemRating": 6,
+      "memoryRequired": 108,
+      "damage": "",
+      "hostSecurityTier": "Blue",
+      "notes": "<p><strong>Passive countermeasure.</strong> Blocks pathways between nodes. Crossing requires Rating successes (Hacking + Hacking Pool vs System Rating). Memory: Rating squared x3 Mp.</p>",
+      "woundValue": 0,
+      "bookPage": "matrix-defragged.25"
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

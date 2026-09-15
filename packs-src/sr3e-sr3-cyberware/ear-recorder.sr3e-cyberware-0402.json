@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0402",
+  "doc": {
+    "_id": "sr3e-cyberware-0402",
+    "name": "Ear Recorder",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Earware",
+      "essenceCost": 0.3,
+      "cost": 7000,
+      "availability": "8/48 hours",
+      "streetIndex": 2,
+      "legalCode": "12P-N",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.299",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Record what is heard"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

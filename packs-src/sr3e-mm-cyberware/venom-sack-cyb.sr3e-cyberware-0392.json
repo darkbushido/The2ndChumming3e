@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0392",
+  "doc": {
+    "_id": "sr3e-cyberware-0392",
+    "name": "Venom Sack(CYB)",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberweapons",
+      "essenceCost": 0.05,
+      "cost": 500,
+      "availability": "4/48 hours",
+      "streetIndex": 2,
+      "legalCode": "3-N",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.42",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Holds 2 Doses"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

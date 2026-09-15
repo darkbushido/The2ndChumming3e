@@ -1,0 +1,29 @@
+{
+  "_key": "!items!faa7b2c6b23d6a0e",
+  "doc": {
+    "_id": "faa7b2c6b23d6a0e",
+    "name": "Security Helmet",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "-",
+      "ballistic": 1,
+      "impact": 2,
+      "weight": 0,
+      "cost": 250,
+      "availability": "12/14days",
+      "streetIndex": "2",
+      "bookPage": "ssc.68",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

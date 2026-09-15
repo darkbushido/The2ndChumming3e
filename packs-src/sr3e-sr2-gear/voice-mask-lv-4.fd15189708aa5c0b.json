@@ -1,0 +1,30 @@
+{
+  "_key": "!items!fd15189708aa5c0b",
+  "doc": {
+    "_id": "fd15189708aa5c0b",
+    "name": "Voice Mask Lv 4",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "6",
+      "rating": null,
+      "cost": 12000,
+      "weight": 0,
+      "availability": "4/72hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

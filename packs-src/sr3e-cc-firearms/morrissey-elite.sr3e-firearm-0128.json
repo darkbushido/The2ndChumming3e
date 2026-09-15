@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0128",
+  "doc": {
+    "_id": "sr3e-firearm-0128",
+    "name": "Morrissey Elite",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "7",
+      "ammunition": "5(c)",
+      "mode": "SA",
+      "damage": "9M",
+      "weight": "1",
+      "availability": "6/48hrs",
+      "cost": 550,
+      "streetIndex": ".5",
+      "accessories": "Laser Sight, HPist uses LPist Ranges",
+      "bookPage": "cc.19",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0118",
+  "doc": {
+    "_id": "sr3e-adeptpower-0118",
+    "name": "Voice Alteration",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 1.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "tss.4",
+      "description": "Adept can roll INT(8) to make his voice reproduce any natural sound, -1 TN for each previous sucess with a given sound.  TN 14 to mimic a voice."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

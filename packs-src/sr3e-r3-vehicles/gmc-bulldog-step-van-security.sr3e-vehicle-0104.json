@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0104",
+  "doc": {
+    "_id": "sr3e-vehicle-0104",
+    "name": "GMC Bulldog Step-Van(Security)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 52600,
+      "streetIndex": 2,
+      "availability": "9/9days",
+      "bookPage": "r3.170",
+      "seating": 2,
+      "notes": "Folding Bench Seat | Seating: 1+1b",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 6,
+          "base": 6
+        },
+        "speed": {
+          "value": 85,
+          "base": 85
+        },
+        "accel": {
+          "value": 4,
+          "base": 4
+        },
+        "body": {
+          "value": 4,
+          "base": 4
+        },
+        "armor": {
+          "value": 5,
+          "base": 5
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 50,
+          "base": 50
+        },
+        "load": {
+          "value": 960,
+          "base": 960
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

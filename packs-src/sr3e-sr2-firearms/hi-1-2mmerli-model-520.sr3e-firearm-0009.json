@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0009",
+  "doc": {
+    "_id": "sr3e-firearm-0009",
+    "name": "Hï¿½mmerli Model 520",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HOPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "6(c)",
+      "mode": "SA",
+      "damage": "6L",
+      "weight": "1.25",
+      "availability": "8/4days",
+      "cost": 1000,
+      "streetIndex": "1",
+      "accessories": "RC:(1)",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

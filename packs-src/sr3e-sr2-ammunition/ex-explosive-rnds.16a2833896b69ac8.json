@@ -1,0 +1,34 @@
+{
+  "_key": "!items!16a2833896b69ac8",
+  "doc": {
+    "_id": "16a2833896b69ac8",
+    "name": "EX Explosive Rnds",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "(see rules)",
+      "ammoType": "exExplosive",
+      "loadMechanism": "c",
+      "countedIn": "rounds",
+      "rounds": 10,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 0.75,
+      "cost": 100,
+      "availability": "6/72hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.281,fof.51",
+      "notes": "<p>A box of 10. The generator lists these per round (10¥ each); the book prices ammunition per 10 shots.</p><p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>"
+    }
+  },
+  "embedded": {}
+}

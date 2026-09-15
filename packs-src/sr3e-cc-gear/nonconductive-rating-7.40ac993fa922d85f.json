@@ -1,0 +1,30 @@
+{
+  "_key": "!items!40ac993fa922d85f",
+  "doc": {
+    "_id": "40ac993fa922d85f",
+    "name": "Nonconductive Rating [7]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 7,
+      "cost": 1400,
+      "weight": 0,
+      "availability": "+2/+24hrs",
+      "streetIndex": "+.25",
+      "bookPage": "cc.53",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

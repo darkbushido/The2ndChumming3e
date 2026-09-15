@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0292",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0292",
+    "name": "VAUBAN Missile A.T. [1]",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 36000,
+      "availability": "1/?",
+      "streetIndex": "1",
+      "installEquipment": "Sensor +1",
+      "installTime": "0/0",
+      "cfCost": "Upgrade",
+      "load": "0",
+      "bookPage": "fra.141",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

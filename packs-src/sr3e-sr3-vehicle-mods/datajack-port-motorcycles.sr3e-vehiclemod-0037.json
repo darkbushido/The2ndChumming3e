@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0037",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0037",
+    "name": "Datajack Port(Motorcycles)",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 5000,
+      "availability": "3/72hrs",
+      "streetIndex": "1.5",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "112 hrs/Vehicle B/R(4)",
+      "cfCost": "1",
+      "load": "15kg",
+      "bookPage": "sr3.306,r3.128",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

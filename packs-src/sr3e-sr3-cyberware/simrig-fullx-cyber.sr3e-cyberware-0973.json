@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0973",
+  "doc": {
+    "_id": "sr3e-cyberware-0973",
+    "name": "Simrig FullX Cyber",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Rigger",
+      "essenceCost": 2,
+      "cost": 500000,
+      "availability": "6/12 days",
+      "streetIndex": 2,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.302",
+      "grade": "Standard",
+      "rating": 0,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

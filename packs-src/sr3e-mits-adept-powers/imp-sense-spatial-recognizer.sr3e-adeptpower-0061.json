@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0061",
+  "doc": {
+    "_id": "sr3e-adeptpower-0061",
+    "name": "Imp. Sense: Spatial Recognizer",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.25,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "mits.18",
+      "description": "This power provides the benefit of the cyberear Spatial Recognizer SR3-299."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!959256c0306e114c",
+  "doc": {
+    "_id": "959256c0306e114c",
+    "name": "Music - Disk/Chip",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "12",
+      "rating": null,
+      "cost": 20,
+      "weight": 0,
+      "availability": "Always",
+      "streetIndex": ".75",
+      "bookPage": "sr3.285",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

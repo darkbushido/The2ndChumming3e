@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0151",
+  "doc": {
+    "_id": "sr3e-vehicle-0151",
+    "name": "Eurocopter Tiger",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "helicopter",
+      "cost": 982500,
+      "streetIndex": 3,
+      "availability": "-",
+      "bookPage": "sota.78",
+      "seating": 2,
+      "notes": "Crash Cage, Datajack Port, Drive-by-Wire 1, ECM 2, ECCM 2, 2 External Fixed Hardpoints (located under chin), Medium Launch Control System, Rigger Adaptation, 2x3 Rocket Mounts (Wingtip)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 300,
+          "base": 300
+        },
+        "accel": {
+          "value": 21,
+          "base": 21
+        },
+        "body": {
+          "value": 5,
+          "base": 5
+        },
+        "armor": {
+          "value": 5,
+          "base": 5
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 5,
+          "base": 5
+        },
+        "cargo": {
+          "value": 3,
+          "base": 3
+        },
+        "load": {
+          "value": 1600,
+          "base": 1600
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

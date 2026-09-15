@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0119",
+  "doc": {
+    "_id": "sr3e-melee-0119",
+    "name": "Fangs",
+    "type": "melee",
+    "system": {
+      "category": "CYB",
+      "skill": "Unarmed Combat",
+      "attribute": "strength",
+      "concealability": "5",
+      "reach": "-1",
+      "damage": "(STR+1)L",
+      "weight": "",
+      "availability": "",
+      "cost": 0,
+      "streetIndex": "1",
+      "legal": true,
+      "bookPage": "mm.43",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

@@ -1,0 +1,29 @@
+{
+  "_key": "!items!e99e4f9a5828c7fc",
+  "doc": {
+    "_id": "e99e4f9a5828c7fc",
+    "name": "Secure Jacket",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "9",
+      "ballistic": 5,
+      "impact": 3,
+      "weight": 3,
+      "cost": 850,
+      "availability": "4/36hrs",
+      "streetIndex": ".8",
+      "bookPage": "sr2.279",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

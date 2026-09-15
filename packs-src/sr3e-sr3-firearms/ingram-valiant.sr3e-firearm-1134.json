@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1134",
+  "doc": {
+    "_id": "sr3e-firearm-1134",
+    "name": "Ingram Valiant",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LMG",
+      "skill": "Gunnery",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "belt/50(c)",
+      "mode": "BF/FA",
+      "damage": "7S",
+      "weight": "9",
+      "availability": "6/5days",
+      "cost": 1500,
+      "streetIndex": "2",
+      "accessories": "Hip Brace(1RC), Gas Vent II(2RC)",
+      "bookPage": "sr3.279",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

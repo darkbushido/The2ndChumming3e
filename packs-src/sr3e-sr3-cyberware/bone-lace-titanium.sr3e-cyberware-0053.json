@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0053",
+  "doc": {
+    "_id": "sr3e-cyberware-0053",
+    "name": "Bone Lace, Titanium",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 2.25,
+      "cost": 75000,
+      "availability": "5/14 days",
+      "streetIndex": 1.5,
+      "legalCode": "6-R",
+      "mods": "+2BOD,+1IMP,+1BAL,",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.302",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Unarmed = (STR+4)M Stun, +2BOD, +1IMP, +1BAL",
+      "bonusBod": 2
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

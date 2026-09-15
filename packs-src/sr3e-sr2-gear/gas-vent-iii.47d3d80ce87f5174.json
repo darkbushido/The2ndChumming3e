@@ -1,0 +1,30 @@
+{
+  "_key": "!items!47d3d80ce87f5174",
+  "doc": {
+    "_id": "47d3d80ce87f5174",
+    "name": "Gas Vent III",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-2)",
+      "rating": 2,
+      "cost": 700,
+      "weight": 0.75,
+      "availability": "2/24hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.239",
+      "description": "<p><strong>Mount:</strong> Barrel</p>"
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!36cb90db075eb887",
+  "doc": {
+    "_id": "36cb90db075eb887",
+    "name": "Signal Amp [5]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "3",
+      "rating": 5,
+      "cost": 1250,
+      "weight": 5,
+      "availability": "5/60hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr3.290",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

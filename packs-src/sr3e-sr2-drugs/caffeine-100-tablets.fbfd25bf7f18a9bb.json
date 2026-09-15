@@ -1,0 +1,31 @@
+{
+  "_key": "!items!fbfd25bf7f18a9bb",
+  "doc": {
+    "_id": "fbfd25bf7f18a9bb",
+    "name": "Caffeine (100 tablets)",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "1M",
+      "tolerance": "3",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 5,
+      "availability": "always",
+      "streetIndex": "1",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 50</p>"
+    }
+  },
+  "embedded": {}
+}

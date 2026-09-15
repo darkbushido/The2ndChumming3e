@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0690",
+  "doc": {
+    "_id": "sr3e-firearm-0690",
+    "name": "Ingram SuperMach 100 Ext",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "60(c)",
+      "mode": "SA/BF/FA",
+      "damage": "6L",
+      "weight": "3.25",
+      "availability": "9/48hrs",
+      "cost": 875,
+      "streetIndex": "3",
+      "accessories": "RC(3)",
+      "bookPage": "cc.21",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

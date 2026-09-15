@@ -1,0 +1,30 @@
+{
+  "_key": "!items!4f9ae3d2a2570984",
+  "doc": {
+    "_id": "4f9ae3d2a2570984",
+    "name": "Everest Grapple Line",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 240,
+      "weight": 3,
+      "availability": "always",
+      "streetIndex": "1",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!6702e376bb6cc850",
+  "doc": {
+    "_id": "6702e376bb6cc850",
+    "name": "Hermetic Library (Enchanting) Rating 8",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Magical Equipment"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Magical Equipment",
+      "concealability": "",
+      "rating": 8,
+      "cost": 64000,
+      "weight": 0,
+      "availability": "8/7days",
+      "streetIndex": "1",
+      "bookPage": "sr3.305",
+      "description": "<p><strong>KarmaCost:</strong> 0</p>"
+    }
+  },
+  "embedded": {}
+}

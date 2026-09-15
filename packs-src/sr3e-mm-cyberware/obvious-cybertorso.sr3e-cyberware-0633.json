@@ -1,0 +1,28 @@
+{
+  "_key": "!items!sr3e-cyberware-0633",
+  "doc": {
+    "_id": "sr3e-cyberware-0633",
+    "name": "Obvious Cybertorso",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimbs",
+      "essenceCost": 1.5,
+      "cost": 90000,
+      "availability": "6/4 days",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "+1BOD,",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.28",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "",
+      "bonusBod": 1,
+      "srcgName": "Obv. CyberTorso"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

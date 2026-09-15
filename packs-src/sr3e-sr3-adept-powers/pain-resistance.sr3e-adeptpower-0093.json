@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0093",
+  "doc": {
+    "_id": "sr3e-adeptpower-0093",
+    "name": "Pain Resistance*",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": true,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sr3.170",
+      "description": "Pain resistance allows you to ignore the effects of injury.  It does not reduce actualdamage, only it's effects on you."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

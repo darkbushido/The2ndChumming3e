@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-bioware-0034",
+  "doc": {
+    "_id": "sr3e-bioware-0034",
+    "name": "Enhanced Articulation",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Standard",
+      "grade": "Standard",
+      "bioIndex": 0.6,
+      "cost": 40000,
+      "availability": "5/6 days",
+      "streetIndex": 1.5,
+      "mods": "+1NCT,",
+      "bookPage": "mm.066",
+      "rating": 0,
+      "description": "<p>Joint-surface coating, relubrication and tendon augmentation for fluid muscle and joint action.</p><p><strong>+1 die</strong> on any Success Test involving <strong>Combat, Physical, Technical and Build/Repair</strong> skills, and on <strong>physical use of Vehicle skills</strong> — driving via datajack or piloting a submarine does not qualify. Tick the bonus on the Roll Skill dialog; the Vehicle case is left to your judgement.</p><p><strong>+1 Reaction</strong>, with no effect on rigging or decking and no effect on the Control Pool — apply by hand.</p>",
+      "improvedSkillCategory": "Combat skills, Physical skills, Technical skills, Build/Repair skills, Vehicle skills",
+      "improvedSkillDice": 1,
+      "bonusRea": 1
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

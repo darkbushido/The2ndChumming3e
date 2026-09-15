@@ -1,0 +1,34 @@
+{
+  "_key": "!items!19088e466d568770",
+  "doc": {
+    "_id": "19088e466d568770",
+    "name": "60-Rnd Clip (Incendiary)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 60,
+      "rounds": 0,
+      "weight": 5.25,
+      "cost": 905,
+      "availability": "10/1wk",
+      "streetIndex": "2",
+      "bookPage": "cc.38",
+      "notes": "<p>Incendiary rounds — a type this system does not model; its rules are the GM's (cc.38).</p>"
+    }
+  },
+  "embedded": {}
+}

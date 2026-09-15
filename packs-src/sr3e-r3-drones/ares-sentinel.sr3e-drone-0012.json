@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0012",
+  "doc": {
+    "_id": "sr3e-drone-0012",
+    "name": "Ares Sentinel",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 32000,
+      "streetIndex": 2,
+      "availability": "8/8 days",
+      "seating": 0,
+      "bookPage": "r3.172",
+      "notes": "Remote-Control Interface, Rigger Adaptation, Gridlink, Micro-turret(1 CF Ammo Bin)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 25,
+          "base": 25
+        },
+        "accel": {
+          "value": 2,
+          "base": 2
+        },
+        "body": {
+          "value": 1,
+          "base": 1
+        },
+        "armor": {
+          "value": 12,
+          "base": 12
+        },
+        "sig": {
+          "value": 7,
+          "base": 7
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 3,
+          "base": 3
+        },
+        "sensor": {
+          "value": 4,
+          "base": 4
+        },
+        "cargo": {
+          "value": 1,
+          "base": 1
+        },
+        "load": {
+          "value": 25,
+          "base": 25
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0038",
+  "doc": {
+    "_id": "sr3e-spell-0038",
+    "name": "Identify",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Detection",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "LOS",
+      "drain": "+1(L)",
+      "target": "OR",
+      "bookPage": "tss.9",
+      "damage": "",
+      "description": "not the same as D&D spell of same name"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

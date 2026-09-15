@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0161",
+  "doc": {
+    "_id": "sr3e-vehicle-0161",
+    "name": "Hughes Airstar",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "helicopter",
+      "cost": 1330500,
+      "streetIndex": 1,
+      "availability": "n/a",
+      "bookPage": "r3.184",
+      "seating": 11,
+      "notes": "Concealed Armor, Partial High Living Amenities",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 200,
+          "base": 200
+        },
+        "accel": {
+          "value": 16,
+          "base": 16
+        },
+        "body": {
+          "value": 7,
+          "base": 7
+        },
+        "armor": {
+          "value": 6,
+          "base": 6
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 4,
+          "base": 4
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 226,
+          "base": 226
+        },
+        "load": {
+          "value": 2100,
+          "base": 2100
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

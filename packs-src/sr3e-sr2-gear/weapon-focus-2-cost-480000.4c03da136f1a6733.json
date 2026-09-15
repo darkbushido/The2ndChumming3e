@@ -1,0 +1,30 @@
+{
+  "_key": "!items!4c03da136f1a6733",
+  "doc": {
+    "_id": "4c03da136f1a6733",
+    "name": "Weapon Focus 2 (Cost 480000¥)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Magical Equipment"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Magical Equipment",
+      "concealability": "",
+      "rating": null,
+      "cost": 480000,
+      "weight": 0,
+      "availability": "8/72hrs",
+      "streetIndex": "3",
+      "bookPage": "sr2.158",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

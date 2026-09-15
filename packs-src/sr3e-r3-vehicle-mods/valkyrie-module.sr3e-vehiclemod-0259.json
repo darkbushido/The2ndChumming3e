@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0259",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0259",
+    "name": "Valkyrie Module",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 1000000,
+      "availability": "10/2weeks",
+      "streetIndex": "3",
+      "installEquipment": "Vehicle Shop, Electronics Shop",
+      "installTime": "5 days/Vehicle B/R(5) Electronics B/R(5)",
+      "cfCost": "15",
+      "load": "500kg",
+      "bookPage": "r3.155",
+      "description": "See MM-139"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

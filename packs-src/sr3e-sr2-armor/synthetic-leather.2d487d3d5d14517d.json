@@ -1,0 +1,29 @@
+{
+  "_key": "!items!2d487d3d5d14517d",
+  "doc": {
+    "_id": "2d487d3d5d14517d",
+    "name": "Synthetic Leather",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "-",
+      "ballistic": 0,
+      "impact": 1,
+      "weight": 1,
+      "cost": 250,
+      "availability": "Always",
+      "streetIndex": ".6",
+      "bookPage": "sr2.256",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

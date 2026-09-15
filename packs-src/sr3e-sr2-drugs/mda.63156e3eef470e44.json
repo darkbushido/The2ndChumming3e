@@ -1,0 +1,31 @@
+{
+  "_key": "!items!63156e3eef470e44",
+  "doc": {
+    "_id": "63156e3eef470e44",
+    "name": "MDA",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "2M",
+      "tolerance": "2",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 10,
+      "availability": "4/7hrs",
+      "streetIndex": "1.7",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 6</p>"
+    }
+  },
+  "embedded": {}
+}

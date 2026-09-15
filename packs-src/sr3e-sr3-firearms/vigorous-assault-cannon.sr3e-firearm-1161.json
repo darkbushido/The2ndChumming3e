@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1161",
+  "doc": {
+    "_id": "sr3e-firearm-1161",
+    "name": "Vigorous Assault Cannon",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "ACan",
+      "skill": "Gunnery",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "20(c)/Belt",
+      "mode": "SS",
+      "damage": "18D",
+      "weight": "20",
+      "availability": "16/14days",
+      "cost": 6500,
+      "streetIndex": "2",
+      "accessories": "None",
+      "bookPage": "sr3.279",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

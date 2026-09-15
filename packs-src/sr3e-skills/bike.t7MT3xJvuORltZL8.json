@@ -1,0 +1,41 @@
+{
+  "_key": "!items!t7MT3xJvuORltZL8",
+  "doc": {
+    "name": "Bike",
+    "type": "skill",
+    "system": {
+      "category": "Vehicle skills",
+      "skillType": "active",
+      "skillName": "Bike",
+      "linkedAttribute": "reaction",
+      "rating": 1,
+      "force": 0,
+      "specialisation": "",
+      "specialisations": [],
+      "description": "",
+      "bookPage": "sr3.88"
+    },
+    "_id": "t7MT3xJvuORltZL8",
+    "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0,
+      "4u3OKLGy45fqatR4": 3
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.364",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.2.0",
+      "createdTime": 1779192943490,
+      "modifiedTime": 1782889914451,
+      "lastModifiedBy": "ge55aFMax5sNd2Ho",
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {}
+}

@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0025",
+  "doc": {
+    "_id": "sr3e-cyberware-0025",
+    "name": "+Print Scanner [3]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0,
+      "cost": 1500,
+      "availability": "3/72 hours",
+      "streetIndex": 3,
+      "legalCode": "6P-V",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.23",
+      "grade": "Standard",
+      "rating": 3,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

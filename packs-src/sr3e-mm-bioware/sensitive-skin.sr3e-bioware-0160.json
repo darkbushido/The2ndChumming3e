@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0160",
+  "doc": {
+    "_id": "sr3e-bioware-0160",
+    "name": "Sensitive Skin",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Cosmetic",
+      "grade": "Exotic",
+      "bioIndex": 0.2,
+      "cost": 10000,
+      "availability": "6/6 days",
+      "streetIndex": 2,
+      "mods": "",
+      "bookPage": "mm.076",
+      "rating": 0,
+      "description": "Increase sensitivity to heat, cold, pressure, pain"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-vehicleweapon-0005",
+  "doc": {
+    "_id": "sr3e-vehicleweapon-0005",
+    "name": "Ares Vanquisher Minigun",
+    "type": "vehicleweapon",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "system": {
+      "weaponType": "HMG",
+      "mode": "FA",
+      "damage": "10S",
+      "ammunition": "Belt",
+      "weight": 45,
+      "cost": 75000,
+      "availability": "18/28days",
+      "streetIndex": "3.5",
+      "bookPage": "r3.89",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

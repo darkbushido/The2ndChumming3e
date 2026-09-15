@@ -1,0 +1,30 @@
+{
+  "_key": "!items!efe416617a97be31",
+  "doc": {
+    "_id": "efe416617a97be31",
+    "name": "SkillSoft Jukebox 3MP 15 ports",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 900,
+      "weight": 0,
+      "availability": "3/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Juk<br><strong>Memory:</strong> 3</p>"
+    }
+  },
+  "embedded": {}
+}

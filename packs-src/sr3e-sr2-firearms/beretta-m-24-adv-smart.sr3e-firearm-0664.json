@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0664",
+  "doc": {
+    "_id": "sr3e-firearm-0664",
+    "name": "Beretta M-24 Adv. Smart",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "50(c)",
+      "mode": "BF/FA",
+      "damage": "7M",
+      "weight": "3.5",
+      "availability": "6/4days",
+      "cost": 1250,
+      "streetIndex": "1.25",
+      "accessories": "Smartlink",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

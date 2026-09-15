@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0171",
+  "doc": {
+    "_id": "sr3e-spell-0171",
+    "name": "Steam",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Elemental",
+      "type": "Physical",
+      "duration": "Instant",
+      "range": "LOS",
+      "drain": "(DL+1)",
+      "target": "4(RC)",
+      "bookPage": "mits.145",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0222",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0222",
+    "name": "Retransmission Unit",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 25000,
+      "availability": "8/14days",
+      "streetIndex": "3",
+      "installEquipment": "Microtronics Shop",
+      "installTime": "64 hrs/Electronics B/R(4)",
+      "cfCost": "1.5",
+      "load": "5kg",
+      "bookPage": "r3.147",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!7c9eda3aea5ed430",
+  "doc": {
+    "_id": "7c9eda3aea5ed430",
+    "name": "Rangefinder Grenade Link",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-",
+      "rating": null,
+      "cost": 750,
+      "weight": 0.1,
+      "availability": "8/48hrs",
+      "streetIndex": "2",
+      "bookPage": "ssc.66",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

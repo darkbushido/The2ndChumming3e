@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0700",
+  "doc": {
+    "_id": "sr3e-firearm-0700",
+    "name": "Set.-Arasaka \"PMS\" Adv.",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "40(c)",
+      "mode": "SA/BF",
+      "damage": "6M",
+      "weight": "3.5",
+      "availability": "4/72hrs",
+      "cost": 1150,
+      "streetIndex": "1",
+      "accessories": "Caseless, Smartlink, Sound Suppressor",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

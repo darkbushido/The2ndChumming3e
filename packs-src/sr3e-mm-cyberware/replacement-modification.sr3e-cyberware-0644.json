@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0644",
+  "doc": {
+    "_id": "sr3e-cyberware-0644",
+    "name": "+Replacement Modification",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimbs",
+      "essenceCost": 0,
+      "cost": 3,
+      "availability": "3/8 hours",
+      "streetIndex": 2,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.39",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Interchangeable Hook Hand",
+      "srcgName": "+Replacement Mod."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

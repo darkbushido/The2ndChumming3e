@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0087",
+  "doc": {
+    "_id": "sr3e-firearm-0087",
+    "name": "Browning Def. 10 Smart",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "15(c)",
+      "mode": "SA/BF",
+      "damage": "9M",
+      "weight": "2",
+      "availability": "5/36hrs",
+      "cost": 1800,
+      "streetIndex": "2",
+      "accessories": "Smartlink",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

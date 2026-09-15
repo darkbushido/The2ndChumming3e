@@ -1,0 +1,34 @@
+{
+  "_key": "!items!102fdcf352d28da1",
+  "doc": {
+    "_id": "102fdcf352d28da1",
+    "name": "15-Rnd Clip (Gel)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "gel",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 15,
+      "rounds": 0,
+      "weight": 1.125,
+      "cost": 50,
+      "availability": "4/48hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.281",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

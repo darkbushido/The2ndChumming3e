@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1005",
+  "doc": {
+    "_id": "sr3e-firearm-1005",
+    "name": "Ruger 100",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SptR",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "2",
+      "ammunition": "5(m)",
+      "mode": "SA",
+      "damage": "7S",
+      "weight": "3.75",
+      "availability": "3/24hrs",
+      "cost": 1300,
+      "streetIndex": "1",
+      "accessories": "Mag:(3)",
+      "bookPage": "cc.21",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

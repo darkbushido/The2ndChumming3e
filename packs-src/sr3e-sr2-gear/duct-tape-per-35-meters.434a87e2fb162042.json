@@ -1,0 +1,30 @@
+{
+  "_key": "!items!434a87e2fb162042",
+  "doc": {
+    "_id": "434a87e2fb162042",
+    "name": "Duct Tape (per 35 meters)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": null,
+      "cost": 10,
+      "weight": 0,
+      "availability": "always",
+      "streetIndex": "1",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

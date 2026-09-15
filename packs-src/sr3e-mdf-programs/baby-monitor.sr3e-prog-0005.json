@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0005",
+  "doc": {
+    "_id": "sr3e-prog-0005",
+    "name": "Baby Monitor",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Baby Monitor",
+      "type": "Program",
+      "category": "Operational",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 3,
+      "degradable": true,
+      "description": "<p>Allows user to get a peek at current Overwatch level. GM relays boxes accrued in terms of wound levels.</p>",
+      "associatedPrompt": "Scrub Datastream",
+      "effect": "Information",
+      "bookPage": "matrix-defragged.30"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

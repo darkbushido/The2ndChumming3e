@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0050",
+  "doc": {
+    "_id": "sr3e-cyberware-0050",
+    "name": "Bone Lace, Ceramic",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 1.5,
+      "cost": 40000,
+      "availability": "6/21 days",
+      "streetIndex": 2,
+      "legalCode": "6P-Q",
+      "mods": "+1BOD,+2IMP,",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.27",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Unarmed = (STR+3)M Stun, +1BOD, +2IMP",
+      "bonusBod": 1
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

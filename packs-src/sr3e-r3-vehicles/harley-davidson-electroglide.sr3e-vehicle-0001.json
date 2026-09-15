@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0001",
+  "doc": {
+    "_id": "sr3e-vehicle-0001",
+    "name": "Harley-Davidson Electroglide",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "motorcycle",
+      "cost": 70000,
+      "streetIndex": 2,
+      "availability": "10/10days",
+      "bookPage": "r3.158",
+      "seating": 1,
+      "notes": "Electronics Port w/Radio(Rating 3), External Fixed Firmpoint(1 CF Ammo Bin), Turbocharging 3(factored in) | Seating: 1m",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 225,
+          "base": 225
+        },
+        "accel": {
+          "value": 13,
+          "base": 13
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 2,
+          "base": 2
+        },
+        "sig": {
+          "value": 1,
+          "base": 1
+        },
+        "autonav": {
+          "value": 1,
+          "base": 1
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 2,
+          "base": 2
+        },
+        "load": {
+          "value": 140,
+          "base": 140
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

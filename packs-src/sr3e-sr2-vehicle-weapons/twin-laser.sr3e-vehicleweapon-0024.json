@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-vehicleweapon-0024",
+  "doc": {
+    "_id": "sr3e-vehicleweapon-0024",
+    "name": "Twin Laser",
+    "type": "vehicleweapon",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "system": {
+      "weaponType": "Sniper",
+      "mode": "SA",
+      "damage": "18S",
+      "ammunition": "(Special)",
+      "weight": 340,
+      "cost": 700000,
+      "availability": "-",
+      "streetIndex": "-",
+      "bookPage": "sr2.265",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

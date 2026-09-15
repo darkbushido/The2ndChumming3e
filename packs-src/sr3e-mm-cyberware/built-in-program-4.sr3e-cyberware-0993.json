@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0993",
+  "doc": {
+    "_id": "sr3e-cyberware-0993",
+    "name": "+Built in Program [4]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Senseware",
+      "essenceCost": 0,
+      "cost": 9600,
+      "availability": "4/6 days",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.13",
+      "grade": "Standard",
+      "rating": 4,
+      "description": "Chemistry Skill of 6"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

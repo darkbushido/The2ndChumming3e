@@ -1,0 +1,29 @@
+{
+  "_key": "!items!0a0eac9877b24f9e",
+  "doc": {
+    "_id": "0a0eac9877b24f9e",
+    "name": "Real Leather",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "-",
+      "ballistic": 0,
+      "impact": 2,
+      "weight": 1,
+      "cost": 750,
+      "availability": "Always",
+      "streetIndex": ".75",
+      "bookPage": "sr2.256",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

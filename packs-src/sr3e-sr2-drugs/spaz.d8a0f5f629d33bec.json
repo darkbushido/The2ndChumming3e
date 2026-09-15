@@ -1,0 +1,31 @@
+{
+  "_key": "!items!d8a0f5f629d33bec",
+  "doc": {
+    "_id": "d8a0f5f629d33bec",
+    "name": "Spaz",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "5P",
+      "tolerance": "1",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 10,
+      "availability": "8/24hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 5</p>"
+    }
+  },
+  "embedded": {}
+}

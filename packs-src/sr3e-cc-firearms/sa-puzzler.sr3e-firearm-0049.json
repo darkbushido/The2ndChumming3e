@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0049",
+  "doc": {
+    "_id": "sr3e-firearm-0049",
+    "name": "SA Puzzler",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "6",
+      "ammunition": "12(c)",
+      "mode": "SA",
+      "damage": "6L",
+      "weight": ".75",
+      "availability": "9/1wk",
+      "cost": 900,
+      "streetIndex": "2",
+      "accessories": "None",
+      "bookPage": "cc.18",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

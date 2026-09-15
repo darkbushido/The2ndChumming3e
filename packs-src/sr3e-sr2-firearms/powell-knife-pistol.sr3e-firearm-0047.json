@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0047",
+  "doc": {
+    "_id": "sr3e-firearm-0047",
+    "name": "Powell Knife Pistol",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "LPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "8",
+      "ammunition": "1(b)",
+      "mode": "SS",
+      "damage": "6L/(STR)L",
+      "weight": ".5",
+      "availability": "5/48hrs",
+      "cost": 250,
+      "streetIndex": "1",
+      "accessories": "None",
+      "bookPage": "pw.9",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

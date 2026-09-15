@@ -1,0 +1,21 @@
+{
+  "_key": "!items!sr3e-adeptpower-0050",
+  "doc": {
+    "_id": "sr3e-adeptpower-0050",
+    "name": "Imp. Reflexes Level 1",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 2,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "+2RCT,+1INI",
+      "bookPage": "sr3.169",
+      "description": "This power increases the speed at which you react, just like wired reflexes SR3-301.",
+      "bonusRea": 2,
+      "bonusInitDice": 1
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0205",
+  "doc": {
+    "_id": "sr3e-vehicle-0205",
+    "name": "A",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 75000000,
+      "streetIndex": 1,
+      "availability": "-",
+      "bookPage": "r3.192",
+      "seating": 156,
+      "notes": "Rigger Adaption, 8 Partial Basic Living Amenities | Alt-mode Speed/Accel: 200(1000)/50",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 6,
+          "base": 6
+        },
+        "handlingOffRoad": {
+          "value": 6,
+          "base": 6
+        },
+        "speed": {
+          "value": 200,
+          "base": 200
+        },
+        "accel": {
+          "value": 50,
+          "base": 50
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 1,
+          "base": 1
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 4,
+          "base": 4
+        },
+        "pilot": {
+          "value": 4,
+          "base": 4
+        },
+        "sensor": {
+          "value": 4,
+          "base": 4
+        },
+        "cargo": {
+          "value": 300,
+          "base": 300
+        },
+        "load": {
+          "value": 12000,
+          "base": 12000
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

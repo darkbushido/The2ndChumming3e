@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0173",
+  "doc": {
+    "_id": "sr3e-cyberware-0173",
+    "name": "Skillwires [1] MP 6",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0.2,
+      "cost": 3000,
+      "availability": "1/10 days",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.302",
+      "grade": "Standard",
+      "rating": 1,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

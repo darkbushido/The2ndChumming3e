@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-bioware-0081",
+  "doc": {
+    "_id": "sr3e-bioware-0081",
+    "name": "Pathogenic Defense[9]",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Standard",
+      "grade": "Standard",
+      "bioIndex": 1.8,
+      "cost": 216000,
+      "availability": "4/4 days",
+      "streetIndex": 1.5,
+      "mods": "",
+      "bookPage": "mm.068",
+      "rating": 9,
+      "description": "Max half BOD, -9 power to biological attacks",
+      "srcgName": "Pathogenic Def.[9]"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

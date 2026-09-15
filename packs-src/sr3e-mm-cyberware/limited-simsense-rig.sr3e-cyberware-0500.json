@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0500",
+  "doc": {
+    "_id": "sr3e-cyberware-0500",
+    "name": "Limited Simsense Rig",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Headware",
+      "essenceCost": 0.1,
+      "cost": 1000,
+      "availability": "4/48 hours",
+      "streetIndex": 1.5,
+      "legalCode": "5P-N",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.31",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "",
+      "srcgName": "Lim. Simsense Rig"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

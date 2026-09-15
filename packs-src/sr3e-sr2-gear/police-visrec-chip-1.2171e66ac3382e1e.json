@@ -1,0 +1,30 @@
+{
+  "_key": "!items!2171e66ac3382e1e",
+  "doc": {
+    "_id": "2171e66ac3382e1e",
+    "name": "Police VisRec Chip 1",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 16250,
+      "weight": 0,
+      "availability": "10/4days",
+      "streetIndex": "2.5",
+      "bookPage": "sr2.244",
+      "description": "<p><strong>Type:</strong> Know<br><strong>Memory:</strong> 65</p>"
+    }
+  },
+  "embedded": {}
+}

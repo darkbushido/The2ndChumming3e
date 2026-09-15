@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0106",
+  "doc": {
+    "_id": "sr3e-firearm-0106",
+    "name": "Fich. Mil. XI Smart",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "18(c)",
+      "mode": "SA/BF",
+      "damage": "9M",
+      "weight": "2.25",
+      "availability": "5/36hrs",
+      "cost": 1800,
+      "streetIndex": "2",
+      "accessories": "Smartlink, RC:(1)",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

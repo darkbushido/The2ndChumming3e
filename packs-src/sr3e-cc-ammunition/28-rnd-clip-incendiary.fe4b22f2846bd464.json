@@ -1,0 +1,34 @@
+{
+  "_key": "!items!fe4b22f2846bd464",
+  "doc": {
+    "_id": "fe4b22f2846bd464",
+    "name": "28-Rnd Clip (Incendiary)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 28,
+      "rounds": 0,
+      "weight": 2.85,
+      "cost": 425,
+      "availability": "10/1wk",
+      "streetIndex": "2",
+      "bookPage": "cc.38",
+      "notes": "<p>Incendiary rounds — a type this system does not model; its rules are the GM's (cc.38).</p>"
+    }
+  },
+  "embedded": {}
+}

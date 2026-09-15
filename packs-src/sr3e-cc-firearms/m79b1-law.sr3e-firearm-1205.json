@@ -1,0 +1,28 @@
+{
+  "_key": "!items!sr3e-firearm-1205",
+  "doc": {
+    "_id": "sr3e-firearm-1205",
+    "name": "M79B1 LAW",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "MisLn",
+      "skill": "Gunnery",
+      "attribute": "quickness",
+      "concealability": "4/-",
+      "ammunition": "1",
+      "mode": "SS",
+      "damage": "(As M79B1 LAW Rocket)",
+      "weight": "2.5",
+      "availability": "6/36hrs",
+      "cost": 700,
+      "streetIndex": "2",
+      "accessories": "One use ONLY",
+      "bookPage": "cc.28",
+      "notes": "",
+      "isAoE": true
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,29 @@
+{
+  "_key": "!items!d044690e13329db6",
+  "doc": {
+    "_id": "d044690e13329db6",
+    "name": "Vest with Plates",
+    "type": "armor",
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Clothing and Armor"
+      }
+    },
+    "system": {
+      "concealability": "10",
+      "ballistic": 4,
+      "impact": 3,
+      "weight": 2,
+      "cost": 600,
+      "availability": "3/36hrs",
+      "streetIndex": "1",
+      "bookPage": "sr2.256",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

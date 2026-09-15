@@ -1,0 +1,31 @@
+{
+  "_key": "!items!594c440c5cdabe88",
+  "doc": {
+    "_id": "594c440c5cdabe88",
+    "name": "Methaqualone",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "4M+4P",
+      "tolerance": "4",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 3,
+      "availability": "4/3hrs",
+      "streetIndex": "1.2",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 2</p>"
+    }
+  },
+  "embedded": {}
+}

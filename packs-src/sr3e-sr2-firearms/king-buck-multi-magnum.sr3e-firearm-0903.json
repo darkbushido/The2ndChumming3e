@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0903",
+  "doc": {
+    "_id": "sr3e-firearm-0903",
+    "name": "\"King Buck\" Multi-Magnum",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "ShtG",
+      "skill": "Shotguns",
+      "attribute": "quickness",
+      "concealability": "1",
+      "ammunition": "4(m)",
+      "mode": "SA",
+      "damage": "9S",
+      "weight": "7",
+      "availability": "12/4days",
+      "cost": 800,
+      "streetIndex": "2.1",
+      "accessories": "None",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

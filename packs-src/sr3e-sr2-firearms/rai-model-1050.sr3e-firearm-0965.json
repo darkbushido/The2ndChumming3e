@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0965",
+  "doc": {
+    "_id": "sr3e-firearm-0965",
+    "name": "RAI Model 1050",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "Snip",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "5(c)",
+      "mode": "SA",
+      "damage": "15S",
+      "weight": "5.25",
+      "availability": "14/10days",
+      "cost": 6000,
+      "streetIndex": "4",
+      "accessories": "High-power Laser Sight, Low-Light, Mag:(3), Shock Pads, Silencer",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

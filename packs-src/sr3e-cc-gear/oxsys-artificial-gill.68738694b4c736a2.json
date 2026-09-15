@@ -1,0 +1,30 @@
+{
+  "_key": "!items!68738694b4c736a2",
+  "doc": {
+    "_id": "68738694b4c736a2",
+    "name": "OXSYS Artificial Gill",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 3250,
+      "weight": 0.5,
+      "availability": "4/12hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.57",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

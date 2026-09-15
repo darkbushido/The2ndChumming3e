@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0054",
+  "doc": {
+    "_id": "sr3e-adeptpower-0054",
+    "name": "Imp. Sense: Thermo Vision",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.25,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sr3.169",
+      "description": "This power provides thermographic vision SR3-300."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

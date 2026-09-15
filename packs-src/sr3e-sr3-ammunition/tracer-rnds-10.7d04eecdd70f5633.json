@@ -1,0 +1,34 @@
+{
+  "_key": "!items!7d04eecdd70f5633",
+  "doc": {
+    "_id": "7d04eecdd70f5633",
+    "name": "Tracer Rnds (10)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "(see rules)",
+      "ammoType": "tracer",
+      "loadMechanism": "c",
+      "countedIn": "rounds",
+      "rounds": 10,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 0.5,
+      "cost": 75,
+      "availability": "3/24hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.281",
+      "notes": "<p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>"
+    }
+  },
+  "embedded": {}
+}

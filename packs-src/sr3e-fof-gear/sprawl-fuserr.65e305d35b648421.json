@@ -1,0 +1,30 @@
+{
+  "_key": "!items!65e305d35b648421",
+  "doc": {
+    "_id": "65e305d35b648421",
+    "name": "Sprawl Fuserr",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "-",
+      "rating": null,
+      "cost": 1200,
+      "weight": 5.5,
+      "availability": "always",
+      "streetIndex": ".75",
+      "bookPage": "fof.98",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

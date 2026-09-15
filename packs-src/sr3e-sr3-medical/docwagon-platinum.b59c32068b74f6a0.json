@@ -1,0 +1,28 @@
+{
+  "_key": "!items!b59c32068b74f6a0",
+  "doc": {
+    "_id": "b59c32068b74f6a0",
+    "name": "DocWagon Platinum",
+    "type": "medical",
+    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Biotech"
+      }
+    },
+    "system": {
+      "category": "Biotech",
+      "rating": "",
+      "weight": "-",
+      "cost": 50000,
+      "availability": "On Payment",
+      "streetIndex": "1",
+      "bookPage": "sr3.304",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

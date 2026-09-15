@@ -1,0 +1,30 @@
+{
+  "_key": "!items!09d576f89a38dc6c",
+  "doc": {
+    "_id": "09d576f89a38dc6c",
+    "name": "Headjammer Rating [3]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "3",
+      "rating": 3,
+      "cost": 3600,
+      "weight": 1,
+      "availability": "3/72hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.294",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

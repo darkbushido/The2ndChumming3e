@@ -1,0 +1,30 @@
+{
+  "_key": "!items!a2384f217c8063c9",
+  "doc": {
+    "_id": "a2384f217c8063c9",
+    "name": "Comp.Soft.Encrypt Rating [2]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 2,
+      "cost": 200,
+      "weight": 0,
+      "availability": "-",
+      "streetIndex": "1",
+      "bookPage": "sr3.293",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

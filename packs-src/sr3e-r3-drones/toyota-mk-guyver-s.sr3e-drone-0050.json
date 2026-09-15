@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0050",
+  "doc": {
+    "_id": "sr3e-drone-0050",
+    "name": "Toyota MK-Guyver S",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 95375,
+      "streetIndex": 2,
+      "availability": "5/5days",
+      "seating": 0,
+      "bookPage": "r3.178",
+      "notes": "Remote-Control Interface, Rigger Adaptation, Robotic Pilot, Adaptation Pool 2, 2 Mechanical Arms(STR 10), Autosoft Interpretation System, Autosoft: Demolitions 3",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 10,
+          "base": 10
+        },
+        "accel": {
+          "value": 0,
+          "base": 0
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 3,
+          "base": 3
+        },
+        "sig": {
+          "value": 5,
+          "base": 5
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 3,
+          "base": 3
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 5,
+          "base": 5
+        },
+        "load": {
+          "value": 1025,
+          "base": 1025
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

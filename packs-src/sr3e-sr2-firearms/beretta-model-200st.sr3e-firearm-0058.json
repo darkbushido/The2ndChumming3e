@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0058",
+  "doc": {
+    "_id": "sr3e-firearm-0058",
+    "name": "Beretta Model 200ST",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "MaPist",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "26(c)",
+      "mode": "SA/BF",
+      "damage": "6L",
+      "weight": "2",
+      "availability": "5/24hrs",
+      "cost": 750,
+      "streetIndex": "1.5",
+      "accessories": "RC:(1)",
+      "bookPage": "ssc.19",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

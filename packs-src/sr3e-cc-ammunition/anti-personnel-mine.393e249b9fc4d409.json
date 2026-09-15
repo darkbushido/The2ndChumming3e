@@ -1,0 +1,34 @@
+{
+  "_key": "!items!393e249b9fc4d409",
+  "doc": {
+    "_id": "393e249b9fc4d409",
+    "name": "Anti-Personnel Mine",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "As grenade",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "rounds",
+      "rounds": 1,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 2,
+      "cost": 10,
+      "availability": "As grenade",
+      "streetIndex": "2",
+      "bookPage": "cc.42",
+      "notes": "<p>Not one of the types this system models, or a combination of them — its rules are the GM's.</p><p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>"
+    }
+  },
+  "embedded": {}
+}

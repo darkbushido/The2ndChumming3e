@@ -1,0 +1,25 @@
+{
+  "_key": "!folders!1d8a3ad0f30e8fb9",
+  "doc": {
+    "_id": "1d8a3ad0f30e8fb9",
+    "name": "Workin' the Mojo",
+    "type": "Actor",
+    "description": "",
+    "folder": null,
+    "sorting": "a",
+    "sort": 800000,
+    "color": null,
+    "flags": {},
+    "_stats": {
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "coreVersion": "14",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": null,
+      "createdTime": 1788274787556,
+      "modifiedTime": 1788274787556,
+      "lastModifiedBy": null
+    }
+  },
+  "embedded": {}
+}

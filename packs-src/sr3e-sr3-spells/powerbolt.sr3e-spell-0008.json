@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0008",
+  "doc": {
+    "_id": "sr3e-spell-0008",
+    "name": "Powerbolt",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Combat",
+      "type": "Physical",
+      "duration": "Instant",
+      "range": "LOS",
+      "drain": "+1(DL)",
+      "target": "B(R)",
+      "bookPage": "sr3.191",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

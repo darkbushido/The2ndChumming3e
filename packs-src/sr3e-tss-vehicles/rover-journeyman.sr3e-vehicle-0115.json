@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0115",
+  "doc": {
+    "_id": "sr3e-vehicle-0115",
+    "name": "Rover Journeyman",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 50000,
+      "streetIndex": 1,
+      "availability": "2/24hrs",
+      "bookPage": "tss.6",
+      "seating": 4,
+      "notes": "Minivan, APPS, TDI Engine, Datajack Port, optional Rigger Adaptation | Seating: 2+2",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 8,
+          "base": 8
+        },
+        "speed": {
+          "value": 125,
+          "base": 125
+        },
+        "accel": {
+          "value": 7,
+          "base": 7
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 8,
+          "base": 8
+        },
+        "load": {
+          "value": 600,
+          "base": 600
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

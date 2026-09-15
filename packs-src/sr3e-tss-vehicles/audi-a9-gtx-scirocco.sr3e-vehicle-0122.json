@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0122",
+  "doc": {
+    "_id": "sr3e-vehicle-0122",
+    "name": "Audi A9 GTX Scirocco",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 45000,
+      "streetIndex": 2,
+      "availability": "3/7days",
+      "bookPage": "tss.6",
+      "seating": 2,
+      "notes": "Rally Car, no offroad speed change.  Roll bars, Datajack port, GPS, Rigger Control, Amphibious OPs Packages I-III, Secondary Controls, Spotlight, Satt Uplink",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 3,
+          "base": 3
+        },
+        "handlingOffRoad": {
+          "value": 3,
+          "base": 3
+        },
+        "speed": {
+          "value": 140,
+          "base": 140
+        },
+        "accel": {
+          "value": 15,
+          "base": 15
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 3,
+          "base": 3
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 2,
+          "base": 2
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 3,
+          "base": 3
+        },
+        "load": {
+          "value": 300,
+          "base": 300
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

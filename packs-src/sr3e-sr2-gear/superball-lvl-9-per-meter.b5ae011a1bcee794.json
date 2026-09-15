@@ -1,0 +1,30 @@
+{
+  "_key": "!items!b5ae011a1bcee794",
+  "doc": {
+    "_id": "b5ae011a1bcee794",
+    "name": "Superball Lvl 9 (per meter)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 9,
+      "cost": 450,
+      "weight": 0,
+      "availability": "18/48hrs",
+      "streetIndex": "3",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0015",
+  "doc": {
+    "_id": "sr3e-cyberware-0015",
+    "name": "+Lockpicks",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0,
+      "cost": 500,
+      "availability": "8/2 weeks",
+      "streetIndex": 3,
+      "legalCode": "6P-Q",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.23",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "For key and tumbler locks"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-bioware-0132",
+  "doc": {
+    "_id": "sr3e-bioware-0132",
+    "name": "Cerebral Booster[2]",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Cultured",
+      "grade": "Cultured",
+      "bioIndex": 0.8,
+      "cost": 110000,
+      "availability": "6/14 days",
+      "streetIndex": 2,
+      "mods": "+2RNT,+1TAS",
+      "bookPage": "mm.072",
+      "rating": 2,
+      "description": "+2INT,+1TASK",
+      "bonusInt": 2
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

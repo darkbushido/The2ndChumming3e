@@ -1,0 +1,30 @@
+{
+  "_key": "!items!3c922c01ea1f082f",
+  "doc": {
+    "_id": "3c922c01ea1f082f",
+    "name": "Jammer Lv [3]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "2",
+      "rating": 3,
+      "cost": 3000,
+      "weight": 5,
+      "availability": "3/72hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr3.292",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

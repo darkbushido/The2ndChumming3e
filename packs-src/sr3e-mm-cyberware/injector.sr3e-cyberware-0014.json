@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0014",
+  "doc": {
+    "_id": "sr3e-cyberware-0014",
+    "name": "+Injector",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0,
+      "cost": 500,
+      "availability": "4/72 hours",
+      "streetIndex": 1.5,
+      "legalCode": "6P-N",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.23",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "One dose of a compound"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

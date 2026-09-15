@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0946",
+  "doc": {
+    "_id": "sr3e-cyberware-0946",
+    "name": "RC Encryption Module [3]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Rigger",
+      "essenceCost": 0.2,
+      "cost": 30000,
+      "availability": "3/3 days",
+      "streetIndex": 3,
+      "legalCode": "4P-W",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.23",
+      "grade": "Standard",
+      "rating": 3,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

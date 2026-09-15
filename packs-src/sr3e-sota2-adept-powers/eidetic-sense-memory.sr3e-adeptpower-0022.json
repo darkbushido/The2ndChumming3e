@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0022",
+  "doc": {
+    "_id": "sr3e-adeptpower-0022",
+    "name": "Eidetic Sense Memory",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.65",
+      "description": "The adept gains photo sight memory in addition to a increased memory involving all other senses."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

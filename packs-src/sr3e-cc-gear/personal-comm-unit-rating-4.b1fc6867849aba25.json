@@ -1,0 +1,30 @@
+{
+  "_key": "!items!b1fc6867849aba25",
+  "doc": {
+    "_id": "b1fc6867849aba25",
+    "name": "Personal Comm Unit Rating [4]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "9",
+      "rating": 4,
+      "cost": 6000,
+      "weight": 0.5,
+      "availability": "8/2wks",
+      "streetIndex": "2",
+      "bookPage": "cc.55",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

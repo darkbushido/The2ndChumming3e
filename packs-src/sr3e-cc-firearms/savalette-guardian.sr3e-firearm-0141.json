@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0141",
+  "doc": {
+    "_id": "sr3e-firearm-0141",
+    "name": "Savalette Guardian",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "5",
+      "ammunition": "12(c)",
+      "mode": "SA/BF",
+      "damage": "9M",
+      "weight": "3.25",
+      "availability": "6/36hrs",
+      "cost": 900,
+      "streetIndex": "2.5",
+      "accessories": "RC(1), Smartlink, BF = Complex Action",
+      "bookPage": "cc.19",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

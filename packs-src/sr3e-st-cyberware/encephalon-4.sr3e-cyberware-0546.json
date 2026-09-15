@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0546",
+  "doc": {
+    "_id": "sr3e-cyberware-0546",
+    "name": "Encephalon [4]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Headware",
+      "essenceCost": 1.75,
+      "cost": 115000,
+      "availability": "0/0",
+      "streetIndex": 2,
+      "legalCode": "Legal",
+      "mods": "+2INT,",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "st.49",
+      "grade": "Standard",
+      "rating": 4,
+      "description": "",
+      "bonusInt": 2
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

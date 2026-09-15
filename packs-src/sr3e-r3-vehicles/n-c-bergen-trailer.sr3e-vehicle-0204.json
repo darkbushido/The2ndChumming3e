@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0204",
+  "doc": {
+    "_id": "sr3e-vehicle-0204",
+    "name": "N-C Bergen(trailer)",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "fixedwing",
+      "cost": 227000,
+      "streetIndex": 1,
+      "availability": "10/10 days",
+      "bookPage": "r3.192",
+      "seating": 2,
+      "notes": "",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 0,
+          "base": 0
+        },
+        "handlingOffRoad": {
+          "value": 0,
+          "base": 0
+        },
+        "speed": {
+          "value": 0,
+          "base": 0
+        },
+        "accel": {
+          "value": 0,
+          "base": 0
+        },
+        "body": {
+          "value": 8,
+          "base": 8
+        },
+        "armor": {
+          "value": 3,
+          "base": 3
+        },
+        "sig": {
+          "value": 3,
+          "base": 3
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 1008,
+          "base": 1008
+        },
+        "load": {
+          "value": 80000,
+          "base": 80000
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

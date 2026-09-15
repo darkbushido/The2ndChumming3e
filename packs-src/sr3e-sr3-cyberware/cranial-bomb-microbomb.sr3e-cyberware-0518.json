@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0518",
+  "doc": {
+    "_id": "sr3e-cyberware-0518",
+    "name": "Cranial Bomb Microbomb",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Headware",
+      "essenceCost": 0,
+      "cost": 65500,
+      "availability": "18/48 hours",
+      "streetIndex": 1.25,
+      "legalCode": "2-R",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.298",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Kill bearer"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0071",
+  "doc": {
+    "_id": "sr3e-bioware-0071",
+    "name": "Orthoskin[3]",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Standard",
+      "grade": "Standard",
+      "bioIndex": 1.5,
+      "cost": 100000,
+      "availability": "8/8 days",
+      "streetIndex": 0.8,
+      "mods": "+2IMP,+1BAL,",
+      "bookPage": "mm.068",
+      "rating": 3,
+      "description": "+2IMP,+1BAL"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

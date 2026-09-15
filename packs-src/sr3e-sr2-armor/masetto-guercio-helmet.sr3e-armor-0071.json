@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0071",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0071",
+    "name": "Masetto 'Guercio' Helmet",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 0,
+      "impact": 1,
+      "weight": 1,
+      "availability": "3/48hrs",
+      "cost": 600,
+      "streetIndex": "2",
+      "bookPage": "sr2.???",
+      "notes": "Impact +1 (additive modifier)"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

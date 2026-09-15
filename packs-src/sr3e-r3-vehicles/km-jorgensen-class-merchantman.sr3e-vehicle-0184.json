@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0184",
+  "doc": {
+    "_id": "sr3e-vehicle-0184",
+    "name": "KM Jorgensen Class Merchantman",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "ship",
+      "cost": 140000000,
+      "streetIndex": 1,
+      "availability": "-",
+      "bookPage": "r3.186",
+      "seating": 0,
+      "notes": "Crane (5000 kg), 25 Basic Living Amenities | Alt-mode Speed/Accel: 25(10)/1 | Alt-mode Sig/Autonav: 2(2)/3 | Alt-mode Cargo/Load: 300000[3000 PS]/1999440[37500 PS] | Alt-mode Pilot/Sensor: -/1(1)",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 5,
+          "base": 5
+        },
+        "handlingOffRoad": {
+          "value": 5,
+          "base": 5
+        },
+        "speed": {
+          "value": 25,
+          "base": 25
+        },
+        "accel": {
+          "value": 1,
+          "base": 1
+        },
+        "body": {
+          "value": 7,
+          "base": 7
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 3,
+          "base": 3
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 1,
+          "base": 1
+        },
+        "cargo": {
+          "value": 300000,
+          "base": 300000
+        },
+        "load": {
+          "value": 1999440,
+          "base": 1999440
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

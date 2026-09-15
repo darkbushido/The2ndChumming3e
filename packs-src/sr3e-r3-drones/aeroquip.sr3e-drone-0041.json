@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0041",
+  "doc": {
+    "_id": "sr3e-drone-0041",
+    "name": "Aeroquip",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 85000,
+      "streetIndex": 1,
+      "availability": "4/4days",
+      "seating": 0,
+      "bookPage": "r3.177",
+      "notes": "Remote-Control Interface, Rigger Adaptation",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 300,
+          "base": 300
+        },
+        "accel": {
+          "value": 35,
+          "base": 35
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 5,
+          "base": 5
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 2,
+          "base": 2
+        },
+        "sensor": {
+          "value": 3,
+          "base": 3
+        },
+        "cargo": {
+          "value": 16,
+          "base": 16
+        },
+        "load": {
+          "value": 155,
+          "base": 155
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

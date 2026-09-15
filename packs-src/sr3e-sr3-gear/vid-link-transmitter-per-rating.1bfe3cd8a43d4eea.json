@@ -1,0 +1,30 @@
+{
+  "_key": "!items!1bfe3cd8a43d4eea",
+  "doc": {
+    "_id": "1bfe3cd8a43d4eea",
+    "name": "Vid-link Transmitter (per Rating)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Miscellaneous Components"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Miscellaneous Components",
+      "concealability": "",
+      "rating": null,
+      "cost": 0,
+      "weight": 0,
+      "availability": "4/1 wk",
+      "streetIndex": "2",
+      "bookPage": "sr3.302",
+      "description": "<p>Cost Rating×2000¥ — by rating; set the cost for the rating bought.</p><p><strong>Legal:</strong> 8P-L</p>"
+    }
+  },
+  "embedded": {}
+}

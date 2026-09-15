@@ -1,0 +1,34 @@
+{
+  "_key": "!items!db38a729b069d247",
+  "doc": {
+    "_id": "db38a729b069d247",
+    "name": "50-Rnd Clip (Flare)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 50,
+      "rounds": 0,
+      "weight": 5.75,
+      "cost": 130,
+      "availability": "4/48hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.39",
+      "notes": "<p>Flare rounds — a type this system does not model; its rules are the GM's (cc.39).</p>"
+    }
+  },
+  "embedded": {}
+}

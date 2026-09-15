@@ -1,0 +1,30 @@
+{
+  "_key": "!items!5bc69bdf07ce9145",
+  "doc": {
+    "_id": "5bc69bdf07ce9145",
+    "name": "Chem Sniffer - Hand-held [5]",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "6",
+      "rating": 5,
+      "cost": 50000,
+      "weight": 1,
+      "availability": "5/72hrs",
+      "streetIndex": "2",
+      "bookPage": "sr3.294",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

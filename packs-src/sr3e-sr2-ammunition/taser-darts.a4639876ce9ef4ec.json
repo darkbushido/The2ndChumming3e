@@ -1,0 +1,34 @@
+{
+  "_key": "!items!a4639876ce9ef4ec",
+  "doc": {
+    "_id": "a4639876ce9ef4ec",
+    "name": "Taser Darts",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "3",
+      "damage": "special",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "rounds",
+      "rounds": 1,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 0.05,
+      "cost": 5,
+      "availability": "6/36hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.281",
+      "notes": "<p>Not one of the types this system models, or a combination of them — its rules are the GM's.</p><p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>"
+    }
+  },
+  "embedded": {}
+}

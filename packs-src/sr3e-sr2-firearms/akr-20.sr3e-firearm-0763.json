@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0763",
+  "doc": {
+    "_id": "sr3e-firearm-0763",
+    "name": "AKR-20",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "AsRf",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "3",
+      "ammunition": "30(c)",
+      "mode": "SA/BF/FA",
+      "damage": "8M",
+      "weight": "4",
+      "availability": "5/48hrs",
+      "cost": 1000,
+      "streetIndex": "2",
+      "accessories": "Gas Vent (1), Laser Sight",
+      "bookPage": "pw.26",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

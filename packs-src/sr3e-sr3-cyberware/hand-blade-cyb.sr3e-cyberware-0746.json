@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0746",
+  "doc": {
+    "_id": "sr3e-cyberware-0746",
+    "name": "Hand Blade,(CYB)",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0,
+      "cost": 7500,
+      "availability": "6/5 days",
+      "streetIndex": 1.5,
+      "legalCode": "4P-R",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.302",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "(STR+3)L"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

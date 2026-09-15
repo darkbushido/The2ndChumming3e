@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0193",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0193",
+    "name": "Remote-Control Encryption [3]",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 15000,
+      "availability": "3/72hrs",
+      "streetIndex": "3",
+      "installEquipment": "Electronics Kit",
+      "installTime": "1 hour/Electronics B/R(4)",
+      "cfCost": "0",
+      "load": "",
+      "bookPage": "r3.147",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

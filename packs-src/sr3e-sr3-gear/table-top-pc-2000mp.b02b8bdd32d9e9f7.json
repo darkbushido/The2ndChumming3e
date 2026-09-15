@@ -1,0 +1,30 @@
+{
+  "_key": "!items!b02b8bdd32d9e9f7",
+  "doc": {
+    "_id": "b02b8bdd32d9e9f7",
+    "name": "Table Top PC (2000Mp)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "4",
+      "rating": null,
+      "cost": 40000,
+      "weight": 3,
+      "availability": "Always",
+      "streetIndex": ".75",
+      "bookPage": "sr3.287",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

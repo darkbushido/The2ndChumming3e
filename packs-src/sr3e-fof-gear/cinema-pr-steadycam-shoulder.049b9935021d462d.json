@@ -1,0 +1,30 @@
+{
+  "_key": "!items!049b9935021d462d",
+  "doc": {
+    "_id": "049b9935021d462d",
+    "name": "Cinema Pr. Steadycam Shoulder",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "-",
+      "rating": null,
+      "cost": 1800,
+      "weight": 2,
+      "availability": "3/48hrs",
+      "streetIndex": "2",
+      "bookPage": "fof.96",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

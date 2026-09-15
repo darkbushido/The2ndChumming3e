@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0767",
+  "doc": {
+    "_id": "sr3e-cyberware-0767",
+    "name": "Mount, External (retractable)",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0,
+      "cost": 15000,
+      "availability": "6/4 days",
+      "streetIndex": 2,
+      "legalCode": "3P-R",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.40",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Weapon mount",
+      "srcgName": "Mount, External (retr.)"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

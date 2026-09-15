@@ -1,0 +1,30 @@
+{
+  "_key": "!items!61ebacda80a26346",
+  "doc": {
+    "_id": "61ebacda80a26346",
+    "name": "Goggles",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "S+S Vision Enhancers"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "S+S Vision Enhancers",
+      "concealability": "6",
+      "rating": null,
+      "cost": 1500,
+      "weight": 0,
+      "availability": "4/48hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr3.290",
+      "description": "<p><strong>Mag:</strong> 20x</p>"
+    }
+  },
+  "embedded": {}
+}

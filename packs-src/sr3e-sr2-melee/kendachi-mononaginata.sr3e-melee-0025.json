@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0025",
+  "doc": {
+    "_id": "sr3e-melee-0025",
+    "name": "Kendachi Mononaginata",
+    "type": "melee",
+    "system": {
+      "category": "EDG",
+      "skill": "Edged Weapons",
+      "attribute": "strength",
+      "concealability": "2",
+      "reach": "1",
+      "damage": "(STR+2)L",
+      "weight": ".5",
+      "availability": "6/60hrs",
+      "cost": 300,
+      "streetIndex": "1",
+      "legal": true,
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

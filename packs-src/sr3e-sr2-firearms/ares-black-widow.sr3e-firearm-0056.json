@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0056",
+  "doc": {
+    "_id": "sr3e-firearm-0056",
+    "name": "Ares Black Widow",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "MaPist",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "6",
+      "ammunition": "21(c)",
+      "mode": "SA/BF",
+      "damage": "6L",
+      "weight": "1",
+      "availability": "14/7days",
+      "cost": 1500,
+      "streetIndex": "3",
+      "accessories": "Silencer, Smartlink-2",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0037",
+  "doc": {
+    "_id": "sr3e-vehicle-0037",
+    "name": "Ruhr. Leopard III",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "military",
+      "cost": 7290000,
+      "streetIndex": 4,
+      "availability": "-",
+      "bookPage": "sota.78",
+      "seating": 3,
+      "notes": "Contingency Maneuver Controls 6, Drive-by-Wire 2, Rigger Adaptation, EnviroSeal(gas water engine), 2x4 External Rocket Mounts, Extra-Large Turret(0.8 CF Ammo Bin for 80 railgun projectiles), Large Smoke Projector, Life Support(150 man-hours), Medium Launch Control System, Micro-turret(AA capable Recoil Adjustment 4 1 CF Ammo Bin for HVAR ammo), Radar Absorbent Materials 2, Smart Materials, Thermal Baffles 2, Turbocharging 1",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 90,
+          "base": 90
+        },
+        "accel": {
+          "value": 8,
+          "base": 8
+        },
+        "body": {
+          "value": 12,
+          "base": 12
+        },
+        "armor": {
+          "value": 40,
+          "base": 40
+        },
+        "sig": {
+          "value": 4,
+          "base": 4
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 8,
+          "base": 8
+        },
+        "cargo": {
+          "value": 33,
+          "base": 33
+        },
+        "load": {
+          "value": 2095,
+          "base": 2095
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

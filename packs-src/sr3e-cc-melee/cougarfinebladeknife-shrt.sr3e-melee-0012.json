@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0012",
+  "doc": {
+    "_id": "sr3e-melee-0012",
+    "name": "CougarFineBladeKnife-Shrt",
+    "type": "melee",
+    "system": {
+      "category": "EDG",
+      "skill": "Edged Weapons",
+      "attribute": "strength",
+      "concealability": "8",
+      "reach": "-",
+      "damage": "(STR)M",
+      "weight": ".5",
+      "availability": "5/72hrs",
+      "cost": 800,
+      "streetIndex": "3",
+      "legal": true,
+      "bookPage": "cc.8",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

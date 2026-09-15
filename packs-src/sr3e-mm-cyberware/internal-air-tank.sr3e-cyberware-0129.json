@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0129",
+  "doc": {
+    "_id": "sr3e-cyberware-0129",
+    "name": "Internal Air Tank",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 0.25,
+      "cost": 1200,
+      "availability": "4/5 days",
+      "streetIndex": 1.5,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.29",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "75 minutes of air, -1 TN to floating or treading water"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

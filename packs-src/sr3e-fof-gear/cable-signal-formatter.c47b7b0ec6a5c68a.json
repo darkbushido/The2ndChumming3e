@@ -1,0 +1,30 @@
+{
+  "_key": "!items!c47b7b0ec6a5c68a",
+  "doc": {
+    "_id": "c47b7b0ec6a5c68a",
+    "name": "Cable Signal Formatter",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "3",
+      "rating": null,
+      "cost": 2000,
+      "weight": 3,
+      "availability": "8/1week",
+      "streetIndex": "2",
+      "bookPage": "fof.96",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

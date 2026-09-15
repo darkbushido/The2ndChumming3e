@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0037",
+  "doc": {
+    "_id": "sr3e-adeptpower-0037",
+    "name": "Great Leap*",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.25,
+      "hasLevels": true,
+      "level": 1,
+      "mods": "",
+      "bookPage": "mits.150",
+      "description": "Each level of greatleap adds a die for Jumping Tests and is also added to the characters Quickness for determining the maximum distance a character can jump."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

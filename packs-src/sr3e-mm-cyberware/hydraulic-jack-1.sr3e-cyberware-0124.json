@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0124",
+  "doc": {
+    "_id": "sr3e-cyberware-0124",
+    "name": "Hydraulic Jack [1]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 1,
+      "cost": 5000,
+      "availability": "5/6 days",
+      "streetIndex": 1,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.29",
+      "grade": "Standard",
+      "rating": 1,
+      "description": "+1 die to Athletics (Running, Jumping) tests, +20% running distance, -1 Power level to falls"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

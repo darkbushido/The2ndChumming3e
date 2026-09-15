@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-bioware-0129",
+  "doc": {
+    "_id": "sr3e-bioware-0129",
+    "name": "Venomous Fangs, Lethal",
+    "type": "bioware",
+    "img": "systems/The2ndChumming3e/styles/textures/bioware-default.webp",
+    "system": {
+      "biowareCategory": "Standard",
+      "grade": "Standard",
+      "bioIndex": 0.5,
+      "cost": 18000,
+      "availability": "4/7 days",
+      "streetIndex": 2,
+      "mods": "",
+      "bookPage": "tss.5",
+      "rating": 0,
+      "description": "Designed like a cobra's fangs, 1/2\" long. Includes a venom sack and poison gland that makes enough for 6 bites and takes 12 hours to refill.  8D damage from poison."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

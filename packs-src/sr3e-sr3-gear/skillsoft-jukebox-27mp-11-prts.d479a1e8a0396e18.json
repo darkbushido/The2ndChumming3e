@@ -1,0 +1,30 @@
+{
+  "_key": "!items!d479a1e8a0396e18",
+  "doc": {
+    "_id": "d479a1e8a0396e18",
+    "name": "SkillSoft Jukebox 27MP 11 prts",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 5940,
+      "weight": 0,
+      "availability": "3/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Juk<br><strong>Memory:</strong> 27</p>"
+    }
+  },
+  "embedded": {}
+}

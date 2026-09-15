@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0293",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0293",
+    "name": "Medium Military Armor",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 12,
+      "impact": 8,
+      "weight": 0,
+      "availability": "24/1mth",
+      "cost": 45000,
+      "streetIndex": "3",
+      "bookPage": "fof.54",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,30 @@
+{
+  "_key": "!items!c47bafbe144ea526",
+  "doc": {
+    "_id": "c47bafbe144ea526",
+    "name": "Radio Scrambler Level 10",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "-",
+      "rating": 10,
+      "cost": 50000,
+      "weight": 0,
+      "availability": "8/36hrs",
+      "streetIndex": "1.25",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

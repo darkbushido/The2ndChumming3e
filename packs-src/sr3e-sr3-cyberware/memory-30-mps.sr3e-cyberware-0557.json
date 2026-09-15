@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0557",
+  "doc": {
+    "_id": "sr3e-cyberware-0557",
+    "name": "Memory (30 Mps)",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Headware",
+      "essenceCost": 0.1,
+      "cost": 4500,
+      "availability": "3/24 hours",
+      "streetIndex": 0.8,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.298",
+      "grade": "Standard",
+      "rating": 0,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

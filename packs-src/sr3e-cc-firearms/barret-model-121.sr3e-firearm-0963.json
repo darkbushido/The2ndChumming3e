@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0963",
+  "doc": {
+    "_id": "sr3e-firearm-0963",
+    "name": "Barret Model 121",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "Snip",
+      "skill": "Rifles",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "14(c)",
+      "mode": "SA",
+      "damage": "14D",
+      "weight": "10",
+      "availability": "14/30days",
+      "cost": 4800,
+      "streetIndex": "5",
+      "accessories": "Folding Bipod(2RC), Silencer, Smartlink, +2 Recoil/Rnd, Use ONLY 121 Rnds",
+      "bookPage": "cc.21",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

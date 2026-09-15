@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0085",
+  "doc": {
+    "_id": "sr3e-firearm-0085",
+    "name": "B&Carr. MP-11 Smart",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "15(30((c)",
+      "mode": "SA/BF",
+      "damage": "9M",
+      "weight": "3",
+      "availability": "8/36hrs",
+      "cost": 2000,
+      "streetIndex": "2",
+      "accessories": "Gas Vent (2), Smartlink",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

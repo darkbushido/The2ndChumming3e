@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0912",
+  "doc": {
+    "_id": "sr3e-firearm-0912",
+    "name": "Neostead Combat",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "ShtG",
+      "skill": "Shotguns",
+      "attribute": "quickness",
+      "concealability": "8",
+      "ammunition": "12(c)",
+      "mode": "SS",
+      "damage": "12S",
+      "weight": "3.5",
+      "availability": "8/10days",
+      "cost": 1450,
+      "streetIndex": "3",
+      "accessories": "2 different types of ammo w/ selector switch",
+      "bookPage": "tss.2",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

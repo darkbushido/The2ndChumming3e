@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0028",
+  "doc": {
+    "_id": "sr3e-prog-0028",
+    "name": "Dewormer",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Dewormer",
+      "type": "Protocol",
+      "category": "",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 3,
+      "degradable": false,
+      "description": "<p>Purges a cyberdeck or Matrix enabled device of an Infiltrating IC Agent. Takes hours equal to rating of infiltrator. Can only purge infiltrators up to its rating.</p><p><strong>Function:</strong> Anti-Infiltration</p>",
+      "associatedPrompt": "",
+      "effect": "Purge IC",
+      "bookPage": "matrix-defragged.29"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

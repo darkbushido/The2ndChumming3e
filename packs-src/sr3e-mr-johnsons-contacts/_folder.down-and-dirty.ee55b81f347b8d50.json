@@ -1,0 +1,25 @@
+{
+  "_key": "!folders!ee55b81f347b8d50",
+  "doc": {
+    "_id": "ee55b81f347b8d50",
+    "name": "Down and Dirty",
+    "type": "Actor",
+    "description": "",
+    "folder": null,
+    "sorting": "a",
+    "sort": 500000,
+    "color": null,
+    "flags": {},
+    "_stats": {
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "coreVersion": "14",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": null,
+      "createdTime": 1788274787556,
+      "modifiedTime": 1788274787556,
+      "lastModifiedBy": null
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0612",
+  "doc": {
+    "_id": "sr3e-cyberware-0612",
+    "name": "Smartlink II (Internal)",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimbs",
+      "essenceCost": 0.25,
+      "cost": 3200,
+      "availability": "6/48 hours",
+      "streetIndex": 2,
+      "legalCode": "5P-N",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.31",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "",
+      "srcgName": "Smartlink II (Int)"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

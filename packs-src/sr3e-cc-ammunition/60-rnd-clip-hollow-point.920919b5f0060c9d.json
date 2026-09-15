@@ -1,0 +1,34 @@
+{
+  "_key": "!items!920919b5f0060c9d",
+  "doc": {
+    "_id": "920919b5f0060c9d",
+    "name": "60-Rnd Clip (Hollow Point)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 60,
+      "rounds": 0,
+      "weight": 3.75,
+      "cost": 305,
+      "availability": "5/48hrs",
+      "streetIndex": "2",
+      "bookPage": "cc.38",
+      "notes": "<p>Hollow Point rounds — a type this system does not model; its rules are the GM's (cc.38).</p>"
+    }
+  },
+  "embedded": {}
+}

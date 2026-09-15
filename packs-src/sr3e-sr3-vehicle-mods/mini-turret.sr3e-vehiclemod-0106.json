@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0106",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0106",
+    "name": "Mini-Turret",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 5000,
+      "availability": "GM",
+      "streetIndex": "2",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "72 hrs/Vehicle B/R(4)",
+      "cfCost": "7",
+      "load": "25kg",
+      "bookPage": "sr3.312,r3.139",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

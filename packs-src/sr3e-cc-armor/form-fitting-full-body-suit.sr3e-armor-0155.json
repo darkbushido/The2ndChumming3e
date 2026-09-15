@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0155",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0155",
+    "name": "Form-fitting Full-Body Suit",
+    "type": "armor",
+    "system": {
+      "concealability": "12",
+      "ballistic": 4,
+      "impact": 1,
+      "weight": 1.25,
+      "availability": "6/2wks",
+      "cost": 2000,
+      "streetIndex": "1",
+      "bookPage": "cc.51",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

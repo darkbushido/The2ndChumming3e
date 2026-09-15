@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0213",
+  "doc": {
+    "_id": "sr3e-cyberware-0213",
+    "name": "Skillwires Plus [6]",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Bodyware",
+      "essenceCost": 1.2,
+      "cost": 750000,
+      "availability": "5/10 days",
+      "streetIndex": 1,
+      "legalCode": "6P-CB",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "st.47",
+      "grade": "Standard",
+      "rating": 6,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

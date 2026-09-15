@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0108",
+  "doc": {
+    "_id": "sr3e-adeptpower-0108",
+    "name": "Spell Shroud*",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.25,
+      "hasLevels": true,
+      "level": 1,
+      "mods": "",
+      "bookPage": "mits.151",
+      "description": "For each level of the power, the adept adds 1 die to Spell Resistance Tests against detection spells only."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

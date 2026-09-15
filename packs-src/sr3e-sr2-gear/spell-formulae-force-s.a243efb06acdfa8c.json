@@ -1,0 +1,30 @@
+{
+  "_key": "!items!a243efb06acdfa8c",
+  "doc": {
+    "_id": "a243efb06acdfa8c",
+    "name": "Spell formulae - Force S",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Magical Equipment"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Magical Equipment",
+      "concealability": "",
+      "rating": null,
+      "cost": 500,
+      "weight": 0,
+      "availability": "-",
+      "streetIndex": "-",
+      "bookPage": "sr2.158",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0165",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0165",
+    "name": "Light Combat Biker Armor",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 3,
+      "impact": 2,
+      "weight": 1.25,
+      "availability": "4/48hrs",
+      "cost": 900,
+      "streetIndex": "1",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

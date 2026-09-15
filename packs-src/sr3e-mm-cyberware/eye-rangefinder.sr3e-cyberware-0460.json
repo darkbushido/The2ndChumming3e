@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0460",
+  "doc": {
+    "_id": "sr3e-cyberware-0460",
+    "name": "Eye, Rangefinder",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Eyeware",
+      "essenceCost": 0.1,
+      "cost": 2000,
+      "availability": "8/48 hours",
+      "streetIndex": 1.5,
+      "legalCode": "5P-N",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.31",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Shows range to target.w/SM2 -1 TN to targets at Long range and -2 TN at Extreme range. Not compatible with other vision magnifications."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

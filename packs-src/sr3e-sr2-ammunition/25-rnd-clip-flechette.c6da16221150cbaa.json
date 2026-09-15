@@ -1,0 +1,34 @@
+{
+  "_key": "!items!c6da16221150cbaa",
+  "doc": {
+    "_id": "c6da16221150cbaa",
+    "name": "25-Rnd Clip (Flechette)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "flechette",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 25,
+      "rounds": 0,
+      "weight": 2,
+      "cost": 255,
+      "availability": "3/36hrs",
+      "streetIndex": ".8",
+      "bookPage": "sr2.281",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

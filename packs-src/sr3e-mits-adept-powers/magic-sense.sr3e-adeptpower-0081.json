@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0081",
+  "doc": {
+    "_id": "sr3e-adeptpower-0081",
+    "name": "Magic Sense",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "mits.150",
+      "description": "May sense magical energies and effects within a radius equal to the adepts Magic Attribute x 5 in meters. Use the detection spell table (p. 192, SR3) to determinethe target numbers."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

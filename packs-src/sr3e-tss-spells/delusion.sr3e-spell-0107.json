@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0107",
+  "doc": {
+    "_id": "sr3e-spell-0107",
+    "name": "Delusion",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Illusion",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "LOS",
+      "drain": "+2(D)",
+      "target": "W(R)",
+      "bookPage": "tss.9",
+      "damage": "",
+      "description": "Target changed to fit with other Direct Illusions"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

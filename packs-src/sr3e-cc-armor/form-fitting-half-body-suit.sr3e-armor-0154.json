@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0154",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0154",
+    "name": "Form-fitting Half-Body Suit",
+    "type": "armor",
+    "system": {
+      "concealability": "13",
+      "ballistic": 3,
+      "impact": 1,
+      "weight": 1,
+      "availability": "6/10days",
+      "cost": 1000,
+      "streetIndex": "1",
+      "bookPage": "cc.51",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

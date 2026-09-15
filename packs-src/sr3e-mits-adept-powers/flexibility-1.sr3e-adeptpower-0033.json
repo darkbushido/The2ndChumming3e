@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0033",
+  "doc": {
+    "_id": "sr3e-adeptpower-0033",
+    "name": "Flexibility 1",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "mits.149",
+      "description": "This power reduces the target numbers for athletics (escape artist) by 1."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

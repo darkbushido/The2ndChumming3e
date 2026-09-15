@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0053",
+  "doc": {
+    "_id": "sr3e-spell-0053",
+    "name": "Cripple Limb",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Health",
+      "type": "Physical",
+      "duration": "Sustained",
+      "range": "T",
+      "drain": "+1(S)",
+      "target": "B(T)",
+      "bookPage": "mits.142",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

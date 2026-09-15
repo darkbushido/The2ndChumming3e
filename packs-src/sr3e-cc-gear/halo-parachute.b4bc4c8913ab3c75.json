@@ -1,0 +1,30 @@
+{
+  "_key": "!items!b4bc4c8913ab3c75",
+  "doc": {
+    "_id": "b4bc4c8913ab3c75",
+    "name": "HALO Parachute",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Surveillance and Security"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Surveillance and Security",
+      "concealability": "-",
+      "rating": null,
+      "cost": 1000,
+      "weight": 40,
+      "availability": "10/2wks",
+      "streetIndex": "1",
+      "bookPage": "cc.56",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

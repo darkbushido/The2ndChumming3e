@@ -1,0 +1,30 @@
+{
+  "_key": "!items!81cb74917f894693",
+  "doc": {
+    "_id": "81cb74917f894693",
+    "name": "SkillSoft Jukebox 300MP 5 prts",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 30000,
+      "weight": 0,
+      "availability": "3/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Juk<br><strong>Memory:</strong> 300</p>"
+    }
+  },
+  "embedded": {}
+}

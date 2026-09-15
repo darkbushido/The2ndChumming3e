@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0193",
+  "doc": {
+    "_id": "sr3e-spell-0193",
+    "name": "Shape Earth",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Transformation",
+      "type": "Physical",
+      "duration": "Sustained",
+      "range": "LOS(A)",
+      "drain": "+2(M)",
+      "target": "4",
+      "bookPage": "mits.146",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

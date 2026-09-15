@@ -1,0 +1,34 @@
+{
+  "_key": "!items!a83577832922f309",
+  "doc": {
+    "_id": "a83577832922f309",
+    "name": "8-Rnd Clip (Shock Lock)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "1/2 Door Barrier",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 8,
+      "rounds": 0,
+      "weight": 1.35,
+      "cost": 61,
+      "availability": "5/48hrs",
+      "streetIndex": "2",
+      "bookPage": "cc.39",
+      "notes": "<p>Shock Lock rounds — a type this system does not model; its rules are the GM's (cc.39).</p>"
+    }
+  },
+  "embedded": {}
+}

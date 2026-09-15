@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0143",
+  "doc": {
+    "_id": "sr3e-firearm-0143",
+    "name": "Sig Sauer P300",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "HPist",
+      "skill": "Pistols",
+      "attribute": "quickness",
+      "concealability": "4",
+      "ammunition": "18(c)",
+      "mode": "SA",
+      "damage": "9M",
+      "weight": "3.25",
+      "availability": "8/48hrs",
+      "cost": 800,
+      "streetIndex": "2",
+      "accessories": "Caseless, Laser Sight, Silencer",
+      "bookPage": "pw.17",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

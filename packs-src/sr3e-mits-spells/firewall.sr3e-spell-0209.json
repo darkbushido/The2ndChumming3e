@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0209",
+  "doc": {
+    "_id": "sr3e-spell-0209",
+    "name": "Firewall",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Manipulation",
+      "type": "Physical",
+      "duration": "Sustained",
+      "range": "LOS(A)",
+      "drain": "+2(S)",
+      "target": "4",
+      "bookPage": "mits.147",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

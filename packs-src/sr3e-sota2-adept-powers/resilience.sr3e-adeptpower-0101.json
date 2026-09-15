@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0101",
+  "doc": {
+    "_id": "sr3e-adeptpower-0101",
+    "name": "Resilience*",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.25,
+      "hasLevels": true,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.67",
+      "description": "The adept can stabilize Deadly Wounds and can minimize effects of extreme wounds such as loosing limbs."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

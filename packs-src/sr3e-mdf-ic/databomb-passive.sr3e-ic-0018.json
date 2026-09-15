@@ -1,0 +1,24 @@
+{
+  "_key": "!actors!sr3e-ic-0018",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/agent-default.webp",
+    "_id": "sr3e-ic-0018",
+    "name": "Databomb (Passive)",
+    "type": "ic",
+    "system": {
+      "icType": "Scrambler",
+      "grading": "White",
+      "rating": 6,
+      "systemRating": 6,
+      "memoryRequired": 144,
+      "damage": "",
+      "hostSecurityTier": "Blue",
+      "notes": "<p><strong>Passive trap.</strong> Attached to a data file. On unauthorized access without Kill Switch program, self-deletes the protected file and triggers Alert. Memory: Rating squared x4 Mp.</p>",
+      "woundValue": 0,
+      "bookPage": "matrix-defragged.25"
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

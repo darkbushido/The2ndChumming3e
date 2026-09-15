@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-prog-0023",
+  "doc": {
+    "_id": "sr3e-prog-0023",
+    "name": "Sleaze",
+    "type": "program",
+    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "system": {
+      "name": "Sleaze",
+      "type": "Program",
+      "category": "Operational",
+      "rating": 0,
+      "sizeMp": 0,
+      "multiplier": 4,
+      "degradable": true,
+      "description": "<p>Allows user to harmlessly pass-through (ignore) any Matrix barrier with rating equal-to or lower than program's current rating.</p><p><em>Degrades by 1 point after each use.</em></p>",
+      "associatedPrompt": "Movement",
+      "effect": "Barrier Bypass",
+      "bookPage": "matrix-defragged.32"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-1250",
+  "doc": {
+    "_id": "sr3e-firearm-1250",
+    "name": "Ares Exec. Protector",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "SMG",
+      "skill": "SMG",
+      "attribute": "quickness",
+      "concealability": "10/3",
+      "ammunition": "35(c)",
+      "mode": "SA/BF/FA",
+      "damage": "6M",
+      "weight": "5/3",
+      "availability": "6/3days",
+      "cost": 2000,
+      "streetIndex": "1.5",
+      "accessories": "Sound Suppressor, Fold Stock(1RC) -(Briefcase SMG)",
+      "bookPage": "cc.31",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

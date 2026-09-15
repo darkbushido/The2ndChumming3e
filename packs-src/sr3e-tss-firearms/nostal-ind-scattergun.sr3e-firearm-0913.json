@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-firearm-0913",
+  "doc": {
+    "_id": "sr3e-firearm-0913",
+    "name": "Nostal. Ind. Scattergun",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "system": {
+      "category": "ShtG",
+      "skill": "Shotguns",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "3(c)",
+      "mode": "SS",
+      "damage": "10S(f)",
+      "weight": "5",
+      "availability": "8/48hrs",
+      "cost": 280,
+      "streetIndex": "2.75",
+      "accessories": "Uses Flechette rules",
+      "bookPage": "tss.2",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

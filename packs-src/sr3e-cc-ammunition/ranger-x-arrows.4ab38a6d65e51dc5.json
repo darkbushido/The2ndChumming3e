@@ -1,0 +1,34 @@
+{
+  "_key": "!items!4ab38a6d65e51dc5",
+  "doc": {
+    "_id": "4ab38a6d65e51dc5",
+    "name": "Ranger-X Arrows",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Bow and crossbow"
+      }
+    },
+    "system": {
+      "concealability": "4",
+      "damage": "As bow",
+      "ammoType": "regular",
+      "loadMechanism": "arrow",
+      "countedIn": "rounds",
+      "rounds": 1,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 0.08,
+      "cost": 18,
+      "availability": "4/36hrs",
+      "streetIndex": "1",
+      "bookPage": "cc.13",
+      "notes": ""
+    }
+  },
+  "embedded": {}
+}

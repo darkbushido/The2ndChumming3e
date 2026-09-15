@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-armor-0312",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+    "_id": "sr3e-armor-0312",
+    "name": "\"Mirage Gear\" Flak Vest",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 2,
+      "impact": 1,
+      "weight": 1.5,
+      "availability": "7/4days",
+      "cost": 1275,
+      "streetIndex": "2.5",
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

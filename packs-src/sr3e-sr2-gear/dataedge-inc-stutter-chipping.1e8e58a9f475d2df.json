@@ -1,0 +1,30 @@
+{
+  "_key": "!items!1e8e58a9f475d2df",
+  "doc": {
+    "_id": "1e8e58a9f475d2df",
+    "name": "DataEdge Inc. Stutter Chipping",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": null,
+      "cost": 3100,
+      "weight": 0,
+      "availability": "4/48hrs",
+      "streetIndex": "1.5",
+      "bookPage": "sr2.244",
+      "description": "<p><strong>Type:</strong> Know<br><strong>Memory:</strong> 20</p>"
+    }
+  },
+  "embedded": {}
+}

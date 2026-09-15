@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0059",
+  "doc": {
+    "_id": "sr3e-melee-0059",
+    "name": "Lance",
+    "type": "melee",
+    "system": {
+      "category": "POL",
+      "skill": "Pole Arms/Staff",
+      "attribute": "strength",
+      "concealability": "-",
+      "reach": "2",
+      "damage": "(kph/5)M",
+      "weight": "2",
+      "availability": "4/12hrs",
+      "cost": 60,
+      "streetIndex": "1",
+      "legal": true,
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}

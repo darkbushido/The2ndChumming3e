@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0035",
+  "doc": {
+    "_id": "sr3e-drone-0035",
+    "name": "MCT Indrahar O-5P Surv. Drone",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 108825,
+      "streetIndex": 1.5,
+      "availability": "6/6 days",
+      "seating": 0,
+      "bookPage": "sta2.39",
+      "notes": "Remote-Control Interface, Rigger Adaptation, ECCM 6, Enhanced Sensors 6 | Alt-mode Speed/Accel: 60(300)/20",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 60,
+          "base": 60
+        },
+        "accel": {
+          "value": 20,
+          "base": 20
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 6,
+          "base": 6
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 3,
+          "base": 3
+        },
+        "sensor": {
+          "value": 6,
+          "base": 6
+        },
+        "cargo": {
+          "value": 2,
+          "base": 2
+        },
+        "load": {
+          "value": 100,
+          "base": 100
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

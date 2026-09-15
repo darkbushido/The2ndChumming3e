@@ -1,0 +1,34 @@
+{
+  "_key": "!items!6c85a38b7830309b",
+  "doc": {
+    "_id": "6c85a38b7830309b",
+    "name": "Micro Flares",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "10",
+      "damage": "6M",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "rounds",
+      "rounds": 1,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 0,
+      "cost": 75,
+      "availability": "Always",
+      "streetIndex": "1",
+      "bookPage": "sr3.295",
+      "notes": "<p>Not one of the types this system models, or a combination of them — its rules are the GM's.</p><p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>"
+    }
+  },
+  "embedded": {}
+}

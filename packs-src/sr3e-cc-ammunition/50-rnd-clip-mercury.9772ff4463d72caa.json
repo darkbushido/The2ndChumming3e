@@ -1,0 +1,34 @@
+{
+  "_key": "!items!9772ff4463d72caa",
+  "doc": {
+    "_id": "9772ff4463d72caa",
+    "name": "50-Rnd Clip (Mercury)",
+    "type": "ammunition",
+    "img": "icons/svg/skull.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Ammunition"
+      }
+    },
+    "system": {
+      "concealability": "8",
+      "damage": "-",
+      "ammoType": "regular",
+      "loadMechanism": "c",
+      "countedIn": "reloads",
+      "reloads": 1,
+      "roundsPerReload": 50,
+      "rounds": 0,
+      "weight": 4.5,
+      "cost": 255,
+      "availability": "6/48hrs",
+      "streetIndex": "2",
+      "bookPage": "cc.38",
+      "notes": "<p>Mercury rounds — a type this system does not model; its rules are the GM's (cc.38).</p>"
+    }
+  },
+  "embedded": {}
+}

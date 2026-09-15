@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0096",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0096",
+    "name": "Assault Cannon Cust. Kit",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 1000,
+      "availability": "6/42hrs",
+      "streetIndex": "2.5",
+      "installEquipment": "Weapon Kit",
+      "installTime": "24 hrs/Vehicle B/R(4)",
+      "cfCost": "0",
+      "load": "1",
+      "bookPage": "r3.136",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

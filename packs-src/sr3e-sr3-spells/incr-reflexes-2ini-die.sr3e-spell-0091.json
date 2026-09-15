@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-spell-0091",
+  "doc": {
+    "_id": "sr3e-spell-0091",
+    "name": "Incr. Reflexes +2INI DIE",
+    "type": "spell",
+    "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+    "system": {
+      "category": "Health",
+      "type": "Mana",
+      "duration": "Sustained",
+      "range": "T",
+      "drain": "+1(D)",
+      "target": "REA(V)",
+      "bookPage": "sr3.194",
+      "damage": "",
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

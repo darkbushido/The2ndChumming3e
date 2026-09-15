@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-cyberware-0431",
+  "doc": {
+    "_id": "sr3e-cyberware-0431",
+    "name": "Eyes, Image Link",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Eyeware",
+      "essenceCost": 0.2,
+      "cost": 1600,
+      "availability": "4/48 hours",
+      "streetIndex": 2,
+      "legalCode": "Legal",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.300",
+      "grade": "Standard",
+      "rating": 0,
+      "description": "Display text and images in field of vision"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

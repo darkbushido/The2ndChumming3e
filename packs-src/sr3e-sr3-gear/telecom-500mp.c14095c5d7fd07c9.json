@@ -1,0 +1,30 @@
+{
+  "_key": "!items!c14095c5d7fd07c9",
+  "doc": {
+    "_id": "c14095c5d7fd07c9",
+    "name": "Telecom (500Mp)",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "-",
+      "rating": null,
+      "cost": 15000,
+      "weight": 5,
+      "availability": "Always",
+      "streetIndex": "1",
+      "bookPage": "sr3.286",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

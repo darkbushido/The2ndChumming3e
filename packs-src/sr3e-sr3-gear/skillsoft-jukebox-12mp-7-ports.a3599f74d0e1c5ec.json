@@ -1,0 +1,30 @@
+{
+  "_key": "!items!a3599f74d0e1c5ec",
+  "doc": {
+    "_id": "a3599f74d0e1c5ec",
+    "name": "SkillSoft Jukebox 12MP 7 ports",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 1,
+      "cost": 1680,
+      "weight": 0,
+      "availability": "3/72hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Juk<br><strong>Memory:</strong> 12</p>"
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0082",
+  "doc": {
+    "_id": "sr3e-vehicle-0082",
+    "name": "Daimler Benz Swatch C",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "car",
+      "cost": 80000,
+      "streetIndex": 1,
+      "availability": "2/24hrs",
+      "bookPage": "tss.6",
+      "seating": 2,
+      "notes": "APPS, Anti-Theft System V, Gridlink, optional Suncell and roof rack",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 2,
+          "base": 2
+        },
+        "handlingOffRoad": {
+          "value": 7,
+          "base": 7
+        },
+        "speed": {
+          "value": 100,
+          "base": 100
+        },
+        "accel": {
+          "value": 5,
+          "base": 5
+        },
+        "body": {
+          "value": 3,
+          "base": 3
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 6,
+          "base": 6
+        },
+        "autonav": {
+          "value": 4,
+          "base": 4
+        },
+        "pilot": {
+          "value": 1,
+          "base": 1
+        },
+        "sensor": {
+          "value": 0,
+          "base": 0
+        },
+        "cargo": {
+          "value": 2,
+          "base": 2
+        },
+        "load": {
+          "value": 40,
+          "base": 40
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

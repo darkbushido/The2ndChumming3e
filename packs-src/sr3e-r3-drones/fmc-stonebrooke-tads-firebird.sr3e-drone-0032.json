@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-drone-0032",
+  "doc": {
+    "_id": "sr3e-drone-0032",
+    "name": "FMC-Stonebrooke TADS Firebird",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "system": {
+      "vehicleType": "drone",
+      "cost": 52000,
+      "streetIndex": 2,
+      "availability": "9/9 days",
+      "seating": 0,
+      "bookPage": "r3.175",
+      "notes": "Remote-Control Interface, Rigger Adaptation, BattleTac FDDM | Alt-mode Speed/Accel: 40(105)/30",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 40,
+          "base": 40
+        },
+        "accel": {
+          "value": 30,
+          "base": 30
+        },
+        "body": {
+          "value": 2,
+          "base": 2
+        },
+        "armor": {
+          "value": 0,
+          "base": 0
+        },
+        "sig": {
+          "value": 6,
+          "base": 6
+        },
+        "autonav": {
+          "value": 0,
+          "base": 0
+        },
+        "pilot": {
+          "value": 2,
+          "base": 2
+        },
+        "sensor": {
+          "value": 3,
+          "base": 3
+        },
+        "cargo": {
+          "value": 0,
+          "base": 0
+        },
+        "load": {
+          "value": 5,
+          "base": 5
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

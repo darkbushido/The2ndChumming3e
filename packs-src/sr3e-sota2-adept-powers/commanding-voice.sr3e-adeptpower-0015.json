@@ -1,0 +1,19 @@
+{
+  "_key": "!items!sr3e-adeptpower-0015",
+  "doc": {
+    "_id": "sr3e-adeptpower-0015",
+    "name": "Commanding Voice",
+    "type": "adeptpower",
+    "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+    "system": {
+      "powerCost": 0.5,
+      "hasLevels": false,
+      "level": 1,
+      "mods": "",
+      "bookPage": "sta2.64",
+      "description": "Adept can speak a Command with three or less words. Opposed test between adepts Charisma and opponents Willpower. If the adept wins the opponent is either distracted or obeys the command (GM)."
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

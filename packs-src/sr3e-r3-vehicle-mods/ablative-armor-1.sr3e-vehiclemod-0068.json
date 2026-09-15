@@ -1,0 +1,22 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0068",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0068",
+    "name": "Ablative Armor [1]",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 700,
+      "availability": "8/14days",
+      "streetIndex": "2",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "6 hrs/no test needed",
+      "cfCost": "0",
+      "load": "Body*100kg",
+      "bookPage": "r3.131",
+      "description": "2pts not hardened"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

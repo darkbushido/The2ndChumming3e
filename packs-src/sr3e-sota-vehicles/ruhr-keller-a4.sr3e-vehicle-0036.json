@@ -1,0 +1,74 @@
+{
+  "_key": "!actors!sr3e-vehicle-0036",
+  "doc": {
+    "_id": "sr3e-vehicle-0036",
+    "name": "Ruhr. Keller A4",
+    "type": "vehicle",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "vehicleType": "military",
+      "cost": 4600000,
+      "streetIndex": 4,
+      "availability": "-",
+      "bookPage": "sota.78",
+      "seating": 4,
+      "notes": "Amphibious Operation 3, Contingency Maneuver Controls 9, Drive-by-Wire 1, EnviroSeal(gas water engine), 2x4 External Rocket Mounts, Large Smoke Projector, Large Turret(1.6 CF ammo bin for 160 railgun slugs), Life Support(100 Man-Hours), Medium Launch Control Systems, Micro-turret(AA capable Recoil Adjustment 4 0.5 CF ammo bin for 5000 rds HVAR ammo), Rigger Adaption, Smart Armor System, Smart Materials",
+      "damage": {
+        "value": 0
+      },
+      "attributes": {
+        "handling": {
+          "value": 4,
+          "base": 4
+        },
+        "handlingOffRoad": {
+          "value": 4,
+          "base": 4
+        },
+        "speed": {
+          "value": 120,
+          "base": 120
+        },
+        "accel": {
+          "value": 10,
+          "base": 10
+        },
+        "body": {
+          "value": 10,
+          "base": 10
+        },
+        "armor": {
+          "value": 28,
+          "base": 28
+        },
+        "sig": {
+          "value": 2,
+          "base": 2
+        },
+        "autonav": {
+          "value": 2,
+          "base": 2
+        },
+        "pilot": {
+          "value": 0,
+          "base": 0
+        },
+        "sensor": {
+          "value": 7,
+          "base": 7
+        },
+        "cargo": {
+          "value": 12,
+          "base": 12
+        },
+        "load": {
+          "value": 1775,
+          "base": 1775
+        }
+      }
+    },
+    "items": [],
+    "effects": []
+  },
+  "embedded": {}
+}

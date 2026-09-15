@@ -1,0 +1,31 @@
+{
+  "_key": "!items!261bf73194653d37",
+  "doc": {
+    "_id": "261bf73194653d37",
+    "name": "Methylphenidate",
+    "type": "drug",
+    "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Drugs"
+      }
+    },
+    "system": {
+      "category": "",
+      "addiction": "3P",
+      "tolerance": "5",
+      "effect": "",
+      "speed": "",
+      "vector": "",
+      "cost": 25,
+      "availability": "4/3hrs",
+      "streetIndex": "1.8",
+      "bookPage": "sr2.246",
+      "notes": "<p><strong>Strength:</strong> 4</p>"
+    }
+  },
+  "embedded": {}
+}

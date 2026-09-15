@@ -1,0 +1,30 @@
+{
+  "_key": "!items!d1a6149ce21d3060",
+  "doc": {
+    "_id": "d1a6149ce21d3060",
+    "name": "Chemical Analyzer Lvl 1",
+    "type": "gear",
+    "img": "icons/svg/chest.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Stuff With Ratings"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Stuff With Ratings",
+      "concealability": "5",
+      "rating": 1,
+      "cost": 10000,
+      "weight": 0.5,
+      "availability": "4/5days",
+      "streetIndex": "1",
+      "bookPage": "sr2.252",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

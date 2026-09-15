@@ -1,0 +1,26 @@
+{
+  "_key": "!items!sr3e-melee-0099",
+  "doc": {
+    "_id": "sr3e-melee-0099",
+    "name": "Bio-Injector",
+    "type": "melee",
+    "system": {
+      "category": "other",
+      "skill": "Armed Combat",
+      "attribute": "strength",
+      "concealability": "8",
+      "reach": "0",
+      "damage": "5L + drug",
+      "weight": ".5",
+      "availability": "10/96hrs",
+      "cost": 15000,
+      "streetIndex": "1",
+      "legal": true,
+      "bookPage": "sr2.???",
+      "notes": ""
+    },
+    "effects": [],
+    "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  },
+  "embedded": {}
+}
