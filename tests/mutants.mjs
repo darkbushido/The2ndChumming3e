@@ -30,8 +30,23 @@ const MIJI  = { module: '../scripts/SR3EMIJI.js',            klass: 'SR3EMIJI'  
 const HEAL  = { module: '../scripts/SR3EHealing.js',         klass: 'SR3EHealing' };
 const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating' };
 const AMMO   = { module: '../scripts/data/ammo-stock.mjs',   klass: 'AmmoStock' };
+const BOOKPAGE = { module: '../scripts/data/book-page.mjs',  klass: 'BookPage' };
 
 export const MUTANTS = [
+  {
+    id:     'bookpage-sta2-not-aliased',
+    suite:  'book-page',
+    ...BOOKPAGE, method: 'codes',
+    was:    'upstream\'s `sta2` read as its own book — all 63 SOTA 2064 documents reported as filed under the wrong one',
+    impl:   bp => String(bp ?? '').split(',').map(s => /^([a-z0-9-]+)\./i.exec(s.trim())?.[1]?.toLowerCase()).filter(Boolean),
+  },
+  {
+    id:     'bookpage-placeholder-counts',
+    suite:  'book-page',
+    ...BOOKPAGE, method: 'missing',
+    was:    'only a blank page counted as missing — the SR2 import\'s 314 "sr2.???" looked sourced',
+    impl:   bp => !String(bp ?? '').trim(),
+  },
   {
     id:     'reload-docks-rounds-for-reloads',
     suite:  'ammo-stock',
@@ -1303,6 +1318,22 @@ export const MUTANTS = [
     was:    'the Drain card read base Willpower first, so a Pain Editor\'s or Adrenal Pump\'s +1 '
           + 'Willpower never reached the Drain Resistance Test (SR3 p.183)',
     impl:   (attr, key = 'willpower') => attr?.[key]?.base ?? attr?.[key]?.value ?? 1,
+  },
+  {
+    id:     'cybercombat-attack-ignores-wounds',
+    suite:  'wound-modifiers',
+    ...ACTOR, method: '_buildCCParticipant', needsOriginal: '_buildCCParticipantReal',
+    was:    'SR3 p.125 — the Injury Modifier applies to nearly all tests except resisting or avoiding '
+          + 'damage. The cybercombat card rolls through _rollWave and never added it to the attack',
+    impl:   async function (actor) { return this._buildCCParticipantReal(actor, { attacking: false }); },
+  },
+  {
+    id:     'grenade-throw-ignores-wounds',
+    suite:  'aoe-throw-tn',
+    ...ITEM, method: 'throwPreTN',
+    was:    'SR3 p.126 — wound modifiers apply to every test. The grenade dialog built its TN from 4 + '
+          + 'range while the throw skipped rollPool\'s wound modifier, so wounds never reached a throw',
+    impl:   ({ armorQTN = 0 } = {}) => ({ mod: Math.max(0, Number(armorQTN) || 0), parts: [] }),
   },
   {
     id:     'next-step-before-the-explosions',

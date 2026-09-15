@@ -1925,6 +1925,12 @@ they stay archived.
 
 ## 11. Restore the sr3e-macros pack (and the character importer's delivery)
 
+> ⚠ **Checked 2026-09-14 — lower stakes than this entry says.** The pack only ever listed ONE macro
+> (the Nullsheen importer, `populate-macros.js`), and the install's leftover `sr3e-macros` holds **0**
+> documents (as do both `sr3e-odm-*`). The importer is **not** undelivered: the `ready` hook in
+> `scripts/sr3e.js` creates it in the GM's macro library on first load, with the Chrome Threat
+> Generator and two populate macros. Restoring the pack would only add a compendium copy.
+
 **Never archived.** `f457d3c` dropped `medical`, `odm-cyberdecks`, `odm-programs` and
 `macros` together because each **shipped empty**, waiting on a populate macro never run.
 Verified: no Macro-type documents in `archive/non-sr3-content/`; the pack tree at
@@ -7726,6 +7732,50 @@ count; it would have the moment it did.
 
 **Progress:** `GearData` gained `bookPage` (with `rating`, `availability`, `streetIndex`) in 0.5.2
 — [#118](#118) — and the character importer now keeps the export's `BookPage` for plain gear.
+
+### 2026-09-13 — built on `feature/book-pages`: 934 → 200 missing
+
+All four steps done; **734 documents** given a page (repo and install), **200** left.
+1. **Schema** — `bookPage` on Skill, Quality, Summoning, ComplexForm, Program, Cyberdeck and Contact
+   items and on Character, NPC, IC, Agent and Host actors (data-model change → full restart).
+2. **Filled** by `tools/fill-book-pages.mjs` from `tools/data/book-pages.json` — every entry carries
+   its name and *why*, so the sourcing can be reviewed line by line:
+   - **Skills** 420/438: 316 from the upstream generator's own `source`; knowledge, language and
+     B/R skills the core book describes only as a category get that category's section (Knowledge
+     p.90, Language p.91, Build/Repair p.85 — each read in the PDF); Program Design Matrix p.25;
+     Hacking / Cybercombat / Programming *Matrix Defragged* p.11.
+   - **Contacts** 62/62 from their notes' own citation (`lbb.53`); the **example characters** 4/4
+     from the Little Black Book's contents page (lbb.38-40). New code **`lbb`**.
+   - **Matrix Defragged** 88/116 from the PDF (printed page = PDF page): decks p.35, programs
+     pp.28-32, IC entries pp.40-44, passive IC p.25.
+   - **SR2 `???`** 160/314 from the upstream SR2 data by name.
+3. **`npm run packs:check`** now reports missing pages and pages naming another book (information,
+   not yet a fault). **`tests/book-page.test.mjs`** ratchets the shipped count: 200, may only fall.
+4. **Shown** as *"SR3 p.303"* under the raw code on every item sheet (`scripts/data/book-page.mjs`,
+   `BookPage.format`) — including the seven layouts that never had the field — and on the actor Bio tab.
+
+⚠ **Correction:** step 2 above says *"the SR2 core PDF is in the library"*. **It is not** — 32 SR3
+books, no SR2 core. That is why 154 SR2 placeholders stay `???`.
+
+**Still missing (200), and why:**
+| | Count | Needs |
+|---|---:|---|
+| SR2 packs `???` | 154 | the SR2 core PDF (84 are "unknown" even upstream) |
+| `sr3e-mdf-agents` | 17 | not in the book — this project's own (commit `6e06863`) |
+| `sr3e-mdf-hosts` | 10 | not in the book — "example hosts added" (`b2d8c3e`) |
+| Area Knowledge skills | 15 | no page in SR3 core; upstream `sr3.XXX` |
+| Artisan, Performance, Forgery | 3 | not in SR3 core; upstream `sr3.XXX` |
+| Hermes Ikon | 1 | not in *Matrix Defragged*'s deck table |
+
+**Decision needed — misfiled content** (now visible because it has a page): `packs:check` lists
+**141** documents whose page names a different book from their pack. **121 are fan content (`pw`)
+and 1 `cp`** sitting in the SR2 core packs, i.e. shipping un-toggleable fan material, which the
+archive policy says belongs in `archive/non-sr3-content/`; **21** are SSC, Fields of Fire and
+Rigger 2 items in SR2 core packs (SSC and FoF have packs of their own; Rigger 2 has no code); and
+**Kamikaze** (`sr3e-mm-drugs`) is SR2. Moving them is a content decision, not a page fix.
+
+What the system writes for content it made itself (the 27 MDF agents and hosts) is also open — a
+`sr3e` provenance code, or an exemption in `check-packs`.
 
 <a id="118"></a>
 

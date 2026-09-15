@@ -223,6 +223,7 @@ export class SkillData extends foundry.abstract.TypeDataModel {
 
   static defineSchema() {
     return {
+      bookPage:     new StringField({ initial: '' }),   // TODO 117 — every shipped document carries a book and page
       rating:          new NumberField({ integer: true, initial: 1, min: 0 }),
       force:           new NumberField({ integer: true, initial: 0, min: 0 }),
       category:        new StringField({ initial: '' }),
@@ -242,6 +243,7 @@ export class SkillData extends foundry.abstract.TypeDataModel {
 export class QualityData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
+      bookPage:     new StringField({ initial: '' }),   // TODO 117 — every shipped document carries a book and page
       qualityType:  new StringField({ initial: 'positive' }),
       karmaCost:    new NumberField({ integer: true, initial: 0 }),
       description:  new HTMLField({ initial: '', required: false }),
@@ -450,6 +452,7 @@ export class AdeptPowerData extends foundry.abstract.TypeDataModel {
 export class SummoningData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
+      bookPage:     new StringField({ initial: '' }),   // TODO 117 — every shipped document carries a book and page
       spiritType: new StringField({ initial: 'earth_elemental' }),
       notes:      new HTMLField({ initial: '', required: false }),
     };
@@ -461,6 +464,7 @@ export class SummoningData extends foundry.abstract.TypeDataModel {
 export class ComplexFormData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
+      bookPage:     new StringField({ initial: '' }),   // TODO 117 — every shipped document carries a book and page
       rating:      new NumberField({ integer: true, initial: 1, min: 0 }),
       duration:    new StringField({ initial: '' }),
       fade:        new StringField({ initial: '' }),
@@ -472,6 +476,7 @@ export class ComplexFormData extends foundry.abstract.TypeDataModel {
 export class ProgramData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
+      bookPage:     new StringField({ initial: '' }),   // TODO 117 — every shipped document carries a book and page
       name:             new StringField({ initial: '' }),
       type:             new StringField({ initial: '' }),
       category:         new StringField({ initial: '' }),
@@ -490,6 +495,7 @@ export class ProgramData extends foundry.abstract.TypeDataModel {
 export class CyberdeckData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
+      bookPage:     new StringField({ initial: '' }),   // TODO 117 — every shipped document carries a book and page
       era:           new StringField({ initial: '' }),
       cost:          new NumberField({ integer: true, initial: 0, min: 0 }),
       streetIndex:   new NumberField({ initial: 0, min: 0 }),
@@ -568,6 +574,7 @@ export class CyberdeckData extends foundry.abstract.TypeDataModel {
 export class ContactData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
+      bookPage:     new StringField({ initial: '' }),   // TODO 117 — every shipped document carries a book and page
       loyalty:    new NumberField({ integer: true, initial: 1, min: 1, max: 6 }),
       connection: new NumberField({ integer: true, initial: 1, min: 1, max: 6 }),
       archetype:  new StringField({ initial: '' }),

@@ -191,4 +191,21 @@ export async function run(t) {
   }
   t.ok('ward fool → rollOpposedPair', /rollOpposedPair\('ward-fool'/.test(read('scripts/documents/SR3EWard.js')));
   t.ok('the chase 💥 is gated to the user who rolled', /sr-chase-open-explode-btn[\s\S]{0,300}pl\.userId !== game\.user\.id/.test(read('scripts/sr3e.js')));
+
+  /* ── A 💥 is rolled ONCE — on the message, not only in memory (2026-09-14) ─────── */
+  // `_usedButtons` resets on reload by design, so an old wave card's 💥 could be clicked after an
+  // F5 and post a new wave for a finished roll; two clients could each roll the same wave.
+  const main = read('scripts/sr3e.js');
+  const explodeHandler = main.slice(main.indexOf("querySelectorAll('.sr-explode-btn')"), main.indexOf("querySelectorAll('.sr-chase-open-explode-btn')"));
+  const chaseHandler   = main.slice(main.indexOf("querySelectorAll('.sr-chase-open-explode-btn')"), main.indexOf('"Resist Damage" button'));
+  for (const [what, src, cls] of [['💥', explodeHandler, 'explode'], ['chase 💥', chaseHandler, 'chaseexplode']]) {
+    t.ok(`${what}: a 💥 already rolled renders spent, from the message flag`, new RegExp(`_explosionRolled\\(message, '${cls}', i\\)\\) return _spentExplodeBtn`).test(src));
+    t.ok(`${what}: the click claims it on the message and stops if someone already did`,
+      new RegExp(`if \\(!await _claimExplosion\\(mid, '${cls}', i\\)\\) return _spentExplodeBtn`).test(src));
+  }
+  t.ok('…the claim comes BEFORE the roll', explodeHandler.indexOf('_claimExplosion') < explodeHandler.indexOf('handleExplosionClick'));
+  t.ok('…the chase checks its window BEFORE claiming, so a closed window cannot lock the button',
+    chaseHandler.indexOf('instance?.rendered') < chaseHandler.indexOf('_claimExplosion'));
+  t.ok('the claim is the append-only, GM-serialised card ledger — the first claim stands',
+    /async function _claimExplosion[\s\S]{0,200}_markActed\(mid, _explodeRole\(cls, i\)/.test(main) && /return !res\?\.already/.test(main));
 }

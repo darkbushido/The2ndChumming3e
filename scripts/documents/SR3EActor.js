@@ -184,7 +184,7 @@ export class SR3EActor extends Actor {
       return;
     }
 
-    const atk = await SR3EActor._buildCCParticipant(this);
+    const atk = await SR3EActor._buildCCParticipant(this, { attacking: true });
     if (!atk) return;   // defaulting cancelled
     const mcmPenalty = this._matrixTNPenalty?.() ?? 0;
     const mcmNote = mcmPenalty > 0
@@ -290,7 +290,12 @@ export class SR3EActor extends Actor {
     });
   }
 
-  static async _buildCCParticipant(actor) {
+  /**
+   * One side of a cybercombat card. `attacking` adds the decker's own wound modifier — SR3 p.125:
+   * the Injury Modifier "applies to nearly all Success Tests … except those for resisting or avoiding
+   * damage", so the attack takes it and the defence (avoiding the hit) does not.
+   */
+  static async _buildCCParticipant(actor, { attacking = false } = {}) {
     const sys = actor.system;
 
     if (actor.type === 'ic') {
@@ -372,7 +377,7 @@ export class SR3EActor extends Actor {
 
     return {
       label: 'Decker', skillName,
-      skillDice: ccRating, hackPoolAvail, tn: 4 + mcmPenalty + defTnMod,
+      skillDice: ccRating, hackPoolAvail, tn: 4 + mcmPenalty + defTnMod + (attacking ? SR3EActor.woundTN(actor) : 0),
       damageCode: dmgCode, damageBase: SR3EItem.parseDamageCode(dmgCode),
       firewall: deckFirewall, soakPool: deckMpcp, userMode: sys.matrixUserMode ?? '',
       programId: attackProg?.id ?? null, operatorActorId: null,
@@ -1321,7 +1326,7 @@ export class SR3EActor extends Actor {
       return;
     }
 
-    const atk = await SR3EActor._buildCCParticipant(this);
+    const atk = await SR3EActor._buildCCParticipant(this, { attacking: true });
     if (!atk) return;   // defaulting cancelled
 
     const targetOptions = targets.map(a => {
@@ -7661,9 +7666,13 @@ _prepareCharacter(sys, attr) {
     const atkStr    = attacker?.system?.attributes?.strength?.value ?? 0;
     // A failed Charging Attack adds +2 here rather than costing a separate Quickness test
     // (CC p.86) — see chargingFailure. Zero for every other attack.
+    // The target's own wounds (SR3 p.125 — the Injury Modifier applies to nearly all tests except
+    // resisting or avoiding DAMAGE, and staying upright is neither). The maintainer's ruling,
+    // 2026-09-14: applied, though the threshold also scales with the wound (p.124). Editable.
+    const kdWound   = SR3EActor.woundTN(target);
     const tnDefault = SR3EActor.knockdownTN({
       power: ctx.power, strength: atkStr, isMelee: ctx.isMelee, ammoType: ctx.ammoType,
-    }) + Math.max(0, Math.trunc(Number(ctx.knockdownTNMod) || 0));
+    }) + Math.max(0, Math.trunc(Number(ctx.knockdownTNMod) || 0)) + kdWound;
     const needed  = SR3EActor.knockdownOutcome({ level, tested: false }).needed ?? 2;
     /* Rooting and Enhanced Balance add dice to *"all tests to resist being knocked down,
      * thrown, levitated or otherwise moved against his will"* (MITS p.151, SOTA2 p.65).
@@ -7700,7 +7709,8 @@ _prepareCharacter(sys, attr) {
         <p style="margin-bottom:8px;font-size:12px">
           ${target.name} took a <strong>${SR3EActor._woundName(level)}</strong> wound and must stay on their feet.
         </p>
-        <p style="margin-bottom:8px;font-size:11px;color:var(--sr-muted)">${tnNote}</p>
+        <p style="margin-bottom:8px;font-size:11px;color:var(--sr-muted)">${tnNote}${kdWound
+          ? ` <span style="color:var(--sr-amber)">Includes ${target.name}'s wounds +${kdWound} (p.125).</span>` : ''}</p>
         <label style="display:block;margin-bottom:6px">Body dice
           <input type="number" id="kd-body" value="${bodyDef}" min="1" max="50" style="width:60px;margin-left:6px"/>
           ${kdBonus.dice ? `<span style="font-size:11px;color:var(--sr-gold);margin-left:6px">includes +${kdBonus.dice} from ${kdBonus.labels.join(' + ')}</span>` : ''}
@@ -10399,6 +10409,8 @@ _prepareCharacter(sys, attr) {
           if (!data) return;
           el.querySelector('#atk-source').innerHTML = buildOptions(data.sources);
           el.querySelector('#atk-pool').value = data.firstVal ?? 4;
+          // Their own wounds (SR3 p.125) follow the actor chosen.
+          el.querySelector('#atk-tn').value = 4 + SR3EActor.woundTN(game.actors.get(e.target.value));
         });
         el.querySelector('#atk-source')?.addEventListener('change', (e) => {
           el.querySelector('#atk-pool').value = parseInt(e.target.value) || 1;
@@ -10418,8 +10430,8 @@ _prepareCharacter(sys, attr) {
       <label style="display:block;margin-bottom:6px;font-size:12px">Pool:
         <input type="number" id="${poolId}" value="${defaultData?.firstVal ?? 4}" min="1" max="30" style="width:55px;margin-left:4px"/>
       </label>
-      <label style="display:block;margin-bottom:6px;font-size:12px">TN:
-        <input type="number" id="${tnId}" value="4" min="2" max="30" style="width:55px;margin-left:4px"/>
+      <label style="display:block;margin-bottom:6px;font-size:12px" title="4, plus the actor's own wound modifier (SR3 p.125)">TN:
+        <input type="number" id="${tnId}" value="${4 + SR3EActor.woundTN(game.actors.get(defaultAtkId))}" min="2" max="30" style="width:55px;margin-left:4px"/>
       </label>
       <label style="display:block;margin-bottom:0;font-size:12px">Damage:
         <input type="text" id="${dmgId}" value="4L" style="width:55px;margin-left:4px"/>
@@ -10484,7 +10496,8 @@ _prepareCharacter(sys, attr) {
                 oppActorName:   oppActId === 'other' ? 'Other' : (game.actors.get(oppActId)?.name ?? 'Other'),
                 oppSourceLabel: oppData?.[0]?.label ?? '',
                 oppPool:   Math.max(1, oppData?.[0]?.value || 4),
-                oppTN:     4,
+                // A starting point in their corner — their own wounds included (SR3 p.125).
+                oppTN:     4 + SR3EActor.woundTN(game.actors.get(oppActId)),
                 oppDamage: '4L',
                 physicalDice: shiftKey,
               };
@@ -10896,6 +10909,7 @@ _prepareCharacter(sys, attr) {
           Computer: <strong>${compRating}</strong> &nbsp;|&nbsp;
           Hacking Pool: <strong>${hackPool}</strong> &nbsp;|&nbsp;
           Detect. Factor: <strong>${detectFactor}</strong>
+          ${SR3EActor.woundTN(this) ? `&nbsp;|&nbsp; <span style="color:var(--sr-amber)">Wound +${SR3EActor.woundTN(this)} TN</span>` : ''}
         </p>
         <label>Subsystem:
           <select id="ost-sub" style="width:100%;margin-top:2px">${subsOpts}</select>
@@ -10924,7 +10938,8 @@ _prepareCharacter(sys, attr) {
             utilMod    = Math.max(0, parseInt(dlg.element.querySelector('#ost-util')?.value) || 0);
             hpAlloc    = Math.min(hackPool, Math.max(0, parseInt(dlg.element.querySelector('#ost-hp')?.value) || 0));
             deckerDice = compRating + hpAlloc;
-            deckerTN   = Math.max(2, subR + alertMod - utilMod);
+            // The decker's own wounds (SR3 p.125 — every test but resisting or avoiding damage).
+            deckerTN   = Math.max(2, subR + alertMod - utilMod + SR3EActor.woundTN(this));
           },
         },
         { label: 'Cancel', action: 'cancel' },
@@ -11087,7 +11102,8 @@ _prepareCharacter(sys, attr) {
       return `<option value="${a.id}">${a.name} [${icType}, Rating ${a.system.rating ?? 0}]</option>`;
     }).join('');
 
-    const tnIntruding = SR3EActor._orthoCCTN.intruding[secCode]  ?? 4;
+    // The decker attacks, so their own wounds count (SR3 p.125); the IC's soak does not take any.
+    const tnIntruding = (SR3EActor._orthoCCTN.intruding[secCode] ?? 4) + SR3EActor.woundTN(this);
     const dmgLevel    = SR3EActor._orthoICDmgLevel[secCode] ?? 'Moderate';
     const dmgPower    = deck.mccp ?? 4;  // default attack power: MPCP Rating
 
@@ -11112,7 +11128,7 @@ _prepareCharacter(sys, attr) {
           </label>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <label>Attack TN (${tnIntruding} vs Intruder):
+          <label>Attack TN (${tnIntruding - SR3EActor.woundTN(this)} vs Intruder${SR3EActor.woundTN(this) ? `, wound +${SR3EActor.woundTN(this)}` : ''}):
             <input type="number" id="occ-tn" value="${tnIntruding}" min="2" max="12" style="width:55px;margin-left:4px">
           </label>
           <label>Attack Power (damage):

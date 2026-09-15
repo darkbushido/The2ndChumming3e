@@ -2132,6 +2132,31 @@ function _claimBtn(btn, mid, cls, idx) {
  * reintroduces a distinct bug.
  */
 
+/*
+ * A 💥 is rolled ONCE — recorded on the message, not just in `_usedButtons`. That in-memory set
+ * resets on reload by design, so an old wave card's 💥 could be clicked again after an F5 and post
+ * a fresh wave for a roll long since finished; two clients (the owner and the GM) could also each
+ * roll the same wave. `sr3e.card.mark` is append-only and GM-serialised: the first claim stands.
+ */
+const _explodeRole = (cls, i) => `${cls}:${i}`;
+
+function _explosionRolled(message, cls, i) {
+  return !!message?.getFlag?.('The2ndChumming3e', 'acted')?.[_explodeRole(cls, i)];
+}
+
+function _spentExplodeBtn(btn) {
+  btn.disabled    = true;
+  btn.textContent = '💥 Explosions rolled';
+  btn.title       = 'Already rolled — the next wave is below.';
+}
+
+/** Claim this 💥 on the message. False = someone already rolled it, so it must not roll again. */
+async function _claimExplosion(mid, cls, i) {
+  const res = await _markActed(mid, _explodeRole(cls, i), 'explosions rolled');
+  // null = the GM could not be reached: roll anyway — bookkeeping never blocks the action.
+  return !res?.already;
+}
+
 /** Record that `role` has acted on this card. Routed to the GM; safe to await. */
 async function _markActed(messageId, role, label, data) {
   try {
@@ -2423,6 +2448,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // Rule of Six explosion button
   html.querySelectorAll('.sr-explode-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'explode', i)) return;
+    // Already rolled — recorded on the MESSAGE, so it survives a reload and holds on every client.
+    if (_explosionRolled(message, 'explode', i)) return _spentExplodeBtn(btn);
     // Continuing someone's roll is continuing THEIR roll — the card is visible to
     // the whole table, but only the roller's owner (or the GM) may advance it.
     try {
@@ -2438,6 +2465,7 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       if (!payload) return;
       btn.disabled    = true;
       btn.textContent = '\u23f3 Rolling\u2026';
+      if (!await _claimExplosion(mid, 'explode', i)) return _spentExplodeBtn(btn);
       await SR3EActor.handleExplosionClick(payload);
     });
   });
@@ -2446,6 +2474,7 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   // window of the user who rolled, so only that user's click can land it.
   html.querySelectorAll('.sr-chase-open-explode-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'chaseexplode', i)) return;
+    if (_explosionRolled(message, 'chaseexplode', i)) return _spentExplodeBtn(btn);
     let pl;
     try { pl = JSON.parse(btn.dataset.payload ?? '{}'); } catch { return; }
     if (pl.userId !== game.user.id) {
@@ -2455,12 +2484,17 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.preventDefault();
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'chaseexplode', i)) return;
-      btn.textContent = '⏳ Rolling…';
-      if (await game.sr3e.SR3EVehicleChase.handleOpenTestExplode(pl) === false) {
-        _usedButtons.delete(`${mid}|chaseexplode|${i}`);   // chase window closed — try again once it is open
+      // The chase window must be open BEFORE the claim is recorded — a closed window hands the
+      // button back, and a claim already on the message would lock it for good.
+      if (!game.sr3e.SR3EVehicleChase.instance?.rendered) {
+        ui.notifications.warn('Open the Chase Scene to finish this roll.');
+        _usedButtons.delete(`${mid}|chaseexplode|${i}`);
         btn.disabled = false;
-        btn.textContent = '💥 Roll explosions';
+        return;
       }
+      btn.textContent = '⏳ Rolling…';
+      if (!await _claimExplosion(mid, 'chaseexplode', i)) return _spentExplodeBtn(btn);
+      await game.sr3e.SR3EVehicleChase.handleOpenTestExplode(pl);
     });
   });
 

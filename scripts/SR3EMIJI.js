@@ -110,6 +110,16 @@ export class SR3EMIJI {
     return Math.max(0, rating | 0);
   }
 
+  /**
+   * A rigger's own wound modifier on an EW test — SR3 p.125: the Injury Modifier applies to
+   * "nearly all Success Tests … except those for resisting or avoiding damage", and none of these
+   * is either. 0 for a vehicle rolling for itself. These tests roll through `_rollWave`, which
+   * never adds it, so each TN has to.
+   */
+  static _woundTN(actor) {
+    return game.sr3e.SR3EActor.woundTN(actor);
+  }
+
   /** Controlling rigger of a vehicle (its linked driver). */
   static _riggerOf(vehicle) {
     const id = vehicle?.system?.driverActorId?.trim();
@@ -203,12 +213,15 @@ export class SR3EMIJI {
     const intComp  = this._complementaryDice(intFlux);
     const defComp  = this._complementaryDice(defFlux);
 
+    // Each rigger's own wounds (SR3 p.125: the Injury Modifier applies to nearly all tests, except
+    // resisting or avoiding damage — and resisting an intrusion is neither). 0 for an unmanned drone.
+    const woundTN = a => this._woundTN(a);
     // Intruder TN = defender's remote-control deck rating.
-    const intTN = Math.max(2, defRigger?.system?.ew?.deckRating ?? 4);
+    const intTN = Math.max(2, (defRigger?.system?.ew?.deckRating ?? 4) + woundTN(intRigger));
     // Defender TN = intruder's ECM (Jamming) or protocol-emulation module (others).
-    const defTN = Math.max(2, op.tnStat === 'ecm'
+    const defTN = Math.max(2, (op.tnStat === 'ecm'
       ? (intVehicle?.system?.ew?.ecm ?? 0)
-      : (intRigger?.system?.ew?.protocolModule ?? 0));
+      : (intRigger?.system?.ew?.protocolModule ?? 0)) + woundTN(defRigger));
 
     await this.postMIJICard({
       targetVehicleId:   targetVehicle.id,
@@ -433,7 +446,7 @@ export class SR3EMIJI {
     const pool  = Math.max(1, skill.rating);
     const proto = intRigger.system?.ew?.protocolModule ?? 0;
     const deck  = defRigger?.system?.ew?.deckRating ?? 0;
-    const tn    = Math.max(2, 6 - (proto - deck));
+    const tn    = Math.max(2, 6 - (proto - deck) + this._woundTN(intRigger));
 
     // The allocation dialog waits for the explosions (TN 6 + a deck advantage reaches 7).
     await game.sr3e.SR3EActor.rollThen(intRigger, pool, tn, {
@@ -563,7 +576,7 @@ export class SR3EMIJI {
     if (!defRigger) { ui.notifications.warn('No rigger linked to this vehicle to run the check.'); return; }
     const skill = this._ewSkill(defRigger);
     const pool  = Math.max(1, skill.rating);
-    const tn    = Math.max(2, inf.intrusionFactor ?? 0);
+    const tn    = Math.max(2, (inf.intrusionFactor ?? 0) + this._woundTN(defRigger));
     // The Intrusion Factor is the TN, and it starts at the intruder's skill — 7+ is ordinary.
     await game.sr3e.SR3EActor.rollThen(defRigger, pool, tn, {
       label:    `🔍 ${defRigger.name} — Detect Infiltration`,
@@ -605,6 +618,7 @@ export class SR3EMIJI {
   static async openIVIS(rigger) {
     if (!rigger) return;
     const skill = this._smallUnitTactics(rigger);
+    const wound = this._woundTN(rigger);
 
     // Setup — pool (default SUT rating), TN (default 5), System-channel degradation (editable).
     const wireIvisSetup = (_app, html) => {
@@ -629,8 +643,8 @@ export class SR3EMIJI {
           <label>Small Unit Tactics dice
             <input type="number" id="ivis-pool" value="${skill.rating}" min="1" max="30" style="width:60px;margin-left:6px"/>
           </label>
-          <label>Base TN
-            <input type="number" id="ivis-tn" value="5" min="2" max="30" style="width:60px;margin-left:6px"/>
+          <label>Base TN${wound ? ` (5, wound +${wound})` : ''}
+            <input type="number" id="ivis-tn" value="${5 + wound}" min="2" max="30" style="width:60px;margin-left:6px"/>
           </label>
           <label>System-channel degradation (+TN)
             <input type="number" id="ivis-deg" value="0" min="0" max="9" style="width:60px;margin-left:6px"/>
@@ -757,9 +771,8 @@ export class SR3EMIJI {
       // intruder's vehicle ECM, if we can find it
       (this._liveVehicles().find(v => this._riggerOf(v)?.id === intruder?.id)?.system?.ew?.ecm ?? 0),
     );
-    const tn = Math.max(2, attackerStat + 3);
-
     const roller = rigger ?? targetVehicle;
+    const tn = Math.max(2, attackerStat + 3 + this._woundTN(rigger));
     // TN = the attacker's stat + 3 — a stat of 4 already makes it 7, where 6s explode.
     await game.sr3e.SR3EActor.rollThen(roller, pool, tn, {
       label:    `🛡 ${roller.name} — ECCM Repair`,
@@ -792,7 +805,7 @@ export class SR3EMIJI {
     const rigger  = this._riggerOf(targetVehicle);
     const skill   = this._ewSkill(rigger);
     const pool    = Math.max(1, skill.rating);
-    const tn      = Math.max(2, fp + 4);
+    const tn      = Math.max(2, fp + 4 + this._woundTN(rigger));
     const roller  = rigger ?? targetVehicle;
     // TN = Footprint + 4.
     await game.sr3e.SR3EActor.rollThen(roller, pool, tn, {
