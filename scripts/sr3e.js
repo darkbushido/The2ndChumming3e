@@ -360,16 +360,9 @@ Hooks.once('ready', async () => {
       path: 'scripts/macros/generate-chrome-threat.js',
       img:  'icons/svg/skull.svg',
     },
-    {
-      name: 'Populate SR3E Programming Agents',
-      path: 'scripts/macros/populate-agents.js',
-      img:  'icons/svg/mystery-man.svg',
-    },
-    {
-      name: 'Populate SR3E DataHosts',
-      path: 'scripts/macros/populate-hosts.js',
-      img:  'icons/svg/portal.svg',
-    },
+    // ⚠ The populate-agents / populate-hosts macros used to be created here too. They wrote to
+    // `sr3e-agents` / `sr3e-hosts`, packs gone since the book split, so every GM got two macros
+    // that could only fail. Agents and hosts ship in `sr3e-mdf-agents` / `sr3e-mdf-hosts` (TODO 1).
   ];
 
   for (const def of macros) {

@@ -1930,6 +1930,8 @@ they stay archived.
 > documents (as do both `sr3e-odm-*`). The importer is **not** undelivered: the `ready` hook in
 > `scripts/sr3e.js` creates it in the GM's macro library on first load, with the Chrome Threat
 > Generator and two populate macros. Restoring the pack would only add a compendium copy.
+> **Update (TODO 1):** `populate-macros.js` is deleted, and the two populate macros are no longer
+> created. If a compendium copy is ever wanted, add `sr3e-macros` to `packs-src/` — not a macro.
 
 **Never archived.** `f457d3c` dropped `medical`, `odm-cyberdecks`, `odm-programs` and
 `macros` together because each **shipped empty**, waiting on a populate macro never run.
@@ -3406,7 +3408,29 @@ drop the `Hooks.on`/`Hooks.off` dance and the element-check guard for
 
 ### 🧹 Housekeeping
 
-## 1. Audit and remove dead code — *investigated 2026-08-04; blocked by #4, #8 for deletion only*
+## 1. ✅ Audit and remove dead code — **DONE 2026-09-14**
+
+> **Done.** Both blockers had landed (#4 move-by-wire, #8 the `Mods` parser), and TODO 12 made
+> `packs-src/` the source of truth, so the harvest below was a check rather than an extraction.
+> Every row of the hand-authored macros was compared by name against `packs-src`:
+> agents 17/17 and hosts 10/10 ship (`sr3e-mdf-agents`, `sr3e-mdf-hosts`), medical 19/19;
+> drugs 90/92 — the two missing rows ("MDA, MDMA, other amphetamines", "Somaware Biotech Sleep
+> Inductor") are in no SR3 book; cyberware and bioware ship under the packs' own spellings
+> (`Reaction Enhance [N]`, `Bone Lace, …`), and the rest were invented rows (`Synaptic Booster`,
+> `Cerebral Booster 3`, `Adrenal Surge`). The macros' numbers were older than the packs' and are
+> not kept.
+>
+> **Deleted:** the 11 `populate-*-v2.js`, `populate-skills-v2.js`, `populate-{cyberware,bioware,
+> agents,drugs,hosts,medical,macros,odm-cyberdecks,odm-programs}.js`, the four `update-*-images.js`,
+> `scripts/update-compendium-images.mjs` (every pack it named is pre-split), and the root
+> `build-armor-pack.mjs` / `build-cyberdeck-pack.mjs`. **Bug fixed with it:** the `ready` hook
+> auto-created *Populate SR3E Programming Agents* and *Populate SR3E DataHosts* in every GM's
+> macro library, and both could only fail. The Orthodox pickers' "run the populate macro" warnings
+> now point at Configure Source Books.
+>
+> **Kept:** `import-sr3-character.js`, `generate-chrome-threat.js` (the `ready` hook creates both)
+> and `populate-mr-johnsons-contacts.js` (parsed by `tools/lib/johnson-generator.mjs` and the
+> johnson tools). `tests/macros.test.mjs` pins all of it. The notes below are the original audit.
 
 **Root cause: the book split renamed every content pack from `sr3e-<type>` to
 `sr3e-<book>-<type>`, and no macro was updated.** 24 of 27 macros in `scripts/macros/`

@@ -211,10 +211,8 @@ Keep each entry's `_id` stable — that is its identity; filenames are for your 
 endings on a Windows checkout — which is fatal for `CURRENT`, as LevelDB then looks for a
 manifest file whose name ends in a carriage return and the pack simply fails to open.
 
-⚠ **The `populate-*.js` macros in `scripts/macros/` are mostly stale.** Most target the old
-monolithic pack names (`sr3e-cyberware`, `sr3e-firearms`) which no longer exist, and fail at
-`game.packs.get()` returning undefined. They were never used for the book split — that was done
-by direct LevelDB manipulation. Treat them as reference for their inline data, not as a pipeline.
+The old `populate-*.js` macros are gone (TODO 1): they targeted pack names retired by the book
+split, and every row they carried already ships. Packs are built from `packs-src/` — see CLAUDE.md.
 
 ### Macro pack — currently missing
 

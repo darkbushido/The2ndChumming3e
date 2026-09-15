@@ -216,7 +216,7 @@ No pack in this repo was built that way.** Corrected 2026-09-03.
 | **`packs/<pack>/`** (LevelDB) | **Build output**, still committed because Foundry installs from the branch zip. `npm run packs:build` compiles `packs-src` → `packs/`, rebuilding only packs whose content changed. |
 | The install | **`npm run packs:install`** — a one-way copy from `packs-src` (Foundry CLOSED). Never link the install to the checkout. |
 | Upstream data | Vendored in `rawdata/SRCG-*` (`rawdata/SRCG-README.md`). `tools/build-default-gear.mjs` and `tools/build-odm-packs.mjs` generate their packs from it; everything else was imported once and is now maintained in `packs-src`. |
-| `scripts/macros/populate-*.js` | **Retired** (2026-08-04) and superseded — every document they ever produced is in `packs-src`. Deletable (TODO 1). |
+| The old `populate-*.js` macros | **Deleted** (TODO 1, 2026-09-14) — every row they carried already shipped in a pack. `tests/macros.test.mjs` fails if anything names one again. |
 
 **The workflow:**
 - ⚠ **After a merge with a conflict in `packs/`**: merge the JSON in `packs-src/`, then
@@ -517,10 +517,10 @@ sr3e/
     │   ├── SR3EICSheetOrthodox.js    ← IC sheet (Orthodox SR3)
     │   ├── SR3EAgentSheet.js         ← Agent sheet (Matrix Defragged)
     │   └── SR3EWardSheet.js          ← Ward (astral barrier) sheet
-    └── macros/
-        ├── populate-odm-cyberdecks.js ← Populates sr3e-odm-cyberdecks pack (Orthodox SR3)
-        ├── populate-odm-programs.js   ← Populates sr3e-odm-programs pack (Orthodox SR3)
-        └── populate-drugs.js          ← Populates sr3e-drugs pack
+    └── macros/                       ← world Macro bodies, not modules (the only three left — TODO 1)
+        ├── import-sr3-character.js    ← Nullsheen importer; the `ready` hook adds it to the GM's library
+        ├── generate-chrome-threat.js  ← Chrome Threat Generator; also added by the `ready` hook
+        └── populate-mr-johnsons-contacts.js ← the contacts' generator data, PARSED by tools/lib/johnson-generator.mjs
 ```
 
 ### rawdata/ file naming convention
@@ -1560,8 +1560,8 @@ collapse the field into a pre-multiplied number.
 ### Move-by-wire  · *M&M p.60*
 
 The **shipped pack data is correct** and asserted row-by-row — rating N gives **+N QUI, +2N REA,
-+N initiative dice, +N Athletics/Stealth dice**, ratings 1-4. ⚠ `populate-cyberware.js` still
-carries the pre-[#8] numbers and disagrees with all four rows; the packs are the source of truth.
++N initiative dice, +N Athletics/Stealth dice**, ratings 1-4. The packs are the source of truth
+(the retired `populate-cyberware` macro carried pre-[#8] numbers; it was deleted in TODO 1).
 
 ⚠ **The Quickness bonus is excluded from Reaction and from nothing else.** *"The Quickness bonus
 does not count when calculating the character's Reaction Attribute."* The Combat Pool is
@@ -2264,7 +2264,7 @@ system.roundsFiredThisPhase        ← persisted, recoil accumulator; reset each
 - `armor`: `ballistic` (number), `impact` (number)
 - `skill`: `rating`, `linkedAttribute`, `specialisation`
 - `spell`: `type` ("Mana"/"Physical" — sets **only the damage track**: Mana → Stun, Physical → Physical; it does **not** set the resist attribute), `target` (sets the **resist attribute *and* the cast TN** — `W/B/I/Q/F`/number, suffixes stripped — `SR3EItem._parseSpellTarget`), `category` (**Combat = damaging**: shows the cast Damage-Level dropdown), `drain` (drain-Power/TN formula e.g. "(F/2)" or "(DL+1)" — level = nominated Damage Level ± a `DL` token), `range` (Touch/LOS; an **`(A)` suffix = area effect**, no separate flag), `duration`. **No damage code** — spell power = Force and the level is chosen at cast (the `damage` field is hidden/legacy; only `drain` is required for a complete spell).
-- `drug`: reference-only item type (no roll/mechanic automation — the system has no drug rules yet). `category` (Pharmaceutical Compounds / Depressants / Designer Drugs / Hallucinogens / Magical Compounds / Narcotics / Stimulants), `addiction` (e.g. "2M", "4M+3P", "5M/5P" — M=Mental, P=Physical, all free text), `tolerance`, `effect`, `speed` (onset time), `vector` (delivery method), `availability`, `cost`, `streetIndex`, `bookPage`, `notes`. Populated via `scripts/macros/populate-drugs.js` into the `sr3e-drugs` compendium pack.
+- `drug`: reference-only item type (no roll/mechanic automation — the system has no drug rules yet). `category` (Pharmaceutical Compounds / Depressants / Designer Drugs / Hallucinogens / Magical Compounds / Narcotics / Stimulants), `addiction` (e.g. "2M", "4M+3P", "5M/5P" — M=Mental, P=Physical, all free text), `tolerance`, `effect`, `speed` (onset time), `vector` (delivery method), `availability`, `cost`, `streetIndex`, `bookPage`, `notes`. Shipped in the per-book drug packs (`sr3e-mm-drugs`, …).
 
 ### Weapon category codes → skills
 ```
@@ -2385,8 +2385,8 @@ by `SR3ESourceBooks.rulesetAllows` inside `packAllowed`, so the sidebar and the 
 The two **Matrix Defragged** item packs of the same types (`sr3e-mdf-cyberdecks`, `sr3e-mdf-programs`)
 are tagged `'defragged'` so the Orthodox pickers do not list them; IC, agents and hosts are untagged.
 Presentation only, fails visible; the setting already requires a reload.
-- ⚠ The old `populate-odm-*.js` macros are superseded — several of their program descriptions were
-  wrong (Lock-On, Relocate); the packs describe each utility by category, multiplier and page instead.
+- ⚠ The old `populate-odm-*.js` macros (deleted, TODO 1) had several program descriptions wrong
+  (Lock-On, Relocate); the packs describe each utility by category, multiplier and page instead.
 - Program items store extra fields in `modules[0]` with `_odmType: 'orthodox'` (hardening, storageMemory, responseIncrease) since these don't map to the Defragged `CyberdeckData` schema.
 
 ---

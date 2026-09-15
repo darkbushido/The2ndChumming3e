@@ -3871,7 +3871,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     // sourcebook modules ship their own packs and a fixed pack id would ignore them.
     const docs = await game.sr3e.SR3EItem._documentsOfType('cyberdeck');
     if (!docs.length) {
-      ui.notifications.warn('No cyberdecks found in any compendium — run the populate-odm-cyberdecks macro, or enable a sourcebook module that provides them.');
+      ui.notifications.warn('No cyberdecks found in any compendium — check that the core rulebook is enabled in Configure Source Books, or enable a sourcebook module that provides them.');
       return;
     }
 
@@ -3978,7 +3978,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     // See _onAddOrthodoxCyberdeck — aggregate across packs so module content is included.
     const docs = await game.sr3e.SR3EItem._documentsOfType('program');
     if (!docs.length) {
-      ui.notifications.warn('No programs found in any compendium — run the populate-odm-programs macro, or enable a sourcebook module that provides them.');
+      ui.notifications.warn('No programs found in any compendium — check that the core rulebook is enabled in Configure Source Books, or enable a sourcebook module that provides them.');
       return;
     }
 
