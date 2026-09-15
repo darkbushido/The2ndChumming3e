@@ -8678,6 +8678,13 @@ _prepareCharacter(sys, attr) {
    * their own data. Minimal guardrails.
    */
   async _preUpdate(changed, options, user) {
+    // GM only (the maintainer, 2026-09-15): a player's write to Essence is dropped before anything
+    // converts it — lowering the recorded loss is the refund M&M p.147 forbids. The sheet already
+    // disables both boxes for players; this catches every other path. The install ratchet runs on
+    // the active GM, and actor CREATION (importer, generators) never reaches _preUpdate.
+    if (SR3EActor.stripPlayerEssenceWrites(changed, user?.isGM ?? globalThis.game?.user?.isGM)) {
+      globalThis.ui?.notifications?.warn('Essence loss is permanent — only the GM can change it.');
+    }
     const v = foundry.utils.getProperty(changed, 'system.attributes.essence.value');
     if (v !== undefined && foundry.utils.getProperty(changed, 'system.attributes.essence.lost') === undefined) {
       const base = this.system?.attributes?.essence?.base ?? 6;
@@ -8685,6 +8692,23 @@ _prepareCharacter(sys, attr) {
         Math.max(0, parseFloat((base - (Number(v) || 0)).toFixed(2))));
     }
     return super._preUpdate(changed, options, user);
+  }
+
+  /**
+   * Remove `essence.value` / `essence.lost` from an update made by someone who is not a GM, in
+   * both the nested and the flattened (`'system.attributes.essence.lost'`) spellings. Returns true
+   * if anything was removed. Pure — `changed` is edited in place, as `_preUpdate` requires.
+   */
+  static stripPlayerEssenceWrites(changed, isGM) {
+    if (isGM || !changed || typeof changed !== 'object') return false;
+    let removed = false;
+    for (const k of ['value', 'lost']) {
+      const flat = `system.attributes.essence.${k}`;
+      if (flat in changed) { delete changed[flat]; removed = true; }
+      const ess = changed.system?.attributes?.essence;
+      if (ess && typeof ess === 'object' && k in ess) { delete ess[k]; removed = true; }
+    }
+    return removed;
   }
 
   async spendCombatPool(amount) {

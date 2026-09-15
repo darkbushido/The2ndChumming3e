@@ -234,4 +234,29 @@ export async function run(t) {
     JSON.stringify({ essenceCostBase: 0.5, costBase: 1000 }));
   t.is('baseEssenceCost prefers a stored base', SR3EActor.baseEssenceCost(item({ essenceCost: 0.4, essenceCostBase: 0.5 })), 0.5);
   t.is('…and falls back to essenceCost',        SR3EActor.baseEssenceCost(item({ essenceCost: 0.2 })), 0.2);
+
+  /* ── The Essence controls are the GM's (the maintainer, 2026-09-15) ────────────────────
+   * All three — the Essence box, the "lost" box and ↺ — can LOWER the recorded loss, which is the
+   * refund p.147 forbids. A player could press ↺ and get back the Essence removed chrome cost. */
+  const nested = () => ({ system: { attributes: { essence: { value: 6, lost: null }, body: { base: 5 } } } });
+  const p = nested();
+  t.ok('a player\'s nested Essence write is dropped', SR3EActor.stripPlayerEssenceWrites(p, false));
+  t.eq('…both fields go, the rest of the update stays', p, { system: { attributes: { essence: {}, body: { base: 5 } } } });
+  const flat = { 'system.attributes.essence.lost': null, 'system.nuyen': 50 };
+  SR3EActor.stripPlayerEssenceWrites(flat, false);
+  t.eq('…and the flattened spelling (↺ writes that)', flat, { 'system.nuyen': 50 });
+  const g = nested();
+  t.ok('a GM\'s write is left alone', !SR3EActor.stripPlayerEssenceWrites(g, true) && g.system.attributes.essence.lost === null);
+  t.ok('an update that does not touch Essence reports nothing', !SR3EActor.stripPlayerEssenceWrites({ 'system.nuyen': 5 }, false));
+
+  const { readFileSync } = await import('node:fs');
+  const actorSrc = readFileSync(new URL('../scripts/documents/SR3EActor.js', import.meta.url), 'utf8');
+  const sheetSrc = readFileSync(new URL('../scripts/sheets/SR3EActorSheet.js', import.meta.url), 'utf8');
+  t.ok('_preUpdate strips a non-GM\'s Essence write BEFORE converting it',
+    /async _preUpdate\(changed, options, user\) \{[\s\S]{0,700}stripPlayerEssenceWrites\(changed, user\?\.isGM[\s\S]{0,300}essence\.value'\)/.test(actorSrc));
+  t.ok('the sheet gives both boxes a name (so a value) only for the GM, disabled otherwise',
+    /\$\{essGM \? 'name="system\.attributes\.essence\.value"' : 'disabled'\}/.test(sheetSrc)
+    && /\$\{essGM \? 'name="system\.attributes\.essence\.lost"' : 'disabled'\}/.test(sheetSrc));
+  t.ok('↺ is not rendered for players', /essLost === null \|\| !essGM \? '' : `<a data-action="essenceRecalc"/.test(sheetSrc));
+  t.ok('…and its handler refuses them anyway', /_onEssenceRecalc[\s\S]{0,200}if \(!game\.user\.isGM\)/.test(sheetSrc));
 }

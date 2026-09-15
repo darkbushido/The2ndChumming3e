@@ -817,6 +817,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   // override has ever been recorded, so the value follows installed cyberware instead.
   const essLost      = attr.essence?.lost ?? null;
   const essInstalled = game.sr3e.SR3EActor.installedEssenceCost(this.actor.items);
+  const essGM        = game.user.isGM;   // the Essence controls are the GM's — see the block below
   // TODO 103: warn below 1, danger at 0 or less. Shown, never enforced. The wording quotes the
   // books because the "below 1 needs drugs" reading does not survive them — see essenceState.
   const essState   = game.sr3e.SR3EActor.essenceState(attr.essence?.value ?? 6);
@@ -960,18 +961,22 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       <div class="attr-block attr-special${essState === 'ok' ? '' : ` essence-${essState}`}"
            title="Essence ${attr.essence?.value ?? 6} = base ${attr.essence?.base ?? 6} − ${essLost === null ? `${essInstalled} installed (not overridden)` : `${essLost} lost`}${(d.totalBioIndex??0) > 0 ? ` | Bio Index ${d.totalBioIndex} / ${d.bioIndexCapacity} capacity` : ''}${essWarning}">
         <span class="attr-label" style="color:var(--sr-amber)">Essence${essState === 'ok' ? '' : ' ⚠'}</span>
+        <!-- ⚠ GM ONLY (the maintainer, 2026-09-15). All three controls can lower the recorded loss,
+             and a lower loss is the Essence refund M&M p.147 forbids — so a player sees the numbers
+             and cannot change them: no \`name\` (nothing submitted) and disabled, like Species.
+             SR3EActor._preUpdate drops a player's write to either field as well. -->
         <div class="attr-row">
-          <input class="attr-input" type="number" name="system.attributes.essence.value"
+          <input class="attr-input" type="number" ${essGM ? 'name="system.attributes.essence.value"' : 'disabled'}
                  value="${attr.essence?.value ?? 6}" min="0" max="6" step="0.1"
-                 style="color:var(--sr-amber)"/>
+                 style="color:var(--sr-amber)"${essGM ? '' : ' title="Essence loss is permanent (M&amp;M p.147) — only the GM corrects it."'}/>
         </div>
         <div class="attr-row" style="margin-top:2px;gap:3px;align-items:center">
           <span style="font-size:9px;color:var(--sr-muted)" title="Permanent Essence loss (M&amp;M p.147). Removing cyberware never lowers this by itself.">lost</span>
-          <input class="attr-input" type="number" name="system.attributes.essence.lost"
+          <input class="attr-input" type="number" ${essGM ? 'name="system.attributes.essence.lost"' : 'disabled'}
                  value="${essLost ?? ''}" placeholder="${essInstalled}" min="0" max="6" step="0.1"
                  style="width:42px;font-size:10px"
-                 title="Blank = follow installed cyberware (${essInstalled}). Type a number to override it — that is how you undo a mistaken install."/>
-          ${essLost === null ? '' : `<a data-action="essenceRecalc" title="Clear the override and go back to following installed cyberware (${essInstalled})." style="cursor:pointer;font-size:10px;color:var(--sr-muted)">↺</a>`}
+                 title="${essGM ? `Blank = follow installed cyberware (${essInstalled}). Type a number to override it — that is how you undo a mistaken install.` : `Permanent Essence loss — only the GM corrects it (blank = installed cyberware, ${essInstalled}).`}"/>
+          ${essLost === null || !essGM ? '' : `<a data-action="essenceRecalc" title="Clear the override and go back to following installed cyberware (${essInstalled})." style="cursor:pointer;font-size:10px;color:var(--sr-muted)">↺</a>`}
         </div>
       </div>
 
@@ -3488,6 +3493,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   static async _onEssenceRecalc(_event, _target) {
+    // GM only — clearing the mark refunds Essence lost to removed cyberware (M&M p.147).
+    if (!game.user.isGM) { ui.notifications.warn('Only the GM can reset Essence loss.'); return; }
     await this.actor.update({ 'system.attributes.essence.lost': null });
     ui.notifications.info(`${this.actor.name}: Essence now follows installed cyberware.`);
   }
