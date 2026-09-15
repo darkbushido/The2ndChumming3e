@@ -9,8 +9,9 @@
  * own TN, and F3 (melee, astral) and the grenade throw were the first found without it. These are
  * the rest: the contested roll (both sides), cybercombat (the attacker — the defence avoids damage),
  * the MIJI contest (both riggers) and the single-roller EW tests, and the Orthodox System Test and
- * Orthodox attack (the decker). Deliberately NOT added: Missile Parry (it avoids damage) and the
- * Knockdown Test, whose threshold already scales with the wound (p.124) — the maintainer's call.
+ * Orthodox attack (the decker), the Knockdown Test (the maintainer's ruling, though its threshold
+ * also scales with the wound, p.124), and vehicle weapons, which took the gunner's wounds off the
+ * DICE POOL. Deliberately NOT added: Missile Parry — it avoids damage.
  */
 import { readFileSync } from 'node:fs';
 import { installGlobals, installGame } from './helpers/foundry.mjs';
@@ -73,4 +74,18 @@ export async function run(t) {
   ]) t.ok(`EW ${what}: the rigger's wounds in the TN`, re.test(miji));
 
   t.ok('Missile Parry is left alone — it avoids damage (p.125)', !/missileParryTN\([^)]*woundTN/.test(actor));
+
+  /* ── Knockdown — the maintainer's ruling, 2026-09-14: applied ────────────────── */
+  t.ok('Knockdown: the target\'s wounds in the Body Test\'s TN',
+    /const kdWound\s+= SR3EActor\.woundTN\(target\)/.test(actor) && /knockdownTNMod\) \|\| 0\)\) \+ kdWound;/.test(actor));
+
+  /* ── Vehicle weapons: the gunner's wounds are a TN, not lost dice ─────────────── */
+  const item = read('scripts/documents/SR3EItem.js');
+  const vw   = item.slice(item.indexOf('async rollVehicleWeapon('), item.indexOf('return actor.rollPool(finalPool'));
+  t.ok('the gunner\'s wounds come from the derived woundMod (Pain Resistance, compensators, Pain Editor)',
+    /pilotWoundMod = game\.sr3e\.SR3EActor\.woundTN\(pilotActor\)/.test(vw));
+  t.ok('…they no longer come off the dice pool', !/pool \+= pilotWoundMod/.test(vw));
+  t.ok('…nor from the raw boxes', !/_trackMod\(stunVal\)/.test(vw));
+  t.ok('…they go on the TN, and the card says so', /const tn\s+= weaponOpts\.tn \+ gunneryDefTnMod \+ pilotWoundMod/.test(vw)
+    && /wounded \+\$\{pilotWoundMod\} TN/.test(vw));
 }

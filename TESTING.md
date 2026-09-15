@@ -2236,14 +2236,17 @@ editable):
 | Orthodox System Test | the decker |
 | MIJI contest | both riggers |
 | Infiltration · detect · ECCM repair · reduce footprint · IVIS | the rigger |
+| Knockdown Test | the target — **the maintainer's ruling**, though its threshold also scales with the wound (p.124) |
+| Vehicle weapons | the gunner — they were taking the wounds off the **dice pool**, from the raw boxes (so Pain Resistance, compensators and the Pain Editor were ignored); now a TN, from `woundMod` |
 
 ⚠ **Left alone on purpose:** **Missile Parry** avoids damage (excluded by p.125, and not the dodge,
-whose own example works the wound in, p.113). **Knockdown** — p.124 gives no injury modifier and its
-threshold already scales with the wound, so adding it may count the wound twice: **the maintainer's
-call.** `tests/wound-modifiers.test.mjs` + the `cybercombat-attack-ignores-wounds` mutant.
+whose own example works the wound in, p.113). `tests/wound-modifiers.test.mjs` + the
+`cybercombat-attack-ignores-wounds` mutant.
 - [ ] Give a decker 3 Stun boxes → Cybercombat → their corner starts at TN 6, the defender's at 4.
 - [ ] Contested roll from a wounded actor's sheet → the TN box starts at 4 + the wound; pick another actor and it follows.
 - [ ] MIJI with a wounded intruder rigger → the intruder corner's TN is the deck rating + the wound.
+- [ ] A wounded rigger fires a vehicle weapon → the pool is NOT reduced; the card's TN is +the wound and its label says so.
+- [ ] Knockdown on a wounded target → the TN box includes their wound, and the dialog says so.
 
 ## F6. Wrong range-TN fallback array — FIXED 2026-09-14 (0.5.2)
 

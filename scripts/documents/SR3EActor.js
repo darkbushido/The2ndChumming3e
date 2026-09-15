@@ -7666,9 +7666,13 @@ _prepareCharacter(sys, attr) {
     const atkStr    = attacker?.system?.attributes?.strength?.value ?? 0;
     // A failed Charging Attack adds +2 here rather than costing a separate Quickness test
     // (CC p.86) — see chargingFailure. Zero for every other attack.
+    // The target's own wounds (SR3 p.125 — the Injury Modifier applies to nearly all tests except
+    // resisting or avoiding DAMAGE, and staying upright is neither). The maintainer's ruling,
+    // 2026-09-14: applied, though the threshold also scales with the wound (p.124). Editable.
+    const kdWound   = SR3EActor.woundTN(target);
     const tnDefault = SR3EActor.knockdownTN({
       power: ctx.power, strength: atkStr, isMelee: ctx.isMelee, ammoType: ctx.ammoType,
-    }) + Math.max(0, Math.trunc(Number(ctx.knockdownTNMod) || 0));
+    }) + Math.max(0, Math.trunc(Number(ctx.knockdownTNMod) || 0)) + kdWound;
     const needed  = SR3EActor.knockdownOutcome({ level, tested: false }).needed ?? 2;
     /* Rooting and Enhanced Balance add dice to *"all tests to resist being knocked down,
      * thrown, levitated or otherwise moved against his will"* (MITS p.151, SOTA2 p.65).
@@ -7705,7 +7709,8 @@ _prepareCharacter(sys, attr) {
         <p style="margin-bottom:8px;font-size:12px">
           ${target.name} took a <strong>${SR3EActor._woundName(level)}</strong> wound and must stay on their feet.
         </p>
-        <p style="margin-bottom:8px;font-size:11px;color:var(--sr-muted)">${tnNote}</p>
+        <p style="margin-bottom:8px;font-size:11px;color:var(--sr-muted)">${tnNote}${kdWound
+          ? ` <span style="color:var(--sr-amber)">Includes ${target.name}'s wounds +${kdWound} (p.125).</span>` : ''}</p>
         <label style="display:block;margin-bottom:6px">Body dice
           <input type="number" id="kd-body" value="${bodyDef}" min="1" max="50" style="width:60px;margin-left:6px"/>
           ${kdBonus.dice ? `<span style="font-size:11px;color:var(--sr-gold);margin-left:6px">includes +${kdBonus.dice} from ${kdBonus.labels.join(' + ')}</span>` : ''}

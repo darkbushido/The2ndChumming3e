@@ -1496,10 +1496,12 @@ export class SR3EItem extends Item {
         gunneryDefAllowPool = def.allowPool;
         gunneryDefPoolCap   = def.poolCap;
       }
-      const stunVal = pilotActor.system.wounds?.stun?.value     ?? 0;
-      const physVal = pilotActor.system.wounds?.physical?.value ?? 0;
-      pilotWoundMod = -(game.sr3e.SR3EActor._trackMod(stunVal) + game.sr3e.SR3EActor._trackMod(physVal));
-      pool += pilotWoundMod;
+      // The gunner's wounds are a TARGET NUMBER modifier (SR3 p.125), read from the derived
+      // `woundMod` so Pain Resistance, Damage Compensators and the Pain Editor count. This used to
+      // take them off the DICE POOL, re-derived from the raw boxes — wrong in kind and blind to all
+      // three. The roll goes through the vehicle's rollPool, which has no wounds of its own, so the
+      // TN has to carry the pilot's.
+      pilotWoundMod = game.sr3e.SR3EActor.woundTN(pilotActor);
 
       if (vcrMode) {
         const activeVCRId = pilotActor.system.activeVCRItemId ?? '';
@@ -1535,9 +1537,10 @@ export class SR3EItem extends Item {
     if (!weaponOpts) return null;
 
     const finalPool = Math.max(1, pool + weaponOpts.controlPool);
-    const tn        = weaponOpts.tn + gunneryDefTnMod;   // bake defaulting TN modifier
+    const tn        = weaponOpts.tn + gunneryDefTnMod + pilotWoundMod;   // bake defaulting + the gunner's wounds
     const cpNote    = weaponOpts.controlPool > 0 ? ` + CP${weaponOpts.controlPool}` : '';
-    const label     = `🚗 ${this.name} [${weaponOpts.damageCode}] vs ${targetActor.name} — ${poolLabel}${cpNote}`;
+    const woundNote = pilotWoundMod > 0 ? ` (${pilotActor.name} wounded +${pilotWoundMod} TN)` : '';
+    const label     = `🚗 ${this.name} [${weaponOpts.damageCode}] vs ${targetActor.name} — ${poolLabel}${cpNote}${woundNote}`;
 
     // Step 4: Vehicle damage modifier (unless AV munition)
     let effectiveRawDamage = weaponOpts.damageCode;

@@ -1641,9 +1641,9 @@ encodings to plain attributes, deliberately.
 so the adept loop collects claims into `pendingImprovedAbility` and a second pass applies the
 cap. A capped power still shows its full level in the breakdown, with the cap noted.
 
-⚠ **Still not implemented:** the defaulting clause — *"only half (round down) of the Improved
-Ability dice may be used"* when defaulting to the improved skill. `defaultTiers` reads
-`rating` alone and contributes **none**. TODO 61.
+The defaulting clause — *"only half (round down) of the Improved Ability dice may be used"* when
+defaulting to the improved skill — is implemented (TODO 61): see *Defaulting carries half the
+augmentation dice* below. (This line said "still not implemented" until 2026-09-14.)
 
 #### Improved Reflexes does not stack with technology  · *SR3 p.169* — TODO 64
 
@@ -2621,12 +2621,16 @@ the files' mtime and fails with "reload <user>'s tab" — including when the GM 
 at all, which is itself proof the tab predates the query.
 
 ## What is NOT yet implemented
-- Vehicle sheets
-- Matrix/hacking combat rolls (host sheet is GM reference/tracking only for now)
-- Magic combat (spellcasting rolls exist, combat application not wired)
-- Learning a NEW skill with karma (increases and specialisations DO work — see TODO 80,
-  which also lists three costing bugs in the advancement that does exist)
-- Pool refresh prompts for astral/hacking pools (only combat pool currently)
+
+⚠ **This list was stale until 2026-09-14** and named five things that exist: vehicle sheets
+(`SR3EVehicleSheet.js`), Matrix combat rolls (the cybercombat, hacking-action and Orthodox cards),
+combat spells' application (Resist Spell → Assign Damage), learning a new skill with karma (TODO 80,
+`karmaNewSkillCost`), and astral/hacking pool refresh (`SR3ECombat._endOfTurnReset`, every Combat Turn
+— deliberately without a prompt). The open work lives in `TODO.md`; the larger gaps are:
+- The action economy — actions are charged by hand (TODO 48), hands and Ready Weapon (TODO 47, 49)
+- Cyberware/bioware Stress, TLE-x, cybermancy (TODO 109-111) and drug rules (TODO 124)
+- A purchasing flow — Availability, grade cost multipliers (TODO 82)
+- The Matrix Condition Monitor on the host sheet (see *Matrix rules* below)
 
 ---
 
