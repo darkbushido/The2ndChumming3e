@@ -38,8 +38,9 @@ export async function run(t) {
   const helmets = items.filter(d => d.name === 'Helmet');
   t.ok('every "Helmet" links to the SR3 Security Helmet, page and all',
     helmets.length === 3 && helmets.every(d => packOf(d) === 'sr3e-sr3-armor' && d.system.bookPage === 'sr3.284'));
-  t.eq('…at the ratings the Little Black Book prints: one 2/1 (Freedom Fighter, p.46), two 1/1 (p.62)',
-    helmets.map(d => `${d.system.ballistic}/${d.system.impact}`).sort(), ['1/1', '1/1', '2/1']);
+  // All three at 2/1 — the maintainer's ruling: p.62 prints 1/1 for two of them, but no SR3 helmet is
+  // 1/1 (Security Helmet +1/+2 p.284, CC's Rapid Transit +0/+2 and Military +2/+3; every 1/1 is SR2).
+  t.eq('…all three at 2/1, by the maintainer\'s ruling', helmets.map(d => `${d.system.ballistic}/${d.system.impact}`), ['2/1', '2/1', '2/1']);
 
   const medkits = items.filter(d => /^Medkit/.test(d.name));
   t.ok('every medkit is now a medical item', medkits.length >= 5 && medkits.every(d => d.type === 'medical'));

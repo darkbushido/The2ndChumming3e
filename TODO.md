@@ -5837,9 +5837,10 @@ medkits. Rules added to the tool, each pinned by `tests/johnson-gear-import.test
 
 **For the maintainer:**
 1. ✅ **The three `Helmet`s — RESOLVED 2026-09-14** (the maintainer: "use the security helmet").
-   `tools/relink-johnson-helmets.mjs` links them to the SR3 *Security Helmet* (p.284) at the rating
-   each contact's page prints — Freedom Fighter **2/1** (p.46; the first pass had flattened it to the
-   SR2 entry's 1/1), Highway Patrol and SWAT Team Member **1/1** (p.62). ⚠ Actors a world already
+   `tools/relink-johnson-helmets.mjs` links them to the SR3 *Security Helmet* (p.284), **all three at
+   2/1** — the maintainer's ruling. The Freedom Fighter prints 2/1 (p.46; the first pass had flattened
+   it to 1/1); Highway Patrol and SWAT Team Member print 1/1 (p.62), but **no SR3 helmet is 1/1**
+   (Security Helmet +1/+2, CC's Rapid Transit +0/+2 and Military +2/+3; every 1/1 helmet is SR2). ⚠ Actors a world already
    imported keep their old embedded copy — Foundry embeds, it does not link.
 2. **Rated variants with no rating on the contact's line**: *Micro-transceiver* (Ork Nation Organizer,
    Earnest Muckraker) and *Micro-recorder* (Earnest Muckraker) — the SR3 packs ship ratings 1-10.

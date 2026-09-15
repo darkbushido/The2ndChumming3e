@@ -10,16 +10,17 @@
  * SR3 book, and SR3 core prints no plain helmet — only the **Security Helmet** (p.284). The
  * maintainer's ruling, 2026-09-14: use the Security Helmet, and update the contacts appropriately.
  *
- * ⚠ **Each contact keeps the rating ITS page prints** — the import's standing rule (the contact's
- * own detail wins). The book gives three different lines:
+ * ⚠ **All three are 2/1 — the maintainer's ruling, 2026-09-14 ("use the 2/1 values"), and it
+ * OVERRIDES two of the printed lines.** The book gives:
  *   · Freedom Fighter (p.46)   — "Vest with plates [4/3], helmet (2/1)"
  *   · Highway Patrol (p.62)    — "Armor vest with plates [4/3], helmet [1/1]"
  *   · SWAT Team Member (p.62)  — "Armor vest with plates [4/3], helmet [1/1]"
- * The first pass had flattened the Freedom Fighter's 2/1 to the SR2 entry's 1/1; this restores it.
+ * Do not "correct" the p.62 two back to 1/1 from the page: the GM chose one helmet rating for the
+ * three. (The first pass had also flattened the Freedom Fighter's printed 2/1 to the SR2 entry's 1/1.)
  * Everything else — cost, availability, concealability, book and page, the link — is the Security
  * Helmet's.
  *
- * Idempotent: an item already linked to the Security Helmet with the printed values is left alone.
+ * Idempotent: an item already linked to the Security Helmet at these values is left alone.
  * Indexes the REPO's armour pack through a copy (tools/lib/pack-copy.mjs); only the contacts pack
  * being written is opened for real, and `--check` reads a copy of that too.
  */
@@ -35,11 +36,11 @@ const INSTALL = process.env.SR3E_INSTALL
 const ROOT    = process.argv.includes('--install') ? INSTALL : REPO;
 const CHECK   = process.argv.includes('--check');
 
-/** The book's own helmet line per contact — Mr. Johnson's Little Black Book. */
+/** The helmet rating per contact — 2/1 for all three by the maintainer's ruling (the p.62 lines print 1/1). */
 export const PRINTED = {
   'Freedom Fighter':  { ballistic: 2, impact: 1, page: 'lbb.46' },
-  'Highway Patrol':   { ballistic: 1, impact: 1, page: 'lbb.62' },
-  'SWAT Team Member': { ballistic: 1, impact: 1, page: 'lbb.62' },
+  'Highway Patrol':   { ballistic: 2, impact: 1, page: 'lbb.62 (prints 1/1; ruled 2/1)' },
+  'SWAT Team Member': { ballistic: 2, impact: 1, page: 'lbb.62 (prints 1/1; ruled 2/1)' },
 };
 
 // ── The SR3 Security Helmet, from the REPO's pack (what ships), read through a copy ──────────
