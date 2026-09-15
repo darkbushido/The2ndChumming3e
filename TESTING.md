@@ -984,6 +984,8 @@ card pre-filled **TN 7** (3 + 4, said on the card); dropping all cleared the sta
 - [ ] Cast a Sustained spell (Armor) for real → the result card offers **🔒 Sustain**; an Instant one (Manabolt) does not; the Resist Drain that follows is NOT raised by the spell just sustained.
 - [ ] Player-seat: a player sees 🔒 and 🎲 Keep enabled for their own caster, disabled on someone else's.
 - [ ] Sustaining one spell: the melee GM window shows *"… sustaining +2"*, a dodge prompt's TN includes it, and a **soak card's TN does not** change.
+- [ ] A target sustaining one spell resists a combat spell → the resist card's TN is Force **+2** (the maintainer's ruling, 2026-09-14).
+- [ ] A decker sustaining one spell: cybercombat corner +2 whether attacking or defending; a rigger's MIJI corner and EW tests +2.
 - [ ] Sustain more than the Sorcery rating → an amber warning on the Magic tab and a notification; nothing is refused.
 
 ---

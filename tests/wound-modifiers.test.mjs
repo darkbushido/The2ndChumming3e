@@ -56,11 +56,11 @@ export async function run(t) {
   t.ok('…and the defender sites do not', !/_buildCCParticipant\(defActor, \{ attacking: true \}\)/.test(actor));
 
   t.ok('contested: the initiator\'s TN starts at 4 + their wounds',
-    /id="\$\{tnId\}" value="\$\{4 \+ SR3EActor\.woundTN\(game\.actors\.get\(defaultAtkId\)\)\}"/.test(actor));
-  t.ok('…and follows the actor picked', /#atk-tn'\)\.value = 4 \+ SR3EActor\.woundTN\(game\.actors\.get\(e\.target\.value\)\)/.test(actor));
+    /id="\$\{tnId\}" value="\$\{4 \+ SR3EActor\.woundTN\(game\.actors\.get\(defaultAtkId\)\)/.test(actor));
+  t.ok('…and follows the actor picked', /#atk-tn'\)\.value = 4 \+ SR3EActor\.woundTN\((game\.actors\.get\(e\.target\.value\)|picked)\)/.test(actor));
   t.ok('…and the opponent\'s corner starts at 4 + theirs', /oppTN:\s+4 \+ SR3EActor\.woundTN\(game\.actors\.get\(oppActId\)\)/.test(actor));
 
-  t.ok('Orthodox System Test: the decker\'s wounds in their TN', /deckerTN\s+= Math\.max\(2, subR \+ alertMod - utilMod \+ SR3EActor\.woundTN\(this\)\)/.test(actor));
+  t.ok('Orthodox System Test: the decker\'s wounds in their TN', /deckerTN\s+= Math\.max\(2, subR \+ alertMod - utilMod \+ SR3EActor\.woundTN\(this\)/.test(actor));
   t.ok('Orthodox attack: the decker\'s wounds in the attack TN', /const tnIntruding = \(SR3EActor\._orthoCCTN\.intruding\[secCode\] \?\? 4\) \+ SR3EActor\.woundTN\(this\)/.test(actor));
 
   t.ok('MIJI: the intruder\'s wounds in the intruder\'s TN', /const intTN = Math\.max\(2, \(defRigger\?\.system\?\.ew\?\.deckRating \?\? 4\) \+ woundTN\(intRigger\)\)/.test(miji));
@@ -77,7 +77,7 @@ export async function run(t) {
 
   /* ── Knockdown — the maintainer's ruling, 2026-09-14: applied ────────────────── */
   t.ok('Knockdown: the target\'s wounds in the Body Test\'s TN',
-    /const kdWound\s+= SR3EActor\.woundTN\(target\)/.test(actor) && /knockdownTNMod\) \|\| 0\)\) \+ kdWound;/.test(actor));
+    /const kdWound\s+= SR3EActor\.woundTN\(target\)/.test(actor) && /knockdownTNMod\) \|\| 0\)\) \+ kdWound\b/.test(actor));
 
   /* ── Vehicle weapons: the gunner's wounds are a TN, not lost dice ─────────────── */
   const item = read('scripts/documents/SR3EItem.js');

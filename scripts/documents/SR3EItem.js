@@ -1469,6 +1469,7 @@ export class SR3EItem extends Item {
     let   pool          = 0;
     let   poolLabel     = '';
     let   pilotWoundMod = 0;
+    let   pilotSustain  = 0;
     let   gunneryDefaulting   = false;
     let   gunneryDefTnMod     = 0;
     let   gunneryDefAllowPool = false;
@@ -1512,6 +1513,7 @@ export class SR3EItem extends Item {
       // three. The roll goes through the vehicle's rollPool, which has no wounds of its own, so the
       // TN has to carry the pilot's.
       pilotWoundMod = game.sr3e.SR3EActor.woundTN(pilotActor);
+      pilotSustain  = game.sr3e.SR3EActor.sustainingTN(pilotActor);   // p.178, all tests
 
       if (vcrMode) {
         const activeVCRId = pilotActor.system.activeVCRItemId ?? '';
@@ -1547,9 +1549,10 @@ export class SR3EItem extends Item {
     if (!weaponOpts) return null;
 
     const finalPool = Math.max(1, pool + weaponOpts.controlPool);
-    const tn        = weaponOpts.tn + gunneryDefTnMod + pilotWoundMod;   // bake defaulting + the gunner's wounds
+    const tn        = weaponOpts.tn + gunneryDefTnMod + pilotWoundMod + pilotSustain;   // defaulting + the gunner's wounds and spells
     const cpNote    = weaponOpts.controlPool > 0 ? ` + CP${weaponOpts.controlPool}` : '';
-    const woundNote = pilotWoundMod > 0 ? ` (${pilotActor.name} wounded +${pilotWoundMod} TN)` : '';
+    const woundNote = (pilotWoundMod > 0 ? ` (${pilotActor.name} wounded +${pilotWoundMod} TN)` : '')
+                    + (pilotSustain  > 0 ? ` (sustaining +${pilotSustain} TN)` : '');
     const label     = `🚗 ${this.name} [${weaponOpts.damageCode}] vs ${targetActor.name} — ${poolLabel}${cpNote}${woundNote}`;
 
     // Step 4: Vehicle damage modifier (unless AV munition)
@@ -3063,7 +3066,8 @@ export class SR3EItem extends Item {
     const canParry   = game.sr3e.SR3EActor.canMissileParry(defender, opts.weaponType);
     const parryRea   = defender.system.attributes?.reaction?.value ?? 0;
     const baseRngTN  = 4 + ((game.sr3e.SR3E.rangeTN ?? [0, 1, 2, 5])[opts.rangeBandIdx] ?? 0);
-    const parryTN    = game.sr3e.SR3EActor.missileParryTN(baseRngTN);
+    // + the defender's sustained spells (p.178 — all tests but Damage Resistance). Not wounds: p.125.
+    const parryTN    = game.sr3e.SR3EActor.missileParryTN(baseRngTN) + game.sr3e.SR3EActor.sustainingTN(defender);
     const rangeName  = ['Short', 'Medium', 'Long', 'Extreme'][opts.rangeBandIdx] ?? null;
 
     const availPool  = defender.system.derived?.availableCombatPool ?? 0;

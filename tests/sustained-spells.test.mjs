@@ -116,8 +116,26 @@ export async function run(t) {
   t.is('the sheet\'s attribute and skill dialogs pre-apply it and skip it in rollPool',
     (sheet.match(/skipSustainMod: true/g) ?? []).length, 2);
   t.ok('…both pre-fill the TN with it', (sheet.match(/4 \+ woundPenalty \+ sustainTN \+ qtnFor/g) ?? []).length === 2);
-  t.ok('Spell Resistance does NOT take it — "No target modifiers apply to this test except where specifically noted" (p.183)',
-    /isSpellResist:\s+true[\s\S]{0,600}skipSustainMod: true/.test(actor));
+  // The maintainer's ruling, 2026-09-14: p.178's "all tests" wins over p.183's "no target modifiers
+  // … except where specifically noted" — so the Spell Resistance Test takes it through rollPool.
+  const resist = actor.slice(actor.indexOf('isSpellResist:      true'), actor.indexOf('isSpellResist:      true') + 900);
+  t.ok('Spell Resistance TAKES it — rollPool is not told to skip it (the maintainer\'s ruling)',
+    resist.length > 100 && !/skipSustainMod: true/.test(resist.slice(0, resist.indexOf('});'))));
+
+  /* ── Every site the wound modifier reaches, and the defences p.178 does not exclude ── */
+  const miji = read('scripts/SR3EMIJI.js');
+  t.ok('cybercombat: both sides (the defence avoids damage — p.125 spares it wounds, not spells)',
+    /\(attacking \? SR3EActor\.woundTN\(actor\) : 0\) \+ SR3EActor\.sustainingTN\(actor\)/.test(actor));
+  t.ok('contested: both corners', /woundTN\(picked\) \+ SR3EActor\.sustainingTN\(picked\)/.test(actor)
+    && /oppTN:[^\n]*sustainingTN\(game\.actors\.get\(oppActId\)\)/.test(actor));
+  t.ok('Orthodox System Test and attack: the decker', /utilMod \+ SR3EActor\.woundTN\(this\) \+ SR3EActor\.sustainingTN\(this\)/.test(actor)
+    && /intruding\[secCode\] \?\? 4\) \+ SR3EActor\.woundTN\(this\) \+ SR3EActor\.sustainingTN\(this\)/.test(actor));
+  t.ok('Orthodox IC attack: the decker\'s defence', /defTN\s+= atkTNOverride \+ SR3EActor\.sustainingTN\(deckerActor\)/.test(actor));
+  t.ok('knockdown', /kdWound \+ SR3EActor\.sustainingTN\(target\)/.test(actor));
+  t.ok('MIJI and every EW test — the rigger', /woundTN\(actor\) \+ game\.sr3e\.SR3EActor\.sustainingTN\(actor\)/.test(miji));
+  t.ok('vehicle weapons: the gunner', /pilotSustain\s+= game\.sr3e\.SR3EActor\.sustainingTN\(pilotActor\)/.test(item)
+    && /gunneryDefTnMod \+ pilotWoundMod \+ pilotSustain/.test(item));
+  t.ok('Missile Parry: the defender', /missileParryTN\(baseRngTN\) \+ game\.sr3e\.SR3EActor\.sustainingTN\(defender\)/.test(item));
   const soak = actor.slice(actor.indexOf('static async handleSoakRollClick'), actor.indexOf('static async handleSoakRollClick') + 4000);
   t.ok('Damage Resistance does NOT take it (p.178) — the soak handler never reads it', soak.length > 100 && !/sustain/i.test(soak));
   t.ok('the cast records what was held at the moment, for its own Drain', /sustainTN:\s+game\.sr3e\.SR3EActor\.sustainingTN\(actor\)/.test(item)

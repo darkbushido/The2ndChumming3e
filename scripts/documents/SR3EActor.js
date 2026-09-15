@@ -378,7 +378,7 @@ export class SR3EActor extends Actor {
 
     return {
       label: 'Decker', skillName,
-      skillDice: ccRating, hackPoolAvail, tn: 4 + mcmPenalty + defTnMod + (attacking ? SR3EActor.woundTN(actor) : 0),
+      skillDice: ccRating, hackPoolAvail, tn: 4 + mcmPenalty + defTnMod + (attacking ? SR3EActor.woundTN(actor) : 0) + SR3EActor.sustainingTN(actor),
       damageCode: dmgCode, damageBase: SR3EItem.parseDamageCode(dmgCode),
       firewall: deckFirewall, soakPool: deckMpcp, userMode: sys.matrixUserMode ?? '',
       programId: attackProg?.id ?? null, operatorActorId: null,
@@ -7783,7 +7783,7 @@ _prepareCharacter(sys, attr) {
     const kdWound   = SR3EActor.woundTN(target);
     const tnDefault = SR3EActor.knockdownTN({
       power: ctx.power, strength: atkStr, isMelee: ctx.isMelee, ammoType: ctx.ammoType,
-    }) + Math.max(0, Math.trunc(Number(ctx.knockdownTNMod) || 0)) + kdWound;
+    }) + Math.max(0, Math.trunc(Number(ctx.knockdownTNMod) || 0)) + kdWound + SR3EActor.sustainingTN(target);
     const needed  = SR3EActor.knockdownOutcome({ level, tested: false }).needed ?? 2;
     /* Rooting and Enhanced Balance add dice to *"all tests to resist being knocked down,
      * thrown, levitated or otherwise moved against his will"* (MITS p.151, SOTA2 p.65).
@@ -9168,9 +9168,9 @@ _prepareCharacter(sys, attr) {
         rawDamage:       payload.rawDamage,
       },
       skipWoundMod: true,
-      // SR3 p.183: "No target modifiers apply to this test except where specifically noted" —
-      // and p.178's sustaining rule names Drain Resistance, not Spell Resistance.
-      skipSustainMod: true,
+      // Sustained spells DO apply — the maintainer's ruling, 2026-09-14, reading p.178's "all tests"
+      // (only normal Damage Resistance is excluded) over p.183's "No target modifiers apply to this
+      // test except where specifically noted". rollPool adds it: no skipSustainMod here.
       physicalDice,
     });
   }
@@ -10531,7 +10531,8 @@ _prepareCharacter(sys, attr) {
           el.querySelector('#atk-source').innerHTML = buildOptions(data.sources);
           el.querySelector('#atk-pool').value = data.firstVal ?? 4;
           // Their own wounds (SR3 p.125) follow the actor chosen.
-          el.querySelector('#atk-tn').value = 4 + SR3EActor.woundTN(game.actors.get(e.target.value));
+          const picked = game.actors.get(e.target.value);
+          el.querySelector('#atk-tn').value = 4 + SR3EActor.woundTN(picked) + SR3EActor.sustainingTN(picked);
         });
         el.querySelector('#atk-source')?.addEventListener('change', (e) => {
           el.querySelector('#atk-pool').value = parseInt(e.target.value) || 1;
@@ -10552,7 +10553,7 @@ _prepareCharacter(sys, attr) {
         <input type="number" id="${poolId}" value="${defaultData?.firstVal ?? 4}" min="1" max="30" style="width:55px;margin-left:4px"/>
       </label>
       <label style="display:block;margin-bottom:6px;font-size:12px" title="4, plus the actor's own wound modifier (SR3 p.125)">TN:
-        <input type="number" id="${tnId}" value="${4 + SR3EActor.woundTN(game.actors.get(defaultAtkId))}" min="2" max="30" style="width:55px;margin-left:4px"/>
+        <input type="number" id="${tnId}" value="${4 + SR3EActor.woundTN(game.actors.get(defaultAtkId)) + SR3EActor.sustainingTN(game.actors.get(defaultAtkId))}" min="2" max="30" style="width:55px;margin-left:4px"/>
       </label>
       <label style="display:block;margin-bottom:0;font-size:12px">Damage:
         <input type="text" id="${dmgId}" value="4L" style="width:55px;margin-left:4px"/>
@@ -10618,7 +10619,7 @@ _prepareCharacter(sys, attr) {
                 oppSourceLabel: oppData?.[0]?.label ?? '',
                 oppPool:   Math.max(1, oppData?.[0]?.value || 4),
                 // A starting point in their corner — their own wounds included (SR3 p.125).
-                oppTN:     4 + SR3EActor.woundTN(game.actors.get(oppActId)),
+                oppTN:     4 + SR3EActor.woundTN(game.actors.get(oppActId)) + SR3EActor.sustainingTN(game.actors.get(oppActId)),
                 oppDamage: '4L',
                 physicalDice: shiftKey,
               };
@@ -11060,7 +11061,7 @@ _prepareCharacter(sys, attr) {
             hpAlloc    = Math.min(hackPool, Math.max(0, parseInt(dlg.element.querySelector('#ost-hp')?.value) || 0));
             deckerDice = compRating + hpAlloc;
             // The decker's own wounds (SR3 p.125 — every test but resisting or avoiding damage).
-            deckerTN   = Math.max(2, subR + alertMod - utilMod + SR3EActor.woundTN(this));
+            deckerTN   = Math.max(2, subR + alertMod - utilMod + SR3EActor.woundTN(this) + SR3EActor.sustainingTN(this));
           },
         },
         { label: 'Cancel', action: 'cancel' },
@@ -11224,7 +11225,7 @@ _prepareCharacter(sys, attr) {
     }).join('');
 
     // The decker attacks, so their own wounds count (SR3 p.125); the IC's soak does not take any.
-    const tnIntruding = (SR3EActor._orthoCCTN.intruding[secCode] ?? 4) + SR3EActor.woundTN(this);
+    const tnIntruding = (SR3EActor._orthoCCTN.intruding[secCode] ?? 4) + SR3EActor.woundTN(this) + SR3EActor.sustainingTN(this);
     const dmgLevel    = SR3EActor._orthoICDmgLevel[secCode] ?? 'Moderate';
     const dmgPower    = deck.mccp ?? 4;  // default attack power: MPCP Rating
 
@@ -11249,7 +11250,7 @@ _prepareCharacter(sys, attr) {
           </label>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <label>Attack TN (${tnIntruding - SR3EActor.woundTN(this)} vs Intruder${SR3EActor.woundTN(this) ? `, wound +${SR3EActor.woundTN(this)}` : ''}):
+          <label>Attack TN (${tnIntruding - SR3EActor.woundTN(this) - SR3EActor.sustainingTN(this)} vs Intruder${SR3EActor.woundTN(this) ? `, wound +${SR3EActor.woundTN(this)}` : ''}):
             <input type="number" id="occ-tn" value="${tnIntruding}" min="2" max="12" style="width:55px;margin-left:4px">
           </label>
           <label>Attack Power (damage):
@@ -11442,7 +11443,9 @@ _prepareCharacter(sys, attr) {
     const totalDefDice = Math.max(1, defCcSkill?.system?.rating ?? 1);
     const defHpAvail   = deckerActor.system.derived?.availableOrthodoxHackingPool
                       ?? deckerActor.system.derived?.availableHackingPool ?? 0;
-    const defTN        = atkTNOverride;  // same TN for both sides
+    // Same base TN for both sides, plus the decker's sustained spells (p.178 — all tests but Damage
+    // Resistance). Not their wounds: the defence avoids damage (p.125).
+    const defTN        = atkTNOverride + SR3EActor.sustainingTN(deckerActor);
     const baseCode     = `${rating}${dmgLevel[0]}`;
 
     const ctx = {

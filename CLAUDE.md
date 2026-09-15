@@ -1901,9 +1901,10 @@ The rule is `scripts/data/sustaining.mjs` (pure); `SR3EActor.sustainingTN(actor)
 | `rollPool` (skills, attributes, casting, weapons, healing…) | added unless `skipSustainMod` — **its own opt-out**, not `skipWoundMod` (healing skips the wound, not the spells) |
 | Ranged roll options · sheet attribute/skill dialogs | pre-applied in the TN beside the wound, then `skipSustainMod` |
 | Melee (GM window base TNs + note) · astral · both dodge prompts | beside `woundTN`, each fighter's own |
+| Contested · cybercombat · Orthodox cards · MIJI and every EW test · knockdown · vehicle weapons | beside `woundTN` — and ⚠ **also on the defences p.125 spares the wound** (the cybercombat defender, the decker's IC defence, Missile Parry): p.178 excludes only *"normal Damage Resistance"*, a narrower exclusion than the wound's |
 | Drain Resistance | added to the card's TN — a spell's own Drain counts what was held **at casting** (`spellContext.sustainTN`), never itself |
 | Damage Resistance (soak) | **never** (p.178) |
-| Spell Resistance Test | **never** — p.183: *"No target modifiers apply to this test except where specifically noted"*, and p.178 notes Drain only. A reading; TODO 123 checks it |
+| Spell Resistance Test | **yes** — the maintainer's ruling (2026-09-14): p.178's "all tests" over p.183's *"No target modifiers apply to this test except where specifically noted"*. Wounds still skip it |
 
 - ⚠ **One modifier, stated three times.** p.180's *"+2 to the Power of the Drain"* and p.183's cast
   TN are p.178's "all tests" restated. Adding p.180 on top charges +4 per spell on Drain.
