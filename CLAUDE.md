@@ -861,8 +861,13 @@ initiative is rolled only through the "Begin Encounter" dialog. Re-enabled once 
     `WeaponAccessories.flag`; the packs store them (`tools/fill-weapon-accessories.mjs`).
   - ⚠ **Read the text per ITEM.** A designator or a laser weapon is not a laser sight.
   - A worn *Gyro Mount* gear item: `SR3EActor.gyroMount` / `gyroRating`.
-  - ⚠ **One allowance against p.113's TOTAL.** `gyroOnRecoil` spends it on recoil in `rollWeapon`, and
-    the rest goes to the GM window as `gyroLeft`, where `gyroOffset` takes it off the ticked movement rows.
+  - ⚠ **The full rating on EACH — the maintainer's ruling (2026-09-15), CC p.34's Max-Gyro wording.**
+    - Recoil compensators affect recoil only; a gyro affects recoil and movement.
+    - `gyroOnRecoil` takes it off recoil in `rollWeapon`.
+    - The whole rating goes to the GM window as `gyroLeft`, where `gyroOffset` takes it off the ticked
+      movement rows.
+    - Do not restore p.113's "one allowance against the total"; the mutant `gyro-shared-allowance` guards
+      against it.
   - Costs: +1/+1 armour in `armorRatings`, +4 melee TN (`gyroMeleeTN`), half the Combat Pool
     (`derived.combatPoolBeforeGyro` keeps the full figure).
 - Not yet: Take Aim across phases (#48's note); one Simple for two guns, recoil crossover (#49).

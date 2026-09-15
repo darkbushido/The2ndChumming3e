@@ -35,6 +35,15 @@ const ACCESSORIES = { module: '../scripts/data/weapon-accessories.mjs', klass: '
 
 export const MUTANTS = [
   {
+    id:     'gyro-shared-allowance',
+    suite:  'gyro',
+    ...ACTOR, method: 'gyroOnRecoil',
+    was:    'one gyro allowance shared by recoil and movement (p.113 "total") — recoil ate the movement offset; '
+          + 'the maintainer ruled the full rating applies to each (2026-09-15, CC p.34)',
+    impl:   (rating, recoil) => { const r = Math.max(0, Number(recoil) || 0), g = Math.max(0, Number(rating) || 0);
+      const used = Math.min(g, r); return { recoil: r - used, used, left: g - used }; },
+  },
+  {
     id:     'smartgun-walking-waste',
     suite:  'fire-modes',
     ...ITEM, method: 'walkingWaste',

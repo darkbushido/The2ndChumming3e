@@ -2385,9 +2385,9 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
 - [ ] **Gyro (TODO 18):**
   - [ ] Give a character a compendium *Gyro Mount* (sr3 gear, rating 5). The Combat Pool halves, rounded
         down. The soak card's armour rises by 1/1.
-  - [ ] Fire SA twice (+1 recoil on the second shot). The breakdown says "Gyro −1 of recoil (4 left for
+  - [ ] Fire SA twice (+1 recoil on the second shot). The breakdown says "Gyro −1 of recoil (up to 5 off
         movement)".
-  - [ ] In the GM window, "Gyro 5 — left for movement" reads 4. Tick "Attacker running": the TN does not
+  - [ ] In the GM window, "Gyro 5 — off movement" reads 5. Tick "Attacker running": the TN does not
         rise (4 offset). Set the box to 2: the TN rises by 2.
   - [ ] Put the gyro in storage. All of the above goes away.
   - [ ] Melee with the gyro worn: the GM window's base TN for that fighter is 4 higher.

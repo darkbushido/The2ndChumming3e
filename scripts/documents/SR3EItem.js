@@ -1319,7 +1319,8 @@ export class SR3EItem extends Item {
 
   // --- Step 3: Roll options dialog (TN + damage code + range + vehicle modifier) ---
   // A worn gyro soaks recoil first — p.113's one allowance against recoil + movement, cumulative with
-  // compensation (already inside recoilTN). What is left offsets movement in the GM window (TODO 18).
+  // compensation (already inside recoilTN). Its full rating also offsets movement in the GM window — the
+  // maintainer's ruling (TODO 18), CC p.34's Max-Gyro wording.
   const gyro         = game.sr3e.SR3EActor.gyroOnRecoil(game.sr3e.SR3EActor.gyroRating(actor), fireModeResult?.recoilTN ?? 0);
   const recoilTNMod  = gyro.recoil;
   const woundPenalty = -(actor.system.woundMod ?? 0);
@@ -1333,7 +1334,7 @@ export class SR3EItem extends Item {
   const extraTNMod   = recoilTNMod + (fireModeResult?.additionalTNPenalty ?? 0) + woundPenalty + armorQTN + sustainTN + (shot?.tn ?? 0);
   const tnBreakdownParts = [];
   if (recoilTNMod)                           tnBreakdownParts.push(`Recoil +${recoilTNMod}`);
-  if (gyro.used)                             tnBreakdownParts.push(`Gyro −${gyro.used} of recoil${gyro.left ? ` (${gyro.left} left for movement)` : ''}`);
+  if (gyro.used)                             tnBreakdownParts.push(`Gyro −${gyro.used} of recoil (up to ${gyro.left} off movement too)`);
   if (fireModeResult?.additionalTNPenalty)   tnBreakdownParts.push(`Multi-target +${fireModeResult.additionalTNPenalty}`);
   if (woundPenalty > 0)                      tnBreakdownParts.push(`Wound +${woundPenalty}`);
   if (armorQTN > 0)                          tnBreakdownParts.push(`Layered armour +${armorQTN}`);
@@ -3105,11 +3106,10 @@ export class SR3EItem extends Item {
         </label>
         <div id="sr-gm-tn-note" style="font-size:11px;color:var(--sr-dim);margin-top:4px"></div>
         ${ctx.gyroRating ? `
-        <!-- A GM control, not a fixed number (TODO 18): p.113 reads as ONE allowance against the TOTAL of
-             recoil and movement, which is the default here; p.112's table says "recoil OR movement". The
-             GM sets what is left for movement — the full rating is the other reading. -->
+        <!-- The gyro's full rating offsets movement as well as recoil (the maintainer's ruling, TODO 18;
+             CC p.34). Still a number the GM can change. -->
         <label style="display:flex;align-items:center;gap:8px;margin-top:6px;font-size:12px">
-          Gyro ${ctx.gyroRating} — left for movement
+          Gyro ${ctx.gyroRating} — off movement
           <input type="number" id="sr-gm-gyro" value="${ctx.gyroLeft ?? 0}" min="0" max="${ctx.gyroRating}" style="width:50px"/>
         </label>` : ''}
         <div id="sr-gm-gyro-note" style="font-size:11px;color:var(--sr-dim)"></div>
@@ -3176,7 +3176,7 @@ export class SR3EItem extends Item {
           const gyroOff = gyroOffset(state, gyroLeft);
           const { tn, floored, raw } = clampTN(baseTN + sumModifiers(state) - gyroOff);
           if (gyroNote) gyroNote.textContent = ctx.gyroRating
-            ? `${ctx.gyroUsed ?? 0} already off recoil; offsetting ${gyroOff} of movement. SR3 p.113 counts one allowance against the total — p.112's table says "or".`
+            ? `Offsetting ${gyroOff} of movement${ctx.gyroUsed ? ` (and ${ctx.gyroUsed} came off recoil)` : ''} — a gyro works on both, in full (house ruling; CC p.34).`
             : '';
           tnEl.value      = tn;
           note.textContent = floored

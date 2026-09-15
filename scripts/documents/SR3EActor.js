@@ -6965,10 +6965,15 @@ _prepareCharacter(sys, attr) {
    * > stabilization the system provides … cumulative with recoil compensation." — p.113
    * > "Gyro systems add +4 to the wearer's target numbers in melee combat, and only allow him to
    * > use half his Combat Pool dice." — p.282 (standard Rating 5, deluxe 6)
-   * ⚠ ONE allowance against the SUM of recoil and movement (p.113's "total"), not the rating on each:
-   * the fire dialog spends it on recoil first and hands what is left to the GM window for movement.
-   * ⚠ A gyro is a worn harness: a Gyro Mount gear item not in storage. Its drawbacks come with it. */
-  static GYRO_RE = /gyro[\s-]*(mount|stabili)/i;
+   * ⚠ **The FULL rating on EACH — the maintainer's ruling, 2026-09-15.** p.112 ("recoil or movement")
+   * and p.113 ("the total recoil and movement modifiers") disagree; the maintainer read them as mixing
+   * gyros up with recoil compensators. Ordinary recoil compensation affects recoil only; a gyro affects
+   * both, in full. Cannon Companion p.34 words its Max-Gyro that way: *"provides 7 points of recoil
+   * compensation and reduces movement modifiers by 7."* So recoil never uses up the movement offset,
+   * which matters: difficult-terrain running alone is +6.
+   * ⚠ A gyro is a worn harness: a Gyro Mount (or CC Max-Gyro) gear item not in storage. Its drawbacks
+   * come with it. */
+  static GYRO_RE = /gyro[\s-]*(mount|stabili)|max[\s-]*gyro/i;
 
   /** The worn gyro harness, or null. Gear only (the FN-AAL Gyrojet is a pistol), never from storage. */
   static gyroMount(actor) {
@@ -6985,11 +6990,12 @@ _prepareCharacter(sys, attr) {
   /** +4 to the wearer's melee target numbers (p.282). */
   static gyroMeleeTN(actor) { return SR3EActor.gyroMount(actor) ? 4 : 0; }
 
-  /** Spend the gyro on recoil first (p.113's single allowance): `{ recoil, used, left }`. */
+  /** The gyro against recoil, with its full rating still there for movement (the ruling above):
+   *  `{ recoil, used, left }` — `left` is what the GM window offsets movement with, always the rating. */
   static gyroOnRecoil(rating, recoil) {
     const r = Math.max(0, Number(recoil) || 0), g = Math.max(0, Number(rating) || 0);
     const used = Math.min(g, r);
-    return { recoil: r - used, used, left: g - used };
+    return { recoil: r - used, used, left: g };
   }
 
   /* ── Stacks of items — splitting and merging · TODO 113 ─────────────────────────────── */

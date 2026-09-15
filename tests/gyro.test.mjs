@@ -1,6 +1,9 @@
 /**
  * Gyro stabilization and structured weapon accessories · SR3 p.113, p.282 (TODO 18).
  *
+ * The maintainer's ruling (2026-09-15): recoil compensators affect recoil only; a gyro affects recoil AND
+ * movement, its full rating on each — as Cannon Companion p.34 words the Max-Gyro ("provides 7 points of
+ * recoil compensation and reduces movement modifiers by 7").
  * > "The total recoil and movement modifiers are reduced by -1 for every point of gyro-stabilization
  * > the system provides … cumulative with recoil compensation." — p.113
  * > Gyro systems add +4 to the wearer's melee target numbers and only allow half the Combat Pool;
@@ -34,20 +37,21 @@ export async function run(t) {
   t.is('an unrated harness is a standard 5', A.gyroRating(actor([gear('Gyro Mount')])), 5);
   t.is('no harness, no rating', A.gyroRating(actor([])), 0);
 
-  /* ── p.113: one allowance against the TOTAL of recoil and movement ─────────── */
-  t.eq('recoil first: 5 against +3 recoil leaves 2', A.gyroOnRecoil(5, 3), { recoil: 0, used: 3, left: 2 });
-  t.eq('more recoil than gyro: +8 against 5 leaves +3', A.gyroOnRecoil(5, 8), { recoil: 3, used: 5, left: 0 });
+  /* ── The ruling: the full rating on recoil AND on movement ─────────────────── */
+  t.eq('5 against +3 recoil: recoil gone, all 5 still for movement', A.gyroOnRecoil(5, 3), { recoil: 0, used: 3, left: 5 });
+  t.eq('more recoil than gyro: +8 against 5 leaves +3, and 5 for movement', A.gyroOnRecoil(5, 8), { recoil: 3, used: 5, left: 5 });
   t.eq('no recoil: the whole rating is left for movement', A.gyroOnRecoil(6, 0), { recoil: 0, used: 0, left: 6 });
   t.eq('no gyro: nothing changes', A.gyroOnRecoil(0, 4), { recoil: 4, used: 0, left: 0 });
+  t.ok('CC\'s Max-Gyro is a gyro', !!A.gyroMount(actor([gear('Max-Gyro', { system: { rating: 7 } })])));
   t.is('what is left offsets running (+4) — 2 of it', gyroOffset({ atkRunning: true }, 2), 2);
   t.is('…never more than the movement ticked: walking +1 against 5', gyroOffset({ atkWalking: true }, 5), 1);
   t.is('…and nothing when no movement is ticked', gyroOffset({ darkness: true }, 5), 0);
   t.is('…or no gyro is left', gyroOffset({ atkRunning: true }, 0), 0);
   t.eq('the movement rows are the attacker\'s four', GYRO_MOVEMENT_KEYS, ['atkRunning', 'atkRunningDiff', 'atkWalking', 'atkWalkingDiff']);
-  // The discriminating case: rating 5, recoil +3, running +4. "Rating on each" would give 0 + 0;
-  // p.113's total gives 7 − 5 = 2.
+  // The discriminating case: rating 5, recoil +3, running on difficult ground +6. One shared allowance
+  // would leave +4; the ruling (full rating on each) leaves 0 recoil + 1 movement = +1.
   const r = A.gyroOnRecoil(5, 3);
-  t.is('p.113 total: recoil +3 and running +4 against 5 leaves +2 in all', r.recoil + 4 - gyroOffset({ atkRunning: true }, r.left), 2);
+  t.is('the ruling: recoil +3 and difficult running +6 against 5 leaves +1 in all', r.recoil + 6 - gyroOffset({ atkRunningDiff: true }, r.left), 1);
 
   /* ── p.282: the harness's costs ────────────────────────────────────────────── */
   t.is('+4 to the wearer\'s melee TNs', A.gyroMeleeTN(actor([gear('Gyro Mount')])), 4);
@@ -102,7 +106,7 @@ export async function run(t) {
     && /const recoilTNMod\s+= gyro\.recoil;/.test(item));
   t.ok('…and hands what is left to the GM window', /gyroLeft:\s+gyro\.left/.test(item));
   t.ok('the GM window subtracts it from the ticked movement', /clampTN\(baseTN \+ sumModifiers\(state\) - gyroOff\)/.test(item));
-  t.ok('…and what is left is the GM\'s number, pre-filled (p.112 says "or", p.113 "total")',
+  t.ok('…and the movement offset is the GM\'s number, pre-filled with the full rating',
     /id="sr-gm-gyro" value="\$\{ctx\.gyroLeft \?\? 0\}" min="0" max="\$\{ctx\.gyroRating\}"/.test(item)
     && /gyroOffset\(state, gyroLeft\)/.test(item) && /gyroRating:\s+game\.sr3e\.SR3EActor\.gyroRating\(actor\)/.test(item));
   t.ok('melee adds +4 to each fighter wearing one', /A\.woundTN\(actor\) \+ A\.gyroMeleeTN\(actor\)/.test(item)

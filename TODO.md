@@ -1969,11 +1969,14 @@ is the most-played path in the system and the one with the most moving parts.
 >   comes off recoil first in the fire flow (`SR3EActor.gyroOnRecoil`). What is left offsets the Attacker
 >   movement rows the GM ticks (`gyroOffset`). It also gives +1 impact and ballistic armour and +4 to the
 >   wearer's melee TNs, and halves the Combat Pool (rounded down).
-> - **The reading is a GM control, as this item asked.** p.113 says *"The **total** recoil and movement
->   modifiers are reduced by -1 for every point"*: one allowance against the sum. That is the default. The
->   GM window shows *Gyro N — left for movement*, pre-filled with what recoil did not use. Setting it to the
->   full rating applies p.112's *"recoil **or** movement"* reading instead. **For the maintainer:** which
->   reading is right, p.112/p.113 or p.280?
+> - **RULED by the maintainer, 2026-09-15:**
+>   - The books mix gyros up with recoil compensators. **Ordinary recoil compensation affects recoil
+>     only. A gyro affects both, its full rating on each.**
+>   - Cannon Companion p.34 words its Max-Gyro that way: *"provides 7 points of recoil compensation and
+>     reduces movement modifiers by 7."*
+>   - So recoil never uses up the movement offset, and difficult-terrain running alone is +6.
+>   - The GM window's *Gyro N — off movement* is pre-filled with the full rating and stays editable.
+>   - The shared-allowance reading it replaced is kept as a mutant (`gyro-shared-allowance`).
 > - TESTING.md §40.
 > - **Not modelled:**
 >   - The actor side still reads item names (smartlink cyberware, smart goggles). That is the pair
