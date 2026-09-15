@@ -42,14 +42,17 @@ const norm  = v => String(v ?? '').toLowerCase().replace(/\s+/g, '').replace(/[�
 const dir     = join(REPO, 'packs-src', PACK);
 const entries = readSourceDir(dir);
 const groups  = new Map();
+// ⚠ Documents `tools/build-default-gear.mjs` generated (Narcoject) are that tool's to write — it
+// regenerates them from upstream and its test fails on any other edit. Left exactly as they are.
+const generated = doc => doc?.flags?.The2ndChumming3e?.generatedBy === 'build-default-gear';
 for (const [key, doc] of entries) {
-  if (!key.startsWith('!items!')) continue;
+  if (!key.startsWith('!items!') || generated(doc)) continue;
   const name = alias(doc.name);
   if (!groups.has(name)) groups.set(name, []);
   groups.get(name).push(key);
 }
 
-const out = new Map([...entries].filter(([k]) => !k.startsWith('!items!')));
+const out = new Map([...entries].filter(([k, d]) => !k.startsWith('!items!') || generated(d)));
 const report = [];
 let changed = 0;
 for (const [name, keys] of [...groups].sort(([a], [b]) => a.localeCompare(b))) {
