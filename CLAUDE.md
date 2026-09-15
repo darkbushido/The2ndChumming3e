@@ -60,6 +60,23 @@ npm run test:e2e        # Playwright, two real clients (Foundry running)
   healing with its time boxes, gear ratings) predate these rules and ship as they are — do not
   split or renumber them.
 
+## TODOs — `TODO.md` is open work only, `TODO-DONE.md` the record (2026-09-15)
+
+- **`TODO.md` holds only open items**, grouped by kind of work (`###` headings). Finished items
+  live in **`TODO-DONE.md`**, in number order, with their reasoning intact.
+- **Numbers are permanent** — code, tests, CLAUDE.md and commits cite "TODO 48". Never reuse or
+  renumber; a new item takes the next number and goes under its group in `TODO.md`.
+- **Finishing an item:** put ✅ in its heading with the commit that closed it, then
+  `npm run todo:archive`. That moves it to `TODO-DONE.md`, rewrites links to it (both files and
+  `audit/*.md`) and regenerates `TODO.md`'s Contents table — **never edit that table by hand**.
+  Removing the ✅ and re-running moves an item back. `npm run todo:check` is read-only.
+- **Done means the heading has ✅** — nothing else is consulted. A finished item that leaves a
+  remainder (a "still open" or "noticed, not fixed" note) needs that remainder raised as a new
+  numbered item, or it disappears into the archive.
+- `tests/todo-archive.test.mjs` fails on a ✅ left in `TODO.md`, a missing or duplicated number,
+  a link naming the wrong file, or a file the tool would rewrite. Not GitHub issues and not the
+  in-session task list — those are ephemeral or outside the repo (the maintainer's call).
+
 ## Branch manifest URLs — `npm run manifest:branch`
 
 The three fields at the bottom of `system.json` (`url` / `manifest` / `download`) name a
