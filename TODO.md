@@ -276,6 +276,12 @@ of that would not gate melee, it would abolish it. #46 first, always.
 
 ## 48. The GM hand-charges every action — most of them are knowable
 
+> **Built 2026-09-15 on `feature/action-economy`** (0.6; not merged). See CLAUDE.md → *Action Tracker /
+> the action ledger*: combatant-flag ledger, self-charging flows, pips for everyone, and the GM's
+> ↺ undo that also puts back what the action spent (ammo, pool dice, recoil) and deletes its cards
+> (the maintainer, 2026-09-15). **Still open here:** Take Aim as cross-phase state (below); dual
+> wield billing one Simple for two guns waits on #49. Live check: TESTING.md §40.
+
 **Asked 2026-08-11:** *"right now the GM decides if a player does a simple or complex action. Some of
 these should auto apply. Is that possible?"* **Yes**, and for most combat actions the answer is not
 even ambiguous — SR3 states the cost per action, and the system already knows which action was taken

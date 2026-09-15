@@ -29,6 +29,7 @@ import { SR3EMIJI } from './SR3EMIJI.js';
 import { SR3EClocks } from './SR3EClocks.js';
 import { SR3EHealing } from './SR3EHealing.js';
 import { SR3EDrugs } from './SR3EDrugs.js';
+import { SR3EActionLedger } from './SR3EActionLedger.js';
 import { SR3ESourceBooks } from './SR3ESourceBooks.js';
 import { SR3ECompendiumDirectory } from './SR3ECompendiumDirectory.js';
 import { SR3EQuery, SR3EQueue, SR3EGMUnavailable } from './SR3EQuery.js';
@@ -41,6 +42,7 @@ Hooks.once('init', () => {
   // than `ready`: a fast click during world load must not reach a verb that
   // nobody is listening for.
   SR3EQuery.register();
+  SR3EActionLedger.register();   // sr3e.action.charge — TODO 48
 
   async function buildSkillsCompendium() {
     const PACK_ID = 'The2ndChumming3e.sr3e-skills';
@@ -95,7 +97,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock, ItemRating };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock, ItemRating };
 
   // When THIS client loaded the system's code.
   //
@@ -1687,70 +1689,9 @@ Hooks.on('renderCombatTracker', (_app, html) => {
     }, true); // capture phase — intercepts before Foundry's bubble handler
   }
 
-  // Action Tracker — GM-only, on the active combatant's card.
-  // Complex (full width) advances the turn; clicking the first Simple toggles Complex off
-  // (one simple action used); the second Simple advances the turn.
-  if (game.user.isGM && combat?.started && combat.combatant) {
-    const activeId = combat.combatant.id;
-    const row = el.querySelector(`[data-combatant-id="${activeId}"]`);
-    if (row && !row.querySelector('.sr3e-action-tracker')) {
-      const btnStyle = 'box-sizing:border-box;padding:2px 4px;font-size:11px;cursor:pointer;border:1px solid var(--sr-border,#444);border-radius:3px;background:var(--sr-surface,#1a1a1a);color:var(--sr-text,#ddd);';
-
-      // Combat rows are usually flex; let the tracker wrap to a full-width line below the row content.
-      row.style.flexWrap = 'wrap';
-      const wrap = document.createElement('div');
-      wrap.className = 'sr3e-action-tracker';
-      wrap.style.cssText = 'flex-basis:100%;margin:6px 6px 2px;display:flex;flex-direction:column;gap:3px;';
-
-      const label = document.createElement('div');
-      label.textContent = 'Action Tracker';
-      label.style.cssText = 'font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:var(--sr-muted,#999);text-align:center;';
-
-      const complexBtn = document.createElement('button');
-      complexBtn.type = 'button';
-      complexBtn.className = 'sr3e-act-complex';
-      complexBtn.textContent = 'Complex';
-      complexBtn.style.cssText = btnStyle + 'width:100%;';
-
-      const simpleRow = document.createElement('div');
-      simpleRow.style.cssText = 'display:flex;gap:3px;';
-      const simple1 = document.createElement('button');
-      simple1.type = 'button'; simple1.className = 'sr3e-act-simple1';
-      simple1.textContent = 'Simple'; simple1.style.cssText = btnStyle + 'flex:1;';
-      const simple2 = document.createElement('button');
-      simple2.type = 'button'; simple2.className = 'sr3e-act-simple2';
-      simple2.textContent = 'Simple'; simple2.style.cssText = btnStyle + 'flex:1;';
-      simpleRow.append(simple1, simple2);
-
-      const applyState = () => {
-        const used = (_actionTracker.get(activeId) ?? {}).firstSimpleUsed;
-        complexBtn.style.opacity = used ? '0.35' : '1';
-        complexBtn.style.cursor  = used ? 'not-allowed' : 'pointer';
-        simple1.style.background = used ? 'var(--sr-accent,#3a6ea5)' : 'var(--sr-surface,#1a1a1a)';
-        simple1.style.color      = used ? '#fff' : 'var(--sr-text,#ddd)';
-      };
-
-      complexBtn.addEventListener('click', async () => {
-        if ((_actionTracker.get(activeId) ?? {}).firstSimpleUsed) return; // greyed out
-        _actionTracker.delete(activeId);
-        await combat.nextTurn();
-      });
-      simple1.addEventListener('click', () => {
-        const s = _actionTracker.get(activeId) ?? { firstSimpleUsed: false };
-        s.firstSimpleUsed = !s.firstSimpleUsed;
-        _actionTracker.set(activeId, s);
-        applyState();
-      });
-      simple2.addEventListener('click', async () => {
-        _actionTracker.delete(activeId);
-        await combat.nextTurn();
-      });
-
-      applyState();
-      wrap.append(label, complexBtn, simpleRow);
-      row.appendChild(wrap);
-    }
-  }
+  // Action Tracker (TODO 48) — pips for everyone, the GM's buttons beside them. The state is a
+  // combatant flag (SR3EActionLedger), so a player sees what they have spent and a reload keeps it.
+  SR3EActionLedger.renderTracker(combat, el);
 
   // GM tool buttons (Chase Scene, Session Rewards, Chunky Salsa, Barrier/Falling Damage,
   // Escape Artist) live on the Rollable Tables sidebar tab — see renderRollTableDirectory below.
@@ -1771,7 +1712,6 @@ Hooks.on('updateCombatant', (combatant, changed) => {
 // Action Tracker state resets whenever the combat turn or round changes (covers both the
 // tracker's own buttons and the default next-turn arrow).
 Hooks.on('updateCombat', (_combat, changed) => {
-  if ('turn' in changed || 'round' in changed) _actionTracker.clear();
   // Per-combat-round upkeep (GM client only): count down infiltrations; refresh IVIS Pools;
   // expire Attribute Boosts. ⚠ A Foundry ROUND is an SR3 Combat Turn, which is the unit
   // p.168 counts a boost's duration in — per-pass would evaporate a 3-success boost inside
@@ -2112,7 +2052,6 @@ const _cornerDrafts = new Map();
 
 // Action Tracker state — per active combatant, this turn only. Keyed by combatant id,
 // value { firstSimpleUsed }. Cleared whenever the combat turn/round changes (below).
-const _actionTracker = new Map();
 
 function _checkBtn(btn, mid, cls, idx) {
   if (!_usedButtons.has(`${mid}|${cls}|${idx}`)) return true;

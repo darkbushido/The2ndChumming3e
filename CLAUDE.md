@@ -826,10 +826,26 @@ physical dice dialog — shows the formula, lets the user type in the result dir
 roll icons in the tracker are dimmed + `pointer-events:none` (and the shift handler bails) so
 initiative is rolled only through the "Begin Encounter" dialog. Re-enabled once combat starts.
 
-**Action Tracker** (GM-only, on the active combatant's card, `renderCombatTracker`): a "Complex"
-(full-width) button advances the turn (`combat.nextTurn()`); the first "Simple" button toggles
-Complex off (one simple action used, can toggle back); the second "Simple" advances the turn.
-Per-turn state is in-memory (`_actionTracker` map), cleared on any `updateCombat` turn/round change.
+**Action Tracker / the action ledger** (TODO 48, `feature/action-economy`) — SR3 pp.105-108. Rules:
+`scripts/data/action-economy.mjs` (`ActionEconomy`, `ACTIONS` with a page each); storage and UI:
+`scripts/SR3EActionLedger.js`. The ledger is a **combatant flag** keyed to the phase it was written in
+(`round|turn`, so it needs no clearing), written by the GM through **`sr3e.action.charge`**.
+- A phase holds **two Simple or one Complex, plus one Free** (p.105, p.107). Over-spending is recorded
+  and flagged ⚠, **never refused**.
+- **The flows charge themselves** (`SR3EActionLedger.charge`, only when it is that actor's phase):
+  a firearm by **fire mode** (SS/SA/BF Simple, FA Complex), thrown = Throw Weapon, melee (attacker
+  only), spells, vehicle weapons, skills, nature-spirit summoning, reloads per the Ammo Reloading Table.
+  ⚠ **Nothing reactive is ever charged** (dodge, soak, resistance, initiative) — charge the actor who
+  OPENED the action. ⚠ **Auto-mark, never auto-advance**: only the GM's Complex / second Simple end a turn.
+- **Pips for everyone** on the active combatant's row (action economy is public at the table); the GM's
+  buttons beside them: Complex (ends turn), Simple (toggle), Simple (ends turn), **↺ Undo**.
+- ⚠ **The GM's undo restores what the action SPENT.** Each flow calls `SR3EActionLedger.begin(actor)`
+  at its very start (before any dialog) to snapshot pool dice spent, the recoil count, Karma Pool and
+  every weapon/ammunition item's rounds and quantity; the charge carries it. ↺ lists every snapshotted
+  value changed since and every chat card posted since, all ticked, each untickable (the same
+  character's dodge in between) — then puts back, deletes, and frees the slot. Damage is never
+  auto-applied, so nothing else needs reversing.
+- Not yet: Take Aim across phases (#48's note), dual wield's one Simple for two guns (#49), Ready (#47).
 
 ### GM tools — Rollable Tables sidebar
 Chase Scene, Driving Test, Session Rewards, Chunky Salsa, Barrier Damage, Falling Damage and

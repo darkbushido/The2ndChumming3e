@@ -76,6 +76,7 @@ export class SR3EItem extends Item {
    */
   async rollSkill(tn = 4, options = {}) {
     const actor = this.actor;
+    game.sr3e.SR3EActionLedger?.begin(actor);   // snapshot for the GM's undo (TODO 48)
     if (!actor) {
       ui.notifications.warn('This skill is not owned by an actor.');
       return null;
@@ -126,6 +127,7 @@ export class SR3EItem extends Item {
     }
 
     // TN modifier from defaulting is baked in here.
+    game.sr3e.SR3EActionLedger?.charge(actor, 'useSkill', this.name);   // Use Skill — Complex, SR3 p.108 (TODO 48)
     return actor.rollPool(pool, tn + defTnMod, label, { ...options });
   }
 
@@ -198,6 +200,7 @@ export class SR3EItem extends Item {
    */
   static async rollMeleeAttack(actor, atkWeapon) {
     if (!actor || !atkWeapon) return null;
+    game.sr3e.SR3EActionLedger?.begin(actor);   // snapshot for the GM's undo (TODO 48)
 
     // Parse attacker damage code (resolve STR against attacker)
     const rawDamage  = atkWeapon.system?.damage || '';
@@ -352,6 +355,10 @@ export class SR3EItem extends Item {
         .filter(Boolean).join(' · ') || null,
     }, { timeout: 300_000 });
     if (gm === null) return null;
+
+    // Melee/Unarmed Attack — Complex, SR3 p.108 (TODO 48). The ATTACKER only: the defender's
+    // half of the exchange is reactive and costs them nothing from their own phase.
+    game.sr3e.SR3EActionLedger?.charge(actor, 'meleeAttack', atkWeapon?.name ?? 'Unarmed');
 
     await game.sr3e.SR3EActor.postMeleeCard({
       attackerActorId:  actor.id,
@@ -914,6 +921,7 @@ export class SR3EItem extends Item {
   if (this.type === 'vehicleweapon') return this.rollVehicleWeapon(options);
 
   const actor = this.actor;
+  game.sr3e.SR3EActionLedger?.begin(actor);   // snapshot for the GM's undo (TODO 48)
   if (!actor) {
     ui.notifications.warn('No actor for this weapon.');
     return null;
@@ -1058,6 +1066,8 @@ export class SR3EItem extends Item {
     options.grenadeType      = weaponOpts.grenadeType ?? 'standard';
     options.skipWoundMod     = true;   // pre-applied in the roll-options TN (throwPreTN)
 
+    // A thrown grenade is Throw Weapon; a launcher is Fire Weapon — Simple, SR3 p.106-107 (TODO 48).
+    game.sr3e.SR3EActionLedger?.charge(actor, this._isConsumable() ? 'throwWeapon' : 'fireWeapon', this.name);
     await this._consumeThrown();
     return actor.rollPool(pool, tn, label, options);
   }
@@ -1437,6 +1447,10 @@ export class SR3EItem extends Item {
     }
   }
 
+  // The action it is (TODO 48): thrown — Throw Weapon; a gun or bow — by FIRE MODE, because full
+  // auto is a different action (Fire Automatic Weapon, Complex, p.108) from SS/SA/BF (Simple, p.106).
+  game.sr3e.SR3EActionLedger?.charge(actor, this._isConsumable() ? 'throwWeapon' : game.sr3e.SR3EActionLedger.rules.fireAction(fireModeResult?.mode),
+    `${this.name}${fireModeResult?.mode ? ` (${fireModeResult.mode})` : ''}`);
   await this._consumeThrown();
   return actor.rollPool(pool, tn, label, options);
 }
@@ -1453,6 +1467,7 @@ export class SR3EItem extends Item {
    */
   async rollVehicleWeapon(options = {}) {
     const actor = this.actor;
+    game.sr3e.SR3EActionLedger?.begin(actor);   // snapshot for the GM's undo (TODO 48)
     if (!actor) { ui.notifications.warn('No actor for this weapon.'); return null; }
 
     const rawDamage = this.system.damage || '';
@@ -1577,6 +1592,10 @@ export class SR3EItem extends Item {
     options.isWeaponRoll       = true;
     options.isMelee            = false;
     options.committedDodgeDice = 0;
+
+    // Fire Mounted or Vehicle Weapon — Complex, SR3 p.108 (TODO 48). Charged to whichever of the
+    // vehicle and its pilot holds the Combat Phase; the ledger ignores the one that does not.
+    for (const who of new Set([actor, pilotActor].filter(Boolean))) game.sr3e.SR3EActionLedger?.charge(who, 'fireVehicleWeapon', this.name);
 
     return actor.rollPool(finalPool, tn, label, options);
   }
@@ -1886,6 +1905,7 @@ export class SR3EItem extends Item {
     if (this.type !== 'firearm' && !this._usesNockedAmmo()) return;
     const actor = this.actor;
     if (!actor) return;
+    game.sr3e.SR3EActionLedger?.begin(actor);   // snapshot for the GM's undo (TODO 48)
     const SR3E    = game.sr3e.SR3E;
     const trackOn = game.settings.get('The2ndChumming3e', 'trackAmmo');
     const gunMech = this._weaponLoadMechanism();
@@ -1931,6 +1951,16 @@ export class SR3EItem extends Item {
     const returnedTo = plan.returned > 0 ? await SR3EItem._returnRounds(actor, gunMech, current.type, plan.returned) : null;
     const quickness = actor.system?.attributes?.quickness?.value ?? 1;
     const actions   = AmmoStock.reloadActions(ammo.system, { taken: plan.taken, quickness }).text;
+    // Charge what the Ammo Reloading Table says it took (TODO 48): a clip swap is Remove Clip + Insert
+    // Clip (two Simple, p.107/106), loose rounds a Complex each (Reload Firearm, p.108), and nocking an
+    // arrow or bolt is Ready Weapon (p.106 — "a bow … previously made ready using … Ready Weapon").
+    {
+      const cost = AmmoStock.reloadActions(ammo.system, { taken: plan.taken, quickness });
+      const LG = game.sr3e.SR3EActionLedger;
+      if (/^(arrow|bolt)$/.test(gunMech)) LG?.charge(actor, 'readyWeapon', this.name);
+      else if (cost.simple >= 2) { LG?.charge(actor, 'removeClip', this.name).then(() => LG?.charge(actor, 'insertClip', this.name)); }
+      else for (let i = 0; i < cost.complex; i++) LG?.charge(actor, 'reloadFirearm', this.name);
+    }
     const parts = [
       `${this.name}: ${plan.loaded}/${magSize} × ${typeLabel}`,
       plan.topUp ? `topped up with ${plan.taken}` : '',
@@ -4052,6 +4082,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
    */
   async rollSpell(options = {}) {
     const actor = this.actor;
+    game.sr3e.SR3EActionLedger?.begin(actor);   // snapshot for the GM's undo (TODO 48)
     if (!actor) { ui.notifications.warn('No actor for this spell.'); return null; }
 
     const magicBase = actor.system.attributes?.magic?.base ?? 0;
@@ -4262,6 +4293,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       targetNames,
     };
 
+    game.sr3e.SR3EActionLedger?.charge(actor, 'castSpell', this.name);   // Cast Spell — Complex, SR3 p.108 (TODO 48)
     return actor.rollPool(pool, tn, label, {
       isSpellRoll:        true,
       spellContext,

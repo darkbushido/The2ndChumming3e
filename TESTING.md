@@ -2352,3 +2352,21 @@ then `npm run packs:install` with Foundry closed so the rebuilt M&M drug pack re
 - [ ] **Jazz** → Quickness +2 (and Reaction with it); wears off → a **🩸 Resist 8L Stun** button → the
       soak card shows *armour does not apply*.
 - [ ] A second player cannot press another character's ✔ buttons or 🎲 (greyed with a reason).
+
+## 40. The action ledger (TODO 48, `feature/action-economy`)
+
+**Prerequisites:** the branch's code live in the install (the install's `scripts/` is a junction to the
+MAIN checkout, so merge first or point it at the branch), then F5. A combat with two PCs, started.
+
+- [ ] The active combatant's row shows pips (one wide Complex, two Simple, one small Free) to **every**
+      user; the GM also sees Complex / Simple / Simple / ↺.
+- [ ] On their phase a player fires a pistol **SA** → one Simple pip fills; a second SA → both; a
+      third → ⚠ and a GM warning, recorded not refused. The turn does **not** advance by itself.
+- [ ] Full auto → the Complex pip, not a Simple. A skill roll, a spell, a melee attack → Complex.
+- [ ] The defender's dodge, soak and spell resistance fill **nothing** on the defender.
+- [ ] An actor who is not the active combatant rolls → nothing is charged.
+- [ ] ↺ (GM): pick the SA shot → the dialog lists `combatPoolSpent`, `roundsFiredThisPhase`, the gun's
+      `loadedRounds` and the chat cards since, all ticked → **↩ Undo** puts them back, deletes the
+      cards and frees the pip. Untick one row → that value is left alone.
+- [ ] Reload: a clip swap fills both Simples; loose rounds a Complex each; nocking an arrow one Simple.
+- [ ] F5 on any client keeps the pips (they are a combatant flag); the next combatant's phase starts empty.
