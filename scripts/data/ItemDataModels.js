@@ -602,7 +602,13 @@ export class DrugData extends foundry.abstract.TypeDataModel {
       category:     new StringField({ initial: '' }),  // Pharmaceutical Compounds / Depressants / Designer Drugs / Hallucinogens / Magical Compounds / Narcotics / Stimulants
       addiction:    new StringField({ initial: '' }),   // e.g. "2M", "4M+3P", "5M/5P" (M=Mental, P=Physical)
       tolerance:    new StringField({ initial: '' }),
-      effect:       new StringField({ initial: '' }),   // source table's "Edge" column
+      // ⚠ LEGACY: the upstream table's name for the Edge column. The packs now use `edge`, but a
+      // world item copied earlier keeps its Edge here — `DrugRules.drugEdge` reads both (TODO 124).
+      effect:       new StringField({ initial: '' }),
+      edge:         new StringField({ initial: '' }),   // "pre/post", e.g. "5/50" — M&M p.108
+      fixFactor:    new StringField({ initial: '' }),   // longest an addict goes between doses, e.g. "2 days"
+      damage:       new StringField({ initial: '' }),   // Power + Level, e.g. "6S Stun" — resisted with Body (M&M p.106)
+      legality:     new StringField({ initial: '' }),
       speed:        new StringField({ initial: '' }),   // onset time, e.g. "Instant", "10 min", "1D6 hrs"
       vector:       new StringField({ initial: '' }),   // delivery method, e.g. "Inhalation", "Ingestion, Injection"
       availability: new StringField({ initial: '' }),

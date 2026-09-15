@@ -118,7 +118,7 @@ export class SR3EMIJI {
    */
   static _woundTN(actor) {
     // + sustained spells (p.178) — a rigger sustaining a spell pays +2 on these tests too.
-    return game.sr3e.SR3EActor.woundTN(actor) + game.sr3e.SR3EActor.sustainingTN(actor);
+    return game.sr3e.SR3EActor.woundTN(actor) + game.sr3e.SR3EActor.standingTN(actor);
   }
 
   /** Controlling rigger of a vehicle (its linked driver). */

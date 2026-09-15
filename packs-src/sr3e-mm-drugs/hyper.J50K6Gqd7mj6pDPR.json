@@ -10,11 +10,13 @@
       "effect": "",
       "speed": "Immediate",
       "vector": "Inhalation or Injection",
-      "availability": "180",
-      "cost": 0,
+      "availability": "4/24 hrs",
+      "cost": 180,
       "streetIndex": ".9",
       "bookPage": "mm.119",
-      "notes": ""
+      "notes": "",
+      "damage": "6S Stun",
+      "legality": "4P-X"
     },
     "_id": "J50K6Gqd7mj6pDPR",
     "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",

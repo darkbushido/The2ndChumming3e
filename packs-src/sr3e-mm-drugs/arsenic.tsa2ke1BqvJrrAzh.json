@@ -6,7 +6,7 @@
     "system": {
       "category": "Pharmaceutical Compounds",
       "addiction": "",
-      "tolerance": "",
+      "tolerance": "1",
       "effect": "",
       "speed": "1D6 hrs",
       "vector": "Ingestion",
@@ -14,7 +14,10 @@
       "cost": 40,
       "streetIndex": "1",
       "bookPage": "mm.118",
-      "notes": ""
+      "notes": "",
+      "damage": "10D",
+      "edge": "20/--",
+      "legality": "Legal"
     },
     "_id": "tsa2ke1BqvJrrAzh",
     "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",

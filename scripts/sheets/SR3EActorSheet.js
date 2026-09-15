@@ -35,6 +35,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       rollUnarmed:    SR3EActorSheet._onRollUnarmed,
       attributeBoost: SR3EActorSheet._onAttributeBoost,
       toggleAugmentation: SR3EActorSheet._onToggleAugmentation,
+      takeDrug:       SR3EActorSheet._onTakeDrug,
+      drugRecord:     SR3EActorSheet._onDrugRecord,
       rollInitiative: SR3EActorSheet._onRollInitiative,
       itemCreate:     SR3EActorSheet._onItemCreate,
       browseSkills:   SR3EActorSheet._onBrowseSkills,
@@ -861,7 +863,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const srcs     = d.attributeSources?.[key] ?? [];
     // Attribute Boost and switched-on cyberware (Adrenal Pump, Pain Editor) change the VALUE but
     // had no chip, so the sheet's total disagreed with what every roll used. Shown now.
-    const live     = SA.attributeSourceSum(srcs, ['boost', 'triggered']);
+    const live     = SA.attributeSourceSum(srcs, ['boost', 'triggered', 'drug']);
     const total    = attr[key]?.value ?? (base + adept + aug + racial);
     const showTotal = aug !== 0 || adept !== 0 || racial !== 0 || live !== 0;
     const breakdown = _title(SA.attributeBreakdown({ label, base, sources: srcs, total }));
@@ -884,7 +886,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         ${racial > 0 ? `<span class="attr-force-sep">+</span>
         <span class="attr-aug" title="Troll dermal armor (SR3 p.56)">${racial}</span>` : ''}
         ${live !== 0 ? `<span class="attr-force-sep">${live > 0 ? '+' : '−'}</span>
-        <span class="attr-live" title="${_named(srcs, ['boost', 'triggered'], 'Running now')}">${Math.abs(live)}</span>` : ''}
+        <span class="attr-live" title="${_named(srcs, ['boost', 'triggered', 'drug'], 'Running now')}">${Math.abs(live)}</span>` : ''}
         ${showTotal ? `<span class="attr-force-total" title="${breakdown}">(${total})</span>` : ''}
         ${key === 'quickness' && (d.armorQuicknessTN ?? 0) > 0 ? `<span class="attr-enc-penalty" title="${_title(`Layered armour — ${wornArmour.join(' + ')}\nWorn Ballistic ${d.armorSumBallistic} exceeds Quickness by ${d.armorQuicknessTN}: ${_signed(d.armorQuicknessTN)} TN to Quickness tests and Quickness-linked skills, and Quickness counts ${d.armorQuicknessTN} lower for movement (SR3 p.285).\nQuickness itself is not lowered — armour costs Combat Pool dice instead.`)}">+${d.armorQuicknessTN} TN</span>` : ''}
         <i class="fas fa-dice-d6 rollable" data-action="rollAttr" data-attr="${key}"
@@ -2435,9 +2437,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const dRows = drugs.length ? drugs.map(d => `
       <div class="item-row" data-item-id="${d.id}">
-        <span class="item-name" title="${d.system.category ?? ''}">${d.name}</span>
+        <span class="item-name" title="${d.system.category ?? ''}">
+          <button type="button" class="sr-drug-take" data-action="takeDrug" title="Take a dose (M&amp;M pp.105-109)">💊</button>
+          ${d.name}</span>
         <span class="item-cell">${d.system.category ?? '-'}</span>
-        <span class="item-cell">${d.system.addiction || '-'}</span>
+        <span class="item-cell" title="Addiction · Tolerance · Edge">${d.system.addiction || '-'}</span>
         <span class="item-cell">${d.system.cost ?? 0}¥</span>
         ${this._itemControls(d.id, false)}
       </div>`).join('') : '<p class="empty-list">No drugs or toxins.</p>';
@@ -2455,7 +2459,52 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       <div class="list-header"><span>Name</span><span>Category</span><span>Addiction</span><span>Cost</span><span></span></div>
       ${dRows}
       <button type="button" class="btn-add" data-action="itemCreate" data-type="drug">+ Add Drug</button>
+      ${this._substancesBlock(actor)}
     </div>`;
+  }
+
+  /**
+   * Substance use · M&M pp.108-110 (TODO 124) — one row per drug the character has taken: doses, the
+   * current Addiction (• = addicted) and Tolerance, what is running, and the buttons that move the
+   * record on. Every number is the GM's to edit on the record; nothing here rolls or applies by itself.
+   */
+  _substancesBlock(actor) {
+    const D = game.sr3e.SR3EDrugs;
+    const R = D?.rules;
+    const subs = Object.entries(actor.system.substances ?? {}).filter(([, s]) => s);
+    if (!R || !subs.length) return '';
+    const btn = (key, op, label, title) =>
+      `<button type="button" class="sr-drug-op" data-action="drugRecord" data-key="${key}" data-op="${op}" title="${title}">${label}</button>`;
+    const WD = { withdrawal: 'Withdrawal +2', forced: 'Forced withdrawal +3', recovery: 'Recovering +1' };
+    const rows = subs.map(([key, s]) => {
+      const hooked = R.isAddicted(s);
+      const state = [
+        s.active ? `<span class="sr-drug-badge sr-drug-on" title="${s.active.duration ?? ''}">running${s.active.duration ? ` · ${s.active.duration}` : ''}</span>` : '',
+        s.crash ? `<span class="sr-drug-badge sr-drug-crash">crashing${s.crash.duration ? ` · ${s.crash.duration}` : ''}</span>` : '',
+        hooked ? '<span class="sr-drug-badge sr-drug-hooked">addicted</span>' : '',
+        s.tolerant ? '<span class="sr-drug-badge">tolerant</span>' : '',
+        s.withdrawal ? `<span class="sr-drug-badge sr-drug-wd">${WD[s.withdrawal]} · day ${s.days ?? 0}${s.withdrawal === 'recovery' ? ` of ${s.recoveryDays}` : ''}</span>` : '',
+      ].join('');
+      const ops = [
+        s.active ? btn(key, 'wearOff', '⏳ Wears off', 'The drug wears off — its crash, and the tolerance test it owes') : '',
+        s.crash ? btn(key, 'crashOver', '✔ Crash over', 'The crash has run its course') : '',
+        !s.active && s.toleranceDue ? btn(key, 'tolerance', '🎲 Tolerance', `Body (${s.toleranceDue}) — M&M p.109`) : '',
+        hooked && !s.withdrawal ? btn(key, 'fix', '🎲 Stretch fix', 'Skip one Fix Factor period — M&M p.109') : '',
+        hooked ? btn(key, 'monthly', '🎲 Monthly', 'Addiction Effects — failure costs a point of Body (M&M p.109)') : '',
+        hooked && !s.withdrawal ? btn(key, 'kick', '🎲 Kick it', `Willpower (${R.kickTN(s)}) — M&M pp.109-110`) : '',
+        hooked && !s.withdrawal ? btn(key, 'forced', '⛓ No fix', 'No dose in time — forced withdrawal (M&M p.110)') : '',
+        s.withdrawal ? btn(key, 'day', '⏭ A day passes', 'Withdrawal: −1 every two days; forced: −1 a day; recovery counts down (M&M p.110)') : '',
+        btn(key, 'clear', '✕', 'Forget this record'),
+      ].join('');
+      return `<div class="sr-drug-rec">
+        <div class="sr-drug-rec-head"><strong>${s.name}</strong> <span class="sr-drug-meta">dose ${s.doses ?? 0} · Addiction ${D.ratingText(s)} · Tolerance ${s.tolerance ?? '—'}${s.fixFactor ? ` · fix every ${s.fixFactor}` : ''}</span>${state}</div>
+        <div class="sr-drug-ops">${ops}</div>
+      </div>`;
+    }).join('');
+    const tn = game.sr3e.SR3EActor.drugTN(actor);
+    return `<h3 class="section-hdr" style="margin-top:1rem">Substance use</h3>
+      ${tn ? `<div class="sr-drug-standing">⚠ ${game.sr3e.SR3EActor.drugNote(actor)} on every test but Damage Resistance${(actor.system.derived?.drugConcentrationTN ?? 0) > tn ? ` — +${actor.system.derived.drugConcentrationTN} on concentration tasks, spellcasting included (apply the difference)` : ''}.</div>` : ''}
+      ${rows}`;
   }
 
   _tabMagic(actor, sys) {
@@ -3460,6 +3509,42 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    * Activate an Attribute Boost (SR3 p.168-169) — a Magic Test, a duration, and a Drain
    * bill when it lapses. The whole flow lives on the document; the sheet only triggers it.
    */
+  /** 💊 Take a dose (M&M pp.105-109) — TODO 124. */
+  static async _onTakeDrug(event, target) {
+    event.preventDefault();
+    const item = this.actor.items.get(target.closest('[data-item-id]')?.dataset.itemId);
+    if (item) await game.sr3e.SR3EDrugs.take(this.actor, item);
+  }
+
+  /**
+   * A button on the Substances block (TODO 124): `data-op` wearOff | crashOver | day | fix | monthly
+   * | kick | tolerance | forced | clear, on the record `data-key`.
+   */
+  static async _onDrugRecord(event, target) {
+    event.preventDefault();
+    const D = game.sr3e.SR3EDrugs, R = D.rules, actor = this.actor;
+    const key = target.dataset.key, op = target.dataset.op;
+    const s = D.record(actor, key);
+    if (!s) return;
+    switch (op) {
+      case 'wearOff':   return D.wearOff(actor, key);
+      case 'crashOver': return D.crashOver(actor, key);
+      case 'day':       return D.passDay(actor, key);
+      case 'fix':
+      case 'monthly':   for (const t of R.addictTests(s)) await D.postTest(actor, key, { ...t, kind: op }); return;
+      case 'kick':      return D.postTest(actor, key, { kind: 'kick', attr: 'willpower', tn: R.kickTN(s) });
+      case 'tolerance': return D.postTest(actor, key, { kind: 'tolerance', tn: s.toleranceDue ?? s.tolerance });
+      case 'forced':    return D.act(null, { act: 'withdrawal', ownerId: actor.id, key, forced: true });
+      case 'clear': {
+        const ok = await foundry.applications.api.DialogV2.confirm({ window: { title: 'Clear the record' },
+          content: `<p>Forget ${actor.name}'s whole history with <strong>${s.name}</strong> — doses, Addiction, Tolerance and withdrawal?</p>` });
+        if (ok) await D.write(actor, key, null);
+        return;
+      }
+      default: return;
+    }
+  }
+
   /** Switch a triggered augmentation on or off (M&M p.63, p.71) — TODO 30. */
   static async _onToggleAugmentation(event, target) {
     event.preventDefault();
@@ -4657,11 +4742,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const karmaPool    = actor?.system.karmaPool ?? 0;
     const woundPenalty = -(actor?.system.woundMod ?? 0);
     // Sustained spells, +2 each on all tests (p.178) — pre-applied beside the wound, and `rollPool` skips both.
-    const sustainTN    = game.sr3e.SR3EActor.sustainingTN(actor);
+    const sustainTN    = game.sr3e.SR3EActor.standingTN(actor);
     const woundNote    = (woundPenalty > 0
       ? `<div class="roll-opts-wound-note">⚡ Wound TN +${woundPenalty} (pre-applied)</div>`
       : '') + (sustainTN > 0
-      ? `<div class="roll-opts-wound-note">🔒 ${game.sr3e.SR3EActor.sustainingNote(actor)} (pre-applied)</div>`
+      ? `<div class="roll-opts-wound-note">🔒 ${game.sr3e.SR3EActor.standingNote(actor)} (pre-applied)</div>`
       : '');
     const attrs = actor?.system.attributes ?? {};
 
@@ -4815,7 +4900,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   static async _promptSkillRollOptions(actor, defaultItem, { physicalDice = false } = {}) {
     const karmaPool    = actor?.system.karmaPool ?? 0;
     const woundPenalty = -(actor?.system.woundMod ?? 0);
-    const sustainTN    = game.sr3e.SR3EActor.sustainingTN(actor);   // p.178, pre-applied like the wound
+    const sustainTN    = game.sr3e.SR3EActor.standingTN(actor);   // p.178, pre-applied like the wound
     // No isAdept check: skillBonusDice is only populated for actors who earned the dice,
     // so re-gating here could only drop a bonus derivation already granted. It also now
     // carries cyberware/bioware skill bonuses, which have nothing to do with being an adept.
@@ -4951,7 +5036,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
               <input type="number" id="sr-tn" class="skill-opts-tn" value="${4 + woundPenalty + sustainTN + qtnFor(defSkill)}" min="2" max="30" data-qtn="${qtnFor(defSkill)}"/>
             </div>
             ${woundPenalty > 0 ? `<div style="font-size:11px;color:var(--sr-amber);margin:4px 0 8px">⚡ Wound TN +${woundPenalty} (pre-applied)</div>` : ''}
-            ${sustainTN > 0 ? `<div style="font-size:11px;color:var(--sr-amber);margin:4px 0 8px">🔒 ${game.sr3e.SR3EActor.sustainingNote(actor)} (pre-applied)</div>` : ''}
+            ${sustainTN > 0 ? `<div style="font-size:11px;color:var(--sr-amber);margin:4px 0 8px">🔒 ${game.sr3e.SR3EActor.standingNote(actor)} (pre-applied)</div>` : ''}
             ${armorQTN > 0 ? `<div id="sr-armor-note" style="font-size:11px;color:var(--sr-amber);margin:4px 0 8px;display:${qtnFor(defSkill) ? 'block' : 'none'}">🛡 Layered armour TN +${armorQTN} (Quickness-linked skill, SR3 p.285, pre-applied)</div>` : ''}
             <div id="sr-default-note" style="font-size:11px;color:var(--sr-amber);margin:4px 0 8px;display:${defS.rating ? 'none' : 'block'}">↩ No skill — you'll <strong>choose how to default</strong> (specialization / skill / attribute) when you roll.</div>
             ${karmaPool > 0 ? `

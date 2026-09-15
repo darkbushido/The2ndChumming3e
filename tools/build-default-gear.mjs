@@ -78,8 +78,10 @@ const IMG = {
 
 // Upstream spelling slips, each checked against the book's own text (2026-09-14): CC prints
 // "Grapple Gun" and "Liquid Breathing Apparatus"; M&M "Hospital", "Witch's Moss" and "Novacoke".
+// M&M also prints "Neuro-stun" (p.121) and "CS/Tear Gas" (p.118) — upstream's Toxins table spells
+// them "Neurostun" and "CS", which slipped past the already-shipped check and shipped each drug twice.
 const NAME_FIXES = [[/\bHosptial\b/g, 'Hospital'], [/\bApparartus\b/g, 'Apparatus'], [/\bGrappel\b/g, 'Grapple'], [/\bDiplay\b/g, 'Display'],
-  [/\bWitchs Moss\b/g, "Witch's Moss"], [/\bNovocoke\b/g, 'Novacoke']];
+  [/\bWitchs Moss\b/g, "Witch's Moss"], [/\bNovocoke\b/g, 'Novacoke'], [/\bNeurostun\b/g, 'Neuro-stun'], [/^CS$/, 'CS/Tear Gas']];
 /** The generator's "specify" (`->`) and credstick (`>>`) markers off a name, spaces tidied, slips fixed. */
 export const cleanName = s => NAME_FIXES.reduce((n, [re, to]) => n.replace(re, to),
   String(s ?? '').replace(/\s*(->|>>)\s*$/, '').replace(/\s+/g, ' ').trim());
@@ -162,8 +164,9 @@ export function docFor(row, category, edition) {
   }
   if (type === 'drug') {
     const more = extras(row, ['Addiction', 'Tolerance', 'Edge', 'Speed', 'Vector', 'Availability', 'Cost', 'Street Index', 'Damage']);
+    // Edge and Damage are separate fields (TODO 124) — they used to share the legacy `effect`.
     return { ...base, book, system: { category: category === 'Drugs' ? '' : category, addiction: String(row.Addiction ?? ''),
-      tolerance: String(row.Tolerance ?? ''), effect: String(row.Edge ?? row.Damage ?? ''), speed: String(row.Speed ?? ''),
+      tolerance: String(row.Tolerance ?? ''), edge: String(row.Edge ?? ''), damage: String(row.Damage ?? ''), speed: String(row.Speed ?? ''),
       vector: String(row.Vector ?? ''), cost, ...common, notes: `${costNote}${more ? `<p>${more}</p>` : ''}` } };
   }
   if (type === 'armor') {

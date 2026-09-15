@@ -1447,6 +1447,9 @@ indicates the number of Combat Turns"*. A boolean flag would let a GM forget to 
 leave a character permanently boosted. It counts down on the `updateCombat` round hook beside
 `tickAttributeBoosts`, and on expiry bills a **Body Test vs (turns it ran)D Stun** — Power is the
 duration, read from `rolledTurns` recorded at activation, because by expiry the counter is zero.
+⚠ The crash goes through the ordinary soak card with **`noArmor`** — shock is not an attack. Until
+0.5.2 it passed `power`/`level` where the card reads `stagedPower`/`stagedLevel`, so the card had
+no Power and a NaN TN (`tests/soak-payload.test.mjs`).
 
 ⚠ **WHERE the bonuses are applied is the rule, not a detail.** p.63: *"The Quickness bonus does
 not affect Reaction, nor does the Reaction bonus affect the Control Pool. However, the Quickness
@@ -2162,6 +2165,45 @@ at the call site.
 bought, so "where did that 40 karma go?" has no answer. Tracked separately as TODO 79, because
 it is a want rather than a defect.
 
+### Drugs — addiction, tolerance, withdrawal, effects  · *M&M pp.105-110, 117-123* — TODO 124
+
+Pure rules in `scripts/data/drug-rules.mjs` (`DrugRules`, tested against the book's Cram example
+from first hit to forced withdrawal); cards and writes in `scripts/SR3EDrugs.js`; state in
+**`system.substances`** (characters and NPCs), one record per drug keyed by `DrugRules.drugKey(name)`.
+Same shape as healing: 💊 on a drug row → a dose card and a roll card per test → `rollPool` with
+`drugContext` (carried at all three 💥 sites) → a result card whose buttons **offer** the consequence
+(`.sr-drug-roll-btn` `_isDeciderId`, `.sr-drug-act-btn` `_mineId`). The **Substance use** block on the
+Gear tab moves the record on: wears off, crash over, stretch a fix, monthly test, kick it, no fix, a
+day passes, clear.
+
+| Rule | Where |
+|---|---|
+| First dose: a test per addiction type vs the **base** rating — Willpower (M), Body (P), **unaugmented**, a dwarf +2 Body dice on P | `takeDose` · p.108 |
+| Every Edge doses (**total** doses; pre-Edge until addicted, post after): Addiction and Tolerance +1, retest the modified rating | `takeDose` · p.108 |
+| Failed: addicted, rating → base + 1 | `addictionResult` · p.108 |
+| Tolerance: Body vs Tolerance **after it wears off**; no successes = tolerant | `toleranceResult` · p.109 |
+| Kick: Willpower vs current +1 (M) / +3 (P) / +4 (both — the higher rating, editable) | `kickTN` · pp.109-110 |
+| Withdrawal −1 every 2 days, forced −1 a day, to the base; then rest (Addiction Rating) days | `passDay` · p.110 |
+| Standing TN: withdrawal +2, forced +3, recovery +1 (concentration ×2); forced = a Moderate Stun wound's modifier | `withdrawalPenalty` · p.110 |
+| A dose in withdrawal, recovery or after kicking re-addicts, +1 | `takeDose` · p.110 |
+
+- **Effects are a registry, `DRUG_EFFECTS`, keyed by name with a page each** (Jazz, Kamikaze, Cram,
+  Novacoke, Bliss, Nitro, Zen, Psyche, Deepweed; notes for ACTH, Burn, Long Haul). Applied in
+  `_prepareCharacter` **beside the Attribute Boost, before Reaction and the pools** — Kamikaze's
+  *"may also increase calculated reaction and Dice Pools"* (p.119). A drug's Reaction adds to
+  whichever p.169 package won; its pain resistance takes the **larger** with the adept power.
+- ⚠ **Durations are minutes and hours**, not Combat Turns — rolled and stated on the card; ⏳ Wears
+  off is a button. Crash damage and a drug's own damage go through the soak card with **`noArmor`**.
+- ⚠ **`SR3EActor.standingTN(actor)` = sustaining + drugs**, and every "all tests" site now adds it
+  (`sustainingTN` stays the sustain rule alone); rollPool labels it with `standingNote`. The two
+  dodge prompts pass drugs as their own `drugs:` term. `tests/drug-wiring.test.mjs` ratchets it.
+- ⚠ **The M&M drug pack** was two half-items per drug; `tools/fix-mm-drugs.mjs` merges them from a
+  transcription of the tables (`rawdata/MM-Drugs.json`, pp.122, 157-158). **`edge` is its own field**;
+  the legacy `effect` (upstream's name for Edge) is still read by `DrugRules.drugEdge`, so worlds need
+  no migration. `build-default-gear` writes `edge`/`damage` too, and knows "Neuro-stun"/"CS/Tear Gas".
+- Not modelled: overdosing (p.107, GM's call), exposure modifiers and weapon-delivered doses (p.106),
+  the concentration half of the withdrawal TN (stated on the sheet), tolerance decay (edit the record).
+
 ### Guided healing  · *SR3 pp.125-129, 178, 193-194, 304-305; M&M pp.95, 136, 138* — TODO 115
 
 `scripts/SR3EHealing.js`, opened by 🩹 **Healing** on the character sheet (wound-tracks area) and
@@ -2264,7 +2306,7 @@ system.roundsFiredThisPhase        ← persisted, recoil accumulator; reset each
 - `armor`: `ballistic` (number), `impact` (number)
 - `skill`: `rating`, `linkedAttribute`, `specialisation`
 - `spell`: `type` ("Mana"/"Physical" — sets **only the damage track**: Mana → Stun, Physical → Physical; it does **not** set the resist attribute), `target` (sets the **resist attribute *and* the cast TN** — `W/B/I/Q/F`/number, suffixes stripped — `SR3EItem._parseSpellTarget`), `category` (**Combat = damaging**: shows the cast Damage-Level dropdown), `drain` (drain-Power/TN formula e.g. "(F/2)" or "(DL+1)" — level = nominated Damage Level ± a `DL` token), `range` (Touch/LOS; an **`(A)` suffix = area effect**, no separate flag), `duration`. **No damage code** — spell power = Force and the level is chosen at cast (the `damage` field is hidden/legacy; only `drain` is required for a complete spell).
-- `drug`: reference-only item type (no roll/mechanic automation — the system has no drug rules yet). `category` (Pharmaceutical Compounds / Depressants / Designer Drugs / Hallucinogens / Magical Compounds / Narcotics / Stimulants), `addiction` (e.g. "2M", "4M+3P", "5M/5P" — M=Mental, P=Physical, all free text), `tolerance`, `effect`, `speed` (onset time), `vector` (delivery method), `availability`, `cost`, `streetIndex`, `bookPage`, `notes`. Shipped in the per-book drug packs (`sr3e-mm-drugs`, …).
+- `drug`: 💊 takes a dose — see *Drugs* (TODO 124). `category`, `addiction` (e.g. "2M", "4M+3P", "5M/5P" — M=Mental, P=Physical), `tolerance`, `edge` ("5/50"), `fixFactor`, `damage` ("6S Stun"), `legality`, `speed` (onset time), `vector` (delivery method), `availability`, `cost`, `streetIndex`, `bookPage`, `notes`. `effect` is **legacy** — the Edge on items copied before `edge` existed. Shipped in the per-book drug packs (`sr3e-mm-drugs`, …).
 
 ### Weapon category codes → skills
 ```
@@ -2720,7 +2762,7 @@ combat spells' application (Resist Spell → Assign Damage), learning a new skil
 `karmaNewSkillCost`), and astral/hacking pool refresh (`SR3ECombat._endOfTurnReset`, every Combat Turn
 — deliberately without a prompt). The open work lives in `TODO.md`; the larger gaps are:
 - The action economy — actions are charged by hand (TODO 48), hands and Ready Weapon (TODO 47, 49)
-- Cyberware/bioware Stress, TLE-x, cybermancy (TODO 109-111) and drug rules (TODO 124)
+- Cyberware/bioware Stress, TLE-x, cybermancy (TODO 109-111)
 - A purchasing flow — Availability, grade cost multipliers (TODO 82)
 - The Matrix Condition Monitor on the host sheet (see *Matrix rules* below)
 

@@ -14,7 +14,9 @@
       "cost": 280,
       "streetIndex": "2",
       "bookPage": "mm.120",
-      "notes": ""
+      "notes": "",
+      "damage": "12L Stun",
+      "legality": "4P-X"
     },
     "_id": "kfBEilJkQvmNkfe8",
     "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",

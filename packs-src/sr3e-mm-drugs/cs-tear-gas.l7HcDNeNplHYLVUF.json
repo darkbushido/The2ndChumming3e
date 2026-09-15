@@ -8,13 +8,15 @@
       "addiction": "",
       "tolerance": "",
       "effect": "",
-      "speed": "Contact or Inhalation",
-      "vector": "1 Combat Turn",
+      "speed": "1 Combat Turn",
+      "vector": "Contact or inhalation",
       "availability": "4/36 hrs",
       "cost": 10,
       "streetIndex": "1",
       "bookPage": "mm.118",
-      "notes": ""
+      "notes": "<p><strong>Also listed:</strong> Vector Contact/Inhalation (mm.118); Speed 1 Combat Turn (mm.118)</p>",
+      "damage": "Special",
+      "legality": "Legal"
     },
     "_id": "l7HcDNeNplHYLVUF",
     "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",

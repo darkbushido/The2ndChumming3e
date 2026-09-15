@@ -10,11 +10,13 @@
       "effect": "",
       "speed": "1 Combat Turn",
       "vector": "Contact or Inhalation",
-      "availability": "6/36 hrs",
+      "availability": "8/48 hrs",
       "cost": 30,
       "streetIndex": "2",
       "bookPage": "mm.121",
-      "notes": ""
+      "notes": "",
+      "damage": "8S Stun",
+      "legality": "6P-X"
     },
     "_id": "fMTEJzK0vY9S9AvT",
     "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",

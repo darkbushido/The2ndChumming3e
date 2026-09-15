@@ -3,6 +3,7 @@ import { parseMods } from '../SR3EMods.js';
 import { itemRating, vcrLevel as vcrLevelOf } from '../data/item-rating.mjs';
 import { AmmoStock } from '../data/ammo-stock.mjs';
 import * as Sustaining from '../data/sustaining.mjs';
+import { DrugRules } from '../data/drug-rules.mjs';
 
 export class SR3EActor extends Actor {
 
@@ -378,7 +379,7 @@ export class SR3EActor extends Actor {
 
     return {
       label: 'Decker', skillName,
-      skillDice: ccRating, hackPoolAvail, tn: 4 + mcmPenalty + defTnMod + (attacking ? SR3EActor.woundTN(actor) : 0) + SR3EActor.sustainingTN(actor),
+      skillDice: ccRating, hackPoolAvail, tn: 4 + mcmPenalty + defTnMod + (attacking ? SR3EActor.woundTN(actor) : 0) + SR3EActor.standingTN(actor),
       damageCode: dmgCode, damageBase: SR3EItem.parseDamageCode(dmgCode),
       firewall: deckFirewall, soakPool: deckMpcp, userMode: sys.matrixUserMode ?? '',
       programId: attackProg?.id ?? null, operatorActorId: null,
@@ -1967,9 +1968,15 @@ _prepareCharacter(sys, attr) {
    * ⚠ The LARGER of the two, never the sum: M&M p.78 makes Pain Resistance *"incompatible with
    * pain editors or damage compensators"*. Reported, not enforced — the better one applies. */
   const damageCompensators = SR3EActor.damageCompensatorLevel(this.items);
-  const woundOffset = Math.max(painResistance, damageCompensators);
-  if (woundOffset > 0) {
-    const stunBoxes = SR3EActor.painAdjustedBoxes(sys.wounds?.stun?.value ?? 0, woundOffset);
+  /* Drugs · M&M pp.105-123 (TODO 124) — everything the substance records add up to, resolved once.
+   * Two of them land on this lookup: a drug's pain resistance ("equivalent to N levels of the adept
+   * power" — the larger of it and the power, never the sum), and Stun that lasts only while it runs —
+   * forced withdrawal's "persistent Moderate mental wound" (p.110), Cram's crash (p.122) — added to
+   * the Stun boxes the LOOKUP reads. The track itself is never touched. */
+  const drugs = DrugRules.totals(sys.substances);
+  const woundOffset = Math.max(painResistance, drugs.painResistance, damageCompensators);
+  if (woundOffset > 0 || drugs.stunBoxes > 0) {
+    const stunBoxes = SR3EActor.painAdjustedBoxes((sys.wounds?.stun?.value ?? 0) + drugs.stunBoxes, woundOffset);
     const physBoxes = SR3EActor.painAdjustedBoxes(sys.wounds?.physical?.value ?? 0, woundOffset);
     const raw = -(SR3EActor._trackMod(stunBoxes) + SR3EActor._trackMod(physBoxes));
     sys.rawWoundMod = raw;
@@ -2038,6 +2045,31 @@ _prepareCharacter(sys, attr) {
     attr[key].value = capped;
   }
 
+  /* ── Drugs running, and drugs crashing · M&M pp.117-123 (TODO 124) ─────────────────
+   *
+   * Applied HERE, with the other live boosts and before Reaction and the pools, because the book
+   * says they reach both — Kamikaze's *"these bonuses may also increase calculated reaction and
+   * Dice Pools"* (p.119), Jazz's Quickness *"which can increase Reaction"*. The crash's own
+   * figures land the same way (Jazz −1 Quickness). Floored at 1, like every attribute here.
+   * ⚠ Novacoke's crash is not a delta — *"Charisma is reduced to 1 and his Willpower is reduced by
+   * half (round down)"* — so it is applied after the sums. */
+  const _drugAttr = { bod: 'body', qui: 'quickness', str: 'strength', cha: 'charisma', int: 'intelligence', wil: 'willpower' };
+  for (const src of drugs.sources) {
+    const key = _drugAttr[src.key];
+    if (!key || !attr[key]) continue;
+    attr[key].value = Math.max(1, (attr[key].value ?? 0) + src.amount);
+    _source(src.key, src.amount, src.label, 'drug', 'M&M');
+  }
+  if (drugs.chaTo !== null && attr.charisma && attr.charisma.value > drugs.chaTo) {
+    _source('cha', drugs.chaTo - attr.charisma.value, 'Novacoke crash — reduced to 1', 'drug', 'M&M p.122');
+    attr.charisma.value = drugs.chaTo;
+  }
+  if (drugs.wilHalf && attr.willpower) {
+    const half = Math.max(1, Math.floor(attr.willpower.value / 2));
+    _source('wil', half - attr.willpower.value, 'Novacoke crash — halved', 'drug', 'M&M p.122');
+    attr.willpower.value = half;
+  }
+
   /* Armour burden · SR3 p.285 — TODO 112. `layeredArmor` holds both rules: Combat Pool dice
    * lost to the full ratings worn, and the Quickness TN penalty when layering.
    * ⚠ Quickness itself is NOT lowered. It used to be (−1 per 2 points over), which also cut
@@ -2096,11 +2128,15 @@ _prepareCharacter(sys, attr) {
     reactionInputs = { quickness: quiForReaction, intelligence: attr.intelligence?.value ?? 0 };
 
     if (!attr.reaction.override) {
+      // A drug's Reaction (Cram +1, Zen −2 — M&M p.122) is chemical, so p.169's bar on combining
+      // technological and magical increases does not decide it; it adds to whichever package won.
       attr.reaction.value = Math.max(1, baseReaction
         + (attr.reaction.reactionBonus ?? 0) + (attr.reaction.bonus ?? 0)
-        + reflex.rea);
+        + reflex.rea + drugs.rea);
+      for (const s of drugs.sources) if (s.key === 'rea') attributeSources.reaction.push({ label: s.label, amount: s.amount, kind: 'drug', note: 'M&M' });
     }
   }
+  for (const s of drugs.sources) if (s.key === 'initDice') attributeSources.initiativeDice.push({ label: s.label, amount: s.amount, kind: 'drug', note: 'M&M' });
 
   // Essence — reduced by cyberware only (M&M rules: bioware uses Bio Index, not Essence)
   if (attr.essence) {
@@ -2292,7 +2328,12 @@ _prepareCharacter(sys, attr) {
      * rigging and TRM/AR/VR-Cold decking, and those are the ones that need this. */
     reactionNoRigDeck:  Math.max(1, (attr.reaction?.value ?? 0)
                           - (reflex.source === 'adept' ? 0 : (cyberBonus.reaNotRigDeck ?? 0))),
-    initiativeDice:     1 + (sys.initiativeDiceBonus ?? 0) + (attr.reaction?.diceBonus ?? 0) + reflex.initDice,
+    initiativeDice:     1 + (sys.initiativeDiceBonus ?? 0) + (attr.reaction?.diceBonus ?? 0) + reflex.initDice + drugs.initDice,
+    /* Drugs · M&M p.110, p.122 (TODO 124) — the standing TN (withdrawal, Bliss) that `standingTN`
+     * adds to every test, what concentration costs on top, and every drug figure by source. */
+    drugTN:             drugs.tn,
+    drugConcentrationTN: drugs.concentration,
+    drugSources:        drugs.sources,
     cyberBonus,
     adeptBonus,
     racialBonus,
@@ -2420,8 +2461,10 @@ _prepareCharacter(sys, attr) {
     // Sustained spells — +2 each, "applied to all tests" (SR3 p.178). ⚠ Its own opt-out, not
     // `skipWoundMod`: the healing tables price the wound in but not the spells, while a dialog that
     // pre-applies both passes both. Damage Resistance never comes through here.
-    const sustainMod   = options.skipSustainMod ? 0 : SR3EActor.sustainingTN(this);
-    if (sustainMod) label = `${label} (sustaining +${sustainMod})`;
+    // Drugs ride with it — withdrawal's "+2 to all his target numbers" (M&M p.110) has the same
+    // scope — so it is `standingTN`, and a dialog that pre-applied that passes `skipSustainMod`.
+    const sustainMod   = options.skipSustainMod ? 0 : SR3EActor.standingTN(this);
+    if (sustainMod) label = `${label} (${SR3EActor.standingNote(this)})`;
     const effectiveTN  = options.skipWoundMod
       ? Math.max(2, tn + signalMod + sustainMod)
       : Math.max(2, tn - (this.system.woundMod ?? 0) + signalMod + sustainMod);
@@ -2498,6 +2541,7 @@ _prepareCharacter(sys, attr) {
         fallingContext:          options.fallingContext          ?? null,
         escapeContext:           options.escapeContext           ?? null,
         healingContext:          options.healingContext          ?? null,
+        drugContext:             options.drugContext             ?? null,
         grenadeType:             options.grenadeType             ?? 'standard',
         footerNote:              options.footerNote              ?? null,
         crashOnFailVehicleId:    options.crashOnFailVehicleId    ?? null,
@@ -2575,6 +2619,7 @@ _prepareCharacter(sys, attr) {
       fallingContext:          options.fallingContext          ?? null,
       escapeContext:           options.escapeContext           ?? null,
       healingContext:          options.healingContext          ?? null,
+      drugContext:             options.drugContext             ?? null,
       grenadeType:           options.grenadeType           ?? 'standard',
       footerNote:            options.footerNote            ?? null,
       crashOnFailVehicleId:  options.crashOnFailVehicleId  ?? null,
@@ -2650,6 +2695,38 @@ _prepareCharacter(sys, attr) {
   /** "Sustaining 2 spells +4", or '' — for a TN breakdown. */
   static sustainingNote(actor) {
     return Sustaining.sustainingNote(actor?.system?.sustainedSpells);
+  }
+
+  /**
+   * What drugs add to every target number · M&M pp.110, 122 (TODO 124) — withdrawal +2, forced
+   * withdrawal +3, recovery +1, and a drug that says so (Bliss +1). Derived in `_prepareCharacter`
+   * from `system.substances`. ⚠ The same scope as sustaining (all tests but Damage Resistance):
+   * p.110's *"all his target numbers"* sits beside a wound modifier, which p.125 keeps off the soak.
+   */
+  static drugTN(actor) {
+    return Math.max(0, Math.trunc(Number(actor?.system?.derived?.drugTN) || 0));
+  }
+
+  /** "Drugs +2 (Cram — withdrawal)", or '' — for a TN breakdown. */
+  static drugNote(actor) {
+    const tn = SR3EActor.drugTN(actor);
+    if (!tn) return '';
+    const why = (actor?.system?.derived?.drugSources ?? []).filter(s => s.key === 'tn').map(s => s.label);
+    return `Drugs +${tn}${why.length ? ` (${why.join(', ')})` : ''}`;
+  }
+
+  /**
+   * The standing TN penalties that ride on every test but Damage Resistance: sustained spells
+   * (p.178) and drugs (M&M p.110). Every site that used to add `sustainingTN` adds this —
+   * `sustainingTN` stays the sustain rule alone, for the Drain Power it also sets (p.180).
+   */
+  static standingTN(actor) {
+    return SR3EActor.sustainingTN(actor) + SR3EActor.drugTN(actor);
+  }
+
+  /** Both notes, joined — the breakdown line for `standingTN`. */
+  static standingNote(actor) {
+    return [SR3EActor.sustainingNote(actor), SR3EActor.drugNote(actor)].filter(Boolean).join(' · ');
   }
 
   /** Start sustaining a spell (p.178). Returns the new entry's id. */
@@ -3656,6 +3733,7 @@ _prepareCharacter(sys, attr) {
         fallingContext:     state.fallingContext     ?? null,
         // Healing (TODO 115): the Healing Table's Deadly stage is TN 10 — explodes routinely.
         healingContext:     state.healingContext     ?? null,
+        drugContext:        state.drugContext        ?? null,
         burstRounds:        state.burstRounds        ?? 0,
         shotgunSpread:      state.shotgunSpread      ?? 0,
         // Missile Parry's two inputs (p.170). Dropped, the defender is never offered the
@@ -4120,6 +4198,12 @@ _prepareCharacter(sys, attr) {
     // Healing (TODO 115) — the step's result card: next step, time, the bill. Nothing is applied here.
     if (allDone && state.healingContext) {
       await game.sr3e.SR3EHealing.onRolled(state.healingContext, successes);
+    }
+
+    // Drugs (TODO 124) — an addiction, tolerance, fix, monthly or kicking test's result card. Like
+    // healing, nothing is applied here: the card offers the consequence as a button.
+    if (allDone && state.drugContext) {
+      await game.sr3e.SR3EDrugs.onRolled(state.drugContext, successes);
     }
 
     // Hacking action threshold check — increment Overwatch if below Security Threshold
@@ -6031,10 +6115,10 @@ _prepareCharacter(sys, attr) {
  * @param {number}  [o.sustain=0]        the DEFENDER's sustained-spell modifier, +2 each (p.178)
  * @returns {number} the Dodge Test target number
  */
-  static dodgeTN({ burstRounds = 0, shotgunSpread = 0, woundMod = 0, sustain = 0 } = {}) {
+  static dodgeTN({ burstRounds = 0, shotgunSpread = 0, woundMod = 0, sustain = 0, drugs = 0 } = {}) {
     const n = v => Math.max(0, Math.trunc(Number(v) || 0));
     const wound = Math.min(0, Math.trunc(Number(woundMod) || 0));
-    return 4 + Math.floor(n(burstRounds) / 3) + n(shotgunSpread) - wound + n(sustain);
+    return 4 + Math.floor(n(burstRounds) / 3) + n(shotgunSpread) - wound + n(sustain) + n(drugs);
   }
 
   /**
@@ -6043,7 +6127,7 @@ _prepareCharacter(sys, attr) {
    *
    * @returns {string[]} human-readable fragments, empty when the TN is a plain 4
    */
-  static dodgeTNParts({ burstRounds = 0, shotgunSpread = 0, woundMod = 0, sustain = 0 } = {}) {
+  static dodgeTNParts({ burstRounds = 0, shotgunSpread = 0, woundMod = 0, sustain = 0, drugs = 0 } = {}) {
     const n = v => Math.max(0, Math.trunc(Number(v) || 0));
     const wound = Math.min(0, Math.trunc(Number(woundMod) || 0));
     const parts = [];
@@ -6052,6 +6136,7 @@ _prepareCharacter(sys, attr) {
     if (n(shotgunSpread)) parts.push(`+${n(shotgunSpread)} shot spread`);
     if (wound)         parts.push(`+${-wound} wound`);
     if (n(sustain))    parts.push(`+${n(sustain)} sustaining spells`);
+    if (n(drugs))      parts.push(`+${n(drugs)} drugs`);
     return parts;
   }
 
@@ -7106,7 +7191,7 @@ _prepareCharacter(sys, attr) {
   /** What a source `kind` reads as on the sheet. */
   static ATTRIBUTE_SOURCE_KINDS = {
     cyber: 'cyberware', bio: 'bioware', adept: 'adept power', racial: 'racial',
-    boost: 'Attribute Boost', triggered: 'switched on', note: '',
+    boost: 'Attribute Boost', triggered: 'switched on', drug: 'drug', note: '',
   };
 
   /** Sum of the sources of the given kinds — what one chip on the sheet shows. */
@@ -7497,10 +7582,12 @@ _prepareCharacter(sys, attr) {
       </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
+    // ⚠ The soak card reads `stagedPower` / `stagedLevel`. This passed `power` / `level`, so the
+    // crash card came up with no Power and a NaN target number (0.5.2 fix).
     await actor._postSoakCard({
-      power, level: 'D', isStun: true,
-      label: `${name} — system shock`,
-      attackerName: name,
+      stagedPower: power, stagedLevel: 'D', isStun: true,
+      rawDamage: `${power}D`, targetActorId: actor.id,
+      noArmor: true, noArmorNote: 'System shock — armour does not apply (M&M p.63)',
     });
   }
 
@@ -7665,6 +7752,7 @@ _prepareCharacter(sys, attr) {
       shotgunSpread: dodgeContext?.shotgunSpread ?? 0,
       woundMod:      targetActor.system.woundMod ?? 0,
       sustain:       SR3EActor.sustainingTN(targetActor),
+      drugs:         SR3EActor.drugTN(targetActor),
     };
     const DODGE_TN  = SR3EActor.dodgeTN(tnOpts);
     const tnParts   = SR3EActor.dodgeTNParts(tnOpts);
@@ -7875,7 +7963,7 @@ _prepareCharacter(sys, attr) {
     const kdWound   = SR3EActor.woundTN(target);
     const tnDefault = SR3EActor.knockdownTN({
       power: ctx.power, strength: atkStr, isMelee: ctx.isMelee, ammoType: ctx.ammoType,
-    }) + Math.max(0, Math.trunc(Number(ctx.knockdownTNMod) || 0)) + kdWound + SR3EActor.sustainingTN(target);
+    }) + Math.max(0, Math.trunc(Number(ctx.knockdownTNMod) || 0)) + kdWound + SR3EActor.standingTN(target);
     const needed  = SR3EActor.knockdownOutcome({ level, tested: false }).needed ?? 2;
     /* Rooting and Enhanced Balance add dice to *"all tests to resist being knocked down,
      * thrown, levitated or otherwise moved against his will"* (MITS p.151, SOTA2 p.65).
@@ -8112,6 +8200,13 @@ _prepareCharacter(sys, attr) {
         ballistic = eff;
         impact    = eff;
       }
+    }
+    // Damage from inside the body — a crash, a drug — is not an attack, and no armour resists it.
+    if (payload.noArmor) {
+      ballistic = 0;
+      impact    = 0;
+      adeptArmorNotes.length = 0;
+      ammoNote  = payload.noArmorNote ?? 'No armour applies — this is not an attack';
     }
 
     // Which armour rating resists this attack. Melee uses Impact, ranged uses Ballistic —
@@ -9299,7 +9394,7 @@ _prepareCharacter(sys, attr) {
     // the same +2 as p.178's "all tests, including Drain Resistance"). A spell's own Drain is
     // resolved as it is cast, before anyone could be sustaining IT, so the casting flow counts at
     // cast time and carries `sustainTN`; the rest (conjuring, wards, dispelling) count now.
-    const sustainTN = Math.max(0, Number(payload.sustainTN ?? SR3EActor.sustainingTN(this)) || 0);
+    const sustainTN = Math.max(0, Number(payload.sustainTN ?? SR3EActor.standingTN(this)) || 0);
     drainTN += sustainTN;
     const trackLabel = drainIsPhysical ? 'Physical' : 'Stun';
 
@@ -10040,8 +10135,8 @@ _prepareCharacter(sys, attr) {
     // Defaulting, plus each fighter's own wounds — astral combat uses the melee rules (p.174), and
     // the Melee Modifiers Table carries "Character is wounded" (F3).
     // Sustained spells too — "all tests" (p.178).
-    const atkTN = 4 + (atkInfo.defaultTnMod ?? 0) + SR3EActor.woundTN(this) + SR3EActor.sustainingTN(this);
-    const defTN = 4 + (defInfo.defaultTnMod ?? 0) + SR3EActor.woundTN(targetActor) + SR3EActor.sustainingTN(targetActor);
+    const atkTN = 4 + (atkInfo.defaultTnMod ?? 0) + SR3EActor.woundTN(this) + SR3EActor.standingTN(this);
+    const defTN = 4 + (defInfo.defaultTnMod ?? 0) + SR3EActor.woundTN(targetActor) + SR3EActor.standingTN(targetActor);
 
     await SR3EActor.postAstralCard({
       attackerActorId: this.id,
@@ -10624,7 +10719,7 @@ _prepareCharacter(sys, attr) {
           el.querySelector('#atk-pool').value = data.firstVal ?? 4;
           // Their own wounds (SR3 p.125) follow the actor chosen.
           const picked = game.actors.get(e.target.value);
-          el.querySelector('#atk-tn').value = 4 + SR3EActor.woundTN(picked) + SR3EActor.sustainingTN(picked);
+          el.querySelector('#atk-tn').value = 4 + SR3EActor.woundTN(picked) + SR3EActor.standingTN(picked);
         });
         el.querySelector('#atk-source')?.addEventListener('change', (e) => {
           el.querySelector('#atk-pool').value = parseInt(e.target.value) || 1;
@@ -10645,7 +10740,7 @@ _prepareCharacter(sys, attr) {
         <input type="number" id="${poolId}" value="${defaultData?.firstVal ?? 4}" min="1" max="30" style="width:55px;margin-left:4px"/>
       </label>
       <label style="display:block;margin-bottom:6px;font-size:12px" title="4, plus the actor's own wound modifier (SR3 p.125)">TN:
-        <input type="number" id="${tnId}" value="${4 + SR3EActor.woundTN(game.actors.get(defaultAtkId)) + SR3EActor.sustainingTN(game.actors.get(defaultAtkId))}" min="2" max="30" style="width:55px;margin-left:4px"/>
+        <input type="number" id="${tnId}" value="${4 + SR3EActor.woundTN(game.actors.get(defaultAtkId)) + SR3EActor.standingTN(game.actors.get(defaultAtkId))}" min="2" max="30" style="width:55px;margin-left:4px"/>
       </label>
       <label style="display:block;margin-bottom:0;font-size:12px">Damage:
         <input type="text" id="${dmgId}" value="4L" style="width:55px;margin-left:4px"/>
@@ -10711,7 +10806,7 @@ _prepareCharacter(sys, attr) {
                 oppSourceLabel: oppData?.[0]?.label ?? '',
                 oppPool:   Math.max(1, oppData?.[0]?.value || 4),
                 // A starting point in their corner — their own wounds included (SR3 p.125).
-                oppTN:     4 + SR3EActor.woundTN(game.actors.get(oppActId)) + SR3EActor.sustainingTN(game.actors.get(oppActId)),
+                oppTN:     4 + SR3EActor.woundTN(game.actors.get(oppActId)) + SR3EActor.standingTN(game.actors.get(oppActId)),
                 oppDamage: '4L',
                 physicalDice: shiftKey,
               };
@@ -11153,7 +11248,7 @@ _prepareCharacter(sys, attr) {
             hpAlloc    = Math.min(hackPool, Math.max(0, parseInt(dlg.element.querySelector('#ost-hp')?.value) || 0));
             deckerDice = compRating + hpAlloc;
             // The decker's own wounds (SR3 p.125 — every test but resisting or avoiding damage).
-            deckerTN   = Math.max(2, subR + alertMod - utilMod + SR3EActor.woundTN(this) + SR3EActor.sustainingTN(this));
+            deckerTN   = Math.max(2, subR + alertMod - utilMod + SR3EActor.woundTN(this) + SR3EActor.standingTN(this));
           },
         },
         { label: 'Cancel', action: 'cancel' },
@@ -11317,7 +11412,7 @@ _prepareCharacter(sys, attr) {
     }).join('');
 
     // The decker attacks, so their own wounds count (SR3 p.125); the IC's soak does not take any.
-    const tnIntruding = (SR3EActor._orthoCCTN.intruding[secCode] ?? 4) + SR3EActor.woundTN(this) + SR3EActor.sustainingTN(this);
+    const tnIntruding = (SR3EActor._orthoCCTN.intruding[secCode] ?? 4) + SR3EActor.woundTN(this) + SR3EActor.standingTN(this);
     const dmgLevel    = SR3EActor._orthoICDmgLevel[secCode] ?? 'Moderate';
     const dmgPower    = deck.mccp ?? 4;  // default attack power: MPCP Rating
 
@@ -11342,7 +11437,7 @@ _prepareCharacter(sys, attr) {
           </label>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <label>Attack TN (${tnIntruding - SR3EActor.woundTN(this) - SR3EActor.sustainingTN(this)} vs Intruder${SR3EActor.woundTN(this) ? `, wound +${SR3EActor.woundTN(this)}` : ''}):
+          <label>Attack TN (${tnIntruding - SR3EActor.woundTN(this) - SR3EActor.standingTN(this)} vs Intruder${SR3EActor.woundTN(this) ? `, wound +${SR3EActor.woundTN(this)}` : ''}):
             <input type="number" id="occ-tn" value="${tnIntruding}" min="2" max="12" style="width:55px;margin-left:4px">
           </label>
           <label>Attack Power (damage):
@@ -11537,7 +11632,7 @@ _prepareCharacter(sys, attr) {
                       ?? deckerActor.system.derived?.availableHackingPool ?? 0;
     // Same base TN for both sides, plus the decker's sustained spells (p.178 — all tests but Damage
     // Resistance). Not their wounds: the defence avoids damage (p.125).
-    const defTN        = atkTNOverride + SR3EActor.sustainingTN(deckerActor);
+    const defTN        = atkTNOverride + SR3EActor.standingTN(deckerActor);
     const baseCode     = `${rating}${dmgLevel[0]}`;
 
     const ctx = {

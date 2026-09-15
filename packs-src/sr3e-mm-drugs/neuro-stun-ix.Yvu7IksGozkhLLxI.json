@@ -14,7 +14,9 @@
       "cost": 20,
       "streetIndex": "2",
       "bookPage": "mm.121",
-      "notes": ""
+      "notes": "",
+      "damage": "6S Stun",
+      "legality": "6P-X"
     },
     "_id": "Yvu7IksGozkhLLxI",
     "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",

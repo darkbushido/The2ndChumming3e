@@ -14,7 +14,9 @@
       "cost": 10,
       "streetIndex": "2",
       "bookPage": "mm.121",
-      "notes": ""
+      "notes": "",
+      "damage": "Special",
+      "legality": "8P-X"
     },
     "_id": "3Ne7qhgAWAuf4XV3",
     "img": "systems/The2ndChumming3e/styles/textures/drugs-default.webp",

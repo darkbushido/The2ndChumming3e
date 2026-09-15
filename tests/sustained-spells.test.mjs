@@ -77,7 +77,7 @@ export async function run(t) {
   globalThis.game.actors = { find: () => null, get: () => roller };
   await SR3EActor.prototype.rollPool.call(roller, 3, 4, 'Sorcery');
   t.is('rollPool: TN 4 + 2 for the one spell held by concentration', cards[0]?.tn, 6);
-  t.ok('…and the card says why', /sustaining \+2/.test(cards[0]?.label ?? ''));
+  t.ok('…and the card says why', /Sustaining 1 spell \+2/.test(cards[0]?.label ?? ''));
   await SR3EActor.prototype.rollPool.call(roller, 3, 4, 'Soak-like', { skipSustainMod: true });
   t.is('skipSustainMod: a flow that pre-applied it (or must not take it) is left alone', cards[1]?.tn, 4);
   await SR3EActor.prototype.rollPool.call(roller, 3, 4, 'Healing', { skipWoundMod: true });
@@ -105,10 +105,13 @@ export async function run(t) {
 
   t.is('the field is on characters AND NPCs', (model.match(/sustainedSpells:\s+sustainedSpellsField\(\)/g) ?? []).length, 2);
   t.ok('melee: each fighter\'s own spells in their own TN', /baseAtkTN = [^;]*atkSust/.test(item) && /baseDefTN = [^;]*defSust/.test(item)
-    && /atkSust\s+= A\.sustainingTN\(actor\)/.test(item) && /defSust\s+= A\.sustainingTN\(targetActor\)/.test(item));
-  t.ok('…and the GM window is told', /sustaining \+\$\{atkSust\}/.test(item));
-  t.ok('astral: both fighters (p.174 — the melee rules)', /const atkTN = [^;]*SR3EActor\.sustainingTN\(this\)/.test(actor)
-    && /const defTN = [^;]*SR3EActor\.sustainingTN\(targetActor\)/.test(actor));
+    && /atkSust\s+= A\.standingTN\(actor\)/.test(item) && /defSust\s+= A\.standingTN\(targetActor\)/.test(item));
+  t.ok('…and the GM window is told', /A\.standingNote\(actor\)/.test(item) && /A\.standingNote\(targetActor\)/.test(item));
+  // Drugs ride with sustaining (TODO 124): every site below reads `standingTN`, which is the sustain rule plus drugs.
+  t.is('standingTN is the sustaining TN when no drug is running', SR3EActor.standingTN(mage([spell('a')])), 2);
+  t.is('…plus the drug TN when one is (withdrawal +2, M&M p.110)', SR3EActor.standingTN({ ...mage([spell('a')]), system: { ...mage([spell('a')]).system, derived: { drugTN: 2 } } }), 4);
+  t.ok('astral: both fighters (p.174 — the melee rules)', /const atkTN = [^;]*SR3EActor\.standingTN\(this\)/.test(actor)
+    && /const defTN = [^;]*SR3EActor\.standingTN\(targetActor\)/.test(actor));
   t.ok('dodge: both dodge prompts pass the defender\'s', /sustain:\s+SR3EActor\.sustainingTN\(targetActor\)/.test(actor)
     && /sustain:\s+game\.sr3e\.SR3EActor\.sustainingTN\(defender\)/.test(item));
   t.ok('ranged: pre-applied in the roll-options TN, and rollPool told to skip it',
@@ -125,20 +128,20 @@ export async function run(t) {
   /* ── Every site the wound modifier reaches, and the defences p.178 does not exclude ── */
   const miji = read('scripts/SR3EMIJI.js');
   t.ok('cybercombat: both sides (the defence avoids damage — p.125 spares it wounds, not spells)',
-    /\(attacking \? SR3EActor\.woundTN\(actor\) : 0\) \+ SR3EActor\.sustainingTN\(actor\)/.test(actor));
-  t.ok('contested: both corners', /woundTN\(picked\) \+ SR3EActor\.sustainingTN\(picked\)/.test(actor)
-    && /oppTN:[^\n]*sustainingTN\(game\.actors\.get\(oppActId\)\)/.test(actor));
-  t.ok('Orthodox System Test and attack: the decker', /utilMod \+ SR3EActor\.woundTN\(this\) \+ SR3EActor\.sustainingTN\(this\)/.test(actor)
-    && /intruding\[secCode\] \?\? 4\) \+ SR3EActor\.woundTN\(this\) \+ SR3EActor\.sustainingTN\(this\)/.test(actor));
-  t.ok('Orthodox IC attack: the decker\'s defence', /defTN\s+= atkTNOverride \+ SR3EActor\.sustainingTN\(deckerActor\)/.test(actor));
-  t.ok('knockdown', /kdWound \+ SR3EActor\.sustainingTN\(target\)/.test(actor));
-  t.ok('MIJI and every EW test — the rigger', /woundTN\(actor\) \+ game\.sr3e\.SR3EActor\.sustainingTN\(actor\)/.test(miji));
-  t.ok('vehicle weapons: the gunner', /pilotSustain\s+= game\.sr3e\.SR3EActor\.sustainingTN\(pilotActor\)/.test(item)
+    /\(attacking \? SR3EActor\.woundTN\(actor\) : 0\) \+ SR3EActor\.standingTN\(actor\)/.test(actor));
+  t.ok('contested: both corners', /woundTN\(picked\) \+ SR3EActor\.standingTN\(picked\)/.test(actor)
+    && /oppTN:[^\n]*standingTN\(game\.actors\.get\(oppActId\)\)/.test(actor));
+  t.ok('Orthodox System Test and attack: the decker', /utilMod \+ SR3EActor\.woundTN\(this\) \+ SR3EActor\.standingTN\(this\)/.test(actor)
+    && /intruding\[secCode\] \?\? 4\) \+ SR3EActor\.woundTN\(this\) \+ SR3EActor\.standingTN\(this\)/.test(actor));
+  t.ok('Orthodox IC attack: the decker\'s defence', /defTN\s+= atkTNOverride \+ SR3EActor\.standingTN\(deckerActor\)/.test(actor));
+  t.ok('knockdown', /kdWound \+ SR3EActor\.standingTN\(target\)/.test(actor));
+  t.ok('MIJI and every EW test — the rigger', /woundTN\(actor\) \+ game\.sr3e\.SR3EActor\.standingTN\(actor\)/.test(miji));
+  t.ok('vehicle weapons: the gunner', /pilotSustain\s+= game\.sr3e\.SR3EActor\.standingTN\(pilotActor\)/.test(item)
     && /gunneryDefTnMod \+ pilotWoundMod \+ pilotSustain/.test(item));
-  t.ok('Missile Parry: the defender', /missileParryTN\(baseRngTN\) \+ game\.sr3e\.SR3EActor\.sustainingTN\(defender\)/.test(item));
+  t.ok('Missile Parry: the defender', /missileParryTN\(baseRngTN\) \+ game\.sr3e\.SR3EActor\.standingTN\(defender\)/.test(item));
   const soak = actor.slice(actor.indexOf('static async handleSoakRollClick'), actor.indexOf('static async handleSoakRollClick') + 4000);
   t.ok('Damage Resistance does NOT take it (p.178) — the soak handler never reads it', soak.length > 100 && !/sustain/i.test(soak));
-  t.ok('the cast records what was held at the moment, for its own Drain', /sustainTN:\s+game\.sr3e\.SR3EActor\.sustainingTN\(actor\)/.test(item)
+  t.ok('the cast records what was held at the moment, for its own Drain', /sustainTN:\s+game\.sr3e\.SR3EActor\.standingTN\(actor\)/.test(item)
     && /sustainTN:\s+sc\.sustainTN \?\? 0/.test(actor));
   t.ok('the cast card OFFERS 🔒 Sustain for a Sustained/Permanent spell that took effect',
     /successes > 0 && Sustaining\.isSustainable\(sc\.duration\)/.test(actor));
