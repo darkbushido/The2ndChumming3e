@@ -1070,6 +1070,31 @@ the fire dialog and remembered on the gun (`system.choke`, blank = 5). From the 
 
 With no distance to measure, the spreads typed in the fire dialog stand in.
 
+```
+SR3 p.117 — SHOTGUN SPREAD EXAMPLE, choke 3  (each # row is 1 m of width; it widens ½ m each side)
+
+              0 m        3 m        6 m        9 m
+               |          |          |##########|
+               |          |##########|##########|
+   [gun] >=====|##########|##########|##########|
+               |          |##########|##########|
+               |          |          |##########|
+
+   width           1 m        2 m        3 m
+   spreads          0          1          2
+   Power            —         −1         −2
+   attacker TN      —         −1         −2      ← easier to hit…
+   target Dodge TN  —         +1         +2      ← …and harder to dodge, but less damage
+
+   Everyone inside the cone is a valid target; each gets +1 Damage Resistance die per
+   other target in front of them. At Power 0 the shot is ineffective.
+```
+
+The wider the shot, the easier it hits and the less it hurts: at choke 3 a target 3 m out takes the
+full Damage Code, and one at 9 m takes −2 Power while the shooter rolls against −2 TN. The Dodge row is
+the spreads reading, still a question for the maintainer (SR3 p.113: *"+1 per meter of shotgun spread
+at the target's position"*).
+
 ⚠ **The Dodge modifier counts spreads, not the width**, so a point-blank shot adds nothing. p.113's "per
 meter of shotgun spread" is the maintainer's to confirm.
 

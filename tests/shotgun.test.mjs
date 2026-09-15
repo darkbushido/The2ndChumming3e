@@ -20,6 +20,10 @@ export async function run(t) {
   t.eq('choke 5: 1 m to 5 m, 2 to 10, 3 to 15, 4 to 20', [5, 10, 15, 20].map(d => S.width(d, 5)), [1, 2, 3, 4]);
   t.is('…just past the choke distance it widens', S.width(5.5, 5), 2);
   t.is('point blank is 1 m wide and has not spread', S.spreads(0, 5), 0);
+  // The p.117 spread example as drawn in CLAUDE.md, choke 3: 0-3 m 1 m wide, 3-6 m 2 m, 6-9 m 3 m.
+  t.eq('choke 3 (the diagram): widths at 2, 3, 4, 6, 7, 9 m', [2, 3, 4, 6, 7, 9].map(d => S.width(d, 3)), [1, 1, 2, 2, 3, 3]);
+  t.eq('…Power / attacker TN at 3, 6, 9 m: none, −1, −2', [3, 6, 9].map(d => S.effects(S.spreads(d, 3)).power), [-0, -1, -2]);
+  t.ok('…the diagram is in CLAUDE.md', /SHOTGUN SPREAD EXAMPLE, choke 3/.test(read('CLAUDE.md')));
   t.eq('"a shot on a choke setting of 2 would be -2 Power/-2 target number at the six-meter point"',
     [S.effects(S.spreads(6, 2)).power, S.effects(S.spreads(6, 2)).tn], [-2, -2]);
   t.eq('"a choke setting 5 shot would be -2/-2 at fifteen meters"', [S.effects(S.spreads(15, 5)).power, S.effects(S.spreads(15, 5)).tn], [-2, -2]);

@@ -9,6 +9,25 @@
  * > meters, and then -3/-3 at twenty meters. When the Power reaches 0, the shot is considered ineffective."
  * > "+1 per meter of shotgun spread at the target's position" — the Dodge Test, p.113.
  *
+ *
+ * SR3 p.117 — SHOTGUN SPREAD EXAMPLE, choke 3  (each # row is 1 m of width; it widens ½ m each side)
+ *
+ *               0 m        3 m        6 m        9 m
+ *                |          |          |##########|
+ *                |          |##########|##########|
+ *    [gun] >=====|##########|##########|##########|
+ *                |          |##########|##########|
+ *                |          |          |##########|
+ *
+ *    width           1 m        2 m        3 m
+ *    spreads          0          1          2
+ *    Power            —         −1         −2
+ *    attacker TN      —         −1         −2      ← easier to hit…
+ *    target Dodge TN  —         +1         +2      ← …and harder to dodge, but less damage
+ *
+ *    Everyone inside the cone is a valid target; each gets +1 Damage Resistance die per
+ *    other target in front of them. At Power 0 the shot is ineffective.
+ *
  * ⚠ **Width is `ceil(d / choke)`, at least 1; the spreads are width − 1.** The path starts 1 m wide and
  * has not spread at all — at exactly the choke distance it is still 1 m.
  * ⚠ **The Dodge modifier counts SPREADS, not the width** — the reading this system already used for the
