@@ -36,6 +36,7 @@ import { ClassicLevel } from 'classic-level';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { readdirSync } from 'node:fs';
+import { copyPacks } from './lib/pack-copy.mjs';
 import { splitCyberware } from './lib/cyberware-split.mjs';
 import { resolveImplant, resolveMod, resolveSpell, MODS_CONSUMED_BY } from './lib/johnson-aliases.mjs';
 
@@ -54,23 +55,31 @@ const CONTACTS = join(ROOT, 'packs', 'sr3e-mr-johnsons-contacts');
 
 const norm = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 
+/* ⚠ Read through a COPY (tools/lib/pack-copy.mjs). Opening a LevelDB rewrites its files even to
+ * read, so indexing the repo's packs directly left ~400 pack files "modified" in git after a mere
+ * `--check`. Only the contacts pack is opened for real, and only when writing. */
 const idx = new Map();
-for (const p of readdirSync(PACKDIR)) {
-  if (p === 'sr3e-mr-johnsons-contacts') continue;
-  const db = new ClassicLevel(join(PACKDIR, p), { valueEncoding: 'json' });
-  try { await db.open(); } catch { continue; }
-  for await (const [k, v] of db.iterator()) {
-    if (!String(k).startsWith('!items!') || !v?.name) continue;
-    if (!['cyberware', 'bioware', 'spell'].includes(v.type)) continue;
-    const n = norm(v.name);
-    if (!idx.has(n)) idx.set(n, { doc: v, pack: p });
+const indexCopy = copyPacks(PACKDIR);
+try {
+  for (const p of readdirSync(indexCopy.dir)) {
+    if (p === 'sr3e-mr-johnsons-contacts') continue;
+    const db = new ClassicLevel(join(indexCopy.dir, p), { valueEncoding: 'json' });
+    try { await db.open(); } catch { continue; }
+    for await (const [k, v] of db.iterator()) {
+      if (!String(k).startsWith('!items!') || !v?.name) continue;
+      if (!['cyberware', 'bioware', 'spell'].includes(v.type)) continue;
+      const n = norm(v.name);
+      if (!idx.has(n)) idx.set(n, { doc: v, pack: p });
+    }
+    await db.close();
   }
-  await db.close();
-}
+} finally { indexCopy.cleanup(); }
 console.log(`Pack index: ${idx.size} cyberware/bioware/spell names (from ${PACKDIR})`);
 console.log(CHECK ? 'Mode:       --check (nothing will be written)\n' : 'Mode:       apply\n');
 
-const db = new ClassicLevel(CONTACTS, { valueEncoding: 'json' });
+// --check reads a copy too, so a report never touches the checkout.
+const contactsCopy = CHECK ? copyPacks(CONTACTS) : null;
+const db = new ClassicLevel(CHECK ? contactsCopy.dir : CONTACTS, { valueEncoding: 'json' });
 try { await db.open(); } catch (err) {
   if (/LOCK|lock/i.test(String(err?.message))) {
     console.error('ERROR: the pack is locked — close Foundry and try again.'); process.exit(1);
@@ -210,6 +219,7 @@ if (!CHECK) {
   for (const [k, v] of writes) { if (v === null) await db.del(k); else await db.put(k, v); }
 }
 await db.close();
+contactsCopy?.cleanup();
 
 console.log(`\n${CHECK ? 'Would import' : 'Imported'}: ${implants} implants across ${contactsTouched} contacts`);
 console.log(`Spells relinked: ${spellsFixed}`);

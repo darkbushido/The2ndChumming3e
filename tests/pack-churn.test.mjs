@@ -36,6 +36,34 @@ export async function run(t) {
     t.ok(`tests/${f} opens packs through copyPacks, not the checkout's own`, /copyPacks\(/.test(s));
   }
 
+  /* ── A tool with a read-only --check reads a copy ───────────────────────────────────── */
+  /* Any tools/*.mjs that opens a LevelDB AND offers `--check` must go through copyPacks, or its
+   * report rewrites every pack it reads (import-johnson-cyberware.mjs did: ~400 files, 2026-09-14).
+   * ⚠ KNOWN_OFFENDERS is a RATCHET, not an exemption list: each opens the real pack even under
+   * --check and is owed the same fix. It may only shrink — a listed tool that gains copyPacks fails
+   * here until it is removed from the list. */
+  const KNOWN_OFFENDERS = new Set([
+    'fix-johnson-reflex.mjs', 'folder-johnson-contacts.mjs', 'patch-enhanced-articulation.mjs',
+    'patch-johnson-contacts.mjs', 'patch-johnson-stats.mjs', 'patch-pack-bonuses.mjs',
+    'rename-cyberware.mjs',
+  ]);
+  const toolsDir = new URL('../tools/', import.meta.url);
+  for (const f of readdirSync(toolsDir).filter(n => n.endsWith('.mjs'))) {
+    const s = readFileSync(new URL(f, toolsDir), 'utf8');
+    if (!/new ClassicLevel\(/.test(s) || !/['"]--check['"]/.test(s)) continue;
+    const copies = /copyPacks\(/.test(s);
+    if (KNOWN_OFFENDERS.has(f)) t.ok(`tools/${f} is still a known offender (remove it from the list once fixed)`, !copies);
+    else t.ok(`tools/${f} --check opens packs through copyPacks, not the checkout's own`, copies);
+  }
+
+  /* The two Johnson importers: the index ALWAYS from a copy, the contacts from a copy under --check. */
+  for (const f of ['import-johnson-cyberware.mjs', 'import-johnson-gear.mjs']) {
+    const s = read(`tools/${f}`);
+    t.ok(`${f} indexes a copy of the repo packs`, /copyPacks\(PACKDIR\)/.test(s) && !/new ClassicLevel\(join\(PACKDIR/.test(s));
+    t.ok(`${f} --check reads the contacts from a copy`, /contactsCopy\s*=\s*CHECK\s*\?\s*copyPacks\(/.test(s)
+      && /new ClassicLevel\(CHECK \? /.test(s) && /contactsCopy\?\.cleanup\(\)/.test(s));
+  }
+
   /* ── The pack check reads a copy of the repo unless it is fixing ────────────────────── */
   const check = read('tools/check-packs.mjs');
   t.ok('check-packs --repo (read-only) opens a copy', /READ_COPY\s*=\s*process\.argv\.includes\('--repo'\)\s*&&\s*!FIX/.test(check)
