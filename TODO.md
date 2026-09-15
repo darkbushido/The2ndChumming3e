@@ -1925,6 +1925,12 @@ they stay archived.
 
 ## 11. Restore the sr3e-macros pack (and the character importer's delivery)
 
+> ⚠ **Checked 2026-09-14 — lower stakes than this entry says.** The pack only ever listed ONE macro
+> (the Nullsheen importer, `populate-macros.js`), and the install's leftover `sr3e-macros` holds **0**
+> documents (as do both `sr3e-odm-*`). The importer is **not** undelivered: the `ready` hook in
+> `scripts/sr3e.js` creates it in the GM's macro library on first load, with the Chrome Threat
+> Generator and two populate macros. Restoring the pack would only add a compendium copy.
+
 **Never archived.** `f457d3c` dropped `medical`, `odm-cyberdecks`, `odm-programs` and
 `macros` together because each **shipped empty**, waiting on a populate macro never run.
 Verified: no Macro-type documents in `archive/non-sr3-content/`; the pack tree at

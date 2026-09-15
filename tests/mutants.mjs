@@ -1324,6 +1324,22 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'cybercombat-attack-ignores-wounds',
+    suite:  'wound-modifiers',
+    ...ACTOR, method: '_buildCCParticipant', needsOriginal: '_buildCCParticipantReal',
+    was:    'SR3 p.125 — the Injury Modifier applies to nearly all tests except resisting or avoiding '
+          + 'damage. The cybercombat card rolls through _rollWave and never added it to the attack',
+    impl:   async function (actor) { return this._buildCCParticipantReal(actor, { attacking: false }); },
+  },
+  {
+    id:     'grenade-throw-ignores-wounds',
+    suite:  'aoe-throw-tn',
+    ...ITEM, method: 'throwPreTN',
+    was:    'SR3 p.126 — wound modifiers apply to every test. The grenade dialog built its TN from 4 + '
+          + 'range while the throw skipped rollPool\'s wound modifier, so wounds never reached a throw',
+    impl:   ({ armorQTN = 0 } = {}) => ({ mod: Math.max(0, Number(armorQTN) || 0), parts: [] }),
+  },
+  {
     id:     'next-step-before-the-explosions',
     suite:  'interactive-explosions',
     ...ACTOR, method: 'rollThen',

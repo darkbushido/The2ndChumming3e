@@ -763,6 +763,17 @@ Needs a scene with tokens. Flow: **nominate** the blast point (drag the template
 - Per-target power = base damage − distance from the (scattered) epicentre. Damage is **not** staged up by successes.
 - **Confined Space (Chunky Salsa):** tick the box → after the throw + scatter, the Chunky Salsa GUI opens seeded with whoever was caught; draw walls / drag positions → it returns each target's code into the soak cards.
 
+### The thrower's wounds — FIXED 2026-09-14 (0.5.2)
+The throw rolls with `skipWoundMod` (the single-target path's convention: the roll-options TN
+already holds the wound), but the grenade dialog built its TN as 4 + range alone, so a wounded
+thrower never paid the wound modifier (SR3 p.126). Layered armour (p.285) was missing the same way.
+`SR3EItem.throwPreTN` now feeds the dialog; `tests/aoe-throw-tn.test.mjs` + the
+`grenade-throw-ignores-wounds` mutant.
+**Walked by the agent 2026-09-14** (mcp-api, the dialog opened directly — the pane draws no canvas):
+a Moderate wound at 12 m starts at **TN 6** (4 + 2, Short), says *"Wound +2 (pre-applied)"*, and keeps
+the +2 when the grenade type changes.
+- [ ] A real throw on a drawn canvas by a wounded character: the dialog's TN includes the wound, and the throw card rolls at that TN (not +2 again).
+
 ### Blast power at distance - passed
 `Power at target = weapon power − distance in metres` (from the scattered epicentre).
 
@@ -2196,8 +2207,14 @@ the click (6 → 7), then the MIJI result once, below it.
 **Found during the live check — old 💥 buttons re-roll after a reload.** The one-shot guard
 (`_usedButtons`) is in memory and resets on reload by design, so after an F5 an old wave card's 💥
 can be clicked again and posts a new wave for a roll long since resolved. It cannot change an opposed
-result any more (a resolved ⏳ card ignores it), but it does for a plain roll's own card. A fix is
-`sr3e.card.mark` on the 💥, as the two-corner cards do — not done here.
+result any more (a resolved ⏳ card ignores it), but it does for a plain roll's own card.
+**FIXED 2026-09-14 (0.5.2):** a 💥 click is claimed on the message through `sr3e.card.mark` (append-only,
+GM-serialised) before it rolls; a claimed 💥 renders *"💥 Explosions rolled"* on every client and after
+any reload, and a second click — the owner and the GM at once, say — stops. The Chase Scene's 💥 too,
+which checks its window is open before claiming. GM unreachable → it rolls anyway.
+`tests/interactive-explosions.test.mjs`.
+- [ ] Roll at TN 8 until a 💥 appears → click it → F5 → the old card's 💥 shows *Explosions rolled*, disabled.
+- [ ] The actor's owner and the GM click the same 💥 together → one wave posts, not two.
 
 ## F5. Drain track (Stun vs Physical) inconsistent between casting and dispelling — FIXED 2026-09-14 (0.5.2)
 
@@ -2222,6 +2239,32 @@ ratchets every other read; two mutants.
 **Checked live 2026-09-14:** *Bruce Lee* in the test world is the repro — base 6, effective 5; a
 Force 6 dispel now takes Physical Drain as a Force 6 cast does, and `spellPoolFor` equals the sheet's
 Spell Pool for every actor.
+
+## F7. Wound modifiers missing from the tests that roll outside `rollPool` — FIXED 2026-09-14 (0.5.2)
+
+SR3 p.125: *"The Injury Modifier is a universal target number modifier that applies to nearly all
+Success Tests the injured character may attempt, except those for resisting or avoiding damage."*
+`rollPool` adds it; these roll through `_rollWave` and never did. Each TN is pre-filled (and stays
+editable):
+
+| Test | Now takes the wound |
+|---|---|
+| Contested roll | both sides — the initiator's TN follows the actor picked, the opponent's corner starts with theirs |
+| Cybercombat (Defragged) · Orthodox cybercombat | the **attacker**; the defence avoids damage |
+| Orthodox System Test | the decker |
+| MIJI contest | both riggers |
+| Infiltration · detect · ECCM repair · reduce footprint · IVIS | the rigger |
+| Knockdown Test | the target — **the maintainer's ruling**, though its threshold also scales with the wound (p.124) |
+| Vehicle weapons | the gunner — they were taking the wounds off the **dice pool**, from the raw boxes (so Pain Resistance, compensators and the Pain Editor were ignored); now a TN, from `woundMod` |
+
+⚠ **Left alone on purpose:** **Missile Parry** avoids damage (excluded by p.125, and not the dodge,
+whose own example works the wound in, p.113). `tests/wound-modifiers.test.mjs` + the
+`cybercombat-attack-ignores-wounds` mutant.
+- [ ] Give a decker 3 Stun boxes → Cybercombat → their corner starts at TN 6, the defender's at 4.
+- [ ] Contested roll from a wounded actor's sheet → the TN box starts at 4 + the wound; pick another actor and it follows.
+- [ ] MIJI with a wounded intruder rigger → the intruder corner's TN is the deck rating + the wound.
+- [ ] A wounded rigger fires a vehicle weapon → the pool is NOT reduced; the card's TN is +the wound and its label says so.
+- [ ] Knockdown on a wounded target → the TN box includes their wound, and the dialog says so.
 
 ## F6. Wrong range-TN fallback array — FIXED 2026-09-14 (0.5.2)
 

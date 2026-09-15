@@ -961,7 +961,12 @@ export class SR3EItem extends Item {
     }
 
     // Step 2: Roll options (TN auto range mod by grenade type, damage code, type, chunky)
-    const weaponOpts = await SR3EItem._promptWeaponRollOptionsAoE(rawDamage, actor, { throwDistance });
+    // The wound (and layered armour) go into the dialog TN — the throw skips rollPool's wound modifier.
+    const pre = SR3EItem.throwPreTN({
+      woundMod: actor.system.woundMod ?? 0,
+      armorQTN: this._getDefaultAttribute() === 'quickness' ? (actor.system.derived?.armorQuicknessTN ?? 0) : 0,
+    });
+    const weaponOpts = await SR3EItem._promptWeaponRollOptionsAoE(rawDamage, actor, { throwDistance, pre });
     if (!weaponOpts) return null;
 
     let   tn                 = weaponOpts.tn;
@@ -1051,7 +1056,7 @@ export class SR3EItem extends Item {
     options.aoeThrowerCenter = throwerCenter;          // for relative scatter direction
     options.aoeChunky        = weaponOpts.useSalsaGUI; // resolve confined space after scatter
     options.grenadeType      = weaponOpts.grenadeType ?? 'standard';
-    options.skipWoundMod     = true;
+    options.skipWoundMod     = true;   // pre-applied in the roll-options TN (throwPreTN)
 
     await this._consumeThrown();
     return actor.rollPool(pool, tn, label, options);
@@ -1501,10 +1506,12 @@ export class SR3EItem extends Item {
         gunneryDefAllowPool = def.allowPool;
         gunneryDefPoolCap   = def.poolCap;
       }
-      const stunVal = pilotActor.system.wounds?.stun?.value     ?? 0;
-      const physVal = pilotActor.system.wounds?.physical?.value ?? 0;
-      pilotWoundMod = -(game.sr3e.SR3EActor._trackMod(stunVal) + game.sr3e.SR3EActor._trackMod(physVal));
-      pool += pilotWoundMod;
+      // The gunner's wounds are a TARGET NUMBER modifier (SR3 p.125), read from the derived
+      // `woundMod` so Pain Resistance, Damage Compensators and the Pain Editor count. This used to
+      // take them off the DICE POOL, re-derived from the raw boxes — wrong in kind and blind to all
+      // three. The roll goes through the vehicle's rollPool, which has no wounds of its own, so the
+      // TN has to carry the pilot's.
+      pilotWoundMod = game.sr3e.SR3EActor.woundTN(pilotActor);
 
       if (vcrMode) {
         const activeVCRId = pilotActor.system.activeVCRItemId ?? '';
@@ -1540,9 +1547,10 @@ export class SR3EItem extends Item {
     if (!weaponOpts) return null;
 
     const finalPool = Math.max(1, pool + weaponOpts.controlPool);
-    const tn        = weaponOpts.tn + gunneryDefTnMod;   // bake defaulting TN modifier
+    const tn        = weaponOpts.tn + gunneryDefTnMod + pilotWoundMod;   // bake defaulting + the gunner's wounds
     const cpNote    = weaponOpts.controlPool > 0 ? ` + CP${weaponOpts.controlPool}` : '';
-    const label     = `🚗 ${this.name} [${weaponOpts.damageCode}] vs ${targetActor.name} — ${poolLabel}${cpNote}`;
+    const woundNote = pilotWoundMod > 0 ? ` (${pilotActor.name} wounded +${pilotWoundMod} TN)` : '';
+    const label     = `🚗 ${this.name} [${weaponOpts.damageCode}] vs ${targetActor.name} — ${poolLabel}${cpNote}${woundNote}`;
 
     // Step 4: Vehicle damage modifier (unless AV munition)
     let effectiveRawDamage = weaponOpts.damageCode;
@@ -2112,10 +2120,33 @@ export class SR3EItem extends Item {
    * scatter are resolved AFTER the throw roll. opts.throwDistance = thrower→nominated metres.
    * Returns { tn, damageCode, grenadeType, useSalsaGUI, useKarma, karmaReroll } or null.
    */
+  /**
+   * The attacker-side modifiers a thrown AoE weapon's TN carries before range — pure.
+   *
+   * The throw rolls with `skipWoundMod`, exactly as the single-target path does, because the
+   * roll-options TN is meant to hold the wound already. The grenade dialog never added it, so a
+   * wounded character threw at an unhurt TN (found 2026-09-14). Layered armour (SR3 p.285) rides
+   * with it on a Quickness-linked skill, as it does in the single-target dialog.
+   *
+   * @param {{woundMod?: number, armorQTN?: number}} o  woundMod is NEGATIVE, as everywhere
+   * @returns {{mod: number, parts: string[]}}
+   */
+  static throwPreTN({ woundMod = 0, armorQTN = 0 } = {}) {
+    const wound = Math.max(0, -Math.min(0, Number(woundMod) || 0));
+    const armor = Math.max(0, Number(armorQTN) || 0);
+    const parts = [];
+    if (wound) parts.push(`Wound +${wound}`);
+    if (armor) parts.push(`Layered armour +${armor}`);
+    return { mod: wound + armor, parts };
+  }
+
   static async _promptWeaponRollOptionsAoE(rawDamage, actor, opts = {}) {
     const SR3E       = game.sr3e.SR3E;
     const karmaPool  = actor?.system.karmaPool ?? 0;
     const throwDist  = opts.throwDistance ?? null;
+    // Wound (and layered armour) — pre-applied, since the throw skips rollPool's wound modifier.
+    const pre        = opts.pre ?? { mod: 0, parts: [] };
+    const baseTN     = 4 + pre.mod;
     const str        = Math.max(1, actor?.system?.attributes?.strength?.value
                               ?? actor?.system?.attributes?.strength?.base ?? 1);
     // ⚠ GRENADES have their own target-number row — Long is 8, not 6 (SR3 p.119). This used
@@ -2138,7 +2169,7 @@ export class SR3EItem extends Item {
     const typeOpts  = Object.entries(gTypes).map(([k, v], i) =>
       `<option value="${k}" ${i === 0 ? 'selected' : ''}>${v.label}</option>`).join('');
     const initType  = Object.keys(gTypes)[0] ?? 'standard';
-    const defaultTN = 4 + (bandFor(initType)?.tnMod ?? 0);
+    const defaultTN = baseTN + (bandFor(initType)?.tnMod ?? 0);
 
     const AOE_TITLE = 'AoE Weapon Roll Options';
     const wireAoe = (app, html) => {
@@ -2149,9 +2180,9 @@ export class SR3EItem extends Item {
       const note = el.querySelector('#sr-range-note');
       const recompute = () => {
         const b = bandFor(sel?.value);
-        if (b && tnIn) tnIn.value = 4 + b.tnMod;
+        if (b && tnIn) tnIn.value = baseTN + b.tnMod;
         if (note) note.textContent = b
-          ? `Range: ${b.label} (${Math.round(throwDist)}m) → TN ${4 + b.tnMod}${b.beyond ? ' — beyond Extreme' : ''}`
+          ? `Range: ${b.label} (${Math.round(throwDist)}m) → TN ${baseTN + b.tnMod}${b.beyond ? ' — beyond Extreme' : ''}`
           : '';
       };
       sel?.addEventListener('change', recompute);
@@ -2169,7 +2200,8 @@ export class SR3EItem extends Item {
             <div id="sr-range-note" style="font-size:11px;color:var(--sr-amber);margin-top:4px"></div>
           </div>
           <div style="margin-bottom:10px"><label>Target Number (TN):
-            <input type="number" id="sr-tn" value="${defaultTN}" min="2" max="30" style="width:60px;margin-left:8px"/></label></div>
+            <input type="number" id="sr-tn" value="${defaultTN}" min="2" max="30" style="width:60px;margin-left:8px"/></label>
+            ${pre.parts.length ? `<div style="font-size:11px;color:var(--sr-amber);margin-top:4px">⚡ TN modifiers: ${pre.parts.join(", ")} (pre-applied)</div>` : ''}</div>
           <div style="margin-bottom:10px"><label>Damage Code:
             <input type="text" id="sr-damage" value="${rawDamage}" style="width:80px;margin-left:8px"/></label></div>
           ${karmaPool > 0 ? `<div style="margin-bottom:10px"><label><input type="checkbox" id="sr-karma"/> Use Karma Pool (${karmaPool} available)</label></div>` : ''}
