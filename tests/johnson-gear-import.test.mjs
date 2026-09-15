@@ -31,14 +31,15 @@ export async function run(t) {
   const linked = items.filter(d => d._stats?.compendiumSource);
   const packOf = d => d._stats.compendiumSource.split('.')[2];
   t.ok('converted items record where they came from', linked.length >= 50, `${linked.length} linked`);
-  /* ⚠ One known exception, from the FIRST pass (2026-09-03, before SR2 packs were excluded): three
-   * contacts' "Helmet" link to `sr3e-sr2-armor` (1/1, SR2 p.241). SR3 core prints no plain helmet —
-   * only a Security Helmet (1/2, p.284) — so re-pointing would change their stats on a guess. Left
-   * for the maintainer (TODO 86). Nothing else may link to an SR2 pack. */
-  const SR2_KNOWN = new Set(['Helmet']);
-  t.is('no contact item links to an SR2-edition pack (bar the three first-pass helmets)',
-    linked.filter(d => /^sr3e-(sr2|ct|ssc|st|fof|pna)-/.test(packOf(d)) && !SR2_KNOWN.has(d.name)).map(d => d.name).join(', '), '');
-  t.is('…and that exception is exactly the three helmets', linked.filter(d => /^sr3e-sr2-/.test(packOf(d))).length, 3);
+  t.is('no contact item links to an SR2-edition pack', linked.filter(d => /^sr3e-(sr2|ct|ssc|st|fof|pna)-/.test(packOf(d))).map(d => d.name).join(', '), '');
+
+  /* The three first-pass helmets (once linked to the SR2 helmet): the maintainer's ruling, the SR3
+   * Security Helmet (p.284) — each at the rating its contact's page prints (tools/relink-johnson-helmets.mjs). */
+  const helmets = items.filter(d => d.name === 'Helmet');
+  t.ok('every "Helmet" links to the SR3 Security Helmet, page and all',
+    helmets.length === 3 && helmets.every(d => packOf(d) === 'sr3e-sr3-armor' && d.system.bookPage === 'sr3.284'));
+  t.eq('…at the ratings the Little Black Book prints: one 2/1 (Freedom Fighter, p.46), two 1/1 (p.62)',
+    helmets.map(d => `${d.system.ballistic}/${d.system.impact}`).sort(), ['1/1', '1/1', '2/1']);
 
   const medkits = items.filter(d => /^Medkit/.test(d.name));
   t.ok('every medkit is now a medical item', medkits.length >= 5 && medkits.every(d => d.type === 'medical'));

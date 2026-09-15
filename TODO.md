@@ -5836,9 +5836,11 @@ medkits. Rules added to the tool, each pinned by `tests/johnson-gear-import.test
   `compendiumSource` makes a second run a no-op (gear → gear keeps the type).
 
 **For the maintainer:**
-1. **Three `Helmet`s link to `sr3e-sr2-armor`** (1/1, SR2 p.241) from the first pass. SR3 core
-   prints no plain helmet, only a *Security Helmet* (1/2, p.284). Keep, re-point (changes stats),
-   or unlink?
+1. ✅ **The three `Helmet`s — RESOLVED 2026-09-14** (the maintainer: "use the security helmet").
+   `tools/relink-johnson-helmets.mjs` links them to the SR3 *Security Helmet* (p.284) at the rating
+   each contact's page prints — Freedom Fighter **2/1** (p.46; the first pass had flattened it to the
+   SR2 entry's 1/1), Highway Patrol and SWAT Team Member **1/1** (p.62). ⚠ Actors a world already
+   imported keep their old embedded copy — Foundry embeds, it does not link.
 2. **Rated variants with no rating on the contact's line**: *Micro-transceiver* (Ork Nation Organizer,
    Earnest Muckraker) and *Micro-recorder* (Earnest Muckraker) — the SR3 packs ship ratings 1-10.
 3. **160 distinct stubs still unmatched** — compound lists, categories (*Club Drugs of Choice*), and
