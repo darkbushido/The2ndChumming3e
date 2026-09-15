@@ -1900,7 +1900,7 @@ export class SR3EItem extends Item {
     // armour and a medkit. A stack split into storage used to be offered here.
     let stock = actor.items.filter(i =>
       i.type === 'ammunition' && !i.getFlag('The2ndChumming3e', 'stored')
-      && (!gunMech || (i.system.loadMechanism ?? 'c') === gunMech));
+      && AmmoStock.fits(i.system, gunMech));   // loose rounds fit any gun; a reload only its own
     if (trackOn) stock = stock.filter(i => AmmoStock.stock(i.system).count > 0);
     if (stock.length === 0) {
       ui.notifications.warn(`No compatible ammo in stock for ${this.name}.`);
@@ -1930,7 +1930,7 @@ export class SR3EItem extends Item {
     await this.update({ 'system.loadedAmmoType': type, 'system.loadedRounds': plan.loaded });
     const returnedTo = plan.returned > 0 ? await SR3EItem._returnRounds(actor, gunMech, current.type, plan.returned) : null;
     const quickness = actor.system?.attributes?.quickness?.value ?? 1;
-    const actions   = AmmoStock.reloadActions(ammo.system, { taken: plan.taken, quickness }).text;
+    const actions   = AmmoStock.reloadActions(ammo.system, { taken: plan.taken, quickness, gunMech }).text;
     const parts = [
       `${this.name}: ${plan.loaded}/${magSize} × ${typeLabel}`,
       plan.topUp ? `topped up with ${plan.taken}` : '',
@@ -1951,7 +1951,7 @@ export class SR3EItem extends Item {
   static async _returnRounds(actor, mech, type, n) {
     const t = type || 'regular';
     const home = actor.items.find(i => i.type === 'ammunition' && !i.getFlag('The2ndChumming3e', 'stored')
-      && (i.system.loadMechanism ?? 'c') === mech && (i.system.ammoType ?? 'regular') === t
+      && AmmoStock.fits(i.system, mech) && (i.system.ammoType ?? 'regular') === t
       && AmmoStock.unit(i.system) === 'rounds');
     if (home) {
       await home.update({ 'system.rounds': (home.system.rounds ?? 0) + n });
@@ -2000,7 +2000,7 @@ export class SR3EItem extends Item {
         }
         const want = loose && inp ? Number(inp.value) : null;
         const plan = AmmoStock.reloadPlan(ammo.system, magSize, current, { want });
-        const act  = AmmoStock.reloadActions(ammo.system, { taken: plan.taken, quickness }).text;
+        const act  = AmmoStock.reloadActions(ammo.system, { taken: plan.taken, quickness, gunMech: mech }).text;
         out.textContent = plan.taken <= 0 ? 'Already full.'
           : `${plan.loaded}/${magSize} in the gun afterwards${plan.discarded ? ` — ${plan.discarded} unfired lost` : ''}${plan.returned ? ` — ${plan.returned} unfired go back into stock` : ''}.${act ? ` ${act}.` : ''}`;
       };

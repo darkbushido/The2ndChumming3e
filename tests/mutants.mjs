@@ -34,6 +34,14 @@ const BOOKPAGE = { module: '../scripts/data/book-page.mjs',  klass: 'BookPage' }
 
 export const MUTANTS = [
   {
+    id:     'ammo-fits-by-mechanism-only',
+    suite:  'ammo-stock',
+    ...AMMO, method: 'fits',
+    was:    'stock matched the gun by loading mechanism alone — every shipped box of rounds says (c), so 74 '
+          + 'revolvers, tube-fed shotguns and break actions had nothing to load (found checking TODO 23)',
+    impl:   (sys, gunMech) => !gunMech || String(sys?.loadMechanism ?? 'c').toLowerCase() === String(gunMech).toLowerCase(),
+  },
+  {
     id:     'bookpage-sta2-not-aliased',
     suite:  'book-page',
     ...BOOKPAGE, method: 'codes',
