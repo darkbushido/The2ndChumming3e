@@ -1014,6 +1014,73 @@ Add `"lint": "eslint scripts"` to `scripts`, and wire it into `npm test` so it r
 triage pass and consider starting with only the rules above rather than a full recommended set —
 a wall of 500 style warnings gets ignored, and the correctness rules are what matter.
 
+## 23. Ship an ammunition compendium — **found in play 2026-08-05** ✅ `b925730d`, `c8e04eff`
+
+> **Closed 2026-09-15.** Checked against what ships:
+> - **661 ammunition documents** in six packs, all built by `build-default-gear` from the vendored data
+>   (#91/#92): `sr3` 189, `cc` 219, `sr2` 199, `fof` 47, `mm` 6, `ssc` 1.
+> - **All 8 of `SR3E.ammoTypes`:** regular 382, APDS / Explosive / EX / Gel / Flechette 50 each,
+>   Anti-Vehicle 27, Tracer 2.
+> - Priced per 10 rounds (p.281), plus 4 arrows and 5 bolts.
+> - **The check found a defect, fixed on main (`c8e04eff`).** Every box of rounds says `c`, and reload
+>   matched stock by mechanism alone. So 74 guns (revolvers, tube-fed shotguns, break actions) had
+>   nothing to load. `AmmoStock.fits` now lets loose rounds load any firearm; a pre-filled reload still
+>   fits only its own mechanism.
+> - "Blocked on #12" is moot: #12 is done.
+> - **Not shipped:** pre-filled reloads (clips, speed loaders, belts) as compendium items. The generator
+>   has none; the importer makes them from a character's `N-Rnd Clip`, and a player can set any ammunition
+>   item to count reloads.
+
+**The code is complete; there is simply no content.** Verified:
+
+| Piece | State |
+|---|---|
+| `ammunition` in `system.json` → `documentTypes.Item` | ✅ present |
+| `AmmunitionData` model (`ItemDataModels.js:127`) | ✅ full schema |
+| `CONFIG.Item.dataModels.ammunition` (`sr3e.js:107`) | ✅ registered |
+| "+ Add Ammunition" buttons (`SR3EActorSheet.js:1323`, `:2069`) | ✅ present |
+| `SR3E.ammoTypes` rules (8 types) + `ammoLoadMechanisms` (9) | ✅ in `config.js` |
+| **Any ammunition item, anywhere** | ❌ **zero** |
+
+**Not a regression — it never existed.** `main`'s 24 monolithic packs had none either, the
+archive holds **0** ammunition documents, and there is no source data in `rawdata/` or the
+upstream character generator. Of 82 packs across 20 books, not one is ammunition.
+
+The practical effect is what got reported: to use ammo at all, someone must hand-create an item
+and fill in `ammoType`, `loadMechanism`, `rounds`, `cost`, `availability`, `streetIndex` and
+`bookPage` — **per type, per gun class** — before `reload()` has any stockpile to match against.
+Everything downstream (magazine tracking, APDS/flechette armour effects, the `trackAmmo` setting)
+is dead until that content exists.
+
+### What the pack needs
+
+8 types from `SR3E.ammoTypes`: Regular · Explosive · EX Explosive · Gel · APDS · Flechette ·
+Tracer · Anti-Vehicle. Load mechanism matters because `reload()` matches on it, so a Belt entry is
+distinct from a Clip entry.
+
+Pricing is core p.281, *Ammunition, Per 10 Shots*. ⚠ **That table extracts badly** — the two-column
+merge offsets the stat rows against their labels, exactly like the Visibility Table, so crop per
+column (`pdftotext -x -y -W -H`, mediabox ~616×795pt, **book page = PDF page − 2**) rather than
+reading the merged dump. One figure is safe from prose: *"Standard ammo costs 20¥ for 10 rounds."*
+
+### Re-confirmed by the core gear audit, 2026-09-02 — see [#91](TODO.md#91)
+
+`audit/sr3-core-gear-audit.md` reached this independently and adds three things: **arrows and
+bolts** are the same gap (the nocked-ammo flow matches them by loading mechanism, and a bow can
+never be re-nocked without them); ammunition did **not** ship mis-typed under some other item
+type (checked by name across all 82 packs); and `ammunition` is one of **eight** declared Item
+types with zero documents, so this is the sharpest case of a wider pattern rather than an
+isolated omission.
+
+### ⚠ Blocked on [#12](#12-write-a-committed-pack-rebuild-script-and-vendor-its-sources)
+
+The populate macros were **retired**, so there is currently no supported way to build a pack. This
+is the first task to actually need that decision, and it should not be resolved by quietly
+resurrecting a one-off macro.
+
+
+---
+
 ## 24. ✅ Revise the two-corner cards onto the socket layer — **ALL EIGHT DONE 2026-08-13**
 
 ### ✅ Melee — the decided flow is built
@@ -5583,7 +5650,7 @@ loaders and cylinder reloads, rather than a slip in the arithmetic.
 **To decide when picked up:** whether an ammunition item can be counted in **reloads** (clips / speed-
 loaders / cylinders, each holding the magazine size — `c`, `m`, `cy`) as well as in **loose rounds**
 (boxes, belts, `internal`/`b`), and what reloading from each does. Relates to [#55](TODO.md#55) (the ammunition
-model before `trackAmmo` defaults on) and [#23](TODO.md#23) (no ammunition compendium). Stacks can now be split
+model before `trackAmmo` defaults on) and [#23](#23) (no ammunition compendium). Stacks can now be split
 into and out of storage ([#113](#113)), which should work with whichever unit is chosen.
 
 <a id="115"></a>

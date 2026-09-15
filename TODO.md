@@ -28,7 +28,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | [47](#47) | Ready Weapon, an equip control for firearms, Quick Draw | ✅ built — two-gun Quick Draw waits on #49 |
 | [49](#49) | Hands | ✅ built — dual-wield billing, recoil crossover and matched razors still open inside it |
 | [18](#18) | Structured weapon-accessory data (smartlink, smart goggles, laser) + gyro | ✅ built — `smartgun`/`laserSight` fields; gyro on recoil, then movement |
-| [23](#23) | Ammunition compendium | easiest — likely already met: 661 ammunition docs ship in 6 default-gear packs; verify and close |
+| [23](TODO-DONE.md#23) | Ammunition compendium | ✅ closed — 661 docs, all 8 types; found and fixed loose rounds not loading non-clip guns (`c8e04eff`, main) |
 | [55](#55) | `trackAmmo` on by default | small switch; audit what it exposes |
 | [57](#57) | Shotgun choke and spread (p.117) | self-contained rule and one dialog input |
 | [56.1](#56) | Smartguns waste no rounds (p.116) | easy once #18 gives a smartgun flag |
@@ -38,7 +38,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 
 ## Contents
 
-**37 open.** 88 done — see [TODO-DONE.md](TODO-DONE.md).
+**36 open.** 89 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -47,7 +47,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | 🧙 Adept powers | [78](#78) Quick Strike acts first in a pass — *MITS p.151* |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [119](#119) Audit *The Matrix Defragged v2* against what we have<br>[120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork) |
-| 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[23](#23) Ship an ammunition compendium<br>[55](#55) Default `trackAmmo` ON — and the ammunition model it needs first<br>[79](#79) No ledger for karma or nuyen — *low priority*<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
+| 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[55](#55) Default `trackAmmo` ON — and the ammunition model it needs first<br>[79](#79) No ledger for karma or nuyen — *low priority*<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[56](#56) Full auto still asks the player for what the system could work out<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[122](#122) Ratings in the field, not the name, for weapons, cyberware and bioware |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -970,58 +970,6 @@ Foundry restart, not an F5.
 
 ---
 
-## 23. Ship an ammunition compendium — **found in play 2026-08-05**
-
-**The code is complete; there is simply no content.** Verified:
-
-| Piece | State |
-|---|---|
-| `ammunition` in `system.json` → `documentTypes.Item` | ✅ present |
-| `AmmunitionData` model (`ItemDataModels.js:127`) | ✅ full schema |
-| `CONFIG.Item.dataModels.ammunition` (`sr3e.js:107`) | ✅ registered |
-| "+ Add Ammunition" buttons (`SR3EActorSheet.js:1323`, `:2069`) | ✅ present |
-| `SR3E.ammoTypes` rules (8 types) + `ammoLoadMechanisms` (9) | ✅ in `config.js` |
-| **Any ammunition item, anywhere** | ❌ **zero** |
-
-**Not a regression — it never existed.** `main`'s 24 monolithic packs had none either, the
-archive holds **0** ammunition documents, and there is no source data in `rawdata/` or the
-upstream character generator. Of 82 packs across 20 books, not one is ammunition.
-
-The practical effect is what got reported: to use ammo at all, someone must hand-create an item
-and fill in `ammoType`, `loadMechanism`, `rounds`, `cost`, `availability`, `streetIndex` and
-`bookPage` — **per type, per gun class** — before `reload()` has any stockpile to match against.
-Everything downstream (magazine tracking, APDS/flechette armour effects, the `trackAmmo` setting)
-is dead until that content exists.
-
-### What the pack needs
-
-8 types from `SR3E.ammoTypes`: Regular · Explosive · EX Explosive · Gel · APDS · Flechette ·
-Tracer · Anti-Vehicle. Load mechanism matters because `reload()` matches on it, so a Belt entry is
-distinct from a Clip entry.
-
-Pricing is core p.281, *Ammunition, Per 10 Shots*. ⚠ **That table extracts badly** — the two-column
-merge offsets the stat rows against their labels, exactly like the Visibility Table, so crop per
-column (`pdftotext -x -y -W -H`, mediabox ~616×795pt, **book page = PDF page − 2**) rather than
-reading the merged dump. One figure is safe from prose: *"Standard ammo costs 20¥ for 10 rounds."*
-
-### Re-confirmed by the core gear audit, 2026-09-02 — see [#91](#91)
-
-`audit/sr3-core-gear-audit.md` reached this independently and adds three things: **arrows and
-bolts** are the same gap (the nocked-ammo flow matches them by loading mechanism, and a bow can
-never be re-nocked without them); ammunition did **not** ship mis-typed under some other item
-type (checked by name across all 82 packs); and `ammunition` is one of **eight** declared Item
-types with zero documents, so this is the sharpest case of a wider pattern rather than an
-isolated omission.
-
-### ⚠ Blocked on [#12](TODO-DONE.md#12-write-a-committed-pack-rebuild-script-and-vendor-its-sources)
-
-The populate macros were **retired**, so there is currently no supported way to build a pack. This
-is the first task to actually need that decision, and it should not be resolved by quietly
-resurrecting a one-off macro.
-
-
----
-
 ## 55. Default `trackAmmo` ON — and the ammunition model it needs first
 
 Decided 2026-08-14. `trackAmmo` currently defaults **off**, so the whole magazine/reload
@@ -1051,7 +999,7 @@ Turning tracking on before the model is right would make every table meet the th
 once — empty-clip bails, reload prompts that cannot express "load the APDS" — and the likely
 outcome is that people turn it straight back off.
 
-So: **model first, default second.** [#23](#23) (ship an ammunition compendium) is the other
+So: **model first, default second.** [#23](TODO-DONE.md#23) (ship an ammunition compendium) is the other
 half of this — the code is complete and the content is missing.
 
 ## 79. No ledger for karma or nuyen — *low priority*
@@ -1787,7 +1735,7 @@ and (at higher levels) some Reaction, and the shipped pack items carry the real 
 > packs, generated by `tools/build-default-gear.mjs` from vendored generator data, pinned by
 > `tests/default-gear.test.mjs`. Full account: `audit/default-books-gear-audit.md`. This also
 > answers [#12](TODO-DONE.md#12-write-a-committed-pack-rebuild-script-and-vendor-its-sources) for this content —
-> a committed builder over committed sources — and [#23](#23)'s missing ammunition.
+> a committed builder over committed sources — and [#23](TODO-DONE.md#23)'s missing ammunition.
 >
 > **Still open from this entry:** core **grenades** (weapons — out of scope by the maintainer's
 > ruling, 2026-09-14) and the `thrown` · `contact` · `quality` · `complex_form` · `summoning`
@@ -1803,9 +1751,9 @@ flash-pak and asked whether that was one gap or a class. It is a class.
 one of `adept-powers · armor · bioware · cyberware · drones · drugs · firearms · melee ·
 projectiles · spells · vehicle-mods · vehicle-weapons · vehicles`.
 
-### ⚠ `ammunition` — **already tracked as [#23](#23), a month before this audit**
+### ⚠ `ammunition` — **already tracked as [#23](TODO-DONE.md#23), a month before this audit**
 
-⚠ **This audit REDISCOVERED [#23](#23) and first wrote it up as new.** That entry dates from
+⚠ **This audit REDISCOVERED [#23](TODO-DONE.md#23) and first wrote it up as new.** That entry dates from
 **2026-08-05** and was *found in play*, which is a better warrant than a sweep. It is also more
 complete: it inventories every piece of the implementation, records that this is **not a
 regression** (the old monolithic packs on `main` had no ammunition either, the archive holds
@@ -1813,7 +1761,7 @@ zero, and there is no source data in `rawdata/` or upstream), and it names a blo
 missed — **[#12](TODO-DONE.md#12-write-a-committed-pack-rebuild-script-and-vendor-its-sources), because the
 populate macros were retired and there is currently no supported way to build a pack at all.**
 
-**Read [#23](#23) for the ammunition work.** Only the items below are new here.
+**Read [#23](TODO-DONE.md#23) for the ammunition work.** Only the items below are new here.
 
 ⚠ **This is a PACK gap, not a book gap and not a rules gap** — three layers, and only the third
 is empty. The **books** print ammunition in full (SR3 core p.279; Cannon Companion devotes a
@@ -1829,10 +1777,10 @@ filters `actor.items` for `type === 'ammunition'`, finds none, warns *"No compat
 stock"* and stops — so with `trackAmmo` on **every firearm in the system is unreloadable** until
 a GM hand-authors the items.
 
-**What this audit adds to [#23](#23):**
+**What this audit adds to [#23](TODO-DONE.md#23):**
 - **Arrows and bolts are the same gap.** The nocked-ammo flow matches them by `arrow`/`bolt`
   loading mechanism and the book prints both rows; neither ships, so a bow can never be re-nocked.
-  [#23](#23) lists the 8 firearm types and does not mention these.
+  [#23](TODO-DONE.md#23) lists the 8 firearm types and does not mention these.
 - **Confirmed it did not merely ship MIS-TYPED.** Searched by name under every item type: 31
   hits, none of them ammunition — weapons named for the round they fire (`9mm Flechette SMG`,
   `Flechette Gun`), a French vehicle decoy (`Lure Ammo AM-56`), and spells.
@@ -1871,12 +1819,12 @@ the cyberdecks in `sr3e-mdf-cyberdecks`, a few cyberware entries.
 
 ⚠ **Nothing here can start until [#12](TODO-DONE.md#12-write-a-committed-pack-rebuild-script-and-vendor-its-sources)
 is resolved.** The populate macros were retired and the per-book routing exists nowhere in git, so
-**the repo cannot currently build a pack at all** — and [#23](#23) already names itself as the
+**the repo cannot currently build a pack at all** — and [#23](TODO-DONE.md#23) already names itself as the
 first task to actually need that decision. An earlier draft of this entry recommended
 "ammunition first, it is only nine rows"; nine rows you have no committed way to build is not a
 starting point. **#12 is the starting point.**
 
-After that: **ammunition** ([#23](#23) — finished mechanics sitting idle, and it unblocks
+After that: **ammunition** ([#23](TODO-DONE.md#23) — finished mechanics sitting idle, and it unblocks
 `trackAmmo` for every firearm and bow already shipped), then core grenades, then accessories (the
 next-most mechanical), then the bulk gear.
 
