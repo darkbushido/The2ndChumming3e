@@ -2,6 +2,7 @@ import { vcrLevel as vcrLevelOf } from '../data/item-rating.mjs';
 import { AmmoStock } from '../data/ammo-stock.mjs';
 import { Shotgun, CHOKE_MIN, CHOKE_MAX } from '../data/shotgun.mjs';
 import { WeaponAccessories } from '../data/weapon-accessories.mjs';
+import { PhaseTargets } from '../data/phase-targets.mjs';
 
 export class SR3EItem extends Item {
 
@@ -1156,6 +1157,17 @@ export class SR3EItem extends Item {
     targetToken = targetActor.getActiveTokens?.()[0] ?? null;
   }
 
+  // Who this character has already shot at this Combat Phase (TODO 56.2) — prefills the fire dialog's
+  // target ordinal (+2 each, p.111) and the metres the fire walks from the last one (p.116).
+  const _phase     = game.combat ? game.sr3e.SR3EActionLedger?.phase(game.combat) ?? 'none' : 'none';
+  const _targetKey = targetToken?.id ?? targetActor.id;
+  const _engaged   = PhaseTargets.current(actor.system.targetsThisPhase, _phase);
+  const _prevTgt   = PhaseTargets.previous(_engaged, _targetKey);
+  const _prevTok   = _prevTgt?.tokenId ? canvas?.tokens?.get?.(_prevTgt.tokenId) ?? null : null;
+  const _walkM     = _prevTok && targetToken ? SR3EItem._measureDistance(_prevTok, targetToken) : null;
+  const targetPrefill = { ordinal: PhaseTargets.ordinal(_engaged, _targetKey), engaged: _engaged.length,
+                          metres: _walkM != null ? Math.round(_walkM) : null };
+
   // --- Step 1.5: Loaded ammo (firearms only) ---
   // Ammo is loaded into the weapon via the Reload button; firing uses whatever is loaded.
   let ammoType = 'regular';
@@ -1184,9 +1196,11 @@ export class SR3EItem extends Item {
       const isHeavy   = HEAVY_CATS.has(this.system.category ?? '');
       const isShotgun = (this.system.category ?? '') === 'ShtG';
       if (availableModes.length === 1 && availableModes[0] === 'SS') {
-        fireModeResult = { mode: 'SS', rounds: 0, roundsWasted: 0, recoilTN: 0, additionalTNPenalty: 0, shotgunSpread: 0 };
+        fireModeResult = { mode: 'SS', rounds: 0, roundsWasted: 0, recoilTN: 0, shotgunSpread: 0,
+          // No dialog to ask, so the ordinal comes from who was already shot at (TODO 56.2).
+          additionalTNPenalty: SR3EItem.multiTargetTN(targetPrefill.ordinal) };
       } else {
-        fireModeResult = await SR3EItem._promptFireMode(availableModes, actor, this, isHeavy, isShotgun);
+        fireModeResult = await SR3EItem._promptFireMode(availableModes, actor, this, isHeavy, isShotgun, targetPrefill);
         if (!fireModeResult) return null;
       }
 
@@ -1518,10 +1532,11 @@ export class SR3EItem extends Item {
   options.weaponType         = this.type;
   options.rangeBandIdx       = Number.isInteger(weaponOpts?.rangeBandIdx) ? weaponOpts.rangeBandIdx : null;
 
-  // Commit recoil — update rounds fired counter before the roll
-  if (fireModeRounds > 0) {
-    const currentRounds = actor.system.roundsFiredThisPhase ?? 0;
-    await actor.update({ 'system.roundsFiredThisPhase': currentRounds + fireModeRounds });
+  // Commit recoil — update rounds fired counter before the roll — and who was shot at (TODO 56.2).
+  {
+    const changes = { 'system.targetsThisPhase': PhaseTargets.add(actor.system.targetsThisPhase, _phase, _targetKey, targetToken?.id ?? null) };
+    if (fireModeRounds > 0) changes['system.roundsFiredThisPhase'] = (actor.system.roundsFiredThisPhase ?? 0) + fireModeRounds;
+    await actor.update(changes);
   }
 
   // Decrement the weapon's loaded magazine when tracking is enabled. Bullets fired =
@@ -3798,7 +3813,7 @@ static fireModeDamage({ power, level = 'M', mode, rounds = 0, isTracer = false,
   return { power: pwr, level: STAGES[lvlIdx] };
 }
 
-static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isShotgun = false) {
+static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isShotgun = false, prefill = {}) {
   const weaponName   = weapon.name;
   const actorComp    = actor.system.recoilCompensation ?? 0;
   const weaponComp   = weapon.system.recoilMod ?? 0;
@@ -3858,7 +3873,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       </label>
       <div style="font-size:11px;color:var(--sr-muted);margin-bottom:6px">Walking fire: 1 wasted round per metre between targets. Full-auto only — the +2 per target above applies to every mode.</div>
       <label style="display:block">Metres to previous target (wasted rounds):
-        <input type="number" id="fa-metres" value="0" min="0" max="30" style="width:55px;margin-left:6px"/>
+        <input type="number" id="fa-metres" value="${prefill.metres ?? 0}" min="0" max="30" style="width:55px;margin-left:6px"/>${prefill.metres != null ? '<span style="font-size:11px;color:var(--sr-muted);margin-left:4px">(measured from the last target)</span>' : ''}
       </label>
       <label style="display:block;margin-top:4px;font-size:12px">
         <input type="checkbox" id="fa-smartgun" ${WeaponAccessories.flag(weapon, 'smartgun') ? 'checked' : ''}/>
@@ -3872,13 +3887,11 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
   const targetOrdinal = `
     <label style="display:block;margin-top:8px;font-size:12px">Which <strong>target</strong> this Combat Phase?
       <select id="sr-target-num" style="margin-left:6px">
-        <option value="1">1st (no penalty)</option>
-        <option value="2">2nd (+2 TN)</option>
-        <option value="3">3rd (+4 TN)</option>
-        <option value="4">4th (+6 TN)</option>
-        <option value="5">5th+ (+8 TN)</option>
+        ${[['1', '1st (no penalty)'], ['2', '2nd (+2 TN)'], ['3', '3rd (+4 TN)'], ['4', '4th (+6 TN)'], ['5', '5th+ (+8 TN)']]
+          .map(([v, l]) => `<option value="${v}" ${Number(v) === Math.min(5, prefill.ordinal ?? 1) ? 'selected' : ''}>${l}</option>`).join('')}
       </select>
-      <span style="font-size:11px;color:var(--sr-muted);margin-left:4px">(a further shot at the SAME target is still the 1st)</span>
+      <span style="font-size:11px;color:var(--sr-muted);margin-left:4px">(a further shot at the SAME target keeps its place)</span>
+      ${prefill.engaged ? `<div style="font-size:11px;color:var(--sr-muted)">Already shot at this phase: ${prefill.engaged} target${prefill.engaged === 1 ? '' : 's'} — set from that (TODO 56.2).</div>` : ''}
     </label>`;
 
   // Shot spreads by the choke (p.117, TODO 57): the shooter sets it here and it is remembered on the gun.

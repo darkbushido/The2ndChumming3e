@@ -1214,7 +1214,10 @@ Actions at two targets is the ordinary way there (a second SA shot, a second bur
 each hand). It reads as full-auto-only because p.116 restates the +2 beneath a *Multiple
 Targets* heading inside FULL-AUTO MODE; what is genuinely full-auto-only there is **walking the
 fire** (1 wasted round per metre; smartguns waste none). The ordinal counts **targets, not shots** — a second burst at the same target is
-still the 1st. ⚠ The **GM window cannot supply this**: `multiTarget` carries no `mvp` flag, so
+still the 1st. The dialog **prefills** the ordinal and the walking-fire metres from `system.targetsThisPhase`
+(TODO 56.2, `scripts/data/phase-targets.mjs`): who was shot at, keyed to the ledger's `round|turn` phase,
+cleared by `resetRecoil` with the full empty record, never `{}` (an ObjectField update merges). It is
+snapshotted for the GM's ↺ undo. ⚠ The **GM window cannot supply this**: `multiTarget` carries no `mvp` flag, so
 `mvpModifierGroups()` never renders it and the fire dialog is the only source. It used to live
 inside the dialog's FA-only section, so SA's second shot and BF's second burst were both free.
 

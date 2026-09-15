@@ -51,7 +51,8 @@ export async function run(t) {
             { id: 's', name: 'Sorcery', type: 'skill', system: { rating: 5 } }] };
   const snap = E.snapshot(before, 1000);
   t.eq('the snapshot holds what an action can spend — and nothing else (not nuyen, not skills)',
-    [Object.keys(snap.actor).sort(), Object.keys(snap.items).sort()], [['combatPoolSpent', 'karmaPool', 'roundsFiredThisPhase'], ['g', 'k']]);
+    [Object.keys(snap.actor).sort(), Object.keys(snap.items).sort()], [['combatPoolSpent', 'karmaPool', 'roundsFiredThisPhase', 'targetsThisPhase'], ['g', 'k']]);
+  // (targetsThisPhase — who was shot at, TODO 56.2 — is always snapshotted, as the empty record if unset.)
   const after = { system: { ...before.system, combatPoolSpent: 4, roundsFiredThisPhase: 3 },
     items: [{ ...before.items[0], system: { loadedRounds: 12, loadedAmmoType: 'regular' } }, before.items[2]] };
   const plan = E.restorePlan(snap, after);

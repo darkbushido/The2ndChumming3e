@@ -18,6 +18,8 @@
  * (`round|turn`); a ledger from any other phase reads as empty, so nothing has to clear it.
  */
 
+import { PhaseTargets } from './phase-targets.mjs';
+
 /** Every action the system can charge by itself, with its cost and page. */
 export const ACTIONS = {
   fireWeapon:        { cost: 'simple',  label: 'Fire Weapon',                  page: 'SR3 p.106' },   // SS / SA / BF, bows
@@ -114,7 +116,10 @@ export const ActionEconomy = {
    * action can have spent is exactly this: pool dice, the recoil count, Karma Pool, and ammunition. */
 
   /** Actor fields an action can spend. */
-  SNAP_ACTOR: ['combatPoolSpent', 'spellPoolSpent', 'astralPoolSpent', 'hackingPoolSpent', 'roundsFiredThisPhase', 'karmaPool'],
+  SNAP_ACTOR: ['combatPoolSpent', 'spellPoolSpent', 'astralPoolSpent', 'hackingPoolSpent', 'roundsFiredThisPhase', 'karmaPool',
+               'targetsThisPhase'],
+  /** Object fields, copied and compared by VALUE — who was shot at this phase (TODO 56.2). */
+  SNAP_OBJECT: { targetsThisPhase: v => PhaseTargets.normalize(v) },
   /** Item fields an action can spend — rounds in a gun, a thrown stack, an ammunition stock. */
   SNAP_ITEM: ['loadedRounds', 'loadedAmmoType', 'quantity', 'rounds', 'reloads'],
   SNAP_TYPES: ['firearm', 'projectile', 'thrown', 'ammunition'],
@@ -123,7 +128,11 @@ export const ActionEconomy = {
   snapshot(actorData, at = Date.now()) {
     const sys = actorData?.system ?? {};
     const actor = {};
-    for (const k of ActionEconomy.SNAP_ACTOR) if (sys[k] !== undefined) actor[k] = sys[k];
+    for (const k of ActionEconomy.SNAP_ACTOR) {
+      const norm = ActionEconomy.SNAP_OBJECT[k];
+      if (norm) actor[k] = norm(sys[k]);
+      else if (sys[k] !== undefined) actor[k] = sys[k];
+    }
     const items = {};
     for (const i of actorData?.items ?? []) {
       if (!ActionEconomy.SNAP_TYPES.includes(i.type)) continue;
@@ -144,7 +153,10 @@ export const ActionEconomy = {
     const out = [];
     const sys = actorData?.system ?? {};
     for (const [k, back] of Object.entries(snap.actor ?? {})) {
-      if (sys[k] !== back) out.push({ kind: 'actor', id: null, name: '', field: k, now: sys[k], back });
+      const norm = ActionEconomy.SNAP_OBJECT[k];
+      const now  = norm ? norm(sys[k]) : sys[k];
+      const same = norm ? JSON.stringify(now) === JSON.stringify(back) : now === back;
+      if (!same) out.push({ kind: 'actor', id: null, name: '', field: k, now, back });
     }
     const byId = new Map((actorData?.items ?? []).map(i => [i.id, i]));
     for (const [id, s] of Object.entries(snap.items ?? {})) {
@@ -156,6 +168,12 @@ export const ActionEconomy = {
       }
     }
     return out;
+  },
+
+  /** A value as the undo dialog shows it — a target record as its count. */
+  display(v) {
+    if (v && typeof v === 'object' && Array.isArray(v.targets)) return `${v.targets.length} target${v.targets.length === 1 ? '' : 's'} shot at`;
+    return String(v);
   },
 
   /** A one-line summary for a tooltip: "Fire Weapon (SA) · Ready Weapon". */

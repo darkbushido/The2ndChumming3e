@@ -8873,10 +8873,10 @@ _prepareCharacter(sys, attr) {
   async resetRecoil() {
     if (!game.users.activeGM?.isSelf) {
       await game.sr3e.SR3EQuery.asGM('sr3e.actor.set',
-        { uuid: this.uuid, changes: { 'system.roundsFiredThisPhase': 0 } });
+        { uuid: this.uuid, changes: { 'system.roundsFiredThisPhase': 0, 'system.targetsThisPhase': { phase: '', targets: [] } } });
       return;
     }
-    await this.update({ 'system.roundsFiredThisPhase': 0 });
+    await this.update({ 'system.roundsFiredThisPhase': 0, 'system.targetsThisPhase': { phase: '', targets: [] } });
   }
 
   /**

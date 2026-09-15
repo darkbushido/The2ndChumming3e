@@ -165,7 +165,7 @@ export class SR3EActionLedger {
       const rows = plan.map((p, i) => p.gone
         ? `<div class="sr3e-undo-row"><em>${esc(p.name)} was deleted since — recreate it by hand.</em></div>`
         : `<label class="sr3e-undo-row"><input type="checkbox" class="sr3e-undo-val" data-i="${i}" checked/>
-            ${p.kind === 'item' ? `${esc(p.name)} · ` : ''}${esc(p.field)}: ${esc(p.now)} → <strong>${esc(p.back)}</strong></label>`).join('');
+            ${p.kind === 'item' ? `${esc(p.name)} · ` : ''}${esc(p.field)}: ${esc(ActionEconomy.display(p.now))} → <strong>${esc(ActionEconomy.display(p.back))}</strong></label>`).join('');
       const crows = cards.map(m => `<label class="sr3e-undo-row"><input type="checkbox" class="sr3e-undo-card" data-id="${m.id}" checked/> 🗨 ${cardText(m)}</label>`).join('');
       return `${e.snap ? '' : '<p><em>No snapshot for this action (it was marked by hand) — only its slot is freed.</em></p>'}
         <h4>Put back</h4>${rows || '<p><em>Nothing it spent has changed.</em></p>'}

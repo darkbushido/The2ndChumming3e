@@ -81,6 +81,9 @@ function _pools() {
     fullDefensePool:         new NumberField({ integer: true, initial: 0, min: 0 }),
     recoilCompensation:      new NumberField({ integer: true, initial: 0, min: 0 }),
     roundsFiredThisPhase:    new NumberField({ integer: true, initial: 0, min: 0 }),
+    // Who was shot at this Combat Phase, in order (TODO 56.2): { phase: 'round|turn', targets: [{ key, tokenId }] }.
+    // Prefills the fire dialog's target ordinal and walking-fire metres; scripts/data/phase-targets.mjs.
+    targetsThisPhase:        new ObjectField(),
     stimBonus:               new NumberField({ integer: true, initial: 0, min: 0 }),
   };
 }

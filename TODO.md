@@ -31,14 +31,14 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | [23](TODO-DONE.md#23) | Ammunition compendium | ✅ closed — 661 docs, all 8 types; found and fixed loose rounds not loading non-clip guns (`c8e04eff`, main) |
 | [55](TODO-DONE.md#55) | `trackAmmo` on by default | ✅ — new worlds on; existing worlds pinned off; weight raised as #126 |
 | [57](TODO-DONE.md#57) | Shotgun choke and spread (p.117) | ✅ — shot ammo type, choke on the gun, spread from the range |
-| [56.1](#56) | Smartguns waste no rounds (p.116) | easy once #18 gives a smartgun flag |
-| [56.2](#56) | Remember who you shot at this phase | per-phase state — the #48 ledger is its home; closes #56 |
+| [56.1](TODO-DONE.md#56) | Smartguns waste no rounds (p.116) | ✅ `74372f9d` |
+| [56.2](TODO-DONE.md#56) | Remember who you shot at this phase | ✅ — prefills the ordinal and the walking metres |
 | [78](#78) | Quick Strike acts first in a pass (MITS p.151) | touches the initiative queue |
 | [38](TODO-DONE.md#38) | Multiple targets — the leftovers (melee, per-attack pool) | hardest; #38 is archived but names these as unapplied |
 
 ## Contents
 
-**35 open.** 91 done — see [TODO-DONE.md](TODO-DONE.md).
+**34 open.** 92 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -48,7 +48,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [119](#119) Audit *The Matrix Defragged v2* against what we have<br>[120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork) |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[79](#79) No ledger for karma or nuyen — *low priority*<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear<br>[126](#126) Ammunition has no weight, and nothing adds up a carried load |
-| 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[56](#56) Full auto still asks the player for what the system could work out<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[122](#122) Ratings in the field, not the name, for weapons, cyberware and bioware |
+| 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[122](#122) Ratings in the field, not the name, for weapons, cyberware and bioware |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
@@ -2101,83 +2101,6 @@ model; a vision-gear flag reachable from the actor for goggles; keep `accessorie
 description. Then delete the guessing in `SR3ECombatModifiers` and read the fields.
 
 See [audit/socket-combat-plan.md](audit/socket-combat-plan.md) — "Maintainer decisions — 2026-08-05".
-
-## 56. Full auto still asks the player for what the system could work out
-
-Raised 2026-08-18, alongside the walking-fire fix. Both numbers that make a multi-target
-full-auto attack correct are typed in by hand, and each has a source of truth already sitting
-in the code that nothing consults.
-
-### 56.1 Smartguns waste no rounds — and the system cannot tell
-
-> **Built 2026-09-15 on `feature/action-economy`.**
-> - The full-auto section has a *Smartgun* tick, pre-ticked from the gun's `smartgun` field (#18).
-> - `SR3EItem.walkingWaste(metres, smartgun)` makes it 0 wasted rounds. The recoil preview and the shot
->   both read it; the player can untick it.
-> - Mutant `smartgun-walking-waste`.
-
-*SR3 p.116*, flatly: **"Smartguns never waste rounds."**
-
-Not a discount — the round is simply never fired. A smartgun slews to the next target without
-spending anything crossing the gap, so the saving lands on all three of the things
-`roundsExpended` feeds: the magazine, recoil, and the 10-round phase budget. It is the
-difference between Able's three targets at a metre costing **11 rounds** (illegal, over the
-cap) and **9** (fine).
-
-Today the player has to know to leave "metres to previous target" at 0. Nothing in the dialog
-even hints at it.
-
-⚠ **Blocked on [#18](#18), and not worth faking around.** Smartgun detection is the
-free-text `accessories` StringField guess in `guessGearModifiers` — good enough to
-pre-tick an overridable TN checkbox the GM is looking at, nowhere near good enough to
-silently zero a player's ammunition. A wrong guess here is invisible and costs rounds.
-
-**Interim, cheap, honest:** a one-line note under the metres field — *"Smartguns waste no
-rounds (p.116) — leave at 0."* Costs nothing and does not pretend to know.
-
-**Once #18 lands:** default the field to 0 and disable it when a smartgun is detected, with
-the reason shown. Still overridable — minimal guardrails.
-
-### 56.2 Nothing remembers who you already shot at this phase
-
-⚠ **[#38](TODO-DONE.md#38) raised this first, on 2026-08-10**, under "Why it is not simply add a checkbox".
-This section is the same gap seen from the other end: #38 owns the multi-target rules still
-unapplied (melee, and per-attack pool allocation), this owns deriving the two dialog inputs.
-
-Two controls in the fire dialog are manual for the same missing reason:
-
-| Control | Asks for | Could be derived from |
-|---|---|---|
-| "Which target this Combat Phase?" | the ordinal, driving +2 each (SR3 p.111) | the set of targets fired at this phase |
-| "Metres to previous target" | walking-fire waste | `_measureDistance` between this target's token and the previous one |
-
-`_measureDistance` already exists and already runs — it is what classifies the range band on
-every shot. What is missing is a per-phase record of **which actors have been engaged**, in
-order. `roundsFiredThisPhase` counts rounds and nothing else, so each `rollWeapon` call is
-blind to the ones before it.
-
-A `system.targetsThisPhase` array (actor ids, in order, cleared by `resetRecoil` alongside
-`roundsFiredThisPhase`) would let both fields prefill:
-- ordinal = index of this target in the list + 1, or `length + 1` for a new one
-- metres = measured distance from the previous entry's token
-
-⚠ **Prefill, do not enforce.** The ordinal counts **targets, not shots** — a second burst at
-someone already shot is still their ordinal, not a new one — and that is exactly the sort of
-judgement a GM overrides. Both fields stay editable.
-
-⚠ **The failure mode today is silent under-reporting**, not cheating: a player forgets they
-already shot at Brian and leaves the ordinal at 1, and the attack is simply 2 points easier
-than it should be. Nothing warns, because nothing knows.
-
-### Not in scope here
-
-The magazine arithmetic is correct and was correct before the walking-fire fix — each
-declaration spends only its own rounds plus its own waste. This item is about the two inputs
-to that arithmetic being hand-entered, not about the arithmetic.
-
----
-
-<a id="57"></a>
 
 ## 105. Tie vehicle passengers to the Rideable module — **requested during the TODO 93 run, 2026-09-13**
 
