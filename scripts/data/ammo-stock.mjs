@@ -115,11 +115,34 @@ export const AmmoStock = {
   },
 
   /**
+   * Can this stock go into a gun loaded by `gunMech`? (blank = the gun does not say: anything).
+   *
+   * ⚠ **Loose rounds fit every firearm.** A box of rounds is loaded by hand whatever the gun takes —
+   * every row of the Ammo Reloading Table (SR3 p.280) has an "insert rounds" method. Only a pre-filled
+   * RELOAD (clip, speed loader, belt) is shaped for one mechanism. Every shipped box of rounds says
+   * `c`, so matching on the mechanism alone left 74 shipped guns — revolvers, tube-fed shotguns,
+   * break actions — with nothing to load (found checking TODO 23, 2026-09-15).
+   * ⚠ Arrows and bolts are the exception both ways: a bow takes only arrows, a crossbow only bolts,
+   * and neither fits a gun.
+   */
+  fits(sys, gunMech) {
+    const gun  = String(gunMech ?? '').toLowerCase();
+    if (!gun) return true;
+    const mech = String(sys?.loadMechanism ?? 'c').toLowerCase();
+    if (mech === gun) return true;
+    const nocked = m => m === 'arrow' || m === 'bolt';
+    return AmmoStock.unit(sys) === 'rounds' && !nocked(mech) && !nocked(gun);
+  },
+
+  /**
    * What loading takes, from the Ammo Reloading Table (SR3 p.280) — shown, never enforced.
+   * Loose rounds go at the GUN's rate (`gunMech`) — a box marked for clips still loads a break action
+   * 2 rounds at a time.
    * @returns {{complex:number, simple:number, text:string}}
    */
-  reloadActions(sys, { taken = 0, quickness = 1 } = {}) {
-    const mech = String(sys?.loadMechanism ?? 'c').toLowerCase();
+  reloadActions(sys, { taken = 0, quickness = 1, gunMech = null } = {}) {
+    const own  = String(sys?.loadMechanism ?? 'c').toLowerCase();
+    const mech = AmmoStock.unit(sys) === 'rounds' && gunMech ? String(gunMech).toLowerCase() : own;
     if (AmmoStock.unit(sys) === 'reloads') {
       if (mech === 'c' || mech === 'd') {
         return { complex: 0, simple: 2, text: 'Simple Action to remove the old clip, another to insert the new one (SR3 p.107, p.280) — a smartlink ejects it with a Free Action' };

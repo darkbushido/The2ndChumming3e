@@ -79,6 +79,26 @@ export async function run(t) {
   t.ok('loose rounds into a clip say so', /into the clip/.test(AmmoStock.reloadActions(rounds(20, 'c'), { taken: 5, quickness: 5 }).text));
   t.ok('the text cites the table', /SR3 p\.280/.test(AmmoStock.reloadActions(rounds(20, 'm'), { taken: 5, quickness: 5 }).text));
 
+  /* ── Which stock fits which gun ───────────────────────────────────────────────── */
+  t.ok('a box of rounds marked for clips loads a revolver', AmmoStock.fits(rounds(50, 'c'), 'cy'));
+  t.ok('…a tube-fed shotgun', AmmoStock.fits(rounds(50, 'c'), 'm'));
+  t.ok('…and a break action', AmmoStock.fits(rounds(50, 'c'), 'b'));
+  t.ok('a pre-filled clip fits only a clip gun — not a revolver', !AmmoStock.fits(clip, 'cy'));
+  t.ok('…but does fit a clip gun', AmmoStock.fits(clip, 'c'));
+  t.ok('speed loaders fit revolvers only', AmmoStock.fits(reloads(6, 7), 'cy') && !AmmoStock.fits(reloads(6, 7), 'c'));
+  t.ok('arrows are not bullets', !AmmoStock.fits(rounds(12, 'arrow'), 'c'));
+  t.ok('…nor bullets arrows', !AmmoStock.fits(rounds(50, 'c'), 'arrow'));
+  t.ok('bolts fit a crossbow, arrows do not', AmmoStock.fits(rounds(5, 'bolt'), 'bolt') && !AmmoStock.fits(rounds(5, 'arrow'), 'bolt'));
+  t.ok('a gun that names no mechanism takes anything', AmmoStock.fits(clip, ''));
+  t.is('clip-marked rounds into a break action go 2 at a time — 3 rounds is 2 actions',
+    AmmoStock.reloadActions(rounds(50, 'c'), { taken: 3, quickness: 6, gunMech: 'b' }).complex, 2);
+  t.ok('…and do not say "into the clip"', !/into the clip/.test(AmmoStock.reloadActions(rounds(50, 'c'), { taken: 3, quickness: 6, gunMech: 'b' }).text));
+  t.is('a reload keeps its own mechanism\'s rate', AmmoStock.reloadActions(clip, { gunMech: 'cy' }).simple, 2);
+  const itemSrc = readFileSync(new URL('../scripts/documents/SR3EItem.js', import.meta.url), 'utf8');
+  t.ok('reload() offers stock through AmmoStock.fits', /AmmoStock\.fits\(i\.system, gunMech\)/.test(itemSrc));
+  t.ok('…and unloaded rounds go home through it too', /AmmoStock\.fits\(i\.system, mech\) && \(i\.system\.ammoType/.test(itemSrc));
+  t.ok('…no reload site matches on the mechanism alone any more', !/loadMechanism \?\? 'c'\) === (gunMech|mech)/.test(itemSrc));
+
   /* ── Reading it back ──────────────────────────────────────────────────────────── */
   t.is('describe: reloads with a size', AmmoStock.describe(reloads(6, 7)), '6 reloads of 7');
   t.is('describe: one reload', AmmoStock.describe(reloads(1)), '1 reload');
