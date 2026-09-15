@@ -102,6 +102,9 @@ export async function run(t) {
     && /const recoilTNMod\s+= gyro\.recoil;/.test(item));
   t.ok('…and hands what is left to the GM window', /gyroLeft:\s+gyro\.left/.test(item));
   t.ok('the GM window subtracts it from the ticked movement', /clampTN\(baseTN \+ sumModifiers\(state\) - gyroOff\)/.test(item));
+  t.ok('…and what is left is the GM\'s number, pre-filled (p.112 says "or", p.113 "total")',
+    /id="sr-gm-gyro" value="\$\{ctx\.gyroLeft \?\? 0\}" min="0" max="\$\{ctx\.gyroRating\}"/.test(item)
+    && /gyroOffset\(state, gyroLeft\)/.test(item) && /gyroRating:\s+game\.sr3e\.SR3EActor\.gyroRating\(actor\)/.test(item));
   t.ok('melee adds +4 to each fighter wearing one', /A\.woundTN\(actor\) \+ A\.gyroMeleeTN\(actor\)/.test(item)
     && /A\.woundTN\(targetActor\) \+ A\.gyroMeleeTN\(targetActor\)/.test(item));
   t.ok('the Combat Pool is halved while one is worn, rounded down', /combatPool\s+= gyroWorn \? Math\.floor\(combatPoolFull \/ 2\) : combatPoolFull/.test(act));

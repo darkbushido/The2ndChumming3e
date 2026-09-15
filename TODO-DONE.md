@@ -3079,7 +3079,7 @@ So a 2-round burst is a distinct case, not "a burst that happens to fire two". N
 and counts 3 rounds, whatever the magazine holds.
 
 **Only reachable with `trackAmmo` ON**, which is off by default — which is presumably why it
-was never noticed. See [#55](TODO.md#55) for the decision to flip that default, and what has to be
+was never noticed. See [#55](#55) for the decision to flip that default, and what has to be
 modelled first.
 
 ### What was built
@@ -3274,6 +3274,53 @@ of their 8 dice. Trixie is on Flux 8.
 ⚠ SR3 p.97's mechanic (a separate test at 2 successes → 1) is NOT what this is, and switching
 to it later would be a different shape — a second roll — not a tweak to this number. Pinned
 in `tests/ew-skill.test.mjs`.
+
+## 55. Default `trackAmmo` ON — and the ammunition model it needs first ✅ 2026-09-15, `feature/action-economy`
+
+> **Done 2026-09-15 on `feature/action-economy`** (0.6).
+> - `trackAmmo` defaults **on** for a new world.
+> - ⚠ **An existing world that never set it stays off.** Foundry stores only a value someone set, so
+>   flipping the default would flip every such world, and every gun there reads 0 rounds and cannot fire.
+>   `SR3EMigrations.DEFAULT_CHANGES` writes the old `false` into a world stamped before 0.6.0.
+> - The hint is rewritten; it said an empty gun still fires, and has not since the ammo rework.
+> - The three worries below, as they stand now:
+>   - **Which ammunition goes in:** answered by #114. The reload dialog picks the stock and asks how many
+>     rounds, and each type is its own item.
+>   - **The content:** #23 (661 documents). The `c8e04eff` fix lets revolvers and shotguns load them.
+>   - **Weight and carried load:** not modelled. It needs encumbrance, which does not exist, so it does
+>     not block the default. Raised as [#126](TODO.md#126).
+>   - **Special arrows:** the flow already carries an arrow's type. No typed arrows ship because the data
+>     has none.
+
+Decided 2026-08-14. `trackAmmo` currently defaults **off**, so the whole magazine/reload
+layer is dormant for a new world, and rules that depend on it ([#51](#51) short bursts) can
+never fire. It should be on by default.
+
+⚠ **Flipping the default is one line; the reason it is not done yet is what it exposes.**
+With tracking off, nobody notices that ammunition is modelled thinly.
+
+### What needs deciding before the flip
+
+- **Ammo types.** `SR3E.ammoTypes` holds the rules (APDS, explosive, EX, gel, flechette,
+  tracer, anti-vehicle), and firearms carry `loadedAmmoType`, but the **stockpile is one
+  undifferentiated `rounds` count per ammo item**. A runner carrying regular, APDS and
+  explosive for the same gun has three items and no notion of which is in the clip beyond a
+  single string. Reloading picks a stockpile by loading mechanism, not by what the player
+  wants loaded.
+- **Weight / encumbrance.** Ammunition has none. There is no weight field on the ammo item
+  and no carried-load calculation anywhere in the system, so "how much can this character
+  actually carry" cannot be answered — which is half the point of tracking ammo at all.
+- **Bows and crossbows** already nock a single arrow/bolt with no types at all (always
+  `regular`), so arrowheads would need the same treatment.
+
+### Sequencing
+
+Turning tracking on before the model is right would make every table meet the thin parts at
+once — empty-clip bails, reload prompts that cannot express "load the APDS" — and the likely
+outcome is that people turn it straight back off.
+
+So: **model first, default second.** [#23](#23) (ship an ammunition compendium) is the other
+half of this — the code is complete and the content is missing.
 
 ## 58. ✅ A free situational row in the GM windows — **DONE 2026-08-20**
 
@@ -5649,7 +5696,7 @@ loaders and cylinder reloads, rather than a slip in the arithmetic.
 
 **To decide when picked up:** whether an ammunition item can be counted in **reloads** (clips / speed-
 loaders / cylinders, each holding the magazine size — `c`, `m`, `cy`) as well as in **loose rounds**
-(boxes, belts, `internal`/`b`), and what reloading from each does. Relates to [#55](TODO.md#55) (the ammunition
+(boxes, belts, `internal`/`b`), and what reloading from each does. Relates to [#55](#55) (the ammunition
 model before `trackAmmo` defaults on) and [#23](#23) (no ammunition compendium). Stacks can now be split
 into and out of storage ([#113](#113)), which should work with whichever unit is chosen.
 

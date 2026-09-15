@@ -1326,6 +1326,8 @@ export class SR3EItem extends Item {
     baseTN:       _baseTNForGM,
     baseNote:     tnBreakdownParts.length ? tnBreakdownParts.join(' | ') : null,
     gyroLeft:     gyro.left,   // TODO 18 — offsets the Attacker movement rows (p.113)
+    gyroRating:   game.sr3e.SR3EActor.gyroRating(actor),
+    gyroUsed:     gyro.used,
   }, { timeout: 300_000 });
 
   if (negotiation === null) return null;   // GM cancelled the attack — nothing written
@@ -3048,6 +3050,14 @@ export class SR3EItem extends Item {
           <input type="number" id="sr-gm-tn" value="${baseTN}" min="2" max="30" style="width:60px"/>
         </label>
         <div id="sr-gm-tn-note" style="font-size:11px;color:var(--sr-dim);margin-top:4px"></div>
+        ${ctx.gyroRating ? `
+        <!-- A GM control, not a fixed number (TODO 18): p.113 reads as ONE allowance against the TOTAL of
+             recoil and movement, which is the default here; p.112's table says "recoil OR movement". The
+             GM sets what is left for movement — the full rating is the other reading. -->
+        <label style="display:flex;align-items:center;gap:8px;margin-top:6px;font-size:12px">
+          Gyro ${ctx.gyroRating} — left for movement
+          <input type="number" id="sr-gm-gyro" value="${ctx.gyroLeft ?? 0}" min="0" max="${ctx.gyroRating}" style="width:50px"/>
+        </label>` : ''}
         <div id="sr-gm-gyro-note" style="font-size:11px;color:var(--sr-dim)"></div>
       `,
       buttons: [
@@ -3078,6 +3088,7 @@ export class SR3EItem extends Item {
         const tnEl = el.querySelector('#sr-gm-tn');
         const note = el.querySelector('#sr-gm-tn-note');
         const gyroNote = el.querySelector('#sr-gm-gyro-note');
+        const gyroEl   = el.querySelector('#sr-gm-gyro');
         const visNote = el.querySelector('.sr-gm-vis-note');
 
         // The pre-selected vision follows the condition — a character with thermographic and
@@ -3107,9 +3118,12 @@ export class SR3EItem extends Item {
           }
 
           // A worn gyro's remainder offsets the movement rows ticked (p.113, TODO 18).
-          const gyroOff = gyroOffset(state, ctx.gyroLeft ?? 0);
+          const gyroLeft = gyroEl ? Math.max(0, parseInt(gyroEl.value) || 0) : 0;
+          const gyroOff = gyroOffset(state, gyroLeft);
           const { tn, floored, raw } = clampTN(baseTN + sumModifiers(state) - gyroOff);
-          if (gyroNote) gyroNote.textContent = ctx.gyroLeft ? `Gyro ${ctx.gyroLeft} left after recoil — offsetting ${gyroOff} of movement (SR3 p.113).` : '';
+          if (gyroNote) gyroNote.textContent = ctx.gyroRating
+            ? `${ctx.gyroUsed ?? 0} already off recoil; offsetting ${gyroOff} of movement. SR3 p.113 counts one allowance against the total — p.112's table says "or".`
+            : '';
           tnEl.value      = tn;
           note.textContent = floored
             ? `Floored at ${tn} — modifiers summed to ${raw}. No target number can be less than 2 (SR3 p.112).`
@@ -3120,7 +3134,7 @@ export class SR3EItem extends Item {
           .forEach(i => i.addEventListener('change', recompute));
         // `change` alone does not fire until the number input loses focus, so the TN would
         // lag behind what the GM has typed. `input` keeps the two in step.
-        el.querySelectorAll('.sr-gm-mod-sit, .sr-gm-mod-per')
+        el.querySelectorAll('.sr-gm-mod-sit, .sr-gm-mod-per, #sr-gm-gyro')
           .forEach(i => i.addEventListener('input', recompute));
         recompute();
       },

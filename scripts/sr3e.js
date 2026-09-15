@@ -291,11 +291,13 @@ Hooks.once('init', () => {
 
   game.settings.register('The2ndChumming3e', 'trackAmmo', {
     name: 'Track Ammunition',
-    hint: 'When enabled, firing decrements the selected ammo\'s rounds-remaining counter (1 SS/SA, 3 BF, N FA). Warns when empty but never blocks a shot. Reload by editing the rounds field on the ammo item.',
+    hint: 'Guns hold what was loaded into them: firing spends rounds (1 SS/SA, 3 BF, N FA, plus walked rounds), an empty gun cannot fire, and ↻ Reload loads from the ammunition the character carries. Off: ammunition is not counted.',
     scope: 'world',
     config: true,
     type: Boolean,
-    default: false,
+    // ON for a new world (TODO 55). A world from before 0.6 that never set it keeps OFF —
+    // SR3EMigrations.DEFAULT_CHANGES writes the old default into it, or every gun there would read empty.
+    default: true,
   });
 
   /* Pain Editor concealment · M&M p.71 — "the player should not be told how much damage has

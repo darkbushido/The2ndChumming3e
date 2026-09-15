@@ -2387,8 +2387,8 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
         down. The soak card's armour rises by 1/1.
   - [ ] Fire SA twice (+1 recoil on the second shot). The breakdown says "Gyro −1 of recoil (4 left for
         movement)".
-  - [ ] In the GM window, tick "Attacker running". The TN does not rise (4 offset), and the gyro note
-        says so.
+  - [ ] In the GM window, "Gyro 5 — left for movement" reads 4. Tick "Attacker running": the TN does not
+        rise (4 offset). Set the box to 2: the TN rises by 2.
   - [ ] Put the gyro in storage. All of the above goes away.
   - [ ] Melee with the gyro worn: the GM window's base TN for that fighter is 4 higher.
 - [ ] **Accessories (TODO 18):**
@@ -2397,3 +2397,8 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
   - [ ] The Ballista (Laser Designator) never pre-ticks a laser sight.
   - [ ] After merging, run `npm run packs:install` (Foundry closed), then restart Foundry fully: the data
         model changed.
+- [ ] **trackAmmo default (TODO 55):**
+  - [ ] In `test-shadowrun`, open Configure Settings. Track Ammunition is still OFF, and the console logged
+        "trackAmmo: default changed in 0.6.0; this world keeps false".
+  - [ ] A brand-new world has it ON (after the 0.6.0 bump; before it, the second load pins it off).
+  - [ ] Its hint describes empty guns and ↻ Reload.

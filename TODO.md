@@ -29,7 +29,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | [49](#49) | Hands | ✅ built — dual-wield billing, recoil crossover and matched razors still open inside it |
 | [18](#18) | Structured weapon-accessory data (smartlink, smart goggles, laser) + gyro | ✅ built — `smartgun`/`laserSight` fields; gyro on recoil, then movement |
 | [23](TODO-DONE.md#23) | Ammunition compendium | ✅ closed — 661 docs, all 8 types; found and fixed loose rounds not loading non-clip guns (`c8e04eff`, main) |
-| [55](#55) | `trackAmmo` on by default | small switch; audit what it exposes |
+| [55](TODO-DONE.md#55) | `trackAmmo` on by default | ✅ — new worlds on; existing worlds pinned off; weight raised as #126 |
 | [57](#57) | Shotgun choke and spread (p.117) | self-contained rule and one dialog input |
 | [56.1](#56) | Smartguns waste no rounds (p.116) | easy once #18 gives a smartgun flag |
 | [56.2](#56) | Remember who you shot at this phase | per-phase state — the #48 ledger is its home; closes #56 |
@@ -38,7 +38,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 
 ## Contents
 
-**36 open.** 89 done — see [TODO-DONE.md](TODO-DONE.md).
+**36 open.** 90 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -47,7 +47,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | 🧙 Adept powers | [78](#78) Quick Strike acts first in a pass — *MITS p.151* |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [119](#119) Audit *The Matrix Defragged v2* against what we have<br>[120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork) |
-| 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[55](#55) Default `trackAmmo` ON — and the ammunition model it needs first<br>[79](#79) No ledger for karma or nuyen — *low priority*<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
+| 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[79](#79) No ledger for karma or nuyen — *low priority*<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear<br>[126](#126) Ammunition has no weight, and nothing adds up a carried load |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[56](#56) Full auto still asks the player for what the system could work out<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[122](#122) Ratings in the field, not the name, for weapons, cyberware and bioware |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -969,38 +969,6 @@ toggle can hide the GM's reference material — and remember a new pack in `syst
 Foundry restart, not an F5.
 
 ---
-
-## 55. Default `trackAmmo` ON — and the ammunition model it needs first
-
-Decided 2026-08-14. `trackAmmo` currently defaults **off**, so the whole magazine/reload
-layer is dormant for a new world, and rules that depend on it ([#51](TODO-DONE.md#51) short bursts) can
-never fire. It should be on by default.
-
-⚠ **Flipping the default is one line; the reason it is not done yet is what it exposes.**
-With tracking off, nobody notices that ammunition is modelled thinly.
-
-### What needs deciding before the flip
-
-- **Ammo types.** `SR3E.ammoTypes` holds the rules (APDS, explosive, EX, gel, flechette,
-  tracer, anti-vehicle), and firearms carry `loadedAmmoType`, but the **stockpile is one
-  undifferentiated `rounds` count per ammo item**. A runner carrying regular, APDS and
-  explosive for the same gun has three items and no notion of which is in the clip beyond a
-  single string. Reloading picks a stockpile by loading mechanism, not by what the player
-  wants loaded.
-- **Weight / encumbrance.** Ammunition has none. There is no weight field on the ammo item
-  and no carried-load calculation anywhere in the system, so "how much can this character
-  actually carry" cannot be answered — which is half the point of tracking ammo at all.
-- **Bows and crossbows** already nock a single arrow/bolt with no types at all (always
-  `regular`), so arrowheads would need the same treatment.
-
-### Sequencing
-
-Turning tracking on before the model is right would make every table meet the thin parts at
-once — empty-clip bails, reload prompts that cannot express "load the APDS" — and the likely
-outcome is that people turn it straight back off.
-
-So: **model first, default second.** [#23](TODO-DONE.md#23) (ship an ammunition compendium) is the other
-half of this — the code is complete and the content is missing.
 
 ## 79. No ledger for karma or nuyen — *low priority*
 
@@ -2023,6 +1991,19 @@ something from 2nd edition"*
 4. **The outcome:** a list of candidate additions per book, each with its page, for the maintainer to
    approve. Nothing is added to the packs without that approval.
 
+## 126. Ammunition has no weight, and nothing adds up a carried load
+
+Raised 2026-09-15 as the remainder of [#55](TODO-DONE.md#55).
+
+- `AmmunitionData` has no weight, and nothing in the system totals what a character carries.
+- SR3 gives weights on the gear tables. Encumbrance itself needs checking in the book; don't assume it.
+- So the question "how much can this character carry" has no answer. #55 named this as half the point
+  of tracking ammunition.
+- **Shape:**
+  - A weight on ammunition, per box or reload.
+  - A carried total on the Gear tab, excluding storage (TODO 113).
+  - Whatever the book's encumbrance rule is, shown and never enforced.
+
 ### 🔧 Tooling & infrastructure
 
 ## 7. Expand test coverage for combat, initiative and pools
@@ -2080,9 +2061,11 @@ is the most-played path in the system and the one with the most moving parts.
 >   comes off recoil first in the fire flow (`SR3EActor.gyroOnRecoil`). What is left offsets the Attacker
 >   movement rows the GM ticks (`gyroOffset`). It also gives +1 impact and ballistic armour and +4 to the
 >   wearer's melee TNs, and halves the Combat Pool (rounded down).
-> - **The p.113 reading:** *"The **total** recoil and movement modifiers are reduced by -1 for every point"*
->   means ONE allowance against the sum. The rating is not taken off each modifier separately. Flagged for
->   the maintainer.
+> - **The reading is a GM control, as this item asked.** p.113 says *"The **total** recoil and movement
+>   modifiers are reduced by -1 for every point"*: one allowance against the sum. That is the default. The
+>   GM window shows *Gyro N — left for movement*, pre-filled with what recoil did not use. Setting it to the
+>   full rating applies p.112's *"recoil **or** movement"* reading instead. **For the maintainer:** which
+>   reading is right, p.112/p.113 or p.280?
 > - TESTING.md §40.
 > - **Not modelled:**
 >   - The actor side still reads item names (smartlink cyberware, smart goggles). That is the pair
