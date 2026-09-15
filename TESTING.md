@@ -1064,6 +1064,17 @@ Set on the Magic tab. Only one active at a time; clicking active button deactiva
 
 ## 18. Matrix
 
+### Orthodox packs, shown by ruleset — `feature/orthodox-packs` · 2026-09-14
+`sr3e-sr3-odm-cyberdecks` (8 decks, SR3 p.207/304) and `sr3e-sr3-odm-programs` (22 utilities,
+pp.220-222), built by `tools/build-odm-packs.mjs` and shown only under the Orthodox Matrix ruleset;
+the Defragged decks and programs only under Defragged. `tests/odm-packs.test.mjs`,
+`tests/source-books.test.mjs`. Written to the install and the manifest synced on 2026-09-14 —
+**restart Foundry fully** before walking these.
+- [ ] Matrix Ruleset = Defragged → the Compendium sidebar's Matrix → Cyberdecks folder shows only the Defragged pack; Orthodox packs absent.
+- [ ] Switch to Orthodox (reload) → the folder shows *Cyberdecks (Orthodox)* and *Programs (Orthodox)*, not the Defragged ones.
+- [ ] Orthodox, a decker's Matrix tab → pick a cyberdeck → the 8 stock decks; pick Fairlight Excalibur → MPCP 12, Hardening 6, 3000/5000 Mp, I/O 600, Response 3 fill in.
+- [ ] Orthodox → add a program → the 22 utilities, Attack at four levels; Track shows multiplier 8.
+
 ### User modes (Matrix tab)
 
 | Mode | Initiative formula | Notes |
