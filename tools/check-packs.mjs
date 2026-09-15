@@ -39,6 +39,7 @@
  */
 import { readdirSync, existsSync, readFileSync } from 'node:fs';
 import { copyPacks } from './lib/pack-copy.mjs';
+import { BookPage } from '../scripts/data/book-page.mjs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { ClassicLevel } from 'classic-level';
@@ -101,11 +102,13 @@ console.log(`\nChecking ${target}`);
 
 /* ── The manifest, if there is one, so declared-vs-on-disk can be reported ──────── */
 let declared = null;
+const packBook = new Map();   // pack → its book code (TODO 117); system packs have none
 const manifestPath = join(target, 'system.json');
 if (existsSync(manifestPath)) {
   try {
     const m = JSON.parse(readFileSync(manifestPath, 'utf8'));
     declared = new Set((m.packs ?? []).map(p => p.name));
+    for (const p of m.packs ?? []) packBook.set(p.name, p.flags?.The2ndChumming3e?.book ?? null);
     console.log(`Manifest: version ${m.version}, ${declared.size} packs declared`);
   } catch { console.log('Manifest: unreadable — skipping the declared-vs-on-disk check'); }
 }
@@ -114,6 +117,9 @@ const onDisk = readdirSync(PACKS, { withFileTypes: true })
   .filter(e => e.isDirectory()).map(e => e.name).sort();
 
 const problems = { malformed: [], keyMismatch: [], duplicateId: [], undeclared: [], missing: [] };
+// Book and page — TODO 117. INFORMATION for now, not a fault: a backlog remains (content with no
+// source this project can reach). Make these faults once it is cleared.
+const pages = { missing: new Map(), otherBook: [] };
 let removed = 0, unsafe = 0, totalDocs = 0, openedPacks = 0;
 
 for (const packName of onDisk) {
@@ -159,6 +165,11 @@ for (const packName of onDisk) {
     if (doc._id !== keyId) {
       problems.keyMismatch.push({ pack: packName, key, id: doc._id, name: doc?.name });
     }
+    if (/^!(items|actors)!/.test(key) && (!declared || declared.has(packName))) {
+      if (BookPage.missing(doc?.system?.bookPage)) pages.missing.set(packName, (pages.missing.get(packName) ?? 0) + 1);
+      else if (BookPage.namesOtherBook(doc.system.bookPage, packBook.get(packName)))
+        pages.otherBook.push({ pack: packName, name: doc?.name, bookPage: doc.system.bookPage });
+    }
     if (seenIds.has(doc._id)) {
       problems.duplicateId.push({ pack: packName, id: doc._id, name: doc?.name });
     }
@@ -203,6 +214,21 @@ report(problems.missing, 'DECLARED IN THE MANIFEST BUT NOT ON DISK — Foundry w
 if (problems.undeclared.length) {
   console.log(`Undeclared packs on disk (ignored by Foundry, not a fault) (${problems.undeclared.length}):`);
   console.log('  ' + problems.undeclared.join(', ') + '\n');
+}
+
+// Book and page — information, never a failure (yet). See `pages` above.
+if (pages.missing.size) {
+  const n = [...pages.missing.values()].reduce((a, b) => a + b, 0);
+  console.log(`No book / page (information — TODO 117) (${n}):`);
+  for (const [p, c] of [...pages.missing].sort((a, b) => b[1] - a[1])) console.log(`  ${p.padEnd(30)} ${c}`);
+  console.log('');
+}
+if (pages.otherBook.length) {
+  const by = {};
+  for (const x of pages.otherBook) { const k = `${x.pack} ← ${BookPage.codes(x.bookPage).join('+')}`; by[k] = (by[k] ?? 0) + 1; }
+  console.log(`Page names a different book from its pack (information) (${pages.otherBook.length}):`);
+  for (const [k, c] of Object.entries(by).sort((a, b) => b[1] - a[1])) console.log(`  ${k.padEnd(40)} ${c}`);
+  console.log('');
 }
 
 const faults = problems.malformed.length + problems.keyMismatch.length
