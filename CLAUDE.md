@@ -1447,6 +1447,9 @@ indicates the number of Combat Turns"*. A boolean flag would let a GM forget to 
 leave a character permanently boosted. It counts down on the `updateCombat` round hook beside
 `tickAttributeBoosts`, and on expiry bills a **Body Test vs (turns it ran)D Stun** — Power is the
 duration, read from `rolledTurns` recorded at activation, because by expiry the counter is zero.
+⚠ The crash goes through the ordinary soak card with **`noArmor`** — shock is not an attack. Until
+0.5.2 it passed `power`/`level` where the card reads `stagedPower`/`stagedLevel`, so the card had
+no Power and a NaN TN (`tests/soak-payload.test.mjs`).
 
 ⚠ **WHERE the bonuses are applied is the rule, not a detail.** p.63: *"The Quickness bonus does
 not affect Reaction, nor does the Reaction bonus affect the Control Pool. However, the Quickness

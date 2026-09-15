@@ -7497,10 +7497,12 @@ _prepareCharacter(sys, attr) {
       </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
+    // ⚠ The soak card reads `stagedPower` / `stagedLevel`. This passed `power` / `level`, so the
+    // crash card came up with no Power and a NaN target number (0.5.2 fix).
     await actor._postSoakCard({
-      power, level: 'D', isStun: true,
-      label: `${name} — system shock`,
-      attackerName: name,
+      stagedPower: power, stagedLevel: 'D', isStun: true,
+      rawDamage: `${power}D`, targetActorId: actor.id,
+      noArmor: true, noArmorNote: 'System shock — armour does not apply (M&M p.63)',
     });
   }
 
@@ -8112,6 +8114,13 @@ _prepareCharacter(sys, attr) {
         ballistic = eff;
         impact    = eff;
       }
+    }
+    // Damage from inside the body — a crash, a drug — is not an attack, and no armour resists it.
+    if (payload.noArmor) {
+      ballistic = 0;
+      impact    = 0;
+      adeptArmorNotes.length = 0;
+      ammoNote  = payload.noArmorNote ?? 'No armour applies — this is not an attack';
     }
 
     // Which armour rating resists this attack. Melee uses Impact, ranged uses Ballistic —
