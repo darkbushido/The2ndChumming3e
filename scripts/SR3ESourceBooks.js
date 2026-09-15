@@ -56,9 +56,26 @@ export class SR3ESourceBooks {
     return pack?.metadata?.flags?.[SYS]?.book ?? null;
   }
 
-  /** Should this pack's contents be offered anywhere? */
+  /** Should this pack's contents be offered anywhere? The book toggles AND the Matrix ruleset. */
   static packAllowed(pack) {
-    return this.isAllowed(this.bookOf(pack));
+    return this.isAllowed(this.bookOf(pack)) && this.rulesetAllows(pack);
+  }
+
+  /**
+   * A pack flagged `matrixRuleset` shows only while that ruleset is in play (the maintainer,
+   * 2026-09-14: the Orthodox decks and programs should not be in the compendium "if we aren't using
+   * the orthodox decking method"). `'orthodox'` → the core Matrix packs; `'defragged'` → the Matrix
+   * Defragged decks and programs, whose item types the Orthodox pickers would otherwise also list.
+   *
+   * ⚠ Presentation only, like the book filter — nothing is unloaded, and a character keeps what they
+   * already own. Fails VISIBLE: no flag, or a setting that cannot be read, shows the pack.
+   */
+  static rulesetAllows(pack) {
+    const wants = pack?.metadata?.flags?.[SYS]?.matrixRuleset;
+    if (!wants) return true;
+    let current;
+    try { current = game.settings.get(SYS, 'matrixRuleset'); } catch { return true; }
+    return !current || current === wants;
   }
 
   /**

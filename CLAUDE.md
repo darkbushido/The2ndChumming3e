@@ -2349,13 +2349,23 @@ The character sheet (`SR3EActorSheet`) renders its Matrix tab differently depend
 - `system.orthodoxRunState.{ hostId, hostName, securityCode, securityValue, securityTally, personaBod, personaEvasion, personaMasking, personaSensor }` — current run state
 - `system.orthodoxMatrixCM.value` — Matrix Condition Monitor boxes (0–10); crash at 10 → dumpshock
 
-**Compendiums (Orthodox only) — ⚠ currently missing.** `sr3e-odm-cyberdecks` and
-`sr3e-odm-programs` are **no longer declared in `system.json` and their pack directories are gone**,
-removed during the per-book pack restructure. Everything else on the Orthodox path survives — both
-sheet classes, the `matrixRuleset` setting, and `scripts/macros/populate-odm-cyberdecks.js` /
-`populate-odm-programs.js` — so the pickers described above have nothing to read from until the
-packs are re-declared and re-populated from the ODM-\* rawdata. Fix this before doing any Orthodox
-Matrix work.
+**Compendiums (Orthodox only) — `sr3e-sr3-odm-cyberdecks` · `sr3e-sr3-odm-programs`** (restored
+2026-09-14; the old `sr3e-odm-*` packs shipped EMPTY and were dropped in `f457d3c`). Built by
+**`node tools/build-odm-packs.mjs`** (`--install` for the install, Foundry closed; then
+`npm run sync:install -- --force` for the manifest) from the ODM-\* rawdata, **core book only**: the 8
+stock decks (stats p.207, cost/availability p.304 — `bookPage: sr3.207,sr3.304`) and the 22 core
+utilities (pp.220-222, Attack at each damage level, each with its own `bookPage`). The rawdata's other rows — Cyberpunk 2020 (`cp`), `cd.130`, the Matrix sourcebook
+(`mat`, 23 programs + 5 decks), 4 Erosion variants in neither PDF — are left in rawdata. The tool
+**refuses to write** if a row disagrees with the book; `tests/odm-packs.test.mjs` diffs the committed
+packs against it.
+
+⚠ **Shown only under the Orthodox ruleset** — `flags.The2ndChumming3e.matrixRuleset: 'orthodox'`, read
+by `SR3ESourceBooks.rulesetAllows` inside `packAllowed`, so the sidebar and the pickers both follow it.
+The two **Matrix Defragged** item packs of the same types (`sr3e-mdf-cyberdecks`, `sr3e-mdf-programs`)
+are tagged `'defragged'` so the Orthodox pickers do not list them; IC, agents and hosts are untagged.
+Presentation only, fails visible; the setting already requires a reload.
+- ⚠ The old `populate-odm-*.js` macros are superseded — several of their program descriptions were
+  wrong (Lock-On, Relocate); the packs describe each utility by category, multiplier and page instead.
 - Program items store extra fields in `modules[0]` with `_odmType: 'orthodox'` (hardening, storageMemory, responseIncrease) since these don't map to the Defragged `CyberdeckData` schema.
 
 ---

@@ -25,8 +25,11 @@ const { SOURCE_BOOKS, defaultAllowedBooks } = await import('../scripts/config.js
 // returning one blob for every key made the edition gate read the allowed-books map.
 let stored = {};
 let edition = 'SR3';
+// The Matrix ruleset. '' = unset, which fails VISIBLE, so the book scenarios below count every pack.
+let ruleset = '';
 installGame({ packs: manifest.packs });
-globalThis.game.settings.get = (_ns, key) => (key === 'edition' ? edition : stored);
+globalThis.game.settings.get = (_ns, key) =>
+  (key === 'edition' ? edition : key === 'matrixRuleset' ? ruleset : stored);
 
 const { SR3ESourceBooks } = await import('../scripts/SR3ESourceBooks.js');
 globalThis.game.sr3e = { SR3ESourceBooks };
@@ -142,4 +145,38 @@ export async function run(t) {
 
   edition = 'SR3';
   stored = allOn();
+
+  /* ---- the Matrix ruleset gate (2026-09-14) ----
+   * "not have them in the compendium if we aren't using the orthodox decking method" — the maintainer.
+   * The Orthodox decks/programs show only under Orthodox; the Defragged decks/programs, whose item
+   * types the Orthodox pickers also read, only under Defragged. Everything else ignores the setting. */
+  const nameOf    = p => p.collection.split('.').pop();
+  const byRuleset = r => packs.filter(p => p.metadata?.flags?.[SYS]?.matrixRuleset === r).map(nameOf);
+  const shown     = name => SR3ESourceBooks.packAllowed(packs.find(p => nameOf(p) === name));
+  t.eq('the manifest tags the two Orthodox packs', byRuleset('orthodox').sort(), ['sr3e-sr3-odm-cyberdecks', 'sr3e-sr3-odm-programs']);
+  t.eq('…and the two Defragged packs that share their item types', byRuleset('defragged').sort(), ['sr3e-mdf-cyberdecks', 'sr3e-mdf-programs']);
+  t.ok('the Orthodox packs belong to the core book (so the book toggles still apply too)',
+    packs.filter(p => p.metadata?.flags?.[SYS]?.matrixRuleset === 'orthodox').every(p => p.metadata.flags[SYS].book === 'sr3'));
+
+  ruleset = 'defragged';
+  t.is('Defragged: the Orthodox decks are hidden', shown('sr3e-sr3-odm-cyberdecks'), false);
+  t.is('Defragged: the Defragged decks show', shown('sr3e-mdf-cyberdecks'), true);
+  t.is('Defragged: a deck picker offers only the Defragged pack', forType('cyberdeck'), 1);
+  ruleset = 'orthodox';
+  t.is('Orthodox: the Orthodox programs show', shown('sr3e-sr3-odm-programs'), true);
+  t.is('Orthodox: the Defragged programs are hidden', shown('sr3e-mdf-programs'), false);
+  t.is('Orthodox: a program picker offers only the Orthodox pack', forType('program'), 1);
+  t.is('Orthodox: untagged Matrix packs (IC, hosts, agents) are untouched', shown('sr3e-mdf-ic'), true);
+  ruleset = '';
+  t.is('an unreadable/unset ruleset fails VISIBLE', shown('sr3e-sr3-odm-cyberdecks') && shown('sr3e-mdf-cyberdecks'), true);
+  globalThis.game.settings.get = () => { throw new Error('pre-init'); };
+  t.is('…as does a setting that throws (pre-init)', SR3ESourceBooks.rulesetAllows({ metadata: { flags: { [SYS]: { matrixRuleset: 'orthodox' } } } }), true);
+  globalThis.game.settings.get = (_ns, key) =>
+    (key === 'edition' ? edition : key === 'matrixRuleset' ? ruleset : stored);
+  // The book gate is AND'ed, not replaced: a ruleset-tagged pack from a switched-off book stays hidden.
+  ruleset = 'orthodox';
+  t.is('the book gate still applies to a ruleset-tagged pack', SR3ESourceBooks.packAllowed({ metadata: { flags: { [SYS]: { book: 'mm', matrixRuleset: 'orthodox' } } } }), SR3ESourceBooks.isAllowed('mm'));
+  stored = { ...allOn(), mm: false };
+  t.is('…so switching its book off hides it even under Orthodox', SR3ESourceBooks.packAllowed({ metadata: { flags: { [SYS]: { book: 'mm', matrixRuleset: 'orthodox' } } } }), false);
+  ruleset = ''; stored = allOn();
 }

@@ -1304,7 +1304,8 @@
           "itemTypes": [
             "cyberdeck"
           ],
-          "book": "matrix-defragged"
+          "book": "matrix-defragged",
+          "matrixRuleset": "defragged"
         }
       }
     },
@@ -1323,7 +1324,48 @@
           "itemTypes": [
             "program"
           ],
-          "book": "matrix-defragged"
+          "book": "matrix-defragged",
+          "matrixRuleset": "defragged"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr3-odm-cyberdecks",
+      "label": "Cyberdecks (Orthodox)",
+      "path": "packs/sr3e-sr3-odm-cyberdecks",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "cyberdeck"
+          ],
+          "book": "sr3",
+          "matrixRuleset": "orthodox"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr3-odm-programs",
+      "label": "Programs (Orthodox)",
+      "path": "packs/sr3e-sr3-odm-programs",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "program"
+          ],
+          "book": "sr3",
+          "matrixRuleset": "orthodox"
         }
       }
     },
@@ -2291,14 +2333,16 @@
           "name": "Cyberdecks",
           "sorting": "a",
           "packs": [
-            "sr3e-mdf-cyberdecks"
+            "sr3e-mdf-cyberdecks",
+            "sr3e-sr3-odm-cyberdecks"
           ]
         },
         {
           "name": "Matrix Programs",
           "sorting": "a",
           "packs": [
-            "sr3e-mdf-programs"
+            "sr3e-mdf-programs",
+            "sr3e-sr3-odm-programs"
           ]
         },
         {
