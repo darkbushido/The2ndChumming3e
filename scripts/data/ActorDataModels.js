@@ -25,6 +25,28 @@ function attributeBoostField() {
   return new SchemaField({ body: one(), quickness: one(), strength: one() });
 }
 
+/**
+ * Spells the character is sustaining · *SR3 p.178*
+ *
+ * > "Characters sustaining spells have a +2 target modifier per sustained spell applied to all
+ * > tests, including Drain Resistance Tests (but not normal Damage Resistance Tests). You can
+ * > simultaneously sustain a number of spells equal to your Sorcery rating."
+ *
+ * One entry per spell held. `focus` marks one held by a sustaining focus (or a spirit), which the
+ * character is NOT concentrating on, so it costs no TN — the GM's call, a tick on the Magic tab.
+ * `id` is the entry's own key (a spell can be sustained twice, on two targets).
+ */
+function sustainedSpellsField() {
+  return new ArrayField(new SchemaField({
+    id:          new StringField({ required: true, initial: '' }),
+    name:        new StringField({ initial: '' }),
+    force:       new NumberField({ integer: true, initial: 1, min: 0 }),
+    spellItemId: new StringField({ initial: '' }),
+    target:      new StringField({ initial: '' }),
+    focus:       new BooleanField({ initial: false }),
+  }), { initial: [] });
+}
+
 /** Basic persisted attribute: base, value, mod, force */
 function _attr(base = 3) {
   return new SchemaField({
@@ -107,7 +129,8 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       // Triggered cyber/bioware, keyed by ITEM ID — see SR3E.triggeredAugmentations.
       // ⚠ An ObjectField because the keys are item ids, which a SchemaField cannot declare.
       augmentations:           new ObjectField(),
-      gender:                  new StringField({ initial: '' }),
+      sustainedSpells:         sustainedSpellsField(),
+      gender:                 new StringField({ initial: '' }),
       age:                     new StringField({ initial: '' }),
       height:                  new StringField({ initial: '' }),
       weight:                  new StringField({ initial: '' }),
@@ -221,7 +244,8 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       metatype:         new StringField({ initial: 'human' }),
       attributeBoost:   attributeBoostField(),
       augmentations:    new ObjectField(),
-      nuyen:            new NumberField({ integer: true, initial: 0, min: 0 }),
+      sustainedSpells:  sustainedSpellsField(),
+      nuyen:           new NumberField({ integer: true, initial: 0, min: 0 }),
       // ⚠ NpcData has no karma/totalKarma/karmaPool at all — see TODO 83. An NPC that needs
       // a Karma Pool has to be built as a `character`, which is exactly what the 62 shipped
       // Little Black Book contacts are.

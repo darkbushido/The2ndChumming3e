@@ -995,6 +995,26 @@ Every 2 hits = 1 stage down (S→M→M→L→fully resisted).
 ### Assign Drain button
 **⚡ Assign \<Level\> \<Stun/Physical\> Wound to [Caster]** → applies boxes to correct track, disables.
 
+### Sustained spells — `feature/sustained-spells` (0.6.0) · SR3 p.178
+
+*"+2 target modifier per sustained spell applied to all tests, including Drain Resistance Tests (but
+not normal Damage Resistance Tests)"*, up to the Sorcery rating. `tests/sustained-spells.test.mjs` (53
+assertions) + two mutants. ⚠ **Data-model change** — `system.sustainedSpells` on characters and NPCs;
+the live world picked it up on reload, but restart Foundry fully if an actor shows no field.
+
+**Walked by the agent 2026-09-14** (mcp-api, a disposable `__TEST Sustainer`, Sorcery 4, deleted
+after): two spells held, one ticked *focus* → **+2** (the focus costs nothing), the token shows
+*Sustaining*; the Magic tab lists both with *1 / 4 (Sorcery) · +2 TN*; a 4-die roll at TN 4 went at
+**6**, labelled *(sustaining +2)*; adding 2 Stun posted *took damage while sustaining* with **one** 🎲
+Keep (the focus-held spell is not tested); 🔒 on a cast card added a third (+4); a Force 6 `(F/2)` Drain
+card pre-filled **TN 7** (3 + 4, said on the card); dropping all cleared the status.
+- [ ] Cast a Sustained spell (Armor) for real → the result card offers **🔒 Sustain**; an Instant one (Manabolt) does not; the Resist Drain that follows is NOT raised by the spell just sustained.
+- [ ] Player-seat: a player sees 🔒 and 🎲 Keep enabled for their own caster, disabled on someone else's.
+- [ ] Sustaining one spell: the melee GM window shows *"… sustaining +2"*, a dodge prompt's TN includes it, and a **soak card's TN does not** change.
+- [ ] A target sustaining one spell resists a combat spell → the resist card's TN is Force **+2** (the maintainer's ruling, 2026-09-14).
+- [ ] A decker sustaining one spell: cybercombat corner +2 whether attacking or defending; a rigger's MIJI corner and EW tests +2.
+- [ ] Sustain more than the Sorcery rating → an amber warning on the Magic tab and a notification; nothing is refused.
+
 ---
 
 ## 13. Dispelling

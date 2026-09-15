@@ -1320,6 +1320,25 @@ export const MUTANTS = [
     impl:   (attr, key = 'willpower') => attr?.[key]?.base ?? attr?.[key]?.value ?? 1,
   },
   {
+    id:     'sustaining-charges-focus-held-spells',
+    suite:  'sustained-spells',
+    ...ACTOR, method: 'sustainingTN',
+    was:    'SR3 p.178 — the +2 is for spells the character concentrates on; one held by a sustaining '
+          + 'focus costs nothing. Counting every entry charges a mage for their focus',
+    impl:   actor => 2 * (actor?.system?.sustainedSpells ?? []).length,
+  },
+  {
+    id:     'dodge-ignores-sustained-spells',
+    suite:  'sustained-spells',
+    ...ACTOR, method: 'dodgeTN',
+    was:    'SR3 p.178 — "+2 target modifier per sustained spell applied to all tests"; the Dodge Test '
+          + 'rolls through _rollWave, which never adds it, so the dodge prompt must',
+    impl:   ({ burstRounds = 0, shotgunSpread = 0, woundMod = 0 } = {}) => {
+      const n = v => Math.max(0, Math.trunc(Number(v) || 0));
+      return 4 + Math.floor(n(burstRounds) / 3) + n(shotgunSpread) - Math.min(0, Math.trunc(Number(woundMod) || 0));
+    },
+  },
+  {
     id:     'cybercombat-attack-ignores-wounds',
     suite:  'wound-modifiers',
     ...ACTOR, method: '_buildCCParticipant', needsOriginal: '_buildCCParticipantReal',

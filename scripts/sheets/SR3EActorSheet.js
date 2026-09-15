@@ -49,6 +49,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         healDamage:     SR3EActorSheet._onHealDamage,
         rollSpell:      SR3EActorSheet._onRollSpell,
         dispelSpell:    SR3EActorSheet._onDispelSpell,
+        sustainAdd:     SR3EActorSheet._onSustainAdd,
+        sustainDrop:    SR3EActorSheet._onSustainDrop,
+        sustainFocus:   SR3EActorSheet._onSustainFocus,
+        sustainCheck:   SR3EActorSheet._onSustainCheck,
         banishSpirit:   SR3EActorSheet._onBanishSpirit,
         summonSpirit:   SR3EActorSheet._onSummonSpirit,
         resetAllPools:     SR3EActorSheet._onResetAllPools,
@@ -2691,6 +2695,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <button type="button" class="btn-add" data-action="itemCreate" data-type="spell">+ Add Spell</button>
         <button type="button" class="btn-add" data-action="dispelSpell">✦ Dispel Spell</button>
       </div>
+      ${this._sustainedBlock(actor)}
       ` : ''}
       ${!isSorcerer ? `
       <h3 class="section-hdr" style="margin-top:1.2rem">Conjuring</h3>
@@ -2990,6 +2995,42 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <textarea name="${name}" class="bio-text" style="display:none">${value ?? ''}</textarea>
         <button type="button" class="btn-sm bio-edit-toggle" style="margin-top:4px">✎ Edit</button>
       </div>`;
+  }
+
+  /**
+   * Sustained spells, on the Magic tab · SR3 p.178. What is held, what it costs (+2 on every test
+   * per spell held by concentration), and the Sorcery limit — shown, never enforced.
+   */
+  _sustainedBlock(actor) {
+    const A       = game.sr3e.SR3EActor;
+    const list    = actor.system.sustainedSpells ?? [];
+    const tn      = A.sustainingTN(actor);
+    const held    = list.filter(e => !e.focus).length;
+    const limit   = A.sorceryRating(actor);
+    const over    = held > limit;
+    const rows = list.length ? list.map(e => `
+      <div class="item-row sr-sustain-row" data-sustain-id="${e.id}">
+        <span class="item-name">🔒 ${e.name} <span class="sr-bd-note">F${e.force}${e.target ? ` → ${e.target}` : ''}</span></span>
+        <label class="item-cell" title="Held by a sustaining focus — no TN cost">
+          <input type="checkbox" data-action="sustainFocus" data-sustain-id="${e.id}" ${e.focus ? 'checked' : ''}/> focus
+        </label>
+        <span class="item-cell">
+          <button type="button" class="btn-xs" data-action="sustainCheck" data-sustain-id="${e.id}"
+                  title="Took damage: Sorcery vs Force ${e.force} to keep it (p.178)">🎲 Keep</button>
+          <button type="button" class="btn-xs" data-action="sustainDrop" data-sustain-id="${e.id}"
+                  title="Stop sustaining — a Free Action">✕</button>
+        </span>
+      </div>`).join('') : '<p class="empty-list">Not sustaining any spells.</p>';
+    return `
+      <div style="display:flex;align-items:center;gap:16px;margin:1rem 0 6px">
+        <h3 class="section-hdr" style="margin:0">Sustained Spells</h3>
+        <span style="font-size:12px;color:${over ? 'var(--sr-amber)' : 'var(--sr-muted)'}">
+          ${held} / ${limit} (Sorcery)${tn ? ` · <strong>+${tn} TN</strong> on every test, Drain included — not Damage Resistance` : ''}
+        </span>
+      </div>
+      ${over ? `<div class="sr-alert sr-alert--danger" style="margin-bottom:6px">⚠ Sustaining more spells than the Sorcery rating allows (SR3 p.178) — the GM's call.</div>` : ''}
+      ${rows}
+      <button type="button" class="btn-add" data-action="sustainAdd">+ Sustain a spell</button>`;
   }
 
   _itemControls(itemId, hasRoll, rollAction = 'rollWeapon', stored = null, rollDisabled = false, reloadId = null) {
@@ -3422,6 +3463,60 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   static async _onDispelSpell(_ev, _target) {
     await this.actor.rollDispel();
+  }
+
+  /* ── Sustained spells · SR3 p.178 ─────────────────────────────────────────── */
+
+  /** Hold a spell by hand — for one cast before this existed, or a GM's edge case. */
+  static async _onSustainAdd(_ev, _target) {
+    // Sustained and Permanent spells, plus any with no duration set — never an Instant one.
+    const spells = this.actor.items.filter(i => i.type === 'spell'
+        && (!String(i.system.duration ?? '').trim() || game.sr3e.SR3EActor.isSustainable(i.system.duration)))
+      .sort((a, b) => a.name.localeCompare(b.name));
+    const opts = spells.map(s => `<option value="${s.id}">${s.name} (${s.system.duration || '—'})</option>`).join('');
+    let entry = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `Sustain a spell — ${this.actor.name}` },
+      content: `<div style="display:flex;flex-direction:column;gap:6px;padding:4px 0;font-size:12px">
+        <label>Spell <select id="sus-spell" style="width:100%"><option value="">— other (type a name) —</option>${opts}</select></label>
+        <label>Name <input type="text" id="sus-name" placeholder="for a spell not on the sheet"/></label>
+        <label>Force <input type="number" id="sus-force" value="1" min="1" max="30" style="width:60px"/></label>
+        <label>Target <input type="text" id="sus-target" placeholder="optional"/></label>
+        <label><input type="checkbox" id="sus-focus"/> Held by a sustaining focus (no TN cost)</label>
+      </div>`,
+      buttons: [
+        { label: 'Sustain', action: 'go', default: true, callback: (_e, _b, d) => {
+            const el = d.element;
+            const item = this.actor.items.get(el.querySelector('#sus-spell')?.value);
+            const name = item?.name ?? el.querySelector('#sus-name')?.value?.trim();
+            if (!name) return;
+            entry = {
+              name, spellItemId: item?.id ?? '',
+              force:  Math.max(1, parseInt(el.querySelector('#sus-force')?.value) || 1),
+              target: el.querySelector('#sus-target')?.value?.trim() ?? '',
+              focus:  !!el.querySelector('#sus-focus')?.checked,
+            };
+          } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (entry) await this.actor.sustainSpell(entry);
+  }
+
+  /** ✕ — stop sustaining (a Free Action, p.178). */
+  static async _onSustainDrop(_ev, target) {
+    await this.actor.dropSustained(target.dataset.sustainId);
+  }
+
+  /** Focus tick — a focus-held spell costs no TN. */
+  static async _onSustainFocus(_ev, target) {
+    await this.actor.setSustainedFocus(target.dataset.sustainId, !!target.checked);
+  }
+
+  /** 🎲 — the Sorcery Test to keep a spell after taking damage (p.178). */
+  static async _onSustainCheck(_ev, target) {
+    const e = (this.actor.system.sustainedSpells ?? []).find(x => x.id === target.dataset.sustainId);
+    if (e) await game.sr3e.SR3EActor.rollSustainCheck({ actorId: this.actor.id, name: e.name, force: e.force });
   }
 
   static async _onBanishSpirit(_ev, _target) {
@@ -4537,9 +4632,13 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   static async _promptRollOptions(actor, { defaultPool = null, poolNote = '', physicalDice = false, rollAttr = null, custom = false } = {}) {
     const karmaPool    = actor?.system.karmaPool ?? 0;
     const woundPenalty = -(actor?.system.woundMod ?? 0);
-    const woundNote    = woundPenalty > 0
+    // Sustained spells, +2 each on all tests (p.178) — pre-applied beside the wound, and `rollPool` skips both.
+    const sustainTN    = game.sr3e.SR3EActor.sustainingTN(actor);
+    const woundNote    = (woundPenalty > 0
       ? `<div class="roll-opts-wound-note">⚡ Wound TN +${woundPenalty} (pre-applied)</div>`
-      : '';
+      : '') + (sustainTN > 0
+      ? `<div class="roll-opts-wound-note">🔒 ${game.sr3e.SR3EActor.sustainingNote(actor)} (pre-applied)</div>`
+      : '');
     const attrs = actor?.system.attributes ?? {};
 
     const attrList = [
@@ -4602,7 +4701,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             ${poolNote ? `<p class="roll-opts-note">${poolNote}</p>` : ''}
             <label class="roll-opts-label" for="sr-tn">Target Number</label>
             <span></span>
-            <input type="number" id="sr-tn" class="roll-opts-tn" value="${4 + woundPenalty + qtnFor(selectedKey)}" min="2" max="30" data-qtn="${qtnFor(selectedKey)}"/>
+            <input type="number" id="sr-tn" class="roll-opts-tn" value="${4 + woundPenalty + sustainTN + qtnFor(selectedKey)}" min="2" max="30" data-qtn="${qtnFor(selectedKey)}"/>
             ${woundNote}
             ${armorNote}
             <span></span>
@@ -4636,6 +4735,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                 toxinDice:    toxinOn ? toxin.dice : 0,
                 physicalDice,
                 skipWoundMod: true,
+                skipSustainMod: true,
               });
             }
           },
@@ -4691,6 +4791,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   static async _promptSkillRollOptions(actor, defaultItem, { physicalDice = false } = {}) {
     const karmaPool    = actor?.system.karmaPool ?? 0;
     const woundPenalty = -(actor?.system.woundMod ?? 0);
+    const sustainTN    = game.sr3e.SR3EActor.sustainingTN(actor);   // p.178, pre-applied like the wound
     // No isAdept check: skillBonusDice is only populated for actors who earned the dice,
     // so re-gating here could only drop a bonus derivation already granted. It also now
     // carries cyberware/bioware skill bonuses, which have nothing to do with being an adept.
@@ -4823,9 +4924,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             </div>
             <div class="skill-opts-tn-row">
               <label class="skill-opts-tn-label" for="sr-tn">Target Number</label>
-              <input type="number" id="sr-tn" class="skill-opts-tn" value="${4 + woundPenalty + qtnFor(defSkill)}" min="2" max="30" data-qtn="${qtnFor(defSkill)}"/>
+              <input type="number" id="sr-tn" class="skill-opts-tn" value="${4 + woundPenalty + sustainTN + qtnFor(defSkill)}" min="2" max="30" data-qtn="${qtnFor(defSkill)}"/>
             </div>
             ${woundPenalty > 0 ? `<div style="font-size:11px;color:var(--sr-amber);margin:4px 0 8px">⚡ Wound TN +${woundPenalty} (pre-applied)</div>` : ''}
+            ${sustainTN > 0 ? `<div style="font-size:11px;color:var(--sr-amber);margin:4px 0 8px">🔒 ${game.sr3e.SR3EActor.sustainingNote(actor)} (pre-applied)</div>` : ''}
             ${armorQTN > 0 ? `<div id="sr-armor-note" style="font-size:11px;color:var(--sr-amber);margin:4px 0 8px;display:${qtnFor(defSkill) ? 'block' : 'none'}">🛡 Layered armour TN +${armorQTN} (Quickness-linked skill, SR3 p.285, pre-applied)</div>` : ''}
             <div id="sr-default-note" style="font-size:11px;color:var(--sr-amber);margin:4px 0 8px;display:${defS.rating ? 'none' : 'block'}">↩ No skill — you'll <strong>choose how to default</strong> (specialization / skill / attribute) when you roll.</div>
             ${karmaPool > 0 ? `
@@ -4855,6 +4957,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                 selectedSkillId,
                 physicalDice,
                 skipWoundMod:  true,
+                skipSustainMod: true,
               });
             }
           },

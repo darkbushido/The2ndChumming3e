@@ -29,9 +29,9 @@ export async function run(t) {
 
   const item = read('scripts/documents/SR3EItem.js');
   t.ok('melee: the attacker\'s wounds are in the attacker\'s TN',
-    /const atkWound\s*= game\.sr3e\.SR3EActor\.woundTN\(actor\)/.test(item) && /baseAtkTN = Math\.max\(2, 4 \+[^;]*\+ atkWound\)/.test(item));
+    /const atkWound\s*= (game\.sr3e\.SR3EActor|A)\.woundTN\(actor\)/.test(item) && /baseAtkTN = Math\.max\(2, 4 \+[^;]*\+ atkWound\b/.test(item));
   t.ok('…and the defender\'s in the defender\'s — each fighter\'s own, never the other\'s',
-    /const defWound\s*= game\.sr3e\.SR3EActor\.woundTN\(targetActor\)/.test(item) && /baseDefTN = Math\.max\(2, 4 \+[^;]*\+ defWound\)/.test(item));
+    /const defWound\s*= (game\.sr3e\.SR3EActor|A)\.woundTN\(targetActor\)/.test(item) && /baseDefTN = Math\.max\(2, 4 \+[^;]*\+ defWound\b/.test(item));
   t.ok('…and the GM window is told why the TNs moved', /woundNote/.test(item) && /baseNote:[^\n]*woundNote/.test(item));
 
   const actor = read('scripts/documents/SR3EActor.js');

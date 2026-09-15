@@ -2,6 +2,7 @@ import { SR3EItem } from './SR3EItem.js';
 import { parseMods } from '../SR3EMods.js';
 import { itemRating, vcrLevel as vcrLevelOf } from '../data/item-rating.mjs';
 import { AmmoStock } from '../data/ammo-stock.mjs';
+import * as Sustaining from '../data/sustaining.mjs';
 
 export class SR3EActor extends Actor {
 
@@ -377,7 +378,7 @@ export class SR3EActor extends Actor {
 
     return {
       label: 'Decker', skillName,
-      skillDice: ccRating, hackPoolAvail, tn: 4 + mcmPenalty + defTnMod + (attacking ? SR3EActor.woundTN(actor) : 0),
+      skillDice: ccRating, hackPoolAvail, tn: 4 + mcmPenalty + defTnMod + (attacking ? SR3EActor.woundTN(actor) : 0) + SR3EActor.sustainingTN(actor),
       damageCode: dmgCode, damageBase: SR3EItem.parseDamageCode(dmgCode),
       firewall: deckFirewall, soakPool: deckMpcp, userMode: sys.matrixUserMode ?? '',
       programId: attackProg?.id ?? null, operatorActorId: null,
@@ -2360,10 +2361,15 @@ _prepareCharacter(sys, attr) {
 
     // Simsense degradation on a VCR-jacked rigger applies to ALL their actions (wound-like).
     const signalMod    = options.skipSignalMod ? 0 : SR3EActor._jackedSignalMod(this);
+    // Sustained spells — +2 each, "applied to all tests" (SR3 p.178). ⚠ Its own opt-out, not
+    // `skipWoundMod`: the healing tables price the wound in but not the spells, while a dialog that
+    // pre-applies both passes both. Damage Resistance never comes through here.
+    const sustainMod   = options.skipSustainMod ? 0 : SR3EActor.sustainingTN(this);
+    if (sustainMod) label = `${label} (sustaining +${sustainMod})`;
     const effectiveTN  = options.skipWoundMod
-      ? Math.max(2, tn + signalMod)
-      : Math.max(2, tn - (this.system.woundMod ?? 0) + signalMod);
-    const woundDisplay = (options.skipWoundMod ? 0 : -(this.system.woundMod ?? 0)) + signalMod;
+      ? Math.max(2, tn + signalMod + sustainMod)
+      : Math.max(2, tn - (this.system.woundMod ?? 0) + signalMod + sustainMod);
+    const woundDisplay = (options.skipWoundMod ? 0 : -(this.system.woundMod ?? 0)) + signalMod + sustainMod;
 
     if (options.physicalDice) {
       const successes = await SR3EActor._promptPhysicalSuccesses(pool, effectiveTN, label, tn, woundDisplay);
@@ -2568,6 +2574,100 @@ _prepareCharacter(sys, attr) {
    */
   static woundTN(actor) {
     return Math.max(0, -Math.min(0, Number(actor?.system?.woundMod) || 0));
+  }
+
+  /**
+   * What sustaining spells adds to every test this actor makes — +2 per spell held by
+   * concentration (SR3 p.178; a focus-held spell costs nothing). `scripts/data/sustaining.mjs` holds
+   * the rule. Every TN that takes `woundTN` takes this too, and so does Drain Resistance, which
+   * takes no wound modifier; the Damage Resistance soak and the Spell Resistance Test take neither.
+   */
+  static sustainingTN(actor) {
+    return Sustaining.sustainingTN(actor?.system?.sustainedSpells);
+  }
+
+  /** Sustained or Permanent — a spell that can be held (p.178). */
+  static isSustainable(duration) {
+    return Sustaining.isSustainable(duration);
+  }
+
+  /** "Sustaining 2 spells +4", or '' — for a TN breakdown. */
+  static sustainingNote(actor) {
+    return Sustaining.sustainingNote(actor?.system?.sustainedSpells);
+  }
+
+  /** Start sustaining a spell (p.178). Returns the new entry's id. */
+  async sustainSpell(entry) {
+    const id   = foundry.utils.randomID();
+    const next = Sustaining.addSustained(this.system.sustainedSpells, entry, id);
+    await this.update({ 'system.sustainedSpells': next });
+    if (Sustaining.overLimit(next, SR3EActor.sorceryRating(this))) {
+      ui.notifications.warn(`${this.name} is sustaining more spells than their Sorcery rating (p.178) — the GM's call.`);
+    }
+    return id;
+  }
+
+  /** Stop sustaining — a Free Action, any time (p.178). */
+  async dropSustained(id) {
+    await this.update({ 'system.sustainedSpells': Sustaining.dropSustained(this.system.sustainedSpells, id) });
+  }
+
+  /** Mark a spell as held by a sustaining focus (no TN cost) or back by concentration. */
+  async setSustainedFocus(id, focus) {
+    await this.update({ 'system.sustainedSpells': Sustaining.setSustainedFocus(this.system.sustainedSpells, id, focus) });
+  }
+
+  /** The Sorcery skill rating, 0 without one — the sustaining limit (p.178). */
+  static sorceryRating(actor) {
+    const sk = actor?.items?.find?.(i => i.type === 'skill' && /^sorcery$/i.test((i.system?.skillName || i.name || '').trim()));
+    return Number(sk?.system?.rating) || 0;
+  }
+
+  /** The 🔒 Sustain offer on a cast card. */
+  static sustainButton(actorId, entry) {
+    const payload = JSON.stringify({ actorId, ...entry }).replace(/'/g, '&#39;');
+    return `<div class="sr-soak-action">
+      <button class="sr-sustain-btn" data-payload='${payload}'>🔒 Sustain ${entry.name ?? 'spell'} [F${entry.force}]</button>
+    </div>`;
+  }
+
+  /**
+   * Took damage while sustaining — p.178: *"A caster who takes damage while sustaining a spell must
+   * make a Sorcery Test against the Force of the spell (plus any injury modifiers) to continue
+   * sustaining the spell."* One button per spell held by concentration; a failed test is dropped
+   * by hand (✕ on the Magic tab) — the card says so, and nothing drops by itself.
+   */
+  static async postSustainCheckCard(actor) {
+    const held = Sustaining.concentrating(actor?.system?.sustainedSpells);
+    if (!held.length) return;
+    const unconscious = actor.statuses?.has?.('unconscious');
+    const buttons = held.map(e => {
+      const payload = JSON.stringify({ actorId: actor.id, sustainId: e.id, name: e.name, force: e.force }).replace(/'/g, '&#39;');
+      return `<div class="sr-soak-action"><button class="sr-sustain-check-btn" data-payload='${payload}'>
+        🎲 Keep ${e.name} — Sorcery vs ${e.force}</button></div>`;
+    }).join('');
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="sr-roll-card">
+        <div class="sr-roll-header">🔒 ${actor.name} took damage while sustaining</div>
+        ${unconscious
+          ? `<div class="sr-staging-result" style="color:var(--sr-red)">Unconscious — no spell can be sustained (p.178). Drop them on the Magic tab.</div>`
+          : `<div style="font-size:11px;color:var(--sr-muted)">Sorcery Test against each spell's Force, plus injury modifiers (p.178). No successes → the spell ends: drop it on the Magic tab.</div>
+             ${buttons}`}
+      </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    });
+  }
+
+  /** 🎲 Keep — the Sorcery Test. `rollPool` adds the injury modifiers and the sustaining ones. */
+  static async rollSustainCheck(payload) {
+    const actor = game.actors.get(payload.actorId);
+    if (!actor) return;
+    const sorcery = SR3EActor.sorceryRating(actor);
+    if (sorcery < 1) { ui.notifications.warn(`${actor.name} has no Sorcery skill to roll.`); return; }
+    await actor.rollPool(sorcery, Math.max(2, Number(payload.force) || 2),
+      `🔒 ${actor.name} keeps ${payload.name} sustained — Sorcery vs Force ${payload.force}`,
+      { footerNote: '{successes} successes — none means the spell ends (✕ on the Magic tab).' });
   }
 
   /**
@@ -3037,6 +3137,7 @@ _prepareCharacter(sys, attr) {
           drainIsPhysical:  sc.drainIsPhysical,
           spellName:        sc.spellName,
           spellPoolForDrain: sc.spellPoolForDrain ?? 0,
+          sustainTN:        sc.sustainTN ?? 0,
         }).replace(/'/g, '&#39;');
         const casterName = game.actors.get(sc.attackerActorId)?.name ?? 'Caster';
         postRollHtml += `
@@ -3045,6 +3146,13 @@ _prepareCharacter(sys, attr) {
               ⚡ ${casterName}: Resist Drain
             </button>
           </div>`;
+        // A Sustained or Permanent spell that took effect can be held (p.178) — OFFERED, never
+        // automatic: sustaining costs +2 on every test, so it is the caster's choice.
+        if (successes > 0 && Sustaining.isSustainable(sc.duration)) {
+          postRollHtml += SR3EActor.sustainButton(sc.attackerActorId, {
+            name: sc.spellName, force: sc.force, spellItemId: sc.spellId, target: sc.targetNames ?? '',
+          });
+        }
 
       } else if (state.isDispelRoll && state.dispelContext) {
         const dc = state.dispelContext;
@@ -5864,12 +5972,13 @@ _prepareCharacter(sys, attr) {
  * @param {number}  [o.burstRounds=0]    rounds sent at THIS target from a BF/FA weapon
  * @param {number}  [o.shotgunSpread=0]  metres of shot spread at the target's position
  * @param {number}  [o.woundMod=0]       the DEFENDER's wound modifier, negative
+ * @param {number}  [o.sustain=0]        the DEFENDER's sustained-spell modifier, +2 each (p.178)
  * @returns {number} the Dodge Test target number
  */
-  static dodgeTN({ burstRounds = 0, shotgunSpread = 0, woundMod = 0 } = {}) {
+  static dodgeTN({ burstRounds = 0, shotgunSpread = 0, woundMod = 0, sustain = 0 } = {}) {
     const n = v => Math.max(0, Math.trunc(Number(v) || 0));
     const wound = Math.min(0, Math.trunc(Number(woundMod) || 0));
-    return 4 + Math.floor(n(burstRounds) / 3) + n(shotgunSpread) - wound;
+    return 4 + Math.floor(n(burstRounds) / 3) + n(shotgunSpread) - wound + n(sustain);
   }
 
   /**
@@ -5878,7 +5987,7 @@ _prepareCharacter(sys, attr) {
    *
    * @returns {string[]} human-readable fragments, empty when the TN is a plain 4
    */
-  static dodgeTNParts({ burstRounds = 0, shotgunSpread = 0, woundMod = 0 } = {}) {
+  static dodgeTNParts({ burstRounds = 0, shotgunSpread = 0, woundMod = 0, sustain = 0 } = {}) {
     const n = v => Math.max(0, Math.trunc(Number(v) || 0));
     const wound = Math.min(0, Math.trunc(Number(woundMod) || 0));
     const parts = [];
@@ -5886,6 +5995,7 @@ _prepareCharacter(sys, attr) {
     if (burst)         parts.push(`+${burst} burst (${n(burstRounds)} rounds)`);
     if (n(shotgunSpread)) parts.push(`+${n(shotgunSpread)} shot spread`);
     if (wound)         parts.push(`+${-wound} wound`);
+    if (n(sustain))    parts.push(`+${n(sustain)} sustaining spells`);
     return parts;
   }
 
@@ -7462,6 +7572,7 @@ _prepareCharacter(sys, attr) {
       burstRounds:   dodgeContext?.burstRounds   ?? 0,
       shotgunSpread: dodgeContext?.shotgunSpread ?? 0,
       woundMod:      targetActor.system.woundMod ?? 0,
+      sustain:       SR3EActor.sustainingTN(targetActor),
     };
     const DODGE_TN  = SR3EActor.dodgeTN(tnOpts);
     const tnParts   = SR3EActor.dodgeTNParts(tnOpts);
@@ -7672,7 +7783,7 @@ _prepareCharacter(sys, attr) {
     const kdWound   = SR3EActor.woundTN(target);
     const tnDefault = SR3EActor.knockdownTN({
       power: ctx.power, strength: atkStr, isMelee: ctx.isMelee, ammoType: ctx.ammoType,
-    }) + Math.max(0, Math.trunc(Number(ctx.knockdownTNMod) || 0)) + kdWound;
+    }) + Math.max(0, Math.trunc(Number(ctx.knockdownTNMod) || 0)) + kdWound + SR3EActor.sustainingTN(target);
     const needed  = SR3EActor.knockdownOutcome({ level, tested: false }).needed ?? 2;
     /* Rooting and Enhanced Balance add dice to *"all tests to resist being knocked down,
      * thrown, levitated or otherwise moved against his will"* (MITS p.151, SOTA2 p.65).
@@ -9057,6 +9168,9 @@ _prepareCharacter(sys, attr) {
         rawDamage:       payload.rawDamage,
       },
       skipWoundMod: true,
+      // Sustained spells DO apply — the maintainer's ruling, 2026-09-14, reading p.178's "all tests"
+      // (only normal Damage Resistance is excluded) over p.183's "No target modifiers apply to this
+      // test except where specifically noted". rollPool adds it: no skipSustainMod here.
       physicalDice,
     });
   }
@@ -9089,6 +9203,12 @@ _prepareCharacter(sys, attr) {
       drainTN    = parsed.tn;
       drainLevel = parsed.level;
     }
+    // Sustained spells — "+2 to the Power of the Drain" per spell sustained AT THE MOMENT (p.180;
+    // the same +2 as p.178's "all tests, including Drain Resistance"). A spell's own Drain is
+    // resolved as it is cast, before anyone could be sustaining IT, so the casting flow counts at
+    // cast time and carries `sustainTN`; the rest (conjuring, wards, dispelling) count now.
+    const sustainTN = Math.max(0, Number(payload.sustainTN ?? SR3EActor.sustainingTN(this)) || 0);
+    drainTN += sustainTN;
     const trackLabel = drainIsPhysical ? 'Physical' : 'Stun';
 
     // Drain is normally resisted with Willpower (spells); conjuring overrides to Charisma and
@@ -9146,7 +9266,7 @@ _prepareCharacter(sys, attr) {
           <div class="sr-roll-header">⚡ ${this.name} — Resist Drain</div>
           <div class="sr-roll-meta">
             Drain: <strong>${drainLevel} ${trackLabel}</strong>
-            (${drainStr ? `formula: ${drainStr}, F=${force} → ` : ''}TN ${drainTN})
+            (${drainStr ? `formula: ${drainStr}, F=${force} → ` : ''}TN ${drainTN}${sustainTN ? `, incl. sustaining spells +${sustainTN}` : ''})
             ${physWarning}
           </div>
           ${payload.drainNote ? `<div style="color:var(--sr-muted);font-size:11px;margin:2px 0 4px">${payload.drainNote}</div>` : ''}
@@ -9827,8 +9947,9 @@ _prepareCharacter(sys, attr) {
 
     // Defaulting, plus each fighter's own wounds — astral combat uses the melee rules (p.174), and
     // the Melee Modifiers Table carries "Character is wounded" (F3).
-    const atkTN = 4 + (atkInfo.defaultTnMod ?? 0) + SR3EActor.woundTN(this);
-    const defTN = 4 + (defInfo.defaultTnMod ?? 0) + SR3EActor.woundTN(targetActor);
+    // Sustained spells too — "all tests" (p.178).
+    const atkTN = 4 + (atkInfo.defaultTnMod ?? 0) + SR3EActor.woundTN(this) + SR3EActor.sustainingTN(this);
+    const defTN = 4 + (defInfo.defaultTnMod ?? 0) + SR3EActor.woundTN(targetActor) + SR3EActor.sustainingTN(targetActor);
 
     await SR3EActor.postAstralCard({
       attackerActorId: this.id,
@@ -10410,7 +10531,8 @@ _prepareCharacter(sys, attr) {
           el.querySelector('#atk-source').innerHTML = buildOptions(data.sources);
           el.querySelector('#atk-pool').value = data.firstVal ?? 4;
           // Their own wounds (SR3 p.125) follow the actor chosen.
-          el.querySelector('#atk-tn').value = 4 + SR3EActor.woundTN(game.actors.get(e.target.value));
+          const picked = game.actors.get(e.target.value);
+          el.querySelector('#atk-tn').value = 4 + SR3EActor.woundTN(picked) + SR3EActor.sustainingTN(picked);
         });
         el.querySelector('#atk-source')?.addEventListener('change', (e) => {
           el.querySelector('#atk-pool').value = parseInt(e.target.value) || 1;
@@ -10431,7 +10553,7 @@ _prepareCharacter(sys, attr) {
         <input type="number" id="${poolId}" value="${defaultData?.firstVal ?? 4}" min="1" max="30" style="width:55px;margin-left:4px"/>
       </label>
       <label style="display:block;margin-bottom:6px;font-size:12px" title="4, plus the actor's own wound modifier (SR3 p.125)">TN:
-        <input type="number" id="${tnId}" value="${4 + SR3EActor.woundTN(game.actors.get(defaultAtkId))}" min="2" max="30" style="width:55px;margin-left:4px"/>
+        <input type="number" id="${tnId}" value="${4 + SR3EActor.woundTN(game.actors.get(defaultAtkId)) + SR3EActor.sustainingTN(game.actors.get(defaultAtkId))}" min="2" max="30" style="width:55px;margin-left:4px"/>
       </label>
       <label style="display:block;margin-bottom:0;font-size:12px">Damage:
         <input type="text" id="${dmgId}" value="4L" style="width:55px;margin-left:4px"/>
@@ -10497,7 +10619,7 @@ _prepareCharacter(sys, attr) {
                 oppSourceLabel: oppData?.[0]?.label ?? '',
                 oppPool:   Math.max(1, oppData?.[0]?.value || 4),
                 // A starting point in their corner — their own wounds included (SR3 p.125).
-                oppTN:     4 + SR3EActor.woundTN(game.actors.get(oppActId)),
+                oppTN:     4 + SR3EActor.woundTN(game.actors.get(oppActId)) + SR3EActor.sustainingTN(game.actors.get(oppActId)),
                 oppDamage: '4L',
                 physicalDice: shiftKey,
               };
@@ -10939,7 +11061,7 @@ _prepareCharacter(sys, attr) {
             hpAlloc    = Math.min(hackPool, Math.max(0, parseInt(dlg.element.querySelector('#ost-hp')?.value) || 0));
             deckerDice = compRating + hpAlloc;
             // The decker's own wounds (SR3 p.125 — every test but resisting or avoiding damage).
-            deckerTN   = Math.max(2, subR + alertMod - utilMod + SR3EActor.woundTN(this));
+            deckerTN   = Math.max(2, subR + alertMod - utilMod + SR3EActor.woundTN(this) + SR3EActor.sustainingTN(this));
           },
         },
         { label: 'Cancel', action: 'cancel' },
@@ -11103,7 +11225,7 @@ _prepareCharacter(sys, attr) {
     }).join('');
 
     // The decker attacks, so their own wounds count (SR3 p.125); the IC's soak does not take any.
-    const tnIntruding = (SR3EActor._orthoCCTN.intruding[secCode] ?? 4) + SR3EActor.woundTN(this);
+    const tnIntruding = (SR3EActor._orthoCCTN.intruding[secCode] ?? 4) + SR3EActor.woundTN(this) + SR3EActor.sustainingTN(this);
     const dmgLevel    = SR3EActor._orthoICDmgLevel[secCode] ?? 'Moderate';
     const dmgPower    = deck.mccp ?? 4;  // default attack power: MPCP Rating
 
@@ -11128,7 +11250,7 @@ _prepareCharacter(sys, attr) {
           </label>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <label>Attack TN (${tnIntruding - SR3EActor.woundTN(this)} vs Intruder${SR3EActor.woundTN(this) ? `, wound +${SR3EActor.woundTN(this)}` : ''}):
+          <label>Attack TN (${tnIntruding - SR3EActor.woundTN(this) - SR3EActor.sustainingTN(this)} vs Intruder${SR3EActor.woundTN(this) ? `, wound +${SR3EActor.woundTN(this)}` : ''}):
             <input type="number" id="occ-tn" value="${tnIntruding}" min="2" max="12" style="width:55px;margin-left:4px">
           </label>
           <label>Attack Power (damage):
@@ -11321,7 +11443,9 @@ _prepareCharacter(sys, attr) {
     const totalDefDice = Math.max(1, defCcSkill?.system?.rating ?? 1);
     const defHpAvail   = deckerActor.system.derived?.availableOrthodoxHackingPool
                       ?? deckerActor.system.derived?.availableHackingPool ?? 0;
-    const defTN        = atkTNOverride;  // same TN for both sides
+    // Same base TN for both sides, plus the decker's sustained spells (p.178 — all tests but Damage
+    // Resistance). Not their wounds: the defence avoids damage (p.125).
+    const defTN        = atkTNOverride + SR3EActor.sustainingTN(deckerActor);
     const baseCode     = `${rating}${dmgLevel[0]}`;
 
     const ctx = {
