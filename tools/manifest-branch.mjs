@@ -10,9 +10,9 @@
  *   node tools/manifest-branch.mjs main       stamp to a named branch
  *   node tools/manifest-branch.mjs --check    exit 1 if stale, change nothing
  *
- * ⚠ Rewrites three LINES, not the parsed document. Round-tripping this file through
- * JSON.parse/stringify would reformat ~1900 lines of pack declarations into one
- * unreviewable diff, so the edit is deliberately textual and surgical.
+ * A tagged RELEASE stamps its own URLs into the copy it ships (tools/release.mjs); the
+ * committed file keeps naming a branch. Both share tools/lib/manifest-urls.mjs, which
+ * rewrites three lines rather than the parsed document.
  *
  * The repo slug is read back out of the existing `url`, never hardcoded, so renaming
  * or forking the repo does not silently keep publishing the old owner's manifest.
@@ -21,16 +21,10 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { repoSlug, branchUrls, stampUrls } from './lib/manifest-urls.mjs';
 
 const ROOT     = join(dirname(fileURLToPath(import.meta.url)), '..');
 const MANIFEST = join(ROOT, 'system.json');
-
-/** The three fields, and how each embeds the branch name. */
-const FIELDS = [
-  { key: 'url',      build: (slug, b) => `https://github.com/${slug}/tree/${b}` },
-  { key: 'manifest', build: (slug, b) => `https://raw.githubusercontent.com/${slug}/refs/heads/${b}/system.json` },
-  { key: 'download', build: (slug, b) => `https://github.com/${slug}/archive/refs/heads/${b}.zip` },
-];
 
 function currentBranch() {
   const b = execFileSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'], { cwd: ROOT })
@@ -42,38 +36,21 @@ function currentBranch() {
   return b;
 }
 
-/** Pull "owner/repo" out of the committed url so it survives a rename or a fork. */
-function repoSlug(text) {
-  const m = text.match(/"url"\s*:\s*"https:\/\/github\.com\/([^/"]+\/[^/"]+)\//);
-  if (!m) {
-    console.error('manifest-branch: could not read the repo slug from system.json "url".');
-    process.exit(2);
-  }
-  return m[1];
-}
-
 const args   = process.argv.slice(2);
 const check  = args.includes('--check');
 const branch = args.find(a => !a.startsWith('-')) ?? currentBranch();
 
 const original = readFileSync(MANIFEST, 'utf8');
 const slug     = repoSlug(original);
-
-let updated = original;
-const changes = [];
-
-for (const { key, build } of FIELDS) {
-  const want = build(slug, branch);
-  // Match the whole value so a partially-edited file is corrected rather than skipped.
-  const re   = new RegExp(`("${key}"\\s*:\\s*")([^"]*)(")`);
-  const m    = updated.match(re);
-  if (!m) {
-    console.error(`manifest-branch: no "${key}" field found in system.json.`);
-    process.exit(2);
-  }
-  if (m[2] !== want) changes.push({ key, from: m[2], to: want });
-  updated = updated.replace(re, `$1${want}$3`);
+if (!slug) {
+  console.error('manifest-branch: could not read the repo slug from system.json "url".');
+  process.exit(2);
 }
+
+let result;
+try { result = stampUrls(original, branchUrls(slug, branch)); }
+catch (err) { console.error(`manifest-branch: ${err.message}.`); process.exit(2); }
+const { text: updated, changes } = result;
 
 if (changes.length === 0) {
   console.log(`manifest-branch: system.json already points at "${branch}".`);

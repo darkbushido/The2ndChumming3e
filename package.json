@@ -10,6 +10,8 @@
     "typecheck": "tsc --noEmit",
     "manifest:branch": "node tools/manifest-branch.mjs",
     "manifest:check": "node tools/manifest-branch.mjs --check",
+    "release:check": "node tools/release.mjs --check",
+    "release:stage": "node tools/release.mjs",
     "setup:hooks": "git config core.hooksPath .githooks",
     "sync:install": "node tools/sync-install.mjs",
     "sync:install:check": "node tools/sync-install.mjs --check",

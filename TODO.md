@@ -52,6 +52,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | [79](#79) | A ledger for karma and nuyen | nice to have |
 | [82](#82) | A flow for buying gear — *Availability, SR3 pp.284-286* | nice to have |
 | [7](#7) | More test coverage for combat, initiative and pools | nice to have |
+| [127](#127) | Tagged releases, with the guides versioned beside them | in 0.6 — built on `feature/release-pipeline` |
 
 ### Release tasks — before `system.json` becomes 0.6.0
 
@@ -61,10 +62,12 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 2. The live checks in TESTING.md §40 are done, and 47, 48, 49, 18 and 124 are archived.
 3. **Only then bump `system.json` to 0.6.0** — the maintainer: *"don't bump the version to 0.6 until we are
    ready to push it up"*. Nothing is pushed unless the maintainer asks.
+4. **[127](#127) — the first tagged release.** Tag `v0.6.0` and push it; set Pages to the `gh-pages` branch;
+   hand the players the new guides URL.
 
 ## Contents
 
-**33 open.** 93 done — see [TODO-DONE.md](TODO-DONE.md).
+**34 open.** 93 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -73,7 +76,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [119](#119) Audit *The Matrix Defragged v2* against what we have<br>[120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork) |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[79](#79) No ledger for karma or nuyen — *low priority*<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear<br>[126](#126) Ammunition has no weight, and nothing adds up a carried load |
-| 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[122](#122) Ratings in the field, not the name, for weapons, cyberware and bioware |
+| 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[122](#122) Ratings in the field, not the name, for weapons, cyberware and bioware<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
@@ -2109,7 +2112,7 @@ matters there too.
 ## 121. Check the code's rules against *sr3-guides* on every version bump — **requested 2026-09-14**
 
 **Request (maintainer):** a repeatable task that makes sure our interpretation of the rules in code
-matches the rules as explained in `C:\Users\lance\Documents\sr3-guides` — and it is **part of every
+matches the rules as explained in `guides/` (sr3-guides, moved into this repo by [#127](#127)) — and it is **part of every
 release**: run it on each version bump. **The first run waits until the 0.6 branches (100, 117, and
 119) are merged back to `main`** (the maintainer, 2026-09-14: not before).
 
@@ -2174,6 +2177,33 @@ null; `displayName(item)` showing `Name [N]` without doubling a bracket (answeri
   Reflexes*;
 - `displayName` on every sheet row and chat card that prints these names;
 - the rename itself in the packs (derived ids, repo + install) and a migration for world copies.
+
+## 127. Tagged releases, with the guides versioned beside them — **requested 2026-09-15, in 0.6**
+
+**Request (maintainer):** move *sr3-guides* into this repo; each release updates the guides to match
+how the system handles the rules; build a release zip; let people install a specific version.
+
+**Built on `feature/release-pipeline`:**
+- `guides/` — the whole sr3-guides repo, imported with its history (`git subtree add`). Its own
+  CLAUDE.md, TODO.md and link checker came with it. Its Pages workflow was dropped: a workflow only
+  runs from the repo root.
+- `.github/workflows/release.yml`, on a `v*.*.*` tag: `tools/release.mjs` stages an **include list**
+  (`system.json scripts styles lang packs LICENSE README.md`) with system.json stamped to the release
+  — `download` pinned to the tag, `manifest` at `releases/latest` so updates are still offered — and
+  refuses if the tag and `system.json`'s version disagree. A GitHub Release gets `system.json`,
+  `system.zip` and `guides.zip`; the guides are built twice (`v0.6.0/`, frozen, and `latest/`) onto
+  the **gh-pages** branch, indexed by `tools/guides-versions.mjs` (`versions/`, root → `latest/`).
+- The committed system.json keeps naming a branch (`manifest:branch` is unchanged, now on the shared
+  `tools/lib/manifest-urls.mjs`). `tests/release.test.mjs`.
+
+**Still to do, at the 0.6 release (the maintainer's):**
+1. Settings → Pages → Source: **Deploy from a branch**, `gh-pages`, `/ (root)` — after the first tag
+   creates the branch (the setting cannot name a branch that does not exist yet; saving it publishes
+   what is there).
+2. Bump `system.json` to 0.6.0, merge, push, then `git tag v0.6.0` and `git push origin v0.6.0`.
+3. Hand the players the new guides URL (`darkbushido.github.io/The2ndChumming3e/`); archive the old
+   `sr3-guides` repo. No redirect (the maintainer).
+4. Future guide edits happen in `guides/` here — the old repo takes no more commits.
 
 <a id="123"></a>
 

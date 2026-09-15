@@ -4,9 +4,9 @@ description: >-
   checked against the rulebooks with a book and page for every rule.
 theme: just-the-docs
 
-# GitHub Pages project sites live under /<repo-name>. Change this if the
-# repository is renamed.
-baseurl: "/sr3-guides"
+# The guides live in The2ndChumming3e's guides/ folder. A release build overrides
+# baseurl per version (/The2ndChumming3e/v0.6.0, /latest) - .github/workflows/release.yml.
+baseurl: "/The2ndChumming3e"
 permalink: pretty
 url: "https://darkbushido.github.io"
 

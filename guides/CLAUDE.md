@@ -3,16 +3,23 @@
 Read this before editing pages. It explains what the site is for, the rules every page
 follows, where the sources are, and the traps already hit while building it.
 
-## What this repo is
+## What this folder is
 
 A public, **unofficial Shadowrun 3rd Edition rules reference**, published with GitHub Pages
-at **https://darkbushido.github.io/sr3-guides/**. It began as fifteen Gemini-generated gists
+at **https://darkbushido.github.io/The2ndChumming3e/** — one frozen copy per release of the
+system (`/v0.6.0/`), the newest at `/latest/`, all listed at `/versions/`.
+
+⚠ **It lives in `guides/` of The2ndChumming3e since 2026-09-15** (TODO 127 there), imported
+from the old `darkbushido/sr3-guides` repo with its history. That repo takes no more commits.
+**The site is published only by a release tag** (the root CLAUDE.md, *Releases*): a guide page
+changes what players read at the next release, together with the code it describes.
+
+It began as fifteen Gemini-generated gists
 (combat, grenades, healing, magic, SINs, gear and fencing, cyberware grades, and eight
 "hiring" guides). Every one of them was checked against the rulebooks and rewritten, and
 most were substantially wrong.
 
-It is the **player-facing companion** to **The 2nd Chumming**
-(`C:\Users\lance\Documents\The2ndChumming3e`, `darkbushido/The2ndChumming3e`), the same
+It is the **player-facing companion** to **The 2nd Chumming** (the rest of this repo), the same
 maintainer's unofficial SR3 system for Foundry VTT v14. That system rolls the dice (Rule of
 Six and Rule of One, pools, staging), tracks wounds and modifiers, and prompts each player
 for their own decisions. By design it **never applies outcomes**: the GM clicks the wound
@@ -28,7 +35,7 @@ The two projects share:
   book**; don't copy either one.
 - **The PDF library**: `C:\Users\lance\Documents\Shadowrun 3rd Edition PDFs`.
 
-This repo has no game code. It's Markdown, a Jekyll theme, and two small Node tools.
+This folder has no game code, and none of it ships in the system's zip. It's Markdown, a Jekyll theme, and two small Node tools.
 
 ## Rules for every page
 
@@ -110,7 +117,7 @@ Jekyll 4 with the **Just the Docs** theme gem (0.12), built by GitHub Actions.
 | `_sass/color_schemes/sixthworld.scss` | theme colour variables (`color_scheme: sixthworld`) |
 | `_sass/custom/custom.scss` | the "Sixth World" look: fret bands, notched callouts, tables |
 | `tools/linkcheck.mjs` | internal link and anchor checker for `_site` |
-| `.github/workflows/pages.yml` | build and deploy on every push to `main` |
+| `../.github/workflows/release.yml` | builds and publishes the site on a release tag |
 
 Sidebar placement comes from front matter: `parent:` and `nav_order:`. A section's
 `index.md` has `has_children: true`.
@@ -119,18 +126,19 @@ Sidebar placement comes from front matter: `parent:` and `nav_order:`. A section
 
 ```bash
 bundle install                      # gems go to vendor/bundle (local config)
-bundle exec jekyll serve            # http://localhost:4000/sr3-guides/
+bundle exec jekyll serve            # http://localhost:4000/The2ndChumming3e/ (run from guides/)
 bundle exec jekyll build
 node tools/linkcheck.mjs            # must report 0 problems before committing
 ```
 
 - **Before every commit:** build, then run the link checker. There are no other tests.
 - **`_config.yml` changes need the server restarted.** Page edits hot-reload.
-- **Publishing:** push to `main`. The workflow builds and deploys in about 2 minutes. Pages
-  **Source** must be set to *GitHub Actions* (done once). When two pushes land close
-  together, the older run is **cancelled on purpose** (`concurrency: pages`), which isn't a
-  failure.
-- **Renaming the repo** means changing `baseurl` in `_config.yml`.
+- **Publishing:** a release tag (`v0.6.0`) — not a push. The workflow builds the site with a
+  per-version `baseurl` (`/The2ndChumming3e/v0.6.0`, `/latest`) and `sr3e_version`, which the
+  header shows, and commits both to the `gh-pages` branch. Pages **Source** is *Deploy from a
+  branch*, `gh-pages`.
+- **`baseurl` in `_config.yml` is for local preview only**; the release overrides it. Renaming
+  the repo needs no change here — the workflow reads the repo name.
 
 ## Traps already hit
 
@@ -147,7 +155,7 @@ node tools/linkcheck.mjs            # must report 0 problems before committing
   fails with "Undefined variable".
 - **Don't give `.side-bar` `position: relative`.** The theme fixes it in place at desktop
   widths; overriding that drops the sidebar into the page flow and leaves a huge gap.
-- **Git Bash rewrites `/sr3-guides`** into a Windows path when passed as an argument. The
+- **Git Bash rewrites `/The2ndChumming3e`** into a Windows path when passed as an argument. The
   link checker defaults to the right value; pass it explicitly only with
   `MSYS_NO_PATHCONV=1`.
 - **The digital rain is off under `prefers-reduced-motion`**, and the Browser preview pane

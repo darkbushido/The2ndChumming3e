@@ -15,7 +15,7 @@
  *   pp.193-194  Heal, Treat, Stabilize
  *   pp.304-305  Medkit (Biotech 3, supplies run out on a 1 on 1D6), Stabilization Unit, slap patches
  *   p.62        Lifestyle costs (paid daily at monthly ÷ 30, p.127)
- * The sr3-guides healing page (sr3-guides/rules/healing.md) agrees with all of it; it omits the
+ * The sr3-guides healing page (guides/rules/healing.md) agrees with all of it; it omits the
  * Body Part Types Table, Stabilize, the Permanent Spell Base Time, re-testing when professional
  * help arrives, and donor-organ Magic loss, which are included here.
  *

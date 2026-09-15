@@ -22,6 +22,9 @@ rules pdfs/
 # Tooling
 node_modules/
 
+# A staged release — tools/release.mjs
+dist/
+
 # macOS directory metadata
 .DS_Store
 

@@ -1,0 +1,100 @@
+# A release: push a tag named for the version in system.json, e.g.
+#
+#   git tag v0.6.0 && git push origin v0.6.0
+#
+# and this workflow
+#   1. stages the system (tools/release.mjs - refuses if the tag and system.json disagree),
+#      zips it, and publishes a GitHub Release carrying system.json, system.zip and the
+#      guides as guides.zip;
+#   2. builds the guides for that version and adds them to the gh-pages branch as
+#      v0.6.0/ (frozen) and latest/, with a versions/ index.
+#
+# One-time setup: Settings -> Pages -> Source: "Deploy from a branch", branch gh-pages, / (root).
+# The first run creates the branch.
+name: Release
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.ref_name }}
+      REPO_NAME: ${{ github.event.repository.name }}
+      OWNER: ${{ github.repository_owner }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Stage the system
+        run: node tools/release.mjs "$TAG"
+
+      - name: Zip the system
+        run: cd dist/system && zip -qr ../system.zip .
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+          working-directory: guides
+
+      # Two builds: the frozen copy for this version and the latest/ copy. They differ only
+      # in baseurl, which Jekyll bakes into every link.
+      - name: Build the guides
+        working-directory: guides
+        env:
+          JEKYLL_ENV: production
+        run: |
+          for dest in "$TAG" latest; do
+            cat > _release.yml <<EOF
+          url: "https://${OWNER,,}.github.io"
+          baseurl: "/${REPO_NAME}/${dest}"
+          sr3e_version: "${TAG}"
+          sr3e_versions_url: "https://${OWNER,,}.github.io/${REPO_NAME}/versions/"
+          EOF
+            bundle exec jekyll build --config _config.yml,_release.yml -d "../dist/guides/${dest}"
+          done
+          rm _release.yml
+          node tools/linkcheck.mjs "../dist/guides/${TAG}" "/${REPO_NAME}/${TAG}"
+
+      - name: Zip the guides
+        run: cd "dist/guides/$TAG" && zip -qr ../../guides.zip .
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$TAG" dist/system.json dist/system.zip dist/guides.zip \
+            --title "$TAG" --generate-notes --verify-tag
+
+      - name: Publish the guides
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898+github-actions[bot]@users.noreply.github.com"
+          if git ls-remote --exit-code --heads origin gh-pages >/dev/null; then
+            git fetch --depth 1 origin gh-pages
+            git worktree add pages FETCH_HEAD
+            git -C pages switch -c gh-pages
+          else
+            git worktree add --detach pages
+            git -C pages switch --orphan gh-pages
+          fi
+          rm -rf "pages/$TAG" pages/latest
+          cp -r "dist/guides/$TAG" "pages/$TAG"
+          cp -r dist/guides/latest pages/latest
+          node tools/guides-versions.mjs pages
+          git -C pages add -A
+          git -C pages commit -m "Guides for $TAG"
+          git -C pages push origin gh-pages

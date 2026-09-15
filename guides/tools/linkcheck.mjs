@@ -1,10 +1,10 @@
 // Checks every internal href (and #anchor) in a built Jekyll _site.
-// usage: node tools/linkcheck.mjs [siteDir=_site] [baseurl=/sr3-guides]
+// usage: node tools/linkcheck.mjs [siteDir=_site] [baseurl=/The2ndChumming3e]
 // Run after `bundle exec jekyll build`. From Git Bash, pass an explicit baseurl only with
-// MSYS_NO_PATHCONV=1, or Git Bash rewrites "/sr3-guides" into a Windows path.
+// MSYS_NO_PATHCONV=1, or Git Bash rewrites "/The2ndChumming3e" into a Windows path.
 import fs from 'fs';
 import path from 'path';
-const [root = "_site", base = "/sr3-guides"] = process.argv.slice(2);
+const [root = "_site", base = "/The2ndChumming3e"] = process.argv.slice(2);
 const walk = d => fs.readdirSync(d, { withFileTypes: true }).flatMap(e =>
   e.isDirectory() ? walk(path.join(d, e.name)) : e.name.endsWith('.html') ? [path.join(d, e.name)] : []);
 let bad = 0, n = 0;
