@@ -194,6 +194,10 @@ export class GearData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
       quantity:    new NumberField({ integer: true, initial: 1, min: 0 }),
+      // The book's table the item comes from ("Surveillance and Security", "Chips", …) and its
+      // Concealability — both columns the generator carries; the default-books gear packs fill them.
+      category:       new StringField({ initial: '' }),
+      concealability: new StringField({ initial: '' }),
       // ⚠ **Gear had NO rating field until 0.5.2**, so a Medkit [6] carried its rating only in
       // its name, and a TypeDataModel DROPS undeclared keys — the importer's Rating could not
       // have survived even if it had been written. Read it through `itemRating()`

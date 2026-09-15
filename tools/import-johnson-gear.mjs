@@ -17,8 +17,8 @@
  *
  * ⚠ **Foundry must be CLOSED.** A LevelDB allows one writer.
  * ⚠ **Run it TWICE**, once plain and once `--install` — `npm run sync:install` never copies packs.
- * ⚠ **Idempotent** — a second run reports 0 changes, because a converted item is no longer
- *   typed `gear` and `FROM_TYPES` no longer admits it.
+ * ⚠ **Idempotent** — a second run reports 0 changes: a converted item carries
+ *   `_stats.compendiumSource` and is skipped (its type alone is not enough since gear → gear).
  *
  * ─────────────────────────────────────────────────────────────────────────────────────────────
  * ⚠ **EXACT NAME MATCHES ONLY. The stem tier is deliberately absent.**
@@ -35,6 +35,8 @@ import { ClassicLevel } from 'classic-level';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { readdirSync } from 'node:fs';
+import { copyPacks } from './lib/pack-copy.mjs';
+import { ratingFromName } from '../scripts/data/item-rating.mjs';
 
 const HERE    = dirname(fileURLToPath(import.meta.url));
 const REPO    = join(HERE, '..');
@@ -78,31 +80,60 @@ const FROM_TYPES = new Set(['gear']);
  * ⚠ **`drug`** — the `Club Drugs of Choice` case. It is genuinely a drug, but it names a
  *   CATEGORY rather than an item, so there is nothing to import; it needs a typed placeholder
  *   instead. Out of scope here.
+ *
+ * ✅ **`gear` and `medical` — added 2026-09-14**, once TODO 91's packs shipped the default books'
+ *   gear and medical items. An exact name match to a real item is the same safe case as a weapon:
+ *   the stub gains its cost, rating, book and page and a `compendiumSource`. ⚠ **The contact's own
+ *   rating wins** — `Medkit [Rating 5]` normalises to plain `Medkit` (rating 3), and since TODO 118 a
+ *   stored rating beats the name, so the name's rating is written into the field.
  */
-const TO_TYPES = new Set(['firearm', 'melee', 'projectile', 'thrown', 'armor', 'cyberdeck']);
+const TO_TYPES = new Set(['firearm', 'melee', 'projectile', 'thrown', 'armor', 'cyberdeck', 'gear', 'medical']);
 
 const norm = s => String(s).toLowerCase().replace(/\[.*?\]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+/** The same, but a bracket's words stay: `Medkit [Rating 5]` → `medkit rating 5`, which is exactly
+ *  how M&M's rated medkits are named (`Medkit Rating 5`). Tried first. */
+const normKeep = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+
+/* ⚠ **The Little Black Book is an SR3 book — SR2 packs are never targets.** `Medkit` exists only in
+ * `sr3e-sr2-medical`, and linking an SR3 contact's kit to the SR2 core (hidden whenever SR3 is played)
+ * would be the wrong edition's item and page. */
+const SR2_PACK = /^sr3e-(sr2|ct|ssc|st|fof|pna)-/;
+
+/* Reviewed aliases — a book's name for an item that ships under another. Explicit, cited, one line
+ * each; NOT the stem tier this tool refuses. */
+const ALIASES = {
+  'medkit': 'basic medkit',   // SR3 p.304 prints "Medkit"; the pack (from the generator) says "Basic Medkit"
+};
 
 /* ── Index every other pack by normalised name ───────────────────────────────────────────── */
+/* ⚠ Read through a COPY (tools/lib/pack-copy.mjs). Opening a LevelDB rewrites its files even to
+ * read, and this index used to open all ~100 repo packs directly — a `--check` run left 582 files
+ * "modified" in git, content-identical (found 2026-09-14). Only the contacts pack is opened for
+ * real, and only when writing. */
 const idx = new Map();
-for (const p of readdirSync(PACKDIR)) {
-  if (p === 'sr3e-mr-johnsons-contacts') continue;
-  const db = new ClassicLevel(join(PACKDIR, p), { valueEncoding: 'json' });
-  try { await db.open(); } catch { continue; }
-  for await (const [k, v] of db.iterator()) {
-    if (!String(k).startsWith('!items!') || !v?.name) continue;
-    const n = norm(v.name);
-    if (!idx.has(n)) idx.set(n, []);
-    idx.get(n).push({ doc: v, pack: p });
+const indexCopy = copyPacks(PACKDIR);
+try {
+  for (const p of readdirSync(indexCopy.dir)) {
+    if (p === 'sr3e-mr-johnsons-contacts') continue;
+    const db = new ClassicLevel(join(indexCopy.dir, p), { valueEncoding: 'json' });
+    try { await db.open(); } catch { continue; }
+    for await (const [k, v] of db.iterator()) {
+      if (!String(k).startsWith('!items!') || !v?.name) continue;
+      const n = norm(v.name);
+      if (!idx.has(n)) idx.set(n, []);
+      idx.get(n).push({ doc: v, pack: p });
+    }
+    await db.close();
   }
-  await db.close();
-}
+} finally { indexCopy.cleanup(); }
 console.log(`Pack index: ${idx.size} distinct normalised names`);
 console.log(`Index from: ${PACKDIR}  (always the repo — the install carries unshipped packs)`);
 console.log(`Contacts:   ${CONTACTS}`);
 console.log(CHECK ? 'Mode:       --check (nothing will be written)\n' : 'Mode:       apply\n');
 
-const db = new ClassicLevel(CONTACTS, { valueEncoding: 'json' });
+// --check reads a copy too, so a report never touches the checkout.
+const contactsCopy = CHECK ? copyPacks(join(ROOT, 'packs')) : null;
+const db = new ClassicLevel(CHECK ? join(contactsCopy.dir, 'sr3e-mr-johnsons-contacts') : CONTACTS, { valueEncoding: 'json' });
 try { await db.open(); } catch (err) {
   if (/LOCK|lock/i.test(String(err?.message))) {
     console.error('ERROR: the pack is locked — close Foundry and try again.');
@@ -119,7 +150,7 @@ for await (const [k, v] of db.iterator()) {
 }
 
 let converted = 0;
-const skippedAmbiguous = [], skippedType = [], unmatched = new Set();
+const skippedAmbiguous = [], skippedType = [], skippedRated = [], unmatched = new Set();
 const perContact = new Map();
 
 for (const a of actors) {
@@ -127,8 +158,15 @@ for (const a of actors) {
     const key = `!actors.items!${a._id}.${id}`;
     const it  = embedded.get(key);
     if (!it || !FROM_TYPES.has(it.type)) continue;
+    // Already converted: a gear → gear conversion keeps the type, so `FROM_TYPES` alone no longer
+    // makes a second run a no-op. The provenance stamp does.
+    if (it._stats?.compendiumSource) continue;
 
-    const hits = idx.get(norm(it.name));
+    let hits = null;
+    for (const key of [normKeep(it.name), norm(it.name)]) {
+      const found = (idx.get(ALIASES[key] ?? key) ?? []).filter(h => !SR2_PACK.test(h.pack));
+      if (found.length) { hits = found; break; }
+    }
     if (!hits) { unmatched.add(it.name); continue; }
 
     /* ⚠ Ambiguity guard. One name can exist in several packs; if they disagree about the TYPE
@@ -140,7 +178,23 @@ for (const a of actors) {
     }
     if (!TO_TYPES.has(types[0])) { skippedType.push(`${it.name} → ${types[0]}`); continue; }
 
-    const src = hits[0];
+    /* ⚠ **Rated variants.** The SR3 packs ship `Micro-transceiver` once per rating (1-10). The
+     * contact's own rating picks one; with none, which rating the book meant is unknown — reported
+     * for a human, never resolved by pack order. */
+    const rating = ratingFromName(it.name);
+    let pick = hits;
+    if (pick.length > 1 && rating) {
+      const exact = pick.filter(h => h.doc.system?.rating === rating);
+      if (exact.length) pick = exact;
+    }
+    if (new Set(pick.map(h => JSON.stringify(h.doc.system?.rating ?? null))).size > 1) {
+      skippedRated.push(`${it.name} → ${pick.length} rated variants (${a.name})`);
+      continue;
+    }
+    // The core book first, then the other SR3 books.
+    pick = [...pick].sort((x, y) => (y.pack.startsWith('sr3e-sr3-') ? 1 : 0) - (x.pack.startsWith('sr3e-sr3-') ? 1 : 0));
+
+    const src = pick[0];
     const now = Date.now();
     const next = {
       ...it,
@@ -154,7 +208,11 @@ for (const a of actors) {
       name: it.name,
       type: src.doc.type,
       img:  src.doc.img ?? it.img,
-      system: structuredClone(src.doc.system ?? {}),
+      system: {
+        ...structuredClone(src.doc.system ?? {}),
+        // The contact's own rating (from the book's gear line) wins over the pack entry's.
+        ...(ratingFromName(it.name) ? { rating: ratingFromName(it.name) } : {}),
+      },
       _stats: {
         ...(it._stats ?? {}),
         // Real provenance: this is what "does their gear link back to the compendium" means.
@@ -169,6 +227,7 @@ for (const a of actors) {
   }
 }
 await db.close();
+contactsCopy?.cleanup();
 
 for (const [name, list] of [...perContact].sort()) {
   console.log(`  ${name}`);
@@ -179,6 +238,11 @@ console.log(`\n${CHECK ? 'Would convert' : 'Converted'}: ${converted}`);
 if (skippedType.length) {
   console.log(`\nSkipped — target type is excluded by design (${skippedType.length}):`);
   [...new Set(skippedType)].forEach(s => console.log(`  ${s}`));
+}
+if (skippedRated.length) {
+  console.log(`
+Skipped — RATED VARIANTS, the contact's line gives no rating (${skippedRated.length}):`);
+  [...new Set(skippedRated)].forEach(s => console.log(`  ${s}`));
 }
 if (skippedAmbiguous.length) {
   console.log(`\nSkipped — AMBIGUOUS, packs disagree on the type (${skippedAmbiguous.length}):`);

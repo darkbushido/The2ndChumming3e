@@ -1659,6 +1659,386 @@
           "book": "st"
         }
       }
+    },
+    {
+      "name": "sr3e-sr3-ammunition",
+      "label": "Shadowrun 3rd",
+      "path": "packs/sr3e-sr3-ammunition",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "ammunition"
+          ],
+          "book": "sr3"
+        }
+      }
+    },
+    {
+      "name": "sr3e-cc-ammunition",
+      "label": "Cannon Companion",
+      "path": "packs/sr3e-cc-ammunition",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "ammunition"
+          ],
+          "book": "cc"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr3-gear",
+      "label": "Shadowrun 3rd",
+      "path": "packs/sr3e-sr3-gear",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "gear"
+          ],
+          "book": "sr3"
+        }
+      }
+    },
+    {
+      "name": "sr3e-mm-ammunition",
+      "label": "Man and Machine",
+      "path": "packs/sr3e-mm-ammunition",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "ammunition"
+          ],
+          "book": "mm"
+        }
+      }
+    },
+    {
+      "name": "sr3e-cc-gear",
+      "label": "Cannon Companion",
+      "path": "packs/sr3e-cc-gear",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "gear"
+          ],
+          "book": "cc"
+        }
+      }
+    },
+    {
+      "name": "sr3e-mm-gear",
+      "label": "Man and Machine",
+      "path": "packs/sr3e-mm-gear",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "gear"
+          ],
+          "book": "mm"
+        }
+      }
+    },
+    {
+      "name": "sr3e-mm-medical",
+      "label": "Man and Machine",
+      "path": "packs/sr3e-mm-medical",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "medical"
+          ],
+          "book": "mm"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr3-medical",
+      "label": "Shadowrun 3rd",
+      "path": "packs/sr3e-sr3-medical",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "medical"
+          ],
+          "book": "sr3"
+        }
+      }
+    },
+    {
+      "name": "sr3e-mits-gear",
+      "label": "Magic in the Shadows",
+      "path": "packs/sr3e-mits-gear",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "gear"
+          ],
+          "book": "mits"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr3-drugs",
+      "label": "Shadowrun 3rd",
+      "path": "packs/sr3e-sr3-drugs",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "drug"
+          ],
+          "book": "sr3"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr2-ammunition",
+      "label": "Shadowrun 2nd Edition",
+      "path": "packs/sr3e-sr2-ammunition",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "ammunition"
+          ],
+          "book": "sr2"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr2-gear",
+      "label": "Shadowrun 2nd Edition",
+      "path": "packs/sr3e-sr2-gear",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "gear"
+          ],
+          "book": "sr2"
+        }
+      }
+    },
+    {
+      "name": "sr3e-fof-ammunition",
+      "label": "Fields of Fire",
+      "path": "packs/sr3e-fof-ammunition",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "ammunition"
+          ],
+          "book": "fof"
+        }
+      }
+    },
+    {
+      "name": "sr3e-ssc-gear",
+      "label": "Street Samurai Catalog",
+      "path": "packs/sr3e-ssc-gear",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "gear"
+          ],
+          "book": "ssc"
+        }
+      }
+    },
+    {
+      "name": "sr3e-ssc-armor",
+      "label": "Street Samurai Catalog",
+      "path": "packs/sr3e-ssc-armor",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "armor"
+          ],
+          "book": "ssc"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr2-medical",
+      "label": "Shadowrun 2nd Edition",
+      "path": "packs/sr3e-sr2-medical",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "medical"
+          ],
+          "book": "sr2"
+        }
+      }
+    },
+    {
+      "name": "sr3e-st-medical",
+      "label": "Shadowtech",
+      "path": "packs/sr3e-st-medical",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "medical"
+          ],
+          "book": "st"
+        }
+      }
+    },
+    {
+      "name": "sr3e-fof-gear",
+      "label": "Fields of Fire",
+      "path": "packs/sr3e-fof-gear",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "gear"
+          ],
+          "book": "fof"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr2-drugs",
+      "label": "Shadowrun 2nd Edition",
+      "path": "packs/sr3e-sr2-drugs",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "drug"
+          ],
+          "book": "sr2"
+        }
+      }
+    },
+    {
+      "name": "sr3e-ssc-ammunition",
+      "label": "Street Samurai Catalog",
+      "path": "packs/sr3e-ssc-ammunition",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "ammunition"
+          ],
+          "book": "ssc"
+        }
+      }
     }
   ],
   "packFolders": [
@@ -1703,6 +2083,7 @@
             "sr3e-sota2-armor",
             "sr3e-sr2-armor",
             "sr3e-sr3-armor",
+            "sr3e-ssc-armor",
             "sr3e-tss-armor",
             "sr3e-twl-armor"
           ]
@@ -1759,8 +2140,45 @@
           "packs": [
             "sr3e-mm-drugs",
             "sr3e-sota-drugs",
+            "sr3e-sr2-drugs",
+            "sr3e-sr3-drugs",
             "sr3e-st-drugs",
             "sr3e-tal-drugs"
+          ]
+        },
+        {
+          "name": "Ammunition",
+          "sorting": "a",
+          "packs": [
+            "sr3e-cc-ammunition",
+            "sr3e-fof-ammunition",
+            "sr3e-mm-ammunition",
+            "sr3e-sr2-ammunition",
+            "sr3e-sr3-ammunition",
+            "sr3e-ssc-ammunition"
+          ]
+        },
+        {
+          "name": "Gear",
+          "sorting": "a",
+          "packs": [
+            "sr3e-cc-gear",
+            "sr3e-fof-gear",
+            "sr3e-mits-gear",
+            "sr3e-mm-gear",
+            "sr3e-sr2-gear",
+            "sr3e-sr3-gear",
+            "sr3e-ssc-gear"
+          ]
+        },
+        {
+          "name": "Medical",
+          "sorting": "a",
+          "packs": [
+            "sr3e-mm-medical",
+            "sr3e-sr2-medical",
+            "sr3e-sr3-medical",
+            "sr3e-st-medical"
           ]
         }
       ]
