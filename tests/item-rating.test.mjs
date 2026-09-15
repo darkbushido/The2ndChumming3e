@@ -87,7 +87,7 @@ export async function run(t) {
   const sheet = read('scripts/sheets/SR3EItemSheet.js');
   const gearCase = sheet.slice(sheet.indexOf("case 'gear':"), sheet.indexOf("case 'gear':") + 900);
   t.ok('the gear sheet has a Rating box', /this\._ratingField\(s\)/.test(gearCase));
-  t.ok('…and Book / Page', /'bookPage'/.test(gearCase));
+  t.ok('…and Book / Page', /_bookPageField\(s\)/.test(gearCase));
   t.ok('cyberware and bioware use the same Rating box', /case 'bioware'[\s\S]{0,2500}this\._ratingField\(s\)/.test(sheet));
   const gearModel = models.slice(models.indexOf('class GearData'), models.indexOf('class SkillData'));
   t.ok('gear\'s rating is nullable — null is no rating', /rating:\s+new NumberField\(\{ integer: true, nullable: true, initial: null/.test(gearModel));
