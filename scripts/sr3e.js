@@ -12,6 +12,7 @@ import { EssenceHoles } from './data/essence-holes.mjs';
 import { SR3EStress } from './SR3EStress.js';
 import { Stress } from './data/stress.mjs';
 import { MoveByWire } from './data/move-by-wire.mjs';
+import { Cyberzombie } from './data/cyberzombie.mjs';
 import { ItemRating, ratingOnCreate } from './data/item-rating.mjs';
 import { sceneFirst } from './data/actor-scope.mjs';
 import { SR3EItem } from './documents/SR3EItem.js';
@@ -104,7 +105,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock, ItemRating, EssenceHoles, SR3EStress, Stress, MoveByWire };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock, ItemRating, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie };
 
   // When THIS client loaded the system's code.
   //

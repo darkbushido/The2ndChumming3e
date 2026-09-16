@@ -146,6 +146,9 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       // corrects it twice at most. Every effect is situational, so nothing reads this on a roll —
       // the sheet states it and the GM applies it. See scripts/data/move-by-wire.mjs.
       tlex:                    new ObjectField(),
+      // Cybermancy · M&M pp.50-59 (TODO 111): { is, cds, treatments, cancer }. ⚠ A cyberzombie is the
+      // ONE case where Essence may sit at or below 0 — see SR3EActor.essenceValue and essenceState.
+      cybermancy:              new ObjectField(),
       // Hands beyond the two everyone has — extra cyber-limbs (TODO 49; SR3 core has no rule, the GM sets it).
       extraHands:              new NumberField({ integer: true, initial: 0, min: 0 }),
       sustainedSpells:         sustainedSpellsField(),
@@ -267,6 +270,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       essenceHoles:     new ArrayField(new ObjectField(), { initial: [] }),   // TODO 53 — see CharacterData
       attributeStress:  new ObjectField(),   // TODO 109 — see CharacterData
       tlex:             new ObjectField(),   // TODO 110 — see CharacterData
+      cybermancy:       new ObjectField(),   // TODO 111 — see CharacterData
       extraHands:       new NumberField({ integer: true, initial: 0, min: 0 }),   // TODO 49
       sustainedSpells:  sustainedSpellsField(),
       nuyen:           new NumberField({ integer: true, initial: 0, min: 0 }),

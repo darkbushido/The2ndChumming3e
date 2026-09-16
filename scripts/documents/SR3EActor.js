@@ -2157,6 +2157,8 @@ _prepareCharacter(sys, attr) {
       base: attr.essence.base ?? 6,
       lost: attr.essence.lost ?? null,
       installed: SR3EActor.installedEssenceCost(this.items),
+      // A cyberzombie may sit at or below 0 — cybermancy is the exception (M&M pp.50-54, TODO 111).
+      cybermancy: !!this.system?.cybermancy?.is,
     });
   }
 
@@ -8672,10 +8674,12 @@ _prepareCharacter(sys, attr) {
    *
    * Shown, never enforced — a GM may be running a cyberzombie on purpose.
    */
-  static essenceState(value) {
+  static essenceState(value, { cybermancy = false } = {}) {
     const v = Number(value);
     if (!Number.isFinite(v)) return 'ok';
-    if (v <= 0) return 'dead';
+    // ⚠ A cyberzombie at or below 0 is not dead — it is what cybermancy is FOR (M&M pp.50-54, TODO 111).
+    // Saying "dead" on their sheet would be wrong in the one case the state exists to describe.
+    if (v <= 0) return cybermancy ? 'cyberzombie' : 'dead';
     if (v < 1)  return 'low';
     return 'ok';
   }
@@ -8697,7 +8701,7 @@ _prepareCharacter(sys, attr) {
    * Floors at 0: SR3 has no negative Essence, and the two values that hang off it
    * (Bio Index capacity, effective Magic) would go strange rather than merely low.
    */
-  static essenceValue({ base = 6, lost = null, installed = 0 } = {}) {
+  static essenceValue({ base = 6, lost = null, installed = 0, cybermancy = false } = {}) {
     const b = Number.isFinite(Number(base)) ? Number(base) : 6;
     const inst = Number(installed) || 0;
 
@@ -8712,7 +8716,12 @@ _prepareCharacter(sys, attr) {
     // to was below what the (already deleted) hardware implied. The GM is trusted here,
     // as everywhere else in this system.
     const effective = (lost === null || lost === undefined) ? inst : (Number(lost) || 0);
-    return Math.max(0, parseFloat((b - effective).toFixed(2)));
+    const raw = parseFloat((b - effective).toFixed(2));
+    // ⚠ The floor of 0 is lifted for a CYBERZOMBIE and for nobody else (TODO 111). SR3 p.55: "An
+    // Essence of 0 means you're dead" — cybermancy (M&M pp.50-54) is the exception the books carve
+    // out, and Chronic Dissociation Syndrome is graded by how far BELOW zero the character sits, so
+    // clamping made every cyberzombie read as exactly 0 and the whole table unreachable.
+    return cybermancy ? raw : Math.max(0, raw);
   }
 
   /**

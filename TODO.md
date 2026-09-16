@@ -48,7 +48,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | [53](TODO-DONE.md#53) | The "Essence hole" surgery option — *M&M p.150* | ✅ — removal records a hole; an implant ticked Essence Slot spends it |
 | [109](TODO-DONE.md#109) | Cyberware, bioware and Attribute Stress — *M&M pp.124-131* | ✅ — Stress Points, Levels and the Stress Test; ⚙ Apply Stress on the Cyber tab |
 | [110](TODO-DONE.md#110) | Move-by-wire's TLE-x | ✅ — the Automatic Stress Table, the Willpower test, and the flag with its two surgeries |
-| [111](#111) | Chronic Dissociation Syndrome — cyberzombies | in 0.6 — after 109 |
+| [111](TODO-DONE.md#111) | Chronic Dissociation Syndrome — cyberzombies | ✅ — Essence below 0, the CDS table, and the GM's check |
 | [79](#79) | A ledger for karma and nuyen | nice to have |
 | [82](#82) | A flow for buying gear — *Availability, SR3 pp.284-286* | nice to have |
 | [7](#7) | More test coverage for combat, initiative and pools | nice to have |
@@ -64,12 +64,12 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 
 ## Contents
 
-**30 open.** 98 done — see [TODO-DONE.md](TODO-DONE.md).
+**29 open.** 99 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[111](#111) Chronic Dissociation Syndrome — cyberzombies |
+| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[127](#127) Tagged releases, with the guides versioned beside them<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[79](#79) No ledger for karma or nuyen — *low priority*<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
@@ -540,35 +540,6 @@ row cannot be done properly until accessories are structured data.
 - **Quick Draw is explicitly out of scope** — *"we will need some way for someone to quick draw a
   one-handed weapon if the need arises but that's a problem for another day."* It is specified in
   #47 (p.107, Reaction (4) Test, +2 unholstered, +2 each for two weapons); do not build it here.
-
-## 111. Chronic Dissociation Syndrome — cyberzombies — **rules not implemented** (M&M p.59)
-
-**Filed 2026-09-13.** The nearest thing the books have to "cyberpsychosis", and it applies **only
-to cyberzombies** — characters kept alive at **Essence 0 or less** by cybermancy (M&M p.50-54).
-- The GM makes periodic **Willpower Tests**; frequency and TN come from the *Chronic Dissociation
-  Syndrome Table* by Essence: 0 to −0.50 every 6 months TN 3 · −0.51 to −1.00 TN 4 · −1.01 to
-  −1.50 TN 5 · −1.51 to −2.00 every 4 months TN 5 · −2.01 to −2.50 TN 6 · −2.51 to −3.00 every 3
-  months TN 6 · −3.01 to −3.50 every 2 months TN 6 · −3.51 or lower every 2 months TN 8, +1 per
-  further −0.5. Cybermantic Willpower modifiers apply; short-term magical ones do not.
-- **Failure:** the character *"is lost to the world"* — can only react, never initiate; **+4 to
-  Perception Tests, +3 to all other tests**; dies in **3 + Willpower weeks**.
-- **Treatment:** only a cybermancer, in a delta clinic — Spell Resistance (8) Test, where
-  *success* kills; TN drops by 1 (min 2) each repeat; recovery speed by Willpower (6).
-- Same section: a **cancer** roll at the cybermancy operation (2D6 < 2 × |Essence| → cancer in
-  10D6 months, fatal in 4 + 1D6 weeks), adjusted for Body and symbiotes.
-
-⚠ **Prerequisite: Essence below 0 cannot be stored today.** `SR3EActor.essenceValue` returns
-`Math.max(0, …)` and the sheet's Essence box has `min="0"`, so a cyberzombie reads as exactly 0.
-Lifting that floor is part of this task — and `essenceState` (TODO 103) already treats ≤ 0 as
-`dead`, which a cybermancy flag would need to relabel (*cyberzombie*, not *dead*).
-
-**Shape, when built** (proposal): a `cybermancy` flag on the actor; a pure
-`SR3EActor.cdsTest(essence)` → `{ months, tn }` from the table, unit-tested row by row; a
-GM-only "CDS check" button when the flag is set; the CDS state as a status effect whose +4/+3 the
-GM applies. Scheduling (every N months) is campaign time the system does not track — show the
-interval, let the GM roll.
-
-<a id="112"></a>
 
 ### 🪄 Spells & drugs
 

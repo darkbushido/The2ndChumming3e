@@ -1003,6 +1003,32 @@ than 1"*, SR3 p.55) and the block turns **amber**; 0 or less is death (*"An Esse
 you're dead"*) and it turns **red**. Shown, never enforced. ⚠ **Below 1 does not need drugs** —
 the drug cocktail belongs to **cybermancy** at 0 or less (M&M p.50, p.54), not to Essence under 1.
 
+### Cyberzombies · *M&M pp.50-59* — TODO 111
+
+`system.cybermancy = { is, cds, treatments, cancer }`; rules in `scripts/data/cyberzombie.mjs`.
+
+⚠ **A cyberzombie is the ONE case where Essence may sit at or below 0.** `essenceValue` keeps the
+negative only when the flag is set, the sheet's Essence box opens its floor only then, and
+`essenceState` returns **`cyberzombie`** instead of `dead` — Chronic Dissociation Syndrome is graded by
+how far below zero the character is, so clamping at 0 made the whole table unreachable.
+
+**Chronic Dissociation Syndrome** (p.59) — the GM's periodic Willpower Test, ⚰ **CDS check** on the
+Cyber tab. The table runs 6 months/TN 3 at 0 to −0.50 down to **every 2 months at TN 8** from −3.51,
+*"+1 … for every additional -0.5"*. ⚠ That last row is open-ended and must be matched apart from the
+printed ones, or the extension never fires. A failure leaves the character *"lost to the world"*: they
+cannot initiate action, take **+4 on Perception and +3 on everything else**, and die in **3 + Willpower**
+weeks. Stated on the card; nothing is applied.
+
+⚠ **The treatment test is inverted and it is not a typo** — a delta-clinic Spell Resistance (8) Test
+where *"if the test succeeds, the magic fails and the character dies"*. It drops by 1 per repeat, to a
+minimum of 2. Recovery is a week, less a day per success on a Willpower (6) Test.
+
+**Cancer** (p.59) is rolled once, at the operation: 2D6 under twice the absolute Essence means cancer in
+10D6 months, fatal in 4 + 1D6 weeks. Body 4-7 adds 1 to the roll and 8+ adds 2, symbiotes another — all
+*"at the gamemaster's discretion"*, so they are arguments, not assumptions.
+
+**Scheduling is not modelled**: "every N months" is campaign time this system does not track.
+
 ### Astral state (Awakened characters)  · *astral Initiative: SR3 p.41, p.62*
 > "In astral space, base Reaction for magicians is equal [to Intelligence]… and a +20
 > Initiative bonus" (p.41); worked at p.62 as "(Intelligence + 20) + 1D6".

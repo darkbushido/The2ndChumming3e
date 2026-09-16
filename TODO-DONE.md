@@ -5869,7 +5869,7 @@ change handler on the select itself.
 >   place for all three.
 
 **Filed 2026-09-13** at the maintainer's request, from a search of the PDF library for
-cyberpsychosis (none of the searchable books has such a rule — see [#110](#110)/[#111](TODO.md#111) for the
+cyberpsychosis (none of the searchable books has such a rule — see [#110](#110)/[#111](#111) for the
 two nearest). Stress is the *foundation* both of those need, so it comes first.
 
 **What the book has** (*Man & Machine*, all verified against the PDF text):
@@ -5944,6 +5944,53 @@ applied automatically.
 ⚠ Rating 3/4's forced extra Complex Action is a separate, known gap (TODO 48).
 
 <a id="111"></a>
+
+## 111. Chronic Dissociation Syndrome — cyberzombies — **rules not implemented** (M&M p.59) ✅ 2026-09-16, `feature/0-6-rules`
+
+> **Built 2026-09-16** (0.6). Rules: `scripts/data/cyberzombie.mjs`.
+> - **The prerequisite is done: Essence can go below 0 — for a cyberzombie and nobody else.**
+>   `essenceValue` keeps the negative when `system.cybermancy.is` is set, the sheet's box opens its
+>   floor, and `essenceState` returns **`cyberzombie`** rather than `dead`, since saying "dead" is
+>   wrong in the one case the state exists for.
+> - **The CDS table is pinned row by row** (`cdsTest`), including *"-3.51 or lower … 8; +1 … for every
+>   additional -0.5"* — the open-ended row had to be matched separately, or the extension is
+>   unreachable, which is exactly the bug the first draft had and the test caught.
+> - **⚰ on the Cyber tab (GM):** mark a cyberzombie, 🎲 CDS check (Willpower against the table, with
+>   the interval stated), and mark or clear CDS. The card says what failing costs — *"cannot initiate
+>   action, only react"*, +4 Perception, +3 everything else, dead in 3 + Willpower weeks — and applies
+>   none of it.
+> - **Treatment and cancer are pure helpers**, stated on the sheet: the delta-clinic Spell Resistance
+>   (8), easier by 1 each repeat, ⚠ where **succeeding kills**; recovery of a week less a day per
+>   Willpower success; and the operation's 2D6 cancer roll with its Body and symbiote modifiers.
+> - **Scheduling is not modelled** — "every N months" is campaign time this system does not track. The
+>   interval is shown and the GM rolls when it is due, as the item proposed.
+
+**Filed 2026-09-13.** The nearest thing the books have to "cyberpsychosis", and it applies **only
+to cyberzombies** — characters kept alive at **Essence 0 or less** by cybermancy (M&M p.50-54).
+- The GM makes periodic **Willpower Tests**; frequency and TN come from the *Chronic Dissociation
+  Syndrome Table* by Essence: 0 to −0.50 every 6 months TN 3 · −0.51 to −1.00 TN 4 · −1.01 to
+  −1.50 TN 5 · −1.51 to −2.00 every 4 months TN 5 · −2.01 to −2.50 TN 6 · −2.51 to −3.00 every 3
+  months TN 6 · −3.01 to −3.50 every 2 months TN 6 · −3.51 or lower every 2 months TN 8, +1 per
+  further −0.5. Cybermantic Willpower modifiers apply; short-term magical ones do not.
+- **Failure:** the character *"is lost to the world"* — can only react, never initiate; **+4 to
+  Perception Tests, +3 to all other tests**; dies in **3 + Willpower weeks**.
+- **Treatment:** only a cybermancer, in a delta clinic — Spell Resistance (8) Test, where
+  *success* kills; TN drops by 1 (min 2) each repeat; recovery speed by Willpower (6).
+- Same section: a **cancer** roll at the cybermancy operation (2D6 < 2 × |Essence| → cancer in
+  10D6 months, fatal in 4 + 1D6 weeks), adjusted for Body and symbiotes.
+
+⚠ **Prerequisite: Essence below 0 cannot be stored today.** `SR3EActor.essenceValue` returns
+`Math.max(0, …)` and the sheet's Essence box has `min="0"`, so a cyberzombie reads as exactly 0.
+Lifting that floor is part of this task — and `essenceState` (TODO 103) already treats ≤ 0 as
+`dead`, which a cybermancy flag would need to relabel (*cyberzombie*, not *dead*).
+
+**Shape, when built** (proposal): a `cybermancy` flag on the actor; a pure
+`SR3EActor.cdsTest(essence)` → `{ months, tn }` from the table, unit-tested row by row; a
+GM-only "CDS check" button when the flag is set; the CDS state as a status effect whose +4/+3 the
+GM applies. Scheduling (every N months) is campaign time the system does not track — show the
+interval, let the GM roll.
+
+<a id="112"></a>
 
 ## 112. ✅ Only one armour item can be worn — a coat and a helmet together is legal — **FIXED 2026-09-13** (`fix/armor-and-stacks`)
 

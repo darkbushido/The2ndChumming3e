@@ -2466,3 +2466,11 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
   - [ ] ＋ mark TLE-x: the line turns amber and lists the effects. ✕ clears it and counts a surgery.
   - [ ] A third clearing warns that the book allows only two.
   - [ ] A character with no move-by-wire sees none of this.
+- [ ] **Cyberzombies (TODO 111):**
+  - [ ] On a character with Essence 0, the Cyber tab offers ＋ mark cyberzombie (GM only).
+  - [ ] Marked: set Essence loss to 8 on a base of 6 — the box now shows −2 and the block says
+        Cyberzombie, not dead.
+  - [ ] 🎲 CDS check rolls Willpower against TN 6, and says one test every 4 months.
+  - [ ] ＋ mark CDS: the line lists +4 Perception / +3 other, the weeks left, and the treatment TN.
+  - [ ] Unmark cyberzombie: Essence clamps back to 0 and reads dead again.
+  - [ ] Full restart first — the data model changed.
