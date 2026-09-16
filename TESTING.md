@@ -2442,3 +2442,11 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
   - [ ] Ticked with no hole: a warning, and full price.
   - [ ] A player sees the holes but has no ✕.
   - [ ] Full restart first — the data model changed.
+- [ ] **Carried load (TODO 126):**
+  - [ ] A Strength 4 character with a rifle and a few clips: the Gear tab reads "⚖ Carried N kg, free
+        to 20 kg (Str × 5)".
+  - [ ] Load it past 20 kg: the line turns amber and names the Light Wound and the (Body) turns.
+  - [ ] Past 40 kg it turns red (Moderate), and nothing is ever applied automatically.
+  - [ ] Move a heavy item into storage: the total drops.
+  - [ ] Fire a box of ammunition down: the total drops with it (weight is per round).
+  - [ ] After merging, `npm run packs:install` — the 661 ammunition documents changed.

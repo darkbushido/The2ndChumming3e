@@ -3747,3 +3747,6 @@ label.act-field input[type=number] {
 .sr-hands-line { font-size: 11px; color: var(--sr-muted); margin: 2px 0 6px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
 .sr-hands-line.is-over { color: var(--sr-amber); }
 .sr-hands-extra { margin-left: auto; }
+
+/* ⚖ Carried load and encumbrance on the Gear tab (SR3 p.274, TODO 126). */
+.sr-carried-line { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; margin: 2px 0 6px; padding: 4px 8px; font-size: 11px; background: var(--sr-surface, #1a1a1a); border: 1px solid var(--sr-border, #444); border-radius: var(--r, 3px); }

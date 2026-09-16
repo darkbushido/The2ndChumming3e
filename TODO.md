@@ -44,7 +44,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | # | Item | Status |
 |---|---|---|
 | [119](#119) | Audit *The Matrix Defragged v2* | **the 0.6 feature bump** (the maintainer, earlier) |
-| [126](#126) | Ammunition weight and a carried load | in 0.6 |
+| [126](TODO-DONE.md#126) | Ammunition weight and a carried load | ✅ — per-round weights; ⚖ Carried on the Gear tab with the p.274 tiers |
 | [53](TODO-DONE.md#53) | The "Essence hole" surgery option — *M&M p.150* | ✅ — removal records a hole; an implant ticked Essence Slot spends it |
 | [109](#109) | Cyberware, bioware and Attribute Stress — *M&M pp.124-131* | in 0.6 — the foundation 110 and 111 need |
 | [110](#110) | Move-by-wire's TLE-x | in 0.6 — after 109 |
@@ -64,7 +64,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 
 ## Contents
 
-**32 open.** 94 done — see [TODO-DONE.md](TODO-DONE.md).
+**31 open.** 95 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -72,7 +72,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[109](#109) Cyberware, bioware and Attribute Stress<br>[110](#110) Move-by-wire's TLE-x<br>[111](#111) Chronic Dissociation Syndrome — cyberzombies |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [119](#119) Audit *The Matrix Defragged v2* against what we have<br>[120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork) |
-| 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[79](#79) No ledger for karma or nuyen — *low priority*<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear<br>[126](#126) Ammunition has no weight, and nothing adds up a carried load |
+| 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[79](#79) No ledger for karma or nuyen — *low priority*<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[122](#122) Ratings in the field, not the name, for weapons, cyberware and bioware |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -1892,19 +1892,6 @@ something from 2nd edition"*
    Check its terms before scraping anything.
 4. **The outcome:** a list of candidate additions per book, each with its page, for the maintainer to
    approve. Nothing is added to the packs without that approval.
-
-## 126. Ammunition has no weight, and nothing adds up a carried load
-
-Raised 2026-09-15 as the remainder of [#55](TODO-DONE.md#55).
-
-- `AmmunitionData` has no weight, and nothing in the system totals what a character carries.
-- SR3 gives weights on the gear tables. Encumbrance itself needs checking in the book; don't assume it.
-- So the question "how much can this character carry" has no answer. #55 named this as half the point
-  of tracking ammunition.
-- **Shape:**
-  - A weight on ammunition, per box or reload.
-  - A carried total on the Gear tab, excluding storage (TODO 113).
-  - Whatever the book's encumbrance rule is, shown and never enforced.
 
 ### 🔧 Tooling & infrastructure
 

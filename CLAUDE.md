@@ -1273,6 +1273,9 @@ inside the dialog's FA-only section, so SA's second shot and BF's second burst w
 - *Type rules*: Explosive +1 / EX +2 power; Gel −2 power + Stun (attack time). **Shot** (shotguns, p.117): flechette rules + choke spread (above). APDS halves ballistic; Flechette unarmoured → level +1, armoured → **`max(Impact × 2, Ballistic)`** (`SR3EActor.flechetteArmor`, soak time via `ammoType` carried into `_postSoakCard`).
   ⚠ **The doubling is on IMPACT ONLY** — *"use either double its Impact Armor Rating or its normal Ballistic Armor Rating, whichever is higher"* (p.116). This was `max(ballistic, impact) × 2` until 2026-08-30, which doubles the wrong number and then doubles it anyway: ballistic 8 / impact 2 gave 16 where the book gives 8. The two agree whenever Impact is the higher, which is the common case for light armour and is why it survived. ⚠ *"Dermal armor negates the Damage Level increase"* — `SR3EActor.flechetteRaisesLevel`, fed by `dermalArmorSources`: a troll's hide, **Dermal Plating** or a **Dermal Sheath** (`SR3E.dermalArmorImplants`; M&M p.133 defines dermal armor as *"plating or sheath"*). ⚠ **Orthoskin is not dermal armor** — it is bioware armour, and now counts as armour instead (below). Anti-Vehicle sets `weaponOpts.avMunition` to bypass the vehicle Power/2. Tracer: FA-only, tracer rounds raise Level not Power, TN bonus shown as a manual note.
 - *Loading mechanisms*: c/m/cy/b/belt/d/sb/internal + arrow/bolt (`SR3E.ammoLoadMechanisms`); for firearms parsed from the gun's capacity string by `SR3EItem._parseLoadMechanism`. ⚠ **`b` is BREAK ACTION and `m` an INTERNAL magazine** (SR3 p.280) — the map said Belt and Magazine until 2026-09-13; 14 shipped guns are `(b)`, all break-action. Belt feed is `belt`.
+- *Weight*: ⚠ **ammunition weight is PER ROUND** (per reload for a clip) — TODO 126. A box that has been
+  fired down weighs less, which a per-box figure could not express; `build-default-gear` divides the
+  generator's package weight down, and the 661 shipped documents store it that way.
 - *Setting*: world setting `trackAmmo` gates all counting/depletion — **on** for a new world (TODO 55).
   ⚠ A world from before 0.6 that never set it stays **off**. `SR3EMigrations.DEFAULT_CHANGES` writes the
   old default in, because Foundry stores only a value someone set, so a changed default would silently
@@ -1285,6 +1288,26 @@ inside the dialog's FA-only section, so SA's second shot and BF's second burst w
 **Empty = inoperable** (when `trackAmmo` is on): `rollWeapon` bails at the top if a firearm or nocked bow/crossbow has `loadedRounds ≤ 0`, or a consumable has `quantity ≤ 0`. The roll dice icon is rendered faded + struck-through (`_itemControls` `rollDisabled`, gated by `SR3EActorSheet._weaponOutOfAmmo` for firearms & bows / inline for thrown). The Reload button stays active so you can refill.
 
 **Vehicle-mounted weapons** keep their own AV-munition checkbox in the `🚗` firing dialog — they do **not** use the clip/reload system (built for vehicle-vs-vehicle). Character firearm dialogs no longer have a manual AV checkbox (driven by Anti-Vehicle ammo type).
+
+### Carried load and Encumbrance  · *SR3 p.274* — TODO 126
+
+`scripts/data/carried-load.mjs`. The Gear tab leads with **⚖ Carried N kg**, from every item NOT in
+storage (TODO 113); installed cyberware and bioware weigh nothing, stacks multiply by `quantity`, and
+ammunition by its rounds or reloads.
+
+⚠ **The book makes this OPTIONAL** — *"If the player characters' equipment seems to be getting a bit
+out of hand, the gamemaster can impose the following Encumbrance rules"*. Shown, never enforced.
+
+| Load | Effect |
+|---|---|
+| up to **Strength × 5** kg | no appreciable effect |
+| × 10 | **Light** Stun wound after (Body) Combat Turns, then a box every turn |
+| × 15 | **Moderate**; cannot run, movement halved |
+| × 20 | **Serious**; cannot run, movement quartered |
+| heavier | passes out from exertion |
+
+⚠ **Each bound is "up to"** — exactly Strength × 5 is still free. ⚠ The movement penalties are stated,
+not modelled (there is no movement rate), and the Stun is the GM's to apply like any other wound.
 
 ### Range (firearms, bows/crossbows, thrown)  · *SR3 p.111*
 Every band and Strength multiplier is asserted against the printed table in

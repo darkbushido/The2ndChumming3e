@@ -181,7 +181,8 @@ export function docFor(row, category, edition) {
     const n = Number(/^(\d+)\s/.exec(name)?.[1] ?? 1);
     return { ...base, book, system: { concealability: String(row.Concealability ?? ''), damage, ammoType: 'regular',
       loadMechanism: /bolt/i.test(missile[1]) ? 'bolt' : 'arrow', countedIn: 'rounds', rounds: n, reloads: 0, roundsPerReload: 0,
-      weight: cellNumber(row.Weight), cost, ...common, notes: costNote } };
+      // Per arrow/bolt (TODO 126): "10 Bolts" lists the bundle, and one "Bolts" row is 0.05 — the same figure.
+      weight: Math.round(cellNumber(row.Weight) / n * 100000) / 100000, cost, ...common, notes: costNote } };
   }
   if (clip) {
     const ammoType = AmmoStock.typeFromLabel(clip[2]);
@@ -200,7 +201,10 @@ export function docFor(row, category, edition) {
   const ammoType = ammoTypeFromWords(name);
   return { ...base, book, system: { concealability: String(row.Concealability ?? ''), damage, ammoType: ammoType ?? 'regular',
     loadMechanism: 'c', countedIn: 'rounds', rounds, reloads: 0, roundsPerReload: 0,
-    weight: Math.round(cellNumber(row.Weight) * (perRound ? rounds : 1) * 1000) / 1000,
+    // ⚠ Ammunition weight is PER ROUND (TODO 126) — rounds get spent, so a per-box figure would have
+    // the stock weigh the same with one round left. The generator lists it per round already; a row that
+    // names its count ("10 Bolts", "Belt (100)") lists the package, so that is divided down.
+    weight: Math.round(cellNumber(row.Weight) / (count ? rounds : 1) * 100000) / 100000,
     cost: perRound ? Math.round(rawCost * rounds) : cost, ...common,
     notes: `${perRound ? `<p>A box of ${rounds}. The generator lists these per round (${row.Cost}¥ each); the book prices ammunition per 10 shots.</p>` : ''}`
       + costNote

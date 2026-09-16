@@ -3344,7 +3344,7 @@ in `tests/ew-skill.test.mjs`.
 >     rounds, and each type is its own item.
 >   - **The content:** #23 (661 documents). The `c8e04eff` fix lets revolvers and shotguns load them.
 >   - **Weight and carried load:** not modelled. It needs encumbrance, which does not exist, so it does
->     not block the default. Raised as [#126](TODO.md#126).
+>     not block the default. Raised as [#126](#126).
 >   - **Special arrows:** the flow already carries an arrow's type. No typed arrows ship because the data
 >     has none.
 
@@ -6124,3 +6124,36 @@ needs `node tools/patch-name-ratings.mjs --install` with Foundry closed**); `dis
 `Medkit [3]`. Mutants `gear-null-rating-reads-the-name`, `gear-rating-column-ignored`.
 
 <a id="119"></a>
+
+## 126. Ammunition has no weight, and nothing adds up a carried load ✅ 2026-09-16, `feature/0-6-rules`
+
+> **Built 2026-09-16** (0.6). Rules: `scripts/data/carried-load.mjs`.
+> - ⚠ **The first bullet was already wrong when it was written:** `AmmunitionData` HAS carried a
+>   `weight` since the default-gear build, and all 661 shipped documents store one.
+> - **What was actually wrong is the UNIT.** The weight was the whole package (a box of ten APDS =
+>   0.25), so a box fired down to its last round still weighed what ten did. It is now **per round**,
+>   or per reload for a clip — `tools/build-default-gear.mjs` divides the package down, and the 661
+>   documents were regenerated. "10 Bolts" now agrees with the single "Bolts" row at 0.05 each.
+> - **The Gear tab leads with ⚖ Carried N kg** and the Encumbrance tier, from everything not in
+>   storage (TODO 113). Installed cyberware and bioware weigh nothing — they are not carried.
+> - **Encumbrance is SR3 p.274**, and the book makes it optional: *"the gamemaster can impose the
+>   following Encumbrance rules"*. Shown, never enforced, and the line says so.
+>   - Free to **Strength × 5** kg; then × 10 Light, × 15 Moderate, × 20 Serious, beyond that the
+>     character passes out.
+>   - Each wound lands after **(Body) Combat Turns**, with a box of Stun every turn after — the
+>     book's Body 8 example is asserted.
+>   - ⚠ **The tiers are "up to"** — exactly Strength × 5 is still free.
+> - Tests: `tests/carried-load.test.mjs`. Checklist: TESTING.md §40.
+> - **Not modelled:** the movement penalties themselves (there is no movement rate), and nothing
+>   applies the Stun — the GM ticks boxes, as with every other wound.
+
+Raised 2026-09-15 as the remainder of [#55](#55).
+
+- `AmmunitionData` has no weight, and nothing in the system totals what a character carries.
+- SR3 gives weights on the gear tables. Encumbrance itself needs checking in the book; don't assume it.
+- So the question "how much can this character carry" has no answer. #55 named this as half the point
+  of tracking ammunition.
+- **Shape:**
+  - A weight on ammunition, per box or reload.
+  - A carried total on the Gear tab, excluding storage (TODO 113).
+  - Whatever the book's encumbrance rule is, shown and never enforced.

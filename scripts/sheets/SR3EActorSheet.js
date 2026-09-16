@@ -1,6 +1,7 @@
 import { SR3E, getSpecializationsForSkill, skillTypeForCategory } from '../config.js';
 import { CHARGEN_SPEC_GAP } from '../data/skill-rules.mjs';
 import { itemRating, vcrLevel, displayName } from '../data/item-rating.mjs';
+import { CarriedLoad } from '../data/carried-load.mjs';
 import { AmmoStock } from '../data/ammo-stock.mjs';
 import { BookPage } from '../data/book-page.mjs';
 
@@ -2473,7 +2474,23 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         ${this._itemControls(d.id, false)}
       </div>`).join('') : '<p class="empty-list">No drugs or toxins.</p>';
 
+    // ⚖ What the character is carrying · SR3 p.274 (TODO 126). The book's Encumbrance rules are the GM's
+    // to impose — shown here, never enforced, and stored gear is not on the character (TODO 113).
+    const carried = actor.items.filter(i => !i.getFlag('The2ndChumming3e', 'stored'));
+    const kg      = CarriedLoad.total(carried);
+    const enc     = CarriedLoad.encumbrance(actor.system?.attributes?.strength?.value ?? 0, kg,
+                                            actor.system?.attributes?.body?.value ?? 0);
+    const encColour = enc.key === 'free' ? 'var(--sr-muted)' : enc.key === 'light' ? 'var(--sr-amber)' : 'var(--sr-red)';
+    const loadLine = `
+      <div class="sr-carried-line" title="Encumbrance is an OPTIONAL rule the gamemaster may impose (${CarriedLoad.PAGE}). Free to Strength × 5; then Strength × 10 / × 15 / × 20. Stored gear does not count.">
+        <span>⚖ Carried <strong>${kg} kg</strong></span>
+        <span style="color:var(--sr-muted)">free to ${enc.free} kg (Str × 5)</span>
+        ${enc.over ? `<span style="color:${encColour}">— ${enc.label}: ${enc.note}${enc.wound && enc.key !== 'collapse' ? ` (after ${enc.afterTurns} Combat Turns)` : ''}</span>` : ''}
+        <span style="color:var(--sr-dim);font-size:10px">${CarriedLoad.PAGE}, the GM's call</span>
+      </div>`;
+
     return `<div class="tab ${this._activeTab === 'gear' ? 'active' : ''}" data-tab="gear" style="overflow-y:auto">
+      ${loadLine}
       <h3 class="section-hdr">Gear</h3>
       <div class="list-header"><span>Name</span><span>Qty</span><span>Cost</span><span class="col-xs" title="Weight (kg)">KG</span><span></span></div>
       ${gRows}
