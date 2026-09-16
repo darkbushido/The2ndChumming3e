@@ -135,10 +135,10 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       // Drug use, keyed by `DrugRules.drugKey(name)` — doses, Addiction, Tolerance, withdrawal,
       // what is running (M&M pp.108-110, TODO 124). See scripts/data/drug-rules.mjs.
       substances:              new ObjectField(),
-      // Essence holes left by removed cyberware — M&M p.150's Essence Slot option (TODO 53).
-      // ⚠ A RECORD, never a refund: removal leaves `essence.lost` alone (M&M p.147). Each entry is
-      // { id, name, amount, at, grade }; see scripts/data/essence-holes.mjs.
-      essenceHoles:            new ArrayField(new ObjectField(), { initial: [] }),
+      // The Essence hole left by removed cyberware — M&M p.150's Essence Slot option (TODO 53). ONE pooled
+      // number (the maintainer: "they just have an essence hole"), filled down by implants fitted into it.
+      // ⚠ A RECORD, never a refund: removal leaves `essence.lost` alone (M&M p.147).
+      essenceHole:             new NumberField({ initial: 0, min: 0 }),
       // Attribute Stress · M&M pp.124-131 (TODO 109), keyed by attribute name ({ body: 3, … }).
       // ⚠ An ObjectField because only the attributes that have taken Stress appear.
       attributeStress:         new ObjectField(),
@@ -267,7 +267,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       attributeBoost:   attributeBoostField(),
       augmentations:    new ObjectField(),
       substances:       new ObjectField(),   // drug use — see CharacterData (TODO 124)
-      essenceHoles:     new ArrayField(new ObjectField(), { initial: [] }),   // TODO 53 — see CharacterData
+      essenceHole:      new NumberField({ initial: 0, min: 0 }),   // TODO 53 — see CharacterData
       attributeStress:  new ObjectField(),   // TODO 109 — see CharacterData
       tlex:             new ObjectField(),   // TODO 110 — see CharacterData
       cybermancy:       new ObjectField(),   // TODO 111 — see CharacterData

@@ -2433,14 +2433,14 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
 - [ ] **Melee multiple targets (TODO 38 / 56.2):** in combat, punch token A, then attack B in the same
       phase. The GM melee window's "additional targets" starts at 1 and the attacker's TN includes +2.
       Attacking A again starts at 0.
-- [ ] **Essence holes (TODO 53):**
-  - [ ] Remove a 3.0 implant (Wired Reflexes [2]). Essence does NOT go back up, and the Cyber tab
-        lists a 3.0 hole under Essence.
-  - [ ] Drag in a 1.0 implant with Essence Slot ticked on its item sheet: Essence lost rises by 0, the
-        notification says 1.0 off and 2.0 unused, and the hole is gone.
-  - [ ] The same implant without the tick costs its full 1.0 and leaves the hole alone.
-  - [ ] Ticked with no hole: a warning, and full price.
-  - [ ] A player sees the holes but has no ✕.
+- [ ] **Essence hole (TODO 53):**
+  - [ ] Remove a 3.0 implant (Wired Reflexes [2]). Essence does NOT go back up, and "hole 3" appears
+        under Essence.
+  - [ ] Drag in a 2.0 implant with Essence Slot ticked: Essence lost does not rise, the notice says
+        2.0 off, and the hole reads 1.
+  - [ ] Drag in a 2.0 implant with the tick: 1.0 off, 1.0 to pay, and the hole reads 0.
+  - [ ] Without the tick, an implant costs full price and leaves the hole alone.
+  - [ ] The GM can type the hole down (a cloned replacement, say); a player sees it greyed out.
   - [ ] Full restart first — the data model changed.
 - [ ] **Carried load (TODO 126):**
   - [ ] A Strength 4 character with a rifle and a few clips: the Gear tab reads "⚖ Carried N kg, free

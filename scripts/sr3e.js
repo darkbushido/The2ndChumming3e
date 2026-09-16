@@ -2327,18 +2327,19 @@ function _ratchetEssenceOnInstall(item) {
   // that hole's Essence comes off its cost. ⚠ Opt-in per implant, and the hole is consumed whole.
   let holeUpdate = null;
   if (item.system?.essenceSlot) {
-    const fit = EssenceHoles.fill(EssenceHoles.list(actor.system), cost);
+    // The hole is filled only as far as this implant needs; the rest stays for the next one.
+    const fit = EssenceHoles.fill(EssenceHoles.of(actor.system), cost);
     if (fit.discount > 0) {
       cost = fit.charge;
-      holeUpdate = fit.holes;
-      ui.notifications?.info(`${actor.name}: ${item.name} fitted into the ${fit.used.name || 'Essence'} hole `
-        + `— ${fit.discount} Essence off${fit.wasted ? `, ${fit.wasted} of the hole unused` : ''} (${EssenceHoles.PAGE}).`);
+      holeUpdate = fit.hole;
+      ui.notifications?.info(`${actor.name}: ${item.name} fitted into the Essence hole — ${fit.discount} Essence off`
+        + `${fit.charge ? `, ${fit.charge} still to pay` : ''}; ${fit.hole} of the hole left (${EssenceHoles.PAGE}).`);
     } else {
       ui.notifications?.warn(`${actor.name}: ${item.name} is marked Essence Slot but there is no hole to fit it into (${EssenceHoles.PAGE}).`);
     }
   }
   if (cost <= 0) {
-    if (holeUpdate) actor.update({ 'system.essenceHoles': holeUpdate }).catch(err => console.error('SR3E | essence hole update failed:', err));
+    if (holeUpdate !== null) actor.update({ 'system.essenceHole': holeUpdate }).catch(err => console.error('SR3E | essence hole update failed:', err));
     return;
   }
 
@@ -2355,7 +2356,7 @@ function _ratchetEssenceOnInstall(item) {
   if (next <= lost) return;
 
   const changes = { 'system.attributes.essence.lost': next };
-  if (holeUpdate) changes['system.essenceHoles'] = holeUpdate;
+  if (holeUpdate !== null) changes['system.essenceHole'] = holeUpdate;
   actor.update(changes)
     .catch(err => console.error('SR3E | essence ratchet failed:', err));
 }
@@ -2375,10 +2376,9 @@ function _recordEssenceHoleOnRemoval(item) {
 
   const amount = SR3EActor.gradedEssenceCost(SR3EActor.baseEssenceCost(item), item.system?.grade);
   if (!(amount > 0)) return;
-  const holes = EssenceHoles.record(EssenceHoles.list(actor.system),
-    { name: item.name, amount, grade: item.system?.grade ?? '' });
-  actor.update({ 'system.essenceHoles': holes })
-    .then(() => ui.notifications?.info(`${actor.name}: removing ${item.name} leaves a ${amount} Essence hole. `
+  const hole = EssenceHoles.add(EssenceHoles.of(actor.system), amount);
+  actor.update({ 'system.essenceHole': hole })
+    .then(() => ui.notifications?.info(`${actor.name}: removing ${item.name} adds ${amount} to the Essence hole (now ${hole}). `
       + `Essence is NOT refunded (M&M p.147); a new implant can be fitted into it with the Essence Slot option `
       + `(+${EssenceHoles.THRESHOLD_MOD} Threshold, ${EssenceHoles.PAGE}).`))
     .catch(err => console.error('SR3E | essence hole record failed:', err));

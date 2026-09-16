@@ -978,11 +978,14 @@ CYBERWARE:
 > "Cyberware that is removed **does not restore the character's lost Essence**. Removing
 > cyberware incurs permanent damage to the implant (1D6 ÷ 2 Stress)."  — *M&M p.147*
 
-**The Essence hole is BUILT** (TODO 53, `scripts/data/essence-holes.mjs`): removing cyberware records a
-hole on `system.essenceHoles` — ⚠ **never touching `essence.lost`**, because removal refunds nothing —
-and an implant whose `essenceSlot` is ticked takes one hole off its cost when it is installed. ⚠ **One
-hole, consumed whole**: the remainder is discarded rather than lent to the next implant. The +2 Threshold
-is stated, not enforced; there is still no surgery flow (TODO 109).
+**The Essence hole is BUILT** (TODO 53, `scripts/data/essence-holes.mjs`): **one pooled number,
+`system.essenceHole`** (the maintainer: *"they just have an essence hole"*). Removing cyberware adds its
+graded cost — ⚠ **never touching `essence.lost`**, because removal refunds nothing — and an implant whose
+`essenceSlot` is ticked fills the hole down at install. ⚠ **A partly filled hole keeps its remainder**: a
+3.0 hole with a 2.0 implant is a 1.0 hole, tracked until it reaches 0. The GM edits it on the sheet; a
+player's write is dropped (`stripPlayerEssenceWrites`). The +2 Threshold is stated, not enforced; there is
+no surgery flow. ⚠ A cloned replacement filling the hole is **not in M&M** as far as a search finds
+(Body Parts p.139, Transplant p.148) — the GM lowers the number by hand.
 
 ⚠ **The "Essence hole" is an opt-in SURGERY OPTION, not automatic** — *M&M p.150*:
 

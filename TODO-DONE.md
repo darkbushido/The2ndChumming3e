@@ -3192,7 +3192,17 @@ dodge fields ride, and adding them without noticing would have reproduced it.
 ## 53. The "Essence hole" surgery option is not modelled — *M&M p.150* ✅ 2026-09-16, `feature/0-6-rules`
 
 > **Built 2026-09-16** (0.6). Rules: `scripts/data/essence-holes.mjs`.
-> - **Removing cyberware records a hole** on the actor (`system.essenceHoles`), naming the implant and
+> - ⚠ **REVISED the same morning — the maintainer's ruling:** *"we don't need to track what implant was
+>   removed, they just have an essence hole"*, and a partly filled hole keeps its remainder *"until the
+>   hole is zero'd out"*. So the list of holes below became **one number, `system.essenceHole`**: removal
+>   adds to it, an Essence Slot implant fills it down, and a 3.0 hole with a 2.0 implant is a **1.0 hole**.
+>   The GM edits it directly on the sheet (players cannot). Nothing in M&M needs the removed implant
+>   remembered — p.127's Essence *slots* choose which INSTALLED implant a wound hits, a different thing.
+>   ⚠ **A cloned replacement filling the hole was NOT found in M&M.** Body Parts (p.139) and the
+>   Transplant Organ/Limb procedure (p.148) cover cloned parts, and the designer's note (p.7) says Essence
+>   is not lost when something is *"replaced with the same type of item"*, but no page says a clone fills
+>   an Essence hole. Until a page turns up, the GM lowers the hole by hand.
+> - *(Superseded:)* **Removing cyberware records a hole** on the actor (`system.essenceHoles`), naming the implant and
 >   its graded Essence cost.
 > - ⚠ **It still refunds nothing** (M&M p.147). The `deleteItem` hook never touches `essence.lost`;
 >   the long-standing warning is against a hook that LOWERS the mark, and a test asserts this one does

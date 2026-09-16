@@ -8768,6 +8768,12 @@ _prepareCharacter(sys, attr) {
       const ess = changed.system?.attributes?.essence;
       if (ess && typeof ess === 'object' && k in ess) { delete ess[k]; removed = true; }
     }
+    // The Essence hole (TODO 53) lowers what the next implant costs, so it is the GM's for the same reason.
+    // The hooks that add to it and fill it run on the GM, so this never blocks them.
+    if ('system.essenceHole' in changed) { delete changed['system.essenceHole']; removed = true; }
+    if (changed.system && typeof changed.system === 'object' && 'essenceHole' in changed.system) {
+      delete changed.system.essenceHole; removed = true;
+    }
     return removed;
   }
 
