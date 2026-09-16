@@ -50,6 +50,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       essenceRecalc:  SR3EActorSheet._onEssenceRecalc,
       clearEssenceHole: SR3EActorSheet._onClearEssenceHole,   // TODO 53
       applyStress:      SR3EActorSheet._onApplyStress,        // TODO 109
+      toggleTlex:       SR3EActorSheet._onToggleTlex,         // TODO 110
       openHealing:    SR3EActorSheet._onOpenHealing,
       equipArmor:     SR3EActorSheet._onEquipArmor,
       equipMelee:     SR3EActorSheet._onEquipMelee,
@@ -1818,6 +1819,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                title="Recoil compensation from cyberware, bioware, shock pads etc. (weapon-mounted comp is set on the weapon)"/>
         <span style="font-size:11px;color:var(--sr-muted)">from cyber/bio sources — stacks with weapon-mounted compensation</span>
       </div>
+      ${this._tlexLine(actor)}
       <h3 class="section-hdr">Cyberware</h3>
       ${game.user.isGM ? `<button type="button" class="btn-add" data-action="applyStress"
         title="Apply Stress to an implant or an Attribute — a wound effect is 1D6 ÷ 2 and a Stress Test (M&amp;M pp.124-131)."
@@ -2439,6 +2441,36 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       </div>
       <div style="font-size:11px;color:var(--sr-muted);margin-bottom:10px">
         Damage: 3/6/8/10 boxes = +1/+2/+3 TN or crash. Click boxes or use L/M/S/D buttons to apply damage.
+      </div>`;
+  }
+
+  /**
+   * TLE-x from a move-by-wire system · M&M p.60 (TODO 110). Shown only when the character HAS the
+   * system — nobody else can develop it. ⚠ Every effect is situational and the book hands each
+   * situation to the GM, so this states them and applies none.
+   */
+  _tlexLine(actor) {
+    const MBW = game.sr3e.MoveByWire;
+    const mbw = game.sr3e.SR3EStress.moveByWire(actor);
+    if (!mbw) return '';
+    const tlex   = actor.system?.tlex ?? {};
+    const has    = !!tlex.has;
+    const surg   = Math.max(0, Number(tlex.surgeries) || 0);
+    const months = MBW.stressEveryMonths(mbw.rating);
+    const gm     = game.user.isGM;
+    return `
+      <div class="sr-carried-line" style="border-color:${has ? 'var(--sr-amber)' : 'var(--sr-border)'}"
+           title="Move-by-wire's side effects — M&amp;M p.60. The Stress lands on Quickness and Reaction, and only therapeutic surgery removes it.">
+        <span>🧠 Move-by-wire ${mbw.rating}</span>
+        ${months ? `<span style="color:var(--sr-muted)">1 Stress every ${months} month${months === 1 ? '' : 's'}, to Quickness AND Reaction</span>` : ''}
+        <span style="color:var(--sr-muted)">then unaugmented Willpower (${MBW.tlexTN(mbw.rating)}) or TLE-x</span>
+        ${has
+          ? `<span style="color:var(--sr-amber)">TLE-x: ${MBW.tlexNote()}</span>
+             <span style="color:var(--sr-dim)">brain surgery ${surg}/${MBW.TLEX_SURGERY.limit}${MBW.surgeryExhausted(surg) ? ' — no more possible' : `, Correct Failure TN ${MBW.TLEX_SURGERY.targetNumber}`}</span>`
+          : ''}
+        ${gm ? `<a data-action="toggleTlex" style="cursor:pointer;margin-left:auto;color:var(--sr-muted)"
+                  title="${has ? 'Clear TLE-x — brain surgery corrected it (it counts against the two allowed).' : 'Mark TLE-x — the Willpower test was failed.'}"
+                  >${has ? '✕ cleared by surgery' : '＋ mark TLE-x'}</a>` : ''}
       </div>`;
   }
 
@@ -3598,6 +3630,23 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    * ✕ on an Essence hole (M&M p.150, TODO 53) — GM only, because a hole is what lets the next implant
    * cost less, and removing one is the same kind of decision as correcting the loss above it.
    */
+  /**
+   * 🧠 TLE-x on or off · M&M p.60 (TODO 110) — GM only. Clearing it counts a brain surgery, because the
+   * book allows only two: "it can only be done twice".
+   */
+  static async _onToggleTlex(_event, _target) {
+    if (!game.user.isGM) { ui.notifications.warn('Only the GM sets TLE-x.'); return; }
+    const MBW  = game.sr3e.MoveByWire;
+    const tlex = this.actor.system?.tlex ?? {};
+    const has  = !!tlex.has;
+    const surg = Math.max(0, Number(tlex.surgeries) || 0);
+    if (has && MBW.surgeryExhausted(surg)) {
+      ui.notifications.warn(`${this.actor.name}: brain surgery has already been done ${surg} times — `
+        + `"it can only be done twice" (${MBW.PAGE}). Edit the record by hand if the GM is overruling that.`);
+    }
+    await this.actor.update({ 'system.tlex': { has: !has, surgeries: has ? surg + 1 : surg } });
+  }
+
   /** ⚙ Apply Stress — GM only, because Stress is the GM saying what a wound did (TODO 109). */
   static async _onApplyStress(_event, _target) {
     await game.sr3e.SR3EStress.open(this.actor);

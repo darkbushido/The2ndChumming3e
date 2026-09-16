@@ -47,7 +47,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | [126](TODO-DONE.md#126) | Ammunition weight and a carried load | ✅ — per-round weights; ⚖ Carried on the Gear tab with the p.274 tiers |
 | [53](TODO-DONE.md#53) | The "Essence hole" surgery option — *M&M p.150* | ✅ — removal records a hole; an implant ticked Essence Slot spends it |
 | [109](TODO-DONE.md#109) | Cyberware, bioware and Attribute Stress — *M&M pp.124-131* | ✅ — Stress Points, Levels and the Stress Test; ⚙ Apply Stress on the Cyber tab |
-| [110](#110) | Move-by-wire's TLE-x | in 0.6 — after 109 |
+| [110](TODO-DONE.md#110) | Move-by-wire's TLE-x | ✅ — the Automatic Stress Table, the Willpower test, and the flag with its two surgeries |
 | [111](#111) | Chronic Dissociation Syndrome — cyberzombies | in 0.6 — after 109 |
 | [79](#79) | A ledger for karma and nuyen | nice to have |
 | [82](#82) | A flow for buying gear — *Availability, SR3 pp.284-286* | nice to have |
@@ -64,12 +64,12 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 
 ## Contents
 
-**31 open.** 97 done — see [TODO-DONE.md](TODO-DONE.md).
+**30 open.** 98 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[110](#110) Move-by-wire's TLE-x<br>[111](#111) Chronic Dissociation Syndrome — cyberzombies |
+| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[111](#111) Chronic Dissociation Syndrome — cyberzombies |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[127](#127) Tagged releases, with the guides versioned beside them<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[79](#79) No ledger for karma or nuyen — *low priority*<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
@@ -540,28 +540,6 @@ row cannot be done properly until accessories are structured data.
 - **Quick Draw is explicitly out of scope** — *"we will need some way for someone to quick draw a
   one-handed weapon if the need arises but that's a problem for another day."* It is specified in
   #47 (p.107, Reaction (4) Test, +2 unholstered, +2 each for two weapons); do not build it here.
-
-## 110. Move-by-wire's TLE-x — **rules not implemented** (M&M p.60) — needs [#109](TODO-DONE.md#109)
-
-**Filed 2026-09-13.** Move-by-wire's attribute bonuses are implemented (CLAUDE.md, *Move-by-wire*);
-its **side effect** is not:
-- Each time the system takes **Stress**, the character makes an **unaugmented Willpower Test, TN
-  (move-by-wire rating × 2)**. Failure → **TLE-x**: *"feelings of alienation and loss of his sense
-  of self"*.
-- Effects: **−1 Charisma and all Charisma-based skills** in important social situations; and, in
-  circumstances the GM deems dangerous or tactically crucial, **+2 to Perception target numbers,
-  −2 Initiative and −1D6 Reaction**.
-- The same page gives move-by-wire **automatic Stress** (the *Automatic Stress Table*), applied to
-  **both Quickness and Reaction**, removable only by therapeutic surgery (p.147).
-
-**Depends on #109** — there is no Stress to trigger the test until that exists. The flag itself is
-cheap: a per-actor `tlex` state (or a status effect) plus a pure rule for the test; the situational
-modifiers are GM-judged, so they belong in the GM's TN window as an offered row (like vision), not
-applied automatically.
-
-⚠ Rating 3/4's forced extra Complex Action is a separate, known gap (TODO 48).
-
-<a id="111"></a>
 
 ## 111. Chronic Dissociation Syndrome — cyberzombies — **rules not implemented** (M&M p.59)
 

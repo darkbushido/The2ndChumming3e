@@ -5869,7 +5869,7 @@ change handler on the select itself.
 >   place for all three.
 
 **Filed 2026-09-13** at the maintainer's request, from a search of the PDF library for
-cyberpsychosis (none of the searchable books has such a rule — see [#110](TODO.md#110)/[#111](TODO.md#111) for the
+cyberpsychosis (none of the searchable books has such a rule — see [#110](#110)/[#111](TODO.md#111) for the
 two nearest). Stress is the *foundation* both of those need, so it comes first.
 
 **What the book has** (*Man & Machine*, all verified against the PDF text):
@@ -5905,6 +5905,45 @@ offered button on the soak card. Unit tests pinned to the p.126 Leggy example (r
 the field too (packs are not migrated; see *World migrations*).
 
 <a id="110"></a>
+
+## 110. Move-by-wire's TLE-x — **rules not implemented** (M&M p.60) — needs [#109](#109) ✅ 2026-09-16, `feature/0-6-rules`
+
+> **Built 2026-09-16** (0.6), on #109's Stress. Rules: `scripts/data/move-by-wire.mjs`.
+> - **The Automatic Stress Table** — 1 Stress every 6 / 4 / 2 / 1 months at ratings 1-4 — is shown on
+>   the Cyber tab beside the system, with the reminder that it lands on **Quickness AND Reaction** and
+>   that only therapeutic surgery removes it.
+> - **The TLE-x test is offered** on the Stress card whenever the system, Quickness or Reaction takes
+>   Stress: unaugmented Willpower against **rating × 2**. Failing it is what gives TLE-x.
+> - **`system.tlex` = `{ has, surgeries }`.** The GM marks or clears it on the Cyber tab; clearing
+>   counts a brain surgery, and the third is refused with the book's words — *"it can only be done
+>   twice"* — at its Correct Failure TN 8.
+> - ⚠ **Every effect is situational and stays the GM's.** The book scopes them to *"important social
+>   situations"* and *"circumstances that the gamemaster deems dangerous or tactically crucial"*, so
+>   the sheet states −1 Charisma, +2 Perception TNs, −2 Initiative and −1D6 Reaction, and applies none
+>   of them to a roll. Same precedent as the Charging Attack's declared movement.
+> - **Not built:** CCSS (p.60) — the seizure syndrome a failed system causes. It ends the character's
+>   move-by-wire permanently and its aftermath is *"at the gamemaster's discretion"*, which is a
+>   narrative call with no dice to hang on it. Raised nowhere; it is one paragraph of GM text.
+
+**Filed 2026-09-13.** Move-by-wire's attribute bonuses are implemented (CLAUDE.md, *Move-by-wire*);
+its **side effect** is not:
+- Each time the system takes **Stress**, the character makes an **unaugmented Willpower Test, TN
+  (move-by-wire rating × 2)**. Failure → **TLE-x**: *"feelings of alienation and loss of his sense
+  of self"*.
+- Effects: **−1 Charisma and all Charisma-based skills** in important social situations; and, in
+  circumstances the GM deems dangerous or tactically crucial, **+2 to Perception target numbers,
+  −2 Initiative and −1D6 Reaction**.
+- The same page gives move-by-wire **automatic Stress** (the *Automatic Stress Table*), applied to
+  **both Quickness and Reaction**, removable only by therapeutic surgery (p.147).
+
+**Depends on #109** — there is no Stress to trigger the test until that exists. The flag itself is
+cheap: a per-actor `tlex` state (or a status effect) plus a pure rule for the test; the situational
+modifiers are GM-judged, so they belong in the GM's TN window as an offered row (like vision), not
+applied automatically.
+
+⚠ Rating 3/4's forced extra Complex Action is a separate, known gap (TODO 48).
+
+<a id="111"></a>
 
 ## 112. ✅ Only one armour item can be worn — a coat and a helmet together is legal — **FIXED 2026-09-13** (`fix/armor-and-stacks`)
 

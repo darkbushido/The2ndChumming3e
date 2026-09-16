@@ -1755,6 +1755,18 @@ paid Essence for and the book never says which loses. Registry: `SR3E.reactionEx
 ⚠ **Rating 3/4's forced extra Complex Action is not modelled** — it needs the action economy
 (TODO 48).
 
+**Its side effects are built** (TODO 110, `scripts/data/move-by-wire.mjs`) · *M&M p.60*:
+- **Automatic Stress** — 1 point every **6 / 4 / 2 / 1 months** at ratings 1-4, *"to both Quickness and
+  Reaction"*, removable only by therapeutic surgery. Shown on the Cyber tab; the points go on through
+  ⚙ Apply Stress (TODO 109).
+- **TLE-x** — each time the system takes Stress, an **unaugmented Willpower (rating × 2)** Test, offered
+  on the Stress card. `system.tlex = { has, surgeries }`; the GM marks it, and clearing it counts one of
+  the **two** brain surgeries the book allows (Correct Failure, base TN 8).
+- ⚠ **Nothing is applied to a roll.** −1 Charisma *"in important social situations"*, and +2 Perception
+  TNs / −2 Initiative / −1D6 Reaction *"in circumstances that the gamemaster deems dangerous or
+  tactically crucial"* — both are situations the book hands to the GM, so the sheet states them.
+- **CCSS is not modelled** — a failed system risks it, and its aftermath is explicitly the GM's.
+
 ### Enhanced Articulation's Reaction stops at rigging and decking  · *M&M p.66*
 
 `derived.reactionNoRigDeck` is Reaction with the exempt bonuses removed; only **remote-control

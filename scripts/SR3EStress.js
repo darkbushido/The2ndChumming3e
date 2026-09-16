@@ -1,4 +1,5 @@
 import { Stress } from './data/stress.mjs';
+import { MoveByWire } from './data/move-by-wire.mjs';
 
 /**
  * Stress on implants and Attributes — the GM's flow · *M&M pp.124-131* (TODO 109).
@@ -17,6 +18,20 @@ import { Stress } from './data/stress.mjs';
  * Attribute then does is the GM's, as damage always is here.
  */
 export const SR3EStress = {
+  /**
+   * The character's move-by-wire system, if any · M&M p.60 (TODO 110) — `{ item, rating, willpower }`,
+   * with the UNAUGMENTED Willpower the test rolls. Null when there is none.
+   */
+  moveByWire(actor) {
+    const item = (actor?.items ?? []).find(i => MoveByWire.isSystem(i));
+    if (!item) return null;
+    return {
+      item,
+      rating:    game.sr3e.ItemRating.itemRating(item) || 1,
+      willpower: Math.max(0, Number(actor?.system?.attributes?.willpower?.base) || 0),
+    };
+  },
+
   /** Implants that can take Stress: cyberware and bioware the character is actually carrying. */
   implants(actor) {
     return (actor?.items ?? []).filter(i => (i.type === 'cyberware' || i.type === 'bioware')
@@ -147,6 +162,21 @@ export const SR3EStress = {
       actorId: actor.id, targetLabel: label, dice: plan.dice, tn: plan.tn,
     }).replace(/'/g, '&#39;');
 
+    // Move-by-wire · M&M p.60 (TODO 110): "Each time the character takes Stress, he must make an
+    // unaugmented Willpower (move-by-wire rating x 2) Test. If he fails … he develops TLE-x."
+    // ⚠ Offered, never rolled for them, and never applied — TLE-x is a state the GM sets.
+    const mbw = SR3EStress.moveByWire(actor);
+    const tlexBtn = (isItem && MoveByWire.isSystem(item)) || (!isItem && mbw && MoveByWire.STRESSED_ATTRIBUTES.includes(id))
+      ? `<div class="sr-roll-meta" style="color:var(--sr-amber)">Move-by-wire ${mbw.rating}: an unaugmented
+           Willpower (${MoveByWire.tlexTN(mbw.rating)}) Test, or TLE-x (${MoveByWire.PAGE}).</div>
+         <div class="sr-soak-action">
+           <button class="sr-stress-roll-btn" data-payload='${JSON.stringify({
+             actorId: actor.id, targetLabel: `TLE-x — ${actor.name}`, dice: mbw.willpower,
+             tn: MoveByWire.tlexTN(mbw.rating), tlex: true,
+           }).replace(/'/g, '&#39;')}'>🎲 Willpower vs TLE-x</button>
+         </div>`
+      : '';
+
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor }),
@@ -155,6 +185,7 @@ export const SR3EStress = {
           <div class="sr-roll-header">⚙ Stress — ${esc(label)}</div>
           ${dieNote ? `<div class="sr-roll-meta">${dieNote}</div>` : ''}
           <div class="sr-roll-meta">${before} → <strong>${Stress.describe(after)}</strong> (${Stress.PAGE})</div>
+          ${tlexBtn}
           ${plan.autoFails
             ? `<div class="sr-roll-meta" style="color:var(--sr-red)">
                  Deadly Stress — <strong>it fails automatically</strong>; no test is rolled (M&amp;M p.126).
@@ -179,9 +210,11 @@ export const SR3EStress = {
       ui.notifications.warn(`${payload.targetLabel}: no dice to roll — it fails (M&M p.126).`);
       return;
     }
-    await actor.rollPool(dice, tn, `⚙ Stress Test — ${payload.targetLabel}`, {
+    await actor.rollPool(dice, tn, `${payload.tlex ? '🧠' : '⚙'} ${payload.tlex ? '' : 'Stress Test — '}${payload.targetLabel}`, {
       skipWoundMod: true, skipSustainMod: true,
-      footerNote: 'One success avoids failure (M&M p.126). What a failure does is the GM\'s call.',
+      footerNote: payload.tlex
+        ? `No successes and the character develops TLE-x (${MoveByWire.PAGE}): ${MoveByWire.tlexNote()}. Set it on the Cyber tab.`
+        : 'One success avoids failure (M&M p.126). What a failure does is the GM\'s call.',
     });
   },
 };

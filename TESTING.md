@@ -2458,3 +2458,11 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
   - [ ] Apply Stress to an Attribute: the test rolls half its unaugmented rating.
   - [ ] Take one to 10: the card says it fails automatically and offers no roll.
   - [ ] Full restart first — the data model changed.
+- [ ] **Move-by-wire TLE-x (TODO 110):**
+  - [ ] Give a character Move-by-Wire [2]. The Cyber tab shows "1 Stress every 4 months, to Quickness
+        AND Reaction" and "unaugmented Willpower (4) or TLE-x".
+  - [ ] ⚙ Apply Stress to Quickness: the card offers 🎲 Willpower vs TLE-x as well as the Stress Test,
+        and rolls the character's BASE Willpower.
+  - [ ] ＋ mark TLE-x: the line turns amber and lists the effects. ✕ clears it and counts a surgery.
+  - [ ] A third clearing warns that the book allows only two.
+  - [ ] A character with no move-by-wire sees none of this.
