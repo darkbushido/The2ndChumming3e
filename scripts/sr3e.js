@@ -8,6 +8,11 @@ import {
 import { SR3EActor } from './documents/SR3EActor.js';
 import { SR3EMigrations } from './SR3EMigrations.js';
 import { AmmoStock } from './data/ammo-stock.mjs';
+import { EssenceHoles } from './data/essence-holes.mjs';
+import { SR3EStress } from './SR3EStress.js';
+import { Stress } from './data/stress.mjs';
+import { MoveByWire } from './data/move-by-wire.mjs';
+import { Cyberzombie } from './data/cyberzombie.mjs';
 import { ItemRating, ratingOnCreate } from './data/item-rating.mjs';
 import { sceneFirst } from './data/actor-scope.mjs';
 import { SR3EItem } from './documents/SR3EItem.js';
@@ -100,7 +105,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock, ItemRating };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock, ItemRating, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie };
 
   // When THIS client loaded the system's code.
   //
@@ -2315,8 +2320,28 @@ function _ratchetEssenceOnInstall(item) {
   if (item.type !== 'cyberware') return;
   if (actor.type !== 'character' && actor.type !== 'npc') return;
 
-  const cost = parseFloat(item.system?.essenceCost ?? 0);
+  let cost = parseFloat(item.system?.essenceCost ?? 0);
   if (!Number.isFinite(cost) || cost <= 0) return;
+
+  // M&M p.150's Essence Slot (TODO 53): this implant was fitted into the hole an earlier one left, so
+  // that hole's Essence comes off its cost. ⚠ Opt-in per implant, and the hole is consumed whole.
+  let holeUpdate = null;
+  if (item.system?.essenceSlot) {
+    // The hole is filled only as far as this implant needs; the rest stays for the next one.
+    const fit = EssenceHoles.fill(EssenceHoles.of(actor.system), cost);
+    if (fit.discount > 0) {
+      cost = fit.charge;
+      holeUpdate = fit.hole;
+      ui.notifications?.info(`${actor.name}: ${item.name} fitted into the Essence hole — ${fit.discount} Essence off`
+        + `${fit.charge ? `, ${fit.charge} still to pay` : ''}; ${fit.hole} of the hole left (${EssenceHoles.PAGE}).`);
+    } else {
+      ui.notifications?.warn(`${actor.name}: ${item.name} is marked Essence Slot but there is no hole to fit it into (${EssenceHoles.PAGE}).`);
+    }
+  }
+  if (cost <= 0) {
+    if (holeUpdate !== null) actor.update({ 'system.essenceHole': holeUpdate }).catch(err => console.error('SR3E | essence hole update failed:', err));
+    return;
+  }
 
   // The item is already attached by the time this fires, so subtract it back out to get
   // the "before" total the seed needs.
@@ -2330,11 +2355,37 @@ function _ratchetEssenceOnInstall(item) {
   const next = parseFloat((Math.max(lost, installedBefore) + cost).toFixed(2));
   if (next <= lost) return;
 
-  actor.update({ 'system.attributes.essence.lost': next })
+  const changes = { 'system.attributes.essence.lost': next };
+  if (holeUpdate !== null) changes['system.essenceHole'] = holeUpdate;
+  actor.update(changes)
     .catch(err => console.error('SR3E | essence ratchet failed:', err));
 }
 
+/**
+ * Cyberware removed leaves an Essence HOLE · M&M p.150 (TODO 53).
+ *
+ * ⚠ **This never touches `essence.lost`** — removal refunds nothing (M&M p.147), and the long-standing
+ * warning against a delete hook is about a hook that LOWERS the mark. This one only records what was
+ * taken out, so a later implant can be fitted into the gap with the Essence Slot surgery option.
+ */
+function _recordEssenceHoleOnRemoval(item) {
+  const actor = item?.actor;
+  if (!actor || !game.users.activeGM?.isSelf) return;
+  if (item.type !== 'cyberware') return;
+  if (actor.type !== 'character' && actor.type !== 'npc') return;
+
+  const amount = SR3EActor.gradedEssenceCost(SR3EActor.baseEssenceCost(item), item.system?.grade);
+  if (!(amount > 0)) return;
+  const hole = EssenceHoles.add(EssenceHoles.of(actor.system), amount);
+  actor.update({ 'system.essenceHole': hole })
+    .then(() => ui.notifications?.info(`${actor.name}: removing ${item.name} adds ${amount} to the Essence hole (now ${hole}). `
+      + `Essence is NOT refunded (M&M p.147); a new implant can be fitted into it with the Essence Slot option `
+      + `(+${EssenceHoles.THRESHOLD_MOD} Threshold, ${EssenceHoles.PAGE}).`))
+    .catch(err => console.error('SR3E | essence hole record failed:', err));
+}
+
 Hooks.on('createItem', (item) => _ratchetEssenceOnInstall(item));
+Hooks.on('deleteItem', (item) => _recordEssenceHoleOnRemoval(item));
 
 // Inject red warning below the matrixRuleset setting in Configure Settings.
 Hooks.on('renderSettingsConfig', (_app, html) => {
@@ -3085,6 +3136,19 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'qdfire', i)) return;
       await game.actors.get(pl.actorId)?.items.get(pl.itemId)?.rollWeapon({ quickDrawn: true });
+    });
+  });
+  // ⚙ Stress Test (TODO 109) — an ordinary Success Test; the GM or the owner rolls it.
+  html.querySelectorAll('.sr-stress-roll-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'stressroll', i)) return;
+    const pl = _payload(btn);
+    if (!pl) return;
+    if (!_isDeciderId(pl.actorId)) return _denyBtn(btn, 'Only this character\'s player (or the GM) rolls it.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'stressroll', i)) return;
+      await SR3EStress.roll(pl);
     });
   });
   html.querySelectorAll('.sr-drug-roll-btn').forEach((btn, i) => {

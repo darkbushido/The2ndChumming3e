@@ -3189,6 +3189,65 @@ Flechette into the soak. Any attack whose dice exploded — most of them — sil
 ammunition's armour effects. Fixed in the same commit; it is the same carry chain the two new
 dodge fields ride, and adding them without noticing would have reproduced it.
 
+## 53. The "Essence hole" surgery option is not modelled — *M&M p.150* ✅ 2026-09-16, `feature/0-6-rules`
+
+> **Built 2026-09-16** (0.6). Rules: `scripts/data/essence-holes.mjs`.
+> - ⚠ **REVISED the same morning — the maintainer's ruling:** *"we don't need to track what implant was
+>   removed, they just have an essence hole"*, and a partly filled hole keeps its remainder *"until the
+>   hole is zero'd out"*. So the list of holes below became **one number, `system.essenceHole`**: removal
+>   adds to it, an Essence Slot implant fills it down, and a 3.0 hole with a 2.0 implant is a **1.0 hole**.
+>   The GM edits it directly on the sheet (players cannot). Nothing in M&M needs the removed implant
+>   remembered — p.127's Essence *slots* choose which INSTALLED implant a wound hits, a different thing.
+>   ⚠ **There is no way to regain Essence** (the maintainer, same morning, withdrawing the idea that a
+>   cloned replacement might fill the hole — M&M has no such rule). The GM's edit exists for player error
+>   and bookkeeping only. The Essence *slots* of p.127 are a separate thing, for cybersystem damage — TODO 129.
+> - *(Superseded:)* **Removing cyberware records a hole** on the actor (`system.essenceHoles`), naming the implant and
+>   its graded Essence cost.
+> - ⚠ **It still refunds nothing** (M&M p.147). The `deleteItem` hook never touches `essence.lost`;
+>   the long-standing warning is against a hook that LOWERS the mark, and a test asserts this one does
+>   not mention it.
+> - **The discount is opt-in per implant:** `essenceSlot` on the cyberware, a tick beside the grade on
+>   the item sheet, labelled with its +2 Threshold. Installing it takes the hole off its cost.
+> - **One hole per implant, consumed whole.** A 1.0 implant in a 3.0 hole costs nothing and the other
+>   2.0 is discarded — it is not lent to the next implant, which is the abuse this item warned about.
+>   **For the maintainer:** M&M p.150 does not say what happens to the remainder. `EssenceHoles.fill`
+>   is the one place to change it.
+> - `pick` takes the snuggest hole that covers the cost, else the largest.
+> - The Cyber tab lists the holes under Essence; the ✕ that forgets one is the GM's.
+> - **Still not modelled:** the surgery flow itself — Thresholds, Stress, procedure options (TODO 109).
+>   The +2 is stated, never enforced.
+> - Tests: `tests/essence-holes.test.mjs`. Checklist: TESTING.md §40.
+
+Found 2026-08-14, when the essence work in [#5](#5) was challenged on sourcing and the
+answer turned out to be in Man & Machine rather than core.
+
+Removing cyberware never refunds Essence (**M&M p.147**, and [#5](#5) implements that). But
+M&M also gives a way to reuse the gap, as an **optional surgery modifier**:
+
+> **Essence Slot (Implant, +2 Threshold)** — "If the character previously had cyberware
+> removed, a new implant with this option can be installed within the 'Essence hole' left
+> behind by the earlier implant. In other words, the old implant's Essence Cost can be
+> subtracted from the new implant's Essence Cost."
+
+⚠ **It is opt-in and it costs something** — +2 to the surgery Threshold, chosen per
+procedure. It is NOT what happens by default when you swap chrome, which is exactly why
+[#5](#5) accumulates on install rather than storing `max(lost, installed)`: that model would
+grant every character a free, permanent Essence Slot on every implant they ever fit.
+
+**Why it is not built.** The system has no surgery flow at all — no procedures, no
+Thresholds, no Stress. The Essence Slot option is one line in a table that only means
+anything inside that framework, and modelling it alone would be modelling the discount
+without the cost.
+
+**How a GM applies it today, and it is genuinely fine:** reduce the new implant's
+`essenceCost` by the old one's before installing, or correct the Essence box afterwards
+(`_preUpdate` translates that into `essence.lost`, so it sticks). Both are one edit.
+
+**If it is ever built**, it belongs with the rest of the surgery rules (Stress, Thresholds,
+procedure options) rather than as a special case bolted onto the install hook — and it needs
+to track WHICH hole is being filled, since a 0.5 implant cannot borrow 2.0 of hole and then
+lend the remainder to the next one for free.
+
 ## 54. ✅ Three EW divergences from Rigger 3 — **ALL FIXED 2026-08-14**
 
 Found 2026-08-14 when the [#24](#24) MIJI skill fix was challenged on sourcing. Verifying it
@@ -3294,7 +3353,7 @@ in `tests/ew-skill.test.mjs`.
 >     rounds, and each type is its own item.
 >   - **The content:** #23 (661 documents). The `c8e04eff` fix lets revolvers and shotguns load them.
 >   - **Weight and carried load:** not modelled. It needs encumbrance, which does not exist, so it does
->     not block the default. Raised as [#126](TODO.md#126).
+>     not block the default. Raised as [#126](#126).
 >   - **Special arrows:** the flow already carries an arrow's type. No typed arrows ship because the data
 >     has none.
 
@@ -5796,6 +5855,152 @@ change handler on the select itself.
 
 <a id="109"></a>
 
+## 109. Cyberware, bioware and Attribute Stress — **rules not implemented** (M&M p.124-131) ✅ 2026-09-16, `feature/0-6-rules`
+
+> **Built 2026-09-16** (0.6), to the shape this item proposed. Rules: `scripts/data/stress.mjs`; the
+> dialog, writes and card: `scripts/SR3EStress.js`.
+> - **Fields:** `stress` on cyberware (0) and bioware (**1**, the book's permanent starting point),
+>   `integrity` for a cyberlimb's Integrity Enhancement, and `system.attributeStress` on the actor.
+> - **⚙ Apply Stress** on the Cyber tab (GM only): pick an implant or an Attribute, roll 1D6 ÷ 2 or
+>   type the points, and it posts a card with the new total, its Stress Level and the test.
+> - **The Stress Test** — dice by grade (cyberware 1/2/3/5, bioware 1/2/4, an Attribute half its
+>   unaugmented rating), TN = **the new total**, −Integrity, +a bioware boost. One success avoids
+>   failure. At Deadly there is no button: it fails outright.
+> - ⚠ **The 1D6 ÷ 2 does not explode** (*"the Rule of Six does not apply to this roll"*), so it is
+>   rolled plainly; the Stress Test is an ordinary Success Test and goes through `rollPool`.
+> - ⚠ **Nothing is automated.** Wound effects are the GM saying what a wound did, so the soak card does
+>   not reach in — `Stress.woundEffects(highestDie, boxes)` is there when the GM wants the book's own
+>   answer (p.126).
+> - The p.126 worked example (Leggy) is asserted end to end in `tests/stress.test.mjs`.
+> - **For the maintainer:** 1D6 ÷ 2 **rounds down**, so a 1 inflicts nothing. M&M never says which way.
+> - **Not built here:** Stress Maintenance and repair (p.130-131), bioware malfunction thresholds, and
+>   the surgery options that change the dice (Fragile/Rugged, p.148). The field and the level are in
+>   place for all three.
+
+**Filed 2026-09-13** at the maintainer's request, from a search of the PDF library for
+cyberpsychosis (none of the searchable books has such a rule — see [#110](#110)/[#111](#111) for the
+two nearest). Stress is the *foundation* both of those need, so it comes first.
+
+**What the book has** (*Man & Machine*, all verified against the PDF text):
+- **Stress Points** mark wear and damage on an **implant** or an **Attribute** (p.124). New
+  implants start at 0; **used cyberware starts with 1D6 ÷ 2 permanent** Stress, bioware with 1.
+- **Stress Level** (p.126): 1-2 Light · 3-5 Moderate · 6-9 Serious · **10+ Deadly = automatic
+  failure**.
+- **Stress Test** (p.126), every time Stress is taken: dice by grade — cyberware Basic 1 · Alpha 2 ·
+  Beta 3 · Delta 5; bioware Cosmetic 1 · Basic 2 · Cultured 4; an Attribute rolls
+  ½ unaugmented. **TN = current Stress total** (− cyberlimb Integrity Rating; + the boost for a
+  bioware-boosted Attribute). **One success** avoids failure; none = the system/Attribute fails.
+- **Wound effects** (p.126-129): on a Damage Resistance Test, the highest die compared with the
+  boxes of damage decides whether an implant or Attribute is hit — 1D6 ÷ 2 Stress, then a Stress
+  Test. Electrical damage automatically affects cyberware (p.127).
+- **Removal** of cyberware costs the implant 1D6 ÷ 2 Stress (p.147, already quoted in CLAUDE.md's
+  *Essence is permanent*).
+- **Repair** (p.130-131): cyberware via maintenance/surgery; bioware and Attributes heal; an
+  implant's Stress **never drops below 1** once taken; some becomes permanent. Therapeutic surgery
+  p.147.
+- Bioware **malfunctions by Stress Level** (thresholds per item).
+
+**Nothing exists yet** — no Stress field on any item or attribute (grepped 2026-09-13).
+
+**Shape, when built** (a proposal, not decided): a nullable-free `stress` NumberField on
+cyberware/bioware items and per-Attribute; a pure `SR3EActor.stressTest({grade, type, stress,
+integrity, boost})` → dice + TN, and `stressLevel(points)`; show Stress on the Cyber tab with the
+level; a **GM-invoked** "Apply Stress" (1D6 ÷ 2 + the test) rather than automating wound effects —
+the ethos is that the GM decides what a wound did. Wound-effect detection could come later as an
+offered button on the soak card. Unit tests pinned to the p.126 Leggy example (reaction enhancer
+3 Stress → 1D6 vs TN 3; nephritic screen 3+1 → 2D6 vs TN 4; Reaction ½ unaugmented vs TN 3).
+
+⚠ **Data-model change** — needs a full Foundry restart. The contacts pack's cyberware would need
+the field too (packs are not migrated; see *World migrations*).
+
+<a id="110"></a>
+
+## 110. Move-by-wire's TLE-x — **rules not implemented** (M&M p.60) — needs [#109](#109) ✅ 2026-09-16, `feature/0-6-rules`
+
+> **Built 2026-09-16** (0.6), on #109's Stress. Rules: `scripts/data/move-by-wire.mjs`.
+> - **The Automatic Stress Table** — 1 Stress every 6 / 4 / 2 / 1 months at ratings 1-4 — is shown on
+>   the Cyber tab beside the system, with the reminder that it lands on **Quickness AND Reaction** and
+>   that only therapeutic surgery removes it.
+> - **The TLE-x test is offered** on the Stress card whenever the system, Quickness or Reaction takes
+>   Stress: unaugmented Willpower against **rating × 2**. Failing it is what gives TLE-x.
+> - **`system.tlex` = `{ has, surgeries }`.** The GM marks or clears it on the Cyber tab; clearing
+>   counts a brain surgery, and the third is refused with the book's words — *"it can only be done
+>   twice"* — at its Correct Failure TN 8.
+> - ⚠ **Every effect is situational and stays the GM's.** The book scopes them to *"important social
+>   situations"* and *"circumstances that the gamemaster deems dangerous or tactically crucial"*, so
+>   the sheet states −1 Charisma, +2 Perception TNs, −2 Initiative and −1D6 Reaction, and applies none
+>   of them to a roll. Same precedent as the Charging Attack's declared movement.
+> - **Not built:** CCSS (p.60) — the seizure syndrome a failed system causes. It ends the character's
+>   move-by-wire permanently and its aftermath is *"at the gamemaster's discretion"*, which is a
+>   narrative call with no dice to hang on it. Raised nowhere; it is one paragraph of GM text.
+
+**Filed 2026-09-13.** Move-by-wire's attribute bonuses are implemented (CLAUDE.md, *Move-by-wire*);
+its **side effect** is not:
+- Each time the system takes **Stress**, the character makes an **unaugmented Willpower Test, TN
+  (move-by-wire rating × 2)**. Failure → **TLE-x**: *"feelings of alienation and loss of his sense
+  of self"*.
+- Effects: **−1 Charisma and all Charisma-based skills** in important social situations; and, in
+  circumstances the GM deems dangerous or tactically crucial, **+2 to Perception target numbers,
+  −2 Initiative and −1D6 Reaction**.
+- The same page gives move-by-wire **automatic Stress** (the *Automatic Stress Table*), applied to
+  **both Quickness and Reaction**, removable only by therapeutic surgery (p.147).
+
+**Depends on #109** — there is no Stress to trigger the test until that exists. The flag itself is
+cheap: a per-actor `tlex` state (or a status effect) plus a pure rule for the test; the situational
+modifiers are GM-judged, so they belong in the GM's TN window as an offered row (like vision), not
+applied automatically.
+
+⚠ Rating 3/4's forced extra Complex Action is a separate, known gap (TODO 48).
+
+<a id="111"></a>
+
+## 111. Chronic Dissociation Syndrome — cyberzombies — **rules not implemented** (M&M p.59) ✅ 2026-09-16, `feature/0-6-rules`
+
+> **Built 2026-09-16** (0.6). Rules: `scripts/data/cyberzombie.mjs`.
+> - **The prerequisite is done: Essence can go below 0 — for a cyberzombie and nobody else.**
+>   `essenceValue` keeps the negative when `system.cybermancy.is` is set, the sheet's box opens its
+>   floor, and `essenceState` returns **`cyberzombie`** rather than `dead`, since saying "dead" is
+>   wrong in the one case the state exists for.
+> - **The CDS table is pinned row by row** (`cdsTest`), including *"-3.51 or lower … 8; +1 … for every
+>   additional -0.5"* — the open-ended row had to be matched separately, or the extension is
+>   unreachable, which is exactly the bug the first draft had and the test caught.
+> - **⚰ on the Cyber tab (GM):** mark a cyberzombie, 🎲 CDS check (Willpower against the table, with
+>   the interval stated), and mark or clear CDS. The card says what failing costs — *"cannot initiate
+>   action, only react"*, +4 Perception, +3 everything else, dead in 3 + Willpower weeks — and applies
+>   none of it.
+> - **Treatment and cancer are pure helpers**, stated on the sheet: the delta-clinic Spell Resistance
+>   (8), easier by 1 each repeat, ⚠ where **succeeding kills**; recovery of a week less a day per
+>   Willpower success; and the operation's 2D6 cancer roll with its Body and symbiote modifiers.
+> - **Scheduling is not modelled** — "every N months" is campaign time this system does not track. The
+>   interval is shown and the GM rolls when it is due, as the item proposed.
+
+**Filed 2026-09-13.** The nearest thing the books have to "cyberpsychosis", and it applies **only
+to cyberzombies** — characters kept alive at **Essence 0 or less** by cybermancy (M&M p.50-54).
+- The GM makes periodic **Willpower Tests**; frequency and TN come from the *Chronic Dissociation
+  Syndrome Table* by Essence: 0 to −0.50 every 6 months TN 3 · −0.51 to −1.00 TN 4 · −1.01 to
+  −1.50 TN 5 · −1.51 to −2.00 every 4 months TN 5 · −2.01 to −2.50 TN 6 · −2.51 to −3.00 every 3
+  months TN 6 · −3.01 to −3.50 every 2 months TN 6 · −3.51 or lower every 2 months TN 8, +1 per
+  further −0.5. Cybermantic Willpower modifiers apply; short-term magical ones do not.
+- **Failure:** the character *"is lost to the world"* — can only react, never initiate; **+4 to
+  Perception Tests, +3 to all other tests**; dies in **3 + Willpower weeks**.
+- **Treatment:** only a cybermancer, in a delta clinic — Spell Resistance (8) Test, where
+  *success* kills; TN drops by 1 (min 2) each repeat; recovery speed by Willpower (6).
+- Same section: a **cancer** roll at the cybermancy operation (2D6 < 2 × |Essence| → cancer in
+  10D6 months, fatal in 4 + 1D6 weeks), adjusted for Body and symbiotes.
+
+⚠ **Prerequisite: Essence below 0 cannot be stored today.** `SR3EActor.essenceValue` returns
+`Math.max(0, …)` and the sheet's Essence box has `min="0"`, so a cyberzombie reads as exactly 0.
+Lifting that floor is part of this task — and `essenceState` (TODO 103) already treats ≤ 0 as
+`dead`, which a cybermancy flag would need to relabel (*cyberzombie*, not *dead*).
+
+**Shape, when built** (proposal): a `cybermancy` flag on the actor; a pure
+`SR3EActor.cdsTest(essence)` → `{ months, tn }` from the table, unit-tested row by row; a
+GM-only "CDS check" button when the flag is set; the CDS state as a status effect whose +4/+3 the
+GM applies. Scheduling (every N months) is campaign time the system does not track — show the
+interval, let the GM roll.
+
+<a id="112"></a>
+
 ## 112. ✅ Only one armour item can be worn — a coat and a helmet together is legal — **FIXED 2026-09-13** (`fix/armor-and-stacks`)
 
 **Fixed.** Any number of pieces are worn (a per-item `worn` flag; the old `equippedArmor` field is
@@ -6074,3 +6279,84 @@ needs `node tools/patch-name-ratings.mjs --install` with Foundry closed**); `dis
 `Medkit [3]`. Mutants `gear-null-rating-reads-the-name`, `gear-rating-column-ignored`.
 
 <a id="119"></a>
+
+## 119. Audit *The Matrix Defragged v2* against what we have — **requested 2026-09-13** ✅ 2026-09-16, `feature/0-6-rules`
+
+> **Done 2026-09-16 — `audit/matrix-defragged-audit.md`.** Fourteen rules checked against the PDF, every
+> quotation extracted rather than transcribed.
+> - **Eight confirmed:** System Rating, the seven Security Tiers and thresholds, the Hacking Pool
+>   formula, Sys/Sec, the hacking procedure (including *"a tie goes in favor of the hacker"*), the
+>   10-box Overwatch track and Convergence, IC/agent initiative by tier with Firewall = the host's
+>   threshold, and the Sys/Sec modifiers.
+> - **Three places CLAUDE.md was wrong and the code was right** — cybercombat's two target numbers
+>   (base TN 4, not the System Rating) and the resistance roll (System Rating/MPCP against Power minus
+>   the firewall, not Body). Corrected, with the book quoted.
+> - **Two code divergences, both fixed here:** Dumpshock was Moderate where the book says **Serious**
+>   (three sites), and TRM/AR/VR-Cold were forced to **one initiative die** where the book gives them
+>   their own meat-world Initiative and excludes only Response.
+> - **One table could not be read:** the Matrix Condition Monitor (p.12) is a graphic. Its labels show
+>   **four** penalty steps (+1…+4) where we model three, and the box counts do not extract. 🔴 in
+>   CLAUDE.md. **For the maintainer:** one look at p.12 settles it.
+> - `tests/matrix-defragged.test.mjs` pins the verified figures with their pages, and deliberately does
+>   NOT assert the Condition Monitor thresholds.
+> - **Remainders raised as [#128](TODO.md#128):** Overwatch's second trigger (crashing an icon without
+>   Suppressing it), the Suppression utility, and the Security Sheaf's Trigger Steps. The 28 MDF
+>   documents still missing a book page belong to [#117](TODO.md#117).
+
+**Request (maintainer):** the book is now in the library — audit it against the system.
+
+*Shadowrun 3e - The Matrix Defragged v2.pdf* (Brinoceros, updated May 22, 2024; ~21,000 words, a
+**real text layer** — `pdftotext -layout` works). Until now CLAUDE.md said the whole *Matrix
+Defragged* section **cannot be audited** because the book was not in the library; that is no longer
+true, and this is the audit that section has been waiting for.
+
+**Scope, from its contents page:** the Architecture of Cyberspace (AROs, datastream, grid, hosts,
+icons, I/O ports, marks, movement, stealth, perception, nodes, pathways, PAN, prompts, RFID) ·
+User Modes (Tortoise, AR, VR cold/hot) · Running the Matrix (logon, Sys/Sec modifiers, hosts,
+legitimate use, prompting nodes; CPU/DS/SN/SPU/SAN prompts and the CPU Barrier) · Hacking · the
+Security Sheaf (Overwatch, stocking it, grading IC White/Gray/Black, Convergence, IC, IC agents) ·
+Available Programs (Analyze … Suppression).
+
+**Against:** CLAUDE.md *Matrix rules (Matrix Defragged v2)* — System Rating, Security Tiers and
+thresholds, Hacking Pool (`INT + ⌊MPCP/3⌋`), User Modes table, the 3-step hacking procedure,
+Overwatch/Convergence, cybercombat, IC initiative by tier, the official IC list, the Matrix
+Condition Monitor, Sys/Sec modifiers; the host/IC/agent sheets; the `MDF-*.json` rawdata and the
+five `sr3e-mdf-*` packs (116 documents with no `bookPage` — [#117](TODO.md#117)); and
+`tests/tables.test.mjs`, which says outright that its tier tables are **not** independent
+verification. Output: a divergence list like the adept-power audit (`audit/`), each with page
+citations, 🔴 markers in CLAUDE.md for real divergences, and book/page on the MDF packs.
+
+<a id="120"></a>
+
+## 126. Ammunition has no weight, and nothing adds up a carried load ✅ 2026-09-16, `feature/0-6-rules`
+
+> **Built 2026-09-16** (0.6). Rules: `scripts/data/carried-load.mjs`.
+> - ⚠ **The first bullet was already wrong when it was written:** `AmmunitionData` HAS carried a
+>   `weight` since the default-gear build, and all 661 shipped documents store one.
+> - **What was actually wrong is the UNIT.** The weight was the whole package (a box of ten APDS =
+>   0.25), so a box fired down to its last round still weighed what ten did. It is now **per round**,
+>   or per reload for a clip — `tools/build-default-gear.mjs` divides the package down, and the 661
+>   documents were regenerated. "10 Bolts" now agrees with the single "Bolts" row at 0.05 each.
+> - **The Gear tab leads with ⚖ Carried N kg** and the Encumbrance tier, from everything not in
+>   storage (TODO 113). Installed cyberware and bioware weigh nothing — they are not carried.
+> - **Encumbrance is SR3 p.274**, and the book makes it optional: *"the gamemaster can impose the
+>   following Encumbrance rules"*. Shown, never enforced, and the line says so.
+>   - Free to **Strength × 5** kg; then × 10 Light, × 15 Moderate, × 20 Serious, beyond that the
+>     character passes out.
+>   - Each wound lands after **(Body) Combat Turns**, with a box of Stun every turn after — the
+>     book's Body 8 example is asserted.
+>   - ⚠ **The tiers are "up to"** — exactly Strength × 5 is still free.
+> - Tests: `tests/carried-load.test.mjs`. Checklist: TESTING.md §40.
+> - **Not modelled:** the movement penalties themselves (there is no movement rate), and nothing
+>   applies the Stun — the GM ticks boxes, as with every other wound.
+
+Raised 2026-09-15 as the remainder of [#55](#55).
+
+- `AmmunitionData` has no weight, and nothing in the system totals what a character carries.
+- SR3 gives weights on the gear tables. Encumbrance itself needs checking in the book; don't assume it.
+- So the question "how much can this character carry" has no answer. #55 named this as half the point
+  of tracking ammunition.
+- **Shape:**
+  - A weight on ammunition, per box or reload.
+  - A carried total on the Gear tab, excluding storage (TODO 113).
+  - Whatever the book's encumbrance rule is, shown and never enforced.

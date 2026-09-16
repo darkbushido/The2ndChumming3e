@@ -43,15 +43,19 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 
 | # | Item | Status |
 |---|---|---|
-| [119](#119) | Audit *The Matrix Defragged v2* | **the 0.6 feature bump** (the maintainer, earlier) |
-| [126](#126) | Ammunition weight and a carried load | in 0.6 |
-| [53](#53) | The "Essence hole" surgery option — *M&M p.150* | in 0.6 |
-| [109](#109) | Cyberware, bioware and Attribute Stress — *M&M pp.124-131* | in 0.6 — the foundation 110 and 111 need |
-| [110](#110) | Move-by-wire's TLE-x | in 0.6 — after 109 |
-| [111](#111) | Chronic Dissociation Syndrome — cyberzombies | in 0.6 — after 109 |
+| [119](TODO-DONE.md#119) | Audit *The Matrix Defragged v2* | ✅ — 8 confirmed, 3 doc fixes, 2 code fixes, 1 unreadable table; remainders → #128 |
+| [126](TODO-DONE.md#126) | Ammunition weight and a carried load | ✅ — per-round weights; ⚖ Carried on the Gear tab with the p.274 tiers |
+| [53](TODO-DONE.md#53) | The "Essence hole" surgery option — *M&M p.150* | ✅ — removal records a hole; an implant ticked Essence Slot spends it |
+| [109](TODO-DONE.md#109) | Cyberware, bioware and Attribute Stress — *M&M pp.124-131* | ✅ — Stress Points, Levels and the Stress Test; ⚙ Apply Stress on the Cyber tab |
+| [110](TODO-DONE.md#110) | Move-by-wire's TLE-x | ✅ — the Automatic Stress Table, the Willpower test, and the flag with its two surgeries |
+| [111](TODO-DONE.md#111) | Chronic Dissociation Syndrome — cyberzombies | ✅ — Essence below 0, the CDS table, and the GM's check |
 | [79](#79) | A ledger for karma and nuyen | nice to have |
 | [82](#82) | A flow for buying gear — *Availability, SR3 pp.284-286* | nice to have |
 | [7](#7) | More test coverage for combat, initiative and pools | nice to have |
+
+**Built 2026-09-16 on `feature/0-6-rules`** (branched from `main` at `5e26b2b1`, not merged): 53, 126,
+119, 109, 110, 111 — in that order, each with tests, docs and its own commit. What is left of 0.6 is the
+three nice-to-haves (79, 82, 7) and the release tasks below.
 
 ### Release tasks — before `system.json` becomes 0.6.0
 
@@ -64,15 +68,15 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 
 ## Contents
 
-**33 open.** 93 done — see [TODO-DONE.md](TODO-DONE.md).
+**30 open.** 99 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[53](#53) The "Essence hole" surgery option is not modelled — *M&M p.150*<br>[109](#109) Cyberware, bioware and Attribute Stress<br>[110](#110) Move-by-wire's TLE-x<br>[111](#111) Chronic Dissociation Syndrome — cyberzombies |
+| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
-| 🖥 Matrix | [119](#119) Audit *The Matrix Defragged v2* against what we have<br>[120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork) |
-| 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[79](#79) No ledger for karma or nuyen — *low priority*<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear<br>[126](#126) Ammunition has no weight, and nothing adds up a carried load |
+| 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[127](#127) Tagged releases, with the guides versioned beside them<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[129](#129) Cybersystem damage — Essence slots and the Wound Effect Table (M&M pp.126-128) |
+| 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[79](#79) No ledger for karma or nuyen — *low priority*<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[122](#122) Ratings in the field, not the name, for weapons, cyberware and bioware |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -541,129 +545,6 @@ row cannot be done properly until accessories are structured data.
   one-handed weapon if the need arises but that's a problem for another day."* It is specified in
   #47 (p.107, Reaction (4) Test, +2 unholstered, +2 each for two weapons); do not build it here.
 
-## 53. The "Essence hole" surgery option is not modelled — *M&M p.150*
-
-Found 2026-08-14, when the essence work in [#5](TODO-DONE.md#5) was challenged on sourcing and the
-answer turned out to be in Man & Machine rather than core.
-
-Removing cyberware never refunds Essence (**M&M p.147**, and [#5](TODO-DONE.md#5) implements that). But
-M&M also gives a way to reuse the gap, as an **optional surgery modifier**:
-
-> **Essence Slot (Implant, +2 Threshold)** — "If the character previously had cyberware
-> removed, a new implant with this option can be installed within the 'Essence hole' left
-> behind by the earlier implant. In other words, the old implant's Essence Cost can be
-> subtracted from the new implant's Essence Cost."
-
-⚠ **It is opt-in and it costs something** — +2 to the surgery Threshold, chosen per
-procedure. It is NOT what happens by default when you swap chrome, which is exactly why
-[#5](TODO-DONE.md#5) accumulates on install rather than storing `max(lost, installed)`: that model would
-grant every character a free, permanent Essence Slot on every implant they ever fit.
-
-**Why it is not built.** The system has no surgery flow at all — no procedures, no
-Thresholds, no Stress. The Essence Slot option is one line in a table that only means
-anything inside that framework, and modelling it alone would be modelling the discount
-without the cost.
-
-**How a GM applies it today, and it is genuinely fine:** reduce the new implant's
-`essenceCost` by the old one's before installing, or correct the Essence box afterwards
-(`_preUpdate` translates that into `essence.lost`, so it sticks). Both are one edit.
-
-**If it is ever built**, it belongs with the rest of the surgery rules (Stress, Thresholds,
-procedure options) rather than as a special case bolted onto the install hook — and it needs
-to track WHICH hole is being filled, since a 0.5 implant cannot borrow 2.0 of hole and then
-lend the remainder to the next one for free.
-
-## 109. Cyberware, bioware and Attribute Stress — **rules not implemented** (M&M p.124-131)
-
-**Filed 2026-09-13** at the maintainer's request, from a search of the PDF library for
-cyberpsychosis (none of the searchable books has such a rule — see [#110](#110)/[#111](#111) for the
-two nearest). Stress is the *foundation* both of those need, so it comes first.
-
-**What the book has** (*Man & Machine*, all verified against the PDF text):
-- **Stress Points** mark wear and damage on an **implant** or an **Attribute** (p.124). New
-  implants start at 0; **used cyberware starts with 1D6 ÷ 2 permanent** Stress, bioware with 1.
-- **Stress Level** (p.126): 1-2 Light · 3-5 Moderate · 6-9 Serious · **10+ Deadly = automatic
-  failure**.
-- **Stress Test** (p.126), every time Stress is taken: dice by grade — cyberware Basic 1 · Alpha 2 ·
-  Beta 3 · Delta 5; bioware Cosmetic 1 · Basic 2 · Cultured 4; an Attribute rolls
-  ½ unaugmented. **TN = current Stress total** (− cyberlimb Integrity Rating; + the boost for a
-  bioware-boosted Attribute). **One success** avoids failure; none = the system/Attribute fails.
-- **Wound effects** (p.126-129): on a Damage Resistance Test, the highest die compared with the
-  boxes of damage decides whether an implant or Attribute is hit — 1D6 ÷ 2 Stress, then a Stress
-  Test. Electrical damage automatically affects cyberware (p.127).
-- **Removal** of cyberware costs the implant 1D6 ÷ 2 Stress (p.147, already quoted in CLAUDE.md's
-  *Essence is permanent*).
-- **Repair** (p.130-131): cyberware via maintenance/surgery; bioware and Attributes heal; an
-  implant's Stress **never drops below 1** once taken; some becomes permanent. Therapeutic surgery
-  p.147.
-- Bioware **malfunctions by Stress Level** (thresholds per item).
-
-**Nothing exists yet** — no Stress field on any item or attribute (grepped 2026-09-13).
-
-**Shape, when built** (a proposal, not decided): a nullable-free `stress` NumberField on
-cyberware/bioware items and per-Attribute; a pure `SR3EActor.stressTest({grade, type, stress,
-integrity, boost})` → dice + TN, and `stressLevel(points)`; show Stress on the Cyber tab with the
-level; a **GM-invoked** "Apply Stress" (1D6 ÷ 2 + the test) rather than automating wound effects —
-the ethos is that the GM decides what a wound did. Wound-effect detection could come later as an
-offered button on the soak card. Unit tests pinned to the p.126 Leggy example (reaction enhancer
-3 Stress → 1D6 vs TN 3; nephritic screen 3+1 → 2D6 vs TN 4; Reaction ½ unaugmented vs TN 3).
-
-⚠ **Data-model change** — needs a full Foundry restart. The contacts pack's cyberware would need
-the field too (packs are not migrated; see *World migrations*).
-
-<a id="110"></a>
-
-## 110. Move-by-wire's TLE-x — **rules not implemented** (M&M p.60) — needs [#109](#109)
-
-**Filed 2026-09-13.** Move-by-wire's attribute bonuses are implemented (CLAUDE.md, *Move-by-wire*);
-its **side effect** is not:
-- Each time the system takes **Stress**, the character makes an **unaugmented Willpower Test, TN
-  (move-by-wire rating × 2)**. Failure → **TLE-x**: *"feelings of alienation and loss of his sense
-  of self"*.
-- Effects: **−1 Charisma and all Charisma-based skills** in important social situations; and, in
-  circumstances the GM deems dangerous or tactically crucial, **+2 to Perception target numbers,
-  −2 Initiative and −1D6 Reaction**.
-- The same page gives move-by-wire **automatic Stress** (the *Automatic Stress Table*), applied to
-  **both Quickness and Reaction**, removable only by therapeutic surgery (p.147).
-
-**Depends on #109** — there is no Stress to trigger the test until that exists. The flag itself is
-cheap: a per-actor `tlex` state (or a status effect) plus a pure rule for the test; the situational
-modifiers are GM-judged, so they belong in the GM's TN window as an offered row (like vision), not
-applied automatically.
-
-⚠ Rating 3/4's forced extra Complex Action is a separate, known gap (TODO 48).
-
-<a id="111"></a>
-
-## 111. Chronic Dissociation Syndrome — cyberzombies — **rules not implemented** (M&M p.59)
-
-**Filed 2026-09-13.** The nearest thing the books have to "cyberpsychosis", and it applies **only
-to cyberzombies** — characters kept alive at **Essence 0 or less** by cybermancy (M&M p.50-54).
-- The GM makes periodic **Willpower Tests**; frequency and TN come from the *Chronic Dissociation
-  Syndrome Table* by Essence: 0 to −0.50 every 6 months TN 3 · −0.51 to −1.00 TN 4 · −1.01 to
-  −1.50 TN 5 · −1.51 to −2.00 every 4 months TN 5 · −2.01 to −2.50 TN 6 · −2.51 to −3.00 every 3
-  months TN 6 · −3.01 to −3.50 every 2 months TN 6 · −3.51 or lower every 2 months TN 8, +1 per
-  further −0.5. Cybermantic Willpower modifiers apply; short-term magical ones do not.
-- **Failure:** the character *"is lost to the world"* — can only react, never initiate; **+4 to
-  Perception Tests, +3 to all other tests**; dies in **3 + Willpower weeks**.
-- **Treatment:** only a cybermancer, in a delta clinic — Spell Resistance (8) Test, where
-  *success* kills; TN drops by 1 (min 2) each repeat; recovery speed by Willpower (6).
-- Same section: a **cancer** roll at the cybermancy operation (2D6 < 2 × |Essence| → cancer in
-  10D6 months, fatal in 4 + 1D6 weeks), adjusted for Body and symbiotes.
-
-⚠ **Prerequisite: Essence below 0 cannot be stored today.** `SR3EActor.essenceValue` returns
-`Math.max(0, …)` and the sheet's Essence box has `min="0"`, so a cyberzombie reads as exactly 0.
-Lifting that floor is part of this task — and `essenceState` (TODO 103) already treats ≤ 0 as
-`dead`, which a cybermancy flag would need to relabel (*cyberzombie*, not *dead*).
-
-**Shape, when built** (proposal): a `cybermancy` flag on the actor; a pure
-`SR3EActor.cdsTest(essence)` → `{ months, tn }` from the table, unit-tested row by row; a
-GM-only "CDS check" button when the flag is set; the CDS state as a status effect whose +4/+3 the
-GM applies. Scheduling (every N months) is campaign time the system does not track — show the
-interval, let the GM roll.
-
-<a id="112"></a>
-
 ### 🪄 Spells & drugs
 
 ## 123. Audit every shipped spell and the casting rules — **requested 2026-09-14**
@@ -756,33 +637,6 @@ Effects offered and applied only on a click — nothing automatic, per the desig
 
 ### 🖥 Matrix
 
-## 119. Audit *The Matrix Defragged v2* against what we have — **requested 2026-09-13**
-
-**Request (maintainer):** the book is now in the library — audit it against the system.
-
-*Shadowrun 3e - The Matrix Defragged v2.pdf* (Brinoceros, updated May 22, 2024; ~21,000 words, a
-**real text layer** — `pdftotext -layout` works). Until now CLAUDE.md said the whole *Matrix
-Defragged* section **cannot be audited** because the book was not in the library; that is no longer
-true, and this is the audit that section has been waiting for.
-
-**Scope, from its contents page:** the Architecture of Cyberspace (AROs, datastream, grid, hosts,
-icons, I/O ports, marks, movement, stealth, perception, nodes, pathways, PAN, prompts, RFID) ·
-User Modes (Tortoise, AR, VR cold/hot) · Running the Matrix (logon, Sys/Sec modifiers, hosts,
-legitimate use, prompting nodes; CPU/DS/SN/SPU/SAN prompts and the CPU Barrier) · Hacking · the
-Security Sheaf (Overwatch, stocking it, grading IC White/Gray/Black, Convergence, IC, IC agents) ·
-Available Programs (Analyze … Suppression).
-
-**Against:** CLAUDE.md *Matrix rules (Matrix Defragged v2)* — System Rating, Security Tiers and
-thresholds, Hacking Pool (`INT + ⌊MPCP/3⌋`), User Modes table, the 3-step hacking procedure,
-Overwatch/Convergence, cybercombat, IC initiative by tier, the official IC list, the Matrix
-Condition Monitor, Sys/Sec modifiers; the host/IC/agent sheets; the `MDF-*.json` rawdata and the
-five `sr3e-mdf-*` packs (116 documents with no `bookPage` — [#117](#117)); and
-`tests/tables.test.mjs`, which says outright that its tier tables are **not** independent
-verification. Output: a divergence list like the adept-power audit (`audit/`), each with page
-citations, 🔴 markers in CLAUDE.md for real divergences, and book/page on the MDF packs.
-
-<a id="120"></a>
-
 ## 120. A Matrix Defragged adapter for HoloSuite Hacking (fork) — **requested 2026-09-13**
 
 **Request (maintainer):** work on a possible fork of
@@ -805,9 +659,96 @@ ones, or (b) no fork — a small bridge in this system that calls its public API
 a GPL fork and survives upstream updates; (a) is needed only if the adapter contract cannot express
 Defragged's rolls. Defragged-specific parts to map: the Hacking Pool, the Security Threshold (fail →
 Overwatch +1 — `SR3EHostSheet`'s track), System Rating as TN, and node prompts as the challenge.
-Depends on [#119](#119) for which rules are right.
+Depends on [#119](TODO-DONE.md#119) for which rules are right.
 
 <a id="121"></a>
+
+## 127. Tagged releases, with the guides versioned beside them — **on `feature/release-pipeline`**
+
+⚠ **A placeholder, so the numbering has no hole.** The item itself was written by another session and
+lives on **`feature/release-pipeline`** (`3ef4bdf2`) together with the work it describes: `guides/` imported
+with its history, `.github/workflows/release.yml`, and `tools/release.mjs`. That branch is not merged.
+
+`tests/todo-archive.test.mjs` requires every number from 1 to the highest to appear exactly once, and #128
+was raised here before #127 arrived on `main`. **On merging that branch, keep ITS version of this entry and
+delete this stub** — the two will conflict here, which is the point: the conflict is the reminder.
+
+## 128. Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps
+
+Raised 2026-09-16 as the remainder of [#119](TODO-DONE.md#119), all three from *The Matrix Defragged v2*.
+
+**1. Overwatch has two triggers; we implement one** (MDF p.22):
+
+> "Overwatch is tracked on the Security Sheaf of the grid or host system in which a decker prompts an
+> action leading to any of the following conditions: **Failing a test using the Hacking skill** ·
+> **Crashing an icon without Suppressing it**."
+
+`SR3EActor._incrementOverwatch` is called from the two failed-test paths and nowhere else, so crashing
+an icon in cybercombat is currently free.
+
+**2. The Suppression utility is the way out of it** (MDF p.26):
+
+> "Deckers who crash an icon while running Suppression in an active utility slot, may degrade 1 point
+> of the utility's rating, to avoid accruing Overwatch when their actions result in the crash of an
+> enemy icon."
+
+It is in the book's program list and in the MDF program pack; no code reads it. Note the cost — the
+utility **degrades by a point**, so this is a choice, not a free pass.
+
+**3. The Security Sheaf is more than a 10-box track** (MDF p.22-23): ten **Trigger Steps**, each able
+to hold IC that the host deploys when Overwatch reaches it — *"Triggered IC activate (rolling into
+initiative) at the top of the next Combat Phase (-10 from an IC's Initiative for each phase that has
+already transpired)"*. The book prints a worked sheaf (System Sweep, Authenticator-(4), Alert,
+Barrier-(6) + Tracker-(4), Killer-(6), Data Worm-(6), Convergence). The host sheet has the track and
+the Convergence box, and nothing to stock.
+
+⚠ **Stocking is bounded by memory** — *"so long as the total Mp size of the assigned resources are
+less than the host's available Memory (generally System Rating x500Mp)"*, and Gray/Black IC need the
+Mainframe Support module. Any implementation should report that, not enforce it.
+
+**Shape:** the crash trigger and Suppression are small and self-contained — do them first. The sheaf
+is a host-sheet feature (a list of steps, each with IC and a rating) and is worth its own pass.
+
+## 129. Cybersystem damage — Essence slots and the Wound Effect Table (M&M pp.126-128)
+
+Raised 2026-09-16 by the maintainer, while settling the Essence hole (#53): *"the essence slot has to do
+with cybersystem damage … they do need to be assigned a slot but that can be handled under the hood when we
+need to see if cyber systems take damage."* **No UI needed** — a picture of the six slots might look good,
+but the slots only matter at the moment a wound effect is resolved.
+
+**What the book does** (M&M pp.126-128, with the Leggy example running through it):
+1. **Wound effects** (p.126) — `Stress.woundEffects(highestDie, boxes)` already counts them (#109): the
+   Damage Resistance Test read as a Success Test against the boxes inflicted.
+2. **The Wound Effect Table** (p.127) — 1D6 per wound effect: **1-2 cybersystem damage · 3-4 bioware
+   damage · 5-6 organic physical injury**. A character with no cyberware ignores a cybersystem result; no
+   bioware, a bioware result.
+3. **Assign Essence Slots** (p.127) — six slots, one per point of Essence, each holding 1.0 of cyberware.
+   Fill slot 1 first and each slot completely before the next, in ascending order; an implant costing more
+   than 1 spans several. Anything inside a cybereye, cyberear or cyberlimb counts as part of that system
+   *unless* it cost Essence of its own. Leggy's slots are worked on p.127: VCR 2 in 1-3, two reaction
+   enhancers in 3, wired reflexes in 4-5 with his cybereyes and datajack, smartlink half-filling 6.
+4. **Determine System Affected** (p.127) — roll 1D6 against the slots. An empty slot: no damage. A slot
+   with several implants: the GM chooses, picks randomly, or rolls 1D10 across the slot subdivided by
+   Essence Cost. ⚠ **A half-full slot** is a 50-50 between its implant and no damage (the smartlink, p.128).
+   A damaged cyberlimb/eye/ear: the whole system or a random subsystem, the GM's call.
+5. **The damage** — 1D6 ÷ 2 Stress and a Stress Test (p.127), which #109 already does.
+6. **Bioware** (p.128) — the same procedure with **Bio Index slots** in place of Essence slots.
+
+**Two special cases:**
+- **Electrical damage** (p.127) automatically affects cyberware: each wound effect goes straight to
+  Determine System Affected, plus an extra 1D6 per wound effect where **1-2 damages another piece**.
+- **Cyberzombies** (p.127) have more cyberware than slots, so they *"double up"* — two systems can be hit
+  at once — and *"always take damage from cybersystem wound effects"* (#111). Bioware over its slots doubles
+  up the same way (p.128).
+
+**Shape, when built:** a pure `scripts/data/cyber-slots.mjs` — `assignSlots(implants)` returning the six
+slots with each implant's share, `systemHit(slots, d6)` returning the implant(s) or none (with the half-slot
+chance), and the Wound Effect Table — pinned to Leggy's slots from p.127. Then offer it where #109's
+⚙ Apply Stress asks "what took it": *"roll for it (M&M p.127)"*, which fills the choice in. ⚠ Offered, not
+automatic — the design ethos, and the book gives the GM the pick within a slot anyway.
+
+⚠ **Not the Essence hole.** #53's hole records Essence spent on removed cyberware; these slots describe
+cyberware that is still installed.
 
 ### 📦 Content gaps
 
@@ -1843,7 +1784,7 @@ count; it would have the moment it did.
    SR2 core for the 314 `sr2.???` (the SR2 core PDF is in the library), Mr. Johnson's Little Black
    Book for the 62 contacts, the core rules for skills. The Matrix Defragged packs **can now be
    sourced**: *Shadowrun 3e - The Matrix Defragged v2.pdf* was added to the library on 2026-09-13,
-   with a text layer — see [#119](#119).
+   with a text layer — see [#119](TODO-DONE.md#119).
 3. Make it a rule the tooling enforces: `tools/check-packs.mjs` to report any document with an empty
    or `???` `bookPage` (information for now, a fault once the backlog is cleared), so new content
    cannot ship without one.
@@ -1924,19 +1865,6 @@ something from 2nd edition"*
    Check its terms before scraping anything.
 4. **The outcome:** a list of candidate additions per book, each with its page, for the maintainer to
    approve. Nothing is added to the packs without that approval.
-
-## 126. Ammunition has no weight, and nothing adds up a carried load
-
-Raised 2026-09-15 as the remainder of [#55](TODO-DONE.md#55).
-
-- `AmmunitionData` has no weight, and nothing in the system totals what a character carries.
-- SR3 gives weights on the gear tables. Encumbrance itself needs checking in the book; don't assume it.
-- So the question "how much can this character carry" has no answer. #55 named this as half the point
-  of tracking ammunition.
-- **Shape:**
-  - A weight on ammunition, per box or reload.
-  - A carried total on the Gear tab, excluding storage (TODO 113).
-  - Whatever the book's encumbrance rule is, shown and never enforced.
 
 ### 🔧 Tooling & infrastructure
 

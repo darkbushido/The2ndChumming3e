@@ -1,6 +1,7 @@
 import { SR3E, getSpecializationsForSkill, skillTypeForCategory } from '../config.js';
 import { CHARGEN_SPEC_GAP } from '../data/skill-rules.mjs';
 import { itemRating, vcrLevel, displayName } from '../data/item-rating.mjs';
+import { CarriedLoad } from '../data/carried-load.mjs';
 import { AmmoStock } from '../data/ammo-stock.mjs';
 import { BookPage } from '../data/book-page.mjs';
 
@@ -47,6 +48,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       itemDelete:     SR3EActorSheet._onItemDelete,
       woundBox:       SR3EActorSheet._onWoundBox,
       essenceRecalc:  SR3EActorSheet._onEssenceRecalc,
+      applyStress:      SR3EActorSheet._onApplyStress,        // TODO 109
+      toggleTlex:       SR3EActorSheet._onToggleTlex,         // TODO 110
+      toggleCybermancy: SR3EActorSheet._onToggleCybermancy,   // TODO 111
+      toggleCds:        SR3EActorSheet._onToggleCds,          // TODO 111
+      cdsCheck:         SR3EActorSheet._onCdsCheck,           // TODO 111
       openHealing:    SR3EActorSheet._onOpenHealing,
       equipArmor:     SR3EActorSheet._onEquipArmor,
       equipMelee:     SR3EActorSheet._onEquipMelee,
@@ -819,10 +825,16 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   const essLost      = attr.essence?.lost ?? null;
   const essInstalled = game.sr3e.SR3EActor.installedEssenceCost(this.actor.items);
   const essGM        = game.user.isGM;   // the Essence controls are the GM's — see the block below
+  // Essence holes (M&M p.150, TODO 53) — shown to everyone, cleared only by the GM.
+  const holeTotal     = game.sr3e.EssenceHoles.of(sys);
+  const holeThreshold = game.sr3e.EssenceHoles.THRESHOLD_MOD;
   // TODO 103: warn below 1, danger at 0 or less. Shown, never enforced. The wording quotes the
   // books because the "below 1 needs drugs" reading does not survive them — see essenceState.
-  const essState   = game.sr3e.SR3EActor.essenceState(attr.essence?.value ?? 6);
-  const essWarning = essState === 'dead'
+  const isCyberzombie = !!sys.cybermancy?.is;
+  const essState   = game.sr3e.SR3EActor.essenceState(attr.essence?.value ?? 6, { cybermancy: isCyberzombie });
+  const essWarning = essState === 'cyberzombie'
+    ? ' | ⚠ Cyberzombie: held together by cybermancy (M&amp;M pp.50-54). Chronic Dissociation Syndrome is graded by how far below 0 this sits (p.59).'
+    : essState === 'dead'
     ? ' | ⚠ Essence 0 or less: “the spirit slips away and the body dies” unless done by cybermancy in a delta clinic (SR3 p.55; M&amp;M p.50, p.54).'
     : essState === 'low'
       ? ' | ⚠ Below 1: legal (“it may be less than 1”, SR3 p.55) but any further loss that reaches 0 kills.'
@@ -968,7 +980,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
              SR3EActor._preUpdate drops a player's write to either field as well. -->
         <div class="attr-row">
           <input class="attr-input" type="number" ${essGM ? 'name="system.attributes.essence.value"' : 'disabled'}
-                 value="${attr.essence?.value ?? 6}" min="0" max="6" step="0.1"
+                 value="${attr.essence?.value ?? 6}" min="${isCyberzombie ? -12 : 0}" max="6" step="0.1"
                  style="color:var(--sr-amber)"${essGM ? '' : ' title="Essence loss is permanent (M&amp;M p.147) — only the GM corrects it."'}/>
         </div>
         <div class="attr-row" style="margin-top:2px;gap:3px;align-items:center">
@@ -979,6 +991,16 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                  title="${essGM ? `Blank = follow installed cyberware (${essInstalled}). Type a number to override it — that is how you undo a mistaken install.` : `Permanent Essence loss — only the GM corrects it (blank = installed cyberware, ${essInstalled}).`}"/>
           ${essLost === null || !essGM ? '' : `<a data-action="essenceRecalc" title="Clear the override and go back to following installed cyberware (${essInstalled})." style="cursor:pointer;font-size:10px;color:var(--sr-muted)">↺</a>`}
         </div>
+        ${holeTotal > 0 || essGM ? `
+        <!-- The Essence hole — M&M p.150's Essence Slot option (TODO 53). One pooled number: removed cyberware
+             adds to it, an implant ticked Essence Slot fills it down. ⚠ It refunds nothing by existing.
+             The GM edits it directly, for player error and bookkeeping only — Essence cannot be regained. -->
+        <div class="attr-row" style="margin-top:2px;gap:3px;align-items:center"
+             title="Essence hole (M&amp;M p.150). Removing cyberware refunds nothing (p.147), but an implant ticked 'Essence Slot' fills this first, at +${holeThreshold} surgery Threshold.">
+          <span style="font-size:9px;color:var(--sr-muted)">hole</span>
+          <input class="attr-input" type="number" ${essGM ? 'name="system.essenceHole"' : 'disabled'}
+                 value="${holeTotal}" min="0" max="6" step="0.01" style="width:42px;font-size:10px"/>
+        </div>` : ''}
       </div>
 
       <!-- Initiative Dice Bonus -->
@@ -1718,6 +1740,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           <span class="item-cell">${c.system.grade ?? '—'}</span>
           <span class="item-cell">${c.system.essenceCost ?? 0}</span>
           <span class="item-cell">${rating}</span>
+          ${this._stressCell(c)}
           ${_trigBtn(c.id)}
           ${this._itemControls(c.id, false, 'rollWeapon', false)}
         </div>`;
@@ -1731,6 +1754,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <span class="item-cell">${b.system.grade ?? '—'}</span>
         <span class="item-cell">${b.system.bioIndex ?? 0}</span>
         <span class="item-cell">${itemRating(b)}</span>
+        ${this._stressCell(b)}
         ${this._itemControls(b.id, false, 'rollWeapon', false)}
       </div>`).join('') : '<p class="empty-list">No bioware.</p>';
 
@@ -1796,8 +1820,13 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                title="Recoil compensation from cyberware, bioware, shock pads etc. (weapon-mounted comp is set on the weapon)"/>
         <span style="font-size:11px;color:var(--sr-muted)">from cyber/bio sources — stacks with weapon-mounted compensation</span>
       </div>
+      ${this._tlexLine(actor)}
+      ${this._cyberzombieLine(actor)}
       <h3 class="section-hdr">Cyberware</h3>
-      <div class="list-header"><span>Name</span><span>Grade</span><span>Essence</span><span>Rating</span><span></span></div>
+      ${game.user.isGM ? `<button type="button" class="btn-add" data-action="applyStress"
+        title="Apply Stress to an implant or an Attribute — a wound effect is 1D6 ÷ 2 and a Stress Test (M&amp;M pp.124-131)."
+        style="margin-bottom:4px">⚙ Apply Stress…</button>` : ''}
+      <div class="list-header"><span>Name</span><span>Grade</span><span>Essence</span><span>Rating</span><span title="Stress Points · M&amp;M p.124">Stress</span><span></span></div>
       ${cwRows}
       <button type="button" class="btn-add" data-action="itemCreate" data-type="cyberware">+ Cyberware</button>
       <h3 class="section-hdr" style="margin-top:1rem">Bioware</h3>
@@ -2417,6 +2446,88 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       </div>`;
   }
 
+  /**
+   * Cybermancy · M&M pp.50-59 (TODO 111) — the cyberzombie block on the Cyber tab.
+   *
+   * ⚠ **Shown for the GM, or once the flag is set.** Nothing schedules the CDS test: the table's
+   * interval is campaign time this system does not track, so the interval is stated and the GM rolls
+   * when it is due.
+   */
+  _cyberzombieLine(actor) {
+    const CZ  = game.sr3e.Cyberzombie;
+    const cy  = actor.system?.cybermancy ?? {};
+    const gm  = game.user.isGM;
+    const is  = !!cy.is;
+    if (!is && !gm) return '';
+    const ess  = actor.system?.attributes?.essence?.value ?? 6;
+    const test = is ? CZ.cdsTest(ess) : null;
+    const wil  = actor.system?.attributes?.willpower?.value ?? 0;
+    const treatments = Math.max(0, Number(cy.treatments) || 0);
+    if (!is) {
+      return `<div class="sr-carried-line">
+        <span style="color:var(--sr-muted)">⚰ Not a cyberzombie</span>
+        <a data-action="toggleCybermancy" style="cursor:pointer;margin-left:auto;color:var(--sr-muted)"
+           title="Mark this character as kept alive by cybermancy (M&amp;M pp.50-54). Only then may Essence go to 0 or below.">＋ mark cyberzombie</a>
+      </div>`;
+    }
+    return `
+      <div class="sr-carried-line" style="border-color:var(--sr-red)"
+           title="Cybermancy — M&amp;M pp.50-59. The CDS interval is campaign time; the GM rolls when it is due.">
+        <span style="color:var(--sr-red)">⚰ Cyberzombie</span>
+        ${test ? `<span>CDS: Willpower (${test.tn}), one test every ${test.months} months (${CZ.PAGE})</span>` : ''}
+        ${cy.cds
+          ? `<span style="color:var(--sr-red)">HAS CDS — ${CZ.CDS_EFFECTS.note}; dies in ${CZ.weeksToLive(wil)} weeks</span>
+             <span style="color:var(--sr-dim)">treatment: Spell Resistance (${CZ.treatmentTN(treatments)}) in a delta clinic — ⚠ SUCCESS kills</span>`
+          : ''}
+        ${cy.cancer ? '<span style="color:var(--sr-red)">cancer from the operation (p.59)</span>' : ''}
+        ${gm ? `<a data-action="cdsCheck" style="cursor:pointer;color:var(--sr-gold)" title="Roll the periodic Willpower Test (M&amp;M p.59).">🎲 CDS check</a>
+                <a data-action="toggleCds" style="cursor:pointer;color:var(--sr-muted)" title="${cy.cds ? 'Clear CDS — treated, or the GM is overruling it.' : 'Mark CDS — the Willpower Test was failed.'}">${cy.cds ? '✕ clear CDS' : '＋ mark CDS'}</a>
+                <a data-action="toggleCybermancy" style="cursor:pointer;margin-left:auto;color:var(--sr-muted)" title="No longer a cyberzombie.">✕ not a cyberzombie</a>` : ''}
+      </div>`;
+  }
+
+  /**
+   * TLE-x from a move-by-wire system · M&M p.60 (TODO 110). Shown only when the character HAS the
+   * system — nobody else can develop it. ⚠ Every effect is situational and the book hands each
+   * situation to the GM, so this states them and applies none.
+   */
+  _tlexLine(actor) {
+    const MBW = game.sr3e.MoveByWire;
+    const mbw = game.sr3e.SR3EStress.moveByWire(actor);
+    if (!mbw) return '';
+    const tlex   = actor.system?.tlex ?? {};
+    const has    = !!tlex.has;
+    const surg   = Math.max(0, Number(tlex.surgeries) || 0);
+    const months = MBW.stressEveryMonths(mbw.rating);
+    const gm     = game.user.isGM;
+    return `
+      <div class="sr-carried-line" style="border-color:${has ? 'var(--sr-amber)' : 'var(--sr-border)'}"
+           title="Move-by-wire's side effects — M&amp;M p.60. The Stress lands on Quickness and Reaction, and only therapeutic surgery removes it.">
+        <span>🧠 Move-by-wire ${mbw.rating}</span>
+        ${months ? `<span style="color:var(--sr-muted)">1 Stress every ${months} month${months === 1 ? '' : 's'}, to Quickness AND Reaction</span>` : ''}
+        <span style="color:var(--sr-muted)">then unaugmented Willpower (${MBW.tlexTN(mbw.rating)}) or TLE-x</span>
+        ${has
+          ? `<span style="color:var(--sr-amber)">TLE-x: ${MBW.tlexNote()}</span>
+             <span style="color:var(--sr-dim)">brain surgery ${surg}/${MBW.TLEX_SURGERY.limit}${MBW.surgeryExhausted(surg) ? ' — no more possible' : `, Correct Failure TN ${MBW.TLEX_SURGERY.targetNumber}`}</span>`
+          : ''}
+        ${gm ? `<a data-action="toggleTlex" style="cursor:pointer;margin-left:auto;color:var(--sr-muted)"
+                  title="${has ? 'Clear TLE-x — brain surgery corrected it (it counts against the two allowed).' : 'Mark TLE-x — the Willpower test was failed.'}"
+                  >${has ? '✕ cleared by surgery' : '＋ mark TLE-x'}</a>` : ''}
+      </div>`;
+  }
+
+  /**
+   * Stress Points on an implant · M&M p.124 (TODO 109). Blank at 0 — a healthy implant should not
+   * shout. Amber from Light, red at Deadly, where it fails outright.
+   */
+  _stressCell(item) {
+    const n = Math.max(0, Number(item.system?.stress) || 0);
+    if (!n) return '<span class="item-cell">—</span>';
+    const lvl = game.sr3e.Stress.level(n);
+    const col = lvl === 'Deadly' ? 'var(--sr-red)' : lvl === 'Serious' ? 'var(--sr-red)' : 'var(--sr-amber)';
+    return `<span class="item-cell" style="color:${col}" title="${lvl}${lvl === 'Deadly' ? ' — automatic failure' : ''} (M&amp;M p.126)">${n}</span>`;
+  }
+
   _tabGear(actor) {
     const gear  = actor.items.filter(i => i.type === 'gear'        && !i.getFlag('The2ndChumming3e', 'stored'));
     const ammo  = actor.items.filter(i => i.type === 'ammunition'  && !i.getFlag('The2ndChumming3e', 'stored'));
@@ -2455,7 +2566,23 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         ${this._itemControls(d.id, false)}
       </div>`).join('') : '<p class="empty-list">No drugs or toxins.</p>';
 
+    // ⚖ What the character is carrying · SR3 p.274 (TODO 126). The book's Encumbrance rules are the GM's
+    // to impose — shown here, never enforced, and stored gear is not on the character (TODO 113).
+    const carried = actor.items.filter(i => !i.getFlag('The2ndChumming3e', 'stored'));
+    const kg      = CarriedLoad.total(carried);
+    const enc     = CarriedLoad.encumbrance(actor.system?.attributes?.strength?.value ?? 0, kg,
+                                            actor.system?.attributes?.body?.value ?? 0);
+    const encColour = enc.key === 'free' ? 'var(--sr-muted)' : enc.key === 'light' ? 'var(--sr-amber)' : 'var(--sr-red)';
+    const loadLine = `
+      <div class="sr-carried-line" title="Encumbrance is an OPTIONAL rule the gamemaster may impose (${CarriedLoad.PAGE}). Free to Strength × 5; then Strength × 10 / × 15 / × 20. Stored gear does not count.">
+        <span>⚖ Carried <strong>${kg} kg</strong></span>
+        <span style="color:var(--sr-muted)">free to ${enc.free} kg (Str × 5)</span>
+        ${enc.over ? `<span style="color:${encColour}">— ${enc.label}: ${enc.note}${enc.wound && enc.key !== 'collapse' ? ` (after ${enc.afterTurns} Combat Turns)` : ''}</span>` : ''}
+        <span style="color:var(--sr-dim);font-size:10px">${CarriedLoad.PAGE}, the GM's call</span>
+      </div>`;
+
     return `<div class="tab ${this._activeTab === 'gear' ? 'active' : ''}" data-tab="gear" style="overflow-y:auto">
+      ${loadLine}
       <h3 class="section-hdr">Gear</h3>
       <div class="list-header"><span>Name</span><span>Qty</span><span>Cost</span><span class="col-xs" title="Weight (kg)">KG</span><span></span></div>
       ${gRows}
@@ -3539,6 +3666,56 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   /** 🩹 Healing (TODO 115) — the guided flow, one card per roll. */
   static async _onOpenHealing(_event, _target) {
     await game.sr3e.SR3EHealing.open(this.actor);
+  }
+
+  /** ⚰ Cyberzombie on or off · M&M pp.50-54 (TODO 111) — GM only. It is what lets Essence go below 0. */
+  static async _onToggleCybermancy(_event, _target) {
+    if (!game.user.isGM) { ui.notifications.warn('Only the GM marks a cyberzombie.'); return; }
+    const cy = this.actor.system?.cybermancy ?? {};
+    await this.actor.update({ 'system.cybermancy': { ...cy, is: !cy.is } });
+  }
+
+  /** ＋/✕ CDS · M&M p.59 (TODO 111) — GM only; the effects are stated, never applied to a roll. */
+  static async _onToggleCds(_event, _target) {
+    if (!game.user.isGM) { ui.notifications.warn('Only the GM sets CDS.'); return; }
+    const cy = this.actor.system?.cybermancy ?? {};
+    await this.actor.update({ 'system.cybermancy': { ...cy, cds: !cy.cds } });
+  }
+
+  /** 🎲 The periodic CDS Willpower Test · M&M p.59 (TODO 111) — the GM rolls it when it is due. */
+  static async _onCdsCheck(_event, _target) {
+    if (!game.user.isGM) { ui.notifications.warn('The GM makes the CDS test.'); return; }
+    const CZ   = game.sr3e.Cyberzombie;
+    const ess  = this.actor.system?.attributes?.essence?.value ?? 6;
+    const test = CZ.cdsTest(ess);
+    if (!test) { ui.notifications.warn(`${this.actor.name}: Essence is above 0 — no CDS test (${CZ.PAGE}).`); return; }
+    const wil = this.actor.system?.attributes?.willpower?.value ?? 0;
+    await this.actor.rollPool(wil, test.tn, `⚰ Chronic Dissociation Syndrome — ${this.actor.name}`, {
+      footerNote: `No successes and the character develops CDS (${CZ.PAGE}): ${CZ.CDS_EFFECTS.note}, dying in `
+        + `${CZ.weeksToLive(wil)} weeks. One test every ${test.months} months at this Essence. Mark it on the Cyber tab.`,
+    });
+  }
+
+  /**
+   * 🧠 TLE-x on or off · M&M p.60 (TODO 110) — GM only. Clearing it counts a brain surgery, because the
+   * book allows only two: "it can only be done twice".
+   */
+  static async _onToggleTlex(_event, _target) {
+    if (!game.user.isGM) { ui.notifications.warn('Only the GM sets TLE-x.'); return; }
+    const MBW  = game.sr3e.MoveByWire;
+    const tlex = this.actor.system?.tlex ?? {};
+    const has  = !!tlex.has;
+    const surg = Math.max(0, Number(tlex.surgeries) || 0);
+    if (has && MBW.surgeryExhausted(surg)) {
+      ui.notifications.warn(`${this.actor.name}: brain surgery has already been done ${surg} times — `
+        + `"it can only be done twice" (${MBW.PAGE}). Edit the record by hand if the GM is overruling that.`);
+    }
+    await this.actor.update({ 'system.tlex': { has: !has, surgeries: has ? surg + 1 : surg } });
+  }
+
+  /** ⚙ Apply Stress — GM only, because Stress is the GM saying what a wound did (TODO 109). */
+  static async _onApplyStress(_event, _target) {
+    await game.sr3e.SR3EStress.open(this.actor);
   }
 
   static async _onEssenceRecalc(_event, _target) {

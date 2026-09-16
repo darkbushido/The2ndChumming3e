@@ -22,7 +22,7 @@
       "rounds": 100,
       "reloads": 0,
       "roundsPerReload": 0,
-      "weight": 15,
+      "weight": 0.15,
       "cost": 9500,
       "availability": "16/2wks",
       "streetIndex": "4",

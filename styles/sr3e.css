@@ -245,6 +245,7 @@ background-color: var(--sr-surface) !important;
 .sr-matrix-decker-resist-roll-btn,
 .sr-miji-degradation-btn,
 .sr-knockdown-btn,
+.sr-stress-roll-btn,
 .sr-fd-dodge-btn,
 .sr-charge-quickness-btn,
 .sr-prone-btn {
@@ -272,6 +273,7 @@ background-color: var(--sr-surface) !important;
 .sr-crash-open-btn,
 .sr-ram-passenger-resist-btn,
 .sr-knockdown-btn,
+.sr-stress-roll-btn,
 .sr-charge-quickness-btn {
   background: linear-gradient(135deg, color-mix(in srgb, var(--sr-gold) 15%, transparent) 0%, color-mix(in srgb, var(--sr-gold) 5%, transparent) 100%);
   border: 1px solid var(--sr-gold);
@@ -290,6 +292,7 @@ background-color: var(--sr-surface) !important;
 .sr-crash-open-btn:hover:not(:disabled),
 .sr-ram-passenger-resist-btn:hover:not(:disabled),
 .sr-knockdown-btn:hover:not(:disabled),
+.sr-stress-roll-btn:hover:not(:disabled),
 .sr-charge-quickness-btn:hover:not(:disabled) {
   background: color-mix(in srgb, var(--sr-gold) 25%, transparent);
   box-shadow: 0 0 10px color-mix(in srgb, var(--sr-gold) 30%, transparent);
@@ -3747,3 +3750,9 @@ label.act-field input[type=number] {
 .sr-hands-line { font-size: 11px; color: var(--sr-muted); margin: 2px 0 6px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
 .sr-hands-line.is-over { color: var(--sr-amber); }
 .sr-hands-extra { margin-left: auto; }
+
+/* ⚖ Carried load and encumbrance on the Gear tab (SR3 p.274, TODO 126). */
+.sr-carried-line { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; margin: 2px 0 6px; padding: 4px 8px; font-size: 11px; background: var(--sr-surface, #1a1a1a); border: 1px solid var(--sr-border, #444); border-radius: var(--r, 3px); }
+/* ⚰ A cyberzombie's Essence — red like death, because it is at or below 0, but labelled (TODO 111). */
+.attr-block.essence-cyberzombie { border-color: var(--sr-red); background: var(--sr-red-bg); }
+.attr-block.essence-cyberzombie .attr-label { color: var(--sr-red) !important; }

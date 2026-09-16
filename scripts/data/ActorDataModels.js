@@ -135,6 +135,20 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       // Drug use, keyed by `DrugRules.drugKey(name)` — doses, Addiction, Tolerance, withdrawal,
       // what is running (M&M pp.108-110, TODO 124). See scripts/data/drug-rules.mjs.
       substances:              new ObjectField(),
+      // The Essence hole left by removed cyberware — M&M p.150's Essence Slot option (TODO 53). ONE pooled
+      // number (the maintainer: "they just have an essence hole"), filled down by implants fitted into it.
+      // ⚠ A RECORD, never a refund: removal leaves `essence.lost` alone (M&M p.147).
+      essenceHole:             new NumberField({ initial: 0, min: 0 }),
+      // Attribute Stress · M&M pp.124-131 (TODO 109), keyed by attribute name ({ body: 3, … }).
+      // ⚠ An ObjectField because only the attributes that have taken Stress appear.
+      attributeStress:         new ObjectField(),
+      // TLE-x from a move-by-wire system · M&M p.60 (TODO 110): { has, surgeries }. Brain surgery
+      // corrects it twice at most. Every effect is situational, so nothing reads this on a roll —
+      // the sheet states it and the GM applies it. See scripts/data/move-by-wire.mjs.
+      tlex:                    new ObjectField(),
+      // Cybermancy · M&M pp.50-59 (TODO 111): { is, cds, treatments, cancer }. ⚠ A cyberzombie is the
+      // ONE case where Essence may sit at or below 0 — see SR3EActor.essenceValue and essenceState.
+      cybermancy:              new ObjectField(),
       // Hands beyond the two everyone has — extra cyber-limbs (TODO 49; SR3 core has no rule, the GM sets it).
       extraHands:              new NumberField({ integer: true, initial: 0, min: 0 }),
       sustainedSpells:         sustainedSpellsField(),
@@ -253,6 +267,10 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       attributeBoost:   attributeBoostField(),
       augmentations:    new ObjectField(),
       substances:       new ObjectField(),   // drug use — see CharacterData (TODO 124)
+      essenceHole:      new NumberField({ initial: 0, min: 0 }),   // TODO 53 — see CharacterData
+      attributeStress:  new ObjectField(),   // TODO 109 — see CharacterData
+      tlex:             new ObjectField(),   // TODO 110 — see CharacterData
+      cybermancy:       new ObjectField(),   // TODO 111 — see CharacterData
       extraHands:       new NumberField({ integer: true, initial: 0, min: 0 }),   // TODO 49
       sustainedSpells:  sustainedSpellsField(),
       nuyen:           new NumberField({ integer: true, initial: 0, min: 0 }),

@@ -62,7 +62,8 @@ export async function run(t) {
   const box = docFor({ Name: 'APDS Rnds', Cost: '7', Weight: '.025', BookPage: 'sr3.281' }, 'Ammunition', 'SR3');
   t.is('loose rounds are a box of 10 — the book prices "Ammunition, Per 10 Shots" (SR3 p.281)', box.system.rounds, 10);
   t.is('…at the book\'s price for ten: APDS 70¥', box.system.cost, 70);
-  t.is('…and ten rounds\' weight', box.system.weight, 0.25);
+  // ⚠ Weight is PER ROUND (TODO 126) — a box fired down to two rounds must not weigh what ten did.
+  t.is('…and the weight of ONE round, as the generator lists it', box.system.weight, 0.025);
   const dart = docFor({ Name: 'Dart, Cyanide', Cost: '380', BookPage: 'mm.116' }, 'Ammunition', 'SR3');
   t.is('a dart is ONE, at its listed price — not a box of ten', `${dart.system.rounds} ${dart.system.cost}`, '1 380');
   const belt = docFor({ Name: 'Assault Cannon Belt (100)', Cost: '4250', BookPage: 'sr3.281' }, 'Ammunition', 'SR3');

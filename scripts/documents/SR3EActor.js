@@ -1164,9 +1164,9 @@ export class SR3EActor extends Actor {
       targetActorId:   this.id,
       isMelee:         false,
       stagedPower:     power,
-      stagedLevel:     'M',
+      stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)
       isStun,
-      rawDamage:       `${power}M`,
+      rawDamage:       `${power}S`,
     }).replace(/'/g, '&#39;');
 
     await ChatMessage.create({
@@ -1175,7 +1175,7 @@ export class SR3EActor extends Actor {
         <div class="sr-roll-card">
           <div class="sr-roll-header" style="color:var(--sr-red)">⚡ Dumpshock — ${this.name}</div>
           <div class="sr-staging-result">
-            Dumpshock ${isVRHot ? '(VR-Hot → Physical)' : '(VR-Cold → Stun)'}: <strong>${power}M ${trackLabel}</strong>
+            Dumpshock ${isVRHot ? '(VR-Hot → Physical)' : '(VR-Cold → Stun)'}: <strong>${power}S ${trackLabel}</strong>
           </div>
           <div class="sr-soak-action">
             <button class="sr-soak-btn" data-payload='${soakCtx}'>🛡 ${this.name}: Resist Dumpshock (Body)</button>
@@ -1281,7 +1281,7 @@ export class SR3EActor extends Actor {
     const attackerName  = attacker?.name ?? 'Decker';
     const isVRHot       = (attacker?.system?.matrixUserMode ?? '') === 'VR-Hot';
     const isStun        = !isVRHot;
-    const damageCode    = `${systemRating}M`;
+    const damageCode    = `${systemRating}S`;   // Serious — MDF p.27 (TODO 119)
     const trackLabel    = isStun ? 'Stun' : 'Physical';
 
     const soakCtx = JSON.stringify({
@@ -1289,7 +1289,7 @@ export class SR3EActor extends Actor {
       targetActorId:   attackerActorId,
       isMelee:         false,
       stagedPower:     systemRating,
-      stagedLevel:     'M',
+      stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)
       isStun,
       rawDamage:       damageCode,
     }).replace(/'/g, '&#39;');
@@ -1300,7 +1300,7 @@ export class SR3EActor extends Actor {
           <div class="sr-roll-header" style="color:var(--sr-red)">⚠ CONVERGENCE — ${hostActor.name}</div>
           <div class="sr-roll-result" style="color:var(--sr-red)">GOD Response activated! Overwatch reached 10.</div>
           <div class="sr-staging-result">
-            Dumpshock on ${attackerName}${isVRHot ? ' (VR-Hot → Physical)' : ' (VR-Cold → Stun)'}: <strong>${systemRating}M ${trackLabel}</strong>
+            Dumpshock on ${attackerName}${isVRHot ? ' (VR-Hot → Physical)' : ' (VR-Cold → Stun)'}: <strong>${systemRating}S ${trackLabel}</strong>
           </div>
           <div class="sr-soak-action">
             <button class="sr-soak-btn" data-payload='${soakCtx}'>
@@ -2157,6 +2157,8 @@ _prepareCharacter(sys, attr) {
       base: attr.essence.base ?? 6,
       lost: attr.essence.lost ?? null,
       installed: SR3EActor.installedEssenceCost(this.items),
+      // A cyberzombie may sit at or below 0 — cybermancy is the exception (M&M pp.50-54, TODO 111).
+      cybermancy: !!this.system?.cybermancy?.is,
     });
   }
 
@@ -8672,10 +8674,12 @@ _prepareCharacter(sys, attr) {
    *
    * Shown, never enforced — a GM may be running a cyberzombie on purpose.
    */
-  static essenceState(value) {
+  static essenceState(value, { cybermancy = false } = {}) {
     const v = Number(value);
     if (!Number.isFinite(v)) return 'ok';
-    if (v <= 0) return 'dead';
+    // ⚠ A cyberzombie at or below 0 is not dead — it is what cybermancy is FOR (M&M pp.50-54, TODO 111).
+    // Saying "dead" on their sheet would be wrong in the one case the state exists to describe.
+    if (v <= 0) return cybermancy ? 'cyberzombie' : 'dead';
     if (v < 1)  return 'low';
     return 'ok';
   }
@@ -8697,7 +8701,7 @@ _prepareCharacter(sys, attr) {
    * Floors at 0: SR3 has no negative Essence, and the two values that hang off it
    * (Bio Index capacity, effective Magic) would go strange rather than merely low.
    */
-  static essenceValue({ base = 6, lost = null, installed = 0 } = {}) {
+  static essenceValue({ base = 6, lost = null, installed = 0, cybermancy = false } = {}) {
     const b = Number.isFinite(Number(base)) ? Number(base) : 6;
     const inst = Number(installed) || 0;
 
@@ -8712,7 +8716,12 @@ _prepareCharacter(sys, attr) {
     // to was below what the (already deleted) hardware implied. The GM is trusted here,
     // as everywhere else in this system.
     const effective = (lost === null || lost === undefined) ? inst : (Number(lost) || 0);
-    return Math.max(0, parseFloat((b - effective).toFixed(2)));
+    const raw = parseFloat((b - effective).toFixed(2));
+    // ⚠ The floor of 0 is lifted for a CYBERZOMBIE and for nobody else (TODO 111). SR3 p.55: "An
+    // Essence of 0 means you're dead" — cybermancy (M&M pp.50-54) is the exception the books carve
+    // out, and Chronic Dissociation Syndrome is graded by how far BELOW zero the character sits, so
+    // clamping made every cyberzombie read as exactly 0 and the whole table unreachable.
+    return cybermancy ? raw : Math.max(0, raw);
   }
 
   /**
@@ -8758,6 +8767,12 @@ _prepareCharacter(sys, attr) {
       if (flat in changed) { delete changed[flat]; removed = true; }
       const ess = changed.system?.attributes?.essence;
       if (ess && typeof ess === 'object' && k in ess) { delete ess[k]; removed = true; }
+    }
+    // The Essence hole (TODO 53) lowers what the next implant costs, so it is the GM's for the same reason.
+    // The hooks that add to it and fill it run on the GM, so this never blocks them.
+    if ('system.essenceHole' in changed) { delete changed['system.essenceHole']; removed = true; }
+    if (changed.system && typeof changed.system === 'object' && 'essenceHole' in changed.system) {
+      delete changed.system.essenceHole; removed = true;
     }
     return removed;
   }
@@ -9795,12 +9810,15 @@ _prepareCharacter(sys, attr) {
       dice = 1 + response;
       modeNote = `<div class="sr-roll-meta" style="color:var(--sr-accent)">💻 VR-Hot Init — REA ${reactionBase} + Response ${response}×2</div>`;
     } else if (useMatrixJacked) {
-      // TRM / AR / VR-Cold: Reaction (with wired reflexes) + 1d6 (Response does not apply).
+      // TRM / AR / VR-Cold: the character's OWN meat-world Initiative — MDF p.10: "rely on their
+      // meat world Initiative; cannot benefit from Response". ⚠ The dice were forced to 1 until
+      // TODO 119's audit; the book excludes Response, not the character's own initiative dice, so
+      // wired reflexes were being stripped from every decker who was not in VR-Hot.
       // ⚠ This is DECKING, so Enhanced Articulation's +1 Reaction does not apply (M&M p.66).
       // Wired reflexes DO — the exclusion is specific to that bonus, not to cyberware at
       // large, which is why this uses the corrected Reaction rather than reaction.base.
       base = (d.reactionNoRigDeck ?? 0) + (this.system.woundMod ?? 0);
-      dice = 1;
+      dice = Math.max(1, d.initiativeDice ?? 1);
       modeNote = `<div class="sr-roll-meta" style="color:var(--sr-accent)">🔌 Matrix Init (${matrixMode})</div>`;
     } else {
       base = d.initiative     ?? 0;
@@ -11872,9 +11890,9 @@ _prepareCharacter(sys, attr) {
         targetActorId:   ctx.deckerActorId,
         isMelee:         false,
         stagedPower:     secVal,
-        stagedLevel:     'M',
+        stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)
         isStun,
-        rawDamage:       `${secVal}M`,
+        rawDamage:       `${secVal}S`,
       }).replace(/'/g, '&#39;');
 
       await ChatMessage.create({
@@ -11883,7 +11901,7 @@ _prepareCharacter(sys, attr) {
           <div class="sr-roll-header" style="color:var(--sr-red)">⚡ Cyberdeck Crashed — ${ctx.deckerName}</div>
           <div class="sr-staging-result">
             Matrix CM full — ${ctx.deckerName} is forcibly disconnected.
-            Dumpshock ${isVRHot ? '(VR-Hot → Physical)' : '(VR-Cold → Stun)'}: <strong>${secVal}M ${trackLabel}</strong>
+            Dumpshock ${isVRHot ? '(VR-Hot → Physical)' : '(VR-Cold → Stun)'}: <strong>${secVal}S ${trackLabel}</strong>
           </div>
           <div class="sr-soak-action">
             <button class="sr-soak-btn" data-payload='${soakCtx}'>

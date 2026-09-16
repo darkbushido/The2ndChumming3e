@@ -709,19 +709,14 @@ ODM-\* rawdata), **`mat`** = this sourcebook, **`matrix-defragged`** = the commu
 > thresholds, the Weapon Range Table, Impact Projectile multipliers, the Grenade Range Table,
 > Impact Damage Levels and crash Power, ammunition, R3 flux ranges).
 >
-> ✅ **Update 2026-09-13: *Shadowrun 3e - The Matrix Defragged v2.pdf* is now in the library, with a
-> text layer — the audit below is TODO 119 and has not been done yet.** Until it is, the warning
-> stands:
->
-> ⚠ **THE MATRIX DEFRAGGED SECTION CANNOT BE AUDITED AT ALL.** *Matrix rules (Matrix Defragged
-> v2)* — System Rating, Security Tiers, Hacking Pool, User Modes, the hacking procedure,
-> Overwatch/Convergence, cybercombat, IC grading, the Matrix Condition Monitor and the Sys/Sec
-> modifiers — is a **community supplement that is not in the PDF library**, and carries one
-> citation across the whole block. Everything in it is unverifiable here: `rawdata/MDF-*.json`
-> holds its DATA but no rules text. So those sections are this project's own specification, not
-> a transcription anyone has checked. `tests/tables.test.mjs` asserts the tier tables agree with
-> **this file** and with each other, and says at the assertion that this is not independent
-> verification. Do not read a green suite there as "matches the book" — there is no book.
+> ✅ **AUDITED 2026-09-16 — TODO 119, `audit/matrix-defragged-audit.md`.** *Shadowrun 3e - The Matrix
+> Defragged v2.pdf* is in the library with a text layer, and the *Matrix rules (Matrix Defragged v2)*
+> section below has been checked against it page by page. The old warning that it "cannot be audited at
+> all" is gone. What the audit found: eight rules confirmed, **three places where this file was wrong and
+> the code was right** (all three corrected below), **two code divergences** (Dumpshock was Moderate, and
+> TRM/AR/VR-Cold were forced to one initiative die — both fixed), and **one table that could not be read**
+> because it is a graphic (the Matrix Condition Monitor's box thresholds — 🔴 below). `tests/matrix-defragged.test.mjs`
+> now pins the verified figures with their pages.
 
 ### Dice rolling — Rule of Six & Rule of One  · *SR3 p.38-39*
 - All rolls are d6 success-counting (result ≥ TN = success)
@@ -983,6 +978,18 @@ CYBERWARE:
 > "Cyberware that is removed **does not restore the character's lost Essence**. Removing
 > cyberware incurs permanent damage to the implant (1D6 ÷ 2 Stress)."  — *M&M p.147*
 
+**The Essence hole is BUILT** (TODO 53, `scripts/data/essence-holes.mjs`): **one pooled number,
+`system.essenceHole`** (the maintainer: *"they just have an essence hole"*). Removing cyberware adds its
+graded cost — ⚠ **never touching `essence.lost`**, because removal refunds nothing — and an implant whose
+`essenceSlot` is ticked fills the hole down at install. ⚠ **A partly filled hole keeps its remainder**: a
+3.0 hole with a 2.0 implant is a 1.0 hole, tracked until it reaches 0. The GM edits it on the sheet **for player
+error and bookkeeping only** — ⚠ there is no way to regain Essence, so nothing but an Essence Slot implant
+fills the hole (the maintainer, 2026-09-16). A player's write is dropped (`stripPlayerEssenceWrites`). The
++2 Threshold is stated, not enforced; there is no surgery flow.
+
+⚠ **The Essence hole is NOT the Essence *slots* of M&M p.127.** Those six slots assign INSTALLED cyberware
+to a d6 result so a wound effect can pick which implant it hits — TODO 129.
+
 ⚠ **The "Essence hole" is an opt-in SURGERY OPTION, not automatic** — *M&M p.150*:
 
 > "Essence Slot (Implant, +2 Threshold) — If the character previously had cyberware
@@ -992,9 +999,8 @@ CYBERWARE:
 
 So accumulating on install is the correct **default**, and the discount exists only when
 a surgeon takes that option at +2 Threshold. Storing `max(lost, installed)` instead would
-hand every character a free, permanent Essence Slot on every implant. **Not modelled** —
-there is no surgery flow to hang it on; a GM applies it by editing the item's
-`essenceCost` or the Essence box. See TODO 53.
+hand every character a free, permanent Essence Slot on every implant — which is why the built
+version (above) is a per-implant tick, read once at install.
 
 ⚠ Adding this field was a **data-model change**: it needs a full Foundry restart, not F5.
 
@@ -1002,6 +1008,32 @@ there is no surgery flow to hang it on; a GM applies it by editing the item's
 than 1"*, SR3 p.55) and the block turns **amber**; 0 or less is death (*"An Essence of 0 means
 you're dead"*) and it turns **red**. Shown, never enforced. ⚠ **Below 1 does not need drugs** —
 the drug cocktail belongs to **cybermancy** at 0 or less (M&M p.50, p.54), not to Essence under 1.
+
+### Cyberzombies · *M&M pp.50-59* — TODO 111
+
+`system.cybermancy = { is, cds, treatments, cancer }`; rules in `scripts/data/cyberzombie.mjs`.
+
+⚠ **A cyberzombie is the ONE case where Essence may sit at or below 0.** `essenceValue` keeps the
+negative only when the flag is set, the sheet's Essence box opens its floor only then, and
+`essenceState` returns **`cyberzombie`** instead of `dead` — Chronic Dissociation Syndrome is graded by
+how far below zero the character is, so clamping at 0 made the whole table unreachable.
+
+**Chronic Dissociation Syndrome** (p.59) — the GM's periodic Willpower Test, ⚰ **CDS check** on the
+Cyber tab. The table runs 6 months/TN 3 at 0 to −0.50 down to **every 2 months at TN 8** from −3.51,
+*"+1 … for every additional -0.5"*. ⚠ That last row is open-ended and must be matched apart from the
+printed ones, or the extension never fires. A failure leaves the character *"lost to the world"*: they
+cannot initiate action, take **+4 on Perception and +3 on everything else**, and die in **3 + Willpower**
+weeks. Stated on the card; nothing is applied.
+
+⚠ **The treatment test is inverted and it is not a typo** — a delta-clinic Spell Resistance (8) Test
+where *"if the test succeeds, the magic fails and the character dies"*. It drops by 1 per repeat, to a
+minimum of 2. Recovery is a week, less a day per success on a Willpower (6) Test.
+
+**Cancer** (p.59) is rolled once, at the operation: 2D6 under twice the absolute Essence means cancer in
+10D6 months, fatal in 4 + 1D6 weeks. Body 4-7 adds 1 to the roll and 8+ adds 2, symbiotes another — all
+*"at the gamemaster's discretion"*, so they are arguments, not assumptions.
+
+**Scheduling is not modelled**: "every N months" is campaign time this system does not track.
 
 ### Astral state (Awakened characters)  · *astral Initiative: SR3 p.41, p.62*
 > "In astral space, base Reaction for magicians is equal [to Intelligence]… and a +20
@@ -1268,6 +1300,9 @@ inside the dialog's FA-only section, so SA's second shot and BF's second burst w
 - *Type rules*: Explosive +1 / EX +2 power; Gel −2 power + Stun (attack time). **Shot** (shotguns, p.117): flechette rules + choke spread (above). APDS halves ballistic; Flechette unarmoured → level +1, armoured → **`max(Impact × 2, Ballistic)`** (`SR3EActor.flechetteArmor`, soak time via `ammoType` carried into `_postSoakCard`).
   ⚠ **The doubling is on IMPACT ONLY** — *"use either double its Impact Armor Rating or its normal Ballistic Armor Rating, whichever is higher"* (p.116). This was `max(ballistic, impact) × 2` until 2026-08-30, which doubles the wrong number and then doubles it anyway: ballistic 8 / impact 2 gave 16 where the book gives 8. The two agree whenever Impact is the higher, which is the common case for light armour and is why it survived. ⚠ *"Dermal armor negates the Damage Level increase"* — `SR3EActor.flechetteRaisesLevel`, fed by `dermalArmorSources`: a troll's hide, **Dermal Plating** or a **Dermal Sheath** (`SR3E.dermalArmorImplants`; M&M p.133 defines dermal armor as *"plating or sheath"*). ⚠ **Orthoskin is not dermal armor** — it is bioware armour, and now counts as armour instead (below). Anti-Vehicle sets `weaponOpts.avMunition` to bypass the vehicle Power/2. Tracer: FA-only, tracer rounds raise Level not Power, TN bonus shown as a manual note.
 - *Loading mechanisms*: c/m/cy/b/belt/d/sb/internal + arrow/bolt (`SR3E.ammoLoadMechanisms`); for firearms parsed from the gun's capacity string by `SR3EItem._parseLoadMechanism`. ⚠ **`b` is BREAK ACTION and `m` an INTERNAL magazine** (SR3 p.280) — the map said Belt and Magazine until 2026-09-13; 14 shipped guns are `(b)`, all break-action. Belt feed is `belt`.
+- *Weight*: ⚠ **ammunition weight is PER ROUND** (per reload for a clip) — TODO 126. A box that has been
+  fired down weighs less, which a per-box figure could not express; `build-default-gear` divides the
+  generator's package weight down, and the 661 shipped documents store it that way.
 - *Setting*: world setting `trackAmmo` gates all counting/depletion — **on** for a new world (TODO 55).
   ⚠ A world from before 0.6 that never set it stays **off**. `SR3EMigrations.DEFAULT_CHANGES` writes the
   old default in, because Foundry stores only a value someone set, so a changed default would silently
@@ -1280,6 +1315,26 @@ inside the dialog's FA-only section, so SA's second shot and BF's second burst w
 **Empty = inoperable** (when `trackAmmo` is on): `rollWeapon` bails at the top if a firearm or nocked bow/crossbow has `loadedRounds ≤ 0`, or a consumable has `quantity ≤ 0`. The roll dice icon is rendered faded + struck-through (`_itemControls` `rollDisabled`, gated by `SR3EActorSheet._weaponOutOfAmmo` for firearms & bows / inline for thrown). The Reload button stays active so you can refill.
 
 **Vehicle-mounted weapons** keep their own AV-munition checkbox in the `🚗` firing dialog — they do **not** use the clip/reload system (built for vehicle-vs-vehicle). Character firearm dialogs no longer have a manual AV checkbox (driven by Anti-Vehicle ammo type).
+
+### Carried load and Encumbrance  · *SR3 p.274* — TODO 126
+
+`scripts/data/carried-load.mjs`. The Gear tab leads with **⚖ Carried N kg**, from every item NOT in
+storage (TODO 113); installed cyberware and bioware weigh nothing, stacks multiply by `quantity`, and
+ammunition by its rounds or reloads.
+
+⚠ **The book makes this OPTIONAL** — *"If the player characters' equipment seems to be getting a bit
+out of hand, the gamemaster can impose the following Encumbrance rules"*. Shown, never enforced.
+
+| Load | Effect |
+|---|---|
+| up to **Strength × 5** kg | no appreciable effect |
+| × 10 | **Light** Stun wound after (Body) Combat Turns, then a box every turn |
+| × 15 | **Moderate**; cannot run, movement halved |
+| × 20 | **Serious**; cannot run, movement quartered |
+| heavier | passes out from exertion |
+
+⚠ **Each bound is "up to"** — exactly Strength × 5 is still free. ⚠ The movement penalties are stated,
+not modelled (there is no movement rate), and the Stun is the GM's to apply like any other wound.
 
 ### Range (firearms, bows/crossbows, thrown)  · *SR3 p.111*
 Every band and Strength multiplier is asserted against the printed table in
@@ -1591,6 +1646,28 @@ joins them, and all three are offered on the **attribute-roll dialog** as one un
 live only while Body is selected (`SR3EActor.toxinResistanceOffer`, TODO 98) — dice on the
 test, never added to `body.value`.
 
+### Stress on implants and Attributes  · *M&M pp.124-131* — TODO 109
+
+Rules: `scripts/data/stress.mjs` (pure). Dialog, writes and card: `scripts/SR3EStress.js`. Fields:
+`stress` on cyberware (starts 0) and bioware (**starts 1** — the book's permanent point), `integrity`
+for a cyberlimb's Integrity Enhancement, and `system.attributeStress` keyed by attribute.
+
+| | |
+|---|---|
+| Stress Level | 1-2 Light · 3-5 Moderate · 6-9 Serious · **10+ Deadly = automatic failure** |
+| Stress Test dice | cyberware Basic 1 / Alpha 2 / Beta 3 / Delta 5 · bioware Cosmetic 1 / Basic 2 / Cultured 4 · an Attribute **half its unaugmented rating** |
+| Target number | **the current total** − a cyberlimb's Integrity Rating + a bioware Attribute boost |
+| A wound effect | **1D6 ÷ 2** Stress, then the test |
+
+⚠ **The TN is the NEW total, not what was just added** — p.126's example rolls the nephritic screen
+against 4 because it already carried 3. ⚠ **One success avoids failure**; this is a check, not a graded
+test. ⚠ **The 1D6 ÷ 2 must NOT go through `rollPool`** — *"the Rule of Six does not apply to this roll"*,
+and every `rollPool` path explodes 6s. ⚠ **Nothing is automatic**: ⚙ Apply Stress is GM-only and the soak
+card does not reach in, because a wound effect is a judgement about what the wound did.
+⚠ **1D6 ÷ 2 rounds DOWN** here, so a 1 inflicts nothing — M&M does not say, and it is the maintainer's to
+settle. Not built: Stress Maintenance and repair (p.130-131), bioware malfunction thresholds, and the
+Fragile/Rugged surgery options (p.148).
+
 ### Item ratings — one reader  · TODO 118
 
 `scripts/data/item-rating.mjs`: `itemRating(item)` — a stored `system.rating` **above 0 wins**,
@@ -1709,6 +1786,18 @@ paid Essence for and the book never says which loses. Registry: `SR3E.reactionEx
 
 ⚠ **Rating 3/4's forced extra Complex Action is not modelled** — it needs the action economy
 (TODO 48).
+
+**Its side effects are built** (TODO 110, `scripts/data/move-by-wire.mjs`) · *M&M p.60*:
+- **Automatic Stress** — 1 point every **6 / 4 / 2 / 1 months** at ratings 1-4, *"to both Quickness and
+  Reaction"*, removable only by therapeutic surgery. Shown on the Cyber tab; the points go on through
+  ⚙ Apply Stress (TODO 109).
+- **TLE-x** — each time the system takes Stress, an **unaugmented Willpower (rating × 2)** Test, offered
+  on the Stress card. `system.tlex = { has, surgeries }`; the GM marks it, and clearing it counts one of
+  the **two** brain surgeries the book allows (Correct Failure, base TN 8).
+- ⚠ **Nothing is applied to a roll.** −1 Charisma *"in important social situations"*, and +2 Perception
+  TNs / −2 Initiative / −1D6 Reaction *"in circumstances that the gamemaster deems dangerous or
+  tactically crucial"* — both are situations the book hands to the GM, so the sheet states them.
+- **CCSS is not modelled** — a failed system risks it, and its aftermath is explicitly the GM's.
 
 ### Enhanced Articulation's Reaction stops at rigging and decking  · *M&M p.66*
 
@@ -2586,31 +2675,50 @@ Presentation only, fails visible; the setting already requires a reload.
 ### User Modes and their effects
 | Mode | Initiative | Biofeedback | Dumpshock |
 |------|-----------|-------------|-----------|
-| Tortoise (TRM) | Physical | Immune | — |
-| AR | Physical | Immune | — |
-| VR-Cold | Matrix (Rating + Xd6) | Stun overflow | Stun |
-| VR-Hot | Matrix (Rating + Xd6) | Physical | Physical |
+| Tortoise (TRM) | **meat world** | Immune | — |
+| AR | **meat world** | Immune | — |
+| VR-Cold | **meat world** | Stun overflow | Stun |
+| VR-Hot | Matrix (Response) | Physical | Physical |
 
+- ⚠ **Only VR-Hot uses Matrix Initiative** (MDF p.10, verified TODO 119). Tortoise, AR and VR-Cold all
+  *"rely on their meat world Initiative; cannot benefit from Response, but may use their Hacking Pool"* —
+  their **own** initiative dice, wired reflexes included. The code forced them to 1d6 until the audit;
+  the book excludes Response, not the character's dice.
 - Tortoise mode: +2 TN to all Matrix actions, immune to Biofeedback
 - VR-Cold: overflow damage after stun track filled goes to physical; dumpshock = Stun
-- VR-Hot: all damage physical; dumpshock = physical; uses Matrix initiative formula
+- VR-Hot: all damage physical; dumpshock = physical; *"may rely on their Matrix Initiative, benefit from
+  Response"*
+- **Dumpshock is SERIOUS** — *"The user must immediately resist Serious Biofeedback Damage. The attack's
+  Power is equal to the System Rating of the grid or host that dumped the user"* (MDF p.27). It was
+  Moderate at three sites until the audit.
 
 ### Hacking procedure (3 steps)
 1. **Declare action** — attacker picks a node prompt (e.g. Duplicate/Download on DS)
 2. **Check Security Threshold** — roll Hacking vs System Rating; need ≥ Security Threshold successes or: action fails + Overwatch +1
 3. **Perform action** — if threshold met, action resolves (may require a second roll per the prompt's test field)
 
-### Overwatch / Convergence
-- Track: 10 boxes
-- Each failed hack attempt (misses Security Threshold): Overwatch +1
+### Overwatch / Convergence  · *MDF p.22-23* (verified, TODO 119)
+- Track: 10 boxes, on the host's **Security Sheaf**
+- Overwatch +1 on either of the book's two triggers: *"Failing a test using the Hacking skill"* and
+  *"Crashing an icon without Suppressing it"*. ⚠ **Only the first is implemented** — the crash trigger and
+  the Suppression utility that avoids it are TODO 128, as are the sheaf's ten **Trigger Steps**, which
+  hold the IC a host responds with.
 - Box 10 = **Convergence**: Dumpshock attack (Power = System Rating) + GOD/corporate response + possible physical security
 
-### Cybercombat procedure
-1. **Attack** — attacker rolls Cybercombat + Hacking Pool dice vs TN = target's System Rating
-2. **Defend** — defender rolls Cybercombat (or Firewall dice) vs same TN
-3. **Compare** — net successes (attacker hits − defender hits)
-4. **Determine damage** — base = IC Rating + level (e.g. "6S"); stage up by net successes (every 2 net = +1 stage)
-5. **Resist** — target rolls Body (physical) or System Rating (Matrix entity) vs Power; each 2 soak hits = stage down
+### Cybercombat procedure  · *MDF p.26* (verified, TODO 119)
+1. **Attack** — attacker rolls Cybercombat + Hacking Pool *"against a base target number 4, modified as
+   appropriate"*. ⚠ **Not the target's System Rating** — this file said so until the audit; the code was
+   always right.
+2. **Defend** — defender rolls Cybercombat + Hacking Pool, also against **base TN 4**.
+3. **Compare** — net successes. ⚠ *"Ties are resolved in favor of the defender."* The card posts 🤝 Tie
+   and deals no damage; whether the defender should instead land their own base damage (as a melee tie
+   does for the attacker, SR3 p.122) is the maintainer's to settle — see the audit.
+4. **Determine damage** — +1 Damage Level per 2 net successes; past Deadly the extra successes raise the
+   **Power** by one per two, exactly as melee does.
+5. **Resist** — *"Roll the target icon's System Rating (or MPCP) against a target number equal to the
+   attack's Power, minus the target's Security Threshold or Firewall (which act as armor)."* ⚠ **Not
+   Body** — this file said Body until the audit; the code carries the firewall as armour and rolls
+   MPCP / Rating.
 
 ### IC / Agent rules
 - **Firewall** = host's Security Threshold (not a separate stat on the IC actor)
@@ -2633,16 +2741,23 @@ Presentation only, fails visible; the setting already requires a reload.
 - **Black**: Killer, Ripper
 
 ### Matrix Condition Monitor
-- 10 boxes (same click-to-toggle pattern as physical/stun wound track)
-- TN penalties at 3/6/8/10 boxes filled (+1/+2/+3/crash)
+- 10 boxes (same click-to-toggle pattern as physical/stun wound track) — ✅ *"When an icon achieves 10
+  boxes of Overload Damage, it crashes"* (MDF p.26)
+- 🔴 **THE THRESHOLDS ARE UNVERIFIED.** We use 3/6/8/10 → +1/+2/+3/crash. The book's table (MDF p.12) is a
+  **graphic**: its labels extract as `Icon | +1 TN | +2 TN | +3 TN | +4 TN` — **four** penalty steps, not
+  three — but the box counts do not, and this machine has no PDF rasteriser. One look at p.12 settles it
+  (TODO 119, `audit/matrix-defragged-audit.md`).
 - Not yet implemented as a separate track on the host sheet
 
 ### Sys/Sec modifiers
 | Condition | Modifier |
 |-----------|---------|
-| Hardlined (physical jackpoint) | −2 |
-| Tortoise mode | +2 |
-| Using comms only | +1 |
+| Hardlined via a datajack or trodes | −2 |
+| Operating in a Tortoise Terminal | +2 |
+| Maintaining real-time communication with meat world associates | +1 |
+| Circumstantial — Matrix noise, jamming, wound modifiers | ±1-4 |
+
+Verified against MDF p.14 (TODO 119); the fourth row was missing from this file.
 
 ### Host sheet implementation notes (SR3EHostSheet.js)
 - `securityTierName` change auto-fills both `securityTierColor` and `securityTierThreshold`
