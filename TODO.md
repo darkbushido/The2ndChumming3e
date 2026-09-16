@@ -53,6 +53,10 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | [82](#82) | A flow for buying gear — *Availability, SR3 pp.284-286* | nice to have |
 | [7](#7) | More test coverage for combat, initiative and pools | nice to have |
 
+**Built 2026-09-16 on `feature/0-6-rules`** (branched from `main` at `5e26b2b1`, not merged): 53, 126,
+119, 109, 110, 111 — in that order, each with tests, docs and its own commit. What is left of 0.6 is the
+three nice-to-haves (79, 82, 7) and the release tasks below.
+
 ### Release tasks — before `system.json` becomes 0.6.0
 
 1. **[121](#121) — check the code's rules against *sr3-guides*.** It is the maintainer's standing rule for
