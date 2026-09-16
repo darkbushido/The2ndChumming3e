@@ -49,6 +49,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       woundBox:       SR3EActorSheet._onWoundBox,
       essenceRecalc:  SR3EActorSheet._onEssenceRecalc,
       clearEssenceHole: SR3EActorSheet._onClearEssenceHole,   // TODO 53
+      applyStress:      SR3EActorSheet._onApplyStress,        // TODO 109
       openHealing:    SR3EActorSheet._onOpenHealing,
       equipArmor:     SR3EActorSheet._onEquipArmor,
       equipMelee:     SR3EActorSheet._onEquipMelee,
@@ -1737,6 +1738,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           <span class="item-cell">${c.system.grade ?? '—'}</span>
           <span class="item-cell">${c.system.essenceCost ?? 0}</span>
           <span class="item-cell">${rating}</span>
+          ${this._stressCell(c)}
           ${_trigBtn(c.id)}
           ${this._itemControls(c.id, false, 'rollWeapon', false)}
         </div>`;
@@ -1750,6 +1752,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <span class="item-cell">${b.system.grade ?? '—'}</span>
         <span class="item-cell">${b.system.bioIndex ?? 0}</span>
         <span class="item-cell">${itemRating(b)}</span>
+        ${this._stressCell(b)}
         ${this._itemControls(b.id, false, 'rollWeapon', false)}
       </div>`).join('') : '<p class="empty-list">No bioware.</p>';
 
@@ -1816,7 +1819,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <span style="font-size:11px;color:var(--sr-muted)">from cyber/bio sources — stacks with weapon-mounted compensation</span>
       </div>
       <h3 class="section-hdr">Cyberware</h3>
-      <div class="list-header"><span>Name</span><span>Grade</span><span>Essence</span><span>Rating</span><span></span></div>
+      ${game.user.isGM ? `<button type="button" class="btn-add" data-action="applyStress"
+        title="Apply Stress to an implant or an Attribute — a wound effect is 1D6 ÷ 2 and a Stress Test (M&amp;M pp.124-131)."
+        style="margin-bottom:4px">⚙ Apply Stress…</button>` : ''}
+      <div class="list-header"><span>Name</span><span>Grade</span><span>Essence</span><span>Rating</span><span title="Stress Points · M&amp;M p.124">Stress</span><span></span></div>
       ${cwRows}
       <button type="button" class="btn-add" data-action="itemCreate" data-type="cyberware">+ Cyberware</button>
       <h3 class="section-hdr" style="margin-top:1rem">Bioware</h3>
@@ -2434,6 +2440,18 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       <div style="font-size:11px;color:var(--sr-muted);margin-bottom:10px">
         Damage: 3/6/8/10 boxes = +1/+2/+3 TN or crash. Click boxes or use L/M/S/D buttons to apply damage.
       </div>`;
+  }
+
+  /**
+   * Stress Points on an implant · M&M p.124 (TODO 109). Blank at 0 — a healthy implant should not
+   * shout. Amber from Light, red at Deadly, where it fails outright.
+   */
+  _stressCell(item) {
+    const n = Math.max(0, Number(item.system?.stress) || 0);
+    if (!n) return '<span class="item-cell">—</span>';
+    const lvl = game.sr3e.Stress.level(n);
+    const col = lvl === 'Deadly' ? 'var(--sr-red)' : lvl === 'Serious' ? 'var(--sr-red)' : 'var(--sr-amber)';
+    return `<span class="item-cell" style="color:${col}" title="${lvl}${lvl === 'Deadly' ? ' — automatic failure' : ''} (M&amp;M p.126)">${n}</span>`;
   }
 
   _tabGear(actor) {
@@ -3580,6 +3598,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    * ✕ on an Essence hole (M&M p.150, TODO 53) — GM only, because a hole is what lets the next implant
    * cost less, and removing one is the same kind of decision as correcting the loss above it.
    */
+  /** ⚙ Apply Stress — GM only, because Stress is the GM saying what a wound did (TODO 109). */
+  static async _onApplyStress(_event, _target) {
+    await game.sr3e.SR3EStress.open(this.actor);
+  }
+
   static async _onClearEssenceHole(_event, target) {
     if (!game.user.isGM) { ui.notifications.warn('Only the GM can clear an Essence hole.'); return; }
     const id    = target?.dataset?.holeId;

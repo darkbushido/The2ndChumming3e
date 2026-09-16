@@ -46,7 +46,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | [119](TODO-DONE.md#119) | Audit *The Matrix Defragged v2* | ✅ — 8 confirmed, 3 doc fixes, 2 code fixes, 1 unreadable table; remainders → #128 |
 | [126](TODO-DONE.md#126) | Ammunition weight and a carried load | ✅ — per-round weights; ⚖ Carried on the Gear tab with the p.274 tiers |
 | [53](TODO-DONE.md#53) | The "Essence hole" surgery option — *M&M p.150* | ✅ — removal records a hole; an implant ticked Essence Slot spends it |
-| [109](#109) | Cyberware, bioware and Attribute Stress — *M&M pp.124-131* | in 0.6 — the foundation 110 and 111 need |
+| [109](TODO-DONE.md#109) | Cyberware, bioware and Attribute Stress — *M&M pp.124-131* | ✅ — Stress Points, Levels and the Stress Test; ⚙ Apply Stress on the Cyber tab |
 | [110](#110) | Move-by-wire's TLE-x | in 0.6 — after 109 |
 | [111](#111) | Chronic Dissociation Syndrome — cyberzombies | in 0.6 — after 109 |
 | [79](#79) | A ledger for karma and nuyen | nice to have |
@@ -64,12 +64,12 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 
 ## Contents
 
-**32 open.** 96 done — see [TODO-DONE.md](TODO-DONE.md).
+**31 open.** 97 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[109](#109) Cyberware, bioware and Attribute Stress<br>[110](#110) Move-by-wire's TLE-x<br>[111](#111) Chronic Dissociation Syndrome — cyberzombies |
+| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[110](#110) Move-by-wire's TLE-x<br>[111](#111) Chronic Dissociation Syndrome — cyberzombies |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[127](#127) Tagged releases, with the guides versioned beside them<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[79](#79) No ledger for karma or nuyen — *low priority*<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
@@ -541,47 +541,7 @@ row cannot be done properly until accessories are structured data.
   one-handed weapon if the need arises but that's a problem for another day."* It is specified in
   #47 (p.107, Reaction (4) Test, +2 unholstered, +2 each for two weapons); do not build it here.
 
-## 109. Cyberware, bioware and Attribute Stress — **rules not implemented** (M&M p.124-131)
-
-**Filed 2026-09-13** at the maintainer's request, from a search of the PDF library for
-cyberpsychosis (none of the searchable books has such a rule — see [#110](#110)/[#111](#111) for the
-two nearest). Stress is the *foundation* both of those need, so it comes first.
-
-**What the book has** (*Man & Machine*, all verified against the PDF text):
-- **Stress Points** mark wear and damage on an **implant** or an **Attribute** (p.124). New
-  implants start at 0; **used cyberware starts with 1D6 ÷ 2 permanent** Stress, bioware with 1.
-- **Stress Level** (p.126): 1-2 Light · 3-5 Moderate · 6-9 Serious · **10+ Deadly = automatic
-  failure**.
-- **Stress Test** (p.126), every time Stress is taken: dice by grade — cyberware Basic 1 · Alpha 2 ·
-  Beta 3 · Delta 5; bioware Cosmetic 1 · Basic 2 · Cultured 4; an Attribute rolls
-  ½ unaugmented. **TN = current Stress total** (− cyberlimb Integrity Rating; + the boost for a
-  bioware-boosted Attribute). **One success** avoids failure; none = the system/Attribute fails.
-- **Wound effects** (p.126-129): on a Damage Resistance Test, the highest die compared with the
-  boxes of damage decides whether an implant or Attribute is hit — 1D6 ÷ 2 Stress, then a Stress
-  Test. Electrical damage automatically affects cyberware (p.127).
-- **Removal** of cyberware costs the implant 1D6 ÷ 2 Stress (p.147, already quoted in CLAUDE.md's
-  *Essence is permanent*).
-- **Repair** (p.130-131): cyberware via maintenance/surgery; bioware and Attributes heal; an
-  implant's Stress **never drops below 1** once taken; some becomes permanent. Therapeutic surgery
-  p.147.
-- Bioware **malfunctions by Stress Level** (thresholds per item).
-
-**Nothing exists yet** — no Stress field on any item or attribute (grepped 2026-09-13).
-
-**Shape, when built** (a proposal, not decided): a nullable-free `stress` NumberField on
-cyberware/bioware items and per-Attribute; a pure `SR3EActor.stressTest({grade, type, stress,
-integrity, boost})` → dice + TN, and `stressLevel(points)`; show Stress on the Cyber tab with the
-level; a **GM-invoked** "Apply Stress" (1D6 ÷ 2 + the test) rather than automating wound effects —
-the ethos is that the GM decides what a wound did. Wound-effect detection could come later as an
-offered button on the soak card. Unit tests pinned to the p.126 Leggy example (reaction enhancer
-3 Stress → 1D6 vs TN 3; nephritic screen 3+1 → 2D6 vs TN 4; Reaction ½ unaugmented vs TN 3).
-
-⚠ **Data-model change** — needs a full Foundry restart. The contacts pack's cyberware would need
-the field too (packs are not migrated; see *World migrations*).
-
-<a id="110"></a>
-
-## 110. Move-by-wire's TLE-x — **rules not implemented** (M&M p.60) — needs [#109](#109)
+## 110. Move-by-wire's TLE-x — **rules not implemented** (M&M p.60) — needs [#109](TODO-DONE.md#109)
 
 **Filed 2026-09-13.** Move-by-wire's attribute bonuses are implemented (CLAUDE.md, *Move-by-wire*);
 its **side effect** is not:

@@ -139,6 +139,9 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       // ⚠ A RECORD, never a refund: removal leaves `essence.lost` alone (M&M p.147). Each entry is
       // { id, name, amount, at, grade }; see scripts/data/essence-holes.mjs.
       essenceHoles:            new ArrayField(new ObjectField(), { initial: [] }),
+      // Attribute Stress · M&M pp.124-131 (TODO 109), keyed by attribute name ({ body: 3, … }).
+      // ⚠ An ObjectField because only the attributes that have taken Stress appear.
+      attributeStress:         new ObjectField(),
       // Hands beyond the two everyone has — extra cyber-limbs (TODO 49; SR3 core has no rule, the GM sets it).
       extraHands:              new NumberField({ integer: true, initial: 0, min: 0 }),
       sustainedSpells:         sustainedSpellsField(),
@@ -258,6 +261,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       augmentations:    new ObjectField(),
       substances:       new ObjectField(),   // drug use — see CharacterData (TODO 124)
       essenceHoles:     new ArrayField(new ObjectField(), { initial: [] }),   // TODO 53 — see CharacterData
+      attributeStress:  new ObjectField(),   // TODO 109 — see CharacterData
       extraHands:       new NumberField({ integer: true, initial: 0, min: 0 }),   // TODO 49
       sustainedSpells:  sustainedSpellsField(),
       nuyen:           new NumberField({ integer: true, initial: 0, min: 0 }),

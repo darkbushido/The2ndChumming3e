@@ -297,6 +297,11 @@ export class CyberwareData extends foundry.abstract.TypeDataModel {
       // Fitted into an Essence hole left by removed cyberware — M&M p.150's Essence Slot surgery
       // option, +2 Threshold (TODO 53). ⚠ Opt-in, and read only when the implant is installed.
       essenceSlot:       new BooleanField({ initial: false }),
+      // Wear and damage · M&M pp.124-131 (TODO 109). New implants start at 0; used cyberware starts
+      // with 1D6÷2 permanent. The Stress Test's TN is this total; scripts/data/stress.mjs.
+      stress:            new NumberField({ integer: true, initial: 0, min: 0 }),
+      // Cyberlimb Integrity Enhancement (M&M p.39) lowers a Stress Test's TN by its rating.
+      integrity:         new NumberField({ integer: true, initial: 0, min: 0 }),
       grade:             new StringField({ initial: 'Standard' }),
       rating:            new NumberField({ integer: true, initial: 0, min: 0 }),
       cost:              new NumberField({ integer: true, initial: 0, min: 0 }),
@@ -364,6 +369,8 @@ export class BiowareData extends foundry.abstract.TypeDataModel {
        * Read it through `SR3EActor.srcgKey(item)`, never directly. */
       srcgName:     new StringField({ initial: '' }),
       bioIndex:         new NumberField({ initial: 0.25, min: 0 }),
+      // Wear and damage · M&M pp.124-131 (TODO 109). Bioware starts with 1 permanent Stress Point.
+      stress:           new NumberField({ integer: true, initial: 1, min: 0 }),
       grade:            new StringField({ initial: 'Standard' }),
       rating:           new NumberField({ integer: true, initial: 0, min: 0 }),
       cost:             new NumberField({ integer: true, initial: 0, min: 0 }),

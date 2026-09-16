@@ -5846,6 +5846,66 @@ change handler on the select itself.
 
 <a id="109"></a>
 
+## 109. Cyberware, bioware and Attribute Stress — **rules not implemented** (M&M p.124-131) ✅ 2026-09-16, `feature/0-6-rules`
+
+> **Built 2026-09-16** (0.6), to the shape this item proposed. Rules: `scripts/data/stress.mjs`; the
+> dialog, writes and card: `scripts/SR3EStress.js`.
+> - **Fields:** `stress` on cyberware (0) and bioware (**1**, the book's permanent starting point),
+>   `integrity` for a cyberlimb's Integrity Enhancement, and `system.attributeStress` on the actor.
+> - **⚙ Apply Stress** on the Cyber tab (GM only): pick an implant or an Attribute, roll 1D6 ÷ 2 or
+>   type the points, and it posts a card with the new total, its Stress Level and the test.
+> - **The Stress Test** — dice by grade (cyberware 1/2/3/5, bioware 1/2/4, an Attribute half its
+>   unaugmented rating), TN = **the new total**, −Integrity, +a bioware boost. One success avoids
+>   failure. At Deadly there is no button: it fails outright.
+> - ⚠ **The 1D6 ÷ 2 does not explode** (*"the Rule of Six does not apply to this roll"*), so it is
+>   rolled plainly; the Stress Test is an ordinary Success Test and goes through `rollPool`.
+> - ⚠ **Nothing is automated.** Wound effects are the GM saying what a wound did, so the soak card does
+>   not reach in — `Stress.woundEffects(highestDie, boxes)` is there when the GM wants the book's own
+>   answer (p.126).
+> - The p.126 worked example (Leggy) is asserted end to end in `tests/stress.test.mjs`.
+> - **For the maintainer:** 1D6 ÷ 2 **rounds down**, so a 1 inflicts nothing. M&M never says which way.
+> - **Not built here:** Stress Maintenance and repair (p.130-131), bioware malfunction thresholds, and
+>   the surgery options that change the dice (Fragile/Rugged, p.148). The field and the level are in
+>   place for all three.
+
+**Filed 2026-09-13** at the maintainer's request, from a search of the PDF library for
+cyberpsychosis (none of the searchable books has such a rule — see [#110](TODO.md#110)/[#111](TODO.md#111) for the
+two nearest). Stress is the *foundation* both of those need, so it comes first.
+
+**What the book has** (*Man & Machine*, all verified against the PDF text):
+- **Stress Points** mark wear and damage on an **implant** or an **Attribute** (p.124). New
+  implants start at 0; **used cyberware starts with 1D6 ÷ 2 permanent** Stress, bioware with 1.
+- **Stress Level** (p.126): 1-2 Light · 3-5 Moderate · 6-9 Serious · **10+ Deadly = automatic
+  failure**.
+- **Stress Test** (p.126), every time Stress is taken: dice by grade — cyberware Basic 1 · Alpha 2 ·
+  Beta 3 · Delta 5; bioware Cosmetic 1 · Basic 2 · Cultured 4; an Attribute rolls
+  ½ unaugmented. **TN = current Stress total** (− cyberlimb Integrity Rating; + the boost for a
+  bioware-boosted Attribute). **One success** avoids failure; none = the system/Attribute fails.
+- **Wound effects** (p.126-129): on a Damage Resistance Test, the highest die compared with the
+  boxes of damage decides whether an implant or Attribute is hit — 1D6 ÷ 2 Stress, then a Stress
+  Test. Electrical damage automatically affects cyberware (p.127).
+- **Removal** of cyberware costs the implant 1D6 ÷ 2 Stress (p.147, already quoted in CLAUDE.md's
+  *Essence is permanent*).
+- **Repair** (p.130-131): cyberware via maintenance/surgery; bioware and Attributes heal; an
+  implant's Stress **never drops below 1** once taken; some becomes permanent. Therapeutic surgery
+  p.147.
+- Bioware **malfunctions by Stress Level** (thresholds per item).
+
+**Nothing exists yet** — no Stress field on any item or attribute (grepped 2026-09-13).
+
+**Shape, when built** (a proposal, not decided): a nullable-free `stress` NumberField on
+cyberware/bioware items and per-Attribute; a pure `SR3EActor.stressTest({grade, type, stress,
+integrity, boost})` → dice + TN, and `stressLevel(points)`; show Stress on the Cyber tab with the
+level; a **GM-invoked** "Apply Stress" (1D6 ÷ 2 + the test) rather than automating wound effects —
+the ethos is that the GM decides what a wound did. Wound-effect detection could come later as an
+offered button on the soak card. Unit tests pinned to the p.126 Leggy example (reaction enhancer
+3 Stress → 1D6 vs TN 3; nephritic screen 3+1 → 2D6 vs TN 4; Reaction ½ unaugmented vs TN 3).
+
+⚠ **Data-model change** — needs a full Foundry restart. The contacts pack's cyberware would need
+the field too (packs are not migrated; see *World migrations*).
+
+<a id="110"></a>
+
 ## 112. ✅ Only one armour item can be worn — a coat and a helmet together is legal — **FIXED 2026-09-13** (`fix/armor-and-stacks`)
 
 **Fixed.** Any number of pieces are worn (a per-item `worn` flag; the old `equippedArmor` field is

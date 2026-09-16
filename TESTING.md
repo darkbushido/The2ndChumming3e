@@ -2450,3 +2450,11 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
   - [ ] Move a heavy item into storage: the total drops.
   - [ ] Fire a box of ammunition down: the total drops with it (weight is per round).
   - [ ] After merging, `npm run packs:install` — the 661 ammunition documents changed.
+- [ ] **Stress (TODO 109):**
+  - [ ] Cyber tab → ⚙ Apply Stress (GM only — a player does not see it). Pick a basic cyberware item,
+        roll 1D6 ÷ 2: the card names the die, the new total and its level, and offers the test.
+  - [ ] The row now shows the Stress in amber; at 6+ it turns red.
+  - [ ] Roll the test: 1 die vs TN = the new total. One success avoids failure; nothing is applied.
+  - [ ] Apply Stress to an Attribute: the test rolls half its unaugmented rating.
+  - [ ] Take one to 10: the card says it fails automatically and offers no roll.
+  - [ ] Full restart first — the data model changed.

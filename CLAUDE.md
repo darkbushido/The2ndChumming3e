@@ -1614,6 +1614,28 @@ joins them, and all three are offered on the **attribute-roll dialog** as one un
 live only while Body is selected (`SR3EActor.toxinResistanceOffer`, TODO 98) — dice on the
 test, never added to `body.value`.
 
+### Stress on implants and Attributes  · *M&M pp.124-131* — TODO 109
+
+Rules: `scripts/data/stress.mjs` (pure). Dialog, writes and card: `scripts/SR3EStress.js`. Fields:
+`stress` on cyberware (starts 0) and bioware (**starts 1** — the book's permanent point), `integrity`
+for a cyberlimb's Integrity Enhancement, and `system.attributeStress` keyed by attribute.
+
+| | |
+|---|---|
+| Stress Level | 1-2 Light · 3-5 Moderate · 6-9 Serious · **10+ Deadly = automatic failure** |
+| Stress Test dice | cyberware Basic 1 / Alpha 2 / Beta 3 / Delta 5 · bioware Cosmetic 1 / Basic 2 / Cultured 4 · an Attribute **half its unaugmented rating** |
+| Target number | **the current total** − a cyberlimb's Integrity Rating + a bioware Attribute boost |
+| A wound effect | **1D6 ÷ 2** Stress, then the test |
+
+⚠ **The TN is the NEW total, not what was just added** — p.126's example rolls the nephritic screen
+against 4 because it already carried 3. ⚠ **One success avoids failure**; this is a check, not a graded
+test. ⚠ **The 1D6 ÷ 2 must NOT go through `rollPool`** — *"the Rule of Six does not apply to this roll"*,
+and every `rollPool` path explodes 6s. ⚠ **Nothing is automatic**: ⚙ Apply Stress is GM-only and the soak
+card does not reach in, because a wound effect is a judgement about what the wound did.
+⚠ **1D6 ÷ 2 rounds DOWN** here, so a 1 inflicts nothing — M&M does not say, and it is the maintainer's to
+settle. Not built: Stress Maintenance and repair (p.130-131), bioware malfunction thresholds, and the
+Fragile/Rugged surgery options (p.148).
+
 ### Item ratings — one reader  · TODO 118
 
 `scripts/data/item-rating.mjs`: `itemRating(item)` — a stored `system.rating` **above 0 wins**,
