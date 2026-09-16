@@ -1164,9 +1164,9 @@ export class SR3EActor extends Actor {
       targetActorId:   this.id,
       isMelee:         false,
       stagedPower:     power,
-      stagedLevel:     'M',
+      stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)
       isStun,
-      rawDamage:       `${power}M`,
+      rawDamage:       `${power}S`,
     }).replace(/'/g, '&#39;');
 
     await ChatMessage.create({
@@ -1175,7 +1175,7 @@ export class SR3EActor extends Actor {
         <div class="sr-roll-card">
           <div class="sr-roll-header" style="color:var(--sr-red)">⚡ Dumpshock — ${this.name}</div>
           <div class="sr-staging-result">
-            Dumpshock ${isVRHot ? '(VR-Hot → Physical)' : '(VR-Cold → Stun)'}: <strong>${power}M ${trackLabel}</strong>
+            Dumpshock ${isVRHot ? '(VR-Hot → Physical)' : '(VR-Cold → Stun)'}: <strong>${power}S ${trackLabel}</strong>
           </div>
           <div class="sr-soak-action">
             <button class="sr-soak-btn" data-payload='${soakCtx}'>🛡 ${this.name}: Resist Dumpshock (Body)</button>
@@ -1281,7 +1281,7 @@ export class SR3EActor extends Actor {
     const attackerName  = attacker?.name ?? 'Decker';
     const isVRHot       = (attacker?.system?.matrixUserMode ?? '') === 'VR-Hot';
     const isStun        = !isVRHot;
-    const damageCode    = `${systemRating}M`;
+    const damageCode    = `${systemRating}S`;   // Serious — MDF p.27 (TODO 119)
     const trackLabel    = isStun ? 'Stun' : 'Physical';
 
     const soakCtx = JSON.stringify({
@@ -1289,7 +1289,7 @@ export class SR3EActor extends Actor {
       targetActorId:   attackerActorId,
       isMelee:         false,
       stagedPower:     systemRating,
-      stagedLevel:     'M',
+      stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)
       isStun,
       rawDamage:       damageCode,
     }).replace(/'/g, '&#39;');
@@ -1300,7 +1300,7 @@ export class SR3EActor extends Actor {
           <div class="sr-roll-header" style="color:var(--sr-red)">⚠ CONVERGENCE — ${hostActor.name}</div>
           <div class="sr-roll-result" style="color:var(--sr-red)">GOD Response activated! Overwatch reached 10.</div>
           <div class="sr-staging-result">
-            Dumpshock on ${attackerName}${isVRHot ? ' (VR-Hot → Physical)' : ' (VR-Cold → Stun)'}: <strong>${systemRating}M ${trackLabel}</strong>
+            Dumpshock on ${attackerName}${isVRHot ? ' (VR-Hot → Physical)' : ' (VR-Cold → Stun)'}: <strong>${systemRating}S ${trackLabel}</strong>
           </div>
           <div class="sr-soak-action">
             <button class="sr-soak-btn" data-payload='${soakCtx}'>
@@ -9795,12 +9795,15 @@ _prepareCharacter(sys, attr) {
       dice = 1 + response;
       modeNote = `<div class="sr-roll-meta" style="color:var(--sr-accent)">💻 VR-Hot Init — REA ${reactionBase} + Response ${response}×2</div>`;
     } else if (useMatrixJacked) {
-      // TRM / AR / VR-Cold: Reaction (with wired reflexes) + 1d6 (Response does not apply).
+      // TRM / AR / VR-Cold: the character's OWN meat-world Initiative — MDF p.10: "rely on their
+      // meat world Initiative; cannot benefit from Response". ⚠ The dice were forced to 1 until
+      // TODO 119's audit; the book excludes Response, not the character's own initiative dice, so
+      // wired reflexes were being stripped from every decker who was not in VR-Hot.
       // ⚠ This is DECKING, so Enhanced Articulation's +1 Reaction does not apply (M&M p.66).
       // Wired reflexes DO — the exclusion is specific to that bonus, not to cyberware at
       // large, which is why this uses the corrected Reaction rather than reaction.base.
       base = (d.reactionNoRigDeck ?? 0) + (this.system.woundMod ?? 0);
-      dice = 1;
+      dice = Math.max(1, d.initiativeDice ?? 1);
       modeNote = `<div class="sr-roll-meta" style="color:var(--sr-accent)">🔌 Matrix Init (${matrixMode})</div>`;
     } else {
       base = d.initiative     ?? 0;
@@ -11872,9 +11875,9 @@ _prepareCharacter(sys, attr) {
         targetActorId:   ctx.deckerActorId,
         isMelee:         false,
         stagedPower:     secVal,
-        stagedLevel:     'M',
+        stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)
         isStun,
-        rawDamage:       `${secVal}M`,
+        rawDamage:       `${secVal}S`,
       }).replace(/'/g, '&#39;');
 
       await ChatMessage.create({
@@ -11883,7 +11886,7 @@ _prepareCharacter(sys, attr) {
           <div class="sr-roll-header" style="color:var(--sr-red)">⚡ Cyberdeck Crashed — ${ctx.deckerName}</div>
           <div class="sr-staging-result">
             Matrix CM full — ${ctx.deckerName} is forcibly disconnected.
-            Dumpshock ${isVRHot ? '(VR-Hot → Physical)' : '(VR-Cold → Stun)'}: <strong>${secVal}M ${trackLabel}</strong>
+            Dumpshock ${isVRHot ? '(VR-Hot → Physical)' : '(VR-Cold → Stun)'}: <strong>${secVal}S ${trackLabel}</strong>
           </div>
           <div class="sr-soak-action">
             <button class="sr-soak-btn" data-payload='${soakCtx}'>

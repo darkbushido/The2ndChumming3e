@@ -43,7 +43,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 
 | # | Item | Status |
 |---|---|---|
-| [119](#119) | Audit *The Matrix Defragged v2* | **the 0.6 feature bump** (the maintainer, earlier) |
+| [119](TODO-DONE.md#119) | Audit *The Matrix Defragged v2* | ✅ — 8 confirmed, 3 doc fixes, 2 code fixes, 1 unreadable table; remainders → #128 |
 | [126](TODO-DONE.md#126) | Ammunition weight and a carried load | ✅ — per-round weights; ⚖ Carried on the Gear tab with the p.274 tiers |
 | [53](TODO-DONE.md#53) | The "Essence hole" surgery option — *M&M p.150* | ✅ — removal records a hole; an implant ticked Essence Slot spends it |
 | [109](#109) | Cyberware, bioware and Attribute Stress — *M&M pp.124-131* | in 0.6 — the foundation 110 and 111 need |
@@ -64,14 +64,14 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 
 ## Contents
 
-**31 open.** 95 done — see [TODO-DONE.md](TODO-DONE.md).
+**32 open.** 96 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[109](#109) Cyberware, bioware and Attribute Stress<br>[110](#110) Move-by-wire's TLE-x<br>[111](#111) Chronic Dissociation Syndrome — cyberzombies |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
-| 🖥 Matrix | [119](#119) Audit *The Matrix Defragged v2* against what we have<br>[120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork) |
+| 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[127](#127) Tagged releases, with the guides versioned beside them<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[79](#79) No ledger for karma or nuyen — *low priority*<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[122](#122) Ratings in the field, not the name, for weapons, cyberware and bioware |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
@@ -724,33 +724,6 @@ Effects offered and applied only on a click — nothing automatic, per the desig
 
 ### 🖥 Matrix
 
-## 119. Audit *The Matrix Defragged v2* against what we have — **requested 2026-09-13**
-
-**Request (maintainer):** the book is now in the library — audit it against the system.
-
-*Shadowrun 3e - The Matrix Defragged v2.pdf* (Brinoceros, updated May 22, 2024; ~21,000 words, a
-**real text layer** — `pdftotext -layout` works). Until now CLAUDE.md said the whole *Matrix
-Defragged* section **cannot be audited** because the book was not in the library; that is no longer
-true, and this is the audit that section has been waiting for.
-
-**Scope, from its contents page:** the Architecture of Cyberspace (AROs, datastream, grid, hosts,
-icons, I/O ports, marks, movement, stealth, perception, nodes, pathways, PAN, prompts, RFID) ·
-User Modes (Tortoise, AR, VR cold/hot) · Running the Matrix (logon, Sys/Sec modifiers, hosts,
-legitimate use, prompting nodes; CPU/DS/SN/SPU/SAN prompts and the CPU Barrier) · Hacking · the
-Security Sheaf (Overwatch, stocking it, grading IC White/Gray/Black, Convergence, IC, IC agents) ·
-Available Programs (Analyze … Suppression).
-
-**Against:** CLAUDE.md *Matrix rules (Matrix Defragged v2)* — System Rating, Security Tiers and
-thresholds, Hacking Pool (`INT + ⌊MPCP/3⌋`), User Modes table, the 3-step hacking procedure,
-Overwatch/Convergence, cybercombat, IC initiative by tier, the official IC list, the Matrix
-Condition Monitor, Sys/Sec modifiers; the host/IC/agent sheets; the `MDF-*.json` rawdata and the
-five `sr3e-mdf-*` packs (116 documents with no `bookPage` — [#117](#117)); and
-`tests/tables.test.mjs`, which says outright that its tier tables are **not** independent
-verification. Output: a divergence list like the adept-power audit (`audit/`), each with page
-citations, 🔴 markers in CLAUDE.md for real divergences, and book/page on the MDF packs.
-
-<a id="120"></a>
-
 ## 120. A Matrix Defragged adapter for HoloSuite Hacking (fork) — **requested 2026-09-13**
 
 **Request (maintainer):** work on a possible fork of
@@ -773,9 +746,55 @@ ones, or (b) no fork — a small bridge in this system that calls its public API
 a GPL fork and survives upstream updates; (a) is needed only if the adapter contract cannot express
 Defragged's rolls. Defragged-specific parts to map: the Hacking Pool, the Security Threshold (fail →
 Overwatch +1 — `SR3EHostSheet`'s track), System Rating as TN, and node prompts as the challenge.
-Depends on [#119](#119) for which rules are right.
+Depends on [#119](TODO-DONE.md#119) for which rules are right.
 
 <a id="121"></a>
+
+## 127. Tagged releases, with the guides versioned beside them — **on `feature/release-pipeline`**
+
+⚠ **A placeholder, so the numbering has no hole.** The item itself was written by another session and
+lives on **`feature/release-pipeline`** (`3ef4bdf2`) together with the work it describes: `guides/` imported
+with its history, `.github/workflows/release.yml`, and `tools/release.mjs`. That branch is not merged.
+
+`tests/todo-archive.test.mjs` requires every number from 1 to the highest to appear exactly once, and #128
+was raised here before #127 arrived on `main`. **On merging that branch, keep ITS version of this entry and
+delete this stub** — the two will conflict here, which is the point: the conflict is the reminder.
+
+## 128. Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps
+
+Raised 2026-09-16 as the remainder of [#119](TODO-DONE.md#119), all three from *The Matrix Defragged v2*.
+
+**1. Overwatch has two triggers; we implement one** (MDF p.22):
+
+> "Overwatch is tracked on the Security Sheaf of the grid or host system in which a decker prompts an
+> action leading to any of the following conditions: **Failing a test using the Hacking skill** ·
+> **Crashing an icon without Suppressing it**."
+
+`SR3EActor._incrementOverwatch` is called from the two failed-test paths and nowhere else, so crashing
+an icon in cybercombat is currently free.
+
+**2. The Suppression utility is the way out of it** (MDF p.26):
+
+> "Deckers who crash an icon while running Suppression in an active utility slot, may degrade 1 point
+> of the utility's rating, to avoid accruing Overwatch when their actions result in the crash of an
+> enemy icon."
+
+It is in the book's program list and in the MDF program pack; no code reads it. Note the cost — the
+utility **degrades by a point**, so this is a choice, not a free pass.
+
+**3. The Security Sheaf is more than a 10-box track** (MDF p.22-23): ten **Trigger Steps**, each able
+to hold IC that the host deploys when Overwatch reaches it — *"Triggered IC activate (rolling into
+initiative) at the top of the next Combat Phase (-10 from an IC's Initiative for each phase that has
+already transpired)"*. The book prints a worked sheaf (System Sweep, Authenticator-(4), Alert,
+Barrier-(6) + Tracker-(4), Killer-(6), Data Worm-(6), Convergence). The host sheet has the track and
+the Convergence box, and nothing to stock.
+
+⚠ **Stocking is bounded by memory** — *"so long as the total Mp size of the assigned resources are
+less than the host's available Memory (generally System Rating x500Mp)"*, and Gray/Black IC need the
+Mainframe Support module. Any implementation should report that, not enforce it.
+
+**Shape:** the crash trigger and Suppression are small and self-contained — do them first. The sheaf
+is a host-sheet feature (a list of steps, each with IC and a rating) and is worth its own pass.
 
 ### 📦 Content gaps
 
@@ -1811,7 +1830,7 @@ count; it would have the moment it did.
    SR2 core for the 314 `sr2.???` (the SR2 core PDF is in the library), Mr. Johnson's Little Black
    Book for the 62 contacts, the core rules for skills. The Matrix Defragged packs **can now be
    sourced**: *Shadowrun 3e - The Matrix Defragged v2.pdf* was added to the library on 2026-09-13,
-   with a text layer — see [#119](#119).
+   with a text layer — see [#119](TODO-DONE.md#119).
 3. Make it a rule the tooling enforces: `tools/check-packs.mjs` to report any document with an empty
    or `???` `bookPage` (information for now, a fault once the backlog is cleared), so new content
    cannot ship without one.

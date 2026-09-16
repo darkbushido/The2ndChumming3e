@@ -709,19 +709,14 @@ ODM-\* rawdata), **`mat`** = this sourcebook, **`matrix-defragged`** = the commu
 > thresholds, the Weapon Range Table, Impact Projectile multipliers, the Grenade Range Table,
 > Impact Damage Levels and crash Power, ammunition, R3 flux ranges).
 >
-> ✅ **Update 2026-09-13: *Shadowrun 3e - The Matrix Defragged v2.pdf* is now in the library, with a
-> text layer — the audit below is TODO 119 and has not been done yet.** Until it is, the warning
-> stands:
->
-> ⚠ **THE MATRIX DEFRAGGED SECTION CANNOT BE AUDITED AT ALL.** *Matrix rules (Matrix Defragged
-> v2)* — System Rating, Security Tiers, Hacking Pool, User Modes, the hacking procedure,
-> Overwatch/Convergence, cybercombat, IC grading, the Matrix Condition Monitor and the Sys/Sec
-> modifiers — is a **community supplement that is not in the PDF library**, and carries one
-> citation across the whole block. Everything in it is unverifiable here: `rawdata/MDF-*.json`
-> holds its DATA but no rules text. So those sections are this project's own specification, not
-> a transcription anyone has checked. `tests/tables.test.mjs` asserts the tier tables agree with
-> **this file** and with each other, and says at the assertion that this is not independent
-> verification. Do not read a green suite there as "matches the book" — there is no book.
+> ✅ **AUDITED 2026-09-16 — TODO 119, `audit/matrix-defragged-audit.md`.** *Shadowrun 3e - The Matrix
+> Defragged v2.pdf* is in the library with a text layer, and the *Matrix rules (Matrix Defragged v2)*
+> section below has been checked against it page by page. The old warning that it "cannot be audited at
+> all" is gone. What the audit found: eight rules confirmed, **three places where this file was wrong and
+> the code was right** (all three corrected below), **two code divergences** (Dumpshock was Moderate, and
+> TRM/AR/VR-Cold were forced to one initiative die — both fixed), and **one table that could not be read**
+> because it is a graphic (the Matrix Condition Monitor's box thresholds — 🔴 below). `tests/matrix-defragged.test.mjs`
+> now pins the verified figures with their pages.
 
 ### Dice rolling — Rule of Six & Rule of One  · *SR3 p.38-39*
 - All rolls are d6 success-counting (result ≥ TN = success)
@@ -2614,31 +2609,50 @@ Presentation only, fails visible; the setting already requires a reload.
 ### User Modes and their effects
 | Mode | Initiative | Biofeedback | Dumpshock |
 |------|-----------|-------------|-----------|
-| Tortoise (TRM) | Physical | Immune | — |
-| AR | Physical | Immune | — |
-| VR-Cold | Matrix (Rating + Xd6) | Stun overflow | Stun |
-| VR-Hot | Matrix (Rating + Xd6) | Physical | Physical |
+| Tortoise (TRM) | **meat world** | Immune | — |
+| AR | **meat world** | Immune | — |
+| VR-Cold | **meat world** | Stun overflow | Stun |
+| VR-Hot | Matrix (Response) | Physical | Physical |
 
+- ⚠ **Only VR-Hot uses Matrix Initiative** (MDF p.10, verified TODO 119). Tortoise, AR and VR-Cold all
+  *"rely on their meat world Initiative; cannot benefit from Response, but may use their Hacking Pool"* —
+  their **own** initiative dice, wired reflexes included. The code forced them to 1d6 until the audit;
+  the book excludes Response, not the character's dice.
 - Tortoise mode: +2 TN to all Matrix actions, immune to Biofeedback
 - VR-Cold: overflow damage after stun track filled goes to physical; dumpshock = Stun
-- VR-Hot: all damage physical; dumpshock = physical; uses Matrix initiative formula
+- VR-Hot: all damage physical; dumpshock = physical; *"may rely on their Matrix Initiative, benefit from
+  Response"*
+- **Dumpshock is SERIOUS** — *"The user must immediately resist Serious Biofeedback Damage. The attack's
+  Power is equal to the System Rating of the grid or host that dumped the user"* (MDF p.27). It was
+  Moderate at three sites until the audit.
 
 ### Hacking procedure (3 steps)
 1. **Declare action** — attacker picks a node prompt (e.g. Duplicate/Download on DS)
 2. **Check Security Threshold** — roll Hacking vs System Rating; need ≥ Security Threshold successes or: action fails + Overwatch +1
 3. **Perform action** — if threshold met, action resolves (may require a second roll per the prompt's test field)
 
-### Overwatch / Convergence
-- Track: 10 boxes
-- Each failed hack attempt (misses Security Threshold): Overwatch +1
+### Overwatch / Convergence  · *MDF p.22-23* (verified, TODO 119)
+- Track: 10 boxes, on the host's **Security Sheaf**
+- Overwatch +1 on either of the book's two triggers: *"Failing a test using the Hacking skill"* and
+  *"Crashing an icon without Suppressing it"*. ⚠ **Only the first is implemented** — the crash trigger and
+  the Suppression utility that avoids it are TODO 128, as are the sheaf's ten **Trigger Steps**, which
+  hold the IC a host responds with.
 - Box 10 = **Convergence**: Dumpshock attack (Power = System Rating) + GOD/corporate response + possible physical security
 
-### Cybercombat procedure
-1. **Attack** — attacker rolls Cybercombat + Hacking Pool dice vs TN = target's System Rating
-2. **Defend** — defender rolls Cybercombat (or Firewall dice) vs same TN
-3. **Compare** — net successes (attacker hits − defender hits)
-4. **Determine damage** — base = IC Rating + level (e.g. "6S"); stage up by net successes (every 2 net = +1 stage)
-5. **Resist** — target rolls Body (physical) or System Rating (Matrix entity) vs Power; each 2 soak hits = stage down
+### Cybercombat procedure  · *MDF p.26* (verified, TODO 119)
+1. **Attack** — attacker rolls Cybercombat + Hacking Pool *"against a base target number 4, modified as
+   appropriate"*. ⚠ **Not the target's System Rating** — this file said so until the audit; the code was
+   always right.
+2. **Defend** — defender rolls Cybercombat + Hacking Pool, also against **base TN 4**.
+3. **Compare** — net successes. ⚠ *"Ties are resolved in favor of the defender."* The card posts 🤝 Tie
+   and deals no damage; whether the defender should instead land their own base damage (as a melee tie
+   does for the attacker, SR3 p.122) is the maintainer's to settle — see the audit.
+4. **Determine damage** — +1 Damage Level per 2 net successes; past Deadly the extra successes raise the
+   **Power** by one per two, exactly as melee does.
+5. **Resist** — *"Roll the target icon's System Rating (or MPCP) against a target number equal to the
+   attack's Power, minus the target's Security Threshold or Firewall (which act as armor)."* ⚠ **Not
+   Body** — this file said Body until the audit; the code carries the firewall as armour and rolls
+   MPCP / Rating.
 
 ### IC / Agent rules
 - **Firewall** = host's Security Threshold (not a separate stat on the IC actor)
@@ -2661,16 +2675,23 @@ Presentation only, fails visible; the setting already requires a reload.
 - **Black**: Killer, Ripper
 
 ### Matrix Condition Monitor
-- 10 boxes (same click-to-toggle pattern as physical/stun wound track)
-- TN penalties at 3/6/8/10 boxes filled (+1/+2/+3/crash)
+- 10 boxes (same click-to-toggle pattern as physical/stun wound track) — ✅ *"When an icon achieves 10
+  boxes of Overload Damage, it crashes"* (MDF p.26)
+- 🔴 **THE THRESHOLDS ARE UNVERIFIED.** We use 3/6/8/10 → +1/+2/+3/crash. The book's table (MDF p.12) is a
+  **graphic**: its labels extract as `Icon | +1 TN | +2 TN | +3 TN | +4 TN` — **four** penalty steps, not
+  three — but the box counts do not, and this machine has no PDF rasteriser. One look at p.12 settles it
+  (TODO 119, `audit/matrix-defragged-audit.md`).
 - Not yet implemented as a separate track on the host sheet
 
 ### Sys/Sec modifiers
 | Condition | Modifier |
 |-----------|---------|
-| Hardlined (physical jackpoint) | −2 |
-| Tortoise mode | +2 |
-| Using comms only | +1 |
+| Hardlined via a datajack or trodes | −2 |
+| Operating in a Tortoise Terminal | +2 |
+| Maintaining real-time communication with meat world associates | +1 |
+| Circumstantial — Matrix noise, jamming, wound modifiers | ±1-4 |
+
+Verified against MDF p.14 (TODO 119); the fourth row was missing from this file.
 
 ### Host sheet implementation notes (SR3EHostSheet.js)
 - `securityTierName` change auto-fills both `securityTierColor` and `securityTierThreshold`

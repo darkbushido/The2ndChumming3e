@@ -6125,6 +6125,54 @@ needs `node tools/patch-name-ratings.mjs --install` with Foundry closed**); `dis
 
 <a id="119"></a>
 
+## 119. Audit *The Matrix Defragged v2* against what we have — **requested 2026-09-13** ✅ 2026-09-16, `feature/0-6-rules`
+
+> **Done 2026-09-16 — `audit/matrix-defragged-audit.md`.** Fourteen rules checked against the PDF, every
+> quotation extracted rather than transcribed.
+> - **Eight confirmed:** System Rating, the seven Security Tiers and thresholds, the Hacking Pool
+>   formula, Sys/Sec, the hacking procedure (including *"a tie goes in favor of the hacker"*), the
+>   10-box Overwatch track and Convergence, IC/agent initiative by tier with Firewall = the host's
+>   threshold, and the Sys/Sec modifiers.
+> - **Three places CLAUDE.md was wrong and the code was right** — cybercombat's two target numbers
+>   (base TN 4, not the System Rating) and the resistance roll (System Rating/MPCP against Power minus
+>   the firewall, not Body). Corrected, with the book quoted.
+> - **Two code divergences, both fixed here:** Dumpshock was Moderate where the book says **Serious**
+>   (three sites), and TRM/AR/VR-Cold were forced to **one initiative die** where the book gives them
+>   their own meat-world Initiative and excludes only Response.
+> - **One table could not be read:** the Matrix Condition Monitor (p.12) is a graphic. Its labels show
+>   **four** penalty steps (+1…+4) where we model three, and the box counts do not extract. 🔴 in
+>   CLAUDE.md. **For the maintainer:** one look at p.12 settles it.
+> - `tests/matrix-defragged.test.mjs` pins the verified figures with their pages, and deliberately does
+>   NOT assert the Condition Monitor thresholds.
+> - **Remainders raised as [#128](TODO.md#128):** Overwatch's second trigger (crashing an icon without
+>   Suppressing it), the Suppression utility, and the Security Sheaf's Trigger Steps. The 28 MDF
+>   documents still missing a book page belong to [#117](TODO.md#117).
+
+**Request (maintainer):** the book is now in the library — audit it against the system.
+
+*Shadowrun 3e - The Matrix Defragged v2.pdf* (Brinoceros, updated May 22, 2024; ~21,000 words, a
+**real text layer** — `pdftotext -layout` works). Until now CLAUDE.md said the whole *Matrix
+Defragged* section **cannot be audited** because the book was not in the library; that is no longer
+true, and this is the audit that section has been waiting for.
+
+**Scope, from its contents page:** the Architecture of Cyberspace (AROs, datastream, grid, hosts,
+icons, I/O ports, marks, movement, stealth, perception, nodes, pathways, PAN, prompts, RFID) ·
+User Modes (Tortoise, AR, VR cold/hot) · Running the Matrix (logon, Sys/Sec modifiers, hosts,
+legitimate use, prompting nodes; CPU/DS/SN/SPU/SAN prompts and the CPU Barrier) · Hacking · the
+Security Sheaf (Overwatch, stocking it, grading IC White/Gray/Black, Convergence, IC, IC agents) ·
+Available Programs (Analyze … Suppression).
+
+**Against:** CLAUDE.md *Matrix rules (Matrix Defragged v2)* — System Rating, Security Tiers and
+thresholds, Hacking Pool (`INT + ⌊MPCP/3⌋`), User Modes table, the 3-step hacking procedure,
+Overwatch/Convergence, cybercombat, IC initiative by tier, the official IC list, the Matrix
+Condition Monitor, Sys/Sec modifiers; the host/IC/agent sheets; the `MDF-*.json` rawdata and the
+five `sr3e-mdf-*` packs (116 documents with no `bookPage` — [#117](TODO.md#117)); and
+`tests/tables.test.mjs`, which says outright that its tier tables are **not** independent
+verification. Output: a divergence list like the adept-power audit (`audit/`), each with page
+citations, 🔴 markers in CLAUDE.md for real divergences, and book/page on the MDF packs.
+
+<a id="120"></a>
+
 ## 126. Ammunition has no weight, and nothing adds up a carried load ✅ 2026-09-16, `feature/0-6-rules`
 
 > **Built 2026-09-16** (0.6). Rules: `scripts/data/carried-load.mjs`.
