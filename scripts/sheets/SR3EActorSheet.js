@@ -994,7 +994,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         ${holeTotal > 0 || essGM ? `
         <!-- The Essence hole — M&M p.150's Essence Slot option (TODO 53). One pooled number: removed cyberware
              adds to it, an implant ticked Essence Slot fills it down. ⚠ It refunds nothing by existing.
-             The GM edits it directly for anything else that fills or opens it. -->
+             The GM edits it directly, for player error and bookkeeping only — Essence cannot be regained. -->
         <div class="attr-row" style="margin-top:2px;gap:3px;align-items:center"
              title="Essence hole (M&amp;M p.150). Removing cyberware refunds nothing (p.147), but an implant ticked 'Essence Slot' fills this first, at +${holeThreshold} surgery Threshold.">
           <span style="font-size:9px;color:var(--sr-muted)">hole</span>

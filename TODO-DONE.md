@@ -3198,10 +3198,9 @@ dodge fields ride, and adding them without noticing would have reproduced it.
 >   adds to it, an Essence Slot implant fills it down, and a 3.0 hole with a 2.0 implant is a **1.0 hole**.
 >   The GM edits it directly on the sheet (players cannot). Nothing in M&M needs the removed implant
 >   remembered — p.127's Essence *slots* choose which INSTALLED implant a wound hits, a different thing.
->   ⚠ **A cloned replacement filling the hole was NOT found in M&M.** Body Parts (p.139) and the
->   Transplant Organ/Limb procedure (p.148) cover cloned parts, and the designer's note (p.7) says Essence
->   is not lost when something is *"replaced with the same type of item"*, but no page says a clone fills
->   an Essence hole. Until a page turns up, the GM lowers the hole by hand.
+>   ⚠ **There is no way to regain Essence** (the maintainer, same morning, withdrawing the idea that a
+>   cloned replacement might fill the hole — M&M has no such rule). The GM's edit exists for player error
+>   and bookkeeping only. The Essence *slots* of p.127 are a separate thing, for cybersystem damage — TODO 129.
 > - *(Superseded:)* **Removing cyberware records a hole** on the actor (`system.essenceHoles`), naming the implant and
 >   its graded Essence cost.
 > - ⚠ **It still refunds nothing** (M&M p.147). The `deleteItem` hook never touches `essence.lost`;

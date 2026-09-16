@@ -68,14 +68,14 @@ three nice-to-haves (79, 82, 7) and the release tasks below.
 
 ## Contents
 
-**29 open.** 99 done — see [TODO-DONE.md](TODO-DONE.md).
+**30 open.** 99 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
-| 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[127](#127) Tagged releases, with the guides versioned beside them<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps |
+| 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[127](#127) Tagged releases, with the guides versioned beside them<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[129](#129) Cybersystem damage — Essence slots and the Wound Effect Table (M&M pp.126-128) |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[79](#79) No ledger for karma or nuyen — *low priority*<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[122](#122) Ratings in the field, not the name, for weapons, cyberware and bioware |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
@@ -708,6 +708,47 @@ Mainframe Support module. Any implementation should report that, not enforce it.
 
 **Shape:** the crash trigger and Suppression are small and self-contained — do them first. The sheaf
 is a host-sheet feature (a list of steps, each with IC and a rating) and is worth its own pass.
+
+## 129. Cybersystem damage — Essence slots and the Wound Effect Table (M&M pp.126-128)
+
+Raised 2026-09-16 by the maintainer, while settling the Essence hole (#53): *"the essence slot has to do
+with cybersystem damage … they do need to be assigned a slot but that can be handled under the hood when we
+need to see if cyber systems take damage."* **No UI needed** — a picture of the six slots might look good,
+but the slots only matter at the moment a wound effect is resolved.
+
+**What the book does** (M&M pp.126-128, with the Leggy example running through it):
+1. **Wound effects** (p.126) — `Stress.woundEffects(highestDie, boxes)` already counts them (#109): the
+   Damage Resistance Test read as a Success Test against the boxes inflicted.
+2. **The Wound Effect Table** (p.127) — 1D6 per wound effect: **1-2 cybersystem damage · 3-4 bioware
+   damage · 5-6 organic physical injury**. A character with no cyberware ignores a cybersystem result; no
+   bioware, a bioware result.
+3. **Assign Essence Slots** (p.127) — six slots, one per point of Essence, each holding 1.0 of cyberware.
+   Fill slot 1 first and each slot completely before the next, in ascending order; an implant costing more
+   than 1 spans several. Anything inside a cybereye, cyberear or cyberlimb counts as part of that system
+   *unless* it cost Essence of its own. Leggy's slots are worked on p.127: VCR 2 in 1-3, two reaction
+   enhancers in 3, wired reflexes in 4-5 with his cybereyes and datajack, smartlink half-filling 6.
+4. **Determine System Affected** (p.127) — roll 1D6 against the slots. An empty slot: no damage. A slot
+   with several implants: the GM chooses, picks randomly, or rolls 1D10 across the slot subdivided by
+   Essence Cost. ⚠ **A half-full slot** is a 50-50 between its implant and no damage (the smartlink, p.128).
+   A damaged cyberlimb/eye/ear: the whole system or a random subsystem, the GM's call.
+5. **The damage** — 1D6 ÷ 2 Stress and a Stress Test (p.127), which #109 already does.
+6. **Bioware** (p.128) — the same procedure with **Bio Index slots** in place of Essence slots.
+
+**Two special cases:**
+- **Electrical damage** (p.127) automatically affects cyberware: each wound effect goes straight to
+  Determine System Affected, plus an extra 1D6 per wound effect where **1-2 damages another piece**.
+- **Cyberzombies** (p.127) have more cyberware than slots, so they *"double up"* — two systems can be hit
+  at once — and *"always take damage from cybersystem wound effects"* (#111). Bioware over its slots doubles
+  up the same way (p.128).
+
+**Shape, when built:** a pure `scripts/data/cyber-slots.mjs` — `assignSlots(implants)` returning the six
+slots with each implant's share, `systemHit(slots, d6)` returning the implant(s) or none (with the half-slot
+chance), and the Wound Effect Table — pinned to Leggy's slots from p.127. Then offer it where #109's
+⚙ Apply Stress asks "what took it": *"roll for it (M&M p.127)"*, which fills the choice in. ⚠ Offered, not
+automatic — the design ethos, and the book gives the GM the pick within a slot anyway.
+
+⚠ **Not the Essence hole.** #53's hole records Essence spent on removed cyberware; these slots describe
+cyberware that is still installed.
 
 ### 📦 Content gaps
 

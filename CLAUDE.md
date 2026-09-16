@@ -982,10 +982,13 @@ CYBERWARE:
 `system.essenceHole`** (the maintainer: *"they just have an essence hole"*). Removing cyberware adds its
 graded cost — ⚠ **never touching `essence.lost`**, because removal refunds nothing — and an implant whose
 `essenceSlot` is ticked fills the hole down at install. ⚠ **A partly filled hole keeps its remainder**: a
-3.0 hole with a 2.0 implant is a 1.0 hole, tracked until it reaches 0. The GM edits it on the sheet; a
-player's write is dropped (`stripPlayerEssenceWrites`). The +2 Threshold is stated, not enforced; there is
-no surgery flow. ⚠ A cloned replacement filling the hole is **not in M&M** as far as a search finds
-(Body Parts p.139, Transplant p.148) — the GM lowers the number by hand.
+3.0 hole with a 2.0 implant is a 1.0 hole, tracked until it reaches 0. The GM edits it on the sheet **for player
+error and bookkeeping only** — ⚠ there is no way to regain Essence, so nothing but an Essence Slot implant
+fills the hole (the maintainer, 2026-09-16). A player's write is dropped (`stripPlayerEssenceWrites`). The
++2 Threshold is stated, not enforced; there is no surgery flow.
+
+⚠ **The Essence hole is NOT the Essence *slots* of M&M p.127.** Those six slots assign INSTALLED cyberware
+to a d6 result so a wound effect can pick which implant it hits — TODO 129.
 
 ⚠ **The "Essence hole" is an opt-in SURGERY OPTION, not automatic** — *M&M p.150*:
 

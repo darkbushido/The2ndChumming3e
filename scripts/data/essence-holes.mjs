@@ -15,7 +15,9 @@
  * be reclaimed by surgery, never a change to `essence.lost`.
  * ⚠ **The discount is opt-in, per implant** — `system.essenceSlot` on the cyberware, ticked before it is
  * installed. Applying it by default would hand every character a free Essence Slot on every implant.
- * ⚠ **The GM edits the hole directly** (the sheet's number box) for anything else that fills or opens it.
+ * ⚠ **The GM edits the hole directly** (the sheet's number box) — for player error and bookkeeping, and
+ *   nothing else. There is no way to regain Essence (the maintainer, 2026-09-16): nothing but an Essence
+ *   Slot implant fills the hole.
  *
  * There is no surgery flow (no Thresholds — TODO 109 built Stress, not surgery), so the +2 Threshold is
  * **stated, never enforced**.

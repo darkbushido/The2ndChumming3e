@@ -2440,7 +2440,7 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
         2.0 off, and the hole reads 1.
   - [ ] Drag in a 2.0 implant with the tick: 1.0 off, 1.0 to pay, and the hole reads 0.
   - [ ] Without the tick, an implant costs full price and leaves the hole alone.
-  - [ ] The GM can type the hole down (a cloned replacement, say); a player sees it greyed out.
+  - [ ] The GM can correct the hole by hand (a bookkeeping mistake); a player sees it greyed out.
   - [ ] Full restart first — the data model changed.
 - [ ] **Carried load (TODO 126):**
   - [ ] A Strength 4 character with a rifle and a few clips: the Gear tab reads "⚖ Carried N kg, free
