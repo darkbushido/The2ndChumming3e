@@ -294,6 +294,9 @@ export class CyberwareData extends foundry.abstract.TypeDataModel {
        * Read it through `SR3EActor.srcgKey(item)`, never directly. */
       srcgName:     new StringField({ initial: '' }),
       essenceCost:       new NumberField({ initial: 0.5, min: 0 }),
+      // Fitted into an Essence hole left by removed cyberware — M&M p.150's Essence Slot surgery
+      // option, +2 Threshold (TODO 53). ⚠ Opt-in, and read only when the implant is installed.
+      essenceSlot:       new BooleanField({ initial: false }),
       grade:             new StringField({ initial: 'Standard' }),
       rating:            new NumberField({ integer: true, initial: 0, min: 0 }),
       cost:              new NumberField({ integer: true, initial: 0, min: 0 }),

@@ -47,6 +47,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       itemDelete:     SR3EActorSheet._onItemDelete,
       woundBox:       SR3EActorSheet._onWoundBox,
       essenceRecalc:  SR3EActorSheet._onEssenceRecalc,
+      clearEssenceHole: SR3EActorSheet._onClearEssenceHole,   // TODO 53
       openHealing:    SR3EActorSheet._onOpenHealing,
       equipArmor:     SR3EActorSheet._onEquipArmor,
       equipMelee:     SR3EActorSheet._onEquipMelee,
@@ -819,6 +820,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   const essLost      = attr.essence?.lost ?? null;
   const essInstalled = game.sr3e.SR3EActor.installedEssenceCost(this.actor.items);
   const essGM        = game.user.isGM;   // the Essence controls are the GM's — see the block below
+  // Essence holes (M&M p.150, TODO 53) — shown to everyone, cleared only by the GM.
+  const essHoles      = game.sr3e.EssenceHoles.list(sys);
+  const holeTotal     = game.sr3e.EssenceHoles.total(essHoles);
+  const holeThreshold = game.sr3e.EssenceHoles.THRESHOLD_MOD;
   // TODO 103: warn below 1, danger at 0 or less. Shown, never enforced. The wording quotes the
   // books because the "below 1 needs drugs" reading does not survive them — see essenceState.
   const essState   = game.sr3e.SR3EActor.essenceState(attr.essence?.value ?? 6);
@@ -979,6 +984,19 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                  title="${essGM ? `Blank = follow installed cyberware (${essInstalled}). Type a number to override it — that is how you undo a mistaken install.` : `Permanent Essence loss — only the GM corrects it (blank = installed cyberware, ${essInstalled}).`}"/>
           ${essLost === null || !essGM ? '' : `<a data-action="essenceRecalc" title="Clear the override and go back to following installed cyberware (${essInstalled})." style="cursor:pointer;font-size:10px;color:var(--sr-muted)">↺</a>`}
         </div>
+        ${essHoles.length ? `
+        <!-- Essence holes left by removed cyberware — M&M p.150's Essence Slot option (TODO 53).
+             ⚠ Nothing is refunded by a hole existing; it is what a surgeon can fit the next implant into.
+             The ✕ is the GM's, for a hole that has been filled some other way or should never have been. -->
+        <div class="attr-row" style="margin-top:3px;flex-direction:column;align-items:stretch;gap:2px"
+             title="Essence holes (M&amp;M p.150). Removing cyberware refunds nothing (p.147), but a new implant ticked 'Essence Slot' can be fitted into one, at +${holeThreshold} surgery Threshold.">
+          <span style="font-size:9px;color:var(--sr-muted)">holes ${holeTotal}</span>
+          ${essHoles.map(h => `<span style="font-size:9px;display:flex;gap:3px;align-items:center;color:var(--sr-dim)">
+            <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${h.name || 'removed implant'}</span>
+            <strong style="color:var(--sr-amber)">${h.amount}</strong>
+            ${essGM ? `<a data-action="clearEssenceHole" data-hole-id="${h.id}" title="Forget this hole." style="cursor:pointer;color:var(--sr-muted)">✕</a>` : ''}
+          </span>`).join('')}
+        </div>` : ''}
       </div>
 
       <!-- Initiative Dice Bonus -->
@@ -3539,6 +3557,17 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   /** 🩹 Healing (TODO 115) — the guided flow, one card per roll. */
   static async _onOpenHealing(_event, _target) {
     await game.sr3e.SR3EHealing.open(this.actor);
+  }
+
+  /**
+   * ✕ on an Essence hole (M&M p.150, TODO 53) — GM only, because a hole is what lets the next implant
+   * cost less, and removing one is the same kind of decision as correcting the loss above it.
+   */
+  static async _onClearEssenceHole(_event, target) {
+    if (!game.user.isGM) { ui.notifications.warn('Only the GM can clear an Essence hole.'); return; }
+    const id    = target?.dataset?.holeId;
+    const holes = game.sr3e.EssenceHoles.list(this.actor.system).filter(h => h.id !== id);
+    await this.actor.update({ 'system.essenceHoles': holes });
   }
 
   static async _onEssenceRecalc(_event, _target) {

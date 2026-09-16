@@ -983,6 +983,12 @@ CYBERWARE:
 > "Cyberware that is removed **does not restore the character's lost Essence**. Removing
 > cyberware incurs permanent damage to the implant (1D6 ÷ 2 Stress)."  — *M&M p.147*
 
+**The Essence hole is BUILT** (TODO 53, `scripts/data/essence-holes.mjs`): removing cyberware records a
+hole on `system.essenceHoles` — ⚠ **never touching `essence.lost`**, because removal refunds nothing —
+and an implant whose `essenceSlot` is ticked takes one hole off its cost when it is installed. ⚠ **One
+hole, consumed whole**: the remainder is discarded rather than lent to the next implant. The +2 Threshold
+is stated, not enforced; there is still no surgery flow (TODO 109).
+
 ⚠ **The "Essence hole" is an opt-in SURGERY OPTION, not automatic** — *M&M p.150*:
 
 > "Essence Slot (Implant, +2 Threshold) — If the character previously had cyberware
@@ -992,9 +998,8 @@ CYBERWARE:
 
 So accumulating on install is the correct **default**, and the discount exists only when
 a surgeon takes that option at +2 Threshold. Storing `max(lost, installed)` instead would
-hand every character a free, permanent Essence Slot on every implant. **Not modelled** —
-there is no surgery flow to hang it on; a GM applies it by editing the item's
-`essenceCost` or the Essence box. See TODO 53.
+hand every character a free, permanent Essence Slot on every implant — which is why the built
+version (above) is a per-implant tick, read once at install.
 
 ⚠ Adding this field was a **data-model change**: it needs a full Foundry restart, not F5.
 

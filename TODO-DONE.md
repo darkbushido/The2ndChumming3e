@@ -3189,6 +3189,56 @@ Flechette into the soak. Any attack whose dice exploded — most of them — sil
 ammunition's armour effects. Fixed in the same commit; it is the same carry chain the two new
 dodge fields ride, and adding them without noticing would have reproduced it.
 
+## 53. The "Essence hole" surgery option is not modelled — *M&M p.150* ✅ 2026-09-16, `feature/0-6-rules`
+
+> **Built 2026-09-16** (0.6). Rules: `scripts/data/essence-holes.mjs`.
+> - **Removing cyberware records a hole** on the actor (`system.essenceHoles`), naming the implant and
+>   its graded Essence cost.
+> - ⚠ **It still refunds nothing** (M&M p.147). The `deleteItem` hook never touches `essence.lost`;
+>   the long-standing warning is against a hook that LOWERS the mark, and a test asserts this one does
+>   not mention it.
+> - **The discount is opt-in per implant:** `essenceSlot` on the cyberware, a tick beside the grade on
+>   the item sheet, labelled with its +2 Threshold. Installing it takes the hole off its cost.
+> - **One hole per implant, consumed whole.** A 1.0 implant in a 3.0 hole costs nothing and the other
+>   2.0 is discarded — it is not lent to the next implant, which is the abuse this item warned about.
+>   **For the maintainer:** M&M p.150 does not say what happens to the remainder. `EssenceHoles.fill`
+>   is the one place to change it.
+> - `pick` takes the snuggest hole that covers the cost, else the largest.
+> - The Cyber tab lists the holes under Essence; the ✕ that forgets one is the GM's.
+> - **Still not modelled:** the surgery flow itself — Thresholds, Stress, procedure options (TODO 109).
+>   The +2 is stated, never enforced.
+> - Tests: `tests/essence-holes.test.mjs`. Checklist: TESTING.md §40.
+
+Found 2026-08-14, when the essence work in [#5](#5) was challenged on sourcing and the
+answer turned out to be in Man & Machine rather than core.
+
+Removing cyberware never refunds Essence (**M&M p.147**, and [#5](#5) implements that). But
+M&M also gives a way to reuse the gap, as an **optional surgery modifier**:
+
+> **Essence Slot (Implant, +2 Threshold)** — "If the character previously had cyberware
+> removed, a new implant with this option can be installed within the 'Essence hole' left
+> behind by the earlier implant. In other words, the old implant's Essence Cost can be
+> subtracted from the new implant's Essence Cost."
+
+⚠ **It is opt-in and it costs something** — +2 to the surgery Threshold, chosen per
+procedure. It is NOT what happens by default when you swap chrome, which is exactly why
+[#5](#5) accumulates on install rather than storing `max(lost, installed)`: that model would
+grant every character a free, permanent Essence Slot on every implant they ever fit.
+
+**Why it is not built.** The system has no surgery flow at all — no procedures, no
+Thresholds, no Stress. The Essence Slot option is one line in a table that only means
+anything inside that framework, and modelling it alone would be modelling the discount
+without the cost.
+
+**How a GM applies it today, and it is genuinely fine:** reduce the new implant's
+`essenceCost` by the old one's before installing, or correct the Essence box afterwards
+(`_preUpdate` translates that into `essence.lost`, so it sticks). Both are one edit.
+
+**If it is ever built**, it belongs with the rest of the surgery rules (Stress, Thresholds,
+procedure options) rather than as a special case bolted onto the install hook — and it needs
+to track WHICH hole is being filled, since a 0.5 implant cannot borrow 2.0 of hole and then
+lend the remainder to the next one for free.
+
 ## 54. ✅ Three EW divergences from Rigger 3 — **ALL FIXED 2026-08-14**
 
 Found 2026-08-14 when the [#24](#24) MIJI skill fix was challenged on sourcing. Verifying it

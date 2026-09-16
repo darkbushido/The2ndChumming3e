@@ -135,6 +135,10 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       // Drug use, keyed by `DrugRules.drugKey(name)` — doses, Addiction, Tolerance, withdrawal,
       // what is running (M&M pp.108-110, TODO 124). See scripts/data/drug-rules.mjs.
       substances:              new ObjectField(),
+      // Essence holes left by removed cyberware — M&M p.150's Essence Slot option (TODO 53).
+      // ⚠ A RECORD, never a refund: removal leaves `essence.lost` alone (M&M p.147). Each entry is
+      // { id, name, amount, at, grade }; see scripts/data/essence-holes.mjs.
+      essenceHoles:            new ArrayField(new ObjectField(), { initial: [] }),
       // Hands beyond the two everyone has — extra cyber-limbs (TODO 49; SR3 core has no rule, the GM sets it).
       extraHands:              new NumberField({ integer: true, initial: 0, min: 0 }),
       sustainedSpells:         sustainedSpellsField(),
@@ -253,6 +257,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       attributeBoost:   attributeBoostField(),
       augmentations:    new ObjectField(),
       substances:       new ObjectField(),   // drug use — see CharacterData (TODO 124)
+      essenceHoles:     new ArrayField(new ObjectField(), { initial: [] }),   // TODO 53 — see CharacterData
       extraHands:       new NumberField({ integer: true, initial: 0, min: 0 }),   // TODO 49
       sustainedSpells:  sustainedSpellsField(),
       nuyen:           new NumberField({ integer: true, initial: 0, min: 0 }),

@@ -45,7 +45,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 |---|---|---|
 | [119](#119) | Audit *The Matrix Defragged v2* | **the 0.6 feature bump** (the maintainer, earlier) |
 | [126](#126) | Ammunition weight and a carried load | in 0.6 |
-| [53](#53) | The "Essence hole" surgery option — *M&M p.150* | in 0.6 |
+| [53](TODO-DONE.md#53) | The "Essence hole" surgery option — *M&M p.150* | ✅ — removal records a hole; an implant ticked Essence Slot spends it |
 | [109](#109) | Cyberware, bioware and Attribute Stress — *M&M pp.124-131* | in 0.6 — the foundation 110 and 111 need |
 | [110](#110) | Move-by-wire's TLE-x | in 0.6 — after 109 |
 | [111](#111) | Chronic Dissociation Syndrome — cyberzombies | in 0.6 — after 109 |
@@ -64,12 +64,12 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 
 ## Contents
 
-**33 open.** 93 done — see [TODO-DONE.md](TODO-DONE.md).
+**32 open.** 94 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[53](#53) The "Essence hole" surgery option is not modelled — *M&M p.150*<br>[109](#109) Cyberware, bioware and Attribute Stress<br>[110](#110) Move-by-wire's TLE-x<br>[111](#111) Chronic Dissociation Syndrome — cyberzombies |
+| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[109](#109) Cyberware, bioware and Attribute Stress<br>[110](#110) Move-by-wire's TLE-x<br>[111](#111) Chronic Dissociation Syndrome — cyberzombies |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [119](#119) Audit *The Matrix Defragged v2* against what we have<br>[120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork) |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[79](#79) No ledger for karma or nuyen — *low priority*<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear<br>[126](#126) Ammunition has no weight, and nothing adds up a carried load |
@@ -540,38 +540,6 @@ row cannot be done properly until accessories are structured data.
 - **Quick Draw is explicitly out of scope** — *"we will need some way for someone to quick draw a
   one-handed weapon if the need arises but that's a problem for another day."* It is specified in
   #47 (p.107, Reaction (4) Test, +2 unholstered, +2 each for two weapons); do not build it here.
-
-## 53. The "Essence hole" surgery option is not modelled — *M&M p.150*
-
-Found 2026-08-14, when the essence work in [#5](TODO-DONE.md#5) was challenged on sourcing and the
-answer turned out to be in Man & Machine rather than core.
-
-Removing cyberware never refunds Essence (**M&M p.147**, and [#5](TODO-DONE.md#5) implements that). But
-M&M also gives a way to reuse the gap, as an **optional surgery modifier**:
-
-> **Essence Slot (Implant, +2 Threshold)** — "If the character previously had cyberware
-> removed, a new implant with this option can be installed within the 'Essence hole' left
-> behind by the earlier implant. In other words, the old implant's Essence Cost can be
-> subtracted from the new implant's Essence Cost."
-
-⚠ **It is opt-in and it costs something** — +2 to the surgery Threshold, chosen per
-procedure. It is NOT what happens by default when you swap chrome, which is exactly why
-[#5](TODO-DONE.md#5) accumulates on install rather than storing `max(lost, installed)`: that model would
-grant every character a free, permanent Essence Slot on every implant they ever fit.
-
-**Why it is not built.** The system has no surgery flow at all — no procedures, no
-Thresholds, no Stress. The Essence Slot option is one line in a table that only means
-anything inside that framework, and modelling it alone would be modelling the discount
-without the cost.
-
-**How a GM applies it today, and it is genuinely fine:** reduce the new implant's
-`essenceCost` by the old one's before installing, or correct the Essence box afterwards
-(`_preUpdate` translates that into `essence.lost`, so it sticks). Both are one edit.
-
-**If it is ever built**, it belongs with the rest of the surgery rules (Stress, Thresholds,
-procedure options) rather than as a special case bolted onto the install hook — and it needs
-to track WHICH hole is being filled, since a 0.5 implant cannot borrow 2.0 of hole and then
-lend the remainder to the next one for free.
 
 ## 109. Cyberware, bioware and Attribute Stress — **rules not implemented** (M&M p.124-131)
 

@@ -730,6 +730,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
                    value="${essEff}" step="0.01" min="0"/>
           </label>
           ${this._sel('Grade', 'grade', grade, SR3E.cyberwareGrades, 'grade-select')}
+          ${isBio ? '' : this._check(`Essence Slot (+${game.sr3e.EssenceHoles.THRESHOLD_MOD} Threshold)`, 'essenceSlot', s.essenceSlot)}
           ${this._ratingField(s)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
           ${this._f('Availability', 'availability', availEff, 'text', 'placeholder="8/36 hrs"')}
