@@ -2433,44 +2433,46 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
 - [ ] **Melee multiple targets (TODO 38 / 56.2):** in combat, punch token A, then attack B in the same
       phase. The GM melee window's "additional targets" starts at 1 and the attacker's TN includes +2.
       Attacking A again starts at 0.
-- [ ] **Essence hole (TODO 53):**
-  - [ ] Remove a 3.0 implant (Wired Reflexes [2]). Essence does NOT go back up, and "hole 3" appears
+- [x] **Essence hole (TODO 53):**
+  - [x] Remove a 3.0 implant (Wired Reflexes [2]). Essence does NOT go back up, and "hole 3" appears
         under Essence.
-  - [ ] Drag in a 2.0 implant with Essence Slot ticked: Essence lost does not rise, the notice says
+  - [x] Drag in a 2.0 implant with Essence Slot ticked: Essence lost does not rise, the notice says
         2.0 off, and the hole reads 1.
-  - [ ] Drag in a 2.0 implant with the tick: 1.0 off, 1.0 to pay, and the hole reads 0.
-  - [ ] Without the tick, an implant costs full price and leaves the hole alone.
-  - [ ] The GM can correct the hole by hand (a bookkeeping mistake); a player sees it greyed out.
-  - [ ] Full restart first — the data model changed.
-- [ ] **Carried load (TODO 126):**
-  - [ ] A Strength 4 character with a rifle and a few clips: the Gear tab reads "⚖ Carried N kg, free
+  - [x] Drag in a 2.0 implant with the tick: 1.0 off, 1.0 to pay, and the hole reads 0.
+  - [x] Without the tick, an implant costs full price and leaves the hole alone.
+  - [x] The GM can correct the hole by hand (a bookkeeping mistake); a player sees it greyed out.
+  - [x] Full restart first — the data model changed.
+- [x] **Carried load (TODO 126):**
+  - [x] A Strength 4 character with a rifle and a few clips: the Gear tab reads "⚖ Carried N kg, free
         to 20 kg (Str × 5)".
-  - [ ] Load it past 20 kg: the line turns amber and names the Light Wound and the (Body) turns.
-  - [ ] Past 40 kg it turns red (Moderate), and nothing is ever applied automatically.
-  - [ ] Move a heavy item into storage: the total drops.
-  - [ ] Fire a box of ammunition down: the total drops with it (weight is per round).
-  - [ ] After merging, `npm run packs:install` — the 661 ammunition documents changed.
-- [ ] **Stress (TODO 109):**
-  - [ ] Cyber tab → ⚙ Apply Stress (GM only — a player does not see it). Pick a basic cyberware item,
+  - [x] Load it past 20 kg: the line turns amber and names the Light Wound and the (Body) turns.
+  - [x] Past 40 kg it turns red (Moderate), and nothing is ever applied automatically.
+  - [x] Move a heavy item into storage: the total drops.
+  - [x] Fire a box of ammunition down: the total drops with it (weight is per round).
+  - [x] After merging, `npm run packs:install` — the 661 ammunition documents changed.
+- [x] **Stress (TODO 109):**
+  - [x] Cyber tab → ⚙ Apply Stress (GM only — a player does not see it). Pick a basic cyberware item,
         roll 1D6 ÷ 2: the card names the die, the new total and its level, and offers the test.
-  - [ ] The row now shows the Stress in amber; at 6+ it turns red.
-  - [ ] Roll the test: 1 die vs TN = the new total. One success avoids failure; nothing is applied.
-  - [ ] Apply Stress to an Attribute: the test rolls half its unaugmented rating.
-  - [ ] Take one to 10: the card says it fails automatically and offers no roll.
-  - [ ] Full restart first — the data model changed.
-- [ ] **Move-by-wire TLE-x (TODO 110):**
-  - [ ] Give a character Move-by-Wire [2]. The Cyber tab shows "1 Stress every 4 months, to Quickness
+  - [x] The row now shows the Stress in amber; at 6+ it turns red.
+  - [x] Roll the test: 1 die vs TN = the new total. One success avoids failure; nothing is applied.
+  - [x] Apply Stress to an Attribute: the test rolls half its unaugmented rating.
+  - [x] Take one to 10: the card says it fails automatically and offers no roll.
+  - [x] Full restart first — the data model changed.
+- [x] **Move-by-wire TLE-x (TODO 110):**
+  - [x] Give a character Move-by-Wire [2]. The Cyber tab shows "1 Stress every 4 months, to Quickness
         AND Reaction" and "unaugmented Willpower (4) or TLE-x".
-  - [ ] ⚙ Apply Stress to Quickness: the card offers 🎲 Willpower vs TLE-x as well as the Stress Test,
+  - [x] ⚙ Apply Stress to Quickness: the card offers 🎲 Willpower vs TLE-x as well as the Stress Test,
         and rolls the character's BASE Willpower.
-  - [ ] ＋ mark TLE-x: the line turns amber and lists the effects. ✕ clears it and counts a surgery.
-  - [ ] A third clearing warns that the book allows only two.
-  - [ ] A character with no move-by-wire sees none of this.
-- [ ] **Cyberzombies (TODO 111):**
-  - [ ] On a character with Essence 0, the Cyber tab offers ＋ mark cyberzombie (GM only).
-  - [ ] Marked: set Essence loss to 8 on a base of 6 — the box now shows −2 and the block says
+  - [x] ＋ mark TLE-x: the line turns amber and lists the effects. ✕ clears it and counts a surgery.
+  - [x] A third clearing warns that the book allows only two.
+  - [x] A character with no move-by-wire sees none of this.
+- [x] **Cyberzombies (TODO 111):**
+  - [x] On a character with Essence 0, the Cyber tab offers ＋ mark cyberzombie (GM only).
+  - [x] Marked: set Essence loss to 8 on a base of 6 — the box now shows −2 and the block says
         Cyberzombie, not dead.
-  - [ ] 🎲 CDS check rolls Willpower against TN 6, and says one test every 4 months.
-  - [ ] ＋ mark CDS: the line lists +4 Perception / +3 other, the weeks left, and the treatment TN.
-  - [ ] Unmark cyberzombie: Essence clamps back to 0 and reads dead again.
-  - [ ] Full restart first — the data model changed.
+  - [x] 🎲 CDS check rolls Willpower against TN 6, and says one test every 4 months.
+  - [x] ＋ mark CDS: the line lists +4 Perception / +3 other, the weeks left, and the treatment TN.
+  - [x] Unmark cyberzombie: Essence clamps back to 0 and reads dead again.
+  - [x] Full restart first — the data model changed.
+
+**Ran 2026-09-20 by the agent in the Browser pane** (mcp-api, sole user, fresh load, system 0.5.2 after merging `feature/0-6-rules` + `feature/release-pipeline`): every box above verified by driving `game.sr3e.*` directly. Not re-checked by hand: the *player sees it greyed out* halves, which are the same `essGM` branch the unit tests and `tests/e2e/player-sheet.spec.mjs` pin.
