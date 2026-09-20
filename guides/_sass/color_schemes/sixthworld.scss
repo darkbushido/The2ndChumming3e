@@ -1,0 +1,23 @@
+// "Sixth World" — Matrix phosphor green over obsidian, with Aztlan jade,
+// gold and vermilion. Loaded by `color_scheme: sixthworld` in _config.yml.
+$color-scheme: dark;
+
+// Palette ($sw-*) lives in _sass/custom/setup.scss so every stylesheet can use it.
+
+$body-background-color: $sw-obsidian;
+$body-heading-color: $sw-phosphor;
+$body-text-color: $sw-text;
+$link-color: $sw-jade;
+$nav-child-link-color: $sw-muted;
+$sidebar-color: #020605;
+$base-button-color: $sw-panel-2;
+$btn-primary-color: #0f6b58;
+$code-background-color: #010403;
+$code-linenumber-color: $sw-muted;
+$feedback-color: #020403;
+$table-background-color: $sw-panel;
+$search-background-color: $sw-panel;
+$search-result-preview-color: $sw-muted;
+$border-color: $sw-line;
+
+@import "./vendor/accessible-pygments/github-dark";

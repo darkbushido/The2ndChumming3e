@@ -1,0 +1,316 @@
+// Sixth World theme: Matrix phosphor over obsidian, Aztlan jade / gold / vermilion.
+// Colors come from _sass/color_schemes/sixthworld.scss.
+
+$sw-fret: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='10' viewBox='0 0 24 10'%3E%3Cpath d='M0 9h3V6h3V3h3V1h6v2h3v3h3v3h3' fill='none' stroke='%23d9a93f' stroke-width='1.2'/%3E%3C/svg%3E");
+$sw-fret-jade: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='10' viewBox='0 0 24 10'%3E%3Cpath d='M0 9h3V6h3V3h3V1h6v2h3v3h3v3h3' fill='none' stroke='%232fd6b0' stroke-width='1.2'/%3E%3C/svg%3E");
+$sw-fret-jade-v: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='24' viewBox='0 0 10 24'%3E%3Cpath d='M9 0v3H6v3H3v3H1v6h2v3h3v3h3v3' fill='none' stroke='%232fd6b0' stroke-width='1.2'/%3E%3C/svg%3E");
+$sw-notch: 10px;
+
+// ---------- Backdrop: digital rain canvas + CRT scanlines ----------
+
+#sw-rain {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.16;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.18) 3px
+  );
+}
+
+.main {
+  position: relative;
+  z-index: 1;
+}
+
+// The theme fixes the sidebar in place at desktop widths; only lift it above the rain.
+.side-bar {
+  z-index: 2;
+}
+
+// Text sits on a near-opaque panel so the rain never competes with the rules.
+.main-content-wrap {
+  background: rgba(3, 9, 7, 0.9);
+  box-shadow: 0 0 0 1px rgba($sw-jade, 0.08);
+}
+
+// ---------- Sidebar ----------
+
+.side-bar {
+  background-color: rgba(2, 6, 5, 0.97);
+  background-image: $sw-fret-jade-v;
+  background-repeat: repeat-y;
+  background-position: right top;
+  background-size: 10px 24px;
+  border-right: 0;
+}
+
+.site-header {
+  border-bottom: 1px solid $sw-line;
+}
+
+.site-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: "Chakra Petch", $body-font-family;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: $sw-phosphor !important;
+  text-shadow: 0 0 8px rgba($sw-phosphor, 0.45);
+}
+
+.sw-emblem {
+  width: 2.4rem;
+  height: 2.4rem;
+  flex: none;
+  filter: drop-shadow(0 0 4px rgba($sw-gold, 0.45));
+}
+
+.nav-list .nav-list-item .nav-list-link {
+  font-family: $mono-font-family;
+  letter-spacing: 0.02em;
+
+  &:hover,
+  &.active {
+    color: $sw-phosphor;
+    background-image: linear-gradient(-90deg, rgba($sw-jade, 0.02) 0%, rgba($sw-jade, 0.14) 100%);
+  }
+
+  &.active {
+    text-shadow: 0 0 6px rgba($sw-phosphor, 0.5);
+  }
+}
+
+.nav-list .nav-list-item > .nav-list-link {
+  color: $sw-text;
+}
+
+// ---------- Top header ----------
+
+.main-header {
+  background-color: rgba(2, 6, 5, 0.96);
+  border-bottom: 0;
+  background-image: $sw-fret;
+  background-repeat: repeat-x;
+  background-position: left bottom;
+  background-size: 24px 10px;
+  padding-bottom: 10px;
+}
+
+.search-input {
+  font-family: $mono-font-family;
+  color: $sw-phosphor;
+}
+
+.corrections-toggle {
+  font-family: $mono-font-family;
+  color: $sw-gold;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem !important;
+
+  input {
+    accent-color: $sw-gold;
+  }
+}
+
+// ---------- Headings ----------
+
+.main-content {
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: "Chakra Petch", $body-font-family;
+  }
+
+  h1 {
+    color: $sw-phosphor;
+    letter-spacing: 0.02em;
+    text-shadow: 0 0 10px rgba($sw-phosphor, 0.35);
+
+    &::before {
+      content: "";
+      display: inline-block;
+      width: 0.9em;
+      height: 0.62em;
+      margin-right: 0.45em;
+      background: $sw-gold;
+      clip-path: polygon(0 100%, 0 75%, 14% 75%, 14% 50%, 28% 50%, 28% 25%, 40% 25%, 40% 0, 60% 0, 60% 25%, 72% 25%, 72% 50%, 86% 50%, 86% 75%, 100% 75%, 100% 100%);
+      filter: drop-shadow(0 0 4px rgba($sw-gold, 0.6));
+    }
+  }
+
+  h2 {
+    color: $sw-gold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding-bottom: 12px;
+    background-image: $sw-fret;
+    background-repeat: repeat-x;
+    background-position: left bottom;
+    background-size: 24px 10px;
+  }
+
+  h3 {
+    color: $sw-jade;
+  }
+
+  h4 {
+    color: $sw-muted;
+  }
+
+  // Page citations inside headings, e.g. "(SR3 p.113)"
+  h2 em,
+  h3 em,
+  h4 em {
+    font-family: $mono-font-family;
+    font-style: normal;
+    font-size: 0.72em;
+    text-transform: none;
+    letter-spacing: 0;
+    color: $sw-muted;
+  }
+
+  // Citations and book titles in body text
+  p em,
+  li em,
+  td em {
+    color: #9fd8c4;
+  }
+
+  a {
+    text-decoration-color: rgba($sw-jade, 0.45);
+
+    &:hover {
+      color: $sw-gold;
+      text-decoration-color: $sw-gold;
+    }
+  }
+
+  strong {
+    color: #eafff4;
+  }
+
+  hr {
+    height: 10px;
+    border: 0;
+    background: $sw-fret-jade repeat-x left center / 24px 10px;
+    opacity: 0.55;
+  }
+
+  code {
+    color: $sw-phosphor;
+    background: #010403;
+    border-color: $sw-line;
+  }
+
+  pre.highlight,
+  div.highlighter-rouge {
+    background: #010403 !important;
+    border: 1px solid $sw-line;
+
+    code {
+      color: $sw-phosphor;
+      text-shadow: 0 0 5px rgba($sw-phosphor, 0.35);
+    }
+  }
+}
+
+// ---------- Tables ----------
+
+.table-wrapper {
+  border: 1px solid $sw-line;
+  box-shadow: none;
+}
+
+th {
+  font-family: $mono-font-family;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: $sw-gold;
+  background-color: #081813 !important;
+  border-bottom: 1px solid rgba($sw-gold, 0.45) !important;
+}
+
+td,
+th {
+  border-color: $sw-line !important;
+}
+
+tbody tr:nth-child(even) td {
+  background-color: #07140f;
+}
+
+tbody tr:hover td {
+  background-color: rgba($sw-jade, 0.08);
+}
+
+// ---------- Callouts: notched, like carved stone plaques ----------
+
+blockquote.fixed,
+blockquote.house,
+blockquote.note,
+blockquote.rule {
+  border: 0 !important;
+  border-left: 4px solid !important;
+  clip-path: polygon($sw-notch 0, 100% 0, 100% calc(100% - #{$sw-notch}), calc(100% - #{$sw-notch}) 100%, 0 100%, 0 $sw-notch);
+  padding-left: 1.1rem;
+
+  &::before {
+    font-family: $mono-font-family;
+    letter-spacing: 0.12em;
+    font-weight: normal !important;
+  }
+}
+
+blockquote.fixed {
+  border-left-color: $sw-gold !important;
+  background: linear-gradient(90deg, rgba($sw-gold, 0.16), rgba($sw-gold, 0.04)) !important;
+
+  &::before { color: $sw-gold !important; }
+}
+
+blockquote.house {
+  border-left-color: $sw-vermilion !important;
+  background: linear-gradient(90deg, rgba($sw-vermilion, 0.16), rgba($sw-vermilion, 0.04)) !important;
+
+  &::before { color: $sw-vermilion !important; }
+}
+
+blockquote.note,
+blockquote.rule {
+  border-left-color: $sw-jade !important;
+  background: linear-gradient(90deg, rgba($sw-jade, 0.14), rgba($sw-jade, 0.03)) !important;
+
+  &::before { color: $sw-jade !important; }
+}
+
+// ---------- Footer ----------
+
+.site-footer {
+  font-family: $mono-font-family;
+  color: $sw-muted;
+}
+
+::selection {
+  background: rgba($sw-phosphor, 0.3);
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #sw-rain { display: none; }
+}

@@ -51,7 +51,8 @@ npm run test:e2e        # Playwright, two real clients (Foundry running)
   number it by the release it will ship in under these rules.
 - Never `git push` unless asked — the maintainer publishes.
 - **Every version bump, before the release: check the code's rules against *sr3-guides***
-  (`C:\Users\lance\Documents\sr3-guides`, the maintainer's rules reference site) — TODO 121.
+  (**`guides/`** in this repo, the maintainer's rules reference site — moved in by TODO 127; the old
+  `sr3-guides` repo takes no more commits) — TODO 121.
   ⚠ **The PDFs are the source, not the guide and not the code.** Every difference is verified
   against the PDF (quoted, with its printed page) and/or brought to the maintainer — never settled
   by picking a side. A verified code divergence becomes a bug fix before the release goes out. The
@@ -59,6 +60,32 @@ npm run test:e2e        # Playwright, two real clients (Foundry running)
 - **Going forward only.** The commits already on `main` for 0.5.2 (healing cards, cross-player
   healing with its time boxes, gear ratings) predate these rules and ship as they are — do not
   split or renumber them.
+
+## Releases — a tag builds the zip and the guides  · TODO 127
+
+```bash
+npm run release:check -- v0.6.0   # tag matches system.json, every loaded path ships — changes nothing
+npm run release:stage -- v0.6.0   # stage into dist/ to inspect what would ship (dist/ is ignored)
+git tag v0.6.0 && git push origin v0.6.0   # the maintainer's — the release itself
+```
+
+A pushed `v*.*.*` tag runs `.github/workflows/release.yml`:
+- **The system** — `tools/release.mjs` stages an **include list** (`RELEASE_FILES`: `system.json scripts
+  styles lang packs LICENSE README.md`) and stamps the copy's URLs (`tools/lib/manifest-urls.mjs`):
+  `download` pinned to the tag, `manifest` at **`releases/latest`**, so an install still sees updates.
+  **A specific version** is installed by pasting `…/releases/download/v0.6.0/system.json` into Foundry.
+  The Release carries `system.json`, `system.zip`, `guides.zip`.
+- **The guides** (`guides/`, Jekyll) are built twice onto the **gh-pages** branch — `v0.6.0/` (frozen:
+  how that version handles the rules) and `latest/` — and `tools/guides-versions.mjs` rewrites the
+  `versions/` index and the root redirect. The header shows the version (`site.sr3e_version`).
+- ⚠ **It refuses a tag that does not match `system.json`'s version** — bump first, then tag.
+- ⚠ **The include list is deliberate**: a new top-level folder the system loads must be added to
+  `RELEASE_FILES`. `tests/release.test.mjs` fails if system.json names a path it would not ship.
+- ⚠ **The committed system.json still names a BRANCH** (`manifest:branch`, below). Only the released
+  copy names the release; do not commit release URLs.
+- One-time: Settings → Pages → Source *Deploy from a branch*, `gh-pages` — after the first tag creates it.
+- Guide pages: edit in `guides/` (its own CLAUDE.md has the page rules); preview with
+  `bundle exec jekyll serve` from `guides/`, then `node tools/linkcheck.mjs` there.
 
 ## TODOs — `TODO.md` is open work only, `TODO-DONE.md` the record (2026-09-15)
 
@@ -494,6 +521,7 @@ sr3e/
 ├── system.json                       ← Foundry manifest + documentTypes declaration
 ├── lang/en.json                      ← Localisation strings
 ├── styles/sr3e.css                   ← All styles, CSS custom properties
+├── guides/                           ← the SR3 Table Reference site (Jekyll) — NOT shipped in the zip; see Releases
 ├── packs/                            ← 102 compendium packs, `sr3e-<book>-<type>` (see Source books)
 ├── archive/non-sr3-content/          ← 1,703 documents split out of the packs, held for future modules
 │   ├── README.md                     ← ⚠ STALE — predates the SR2 restore; see Source books
