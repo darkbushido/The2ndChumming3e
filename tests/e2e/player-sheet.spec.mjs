@@ -28,14 +28,20 @@ async function sheetView(page, name) {
     const el = a.sheet.element;
     const species = [...el.querySelectorAll('label.inline-field')]
       .find(l => /Species/.test(l.textContent))?.querySelector('select');
-    const essInput = el.querySelector('input[name="system.attributes.essence.value"]');
-    const essBlock = essInput?.closest('.attr-block');
+    // ⚠ The Essence box carries no `name` for a player — all three Essence controls are GM-only
+    // (9c45a4ab, "only the GM can change Essence loss"): lowering the recorded loss is the refund
+    // M&M p.147 forbids. So find the block by its label and read the box inside it.
+    const essBlock = [...el.querySelectorAll('.attr-block')]
+      .find(b => /^Essence/.test(b.querySelector('.attr-label')?.textContent ?? ''));
+    const essInput = essBlock?.querySelector('input.attr-input');
     return {
       isOwner:        a.isOwner,
       speciesNamed:   species?.getAttribute('name') ?? null,
       speciesDisabled: species?.disabled ?? null,
       speciesShown:   species?.selectedOptions[0]?.textContent.trim() ?? null,
       essValue:       Number(essInput?.value),
+      essNamed:       essInput?.getAttribute('name') ?? null,
+      essDisabled:    essInput?.disabled ?? null,
       essClass:       essBlock ? [...essBlock.classList].filter(c => c.startsWith('essence-')) : null,
       essTitle:       essBlock?.getAttribute('title') ?? '',
     };
@@ -86,6 +92,8 @@ test.describe('the character sheet from a player\'s seat', () => {
 
       // ── Essence 0.5: legal but low → amber ──────────────────────────────────────
       expect(v.essValue, 'lost 5.5 from 6').toBe(0.5);
+      expect(v.essNamed, 'and a player cannot submit it — no name, disabled (M&M p.147)').toBeNull();
+      expect(v.essDisabled, 'the box is read-only from a player seat').toBe(true);
       expect(v.essClass, 'below 1 is the LOW state').toEqual(['essence-low']);
       expect(v.essTitle, 'and the tooltip quotes p.55').toMatch(/it may be less than 1/);
 
