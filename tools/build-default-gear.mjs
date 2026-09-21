@@ -40,7 +40,7 @@ import { readSourceDir, writeSourceDir, rebuildPack } from './lib/pack-source.mj
 import { AmmoStock } from '../scripts/data/ammo-stock.mjs';
 // The system's own rating reader — the name, then GEAR_RATINGS — so a generated item agrees with
 // `itemRating`, migration 0.5.2 and `tools/patch-name-ratings.mjs`, which would otherwise fill it later.
-import { knownRating } from '../scripts/data/item-rating.mjs';
+import { knownRating, ratingFromName } from '../scripts/data/item-rating.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, '..');
@@ -152,7 +152,16 @@ export function docFor(row, category, edition) {
 
   if (type === 'gear') {
     const ratingCol = /^\d+$/.test(String(row.Rating ?? '')) ? Number(row.Rating) : null;
-    const rating = (ratingCol && ratingCol > 0 ? ratingCol : null) ?? knownRating(name);
+    // ⚠ **A BRACKETED name beats the Rating column.** Upstream's column carries at least one typo
+    // — "Maglock Passkey [9]" is listed at Rating 8 — and the name is corroborated by the cost,
+    // which SR3 p.294 gives as 10,000¥ x Rating (this row: 90,000¥). Taking the column blindly
+    // shipped a Rating 9 passkey that read as 8.
+    // ⚠ **Only a BRACKET, not `knownRating`.** The wider lookup also consults GEAR_RATINGS, which
+    // is a name table we generate; preferring that would silently re-rate SR2's Gas Vent II/III,
+    // where the column and the table genuinely disagree and the book has not been checked. A
+    // bracket is the item's own statement of its rating — a generated table is not.
+    const named = ratingFromName(name);
+    const rating = named ?? (ratingCol && ratingCol > 0 ? ratingCol : null) ?? knownRating(name);
     const more = extras(row, ['Concealability', 'Rating', 'Weight', 'Availability', 'Cost', 'Street Index']);
     return { ...base, book, system: { quantity: 1, category, concealability: String(row.Concealability ?? ''), rating: rating ?? null,
       cost, weight: cellNumber(row.Weight), ...common, description: `${costNote}${more ? `<p>${more}</p>` : ''}` } };

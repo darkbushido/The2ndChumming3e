@@ -7,6 +7,7 @@
  * a hand edit to a generated item, or a change to the builder that was not re-run, fails here.
  */
 import { readFileSync } from 'node:fs';
+import { ratingFromName } from '../scripts/data/item-rating.mjs';
 import {
   cleanName, bookOf, cellNumber, ammoTypeFromWords, variantsOf, mergeListings, docFor, plan, declarePacks,
   EDITION_BOOKS, CATEGORY_TYPE, GENERATOR, idFor,
@@ -154,5 +155,21 @@ export async function run(t) {
     }
     t.ok(`the packs hold ${total} generated documents`, total > 2500);
     t.is(`the packs match rawdata/SRCG-*-Gear.json${drift.length ? ` — ${drift.slice(0, 5).join('; ')}` : ''}`, drift.length, 0);
+
+    // ⚠ **An upstream Rating-column typo must be a FAILURE, not a silently wrong number.**
+    // "Maglock Passkey [9]" ships upstream at Rating 8 — the name and the cost (10,000¥ x Rating,
+    // SR3 p.294 → 90,000¥) both say 9. The builder now prefers a BRACKETED name over the column;
+    // this is the check that keeps the two in step, and it is the only place a new typo of this
+    // shape would show up, since nothing else reads both.
+    const mismatched = [];
+    for (const doc of [...byPack.values()].flatMap(v => v.docs)) {
+      const named = ratingFromName(doc.name);
+      const stored = Number(doc.system?.rating);
+      if (named !== null && Number.isFinite(stored) && stored > 0 && stored !== named) {
+        mismatched.push(`${doc.name} — stored ${stored}, name says ${named}`);
+      }
+    }
+    t.is(`no generated item's rating disagrees with a bracketed name${mismatched.length ? ` — ${mismatched.slice(0, 5).join('; ')}` : ''}`,
+      mismatched.length, 0);
   } finally { copy.cleanup(); }
 }
