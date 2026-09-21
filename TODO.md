@@ -1742,6 +1742,54 @@ count; it would have the moment it did.
 ⚠ Pack edits need Foundry **closed** and must be run twice (repo + `--install`) — CLAUDE.md,
 *Editing an existing pack*.
 
+**Re-surveyed 2026-09-21. The backlog is 200, and every one of them is BLOCKED — this is not
+grind-it-out work, and the entry above was wrong about why.**
+
+| Group | Count | Status |
+|---|---:|---|
+| SR2 gear, `sr2.???` | **154** | ⛔ **No SR2 core PDF exists in the library.** |
+| Matrix Defragged agents (17), hosts (10), Hermes Ikon (1) | **28** | ⛔ Authored for this system — no book to cite. |
+| `sr3e-skills` | **18** | ⛔ 15 Area Knowledge examples + 3 whose upstream source is `sr3.XXX`. |
+
+⚠ **THE SR2 CORE PDF IS NOT IN THE LIBRARY.** This entry used to say *"SR2 core for the 314
+`sr2.???` (the SR2 core PDF is in the library)"*. It is not: the library holds SR3 books only
+(core, CC, M&M, MitS, R3, Matrix, MDF, Critters, New Seattle, Mr. Johnson's) plus `Supplements/`,
+where almost every file is marked `[no-text]` and extracts nothing — `Shadowtech`, `Shadowrun
+Companion` and `Virtual Realities 2.0` among them. So the 154 SR2 weapons, armour, melee, vehicle
+mods and projectiles **cannot be sourced from what is here**. Someone has to supply the book, or
+the maintainer rules on what to cite.
+
+⚠ **The MDF agents and hosts are not in the Matrix Defragged book at all.** Every one of the 17
+agent names (Bloodhound, Warhound, Watchdog, Keystroke, Slowburn …) and all 10 hosts (*Ares Arms —
+Retail Storefront*, *Aztechnology — Tenochtitlan Research Subnet* …) was searched for in the PDF
+and appears **nowhere**; the agent rawdata (`rawdata/MDF-program-agents.json`) holds *abilities*
+(Analyze, Armor, Attack …), not these. They are example content written for this system. They
+therefore need a **convention**, not a citation — a way to say "original content, no book" that the
+sheet and `check-packs` both understand — and that is the maintainer's call, not a page to hunt.
+
+⚠ **Area Knowledge entries have no page of their own.** 15 of the 18 skills are Seattle districts
+(Auburn, Bellevue, Redmond, Puyallup, Tacoma, Council Island, the Seattle Sewers …) — examples of
+the Area Knowledge *category*, which the SR3 core index does not list as an entry: the string
+"Area Knowledge" does not occur in the book. The nearest real citation is **ABOUT KNOWLEDGE SKILLS,
+SR3 p.89** (verified: printed p.89 = PDF p.91), which is where a GM actually looks the rules up.
+Using it for all 15 is defensible but it is a **decision about what a citation means**, so it is
+left for the maintainer rather than taken here.
+⚠ The other three — **Artisan, Forgery, Performance** — are not in the SR3 core PDF either, and
+the upstream data itself records their source as the placeholder **`sr3.XXX`**. They are probably
+Shadowrun Companion, which is in `Supplements/` as `[no-text]`.
+
+⚠ **Folders are not documents.** A first pass counted 10 more "gaps" in
+`sr3e-mr-johnsons-contacts` that are the Little Black Book's chapter names (*By Any Means
+Necessary*, *Crime, Inc: The Underworld* …) stored under `!folders!`. They carry no `system` and
+cannot hold a page. `tests/book-page.test.mjs` already filters to `!items!` / `!actors!` and is
+right to; any new survey must do the same or it will report phantom work.
+
+**So steps 1, 3 and 4 of the original plan are DONE** (the schema carries `bookPage` on every type,
+`check-packs` reports gaps, the sheet renders *"SR3 p.303"*), and step 2 is what remains. It needs
+one of: the SR2 book, a ruling on the Area Knowledge citation, and a convention for authored
+content. Until then the ceiling in `tests/book-page.test.mjs` stays at 200 — it is not slipping,
+it is at the floor of what is reachable.
+
 **Progress:** `GearData` gained `bookPage` (with `rating`, `availability`, `streetIndex`) in 0.5.2
 — [#118](TODO-DONE.md#118) — and the character importer now keeps the export's `BookPage` for plain gear.
 
