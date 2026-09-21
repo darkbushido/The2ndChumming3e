@@ -1739,6 +1739,40 @@ it is **identify the real source book per item, then cite it** — and several o
 in the wrong pack as well, which is the "names a different book from their pack" case `check-packs`
 already reports.
 
+⚠⚠ **AND THEN THE REAL FINDING: the "SR2" packs are mostly FAN CONTENT.** Counting what the
+documents that *do* carry a page actually cite:
+
+| Pack | Docs | Missing | What the rest cite |
+|---|---:|---:|---|
+| `sr3e-sr2-firearms` | 176 | 53 | **`pw` 115**, `ssc` 7, `fof` 1 |
+| `sr3e-sr2-armor` | 76 | 49 | `sr2` 23, `fof` 2, `ssc` 1, `pw` 1 |
+| `sr3e-sr2-melee` | 40 | 32 | `fof` 3, `pw` 3, `sr2` 1, `ssc` 1 |
+
+**`pw` is a FAN code** — it is one of the eight in `archive/non-sr3-content/`'s `fan` bucket
+(ray · cb1-4 · cp · nagee · **pw** · bjf · adh). So 115 of the 176 "SR2 core" firearms are fan
+material sitting in a shipping pack, which is the case `check-packs` already reports as *"names a
+different book from their pack"* — quantified here for the first time.
+
+That also explains why the missing 154 cannot be found: they are not in the official books.
+Searched and **not found** in SR2 core's Equipment Tables (printed pp.254 and 278, read by OCR),
+the **Street Samurai Catalog** (all 118 pages, OCR'd: 0 of 31 melee names), or **Blackhand's Street
+Weapons** (text layer: 5 of 27, and Blackhand's is itself a fan publication — no FASA code).
+*Bear-Knife*, *Gasher battleaxe*, *Mjolnir warhammer*, *Cat With Nine Tails*, *Tetsubo*,
+*Morning Star*, *Scimitar*, *Halberd* read as a fan melee list, not a FASA table.
+
+**So this is a question for the maintainer before it is work at all:**
+1. Should fan content ship in a pack named for SR2 core? The system's stated principle is that it
+   *"ships no sourcebook content it cannot turn off"*, and the fan material was meant to be parked
+   in `archive/non-sr3-content/` (1,219 documents already are).
+2. If it stays, it needs its own book code and pack so the toggle can reach it — at which point the
+   page citation is the fan document's, not an SR2 one.
+3. Only what is genuinely FASA content is a page-hunting job, and that looks like a **small
+   minority** of the 154.
+
+⚠ **Do not "fill in" these pages from an SR2 book.** Most of these items are not in one, so any
+page written against them would be a fabricated citation — worse than the blank, because the next
+person trusts it.
+
 ⚠ **The printed-page offset for SR2 core is PDF − 26** (PDF 260 = printed 234), established from
 the footers. Every book needs its own; do not assume.
 
