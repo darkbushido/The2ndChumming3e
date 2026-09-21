@@ -1753,12 +1753,25 @@ documents that *do* carry a page actually cite:
 material sitting in a shipping pack, which is the case `check-packs` already reports as *"names a
 different book from their pack"* — quantified here for the first time.
 
-That also explains why the missing 154 cannot be found: they are not in the official books.
-Searched and **not found** in SR2 core's Equipment Tables (printed pp.254 and 278, read by OCR),
-the **Street Samurai Catalog** (all 118 pages, OCR'd: 0 of 31 melee names), or **Blackhand's Street
-Weapons** (text layer: 5 of 27, and Blackhand's is itself a fan publication — no FASA code).
-*Bear-Knife*, *Gasher battleaxe*, *Mjolnir warhammer*, *Cat With Nine Tails*, *Tetsubo*,
-*Morning Star*, *Scimitar*, *Halberd* read as a fan melee list, not a FASA table.
+⚠ **CORRECTION, same day — the search above was INCOMPLETE and its conclusion was too strong.**
+What was actually searched: SR2 core's Equipment Tables (printed pp.254 and 278, read by OCR), the
+**Street Samurai Catalog** (all 118 pages OCR'd — 0 of 31 melee names) and **Blackhand's Street
+Weapons** (text layer — 5 of 27, and Blackhand's is itself fan, no FASA code). From that I wrote
+that the items "are not in the official books". **That does not follow**, because three obvious
+candidates were sitting in the same folder unread:
+
+- **Fields of Fire `{FASA7114}`** — SR2's *weapons and combat* sourcebook, and the book code
+  `fof` that three of these very documents already cite. This is the first place to look.
+- **Street Samurai Catalog (Revised) `{FASA7104a}`** — a second, larger edition; only the
+  original `{FASA7104}` was read.
+- **Cybertechnology `{FASA7119}`** (`ct`).
+
+So the honest state is: **not yet found, not "not there"**. Do the three above before drawing any
+conclusion about fan origin for a given item.
+
+⚠ **What does NOT depend on that search, and stands:** the `pw` counts in the table above. 115 of
+176 firearms in a pack named for SR2 core cite a fan code, and that is a fact about the packs
+rather than about any book.
 
 **So this is a question for the maintainer before it is work at all:**
 1. Should fan content ship in a pack named for SR2 core? The system's stated principle is that it
