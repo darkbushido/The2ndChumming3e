@@ -33,6 +33,7 @@ const AMMO   = { module: '../scripts/data/ammo-stock.mjs',   klass: 'AmmoStock' 
 const BOOKPAGE = { module: '../scripts/data/book-page.mjs',  klass: 'BookPage' };
 const ACCESSORIES = { module: '../scripts/data/weapon-accessories.mjs', klass: 'WeaponAccessories' };
 const SLOTS  = { module: '../scripts/data/cyber-slots.mjs',  klass: 'CyberSlots' };
+const LEDGER = { module: '../scripts/data/ledger.mjs',       klass: 'Ledger' };
 
 export const MUTANTS = [
   {
@@ -1472,6 +1473,23 @@ export const MUTANTS = [
       const rolled = (Array.isArray(dice) ? dice : [dice]).map(Number);
       const b = Math.max(0, Math.trunc(Number(boxes) || 0));
       return rolled.filter(d => d >= b).length;
+    },
+  },
+  {
+    id:     'ledger-rewrite-checks-length-only',
+    suite:  'ledger',
+    ...LEDGER, method: 'reconcile',
+    was:    'an append-only check that compares LENGTHS rather than content (TODO 79). A player '
+          + 'editing the reason on a past entry, or swapping one entry for another, keeps the array '
+          + 'the same length and sails straight through - which is exactly the rewrite the guard '
+          + 'exists to stop, and the one a player would actually attempt',
+    impl:   (current, next, { isGM = false } = {}) => {
+      if (isGM) return { ok: true, why: '' };
+      const cur = Array.isArray(current) ? current : [];
+      const nxt = Array.isArray(next) ? next : [];
+      return nxt.length < cur.length
+        ? { ok: false, why: 'the ledger is append-only' }
+        : { ok: true, why: '' };
     },
   },
   {

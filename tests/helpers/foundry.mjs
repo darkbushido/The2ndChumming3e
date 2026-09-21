@@ -39,6 +39,25 @@ export function installGlobals() {
       deepClone: v => (v === null || typeof v !== 'object')
         ? v
         : JSON.parse(JSON.stringify(v)),
+      // Foundry's dotted-path accessors. ⚠ They must handle BOTH spellings, because an update
+      // object legitimately arrives either way — `{ 'system.karma': 5 }` from a form submit and
+      // `{ system: { karma: 5 } }` from code — and anything reading only one silently misses half
+      // the writes it is supposed to see (`_preUpdate` reads both).
+      getProperty: (obj, path) => {
+        if (!obj || typeof obj !== 'object') return undefined;
+        if (path in obj) return obj[path];
+        return String(path).split('.').reduce((o, k) => (o === null || o === undefined ? undefined : o[k]), obj);
+      },
+      setProperty: (obj, path, value) => {
+        if (!obj || typeof obj !== 'object') return false;
+        if (path in obj) { obj[path] = value; return true; }
+        const keys = String(path).split('.');
+        const last = keys.pop();
+        let at = obj;
+        for (const k of keys) { if (typeof at[k] !== 'object' || at[k] === null) at[k] = {}; at = at[k]; }
+        at[last] = value;
+        return true;
+      },
     },
   };
 }

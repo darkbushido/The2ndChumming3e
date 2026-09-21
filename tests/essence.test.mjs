@@ -252,8 +252,11 @@ export async function run(t) {
   const { readFileSync } = await import('node:fs');
   const actorSrc = readFileSync(new URL('../scripts/documents/SR3EActor.js', import.meta.url), 'utf8');
   const sheetSrc = readFileSync(new URL('../scripts/sheets/SR3EActorSheet.js', import.meta.url), 'utf8');
+  // ⚠ The window after the strip is wide because _preUpdate does more than Essence now (the
+  //   TODO 79 ledger sits between them). What this pins is the ORDER — the strip must come
+  //   first, or a player's write is converted into a `lost` before it is dropped.
   t.ok('_preUpdate strips a non-GM\'s Essence write BEFORE converting it',
-    /async _preUpdate\(changed, options, user\) \{[\s\S]{0,700}stripPlayerEssenceWrites\(changed, user\?\.isGM[\s\S]{0,300}essence\.value'\)/.test(actorSrc));
+    /async _preUpdate\(changed, options, user\) \{[\s\S]{0,700}stripPlayerEssenceWrites\(changed, user\?\.isGM[\s\S]{0,900}essence\.value'\)/.test(actorSrc));
   t.ok('the sheet gives both boxes a name (so a value) only for the GM, disabled otherwise',
     /\$\{essGM \? 'name="system\.attributes\.essence\.value"' : 'disabled'\}/.test(sheetSrc)
     && /\$\{essGM \? 'name="system\.attributes\.essence\.lost"' : 'disabled'\}/.test(sheetSrc));

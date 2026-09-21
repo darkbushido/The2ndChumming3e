@@ -13,6 +13,7 @@ import { SR3EStress } from './SR3EStress.js';
 import { Stress } from './data/stress.mjs';
 import { MoveByWire } from './data/move-by-wire.mjs';
 import { Cyberzombie } from './data/cyberzombie.mjs';
+import { CyberSlots } from './data/cyber-slots.mjs';
 import { ItemRating, ratingOnCreate } from './data/item-rating.mjs';
 import { sceneFirst } from './data/actor-scope.mjs';
 import { SR3EItem } from './documents/SR3EItem.js';
@@ -35,6 +36,7 @@ import { SR3EClocks } from './SR3EClocks.js';
 import { SR3EHealing } from './SR3EHealing.js';
 import { SR3EDrugs } from './SR3EDrugs.js';
 import { SR3EActionLedger } from './SR3EActionLedger.js';
+import { Ledger } from './data/ledger.mjs';
 import { ReadyWeapon } from './data/ready-weapon.mjs';
 import { Hands } from './data/hands.mjs';
 import { SR3ESourceBooks } from './SR3ESourceBooks.js';
@@ -105,7 +107,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock, ItemRating, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock, ItemRating, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger };
 
   // When THIS client loaded the system's code.
   //
@@ -561,7 +563,9 @@ async function _openSessionRewardDialog() {
       split.push({ name: actor.name, ...r });
     }
     if (nuyen)  updates['system.nuyen'] = (actor.system.nuyen ?? 0) + nuyen;
-    if (Object.keys(updates).length) await actor.update(updates);
+    // The ledger reads this reason (TODO 79) — every write is recorded either way, but a blank
+    // "why" column is only half an answer to "where did that 40 karma go?".
+    if (Object.keys(updates).length) await actor.update(updates, { ledgerReason: 'Session rewards' });
   }
 
   /* Name anyone whose award crossed a Karma Pool threshold, since that point did NOT reach

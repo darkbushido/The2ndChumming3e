@@ -49,7 +49,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | [109](TODO-DONE.md#109) | Cyberware, bioware and Attribute Stress — *M&M pp.124-131* | ✅ — Stress Points, Levels and the Stress Test; ⚙ Apply Stress on the Cyber tab |
 | [110](TODO-DONE.md#110) | Move-by-wire's TLE-x | ✅ — the Automatic Stress Table, the Willpower test, and the flag with its two surgeries |
 | [111](TODO-DONE.md#111) | Chronic Dissociation Syndrome — cyberzombies | ✅ — Essence below 0, the CDS table, and the GM's check |
-| [79](#79) | A ledger for karma and nuyen | nice to have |
+| [79](TODO-DONE.md#79) | A ledger for karma and nuyen | nice to have |
 | [82](#82) | A flow for buying gear — *Availability, SR3 pp.284-286* | nice to have |
 | [7](#7) | More test coverage for combat, initiative and pools | nice to have |
 | [127](#127) | Tagged releases, with the guides versioned beside them | in 0.6 — built on `feature/release-pipeline` |
@@ -71,7 +71,7 @@ three nice-to-haves (79, 82, 7) and the release tasks below.
 
 ## Contents
 
-**29 open.** 101 done — see [TODO-DONE.md](TODO-DONE.md).
+**28 open.** 102 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -79,7 +79,7 @@ three nice-to-haves (79, 82, 7) and the release tasks below.
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field |
-| 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[79](#79) No ledger for karma or nuyen — *low priority*<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
+| 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -826,38 +826,6 @@ Foundry restart, not an F5.
 
 ---
 
-## 79. No ledger for karma or nuyen — *low priority*
-
-**Raised 2026-08-31.** There is no record of what a character has earned or spent, only current
-totals — `system.karmaPool` and the nuyen field are numbers a player edits in place. So a GM
-cannot answer "where did that 40 karma go?", and a player who mistypes has nothing to restore
-from.
-
-⚠ **This is not the same item as karma SPENDING**, which — contrary to what this entry and
-CLAUDE.md both said when first written — **is implemented**. `_onSpendKarmaCalculator`
-(`SR3EActorSheet.js`) buys attributes, skills and specialisations at the p.245 costs; its
-defects were [#80](TODO-DONE.md#80). This entry is the **audit trail**, a separate want: the calculator
-writes new totals and leaves no record of what was bought.
-
-⚠ **AWARDING is a different story, and this entry used to overstate it too.** `_onAwardKarma`
-is correct but **unreachable** — nothing renders its button — so the only reachable award path
-is the Session Rewards tool, which writes to the wrong field entirely. See [#81](TODO-DONE.md#81); a ledger
-should be built on top of a working award path, not before one.
-
-Shape, roughly: an append-only array of `{ when, kind: 'karma'|'nuyen', delta, reason, by }` on
-the actor, a compact table on the sheet, and a **+/− with a reason field** replacing bare
-in-place editing of the totals. The Session Rewards tool (Rollable Tables sidebar) is the
-obvious first writer — **once [#81](TODO-DONE.md#81) has made it write to the right fields**.
-
-⚠ **Keep the totals editable.** The ethos is that a GM is never fighting the system; a ledger
-that becomes the only way to change a number is a guardrail, not a record. Log an unexplained
-adjustment as an entry with an empty reason rather than blocking it.
-
-⚠ Append-only and GM-relayed, like `sr3e.card.mark` — a player must be able to see their own
-history without being able to rewrite it.
-
-<a id="80"></a>
-
 ## 82. Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*
 
 **Raised 2026-09-01.** Gear is acquired by hand today: a GM decides, a player edits `nuyen` and
@@ -886,7 +854,7 @@ and the part worth designing first.
 
 ⚠ **Check what `contact` items actually carry** before assuming a level or type field exists.
 
-⚠ **Related: [#79](#79)'s ledger.** A purchase is the single best reason to want a nuyen audit
+⚠ **Related: [#79](TODO-DONE.md#79)'s ledger.** A purchase is the single best reason to want a nuyen audit
 trail, and a buy flow is its most natural writer. Neither blocks the other, but if the ledger
 lands first this should write to it rather than editing `system.nuyen` in place.
 
@@ -1176,7 +1144,7 @@ different Foundry-version assumptions and different rules interpretations — a 
 as likely to be *their* reading as a gap in ours. Note which, when writing it up.
 
 Worth looking for specifically, since these are our known holes: a gear-acquisition flow
-([#82](#82)), an action economy ([#48](#48)), a karma/nuyen ledger ([#79](#79)), character
+([#82](#82)), an action economy ([#48](#48)), a karma/nuyen ledger ([#79](TODO-DONE.md#79)), character
 generation, and anything covering the run structure in Mr Johnson's Little Black Book p.5-35
 ([#83](#83)).
 

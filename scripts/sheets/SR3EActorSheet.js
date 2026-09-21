@@ -3182,6 +3182,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           : ''}
         <button type="button" class="btn-sm" data-action="spendKarmaCalculator" style="align-self:flex-end">Spend Karma…</button>
       </div>
+      ${this._ledgerTable(this.actor)}
 
       <h3 class="section-hdr" style="margin-top:1rem">Reputation</h3>
       <div class="rep-grid">
@@ -3194,6 +3195,39 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ${this._bioField('Background', 'system.biography', sys.biography, 'No background set.')}
       ${this._bioField('Notes', 'system.notes', sys.notes, 'No notes.')}
     </div>`;
+  }
+
+  /**
+   * The karma / nuyen ledger · TODO 79 — what was earned and spent, and why.
+   *
+   * ⚠ **A record, not a gate.** The numbers above it stay editable; an unexplained edit simply
+   * lands here with an empty reason. Everyone who can see the sheet can read it (it is their own
+   * history), and `_preUpdate` is what stops a player rewriting it.
+   * ⚠ **Newest first, and capped in the UI** — the whole array is on the document, so a campaign's
+   * worth of entries must not render as a campaign's worth of rows.
+   */
+  static _ledgerTable(actor) {
+    const L = game.sr3e.Ledger;
+    const all = L.of(actor.system);
+    if (!all.length) return '';
+    const rows = L.recent(all, { limit: 30 });
+    const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const when = ms => { const d = new Date(Number(ms) || 0);
+      return Number.isFinite(d.getTime()) ? d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : ''; };
+    const colour = d => (Number(d) < 0 ? 'var(--sr-red)' : 'var(--sr-green)');
+    return `
+      <h3 class="section-hdr" style="margin-top:1rem" title="Every change to Good Karma, Nuyen and the Karma Pool. Append-only — the totals above stay editable, and an unexplained edit is logged with no reason.">📒 Ledger</h3>
+      <div class="list-header" style="grid-template-columns:52px 74px 74px 1fr">
+        <span>When</span><span>What</span><span>Change</span><span>Why</span>
+      </div>
+      ${rows.map(e => `
+        <div class="item-row" style="grid-template-columns:52px 74px 74px 1fr">
+          <span style="font-size:10px;color:var(--sr-muted)">${esc(when(e.when))}</span>
+          <span style="font-size:11px">${esc(L.TRACKED[e.kind === 'pool' ? 'karmaPool' : e.kind]?.label ?? e.kind)}</span>
+          <span style="font-size:11px;color:${colour(e.delta)}">${esc(L.formatDelta(e.kind, e.delta))}</span>
+          <span style="font-size:11px;color:var(--sr-muted)" title="${esc(e.by ? `by ${e.by}` : '')}">${esc(e.reason || '—')}</span>
+        </div>`).join('')}
+      ${all.length > rows.length ? `<div class="sr-roll-meta" style="font-size:10px;color:var(--sr-dim)">… and ${all.length - rows.length} older</div>` : ''}`;
   }
 
   /**
@@ -5392,7 +5426,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       'system.karma':      karma + goodKarma,
       'system.totalKarma': newTotal,
       'system.karmaPool':  karmaPool + poolGained,
-    });
+    }, { ledgerReason: 'Karma award' });
 
     let msg = `${actor.name} awarded ${amount} karma (total: ${newTotal}).`;
     if (poolGained > 0) {
@@ -5543,7 +5577,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       }
       if (existing) await existing.update({ 'system.rating': 1 });
       else          await SR3EActorSheet._createSkillItem(actor, def, 1);
-      await actor.update({ 'system.karma': karma - chosenCost });
+      // The ledger's "why" column (TODO 79) — the spend is recorded either way, but this is what
+      // makes it answer "where did that 40 karma go?" a month later.
+      await actor.update({ 'system.karma': karma - chosenCost }, { ledgerReason: `Learned ${def.name}` });
       ui.notifications.info(`${def.name} learned at rating 1 (${chosenCost} karma spent).`);
       return;
     }
@@ -5551,7 +5587,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     if (type === 'attr') {
       const key  = parts[1];
       const cur  = attrs[key]?.base ?? 0;
-      await actor.update({ [`system.attributes.${key}.base`]: cur + 1, 'system.karma': karma - chosenCost });
+      await actor.update({ [`system.attributes.${key}.base`]: cur + 1, 'system.karma': karma - chosenCost },
+        { ledgerReason: `${key[0].toUpperCase()}${key.slice(1)} ${cur} → ${cur + 1}` });
       ui.notifications.info(`${actor.name}: ${key} raised to ${cur + 1} (${chosenCost} karma spent).`);
       return;
     }
@@ -5565,13 +5602,14 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       if (action === 'learn') {
         // p.245: a new skill is purchased AT rating 1 for a flat 1 karma.
         await skill.update({ 'system.rating': 1 });
-        await actor.update({ 'system.karma': karma - chosenCost });
+        await actor.update({ 'system.karma': karma - chosenCost }, { ledgerReason: `Learned ${skill.name}` });
         ui.notifications.info(`${skill.name} learned at rating 1 (${chosenCost} karma spent).`);
 
       } else if (action === 'rating') {
         const newRating = (skill.system.rating ?? 0) + 1;
         await skill.update({ 'system.rating': newRating });
-        await actor.update({ 'system.karma': karma - chosenCost });
+        await actor.update({ 'system.karma': karma - chosenCost },
+          { ledgerReason: `${skill.name} → ${newRating}` });
         ui.notifications.info(`${skill.name} raised to ${newRating} (${chosenCost} karma spent).`);
 
       } else if (action === 'addspec') {
@@ -5614,7 +5652,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         const specs = [...(skill.system.specialisations ?? [])];
         specs.push({ name: specName, level: 1 });
         await skill.update({ 'system.specialisations': specs });
-        await actor.update({ 'system.karma': karma - chosenCost });
+        await actor.update({ 'system.karma': karma - chosenCost },
+          { ledgerReason: `${skill.name}: "${specName}"` });
         ui.notifications.info(`${skill.name}: "${specName}" added (${chosenCost} karma spent).`);
 
       } else if (action === 'improvespec') {
@@ -5626,7 +5665,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         const newLevel = (specs[specIdx].level ?? 1) + 1;
         specs[specIdx] = { ...specs[specIdx], level: newLevel };
         await skill.update({ 'system.specialisations': specs });
-        await actor.update({ 'system.karma': karma - chosenCost });
+        await actor.update({ 'system.karma': karma - chosenCost },
+          { ledgerReason: `${skill.name} "${specName}" → +${newLevel}` });
         ui.notifications.info(
           `${skill.name} "${specName}" raised to ${(skill.system.rating ?? 0) + newLevel} dice `
           + `(${chosenCost} karma spent).`);

@@ -4,6 +4,7 @@ import { itemRating, vcrLevel as vcrLevelOf } from '../data/item-rating.mjs';
 import { AmmoStock } from '../data/ammo-stock.mjs';
 import * as Sustaining from '../data/sustaining.mjs';
 import { DrugRules } from '../data/drug-rules.mjs';
+import { Ledger } from '../data/ledger.mjs';
 
 export class SR3EActor extends Actor {
 
@@ -8745,6 +8746,11 @@ _prepareCharacter(sys, attr) {
     if (SR3EActor.stripPlayerEssenceWrites(changed, user?.isGM ?? globalThis.game?.user?.isGM)) {
       globalThis.ui?.notifications?.warn('Essence loss is permanent — only the GM can change it.');
     }
+    // The karma / nuyen ledger · TODO 79. Done HERE, on the write, so the Session Rewards tool,
+    // Award Karma, the Spend calculator, a healing bill and a player typing in the box are all
+    // recorded by one piece of code — instrumenting the call sites would miss the next one added.
+    SR3EActor.recordLedger(this, changed, options, user);
+
     const v = foundry.utils.getProperty(changed, 'system.attributes.essence.value');
     if (v !== undefined && foundry.utils.getProperty(changed, 'system.attributes.essence.lost') === undefined) {
       const base = this.system?.attributes?.essence?.base ?? 6;
@@ -8752,6 +8758,61 @@ _prepareCharacter(sys, attr) {
         Math.max(0, parseFloat((base - (Number(v) || 0)).toFixed(2))));
     }
     return super._preUpdate(changed, options, user);
+  }
+
+  /**
+   * Fold a ledger entry into an update that changes karma, nuyen or the Karma Pool · TODO 79.
+   *
+   * ⚠ **The entry RIDES ALONG in the same update.** It is not a second write and needs no GM relay:
+   * whoever is allowed to change the number is, by definition, allowed to write the actor. A
+   * separate relayed write would also race the change it describes.
+   * ⚠ **A caller explains itself through `options.ledgerReason`** (and `options.ledgerBy`). With no
+   * reason the entry is still written, with an empty one — *"log an unexplained adjustment rather
+   * than blocking it"*. The totals stay editable; this only remembers.
+   * ⚠ **An update that touches the ledger and nothing else is left alone**, or every append would
+   * describe itself for ever.
+   * ⚠ **Players may append, never rewrite** (`Ledger.reconcile`). They can still set karma to 9,999
+   * — that is the ethos — but the ledger will say so.
+   *
+   * `changed` is edited in place, as `_preUpdate` requires.
+   */
+  static recordLedger(actor, changed, options = {}, user = null) {
+    if (!changed || typeof changed !== 'object') return;
+    const isGM = user?.isGM ?? globalThis.game?.user?.isGM ?? false;
+
+    // A write to the ledger itself: police it, and stop — do not describe it.
+    const incoming = foundry.utils.getProperty(changed, 'system.ledger');
+    if (incoming !== undefined) {
+      const check = Ledger.reconcile(Ledger.of(actor?.system), incoming, { isGM });
+      if (!check.ok) {
+        globalThis.ui?.notifications?.warn(`SR3E: ${check.why}.`);
+        delete changed.system?.ledger;
+        if ('system.ledger' in changed) delete changed['system.ledger'];
+      }
+      return;
+    }
+
+    const after = {};
+    for (const key of Object.keys(Ledger.TRACKED)) {
+      const flat = `system.${key}`;
+      const val = flat in changed ? changed[flat] : foundry.utils.getProperty(changed, flat);
+      if (val !== undefined) after[key] = val;
+    }
+    if (!Object.keys(after).length) return;
+
+    const entries = Ledger.diff(actor?.system ?? {}, after, {
+      reason: options?.ledgerReason ?? '',
+      by:     options?.ledgerBy ?? user?.name ?? globalThis.game?.user?.name ?? '',
+    });
+    if (!entries.length) return;   // a form re-submitting the same number is not an entry
+
+    // ⚠ Write it in the SPELLING THE CALLER USED. An update arrives flat from a form submit
+    // ({'system.karma': 5}) and nested from code ({system:{karma:5}}); Foundry merges either, but
+    // mixing the two in one object makes the update unreadable and is a trap for the next reader.
+    const flat = Object.keys(changed).some(k => k.startsWith('system.'));
+    const next = Ledger.append(Ledger.of(actor?.system), entries);
+    if (flat) changed['system.ledger'] = next;
+    else foundry.utils.setProperty(changed, 'system.ledger', next);
   }
 
   /**

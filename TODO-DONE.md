@@ -4522,6 +4522,38 @@ defensible under the ethos, but should be a decision rather than a discovery.
 
 <a id="79"></a>
 
+## 79. ✅ No ledger for karma or nuyen — *low priority*
+
+**Raised 2026-08-31.** There is no record of what a character has earned or spent, only current
+totals — `system.karmaPool` and the nuyen field are numbers a player edits in place. So a GM
+cannot answer "where did that 40 karma go?", and a player who mistypes has nothing to restore
+from.
+
+⚠ **This is not the same item as karma SPENDING**, which — contrary to what this entry and
+CLAUDE.md both said when first written — **is implemented**. `_onSpendKarmaCalculator`
+(`SR3EActorSheet.js`) buys attributes, skills and specialisations at the p.245 costs; its
+defects were [#80](#80). This entry is the **audit trail**, a separate want: the calculator
+writes new totals and leaves no record of what was bought.
+
+⚠ **AWARDING is a different story, and this entry used to overstate it too.** `_onAwardKarma`
+is correct but **unreachable** — nothing renders its button — so the only reachable award path
+is the Session Rewards tool, which writes to the wrong field entirely. See [#81](#81); a ledger
+should be built on top of a working award path, not before one.
+
+Shape, roughly: an append-only array of `{ when, kind: 'karma'|'nuyen', delta, reason, by }` on
+the actor, a compact table on the sheet, and a **+/− with a reason field** replacing bare
+in-place editing of the totals. The Session Rewards tool (Rollable Tables sidebar) is the
+obvious first writer — **once [#81](#81) has made it write to the right fields**.
+
+⚠ **Keep the totals editable.** The ethos is that a GM is never fighting the system; a ledger
+that becomes the only way to change a number is a guardrail, not a record. Log an unexplained
+adjustment as an entry with an empty reason rather than blocking it.
+
+⚠ Append-only and GM-relayed, like `sr3e.card.mark` — a player must be able to see their own
+history without being able to rewrite it.
+
+<a id="80"></a>
+
 ## 80. ✅ Karma advancement — seven defects — **DONE 2026-08-31**
 
 **Reported from play 2026-08-31:** *"karma spending seems to be implemented, there isn't
@@ -4696,7 +4728,7 @@ attribute of 0 the table charges 2 — so `karmaNewSkillCost()` stays argument-f
 dialog opens and writes back `karma - chosenCost`, an **absolute**, so a GM award landing while
 the dialog is open is clobbered. Everything else authoritative relays a **delta** through the GM
 for exactly this reason (`sr3e.damage.apply` says so at its definition). Left alone because it
-is a concurrency change touching the same write path as [#79](TODO.md#79)'s ledger, and the two should
+is a concurrency change touching the same write path as [#79](#79)'s ledger, and the two should
 land together rather than the second rewriting the first.
 
 <a id="81"></a>
@@ -4780,7 +4812,7 @@ Karma awarded so far went into the Pool and was never recorded in `totalKarma`, 
 record of what was earned — nothing to migrate from. Say so in the release note rather than
 attempting a heuristic.
 
-⚠ **Do not fold [#79](TODO.md#79)'s ledger into this.** The ledger wants a delta-based, GM-relayed
+⚠ **Do not fold [#79](#79)'s ledger into this.** The ledger wants a delta-based, GM-relayed
 write on the same path; this is a correctness fix that should land first and small.
 
 ---

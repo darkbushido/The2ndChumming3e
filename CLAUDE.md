@@ -2526,9 +2526,38 @@ runs through **`fixActor`** — the third migration hook, and the first to touch
 document rather than its embedded items. Like `fixItem` it can overwrite, so it argues its case
 at the call site.
 
-⚠ **There is no ledger.** The calculator writes new totals and records nothing about what was
-bought, so "where did that 40 karma go?" has no answer. Tracked separately as TODO 79, because
-it is a want rather than a defect.
+#### The ledger — what was earned and spent, and why  · TODO 79
+
+`scripts/data/ledger.mjs`. `system.ledger` on characters and NPCs: `{ when, kind: 'karma' | 'nuyen'
+| 'pool', delta, from, to, reason, by }`, newest rendered first under **📒 Ledger** on the Bio tab.
+
+⚠ **Every entry is derived from the WRITE, in `SR3EActor.recordLedger` (called by `_preUpdate`) —
+never from a call site.** Session Rewards, Award Karma, all six Spend-calculator purchases, a
+healing bill and a player typing in the box are recorded by one piece of code. Instrumenting the
+ten call sites instead would silently miss the eleventh, and the eleventh is the one a future
+feature adds. `tests/ledger.test.mjs` **ratchets** it: a writer that reaches these fields without
+going through `actor.update` fails the suite by name.
+
+⚠ **The entry RIDES ALONG in the same update** — not a second write, and no GM relay: whoever may
+change the number may write the actor. A relayed write would also race the change it describes. It
+is written in the **spelling the caller used** (flat from a form, nested from code), because mixing
+the two in one update object is a trap for the next reader.
+
+⚠ **A record, not a gate** (the ethos). The totals stay editable and an unexplained edit is logged
+with an **empty reason** rather than refused. A caller explains itself with `options.ledgerReason`.
+
+⚠ **A delta of 0 is not an entry** — Foundry re-sends unchanged fields on a form submit, and
+logging those would bury the real entries within one session.
+
+⚠ **Append-only for players, compared by CONTENT not by length** (`Ledger.reconcile`): a same-length
+array with an edited reason is a rewrite, and a length check waves it through. Mutant:
+`ledger-rewrite-checks-length-only`. A player can still set their karma to 9,999 — that is the
+ethos — but the ledger will say they did.
+
+⚠ **Capped at `MAX_ENTRIES` (500), trimmed oldest-first.** The whole array rides on a document that
+is broadcast on every update; unbounded would be a performance bug waiting to happen.
+
+⚠ **A write to the ledger itself is never described**, or every append would describe itself for ever.
 
 ### Drugs — addiction, tolerance, withdrawal, effects  · *M&M pp.105-110, 117-123* — TODO 124
 

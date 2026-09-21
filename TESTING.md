@@ -2466,6 +2466,15 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
   - [x] ＋ mark TLE-x: the line turns amber and lists the effects. ✕ clears it and counts a surgery.
   - [x] A third clearing warns that the book allows only two.
   - [x] A character with no move-by-wire sees none of this.
+- [ ] **Karma / nuyen ledger (TODO 79):**
+  - [ ] Award karma from Session Rewards: the Bio tab's 📒 Ledger shows "+N · Session rewards".
+  - [ ] Spend karma on a skill: a negative entry naming the skill and its new rating.
+  - [ ] Type a new Nuyen total in the box: an entry with an em-dash for the reason — logged, not blocked.
+  - [ ] Re-submit the sheet without changing anything: NO new entry.
+  - [ ] A healing Charge names the treatment.
+  - [ ] A player sees their own ledger; from the console, `actor.update({'system.ledger': []})`
+        as a player is refused with a notice, and as the GM is allowed.
+  - [ ] Full restart first — the data model changed.
 - [ ] **Cybersystem damage (TODO 129):**
   - [ ] Cyber tab → 🎲 Wound effects… (GM only — a player does not see it). 6 boxes, highest die 3
         → the card says 3 wound effects.
