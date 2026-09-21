@@ -2369,7 +2369,7 @@
       ]
     }
   ],
-  "url": "https://github.com/darkbushido/The2ndChumming3e/tree/main",
-  "manifest": "https://raw.githubusercontent.com/darkbushido/The2ndChumming3e/refs/heads/main/system.json",
-  "download": "https://github.com/darkbushido/The2ndChumming3e/archive/refs/heads/main.zip"
+  "url": "https://github.com/darkbushido/The2ndChumming3e/tree/feature/0-6-more",
+  "manifest": "https://raw.githubusercontent.com/darkbushido/The2ndChumming3e/refs/heads/feature/0-6-more/system.json",
+  "download": "https://github.com/darkbushido/The2ndChumming3e/archive/refs/heads/feature/0-6-more.zip"
 }
