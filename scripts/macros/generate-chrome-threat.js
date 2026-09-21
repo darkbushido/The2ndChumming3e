@@ -124,6 +124,11 @@ const moveByWire = (r, g) => cyberware(`Move-by-Wire [${r}]`, [0, 2.5, 4, 5.5, 7
 // ── Threat levels ───────────────────────────────────────────────────────────
 //  Index = level. Level 4 reproduces the original generator (Superior/4).
 
+// ⚠ Every table below is 1-INDEXED BY THREAT LEVEL, so each opens with a deliberate elision:
+// `L.skill[4]` must be the level-4 figure, not the fifth entry. no-sparse-arrays exists to catch
+// an accidental double comma, which is the same syntax — so it is disabled here, at the one place
+// the sparseness is the point, rather than repo-wide.
+/* eslint-disable no-sparse-arrays */
 const L = {
   rel:     [, 'Inferior', 'Inferior', 'Equal', 'Superior', 'Superior', 'Superior', 'Superior', 'Superior', 'Superior', 'Superior'],
   pr:      [, 1, 2, 3, 4, 4, 4, 4, 4, 4, 4],        // the LBB scale stops at 4
@@ -136,6 +141,7 @@ const L = {
   karma:   [, 0, 1, 1, 3, 3, 4, 4, 5, 5, 6],
   apds:    lvl => lvl >= 4,
 };
+/* eslint-enable no-sparse-arrays */
 
 const ARMOR_BY_LEVEL = lvl =>
     lvl <= 1 ? armor('Armor Vest', 2, 1)
@@ -144,6 +150,7 @@ const ARMOR_BY_LEVEL = lvl =>
   : lvl <= 8 ? armor('Light Security Armor', 6, 4)
   :            armor('Heavy Security Armor', 7, 5);
 
+/* eslint-disable-next-line no-sparse-arrays -- 1-indexed by threat level, like the L tables above */
 const LEVEL_BLURB = [, 'Street muscle with a cheap arm. A troll should win.',
   'Gang lieutenant. A troll should still win.',
   'An even fight for a starting troll.',

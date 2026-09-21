@@ -61,6 +61,58 @@ npm run test:e2e        # Playwright, two real clients (Foundry running)
   healing with its time boxes, gear ratings) predate these rules and ship as they are — do not
   split or renumber them.
 
+## Verifying a build — `npm run preflight`
+
+**One command, one verdict, written to be run by a cheap agent** (and by the `verify-build` skill,
+`.claude/skills/verify-build/SKILL.md`). It exists because ad-hoc verification is what cost the 0.6
+window: every mechanical gate in one place, each printing what to do next in plain words.
+
+```bash
+npm run preflight                          # eslint, suites, mutants, TODO, packs, manifest, guides
+npm run preflight -- --fast                # skip mutants, guides, e2e
+npm run preflight -- --e2e                 # …and Playwright — Foundry must be RUNNING
+npm run preflight -- --version v0.6.0 --e2e   # …and version, release:check, notes, rules record, clean tree
+```
+
+⚠ **It changes NOTHING** — no writes, no commits, no tags, no pushes. `tests/preflight.test.mjs`
+asserts that: the only fs imports are `existsSync`/`readFileSync`, and the only `git` it runs is
+`status --porcelain`. The two writers are separate and explicit:
+
+```bash
+npm run version:bump -- 0.6.0     # or: patch (a bug fix) / minor (a feature)
+npm run release:notes -- 0.6.0 --write
+```
+
+⚠ **`bump-version.mjs` rewrites ONE LINE**, for the same reason `manifest-branch.mjs` does — a
+`JSON.parse`/`stringify` round-trip reformats ~1900 lines of pack declarations into one
+unreviewable diff. ⚠ **There is deliberately no `major` keyword**: 1.0.0 is "feature complete" and
+the maintainer calls it.
+
+⚠ **`release-notes.mjs` produces a DRAFT from commit subjects, and that is the least useful part.**
+Subjects are written for whoever reads the diff; notes are for a GM. Anything that changes how a
+rule resolves is stated plainly **with its book and printed page**, because a table mid-campaign
+needs to know their numbers moved. The preflight gate proves the section exists, never that it is
+any good.
+
+### ⚠ The one gate that must never be faked — TODO 121
+
+`--version` checks that **`audit/rules-check-<version>.md` exists**. That file is supposed to mean a
+person compared the code's rules against `guides/` **with the PDFs as the authority**, quoted every
+difference with its printed page, and took it to the maintainer instead of deciding it.
+
+**The script cannot do that, and neither can a cheap agent.** If the record is missing, the answer
+is to say so and stop — never to write the file so the gate goes green. A record claiming a check
+that never happened is worse than a missing one, because the next person trusts it. Both
+`tools/preflight.mjs` and the skill say this outright, and `tests/preflight.test.mjs` asserts they
+still do.
+
+⚠ **`npm run lint` must stay green, or the first gate trains people to ignore the rest.** It was red
+on `main` with 28 pre-existing errors when the preflight was built: the test suites legitimately use
+the Foundry stub's `game` (18), and `generate-chrome-threat.js`'s threat tables are deliberately
+1-indexed with a leading elision (10). Both were fixed where the fault was — the eslint config now
+grants `tests/**` the Foundry globals, and the two sparse tables carry a scoped disable with its
+reason — not by turning a rule off repo-wide.
+
 ## Releases — a tag builds the zip and the guides  · TODO 127
 
 ```bash

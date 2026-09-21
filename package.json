@@ -26,7 +26,11 @@
     "todo:check": "node tools/todo-archive.mjs --check",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
-    "test:mutate": "node tests/mutate.mjs"
+    "test:mutate": "node tests/mutate.mjs",
+    "preflight": "node tools/preflight.mjs",
+    "version:bump": "node tools/bump-version.mjs",
+    "version:check": "node tools/bump-version.mjs --check",
+    "release:notes": "node tools/release-notes.mjs"
   },
   "devDependencies": {
     "@league-of-foundry-developers/foundry-vtt-types": "^13.346.0-beta.20250812191140",

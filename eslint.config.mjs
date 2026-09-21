@@ -218,13 +218,21 @@ export default [
     },
   },
 
-  // ── Node-side: tests and build/maintenance scripts ──────────────────────────
+  // ── Node-side: tests and build/maintenance scripts ─────────────────────────
+  //
+  // ⚠ The Foundry globals are declared here too, and that is not laziness. `tests/helpers/
+  // foundry.mjs` (`installGlobals` / `installGame`) puts a stub of Foundry's API on `globalThis`
+  // precisely so a suite can exercise code that reads `game`, and several do — healing.test.mjs
+  // swaps `game.user` to check that a roll card's dice are the GM's, for one. Without them
+  // `no-undef` fired 18 times on legitimate test code, which made `npm run lint` permanently red;
+  // a gate that always fails is a gate everyone learns to ignore, and it takes the real findings
+  // with it (the reasoning at the top of this file, applied to the tests).
   {
     files: ['tests/**/*.mjs', '*.mjs', 'build-*.mjs'],
     languageOptions: {
       ecmaVersion: 2023,
       sourceType: 'module',
-      globals: { ...globals.node },
+      globals: { ...globals.node, ...foundryGlobals },
     },
     rules: {
       'no-undef': 'error',
