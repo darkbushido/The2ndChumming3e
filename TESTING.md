@@ -2475,4 +2475,4 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
   - [x] Unmark cyberzombie: Essence clamps back to 0 and reads dead again.
   - [x] Full restart first — the data model changed.
 
-**Ran 2026-09-20 by the agent in the Browser pane** (mcp-api, sole user, fresh load, system 0.5.2 after merging `feature/0-6-rules` + `feature/release-pipeline`): every box above verified by driving `game.sr3e.*` directly. Not re-checked by hand: the *player sees it greyed out* halves, which are the same `essGM` branch the unit tests and `tests/e2e/player-sheet.spec.mjs` pin.
+**Ran 2026-09-20 by the agent in the Browser pane** (mcp-api, sole user, fresh load, system 0.5.2 after merging `feature/0-6-rules` + `feature/release-pipeline`): every box above verified by driving `game.sr3e.*` directly. The *player sees it greyed out* half is covered by `tests/e2e/player-sheet.spec.mjs`, which has the seats the Browser pane does not: the GM opens a 1.5 hole, Player2's sheet shows all three Essence boxes unnamed and disabled, and the same block is read back from the GM's seat named and editable — so a sheet that locked everyone out would fail too.

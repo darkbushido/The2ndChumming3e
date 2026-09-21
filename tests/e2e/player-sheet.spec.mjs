@@ -34,6 +34,10 @@ async function sheetView(page, name) {
     const essBlock = [...el.querySelectorAll('.attr-block')]
       .find(b => /^Essence/.test(b.querySelector('.attr-label')?.textContent ?? ''));
     const essInput = essBlock?.querySelector('input.attr-input');
+    // The three boxes inside that block, in render order: Essence, lost, hole (TODO 53). The hole is
+    // rendered for a player only when there is one, so read them all rather than assuming an index.
+    const essBoxes = [...(essBlock?.querySelectorAll('input.attr-input') ?? [])]
+      .map(i => ({ name: i.getAttribute('name'), disabled: i.disabled, value: i.value }));
     return {
       isOwner:        a.isOwner,
       speciesNamed:   species?.getAttribute('name') ?? null,
@@ -44,6 +48,7 @@ async function sheetView(page, name) {
       essDisabled:    essInput?.disabled ?? null,
       essClass:       essBlock ? [...essBlock.classList].filter(c => c.startsWith('essence-')) : null,
       essTitle:       essBlock?.getAttribute('title') ?? '',
+      essBoxes,
     };
   }, name);
 }
@@ -105,12 +110,38 @@ test.describe('the character sheet from a player\'s seat', () => {
         .toEqual(['essence-dead']);
       expect((await sheetView(p, SUBJECT)).essTitle).toMatch(/the spirit slips away/);
 
-      // ── Back above 1 → no warning at all ───────────────────────────────────────
+      // ── Back above 1 → no warning at all ─────────────────────────────────
       await janitor.page.evaluate(async n => {
         await game.actors.getName(n).update({ 'system.attributes.essence.lost': 2 });
       }, SUBJECT);
       await expect.poll(async () => (await sheetView(p, SUBJECT)).essClass, { timeout: 15_000 })
         .toEqual([]);
+
+      // ── The Essence hole is visible to a player and editable by nobody but the GM ────
+      // TODO 53, M&M p.150. The GM opens a hole; the player must SEE it (it is their character's
+      // record) and must not be able to lower it, because a lower hole is Essence back.
+      // ⚠ This is the half the Browser pane cannot check — it drives one user at a time.
+      await janitor.page.evaluate(async n => {
+        await game.actors.getName(n).update({ 'system.essenceHole': 1.5 });
+      }, SUBJECT);
+      await expect.poll(async () => (await sheetView(p, SUBJECT)).essBoxes.length, { timeout: 15_000 })
+        .toBe(3);
+      const boxes = (await sheetView(p, SUBJECT)).essBoxes;
+      expect(boxes.map(b => b.name), 'not one of the three is submitted from a player seat')
+        .toEqual([null, null, null]);
+      expect(boxes.map(b => b.disabled), 'and all three are disabled').toEqual([true, true, true]);
+      expect(boxes[2].value, 'the hole itself is shown, at the number the GM set').toBe('1.5');
+
+      // ⚠ Contrast the SAME block from the GM's seat, or the three assertions above would pass just
+      // as happily against a sheet that disabled the boxes for everyone — which would be a different
+      // bug (the GM could no longer correct a mistaken install) and would look identical from here.
+      const gmBoxes = (await sheetView(janitor.page, SUBJECT)).essBoxes;
+      expect(gmBoxes.map(b => b.name), 'the GM gets all three, named and submitted').toEqual([
+        'system.attributes.essence.value',
+        'system.attributes.essence.lost',
+        'system.essenceHole',
+      ]);
+      expect(gmBoxes.some(b => b.disabled), 'and none of them disabled').toBe(false);
 
       // ── Matrix skill priced as ACTIVE in the karma dialog ──────────────────────
       await fireAndForget(p, `
