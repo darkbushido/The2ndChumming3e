@@ -2466,6 +2466,18 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
   - [x] ＋ mark TLE-x: the line turns amber and lists the effects. ✕ clears it and counts a surgery.
   - [x] A third clearing warns that the book allows only two.
   - [x] A character with no move-by-wire sees none of this.
+- [ ] **Buying gear (TODO 82):**
+  - [ ] Bio tab → 🛒 Buy gear…. With no item chosen the fields are blank and editable.
+  - [ ] Pick a contact: a talismonger against a firearm shows the amber "poor source" line; a fixer
+        against gear shows ✓. Neither blocks the button.
+  - [ ] Set TN 24, time 14, cost 3000, index 3, wait 12 → the preview reads TN 12, base time 38
+        days, Street Index 4.2, asking ¥12,600 (the book's monofilament whip, SR3 p.272).
+  - [ ] Roll with 2 successes → the card says 19 days and a meet at 9.5.
+  - [ ] Roll 0 successes → "No source", and the card explains the wait option rather than ending it.
+  - [ ] 🤝 Negotiate, buyer wins by 4 → 20% off, ¥10,080. Buyer LOSES by 2 → the price goes UP 10%.
+  - [ ] 💴 Pay confirms first, deducts the nuyen, adds the item if one was chosen, and leaves a
+        ledger entry reading "Bought …".
+  - [ ] A player can press 🤝 and 💴 on their own character; another player's client cannot.
 - [ ] **Karma / nuyen ledger (TODO 79):**
   - [ ] Award karma from Session Rewards: the Bio tab's 📒 Ledger shows "+N · Session rewards".
   - [ ] Spend karma on a skill: a negative entry naming the skill and its new rating.

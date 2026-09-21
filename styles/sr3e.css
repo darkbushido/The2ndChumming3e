@@ -247,6 +247,8 @@ background-color: var(--sr-surface) !important;
 .sr-knockdown-btn,
 .sr-stress-roll-btn,
 .sr-stress-apply-btn,
+.sr-buy-negotiate-btn,
+.sr-buy-pay-btn,
 .sr-fd-dodge-btn,
 .sr-charge-quickness-btn,
 .sr-prone-btn {
@@ -276,6 +278,8 @@ background-color: var(--sr-surface) !important;
 .sr-knockdown-btn,
 .sr-stress-roll-btn,
 .sr-stress-apply-btn,
+.sr-buy-negotiate-btn,
+.sr-buy-pay-btn,
 .sr-charge-quickness-btn {
   background: linear-gradient(135deg, color-mix(in srgb, var(--sr-gold) 15%, transparent) 0%, color-mix(in srgb, var(--sr-gold) 5%, transparent) 100%);
   border: 1px solid var(--sr-gold);

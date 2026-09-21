@@ -50,6 +50,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       essenceRecalc:  SR3EActorSheet._onEssenceRecalc,
       applyStress:      SR3EActorSheet._onApplyStress,        // TODO 109
       woundEffects:     SR3EActorSheet._onWoundEffects,        // TODO 129
+      buyGear:          SR3EActorSheet._onBuyGear,             // TODO 82
       toggleTlex:       SR3EActorSheet._onToggleTlex,         // TODO 110
       toggleCybermancy: SR3EActorSheet._onToggleCybermancy,   // TODO 111
       toggleCds:        SR3EActorSheet._onToggleCds,          // TODO 111
@@ -3181,6 +3182,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           ? `<button type="button" class="btn-sm" data-action="awardKarma" style="align-self:flex-end">Award Karma…</button>`
           : ''}
         <button type="button" class="btn-sm" data-action="spendKarmaCalculator" style="align-self:flex-end">Spend Karma…</button>
+        <button type="button" class="btn-sm" data-action="buyGear" style="align-self:flex-end"
+          title="Find a source for gear — an Etiquette Test against its Availability, then haggle (SR3 pp.272-273).">🛒 Buy gear…</button>
       </div>
       ${this._ledgerTable(this.actor)}
 
@@ -3754,6 +3757,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   /** ⚙ Apply Stress — GM only, because Stress is the GM saying what a wound did (TODO 109). */
   static async _onApplyStress(_event, _target) {
     await game.sr3e.SR3EStress.open(this.actor);
+  }
+
+  /** 🛒 Buy gear — anyone who owns the sheet; the rules are SR3 pp.272-273 (TODO 82). */
+  static async _onBuyGear(_event, _target) {
+    await game.sr3e.SR3EPurchase.open(this.actor);
   }
 
   /**

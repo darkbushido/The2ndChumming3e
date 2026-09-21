@@ -4377,6 +4377,7 @@ _prepareCharacter(sys, attr) {
     'ortho-system': ['SR3EActor', '_postOrthoSystemResult'],
     'ortho-ic':     ['SR3EActor', '_postOrthoICAttackResult'],
     'ortho-cc':     ['SR3EActor', '_postOrthoCCResult'],
+    purchase:       ['SR3EPurchase', 'onNegotiated'],   // TODO 82 — the haggle, SR3 p.273
   };
 
   /**
@@ -4391,6 +4392,7 @@ _prepareCharacter(sys, attr) {
     'miji.eccm':       ['SR3EMIJI', '_eccmRolled'],
     'miji.footprint':  ['SR3EMIJI', '_footprintRolled'],
     quickDraw:         ['SR3EItem', '_quickDrawRolled'],   // TODO 47 — Reaction (4), p.107
+    purchaseSourced:   ['SR3EPurchase', 'onSourced'],       // TODO 82 — Etiquette vs Availability, p.272
   };
 
   static _registryFn([cls, fn] = [], what) {

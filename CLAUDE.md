@@ -2559,6 +2559,53 @@ is broadcast on every update; unbounded would be a performance bug waiting to ha
 
 ⚠ **A write to the ledger itself is never described**, or every append would describe itself for ever.
 
+### Buying gear — Availability, Street Index and the deal  · *SR3 pp.272-273* — TODO 82
+
+Rules: `scripts/data/purchasing.mjs` (pure). Flow: `scripts/SR3EPurchase.js`, opened by
+**🛒 Buy gear…** on the Bio tab beside Spend Karma.
+
+    🛒 pick the item + contact, optionally buy the TN down
+      → 🎲 Etiquette vs Availability      (`rollThen` → `onSourced`)
+      → a card: delivery in N, the meet at N/2, the asking price
+      → 🤝 Negotiate, a Success Contest   (`rollOpposedPair` → `onNegotiated`)
+      → 💴 Pay & receive
+
+⚠ **The Availability code is TWO numbers.** `24/14 days` is **target number 24** and a **base time
+of 14 days**: the TN is what Etiquette rolls against, the time is what the successes divide into.
+Reading it as one number makes every item instant.
+
+⚠ **Successes DIVIDE the time; they never lower the target number.** An easier TN is bought
+separately and *before* the roll, at **2 days and +0.1 Street Index per point**.
+
+⚠ **Those days are added to the BASE TIME.** The book's Cheshire cuts TN 24 → 12 for "24 extra
+days (2 x 12)", making the base **14 + 24 = 38**, so 2 successes deliver in **19 days**. Shortening
+the final time instead reads just as naturally and gives a different answer everywhere except a
+case the book happens to work. Mutant: `availability-reduction-shortens-the-wait`.
+
+⚠ **Losing the haggle COSTS.** It is a Success Contest — Negotiation against the other side's
+Intelligence — at **5% per net success**, and *"if the player loses, the gamemaster can either
+raise the price or demand the extra percentage up front"*. The adjustment is **signed**; clamping
+it at zero turns every bad roll into a free retry. Mutant: `negotiation-loss-is-merely-no-discount`.
+
+⚠ **The contact is a HINT, not a gate** (`SOURCE_AFFINITY`). The book names only talismongers —
+*"ideal contact for magical items, but not very good at acquiring weapons"* — and leaves the rest to
+the GM, so a poor source is shown in amber and allowed, and an unknown archetype has no opinion.
+
+⚠ **Nothing is written until 💴.** The item is not created and the nuyen not deducted before then,
+so a deal that falls through — *"If the buyer cannot or will not pay the resulting price, the deal
+is off"* — is a card nobody presses. The payment goes through `actor.update` with a
+`ledgerReason`, so [the ledger](#the-ledger--what-was-earned-and-spent-and-why--todo-79) records it.
+
+⚠ **Every number is editable**, because p.272 says the Availability code *"is intended as a
+guideline for the gamemaster, who should adjust the listed value"*.
+
+⚠ **Racial modifications** (p.272): dwarf-sized gear **+10%**, troll **+25%**, applied to the
+asking price from `system.metatype`.
+
+**Not modelled:** Legality codes and permits (p.273), which are a scene rather than a number, and
+the Etiquette **specialisation** the book's example uses ("three Etiquette (Street) Tests").
+`tests/purchasing.test.mjs` pins Cheshire's whole worked example: 38 days, 19 days, ¥12,600, ¥10,080.
+
 ### Drugs — addiction, tolerance, withdrawal, effects  · *M&M pp.105-110, 117-123* — TODO 124
 
 Pure rules in `scripts/data/drug-rules.mjs` (`DrugRules`, tested against the book's Cram example

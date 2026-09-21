@@ -4854,6 +4854,40 @@ the flat-twentieth bug. 56/56 mutants.
 
 <a id="82"></a>
 
+## 82. ✅ Buying gear needs a flow, like combat has — *Availability, SR3 pp.272-273*
+
+**Raised 2026-09-01.** Gear is acquired by hand today: a GM decides, a player edits `nuyen` and
+drags an item on. SR3 has actual rules for this and none of them are implemented.
+
+The shape wanted is the combat one — a dialog that gathers the modifiers, a roll, a chat card
+that says what happened and leaves the decision to the GM.
+
+### What the rules are
+
+Every gear item already ships the two fields this needs: **`availability`** (e.g. `8/14 days`)
+and **`streetIndex`**, alongside `cost`. Nothing reads either. An Availability Test is an
+opposed/threshold test against the availability rating, with the time code setting how long it
+takes, and the Street Index multiplying price outside normal channels.
+
+⚠ **Read the book before designing.** Availability, Street Index and the legality codes
+interact, and the numbers are already sitting in the packs — so this is mostly a matter of
+consuming data that is present rather than authoring any.
+
+### Contacts are the interesting half
+
+The player's **contacts** should modify this — a Fixer is not an Armourer is not a Talismonger,
+and a Level 3 contact is not a Level 1. The contact type gates *what* they can source, the
+level/quality gates *how well*. That is the part with no obvious existing model in the system
+and the part worth designing first.
+
+⚠ **Check what `contact` items actually carry** before assuming a level or type field exists.
+
+⚠ **Related: [#79](#79)'s ledger.** A purchase is the single best reason to want a nuyen audit
+trail, and a buy flow is its most natural writer. Neither blocks the other, but if the ledger
+lands first this should write to it rather than editing `system.nuyen` in place.
+
+<a id="83"></a>
+
 ## 87. ✅ Cyberware names are abbreviated — **DONE 2026-09-03** (5 left, see below)
 
 **Raised 2026-09-01.** `Muscle Replac. [1]`, `Reaction Enhance [2]`, `Eyes, Vis Mag Ele[1]`,

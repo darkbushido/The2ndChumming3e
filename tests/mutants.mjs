@@ -34,6 +34,7 @@ const BOOKPAGE = { module: '../scripts/data/book-page.mjs',  klass: 'BookPage' }
 const ACCESSORIES = { module: '../scripts/data/weapon-accessories.mjs', klass: 'WeaponAccessories' };
 const SLOTS  = { module: '../scripts/data/cyber-slots.mjs',  klass: 'CyberSlots' };
 const LEDGER = { module: '../scripts/data/ledger.mjs',       klass: 'Ledger' };
+const BUY    = { module: '../scripts/data/purchasing.mjs', klass: 'Purchasing' };
 
 export const MUTANTS = [
   {
@@ -1490,6 +1491,42 @@ export const MUTANTS = [
       return nxt.length < cur.length
         ? { ok: false, why: 'the ledger is append-only' }
         : { ok: true, why: '' };
+    },
+  },
+  {
+    id:     'availability-reduction-shortens-the-wait',
+    suite:  'purchasing',
+    ...BUY, method: 'reduceAvailability',
+    was:    'SR3 p.272 - buying the Availability target number down ADDS to the base time that the '
+          + "successes then divide: Cheshire's TN 24 to 12 costs \"24 extra days (2 x 12 = 24)\" and "
+          + 'makes the base 14 + 24 = 38, so 2 successes deliver in 19 days. Reading the wait as a '
+          + 'reduction of the time instead is the intuitive-but-backwards version, and it still '
+          + 'produces a plausible number for every case the book does not work',
+    impl:   (avail, streetIndex, reduceBy = 0) => {
+      const by = Math.max(0, Math.floor(Number(reduceBy) || 0));
+      const capped = Math.min(by, Math.max(0, Number(avail?.tn) || 0));
+      return {
+        tn: (Number(avail?.tn) || 0) - capped,
+        reducedBy: capped,
+        extraDays: capped * 2,
+        streetIndex: Math.round(((Number(streetIndex) || 0) + capped * 0.1) * 10) / 10,
+        baseTime: Math.max(0, (Number(avail?.time) || 0) - capped * 2),
+      };
+    },
+  },
+  {
+    id:     'negotiation-loss-is-merely-no-discount',
+    suite:  'purchasing',
+    ...BUY, method: 'negotiate',
+    was:    'SR3 p.273 - the haggle is a Success Contest and losing it COSTS: "If the player loses, '
+          + 'the gamemaster can either raise the price or demand the extra percentage up front." '
+          + 'Clamping the adjustment at zero turns every bad roll into a free retry, which nobody '
+          + 'at the table would ever notice as wrong',
+    impl:   (price, buyerHits, sourceHits) => {
+      const net = Math.max(0, Math.floor(Number(buyerHits) || 0) - Math.floor(Number(sourceHits) || 0));
+      const adjustment = Math.round(-net * 0.05 * (Number(price) || 0));
+      return { net, toBuyer: net > 0, percent: net * 0.05, adjustment,
+        price: Math.max(0, Math.round((Number(price) || 0) + adjustment)) };
     },
   },
   {

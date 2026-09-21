@@ -50,7 +50,7 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | [110](TODO-DONE.md#110) | Move-by-wire's TLE-x | ✅ — the Automatic Stress Table, the Willpower test, and the flag with its two surgeries |
 | [111](TODO-DONE.md#111) | Chronic Dissociation Syndrome — cyberzombies | ✅ — Essence below 0, the CDS table, and the GM's check |
 | [79](TODO-DONE.md#79) | A ledger for karma and nuyen | nice to have |
-| [82](#82) | A flow for buying gear — *Availability, SR3 pp.284-286* | nice to have |
+| [82](TODO-DONE.md#82) | A flow for buying gear — *Availability, SR3 pp.284-286* | nice to have |
 | [7](#7) | More test coverage for combat, initiative and pools | nice to have |
 | [127](#127) | Tagged releases, with the guides versioned beside them | in 0.6 — built on `feature/release-pipeline` |
 
@@ -71,7 +71,7 @@ three nice-to-haves (79, 82, 7) and the release tasks below.
 
 ## Contents
 
-**28 open.** 102 done — see [TODO-DONE.md](TODO-DONE.md).
+**27 open.** 103 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -79,7 +79,7 @@ three nice-to-haves (79, 82, 7) and the release tasks below.
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field |
-| 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
+| 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -826,40 +826,6 @@ Foundry restart, not an F5.
 
 ---
 
-## 82. Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*
-
-**Raised 2026-09-01.** Gear is acquired by hand today: a GM decides, a player edits `nuyen` and
-drags an item on. SR3 has actual rules for this and none of them are implemented.
-
-The shape wanted is the combat one — a dialog that gathers the modifiers, a roll, a chat card
-that says what happened and leaves the decision to the GM.
-
-### What the rules are
-
-Every gear item already ships the two fields this needs: **`availability`** (e.g. `8/14 days`)
-and **`streetIndex`**, alongside `cost`. Nothing reads either. An Availability Test is an
-opposed/threshold test against the availability rating, with the time code setting how long it
-takes, and the Street Index multiplying price outside normal channels.
-
-⚠ **Read the book before designing.** Availability, Street Index and the legality codes
-interact, and the numbers are already sitting in the packs — so this is mostly a matter of
-consuming data that is present rather than authoring any.
-
-### Contacts are the interesting half
-
-The player's **contacts** should modify this — a Fixer is not an Armourer is not a Talismonger,
-and a Level 3 contact is not a Level 1. The contact type gates *what* they can source, the
-level/quality gates *how well*. That is the part with no obvious existing model in the system
-and the part worth designing first.
-
-⚠ **Check what `contact` items actually carry** before assuming a level or type field exists.
-
-⚠ **Related: [#79](TODO-DONE.md#79)'s ledger.** A purchase is the single best reason to want a nuyen audit
-trail, and a buy flow is its most natural writer. Neither blocks the other, but if the ledger
-lands first this should write to it rather than editing `system.nuyen` in place.
-
-<a id="83"></a>
-
 ## 83. Mr Johnson's Little Black Book
 
 **Raised 2026-09-01, and named as the next thing to work on.**
@@ -876,7 +842,7 @@ existing data or a data job first.
 Worth settling before building: is this a GM-facing directory of Johnsons and their jobs, a
 player-facing contact list, or the run-generation surface a Johnson implies?
 
-⚠ **Sequencing with [#82](#82).** Both are about contacts. If gear-buying is going to read
+⚠ **Sequencing with [#82](TODO-DONE.md#82).** Both are about contacts. If gear-buying is going to read
 contact type and level, the contact data model wants to be settled once, by whichever of these
 lands first, rather than twice.
 
@@ -967,7 +933,7 @@ the pack because re-running the macro rebuilds all 62 inside Foundry — far big
 correcting records in place.
 
 ⚠ It also calls PR the *"Professional/Connection Rating"*, which is a live question for
-[#82](#82): if PR is a connection rating, it and `contact.connection` may be the same number.
+[#82](TODO-DONE.md#82): if PR is a connection rating, it and `contact.connection` may be the same number.
 
 <a id="84"></a>
 
@@ -1144,7 +1110,7 @@ different Foundry-version assumptions and different rules interpretations — a 
 as likely to be *their* reading as a gap in ours. Note which, when writing it up.
 
 Worth looking for specifically, since these are our known holes: a gear-acquisition flow
-([#82](#82)), an action economy ([#48](#48)), a karma/nuyen ledger ([#79](TODO-DONE.md#79)), character
+([#82](TODO-DONE.md#82)), an action economy ([#48](#48)), a karma/nuyen ledger ([#79](TODO-DONE.md#79)), character
 generation, and anything covering the run structure in Mr Johnson's Little Black Book p.5-35
 ([#83](#83)).
 
