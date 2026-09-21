@@ -1871,8 +1871,27 @@ Three harness facts worth knowing before writing another spec — each cost a wr
   cast posts no resist button, so it died on a missing selector about one run in twelve. It had
   been reported green repeatedly before the full suite happened to lose the coin toss.
 
-⚠ Still no coverage for the **ranged** flow end-to-end (fire mode → recoil → dodge → soak), which
-is the most-played path in the system and the one with the most moving parts.
+**Closed 2026-09-21 for the unit half — `tests/pools.test.mjs`.** Of the gaps listed above, the
+pool derivations and the reset boundaries were covered; what was NOT covered, anywhere, was
+**`endCombat` itself**. `tests/initiative.test.mjs` pins `_endOfTurnReset` and `startCombat`, and
+nothing pinned the two clears that belong to the end of a FIGHT rather than a turn: Spell Defense,
+and **`tempMagicLoss` — the flag this entry calls "the one whose correct lifetime was never
+established"**. It is established now, and verified by deleting the clear and watching the suite
+fail. The new suite also pins ⌊(QUI+INT+WIL)/2⌋ and ⌊(INT+WIL+MAG)/3⌋ directly (they were asserted
+only incidentally, inside an adept-power test), the floor at 0 on a spent pool, and Spell Pool
+being **null** rather than 0 for a mundane.
+
+⚠ It also asserts the two end-of-fight clears are **NOT** in the per-turn reset. Moving
+`clearSpellDefense` there would look like tidying and would erase a mage's declaration the moment
+the round ticked over — Spell Defense is committed for a whole Combat Turn.
+
+### Still open: the ranged flow end-to-end
+
+⚠ No e2e coverage for **fire mode → recoil → dodge → soak**, the most-played path in the system and
+the one with the most moving parts. It is e2e rather than unit work because the dodge declaration
+and the soak card live on a different client from the attack. Left open deliberately: writing that
+spec needs a running Foundry to verify against, and a spec that has never been run green is worse
+than no spec.
 
 ## 18. Structured gear data for weapon-accessory TN modifiers
 
