@@ -6360,3 +6360,44 @@ Raised 2026-09-15 as the remainder of [#55](#55).
   - A weight on ammunition, per box or reload.
   - A carried total on the Gear tab, excluding storage (TODO 113).
   - Whatever the book's encumbrance rule is, shown and never enforced.
+
+## 129. ✅ Cybersystem damage — Essence slots and the Wound Effect Table (M&M pp.126-128)
+
+Raised 2026-09-16 by the maintainer, while settling the Essence hole (#53): *"the essence slot has to do
+with cybersystem damage … they do need to be assigned a slot but that can be handled under the hood when we
+need to see if cyber systems take damage."* **No UI needed** — a picture of the six slots might look good,
+but the slots only matter at the moment a wound effect is resolved.
+
+**What the book does** (M&M pp.126-128, with the Leggy example running through it):
+1. **Wound effects** (p.126) — `Stress.woundEffects(highestDie, boxes)` already counts them (#109): the
+   Damage Resistance Test read as a Success Test against the boxes inflicted.
+2. **The Wound Effect Table** (p.127) — 1D6 per wound effect: **1-2 cybersystem damage · 3-4 bioware
+   damage · 5-6 organic physical injury**. A character with no cyberware ignores a cybersystem result; no
+   bioware, a bioware result.
+3. **Assign Essence Slots** (p.127) — six slots, one per point of Essence, each holding 1.0 of cyberware.
+   Fill slot 1 first and each slot completely before the next, in ascending order; an implant costing more
+   than 1 spans several. Anything inside a cybereye, cyberear or cyberlimb counts as part of that system
+   *unless* it cost Essence of its own. Leggy's slots are worked on p.127: VCR 2 in 1-3, two reaction
+   enhancers in 3, wired reflexes in 4-5 with his cybereyes and datajack, smartlink half-filling 6.
+4. **Determine System Affected** (p.127) — roll 1D6 against the slots. An empty slot: no damage. A slot
+   with several implants: the GM chooses, picks randomly, or rolls 1D10 across the slot subdivided by
+   Essence Cost. ⚠ **A half-full slot** is a 50-50 between its implant and no damage (the smartlink, p.128).
+   A damaged cyberlimb/eye/ear: the whole system or a random subsystem, the GM's call.
+5. **The damage** — 1D6 ÷ 2 Stress and a Stress Test (p.127), which #109 already does.
+6. **Bioware** (p.128) — the same procedure with **Bio Index slots** in place of Essence slots.
+
+**Two special cases:**
+- **Electrical damage** (p.127) automatically affects cyberware: each wound effect goes straight to
+  Determine System Affected, plus an extra 1D6 per wound effect where **1-2 damages another piece**.
+- **Cyberzombies** (p.127) have more cyberware than slots, so they *"double up"* — two systems can be hit
+  at once — and *"always take damage from cybersystem wound effects"* (#111). Bioware over its slots doubles
+  up the same way (p.128).
+
+**Shape, when built:** a pure `scripts/data/cyber-slots.mjs` — `assignSlots(implants)` returning the six
+slots with each implant's share, `systemHit(slots, d6)` returning the implant(s) or none (with the half-slot
+chance), and the Wound Effect Table — pinned to Leggy's slots from p.127. Then offer it where #109's
+⚙ Apply Stress asks "what took it": *"roll for it (M&M p.127)"*, which fills the choice in. ⚠ Offered, not
+automatic — the design ethos, and the book gives the GM the pick within a slot anyway.
+
+⚠ **Not the Essence hole.** #53's hole records Essence spent on removed cyberware; these slots describe
+cyberware that is still installed.

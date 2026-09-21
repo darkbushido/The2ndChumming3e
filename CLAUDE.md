@@ -1068,7 +1068,8 @@ fills the hole (the maintainer, 2026-09-16). A player's write is dropped (`strip
 +2 Threshold is stated, not enforced; there is no surgery flow.
 
 ⚠ **The Essence hole is NOT the Essence *slots* of M&M p.127.** Those six slots assign INSTALLED cyberware
-to a d6 result so a wound effect can pick which implant it hits — TODO 129.
+to a d6 result so a wound effect can pick which implant it hits — built as TODO 129, *Cybersystem damage*
+below.
 
 ⚠ **The "Essence hole" is an opt-in SURGERY OPTION, not automatic** — *M&M p.150*:
 
@@ -1747,6 +1748,60 @@ card does not reach in, because a wound effect is a judgement about what the wou
 ⚠ **1D6 ÷ 2 rounds DOWN** here, so a 1 inflicts nothing — M&M does not say, and it is the maintainer's to
 settle. Not built: Stress Maintenance and repair (p.130-131), bioware malfunction thresholds, and the
 Fragile/Rugged surgery options (p.148).
+
+### Cybersystem damage — Essence slots and the Wound Effect Table  · *M&M pp.126-129* — TODO 129
+
+Rules: `scripts/data/cyber-slots.mjs` (pure). The flow: 🎲 **Wound effects…** beside ⚙ Apply Stress on
+the Cyber tab (GM-only) → a card naming what each effect hit → ⚙ **Apply Stress — <implant>**, which
+opens TODO 109's dialog with *"what took it"* filled in.
+
+| Step | Rule |
+|---|---|
+| How many effects | the Damage Resistance Test read as a Success Test: **boxes − the highest die** · p.127 |
+| What kind | 1D6: **1-2 cybersystem · 3-4 bioware · 5-6 organic** · p.127 |
+| Which system | 1D6 against the **six Essence slots**, one per point of Essence · p.127 |
+| Bioware | the same procedure with **Bio Index slots** · p.128 |
+| The Stress | 1D6 ÷ 2 and a Stress Test — TODO 109 already does it · p.127 |
+
+⚠ **The count is the MARGIN OF FAILURE, not the successes** — *"the difference between the highest
+roll and the number of damage boxes suffered"*. The book's 1,1,2,2,3 against 6 boxes is **3** wound
+effects; counting successes gives 0 and the rule never fires. Mutant: `wound-effects-count-successes`.
+
+⚠ **A partly filled slot is a CHANCE, not a hit** — *"he might not have taken any damage at all
+because that slot is only half full … a 50-50 chance between the smartlink getting hit and no damage
+being done"* (p.128). `hitChance` is the filled fraction. Mutant: `half-slot-is-a-certain-hit`.
+
+⚠ **Ignore, never re-roll.** An effect landing on an empty slot, or on a type the character has none
+of, is *"ignored"* — it does not become a hit somewhere else.
+
+⚠ **The module never picks within a slot.** The book hands that to the GM — *"choose an appropriate
+cybersystem from that slot, choose randomly, or roll a ten sided die"* — so `systemHit` returns the
+candidates with their shares (summing to 1, for the optional 1D10) and the card offers all of them.
+
+⚠ **A slot holds GRADED Essence.** An alphaware VCR occupies **2.4**, not its base 3.0 — the slots
+picture the Essence actually spent, which is what makes the printed layout come out right.
+
+⚠ **Electrical damage SKIPS the Wound Effect Table** (p.129): every effect goes straight to Determine
+System Affected, plus an extra 1D6 each where **1-2 damages another implant**.
+
+⚠ **Cyberzombies double up** (p.127) — more cyberware than slots, so filling wraps to slot 1 rather
+than spilling off the end, and *"two systems [can] be damaged at the same time"*. Driven by
+`system.cybermancy.is` (TODO 111).
+
+⚠ **`assignSlots` is pinned to Leggy's printed six slots** (p.127), the only worked layout in the
+book. It exercises an implant spanning three slots, two sharing with a remainder, three sharing
+another, and a half-full last slot. ⚠ The two reaction enhancers' *"Essence Cost .6"* is the pair's
+**combined** cost (.3 each) — the only reading that reproduces the printed slots.
+
+⚠ **Offered, never automatic** — the soak card does not reach in, because whether a wound damaged a
+cybersystem is a judgement about that wound (the design ethos). `tests/cyber-slots.test.mjs` asserts
+`SR3EActor.js` never calls it.
+
+⚠ **Not the Essence hole.** #53's hole records Essence spent on cyberware that was **removed**; these
+slots describe cyberware that is still **installed**.
+
+**Not built:** the Cyberware Failure Table (p.128, a GM flavour table), bioware Stress Level side
+effects (p.128, per-item text the packs do not carry), and applying anything automatically.
 
 ### Item ratings — one reader  · TODO 118
 

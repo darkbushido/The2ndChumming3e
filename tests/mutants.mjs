@@ -32,6 +32,7 @@ const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating'
 const AMMO   = { module: '../scripts/data/ammo-stock.mjs',   klass: 'AmmoStock' };
 const BOOKPAGE = { module: '../scripts/data/book-page.mjs',  klass: 'BookPage' };
 const ACCESSORIES = { module: '../scripts/data/weapon-accessories.mjs', klass: 'WeaponAccessories' };
+const SLOTS  = { module: '../scripts/data/cyber-slots.mjs',  klass: 'CyberSlots' };
 
 export const MUTANTS = [
   {
@@ -1440,6 +1441,38 @@ export const MUTANTS = [
     was:    'SR3 p.56 - a dwarf\'s "Resistance (+2 Body) to any disease or toxin". Not '
           + 'modelled at all until 2026-09-12 (TODO 98)',
     impl:   () => [],
+  },
+  {
+    id:     'half-slot-is-a-certain-hit',
+    suite:  'cyber-slots',
+    ...SLOTS, method: 'systemHit',
+    was:    'M&M p.128 - a partly filled Essence slot is a CHANCE, not a hit: "If Leggy had rolled '
+          + 'a 6, he might not have taken any damage at all because that slot is only half full … '
+          + 'a 50-50 chance between the smartlink getting hit and no damage being done." Reading '
+          + 'the slot as occupied-therefore-hit doubles how often a lone cheap implant breaks, and '
+          + 'no fill-rule test would notice',
+    impl:   (assignment, d6) => {
+      const slots = assignment?.slots ?? assignment ?? [];
+      const slot  = slots.find(s => s.index === Math.trunc(Number(d6) || 0)) ?? null;
+      if (!slot || !slot.entries.length) {
+        return { slot: d6, empty: true, partial: false, hitChance: 0, candidates: [], note: 'empty' };
+      }
+      const candidates = slot.entries.map(e => ({ ...e, share: e.amount / slot.filled }));
+      return { slot: d6, empty: false, partial: false, hitChance: 1, candidates, note: 'hit' };
+    },
+  },
+  {
+    id:     'wound-effects-count-successes',
+    suite:  'cyber-slots',
+    ...SLOTS, method: 'woundEffects',
+    was:    'M&M p.127 counts the MARGIN OF FAILURE - "the difference between the highest roll and '
+          + 'the number of damage boxes suffered" - not successes. a roll of 1,1,2,2,3 against 6 '
+          + 'boxes is 3 wound effects; counting successes gives 0 and the whole rule never fires',
+    impl:   (dice, boxes) => {
+      const rolled = (Array.isArray(dice) ? dice : [dice]).map(Number);
+      const b = Math.max(0, Math.trunc(Number(boxes) || 0));
+      return rolled.filter(d => d >= b).length;
+    },
   },
   {
     id:     'attribute-hover-says-nothing',

@@ -2466,6 +2466,15 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
   - [x] ＋ mark TLE-x: the line turns amber and lists the effects. ✕ clears it and counts a surgery.
   - [x] A third clearing warns that the book allows only two.
   - [x] A character with no move-by-wire sees none of this.
+- [ ] **Cybersystem damage (TODO 129):**
+  - [ ] Cyber tab → 🎲 Wound effects… (GM only — a player does not see it). 6 boxes, highest die 3
+        → the card says 3 wound effects.
+  - [ ] Each line names its kind and, for a cybersystem hit, the slot and the implants in it.
+  - [ ] A hit on a half-full slot says so as a percentage chance, not as a certain hit.
+  - [ ] An empty slot says the effect is ignored, and offers no button.
+  - [ ] ⚙ Apply Stress — <implant> opens the Stress dialog with that implant already chosen.
+  - [ ] Tick Electrical: every effect is a cybersystem one, and some carry the ⚡ spread note.
+  - [ ] A character with no bioware never gets a bioware hit — those lines read "ignored".
 - [x] **Cyberzombies (TODO 111):**
   - [x] On a character with Essence 0, the Cyber tab offers ＋ mark cyberzombie (GM only).
   - [x] Marked: set Essence loss to 8 on a base of 6 — the box now shows −2 and the block says

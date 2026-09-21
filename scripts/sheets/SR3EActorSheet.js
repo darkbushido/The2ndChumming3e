@@ -49,6 +49,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       woundBox:       SR3EActorSheet._onWoundBox,
       essenceRecalc:  SR3EActorSheet._onEssenceRecalc,
       applyStress:      SR3EActorSheet._onApplyStress,        // TODO 109
+      woundEffects:     SR3EActorSheet._onWoundEffects,        // TODO 129
       toggleTlex:       SR3EActorSheet._onToggleTlex,         // TODO 110
       toggleCybermancy: SR3EActorSheet._onToggleCybermancy,   // TODO 111
       toggleCds:        SR3EActorSheet._onToggleCds,          // TODO 111
@@ -1825,7 +1826,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       <h3 class="section-hdr">Cyberware</h3>
       ${game.user.isGM ? `<button type="button" class="btn-add" data-action="applyStress"
         title="Apply Stress to an implant or an Attribute — a wound effect is 1D6 ÷ 2 and a Stress Test (M&amp;M pp.124-131)."
-        style="margin-bottom:4px">⚙ Apply Stress…</button>` : ''}
+        style="margin-bottom:4px">⚙ Apply Stress…</button>
+      <button type="button" class="btn-add" data-action="woundEffects"
+        title="Roll wound effects for a wound this character just took — the Wound Effect Table, then which Essence slot it hits (M&amp;M pp.126-129)."
+        style="margin-bottom:4px">🎲 Wound effects…</button>` : ''}
       <div class="list-header"><span>Name</span><span>Grade</span><span>Essence</span><span>Rating</span><span title="Stress Points · M&amp;M p.124">Stress</span><span></span></div>
       ${cwRows}
       <button type="button" class="btn-add" data-action="itemCreate" data-type="cyberware">+ Cyberware</button>
@@ -3716,6 +3720,14 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   /** ⚙ Apply Stress — GM only, because Stress is the GM saying what a wound did (TODO 109). */
   static async _onApplyStress(_event, _target) {
     await game.sr3e.SR3EStress.open(this.actor);
+  }
+
+  /**
+   * 🎲 Wound effects — GM only (TODO 129, M&M pp.126-129). Rolls the Wound Effect Table and the
+   * Essence slot, then offers ⚙ Apply Stress for whatever it named. Nothing is applied by it.
+   */
+  static async _onWoundEffects(_event, _target) {
+    await game.sr3e.SR3EStress.openWoundEffects(this.actor);
   }
 
   static async _onEssenceRecalc(_event, _target) {

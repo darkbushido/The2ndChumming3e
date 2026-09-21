@@ -3151,6 +3151,22 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       await SR3EStress.roll(pl);
     });
   });
+  // ⚙ Apply Stress to the implant a wound effect named (TODO 129, M&M p.127).
+  // ⚠ GM-only, like ⚙ Apply Stress itself — it opens the dialog with "what took it" filled in,
+  //   and still rolls the 1D6 ÷ 2 and the Stress Test rather than applying anything.
+  html.querySelectorAll('.sr-stress-apply-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'stressapply', i)) return;
+    const pl = _payload(btn);
+    if (!pl) return;
+    if (!game.user.isGM) return _denyBtn(btn, 'Only the GM applies Stress.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'stressapply', i)) return;
+      const actor = game.actors.get(pl.actorId);
+      if (actor) await SR3EStress.open(actor, { target: pl.target });
+    });
+  });
   html.querySelectorAll('.sr-drug-roll-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'drugroll', i)) return;
     const pl = _payload(btn);
