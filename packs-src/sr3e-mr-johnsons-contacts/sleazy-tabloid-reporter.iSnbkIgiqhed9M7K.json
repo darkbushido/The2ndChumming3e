@@ -321,7 +321,7 @@
         "isReplacement": false,
         "bookPage": "sr3.298",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": ""
       },
       "effects": [],
@@ -400,7 +400,7 @@
         "isReplacement": false,
         "bookPage": "sr3.300",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Record video footage"
       },
       "effects": [],
@@ -479,7 +479,7 @@
         "isReplacement": false,
         "bookPage": "sr3.300",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Low-light vision"
       },
       "effects": [],
@@ -623,7 +623,7 @@
         "isReplacement": false,
         "bookPage": "sr3.299",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Record what is heard"
       },
       "effects": [],
@@ -738,7 +738,7 @@
         "isReplacement": false,
         "bookPage": "sr3.299",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Similar to shotgun microphone",
         "srcgName": "Ear Hearing Amp"
       },
@@ -1056,7 +1056,7 @@
         "isReplacement": false,
         "bookPage": "sr3.299",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Holds .5 Essence of ear mods free of Essence cost",
         "srcgName": "Ears Cyber Repl"
       },
@@ -1128,7 +1128,7 @@
         "isReplacement": true,
         "bookPage": "sr3.300",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Holds .5 Essence of eye mods free of Essence cost"
       },
       "effects": [],
@@ -1272,7 +1272,7 @@
         "isReplacement": false,
         "bookPage": "sr3.298",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": ""
       },
       "effects": [],

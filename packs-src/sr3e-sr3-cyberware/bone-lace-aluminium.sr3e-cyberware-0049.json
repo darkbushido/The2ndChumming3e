@@ -17,7 +17,7 @@
       "isReplacement": false,
       "bookPage": "sr3.302",
       "grade": "Standard",
-      "rating": 0,
+      "rating": null,
       "description": "Unarmed = (STR+3)M Stun, +1BOD, +1IMP",
       "bonusBod": 1
     },

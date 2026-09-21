@@ -17,7 +17,7 @@
       "isReplacement": false,
       "bookPage": "sr3.300",
       "grade": "Standard",
-      "rating": 0,
+      "rating": null,
       "description": "Display text and images in field of vision"
     },
     "effects": []

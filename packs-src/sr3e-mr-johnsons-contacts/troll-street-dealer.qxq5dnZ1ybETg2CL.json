@@ -992,7 +992,7 @@
         "isReplacement": false,
         "bookPage": "mm.31",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "-2 to TNs for firing a Smartlink-II weapon, +2 Called Shot modifier"
       },
       "effects": [],

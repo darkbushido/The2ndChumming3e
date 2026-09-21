@@ -14,7 +14,7 @@
       "streetIndex": 2,
       "mods": "",
       "bookPage": "sota.027",
-      "rating": 0,
+      "rating": null,
       "description": "After Deadly wound, additional damage accrues at Body x2 combat turns"
     },
     "effects": []

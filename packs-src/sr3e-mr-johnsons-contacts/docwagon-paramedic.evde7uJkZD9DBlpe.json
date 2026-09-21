@@ -382,7 +382,7 @@
         "isReplacement": false,
         "bookPage": "sr3.300",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Thermographic vision"
       },
       "effects": [],
@@ -491,7 +491,7 @@
         "isReplacement": false,
         "bookPage": "sr3.300",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Low-light vision"
       },
       "effects": [],
@@ -786,7 +786,7 @@
         "isReplacement": true,
         "bookPage": "sr3.300",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Holds .5 Essence of eye mods free of Essence cost"
       },
       "effects": [],

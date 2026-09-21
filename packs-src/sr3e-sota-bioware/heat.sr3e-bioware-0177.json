@@ -14,7 +14,7 @@
       "streetIndex": 2,
       "mods": "",
       "bookPage": "sota.027",
-      "rating": 0,
+      "rating": null,
       "description": "+2 Dice Vs heat damage, -2 modifier heat survival tests"
     },
     "effects": []

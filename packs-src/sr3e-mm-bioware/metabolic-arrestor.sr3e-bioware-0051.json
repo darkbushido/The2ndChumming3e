@@ -14,7 +14,7 @@
       "streetIndex": 1.5,
       "mods": "",
       "bookPage": "mm.066",
-      "rating": 0,
+      "rating": null,
       "description": "Metabolic stasis after 10 boxes of physical damage"
     },
     "effects": []

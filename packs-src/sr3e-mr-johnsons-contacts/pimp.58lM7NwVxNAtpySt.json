@@ -315,7 +315,7 @@
         "isReplacement": false,
         "bookPage": "sr3.300",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Low-light vision"
       },
       "effects": [],
@@ -636,7 +636,7 @@
         "isReplacement": false,
         "bookPage": "sr3.300",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Thermographic vision"
       },
       "effects": [],
@@ -675,7 +675,7 @@
         "isReplacement": false,
         "bookPage": "sr3.300",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": ""
       },
       "effects": [],

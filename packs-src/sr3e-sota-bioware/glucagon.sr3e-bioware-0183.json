@@ -14,7 +14,7 @@
       "streetIndex": 2,
       "mods": "",
       "bookPage": "sota.028",
-      "rating": 0,
+      "rating": null,
       "description": "Double times when dealing with fatigue effects"
     },
     "effects": []

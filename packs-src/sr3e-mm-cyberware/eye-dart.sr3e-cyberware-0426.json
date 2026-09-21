@@ -17,7 +17,7 @@
       "isReplacement": false,
       "bookPage": "mm.16",
       "grade": "Standard",
-      "rating": 0,
+      "rating": null,
       "description": "Half power toxin/narcojet rounds, half range"
     },
     "effects": []

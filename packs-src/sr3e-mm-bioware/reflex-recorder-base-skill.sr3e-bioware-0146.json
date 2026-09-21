@@ -14,7 +14,7 @@
       "streetIndex": 1.5,
       "mods": "",
       "bookPage": "mm.074",
-      "rating": 0,
+      "rating": null,
       "description": "+1 die base skill, only once per skill",
       "srcgName": "Reflex Rec. (base skill)"
     },

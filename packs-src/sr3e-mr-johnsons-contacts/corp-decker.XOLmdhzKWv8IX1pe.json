@@ -466,7 +466,7 @@
         "isReplacement": false,
         "bookPage": "sr3.298",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": ""
       },
       "effects": [],
@@ -796,7 +796,7 @@
         "isReplacement": false,
         "bookPage": "sr3.298",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": ""
       },
       "effects": [],

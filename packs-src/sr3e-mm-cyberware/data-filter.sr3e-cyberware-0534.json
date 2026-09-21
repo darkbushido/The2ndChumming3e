@@ -17,7 +17,7 @@
       "isReplacement": false,
       "bookPage": "mm.21",
       "grade": "Standard",
-      "rating": 0,
+      "rating": null,
       "description": "While active, +2 perception modifier, not remember anything afterwards"
     },
     "effects": []

@@ -17,7 +17,7 @@
       "isReplacement": false,
       "bookPage": "mm.30",
       "grade": "Standard",
-      "rating": 0,
+      "rating": null,
       "description": "+4STR to hold items, support 25 kgs"
     },
     "effects": []

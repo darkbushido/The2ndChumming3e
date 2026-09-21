@@ -496,7 +496,7 @@
         "isReplacement": false,
         "bookPage": "sr3.300",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Display text in field of vision"
       },
       "effects": [],
@@ -681,7 +681,7 @@
         "isReplacement": false,
         "bookPage": "sr3.298",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Receive faxes, make phone calls"
       },
       "effects": [],
@@ -896,7 +896,7 @@
         "isReplacement": false,
         "bookPage": "sr3.300",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Display text and images in field of vision"
       },
       "effects": [],
@@ -935,7 +935,7 @@
         "isReplacement": false,
         "bookPage": "sr3.298",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": ""
       },
       "effects": [],
@@ -1009,7 +1009,7 @@
         "isReplacement": false,
         "bookPage": "sr3.298",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": ""
       },
       "effects": [],
@@ -1048,7 +1048,7 @@
         "isReplacement": false,
         "bookPage": "sr3.300",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Record video footage"
       },
       "effects": [],
@@ -1119,7 +1119,7 @@
         "isReplacement": false,
         "bookPage": "sr3.299",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Holds .5 Essence of ear mods free of Essence cost",
         "srcgName": "Ears Cyber Repl"
       },

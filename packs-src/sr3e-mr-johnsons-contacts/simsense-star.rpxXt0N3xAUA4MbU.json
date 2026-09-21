@@ -566,7 +566,7 @@
         "isReplacement": false,
         "bookPage": "sr3.300",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": ""
       },
       "effects": [],
@@ -605,7 +605,7 @@
         "isReplacement": false,
         "bookPage": "sr3.302",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": ""
       },
       "effects": [],
@@ -746,7 +746,7 @@
         "streetIndex": 1,
         "mods": "",
         "bookPage": "mm.076",
-        "rating": 0,
+        "rating": null,
         "description": "Can't gain weight"
       },
       "effects": [],
@@ -782,7 +782,7 @@
         "streetIndex": 1,
         "mods": "",
         "bookPage": "mm.076",
-        "rating": 0,
+        "rating": null,
         "description": "No BO or unpleasant gasses"
       },
       "effects": [],

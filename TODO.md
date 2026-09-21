@@ -71,16 +71,16 @@ three nice-to-haves (79, 82, 7) and the release tasks below.
 
 ## Contents
 
-**29 open.** 100 done — see [TODO-DONE.md](TODO-DONE.md).
+**29 open.** 101 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
-| 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps |
+| 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[79](#79) No ledger for karma or nuyen — *low priority*<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
-| 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[122](#122) Ratings in the field, not the name, for weapons, cyberware and bioware<br>[127](#127) Tagged releases, with the guides versioned beside them |
+| 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
@@ -701,6 +701,35 @@ Mainframe Support module. Any implementation should report that, not enforce it.
 
 **Shape:** the crash trigger and Suppression are small and self-contained — do them first. The sheaf
 is a host-sheet feature (a list of steps, each with IC and a rating) and is worth its own pass.
+
+## 130. Store implant names plainly, with the rating only in the field
+
+Raised 2026-09-21 as the remainder of [#122](TODO-DONE.md#122), which made the **field** authoritative but left
+every shipped name as `Wired Reflexes [2]`. The maintainer's original ask has two halves; this is the
+second: *"is there a way to get the name 'Wired Reflexes' with a rating '2' to display as 'Wired
+Reflexes [2]'"* — yes, `displayName(item)` already does it, and it now covers cyberware and bioware.
+So the machinery is in place and this is the rename itself.
+
+**Why it was not done with #122:** the rename is the risky half, and none of the risk is in the
+rename. Before a single name changes, every **name-keyed** lookup has to be found and moved to a stem
+or to `srcgName` (the upstream identity field cyberware already carries):
+
+- `SRCG_BONUSES` — keyed **with brackets**, and `tests/cyberware-names.test.mjs` shows 43 entries
+  already renamed once; a second rename without it silently drops every bonus on those implants.
+- the registries in `config.js` — `triggeredAugmentations`, `quicknessNotForReaction`,
+  `reactionExclusive`, `augmentationSkillDice`. CLAUDE.md already warns these must match a **stem**,
+  never a full name, and the move-by-wire note records getting this wrong once.
+- migrations that match by name, and the healing `EQUIPMENT` regexes.
+- **compendium pickers**: add `system.rating` to `CONFIG.Item.compendiumIndexFields` and append
+  ` [N]` where entries are drawn, or the picker shows five identical *Wired Reflexes*.
+- `displayName` at every sheet row and chat card that prints these names.
+
+Then the rename itself: the packs (derived ids, repo **and** `--install`), and a migration for the
+embedded copies in worlds already in play — Foundry embeds items, so a pack rename reaches nobody
+who already owns one.
+
+⚠ **A rename is not reversible by a fill-blanks migration**, which is what every other migration
+here is. Worth a plan and the maintainer's go-ahead before starting, not a drive-by.
 
 ### 📦 Content gaps
 
@@ -2029,31 +2058,6 @@ grenades (the Grenade Range Table, SR3 p.119), cyberware grades (TODO 86, M&M p.
 ranged sequence, dodge, staging).
 
 <a id="122"></a>
-
-## 122. Ratings in the field, not the name, for weapons, cyberware and bioware — **requested 2026-09-14, future**
-
-**Request (maintainer):** *"I do not like the rating being in the name, I would prefer that it were
-in a column where nil means no rating"* — done for **gear** in 0.5.2 ([#118](TODO-DONE.md#118)); weapons,
-cyberware and bioware were ruled **out of scope for that change** (*"can be done on a future
-todo"*). This is that TODO.
-
-**What gear already has, to copy:** a nullable `rating` (null = none); `itemRating` reading null as
-none; a `preCreateItem` fill (`ratingOnCreate`); migration and pack tool turning a legacy `0` into
-null; `displayName(item)` showing `Name [N]` without doubling a bracket (answering the maintainer's
-*"is there a way to get the name 'Wired Reflexes' with a rating '2' to display as 'Wired Reflexes
-[2]'"* — yes).
-
-**The larger half — plain names.** Storing `Wired Reflexes` + rating 2 instead of `Wired Reflexes
-[2]` needs, before any rename:
-- every **name-keyed** lookup found and moved to the name's stem or to `srcgName` (the upstream
-  identity field cyberware already carries): `SRCG_BONUSES` (keyed with brackets), the registries in
-  `config.js` (`triggeredAugmentations`, `quicknessNotForReaction`, `reactionExclusive`,
-  `augmentationSkillDice`, …), migrations that match by name, the healing `EQUIPMENT` regexes;
-- **compendium lists** showing the rating: add `system.rating` to `CONFIG.Item.compendiumIndexFields`
-  and append ` [N]` where each entry is drawn — otherwise the picker shows five identical *Wired
-  Reflexes*;
-- `displayName` on every sheet row and chat card that prints these names;
-- the rename itself in the packs (derived ids, repo + install) and a migration for world copies.
 
 ## 127. Tagged releases, with the guides versioned beside them — **requested 2026-09-15, in 0.6**
 

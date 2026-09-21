@@ -602,7 +602,7 @@
         "isReplacement": false,
         "bookPage": "sr3.300",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Record video footage"
       },
       "effects": [],
@@ -874,7 +874,7 @@
         "isReplacement": false,
         "bookPage": "sr3.298",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": ""
       },
       "effects": [],
@@ -1082,7 +1082,7 @@
         "isReplacement": true,
         "bookPage": "sr3.300",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Holds .5 Essence of eye mods free of Essence cost"
       },
       "effects": [],
@@ -1230,7 +1230,7 @@
         "isReplacement": false,
         "bookPage": "sr3.298",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": ""
       },
       "effects": [],

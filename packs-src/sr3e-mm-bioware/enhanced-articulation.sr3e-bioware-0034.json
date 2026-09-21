@@ -14,7 +14,7 @@
       "streetIndex": 1.5,
       "mods": "+1NCT,",
       "bookPage": "mm.066",
-      "rating": 0,
+      "rating": null,
       "description": "<p>Joint-surface coating, relubrication and tendon augmentation for fluid muscle and joint action.</p><p><strong>+1 die</strong> on any Success Test involving <strong>Combat, Physical, Technical and Build/Repair</strong> skills, and on <strong>physical use of Vehicle skills</strong> — driving via datajack or piloting a submarine does not qualify. Tick the bonus on the Roll Skill dialog; the Vehicle case is left to your judgement.</p><p><strong>+1 Reaction</strong>, with no effect on rigging or decking and no effect on the Control Pool — apply by hand.</p>",
       "improvedSkillCategory": "Combat skills, Physical skills, Technical skills, Build/Repair skills, Vehicle skills",
       "improvedSkillDice": 1,

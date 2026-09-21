@@ -17,7 +17,7 @@
       "isReplacement": false,
       "bookPage": "mm.32",
       "grade": "Standard",
-      "rating": 0,
+      "rating": null,
       "description": "w/SM2 Shows range to target. -1 TN to targets at Long range and -2 TN at Extreme range. Not compatible with other vision magnifications."
     },
     "effects": []

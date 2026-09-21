@@ -17,7 +17,7 @@
       "isReplacement": false,
       "bookPage": "mm.15",
       "grade": "Standard",
-      "rating": 0,
+      "rating": null,
       "description": "12M Stun, range modifiers on MM15, 1 use"
     },
     "effects": []

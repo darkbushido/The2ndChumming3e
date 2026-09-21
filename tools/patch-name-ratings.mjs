@@ -45,7 +45,11 @@ export function ratingPatch(doc) {
   if (!(cur === undefined || cur === null || cur === '' || Number(cur) === 0)) return undefined;
   const r = knownRating(doc.name);
   if (r) return doc.type === 'medical' ? String(r) : r;
-  return doc.type === 'gear' && cur !== null ? null : undefined;
+  // ⚠ A legacy 0 with nothing to fill it from becomes an explicit null — "no rating" — on every
+  // type whose field is authoritative (TODO 118 for gear, TODO 122 for cyberware and bioware).
+  // `medical` is excluded because its rating is a STRING ("+2" is a real Biotech rating), so it has
+  // no null to mean anything, and an explicit null is already the answer and is left alone.
+  return ['gear', 'cyberware', 'bioware'].includes(doc.type) && cur !== null ? null : undefined;
 }
 
 // Only the packs this system declares — an install may still carry undeclared pre-split packs.

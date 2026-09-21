@@ -1822,8 +1822,9 @@ types one; migration 0.5.2 copies name ratings into blank fields in each world, 
 `tools/patch-name-ratings.mjs` did the same to the shipped packs (623 items; a test sweeps them so
 new content cannot regress). ⚠ **A range is not a rating** — "Rating 4-8" reads as none.
 
-**GEAR: the field is the rating, and null means NO rating** (the maintainer, 2026-09-14: *"a column
-where nil means no rating"*). `GearData.rating` is **nullable, initial null**; `itemRating` reads a
+**The field is the rating, and null means NO rating** (the maintainer, 2026-09-14: *"a column
+where nil means no rating"*) — **gear and medical** in 0.5.2 (#118), **cyberware and bioware** in 0.6
+(TODO 122). `GearData.rating` is **nullable, initial null**; `itemRating` reads a
 number as the rating, **null as none (the name is not consulted)**, and a `0` or missing field as
 **legacy** → the name, then `GEAR_RATINGS`. A `preCreateItem` hook (`ratingOnCreate`) fills a new
 gear item's field when its creator gave none, so nothing downstream reads a name; migration 0.5.2 and
@@ -1835,8 +1836,25 @@ book entry). They read **0** before (reported: *"medkits for one"*). ⚠ Names u
 differently in different entries (Gyro Mount 5/6/7) are **left out** — a name cannot settle them.
 ⚠ **`displayName(item)`** shows `Medkit [3]` for a plain-named rated gear item and never doubles a
 bracket — the path to storing names plainly.
-⚠ **Weapons, cyberware and bioware are OUT OF SCOPE** (the maintainer): their field still defaults
-to 0 and reads through the legacy row exactly as before. TODO 122.
+⚠ **WEAPONS HAVE NO RATING FIELD, and that is the ANSWER, not an omission** (TODO 122). They were
+named in the request beside cyberware and bioware, so the survey is worth recording: of **343
+firearms, 107 melee weapons and 67 projectiles, not one** carries a rating in its name, and none of
+the four weapon data models has ever declared the field. SR3 rates gear and implants, not guns —
+adding the column would add an empty one. `tests/item-rating.test.mjs` asserts all four models stay
+without it, so the question is answered once rather than re-asked.
+
+⚠ **TODO 122 needed NO MIGRATION, and the reason is worth keeping.** On an implant a legacy `0`
+and an explicit `null` read the **same number**: 0 falls through to the name, and an unrated implant
+has nothing there either way. What `null` adds is the ability to *say* "no rating" and have the name
+ignored — which `0` cannot express. No world's dice move, so the 0.5.2 migration is left exactly as
+it shipped (a world that ran it never runs it again). That invariant is asserted in
+`tests/item-rating.test.mjs`; if it ever stops holding, a migration is owed.
+
+⚠ **Every bracketed cyberware (494) and bioware (69) document already stored its rating** before
+this change — and none disagreed with its name. `tools/patch-name-ratings.mjs` then turned the
+**495** legacy `0`s with nothing to fill them from into explicit `null`s. ⚠ `medical` is excluded
+from that: its rating is a **string** (`"+2"` is a real Biotech rating), so it has no null to mean
+anything.
 
 ### Cyberware grades  · *M&M p.45* — TODO 86
 

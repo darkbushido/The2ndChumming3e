@@ -10,8 +10,7 @@
  *
  * **The FIELD is the rating, and no value means no rating** (the maintainer, 2026-09-14: *"I would
  * prefer that it were in a column where nil means no rating"*). `system.rating` is nullable on
- * **gear** — weapons, cyberware and bioware are out of scope for now (TODO 122); their field still
- * defaults to 0, which reads through the legacy row below exactly as before:
+ * **gear, medical, cyberware and bioware** (TODO 118, then TODO 122):
  *
  * | `system.rating` | reads as |
  * |---|---|
@@ -21,8 +20,15 @@
  * |   | `GEAR_RATINGS` — gear rated only in the generator's Rating column (plain *Medkit* 3, SR3 p.304) |
  *
  * The legacy row is how the migration and `tools/patch-name-ratings.mjs` FILL the field; after
- * that nothing reads a name. Checked against every shipped pack: no item stores a rating that
- * disagrees with its name.
+ * that nothing reads a name. Every bracketed cyberware (494) and bioware (69) document in the
+ * shipped packs already stores its rating, and none disagrees with its name.
+ *
+ * ⚠ **WEAPONS HAVE NO RATING, AND THAT IS THE ANSWER, NOT AN OMISSION** (TODO 122). They were
+ * named in the request alongside cyberware and bioware, so it is worth recording what a survey of
+ * the packs found: of 343 firearms, 107 melee weapons and 67 projectiles, **not one** carries a
+ * rating in its name, and none of the four weapon data models has ever declared a `rating` field.
+ * SR3 rates gear and implants, not guns. Adding the column would add an empty one — so the field
+ * is deliberately not there, and `itemRating` is not wired to weapons.
  *
  * The functions live on `ItemRating` and the named exports call through it, so
  * `tests/mutants.mjs` can reinstate a shipped bug by replacing one (ES exports are read-only).
@@ -53,6 +59,9 @@ export const ItemRating = {
     return ItemRating.ratingFromName(name) ?? GEAR_RATINGS[normName(name)] ?? null;
   },
 
+  /** Types whose `rating` field is authoritative — null on one of these means NO rating. */
+  RATED_TYPES: ['gear', 'medical', 'cyberware', 'bioware'],
+
   /** The item's rating (0 = none). See the table above: a number wins, null is none, 0/missing is legacy. */
   itemRating(item) {
     const raw = item?.system?.rating;
@@ -68,9 +77,9 @@ export const ItemRating = {
    * (a shipped unrated item) stays null, and so does a number.
    */
   ratingOnCreate(type, given, name) {
-    // ⚠ GEAR only — the maintainer, 2026-09-14: weapons, cyberware and bioware are out of scope
-    // (TODO 122). Their field still defaults to 0 and is read with the name, as before.
-    if (type !== 'gear') return undefined;
+    // ⚠ Only the types whose field is authoritative. A weapon has no `rating` field at all, so
+    // writing one would create a key its data model drops at load.
+    if (!ItemRating.RATED_TYPES.includes(type)) return undefined;
     if (given === null || Number(given) > 0) return undefined;
     return ItemRating.knownRating(name) ?? null;
   },
@@ -82,7 +91,7 @@ export const ItemRating = {
    */
   displayName(item) {
     const name = String(item?.name ?? '');
-    if (!['gear', 'medical'].includes(item?.type)) return name;       // gear only for now (TODO 122)
+    if (!ItemRating.RATED_TYPES.includes(item?.type)) return name;
     const r = ItemRating.itemRating(item);
     return r > 0 && ItemRating.ratingFromName(name) === null ? `${name} [${r}]` : name;
   },

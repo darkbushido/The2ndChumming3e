@@ -14,7 +14,7 @@
       "streetIndex": 2,
       "mods": "",
       "bookPage": "mm.075",
-      "rating": 0,
+      "rating": null,
       "description": "-1 box Stun wounds, shift 1 box of Physical wounds to Stun"
     },
     "effects": []

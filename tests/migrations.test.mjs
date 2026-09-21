@@ -270,7 +270,11 @@ export async function run(t) {
   t.is('gear with no rating anywhere: its legacy 0 becomes null, "no rating" (2026-09-14)',
     rt.fixItem(typed('gear', 'Predator 2', { rating: 0 }))?.['system.rating'], null);
   t.is('…a plain Medkit is filled from the table: 3 (SR3 p.304)', rt.fixItem(typed('gear', 'Medkit', { rating: 0 }))?.['system.rating'], 3);
-  t.is('…an unrated CYBERWARE keeps its 0 (out of scope, TODO 122)', rt.fixItem(typed('cyberware', 'Datajack', { rating: 0 })), null);
+  // ⚠ The 0.5.2 migration is left EXACTLY as it shipped — a world that already ran it never runs
+  //   it again, so changing its behaviour now would reach only worlds that have not loaded since.
+  //   TODO 122 needed no migration of its own: on an implant a legacy 0 and an explicit null read
+  //   the same number (asserted in tests/item-rating.test.mjs), so no world's dice move.
+  t.is('…an unrated cyberware kept its 0 in 0.5.2, and still does', rt.fixItem(typed('cyberware', 'Datajack', { rating: 0 })), null);
   t.is('…a gear null is already "none": nothing to do', rt.fixItem(typed('gear', 'Wrist Phone', { rating: null })), null);
   t.is('armour has no rating field — skipped', rt.fixItem(typed('armor', 'Helmet [2]', {})), null);
   const rtOnce = rt.fixItem(typed('gear', 'Medkit [6]', { rating: 0 }));
