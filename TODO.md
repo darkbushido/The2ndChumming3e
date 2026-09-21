@@ -1713,9 +1713,39 @@ grind-it-out work, and the entry above was wrong about why.**
 
 | Group | Count | Status |
 |---|---:|---|
-| SR2 gear, `sr2.???` | **154** | ⛔ **No SR2 core PDF exists in the library.** |
+| SR2 gear, `sr2.???` | **154** | 🟡 **Unblocked 2026-09-21** — see below. |
 | Matrix Defragged agents (17), hosts (10), Hermes Ikon (1) | **28** | ⛔ Authored for this system — no book to cite. |
 | `sr3e-skills` | **18** | ⛔ 15 Area Knowledge examples + 3 whose upstream source is `sr3.XXX`. |
+
+**UNBLOCKED 2026-09-21 — the maintainer has an SR2 library, and there is now a way to read it.**
+It lives at `C:\Users\lance\Documents\Shadowrun 2nd Edition PDFs` (35 files) and is almost all
+image-only, so `pdftotext` returns nothing. **`tools/ocr-pdf.ps1`** reads them using
+`Windows.Data.Pdf` + `Windows.Media.Ocr`, both built into Windows — no install, nothing added to
+the repo, ~2 seconds a page. It rebuilds table layout from the OCR word boxes, so stat rows survive:
+
+    Beretta Model 70   SMG      BF/FA     35(c)   6M   3.75   900%      <- 900¥
+    Heckler & Koch     SMG   5  SA/BF/FA  20(c)   6M   3.25   850Y      <- 850¥
+
+⚠ **Seven of the 35 already have a text layer** (Grimoire, Magic, Blackhand's Street Weapons, DMZ,
+Running Gear, Companion — Beyond the Shadows, NAGNA). Try `pdftotext -layout` first: it is exact
+and instant. The rest need OCR.
+
+⚠ **AND THE ITEMS ARE NOT ALL FROM SR2 CORE — this is the new finding.** The names in
+`sr3e-sr2-melee` are *Bear-Knife*, *Cane Sword*, *Decapitator battleaxe*, *Gasher battleaxe*,
+*Mjolnir warhammer*, *Kendachi Mononaginata*, *Mersch MX-23 Stunlance* … none of which is in SR2
+core's Equipment Table (printed p.254, verified by OCR; the Sourcebook Updates table on p.278 is
+the other one). They are **Street Samurai Catalog** and similar. So the work is not "read one book",
+it is **identify the real source book per item, then cite it** — and several of those documents are
+in the wrong pack as well, which is the "names a different book from their pack" case `check-packs`
+already reports.
+
+⚠ **The printed-page offset for SR2 core is PDF − 26** (PDF 260 = printed 234), established from
+the footers. Every book needs its own; do not assume.
+
+⚠ **What OCR is good for, measured.** Page numbers, availability codes (`3/72 hrs`, `Always`),
+Street Index, damage codes, ammo and fire modes all come through. **Prices do not** — `¥` reads as
+`Y`, `%` or worse, and heavily stylised books (*Shadowtech*) mangle body text. Treat it as a
+research aid and verify anything that changes a die roll, as the standing rule requires.
 
 ⚠ **THE SR2 CORE PDF IS NOT IN THE LIBRARY.** This entry used to say *"SR2 core for the 314
 `sr2.???` (the SR2 core PDF is in the library)"*. It is not: the library holds SR3 books only
