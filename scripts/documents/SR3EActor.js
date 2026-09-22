@@ -3281,6 +3281,21 @@ _prepareCharacter(sys, attr) {
               ${stageLine}
             </div>`;
 
+          /* Elemental Manipulation (p.183, p.196): a ranged attack, not a spell resistance. Say so, and
+           * state the secondary effects — p.196 hands them to the GM ("selective … judgment calls"),
+           * so they are a line on the card and nothing more. */
+          if (sc.isElemental) {
+            const objMod = SR3EItem.elementalSecondaryResistance(sc.damageBase?.level);
+            stagingHtml += `
+              <div class="sr-roll-meta" style="font-size:11px">
+                🔥 Elemental: each target may <strong>dodge</strong> (p.183), then resists with
+                <strong>Body + Combat Pool</strong> against Impact armour at half (p.196).
+                Secondary effects: ${objMod === null
+                  ? 'none — a Light elemental spell has no secondary effects'
+                  : `roll 2D6 ≥ the Object Resistance${objMod ? ` +${objMod}` : ''} of anything left vulnerable`} (p.196).
+              </div>`;
+          }
+
           // Counterspelling (Spell Defense) reduces the caster's successes first, if anyone has it.
           const spellDefenders = game.actors.contents.filter(
             a => (a.system.spellDefensePool ?? 0) > 0 && a.id !== sc.attackerActorId
@@ -4739,6 +4754,25 @@ _prepareCharacter(sys, attr) {
   }
 
   /**
+   * Armour against an Elemental Manipulation spell · *SR3 p.196*
+   *
+   * > "Impact Armor protects against damage from elemental manipulations, but at only half its
+   * > normal rating (round down)."
+   *
+   * ⚠ **Impact, not Ballistic** — a Fireball is not a bullet. The ranged soak card defaults to
+   *   Ballistic, and elemental spells now reach it through the ranged flow, so this is the rule most
+   *   likely to be lost by accident. Mutant: `elemental-halves-ballistic`.
+   * ⚠ **Halved, and rounded DOWN** — Impact 5 protects as 2. Mutant: `elemental-full-impact`.
+   * ⚠ **Mystic Armor is halved with it** (the maintainer, 2026-09-22): p.170 makes it *"Impact
+   *   Armor, cumulative with any worn Impact Armor"*, so the caller passes the combined figure.
+   *
+   * `ballistic` is taken only so a mutant reading the wrong rating can be expressed and killed.
+   */
+  static elementalImpact({ ballistic: _ballistic = 0, impact = 0 } = {}) {
+    return Math.floor(Math.max(0, Number(impact) || 0) / 2);
+  }
+
+  /**
    * VEHICLE DAMAGE MODIFIERS TABLE · *SR3 p.145*
    *
    * | Damage Level | Target Number | Initiative Penalty | Speed Rating Reduction |
@@ -5971,6 +6005,8 @@ _prepareCharacter(sys, attr) {
       rawDamage:       payload.rawDamage,
       // Dodge hits that failed to beat the attack still count toward resisting.
       carriedSuccesses: payload.carriedSuccesses ?? 0,
+      // An elemental spell (p.183) — the soak card halves Impact for it (p.196).
+      elemental:       payload.elemental === true || undefined,
     }).replace(/'/g, '&#39;');
 
     return `
@@ -8290,6 +8326,13 @@ _prepareCharacter(sys, attr) {
         impact    = eff;
       }
     }
+    // Elemental Manipulation · SR3 p.196 — Impact at half, round down. After Mystic Armor, which is
+    // Impact armour like any other, so it is halved with the rest (see `elementalImpact`).
+    if (payload.elemental === true) {
+      const halved = SR3EActor.elementalImpact({ ballistic, impact });
+      ammoNote = `Elemental spell — Impact armour at half (${impact} → ${halved}); Ballistic does not apply (p.196)`;
+      impact   = halved;
+    }
     // Damage from inside the body — a crash, a drug — is not an attack, and no armour resists it.
     if (payload.noArmor) {
       ballistic = 0;
@@ -8302,7 +8345,7 @@ _prepareCharacter(sys, attr) {
     // except gel rounds, which are a ranged attack the rules resist with Impact. That
     // exception is declared on the ammo type (config.js) rather than hard-coded here, so it
     // sits with the rest of the ammo-armour rules instead of hiding in the selection.
-    const usesImpact   = isMelee || ammoRules.armorEffect === 'gel';
+    const usesImpact   = isMelee || ammoRules.armorEffect === 'gel' || payload.elemental === true;
     const defaultArmor = usesImpact ? impact : ballistic;
 
     const soakTN = Math.max(2, stagedPower - defaultArmor);
@@ -8352,8 +8395,8 @@ _prepareCharacter(sys, attr) {
             <label class="sr-soak-label">
               Armour type:
               <select class="sr-soak-armor-type">
-                <option value="ballistic" ${!isMelee ? 'selected' : ''}>Ballistic (${ballistic})</option>
-                <option value="impact"    ${isMelee  ? 'selected' : ''}>Impact (${impact})</option>
+                <option value="ballistic" ${!usesImpact ? 'selected' : ''}>Ballistic (${ballistic})</option>
+                <option value="impact"    ${usesImpact  ? 'selected' : ''}>Impact (${impact})</option>
               </select>
             </label>
           </div>
@@ -9311,7 +9354,9 @@ _prepareCharacter(sys, attr) {
     if (currentSuccesses > 0) {
       html += `<div class="sr-roll-meta">
         🔮 ${sc.spellName} — <strong>${currentSuccesses} casting hit${currentSuccesses !== 1 ? 's' : ''}</strong> after defense;
-        base <strong>${sc.rawDamage}</strong>. Each target resists vs Force ${force}.
+        base <strong>${sc.rawDamage}</strong>. ${sc.isElemental
+          ? 'Each target may dodge, then resists the damage (p.183).'
+          : `Each target resists vs Force ${force}.`}
       </div>`;
       for (const targetId of (sc.targetActorIds ?? [])) {
         html += SR3EActor._spellResistButton(sc, targetId, currentSuccesses);
@@ -9441,6 +9486,51 @@ _prepareCharacter(sys, attr) {
   static _spellResistButton(sc, targetId, attackSuccesses) {
     const tActor = game.actors.get(targetId);
     if (!tActor) return '';
+
+    /* ── Elemental Manipulation · SR3 p.183 ─────────────────────────────────────────────────
+     *
+     * > "Elemental spells, unless completely dodged, strike their target. The Damage Level is
+     * > staged up by every 2 successes the caster made on the Ranged Combat Test. The target
+     * > stages down with a Damage Resistance Test (see p. 113)."
+     *
+     * So an elemental spell leaves the spell-resist path entirely and joins the ranged one at step
+     * 4: the same `.sr-dodge-declare-btn` a gunshot posts, which already owns dodge-versus-soak,
+     * carried dodge successes, Full Defense and the fall-through to the soak card. Both sites that
+     * hand out spell buttons come through here — the plain cast and the post-counterspelling card —
+     * so counterspelling still takes its successes off first.
+     *
+     * ⚠ Staged by the CASTER's successes, on the ranged rule (Deadly caps; the surplus is lost) —
+     *   not the net against a resistance roll, because there is none.
+     * ⚠ `elemental: true` rides to the soak card, which halves Impact (p.196). `handleDodgeDeclare`
+     *   and `_rollDodge` pass the context whole; `_soakButtonHtml` lists its fields, and carries it.
+     */
+    if (sc.isElemental) {
+      const staged       = SR3EItem.stageDamage(sc.damageBase, attackSuccesses);
+      const attackerName = game.actors.get(sc.attackerActorId)?.name ?? 'The caster';
+      const ctx = {
+        attackerActorId: sc.attackerActorId,
+        targetActorId:   targetId,
+        isMelee:         false,
+        attackSuccesses,
+        attackerName,
+        stagedPower:     staged.power,
+        stagedLevel:     staged.level,
+        isStun:          staged.isStun,
+        rawDamage:       `${sc.spellName ?? 'Spell'} ${sc.rawDamage}`,
+        elemental:       true,
+      };
+      // A vehicle does not dodge (the ranged flow's own rule) — straight to its resistance.
+      if (tActor.type === 'vehicle') return SR3EActor._soakButtonHtml(ctx);
+      const json = JSON.stringify(ctx).replace(/'/g, '&#39;');
+      return `
+      <div class="sr-soak-action">
+        <button class="sr-dodge-declare-btn" data-payload='${json}'>
+          🎯 ${tActor.name} — ${sc.spellName ?? 'spell'}, ${attackSuccesses} hit${attackSuccesses === 1 ? '' : 's'}
+          (${staged.power}${staged.level}). Dodge or take it?
+        </button>
+      </div>`;
+    }
+
     const payload = JSON.stringify({
       actorId:         targetId,
       targetActorId:   targetId,

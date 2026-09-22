@@ -2376,8 +2376,8 @@ The rule is `scripts/data/sustaining.mjs` (pure); `SR3EActor.sustainingTN(actor)
 
 ### Spellcasting flow
 1. Caster clicks "Cast" on a spell row (magic tab)
-2. Choose Force dialog — note shown if Force > Magic (drain becomes Physical). For damaging spells (item `damage` non-empty) it also has a **Damage Level** dropdown (L/M/S/D, default = the spell item's level); the chosen level drives **both** the target's base damage **and** the caster's drain level. **AoE spells** (Range code contains `(A)`, e.g. `LOS (A)` — there is no separate AoE flag) also show an **Area radius (m)** input (default = caster's **Magic** attribute, editable).
-3. Targeting (**no dodge** — combat spells are resisted, not dodged):
+2. Choose Force dialog — note shown if Force > Magic (drain becomes Physical). For **Combat and Elemental** spells (`SR3EItem.spellChoosesDamageLevel(category)`) it also has a **Damage Level** dropdown (L/M/S/D, default = the spell item's level, else Moderate); the chosen level drives **both** the target's base damage **and** the caster's drain level. **AoE spells** (Range code contains `(A)`, e.g. `LOS (A)` — there is no separate AoE flag) also show an **Area radius (m)** input (default = caster's **Magic** attribute, editable).
+3. Targeting (combat spells are resisted, never dodged; **elemental spells are dodged** — see *Elemental Manipulation spells* below):
    - **Single**: target dialog only.
    - **AoE** (`SR3EItem._placeBlastTemplate` cursor aim → `_actorsInRadius`): nominate the area centre on the canvas; **every live actor (not the caster, not vehicles) inside the radius is auto-detected** as a target — no manual checkbox list, **no scatter, no falloff**. A purple **Region** area marker is drawn for all players (`SR3EActor._drawBlastArea`, local PIXI fallback) with a 🧹 Clear button on the result card. Off-canvas → falls back to the manual checkbox dialog (`_promptTargetsMulti`). Empty area → casts anyway (drain still applies).
 4. Allocate Spell Pool dice dialog (if any available)
@@ -2405,6 +2405,17 @@ card so the GM can see what was taken.
 - Covered by `tests/spell-defense.test.mjs`, including that each mage is asked on their own
   decider and that a mage who never answers does not block round start.
 7. **Resist Spell** (`_postSpellSoakCard` → `handleSpellResistRoll`): target rolls the **spell's Target attribute** — the *same* `SR3EItem._parseSpellTarget` is reused so the resist attribute always matches the cast — **attribute only, no pool** — vs **TN = Force** (interactive). **Net = caster successes − resister successes** (`isSpellResist` branch in `_postWaveCard`): ≤ 0 → no effect; otherwise `stageDamage(base, net)` → **Assign Damage** button. **There is no separate soak** — the resistance test *is* the defence.
+   **Elemental Manipulation spells do NOT come here** · *SR3 p.183, p.196* (rules-check 0.6.0 Finding 4).
+   *"Elemental spells are treated like normal ranged attacks … These spells can be dodged"* and *"the
+   Resistance Test is actually a Damage Resistance Test … The Combat Pool may be used"*. `_spellResistButton`
+   checks `sc.isElemental` (`SR3EItem.isElementalSpell(category)`, 17 shipped spells) and posts the
+   **ranged `.sr-dodge-declare-btn`** instead, staged by the caster's successes on the ranged rule; the dodge,
+   the carried successes and the soak card are the gunshot's. The soak card halves **Impact** for
+   `payload.elemental` (`SR3EActor.elementalImpact`, p.196: *"at only half its normal rating (round down)"*),
+   never Ballistic. ⚠ **Every target in an area elemental spell dodges** (the maintainer, 2026-09-22 — MITS p.56;
+   p.182's grenade comparison is about who is caught, not the dodge). ⚠ **Mystic Armor is halved with worn
+   Impact.** ⚠ `_soakButtonHtml` lists its fields, so `elemental` is one of them. Secondary effects are stated
+   on the card, never applied. Cover and visibility on the cast are TODO 131.
    ⚠ **The Sorcery Test's own Rule of One costs +2 on the Drain TN** · SR3 p.182: *"If the results are
    all ones (see Rule Of One, p. 38), the spell fails and the target number for the Drain Resistance
    Test is increased by +2."* Carried as `castGlitch` on the drain payload and added in
@@ -2791,7 +2802,7 @@ system.roundsFiredThisPhase        ← persisted, recoil accumulator; reset each
   as 0 would make the whole spell library uncastable. ⚠ **The clamp is on READ, not just `max=`** —
   `max` is a hint the browser applies to spinner clicks only, and a typed value sails past it.
   There was no field at all before 2026-09-22, so the limit could not even be shown.
-- `spell`: `type` ("Mana"/"Physical" — sets **only the damage track**: Mana → Stun, Physical → Physical; it does **not** set the resist attribute), `target` (sets the **resist attribute *and* the cast TN** — `W/B/I/Q/F`/number, suffixes stripped — `SR3EItem._parseSpellTarget`), `category` (**Combat = damaging**: shows the cast Damage-Level dropdown), `drain` (drain-Power/TN formula e.g. "(F/2)" or "(DL+1)" — level = nominated Damage Level ± a `DL` token), `range` (Touch/LOS; an **`(A)` suffix = area effect**, no separate flag), `duration`. **No damage code** — spell power = Force and the level is chosen at cast (the `damage` field is hidden/legacy; only `drain` is required for a complete spell).
+- `spell`: `type` ("Mana"/"Physical" — sets **only the damage track**: Mana → Stun, Physical → Physical; it does **not** set the resist attribute), `target` (sets the **resist attribute *and* the cast TN** — `W/B/I/Q/F`/number, suffixes stripped — `SR3EItem._parseSpellTarget`), `category` (**Combat or Elemental = damaging**: shows the cast Damage-Level dropdown; **Elemental** also resolves as a ranged attack — dodge, then soak), `drain` (drain-Power/TN formula e.g. "(F/2)" or "(DL+1)" — level = nominated Damage Level ± a `DL` token), `range` (Touch/LOS; an **`(A)` suffix = area effect**, no separate flag), `duration`. **No damage code** — spell power = Force and the level is chosen at cast (the `damage` field is hidden/legacy; only `drain` is required for a complete spell).
 - `drug`: 💊 takes a dose — see *Drugs* (TODO 124). `category`, `addiction` (e.g. "2M", "4M+3P", "5M/5P" — M=Mental, P=Physical), `tolerance`, `edge` ("5/50"), `fixFactor`, `damage` ("6S Stun"), `legality`, `speed` (onset time), `vector` (delivery method), `availability`, `cost`, `streetIndex`, `bookPage`, `notes`. `effect` is **legacy** — the Edge on items copied before `edge` existed. Shipped in the per-book drug packs (`sr3e-mm-drugs`, …).
 
 ### Weapon category codes → skills

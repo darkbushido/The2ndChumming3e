@@ -1536,4 +1536,36 @@ export const MUTANTS = [
     was:    'the generic tooltips the sheet had — "Cyber/bio augmentation" with no item named (TODO 100, reported in play)',
     impl:   ({ label = '', total = null } = {}) => `${label}${total !== null ? ` ${total}` : ''}`,
   },
+  {
+    id:     'elemental-spells-resisted-like-combat-spells',
+    suite:  'elemental-spells',
+    ...ITEM, method: 'isElementalSpell',
+    was:    'SR3 p.183 - "These spells can be dodged" and "the Resistance Test is actually a Damage '
+          + 'Resistance Test". Every elemental spell went down the combat-spell path until 0.6: no '
+          + 'dodge, a Willpower-only resist, no armour (rules-check 0.6.0, Finding 4)',
+    impl:   () => false,
+  },
+  {
+    id:     'elemental-level-fixed-at-moderate',
+    suite:  'elemental-spells',
+    ...ITEM, method: 'spellChoosesDamageLevel',
+    was:    'SR3 p.196 - "The caster chooses the spell\'s Base Damage Level when it is cast". The dialog '
+          + 'offered it to Combat spells only, so every Fireball was cast, and drained, at Moderate',
+    impl:   category => /^\s*combat\s*$/i.test(String(category ?? '')),
+  },
+  {
+    id:     'elemental-full-impact',
+    suite:  'elemental-spells',
+    ...ACTOR, method: 'elementalImpact',
+    was:    'SR3 p.196 - Impact armour protects "at only half its normal rating (round down)"',
+    impl:   ({ impact = 0 } = {}) => Math.max(0, Number(impact) || 0),
+  },
+  {
+    id:     'elemental-halves-ballistic',
+    suite:  'elemental-spells',
+    ...ACTOR, method: 'elementalImpact',
+    was:    'SR3 p.196 - IMPACT armour at half. The ranged soak card defaults to Ballistic, and elemental '
+          + 'spells now reach it through the ranged flow, so this is the easy way to get it wrong',
+    impl:   ({ ballistic = 0 } = {}) => Math.floor(Math.max(0, Number(ballistic) || 0) / 2),
+  },
 ];

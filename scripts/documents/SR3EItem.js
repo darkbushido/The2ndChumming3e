@@ -4117,6 +4117,55 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
   }
 
   /**
+   * Is this an Elemental Manipulation spell? **Pure.**  · *SR3 p.183, p.196*
+   *
+   * > "Elemental spells are treated like normal ranged attacks (see p. 109) using Sorcery as the
+   * > Ranged Combat Skill. … These spells can be dodged (see p. 113)." — p.183
+   * > "For elemental spells, the Resistance Test is actually a Damage Resistance Test … The Combat
+   * > Pool may be used to resist elemental spells." — p.183
+   *
+   * ⚠ **A different resolution FAMILY, not a variant of a combat spell.** Manabolt and Powerbolt are
+   *   resisted by the targeted Attribute against Force and never dodged; Fireball is dodged and then
+   *   soaked with Body + Combat Pool against the staged Power less half Impact. Until 0.6 every
+   *   elemental spell went down the combat-spell path — a Willpower resist, no dodge, no armour.
+   * ⚠ Keyed on the item's CATEGORY, which is how every shipped elemental spell is marked
+   *   (`category: 'Elemental'`, 17 in five packs). Their Target code `4(RC)` is not a signal: it
+   *   parses as a fixed TN 4, which is the cast TN p.183 gives and nothing more.
+   * ⚠ **An area elemental spell is dodged by EVERY target in it** — the maintainer's ruling
+   *   (2026-09-22), reading MITS p.56 (*"Area spells affect all targets within the radius"*) with
+   *   SR3 p.182's grenade comparison as being about WHO is caught (*"Targets hidden behind a wall
+   *   within the radius of a Fireball spell will still get cooked"*), not about taking the dodge away.
+   */
+  static isElementalSpell(category) {
+    return /^\s*elemental\s*$/i.test(String(category ?? ''));
+  }
+
+  /**
+   * Does the caster choose this spell's Damage Level at casting? **Pure.**  · *SR3 p.191, p.196*
+   *
+   * Combat AND elemental spells both do — p.196: *"The caster chooses the spell's Base Damage Level
+   * when it is cast, which also determines the base Drain Level."* The dialog offered the choice for
+   * `Combat` only, so every Fireball was cast at the parser's fallback of Moderate, and its Drain with it.
+   */
+  static spellChoosesDamageLevel(category) {
+    return /^\s*(combat|elemental)\s*$/i.test(String(category ?? ''));
+  }
+
+  /**
+   * The Object Resistance adjustment for an elemental spell's SECONDARY effects. **Pure.**
+   * · *SR3 p.196*: *"Add +2 to the Object Resistance if the spell has a base damage of Serious, and
+   * +4 if its base damage is Moderate. An elemental spell with a Damage Level of Light does not cause
+   * secondary effects."*
+   *
+   * Returns the modifier (`0` at Deadly), or `null` for Light — no secondary effects at all. Stated on
+   * the card for the GM, never applied: the book says *"the gamemaster will have to be selective and
+   * make some judgment calls."*  ⚠ It reads the BASE level chosen at casting, not the staged one.
+   */
+  static elementalSecondaryResistance(baseLevel) {
+    return ({ L: null, M: 4, S: 2, D: 0 })[String(baseLevel ?? '').toUpperCase()] ?? null;
+  }
+
+  /**
    * Resolve a spell's cast TN + resist attribute from its Target code (the cast TN AND the
    * attribute the target resists with). Any parenthetical suffix — (R)/(T)/(RC)/(V)/(DT) — is
    * descriptive only and stripped before parsing, so codes like "W(R)", "B(T)", "4(V)" never
@@ -4269,10 +4318,11 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     const isAoE     = /\(A\)/i.test(this.system.range ?? '');
     const magicAttr = actor.system.attributes?.magic?.value ?? magicBase;
 
-    // Combat spells let the caster pick the Damage Level at cast time — it sets both the
-    // target's damage and (per SR3) the caster's Drain level. Non-combat spells skip it.
-    // (Spells have no fixed damage code; "Combat" category = damaging.)
-    const isCombat     = (this.system.category ?? '') === 'Combat';
+    // Combat AND elemental spells let the caster pick the Damage Level at cast time — it sets both
+    // the target's damage and the caster's Drain level (p.191, p.196). Other spells skip it.
+    // (Spells have no fixed damage code; the category says whether one is damaging.)
+    const isCombat     = SR3EItem.spellChoosesDamageLevel(this.system.category);
+    const isElemental  = SR3EItem.isElementalSpell(this.system.category);
     const defaultLevel = SR3EItem._parseSpellDamageLevel(this.system.damage);
     const LEVEL_NAMES  = { L: 'Light', M: 'Moderate', S: 'Serious', D: 'Deadly' };
 
@@ -4387,7 +4437,8 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       const targetActor = await SR3EItem._promptTarget(actor, { allowSelf: true });
       if (!targetActor) return null;
       targetActors = [targetActor];
-      // No dodge: combat spells are resisted (Willpower/Body vs Force), not dodged.
+      // Combat spells are resisted (the targeted Attribute vs Force), never dodged. Elemental spells
+      // ARE dodged, then soaked (p.183) — decided after the cast, in `_spellResistButton`.
     }
 
     // Step 3: Spell Pool allocation — compute from raw fields, not derived cache
@@ -4455,6 +4506,8 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       force,
       spellType,
       spellTarget,
+      // Elemental Manipulation (p.183): each target dodges and soaks instead of resisting.
+      isElemental,
       isAoE,
       aoeRegionId,
       aoeMarkerId,
@@ -4462,7 +4515,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       rawDamage,
       damageBase,
       drainStr,
-      // SR3: failed-drain damage uses the nominated Damage Level (combat spells only).
+      // SR3: failed-drain damage uses the nominated Damage Level (combat and elemental spells).
       drainLevel:        isCombat ? damageLevel : null,
       sorceryRating,
       drainIsPhysical,
