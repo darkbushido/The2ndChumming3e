@@ -139,6 +139,10 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       // number (the maintainer: "they just have an essence hole"), filled down by implants fitted into it.
       // ⚠ A RECORD, never a refund: removal leaves `essence.lost` alone (M&M p.147).
       essenceHole:             new NumberField({ initial: 0, min: 0 }),
+      // The karma / nuyen ledger · TODO 79. Append-only for players; every entry is derived from
+      // the WRITE in SR3EActor._preUpdate, so no call site can forget to record one.
+      // { when, kind: 'karma'|'nuyen'|'pool', delta, from, to, reason, by } — scripts/data/ledger.mjs.
+      ledger:                  new ArrayField(new ObjectField(), { initial: [] }),
       // Attribute Stress · M&M pp.124-131 (TODO 109), keyed by attribute name ({ body: 3, … }).
       // ⚠ An ObjectField because only the attributes that have taken Stress appear.
       attributeStress:         new ObjectField(),
@@ -268,6 +272,10 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       augmentations:    new ObjectField(),
       substances:       new ObjectField(),   // drug use — see CharacterData (TODO 124)
       essenceHole:      new NumberField({ initial: 0, min: 0 }),   // TODO 53 — see CharacterData
+      // The karma / nuyen ledger · TODO 79. Append-only for players; every entry is derived from
+      // the WRITE in SR3EActor._preUpdate, so no call site can forget to record one.
+      // { when, kind: 'karma'|'nuyen'|'pool', delta, from, to, reason, by } — scripts/data/ledger.mjs.
+      ledger:                  new ArrayField(new ObjectField(), { initial: [] }),
       attributeStress:  new ObjectField(),   // TODO 109 — see CharacterData
       tlex:             new ObjectField(),   // TODO 110 — see CharacterData
       cybermancy:       new ObjectField(),   // TODO 111 — see CharacterData

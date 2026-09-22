@@ -32,6 +32,9 @@ const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating'
 const AMMO   = { module: '../scripts/data/ammo-stock.mjs',   klass: 'AmmoStock' };
 const BOOKPAGE = { module: '../scripts/data/book-page.mjs',  klass: 'BookPage' };
 const ACCESSORIES = { module: '../scripts/data/weapon-accessories.mjs', klass: 'WeaponAccessories' };
+const SLOTS  = { module: '../scripts/data/cyber-slots.mjs',  klass: 'CyberSlots' };
+const LEDGER = { module: '../scripts/data/ledger.mjs',       klass: 'Ledger' };
+const BUY    = { module: '../scripts/data/purchasing.mjs', klass: 'Purchasing' };
 
 export const MUTANTS = [
   {
@@ -1440,6 +1443,91 @@ export const MUTANTS = [
     was:    'SR3 p.56 - a dwarf\'s "Resistance (+2 Body) to any disease or toxin". Not '
           + 'modelled at all until 2026-09-12 (TODO 98)',
     impl:   () => [],
+  },
+  {
+    id:     'half-slot-is-a-certain-hit',
+    suite:  'cyber-slots',
+    ...SLOTS, method: 'systemHit',
+    was:    'M&M p.128 - a partly filled Essence slot is a CHANCE, not a hit: "If Leggy had rolled '
+          + 'a 6, he might not have taken any damage at all because that slot is only half full … '
+          + 'a 50-50 chance between the smartlink getting hit and no damage being done." Reading '
+          + 'the slot as occupied-therefore-hit doubles how often a lone cheap implant breaks, and '
+          + 'no fill-rule test would notice',
+    impl:   (assignment, d6) => {
+      const slots = assignment?.slots ?? assignment ?? [];
+      const slot  = slots.find(s => s.index === Math.trunc(Number(d6) || 0)) ?? null;
+      if (!slot || !slot.entries.length) {
+        return { slot: d6, empty: true, partial: false, hitChance: 0, candidates: [], note: 'empty' };
+      }
+      const candidates = slot.entries.map(e => ({ ...e, share: e.amount / slot.filled }));
+      return { slot: d6, empty: false, partial: false, hitChance: 1, candidates, note: 'hit' };
+    },
+  },
+  {
+    id:     'wound-effects-count-successes',
+    suite:  'cyber-slots',
+    ...SLOTS, method: 'woundEffects',
+    was:    'M&M p.127 counts the MARGIN OF FAILURE - "the difference between the highest roll and '
+          + 'the number of damage boxes suffered" - not successes. a roll of 1,1,2,2,3 against 6 '
+          + 'boxes is 3 wound effects; counting successes gives 0 and the whole rule never fires',
+    impl:   (dice, boxes) => {
+      const rolled = (Array.isArray(dice) ? dice : [dice]).map(Number);
+      const b = Math.max(0, Math.trunc(Number(boxes) || 0));
+      return rolled.filter(d => d >= b).length;
+    },
+  },
+  {
+    id:     'ledger-rewrite-checks-length-only',
+    suite:  'ledger',
+    ...LEDGER, method: 'reconcile',
+    was:    'an append-only check that compares LENGTHS rather than content (TODO 79). A player '
+          + 'editing the reason on a past entry, or swapping one entry for another, keeps the array '
+          + 'the same length and sails straight through - which is exactly the rewrite the guard '
+          + 'exists to stop, and the one a player would actually attempt',
+    impl:   (current, next, { isGM = false } = {}) => {
+      if (isGM) return { ok: true, why: '' };
+      const cur = Array.isArray(current) ? current : [];
+      const nxt = Array.isArray(next) ? next : [];
+      return nxt.length < cur.length
+        ? { ok: false, why: 'the ledger is append-only' }
+        : { ok: true, why: '' };
+    },
+  },
+  {
+    id:     'availability-reduction-shortens-the-wait',
+    suite:  'purchasing',
+    ...BUY, method: 'reduceAvailability',
+    was:    'SR3 p.272 - buying the Availability target number down ADDS to the base time that the '
+          + "successes then divide: Cheshire's TN 24 to 12 costs \"24 extra days (2 x 12 = 24)\" and "
+          + 'makes the base 14 + 24 = 38, so 2 successes deliver in 19 days. Reading the wait as a '
+          + 'reduction of the time instead is the intuitive-but-backwards version, and it still '
+          + 'produces a plausible number for every case the book does not work',
+    impl:   (avail, streetIndex, reduceBy = 0) => {
+      const by = Math.max(0, Math.floor(Number(reduceBy) || 0));
+      const capped = Math.min(by, Math.max(0, Number(avail?.tn) || 0));
+      return {
+        tn: (Number(avail?.tn) || 0) - capped,
+        reducedBy: capped,
+        extraDays: capped * 2,
+        streetIndex: Math.round(((Number(streetIndex) || 0) + capped * 0.1) * 10) / 10,
+        baseTime: Math.max(0, (Number(avail?.time) || 0) - capped * 2),
+      };
+    },
+  },
+  {
+    id:     'negotiation-loss-is-merely-no-discount',
+    suite:  'purchasing',
+    ...BUY, method: 'negotiate',
+    was:    'SR3 p.273 - the haggle is a Success Contest and losing it COSTS: "If the player loses, '
+          + 'the gamemaster can either raise the price or demand the extra percentage up front." '
+          + 'Clamping the adjustment at zero turns every bad roll into a free retry, which nobody '
+          + 'at the table would ever notice as wrong',
+    impl:   (price, buyerHits, sourceHits) => {
+      const net = Math.max(0, Math.floor(Number(buyerHits) || 0) - Math.floor(Number(sourceHits) || 0));
+      const adjustment = Math.round(-net * 0.05 * (Number(price) || 0));
+      return { net, toBuyer: net > 0, percent: net * 0.05, adjustment,
+        price: Math.max(0, Math.round((Number(price) || 0) + adjustment)) };
+    },
   },
   {
     id:     'attribute-hover-says-nothing',

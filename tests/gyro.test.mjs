@@ -96,9 +96,11 @@ export async function run(t) {
       if (s.laserSight) laser++;
     }
   }
-  t.ok(`every shipped firearm stores smartgun and laserSight (${guns} guns)`, guns > 300 && blank === 0);
+  // 228 after the fan archive (was 343 with the 115 `pw` guns — tests/fan-content.test.mjs).
+  t.ok(`every shipped firearm stores smartgun and laserSight (${guns} guns)`, guns > 200 && blank === 0);
   t.is('…and each agrees with its accessories text (run tools/fill-weapon-accessories.mjs)', disagree, 0);
-  t.ok(`…59 smartguns and 56 laser sights (${smart}/${laser})`, smart === 59 && laser === 56);
+  // 41/37 after the fan archive: the `pw` guns carried 18 smartlinks and 19 laser sights.
+  t.ok(`…41 smartguns and 37 laser sights (${smart}/${laser})`, smart === 41 && laser === 37);
 
   /* ── The wiring, source-level (needs Foundry to run) ──────────────────────── */
   const item = read('scripts/documents/SR3EItem.js'), act = read('scripts/documents/SR3EActor.js');

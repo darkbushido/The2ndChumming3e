@@ -17,7 +17,7 @@
       "isReplacement": false,
       "bookPage": "cc.55",
       "grade": "Standard",
-      "rating": 0,
+      "rating": null,
       "description": "number of channels equal to rating * 2, Flux equal to Rating/2, ECCM equal to Rating, and Encryption equal to Rating."
     },
     "effects": []

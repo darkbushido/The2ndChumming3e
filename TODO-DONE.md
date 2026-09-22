@@ -4522,6 +4522,38 @@ defensible under the ethos, but should be a decision rather than a discovery.
 
 <a id="79"></a>
 
+## 79. ✅ No ledger for karma or nuyen — *low priority*
+
+**Raised 2026-08-31.** There is no record of what a character has earned or spent, only current
+totals — `system.karmaPool` and the nuyen field are numbers a player edits in place. So a GM
+cannot answer "where did that 40 karma go?", and a player who mistypes has nothing to restore
+from.
+
+⚠ **This is not the same item as karma SPENDING**, which — contrary to what this entry and
+CLAUDE.md both said when first written — **is implemented**. `_onSpendKarmaCalculator`
+(`SR3EActorSheet.js`) buys attributes, skills and specialisations at the p.245 costs; its
+defects were [#80](#80). This entry is the **audit trail**, a separate want: the calculator
+writes new totals and leaves no record of what was bought.
+
+⚠ **AWARDING is a different story, and this entry used to overstate it too.** `_onAwardKarma`
+is correct but **unreachable** — nothing renders its button — so the only reachable award path
+is the Session Rewards tool, which writes to the wrong field entirely. See [#81](#81); a ledger
+should be built on top of a working award path, not before one.
+
+Shape, roughly: an append-only array of `{ when, kind: 'karma'|'nuyen', delta, reason, by }` on
+the actor, a compact table on the sheet, and a **+/− with a reason field** replacing bare
+in-place editing of the totals. The Session Rewards tool (Rollable Tables sidebar) is the
+obvious first writer — **once [#81](#81) has made it write to the right fields**.
+
+⚠ **Keep the totals editable.** The ethos is that a GM is never fighting the system; a ledger
+that becomes the only way to change a number is a guardrail, not a record. Log an unexplained
+adjustment as an entry with an empty reason rather than blocking it.
+
+⚠ Append-only and GM-relayed, like `sr3e.card.mark` — a player must be able to see their own
+history without being able to rewrite it.
+
+<a id="80"></a>
+
 ## 80. ✅ Karma advancement — seven defects — **DONE 2026-08-31**
 
 **Reported from play 2026-08-31:** *"karma spending seems to be implemented, there isn't
@@ -4696,7 +4728,7 @@ attribute of 0 the table charges 2 — so `karmaNewSkillCost()` stays argument-f
 dialog opens and writes back `karma - chosenCost`, an **absolute**, so a GM award landing while
 the dialog is open is clobbered. Everything else authoritative relays a **delta** through the GM
 for exactly this reason (`sr3e.damage.apply` says so at its definition). Left alone because it
-is a concurrency change touching the same write path as [#79](TODO.md#79)'s ledger, and the two should
+is a concurrency change touching the same write path as [#79](#79)'s ledger, and the two should
 land together rather than the second rewriting the first.
 
 <a id="81"></a>
@@ -4780,7 +4812,7 @@ Karma awarded so far went into the Pool and was never recorded in `totalKarma`, 
 record of what was earned — nothing to migrate from. Say so in the release note rather than
 attempting a heuristic.
 
-⚠ **Do not fold [#79](TODO.md#79)'s ledger into this.** The ledger wants a delta-based, GM-relayed
+⚠ **Do not fold [#79](#79)'s ledger into this.** The ledger wants a delta-based, GM-relayed
 write on the same path; this is a correctness fix that should land first and small.
 
 ---
@@ -4821,6 +4853,40 @@ migrate from. A GM should set Good Karma, Total Karma and the Pool by hand once.
 the flat-twentieth bug. 56/56 mutants.
 
 <a id="82"></a>
+
+## 82. ✅ Buying gear needs a flow, like combat has — *Availability, SR3 pp.272-273*
+
+**Raised 2026-09-01.** Gear is acquired by hand today: a GM decides, a player edits `nuyen` and
+drags an item on. SR3 has actual rules for this and none of them are implemented.
+
+The shape wanted is the combat one — a dialog that gathers the modifiers, a roll, a chat card
+that says what happened and leaves the decision to the GM.
+
+### What the rules are
+
+Every gear item already ships the two fields this needs: **`availability`** (e.g. `8/14 days`)
+and **`streetIndex`**, alongside `cost`. Nothing reads either. An Availability Test is an
+opposed/threshold test against the availability rating, with the time code setting how long it
+takes, and the Street Index multiplying price outside normal channels.
+
+⚠ **Read the book before designing.** Availability, Street Index and the legality codes
+interact, and the numbers are already sitting in the packs — so this is mostly a matter of
+consuming data that is present rather than authoring any.
+
+### Contacts are the interesting half
+
+The player's **contacts** should modify this — a Fixer is not an Armourer is not a Talismonger,
+and a Level 3 contact is not a Level 1. The contact type gates *what* they can source, the
+level/quality gates *how well*. That is the part with no obvious existing model in the system
+and the part worth designing first.
+
+⚠ **Check what `contact` items actually carry** before assuming a level or type field exists.
+
+⚠ **Related: [#79](#79)'s ledger.** A purchase is the single best reason to want a nuyen audit
+trail, and a buy flow is its most natural writer. Neither blocks the other, but if the ledger
+lands first this should write to it rather than editing `system.nuyen` in place.
+
+<a id="83"></a>
 
 ## 87. ✅ Cyberware names are abbreviated — **DONE 2026-09-03** (5 left, see below)
 
@@ -6270,7 +6336,7 @@ its rating only in the name; mutant `rating-range-reads-low`.
 all gear?"* — no: the generator rates **287 gear items only in its Rating column**, not the name, so
 a plain *Medkit* (SR3 p.304: 3), a *Basic Medkit* (3) or a *Stabilization Unit* (2) read **0**
 (*"medkits for one"*). And the maintainer: *"I would prefer that it were in a column where nil means
-no rating."* So, for **gear** (weapons, cyberware and bioware out of scope — [#122](TODO.md#122)):
+no rating."* So, for **gear** (weapons, cyberware and bioware out of scope — [#122](#122)):
 `GearData.rating` is nullable, null = none; `GEAR_RATINGS` (253 names, generated by
 `tools/build-gear-ratings.mjs`; 6 names upstream rates inconsistently left out) fills blanks; a
 `preCreateItem` hook fills a new gear item's field; migration 0.5.2 and `patch-name-ratings.mjs`
@@ -6328,6 +6394,42 @@ citations, 🔴 markers in CLAUDE.md for real divergences, and book/page on the 
 
 <a id="120"></a>
 
+## 122. ✅ Ratings in the field, not the name, for weapons, cyberware and bioware — **requested 2026-09-14, future**
+
+**Done 2026-09-21 — the FIELD half.** `rating` is nullable on cyberware and bioware, `itemRating`
+reads null as none, `ratingOnCreate` and `displayName` cover them, `ratingPatch` turned 495 legacy
+`0`s into explicit `null`s, and every bracketed implant already stored its rating. **No migration
+was needed**: on an implant a legacy 0 and a null read the same number (asserted).
+
+**Weapons: answered, not built.** A survey found **no** rating in the name of any of 343 firearms,
+107 melee weapons or 67 projectiles, and no weapon model has ever declared the field. SR3 rates gear
+and implants, not guns; the column would be empty. The four models are now asserted to stay without it.
+
+**The remainder — renaming the packs to plain names — is [#130](TODO.md#130).**
+
+**Request (maintainer):** *"I do not like the rating being in the name, I would prefer that it were
+in a column where nil means no rating"* — done for **gear** in 0.5.2 ([#118](#118)); weapons,
+cyberware and bioware were ruled **out of scope for that change** (*"can be done on a future
+todo"*). This is that TODO.
+
+**What gear already has, to copy:** a nullable `rating` (null = none); `itemRating` reading null as
+none; a `preCreateItem` fill (`ratingOnCreate`); migration and pack tool turning a legacy `0` into
+null; `displayName(item)` showing `Name [N]` without doubling a bracket (answering the maintainer's
+*"is there a way to get the name 'Wired Reflexes' with a rating '2' to display as 'Wired Reflexes
+[2]'"* — yes).
+
+**The larger half — plain names.** Storing `Wired Reflexes` + rating 2 instead of `Wired Reflexes
+[2]` needs, before any rename:
+- every **name-keyed** lookup found and moved to the name's stem or to `srcgName` (the upstream
+  identity field cyberware already carries): `SRCG_BONUSES` (keyed with brackets), the registries in
+  `config.js` (`triggeredAugmentations`, `quicknessNotForReaction`, `reactionExclusive`,
+  `augmentationSkillDice`, …), migrations that match by name, the healing `EQUIPMENT` regexes;
+- **compendium lists** showing the rating: add `system.rating` to `CONFIG.Item.compendiumIndexFields`
+  and append ` [N]` where each entry is drawn — otherwise the picker shows five identical *Wired
+  Reflexes*;
+- `displayName` on every sheet row and chat card that prints these names;
+- the rename itself in the packs (derived ids, repo + install) and a migration for world copies.
+
 ## 126. Ammunition has no weight, and nothing adds up a carried load ✅ 2026-09-16, `feature/0-6-rules`
 
 > **Built 2026-09-16** (0.6). Rules: `scripts/data/carried-load.mjs`.
@@ -6360,3 +6462,44 @@ Raised 2026-09-15 as the remainder of [#55](#55).
   - A weight on ammunition, per box or reload.
   - A carried total on the Gear tab, excluding storage (TODO 113).
   - Whatever the book's encumbrance rule is, shown and never enforced.
+
+## 129. ✅ Cybersystem damage — Essence slots and the Wound Effect Table (M&M pp.126-128)
+
+Raised 2026-09-16 by the maintainer, while settling the Essence hole (#53): *"the essence slot has to do
+with cybersystem damage … they do need to be assigned a slot but that can be handled under the hood when we
+need to see if cyber systems take damage."* **No UI needed** — a picture of the six slots might look good,
+but the slots only matter at the moment a wound effect is resolved.
+
+**What the book does** (M&M pp.126-128, with the Leggy example running through it):
+1. **Wound effects** (p.126) — `Stress.woundEffects(highestDie, boxes)` already counts them (#109): the
+   Damage Resistance Test read as a Success Test against the boxes inflicted.
+2. **The Wound Effect Table** (p.127) — 1D6 per wound effect: **1-2 cybersystem damage · 3-4 bioware
+   damage · 5-6 organic physical injury**. A character with no cyberware ignores a cybersystem result; no
+   bioware, a bioware result.
+3. **Assign Essence Slots** (p.127) — six slots, one per point of Essence, each holding 1.0 of cyberware.
+   Fill slot 1 first and each slot completely before the next, in ascending order; an implant costing more
+   than 1 spans several. Anything inside a cybereye, cyberear or cyberlimb counts as part of that system
+   *unless* it cost Essence of its own. Leggy's slots are worked on p.127: VCR 2 in 1-3, two reaction
+   enhancers in 3, wired reflexes in 4-5 with his cybereyes and datajack, smartlink half-filling 6.
+4. **Determine System Affected** (p.127) — roll 1D6 against the slots. An empty slot: no damage. A slot
+   with several implants: the GM chooses, picks randomly, or rolls 1D10 across the slot subdivided by
+   Essence Cost. ⚠ **A half-full slot** is a 50-50 between its implant and no damage (the smartlink, p.128).
+   A damaged cyberlimb/eye/ear: the whole system or a random subsystem, the GM's call.
+5. **The damage** — 1D6 ÷ 2 Stress and a Stress Test (p.127), which #109 already does.
+6. **Bioware** (p.128) — the same procedure with **Bio Index slots** in place of Essence slots.
+
+**Two special cases:**
+- **Electrical damage** (p.127) automatically affects cyberware: each wound effect goes straight to
+  Determine System Affected, plus an extra 1D6 per wound effect where **1-2 damages another piece**.
+- **Cyberzombies** (p.127) have more cyberware than slots, so they *"double up"* — two systems can be hit
+  at once — and *"always take damage from cybersystem wound effects"* (#111). Bioware over its slots doubles
+  up the same way (p.128).
+
+**Shape, when built:** a pure `scripts/data/cyber-slots.mjs` — `assignSlots(implants)` returning the six
+slots with each implant's share, `systemHit(slots, d6)` returning the implant(s) or none (with the half-slot
+chance), and the Wound Effect Table — pinned to Leggy's slots from p.127. Then offer it where #109's
+⚙ Apply Stress asks "what took it": *"roll for it (M&M p.127)"*, which fills the choice in. ⚠ Offered, not
+automatic — the design ethos, and the book gives the GM the pick within a slot anyway.
+
+⚠ **Not the Essence hole.** #53's hole records Essence spent on removed cyberware; these slots describe
+cyberware that is still installed.

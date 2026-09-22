@@ -2466,6 +2466,36 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
   - [x] ＋ mark TLE-x: the line turns amber and lists the effects. ✕ clears it and counts a surgery.
   - [x] A third clearing warns that the book allows only two.
   - [x] A character with no move-by-wire sees none of this.
+- [ ] **Buying gear (TODO 82):**
+  - [ ] Bio tab → 🛒 Buy gear…. With no item chosen the fields are blank and editable.
+  - [ ] Pick a contact: a talismonger against a firearm shows the amber "poor source" line; a fixer
+        against gear shows ✓. Neither blocks the button.
+  - [ ] Set TN 24, time 14, cost 3000, index 3, wait 12 → the preview reads TN 12, base time 38
+        days, Street Index 4.2, asking ¥12,600 (the book's monofilament whip, SR3 p.272).
+  - [ ] Roll with 2 successes → the card says 19 days and a meet at 9.5.
+  - [ ] Roll 0 successes → "No source", and the card explains the wait option rather than ending it.
+  - [ ] 🤝 Negotiate, buyer wins by 4 → 20% off, ¥10,080. Buyer LOSES by 2 → the price goes UP 10%.
+  - [ ] 💴 Pay confirms first, deducts the nuyen, adds the item if one was chosen, and leaves a
+        ledger entry reading "Bought …".
+  - [ ] A player can press 🤝 and 💴 on their own character; another player's client cannot.
+- [ ] **Karma / nuyen ledger (TODO 79):**
+  - [ ] Award karma from Session Rewards: the Bio tab's 📒 Ledger shows "+N · Session rewards".
+  - [ ] Spend karma on a skill: a negative entry naming the skill and its new rating.
+  - [ ] Type a new Nuyen total in the box: an entry with an em-dash for the reason — logged, not blocked.
+  - [ ] Re-submit the sheet without changing anything: NO new entry.
+  - [ ] A healing Charge names the treatment.
+  - [ ] A player sees their own ledger; from the console, `actor.update({'system.ledger': []})`
+        as a player is refused with a notice, and as the GM is allowed.
+  - [ ] Full restart first — the data model changed.
+- [ ] **Cybersystem damage (TODO 129):**
+  - [ ] Cyber tab → 🎲 Wound effects… (GM only — a player does not see it). 6 boxes, highest die 3
+        → the card says 3 wound effects.
+  - [ ] Each line names its kind and, for a cybersystem hit, the slot and the implants in it.
+  - [ ] A hit on a half-full slot says so as a percentage chance, not as a certain hit.
+  - [ ] An empty slot says the effect is ignored, and offers no button.
+  - [ ] ⚙ Apply Stress — <implant> opens the Stress dialog with that implant already chosen.
+  - [ ] Tick Electrical: every effect is a cybersystem one, and some carry the ⚡ spread note.
+  - [ ] A character with no bioware never gets a bioware hit — those lines read "ignored".
 - [x] **Cyberzombies (TODO 111):**
   - [x] On a character with Essence 0, the Cyber tab offers ＋ mark cyberzombie (GM only).
   - [x] Marked: set Essence loss to 8 on a base of 6 — the box now shows −2 and the block says

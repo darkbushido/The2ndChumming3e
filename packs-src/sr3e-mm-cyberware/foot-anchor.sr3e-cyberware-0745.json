@@ -17,7 +17,7 @@
       "isReplacement": false,
       "bookPage": "mm.29",
       "grade": "Standard",
-      "rating": 0,
+      "rating": null,
       "description": "(STR-1)M Damage, 1 point of Recoil Reduction, -1 Knockdown TNs"
     },
     "effects": []

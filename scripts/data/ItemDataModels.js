@@ -303,7 +303,11 @@ export class CyberwareData extends foundry.abstract.TypeDataModel {
       // Cyberlimb Integrity Enhancement (M&M p.39) lowers a Stress Test's TN by its rating.
       integrity:         new NumberField({ integer: true, initial: 0, min: 0 }),
       grade:             new StringField({ initial: 'Standard' }),
-      rating:            new NumberField({ integer: true, initial: 0, min: 0 }),
+      // ⚠ **Nullable: null means NO rating, and the name is not consulted** (TODO 122, the
+      // maintainer: "a column where nil means no rating"). A legacy 0 still falls through to the
+      // name — see scripts/data/item-rating.mjs for the three rows and why the 0 has to stay
+      // readable. Every bracketed cyberware entry in the shipped packs already stores its rating.
+      rating:            new NumberField({ integer: true, nullable: true, initial: null, min: 0 }),
       cost:              new NumberField({ integer: true, initial: 0, min: 0 }),
       availability:      new StringField({ initial: '' }),
       streetIndex:       new NumberField({ initial: 0, min: 0 }),
@@ -372,7 +376,7 @@ export class BiowareData extends foundry.abstract.TypeDataModel {
       // Wear and damage · M&M pp.124-131 (TODO 109). Bioware starts with 1 permanent Stress Point.
       stress:           new NumberField({ integer: true, initial: 1, min: 0 }),
       grade:            new StringField({ initial: 'Standard' }),
-      rating:           new NumberField({ integer: true, initial: 0, min: 0 }),
+      rating:           new NumberField({ integer: true, nullable: true, initial: null, min: 0 }),   // null = no rating (TODO 122)
       cost:             new NumberField({ integer: true, initial: 0, min: 0 }),
       availability:     new StringField({ initial: '' }),
       streetIndex:      new NumberField({ initial: 0, min: 0 }),

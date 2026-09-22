@@ -17,7 +17,7 @@
       "isReplacement": false,
       "bookPage": "mm.40",
       "grade": "Standard",
-      "rating": 0,
+      "rating": null,
       "description": "Extends from back, full range of targetting"
     },
     "effects": []

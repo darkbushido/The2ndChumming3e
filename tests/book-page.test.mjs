@@ -17,6 +17,12 @@ import { pagePatch } from '../tools/fill-book-pages.mjs';
 export const name = 'book-page';
 
 /** Documents in the shipped packs with no book / page, as of 2026-09-13. Lower it as they are sourced. */
+// ⚠ **200 is the FLOOR of what is reachable, not a backlog being worked down.** Re-surveyed
+// 2026-09-21 (TODO 117): all 200 are blocked — 154 SR2 documents whose book is NOT in the PDF
+// library, 28 Matrix Defragged agents and hosts that appear nowhere in that book because they were
+// written for this system, and 18 skills that are Area Knowledge examples or carry the upstream
+// placeholder `sr3.XXX`. Lowering this number needs the SR2 book, a ruling on what an Area
+// Knowledge entry cites, and a convention for authored content — not more searching.
 const MISSING_CEILING = 200;
 
 export async function run(t) {

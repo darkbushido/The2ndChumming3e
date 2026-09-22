@@ -69,6 +69,7 @@ export async function run(t) {
       if (g.doc.system?.hands === null || g.doc.system?.hands === undefined) blank.push(`${p}/${g.doc.name}`);
     }
   }
-  t.ok('the weapon packs were found', weapons > 400, `${weapons}`);
+  // 397 after the fan archive removed 115 firearms, 3 melee and 2 projectiles.
+  t.ok('the weapon packs were found', weapons > 350, `${weapons}`);
   t.eq('…and every shipped weapon stores its hands', blank.slice(0, 5), []);
 }

@@ -14,7 +14,7 @@
       "streetIndex": 1,
       "mods": "",
       "bookPage": "mm.074",
-      "rating": 0,
+      "rating": null,
       "description": "Only require 3 hours of sleep, 48 hours of wakefulness before TN modifiers occur"
     },
     "effects": []

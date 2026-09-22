@@ -28,6 +28,7 @@ document was classified into, and the untouched document.
 
 | Bucket | Docs | Source codes |
 |---|---:|---|
+| `pw` | 121 | **Added 2026-09-21** — the four `sr3e-sr2-*.json` files. Fan content that was still shipping inside the SR2 packs; see CLAUDE.md, *The book split and the archive*. Bucketed by code so it can be restored per book. |
 | `fan` | 1,219 | ray 658 · cb1 198 · cp 114 · cb4 61 · cb3 59 · cb2 51 · nagee 43 (+1 malformed, see Caveats) · pw 18 · bjf 9 · adh 2 · cus 1 · *blank* 4 |
 | `sr2` | 441 | sr2 328 · ct 43 · ssc 31 · st 27 · fof 5 · cs 3 · gm2 1 · r2 1 · pna 1 · *blank* 1 |
 | `sr2-fan` | 41 | n/sl 41 (NERPS: ShadowLore) |

@@ -14,7 +14,7 @@
       "streetIndex": 1.2,
       "mods": "",
       "bookPage": "mm.073",
-      "rating": 0,
+      "rating": null,
       "description": "While engaged, +1WIL, -1INT, ignore Stun Damage penalties, +4 TN tactile Perception, does not feel pain"
     },
     "effects": []

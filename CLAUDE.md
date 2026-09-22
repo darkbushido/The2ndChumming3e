@@ -696,6 +696,17 @@ per book left a remainder that had no book to belong to, and it is parked — no
 the classification bucket, and the untouched document. Restoring is a direct write back under
 the same key.
 
+⚠ **A second wave, 2026-09-21: 121 more documents, bucketed `pw`.** They were shipping *inside*
+the SR2 packs — **115 of them in `sr3e-sr2-firearms`, which by document count was therefore mostly
+not SR2** — so the source-book toggle could not reach them and the system was shipping sourcebook
+content it could not turn off. Moved by `tools/archive-fan-content.mjs` into four new files named
+for the packs they came from (`sr3e-sr2-firearms.json`, `-armor`, `-melee`, `-projectiles`).
+⚠ **Bucketed by the fan CODE, not the generic `fan`** — the older wave lumps ten sources together
+and this README calls the result hard to inventory, so these stay restorable per book.
+⚠ **Only PROVABLE fan content moved.** A document qualifies when its own `bookPage` cites a fan
+code; a blank or `???` page is **unknown, not fan**, and the 200 documents in that state were left
+exactly where they are. `tests/fan-content.test.mjs` ratchets both halves.
+
 | Bucket | Docs | Contents |
 |---|---:|---|
 | `fan` | 1,219 | ray · cb1-4 · cp · nagee · pw · bjf · adh |
@@ -711,6 +722,11 @@ a bucket blind will duplicate documents** — inventory what already ships first
 The **Chromebooks** (`cb1`-`cb4`) and **Cyberpunk 2020** (`cp`) material is fan *conversion*,
 not official 2nd-edition product, so it stays archived with the rest of the fan content rather
 than joining the SR2 books — see the comment above `SOURCE_BOOKS` in `config.js`.
+
+⚠ **`pw` has no entry in `SOURCE_BOOKS` and that is deliberate.** Registering a code with no pack
+behind it renders an **empty checkbox** in Configure Source Books — the trap noted under *"The
+filter only reaches packs"* below. If `pw` is ever restored it needs its own pack **and** a
+registry entry, off by default, in the same commit; the test asserts the two stay in step.
 
 **How filtering works** — `SR3ESourceBooks.packAllowed(pack)` is the single predicate, consumed
 in exactly two places:
@@ -1068,7 +1084,8 @@ fills the hole (the maintainer, 2026-09-16). A player's write is dropped (`strip
 +2 Threshold is stated, not enforced; there is no surgery flow.
 
 ⚠ **The Essence hole is NOT the Essence *slots* of M&M p.127.** Those six slots assign INSTALLED cyberware
-to a d6 result so a wound effect can pick which implant it hits — TODO 129.
+to a d6 result so a wound effect can pick which implant it hits — built as TODO 129, *Cybersystem damage*
+below.
 
 ⚠ **The "Essence hole" is an opt-in SURGERY OPTION, not automatic** — *M&M p.150*:
 
@@ -1748,6 +1765,60 @@ card does not reach in, because a wound effect is a judgement about what the wou
 settle. Not built: Stress Maintenance and repair (p.130-131), bioware malfunction thresholds, and the
 Fragile/Rugged surgery options (p.148).
 
+### Cybersystem damage — Essence slots and the Wound Effect Table  · *M&M pp.126-129* — TODO 129
+
+Rules: `scripts/data/cyber-slots.mjs` (pure). The flow: 🎲 **Wound effects…** beside ⚙ Apply Stress on
+the Cyber tab (GM-only) → a card naming what each effect hit → ⚙ **Apply Stress — <implant>**, which
+opens TODO 109's dialog with *"what took it"* filled in.
+
+| Step | Rule |
+|---|---|
+| How many effects | the Damage Resistance Test read as a Success Test: **boxes − the highest die** · p.127 |
+| What kind | 1D6: **1-2 cybersystem · 3-4 bioware · 5-6 organic** · p.127 |
+| Which system | 1D6 against the **six Essence slots**, one per point of Essence · p.127 |
+| Bioware | the same procedure with **Bio Index slots** · p.128 |
+| The Stress | 1D6 ÷ 2 and a Stress Test — TODO 109 already does it · p.127 |
+
+⚠ **The count is the MARGIN OF FAILURE, not the successes** — *"the difference between the highest
+roll and the number of damage boxes suffered"*. The book's 1,1,2,2,3 against 6 boxes is **3** wound
+effects; counting successes gives 0 and the rule never fires. Mutant: `wound-effects-count-successes`.
+
+⚠ **A partly filled slot is a CHANCE, not a hit** — *"he might not have taken any damage at all
+because that slot is only half full … a 50-50 chance between the smartlink getting hit and no damage
+being done"* (p.128). `hitChance` is the filled fraction. Mutant: `half-slot-is-a-certain-hit`.
+
+⚠ **Ignore, never re-roll.** An effect landing on an empty slot, or on a type the character has none
+of, is *"ignored"* — it does not become a hit somewhere else.
+
+⚠ **The module never picks within a slot.** The book hands that to the GM — *"choose an appropriate
+cybersystem from that slot, choose randomly, or roll a ten sided die"* — so `systemHit` returns the
+candidates with their shares (summing to 1, for the optional 1D10) and the card offers all of them.
+
+⚠ **A slot holds GRADED Essence.** An alphaware VCR occupies **2.4**, not its base 3.0 — the slots
+picture the Essence actually spent, which is what makes the printed layout come out right.
+
+⚠ **Electrical damage SKIPS the Wound Effect Table** (p.129): every effect goes straight to Determine
+System Affected, plus an extra 1D6 each where **1-2 damages another implant**.
+
+⚠ **Cyberzombies double up** (p.127) — more cyberware than slots, so filling wraps to slot 1 rather
+than spilling off the end, and *"two systems [can] be damaged at the same time"*. Driven by
+`system.cybermancy.is` (TODO 111).
+
+⚠ **`assignSlots` is pinned to Leggy's printed six slots** (p.127), the only worked layout in the
+book. It exercises an implant spanning three slots, two sharing with a remainder, three sharing
+another, and a half-full last slot. ⚠ The two reaction enhancers' *"Essence Cost .6"* is the pair's
+**combined** cost (.3 each) — the only reading that reproduces the printed slots.
+
+⚠ **Offered, never automatic** — the soak card does not reach in, because whether a wound damaged a
+cybersystem is a judgement about that wound (the design ethos). `tests/cyber-slots.test.mjs` asserts
+`SR3EActor.js` never calls it.
+
+⚠ **Not the Essence hole.** #53's hole records Essence spent on cyberware that was **removed**; these
+slots describe cyberware that is still **installed**.
+
+**Not built:** the Cyberware Failure Table (p.128, a GM flavour table), bioware Stress Level side
+effects (p.128, per-item text the packs do not carry), and applying anything automatically.
+
 ### Item ratings — one reader  · TODO 118
 
 `scripts/data/item-rating.mjs`: `itemRating(item)` — a stored `system.rating` **above 0 wins**,
@@ -1767,8 +1838,9 @@ types one; migration 0.5.2 copies name ratings into blank fields in each world, 
 `tools/patch-name-ratings.mjs` did the same to the shipped packs (623 items; a test sweeps them so
 new content cannot regress). ⚠ **A range is not a rating** — "Rating 4-8" reads as none.
 
-**GEAR: the field is the rating, and null means NO rating** (the maintainer, 2026-09-14: *"a column
-where nil means no rating"*). `GearData.rating` is **nullable, initial null**; `itemRating` reads a
+**The field is the rating, and null means NO rating** (the maintainer, 2026-09-14: *"a column
+where nil means no rating"*) — **gear and medical** in 0.5.2 (#118), **cyberware and bioware** in 0.6
+(TODO 122). `GearData.rating` is **nullable, initial null**; `itemRating` reads a
 number as the rating, **null as none (the name is not consulted)**, and a `0` or missing field as
 **legacy** → the name, then `GEAR_RATINGS`. A `preCreateItem` hook (`ratingOnCreate`) fills a new
 gear item's field when its creator gave none, so nothing downstream reads a name; migration 0.5.2 and
@@ -1780,8 +1852,25 @@ book entry). They read **0** before (reported: *"medkits for one"*). ⚠ Names u
 differently in different entries (Gyro Mount 5/6/7) are **left out** — a name cannot settle them.
 ⚠ **`displayName(item)`** shows `Medkit [3]` for a plain-named rated gear item and never doubles a
 bracket — the path to storing names plainly.
-⚠ **Weapons, cyberware and bioware are OUT OF SCOPE** (the maintainer): their field still defaults
-to 0 and reads through the legacy row exactly as before. TODO 122.
+⚠ **WEAPONS HAVE NO RATING FIELD, and that is the ANSWER, not an omission** (TODO 122). They were
+named in the request beside cyberware and bioware, so the survey is worth recording: of **343
+firearms, 107 melee weapons and 67 projectiles, not one** carries a rating in its name, and none of
+the four weapon data models has ever declared the field. SR3 rates gear and implants, not guns —
+adding the column would add an empty one. `tests/item-rating.test.mjs` asserts all four models stay
+without it, so the question is answered once rather than re-asked.
+
+⚠ **TODO 122 needed NO MIGRATION, and the reason is worth keeping.** On an implant a legacy `0`
+and an explicit `null` read the **same number**: 0 falls through to the name, and an unrated implant
+has nothing there either way. What `null` adds is the ability to *say* "no rating" and have the name
+ignored — which `0` cannot express. No world's dice move, so the 0.5.2 migration is left exactly as
+it shipped (a world that ran it never runs it again). That invariant is asserted in
+`tests/item-rating.test.mjs`; if it ever stops holding, a migration is owed.
+
+⚠ **Every bracketed cyberware (494) and bioware (69) document already stored its rating** before
+this change — and none disagreed with its name. `tools/patch-name-ratings.mjs` then turned the
+**495** legacy `0`s with nothing to fill them from into explicit `null`s. ⚠ `medical` is excluded
+from that: its rating is a **string** (`"+2"` is a real Biotech rating), so it has no null to mean
+anything.
 
 ### Cyberware grades  · *M&M p.45* — TODO 86
 
@@ -2453,9 +2542,85 @@ runs through **`fixActor`** — the third migration hook, and the first to touch
 document rather than its embedded items. Like `fixItem` it can overwrite, so it argues its case
 at the call site.
 
-⚠ **There is no ledger.** The calculator writes new totals and records nothing about what was
-bought, so "where did that 40 karma go?" has no answer. Tracked separately as TODO 79, because
-it is a want rather than a defect.
+#### The ledger — what was earned and spent, and why  · TODO 79
+
+`scripts/data/ledger.mjs`. `system.ledger` on characters and NPCs: `{ when, kind: 'karma' | 'nuyen'
+| 'pool', delta, from, to, reason, by }`, newest rendered first under **📒 Ledger** on the Bio tab.
+
+⚠ **Every entry is derived from the WRITE, in `SR3EActor.recordLedger` (called by `_preUpdate`) —
+never from a call site.** Session Rewards, Award Karma, all six Spend-calculator purchases, a
+healing bill and a player typing in the box are recorded by one piece of code. Instrumenting the
+ten call sites instead would silently miss the eleventh, and the eleventh is the one a future
+feature adds. `tests/ledger.test.mjs` **ratchets** it: a writer that reaches these fields without
+going through `actor.update` fails the suite by name.
+
+⚠ **The entry RIDES ALONG in the same update** — not a second write, and no GM relay: whoever may
+change the number may write the actor. A relayed write would also race the change it describes. It
+is written in the **spelling the caller used** (flat from a form, nested from code), because mixing
+the two in one update object is a trap for the next reader.
+
+⚠ **A record, not a gate** (the ethos). The totals stay editable and an unexplained edit is logged
+with an **empty reason** rather than refused. A caller explains itself with `options.ledgerReason`.
+
+⚠ **A delta of 0 is not an entry** — Foundry re-sends unchanged fields on a form submit, and
+logging those would bury the real entries within one session.
+
+⚠ **Append-only for players, compared by CONTENT not by length** (`Ledger.reconcile`): a same-length
+array with an edited reason is a rewrite, and a length check waves it through. Mutant:
+`ledger-rewrite-checks-length-only`. A player can still set their karma to 9,999 — that is the
+ethos — but the ledger will say they did.
+
+⚠ **Capped at `MAX_ENTRIES` (500), trimmed oldest-first.** The whole array rides on a document that
+is broadcast on every update; unbounded would be a performance bug waiting to happen.
+
+⚠ **A write to the ledger itself is never described**, or every append would describe itself for ever.
+
+### Buying gear — Availability, Street Index and the deal  · *SR3 pp.272-273* — TODO 82
+
+Rules: `scripts/data/purchasing.mjs` (pure). Flow: `scripts/SR3EPurchase.js`, opened by
+**🛒 Buy gear…** on the Bio tab beside Spend Karma.
+
+    🛒 pick the item + contact, optionally buy the TN down
+      → 🎲 Etiquette vs Availability      (`rollThen` → `onSourced`)
+      → a card: delivery in N, the meet at N/2, the asking price
+      → 🤝 Negotiate, a Success Contest   (`rollOpposedPair` → `onNegotiated`)
+      → 💴 Pay & receive
+
+⚠ **The Availability code is TWO numbers.** `24/14 days` is **target number 24** and a **base time
+of 14 days**: the TN is what Etiquette rolls against, the time is what the successes divide into.
+Reading it as one number makes every item instant.
+
+⚠ **Successes DIVIDE the time; they never lower the target number.** An easier TN is bought
+separately and *before* the roll, at **2 days and +0.1 Street Index per point**.
+
+⚠ **Those days are added to the BASE TIME.** The book's Cheshire cuts TN 24 → 12 for "24 extra
+days (2 x 12)", making the base **14 + 24 = 38**, so 2 successes deliver in **19 days**. Shortening
+the final time instead reads just as naturally and gives a different answer everywhere except a
+case the book happens to work. Mutant: `availability-reduction-shortens-the-wait`.
+
+⚠ **Losing the haggle COSTS.** It is a Success Contest — Negotiation against the other side's
+Intelligence — at **5% per net success**, and *"if the player loses, the gamemaster can either
+raise the price or demand the extra percentage up front"*. The adjustment is **signed**; clamping
+it at zero turns every bad roll into a free retry. Mutant: `negotiation-loss-is-merely-no-discount`.
+
+⚠ **The contact is a HINT, not a gate** (`SOURCE_AFFINITY`). The book names only talismongers —
+*"ideal contact for magical items, but not very good at acquiring weapons"* — and leaves the rest to
+the GM, so a poor source is shown in amber and allowed, and an unknown archetype has no opinion.
+
+⚠ **Nothing is written until 💴.** The item is not created and the nuyen not deducted before then,
+so a deal that falls through — *"If the buyer cannot or will not pay the resulting price, the deal
+is off"* — is a card nobody presses. The payment goes through `actor.update` with a
+`ledgerReason`, so [the ledger](#the-ledger--what-was-earned-and-spent-and-why--todo-79) records it.
+
+⚠ **Every number is editable**, because p.272 says the Availability code *"is intended as a
+guideline for the gamemaster, who should adjust the listed value"*.
+
+⚠ **Racial modifications** (p.272): dwarf-sized gear **+10%**, troll **+25%**, applied to the
+asking price from `system.metatype`.
+
+**Not modelled:** Legality codes and permits (p.273), which are a scene rather than a number, and
+the Etiquette **specialisation** the book's example uses ("three Etiquette (Street) Tests").
+`tests/purchasing.test.mjs` pins Cheshire's whole worked example: 38 days, 19 days, ¥12,600, ¥10,080.
 
 ### Drugs — addiction, tolerance, withdrawal, effects  · *M&M pp.105-110, 117-123* — TODO 124
 

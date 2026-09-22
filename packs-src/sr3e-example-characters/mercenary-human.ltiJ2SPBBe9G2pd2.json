@@ -757,7 +757,7 @@
       "system": {
         "essenceCost": 0.5,
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "cost": 3500,
         "availability": "6/48 hours",
         "streetIndex": 2,
@@ -886,7 +886,7 @@
       "system": {
         "essenceCost": 0.1,
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "cost": 2000,
         "availability": "5/48 hours",
         "streetIndex": 1.25,
@@ -972,7 +972,7 @@
       "system": {
         "essenceCost": 0.4,
         "grade": "Alpha",
-        "rating": 0,
+        "rating": null,
         "cost": 15000,
         "availability": "5/14 days",
         "streetIndex": 1.5,

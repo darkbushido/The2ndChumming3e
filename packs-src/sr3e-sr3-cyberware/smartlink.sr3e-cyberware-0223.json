@@ -17,7 +17,7 @@
       "isReplacement": false,
       "bookPage": "sr3.302",
       "grade": "Standard",
-      "rating": 0,
+      "rating": null,
       "description": "-2 to TNs for firing a Smartlinked weapon"
     },
     "effects": []

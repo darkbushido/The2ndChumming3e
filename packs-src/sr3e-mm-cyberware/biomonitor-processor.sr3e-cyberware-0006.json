@@ -17,7 +17,7 @@
       "isReplacement": false,
       "bookPage": "mm.25",
       "grade": "Standard",
-      "rating": 0,
+      "rating": null,
       "description": "Biotech skill of 5, triggers/alerts"
     },
     "effects": []

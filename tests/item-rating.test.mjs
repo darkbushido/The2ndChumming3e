@@ -54,14 +54,38 @@ export async function run(t) {
   t.is('…nothing known: explicitly none', ItemRating.ratingOnCreate('gear', undefined, 'Wrist Phone'), null);
   t.is('an explicit null (a shipped unrated item) is left', ItemRating.ratingOnCreate('gear', null, 'Medkit [6]'), undefined);
   t.is('a given rating is left', ItemRating.ratingOnCreate('gear', 4, 'Medkit [6]'), undefined);
-  t.is('cyberware is out of scope (TODO 122)', ItemRating.ratingOnCreate('cyberware', undefined, 'Wired Reflexes [2]'), undefined);
+  t.is('new cyberware is filled from its name too (TODO 122)', ItemRating.ratingOnCreate('cyberware', undefined, 'Wired Reflexes [2]'), 2);
+  t.is('…and bioware', ItemRating.ratingOnCreate('bioware', undefined, 'Muscle Aug. [3]'), 3);
+  t.is('…an unrated implant is explicitly none', ItemRating.ratingOnCreate('cyberware', undefined, 'Datajack'), null);
+  // ⚠ A weapon has NO rating field — writing one would create a key the data model drops at load.
+  t.is('a firearm is not given one', ItemRating.ratingOnCreate('firearm', undefined, 'Ares Predator'), undefined);
+  t.is('…nor melee', ItemRating.ratingOnCreate('melee', undefined, 'Katana'), undefined);
 
   /* ── Shown with its rating: "Medkit [3]", never doubled ─────────────────────────────── */
   const g = (name, rating) => ({ type: 'gear', name, system: { rating } });
   t.is('a plain name with a rating shows it', ItemRating.displayName(g('Medkit', 3)), 'Medkit [3]');
   t.is('a name already carrying one is not doubled', ItemRating.displayName(g('Medkit [6]', 6)), 'Medkit [6]');
   t.is('no rating: the name alone', ItemRating.displayName(g('Wrist Phone', null)), 'Wrist Phone');
-  t.is('cyberware names are untouched (out of scope, TODO 122)', ItemRating.displayName({ type: 'cyberware', name: 'Datajack', system: { rating: 2 } }), 'Datajack');
+  t.is('a plainly-named implant shows its rating (TODO 122)', ItemRating.displayName({ type: 'cyberware', name: 'Wired Reflexes', system: { rating: 2 } }), 'Wired Reflexes [2]');
+  t.is('…and is never doubled', ItemRating.displayName({ type: 'cyberware', name: 'Wired Reflexes [2]', system: { rating: 2 } }), 'Wired Reflexes [2]');
+  t.is('…bioware the same', ItemRating.displayName({ type: 'bioware', name: 'Muscle Aug.', system: { rating: 3 } }), 'Muscle Aug. [3]');
+  t.is('an unrated implant is just its name', ItemRating.displayName({ type: 'cyberware', name: 'Datajack', system: { rating: null } }), 'Datajack');
+  // ⚠ Weapons are never decorated — they have no rating to show (see the survey in item-rating.mjs).
+  t.is('a weapon name is untouched', ItemRating.displayName({ type: 'firearm', name: 'Predator 2', system: {} }), 'Predator 2');
+
+  /* ── TODO 122: null is now sayable on an implant, and NO WORLD MOVES ──────────────
+   * ⚠ This is why the change needs no migration, and the reasoning is only checkable here.
+   * For every implant in an existing world the legacy 0 and an explicit null read IDENTICALLY:
+   * 0 falls through to the name, and an unrated implant has nothing there either way. What null
+   * adds is the ability to SAY "no rating" and have the name ignored — which 0 cannot express.
+   * If that ever stops being true, this suite fails and a migration is owed. */
+  const imp = (name, rating, type = 'cyberware') => itemRating({ type, name, system: { rating } });
+  t.is('an unrated implant: a legacy 0 reads as none', imp('Datajack', 0), 0);
+  t.is('…and so does an explicit null — the same number, so nothing to migrate', imp('Datajack', null), 0);
+  t.is('a name-rated implant still reads its name through the legacy 0', imp('Wired Reflexes [2]', 0), 2);
+  t.is('…the stored field wins when set', imp('Wired Reflexes [2]', 3), 3);
+  t.is('…and null now means none, name or no name', imp('Wired Reflexes [2]', null), 0);
+  t.is('bioware behaves the same', imp('Muscle Aug. [3]', 0, 'bioware'), 3);
 
   /* ── A Vehicle Control Rig ──────────────────────────────────────────────────────── */
   t.is('the shipped VCR [2] (rating 0) is level 2', vcrLevel(it('Vehicle Control Rig [2]', 0)), 2);
@@ -92,7 +116,16 @@ export async function run(t) {
   const gearModel = models.slice(models.indexOf('class GearData'), models.indexOf('class SkillData'));
   t.ok('gear\'s rating is nullable — null is no rating', /rating:\s+new NumberField\(\{ integer: true, nullable: true, initial: null/.test(gearModel));
   const cyberModel = models.slice(models.indexOf('class CyberwareData'), models.indexOf('class BiowareData'));
-  t.ok('cyberware\'s is NOT (out of scope, TODO 122)', /rating:\s+new NumberField\(\{ integer: true, initial: 0, min: 0 \}\)/.test(cyberModel));
+  t.ok('cyberware\'s is nullable too now (TODO 122)', /rating:\s+new NumberField\(\{ integer: true, nullable: true, initial: null/.test(cyberModel));
+  const bioModel = models.slice(models.indexOf('class BiowareData'), models.indexOf('class BiowareData') + 1600);
+  t.ok('…and bioware\'s', /rating:\s+new NumberField\(\{ integer: true, nullable: true, initial: null/.test(bioModel));
+  // ⚠ WEAPONS HAVE NO RATING FIELD, and that is the answer rather than an omission (TODO 122):
+  //   a survey of the packs found not one of 343 firearms, 107 melee weapons or 67 projectiles
+  //   carries a rating in its name. SR3 rates gear and implants, not guns.
+  for (const cls of ['FirearmData', 'MeleeData', 'ProjectileData', 'ThrownData']) {
+    const m = models.slice(models.indexOf(`class ${cls}`), models.indexOf(`class ${cls}`) + 1800);
+    t.ok(`${cls} declares no rating field — there is nothing to put in it`, !/^\s+rating:/m.test(m));
+  }
   const entry = read('scripts/sr3e.js');
   t.ok('a preCreateItem hook fills a new gear item\'s rating', /Hooks\.on\('preCreateItem'[\s\S]{0,200}ratingOnCreate\(document\.type, data\?\.system\?\.rating, document\.name\)/.test(entry));
   const asheet = read('scripts/sheets/SR3EActorSheet.js');
@@ -106,7 +139,10 @@ export async function run(t) {
   t.is('…a range is no rating: a gear item\'s legacy 0 becomes null', ratingPatch({ type: 'gear', name: 'Utilities at Rating 4-8', system: { rating: 0 } }), null);
   t.is('…fills a plain Basic Medkit from the table', ratingPatch({ type: 'gear', name: 'Basic Medkit', system: { rating: 0 } }), 3);
   t.is('…leaves a gear null alone', ratingPatch({ type: 'gear', name: 'Wrist Phone', system: { rating: null } }), undefined);
-  t.is('…an unrated CYBERWARE keeps its 0 (out of scope, TODO 122)', ratingPatch({ type: 'cyberware', name: 'Datajack', system: { rating: 0 } }), undefined);
+  t.is('…an unrated cyberware\'s legacy 0 becomes null (TODO 122)', ratingPatch({ type: 'cyberware', name: 'Datajack', system: { rating: 0 } }), null);
+  t.is('…and bioware\'s', ratingPatch({ type: 'bioware', name: 'Orthoskin', system: { rating: 0 } }), null);
+  // ⚠ medical's rating is a STRING ("+2" is a real Biotech rating), so it has no null to mean "none".
+  t.is('…medical is left alone: its rating is a string', ratingPatch({ type: 'medical', name: 'Bandage', system: { rating: '' } }), undefined);
   t.is('…and skips types without a rating', ratingPatch({ type: 'armor', name: 'Helmet [2]', system: {} }), undefined);
 
   /* ⚠ Every shipped item with a rating in its name stores it — new content cannot ship the old

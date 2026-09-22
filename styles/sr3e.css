@@ -246,6 +246,9 @@ background-color: var(--sr-surface) !important;
 .sr-miji-degradation-btn,
 .sr-knockdown-btn,
 .sr-stress-roll-btn,
+.sr-stress-apply-btn,
+.sr-buy-negotiate-btn,
+.sr-buy-pay-btn,
 .sr-fd-dodge-btn,
 .sr-charge-quickness-btn,
 .sr-prone-btn {
@@ -274,6 +277,9 @@ background-color: var(--sr-surface) !important;
 .sr-ram-passenger-resist-btn,
 .sr-knockdown-btn,
 .sr-stress-roll-btn,
+.sr-stress-apply-btn,
+.sr-buy-negotiate-btn,
+.sr-buy-pay-btn,
 .sr-charge-quickness-btn {
   background: linear-gradient(135deg, color-mix(in srgb, var(--sr-gold) 15%, transparent) 0%, color-mix(in srgb, var(--sr-gold) 5%, transparent) 100%);
   border: 1px solid var(--sr-gold);
@@ -293,6 +299,7 @@ background-color: var(--sr-surface) !important;
 .sr-ram-passenger-resist-btn:hover:not(:disabled),
 .sr-knockdown-btn:hover:not(:disabled),
 .sr-stress-roll-btn:hover:not(:disabled),
+.sr-stress-apply-btn:hover:not(:disabled),
 .sr-charge-quickness-btn:hover:not(:disabled) {
   background: color-mix(in srgb, var(--sr-gold) 25%, transparent);
   box-shadow: 0 0 10px color-mix(in srgb, var(--sr-gold) 30%, transparent);

@@ -49,6 +49,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       woundBox:       SR3EActorSheet._onWoundBox,
       essenceRecalc:  SR3EActorSheet._onEssenceRecalc,
       applyStress:      SR3EActorSheet._onApplyStress,        // TODO 109
+      woundEffects:     SR3EActorSheet._onWoundEffects,        // TODO 129
+      buyGear:          SR3EActorSheet._onBuyGear,             // TODO 82
       toggleTlex:       SR3EActorSheet._onToggleTlex,         // TODO 110
       toggleCybermancy: SR3EActorSheet._onToggleCybermancy,   // TODO 111
       toggleCds:        SR3EActorSheet._onToggleCds,          // TODO 111
@@ -1825,7 +1827,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       <h3 class="section-hdr">Cyberware</h3>
       ${game.user.isGM ? `<button type="button" class="btn-add" data-action="applyStress"
         title="Apply Stress to an implant or an Attribute — a wound effect is 1D6 ÷ 2 and a Stress Test (M&amp;M pp.124-131)."
-        style="margin-bottom:4px">⚙ Apply Stress…</button>` : ''}
+        style="margin-bottom:4px">⚙ Apply Stress…</button>
+      <button type="button" class="btn-add" data-action="woundEffects"
+        title="Roll wound effects for a wound this character just took — the Wound Effect Table, then which Essence slot it hits (M&amp;M pp.126-129)."
+        style="margin-bottom:4px">🎲 Wound effects…</button>` : ''}
       <div class="list-header"><span>Name</span><span>Grade</span><span>Essence</span><span>Rating</span><span title="Stress Points · M&amp;M p.124">Stress</span><span></span></div>
       ${cwRows}
       <button type="button" class="btn-add" data-action="itemCreate" data-type="cyberware">+ Cyberware</button>
@@ -3177,7 +3182,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           ? `<button type="button" class="btn-sm" data-action="awardKarma" style="align-self:flex-end">Award Karma…</button>`
           : ''}
         <button type="button" class="btn-sm" data-action="spendKarmaCalculator" style="align-self:flex-end">Spend Karma…</button>
+        <button type="button" class="btn-sm" data-action="buyGear" style="align-self:flex-end"
+          title="Find a source for gear — an Etiquette Test against its Availability, then haggle (SR3 pp.272-273).">🛒 Buy gear…</button>
       </div>
+      ${this._ledgerTable(this.actor)}
 
       <h3 class="section-hdr" style="margin-top:1rem">Reputation</h3>
       <div class="rep-grid">
@@ -3190,6 +3198,39 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ${this._bioField('Background', 'system.biography', sys.biography, 'No background set.')}
       ${this._bioField('Notes', 'system.notes', sys.notes, 'No notes.')}
     </div>`;
+  }
+
+  /**
+   * The karma / nuyen ledger · TODO 79 — what was earned and spent, and why.
+   *
+   * ⚠ **A record, not a gate.** The numbers above it stay editable; an unexplained edit simply
+   * lands here with an empty reason. Everyone who can see the sheet can read it (it is their own
+   * history), and `_preUpdate` is what stops a player rewriting it.
+   * ⚠ **Newest first, and capped in the UI** — the whole array is on the document, so a campaign's
+   * worth of entries must not render as a campaign's worth of rows.
+   */
+  static _ledgerTable(actor) {
+    const L = game.sr3e.Ledger;
+    const all = L.of(actor.system);
+    if (!all.length) return '';
+    const rows = L.recent(all, { limit: 30 });
+    const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const when = ms => { const d = new Date(Number(ms) || 0);
+      return Number.isFinite(d.getTime()) ? d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : ''; };
+    const colour = d => (Number(d) < 0 ? 'var(--sr-red)' : 'var(--sr-green)');
+    return `
+      <h3 class="section-hdr" style="margin-top:1rem" title="Every change to Good Karma, Nuyen and the Karma Pool. Append-only — the totals above stay editable, and an unexplained edit is logged with no reason.">📒 Ledger</h3>
+      <div class="list-header" style="grid-template-columns:52px 74px 74px 1fr">
+        <span>When</span><span>What</span><span>Change</span><span>Why</span>
+      </div>
+      ${rows.map(e => `
+        <div class="item-row" style="grid-template-columns:52px 74px 74px 1fr">
+          <span style="font-size:10px;color:var(--sr-muted)">${esc(when(e.when))}</span>
+          <span style="font-size:11px">${esc(L.TRACKED[e.kind === 'pool' ? 'karmaPool' : e.kind]?.label ?? e.kind)}</span>
+          <span style="font-size:11px;color:${colour(e.delta)}">${esc(L.formatDelta(e.kind, e.delta))}</span>
+          <span style="font-size:11px;color:var(--sr-muted)" title="${esc(e.by ? `by ${e.by}` : '')}">${esc(e.reason || '—')}</span>
+        </div>`).join('')}
+      ${all.length > rows.length ? `<div class="sr-roll-meta" style="font-size:10px;color:var(--sr-dim)">… and ${all.length - rows.length} older</div>` : ''}`;
   }
 
   /**
@@ -3716,6 +3757,19 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   /** ⚙ Apply Stress — GM only, because Stress is the GM saying what a wound did (TODO 109). */
   static async _onApplyStress(_event, _target) {
     await game.sr3e.SR3EStress.open(this.actor);
+  }
+
+  /** 🛒 Buy gear — anyone who owns the sheet; the rules are SR3 pp.272-273 (TODO 82). */
+  static async _onBuyGear(_event, _target) {
+    await game.sr3e.SR3EPurchase.open(this.actor);
+  }
+
+  /**
+   * 🎲 Wound effects — GM only (TODO 129, M&M pp.126-129). Rolls the Wound Effect Table and the
+   * Essence slot, then offers ⚙ Apply Stress for whatever it named. Nothing is applied by it.
+   */
+  static async _onWoundEffects(_event, _target) {
+    await game.sr3e.SR3EStress.openWoundEffects(this.actor);
   }
 
   static async _onEssenceRecalc(_event, _target) {
@@ -5380,7 +5434,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       'system.karma':      karma + goodKarma,
       'system.totalKarma': newTotal,
       'system.karmaPool':  karmaPool + poolGained,
-    });
+    }, { ledgerReason: 'Karma award' });
 
     let msg = `${actor.name} awarded ${amount} karma (total: ${newTotal}).`;
     if (poolGained > 0) {
@@ -5531,7 +5585,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       }
       if (existing) await existing.update({ 'system.rating': 1 });
       else          await SR3EActorSheet._createSkillItem(actor, def, 1);
-      await actor.update({ 'system.karma': karma - chosenCost });
+      // The ledger's "why" column (TODO 79) — the spend is recorded either way, but this is what
+      // makes it answer "where did that 40 karma go?" a month later.
+      await actor.update({ 'system.karma': karma - chosenCost }, { ledgerReason: `Learned ${def.name}` });
       ui.notifications.info(`${def.name} learned at rating 1 (${chosenCost} karma spent).`);
       return;
     }
@@ -5539,7 +5595,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     if (type === 'attr') {
       const key  = parts[1];
       const cur  = attrs[key]?.base ?? 0;
-      await actor.update({ [`system.attributes.${key}.base`]: cur + 1, 'system.karma': karma - chosenCost });
+      await actor.update({ [`system.attributes.${key}.base`]: cur + 1, 'system.karma': karma - chosenCost },
+        { ledgerReason: `${key[0].toUpperCase()}${key.slice(1)} ${cur} → ${cur + 1}` });
       ui.notifications.info(`${actor.name}: ${key} raised to ${cur + 1} (${chosenCost} karma spent).`);
       return;
     }
@@ -5553,13 +5610,14 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       if (action === 'learn') {
         // p.245: a new skill is purchased AT rating 1 for a flat 1 karma.
         await skill.update({ 'system.rating': 1 });
-        await actor.update({ 'system.karma': karma - chosenCost });
+        await actor.update({ 'system.karma': karma - chosenCost }, { ledgerReason: `Learned ${skill.name}` });
         ui.notifications.info(`${skill.name} learned at rating 1 (${chosenCost} karma spent).`);
 
       } else if (action === 'rating') {
         const newRating = (skill.system.rating ?? 0) + 1;
         await skill.update({ 'system.rating': newRating });
-        await actor.update({ 'system.karma': karma - chosenCost });
+        await actor.update({ 'system.karma': karma - chosenCost },
+          { ledgerReason: `${skill.name} → ${newRating}` });
         ui.notifications.info(`${skill.name} raised to ${newRating} (${chosenCost} karma spent).`);
 
       } else if (action === 'addspec') {
@@ -5602,7 +5660,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         const specs = [...(skill.system.specialisations ?? [])];
         specs.push({ name: specName, level: 1 });
         await skill.update({ 'system.specialisations': specs });
-        await actor.update({ 'system.karma': karma - chosenCost });
+        await actor.update({ 'system.karma': karma - chosenCost },
+          { ledgerReason: `${skill.name}: "${specName}"` });
         ui.notifications.info(`${skill.name}: "${specName}" added (${chosenCost} karma spent).`);
 
       } else if (action === 'improvespec') {
@@ -5614,7 +5673,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         const newLevel = (specs[specIdx].level ?? 1) + 1;
         specs[specIdx] = { ...specs[specIdx], level: newLevel };
         await skill.update({ 'system.specialisations': specs });
-        await actor.update({ 'system.karma': karma - chosenCost });
+        await actor.update({ 'system.karma': karma - chosenCost },
+          { ledgerReason: `${skill.name} "${specName}" → +${newLevel}` });
         ui.notifications.info(
           `${skill.name} "${specName}" raised to ${(skill.system.rating ?? 0) + newLevel} dice `
           + `(${chosenCost} karma spent).`);

@@ -542,7 +542,7 @@
         "isReplacement": false,
         "bookPage": "sr3.300",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Eliminate glare modifiers",
         "srcgName": "Eyes, Flare Comp"
       },
@@ -694,7 +694,7 @@
         "isReplacement": false,
         "bookPage": "sr3.302",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Unarmed = (STR+2)M Stun, +1BOD",
         "bonusBod": 1
       },
@@ -992,7 +992,7 @@
         "isReplacement": false,
         "bookPage": "mm.31",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "-2 to TNs for firing a Smartlink-II weapon, +2 Called Shot modifier"
       },
       "effects": [],
@@ -1031,7 +1031,7 @@
         "isReplacement": false,
         "bookPage": "sr3.300",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Thermographic vision"
       },
       "effects": [],
@@ -1245,7 +1245,7 @@
         "isReplacement": true,
         "bookPage": "sr3.300",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Holds .5 Essence of eye mods free of Essence cost"
       },
       "effects": [],

@@ -13,6 +13,7 @@ import { SR3EStress } from './SR3EStress.js';
 import { Stress } from './data/stress.mjs';
 import { MoveByWire } from './data/move-by-wire.mjs';
 import { Cyberzombie } from './data/cyberzombie.mjs';
+import { CyberSlots } from './data/cyber-slots.mjs';
 import { ItemRating, ratingOnCreate } from './data/item-rating.mjs';
 import { sceneFirst } from './data/actor-scope.mjs';
 import { SR3EItem } from './documents/SR3EItem.js';
@@ -35,6 +36,9 @@ import { SR3EClocks } from './SR3EClocks.js';
 import { SR3EHealing } from './SR3EHealing.js';
 import { SR3EDrugs } from './SR3EDrugs.js';
 import { SR3EActionLedger } from './SR3EActionLedger.js';
+import { Ledger } from './data/ledger.mjs';
+import { SR3EPurchase } from './SR3EPurchase.js';
+import { Purchasing } from './data/purchasing.mjs';
 import { ReadyWeapon } from './data/ready-weapon.mjs';
 import { Hands } from './data/hands.mjs';
 import { SR3ESourceBooks } from './SR3ESourceBooks.js';
@@ -105,7 +109,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock, ItemRating, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock, ItemRating, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing };
 
   // When THIS client loaded the system's code.
   //
@@ -561,7 +565,9 @@ async function _openSessionRewardDialog() {
       split.push({ name: actor.name, ...r });
     }
     if (nuyen)  updates['system.nuyen'] = (actor.system.nuyen ?? 0) + nuyen;
-    if (Object.keys(updates).length) await actor.update(updates);
+    // The ledger reads this reason (TODO 79) — every write is recorded either way, but a blank
+    // "why" column is only half an answer to "where did that 40 karma go?".
+    if (Object.keys(updates).length) await actor.update(updates, { ledgerReason: 'Session rewards' });
   }
 
   /* Name anyone whose award crossed a Karma Pool threshold, since that point did NOT reach
@@ -3149,6 +3155,48 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'stressroll', i)) return;
       await SR3EStress.roll(pl);
+    });
+  });
+  // ⚙ Apply Stress to the implant a wound effect named (TODO 129, M&M p.127).
+  // ⚠ GM-only, like ⚙ Apply Stress itself — it opens the dialog with "what took it" filled in,
+  //   and still rolls the 1D6 ÷ 2 and the Stress Test rather than applying anything.
+  html.querySelectorAll('.sr-stress-apply-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'stressapply', i)) return;
+    const pl = _payload(btn);
+    if (!pl) return;
+    if (!game.user.isGM) return _denyBtn(btn, 'Only the GM applies Stress.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'stressapply', i)) return;
+      const actor = game.actors.get(pl.actorId);
+      if (actor) await SR3EStress.open(actor, { target: pl.target });
+    });
+  });
+  // 🛒 Buying gear · TODO 82 (SR3 pp.272-273). 🤝 and 💴 belong to the buyer (or the GM);
+  // 💴 is the only one that writes anything, and it confirms first.
+  html.querySelectorAll('.sr-buy-negotiate-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'buyneg', i)) return;
+    const pl = _payload(btn);
+    if (!pl) return;
+    if (!_isDeciderId(pl.buyerId)) return _denyBtn(btn, 'Only the buyer (or the GM) haggles.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'buyneg', i)) return;
+      await SR3EPurchase.negotiate(pl);
+    });
+  });
+  html.querySelectorAll('.sr-buy-pay-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'buypay', i)) return;
+    const pl = _payload(btn);
+    if (!pl) return;
+    if (!_mineId(pl.buyerId)) return _denyBtn(btn, 'Only the buyer (or the GM) pays.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'buypay', i)) return;
+      await SR3EPurchase.pay(pl);
     });
   });
   html.querySelectorAll('.sr-drug-roll-btn').forEach((btn, i) => {

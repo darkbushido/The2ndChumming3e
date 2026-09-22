@@ -14,7 +14,7 @@
       "streetIndex": 2,
       "mods": "",
       "bookPage": "mm.92",
-      "rating": 0,
+      "rating": null,
       "description": "add your own entry via DATeditor | Cost: ? 10% of implant cost"
     },
     "effects": []

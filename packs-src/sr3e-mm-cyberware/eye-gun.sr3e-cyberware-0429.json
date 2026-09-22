@@ -17,7 +17,7 @@
       "isReplacement": false,
       "bookPage": "mm.16",
       "grade": "Standard",
-      "rating": 0,
+      "rating": null,
       "description": "Hold-out pistol, half range"
     },
     "effects": []

@@ -14,7 +14,7 @@
       "streetIndex": 2,
       "mods": "",
       "bookPage": "sota.027",
-      "rating": 0,
+      "rating": null,
       "description": "Each success on holding breath adds 10 combat turns, normal oxygen levels cause hyperoxia (Oxygen Toxicity Pg 109 CC)"
     },
     "effects": []

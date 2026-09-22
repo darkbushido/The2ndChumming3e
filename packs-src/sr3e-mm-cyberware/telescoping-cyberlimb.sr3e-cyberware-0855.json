@@ -17,7 +17,7 @@
       "isReplacement": false,
       "bookPage": "mm.40",
       "grade": "Standard",
-      "rating": 0,
+      "rating": null,
       "description": "Increase height or reach by 1 meter, reduce enemy Reach bonus by -1"
     },
     "effects": []

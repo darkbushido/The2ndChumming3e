@@ -14,7 +14,7 @@
       "streetIndex": 2,
       "mods": "+1XTR",
       "bookPage": "sota.026",
-      "rating": 0,
+      "rating": null,
       "description": "+1 to Racial Modified Limit",
       "bonusStr": 1,
       "srcgName": "Str Modified Limit Increase    1"

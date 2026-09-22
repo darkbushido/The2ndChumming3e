@@ -17,7 +17,7 @@
       "isReplacement": false,
       "bookPage": "mm.24",
       "grade": "Standard",
-      "rating": 0,
+      "rating": null,
       "description": "BattleTac receiver unit"
     },
     "effects": []

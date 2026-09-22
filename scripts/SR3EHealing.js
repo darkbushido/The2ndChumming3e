@@ -1155,7 +1155,8 @@ export class SR3EHealing {
           content: `<p>Deduct <strong>${yen(p.amount)}</strong> (${esc(p.what)}) from ${esc(patient.name)}'s ${yen(have)}?</p>
             ${p.amount > have ? '<p style="color:var(--sr-red)">They cannot cover it — nuyen will go to 0.</p>' : ''}` });
         if (!ok) return false;
-        await patient.update({ 'system.nuyen': Math.max(0, have - p.amount) });
+        await patient.update({ 'system.nuyen': Math.max(0, have - p.amount) },
+          { ledgerReason: `Medical: ${p.what ?? 'treatment'}` });
         return ChatMessage.create({ content: `<div class="sr-roll-card"><div class="sr-roll-result">💴 ${esc(patient.name)} paid ${yen(p.amount)} — ${esc(p.what)}. Nuyen ${yen(have)} → ${yen(Math.max(0, have - p.amount))}.</div></div>` });
       }
       case 'medkit': {
@@ -1172,7 +1173,8 @@ export class SR3EHealing {
       case 'restock': {
         const item = patient.items.get(p.itemId);
         const have = patient.system?.nuyen ?? 0;
-        await patient.update({ 'system.nuyen': Math.max(0, have - H.MEDKIT_RESTOCK) });
+        await patient.update({ 'system.nuyen': Math.max(0, have - H.MEDKIT_RESTOCK) },
+          { ledgerReason: 'Medkit supplies restocked' });
         if (item) await item.unsetFlag(FLAG, 'suppliesOut');
         return ChatMessage.create({ content: `<div class="sr-roll-card"><div class="sr-roll-result">🧰 ${esc(patient.name)} restocked ${esc(item?.name ?? 'the medkit')} for ${yen(H.MEDKIT_RESTOCK)}.</div></div>` });
       }

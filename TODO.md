@@ -49,8 +49,8 @@ below is the agent's estimate). Built on `feature/action-economy` in the worktre
 | [109](TODO-DONE.md#109) | Cyberware, bioware and Attribute Stress — *M&M pp.124-131* | ✅ — Stress Points, Levels and the Stress Test; ⚙ Apply Stress on the Cyber tab |
 | [110](TODO-DONE.md#110) | Move-by-wire's TLE-x | ✅ — the Automatic Stress Table, the Willpower test, and the flag with its two surgeries |
 | [111](TODO-DONE.md#111) | Chronic Dissociation Syndrome — cyberzombies | ✅ — Essence below 0, the CDS table, and the GM's check |
-| [79](#79) | A ledger for karma and nuyen | nice to have |
-| [82](#82) | A flow for buying gear — *Availability, SR3 pp.284-286* | nice to have |
+| [79](TODO-DONE.md#79) | A ledger for karma and nuyen | nice to have |
+| [82](TODO-DONE.md#82) | A flow for buying gear — *Availability, SR3 pp.284-286* | nice to have |
 | [7](#7) | More test coverage for combat, initiative and pools | nice to have |
 | [127](#127) | Tagged releases, with the guides versioned beside them | in 0.6 — built on `feature/release-pipeline` |
 
@@ -71,16 +71,16 @@ three nice-to-haves (79, 82, 7) and the release tasks below.
 
 ## Contents
 
-**30 open.** 99 done — see [TODO-DONE.md](TODO-DONE.md).
+**27 open.** 103 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
-| 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[129](#129) Cybersystem damage — Essence slots and the Wound Effect Table (M&M pp.126-128) |
-| 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[79](#79) No ledger for karma or nuyen — *low priority*<br>[82](#82) Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
-| 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[122](#122) Ratings in the field, not the name, for weapons, cyberware and bioware<br>[127](#127) Tagged releases, with the guides versioned beside them |
+| 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field |
+| 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
+| 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
@@ -702,46 +702,34 @@ Mainframe Support module. Any implementation should report that, not enforce it.
 **Shape:** the crash trigger and Suppression are small and self-contained — do them first. The sheaf
 is a host-sheet feature (a list of steps, each with IC and a rating) and is worth its own pass.
 
-## 129. Cybersystem damage — Essence slots and the Wound Effect Table (M&M pp.126-128)
+## 130. Store implant names plainly, with the rating only in the field
 
-Raised 2026-09-16 by the maintainer, while settling the Essence hole (#53): *"the essence slot has to do
-with cybersystem damage … they do need to be assigned a slot but that can be handled under the hood when we
-need to see if cyber systems take damage."* **No UI needed** — a picture of the six slots might look good,
-but the slots only matter at the moment a wound effect is resolved.
+Raised 2026-09-21 as the remainder of [#122](TODO-DONE.md#122), which made the **field** authoritative but left
+every shipped name as `Wired Reflexes [2]`. The maintainer's original ask has two halves; this is the
+second: *"is there a way to get the name 'Wired Reflexes' with a rating '2' to display as 'Wired
+Reflexes [2]'"* — yes, `displayName(item)` already does it, and it now covers cyberware and bioware.
+So the machinery is in place and this is the rename itself.
 
-**What the book does** (M&M pp.126-128, with the Leggy example running through it):
-1. **Wound effects** (p.126) — `Stress.woundEffects(highestDie, boxes)` already counts them (#109): the
-   Damage Resistance Test read as a Success Test against the boxes inflicted.
-2. **The Wound Effect Table** (p.127) — 1D6 per wound effect: **1-2 cybersystem damage · 3-4 bioware
-   damage · 5-6 organic physical injury**. A character with no cyberware ignores a cybersystem result; no
-   bioware, a bioware result.
-3. **Assign Essence Slots** (p.127) — six slots, one per point of Essence, each holding 1.0 of cyberware.
-   Fill slot 1 first and each slot completely before the next, in ascending order; an implant costing more
-   than 1 spans several. Anything inside a cybereye, cyberear or cyberlimb counts as part of that system
-   *unless* it cost Essence of its own. Leggy's slots are worked on p.127: VCR 2 in 1-3, two reaction
-   enhancers in 3, wired reflexes in 4-5 with his cybereyes and datajack, smartlink half-filling 6.
-4. **Determine System Affected** (p.127) — roll 1D6 against the slots. An empty slot: no damage. A slot
-   with several implants: the GM chooses, picks randomly, or rolls 1D10 across the slot subdivided by
-   Essence Cost. ⚠ **A half-full slot** is a 50-50 between its implant and no damage (the smartlink, p.128).
-   A damaged cyberlimb/eye/ear: the whole system or a random subsystem, the GM's call.
-5. **The damage** — 1D6 ÷ 2 Stress and a Stress Test (p.127), which #109 already does.
-6. **Bioware** (p.128) — the same procedure with **Bio Index slots** in place of Essence slots.
+**Why it was not done with #122:** the rename is the risky half, and none of the risk is in the
+rename. Before a single name changes, every **name-keyed** lookup has to be found and moved to a stem
+or to `srcgName` (the upstream identity field cyberware already carries):
 
-**Two special cases:**
-- **Electrical damage** (p.127) automatically affects cyberware: each wound effect goes straight to
-  Determine System Affected, plus an extra 1D6 per wound effect where **1-2 damages another piece**.
-- **Cyberzombies** (p.127) have more cyberware than slots, so they *"double up"* — two systems can be hit
-  at once — and *"always take damage from cybersystem wound effects"* (#111). Bioware over its slots doubles
-  up the same way (p.128).
+- `SRCG_BONUSES` — keyed **with brackets**, and `tests/cyberware-names.test.mjs` shows 43 entries
+  already renamed once; a second rename without it silently drops every bonus on those implants.
+- the registries in `config.js` — `triggeredAugmentations`, `quicknessNotForReaction`,
+  `reactionExclusive`, `augmentationSkillDice`. CLAUDE.md already warns these must match a **stem**,
+  never a full name, and the move-by-wire note records getting this wrong once.
+- migrations that match by name, and the healing `EQUIPMENT` regexes.
+- **compendium pickers**: add `system.rating` to `CONFIG.Item.compendiumIndexFields` and append
+  ` [N]` where entries are drawn, or the picker shows five identical *Wired Reflexes*.
+- `displayName` at every sheet row and chat card that prints these names.
 
-**Shape, when built:** a pure `scripts/data/cyber-slots.mjs` — `assignSlots(implants)` returning the six
-slots with each implant's share, `systemHit(slots, d6)` returning the implant(s) or none (with the half-slot
-chance), and the Wound Effect Table — pinned to Leggy's slots from p.127. Then offer it where #109's
-⚙ Apply Stress asks "what took it": *"roll for it (M&M p.127)"*, which fills the choice in. ⚠ Offered, not
-automatic — the design ethos, and the book gives the GM the pick within a slot anyway.
+Then the rename itself: the packs (derived ids, repo **and** `--install`), and a migration for the
+embedded copies in worlds already in play — Foundry embeds items, so a pack rename reaches nobody
+who already owns one.
 
-⚠ **Not the Essence hole.** #53's hole records Essence spent on removed cyberware; these slots describe
-cyberware that is still installed.
+⚠ **A rename is not reversible by a fill-blanks migration**, which is what every other migration
+here is. Worth a plan and the maintainer's go-ahead before starting, not a drive-by.
 
 ### 📦 Content gaps
 
@@ -838,72 +826,6 @@ Foundry restart, not an F5.
 
 ---
 
-## 79. No ledger for karma or nuyen — *low priority*
-
-**Raised 2026-08-31.** There is no record of what a character has earned or spent, only current
-totals — `system.karmaPool` and the nuyen field are numbers a player edits in place. So a GM
-cannot answer "where did that 40 karma go?", and a player who mistypes has nothing to restore
-from.
-
-⚠ **This is not the same item as karma SPENDING**, which — contrary to what this entry and
-CLAUDE.md both said when first written — **is implemented**. `_onSpendKarmaCalculator`
-(`SR3EActorSheet.js`) buys attributes, skills and specialisations at the p.245 costs; its
-defects were [#80](TODO-DONE.md#80). This entry is the **audit trail**, a separate want: the calculator
-writes new totals and leaves no record of what was bought.
-
-⚠ **AWARDING is a different story, and this entry used to overstate it too.** `_onAwardKarma`
-is correct but **unreachable** — nothing renders its button — so the only reachable award path
-is the Session Rewards tool, which writes to the wrong field entirely. See [#81](TODO-DONE.md#81); a ledger
-should be built on top of a working award path, not before one.
-
-Shape, roughly: an append-only array of `{ when, kind: 'karma'|'nuyen', delta, reason, by }` on
-the actor, a compact table on the sheet, and a **+/− with a reason field** replacing bare
-in-place editing of the totals. The Session Rewards tool (Rollable Tables sidebar) is the
-obvious first writer — **once [#81](TODO-DONE.md#81) has made it write to the right fields**.
-
-⚠ **Keep the totals editable.** The ethos is that a GM is never fighting the system; a ledger
-that becomes the only way to change a number is a guardrail, not a record. Log an unexplained
-adjustment as an entry with an empty reason rather than blocking it.
-
-⚠ Append-only and GM-relayed, like `sr3e.card.mark` — a player must be able to see their own
-history without being able to rewrite it.
-
-<a id="80"></a>
-
-## 82. Buying gear needs a flow, like combat has — *Availability, SR3 p.284-286*
-
-**Raised 2026-09-01.** Gear is acquired by hand today: a GM decides, a player edits `nuyen` and
-drags an item on. SR3 has actual rules for this and none of them are implemented.
-
-The shape wanted is the combat one — a dialog that gathers the modifiers, a roll, a chat card
-that says what happened and leaves the decision to the GM.
-
-### What the rules are
-
-Every gear item already ships the two fields this needs: **`availability`** (e.g. `8/14 days`)
-and **`streetIndex`**, alongside `cost`. Nothing reads either. An Availability Test is an
-opposed/threshold test against the availability rating, with the time code setting how long it
-takes, and the Street Index multiplying price outside normal channels.
-
-⚠ **Read the book before designing.** Availability, Street Index and the legality codes
-interact, and the numbers are already sitting in the packs — so this is mostly a matter of
-consuming data that is present rather than authoring any.
-
-### Contacts are the interesting half
-
-The player's **contacts** should modify this — a Fixer is not an Armourer is not a Talismonger,
-and a Level 3 contact is not a Level 1. The contact type gates *what* they can source, the
-level/quality gates *how well*. That is the part with no obvious existing model in the system
-and the part worth designing first.
-
-⚠ **Check what `contact` items actually carry** before assuming a level or type field exists.
-
-⚠ **Related: [#79](#79)'s ledger.** A purchase is the single best reason to want a nuyen audit
-trail, and a buy flow is its most natural writer. Neither blocks the other, but if the ledger
-lands first this should write to it rather than editing `system.nuyen` in place.
-
-<a id="83"></a>
-
 ## 83. Mr Johnson's Little Black Book
 
 **Raised 2026-09-01, and named as the next thing to work on.**
@@ -920,7 +842,7 @@ existing data or a data job first.
 Worth settling before building: is this a GM-facing directory of Johnsons and their jobs, a
 player-facing contact list, or the run-generation surface a Johnson implies?
 
-⚠ **Sequencing with [#82](#82).** Both are about contacts. If gear-buying is going to read
+⚠ **Sequencing with [#82](TODO-DONE.md#82).** Both are about contacts. If gear-buying is going to read
 contact type and level, the contact data model wants to be settled once, by whichever of these
 lands first, rather than twice.
 
@@ -1011,7 +933,7 @@ the pack because re-running the macro rebuilds all 62 inside Foundry — far big
 correcting records in place.
 
 ⚠ It also calls PR the *"Professional/Connection Rating"*, which is a live question for
-[#82](#82): if PR is a connection rating, it and `contact.connection` may be the same number.
+[#82](TODO-DONE.md#82): if PR is a connection rating, it and `contact.connection` may be the same number.
 
 <a id="84"></a>
 
@@ -1188,7 +1110,7 @@ different Foundry-version assumptions and different rules interpretations — a 
 as likely to be *their* reading as a gap in ours. Note which, when writing it up.
 
 Worth looking for specifically, since these are our known holes: a gear-acquisition flow
-([#82](#82)), an action economy ([#48](#48)), a karma/nuyen ledger ([#79](#79)), character
+([#82](TODO-DONE.md#82)), an action economy ([#48](#48)), a karma/nuyen ledger ([#79](TODO-DONE.md#79)), character
 generation, and anything covering the run structure in Mr Johnson's Little Black Book p.5-35
 ([#83](#83)).
 
@@ -1786,6 +1708,189 @@ count; it would have the moment it did.
 ⚠ Pack edits need Foundry **closed** and must be run twice (repo + `--install`) — CLAUDE.md,
 *Editing an existing pack*.
 
+**Re-surveyed 2026-09-21. The backlog is 200, and every one of them is BLOCKED — this is not
+grind-it-out work, and the entry above was wrong about why.**
+
+| Group | Count | Status |
+|---|---:|---|
+| SR2 gear, `sr2.???` | **154** | 🟡 **Unblocked 2026-09-21** — see below. |
+| Matrix Defragged agents (17), hosts (10), Hermes Ikon (1) | **28** | ⛔ Authored for this system — no book to cite. |
+| `sr3e-skills` | **18** | ⛔ 15 Area Knowledge examples + 3 whose upstream source is `sr3.XXX`. |
+
+**UNBLOCKED 2026-09-21 — the maintainer has an SR2 library, and there is now a way to read it.**
+It lives at `C:\Users\lance\Documents\Shadowrun 2nd Edition PDFs` (35 files) and is almost all
+image-only, so `pdftotext` returns nothing. **`tools/ocr-pdf.ps1`** reads them using
+`Windows.Data.Pdf` + `Windows.Media.Ocr`, both built into Windows — no install, nothing added to
+the repo, ~2 seconds a page. It rebuilds table layout from the OCR word boxes, so stat rows survive:
+
+    Beretta Model 70   SMG      BF/FA     35(c)   6M   3.75   900%      <- 900¥
+    Heckler & Koch     SMG   5  SA/BF/FA  20(c)   6M   3.25   850Y      <- 850¥
+
+⚠ **Seven of the 35 already have a text layer** (Grimoire, Magic, Blackhand's Street Weapons, DMZ,
+Running Gear, Companion — Beyond the Shadows, NAGNA). Try `pdftotext -layout` first: it is exact
+and instant. The rest need OCR.
+
+⚠ **AND THE ITEMS ARE NOT ALL FROM SR2 CORE — this is the new finding.** The names in
+`sr3e-sr2-melee` are *Bear-Knife*, *Cane Sword*, *Decapitator battleaxe*, *Gasher battleaxe*,
+*Mjolnir warhammer*, *Kendachi Mononaginata*, *Mersch MX-23 Stunlance* … none of which is in SR2
+core's Equipment Table (printed p.254, verified by OCR; the Sourcebook Updates table on p.278 is
+the other one). They are **Street Samurai Catalog** and similar. So the work is not "read one book",
+it is **identify the real source book per item, then cite it** — and several of those documents are
+in the wrong pack as well, which is the "names a different book from their pack" case `check-packs`
+already reports.
+
+⚠⚠ **AND THEN THE REAL FINDING: the "SR2" packs are mostly FAN CONTENT.** Counting what the
+documents that *do* carry a page actually cite:
+
+| Pack | Docs | Missing | What the rest cite |
+|---|---:|---:|---|
+| `sr3e-sr2-firearms` | 176 | 53 | **`pw` 115**, `ssc` 7, `fof` 1 |
+| `sr3e-sr2-armor` | 76 | 49 | `sr2` 23, `fof` 2, `ssc` 1, `pw` 1 |
+| `sr3e-sr2-melee` | 40 | 32 | `fof` 3, `pw` 3, `sr2` 1, `ssc` 1 |
+
+**`pw` is a FAN code** — it is one of the eight in `archive/non-sr3-content/`'s `fan` bucket
+(ray · cb1-4 · cp · nagee · **pw** · bjf · adh). So 115 of the 176 "SR2 core" firearms are fan
+material sitting in a shipping pack, which is the case `check-packs` already reports as *"names a
+different book from their pack"* — quantified here for the first time.
+
+⚠ **CORRECTION, same day — the search above was INCOMPLETE and its conclusion was too strong.**
+What was actually searched: SR2 core's Equipment Tables (printed pp.254 and 278, read by OCR), the
+**Street Samurai Catalog** (all 118 pages OCR'd — 0 of 31 melee names) and **Blackhand's Street
+Weapons** (text layer — 5 of 27, and Blackhand's is itself fan, no FASA code). From that I wrote
+that the items "are not in the official books". **That does not follow**, because three obvious
+candidates were sitting in the same folder unread:
+
+- **Fields of Fire `{FASA7114}`** — SR2's *weapons and combat* sourcebook, and the book code
+  `fof` that three of these very documents already cite. This is the first place to look.
+- **Street Samurai Catalog (Revised) `{FASA7104a}`** — a second, larger edition; only the
+  original `{FASA7104}` was read.
+- **Cybertechnology `{FASA7119}`** (`ct`).
+
+So the honest state is: **not yet found, not "not there"**. Do the three above before drawing any
+conclusion about fan origin for a given item.
+
+⚠ **What does NOT depend on that search, and stands:** the `pw` counts in the table above. 115 of
+176 firearms in a pack named for SR2 core cite a fan code, and that is a fact about the packs
+rather than about any book.
+
+**So this is a question for the maintainer before it is work at all:**
+1. Should fan content ship in a pack named for SR2 core? The system's stated principle is that it
+   *"ships no sourcebook content it cannot turn off"*, and the fan material was meant to be parked
+   in `archive/non-sr3-content/` (1,219 documents already are).
+2. If it stays, it needs its own book code and pack so the toggle can reach it — at which point the
+   page citation is the fan document's, not an SR2 one.
+3. Only what is genuinely FASA content is a page-hunting job, and that looks like a **small
+   minority** of the 154.
+
+⚠ **Do not "fill in" these pages from an SR2 book.** Most of these items are not in one, so any
+page written against them would be a fabricated citation — worse than the blank, because the next
+person trusts it.
+
+⚠ **The printed-page offset for SR2 core is PDF − 26** (PDF 260 = printed 234), established from
+the footers. Every book needs its own; do not assume.
+
+⚠ **What OCR is good for, measured.** Page numbers, availability codes (`3/72 hrs`, `Always`),
+Street Index, damage codes, ammo and fire modes all come through. **Prices do not** — `¥` reads as
+`Y`, `%` or worse, and heavily stylised books (*Shadowtech*) mangle body text. Treat it as a
+research aid and verify anything that changes a die roll, as the standing rule requires.
+
+⚠ **THE SR2 CORE PDF IS NOT IN THE LIBRARY.** This entry used to say *"SR2 core for the 314
+`sr2.???` (the SR2 core PDF is in the library)"*. It is not: the library holds SR3 books only
+(core, CC, M&M, MitS, R3, Matrix, MDF, Critters, New Seattle, Mr. Johnson's) plus `Supplements/`,
+where almost every file is marked `[no-text]` and extracts nothing — `Shadowtech`, `Shadowrun
+Companion` and `Virtual Realities 2.0` among them. So the 154 SR2 weapons, armour, melee, vehicle
+mods and projectiles **cannot be sourced from what is here**. Someone has to supply the book, or
+the maintainer rules on what to cite.
+
+⚠ **The MDF agents and hosts are not in the Matrix Defragged book at all.** Every one of the 17
+agent names (Bloodhound, Warhound, Watchdog, Keystroke, Slowburn …) and all 10 hosts (*Ares Arms —
+Retail Storefront*, *Aztechnology — Tenochtitlan Research Subnet* …) was searched for in the PDF
+and appears **nowhere**; the agent rawdata (`rawdata/MDF-program-agents.json`) holds *abilities*
+(Analyze, Armor, Attack …), not these. They are example content written for this system. They
+therefore need a **convention**, not a citation — a way to say "original content, no book" that the
+sheet and `check-packs` both understand — and that is the maintainer's call, not a page to hunt.
+
+⚠ **Area Knowledge entries have no page of their own.** 15 of the 18 skills are Seattle districts
+(Auburn, Bellevue, Redmond, Puyallup, Tacoma, Council Island, the Seattle Sewers …) — examples of
+the Area Knowledge *category*, which the SR3 core index does not list as an entry: the string
+"Area Knowledge" does not occur in the book. The nearest real citation is **ABOUT KNOWLEDGE SKILLS,
+SR3 p.89** (verified: printed p.89 = PDF p.91), which is where a GM actually looks the rules up.
+Using it for all 15 is defensible but it is a **decision about what a citation means**, so it is
+left for the maintainer rather than taken here.
+⚠ The other three — **Artisan, Forgery, Performance** — are not in the SR3 core PDF either, and
+the upstream data itself records their source as the placeholder **`sr3.XXX`**. They are probably
+Shadowrun Companion, which is in `Supplements/` as `[no-text]`.
+
+⚠ **Folders are not documents.** A first pass counted 10 more "gaps" in
+`sr3e-mr-johnsons-contacts` that are the Little Black Book's chapter names (*By Any Means
+Necessary*, *Crime, Inc: The Underworld* …) stored under `!folders!`. They carry no `system` and
+cannot hold a page. `tests/book-page.test.mjs` already filters to `!items!` / `!actors!` and is
+right to; any new survey must do the same or it will report phantom work.
+
+### The corpus exists now — and it does NOT close this item (2026-09-21)
+
+All **92 books** are OCR'd to text at `C:\Users\lance\Documents\SR-OCR\` (8,534 pages, 71 MB,
+`2e/` and `3e/` with a `log.txt`). ⚠ **Deliberately outside the repo** — whole-book text is a
+copyright surface and must not be committed. Built with `tools/ocr-pdf.ps1`.
+
+**It still does not fill the gap, and here is the evidence, so nobody repeats the attempt.**
+
+**1. The `???` is UPSTREAM'S OWN PLACEHOLDER. Nothing was lost in our import.** Of the 196 names
+missing a page, only **61** appear in `rawdata/` with a `BookPage` field at all, and of those
+entries **99 are `sr2.???` / `sr3.XXX` / `cp.???`** against **10** with a real page. The
+generator never knew these pages either.
+
+**2. Even upstream's ten "real" pages do not survive checking.** Six documents, and most disagree
+with themselves — *Bio-Injector* is both `cp.29` and `pw.18`, *Ring Mount* both `fof.46` and
+`r3.129`, *Secondary Controls* both `r3.118` and `sr2.264`. The one unambiguous case,
+*Convertible Top* → `sr2.264`, was checked against the book: the offset is right (PDF 290 =
+printed 264, from the footers) and **the item is not on that page**.
+
+**3. Searching the corpus by name does not work.** Three passes, each tighter than the last:
+
+| Pass | Rule | Result |
+|---|---|---|
+| 1 | every 4+ char token somewhere on the page | 126/200 — top hits were *adventure modules* |
+| 2 | tokens within a 60-char window; common words need a gear-table page | 95/200 — still adventures, and **all 18** Seattle Area Knowledge "skills" matched prose |
+| 3 | distinctive name only, on a gear-table page | 42 "strong" — and eyeballing them, mostly still wrong: *Blackout* matched a power cut, *Phoenix* the city, *Ares Scorpion* a "nova scorpion" |
+
+The cause is structural: these names are ordinary English words (*Devil*, *Lance*, *Flail*,
+*Morning Star*, *Battle Vest*) scattered through 8,534 pages of prose. Search cannot tell a table
+entry from a mention, and a loose match **invents a citation**, which is the one outcome worse than
+a blank.
+
+⚠ **So this is not a data-recovery task and should stop being treated as one.** It is a
+**provenance decision** for the maintainer, of the kind already framed above: 115 of 176 "SR2 core"
+firearms cite the fan code `pw`, *Arasaka Jetsetter Briefcase* is `cp.???` (Cyberpunk 2020), and
+the pages were never recorded by anyone. Either the content earns its own book code and pack so the
+toggle can reach it, or it belongs in `archive/non-sr3-content/` with the rest of the fan
+material — and either way almost none of it gets an SR2 page number.
+
+**What the corpus IS good for**, and why it was still worth building: targeted lookups where a
+human knows what they are looking for (it answered the SR2 core offset and the Equipment Table
+pages in minutes), and **[#121](#121)**, checking the code's rules against the books each release.
+
+### ✅ The fan content is out of the shipping packs (2026-09-21)
+
+The maintainer's call: *"move the fan content to archive and give it its own code, it's not in
+scope for anything I want to do right now."* Done — **121 documents citing `pw`** moved to
+`archive/non-sr3-content/` by `tools/archive-fan-content.mjs`, bucketed `pw` so they are
+restorable per book. `sr3e-sr2-firearms` goes from 176 documents to 61, and **no shipped document
+cites a fan code any more** (`tests/fan-content.test.mjs` ratchets it).
+
+⚠ **The 200 unknowns did NOT move.** A blank or `???` page is *unknown*, not fan — moving those
+would be a guess dressed as a cleanup. So the missing-page backlog is **unchanged at 200**; what
+changed is that the packs no longer mix fan content in with the official books.
+
+⚠ **`pw` is deliberately NOT in `SOURCE_BOOKS`**: a code with no pack behind it renders an empty
+checkbox. If it is ever restored, it needs its own pack and a registry entry in the same commit.
+
+**So steps 1, 3 and 4 of the original plan are DONE** (the schema carries `bookPage` on every type,
+`check-packs` reports gaps, the sheet renders *"SR3 p.303"*), and step 2 is what remains. It needs
+one of: the SR2 book, a ruling on the Area Knowledge citation, and a convention for authored
+content. Until then the ceiling in `tests/book-page.test.mjs` stays at 200 — it is not slipping,
+it is at the floor of what is reachable.
+
 **Progress:** `GearData` gained `bookPage` (with `rating`, `availability`, `streetIndex`) in 0.5.2
 — [#118](TODO-DONE.md#118) — and the character importer now keeps the export's `BookPage` for plain gear.
 
@@ -1901,8 +2006,27 @@ Three harness facts worth knowing before writing another spec — each cost a wr
   cast posts no resist button, so it died on a missing selector about one run in twelve. It had
   been reported green repeatedly before the full suite happened to lose the coin toss.
 
-⚠ Still no coverage for the **ranged** flow end-to-end (fire mode → recoil → dodge → soak), which
-is the most-played path in the system and the one with the most moving parts.
+**Closed 2026-09-21 for the unit half — `tests/pools.test.mjs`.** Of the gaps listed above, the
+pool derivations and the reset boundaries were covered; what was NOT covered, anywhere, was
+**`endCombat` itself**. `tests/initiative.test.mjs` pins `_endOfTurnReset` and `startCombat`, and
+nothing pinned the two clears that belong to the end of a FIGHT rather than a turn: Spell Defense,
+and **`tempMagicLoss` — the flag this entry calls "the one whose correct lifetime was never
+established"**. It is established now, and verified by deleting the clear and watching the suite
+fail. The new suite also pins ⌊(QUI+INT+WIL)/2⌋ and ⌊(INT+WIL+MAG)/3⌋ directly (they were asserted
+only incidentally, inside an adept-power test), the floor at 0 on a spent pool, and Spell Pool
+being **null** rather than 0 for a mundane.
+
+⚠ It also asserts the two end-of-fight clears are **NOT** in the per-turn reset. Moving
+`clearSpellDefense` there would look like tidying and would erase a mage's declaration the moment
+the round ticked over — Spell Defense is committed for a whole Combat Turn.
+
+### Still open: the ranged flow end-to-end
+
+⚠ No e2e coverage for **fire mode → recoil → dodge → soak**, the most-played path in the system and
+the one with the most moving parts. It is e2e rather than unit work because the dodge declaration
+and the soak card live on a different client from the attack. Left open deliberately: writing that
+spec needs a running Foundry to verify against, and a spec that has never been run green is worse
+than no spec.
 
 ## 18. Structured gear data for weapon-accessory TN modifiers
 
@@ -2070,31 +2194,6 @@ grenades (the Grenade Range Table, SR3 p.119), cyberware grades (TODO 86, M&M p.
 ranged sequence, dodge, staging).
 
 <a id="122"></a>
-
-## 122. Ratings in the field, not the name, for weapons, cyberware and bioware — **requested 2026-09-14, future**
-
-**Request (maintainer):** *"I do not like the rating being in the name, I would prefer that it were
-in a column where nil means no rating"* — done for **gear** in 0.5.2 ([#118](TODO-DONE.md#118)); weapons,
-cyberware and bioware were ruled **out of scope for that change** (*"can be done on a future
-todo"*). This is that TODO.
-
-**What gear already has, to copy:** a nullable `rating` (null = none); `itemRating` reading null as
-none; a `preCreateItem` fill (`ratingOnCreate`); migration and pack tool turning a legacy `0` into
-null; `displayName(item)` showing `Name [N]` without doubling a bracket (answering the maintainer's
-*"is there a way to get the name 'Wired Reflexes' with a rating '2' to display as 'Wired Reflexes
-[2]'"* — yes).
-
-**The larger half — plain names.** Storing `Wired Reflexes` + rating 2 instead of `Wired Reflexes
-[2]` needs, before any rename:
-- every **name-keyed** lookup found and moved to the name's stem or to `srcgName` (the upstream
-  identity field cyberware already carries): `SRCG_BONUSES` (keyed with brackets), the registries in
-  `config.js` (`triggeredAugmentations`, `quicknessNotForReaction`, `reactionExclusive`,
-  `augmentationSkillDice`, …), migrations that match by name, the healing `EQUIPMENT` regexes;
-- **compendium lists** showing the rating: add `system.rating` to `CONFIG.Item.compendiumIndexFields`
-  and append ` [N]` where each entry is drawn — otherwise the picker shows five identical *Wired
-  Reflexes*;
-- `displayName` on every sheet row and chat card that prints these names;
-- the rename itself in the packs (derived ids, repo + install) and a migration for world copies.
 
 ## 127. Tagged releases, with the guides versioned beside them — **requested 2026-09-15, in 0.6**
 

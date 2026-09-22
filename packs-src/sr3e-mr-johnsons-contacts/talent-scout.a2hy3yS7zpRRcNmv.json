@@ -539,7 +539,7 @@
         "isReplacement": false,
         "bookPage": "sr3.298",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Receive faxes, make phone calls"
       },
       "effects": [],
@@ -578,7 +578,7 @@
         "isReplacement": false,
         "bookPage": "sr3.298",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": ""
       },
       "effects": [],
@@ -617,7 +617,7 @@
         "isReplacement": false,
         "bookPage": "mm.21",
         "grade": "Standard",
-        "rating": 0,
+        "rating": null,
         "description": "Requires Adapter (100ï¿½)"
       },
       "effects": [],
