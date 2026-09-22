@@ -3209,7 +3209,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    * ⚠ **Newest first, and capped in the UI** — the whole array is on the document, so a campaign's
    * worth of entries must not render as a campaign's worth of rows.
    */
-  static _ledgerTable(actor) {
+  _ledgerTable(actor) {
     const L = game.sr3e.Ledger;
     const all = L.of(actor.system);
     if (!all.length) return '';

@@ -103,7 +103,34 @@ export async function run(t) {
   t.ok('_preUpdate records the ledger', /_preUpdate\(changed, options, user\)[\s\S]{0,900}SR3EActor\.recordLedger\(this, changed, options, user\)/.test(actorSrc));
   t.ok('both actor types store it',
     (read('scripts/data/ActorDataModels.js').match(/ledger:\s+new ArrayField/g) ?? []).length === 2);
-  t.ok('the sheet shows it', /_ledgerTable\(this\.actor\)/.test(read('scripts/sheets/SR3EActorSheet.js')));
+  const sheetSrc = read('scripts/sheets/SR3EActorSheet.js');
+  t.ok('the sheet shows it', /_ledgerTable\(this\.actor\)/.test(sheetSrc));
+
+  /**
+   * ⚠ **A CALL SITE IS NOT A WORKING FEATURE**, and this suite proved it the expensive way.
+   * The assertion above passed while `_ledgerTable` was declared `static` — and a static is NOT
+   * reachable through `this.`, so the Bio tab threw "this._ledgerTable is not a function" for any
+   * character with a ledger entry, which is every character that has ever earned or spent karma.
+   * The string was there; the feature was broken. (CLAUDE.md already says it in another context:
+   * "auditing a function is not auditing a feature.")
+   *
+   * So this is a SHEET-WIDE ratchet rather than a fix for one method: nothing declared `static`
+   * in a sheet may be called through `this`. It is precise — it only looks at names declared
+   * static in that very file — so there are no false positives from inherited helpers.
+   */
+  const { readdirSync } = await import('node:fs');
+  const sheetDir = new URL('../scripts/sheets/', import.meta.url);
+  const mismatched = [];
+  for (const file of readdirSync(sheetDir)) {
+    if (!file.endsWith('.js')) continue;
+    const src = readFileSync(new URL(file, sheetDir), 'utf8');
+    const statics = new Set([...src.matchAll(/^\s*static\s+(?:async\s+)?([A-Za-z_$][\w$]*)\s*\(/gm)].map(m => m[1]));
+    for (const n of statics) {
+      if (new RegExp(`\\bthis\\.${n}\\s*\\(`).test(src)) mismatched.push(`${file}: this.${n}() but declared static`);
+    }
+  }
+  t.is(`no sheet calls a static through \`this\`${mismatched.length ? ` — ${mismatched.join('; ')}` : ''}`,
+    mismatched.length, 0);
 
   /**
    * ⚠ **THE RATCHET.** Every writer of karma or nuyen must go through `actor.update`, so that
