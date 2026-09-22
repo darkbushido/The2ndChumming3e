@@ -1827,6 +1827,49 @@ Necessary*, *Crime, Inc: The Underworld* …) stored under `!folders!`. They car
 cannot hold a page. `tests/book-page.test.mjs` already filters to `!items!` / `!actors!` and is
 right to; any new survey must do the same or it will report phantom work.
 
+### The corpus exists now — and it does NOT close this item (2026-09-21)
+
+All **92 books** are OCR'd to text at `C:\Users\lance\Documents\SR-OCR\` (8,534 pages, 71 MB,
+`2e/` and `3e/` with a `log.txt`). ⚠ **Deliberately outside the repo** — whole-book text is a
+copyright surface and must not be committed. Built with `tools/ocr-pdf.ps1`.
+
+**It still does not fill the gap, and here is the evidence, so nobody repeats the attempt.**
+
+**1. The `???` is UPSTREAM'S OWN PLACEHOLDER. Nothing was lost in our import.** Of the 196 names
+missing a page, only **61** appear in `rawdata/` with a `BookPage` field at all, and of those
+entries **99 are `sr2.???` / `sr3.XXX` / `cp.???`** against **10** with a real page. The
+generator never knew these pages either.
+
+**2. Even upstream's ten "real" pages do not survive checking.** Six documents, and most disagree
+with themselves — *Bio-Injector* is both `cp.29` and `pw.18`, *Ring Mount* both `fof.46` and
+`r3.129`, *Secondary Controls* both `r3.118` and `sr2.264`. The one unambiguous case,
+*Convertible Top* → `sr2.264`, was checked against the book: the offset is right (PDF 290 =
+printed 264, from the footers) and **the item is not on that page**.
+
+**3. Searching the corpus by name does not work.** Three passes, each tighter than the last:
+
+| Pass | Rule | Result |
+|---|---|---|
+| 1 | every 4+ char token somewhere on the page | 126/200 — top hits were *adventure modules* |
+| 2 | tokens within a 60-char window; common words need a gear-table page | 95/200 — still adventures, and **all 18** Seattle Area Knowledge "skills" matched prose |
+| 3 | distinctive name only, on a gear-table page | 42 "strong" — and eyeballing them, mostly still wrong: *Blackout* matched a power cut, *Phoenix* the city, *Ares Scorpion* a "nova scorpion" |
+
+The cause is structural: these names are ordinary English words (*Devil*, *Lance*, *Flail*,
+*Morning Star*, *Battle Vest*) scattered through 8,534 pages of prose. Search cannot tell a table
+entry from a mention, and a loose match **invents a citation**, which is the one outcome worse than
+a blank.
+
+⚠ **So this is not a data-recovery task and should stop being treated as one.** It is a
+**provenance decision** for the maintainer, of the kind already framed above: 115 of 176 "SR2 core"
+firearms cite the fan code `pw`, *Arasaka Jetsetter Briefcase* is `cp.???` (Cyberpunk 2020), and
+the pages were never recorded by anyone. Either the content earns its own book code and pack so the
+toggle can reach it, or it belongs in `archive/non-sr3-content/` with the rest of the fan
+material — and either way almost none of it gets an SR2 page number.
+
+**What the corpus IS good for**, and why it was still worth building: targeted lookups where a
+human knows what they are looking for (it answered the SR2 core offset and the Equipment Table
+pages in minutes), and **[#121](#121)**, checking the code's rules against the books each release.
+
 **So steps 1, 3 and 4 of the original plan are DONE** (the schema carries `bookPage` on every type,
 `check-packs` reports gaps, the sheet renders *"SR3 p.303"*), and step 2 is what remains. It needs
 one of: the SR2 book, a ruling on the Area Knowledge citation, and a convention for authored
