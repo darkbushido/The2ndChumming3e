@@ -115,7 +115,25 @@ concrete, currently-absent mechanical effect, not judgment calls. Finding 3 is l
 and may be an intentional (if undocumented) design choice consistent with the rest of the
 system's "minimal guardrails" philosophy — that one's more a documentation gap than a bug.
 
-None of these are fixed here. Per CLAUDE.md this goes to the maintainer to decide whether
+**RESOLVED 2026-09-22 — all three are fixed** (`4356d8a2`, on `main` as bug fixes per the
+versioning rule). Each was re-verified against the PDF before anything changed, and each carries
+its quote at the code site:
+
+| Finding | Fix |
+|---|---|
+| 1 · grenade staging | the throw's successes now stage the blast's Damage **Level** (never its Power); CLAUDE.md's "never success-staged" line, which stated the wrong behaviour as settled, is corrected, and p.119's optional half-Power variant is named as deliberately not implemented |
+| 2 · Sorcery Rule of One | `castGlitch` now reaches `_postDrainCard`, **+2 cumulative with sustaining**; the detection-spell "the gamemaster lies" half is recorded as the GM's, not modelled |
+| 3 · learned Force | `SpellData.force` added (**nullable — null is "not recorded", which caps nothing**, because every shipped spell predates the field), recorded on the item sheet, and the cast dialog caps *and clamps on read* |
+
+⚠ **Finding 3 was NOT a minimal-guardrails choice**, as this record allowed it might be. There was
+no field at all, so the limit could not be shown, let alone applied. The maintainer's call was to
+record the Force, allow casting lower, and cap the control.
+
+`tests/guide-validation.test.mjs` pins all three with the quotes. It also caught a bug in the fix
+itself before it shipped: `stageDamage` takes a **parsed** code, and the first attempt passed a
+template string, which destructures to undefined and stages from nothing.
+
+None of these were fixed at the time this record was written. Per CLAUDE.md this goes to the maintainer to decide whether
 each becomes a bug fix (with its own version bump per the versioning rules) or gets a
 documented, deliberate 🔴 DIVERGES FROM RAW marker with a TODO number.
 

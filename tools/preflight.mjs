@@ -180,9 +180,27 @@ if (VERSION) {
   }
 
   // ⚠ TODO 121 — recorded, never performed here. See the header.
+  //
+  // ⚠ **Presence is not completeness, and the gate must not imply it is.** The 0.6.0 record opens
+  // "Status: first pass, not exhaustive" and lists whole sections of guides/ it never read — and a
+  // bare PASS beside that would be the gate quietly blessing a partial audit. The script cannot
+  // judge an audit, but it can refuse to hide what the audit says about itself, so the record's own
+  // status line is printed at release time for a human to weigh.
   const audit = path.join(ROOT, 'audit', `rules-check-${bare}.md`);
+  const auditText = existsSync(audit) ? readFileSync(audit, 'utf8') : '';
+  const statusLine = auditText.split(/\r?\n/).find(l => /^\s*\*\*Status[: ]/i.test(l))
+    ?? auditText.split(/\r?\n/).find(l => l.trim() && !l.startsWith('#'))
+    ?? '';
+  const partial = /first pass|not exhaustive|incomplete|were not (checked|covered)/i.test(auditText);
+  if (existsSync(audit)) {
+    console.log(`      rules-check record says: ${statusLine.replace(/\*\*/g, '').trim().slice(0, 100)}`);
+    if (partial) {
+      console.log('      \u26a0 That record describes itself as a PARTIAL pass. Read it before tagging —'
+        + ' this gate proves a person looked, not that they finished.');
+    }
+  }
   record('rules check vs guides (TODO 121)', existsSync(audit),
-    existsSync(audit) ? `audit/rules-check-${bare}.md is present`
+    existsSync(audit) ? `audit/rules-check-${bare}.md is present${partial ? ' (self-described as PARTIAL — see above)' : ''}`
       : `audit/rules-check-${bare}.md is missing`,
     '⚠ NOT a task for this script or for a cheap agent. It is a reading task: the code\'s rules '
     + 'against guides/, with the PDFs as the authority, every difference quoted with its printed '
