@@ -71,13 +71,13 @@ three nice-to-haves (79, 82, 7) and the release tasks below.
 
 ## Contents
 
-**28 open.** 103 done — see [TODO-DONE.md](TODO-DONE.md).
+**29 open.** 103 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held |
-| 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects<br>[131](#131) Cover and visibility on elemental spells |
+| 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects<br>[131](#131) Cover and visibility on elemental spells<br>[132](#132) Astral damage: dual beings resist with Body, not Willpower |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
@@ -638,6 +638,8 @@ duration, counted down on the round hook, a crash card on expiry), a resistance/
 in the healing helper's style, and the effects as data on the item rather than parsed from prose.
 Effects offered and applied only on a click — nothing automatic, per the design ethos.
 
+<a id="132"></a>
+
 ## 131. Cover and visibility on elemental spells — **left over from rules-check 0.6.0 Finding 4, 2026-09-22**
 
 **The book, SR3 p.183:** *"Elemental spells are treated like normal ranged attacks … They have a base
@@ -659,6 +661,22 @@ failed dodge are **dead** — nothing sets `isSpellSoak`. They are a leftover sp
 back to a Willpower resist; remove them once #131 is done, so nobody revives them for elemental spells.
 
 <a id="124"></a>
+
+## 132. Astral damage: dual beings resist with Body, not Willpower — **found fixing rules-check 0.6.0 Finding 5, 2026-09-22**
+
+**The book, SR3 p.175:** *"The Damage Resistance Test is resolved using Willpower or Force for astral
+beings, or Body for dual beings."* p.174 puts *"Astrally perceiving characters and other dual beings"*
+in one class, using *"their normal physical Attributes, skills and Combat Pool in astral combat"*.
+
+**The code:** `_postAstralSoakCard` always offers **Willpower** (*"Willpower / Astral Body"*) — right for
+a projecting character or a spirit, wrong for anyone astrally perceiving or dual-natured. The pool is
+editable, so a GM can correct it by hand, which is why it has not bitten.
+
+**For the maintainer:** is `system.astralMode` (`'dual'` vs `'astral'`) the right switch, and what should
+an actor with no mode set default to? p.174 also gives dual beings their **Combat Pool** in astral combat;
+check whether the astral soak card should offer it.
+
+<a id="131"></a>
 
 ### 🖥 Matrix
 

@@ -1568,4 +1568,12 @@ export const MUTANTS = [
           + 'spells now reach it through the ranged flow, so this is the easy way to get it wrong',
     impl:   ({ ballistic = 0 } = {}) => Math.floor(Math.max(0, Number(ballistic) || 0) / 2),
   },
+  {
+    id:     'mystic-armor-left-out-of-astral',
+    suite:  'astral-soak',
+    ...ACTOR, method: 'astralSoakTN',
+    was:    'SR3 p.170 - "Mystic Armor also protects against damage done in astral combat". The astral '
+          + 'soak card built its TN from the Power alone until 0.6 (rules-check 0.6.0, Finding 5)',
+    impl:   ({ power = 0 } = {}) => Math.max(2, Number(power) || 0),
+  },
 ];

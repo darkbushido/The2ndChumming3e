@@ -10659,6 +10659,24 @@ _prepareCharacter(sys, attr) {
     });
   }
 
+  /**
+   * The astral Damage Resistance TN · *SR3 p.170, p.172, p.175* — rules-check 0.6.0, Finding 5.
+   *
+   * > "Mystic Armor also protects against damage done in astral combat (p. 174)."  — p.170
+   * > "Dual beings with natural physical armor gain the benefits of their armor in astral combat;
+   * > the Power of the attack is reduced by the target's natural armor. Physical armor worn by a
+   * > character has no effect in astral combat."  — p.175
+   *
+   * So the TN is the attack's Power less Mystic Armor, floored at 2 (p.112). ⚠ **Mystic Armor
+   * only** — worn armour has no effect here, which is why this card never read `armorRatings`. The
+   * ordinary soak card added Mystic Armor from the start; this one, the place p.170 names, never did.
+   * ⚠ A troll's "natural armor" (p.172) is SR3's Dermal Armor, **+1 Body** (p.56) — already in Body,
+   * so it is not a second deduction here.
+   */
+  static astralSoakTN({ power = 0, mysticArmor = 0 } = {}) {
+    return Math.max(2, (Number(power) || 0) - Math.max(0, Number(mysticArmor) || 0));
+  }
+
   static async postAstralSoakCard(actorId, payload) {
     const actor = game.actors.get(actorId);
     if (!actor) return;
@@ -10673,8 +10691,9 @@ _prepareCharacter(sys, attr) {
     const wilAttr = this.system.attributes?.willpower;
     const wilVal  = Math.max(wilAttr?.value ?? 0, wilAttr?.base ?? 0, 1);
     // TN = Power of the attack — must reflect any weapon-focus bonus baked into stagedPower,
-    // not just the winner's raw Charisma (which ignores that bonus entirely).
-    const soakTN  = Math.max(2, stagedPower ?? winnerCha);
+    // not just the winner's raw Charisma (which ignores that bonus entirely) — less Mystic Armor.
+    const mysticArmor = Math.max(0, this.system.derived?.mysticArmor ?? 0);
+    const soakTN  = SR3EActor.astralSoakTN({ power: stagedPower ?? winnerCha, mysticArmor });
 
     const soakPayload = JSON.stringify({
       actorId:         this.id,
@@ -10698,8 +10717,11 @@ _prepareCharacter(sys, attr) {
               Resist Pool — Willpower / Astral Body (${wilVal}):
               <input type="number" class="sr-astral-soak-pool" value="${wilVal}" min="1" max="30" style="width:55px"/>
             </label>
+          ${mysticArmor > 0 ? `<div class="sr-roll-meta" style="color:var(--sr-gold);font-size:11px">
+            ✨ Mystic Armor −${mysticArmor} Power — it protects in astral combat; worn armour does not (SR3 p.170, p.175)
+          </div>` : ''}
             <label class="sr-soak-label">
-              TN (Power of the attack — ${soakTN}):
+              TN (Power of the attack${mysticArmor > 0 ? ` − Mystic Armor ${mysticArmor}` : ''} — ${soakTN}):
               <input type="number" class="sr-astral-soak-tn" value="${soakTN}" min="2" max="30" style="width:55px"/>
             </label>
           </div>

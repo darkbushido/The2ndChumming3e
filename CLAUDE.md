@@ -2166,7 +2166,7 @@ already covers its level (`Imp. Reflexes Level 3` costs 5, not 15).
 |---|---|---|
 | Combat Sense | +N **Combat Pool** dice · p.169 | `combatPool` derivation |
 | Pain Resistance | level off the damage used for the **injury-modifier lookup** · p.170 | `woundMod`, recomputed in `_prepareCharacter` |
-| Mystic Armor | +N **Impact** armour, cumulative, astral too · p.170 | soak card |
+| Mystic Armor | +N **Impact** armour, cumulative, astral too · p.170 | soak card; **astral soak card** as −N Power (`astralSoakTN`, p.175) |
 | Penetrating Strike | −N the **target's** Impact armour · SOTA2 p.67 | soak card, from the payload |
 | Killing Hands | replaces unarmed (STR)M Stun with (STR)*level* **Physical** · p.170 | declared in the called-shot dialog |
 
@@ -2177,6 +2177,11 @@ damage, only its effect on you."* Touching the track would un-fill boxes the GM 
 ⚠ **Killing Hands is DECLARED per attack** — *"you may do normal stun damage, or physical
 damage as purchased… must be declared with the Unarmed Combat attack."* Never automatic.
 ⚠ **Mystic Armor is added BEFORE the ammo rules**, so it survives Flechette's doubling.
+⚠ **Astral combat has its OWN soak card** (`_postAstralSoakCard`), and until 0.6 it read no armour at
+all — the row above said "astral too" while the code never did (rules-check 0.6.0, Finding 5). p.175:
+*"the Power of the attack is reduced by the target's natural armor. Physical armor worn by a character
+has no effect in astral combat."* So `astralSoakTN` takes Mystic Armor off the Power and nothing else.
+⚠ Mystic Armor only counts for `magicType: 'Adept'` — a test actor without it derives 0.
 
 #### Defaulting carries half the augmentation dice  · *SR3 p.169* — TODO 61
 
