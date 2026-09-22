@@ -1463,7 +1463,18 @@ Two entry points besides the sheet (both fire ready weapons via `_sr3eReadyWeapo
   1. **Nominate** the blast point — `_placeBlastTemplate`: a plain **PIXI.Graphics circle** (added to `canvas.interface`) that follows the cursor — left-click detonates, right-click/Esc cancels, destroyed via PIXI. Records `aoeCenter` (scene coords) + the thrower token centre. *(Foundry v14 deprecated both the MeasuredTemplate **document** and **placeable** — merged into Region — so the aiming preview uses no MeasuredTemplate at all, avoiding every compatibility warning.)*
   2. **Roll options** — `_promptWeaponRollOptionsAoE(rawDamage, actor, {throwDistance})`: grenade type (Standard/Aero/Launcher), damage code, **auto range-TN** by type (`SR3E.grenadeTypes[type].rangeMult × STR` or `rangeFixed`, recomputed on type change), and a Confined-Space tickbox. No targets chosen here.
   3. **Throw roll** (`rollPool`) carries `aoeCenter / aoeRadius / aoeThrowerCenter / grenadeType / aoeChunky` in the roll state.
-  4. **Resolution** (`SR3EActor._postWaveCard`, the `state.isAoE && state.aoeCenter` branch — runs **before** the `successes===0` check, so a grenade always detonates): rolls scatter (`scatterDice` d6) − `successes × scatterReduction`; **relocates the epicentre** along the throw axis (dir 1 = overthrow, 4 = short); creates a result template at the landing spot; **re-detects every token in range — including the thrower**; draws a landing marker as a **Region document** (circle shape, `visibility: ALWAYS` — synced & visible to **all players**, deleted warning-free since Region isn't deprecated). If the thrower lacks Region-create permission it falls back to a **local PIXI circle** (tracked in `game.sr3e._blastMarkers`). The chat 🧹 Clear button removes whichever was made (`data-region-id` → region `delete()`; `data-marker-id` → PIXI `destroy()`). Per-target power = base − distance (or the **Chunky Salsa GUI** `game.sr3e.openChunkySalsa({...returnOnly})` when confined). Posts a soak card per caught token. Damage is base power − distance, never success-staged (successes only tighten scatter).
+  4. **Resolution** (`SR3EActor._postWaveCard`, the `state.isAoE && state.aoeCenter` branch — runs **before** the `successes===0` check, so a grenade always detonates): rolls scatter (`scatterDice` d6) − `successes × scatterReduction`; **relocates the epicentre** along the throw axis (dir 1 = overthrow, 4 = short); creates a result template at the landing spot; **re-detects every token in range — including the thrower**; draws a landing marker as a **Region document** (circle shape, `visibility: ALWAYS` — synced & visible to **all players**, deleted warning-free since Region isn't deprecated). If the thrower lacks Region-create permission it falls back to a **local PIXI circle** (tracked in `game.sr3e._blastMarkers`). The chat 🧹 Clear button removes whichever was made (`data-region-id` → region `delete()`; `data-marker-id` → PIXI `destroy()`). Per-target power = base − distance (or the **Chunky Salsa GUI** `game.sr3e.openChunkySalsa({...returnOnly})` when confined). Posts a soak card per caught token.
+  ⚠ **The throw's successes STAGE THE DAMAGE LEVEL** · SR3 p.119: *"Compare the target's successes
+  against those from the attacker's Success Test. If the attacker rolled more successes, the Damage
+  Level of the blast increases one level for every two successes over the target's success total. If
+  the target rolls more successes, the Damage Level … is reduced one level for every two."* Only half
+  of that was implemented until 2026-09-22 — the soak already staged DOWN on the target's Body
+  successes, but the thrower's did nothing except tighten scatter, so a perfect throw hit no harder
+  than a fumbled one. **This line used to say "never success-staged", stated as settled.**
+  ⚠ **POWER is not staged, only the LEVEL** — Power is the distance-reduced blast Power *and* the
+  Damage Resistance TN, so staging it would make the wound both likelier and worse, twice over.
+  ⚠ p.119 also prints an **optional** rule (the GM rolls half the grenade's Power vs TN 4 to stage
+  up) — a different rule, not implemented; we do the standard one.
 - `_openChunkySalsaCalculator(opts)` posts soak cards itself when called with no `returnOnly` (the Rollable Tables button); returns per-target codes when `returnOnly:true`.
 - *(The dead remnants of the pre-scatter rework — `_promptTargetsAoE`, `_tokensInBlast`, the `aoeTargetIds`-gated branch in `_postWaveCard` and its `aoeTargetIds`/`chunkySalsa` payload plumbing, and `rollPool`'s inert `options.defaulting` +4 — have been removed.)*
 - **Shared blast-area marker**: `SR3EActor._drawBlastArea(center, radiusM, {name,color})` → `{regionId, markerId}` (Region with `visibility: ALWAYS`, local PIXI fallback) and `SR3EActor._clearBlastButton({regionId,markerId})` build the marker + chat 🧹 Clear button. Used by both grenade resolution and **spell AoE** (purple). Spell AoE has **no scatter/falloff** — `SR3EItem._actorsInRadius(center, radiusM, caster)` auto-detects targets at cast time; each resists at full Force.
@@ -2394,6 +2405,16 @@ card so the GM can see what was taken.
 - Covered by `tests/spell-defense.test.mjs`, including that each mage is asked on their own
   decider and that a mage who never answers does not block round start.
 7. **Resist Spell** (`_postSpellSoakCard` → `handleSpellResistRoll`): target rolls the **spell's Target attribute** — the *same* `SR3EItem._parseSpellTarget` is reused so the resist attribute always matches the cast — **attribute only, no pool** — vs **TN = Force** (interactive). **Net = caster successes − resister successes** (`isSpellResist` branch in `_postWaveCard`): ≤ 0 → no effect; otherwise `stageDamage(base, net)` → **Assign Damage** button. **There is no separate soak** — the resistance test *is* the defence.
+   ⚠ **The Sorcery Test's own Rule of One costs +2 on the Drain TN** · SR3 p.182: *"If the results are
+   all ones (see Rule Of One, p. 38), the spell fails and the target number for the Drain Resistance
+   Test is increased by +2."* Carried as `castGlitch` on the drain payload and added in
+   `_postDrainCard`. ⚠ **Cumulative with sustaining**, not an alternative — a glitched cast while
+   sustaining pays both. The glitch was computed for the dice card from the start and simply never
+   reached the drain (found by the guide validation, 2026-09-22).
+   ⚠ **Detection spells have a SECOND Rule-of-One consequence that is not modelled** (same page):
+   *"On a roll of all ones, the gamemaster lies, giving the caster or target misleading or false
+   information."* We cannot make a GM lie; it is theirs to apply.
+
 8. Drain resist: Willpower dice, two components (`SR3EItem.parseDrainFormula(drainStr, force, damageLevel)`):
    - **Power → TN** = ⌊Force/2⌋ + the **modifier outside the brackets** (the ½F base is implicit, not written; default +0).
    - **Level** = the nominated Damage Level + the **modifier inside the brackets** (`(+1)` or `(DL+1)`/`(Damage Level +1)` both = +1 stage; `(DL)`/`()` = +0; `(DL-1)` = −1).
@@ -2762,6 +2783,14 @@ system.roundsFiredThisPhase        ← persisted, recoil accumulator; reset each
 - `ammunition`: `ammoType` (key into `SR3E.ammoTypes`), `loadMechanism` (c/m/cy/b/d/sb/internal + arrow/bolt), `rounds` (stockpile total) + descriptive fields. NO power/armour data fields — rules are in config
 - `armor`: `ballistic` (number), `impact` (number)
 - `skill`: `rating`, `linkedAttribute`, `specialisation`
+- `spell`: **`force`** — the Force it was LEARNED at · *SR3 p.178*: *"Spellcasters learn spells at a
+  specific Force. They can cast the spell at a lower Force, if desired, but **can never cast the spell
+  at a higher Force than they have learned.**"* The cast dialog caps its Force input at this and
+  defaults to it, so casting lower is a deliberate choice. ⚠ **Nullable, and null means NOT RECORDED**
+  — every shipped spell predates the field, so a null caps nothing and the dialog says so; reading it
+  as 0 would make the whole spell library uncastable. ⚠ **The clamp is on READ, not just `max=`** —
+  `max` is a hint the browser applies to spinner clicks only, and a typed value sails past it.
+  There was no field at all before 2026-09-22, so the limit could not even be shown.
 - `spell`: `type` ("Mana"/"Physical" — sets **only the damage track**: Mana → Stun, Physical → Physical; it does **not** set the resist attribute), `target` (sets the **resist attribute *and* the cast TN** — `W/B/I/Q/F`/number, suffixes stripped — `SR3EItem._parseSpellTarget`), `category` (**Combat = damaging**: shows the cast Damage-Level dropdown), `drain` (drain-Power/TN formula e.g. "(F/2)" or "(DL+1)" — level = nominated Damage Level ± a `DL` token), `range` (Touch/LOS; an **`(A)` suffix = area effect**, no separate flag), `duration`. **No damage code** — spell power = Force and the level is chosen at cast (the `damage` field is hidden/legacy; only `drain` is required for a complete spell).
 - `drug`: 💊 takes a dose — see *Drugs* (TODO 124). `category`, `addiction` (e.g. "2M", "4M+3P", "5M/5P" — M=Mental, P=Physical), `tolerance`, `edge` ("5/50"), `fixFactor`, `damage` ("6S Stun"), `legality`, `speed` (onset time), `vector` (delivery method), `availability`, `cost`, `streetIndex`, `bookPage`, `notes`. `effect` is **legacy** — the Edge on items copied before `edge` existed. Shipped in the per-book drug packs (`sr3e-mm-drugs`, …).
 

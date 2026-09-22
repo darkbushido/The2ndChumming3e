@@ -782,6 +782,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Target', 'target', s.target, 'text', 'placeholder="W / B / F / number" title="Resisted attribute & cast TN — W=Willpower, B=Body, F=Force, or a fixed number"')}
           ${this._sel('Duration', 'duration', s.duration, SR3E.spellDurations)}
           ${this._f('Drain Code', 'drain', s.drain, 'text', 'placeholder="(F/2) or (DL+1)"')}
+          ${this._f('Learned Force', 'force', s.force, 'number', 'min="1" placeholder="not recorded" title="The Force this spell was learned at (SR3 p.178). It may be cast at or below this, never above. Blank = not recorded, which caps nothing."')}
         </div>
         <div class="notes-field">
           <label class="bio-label">Description</label>

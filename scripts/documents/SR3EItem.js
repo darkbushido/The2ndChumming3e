@@ -4276,6 +4276,14 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     const defaultLevel = SR3EItem._parseSpellDamageLevel(this.system.damage);
     const LEVEL_NAMES  = { L: 'Light', M: 'Moderate', S: 'Serious', D: 'Deadly' };
 
+    /* The Force this spell was learned at · SR3 p.178 — "can never cast the spell at a higher
+     * Force than they have learned". ⚠ A null (or a pre-0.6 spell that never had the field) is
+     * NOT RECORDED, so it caps nothing; the dialog says so rather than silently allowing anything. */
+    const learnedForce = Number(this.system.force) > 0 ? Number(this.system.force) : null;
+    /* Default to the learned Force when there is one — a caster who wants less says so. Otherwise
+     * the old behaviour, the Sorcery rating, which is a sane starting guess and nothing more. */
+    const defaultForce = learnedForce ?? Math.max(1, sorceryRating);
+
     // Step 1: Choose Force (+ Damage Level, + area radius for AoE spells)
     let force        = null;
     let damageLevel  = defaultLevel;
@@ -4298,8 +4306,11 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
-          Force: <input type="number" id="spell-force" min="1" max="99"
-                 value="${Math.max(1, sorceryRating)}" style="width:60px"/>
+          Force: <input type="number" id="spell-force" min="1" max="${learnedForce ?? 99}"
+                 value="${defaultForce}" style="width:60px"/>
+          ${learnedForce
+            ? `<span style="font-size:11px;color:var(--sr-muted)">learned at Force ${learnedForce} — may be cast lower, never higher (p.178)</span>`
+            : '<span style="font-size:11px;color:var(--sr-amber)">no learned Force recorded on this spell — uncapped</span>'}
         </div>
         ${isCombat ? `
         <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
@@ -4323,7 +4334,11 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
           default: true,
           callback: (_e, _b, dialog) => {
             castCancelled = false;
+            // ⚠ CLAMPED here, not merely in the markup: `max` is a hint the browser applies to
+            //   spinner clicks only, and a typed 99 sails past it — the same defect the drain pool
+            //   note records. With no learned Force recorded, nothing is capped.
             force = Math.max(1, parseInt(dialog.element.querySelector('#spell-force')?.value) || 1);
+            if (learnedForce) force = Math.min(force, learnedForce);
             if (isCombat) damageLevel = dialog.element.querySelector('#spell-damage')?.value || defaultLevel;
             if (isAoE) aoeRadius = Math.max(1, parseInt(dialog.element.querySelector('#spell-radius')?.value) || aoeRadius);
           }

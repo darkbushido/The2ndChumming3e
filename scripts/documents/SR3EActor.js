@@ -3135,8 +3135,37 @@ _prepareCharacter(sys, attr) {
                         .filter(t => t.power > 0);
           }
 
+          /* ⚠ **The throw's successes STAGE THE DAMAGE LEVEL** · SR3 p.119:
+           *   "Compare the target's successes against those from the attacker's Success Test. If
+           *    the attacker rolled more successes, the Damage Level of the blast increases one
+           *    level for every two successes over the target's success total. If the target rolls
+           *    more successes, the Damage Level of the blast is reduced one level for every two
+           *    successes over the attacker's success total."
+           *
+           * Only HALF of that was implemented: the soak card already stages DOWN on the target's
+           * Body successes, but the thrower's successes did nothing except tighten the scatter, so
+           * a perfectly-placed grenade hit no harder than a fumbled one. Staging up here and
+           * letting the soak stage down gives exactly the book's net comparison.
+           *
+           * ⚠ **POWER is not staged — only the LEVEL.** Power is "the adjusted Power of the
+           *   grenade's blast" (base minus distance) and is also the Damage Resistance TN; staging
+           *   it would make the blast both likelier to wound and harder to soak, twice over.
+           * ⚠ p.119 also offers an OPTIONAL rule where the GM instead rolls half the grenade's
+           *   Power against TN 4 to stage up. That is a different rule and is not implemented;
+           *   this is the standard one. */
+          {
+            const staged = codes.map(t => {
+              // ⚠ stageDamage takes a PARSED code ({power, level, isStun}), not a string — a string
+              //   destructures to undefined and stages from nothing. Caught by the test, not by play.
+              const up = SR3EItem.stageDamage({ power: t.power, level: t.level, isStun }, successes);
+              return { ...t, level: up.level, staged: up.level !== t.level };
+            });
+            codes.length = 0;
+            codes.push(...staged);
+          }
+
           const hitLines = codes.length
-            ? codes.map(t => `<div style="font-size:11px;margin-top:2px"><strong>${t.name}</strong>: ${t.power}${t.level}${t.dist != null ? ` <span style="color:var(--sr-muted)">(${t.dist}m)</span>` : ''}</div>`).join('')
+            ? codes.map(t => `<div style="font-size:11px;margin-top:2px"><strong>${t.name}</strong>: ${t.power}${t.level}${t.dist != null ? ` <span style="color:var(--sr-muted)">(${t.dist}m)</span>` : ''}${t.staged ? ` <span style="color:var(--sr-gold)">(staged up by ${successes} hit${successes !== 1 ? 's' : ''}, p.119)</span>` : ''}</div>`).join('')
             : '<div style="font-size:11px;color:var(--sr-muted)">No one caught in the blast.</div>';
           const clearBtn = SR3EActor._clearBlastButton({ regionId: resultRegionId, markerId: resultMarkerId });
           stagingHtml = `<div class="sr-staging-result">💥 ${basePower}${level}${isStun ? ' Stun' : ''} grenade — ${successes} hit${successes !== 1 ? 's' : ''}<div style="margin-top:3px">${scatterDesc}</div>${hitLines}${clearBtn}</div>`;
@@ -3281,6 +3310,10 @@ _prepareCharacter(sys, attr) {
           spellName:        sc.spellName,
           spellPoolForDrain: sc.spellPoolForDrain ?? 0,
           sustainTN:        sc.sustainTN ?? 0,
+          // ⚠ SR3 p.182: "If the results are all ones (see Rule Of One, p. 38), the spell fails and
+          //   the target number for the Drain Resistance Test is increased by +2." The glitch was
+          //   already computed for the dice card and simply never reached the drain.
+          castGlitch:       !!glitch,
         }).replace(/'/g, '&#39;');
         const casterName = game.actors.get(sc.attackerActorId)?.name ?? 'Caster';
         postRollHtml += `
@@ -9549,6 +9582,12 @@ _prepareCharacter(sys, attr) {
     // cast time and carries `sustainTN`; the rest (conjuring, wards, dispelling) count now.
     const sustainTN = Math.max(0, Number(payload.sustainTN ?? SR3EActor.standingTN(this)) || 0);
     drainTN += sustainTN;
+    // ⚠ **The Sorcery Test's own Rule of One costs +2 here** · SR3 p.182: "If the results are all
+    //   ones … the spell fails and the target number for the Drain Resistance Test is increased by
+    //   +2." Separate from, and cumulative with, the sustaining modifier above — a glitched cast
+    //   while sustaining pays both.
+    const castGlitch = !!payload.castGlitch;
+    if (castGlitch) drainTN += 2;
     const trackLabel = drainIsPhysical ? 'Physical' : 'Stun';
 
     // Drain is normally resisted with Willpower (spells); conjuring overrides to Charisma and
@@ -9576,6 +9615,10 @@ _prepareCharacter(sys, attr) {
       spellName,
     }).replace(/'/g, '&#39;');
 
+    const glitchWarning = castGlitch
+      ? '<div style="color:var(--sr-red);font-size:11px;margin-top:4px">⚠ Rule of One on the Sorcery Test '
+        + '— the spell failed and Drain is <strong>+2</strong> harder to resist (SR3 p.182).</div>'
+      : '';
     const physWarning = drainIsPhysical
       ? `<div style="color:var(--sr-red);font-size:11px;margin-top:4px">⚠ Force (${force}) &gt; Magic (${magicAttr}) — Drain is Physical!</div>`
       : '';

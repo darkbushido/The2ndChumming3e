@@ -417,6 +417,13 @@ export class BiowareData extends foundry.abstract.TypeDataModel {
 export class SpellData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
+      /* The Force this spell was LEARNED at · SR3 p.178: "Spellcasters learn spells at a specific
+       * Force. They can cast the spell at a lower Force, if desired, but can never cast the spell
+       * at a higher Force than they have learned."
+       * ⚠ **Nullable, and null means NOT RECORDED — not zero.** Every shipped spell predates this
+       *   field, so a null must leave the Force uncapped rather than pinning every existing spell
+       *   to 0 and making it uncastable. A number caps the cast dialog. */
+      force:       new NumberField({ integer: true, nullable: true, initial: null, min: 1 }),
       category:    new StringField({ initial: 'Combat' }),
       type:        new StringField({ initial: 'Physical' }),
       range:       new StringField({ initial: 'LOS' }),
