@@ -1,0 +1,3457 @@
+[
+ {
+  "_key": "!items!sr3e-firearm-0763",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0763",
+   "name": "AKR-20",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "AsRf",
+    "skill": "Rifles",
+    "attribute": "quickness",
+    "concealability": "3",
+    "ammunition": "30(c)",
+    "mode": "SA/BF/FA",
+    "damage": "8M",
+    "weight": "4",
+    "availability": "5/48hrs",
+    "cost": 1000,
+    "streetIndex": "2",
+    "accessories": "Gas Vent (1), Laser Sight",
+    "bookPage": "pw.26",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": true
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0068",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0068",
+   "name": "Altmayr SP",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "4",
+    "ammunition": "7(m)",
+    "mode": "SS",
+    "damage": "(Special)",
+    "weight": "3",
+    "availability": "4/48hrs",
+    "cost": 900,
+    "streetIndex": "1.5",
+    "accessories": "None",
+    "bookPage": "pw.15",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0764",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0764",
+   "name": "Anti-Vehicular Rifle",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "AsRf",
+    "skill": "Rifles",
+    "attribute": "quickness",
+    "concealability": "3",
+    "ammunition": "10(c)",
+    "mode": "SA/BF",
+    "damage": "8S",
+    "weight": "5.3",
+    "availability": "14/16days",
+    "cost": 6000,
+    "streetIndex": "3.2",
+    "accessories": "Mag:(2)",
+    "bookPage": "pw.28",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0657",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0657",
+   "name": "Arasaka Minami 10",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "SMG",
+    "skill": "SMG",
+    "attribute": "quickness",
+    "concealability": "6",
+    "ammunition": "40(c)",
+    "mode": "SA/BF/FA",
+    "damage": "7M",
+    "weight": "3.25",
+    "availability": "3/24hrs",
+    "cost": 1000,
+    "streetIndex": ".9",
+    "accessories": "None",
+    "bookPage": "pw.23",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0078",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0078",
+   "name": "Armalite 44",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "4",
+    "ammunition": "8(c)",
+    "mode": "SA",
+    "damage": "9M",
+    "weight": "2.25",
+    "availability": "4/24hrs",
+    "cost": 450,
+    "streetIndex": "1",
+    "accessories": "None",
+    "bookPage": "pw.21",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0000",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0000",
+   "name": "Barton Arms Bracer",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HOPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "7",
+    "ammunition": "1",
+    "mode": "SS",
+    "damage": "6L",
+    "weight": ".3",
+    "availability": "12/7days",
+    "cost": 1300,
+    "streetIndex": "3",
+    "accessories": "None",
+    "bookPage": "pw.20",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0001",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0001",
+   "name": "Barton Arms Gun Cane",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HOPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "2/9",
+    "ammunition": "1",
+    "mode": "SS",
+    "damage": "6L",
+    "weight": "1",
+    "availability": "10/7days",
+    "cost": 500,
+    "streetIndex": "2",
+    "accessories": "None",
+    "bookPage": "pw.20",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0082",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0082",
+   "name": "Beretta 100S Smart",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "15(c)",
+    "mode": "SA",
+    "damage": "9M",
+    "weight": "2.5",
+    "availability": "5/36hrs",
+    "cost": 1300,
+    "streetIndex": "1.5",
+    "accessories": "Smartlink, Silencer",
+    "bookPage": "pw.15",
+    "notes": "",
+    "hands": 1,
+    "smartgun": true,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0083",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0083",
+   "name": "Beretta Model 110-T",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "16(c)",
+    "mode": "SA",
+    "damage": "9M",
+    "weight": "2",
+    "availability": "3/24hrs",
+    "cost": 400,
+    "streetIndex": "1",
+    "accessories": "Laser Sight",
+    "bookPage": "pw.15",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": true
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0080",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0080",
+   "name": "Beretta Model 95S-B",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "15(c)",
+    "mode": "SA/BF",
+    "damage": "9M",
+    "weight": "2.5",
+    "availability": "6/72hrs",
+    "cost": 750,
+    "streetIndex": "1.75",
+    "accessories": "Smartlink-2",
+    "bookPage": "pw.15",
+    "notes": "",
+    "hands": 1,
+    "smartgun": true,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0086",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0086",
+   "name": "Browning Defender 10",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "15(c)",
+    "mode": "SA/BF",
+    "damage": "9M",
+    "weight": "2",
+    "availability": "5/36hrs",
+    "cost": 900,
+    "streetIndex": "2",
+    "accessories": "None",
+    "bookPage": "pw.15",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0090",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0090",
+   "name": "BudgetArms Auto      (HPist) 3",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "8(c)",
+    "mode": "SA",
+    "damage": "9M",
+    "weight": "2.25",
+    "availability": "4/12hrs",
+    "cost": 350,
+    "streetIndex": ".7",
+    "accessories": "None",
+    "bookPage": "pw.19",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0002",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0002",
+   "name": "BudgetArms C13",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HOPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "8",
+    "ammunition": "8(c)",
+    "mode": "SA",
+    "damage": "4L",
+    "weight": ".5",
+    "availability": "2/8hrs",
+    "cost": 150,
+    "streetIndex": ".75",
+    "accessories": "None",
+    "bookPage": "pw.14",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0004",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0004",
+   "name": "Ceska Diplomat",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HOPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "8",
+    "ammunition": "6(cy)",
+    "mode": "SS",
+    "damage": "4L",
+    "weight": ".5",
+    "availability": "3/12hrs",
+    "cost": 250,
+    "streetIndex": "1",
+    "accessories": "None",
+    "bookPage": "pw.14",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0891",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0891",
+   "name": "Chandler Capture 100",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "ShtG",
+    "skill": "Shotguns",
+    "attribute": "quickness",
+    "concealability": "3",
+    "ammunition": "10(m)",
+    "mode": "SA",
+    "damage": "10S",
+    "weight": "4",
+    "availability": "4/24hrs",
+    "cost": 1500,
+    "streetIndex": "2",
+    "accessories": "Gas Vent (2), Shock Pads",
+    "bookPage": "pw.25",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0094",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0094",
+   "name": "Colt AMT Model 2000",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "8(c)",
+    "mode": "SA",
+    "damage": "9M",
+    "weight": "2.5",
+    "availability": "5/24hrs",
+    "cost": 500,
+    "streetIndex": "1",
+    "accessories": "None",
+    "bookPage": "pw.21",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0098",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0098",
+   "name": "Colt Peacemaker",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "4",
+    "ammunition": "6(cy)",
+    "mode": "SS",
+    "damage": "10M",
+    "weight": "2.75",
+    "availability": "3/24hrs",
+    "cost": 350,
+    "streetIndex": ".9",
+    "accessories": "None",
+    "bookPage": "pw.17",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0099",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0099",
+   "name": "Colt Penetrator",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "12(c)",
+    "mode": "SA",
+    "damage": "9M",
+    "weight": "2",
+    "availability": "4/24hrs",
+    "cost": 600,
+    "streetIndex": "1.5",
+    "accessories": "None",
+    "bookPage": "pw.21",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0005",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0005",
+   "name": "Colt Take-Down",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HOPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "8",
+    "ammunition": "2(b)",
+    "mode": "SA",
+    "damage": "7M",
+    "weight": ".5",
+    "availability": "4/12hrs",
+    "cost": 150,
+    "streetIndex": ".8",
+    "accessories": "None",
+    "bookPage": "pw.14",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0641",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0641",
+   "name": "Colt TP-6A",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "Tasr",
+    "skill": "Tasers",
+    "attribute": "quickness",
+    "concealability": "7",
+    "ammunition": "6(m)",
+    "mode": "SS",
+    "damage": "8S",
+    "weight": ".75",
+    "availability": "6/24hrs",
+    "cost": 550,
+    "streetIndex": "1",
+    "accessories": "None",
+    "bookPage": "pw.13",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0006",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0006",
+   "name": "Dai Lung Cybermag 15",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HOPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "7",
+    "ammunition": "10(c)",
+    "mode": "SA",
+    "damage": "4L",
+    "weight": ".5",
+    "availability": "3/12hrs",
+    "cost": 100,
+    "streetIndex": ".7",
+    "accessories": "None",
+    "bookPage": "pw.14",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0028",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0028",
+   "name": "Dai Lung Streetmaster",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "LPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "6",
+    "ammunition": "12(c)",
+    "mode": "SA",
+    "damage": "6L",
+    "weight": "1",
+    "availability": "3/12hrs",
+    "cost": 325,
+    "streetIndex": ".8",
+    "accessories": "None",
+    "bookPage": "pw.15",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0100",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0100",
+   "name": "DinaTech F5A",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "10",
+    "ammunition": "1",
+    "mode": "SS",
+    "damage": "10M",
+    "weight": "-",
+    "availability": "10/14days",
+    "cost": 500,
+    "streetIndex": "3",
+    "accessories": "None",
+    "bookPage": "pw.15",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0101",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0101",
+   "name": "DinaTech F5B",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "10",
+    "ammunition": "1",
+    "mode": "SS",
+    "damage": "7S",
+    "weight": "-",
+    "availability": "12/14days",
+    "cost": 700,
+    "streetIndex": "3",
+    "accessories": "None",
+    "bookPage": "pw.15",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0895",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0895",
+   "name": "Eichiro Hatamoto II",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "ShtG",
+    "skill": "Shotguns",
+    "attribute": "quickness",
+    "concealability": "6",
+    "ammunition": "1",
+    "mode": "SS",
+    "damage": "8S",
+    "weight": "2.5",
+    "availability": "12/7days",
+    "cost": 1200,
+    "streetIndex": "2",
+    "accessories": "None",
+    "bookPage": "pw.25",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0007",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0007",
+   "name": "Federated Arms X-22",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HOPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "7",
+    "ammunition": "10(c)",
+    "mode": "SA",
+    "damage": "4L",
+    "weight": ".5",
+    "availability": "2/12hrs",
+    "cost": 300,
+    "streetIndex": ".8",
+    "accessories": "None",
+    "bookPage": "pw.14",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0031",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0031",
+   "name": "Federated Arms X-9mm",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "LPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "12(c)",
+    "mode": "SA",
+    "damage": "6L",
+    "weight": "1",
+    "availability": "3/12hrs",
+    "cost": 450,
+    "streetIndex": ".75",
+    "accessories": "None",
+    "bookPage": "pw.16",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0104",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0104",
+   "name": "Fichetti Hurricane",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "14(30)(c)",
+    "mode": "SA/BF",
+    "damage": "9S(f)",
+    "weight": "2",
+    "availability": "3/48hrs",
+    "cost": 600,
+    "streetIndex": "1",
+    "accessories": "None",
+    "bookPage": "pw.17",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0771",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0771",
+   "name": "FN AGRL",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "AsRf",
+    "skill": "Rifles",
+    "attribute": "quickness",
+    "concealability": "-",
+    "ammunition": "40(c)",
+    "mode": "SA/BF/FA",
+    "damage": "8M",
+    "weight": "5",
+    "availability": "5/36hrs",
+    "cost": 2000,
+    "streetIndex": "2",
+    "accessories": "Gas Vent (2), Grenade Launcher (6-shot), Laser Sight, Mag:(2)",
+    "bookPage": "pw.27",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": true
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0676",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0676",
+   "name": "FN P55 Smart",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "SMG",
+    "skill": "SMG",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "50(c)",
+    "mode": "SA/BF/FA",
+    "damage": "8M",
+    "weight": "3.75",
+    "availability": "9/4days",
+    "cost": 900,
+    "streetIndex": "2.75",
+    "accessories": "Gas Vent (2), Smartlink",
+    "bookPage": "pw.23",
+    "notes": "",
+    "hands": 1,
+    "smartgun": true,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0675",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0675",
+   "name": "FN P55",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "SMG",
+    "skill": "SMG",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "50(c)",
+    "mode": "SA/BF/FA",
+    "damage": "8M",
+    "weight": "3.5",
+    "availability": "8/4days",
+    "cost": 650,
+    "streetIndex": "2.5",
+    "accessories": "Gas Vent (2), Mag:(2)",
+    "bookPage": "pw.23",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0773",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0773",
+   "name": "FN RAL",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "AsRf",
+    "skill": "Rifles",
+    "attribute": "quickness",
+    "concealability": "3",
+    "ammunition": "30(c)",
+    "mode": "SA/FA",
+    "damage": "8M",
+    "weight": "5",
+    "availability": "5/60hrs",
+    "cost": 1200,
+    "streetIndex": "2",
+    "accessories": "Mag:(1)",
+    "bookPage": "pw.26",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-1185",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-1185",
+   "name": "Generic Under-Barrel",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "GrLn",
+    "skill": "Grenade Launchers",
+    "attribute": "quickness",
+    "concealability": "(-3)",
+    "ammunition": "6(m)",
+    "mode": "SS",
+    "damage": "(Grenade)",
+    "weight": "(+2 kg)",
+    "availability": "8/4days",
+    "cost": 1700,
+    "streetIndex": "3",
+    "accessories": "None",
+    "bookPage": "pw.32",
+    "notes": "",
+    "isAoE": true,
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-1186",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-1186",
+   "name": "Grenade Launcher",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "GrLn",
+    "skill": "Grenade Launchers",
+    "attribute": "quickness",
+    "concealability": "(-2)",
+    "ammunition": "1(m)",
+    "mode": "SS",
+    "damage": "(Grenade)",
+    "weight": "1",
+    "availability": "6/4days",
+    "cost": 1250,
+    "streetIndex": "2.75",
+    "accessories": "None",
+    "bookPage": "pw.32",
+    "notes": "",
+    "isAoE": true,
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0037",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0037",
+   "name": "H&K Cavaet",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "LPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "9(c)",
+    "mode": "SA",
+    "damage": "6L",
+    "weight": "1.25",
+    "availability": "4/24hrs",
+    "cost": 500,
+    "streetIndex": "1",
+    "accessories": "None",
+    "bookPage": "pw.16",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-1133",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-1133",
+   "name": "H&K MG4/46",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "LMG",
+    "skill": "Gunnery",
+    "attribute": "quickness",
+    "concealability": "-",
+    "ammunition": "belt/100(c)",
+    "mode": "BF/FA",
+    "damage": "7S",
+    "weight": "7",
+    "availability": "11/8days",
+    "cost": 2500,
+    "streetIndex": "4",
+    "accessories": "Laser Sight, Mag:(3), Shock Pads, Thermographic",
+    "bookPage": "pw.30",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": true
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0680",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0680",
+   "name": "H&K MP-2013",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "SMG",
+    "skill": "SMG",
+    "attribute": "quickness",
+    "concealability": "3",
+    "ammunition": "35(c)",
+    "mode": "SA/BF/FA",
+    "damage": "6M",
+    "weight": "2.75",
+    "availability": "5/48hrs",
+    "cost": 900,
+    "streetIndex": "1.1",
+    "accessories": "Sound Suppressor",
+    "bookPage": "pw.23",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0679",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0679",
+   "name": "H&K MP-9",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "SMG",
+    "skill": "SMG",
+    "attribute": "quickness",
+    "concealability": "4",
+    "ammunition": "25(c)",
+    "mode": "SA/BF",
+    "damage": "7M",
+    "weight": "3.75",
+    "availability": "5/36hrs",
+    "cost": 900,
+    "streetIndex": "1",
+    "accessories": "Gas Vent (3), Smartlink",
+    "bookPage": "pw.22",
+    "notes": "",
+    "hands": 1,
+    "smartgun": true,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0682",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0682",
+   "name": "H&K MPK-11",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "SMG",
+    "skill": "SMG",
+    "attribute": "quickness",
+    "concealability": "4",
+    "ammunition": "30(c)",
+    "mode": "SA/FA",
+    "damage": "7M",
+    "weight": "3.5",
+    "availability": "5/48hrs",
+    "cost": 1400,
+    "streetIndex": "1.2",
+    "accessories": "None",
+    "bookPage": "pw.24",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0681",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0681",
+   "name": "H&K MPK9",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "SMG",
+    "skill": "SMG",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "35(c)",
+    "mode": "SA/BF",
+    "damage": "7M",
+    "weight": "3",
+    "availability": "5/36hrs",
+    "cost": 1040,
+    "streetIndex": ".8",
+    "accessories": "None",
+    "bookPage": "pw.22",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0117",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0117",
+   "name": "H&K OHWS",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "12(c)",
+    "mode": "SA",
+    "damage": "9M",
+    "weight": "1.2",
+    "availability": "18/14 days",
+    "cost": 2500,
+    "streetIndex": "2",
+    "accessories": "Flashlight, Laser Sight",
+    "bookPage": "pw.22",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": true
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0040",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0040",
+   "name": "H&K P11M13",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "LPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "8",
+    "ammunition": "13(c)",
+    "mode": "SA",
+    "damage": "6L",
+    "weight": "1",
+    "availability": "5/36hrs",
+    "cost": 650,
+    "streetIndex": "1.25",
+    "accessories": "None",
+    "bookPage": "pw.22",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0039",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0039",
+   "name": "H&K P11M8",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "LPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "8",
+    "ammunition": "8(c)",
+    "mode": "SA",
+    "damage": "6L",
+    "weight": "1",
+    "availability": "5/36hrs",
+    "cost": 600,
+    "streetIndex": "1.25",
+    "accessories": "None",
+    "bookPage": "pw.22",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0010",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0010",
+   "name": "H&K P48",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HOPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "8",
+    "ammunition": "6(c)",
+    "mode": "SA/BF",
+    "damage": "4L",
+    "weight": ".45",
+    "availability": "4/24hrs",
+    "cost": 300,
+    "streetIndex": "1.5",
+    "accessories": "None",
+    "bookPage": "pw.20",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0038",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0038",
+   "name": "H&K P7S15",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "LPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "6",
+    "ammunition": "15(c)",
+    "mode": "SA",
+    "damage": "6L",
+    "weight": "1",
+    "availability": "4/24hrs",
+    "cost": 400,
+    "streetIndex": "1",
+    "accessories": "None",
+    "bookPage": "pw.16",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0964",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0964",
+   "name": "H&K PSG-65",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "Snip",
+    "skill": "Rifles",
+    "attribute": "quickness",
+    "concealability": "-",
+    "ammunition": "20(m)",
+    "mode": "SA",
+    "damage": "14S",
+    "weight": "6",
+    "availability": "12/7days",
+    "cost": 7000,
+    "streetIndex": "4",
+    "accessories": "Gas Vent (2), Low-Light, Mag:(3), Smartlink, Thermographic",
+    "bookPage": "pw.28",
+    "notes": "",
+    "hands": 2,
+    "smartgun": true,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0063",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0063",
+   "name": "H&K VP80Z",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "MaPist",
+    "skill": "SMG",
+    "attribute": "quickness",
+    "concealability": "6",
+    "ammunition": "21(c)",
+    "mode": "SA/BF",
+    "damage": "6L",
+    "weight": "1.25",
+    "availability": "6/48hrs",
+    "cost": 1200,
+    "streetIndex": "3",
+    "accessories": "RC:(1)",
+    "bookPage": "pw.23",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0899",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0899",
+   "name": "Holland&Holland .600 NE",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "ShtG",
+    "skill": "Shotguns",
+    "attribute": "quickness",
+    "concealability": "-",
+    "ammunition": "2(b)",
+    "mode": "SA",
+    "damage": "12S",
+    "weight": "4.5",
+    "availability": "-",
+    "cost": 10000,
+    "streetIndex": "-",
+    "accessories": "None",
+    "bookPage": "pw.25",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0779",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0779",
+   "name": "Honda AR-1",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "AsRf",
+    "skill": "Rifles",
+    "attribute": "quickness",
+    "concealability": "3",
+    "ammunition": "28(c)",
+    "mode": "BF/FA",
+    "damage": "8M",
+    "weight": "4.25",
+    "availability": "9/6 days",
+    "cost": 1000,
+    "streetIndex": "2",
+    "accessories": "Magnifcation (1)",
+    "bookPage": "pw.26",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-1241",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-1241",
+   "name": "Infrared Laser",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "Las",
+    "skill": "Firearms",
+    "attribute": "quickness",
+    "concealability": "normal",
+    "ammunition": "normal",
+    "mode": "normal",
+    "damage": "normal",
+    "weight": "normal",
+    "availability": "+4/+7 days",
+    "cost": 0,
+    "streetIndex": "+1",
+    "accessories": "normal",
+    "bookPage": "pw.13",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0686",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0686",
+   "name": "Ingram MAC-14",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "SMG",
+    "skill": "SMG",
+    "attribute": "quickness",
+    "concealability": "6",
+    "ammunition": "20(c)",
+    "mode": "SA/FA",
+    "damage": "7M",
+    "weight": "3",
+    "availability": "4/36hrs",
+    "cost": 650,
+    "streetIndex": "1",
+    "accessories": "None",
+    "bookPage": "pw.24",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0687",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0687",
+   "name": "Ingram MAC-20",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "SMG",
+    "skill": "SMG",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "20(c)/16(32)(c)",
+    "mode": "SA/FA",
+    "damage": "9M/7M",
+    "weight": "3.75/3.5",
+    "availability": "6/48hrs",
+    "cost": 700,
+    "streetIndex": "1.5",
+    "accessories": "Sound Suppressor",
+    "bookPage": "pw.24",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0121",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0121",
+   "name": "Ingram Mk IV",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "4",
+    "ammunition": "16(c)",
+    "mode": "SA/BF",
+    "damage": "10M",
+    "weight": "3",
+    "availability": "18/14 days",
+    "cost": 2500,
+    "streetIndex": "3",
+    "accessories": "Gas Vent (3), Smartlink",
+    "bookPage": "pw.15",
+    "notes": "",
+    "hands": 1,
+    "smartgun": true,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-1136",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-1136",
+   "name": "IWS Mini-5 Smart",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "LMG",
+    "skill": "Gunnery",
+    "attribute": "quickness",
+    "concealability": "-",
+    "ammunition": "belt",
+    "mode": "FA",
+    "damage": "7S",
+    "weight": "14",
+    "availability": "24/14days",
+    "cost": 26000,
+    "streetIndex": "2",
+    "accessories": "Smartlink",
+    "bookPage": "pw.34",
+    "notes": "",
+    "hands": 2,
+    "smartgun": true,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-1135",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-1135",
+   "name": "IWS Mini-5",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "LMG",
+    "skill": "Gunnery",
+    "attribute": "quickness",
+    "concealability": "-",
+    "ammunition": "belt",
+    "mode": "FA",
+    "damage": "7S",
+    "weight": "14",
+    "availability": "24/14days",
+    "cost": 13000,
+    "streetIndex": "2",
+    "accessories": "None",
+    "bookPage": "pw.34",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0780",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0780",
+   "name": "Kalashnikov A-80",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "AsRf",
+    "skill": "Rifles",
+    "attribute": "quickness",
+    "concealability": "1",
+    "ammunition": "35(c)",
+    "mode": "SA/FA",
+    "damage": "8M",
+    "weight": "4.5",
+    "availability": "4/36hrs",
+    "cost": 1100,
+    "streetIndex": "2.5",
+    "accessories": "None",
+    "bookPage": "pw.27",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0782",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0782",
+   "name": "Kalishnikov AK-100 Smart",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "AsRf",
+    "skill": "Rifles",
+    "attribute": "quickness",
+    "concealability": "-",
+    "ammunition": "30(c)",
+    "mode": "SA/BF/FA",
+    "damage": "8M",
+    "weight": "5.75",
+    "availability": "5/36hrs",
+    "cost": 2000,
+    "streetIndex": "2",
+    "accessories": "Gas Vent (2), Smartlink",
+    "bookPage": "pw.27",
+    "notes": "",
+    "hands": 2,
+    "smartgun": true,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0781",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0781",
+   "name": "Kalishnikov AK-100",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "AsRf",
+    "skill": "Rifles",
+    "attribute": "quickness",
+    "concealability": "-",
+    "ammunition": "30(c)",
+    "mode": "SA/BF/FA",
+    "damage": "8M",
+    "weight": "5.75",
+    "availability": "5/36hrs",
+    "cost": 1000,
+    "streetIndex": "2",
+    "accessories": "Gas Vent (2)",
+    "bookPage": "pw.27",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0784",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0784",
+   "name": "Kalishnikov AK-101 Smart",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "AsRf",
+    "skill": "Rifles",
+    "attribute": "quickness",
+    "concealability": "2",
+    "ammunition": "30(m)",
+    "mode": "SA/BF/FA",
+    "damage": "8M",
+    "weight": "5.5",
+    "availability": "8/4days",
+    "cost": 3200,
+    "streetIndex": "2",
+    "accessories": "Gas Vent (2), Smartlink",
+    "bookPage": "pw.27",
+    "notes": "",
+    "hands": 2,
+    "smartgun": true,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0783",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0783",
+   "name": "Kalishnikov AK-101",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "AsRf",
+    "skill": "Rifles",
+    "attribute": "quickness",
+    "concealability": "2",
+    "ammunition": "30(m)",
+    "mode": "SA/BF/FA",
+    "damage": "8M",
+    "weight": "5.5",
+    "availability": "8/4days",
+    "cost": 1600,
+    "streetIndex": "2",
+    "accessories": "Gas Vent (2), Laser Sight",
+    "bookPage": "pw.27",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": true
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0900",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0900",
+   "name": "Kimatsuhama UBS-5",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "ShtG",
+    "skill": "Shotguns",
+    "attribute": "quickness",
+    "concealability": "(-2)",
+    "ammunition": "4(m)",
+    "mode": "SS",
+    "damage": "7S",
+    "weight": "2.25",
+    "availability": "5/48hrs",
+    "cost": 500,
+    "streetIndex": "1.1",
+    "accessories": "None",
+    "bookPage": "pw.25",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0901",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0901",
+   "name": "Kimatsuhama UBS-6",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "ShtG",
+    "skill": "Shotguns",
+    "attribute": "quickness",
+    "concealability": "(-2)",
+    "ammunition": "6(m)",
+    "mode": "SA",
+    "damage": "7S",
+    "weight": "2.5",
+    "availability": "6/48hrs",
+    "cost": 750,
+    "streetIndex": "1.1",
+    "accessories": "None",
+    "bookPage": "pw.25",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0902",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0902",
+   "name": "Kimatsuhama UBS-7",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "ShtG",
+    "skill": "Shotguns",
+    "attribute": "quickness",
+    "concealability": "(-3)",
+    "ammunition": "2x 4(m)",
+    "mode": "2x SS",
+    "damage": "7S",
+    "weight": "3.5",
+    "availability": "10/7days",
+    "cost": 1700,
+    "streetIndex": "1.25",
+    "accessories": "None",
+    "bookPage": "pw.25",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-1242",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-1242",
+   "name": "Laser LAW",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "Las",
+    "skill": "Firearms",
+    "attribute": "quickness",
+    "concealability": "2",
+    "ammunition": "1(m)",
+    "mode": "SS",
+    "damage": "12M",
+    "weight": "5",
+    "availability": "24/21days",
+    "cost": 75000,
+    "streetIndex": "3",
+    "accessories": "None",
+    "bookPage": "pw.32",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-1243",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-1243",
+   "name": "Laser VLAW",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "Las",
+    "skill": "Firearms",
+    "attribute": "quickness",
+    "concealability": "4",
+    "ammunition": "1(m)",
+    "mode": "SS",
+    "damage": "10M",
+    "weight": "3.5",
+    "availability": "24/21days",
+    "cost": 60000,
+    "streetIndex": "3",
+    "accessories": "None",
+    "bookPage": "pw.32",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0787",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0787",
+   "name": "Maremont LR",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "AsRf",
+    "skill": "Rifles",
+    "attribute": "quickness",
+    "concealability": "3",
+    "ammunition": "36(c)",
+    "mode": "BF/FA",
+    "damage": "8M",
+    "weight": "4.25",
+    "availability": "6/4days",
+    "cost": 1400,
+    "streetIndex": "2.5",
+    "accessories": "Laser Sight, Mag:(1)",
+    "bookPage": "pw.30",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": true
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0042",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0042",
+   "name": "Mauser Ladyline",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "LPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "7",
+    "ammunition": "8(c)",
+    "mode": "SA",
+    "damage": "6L",
+    "weight": ".75",
+    "availability": "4/24hrs",
+    "cost": 350,
+    "streetIndex": "1",
+    "accessories": "None",
+    "bookPage": "pw.14",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0064",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0064",
+   "name": "Micro Uzi III",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "MaPist",
+    "skill": "SMG",
+    "attribute": "quickness",
+    "concealability": "6",
+    "ammunition": "16(c)",
+    "mode": "BF",
+    "damage": "6L",
+    "weight": "1.5",
+    "availability": "6/36hrs",
+    "cost": 750,
+    "streetIndex": "1",
+    "accessories": "Laser Sight",
+    "bookPage": "pw.22",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": true
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0043",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0043",
+   "name": "Militech Arms Avenger",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "LPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "6",
+    "ammunition": "10(c)",
+    "mode": "SA",
+    "damage": "6L",
+    "weight": "1",
+    "availability": "3/12hrs",
+    "cost": 325,
+    "streetIndex": ".8",
+    "accessories": "None",
+    "bookPage": "pw.15",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0788",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0788",
+   "name": "Militech Cyborg Rifle",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "AsRf",
+    "skill": "Rifles",
+    "attribute": "quickness",
+    "concealability": "2",
+    "ammunition": "30(c)",
+    "mode": "SA",
+    "damage": "6S",
+    "weight": "7.5",
+    "availability": "10/7days",
+    "cost": 800,
+    "streetIndex": "2.5",
+    "accessories": "Gas Vent (2)",
+    "bookPage": "pw.29",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-1206",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-1206",
+   "name": "Militech RPG-A",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "MisLn",
+    "skill": "Gunnery",
+    "attribute": "quickness",
+    "concealability": "-",
+    "ammunition": "1(m)",
+    "mode": "SS",
+    "damage": "(Missile)",
+    "weight": "4.5",
+    "availability": "9/14days",
+    "cost": 4500,
+    "streetIndex": "2.5",
+    "accessories": "None",
+    "bookPage": "pw.33",
+    "notes": "",
+    "isAoE": true,
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-1126",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-1126",
+   "name": "Mossberg M-712",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "MulWea",
+    "skill": "Firearms",
+    "attribute": "quickness",
+    "concealability": "3",
+    "ammunition": "35(c)/15(c)",
+    "mode": "(SA/BF/FA)/(SA)",
+    "damage": "8M/10S",
+    "weight": "6",
+    "availability": "12/7days",
+    "cost": 4000,
+    "streetIndex": "3",
+    "accessories": "Gas Vent (2, Rifle), Mag:(2), Smartlink",
+    "bookPage": "pw.25",
+    "notes": "",
+    "hands": 2,
+    "smartgun": true,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0129",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0129",
+   "name": "Nova .338 City Gun",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "7(c)",
+    "mode": "SA",
+    "damage": "10M",
+    "weight": "2.5",
+    "availability": "4/24hrs",
+    "cost": 460,
+    "streetIndex": "1",
+    "accessories": "None",
+    "bookPage": "pw.20",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-1155",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-1155",
+   "name": "NR-10 Multi-Barrel HMG",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HMG",
+    "skill": "Gunnery",
+    "attribute": "quickness",
+    "concealability": "-",
+    "ammunition": "35(c) or belt",
+    "mode": "FA",
+    "damage": "10S",
+    "weight": "41",
+    "availability": "28/30days",
+    "cost": 75000,
+    "streetIndex": "3",
+    "accessories": "None",
+    "bookPage": "pw.31",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0791",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0791",
+   "name": "Parker Carbine",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "AsRf",
+    "skill": "Rifles",
+    "attribute": "quickness",
+    "concealability": "3",
+    "ammunition": "500(c)",
+    "mode": "FA",
+    "damage": "6M",
+    "weight": "5.1",
+    "availability": "12/7days",
+    "cost": 2500,
+    "streetIndex": "1",
+    "accessories": "Caseless, Gas Vent (2), RC:is halved",
+    "bookPage": "pw.27",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0047",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0047",
+   "name": "Powell Knife Pistol",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "LPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "8",
+    "ammunition": "1(b)",
+    "mode": "SS",
+    "damage": "6L/(STR)L",
+    "weight": ".5",
+    "availability": "5/48hrs",
+    "cost": 250,
+    "streetIndex": "1",
+    "accessories": "None",
+    "bookPage": "pw.9",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0915",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0915",
+   "name": "Ranger Arms Security 12",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "ShtG",
+    "skill": "Shotguns",
+    "attribute": "quickness",
+    "concealability": "3",
+    "ammunition": "15(c)",
+    "mode": "SA/BF/FA",
+    "damage": "10S",
+    "weight": "4.5",
+    "availability": "10/8days",
+    "cost": 2000,
+    "streetIndex": "2",
+    "accessories": "Gas Vent (2), Laser Sight",
+    "bookPage": "pw.25",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": true
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0918",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0918",
+   "name": "Remington 1628",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "ShtG",
+    "skill": "Shotguns",
+    "attribute": "quickness",
+    "concealability": "4",
+    "ammunition": "8(m)",
+    "mode": "SS",
+    "damage": "8S",
+    "weight": "3",
+    "availability": "3/24hrs",
+    "cost": 500,
+    "streetIndex": "1",
+    "accessories": "None",
+    "bookPage": "pw.25",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0134",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0134",
+   "name": "Riot Gun",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "8",
+    "ammunition": "3(c)",
+    "mode": "SA",
+    "damage": "9S(f)",
+    "weight": "2",
+    "availability": "4/48hrs",
+    "cost": 500,
+    "streetIndex": "1",
+    "accessories": "None",
+    "bookPage": "pw.19",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-1191",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-1191",
+   "name": "Rockwell AGL-113",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "GrLn",
+    "skill": "Grenade Launchers",
+    "attribute": "quickness",
+    "concealability": "-",
+    "ammunition": "20(c)/belt",
+    "mode": "FA",
+    "damage": "(Grenade)",
+    "weight": "50",
+    "availability": "24/21days",
+    "cost": 15000,
+    "streetIndex": "4",
+    "accessories": "None",
+    "bookPage": "pw.32",
+    "notes": "",
+    "isAoE": true,
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0135",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0135",
+   "name": "Ruger M45",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "6",
+    "ammunition": "18(c)",
+    "mode": "SA/FA",
+    "damage": "9M",
+    "weight": "2",
+    "availability": "8/60hrs",
+    "cost": 860,
+    "streetIndex": "3",
+    "accessories": "Laser Sight",
+    "bookPage": "pw.21",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": true
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0136",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0136",
+   "name": "Ruger P-105",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "4",
+    "ammunition": "10(c)",
+    "mode": "SA",
+    "damage": "10M",
+    "weight": "2.5",
+    "availability": "4/24hrs",
+    "cost": 600,
+    "streetIndex": "1",
+    "accessories": "None",
+    "bookPage": "pw.17",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0048",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0048",
+   "name": "Ruger P-8",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "LPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "8",
+    "ammunition": "10(c)",
+    "mode": "SA",
+    "damage": "7L",
+    "weight": ".75",
+    "availability": "4/24hrs",
+    "cost": 395,
+    "streetIndex": "1",
+    "accessories": "None",
+    "bookPage": "pw.16",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0139",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0139",
+   "name": "Ruger Warhawk",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "6(cy)",
+    "mode": "SS",
+    "damage": "9M",
+    "weight": "2",
+    "availability": "3/24hrs",
+    "cost": 250,
+    "streetIndex": "1",
+    "accessories": "None",
+    "bookPage": "pw.21",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-1207",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-1207",
+   "name": "Ruhrmetall GPRL-Alpha",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "MisLn",
+    "skill": "Gunnery",
+    "attribute": "quickness",
+    "concealability": "-",
+    "ammunition": "4(m)",
+    "mode": "SS",
+    "damage": "(Missile)",
+    "weight": "9.5",
+    "availability": "13/28days",
+    "cost": 9000,
+    "streetIndex": "2",
+    "accessories": "None",
+    "bookPage": "pw.33",
+    "notes": "",
+    "isAoE": true,
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-1158",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-1158",
+   "name": "Ruhrmetall SF20",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HMG",
+    "skill": "Gunnery",
+    "attribute": "quickness",
+    "concealability": "-",
+    "ammunition": "belt/80(c)",
+    "mode": "BF/FA",
+    "damage": "10S",
+    "weight": "14",
+    "availability": "17/28days",
+    "cost": 7200,
+    "streetIndex": "2",
+    "accessories": "Gas Vent (3), Shock Pads",
+    "bookPage": "pw.33",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0051",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0051",
+   "name": "S&W Model 6739",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "LPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "8",
+    "ammunition": "5(cy)",
+    "mode": "SS",
+    "damage": "6L",
+    "weight": ".75",
+    "availability": "3/36hrs",
+    "cost": 250,
+    "streetIndex": ".9",
+    "accessories": "None",
+    "bookPage": "pw.16",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0696",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0696",
+   "name": "Sandler Model II",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "SMG",
+    "skill": "SMG",
+    "attribute": "quickness",
+    "concealability": "3",
+    "ammunition": "30(c)",
+    "mode": "BF/FA",
+    "damage": "6M",
+    "weight": "3.75",
+    "availability": "4/24hrs",
+    "cost": 700,
+    "streetIndex": "1",
+    "accessories": "Gas Vent (2), Laser Sight",
+    "bookPage": "pw.24",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": true
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0797",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0797",
+   "name": "Seco M-995 Smart",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "AsRf",
+    "skill": "Rifles",
+    "attribute": "quickness",
+    "concealability": "-",
+    "ammunition": "30(c)",
+    "mode": "SA/BF/FA",
+    "damage": "8M",
+    "weight": "5.75",
+    "availability": "10/4days",
+    "cost": 6000,
+    "streetIndex": "3",
+    "accessories": "Gas Vent (3), Grenade Launcher (6-shot), Rangefinder Grenade Link, Smartlink",
+    "bookPage": "pw.26",
+    "notes": "",
+    "hands": 2,
+    "smartgun": true,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0066",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0066",
+   "name": "Seco Quickfire",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "MaPist",
+    "skill": "SMG",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "18(c)",
+    "mode": "SA/BF/FA",
+    "damage": "6L",
+    "weight": "1.5",
+    "availability": "5/24hrs",
+    "cost": 750,
+    "streetIndex": "2",
+    "accessories": "None",
+    "bookPage": "pw.17",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0794",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0794",
+   "name": "SIG 880",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "AsRf",
+    "skill": "Rifles",
+    "attribute": "quickness",
+    "concealability": "2",
+    "ammunition": "30(c)",
+    "mode": "SA/BF",
+    "damage": "8M",
+    "weight": "4",
+    "availability": "4/36hrs",
+    "cost": 850,
+    "streetIndex": "2",
+    "accessories": "Gas Vent (2), Laser Sight",
+    "bookPage": "pw.27",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": true
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0795",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0795",
+   "name": "SIG 882",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "AsRf",
+    "skill": "Rifles",
+    "attribute": "quickness",
+    "concealability": "3",
+    "ammunition": "30(c)",
+    "mode": "SA/BF",
+    "damage": "8M",
+    "weight": "4",
+    "availability": "5/36hrs",
+    "cost": 850,
+    "streetIndex": "2",
+    "accessories": "Gas Vent (2), Laser Sight",
+    "bookPage": "pw.27",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": true
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-1006",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-1006",
+   "name": "SIG 883 SP",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "SptR",
+    "skill": "Rifles",
+    "attribute": "quickness",
+    "concealability": "2",
+    "ammunition": "5(30)(c)",
+    "mode": "SA",
+    "damage": "9M",
+    "weight": "4.25",
+    "availability": "3/36hrs",
+    "cost": 950,
+    "streetIndex": "1.5",
+    "accessories": "Mag:(2), Shock Pads",
+    "bookPage": "pw.31",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-1137",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-1137",
+   "name": "SIG 883",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "LMG",
+    "skill": "Gunnery",
+    "attribute": "quickness",
+    "concealability": "1",
+    "ammunition": "30(50)(c)",
+    "mode": "SA/FA",
+    "damage": "9M",
+    "weight": "6.5",
+    "availability": "6/48hrs",
+    "cost": 1000,
+    "streetIndex": "2.5",
+    "accessories": "Bipod, Gas Vent (3), Laser Sight, Shock Pads",
+    "bookPage": "pw.31",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": true
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0143",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0143",
+   "name": "Sig Sauer P300",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "4",
+    "ammunition": "18(c)",
+    "mode": "SA",
+    "damage": "9M",
+    "weight": "3.25",
+    "availability": "8/48hrs",
+    "cost": 800,
+    "streetIndex": "2",
+    "accessories": "Caseless, Laser Sight, Silencer",
+    "bookPage": "pw.17",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": true
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0967",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0967",
+   "name": "SMF K6",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "Snip",
+    "skill": "Rifles",
+    "attribute": "quickness",
+    "concealability": "-",
+    "ammunition": "30(c)",
+    "mode": "SA/FA",
+    "damage": "10S",
+    "weight": "5",
+    "availability": "14/21days",
+    "cost": 2000,
+    "streetIndex": "3",
+    "accessories": "Gas Vent (2)",
+    "bookPage": "pw.28",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0015",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0015",
+   "name": "Star Model DWT",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HOPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "7",
+    "ammunition": "6(c)",
+    "mode": "SA",
+    "damage": "5L",
+    "weight": ".5",
+    "availability": "3/18hrs",
+    "cost": 300,
+    "streetIndex": ".8",
+    "accessories": "None",
+    "bookPage": "pw.14",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0701",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0701",
+   "name": "Sternmeyer SMG 21",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "SMG",
+    "skill": "SMG",
+    "attribute": "quickness",
+    "concealability": "4",
+    "ammunition": "30(c)",
+    "mode": "SA.BF/FA",
+    "damage": "7M",
+    "weight": "3.25",
+    "availability": "4/36hrs",
+    "cost": 1000,
+    "streetIndex": "1.1",
+    "accessories": "None",
+    "bookPage": "pw.24",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0923",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0923",
+   "name": "Sternmeyer Stakeout 10",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "ShtG",
+    "skill": "Shotguns",
+    "attribute": "quickness",
+    "concealability": "4",
+    "ammunition": "10(m)",
+    "mode": "SA",
+    "damage": "9S",
+    "weight": "3.75",
+    "availability": "8/7days",
+    "cost": 900,
+    "streetIndex": "1.5",
+    "accessories": "None",
+    "bookPage": "pw.25",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0146",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0146",
+   "name": "SternMeyer Type5     (HPist) 3",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "8(c)",
+    "mode": "SA",
+    "damage": "9M",
+    "weight": "2.5",
+    "availability": "4/36hrs",
+    "cost": 400,
+    "streetIndex": "1",
+    "accessories": "None",
+    "bookPage": "pw.17",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0702",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0702",
+   "name": "Steyr MP i 25",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "SMG",
+    "skill": "SMG",
+    "attribute": "quickness",
+    "concealability": "4",
+    "ammunition": "35(c)",
+    "mode": "SA/BF/FA",
+    "damage": "6M",
+    "weight": "3.75",
+    "availability": "5/60hrs",
+    "cost": 725,
+    "streetIndex": "2",
+    "accessories": "Gas Vent (1), Laser Sight",
+    "bookPage": "pw.23",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": true
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0147",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0147",
+   "name": "SuperEagle",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "4",
+    "ammunition": "7(c)",
+    "mode": "SA",
+    "damage": "11M",
+    "weight": "2.75",
+    "availability": "6/48hrs",
+    "cost": 600,
+    "streetIndex": "1.5",
+    "accessories": "Smartlink",
+    "bookPage": "pw.21",
+    "notes": "",
+    "hands": 1,
+    "smartgun": true,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0893",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0893",
+   "name": "Syrko Cobra",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "ShtG",
+    "skill": "Shotguns",
+    "attribute": "quickness",
+    "concealability": "2(4)",
+    "ammunition": "10(c)",
+    "mode": "SA",
+    "damage": "10S",
+    "weight": "4.5",
+    "availability": "4/60hrs",
+    "cost": 1200,
+    "streetIndex": "1",
+    "accessories": "Smartlink",
+    "bookPage": "pw.24",
+    "notes": "",
+    "hands": 2,
+    "smartgun": true,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0703",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0703",
+   "name": "Syrko Eagle",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "SMG",
+    "skill": "SMG",
+    "attribute": "quickness",
+    "concealability": "4",
+    "ammunition": "50(c)",
+    "mode": "SA/FA",
+    "damage": "6M",
+    "weight": "3",
+    "availability": "5/3days",
+    "cost": 900,
+    "streetIndex": "1",
+    "accessories": "Gas Vent (2), Smartlink",
+    "bookPage": "pw.24",
+    "notes": "",
+    "hands": 1,
+    "smartgun": true,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-1128",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-1128",
+   "name": "Syrko Panther",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "MulWea",
+    "skill": "Firearms",
+    "attribute": "quickness",
+    "concealability": "1",
+    "ammunition": "40(c)/25(c)",
+    "mode": "(SA/FA)/(SA/BF)",
+    "damage": "8M/8S",
+    "weight": "5.25",
+    "availability": "8/7days",
+    "cost": 4000,
+    "streetIndex": "3",
+    "accessories": "Gas Vent (3, Rifle), Gas Vent (2, Shotgun), Smartlink",
+    "bookPage": "pw.24",
+    "notes": "",
+    "hands": 2,
+    "smartgun": true,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-1138",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-1138",
+   "name": "Syrko Tiger",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "LMG",
+    "skill": "Gunnery",
+    "attribute": "quickness",
+    "concealability": "-",
+    "ammunition": "40(c)/belt",
+    "mode": "SA/FA",
+    "damage": "7S",
+    "weight": "8.25",
+    "availability": "7/7days",
+    "cost": 3000,
+    "streetIndex": "2",
+    "accessories": "Caseless, Gas Vent (3), Smartlink",
+    "bookPage": "pw.24",
+    "notes": "",
+    "hands": 2,
+    "smartgun": true,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0148",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0148",
+   "name": "Syrko Wolf",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "17(c)",
+    "mode": "SA/BF",
+    "damage": "9M",
+    "weight": "2.5",
+    "availability": "5/48hrs",
+    "cost": 800,
+    "streetIndex": "1.5",
+    "accessories": "Smartlink",
+    "bookPage": "pw.24",
+    "notes": "",
+    "hands": 1,
+    "smartgun": true,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0653",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0653",
+   "name": "Techtronica Model 009",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "Tasr",
+    "skill": "Tasers",
+    "attribute": "quickness",
+    "concealability": "3",
+    "ammunition": "6(c)",
+    "mode": "SS",
+    "damage": "10S Stun",
+    "weight": "3.5",
+    "availability": "8/72hrs",
+    "cost": 1950,
+    "streetIndex": "2.5",
+    "accessories": "None",
+    "bookPage": "pw.13",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0707",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0707",
+   "name": "Uzi IV Smart",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "SMG",
+    "skill": "SMG",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "30(c)",
+    "mode": "SA/BF/FA",
+    "damage": "6M",
+    "weight": "3.25",
+    "availability": "8/60hrs",
+    "cost": 1200,
+    "streetIndex": "1.25",
+    "accessories": "Gas Vent (2), Smartlink",
+    "bookPage": "pw.22",
+    "notes": "",
+    "hands": 1,
+    "smartgun": true,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0706",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0706",
+   "name": "Uzi IV",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "SMG",
+    "skill": "SMG",
+    "attribute": "quickness",
+    "concealability": "4",
+    "ammunition": "30(c)",
+    "mode": "SA/BF/FA",
+    "damage": "6M",
+    "weight": "3",
+    "availability": "6/60hrs",
+    "cost": 1000,
+    "streetIndex": "1",
+    "accessories": "Gas Vent (2), Laser Sight",
+    "bookPage": "pw.22",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": true
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0708",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0708",
+   "name": "Uzi Miniauto 9",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "SMG",
+    "skill": "SMG",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "30(c)",
+    "mode": "BF/FA",
+    "damage": "6M",
+    "weight": "3",
+    "availability": "4/36hrs",
+    "cost": 700,
+    "streetIndex": "1",
+    "accessories": "None",
+    "bookPage": "pw.22",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0705",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0705",
+   "name": "UziS                   (SMG) 3",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "SMG",
+    "skill": "SMG",
+    "attribute": "quickness",
+    "concealability": "5",
+    "ammunition": "24(c)",
+    "mode": "SA/BF",
+    "damage": "6M",
+    "weight": "2.5",
+    "availability": "10/36hrs",
+    "cost": 900,
+    "streetIndex": "2",
+    "accessories": "Laser Sight, Sound Suppressor",
+    "bookPage": "pw.22",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": true
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0709",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0709",
+   "name": "Walther S900",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "SMG",
+    "skill": "SMG",
+    "attribute": "quickness",
+    "concealability": "4",
+    "ammunition": "30(c)",
+    "mode": "SA/BF",
+    "damage": "6M",
+    "weight": "3",
+    "availability": "5/36hrs",
+    "cost": 900,
+    "streetIndex": "1",
+    "accessories": "Gas Vent (2), Laser Sight",
+    "bookPage": "pw.24",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": true
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0149",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0149",
+   "name": "Walther Secura",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "HPist",
+    "skill": "Pistols",
+    "attribute": "quickness",
+    "concealability": "6",
+    "ammunition": "12(c)",
+    "mode": "SA",
+    "damage": "9M",
+    "weight": "1.5",
+    "availability": "5/48hrs",
+    "cost": 500,
+    "streetIndex": "1.5",
+    "accessories": "None",
+    "bookPage": "pw.17",
+    "notes": "",
+    "hands": 1,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ },
+ {
+  "_key": "!items!sr3e-firearm-0929",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-firearm-0929",
+   "name": "Wirtz SW3i DemoControl",
+   "type": "firearm",
+   "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+   "system": {
+    "category": "ShtG",
+    "skill": "Shotguns",
+    "attribute": "quickness",
+    "concealability": "3",
+    "ammunition": "4(m)",
+    "mode": "SS",
+    "damage": "(special)",
+    "weight": "3",
+    "availability": "9/16days",
+    "cost": 600,
+    "streetIndex": "4",
+    "accessories": "None",
+    "bookPage": "pw.25",
+    "notes": "",
+    "hands": 2,
+    "smartgun": false,
+    "laserSight": false
+   },
+   "effects": []
+  }
+ }
+]

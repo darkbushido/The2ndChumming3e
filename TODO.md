@@ -1870,6 +1870,21 @@ material — and either way almost none of it gets an SR2 page number.
 human knows what they are looking for (it answered the SR2 core offset and the Equipment Table
 pages in minutes), and **[#121](#121)**, checking the code's rules against the books each release.
 
+### ✅ The fan content is out of the shipping packs (2026-09-21)
+
+The maintainer's call: *"move the fan content to archive and give it its own code, it's not in
+scope for anything I want to do right now."* Done — **121 documents citing `pw`** moved to
+`archive/non-sr3-content/` by `tools/archive-fan-content.mjs`, bucketed `pw` so they are
+restorable per book. `sr3e-sr2-firearms` goes from 176 documents to 61, and **no shipped document
+cites a fan code any more** (`tests/fan-content.test.mjs` ratchets it).
+
+⚠ **The 200 unknowns did NOT move.** A blank or `???` page is *unknown*, not fan — moving those
+would be a guess dressed as a cleanup. So the missing-page backlog is **unchanged at 200**; what
+changed is that the packs no longer mix fan content in with the official books.
+
+⚠ **`pw` is deliberately NOT in `SOURCE_BOOKS`**: a code with no pack behind it renders an empty
+checkbox. If it is ever restored, it needs its own pack and a registry entry in the same commit.
+
 **So steps 1, 3 and 4 of the original plan are DONE** (the schema carries `bookPage` on every type,
 `check-packs` reports gaps, the sheet renders *"SR3 p.303"*), and step 2 is what remains. It needs
 one of: the SR2 book, a ruling on the Area Knowledge citation, and a convention for authored

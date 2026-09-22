@@ -696,6 +696,17 @@ per book left a remainder that had no book to belong to, and it is parked — no
 the classification bucket, and the untouched document. Restoring is a direct write back under
 the same key.
 
+⚠ **A second wave, 2026-09-21: 121 more documents, bucketed `pw`.** They were shipping *inside*
+the SR2 packs — **115 of them in `sr3e-sr2-firearms`, which by document count was therefore mostly
+not SR2** — so the source-book toggle could not reach them and the system was shipping sourcebook
+content it could not turn off. Moved by `tools/archive-fan-content.mjs` into four new files named
+for the packs they came from (`sr3e-sr2-firearms.json`, `-armor`, `-melee`, `-projectiles`).
+⚠ **Bucketed by the fan CODE, not the generic `fan`** — the older wave lumps ten sources together
+and this README calls the result hard to inventory, so these stay restorable per book.
+⚠ **Only PROVABLE fan content moved.** A document qualifies when its own `bookPage` cites a fan
+code; a blank or `???` page is **unknown, not fan**, and the 200 documents in that state were left
+exactly where they are. `tests/fan-content.test.mjs` ratchets both halves.
+
 | Bucket | Docs | Contents |
 |---|---:|---|
 | `fan` | 1,219 | ray · cb1-4 · cp · nagee · pw · bjf · adh |
@@ -711,6 +722,11 @@ a bucket blind will duplicate documents** — inventory what already ships first
 The **Chromebooks** (`cb1`-`cb4`) and **Cyberpunk 2020** (`cp`) material is fan *conversion*,
 not official 2nd-edition product, so it stays archived with the rest of the fan content rather
 than joining the SR2 books — see the comment above `SOURCE_BOOKS` in `config.js`.
+
+⚠ **`pw` has no entry in `SOURCE_BOOKS` and that is deliberate.** Registering a code with no pack
+behind it renders an **empty checkbox** in Configure Source Books — the trap noted under *"The
+filter only reaches packs"* below. If `pw` is ever restored it needs its own pack **and** a
+registry entry, off by default, in the same commit; the test asserts the two stay in step.
 
 **How filtering works** — `SR3ESourceBooks.packAllowed(pack)` is the single predicate, consumed
 in exactly two places:

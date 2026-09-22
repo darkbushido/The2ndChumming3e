@@ -594,6 +594,17 @@ export const SOURCE_BOOKS = {
   // Official SR2 books only. The Chromebooks (cb1-cb4) and Cyberpunk 2020 (cp) content
   // in the archive are fan CONVERSIONS rather than official 2nd-edition products, so
   // they stay archived alongside the other fan material — see archive/non-sr3-content.
+  //
+  // ⚠ **`pw` is a fan code and is deliberately NOT registered here** (2026-09-21). 121 `pw`
+  // documents were shipping inside these SR2 packs — 115 of them in `sr3e-sr2-firearms`, which by
+  // document count was therefore mostly not SR2 — so the source-book toggle could not reach them.
+  // They are now in `archive/non-sr3-content/`, bucketed as `pw` rather than the generic `fan`
+  // so they can be restored per book (`tools/archive-fan-content.mjs`).
+  //
+  // Registering the code without shipping a pack for it would render an **empty checkbox** in
+  // Configure Source Books — the trap noted under "The filter only reaches packs" in CLAUDE.md.
+  // If `pw` is ever restored it needs its own pack AND an entry here, off by default, in the
+  // same commit; `tests/fan-content.test.mjs` asserts the two stay in step.
   sr2:                { label: 'Shadowrun 2nd Edition',    edition: 'SR2', enabled: true, core: true },
   ct:                 { label: 'Cybertechnology',          edition: 'SR2', enabled: true  },
   ssc:                { label: 'Street Samurai Catalog',   edition: 'SR2', enabled: true  },

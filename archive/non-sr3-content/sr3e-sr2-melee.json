@@ -1,0 +1,83 @@
+[
+ {
+  "_key": "!items!sr3e-melee-0102",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-melee-0102",
+   "name": "DinaTech F5C",
+   "type": "melee",
+   "system": {
+    "category": "other",
+    "skill": "Armed Combat",
+    "attribute": "strength",
+    "concealability": "8",
+    "reach": "0",
+    "damage": "(STR/2)L/(STR)L",
+    "weight": "-",
+    "availability": "10/14 days",
+    "cost": 350,
+    "streetIndex": "3",
+    "legal": true,
+    "bookPage": "pw.15",
+    "notes": "",
+    "hands": 1
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  }
+ },
+ {
+  "_key": "!items!sr3e-melee-0103",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-melee-0103",
+   "name": "Drug-A-Thug",
+   "type": "melee",
+   "system": {
+    "category": "other",
+    "skill": "Armed Combat",
+    "attribute": "strength",
+    "concealability": "6",
+    "reach": "0",
+    "damage": "drug",
+    "weight": ".5",
+    "availability": "3/8hrs",
+    "cost": 150,
+    "streetIndex": "2",
+    "legal": true,
+    "bookPage": "pw.13",
+    "notes": "",
+    "hands": 1
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  }
+ },
+ {
+  "_key": "!items!sr3e-melee-0039",
+  "bucket": "pw",
+  "doc": {
+   "_id": "sr3e-melee-0039",
+   "name": "Slamdance Inc. Spawnblade",
+   "type": "melee",
+   "system": {
+    "category": "EDG",
+    "skill": "Edged Weapons",
+    "attribute": "strength",
+    "concealability": "8",
+    "reach": "0",
+    "damage": "(STR)L",
+    "weight": ".5",
+    "availability": "4/72hrs",
+    "cost": 100,
+    "streetIndex": "1.1",
+    "legal": true,
+    "bookPage": "pw.10",
+    "notes": "",
+    "hands": 1
+   },
+   "effects": [],
+   "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp"
+  }
+ }
+]
