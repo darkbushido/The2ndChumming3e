@@ -59,6 +59,19 @@ export async function run(t) {
     committed.every(u => !u.includes('/releases/')), committed.join(' '));
   t.eq('…in the shape manifest:branch writes', stampUrls(text, branchUrls(slug, committed[0].split('/tree/')[1])).changes, []);
 
+  /* ---- what the README tells a player to paste ----
+   * ⚠ It named the BRANCH manifest until 2026-09-23, so the documented install was "whatever is
+   *   on main right now" rather than a release: mid-change code, whatever the packs were last built
+   *   to, and Foundry offering main's tip as every future update. The branch URL is still there, as
+   *   the deliberate playtest option. This is checkable only here, against the same helpers the
+   *   release itself stamps with — a README URL has nothing else watching it.
+   */
+  const readme = read('README.md');
+  t.ok('the README installs the LATEST RELEASE, not a branch', readme.includes(releaseUrls(slug, 'v0.6.0').manifest), releaseUrls(slug, 'v0.6.0').manifest);
+  t.ok('…and shows how to pin one version', readme.includes('/releases/download/v0.6.0/system.json'));
+  t.ok('…with the branch URL kept, but named as development', /development branch/i.test(readme));
+  t.ok('the README links the published guides', readme.includes('https://darkbushido.github.io/The2ndChumming3e/'));
+
   /* ---- guides versions ---- */
   t.eq('versions sort numerically, newest first', sortVersions(['v0.9.0', 'latest', 'v0.10.0', 'versions', 'v0.10.1']),
     ['v0.10.1', 'v0.10.0', 'v0.9.0']);

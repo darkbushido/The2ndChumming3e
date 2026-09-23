@@ -1,12 +1,29 @@
 # The 2nd Chumming (3e): Shadowrun 3rd Edition — Foundry VTT System
 Unofficial Foundry VTT **v14** system for **Shadowrun 3rd Edition** and Matrix Defragged. 
 
+📖 **[SR3 Table Reference](https://darkbushido.github.io/The2ndChumming3e/)** — the rules tables and
+how this system handles them, published per release ([all versions](https://darkbushido.github.io/The2ndChumming3e/versions/)). It ships with each release as `guides.zip`, and is not part of the system download.
+
 ## Installation
 Under 'Game Systems', click Install System and paste the URL below into the Manifest URL field. This will install the system and associated compendiums.
 
 ```
+https://github.com/darkbushido/The2ndChumming3e/releases/latest/download/system.json
+```
+
+That is the **latest release**, and Foundry will offer you each new one from it. To install a
+**specific version** instead, paste that release's own manifest — e.g. `.../releases/download/v0.6.0/system.json`
+([all releases](https://github.com/darkbushido/The2ndChumming3e/releases)).
+
+<details><summary>Installing the development branch instead</summary>
+
+`main` is the tip of development, not a release: it may be mid-change, and its compendiums are
+whatever was last built. Foundry will keep offering you `main`'s contents as an update.
+
+```
 https://raw.githubusercontent.com/darkbushido/The2ndChumming3e/refs/heads/main/system.json
 ```
+</details>
 
 Create a new world, select **The 2nd Chumming** as your system.
 
