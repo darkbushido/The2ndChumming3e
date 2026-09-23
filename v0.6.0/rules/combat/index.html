@@ -1,0 +1,1081 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.6.0/assets/css/just-the-docs-default.css">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.6.0/assets/css/just-the-docs-head-nav.css" id="jtd-head-nav-stylesheet">
+
+  <style id="jtd-nav-activation">
+  
+
+    .site-nav > ul.nav-list:first-child > li > a,
+    
+    .site-nav > ul.nav-list:first-child > li > ul > li:not(:nth-child(1)) > a,
+    .site-nav > ul.nav-list:first-child > li > ul > li > ul > li a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:not(:first-child) a,
+    .site-nav li.external a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:first-child > li:nth-child(2) > ul > li:nth-child(1) > a {
+      font-weight: 600;
+      text-decoration: none;
+    }.site-nav > ul.nav-list:first-child > li:nth-child(2) > button svg,
+    .site-nav > ul.nav-list:first-child > li:nth-child(2) > ul > li:nth-child(1) > button svg {
+      transform: rotate(-90deg);
+    }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(2) > ul.nav-list,
+    .site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(2) > ul.nav-list > li.nav-list-item:nth-child(1) > ul.nav-list {
+      display: block;
+    }
+  </style>
+
+  
+
+  
+    <script src="/The2ndChumming3e/v0.6.0/assets/js/vendor/lunr.min.js"></script>
+  
+
+  <script src="/The2ndChumming3e/v0.6.0/assets/js/just-the-docs.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+
+
+
+  <!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Actions &amp; Combat | SR3 Table Reference</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Actions &amp; Combat" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<meta name="twitter:description" property="og:description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<link rel="canonical" href="https://darkbushido.github.io/The2ndChumming3e/v0.6.0/rules/combat/" />
+<meta property="og:url" content="https://darkbushido.github.io/The2ndChumming3e/v0.6.0/rules/combat/" />
+<meta property="og:site_name" content="SR3 Table Reference" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Actions &amp; Combat" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule.","headline":"Actions &amp; Combat","url":"https://darkbushido.github.io/The2ndChumming3e/v0.6.0/rules/combat/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <!-- Corrections toggle: set the class before first paint so hidden boxes never flash. -->
+<script>
+  try {
+    if (localStorage.getItem('showCorrections') === '1') {
+      document.documentElement.classList.add('show-corrections');
+    }
+  } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&display=swap">
+
+<!-- Digital rain behind the page. Throttled, paused in hidden tabs, off for reduced motion. -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var canvas = document.createElement('canvas');
+    canvas.id = 'sw-rain';
+    canvas.setAttribute('aria-hidden', 'true');
+    document.body.prepend(canvas);
+    var ctx = canvas.getContext('2d');
+    var glyphs = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789';
+    var size = 16, cols = 0, drops = [], gold = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      cols = Math.ceil(canvas.width / size);
+      drops = []; gold = [];
+      for (var i = 0; i < cols; i++) {
+        drops[i] = Math.random() * -canvas.height / size;
+        gold[i] = Math.random() < 0.06;
+      }
+    }
+
+    function frame() {
+      ctx.fillStyle = 'rgba(3, 8, 7, 0.12)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = size + 'px "Share Tech Mono", monospace';
+      for (var i = 0; i < cols; i++) {
+        var ch = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+        ctx.fillStyle = gold[i] ? '#d9a93f' : (Math.random() < 0.1 ? '#c8ffe0' : '#3ddc84');
+        ctx.fillText(ch, i * size, drops[i] * size);
+        if (drops[i] * size > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+          gold[i] = Math.random() < 0.06;
+        }
+        drops[i] += 1;
+      }
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    var timer = null;
+    function start() { if (!timer) timer = setInterval(frame, 60); }
+    function stop() { clearInterval(timer); timer = null; }
+    document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+    start();
+  });
+</script>
+
+<style>
+  html:not(.show-corrections) blockquote.fixed { display: none; }
+  .corrections-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  .corrections-toggle input { cursor: pointer; }
+  .guides-version {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    font-family: "Share Tech Mono", monospace;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+</style>
+
+
+</head>
+
+<body>
+  <a class="skip-to-main" href="#main-content">Skip to main content</a>
+  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="svg-link" viewBox="0 0 24 24">
+  <title>Link</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+  </svg>
+</symbol>
+
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+  <title>Menu</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+</symbol>
+
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+  <title>Expand</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </svg>
+</symbol>
+
+  <!-- Feather. MIT License: https://github.com/feathericons/feather/blob/master/LICENSE -->
+<symbol id="svg-external-link" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+  <title id="svg-external-link-title">(external link)</title>
+  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line>
+</symbol>
+
+  
+    <symbol id="svg-doc" viewBox="0 0 24 24">
+  <title>Document</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline>
+  </svg>
+</symbol>
+
+    <symbol id="svg-search" viewBox="0 0 24 24">
+  <title>Search</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>
+</symbol>
+
+  
+  
+    <!-- Bootstrap Icons. MIT License: https://github.com/twbs/icons/blob/main/LICENSE.md -->
+<symbol id="svg-copy" viewBox="0 0 16 16">
+  <title>Copy</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+  </svg>
+</symbol>
+<symbol id="svg-copied" viewBox="0 0 16 16">
+  <title>Copied</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-check-fill" viewBox="0 0 16 16">
+    <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3Zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Z"/>
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1Zm6.854 7.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708Z"/>
+  </svg>
+</symbol>
+
+  
+</svg>
+
+  
+    <header class="side-bar">
+  <div class="site-header">
+    <a href="/The2ndChumming3e/v0.6.0/" class="site-title lh-tight"><svg class="sw-emblem" viewBox="0 0 48 48" aria-hidden="true">
+  <circle cx="24" cy="13" r="6" fill="none" stroke="#d9a93f" stroke-width="2"/>
+  <path d="M24 3v3M24 20v3M14 13h3M31 13h3M17 6l2 2M29 18l2 2M17 20l2-2M29 8l2-2" stroke="#d9a93f" stroke-width="1.5"/>
+  <path d="M6 44h36v-5h-4v-5h-4v-5h-4v-4h-8v4h-4v5h-4v5h-4v5H6z" fill="none" stroke="#2fd6b0" stroke-width="2" stroke-linejoin="miter"/>
+  <path d="M21 44v-7h6v7" fill="none" stroke="#5dff9d" stroke-width="1.5"/>
+</svg>
+<span class="sw-title-text">SR3 Table Reference</span>
+</a>
+    <button id="menu-button" class="site-button btn-reset" aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><use xlink:href="#svg-menu"></use></svg>
+    </button>
+  </div>
+
+  <nav aria-label="Main" id="site-nav" class="site-nav">
+  
+  
+    <ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.0/" class="nav-list-link">Home</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Rules submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.0/rules/" class="nav-list-link">Rules</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.0/rules/combat/" class="nav-list-link">Actions & Combat</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.0/rules/reloading/" class="nav-list-link">Reloading</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.0/rules/grenades/" class="nav-list-link">Grenades</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.0/rules/healing/" class="nav-list-link">Healing</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Magic submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.0/magic/" class="nav-list-link">Magic</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.0/magic/awakened-primer/" class="nav-list-link">Primer for the Awakened</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.0/magic/spellcasting/" class="nav-list-link">Spellcasting, Resistance & Drain</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="The Street submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.0/street/" class="nav-list-link">The Street</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.0/street/sins/" class="nav-list-link">SINs & the SINless</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.0/street/gear-and-fencing/" class="nav-list-link">Buying Gear & Fencing</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.0/street/cyberware-grades/" class="nav-list-link">Cyberware Grades & Used Chrome</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Hiring & Service Costs submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.0/hiring/" class="nav-list-link">Hiring & Service Costs</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.0/hiring/decker/" class="nav-list-link">Decker</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.0/hiring/rigger/" class="nav-list-link">Rigger</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.0/hiring/combat-mage/" class="nav-list-link">Combat Mage</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.0/hiring/shaman/" class="nav-list-link">Shaman</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.0/hiring/physical-adept/" class="nav-list-link">Physical Adept</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.0/hiring/street-samurai/" class="nav-list-link">Street Samurai</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.0/hiring/face/" class="nav-list-link">Face</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.0/hiring/infiltrator/" class="nav-list-link">Infiltrator</a></li></ul></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.0/sources/" class="nav-list-link">Source Books & Method</a></li></ul>
+  
+</nav>
+
+
+<div class="d-md-block d-none site-footer">
+  
+  
+    This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+  
+  </div>
+</header>
+
+  
+  <div class="main" id="top">
+    <div id="main-header" class="main-header">
+  
+    
+
+<div class="search" role="search">
+  <div class="search-input-wrap">
+    <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="Search SR3 Table Reference" autocomplete="off">
+    <label for="search-input" class="search-label">
+      <span class="sr-only">Search SR3 Table Reference</span>
+      <svg viewBox="0 0 24 24" class="search-icon" aria-hidden="true"><use xlink:href="#svg-search"></use></svg>
+    </label>
+  </div>
+  <div id="search-results" class="search-results"></div>
+</div>
+
+  
+  <a class="guides-version" href="https://darkbushido.github.io/The2ndChumming3e/versions/" title="These guides describe how this version of The 2nd Chumming handles the rules. Other versions">v0.6.0</a><label class="corrections-toggle" title="Show what was corrected from the original Gemini gists">
+  <input type="checkbox" id="show-corrections">
+  Show corrections
+</label>
+<script>
+  (function () {
+    var box = document.getElementById('show-corrections');
+    var root = document.documentElement;
+    box.checked = root.classList.contains('show-corrections');
+    box.addEventListener('change', function () {
+      root.classList.toggle('show-corrections', box.checked);
+      try { localStorage.setItem('showCorrections', box.checked ? '1' : '0'); } catch (e) {}
+    });
+  })();
+</script>
+
+  
+</div>
+
+    <div class="main-content-wrap">
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+  <ol class="breadcrumb-nav-list">
+    <li class="breadcrumb-nav-list-item"><a href="/The2ndChumming3e/v0.6.0/rules/">Rules</a></li>
+    <li class="breadcrumb-nav-list-item"><span>Actions & Combat</span></li>
+  </ol>
+</nav>
+
+
+      <div id="main-content" class="main-content">
+        <main>
+          
+            <h1 class="no_toc" id="actions--combat">
+  
+  
+    <a href="#actions--combat" class="anchor-heading" aria-labelledby="actions--combat"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Actions &amp; Combat
+  
+  
+</h1>
+    
+
+<p>How a Combat Phase works, how ranged and melee attacks resolve, the
+modifier tables, wounds, and short summaries of spellcasting, decking and
+vehicle combat.</p>
+
+<ol id="markdown-toc">
+  <li><a href="#the-combat-turn" id="markdown-toc-the-combat-turn">The Combat Turn</a></li>
+  <li><a href="#action-economy--sr3-p104108" id="markdown-toc-action-economy--sr3-p104108">Action economy  <em>(SR3 p.104–108)</em></a>    <ol>
+      <li><a href="#free-actions--sr3-p105" id="markdown-toc-free-actions--sr3-p105">Free Actions  <em>(SR3 p.105)</em></a></li>
+      <li><a href="#simple-actions--sr3-p105107" id="markdown-toc-simple-actions--sr3-p105107">Simple Actions  <em>(SR3 p.105–107)</em></a></li>
+      <li><a href="#complex-actions--sr3-p107108" id="markdown-toc-complex-actions--sr3-p107108">Complex Actions  <em>(SR3 p.107–108)</em></a></li>
+    </ol>
+  </li>
+  <li><a href="#ranged-combat--sr3-p109114" id="markdown-toc-ranged-combat--sr3-p109114">Ranged combat  <em>(SR3 p.109–114)</em></a>    <ol>
+      <li><a href="#worked-example-from-the-rulebook--sr3-p113" id="markdown-toc-worked-example-from-the-rulebook--sr3-p113">Worked example, from the rulebook  <em>(SR3 p.113)</em></a></li>
+    </ol>
+  </li>
+  <li><a href="#melee-combat--sr3-p120123" id="markdown-toc-melee-combat--sr3-p120123">Melee combat  <em>(SR3 p.120–123)</em></a></li>
+  <li><a href="#modifier-tables" id="markdown-toc-modifier-tables">Modifier tables</a>    <ol>
+      <li><a href="#ranged-combat-modifiers--sr3-p112" id="markdown-toc-ranged-combat-modifiers--sr3-p112">Ranged Combat Modifiers  <em>(SR3 p.112)</em></a></li>
+      <li><a href="#visibility-table--sr3-p112" id="markdown-toc-visibility-table--sr3-p112">Visibility Table  <em>(SR3 p.112)</em></a></li>
+      <li><a href="#melee-modifiers--sr3-p123" id="markdown-toc-melee-modifiers--sr3-p123">Melee Modifiers  <em>(SR3 p.123)</em></a></li>
+    </ol>
+  </li>
+  <li><a href="#wounds-and-the-condition-monitor" id="markdown-toc-wounds-and-the-condition-monitor">Wounds and the Condition Monitor  <em>(SR3 p.125–126)</em></a></li>
+  <li><a href="#spellcasting-and-drain" id="markdown-toc-spellcasting-and-drain">Spellcasting and Drain  <em>(summary)</em></a></li>
+  <li><a href="#decking--summary" id="markdown-toc-decking--summary">Decking  <em>(summary)</em></a></li>
+  <li><a href="#vehicle-combat--rigging--summary" id="markdown-toc-vehicle-combat--rigging--summary">Vehicle combat &amp; rigging  <em>(summary)</em></a></li>
+</ol>
+
+<blockquote class="fixed">
+  <p>Original gist: “Complete Actions &amp; Combat System Guide”.</p>
+  <ul>
+    <li>You get <strong>one Free Action in every Combat Phase</strong>, including other
+characters’ phases, not one per Initiative Pass.</li>
+    <li>“Take Cover” is not an SR3 action. “Suppressive fire” does not exist in
+the core rules.</li>
+    <li>Nearly every value in the modifiers table was wrong: partial cover is
+<strong>+4</strong>, target running is <strong>+2</strong>, and the visibility values come from a
+two-axis table.</li>
+    <li>Damage staging is <strong>net</strong>: attacker successes are compared with the
+defender’s Dodge + Damage Resistance successes. The dodge doesn’t reduce
+the attacker’s successes directly.</li>
+    <li>SR3 has a <strong>Spell Pool</strong>, not a Magic Pool. Drain TN is Force ÷ 2 plus a
+modifier; there is no minimum-2 rule of its own.</li>
+    <li>Matrix: there is no “Access Node” action and no “Response Index”. Hacking
+Pool <strong>cannot</strong> be used to resist black IC.</li>
+    <li>Vehicles: “VCTR” is not an SR3 term. A crash test comes from <strong>Serious</strong>
+damage in one attack, not Moderate, and the TN is Handling.</li>
+  </ul>
+</blockquote><hr />
+<h2 id="the-combat-turn">
+  
+  
+    <a href="#the-combat-turn" class="anchor-heading" aria-labelledby="the-combat-turn"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The Combat Turn
+  
+  
+</h2>
+    
+
+<ul>
+  <li><strong>Dice pools refresh at the start of every Combat Turn.</strong> Unused pool
+dice don’t carry over. Karma Pool is the exception. <em>(SR3 p.104)</em></li>
+  <li>Everyone acts in Initiative order in the first <strong>Initiative Pass</strong>. After
+each pass, subtract 10 from every Initiative Score. A character at 0 or
+less is done for the turn. <em>(SR3 p.104)</em></li>
+  <li>Wound modifiers reduce Initiative immediately. <em>(SR3 p.104, p.126)</em></li>
+</ul>
+<h2 id="action-economy--sr3-p104108">
+  
+  
+    <a href="#action-economy--sr3-p104108" class="anchor-heading" aria-labelledby="action-economy--sr3-p104108"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Action economy  <em>(SR3 p.104–108)</em>
+  
+  
+</h2>
+    
+
+<p>In your <strong>Combat Phase</strong> you take <strong>either two Simple Actions or one
+Complex Action</strong>. <em>(SR3 p.104)</em></p>
+
+<p>Separately, you may take <strong>one Free Action during any character’s Combat
+Phase</strong>, including your own. You can’t take one before your first Combat
+Phase of the first Initiative Pass. Free Actions taken in someone else’s
+phase resolve last in that phase. <em>(SR3 p.105)</em> A Free Action can also be
+taken in place of a Simple Action. <em>(SR3 p.105)</em></p>
+<h3 id="free-actions--sr3-p105">
+  
+  
+    <a href="#free-actions--sr3-p105" class="anchor-heading" aria-labelledby="free-actions--sr3-p105"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Free Actions  <em>(SR3 p.105)</em>
+  
+  
+</h3>
+    
+
+<p>Activate cyberware · call a shot · change a <strong>smartgun’s</strong> fire mode ·
+deactivate a focus · delay an action · drop an object · drop prone · drop a
+sustained spell · eject a smartgun clip · gesture · observe (no Perception
+Test) · speak a word or short phrase · allocate Spell Defense dice.</p>
+<h3 id="simple-actions--sr3-p105107">
+  
+  
+    <a href="#simple-actions--sr3-p105107" class="anchor-heading" aria-labelledby="simple-actions--sr3-p105107"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Simple Actions  <em>(SR3 p.105–107)</em>
+  
+  
+</h3>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Action</th>
+      <th style="text-align: left">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Fire Weapon</strong></td>
+      <td style="text-align: left">One shot in single-shot, semi-auto or burst-fire mode. A single-shot weapon fires only once per Combat Phase. With a gun in each hand, one Simple Action fires each once. <em>(p.106)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Change Gun Mode</strong></td>
+      <td style="text-align: left">A Simple Action for an ordinary gun; a Free Action for a smartgun with smartlink. <em>(p.106)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Change Position</strong></td>
+      <td style="text-align: left">Stand up or lie down. Wounded characters make a Willpower (2) Test to stand. <em>(p.106)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Insert Clip / Remove Clip</strong></td>
+      <td style="text-align: left">One Simple Action each. <em>(p.106–107)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Ready Weapon</strong></td>
+      <td style="text-align: left">Draw a weapon, or nock an arrow. Small throwing weapons: ready ½ Quickness of them per action. <em>(p.107)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Take Aim</strong></td>
+      <td style="text-align: left">−1 TN per action, cumulative. Maximum ½ the skill. Lost if you take any other action. <em>(p.107)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Throw Weapon</strong></td>
+      <td style="text-align: left">Throws a ready throwing weapon. <em>(p.107)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Observe in Detail</strong></td>
+      <td style="text-align: left">A Perception Test. <em>(p.106)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Quick Draw</strong></td>
+      <td style="text-align: left">Draw and fire a pistol with a Reaction (4) Test; +2 without a proper holster. <em>(p.107)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Shift Perception</strong></td>
+      <td style="text-align: left">Switch to or from astral perception. <em>(p.107)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Also</td>
+      <td style="text-align: left">Activate focus · call a nature spirit on standby · command a spirit · pick up / put down an object · use a simple object. <em>(p.105–107)</em></td>
+    </tr>
+  </tbody>
+</table></div>
+<h3 id="complex-actions--sr3-p107108">
+  
+  
+    <a href="#complex-actions--sr3-p107108" class="anchor-heading" aria-labelledby="complex-actions--sr3-p107108"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Complex Actions  <em>(SR3 p.107–108)</em>
+  
+  
+</h3>
+    
+
+<p>A Complex Action uses your whole phase. You may still take a Free Action,
+but no Simple Actions. <em>(SR3 p.107)</em></p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Action</th>
+      <th style="text-align: left">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Fire Automatic Weapon</strong></td>
+      <td style="text-align: left">Full-auto fire. <em>(p.107)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Fire Mounted or Vehicle Weapon</strong></td>
+      <td style="text-align: left"><em>(p.108)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Melee / Unarmed Attack</strong></td>
+      <td style="text-align: left">May attack several targets in reach with one action. <em>(p.108)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Cast Spell</strong></td>
+      <td style="text-align: left"><em>(p.107)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Summon Nature Spirit</strong></td>
+      <td style="text-align: left"><em>(p.108)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Astral Projection</strong></td>
+      <td style="text-align: left">Leaving or returning to your body. <em>(p.107)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Reload Firearm</strong></td>
+      <td style="text-align: left">Weapons without clips. <em>(p.108)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Use Skill / Use Complex Object</strong></td>
+      <td style="text-align: left">First aid, operating a cyberdeck or vehicle, and so on. <em>(p.108)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Also</td>
+      <td style="text-align: left">Banish spirit · call elemental · control spirit · erase astral signature. <em>(p.107)</em></td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p><strong>Movement doesn’t use an action.</strong> Walking rate is Quickness in meters
+per Combat Turn. Running rate is Quickness × 3 for humans, elves, orks and
+trolls, and × 2 for dwarfs. Both are divided evenly across the turn’s
+Initiative Passes. <em>(SR3 p.108)</em></p><hr />
+<h2 id="ranged-combat--sr3-p109114">
+  
+  
+    <a href="#ranged-combat--sr3-p109114" class="anchor-heading" aria-labelledby="ranged-combat--sr3-p109114"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Ranged combat  <em>(SR3 p.109–114)</em>
+  
+  
+</h2>
+    
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Attack Test ─▶ Dodge Test (optional) ─▶ Damage Resistance Test ─▶ Compare &amp; stage
+</code></pre></div></div>
+
+<ol>
+  <li><strong>Base target number from range</strong>: Short <strong>4</strong>, Medium <strong>5</strong>, Long <strong>6</strong>,
+Extreme <strong>9</strong>, using the band for your weapon on the Weapon Range Table.
+<em>(SR3 p.111)</em> Apply the modifiers below.</li>
+  <li><strong>Attack Test</strong>: the ranged combat skill plus any Combat Pool dice.
+Count successes. No successes means a miss. <em>(SR3 p.113)</em></li>
+  <li><strong>Dodge Test (defender’s choice)</strong>: <strong>Combat Pool dice only</strong>, against
+TN <strong>4</strong>, plus 1 per 3 rounds of a burst or full-auto attack, plus 1 per
+meter of shotgun spread, plus the defender’s wound modifier.
+    <ul>
+      <li>Beat the attacker’s successes and the attack <strong>misses completely</strong>. A
+tie does not count.</li>
+      <li>Otherwise the dodge successes aren’t wasted. They <strong>add to your Damage
+Resistance successes</strong>. <em>(SR3 p.113)</em></li>
+    </ul>
+  </li>
+  <li><strong>Damage Resistance Test</strong>: Body (including dermal armor) plus any
+Combat Pool dice left, against TN = <strong>weapon Power − armor</strong>, minimum 2.
+<em>(SR3 p.113)</em></li>
+  <li><strong>Determine the outcome</strong>: compare the attacker’s successes with the
+defender’s total (dodge + resistance). <em>(SR3 p.113)</em>
+    <ul>
+      <li>Attacker ahead: stage the Damage Level <strong>up</strong> one step (L → M → S → D)
+per <strong>2</strong> successes over the defender’s total.</li>
+      <li>Defender ahead: stage it <strong>down</strong> one step per 2 successes over the
+attacker’s. Below Light, no damage.</li>
+      <li>Tie: base damage.</li>
+      <li>In ranged combat, staging stops at <strong>Deadly</strong>. Extra successes are
+discarded. <em>(SR3 p.113)</em></li>
+    </ul>
+  </li>
+</ol>
+<h3 id="worked-example-from-the-rulebook--sr3-p113">
+  
+  
+    <a href="#worked-example-from-the-rulebook--sr3-p113" class="anchor-heading" aria-labelledby="worked-example-from-the-rulebook--sr3-p113"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Worked example, from the rulebook  <em>(SR3 p.113)</em>
+  
+  
+</h3>
+    
+
+<p>Liam (Pistols 6) fires an Ares Predator (<strong>9M</strong>) and gets <strong>5</strong> successes.
+Snot (Body 5, ballistic armor 4, already Lightly wounded) dodges with all 5
+Combat Pool dice against TN <strong>5</strong> (4, +1 for his wound) and gets <strong>2</strong>. That’s
+not enough to dodge, but the 2 count. His Damage Resistance Test is 5 Body
+dice against TN <strong>5</strong> (9 − 4) and gets <strong>1</strong>. Snot’s total is <strong>3</strong>, Liam’s is</p>
+<ol>
+  <li>Liam is 2 ahead, so the damage stages up once to <strong>9S</strong>.</li>
+</ol><hr />
+<h2 id="melee-combat--sr3-p120123">
+  
+  
+    <a href="#melee-combat--sr3-p120123" class="anchor-heading" aria-labelledby="melee-combat--sr3-p120123"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Melee combat  <em>(SR3 p.120–123)</em>
+  
+  
+</h2>
+    
+
+<p>Melee is a <strong>Complex Action</strong>. It is an <strong>opposed</strong> test: both sides roll.
+<em>(SR3 p.108, p.122)</em></p>
+
+<ol>
+  <li><strong>Attacker</strong>: combat skill plus Combat Pool dice against base TN <strong>4</strong>,
+modified. <em>(SR3 p.122)</em></li>
+  <li><strong>Defender</strong>: the same, also against base TN <strong>4</strong>, modified. <em>(SR3 p.122)</em></li>
+  <li><strong>Most successes hits. A tie goes to the attacker.</strong> <em>(SR3 p.122)</em></li>
+  <li>The winner stages the damage up one level per <strong>2</strong> successes over the
+loser’s. <strong>In melee, once the level reaches Deadly, every 2 further
+successes add +1 Power.</strong> <em>(SR3 p.122)</em></li>
+  <li>The loser rolls <strong>Body</strong> against <strong>Power − Impact armor</strong>. Every 2
+successes reduce the Damage Level by one. <em>(SR3 p.122)</em></li>
+</ol>
+
+<p><strong>Reach</strong> gives a differential. The fighter with the longer reach may take
+the difference as a −TN to their own test <strong>or</strong> a +TN to the opponent’s.
+<em>(SR3 p.121)</em></p><hr />
+<h2 id="modifier-tables">
+  
+  
+    <a href="#modifier-tables" class="anchor-heading" aria-labelledby="modifier-tables"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Modifier tables
+  
+  
+</h2>
+    
+<h3 id="ranged-combat-modifiers--sr3-p112">
+  
+  
+    <a href="#ranged-combat-modifiers--sr3-p112" class="anchor-heading" aria-labelledby="ranged-combat-modifiers--sr3-p112"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Ranged Combat Modifiers  <em>(SR3 p.112)</em>
+  
+  
+</h3>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Situation</th>
+      <th style="text-align: center">Modifier</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Recoil, semi-automatic</td>
+      <td style="text-align: center">+1 for the second shot that phase</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Recoil, burst-fire</td>
+      <td style="text-align: center">+3 per burst that phase</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Recoil, full-auto</td>
+      <td style="text-align: center">+1 per round fired that phase</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Recoil, heavy weapon</td>
+      <td style="text-align: center">2 × uncompensated recoil</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Blind fire</td>
+      <td style="text-align: center">+8</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Partial cover</td>
+      <td style="text-align: center"><strong>+4</strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Multiple targets</td>
+      <td style="text-align: center">+2 per additional target that phase</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Target running</td>
+      <td style="text-align: center"><strong>+2</strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Target stationary</td>
+      <td style="text-align: center">−1</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Attacker in melee combat</td>
+      <td style="text-align: center">+2 per opponent</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Attacker walking / on difficult ground</td>
+      <td style="text-align: center">+1 / +2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Attacker running / on difficult ground</td>
+      <td style="text-align: center">+4 / +6</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Attacker wounded</td>
+      <td style="text-align: center">Damage Modifiers Table</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Smartlink with smartgun</td>
+      <td style="text-align: center">−2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Smart goggles with smartgun</td>
+      <td style="text-align: center">−1</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Laser sight (to 50 m; defeated by mist, smoke, fog or rain)</td>
+      <td style="text-align: center">−1</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Using a second firearm</td>
+      <td style="text-align: center">+2, and no smartlink, goggle or laser bonus</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Aimed shot</td>
+      <td style="text-align: center">−1 per Simple Action</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Called shot</td>
+      <td style="text-align: center">+4</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>Recoil compensation reduces only recoil. Gyro-stabilization reduces recoil
+and movement modifiers. <em>(SR3 p.113)</em></p>
+<h3 id="visibility-table--sr3-p112">
+  
+  
+    <a href="#visibility-table--sr3-p112" class="anchor-heading" aria-labelledby="visibility-table--sr3-p112"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Visibility Table  <em>(SR3 p.112)</em>
+  
+  
+</h3>
+    
+
+<p>In each vision cell, the first number is for cybernetic vision and the
+second for natural vision.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Condition</th>
+      <th style="text-align: center">Normal</th>
+      <th style="text-align: center">Low-Light</th>
+      <th style="text-align: center">Thermographic</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Full darkness</td>
+      <td style="text-align: center">+8</td>
+      <td style="text-align: center">+8/+8</td>
+      <td style="text-align: center">+4/+2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Minimal light</td>
+      <td style="text-align: center">+6</td>
+      <td style="text-align: center">+4/+2</td>
+      <td style="text-align: center">+4/+2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Partial light</td>
+      <td style="text-align: center">+2</td>
+      <td style="text-align: center">+1/0</td>
+      <td style="text-align: center">+2/+1</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Glare</td>
+      <td style="text-align: center">+2</td>
+      <td style="text-align: center">+4/+2</td>
+      <td style="text-align: center">+4/+2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Mist</td>
+      <td style="text-align: center">+2</td>
+      <td style="text-align: center">+2/0</td>
+      <td style="text-align: center">0</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Light smoke / fog / rain</td>
+      <td style="text-align: center">+4</td>
+      <td style="text-align: center">+4/+2</td>
+      <td style="text-align: center">0</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Heavy smoke / fog / rain</td>
+      <td style="text-align: center">+6</td>
+      <td style="text-align: center">+6/+4</td>
+      <td style="text-align: center">+1/0</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Thermal smoke</td>
+      <td style="text-align: center">+4</td>
+      <td style="text-align: center">+4</td>
+      <td style="text-align: center">+8/+6</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>In melee, visibility modifiers apply at <strong>half value</strong> (rounded down),
+except full darkness. <em>(SR3 p.122)</em></p>
+<h3 id="melee-modifiers--sr3-p123">
+  
+  
+    <a href="#melee-modifiers--sr3-p123" class="anchor-heading" aria-labelledby="melee-modifiers--sr3-p123"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Melee Modifiers  <em>(SR3 p.123)</em>
+  
+  
+</h3>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Situation</th>
+      <th style="text-align: center">Modifier</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Called shot</td>
+      <td style="text-align: center">+4</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Character has more friends in the melee</td>
+      <td style="text-align: center">−1 per friend, maximum −4</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Opponent has more friends in the melee</td>
+      <td style="text-align: center">+1 per friend, maximum +4</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Longer reach</td>
+      <td style="text-align: center">−1 per point (or +1 to the opponent)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Attacking multiple targets</td>
+      <td style="text-align: center">+2 per additional target</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Superior position</td>
+      <td style="text-align: center">−1</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Opponent prone</td>
+      <td style="text-align: center">−2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Wounded</td>
+      <td style="text-align: center">Damage Modifiers Table</td>
+    </tr>
+  </tbody>
+</table></div><hr />
+<h2 id="wounds-and-the-condition-monitor">
+  
+  
+    <a href="#wounds-and-the-condition-monitor" class="anchor-heading" aria-labelledby="wounds-and-the-condition-monitor"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Wounds and the Condition Monitor  <em>(SR3 p.125–126)</em>
+  
+  
+</h2>
+    
+
+<p>Physical and Stun damage each fill a <strong>10-box</strong> track.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: center">Boxes filled</th>
+      <th style="text-align: left">Level</th>
+      <th style="text-align: center">Target numbers</th>
+      <th style="text-align: center">Initiative</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: left">Light</td>
+      <td style="text-align: center">+1</td>
+      <td style="text-align: center">−1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: left">Moderate</td>
+      <td style="text-align: center">+2</td>
+      <td style="text-align: center">−2</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">6</td>
+      <td style="text-align: left">Serious</td>
+      <td style="text-align: center">+3</td>
+      <td style="text-align: center">−3</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">10</td>
+      <td style="text-align: left">Deadly</td>
+      <td style="text-align: center">Unconscious</td>
+      <td style="text-align: center">—</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<ul>
+  <li>Use only the <strong>highest</strong> level in each track, but add the Stun and
+Physical modifiers together. <em>(SR3 p.125–126)</em></li>
+  <li>The injury modifier applies to nearly every test <strong>except</strong> tests to
+resist or avoid damage. <em>(SR3 p.126)</em></li>
+  <li><strong>Stun past 10 boxes</strong> overflows into the Physical track, and you fall
+unconscious. <em>(SR3 p.125)</em></li>
+  <li><strong>Physical past 10 boxes</strong>: you can survive overflow up to your <strong>Body</strong>
+rating. One box beyond that and you are dead. While in overflow, you take
+another box every (Body) Combat Turns until stabilized. <em>(SR3 p.125–126)</em></li>
+</ul><hr />
+<h2 id="spellcasting-and-drain">
+  
+  
+    <a href="#spellcasting-and-drain" class="anchor-heading" aria-labelledby="spellcasting-and-drain"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Spellcasting and Drain  <em>(summary)</em>
+  
+  
+</h2>
+    
+
+<p>The full step-by-step, with Spell Defense, elemental spells and sustaining, is
+on <a href="../../magic/spellcasting/">Spellcasting, Resistance &amp; Drain</a>.</p>
+
+<p>Casting a spell is a <strong>Complex Action</strong>. <em>(SR3 p.107)</em></p>
+
+<ol>
+  <li><strong>Force</strong>: you can cast a spell at any Force up to the one you learned it
+at, never higher. <em>(SR3 p.178)</em></li>
+  <li><strong>Sorcery Test</strong>: Sorcery dice plus up to an equal number of <strong>Spell
+Pool</strong> dice. The TN is the target’s <strong>Willpower</strong> for mana spells or
+<strong>Body</strong> for physical spells. Objects use the Object Resistance Table:
+natural 3, low-tech 5, high-tech 8, highly processed 10+. <em>(SR3 p.182)</em>
+If every die shows 1, the spell fails and Drain TN rises by 2.
+<em>(SR3 p.182)</em></li>
+  <li><strong>Resistance</strong>: the target resists with the same attribute, and the net
+successes decide the effect.</li>
+  <li><strong>Drain</strong>: every spell lists a code like <code class="language-plaintext highlighter-rouge">+1(M)</code>. Drain <strong>Power</strong> (the TN)
+= <strong>Force ÷ 2, rounded down, + the modifier</strong>; <strong>M</strong> is the Damage
+Level. Resist with <strong>Willpower</strong> plus any number of Spell Pool dice.
+Every 2 successes reduce the level one step. <em>(SR3 p.162, p.44)</em>
+    <ul>
+      <li>Drain is <strong>Stun</strong>, or <strong>Physical</strong> if the Force is higher than your
+Magic, or if you are astrally projecting. <em>(SR3 p.162)</em></li>
+      <li>Each spell you are sustaining adds <strong>+2</strong> to Drain Power. <em>(SR3 p.162)</em></li>
+      <li>Conjuring Drain is resisted with <strong>Charisma</strong>. <em>(SR3 p.162)</em></li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong>Spell Pool</strong> = (Intelligence + Willpower + Magic) ÷ 3, rounded down.
+<em>(SR3 p.44)</em></p><hr />
+<h2 id="decking--summary">
+  
+  
+    <a href="#decking--summary" class="anchor-heading" aria-labelledby="decking--summary"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Decking  <em>(summary)</em>
+  
+  
+</h2>
+    
+
+<ul>
+  <li><strong>Hacking Pool</strong> = (Intelligence + MPCP) ÷ 3, rounded down. You can add at
+most your skill dice from it to a test. It <strong>can’t</strong> be used on Body or
+Willpower tests against gray or black IC, or on Etiquette (Matrix).
+<em>(SR3 p.44)</em></li>
+  <li><strong>Matrix Initiative</strong>: your persona’s Reaction + <strong>1D6</strong>. Each point of
+<strong>Response Increase</strong> adds +2 Reaction and <strong>+1D6</strong>, up to 3 points and no
+more than MPCP ÷ 4. Wired reflexes and other physical boosts don’t apply.
+<em>(SR3 p.207, p.223)</em></li>
+  <li>Icons get the same Free / Simple / Complex actions. <em>(SR3 p.223)</em></li>
+  <li><strong>System Tests</strong>: you roll Computer against the relevant subsystem rating
+(Access, Control, Index, Files, Slave). The host rolls its Security Value
+against your Detection Factor, and its successes build your <strong>security
+tally</strong>, which triggers alerts and IC. <em>(SR3 p.209–210)</em></li>
+  <li><strong>Security codes</strong>: Blue, Green, Orange, Red. Deckers call the ones off
+the chart “UV”. <em>(SR3 p.205)</em></li>
+  <li><strong>IC</strong> <em>(SR3 p.227–230)</em>
+    <ul>
+      <li><strong>White</strong> affects only your icon: crippler, killer, probe, scramble,
+tar baby.</li>
+      <li><strong>Gray</strong> attacks your deck and utilities: blaster, ripper, sparky, tar
+pit.</li>
+      <li><strong>Black</strong> attacks <strong>you</strong>. Against lethal black IC you resist with
+<strong>Body</strong>, reduced by Hardening. Hacking Pool can’t be used; Karma Pool
+can. After black IC hits you, jacking out takes a Complex Action and a
+Willpower (IC Rating) Test. <em>(SR3 p.230)</em></li>
+    </ul>
+  </li>
+  <li><strong>Tortoises</strong> (cyberterminals) can’t be hurt by black IC or dump shock.
+<em>(SR3 p.208)</em></li>
+  <li><em>Matrix</em> adds <strong>cold ASIST</strong>, which treats lethal black IC as non-lethal,
+and <strong>hot ASIST</strong>, which you need for Response Increase and Hacking Pool.
+<em>(Matrix p.18)</em></li>
+</ul><hr />
+<h2 id="vehicle-combat--rigging--summary">
+  
+  
+    <a href="#vehicle-combat--rigging--summary" class="anchor-heading" aria-labelledby="vehicle-combat--rigging--summary"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Vehicle combat &amp; rigging  <em>(summary)</em>
+  
+  
+</h2>
+    
+
+<ul>
+  <li><strong>Vehicle Control Rig</strong>: each level gives +2 Reaction and <strong>+1D6</strong>
+Initiative while rigging. <em>(SR3 p.301)</em></li>
+  <li><strong>Control Pool</strong> = Reaction as modified by the VCR. <em>(SR3 p.44)</em> It only
+works in a vehicle adapted for rigger control. <em>(SR3 p.134)</em></li>
+  <li><strong>Driving Tests</strong> use the vehicle’s <strong>Handling</strong> as base TN. A jacked-in
+rigger subtracts the VCR rating. Vehicle-combat maneuver tables subtract
+<strong>2 × VCR rating</strong>. <em>(SR3 p.134, p.142–144)</em></li>
+  <li><strong>Gunnery</strong>: mounted weapons use the Gunnery skill and the ordinary
+ranged-combat rules. Sensor-enhanced gunnery adds half the Sensor rating
+in dice. <em>(SR3 p.151–152)</em></li>
+  <li><strong>Shooting a vehicle</strong>: halve the weapon’s Power and drop its Damage Level
+one step, then subtract vehicle armor. If what’s left doesn’t beat the
+armor, no damage. Anti-vehicle munitions skip the halving and subtract
+only half the armor. <em>(SR3 p.149)</em></li>
+  <li><strong>Vehicle Damage Resistance</strong>: vehicle Body plus Control Pool dice up to
+the Driving skill, against the modified Power. Riggers may <strong>dodge</strong> with
+Control Pool against the vehicle’s Handling. <em>(SR3 p.149)</em></li>
+  <li><strong>Crash Tests</strong> are required when a vehicle takes <strong>Serious</strong> damage in a
+single attack, reaches Destroyed, takes damage from a ram, or brakes harder
+than Acceleration × 4. The test is a Driving Test against <strong>Handling</strong>.
+<em>(SR3 p.147)</em></li>
+  <li><strong>Rigger damage</strong>: if the vehicle takes Serious damage, the jacked-in
+rigger resists <strong>6M</strong> Physical. If it’s destroyed, <strong>6S</strong>. This is resisted
+with <strong>Willpower</strong>, and no pool dice can be used. <em>(SR3 p.145)</em></li>
+</ul>
+
+          
+
+          
+            
+          
+        </main>
+        
+<hr>
+<footer>
+  
+    <p><a href="#top" id="back-to-top">Back to top</a></p>
+  
+
+  <p class="text-small mb-0">Unofficial fan reference. Shadowrun is a registered trademark of its owners; no challenge to their rights is intended. Page numbers refer to the printed page of each book, not the PDF page.</p>
+
+  <div class="d-md-none mt-4 fs-2">
+    
+    
+      This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+    
+  </div>
+</footer>
+
+      </div>
+    </div>
+    
+      
+
+<div class="search-overlay"></div>
+
+    
+  </div>
+
+  
+</body>
+</html>
+

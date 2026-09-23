@@ -1,0 +1,933 @@
+{"0": {
+    "doc": "Primer for the Awakened",
+    "title": "Primer for the Awakened",
+    "content": "What a starting magician can do, how astral space works, and what an elven mage in Seattle knows about the world. | 1. What a magician can do . | Spellcasting | Conjuring | Ritual sorcery (MitS p.34–36) | Foci (SR3 p.189–191; MitS p.169) | . | 2. Astral space . | Astral perception (SR3 p.171–172) | Astral projection (SR3 p.172–173) | Astral attributes (SR3 p.173–174) | Astral combat (SR3 p.174–175) | . | 3. What a starting elven mage knows . | The Awakened world | Elven heritage | Street survival | . | . Original gist: “Primer for the Awakened Elf”. | Drain codes like “4L, 3M, 5H” don’t exist. SR3 writes Drain as +1(M), meaning Power = Force ÷ 2 + 1 at Moderate. There is no “H” level. | Force is capped by the Force you learned the spell at, not by your Magic. Casting above your Magic is legal; the Drain just becomes Physical. | Nature spirits come in four families: Man, Land, Sky and Waters. “Aura Masking” is not a spirit service. | SR3 ritual sorcery uses a material link. “Sympathetic link” is a term from a later edition. | Astral attacks use an Astral Combat Pool and Sorcery, Unarmed Combat or an armed skill with a weapon focus. The gist’s “Astral Combat + Combat Pool” was wrong. Force / Magic is not astral armor. | Projecting movement: normal speed is Intelligence × 4 m per turn, and fast movement is up to Magic in kilometers per turn, not a flat 100 km per turn. | The Awakening is dated 24 December 2011, when the dragon Ryumyo appeared near Mount Fuji. It was not 21 December. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/magic/awakened-primer/",
+    
+    "relUrl": "/magic/awakened-primer/"
+  },"1": {
+    "doc": "Primer for the Awakened",
+    "title": "1. What a magician can do",
+    "content": "Spellcasting . | Spells fall into five categories: Combat, Detection, Health, Illusion, Manipulation. (SR3 p.191–198) | You learn each spell at a specific Force. You can cast it at that Force or lower, never higher. (SR3 p.178) At character creation no spell can be bought above Force 6. (SR3 p.60) | Casting is a Complex Action: roll Sorcery plus up to as many Spell Pool dice as Sorcery dice. The TN is the target’s Willpower (mana spells) or Body (physical spells), or its Object Resistance. (SR3 p.107, p.182) | Drain: Power = Force ÷ 2 (round down) + the spell’s modifier, at the Damage Level shown. Resist with Willpower plus any number of Spell Pool dice, and reduce one level per 2 successes. (SR3 p.162, p.44) . | It’s Stun if the Force is no higher than your Magic, and Physical if it is higher, or if you’re astrally projecting. (SR3 p.162) | Every spell you’re sustaining adds +2 to Drain Power. (SR3 p.162) | . | Spell Pool = (INT + WIL + MAG) ÷ 3. (SR3 p.44) | . For the full step-by-step, including resistance, Spell Defense and Drain, see Spellcasting, Resistance &amp; Drain. Conjuring . Hermetic mages call elementals: Earth, Air, Fire and Water. (SR3 p.186) . | You need a conjuring library and a hermetic circle, each rated at least the Force of the elemental, plus ritual materials costing about 1,000¥ × Force. (SR3 p.186; MitS p.169) | The elemental needs something to form from: a bonfire, a pool of water, and so on. (SR3 p.186) | An elemental can give five services: Aid Sorcery, Aid Study, Spell Sustaining, Physical Service, Remote Service. For Aid Sorcery, fire elementals help combat spells, air detection, water illusion and earth manipulation. No elemental helps health spells. (SR3 p.187) | . Shamans summon nature spirits, and only inside the spirit’s domain. (SR3 p.184, p.186) . | Summoning is an Exclusive Complex Action. The Conjuring Test is against TN = the spirit’s Force, and each success is one service. With no successes, nothing comes, but Drain still applies. (SR3 p.186) | Nature spirits vanish at sunrise and sunset, and any unused services are lost. (SR3 p.186) | A service is one use of one of the spirit’s powers, or a physical task such as attacking. (SR3 p.186) | The four families are (SR3 p.266–267): . | Spirits of Man: city, field, hearth | Spirits of the Land: desert, forest, mountain, prairie | Spirits of the Sky: mist, storm, wind | Spirits of the Waters: lake, river, sea, swamp | . | . Conjuring Drain: Power = the spirit’s Force, with the level set by comparing Force to your Charisma. Resist with Charisma. (SR3 p.162, p.187) . Ritual sorcery (MitS p.34–36) . | A team of magicians can cast one spell together. It builds over hours, but it can reach a target out of sight. | The team can have at most as many members as the lowest Sorcery rating among them. Everyone must know the spell at the chosen Force, and all must share a tradition (shamans of different totems may mix). | You need a hermetic circle or shamanic lodge rated at least the spell’s Force, plus ritual materials, which are used up whatever happens. | To reach a distant target you need a material link: a piece of the target, such as blood, hair or tissue. | Elemental manipulation spells can’t be cast as ritual sorcery. | . Foci (SR3 p.189–191; MitS p.169) . Foci are bonded with Karma. The core types are spell foci (one specific spell or a whole category), spirit foci, power foci, sustaining foci and weapon foci. Active foci are visible and vulnerable on the astral. A weapon focus lets you use an armed skill in astral combat. ",
+    "url": "/The2ndChumming3e/v0.6.0/magic/awakened-primer/#1-what-a-magician-can-do",
+    
+    "relUrl": "/magic/awakened-primer/#1-what-a-magician-can-do"
+  },"2": {
+    "doc": "Primer for the Awakened",
+    "title": "2. Astral space",
+    "content": "Astral perception (SR3 p.171–172) . | It takes a Simple Action to switch. While perceiving you’re dual-natured: you see astral forms and auras, and they can attack you. | Assensing: Intelligence against TN 4, taking a Simple Action. With 1–2 successes you learn general health, whether cyberware is present, rough emotions, and mundane or Awakened. More successes give Essence and Magic compared to yours, implant locations and astral signatures. (SR3 p.172) | Doing ordinary, non-magical tasks while perceiving (shooting, driving) costs +2 TN. (SR3 p.172) | . Astral projection (SR3 p.172–173) . | Leaving your body and returning are each an Exclusive Complex Action. Your body lies in a trance. | Your body loses 1 Essence per hour you’re away. At 0 Essence you die. (SR3 p.173) | Normal movement is Intelligence × 4 m per turn. Fast movement is up to Magic in kilometers per turn, roughly Magic × 1,000 km per hour. (SR3 p.173) | Solid earth blocks astral forms, which is why secure sites are often built underground. (SR3 p.173) | . Astral attributes (SR3 p.173–174) . | Physical | While projecting | . | Strength | Charisma | . | Quickness | Intelligence | . | Body | Willpower | . | Reaction | Intelligence, and Initiative is INT + 20 + 1D6 | . Astral combat (SR3 p.174–175) . | Astral combat uses the melee rules. There are no ranged attacks except spells. | A projecting character uses the Astral Combat Pool, (INT + WIL + CHA) ÷ 2. (SR3 p.44, p.174) Attack with an armed skill if you have a weapon focus, Unarmed Combat otherwise, or Sorcery in its place. | Damage: unarmed (Charisma)M; armed, Charisma plus the weapon focus’s damage; spirits, foci and barriers (Force)M. (SR3 p.175) | Worn armor is useless on the astral. Natural armor, such as a troll’s or an adept’s Mystic Armor, still counts. (SR3 p.172, p.175) | The attacker picks Stun or Physical damage. Wounds appear on your physical body. If your astral form dies, your body dies. (SR3 p.175) | Wards and other astral barriers block astral movement, and the only way through is to beat the barrier in astral combat. (SR3 p.174) | . ",
+    "url": "/The2ndChumming3e/v0.6.0/magic/awakened-primer/#2-astral-space",
+    
+    "relUrl": "/magic/awakened-primer/#2-astral-space"
+  },"3": {
+    "doc": "Primer for the Awakened",
+    "title": "3. What a starting elven mage knows",
+    "content": "The Awakened world . | The Awakening happened in 2011. On 24 December, passengers on a bullet train saw the great dragon Ryumyo appear near Mount Fuji. (SR3 p.25) | Traditions: mages treat magic as a discipline of formulae and elements. Shamans follow a totem, which grants bonus dice for some spells and spirits and penalties for others. (SR3 p.163–165) | Essence and Magic: every full point of Essence lost, or fraction of one, costs a point of Magic. Cyberware is the usual cause. (SR3 p.160) | Magic and the law: in the UCAS and CAS, any spell, spirit or focus of Force 3 or higher is legally regulated, and permits are available. Killing with magic is treated as premeditated. (MitS p.11) | . Elven heritage . | Tír Tairngire, “Land of Promise” in Sperethiel, takes up most of the former state of Oregon plus parts of Washington and California. (SR3 p.321) | It’s ruled by the Council of Princes, with High Prince Lugh Surehand. The Council was all-elven at first; it later admitted other metahumans, including the dragon Lofwyr. (SR3 p.30) | Rumors of immortal elves who lived through the last low-magic age are not covered in the core rulebook. Treat them as street talk. | . Street survival . | The megacorps hold extraterritoriality: their ground, their law. (SR3 p.22) | Without a SIN you have few civil rights, but you’re also harder to trace. See SINs &amp; the SINless. (SR3 p.238) | . ",
+    "url": "/The2ndChumming3e/v0.6.0/magic/awakened-primer/#3-what-a-starting-elven-mage-knows",
+    
+    "relUrl": "/magic/awakened-primer/#3-what-a-starting-elven-mage-knows"
+  },"4": {
+    "doc": "Combat Mage",
+    "title": "Hiring a Combat Mage",
+    "content": ". | What the books give you . | What the mage is risking | . | House rates . | Base day rate, by Sorcery or Conjuring | Threat multiplier | Hazard pay and expenses | . | Worked examples | . | The “1% rule” isn’t stated in any SR3 book checked, so it’s been removed. | “Astral Gateway collapse” isn’t an SR3 hazard. Focus addiction is real. (MitS p.45) | The Scenario C total was wrong: 8,000 × 3, then +100%, is 48,000¥, not 32,000–40,000¥. | The 1,000¥ per point of Force for hermetic conjuring materials was correct. (SR3 p.186; MitS p.169) | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/combat-mage/#hiring-a-combat-mage",
+    
+    "relUrl": "/hiring/combat-mage/#hiring-a-combat-mage"
+  },"5": {
+    "doc": "Combat Mage",
+    "title": "What the books give you",
+    "content": "|   |   | Source | . | Security duty (including magical overwatch) | 200¥ per day | SRComp p.100 | . | Destruction | 5,000¥ | SRComp p.100 | . | Assassination | 5,000¥ | SRComp p.100 | . | Ward maintenance | about 100¥ an hour per magician | SR3 p.174 | . | Elemental conjuring materials | Force × 1,000¥ | SR3 p.186; MitS p.169 | . What the mage is risking . | Drain: casting above your Magic makes it Physical, and so does casting while astrally projecting. (SR3 p.162) | Magic loss: on a Deadly wound, or medical treatment without the Awakened modifier, roll 2D6. At or under your Magic, you lose a point permanently. (SR3 p.129) | Astral combat: wounds taken on the astral appear on the body. Being disrupted forces a Magic Loss check. (SR3 p.175) | The law: magic of Force 3+ is regulated in the UCAS and CAS, and a felony committed with magic is treated as premeditated. (MitS p.11) | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/combat-mage/#what-the-books-give-you",
+    
+    "relUrl": "/hiring/combat-mage/#what-the-books-give-you"
+  },"6": {
+    "doc": "Combat Mage",
+    "title": "House rates",
+    "content": "These rates aren’t from any SR3 book. They are the original gist’s numbers, kept for convenience. Base day rate, by Sorcery or Conjuring . | Tier | Skill | Base day rate | Typical capability | . | Hedge wizard | 1–3 | 500–1,000¥ | An aspected or weak caster with utility spells | . | Wage mage | 4–5 | 2,500–5,000¥ | A full magician: Manabolt, Armor, Fireball at Force 4–6, watcher spirits | . | Veteran | 6–7 | 6,000–12,000¥ | An initiate (grade 1–3) with a sustaining focus and Force 6+ elementals | . | Elite | 8+ | 20,000¥ and up | A high-grade initiate with metamagic (centering, shielding, reflecting) and a strong set of foci | . Threat multiplier . | Work | Multiplier | . | Utility magic: Invisibility, Levitate, healing, assensing | ×1 | . | Combat spells, breaking basic wards, mid-Force spirits | ×2–3 | . | Corporate security mages, high-Force elementals, strong wards | ×4–6 | . Hazard pay and expenses . | Off-site ritual work or astral recon from a circle: no hazard pay. | On-site with the team: +100%. Mages are the first target. | Conjuring and ritual materials are paid up front by the employer. (Prices: MitS p.169) | Bound spirit services brought to the job: 1,000–3,000¥ per service. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/combat-mage/#house-rates",
+    
+    "relUrl": "/hiring/combat-mage/#house-rates"
+  },"7": {
+    "doc": "Combat Mage",
+    "title": "Worked examples",
+    "content": "| Job | House rate | Companion baseline | . | Off-site ritual work, wage mage (base 3,000¥), ×1 | 3,000¥ plus ritual materials | Investigation: 200¥ a day | . | Astral overwatch on a heist, veteran (base 8,000¥), ×2 | 8,000 × 2 = 16,000¥ | Security: 200¥ a day | . | On-site assault support, veteran initiate, ×3, +100% | 8,000 × 3 × 2 = 48,000¥ | A share of the destruction or extraction fee | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/combat-mage/#worked-examples",
+    
+    "relUrl": "/hiring/combat-mage/#worked-examples"
+  },"8": {
+    "doc": "Combat Mage",
+    "title": "Combat Mage",
+    "content": " ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/combat-mage/",
+    
+    "relUrl": "/hiring/combat-mage/"
+  },"9": {
+    "doc": "Actions & Combat",
+    "title": "Actions &amp; Combat",
+    "content": "How a Combat Phase works, how ranged and melee attacks resolve, the modifier tables, wounds, and short summaries of spellcasting, decking and vehicle combat. | The Combat Turn | Action economy (SR3 p.104–108) . | Free Actions (SR3 p.105) | Simple Actions (SR3 p.105–107) | Complex Actions (SR3 p.107–108) | . | Ranged combat (SR3 p.109–114) . | Worked example, from the rulebook (SR3 p.113) | . | Melee combat (SR3 p.120–123) | Modifier tables . | Ranged Combat Modifiers (SR3 p.112) | Visibility Table (SR3 p.112) | Melee Modifiers (SR3 p.123) | . | Wounds and the Condition Monitor (SR3 p.125–126) | Spellcasting and Drain (summary) | Decking (summary) | Vehicle combat &amp; rigging (summary) | . Original gist: “Complete Actions &amp; Combat System Guide”. | You get one Free Action in every Combat Phase, including other characters’ phases, not one per Initiative Pass. | “Take Cover” is not an SR3 action. “Suppressive fire” does not exist in the core rules. | Nearly every value in the modifiers table was wrong: partial cover is +4, target running is +2, and the visibility values come from a two-axis table. | Damage staging is net: attacker successes are compared with the defender’s Dodge + Damage Resistance successes. The dodge doesn’t reduce the attacker’s successes directly. | SR3 has a Spell Pool, not a Magic Pool. Drain TN is Force ÷ 2 plus a modifier; there is no minimum-2 rule of its own. | Matrix: there is no “Access Node” action and no “Response Index”. Hacking Pool cannot be used to resist black IC. | Vehicles: “VCTR” is not an SR3 term. A crash test comes from Serious damage in one attack, not Moderate, and the TN is Handling. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/combat/#actions--combat",
+    
+    "relUrl": "/rules/combat/#actions--combat"
+  },"10": {
+    "doc": "Actions & Combat",
+    "title": "The Combat Turn",
+    "content": ". | Dice pools refresh at the start of every Combat Turn. Unused pool dice don’t carry over. Karma Pool is the exception. (SR3 p.104) | Everyone acts in Initiative order in the first Initiative Pass. After each pass, subtract 10 from every Initiative Score. A character at 0 or less is done for the turn. (SR3 p.104) | Wound modifiers reduce Initiative immediately. (SR3 p.104, p.126) | . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/combat/#the-combat-turn",
+    
+    "relUrl": "/rules/combat/#the-combat-turn"
+  },"11": {
+    "doc": "Actions & Combat",
+    "title": "Action economy  (SR3 p.104–108)",
+    "content": "In your Combat Phase you take either two Simple Actions or one Complex Action. (SR3 p.104) . Separately, you may take one Free Action during any character’s Combat Phase, including your own. You can’t take one before your first Combat Phase of the first Initiative Pass. Free Actions taken in someone else’s phase resolve last in that phase. (SR3 p.105) A Free Action can also be taken in place of a Simple Action. (SR3 p.105) . Free Actions (SR3 p.105) . Activate cyberware · call a shot · change a smartgun’s fire mode · deactivate a focus · delay an action · drop an object · drop prone · drop a sustained spell · eject a smartgun clip · gesture · observe (no Perception Test) · speak a word or short phrase · allocate Spell Defense dice. Simple Actions (SR3 p.105–107) . | Action | Notes | . | Fire Weapon | One shot in single-shot, semi-auto or burst-fire mode. A single-shot weapon fires only once per Combat Phase. With a gun in each hand, one Simple Action fires each once. (p.106) | . | Change Gun Mode | A Simple Action for an ordinary gun; a Free Action for a smartgun with smartlink. (p.106) | . | Change Position | Stand up or lie down. Wounded characters make a Willpower (2) Test to stand. (p.106) | . | Insert Clip / Remove Clip | One Simple Action each. (p.106–107) | . | Ready Weapon | Draw a weapon, or nock an arrow. Small throwing weapons: ready ½ Quickness of them per action. (p.107) | . | Take Aim | −1 TN per action, cumulative. Maximum ½ the skill. Lost if you take any other action. (p.107) | . | Throw Weapon | Throws a ready throwing weapon. (p.107) | . | Observe in Detail | A Perception Test. (p.106) | . | Quick Draw | Draw and fire a pistol with a Reaction (4) Test; +2 without a proper holster. (p.107) | . | Shift Perception | Switch to or from astral perception. (p.107) | . | Also | Activate focus · call a nature spirit on standby · command a spirit · pick up / put down an object · use a simple object. (p.105–107) | . Complex Actions (SR3 p.107–108) . A Complex Action uses your whole phase. You may still take a Free Action, but no Simple Actions. (SR3 p.107) . | Action | Notes | . | Fire Automatic Weapon | Full-auto fire. (p.107) | . | Fire Mounted or Vehicle Weapon | (p.108) | . | Melee / Unarmed Attack | May attack several targets in reach with one action. (p.108) | . | Cast Spell | (p.107) | . | Summon Nature Spirit | (p.108) | . | Astral Projection | Leaving or returning to your body. (p.107) | . | Reload Firearm | Weapons without clips. (p.108) | . | Use Skill / Use Complex Object | First aid, operating a cyberdeck or vehicle, and so on. (p.108) | . | Also | Banish spirit · call elemental · control spirit · erase astral signature. (p.107) | . Movement doesn’t use an action. Walking rate is Quickness in meters per Combat Turn. Running rate is Quickness × 3 for humans, elves, orks and trolls, and × 2 for dwarfs. Both are divided evenly across the turn’s Initiative Passes. (SR3 p.108) . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/combat/#action-economy--sr3-p104108",
+    
+    "relUrl": "/rules/combat/#action-economy--sr3-p104108"
+  },"12": {
+    "doc": "Actions & Combat",
+    "title": "Ranged combat  (SR3 p.109–114)",
+    "content": "Attack Test ─▶ Dodge Test (optional) ─▶ Damage Resistance Test ─▶ Compare &amp; stage . | Base target number from range: Short 4, Medium 5, Long 6, Extreme 9, using the band for your weapon on the Weapon Range Table. (SR3 p.111) Apply the modifiers below. | Attack Test: the ranged combat skill plus any Combat Pool dice. Count successes. No successes means a miss. (SR3 p.113) | Dodge Test (defender’s choice): Combat Pool dice only, against TN 4, plus 1 per 3 rounds of a burst or full-auto attack, plus 1 per meter of shotgun spread, plus the defender’s wound modifier. | Beat the attacker’s successes and the attack misses completely. A tie does not count. | Otherwise the dodge successes aren’t wasted. They add to your Damage Resistance successes. (SR3 p.113) | . | Damage Resistance Test: Body (including dermal armor) plus any Combat Pool dice left, against TN = weapon Power − armor, minimum 2. (SR3 p.113) | Determine the outcome: compare the attacker’s successes with the defender’s total (dodge + resistance). (SR3 p.113) . | Attacker ahead: stage the Damage Level up one step (L → M → S → D) per 2 successes over the defender’s total. | Defender ahead: stage it down one step per 2 successes over the attacker’s. Below Light, no damage. | Tie: base damage. | In ranged combat, staging stops at Deadly. Extra successes are discarded. (SR3 p.113) | . | . Worked example, from the rulebook (SR3 p.113) . Liam (Pistols 6) fires an Ares Predator (9M) and gets 5 successes. Snot (Body 5, ballistic armor 4, already Lightly wounded) dodges with all 5 Combat Pool dice against TN 5 (4, +1 for his wound) and gets 2. That’s not enough to dodge, but the 2 count. His Damage Resistance Test is 5 Body dice against TN 5 (9 − 4) and gets 1. Snot’s total is 3, Liam’s is . | Liam is 2 ahead, so the damage stages up once to 9S. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/combat/#ranged-combat--sr3-p109114",
+    
+    "relUrl": "/rules/combat/#ranged-combat--sr3-p109114"
+  },"13": {
+    "doc": "Actions & Combat",
+    "title": "Melee combat  (SR3 p.120–123)",
+    "content": "Melee is a Complex Action. It is an opposed test: both sides roll. (SR3 p.108, p.122) . | Attacker: combat skill plus Combat Pool dice against base TN 4, modified. (SR3 p.122) | Defender: the same, also against base TN 4, modified. (SR3 p.122) | Most successes hits. A tie goes to the attacker. (SR3 p.122) | The winner stages the damage up one level per 2 successes over the loser’s. In melee, once the level reaches Deadly, every 2 further successes add +1 Power. (SR3 p.122) | The loser rolls Body against Power − Impact armor. Every 2 successes reduce the Damage Level by one. (SR3 p.122) | . Reach gives a differential. The fighter with the longer reach may take the difference as a −TN to their own test or a +TN to the opponent’s. (SR3 p.121) . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/combat/#melee-combat--sr3-p120123",
+    
+    "relUrl": "/rules/combat/#melee-combat--sr3-p120123"
+  },"14": {
+    "doc": "Actions & Combat",
+    "title": "Modifier tables",
+    "content": "Ranged Combat Modifiers (SR3 p.112) . | Situation | Modifier | . | Recoil, semi-automatic | +1 for the second shot that phase | . | Recoil, burst-fire | +3 per burst that phase | . | Recoil, full-auto | +1 per round fired that phase | . | Recoil, heavy weapon | 2 × uncompensated recoil | . | Blind fire | +8 | . | Partial cover | +4 | . | Multiple targets | +2 per additional target that phase | . | Target running | +2 | . | Target stationary | −1 | . | Attacker in melee combat | +2 per opponent | . | Attacker walking / on difficult ground | +1 / +2 | . | Attacker running / on difficult ground | +4 / +6 | . | Attacker wounded | Damage Modifiers Table | . | Smartlink with smartgun | −2 | . | Smart goggles with smartgun | −1 | . | Laser sight (to 50 m; defeated by mist, smoke, fog or rain) | −1 | . | Using a second firearm | +2, and no smartlink, goggle or laser bonus | . | Aimed shot | −1 per Simple Action | . | Called shot | +4 | . Recoil compensation reduces only recoil. Gyro-stabilization reduces recoil and movement modifiers. (SR3 p.113) . Visibility Table (SR3 p.112) . In each vision cell, the first number is for cybernetic vision and the second for natural vision. | Condition | Normal | Low-Light | Thermographic | . | Full darkness | +8 | +8/+8 | +4/+2 | . | Minimal light | +6 | +4/+2 | +4/+2 | . | Partial light | +2 | +1/0 | +2/+1 | . | Glare | +2 | +4/+2 | +4/+2 | . | Mist | +2 | +2/0 | 0 | . | Light smoke / fog / rain | +4 | +4/+2 | 0 | . | Heavy smoke / fog / rain | +6 | +6/+4 | +1/0 | . | Thermal smoke | +4 | +4 | +8/+6 | . In melee, visibility modifiers apply at half value (rounded down), except full darkness. (SR3 p.122) . Melee Modifiers (SR3 p.123) . | Situation | Modifier | . | Called shot | +4 | . | Character has more friends in the melee | −1 per friend, maximum −4 | . | Opponent has more friends in the melee | +1 per friend, maximum +4 | . | Longer reach | −1 per point (or +1 to the opponent) | . | Attacking multiple targets | +2 per additional target | . | Superior position | −1 | . | Opponent prone | −2 | . | Wounded | Damage Modifiers Table | . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/combat/#modifier-tables",
+    
+    "relUrl": "/rules/combat/#modifier-tables"
+  },"15": {
+    "doc": "Actions & Combat",
+    "title": "Wounds and the Condition Monitor  (SR3 p.125–126)",
+    "content": "Physical and Stun damage each fill a 10-box track. | Boxes filled | Level | Target numbers | Initiative | . | 1 | Light | +1 | −1 | . | 3 | Moderate | +2 | −2 | . | 6 | Serious | +3 | −3 | . | 10 | Deadly | Unconscious | — | . | Use only the highest level in each track, but add the Stun and Physical modifiers together. (SR3 p.125–126) | The injury modifier applies to nearly every test except tests to resist or avoid damage. (SR3 p.126) | Stun past 10 boxes overflows into the Physical track, and you fall unconscious. (SR3 p.125) | Physical past 10 boxes: you can survive overflow up to your Body rating. One box beyond that and you are dead. While in overflow, you take another box every (Body) Combat Turns until stabilized. (SR3 p.125–126) | . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/combat/#wounds-and-the-condition-monitor",
+    
+    "relUrl": "/rules/combat/#wounds-and-the-condition-monitor"
+  },"16": {
+    "doc": "Actions & Combat",
+    "title": "Spellcasting and Drain  (summary)",
+    "content": "The full step-by-step, with Spell Defense, elemental spells and sustaining, is on Spellcasting, Resistance &amp; Drain. Casting a spell is a Complex Action. (SR3 p.107) . | Force: you can cast a spell at any Force up to the one you learned it at, never higher. (SR3 p.178) | Sorcery Test: Sorcery dice plus up to an equal number of Spell Pool dice. The TN is the target’s Willpower for mana spells or Body for physical spells. Objects use the Object Resistance Table: natural 3, low-tech 5, high-tech 8, highly processed 10+. (SR3 p.182) If every die shows 1, the spell fails and Drain TN rises by 2. (SR3 p.182) | Resistance: the target resists with the same attribute, and the net successes decide the effect. | Drain: every spell lists a code like +1(M). Drain Power (the TN) = Force ÷ 2, rounded down, + the modifier; M is the Damage Level. Resist with Willpower plus any number of Spell Pool dice. Every 2 successes reduce the level one step. (SR3 p.162, p.44) . | Drain is Stun, or Physical if the Force is higher than your Magic, or if you are astrally projecting. (SR3 p.162) | Each spell you are sustaining adds +2 to Drain Power. (SR3 p.162) | Conjuring Drain is resisted with Charisma. (SR3 p.162) | . | . Spell Pool = (Intelligence + Willpower + Magic) ÷ 3, rounded down. (SR3 p.44) . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/combat/#spellcasting-and-drain",
+    
+    "relUrl": "/rules/combat/#spellcasting-and-drain"
+  },"17": {
+    "doc": "Actions & Combat",
+    "title": "Decking  (summary)",
+    "content": ". | Hacking Pool = (Intelligence + MPCP) ÷ 3, rounded down. You can add at most your skill dice from it to a test. It can’t be used on Body or Willpower tests against gray or black IC, or on Etiquette (Matrix). (SR3 p.44) | Matrix Initiative: your persona’s Reaction + 1D6. Each point of Response Increase adds +2 Reaction and +1D6, up to 3 points and no more than MPCP ÷ 4. Wired reflexes and other physical boosts don’t apply. (SR3 p.207, p.223) | Icons get the same Free / Simple / Complex actions. (SR3 p.223) | System Tests: you roll Computer against the relevant subsystem rating (Access, Control, Index, Files, Slave). The host rolls its Security Value against your Detection Factor, and its successes build your security tally, which triggers alerts and IC. (SR3 p.209–210) | Security codes: Blue, Green, Orange, Red. Deckers call the ones off the chart “UV”. (SR3 p.205) | IC (SR3 p.227–230) . | White affects only your icon: crippler, killer, probe, scramble, tar baby. | Gray attacks your deck and utilities: blaster, ripper, sparky, tar pit. | Black attacks you. Against lethal black IC you resist with Body, reduced by Hardening. Hacking Pool can’t be used; Karma Pool can. After black IC hits you, jacking out takes a Complex Action and a Willpower (IC Rating) Test. (SR3 p.230) | . | Tortoises (cyberterminals) can’t be hurt by black IC or dump shock. (SR3 p.208) | Matrix adds cold ASIST, which treats lethal black IC as non-lethal, and hot ASIST, which you need for Response Increase and Hacking Pool. (Matrix p.18) | . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/combat/#decking--summary",
+    
+    "relUrl": "/rules/combat/#decking--summary"
+  },"18": {
+    "doc": "Actions & Combat",
+    "title": "Vehicle combat &amp; rigging  (summary)",
+    "content": ". | Vehicle Control Rig: each level gives +2 Reaction and +1D6 Initiative while rigging. (SR3 p.301) | Control Pool = Reaction as modified by the VCR. (SR3 p.44) It only works in a vehicle adapted for rigger control. (SR3 p.134) | Driving Tests use the vehicle’s Handling as base TN. A jacked-in rigger subtracts the VCR rating. Vehicle-combat maneuver tables subtract 2 × VCR rating. (SR3 p.134, p.142–144) | Gunnery: mounted weapons use the Gunnery skill and the ordinary ranged-combat rules. Sensor-enhanced gunnery adds half the Sensor rating in dice. (SR3 p.151–152) | Shooting a vehicle: halve the weapon’s Power and drop its Damage Level one step, then subtract vehicle armor. If what’s left doesn’t beat the armor, no damage. Anti-vehicle munitions skip the halving and subtract only half the armor. (SR3 p.149) | Vehicle Damage Resistance: vehicle Body plus Control Pool dice up to the Driving skill, against the modified Power. Riggers may dodge with Control Pool against the vehicle’s Handling. (SR3 p.149) | Crash Tests are required when a vehicle takes Serious damage in a single attack, reaches Destroyed, takes damage from a ram, or brakes harder than Acceleration × 4. The test is a Driving Test against Handling. (SR3 p.147) | Rigger damage: if the vehicle takes Serious damage, the jacked-in rigger resists 6M Physical. If it’s destroyed, 6S. This is resisted with Willpower, and no pool dice can be used. (SR3 p.145) | . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/combat/#vehicle-combat--rigging--summary",
+    
+    "relUrl": "/rules/combat/#vehicle-combat--rigging--summary"
+  },"19": {
+    "doc": "Actions & Combat",
+    "title": "Actions & Combat",
+    "content": " ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/combat/",
+    
+    "relUrl": "/rules/combat/"
+  },"20": {
+    "doc": "Cyberware Grades & Used Chrome",
+    "title": "Cyberware Grades &amp; Used Chrome",
+    "content": "Basic, alpha, beta and deltaware; buying used; removing chrome; and selling what you’ve pulled out. Grade rules are from Man &amp; Machine: Cyberware. | The four grades (M&amp;M p.10–11) . | Cyberware Grades Table (M&amp;M p.45) | Matching grades (M&amp;M p.45) | . | Used cyberware (M&amp;M p.11, p.45) . | Example: Wired Reflexes, level 1 | . | Removing cyberware (M&amp;M p.147, p.150) | Selling harvested chrome | Being scanned (SR3 p.237) | . Original gist: “Cyberware Grades &amp; Secondhand Gear Guide”. | Betaware is ×.6 Essence, not ×.7. | Used cyberware costs the Essence of its grade, not ×1.25. It costs half price, not ×.75. | The availability modifiers were invented. Alphaware is as available as basic. Betaware is +5 to the TN and ×1.5 the time. Deltaware is at least +9 and ×3. Used is standard. | Betaware isn’t available to starting characters either, not only deltaware. | Used deltaware can’t be bought, but if you get hold of some, it can be installed as betaware. It isn’t “destroyed on extraction”. | Used implants come with 1D3 permanent Stress Points, not “1 to 2”. | Removing chrome never gives Essence back. A later implant can use the “Essence hole”, but only through a surgical option at +2 Threshold. | The 1–3 hour harvest window, the TN 4–8 extraction roll and the “Electronics (Cyberware) scrub” aren’t in Man &amp; Machine. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/street/cyberware-grades/#cyberware-grades--used-chrome",
+    
+    "relUrl": "/street/cyberware-grades/#cyberware-grades--used-chrome"
+  },"21": {
+    "doc": "Cyberware Grades & Used Chrome",
+    "title": "The four grades  (M&amp;M p.10–11)",
+    "content": ". | Basic is mass-market and fits anyone. Any street doc can install it. | Alphaware has better materials and testing. It’s as easy to get as basic and costs twice as much. | Betaware is custom-fitted to your body, after tests and DNA screening, and uses myomers in place of gyros and microengines. It must be special-ordered. | Deltaware is built during the surgery itself, in corporate clinics that are almost never mentioned. It isn’t available on the street. | . Cyberware Grades Table (M&amp;M p.45) . | Grade | Essence | Cost multiplier | Availability | . | Basic | ×1 | ×1 | Standard | . | Alpha | ×.8 (−20%) | ×2 | Standard | . | Beta | ×.6 (−40%) | ×4 | +5 / ×1.5 time | . | Delta | ×.5 (−50%) | ×8 | +9 / ×3 time, at least | . | Used | by grade | ×.5 | Standard | . | Round Essence costs up. A reduction can’t take an Essence cost below .01. (M&amp;M p.45) | The cost multiplier covers the implant only. Surgery and hospital bills are extra. (M&amp;M p.45; see Surgery, M&amp;M p.135) | Most shadow clinics can supply basic, alpha and often beta. Betaware isn’t available to starting characters. A clinic that does delta has to want you there. (M&amp;M p.45) | . Matching grades (M&amp;M p.45) . Accessories for an alpha, beta or delta device must be the same grade. So must every component of a system bought in parts, such as a smartlink. Devices installed inside a cyberlimb or body compartment don’t have to match the limb. ",
+    "url": "/The2ndChumming3e/v0.6.0/street/cyberware-grades/#the-four-grades--mm-p1011",
+    
+    "relUrl": "/street/cyberware-grades/#the-four-grades--mm-p1011"
+  },"22": {
+    "doc": "Cyberware Grades & Used Chrome",
+    "title": "Used cyberware  (M&amp;M p.11, p.45)",
+    "content": ". | Basic, alpha and beta chrome can be bought used. It’s cheap, it’s of suspect quality, and it still works. | Used deltaware can’t be bought. If you acquire some anyway, it’s installed as if it were betaware. | Used chrome is as easy to find as basic, but the sellers are organleggers, ghouls and dubious clinics. | Its Essence cost is the same as new of that grade. Its price is half. | Each used item comes with 1D3 permanent Stress Points. They can never be removed, and they add to any Stress it picks up in use. (M&amp;M p.45; see Damage and Healing, M&amp;M p.124) | . Example: Wired Reflexes, level 1 . Wired Reflexes 1 is 2 Essence, 55,000¥, Availability 4/8 days. (SR3 p.302) . | Grade | Essence | Cost | Availability | . | Basic | 2.0 | 55,000¥ | 4 / 8 days | . | Alpha | 1.6 | 110,000¥ | 4 / 8 days | . | Beta | 1.2 | 220,000¥ | 9 / 12 days | . | Delta | 1.0 | 440,000¥ | 13 / 24 days or worse | . | Used basic | 2.0 | 27,500¥ | 4 / 8 days, plus 1D3 Stress | . | Used alpha | 1.6 | 55,000¥ | 4 / 8 days, plus 1D3 Stress | . “Used” is shown here as half the price of the same grade new. The table’s ×.5 sits in the Cost column beside “by grade” for Essence, which reads as a discount applied to whichever grade it is. ",
+    "url": "/The2ndChumming3e/v0.6.0/street/cyberware-grades/#used-cyberware--mm-p11-p45",
+    
+    "relUrl": "/street/cyberware-grades/#used-cyberware--mm-p11-p45"
+  },"23": {
+    "doc": "Cyberware Grades & Used Chrome",
+    "title": "Removing cyberware  (M&amp;M p.147, p.150)",
+    "content": ". | Removal doesn’t give back lost Essence. (M&amp;M p.147) | The implant takes 1D6 ÷ 2 Stress coming out. If the procedure fails, it stays in, still takes the Stress, and has to make a Stress Test. (M&amp;M p.147) | Essence Slot is a surgical option at +2 Threshold. A new implant can be fitted into the “Essence hole” left by removed chrome, and the old implant’s Essence cost is subtracted from the new one’s. Without this option there’s no discount. (M&amp;M p.150) | . Removal is surgery, and uses the procedures from Surgery onward. (M&amp;M p.135 on) . ",
+    "url": "/The2ndChumming3e/v0.6.0/street/cyberware-grades/#removing-cyberware--mm-p147-p150",
+    
+    "relUrl": "/street/cyberware-grades/#removing-cyberware--mm-p147-p150"
+  },"24": {
+    "doc": "Cyberware Grades & Used Chrome",
+    "title": "Selling harvested chrome",
+    "content": "Man &amp; Machine has no separate resale rule for used implants, so sell them the same way as any other loot. Use the fencing rules (SR3 p.237–238): a 30% base, 5% per net success on the Negotiation, never below 10% or above 50%. Stolen chrome isn’t standard gear, so expect the Finding a Fence TN to rise. Example. A dead samurai’s smartlink (2,500¥) and retractable spur (11,500¥) (SR3 p.302) list at 14,000¥ together. The fence’s base offer is 4,200¥. Depending on the Negotiation, the deal can’t go below 1,400¥ or above 7,000¥. Optional flavor, not from the books. Tracking tags or corporate lockouts on stolen high-end implants, and a time limit for pulling chrome from a corpse, are good complications. If you use them, set the tests yourself; neither book gives numbers. ",
+    "url": "/The2ndChumming3e/v0.6.0/street/cyberware-grades/#selling-harvested-chrome",
+    
+    "relUrl": "/street/cyberware-grades/#selling-harvested-chrome"
+  },"25": {
+    "doc": "Cyberware Grades & Used Chrome",
+    "title": "Being scanned  (SR3 p.237)",
+    "content": "Cyberware scanners are usually rated 3–9. The scanner rolls its rating against TN 3 for typical cyberware and TN 6 for alphaware. More successes identify the implants more precisely. ",
+    "url": "/The2ndChumming3e/v0.6.0/street/cyberware-grades/#being-scanned--sr3-p237",
+    
+    "relUrl": "/street/cyberware-grades/#being-scanned--sr3-p237"
+  },"26": {
+    "doc": "Cyberware Grades & Used Chrome",
+    "title": "Cyberware Grades & Used Chrome",
+    "content": " ",
+    "url": "/The2ndChumming3e/v0.6.0/street/cyberware-grades/",
+    
+    "relUrl": "/street/cyberware-grades/"
+  },"27": {
+    "doc": "Decker",
+    "title": "Hiring a Decker",
+    "content": ". | What the books give you . | What the decker is risking | . | House rates . | Base day rate, by Computer skill | Threat multiplier, by host security | Hazard pay and expenses | . | Worked examples | . | SR3 security codes are Blue, Green, Orange and Red, plus unofficial “UV”. There are no “Yellow” systems, and “Passive / Passive-Alert IC” is not an IC type. (SR3 p.205) | Blaster, sparky and tar pit are gray IC: they damage the deck and its programs. Black IC is the kind that hurts the decker, including the psychotropic variety. (SR3 p.227–230) | The “Scenario C” total was right. The others are restated below with the formula from the hiring overview. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/decker/#hiring-a-decker",
+    
+    "relUrl": "/hiring/decker/#hiring-a-decker"
+  },"28": {
+    "doc": "Decker",
+    "title": "What the books give you",
+    "content": "|   |   | Source | . | Hacking job | 1,000¥ × the host’s Security Value | SRComp p.100 | . | Datasteal | 20% of the data’s value | SRComp p.100 | . | Encryption / decryption | 200¥ per Mp | SRComp p.100 | . What the decker is risking . | Gray IC (blaster, ripper, sparky, tar pit) damages the deck and its programs. Burned chips have to be replaced. (SR3 p.228–229) | Lethal black IC damages the decker, at (IC Rating) Moderate on Blue and Green hosts and Serious on Orange and Red hosts. Once it hits, jacking out takes a Complex Action and a Willpower test. (SR3 p.230) | Decks are expensive. (SR3 p.304) | . | Stock deck | Price | . | Allegiance Sigma | 70,000¥ | . | Sony CTY-360-D | 125,000¥ | . | Novatech Hyperdeck-6 | 250,000¥ | . | Renraku Kraftwerk-8 | 600,000¥ | . | Novatech Slimcase-10 | 1,500,000¥ | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/decker/#what-the-books-give-you",
+    
+    "relUrl": "/hiring/decker/#what-the-books-give-you"
+  },"29": {
+    "doc": "Decker",
+    "title": "House rates",
+    "content": "These rates aren’t from any SR3 book. They are the original gist’s numbers, kept for convenience. Base day rate, by Computer skill . | Tier | Computer | Base day rate | Typical kit | . | Amateur | 1–3 | 250–500¥ | Entry deck, low MPCP | . | Professional | 4–5 | 1,000–2,500¥ | Mid-range deck; comfortable on Blue and Green hosts | . | Veteran | 6–7 | 3,000–6,000¥ | High-end or custom deck with strong utilities | . | Elite | 8+ | 10,000¥ and up | Custom hardware and custom-coded utilities | . Threat multiplier, by host security . | Host | Multiplier | Why | . | Blue / Green | ×1 | Mostly white IC; being traced or dumped is the main risk | . | Orange | ×1.5–2 | Gray IC; deck damage becomes likely | . | Red | ×3–5 | Black IC; the decker can die | . | UV / megacorp core | ×10, or a flat 50,000¥ and up | Off the chart | . Hazard pay and expenses . | Remote decking from a safehouse: no hazard pay. | On-site decking, jacking in with the team: +100% to +200%. | Custom utilities written for the job should be paid for by the employer. | A deck repair deposit of 5,000–20,000¥ is reasonable against gray IC. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/decker/#house-rates",
+    
+    "relUrl": "/hiring/decker/#house-rates"
+  },"30": {
+    "doc": "Decker",
+    "title": "Worked examples",
+    "content": "| Job | House rate | Companion baseline | . | Remote hack of a Blue-2 host by a professional (base 1,000¥) | 1,000 × 1 = 1,000¥ | 1,000 × 2 = 2,000¥ | . | Remote paydata grab from a Red host by a veteran (base 4,000¥) | 4,000 × 3 = 12,000¥ | Hacking: 1,000¥ × Security Value, or 20% of the data’s value | . | On-site hack during a heist by a veteran, Orange-to-Red (×2), +100% hazard | 4,000 × 2 × 2 = 16,000¥, or 24,000¥ at +200% | Hacking fee plus a share of the burglary or extraction | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/decker/#worked-examples",
+    
+    "relUrl": "/hiring/decker/#worked-examples"
+  },"31": {
+    "doc": "Decker",
+    "title": "Decker",
+    "content": " ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/decker/",
+    
+    "relUrl": "/hiring/decker/"
+  },"32": {
+    "doc": "Face",
+    "title": "Hiring a Face",
+    "content": ". | What the books give you . | What their cover costs | . | House rates . | Base day rate, by Negotiation or other social skill | Threat multiplier | Hazard pay and expenses | . | Worked examples | . | There’s no adept power called “Authoritative Voice”. The SR3 powers are Commanding Voice and Kinesics. (SOTA64 p.64–66) | A Rating 4–6 fake ID doesn’t cost “1,000–10,000¥”. By the Creating a Credstick Table it’s 16,000¥ at Rating 4 and 30,000¥ at Rating 6. (SR3 p.239) | Corporate Download is a real SR3 book, but it isn’t in the library used for checking. Nothing on this page depends on it. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/face/#hiring-a-face",
+    
+    "relUrl": "/hiring/face/#hiring-a-face"
+  },"33": {
+    "doc": "Face",
+    "title": "What the books give you",
+    "content": "|   |   | Source | . | Investigation (legwork) | 200¥ per day | SRComp p.100 | . | Distraction | 1,000¥ | SRComp p.100 | . | Fencing | the face’s Negotiation moves the price 5% per net success | SR3 p.238 | . | Buying gear | also 5% per net success | SR3 p.273 | . A face earns their fee at the Negotiation table. Each net success is worth 5% on a fence deal or a black-market purchase (SR3 p.238, p.273), and Mr. Johnson always opens low and leaves room to bargain (MJLBB p.20–21). What their cover costs . | Item | Cost | Source | . | Fake ID, Rating 4 | 16,000¥ | SR3 p.239 | . | Fake ID, Rating 6 | 30,000¥ | SR3 p.239 | . | Permit (possess / possess and transport) | 5% / 10% of the item’s price; needs a valid SIN | SR3 p.274 | . | Tailored pheromones | bioware | M&amp;M p.71 | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/face/#what-the-books-give-you",
+    
+    "relUrl": "/hiring/face/#what-the-books-give-you"
+  },"34": {
+    "doc": "Face",
+    "title": "House rates",
+    "content": "These rates aren’t from any SR3 book. They are the original gist’s numbers, kept for convenience. Base day rate, by Negotiation or other social skill . | Tier | Skill | Base day rate | Typical kit | . | Hustler | 1–3 | 300–600¥ | Street contacts and simple bluffs | . | Professional | 4–5 | 1,500–3,000¥ | Tailored pheromones, a Rating 4 fake ID, mid-level contacts | . | Veteran | 6–7 | 4,500–9,000¥ | Strong pheromones or Kinesics, high-tier corporate contacts | . | Elite | 8+ | 15,000¥ and up | A global network and flawless impersonation | . Threat multiplier . | Work | Multiplier | . | Legwork, contract negotiation, fence deals | ×1 | . | Impersonation inside a corporate facility | ×2–3 | . | Undercover in a yakuza, triad or mafia operation, or a black site | ×4–5 | . Hazard pay and expenses . | Off-site negotiation: no hazard pay. | On-site, talking the team past checkpoints: +50% to +100%. | The employer pays for venues, clothing, gifts and bribes. | Burned identity deposit: enough to replace the fake ID at its rating (see the table above). | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/face/#house-rates",
+    
+    "relUrl": "/hiring/face/#house-rates"
+  },"35": {
+    "doc": "Face",
+    "title": "Worked examples",
+    "content": "| Job | House rate | Companion baseline | . | Negotiating a Johnson contract, professional (base 2,000¥), ×1 | 2,000¥, or 5–10% of the bonus they win | Investigation: 200¥ a day | . | Posing as staff in a corporate office, veteran (base 6,000¥), ×2, plus a Rating 4 fake ID | 12,000 + 16,000 = 28,000¥ | Distraction: 1,000¥; investigation: 200¥ a day | . | Undercover in a yakuza operation, veteran (base 8,000¥), ×4 | 8,000 × 4 = 32,000¥ plus bribes and burned IDs | Investigation: 200¥ a day | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/face/#worked-examples",
+    
+    "relUrl": "/hiring/face/#worked-examples"
+  },"36": {
+    "doc": "Face",
+    "title": "Face",
+    "content": " ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/face/",
+    
+    "relUrl": "/hiring/face/"
+  },"37": {
+    "doc": "Buying Gear & Fencing",
+    "title": "Buying Gear &amp; Fencing",
+    "content": "Availability, Street Index and Legality Codes; buying through contacts; and selling stolen goods to a fence. All rules are from the core rulebook, (SR3 p.237–238, p.270–274). | Reading a gear entry (SR3 p.270–272) | Buying on the street (SR3 p.272–273) . | The book’s example (SR3 p.273) | Example: an Ares Predator | . | Legality Codes (SR3 p.273–274) . | Categories (SR3 p.274) | . | Fencing the loot (SR3 p.237–238) . | 1. Find a fence (SR3 p.237) . | Finding a Fence Table (SR3 p.238) | . | 2. Spend your successes (SR3 p.237–238) | 3. The meet (SR3 p.238) | Example: five HK227 SMGs | . | . Original gist: “Gear Availability, Acquisition, &amp; Fencing Guide”. | SR3 Legality Codes look like 6P-E, not “R” or “F”. The number is the restriction level, P means a permit is available, and the letter is the category. | Successes on the acquisition test divide the base time. They don’t cut it by 25–50% each. | Paying to hurry a search costs +2 days and +0.1 Street Index for each −1 to the Availability TN. It’s not “+25–50% per die”. | The price is negotiated: Negotiation against Intelligence, 5% per net success. | Fencing: the 30% base and 5% per net success were right, but the limits are a 10% floor and a 50% ceiling, not 60%. The “chop shop 10–15%” rate and the hot, encrypted and scarce percentage modifiers were invented. The book handles risk through the Finding a Fence TN instead. | The Ares Predator III isn’t in the core rulebook. The examples below use the core Ares Predator (450¥, Availability 3/24 hrs, Street Index .5). | . ",
+    "url": "/The2ndChumming3e/v0.6.0/street/gear-and-fencing/#buying-gear--fencing",
+    
+    "relUrl": "/street/gear-and-fencing/#buying-gear--fencing"
+  },"38": {
+    "doc": "Buying Gear & Fencing",
+    "title": "Reading a gear entry  (SR3 p.270–272)",
+    "content": "| Statistic | Meaning | . | Concealability | TN for Perception Tests to spot it. Searches use half. | . | Availability | Two numbers: TN / base time, for example 3/24 hrs. | . | Cost | The legal retail price in nuyen. | . | Street Index | The black-market multiplier on Cost. | . | Legality | Restriction level, permit availability, and category. | . At character creation, no gear may have a Device Rating above 6 or an Availability above 8. (SR3 p.270) Gear modified for a dwarf costs +10%, and for a troll +25%. (SR3 p.272) . ",
+    "url": "/The2ndChumming3e/v0.6.0/street/gear-and-fencing/#reading-a-gear-entry--sr3-p270272",
+    
+    "relUrl": "/street/gear-and-fencing/#reading-a-gear-entry--sr3-p270272"
+  },"39": {
+    "doc": "Buying Gear & Fencing",
+    "title": "Buying on the street  (SR3 p.272–273)",
+    "content": ". | Find a source. Contact a fixer or other suitable contact and make an Etiquette Test against the Availability TN. Contacts differ: a talismonger is great for magical goods and poor for guns. | Wait. Base time ÷ successes is how long it takes the source to find the item. | No successes? The contact can’t or won’t find it. At the GM’s discretion you can put the word out: for each −1 to the Availability TN, add 2 days to the wait and +0.1 to the Street Index. (SR3 p.273) | Negotiate. Halfway through the wait you meet the source. The asking price is Cost × Street Index, plus any increase from step 3. You and the source each roll Negotiation against the other’s Intelligence. The winner moves the price 5% per net success in their favor. (SR3 p.273) | Pick up. If you won’t pay, the deal is off, and the GM may raise the Availability TN next time you use that contact. (SR3 p.273) | . The book’s example (SR3 p.273) . Cheshire wants a monofilament whip: Availability 24/14 days, Street Index 3, Cost 3,000¥. None of her contacts come close to TN . | She puts the word out, cutting the TN to 12. That adds 24 days (2 × 12) and +1.2 Street Index. She rolls 2 successes: (24 + 14) ÷ 2 = 19 days. The price is 3,000 × 4.2 = 12,600¥. She wins the negotiation by 4, which is 20% off, and pays 10,080¥. | . Example: an Ares Predator . | Ares Predator: 9M, SA, Availability 3/24 hrs, Cost 450¥, Street Index .5, Legality 6P-E. (SR3 p.278) | An Etiquette Test against TN 3 scores 2 successes, so the pistol turns up in 12 hours. | The asking price is 450 × .5 = 225¥ before negotiation. Its Street Index is below 1, so heavy pistols are cheaper on the street than in a store. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/street/gear-and-fencing/#buying-on-the-street--sr3-p272273",
+    
+    "relUrl": "/street/gear-and-fencing/#buying-on-the-street--sr3-p272273"
+  },"40": {
+    "doc": "Buying Gear & Fencing",
+    "title": "Legality Codes  (SR3 p.273–274)",
+    "content": "A code like 6P-E reads as follows: . | 6 is the restriction level. The lower the number, the more tightly it’s controlled. When an officer notices the item, they roll their Security or Police Procedures skill against this number. With 1 success they know and may warn you. With more, they ask for a permit or arrest you. A low-enforcement area adds up to +3; a high-enforcement area subtracts up to −3, to a minimum of 2. | P means a permit is available. See SINs &amp; the SINless. | E is the category on the Local Fines and Punishment Table. | . Legal items have no code. They can be bought over the counter, but only in your own name, which leaves a data trail. (SR3 p.273) . Categories (SR3 p.274) . |   |   |   |   | . | A Small blade | F Rifle | L Military armor | S Class D Matrix (unregistered decks and software) | . | B Large blade | G Automatic weapon | M Military ammunition | T Class E Magic (unregistered spells, spirits, foci) | . | C Blunt weapon | H Heavy weapon | N Class A cyberware (paralegal) | U / V / W Class A / B / C equipment | . | D Projectile | J Explosives | Q Class B cyberware (security grade) | X / Y / Z Class A / B / C controlled substances | . | E Pistol | K Military weapon | R Class C cyberware (military grade) |   | . The table also lists fines and prison terms for possession, transport, threat, use and intent in each category. ",
+    "url": "/The2ndChumming3e/v0.6.0/street/gear-and-fencing/#legality-codes--sr3-p273274",
+    
+    "relUrl": "/street/gear-and-fencing/#legality-codes--sr3-p273274"
+  },"41": {
+    "doc": "Buying Gear & Fencing",
+    "title": "Fencing the loot  (SR3 p.237–238)",
+    "content": "If the job came with an agreed way to dispose of the loot, these rules don’t apply. Otherwise, you need a fence. 1. Find a fence (SR3 p.237) . Make an Etiquette (Street) Test against TN 4, modified as below. A team rolls the average Etiquette (Street) of the group plus one die per member, and everyone who contributes must attend the meet. Finding a Fence Table (SR3 p.238) . | Situation | Modifier | . | Using a regular contact | −1 | . | Disposing of standard gear | −1 | . | Disposing of hi-tech or other important loot | +1 | . | Disposing of hot loot | +3 | . | Being sought by the police | +1 | . | Being sought by a corp or organized crime | +2 | . | Magical loot (foci, spell formulae and so on) | +2 | . Fences prefer, in this order: standard gear (weapons, armor, vehicles, jewelry, money), then high-tech loot (ordinary data, equipment, research), then hot loot (one-of-a-kind items, prototypes, secret files, magical items). (SR3 p.237) . 2. Spend your successes (SR3 p.237–238) . You can split them between two uses: . | Hurry it along: finding a fence takes a base 10 days, and each success allocated takes a day off, down to a minimum of 1 day. At the end of each day the GM rolls dice equal to the days spent so far against TN 6. Any success means the former owners have found out. | Finance the fence: the GM secretly rolls 2D6 × 100,000¥ and multiplies it by the successes allocated. That’s the most money the fence brings to the meet. | . 3. The meet (SR3 p.238) . | One character and the fence each roll Negotiation against the other’s Intelligence, +2 because both sides are suspicious. | The base price is 30% of the item’s listed value. The winner shifts it 5% per extra success. | The fence can’t push it below 10%, and the team can’t push it above 50%. | The fence will bring muscle. If the former owners are hunting the loot, they may turn up too. | . Example: five HK227 SMGs . | The Heckler &amp; Koch HK227 costs 1,500¥ each, so five are worth 7,500¥ at list. (SR3 p.278) | The fence’s base offer is 30%, which is 2,250¥. | The team’s face wins by 3 successes: +15%, for 45%, or 3,375¥. | Winning by 5 would reach 55%, but the ceiling holds it at 50%, which is 3,750¥. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/street/gear-and-fencing/#fencing-the-loot",
+    
+    "relUrl": "/street/gear-and-fencing/#fencing-the-loot"
+  },"42": {
+    "doc": "Buying Gear & Fencing",
+    "title": "Buying Gear & Fencing",
+    "content": " ",
+    "url": "/The2ndChumming3e/v0.6.0/street/gear-and-fencing/",
+    
+    "relUrl": "/street/gear-and-fencing/"
+  },"43": {
+    "doc": "Grenades",
+    "title": "Grenades",
+    "content": "Throwing or launching a grenade, where it lands, when it goes off, and what the blast does. All rules are from the core rulebook, (SR3 p.118–119). | 1. Hitting the target (SR3 p.118) . | Grenade Range Table (SR3 p.119) | . | 2. Scatter (SR3 p.119) | 3. When it goes off (SR3 p.119) | 4. The blast (SR3 p.119) . | Grenade Damage Table (SR3 p.119) | . | 5. Barriers and confined spaces (SR3 p.119) | . Original gist: “Grenade Throwing Rules Reference”. | The range table was invented. Grenades have their own range table, with base TNs 4 / 5 / 8 / 9, not 4 / 5 / 6 / 9, and bands of STR × 3 / 5 / 10 / 20 for a standard grenade. | Scatter is 1D6 m (standard), 2D6 m (aerodynamic) or 3D6 m (launcher). Each success removes 2 m (standard) or 4 m (aerodynamic and launcher), not 2D6 m less 1 m per success. | Grenades go off in your next Combat Phase, not at the end of the Combat Turn. There are no fuse types in the core rules. | Offensive grenades are 10S, −1 Power per meter. Defensive grenades are 10S, −1 per half meter. Concussion grenades are 12M Stun, −1 per meter. There is no “12D HE”. | All blast damage is resisted with Impact armor. | The chunky salsa effect adds the combined Power of each pass of the wave. It is not a series of separate damage rolls. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/grenades/",
+    
+    "relUrl": "/rules/grenades/"
+  },"44": {
+    "doc": "Grenades",
+    "title": "1. Hitting the target  (SR3 p.118)",
+    "content": ". | Pick the target point. | Make the attack test with Throwing Weapons for a thrown grenade, or Launch Weapons for a grenade launcher. (SR3 p.86) Throwing Weapons is linked to Strength and defaults to Strength. You may add Combat Pool dice. (SR3 p.86, p.118) | Base TN comes from the Grenade Range Table below. Apply the usual ranged combat modifiers (see Actions &amp; Combat). (SR3 p.118) | . Grenade Range Table (SR3 p.119) . | Type | Short (TN 4) | Medium (TN 5) | Long (TN 8) | Extreme (TN 9) | Scatter | . | Standard | 0 – STR × 3 | to STR × 5 | to STR × 10 | to STR × 20 | 1D6 m | . | Aerodynamic | 0 – STR × 3 | to STR × 5 | to STR × 20 | to STR × 30 | 2D6 m | . | Grenade launcher | 5 – 50 m | 51 – 100 m | 101 – 150 m | 151 – 300 m | 3D6 m | . Launcher minigrenades don’t arm until they’ve traveled about 5 meters. Disabling that safety takes an Electronics B/R (6) Test and 5 minutes. (SR3 p.118) . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/grenades/#1-hitting-the-target--sr3-p118",
+    
+    "relUrl": "/rules/grenades/#1-hitting-the-target--sr3-p118"
+  },"45": {
+    "doc": "Grenades",
+    "title": "2. Scatter  (SR3 p.119)",
+    "content": "Every grenade scatters to some degree. | Direction: roll 1D6 and read the Scatter Diagram. The arrow points in the direction of the throw. 1 means the grenade carried on past the target, 4 means it bounced back toward the thrower. | Distance: roll the dice from the Scatter column, then subtract 2 m per success for a standard grenade, or 4 m per success for an aerodynamic grenade or launcher. | At 0 or less, the grenade goes off exactly on target. Otherwise it goes off the remaining distance away in the rolled direction. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/grenades/#2-scatter--sr3-p119",
+    
+    "relUrl": "/rules/grenades/#2-scatter--sr3-p119"
+  },"46": {
+    "doc": "Grenades",
+    "title": "3. When it goes off  (SR3 p.119)",
+    "content": "A grenade goes off in the next Combat Phase of the character who threw or fired it. | If they have no more Combat Phases this turn, it goes off at the end of the next Initiative Pass. | If it was thrown in the last Initiative Pass of the turn, it goes off at the end of that Combat Turn. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/grenades/#3-when-it-goes-off--sr3-p119",
+    
+    "relUrl": "/rules/grenades/#3-when-it-goes-off--sr3-p119"
+  },"47": {
+    "doc": "Grenades",
+    "title": "4. The blast  (SR3 p.119)",
+    "content": "Grenade Damage Table (SR3 p.119) . | Type | Damage Code | Power reduction | . | Offensive | 10S | −1 per meter | . | Defensive | 10S | −1 per half meter | . | Concussion | 12M Stun | −1 per meter | . Each target resists with Body plus any Combat Pool dice, against TN = Power at their distance − Impact armor. Compare their successes with the thrower’s: every 2 more for the thrower stage the damage up one level, and every 2 more for the target stage it down one level. (SR3 p.119) . The book’s own example: a target 3 m from an offensive grenade faces 7S (10 − 3). A target 3 m from a defensive grenade faces 4S (10 − 6). At 6 m, the defensive grenade does nothing. (SR3 p.119) . Anti-personnel (AP) grenades are offensive or defensive grenades with heavy fragmentation. Their damage uses the flechette rules. (SR3 p.119, p.116) . Optional rule, grenade damage: instead of staging with the thrower’s successes, roll dice equal to half the grenade’s Power (round up) against TN 4, and stage up with those successes. (SR3 p.119) . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/grenades/#4-the-blast--sr3-p119",
+    
+    "relUrl": "/rules/grenades/#4-the-blast--sr3-p119"
+  },"48": {
+    "doc": "Grenades",
+    "title": "5. Barriers and confined spaces  (SR3 p.119)",
+    "content": "Blast against a barrier: compare the blast’s remaining Power with twice the Barrier Rating and use the Barrier Effect Table (p.124). If the barrier falls, the blast carries on with its Power reduced by the original Barrier Rating. If it holds, the blast may be channeled. Blast in a confined space (the “chunky salsa” effect): . | Check whether the walls held, using the barrier rules above. If they didn’t, resolve the blast normally. | If they held, the shock wave reflects back the way it came. | Anyone the rebounding wave still reaches is hit again. The Power of that second hit is the combined Power of both waves. For example, 6 on the way out and 2 on the rebound makes an effective Power of 8. | In a small, solid room the wave can rebound off every wall, and the effective Power climbs far above the grenade’s own. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/grenades/#5-barriers-and-confined-spaces--sr3-p119",
+    
+    "relUrl": "/rules/grenades/#5-barriers-and-confined-spaces--sr3-p119"
+  },"49": {
+    "doc": "Healing",
+    "title": "Healing",
+    "content": "What happens after someone gets hurt, step by step and in the order you do it at the table: who rolls, what they roll, and what it achieves. All rules are from the core rulebook, (SR3 p.125–129) and (SR3 p.162, p.193–194). | Who’s involved | The sequence at a glance | Step 0: The wound (SR3 p.125–126) | Step 1: Stabilize a dying character (SR3 p.129) | Step 2: First aid (SR3 p.129) . | First Aid Table (SR3 p.129) | . | Step 3: Magical healing (SR3 p.127, p.193–194) | Step 4: Deadly-wound aftermath (SR3 p.127–129) | Step 5: Do you need a doctor? (SR3 p.126–127) | Step 6: Heal over time (SR3 p.127–128) . | Healing Table (SR3 p.127) | Doctoring Table (SR3 p.128) | What it costs (SR3 p.128) | . | Stun damage (SR3 p.126) | Worked example | . Original gist: “Healing Rules Reference”. | Stun: TN is 2 plus your injury modifiers, not 2 plus the number of boxes filled. Recovering one box takes 60 minutes ÷ successes. You roll the higher of Body or Willpower; that’s the rule, not a GM option. | First aid: TN is 4 / 6 / 8 / 10 by wound level. One success lowers the wound one Damage Level, never more. It doesn’t heal a box per success, and there is no “capped by medkit rating”. | Heal / Treat: TN is 10 − the patient’s Essence, not the number of boxes filled. Each success heals one box, up to the spell’s Force. Heal has no +2 penalty after an hour. | Natural healing uses the Healing Table (TN 4 / 6 / 8 / 10), and the base time is divided by your successes. The “nurse / hospital / DocWagon” modifiers in the original were invented. The real ones are on the Doctoring Table below. | The fourth level is Deadly, not “Lethal”. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/healing/",
+    
+    "relUrl": "/rules/healing/"
+  },"50": {
+    "doc": "Healing",
+    "title": "Who’s involved",
+    "content": "| Role | Who they are | What they roll | . | Patient | The wounded character | Body (natural Body, no cyberware) for most healing tests; Body or Willpower for Stun | . | Medic | Anyone with Biotech skill, ideally with a medkit | Biotech for first aid and stabilizing | . | Magician | A spellcaster who knows Heal or Treat | Sorcery (+ Spell Pool), then Willpower for Drain | . | Doctor | Someone with a real medical degree, not just Biotech skill | Nothing; they give the patient the Doctoring Table modifiers | . | GM |   | Judges conditions (bad, terrible), lifestyle, and interruptions | . Gear that matters: a medkit (first aid without one is +4 TN), a trauma patch for a dying patient, and a hospital for intensive care. (SR3 p.128–129) . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/healing/#whos-involved",
+    
+    "relUrl": "/rules/healing/#whos-involved"
+  },"51": {
+    "doc": "Healing",
+    "title": "The sequence at a glance",
+    "content": "| # | Step | When | Who rolls | Roll | Effect | . | 1 | Stabilize | Deadly wound, right away | Medic, then patient | Biotech vs 10; if that fails, Body vs 10 | Stops the bleeding; heals nothing | . | 2 | First aid | Within 1 hour, before any magic | Medic | Biotech vs 4 / 6 / 8 | Wound drops one level | . | 3 | Magical healing | Treat within 1 hour; Heal any time | Magician | Sorcery vs 10 − Essence | Heals 1 box per success, up to Force | . | 4 | Deadly-wound aftermath | After a Deadly wound | Patient | Body vs 4; 2D6 for Magic loss if Awakened | May lose an organ, limb or attribute point, or Magic | . | 5 | Need a doctor? | After steps 2 and 3 | Patient | Body vs 2 / 4 / 6 | Decides whether you heal on your own | . | 6 | Heal over time | Each wound level, one at a time | Patient | Body vs 4 / 6 / 8 / 10 | Base time ÷ successes to drop one level | . | — | Stun recovery | Any time you can rest | Patient | Body or Willpower vs 2 | 60 min ÷ successes per box | . The order matters for two reasons. First aid can’t help once magical healing has been applied, so do first aid first. And first aid and magic both have to happen before the “need a doctor?” test. (SR3 p.127, p.129) . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/healing/#the-sequence-at-a-glance",
+    
+    "relUrl": "/rules/healing/#the-sequence-at-a-glance"
+  },"52": {
+    "doc": "Healing",
+    "title": "Step 0: The wound  (SR3 p.125–126)",
+    "content": "Physical and Stun each have 10 boxes. The Light / Moderate / Serious / Deadly thresholds are 1 / 3 / 6 / 10 boxes, and they add +1 / +2 / +3 to target numbers and −1 / −2 / −3 to Initiative. At 10 boxes you’re unconscious. | Stun past 10 boxes spills into the Physical track, and you’re knocked out. | Physical past 10 boxes: you can survive overflow up to your Body rating. Until someone stabilizes you, you take another box every (Body) Combat Turns. Past Body in overflow, you’re dead. | . See Actions &amp; Combat for the full table. ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/healing/#step-0-the-wound--sr3-p125126",
+    
+    "relUrl": "/rules/healing/#step-0-the-wound--sr3-p125126"
+  },"53": {
+    "doc": "Healing",
+    "title": "Step 1: Stabilize a dying character  (SR3 p.129)",
+    "content": "Only for a Deadly wound. First aid can stabilize a Deadly wound but can’t reduce it. | Medic rolls Biotech against TN 10, with the modifiers from the First Aid Table in step 2. One success stabilizes the patient: the extra box every (Body) Combat Turns stops. | If that fails, the patient rolls natural Body against TN 10. With a success they stabilize on their own. If that fails too, they die once the damage exceeds their Body rating. | Trauma patch (optional, last resort): the patient gets an extra Body Test to stabilize, against TN 4 + the rating of any dermal armor or blood filters. Success stops the overflow damage. It makes permanent damage more likely: +2 to the step 4 test. | When professional help arrives, such as a hospital or a DocWagon paramedic with better Biotech, it makes another Biotech Test and Body Test. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/healing/#step-1-stabilize-a-dying-character",
+    
+    "relUrl": "/rules/healing/#step-1-stabilize-a-dying-character"
+  },"54": {
+    "doc": "Healing",
+    "title": "Step 2: First aid  (SR3 p.129)",
+    "content": ". | Who: the medic, rolling Biotech. | When: within one hour of the injury, and before any magical healing. Once magic has been used on the wound, first aid can’t help. | Effect: at least one success lowers the wound one Damage Level. It never drops it by more than one level, and it only helps Physical damage. | Time: treatment time ÷ successes, in uninterrupted Combat Turns. A serious interruption means starting over. | . First Aid Table (SR3 p.129) . | Damage level | TN | Treatment time | . | Light | 4 | 5 Combat Turns | . | Moderate | 6 | 10 Combat Turns | . | Serious | 8 | 15 Combat Turns | . | Deadly | 10 | Special: stabilize only (step 1) | . | Situation | Modifier | . | Patient is Awakened | +2 | . | Bad conditions (a city street) | +1 | . | Terrible conditions (the same street in a firefight in the rain) | +3 | . | Patient’s Body 1–3 / 4–6 / 7–9 / 10+ | +0 / −1 / −2 / −3 | . | No medkit available | +4 | . Awakened patients. The +2 isn’t optional. If a medic treats an Awakened patient without applying it (using gear and drugs that risk their magic), the patient rolls 2D6; on a result at or below their Magic, they permanently lose 1 Magic. (SR3 p.129) . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/healing/#step-2-first-aid",
+    
+    "relUrl": "/rules/healing/#step-2-first-aid"
+  },"55": {
+    "doc": "Healing",
+    "title": "Step 3: Magical healing  (SR3 p.127, p.193–194)",
+    "content": ". | Who: a magician who knows the spell, touching the patient. (SR3 p.193) | Roll: Sorcery plus up to as many Spell Pool dice as Sorcery dice, against TN 10 − the patient’s Essence. (SR3 p.194; p.44) | . | Spell | Type | TN | When | Drain | . | Treat | Mana | 10 − Essence | Within 1 hour of the injury | −1(Wound Level) | . | Heal | Mana | 10 − Essence | Any time | (Wound Level) | . | Effect: each success heals one box of Physical damage, up to the spell’s Force. You can instead spend successes to divide the base time before the spell becomes permanent, or split them between the two. Treat becomes permanent in half the normal time. (SR3 p.194) | Drain: Power = Force ÷ 2 (+0 for Heal, −1 for Treat). The Damage Level is the patient’s wound level when the spell is cast. The magician resists with Willpower. (SR3 p.162, p.194) | Once only: a character can be magically healed once for a single set of injuries. A successful Heal or Treat rules out further healing spells and first aid. (SR3 p.127, p.194) | Drain can’t be healed by magic. Physical damage from Drain heals only with rest and medical care. (SR3 p.162) | . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/healing/#step-3-magical-healing",
+    
+    "relUrl": "/rules/healing/#step-3-magical-healing"
+  },"56": {
+    "doc": "Healing",
+    "title": "Step 4: Deadly-wound aftermath  (SR3 p.127–129)",
+    "content": "Only after a Deadly wound. Permanent damage. The patient rolls Body against TN 4. Dermal armor counts for this test, and use of a trauma patch adds +2. (SR3 p.127–128) . | Successes | Result | . | 0 | A vital organ or system is gravely damaged. The patient needs continuous care from someone with Biotech, the whole healing time doubles, and a transplant is needed. Roll 1D6 for the attribute permanently lost: 1 Body, 2 Strength, 3 Quickness, 4 Intelligence, 5 Willpower, 6 Reaction. | . | 1 | An eye or limb is lost and must be replaced, either natural or cyber. Base healing time +50%. Roll 1D6: 1 right arm, 2 left arm, 3 right leg, 4 left leg, 5 an ear, 6 an eye. | . | 2+ | No lasting damage. | . Magic loss. An Awakened patient with a Deadly wound rolls 2D6. At or below their Magic, they permanently lose 1 point. If the Deadly wound was also treated without the +2 Awakened modifier, they roll twice. (SR3 p.129) . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/healing/#step-4-deadly-wound-aftermath",
+    
+    "relUrl": "/rules/healing/#step-4-deadly-wound-aftermath"
+  },"57": {
+    "doc": "Healing",
+    "title": "Step 5: Do you need a doctor?  (SR3 p.126–127)",
+    "content": "Once first aid and magic are done, the patient makes a Body Test (natural Body, no cyberware) against the TN for their current wound: . | Wound level | TN | . | Light | 2 | . | Moderate | 4 | . | Serious | 6 | . | Deadly | Always needs medical attention | . | Any successes: you’ll heal without medical attention. | No successes: you won’t heal at all until you get medical attention, meaning a doctor, clinic or hospital. | . You can make this test any time, but doing it in combat costs your whole next Combat Turn. (SR3 p.126) . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/healing/#step-5-do-you-need-a-doctor",
+    
+    "relUrl": "/rules/healing/#step-5-do-you-need-a-doctor"
+  },"58": {
+    "doc": "Healing",
+    "title": "Step 6: Heal over time  (SR3 p.127–128)",
+    "content": "Physical damage heals one Damage Level at a time: Deadly to Serious, Serious to Moderate, and so on. When a level heals, the track drops to the lowest box of the next level. A Serious wound that heals to Moderate leaves exactly 3 boxes filled. For each level: . | The patient rolls Body against the TN on the Healing Table below. Add Doctoring Table modifiers if a doctor is involved. | Base time ÷ successes = how long that level takes to heal. It can never be shorter than the minimum time. | When the level heals, repeat for the next level down. | . Healing Table (SR3 p.127) . | Damage level | Base time | Minimum time | TN | Minimum lifestyle | . | Deadly | 30 days | 3 days | 10 | Hospitalized | . | Serious | 20 days | 2 days | 8 | High | . | Moderate | 10 days | 1 day | 6 | Middle | . | Light | 24 hours | 2 hours | 4 | Low | . If the patient can’t support the minimum lifestyle while healing, the GM may add modifiers. Lifestyle can be paid by the day: the monthly cost ÷ 30. (SR3 p.127) . Doctoring Table (SR3 p.128) . Use this when a real doctor is looking after the patient. | Situation | Modifier | . | Intensive care (hospital only) | −2 | . | Long-term magical care | −2 | . | Conditions (apply only one): |   | . | Not in a hospital or clinic | +2 | . | Bad conditions | +3 | . | Terrible conditions | +4 | . | Patient is a magician | +2 | . | Patient’s natural Body 1–3 / 4–6 / 7–9 / 10+ | +0 / −1 / −2 / −3 | . | Patient’s natural Willpower 1–3 / 4–6 / 7–9 / 10+ | +0 / −1 / −2 / −3 | . What it costs (SR3 p.128) . | Service | Deadly | Serious | Moderate | Light | . | Paramedic first aid | 400¥ | 200¥ | 100¥ | 50¥ | . | Doctor’s services, per day | 400¥ | 200¥ | 100¥ | 50¥ | . A hospitalization lifestyle is 500¥ a day, including the doctor. Intensive care, for Deadly wounds only, is 1,000¥ a day. ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/healing/#step-6-heal-over-time",
+    
+    "relUrl": "/rules/healing/#step-6-heal-over-time"
+  },"59": {
+    "doc": "Healing",
+    "title": "Stun damage  (SR3 p.126)",
+    "content": "Stun runs on its own track and recovers much faster. No medicine or known spell helps; you just rest. | The patient rolls Body or Willpower, whichever is higher, against TN 2, plus current Stun and Physical injury modifiers. | Recovering one box takes 60 minutes ÷ successes. Erase the box, then roll again for the next one. | The patient must be resting completely. If they’re interrupted, they start over, and the new roll can’t beat the first one. | . A character knocked out by Deadly Stun doesn’t wake up until the Stun is back down to Serious. Stim patches only mask Stun, at a price. (SR3 p.126, p.305) . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/healing/#stun-damage",
+    
+    "relUrl": "/rules/healing/#stun-damage"
+  },"60": {
+    "doc": "Healing",
+    "title": "Worked example",
+    "content": "Snot takes a Serious Physical wound (6 boxes) from a Predator. | Stabilize: not needed; it isn’t Deadly. | First aid, within the hour. Teammate Doc has Biotech 4 and a medkit, and it’s a city street (+1). The TN is 8 + 1 = 9, less 1 for Snot’s Body 5 = 8. Doc gets 1 success: the wound drops to Moderate (3 boxes). Treatment takes 15 ÷ 1 = 15 Combat Turns. | Magic. The team mage casts Treat, still within the hour, against 10 − Snot’s Essence 6 = TN 4, and gets 2 successes. Two boxes heal, leaving 1 box: Light. Drain is resisted at Moderate, Snot’s wound level when the spell was cast. Nobody can use first aid or healing magic on this wound again. | Aftermath: not needed; it wasn’t Deadly. | Need a doctor? Snot rolls Body 5 against TN 2 for a Light wound and succeeds. He’ll heal on his own. | Heal over time. Body 5 against TN 4 gets 2 successes: 24 hours ÷ 2 = 12 hours, above the 2-hour minimum. He needs at least a Low lifestyle for that time. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/healing/#worked-example",
+    
+    "relUrl": "/rules/healing/#worked-example"
+  },"61": {
+    "doc": "Hiring & Service Costs",
+    "title": "Hiring &amp; Service Costs",
+    "content": "What the books say about paying shadowrunners, and a house-rule framework for pricing individual specialists. The eight specialist pages below build on this one. | What the books say . | Setting the fee (SRComp p.99) | Baseline Shadowrun Payment Table (SRComp p.100) | How Mr. Johnson pays (MJLBB p.20–21) | What living costs (SR3 p.240) | Services with book prices | . | The house-rule framework | The specialists | . About the original eight hiring gists. They credited their rates to a core-rulebook section called “Spells, Contacts, and Services”. No such section exists, and no SR3 book prices specialists by skill rating. The books price jobs: see the Baseline Payment Table below. The day rates on the specialist pages are kept, marked as house rules, with the example arithmetic corrected. Several of the original examples didn’t add up. ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/#hiring--service-costs",
+    
+    "relUrl": "/hiring/#hiring--service-costs"
+  },"62": {
+    "doc": "Hiring & Service Costs",
+    "title": "What the books say",
+    "content": "Setting the fee (SRComp p.99) . | Player characters average about one shadowrun a month. | A good starting fee for each runner is one month’s living expenses plus the cost of the gear the run needs. If the team’s lifestyles differ, use the average. | The GM decides in the end, based on the risk, what the employer can and will pay, and the runners’ reputations. | . Baseline Shadowrun Payment Table (SRComp p.100) . | Run | Bottom-line fee | . | Assassination | 5,000¥ | . | Bodyguard / security duty | 200¥ per day | . | Burglary | 2,000¥ | . | Courier run | 1,000¥ | . | Datasteal | 20% of the data’s value | . | Distraction | 1,000¥ | . | Destruction | 5,000¥ | . | Enforcement | 1,000¥ | . | Encryption / decryption | 200¥ per Mp | . | Extraction | 20,000¥ | . | Hacking | 1,000¥ × the host’s Security Value | . | Investigation | 200¥ per day | . | Smuggling run | 5,000¥ | . How to use it (SRComp p.99–100): . | These are low-end rates for the task alone. More work, more risk, a tougher target or higher-caliber runners should all push them up. | Bigger teams can generally expect more. The rates don’t account for team size. | The rates don’t include expenses, hazard pay or “death benefits”. | In an amoral campaign, where the runners care more about money than doing the right thing, double the base fees and windfalls. | A rare windfall should come to roughly six months of the character’s lifestyle. | Pay doesn’t have to be cash. Valuable data, equipment, paid expenses, time in a magical research facility, Matrix access and SINs all work. | . How Mr. Johnson pays (MJLBB p.20–21) . | Pay is fluid, and should suit the danger and the style of game. Johnson has a budget he won’t go over, and he lowballs his first offer so there’s room to haggle. | The more information and support Johnson provides, the less he’ll pay. | Johnson normally covers miscellaneous expenses such as travel and visa fees, if they’re negotiated. Runners who forget to ask may be out of luck. | Up-front money: never more than half, and rarely more than a third. | Paying in gear: a corporate Johnson can usually afford up to 25% over budget if he pays in equipment. That gear may be tagged, trackable, or a prototype. | . What living costs (SR3 p.240) . | Lifestyle | Per month | . | Street | Free | . | Squatter | 100¥ | . | Low | 1,000¥ | . | Middle | 5,000¥ | . | High | 10,000¥ | . | Luxury | 100,000¥ and up | . | Hospitalized | 500¥ per day (1,000¥ in intensive care) | . So by the Companion’s rule, a Low-lifestyle runner’s fee starts near 1,000¥ plus gear for a run, and a High-lifestyle runner’s near 10,000¥ plus gear. Services with book prices . | Service | Price | Source | . | Ward maintenance (freelance or firm) | about 100¥ an hour, per magician | SR3 p.174 | . | Elemental conjuring materials | Force × 1,000¥ | SR3 p.186; MitS p.169 | . | Renting an enchanting shop | 100¥ a day, plus materials | MitS p.40 | . | Paramedic first aid | 50¥ (Light) to 400¥ (Deadly) | SR3 p.128 | . | Doctor | 50¥ to 400¥ a day, by wound | SR3 p.128 | . | Fake ID, Rating 1–4 | Rating × Rating × 1,000¥ | SR3 p.239 | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/#what-the-books-say",
+    
+    "relUrl": "/hiring/#what-the-books-say"
+  },"63": {
+    "doc": "Hiring & Service Costs",
+    "title": "The house-rule framework",
+    "content": "The specialist pages use this structure. It came from the original gists. The numbers are not from any SR3 book, and are much higher than the Companion’s baselines. For example, a “professional” bodyguard at 1,500¥ a night compares with the book’s 200¥ a day. They fit a high-paying campaign. Scale them to your table. Fee = base day rate × threat multiplier, plus hazard pay (a percentage of that), plus expenses. | Base day rate is set by the specialist’s tier in their main skill (1–3, 4–5, 6–7, 8+). | Threat multiplier, from about ×1 for routine work to ×3–×6 for heavy opposition. | Hazard pay for being on-site rather than working remotely, usually +50% to +100%. | Expenses and deposits: ammunition, reagents, fake IDs, drone and deck repairs. By the book, Johnson covers expenses only if they’re negotiated (MJLBB p.20–21). | . Fixers take a finder’s fee, which the books don’t quantify. The original gists suggested 10–30% depending on how rare the specialist is. Many top-tier freelancers will ask instead for an equal share of the team’s payout. That fits the Companion’s guidance that the fee is per runner (SRComp p.99). ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/#the-house-rule-framework",
+    
+    "relUrl": "/hiring/#the-house-rule-framework"
+  },"64": {
+    "doc": "Hiring & Service Costs",
+    "title": "The specialists",
+    "content": "| Specialist | Nearest Companion baseline | . | Decker | Hacking: 1,000¥ × Security Value; datasteal: 20% of the data’s value | . | Rigger | Courier run: 1,000¥; smuggling run: 5,000¥ | . | Combat Mage | Security: 200¥ a day; destruction or assassination: 5,000¥ | . | Shaman | Investigation: 200¥ a day; security: 200¥ a day | . | Physical Adept | Bodyguard: 200¥ a day; assassination: 5,000¥ | . | Street Samurai | Bodyguard: 200¥ a day; enforcement: 1,000¥ | . | Face | Investigation: 200¥ a day; distraction: 1,000¥ | . | Infiltrator | Burglary: 2,000¥; extraction: 20,000¥ | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/#the-specialists",
+    
+    "relUrl": "/hiring/#the-specialists"
+  },"65": {
+    "doc": "Hiring & Service Costs",
+    "title": "Hiring & Service Costs",
+    "content": " ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/",
+    
+    "relUrl": "/hiring/"
+  },"66": {
+    "doc": "Rules",
+    "title": "Rules",
+    "content": "Combat, grenades and healing, from the Shadowrun, Third Edition core rulebook. ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/",
+    
+    "relUrl": "/rules/"
+  },"67": {
+    "doc": "The Street",
+    "title": "The Street",
+    "content": "Identity, buying and selling gear, and secondhand chrome. ",
+    "url": "/The2ndChumming3e/v0.6.0/street/",
+    
+    "relUrl": "/street/"
+  },"68": {
+    "doc": "Magic",
+    "title": "Magic",
+    "content": "Spellcasting, conjuring and astral space for new Awakened characters. ",
+    "url": "/The2ndChumming3e/v0.6.0/magic/",
+    
+    "relUrl": "/magic/"
+  },"69": {
+    "doc": "Home",
+    "title": "SR3 Table Reference",
+    "content": "Quick-reference pages for Shadowrun, Third Edition: combat, healing, grenades, magic, life with and without a SIN, buying and fencing gear, cyberware grades, and what it costs to hire a specialist. These pages began as fifteen Gemini-generated gists. Every rule has since been checked against the rulebooks, and each one now carries a citation like (SR3 p.113) so you can check it at the table. Abbreviations are on Source books &amp; method. ",
+    "url": "/The2ndChumming3e/v0.6.0/#sr3-table-reference",
+    
+    "relUrl": "/#sr3-table-reference"
+  },"70": {
+    "doc": "Home",
+    "title": "How to read the markers",
+    "content": "Show corrections, the checkbox at the top of every page, turns on yellow boxes listing what was wrong in the original gist and has been corrected. The originals got a lot wrong: invented tables, rules from other editions, and numbers that appear in no book. The boxes are hidden by default, and the setting is remembered in your browser. This is what a correction box looks like. A purple box marks material that is not in any SR3 book. The hiring rates are the main example. It’s kept because it’s useful at the table, but treat it as a house rule and change it freely. Anything without a citation or a purple box is general description, not a rule. ",
+    "url": "/The2ndChumming3e/v0.6.0/#how-to-read-the-markers",
+    
+    "relUrl": "/#how-to-read-the-markers"
+  },"71": {
+    "doc": "Home",
+    "title": "Pages",
+    "content": "| Section | Pages | . | Rules | Actions &amp; Combat · Reloading · Grenades · Healing | . | Magic | Primer for the Awakened · Spellcasting, Resistance &amp; Drain | . | The Street | SINs &amp; the SINless · Buying Gear &amp; Fencing · Cyberware Grades &amp; Used Chrome | . | Hiring | What the Books Say · Decker · Rigger · Combat Mage · Shaman · Physical Adept · Street Samurai · Face · Infiltrator | . ",
+    "url": "/The2ndChumming3e/v0.6.0/#pages",
+    
+    "relUrl": "/#pages"
+  },"72": {
+    "doc": "Home",
+    "title": "Home",
+    "content": " ",
+    "url": "/The2ndChumming3e/v0.6.0/",
+    
+    "relUrl": "/"
+  },"73": {
+    "doc": "Infiltrator",
+    "title": "Hiring an Infiltrator",
+    "content": ". | What the books give you . | What they’re up against | . | House rates . | Base day rate, by Stealth, Electronics and similar skills | Threat multiplier | Hazard pay and expenses | . | Worked examples | . | “Spurlock &amp; Sprawl” isn’t a Shadowrun book. The citation has been removed. | “Neural Silence gear” and “cyber-matures” appear in no book and have been removed. “Synthetic muscle” is muscle replacement. (SR3 p.302) | Chameleon camouflage in SR3 uses ruthenium polymers. (M&amp;M) | The Scenario C total was wrong: 12,000 × 4, then +50%, is 72,000¥, not 54,000–60,000¥. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/infiltrator/#hiring-an-infiltrator",
+    
+    "relUrl": "/hiring/infiltrator/#hiring-an-infiltrator"
+  },"74": {
+    "doc": "Infiltrator",
+    "title": "What the books give you",
+    "content": "|   |   | Source | . | Burglary | 2,000¥ | SRComp p.100 | . | Extraction (kidnapping) | 20,000¥ | SRComp p.100 | . | Plant an object | not priced. The nearest baseline is burglary. | SRComp p.101 | . | Retrieval of an object | not priced. The nearest baseline is burglary. | SRComp p.101 | . What they’re up against . | Weapon detection: MAD scanners are rated 1–4 hand-held and 4–9 built into doorways. The scanner rolls its rating against the weapon’s Concealability. (SR3 p.237) | Cyberware scanners are rated 3–9, against TN 3, or 6 for alphaware. (SR3 p.237) | Astral security: bound spirits, wards and dual-natured watch critters. (SR3 p.237) | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/infiltrator/#what-the-books-give-you",
+    
+    "relUrl": "/hiring/infiltrator/#what-the-books-give-you"
+  },"75": {
+    "doc": "Infiltrator",
+    "title": "House rates",
+    "content": "These rates aren’t from any SR3 book. They are the original gist’s numbers, kept for convenience. Base day rate, by Stealth, Electronics and similar skills . | Tier | Skill | Base day rate | Typical kit | . | Cat burglar | 1–3 | 250–500¥ | Lockpicks and climbing gear | . | Professional | 4–5 | 1,500–3,000¥ | Maglock passkey, sequencer, voice modulator, dermal sheath | . | Veteran | 6–7 | 4,000–8,000¥ | High-grade electronics, muscle replacement, retractable climbing claws | . | Elite | 8+ | 12,000¥ and up | Ruthenium-polymer camouflage and a full stealth suite | . Threat multiplier . | Target | Multiplier | . | Commercial or residential: locks, basic maglocks, cameras | ×1 | . | Corporate facility: patrols, pressure and laser sensors, better maglocks | ×2–3 | . | Black site or military storage: monowire, turrets, wards, instant response | ×4–5 | . Hazard pay and expenses . | Solo entry, or opening the door for the team: no hazard pay. | Leading the team through the sensors under fire: +50% to +100%. | The employer pays for consumables such as bypass cards, thermite and fiber-optic cameras. | A gear deposit of 25–50% of the value of expensive kit taken into high-danger areas. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/infiltrator/#house-rates",
+    
+    "relUrl": "/hiring/infiltrator/#house-rates"
+  },"76": {
+    "doc": "Infiltrator",
+    "title": "Worked examples",
+    "content": "| Job | House rate | Companion baseline | . | Cracking a commercial storage unit, professional (base 1,500¥), ×1 | 1,500¥ | Burglary: 2,000¥ | . | Stealing a prototype from a corporate R&amp;D office, veteran (base 5,000¥), ×2 | 5,000 × 2 = 10,000¥ | Burglary: 2,000¥ | . | Getting into a military bunker, elite (base 12,000¥), ×4, leading the team +50% | 12,000 × 4 × 1.5 = 72,000¥ | Extraction: 20,000¥ | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/infiltrator/#worked-examples",
+    
+    "relUrl": "/hiring/infiltrator/#worked-examples"
+  },"77": {
+    "doc": "Infiltrator",
+    "title": "Infiltrator",
+    "content": " ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/infiltrator/",
+    
+    "relUrl": "/hiring/infiltrator/"
+  },"78": {
+    "doc": "Physical Adept",
+    "title": "Hiring a Physical Adept",
+    "content": ". | What the books give you . | Powers an employer might pay for | . | House rates . | Base day rate, by combat skill and initiation | Threat multiplier | Hazard pay | . | Worked examples | . | The power is Improved Reflexes (levels 1–3, +1D6 to +3D6 Initiative), not “Increased Reflexes”. Its bonus can’t be combined with wired reflexes or other technological or magical boosts. (SR3 p.169) | Initiative dice aren’t Initiative Passes. The number of passes comes from the Initiative score, which drops by 10 each pass. (SR3 p.104) | There are no adept powers called “Invisibility” or “Silence”. For stealth, look at Traceless Walk (MitS p.151) and Melanin Control (SOTA64 p.67–68). | “Wall-walking” is Wall Running. “Bushido / Way powers” isn’t an SR3 term, so it’s been removed. | The Scenario C total was wrong: 18,000 × 4, then +50%, is 108,000¥, not 81,000¥. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/physical-adept/#hiring-a-physical-adept",
+    
+    "relUrl": "/hiring/physical-adept/#hiring-a-physical-adept"
+  },"79": {
+    "doc": "Physical Adept",
+    "title": "What the books give you",
+    "content": "|   |   | Source | . | Bodyguard / security duty | 200¥ per day | SRComp p.100 | . | Assassination | 5,000¥ | SRComp p.100 | . | Extraction | 20,000¥ | SRComp p.100 | . Powers an employer might pay for . | Power | What it does | Source | . | Improved Reflexes 1–3 | +1D6 to +3D6 Initiative; doesn’t stack with cyberware | SR3 p.169 | . | Killing Hands | Unarmed attacks do Physical damage; works on the astral | SR3 p.170, p.175 | . | Mystic Armor | Impact armor that also counts in astral combat | SR3 p.170, p.175 | . | Astral Perception | Lets the adept see and fight on the astral | SR3 p.169 | . | Traceless Walk, Missile Mastery | Stealth; catching and throwing missiles | MitS p.150–151 | . | Wall Running, Melanin Control | Mobility; camouflage | SOTA64 p.67–68 | . | Kinesics | Control of body language: easier social tests, harder to read | SOTA64 p.66 | . | A weapon focus or Killing Hands lets an adept hurt spirits and projecting magicians. That’s why “spirit hunter” work pays well. (SR3 p.174–175) | Adepts can take Magic Loss from Deadly wounds, just as magicians do. (SR3 p.129) | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/physical-adept/#what-the-books-give-you",
+    
+    "relUrl": "/hiring/physical-adept/#what-the-books-give-you"
+  },"80": {
+    "doc": "Physical Adept",
+    "title": "House rates",
+    "content": "These rates aren’t from any SR3 book. They are the original gist’s numbers, kept for convenience. Base day rate, by combat skill and initiation . | Tier | Skill and grade | Base day rate | Typical powers | . | Street athlete | Skill 1–3 | 400–800¥ | Improved Reflexes 1, a movement power | . | Professional | Skill 4–5 | 2,000–4,000¥ | Improved Reflexes 1–2, Killing Hands, a Force 2–3 weapon focus, Astral Perception | . | Veteran | Skill 6–7, grade 1–3 | 5,000–10,000¥ | Improved Reflexes 2–3, Mystic Armor, a Force 4+ weapon focus, Missile Mastery | . | Master | Skill 8+, grade 4+ | 18,000¥ and up | Spirit-killing melee and near-undetectable movement | . Threat multiplier . | Work | Multiplier | . | Bodyguarding, stealth recon, static security | ×1 | . | Assaulting a perimeter, close-quarters fights with corporate guards | ×2 | . | Security mages, dual-natured critters, strong spirits | ×3–5 | . Hazard pay . | Silent infiltration or overwatch: no hazard pay. | Point man or breacher: +50% to +100%. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/physical-adept/#house-rates",
+    
+    "relUrl": "/hiring/physical-adept/#house-rates"
+  },"81": {
+    "doc": "Physical Adept",
+    "title": "Worked examples",
+    "content": "| Job | House rate | Companion baseline | . | Nightclub bodyguard, professional (base 2,500¥), ×1 | 2,500¥ a night | 200¥ a day | . | Hunting a spirit, veteran with a weapon focus (base 7,000¥), ×3 | 7,000 × 3 = 21,000¥ | Assassination: 5,000¥ | . | Infiltration and point on a corporate assault, master (base 18,000¥), ×4, +50% | 18,000 × 4 × 1.5 = 108,000¥ | A share of the extraction or destruction fee | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/physical-adept/#worked-examples",
+    
+    "relUrl": "/hiring/physical-adept/#worked-examples"
+  },"82": {
+    "doc": "Physical Adept",
+    "title": "Physical Adept",
+    "content": " ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/physical-adept/",
+    
+    "relUrl": "/hiring/physical-adept/"
+  },"83": {
+    "doc": "Reloading",
+    "title": "Reloading",
+    "content": "How each kind of gun is reloaded, what it costs in actions, and buying and sharing ammunition. The core rule is the Ammo Reloading Table, (SR3 p.280). | Reading the ammo code (SR3 p.280) | Ammo Reloading Table (SR3 p.280) | Clips: the two-step swap (SR3 p.105–107) | Guns without clips (SR3 p.108, p.280) | Belt-fed weapons (SR3 p.280) | Bows and crossbows (SR3 p.107, p.118) | Examples | Buying and sharing ammunition (SR3 p.279, p.281) . | Ammunition, per 10 rounds (SR3 p.281) | . | . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/reloading/",
+    
+    "relUrl": "/rules/reloading/"
+  },"84": {
+    "doc": "Reloading",
+    "title": "Reading the ammo code  (SR3 p.280)",
+    "content": "Every firearm’s Ammo entry is a capacity followed by a letter in brackets. The letter is how the gun is reloaded. | Code | Method | How it works | Example (SR3 p.278–279) | . | (c) | Removable clip | A detachable clip holding many rounds. The most common method. | Ares Predator, 15 (c) | . | (b) | Break action | The gun hinges open and rounds go in by hand. | Walther Palm Pistol, 2 (b) | . | (m) | Internal magazine | Rounds are pushed into a port inside the gun. | Remington Roomsweeper, 8 (m) | . | (cy) | Cylinder | A pop-out cylinder, loaded by hand or with a speed loader. | Ruger Super Warhawk, 6 (cy) | . | (belt) | Belt feed | A long belt of linked rounds fed continuously. | Ingram Valiant LMG, 50 (c)/Belt | . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/reloading/#reading-the-ammo-code--sr3-p280",
+    
+    "relUrl": "/rules/reloading/#reading-the-ammo-code--sr3-p280"
+  },"85": {
+    "doc": "Reloading",
+    "title": "Ammo Reloading Table  (SR3 p.280)",
+    "content": "| Reloading method | Action required | Result | . | Removable clip (c) | Simple Action | Remove or insert a clip | . |   | Complex Action | Load (Quickness) rounds into a clip | . | Break action (b) | Complex Action | Load 2 rounds | . | Internal magazine (m) | Complex Action | Load (Quickness) rounds | . | Cylinder (cy) | Complex Action | Load (Quickness) rounds | . |   | Complex Action | Use a speed loader | . | Belt feed (belt) | Complex Action | Insert a belt | . |   | Complex Action | Load (Quickness × 2) rounds into a belt | . “(Quickness) rounds” means as many rounds as your Quickness per action. A character with Quickness 5 loads 5 rounds with each Complex Action. ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/reloading/#ammo-reloading-table--sr3-p280",
+    
+    "relUrl": "/rules/reloading/#ammo-reloading-table--sr3-p280"
+  },"86": {
+    "doc": "Reloading",
+    "title": "Clips: the two-step swap  (SR3 p.105–107)",
+    "content": "Changing a clip is two actions: take the old one out, then put a new one in. You can’t insert a clip until the old one is out. (SR3 p.106) . | Action | Type | Notes | . | Remove Clip | Simple | Takes the old clip out of a ready gun. (p.107) | . | Eject Smartgun Clip | Free | Only for a smartgun linked to your smartlink: a cybernetic command drops the clip. (p.105, p.107) | . | Insert Clip | Simple | Grabs a fresh clip and slams it home. (p.106) | . So a full clip change costs: . | Without a smartlink: Remove Clip + Insert Clip, both Simple Actions. That’s your whole Combat Phase, and you shoot next phase. | With a smartlink and smartgun: eject as a Free Action, insert as a Simple Action, and you still have one Simple Action left to fire. | . The rules don’t throw away the rounds left in a removed clip. Spare clips cost 5¥ each, unloaded. Each holds the gun’s full capacity, and they don’t swap between guns, even guns of the same class. (SR3 p.281) . Refilling empty clips is the slow part: a Complex Action per (Quickness) rounds. Do it between fights. ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/reloading/#clips-the-two-step-swap--sr3-p105107",
+    
+    "relUrl": "/rules/reloading/#clips-the-two-step-swap--sr3-p105107"
+  },"87": {
+    "doc": "Reloading",
+    "title": "Guns without clips  (SR3 p.108, p.280)",
+    "content": "Break-action guns, internal magazines and cylinders are reloaded with the Reload Firearm Complex Action. (SR3 p.108) Each action loads only part of the gun: . | Break action: 2 rounds per Complex Action. | Internal magazine: (Quickness) rounds per Complex Action. | Cylinder: (Quickness) rounds per Complex Action, or the whole cylinder in one Complex Action with a speed loader. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/reloading/#guns-without-clips--sr3-p108-p280",
+    
+    "relUrl": "/rules/reloading/#guns-without-clips--sr3-p108-p280"
+  },"88": {
+    "doc": "Reloading",
+    "title": "Belt-fed weapons  (SR3 p.280)",
+    "content": ". | Inserting a belt is a Complex Action. | Loading rounds into a belt is a Complex Action per (Quickness × 2) rounds. | A 100-round belt costs 4,250¥ and weighs 12.5 kg. Its Concealability is listed as “yeah, right”. (SR3 p.281) | . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/reloading/#belt-fed-weapons--sr3-p280",
+    
+    "relUrl": "/rules/reloading/#belt-fed-weapons--sr3-p280"
+  },"89": {
+    "doc": "Reloading",
+    "title": "Bows and crossbows  (SR3 p.107, p.118)",
+    "content": ". | Nocking an arrow or bolt is the Ready Weapon Simple Action. Firing it is a separate Fire Weapon action. (SR3 p.106–107) | A character below a crossbow’s Strength Minimum needs one extra Ready Weapon action per point short to reload it. (SR3 p.118) | Small throwing weapons, such as knives and shuriken, are readied ½ Quickness at a time per Ready Weapon action. (SR3 p.107) | . ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/reloading/#bows-and-crossbows--sr3-p107-p118",
+    
+    "relUrl": "/rules/reloading/#bows-and-crossbows--sr3-p107-p118"
+  },"90": {
+    "doc": "Reloading",
+    "title": "Examples",
+    "content": "Ares Predator, no smartlink. Liam empties his Predator (15 rounds). Next Combat Phase he spends a Simple Action on Remove Clip and another on Insert Clip. His phase is gone, but he’s loaded for the next one. Ares Predator with a smartlink. Same situation. Liam ejects with a Free Action, inserts the new clip with a Simple Action, and fires with his second Simple Action, all in the same phase. Refilling after the fight. Liam has Quickness 5 and two empty 15-round clips. Each clip takes 15 ÷ 5 = 3 Complex Actions, so 6 for both. Ruger Super Warhawk. The six-shot revolver is empty. With Quickness 4 and no speed loader, that’s 2 Complex Actions: 4 rounds, then 2. With a speed loader, it’s one Complex Action. Remington Roomsweeper. Eight rounds in an internal magazine, Quickness 4: 2 Complex Actions. ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/reloading/#examples",
+    
+    "relUrl": "/rules/reloading/#examples"
+  },"91": {
+    "doc": "Reloading",
+    "title": "Buying and sharing ammunition  (SR3 p.279, p.281)",
+    "content": "Ammo is shared by gun class, using the categories on the Weapon Range Table (SR3 p.111). Any light pistol can fire any light-pistol ammo, any assault rifle any assault-rifle ammo, and so on. All shotguns, pistol or rifle, share ammunition. (SR3 p.279) . Ammunition, per 10 rounds (SR3 p.281) . | Type | Availability | Cost | Street Index | Legality | . | Regular ammo | 2/24 hrs | 20¥ | .75 | As weapon | . | Gel rounds | 4/48 hrs | 30¥ | 1 | As weapon | . | Explosive rounds | 3/36 hrs | 50¥ | .8 | As weapon | . | Taser dart | 6/36 hrs | 50¥ | 1.5 | As weapon | . | Tracer | 3/24 hrs | 75¥ | 1 | As weapon | . | EX explosive | 6/72 hrs | 100¥ | 1.5 | As weapon | . | Flechette rounds | 3/36 hrs | 100¥ | .8 | As weapon | . | APDS | 14/14 days | 70¥ | 4 | 3-M | . | Assault cannon | 5/3 days | 450¥ | 2 | As weapon | . Ammunition is Concealability 8 (assault-cannon rounds and taser darts 3), and −1 Concealability for every extra 10 rounds. For belted ammo, add (rounds ÷ 100) to the Availability. (SR3 p.281) . For what each round type does in combat (APDS, explosive, flechette, gel, tracer), see Ammunition (SR3 p.116). For how to buy on the street, see Buying Gear &amp; Fencing. ",
+    "url": "/The2ndChumming3e/v0.6.0/rules/reloading/#buying-and-sharing-ammunition--sr3-p279-p281",
+    
+    "relUrl": "/rules/reloading/#buying-and-sharing-ammunition--sr3-p279-p281"
+  },"92": {
+    "doc": "Rigger",
+    "title": "Hiring a Rigger",
+    "content": ". | What the books give you . | What the rigger is risking | . | House rates . | Base day rate, by vehicle or gunnery skill and VCR | Threat multiplier | Hazard pay and expenses | . | Worked examples | . | The Defiance T-250 is a shotgun (SR3 p.278), not a rotorcraft. “Ares Duelist” and “Fly-Spy” drones don’t appear in any book checked, so they’ve been removed. | A jumped-in rigger doesn’t feel every hit. Damage carries over only when the vehicle takes Serious damage (6M) or is destroyed (6S). It’s resisted with Willpower. (SR3 p.145) | The Scenario C total was 30,000¥, not 25,000–30,000¥. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/rigger/#hiring-a-rigger",
+    
+    "relUrl": "/hiring/rigger/#hiring-a-rigger"
+  },"93": {
+    "doc": "Rigger",
+    "title": "What the books give you",
+    "content": "|   |   | Source | . | Courier run | 1,000¥ | SRComp p.100 | . | Smuggling run | 5,000¥ | SRComp p.100 | . What the rigger is risking . | Their body. A jumped-in rigger resists 6M Physical when the vehicle takes Serious damage and 6S when it’s destroyed, using Willpower with no pool dice. (SR3 p.145) | Their implants. A Vehicle Control Rig costs (SR3 p.302): | . | VCR | Essence | Cost | . | Level 1 | 2 | 12,000¥ | . | Level 2 | 3 | 60,000¥ | . | Level 3 | 5 | 300,000¥ | . | Their vehicles. Whatever is shot down comes out of the rigger’s pocket unless the contract says otherwise. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/rigger/#what-the-books-give-you",
+    
+    "relUrl": "/hiring/rigger/#what-the-books-give-you"
+  },"94": {
+    "doc": "Rigger",
+    "title": "House rates",
+    "content": "These rates aren’t from any SR3 book. They are the original gist’s numbers, kept for convenience. Base day rate, by vehicle or gunnery skill and VCR . | Tier | Skill and VCR | Base day rate | Typical hardware | . | Amateur | Skill 1–3, no VCR or VCR 1 | 300–600¥ | An ordinary ground vehicle; no combat drones | . | Professional | Skill 4–5, VCR 1–2 | 1,500–3,000¥ | An upgraded getaway car and one or two surveillance drones | . | Veteran | Skill 6–7, VCR 2–3 | 4,000–8,000¥ | An armored vehicle, a remote control deck, and combat drones such as a Doberman or Steel Lynx | . | Elite | Skill 8+, VCR 3 | 12,000¥ and up | Security or military aircraft, heavy weapons, a drone swarm | . Threat multiplier . | Work | Multiplier | . | Transport or recon, avoiding trouble | ×1 | . | Combat support or a getaway under fire | ×2 | . | Heavy combat, anti-vehicle fire or assault | ×4–6 | . Hazard pay and expenses . | Remote (deck or autonav): no hazard pay. | Jumped in with a VCR: +50%, because the rigger feels Serious and Destroyed damage. | The employer pays for ammunition, fuel and expended countermeasures. | For high-threat work, a deposit of 25–50% of each drone’s replacement value. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/rigger/#house-rates",
+    
+    "relUrl": "/hiring/rigger/#house-rates"
+  },"95": {
+    "doc": "Rigger",
+    "title": "Worked examples",
+    "content": "| Job | House rate | Companion baseline | . | Getaway driver, professional (base 1,500¥), ×2 | 1,500 × 2 = 3,000¥ plus fuel | Courier run: 1,000¥ | . | Drone surveillance, veteran (base 5,000¥), remote, ×1 | 5,000¥ plus lost drones | Investigation: 200¥ a day | . | Fire support on an assault, veteran, ×4, jumped in +50% | 5,000 × 4 × 1.5 = 30,000¥ | A share of the destruction or extraction fee | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/rigger/#worked-examples",
+    
+    "relUrl": "/hiring/rigger/#worked-examples"
+  },"96": {
+    "doc": "Rigger",
+    "title": "Rigger",
+    "content": " ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/rigger/",
+    
+    "relUrl": "/hiring/rigger/"
+  },"97": {
+    "doc": "Shaman",
+    "title": "Hiring a Shaman",
+    "content": ". | What the books give you . | Why domain matters | . | House rates . | Base day rate, by Conjuring or Sorcery | Threat multiplier | Hazard pay and expenses | . | Worked examples | . | Shamans summon nature spirits of Man, Land, Sky and Waters, not “domain spirits”. They can only summon inside the spirit’s domain, and a nature spirit can’t leave its domain. (SR3 p.184, p.266–267) | A spirit gives one service per success on the Conjuring Test, and nature spirits vanish at sunrise and sunset. So “bring pre-summoned spirits to the job” has a hard time limit. (SR3 p.186) | The Scenario C total was wrong: 8,000 × 3, then +50% and +100%, is 60,000¥, not 36,000–44,000¥. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/shaman/#hiring-a-shaman",
+    
+    "relUrl": "/hiring/shaman/#hiring-a-shaman"
+  },"98": {
+    "doc": "Shaman",
+    "title": "What the books give you",
+    "content": "|   |   | Source | . | Investigation (astral scouting, divination) | 200¥ per day | SRComp p.100 | . | Security duty | 200¥ per day | SRComp p.100 | . | Ward maintenance | about 100¥ an hour per magician | SR3 p.174 | . | Shamanic lodge materials | (Rating × Rating) × 1,000¥ | MitS p.169 | . Why domain matters . | No domain, no spirit. A shaman inside a building can only summon a hearth spirit. In the middle of a parking garage there may be nothing to call at all. (SR3 p.184) | Totem modifiers add dice to some spells and spirits and take them from others. Bear, for example, gets +2 dice for health spells and forest spirits. (SR3 p.163–165) | Nature spirits disappear at sunrise and sunset, taking their unused services with them. (SR3 p.186) | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/shaman/#what-the-books-give-you",
+    
+    "relUrl": "/hiring/shaman/#what-the-books-give-you"
+  },"99": {
+    "doc": "Shaman",
+    "title": "House rates",
+    "content": "These rates aren’t from any SR3 book. They are the original gist’s numbers, kept for convenience. Base day rate, by Conjuring or Sorcery . | Tier | Skill | Base day rate | Typical capability | . | Hedge shaman | 1–3 | 400–800¥ | Force 1–3 spirits, basic detection and healing | . | Sprawl shaman | 4–5 | 2,500–5,000¥ | Force 4–6 city, hearth and storm spirits, a medicine lodge | . | Spirit talker | 6–7 | 7,000–13,000¥ | An initiate (grade 1–3) with masking, centering and invoking | . | Elite | 8+ | 22,000¥ and up | A high-grade initiate commanding powerful spirits | . Threat multiplier . | Work | Multiplier | . | Concealment, healing, assensing, spirit scouting | ×1 | . | Combat spells, hostile wards, mid-Force spirits in a fight | ×2–3 | . | Security mages, high-Force spirits, working outside a helpful domain | ×4–6 | . Hazard pay and expenses . | Off-site, working from the lodge: no hazard pay. | On-site with the team: +100%. | Wrong-domain surcharge: +50% when the job keeps the shaman away from spirits their totem favors. | Spirit services for the team: 1,500–4,000¥ per service. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/shaman/#house-rates",
+    
+    "relUrl": "/hiring/shaman/#house-rates"
+  },"100": {
+    "doc": "Shaman",
+    "title": "Worked examples",
+    "content": "| Job | House rate | Companion baseline | . | Astral scouting plus a concealment spell, sprawl shaman (base 3,000¥), ×1 | 3,000¥ | Investigation: 200¥ a day | . | A Force 6 city spirit on facility overwatch, spirit talker (base 8,000¥), ×2, plus one service at 3,000¥ | 16,000 + 3,000 = 19,000¥ | Security: 200¥ a day | . | On-site assault in an underground facility, ×3, +50% domain, +100% on-site | 8,000 × 3 × 2.5 = 60,000¥ | A share of the destruction or extraction fee | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/shaman/#worked-examples",
+    
+    "relUrl": "/hiring/shaman/#worked-examples"
+  },"101": {
+    "doc": "Shaman",
+    "title": "Shaman",
+    "content": " ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/shaman/",
+    
+    "relUrl": "/hiring/shaman/"
+  },"102": {
+    "doc": "SINs & the SINless",
+    "title": "SINs &amp; the SINless",
+    "content": "What a System Identification Number gets you, what life without one looks like, and how fake IDs work in SR3. | What a SIN is (SR3 p.238) | Life with a SIN (SR3 p.238–239) | Life without one (SR3 p.238) | Credsticks (SR3 p.238–239) | Fake IDs: forging credsticks (SR3 p.239) . | Creating a Credstick Table (SR3 p.239) | . | Permits and licenses (SR3 p.273–274) . | Magic and the law | . | . Original gist: “Life with a SIN vs. Living SINless”. | The Fake SIN price table was invented. In SR3 a fake ID is a forged credstick, and its rating sets its price: Rating × Rating × 1,000¥ at ratings 1–4, rising steeply after that. The table is below. | A SIN is not a “12-digit alphanumeric code”. The book says the number is generated from personal data, and police can read your birth date, state of origin and initials from it. | “30–40% of the population is SINless” appears in no SR3 book checked. | There’s no “Lesser / Greater Magical Permit”. In the UCAS and CAS, magic of Force 3 or more is regulated and needs a permit. Unregistered spells, spirits and foci fall under legality category (T) Class E Magic. | Permits require a valid SIN, and a fake one must beat a Rating 6 verification system. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/street/sins/#sins--the-sinless",
+    
+    "relUrl": "/street/sins/#sins--the-sinless"
+  },"103": {
+    "doc": "SINs & the SINless",
+    "title": "What a SIN is  (SR3 p.238)",
+    "content": ". | The UCAS introduced SINs in 2036, requiring every citizen to register. People living in the UCAS without one are “probationary citizens”: they can’t vote and have few or no civil rights. | A SIN is normally registered at birth, if the birth happens in a standard hospital. Anyone born elsewhere is SINless unless they register later, and registering means proving to the government that you’re worth admitting. | Most governments use SINs or something like them, and they share databases. Corporations issue corporate SINs to their employees. | The number is generated from personal data. Police can work out your birth date, state of origin and initials from it. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/street/sins/#what-a-sin-is--sr3-p238",
+    
+    "relUrl": "/street/sins/#what-a-sin-is--sr3-p238"
+  },"104": {
+    "doc": "SINs & the SINless",
+    "title": "Life with a SIN  (SR3 p.238–239)",
+    "content": "You need a SIN to get a legal job, open a bank account, own property, go to school, rent an apartment, set up utilities, and travel legally, which includes buying a bus ticket. Your credstick carries your ID, licenses and permits, and can hold your fingerprints, palmprints and retinal prints. The cost is a data trail. Every legal purchase leaves credit records and inventory, and possibly video footage, and stores that realize they sold to shadowrunners will hand those records to the police. (SR3 p.273) . ",
+    "url": "/The2ndChumming3e/v0.6.0/street/sins/#life-with-a-sin--sr3-p238239",
+    
+    "relUrl": "/street/sins/#life-with-a-sin--sr3-p238239"
+  },"105": {
+    "doc": "SINs & the SINless",
+    "title": "Life without one  (SR3 p.238)",
+    "content": ". | You officially don’t exist, which makes you hard to trace. | If you’re arrested, you may be abused, locked away or “disappeared”, with no data trail to prove you existed. More often you’re issued a criminal SIN, which is yours for life and is stored in police databases with your photograph, fingerprints and perhaps more. | Legal work, housing and travel are all closed to you. | . Players decide at character creation whether their character has a SIN. (SR3 p.238) . ",
+    "url": "/The2ndChumming3e/v0.6.0/street/sins/#life-without-one--sr3-p238",
+    
+    "relUrl": "/street/sins/#life-without-one--sr3-p238"
+  },"106": {
+    "doc": "SINs & the SINless",
+    "title": "Credsticks  (SR3 p.238–239)",
+    "content": "A credstick is a pen-sized tube that serves as ID and credit card together. | Credstick | Transaction limit | ID required | . | Standard | 1–5,000¥ | Passcode | . | Silver | 1–20,000¥ | Fingerprint | . | Gold | 1–200,000¥ | Voiceprint | . | Platinum | 1–1,000,000¥ | Retinal scan | . | Ebony | Unlimited | Cellular scan | . A certified credstick is registered to no one. It’s worth what’s loaded on it, needs no ID, and can’t be used as ID. It’s the shadowrunner’s usual way to get paid. (SR3 p.239) . ",
+    "url": "/The2ndChumming3e/v0.6.0/street/sins/#credsticks--sr3-p238239",
+    
+    "relUrl": "/street/sins/#credsticks--sr3-p238239"
+  },"107": {
+    "doc": "SINs & the SINless",
+    "title": "Fake IDs: forging credsticks  (SR3 p.239)",
+    "content": "Faking an identity means inserting a believable credit history into databases all over the world. Only well-connected forgery outfits, often based in data havens, can do it. At least half the cost is paid up front to the fixer. Creating a Credstick Table (SR3 p.239) . | Stick rating | Cost | Availability | Street Index | . | 1–4 | Rating × Rating × 1,000¥ | Rating / 24 hours | 1 | . | 5–8 | Rating × 5,000¥ | Rating / 72 hours | 1 | . | 9–12 | Rating × 10,000¥ | Rating / 14 days | 1 | . | 13+ | Rating × 50,000¥ | Rating / 30 days | 1 | . For example, a Rating 4 ID costs 16,000¥, a Rating 6 costs 30,000¥, and a Rating 10 costs 100,000¥. Using a fake: make an Opposed Test of the stick’s rating against the rating of the verification system. The side with more successes wins. On a tie, the operator is told to question the bearer about their history, and one wrong answer gets the ID rejected. (SR3 p.239) . ",
+    "url": "/The2ndChumming3e/v0.6.0/street/sins/#fake-ids-forging-credsticks--sr3-p239",
+    
+    "relUrl": "/street/sins/#fake-ids-forging-credsticks--sr3-p239"
+  },"108": {
+    "doc": "SINs & the SINless",
+    "title": "Permits and licenses  (SR3 p.273–274)",
+    "content": ". | Gear whose Legality Code includes a “P” can be legally permitted. Applying takes a valid SIN, and may need proof of employment and a good reason. (SR3 p.274) | Test Etiquette against the item’s Availability + 2. The base time is the item’s, divided by your successes. (SR3 p.274) | A permit to possess usually costs 5% of the item’s price. A permit to possess and transport costs 10%. (SR3 p.274) | Criminal-SIN holders and the SINless can’t get permits. Applying with a fake ID means it must beat a Rating 6 verification system. (SR3 p.274) | Holding the right permit gives −2 to the item’s Availability when you’re buying on the street. (SR3 p.274) | . Magic and the law . | In the UCAS and CAS, any spell, spirit, focus or other magical effect of Force 3 or higher is legally regulated, though permits can be had. A felony committed with magic always counts as premeditated. (MitS p.11) | On the Local Fines and Punishment Table, (T) Class E Magic covers unregistered spells, spirits and foci. (SR3 p.274) | Reading astral signatures is accepted forensic evidence, like fingerprints or DNA. (MitS p.11) | . Runner practice. Carrying several fake IDs for different purposes is common in play: one for the safehouse lease, one carrying permits, one to burn. The book doesn’t require it, but a burned ID is expensive to replace, so spreading the risk makes sense. ",
+    "url": "/The2ndChumming3e/v0.6.0/street/sins/#permits-and-licenses",
+    
+    "relUrl": "/street/sins/#permits-and-licenses"
+  },"109": {
+    "doc": "SINs & the SINless",
+    "title": "SINs & the SINless",
+    "content": " ",
+    "url": "/The2ndChumming3e/v0.6.0/street/sins/",
+    
+    "relUrl": "/street/sins/"
+  },"110": {
+    "doc": "Source Books & Method",
+    "title": "Source books &amp; method",
+    "content": " ",
+    "url": "/The2ndChumming3e/v0.6.0/sources/#source-books--method",
+    
+    "relUrl": "/sources/#source-books--method"
+  },"111": {
+    "doc": "Source Books & Method",
+    "title": "Abbreviations",
+    "content": "| Code | Book | . | SR3 | Shadowrun, Third Edition core rulebook | . | M&amp;M | Man &amp; Machine: Cyberware | . | MitS | Magic in the Shadows | . | Matrix | Matrix | . | R3 | Rigger 3 Revised | . | SRComp | Shadowrun Companion | . | MJLBB | Mr. Johnson’s Little Black Book | . | SOTA64 | State of the Art: 2064 | . Page numbers are the printed page numbers, not PDF page numbers. In several PDFs the two differ by one or two pages. ",
+    "url": "/The2ndChumming3e/v0.6.0/sources/#abbreviations",
+    
+    "relUrl": "/sources/#abbreviations"
+  },"112": {
+    "doc": "Source Books & Method",
+    "title": "How the pages were checked",
+    "content": "Each gist was split into its individual claims, and each claim was looked up in the book it concerns: the text layer of each PDF was searched, and the page was read in full around every match. Tables were taken directly from the book, not paraphrased. Where the gist gave a number and the book gives a different one, the page uses the book’s number and says so in a yellow box. The Shadowrun Companion PDF has no text layer. Its payment guidance (SRComp p.99–100) was read from the page images directly. ",
+    "url": "/The2ndChumming3e/v0.6.0/sources/#how-the-pages-were-checked",
+    
+    "relUrl": "/sources/#how-the-pages-were-checked"
+  },"113": {
+    "doc": "Source Books & Method",
+    "title": "What could not be verified",
+    "content": ". | Specialist hiring rates. No SR3 book prices specialists by skill rating. The books give per-job baselines instead (SRComp p.100), and the hiring pages are built on those. The per-archetype day rates are marked as house rules. | Fixer “finder’s fee” percentages. The books say fixers act as middlemen (SR3 p.272) but set no percentage. | Corporate Download is cited by one original gist but is not in the library used for checking. Nothing on these pages depends on it. | Some named gear in the originals does not appear in any book checked, and has been removed: “Ares Duelist” drones, “Neural Silence gear”, and the book “Spurlock &amp; Sprawl”, which does not exist. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/sources/#what-could-not-be-verified",
+    
+    "relUrl": "/sources/#what-could-not-be-verified"
+  },"114": {
+    "doc": "Source Books & Method",
+    "title": "Rules from other editions",
+    "content": "The original gists mixed in rules and terms from other editions. These have been removed or replaced throughout: . | Appeared in the gists | What SR3 actually uses | . | Magic Pool | Spell Pool, (INT + WIL + MAG) ÷ 3 (SR3 p.44) | . | Sympathetic link | Material link (MitS p.34–36) | . | Legality codes “R” / “F” | Legality Code such as 6P-E: restriction level, optional P for permit, category letter (SR3 p.273) | . | “Yellow” security systems | Security codes are Blue, Green, Orange, Red, plus unofficial “UV” (SR3 p.205) | . | Drain codes like “5H” | Drain is written +1(M): Power = Force ÷ 2 + modifier, then a Damage Level (SR3 p.162) | . | Increased Reflexes (adept power) | Improved Reflexes (SR3 p.169). Increase Reflexes is a spell. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/sources/#rules-from-other-editions",
+    
+    "relUrl": "/sources/#rules-from-other-editions"
+  },"115": {
+    "doc": "Source Books & Method",
+    "title": "Source Books & Method",
+    "content": " ",
+    "url": "/The2ndChumming3e/v0.6.0/sources/",
+    
+    "relUrl": "/sources/"
+  },"116": {
+    "doc": "Spellcasting, Resistance & Drain",
+    "title": "Spellcasting, Resistance &amp; Drain",
+    "content": "How a spell is cast, step by step and in the order the book gives: who rolls, what they roll, and what happens. All rules are from the core rulebook, (SR3 p.178–185, p.191). | Who rolls what | The sequence at a glance (SR3 p.181) | Step 1: Preparation (SR3 p.178, p.181, p.191) | Step 2: Targeting (SR3 p.181–182) | Step 3: Sorcery Test (SR3 p.182–183) . | Target number . | Object Resistance Table (SR3 p.182) | . | Modifiers to the Sorcery TN (SR3 p.182–183) | Results | . | Step 4: Spell Resistance (SR3 p.183) . | The target resists | A magician blocks it: Spell Defense (SR3 p.183) | . | Step 5: Spell Effect (SR3 p.183, p.191) . | Combat spells: armor doesn’t help (SR3 p.191) | Elemental spells work like guns (SR3 p.183, p.196) | . | Step 6: Drain (SR3 p.162, p.180, p.183, p.191) . | Reading a Drain code (SR3 p.191) | Adding up the TN | The roll | Stun or Physical? (SR3 p.162, p.183) | . | Sustaining spells (SR3 p.178) | Worked example: Manabolt | . ",
+    "url": "/The2ndChumming3e/v0.6.0/magic/spellcasting/#spellcasting-resistance--drain",
+    
+    "relUrl": "/magic/spellcasting/#spellcasting-resistance--drain"
+  },"117": {
+    "doc": "Spellcasting, Resistance & Drain",
+    "title": "Who rolls what",
+    "content": "| Role | Roll | Against | When | . | Caster | Sorcery + Spell Pool (no more pool dice than Sorcery dice) | The target’s attribute, or the spell’s listed TN | Step 3 | . | Target | The spell’s target attribute: Willpower, Body or Intelligence | The spell’s Force | Step 4 | . | A protecting magician | Spell Defense dice: Sorcery + Spell Pool set aside earlier | The spell’s Force | Step 4 | . | Caster | Willpower + any number of Spell Pool dice | Drain Power: Force ÷ 2 + modifier | Step 6 | . | GM | Rolls the Sorcery Test secretly for detection spells |   | Step 3 | . Spell Pool = (Intelligence + Willpower + Magic) ÷ 3, rounded down. It refreshes every Combat Turn and is shared between casting, Spell Defense and Drain. (SR3 p.44, p.180) . ",
+    "url": "/The2ndChumming3e/v0.6.0/magic/spellcasting/#who-rolls-what",
+    
+    "relUrl": "/magic/spellcasting/#who-rolls-what"
+  },"118": {
+    "doc": "Spellcasting, Resistance & Drain",
+    "title": "The sequence at a glance  (SR3 p.181)",
+    "content": "The book’s own six steps, all within your one Complex Action: . | # | Step | What you decide or roll | . | 1 | Preparation | Spell, Force, Damage Level, dice split, area radius | . | 2 | Targeting | Can you see it? Is it on your plane? | . | 3 | Sorcery Test | Caster: Sorcery + Spell Pool vs the target number | . | 4 | Spell Resistance | Target: attribute vs Force; plus any Spell Defense | . | 5 | Spell Effect | Net successes decide the effect | . | 6 | Drain | Caster: Willpower + Spell Pool vs Drain Power | . ",
+    "url": "/The2ndChumming3e/v0.6.0/magic/spellcasting/#the-sequence-at-a-glance--sr3-p181",
+    
+    "relUrl": "/magic/spellcasting/#the-sequence-at-a-glance--sr3-p181"
+  },"119": {
+    "doc": "Spellcasting, Resistance & Drain",
+    "title": "Step 1: Preparation  (SR3 p.178, p.181, p.191)",
+    "content": "Decide all of these before rolling. | The spell and its Force. You can cast at the Force you learned it at or lower, never higher. The minimum is Force 1. (SR3 p.178) Higher Force is harder to resist and produces more Drain. | Damage Level, for combat and elemental spells. You choose L, M, S or D when you cast. That choice is both the spell’s base damage and its base Drain Level. (SR3 p.191, p.196) | How many Sorcery dice go into this spell, and how many Spell Pool dice. You can’t add more pool dice than Sorcery dice. (SR3 p.180) | More than one spell? You can split Sorcery and Spell Pool dice to cast several spells in one Complex Action, up to your Sorcery rating in spells, with at least 1 Sorcery die each. Each spell then gets +2 to its Drain TN for every extra spell. Two spells means +2 on each Drain Test; three means +4 on each. (SR3 p.181) | Sustaining anything? Choose whether to keep or drop spells you’re already sustaining. Each one you keep costs +2 to all your tests, including this Sorcery Test and its Drain Test. (SR3 p.178) | Area spells: the base radius is your Magic in meters, and it hits everyone valid inside, including you and your friends. Withhold Sorcery dice to change it: every 2 dice withheld shrink it by 1 m, or every 1 die withheld widens it by 1 m. (SR3 p.181) | . ",
+    "url": "/The2ndChumming3e/v0.6.0/magic/spellcasting/#step-1-preparation",
+    
+    "relUrl": "/magic/spellcasting/#step-1-preparation"
+  },"120": {
+    "doc": "Spellcasting, Resistance & Drain",
+    "title": "Step 2: Targeting  (SR3 p.181–182)",
+    "content": ". | You must see the target, and be on the same plane (physical or astral). Glasses, mirrors, fiber optics and cybereyes are fine. Any digital image, such as a camera feed, simsense or a vision-altering spell like Clairvoyance, is not. (SR3 p.181) | Glass doesn’t stop most spells, because the effect happens at the target and nothing travels. An opaque barrier blocks the spell. (SR3 p.182) | Touch-range spells skip cover and visibility modifiers, but you must touch the target first with an Unarmed Combat attack at −1 TN, as part of the same action. One net success is enough. (SR3 p.178, p.183) | From the astral, you can only cast mana spells, and only at astral targets. Astrally perceiving casters can target both planes, but can be attacked from both. (SR3 p.182) | . ",
+    "url": "/The2ndChumming3e/v0.6.0/magic/spellcasting/#step-2-targeting",
+    
+    "relUrl": "/magic/spellcasting/#step-2-targeting"
+  },"121": {
+    "doc": "Spellcasting, Resistance & Drain",
+    "title": "Step 3: Sorcery Test  (SR3 p.182–183)",
+    "content": "The caster rolls Sorcery dice plus Spell Pool dice. Target number . | Target | Base TN | . | A living being, mana spell | The target’s Willpower | . | A living being, physical spell | The target’s Body | . | An object | The Object Resistance Table, below | . | Spells with a fixed number | As listed in the spell, e.g. “Target: 4” | . Object Resistance Table (SR3 p.182) . | Material | TN | . | Natural objects: trees, soil, unprocessed water | 3 | . | Low-tech manufactured: brick, leather, simple plastics | 5 | . | High-tech manufactured: advanced plastics, alloys, electronics | 8 | . | Highly processed: computers, complex toxic waste | 10+ | . To affect an object at all, the spell’s Force must be at least half its Object Resistance, rounded down. Vehicles add their Body and half their armor to Object Resistance before halving. (SR3 p.182) . Modifiers to the Sorcery TN (SR3 p.182–183) . | Cover and visibility, as for Perception. | Injury modifiers (+1 / +2 / +3). | +2 per spell you’re sustaining. | An astral barrier you’re casting across, such as a ward, hermetic circle or shamanic lodge, adds its Force. Its creator is exempt. | . Results . | No successes: the spell fails. | All 1s: it fails and your Drain TN goes up by +2. (SR3 p.182) | Area spells: roll once and compare the dice against each target’s TN separately. Each target then resists separately. (SR3 p.182) | Detection spells: the GM rolls in secret. On all 1s, the GM gives you false information. (SR3 p.182) | . ",
+    "url": "/The2ndChumming3e/v0.6.0/magic/spellcasting/#step-3-sorcery-test",
+    
+    "relUrl": "/magic/spellcasting/#step-3-sorcery-test"
+  },"122": {
+    "doc": "Spellcasting, Resistance & Drain",
+    "title": "Step 4: Spell Resistance  (SR3 p.183)",
+    "content": "Two different things can reduce the caster’s successes here. Both can happen against the same spell. The target resists . | Any living target that isn’t willing makes a Spell Resistance Test: its targeted attribute (usually Body, Intelligence or Willpower) against TN = the spell’s Force. | No modifiers apply unless the spell says so. That includes the target’s wounds. | Non-living, non-magical targets don’t resist. | . A magician blocks it: Spell Defense (SR3 p.183) . | At some earlier point, a magician set aside Sorcery and Spell Pool dice for defense. That’s a Free Action. | They can protect up to their Sorcery rating in subjects, all within Magic × 100 m and on the same plane. Protecting yourself counts as one. | When a protected subject is targeted, the defender senses it and may roll any of those dice against TN = the spell’s Force. It takes no action. | Every success subtracts one success from the caster’s Sorcery Test. If that takes the caster to 0 or less, the spell fails. | Dice used are gone until the next Combat Turn. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/magic/spellcasting/#step-4-spell-resistance",
+    
+    "relUrl": "/magic/spellcasting/#step-4-spell-resistance"
+  },"123": {
+    "doc": "Spellcasting, Resistance & Drain",
+    "title": "Step 5: Spell Effect  (SR3 p.183, p.191)",
+    "content": "Compare the caster’s remaining successes with the target’s resistance successes. | Target ties or wins: no effect. A tie goes to the target. | Caster wins: the net successes (caster − target) measure the effect. The spell’s description says what they buy. | No resistance roll (an object, or a willing subject): all the caster’s successes count, and 1 success always gives some effect. | Damaging spells: the chosen Damage Level stages up one level per 2 net successes, up to Deadly. | . Combat spells: armor doesn’t help (SR3 p.191) . Combat spells (Manabolt, Powerbolt, Stunbolt and their ball versions) damage the target directly and bypass armor. The Spell Resistance Test is the target’s only defense, so there’s no Damage Resistance Test. Mana spells are resisted with Willpower and affect only living and magical targets. Physical spells are resisted with Body and can hit objects too. | Spell | Type | Resisted by | Drain | Damage | . | Stunbolt / Stunball | Mana | Willpower | −1(Damage Level) / −1(Damage Level +1) | Stun | . | Manabolt / Manaball | Mana | Willpower | (Damage Level) / (Damage Level +1) | Physical | . | Powerbolt / Powerball | Physical | Body | +1(Damage Level) / +1(Damage Level +1) | Physical | . | Death Touch | Mana | Willpower | (Damage Level −1) | Physical, by touch | . Elemental spells work like guns (SR3 p.183, p.196) . Fireball, Flamethrower, Lightning Bolt, Acid Stream and similar spells make real fire, lightning or acid. They follow the ranged combat rules, so steps 3 to 5 change: . | Sorcery is the ranged combat skill. The base TN is 4 at any range if you can see the target, plus cover, visibility, injury and sustaining modifiers. Spell Pool dice can be added. (SR3 p.183) | The target can dodge with Combat Pool. (SR3 p.183) | Instead of a Spell Resistance Test, the target makes a Damage Resistance Test with Body plus Combat Pool dice, and Impact armor at half its rating (rounded down) protects. (SR3 p.183, p.196) | The chosen Damage Level stages up 2 successes per level for the caster and down for the target, as in ordinary ranged combat. (SR3 p.183) | Secondary effects can still set fires, cook off ammunition or melt material, even if the primary damage is staged to nothing. (SR3 p.196) | . Glass and walls do block elemental spells, which have to break through like bullets. Targets hidden behind cover inside a Fireball’s radius still get hit. Spell Defense and astral barriers still work against them. (SR3 p.182) . The damage Power of an elemental spell. The core book gives the spell’s Damage Code but never states its Power in so many words. The usual reading is that the Power is the spell’s Force, so a Force 6 Fireball cast at Moderate is 6M before staging. ",
+    "url": "/The2ndChumming3e/v0.6.0/magic/spellcasting/#step-5-spell-effect",
+    
+    "relUrl": "/magic/spellcasting/#step-5-spell-effect"
+  },"124": {
+    "doc": "Spellcasting, Resistance & Drain",
+    "title": "Step 6: Drain  (SR3 p.162, p.180, p.183, p.191)",
+    "content": "Right after casting, in the same action, whether or not the spell worked, the caster resists Drain. Reading a Drain code (SR3 p.191) . A spell’s Drain looks like +1(M) or -1(Damage Level +1): . | The number outside the brackets modifies the Power, which is the target number: Drain Power = Force ÷ 2, rounded down, + that modifier. | The part inside the brackets is the Drain Level, the damage you take before resisting. For combat and elemental spells it’s the Damage Level you chose, adjusted by any modifier written with it. | If a modifier would push the Drain Level above Deadly, add +2 Drain Power per level above instead. | . Adding up the TN . | Source | Change | . | Base | Force ÷ 2 (round down) + the spell’s modifier | . | Each spell you’re sustaining | +2 (p.178, p.180) | . | Each extra spell cast in the same action | +2 (p.181) | . | The Sorcery Test came up all 1s | +2 (p.182) | . Otherwise, no modifiers apply, including wounds. (SR3 p.183) . The roll . The caster rolls Willpower plus any number of Spell Pool dice. There’s no cap here, unlike the Sorcery Test. Every 2 successes lower the Drain Level one step. Below Light, you take nothing. (SR3 p.44, p.183) . Stun or Physical? (SR3 p.162, p.183) . | Stun normally. | Physical if the Force is higher than your Magic, or if you’re astrally projecting, whatever the Force. | A limited spell (fetish −1, exclusive −2) can lower the Force for Drain purposes, both for the TN and for this Stun-or-Physical check. (SR3 p.180) | Physical damage from Drain can’t be healed by magic, only by rest and medical care. (SR3 p.162) | . ",
+    "url": "/The2ndChumming3e/v0.6.0/magic/spellcasting/#step-6-drain",
+    
+    "relUrl": "/magic/spellcasting/#step-6-drain"
+  },"125": {
+    "doc": "Spellcasting, Resistance & Drain",
+    "title": "Sustaining spells  (SR3 p.178)",
+    "content": "| Duration | What it means | . | Instant (I) | Takes effect and ends at once. The results, such as wounds, stay. Combat spells work this way. | . | Sustained (S) | Lasts while you concentrate, which takes no action. | . | Permanent (P) | Must be sustained for a base time, then becomes permanent. Sorcery successes can be spent dividing that time instead of on the effect. | . While sustaining: . | +2 to all your tests per sustained spell, including Drain Resistance but not ordinary Damage Resistance. | You can sustain up to your Sorcery rating in spells at once. | If you take damage, roll Sorcery against the spell’s Force (plus injury modifiers) to keep it going. | Dropping a spell is a Free Action. Being knocked out or falling asleep drops them all. | An Exclusive Action means dropping every sustained spell first. | . A sustaining focus holds a spell for you, and the +2 doesn’t apply to you. (SR3 p.191) . ",
+    "url": "/The2ndChumming3e/v0.6.0/magic/spellcasting/#sustaining-spells--sr3-p178",
+    
+    "relUrl": "/magic/spellcasting/#sustaining-spells--sr3-p178"
+  },"126": {
+    "doc": "Spellcasting, Resistance & Drain",
+    "title": "Worked example: Manabolt",
+    "content": "Kestrel has Magic 6, Sorcery 5, and a Spell Pool of 4 (Intelligence 5, Willpower 5, Magic 6 → 16 ÷ 3 = 5, and she spent 1 earlier this turn). She casts Manabolt at Force 5, choosing Serious, at a guard with Willpower 4. She isn’t sustaining anything. | Preparation. Force 5, Serious, 5 Sorcery dice plus 3 Spell Pool dice. That leaves 1 pool die for Drain. | Targeting. She can see him and they’re both on the physical plane. | Sorcery Test. 8 dice against TN 4 (his Willpower). She gets 4 successes. | Resistance. The guard rolls Willpower 4 against TN 5 (the Force) and gets 1. Nobody is running Spell Defense for him. | Effect. 4 − 1 = 3 net successes. Two of them stage Serious up to Deadly; the third is left over. Combat spells ignore armor, so the guard takes a Deadly Physical wound. | Drain. Manabolt’s Drain is (Damage Level). Power is 5 ÷ 2 = 2, and the level is Serious, the level she chose, not the staged one. She rolls Willpower 5 plus her last Spell Pool die, 6 dice against TN 2, and gets 3 successes. Two of them take Serious down to Moderate. Force 5 isn’t higher than her Magic 6, so it’s Moderate Stun. | . If she had cast at Force 7 (assuming she’d learned it that high): Drain Power would be 3, and the Drain would be Physical, because 7 is higher than her Magic. If a mage were protecting the guard with Spell Defense and rolled 2 successes against TN 5, Kestrel’s 4 would drop to 2. The guard’s 1 resistance success would leave 1 net success: not enough to stage up, so he’d take Serious. ",
+    "url": "/The2ndChumming3e/v0.6.0/magic/spellcasting/#worked-example-manabolt",
+    
+    "relUrl": "/magic/spellcasting/#worked-example-manabolt"
+  },"127": {
+    "doc": "Spellcasting, Resistance & Drain",
+    "title": "Spellcasting, Resistance & Drain",
+    "content": " ",
+    "url": "/The2ndChumming3e/v0.6.0/magic/spellcasting/",
+    
+    "relUrl": "/magic/spellcasting/"
+  },"128": {
+    "doc": "Street Samurai",
+    "title": "Hiring a Street Samurai",
+    "content": ". | What the books give you . | What their chrome costs (SR3 p.302) | . | House rates . | Base day rate, by combat skill and augmentation | Threat multiplier | Hazard pay and expenses | . | Worked examples | . | Wired reflexes give Initiative dice, not passes. Levels 1/2/3 are +2/+4/+6 Reaction and +1D6/+2D6/+3D6 Initiative. The number of passes comes from the Initiative score. (SR3 p.104, p.302) | “Booster” means boosted reflexes, and “move booster” means move-by-wire. (SR3 p.302; M&amp;M p.60) | SR3 has dermal plating and dermal sheath; “subdermal plating” is a later-edition name. (SR3 p.302; M&amp;M) | The Scenario B and C totals were wrong. The correct figures are 15,000¥ and 42,000¥. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/street-samurai/#hiring-a-street-samurai",
+    
+    "relUrl": "/hiring/street-samurai/#hiring-a-street-samurai"
+  },"129": {
+    "doc": "Street Samurai",
+    "title": "What the books give you",
+    "content": "|   |   | Source | . | Bodyguard / security duty | 200¥ per day | SRComp p.100 | . | Enforcement | 1,000¥ | SRComp p.100 | . | Assassination | 5,000¥ | SRComp p.100 | . | Extraction | 20,000¥ | SRComp p.100 | . What their chrome costs (SR3 p.302) . | Implant | Essence | Cost | . | Smartlink | .5 | 2,500¥ | . | Wired Reflexes 1 / 2 / 3 | 2 / 3 / 5 | 55,000 / 165,000 / 500,000¥ | . | Boosted Reflexes 1 / 2 / 3 | .5 / 1.25 / 2.8 | 15,000 / 40,000 / 90,000¥ | . | Dermal Plating 1 / 2 / 3 | .5 / 1 / 1.5 | 6,000 / 15,000 / 45,000¥ | . | Titanium bone lacing | 2.25 | 75,000¥ | . A samurai who carries used or alphaware chrome prices it differently. See Cyberware Grades. ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/street-samurai/#what-the-books-give-you",
+    
+    "relUrl": "/hiring/street-samurai/#what-the-books-give-you"
+  },"130": {
+    "doc": "Street Samurai",
+    "title": "House rates",
+    "content": "These rates aren’t from any SR3 book. They are the original gist’s numbers, kept for convenience. Base day rate, by combat skill and augmentation . | Tier | Skill and chrome | Base day rate | Typical kit | . | Street tough | Skill 1–3, little or no chrome | 200–500¥ | A heavy pistol or shotgun | . | Professional | Skill 4–5, Wired 1 or Boosted 1–2 | 1,000–2,500¥ | Smartlink, SMG or assault rifle, dermal plating | . | Veteran | Skill 6–7, Wired 2 | 3,500–7,000¥ | Alpha or bioware suite, muscle replacement or augmentation, heavy armor | . | Elite | Skill 8+, Wired 3 or move-by-wire | 10,000¥ and up | Alpha or betaware, bone lacing, anti-vehicle weapons | . Threat multiplier . | Work | Multiplier | . | Bodyguarding, bouncing, static guard duty | ×1 | . | A standard run: perimeter breach, corporate guards, gang turf | ×2 | . | High-threat response teams, combat drones, heavy weapons, combat mages | ×3–5 | . Hazard pay and expenses . | Overwatch or sniper: no hazard pay. | Point man or breacher: +50% to +100%. | The employer supplies special ammunition (APDS, EX, gel), grenades and disposable launchers, and covers medical bills. | A medical and chrome deposit of 2,500–10,000¥ is reasonable against armor-piercing or explosive fire. | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/street-samurai/#house-rates",
+    
+    "relUrl": "/hiring/street-samurai/#house-rates"
+  },"131": {
+    "doc": "Street Samurai",
+    "title": "Worked examples",
+    "content": "| Job | House rate | Companion baseline | . | Nightclub bodyguard, professional (base 1,500¥), ×1 | 1,500¥ a night | 200¥ a day | . | Counter-gang hit, veteran (base 5,000¥), ×2, point man +50% | 5,000 × 2 × 1.5 = 15,000¥ plus ammunition | Enforcement: 1,000¥; assassination: 5,000¥ | . | Breach against a high-threat response team, veteran-plus (base 7,000¥), ×4, breacher +50% | 7,000 × 4 × 1.5 = 42,000¥ plus ammunition and medical | A share of the extraction fee | . ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/street-samurai/#worked-examples",
+    
+    "relUrl": "/hiring/street-samurai/#worked-examples"
+  },"132": {
+    "doc": "Street Samurai",
+    "title": "Street Samurai",
+    "content": " ",
+    "url": "/The2ndChumming3e/v0.6.0/hiring/street-samurai/",
+    
+    "relUrl": "/hiring/street-samurai/"
+  }
+}
