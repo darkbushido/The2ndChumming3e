@@ -6583,3 +6583,17 @@ field; **commercial explosives** (p.283: −3/m, −6/m, −12/m per kilo) are n
 
 **Chunky Salsa fixed 2026-09-24 (`a7a07330`, `main`)**: the direct wave and every rebound now use the throw's falloff. The other two
 are [#160](TODO.md#160).
+
+## 162. ✅ Installed packs carry broken `_id: null` documents from older builds — `ca516641`
+
+**Found 2026-09-24 from a production console log and a read-only check of the server.** Production (installed only through the Foundry UI) has
+**75 packs, each with one document stored under `!items!null` / `!actors!null`** (`_id: null`, full Foundry scaffolding: the `importDocument` signature). The
+shipped packs are clean — the `v0.6.0` tag has 104 packs / 6,147 documents and none — but the June-2026 monolithic-pack builds carried them, and a Foundry
+update does not replace an installed pack database, so they stayed. They crash core's compendium search (`_onMatchSearchDocuments` reads `null.collection`),
+blanking the whole result list (guarded separately, `b95619d3`).
+
+**Fixed (`ca516641`, `main`).** `SR3EPackRepair` runs at `ready` on the active GM's client: it removes such an entry over the socket (`modifyDocument`
+delete with id `'null'`; the client's own `deleteDocuments` refuses it), **only when an identical properly keyed twin is in the same pack**, re-locking in a
+`finally`, on every load, never blocking the world. Verified in the dev world: 74 → 0, 104 packs / 6,147 documents, matching the release. Anything without a
+twin is logged and left alone. It relies on an internal socket call, so a failure is a console warning and the pack is left as it was. Needs no filesystem access.
+A full clean is also possible by uninstalling and reinstalling the system from Foundry's Setup screen.

@@ -71,7 +71,7 @@ three nice-to-haves (79, 82, 7) and the release tasks below.
 
 ## Contents
 
-**51 open.** 110 done — see [TODO-DONE.md](TODO-DONE.md).
+**51 open.** 111 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -309,6 +309,9 @@ twelve medkits at once, so the difference is on production. Hypothesis, unconfir
 and `Object.values(game.documentIndex.lookup('medkit', {documentTypes: [], limit: 25, ownership: CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED, filterEntries: e => !!e.pack})).flat().map(r => r.entry.name)`.
 Nothing here is a shipping bug; it is a question of whether 106 packs make the search unusably slow after
 a start.
+
+**Update 2026-09-24:** the log also showed core's search crashing on the broken `_id: null` entries ([#162](TODO-DONE.md#162)) — a crash that blanks the results is a likelier
+cause than an index that was still building. The crash is guarded and the entries are now removed on load. Left open until production, on 0.6.1, confirms the search.
 
 ## 149. Grenade scatter goes through walls
 
