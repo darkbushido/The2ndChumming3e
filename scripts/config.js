@@ -1441,7 +1441,8 @@ export const SR3E = {
 
   // Grenade types (Grenade Range/Scatter tables). scatterDice = Nd6 scatter; scatterReduction =
   // metres removed per net hit; range bands [S,M,L,E] are STR multipliers, or fixed metres for the
-  // launcher. Damage code/level come from the weapon item; falloff is −1 power per metre.
+  // launcher. Damage code/level come from the weapon item; the falloff per metre is the item's own `blast`
+  // (SR3 p.119, p.283 — Blast.rate; blank = −1/m), not a property of the throw type.
   grenadeTypes: {
     standard:    { label: 'Standard',          scatterDice: 1, scatterReduction: 2, rangeMult:  [3, 5, 10, 20] },
     aerodynamic: { label: 'Aerodynamic',       scatterDice: 2, scatterReduction: 4, rangeMult:  [3, 5, 20, 30] },

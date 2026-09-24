@@ -604,6 +604,13 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'defensive-grenade-falls-off-like-offensive',
+    suite:  'blast',
+    module: '../scripts/data/blast.mjs', klass: 'Blast', method: 'perMetre',
+    was:    'every grenade lost 1 Power per metre; a defensive grenade loses 1 per HALF metre (SR3 p.119, TODO 150)',
+    impl:   text => (/^\s*[-−–]?\s*\d/.test(String(text ?? '')) ? 1 : null),
+  },
+  {
     id:     'short-burst-raises-level',
     suite:  'fire-modes',
     ...ITEM, method: 'fireModeDamage',

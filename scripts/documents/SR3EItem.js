@@ -3,6 +3,7 @@ import { AmmoStock } from '../data/ammo-stock.mjs';
 import { Shotgun, CHOKE_MIN, CHOKE_MAX } from '../data/shotgun.mjs';
 import { WeaponAccessories } from '../data/weapon-accessories.mjs';
 import { PhaseTargets } from '../data/phase-targets.mjs';
+import { Blast } from '../data/blast.mjs';
 
 export class SR3EItem extends Item {
 
@@ -1060,7 +1061,9 @@ export class SR3EItem extends Item {
       return null;
     }
     const power  = SR3EItem.parseDamageCode(rawDamage, actor)?.power ?? 5;
-    const placed = await SR3EItem._placeBlastTemplate(actor, power);
+    // The blast reaches as far as its Power lasts at THIS grenade's falloff — a defensive grenade
+    // (−1 per half metre) runs out at half the distance (SR3 p.119, TODO 150).
+    const placed = await SR3EItem._placeBlastTemplate(actor, Blast.radius(power, Blast.rate(this.system.blast)));
     if (!placed) return null; // cancelled placement
 
     const aToken        = actor.getActiveTokens?.()[0] ?? null;
@@ -1166,6 +1169,7 @@ export class SR3EItem extends Item {
     options.aoeRadius        = placed.radius;          // blast radius (metres)
     options.aoeThrowerCenter = throwerCenter;          // for relative scatter direction
     options.aoeChunky        = weaponOpts.useSalsaGUI; // resolve confined space after scatter
+    options.aoeBlast         = this.system.blast ?? '';   // falloff per metre, read at resolution (TODO 150)
     options.grenadeType      = weaponOpts.grenadeType ?? 'standard';
     options.skipWoundMod     = true;   // pre-applied in the roll-options TN (throwPreTN)
 

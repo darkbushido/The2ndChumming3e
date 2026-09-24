@@ -74,6 +74,8 @@ export class ProjectileData extends foundry.abstract.TypeDataModel {
       bookPage:       new StringField({ initial: '' }),
       notes:          new HTMLField({ initial: '', required: false }),
       isAoE:          new BooleanField({ initial: false }),
+      // Blast falloff in the book's notation — "-1/m", "-1/.5m" (SR3 p.119, p.283; TODO 150). Blank = -1/m.
+      blast:          new StringField({ initial: '' }),
     };
   }
 }
@@ -107,6 +109,7 @@ export class ThrownData extends foundry.abstract.TypeDataModel {
       bookPage:       new StringField({ initial: '' }),
       notes:          new HTMLField({ initial: '', required: false }),
       isAoE:          new BooleanField({ initial: false }),
+      blast:          new StringField({ initial: '' }),   // as on ProjectileData (TODO 150)
     };
   }
 }

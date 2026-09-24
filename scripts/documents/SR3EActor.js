@@ -5,6 +5,7 @@ import { AmmoStock } from '../data/ammo-stock.mjs';
 import * as Sustaining from '../data/sustaining.mjs';
 import { DrugRules } from '../data/drug-rules.mjs';
 import { Ledger } from '../data/ledger.mjs';
+import { Blast } from '../data/blast.mjs';
 
 export class SR3EActor extends Actor {
 
@@ -2501,6 +2502,7 @@ _prepareCharacter(sys, attr) {
         aoeRadius:           options.aoeRadius          ?? null,
         aoeThrowerCenter:    options.aoeThrowerCenter   ?? null,
         aoeChunky:           options.aoeChunky          ?? false,
+        aoeBlast:            options.aoeBlast           ?? '',
         rawDamage:           options.rawDamage          ?? '',
         damageBase:          options.damageBase         ?? null,
         weaponItemId:        options.weaponItemId       ?? null,
@@ -2579,6 +2581,7 @@ _prepareCharacter(sys, attr) {
       aoeRadius:             options.aoeRadius             ?? null,
       aoeThrowerCenter:      options.aoeThrowerCenter      ?? null,
       aoeChunky:             options.aoeChunky             ?? false,
+      aoeBlast:              options.aoeBlast              ?? '',
       rawDamage:             options.rawDamage             ?? '',
       damageBase:            options.damageBase            ?? null,
       weaponItemId:          options.weaponItemId          ?? null,
@@ -3131,7 +3134,8 @@ _prepareCharacter(sys, attr) {
               power: basePower, level, actorIds: hits.map(h => h.actor.id), returnOnly: true,
             })) ?? [];
           } else {
-            codes = hits.map(h => ({ actorId: h.actor.id, name: h.actor.name, power: Math.max(0, basePower - h.dist), level, dist: h.dist }))
+            const perM = Blast.rate(state.aoeBlast);   // its own falloff, p.119 (TODO 150)
+            codes = hits.map(h => ({ actorId: h.actor.id, name: h.actor.name, power: Blast.power(basePower, h.dist, perM), level, dist: h.dist }))
                         .filter(t => t.power > 0);
           }
 
@@ -3760,6 +3764,7 @@ _prepareCharacter(sys, attr) {
         aoeRadius:          state.aoeRadius          ?? null,
         aoeThrowerCenter:   state.aoeThrowerCenter   ?? null,
         aoeChunky:          state.aoeChunky          ?? false,
+        aoeBlast:           state.aoeBlast           ?? '',
         rawDamage:          state.rawDamage          ?? '',
         damageBase:         state.damageBase         ?? null,
         weaponItemId:       state.weaponItemId       ?? null,
