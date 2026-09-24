@@ -16,8 +16,8 @@ export const name = 'personal-paths';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 
-// `C:\Users\x\`, `C:\\Users\\x`, `C:/Users/x/`, `/Users/x/`, `/home/x/`.
-const HOME_PATH = /(?:\b[A-Za-z]:(?:\\\\|\\|\/)+|(?:^|[\s`'"(])\/)(?:Users|home)(?:\\\\|\\|\/)+(?!%|\$|<|\{|\*)[\w.-]+/gi;
+// `C:\Users\x\`, `C:\\Users\\x`, `C:/Users/x/`, `/c/Users/x/` (Git Bash), `/Users/x/`, `/home/x/`.
+const HOME_PATH = /(?:\b[A-Za-z]:(?:\\\\|\\|\/)+|(?:^|[\s`'"(/])\/(?:[A-Za-z]\/)?)(?:Users|home)(?:\\\\|\\|\/)+(?!%|\$|<|\{|\*)[\w.-]+/gi;
 
 // Paths that are not a person's home: a container's own user, and placeholders.
 const ALLOWED = [/\/home\/user\b/i, /\/home\/runner\b/i, /Users(?:\\\\|\\|\/)+(?:Public|Default|you|name|username)\b/i];
@@ -26,9 +26,6 @@ const ALLOWED = [/\/home\/user\b/i, /\/home\/runner\b/i, /Users(?:\\\\|\\|\/)+(?
 const EXEMPT = {
   // This file: its examples are the patterns it looks for.
   'tests/personal-paths.test.mjs': 'the check itself',
-  // A contributor's local permission allow-list, committed before this check existed.
-  // Theirs to move into settings.local.json — not scrubbed here without asking.
-  '.claude/settings.json': 'a contributor\'s local allow-list',
 };
 
 export async function run(t) {
@@ -51,5 +48,7 @@ export async function run(t) {
 
   t.ok('the scan sees the Windows form', 'C:\\Users\\someone\\Documents'.match(HOME_PATH));
   t.ok('the scan sees the forward-slash form', "'C:/Users/someone/x'".match(HOME_PATH));
+  t.ok('the scan sees the Git Bash form', 'find /c/Users/someone -name x'.match(HOME_PATH));
+  t.ok('the scan sees a doubled leading slash', 'Read(//c/Users/someone/**)'.match(HOME_PATH));
   t.ok('%USERPROFILE% is not a hit', !'%USERPROFILE%\\Documents\\Shadowrun'.match(HOME_PATH));
 }
