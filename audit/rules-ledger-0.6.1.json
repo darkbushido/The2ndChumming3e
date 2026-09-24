@@ -5660,16 +5660,16 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 2312,
+          "line": 2313,
           "snippet": "const astralPoolBase = magicBase > 0"
         },
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4160,
+          "line": 4232,
           "snippet": "static parseDrainFormula(drainStr, force, damageLevel = null) {"
         }
       ],
-      "note": "Composite errata callout. Checked against the book: Drain written +1(M) (p.191) and no 'H' level; Force capped by the Force learned (p.178) with Physical Drain above Magic (p.183); four nature-spirit classes Man/Land/Sky/Waters (p.266); material link in ritual sorcery (MitS); astral combat uses the Astral Combat Pool (p.174); projecting movement Intelligence × 4 m and Magic km per turn (p.173); Ryumyo seen on 24 December 2011 (p.25, p.269)."
+      "note": "Composite errata callout. Checked against the book: Drain written +1(M) (p.191) and no 'H' level; Force capped by the Force learned (p.178) with Physical Drain above Magic (p.183); four nature-spirit classes Man/Land/Sky/Waters (p.266); material link in ritual sorcery (MitS); astral combat uses the Astral Combat Pool (p.174); projecting movement Intelligence x 4 m and Magic km per turn (p.173); Ryumyo seen on 24 December 2011 (p.25, p.269)."
     },
     {
       "id": "magic/awakened-primer.md#5",
@@ -5760,11 +5760,11 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4492,
+          "line": 4590,
           "snippet": "if (learnedForce) force = Math.min(force, learnedForce);"
         }
       ],
-      "note": "The character-creation limit (no spell above Force 6, p.60) is not enforced — chargen is not automated."
+      "note": "The character-creation limit (no spell above Force 6, p.60) is not enforced -- chargen is not automated."
     },
     {
       "id": "magic/awakened-primer.md#10",
@@ -5813,8 +5813,8 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4207,
-          "snippet": "return { tn: Math.max(2, halfF + powerMod), level: shiftLevel(levelMod) };"
+          "line": 4284,
+          "snippet": "return { tn: Math.max(2, halfF + powerMod + abovePower), level };"
         }
       ]
     },
@@ -5865,7 +5865,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 9724,
+          "line": 9866,
           "snippet": "drainTN += sustainTN;"
         }
       ]
@@ -6308,7 +6308,7 @@
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 3490,
+          "line": 3521,
           "snippet": "resistAttr:       'charisma',"
         }
       ]
@@ -6630,7 +6630,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 10835,
+          "line": 10977,
           "snippet": "static async _postAssensingResult(successes, tn, actorName, { actorId = null, auraBonus = null, auraSuccesses = null } = {}) {"
         }
       ]
@@ -6814,7 +6814,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 10742,
+          "line": 10884,
           "snippet": "const wilVal  = Math.max(wilAttr?.value ?? 0, wilAttr?.base ?? 0, 1);"
         }
       ]
@@ -6852,7 +6852,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 10387,
+          "line": 10532,
           "snippet": "rawDamage = `${cha}M`;"
         }
       ]
@@ -6904,7 +6904,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 10742,
+          "line": 10884,
           "snippet": "const wilVal  = Math.max(wilAttr?.value ?? 0, wilAttr?.base ?? 0, 1);"
         }
       ]
@@ -6936,7 +6936,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 10032,
+          "line": 10174,
           "snippet": "// Astral initiative: Intelligence + 20 + 1d6"
         }
       ]
@@ -6962,7 +6962,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 10366,
+          "line": 10508,
           "snippet": "async rollAstralCombat(options = {}) {"
         }
       ]
@@ -6988,7 +6988,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 10366,
+          "line": 10508,
           "snippet": "async rollAstralCombat(options = {}) {"
         }
       ]
@@ -7020,12 +7020,12 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 2312,
+          "line": 2313,
           "snippet": "const astralPoolBase = magicBase > 0"
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 10406,
+          "line": 10548,
           "snippet": "// Unarmed: Unarmed Combat (incl. Martial Arts) OR Sorcery w/ Astral Combat specialisation"
         }
       ]
@@ -7063,7 +7063,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 10726,
+          "line": 10868,
           "snippet": "static astralSoakTN({ power = 0, mysticArmor = 0 } = {}) {"
         }
       ],
@@ -7164,7 +7164,34 @@
       ],
       "hash": "c30825be93",
       "text": "- **Traditions**: mages treat magic as a discipline of formulae and elements.\n  *(SR3 p.158)* Shamans follow a **totem**, which grants bonus dice for some\n  spells and spirits and penalties for others. *(SR3 p.163–165)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 160,
+          "printedPage": 158,
+          "quote": "Hermetic magic is intellectual. Mages see the universe as a complex pattern of forces that can be controlled with the right formulae and rituals"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 165,
+          "printedPage": 163,
+          "quote": "A shaman gains bonus dice when using Sorcery or Conjuring according to the totem's ideals. The shaman may also lose dice when using magical skills outside the totem's realm"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1624,
+          "snippet": "magicTotemData: {"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 3524,
+          "snippet": "drainNote:        'GM: add totem modifiers / spirit foci dice as applicable.',"
+        }
+      ],
+      "note": "Totem advantages/disadvantages are shown as reference text per totem (config.js magicTotemData, sheet dropdown) and the GM applies the dice by hand, matching the system's no-automation ethos; not a divergence."
     },
     {
       "id": "magic/awakened-primer.md#68",
@@ -7225,7 +7252,8 @@
       ],
       "hash": "e455d62ce8",
       "text": "- **Tír Tairngire**, \"the Land of Promise\" *(SR3 p.30)*, takes up most of\n  the former state of Oregon plus parts of Washington and California.\n  *(SR3 p.321)*",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "World lore (geography), no code counterpart. 'Meaning the Land of Promise ... Tir Tairngire takes up most of the former state of Oregon, along with portions of Washington and California' is on printed p.321 (pdf p.323); the name and founding in 2035 is on printed p.30 (pdf p.32)."
     },
     {
       "id": "magic/awakened-primer.md#72",
