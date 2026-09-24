@@ -71,12 +71,12 @@ three nice-to-haves (79, 82, 7) and the release tasks below.
 
 ## Contents
 
-**51 open.** 111 done — see [TODO-DONE.md](TODO-DONE.md).
+**48 open.** 115 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 🔴 Confirmed bugs, still open | [133](#133) Unloading a gun returns the rounds to storage as full clips<br>[134](#134) There is no way to unload a gun<br>[135](#135) Characters should start with nothing equipped<br>[136](#136) A character who started with grenades always seems to have one equipped<br>[137](#137) The damage chat card assigns damage again after the player already assigned it through the popup<br>[138](#138) The healing button moves when a character is unconscious or damaged<br>[139](#139) A medkit can be restocked in combat — restocking should happen when shopping<br>[140](#140) The resist card's soak-hits section looks clickable — it should be greyed out<br>[141](#141) The second Simple Action does not flag and end the turn<br>[142](#142) Loading a clip-fed gun treats the clips as individual rounds<br>[143](#143) Clipped ammunition did not migrate<br>[145](#145) No medkit in the compendium, although the gear was added<br>[149](#149) Grenade scatter goes through walls<br>[151](#151) Cyber weapons don't show up in the weapons list, and cannot be used in combat<br>[152](#152) Undoing an action only works on the second try<br>[155](#155) Grenades with no damage code cannot be thrown<br>[158](#158) 2nd-edition grenades: unverifiable pages and damage values<br>[160](#160) Launchers and commercial explosives carry no blast falloff<br>[161](#161) Flechette weapons — the two things the book does not settle |
+| 🔴 Confirmed bugs, still open | [133](#133) Unloading a gun returns the rounds to storage as full clips<br>[134](#134) There is no way to unload a gun<br>[135](#135) Characters should start with nothing equipped<br>[136](#136) A character who started with grenades always seems to have one equipped<br>[137](#137) The damage chat card assigns damage again after the player already assigned it through the popup<br>[138](#138) The healing button moves when a character is unconscious or damaged<br>[139](#139) A medkit can be restocked in combat — restocking should happen when shopping<br>[140](#140) The resist card's soak-hits section looks clickable — it should be greyed out<br>[141](#141) The second Simple Action does not flag and end the turn<br>[142](#142) Loading a clip-fed gun treats the clips as individual rounds<br>[143](#143) Clipped ammunition did not migrate<br>[149](#149) Grenade scatter goes through walls<br>[151](#151) Cyber weapons don't show up in the weapons list, and cannot be used in combat<br>[152](#152) Undoing an action only works on the second try<br>[161](#161) Flechette weapons — the two things the book does not settle<br>[163](#163) Launcher grenades and mini-grenades do not carry a blast |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects<br>[131](#131) Cover and visibility on elemental spells<br>[132](#132) Astral damage: dual beings resist with Body, not Willpower |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field |
@@ -288,31 +288,6 @@ cannot reach. If time is short, do these.
 The reporter believes this caused [#133](#133) and [#142](#142): the clips were still being
 treated as loose rounds.
 
-## 145. No medkit in the compendium, although the gear was added
-
-Triage: the repo ships `Basic Medkit` and `Medkit Supplies` in `sr3e-sr3-medical`, and ten
-medkits in `sr3e-mm-medical`. Check whether the install has those packs (`npm run packs:install`)
-before looking anywhere else.
-
-**Investigated 2026-09-23/24 against the PRODUCTION server (read-only).** Production runs 0.6.0
-(manifest `releases/latest`); `packs/sr3e-sr3-medical` and `packs/sr3e-mm-medical` are on disk with data;
-the enabled books are sr3, cc, mm, mits, r3; and the medkits were visible under Weapons & Gear / Medical /
-sr3 from the start. The Compendium **search** did not find them, then did — about **20 minutes** after the
-world came up (the server had restarted at 02:29). So the data ships correctly and the earlier "run
-`npm run packs:install`" advice was wrong (that only touches the dev install).
-
-**Still open — the cause of the delay is unknown.** Core's sidebar search also queries
-`game.documentIndex.lookup(...)` (25 results, ownership-filtered); in the local test world that returns all
-twelve medkits at once, so the difference is on production. Hypothesis, unconfirmed: the document index for
-~106 packs was still building. If it recurs, run on production, before it clears:
-`game.packs.filter(p => /medical/.test(p.collection)).map(p => [p.collection, p.indexed, p.index.size])`
-and `Object.values(game.documentIndex.lookup('medkit', {documentTypes: [], limit: 25, ownership: CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED, filterEntries: e => !!e.pack})).flat().map(r => r.entry.name)`.
-Nothing here is a shipping bug; it is a question of whether 106 packs make the search unusably slow after
-a start.
-
-**Update 2026-09-24:** the log also showed core's search crashing on the broken `_id: null` entries ([#162](TODO-DONE.md#162)) — a crash that blanks the results is a likelier
-cause than an index that was still building. The crash is guarded and the entries are now removed on load. Left open until production, on 0.6.1, confirms the search.
-
 ## 149. Grenade scatter goes through walls
 
 ## 151. Cyber weapons don't show up in the weapons list, and cannot be used in combat
@@ -321,34 +296,22 @@ cause than an index that was still building. The crash is guarded and the entrie
 
 The GM's ↺ Undo on the action ledger ([#48](#48)) has to be pressed twice before it takes effect.
 
-## 155. Grenades with no damage code cannot be thrown
-
-Smoke, gas, Flash-Pak and thermal smoke carry `--`, `Special`, `gas`, `-` and so on, which
-`parseDamageCode` reads as no code, so the AoE throw warns *"has no damage code"* and stops. The book
-gives each an effect instead — gas: 10 m radius for 2 Combat Turns; smoke: 20 m diameter for 2 Combat
-Turns, visibility modifiers; Flash-Pak: +4 TN (+2 with flare compensation) plus +2 from the strobe
-(SR3 p.283). Found while doing [#144](TODO-DONE.md#144); none of it is modelled.
-
-## 158. 2nd-edition grenades: unverifiable pages and damage values
-
-`sr3e-sr2-projectiles` has eight grenades with `bookPage: "sr2.???"` and damage values `gas`,
-`tear gas`, `-`, `(see rules)`; `Smoke (IR) Grenade` has skill `Projectile Weapons` and category
-`other`. There is no 2nd-edition core PDF in the library, so none of it can be checked. Nothing was
-changed under [#144](TODO-DONE.md#144)–[#146](TODO-DONE.md#146). Blocked on the SR2 book.
-
-## 160. Launchers and commercial explosives carry no blast falloff
-
-A grenade **launcher** is a `firearm` (`GrLn`) with `isAoE` but no `blast` field, so what it fires is always −1/m; SR3 p.283
-prints Commercial −3/m, Plastic IV −6/m and XII −12/m per kilo as explosives, which are not items at all. Split from [#159](TODO-DONE.md#159).
-
 ## 161. Flechette weapons — the two things the book does not settle
 
 1. **Dermal armour and an `(f)` code.** p.116: *"Dermal armor negates the Damage Level increase of flechette ammunition."* An `(f)` code has that increase
    baked in, so it is unclear whether dermal armour should take a level back. Today the card only says so and leaves it to the GM.
-2. **A flechette weapon firing other ammunition** (gel, APDS, explosive). The book does not say how they combine, so the loaded type wins.
+2. ~~A flechette weapon firing other ammunition.~~ **Ruled 2026-09-24 (`a810e8d7`), the maintainer: a flechette weapon cannot load other ammunition types.** The reload list offers a weapon carrying the flechette rules only ordinary rounds.
 
 Also not covered: `(f)` on `ammunition` items (Anti-Personnel HRR Grenade, AP Mortar Round B, the AP minigrenades, Directional A-P Mine) and on the
 `vehicleweapon` Flechette Gun — they are not weapons carrying the box, and their loaded type is handled by ammunition rules.
+
+**Still open:** item 1 — the maintainer is reading the flechette rules (SR3 p.116) before ruling on dermal armour.
+
+## 163. Launcher grenades and mini-grenades do not carry a blast
+
+SR3 p.283's *Mini-grenade* row (Conceal 8, Weight .1, Availability *+2/by grenade*, Cost *x2*, Street Index *+1*, Damage and Blast *by grenade*) describes a grenade for a launcher as a modifier on
+the ordinary one. Grenades fired from a launcher are `ammunition` items with no `blast` field, so they always fall off at −1/m — a Defensive mini-grenade is wrong. Needs the launcher's loaded
+grenade to say Offensive or Defensive (`system.blast` on `ammunition`), and the mini-grenade rows built from p.283 with their arithmetic stated.
 
 ### 📕 Rules not implemented
 

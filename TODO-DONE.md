@@ -6517,6 +6517,35 @@ ship in `sr3e-sr3-projectiles`: Offensive and Defensive (each HE and AP — the 
 `tests/core-grenades.test.mjs` holds an independent transcription of the rows. Needs
 `npm run packs:install` (Foundry closed) and a full Foundry restart (data model).
 
+## 145. ✅ No medkit in the compendium, although the gear was added — `ca516641`
+
+Triage: the repo ships `Basic Medkit` and `Medkit Supplies` in `sr3e-sr3-medical`, and ten
+medkits in `sr3e-mm-medical`. Check whether the install has those packs (`npm run packs:install`)
+before looking anywhere else.
+
+**Investigated 2026-09-23/24 against the PRODUCTION server (read-only).** Production runs 0.6.0
+(manifest `releases/latest`); `packs/sr3e-sr3-medical` and `packs/sr3e-mm-medical` are on disk with data;
+the enabled books are sr3, cc, mm, mits, r3; and the medkits were visible under Weapons & Gear / Medical /
+sr3 from the start. The Compendium **search** did not find them, then did — about **20 minutes** after the
+world came up (the server had restarted at 02:29). So the data ships correctly and the earlier "run
+`npm run packs:install`" advice was wrong (that only touches the dev install).
+
+**Still open — the cause of the delay is unknown.** Core's sidebar search also queries
+`game.documentIndex.lookup(...)` (25 results, ownership-filtered); in the local test world that returns all
+twelve medkits at once, so the difference is on production. Hypothesis, unconfirmed: the document index for
+~106 packs was still building. If it recurs, run on production, before it clears:
+`game.packs.filter(p => /medical/.test(p.collection)).map(p => [p.collection, p.indexed, p.index.size])`
+and `Object.values(game.documentIndex.lookup('medkit', {documentTypes: [], limit: 25, ownership: CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED, filterEntries: e => !!e.pack})).flat().map(r => r.entry.name)`.
+Nothing here is a shipping bug; it is a question of whether 106 packs make the search unusably slow after
+a start.
+
+**Update 2026-09-24:** the log also showed core's search crashing on the broken `_id: null` entries ([#162](#162)) — a crash that blanks the results is a likelier
+cause than an index that was still building. The crash is guarded and the entries are now removed on load. Left open until production, on 0.6.1, confirms the search.
+
+**Closed 2026-09-24 (`b95619d3` guards the search, `ca516641` removes the records; the maintainer: *"it looks like this is an issue with the null ids"*).** The medkits shipped and were
+enabled all along; what broke was the search, which crashed on the `_id: null` entries older builds left in the installed packs ([#162](#162)). To confirm on production once it
+is on 0.6.1: the null count is 0 and "medkit" finds all twelve at once. If it ever recurs, the console lines above are the first thing to run.
+
 ## 146. ✅ Grenades don't seem to do any damage — `e75cab58`
 
 **The reporter's follow-up:** the 2nd-edition grenades have an `[f]` after the damage code, and
@@ -6551,6 +6580,22 @@ worked example has a defensive grenade at 3 m doing 4S (10S − 6) and nothing a
 `scripts/data/blast.mjs`; the blast radius follows it too. Data-model change: full Foundry restart, no
 migration. The Chunky Salsa path is [#159](#159).
 
+## 155. ✅ Grenades with no damage code cannot be thrown — `5df18568`
+
+Smoke, gas, Flash-Pak and thermal smoke carry `--`, `Special`, `gas`, `-` and so on, which
+`parseDamageCode` reads as no code, so the AoE throw warns *"has no damage code"* and stops. The book
+gives each an effect instead — gas: 10 m radius for 2 Combat Turns; smoke: 20 m diameter for 2 Combat
+Turns, visibility modifiers; Flash-Pak: +4 TN (+2 with flare compensation) plus +2 from the strobe
+(SR3 p.283). Found while doing [#144](#144); none of it is modelled.
+
+**Done 2026-09-24 (`5df18568`, `main`), the maintainer: *"some things can be AOE without dealing damage … it would be nice if we could leave a smoke region to show the visibility modifiers. even a graphic would be nice."***
+New `areaRadius` (m) and `areaEffect` (text) on projectile and thrown items. A grenade with no usable Damage Code now detonates and scatters like any other, marks a coloured
+Region (grey smoke, green gas, white flash) that **ends with its Combat Turns** (the round change deletes it; the 🧹 button still clears it early), and posts a card with the book's effect,
+who is inside the area, and *"Nothing is applied"*. Shipped: Gas 10 m radius, Smoke and Smoke (IR) 20 m diameter = 10 m radius, all 2 Combat Turns; Flash-Pak text only (SR3 p.283).
+Checked live in the test world (the card); the marker itself needs a scene with a canvas, which that browser pane cannot start — **a Foundry checklist step**: throw a smoke grenade, see the
+grey region, advance two rounds, see it go. Not built: applying the visibility modifiers (which row of the p.112 table depends on the vision the viewer uses) or the gas's Neuro-Stun
+resistance test.
+
 ## 156. ✅ The `(f)` flechette flag is read but does nothing — `893c7eca`
 
 `parseDamageCode` now returns `flechette: true` for `10S(f)` ([#146](#146)), and SR3 p.119 says *"AP
@@ -6575,6 +6620,18 @@ Weapons (Strength). Not fixed with #148 because it was not reported; the fix is 
 SR3 p.86: *"Projectile Weapons governs the use of muscle-powered projectile weapons."* The book does not name the
 sling; it is grouped with the bows by `SR3E.bowCategories`.
 
+## 158. ✅ 2nd-edition grenades: unverifiable pages and damage values — `fbba2884`
+
+`sr3e-sr2-projectiles` has eight grenades with `bookPage: "sr2.???"` and damage values `gas`,
+`tear gas`, `-`, `(see rules)`; `Smoke (IR) Grenade` has skill `Projectile Weapons` and category
+`other`. There is no 2nd-edition core PDF in the library, so none of it can be checked. Nothing was
+changed under [#144](#144)–[#146](#146). Blocked on the SR2 book.
+
+**Done 2026-09-24 (`fbba2884`, `main`), the maintainer: *"we will be adding sr2 stuff back in the future but I need sr3 working now without confusion."*** All **25 packs of the six
+SR2-era books** (`sr2 ct ssc st fof pna`) are parked in `archive/sr2/` with the exact `system.json` declarations and a restore procedure (`archive/sr2/README.md`); 79 packs ship. The books
+stay registered, and `PLAYABLE_EDITIONS` (SR3 only) hides the SR2 edition choice and makes a world saved as SR2 play SR3. **Verify against the SR2 books before shipping it back** — the open
+points above are listed in that README.
+
 ## 159. ✅ Blast falloff gaps — `a7a07330`
 
 Three places still do not read `system.blast` ([#150](#150)): the **Chunky Salsa** calculator
@@ -6582,7 +6639,17 @@ Three places still do not read `system.blast` ([#150](#150)): the **Chunky Salsa
 field; **commercial explosives** (p.283: −3/m, −6/m, −12/m per kilo) are not items.
 
 **Chunky Salsa fixed 2026-09-24 (`a7a07330`, `main`)**: the direct wave and every rebound now use the throw's falloff. The other two
-are [#160](TODO.md#160).
+are [#160](#160).
+
+## 160. ✅ Launchers and commercial explosives carry no blast falloff — `2468df29`
+
+A grenade **launcher** is a `firearm` (`GrLn`) with `isAoE` but no `blast` field, so what it fires is always −1/m; SR3 p.283
+prints Commercial −3/m, Plastic IV −6/m and XII −12/m per kilo as explosives, which are not items at all. Split from [#159](#159).
+
+**Done 2026-09-24 (`2468df29`, `main`).** The first part of this note was wrong: the commercial explosives **do ship** (as gear in `sr3e-sr3-gear`, from the generator's data), with the
+table's Rating, cost, weight, availability and index all correct — what was missing was the p.283 **Blast** and **Legal** columns. They now ride in each description (Commercial –3/m, Plastic IV –6/m,
+Plastic XII –12/m, *"(Rating)D per kilogram"*, and the accessories' legality), SR3 book only. A **launcher** carries no falloff of its own on purpose: the blast belongs to what it FIRES, and a
+launcher grenade is an ammunition item — see [#163](TODO.md#163).
 
 ## 162. ✅ Installed packs carry broken `_id: null` documents from older builds — `ca516641`
 
