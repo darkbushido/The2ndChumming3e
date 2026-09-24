@@ -1,0 +1,506 @@
+{
+  "packs": [
+    {
+      "name": "sr3e-ct-cyberware",
+      "label": "Cybertechnology",
+      "path": "packs/sr3e-ct-cyberware",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "cyberware"
+          ],
+          "book": "ct"
+        }
+      }
+    },
+    {
+      "name": "sr3e-ct-melee",
+      "label": "Cybertechnology",
+      "path": "packs/sr3e-ct-melee",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "melee"
+          ],
+          "book": "ct"
+        }
+      }
+    },
+    {
+      "name": "sr3e-fof-armor",
+      "label": "Fields of Fire",
+      "path": "packs/sr3e-fof-armor",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "armor"
+          ],
+          "book": "fof"
+        }
+      }
+    },
+    {
+      "name": "sr3e-fof-firearms",
+      "label": "Fields of Fire",
+      "path": "packs/sr3e-fof-firearms",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "firearm"
+          ],
+          "book": "fof"
+        }
+      }
+    },
+    {
+      "name": "sr3e-pna-bioware",
+      "label": "Paranormal Animals",
+      "path": "packs/sr3e-pna-bioware",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "bioware"
+          ],
+          "book": "pna"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr2-armor",
+      "label": "Shadowrun 2nd Edition",
+      "path": "packs/sr3e-sr2-armor",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "armor"
+          ],
+          "book": "sr2"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr2-cyberware",
+      "label": "Shadowrun 2nd Edition",
+      "path": "packs/sr3e-sr2-cyberware",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "cyberware"
+          ],
+          "book": "sr2"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr2-firearms",
+      "label": "Shadowrun 2nd Edition",
+      "path": "packs/sr3e-sr2-firearms",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "firearm"
+          ],
+          "book": "sr2"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr2-melee",
+      "label": "Shadowrun 2nd Edition",
+      "path": "packs/sr3e-sr2-melee",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "melee"
+          ],
+          "book": "sr2"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr2-projectiles",
+      "label": "Shadowrun 2nd Edition",
+      "path": "packs/sr3e-sr2-projectiles",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "projectile"
+          ],
+          "book": "sr2"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr2-vehicle-mods",
+      "label": "Shadowrun 2nd Edition",
+      "path": "packs/sr3e-sr2-vehicle-mods",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "vehiclemod"
+          ],
+          "book": "sr2"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr2-vehicle-weapons",
+      "label": "Shadowrun 2nd Edition",
+      "path": "packs/sr3e-sr2-vehicle-weapons",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "vehicleweapon"
+          ],
+          "book": "sr2"
+        }
+      }
+    },
+    {
+      "name": "sr3e-ssc-cyberware",
+      "label": "Street Samurai Catalog",
+      "path": "packs/sr3e-ssc-cyberware",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "cyberware"
+          ],
+          "book": "ssc"
+        }
+      }
+    },
+    {
+      "name": "sr3e-st-cyberware",
+      "label": "Shadowtech",
+      "path": "packs/sr3e-st-cyberware",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "cyberware"
+          ],
+          "book": "st"
+        }
+      }
+    },
+    {
+      "name": "sr3e-st-drugs",
+      "label": "Shadowtech",
+      "path": "packs/sr3e-st-drugs",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "drug"
+          ],
+          "book": "st"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr2-ammunition",
+      "label": "Shadowrun 2nd Edition",
+      "path": "packs/sr3e-sr2-ammunition",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "ammunition"
+          ],
+          "book": "sr2"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr2-gear",
+      "label": "Shadowrun 2nd Edition",
+      "path": "packs/sr3e-sr2-gear",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "gear"
+          ],
+          "book": "sr2"
+        }
+      }
+    },
+    {
+      "name": "sr3e-fof-ammunition",
+      "label": "Fields of Fire",
+      "path": "packs/sr3e-fof-ammunition",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "ammunition"
+          ],
+          "book": "fof"
+        }
+      }
+    },
+    {
+      "name": "sr3e-ssc-gear",
+      "label": "Street Samurai Catalog",
+      "path": "packs/sr3e-ssc-gear",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "gear"
+          ],
+          "book": "ssc"
+        }
+      }
+    },
+    {
+      "name": "sr3e-ssc-armor",
+      "label": "Street Samurai Catalog",
+      "path": "packs/sr3e-ssc-armor",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "armor"
+          ],
+          "book": "ssc"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr2-medical",
+      "label": "Shadowrun 2nd Edition",
+      "path": "packs/sr3e-sr2-medical",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "medical"
+          ],
+          "book": "sr2"
+        }
+      }
+    },
+    {
+      "name": "sr3e-st-medical",
+      "label": "Shadowtech",
+      "path": "packs/sr3e-st-medical",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "medical"
+          ],
+          "book": "st"
+        }
+      }
+    },
+    {
+      "name": "sr3e-fof-gear",
+      "label": "Fields of Fire",
+      "path": "packs/sr3e-fof-gear",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "gear"
+          ],
+          "book": "fof"
+        }
+      }
+    },
+    {
+      "name": "sr3e-sr2-drugs",
+      "label": "Shadowrun 2nd Edition",
+      "path": "packs/sr3e-sr2-drugs",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "drug"
+          ],
+          "book": "sr2"
+        }
+      }
+    },
+    {
+      "name": "sr3e-ssc-ammunition",
+      "label": "Street Samurai Catalog",
+      "path": "packs/sr3e-ssc-ammunition",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "ammunition"
+          ],
+          "book": "ssc"
+        }
+      }
+    }
+  ],
+  "folders": {
+    "sr3e-fof-armor": "Weapons & Gear / Armor",
+    "sr3e-sr2-armor": "Weapons & Gear / Armor",
+    "sr3e-ssc-armor": "Weapons & Gear / Armor",
+    "sr3e-fof-firearms": "Weapons & Gear / Firearms",
+    "sr3e-sr2-firearms": "Weapons & Gear / Firearms",
+    "sr3e-ct-melee": "Weapons & Gear / Melee Weapons",
+    "sr3e-sr2-melee": "Weapons & Gear / Melee Weapons",
+    "sr3e-sr2-projectiles": "Weapons & Gear / Projectile Weapons",
+    "sr3e-sr2-vehicle-weapons": "Weapons & Gear / Vehicle Weapons",
+    "sr3e-sr2-drugs": "Weapons & Gear / Drugs & Toxins",
+    "sr3e-st-drugs": "Weapons & Gear / Drugs & Toxins",
+    "sr3e-fof-ammunition": "Weapons & Gear / Ammunition",
+    "sr3e-sr2-ammunition": "Weapons & Gear / Ammunition",
+    "sr3e-ssc-ammunition": "Weapons & Gear / Ammunition",
+    "sr3e-fof-gear": "Weapons & Gear / Gear",
+    "sr3e-sr2-gear": "Weapons & Gear / Gear",
+    "sr3e-ssc-gear": "Weapons & Gear / Gear",
+    "sr3e-sr2-medical": "Weapons & Gear / Medical",
+    "sr3e-st-medical": "Weapons & Gear / Medical",
+    "sr3e-ct-cyberware": "Augmentations / Cyberware",
+    "sr3e-sr2-cyberware": "Augmentations / Cyberware",
+    "sr3e-ssc-cyberware": "Augmentations / Cyberware",
+    "sr3e-st-cyberware": "Augmentations / Cyberware",
+    "sr3e-pna-bioware": "Augmentations / Bioware",
+    "sr3e-sr2-vehicle-mods": "Vehicles & Drones / Vehicle Mods"
+  }
+}

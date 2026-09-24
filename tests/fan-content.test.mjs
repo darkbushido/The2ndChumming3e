@@ -41,7 +41,7 @@ export async function run(t) {
       if (codes.length) offenders.push(`${pack}: ${d.doc?.name} (${codes.join(',')})`);
     }
   }
-  t.ok(`the packs hold ${total} documents`, total > 5000);
+  t.ok(`the packs hold ${total} documents`, total > 4000);   // 4,707 with SR2 parked (2026-09-24)
   t.is(`no shipped document cites a fan code${offenders.length ? ` — ${offenders.slice(0, 5).join('; ')}` : ''}`,
     offenders.length, 0);
 

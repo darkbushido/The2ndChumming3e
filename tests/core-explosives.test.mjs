@@ -42,7 +42,10 @@ export async function run(t) {
   }
   for (const [n, legal] of [['Radio Detonator', '6–J'], ['Timer', '6–J']]) {
     t.ok(`${n} (SR3) states Legality ${legal}`, load('sr3e-sr3-gear', n)?.system.description.includes(`Legality ${legal}`));
-    t.ok(`${n} (SR2 pack) is NOT given the SR3 p.283 text`, !(load('sr3e-sr2-gear', n)?.system.description ?? '').includes('SR3 p.283'));
   }
+  // The SR2 packs are parked (archive/sr2/), so the same-named SR2 accessories cannot be checked in data —
+  // check the rule that keeps SR3 p.283 text off them for when they return.
+  t.ok('the SR3 book text is applied to the core SR3 book only, never to a same-named SR2 row',
+    /book === 'sr3' \? \(BOOK_TEXT\[name\] \?\? ''\) : ''/.test(readFileSync(new URL('../tools/build-default-gear.mjs', import.meta.url), 'utf8')));
   t.is('the text table covers exactly the five p.283 rows', Object.keys(BOOK_TEXT).length, 5);
 }

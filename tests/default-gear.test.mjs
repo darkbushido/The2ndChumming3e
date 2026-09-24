@@ -153,7 +153,7 @@ export async function run(t) {
       await db.close();
       for (const id of expected.keys()) drift.push(`${p.name}: ${id} is missing — re-run the builder`);
     }
-    t.ok(`the packs hold ${total} generated documents`, total > 2500);
+    t.ok(`the packs hold ${total} generated documents`, total > 1700);   // SR3 only while SR2 is parked (1,788)
     t.is(`the packs match rawdata/SRCG-*-Gear.json${drift.length ? ` — ${drift.slice(0, 5).join('; ')}` : ''}`, drift.length, 0);
 
     // ⚠ **An upstream Rating-column typo must be a FAILURE, not a silently wrong number.**

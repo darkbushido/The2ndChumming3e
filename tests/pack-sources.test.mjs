@@ -63,7 +63,7 @@ export async function run(t) {
   } finally { copy.cleanup(); }
   t.eq('the committed LevelDB packs match packs-src (else: node tools/packs.mjs extract, or build)', drift, []);
   t.eq('a pack compiled from packs-src reads back identical — the repo can rebuild its packs', rebuilt, []);
-  t.ok('…all of them', docs > 7000, `${docs} documents across ${declared.length} packs`);
+  t.ok('…all of them', docs > 6000, `${docs} documents across ${declared.length} packs`);
 
   /* ── The tools that write a repo pack keep packs-src current themselves ─────── */
   const tool = f => readFileSync(new URL(`tools/${f}`, root), 'utf8');

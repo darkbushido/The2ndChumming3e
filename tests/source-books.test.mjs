@@ -19,7 +19,7 @@ const SYS  = 'The2ndChumming3e';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const manifest = JSON.parse(readFileSync(join(root, 'system.json'), 'utf8'));
 
-const { SOURCE_BOOKS, defaultAllowedBooks } = await import('../scripts/config.js');
+const { SOURCE_BOOKS, PLAYABLE_EDITIONS, defaultAllowedBooks } = await import('../scripts/config.js');
 
 // The setting values the module reads. Reassigned per scenario below. Keyed properly:
 // returning one blob for every key made the edition gate read the allowed-books map.
@@ -76,9 +76,12 @@ export async function run(t) {
   stored = allOn();
   t.is('everything on shows every pack of the played edition',
     visible(), packsIn(allCodes) + systemOnly);
-  t.ok('the other edition\'s packs are excluded even with everything on',
-    visible() < packs.length,
-    `${packs.length - visible()} packs hidden by the edition gate`);
+  // SR2 is parked (2026-09-24): its packs are in archive/sr2/ and no pack of another edition ships. The
+  // gate itself is exercised below with SR2 made playable; here, prove nothing shipping is hidden by it,
+  // and that an edition cannot ship packs without being playable.
+  t.is('no pack is hidden by the edition gate while only SR3 ships', visible(), packs.length);
+  t.eq('every shipping pack belongs to a playable edition',
+    allCodes.filter(c => !PLAYABLE_EDITIONS.includes(SOURCE_BOOKS[c]?.edition ?? 'SR3')), []);
 
   // The core rulebook of the played edition cannot be switched off, so "everything off"
   // leaves the system packs plus whatever the core book contributes.
@@ -124,6 +127,7 @@ export async function run(t) {
     sr2Books.every(c => SR3ESourceBooks.isAllowed(c) === false));
   t.ok('playing SR3, SR3 books are shown', sr3Books.every(c => SR3ESourceBooks.isAllowed(c)));
 
+  PLAYABLE_EDITIONS.push('SR2');   // the gate, as it will work when SR2 packs come back
   edition = 'SR2';
   t.ok('playing SR2, every SR3 book is hidden even with its toggle on',
     sr3Books.every(c => SR3ESourceBooks.isAllowed(c) === false));
@@ -142,6 +146,13 @@ export async function run(t) {
     SR3ESourceBooks.isAllowed(sr2NonCore), false);
   t.is('switching off a supplement does not affect the core book',
     SR3ESourceBooks.isAllowed(sr2Books.find(c => SOURCE_BOOKS[c].core)), true);
+  PLAYABLE_EDITIONS.pop();
+
+  // While SR2 ships nothing, a world stored as SR2 plays SR3 — otherwise it would see every book hidden.
+  edition = 'SR2';
+  stored = allOn();
+  t.is('a world stored as SR2, with no SR2 packs shipping, plays SR3', SR3ESourceBooks.edition, 'SR3');
+  t.ok('…so the SR3 books are shown, not hidden', sr3Books.every(c => SR3ESourceBooks.isAllowed(c)));
 
   edition = 'SR3';
   stored = allOn();

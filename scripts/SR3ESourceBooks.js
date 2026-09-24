@@ -1,4 +1,4 @@
-import { SOURCE_BOOKS, EDITIONS, defaultAllowedBooks,
+import { SOURCE_BOOKS, EDITIONS, PLAYABLE_EDITIONS, defaultAllowedBooks,
          SKILL_CATEGORY_BOOK, SKILL_REPLACED_BY_BOOK } from './config.js';
 
 const SYS             = 'The2ndChumming3e';
@@ -22,9 +22,16 @@ export class SR3ESourceBooks {
     return { ...defaultAllowedBooks(), ...stored };
   }
 
-  /** The edition currently being played. Defaults to SR3. */
+  /**
+   * The edition currently being played. Defaults to SR3, and falls back to it when a world's stored
+   * edition is not one that ships packs (`PLAYABLE_EDITIONS`) — a world saved as SR2 would otherwise see
+   * every SR3 book hidden and nothing in its place.
+   */
   static get edition() {
-    try { return game.settings.get(SYS, EDITION_SETTING) || 'SR3'; } catch { return 'SR3'; }
+    try {
+      const stored = game.settings.get(SYS, EDITION_SETTING) || 'SR3';
+      return PLAYABLE_EDITIONS.includes(stored) ? stored : 'SR3';
+    } catch { return 'SR3'; }
   }
 
   /**
@@ -156,7 +163,7 @@ export class SR3ESourceBooks {
       scope: 'world',
       config: true,
       type: String,
-      choices: Object.fromEntries(Object.entries(EDITIONS).map(([k, v]) => [k, v.label])),
+      choices: Object.fromEntries(Object.entries(EDITIONS).filter(([k]) => PLAYABLE_EDITIONS.includes(k)).map(([k, v]) => [k, v.label])),
       default: 'SR3',
       onChange: () => SR3ESourceBooks._refreshUI(),
     });

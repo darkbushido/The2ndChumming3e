@@ -38,6 +38,7 @@ import { dirname, join } from 'node:path';
 import { copyPacks } from './lib/pack-copy.mjs';
 import { readSourceDir, writeSourceDir, rebuildPack } from './lib/pack-source.mjs';
 import { AmmoStock } from '../scripts/data/ammo-stock.mjs';
+import { PLAYABLE_EDITIONS } from '../scripts/config.js';
 // The system's own rating reader — the name, then GEAR_RATINGS — so a generated item agrees with
 // `itemRating`, migration 0.5.2 and `tools/patch-name-ratings.mjs`, which would otherwise fill it later.
 import { knownRating, ratingFromName } from '../scripts/data/item-rating.mjs';
@@ -305,6 +306,8 @@ export async function plan(manifest, shippedNames) {
   const bump = (m, k) => { m[k] = (m[k] ?? 0) + 1; };
   const groups = new Map();                    // book|type|name → { rows, category, edition }
   for (const { edition, file } of SOURCES) {
+    // ⚠ SR2 is parked (config.js PLAYABLE_EDITIONS, archive/sr2/): its packs are not built while it does not ship.
+    if (!PLAYABLE_EDITIONS.includes(edition)) continue;
     for (const { row, category } of rowsByCategory(file)) {
       const book = bookOf(row.BookPage);
       if (!EDITION_BOOKS[edition].includes(book)) continue;

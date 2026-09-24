@@ -589,8 +589,19 @@ export const EDITIONS = {
   SR2: { label: 'Shadowrun 2nd Edition' },
 };
 
+/**
+ * The editions a world can PLAY — an edition is offered only while packs ship for it.
+ *
+ * ⚠ **SR2 is parked, not removed** (2026-09-24, the maintainer: *"we will be adding sr2 stuff back in the
+ * future but I need sr3 working now without confusion"*). Its 25 packs are in `archive/sr2/` and its books
+ * stay registered below, but with no SR2 pack shipping, offering "Shadowrun 2nd Edition" as a choice would
+ * give a world an empty compendium. To bring SR2 back: restore the packs (`archive/sr2/README.md`) and add
+ * `'SR2'` here. Mutable on purpose — `tests/source-books.test.mjs` adds it to test the edition gate.
+ */
+export const PLAYABLE_EDITIONS = ['SR3'];
+
 export const SOURCE_BOOKS = {
-  // ── 2nd Edition ────────────────────────────────────────────────────────────
+  // ── 2nd Edition (registered, no packs shipping — see PLAYABLE_EDITIONS) ────
   // Official SR2 books only. The Chromebooks (cb1-cb4) and Cyberpunk 2020 (cp) content
   // in the archive are fan CONVERSIONS rather than official 2nd-edition products, so
   // they stay archived alongside the other fan material — see archive/non-sr3-content.
