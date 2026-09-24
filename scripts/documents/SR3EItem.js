@@ -3541,6 +3541,18 @@ static get WEAPON_SKILL_MAP() {
     'Ctrp':   { skill: 'Throwing Weapons', attribute: 'strength' },
     'THR':    { skill: 'Throwing Weapons', attribute: 'strength' },
 
+    /* Bows, crossbows and slings -> Projectile Weapons (Strength)  · TODO 157
+     *
+     * SR3 p.86: *"Projectile Weapons governs the use of muscle-powered projectile weapons."*
+     * Specializations: *"pull-bows or crossbows"*. These rolled 'Firearms' for the same reason
+     * grenades did. The list is `SR3E.bowCategories` (the sling is grouped with them there;
+     * the book does not name it, but it is muscle-powered). */
+    'Bow':    { skill: 'Projectile Weapons', attribute: 'strength' },
+    'LCB':    { skill: 'Projectile Weapons', attribute: 'strength' },
+    'MCB':    { skill: 'Projectile Weapons', attribute: 'strength' },
+    'HCB':    { skill: 'Projectile Weapons', attribute: 'strength' },
+    'SL':     { skill: 'Projectile Weapons', attribute: 'strength' },
+
     // Melee Weapons - Armed Combat
     'EDG': { skill: 'Edged Weapons',        attribute: 'strength' },
     'CLB': { skill: 'Clubs',               attribute: 'strength' },

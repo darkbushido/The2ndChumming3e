@@ -1,5 +1,5 @@
 /**
- * Which skill a thrown grenade rolls — TODO 148.
+ * Which skill a thrown grenade (TODO 148), bow or crossbow (TODO 157) rolls.
  *
  * SR3 p.86: "Throwing Weapons governs the use of any item thrown by the user." Its
  * specialisations include "grenades". The category map had no entry for GR (or any thrown
@@ -26,6 +26,12 @@ export async function run(t) {
   t.is('pistols are untouched', skill('HPist', 'firearm'), 'Pistols');
   t.is('every thrown category names a throwing skill',
     SR3E.thrownCategories.filter(c => skill(c) !== 'Throwing Weapons').join(), '');
+
+  // TODO 157 — SR3 p.86: "Projectile Weapons governs the use of muscle-powered projectile weapons."
+  t.is('a bow rolls Projectile Weapons', skill('Bow'), 'Projectile Weapons');
+  t.is('every bow/crossbow/sling category names it',
+    SR3E.bowCategories.filter(c => skill(c) !== 'Projectile Weapons').join(), '');
+  t.is('…and is not mistaken for a throwing skill', skill('LCB'), 'Projectile Weapons');
 
   // Every shipped grenade and thrown weapon agrees with its own `skill` field.
   const root = new URL('../packs-src/', import.meta.url);
