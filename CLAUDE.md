@@ -751,11 +751,15 @@ behind it, which would render as an empty checkbox.
 
 ### Source PDFs
 
-The maintainer's SR3 PDF library lives at `C:\Users\lance\Documents\Shadowrun 3rd Edition PDFs`
-(32 books). They carry a **real text layer** — `pdftotext -layout` (ships with Git for Windows)
-extracts them exactly; **no OCR needed**. Two-column pages come out with the columns merged on
-each line, so crop per column (`pdftotext -x -y -W -H`, mediabox is ~616×795pt) when a clean
-list is needed. Use these to source page references and verify stats rather than guessing.
+The maintainer's SR3 PDF library lives at `%USERPROFILE%\Documents\Shadowrun 3rd Edition PDFs`
+(32 books; tools take `SR3E_PDF_DIR` to override). They carry a **real text layer** —
+`pdftotext -layout` (ships with Git for Windows) extracts them exactly; **no OCR needed**.
+Two-column pages come out with the columns merged on each line, so crop per column
+(`pdftotext -x -y -W -H`, mediabox is ~616×795pt) when a clean list is needed. Use these to
+source page references and verify stats rather than guessing.
+
+⚠ **Never write a home-directory path with a real username** — `%USERPROFILE%\…` in docs,
+`process.env.USERPROFILE` in tools. `tests/personal-paths.test.mjs` fails on one.
 
 ### The Matrix sourcebook (`mat`) — audited, deliberately not registered
 

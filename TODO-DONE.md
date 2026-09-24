@@ -480,7 +480,7 @@ confirmed **`Mods` is authoritative and carries strictly more information**. `No
 flattened human-readable view. An earlier version of this task said to parse `Notes`; that
 was wrong.
 
-Source: `C:\Users\lance\Documents\Shadowrun-Character-Generator\src\data\SR3\{Cyberware,Bioware}.json`.
+Source: `%USERPROFILE%\Documents\Shadowrun-Character-Generator\src\data\SR3\{Cyberware,Bioware}.json`.
 
 `Mods` uses a **first-letter-replacement** encoding, and there are **two incompatible
 schemes**:

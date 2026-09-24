@@ -44,7 +44,7 @@ npm run preflight -- --version v0.6.0 --e2e
 
 `--version` checks that `audit/rules-check-<version>.md` **exists**. That record is supposed to mean
 a person compared the code's rules against `guides/`, **with the PDFs in
-`C:\Users\lance\Documents\Shadowrun 3rd Edition PDFs` as the authority**, quoted every difference
+`%USERPROFILE%\Documents\Shadowrun 3rd Edition PDFs` as the authority**, quoted every difference
 with its printed page, and took it to the maintainer rather than deciding it.
 
 If that file is missing, **say so and stop**. Do not create it, and do not do a quick version of the

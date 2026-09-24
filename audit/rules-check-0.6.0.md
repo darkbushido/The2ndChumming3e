@@ -4,7 +4,7 @@
 
 This is the TODO 121 rules-check record. Per CLAUDE.md this is meant to be a person
 comparing the code's rules against `guides/`, with the PDFs in
-`C:\Users\lance\Documents\Shadowrun 3rd Edition PDFs` as the authority, quoting every
+`%USERPROFILE%\Documents\Shadowrun 3rd Edition PDFs` as the authority, quoting every
 difference with its printed page, and taking it to the maintainer rather than deciding it
 alone. That is what this file is — Claude, working through it directly with the maintainer
 (Lance) in the loop, not a script and not a rubber stamp.

@@ -1758,7 +1758,7 @@ grind-it-out work, and the entry above was wrong about why.**
 | `sr3e-skills` | **18** | ⛔ 15 Area Knowledge examples + 3 whose upstream source is `sr3.XXX`. |
 
 **UNBLOCKED 2026-09-21 — the maintainer has an SR2 library, and there is now a way to read it.**
-It lives at `C:\Users\lance\Documents\Shadowrun 2nd Edition PDFs` (35 files) and is almost all
+It lives at `%USERPROFILE%\Documents\Shadowrun 2nd Edition PDFs` (35 files) and is almost all
 image-only, so `pdftotext` returns nothing. **`tools/ocr-pdf.ps1`** reads them using
 `Windows.Data.Pdf` + `Windows.Media.Ocr`, both built into Windows — no install, nothing added to
 the repo, ~2 seconds a page. It rebuilds table layout from the OCR word boxes, so stat rows survive:
@@ -1869,7 +1869,7 @@ right to; any new survey must do the same or it will report phantom work.
 
 ### The corpus exists now — and it does NOT close this item (2026-09-21)
 
-All **92 books** are OCR'd to text at `C:\Users\lance\Documents\SR-OCR\` (8,534 pages, 71 MB,
+All **92 books** are OCR'd to text at `%USERPROFILE%\Documents\SR-OCR\` (8,534 pages, 71 MB,
 `2e/` and `3e/` with a `log.txt`). ⚠ **Deliberately outside the repo** — whole-book text is a
 copyright surface and must not be committed. Built with `tools/ocr-pdf.ps1`.
 
@@ -2211,7 +2211,7 @@ the Gemini gists it began from, `{: .house }` boxes mark house rules (not in any
    disagree on a number, a reading, a page, or one covers something the other does not — is
    **never settled by picking a side**.
 4. ⚠ **The PDFs are the source** (the maintainer, 2026-09-14). Neither the code nor the guide is the
-   authority; the book is (`C:\Users\lance\Documents\Shadowrun 3rd Edition PDFs`, real text layer).
+   authority; the book is (`%USERPROFILE%\Documents\Shadowrun 3rd Edition PDFs`, real text layer).
    Every difference is **verified against the PDF** — quote the book's sentence and its printed page
    — and/or **brought to the maintainer**. Report each one as: the rule, what the code does, what
    the guide says, what the PDF says (quoted, with page), and which side is wrong. Bring it to the

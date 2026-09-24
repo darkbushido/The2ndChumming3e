@@ -25,7 +25,8 @@ import { dirname, join } from 'node:path';
 import { parseRatingFromName as ratingFromName } from '../scripts/data/rating-name.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const UP   = process.env.SRCG_DATA ?? 'C:/Users/lance/Documents/Shadowrun-Character-Generator/src/data/SR3/';
+const UP   = process.env.SRCG_DATA
+  ?? join(process.env.USERPROFILE ?? '', 'Documents', 'Shadowrun-Character-Generator', 'src', 'data', 'SR3');
 
 /** Read from the PDFs, not upstream — each with its citation. */
 const BOOK_ADDITIONS = {

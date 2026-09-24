@@ -29,7 +29,7 @@ produced nothing; sequential inline work is the whole point of this file.
 
 ## Method
 
-**Rules source.** The maintainer's PDFs are at `C:\Users\lance\Documents\Shadowrun 3rd
+**Rules source.** The maintainer's PDFs are at `%USERPROFILE%\Documents\Shadowrun 3rd
 Edition PDFs`. Core book: `Shadowrun 3e - Core Rules {FAN25000}.pdf`; also relevant are
 Cannon Companion (weapons/melee), Man and Machine (augmentation), Rigger 3.
 

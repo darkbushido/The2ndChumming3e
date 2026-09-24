@@ -33,7 +33,7 @@ The two projects share:
   same rules (dodge resolution, staging past Deadly, grenade range TNs, cyberware grades,
   and Essence permanence). When a page here and the Foundry code disagree, **check the
   book**; don't copy either one.
-- **The PDF library**: `C:\Users\lance\Documents\Shadowrun 3rd Edition PDFs`.
+- **The PDF library**: `%USERPROFILE%\Documents\Shadowrun 3rd Edition PDFs`.
 
 This folder has no game code, and none of it ships in the system's zip. It's Markdown, a Jekyll theme, and two small Node tools.
 
@@ -59,7 +59,7 @@ This folder has no game code, and none of it ships in the system's zip. It's Mar
 
 ## Source books
 
-`C:\Users\lance\Documents\Shadowrun 3rd Edition PDFs`. Books marked `[no-text]` are scans.
+`%USERPROFILE%\Documents\Shadowrun 3rd Edition PDFs`. Books marked `[no-text]` are scans.
 
 | Code | Book | Text layer | PDF page = printed page + |
 | :--- | :--- | :--- | :---: |
