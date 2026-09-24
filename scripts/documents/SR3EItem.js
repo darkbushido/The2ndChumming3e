@@ -1480,12 +1480,11 @@ export class SR3EItem extends Item {
   if (!damageBase) {
     ui.notifications.warn(`${this.name} has no damage code set. Edit the item to add one (e.g. 9M, (STR+2)M, 6S Stun).`);
   }
-  if (targetActor.type === 'vehicle' && !weaponOpts.avMunition && damageBase) {
-    const levelDown = { D: 'S', S: 'M', M: 'L', L: 'L' };
-    const newPower  = Math.ceil(damageBase.power / 2);
-    const newLevel  = levelDown[damageBase.level] ?? damageBase.level;
-    damageBase = { ...damageBase, power: newPower, level: newLevel };
-    effectiveRawDamage = `${newPower}${newLevel}${damageBase.isStun ? ' Stun' : ''}`;
+  if (targetActor.type === 'vehicle' && damageBase) {
+    const vd = SR3EItem.vehicleTargetDamage(damageBase, { av: weaponOpts.avMunition });
+    damageBase = vd.damage;
+    effectiveRawDamage = `${damageBase.power}${damageBase.level}${damageBase.isStun ? ' Stun' : ''}`;
+    if (vd.noEffect) ui.notifications.warn(`${this.name}: ${vd.note}`);
   }
 
   // The defender declares nothing yet — under RAW they decide after this roll
@@ -1756,9 +1755,11 @@ export class SR3EItem extends Item {
     );
     if (!weaponOpts) return null;
 
-    const finalPool = Math.max(1, pool + weaponOpts.controlPool);
+    // Sensor-enhanced gunnery adds half the Sensor Rating (round down) as DICE · SR3 p.152.
+    const finalPool = Math.max(1, pool + weaponOpts.controlPool + (weaponOpts.sensorDice ?? 0));
     const tn        = weaponOpts.tn + gunneryDefTnMod + pilotWoundMod + pilotSustain;   // defaulting + the gunner's wounds and spells
-    const cpNote    = weaponOpts.controlPool > 0 ? ` + CP${weaponOpts.controlPool}` : '';
+    const cpNote    = (weaponOpts.controlPool > 0 ? ` + CP${weaponOpts.controlPool}` : '')
+                    + (weaponOpts.sensorDice > 0 ? ` + Sensor ${weaponOpts.sensorDice}` : '');
     const woundNote = (pilotWoundMod > 0 ? ` (${pilotActor.name} wounded +${pilotWoundMod} TN)` : '')
                     + (pilotSustain  > 0 ? ` (${game.sr3e.SR3EActor.standingNote(pilotActor)})` : '');
     const label     = `🚗 ${this.name} [${weaponOpts.damageCode}] vs ${targetActor.name} — ${poolLabel}${cpNote}${woundNote}`;
@@ -1769,13 +1770,14 @@ export class SR3EItem extends Item {
     if (!damageBase) {
       ui.notifications.warn(`${this.name} has no damage code set.`);
     }
-    if (targetActor.type === 'vehicle' && !weaponOpts.avMunition && damageBase) {
-      const levelDown = { D: 'S', S: 'M', M: 'L', L: 'L' };
-      const newPower  = Math.ceil(damageBase.power / 2);
-      const newLevel  = levelDown[damageBase.level] ?? damageBase.level;
-      damageBase = { ...damageBase, power: newPower, level: newLevel };
-      effectiveRawDamage = `${newPower}${newLevel}${damageBase.isStun ? ' Stun' : ''}`;
+    if (targetActor.type === 'vehicle' && damageBase) {
+      const vd = SR3EItem.vehicleTargetDamage(damageBase, { av: weaponOpts.avMunition });
+      damageBase = vd.damage;
+      effectiveRawDamage = `${damageBase.power}${damageBase.level}${damageBase.isStun ? ' Stun' : ''}`;
+      if (vd.noEffect) ui.notifications.warn(`${this.name}: ${vd.note}`);
     }
+    // An AV munition halves the vehicle's armour instead (p.149) — the soak card reads it from here.
+    if (weaponOpts.avMunition) options.ammoType = 'antiVehicle';
 
     options.weaponItemId       = this.id;
     options.actorId            = actor.id;
@@ -1796,12 +1798,16 @@ export class SR3EItem extends Item {
   /**
    * Roll options dialog for vehicle weapon attacks.
    */
-  static async _promptVehicleWeaponRollOptions(weapon, targetActor, pool, poolLabel, baseSig, rawDamage, vcrLevel = 0, controlPoolMax = 0) {
+  static async _promptVehicleWeaponRollOptions(weapon, targetActor, pool, poolLabel, baseSig, rawDamage, _vcrLevel = 0, controlPoolMax = 0) {
     const isVehicleTarget = targetActor.type === 'vehicle';
     const sensorRating    = weapon.actor?.system.attributes?.sensor?.base ?? 0;
-    const tnReduction     = vcrLevel > 0 ? vcrLevel : sensorRating;
-    const tnReductionLabel = vcrLevel > 0 ? `VCR Lv${vcrLevel}` : `Sensor ${sensorRating}`;
-    const defaultTN       = Math.max(2, baseSig - tnReduction);
+    /* Sensor-enhanced gunnery · SR3 p.152: "rolls a number of dice equal to the character's Gunnery
+     * Skill plus half the vehicle's Sensor Rating (round down) … The test target number is equal to
+     * the target's Signature", modified by the p.154 table. Steeler's example (p.153): Sig 5, −3
+     * direct LOS, Gunnery 4 + Sensor 3/2 = 5 dice. ⚠ Neither the Sensor nor the VCR comes off the
+     * TN — the code subtracted one or the other until the 0.6.1 rules check (TODO 168). */
+    const sensorDice      = SR3EItem.sensorGunneryDice(sensorRating);
+    const defaultTN       = Math.max(2, baseSig);
 
     // Signal-degradation modifiers on the firing vehicle's network: manual gunnery suffers the
     // Simsense penalty, indirect fire the System penalty (R3 p.145). Folded into the TN live.
@@ -1845,10 +1851,6 @@ export class SR3EItem extends Item {
           <div class="vw-info-row"><span>Pool</span><span>${poolLabel}</span></div>
           <div class="vw-info-row"><span>Sensor</span><span>${sensorRating}</span></div>
           <div class="vw-info-row"><span>Target</span><span>${targetActor.name}${isVehicleTarget ? ` (Sig ${baseSig})` : ''}</span></div>
-          ${tnReduction ? `<div class="vw-info-row">
-            <span style="color:var(--sr-accent)">${tnReductionLabel} TN reduction</span>
-            <span style="color:var(--sr-accent)">−${tnReduction} (${baseSig} → ${defaultTN})</span>
-          </div>` : ''}
         </div>
         <div class="vw-grid">
           <label class="vw-field">Base TN (Sig)
@@ -1877,15 +1879,19 @@ export class SR3EItem extends Item {
                         title="Control Pool unavailable — VCR required for gunnery"/>
                </label>`
           }
+          <label class="vw-field vw-full" title="SR3 p.152 — needs a successful Sensor Test to lock on first. Manual gunnery gets no Sensor dice.">
+            <span><input type="checkbox" id="vw-sensor" ${sensorDice > 0 ? 'checked' : 'disabled'}/>
+            Sensor-enhanced gunnery: +${sensorDice} dice (½ Sensor ${sensorRating}, round down)</span>
+          </label>
           <label class="vw-field">Damage Code
             <input type="text" id="vw-damage" value="${rawDamage}"/>
           </label>
           ${isVehicleTarget ? `
             <div class="vw-full" style="padding:6px 8px;background:var(--sr-surface);border:1px solid var(--sr-accent);border-radius:var(--r);font-size:11px">
-              <div style="color:var(--sr-accent);margin-bottom:4px">⚠ Vehicle target: Power ÷2 (round up), Stage −1</div>
+              <div style="color:var(--sr-accent);margin-bottom:4px">⚠ Vehicle target (SR3 p.149): Power ÷2 (round down), Level −1; Light damage has no effect</div>
               <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
                 <input type="checkbox" id="vw-av"/>
-                AV munition <span style="color:var(--sr-muted)">(removes vehicle modifier)</span>
+                AV munition <span style="color:var(--sr-muted)">(no halving or level drop; the armour is halved instead)</span>
               </label>
             </div>
           ` : ''}
@@ -1905,6 +1911,7 @@ export class SR3EItem extends Item {
               controlPool: Math.max(0, parseInt(el.querySelector('#vw-fc')?.value) || 0),
               damageCode:  el.querySelector('#vw-damage')?.value.trim() || rawDamage,
               avMunition:  el.querySelector('#vw-av')?.checked ?? false,
+              sensorDice:  el.querySelector('#vw-sensor')?.checked ? sensorDice : 0,
             };
           }
         },
@@ -4184,6 +4191,36 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     if (/^stun$/i.test(track))     return true;
     if (/^physical$/i.test(track)) return false;
     return /stun/i.test(String(spell?.name ?? ''));
+  }
+
+  /** Sensor-enhanced gunnery dice: half the Sensor Rating, round down · SR3 p.152. Pure. */
+  static sensorGunneryDice(sensor) {
+    return Math.floor(Math.max(0, Number(sensor) || 0) / 2);
+  }
+
+  /**
+   * A weapon fired AT A VEHICLE · SR3 p.149. Pure — `damage` is a parsed Damage Code.
+   *
+   * > "the weapon's Power is reduced by half (round down) and the Damage Level is reduced by one
+   * > (D to S, S to M, and M to L) … Weapons that do Light Damage cannot affect the vehicle unless
+   * > the attacker uses special ammunition. … anti-vehicle munitions … do not."
+   *
+   * ⚠ **Round DOWN** — `Math.ceil` until the 0.6.1 rules check (TODO 168).
+   * ⚠ **Light is no effect, not Light** — the level table mapped L to L. The attack is still allowed
+   * (the GM may rule a round special); `noEffect` says so.
+   * ⚠ **AV munitions skip both, and halve the ARMOUR instead** — the soak card does that
+   * (`armorEffect: 'antiVehicle'`), because armour is the target's number, not the weapon's.
+   */
+  static vehicleTargetDamage(damage, { av = false } = {}) {
+    if (!damage) return { damage, noEffect: false, note: '' };
+    if (av) return { damage, noEffect: false, note: 'Anti-vehicle munition — no halving or level drop; armour halved (p.149)' };
+    if (damage.level === 'L') {
+      return { damage: { ...damage, power: Math.floor(damage.power / 2) }, noEffect: true,
+        note: 'Light damage cannot affect a vehicle without special ammunition (SR3 p.149)' };
+    }
+    const levelDown = { D: 'S', S: 'M', M: 'L' };
+    return { damage: { ...damage, power: Math.floor(damage.power / 2), level: levelDown[damage.level] ?? damage.level },
+      noEffect: false, note: '' };
   }
 
   static parseDrainFormula(drainStr, force, damageLevel = null) {

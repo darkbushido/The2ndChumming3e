@@ -8368,7 +8368,13 @@ _prepareCharacter(sys, attr) {
     }
     if (mysticArmor > 0) adeptArmorNotes.push(`Mystic Armor +${mysticArmor} Impact (p.170)`);
     if (penetrating > 0) adeptArmorNotes.push(`Penetrating Strike −${penetrating} Impact (SOTA2 p.67)`);
-    if (ammoRules.armorEffect === 'gel') {
+    if (ammoRules.armorEffect === 'antiVehicle' && this.type === 'vehicle') {
+      // SR3 p.149: "The Power of the AV munitions is reduced by half the Armor Rating (round down the
+      // Armor Rating before calculating …)". The halving/level drop was skipped at attack time. TODO 168.
+      ballistic = Math.floor(ballistic / 2);
+      impact    = Math.floor(impact / 2);
+      ammoNote  = `Anti-vehicle munition — vehicle armour halved, round down (now ${ballistic}; p.149)`;
+    } else if (ammoRules.armorEffect === 'gel') {
       ammoNote = `Gel — Impact armour applies (${impact}), not Ballistic`;
     } else if (ammoRules.armorEffect === 'apds') {
       ballistic = Math.floor(ballistic / 2);
@@ -8418,6 +8424,13 @@ _prepareCharacter(sys, attr) {
     const defaultArmor = usesImpact ? impact : ballistic;
 
     const soakTN = Math.max(2, stagedPower - defaultArmor);
+    // SR3 p.149: "If a weapon's reduced Power (unaugmented by burst or full-auto fire rates) does not
+    // exceed the armor's rating, the weapons fire does no damage to the vehicle." Stated for the GM —
+    // the card cannot tell a burst's Power from the weapon's own.
+    if (this.type === 'vehicle' && stagedPower <= defaultArmor) {
+      ammoNote = [ammoNote, `Power ${stagedPower} does not exceed armour ${defaultArmor} — no damage to the vehicle (p.149; burst/full-auto Power does not count)`]
+        .filter(Boolean).join(' · ');
+    }
 
     const soakPayload = JSON.stringify({
       actorId:         this.id,

@@ -39,6 +39,14 @@ const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
 
 export const MUTANTS = [
   {
+    id:     'vehicle-power-rounds-up',
+    suite:  'vehicle-targets',
+    ...ITEM, method: 'vehicleTargetDamage',
+    was:    'Power halved rounding UP and Light passed through at Light (SR3 p.149, TODO 168)',
+    impl:   (d, { av = false } = {}) => av ? { damage: d, noEffect: false, note: '' }
+      : { damage: { ...d, power: Math.ceil(d.power / 2), level: ({ D: 'S', S: 'M', M: 'L', L: 'L' })[d.level] }, noEffect: false, note: '' },
+  },
+  {
     id:     'vcr-plus-one-reaction',
     suite:  'rigging',
     ...RIG, method: 'vcrReaction',
