@@ -39,6 +39,13 @@ const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
 
 export const MUTANTS = [
   {
+    id:     'area-radius-narrow-per-die',
+    suite:  'area-spells',
+    ...ITEM, method: 'spellAreaRadius',
+    was:    'narrowing an area spell cost 1 die per metre, like widening; SR3 p.181 charges 2 (TODO 171)',
+    impl:   (m, w = 0, mode = 'widen') => Math.max(1, mode === 'narrow' ? (Number(m) || 0) - (Number(w) || 0) : (Number(m) || 0) + (Number(w) || 0)),
+  },
+  {
     id:     'staging-each-side-separately',
     suite:  'net-staging',
     ...ACTOR, method: 'netStagedDamage',

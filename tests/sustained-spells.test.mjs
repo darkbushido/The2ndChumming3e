@@ -144,7 +144,7 @@ export async function run(t) {
   t.ok('the cast records what was held at the moment, for its own Drain', /sustainTN:\s+game\.sr3e\.SR3EActor\.standingTN\(actor\)/.test(item)
     && /sustainTN:\s+sc\.sustainTN \?\? 0/.test(actor));
   t.ok('the cast card OFFERS 🔒 Sustain for a Sustained/Permanent spell that took effect',
-    /successes > 0 && Sustaining\.isSustainable\(sc\.duration\)/.test(actor));
+    /bestHits > 0 && Sustaining\.isSustainable\(sc\.duration\)/.test(actor));   // any target reached (p.182, TODO 171)
   t.ok('🔒 Sustain is gated to the caster\'s owner', /sr-sustain-btn[\s\S]{0,200}_mine\(pl\)/.test(main));
   t.ok('🎲 Keep rolls, so it is gated to the one decider', /sr-sustain-check-btn[\s\S]{0,200}_isDecider\(pl\)/.test(main));
   t.ok('taking damage while sustaining posts the Sorcery Test card (p.178)',

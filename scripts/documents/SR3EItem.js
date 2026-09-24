@@ -4386,8 +4386,9 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
    * Returns array of Actor objects, or null if cancelled / nothing selected.
    */
   static async _promptTargetsMulti(attacker, spellType, spellTarget, force) {
+    // The caster is a candidate too — an area spell catches them if they stand in it (SR3 p.181).
     const all = game.actors.contents
-      .filter(a => a.id !== attacker.id && a.type !== 'vehicle' && game.sr3e.isLiveActor(a));
+      .filter(a => a.type !== 'vehicle' && game.sr3e.isLiveActor(a));
     const candidates = game.sr3e.sceneFirst(all);   // on the scene, else everyone (F2)
     if (candidates.length === 0) {
       ui.notifications.warn('No valid targets found.');
@@ -4510,8 +4511,21 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     let force        = null;
     let damageLevel  = defaultLevel;
     let aoeRadius    = Math.max(1, magicAttr);
+    let aoeWithheld  = 0;                      // Sorcery dice held back to change the radius (p.181)
     let castCancelled = true;
+    const radiusPreview = el => {
+      const out = el.querySelector('#spell-radius-out');
+      if (!out) return;
+      const w = Math.max(0, parseInt(el.querySelector('#spell-withhold')?.value) || 0);
+      const m = el.querySelector('#spell-radius-mode')?.value ?? 'widen';
+      out.textContent = `${SR3EItem.spellAreaRadius(magicAttr, w, m)} m`;
+    };
     await foundry.applications.api.DialogV2.wait({
+      render: (_event, dialog) => {
+        const el = dialog.element;
+        el.querySelector('#spell-withhold')?.addEventListener('input', () => radiusPreview(el));
+        el.querySelector('#spell-radius-mode')?.addEventListener('change', () => radiusPreview(el));
+      },
       window: { title: `${actor.name} — Cast ${this.name}` },
       content: `
         <p>Cast <strong>${this.name}</strong> at what Force?</p>
@@ -4543,10 +4557,17 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
           <span style="font-size:11px;color:var(--sr-muted)">target damage &amp; drain level</span>
         </div>` : ''}
         ${isAoE ? `
-        <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
-          Area radius (m): <input type="number" id="spell-radius" min="1" max="99"
-                 value="${aoeRadius}" style="width:60px"/>
-          <span style="font-size:11px;color:var(--sr-muted)">default = Magic ${magicAttr}</span>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap">
+          Withhold <input type="number" id="spell-withhold" min="0" max="${Math.max(0, sorceryRating + (hasSpellcastingSpec ? 2 : 0) - 1)}"
+                 value="0" style="width:50px"/> Sorcery dice to
+          <select id="spell-radius-mode">
+            <option value="widen">widen (+1 m each)</option>
+            <option value="narrow">narrow (−1 m per 2)</option>
+          </select>
+          → radius <strong id="spell-radius-out">${aoeRadius} m</strong>
+          <div style="font-size:11px;color:var(--sr-muted);width:100%">
+            Base radius = Magic ${magicAttr} m. Withheld dice are not rolled and cannot be used for other Sorcery Tests (SR3 p.181).
+          </div>
         </div>` : ''}
       `,
       buttons: [
@@ -4562,7 +4583,12 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
             force = Math.max(1, parseInt(dialog.element.querySelector('#spell-force')?.value) || 1);
             if (learnedForce) force = Math.min(force, learnedForce);
             if (isCombat) damageLevel = dialog.element.querySelector('#spell-damage')?.value || defaultLevel;
-            if (isAoE) aoeRadius = Math.max(1, parseInt(dialog.element.querySelector('#spell-radius')?.value) || aoeRadius);
+            if (isAoE) {
+              const maxHold = Math.max(0, sorceryRating + (hasSpellcastingSpec ? 2 : 0) - 1);
+              aoeWithheld = Math.min(maxHold, Math.max(0, parseInt(dialog.element.querySelector('#spell-withhold')?.value) || 0));
+              const mode  = dialog.element.querySelector('#spell-radius-mode')?.value ?? 'widen';
+              aoeRadius   = SR3EItem.spellAreaRadius(magicAttr, aoeWithheld, mode);
+            }
           }
         },
         { label: 'Cancel', action: 'cancel' },
@@ -4616,7 +4642,8 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     // Step 3: Spell Pool allocation — compute from raw fields, not derived cache
     const sAttr     = actor.system.attributes ?? {};
     const specBonus   = hasSpellcastingSpec ? 2 : 0;
-    const sorceryDice = Math.max(0, sorceryRating + specBonus);
+    // Dice withheld to change an area spell's radius are not rolled (p.181).
+    const sorceryDice = Math.max(0, sorceryRating + specBonus - aoeWithheld);
 
     // The sheet's Spell Pool — SR3EActor.spellPoolFor, effective values (F5; this read `base`).
     const spBase2    = game.sr3e.SR3EActor.spellPoolFor(sAttr) ?? 0;
@@ -4641,19 +4668,32 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
 
     // Step 4: SR3 combat spell = opposed test.
     //   Cast:   Sorcery vs TN = the spell's Target attribute on the target (W→Willpower,
-    //           B→Body, F→Force, or a fixed number). For AoE the primary target sets the TN.
+    //           B→Body, F→Force, or a fixed number).
     //   Resist: target rolls that SAME attribute vs TN = Force (handled at resist time).
     //   Net successes (caster − resister) stage the base damage. No soak.
-    const primaryTarget  = targetActors[0] ?? null;
+    //
+    // ⚠ Several targets: "roll the dice once. Compare the results against the target number for
+    //   each valid target … Successes are counted separately for each target" (SR3 p.182). The dice
+    //   roll at the HIGHEST target number — a die stops exploding once it reaches the roll's TN, so
+    //   only then can every lower TN be counted from the same dice — and each target's hits are
+    //   counted against its own (`hitsAgainst`, in _postWaveCard). Until 0.6.1 the FIRST target's
+    //   TN was used for everyone (TODO 171).
+    const targetTNs = Object.fromEntries(targetActors.map(t =>
+      [t.id, SR3EItem._parseSpellTarget(spellTarget, t, force, spellType).tn]));
+    const hardest   = targetActors.reduce((best, t) =>
+      (!best || targetTNs[t.id] > targetTNs[best.id]) ? t : best, null);
+    const primaryTarget  = hardest ?? null;
     const parsedPrimary  = primaryTarget
       ? SR3EItem._parseSpellTarget(spellTarget, primaryTarget, force, spellType)
       : null;
     const tn             = parsedPrimary ? parsedPrimary.tn : Math.max(2, force);
+    const tnsDiffer      = new Set(Object.values(targetTNs)).size > 1;
     // Human-readable source of the cast TN, shown on the result card.
     let tnSource;
     if (!parsedPrimary || parsedPrimary.attrLabel === 'Force') tnSource = `Force ${force}`;
     else if (parsedPrimary.attrLabel.startsWith('Fixed'))      tnSource = 'fixed';
     else tnSource = `${primaryTarget.name}'s ${parsedPrimary.attrLabel}`;
+    if (tnsDiffer) tnSource = `each target's own; rolled at the highest, ${tnSource}`;
 
     // Build damage context — power = Force, level chosen at cast (drives target damage AND drain level).
     // Damage track: SR3EItem.spellDealsStun — Physical unless it is a stun spell (SR3 p.191).
@@ -4684,6 +4724,9 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       aoeRegionId,
       aoeMarkerId,
       tnSource,
+      // Each target's own cast TN, and the one the dice rolled at (p.182) — TODO 171.
+      targetTNs,
+      castTN:            tn,
       rawDamage,
       damageBase,
       drainStr,
@@ -4715,15 +4758,31 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
   }
 
   /**
-   * Live actors (excluding the caster and vehicles) whose token centre is within `radiusM`
-   * metres of an area-spell's centre. Returns the actor list (deduped).
+   * An area spell's radius · SR3 p.181: "The base radius for all area spells is the caster's
+   * Magic Attribute in meters. … The caster can reduce the base radius by 1 meter for every 2 dice
+   * withheld from the Sorcery Test. … every die withheld from the Sorcery Test increases the radius
+   * by 1 meter." Pure; at least 1 m. It was a free number until 0.6.1 (TODO 171).
    */
-  static _actorsInRadius(center, radiusM, caster) {
+  static spellAreaRadius(magic, withheld = 0, mode = 'widen') {
+    const base = Math.max(0, Math.floor(Number(magic) || 0));
+    const w    = Math.max(0, Math.floor(Number(withheld) || 0));
+    return Math.max(1, mode === 'narrow' ? base - Math.floor(w / 2) : base + w);
+  }
+
+  /**
+   * Live actors (excluding vehicles) whose token centre is within `radiusM` metres of an
+   * area-spell's centre. Returns the actor list (deduped).
+   *
+   * ⚠ **The caster is INCLUDED** · SR3 p.181: "Area spells affect all valid targets within the
+   * radius of effect, friend and foe alike (including the caster)." It was skipped until 0.6.1
+   * (TODO 171). `caster` is kept in the signature for callers; it no longer filters.
+   */
+  static _actorsInRadius(center, radiusM, _caster) {
     const seen = new Set();
     const out  = [];
     for (const tok of (canvas?.tokens?.placeables ?? [])) {
       const a = tok.actor;
-      if (!a || a.type === 'vehicle' || a.id === caster.id) continue;
+      if (!a || a.type === 'vehicle') continue;
       if (!game.sr3e.isLiveActor(a)) continue;
       if (seen.has(a.id)) continue;
       let dM; try { dM = canvas.grid.measurePath([center, tok.center])?.distance ?? Infinity; }

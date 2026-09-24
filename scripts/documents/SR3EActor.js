@@ -3315,8 +3315,22 @@ _prepareCharacter(sys, attr) {
 
       } else if (state.isSpellRoll && state.spellContext) {
         const sc = state.spellContext;
+        /* Several targets: one roll, "Successes are counted separately for each target" (p.182).
+         * The dice rolled at the hardest TN (`castTN`); each target's hits are the same dice counted
+         * against its own. `tn` here carries rollPool's wound/sustain modifiers, so the same delta is
+         * added to each target's number. Physical dice (typed-in totals) have no faces to recount. */
+        const tnDelta     = tn - (sc.castTN ?? tn);
+        const hitsByTarget = {};
+        for (const id of (sc.targetActorIds ?? [])) {
+          hitsByTarget[id] = (state.physicalDice || !sc.targetTNs?.[id])
+            ? successes
+            : SR3EActor.hitsAgainst(dice, sc.targetTNs[id] + tnDelta);
+        }
+        const bestHits = Math.max(successes, ...Object.values(hitsByTarget));
+        sc.hitsByTarget = hitsByTarget;
+        sc.castSuccesses = bestHits;
 
-        if (successes === 0) {
+        if (bestHits === 0) {
           stagingHtml = '<div class="sr-staging-result">0 successes — spell fails (targets resist automatically), no effect</div>';
         } else {
           // SR3 opposed test: caster's successes are carried to each target's resistance
@@ -3355,10 +3369,15 @@ _prepareCharacter(sys, attr) {
             a => (a.system.spellDefensePool ?? 0) > 0 && a.id !== sc.attackerActorId
           );
           if (spellDefenders.length > 0) {
-            state._pendingDefenseCard = { currentSuccesses: successes, sc, force: sc.force };
+            state._pendingDefenseCard = { currentSuccesses: bestHits, sc, force: sc.force };
           } else {
+            if (Object.keys(hitsByTarget).length > 1 && new Set(Object.values(hitsByTarget)).size > 1) {
+              stagingHtml += `<div class="sr-roll-meta" style="font-size:11px">🎯 Hits against each target's own TN (p.182): ${
+                (sc.targetActorIds ?? []).map(id => `${game.actors.get(id)?.name ?? '?'} ${hitsByTarget[id]} (TN ${sc.targetTNs[id] + tnDelta})`).join(' · ')}</div>`;
+            }
             for (const targetId of (sc.targetActorIds ?? [])) {
-              postRollHtml += SR3EActor._spellResistButton(sc, targetId, successes);
+              // A target the dice did not reach against its own TN is unaffected.
+              if (hitsByTarget[targetId] > 0) postRollHtml += SR3EActor._spellResistButton(sc, targetId, hitsByTarget[targetId]);
             }
           }
         }
@@ -3393,7 +3412,7 @@ _prepareCharacter(sys, attr) {
           </div>`;
         // A Sustained or Permanent spell that took effect can be held (p.178) — OFFERED, never
         // automatic: sustaining costs +2 on every test, so it is the caster's choice.
-        if (successes > 0 && Sustaining.isSustainable(sc.duration)) {
+        if (bestHits > 0 && Sustaining.isSustainable(sc.duration)) {
           postRollHtml += SR3EActor.sustainButton(sc.attackerActorId, {
             name: sc.spellName, force: sc.force, spellItemId: sc.spellId, target: sc.targetNames ?? '',
           });
@@ -7944,6 +7963,17 @@ _prepareCharacter(sys, attr) {
     return { power: base.power, level: STAGES[idx], soaked: false, net };
   }
 
+  /**
+   * Successes a finished roll scores against a target number that is NO HIGHER than the one it was
+   * rolled at — each die's running `total` against `tn`. Pure. Used to count one Sorcery Test
+   * against several targets' own numbers (SR3 p.182, TODO 171); counting against a HIGHER number
+   * would be wrong, because a die stops exploding once it reaches the TN it was rolled at.
+   */
+  static hitsAgainst(dice, tn) {
+    const t = Number(tn) || 0;
+    return (dice ?? []).filter(d => (Number(d?.total) || 0) >= t).length;
+  }
+
   static dodgeOutcome(dodgeHits, attackHits) {
     const d = Math.max(0, Number(dodgeHits) || 0);
     const a = Math.max(0, Number(attackHits) || 0);
@@ -9506,8 +9536,14 @@ _prepareCharacter(sys, attr) {
           ? 'Each target may dodge, then resists the damage (p.183).'
           : `Each target resists vs Force ${force}.`}
       </div>`;
+      // Spell Defense took (cast − current) off the cast; each target loses the same from its own
+      // count against its own TN (p.182, TODO 171). No per-target record → everyone gets `current`.
+      const reduction = Math.max(0, (sc.castSuccesses ?? currentSuccesses) - currentSuccesses);
       for (const targetId of (sc.targetActorIds ?? [])) {
-        html += SR3EActor._spellResistButton(sc, targetId, currentSuccesses);
+        const own = sc.hitsByTarget?.[targetId] != null
+          ? Math.max(0, sc.hitsByTarget[targetId] - reduction)
+          : currentSuccesses;
+        if (own > 0) html += SR3EActor._spellResistButton(sc, targetId, own);
       }
     } else {
       html += `<div class="sr-roll-meta">✨ Spell completely defended — no damage to resist.</div>`;
