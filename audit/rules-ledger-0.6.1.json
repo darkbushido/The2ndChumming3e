@@ -7372,7 +7372,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4401,
+          "line": 4479,
           "snippet": "async rollSpell(options = {}) {"
         }
       ]
@@ -7472,7 +7472,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4293,
+          "line": 4370,
           "snippet": "return { tn: Math.max(2, val), resistAttr: attr, resistName: name, attrLabel: name };"
         }
       ]
@@ -7504,7 +7504,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 9156,
+          "line": 9290,
           "snippet": "async commitSpellDefense(sorceryDice, spellDice) {"
         }
       ]
@@ -7530,7 +7530,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 9847,
+          "line": 9989,
           "snippet": "const pool = willDice + spellDice;"
         }
       ]
@@ -7625,7 +7625,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4401,
+          "line": 4479,
           "snippet": "async rollSpell(options = {}) {"
         }
       ]
@@ -7689,7 +7689,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4438,
+          "line": 4516,
           "snippet": "// Step 1: Choose Force (+ Damage Level, + area radius for AoE spells)"
         }
       ]
@@ -7715,7 +7715,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4507,
+          "line": 4610,
           "snippet": "// Step 2: Select target(s)"
         }
       ]
@@ -7741,7 +7741,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4568,
+          "line": 4672,
           "snippet": "const pool = Math.max(1, sorceryDice + magicDice);"
         }
       ]
@@ -7767,7 +7767,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 9536,
+          "line": 9676,
           "snippet": "static _spellResistButton(sc, targetId, attackSuccesses) {"
         }
       ]
@@ -7793,7 +7793,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 4160,
+          "line": 4203,
           "snippet": "const net   = Math.max(0, (rc.attackSuccesses ?? 0) - successes);"
         }
       ]
@@ -7819,7 +7819,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 3359,
+          "line": 3390,
           "snippet": "// Drain button always — caster pays drain regardless of hit/miss"
         }
       ]
@@ -7857,7 +7857,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4438,
+          "line": 4516,
           "snippet": "// Step 1: Choose Force (+ Damage Level, + area radius for AoE spells)"
         }
       ]
@@ -7883,7 +7883,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4438,
+          "line": 4516,
           "snippet": "// Step 1: Choose Force (+ Damage Level, + area radius for AoE spells)"
         }
       ]
@@ -7915,7 +7915,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4492,
+          "line": 4590,
           "snippet": "if (learnedForce) force = Math.min(force, learnedForce);"
         }
       ]
@@ -7941,7 +7941,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4493,
+          "line": 4591,
           "snippet": "if (isCombat) damageLevel = dialog.element.querySelector('#spell-damage')?.value || defaultLevel;"
         }
       ]
@@ -8032,7 +8032,7 @@
       ],
       "hash": "321535d17a",
       "text": "- **Area spells**: the base radius is your **Magic in meters**, and it hits\n  everyone valid inside, **including you and your friends**. Withhold\n  Sorcery dice to change it: **every 2 dice withheld shrink it by 1 m**, or\n  **every 1 die withheld widens it by 1 m**. *(SR3 p.181)*",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -8050,16 +8050,16 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4655,
-          "snippet": "if (!a || a.type === 'vehicle' || a.id === caster.id) continue;"
+          "line": 4772,
+          "snippet": "static spellAreaRadius(magic, withheld = 0, mode = 'widen') {"
         },
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4441,
-          "snippet": "let aoeRadius    = Math.max(1, magicAttr);"
+          "line": 4786,
+          "snippet": "static _actorsInRadius(center, radiusM, _caster) {"
         }
       ],
-      "note": "Two differences. (1) The book: area spells 'affect all valid targets within the radius of effect, friend and foe alike (including the caster)'. The code auto-detects the targets in the radius but excludes the caster (SR3EItem.js `_actorsInRadius`: `a.id === caster.id → continue`). (2) The radius is a free number field defaulting to Magic; withholding Sorcery dice (2 per metre smaller, 1 per metre wider) is not tied to it — no dice are withheld or spent to change the radius."
+      "note": "Fixed for 0.6.1 (TODO 171). The caster is now included (_actorsInRadius no longer filters a.id === caster.id), and the radius is computed from withheld Sorcery dice via spellAreaRadius (narrow: 1m per 2 dice withheld; widen: 1m per die withheld), read at cast time."
     },
     {
       "id": "magic/spellcasting.md#32",
@@ -8082,7 +8082,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4507,
+          "line": 4610,
           "snippet": "// Step 2: Select target(s)"
         }
       ]
@@ -8228,7 +8228,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4568,
+          "line": 4672,
           "snippet": "const pool = Math.max(1, sorceryDice + magicDice);"
         }
       ]
@@ -8254,7 +8254,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4568,
+          "line": 4672,
           "snippet": "const pool = Math.max(1, sorceryDice + magicDice);"
         }
       ]
@@ -8304,7 +8304,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4305,
+          "line": 4382,
           "snippet": "const attr   = isMana ? 'willpower' : 'body';"
         }
       ]
@@ -8330,7 +8330,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4305,
+          "line": 4382,
           "snippet": "const attr   = isMana ? 'willpower' : 'body';"
         }
       ]
@@ -8388,7 +8388,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4301,
+          "line": 4378,
           "snippet": "return { tn: Math.max(2, numeric), resistAttr: 'willpower', resistName: 'Willpower', attrLabel: `Fixed ${numeric}` };"
         }
       ]
@@ -8758,7 +8758,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 3359,
+          "line": 3390,
           "snippet": "// Drain button always — caster pays drain regardless of hit/miss"
         }
       ]
@@ -8784,7 +8784,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 9730,
+          "line": 9872,
           "snippet": "if (castGlitch) drainTN += 2;"
         }
       ]
@@ -8798,7 +8798,7 @@
       ],
       "hash": "847e7f22e3",
       "text": "- **Area spells:** roll once and compare the dice against **each** target's\n  TN separately. Each target then resists separately. *(SR3 p.182)*",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -8810,11 +8810,16 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4576,
-          "snippet": "const primaryTarget  = targetActors[0] ?? null;"
+          "line": 4687,
+          "snippet": "const targetTNs = Object.fromEntries(targetActors.map(t =>"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7972,
+          "snippet": "static hitsAgainst(dice, tn) {"
         }
       ],
-      "note": "The book rolls once and counts successes separately against each target's own target number, with a separate Resistance Test each. The code takes the target number from the PRIMARY (first) target only (`primaryTarget = targetActors[0]`, SR3EItem.js:4577) and applies the one success count to every target."
+      "note": "Fixed for 0.6.1 (TODO 171). The dice roll once, at the hardest target's TN so every lower TN can be read off the same dice; each target's own TN is stored (targetTNs) and its hits counted separately against it (hitsAgainst in _postWaveCard), each with its own Resistance Test."
     },
     {
       "id": "magic/spellcasting.md#61",
@@ -8862,7 +8867,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 9536,
+          "line": 9676,
           "snippet": "static _spellResistButton(sc, targetId, attackSuccesses) {"
         }
       ]
@@ -8926,7 +8931,27 @@
       ],
       "hash": "e84760b9d1",
       "text": "- **No modifiers apply** unless the spell says so. That includes the\n  target's wounds. *(SR3 p.183)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 185,
+          "printedPage": 183,
+          "quote": "No target modifiers apply to this test except where specifically noted"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 9804,
+          "snippet": "static async handleSpellResistRoll(btn, physicalDice = false) {"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 9825,
+          "snippet": "skipWoundMod: true,"
+        }
+      ]
     },
     {
       "id": "magic/spellcasting.md#67",
@@ -8949,8 +8974,8 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4319,
-          "snippet": ".filter(a => a.id !== attacker.id && a.type !== 'vehicle' && game.sr3e.isLiveActor(a));"
+          "line": 4397,
+          "snippet": ".filter(a => a.type !== 'vehicle' && game.sr3e.isLiveActor(a));"
         }
       ]
     },
@@ -8963,7 +8988,29 @@
       ],
       "hash": "62843ef0ad",
       "text": "> **How The 2nd Chumming reads it:** a target who is **sustaining spells**\n> still takes **+2 per spell** on this test. The book says both \"no target\n> modifiers apply to this test\" *(SR3 p.183)* and that sustaining costs +2 on\n> \"all tests, including Drain Resistance Tests (but not normal Damage\n> Resistance Tests)\" *(SR3 p.178)*. The maintainer ruled that p.178's \"all\n> tests\" wins (2026-09-14). Wounds still don't apply.\n{: .house }",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 185,
+          "printedPage": 183,
+          "quote": "No target modifiers apply to this test except where specifically noted"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 180,
+          "printedPage": 178,
+          "quote": "Characters sustaining spells have a +2 target modifier per sustained spell applied to all tests, including Drain Resistance Tests (but not normal Damage Resistance Tests)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 9825,
+          "snippet": "skipWoundMod: true,"
+        }
+      ],
+      "note": "House-rule callout documenting the maintainer's 2026-09-14 ruling that resolves a real conflict between p.178 ('all tests') and p.183 ('no target modifiers except where noted'): handleSpellResistRoll sets skipWoundMod but not skipSustainMod, so rollPool applies the sustaining +2 to the Spell Resistance Test while wounds are excluded, matching the stated ruling."
     },
     {
       "id": "magic/spellcasting.md#69",
@@ -8986,7 +9033,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 9156,
+          "line": 9290,
           "snippet": "async commitSpellDefense(sorceryDice, spellDice) {"
         }
       ]
@@ -9012,7 +9059,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 9251,
+          "line": 9385,
           "snippet": "static async promptSpellDefenseDeclaration(combatants) {"
         }
       ]
@@ -9070,8 +9117,8 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 3346,
-          "snippet": "state._pendingDefenseCard = { currentSuccesses: successes, sc, force: sc.force };"
+          "line": 3372,
+          "snippet": "state._pendingDefenseCard = { currentSuccesses: bestHits, sc, force: sc.force };"
         }
       ]
     },
@@ -9096,7 +9143,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 3623,
+          "line": 3654,
           "snippet": "const newSuccesses = Math.max(0, sdc.currentSuccesses - successes);"
         }
       ]
@@ -9122,7 +9169,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 9293,
+          "line": 9427,
           "snippet": "turn; Sorcery dice return at round end."
         }
       ]
@@ -9148,7 +9195,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 4160,
+          "line": 4203,
           "snippet": "const net   = Math.max(0, (rc.attackSuccesses ?? 0) - successes);"
         }
       ]
@@ -9174,7 +9221,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 4160,
+          "line": 4203,
           "snippet": "const net   = Math.max(0, (rc.attackSuccesses ?? 0) - successes);"
         }
       ]
@@ -9200,7 +9247,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 4163,
+          "line": 4206,
           "snippet": "spellResistResultHtml = `<div class=\"sr-soak-result sr-soak-blocked\">✨ Spell resisted"
         }
       ]
@@ -9226,7 +9273,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 4160,
+          "line": 4203,
           "snippet": "const net   = Math.max(0, (rc.attackSuccesses ?? 0) - successes);"
         }
       ]
@@ -9303,7 +9350,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4575,
+          "line": 4679,
           "snippet": "//   Net successes (caster − resister) stage the base damage. No soak."
         }
       ]
@@ -9335,7 +9382,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4575,
+          "line": 4679,
           "snippet": "//   Net successes (caster − resister) stage the base damage. No soak."
         }
       ]
@@ -9392,7 +9439,7 @@
       ],
       "hash": "f87f0c618a",
       "text": "| Manabolt / Manaball | Mana | Willpower | (Damage Level) / (Damage Level +1) | Physical |",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -9410,8 +9457,8 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4590,
-          "snippet": "const isStun     = spellType !== 'Physical';"
+          "line": 4195,
+          "snippet": "static spellDealsStun(spell) {"
         },
         {
           "file": "packs-src/sr3e-sr3-spells/manaball.sr3e-spell-0004.json",
@@ -9419,7 +9466,7 @@
           "snippet": "\"drain\": \"(DL+1)\","
         }
       ],
-      "note": "Drain codes match (packs). The DAMAGE TRACK does not: the book says Manabolt and Manaball 'channel destructive magical power into the target, doing physical damage' although they are mana spells. The code derives the track from the spell type — `isStun = spellType !== 'Physical'` (SR3EItem.js:4595) — so every mana spell, Manabolt and Manaball included, deals STUN in this system. The pack items carry an empty `damage` field, so nothing overrides it. Same for Death Touch (#86)."
+      "note": "Fixed for 0.6.1 (TODO 169). spellDealsStun now defaults to Physical unless system.damageTrack is explicitly 'Stun' or the name contains 'stun'; Manaball's pack entry has neither, so it deals Physical."
     },
     {
       "id": "magic/spellcasting.md#86",
@@ -9467,7 +9514,7 @@
       ],
       "hash": "84d60cede3",
       "text": "| Death Touch | Mana | Willpower | (Damage Level −1) | Physical, by touch |",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -9479,8 +9526,8 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4590,
-          "snippet": "const isStun     = spellType !== 'Physical';"
+          "line": 4195,
+          "snippet": "static spellDealsStun(spell) {"
         },
         {
           "file": "packs-src/sr3e-sr3-spells/death-touch.sr3e-spell-0001.json",
@@ -9488,7 +9535,7 @@
           "snippet": "\"drain\": \"(DL-1)\","
         }
       ],
-      "note": "Drain code matches (pack). The book says Death Touch 'does physical damage'; it is a mana spell, so the code (`isStun = spellType !== 'Physical'`) makes it Stun. See #84."
+      "note": "Fixed for 0.6.1 (TODO 169), same mechanism as #85: Death Touch has no damageTrack and its name has no 'stun', so spellDealsStun returns false (Physical)."
     },
     {
       "id": "magic/spellcasting.md#88",
@@ -9511,7 +9558,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4240,
+          "line": 4317,
           "snippet": "static isElementalSpell(category) {"
         }
       ]
@@ -9537,7 +9584,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4240,
+          "line": 4317,
           "snippet": "static isElementalSpell(category) {"
         }
       ]
@@ -9563,7 +9610,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4301,
+          "line": 4378,
           "snippet": "return { tn: Math.max(2, numeric), resistAttr: 'willpower', resistName: 'Willpower', attrLabel: `Fixed ${numeric}` };"
         }
       ]
@@ -9589,7 +9636,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 9536,
+          "line": 9676,
           "snippet": "static _spellResistButton(sc, targetId, attackSuccesses) {"
         }
       ]
@@ -9621,7 +9668,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 4815,
+          "line": 4858,
           "snippet": "static elementalImpact({ ballistic: _ballistic = 0, impact = 0 } = {}) {"
         }
       ]
@@ -9647,7 +9694,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 3313,
+          "line": 3339,
           "snippet": "const previewStaged = SR3EItem.stageDamage(sc.damageBase, successes);"
         }
       ],
@@ -9674,7 +9721,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 3337,
+          "line": 3363,
           "snippet": "roll 2D6 ≥ the Object Resistance"
         }
       ]
@@ -9732,7 +9779,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4591,
+          "line": 4708,
           "snippet": "const damageBase = { power: force, level, isStun };"
         }
       ],
@@ -9759,7 +9806,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 3359,
+          "line": 3390,
           "snippet": "// Drain button always — caster pays drain regardless of hit/miss"
         }
       ]
@@ -9785,7 +9832,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 3359,
+          "line": 3390,
           "snippet": "// Drain button always — caster pays drain regardless of hit/miss"
         }
       ]
@@ -9811,7 +9858,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4160,
+          "line": 4232,
           "snippet": "static parseDrainFormula(drainStr, force, damageLevel = null) {"
         }
       ]
@@ -9837,7 +9884,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4160,
+          "line": 4232,
           "snippet": "static parseDrainFormula(drainStr, force, damageLevel = null) {"
         }
       ]
@@ -9863,7 +9910,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4195,
+          "line": 4271,
           "snippet": "// --- Modifier model: Power mod is OUTSIDE brackets, Level mod is INSIDE brackets. ---"
         }
       ]
@@ -9889,7 +9936,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4195,
+          "line": 4271,
           "snippet": "// --- Modifier model: Power mod is OUTSIDE brackets, Level mod is INSIDE brackets. ---"
         }
       ]
@@ -9903,7 +9950,7 @@
       ],
       "hash": "c71960b28b",
       "text": "- If a modifier would push the Drain Level **above Deadly**, add **+2 Drain\n  Power per level above** instead.",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -9915,11 +9962,16 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4175,
-          "snippet": "return STAGES[Math.max(0, Math.min(3, idx + (mod || 0)))];"
+          "line": 4246,
+          "snippet": "const shiftLevel = (mod) => {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4250,
+          "snippet": "abovePower = Math.max(0, raw - 3) * 2;"
         }
       ],
-      "note": "The book: 'If a modifier would raise the Drain Level above Deadly, add +2 to the Drain Power instead for each level above Deadly.' `parseDrainFormula` clamps the level at Deadly (`Math.min(3, idx + mod)`) and adds nothing to the Power, so e.g. Fireball's +1(Damage Level +2) cast at Serious drains at Deadly with no extra +2 Power."
+      "note": "Fixed for 0.6.1 (TODO 170). parseDrainFormula now clamps the level at Deadly and adds abovePower = 2 per level above into the TN (halfF + powerMod + abovePower)."
     },
     {
       "id": "magic/spellcasting.md#104",
@@ -9966,8 +10018,8 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4207,
-          "snippet": "return { tn: Math.max(2, halfF + powerMod), level: shiftLevel(levelMod) };"
+          "line": 4284,
+          "snippet": "return { tn: Math.max(2, halfF + powerMod + abovePower), level };"
         }
       ]
     },
@@ -9992,7 +10044,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 9724,
+          "line": 9866,
           "snippet": "drainTN += sustainTN;"
         }
       ]
@@ -10043,7 +10095,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 9730,
+          "line": 9872,
           "snippet": "if (castGlitch) drainTN += 2;"
         }
       ]
@@ -10069,7 +10121,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 8487,
+          "line": 9991,
           "snippet": "const effectiveTN = Math.max(2, tn);"
         }
       ]
@@ -10113,7 +10165,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 9847,
+          "line": 9989,
           "snippet": "const pool = willDice + spellDice;"
         }
       ]
@@ -10616,7 +10668,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4568,
+          "line": 4672,
           "snippet": "const pool = Math.max(1, sorceryDice + magicDice);"
         }
       ]
@@ -10642,7 +10694,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4507,
+          "line": 4610,
           "snippet": "// Step 2: Select target(s)"
         }
       ]
@@ -10668,7 +10720,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4305,
+          "line": 4382,
           "snippet": "const attr   = isMana ? 'willpower' : 'body';"
         }
       ]
@@ -10688,14 +10740,14 @@
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
           "pdfPage": 185,
           "printedPage": 183,
-          "quote": "The target number of the test is the Force of the spell"
+          "quote": "The target number is the Force of the spell"
         }
       ],
       "code": [
         {
-          "file": "scripts/documents/SR3EItem.js",
-          "line": 4293,
-          "snippet": "return { tn: Math.max(2, val), resistAttr: attr, resistName: name, attrLabel: name };"
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 9761,
+          "snippet": "const tn     = Math.max(2, force);"
         }
       ]
     },
@@ -10708,7 +10760,7 @@
       ],
       "hash": "39a262d1d1",
       "text": "5. **Effect.** 4 − 1 = **3 net successes**. Two of them stage Serious up to\n   **Deadly**; the third is left over. Combat spells ignore armor, so the\n   guard takes a **Deadly Physical** wound.",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -10726,11 +10778,11 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4590,
-          "snippet": "const isStun     = spellType !== 'Physical';"
+          "line": 4195,
+          "snippet": "static spellDealsStun(spell) {"
         }
       ],
-      "note": "The arithmetic (4 − 1 = 3 net, two stage Serious to Deadly, the odd success is discarded) matches. The outcome does not: the example ends 'a Deadly Physical wound' because the book makes Manabolt physical, while the code deals Manabolt as Stun (see #84)."
+      "note": "Fixed for 0.6.1 (TODO 169) alongside #85: Manabolt now deals Physical, so the worked example's 'Deadly Physical wound' agrees with the code."
     },
     {
       "id": "magic/spellcasting.md#139",
@@ -10753,8 +10805,8 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4207,
-          "snippet": "return { tn: Math.max(2, halfF + powerMod), level: shiftLevel(levelMod) };"
+          "line": 4284,
+          "snippet": "return { tn: Math.max(2, halfF + powerMod + abovePower), level };"
         }
       ]
     },
@@ -10805,7 +10857,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 3623,
+          "line": 3654,
           "snippet": "const newSuccesses = Math.max(0, sdc.currentSuccesses - successes);"
         }
       ]
