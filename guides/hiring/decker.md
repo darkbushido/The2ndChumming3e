@@ -24,9 +24,9 @@ nav_order: 1
 
 | | | Source |
 | :--- | :--- | :--- |
-| **Hacking job** | **1,000¥ × the host's Security Value** | SRComp p.100 |
-| **Datasteal** | **20% of the data's value** | SRComp p.100 |
-| **Encryption / decryption** | **200¥ per Mp** | SRComp p.100 |
+| **Hacking job** | **1,000¥ x Host's Security Value** | SRComp p.100 |
+| **Datasteal** | **20% value of data** | SRComp p.100 |
+| **Encryption / decryption** | **200¥ per MP** | SRComp p.100 |
 
 ### What the decker is risking
 

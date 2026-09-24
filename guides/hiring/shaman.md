@@ -24,8 +24,8 @@ nav_order: 4
 
 | | | Source |
 | :--- | :--- | :--- |
-| **Investigation** (astral scouting, divination) | **200¥ per day** | SRComp p.100 |
-| **Security duty** | **200¥ per day** | SRComp p.100 |
+| **Investigation** (astral scouting, divination) | **200¥/day** | SRComp p.100 |
+| **Security duty** | **200¥/day** | SRComp p.100 |
 | **Ward maintenance** | about **100¥ an hour per magician** | SR3 p.174 |
 | **Shamanic lodge materials** | (Rating × Rating) × 1,000¥ | MitS p.169 |
 

@@ -28,7 +28,7 @@ nav_order: 5
 
 | | | Source |
 | :--- | :--- | :--- |
-| **Bodyguard / security duty** | **200¥ per day** | SRComp p.100 |
+| **Bodyguard / security duty** | **200¥/day** | SRComp p.100 |
 | **Assassination** | **5,000¥** | SRComp p.100 |
 | **Extraction** | **20,000¥** | SRComp p.100 |
 

@@ -23,7 +23,7 @@ nav_order: 7
 
 | | | Source |
 | :--- | :--- | :--- |
-| **Investigation** (legwork) | **200¥ per day** | SRComp p.100 |
+| **Investigation** (legwork) | **200¥/day** | SRComp p.100 |
 | **Distraction** | **1,000¥** | SRComp p.100 |
 | **Fencing** | the face's Negotiation moves the price **5% per net success** | SR3 p.238 |
 | **Buying gear** | also **5% per net success** | SR3 p.273 |

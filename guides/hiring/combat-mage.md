@@ -24,7 +24,7 @@ nav_order: 3
 
 | | | Source |
 | :--- | :--- | :--- |
-| **Security duty** (including magical overwatch) | **200¥ per day** | SRComp p.100 |
+| **Security duty** (including magical overwatch) | **200¥/day** | SRComp p.100 |
 | **Destruction** | **5,000¥** | SRComp p.100 |
 | **Assassination** | **5,000¥** | SRComp p.100 |
 | **Ward maintenance** | about **100¥ an hour per magician** | SR3 p.174 |

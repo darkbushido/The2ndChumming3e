@@ -38,21 +38,21 @@ on this one.
 
 ### Baseline Shadowrun Payment Table  *(SRComp p.100)*
 
-| Run | Bottom-line fee |
+| Run | Bottom-line Fee |
 | :--- | :--- |
 | Assassination | 5,000¥ |
-| Bodyguard / security duty | 200¥ per day |
+| Bodyguard/Security Duty | 200¥/day |
 | Burglary | 2,000¥ |
-| Courier run | 1,000¥ |
-| Datasteal | 20% of the data's value |
+| Courier Run | 1,000¥ |
+| Datasteal | 20% value of data |
 | Distraction | 1,000¥ |
 | Destruction | 5,000¥ |
 | Enforcement | 1,000¥ |
-| Encryption / decryption | 200¥ per Mp |
+| Encryption/Decryption | 200¥ per MP |
 | Extraction | 20,000¥ |
-| Hacking | 1,000¥ × the host's Security Value |
-| Investigation | 200¥ per day |
-| Smuggling run | 5,000¥ |
+| Hacking | 1,000¥ x Host's Security Value |
+| Investigation | 200¥/day |
+| Smuggling Run | 5,000¥ |
 
 How to use it *(SRComp p.99–100)*:
 
