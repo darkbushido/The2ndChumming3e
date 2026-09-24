@@ -792,6 +792,11 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._sel('Duration', 'duration', s.duration, SR3E.spellDurations)}
           ${this._f('Drain Code', 'drain', s.drain, 'text', 'placeholder="(F/2) or (DL+1)"')}
           ${this._f('Learned Force', 'force', s.force, 'number', 'min="1" placeholder="not recorded" title="The Force this spell was learned at (SR3 p.178). It may be cast at or below this, never above. Blank = not recorded, which caps nothing."')}
+          ${this._sel('Damage track', 'damageTrack', s.damageTrack ?? '', [
+            { value: '',         label: 'From the name (stun spells Stun, else Physical)' },
+            { value: 'Physical', label: 'Physical' },
+            { value: 'Stun',     label: 'Stun' },
+          ])}
         </div>
         <div class="notes-field">
           <label class="bio-label">Description</label>

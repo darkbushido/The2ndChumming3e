@@ -4156,7 +4156,35 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
    * Legacy fallback: if the code contains an explicit "F" formula (e.g. "(F/2+1)S"), that
    *   formula IS the TN and the level is the nominated level (or a bare letter for non-damaging
    *   spells). `damageLevel` is the cast's level (null for non-damaging spells). TN min 2.
+   *
+   * âš  **Past Deadly the level stops and the POWER rises** Â· SR3 p.191 (and MitS p.66, verbatim):
+   * *"If a modifier would raise the Drain Level above Deadly, add +2 to the Drain Power instead for
+   * each level above Deadly."* Fireball, +1(Damage Level +2), cast at Serious: Deadly, and +2 on the
+   * Power. Clamped silently at Deadly until the 0.6.1 rules check (TODO 170).
    */
+  /**
+   * Does a damaging spell deal STUN?  · *SR3 p.191; MitS p.66*
+   *
+   * > "Manabolt and Manaball channel destructive magical power into the target, doing physical
+   * > damage. As mana spells, they only affect living and magical targets" — SR3 p.191
+   * > "Stun spells channel magical energy directly into the target, causing stun damage." — ibid.
+   *
+   * ⚠ **Mana/Physical decides WHAT the spell can affect, never which track it damages.** The code
+   * read `type !== 'Physical'` as Stun until the 0.6.1 rules check (TODO 169), so Manabolt,
+   * Manaball, Death Touch, Slay and Spiritbolt all dealt Stun.
+   *
+   * `system.damageTrack` is the track: `'Stun'` or `'Physical'` wins; blank means **from the
+   * name** — a stun spell (Stunbolt, Stunball, Stun Touch) is Stun and everything else Physical.
+   * ⚠ Not `system.damage`: that is still read as a legacy damage CODE, where "Physical" would
+   * parse as an S level.
+   */
+  static spellDealsStun(spell) {
+    const track = String(spell?.system?.damageTrack ?? '').trim();
+    if (/^stun$/i.test(track))     return true;
+    if (/^physical$/i.test(track)) return false;
+    return /stun/i.test(String(spell?.name ?? ''));
+  }
+
   static parseDrainFormula(drainStr, force, damageLevel = null) {
     if (!drainStr) return null;
     const STAGES = ['L', 'M', 'S', 'D'];
@@ -4169,10 +4197,14 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       .replace(/\[/g, '(').replace(/\]/g, ')')
       .replace(/DAMAGELEVEL/g, 'DL');
 
+    // Past Deadly, each level the modifier would add is +2 Drain Power instead (p.191).
+    let abovePower = 0;
     const shiftLevel = (mod) => {
       let idx = STAGES.indexOf(damageLevel ?? 'S');
       if (idx < 0) idx = 2;
-      return STAGES[Math.max(0, Math.min(3, idx + (mod || 0)))];
+      const raw = idx + (mod || 0);
+      abovePower = Math.max(0, raw - 3) * 2;
+      return STAGES[Math.max(0, Math.min(3, raw))];
     };
 
     // --- Legacy: an explicit F-formula is the drain Power itself. ---
@@ -4189,7 +4221,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
         try { tn = Math.floor(new Function(`"use strict"; return (${expr})`)()); } catch { tn = halfF; }
       }
       if (!isFinite(tn)) tn = halfF;
-      return { tn: Math.max(2, tn), level };
+      return { tn: Math.max(2, tn + abovePower), level };
     }
 
     // --- Modifier model: Power mod is OUTSIDE brackets, Level mod is INSIDE brackets. ---
@@ -4204,7 +4236,8 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     }
 
     const levelMod  = parseInt((inside.replace(/DL/g, '').match(/[+-]?\d+/) || ['0'])[0]) || 0;
-    return { tn: Math.max(2, halfF + powerMod), level: shiftLevel(levelMod) };
+    const level     = shiftLevel(levelMod);
+    return { tn: Math.max(2, halfF + powerMod + abovePower), level };
   }
 
   /**
@@ -4585,9 +4618,9 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     else tnSource = `${primaryTarget.name}'s ${parsedPrimary.attrLabel}`;
 
     // Build damage context — power = Force, level chosen at cast (drives target damage AND drain level).
-    // Damage track follows the spell Type: Mana → Stun, Physical → Physical.
+    // Damage track: SR3EItem.spellDealsStun — Physical unless it is a stun spell (SR3 p.191).
     const level      = damageLevel;
-    const isStun     = spellType !== 'Physical';
+    const isStun     = SR3EItem.spellDealsStun(this);
     const damageBase = { power: force, level, isStun };
     const rawDamage  = `${force}${level}`;
     const drainStr   = this.system.drain ?? '';

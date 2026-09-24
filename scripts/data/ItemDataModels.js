@@ -448,6 +448,10 @@ export class SpellData extends foundry.abstract.TypeDataModel {
       type:        new StringField({ initial: 'Physical' }),
       range:       new StringField({ initial: 'LOS' }),
       damage:      new StringField({ initial: '' }),
+      /* The track a damaging spell hits · SR3 p.191 — '' (from the name: stun spells Stun, else
+       * Physical), 'Physical' or 'Stun'. NOT `type`: Mana/Physical is what the spell can affect.
+       * Read only through SR3EItem.spellDealsStun (TODO 169). */
+      damageTrack: new StringField({ initial: '', choices: ['', 'Physical', 'Stun'] }),
       duration:    new StringField({ initial: 'Instant' }),
       drain:       new StringField({ initial: '' }),
       target:      new StringField({ initial: '' }),

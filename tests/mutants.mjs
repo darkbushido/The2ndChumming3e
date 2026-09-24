@@ -38,6 +38,25 @@ const BUY    = { module: '../scripts/data/purchasing.mjs', klass: 'Purchasing' }
 
 export const MUTANTS = [
   {
+    id:     'mana-spells-deal-stun',
+    suite:  'spell-damage',
+    ...ITEM, method: 'spellDealsStun',
+    was:    'the damage track followed Mana/Physical â€” Manabolt, Manaball and Death Touch dealt Stun (SR3 p.191, TODO 169)',
+    impl:   spell => (spell?.system?.type ?? 'Mana') !== 'Physical',
+  },
+  {
+    id:     'drain-clamps-at-deadly',
+    suite:  'spell-damage',
+    ...ITEM, method: 'parseDrainFormula', needsOriginal: '_parseDrainFormulaOriginal',
+    was:    'Drain Level clamped at Deadly with no +2 Power per level past it (SR3 p.191, TODO 170)',
+    impl:   function (code, force, level) {
+      const r = this._parseDrainFormulaOriginal(code, force, level);
+      if (!r || r.level !== 'D') return r;
+      const noPast = this._parseDrainFormulaOriginal(code, force, 'M');
+      return { tn: noPast.tn, level: 'D' };
+    },
+  },
+  {
     id:     'overflow-death-at-body',
     suite:  'overflow-death',
     ...ACTOR, method: 'deadFromOverflow',
