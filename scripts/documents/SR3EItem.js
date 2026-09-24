@@ -1,4 +1,5 @@
 import { vcrLevel as vcrLevelOf } from '../data/item-rating.mjs';
+import { Rigging } from '../data/rigging.mjs';
 import { AmmoStock } from '../data/ammo-stock.mjs';
 import { Shotgun, CHOKE_MIN, CHOKE_MAX } from '../data/shotgun.mjs';
 import { WeaponAccessories } from '../data/weapon-accessories.mjs';
@@ -1736,12 +1737,12 @@ export class SR3EItem extends Item {
       poolLabel = `Autonomous: Pilot ${pilotRating}`;
     }
 
-    // Control Pool for gunnery: VCR only (reaction.base + VCR level, no wired reflexes).
+    // Control Pool for gunnery: VCR only — Reaction base + 2 × VCR, at most the skill dice (SR3 p.44).
     // RCD cannot use Control Pool for weapon tests; Auto has no pool at all.
     let controlPoolMax = 0;
     if (vcrMode && pilotActor) {
       const reactionBase = pilotActor.system.attributes?.reaction?.base ?? 0;
-      controlPoolMax = Math.max(0, reactionBase + vcrLevel);
+      controlPoolMax = Rigging.controlPoolDice(Rigging.controlPool(reactionBase, vcrLevel), pool);
     }
     // No pool dice allowed when defaulting to an attribute.
     if (gunneryDefaulting) controlPoolMax = Math.min(controlPoolMax, gunneryDefPoolCap);

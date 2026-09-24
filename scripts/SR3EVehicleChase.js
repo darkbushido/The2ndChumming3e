@@ -1,4 +1,5 @@
 import { vcrLevel as vcrLevelOf } from './data/item-rating.mjs';
+import { Rigging } from './data/rigging.mjs';
 import { openTestFirstWave, openTestExplode, openTestPending, openTestHighest } from './data/open-test.mjs';
 
 const VEHICLE_TYPES = [
@@ -489,19 +490,25 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     this.render();
   }
 
-  // SR3 Vehicle Chase: Control Pool = the driver's Vehicle Skill rating (no spec
-  // bonus, no VCR — VCR's benefit is the −2×rating TN, not extra pool dice). 0 if
-  // the driver has no applicable vehicle skill (defaulting → no Control Pool).
+  // SR3 Vehicle Chase: the Control Pool dice this driver may put into one test — Reaction + 2 × VCR,
+  // up to the Vehicle Skill rating (no spec bonus) · SR3 p.44. ⚠ 0 unless rigged: "The cops driving
+  // the Lone Star Cruisers are not rigged, so they get no Control Pool dice" (p.141). Until 0.6.1
+  // every driver got their skill rating here (TODO 167). 0 with no applicable vehicle skill too
+  // (defaulting → no Control Pool).
   _controlPool(p) {
     const driver = game.actors.get(p?.driverActorId);
     if (!driver) return 0;
+    const vcr = p.vcrActive ? (p.vcrRating ?? 0) : 0;
+    if (!vcr) return 0;
     const keywords = SKILL_KEYWORDS[p.chaseVehicleType] ?? [];
     const skill = driver.items.find(i => {
       if (i.type !== 'skill') return false;
       const sName = (i.system.skillName || i.name || '').toLowerCase();
       return keywords.some(kw => sName.includes(kw));
     });
-    return skill ? (skill.system.rating ?? 0) : 0;
+    if (!skill) return 0;
+    return Rigging.controlPoolDice(
+      Rigging.controlPool(driver.system.attributes?.reaction?.base ?? 0, vcr), skill.system.rating ?? 0);
   }
 
   _detectVcr(actorId) {
@@ -682,17 +689,23 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
       const isDriver   = aid === p.driverActorId;
       const dmgPenalty = isDriver ? damageInfo.initPenalty : 0;
 
-      // VCR bonus applies to the driver only when VCR is active
+      // VCR bonus applies to the driver only when VCR is active — and then REPLACES the rest:
+      // unaugmented Reaction + 2 per level, 1 + level dice, wired reflexes and magic do NOT apply
+      // (SR3 p.301, p.140; TODO 167). Everyone else rolls their ordinary initiative.
       const vcrLevel = (isDriver && p.vcrActive) ? (p.vcrRating ?? 0) : 0;
-      const base = (actor.system.derived?.initiative ?? 0) + vcrLevel;
-      const dice = (actor.system.derived?.initiativeDice ?? 1) + vcrLevel;
+      const base = vcrLevel
+        ? Rigging.vcrReaction(actor.system.attributes?.reaction?.base ?? 0, vcrLevel) + (actor.system.woundMod ?? 0)
+        : (actor.system.derived?.initiative ?? 0);
+      const dice = vcrLevel
+        ? Rigging.vcrInitiativeDice(vcrLevel)
+        : (actor.system.derived?.initiativeDice ?? 1);
 
       const rolls  = Array.from({ length: dice }, () => Math.ceil(Math.random() * 6));
       const total  = base + rolls.reduce((s, r) => s + r, 0) - dmgPenalty;
       p.initiatives[aid] = total;
       const role = isDriver ? 'Driver' : 'Passenger';
       const vcrNote = vcrLevel
-        ? `<small style="color:var(--sr-accent)"> VCR Lv${vcrLevel}: +${vcrLevel} REA, +${vcrLevel}d6</small>`
+        ? `<small style="color:var(--sr-accent)"> VCR Lv${vcrLevel}: +${2 * vcrLevel} REA, +${vcrLevel}d6</small>`
         : '';
       lines.push(`
         <div class="chase-init-row">

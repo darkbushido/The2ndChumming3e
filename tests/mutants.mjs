@@ -35,8 +35,23 @@ const ACCESSORIES = { module: '../scripts/data/weapon-accessories.mjs', klass: '
 const SLOTS  = { module: '../scripts/data/cyber-slots.mjs',  klass: 'CyberSlots' };
 const LEDGER = { module: '../scripts/data/ledger.mjs',       klass: 'Ledger' };
 const BUY    = { module: '../scripts/data/purchasing.mjs', klass: 'Purchasing' };
+const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
 
 export const MUTANTS = [
+  {
+    id:     'vcr-plus-one-reaction',
+    suite:  'rigging',
+    ...RIG, method: 'vcrReaction',
+    was:    'a VCR added +1 Reaction per level; SR3 p.301 gives +2 (TODO 167)',
+    impl:   (base, vcr) => (Number(base) || 0) + (Number(vcr) || 0),
+  },
+  {
+    id:     'control-pool-without-a-rig',
+    suite:  'rigging',
+    ...RIG, method: 'controlPool',
+    was:    'an unrigged driver had a Control Pool; SR3 p.44: "Only characters with a Vehicle Control Rig" (TODO 167)',
+    impl:   (base, vcr) => (Number(base) || 0) + 2 * (Number(vcr) || 0),
+  },
   {
     id:     'mana-spells-deal-stun',
     suite:  'spell-damage',

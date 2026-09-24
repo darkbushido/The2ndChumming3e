@@ -1,4 +1,5 @@
 import { vcrLevel } from '../data/item-rating.mjs';
+import { Rigging } from '../data/rigging.mjs';
 
 export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
 
@@ -1049,7 +1050,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
       const rating    = matchedSkill.system.rating ?? 1;
       const specBonus = useSpecialisation ? 2 : 0;
       skillDice   = rating + specBonus;
-      skillRating = rating;   // plain Vehicle Skill rating → rigger Control Pool
+      skillRating = rating;   // plain Vehicle Skill rating → the cap on Control Pool dice (p.44)
       const specNote = useSpecialisation ? ` + spec (${matchedSkill.system.specialisation})` : '';
       poolLabel = `${matchedSkill.system.skillName || matchedSkill.name} ${rating}${specNote}`;
     } else {
@@ -1061,7 +1062,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
       });
       if (!def) return;   // cancelled
       skillDice   = def.pool;
-      // skillRating feeds the jacked-in rigger's Control Pool. Defaulting caps pool
+      // skillRating caps the jacked-in rigger's Control Pool dice. Defaulting caps pool
       // dice at half the rating defaulted from, and forbids them outright when
       // defaulting to an Attribute (SR3 p.85), so the cap is the ceiling here — not
       // the dice being rolled.
@@ -1092,6 +1093,10 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     // ⚠ `vcrLevel()`: the shipped rigs store rating 0 with the level in the name, so a VCR [2]
     // from the compendium used to take −0 off the Driving Test instead of −2.
     const vcrRating = vcrLevel(vcrItem);
+    // Control Pool dice a rigger may add (SR3 p.44, p.134, p.147): the pool is Reaction + 2 × VCR,
+    // and one test takes at most the skill's dice. It is NOT the skill itself (TODO 167).
+    const controlPool = Rigging.controlPool(driver.system?.attributes?.reaction?.base ?? 0, vcrRating);
+    const cpDice      = Rigging.controlPoolDice(controlPool, skillRating);
 
     // Inline styles — DialogV2 does not reliably apply an injected <style> block.
     const FIELD_S = 'display:flex;flex-direction:column;gap:3px;color:#7880a0;font-size:12px;';
@@ -1142,7 +1147,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
             </select>
           </label>`;
       // Autonav, plus Control Pool dice up to the Driving Skill for a rigger (p.147).
-      crashPool = skillDice + autonav + (vcrRating ? skillRating : 0);
+      crashPool = skillDice + autonav + cpDice;
     }
 
     let result = null;
@@ -1156,7 +1161,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
           ${infoRow('Skill', poolLabel)}
           ${infoRow('Autonav', `${autonav} (added out of combat)`)}
           ${infoRow('Handling (base TN)', handling)}
-          ${vcrRating ? infoRow('VCR', `Rating ${vcrRating} — Control Pool = Vehicle Skill when rigging`) : ''}
+          ${vcrRating ? infoRow('VCR', `Rating ${vcrRating} — Control Pool ${controlPool}, up to ${cpDice} on this test when rigging`) : ''}
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;">
           <label style="${FIELD_S}">Vehicle damage (SR3 p.145)
@@ -1247,14 +1252,14 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
           if (poolOut) poolOut.textContent = basePoolEl;
         };
 
-        // SR3 pool: Vehicle Skill + (rigger using VCR → Control Pool = Vehicle Skill;
+        // SR3 pool: Vehicle Skill + (rigger using VCR → Control Pool dice, up to the skill;
         // else out of combat → Autonav; else nothing). Recomputed when combat/VCR changes.
         const riggerEl = el.querySelector('#drv-rigger');
         const combatEl = el.querySelector('#drv-combat');
         const recomputePool = () => {
           const usingVCR = riggerEl ? (parseInt(riggerEl.value) || 0) !== 0 : false;
           const combatOn = (parseInt(combatEl?.value) || 0) > 0;
-          const bonus    = usingVCR ? skillRating : (combatOn ? 0 : autonav);
+          const bonus    = usingVCR ? cpDice : (combatOn ? 0 : autonav);
           if (poolInp) poolInp.value = Math.max(1, skillDice + bonus);
           update();
         };

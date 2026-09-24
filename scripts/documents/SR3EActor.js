@@ -1,6 +1,7 @@
 import { SR3EItem } from './SR3EItem.js';
 import { parseMods } from '../SR3EMods.js';
 import { itemRating, vcrLevel as vcrLevelOf } from '../data/item-rating.mjs';
+import { Rigging } from '../data/rigging.mjs';
 import { AmmoStock } from '../data/ammo-stock.mjs';
 import * as Sustaining from '../data/sustaining.mjs';
 import { DrugRules } from '../data/drug-rules.mjs';
@@ -2240,9 +2241,9 @@ _prepareCharacter(sys, attr) {
    * bonuses affect the Combat Pool."*
    *
    * Reaction is already computed above, so the Quickness bonus cannot reach it. Combat Pool is
-   * computed below, so Quickness and Willpower do. Control Pool is the Vehicle Skill rating in
-   * this system and never reads Reaction, so that clause needs nothing. Moving this block
-   * either way silently breaks one of the three.
+   * computed below, so Quickness and Willpower do. Control Pool reads `reaction.base` (SR3 p.44,
+   * `Rigging.controlPool`), which no bonus reaches, so that clause needs nothing. Moving this
+   * block either way silently breaks one of the three.
    */
   const activeAugs = [];
   for (const a of triggeredAugs) {
@@ -2427,6 +2428,8 @@ _prepareCharacter(sys, attr) {
     availableOrthodoxHackingPool: Math.max(0, orthodoxHackingPool - (sys.hackingPoolSpent ?? 0)),
     vcrRating,
     vcrActive:          vcrRating > 0,
+    /* SR3 p.44: Reaction (unaugmented) + 2 × VCR; 0 without a rig. The per-test cap is the skill. */
+    controlPool:        Rigging.controlPool(attr.reaction?.base ?? 0, vcrRating),
     totalBioIndex,
     bioIndexCapacity,
     bioIndexOver,
@@ -9907,7 +9910,7 @@ _prepareCharacter(sys, attr) {
           const d = rigger.system.derived ?? {};
 
           if (controlMode === 'vcr') {
-            // VCR: Rigger's reaction BASE (no wired reflexes) + vcrLevel + woundMod, (1 + vcrLevel)d6
+            // VCR: Rigger's reaction BASE (no wired reflexes) + 2 × vcrLevel + woundMod, (1 + vcrLevel)d6 · SR3 p.301
             let vcrLevel = 0;
             const activeVCRId = rigger.system.activeVCRItemId ?? '';
             if (activeVCRId) vcrLevel = vcrLevelOf(rigger.items.get(activeVCRId));
@@ -9923,15 +9926,15 @@ _prepareCharacter(sys, attr) {
             const reactionBase = rigger.system.attributes?.reaction?.base ?? 0;
             // Simsense jamming on this drone lowers the jacked rigger's initiative (wound-like).
             const jam = SR3EActor._vehicleSimsenseMod(this);
-            const base = reactionBase + wm + vcrLevel - jam;
-            const dice = 1 + vcrLevel;
+            const base = Rigging.vcrReaction(reactionBase, vcrLevel) + wm - jam;
+            const dice = Rigging.vcrInitiativeDice(vcrLevel);
 
             const rolls    = Array.from({ length: dice }, () => Math.floor(Math.random() * 6) + 1);
             const rolled   = rolls.reduce((s, r) => s + r, 0);
             const score    = base + rolled;
             const diceHtml = rolls.map(r => `<span class="sr-die ${r === 6 ? 'sr-hit' : ''}">${r}</span>`).join('');
             const wmPart  = wm !== 0 ? ` + wound (${wm})` : '';
-            const vcrPart = ` + VCR ${vcrLevel}`;
+            const vcrPart = ` + VCR ${vcrLevel} (+${2 * vcrLevel})`;
             const jamPart = jam ? ` − Simsense jam (${jam})` : '';
             await ChatMessage.create({
               speaker: ChatMessage.getSpeaker({ actor: this }),
@@ -10021,7 +10024,7 @@ _prepareCharacter(sys, attr) {
 
     let base, dice, modeNote;
 
-    // VCR (jumped-in): rigger uses reaction BASE + VCR level (wired reflexes excluded).
+    // VCR (jumped-in): rigger uses reaction BASE + 2 × VCR level (wired reflexes excluded) · SR3 p.301, p.140.
     const vcrVehicle = game.actors?.find(a =>
       a.type === 'vehicle' &&
       a.system?.driverActorId === this.id &&
@@ -10041,9 +10044,9 @@ _prepareCharacter(sys, attr) {
       const reactionBase = this.system.attributes?.reaction?.base ?? 0;
       // Simsense jamming on the jumped-in drone lowers initiative (wound-like).
       const jam = SR3EActor._vehicleSimsenseMod(vcrVehicle);
-      base = reactionBase + vcrLevel + wm - jam;
-      dice = 1 + vcrLevel;
-      modeNote = `<div class="sr-roll-meta" style="color:var(--sr-accent)">🎮 VCR Lv${vcrLevel} — REA base ${reactionBase}${vcrLevel ? ` + VCR ${vcrLevel}` : ''}${jam ? ` − Simsense jam (${jam})` : ''}</div>`;
+      base = Rigging.vcrReaction(reactionBase, vcrLevel) + wm - jam;
+      dice = Rigging.vcrInitiativeDice(vcrLevel);
+      modeNote = `<div class="sr-roll-meta" style="color:var(--sr-accent)">🎮 VCR Lv${vcrLevel} — REA base ${reactionBase}${vcrLevel ? ` + VCR ${vcrLevel} (+${2 * vcrLevel})` : ''}${jam ? ` − Simsense jam (${jam})` : ''}</div>`;
     } else if (useAstral) {
       // Astral initiative: Intelligence + 20 + 1d6
       const intel = this.system.attributes?.intelligence?.value ?? 0;
