@@ -39,6 +39,20 @@ const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
 
 export const MUTANTS = [
   {
+    id:     'staging-each-side-separately',
+    suite:  'net-staging',
+    ...ACTOR, method: 'netStagedDamage',
+    was:    'the attacker staged up on raw successes and the soak staged down on its own — floor(A/2) − floor(D/2) '
+          + 'instead of p.113\'s net comparison (TODO 165)',
+    impl:   (base, a, d) => {
+      const S = ['L', 'M', 'S', 'D'];
+      const up = Math.min(3, S.indexOf(base.level) + Math.floor((Number(a) || 0) / 2));
+      const idx = up - Math.floor((Number(d) || 0) / 2);
+      return idx < 0 ? { power: base.power, level: null, soaked: true, net: 0 }
+                     : { power: base.power, level: S[idx], soaked: false, net: 0 };
+    },
+  },
+  {
     id:     'vehicle-power-rounds-up',
     suite:  'vehicle-targets',
     ...ITEM, method: 'vehicleTargetDamage',

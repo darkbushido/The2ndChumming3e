@@ -3174,8 +3174,10 @@ _prepareCharacter(sys, attr) {
            *
            * Only HALF of that was implemented: the soak card already stages DOWN on the target's
            * Body successes, but the thrower's successes did nothing except tighten the scatter, so
-           * a perfectly-placed grenade hit no harder than a fumbled one. Staging up here and
-           * letting the soak stage down gives exactly the book's net comparison.
+           * a perfectly-placed grenade hit no harder than a fumbled one. The level staged up here
+           * is only the card's preview: each target's soak carries the thrower's successes and the
+           * unstaged code (`net`) and stages by the difference (`netStagedDamage`, TODO 165) —
+           * staging up here and down there separately is floor(A/2) − floor(D/2), not the book's.
            *
            * ⚠ **POWER is not staged — only the LEVEL.** Power is "the adjusted Power of the
            *   grenade's blast" (base minus distance) and is also the Damage Resistance TN; staging
@@ -3188,7 +3190,7 @@ _prepareCharacter(sys, attr) {
               // ⚠ stageDamage takes a PARSED code ({power, level, isStun}), not a string — a string
               //   destructures to undefined and stages from nothing. Caught by the test, not by play.
               const up = SR3EItem.stageDamage({ power: t.power, level: t.level, isStun }, successes);
-              return { ...t, level: up.level, staged: up.level !== t.level };
+              return { ...t, baseLevel: t.level, level: up.level, staged: up.level !== t.level };
             });
             codes.length = 0;
             codes.push(...staged);
@@ -3227,6 +3229,8 @@ _prepareCharacter(sys, attr) {
               stagedLevel:     t.level,
               isStun,
               rawDamage:       `${t.power}${t.level}`,
+              // p.119 compares the thrower's successes with the target's total — TODO 165.
+              net:             { attackHits: successes, basePower: t.power, baseLevel: t.baseLevel ?? t.level },
             }).replace(/'/g, '&#39;');
             postRollHtml += `<div class="sr-soak-action"><button class="sr-soak-btn" data-payload='${soakCtx}'>🛡 ${tActor.name}: Resist Damage (${t.power}${t.level})</button></div>`;
           }
@@ -3239,6 +3243,7 @@ _prepareCharacter(sys, attr) {
           stagingHtml = `
             <div class="sr-staging-result">
               📊 ${state.rawDamage} + ${successes} hits → <strong>${stagedStr} ${trackLabel}</strong>
+              <span style="font-size:11px;color:var(--sr-muted)"> if unresisted — the target's successes are netted against these (p.113)</span>
             </div>`;
 
           const targetActor  = game.actors.get(state.targetActorId);
@@ -3271,6 +3276,8 @@ _prepareCharacter(sys, attr) {
               stagedLevel:     staged.level,
               isStun:          staged.isStun,
               rawDamage:       state.rawDamage,
+              // The soak compares these successes with the target's total (p.113) — TODO 165.
+              net:             { attackHits: successes, basePower: state.damageBase.power, baseLevel: state.damageBase.level },
             }).replace(/'/g, '&#39;');
 
             postRollHtml = `
@@ -3291,6 +3298,8 @@ _prepareCharacter(sys, attr) {
               stagedLevel:     staged.level,
               isStun:          staged.isStun,
               rawDamage:       state.rawDamage,
+              // A vehicle: "Standard staging rules apply" (p.149) — the net comparison. TODO 165.
+              net:             { attackHits: successes, basePower: state.damageBase.power, baseLevel: state.damageBase.level },
             }).replace(/'/g, '&#39;');
 
             postRollHtml = `
@@ -4025,8 +4034,8 @@ _prepareCharacter(sys, attr) {
       } else {
         // A failed dodge is NOT a wasted dodge: "Even if you don't dodge completely,
         // the successes still count and are added to the Damage Resistance
-        // Successes." They carry to the soak — they do NOT reduce staging, which is
-        // still computed from the attacker's raw successes.
+        // Successes." They carry to the soak, where they join the target's total that the
+        // attacker's successes are compared with (p.113, `netStagedDamage`, TODO 165).
         const trackLabel = dp.isStun ? 'Stun' : 'Physical';
         const soakBtn    = dp.isSpellSoak
           ? SR3EActor._spellSoakButtonHtml({ ...dp, carriedSuccesses: carried })
@@ -4096,14 +4105,26 @@ _prepareCharacter(sys, attr) {
       const carried    = Math.max(0, sp.carriedSuccesses ?? 0);
       const totalSoak  = successes + carried;
       let   remaining  = totalSoak;
+      let   netLine    = '';
 
-      while (remaining >= 2 && idx >= 0) {
-        remaining -= 2;
-        idx--;
+      if (sp.net) {
+        // SR3 p.113: the NET of the attacker's successes and the target's total — TODO 165.
+        const r = SR3EActor.netStagedDamage(
+          { power: sp.net.basePower ?? power, level: sp.net.baseLevel ?? sp.stagedLevel, isStun: sp.isStun },
+          sp.net.attackHits, totalSoak);
+        idx   = r.soaked ? -1 : STAGES.indexOf(r.level);
+        power = r.power;
+        netLine = `<div class="sr-roll-meta" style="font-size:11px">${sp.net.attackHits} attack vs ${totalSoak} `
+                + `— net ${r.net > 0 ? '+' : ''}${r.net} from base <strong>${sp.net.basePower}${sp.net.baseLevel}</strong> (SR3 p.113)</div>`;
+      } else {
+        while (remaining >= 2 && idx >= 0) {
+          remaining -= 2;
+          idx--;
+        }
       }
 
       if (idx < 0) {
-        soakResultHtml = '<div class="sr-soak-result sr-soak-blocked">🛡 Damage completely soaked!</div>';
+        soakResultHtml = `<div class="sr-soak-result sr-soak-blocked">🛡 Damage completely soaked!</div>${netLine}`;
       } else {
         const finalLevel = STAGES[idx];
         const trackLabel = sp.isStun ? 'Stun' : 'Physical';
@@ -4133,7 +4154,7 @@ _prepareCharacter(sys, attr) {
         }).replace(/'/g, '&#39;');
 
         soakResultHtml = `
-          <div class="sr-soak-result">🛡 ${resultLine}</div>
+          <div class="sr-soak-result">🛡 ${resultLine}</div>${netLine}
           <div class="sr-soak-action">
             <button class="sr-assign-damage-btn" data-payload='${soakAssignPayload}'>
               🩸 Assign ${SR3EActor._woundName(finalLevel)} ${trackLabel} Wound to ${soakTargetName}
@@ -6054,6 +6075,8 @@ _prepareCharacter(sys, attr) {
       carriedSuccesses: payload.carriedSuccesses ?? 0,
       // An elemental spell (p.183) — the soak card halves Impact for it (p.196).
       elemental:       payload.elemental === true || undefined,
+      // The attacker's successes and the unstaged code, for the net comparison (p.113, TODO 165).
+      net:             payload.net ?? undefined,
     }).replace(/'/g, '&#39;');
 
     return `
@@ -6170,8 +6193,8 @@ _prepareCharacter(sys, attr) {
    *    achieved". Both strict. Do not relax to `>=`.
    * 2. **A failed dodge is not a wasted dodge.** "Even if you don't dodge
    *    completely, the successes still count and are added to the Damage Resistance
-   *    Successes." They carry — but they do NOT reduce staging, which is computed
-   *    from the attacker's raw successes.
+   *    Successes." They carry into the target's total, which the soak compares with
+   *    the attacker's successes (p.113 — `netStagedDamage`, TODO 165).
    *
    * @param {number} dodgeHits
    * @param {number} attackHits
@@ -7884,6 +7907,43 @@ _prepareCharacter(sys, attr) {
     return b > 0 && o > b;
   }
 
+  /**
+   * The damage an attack does, by the NET of the two sides' successes · SR3 p.113 (TODO 165).
+   *
+   * > "compare the successes rolled by the attacker and the target. If the attacker's successes
+   * > equal the target's, the weapon does its base Damage Level. … The base damage increases by
+   * > one Damage Level for every two successes the attacker rolls over the target's total. … the
+   * > target can stage down the weapon's base Damage Level by one for every two successes the
+   * > target rolls over the attacker's total."
+   *
+   * Liam's 5 against Snot's 3 (p.114): *"His 2 net successes … are enough to increase the Damage
+   * Level by one"*. The target's total is the Damage Resistance successes plus any carried from a
+   * failed dodge (p.113).
+   *
+   * ⚠ **Not floor(A/2) − floor(D/2).** Until 0.6.1 the attack card staged UP by the attacker's raw
+   * successes and the soak staged DOWN by the target's — 2 vs 1 came out a level high, and a tie at
+   * the Deadly cap (6 vs 6 on 9M) fell to Light instead of staying Moderate. The maintainer chose
+   * the net reading (2026-09-24). Ranged, grenade (p.119, same wording), vehicle (p.149 "Standard
+   * staging rules") and elemental-spell damage go through here. **Melee does not** — p.122 nets the
+   * two fighters' successes first and the Damage Resistance Test then stages on its own.
+   *
+   * Pure. `base` is the UNSTAGED code; returns `{ power, level, soaked, net }` with `level: null`
+   * when staged below Light.
+   */
+  static netStagedDamage(base, attackHits, defenceHits) {
+    const STAGES = ['L', 'M', 'S', 'D'];
+    const a = Math.max(0, Number(attackHits) || 0);
+    const d = Math.max(0, Number(defenceHits) || 0);
+    const net = a - d;
+    if (net >= 0) {
+      const up = SR3EItem.stageDamage(base, net);
+      return { power: up.power, level: up.level, soaked: false, net };
+    }
+    const idx = STAGES.indexOf(base.level) - Math.floor(-net / 2);
+    if (idx < 0) return { power: base.power, level: null, soaked: true, net };
+    return { power: base.power, level: STAGES[idx], soaked: false, net };
+  }
+
   static dodgeOutcome(dodgeHits, attackHits) {
     const d = Math.max(0, Number(dodgeHits) || 0);
     const a = Math.max(0, Number(attackHits) || 0);
@@ -8303,6 +8363,7 @@ _prepareCharacter(sys, attr) {
     const { stagedPower, stagedLevel, isStun, isMelee, rawDamage } = payload;
     const trackLabel = isStun ? 'Stun' : 'Physical';
     let   effStagedLevel = stagedLevel;
+    let   netBaseLevel   = payload.net?.baseLevel ?? null;
 
     // Ensure derived data is current — prepareDerivedData now guarantees sys.attributes exists
     this.prepareDerivedData();
@@ -8389,6 +8450,9 @@ _prepareCharacter(sys, attr) {
         const STAGES = ['L', 'M', 'S', 'D'];
         const li = STAGES.indexOf(effStagedLevel);
         if (li >= 0) effStagedLevel = STAGES[Math.min(3, li + 1)];
+        // The same +1 on the unstaged base, which the net comparison stages from (TODO 165).
+        const bi = STAGES.indexOf(netBaseLevel);
+        if (bi >= 0) netBaseLevel = STAGES[Math.min(3, bi + 1)];
         ammoNote = `Flechette vs unarmoured — damage level raised to ${effStagedLevel}`;
       } else if (Math.max(ballistic, impact) <= 0) {
         ammoNote = `Flechette vs unarmoured — no level increase: dermal armor negates it `
@@ -8445,6 +8509,8 @@ _prepareCharacter(sys, attr) {
       impact,
       // Carried in from a failed Dodge Test; added to this test's successes.
       carriedSuccesses: payload.carriedSuccesses ?? 0,
+      // p.113: the result is staged by the NET of the attacker's and this target's successes.
+      net:             payload.net ? { ...payload.net, baseLevel: netBaseLevel } : undefined,
     }).replace(/'/g, '&#39;');
 
     await ChatMessage.create({
@@ -9600,6 +9666,8 @@ _prepareCharacter(sys, attr) {
         isStun:          staged.isStun,
         rawDamage:       `${sc.spellName ?? 'Spell'} ${sc.rawDamage}`,
         elemental:       true,
+        // "treated like normal ranged attacks" (p.183) — the net comparison. TODO 165.
+        net:             { attackHits: attackSuccesses, basePower: sc.damageBase.power, baseLevel: sc.damageBase.level },
       };
       // A vehicle does not dodge (the ranged flow's own rule) — straight to its resistance.
       if (tActor.type === 'vehicle') return SR3EActor._soakButtonHtml(ctx);

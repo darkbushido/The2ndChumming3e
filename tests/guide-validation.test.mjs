@@ -48,7 +48,7 @@ export async function run(t) {
   // ⚠ POWER must NOT be staged: it is the distance-reduced blast Power and also the Damage
   //   Resistance TN, so staging it would make the wound both likelier and worse, twice over.
   t.ok('…taking the staged LEVEL only, never the power',
-    /return \{ \.\.\.t, level: up\.level, staged: up\.level !== t\.level \}/.test(aoe));
+    /return \{ \.\.\.t, baseLevel: t\.level, level: up\.level, staged: up\.level !== t\.level \}/.test(aoe));
   // The arithmetic itself, on the book's own shape: 10S at 3m is 7S, and 4 net successes → 2 stages.
   const blast = SR3EItem.stageDamage({ power: 7, level: 'S' }, 4);
   t.eq('4 hits on a 7S blast is 7D — power untouched, level +2', [blast.power, blast.level], [7, 'D']);
