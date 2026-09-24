@@ -39,6 +39,27 @@ const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
 
 export const MUTANTS = [
   {
+    id:     'used-cyberware-stress-1d6-halved',
+    suite:  'stress',
+    module: '../scripts/data/stress.mjs', klass: 'Stress', method: 'usedStartingPoints',
+    was:    'used cyberware started with 1D6 ÷ 2 rounded down (0 on a 1); the maintainer chose M&M p.45\'s 1D3 (TODO 174)',
+    impl:   die => Math.floor(Math.max(0, Number(die) || 0) / 2),
+  },
+  {
+    id:     'used-delta-reads-as-delta',
+    suite:  'essence',
+    ...ACTOR, method: 'gradedEssenceCost',
+    was:    'Used Delta read as delta (×.5); M&M p.11 installs it as betaware (TODO 174)',
+    impl:   (cost, grade) => {
+      const b = parseFloat(cost ?? 0);
+      if (!(b > 0)) return 0;
+      const k = String(grade ?? '').toLowerCase().replace(/\bused\b/g, '').trim();
+      const m = { alpha: 0.8, alphaware: 0.8, beta: 0.6, betaware: 0.6, delta: 0.5, deltaware: 0.5 }[k] ?? 1;
+      if (m === 1) return parseFloat(b.toFixed(2));
+      return Math.max(0.01, Math.ceil(Number((b * m * 100).toFixed(6))) / 100);
+    },
+  },
+  {
     id:     'area-radius-narrow-per-die',
     suite:  'area-spells',
     ...ITEM, method: 'spellAreaRadius',

@@ -8901,8 +8901,14 @@ _prepareCharacter(sys, attr) {
     if (!Number.isFinite(base) || base <= 0) return 0;
     const table = globalThis.game?.sr3e?.SR3E?.cyberwareGradeEssence ?? SR3EActor._GRADES_FALLBACK;
     /* ⚠ "Used Alpha" must read as alpha: used halves the PRICE and leaves Essence "by grade"
-     * (M&M p.45), so the word is stripped rather than treated as a grade of its own. */
-    const key = String(grade ?? '').toLowerCase().replace(/\bused\b/g, '').trim();
+     * (M&M p.45), so the word is stripped rather than treated as a grade of its own.
+     * ⚠ **Except used DELTA, which installs as BETA** · M&M p.11: "Used deltaware cannot be
+     * purchased, but if you can otherwise acquire it, you can have it installed as if it were
+     * betaware." Read as delta (×.5) until the 0.6.1 rules check (TODO 174). */
+    const raw  = String(grade ?? '').toLowerCase();
+    const used = /\bused\b/.test(raw);
+    let key    = raw.replace(/\bused\b/g, '').trim();
+    if (used && /^delta(ware)?$/.test(key)) key = 'beta';
     const mult = table[key] ?? 1;
     if (mult === 1) return parseFloat(base.toFixed(2));
     /* ⚠ Round the float noise off BEFORE rounding up. 0.2 × 0.8 is 0.16000000000000003 in

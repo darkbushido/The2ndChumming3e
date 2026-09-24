@@ -95,10 +95,23 @@ export const Stress = {
     return Math.floor(Math.max(0, Number(die) || 0) / 2);
   },
 
-  /** What an implant or Attribute starts with · p.124. */
+  /**
+   * Used cyberware's permanent Stress: **1D3** · M&M p.45 — *"Each used cyberware item comes with 1D3
+   * permanent Stress Points."* A d6 read as 1-2 → 1, 3-4 → 2, 5-6 → 3; never 0.
+   *
+   * ⚠ M&M contradicts itself: p.124 says *"used cyberware begins with 1D6 ÷ 2"*, which rounded down
+   * gives 0 on a 1. The maintainer chose p.45 (2026-09-24, TODO 174). A wound effect's 1D6 ÷ 2
+   * (`pointsFromDie`) is a different rule and is unchanged.
+   */
+  usedStartingPoints(die) {
+    const d = Math.min(6, Math.max(1, Math.floor(Number(die) || 1)));
+    return Math.ceil(d / 2);
+  },
+
+  /** What an implant or Attribute starts with · p.124, and M&M p.45 for used cyberware. */
   startingPoints({ kind, used = false, die = 0 } = {}) {
     if (kind === 'bioware') return 1;                       // "bioware begins with 1 permanent Stress Point"
-    if (kind === 'cyberware' && used) return Stress.pointsFromDie(die);
+    if (kind === 'cyberware' && used) return Stress.usedStartingPoints(die);
     return 0;
   },
 

@@ -46,7 +46,10 @@ export async function run(t) {
   /* ── 1D6 ÷ 2 · p.124 ─────────────────────────────────────────────────────── */
   t.eq('a 6 is 3 Stress, a 3 is 1 — rounded down', [6, 5, 4, 3, 2, 1].map(d => S.pointsFromDie(d)), [3, 2, 2, 1, 1, 0]);
   t.is('new implants start at 0', S.startingPoints({ kind: 'cyberware' }), 0);
-  t.is('used cyberware starts with 1D6 ÷ 2, permanent', S.startingPoints({ kind: 'cyberware', used: true, die: 5 }), 2);
+  // M&M p.45 "1D3 permanent Stress Points" over p.124's "1D6 ÷ 2" — the maintainer's ruling (TODO 174).
+  t.eq('used cyberware starts with 1D3 (M&M p.45): a d6 of 1-6 → 1,1,2,2,3,3 — never 0',
+    [1, 2, 3, 4, 5, 6].map(d => S.startingPoints({ kind: 'cyberware', used: true, die: d })), [1, 1, 2, 2, 3, 3]);
+  t.is('…a wound effect is still 1D6 ÷ 2 down — a 1 is 0 there', S.pointsFromDie(1), 0);
   t.is('bioware always starts with 1', S.startingPoints({ kind: 'bioware' }), 1);
 
   /* ── Wound effects · p.126 ───────────────────────────────────────────────── */

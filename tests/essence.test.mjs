@@ -175,6 +175,10 @@ export async function run(t) {
    * The item sheet offers it as a pickable option, so both forms must behave. */
   t.is('"Used" alone reads as basic — full Essence', gec(1, 'Used'), 1);
   t.is('"Used Alpha" reads as alpha',                gec(1, 'Used Alpha'), 0.8);
+  // M&M p.11: "Used deltaware … installed as if it were betaware" (TODO 174).
+  t.is('"Used Delta" installs as BETA — ×.6, not ×.5', gec(1, 'Used Delta'), 0.6);
+  t.is('…"Used Deltaware" too',                      gec(2, 'Used Deltaware'), 1.2);
+  t.is('…and new delta is still ×.5',                gec(1, 'Delta'), 0.5);
 
   /* ⚠ An unknown grade costs FULL Essence — the conservative direction. Bioware's Cultured and
    * Exotic land here, as would a GM's typo. Defaulting to a discount would hand back Essence
