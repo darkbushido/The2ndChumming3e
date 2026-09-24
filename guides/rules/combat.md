@@ -18,8 +18,9 @@ vehicle combat.
 > Original gist: "Complete Actions & Combat System Guide".
 > - You get **one Free Action in every Combat Phase**, including other
 >   characters' phases, not one per Initiative Pass.
-> - "Take Cover" is not an SR3 action. "Suppressive fire" does not exist in
->   the core rules.
+> - "Take Cover" is not an SR3 action. "Suppressive fire" is not a defined
+>   action or modifier in the core rules; the phrase appears only in a rigger
+>   example (SR3 p.156).
 > - Nearly every value in the modifiers table was wrong: partial cover is
 >   **+4**, target running is **+2**, and the visibility values come from a
 >   two-axis table.
@@ -28,8 +29,9 @@ vehicle combat.
 >   the attacker's successes directly.
 > - SR3 has a **Spell Pool**, not a Magic Pool. Drain TN is Force ÷ 2 plus a
 >   modifier; there is no minimum-2 rule of its own.
-> - Matrix: there is no "Access Node" action and no "Response Index". Hacking
->   Pool **cannot** be used to resist black IC.
+> - Matrix: there is no "Access Node" action (the nearest is the **Locate
+>   Access Node** operation, SR3 p.210) and no "Response Index". Hacking Pool
+>   **cannot** be used to resist black IC.
 > - Vehicles: "VCTR" is not an SR3 term. A crash test comes from **Serious**
 >   damage in one attack, not Moderate, and the TN is Handling.
 

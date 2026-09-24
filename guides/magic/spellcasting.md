@@ -146,8 +146,16 @@ against the same spell.
   Test**: its **targeted attribute** (usually Body, Intelligence or
   Willpower) against **TN = the spell's Force**.
 - **No modifiers apply** unless the spell says so. That includes the
-  target's wounds.
+  target's wounds. *(SR3 p.183)*
 - **Non-living, non-magical** targets don't resist.
+
+> **How The 2nd Chumming reads it:** a target who is **sustaining spells**
+> still takes **+2 per spell** on this test. The book says both "no target
+> modifiers apply to this test" *(SR3 p.183)* and that sustaining costs +2 on
+> "all tests, including Drain Resistance Tests (but not normal Damage
+> Resistance Tests)" *(SR3 p.178)*. The maintainer ruled that p.178's "all
+> tests" wins (2026-09-14). Wounds still don't apply.
+{: .house }
 
 ### A magician blocks it: Spell Defense  *(SR3 p.183)*
 

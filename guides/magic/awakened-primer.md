@@ -176,8 +176,8 @@ astral. A weapon focus lets you use an armed skill in astral combat.
   a bullet train saw the great dragon **Ryumyo** appear near Mount Fuji.
   *(SR3 p.25)*
 - **Traditions**: mages treat magic as a discipline of formulae and elements.
-  Shamans follow a **totem**, which grants bonus dice for some spells and
-  spirits and penalties for others. *(SR3 p.163–165)*
+  *(SR3 p.158)* Shamans follow a **totem**, which grants bonus dice for some
+  spells and spirits and penalties for others. *(SR3 p.163–165)*
 - **Essence and Magic**: every full point of Essence lost, or fraction of
   one, costs a point of **Magic**. Cyberware is the usual cause. *(SR3
   p.160)*
@@ -187,7 +187,7 @@ astral. A weapon focus lets you use an armed skill in astral combat.
 
 ### Elven heritage
 
-- **Tír Tairngire**, "Land of Promise" in **Sperethiel**, takes up most of
+- **Tír Tairngire**, "the Land of Promise" *(SR3 p.30)*, takes up most of
   the former state of Oregon plus parts of Washington and California.
   *(SR3 p.321)*
 - It's ruled by the **Council of Princes**, with **High Prince Lugh

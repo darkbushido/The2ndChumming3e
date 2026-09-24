@@ -55,7 +55,7 @@ Launcher minigrenades don't arm until they've traveled about **5 meters**.
 Disabling that safety takes an Electronics B/R (6) Test and 5 minutes.
 *(SR3 p.118)*
 
-## 2. Scatter  *(SR3 p.119)*
+## 2. Scatter  *(SR3 p.118–119)*
 
 Every grenade scatters to some degree.
 
@@ -68,7 +68,7 @@ Every grenade scatters to some degree.
 - At **0 or less**, the grenade goes off exactly on target. Otherwise it goes
   off the remaining distance away in the rolled direction.
 
-## 3. When it goes off  *(SR3 p.119)*
+## 3. When it goes off  *(SR3 p.118)*
 
 A grenade goes off in the **next Combat Phase of the character who threw or
 fired it**.

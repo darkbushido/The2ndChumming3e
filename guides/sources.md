@@ -55,7 +55,7 @@ have been removed or replaced throughout:
 | Appeared in the gists | What SR3 actually uses |
 | :--- | :--- |
 | Magic Pool | **Spell Pool**, (INT + WIL + MAG) ÷ 3 (SR3 p.44) |
-| Sympathetic link | **Material link** (MitS p.34–36) |
+| Sympathetic link | **Material link** (MitS p.37) |
 | Legality codes "R" / "F" | **Legality Code** such as `6P-E`: restriction level, optional P for permit, category letter (SR3 p.273) |
 | "Yellow" security systems | Security codes are **Blue, Green, Orange, Red**, plus unofficial "UV" (SR3 p.205) |
 | Drain codes like "5H" | Drain is written `+1(M)`: Power = Force ÷ 2 + modifier, then a Damage Level (SR3 p.162) |
