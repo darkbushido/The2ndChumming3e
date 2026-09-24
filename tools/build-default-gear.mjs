@@ -56,6 +56,20 @@ const SOURCES = [
   { edition: 'SR2', file: 'rawdata/SRCG-SR2-Gear.json' },
 ];
 
+/**
+ * Book text the generator's data does not carry, by item name (TODO 160). The Explosives Table, SR3 p.283,
+ * prints a Blast and a Legal column the upstream rows lack. The Blast is what the Power of the blast loses
+ * per metre: *"The Damage Code is (Rating)D per kilogram … The Power of the blast is reduced by the base
+ * rating per meter."*  Multiple kilos: (Rating x √kilograms)D.
+ */
+export const BOOK_TEXT = {
+  'Commercial Explosive B': '<p>SR3 p.283 — Blast –3/m. Damage Code (Rating)D per kilogram. Legality 4P–J.</p>',
+  'Plastic Compound IV':    '<p>SR3 p.283 — Blast –6/m. Damage Code (Rating)D per kilogram. Legality 4–J.</p>',
+  'Plastic Compound XII':   '<p>SR3 p.283 — Blast –12/m. Damage Code (Rating)D per kilogram. Legality 3–J.</p>',
+  'Radio Detonator':        '<p>SR3 p.283 — Legality 6–J. Flux Rating 1.</p>',
+  'Timer':                  '<p>SR3 p.283 — Legality 6–J. Runs from 2 seconds to 2 hours.</p>',
+};
+
 /** Upstream category → item type. Anything absent is out of scope (weapons, vehicles, …). */
 export const CATEGORY_TYPE = {
   'Ammunition': 'ammunition', 'Firearms Accessories': 'gear', 'Clothing and Armor': 'armor',
@@ -164,7 +178,7 @@ export function docFor(row, category, edition) {
     const rating = named ?? (ratingCol && ratingCol > 0 ? ratingCol : null) ?? knownRating(name);
     const more = extras(row, ['Concealability', 'Rating', 'Weight', 'Availability', 'Cost', 'Street Index']);
     return { ...base, book, system: { quantity: 1, category, concealability: String(row.Concealability ?? ''), rating: rating ?? null,
-      cost, weight: cellNumber(row.Weight), ...common, description: `${costNote}${more ? `<p>${more}</p>` : ''}` } };
+      cost, weight: cellNumber(row.Weight), ...common, description: `${costNote}${more ? `<p>${more}</p>` : ''}${book === 'sr3' ? (BOOK_TEXT[name] ?? '') : ''}` } };
   }
   if (type === 'medical') {
     const rating = String(row.Rating ?? '').trim();
