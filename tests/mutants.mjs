@@ -611,6 +611,18 @@ export const MUTANTS = [
     impl:   text => (/^\s*[-−–]?\s*\d/.test(String(text ?? '')) ? 1 : null),
   },
   {
+    id:     'core-grenades-defensive-loses-one-per-metre',
+    suite:  'core-grenades',
+    module: '../tools/build-core-grenades.mjs', klass: 'CoreGrenades', method: 'buildDoc',
+    was:    'the shipped Defensive grenades carried the Offensive falloff (-1/m) instead of the printed -1/.5m (SR3 p.283, TODO 144)',
+    impl:   function (row) {
+      const d = this.__origBuild(row);
+      d.doc.system.blast = '-1/m';
+      return d;
+    },
+    needsOriginal: '__origBuild',
+  },
+  {
     id:     'short-burst-raises-level',
     suite:  'fire-modes',
     ...ITEM, method: 'fireModeDamage',

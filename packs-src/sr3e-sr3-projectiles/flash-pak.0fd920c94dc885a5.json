@@ -1,0 +1,34 @@
+{
+  "_key": "!items!0fd920c94dc885a5",
+  "doc": {
+    "_id": "0fd920c94dc885a5",
+    "name": "Flash-Pak",
+    "type": "projectile",
+    "system": {
+      "category": "GR",
+      "skill": "Throwing Weapons",
+      "attribute": "strength",
+      "concealability": "12",
+      "strMin": 0,
+      "damage": "Special",
+      "weight": ".2",
+      "availability": "3/36 hrs",
+      "cost": 250,
+      "streetIndex": "1",
+      "legal": true,
+      "bookPage": "sr3.283",
+      "notes": "<p>The size of a pack of cigarettes, this unit contains four quartz-halogen micro-flashes designed to fire in random strobe sequences to disorient, distract and blind opponents. Anyone facing a flash-pak receives a +4 target number modifier (+2 if the target has flare compensation). The pak also negates modifiers from poor or no lighting, but imposes its own +2 modifier because of the strobing flashes.</p><p>SR3 p.283 — Legality Legal. No blast.</p>",
+      "isAoE": true,
+      "blast": "",
+      "hands": 1
+    },
+    "effects": [],
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-core-grenades"
+      }
+    },
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

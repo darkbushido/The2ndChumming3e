@@ -1,0 +1,34 @@
+{
+  "_key": "!items!c9f14c3dde918d3d",
+  "doc": {
+    "_id": "c9f14c3dde918d3d",
+    "name": "Smoke Grenade",
+    "type": "projectile",
+    "system": {
+      "category": "GR",
+      "skill": "Throwing Weapons",
+      "attribute": "strength",
+      "concealability": "6",
+      "strMin": 0,
+      "damage": "--",
+      "weight": ".25",
+      "availability": "3/24 hrs",
+      "cost": 30,
+      "streetIndex": "2",
+      "legal": false,
+      "bookPage": "sr3.283",
+      "notes": "<p>Releases a cloud of smoke that fills an area 20 metres in diameter, lasting for 2 Combat Turns (less in windy areas). Smoke obscures vision, applying visibility modifiers to relevant tests.</p><p>SR3 p.283 — Legality 5-J. No blast.</p>",
+      "isAoE": true,
+      "blast": "",
+      "hands": 1
+    },
+    "effects": [],
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-core-grenades"
+      }
+    },
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

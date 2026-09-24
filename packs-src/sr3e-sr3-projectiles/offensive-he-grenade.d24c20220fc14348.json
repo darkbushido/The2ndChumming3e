@@ -1,0 +1,34 @@
+{
+  "_key": "!items!d24c20220fc14348",
+  "doc": {
+    "_id": "d24c20220fc14348",
+    "name": "Offensive HE Grenade",
+    "type": "projectile",
+    "system": {
+      "category": "GR",
+      "skill": "Throwing Weapons",
+      "attribute": "strength",
+      "concealability": "6",
+      "strMin": 0,
+      "damage": "10S",
+      "weight": ".25",
+      "availability": "4/4 days",
+      "cost": 30,
+      "streetIndex": "2",
+      "legal": false,
+      "bookPage": "sr3.283",
+      "notes": "<p>Also comes as a mini-grenade for a grenade launcher (SR3 p.283): same effects, weight .1, and it does not arm until it has travelled five metres.</p><p>SR3 p.283 — Legality 3-J. Blast –1/m.</p>",
+      "isAoE": true,
+      "blast": "-1/m",
+      "hands": 1
+    },
+    "effects": [],
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-core-grenades"
+      }
+    },
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

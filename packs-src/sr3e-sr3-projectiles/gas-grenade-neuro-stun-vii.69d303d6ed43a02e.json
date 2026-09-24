@@ -1,0 +1,34 @@
+{
+  "_key": "!items!69d303d6ed43a02e",
+  "doc": {
+    "_id": "69d303d6ed43a02e",
+    "name": "Gas Grenade (Neuro-Stun VII)",
+    "type": "projectile",
+    "system": {
+      "category": "GR",
+      "skill": "Throwing Weapons",
+      "attribute": "strength",
+      "concealability": "5",
+      "strMin": 0,
+      "damage": "Special",
+      "weight": ".25",
+      "availability": "8/4 days",
+      "cost": 60,
+      "streetIndex": "2",
+      "legal": false,
+      "bookPage": "sr3.283",
+      "notes": "<p>Instead of exploding, these cylindrical grenades release a cloud of stun gas — commonly Neuro-Stun VIII (see p.250), although they may be filled with other chemicals. The gas cloud affects everything within a 10-metre radius, and lasts for 2 Combat Turns (less in windy areas, at the gamemaster's discretion).</p><p>SR3 p.283 — Legality 3-J. No blast.</p>",
+      "isAoE": true,
+      "blast": "",
+      "hands": 1
+    },
+    "effects": [],
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-core-grenades"
+      }
+    },
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

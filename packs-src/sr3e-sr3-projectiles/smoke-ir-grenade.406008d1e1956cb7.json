@@ -1,0 +1,34 @@
+{
+  "_key": "!items!406008d1e1956cb7",
+  "doc": {
+    "_id": "406008d1e1956cb7",
+    "name": "Smoke (IR) Grenade",
+    "type": "projectile",
+    "system": {
+      "category": "GR",
+      "skill": "Throwing Weapons",
+      "attribute": "strength",
+      "concealability": "6",
+      "strMin": 0,
+      "damage": "--",
+      "weight": ".25",
+      "availability": "4/48 hrs",
+      "cost": 40,
+      "streetIndex": "2",
+      "legal": false,
+      "bookPage": "sr3.283",
+      "notes": "<p>Infra-red smoke contains hot particles that obscure thermographic vision. Otherwise as a smoke grenade.</p><p>SR3 p.283 — Legality 5-J. No blast.</p>",
+      "isAoE": true,
+      "blast": "",
+      "hands": 1
+    },
+    "effects": [],
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-core-grenades"
+      }
+    },
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

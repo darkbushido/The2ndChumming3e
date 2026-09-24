@@ -1,0 +1,34 @@
+{
+  "_key": "!items!a3366ce223b4851c",
+  "doc": {
+    "_id": "a3366ce223b4851c",
+    "name": "Defensive AP Grenade",
+    "type": "projectile",
+    "system": {
+      "category": "GR",
+      "skill": "Throwing Weapons",
+      "attribute": "strength",
+      "concealability": "6",
+      "strMin": 0,
+      "damage": "10S",
+      "weight": ".25",
+      "availability": "4/4 days",
+      "cost": 30,
+      "streetIndex": "2",
+      "legal": false,
+      "bookPage": "sr3.283",
+      "notes": "<p>AP grenades are offensive or defensive grenades with high fragmentation; they are specifically designed to damage unarmored people. Determine damage from AP grenades according to the flechette rules (SR3 p.116, p.119).</p><p>SR3 p.283 — Legality 3-J. Blast –1/.5m.</p>",
+      "isAoE": true,
+      "blast": "-1/.5m",
+      "hands": 1
+    },
+    "effects": [],
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-core-grenades"
+      }
+    },
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}
