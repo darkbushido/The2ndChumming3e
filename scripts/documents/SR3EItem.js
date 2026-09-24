@@ -3521,6 +3521,22 @@ static get WEAPON_SKILL_MAP() {
     'Flthr':  { skill: 'Spray Weapons',  attribute: 'strength' },
     'MulWea': { skill: 'Pistols',        attribute: 'quickness' },
 
+    /* Thrown weapons -> Throwing Weapons (Strength)  · TODO 148
+     *
+     * SR3 p.86: *"Throwing Weapons governs the use of any item thrown by the user."* Its
+     * specialisations are *"including but not limited to darts, grenades, knives and shuriken"*.
+     *
+     * ⚠ These categories were MISSING, so `_getWeaponSkill` fell through to `'Firearms'` and a
+     * thrown grenade asked for a firearm skill. ⚠ A grenade fired from a LAUNCHER is a different
+     * item (`GrLn`, above) and keeps Launch Weapons. The list is `SR3E.thrownCategories`. */
+    'GR':     { skill: 'Throwing Weapons', attribute: 'strength' },
+    'TK':     { skill: 'Throwing Weapons', attribute: 'strength' },
+    'SH':     { skill: 'Throwing Weapons', attribute: 'strength' },
+    'BOL':    { skill: 'Throwing Weapons', attribute: 'strength' },
+    'Imp':    { skill: 'Throwing Weapons', attribute: 'strength' },
+    'Ctrp':   { skill: 'Throwing Weapons', attribute: 'strength' },
+    'THR':    { skill: 'Throwing Weapons', attribute: 'strength' },
+
     // Melee Weapons - Armed Combat
     'EDG': { skill: 'Edged Weapons',        attribute: 'strength' },
     'CLB': { skill: 'Clubs',               attribute: 'strength' },
@@ -3553,17 +3569,25 @@ _getWeaponCode() {
  * @private
  */
 _getWeaponSkill() {
-  const code = this._getWeaponCode();
-  
+  return SR3EItem.weaponSkillFor(this._getWeaponCode(), this.type);
+}
+
+/**
+ * The skill for a weapon category, or the type's fallback. **Pure** (TODO 148).
+ * A thrown item of a category the map does not name (`other`, a `thrown`-type item) is still
+ * thrown — SR3 p.86: *"Throwing Weapons governs the use of any item thrown by the user."*
+ */
+static weaponSkillFor(code, type) {
   if (code && SR3EItem.WEAPON_SKILL_MAP[code]) {
     return SR3EItem.WEAPON_SKILL_MAP[code].skill;
   }
-  
+
   // Fallback based on item type
-  if (this.type === 'firearm') return 'Firearms';
-  if (this.type === 'melee') return 'Armed Combat';
-  if (this.type === 'bow') return 'Projectile Weapons';
-  
+  if (type === 'thrown' || (type === 'projectile' && game.sr3e.SR3E.thrownCategories.includes(code ?? ''))) return 'Throwing Weapons';
+  if (type === 'firearm') return 'Firearms';
+  if (type === 'melee') return 'Armed Combat';
+  if (type === 'bow') return 'Projectile Weapons';
+
   return 'Firearms';
 }
 

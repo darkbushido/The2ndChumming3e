@@ -593,6 +593,17 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'thrown-grenade-rolls-firearms',
+    suite:  'grenade-skill',
+    ...ITEM, method: 'weaponSkillFor',
+    was:    'no category entry for GR, so a thrown grenade fell through to the Firearms skill (SR3 p.86, TODO 148)',
+    impl:   function (code, type) {
+      if (code === 'GrLn') return 'Launch Weapons';
+      if (code === 'HPist') return 'Pistols';
+      return type === 'melee' ? 'Armed Combat' : 'Firearms';
+    },
+  },
+  {
     id:     'short-burst-raises-level',
     suite:  'fire-modes',
     ...ITEM, method: 'fireModeDamage',
