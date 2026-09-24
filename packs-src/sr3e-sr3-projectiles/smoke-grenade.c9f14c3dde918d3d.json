@@ -20,6 +20,8 @@
       "notes": "<p>Releases a cloud of smoke that fills an area 20 metres in diameter, lasting for 2 Combat Turns (less in windy areas). Smoke obscures vision, applying visibility modifiers to relevant tests.</p><p>SR3 p.283 — Legality 5-J. No blast.</p>",
       "isAoE": true,
       "blast": "",
+      "areaRadius": 10,
+      "areaEffect": "A smoke cloud 20 m across for 2 Combat Turns (less in windy areas): it obscures vision — apply the visibility modifiers (SR3 p.112).",
       "hands": 1
     },
     "effects": [],

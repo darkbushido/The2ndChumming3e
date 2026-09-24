@@ -20,6 +20,7 @@
       "notes": "<p>The size of a pack of cigarettes, this unit contains four quartz-halogen micro-flashes designed to fire in random strobe sequences to disorient, distract and blind opponents. Anyone facing a flash-pak receives a +4 target number modifier (+2 if the target has flare compensation). The pak also negates modifiers from poor or no lighting, but imposes its own +2 modifier because of the strobing flashes.</p><p>SR3 p.283 — Legality Legal. No blast.</p>",
       "isAoE": true,
       "blast": "",
+      "areaEffect": "Anyone facing it takes +4 to target numbers (+2 with flare compensation); it negates poor or no lighting modifiers but adds its own +2 from the strobing.",
       "hands": 1
     },
     "effects": [],

@@ -1743,6 +1743,7 @@ Hooks.on('updateCombat', (_combat, changed) => {
   if ('round' in changed && game.users?.activeGM?.isSelf) {
     SR3EActor.tickAttributeBoosts();
     SR3EActor.tickAugmentations();
+    SR3EActor.expireAreaMarkers(_combat.round).catch(err => console.warn('SR3E | area marker expiry failed', err));   // smoke and gas end (TODO 155)
     for (const a of game.actors) {
       if (a.type === 'vehicle') {
         const left = a.system?.infiltration?.turnsRemaining ?? 0;

@@ -4,6 +4,7 @@ import { Shotgun, CHOKE_MIN, CHOKE_MAX } from '../data/shotgun.mjs';
 import { WeaponAccessories } from '../data/weapon-accessories.mjs';
 import { PhaseTargets } from '../data/phase-targets.mjs';
 import { Blast } from '../data/blast.mjs';
+import { AreaEffect } from '../data/area-effect.mjs';
 
 export class SR3EItem extends Item {
 
@@ -1091,10 +1092,15 @@ export class SR3EItem extends Item {
       ui.notifications.warn('AoE attacks need a scene — place the attacker and targets on a map.');
       return null;
     }
-    const power  = SR3EItem.parseDamageCode(rawDamage, actor)?.power ?? 5;
+    const parsedRaw  = SR3EItem.parseDamageCode(rawDamage, actor);
+    // A gas / smoke / flash grenade has no Damage Code but still lands and marks an area (TODO 155, p.283).
+    const areaEffect = AreaEffect.of(this.system, parsedRaw);
+    const power  = parsedRaw?.power ?? 5;
     // The blast reaches as far as its Power lasts at THIS grenade's falloff — a defensive grenade
     // (−1 per half metre) runs out at half the distance (SR3 p.119, TODO 150).
-    const placed = await SR3EItem._placeBlastTemplate(actor, Blast.radius(power, Blast.rate(this.system.blast)));
+    const placed = await SR3EItem._placeBlastTemplate(actor, areaEffect
+      ? (areaEffect.radius ?? 1)
+      : Blast.radius(power, Blast.rate(this.system.blast)));
     if (!placed) return null; // cancelled placement
 
     const aToken        = actor.getActiveTokens?.()[0] ?? null;
@@ -1119,7 +1125,7 @@ export class SR3EItem extends Item {
     options.karmaReroll      = weaponOpts.karmaReroll;
     const effectiveRawDamage = weaponOpts.damageCode;
     const damageBase         = SR3EItem.parseDamageCode(effectiveRawDamage, actor);
-    if (!damageBase) {
+    if (!damageBase && !areaEffect) {
       ui.notifications.warn(`${this.name} has no damage code set. Edit the item to add one (e.g. 9M, 8M Stun).`);
       return null;
     }
@@ -1201,6 +1207,7 @@ export class SR3EItem extends Item {
     options.aoeThrowerCenter = throwerCenter;          // for relative scatter direction
     options.aoeChunky        = weaponOpts.useSalsaGUI; // resolve confined space after scatter
     options.aoeBlast         = this.system.blast ?? '';   // falloff per metre, read at resolution (TODO 150)
+    options.aoeEffect        = areaEffect ? { name: this.name, ...areaEffect } : null;   // no-damage area grenade (TODO 155)
     options.ammoType         = SR3EItem.flechetteAmmo(this.system);   // AP grenades: the flechette rules, p.119 (TODO 156)
     options.grenadeType      = weaponOpts.grenadeType ?? 'standard';
     options.skipWoundMod     = true;   // pre-applied in the roll-options TN (throwPreTN)

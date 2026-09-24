@@ -20,6 +20,8 @@
       "notes": "<p>Infra-red smoke contains hot particles that obscure thermographic vision. Otherwise as a smoke grenade.</p><p>SR3 p.283 — Legality 5-J. No blast.</p>",
       "isAoE": true,
       "blast": "",
+      "areaRadius": 10,
+      "areaEffect": "An infra-red smoke cloud 20 m across for 2 Combat Turns: hot particles obscure thermographic vision as well as normal sight.",
       "hands": 1
     },
     "effects": [],

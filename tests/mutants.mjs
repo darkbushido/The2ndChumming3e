@@ -644,6 +644,18 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'damaging-grenade-becomes-an-effect',
+    suite:  'area-effect',
+    module: '../scripts/data/area-effect.mjs', klass: 'AreaEffect', method: 'of',
+    was:    'a grenade WITH a Damage Code was treated as an area-effect grenade, so it skipped its damage and soak (TODO 155)',
+    impl:   system => {
+      const text = String(system?.areaEffect ?? '').trim();
+      const radius = Number(system?.areaRadius);
+      if (!text && !(radius > 0)) return null;
+      return { text, radius: radius > 0 ? radius : null, turns: null };
+    },
+  },
+  {
     id:     'short-burst-raises-level',
     suite:  'fire-modes',
     ...ITEM, method: 'fireModeDamage',

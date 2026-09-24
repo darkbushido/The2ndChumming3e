@@ -6,6 +6,7 @@ import * as Sustaining from '../data/sustaining.mjs';
 import { DrugRules } from '../data/drug-rules.mjs';
 import { Ledger } from '../data/ledger.mjs';
 import { Blast } from '../data/blast.mjs';
+import { AreaEffect } from '../data/area-effect.mjs';
 
 export class SR3EActor extends Actor {
 
@@ -2503,6 +2504,7 @@ _prepareCharacter(sys, attr) {
         aoeThrowerCenter:    options.aoeThrowerCenter   ?? null,
         aoeChunky:           options.aoeChunky          ?? false,
         aoeBlast:            options.aoeBlast           ?? '',
+        aoeEffect:           options.aoeEffect          ?? null,
         rawDamage:           options.rawDamage          ?? '',
         damageBase:          options.damageBase         ?? null,
         weaponItemId:        options.weaponItemId       ?? null,
@@ -2582,6 +2584,7 @@ _prepareCharacter(sys, attr) {
       aoeThrowerCenter:      options.aoeThrowerCenter      ?? null,
       aoeChunky:             options.aoeChunky             ?? false,
       aoeBlast:              options.aoeBlast              ?? '',
+      aoeEffect:             options.aoeEffect             ?? null,
       rawDamage:             options.rawDamage             ?? '',
       damageBase:            options.damageBase            ?? null,
       weaponItemId:          options.weaponItemId          ?? null,
@@ -2986,7 +2989,7 @@ _prepareCharacter(sys, attr) {
    * caller lacks Region-create permission. `radiusM` is in scene metres.
    * Returns { regionId, markerId } — feed both to the chat 🧹 Clear button (sr3e.js handles each).
    */
-  static async _drawBlastArea(center, radiusM, { name = 'Blast', color = '#cc3300' } = {}) {
+  static async _drawBlastArea(center, radiusM, { name = 'Blast', color = '#cc3300', expiresRound = null } = {}) {
     const out = { regionId: null, markerId: null };
     if (!canvas?.ready || !center) return out;
     const pxPerM   = canvas.dimensions.size / canvas.dimensions.distance;
@@ -2998,7 +3001,7 @@ _prepareCharacter(sys, attr) {
         color,
         visibility: CONST.REGION_VISIBILITY?.ALWAYS ?? 2,
         shapes: [{ type: 'circle', x: center.x, y: center.y, radius: radiusPx, hole: false }],
-        flags: { 'The2ndChumming3e': { blastResult: true } },
+        flags: { 'The2ndChumming3e': { blastResult: true, ...(Number.isFinite(expiresRound) ? { expiresRound, combatId: game.combat?.id ?? null } : {}) } },
       }]);
       out.regionId = region?.id ?? null;
     } catch {
@@ -3016,6 +3019,19 @@ _prepareCharacter(sys, attr) {
       } catch (err) { console.error('SR3E | could not draw blast marker', err); }
     }
     return out;
+  }
+
+  /**
+   * Remove the area markers whose effect has run out (TODO 155): a smoke or gas cloud lasts its Combat Turns,
+   * and the marker was laid with the round it ends on. GM client only; a marker with no expiry stays until
+   * someone clears it with the 🧹 button.
+   */
+  static async expireAreaMarkers(round) {
+    const doomed = (canvas?.scene?.regions ?? [])
+      .filter(r => AreaEffect.hasExpired(r.getFlag('The2ndChumming3e', 'expiresRound'), round))
+      .map(r => r.id);
+    if (doomed.length) await canvas.scene.deleteEmbeddedDocuments('Region', doomed);
+    return doomed.length;
   }
 
   /** Markup for the chat 🧹 Clear-blast-marker button from a { regionId, markerId } pair. */
@@ -3077,7 +3093,7 @@ _prepareCharacter(sys, attr) {
       let stagingHtml = '';
       let postRollHtml = '';
 
-      if (state.isWeaponRoll && state.damageBase) {
+      if (state.isWeaponRoll && (state.damageBase || state.aoeEffect)) {
         if (state.isAoE && state.aoeCenter) {
           // Grenade: ALWAYS detonates. Successes only reduce scatter (RAW). Scatter relocates
           // the blast; we re-detect who's caught (incl. the thrower) and apply power − distance.
@@ -3091,9 +3107,9 @@ _prepareCharacter(sys, attr) {
           const scatterDist = Math.max(0, rawDist - reduction);
           const DIRS = ['', 'overthrown (long)', 'long & right', 'short & right', 'short', 'short & left', 'long & left'];
 
-          const basePower = state.damageBase.power;
-          const level     = state.damageBase.level;
-          const isStun    = state.damageBase.isStun;
+          const basePower = state.damageBase?.power ?? 0;   // no damage code: an area effect grenade (TODO 155)
+          const level     = state.damageBase?.level ?? 'L';
+          const isStun    = state.damageBase?.isStun ?? false;
 
           // Relocate the epicentre along the throw axis (1 = overthrow, 4 = short).
           let center = { ...state.aoeCenter };
@@ -3117,7 +3133,11 @@ _prepareCharacter(sys, attr) {
           // Show where it actually went off, visible to ALL players (Region, with a local
           // PIXI fallback if the thrower lacks Region-create permission).
           const { regionId: resultRegionId, markerId: resultMarkerId } =
-            await SR3EActor._drawBlastArea(center, state.aoeRadius, { name: 'Grenade Blast' });
+            await SR3EActor._drawBlastArea(center, state.aoeRadius, state.aoeEffect
+              ? { name: `${state.aoeEffect.name}${state.aoeEffect.turns ? ` (${state.aoeEffect.turns} Combat Turns)` : ''}`,
+                  color: AreaEffect.color(state.aoeEffect.name),
+                  expiresRound: AreaEffect.expiresRound(game.combat?.started ? game.combat.round : NaN, state.aoeEffect.turns) }
+              : { name: 'Grenade Blast' });
 
           // Re-detect everyone caught in the (scattered) blast — the thrower can be hit.
           const hits = [];
@@ -3129,7 +3149,9 @@ _prepareCharacter(sys, attr) {
 
           // Per-target codes: Chunky Salsa GUI (confined) or open-air power − distance.
           let codes;
-          if (state.aoeChunky && game.sr3e.openChunkySalsa && hits.length) {
+          if (state.aoeEffect) {
+            codes = [];   // nothing to resist: an area effect deals no damage (TODO 155)
+          } else if (state.aoeChunky && game.sr3e.openChunkySalsa && hits.length) {
             codes = (await game.sr3e.openChunkySalsa({
               power: basePower, level, actorIds: hits.map(h => h.actor.id), returnOnly: true,
               falloff: Blast.rate(state.aoeBlast),   // its own falloff (#159)
@@ -3173,7 +3195,21 @@ _prepareCharacter(sys, attr) {
             ? codes.map(t => `<div style="font-size:11px;margin-top:2px"><strong>${t.name}</strong>: ${t.power}${t.level}${t.dist != null ? ` <span style="color:var(--sr-muted)">(${t.dist}m)</span>` : ''}${t.staged ? ` <span style="color:var(--sr-gold)">(staged up by ${successes} hit${successes !== 1 ? 's' : ''}, p.119)</span>` : ''}</div>`).join('')
             : '<div style="font-size:11px;color:var(--sr-muted)">No one caught in the blast.</div>';
           const clearBtn = SR3EActor._clearBlastButton({ regionId: resultRegionId, markerId: resultMarkerId });
-          stagingHtml = `<div class="sr-staging-result">💥 ${basePower}${level}${isStun ? ' Stun' : ''} grenade — ${successes} hit${successes !== 1 ? 's' : ''}<div style="margin-top:3px">${scatterDesc}</div>${hitLines}${clearBtn}</div>`;
+          if (state.aoeEffect) {
+            // A gas / smoke / flash grenade: nothing is rolled against anyone and nothing is applied — the card
+            // says what the book says it does, who is inside the marked area, and leaves the rest to the GM.
+            const inArea = hits.length
+              ? hits.map(h => `${h.actor.name} (${h.dist}m)`).join(', ')
+              : 'no one';
+            stagingHtml = `<div class="sr-staging-result">💨 <strong>${state.aoeEffect.name}</strong> — ${successes} hit${successes !== 1 ? 's' : ''}`
+              + `<div style="margin-top:3px">${scatterDesc}</div>`
+              + (state.aoeEffect.text ? `<div style="margin-top:4px">${state.aoeEffect.text}</div>` : '')
+              + `<div style="margin-top:4px;font-size:11px"><strong>In the area:</strong> ${inArea}</div>`
+              + `<div style="margin-top:3px;font-size:11px;color:var(--sr-muted)">Nothing is applied — the GM decides what it does to whom (SR3 p.283).</div>`
+              + `${clearBtn}</div>`;
+          } else {
+            stagingHtml = `<div class="sr-staging-result">💥 ${basePower}${level}${isStun ? ' Stun' : ''} grenade — ${successes} hit${successes !== 1 ? 's' : ''}<div style="margin-top:3px">${scatterDesc}</div>${hitLines}${clearBtn}</div>`;
+          }
 
           for (const t of codes) {
             const tActor = game.actors.get(t.actorId);
@@ -3262,7 +3298,7 @@ _prepareCharacter(sys, attr) {
               </div>`;
           }
         }
-      } else if (state.isWeaponRoll && !state.damageBase) {
+      } else if (state.isWeaponRoll && !state.damageBase && !state.aoeEffect) {
         stagingHtml = '<div class="sr-staging-result sr-warn">⚠ No damage code set on this weapon</div>';
 
       } else if (state.isSpellRoll && state.spellContext) {
@@ -3767,6 +3803,7 @@ _prepareCharacter(sys, attr) {
         aoeThrowerCenter:   state.aoeThrowerCenter   ?? null,
         aoeChunky:          state.aoeChunky          ?? false,
         aoeBlast:           state.aoeBlast           ?? '',
+        aoeEffect:          state.aoeEffect          ?? null,
         rawDamage:          state.rawDamage          ?? '',
         damageBase:         state.damageBase         ?? null,
         weaponItemId:       state.weaponItemId       ?? null,

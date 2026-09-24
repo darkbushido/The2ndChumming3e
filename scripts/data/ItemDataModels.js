@@ -76,6 +76,10 @@ export class ProjectileData extends foundry.abstract.TypeDataModel {
       isAoE:          new BooleanField({ initial: false }),
       // Blast falloff in the book's notation — "-1/m", "-1/.5m" (SR3 p.119, p.283; TODO 150). Blank = -1/m.
       blast:          new StringField({ initial: '' }),
+      // An area grenade with no damage — gas, smoke, flash (SR3 p.283; TODO 155): the marked radius in metres
+      // and the effect the card states. Read only when the Damage Code is not a usable code.
+      areaRadius:     new NumberField({ nullable: true, initial: null, min: 0 }),
+      areaEffect:     new StringField({ initial: '' }),
       // Uses the flechette rules (SR3 p.116, p.119; TODO 156). An (f) in the Damage Code says the level
       // increase is already in it, so only the armour rule applies; ticked on a plain code, all of it does.
       flechette:      new BooleanField({ initial: false }),
@@ -113,6 +117,10 @@ export class ThrownData extends foundry.abstract.TypeDataModel {
       notes:          new HTMLField({ initial: '', required: false }),
       isAoE:          new BooleanField({ initial: false }),
       blast:          new StringField({ initial: '' }),   // as on ProjectileData (TODO 150)
+      // An area grenade with no damage — gas, smoke, flash (SR3 p.283; TODO 155): the marked radius in metres
+      // and the effect the card states. Read only when the Damage Code is not a usable code.
+      areaRadius:     new NumberField({ nullable: true, initial: null, min: 0 }),
+      areaEffect:     new StringField({ initial: '' }),
       // Uses the flechette rules (SR3 p.116, p.119; TODO 156). An (f) in the Damage Code says the level
       // increase is already in it, so only the armour rule applies; ticked on a plain code, all of it does.
       flechette:      new BooleanField({ initial: false }),

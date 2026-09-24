@@ -336,6 +336,8 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     ${this._f('Str. Min.', 'strMin', s.strMin, 'text', 'placeholder="3 or -"')}
     ${this._f('Damage', 'damage', s.damage, 'text', 'placeholder="(STR)L or 6M"')}
     ${this._f('Blast falloff', 'blast', s.blast ?? '', 'text', 'placeholder="-1/m" title="Power lost with distance from the blast (SR3 p.119, p.283): -1/m offensive, -1/.5m defensive. Blank = -1/m. Only used when Area of Effect is ticked."')}
+    ${this._f('Area radius (m)', 'areaRadius', s.areaRadius ?? '', 'number', 'min="0" step="1" placeholder="10" title="Gas, smoke and flash grenades that deal no damage: the radius of the area they mark (SR3 p.283). Blank = none."')}
+    ${this._f('Area effect', 'areaEffect', s.areaEffect ?? '', 'text', 'placeholder="what it does — shown on the card"')}
     ${this._f('Quantity', 'quantity', s.quantity ?? 0, 'number', 'min="0" title="How many you carry. Thrown weapons (not bows) are consumed on use when ammo tracking is enabled."')}
     ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
     ${this._f('Availability', 'availability', s.availability)}
@@ -368,6 +370,8 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     ${this._f('Str. Min.', 'strMin', s.strMin, 'text', 'placeholder="3 or -"')}
     ${this._f('Damage', 'damage', s.damage, 'text', 'placeholder="(STR)L or 6M"')}
     ${this._f('Blast falloff', 'blast', s.blast ?? '', 'text', 'placeholder="-1/m" title="Power lost with distance from the blast (SR3 p.119, p.283): -1/m offensive, -1/.5m defensive. Blank = -1/m. Only used when Area of Effect is ticked."')}
+    ${this._f('Area radius (m)', 'areaRadius', s.areaRadius ?? '', 'number', 'min="0" step="1" placeholder="10" title="Gas, smoke and flash grenades that deal no damage: the radius of the area they mark (SR3 p.283). Blank = none."')}
+    ${this._f('Area effect', 'areaEffect', s.areaEffect ?? '', 'text', 'placeholder="what it does — shown on the card"')}
     ${this._f('Quantity', 'quantity', s.quantity ?? 0, 'number', 'min="0" title="How many you carry. Consumed on use when ammo tracking is enabled."')}
     ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
     ${this._f('Availability', 'availability', s.availability)}

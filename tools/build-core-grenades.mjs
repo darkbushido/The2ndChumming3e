@@ -58,12 +58,16 @@ const ROWS = [
   { name: 'Concussion Grenade',   conceal: '6', damage: '12M Stun', blast: '-1/m', weight: 0.25, avail: '5/4 days', cost: 30, index: '2', legality: '3-J', legal: false,
     note: '<p>The book prints the Damage Code as "12M (Stun)".</p>' },
   { name: 'Gas Grenade (Neuro-Stun VII)', conceal: '5', damage: 'Special', blast: '', weight: 0.25, avail: '8/4 days', cost: 60, index: '2', legality: '3-J', legal: false,
+    areaRadius: 10, areaEffect: 'A cloud of stun gas: everything within 10 m is exposed, for 2 Combat Turns (less in windy areas, at the gamemaster\'s discretion).',
     note: '<p>Instead of exploding, these cylindrical grenades release a cloud of stun gas — commonly Neuro-Stun VIII (see p.250), although they may be filled with other chemicals. The gas cloud affects everything within a 10-metre radius, and lasts for 2 Combat Turns (less in windy areas, at the gamemaster\'s discretion).</p>' },
   { name: 'Smoke Grenade',        conceal: '6', damage: '--', blast: '', weight: 0.25, avail: '3/24 hrs', cost: 30, index: '2', legality: '5-J', legal: false,
+    areaRadius: 10, areaEffect: 'A smoke cloud 20 m across for 2 Combat Turns (less in windy areas): it obscures vision — apply the visibility modifiers (SR3 p.112).',
     note: '<p>Releases a cloud of smoke that fills an area 20 metres in diameter, lasting for 2 Combat Turns (less in windy areas). Smoke obscures vision, applying visibility modifiers to relevant tests.</p>' },
   { name: 'Smoke (IR) Grenade',   conceal: '6', damage: '--', blast: '', weight: 0.25, avail: '4/48 hrs', cost: 40, index: '2', legality: '5-J', legal: false,
+    areaRadius: 10, areaEffect: 'An infra-red smoke cloud 20 m across for 2 Combat Turns: hot particles obscure thermographic vision as well as normal sight.',
     note: '<p>Infra-red smoke contains hot particles that obscure thermographic vision. Otherwise as a smoke grenade.</p>' },
   { name: 'Flash-Pak',            conceal: '12', damage: 'Special', blast: '', weight: 0.2, avail: '3/36 hrs', cost: 250, index: '1', legality: 'Legal', legal: true,
+    areaEffect: 'Anyone facing it takes +4 to target numbers (+2 with flare compensation); it negates poor or no lighting modifiers but adds its own +2 from the strobing.',
     note: '<p>The size of a pack of cigarettes, this unit contains four quartz-halogen micro-flashes designed to fire in random strobe sequences to disorient, distract and blind opponents. Anyone facing a flash-pak receives a +4 target number modifier (+2 if the target has flare compensation). The pak also negates modifiers from poor or no lighting, but imposes its own +2 modifier because of the strobing flashes.</p>' },
 ];
 
@@ -95,6 +99,8 @@ function buildDoc(row) {
         notes,
         isAoE: true,
         blast: row.blast,
+        ...(row.areaRadius ? { areaRadius: row.areaRadius } : {}),
+        ...(row.areaEffect ? { areaEffect: row.areaEffect } : {}),   // no-damage area grenades (TODO 155)
         ...(row.flechette ? { flechette: true } : {}),   // AP: the flechette rules, SR3 p.119 (TODO 156)
         hands: 1,
       },
