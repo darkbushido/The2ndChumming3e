@@ -4157,7 +4157,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
    *   formula IS the TN and the level is the nominated level (or a bare letter for non-damaging
    *   spells). `damageLevel` is the cast's level (null for non-damaging spells). TN min 2.
    *
-   * âš  **Past Deadly the level stops and the POWER rises** Â· SR3 p.191 (and MitS p.66, verbatim):
+   * ⚠ **Past Deadly the level stops and the POWER rises** · SR3 p.191 (and MitS p.66, verbatim):
    * *"If a modifier would raise the Drain Level above Deadly, add +2 to the Drain Power instead for
    * each level above Deadly."* Fireball, +1(Damage Level +2), cast at Serious: Deadly, and +2 on the
    * Power. Clamped silently at Deadly until the 0.6.1 rules check (TODO 170).

@@ -41,7 +41,7 @@ export const MUTANTS = [
     id:     'mana-spells-deal-stun',
     suite:  'spell-damage',
     ...ITEM, method: 'spellDealsStun',
-    was:    'the damage track followed Mana/Physical â€” Manabolt, Manaball and Death Touch dealt Stun (SR3 p.191, TODO 169)',
+    was:    'the damage track followed Mana/Physical — Manabolt, Manaball and Death Touch dealt Stun (SR3 p.191, TODO 169)',
     impl:   spell => (spell?.system?.type ?? 'Mana') !== 'Physical',
   },
   {
