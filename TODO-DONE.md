@@ -6664,3 +6664,124 @@ delete with id `'null'`; the client's own `deleteDocuments` refuses it), **only 
 `finally`, on every load, never blocking the world. Verified in the dev world: 74 → 0, 104 packs / 6,147 documents, matching the release. Anything without a
 twin is logged and left alone. It relies on an internal socket call, so a failure is a console warning and the pack is left as it was. Needs no filesystem access.
 A full clean is also possible by uninstalling and reinstalling the system from Foundry's Setup screen.
+
+## 165. ✅ Rules check 0.6.1 — damage staging is not the book's net comparison — `a597f2a0`
+
+**Done 2026-09-24:** the maintainer chose the net comparison. `SR3EActor.netStagedDamage`; ranged, vehicle,
+grenade and elemental-spell soaks carry `net`. Melee unchanged (p.122).
+
+Ranged, grenade and elemental-spell damage stage **up** by the attacker's raw successes and **down** separately
+by the defender's (`SR3EActor.js:3233`, `:4098`). SR3 p.113 compares the attacker's successes with the target's
+**total** and stages by the difference: 2 vs 1 should be base damage (code stages up one); 4 vs 1 should stage up
+once (code twice); a tie at the Deadly cap ends up at Light instead of base. p.114 also has a paragraph describing
+each side staging on its own successes, so this is the maintainer's call which reading governs — the worked
+example (Liam/Snot) follows the net one. Ledger: `combat.md` #50-53, `grenades.md` #31.
+
+## 166. ✅ Rules check 0.6.1 — Physical overflow kills at Body, the book kills past Body — `9f76fc52`
+
+**Done 2026-09-24:** `SR3EActor.deadFromOverflow` (overflow > Body). The extra box every (Body) Combat Turns
+stays a note on the card — damage is never applied automatically (the design ethos), so it is not a remainder.
+
+`sr3e.js:1988` and `SR3EActorSheet.js:607` mark a character dead at overflow ≥ Body; SR3 p.125 kills only when
+overflow **exceeds** Body. The extra box every (Body) Combat Turns while in overflow is shown but never applied.
+Ledger: `combat.md` #124, `healing.md` #29.
+
+## 167. ✅ Rules check 0.6.1 — Vehicle Control Rig and Control Pool — `c7636fab`
+
+**Done 2026-09-24:** `scripts/data/rigging.mjs` — +2 Reaction per VCR level, Control Pool = Reaction + 2 × VCR
+(0 without a rig), capped per test at the skill; the chase no longer gives unrigged drivers a pool.
+"Adapted for rigger control" moves to [#176](TODO.md#176).
+
+- VCR adds **+1** Reaction per level to initiative (`SR3EActor.js` two VCR branches); SR3 p.301 says **+2** and +1D6.
+- Control Pool is the Vehicle Skill rating in this system (comment at `SR3EActor.js:2243`); p.44 says Reaction
+  as modified by the VCR. The gunnery flow sizes it as Reaction base + VCR level (`SR3EItem.js:1744`) — also +1/level.
+- "Adapted for rigger control" (p.134) is not modelled.
+
+Ledger: `combat.md` #152-153.
+
+## 168. ✅ Rules check 0.6.1 — Vehicle gunnery and shooting vehicles — `65ef3438`
+
+**Done 2026-09-24:** `SR3EItem.vehicleTargetDamage` (round down, Light no effect, AV halves armour on the soak
+card) and `sensorGunneryDice`. The vehicle dodge and Control Pool on vehicle soaks (#157 in the ledger) move to
+[#176](TODO.md#176) — they were "not implemented", not divergences.
+
+- Sensor-enhanced gunnery: the code subtracts the Sensor rating from the target's Signature (`SR3EItem.js:1800`);
+  p.152 rolls Gunnery + **half the Sensor rating as dice**.
+- Shooting a vehicle: Power is halved **rounding up** (`Math.ceil`, `SR3EItem.js:1483`, `:1772`) — p.149 says round
+  down; Light damage should not affect the vehicle (`L: 'L'` in the level table); anti-vehicle rounds should subtract
+  only half the armour.
+- Vehicles never dodge and roll no Control Pool on their Damage Resistance Test (p.149).
+
+Ledger: `combat.md` #155-157.
+
+## 169. ✅ Rules check 0.6.1 — Mana spells deal Stun; the book makes Manabolt, Manaball and Death Touch Physical — `4e183605`
+
+**Done 2026-09-24:** `SR3EItem.spellDealsStun` and the spell field `damageTrack` ('' = from the name).
+
+`SR3EItem.js:4595` `isStun = spellType !== 'Physical'`, and the pack items have an empty `damage` field. SR3 p.191:
+Manabolt and Manaball "do physical damage"; Death Touch is Physical. Needs a per-spell damage-track field (or a
+pack fix). Also corrects the worked example on the spellcasting guide page. Ledger: `spellcasting.md` #84, #86, #137.
+
+## 170. ✅ Rules check 0.6.1 — Drain Level clamps at Deadly instead of adding Power — `4e183605`
+
+`SR3EItem.js:4175` clamps the Drain Level at Deadly; SR3 p.191 adds **+2 Drain Power per level above Deadly**
+(e.g. Fireball's +1(Damage Level +2) at Serious). Ledger: `spellcasting.md` #102.
+
+## 171. ✅ Rules check 0.6.1 — Area spells and multi-target casts — `0184449f`
+
+**Done 2026-09-24:** the caster is caught; `SR3EItem.spellAreaRadius` from withheld dice; one roll counted
+against each target's own TN (`SR3EActor.hitsAgainst`).
+
+- The caster is excluded from an area spell (`SR3EItem.js` `_actorsInRadius`); p.181: "friend and foe alike
+  (including the caster)". Withholding Sorcery dice to change the radius is not tied to anything.
+- The cast TN comes from the **first** target only (`SR3EItem.js:4577`); p.182 counts successes separately per
+  target, each against its own TN.
+
+Ledger: `spellcasting.md` #31, #60.
+
+## 172. ✅ Rules check 0.6.1 — Spell Resistance carries the sustaining +2 (a ruling the guide disagrees with) — `d6d3bbca`
+
+**Done 2026-09-24:** the maintainer kept the 2026-09-14 ruling; the guide states p.183 and the ruling as a
+house block.
+
+`handleSpellResistRoll` adds +2 per sustained spell (the maintainer's 2026-09-14 ruling, p.178 over p.183's "no
+target modifiers apply"). The guide page says no modifiers apply. Decide which stands and make the code and the
+guide agree. Ledger: `spellcasting.md` #66.
+
+## 173. ✅ Rules check 0.6.1 — Ammunition: belts, class sharing, spare clips — `6c349109`
+
+**Done 2026-09-24:** belts at (Quickness × 2); the maintainer chose to enforce gun class (`gunClass` on
+ammunition, stated on first load); the guide states the lost-rounds ruling as a house block. Per-gun spare
+clips move to [#176](TODO.md#176).
+
+- Belt-fed loose rounds load at Quickness per Complex Action (`ammo-stock.mjs` `each`); the Ammo Reloading Table
+  says **Quickness × 2** (`reloading.md` #22, #43).
+- `AmmoStock.fits` lets loose rounds into any firearm; SR3 p.279 limits sharing to the same gun class (shotguns
+  together). Deliberate (every shipped box says (c)) — decide whether to keep it (#58).
+- Swapping in a pre-filled clip loses the old rounds (the maintainer's TODO 114 ruling); the guide says the rules
+  don't. Spare clips (5¥, not interchangeable between guns, p.281) are not modelled (#34).
+
+## 174. ✅ Rules check 0.6.1 — Cyberware grade edge cases, Stress dice and the Smartlink — `3c6e4b1c`
+
+**Done 2026-09-24:** Used Delta reads as beta; used cyberware carries 1D3 Stress (the maintainer chose M&M
+p.45). **The Smartlink needed no fix:** item 0846 is the cyberarm smartlink — *"Smartgun links installed in
+cyberarms have a reduced Essence Cost of .25"* (SR3 p.303) — and the bodyware Smartlink (0223) is .5 as p.302
+prints (read with `pdftotext -raw`/`-table`, which keep the row). The audit compared the wrong item.
+
+- A **Used Delta** is read as delta (Essence ×.5); M&M p.11 says install it as **betaware** (×.6)
+  (`SR3EActor.js` `gradedEssenceCost` strips "used").
+- Used cyberware starts with `1D6 ÷ 2` Stress (`stress.mjs`, following M&M p.124); M&M p.45 says **1D3**. The book
+  disagrees with itself — pick one and say so on the guide page. Ledger: `cyberware-grades.md` #26, #29.
+- The **Smartlink** pack item has Essence 0.25; the guide and M&M's example say .5. Read the printed p.302 table
+  and fix whichever is wrong (`packs-src/sr3e-sr3-cyberware/smartlink…`, then `npm run packs:build`).
+- `CLAUDE.md` says only the Essence multiplier of grades is implemented; the item sheet also applies the cost
+  multiplier and availability modifiers — correct the line.
+
+## 175. ✅ Rules check 0.6.1 — Guide fixes (no code) — `d6d3bbca`
+
+- `grenades.md`: the scatter and timing sections cite p.119; the text is on p.118.
+- `combat.md` errata callout: "suppressive fire" and "Access Node action" both appear in the core text (a rigger
+  example, p.156; a Locate Access Node operation, p.210). Reword.
+- `sources.md`: "Sympathetic link → Material link (MitS p.34-36)" — the Material Link passage is on p.37.
+- `awakened-primer.md`: the mage description ("a discipline of formulae and elements") is the hermetic text on
+  p.158, not pp.163-165; the "Land of Promise in Sperethiel" gloss is not on p.321.

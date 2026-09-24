@@ -4,9 +4,39 @@ What changed, for the people running games with it. Newest first.
 
 ## 0.6.1 — 2026-09-24
 
-A bug-fix release: grenades and thrown weapons, a few broken skill choices, and a tidy-up of the shipped packs.
+A bug-fix release: grenades and thrown weapons, a few broken skill choices, a tidy-up of the shipped packs, and every place the 0.6.1 rules check found the code disagreeing with the books.
+
+### Before you upgrade
+
+- **Fully restart Foundry** after updating, not just refresh the browser: spells and ammunition have new fields.
 
 ### Rules that now resolve differently
+
+**Damage**
+
+- **Damage stages by the net of both sides' successes** (SR3 p.113). The attacker's successes are compared with the target's total (Damage Resistance plus any carried from a failed dodge): one level up per two the attacker is ahead, one level down per two the target is ahead, base damage on a tie. It used to stage up on the attacker's successes and down on the target's separately, so 2 against 1 came out a level too high, and a tie on a Deadly-capped attack dropped to Light. This applies to guns, grenades (p.119), attacks on vehicles and elemental spells. Melee is unchanged (p.122).
+- **A character dies when Physical overflow is more than their Body**, not when it equals it (SR3 p.125).
+
+**Magic**
+
+- **Combat spells do Physical damage unless they are stun spells** (SR3 p.191). Manabolt, Manaball and Death Touch are mana spells, but they do Physical damage; Stunbolt, Stunball and Stun Touch do Stun. Mana or Physical decides what a spell can affect, not which track it damages. A spell's new **Damage track** field can override this.
+- **Drain past Deadly adds Power** (SR3 p.191): each level a modifier would add above Deadly is +2 Drain Power instead. A Fireball cast at Serious drains Deadly with +2 Power.
+- **Area spells** (SR3 p.181–182): the caster is caught in their own area. The radius is Magic metres, +1 metre for each Sorcery die withheld or −1 metre for every 2; withheld dice are not rolled. One Sorcery Test is counted against **each target's own** target number (it used to use the first target's for everyone).
+
+**Vehicles and riggers**
+
+- **A Vehicle Control Rig gives +2 Reaction per level** (SR3 p.301), not +1, on every rigging initiative, including the Chase Scene. A jacked-in driver in a chase rolls unaugmented Reaction, not their wired reflexes (p.140).
+- **Control Pool = Reaction + 2 × VCR** (SR3 p.44), and a test takes at most its skill dice. Drivers without a VCR have no Control Pool, in chases too (p.141). The Driving Test, the Crash Test and the chase used the Vehicle Skill as the pool.
+- **Shooting a vehicle** (SR3 p.149): Power is halved **rounding down**; Light damage has no effect (a warning, not a refusal); anti-vehicle rounds halve the vehicle's armour instead. The resist card says when the Power doesn't exceed the armour.
+- **Sensor-enhanced gunnery** (SR3 p.152) adds half the Sensor Rating as **dice** against the target's Signature. The Sensor (or VCR) no longer comes off the target number.
+
+**Gear**
+
+- **Ammunition is shared by gun class** (SR3 p.279). A box of rounds takes the class of the first gun loaded from it, and after that it only goes into guns of that class. Shotguns share across pistols and rifles. The class shows on the ammunition item and can be edited.
+- **Loose rounds go into a belt at (Quickness × 2)** a Complex Action (SR3 p.280).
+- **Used deltaware installs as betaware** (M&M p.11): ×.6 Essence. **Used cyberware carries 1D3 permanent Stress** (M&M p.45; p.124 says 1D6 ÷ 2, and the maintainer chose p.45).
+
+**Other**
 
 - **Grenades roll Throwing Weapons**, not a firearm skill (SR3 p.86). **Bows, crossbows and slings roll Projectile Weapons** (SR3 p.86). A character's dice for these attacks may change.
 - **A grenade's blast loses Power at its own rate** — Offensive −1 per metre, Defensive −1 per half metre (SR3 p.119, p.283). The Chunky Salsa calculator uses the same rate.
