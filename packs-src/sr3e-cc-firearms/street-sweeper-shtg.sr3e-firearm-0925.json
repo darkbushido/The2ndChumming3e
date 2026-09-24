@@ -13,6 +13,7 @@
       "ammunition": "1(b)",
       "mode": "SS",
       "damage": "10S(f)",
+      "flechette": true,
       "weight": "3",
       "availability": "5/24hrs",
       "cost": 200,

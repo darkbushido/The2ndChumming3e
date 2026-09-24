@@ -623,6 +623,16 @@ export const MUTANTS = [
     needsOriginal: '__origBuild',
   },
   {
+    id:     'coded-flechette-raises-level-twice',
+    suite:  'flechette-weapons',
+    ...ITEM, method: 'flechetteAmmo',
+    was:    'an (f) Damage Code got the full flechette rules, raising its level AGAIN — the code already has the increase (SR3 p.116)',
+    impl:   function (system, loaded = 'regular') {
+      if (loaded && loaded !== 'regular') return loaded;
+      return (system?.flechette === true || /\(f\)/i.test(system?.damage ?? '')) ? 'flechette' : loaded;
+    },
+  },
+  {
     id:     'short-burst-raises-level',
     suite:  'fire-modes',
     ...ITEM, method: 'fireModeDamage',

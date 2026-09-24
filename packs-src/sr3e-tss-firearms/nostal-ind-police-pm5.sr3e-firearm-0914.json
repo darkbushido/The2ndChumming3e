@@ -13,6 +13,7 @@
       "ammunition": "7(c)",
       "mode": "SA",
       "damage": "9S(f)",
+      "flechette": true,
       "weight": "5",
       "availability": "5/72hrs",
       "cost": 650,

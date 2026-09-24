@@ -20,6 +20,7 @@
       "notes": "<p>AP grenades are offensive or defensive grenades with high fragmentation; they are specifically designed to damage unarmored people. Determine damage from AP grenades according to the flechette rules (SR3 p.116, p.119).</p><p>SR3 p.283 — Legality 3-J. Blast –1/.5m.</p>",
       "isAoE": true,
       "blast": "-1/.5m",
+      "flechette": true,
       "hands": 1
     },
     "effects": [],

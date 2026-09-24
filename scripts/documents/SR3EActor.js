@@ -3183,6 +3183,7 @@ _prepareCharacter(sys, attr) {
               targetActorId:   t.actorId,
               weaponItemId:    state.weaponItemId,
               isMelee:         false,
+              ammoType:        state.ammoType ?? null,   // flechette rules for an AP grenade (TODO 156)
               stagedPower:     t.power,
               stagedLevel:     t.level,
               isStun,
@@ -8296,7 +8297,10 @@ _prepareCharacter(sys, attr) {
     const penetrating = Math.max(0, payload.penetratingStrike ?? 0);
     if (penetrating > 0) impact = Math.max(0, impact - penetrating);
     // Ammo armour interactions (APDS / Flechette). Other types resolve at attack time.
-    const ammoRules = game.sr3e.SR3E.ammoTypes[payload.ammoType] ?? {};
+    // `flechette-coded`: an (f) Damage Code — the level increase is already in it (p.116), so only the armour rule applies.
+    const ammoRules = payload.ammoType === 'flechette-coded'
+      ? { armorEffect: 'flechette', levelBaked: true }
+      : (game.sr3e.SR3E.ammoTypes[payload.ammoType] ?? {});
     let ammoNote = '';
     const adeptArmorNotes = [];
     // Implant armour is not an adept power, but it is the same kind of note: armour the card
@@ -8315,7 +8319,10 @@ _prepareCharacter(sys, attr) {
       ammoNote  = `APDS — ballistic armour halved (now ${ballistic})`;
     } else if (ammoRules.armorEffect === 'flechette') {
       const dermal = this.type === 'vehicle' ? [] : SR3EActor.dermalArmorSources(this);
-      if (SR3EActor.flechetteRaisesLevel({ ballistic, impact, dermalArmor: dermal.length })) {
+      if (ammoRules.levelBaked && (Math.max(ballistic, impact) <= 0)) {
+        ammoNote = 'Flechette (f) — the level increase is already in the Damage Code (p.116)'
+                 + (dermal.length ? `; dermal armor (${dermal.join(', ')}) — whether it takes that level back is the GM's call` : '');
+      } else if (SR3EActor.flechetteRaisesLevel({ ballistic, impact, dermalArmor: dermal.length })) {
         // Unarmoured target — damage level stages up one
         const STAGES = ['L', 'M', 'S', 'D'];
         const li = STAGES.indexOf(effStagedLevel);

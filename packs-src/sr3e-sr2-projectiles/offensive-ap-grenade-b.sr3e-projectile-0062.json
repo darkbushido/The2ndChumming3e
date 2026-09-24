@@ -11,6 +11,7 @@
       "concealability": "6",
       "strMin": 0,
       "damage": "10S(f)",
+      "flechette": true,
       "weight": ".25",
       "availability": "4/4days",
       "cost": 30,

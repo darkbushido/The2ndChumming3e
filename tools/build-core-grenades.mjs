@@ -52,9 +52,9 @@ const MINI = '<p>Also comes as a mini-grenade for a grenade launcher (SR3 p.283)
 /** The printed rows. `note` is the book's own explanation of the type. */
 const ROWS = [
   { name: 'Offensive HE Grenade', conceal: '6', damage: '10S', blast: '-1/m',   weight: 0.25, avail: '4/4 days', cost: 30, index: '2', legality: '3-J', legal: false, note: MINI },
-  { name: 'Offensive AP Grenade', conceal: '6', damage: '10S', blast: '-1/m',   weight: 0.25, avail: '4/4 days', cost: 30, index: '2', legality: '3-J', legal: false, note: AP },
+  { name: 'Offensive AP Grenade', conceal: '6', damage: '10S', blast: '-1/m',   weight: 0.25, avail: '4/4 days', cost: 30, index: '2', legality: '3-J', legal: false, note: AP, flechette: true },
   { name: 'Defensive HE Grenade', conceal: '6', damage: '10S', blast: '-1/.5m', weight: 0.25, avail: '4/4 days', cost: 30, index: '2', legality: '3-J', legal: false, note: MINI },
-  { name: 'Defensive AP Grenade', conceal: '6', damage: '10S', blast: '-1/.5m', weight: 0.25, avail: '4/4 days', cost: 30, index: '2', legality: '3-J', legal: false, note: AP },
+  { name: 'Defensive AP Grenade', conceal: '6', damage: '10S', blast: '-1/.5m', weight: 0.25, avail: '4/4 days', cost: 30, index: '2', legality: '3-J', legal: false, note: AP, flechette: true },
   { name: 'Concussion Grenade',   conceal: '6', damage: '12M Stun', blast: '-1/m', weight: 0.25, avail: '5/4 days', cost: 30, index: '2', legality: '3-J', legal: false,
     note: '<p>The book prints the Damage Code as "12M (Stun)".</p>' },
   { name: 'Gas Grenade (Neuro-Stun VII)', conceal: '5', damage: 'Special', blast: '', weight: 0.25, avail: '8/4 days', cost: 60, index: '2', legality: '3-J', legal: false,
@@ -95,6 +95,7 @@ function buildDoc(row) {
         notes,
         isAoE: true,
         blast: row.blast,
+        ...(row.flechette ? { flechette: true } : {}),   // AP: the flechette rules, SR3 p.119 (TODO 156)
         hands: 1,
       },
       effects: [],

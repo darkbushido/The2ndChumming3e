@@ -967,6 +967,26 @@ export class SR3EItem extends Item {
   }
 
   /**
+   * The ammunition key the soak card should apply for THIS weapon — flechette rules for a weapon or
+   * grenade that carries them (TODO 156). **Pure.**
+   *
+   * > "Guns with flechette ammo already figured into their Damage Code have an (f) notation following
+   * > the Damage Code."                                                            — SR3 p.116
+   * > "Determine damage from AP grenades according to the flechette rules (p. 116)." — SR3 p.119
+   *
+   * ⚠ An `(f)` code already CONTAINS the level increase, so it gets `flechette-coded` (the armour rule
+   * only); a plain code with the checkbox ticked gets `flechette` (level increase against the
+   * unarmoured, dermal armour, and the armour rule). ⚠ Only when nothing else is loaded — a weapon
+   * firing gel or APDS keeps that type; the book does not say how they combine.
+   */
+  static flechetteAmmo(system, loaded = 'regular') {
+    if (loaded && loaded !== 'regular') return loaded;
+    const coded = SR3EItem.parseDamageCode(system?.damage ?? '')?.flechette === true;
+    if (coded) return 'flechette-coded';
+    return system?.flechette === true ? 'flechette' : loaded;
+  }
+
+  /**
    * Stage damage upward by the given number of net successes.
    * Rules: every 2 successes = +1 stage (L→M→S→D).
    *
@@ -1170,6 +1190,7 @@ export class SR3EItem extends Item {
     options.aoeThrowerCenter = throwerCenter;          // for relative scatter direction
     options.aoeChunky        = weaponOpts.useSalsaGUI; // resolve confined space after scatter
     options.aoeBlast         = this.system.blast ?? '';   // falloff per metre, read at resolution (TODO 150)
+    options.ammoType         = SR3EItem.flechetteAmmo(this.system);   // AP grenades: the flechette rules, p.119 (TODO 156)
     options.grenadeType      = weaponOpts.grenadeType ?? 'standard';
     options.skipWoundMod     = true;   // pre-applied in the roll-options TN (throwPreTN)
 
@@ -1552,7 +1573,7 @@ export class SR3EItem extends Item {
   options.committedDodgeDice = committedDodgeDice;
   options.skipWoundMod       = true;
   options.skipSustainMod     = true;   // pre-applied in the roll-options TN, beside the wound
-  options.ammoType           = ammoType;   // carried to the soak card for APDS/Flechette
+  options.ammoType           = SR3EItem.flechetteAmmo(this.system, ammoType);   // carried to the soak card for APDS/Flechette
 
   // p.113's Dodge Test modifiers, carried to the defender. Rounds are those sent at THIS
   // target — NOT roundsExpended: walking-fire waste travels between targets and is not

@@ -344,6 +344,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     ${this._bookPageField(s)}
     ${this._check('Legal', 'legal', s.legal)}
     ${this._check('Area of Effect (AoE)', 'isAoE', s.isAoE)}
+    ${this._check('Flechette rules (p.116)', 'flechette', s.flechette || game.sr3e.SR3EItem.parseDamageCode(s.damage)?.flechette === true)}
   </div>
   ${this._notes(s.notes)}`;
 
@@ -375,6 +376,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     ${this._bookPageField(s)}
     ${this._check('Legal', 'legal', s.legal)}
     ${this._check('Area of Effect (AoE)', 'isAoE', s.isAoE)}
+    ${this._check('Flechette rules (p.116)', 'flechette', s.flechette || game.sr3e.SR3EItem.parseDamageCode(s.damage)?.flechette === true)}
   </div>
   ${this._notes(s.notes)}`;
 
@@ -420,6 +422,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Accessories', 'accessories', s.accessories)}
           ${this._bookPageField(s)}
           ${this._check('Area of Effect (AoE)', 'isAoE', s.isAoE)}
+          ${this._check('Flechette rules (p.116)', 'flechette', s.flechette || game.sr3e.SR3EItem.parseDamageCode(s.damage)?.flechette === true)}
         </div>
         ${this._notes(s.notes)}`;
 

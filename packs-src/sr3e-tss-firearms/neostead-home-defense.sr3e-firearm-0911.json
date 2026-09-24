@@ -13,6 +13,7 @@
       "ammunition": "6(c)",
       "mode": "SS",
       "damage": "11S(f)",
+      "flechette": true,
       "weight": "3.25",
       "availability": "3/6days",
       "cost": 850,

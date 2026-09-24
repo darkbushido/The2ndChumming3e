@@ -76,6 +76,9 @@ export class ProjectileData extends foundry.abstract.TypeDataModel {
       isAoE:          new BooleanField({ initial: false }),
       // Blast falloff in the book's notation — "-1/m", "-1/.5m" (SR3 p.119, p.283; TODO 150). Blank = -1/m.
       blast:          new StringField({ initial: '' }),
+      // Uses the flechette rules (SR3 p.116, p.119; TODO 156). An (f) in the Damage Code says the level
+      // increase is already in it, so only the armour rule applies; ticked on a plain code, all of it does.
+      flechette:      new BooleanField({ initial: false }),
     };
   }
 }
@@ -110,6 +113,9 @@ export class ThrownData extends foundry.abstract.TypeDataModel {
       notes:          new HTMLField({ initial: '', required: false }),
       isAoE:          new BooleanField({ initial: false }),
       blast:          new StringField({ initial: '' }),   // as on ProjectileData (TODO 150)
+      // Uses the flechette rules (SR3 p.116, p.119; TODO 156). An (f) in the Damage Code says the level
+      // increase is already in it, so only the armour rule applies; ticked on a plain code, all of it does.
+      flechette:      new BooleanField({ initial: false }),
     };
   }
 }
@@ -151,6 +157,9 @@ export class FirearmData extends foundry.abstract.TypeDataModel {
       laserSight:      new BooleanField({ nullable: true, initial: null }),
       // Shotgun choke, 2-10 (SR3 p.117, TODO 57) — set in the fire dialog and remembered. Blank = 5.
       choke:           new NumberField({ integer: true, nullable: true, initial: null, min: 2, max: 10 }),
+      // Uses the flechette rules (SR3 p.116, p.119; TODO 156). An (f) in the Damage Code says the level
+      // increase is already in it, so only the armour rule applies; ticked on a plain code, all of it does.
+      flechette:       new BooleanField({ initial: false }),
       bookPage:        new StringField({ initial: '' }),
       notes:           new HTMLField({ initial: '', required: false }),
       isAoE:           new BooleanField({ initial: false }),
