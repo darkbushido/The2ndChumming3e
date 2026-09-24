@@ -32,13 +32,23 @@ export async function run(t) {
   t.is('…even with the checkbox ticked too (no double count)', fa({ damage: '10S(f)', flechette: true }, 'regular'), 'flechette-coded');
   t.is('10S/10D(f): the flag is on the second alternative — the gun is not flechette', fa({ damage: '10S/10D(f)' }, 'regular'), 'regular');
   t.is('8D(f)/8S: the first alternative is', fa({ damage: '8D(f)/8S' }, 'regular'), 'flechette-coded');
-  t.is('a weapon with other ammo loaded keeps it (the book does not say how they combine)', fa({ damage: '10S(f)' }, 'gel'), 'gel');
-  t.is('…including APDS', fa({ damage: '9S', flechette: true }, 'apds'), 'apds');
+  t.is('a flechette weapon ignores whatever is loaded — it takes no other type', fa({ damage: '10S(f)' }, 'gel'), 'flechette-coded');
+  t.is('…so a ticked plain code still gets the full rules with APDS "loaded"', fa({ damage: '9S', flechette: true }, 'apds'), 'flechette');
+  t.is('an ordinary weapon keeps what it has loaded', fa({ damage: '9M' }, 'gel'), 'gel');
+
+  const ok = (system, type) => SR3EItem.weaponAcceptsAmmoType(system, type);
+  t.ok('an ordinary weapon takes any ammunition', ok({ damage: '9M' }, 'gel') && ok({ damage: '9M' }, 'apds') && ok({ damage: '9M' }, 'flechette'));
+  t.ok('a flechette weapon takes ordinary rounds', ok({ damage: '10S(f)' }, 'regular') && ok({ damage: '10S(f)' }));
+  t.ok('…and nothing else: not gel, APDS, explosive, or a second flechette',
+    ['gel', 'apds', 'ex', 'exExplosive', 'flechette', 'shot'].every(x => !ok({ damage: '10S(f)' }, x)));
+  t.ok('the checkbox does the same as the (f) notation', !ok({ damage: '9S', flechette: true }, 'gel') && ok({ damage: '9S', flechette: true }, 'regular'));
+  t.ok('a shotgun whose (f) is on the SECOND alternative is not a flechette gun (10S/10D(f))', ok({ damage: '10S/10D(f)' }, 'gel'));
   t.is('no ammo argument reads as regular', fa({ damage: '9S', flechette: true }), 'flechette');
   t.is('a nothing item is untouched', fa(undefined, 'regular'), 'regular');
 
   // Wiring (source-level: the throw, the attack and the soak card need a live world).
   const item = read('scripts/documents/SR3EItem.js');
+  t.ok('the reload list offers only what the weapon accepts', /SR3EItem\.weaponAcceptsAmmoType\(this\.system, i\.system\.ammoType \?\? 'regular'\)/.test(item));
   t.ok('the ranged attack carries it to the soak card', /options\.ammoType\s+= SR3EItem\.flechetteAmmo\(this\.system, ammoType\)/.test(item));
   t.ok('the grenade throw carries it too', /options\.ammoType\s+= SR3EItem\.flechetteAmmo\(this\.system\)/.test(item));
   const actor = read('scripts/documents/SR3EActor.js');

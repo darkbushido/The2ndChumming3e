@@ -976,14 +976,25 @@ export class SR3EItem extends Item {
    *
    * ⚠ An `(f)` code already CONTAINS the level increase, so it gets `flechette-coded` (the armour rule
    * only); a plain code with the checkbox ticked gets `flechette` (level increase against the
-   * unarmoured, dermal armour, and the armour rule). ⚠ Only when nothing else is loaded — a weapon
-   * firing gel or APDS keeps that type; the book does not say how they combine.
+   * unarmoured, dermal armour, and the armour rule). ⚠ A flechette weapon takes NO other ammunition
+   * (`weaponAcceptsAmmoType`, the maintainer's ruling 2026-09-24), so whatever `loaded` says, the weapon's
+   * own rules apply — a gun that had gel loaded before the rule existed is still a flechette gun.
    */
   static flechetteAmmo(system, loaded = 'regular') {
-    if (loaded && loaded !== 'regular') return loaded;
     const coded = SR3EItem.parseDamageCode(system?.damage ?? '')?.flechette === true;
     if (coded) return 'flechette-coded';
     return system?.flechette === true ? 'flechette' : loaded;
+  }
+
+  /**
+   * May this weapon be loaded with this ammunition type? **Pure.** A weapon that carries the flechette
+   * rules already has them in its Damage Code (p.116: *"Guns with flechette ammo already figured into
+   * their Damage Code have an (f) notation"*), so only ordinary rounds — its own — go in it. Gel, APDS,
+   * explosive and a second flechette would each change a code that already includes flechette.
+   */
+  static weaponAcceptsAmmoType(system, ammoType = 'regular') {
+    if (SR3EItem.flechetteAmmo(system, 'regular') === 'regular') return true;
+    return (ammoType || 'regular') === 'regular';
   }
 
   /**
@@ -2094,10 +2105,13 @@ export class SR3EItem extends Item {
     // armour and a medkit. A stack split into storage used to be offered here.
     let stock = actor.items.filter(i =>
       i.type === 'ammunition' && !i.getFlag('The2ndChumming3e', 'stored')
-      && AmmoStock.fits(i.system, gunMech));   // loose rounds fit any gun; a reload only its own
+      && AmmoStock.fits(i.system, gunMech)   // loose rounds fit any gun; a reload only its own
+      && SR3EItem.weaponAcceptsAmmoType(this.system, i.system.ammoType ?? 'regular'));   // a flechette weapon takes no other type (TODO 161)
     if (trackOn) stock = stock.filter(i => AmmoStock.stock(i.system).count > 0);
     if (stock.length === 0) {
-      ui.notifications.warn(`No compatible ammo in stock for ${this.name}.`);
+      ui.notifications.warn(SR3EItem.flechetteAmmo(this.system, 'regular') === 'regular'
+        ? `No compatible ammo in stock for ${this.name}.`
+        : `No compatible ammo in stock for ${this.name} — a flechette weapon takes only ordinary rounds (SR3 p.116).`);
       return;
     }
 
