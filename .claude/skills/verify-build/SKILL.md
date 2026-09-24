@@ -63,7 +63,9 @@ explicitly out of scope for this skill.
 
 ## Bumping the version
 
-Only when asked, and only after preflight is green:
+**This skill is the ONLY place the version is bumped** — no fix or feature commit bumps it. Do it
+last, when everything else is set: preflight green (`--e2e` included), release notes rewritten for a
+GM, and `audit/rules-check-<version>.md` present (never faked). Only when asked:
 
 ```bash
 npm run version:bump -- 0.6.0      # or: patch (a bug fix) / minor (a feature)

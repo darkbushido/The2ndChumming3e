@@ -2,6 +2,29 @@
 
 What changed, for the people running games with it. Newest first.
 
+## 0.6.1 — 2026-09-24
+
+A bug-fix release: grenades and thrown weapons, a few broken skill choices, and a tidy-up of the shipped packs.
+
+### Rules that now resolve differently
+
+- **Grenades roll Throwing Weapons**, not a firearm skill (SR3 p.86). **Bows, crossbows and slings roll Projectile Weapons** (SR3 p.86). A character's dice for these attacks may change.
+- **A grenade's blast loses Power at its own rate** — Offensive −1 per metre, Defensive −1 per half metre (SR3 p.119, p.283). The Chunky Salsa calculator uses the same rate.
+- **Flechette** (SR3 p.116, p.119): a weapon or grenade can carry the flechette rules itself — a checkbox on the item, or an `(f)` after its Damage Code, which is now read. A flechette weapon takes no other ammunition.
+- **Gas, smoke and flash grenades** now land and mark their area instead of refusing to throw (SR3 p.283). They deal no damage; the card says how to use the area.
+
+### Content
+
+- The SR3 core grenades are now in `sr3e-sr3-projectiles`, and the core explosives carry the Explosives Table's Blast and Legal columns (SR3 p.283).
+- **The SR2 compendium packs are no longer shipped** (25 packs, parked in `archive/sr2`) until they are fixed. Characters already holding SR2 items keep them; only the compendium entries are gone, and the Edition setting offers SR3 only.
+- Broken `_id: null` entries left in packs by older builds are removed on load (GM only, only when a good copy exists).
+
+### Fixes
+
+- Buy gear: the haggle no longer fails when rolling the negotiation.
+- Compendium search no longer breaks on index entries with no uuid.
+- The pause-screen logo no longer 404s on Linux.
+
 ## 0.6.0 — 2026-09-23
 
 The first version published as a GitHub Release. Earlier versions were installed straight from

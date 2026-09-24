@@ -71,12 +71,12 @@ three nice-to-haves (79, 82, 7) and the release tasks below.
 
 ## Contents
 
-**49 open.** 115 done — see [TODO-DONE.md](TODO-DONE.md).
+**61 open.** 115 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 🔴 Confirmed bugs, still open | [133](#133) Unloading a gun returns the rounds to storage as full clips<br>[134](#134) There is no way to unload a gun<br>[135](#135) Characters should start with nothing equipped<br>[136](#136) A character who started with grenades always seems to have one equipped<br>[137](#137) The damage chat card assigns damage again after the player already assigned it through the popup<br>[138](#138) The healing button moves when a character is unconscious or damaged<br>[139](#139) A medkit can be restocked in combat — restocking should happen when shopping<br>[140](#140) The resist card's soak-hits section looks clickable — it should be greyed out<br>[141](#141) The second Simple Action does not flag and end the turn<br>[142](#142) Loading a clip-fed gun treats the clips as individual rounds<br>[143](#143) Clipped ammunition did not migrate<br>[149](#149) Grenade scatter goes through walls<br>[151](#151) Cyber weapons don't show up in the weapons list, and cannot be used in combat<br>[152](#152) Undoing an action only works on the second try<br>[161](#161) Flechette weapons — the two things the book does not settle<br>[163](#163) Launcher grenades and mini-grenades do not carry a blast<br>[164](#164) Non-damaging area grenades: how to show and use their area |
+| 🔴 Confirmed bugs, still open | [133](#133) Unloading a gun returns the rounds to storage as full clips<br>[134](#134) There is no way to unload a gun<br>[135](#135) Characters should start with nothing equipped<br>[136](#136) A character who started with grenades always seems to have one equipped<br>[137](#137) The damage chat card assigns damage again after the player already assigned it through the popup<br>[138](#138) The healing button moves when a character is unconscious or damaged<br>[139](#139) A medkit can be restocked in combat — restocking should happen when shopping<br>[140](#140) The resist card's soak-hits section looks clickable — it should be greyed out<br>[141](#141) The second Simple Action does not flag and end the turn<br>[142](#142) Loading a clip-fed gun treats the clips as individual rounds<br>[143](#143) Clipped ammunition did not migrate<br>[149](#149) Grenade scatter goes through walls<br>[151](#151) Cyber weapons don't show up in the weapons list, and cannot be used in combat<br>[152](#152) Undoing an action only works on the second try<br>[161](#161) Flechette weapons — the two things the book does not settle<br>[163](#163) Launcher grenades and mini-grenades do not carry a blast<br>[164](#164) Non-damaging area grenades: how to show and use their area<br>[165](#165) Rules check 0.6.1 — damage staging is not the book's net comparison<br>[166](#166) Rules check 0.6.1 — Physical overflow kills at Body, the book kills past Body<br>[167](#167) Rules check 0.6.1 — Vehicle Control Rig and Control Pool<br>[168](#168) Rules check 0.6.1 — Vehicle gunnery and shooting vehicles<br>[169](#169) Rules check 0.6.1 — Mana spells deal Stun; the book makes Manabolt, Manaball and Death Touch Physical<br>[170](#170) Rules check 0.6.1 — Drain Level clamps at Deadly instead of adding Power<br>[171](#171) Rules check 0.6.1 — Area spells and multi-target casts<br>[172](#172) Rules check 0.6.1 — Spell Resistance carries the sustaining +2 (a ruling the guide disagrees with)<br>[173](#173) Rules check 0.6.1 — Ammunition: belts, class sharing, spare clips<br>[174](#174) Rules check 0.6.1 — Cyberware grade edge cases, Stress dice and the Smartlink<br>[175](#175) Rules check 0.6.1 — Guide fixes (no code)<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects<br>[131](#131) Cover and visibility on elemental spells<br>[132](#132) Astral damage: dual beings resist with Body, not Willpower |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field |
@@ -328,6 +328,119 @@ Follow-up to [#155](TODO-DONE.md#155), which lands gas, smoke and flash grenades
 5. **Flash-Pak** has no area at all: *"Anyone facing a flash-pak"* is a facing rule. It could mark a cone or ask the GM to tick who is looking; today it only states +4 (+2 with flare compensation) and +2 from the strobe.
 6. **Wind** — *"less in windy areas, at the gamemaster's discretion"* — is stated on the card and not modelled; the expiry is a fixed 2 Combat Turns. A GM cannot shorten one except by clearing the marker.
 7. **Thermal Smoke** and the other non-core no-damage grenades (the 2nd-edition ones are parked in `archive/sr2/`) would use the same two fields once their packs return.
+
+## 165. Rules check 0.6.1 — damage staging is not the book's net comparison
+
+Ranged, grenade and elemental-spell damage stage **up** by the attacker's raw successes and **down** separately
+by the defender's (`SR3EActor.js:3233`, `:4098`). SR3 p.113 compares the attacker's successes with the target's
+**total** and stages by the difference: 2 vs 1 should be base damage (code stages up one); 4 vs 1 should stage up
+once (code twice); a tie at the Deadly cap ends up at Light instead of base. p.114 also has a paragraph describing
+each side staging on its own successes, so this is the maintainer's call which reading governs — the worked
+example (Liam/Snot) follows the net one. Ledger: `combat.md` #50-53, `grenades.md` #31.
+
+## 166. Rules check 0.6.1 — Physical overflow kills at Body, the book kills past Body
+
+`sr3e.js:1988` and `SR3EActorSheet.js:607` mark a character dead at overflow ≥ Body; SR3 p.125 kills only when
+overflow **exceeds** Body. The extra box every (Body) Combat Turns while in overflow is shown but never applied.
+Ledger: `combat.md` #124, `healing.md` #29.
+
+## 167. Rules check 0.6.1 — Vehicle Control Rig and Control Pool
+
+- VCR adds **+1** Reaction per level to initiative (`SR3EActor.js` two VCR branches); SR3 p.301 says **+2** and +1D6.
+- Control Pool is the Vehicle Skill rating in this system (comment at `SR3EActor.js:2243`); p.44 says Reaction
+  as modified by the VCR. The gunnery flow sizes it as Reaction base + VCR level (`SR3EItem.js:1744`) — also +1/level.
+- "Adapted for rigger control" (p.134) is not modelled.
+
+Ledger: `combat.md` #152-153.
+
+## 168. Rules check 0.6.1 — Vehicle gunnery and shooting vehicles
+
+- Sensor-enhanced gunnery: the code subtracts the Sensor rating from the target's Signature (`SR3EItem.js:1800`);
+  p.152 rolls Gunnery + **half the Sensor rating as dice**.
+- Shooting a vehicle: Power is halved **rounding up** (`Math.ceil`, `SR3EItem.js:1483`, `:1772`) — p.149 says round
+  down; Light damage should not affect the vehicle (`L: 'L'` in the level table); anti-vehicle rounds should subtract
+  only half the armour.
+- Vehicles never dodge and roll no Control Pool on their Damage Resistance Test (p.149).
+
+Ledger: `combat.md` #155-157.
+
+## 169. Rules check 0.6.1 — Mana spells deal Stun; the book makes Manabolt, Manaball and Death Touch Physical
+
+`SR3EItem.js:4595` `isStun = spellType !== 'Physical'`, and the pack items have an empty `damage` field. SR3 p.191:
+Manabolt and Manaball "do physical damage"; Death Touch is Physical. Needs a per-spell damage-track field (or a
+pack fix). Also corrects the worked example on the spellcasting guide page. Ledger: `spellcasting.md` #84, #86, #137.
+
+## 170. Rules check 0.6.1 — Drain Level clamps at Deadly instead of adding Power
+
+`SR3EItem.js:4175` clamps the Drain Level at Deadly; SR3 p.191 adds **+2 Drain Power per level above Deadly**
+(e.g. Fireball's +1(Damage Level +2) at Serious). Ledger: `spellcasting.md` #102.
+
+## 171. Rules check 0.6.1 — Area spells and multi-target casts
+
+- The caster is excluded from an area spell (`SR3EItem.js` `_actorsInRadius`); p.181: "friend and foe alike
+  (including the caster)". Withholding Sorcery dice to change the radius is not tied to anything.
+- The cast TN comes from the **first** target only (`SR3EItem.js:4577`); p.182 counts successes separately per
+  target, each against its own TN.
+
+Ledger: `spellcasting.md` #31, #60.
+
+## 172. Rules check 0.6.1 — Spell Resistance carries the sustaining +2 (a ruling the guide disagrees with)
+
+`handleSpellResistRoll` adds +2 per sustained spell (the maintainer's 2026-09-14 ruling, p.178 over p.183's "no
+target modifiers apply"). The guide page says no modifiers apply. Decide which stands and make the code and the
+guide agree. Ledger: `spellcasting.md` #66.
+
+## 173. Rules check 0.6.1 — Ammunition: belts, class sharing, spare clips
+
+- Belt-fed loose rounds load at Quickness per Complex Action (`ammo-stock.mjs` `each`); the Ammo Reloading Table
+  says **Quickness × 2** (`reloading.md` #22, #43).
+- `AmmoStock.fits` lets loose rounds into any firearm; SR3 p.279 limits sharing to the same gun class (shotguns
+  together). Deliberate (every shipped box says (c)) — decide whether to keep it (#58).
+- Swapping in a pre-filled clip loses the old rounds (the maintainer's TODO 114 ruling); the guide says the rules
+  don't. Spare clips (5¥, not interchangeable between guns, p.281) are not modelled (#34).
+
+## 174. Rules check 0.6.1 — Cyberware grade edge cases, Stress dice and the Smartlink
+
+- A **Used Delta** is read as delta (Essence ×.5); M&M p.11 says install it as **betaware** (×.6)
+  (`SR3EActor.js` `gradedEssenceCost` strips "used").
+- Used cyberware starts with `1D6 ÷ 2` Stress (`stress.mjs`, following M&M p.124); M&M p.45 says **1D3**. The book
+  disagrees with itself — pick one and say so on the guide page. Ledger: `cyberware-grades.md` #26, #29.
+- The **Smartlink** pack item has Essence 0.25; the guide and M&M's example say .5. Read the printed p.302 table
+  and fix whichever is wrong (`packs-src/sr3e-sr3-cyberware/smartlink…`, then `npm run packs:build`).
+- `CLAUDE.md` says only the Essence multiplier of grades is implemented; the item sheet also applies the cost
+  multiplier and availability modifiers — correct the line.
+
+## 175. Rules check 0.6.1 — Guide fixes (no code)
+
+- `grenades.md`: the scatter and timing sections cite p.119; the text is on p.118.
+- `combat.md` errata callout: "suppressive fire" and "Access Node action" both appear in the core text (a rigger
+  example, p.156; a Locate Access Node operation, p.210). Reword.
+- `sources.md`: "Sympathetic link → Material link (MitS p.34-36)" — the Material Link passage is on p.37.
+- `awakened-primer.md`: the mage description ("a discipline of formulae and elements") is the hermetic text on
+  p.158, not pp.163-165; the "Land of Promise in Sperethiel" gloss is not on p.321.
+
+## 176. Rules check 0.6.1 — Rules the guides state that the code does not implement
+
+The full list is in `audit/rules-check-0.6.1.md` (167 units, "Real rules the code does not implement"). Grouped:
+
+- **Magic:** ritual sorcery (MitS pp.34-37); spell, spirit, power and sustaining foci; elemental services and
+  library / circle / materials; the Object Resistance Table; several spells in one action (+2 Drain each); the
+  Spell Pool cap (no more than Sorcery dice) and Hacking Pool cap; Spell Defense subjects and range; limited
+  spells (fetish / exclusive); permanent-spell base time in the Sorcery flow; willing targets; detection spells
+  rolled by the GM; touch-range spells; astral projection as an Exclusive Complex Action, 1 Essence per hour,
+  astral movement; nature-spirit domain and sunrise/sunset; missing spirit types (Hearth, Prairie, Mist, Storm,
+  Lake, Sea).
+- **Matrix:** black IC (lethal / non-lethal, Hardening, jack-out), Tar Pit IC, tortoise immunity, cold / hot ASIST,
+  Hacking Pool restrictions.
+- **Combat:** movement rates, the Change Position test, Shift Perception, laser-sight range and weather, rigger
+  damage (6M / 6S), grenade timing (next Combat Phase), minigrenade arming, chunky-salsa wall strength, the optional
+  grenade damage rule, crossbow Strength Minimum.
+- **Street:** Legality Codes and the Local Fines table, permits, SINs and credsticks, fake IDs, fencing,
+  Concealability searches, weapon and cyberware scanners, belt / extra-round ammunition price adjustments,
+  matching cyberware grades, removal Stress, betaware unavailable to starting characters.
+
+Each needs its own item if the maintainer wants it built; several (SINs, fencing, permits, credsticks) are a small
+feature set on their own.
 
 ### 📕 Rules not implemented
 
