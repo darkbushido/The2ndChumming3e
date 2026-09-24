@@ -7865,6 +7865,22 @@ _prepareCharacter(sys, attr) {
     return charged ? 1 : 0;
   }
 
+  /**
+   * Dead from Physical overflow?  · *SR3 p.125*
+   *
+   * > "Instant death occurs only if damage overflows the Physical column by more than the
+   * > character's Body Rating."
+   *
+   * ⚠ **MORE THAN, not reaching** — overflow equal to Body is survivable; one box past it kills.
+   * This was `>=` in both the status hook and the sheet until the 0.6.1 rules check (TODO 166).
+   * A Body of 0 or less (no attribute set) never reports death: nothing to compare against.
+   */
+  static deadFromOverflow(overflow, body) {
+    const o = Math.max(0, Number(overflow) || 0);
+    const b = Number(body) || 0;
+    return b > 0 && o > b;
+  }
+
   static dodgeOutcome(dodgeHits, attackHits) {
     const d = Math.max(0, Number(dodgeHits) || 0);
     const a = Math.max(0, Number(attackHits) || 0);

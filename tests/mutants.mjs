@@ -38,6 +38,13 @@ const BUY    = { module: '../scripts/data/purchasing.mjs', klass: 'Purchasing' }
 
 export const MUTANTS = [
   {
+    id:     'overflow-death-at-body',
+    suite:  'overflow-death',
+    ...ACTOR, method: 'deadFromOverflow',
+    was:    'dead at overflow >= Body; SR3 p.125 kills only "by more than the character’s Body Rating" (TODO 166)',
+    impl:   (o, b) => (Number(b) || 0) > 0 && (Number(o) || 0) >= (Number(b) || 0),
+  },
+  {
     id:     'quick-strike-unwounded-boxes',
     suite:  'quick-strike',
     module: '../scripts/data/quick-strike.mjs', klass: 'QuickStrike', method: 'unwounded',

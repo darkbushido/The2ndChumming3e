@@ -1985,7 +1985,7 @@ Hooks.on('updateActor', async (actor, changes) => {
     const body     = actor.system.attributes?.body?.value ?? actor.system.attributes?.body?.base ?? 6;
     const physFull = (w.physical?.value ?? 0) >= (w.physical?.max ?? 10);
     const stunFull = (w.stun?.value ?? 0) >= (w.stun?.max ?? 10);
-    const dead     = physFull && (w.overflow?.value ?? 0) >= body;
+    const dead     = physFull && game.sr3e.SR3EActor.deadFromOverflow(w.overflow?.value, body);
 
     /* ⚠ An engaged Pain Editor prevents a Stun knockout · M&M p.71 — "The character will not
      * be rendered unconscious from Stun damage, though he might fall unconscious if he

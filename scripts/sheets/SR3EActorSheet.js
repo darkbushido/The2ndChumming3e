@@ -604,7 +604,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const body         = sys.attributes?.body?.value ?? 0;
     const overflowVal  = w.overflow?.value ?? 0;
-    const isDead       = body > 0 && overflowVal >= body;
+    const isDead       = game.sr3e.SR3EActor.deadFromOverflow(overflowVal, body);
     const deadHtml     = isDead
       ? `<span style="color:var(--sr-red);font-weight:bold;font-size:12px;letter-spacing:1px;margin-left:6px;">☠ DEAD</span>`
       : '';
