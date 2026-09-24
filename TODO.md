@@ -71,12 +71,12 @@ three nice-to-haves (79, 82, 7) and the release tasks below.
 
 ## Contents
 
-**48 open.** 115 done — see [TODO-DONE.md](TODO-DONE.md).
+**49 open.** 115 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 🔴 Confirmed bugs, still open | [133](#133) Unloading a gun returns the rounds to storage as full clips<br>[134](#134) There is no way to unload a gun<br>[135](#135) Characters should start with nothing equipped<br>[136](#136) A character who started with grenades always seems to have one equipped<br>[137](#137) The damage chat card assigns damage again after the player already assigned it through the popup<br>[138](#138) The healing button moves when a character is unconscious or damaged<br>[139](#139) A medkit can be restocked in combat — restocking should happen when shopping<br>[140](#140) The resist card's soak-hits section looks clickable — it should be greyed out<br>[141](#141) The second Simple Action does not flag and end the turn<br>[142](#142) Loading a clip-fed gun treats the clips as individual rounds<br>[143](#143) Clipped ammunition did not migrate<br>[149](#149) Grenade scatter goes through walls<br>[151](#151) Cyber weapons don't show up in the weapons list, and cannot be used in combat<br>[152](#152) Undoing an action only works on the second try<br>[161](#161) Flechette weapons — the two things the book does not settle<br>[163](#163) Launcher grenades and mini-grenades do not carry a blast |
+| 🔴 Confirmed bugs, still open | [133](#133) Unloading a gun returns the rounds to storage as full clips<br>[134](#134) There is no way to unload a gun<br>[135](#135) Characters should start with nothing equipped<br>[136](#136) A character who started with grenades always seems to have one equipped<br>[137](#137) The damage chat card assigns damage again after the player already assigned it through the popup<br>[138](#138) The healing button moves when a character is unconscious or damaged<br>[139](#139) A medkit can be restocked in combat — restocking should happen when shopping<br>[140](#140) The resist card's soak-hits section looks clickable — it should be greyed out<br>[141](#141) The second Simple Action does not flag and end the turn<br>[142](#142) Loading a clip-fed gun treats the clips as individual rounds<br>[143](#143) Clipped ammunition did not migrate<br>[149](#149) Grenade scatter goes through walls<br>[151](#151) Cyber weapons don't show up in the weapons list, and cannot be used in combat<br>[152](#152) Undoing an action only works on the second try<br>[161](#161) Flechette weapons — the two things the book does not settle<br>[163](#163) Launcher grenades and mini-grenades do not carry a blast<br>[164](#164) Non-damaging area grenades: how to show and use their area |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects<br>[131](#131) Cover and visibility on elemental spells<br>[132](#132) Astral damage: dual beings resist with Body, not Willpower |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field |
@@ -312,6 +312,22 @@ Also not covered: `(f)` on `ammunition` items (Anti-Personnel HRR Grenade, AP Mo
 SR3 p.283's *Mini-grenade* row (Conceal 8, Weight .1, Availability *+2/by grenade*, Cost *x2*, Street Index *+1*, Damage and Blast *by grenade*) describes a grenade for a launcher as a modifier on
 the ordinary one. Grenades fired from a launcher are `ammunition` items with no `blast` field, so they always fall off at −1/m — a Defensive mini-grenade is wrong. Needs the launcher's loaded
 grenade to say Offensive or Defensive (`system.blast` on `ammunition`), and the mini-grenade rows built from p.283 with their arithmetic stated.
+
+## 164. Non-damaging area grenades: how to show and use their area
+
+Follow-up to [#155](TODO-DONE.md#155), which lands gas, smoke and flash grenades and marks a coloured Region that ends with its Combat Turns. What it does **not** do yet, and what has to be decided:
+
+1. **The marker has not been seen.** It was checked only as far as the chat card; the Region itself and its two-round expiry need a scene with a canvas. A live step: throw a smoke grenade, see the grey region, advance two
+   rounds, see it go, and try the 🧹 button. It also needs a look at how it reads on a busy map — opacity, the label, and whether a Region shows to players who cannot see that spot.
+2. **A better graphic** than a flat coloured circle: a smoke texture or animated fill, and a different look for infra-red smoke, gas and a flash. Regions can carry a texture; nothing chooses one yet.
+3. **Visibility modifiers for smoke.** The card only says *"apply the visibility modifiers"*. The table (SR3 p.112) depends on the vision the viewer uses — normal, low-light, thermographic — and the marker could offer
+   the number to the GM's TN window when an attacker or target stands inside it. Infra-red smoke is the case that changes the row for thermographic vision. Needs the tokens inside the region tested against the attack, which the ranged
+   flow does not do today.
+4. **Gas.** *"The gas cloud affects everything within a 10-meter radius"* — Neuro-Stun VII is a toxin (SR3 p.250 names VIII, p.283's row says VII; see the note on the item). Offering each token inside a resistance card, as
+   the drugs flow does for a dose, is the obvious shape, and would need the Neuro-Stun rules read first.
+5. **Flash-Pak** has no area at all: *"Anyone facing a flash-pak"* is a facing rule. It could mark a cone or ask the GM to tick who is looking; today it only states +4 (+2 with flare compensation) and +2 from the strobe.
+6. **Wind** — *"less in windy areas, at the gamemaster's discretion"* — is stated on the card and not modelled; the expiry is a fixed 2 Combat Turns. A GM cannot shorten one except by clearing the marker.
+7. **Thermal Smoke** and the other non-core no-damage grenades (the 2nd-edition ones are parked in `archive/sr2/`) would use the same two fields once their packs return.
 
 ### 📕 Rules not implemented
 
