@@ -294,9 +294,21 @@ Triage: the repo ships `Basic Medkit` and `Medkit Supplies` in `sr3e-sr3-medical
 medkits in `sr3e-mm-medical`. Check whether the install has those packs (`npm run packs:install`)
 before looking anywhere else.
 
-**Checked 2026-09-23:** `npm run packs:check:repo` finds no problems, and `packs-src` holds
-`Basic Medkit`, `Medkit Supplies` and `Medkit Rating 1`–`10`. Nothing to build; the maintainer runs
-`npm run packs:install` with Foundry CLOSED and confirms the medkits appear. Left open until then.
+**Investigated 2026-09-23/24 against the PRODUCTION server (read-only).** Production runs 0.6.0
+(manifest `releases/latest`); `packs/sr3e-sr3-medical` and `packs/sr3e-mm-medical` are on disk with data;
+the enabled books are sr3, cc, mm, mits, r3; and the medkits were visible under Weapons & Gear / Medical /
+sr3 from the start. The Compendium **search** did not find them, then did — about **20 minutes** after the
+world came up (the server had restarted at 02:29). So the data ships correctly and the earlier "run
+`npm run packs:install`" advice was wrong (that only touches the dev install).
+
+**Still open — the cause of the delay is unknown.** Core's sidebar search also queries
+`game.documentIndex.lookup(...)` (25 results, ownership-filtered); in the local test world that returns all
+twelve medkits at once, so the difference is on production. Hypothesis, unconfirmed: the document index for
+~106 packs was still building. If it recurs, run on production, before it clears:
+`game.packs.filter(p => /medical/.test(p.collection)).map(p => [p.collection, p.indexed, p.index.size])`
+and `Object.values(game.documentIndex.lookup('medkit', {documentTypes: [], limit: 25, ownership: CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED, filterEntries: e => !!e.pack})).flat().map(r => r.entry.name)`.
+Nothing here is a shipping bug; it is a question of whether 106 packs make the search unusably slow after
+a start.
 
 ## 149. Grenade scatter goes through walls
 
