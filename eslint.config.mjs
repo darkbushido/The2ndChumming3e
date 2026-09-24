@@ -148,6 +148,7 @@ export default [
       'packs/**',
       'archive/**',
       'rawdata/**',
+      'SR-OCR/**',      // copyrighted rulebook OCR — never committed, never linted
       '**/*.min.js',
     ],
   },

@@ -19,6 +19,11 @@ modules/*/packs/*/LOG.old
 .claude/settings.local.json
 rules pdfs/
 
+# ⚠ OCR text and page transcriptions of the copyrighted rulebooks. Kept in the checkout for the rules
+# check, and it MUST NEVER BE COMMITTED — .githooks/pre-commit refuses it even with `git add -f`, and
+# tests/sr-ocr-guard.test.mjs fails if anything under it is ever tracked. Do not remove this line.
+/SR-OCR/
+
 # Tooling
 node_modules/
 

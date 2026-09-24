@@ -1,0 +1,15 @@
+#!/bin/sh
+# Refuse any commit that stages a path under SR-OCR/.
+#
+# SR-OCR/ holds OCR text and page transcriptions of the copyrighted rulebooks. It lives in the
+# checkout for convenience and MUST NEVER be committed — not ignored-by-default, NEVER. .gitignore
+# keeps it out of `git add .`; this hook stops `git add -f` too. tests/sr-ocr-guard.test.mjs checks
+# that nothing under it is tracked and that this hook still exists.
+staged=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '^SR-OCR/' || true)
+if [ -n "$staged" ]; then
+  echo "pre-commit: REFUSED — SR-OCR/ must never be committed (copyrighted rulebook text)." >&2
+  echo "$staged" | sed 's/^/  staged: /' >&2
+  echo "Unstage it: git restore --staged SR-OCR" >&2
+  exit 1
+fi
+exit 0
