@@ -283,8 +283,11 @@ export const SR3EPurchase = {
 
     await game.sr3e.SR3EActor.rollOpposedPair('purchase',
       { ...payload, ...opts },
-      { actorId: actor.id, pool: opts.dice, tn: Math.max(2, opts.tn), label: `🤝 ${actor.name} haggles` },
-      { actorId: actor.id, pool: opts.them, tn: Math.max(2, opts.theirTn), label: '🤝 The source holds out' });
+      // ⚠ `rollOpposedPair` takes each side as `{ actor, pool, tn, label, name? }` — an ACTOR, not an id. This
+      // passed `actorId`, so the first roll threw "Cannot read properties of undefined (reading '_rollWave')".
+      // The source is not an actor: the buyer's rolls its dice (any actor's `_rollWave` will do) and `name` labels it.
+      { actor, pool: opts.dice, tn: Math.max(2, opts.tn), label: `🤝 ${actor.name} haggles` },
+      { actor, pool: opts.them, tn: Math.max(2, opts.theirTn), label: '🤝 The source holds out', name: 'The source' });
   },
 
   /** Both haggles have landed (explosions included) · p.273. */
