@@ -6503,3 +6503,50 @@ automatic — the design ethos, and the book gives the GM the pick within a slot
 
 ⚠ **Not the Essence hole.** #53's hole records Essence spent on removed cyberware; these slots describe
 cyberware that is still installed.
+
+## 144. ✅ Only 2nd-edition grenades are in the compendium — `a025d67d`
+
+Already known: the note *"The `sr3` pack has no grenades"* under [#91](TODO.md#91), which was first
+reported in play on 2026-09-11.
+
+**Fixed 2026-09-23 (`a025d67d`, `main`).** Nine items from the SR3 core Explosives Table (p.283) now
+ship in `sr3e-sr3-projectiles`: Offensive and Defensive (each HE and AP — the table prints one
+"(HE or AP)" row apiece), Concussion, Gas (Neuro-Stun VII), Smoke, Smoke (IR) and Flash-Pak. Built by
+`tools/build-core-grenades.mjs` (derived ids); each carries its printed Blast in the new
+`system.blast`. The Mini-grenade row is every figure "by grenade" and is not shipped.
+`tests/core-grenades.test.mjs` holds an independent transcription of the rows. Needs
+`npm run packs:install` (Foundry closed) and a full Foundry restart (data model).
+
+## 146. ✅ Grenades don't seem to do any damage — `e75cab58`
+
+**The reporter's follow-up:** the 2nd-edition grenades have an `[f]` after the damage code, and
+that is what makes them do no damage.
+
+**Fixed 2026-09-23 (`e75cab58`, `main`).** `(f)` is the flechette flag. `SR3EItem.parseDamageCode`
+matched neither its plain nor its STR branch on `10S(f)` and returned `null`, so 24 shipped
+documents had no readable damage. It now reads Power and Level and returns `flechette: true`; a slash
+code (`10S/10D(f)`) reads its first alternative. The data is unchanged. What the flag should DO is
+[#156](TODO.md#156).
+
+## 148. ✅ Throwing a grenade asks for a firearm skill — `cd98d5c7`
+
+Throwing a grenade offers a firearm skill instead of a throwing skill. It may belong with
+[#146](#146) and [#136](TODO.md#136), which are also about grenades.
+
+**Fixed 2026-09-23 (`cd98d5c7`, `main`).** `WEAPON_SKILL_MAP` had no entry for `GR` (or any thrown
+category), so `_getWeaponSkill` fell through to `'Firearms'`. SR3 p.86: *"Throwing Weapons governs the
+use of any item thrown by the user."* Thrown categories now map to Throwing Weapons; launchers (`GrLn`)
+keep Launch Weapons. The same fallthrough still catches bows, crossbows and slings — [#157](TODO.md#157).
+
+## 150. ✅ Defensive grenades don't use their Damage falloff — `5b541214`
+
+Reported as "−1 per ½ metre, or −2 per metre". The falloff the blast used was not recorded. The
+rule still has to be checked against the book (the Grenade rules, SR3 p.119) before this is
+fixed.
+
+**Fixed 2026-09-23 (`5b541214`, `main`).** The AoE flow subtracted a flat 1 Power per metre. SR3 p.119's
+Grenade Damage Table: Offensive −1 per meter, Defensive −1 per half meter, Concussion −1 per meter; the
+worked example has a defensive grenade at 3 m doing 4S (10S − 6) and nothing at 6 m. New optional
+`system.blast` on projectile and thrown items (the book's `-1/m`, `-1/.5m`; blank = −1/m) is read by
+`scripts/data/blast.mjs`; the blast radius follows it too. Data-model change: full Foundry restart, no
+migration. The Chunky Salsa path is [#159](TODO.md#159).

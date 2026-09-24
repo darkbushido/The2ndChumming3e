@@ -71,17 +71,19 @@ three nice-to-haves (79, 82, 7) and the release tasks below.
 
 ## Contents
 
-**29 open.** 103 done — see [TODO-DONE.md](TODO-DONE.md).
+**52 open.** 107 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
+| 🔴 Confirmed bugs, still open | [133](#133) Unloading a gun returns the rounds to storage as full clips<br>[134](#134) There is no way to unload a gun<br>[135](#135) Characters should start with nothing equipped<br>[136](#136) A character who started with grenades always seems to have one equipped<br>[137](#137) The damage chat card assigns damage again after the player already assigned it through the popup<br>[138](#138) The healing button moves when a character is unconscious or damaged<br>[139](#139) A medkit can be restocked in combat — restocking should happen when shopping<br>[140](#140) The resist card's soak-hits section looks clickable — it should be greyed out<br>[141](#141) The second Simple Action does not flag and end the turn<br>[142](#142) Loading a clip-fed gun treats the clips as individual rounds<br>[143](#143) Clipped ammunition did not migrate<br>[145](#145) No medkit in the compendium, although the gear was added<br>[149](#149) Grenade scatter goes through walls<br>[151](#151) Cyber weapons don't show up in the weapons list, and cannot be used in combat<br>[152](#152) Undoing an action only works on the second try<br>[155](#155) Grenades with no damage code cannot be thrown<br>[156](#156) The `(f)` flechette flag is read but does nothing<br>[157](#157) Bows, crossbows and slings roll a firearm skill<br>[158](#158) 2nd-edition grenades: unverifiable pages and damage values<br>[159](#159) Blast falloff gaps |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects<br>[131](#131) Cover and visibility on elemental spells<br>[132](#132) Astral damage: dual beings resist with Body, not Willpower |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
+| 🗂 Unsorted | [147](#147) Unresolved combat steps get lost among the chat cards<br>[153](#153) Give the 📒 Ledger its own tab on the character sheet<br>[154](#154) 🛒 Buy gear: search the compendium, or drag an item in |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -258,6 +260,86 @@ cannot reach. If time is short, do these.
   pre-selection the GM can change, never a locked value. Worn goggles are not detected.
 
 <a id="94"></a>
+
+### 🔴 Confirmed bugs, still open
+
+## 133. Unloading a gun returns the rounds to storage as full clips
+
+## 134. There is no way to unload a gun
+
+## 135. Characters should start with nothing equipped
+
+## 136. A character who started with grenades always seems to have one equipped
+
+## 137. The damage chat card assigns damage again after the player already assigned it through the popup
+
+## 138. The healing button moves when a character is unconscious or damaged
+
+## 139. A medkit can be restocked in combat — restocking should happen when shopping
+
+## 140. The resist card's soak-hits section looks clickable — it should be greyed out
+
+## 141. The second Simple Action does not flag and end the turn
+
+## 142. Loading a clip-fed gun treats the clips as individual rounds
+
+## 143. Clipped ammunition did not migrate
+
+The reporter believes this caused [#133](#133) and [#142](#142): the clips were still being
+treated as loose rounds.
+
+## 145. No medkit in the compendium, although the gear was added
+
+Triage: the repo ships `Basic Medkit` and `Medkit Supplies` in `sr3e-sr3-medical`, and ten
+medkits in `sr3e-mm-medical`. Check whether the install has those packs (`npm run packs:install`)
+before looking anywhere else.
+
+**Checked 2026-09-23:** `npm run packs:check:repo` finds no problems, and `packs-src` holds
+`Basic Medkit`, `Medkit Supplies` and `Medkit Rating 1`–`10`. Nothing to build; the maintainer runs
+`npm run packs:install` with Foundry CLOSED and confirms the medkits appear. Left open until then.
+
+## 149. Grenade scatter goes through walls
+
+## 151. Cyber weapons don't show up in the weapons list, and cannot be used in combat
+
+## 152. Undoing an action only works on the second try
+
+The GM's ↺ Undo on the action ledger ([#48](#48)) has to be pressed twice before it takes effect.
+
+## 155. Grenades with no damage code cannot be thrown
+
+Smoke, gas, Flash-Pak and thermal smoke carry `--`, `Special`, `gas`, `-` and so on, which
+`parseDamageCode` reads as no code, so the AoE throw warns *"has no damage code"* and stops. The book
+gives each an effect instead — gas: 10 m radius for 2 Combat Turns; smoke: 20 m diameter for 2 Combat
+Turns, visibility modifiers; Flash-Pak: +4 TN (+2 with flare compensation) plus +2 from the strobe
+(SR3 p.283). Found while doing [#144](TODO-DONE.md#144); none of it is modelled.
+
+## 156. The `(f)` flechette flag is read but does nothing
+
+`parseDamageCode` now returns `flechette: true` for `10S(f)` ([#146](TODO-DONE.md#146)), and SR3 p.119 says *"AP
+grenades … Determine damage from AP grenades according to the flechette rules (p. 116)"*. The
+flechette armour rules exist for ammunition (`SR3EActor.flechetteArmor`, `flechetteRaisesLevel`) but no
+weapon or grenade reaches them from its own damage code. Needs the maintainer's decision on how `(f)`
+on a weapon interacts with a loaded ammunition type. ~24 shipped documents carry it.
+
+## 157. Bows, crossbows and slings roll a firearm skill
+
+The root cause of [#148](TODO-DONE.md#148): `WEAPON_SKILL_MAP` has no `Bow`, `LCB`, `MCB`, `HCB` or `SL` entries
+and `_getWeaponSkill`'s fallback for a projectile is `'Firearms'`. SR3 p.86 names the skill Projectile
+Weapons (Strength). Not fixed with #148 because it was not reported; the fix is the same shape.
+
+## 158. 2nd-edition grenades: unverifiable pages and damage values
+
+`sr3e-sr2-projectiles` has eight grenades with `bookPage: "sr2.???"` and damage values `gas`,
+`tear gas`, `-`, `(see rules)`; `Smoke (IR) Grenade` has skill `Projectile Weapons` and category
+`other`. There is no 2nd-edition core PDF in the library, so none of it can be checked. Nothing was
+changed under [#144](TODO-DONE.md#144)–[#146](TODO-DONE.md#146). Blocked on the SR2 book.
+
+## 159. Blast falloff gaps
+
+Three places still do not read `system.blast` ([#150](TODO-DONE.md#150)): the **Chunky Salsa** calculator
+(`openChunkySalsa`) computes its own Power and does not read it; a grenade **launcher** is a `firearm` and has no `blast`
+field; **commercial explosives** (p.283: −3/m, −6/m, −12/m per kilo) are not items.
 
 ### 📕 Rules not implemented
 
@@ -2286,6 +2368,37 @@ landing the harness alone, then rebasing the rest.
 `player-combat` and arguably `spell-self-target` are defect fixes — open a bug describing
 the broken behaviour and reference it from the PR. `gh` defaults to origin; confirm the
 target repo on every command.
+
+### 🗂 Unsorted
+
+## 147. Unresolved combat steps get lost among the chat cards — **reported in the trial session, 2026-09-23**
+
+In a busy fight, a card still waiting on someone (a soak, a dodge declaration, a Drain, a
+Knockdown) scrolls away under newer cards, and important steps get lost. The maintainer asks
+whether there is a better way to keep unresolved steps visible.
+
+This is a **feature**, not a fix, so it goes on a branch. Directions to weigh — none chosen yet:
+- A **"Waiting on…" panel** docked to the combat tracker. It lists each open step with who owes
+  it; clicking a row jumps to the card, or presses its button there, and the row clears once the
+  step is resolved.
+- **Per-user highlighting**: a card that is waiting on *you* gets a coloured edge and a badge
+  count on the chat tab.
+- **Collapsing cards that are done**, so only the open ones take up room.
+
+⚠ A button's "used" state lives in the in-memory `_usedButtons` Set, which is lost on reload.
+Tracking open steps needs a persisted record, such as a message flag.
+
+## 153. Give the 📒 Ledger its own tab on the character sheet — **requested in the trial session, 2026-09-23**
+
+The karma and nuyen ledger ([#79](TODO-DONE.md#79)) sits at the bottom of the Bio tab today. The
+maintainer wants it on a tab of its own. This is a feature, so it goes on a branch.
+
+## 154. 🛒 Buy gear: search the compendium, or drag an item in — **requested in the trial session, 2026-09-23**
+
+Picking the item in the Buy gear dialog ([#82](TODO-DONE.md#82)) should work in two ways: a search
+across the gear compendiums, and dragging an item from a compendium onto the dialog. It must
+respect the source-book filter (`SR3ESourceBooks.packAllowed`). This is a feature, so it goes on
+a branch.
 
 ### 📌 Notes & parked
 
