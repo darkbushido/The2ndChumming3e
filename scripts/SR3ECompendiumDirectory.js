@@ -1,4 +1,5 @@
 import { SR3ESourceBooks } from './SR3ESourceBooks.js';
+import { SearchEntries } from './data/search-entries.mjs';
 
 /**
  * Compendium sidebar that hides packs belonging to disabled source books.
@@ -23,6 +24,17 @@ export class SR3ECompendiumDirectory extends foundry.applications.sidebar.tabs.C
     // Preserve core's own reason for hiding (the type filter) — only ever add to it.
     if (!SR3ESourceBooks.packAllowed(pack)) ctx.hidden = true;
     return ctx;
+  }
+
+  /**
+   * Drop index entries core cannot render before it tries (TODO 145). A pack document stored with
+   * `_id: null` has no uuid, and core's `_onMatchSearchDocuments` throws on it — which blanks the
+   * whole result list for that query, the good matches with it.
+   * @inheritDoc
+   */
+  _matchSearchDocuments(query, documents) {
+    super._matchSearchDocuments(query, documents);
+    SearchEntries.prune(documents, uuid => foundry.utils.parseUuid(uuid)?.collection);
   }
 
   /** @inheritDoc */
