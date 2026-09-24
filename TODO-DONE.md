@@ -6536,7 +6536,7 @@ Throwing a grenade offers a firearm skill instead of a throwing skill. It may be
 **Fixed 2026-09-23 (`cd98d5c7`, `main`).** `WEAPON_SKILL_MAP` had no entry for `GR` (or any thrown
 category), so `_getWeaponSkill` fell through to `'Firearms'`. SR3 p.86: *"Throwing Weapons governs the
 use of any item thrown by the user."* Thrown categories now map to Throwing Weapons; launchers (`GrLn`)
-keep Launch Weapons. The same fallthrough still catches bows, crossbows and slings — [#157](TODO.md#157).
+keep Launch Weapons. The same fallthrough still catches bows, crossbows and slings — [#157](#157).
 
 ## 150. ✅ Defensive grenades don't use their Damage falloff — `5b541214`
 
@@ -6549,4 +6549,23 @@ Grenade Damage Table: Offensive −1 per meter, Defensive −1 per half meter, C
 worked example has a defensive grenade at 3 m doing 4S (10S − 6) and nothing at 6 m. New optional
 `system.blast` on projectile and thrown items (the book's `-1/m`, `-1/.5m`; blank = −1/m) is read by
 `scripts/data/blast.mjs`; the blast radius follows it too. Data-model change: full Foundry restart, no
-migration. The Chunky Salsa path is [#159](TODO.md#159).
+migration. The Chunky Salsa path is [#159](#159).
+
+## 157. ✅ Bows, crossbows and slings roll a firearm skill — `356da37a`
+
+The root cause of [#148](#148): `WEAPON_SKILL_MAP` has no `Bow`, `LCB`, `MCB`, `HCB` or `SL` entries
+and `_getWeaponSkill`'s fallback for a projectile is `'Firearms'`. SR3 p.86 names the skill Projectile
+Weapons (Strength). Not fixed with #148 because it was not reported; the fix is the same shape.
+
+**Fixed 2026-09-24 (`356da37a`, `main`).** `Bow`, `LCB`, `MCB`, `HCB` and `SL` now map to Projectile Weapons (Strength);
+SR3 p.86: *"Projectile Weapons governs the use of muscle-powered projectile weapons."* The book does not name the
+sling; it is grouped with the bows by `SR3E.bowCategories`.
+
+## 159. ✅ Blast falloff gaps — `a7a07330`
+
+Three places still do not read `system.blast` ([#150](#150)): the **Chunky Salsa** calculator
+(`openChunkySalsa`) computes its own Power and does not read it; a grenade **launcher** is a `firearm` and has no `blast`
+field; **commercial explosives** (p.283: −3/m, −6/m, −12/m per kilo) are not items.
+
+**Chunky Salsa fixed 2026-09-24 (`a7a07330`, `main`)**: the direct wave and every rebound now use the throw's falloff. The other two
+are [#160](TODO.md#160).

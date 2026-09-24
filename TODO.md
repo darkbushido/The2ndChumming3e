@@ -71,12 +71,12 @@ three nice-to-haves (79, 82, 7) and the release tasks below.
 
 ## Contents
 
-**52 open.** 107 done — see [TODO-DONE.md](TODO-DONE.md).
+**51 open.** 109 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 🔴 Confirmed bugs, still open | [133](#133) Unloading a gun returns the rounds to storage as full clips<br>[134](#134) There is no way to unload a gun<br>[135](#135) Characters should start with nothing equipped<br>[136](#136) A character who started with grenades always seems to have one equipped<br>[137](#137) The damage chat card assigns damage again after the player already assigned it through the popup<br>[138](#138) The healing button moves when a character is unconscious or damaged<br>[139](#139) A medkit can be restocked in combat — restocking should happen when shopping<br>[140](#140) The resist card's soak-hits section looks clickable — it should be greyed out<br>[141](#141) The second Simple Action does not flag and end the turn<br>[142](#142) Loading a clip-fed gun treats the clips as individual rounds<br>[143](#143) Clipped ammunition did not migrate<br>[145](#145) No medkit in the compendium, although the gear was added<br>[149](#149) Grenade scatter goes through walls<br>[151](#151) Cyber weapons don't show up in the weapons list, and cannot be used in combat<br>[152](#152) Undoing an action only works on the second try<br>[155](#155) Grenades with no damage code cannot be thrown<br>[156](#156) The `(f)` flechette flag is read but does nothing<br>[157](#157) Bows, crossbows and slings roll a firearm skill<br>[158](#158) 2nd-edition grenades: unverifiable pages and damage values<br>[159](#159) Blast falloff gaps |
+| 🔴 Confirmed bugs, still open | [133](#133) Unloading a gun returns the rounds to storage as full clips<br>[134](#134) There is no way to unload a gun<br>[135](#135) Characters should start with nothing equipped<br>[136](#136) A character who started with grenades always seems to have one equipped<br>[137](#137) The damage chat card assigns damage again after the player already assigned it through the popup<br>[138](#138) The healing button moves when a character is unconscious or damaged<br>[139](#139) A medkit can be restocked in combat — restocking should happen when shopping<br>[140](#140) The resist card's soak-hits section looks clickable — it should be greyed out<br>[141](#141) The second Simple Action does not flag and end the turn<br>[142](#142) Loading a clip-fed gun treats the clips as individual rounds<br>[143](#143) Clipped ammunition did not migrate<br>[145](#145) No medkit in the compendium, although the gear was added<br>[149](#149) Grenade scatter goes through walls<br>[151](#151) Cyber weapons don't show up in the weapons list, and cannot be used in combat<br>[152](#152) Undoing an action only works on the second try<br>[155](#155) Grenades with no damage code cannot be thrown<br>[156](#156) The `(f)` flechette flag is read but does nothing<br>[158](#158) 2nd-edition grenades: unverifiable pages and damage values<br>[160](#160) Launchers and commercial explosives carry no blast falloff |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects<br>[131](#131) Cover and visibility on elemental spells<br>[132](#132) Astral damage: dual beings resist with Body, not Willpower |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field |
@@ -334,12 +334,6 @@ flechette armour rules exist for ammunition (`SR3EActor.flechetteArmor`, `fleche
 weapon or grenade reaches them from its own damage code. Needs the maintainer's decision on how `(f)`
 on a weapon interacts with a loaded ammunition type. ~24 shipped documents carry it.
 
-## 157. Bows, crossbows and slings roll a firearm skill
-
-The root cause of [#148](TODO-DONE.md#148): `WEAPON_SKILL_MAP` has no `Bow`, `LCB`, `MCB`, `HCB` or `SL` entries
-and `_getWeaponSkill`'s fallback for a projectile is `'Firearms'`. SR3 p.86 names the skill Projectile
-Weapons (Strength). Not fixed with #148 because it was not reported; the fix is the same shape.
-
 ## 158. 2nd-edition grenades: unverifiable pages and damage values
 
 `sr3e-sr2-projectiles` has eight grenades with `bookPage: "sr2.???"` and damage values `gas`,
@@ -347,11 +341,10 @@ Weapons (Strength). Not fixed with #148 because it was not reported; the fix is 
 `other`. There is no 2nd-edition core PDF in the library, so none of it can be checked. Nothing was
 changed under [#144](TODO-DONE.md#144)–[#146](TODO-DONE.md#146). Blocked on the SR2 book.
 
-## 159. Blast falloff gaps
+## 160. Launchers and commercial explosives carry no blast falloff
 
-Three places still do not read `system.blast` ([#150](TODO-DONE.md#150)): the **Chunky Salsa** calculator
-(`openChunkySalsa`) computes its own Power and does not read it; a grenade **launcher** is a `firearm` and has no `blast`
-field; **commercial explosives** (p.283: −3/m, −6/m, −12/m per kilo) are not items.
+A grenade **launcher** is a `firearm` (`GrLn`) with `isAoE` but no `blast` field, so what it fires is always −1/m; SR3 p.283
+prints Commercial −3/m, Plastic IV −6/m and XII −12/m per kilo as explosives, which are not items at all. Split from [#159](TODO-DONE.md#159).
 
 ### 📕 Rules not implemented
 
