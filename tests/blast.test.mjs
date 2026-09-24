@@ -55,6 +55,15 @@ export async function run(t) {
     /Blast\.power\(basePower, h\.dist, perM\)/.test(actor) && !/Math\.max\(0, basePower - h\.dist\)/.test(actor));
   t.is('the falloff is carried into the roll state at every site',
     (actor.match(/aoeBlast:\s+(options|state)\.aoeBlast/g) ?? []).length, 3);
+  // TODO 159 — the Chunky Salsa calculator takes the same falloff, direct wave and rebounds alike.
+  const sr3e = read('scripts/sr3e.js');
+  t.ok('the confined-space calculator is handed the grenade\'s falloff', /falloff: Blast\.rate\(state\.aoeBlast\)/.test(actor));
+  const calc = sr3e.slice(sr3e.indexOf('function calcBlastM'), sr3e.indexOf('function calcBlastM') + 1400);
+  t.is('every wave it computes goes through Blast.power', (calc.match(/Blast\.power\(power, [^)]*, FALLOFF\)/g) ?? []).length, 4);
+  t.ok('…and none is a bare power − distance', !/=\s*power - /.test(calc));
+  t.ok('a wave reaches half as far at −1/.5m: 10 − 2·(2·2) = 2, not 6',
+    Blast.power(10, 2 * 2, def) === 2 && Blast.power(10, 2 * 2, off) === 6);
+
   const item = read('scripts/documents/SR3EItem.js');
   t.ok('the throw hands the item\'s falloff to the roll', /options\.aoeBlast\s+= this\.system\.blast/.test(item));
   t.ok('the blast radius follows the falloff', /Blast\.radius\(power, Blast\.rate\(this\.system\.blast\)\)/.test(item));

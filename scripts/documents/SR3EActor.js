@@ -3132,6 +3132,7 @@ _prepareCharacter(sys, attr) {
           if (state.aoeChunky && game.sr3e.openChunkySalsa && hits.length) {
             codes = (await game.sr3e.openChunkySalsa({
               power: basePower, level, actorIds: hits.map(h => h.actor.id), returnOnly: true,
+              falloff: Blast.rate(state.aoeBlast),   // its own falloff (#159)
             })) ?? [];
           } else {
             const perM = Blast.rate(state.aoeBlast);   // its own falloff, p.119 (TODO 150)

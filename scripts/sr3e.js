@@ -45,6 +45,7 @@ import { SR3ESourceBooks } from './SR3ESourceBooks.js';
 import { SR3ECompendiumDirectory } from './SR3ECompendiumDirectory.js';
 import { SR3EQuery, SR3EQueue, SR3EGMUnavailable } from './SR3EQuery.js';
 import * as Sustaining from './data/sustaining.mjs';
+import { Blast } from './data/blast.mjs';
 
 Hooks.once('init', () => {
   console.log('SR3E | Initialising');
@@ -601,10 +602,12 @@ async function _openSessionRewardDialog() {
   });
 }
 
-// opts (optional): { power, level, actorIds, returnOnly }
+// opts (optional): { power, level, actorIds, returnOnly, falloff }
+//   - falloff: Power lost per metre (SR3 p.119; default 1 — an Offensive grenade, a Defensive is 2)
 //   - power/level seed the blast; actorIds limits/places the participants
 //   - returnOnly: resolve and RETURN [{actorId,name,power,level,waves}] instead of posting to chat
 async function _openChunkySalsaCalculator(opts = {}) {
+  const FALLOFF = Number(opts.falloff) > 0 ? Number(opts.falloff) : Blast.DEFAULT_PER_METRE;
   // ── Constants ──────────────────────────────────────────────────────────────
   const CW = 420, CH = 420, CX = 210, CY = 210;
   const SCALE = 25;          // pixels per metre
@@ -630,22 +633,22 @@ async function _openChunkySalsaCalculator(opts = {}) {
   function calcBlastM(amx, amy, walls, power) {
     const D = hypot(amx, amy);
     const waves = [];
-    const direct = power - D;
+    const direct = Blast.power(power, D, FALLOFF);
     if (direct > 0) waves.push({ label: `Direct (${D.toFixed(1)}m)`, power: direct });
     for (const w of walls) {
       const W = distPtSeg(0, 0, w.x1, w.y1, w.x2, w.y2);
       if (W < 0.05) continue;
       let wp, label;
       if (D < 0.05) {
-        wp = power - 2 * W;
+        wp = Blast.power(power, 2 * W, FALLOFF);
         label = `Wall @${W.toFixed(1)}m`;
       } else {
         const proj = (amx / D) * (w.x1 + w.x2) / 2 + (amy / D) * (w.y1 + w.y2) / 2;
         if (proj > D) {
-          wp    = power - (2 * W - D);
+          wp    = Blast.power(power, 2 * W - D, FALLOFF);
           label = `Behind @${W.toFixed(1)}m`;
         } else {
-          wp    = power - (2 * W + D);
+          wp    = Blast.power(power, 2 * W + D, FALLOFF);
           label = `Opp. @${W.toFixed(1)}m`;
         }
       }
@@ -689,7 +692,7 @@ async function _openChunkySalsaCalculator(opts = {}) {
     for (let y = CY % SCALE; y < CH; y += SCALE) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(CW, y); ctx.stroke(); }
 
     // Blast radial fill
-    const blastR = Math.min(power * SCALE + 30, MAX_R + 60);
+    const blastR = Math.min((power / FALLOFF) * SCALE + 30, MAX_R + 60);
     const grd = ctx.createRadialGradient(CX, CY, 0, CX, CY, blastR);
     grd.addColorStop(0,   'rgba(255,80,0,0.20)');
     grd.addColorStop(0.6, 'rgba(255,140,0,0.07)');
@@ -701,7 +704,7 @@ async function _openChunkySalsaCalculator(opts = {}) {
     const maxRing = Math.ceil(MAX_R / SCALE) + 1;
     for (let r = 1; r <= maxRing; r++) {
       const rpx = r * SCALE;
-      const rem = power - r;
+      const rem = Blast.power(power, r, FALLOFF);
       const major = r % 2 === 0;
       ctx.strokeStyle = rem > 0
         ? `hsla(${(rem / power) * 120},70%,55%,${major ? 0.40 : 0.14})`
