@@ -1110,8 +1110,8 @@ background-color: var(--sr-surface) !important;
   height: 154px; /* matches the logo's native ~147.3:189.1 aspect ratio */
   margin: 0 auto;
   background-color: var(--sr-accent);
-  -webkit-mask-image: url('textures/shadowrun-logo.svg');
-  mask-image: url('textures/shadowrun-logo.svg');
+  -webkit-mask-image: url('textures/Shadowrun-logo.svg');
+  mask-image: url('textures/Shadowrun-logo.svg');
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-position: center;
