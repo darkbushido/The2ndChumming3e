@@ -6526,7 +6526,7 @@ that is what makes them do no damage.
 matched neither its plain nor its STR branch on `10S(f)` and returned `null`, so 24 shipped
 documents had no readable damage. It now reads Power and Level and returns `flechette: true`; a slash
 code (`10S/10D(f)`) reads its first alternative. The data is unchanged. What the flag should DO is
-[#156](TODO.md#156).
+[#156](#156).
 
 ## 148. ✅ Throwing a grenade asks for a firearm skill — `cd98d5c7`
 
@@ -6550,6 +6550,20 @@ worked example has a defensive grenade at 3 m doing 4S (10S − 6) and nothing a
 `system.blast` on projectile and thrown items (the book's `-1/m`, `-1/.5m`; blank = −1/m) is read by
 `scripts/data/blast.mjs`; the blast radius follows it too. Data-model change: full Foundry restart, no
 migration. The Chunky Salsa path is [#159](#159).
+
+## 156. ✅ The `(f)` flechette flag is read but does nothing — `893c7eca`
+
+`parseDamageCode` now returns `flechette: true` for `10S(f)` ([#146](#146)), and SR3 p.119 says *"AP
+grenades … Determine damage from AP grenades according to the flechette rules (p. 116)"*. The
+flechette armour rules exist for ammunition (`SR3EActor.flechetteArmor`, `flechetteRaisesLevel`) but no
+weapon or grenade reaches them from its own damage code. Needs the maintainer's decision on how `(f)`
+on a weapon interacts with a loaded ammunition type. ~24 shipped documents carry it.
+
+**Done 2026-09-24 (`893c7eca`, `main`), the maintainer's ruling: a weapon or grenade carrying (f) uses the flechette armour rules, as a checkbox.**
+New `flechette` checkbox on firearm, projectile and thrown items. SR3 p.116: *"Guns with flechette ammo already figured into their Damage Code have
+an (f) notation following the Damage Code"* — so an `(f)` code already has the level increase and gets the armour rule only (`flechette-coded`);
+the box ticked on a plain code (the core AP grenades, p.119) gets all of it. Other loaded ammunition wins. Ticked on the 12 shipped weapons;
+data-model change, full restart. What is left is [#161](TODO.md#161).
 
 ## 157. ✅ Bows, crossbows and slings roll a firearm skill — `356da37a`
 
