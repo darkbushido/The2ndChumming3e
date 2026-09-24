@@ -95,8 +95,30 @@ export async function run(t) {
   t.ok('…and do not say "into the clip"', !/into the clip/.test(AmmoStock.reloadActions(rounds(50, 'c'), { taken: 3, quickness: 6, gunMech: 'b' }).text));
   t.is('a reload keeps its own mechanism\'s rate', AmmoStock.reloadActions(clip, { gunMech: 'cy' }).simple, 2);
   const itemSrc = readFileSync(new URL('../scripts/documents/SR3EItem.js', import.meta.url), 'utf8');
-  t.ok('reload() offers stock through AmmoStock.fits', /AmmoStock\.fits\(i\.system, gunMech\)/.test(itemSrc));
-  t.ok('…and unloaded rounds go home through it too', /AmmoStock\.fits\(i\.system, mech\) && \(i\.system\.ammoType/.test(itemSrc));
+  t.ok('reload() offers stock through AmmoStock.fits, with the gun\'s class', /AmmoStock\.fits\(i\.system, gunMech, gunClass\)/.test(itemSrc));
+  t.ok('…and unloaded rounds go home through it too', /AmmoStock\.fits\(i\.system, mech, gunClass\) && \(i\.system\.ammoType/.test(itemSrc));
+
+  /* ── Gun class · SR3 p.279 (TODO 173, the maintainer's choice to enforce it) ─────────────── */
+  // "each kind of gun can trade ammo with another of its class … Shotguns, whether pistols or rifles"
+  t.is('a light pistol takes the light-pistol class', AmmoStock.gunClass('LPist'), 'LPist');
+  t.is('a machine pistol reads as light pistol, as its range does', AmmoStock.gunClass('MaPist'), 'LPist');
+  t.is('a carbine reads as assault rifle', AmmoStock.gunClass('Carb'), 'AsRf');
+  t.is('no category → no class', AmmoStock.gunClass(''), null);
+  const box = cls => ({ loadMechanism: 'c', countedIn: 'rounds', rounds: 20, gunClass: cls });
+  t.ok('a box with no class stated fits any gun (it is stated on first load)', AmmoStock.fits(box(''), 'c', 'AsRf'));
+  t.ok('a light-pistol box fits a light pistol', AmmoStock.fits(box('LPist'), 'c', 'LPist'));
+  t.ok('…and not an assault rifle', !AmmoStock.fits(box('LPist'), 'c', 'AsRf'));
+  t.ok('…not even by hand into a revolver of another class', !AmmoStock.fits(box('LPist'), 'cy', 'HPist'));
+  t.ok('a gun with no category constrains nothing', AmmoStock.fits(box('LPist'), 'c', null));
+  t.ok('reload() states the class of a box that had none',
+    /if \(gunClass && !String\(ammo\.system\.gunClass \?\? ''\)\.trim\(\)\) await ammo\.update\(\{ 'system\.gunClass': gunClass \}\)/.test(itemSrc));
+
+  /* ── Belts load (Quickness × 2) rounds a Complex Action · SR3 p.280 (TODO 173) ───────────── */
+  const beltBox = { loadMechanism: 'belt', countedIn: 'rounds', rounds: 100 };
+  t.is('a belt takes Quickness 4 × 2 = 8 rounds a Complex Action — 16 rounds is 2',
+    AmmoStock.reloadActions(beltBox, { taken: 16, quickness: 4, gunMech: 'belt' }).complex, 2);
+  t.is('…an internal magazine still takes Quickness — 16 rounds is 4',
+    AmmoStock.reloadActions({ loadMechanism: 'm', rounds: 100 }, { taken: 16, quickness: 4, gunMech: 'm' }).complex, 4);
   t.ok('…no reload site matches on the mechanism alone any more', !/loadMechanism \?\? 'c'\) === (gunMech|mech)/.test(itemSrc));
 
   /* ── Reading it back ──────────────────────────────────────────────────────────── */
@@ -131,7 +153,7 @@ export async function run(t) {
   t.ok('…says what the reload takes', /AmmoStock\.reloadActions\(/.test(reload));
   t.ok('…and what was lost', /plan\.discarded/.test(reload));
   t.ok('…never from storage (the stash is not on the character)', /!i\.getFlag\('The2ndChumming3e', 'stored'\)/.test(reload));
-  t.ok('…and puts unloaded rounds back into stock', /plan\.returned > 0 \? await SR3EItem\._returnRounds\(actor, gunMech, current\.type, plan\.returned\)/.test(reload));
+  t.ok('…and puts unloaded rounds back into stock', /plan\.returned > 0 \? await SR3EItem\._returnRounds\(actor, gunMech, current\.type, plan\.returned, gunClass\)/.test(reload));
   const back = item.slice(item.indexOf('static async _returnRounds'), item.indexOf('static async _returnRounds') + 1200);
   t.ok('_returnRounds adds to the loose stock of that type, or makes one', /'system\.rounds': \(home\.system\.rounds \?\? 0\) \+ n/.test(back) && /createEmbeddedDocuments\('Item'/.test(back));
   const dlg = item.slice(item.indexOf('static async _promptReloadChoice'), item.indexOf('static async _promptReloadChoice') + 5000);

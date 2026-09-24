@@ -194,6 +194,10 @@ export class AmmunitionData extends foundry.abstract.TypeDataModel {
       // not rounds: `reloads` of them, each holding `roundsPerReload` (0 = fills the gun).
       // Rules in scripts/data/ammo-stock.mjs.
       countedIn:      new StringField({ initial: 'rounds', choices: ['rounds', 'reloads'] }),
+      /* The class of gun this ammunition was made for · SR3 p.279 — a Weapon Range Table category
+       * (`LPist`, `AsRf`, `ShtG`…). '' = not stated yet: fits any gun, and the first gun to load from it
+       * states it (`SR3EItem.reload`). TODO 173. Read through AmmoStock.classFits. */
+      gunClass:       new StringField({ initial: '' }),
       reloads:        new NumberField({ integer: true, initial: 0, min: 0 }),
       roundsPerReload: new NumberField({ integer: true, initial: 0, min: 0 }),
       weight:         new NumberField({ initial: 0, min: 0 }),

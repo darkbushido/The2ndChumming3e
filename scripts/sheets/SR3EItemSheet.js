@@ -12,7 +12,7 @@ import {
 import { SPIRIT_TYPES } from '../documents/SR3ESpiritSummoning.js';
 import { knownRating } from '../data/item-rating.mjs';
 import { BookPage } from '../data/book-page.mjs';
-import { AmmoStock } from '../data/ammo-stock.mjs';
+import { AmmoStock, GUN_CLASSES } from '../data/ammo-stock.mjs';
 
 export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
 
@@ -445,6 +445,14 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           <div class="form-field">
             <span class="field-label">Loading Mechanism</span>
             <select name="system.loadMechanism" title="Must match the weapon's loading mechanism (the code in its ammo-capacity, e.g. 15(c))">${mechOpts}</select>
+          </div>
+          <div class="form-field">
+            <span class="field-label">Gun Class</span>
+            <select name="system.gunClass" title="SR3 p.279: ammunition is made for a class of gun (the Weapon Range Table's categories) and only guns of that class share it; shotguns share across pistols and rifles. Blank = not stated yet: the first gun to load from it states it.">
+              <option value="" ${!s.gunClass ? 'selected' : ''}>Not stated yet</option>
+              ${Object.entries({ ...GUN_CLASSES, ...(s.gunClass && !GUN_CLASSES[s.gunClass] ? { [s.gunClass]: s.gunClass } : {}) })
+                .map(([k, v]) => `<option value="${k}" ${s.gunClass === k ? 'selected' : ''}>${v}</option>`).join('')}
+            </select>
           </div>
           ${AmmoStock.kind(s.loadMechanism) === 'either' ? `<div class="form-field">
             <span class="field-label">Counted In</span>

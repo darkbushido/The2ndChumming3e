@@ -39,6 +39,23 @@ const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
 
 export const MUTANTS = [
   {
+    id:     'ammo-ignores-gun-class',
+    suite:  'ammo-stock',
+    ...AMMO, method: 'classFits',
+    was:    'loose rounds fitted any firearm; SR3 p.279 shares ammunition only within a gun class (TODO 173)',
+    impl:   () => true,
+  },
+  {
+    id:     'belt-loads-at-quickness',
+    suite:  'ammo-stock',
+    ...AMMO, method: 'reloadActions', needsOriginal: '_reloadActionsOriginal',
+    was:    'belt-fed loose rounds loaded at Quickness a Complex Action; SR3 p.280 gives Quickness × 2 (TODO 173)',
+    impl:   function (sys, o = {}) {
+      const mech = String(o.gunMech ?? sys?.loadMechanism ?? '').toLowerCase();
+      return this._reloadActionsOriginal(mech === 'belt' ? { ...sys, loadMechanism: 'm' } : sys, { ...o, gunMech: mech === 'belt' ? 'm' : o.gunMech });
+    },
+  },
+  {
     id:     'used-cyberware-stress-1d6-halved',
     suite:  'stress',
     module: '../scripts/data/stress.mjs', klass: 'Stress', method: 'usedStartingPoints',

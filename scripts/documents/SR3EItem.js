@@ -2118,14 +2118,16 @@ export class SR3EItem extends Item {
 
     // ⚠ Not from storage — the stash is not on the character (TODO 113), the same rule as worn
     // armour and a medkit. A stack split into storage used to be offered here.
+    // The gun's ammunition class (SR3 p.279): a box already stated for another class is not offered.
+    const gunClass = this.type === 'firearm' ? AmmoStock.gunClass(this.system.category) : null;
     let stock = actor.items.filter(i =>
       i.type === 'ammunition' && !i.getFlag('The2ndChumming3e', 'stored')
-      && AmmoStock.fits(i.system, gunMech)   // loose rounds fit any gun; a reload only its own
+      && AmmoStock.fits(i.system, gunMech, gunClass)   // loose rounds fit any gun of their class; a reload only its own mechanism
       && SR3EItem.weaponAcceptsAmmoType(this.system, i.system.ammoType ?? 'regular'));   // a flechette weapon takes no other type (TODO 161)
     if (trackOn) stock = stock.filter(i => AmmoStock.stock(i.system).count > 0);
     if (stock.length === 0) {
       ui.notifications.warn(SR3EItem.flechetteAmmo(this.system, 'regular') === 'regular'
-        ? `No compatible ammo in stock for ${this.name}.`
+        ? `No compatible ammo in stock for ${this.name}${gunClass ? ` (${gunClass} class — SR3 p.279)` : ''}.`
         : `No compatible ammo in stock for ${this.name} — a flechette weapon takes only ordinary rounds (SR3 p.116).`);
       return;
     }
@@ -2137,6 +2139,8 @@ export class SR3EItem extends Item {
     if (!ammo) return;
     const type      = ammo.system.ammoType ?? 'regular';
     const typeLabel = SR3E.ammoTypes[type]?.label ?? 'Regular';
+    // A box with no class stated is stated now: the ammunition was bought for this class of gun (p.279).
+    if (gunClass && !String(ammo.system.gunClass ?? '').trim()) await ammo.update({ 'system.gunClass': gunClass });
 
     if (!trackOn) {
       await this.update({ 'system.loadedAmmoType': type, 'system.loadedRounds': magSize });
@@ -2151,7 +2155,7 @@ export class SR3EItem extends Item {
     }
     await ammo.update({ [`system.${plan.field}`]: plan.remaining });
     await this.update({ 'system.loadedAmmoType': type, 'system.loadedRounds': plan.loaded });
-    const returnedTo = plan.returned > 0 ? await SR3EItem._returnRounds(actor, gunMech, current.type, plan.returned) : null;
+    const returnedTo = plan.returned > 0 ? await SR3EItem._returnRounds(actor, gunMech, current.type, plan.returned, gunClass) : null;
     const quickness = actor.system?.attributes?.quickness?.value ?? 1;
     const actions   = AmmoStock.reloadActions(ammo.system, { taken: plan.taken, quickness, gunMech }).text;
     // Charge what the Ammo Reloading Table says it took (TODO 48): a clip swap is Remove Clip + Insert
@@ -2181,10 +2185,12 @@ export class SR3EItem extends Item {
    * (the maintainer, 2026-09-13), and a gun holds one ammunition type, so switching type this way
    * unloads the old rounds rather than discarding them. Returns the stock item's name.
    */
-  static async _returnRounds(actor, mech, type, n) {
+  static async _returnRounds(actor, mech, type, n, gunClass = null) {
     const t = type || 'regular';
+    // Rounds out of a gun are that gun's class (p.279): they go back to a box of the same class.
     const home = actor.items.find(i => i.type === 'ammunition' && !i.getFlag('The2ndChumming3e', 'stored')
-      && AmmoStock.fits(i.system, mech) && (i.system.ammoType ?? 'regular') === t
+      && AmmoStock.fits(i.system, mech, gunClass) && (i.system.ammoType ?? 'regular') === t
+      && (!gunClass || String(i.system.gunClass ?? '') === gunClass)
       && AmmoStock.unit(i.system) === 'rounds');
     if (home) {
       await home.update({ 'system.rounds': (home.system.rounds ?? 0) + n });
@@ -2192,7 +2198,7 @@ export class SR3EItem extends Item {
     }
     const label = game.sr3e.SR3E.ammoTypes[t]?.label ?? 'Regular';
     const [made] = await actor.createEmbeddedDocuments('Item', [{ name: `${label} rounds (unloaded)`, type: 'ammunition',
-      system: { ammoType: t, loadMechanism: mech || 'c', countedIn: 'rounds', rounds: n } }]);
+      system: { ammoType: t, loadMechanism: mech || 'c', countedIn: 'rounds', rounds: n, gunClass: gunClass ?? '' } }]);
     return made?.name ?? `${label} rounds`;
   }
 

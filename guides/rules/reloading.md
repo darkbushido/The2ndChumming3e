@@ -65,9 +65,17 @@ So a full clip change costs:
 - **With a smartlink and smartgun:** eject as a **Free Action**, insert as a
   Simple Action, and you still have **one Simple Action left to fire**.
 
-The rules don't throw away the rounds left in a removed clip. **Spare clips**
-cost **5¥** each, unloaded. Each holds the gun's full capacity, and they
-**don't swap between guns**, even guns of the same class. *(SR3 p.281)*
+The book doesn't say what happens to the rounds left in a removed clip.
+**Spare clips** cost **5¥** each, unloaded. Each holds the gun's full
+capacity, and they **don't swap between guns**, even guns of the same class.
+*(SR3 p.281)*
+
+> **How The 2nd Chumming handles it:** swapping in a pre-filled clip, speed
+> loader or belt **loses the rounds left in the old one**; loading loose rounds
+> by hand never loses a round (unfired rounds of another type go back into
+> stock). A reload fits guns by loading mechanism, not by the individual gun,
+> so the "don't swap between guns" part of spare clips is left to the table.
+{: .house }
 
 **Refilling empty clips** is the slow part: a **Complex Action per
 (Quickness) rounds**. Do it between fights.

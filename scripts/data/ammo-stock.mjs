@@ -12,7 +12,7 @@
  * | Break Action (b) | Complex | insert 2 rounds |
  * | Internal Magazine (m) | Complex | insert (Quickness) rounds |
  * | Cylinder (cy) | Complex | insert (Quickness) rounds — or use a speed loader |
- * | Belt Feed (belt) | Complex | insert belt — or insert (Quickness) rounds |
+ * | Belt Feed (belt) | Complex | insert belt — or insert (Quickness × 2) rounds into the belt |
  *
  * So each mechanism is one of two kinds (`MECHANISM_KIND`):
  * - **either** — clip, drum, cylinder, belt: the table gives two methods, so the ITEM says which it
@@ -52,6 +52,21 @@ const RELOAD_WORDS = /\b(clip|reload|mag|magazine|cylinder|speed-?loader|belt|dr
 
 const whole = n => Math.max(0, Math.floor(Number(n) || 0));
 const plural = (n, one, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
+
+/**
+ * Firearm categories that are not rows of the Weapon Range Table (SR3 p.111), folded into the row
+ * `SR3E.weaponRanges` already reads them as ("≈ light, not in book"), so ammunition sharing agrees
+ * with range. Everything else is its own class.
+ */
+const CLASS_ALIASES = { MPist: 'LPist', MaPist: 'LPist', VHP: 'HPist', LCarb: 'AsRf', Carb: 'AsRf' };
+
+/** The classes an ammunition item can be stated for — the Weapon Range Table's rows (SR3 p.111). */
+export const GUN_CLASSES = {
+  HOPist: 'Hold-out pistol', LPist: 'Light pistol', HPist: 'Heavy pistol', Tasr: 'Taser', SMG: 'SMG',
+  ShtG: 'Shotgun (pistol or rifle)', SptR: 'Sporting rifle', Snip: 'Sniper rifle', AsRf: 'Assault rifle',
+  LMG: 'Light machine gun', MMG: 'Medium machine gun', HMG: 'Heavy machine gun', ACan: 'Assault cannon',
+  MinG: 'Minigun', GrLn: 'Grenade launcher', MisLn: 'Missile launcher',
+};
 
 export const AmmoStock = {
   /** 'either' | 'loose' for a loading mechanism code. */
@@ -117,7 +132,8 @@ export const AmmoStock = {
   /**
    * Can this stock go into a gun loaded by `gunMech`? (blank = the gun does not say: anything).
    *
-   * ⚠ **Loose rounds fit every firearm.** A box of rounds is loaded by hand whatever the gun takes —
+   * ⚠ **Loose rounds fit every firearm OF THEIR CLASS** (`classFits`, SR3 p.279 — TODO 173). By
+   * mechanism, a box of rounds is loaded by hand whatever the gun takes —
    * every row of the Ammo Reloading Table (SR3 p.280) has an "insert rounds" method. Only a pre-filled
    * RELOAD (clip, speed loader, belt) is shaped for one mechanism. Every shipped box of rounds says
    * `c`, so matching on the mechanism alone left 74 shipped guns — revolvers, tube-fed shotguns,
@@ -125,13 +141,40 @@ export const AmmoStock = {
    * ⚠ Arrows and bolts are the exception both ways: a bow takes only arrows, a crossbow only bolts,
    * and neither fits a gun.
    */
-  fits(sys, gunMech) {
+  fits(sys, gunMech, gunClass = null) {
+    if (!AmmoStock.classFits(sys, gunClass)) return false;
     const gun  = String(gunMech ?? '').toLowerCase();
     if (!gun) return true;
     const mech = String(sys?.loadMechanism ?? 'c').toLowerCase();
     if (mech === gun) return true;
     const nocked = m => m === 'arrow' || m === 'bolt';
     return AmmoStock.unit(sys) === 'rounds' && !nocked(mech) && !nocked(gun);
+  },
+
+  /**
+   * The ammunition CLASS a firearm takes · SR3 p.279 — "ammunition is also defined by the class of gun
+   * for which it was made (light pistol, assault rifle, MMG). In Shadowrun, each kind of gun can trade
+   * ammo with another of its class. … Use the categories shown on the Weapon Range Table, p. 111 …
+   * Shotguns, whether pistols or rifles, can share ammo." Null for no category.
+   */
+  gunClass(category) {
+    const c = String(category ?? '').trim();
+    if (!c) return null;
+    return CLASS_ALIASES[c] ?? c;
+  },
+
+  /**
+   * Does this stock's class suit a gun of `gunClass`? (TODO 173, the maintainer's choice to enforce it.)
+   *
+   * ⚠ **A blank class is "not stated yet", and fits anything.** The book prices ammunition by type, not
+   * class ("Standard ammo costs 20¥ for 10 rounds"), and no shipped box names one — so the class is a
+   * property of the purchase, stated the first time a gun loads from it (`reload` stamps it). After
+   * that the box goes only into guns of its class. The GM edits it on the item.
+   * ⚠ A gun with no category constrains nothing — fail open, the same way `fits` treats a blank mechanism.
+   */
+  classFits(sys, gunClass) {
+    const mine = String(sys?.gunClass ?? '').trim();
+    return !mine || !gunClass || mine === gunClass;
   },
 
   /**
@@ -151,9 +194,14 @@ export const AmmoStock = {
       return { complex: 1, simple: 0, text: `Complex Action to ${what} (SR3 p.280)` };
     }
     if (mech === 'arrow' || mech === 'bolt') return { complex: 0, simple: 0, text: '' };
-    const each    = mech === 'b' ? 2 : Math.max(1, whole(quickness));
+    // p.280: a break action takes 2 rounds a Complex Action; a BELT takes (Quickness × 2) — it read
+    // Quickness like everything else until the 0.6.1 rules check (TODO 173); the rest take Quickness.
+    const q       = Math.max(1, whole(quickness));
+    const each    = mech === 'b' ? 2 : mech === 'belt' ? q * 2 : q;
     const complex = taken > 0 ? Math.ceil(taken / each) : 0;
-    const how     = mech === 'b' ? '2 rounds each' : `Quickness ${each}: ${plural(each, 'round')} each`;
+    const how     = mech === 'b' ? '2 rounds each'
+                  : mech === 'belt' ? `Quickness ${q} × 2: ${plural(each, 'round')} each`
+                  : `Quickness ${each}: ${plural(each, 'round')} each`;
     const into    = mech === 'c' || mech === 'd' ? ' into the clip' : '';
     return { complex, simple: 0, text: `${plural(complex, 'Complex Action')} to insert ${plural(taken, 'round')}${into} (${how}, SR3 p.280)` };
   },
