@@ -7,6 +7,7 @@ import {
 } from './data/ItemDataModels.js';
 import { SR3EActor } from './documents/SR3EActor.js';
 import { SR3EMigrations } from './SR3EMigrations.js';
+import { SR3EPackRepair } from './SR3EPackRepair.js';
 import { AmmoStock } from './data/ammo-stock.mjs';
 import { EssenceHoles } from './data/essence-holes.mjs';
 import { SR3EStress } from './SR3EStress.js';
@@ -110,7 +111,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, AmmoStock, ItemRating, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing };
 
   // When THIS client loaded the system's code.
   //
@@ -366,6 +367,8 @@ Hooks.once('ready', async () => {
   // Bring documents already in play up to date. Gated to the ACTIVE GM inside; safe to await
   // here because it is a no-op on every load after the first one that needs it.
   await SR3EMigrations.migrate();
+  // Clean the broken (_id: null) entries an older build left in the packs (TODO 145). Never blocks the world.
+  try { await SR3EPackRepair.run(); } catch (err) { console.warn('SR3E | Compendium cleanup failed:', err); }
 
   const macros = [
     {

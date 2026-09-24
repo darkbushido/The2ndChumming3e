@@ -633,6 +633,17 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'pack-repair-removes-without-a-twin',
+    suite:  'pack-repair',
+    module: '../scripts/data/pack-repair.mjs', klass: 'PackRepair', method: 'plan',
+    was:    'a broken entry was removable even with no identical twin — deleting the only copy of a document (TODO 145)',
+    impl:   entries => {
+      const all = [...entries ?? []];
+      const broken = all.filter(e => e?._id == null || e._id === '');
+      return { broken, removable: broken, kept: [] };
+    },
+  },
+  {
     id:     'short-burst-raises-level',
     suite:  'fire-modes',
     ...ITEM, method: 'fireModeDamage',
