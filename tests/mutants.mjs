@@ -580,6 +580,19 @@ export const MUTANTS = [
     needsOriginal: '__origStageDamage',
   },
   {
+    id:     'flechette-flag-voids-damage-code',
+    suite:  'damage-codes',
+    ...ITEM, method: 'parseDamageCode',
+    was:    'a trailing (f) flechette flag made the whole code unparseable, so `10S(f)` grenades did no damage (TODO 146)',
+    // The parser as it was: only a plain code or a STR expression reads; `(f)` matches neither.
+    impl:   function (code) {
+      if (!code) return null;
+      const isStun = /stun/i.test(code);
+      const m = code.trim().replace(/\s*(stun)?\s*$/i, '').trim().match(/^(\d+)\s*([LMSD])$/i);
+      return m ? { power: parseInt(m[1]), level: m[2].toUpperCase(), isStun } : null;
+    },
+  },
+  {
     id:     'short-burst-raises-level',
     suite:  'fire-modes',
     ...ITEM, method: 'fireModeDamage',

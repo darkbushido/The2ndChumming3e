@@ -25,6 +25,22 @@ export async function run(t) {
   t.is('stun code keeps its power', p('6M Stun')?.power, 6);
   t.is('stun code keeps its level', p('6M Stun')?.level, 'M');
 
+  // (f) is the FLECHETTE flag (TODO 146). It used to void the whole code, so a `10S(f)` grenade
+  // parsed as null and did no damage. Power and Level must survive; the flag rides along.
+  t.eq('10S(f) keeps power and level, flags flechette', p('10S(f)'), { power: 10, level: 'S', isStun: false, flechette: true });
+  t.eq('15D(f)', p('15D(f)'), { power: 15, level: 'D', isStun: false, flechette: true });
+  t.eq('9S(f)',  p('9S(f)'),  { power: 9,  level: 'S', isStun: false, flechette: true });
+  t.eq('(F) in capitals reads the same', p('9S(F)'), { power: 9, level: 'S', isStun: false, flechette: true });
+  t.ok('an unflagged code carries no flechette key', !('flechette' in p('10S')));
+  // A slash code lists alternatives; the FIRST is the item's own code, and the flag belongs to
+  // the alternative it is written on.
+  t.eq('10S/10D(f): first alternative, not flechette', p('10S/10D(f)'), { power: 10, level: 'S', isStun: false });
+  t.eq('8S/10D(f): first alternative', p('8S/10D(f)'), { power: 8, level: 'S', isStun: false });
+  t.eq('8D(f)/8S: first alternative IS flechette', p('8D(f)/8S'), { power: 8, level: 'D', isStun: false, flechette: true });
+  // The book prints the concussion grenade as "12M (Stun)" (SR3 p.283).
+  t.eq('12M (Stun) reads', p('12M (Stun)'), { power: 12, level: 'M', isStun: true });
+  t.eq('12M Stun still reads', p('12M Stun'), { power: 12, level: 'M', isStun: true });
+
   // Strength expressions — the melee path leans on these.
   const brute = makeActor({ attributes: { strength: 6 } });
   t.is('(STR)M resolves strength',   p('(STR)M', brute)?.power, 6);

@@ -915,11 +915,30 @@ export class SR3EItem extends Item {
    * Supports plain codes ("9M"), STR expressions ("(STR+3)M", "STR-1S", "(STR)L"),
    * and Stun suffix ("6M Stun").
    * Pass `actor` to resolve STR references; without it, STR expressions return null.
+   *
+   * ⚠ **`(f)` is the FLECHETTE flag** (TODO 146, SR3 p.116) — `10S(f)`, `9S(f)`, `15D(f)`. It used
+   * to match neither branch below, so the whole code parsed as `null` and a grenade "did no damage".
+   * The Power and Level are read as usual and the result carries `flechette: true` (present only
+   * when flagged, so an unflagged code is exactly what it was). Nothing here applies the flechette
+   * armour rules — that is ammunition's job (`SR3EActor.flechetteArmor`).
+   *
+   * ⚠ **A slash code lists ALTERNATIVES** (`10S/10D(f)` — the regular round, then the flechette
+   * one; `8D(f)/8S` the other way round). The FIRST is what the item's own damage field reads:
+   * it is the code the weapon has when nothing else is loaded. The flag belongs to the alternative
+   * it is written on, so `10S/10D(f)` is not flechette and `8D(f)/8S` is.
    */
   static parseDamageCode(code, actor = null) {
     if (!code) return null;
     const isStun = /stun/i.test(code);
-    const s = code.trim().replace(/\s*(stun)?\s*$/i, '').trim();
+    let s = code.trim().replace(/\s*\(?\s*stun\s*\)?\s*$/i, '').trim();
+
+    const alt = s.match(/^(\d+\s*[LMSD]\s*(?:\(f\))?)\s*\/\s*\d+\s*[LMSD]\s*(?:\(f\))?$/i);
+    if (alt) s = alt[1].trim();
+    const flagged = /\(f\)\s*$/i.test(s);
+    if (flagged) {
+      const parsed = SR3EItem.parseDamageCode(s.replace(/\s*\(f\)\s*$/i, '') + (isStun ? ' Stun' : ''), actor);
+      return parsed ? { ...parsed, flechette: true } : null;
+    }
 
     // Fast path: plain numeric code like "9M"
     const plain = s.match(/^(\d+)\s*([LMSDlmsd])$/i);
