@@ -5773,18 +5773,18 @@ The finding as logged:
 (stored correctly — the schema allows it). Clicking Charisma's roll icon opens the dialog with
 **3** dice; switching the dropdown away and back shows **1**. Neither is the character's 0.
 
-- **3** — \`SR3EActorSheet._onRollAttr\` treats \`!val || val < 1\` as a missing attribute and
+- **3** — `SR3EActorSheet._onRollAttr` treats `!val || val < 1` as a missing attribute and
   substitutes 3 ("using default"). Pre-existing, not this branch. The worse of the two: a player
   rolls three dice they do not have.
 - **Magic 0 shows 1 too** when picked from the dropdown (confirmed in the run) — the same floor;
   it is the ordinary case for every mundane character, so this is not only about illegal builds.
 - **1** — the attribute dropdown wiring added for TODO 98 on this branch does
-  \`parseInt(dataset.val) || 1\`, so 0 becomes 1.
+  `parseInt(dataset.val) || 1`, so 0 becomes 1.
 
-**Fix:** show the real value, 0 included, in both places, and let \`rollPool\` refuse a 0 pool as
+**Fix:** show the real value, 0 included, in both places, and let `rollPool` refuse a 0 pool as
 it already does (*"dice pool is 0"*). Keep the default only for an attribute that is genuinely
 MISSING (undefined), which is what that fallback was written for. Check the other callers of
-\`_promptRollOptions\` for the same floor. (The 0 itself is an illegal build — see TODO 93's check 1
+`_promptRollOptions` for the same floor. (The 0 itself is an illegal build — see TODO 93's check 1
 note: a Mental Attribute may not be below 1, SR3 p.55 — but the dialog must still tell the truth.)
 
 <a id="103"></a>
@@ -5836,14 +5836,14 @@ Tests in `gm-tools.test.mjs`.
 The finding as logged:
 
 **Found while answering a question mid-run; not fixed.** SR3 has **two** VCR target modifiers and
-\`SR3EVehicleSheet.runDrivingTest\` uses the wrong one for a Driving Test:
+`SR3EVehicleSheet.runDrivingTest` uses the wrong one for a Driving Test:
 
 | Test | VCR modifier | Source (core, printed pages) |
 |---|---|---|
 | **Driving Test** | **−VCR Rating** | Driving Test Modifiers table p.134 (*"Rigger in Control −VCR Rating"*), and its worked example p.135: *"Rigger in control (VCR Rating 1) −1"* |
 | Vehicle combat / positioning / ramming / crash tables | **−(VCR Rating × 2)** | pp.141-144 (*"Driver has VCR implant −(VCR Rating x 2)"*) |
 
-The dialog's *Rigger — VCR Rating* select offers \`-vcrRating * 2\`, so a VCR 2 rigger gets −4 on a
+The dialog's *Rigger — VCR Rating* select offers `-vcrRating * 2`, so a VCR 2 rigger gets −4 on a
 Driving Test where the book gives −2. CLAUDE.md's Driving Test section repeats the ×2 ("VCR
 −2×rating") and must be corrected with the code.
 
@@ -5871,13 +5871,13 @@ The report as logged:
 linked vehicle. Selecting **Auto** (the control-mode button) does remove it — so the unlink
 exists, but only as a side effect of a button whose label says something else.
 
-**Triage: new** — TODO 71 covers *adding* a vehicle (\`sr3e.actor.create\`, \`sr3e.vehicle.link\`);
+**Triage: new** — TODO 71 covers *adding* a vehicle (`sr3e.actor.create`, `sr3e.vehicle.link`);
 nothing covers removing one.
 
 **To check after the run:** whether Auto removing the vehicle is intended (it may clear
-\`driverActorId\` as part of handing control to the autopilot, which would drop the vehicle from a
+`driverActorId` as part of handing control to the autopilot, which would drop the vehicle from a
 list keyed on "vehicles I drive"), and add an explicit, labelled unlink on the Vehicles tab. The
-unlink writes the VEHICLE's \`driverActorId\`, so it may need a GM route like \`sr3e.vehicle.link\`
+unlink writes the VEHICLE's `driverActorId`, so it may need a GM route like `sr3e.vehicle.link`
 for a player who does not own the vehicle (CLAUDE.md, *Creating documents*).
 
 <a id="108"></a>
@@ -5906,10 +5906,10 @@ Lee: the troll's corner of the melee card shows the **Reach 2** election dropdow
 options (*−2 to my TN* / *+2 to their TN*), but after picking one the dropdown **goes back to
 blank**.
 
-**Triage: new.** The election is \`sr-melee-atk-reach\` / \`sr-melee-def-reach\`, read at resolution
-by \`handleMeleeRoll\` (CLAUDE.md, *Reach is a DIFFERENTIAL*). Unsubmitted corner edits are meant
-to survive card re-renders through \`_cornerDrafts\` (CLAUDE.md, *Two-corner cards*) — whether that
-covers this \`<select>\`, and whether "blank" means no option selected at all, is the first thing to
+**Triage: new.** The election is `sr-melee-atk-reach` / `sr-melee-def-reach`, read at resolution
+by `handleMeleeRoll` (CLAUDE.md, *Reach is a DIFFERENTIAL*). Unsubmitted corner edits are meant
+to survive card re-renders through `_cornerDrafts` (CLAUDE.md, *Two-corner cards*) — whether that
+covers this `<select>`, and whether "blank" means no option selected at all, is the first thing to
 check. Also confirm whether the choice still reaches the result even though the control shows
 blank, and whether it matters who is viewing (GM vs the troll's player).
 

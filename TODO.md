@@ -1789,15 +1789,15 @@ Vehicle and drone actors currently carry no art of their own. Wanted: a portrait
 generated, in keeping with the look of the sourcebooks' vehicle illustrations.
 
 **To settle before starting:**
-- **Which vehicles** — the \`sr3\`, \`r3\`, \`sota\`, \`sota2\`, \`twl\`, \`tss\`, \`ssg\`, \`fra\`, \`sr2\` vehicle and
-  drone packs. Count them first (Actor packs — key \`!actors!\`, see CLAUDE.md), then decide whether
+- **Which vehicles** — the `sr3`, `r3`, `sota`, `sota2`, `twl`, `tss`, `ssg`, `fra`, `sr2` vehicle and
+  drone packs. Count them first (Actor packs — key `!actors!`, see CLAUDE.md), then decide whether
   every entry gets art or one image per chassis type.
 - **Original art only.** "Matching the style" should mean the setting's look — era, silhouettes,
   palette — not copying or tracing the books' illustrations, which are FASA/Catalyst's.
 - **Where the files live and what they cost the download** — they ship with the system, so check
-  total size and format (WebP), and add the \`img\` paths through the pack tooling (Foundry closed,
+  total size and format (WebP), and add the `img` paths through the pack tooling (Foundry closed,
   both pack copies — CLAUDE.md, *Compendium population*), which is blocked on TODO 12 for new
-  content but not for editing an existing document's \`img\`.
+  content but not for editing an existing document's `img`.
 - **Tokens — decided 2026-09-13: separate top-down tokens.** Each vehicle gets two images: a
   portrait (the actor `img`) and a **top-down** token (`prototypeToken.texture.src`), drawn to
   the vehicle's footprint so it reads on the grid. Vehicle footprints differ a lot (a bike vs a
@@ -1964,7 +1964,7 @@ right to; any new survey must do the same or it will report phantom work.
 
 ### The corpus exists now — and it does NOT close this item (2026-09-21)
 
-All **92 books** are OCR'd to text at `C:\Users\lance\Documents\SR-OCR\` (8,534 pages, 71 MB,
+All **92 books** are OCR'd to text at `C:\Users\lance\Documents\SR-OCR` (8,534 pages, 71 MB,
 `2e/` and `3e/` with a `log.txt`). ⚠ **Deliberately outside the repo** — whole-book text is a
 copyright surface and must not be committed. Built with `tools/ocr-pdf.ps1`.
 
@@ -2265,21 +2265,21 @@ tokens) and wants it tied to the vehicle passenger roster from TODO 74 when it i
 *"it would be nice to tie these together if it's installed (passengers in the car bit)."*
 
 **Shape:**
-- **Optional, never required.** Declare it under \`relationships.recommends\` in \`system.json\` (not
-  \`requires\` — a required module that stops being updated strands the system), and guard every
-  use with \`game.modules.get('<id>')?.active\`. Without it, the roster on the vehicle sheet works
-  exactly as now. (Confirm the module's exact id from its \`module.json\`.)
+- **Optional, never required.** Declare it under `relationships.recommends` in `system.json` (not
+  `requires` — a required module that stops being updated strands the system), and guard every
+  use with `game.modules.get('<id>')?.active`. Without it, the roster on the vehicle sheet works
+  exactly as now. (Confirm the module's exact id from its `module.json`.)
 - **Read, don't fight.** When a token rides a vehicle's token, its actor is aboard. Two places
   that could use it: (a) the 💥 Crash dialog and the Chase Scene pre-fill the aboard list from
-  who is riding the vehicle's token; (b) optionally, keep \`VehicleData.passengerActorIds\` in step
+  who is riding the vehicle's token; (b) optionally, keep `VehicleData.passengerActorIds` in step
   when riders mount or dismount. (a) is read-only and the safer first step.
 - **The driver:** decide whether the first rider, or a rider flagged as pilot, fills
-  \`driverActorId\` — or leave the driver to the sheet.
+  `driverActorId` — or leave the driver to the sheet.
 
 **First step:** read Rideable's source for how it records riders — a documented API, or token
 flags — and which hooks fire on mount/dismount. It is **not installed on the dev machine**
-(\`%LOCALAPPDATA%/FoundryVTT/Data/modules\`), so install it or read it from its repository first.
-Pin the tested version range in the \`recommends\` entry's \`compatibility\`.
+(`%LOCALAPPDATA%/FoundryVTT/Data/modules`), so install it or read it from its repository first.
+Pin the tested version range in the `recommends` entry's `compatibility`.
 
 Related: TODO 104 (vehicle art and top-down tokens) — riders sit on the token, so its footprint
 matters there too.
