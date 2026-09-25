@@ -6557,6 +6557,28 @@ documents had no readable damage. It now reads Power and Level and returns `flec
 code (`10S/10D(f)`) reads its first alternative. The data is unchanged. What the flag should DO is
 [#156](#156).
 
+## 147. ✅ Unresolved combat steps get lost among the chat cards — **reported in the trial session, 2026-09-23** — `efe62f62`
+
+**Done 2026-09-24** (merged `529b980b`): all three — the ⏳ Waiting-on panel in the combat tracker, a
+gold edge + "Waiting on you" line + chat-tab count for the user owed, and folding finished cards
+(client setting). The record is the message's `acted` flag. The two-client checks (a player's view)
+are in TESTING.md under *Open combat steps*, not yet walked.
+
+In a busy fight, a card still waiting on someone (a soak, a dodge declaration, a Drain, a
+Knockdown) scrolls away under newer cards, and important steps get lost. The maintainer asks
+whether there is a better way to keep unresolved steps visible.
+
+This is a **feature**, not a fix, so it goes on a branch. Directions to weigh — none chosen yet:
+- A **"Waiting on…" panel** docked to the combat tracker. It lists each open step with who owes
+  it; clicking a row jumps to the card, or presses its button there, and the row clears once the
+  step is resolved.
+- **Per-user highlighting**: a card that is waiting on *you* gets a coloured edge and a badge
+  count on the chat tab.
+- **Collapsing cards that are done**, so only the open ones take up room.
+
+⚠ A button's "used" state lives in the in-memory `_usedButtons` Set, which is lost on reload.
+Tracking open steps needs a persisted record, such as a message flag.
+
 ## 148. ✅ Throwing a grenade asks for a firearm skill — `cd98d5c7`
 
 Throwing a grenade offers a firearm skill instead of a throwing skill. It may belong with
