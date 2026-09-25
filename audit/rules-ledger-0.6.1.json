@@ -10907,7 +10907,84 @@
       ],
       "hash": "67ba679c54",
       "text": "{: .fixed }\n> Original gist: \"Complete Actions & Combat System Guide\".\n> - You get **one Free Action in every Combat Phase**, including other\n>   characters' phases, not one per Initiative Pass.\n> - \"Take Cover\" is not an SR3 action. \"Suppressive fire\" is not a defined\n>   action or modifier in the core rules; the phrase appears only in a rigger\n>   example (SR3 p.156).\n> - Nearly every value in the modifiers table was wrong: partial cover is\n>   **+4**, target running is **+2**, and the visibility values come from a\n>   two-axis table.\n> - Damage staging is **net**: attacker successes are compared with the\n>   defender's Dodge + Damage Resistance successes. The dodge doesn't reduce\n>   the attacker's successes directly.\n> - SR3 has a **Spell Pool**, not a Magic Pool. Drain TN is Force ÷ 2 plus a\n>   modifier; there is no minimum-2 rule of its own.\n> - Matrix: there is no \"Access Node\" action (the nearest is the **Locate\n>   Access Node** operation, SR3 p.210) and no \"Response Index\". Hacking Pool\n>   **cannot** be used to resist black IC.\n> - Vehicles: \"VCTR\" is not an SR3 term. A crash test comes from **Serious**\n>   damage in one attack, not Moderate, and the TN is Handling.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 107,
+          "printedPage": 105,
+          "quote": "A character may take a Free Action during their own Combat Phase and during the Combat Phase of any other character, as long as it is declared. Only one Free Action may be made by each character during any given Combat Phase"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "doorways, curtains and the like) receive a +4 modifier"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 114,
+          "printedPage": 112,
+          "quote": "If the target is running at the time of the attack or during"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 115,
+          "printedPage": 113,
+          "quote": "the target can stage down the weapon's base Damage Level by one for every two successes the target rolls over the attacker's total"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 46,
+          "printedPage": 44,
+          "quote": "A character's Spell Pool is equal to Intelligence plus Willpower plus Magic Rating"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "Vehicle takes Serious damage in a single attack (including weapon and spell attacks)"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "The Crash Test consists of a Driving Test against a base target number equal to the vehicle's Handling Rating"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/action-economy.mjs",
+          "line": 45,
+          "snippet": "freeAction:        { cost: 'free',    label: 'Free Action',"
+        },
+        {
+          "file": "scripts/SR3ECombatModifiers.js",
+          "line": 45,
+          "snippet": "{ key: 'partialCover',   label: 'Partial cover',                 mod: +4,"
+        },
+        {
+          "file": "scripts/SR3ECombatModifiers.js",
+          "line": 50,
+          "snippet": "{ key: 'targetRunning',  label: 'Target running',                mod: +2,"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7952,
+          "snippet": "static netStagedDamage(base, attackHits, defenceHits) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4232,
+          "snippet": "static parseDrainFormula(drainStr, force, damageLevel = null) {"
+        },
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1008,
+          "snippet": "static async runDrivingTest(actor, driverOverride = null, { crash = null } = {}) {"
+        }
+      ],
+      "note": "Page-header errata block correcting a stale AI-generated gist, not a book claim of its own; each corrected point re-checked against the page it cites: one Free Action per Combat Phase (p.114, also on p.105 in this printing's pagination), partial cover +4 and target running +2 (p.112), net damage staging (p.113, now implemented via netStagedDamage, TODO 165), Spell Pool formula and no minimum-2 of its own (p.44, parseDrainFormula has no floor beyond the general TN>=2 clamp shared by every roll), and the vehicle crash test firing on Serious damage in a single attack with TN = Handling (p.147, runDrivingTest's crash mode). The Matrix corrections (no Access Node action, no Response Index, Hacking Pool cannot resist black IC) are reference text on the Orthodox Matrix guide pages, not re-checked here as they carry no code claim on this page."
     },
     {
       "id": "rules/combat.md#5",
@@ -11006,7 +11083,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 10075,
+          "line": 10217,
           "snippet": "const woundMod = this.system.woundMod ?? 0;"
         }
       ]
@@ -11241,7 +11318,7 @@
         },
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 3740,
+          "line": 3754,
           "snippet": "static phaseFireWarning"
         }
       ]
@@ -11895,7 +11972,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 7868,
+          "line": 7977,
           "snippet": "static dodgeOutcome(dodgeHits, attackHits) {"
         }
       ]
@@ -11959,7 +12036,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 3230,
+          "line": 3237,
           "snippet": "} else if (successes === 0) {"
         }
       ]
@@ -11997,7 +12074,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 6247,
+          "line": 6292,
           "snippet": "return 4 + Math.floor(n(burstRounds) / 3) + n(shotgunSpread) - wound + n(sustain) + n(drugs);"
         }
       ]
@@ -12023,7 +12100,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 7871,
+          "line": 7980,
           "snippet": "if (d > a) return { cleanMiss: true, carried: 0 };"
         }
       ]
@@ -12049,12 +12126,12 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 7872,
+          "line": 7981,
           "snippet": "return { cleanMiss: false, carried: d };"
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 4094,
+          "line": 4125,
           "snippet": "const totalSoak  = successes + carried;"
         }
       ]
@@ -12086,12 +12163,12 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 8401,
+          "line": 8520,
           "snippet": "const soakTN = Math.max(2, stagedPower - defaultArmor);"
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 1994,
+          "line": 1995,
           "snippet": "_source('bod', racialBonus.bod, 'Troll dermal armor', 'racial', 'SR3 p.56');"
         }
       ]
@@ -12129,12 +12206,12 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 3233,
+          "line": 3240,
           "snippet": "const staged     = SR3EItem.stageDamage(state.damageBase, successes);"
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 4094,
+          "line": 4125,
           "snippet": "const totalSoak  = successes + carried;"
         }
       ],
@@ -12161,7 +12238,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 3233,
+          "line": 3240,
           "snippet": "const staged     = SR3EItem.stageDamage(state.damageBase, successes);"
         }
       ],
@@ -12176,7 +12253,7 @@
       ],
       "hash": "98ef0a12ff",
       "text": "   - Defender ahead: stage it **down** one step per 2 successes over the\n     attacker's. Below Light, no damage.",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -12188,16 +12265,16 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 4094,
-          "snippet": "const totalSoak  = successes + carried;"
+          "line": 7952,
+          "snippet": "static netStagedDamage(base, attackHits, defenceHits) {"
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 3599,
-          "snippet": "while (remaining >= 2 && idx >= 0) {"
+          "line": 4131,
+          "snippet": "const r = SR3EActor.netStagedDamage("
         }
       ],
-      "note": "Same finding as #50: the defender stages down by floor(total/2) of ITS OWN successes, not by 2 per success over the attacker's."
+      "note": "Fixed for 0.6.1 (TODO 165). netStagedDamage takes the NET of attacker and defender successes and stages down by one level per 2 net successes in the defender's favour, replacing the old floor(total/2) reading."
     },
     {
       "id": "rules/combat.md#53",
@@ -12220,12 +12297,12 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 1038,
+          "line": 1039,
           "snippet": "while (remaining >= 2 && idx < STAGES.length - 1) {"
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 4094,
+          "line": 4125,
           "snippet": "const totalSoak  = successes + carried;"
         }
       ],
@@ -12279,7 +12356,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 6244,
+          "line": 6289,
           "snippet": "static dodgeTN({ burstRounds = 0, shotgunSpread = 0, woundMod = 0, sustain = 0, drugs = 0 } = {}) {"
         }
       ]
@@ -12317,7 +12394,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 4094,
+          "line": 4125,
           "snippet": "const totalSoak  = successes + carried;"
         }
       ]
@@ -12418,7 +12495,7 @@
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 6292,
+          "line": 6337,
           "snippet": "const winnerIsAtk = a >= d;"
         }
       ]
@@ -12444,7 +12521,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 10477,
+          "line": 10619,
           "snippet": "const atkTN = 4 + (atkInfo.defaultTnMod ?? 0) + SR3EActor.woundTN(this) + SR3EActor.standingTN(this);"
         }
       ]
@@ -12496,7 +12573,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 6292,
+          "line": 6337,
           "snippet": "const winnerIsAtk = a >= d;"
         }
       ]
@@ -12548,7 +12625,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 8394,
+          "line": 8513,
           "snippet": "Melee uses Impact, ranged uses Ballistic"
         }
       ]
@@ -12574,7 +12651,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 7000,
+          "line": 7045,
           "snippet": "static meleeReach(weapon, actor) {"
         }
       ]
@@ -13140,7 +13217,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 2678,
+          "line": 2692,
           "snippet": "static async _promptCalledShot(actor, weapon = null) {"
         }
       ]
@@ -13172,7 +13249,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 7113,
+          "line": 7158,
           "snippet": "static gyroOnRecoil(rating, recoil) {"
         },
         {
@@ -13587,7 +13664,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 2678,
+          "line": 2692,
           "snippet": "static async _promptCalledShot(actor, weapon = null) {"
         }
       ]
@@ -13665,7 +13742,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 7000,
+          "line": 7045,
           "snippet": "static meleeReach(weapon, actor) {"
         }
       ]
@@ -14095,7 +14172,7 @@
       ],
       "hash": "ae1bf35ceb",
       "text": "- **Physical past 10 boxes**: you can survive overflow up to your **Body**\n  rating. One box beyond that and you are dead. While in overflow, you take\n  another box every (Body) Combat Turns until stabilized. *(SR3 p.125–126)*",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -14112,17 +14189,22 @@
       ],
       "code": [
         {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7923,
+          "snippet": "static deadFromOverflow(overflow, body) {"
+        },
+        {
           "file": "scripts/sr3e.js",
           "line": 1988,
-          "snippet": "const dead     = physFull && (w.overflow?.value ?? 0) >= body;"
+          "snippet": "const dead     = physFull && game.sr3e.SR3EActor.deadFromOverflow(w.overflow?.value, body);"
         },
         {
           "file": "scripts/sheets/SR3EActorSheet.js",
           "line": 607,
-          "snippet": "const isDead       = body > 0 && overflowVal >= body;"
+          "snippet": "const isDead       = game.sr3e.SR3EActor.deadFromOverflow(overflowVal, body);"
         }
       ],
-      "note": "Two differences. (1) Death: the book says instant death occurs only if Physical overflows 'by MORE than the character's Body Rating' (a character can take 10 + Body and one more point kills), so overflow equal to Body is survivable. The code flags the character dead at overflow >= Body (sr3e.js:1988 `dead = physFull && overflow >= body`; the sheet's isDead is the same test). (2) The extra box every (Body) Combat Turns while in overflow is not applied by the system (SR3EHealing mentions it as a note only)."
+      "note": "The death threshold is fixed for 0.6.1 (TODO 166): deadFromOverflow now requires overflow strictly greater than Body, not >=. The periodic box every (Body) Combat Turns is stated on the healing card (SR3EHealing.js: 'a box every N Combat Turns') but is not auto-applied, consistent with the system never applying damage automatically."
     },
     {
       "id": "rules/combat.md#125",
@@ -14207,7 +14289,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4433,
+          "line": 4511,
           "snippet": "const learnedForce = Number(this.system.force) > 0 ? Number(this.system.force) : null;"
         }
       ]
@@ -14265,7 +14347,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4293,
+          "line": 4370,
           "snippet": "return { tn: Math.max(2, val), resistAttr: attr, resistName: name, attrLabel: name };"
         }
       ]
@@ -14297,8 +14379,8 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4207,
-          "snippet": "return { tn: Math.max(2, halfF + powerMod), level: shiftLevel(levelMod) };"
+          "line": 4284,
+          "snippet": "return { tn: Math.max(2, halfF + powerMod + abovePower), level };"
         }
       ]
     },
@@ -14354,7 +14436,7 @@
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 9724,
+          "line": 9866,
           "snippet": "drainTN += sustainTN;"
         }
       ]
@@ -14380,7 +14462,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 3490,
+          "line": 3521,
           "snippet": "resistAttr:       'charisma',"
         }
       ]
@@ -14506,12 +14588,12 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 10044,
+          "line": 10186,
           "snippet": "base = reactionBase + wm + (resp * 2);"
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 10045,
+          "line": 10187,
           "snippet": "dice = 1 + resp;"
         }
       ],
@@ -14571,7 +14653,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 11707,
+          "line": 11849,
           "snippet": "await deckerActor.update({ 'system.orthodoxRunState.securityTally': curTally + hHits });"
         }
       ]
@@ -14806,7 +14888,7 @@
       ],
       "hash": "2c9351ff5b",
       "text": "- **Vehicle Control Rig**: each level gives +2 Reaction and **+1D6**\n  Initiative while rigging. *(SR3 p.301)*",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -14817,17 +14899,17 @@
       ],
       "code": [
         {
-          "file": "scripts/documents/SR3EActor.js",
-          "line": 10028,
-          "snippet": "base = reactionBase + vcrLevel + wm - jam;"
+          "file": "scripts/data/rigging.mjs",
+          "line": 27,
+          "snippet": "static vcrReaction(reactionBase, vcrLevel) {"
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 9910,
-          "snippet": "const base = reactionBase + wm + vcrLevel - jam;"
+          "line": 10052,
+          "snippet": "const base = Rigging.vcrReaction(reactionBase, vcrLevel) + wm - jam;"
         }
       ],
-      "note": "The book: each VCR level adds +2 to Reaction and +1D6 Initiative dice while rigging. The code gives +1 Reaction per level (base = Reaction base + vcrLevel) with 1 + vcrLevel dice — the dice are right, the Reaction is half what it should be. Both the rigger's own initiative and the jumped-in drone's initiative do this (SR3EActor.js, `vcrLevel` at the two 'VCR' branches)."
+      "note": "Fixed for 0.6.1 (TODO 167). scripts/data/rigging.mjs's Rigging.vcrReaction/vcrInitiativeDice give +2 Reaction and +1 initiative die per VCR level, and both the rigger's own and the jumped-in vehicle's initiative call it (SR3EActor.js:10052, 10170)."
     },
     {
       "id": "rules/combat.md#153",
@@ -14838,7 +14920,7 @@
       ],
       "hash": "5ec9c33a6b",
       "text": "- **Control Pool** = Reaction as modified by the VCR. *(SR3 p.44)* It only\n  works in a vehicle adapted for rigger control. *(SR3 p.134)*",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -14855,17 +14937,17 @@
       ],
       "code": [
         {
-          "file": "scripts/documents/SR3EItem.js",
-          "line": 1744,
-          "snippet": "controlPoolMax = Math.max(0, reactionBase + vcrLevel);"
+          "file": "scripts/data/rigging.mjs",
+          "line": 36,
+          "snippet": "static controlPool(reactionBase, vcrLevel) {"
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 2243,
-          "snippet": "Control Pool is the Vehicle Skill rating in"
+          "line": 2432,
+          "snippet": "controlPool:        Rigging.controlPool(attr.reaction?.base ?? 0, vcrRating),"
         }
       ],
-      "note": "The book: a rigger's Control Pool equals the character's Reaction, modified only by the VCR. The code treats Control Pool as the Vehicle Skill rating (comment at SR3EActor.js:2243, and the Driving Test uses the skill), and the gunnery flow sizes it as Reaction base + VCR level (SR3EItem.js:1744) — neither matches, and the second adds only +1 per level. The 'only works in a vehicle adapted for rigger control' condition is not modelled (no adaptation field)."
+      "note": "Fixed for 0.6.1 (TODO 167). Rigging.controlPool now returns Reaction (base) + 2 x VCR level, 0 without a VCR, and every site (gunnery, Driving Test, chase) reads it through Rigging.controlPool/controlPoolDice rather than the Vehicle Skill rating. The 'adapted for rigger control' precondition is still not modelled as its own field."
     },
     {
       "id": "rules/combat.md#154",
@@ -14894,12 +14976,12 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EVehicleSheet.js",
-          "line": 1114,
+          "line": 1119,
           "snippet": "Using VCR (−${vcrRating} TN, SR3 p.134)"
         },
         {
           "file": "scripts/SR3EVehicleChase.js",
-          "line": 984,
+          "line": 1133,
           "snippet": "const vcr     = el.querySelector('#act-vcr')?.checked ? -((info?.vcrRating ?? 0) * 2) : 0;"
         }
       ]
@@ -14913,7 +14995,7 @@
       ],
       "hash": "1ada4fbad8",
       "text": "- **Gunnery**: mounted weapons use the Gunnery skill and the ordinary\n  ranged-combat rules. Sensor-enhanced gunnery adds half the Sensor rating\n  in dice. *(SR3 p.151–152)*",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -14931,11 +15013,21 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 1801,
-          "snippet": "const tnReduction     = vcrLevel > 0 ? vcrLevel : sensorRating;"
+          "line": 4203,
+          "snippet": "static sensorGunneryDice(sensor) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1809,
+          "snippet": "const sensorDice      = SR3EItem.sensorGunneryDice(sensorRating);"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1759,
+          "snippet": "const finalPool = Math.max(1, pool + weaponOpts.controlPool + (weaponOpts.sensorDice ?? 0));"
         }
       ],
-      "note": "First half matches (manual gunnery uses the Gunnery skill and the ordinary ranged rules, p.151). Sensor-enhanced gunnery does not: the book rolls Gunnery + half the Sensor Rating (round down) as DICE and uses the target's Signature as the TN. The code instead subtracts the Sensor Rating (or the VCR level when jacked in) from the target's Signature as a TN reduction (SR3EItem.js:1800-1802) and adds no Sensor dice."
+      "note": "Fixed for 0.6.1 (TODO 168). Sensor-enhanced gunnery now adds half the Sensor Rating (round down) as DICE via sensorGunneryDice, folded into the pool, with the TN set from the target's Signature (defaultTN = Math.max(2, baseSig))."
     },
     {
       "id": "rules/combat.md#156",
@@ -14946,7 +15038,7 @@
       ],
       "hash": "80ab44bb68",
       "text": "- **Shooting a vehicle**: halve the weapon's Power and drop its Damage Level\n  one step, then subtract vehicle armor. If what's left doesn't beat the\n  armor, no damage. Anti-vehicle munitions skip the halving and subtract\n  only half the armor. *(SR3 p.149)*",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -14964,16 +15056,16 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 1484,
-          "snippet": "const newPower  = Math.ceil(damageBase.power / 2);"
+          "line": 4220,
+          "snippet": "static vehicleTargetDamage(damage, { av = false } = {}) {"
         },
         {
-          "file": "scripts/documents/SR3EItem.js",
-          "line": 1483,
-          "snippet": "const levelDown = { D: 'S', S: 'M', M: 'L', L: 'L' };"
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8462,
+          "snippet": "if (ammoRules.armorEffect === 'antiVehicle' && this.type === 'vehicle') {"
         }
       ],
-      "note": "Three differences. (1) The book halves Power 'round down'; the code rounds UP (Math.ceil(power / 2), SR3EItem.js:1483 and 1772). (2) 'Weapons that do Light Damage cannot affect the vehicle' — the code's level table maps L to L, so Light damage still goes through. (3) Anti-vehicle munitions subtract only half the armour (rounded down) from the Power; the code only skips the halving/level drop for AV and does not halve the armour."
+      "note": "Fixed for 0.6.1 (TODO 168). vehicleTargetDamage now rounds Power down (Math.floor), flags Light damage as noEffect instead of mapping L to L, and AV munitions skip the halving/level-drop and instead halve the vehicle's armour at the soak card (SR3EActor.js:8462-8467)."
     },
     {
       "id": "rules/combat.md#157",
