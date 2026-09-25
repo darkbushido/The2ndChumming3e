@@ -10,6 +10,7 @@ paths:
   - "tests/spirit-flags.test.mjs"
   - "tests/magic-attribute.test.mjs"
   - "tests/astral-soak.test.mjs"
+  - "tests/spell-damage.test.mjs"
   - "tests/e2e/spellcasting.spec.mjs"
   - "tests/e2e/astral-two-corner.spec.mjs"
 ---
@@ -53,19 +54,23 @@ Sheet shows available / total.
 1. Cast → Force dialog, **capped at the spell's learned `force`** (SR3 p.178; ⚠ null = not recorded, caps
    nothing; clamp on read, not just `max=`). Note if Force > Magic. **Combat and Elemental**
    (`SR3EItem.spellChoosesDamageLevel`) add a **Damage Level** dropdown (default the item's, else M), driving
-   both the target's damage and the Drain level. **AoE** = Range contains `(A)` (no separate flag) → radius
-   input (default Magic).
+   both the target's damage and the Drain level. **AoE** = Range contains `(A)` (no separate flag): base radius
+   Magic metres, widened +1 m / narrowed −1 m per 2 by **withheld Sorcery dice** (not rolled) —
+   `SR3EItem.spellAreaRadius`, SR3 p.181 (TODO 171).
 2. Targeting — **Single**: target dialog. **AoE**: `_placeBlastTemplate` → `_actorsInRadius` auto-picks every
-   live non-vehicle actor except the caster (no scatter/falloff); purple Region marker (`_drawBlastArea`) with
+   live non-vehicle actor **including the caster** (*"friend and foe alike (including the caster)"*, p.181; no
+   scatter/falloff); purple Region marker (`_drawBlastArea`) with
    🧹. Off-canvas → `_promptTargetsMulti`. Empty area still casts (Drain applies).
 3. Spell Pool dialog.
 4. **Cast**: Sorcery + Spell Pool vs **the spell's Target attribute** on the target —
    `SR3EItem._parseSpellTarget` (the single parser for cast TN and resist): `W` `B` `I` `Q`; `F` = Force as TN;
    number = fixed TN; blank/`OR`/unknown → Mana=Willpower, Physical=Body. `(R)/(T)/(RC)/(V)/(DT)` suffixes
-   stripped. AoE: the primary target sets the TN.
+   stripped. ⚠ **Several targets: one roll, each against its own TN** (p.182) — dice roll at the **hardest** TN
+   and `SR3EActor.hitsAgainst` counts them per target; a target the dice didn't reach gets no Resist button;
+   Spell Defense reduces each count.
 5. Final wave: 0 successes → fails, Drain still posted. Else each target gets **Resist Spell**
    (`SR3EActor._spellResistButton`, caster's successes + base damage; not pre-staged); caster gets
-   **Resist Drain**. The card shows the TN's source (`spellContext.tnSource`) and the cast's staging. Anyone
+   **Resist Drain**. Damage track: **Physical unless a stun spell** (`SR3EItem.spellDealsStun`, p.191, TODO 169). The card shows the TN's source (`spellContext.tnSource`) and the cast's staging. Anyone
    with Spell Defense → a **Counterspelling** card first (`_postSpellResistOrDoneCard`).
 6. **Resist Spell** (`_postSpellSoakCard` → `handleSpellResistRoll`): the Target attribute only, no pool, vs
    **TN = Force**. Net = caster − resister (`isSpellResist` in `_postWaveCard`): ≤ 0 no effect, else
@@ -74,6 +79,7 @@ Sheet shows available / total.
    - **TN** = ⌊Force/2⌋ + the modifier **outside** the brackets (½F implicit).
    - **Level** = nominated level + the modifier **inside** (`(DL+1)`/`(+1)` = +1; `(DL)`/`()` = 0; `(DL-1)` = −1).
      Manaball `(DL+1)`, F6, Serious → **3D**. Legacy explicit `F` formulas (`(F/2+1)S`) are the TN.
+     Past Deadly, the surplus adds Power (p.191, TODO 170).
    - **Physical if Force > Magic** (effective `SR3EActor.magicAttribute`, not Sorcery) **or astrally
      projecting** (p.183) — `SR3EActor.drainIsPhysical(force, attr, { astral })`; astral half is casting only.
    - ⚠ Resisted with **effective** Willpower (Charisma for conjuring) — `SR3EActor.drainResistRating`.

@@ -38,7 +38,11 @@ npm run test:e2e        # Playwright, two real clients (Foundry running)
 - **`major.minor.patch`.** Bug fix → **patch**; new feature → **minor**; **1.0.0** ("feature complete") is the maintainer's call.
 - **Features on a branch; only bug fixes on `main`.** A reported defect is a fix; a request is a feature, even
   in the same message — split them.
-- A migration needs `system.json` bumped in the same commit (see *World migrations*).
+- ⚠ **Only the release task bumps the version** (`verify-build` skill → `npm run version:bump`), once
+  preflight is green, release notes are written and TODO 121's rules record is done. Never run `version:bump`
+  or edit `system.json`'s `version` while fixing a bug or building a feature. A migration is numbered by the
+  release it ships in; `tests/migrations.test.mjs` fails while that number is above `system.json`'s version —
+  raise it with the maintainer rather than bumping early.
 - Never `git push` unless asked — the maintainer publishes.
 - **Every version bump: check the code's rules against `guides/`** (TODO 121). ⚠ **The PDFs are the source**,
   not the guide and not the code. Every difference is verified against the PDF (quoted, printed page) and/or
@@ -231,13 +235,17 @@ manifest packs missing on disk. Undeclared packs on disk are information. Also r
 
 ⚠ **Foundry EMBEDS items, it doesn't link them** — a pack fix changes nothing for owned copies. So a pack
 correction needs **both** the pack change and a migration.
-- **Adding one:** append to `MIGRATIONS` with the introducing version and **bump `system.json` in the same
-  commit** — a migration numbered above the stamped version re-runs every load (`tests/migrations.test.mjs`).
+- **Adding one:** append to `MIGRATIONS` numbered by the release it ships in — a migration above the stamped
+  version re-runs every load (`tests/migrations.test.mjs` fails until the release bumps `system.json`).
 - **Fill blanks, never overwrite** (`_fillBlank`; `0` and `''` count as unset, so target specific items).
   Overwriting hooks (`fixItem`, `fixActor`) must argue their case at the call site.
 - **Idempotent.** A failed run leaves the stamp so the next load retries.
 - ⚠ **Three populations**: world actors, world items, and **unlinked token actors on every scene**.
-- Compendium packs are **not** migrated (fix the pack file).
+- Compendium packs are **not** migrated (fix the pack file) — with one exception: **`SR3EPackRepair`**
+  (TODO 162, `scripts/SR3EPackRepair.js`, `data/pack-repair.mjs`). At `ready` the active GM's client removes an
+  older build's `!items!null` entry over the socket (`modifyDocument` delete, id `'null'`), **only when an
+  identical properly keyed twin exists** (the `--fix` rule), re-locking the pack in a `finally`. Runs every load,
+  never blocks the world (`tests/pack-repair.test.mjs`).
 - Changed **setting defaults** go in `SR3EMigrations.DEFAULT_CHANGES` (Foundry stores only set values).
 - Gated to `game.users.activeGM`. `game.sr3e.SR3EMigrations.force()` re-runs everything (safe by rule 1).
 
@@ -347,7 +355,7 @@ static defineSchema() {
 - **Status effects**: `sr3e-sustaining/-fulldefense/-dumpshock/-astral/-dual/-vr` appended to
   `CONFIG.statusEffects`. The `updateActor` hook (active GM only) toggles them from `astralMode`,
   `matrixUserMode`, `fullDefense`, `sustainedSpells`, and marks **defeated/unconscious** when a track is full,
-  **dead** when physical is full and overflow ≥ Body. Reversible.
+  **dead** when physical overflow is **more than** Body (SR3 p.125, `SR3EActor.deadFromOverflow`). Reversible.
 - **Drops** (TODO 97): items ride core `ActorSheetV2` handling; `SR3EActorSheet._onDrop`/`_onDropDocument` warn on
   damaged pack entries; `_onDropActor` deploys/links a vehicle via `sr3e.actor.create` / `sr3e.vehicle.link`,
   taking the id from the drag data's uuid.
@@ -361,8 +369,9 @@ static defineSchema() {
 system.json                ← manifest + documentTypes
 lang/en.json · styles/sr3e.css (all styles, CSS custom properties)
 guides/                    ← the SR3 Table Reference site (Jekyll) — NOT shipped in the zip
-packs/ · packs-src/        ← 102 compendium packs (build output · source of truth)
-archive/non-sr3-content/   ← documents split out of the packs, held for future modules
+packs/ · packs-src/        ← 79 compendium packs, all SR3 or system (build output · source of truth)
+archive/                   ← non-sr3-content/ (split-out documents) · sr2/ (the parked SR2 packs)
+SR-OCR/                    ← rulebook OCR, local only — NEVER committed (below)
 rawdata/                   ← source data, not loaded by Foundry (ODM-* = Orthodox SR3 Matrix; MDF-* = Matrix
                              Defragged — never touch MDF files for Orthodox work, or vice versa)
 .claude/rules/             ← subsystem rules, path-scoped (index below)
@@ -387,7 +396,13 @@ without Foundry, so nothing on them can be unit-tested or mutated.
 > `Shadowrun 3e - Core Rules {FAN25000}.pdf`: **PDF page = book page + 2**. The maintainer's library (32 books,
 > `C:\Users\lance\Documents\Shadowrun 3rd Edition PDFs`) has a real text layer: `pdftotext -layout -f N -l N`,
 > no OCR. Two-column pages merge columns per line — crop with `-x 0 -W 308` then `-x 308 -W 320` (mediabox
-> ~616×795pt). Verify stats and pages there rather than guessing.
+> ~616×795pt). Verify stats and pages there rather than guessing. Poppler (`winget oschwartz10612.Poppler`) adds
+> `pdftoppm` for page images; ⚠ Git Bash finds Git's xpdf `pdftotext` first, PowerShell finds Poppler's.
+>
+> ⚠ **`SR-OCR/` — OCR of the books with no text layer, page transcriptions, and `tools/render-page.ps1` — is
+> copyrighted rulebook text and can NEVER be checked in.** Four guards, all asserted by
+> `tests/sr-ocr-guard.test.mjs`: `.gitignore`, `.githooks/pre-commit` (refuses it even after `git add -f`),
+> ESLint's ignore list, and the test failing if `git ls-files SR-OCR` is non-empty. Never weaken any of them.
 >
 > **🔴 DIVERGES FROM RAW** marks a rule implemented differently from the book, with the book's wording and the
 > tracking TODO. Delete the marker only when the code is fixed — and check the book, not the doc.
@@ -446,8 +461,9 @@ system.recoilCompensation / .roundsFiredThisPhase / .targetsThisPhase
 - `ammunition`: `ammoType` (key into `SR3E.ammoTypes`), `loadMechanism`, `rounds`/`reloads`/`roundsPerReload`/`countedIn` — rules live in config
 - `armor`: `ballistic`, `impact`, `worn`
 - `skill`: `rating`, `linkedAttribute`, `specialisations` (`level` = bonus over base)
-- `spell`: `force` (learned Force, nullable — caps the cast; SR3 p.178), `type` (Mana/Physical — **damage track
-  only**), `target` (**resist attribute AND cast TN**, via `SR3EItem._parseSpellTarget`), `category` (Combat or
+- `spell`: `force` (learned Force, nullable — caps the cast; SR3 p.178), `type` (Mana/Physical — **what it can
+  affect**, never the damage track), `damageTrack` (`''`/`Physical`/`Stun` — ⚠ **combat spells do PHYSICAL
+  damage unless they are stun spells**, SR3 p.191; blank reads the name, `SR3EItem.spellDealsStun`), `target` (**resist attribute AND cast TN**, via `SR3EItem._parseSpellTarget`), `category` (Combat or
   Elemental = damaging; Elemental resolves as a ranged attack), `drain` ("(DL+1)"), `range` (`(A)` = area),
   `duration`. **No damage code** — Power = Force, level chosen at cast.
 - `drug`: `addiction` ("4M+3P"), `tolerance`, `edge` ("5/50"; legacy `effect`), `fixFactor`, `damage`, `speed`,

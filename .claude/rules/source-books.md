@@ -17,7 +17,16 @@ paths:
 
 One pack per source book, `sr3e-<book>-<type>`, each declaring `flags.The2ndChumming3e.book` in `system.json`.
 Packs without the flag are system content (exactly three: `sr3e-skills`, `sr3e-example-characters`,
-`sr3e-mr-johnsons-contacts`). **102 packs, 20 books.**
+`sr3e-mr-johnsons-contacts`). **79 packs ship**, all SR3 or system.
+
+### ⚠ SR2 is PARKED — 25 packs in `archive/sr2/` (TODO 158)
+The maintainer: *"we will be adding sr2 stuff back in the future but I need sr3 working now without confusion."*
+Every pack of `sr2 ct ssc st fof pna` is out of `system.json` and `packs/`; sources and exact declarations are in
+`archive/sr2/` with a restore procedure (`archive/sr2/README.md`). Counts below that include SR2 are pre-parking.
+- The books stay in `SOURCE_BOOKS` and `EDITIONS.SR2` stays. **`PLAYABLE_EDITIONS`** (`config.js`, `['SR3']`) is
+  what the Edition setting offers; `SR3ESourceBooks.edition` falls back to SR3 for a stored SR2.
+- `tools/build-default-gear.mjs` skips non-playable editions, so re-running it doesn't resurrect SR2 packs.
+- ⚠ Worlds keep their own copies of SR2 items characters hold.
 
 `SOURCE_BOOKS` in `config.js` is the registry (codes + default-on); the GM picks books in **Configure Settings →
 System → Configure Source Books** (`SR3ESourceBooksConfig`). Codes are the **`BookPage` prefix** of the upstream

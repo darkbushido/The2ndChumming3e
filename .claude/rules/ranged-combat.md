@@ -4,6 +4,11 @@ paths:
   - "scripts/data/shotgun.mjs"
   - "scripts/data/ammo-stock.mjs"
   - "scripts/data/phase-targets.mjs"
+  - "scripts/data/blast.mjs"
+  - "tests/net-staging.test.mjs"
+  - "tests/flechette-weapons.test.mjs"
+  - "tests/grenade-skill.test.mjs"
+  - "tests/vehicle-targets.test.mjs"
   - "scripts/data/weapon-accessories.mjs"
   - "tests/combat-modifiers.test.mjs"
   - "tests/dodge-resolution.test.mjs"
@@ -49,10 +54,11 @@ paths:
      ⚠ **Cat's Eyes are NATURAL** (M&M p.64). ⚠ Thermosense Organs are not vision (M&M p.75).
 6. Attacker allocates Combat Pool — that dialog is the 🎲 Roll trigger. Attack rolls (interactive).
 7. On the final wave the **defender declares a defence knowing the attack's successes**; dodge TN 4.
-8. Dodge result via `SR3EActor.dodgeOutcome` (below). Dodge never reduces staging, but its successes carry.
+8. Dodge result via `SR3EActor.dodgeOutcome` (below). A failed dodge's successes join the target's total.
 9. Soak card: editable Body pool, TN (Power − armour), armour type dropdown (ballistic; impact for melee).
    APDS/Flechette applied from the carried `ammoType` (editable, gold note).
-10. Soak roll; each 2 hits stage down (D→S→M→L); below L = fully soaked. **The GM applies damage manually.**
+10. Soak roll: the attacker's successes against the target's total (soak + carried dodge), 2 per level either way
+    from the **base** code (`netStagedDamage`, p.113); below L = fully soaked. **The GM applies damage manually.**
 
 #### ⚠ The defender declares AFTER the attack roll — RAW (p.113 steps 3-5)
 The book's order: attacker's Success Test → *then* the target decides to dodge (Liam/Snot example). The
@@ -70,7 +76,12 @@ choice is dodge-vs-soak: pool spent dodging is gone from the soak. **Never promp
 1. **A tie is a HIT** (strict *more than* / *exceeds*).
 2. **A failed dodge's successes carry** into the soak (`carriedSuccesses` on the payload; the soak card shows
    the parts, `5 hits (3 soak + 2 dodge)`).
-3. **Staging UP uses the attacker's raw successes** — dodge adds to resistance, it doesn't cancel.
+3. **The damage stages by the NET of the two totals** (p.113, TODO 165): *"one Damage Level for every two
+   successes the attacker rolls over the target's total"*, and down for the target's surplus; equal = base.
+   `SR3EActor.netStagedDamage(base, attack, target)`; the soak payload carries `net: { attackHits, basePower,
+   baseLevel }` (ranged, grenade, vehicle, elemental spell — **not melee**, which nets on p.122 then soaks).
+   ⚠ Never stage up and down separately (floor(A/2) − floor(D/2) is wrong). The attack card's staged code is only
+   an "if unresisted" preview. Worked: 3 hits on 9M, dodge 2 (hits, carried), Body 3 → 5 vs 3 → **9L**.
 Both in `SR3EActor.dodgeOutcome(dodgeHits, attackHits)` → `{cleanMiss, carried}`
 (`tests/dodge-resolution.test.mjs`, including the tie — never relax to `>=`).
 
@@ -166,7 +177,7 @@ SR3 p.117 — SHOTGUN SPREAD EXAMPLE, choke 3  (each # row is 1 m of width; it w
   | Mechanism | Stock | Reloading | Takes |
   |---|---|---|---|
   | clip `c`, drum `d`, cylinder `cy`, belt `belt` | **either** — the item's `countedIn` | a **reload** is swapped; **the old one's rounds are lost** | clip: 2 Simple; speed loader, belt: 1 Complex |
-  | | | or **loose rounds** by hand, topping up | 1 Complex per (Quickness) rounds |
+  | | | or **loose rounds** by hand, topping up | 1 Complex per (Quickness) rounds — **(Quickness × 2) into a belt** (TODO 173) |
   | internal magazine `m`, break action `b`, `sb`, `internal`, arrow, bolt | **rounds** only | topped up | 1 Complex per (Quickness) rounds; **2** for break action |
 
   `reloads` of `roundsPerReload` each (0 = fills the gun). ⚠ **A reload is used up whole.** ⚠ **Round by
@@ -177,16 +188,28 @@ SR3 p.117 — SHOTGUN SPREAD EXAMPLE, choke 3  (each # row is 1 m of width; it w
 - **Stacks and storage** (TODO 113): moving a stack >1 asks how many; splits and merges into an identical
   stack (`SR3EActor.stackKey`, strict). Pure rule `SR3EActor.planStackMove`.
 - **Magazine**: `loadedAmmoType` + `loadedRounds`; size parsed from capacity (`15(c)` → 15). ↻ Reload
-  (`SR3EItem.reload`) prompts compatible stock (`AmmoStock.fits`: ⚠ **loose rounds fit any firearm**; a
-  reload only its mechanism; arrows/bolts only their bow/crossbow) and applies `AmmoStock.reloadPlan`,
+  (`SR3EItem.reload`) prompts compatible stock (`AmmoStock.fits`: ⚠ **loose rounds fit any firearm OF THEIR
+  CLASS** — SR3 p.279, TODO 173: `system.gunClass` on ammunition is a Weapon Range Table category
+  (`AmmoStock.gunClass` folds MaPist/MPist → LPist, VHP → HPist, Carb/LCarb → AsRf); **blank = not stated**, fits
+  anything, and the first gun to load from it stamps its class; a reload only its mechanism; arrows/bolts only
+  their bow/crossbow; a flechette weapon takes nothing else) and applies `AmmoStock.reloadPlan`,
   reporting losses and cost (`reloadActions`). `trackAmmo` off → only sets the type.
 - **Firing** decrements `loadedRounds` when tracking (warns when empty).
 - **Type rules**: Explosive +1 / EX +2 Power; Gel −2 Power + Stun; Shot (above). APDS halves ballistic.
   Flechette: unarmoured → level +1; armoured → **`max(Impact × 2, Ballistic)`** (`SR3EActor.flechetteArmor`).
   ⚠ **Double IMPACT only** (p.116). ⚠ *"Dermal armor negates the Damage Level increase"* —
   `SR3EActor.flechetteRaisesLevel` via `dermalArmorSources`: troll hide, Dermal Plating, Dermal Sheath
-  (`SR3E.dermalArmorImplants`). ⚠ Orthoskin is not dermal armour. Anti-Vehicle sets `weaponOpts.avMunition`
-  (bypasses vehicle Power/2). Tracer: FA only, raises Level not Power, TN bonus is a manual note.
+  (`SR3E.dermalArmorImplants`). ⚠ Orthoskin is not dermal armour.
+  **A weapon or grenade can carry the flechette rules itself** (TODO 156): the `flechette` checkbox on
+  firearm/projectile/thrown, or `(f)` after its Damage Code (p.116). `SR3EItem.flechetteAmmo`: `(f)` →
+  `flechette-coded` (level already in the code, armour rule only); a ticked plain code (core AP grenades, p.119) →
+  `flechette`. ⚠ **A flechette weapon takes NO other ammunition** (`SR3EItem.weaponAcceptsAmmoType`, TODO 161).
+  Open: whether dermal armour takes an `(f)` code's level back.
+  Anti-Vehicle sets `weaponOpts.avMunition` (bypasses vehicle Power/2; the vehicle's soak card halves its armour
+  instead, p.149). Tracer: FA only, raises Level not Power, TN bonus is a manual note.
+- **Shooting a vehicle** — `SR3EItem.vehicleTargetDamage` (p.149, TODO 168): Power ÷ 2 **round down**, level −1,
+  **Light has no effect**. **Sensor-enhanced gunnery** adds ⌊Sensor ÷ 2⌋ **dice** against the target's Signature
+  (p.152) — never a TN reduction.
 - **Mechanisms** `SR3E.ammoLoadMechanisms`, parsed by `SR3EItem._parseLoadMechanism`. ⚠ **`b` = BREAK
   ACTION, `m` = INTERNAL magazine** (p.280); belt feed is `belt`.
 - ⚠ **Weight is PER ROUND** (per reload for a clip) — TODO 126.
@@ -235,10 +258,18 @@ Requires a scene.
    `successes===0` check — a grenade always detonates): scatter `scatterDice`d6 − `successes × scatterReduction`
    along the throw axis (dir 1 over, 4 short); re-detects every token in range **including the thrower**;
    marker = **Region** (`visibility: ALWAYS`), fallback a local PIXI circle (`game.sr3e._blastMarkers`); 🧹
-   Clear removes either. Per-target Power = base − distance, or the Chunky Salsa GUI
+   Clear removes either. Per-target Power = base − distance × the grenade's own falloff (`system.blast`,
+   `scripts/data/blast.mjs`: Offensive −1/m, Defensive −1/.5 m, p.119, TODO 150; blank = −1/m), or the Chunky Salsa GUI
    (`game.sr3e.openChunkySalsa({...returnOnly})`) when confined. A soak card per caught token.
-- ⚠ **The throw's successes STAGE THE LEVEL** (p.119): attacker's surplus over the target's, 2 per level
-  up; the target's surplus stages down. ⚠ **POWER is never staged** (it's also the soak TN).
+- ⚠ **The throw's successes STAGE THE LEVEL** (p.119): each soak nets the two (`netStagedDamage`); the grenade
+  card's staged level is a preview. ⚠ **POWER is never staged** (it's also the soak TN).
+- ⚠ **Walls** (TODO 149, `SR3EActor._wallBetween` — movement-wall `testCollision`, so an open door isn't a wall):
+  a grenade aimed behind a wall drops **just short of it**; one scattering into a wall stops there (`Blast.stopShort`,
+  ¼ m on the thrower's side). A token with a wall between it and the blast is **not caught**; the card lists it with
+  the Power reaching the wall and gives the GM **🧱 the wall fell** (`sr-blast-wall-btn`), which asks the Barrier
+  Rating and posts resist cards at **Power − Barrier Rating** (p.119). Whether it falls (Power vs **twice** the
+  rating, p.124) is the GM's; tooltip and dialog show both p.124 tables (`SR3EActor.barrierTablesHtml`, from
+  `SR3E.barrierRatings`/`barrierEffects`, shared with Barrier Damage). ⚠ The marker still draws its full circle.
   p.119's optional half-Power roll is not implemented.
 - `_openChunkySalsaCalculator(opts)` posts soak cards itself unless `returnOnly`.
 - **Shared blast marker**: `SR3EActor._drawBlastArea(center, radiusM, {name,color})` → `{regionId, markerId}`

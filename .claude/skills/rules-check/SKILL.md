@@ -13,7 +13,7 @@ hand-write it, and you never edit it. What you produce is the **ledger**, `audit
 ## The rule that makes this repeatable: nothing is assumed
 
 - **The PDF is the authority.** Not `guides/`, not the code, not `CLAUDE.md`. Library: `C:\Users\lance\Documents\Shadowrun 3rd Edition PDFs`.
-- **`CLAUDE.md` is never evidence.** It describes the code; it is not the code. Every `code[]` entry is a line you opened and read
+- **`CLAUDE.md` and `.claude/rules/` are never evidence.** It describes the code; it is not the code. Every `code[]` entry is a line you opened and read
   in this session.
 - **A guide line is not evidence about the code.** The guides were checked against the books, not against this system.
 - **Absence is proven by search, not by not having seen it.** "The code doesn't do this" is `not-implemented` with a `search`

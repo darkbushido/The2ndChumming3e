@@ -125,7 +125,8 @@ Upstream (`criticalfault/Shadowrun-Character-Generator`) encodes effects as `+2R
   `rolledTurns` recorded at activation. ⚠ Goes through the soak card with **`noArmor`**, using
   `stagedPower`/`stagedLevel` (`tests/soak-payload.test.mjs`).
 - ⚠ **WHERE the bonuses apply is the rule** (p.63: Quickness not to Reaction, Reaction not to Control Pool,
-  Quickness and Willpower to Combat Pool): applied **after** Reaction derivation, **before** the pools.
+  Quickness and Willpower to Combat Pool): applied **after** Reaction derivation, **before** the pools (Control
+  Pool reads `reaction.base`, which no bonus reaches).
   Moving the block breaks a clause. `tests/adept-powers.test.mjs` uses QUI 4 / INT 5 because the orderings differ there.
 - ⚠ **Pain Editor recomputes the wound modifier from the PHYSICAL track** — it does not zero it.
 - **Damage Compensators** (M&M p.71, TODO 116), passive: `SR3EActor.damageCompensatorLevel(items)`
@@ -215,14 +216,17 @@ bioware or medical items** (`tests/item-rating.test.mjs` checks).
 | Delta | **× .5** | 8 | +9 / × 3 |
 | Used | **by grade** | .5 | Standard |
 
-- Only the Essence multiplier is used here (cost/availability belong to purchasing).
+- Cost and availability multipliers are applied by the item sheet's grade dropdown (`SR3EItemSheet`, `GRADES`),
+  which rewrites `cost`/`availability` from their bases.
+- ⚠ **Used DELTA installs as BETA** (M&M p.11) — `gradedEssenceCost` reads ×.6. **Used cyberware carries 1D3
+  permanent Stress** (M&M p.45 over p.124's 1D6 ÷ 2 — the maintainer's choice) — `Stress.usedStartingPoints`.
 - ⚠ **Round UP, per item, to 2dp** — never the total. ⚠ **Strip float noise first** (0.2 × 0.8 → 0.16, not 0.17).
 - ⚠ **Grade the BASE once — `SR3EActor.baseEssenceCost(item)`** (TODO 101): the contacts pack stores the
   base in `essenceCost`; the item sheet and importer (`importedCyberwareCosts`) store the graded figure
   with the base in `essenceCostBase`. A stored base wins.
 - ⚠ **The .01 floor is on the REDUCTION** — base 0 stays 0.
 - ⚠ **Unknown grade = FULL Essence** (Cultured/Exotic, typos). Over-refunds can't be taken back.
-- ⚠ **"Used" modifies a grade** — stripped; `'Used Alpha'` = alpha, bare `'Used'` = basic.
+- ⚠ **"Used" modifies a grade** — stripped; `'Used Alpha'` = alpha, bare `'Used'` = basic, `'Used Delta'` = beta.
 - ⚠ Bioware never reaches this (charged against Bio Index).
 - ⚠ `SR3E.cyberwareGrades` is just the dropdown's name list — not the multiplier map.
 - ⚠ Keep `CyberwareData.grade` — salvage value depends on it; never collapse into a pre-multiplied number.

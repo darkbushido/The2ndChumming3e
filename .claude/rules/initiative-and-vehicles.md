@@ -9,6 +9,8 @@ paths:
   - "scripts/data/hands.mjs"
   - "scripts/data/weapon-accessories.mjs"
   - "scripts/data/quick-strike.mjs"
+  - "scripts/data/rigging.mjs"
+  - "tests/rigging.test.mjs"
   - "tests/initiative.test.mjs"
   - "tests/action-economy.test.mjs"
   - "tests/ready-weapon.test.mjs"
@@ -36,8 +38,10 @@ Both end the round and prompt the GM to re-roll.
 - Physical / Dual Natured: default
 
 **Vehicle initiative** (`system.vcrMode`, `system.controlledBy`):
-- VCR (jumped in): rigger's `Reaction + vcrLevel + woundMod` + `(1 + vcrLevel)`d6. ⚠ There is no
-  verified flat "−2 TN per VCR level on skill tests"; check the book (TODO 106).
+- VCR (jumped in): rigger's `reaction.base + 2 × vcrLevel + woundMod` + `(1 + vcrLevel)`d6 —
+  `Rigging.vcrReaction` / `vcrInitiativeDice`, SR3 p.301 (*"Each level adds +2 to the user's Reaction and +1D6
+  Initiative dice"*); wired reflexes and magic don't apply (p.140). ⚠ **+2, not +1**, on every path incl. the
+  chase (TODO 167). ⚠ There is no verified flat "−2 TN per VCR level on skill tests" (TODO 106).
 - RCD (remote): rigger's `Reaction + woundMod` + `initiativeDice`d6
 - Auto (no pilot): `Pilot rating` + 2d6
 - VCR is exclusive: activating it sets the rigger's other linked vehicles to Auto (editable after).
@@ -94,7 +98,12 @@ Base TN = vehicle **Handling**; TN dropdowns: unfamiliar +1, stress, size +2/+3,
 −1/0/+1/+3, combat +2, datajack −1, **VCR −VCR Rating**. ⚠ **Not ×2** (p.134, worked p.135); the ×2
 belongs to the vehicle-combat tables (pp.141-146).
 Pool (auto, editable): Vehicle Skill **+ Autonav (out of combat only)**; a jacked-in rigger ("Using VCR")
-adds Control Pool = Vehicle Skill **instead of** Autonav. Recomputed live. No skill → Default dialog.
+adds Control Pool dice **instead of** Autonav — `min(Control Pool, Vehicle Skill)`. Recomputed live. No skill → Default dialog.
+
+**Control Pool — SR3 p.44** (TODO 167, `scripts/data/rigging.mjs`, `derived.controlPool`): **Reaction (unaugmented)
++ 2 × VCR**, **0 without a VCR**; one test takes at most its skill dice. ⚠ **The pool is not the skill** — the
+skill is the per-test cap (p.44, p.134, p.147); unrigged drivers get none (p.141). "Adapted for rigger control"
+(p.134) is not modelled.
 1 success = manoeuvre succeeds; 0 → GM calls a Crash Test.
 
 **💥 Crash** (TODO 74) — `SR3EVehicleSheet.runCrash(vehicle)`, from the Stats tab, the Vehicle Tools HUD

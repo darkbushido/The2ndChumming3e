@@ -6,12 +6,14 @@ paths:
   - "tests/pool-spend.test.mjs"
   - "tests/wound-modifiers.test.mjs"
   - "tests/combat-rules.test.mjs"
+  - "tests/net-staging.test.mjs"
+  - "tests/overflow-death.test.mjs"
 ---
 # Knockdown, called shots, damage staging, Combat Pool
 
 ### Damage staging  · *SR3 p.113-114*
-Power + Level (L/M/S/D) + optional Stun. Each 2 net successes = one stage, up for the attacker, down for
-the defender. Stun → stun track, else physical. **The GM applies damage manually.**
+Power + Level (L/M/S/D) + optional Stun. Each 2 **net** successes = one stage — the attacker's successes against
+the target's total, from the base code (`SR3EActor.netStagedDamage`, p.113; see ranged rules). Stun → stun track, else physical. **The GM applies damage manually.**
 ⚠ **Past Deadly, SR3 gives TWO answers, both RAW, scoped on purpose** — `SR3EItem.stageDamage(base, net, { meleeRules })`:
 - **General (default)**: surplus is **discarded** (p.113). 9M + 6 successes = **9D**. (Power is the soak
   TN, so a phantom point would hurt twice.)
