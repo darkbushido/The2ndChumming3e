@@ -1,6 +1,6 @@
 {
   "version": "0.6.1",
-  "generated": "2026-09-24",
+  "generated": "2026-09-25",
   "entries": [
     {
       "id": "hiring/combat-mage.md#1",
@@ -83,10 +83,10 @@
         27,
         27
       ],
-      "hash": "fab30a525d",
-      "text": "| **Security duty** (including magical overwatch) | **200¥ per day** | SRComp p.100 |",
+      "hash": "5395458f0a",
+      "text": "| **Security duty** (including magical overwatch) | **200¥/day** | SRComp p.100 |",
       "verdict": "unverifiable",
-      "reason": "Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart."
+      "reason": "Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — the table sits on a grey shaded panel with no OCR text layer, so pdftotext finds nothing. Read from the rendered page image: the Security Duty row is 200¥/day, agreeing with this unit."
     },
     {
       "id": "hiring/combat-mage.md#7",
@@ -619,10 +619,10 @@
         27,
         27
       ],
-      "hash": "ccaa341721",
-      "text": "| **Hacking job** | **1,000¥ × the host's Security Value** | SRComp p.100 |",
+      "hash": "2185f0d482",
+      "text": "| **Hacking job** | **1,000¥ x Host's Security Value** | SRComp p.100 |",
       "verdict": "unverifiable",
-      "reason": "Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart."
+      "reason": "Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Hacking row is 1,000¥ x Host's Security Value, agreeing with this unit."
     },
     {
       "id": "hiring/decker.md#7",
@@ -631,10 +631,10 @@
         28,
         28
       ],
-      "hash": "51a816ad03",
-      "text": "| **Datasteal** | **20% of the data's value** | SRComp p.100 |",
+      "hash": "a09d8bfffa",
+      "text": "| **Datasteal** | **20% value of data** | SRComp p.100 |",
       "verdict": "unverifiable",
-      "reason": "Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart."
+      "reason": "Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Datasteal row is 20% value of data, agreeing with this unit."
     },
     {
       "id": "hiring/decker.md#8",
@@ -643,10 +643,10 @@
         29,
         29
       ],
-      "hash": "767722d7d6",
-      "text": "| **Encryption / decryption** | **200¥ per Mp** | SRComp p.100 |",
+      "hash": "d0ce72b237",
+      "text": "| **Encryption / decryption** | **200¥ per MP** | SRComp p.100 |",
       "verdict": "unverifiable",
-      "reason": "Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart."
+      "reason": "Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Encryption/Decryption row is 200¥ per MP, agreeing with this unit."
     },
     {
       "id": "hiring/decker.md#9",
@@ -1155,10 +1155,10 @@
         26,
         26
       ],
-      "hash": "bf2245f7d4",
-      "text": "| **Investigation** (legwork) | **200¥ per day** | SRComp p.100 |",
+      "hash": "b008f192a8",
+      "text": "| **Investigation** (legwork) | **200¥/day** | SRComp p.100 |",
       "verdict": "unverifiable",
-      "reason": "Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart."
+      "reason": "Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Investigation row is 200¥/day, agreeing with this unit."
     },
     {
       "id": "hiring/face.md#7",
@@ -1777,10 +1777,10 @@
         41,
         41
       ],
-      "hash": "a143ae4bed",
-      "text": "| Run | Bottom-line fee |",
+      "hash": "6d1242c894",
+      "text": "| Run | Bottom-line Fee |",
       "verdict": "no-rule-claim",
-      "reason": "page title / description / table of contents / heading / table header / horizontal rule / index or method text — states no game rule"
+      "reason": "table header row"
     },
     {
       "id": "hiring/index.md#13",
@@ -1801,10 +1801,10 @@
         44,
         44
       ],
-      "hash": "c44ad8af4c",
-      "text": "| Bodyguard / security duty | 200¥ per day |",
+      "hash": "3ce513af22",
+      "text": "| Bodyguard/Security Duty | 200¥/day |",
       "verdict": "unverifiable",
-      "reason": "Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart."
+      "reason": "Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Bodyguard/Security Duty row is 200¥/day, agreeing with this unit."
     },
     {
       "id": "hiring/index.md#15",
@@ -1825,10 +1825,10 @@
         46,
         46
       ],
-      "hash": "8e8efbd07b",
-      "text": "| Courier run | 1,000¥ |",
+      "hash": "d161a77cba",
+      "text": "| Courier Run | 1,000¥ |",
       "verdict": "unverifiable",
-      "reason": "Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart."
+      "reason": "Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Courier Run row is 1,000¥, agreeing with this unit."
     },
     {
       "id": "hiring/index.md#17",
@@ -1837,10 +1837,10 @@
         47,
         47
       ],
-      "hash": "980a7c0486",
-      "text": "| Datasteal | 20% of the data's value |",
+      "hash": "2be1ac69e9",
+      "text": "| Datasteal | 20% value of data |",
       "verdict": "unverifiable",
-      "reason": "Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart."
+      "reason": "Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Datasteal row is 20% value of data, agreeing with this unit."
     },
     {
       "id": "hiring/index.md#18",
@@ -1885,10 +1885,10 @@
         51,
         51
       ],
-      "hash": "25c0e16cdc",
-      "text": "| Encryption / decryption | 200¥ per Mp |",
+      "hash": "a15fcdd342",
+      "text": "| Encryption/Decryption | 200¥ per MP |",
       "verdict": "unverifiable",
-      "reason": "Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart."
+      "reason": "Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Encryption/Decryption row is 200¥ per MP, agreeing with this unit."
     },
     {
       "id": "hiring/index.md#22",
@@ -1909,10 +1909,10 @@
         53,
         53
       ],
-      "hash": "fc5c9d9df9",
-      "text": "| Hacking | 1,000¥ × the host's Security Value |",
+      "hash": "f1196291ee",
+      "text": "| Hacking | 1,000¥ x Host's Security Value |",
       "verdict": "unverifiable",
-      "reason": "Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart."
+      "reason": "Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Hacking row is 1,000¥ x Host's Security Value, agreeing with this unit."
     },
     {
       "id": "hiring/index.md#24",
@@ -1921,10 +1921,10 @@
         54,
         54
       ],
-      "hash": "5fb86f3e50",
-      "text": "| Investigation | 200¥ per day |",
+      "hash": "45379dbba3",
+      "text": "| Investigation | 200¥/day |",
       "verdict": "unverifiable",
-      "reason": "Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart."
+      "reason": "Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Investigation row is 200¥/day, agreeing with this unit."
     },
     {
       "id": "hiring/index.md#25",
@@ -1933,10 +1933,10 @@
         55,
         55
       ],
-      "hash": "cd7b1a2ea7",
-      "text": "| Smuggling run | 5,000¥ |",
+      "hash": "5a1dda2814",
+      "text": "| Smuggling Run | 5,000¥ |",
       "verdict": "unverifiable",
-      "reason": "Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart."
+      "reason": "Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Smuggling Run row is 5,000¥, agreeing with this unit."
     },
     {
       "id": "hiring/index.md#26",
@@ -3290,10 +3290,10 @@
         31,
         31
       ],
-      "hash": "473e6f863a",
-      "text": "| **Bodyguard / security duty** | **200¥ per day** | SRComp p.100 |",
+      "hash": "4ef2f186b4",
+      "text": "| **Bodyguard / security duty** | **200¥/day** | SRComp p.100 |",
       "verdict": "unverifiable",
-      "reason": "Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart."
+      "reason": "Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Bodyguard/Security Duty row is 200¥/day, agreeing with this unit."
     },
     {
       "id": "hiring/physical-adept.md#7",
@@ -4413,10 +4413,10 @@
         27,
         27
       ],
-      "hash": "5cd92da9b3",
-      "text": "| **Investigation** (astral scouting, divination) | **200¥ per day** | SRComp p.100 |",
+      "hash": "9a395c1bb5",
+      "text": "| **Investigation** (astral scouting, divination) | **200¥/day** | SRComp p.100 |",
       "verdict": "unverifiable",
-      "reason": "Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart."
+      "reason": "Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Investigation row is 200¥/day, agreeing with this unit."
     },
     {
       "id": "hiring/shaman.md#7",
@@ -4425,10 +4425,10 @@
         28,
         28
       ],
-      "hash": "2860e624db",
-      "text": "| **Security duty** | **200¥ per day** | SRComp p.100 |",
+      "hash": "1d4903ce4c",
+      "text": "| **Security duty** | **200¥/day** | SRComp p.100 |",
       "verdict": "unverifiable",
-      "reason": "Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart."
+      "reason": "Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Security Duty row is 200¥/day, agreeing with this unit."
     },
     {
       "id": "hiring/shaman.md#8",
@@ -4905,10 +4905,10 @@
         28,
         28
       ],
-      "hash": "473e6f863a",
-      "text": "| **Bodyguard / security duty** | **200¥ per day** | SRComp p.100 |",
+      "hash": "4ef2f186b4",
+      "text": "| **Bodyguard / security duty** | **200¥/day** | SRComp p.100 |",
       "verdict": "unverifiable",
-      "reason": "Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart."
+      "reason": "Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Bodyguard/Security Duty row is 200¥/day, agreeing with this unit."
     },
     {
       "id": "hiring/street-samurai.md#7",
