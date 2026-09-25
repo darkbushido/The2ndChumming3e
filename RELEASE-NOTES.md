@@ -47,7 +47,7 @@ A bug-fix release: grenades and thrown weapons, a few broken skill choices, a ti
 
 - **⏳ Waiting on…** — the combat tracker lists every combat step still waiting on someone (a soak, a dodge, a Drain, a Knockdown, assigning a wound…) and who owes it. Click a row to jump to its card; the GM can ✕ a step nobody is going to take.
 - **A card waiting on you** gets a gold edge and says so, and the chat tab shows how many are waiting on you.
-- **Finished cards fold** to their header once every step on them is done; click the header to open one. Turn it off under Configure Settings → *Collapse finished combat cards*.
+- **Finished cards fold** to their header once every step on them is done and play has moved on (two newer messages below it), so the latest exchange always stays readable. Click the header to open one. Turn it off under Configure Settings → *Collapse finished combat cards*.
 - A step already taken stays greyed out after a reload, on every screen.
 
 ### Content
