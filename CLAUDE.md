@@ -536,6 +536,29 @@ silently fails on the one client that executes it. `game.sr3e.loadedAt` records 
 read-only query `sr3e.debug.loadedAt` exposes it, and the e2e preflight fails with "reload <user>'s tab"
 (including when the GM can't answer at all).
 
+## Open combat steps — the ⏳ Waiting-on panel · TODO 147
+
+Reported in the trial session (2026-09-23): in a busy fight a card still owed an answer scrolls away.
+Rules: `scripts/data/open-steps.mjs` (pure). Foundry side: `scripts/SR3EOpenSteps.js`.
+
+- **A step is a button someone owes a click on** — `STEP_BUTTONS` names them (dodge declaration, soak and
+  its roll, spell/astral/Matrix resistance, Drain and its roll, Knockdown, Assign the wound, ram and crash
+  resistance). Optional actions (Mark prone, Sustain, healing, drugs, buying) are deliberately not steps.
+  A new card that waits on someone must add its button class there, or the panel will not see it.
+- **The record is the message's `acted` flag** under `step:<class>:<index>`, written through
+  `sr3e.card.mark` by a click listener `decorate` adds — registered as the **last**
+  `renderChatMessageHTML` hook, so it runs after the button's own handler. `doneBy` honours the older
+  keys (`defender`, `soaker`). ⚠ `card.mark` is now **queued per message** (`SR3EQueue`), because it
+  reads, clones and writes the whole ledger and two marks at once could drop one.
+- **Owed by** = `SR3EQuery.deciderFor(actor)`; no actor → the GM.
+- **Three views:** the ⏳ panel in the combat tracker (steps since the current combat was created, else the
+  last 50 messages; a row click shows the card; the GM's ✕ marks a step nobody will take); a gold edge,
+  a "Waiting on you" line and a chat-tab count for the user a card waits on; and a card whose steps are
+  all done folds to its header (client setting `collapseFinishedCards`, on by default). ⚠ A card with
+  **no** steps never folds — a roll result is something to read.
+- A step already done is greyed on every client and after a reload, which the in-memory `_usedButtons`
+  could not do.
+
 ## Two-corner cards — each side edits only its own half
 
 Eight opposed cards (melee · astral · contested · cybercombat · MIJI · three Orthodox Matrix) share **one**

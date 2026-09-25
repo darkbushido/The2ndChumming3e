@@ -39,6 +39,20 @@ const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
 
 export const MUTANTS = [
   {
+    id:     'open-steps-fold-cards-with-no-steps',
+    suite:  'open-steps',
+    module: '../scripts/data/open-steps.mjs', klass: 'OpenSteps', method: 'finished',
+    was:    'a card with no steps counted as finished, so every roll result would fold away unread (TODO 147)',
+    impl:   (steps = []) => steps.every(s => s.done),
+  },
+  {
+    id:     'open-steps-attacker-owes-the-defence',
+    suite:  'open-steps',
+    module: '../scripts/data/open-steps.mjs', klass: 'OpenSteps', method: 'ownerId',
+    was:    'the attacker was read as owing the target\'s step, putting the defence on the wrong player (TODO 147)',
+    impl:   p => (p?.attackerActorId ?? p?.actorId ?? p?.targetActorId ?? null),
+  },
+  {
     id:     'ammo-ignores-gun-class',
     suite:  'ammo-stock',
     ...AMMO, method: 'classFits',

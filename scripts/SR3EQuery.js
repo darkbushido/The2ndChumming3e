@@ -384,8 +384,11 @@ export class SR3EQuery {
      * [#24]'s "last one to submit triggers the roll" — the ledger has to be append-only or
      * the winner of a race decides the order.
      */
+    // ⚠ Queued PER MESSAGE (TODO 147). It read the flag, cloned it and wrote it back, so two marks on
+    // one card arriving together — a step and a two-corner submission, or two players' steps — could
+    // each write a ledger missing the other's entry. Open-step marks made that race common.
     CONFIG.queries['sr3e.card.mark'] = async ({ rid, messageId, role, label, data }) =>
-      SR3EQuery.once(rid, async () => {
+      SR3EQuery.once(rid, () => SR3EQueue.run(`card:${messageId}`, async () => {
         SR3EQuery.assertActiveGM();
         const msg = game.messages.get(messageId);
         if (!msg) throw new Error(`SR3E | card.mark: unknown message '${messageId}'`);
@@ -402,7 +405,7 @@ export class SR3EQuery {
         acted[role] = { label: label ?? role, at: Date.now(), ...(data ? { data } : {}) };
         await msg.setFlag('The2ndChumming3e', 'acted', acted);
         return { acted, already: false };
-      });
+      }));
 
     /**
      * One side of an opposed roll has finished its explosions (F4) — or the GM resolves now.

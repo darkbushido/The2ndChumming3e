@@ -3763,3 +3763,27 @@ label.act-field input[type=number] {
 /* ⚰ A cyberzombie's Essence — red like death, because it is at or below 0, but labelled (TODO 111). */
 .attr-block.essence-cyberzombie { border-color: var(--sr-red); background: var(--sr-red-bg); }
 .attr-block.essence-cyberzombie .attr-label { color: var(--sr-red) !important; }
+
+/* ⏳ Open combat steps (TODO 147) — scripts/SR3EOpenSteps.js. */
+.sr3e-open-steps { margin: 4px 6px 6px; padding: 4px 6px; border: 1px solid var(--sr-amber, #c89040); border-radius: var(--r, 3px); background: color-mix(in srgb, var(--sr-amber, #c89040) 10%, transparent); font-size: 11px; }
+.sr3e-open-steps-head { font-weight: bold; color: var(--sr-amber, #c89040); margin-bottom: 2px; }
+.sr3e-open-steps-count { display: inline-block; min-width: 16px; padding: 0 4px; border-radius: 8px; text-align: center; background: var(--sr-amber, #c89040); color: #111; }
+.sr3e-open-steps-list { list-style: none; margin: 0; padding: 0; max-height: 180px; overflow-y: auto; }
+.sr3e-step { display: flex; align-items: center; gap: 6px; padding: 2px 4px; border-radius: var(--r, 3px); cursor: pointer; }
+.sr3e-step:hover { background: color-mix(in srgb, var(--sr-accent, #3a9fd6) 18%, transparent); }
+.sr3e-step-what { flex: 1 1 auto; }
+.sr3e-step-who { color: var(--sr-muted, #999); white-space: nowrap; }
+.sr3e-step-mine { box-shadow: inset 3px 0 0 var(--sr-gold, #c8a040); }
+.sr3e-step-mine .sr3e-step-who em { color: var(--sr-gold, #c8a040); font-weight: bold; }
+.sr3e-step-dismiss { flex: 0 0 auto; width: 18px; height: 18px; line-height: 14px; padding: 0; font-size: 11px; }
+/* A card waiting on you: a gold edge and a line saying so. */
+.sr3e-waiting-on-me { box-shadow: inset 4px 0 0 var(--sr-gold, #c8a040); }
+.sr3e-waiting-line { margin: 0 0 4px; padding: 2px 6px; border-radius: var(--r, 3px); font-size: 11px; font-weight: bold; color: #111; background: var(--sr-gold, #c8a040); }
+.sr3e-waiting-badge { position: absolute; top: 0; right: 0; min-width: 14px; padding: 0 3px; border-radius: 7px; font-size: 10px; line-height: 14px; text-align: center; color: #111; background: var(--sr-gold, #c8a040); pointer-events: none; }
+[data-tab="chat"]:has(> .sr3e-waiting-badge) { position: relative; }
+/* A finished card folds to its header; the header opens it again. */
+.sr3e-card-done .sr-roll-card > :not(.sr-roll-header) { display: none; }
+.sr3e-card-done .sr-roll-header { opacity: 0.7; cursor: pointer; }
+.sr3e-card-done .sr-roll-header::after { content: ' ▸ done'; font-size: 10px; font-weight: normal; color: var(--sr-green, #6a6); }
+.sr3e-step-flash { animation: sr3e-step-flash 1.5s ease-out; }
+@keyframes sr3e-step-flash { from { box-shadow: 0 0 0 3px var(--sr-gold, #c8a040); } to { box-shadow: 0 0 0 0 transparent; } }

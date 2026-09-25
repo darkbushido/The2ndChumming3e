@@ -401,6 +401,23 @@ On the active combatant's card: **Complex** (full width) + two **Simple** button
 
 ---
 
+## Open combat steps — TODO 147 (`feature/open-steps`)
+
+**Checked live by the agent, 2026-09-24** (mcp-api, then with the maintainer's Gamemaster seat also on):
+a card with a soak and a Drain button gets the gold "Waiting on you" edge and line, the chat tab shows
+**2**, and the tracker's ⏳ panel lists both. Clicking *Resist Drain* recorded the step, greyed the
+button and the Drain card's roll button became the next row. Once both steps were taken the card folded
+to its header; the header opens and re-folds it. The GM's ✕ records "dismissed by the GM". Clicking a row
+switches to chat and flashes the card. Deleting the messages clears the panel and the badge.
+
+**Still to walk — needs two clients (Playwright, or a person):**
+- [ ] As **Player2**, a card waiting on Player2's character: gold edge, "Waiting on you", badge on
+      Player2's chat tab — and **no** highlight on the GM's screen for that card.
+- [ ] The panel on Player2's screen says "you" on their row and the GM's name on the others; no ✕.
+- [ ] Player2 takes the step: the row disappears on **both** screens.
+- [ ] Reload (F5) on either client: finished cards stay folded and done buttons stay greyed.
+- [ ] Configure Settings → *Collapse finished combat cards* off: finished cards stay open.
+
 ## Gear ratings in the field — TODO 118 (0.5.2) — needs a live pass
 
 Data-model change (gear's `rating` is nullable): **full Foundry restart** first.

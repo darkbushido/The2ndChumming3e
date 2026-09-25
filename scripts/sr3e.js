@@ -43,6 +43,7 @@ import { Purchasing } from './data/purchasing.mjs';
 import { ReadyWeapon } from './data/ready-weapon.mjs';
 import { Hands } from './data/hands.mjs';
 import { SR3ESourceBooks } from './SR3ESourceBooks.js';
+import { SR3EOpenSteps } from './SR3EOpenSteps.js';
 import { SR3ECompendiumDirectory } from './SR3ECompendiumDirectory.js';
 import { SR3EQuery, SR3EQueue, SR3EGMUnavailable } from './SR3EQuery.js';
 import * as Sustaining from './data/sustaining.mjs';
@@ -111,7 +112,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing };
 
   // When THIS client loaded the system's code.
   //
@@ -342,6 +343,10 @@ Hooks.once('init', () => {
   // World migrations — see SR3EMigrations. Registered here so the stored version exists
   // before the `ready` hook tries to read it.
   SR3EMigrations.registerSettings();
+  // Open combat steps (TODO 147) — the "collapse finished cards" client setting, and the hooks that
+  // keep the Waiting-on panel and the chat-tab count current.
+  SR3EOpenSteps.registerSettings();
+  SR3EOpenSteps.registerHooks();
 
   game.settings.register('The2ndChumming3e', 'clocks', {
     scope: 'world',
@@ -1716,6 +1721,8 @@ Hooks.on('renderCombatTracker', (_app, html) => {
   SR3EActionLedger.renderTracker(combat, el);
   // ⚡ Quick Strike (MITS p.151, TODO 78) — on each row whose adept holds it.
   SR3ECombat.renderQuickStrike(combat, el);
+  // ⏳ Waiting on… (TODO 147) — every open step in this fight and who owes it.
+  SR3EOpenSteps.renderPanel(el);
 
   // GM tool buttons (Chase Scene, Session Rewards, Chunky Salsa, Barrier/Falling Damage,
   // Escape Artist) live on the Rollable Tables sidebar tab — see renderRollTableDirectory below.
@@ -3472,3 +3479,10 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
     });
   });
 });
+/* ── Open combat steps (TODO 147) ───────────────────────────────────────────────────────────
+ *
+ * Registered LAST, after every other renderChatMessageHTML hook, and the order is load-bearing:
+ * `decorate` adds a click listener to each step button that records the step as done, and it must
+ * run after the button's own handler has claimed it (`_claimBtn`). It also greys steps already done,
+ * highlights a card waiting on this user and folds a finished one. See scripts/SR3EOpenSteps.js. */
+Hooks.on('renderChatMessageHTML', (message, html) => SR3EOpenSteps.decorate(message, html));

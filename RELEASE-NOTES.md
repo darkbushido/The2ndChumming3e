@@ -43,6 +43,13 @@ A bug-fix release: grenades and thrown weapons, a few broken skill choices, a ti
 - **Flechette** (SR3 p.116, p.119): a weapon or grenade can carry the flechette rules itself — a checkbox on the item, or an `(f)` after its Damage Code, which is now read. A flechette weapon takes no other ammunition.
 - **Gas, smoke and flash grenades** now land and mark their area instead of refusing to throw (SR3 p.283). They deal no damage; the card says how to use the area.
 
+### New at the table
+
+- **⏳ Waiting on…** — the combat tracker lists every combat step still waiting on someone (a soak, a dodge, a Drain, a Knockdown, assigning a wound…) and who owes it. Click a row to jump to its card; the GM can ✕ a step nobody is going to take.
+- **A card waiting on you** gets a gold edge and says so, and the chat tab shows how many are waiting on you.
+- **Finished cards fold** to their header once every step on them is done; click the header to open one. Turn it off under Configure Settings → *Collapse finished combat cards*.
+- A step already taken stays greyed out after a reload, on every screen.
+
 ### Content
 
 - The SR3 core grenades are now in `sr3e-sr3-projectiles`, and the core explosives carry the Explosives Table's Blast and Legal columns (SR3 p.283).
