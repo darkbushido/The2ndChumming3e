@@ -21830,7 +21830,8 @@
       ],
       "hash": "a6db28988b",
       "text": "| Sympathetic link | **Material link** (MitS p.37) |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Terminology-replacement table row (meta-documentation of the guide's own corrections, not a claim about the system's code). Checked against the book: MitS's ritual sorcery section names 'Material Link' as the term, printed p.37 (pdf p.38), agreeing with the guide's citation. No code implements ritual sorcery's targeting link, so there is nothing to compare it against."
     },
     {
       "id": "sources.md#26",
