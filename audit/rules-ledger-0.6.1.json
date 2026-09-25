@@ -4993,7 +4993,7 @@
       ],
       "hash": "10404406e6",
       "text": "| Smartlink | .5 | 2,500¥ |",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Man and Machine Cyberware {FASA7126}.pdf",
@@ -5004,12 +5004,12 @@
       ],
       "code": [
         {
-          "file": "packs-src/sr3e-sr3-cyberware/smartlink.sr3e-cyberware-0846.json",
+          "file": "packs-src/sr3e-sr3-cyberware/smartlink.sr3e-cyberware-0223.json",
           "line": 10,
-          "snippet": "\"essenceCost\": 0.25,"
+          "snippet": "\"essenceCost\": 0.5,"
         }
       ],
-      "note": "The guide (and Man & Machine's own Essence-slot example, which lists 'a smartlink (.5)') gives the smartlink .5 Essence; the shipped pack item has 0.25. The core Bodyware table's Essence column cannot be lined up with its rows in the text layer (the layout view puts '.2' beside the Smartlink row), so the printed value on p.302 should be read from the page image. The 2,500¥ cost matches."
+      "note": "The earlier record compared the wrong shipped item. There are three Smartlink cyberware entries: the Bodyware one (-0223) at essenceCost 0.5, matching the guide and M&M's own Essence-slot worked example; and two cyberarm-mounted variants (-0611 'Smartlink (Internal)' and -0846, both category Cyberlimb/Cyberlimb Mods) at 0.25, which is SR3 p.303's cyberlimb accessory price, a different item from the bodyware smartlink on p.302/M&M p.127."
     },
     {
       "id": "hiring/street-samurai.md#13",
@@ -12182,7 +12182,7 @@
       ],
       "hash": "9c9f339d81",
       "text": "5. **Determine the outcome**: compare the attacker's successes with the\n   defender's total (dodge + resistance). *(SR3 p.113)*",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -12194,28 +12194,22 @@
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
           "pdfPage": 116,
           "printedPage": 114,
-          "quote": "The successes of the participants are usually compared, and the character with the higher net successes wins"
-        },
-        {
-          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
-          "pdfPage": 116,
-          "printedPage": 114,
           "quote": "His 2 net successes (2 more than Snot) are enough to increase the Damage Level by one"
         }
       ],
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 3240,
-          "snippet": "const staged     = SR3EItem.stageDamage(state.damageBase, successes);"
+          "line": 7952,
+          "snippet": "static netStagedDamage(base, attackHits, defenceHits) {"
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 4125,
-          "snippet": "const totalSoak  = successes + carried;"
+          "line": 4131,
+          "snippet": "const r = SR3EActor.netStagedDamage("
         }
       ],
-      "note": "The book compares NET successes: p.113 'compare the successes rolled by the attacker and the target' and its worked example stages once for Liam's 2 net successes. The code does not net them. It stages UP by the attacker's raw successes (SR3EItem.stageDamage(state.damageBase, successes), SR3EActor.js:3233) and then stages DOWN separately by the defender's soak + carried dodge successes (floor(total/2), SR3EActor.js:4098). floor(A/2) − floor(D/2) is not floor((A−D)/2): attacker 2 vs defender 1 should be base damage (net 1) but the code stages up one level; attacker 4 vs 1 should stage up once (net 3) but the code stages up twice. p.114 also has a paragraph describing each side staging on its own successes ('usually compared'), so the code follows one reading of the book; the worked example follows the other. The maintainer's call which governs."
+      "note": "Fixed for 0.6.1 (TODO 165, same fix as #52). netStagedDamage nets the attacker's and defender's successes (net = a - d) and stages from that single net figure, replacing the old floor(A/2) minus floor(D/2) that this unit's earlier record found wrong."
     },
     {
       "id": "rules/combat.md#51",
@@ -12226,7 +12220,7 @@
       ],
       "hash": "5c2b7f67ec",
       "text": "   - Attacker ahead: stage the Damage Level **up** one step (L → M → S → D)\n     per **2** successes over the defender's total.",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -12238,11 +12232,11 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 3240,
-          "snippet": "const staged     = SR3EItem.stageDamage(state.damageBase, successes);"
+          "line": 7952,
+          "snippet": "static netStagedDamage(base, attackHits, defenceHits) {"
         }
       ],
-      "note": "Same finding as #50: 'one step per 2 successes over the defender's total' is a net comparison; the code stages up by 2-per-level of the attacker's RAW successes before the defender's total is known."
+      "note": "Fixed for 0.6.1 (TODO 165), same as #50: netStagedDamage's net >= 0 branch stages up by floor(net/2) levels from the base code."
     },
     {
       "id": "rules/combat.md#52",
@@ -12285,7 +12279,7 @@
       ],
       "hash": "7c03f4ef54",
       "text": "   - Tie: base damage.",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -12296,17 +12290,12 @@
       ],
       "code": [
         {
-          "file": "scripts/documents/SR3EItem.js",
-          "line": 1039,
-          "snippet": "while (remaining >= 2 && idx < STAGES.length - 1) {"
-        },
-        {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 4125,
-          "snippet": "const totalSoak  = successes + carried;"
+          "line": 7957,
+          "snippet": "if (net >= 0) {"
         }
       ],
-      "note": "A tie is base damage in the book. In the code a tie is base damage only while staging up does not hit the Deadly cap: attacker and defender both at 6 successes against a 9M attack stage up to 9D (surplus discarded) and then down three levels to Light instead of staying Moderate. Same root as #50."
+      "note": "Fixed for 0.6.1 (TODO 165). A tie is net 0, and netStagedDamage's net>=0 branch calls SR3EItem.stageDamage(base, 0), which returns the base code unchanged — including at the Deadly cap, since staging now happens once from the net rather than up then down separately (the old bug this unit recorded: 6 vs 6 on 9M went up to 9D and back down three levels to Light instead of staying 9M)."
     },
     {
       "id": "rules/combat.md#54",
@@ -15956,7 +15945,7 @@
       ],
       "hash": "153baaf4d3",
       "text": "Each target resists with **Body** plus any Combat Pool dice, against TN =\n**Power at their distance − Impact armor**. Compare their successes with the\nthrower's: every 2 more for the thrower stage the damage **up** one level,\nand every 2 more for the target stage it **down** one level. *(SR3 p.119)*",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -15968,11 +15957,11 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 3187,
-          "snippet": "const up = SR3EItem.stageDamage({ power: t.power, level: t.level, isStun }, successes);"
+          "line": 7952,
+          "snippet": "static netStagedDamage(base, attackHits, defenceHits) {"
         }
       ],
-      "note": "The resistance test (Body + Combat Pool vs adjusted Power − Impact) matches. The staging does not follow the book's net comparison ('one level for every two successes over the target's success total'): the code stages UP by the thrower's raw successes first (SR3EActor.js:3187, stageDamage(..., successes)) and lets the soak card stage DOWN by the target's own successes, so floor(A/2) − floor(D/2) replaces floor((A−D)/2). Same root as combat.md #50; the code comment claims this 'gives exactly the book's net comparison', which holds only when both halve evenly."
+      "note": "Fixed for 0.6.1 (TODO 165). netStagedDamage's docstring states grenade damage (p.119, same wording as ranged) goes through it; the soak flow's net.attackHits/totalSoak comparison (SR3EActor.js:4129-4137) is the same code path used for #50-53, so a grenade's thrower-vs-target staging is now netted rather than staged up then down separately."
     },
     {
       "id": "rules/grenades.md#32",
@@ -21076,7 +21065,7 @@
       ],
       "hash": "da27edf4d4",
       "text": "**Ammo is shared by gun class**, using the categories on the Weapon Range\nTable *(SR3 p.111)*. Any light pistol can fire any light-pistol ammo, any\nassault rifle any assault-rifle ammo, and so on. **All shotguns**, pistol or\nrifle, share ammunition. *(SR3 p.279)*",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -21094,11 +21083,21 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 151,
-          "snippet": "return AmmoStock.unit(sys) === 'rounds' && !nocked(mech) && !nocked(gun);"
+          "line": 144,
+          "snippet": "fits(sys, gunMech, gunClass = null) {"
+        },
+        {
+          "file": "scripts/data/ammo-stock.mjs",
+          "line": 145,
+          "snippet": "if (!AmmoStock.classFits(sys, gunClass)) return false;"
+        },
+        {
+          "file": "scripts/data/ammo-stock.mjs",
+          "line": 160,
+          "snippet": "gunClass(category) {"
         }
       ],
-      "note": "The book: each kind of gun trades ammunition only with its own class (all light pistols, all assault rifles…), with shotguns sharing across pistol and rifle. The code lets loose rounds fit ANY firearm — `AmmoStock.fits` matches only the loading mechanism, and its comment states 'Loose rounds fit every firearm' as a deliberate choice because every shipped box of rounds is marked (c). Nothing checks the gun class."
+      "note": "Fixed for 0.6.1 (TODO 173). fits() now gates on AmmoStock.classFits(sys, gunClass) before the mechanism check, and gunClass() maps a weapon's category through CLASS_ALIASES (shotguns collapse pistol/rifle variants together), so loose rounds no longer fit any firearm regardless of class."
     },
     {
       "id": "rules/reloading.md#60",
@@ -22552,29 +22551,28 @@
       ],
       "hash": "188cb3367b",
       "text": "- **Each used item comes with 1D3 permanent Stress Points.** They can never\n  be removed, and they add to any Stress it picks up in use. *(M&M p.45; see\n  Damage and Healing, M&M p.124)*",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Man and Machine Cyberware {FASA7126}.pdf",
           "pdfPage": 47,
           "printedPage": 45,
           "quote": "Each used cyberware item comes with 1D3 permanent Stress Points"
-        },
-        {
-          "file": "Shadowrun 3e - Man and Machine Cyberware {FASA7126}.pdf",
-          "pdfPage": 126,
-          "printedPage": 124,
-          "quote": "used cyberware begins with 1D6"
         }
       ],
       "code": [
         {
           "file": "scripts/data/stress.mjs",
-          "line": 95,
-          "snippet": "return Math.floor(Math.max(0, Number(die) || 0) / 2);"
+          "line": 106,
+          "snippet": "usedStartingPoints(die) {"
+        },
+        {
+          "file": "scripts/data/stress.mjs",
+          "line": 114,
+          "snippet": "if (kind === 'cyberware' && used) return Stress.usedStartingPoints(die);"
         }
       ],
-      "note": "M&M p.45 says each used implant comes with 1D3 permanent Stress Points; M&M p.124 says used cyberware begins with 1D6 ÷ 2 permanent Stress Points. The code follows p.124 and rounds down (1D6 ÷ 2 → 0, 1, 1, 2, 2, 3), so a roll of 1 gives none and the spread differs from a flat 1D3. The book contradicts itself; the guide states the p.45 form."
+      "note": "Fixed for 0.6.1 (TODO 174): a used cyberware item's starting Stress now goes through usedStartingPoints (ceil(d/2) on a d6, i.e. 1D3, never 0) rather than pointsFromDie (1D6 / 2 rounded down, which could give 0). The maintainer chose p.45's flat 1D3 over p.124's self-contradicting 1D6/2 wording."
     },
     {
       "id": "street/cyberware-grades.md#30",
