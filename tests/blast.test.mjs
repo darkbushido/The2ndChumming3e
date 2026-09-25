@@ -67,4 +67,26 @@ export async function run(t) {
   const item = read('scripts/documents/SR3EItem.js');
   t.ok('the throw hands the item\'s falloff to the roll', /options\.aoeBlast\s+= this\.system\.blast/.test(item));
   t.ok('the blast radius follows the falloff', /Blast\.radius\(power, Blast\.rate\(this\.system\.blast\)\)/.test(item));
+
+  /* ── Walls — TODO 149 (reported in play: scatter went through walls) ──────────────────────
+   *   SR3 p.119: "When a grenade's blast hits a barrier such as a wall … If the barrier falls, the
+   *   blast continues on, but its Power Level is reduced by the original Barrier Rating. If the
+   *   barrier does not fall, the blast may be channeled." */
+  const p = Blast.stopShort({ x: 0, y: 0 }, { x: 100, y: 0 }, 10);
+  t.eq('a grenade stops just short of the wall it meets', [p.x, p.y], [90, 0]);
+  const q = Blast.stopShort({ x: 0, y: 0 }, { x: 5, y: 0 }, 10);
+  t.eq('…never behind where it started (a wall at the thrower\'s feet)', [q.x, q.y], [0, 0]);
+  t.is('a wall that falls: Power 7 past Barrier Rating 4 is 3 (p.119)', Blast.pastBarrier(7, 4), 3);
+  t.is('…and never below 0', Blast.pastBarrier(3, 12), 0);
+
+  t.ok('walls come from Foundry\'s movement-wall collision test', /polygonBackends\?\.move[\s\S]{0,120}testCollision\(a, b, \{ type: 'move', mode: 'closest' \}\)/.test(actor));
+  t.ok('the throw stops at a wall between the thrower and the aim point', /_wallBetween\(state\.aoeThrowerCenter, aimed\)/.test(actor));
+  t.ok('the scatter stops at a wall', /_wallBetween\(aimed, center\)/.test(actor));
+  t.ok('a token behind a wall is not caught — it is listed for the GM', /if \(SR3EActor\._wallBetween\(center, tok\.center\)\) shielded\.push/.test(actor));
+  t.ok('a fallen wall takes its Barrier Rating off the Power', /Blast\.pastBarrier\(t\.power, br\)/.test(actor));
+  t.ok('the GM button carries the book\'s tables as its tooltip (the maintainer asked)', /sr-blast-wall-btn[\s\S]{0,200}data-tooltip-html="\$\{SR3EActor\.barrierTablesHtml\(\)/.test(actor));
+  const cfg = read('scripts/config.js');
+  t.ok('the Barrier Effect Table is transcribed with its three rows', (/barrierEffects: \[([\s\S]*?)\],/.exec(cfg)?.[1].match(/power:/g) ?? []).length === 3);
+  const main = read('scripts/sr3e.js');
+  t.ok('only the GM may say the wall fell', /\.sr-blast-wall-btn'\)\.forEach\(\(btn, i\) => \{\s*\n\s*if \(!game\.user\.isGM\) return _denyBtn/.test(main));
 }

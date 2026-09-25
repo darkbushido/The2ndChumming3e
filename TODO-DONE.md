@@ -6589,6 +6589,16 @@ category), so `_getWeaponSkill` fell through to `'Firearms'`. SR3 p.86: *"Throwi
 use of any item thrown by the user."* Thrown categories now map to Throwing Weapons; launchers (`GrLn`)
 keep Launch Weapons. The same fallthrough still catches bows, crossbows and slings — [#157](#157).
 
+## 149. ✅ Grenade scatter goes through walls — **reported in play**
+
+**Done 2026-09-24:** the throw and the scatter stop at the first movement wall (Foundry's
+`testCollision`; open doors let it through), and tokens behind a wall from the blast point are not
+caught. They are listed with the Power reaching the wall, and a GM-only **🧱 the wall fell** button asks
+the Barrier Rating and posts their resist cards at Power − Barrier Rating (SR3 p.119). Whether the wall
+falls is the GM's call (Barrier Effect Table, p.124, in the button's tooltip, as the maintainer asked).
+Checked live with a temporary wall in the test world. Not changed: the blast marker still draws its full
+circle through a wall, and channelled blasts (Chunky Salsa) stay the GM's tool.
+
 ## 150. ✅ Defensive grenades don't use their Damage falloff — `5b541214`
 
 Reported as "−1 per ½ metre, or −2 per metre". The falloff the blast used was not recorded. The

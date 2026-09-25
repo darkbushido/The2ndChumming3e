@@ -1454,6 +1454,29 @@ export const SR3E = {
   // metres removed per net hit; range bands [S,M,L,E] are STR multipliers, or fixed metres for the
   // launcher. Damage code/level come from the weapon item; the falloff per metre is the item's own `blast`
   // (SR3 p.119, p.283 — Blast.rate; blank = −1/m), not a property of the throw type.
+  /**
+   * BARRIER RATING TABLE · SR3 p.124 — one source for the Barrier Damage tool and the grenade card's
+   * "wall fell" dialog (TODO 149). Transcribed from the page; `tests/tables.test.mjs` pins it.
+   */
+  barrierRatings: [
+    { name: 'Standard Glass',                     br: 2  },
+    { name: 'Cheap Material / Regular Tires',     br: 3  },
+    { name: 'Average Material / Ballistic Glass', br: 4  },
+    { name: 'Heavy Material',                     br: 6  },
+    { name: 'Reinforced / Armored Glass',         br: 8  },
+    { name: 'Structural Material',                br: 12 },
+    { name: 'Heavy Structural Material',          br: 16 },
+    { name: 'Armored / Reinforced Material',      br: 24 },
+    { name: 'Hardened Material',                  br: 32 },
+  ],
+
+  /** BARRIER EFFECT TABLE · SR3 p.124 — shown beside the ratings; the GM applies it. */
+  barrierEffects: [
+    { power: 'Less than ½ the adjusted Barrier Rating',        effect: 'No effect; the barrier holds, minor cosmetic damage.' },
+    { power: 'Equal to or greater than ½ the adjusted rating', effect: 'Barrier damaged; reduce the Barrier Rating by 1.' },
+    { power: 'Greater than the adjusted Barrier Rating',      effect: 'For every increment equal to half the Barrier Rating by which the Power exceeds it, a ½-metre hole is opened and the Barrier Rating is reduced by 1.' },
+  ],
+
   grenadeTypes: {
     standard:    { label: 'Standard',          scatterDice: 1, scatterReduction: 2, rangeMult:  [3, 5, 10, 20] },
     aerodynamic: { label: 'Aerodynamic',       scatterDice: 2, scatterReduction: 4, rangeMult:  [3, 5, 20, 30] },

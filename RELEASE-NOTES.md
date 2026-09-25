@@ -58,6 +58,7 @@ A bug-fix release: grenades and thrown weapons, a few broken skill choices, a ti
 
 ### Fixes
 
+- **Grenades respect walls** (reported in play). A grenade thrown at a point behind a wall drops at the wall, and scatter stops at a wall; an open door lets it through. Anyone with a wall between them and the blast is **not** caught. The card lists them with the Power that reaches the wall, and gives the GM a **🧱 the wall fell** button: pick the Barrier Rating (the book's tables are in its tooltip) and they resist at Power − Barrier Rating (SR3 p.119, p.124).
 - Buy gear: the haggle no longer fails when rolling the negotiation.
 - Compendium search no longer breaks on index entries with no uuid.
 - The pause-screen logo no longer 404s on Linux.

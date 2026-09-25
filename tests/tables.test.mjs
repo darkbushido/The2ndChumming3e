@@ -292,12 +292,15 @@ export async function run(t) {
   /* ════════════════════════════════════════════════════════════════════════════
    *  BARRIER RATING TABLE · p.124
    *
-   * ⚠ Read out of the SOURCE — the materials are a local array inside the Barrier Damage
-   * tool, not exported config, so retyping them here would assert nothing.
+   * ⚠ Read out of the SOURCE — `SR3E.barrierRatings` in config.js, the one table the Barrier Damage
+   * tool and the grenade card's "wall fell" dialog both read (TODO 149). Retyping it here would
+   * assert nothing.
    * ════════════════════════════════════════════════════════════════════════════ */
   const fsB = await import('node:fs');
   const sr3eSrc = fsB.readFileSync(new URL('../scripts/sr3e.js', import.meta.url), 'utf8');
-  const matBlock = /const MATERIALS = \[([\s\S]*?)\];/.exec(sr3eSrc)?.[1] ?? '';
+  const cfgSrc  = fsB.readFileSync(new URL('../scripts/config.js', import.meta.url), 'utf8');
+  const matBlock = /barrierRatings: \[([\s\S]*?)\],/.exec(cfgSrc)?.[1] ?? '';
+  t.ok('the Barrier Damage tool reads that one table', /const MATERIALS = game\.sr3e\.SR3E\.barrierRatings;/.test(sr3eSrc));
   const materials = {};
   for (const m of matBlock.matchAll(/name:\s*'([^']+)'[^}]*?br:\s*(\d+)/g)) {
     materials[m[1]] = Number(m[2]);

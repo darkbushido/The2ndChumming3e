@@ -3114,11 +3114,26 @@ _prepareCharacter(sys, attr) {
           const level     = state.damageBase?.level ?? 'L';
           const isStun    = state.damageBase?.isStun ?? false;
 
+          /* ⚠ Walls (TODO 149). A grenade cannot pass a wall: thrown at a point behind one, it stops at
+           * the wall; scattering into one, it stops there too — just short of it, so the blast point is
+           * on the thrower's side. Foundry's movement walls decide (an open door is not a wall). */
+          const pxPerM0 = canvas?.dimensions ? canvas.dimensions.size / canvas.dimensions.distance : 1;
+          const WALL_BACK = 0.25 * pxPerM0;
+          let wallNote = '';
+          let aimed = { ...state.aoeCenter };
+          if (state.aoeThrowerCenter) {
+            const hit = SR3EActor._wallBetween(state.aoeThrowerCenter, aimed);
+            if (hit) {
+              aimed = Blast.stopShort(state.aoeThrowerCenter, hit, WALL_BACK);
+              wallNote = ' 🧱 It hit a wall on the way and dropped there.';
+            }
+          }
+
           // Relocate the epicentre along the throw axis (1 = overthrow, 4 = short).
-          let center = { ...state.aoeCenter };
+          let center = { ...aimed };
           let scatterDesc;
           if (scatterDist <= 0) {
-            scatterDesc = `🎯 Direct hit (scatter ${rawDist}m − ${reduction}m = 0).`;
+            scatterDesc = `🎯 Direct hit (scatter ${rawDist}m − ${reduction}m = 0).${wallNote}`;
           } else {
             const thr = state.aoeThrowerCenter;
             let ax = thr ? state.aoeCenter.x - thr.x : 0;
@@ -3128,9 +3143,14 @@ _prepareCharacter(sys, attr) {
             const cos = Math.cos(ang), sin = Math.sin(ang);
             const dx = ax * cos - ay * sin, dy = ax * sin + ay * cos;
             const pxPerM = canvas?.dimensions ? canvas.dimensions.size / canvas.dimensions.distance : 1;
-            center = { x: state.aoeCenter.x + dx * scatterDist * pxPerM, y: state.aoeCenter.y + dy * scatterDist * pxPerM };
+            center = { x: aimed.x + dx * scatterDist * pxPerM, y: aimed.y + dy * scatterDist * pxPerM };
+            const bounced = SR3EActor._wallBetween(aimed, center);
+            if (bounced) {
+              center = Blast.stopShort(aimed, bounced, WALL_BACK);
+              wallNote += ' 🧱 Its scatter stopped at a wall.';
+            }
             const diceStr = distRolls.length > 1 ? `[${distRolls.join('+')}]=${rawDist}` : `${rawDist}`;
-            scatterDesc = `💨 Scattered <strong>${scatterDist}m ${DIRS[dirRoll]}</strong> (${diceStr}m − ${reduction}m).`;
+            scatterDesc = `💨 Scattered <strong>${scatterDist}m ${DIRS[dirRoll]}</strong> (${diceStr}m − ${reduction}m).${wallNote}`;
           }
 
           // Show where it actually went off, visible to ALL players (Region, with a local
@@ -3143,11 +3163,17 @@ _prepareCharacter(sys, attr) {
               : { name: 'Grenade Blast' });
 
           // Re-detect everyone caught in the (scattered) blast — the thrower can be hit.
+          // ⚠ A token with a wall between it and the blast point is NOT caught (TODO 149): the blast
+          //   hits the barrier first (SR3 p.119, "Blast against Barriers"). Whether the wall falls is the
+          //   GM's call — a map wall has no Barrier Rating — so they are listed, with a GM button below.
           const hits = [];
+          const shielded = [];
           for (const tok of (canvas?.tokens?.placeables ?? [])) {
             if (!tok.actor) continue;
             let dM; try { dM = canvas.grid.measurePath([center, tok.center])?.distance ?? Infinity; } catch { dM = Infinity; }
-            if (dM <= state.aoeRadius) hits.push({ actor: tok.actor, dist: Math.round(dM) });
+            if (dM > state.aoeRadius) continue;
+            if (SR3EActor._wallBetween(center, tok.center)) shielded.push({ actor: tok.actor, dist: Math.round(dM) });
+            else hits.push({ actor: tok.actor, dist: Math.round(dM) });
           }
 
           // Per-target codes: Chunky Salsa GUI (confined) or open-air power − distance.
@@ -3196,9 +3222,26 @@ _prepareCharacter(sys, attr) {
             codes.push(...staged);
           }
 
-          const hitLines = codes.length
+          let hitLines = codes.length
             ? codes.map(t => `<div style="font-size:11px;margin-top:2px"><strong>${t.name}</strong>: ${t.power}${t.level}${t.dist != null ? ` <span style="color:var(--sr-muted)">(${t.dist}m)</span>` : ''}${t.staged ? ` <span style="color:var(--sr-gold)">(staged up by ${successes} hit${successes !== 1 ? 's' : ''}, p.119)</span>` : ''}</div>`).join('')
             : '<div style="font-size:11px;color:var(--sr-muted)">No one caught in the blast.</div>';
+          // Behind a wall (TODO 149): Power as it reaches the wall, and the GM's button for a wall that falls.
+          if (shielded.length && !state.aoeEffect) {
+            const perM = Blast.rate(state.aoeBlast);
+            const behind = shielded
+              .map(s => ({ actorId: s.actor.id, name: s.actor.name, dist: s.dist, power: Blast.power(basePower, s.dist, perM) }))
+              .filter(s => s.power > 0);
+            if (behind.length) {
+              hitLines += `<div style="font-size:11px;margin-top:4px;color:var(--sr-amber)">🧱 Behind a wall — not caught unless it falls (SR3 p.119): `
+                + behind.map(s => `<strong>${s.name}</strong> (Power ${s.power} at ${s.dist}m)`).join(', ') + '</div>';
+              const wallPayload = JSON.stringify({
+                attackerActorId: state.attackerActorId, weaponItemId: state.weaponItemId, ammoType: state.ammoType ?? null,
+                isStun, level, attackHits: successes, targets: behind,
+              }).replace(/'/g, '&#39;');
+              postRollHtml += `<div class="sr-soak-action"><button class="sr-blast-wall-btn" data-payload='${wallPayload}'
+                data-tooltip-html="${SR3EActor.barrierTablesHtml().replace(/"/g, '&quot;')}">🧱 GM: the wall fell — the blast reaches them</button></div>`;
+            }
+          }
           const clearBtn = SR3EActor._clearBlastButton({ regionId: resultRegionId, markerId: resultMarkerId });
           if (state.aoeEffect) {
             // A gas / smoke / flash grenade: nothing is rolled against anyone and nothing is applied — the card
@@ -7972,6 +8015,89 @@ _prepareCharacter(sys, attr) {
   static hitsAgainst(dice, tn) {
     const t = Number(tn) || 0;
     return (dice ?? []).filter(d => (Number(d?.total) || 0) >= t).length;
+  }
+
+  /**
+   * The first movement wall on the straight line from `a` to `b` (scene coordinates), or null. Foundry's
+   * own collision test, so an open door lets a grenade through and a closed one does not (TODO 149).
+   * Null when there is no canvas or the test is unavailable — walls then simply do not apply.
+   */
+  static _wallBetween(a, b) {
+    try {
+      const backend = CONFIG.Canvas?.polygonBackends?.move;
+      if (!backend?.testCollision || !a || !b) return null;
+      const hit = backend.testCollision(a, b, { type: 'move', mode: 'closest' });
+      return hit ? { x: hit.x, y: hit.y } : null;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * The Barrier Rating and Barrier Effect Tables (SR3 p.124) as a small HTML table — the tooltip on the
+   * grenade card's "wall fell" button and the body of its dialog (the maintainer asked for the book's
+   * ratings to be to hand). One source: `SR3E.barrierRatings` / `barrierEffects`.
+   */
+  static barrierTablesHtml() {
+    const S = globalThis.game?.sr3e?.SR3E ?? {};
+    const rows = (S.barrierRatings ?? []).map(m => `<tr><td>${m.name}</td><td style="text-align:right">${m.br}</td></tr>`).join('');
+    const eff  = (S.barrierEffects ?? []).map(e => `<tr><td>${e.power}</td><td>${e.effect}</td></tr>`).join('');
+    return `<div style="font-size:11px;max-width:420px"><strong>Barrier Rating Table</strong> (SR3 p.124)`
+      + `<table style="margin:2px 0 6px"><tr><th style="text-align:left">Material</th><th>Rating</th></tr>${rows}</table>`
+      + `<strong>Barrier Effect Table</strong> (SR3 p.124) — compare the blast's remaining Power with <em>twice</em> the Barrier Rating (p.119)`
+      + `<table style="margin-top:2px"><tr><th style="text-align:left">Power of attack</th><th style="text-align:left">Effect</th></tr>${eff}</table>`
+      + `If the barrier falls, the blast continues with its Power reduced by the original Barrier Rating (p.119).</div>`;
+  }
+
+  /**
+   * GM: a wall between a grenade and some targets fell (SR3 p.119). Ask the Barrier Rating — the book's
+   * table beside the input — and post each target's Resist Damage at Power − Barrier Rating, on the net
+   * comparison with the thrower's successes like everyone the blast reached (TODO 165).
+   */
+  static async handleBlastWallFell(payload) {
+    const S = game.sr3e.SR3E;
+    let br = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: '🧱 The wall fell — Barrier Rating' },
+      position: { width: 480 },
+      content: `
+        <label style="display:flex;gap:8px;align-items:center;margin-bottom:6px">Material
+          <select id="sr-wall-mat">${S.barrierRatings.map(m => `<option value="${m.br}">${m.name} (${m.br})</option>`).join('')}</select>
+          Rating <input type="number" id="sr-wall-br" min="0" value="${S.barrierRatings[0].br}" style="width:60px"/>
+        </label>
+        ${SR3EActor.barrierTablesHtml()}`,
+      render: (_event, dialog) => {
+        const el = dialog.element;
+        el.querySelector('#sr-wall-mat')?.addEventListener('change', ev => { el.querySelector('#sr-wall-br').value = ev.target.value; });
+      },
+      buttons: [
+        { label: 'Blast them', action: 'go', default: true,
+          callback: (_e, _b, dialog) => { br = Math.max(0, parseInt(dialog.element.querySelector('#sr-wall-br')?.value) || 0); } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (br === null) return false;
+    const lines = [];
+    let buttons = '';
+    for (const t of (payload.targets ?? [])) {
+      const power = Blast.pastBarrier(t.power, br);
+      if (power <= 0) { lines.push(`${t.name}: Power ${t.power} − ${br} = 0, no damage`); continue; }
+      const up = SR3EItem.stageDamage({ power, level: payload.level, isStun: payload.isStun }, payload.attackHits ?? 0);
+      lines.push(`${t.name}: Power ${t.power} − ${br} = <strong>${power}${payload.level}</strong>`);
+      buttons += SR3EActor._soakButtonHtml({
+        attackerActorId: payload.attackerActorId, targetActorId: t.actorId, weaponItemId: payload.weaponItemId,
+        ammoType: payload.ammoType, isMelee: false, stagedPower: power, stagedLevel: up.level, isStun: payload.isStun,
+        rawDamage: `${power}${payload.level}`,
+        net: { attackHits: payload.attackHits ?? 0, basePower: power, baseLevel: payload.level },
+      });
+    }
+    await ChatMessage.create({
+      speaker: { alias: 'GM' },
+      content: `<div class="sr-roll-card"><div class="sr-roll-header">🧱 The wall fell (Barrier Rating ${br})</div>
+        <div class="sr-staging-result" style="font-size:11px">The blast continues, its Power reduced by the Barrier Rating (SR3 p.119).<br>${lines.join('<br>')}</div>
+        ${buttons}</div>`,
+    });
+    return true;
   }
 
   static dodgeOutcome(dodgeHits, attackHits) {

@@ -43,8 +43,8 @@ export async function run(t) {
   const actor = read('scripts/documents/SR3EActor.js');
   t.ok('the soak result uses the rule when the payload carries `net`',
     /if \(sp\.net\) \{[\s\S]{0,300}SR3EActor\.netStagedDamage\(/.test(actor));
-  t.is('ranged (dodge and no-dodge), grenade and elemental payloads all carry it',
-    (actor.match(/net:\s+\{ attackHits: /g) ?? []).length, 4);
+  t.is('ranged (dodge and no-dodge), grenade, a grenade past a fallen wall (TODO 149) and elemental payloads all carry it',
+    (actor.match(/net:\s+\{ attackHits: /g) ?? []).length, 5);
   t.ok('_soakButtonHtml carries it through the dodge', /net:\s+payload\.net \?\? undefined/.test(actor));
   t.ok('the soak card carries it into the roll', /net:\s+payload\.net \? \{ \.\.\.payload\.net, baseLevel: netBaseLevel \} : undefined/.test(actor));
 }

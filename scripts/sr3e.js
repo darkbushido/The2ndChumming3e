@@ -985,17 +985,7 @@ async function _openChunkySalsaCalculator(opts = {}) {
 }
 
 async function _openBarrierDamageCalculator() {
-  const MATERIALS = [
-    { name: 'Standard Glass',                br: 2  },
-    { name: 'Cheap Material / Regular Tires', br: 3  },
-    { name: 'Average Material / Ballistic Glass', br: 4  },
-    { name: 'Heavy Material',                br: 6  },
-    { name: 'Reinforced / Armored Glass',    br: 8  },
-    { name: 'Structural Material',           br: 12 },
-    { name: 'Heavy Structural Material',     br: 16 },
-    { name: 'Armored / Reinforced Material', br: 24 },
-    { name: 'Hardened Material',             br: 32 },
-  ];
+  const MATERIALS = game.sr3e.SR3E.barrierRatings;   // the Barrier Rating Table, SR3 p.124
 
   const matOpts   = MATERIALS.map((m, i) => `<option value="${i}">${m.name} (BR ${m.br})</option>`).join('');
   const actorOpts = game.sr3e.sceneFirst(game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)))
@@ -2892,6 +2882,23 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'iciaassign', i)) return;
       await SR3EActor.handleOrthodoxICAssign(btn);
+    });
+  });
+
+  // 🧱 A wall between a grenade and some targets fell (SR3 p.119, TODO 149). GM only: whether a map
+  // wall falls is a judgement about a Barrier Rating the map does not carry. Cancelling hands it back.
+  html.querySelectorAll('.sr-blast-wall-btn').forEach((btn, i) => {
+    if (!game.user.isGM) return _denyBtn(btn, 'Only the GM decides whether the wall fell.');
+    if (!_checkBtn(btn, mid, 'blastwall', i)) return;
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'blastwall', i)) return;
+      const done = await SR3EActor.handleBlastWallFell(_payload(btn) ?? {});
+      if (done === false) {
+        _usedButtons.delete(`${mid}|blastwall|${i}`);
+        btn.disabled = false;
+      }
     });
   });
 

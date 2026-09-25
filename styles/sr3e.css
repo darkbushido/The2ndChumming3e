@@ -251,6 +251,7 @@ background-color: var(--sr-surface) !important;
 .sr-buy-pay-btn,
 .sr-fd-dodge-btn,
 .sr-charge-quickness-btn,
+.sr-blast-wall-btn,
 .sr-prone-btn {
   width: 100%;
   height: auto;      /* core gives buttons a fixed height — grow with wrapped text */
@@ -280,7 +281,8 @@ background-color: var(--sr-surface) !important;
 .sr-stress-apply-btn,
 .sr-buy-negotiate-btn,
 .sr-buy-pay-btn,
-.sr-charge-quickness-btn {
+.sr-charge-quickness-btn,
+.sr-blast-wall-btn {
   background: linear-gradient(135deg, color-mix(in srgb, var(--sr-gold) 15%, transparent) 0%, color-mix(in srgb, var(--sr-gold) 5%, transparent) 100%);
   border: 1px solid var(--sr-gold);
   color: var(--sr-gold);
@@ -300,7 +302,8 @@ background-color: var(--sr-surface) !important;
 .sr-knockdown-btn:hover:not(:disabled),
 .sr-stress-roll-btn:hover:not(:disabled),
 .sr-stress-apply-btn:hover:not(:disabled),
-.sr-charge-quickness-btn:hover:not(:disabled) {
+.sr-charge-quickness-btn:hover:not(:disabled),
+.sr-blast-wall-btn:hover:not(:disabled) {
   background: color-mix(in srgb, var(--sr-gold) 25%, transparent);
   box-shadow: 0 0 10px color-mix(in srgb, var(--sr-gold) 30%, transparent);
 }

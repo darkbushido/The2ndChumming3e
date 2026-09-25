@@ -36,7 +36,7 @@ export async function run(t) {
   //   successes; the thrower's successes did nothing but tighten the scatter, so a perfect throw
   //   hit no harder than a fumbled one.
   const aoe = actor.slice(actor.indexOf('state.isAoE && state.aoeCenter'),
-    actor.indexOf('state.isAoE && state.aoeCenter') + 7000);
+    actor.indexOf('state.isAoE && state.aoeCenter') + 10000);   // the branch grew with TODO 149's walls
   t.ok('the blast stages the level by the throw\'s successes',
     /SR3EItem\.stageDamage\(\{ power: t\.power, level: t\.level, isStun \}, successes\)/.test(aoe));
   // ⚠ It takes a PARSED code, not a string. The first attempt passed `` `${t.power}${t.level}` ``,

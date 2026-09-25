@@ -49,4 +49,27 @@ export const Blast = {
   radius(base, perMetre = Blast.DEFAULT_PER_METRE) {
     return Math.max(1, Math.ceil((Number(base) || 0) / perMetre));
   },
+
+  /**
+   * Walls (TODO 149). A thrown or scattering grenade cannot pass a wall, so it comes to rest just
+   * short of the first one it meets: `back` scene units before `hit`, along the line from `from`.
+   * Never behind `from` — a wall at the thrower's feet leaves the grenade at their feet.
+   */
+  stopShort(from, hit, back = 0) {
+    const dx = hit.x - from.x, dy = hit.y - from.y;
+    const len = Math.hypot(dx, dy);
+    if (!(len > 0)) return { x: from.x, y: from.y };
+    const keep = Math.max(0, len - Math.max(0, Number(back) || 0)) / len;
+    return { x: from.x + dx * keep, y: from.y + dy * keep };
+  },
+
+  /**
+   * The Power that carries on past a barrier that FELL · SR3 p.119 — *"If the barrier falls, the blast
+   * continues on, but its Power Level is reduced by the original Barrier Rating."* Whether it falls
+   * (remaining Power against twice the Barrier Rating, on the Barrier Effect Table, p.124) is the GM's
+   * call: a map wall carries no Barrier Rating.
+   */
+  pastBarrier(power, barrierRating) {
+    return Math.max(0, (Number(power) || 0) - Math.max(0, Number(barrierRating) || 0));
+  },
 };

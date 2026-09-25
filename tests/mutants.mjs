@@ -39,6 +39,13 @@ const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
 
 export const MUTANTS = [
   {
+    id:     'fallen-wall-costs-nothing',
+    suite:  'blast',
+    module: '../scripts/data/blast.mjs', klass: 'Blast', method: 'pastBarrier',
+    was:    'a blast through a fallen wall kept its full Power; SR3 p.119 takes the Barrier Rating off (TODO 149)',
+    impl:   power => Math.max(0, Number(power) || 0),
+  },
+  {
     id:     'open-steps-fold-cards-with-no-steps',
     suite:  'open-steps',
     module: '../scripts/data/open-steps.mjs', klass: 'OpenSteps', method: 'finished',
