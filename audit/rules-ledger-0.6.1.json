@@ -21926,7 +21926,7 @@
       ],
       "hash": "193f994dc7",
       "text": "{: .fixed }\n> Original gist: \"Cyberware Grades & Secondhand Gear Guide\".\n> - **Betaware is ×.6 Essence**, not ×.7.\n> - **Used cyberware costs the Essence of its grade**, not ×1.25. It costs\n>   **half price**, not ×.75.\n> - The availability modifiers were invented. Alphaware is **as available as\n>   basic**. Betaware is **+5 to the TN and ×1.5 the time**. Deltaware is at\n>   least **+9 and ×3**. Used is standard.\n> - **Betaware isn't available to starting characters** either, not only\n>   deltaware.\n> - Used deltaware **can't be bought**, but if you get hold of some, it can\n>   be **installed as betaware**. It isn't \"destroyed on extraction\".\n> - Used implants come with **1D3 permanent Stress Points**, not \"1 to 2\".\n> - **Removing** chrome never gives Essence back. A *later* implant can use\n>   the \"Essence hole\", but only through a surgical option at +2 Threshold.\n> - The 1–3 hour harvest window, the TN 4–8 extraction roll and the\n>   \"Electronics (Cyberware) scrub\" aren't in *Man & Machine*.",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Man and Machine Cyberware {FASA7126}.pdf",
@@ -21936,24 +21936,29 @@
         },
         {
           "file": "Shadowrun 3e - Man and Machine Cyberware {FASA7126}.pdf",
-          "pdfPage": 126,
-          "printedPage": 124,
-          "quote": "used cyberware begins with 1D6"
+          "pdfPage": 47,
+          "printedPage": 45,
+          "quote": "Each used cyberware item comes with 1D3 permanent Stress Points"
         }
       ],
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 8777,
-          "snippet": "const key = String(grade ?? '').toLowerCase().replace(/\\bused\\b/g, '').trim();"
+          "line": 8899,
+          "snippet": "static gradedEssenceCost(cost, grade) {"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8911,
+          "snippet": "if (used && /^delta(ware)?$/.test(key)) key = 'beta';"
         },
         {
           "file": "scripts/data/stress.mjs",
-          "line": 95,
-          "snippet": "return Math.floor(Math.max(0, Number(die) || 0) / 2);"
+          "line": 106,
+          "snippet": "usedStartingPoints(die) {"
         }
       ],
-      "note": "Composite errata callout; the code differs in two of its claims. (1) 'Used deltaware can be installed as betaware' — `gradedEssenceCost` strips the word 'used' and reads a Used Delta as delta (×.5), not beta (×.6). (2) 'Used implants come with 1D3 permanent Stress Points' (M&M p.45) — the Stress code starts used cyberware with 1D6 ÷ 2 rounded down (stress.mjs `pointsFromDie`), following M&M p.124's own wording ('1D6 ÷ 2'), so the book itself is inconsistent between p.45 and p.124. Also: 'betaware isn't available to starting characters' is not enforced. The other claims (beta ×.6, used at half price, +5/×1.5 and +9/×3 availability, removal gives no Essence back) are implemented."
+      "note": "Fixed for 0.6.1 (TODO 174). Both findings from the earlier record are corrected: a Used Delta now reads as beta (x.6) at gradedEssenceCost's `if (used && /^delta(ware)?$/.test(key)) key = 'beta'`, and Stress.usedStartingPoints implements 1D3 (ceil(d/2) on a d6, never 0) per M&M p.45 — the maintainer's choice over p.124's self-contradicting 1D6/2 wording. 'Betaware isn't available to starting characters' is still not enforced (no chargen flow to enforce it in)."
     },
     {
       "id": "street/cyberware-grades.md#5",
@@ -22040,7 +22045,7 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EItemSheet.js",
-          "line": 1087,
+          "line": 1100,
           "snippet": "Alpha:    { essMult: 0.8, costMult: 2.0, availAdd: 0, timeMult: 1.0 },"
         }
       ]
@@ -22066,7 +22071,7 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EItemSheet.js",
-          "line": 1088,
+          "line": 1101,
           "snippet": "Beta:     { essMult: 0.6, costMult: 4.0, availAdd: 5, timeMult: 1.5 },"
         }
       ]
@@ -22092,7 +22097,7 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EItemSheet.js",
-          "line": 1089,
+          "line": 1102,
           "snippet": "Delta:    { essMult: 0.5, costMult: 8.0, availAdd: 9, timeMult: 3.0 },"
         }
       ],
@@ -22157,7 +22162,7 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EItemSheet.js",
-          "line": 1086,
+          "line": 1099,
           "snippet": "Standard: { essMult: 1.0, costMult: 1.0, availAdd: 0, timeMult: 1.0 },"
         }
       ]
@@ -22183,7 +22188,7 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EItemSheet.js",
-          "line": 1087,
+          "line": 1100,
           "snippet": "Alpha:    { essMult: 0.8, costMult: 2.0, availAdd: 0, timeMult: 1.0 },"
         }
       ]
@@ -22209,7 +22214,7 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EItemSheet.js",
-          "line": 1088,
+          "line": 1101,
           "snippet": "Beta:     { essMult: 0.6, costMult: 4.0, availAdd: 5, timeMult: 1.5 },"
         }
       ]
@@ -22235,7 +22240,7 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EItemSheet.js",
-          "line": 1089,
+          "line": 1102,
           "snippet": "Delta:    { essMult: 0.5, costMult: 8.0, availAdd: 9, timeMult: 3.0 },"
         }
       ]
@@ -22261,7 +22266,7 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EItemSheet.js",
-          "line": 1090,
+          "line": 1103,
           "snippet": "Used:     { essMult: 1.0, costMult: 0.5, availAdd: 0, timeMult: 1.0 },"
         }
       ],
@@ -22288,7 +22293,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 8785,
+          "line": 8919,
           "snippet": "return Math.max(0.01, Math.ceil(cents) / 100);"
         }
       ]
@@ -22314,7 +22319,7 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EItemSheet.js",
-          "line": 1108,
+          "line": 1121,
           "snippet": "const newCost = Math.round(costBase * costMult);"
         }
       ]
@@ -22428,8 +22433,8 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 8777,
-          "snippet": "const key = String(grade ?? '').toLowerCase().replace(/\\bused\\b/g, '').trim();"
+          "line": 8899,
+          "snippet": "static gradedEssenceCost(cost, grade) {"
         }
       ]
     },
@@ -22454,8 +22459,8 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 8777,
-          "snippet": "const key = String(grade ?? '').toLowerCase().replace(/\\bused\\b/g, '').trim();"
+          "line": 8899,
+          "snippet": "static gradedEssenceCost(cost, grade) {"
         }
       ]
     },
@@ -22468,7 +22473,7 @@
       ],
       "hash": "ad173fb3c6",
       "text": "- **Used deltaware can't be bought.** If you acquire some anyway, it's\n  installed **as if it were betaware**.",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Man and Machine Cyberware {FASA7126}.pdf",
@@ -22480,11 +22485,11 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 8777,
-          "snippet": "const key = String(grade ?? '').toLowerCase().replace(/\\bused\\b/g, '').trim();"
+          "line": 8911,
+          "snippet": "if (used && /^delta(ware)?$/.test(key)) key = 'beta';"
         }
       ],
-      "note": "The book: 'Used deltaware cannot be purchased, but if you can otherwise acquire it, you can have it installed as if it were betaware.' The code strips 'used' from a grade and reads a Used Delta as delta (Essence ×.5), not as beta (×.6)."
+      "note": "Fixed for 0.6.1 (TODO 174): a Used Delta now reads as beta (Essence x.6) rather than delta (x.5)."
     },
     {
       "id": "street/cyberware-grades.md#27",
@@ -22507,7 +22512,7 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EItemSheet.js",
-          "line": 1090,
+          "line": 1103,
           "snippet": "Used:     { essMult: 1.0, costMult: 0.5, availAdd: 0, timeMult: 1.0 },"
         }
       ]
@@ -22533,8 +22538,8 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 8777,
-          "snippet": "const key = String(grade ?? '').toLowerCase().replace(/\\bused\\b/g, '').trim();"
+          "line": 8899,
+          "snippet": "static gradedEssenceCost(cost, grade) {"
         }
       ]
     },
@@ -22654,12 +22659,12 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 8785,
+          "line": 8919,
           "snippet": "return Math.max(0.01, Math.ceil(cents) / 100);"
         },
         {
           "file": "scripts/sheets/SR3EItemSheet.js",
-          "line": 1117,
+          "line": 1130,
           "snippet": "const timeNum = Math.round(parseInt(m[2]) * timeMult);"
         }
       ],
@@ -22692,12 +22697,12 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 8785,
+          "line": 8919,
           "snippet": "return Math.max(0.01, Math.ceil(cents) / 100);"
         },
         {
           "file": "scripts/sheets/SR3EItemSheet.js",
-          "line": 1117,
+          "line": 1130,
           "snippet": "const timeNum = Math.round(parseInt(m[2]) * timeMult);"
         }
       ],
@@ -22730,12 +22735,12 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 8785,
+          "line": 8919,
           "snippet": "return Math.max(0.01, Math.ceil(cents) / 100);"
         },
         {
           "file": "scripts/sheets/SR3EItemSheet.js",
-          "line": 1117,
+          "line": 1130,
           "snippet": "const timeNum = Math.round(parseInt(m[2]) * timeMult);"
         }
       ],
@@ -22768,12 +22773,12 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 8785,
+          "line": 8919,
           "snippet": "return Math.max(0.01, Math.ceil(cents) / 100);"
         },
         {
           "file": "scripts/sheets/SR3EItemSheet.js",
-          "line": 1117,
+          "line": 1130,
           "snippet": "const timeNum = Math.round(parseInt(m[2]) * timeMult);"
         }
       ],
@@ -22806,12 +22811,12 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 8785,
+          "line": 8919,
           "snippet": "return Math.max(0.01, Math.ceil(cents) / 100);"
         },
         {
           "file": "scripts/sheets/SR3EItemSheet.js",
-          "line": 1117,
+          "line": 1130,
           "snippet": "const timeNum = Math.round(parseInt(m[2]) * timeMult);"
         }
       ],
@@ -22844,12 +22849,12 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 8785,
+          "line": 8919,
           "snippet": "return Math.max(0.01, Math.ceil(cents) / 100);"
         },
         {
           "file": "scripts/sheets/SR3EItemSheet.js",
-          "line": 1117,
+          "line": 1130,
           "snippet": "const timeNum = Math.round(parseInt(m[2]) * timeMult);"
         }
       ],
