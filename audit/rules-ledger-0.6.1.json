@@ -19730,7 +19730,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 1974,
+          "line": 1982,
           "snippet": "static _parseLoadMechanism(ammoCapacityStr) {"
         }
       ]
@@ -19884,7 +19884,7 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 150,
+          "line": 193,
           "snippet": "const what = mech === 'cy' ? 'use a speed loader' : mech === 'belt' ? 'insert a belt' : 'load it';"
         }
       ]
@@ -19942,7 +19942,7 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 143,
+          "line": 186,
           "snippet": "reloadActions(sys, { taken = 0, quickness = 1, gunMech = null } = {}) {"
         }
       ]
@@ -19980,7 +19980,7 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 148,
+          "line": 191,
           "snippet": "return { complex: 0, simple: 2, text: 'Simple Action to remove the old clip, another to insert the new one (SR3 p.107, p.280) — a smartlink ejects it with a Free Action' };"
         }
       ]
@@ -20006,12 +20006,12 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 154,
-          "snippet": "const each    = mech === 'b' ? 2 : Math.max(1, whole(quickness));"
+          "line": 200,
+          "snippet": "const each    = mech === 'b' ? 2 : mech === 'belt' ? q * 2 : q;"
         },
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 157,
+          "line": 205,
           "snippet": "const into    = mech === 'c' || mech === 'd' ? ' into the clip' : '';"
         }
       ]
@@ -20037,8 +20037,8 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 154,
-          "snippet": "const each    = mech === 'b' ? 2 : Math.max(1, whole(quickness));"
+          "line": 200,
+          "snippet": "const each    = mech === 'b' ? 2 : mech === 'belt' ? q * 2 : q;"
         }
       ]
     },
@@ -20063,8 +20063,8 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 154,
-          "snippet": "const each    = mech === 'b' ? 2 : Math.max(1, whole(quickness));"
+          "line": 200,
+          "snippet": "const each    = mech === 'b' ? 2 : mech === 'belt' ? q * 2 : q;"
         }
       ]
     },
@@ -20089,8 +20089,8 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 154,
-          "snippet": "const each    = mech === 'b' ? 2 : Math.max(1, whole(quickness));"
+          "line": 200,
+          "snippet": "const each    = mech === 'b' ? 2 : mech === 'belt' ? q * 2 : q;"
         }
       ]
     },
@@ -20115,7 +20115,7 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 150,
+          "line": 193,
           "snippet": "const what = mech === 'cy' ? 'use a speed loader' : mech === 'belt' ? 'insert a belt' : 'load it';"
         }
       ]
@@ -20141,7 +20141,7 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 150,
+          "line": 193,
           "snippet": "const what = mech === 'cy' ? 'use a speed loader' : mech === 'belt' ? 'insert a belt' : 'load it';"
         }
       ]
@@ -20155,7 +20155,7 @@
       ],
       "hash": "5192d1de90",
       "text": "| | Complex Action | Load **(Quickness × 2)** rounds into a belt |",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -20167,16 +20167,11 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 154,
-          "snippet": "const each    = mech === 'b' ? 2 : Math.max(1, whole(quickness));"
-        },
-        {
-          "file": "scripts/data/ammo-stock.mjs",
-          "line": 15,
-          "snippet": "* | Belt Feed (belt) | Complex | insert belt — or insert (Quickness) rounds |"
+          "line": 200,
+          "snippet": "const each    = mech === 'b' ? 2 : mech === 'belt' ? q * 2 : q;"
         }
       ],
-      "note": "The book's last row is 'Insert (Quickness × 2) rounds into belt' (the trailing '× 2) rounds into belt' prints in the facing column, so the text layer splits it). The code loads a belt's loose rounds at the same rate as everything else — Quickness rounds per Complex Action (`each = Math.max(1, whole(quickness))` for any mechanism but a break action) — and its own table comment says 'insert (Quickness) rounds'. A belt therefore takes twice the actions the book gives."
+      "note": "Fixed for 0.6.1 (TODO 173): reloadActions now doubles the belt rate (each = q * 2 for mech === 'belt'), matching the book's Quickness x 2 rounds into a belt."
     },
     {
       "id": "rules/reloading.md#23",
@@ -20199,7 +20194,7 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 155,
+          "line": 201,
           "snippet": "const complex = taken > 0 ? Math.ceil(taken / each) : 0;"
         }
       ]
@@ -20263,7 +20258,7 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 148,
+          "line": 191,
           "snippet": "return { complex: 0, simple: 2, text: 'Simple Action to remove the old clip, another to insert the new one (SR3 p.107, p.280) — a smartlink ejects it with a Free Action' };"
         }
       ]
@@ -20327,7 +20322,7 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 148,
+          "line": 191,
           "snippet": "a smartlink ejects it with a Free Action"
         }
       ],
@@ -20398,7 +20393,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 2156,
+          "line": 2168,
           "snippet": "else if (cost.simple >= 2) { LG?.charge(actor, 'removeClip', this.name).then(() => LG?.charge(actor, 'insertClip', this.name)); }"
         }
       ]
@@ -20430,7 +20425,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 2156,
+          "line": 2168,
           "snippet": "else if (cost.simple >= 2) { LG?.charge(actor, 'removeClip', this.name).then(() => LG?.charge(actor, 'insertClip', this.name)); }"
         }
       ],
@@ -20445,7 +20440,28 @@
       ],
       "hash": "93a154969b",
       "text": "The book doesn't say what happens to the rounds left in a removed clip.\n**Spare clips** cost **5¥** each, unloaded. Each holds the gun's full\ncapacity, and they **don't swap between guns**, even guns of the same class.\n*(SR3 p.281)*",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 283,
+          "printedPage": 281,
+          "quote": "They hold the maximum rounds available for the weapon, and are not interchangeable from weapon to weapon even within the same class"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/spare-clip.27d3735181b12497.json",
+          "line": 21,
+          "snippet": "\"cost\": 5,"
+        },
+        {
+          "file": "scripts/data/ammo-stock.mjs",
+          "line": 144,
+          "snippet": "fits(sys, gunMech, gunClass = null) {"
+        }
+      ],
+      "note": "The 5¥ cost matches (a generic 'Spare Clip' gear item at cost 5), but it is not functionally linked to the reload system — nothing ties it to a specific gun's capacity. The 'not interchangeable from weapon to weapon even within the same class' restriction is not modelled: AmmoStock.fits() matches any reload of the same loading mechanism to any gun taking that mechanism, deliberately (see #35's house-rule note, which documents this as the table's simplification)."
     },
     {
       "id": "rules/reloading.md#35",
@@ -20456,7 +20472,8 @@
       ],
       "hash": "6f642ce10d",
       "text": "> **How The 2nd Chumming handles it:** swapping in a pre-filled clip, speed\n> loader or belt **loses the rounds left in the old one**; loading loose rounds\n> by hand never loses a round (unfired rounds of another type go back into\n> stock). A reload fits guns by loading mechanism, not by the individual gun,\n> so the \"don't swap between guns\" part of spare clips is left to the table.\n{: .house }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "House-rule callout ({: .house}) describing how the system resolves what the book leaves silent (rounds left in a removed clip) and acknowledging a deliberate simplification (reloads fit by mechanism, not by individual gun), not a book rule."
     },
     {
       "id": "rules/reloading.md#36",
@@ -20479,7 +20496,7 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 155,
+          "line": 201,
           "snippet": "const complex = taken > 0 ? Math.ceil(taken / each) : 0;"
         }
       ]
@@ -20557,12 +20574,12 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 154,
-          "snippet": "const each    = mech === 'b' ? 2 : Math.max(1, whole(quickness));"
+          "line": 200,
+          "snippet": "const each    = mech === 'b' ? 2 : mech === 'belt' ? q * 2 : q;"
         },
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 150,
+          "line": 193,
           "snippet": "const what = mech === 'cy' ? 'use a speed loader' : mech === 'belt' ? 'insert a belt' : 'load it';"
         }
       ]
@@ -20588,12 +20605,12 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 154,
-          "snippet": "const each    = mech === 'b' ? 2 : Math.max(1, whole(quickness));"
+          "line": 200,
+          "snippet": "const each    = mech === 'b' ? 2 : mech === 'belt' ? q * 2 : q;"
         },
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 150,
+          "line": 193,
           "snippet": "const what = mech === 'cy' ? 'use a speed loader' : mech === 'belt' ? 'insert a belt' : 'load it';"
         }
       ]
@@ -20619,12 +20636,12 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 154,
-          "snippet": "const each    = mech === 'b' ? 2 : Math.max(1, whole(quickness));"
+          "line": 200,
+          "snippet": "const each    = mech === 'b' ? 2 : mech === 'belt' ? q * 2 : q;"
         },
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 150,
+          "line": 193,
           "snippet": "const what = mech === 'cy' ? 'use a speed loader' : mech === 'belt' ? 'insert a belt' : 'load it';"
         }
       ]
@@ -20650,7 +20667,7 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 150,
+          "line": 193,
           "snippet": "const what = mech === 'cy' ? 'use a speed loader' : mech === 'belt' ? 'insert a belt' : 'load it';"
         }
       ]
@@ -20676,7 +20693,7 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 150,
+          "line": 193,
           "snippet": "const what = mech === 'cy' ? 'use a speed loader' : mech === 'belt' ? 'insert a belt' : 'load it';"
         }
       ]
@@ -20690,7 +20707,7 @@
       ],
       "hash": "c525011ec3",
       "text": "- Loading rounds into a belt is a Complex Action per **(Quickness × 2)**\n  rounds.",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -20702,16 +20719,11 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 154,
-          "snippet": "const each    = mech === 'b' ? 2 : Math.max(1, whole(quickness));"
-        },
-        {
-          "file": "scripts/data/ammo-stock.mjs",
-          "line": 15,
-          "snippet": "* | Belt Feed (belt) | Complex | insert belt — or insert (Quickness) rounds |"
+          "line": 200,
+          "snippet": "const each    = mech === 'b' ? 2 : mech === 'belt' ? q * 2 : q;"
         }
       ],
-      "note": "The book's last row is 'Insert (Quickness × 2) rounds into belt' (the trailing '× 2) rounds into belt' prints in the facing column, so the text layer splits it). The code loads a belt's loose rounds at the same rate as everything else — Quickness rounds per Complex Action (`each = Math.max(1, whole(quickness))` for any mechanism but a break action) — and its own table comment says 'insert (Quickness) rounds'. A belt therefore takes twice the actions the book gives."
+      "note": "Fixed for 0.6.1 (TODO 173), same as #22: reloadActions now uses q * 2 for a belt."
     },
     {
       "id": "rules/reloading.md#45",
@@ -20761,7 +20773,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 2155,
+          "line": 2167,
           "snippet": "if (/^(arrow|bolt)$/.test(gunMech)) LG?.charge(actor, 'readyWeapon', this.name);"
         }
       ]
@@ -20793,7 +20805,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 2155,
+          "line": 2167,
           "snippet": "if (/^(arrow|bolt)$/.test(gunMech)) LG?.charge(actor, 'readyWeapon', this.name);"
         }
       ]
@@ -20900,7 +20912,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 2156,
+          "line": 2168,
           "snippet": "else if (cost.simple >= 2) { LG?.charge(actor, 'removeClip', this.name).then(() => LG?.charge(actor, 'insertClip', this.name)); }"
         }
       ],
@@ -20933,7 +20945,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 2156,
+          "line": 2168,
           "snippet": "else if (cost.simple >= 2) { LG?.charge(actor, 'removeClip', this.name).then(() => LG?.charge(actor, 'insertClip', this.name)); }"
         }
       ],
@@ -20960,7 +20972,7 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 155,
+          "line": 201,
           "snippet": "const complex = taken > 0 ? Math.ceil(taken / each) : 0;"
         }
       ]
@@ -20986,7 +20998,7 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 155,
+          "line": 201,
           "snippet": "const complex = taken > 0 ? Math.ceil(taken / each) : 0;"
         }
       ]
@@ -21012,7 +21024,7 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 155,
+          "line": 201,
           "snippet": "const complex = taken > 0 ? Math.ceil(taken / each) : 0;"
         }
       ]
@@ -21050,8 +21062,8 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 128,
-          "snippet": "fits(sys, gunMech) {"
+          "line": 144,
+          "snippet": "fits(sys, gunMech, gunClass = null) {"
         }
       ]
     },
@@ -21082,7 +21094,7 @@
       "code": [
         {
           "file": "scripts/data/ammo-stock.mjs",
-          "line": 134,
+          "line": 151,
           "snippet": "return AmmoStock.unit(sys) === 'rounds' && !nocked(mech) && !nocked(gun);"
         }
       ],
