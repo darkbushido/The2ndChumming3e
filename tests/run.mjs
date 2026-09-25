@@ -69,8 +69,14 @@ let failedSuites = 0;
 // look KILLED - mutate.mjs's `broken` branch could never fire, so a mutant that never ran at
 // all was reported as caught. Found 2026-08-20 by a mutant with the wrong field names.
 let harnessError = false;
-for (const file of suites) {
-  console.log(`\n${file.replace('.test.mjs', '')}`);
+const started = Date.now();
+for (const [i, file] of suites.entries()) {
+  // Progress: [n/N], a bar and the elapsed time, printed BEFORE the suite runs so a slow or
+  // stuck suite is the last name on screen.
+  const filled = Math.round(((i) / suites.length) * 20);
+  const bar    = '█'.repeat(filled) + '░'.repeat(20 - filled);
+  const secs   = Math.round((Date.now() - started) / 1000);
+  console.log(`\n[${String(i + 1).padStart(String(suites.length).length)}/${suites.length}] ${bar} ${secs}s  ${file.replace('.test.mjs', '')}`);
   const res = spawnSync(process.execPath, [fileURLToPath(import.meta.url)], {
     stdio: 'inherit',
     env: { ...process.env, SR3E_SUITE: join(here, file) },
@@ -79,5 +85,5 @@ for (const file of suites) {
   if (res.status !== 0) failedSuites++;
 }
 
-console.log(`\n${suites.length - failedSuites}/${suites.length} suites passed`);
+console.log(`\n${suites.length - failedSuites}/${suites.length} suites passed in ${Math.round((Date.now() - started) / 1000)}s`);
 process.exit(harnessError ? 2 : failedSuites ? 1 : 0);

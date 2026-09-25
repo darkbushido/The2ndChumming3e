@@ -21,7 +21,7 @@
  * ⚠ **It changes nothing.** No writes, no commits, no tags, no pushes — the maintainer publishes.
  * `--version` only *compares*; `tools/bump-version.mjs` is the thing that writes.
  */
-import { execFileSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -36,24 +36,56 @@ const WANT_E2E = has('--e2e');
 const VERSION = valueOf('--version');
 
 const results = [];
-const record = (name, ok, detail = '', hint = '') => { results.push({ name, ok, detail, hint }); return ok; };
+const record = (name, ok, detail = '', hint = '') => {
+  results.push({ name, ok, detail, hint });
+  end(ok);
+  return ok;
+};
 
-/** Run a command, capturing output. Never throws — a failure is a result, not a crash. */
+/* Progress — so a long gate is visibly working, not frozen. `begin` announces a gate and a
+   heartbeat re-prints the elapsed time every 10 s until `record` closes it. Progress goes to
+   stderr-free stdout lines only; the verdict block at the end is unchanged. */
+let gate = null, beat = null, gateNo = 0;
+function begin(label) {
+  gate = { label, t: Date.now() };
+  gateNo++;
+  console.log(`▶ [${gateNo}] ${label} …`);
+  clearInterval(beat);
+  beat = setInterval(() => {
+    console.log(`    … ${label} still running (${Math.round((Date.now() - gate.t) / 1000)}s)`);
+  }, 10_000);
+  beat.unref();
+}
+function end(ok) {
+  clearInterval(beat);
+  if (!gate) return;
+  console.log(`  ${ok ? '✓' : '✗'} ${gate.label} — ${Math.round((Date.now() - gate.t) / 1000)}s`);
+  gate = null;
+}
+
+/** Run a command, capturing output. Never throws — a failure is a result, not a crash.
+ *  Async (spawn, not execFileSync) so the heartbeat timer can fire while a gate runs. */
 function run(cmd, cmdArgs, opts = {}) {
   const { timeout = 15 * 60_000 } = opts;
-  try {
-    const out = execFileSync(cmd, cmdArgs, {
-      cwd: opts.cwd ?? ROOT, encoding: 'utf8', timeout, stdio: ['ignore', 'pipe', 'pipe'],
-      // ⚠ `shell` only for a real shell script (bundle). Node 24 on Windows refuses to execFile a
-      // `.cmd` without it (EINVAL), and passing `shell: true` concatenates arguments unescaped
-      // (DEP0190) — so everything else is invoked as node against a JS entry point instead, which
-      // needs neither. That is also one fewer process than going through `npm run`.
-      shell: !!opts.shell,
+  return new Promise(resolve => {
+    let out = '', timedOut = false;
+    // ⚠ `shell` only for a real shell script (bundle). Node 24 on Windows refuses to spawn a
+    // `.cmd` without it (EINVAL), and passing `shell: true` concatenates arguments unescaped
+    // (DEP0190) — so everything else is invoked as node against a JS entry point instead, which
+    // needs neither. That is also one fewer process than going through `npm run`.
+    const child = spawn(cmd, cmdArgs, {
+      cwd: opts.cwd ?? ROOT, stdio: ['ignore', 'pipe', 'pipe'], shell: !!opts.shell,
     });
-    return { ok: true, out };
-  } catch (err) {
-    return { ok: false, out: `${err.stdout ?? ''}${err.stderr ?? ''}` || String(err.message ?? err) };
-  }
+    const timer = setTimeout(() => { timedOut = true; child.kill(); }, timeout);
+    child.stdout.on('data', d => { out += d; });
+    child.stderr.on('data', d => { out += d; });
+    child.on('error', err => { clearTimeout(timer); resolve({ ok: false, out: out || String(err.message ?? err) }); });
+    child.on('close', code => {
+      clearTimeout(timer);
+      resolve({ ok: code === 0 && !timedOut, out: timedOut ? `${out}
+timed out after ${timeout / 1000}s` : out });
+    });
+  });
 }
 
 const node = (...a) => run('node', a);
@@ -66,21 +98,24 @@ const tail = (s, n = 6) => String(s).split(/\r?\n/).filter(l => l.trim()).slice(
    ⚠ `node --check` is useless on this codebase (see CLAUDE.md) — ESLint is the only
    thing that catches a broken string in a sheet, because sheets cannot be imported. */
 {
-  const r = bin('eslint/bin/eslint.js', 'scripts', 'tests', 'tools');
+  begin('eslint');
+  const r = await bin('eslint/bin/eslint.js', 'scripts', 'tests', 'tools');
   record('eslint', r.ok, r.ok ? 'scripts, tests, tools parse and pass'
     : tail(r.out, 12), 'npm run lint:fix, or fix by hand.');
 }
 
 /* ── 2. The unit and source-level suites ─────────────────────────────────────── */
 {
-  const r = node('tests/run.mjs');
+  begin('unit + source suites');
+  const r = await node('tests/run.mjs');
   const m = r.out.match(/(\d+)\/(\d+) suites passed/);
   record('unit + source suites', r.ok, m ? m[0] : tail(r.out, 12), 'node tests/run.mjs');
 }
 
 /* ── 3. Mutants — every one must be killed ───────────────────────────────────── */
 if (!FAST) {
-  const r = node('tests/mutate.mjs');
+  begin('mutants (slow — every rule is broken on purpose)');
+  const r = await node('tests/mutate.mjs');
   const m = r.out.match(/(\d+)\/(\d+) mutants killed/);
   record('mutants', r.ok, m ? m[0] : tail(r.out, 12),
     'A surviving mutant means a rule has no test. node tests/mutate.mjs names it.');
@@ -88,26 +123,30 @@ if (!FAST) {
 
 /* ── 4. The work list ────────────────────────────────────────────────────────── */
 {
-  const r = node('tools/todo-archive.mjs', '--check');
+  begin('TODO.md');
+  const r = await node('tools/todo-archive.mjs', '--check');
   record('TODO.md', r.ok, r.ok ? 'numbers unique, no ✅ left open, table current' : tail(r.out, 10),
     'npm run todo:archive rewrites it — never edit the Contents table by hand.');
 }
 
 /* ── 5. Packs: source of truth, integrity, and no churn ──────────────────────── */
 {
-  const r = node('tools/packs.mjs', 'check');
+  begin('packs match packs-src');
+  const r = await node('tools/packs.mjs', 'check');
   record('packs match packs-src', r.ok, r.ok ? 'every pack rebuilds from source' : tail(r.out, 10),
     'npm run packs:build (then --install), or npm run packs:extract if a tool wrote a pack.');
 }
 {
-  const r = node('tools/check-packs.mjs', '--repo');
+  begin('pack integrity');
+  const r = await node('tools/check-packs.mjs', '--repo');
   record('pack integrity', r.ok, r.ok ? 'no null _ids, key/_id disagreement or duplicates' : tail(r.out, 10),
     'npm run packs:check:repo lists the faults. Foundry must be CLOSED even to read.');
 }
 
 /* ── 6. The branch manifest ──────────────────────────────────────────────────── */
 {
-  const r = node('tools/manifest-branch.mjs', '--check');
+  begin('manifest URLs');
+  const r = await node('tools/manifest-branch.mjs', '--check');
   record('manifest URLs', r.ok, r.ok ? 'url/manifest/download name this branch' : tail(r.out, 8),
     'npm run manifest:branch, then commit it. ⚠ Never commit RELEASE urls.');
 }
@@ -117,7 +156,8 @@ if (!FAST) {
   const guides = path.join(ROOT, 'guides');
   if (!existsSync(guides)) record('guides', true, 'no guides/ in this checkout — skipped');
   else {
-    const build = run('bundle', ['exec', 'jekyll', 'build'], { timeout: 10 * 60_000, shell: true, cwd: guides });
+    begin('guides build (jekyll)');
+    const build = await run('bundle', ['exec', 'jekyll', 'build'], { timeout: 10 * 60_000, shell: true, cwd: guides });
     if (!build.ok) {
       record('guides build', false, tail(build.out, 12),
         'cd guides && bundle install, then bundle exec jekyll build.');
@@ -125,7 +165,8 @@ if (!FAST) {
       record('guides build', true, 'jekyll build succeeded');
       // ⚠ From Git Bash the baseurl must not be path-converted — pass it via the env the
       // checker already understands rather than as a bare "/..." argument.
-      const lc = run('node', ['tools/linkcheck.mjs', '_site'], { timeout: 5 * 60_000, cwd: guides });
+      begin('guides links');
+      const lc = await run('node', ['tools/linkcheck.mjs', '_site'], { timeout: 5 * 60_000, cwd: guides });
       record('guides links', lc.ok, lc.ok ? tail(lc.out, 2) : tail(lc.out, 12),
         'Every internal href and #anchor must resolve. The output names each bad link.');
     }
@@ -134,6 +175,7 @@ if (!FAST) {
 
 /* ── 8. Playwright — needs a RUNNING Foundry with the test world loaded ──────── */
 if (WANT_E2E && !FAST) {
+  begin('e2e (Playwright — several minutes)');
   const up = await fetch('http://localhost:30000', { method: 'GET' })
     .then(r => r.ok || r.status < 500).catch(() => false);
   if (!up) {
@@ -142,7 +184,7 @@ if (WANT_E2E && !FAST) {
       + '⚠ Release the seats first: the suite joins as Player2, Player3 and mcp-api, so close '
       + 'any Browser-pane session holding one of them.');
   } else {
-    const r = run('node', [path.join(ROOT, 'node_modules/@playwright/test/cli.js'), 'test'],
+    const r = await run('node', [path.join(ROOT, 'node_modules/@playwright/test/cli.js'), 'test'],
       { timeout: 30 * 60_000 });
     const m = r.out.match(/(\d+) passed[^\n]*/);
     record('e2e (Playwright)', r.ok, m ? m[0] : tail(r.out, 14),
@@ -161,7 +203,8 @@ if (VERSION) {
     `system.json ${manifest.version}, asked for ${bare}`,
     `node tools/bump-version.mjs ${bare} — the release workflow REFUSES a mismatched tag.`);
 
-  const r = run('node', ['tools/release.mjs', tag, '--check']);
+  begin('release:check');
+  const r = await run('node', ['tools/release.mjs', tag, '--check']);
   record('release:check', r.ok, r.ok ? 'every path the manifest loads would ship' : tail(r.out, 10),
     'A new top-level folder the system loads must be added to RELEASE_FILES in tools/release.mjs.');
 
@@ -206,7 +249,8 @@ if (VERSION) {
     + 'against guides/, with the PDFs as the authority, every difference quoted with its printed '
     + 'page and taken to the maintainer. Write the record only after actually doing it.');
 
-  const dirty = run('git', ['status', '--porcelain']);
+  begin('working tree clean');
+  const dirty = await run('git', ['status', '--porcelain']);
   record('working tree clean', dirty.ok && !dirty.out.trim(),
     dirty.out.trim() ? tail(dirty.out, 8) : 'nothing uncommitted',
     'Commit or revert before tagging, so the tag names exactly what was verified.');
