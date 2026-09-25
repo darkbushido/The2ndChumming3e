@@ -15196,7 +15196,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 2278,
+          "line": 2292,
           "snippet": "static async _placeBlastTemplate(actor, radius) {"
         }
       ]
@@ -15273,7 +15273,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 2278,
+          "line": 2292,
           "snippet": "static async _placeBlastTemplate(actor, radius) {"
         }
       ]
@@ -15299,7 +15299,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 2278,
+          "line": 2292,
           "snippet": "static async _placeBlastTemplate(actor, radius) {"
         }
       ]
@@ -15331,12 +15331,12 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 3578,
+          "line": 3592,
           "snippet": "'GR':     { skill: 'Throwing Weapons', attribute: 'strength' },"
         },
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 3561,
+          "line": 3575,
           "snippet": "'GrLn':   { skill: 'Launch Weapons', attribute: 'intelligence' },"
         }
       ]
@@ -15368,7 +15368,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 2383,
+          "line": 2397,
           "snippet": "const rangeTNarr = SR3E.grenadeRangeTN ?? [0, 1, 4, 5];"
         }
       ]
@@ -15536,7 +15536,23 @@
       ],
       "hash": "189188e071",
       "text": "## 2. Scatter  *(SR3 p.118–119)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 120,
+          "printedPage": 118,
+          "quote": "Determine Scatter Next, the gamemaster must determine the gren-"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 3100,
+          "snippet": "if (state.isAoE && state.aoeCenter) {"
+        }
+      ],
+      "note": "Section heading; the scatter rule itself is checked unit-by-unit at #17-20."
     },
     {
       "id": "rules/grenades.md#17",
@@ -15657,7 +15673,23 @@
       ],
       "hash": "f85e26a39a",
       "text": "## 3. When it goes off  *(SR3 p.118)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 120,
+          "printedPage": 118,
+          "quote": "to determine when the grenade will detonate. All grenades go"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 3100,
+          "snippet": "if (state.isAoE && state.aoeCenter) {"
+        }
+      ],
+      "note": "Section heading; the detonation-timing rule itself (delayed to the thrower's next Combat Phase / Initiative Pass / Combat Turn) is checked at #22-24, all not-implemented — resolution is immediate on the throw roll's final wave, not delayed."
     },
     {
       "id": "rules/grenades.md#22",
@@ -16047,7 +16079,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 4345,
+          "line": 4388,
           "snippet": "static computeBarrierEffect(power, currentBR, attackType = 'blast') {"
         }
       ]
@@ -16079,12 +16111,12 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 4346,
+          "line": 4389,
           "snippet": "const effectiveBR = attackType === 'blast' ? currentBR * 2 : currentBR;"
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 4357,
+          "line": 4400,
           "snippet": "const remainPower   = attackType === 'blast' ? power - currentBR : null;"
         }
       ]
@@ -16907,7 +16939,7 @@
       ],
       "hash": "52295a3da2",
       "text": "- **Physical** past 10 boxes: you can survive overflow up to your **Body**\n  rating. Until someone stabilizes you, you take **another box every (Body)\n  Combat Turns**. Past Body in overflow, you're dead.",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -16918,9 +16950,14 @@
       ],
       "code": [
         {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7923,
+          "snippet": "static deadFromOverflow(overflow, body) {"
+        },
+        {
           "file": "scripts/sr3e.js",
           "line": 1988,
-          "snippet": "const dead     = physFull && (w.overflow?.value ?? 0) >= body;"
+          "snippet": "const dead     = physFull && game.sr3e.SR3EActor.deadFromOverflow(w.overflow?.value, body);"
         },
         {
           "file": "scripts/SR3EHealing.js",
@@ -16928,7 +16965,7 @@
           "snippet": "losing a box every ${s.bodyNatural || 1} Combat Turns until stabilized (p.125)"
         }
       ],
-      "note": "The extra box every (Body) Combat Turns is shown on the healing card (SR3EHealing.js:466) but not applied. And, as combat.md #124 records, the code marks a character dead at overflow >= Body (sr3e.js:1988) whereas the book, and this guide line, kill only when overflow EXCEEDS Body ('Past Body in overflow, you're dead')."
+      "note": "Fixed for 0.6.1 (TODO 166, same finding as combat.md #124): deadFromOverflow now requires overflow strictly greater than Body. The extra box every (Body) Combat Turns is stated on the healing card but not auto-applied, consistent with the system never applying damage automatically."
     },
     {
       "id": "rules/healing.md#30",
