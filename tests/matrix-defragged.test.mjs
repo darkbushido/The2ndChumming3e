@@ -21,7 +21,7 @@ const read = rel => readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
 
 export async function run(t) {
   const actor = read('scripts/documents/SR3EActor.js');
-  const claude = read('CLAUDE.md');
+  const claude = read('.claude/rules/matrix.md');
 
   /* ── Cybercombat, MDF p.26 ────────────────────────────────────────────────── */
   // "Roll the attacking icon's base Cybercombat skill dice … against a base target number 4".
@@ -30,8 +30,8 @@ export async function run(t) {
   t.ok('…and the decker\'s corner starts from 4 too', /tn: 4 \+ mcmPenalty \+ defTnMod/.test(actor));
   t.ok('the loser resists with MPCP / Rating, with the firewall as armour',
     /firewallRating: loserFirewall/.test(actor) && /deckerMPCP:     loserSoakPool/.test(actor));
-  t.ok('CLAUDE.md quotes the book rather than the old System-Rating claim',
-    /against a base target number 4, modified as\n   appropriate/.test(claude) && !/vs TN = target's System Rating/.test(claude));
+  t.ok('the Matrix rules quote the book rather than the old System-Rating claim',
+    /against a base target number 4, modified as\s+appropriate/.test(claude) && !/vs TN = target's System Rating/.test(claude));
 
   /* ── Dumpshock is SERIOUS, MDF p.27 ──────────────────────────────────────── */
   // "The user must immediately resist Serious Biofeedback Damage. The attack's Power is equal to the
@@ -61,9 +61,9 @@ export async function run(t) {
       ['ivory', 'blue', 'green', 'orange', 'red', 'black', 'ultraviolet'].map(n => byName[n]),
       [0, 1, 2, 3, 4, 5, 6]);
   } else {
-    t.ok('the tier table lives in CLAUDE.md and tests/tables.test.mjs (no config registry to read)', true);
+    t.ok('the tier table lives in .claude/rules/matrix.md and tests/tables.test.mjs (no config registry to read)', true);
   }
-  t.ok('CLAUDE.md carries the book\'s four Sys/Sec rows, including the circumstantial one',
+  t.ok('the Matrix rules carry the book\'s four Sys/Sec rows, including the circumstantial one',
     /Circumstantial — Matrix noise, jamming, wound modifiers \| ±1-4/.test(claude));
 
   /* ── What the audit could not settle ─────────────────────────────────────── */

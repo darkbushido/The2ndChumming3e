@@ -1,38 +1,31 @@
 # CLAUDE.md — Shadowrun 3rd Edition Foundry VTT System
 
-This file gives Claude Code the context it needs to work on this project effectively.
-Read it fully before touching any code.
+Read this fully before touching code. **Subsystem rules live in `.claude/rules/*.md`** (index below) and load
+automatically when you touch their files — but `SR3EActor.js`, `SR3EItem.js`, `sr3e.js`, `config.js` and the
+actor sheet touch everything, so **read the matching rules file yourself before changing a subsystem there.** Older citations of
+"CLAUDE.md, *Some section*" (code comments, TODOs, audits) now mean that heading in `.claude/rules/`.
 
 ---
 
 ## What this is
 
-An unofficial Foundry VTT **v14** system for **Shadowrun 3rd Edition**.
-`system.json` declares `compatibility.minimum` / `verified` = **"14"**; developed against build
-**14.365.0**. (This file previously said v13 throughout — corrected 2026-08-05.)
-Built with **ApplicationV2** — zero Handlebars template files.
-All sheet HTML is rendered directly from JavaScript using tagged template literals.
-
----
+An unofficial Foundry VTT **v14** system for **Shadowrun 3rd Edition** (`system.json` compatibility "14";
+developed against build **14.365.0**). Built with **ApplicationV2** — zero Handlebars; all sheet HTML is
+JavaScript template literals.
 
 ## Testing — read `TESTING.md` before saying a check "needs the maintainer"
 
-**Every change gets tests** (the maintainer's standing rule): a unit test for a rule, a
-source-level check for sheet/dialog code that cannot be imported without Foundry, a mutant in
-`tests/mutants.mjs` for a rules bug that shipped, and a step in the branch's Foundry checklist
-for anything only a live client can show.
+**Every change gets tests** (the maintainer's standing rule): a unit test for a rule, a source-level check for
+sheet/dialog code that can't be imported without Foundry, a mutant in `tests/mutants.mjs` for a rules bug that
+shipped, and a step in the branch's Foundry checklist for anything only a live client can show.
 
-**The agent CAN test in a live Foundry.** The in-app Browser pane reaches the maintainer's
-Foundry at `http://localhost:30000`; the world `test-shadowrun` is a **test world** with
-passwordless users (join as **mcp-api** or **Player2/3** — the maintainer holds Gamemaster), and
-`javascript_tool` drives `game.sr3e.*`. Full steps — launching the world, joining, driving
-dialogs, stale-GM caveats, what still needs a human — are in **`TESTING.md`**, *Agent-driven live
-checks*. This was lost once to a context compaction; that section exists so it is not lost again.
+**The agent CAN test in a live Foundry.** The in-app Browser pane reaches `http://localhost:30000`; world
+`test-shadowrun` is a **test world** with passwordless users (join as **mcp-api** or **Player2/3** — the
+maintainer holds Gamemaster), and `javascript_tool` drives `game.sr3e.*`. Full steps are in **`TESTING.md`**,
+*Agent-driven live checks*.
 
-**Simulated combat — a GM and two players at once — is `npx playwright test`** (one Chromium
-context each: Player2 attacks, Player3 defends, mcp-api is the GM). Release those seats first
-(the Browser pane often holds mcp-api). TESTING.md → *Simulated combat* has the whole procedure
-and how to write a spec for an exchange the suite does not cover.
+**Simulated combat — a GM and two players — is `npx playwright test`** (Player2 attacks, Player3 defends,
+mcp-api is GM). Release those seats first. TESTING.md → *Simulated combat*.
 
 ```bash
 node tests/run.mjs      # unit + source-level suites (no Foundry)
@@ -40,32 +33,20 @@ node tests/mutate.mjs   # every mutant must be killed
 npm run test:e2e        # Playwright, two real clients (Foundry running)
 ```
 
-## Versions and branches — the maintainer's rules (2026-09-13)
+## Versions and branches — the maintainer's rules
 
-- **`major.minor.patch`.** A **bug fix** bumps the **patch** (0.5.1 → 0.5.2). A **new feature** bumps
-  the **minor** (0.5.x → 0.6.0). **1.0.0** is reserved for "feature complete" — the maintainer calls it.
-- **New features are built on a branch; only bug fixes are made on `main`.** A reported defect
-  ("it won't let player A heal player B") is a fix; a request ("a larger info box would be nice")
-  is a feature, even when it arrives in the same message — split them.
-- A migration still needs `system.json` bumped in the same commit (see *World migrations*), so
-  number it by the release it will ship in under these rules.
+- **`major.minor.patch`.** Bug fix → **patch**; new feature → **minor**; **1.0.0** ("feature complete") is the maintainer's call.
+- **Features on a branch; only bug fixes on `main`.** A reported defect is a fix; a request is a feature, even
+  in the same message — split them.
+- A migration needs `system.json` bumped in the same commit (see *World migrations*).
 - Never `git push` unless asked — the maintainer publishes.
-- **Every version bump, before the release: check the code's rules against *sr3-guides***
-  (**`guides/`** in this repo, the maintainer's rules reference site — moved in by TODO 127; the old
-  `sr3-guides` repo takes no more commits) — TODO 121.
-  ⚠ **The PDFs are the source, not the guide and not the code.** Every difference is verified
-  against the PDF (quoted, with its printed page) and/or brought to the maintainer — never settled
-  by picking a side. A verified code divergence becomes a bug fix before the release goes out. The
-  first run waits until the 0.6 branches are merged to `main`.
-- **Going forward only.** The commits already on `main` for 0.5.2 (healing cards, cross-player
-  healing with its time boxes, gear ratings) predate these rules and ship as they are — do not
-  split or renumber them.
+- **Every version bump: check the code's rules against `guides/`** (TODO 121). ⚠ **The PDFs are the source**,
+  not the guide and not the code. Every difference is verified against the PDF (quoted, printed page) and/or
+  taken to the maintainer — never settled by picking a side. A verified code divergence is fixed before release.
 
 ## Verifying a build — `npm run preflight`
 
-**One command, one verdict, written to be run by a cheap agent** (and by the `verify-build` skill,
-`.claude/skills/verify-build/SKILL.md`). It exists because ad-hoc verification is what cost the 0.6
-window: every mechanical gate in one place, each printing what to do next in plain words.
+One command, one verdict (also the `verify-build` skill, `.claude/skills/verify-build/SKILL.md`).
 
 ```bash
 npm run preflight                          # eslint, suites, mutants, TODO, packs, manifest, guides
@@ -74,149 +55,89 @@ npm run preflight -- --e2e                 # …and Playwright — Foundry must 
 npm run preflight -- --version v0.6.0 --e2e   # …and version, release:check, notes, rules record, clean tree
 ```
 
-⚠ **It changes NOTHING** — no writes, no commits, no tags, no pushes. `tests/preflight.test.mjs`
-asserts that: the only fs imports are `existsSync`/`readFileSync`, and the only `git` it runs is
-`status --porcelain`. The two writers are separate and explicit:
+⚠ **It changes NOTHING** (`tests/preflight.test.mjs` asserts it only reads files and runs `git status
+--porcelain`). The writers are separate:
 
 ```bash
-npm run version:bump -- 0.6.0     # or: patch (a bug fix) / minor (a feature)
+npm run version:bump -- 0.6.0     # or: patch / minor (no `major` keyword, deliberately)
 npm run release:notes -- 0.6.0 --write
 ```
 
-⚠ **`bump-version.mjs` rewrites ONE LINE**, for the same reason `manifest-branch.mjs` does — a
-`JSON.parse`/`stringify` round-trip reformats ~1900 lines of pack declarations into one
-unreviewable diff. ⚠ **There is deliberately no `major` keyword**: 1.0.0 is "feature complete" and
-the maintainer calls it.
-
-⚠ **`release-notes.mjs` produces a DRAFT from commit subjects, and that is the least useful part.**
-Subjects are written for whoever reads the diff; notes are for a GM. Anything that changes how a
-rule resolves is stated plainly **with its book and printed page**, because a table mid-campaign
-needs to know their numbers moved. The preflight gate proves the section exists, never that it is
-any good.
+- ⚠ `bump-version.mjs` rewrites **one line** — never round-trip `system.json` through `JSON.parse`/`stringify`
+  (it reformats ~1900 lines of pack declarations).
+- ⚠ `release-notes.mjs` produces a **draft** from commit subjects. Notes are for a GM: any change to how a rule
+  resolves is stated plainly **with its book and printed page**.
+- ⚠ `npm run lint` must stay green. Fix lint at the source (scoped disables with a reason), never repo-wide.
 
 ### ⚠ The one gate that must never be faked — TODO 121
-
-`--version` checks that **`audit/rules-check-<version>.md` exists**. That file is supposed to mean a
-person compared the code's rules against `guides/` **with the PDFs as the authority**, quoted every
-difference with its printed page, and took it to the maintainer instead of deciding it.
-
-**The script cannot do that, and neither can a cheap agent.** If the record is missing, the answer
-is to say so and stop — never to write the file so the gate goes green. A record claiming a check
-that never happened is worse than a missing one, because the next person trusts it. Both
-`tools/preflight.mjs` and the skill say this outright, and `tests/preflight.test.mjs` asserts they
-still do.
-
-⚠ **`npm run lint` must stay green, or the first gate trains people to ignore the rest.** It was red
-on `main` with 28 pre-existing errors when the preflight was built: the test suites legitimately use
-the Foundry stub's `game` (18), and `generate-chrome-threat.js`'s threat tables are deliberately
-1-indexed with a leading elision (10). Both were fixed where the fault was — the eslint config now
-grants `tests/**` the Foundry globals, and the two sparse tables carry a scoped disable with its
-reason — not by turning a rule off repo-wide.
+`--version` checks that **`audit/rules-check-<version>.md` exists** — meaning a person compared the rules against
+`guides/` with the PDFs as authority and took every difference to the maintainer. **If it's missing, say so and
+stop — never write the file to make the gate green.** Both `tools/preflight.mjs` and the skill say this, and
+`tests/preflight.test.mjs` asserts they still do.
 
 ## Releases — a tag builds the zip and the guides  · TODO 127
 
 ```bash
 npm run release:check -- v0.6.0   # tag matches system.json, every loaded path ships — changes nothing
-npm run release:stage -- v0.6.0   # stage into dist/ to inspect what would ship (dist/ is ignored)
+npm run release:stage -- v0.6.0   # stage into dist/ (ignored) to inspect
 git tag v0.6.0 && git push origin v0.6.0   # the maintainer's — the release itself
 ```
 
 A pushed `v*.*.*` tag runs `.github/workflows/release.yml`:
-- **The system** — `tools/release.mjs` stages an **include list** (`RELEASE_FILES`: `system.json scripts
-  styles lang packs LICENSE README.md`) and stamps the copy's URLs (`tools/lib/manifest-urls.mjs`):
-  `download` pinned to the tag, `manifest` at **`releases/latest`**, so an install still sees updates.
-  **A specific version** is installed by pasting `…/releases/download/v0.6.0/system.json` into Foundry.
-  The Release carries `system.json`, `system.zip`, `guides.zip`.
-- **The guides** (`guides/`, Jekyll) are built twice onto the **gh-pages** branch — `v0.6.0/` (frozen:
-  how that version handles the rules) and `latest/` — and `tools/guides-versions.mjs` rewrites the
-  `versions/` index and the root redirect. The header shows the version (`site.sr3e_version`).
-- ⚠ **It refuses a tag that does not match `system.json`'s version** — bump first, then tag.
-- ⚠ **The include list is deliberate**: a new top-level folder the system loads must be added to
-  `RELEASE_FILES`. `tests/release.test.mjs` fails if system.json names a path it would not ship.
-- ⚠ **The committed system.json still names a BRANCH** (`manifest:branch`, below). Only the released
-  copy names the release; do not commit release URLs.
-- One-time: Settings → Pages → Source *Deploy from a branch*, `gh-pages` — after the first tag creates it.
-- Guide pages: edit in `guides/` (its own CLAUDE.md has the page rules); preview with
-  `bundle exec jekyll serve` from `guides/`, then `node tools/linkcheck.mjs` there.
+- **The system** — `tools/release.mjs` stages `RELEASE_FILES` (`system.json scripts styles lang packs LICENSE
+  README.md`) and stamps the copy's URLs (`tools/lib/manifest-urls.mjs`): `download` pinned to the tag,
+  `manifest` at `releases/latest`. A specific version installs from `…/releases/download/v0.6.0/system.json`.
+- **The guides** (`guides/`, Jekyll) build to **gh-pages** as `v0.6.0/` (frozen) and `latest/`;
+  `tools/guides-versions.mjs` rewrites the index and root redirect.
+- ⚠ It **refuses a tag that doesn't match `system.json`** — bump first.
+- ⚠ A new top-level folder the system loads must be added to `RELEASE_FILES` (`tests/release.test.mjs`).
+- ⚠ The committed `system.json` names a **branch** (below); never commit release URLs.
+- Guide pages: edit in `guides/` (its own CLAUDE.md has the rules); preview `bundle exec jekyll serve` there,
+  then `node tools/linkcheck.mjs`.
 
-## TODOs — `TODO.md` is open work only, `TODO-DONE.md` the record (2026-09-15)
+## TODOs — `TODO.md` is open work, `TODO-DONE.md` the record
 
-- **`TODO.md` holds only open items**, grouped by kind of work (`###` headings). Finished items
-  live in **`TODO-DONE.md`**, in number order, with their reasoning intact.
-- **Numbers are permanent** — code, tests, CLAUDE.md and commits cite "TODO 48". Never reuse or
-  renumber; a new item takes the next number and goes under its group in `TODO.md`.
-- **Finishing an item:** put ✅ in its heading with the commit that closed it, then
-  `npm run todo:archive`. That moves it to `TODO-DONE.md`, rewrites links to it (both files and
-  `audit/*.md`) and regenerates `TODO.md`'s Contents table — **never edit that table by hand**.
-  Removing the ✅ and re-running moves an item back. `npm run todo:check` is read-only.
-- **Done means the heading has ✅** — nothing else is consulted. A finished item that leaves a
-  remainder (a "still open" or "noticed, not fixed" note) needs that remainder raised as a new
-  numbered item, or it disappears into the archive.
-- `tests/todo-archive.test.mjs` fails on a ✅ left in `TODO.md`, a missing or duplicated number,
-  a link naming the wrong file, or a file the tool would rewrite. Not GitHub issues and not the
-  in-session task list — those are ephemeral or outside the repo (the maintainer's call).
+- `TODO.md` holds only open items under `###` group headings; finished ones live in `TODO-DONE.md`, in number order.
+- **Numbers are permanent** — cited by code, tests and commits. Never reuse or renumber; new items take the next number.
+- **Finishing:** put ✅ in the heading with the closing commit, then `npm run todo:archive` (moves it, rewrites
+  links, regenerates the Contents table — **never edit that table by hand**). `npm run todo:check` is read-only.
+- Done means ✅ in the heading. A remainder ("still open") must become a new numbered item.
+- `tests/todo-archive.test.mjs` enforces all of this.
 
 ## Branch manifest URLs — `npm run manifest:branch`
 
-The three fields at the bottom of `system.json` (`url` / `manifest` / `download`) name a
-**branch**. Foundry installs from them, so a playtest branch is only installable if its own copy
-points at itself rather than at `main`.
+`system.json`'s `url` / `manifest` / `download` name a **branch**, so a playtest branch must point at itself.
 
 ```bash
-npm run manifest:branch          # stamp to the current branch
+npm run manifest:branch          # stamp to the current branch (once per branch you push out; commit it)
 npm run manifest:check           # exit 1 if stale — changes nothing
 ```
 
-**Run it once when setting up a branch to push out, and commit the change.** After that the branch
-is self-consistent and checkouts are clean.
+`tools/manifest-branch.mjs` rewrites three lines (never the parsed document) and reads the repo slug from the
+existing `url`.
 
-`tools/manifest-branch.mjs` rewrites **three lines**, never the parsed document — round-tripping
-`system.json` through `JSON.parse`/`stringify` would reformat ~1900 lines of pack declarations into
-one unreviewable diff. The repo slug is read back out of the existing `url` rather than hardcoded,
-so a rename or a fork does not keep publishing the old owner's manifest.
-
-### ⚠ Merging a branch into main must NOT drag its URLs along
-
-Handled by **`.githooks/post-merge`**, which re-stamps to the branch you are *on* after any merge.
-
-**A `.gitattributes` merge driver does not work here** — and this is the trap. A custom driver only
-runs when git has to merge the file's *content*, i.e. when **both** sides changed it. If `main`
-never touched `system.json` since the merge base, git resolves trivially by taking the branch's
-version wholesale and never consults the driver. That is the **common** case: the playtest branch
-stamps its URLs, main does not. A merge driver would miss precisely the merge it was installed for.
-
-The hook deliberately **does not commit** — a fast-forward merge creates no new commit, so an
-automatic `--amend` would rewrite a commit that came from the other branch. It leaves the file
-dirty with a loud notice instead.
-
-`.githooks/post-checkout` is **warn-only** by design: stamping there would leave the tree dirty
-after every checkout of a branch that was never set up for distribution.
-
-**Hooks need one-time local setup** — `core.hooksPath` lives in `.git/config`, which is not
-committed, so a fresh clone has no hooks until:
-
-```bash
-npm run setup:hooks
-```
-
-`.gitattributes` pins `.githooks/**` to `eol=lf`; with CRLF, `sh` fails on the carriage return in
-the shebang and the hooks silently do nothing.
+- ⚠ **Merging into main must not drag a branch's URLs along** — `.githooks/post-merge` re-stamps to the current
+  branch after any merge and leaves the file dirty with a notice (it never commits: a fast-forward has no commit to
+  amend). A `.gitattributes` merge driver **doesn't work** here: git only runs it when both sides changed the file.
+- `.githooks/post-checkout` only warns.
+- **Hooks need one-time setup**: `npm run setup:hooks` (`core.hooksPath` is local config). `.gitattributes`
+  pins `.githooks/**` to `eol=lf` — CRLF breaks the shebang silently.
 
 ## Design ethos — read this first
 
-- **Minimal guardrails.** The GM is trusted. Players are adults. The system presents the right information and dice but humans make all narrative decisions.
-- **No automation of outcomes.** Damage is never applied automatically. The system announces what happened and the GM clicks wound boxes manually.
-- **All stats are manually editable.** Edge cases, houserules, and situational modifiers should always be achievable without fighting the system.
-- **No jQuery.** This is Foundry v14 — use native DOM throughout (`querySelector`, `addEventListener`, `querySelectorAll`). Never use `.find()`, `.val()`, `.on()`.
-- **No Handlebars.** All markup lives in `_renderHTML()` as template literals.
+- **Minimal guardrails.** The GM is trusted; players are adults. The system presents information and dice; humans decide.
+- **No automation of outcomes.** Damage is never applied automatically; the system announces and the GM clicks wound boxes.
+- **All stats are manually editable.** Houserules and edge cases must never fight the system.
+- **No jQuery.** Native DOM only (`querySelector`, `addEventListener`). Never `.find()`, `.val()`, `.on()`.
+- **No Handlebars.** Markup lives in `_renderHTML()` as template literals.
+- **Warn, never refuse; offer, never apply** — the pattern every flow below follows.
 
 ---
 
 ## Foundry v14 API patterns — critical knowledge
 
 ### Dialogs
-Always use `DialogV2`, never the old `Dialog`.
-To wait for user input, use `DialogV2.wait()` not `.render(true)` (which doesn't block).
+Always `DialogV2`, never `Dialog`. To wait for input use `DialogV2.wait()`, not `.render(true)` (doesn't block).
 
 ```js
 let result = null;
@@ -225,108 +146,41 @@ await foundry.applications.api.DialogV2.wait({
   content: `<input type="number" id="my-input" value="4"/>`,
   buttons: [
     {
-      label: 'Confirm',
-      action: 'confirm',
-      default: true,
-      callback: (_e, _b, dialog) => {
-        result = parseInt(dialog.element.querySelector('#my-input')?.value);
-      }
+      label: 'Confirm', action: 'confirm', default: true,
+      callback: (_e, _b, dialog) => { result = parseInt(dialog.element.querySelector('#my-input')?.value); }
     },
     { label: 'Cancel', action: 'cancel' },
   ],
+  // Per-dialog DOM wiring — live filters, row clicks, live TN recomputation.
+  render: (_event, dialog) => wireDialog(dialog, dialog.element),
 });
 ```
 
-### Interactive dialogs — live filtering and DOM wiring
+- **Wire interactive dialogs through `wait()`'s `render` option** (`dialog.mjs:420-422` in 14.365.0 adds it as a
+  render listener). **Never `Hooks.on('renderDialogV2', …)`** — it's global, so two dialogs in flight cross-wire.
+  `tests/dialog-wiring.test.mjs` fails on the hook and on a `const wireX` no `render` option calls. Shape:
+  `const wireDialog = (app, html) => { … }`.
+- `wait` defaults `rejectClose: false`: Esc/✕ **resolves**. Hold the result in a variable only Confirm assigns.
+- In filter inputs, `preventDefault()` on Enter so it doesn't trigger the default button.
+- Never inline `oninput=`/`onclick=` with `document.querySelector` — wire through the element.
 
-**Use `DialogV2.wait()`'s `render` option.** It is a per-dialog callback invoked on every
-render — the correct place to wire live filters, row-click selection and live TN recomputation.
-
-> ⚠ **This section previously claimed `DialogV2.wait()` does NOT call its `render` option, and
-> told you to use the `renderDialogV2` hook instead. That was wrong.** Verified against the
-> installed build (`resources/app/client/applications/api/dialog.mjs:405`, Foundry 14.365.0):
-> `wait` destructures `render` and, at `:420-422`, does
-> `if (typeof render === "function") dialog.addEventListener("render", event => render(event, dialog))`.
-> Core's own docs at `:154` say *"you must still use the `render` option to attach listeners"*.
-> **Every site is migrated** (TODO 20, 2026-09-13 — the "~58" was references, the live hook sites
-> numbered 18). `tests/dialog-wiring.test.mjs` fails on any `Hooks.on('renderDialogV2', …)` and
-> on a `const wireX` that no `render` option calls. The shape used throughout:
-> `const wireDialog = (app, html) => { … }` then `render: (_event, dialog) => wireDialog(dialog, dialog.element)`.
-
-```js
-await foundry.applications.api.DialogV2.wait({
-  window:  { title: 'Pick a thing' },
-  content: `...`,
-  buttons: [ /* … */ ],
-
-  // Per-dialog, scoped to THIS dialog instance. No hook, no guard, no teardown.
-  render: (_event, dialog) => {
-    const html        = dialog.element;
-    const filterInput = html.querySelector('#my-filter');
-    const rows        = html.querySelectorAll('.my-row');
-
-    filterInput.addEventListener('input', () => {
-      const q = filterInput.value.toLowerCase();
-      rows.forEach(row => { row.style.display = row.dataset.name.includes(q) ? '' : 'none'; });
-    });
-
-    // Prevent Enter in filter triggering the default button
-    filterInput.addEventListener('keydown', e => { if (e.key === 'Enter') e.preventDefault(); });
-
-    rows.forEach(row => {
-      row.addEventListener('click', () => {
-        rows.forEach(r => r.style.background = '');
-        row.style.background = 'color-mix(in srgb,var(--sr-accent) 20%,transparent)';
-        html.querySelector('#my-hidden').value = row.dataset.value;
-      });
-    });
-
-    filterInput.focus();
-  },
-});
-```
-
-**Why this matters beyond tidiness.** `Hooks.on('renderDialogV2', …)` is global. With two dialogs
-of the same kind in flight, both hooks are registered before either renders, so the first dialog
-gets wired twice — the second time with the *other* dialog's closure variables — and the second
-gets no wiring at all. The symptom is a checkbox that silently stops recomputing. A per-dialog
-`render` callback cannot cross-wire.
-
-`DialogV2.wait` also defaults `rejectClose: false` (`dialog.mjs:405`), so dismissing with Esc or ✕
-**resolves** rather than throwing. Hold your result in a variable that only the Confirm button's
-callback assigns, and both Cancel and dismissal fall through as `null`.
-
-Never use inline `oninput=` / `onclick=` attributes with `document.querySelector` — these
-fail in the ApplicationV2 rendering context. Always wire through the hook's `html` reference.
-
-### Compendium population — how packs are ACTUALLY changed
-
-⚠ **This section previously documented an in-Foundry macro workflow as "the correct pattern".
-No pack in this repo was built that way.** Corrected 2026-09-03.
-
-**What is true today (TODO 12, 2026-09-14):**
+### Compendium packs — how they are ACTUALLY changed
 
 | | |
 |---|---|
-| **`packs-src/<pack>/`** | **The source of truth.** Every shipped document as JSON — one file per item/actor/folder, `{ _key, doc, embedded }`, its exact LevelDB key and value, an actor's items in its file. Readable, diffable, text-mergeable. `tools/lib/pack-source.mjs`. |
-| **`packs/<pack>/`** (LevelDB) | **Build output**, still committed because Foundry installs from the branch zip. `npm run packs:build` compiles `packs-src` → `packs/`, rebuilding only packs whose content changed. |
-| The install | **`npm run packs:install`** — a one-way copy from `packs-src` (Foundry CLOSED). Never link the install to the checkout. |
-| Upstream data | Vendored in `rawdata/SRCG-*` (`rawdata/SRCG-README.md`). `tools/build-default-gear.mjs` and `tools/build-odm-packs.mjs` generate their packs from it; everything else was imported once and is now maintained in `packs-src`. |
-| The old `populate-*.js` macros | **Deleted** (TODO 1, 2026-09-14) — every row they carried already shipped in a pack. `tests/macros.test.mjs` fails if anything names one again. |
+| **`packs-src/<pack>/`** | **The source of truth.** One JSON file per document, `{ _key, doc, embedded }` (exact LevelDB key and value; an actor's items in its file). `tools/lib/pack-source.mjs`. |
+| **`packs/<pack>/`** (LevelDB) | **Build output**, committed because Foundry installs from the branch zip. `npm run packs:build` compiles changed packs. |
+| The install | `npm run packs:install` — one-way copy from `packs-src` (Foundry CLOSED). Never link the install to the checkout. |
+| Upstream data | Vendored `rawdata/SRCG-*` (`rawdata/SRCG-README.md`); `tools/build-default-gear.mjs` and `tools/build-odm-packs.mjs` generate from it. |
 
-**The workflow:**
-- ⚠ **After a merge with a conflict in `packs/`**: merge the JSON in `packs-src/`, then
-  `npm run packs:build` — never hand-pick LevelDB files (the 2026-09-14 merges show why).
-- ⚠ **A tool that writes LevelDB** refreshes `packs-src` itself (`extractPack`) — the builders,
-  `fill-book-pages`, `import-johnson-gear`, `relink-johnson-helmets`. Any OTHER tool that writes a
-  repo pack must be followed by `npm run packs:extract`. `tests/pack-sources.test.mjs` fails on any
-  drift, and also compiles every pack from source to prove the build reproduces it.
-- `npm run packs:src:check` — the same comparison, read-only.
+- ⚠ **Pack merge conflict**: merge the JSON in `packs-src/`, then `npm run packs:build` — never hand-pick LevelDB files.
+- ⚠ Tools that write LevelDB refresh `packs-src` themselves (`extractPack`); any other writer must be followed by
+  `npm run packs:extract`. `tests/pack-sources.test.mjs` fails on drift and proves the build reproduces every
+  pack. `npm run packs:src:check` is the read-only comparison.
+- `tests/macros.test.mjs` fails if anything names a deleted `populate-*.js` macro.
 
-#### Editing an existing pack — the working pattern
-
-This is what the shipped tools do. Read one before writing another: `tools/check-packs.mjs`,
-`tools/patch-johnson-stats.mjs`, `tools/import-johnson-gear.mjs`, `tools/patch-enhanced-articulation.mjs`.
+**Editing a pack with a tool** — read `tools/check-packs.mjs`, `tools/patch-johnson-stats.mjs`,
+`tools/import-johnson-gear.mjs` first.
 
 ```js
 import { ClassicLevel } from 'classic-level';
@@ -337,71 +191,63 @@ await db.put(key, doc);
 await db.close();
 ```
 
-⚠ **Foundry must be CLOSED even to READ.** A LevelDB allows one process to open a database;
-there is no shared-read mode. Report a lock as "close Foundry", never as a stack trace.
+- ⚠ **Foundry must be CLOSED even to READ** (one process per LevelDB). Report a lock as "close Foundry".
+- ⚠ **Reading the checkout's packs must go through a copy** (`tools/lib/pack-copy.mjs`) — opening a LevelDB
+  rewrites its log/MANIFEST even for a read. `tests/pack-churn.test.mjs` enforces it.
+- ⚠ **Two copies of every pack; Foundry reads the install's.** `scripts/`, `styles/`, `lang/` are junctions into
+  the checkout; `packs/` and `system.json` are NOT (`npm run sync:install` never copies packs). **Run every pack
+  tool twice** — plain and `--install`.
+- ⚠ **Index against the REPO's packs, never the install's** (it carries 22 undeclared pre-split packs; UUIDs into
+  them are dead for everyone else). **Diff the two copies afterwards.**
+- ⚠ **Keys are structural**: `!items!<id>` · `!actors!<id>` · `!actors.items!<actorId>.<itemId>` · `!folders!<id>`.
+  An embedded item needs its own key **and** its id in the actor's `items` array. Sweeps must cover Actor packs too.
+- ⚠ **Derive ids, never randomise** (`idFor()` in `patch-johnson-stats.mjs`) — re-runs must reuse keys.
+- ⚠ Verify with `npm run packs:check:repo`.
 
-⚠ **THERE ARE TWO COPIES OF EVERY PACK AND FOUNDRY READS THE OTHER ONE.** The install's
-`scripts/`, `styles/` and `lang/` are junctions into this checkout; **`packs/` and `system.json`
-are NOT**, and `npm run sync:install` deliberately never copies packs. **Every pack tool must be
-run twice** — once plain, once `--install`.
+**In-Foundry creation (reference only — not how packs are maintained):** `Item.createDocuments(items, { pack })`
+imports 0 items; the working call is a temporary world document + `pack.importDocument(tmp)` + `tmp.delete()`
+inside `pack.configure({ locked: false/true })` (`Actor.create` for actor packs). Such documents carry full
+scaffolding (`_stats`, `ownership`, `sort`, `folder`) — the signature `check-packs.mjs` uses to spot install drift.
 
-⚠ **Index against the REPO's packs, never the install's.** The maintainer's install still
-carries 22 **pre-split monolithic** packs that do not ship. `import-johnson-gear.mjs` indexed the
-install on its first run and stamped `compendiumSource` UUIDs naming `sr3e-firearms` — a pack no
-other user has, i.e. dead provenance links for everyone else. Caught only by diffing the two
-copies afterwards, so **diff them afterwards**.
+### Pack integrity — `npm run packs:check`
 
-⚠ **Keys are structural.** `!items!<id>` · `!actors!<id>` · `!actors.items!<actorId>.<itemId>`
-· `!folders!<id>`. An embedded item lives under its own key **and** is referenced by id in the
-actor's `items` array — write both or the actor points at documents that no longer exist. A
-sweep counting only `!items!` **misses Actor packs entirely** (drones, vehicles, contacts); that
-mistake was made during the 2026-09-02 gear audit and briefly reported two packs as empty.
-
-⚠ **Derive ids, never randomise them.** A re-run must reuse the same keys or it orphans the
-previous documents inside the database. See `idFor()` in `patch-johnson-stats.mjs`.
-
-⚠ **Verify with `npm run packs:check:repo`** afterwards — it catches null `_id`s, key/`_id`
-disagreement and duplicates.
-
-#### The in-Foundry API, for reference only
-
-If you ever do need to create pack documents from inside a running Foundry — which **is not how
-this repo's packs are maintained** — the working call is a temporary world document imported and
-then deleted. `Item.createDocuments(items, { pack: pack.collection })` imports 0 items.
-
-```js
-await pack.configure({ locked: false });
-let created = 0;
-for (const data of MY_DATA) {
-  try {
-    const tmp = await Item.create(data, { renderSheet: false });
-    await pack.importDocument(tmp);
-    await tmp.delete();
-    created++;
-  } catch (err) {
-    console.error(`SR3E | Failed to create "${data.name}":`, err);
-  }
-}
-await pack.configure({ locked: true });
-ui.notifications.info(`SR3E: ${created} items added.`);
+```bash
+npm run packs:check                     # the local install
+npm run packs:check:repo                # this checkout's packs/
+node tools/check-packs.mjs <path>       # any other install
+npm run packs:fix                       # remove SAFE duplicates only
 ```
 
-For Actor compendiums use `Actor.create(data, { renderSheet: false })` instead of `Item.create`.
+Read-only by default; exits 1 on a fault. Checks null/missing `_id`s, key/`_id` disagreement, duplicate `_id`s,
+manifest packs missing on disk. Undeclared packs on disk are information. Also reports (information) blank/`???`
+`system.bookPage` and pages naming another book — one reader, `scripts/data/book-page.mjs` (`BookPage.*`,
+`CODE_ALIASES` maps upstream `sta2` → `sota2`); pages filled from `tools/data/book-pages.json` by
+`tools/fill-book-pages.mjs`; `tests/book-page.test.mjs` ratchets the missing count.
+- Malformed `!items!null` records are **install drift** (from running macros against a live install), not repo faults.
+- ⚠ **`--fix` deletes only what it can PROVE redundant**: a malformed record with a byte-identical properly-keyed
+  twin in the same pack, comparing without `prototypeToken`/scaffolding, against **any** identical twin (names repeat).
 
-⚠ Documents made this way carry **full Foundry scaffolding** (`_stats`, `ownership`, `sort`,
-`folder`) while the shipped packs, built by tooling, carry minimal ones. That difference is the
-signature `tools/check-packs.mjs` uses to tell drift in a live install from what the repo ships.
+### World migrations — `scripts/SR3EMigrations.js`
+
+⚠ **Foundry EMBEDS items, it doesn't link them** — a pack fix changes nothing for owned copies. So a pack
+correction needs **both** the pack change and a migration.
+- **Adding one:** append to `MIGRATIONS` with the introducing version and **bump `system.json` in the same
+  commit** — a migration numbered above the stamped version re-runs every load (`tests/migrations.test.mjs`).
+- **Fill blanks, never overwrite** (`_fillBlank`; `0` and `''` count as unset, so target specific items).
+  Overwriting hooks (`fixItem`, `fixActor`) must argue their case at the call site.
+- **Idempotent.** A failed run leaves the stamp so the next load retries.
+- ⚠ **Three populations**: world actors, world items, and **unlinked token actors on every scene**.
+- Compendium packs are **not** migrated (fix the pack file).
+- Changed **setting defaults** go in `SR3EMigrations.DEFAULT_CHANGES` (Foundry stores only set values).
+- Gated to `game.users.activeGM`. `game.sr3e.SR3EMigrations.force()` re-runs everything (safe by rule 1).
 
 ### Filtering actors for dialog dropdowns
 
-Every list a person picks an actor from answers three questions (F2, 2026-09-14 — reported in play:
-templates in Session Rewards, Chunky Salsa listing the whole world):
-
 | Question | Rule |
 |---|---|
-| No templates — **always** | `game.sr3e.isLiveActor(a)` — never a bare `getFlag('isTemplate')`, which lets an unflagged compendium import through |
-| Is it about what is happening NOW (a blast, a fall, a target, a medic)? | `game.sr3e.sceneFirst(list)` (`scripts/data/actor-scope.mjs`) — tokens on the scene, else everyone |
-| Is it the party only? | `game.sr3e.SR3EQuery.isPlayerCharacter(a)` (Session Rewards) |
+| No templates — **always** | `game.sr3e.isLiveActor(a)` — never a bare `getFlag('isTemplate')` |
+| About what is happening NOW (a blast, a target, a medic)? | `game.sr3e.sceneFirst(list)` (`scripts/data/actor-scope.mjs`) — scene tokens, else everyone |
+| The party only? | `game.sr3e.SR3EQuery.isPlayerCharacter(a)` |
 
 ```js
 const actorOpts = game.sr3e.sceneFirst(game.actors
@@ -410,90 +256,37 @@ const actorOpts = game.sr3e.sceneFirst(game.actors
   .join('');
 ```
 
-Rosters (pilot, passengers, agent operator, chase, the healing patient picker) stay world-wide on
-purpose. ⚠ **`tests/actor-lists.test.mjs` ratchets every `game.actors` list in `scripts/`** — a new
-one must use `isLiveActor`, or be named there as an internal lookup with its reason. The template
-flag is set by the `preCreateActor` hook in `sr3e.js` whenever `_stats.compendiumSource` is set.
+Rosters (pilot, passengers, agent operator, chase, healing patient) stay world-wide on purpose.
+⚠ `tests/actor-lists.test.mjs` ratchets every `game.actors` list — use `isLiveActor` or name it there with a
+reason. The template flag is set by `preCreateActor` in `sr3e.js` whenever `_stats.compendiumSource` is set.
 
 ### ApplicationV2 sheet form handling — critical
 
-Every sheet (ActorSheetV2, ItemSheetV2) **must** declare `tag: 'form'` in `DEFAULT_OPTIONS`
-and configure `form.submitOnChange: true`. Without `tag: 'form'`, ApplicationV2 never
-wires up its change-to-save pipeline, and form edits are silently lost.
+Every sheet **must** declare `tag: 'form'` and `form.submitOnChange: true`, or edits are silently lost:
 
 ```js
 static DEFAULT_OPTIONS = {
   tag: 'form',
-  form: {
-    submitOnChange: true,
-    closeOnSubmit:  false,
-  },
-  // ... classes, position, actions, etc.
+  form: { submitOnChange: true, closeOnSubmit: false },
+  // … classes, position, actions
 };
 ```
 
-When `tag: 'form'` is set, the **application element itself** is the `<form>`.
-Do **not** wrap `_buildSheet` / `_build` content in a `<form>` tag — that creates illegal
-nested forms and breaks the framework. Use `<div class="sr3e-inner">` instead.
-
-`DocumentSheetV2` has a built-in submit handler that calls `document.update()`.
-You do **not** need a custom `form.handler` for basic persistence.
-
-`_activateListeners` does **not** exist in the ApplicationV2 / DocumentSheetV2 parent chain — do
-not call it. (It *does* exist in v14 on unrelated classes — `game.keyboard`, some custom elements —
-so a global grep will find hits. None of them are your sheet's base class.)
-Use `_onRender(context, options)` for any post-render DOM wiring (e.g. class-based
-click/change listeners that can't use `data-action`). `_onRender` is called by the
-framework after every render, so listeners re-attach automatically.
+- The application element **is** the `<form>` — never wrap content in `<form>`; use `<div class="sr3e-inner">`.
+- `DocumentSheetV2`'s built-in submit calls `document.update()`; no custom handler needed.
+- `_activateListeners` does **not** exist on these classes. Post-render wiring goes in `_onRender(context, options)`.
 
 ### Chat message hooks
-Use `renderChatMessageHTML` not `renderChatMessage` (deprecated in v13).
-The `html` argument is a native `HTMLElement`, not jQuery.
-
-```js
-Hooks.on('renderChatMessageHTML', (_message, html, _data) => {
-  html.querySelectorAll('.my-btn').forEach(btn => {
-    btn.addEventListener('click', async event => {
-      event.preventDefault();
-      event.stopPropagation();
-      // handle click
-    });
-  });
-});
-```
+Use `renderChatMessageHTML` (native `HTMLElement`), never the deprecated `renderChatMessage`.
 
 ### One-shot button guard — critical for all action buttons
 
-`renderChatMessageHTML` fires for **both** the Foundry pop-up notification and the main
-chat log when a message is created. Both DOM instances are live simultaneously, so a
-user can click a button in the pop-up and then click the same button again in the chat log,
-firing the action twice (double-soak, double-assign, etc.).
-
-The fix is a module-scoped `Set` keyed by `messageId|class|index`. Every action button
-must use `_checkBtn` at render time and `_claimBtn` inside the click handler.
+`renderChatMessageHTML` fires for **both** the pop-up notification and the chat log, so a button can be clicked
+twice. Every action button uses the module-scoped `_usedButtons` Set in `sr3e.js`, keyed `messageId|class|index`:
 
 ```js
-// sr3e.js — module scope
-const _usedButtons = new Set();
-
-function _checkBtn(btn, mid, cls, idx) {
-  if (!_usedButtons.has(`${mid}|${cls}|${idx}`)) return true;
-  btn.disabled = true;
-  return false;
-}
-
-function _claimBtn(btn, mid, cls, idx) {
-  const key = `${mid}|${cls}|${idx}`;
-  if (_usedButtons.has(key)) { btn.disabled = true; return false; }
-  _usedButtons.add(key);
-  btn.disabled = true;
-  return true;
-}
-
-// In the hook — capture message.id, not _message
 Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   const mid = message.id;
-
   html.querySelectorAll('.my-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'mybtn', i)) return;   // disable if already used
     btn.addEventListener('click', async event => {
@@ -506,55 +299,39 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
 });
 ```
 
-- `_checkBtn` at render time handles chat-log re-renders after a click in the pop-up.
-- `_claimBtn` in the handler is the primary guard — JS is single-threaded so check+add
-  is atomic; no race condition is possible.
-- The `idx` parameter disambiguates when multiple buttons of the same class appear on
-  one card (e.g. per-target soak buttons, per-passenger resist buttons).
-- The Set is in-memory only and resets on page reload — that is intentional.
+`idx` disambiguates several same-class buttons on one card. The Set resets on reload, intentionally.
+
+⚠ **Every chat-card button must ALSO be permission-gated at render time** — the guards stop double clicks, not
+wrong-person clicks. Helpers in `sr3e.js`: `_mine(p)` (any owner or GM — for buttons that post onward),
+`_isDecider(p)` (exactly one user — for buttons that **roll**), `_mineId(id)` / `_isDeciderId(id)`,
+`_mineAny(...ids)`, `_payload(btn)`, `_denyBtn(btn, why)`.
+⚠ `_payloadActorId` resolves only `actorId → icActorId → vehicleActorId → wardActorId → targetActorId`; any other
+key (`deckerActorId`, `conjurerActorId`, `passengerActorId`, `targetVehicleId`, `defenderActorId`, `atkActorId`,
+`intruderRiggerId`) **fails closed to GM-only** unless passed explicitly. `attackerActorId` is excluded on purpose.
 
 ### Actor system data — most important gotcha
 
-`prepareDerivedData` must always initialise fields in-place on `sys`, never via `??` fallback:
+`prepareDerivedData` must initialise fields **in place**:
 
 ```js
-// WRONG — creates a disconnected object, writes are lost
+// WRONG — disconnected object, writes are lost
 const attr = sys.attributes ?? {};
-
-// CORRECT — always initialise in place so writes persist
+// CORRECT
 if (!sys.attributes) sys.attributes = {};
 const attr = sys.attributes;
 ```
 
-If you read `this.system` from a button click handler and find attributes missing,
-it means `prepareDerivedData` ran but `sys.attributes` was undefined so nothing was written.
-Calling `this.prepareDerivedData()` before reading will fix this IF the initialisation is in-place.
-
 ### Cross-module references
-`SR3EActor` imports `SR3EItem` and vice versa would create a circular dependency.
-Break cycles by registering classes on `game.sr3e` in `sr3e.js` and referencing them at runtime:
-
-```js
-// sr3e.js
-game.sr3e = { SR3E, SR3EActor, SR3EItem };
-
-// SR3EItem.js — reference SR3EActor without importing it
-await game.sr3e.SR3EActor.someStaticMethod(ctx);
-```
+`SR3EActor` ↔ `SR3EItem` would be circular. Register classes on `game.sr3e` in `sr3e.js` and reference them at
+runtime (`game.sr3e.SR3EActor.someStaticMethod(ctx)`).
 
 ### Data models — no template.json
-
-`template.json` has been removed. Default values for all document types are defined as
-`TypeDataModel` subclasses in `scripts/data/`. Do **not** recreate `template.json`.
-
-Adding a new persisted field:
-1. Add it to the appropriate model in `ActorDataModels.js` or `ItemDataModels.js`
-2. If it's a new Actor/Item type, also declare it in `system.json` → `documentTypes`
-3. Guard reads with `?? defaultValue` in `prepareDerivedData` for existing documents
-4. **Requires a full Foundry restart** (not just F5) — data model changes are not hot-reloaded
+Defaults are `TypeDataModel` subclasses in `scripts/data/` (`ActorDataModels.js`, `ItemDataModels.js`); never
+recreate `template.json`. A new persisted field: add it to the model; declare a new type in `system.json` →
+`documentTypes`; guard reads with `?? default` for existing documents; **full Foundry restart** (not F5).
+TypeDataModels **drop undeclared keys**.
 
 ```js
-// Example field in a TypeDataModel
 static defineSchema() {
   const { StringField, NumberField } = foundry.data.fields;
   return {
@@ -564,2197 +341,77 @@ static defineSchema() {
 }
 ```
 
+### Foundry integrations
+- **Token bars**: `preCreateActor` defaults character/npc tokens to `bar1=wounds.physical`, `bar2=wounds.stun`,
+  `OWNER_HOVER` (new actors only).
+- **Status effects**: `sr3e-sustaining/-fulldefense/-dumpshock/-astral/-dual/-vr` appended to
+  `CONFIG.statusEffects`. The `updateActor` hook (active GM only) toggles them from `astralMode`,
+  `matrixUserMode`, `fullDefense`, `sustainedSpells`, and marks **defeated/unconscious** when a track is full,
+  **dead** when physical is full and overflow ≥ Body. Reversible.
+- **Drops** (TODO 97): items ride core `ActorSheetV2` handling; `SR3EActorSheet._onDrop`/`_onDropDocument` warn on
+  damaged pack entries; `_onDropActor` deploys/links a vehicle via `sr3e.actor.create` / `sr3e.vehicle.link`,
+  taking the id from the drag data's uuid.
+- **Enrichers**: Biography/Notes render enriched (`_bioField`, `_enrichBioFields` in `_onRender`) with an ✎ Edit toggle.
+
 ---
 
 ## File structure
 
 ```
-sr3e/
-├── system.json                       ← Foundry manifest + documentTypes declaration
-├── lang/en.json                      ← Localisation strings
-├── styles/sr3e.css                   ← All styles, CSS custom properties
-├── guides/                           ← the SR3 Table Reference site (Jekyll) — NOT shipped in the zip; see Releases
-├── packs/                            ← 102 compendium packs, `sr3e-<book>-<type>` (see Source books)
-├── archive/non-sr3-content/          ← 1,703 documents split out of the packs, held for future modules
-│   ├── README.md                     ← ⚠ STALE — predates the SR2 restore; see Source books
-│   └── sr3e-<pack>.json              ← one file per ORIGINAL pack: [{ _key, bucket, doc }]
-├── rawdata/                          ← Source JSON used to populate compendiums (not loaded by Foundry)
-│   ├── ODM-Cyberdeck.json            ← Orthodox SR3 cyberdeck stats     ← USE for orthodox compendiums
-│   ├── ODM-Programs.json             ← Orthodox SR3 program list         ← USE for orthodox compendiums
-│   ├── ODM-ProgrammingRules.js       ← Orthodox SR3 rules reference      ← USE for orthodox compendiums
-│   ├── MDF-cyberdecks.json           ← Matrix Defragged cyberdeck data   ← DO NOT touch for ODM work
-│   ├── MDF-matrixprograms.json       ← Matrix Defragged program data     ← DO NOT touch for ODM work
-│   ├── MDF-IC.json                   ← Matrix Defragged IC data          ← DO NOT touch for ODM work
-│   ├── MDF-program-agents.json       ← Matrix Defragged agent data       ← DO NOT touch for ODM work
-│   ├── MDF-program-agents-abilities.json ← MDF agent abilities          ← DO NOT touch for ODM work
-│   ├── ActiveSkills.json             ← General skills compendium source
-│   └── Armor.json                    ← General armor compendium source
-└── scripts/
-    ├── sr3e.js                       ← Entry point: registers models, classes, hooks, button handlers
-    ├── config.js                     ← SR3E constants
-    ├── SR3EVehicleChase.js           ← Chase scene logic
-    ├── SR3EMIJI.js                   ← Electronic warfare MIJI contest + IVIS
-    ├── SR3EClocks.js                 ← GM Threat Clocks (persisted shared state)
-    ├── data/
-    │   ├── ActorDataModels.js        ← TypeDataModel subclasses: CharacterData, NpcData, VehicleData
-    │   └── ItemDataModels.js         ← TypeDataModel subclasses: all item types
-    ├── documents/
-    │   ├── SR3EActor.js              ← Actor: derived data, all roll/combat methods
-    │   ├── SR3EItem.js               ← Item: skill/weapon/melee roll methods
-    │   ├── SR3ECombat.js             ← Combat: SR2/SR3 initiative, endCombat pool refresh
-    │   ├── SR3ESpiritSummoning.js    ← Conjuring / summoning flow
-    │   └── SR3EWard.js               ← Ward (astral barrier) document logic
-    ├── sheets/
-    │   ├── SR3EActorSheet.js         ← ApplicationV2 character/NPC actor sheet
-    │   ├── SR3EItemSheet.js          ← ApplicationV2 item sheet
-    │   ├── SR3EVehicleSheet.js       ← Vehicle sheet
-    │   ├── SR3EHostSheet.js          ← Host sheet (Matrix Defragged ruleset)
-    │   ├── SR3EHostSheetOrthodox.js  ← Host sheet (Orthodox SR3 ruleset)
-    │   ├── SR3EICSheet.js            ← IC sheet (Matrix Defragged)
-    │   ├── SR3EICSheetOrthodox.js    ← IC sheet (Orthodox SR3)
-    │   ├── SR3EAgentSheet.js         ← Agent sheet (Matrix Defragged)
-    │   └── SR3EWardSheet.js          ← Ward (astral barrier) sheet
-    └── macros/                       ← world Macro bodies, not modules (the only three left — TODO 1)
-        ├── import-sr3-character.js    ← Nullsheen importer; the `ready` hook adds it to the GM's library
-        ├── generate-chrome-threat.js  ← Chrome Threat Generator; also added by the `ready` hook
-        └── populate-mr-johnsons-contacts.js ← the contacts' generator data, PARSED by tools/lib/johnson-generator.mjs
+system.json                ← manifest + documentTypes
+lang/en.json · styles/sr3e.css (all styles, CSS custom properties)
+guides/                    ← the SR3 Table Reference site (Jekyll) — NOT shipped in the zip
+packs/ · packs-src/        ← 102 compendium packs (build output · source of truth)
+archive/non-sr3-content/   ← documents split out of the packs, held for future modules
+rawdata/                   ← source data, not loaded by Foundry (ODM-* = Orthodox SR3 Matrix; MDF-* = Matrix
+                             Defragged — never touch MDF files for Orthodox work, or vice versa)
+.claude/rules/             ← subsystem rules, path-scoped (index below)
+scripts/
+  sr3e.js                  ← entry: models, classes, hooks, chat button handlers
+  config.js                ← SR3E constants and registries
+  SR3E*.js                 ← feature modules (MIJI, Healing, Drugs, Purchase, Stress, VehicleChase, Clocks, …)
+  data/                    ← TypeDataModels + pure rule modules (*.mjs — testable without Foundry)
+  documents/               ← SR3EActor, SR3EItem, SR3ECombat, SR3ESpiritSummoning, SR3EWard
+  sheets/                  ← ApplicationV2 sheets (actor, item, vehicle, host/IC ×2 rulesets, agent, ward)
+  macros/                  ← world Macro bodies (importer, chrome threat, contacts data parsed by tools)
 ```
 
-### rawdata/ file naming convention
-
-**ODM-\*** = **Orthodox Decking Matrix** (SR3 core book rules, Chapter 8).
-These are the source files for the `sr3e-odm-cyberdecks` and `sr3e-odm-programs` compendium packs.
-Use only ODM files when working on Orthodox SR3 Matrix features.
-
-**MDF-\*** = **Matrix Defragged** (the alternative Matrix ruleset, a community supplement).
-These are the source for `sr3e-mdf-cyberdecks`, `sr3e-mdf-programs`, `sr3e-mdf-ic`, and related packs.
-**Do not touch MDF files when working on Orthodox SR3 Matrix features** — they are a completely
-separate ruleset with different schemas and different game mechanics.
+**Put rules in a pure module under `scripts/data/`** (or a static on `SR3EActor`) — sheets can't be imported
+without Foundry, so nothing on them can be unit-tested or mutated.
 
 ---
 
-## Source books & compendium filtering
+## SR3 rules — citations, and where each subsystem's rules live
 
-Compendium content is **one pack per source book**, named `sr3e-<book>-<type>`
-(`sr3e-mm-cyberware`, `sr3e-r3-vehicles`, …). Each pack declares its origin in `system.json`
-as `flags.The2ndChumming3e.book`; packs **without** that flag are system content
-(exactly three: `sr3e-skills`, `sr3e-example-characters`, `sr3e-mr-johnsons-contacts`).
-
-**102 packs, 20 books, 3 system packs** (82 until the default-book gear, 2026-09-14). This layout is **Shadowfork's** — `main` still carries
-the old monolithic packs (27 of them: one `sr3e-cyberware`, one `sr3e-firearms`, …) with no
-book flags and no `archive/`. Don't assume a pack name from `main` exists here.
-
-`SOURCE_BOOKS` in `config.js` is the registry of book codes and which start enabled. The GM
-picks which are in play via **Configure Settings → System → Configure Source Books**
-(`SR3ESourceBooksConfig`).
-
-Codes come from the **`BookPage` prefix** in the upstream Shadowrun Character Generator's gear
-data (`src/data/SR3/*.json` — values like `mm.064`, `sr3.304`, `cb1.29`), so a future re-import
-lines up. They are *not* from that repo's `Books.json`, which holds only
-`{name, loadByDefault, edition}` and carries no codes at all.
-
-| | Codes |
-|---|---|
-| SR2, on by default | `sr2` (core) `ct` `ssc` `st` `fof` `pna` |
-| SR3, on by default | `sr3` (core) `cc` `mm` `mits` `r3` `matrix-defragged` |
-| Off by default | `sota` `sota2` `tal` `twl` `fra` `ger` `ssg` `tss` (tss is a fan publication) |
-
-⚠ **This table said `sota` `sota2` `tal` `twl` were on by default until 2026-09-14.** `config.js`
-has them **off**; `tests/default-gear.test.mjs` now pins the default-on set against `SOURCE_BOOKS`.
-
-### Default-book gear — `tools/build-default-gear.mjs` (TODO 91/92)
-
-**2,926 gear / ammunition / medical / drug / armour documents in 25 packs** (20 of them new:
-`sr3e-<book>-gear` · `-ammunition` · `-medical`, plus `sr3e-sr2-drugs`, `sr3e-sr3-drugs`,
-`sr3e-ssc-armor`), **generated** from the vendored generator data in `rawdata/SRCG-*-Gear.json` for
-every default-on book. Full account: `audit/default-books-gear-audit.md`.
-
-- **Generated, so never hand-edit a document flagged `generatedBy: build-default-gear`** —
-  `tests/default-gear.test.mjs` rebuilds the plan and fails on any document that differs. Change the
-  builder (or the vendored data) and re-run it, repo then `--install`.
-- It **skips a name the book already ships** under any gear-like type, so the hand-built armour and
-  drug packs keep their data; re-running replaces only its own documents (derived ids).
-- ⚠ **Upstream prices loose ammunition per ROUND**; the book's table is *"Ammunition, Per 10
-  Shots"* (SR3 p.281). A `… Rnds` row becomes a box of 10 at the per-10 price.
-- ⚠ **Weapons, cyberware, bioware and vehicles are out of scope** (the maintainer) — arrows and bolts
-  are in, as ammunition.
-
-Packs per book, as declared in `system.json`:
-
-`sr3` 15 · `sr2` 11 · `mm` 9 · `tss` 9 · `cc` 7 · `sota2` 7 · `matrix-defragged` 5 · `twl` 5 ·
-`fof` 4 · `fra` 4 · `r3` 4 · `ssc` 4 · `mits` 3 · `sota` 3 · `st` 3 · `ct` 2 · `ger` 1 ·
-`pna` 1 · `ssg` 1 · `tal` 1
-
-### The book split and the archive
-
-The system ships **no sourcebook content it cannot turn off**. Splitting the monolithic packs
-per book left a remainder that had no book to belong to, and it is parked — not deleted — in
-`archive/non-sr3-content/`.
-
-**1,703 documents**, one JSON file per *original* pack (`sr3e-cyberware.json`,
-`sr3e-firearms.json`, …), each an array of `{ _key, bucket, doc }` — the original LevelDB key,
-the classification bucket, and the untouched document. Restoring is a direct write back under
-the same key.
-
-⚠ **A second wave, 2026-09-21: 121 more documents, bucketed `pw`.** They were shipping *inside*
-the SR2 packs — **115 of them in `sr3e-sr2-firearms`, which by document count was therefore mostly
-not SR2** — so the source-book toggle could not reach them and the system was shipping sourcebook
-content it could not turn off. Moved by `tools/archive-fan-content.mjs` into four new files named
-for the packs they came from (`sr3e-sr2-firearms.json`, `-armor`, `-melee`, `-projectiles`).
-⚠ **Bucketed by the fan CODE, not the generic `fan`** — the older wave lumps ten sources together
-and this README calls the result hard to inventory, so these stay restorable per book.
-⚠ **Only PROVABLE fan content moved.** A document qualifies when its own `bookPage` cites a fan
-code; a blank or `???` page is **unknown, not fan**, and the 200 documents in that state were left
-exactly where they are. `tests/fan-content.test.mjs` ratchets both halves.
-
-| Bucket | Docs | Contents |
-|---|---:|---|
-| `fan` | 1,219 | ray · cb1-4 · cp · nagee · pw · bjf · adh |
-| `sr2` | 441 | **already restored** into the `sr2`/`ct`/`ssc`/`st`/`fof`/`pna` packs |
-| `sr2-fan` | 41 | NERPS: ShadowLore |
-| `unknown` | 2 | two MP7 entries whose `bookPage` holds an accessory list, not a source |
-
-⚠ **`archive/non-sr3-content/README.md` is stale.** It states 0 documents were left in the
-system and does not know the `sr2` bucket has since been split into per-book packs. Its counts
-are also off by a few (it says fan 1,215 / sr2 440; the files hold 1,219 / 441). **Re-importing
-a bucket blind will duplicate documents** — inventory what already ships first.
-
-The **Chromebooks** (`cb1`-`cb4`) and **Cyberpunk 2020** (`cp`) material is fan *conversion*,
-not official 2nd-edition product, so it stays archived with the rest of the fan content rather
-than joining the SR2 books — see the comment above `SOURCE_BOOKS` in `config.js`.
-
-⚠ **`pw` has no entry in `SOURCE_BOOKS` and that is deliberate.** Registering a code with no pack
-behind it renders an **empty checkbox** in Configure Source Books — the trap noted under *"The
-filter only reaches packs"* below. If `pw` is ever restored it needs its own pack **and** a
-registry entry, off by default, in the same commit; the test asserts the two stay in step.
-
-**How filtering works** — `SR3ESourceBooks.packAllowed(pack)` is the single predicate, consumed
-in exactly two places:
-- `SR3ECompendiumDirectory._preparePackContext` sets the `hidden` flag core already renders on
-  each sidebar pack entry (registered as `CONFIG.ui.compendium` at init). It also collapses
-  folders left with nothing visible — core doesn't do that for its own type filter, but one book
-  going dark can empty a whole branch. Overriding `hidden` rides core's own path; **do not**
-  prune DOM on a render hook.
-- `SR3EItem._packsForType(type)` — so a hidden book stops offering its gear through the item
-  pickers. Pass `{ ignoreBookFilter: true }` for migrations and integrity checks that must see
-  everything.
-
-**Nothing is unloaded.** Packs stay in `game.packs`, so a character already holding content from
-a hidden book keeps it. This is a presentation filter.
-
-**Fail-visible by design:** a pack with no `book` flag, or a book code the setting has never
-seen, both default to *visible*. Adding a pack can never silently hide it.
-
-**The filter only reaches packs.** Skills hardcoded in `SR3ESkills` (`config.js`) cannot be
-hidden by any book toggle — worth remembering before adding a book code that has no packs
-behind it, which would render as an empty checkbox.
-
-### Source PDFs
-
-The maintainer's SR3 PDF library lives at `C:\Users\lance\Documents\Shadowrun 3rd Edition PDFs`
-(32 books). They carry a **real text layer** — `pdftotext -layout` (ships with Git for Windows)
-extracts them exactly; **no OCR needed**. Two-column pages come out with the columns merged on
-each line, so crop per column (`pdftotext -x -y -W -H`, mediabox is ~616×795pt) when a clean
-list is needed. Use these to source page references and verify stats rather than guessing.
-
-### The Matrix sourcebook (`mat`) — audited, deliberately not registered
-
-There is **no `mat` code**, and that is a decision rather than an oversight. Audited against
-`Shadowrun 3e - Matrix.pdf` (159 pages):
-
-- **Skills — yes.** The book's introduction states it adds new active and knowledge skills. Its
-  *The Matrix User* chapter (p. 22–27) covers Active Skills (p. 24), System Familiarity (p. 24),
-  Program Design (p. 25), Cyberterminal Design (p. 25), Info Sortilage (p. 25) and other
-  knowledge skills (p. 25), plus an Otaku chapter. Named: Computer (Cybernetics / Decking /
-  Hardware / Search Operations), Computer Build/Repair, Electronics Build/Repair, and the
-  Etiquette (Matrix) and Small Unit Tactics (Matrix) specialisations. **Much of this is already
-  in `SR3ESkills`** — the "Matrix skills" and "Otaku skills" categories and the Matrix knowledge
-  skills — just unattributed. Being hardcoded, no book toggle can hide it.
-- **Spells — no.** 37 magic-term matches across the book, all incidental prose references. No
-  spell entries, drain codes or tables.
-- **Gear — yes, but none of it is imported.** Cyberterminal Construction (p. 52), Utilities
-  (p. 68), Programming (p. 76), System Operations (p. 95), Intrusion Countermeasures (p. 103).
-
-So `mat` becomes worth registering only once something exists to carry it. Keep the three Matrix
-sources distinct — conflating them is the easy mistake: **`sr3`** = core rulebook Ch. 8 (the
-ODM-\* rawdata), **`mat`** = this sourcebook, **`matrix-defragged`** = the community ruleset
-(the MDF-\* rawdata).
-
----
-
-## SR3 rules implemented so far
-
-> **Citation convention.** Each rules section carries its source as *· SR3 p.NN* — the printed
-> page in the **core rulebook**, not the PDF page. (`Shadowrun 3e - Core Rules {FAN25000}.pdf`,
-> **PDF page = book page + 2**; it has a real text layer, so `pdftotext -layout -f N -l N` works.
-> Two-column pages merge the columns per line and scramble tables — crop per column with
-> `-x 0 -W 308` then `-x 308 -W 320`, mediabox ~616×795pt.)
+> **Citation convention.** Rules carry their source as *· SR3 p.NN* — the **printed** page of the core rulebook.
+> `Shadowrun 3e - Core Rules {FAN25000}.pdf`: **PDF page = book page + 2**. The maintainer's library (32 books,
+> `C:\Users\lance\Documents\Shadowrun 3rd Edition PDFs`) has a real text layer: `pdftotext -layout -f N -l N`,
+> no OCR. Two-column pages merge columns per line — crop with `-x 0 -W 308` then `-x 308 -W 320` (mediabox
+> ~616×795pt). Verify stats and pages there rather than guessing.
 >
-> **🔴 DIVERGES FROM RAW** marks a rule the system implements *differently from the book*, with the
-> book's own wording and the TODO number tracking the fix. These are deliberate flags, not notes to
-> tidy away: without them this file reads as an authority and someone builds to the wrong rule.
-> **Delete the marker only when the code is fixed** — and check the book, not this file, when it is.
+> **🔴 DIVERGES FROM RAW** marks a rule implemented differently from the book, with the book's wording and the
+> tracking TODO. Delete the marker only when the code is fixed — and check the book, not the doc.
+> Sections with no citation are **not audited**; absence of a flag is not evidence of correctness.
 >
-> Sections with no citation have **not been audited** against RAW yet. Absence of a flag is not
-> evidence of correctness.
->
-> **Audited against the books so far:** Rule of Six/One · Defaulting · Damage staging · Combat
-> Pool · pool refresh · initiative −10 · dodge resolution · Spell Pool · astral Initiative ·
-> **all 117 adept powers** (`audit/adept-powers-audit.md`) ·
-> **every lookup table** (`tests/tables.test.mjs`: Damage Modifiers and the Condition Monitor
-> thresholds, the Weapon Range Table, Impact Projectile multipliers, the Grenade Range Table,
-> Impact Damage Levels and crash Power, ammunition, R3 flux ranges).
->
-> ✅ **AUDITED 2026-09-16 — TODO 119, `audit/matrix-defragged-audit.md`.** *Shadowrun 3e - The Matrix
-> Defragged v2.pdf* is in the library with a text layer, and the *Matrix rules (Matrix Defragged v2)*
-> section below has been checked against it page by page. The old warning that it "cannot be audited at
-> all" is gone. What the audit found: eight rules confirmed, **three places where this file was wrong and
-> the code was right** (all three corrected below), **two code divergences** (Dumpshock was Moderate, and
-> TRM/AR/VR-Cold were forced to one initiative die — both fixed), and **one table that could not be read**
-> because it is a graphic (the Matrix Condition Monitor's box thresholds — 🔴 below). `tests/matrix-defragged.test.mjs`
-> now pins the verified figures with their pages.
-
-### Dice rolling — Rule of Six & Rule of One  · *SR3 p.38-39*
-- All rolls are d6 success-counting (result ≥ TN = success)
-- Any die showing 6 explodes. Each wave shows a single "💥 Roll explosions (N dice)" button that
-  re-rolls **all** of that wave's exploding dice at once (not one click per die), adding to each
-  die's running total; this repeats wave-by-wave until none are left
-- A die stops exploding when its running total ≥ TN (success, no more rolling needed)
-- **Rule of One** (`SR3EActor.isRuleOfOne`, one pure function feeding all five roll paths):
-  fires **only when every die rolled comes up 1** — *"If ALL the dice rolled for a test come
-  up 1s, it means that the character has made a disastrous mistake"* (p.38). Its consequence
-  is **GM adjudication**, not a mechanical penalty: *"The gamemaster determines whatever tone
-  is appropriate."* There is **no second "critical" tier** — a sweep is already an automatic
-  zero-success failure, so the tier could only ever relabel the same event.
-  ⚠ A two-tier rule keyed on *more than half* the pool showing 1s is **SR4's glitch**. Do not
-  reintroduce it: at 3 dice it trips about twenty times more often than RAW. Caught 2026-08-05
-  when a dodge of `5, 1, 1` at TN 4 wrongly reported a glitch.
-- A single 1 is only *that die* failing — *"the test can still succeed as long as other dice
-  succeed"* — so it needs no special handling beyond comparing against the TN
-- Initiative never explodes interactively — resolved silently as a sum
-- ⚠ **Opposed rolls wait for BOTH sides' explosions** (F4, 0.5.2) — melee, astral, contested and
-  cybercombat. At TN 7+ the result used to post off the first wave, so 💥 changed the dice and never
-  the winner. Now `SR3EActor._openOpposed` posts a **⏳ card** whose message flag holds both sides'
-  dice; each wave card carries `opposed: {messageId, side}` through its 💥 payload; a side's final
-  wave settles through the GM (`sr3e.opposed.settle`, serialised per message), and the side that
-  completes the set posts the result (`postOpposedResult`). ⚔ Resolve (GM) settles with the dice as
-  they stand. ⚠ **A shared record, not an in-memory map** — the two sides explode on different
-  clients. ⚠ The settle runs **after** the wave card is posted, or the result lands above the dice
-  that decided it. A new opposed roll must go through `_openOpposed` — `tests/opposed-explosions.test.mjs`
-  checks all four.
-- ⚠ **EVERY explosion is a 💥 click, and the next step waits for it** (the maintainer, 2026-09-14:
-  *"we should wait for dice explosions to finish before queing up other things"*). Never loop
-  `_rollWave` yourself — MIJI, Orthodox Matrix, ward fooling and banishing all did (`_resolveRoll`),
-  rolling the 6s silently and opening the next dialog before anyone saw them. Two helpers on
-  `SR3EActor`, both a no-op change when nothing explodes (no extra cards):
-  `rollOpposedPair(kind, ctx, atk, def)` — two rolls compared, on the ⏳ card, result by
-  `OPPOSED_RESULTS[kind]`; `rollThen(actor, pool, tn, {label, followUp: {kind, ctx}})` — one roll, then
-  `FOLLOW_UPS[kind](ctx, res)`, run by `_postWaveCard` on the final wave, on the client that rolled it.
-  Both registries name `[class on game.sr3e, method]`, so `ctx` must be plain JSON (ids, not actors).
-  `tests/interactive-explosions.test.mjs` ratchets it: the only `_rollWave(…, false, …)` call in
-  `scripts/` is the 💥 handler. The Chase Scene's Driver Points (an Open Test, p.40 — every 6 rolls
-  again, no TN) do the same through `scripts/data/open-test.mjs`; its 💥 is gated to the user who
-  rolled, because the chase's state lives in that user's window.
-
-### Defaulting (SR3 Default Table) — interactive  · *SR3 p.84-85*
-
-When an actor lacks the skill for a test, an **interactive dialog** asks how to default
-(`SR3EItem.promptDefaultChoice(actor, opts)` → `{ mode, pool, tnMod, allowPool, poolCap, label }`,
-or `null` if cancelled). The table as printed on **p.85**:
-
-| Default To | TN Modifier | Dice Pool |
-|---|---|---|
-| Specialization | +3 | = to ½ specialization's base skill |
-| Skill | +2 | = to ½ base skill being used |
-| Attribute | +4 | No pool dice allowed |
-
-⚠ **The "Dice Pool" column is the cap on POOL dice, not the dice you roll.** You roll the
-**full** rating — *"roll a number of dice equal to **your rating in the default skill**… the
-maximum number of **pool dice** allowed is equal to half your rating in that skill (round
-down)"* (p.84). Reading it as the dice to roll halves every defaulted test *and* drops the
-cap, so it errs in both directions and the two errors partly mask each other.
-
-The book's worked examples, both asserted in `tests/defaulting.test.mjs`:
-- **Shotgun 5** defaulting to an assault rifle → rolls **5 dice**, plus **up to 2** Combat Pool.
-- **Edged Weapons 4 (Sword)** → rolls the **specialization's** rating, with pool capped at
-  **½ the related base skill** (2), not half the specialization.
-
-- `SR3EItem.defaultTiers(actor, opts)` is the **pure** function holding the rule; the dialog only
-  renders it. Specializations come from the `specialisations` array (`level` is the **bonus**, so
-  the spec's rating is `base + level`) — **one option per specialisation**, since a skill may
-  carry several.
-- "½ rating" **rounds down** (`Math.floor`). The dialog lists **all** of the actor's active
-  skills / specialisations (the GM judges relevance — minimal guardrails) plus every attribute.
-- A cancelled dialog **aborts** the whole action (returns `null`; callers bail).
-- The TN modifier is **baked into the TN** at each call site (e.g. `tn + def.tnMod`); the old
-  `rollPool` `options.defaulting` flag has been removed.
-- **`poolCap` is the single gate on pool dice.** Every flow clamps its offer with
-  `Math.min(available, def.poolCap)`; the Attribute tier reports `poolCap: 0`, so the cap alone
-  expresses "no pool dice" and `allowPool` is kept only as a convenience alias for `poolCap > 0`.
-
-**Wired in everywhere defaulting can occur:**
-- Skill rolls (`SR3EItem.rollSkill`), weapon attacks (single + AoE throw + `rollVehicleWeapon`).
-- **Melee** (`rollMeleeAttack`) and **astral** (`rollAstralCombat`): **both sides** are
-  prompted (attacker first, then defender) — each defaulter patches its boxing-card `skillDice`
-  / `skillName` / `defaultTnMod` / available pool.
-- **Matrix**: cybercombat boxing (`_buildCCParticipant`, now async), `rollProgram`,
-  `rollHackingAction`, `rollNodePrompt`.
-- **GM tools**: Falling & Escape Artist (sr3e.js), Driving Test (`SR3EVehicleSheet.runDrivingTest`).
-- **Chase Scene** is an **Open Test** (no TN) — the dialog still chooses the dice pool and the
-  Attribute tier suppresses the Control Pool; the +2/+3 TN modifiers don't apply (GM raises the
-  threshold by hand).
-
-### Initiative  · *SR3 p.103-104*
-Two modes selectable in game settings:
-- **SR3 mode**: Pass-based. Everyone acts once per pass in init order. Subtract 10 after each pass. Repeat until all initiatives ≤ 0.
-- **SR2 mode**: Flat queue. All action slots pre-built (init, init-10, init-20...) merged and sorted descending. Walk queue top to bottom.
-Both modes end combat when the round is complete and prompt GM to re-roll initiative.
-
-**Shift-click** on any initiative roll button (actor sheet bolt or combat tracker d20) opens a
-physical dice dialog — shows the formula, lets the user type in the result directly.
-
-**Pre-start lock**: before the encounter begins (`!combat.started`), the per-combatant initiative
-roll icons in the tracker are dimmed + `pointer-events:none` (and the shift handler bails) so
-initiative is rolled only through the "Begin Encounter" dialog. Re-enabled once combat starts.
-
-**Action Tracker / the action ledger** (TODO 48, `feature/action-economy`) — SR3 pp.105-108. Rules:
-`scripts/data/action-economy.mjs` (`ActionEconomy`, `ACTIONS` with a page each); storage and UI:
-`scripts/SR3EActionLedger.js`. The ledger is a **combatant flag** keyed to the phase it was written in
-(`round|turn`, so it needs no clearing), written by the GM through **`sr3e.action.charge`**.
-- A phase holds **two Simple or one Complex, plus one Free** (p.105, p.107). Over-spending is recorded
-  and flagged ⚠, **never refused**.
-- **The flows charge themselves** (`SR3EActionLedger.charge`, only when it is that actor's phase):
-  a firearm by **fire mode** (SS/SA/BF Simple, FA Complex), thrown = Throw Weapon, melee (attacker
-  only), spells, vehicle weapons, skills, nature-spirit summoning, reloads per the Ammo Reloading Table.
-  ⚠ **Nothing reactive is ever charged** (dodge, soak, resistance, initiative) — charge the actor who
-  OPENED the action. ⚠ **Auto-mark, never auto-advance**: only the GM's Complex / second Simple end a turn.
-- **Pips for everyone** on the active combatant's row (action economy is public at the table); the GM's
-  buttons beside them: Complex (ends turn), Simple (toggle), Simple (ends turn), **↺ Undo**.
-- ⚠ **The GM's undo restores what the action SPENT.** Each flow calls `SR3EActionLedger.begin(actor)`
-  at its very start (before any dialog) to snapshot pool dice spent, the recoil count, Karma Pool and
-  every weapon/ammunition item's rounds and quantity; the charge carries it. ↺ lists every snapshotted
-  value changed since and every chat card posted since, all ticked, each untickable (the same
-  character's dodge in between) — then puts back, deletes, and frees the slot. Damage is never
-  auto-applied, so nothing else needs reversing.
-- **Ready Weapon** (TODO 47, SR3 p.107): `system.ready` on firearm/melee/projectile/thrown (initial **true**),
-  rules in `scripts/data/ready-weapon.mjs`. ✋ on each weapon row toggles it (readying charges a Simple
-  Action). `SR3EItem._ensureReady` runs at the top of `rollWeapon` and `rollMeleeAttack`: Ready / Quick Draw
-  (Concealability 4+ firearms, Reaction (4) +2 unholstered via `rollThen` → `_quickDrawRolled` → a 🎯
-  Fire card that calls `rollWeapon({ quickDrawn: true })`, uncharged) / Attack anyway. ⚠ Warns, never
-  refuses — Quick Draw is the book's answer to "not drawn yet". Fists and cyber-melee are always ready.
-- **Hands** (TODO 49, SR3 p.112): `system.hands` on weapons (0-2, blank = `Hands.defaultHands(type, category)`;
-  the shipped packs store it — `tools/fill-weapon-hands.mjs`), `system.extraHands` on actors (GM). In hand =
-  ready. ⚠ **p.112 is a class whitelist, not free hands** — only pistol/SMG classes one in each hand
-  (`DUAL_WIELD_CATEGORIES`). `guessGearModifiers` guesses `secondFirearm` (+2) when a second ready gun of
-  that class is held and withdraws smartlink / goggles / laser (*"negates"*); the row renders now.
-- **Weapon accessories and the gyro** (TODO 18, SR3 p.113, p.282):
-  - `smartgun` / `laserSight` on firearms (nullable; blank reads `accessories`). Read through
-    `WeaponAccessories.flag`; the packs store them (`tools/fill-weapon-accessories.mjs`).
-  - ⚠ **Read the text per ITEM.** A designator or a laser weapon is not a laser sight.
-  - A worn *Gyro Mount* gear item: `SR3EActor.gyroMount` / `gyroRating`.
-  - ⚠ **The full rating on EACH — the maintainer's ruling (2026-09-15), CC p.34's Max-Gyro wording.**
-    - Recoil compensators affect recoil only; a gyro affects recoil and movement.
-    - `gyroOnRecoil` takes it off recoil in `rollWeapon`.
-    - The whole rating goes to the GM window as `gyroLeft`, where `gyroOffset` takes it off the ticked
-      movement rows.
-    - Do not restore p.113's "one allowance against the total"; the mutant `gyro-shared-allowance` guards
-      against it.
-  - Costs: +1/+1 armour in `armorRatings`, +4 melee TN (`gyroMeleeTN`), half the Combat Pool
-    (`derived.combatPoolBeforeGyro` keeps the full figure).
-- Not yet: Take Aim across phases (#48's note); one Simple for two guns, recoil crossover (#49).
-
-### GM tools — Rollable Tables sidebar
-Chase Scene, Driving Test, Session Rewards, Chunky Salsa, Barrier Damage, Falling Damage and
-Escape Artist live on the **Rollable Tables** directory tab (`renderRollTableDirectory` hook), not
-the combat tracker. Chase Scene and Driving Test are available to all; the rest are GM-only.
-Driving Test (`SR3EVehicleSheet.promptVehicleDrivingTest` → `runDrivingTest`) prompts for a vehicle
-+ driver since there's no sheet context.
-
-⚠ **Multi-actor lists start UNTICKED** (TODO 96, reported in play) — Session Rewards (with an
-**All** box) and Chunky Salsa. The one exception is Chunky Salsa opened by the grenade flow with
-`opts.actorIds`: that list is the actors the blast caught, so they start ticked.
-
-**💥 Crash outside a chase** (TODO 74) — `SR3EVehicleSheet.runCrash(vehicle)`, from the vehicle
-Stats tab, the Vehicle Tools HUD menu, and a **💥 button on a failed Driving Test**
-(`crashOnFailVehicleId`, carried on the dice card). Speed is asked in **km/h** and converted by
-`SR3EActor.crashDamageFromKmh` (÷ 1.2 → m/turn — raw km/h would overstate every crash ~20%).
-The Crash Test **is** `runDrivingTest` in crash mode (p.147: *"a Driving Test against a base
-target number equal to the vehicle's Handling Rating"*). ⚠ One damage builder,
-`_buildCrashDamageHtml`, which takes the GM's Power/Level as ctx overrides. The people aboard come
-from **`VehicleData.passengerActorIds`**, the vehicle's own roster, which the Chase Scene now
-seeds from. **Occupants** (p.147, crash AND ramming) resist the Power the vehicle faced at the level it
-*actually took* — nobody aboard rolls if it took none — and their resist button first asks for
-**impact armour** (drops Power; prefilled from `armorRatings`) and a **seat belt** (drops a level):
-`SR3EActor.collisionPassengerDamage`, pinned to the book's cops, 15S → **12M at TN 12**.
-
-**🎲 Success Test** (TODO 73) — on the character sheet beside ⚔ Contested Roll: any pool against
-any TN, through `_promptRollOptions`' `custom` mode and `rollPool`, never `Roll.create`.
-
-**Chase quarry & auto-distance** (`SR3EVehicleChase.js`): each participant has a **Quarry** checkbox
-next to its Distance box. Exactly one vehicle is the quarry (checking one clears the rest); its
-distance is the reference (0) and its box fades. All other distances are **relative to the quarry**:
-**positive = behind (pursuing), negative = ahead (blocking)**. Participant `speed` is stored in
-metres/Combat-Turn (`km/h ÷ 1.2`), so on **`_nextTurn`** each pursuer's distance updates as
-`newDist = oldDist − (pursuerSpeed − quarrySpeed)` (closing when faster, opening when slower) and the
-turn chat card reports each pursuer's new "Xm behind/ahead (closing/opening)". No quarry set → the
-card notes distances weren't auto-updated. State is in-memory (`isQuarry` on each participant).
-
-**Driving Test (SR3 p.134) — `runDrivingTest`.** Base TN = vehicle **Handling**; modifiers are TN
-dropdowns (unfamiliar +1, stress, size +2/+3, weather +2/+4, terrain −1/0/+1/+3, combat +2,
-datajack −1, **VCR −VCR Rating**). ⚠ **Not ×2** — p.134: *"reduce the target number by an amount
-equal to the VCR Rating"*, worked on p.135 as *"Rigger in control (VCR Rating 1) −1"*. The ×2
-(*"−(VCR Rating x 2)"*) belongs to the **vehicle-combat** tables (pp.141-146); the Driving Test
-used it until 2026-09-13 (TODO 106). **Crash mode** (the 💥 Crash Test, p.147) swaps in the
-**Crash Test Modifiers Table** (p.148): vehicle damage, terrain **−1/0/+2/+4**, and vehicle speed
-against the driver's Reaction (`SR3EActor.crashSpeedModifier`) — no VCR row; a rigger adds
-Control Pool dice (up to the skill) to the pool instead. Dice **pool** (auto, editable): Vehicle Skill dice **+ Autonav
-(only out of combat)**; a **jacked-in rigger ("Using VCR") adds Control Pool = Vehicle Skill
-*instead of* Autonav**. Selecting *Action During Combat* or *Using VCR* recomputes the pool live.
-No vehicle skill → the SR3 Default dialog. 1 success = manoeuvre succeeds (0 → GM Crash Test).
-
-**Initiative formulas by mode:**
-- Default (no Matrix mode): `Reaction + woundMod` base + `initiativeDice` d6 (wired reflexes apply)
-- TRM / AR / VR-Cold: `Reaction + woundMod` base + `1d6` (wired reflexes apply to Reaction; dice forced to 1; Response does NOT apply)
-- VR-Hot: `(reaction.base + woundMod + Response×2)` base + `(1 + Response)d6` (wired reflexes excluded — uses `reaction.base`, not `reaction.value`; Response replaces cyber bonuses)
-- Astral Projection: `Intelligence + 20` base + `1d6`
-- Physical Plane / Dual Natured: use default formula
-
-**Vehicle initiative (read from `system.vcrMode` and `system.controlledBy`):**
-- VCR (jumped-in): Rigger's `Reaction + vcrLevel + woundMod` base + `(1 + vcrLevel)` d6. ⚠ This line
-  used to add *"TN −2 per VCR level on all skill tests"* — **unverified and at odds with p.134**, which
-  gives a Driving Test −VCR Rating; the ×2 is the vehicle-combat tables' (TODO 106). Check the book
-  before relying on a flat −2/level anywhere.
-- RCD (remote): Rigger's `Reaction + woundMod` base + `initiativeDice` d6 (no modifiers)
-- Auto (no pilot or pilot not found): `Pilot rating` base + `2d6`
-- VCR is exclusive: activating VCR sets all other linked vehicles to Auto (not locked — editable after)
-
-### Essence is permanent  · *M&M p.147*
-
-`essence.value` is **derived** and rewritten every `prepareDerivedData`. The persisted number
-is **`essence.lost`**, and it is **nullable** — the null carries meaning:
-
-| `lost` | Meaning | Essence |
-|---|---|---|
-| `null` | nothing recorded | `base − installedCyberwareCost` |
-| a number (incl. `0`) | authoritative | `base − lost` |
-
-⚠ **A recorded number wins outright — it is NOT `max`ed against installed hardware.** The
-first design did exactly that, and it silently blocked the case a GM most needs: a player
-installs the wrong 2.0 of chrome, it is removed, and the corrected Essence cannot be restored
-because the number being corrected *to* sits below what the (now deleted) hardware implied.
-Permanence means removal does not refund **by itself** — not that the GM is overruled.
-
-⚠ **`lost` ACCUMULATES on install; it is not a running maximum of what is fitted.** Storing
-`max(lost, installed)` passes every arithmetic test and still lets a character rip out 2.0 of
-wired reflexes, fit 0.5 of cybereyes, and pay nothing for the new chrome — the removed
-hardware keeps "covering" it. The rule is `lost = max(lost, installedBefore) + cost`, where
-the `max` term exists only to seed actors saved before the field existed (so no migration
-script is needed).
-
-⚠ **There is deliberately NO delete hook.** Removal must never touch the mark; anything
-firing on delete could only lower it, which is the refund this prevents. One hook, on
-`createItem`, gated to the active GM.
-
-⚠ **Two derived values hang off Essence** — Bio Index capacity (`essence + 3`) and effective
-Magic (`essence − totalBioIndex / 2`) — so the old refund silently inflated a character's
-Magic and their bioware headroom.
-
-**Two controls on the sheet.** The Essence box writes to the DERIVED field, which used to mean
-a GM's correction reverted with no error at all; `SR3EActor._preUpdate` now translates a write
-to `value` into the `lost` it implies. Beneath it sits **`lost` itself**, editable, showing the
-installed total as its placeholder when unset — so a GM can see and set the number that
-actually persists rather than inferring it from a subtraction. The **↺** beside it clears the
-override back to `null` (never `0`) so Essence follows installed cyberware again.
-
-⚠ **The rule is in Man & Machine, not core.** SR3 core never states the removal case —
-it only says the Essence Cost is "the amount by which the character's Essence is reduced
-**when the cyberware is installed**" (p.60). M&M settles it outright, under REMOVE
-CYBERWARE:
-
-> "Cyberware that is removed **does not restore the character's lost Essence**. Removing
-> cyberware incurs permanent damage to the implant (1D6 ÷ 2 Stress)."  — *M&M p.147*
-
-**The Essence hole is BUILT** (TODO 53, `scripts/data/essence-holes.mjs`): **one pooled number,
-`system.essenceHole`** (the maintainer: *"they just have an essence hole"*). Removing cyberware adds its
-graded cost — ⚠ **never touching `essence.lost`**, because removal refunds nothing — and an implant whose
-`essenceSlot` is ticked fills the hole down at install. ⚠ **A partly filled hole keeps its remainder**: a
-3.0 hole with a 2.0 implant is a 1.0 hole, tracked until it reaches 0. The GM edits it on the sheet **for player
-error and bookkeeping only** — ⚠ there is no way to regain Essence, so nothing but an Essence Slot implant
-fills the hole (the maintainer, 2026-09-16). A player's write is dropped (`stripPlayerEssenceWrites`). The
-+2 Threshold is stated, not enforced; there is no surgery flow.
-
-⚠ **The Essence hole is NOT the Essence *slots* of M&M p.127.** Those six slots assign INSTALLED cyberware
-to a d6 result so a wound effect can pick which implant it hits — built as TODO 129, *Cybersystem damage*
-below.
-
-⚠ **The "Essence hole" is an opt-in SURGERY OPTION, not automatic** — *M&M p.150*:
-
-> "Essence Slot (Implant, +2 Threshold) — If the character previously had cyberware
-> removed, a new implant with this option can be installed within the 'Essence hole'
-> left behind by the earlier implant. In other words, the old implant's Essence Cost can
-> be subtracted from the new implant's Essence Cost."
-
-So accumulating on install is the correct **default**, and the discount exists only when
-a surgeon takes that option at +2 Threshold. Storing `max(lost, installed)` instead would
-hand every character a free, permanent Essence Slot on every implant — which is why the built
-version (above) is a per-implant tick, read once at install.
-
-⚠ Adding this field was a **data-model change**: it needs a full Foundry restart, not F5.
-
-**Near the edge** (TODO 103) — `SR3EActor.essenceState`: below 1 is **legal** (*"it may be less
-than 1"*, SR3 p.55) and the block turns **amber**; 0 or less is death (*"An Essence of 0 means
-you're dead"*) and it turns **red**. Shown, never enforced. ⚠ **Below 1 does not need drugs** —
-the drug cocktail belongs to **cybermancy** at 0 or less (M&M p.50, p.54), not to Essence under 1.
-
-### Cyberzombies · *M&M pp.50-59* — TODO 111
-
-`system.cybermancy = { is, cds, treatments, cancer }`; rules in `scripts/data/cyberzombie.mjs`.
-
-⚠ **A cyberzombie is the ONE case where Essence may sit at or below 0.** `essenceValue` keeps the
-negative only when the flag is set, the sheet's Essence box opens its floor only then, and
-`essenceState` returns **`cyberzombie`** instead of `dead` — Chronic Dissociation Syndrome is graded by
-how far below zero the character is, so clamping at 0 made the whole table unreachable.
-
-**Chronic Dissociation Syndrome** (p.59) — the GM's periodic Willpower Test, ⚰ **CDS check** on the
-Cyber tab. The table runs 6 months/TN 3 at 0 to −0.50 down to **every 2 months at TN 8** from −3.51,
-*"+1 … for every additional -0.5"*. ⚠ That last row is open-ended and must be matched apart from the
-printed ones, or the extension never fires. A failure leaves the character *"lost to the world"*: they
-cannot initiate action, take **+4 on Perception and +3 on everything else**, and die in **3 + Willpower**
-weeks. Stated on the card; nothing is applied.
-
-⚠ **The treatment test is inverted and it is not a typo** — a delta-clinic Spell Resistance (8) Test
-where *"if the test succeeds, the magic fails and the character dies"*. It drops by 1 per repeat, to a
-minimum of 2. Recovery is a week, less a day per success on a Willpower (6) Test.
-
-**Cancer** (p.59) is rolled once, at the operation: 2D6 under twice the absolute Essence means cancer in
-10D6 months, fatal in 4 + 1D6 weeks. Body 4-7 adds 1 to the roll and 8+ adds 2, symbiotes another — all
-*"at the gamemaster's discretion"*, so they are arguments, not assumptions.
-
-**Scheduling is not modelled**: "every N months" is campaign time this system does not track.
-
-### Astral state (Awakened characters)  · *astral Initiative: SR3 p.41, p.62*
-> "In astral space, base Reaction for magicians is equal [to Intelligence]… and a +20
-> Initiative bonus" (p.41); worked at p.62 as "(Intelligence + 20) + 1D6".
-Toggled on the Magic tab. Stored as `system.astralMode` (persisted):
-- `''` — no state set (default)
-- `'physical'` — explicitly Physical Plane (grey badge in combat tracker)
-- `'dual'` — Dual Natured (amber "Dual Nat." badge)
-- `'astral'` — Astral Projection (purple "Astral" badge); uses INT+20+1d6 initiative
-
-Only one state active at a time; clicking the active button deactivates it.
-
-### Ranged combat flow  · *SR3 p.109-114*
-1. Attacker clicks weapon on sheet
-2. Target selection dialog (radio buttons, single actor)
-3. (Firearms) Loaded ammo type is read from the weapon — no per-shot ammo picker. Power/level/stun mods (Explosive/EX/Gel) applied now; see **Firearms** section
-4. (Firearms) Fire-mode dialog: SS/SA/BF/FA, recoil preview, editable compensation (see **Firearms**)
-5. Roll-options dialog: damage code, editable **range** dropdown (auto-measured from tokens; see Range section), TN-modifier breakdown (recoil, wound, multi-target, tracer note). **The TN field is read-only whenever a GM window will open** — see `gmApprovesTN` below
-6. **GM's TN window** (`_promptGMAttackWindow`): p.112 modifier checkboxes, live-summed into an editable TN, displayed value clamped at 2. Rows are **grouped for reading, not in book order** — Target, Attacker, Conditions, Gear — via a `group` field on each `SR3E_RANGED_MODIFIERS` entry, consumed by `mvpModifierGroups()`. Layout lives on the **data**, so the deferred rows drop into place when they land instead of forcing a re-sort. Gear is last and captioned: those rows are **guesses the system made** from the attacker's kit (`guessGearModifiers`), not judgements the GM is being asked for. Empty groups are dropped; a row with a missing or unknown `group` falls into a trailing **Other** bucket rather than vanishing — a typo there would silently remove a modifier the GM is meant to apply. Covered by `tests/combat-modifiers.test.mjs`.
-   - **GM situational modifier** — a signed number the GM types, for the cases no table
-     covers, so they need not abandon the window and type a raw TN (which would lose the
-     record of why the number is what it is). Lives in **Conditions**, not Gear: Gear is
-     captioned as things the system *guessed* from the attacker's kit, and this is a
-     judgement. ⚠ It is `value: true`, so `sumModifiers` reads it **before** the falsy guard
-     — required, because it is the only row that may legitimately be **negative or 0**.
-     ⚠ The window takes a **number only**; cards carry static wording ("GM situational
-     modifier +2") and the table asks the GM why. ⚠ **Melee's version carries a SIDE**
-     (`atk`/`def`/`both`) because `sumMeleeModifiers` returns a *pair* of deltas and a bare
-     number would have no defined meaning; an unrecognised side falls back to the attacker
-     rather than being dropped.
-   - **Visibility** (p.112 table) renders as **two dropdowns** — condition, and which vision the attacker is using — resolved by `visibilityModifier(condition, visionKey)`. Not a dropdown plus a "cybernetic" checkbox: the table has **two axes** (column = vision type, slash within a cell = cybernetic/natural), giving **five** valid states, and a checkbox would also permit the meaningless "Normal + cybernetic". ⚠ The slash reads **cybernetic first, natural second** (p.111), so **cyber vision is the *worse* of the two** — an elf's own eyes beat cybereyes. Low-Light and Thermographic are **not** interchangeable: they differ in 6 of 8 conditions and invert in Thermal Smoke.
-   - **Vision is PRE-SELECTED** (TODO 36): `bestVisionKey(detectVision(attacker), condition)` — the lowest-modifier row the character actually has (Normal always counts; ties to natural eyes). It **follows the condition until the GM touches the dropdown** (a programmatic `.value =` fires no `change`, which is what tells the two apart), so a troll in Thermal Smoke drops to Normal by itself. **Melee has one vision dropdown per fighter** (`visibilityVisionAtk`/`Def` in `sumMeleeModifiers`, falling back to the shared `visibilityVision`) — one shared dropdown would put the attacker's eyes on the defender's TN.
-   - **👁 Vision reminder** (TODO 99): `detectVision` / `visionReminder` in `SR3ECombatModifiers.js` put one line under the dropdown saying what the attacker's eyes are (both fighters, in the melee window). ⚠ Replaced eyes lose racial vision (p.299) — but only an actual replacement item (`Eyes, Cyber Replacement`, `Cybereyes …`) or **Cat's Eyes** counts; a lone low-light implant may be retinal. ⚠ **Cat's Eyes are NATURAL** on the table (M&M p.64). ⚠ Thermosense Organs are not vision (M&M p.75).
-   - The `visibility` row carries `mod: null` and `value: true`: its state holds the **resolved** number rather than a tick, and `sumModifiers` reads `value` rows **before** its falsy guard, because **0 is a real answer** (thermographic vision in Mist) and must not read as "not set".
-7. Attacker allocates combat pool to attack — this dialog is the attacker's **🎲 Roll** trigger
-8. Attack rolls (interactive Rule of Six)
-9. On final wave: **the defender is asked to declare a defence, knowing the attack's successes** — "N hits incoming. Dodge or take it?"
-10. Dodge roll (interactive Rule of Six, TN 4)
-11. Dodge result — see the RAW box below. Resolved by `SR3EActor.dodgeOutcome`.
-12. Dodge does **not** reduce *staging* — but its successes are not discarded either. See below.
-
-#### The Dodge Test target number  · *SR3 p.113*
-
-`SR3EActor.dodgeTN({ burstRounds, shotgunSpread, woundMod })` — pure, with `dodgeTNParts()`
-beside it for the breakdown the defender is shown. Base **4**, plus: **+1 per 3 rounds** from a
-BF/FA weapon · **+1 per metre of shotgun spread** · **+ the defender's own wound modifier**.
-
-⚠ **The wound modifier is RAW and is worked in the book's example** — *"a Target Number 5 (4,
-plus one from the Light wound he took earlier)"*. It was missing for a structural reason worth
-knowing: `rollPool` is what folds `woundMod` into a TN, and the dodge path never goes through
-it (`_rollDodge` → `_rollWave`, which takes the TN as given).
-
-⚠ **`woundMod` is NEGATIVE** (`Math.min(0, …)`, as everywhere else) and is **subtracted**.
-Adding it makes wounded defenders harder to hit; there is a mutant for exactly that.
-
-⚠ **Burst rounds are the rounds aimed at THIS target — not `roundsExpended`.** Walking-fire
-waste counts for recoil, the phase cap and the magazine, but travels *between* targets, so it
-is excluded here for the same reason it is excluded from damage.
-
-**Shotgun shot, choke and spread — SR3 p.117** (TODO 57; `scripts/data/shotgun.mjs`). Shot is an
-ammunition type, `shot`: flechette rules on the gun's Damage Code, shotguns only. The choke (2-10) is set in
-the fire dialog and remembered on the gun (`system.choke`, blank = 5). From the measured distance:
-- the width is `ceil(d / choke)`, at least 1;
-- each **spread** (width − 1) is −1 Power, −1 to the attacker's TN, and +1 to the defender's Dodge TN;
-- Power 0 is "ineffective", and the attack stops.
-
-With no distance to measure, the spreads typed in the fire dialog stand in.
-
-```
-SR3 p.117 — SHOTGUN SPREAD EXAMPLE, choke 3  (each # row is 1 m of width; it widens ½ m each side)
-
-              0 m        3 m        6 m        9 m
-               |          |          |##########|
-               |          |##########|##########|
-   [gun] >=====|##########|##########|##########|
-               |          |##########|##########|
-               |          |          |##########|
-
-   width           1 m        2 m        3 m
-   spreads          0          1          2
-   Power            —         −1         −2
-   attacker TN      —         −1         −2      ← easier to hit…
-   target Dodge TN  —         +1         +2      ← …and harder to dodge, but less damage
-
-   Everyone inside the cone is a valid target; each gets +1 Damage Resistance die per
-   other target in front of them. At Power 0 the shot is ineffective.
-```
-
-The wider the shot, the easier it hits and the less it hurts: at choke 3 a target 3 m out takes the
-full Damage Code, and one at 9 m takes −2 Power while the shooter rolls against −2 TN. The Dodge row is
-the spreads reading, still a question for the maintainer (SR3 p.113: *"+1 per meter of shotgun spread
-at the target's position"*).
-
-⚠ **The Dodge modifier counts spreads, not the width**, so a point-blank shot adds nothing. p.113's "per
-meter of shotgun spread" is the maintainer's to confirm.
-
-Gear, p.117: a smartlink is worth **−1** firing shot (the `smartlinkShot` row), and shotguns get nothing from
-smart goggles or laser sights.
-
-Not modelled: the cone as a template, where everyone inside it is a target, and the +1 Damage Resistance
-die per other target in front. Both are stated on the card for the GM.
-
-The declaration dialog shows the TN and its breakdown, so the dodge-versus-soak trade is made against the
-real number.
-
-#### ⚠ Resolving the Dodge Test — RAW, and where the code diverges
-
-Two separate questions, easy to conflate. The rulebook answers both in consecutive sentences:
-
-> "If the number of successes obtained on the Dodge Test are **more than** the Attacker achieved on
-> his Attack Test, then the attack is completely dodged, and the target takes no damage.
-> **Even if you don't dodge completely, the successes still count and are added to the Damage
-> Resistance Successes** to determine the final outcome."
-
-and again in the numbered sequence, step 4:
-
-> "A clean miss occurs if the number of successes from the target's Combat Pool dice **exceeds** the
-> attacker's successes."
-
-**1 — A tie is a HIT.** Both statements are strict inequalities: *more than*, *exceeds*. Equal
-successes means the attack lands. Dodging is not "match the attacker", it is "beat the attacker".
-
-**2 — A failed dodge is not a wasted dodge.** Its successes carry into the Damage Resistance Test
-and stage the damage down at the usual 2-per-level, exactly as Body successes do.
-
-**3 — Staging UP is unaffected.** The attacker's raw successes stage the damage; dodge successes are
-added to the **resistance** side, they do not cancel attack successes. So "dodge does not reduce
-staging" is correct — "net hits are irrelevant" is not.
-
-Worked, to make the three concrete. Attacker 3 successes, defender rolls 2 on the dodge:
-staged damage is computed from **3** (not 1), the attack **hits** (2 does not exceed 3), and the
-defender carries **2 successes** into the soak before rolling a single Body die.
-
-**Both rules live in one pure function**, `SR3EActor.dodgeOutcome(dodgeHits, attackHits)` →
-`{cleanMiss, carried}`, so there is a single place to get them wrong. It has no Foundry dependency
-and is covered by `tests/dodge-resolution.test.mjs` — including the tie, which is the case that was
-wrong before and the one most likely to be "helpfully" relaxed back to `>=`.
-
-The carried successes ride to the soak as `carriedSuccesses` on the soak payload and are added to
-the Damage Resistance roll's own successes. The soak card shows the sum **and its parts**
-(`5 hits (3 soak + 2 dodge)`) so a player can see the dodge was credited rather than silently
-folded in.
-
-#### ⚠ The defender declares AFTER the attack roll — this is RAW, not a convenience
-
-The core rulebook's numbered ranged sequence is explicit:
-
-> **3. Make Attacker's Success Test** — "Count the successes the attacker rolls."
-> **4. Resolve Dodge Test** — "If the target wishes to attempt to dodge an attack, he may use the
-> Combat Pool against a Target Number 4… A clean miss occurs if the number of successes from the
-> target's Combat Pool dice **exceeds the attacker's successes**."
-> **5. Resolve Target's Damage Resistance Test**
-
-The book's worked example follows the same order: Liam rolls 5 successes, and *then* "Snot first
-decides to attempt a Dodge Test."
-
-**The decision is dodge-vs-soak, not a blind guess.** Combat Pool spent dodging is gone from the
-Damage Resistance Test — in the example Snot burns all 5 dice on the dodge, fails, and then has
-"no dice remaining in his Combat Pool with which to increase his odds of survival." Showing the
-defender the attack's successes first is what makes that trade a real decision.
-
-**This system had it backwards until 2026-08-05**, asking the defender to commit before the roll.
-Do not "restore" the old order: prompting early is not a simplification, it deletes the choice the
-rule exists to create.
-
-Consequences in the code, so they are not undone by accident:
-- `sr3e.attack.negotiate` handles **only** the GM's TN window. It writes nothing.
-- There is **no** negotiate/commit two-phase and no pending registry. Both existed to protect a
-  defender-pool reservation that no longer happens.
-- `SR3EActor.handleDodgeDeclare` (from `.sr-dodge-declare-btn`) runs step 4: relays
-  `sr3e.dodge.declare` to the defender's decider with `attackSuccesses`, spends the pool through
-  the GM, then rolls the dodge — or falls through to the soak card on a declaration of 0.
-- Full Defense is read (`_fullDefenseDice`) but only consumed at that point, never earlier.
-13. Soak card posts for target: editable Body pool, TN (power − armour), armour type dropdown (ballistic default, impact for melee). APDS/Flechette armour effects auto-applied here from the carried `ammoType` (editable; shows a gold note)
-   - **Armour = worn + implant** — `SR3EActor.armorRatings(actor)`, the one answer the soak card, Falling Damage and the Body+armour stat picker all read (TODO 75). Implant armour (`SR3EActor.implantArmor`) is **cumulative** by the book: Bone Lacing (SR3 p.300), Ceramic/Kevlar lacing (M&M p.27), Dermal Sheath (M&M p.28), Orthoskin (M&M p.68). ⚠ It is read from each item's upstream **`mods`** string (`+1IMP`, `+1BAL`) — every shipped implant carries it — with the **nullable** `bonusImpact`/`bonusBallistic` fields as the GM's override: `null` = from mods, a number **including 0** wins (the `essence.lost` pattern). ⚠ `IMP`/`BAL` are deliberately **not** mapped into `SRCG_BONUSES` — that would be a second source. ⚠ Plastic Bone Lacing gives **no** armour (p.303 table, against the p.300 prose). ⚠ Encumbrance reads worn armour only.
-   - **Several pieces worn at once — SR3 p.285** (TODO 112). A piece is worn when its item has the
-     `worn` flag (`SR3EActor.wornArmorItems`; the legacy `system.equippedArmor` id still counts, and
-     a **stored** item never does). `SR3EActor.layeredArmor` is the one rule: **best piece + half the
-     next**, per type, a third body piece adding nothing; **helmets and shields add in full**
-     (`SR3E.armorAccessories` — *"This does not count as layering"*). ⚠ **Armour costs Combat Pool
-     dice, not Quickness** — *"for every 2 full points that… Ballistic or Impact… exceed Quickness,
-     reduce his or her Combat Pool by one die"*, off the **full** ratings worn, **rounded up** because
-     the book's Twitch (3 over) loses 2. The system used to lower Quickness itself, which also cut
-     Reaction; do not restore that. **Layering** (2+ body pieces) adds +(worn Ballistic − Quickness)
-     TN to Quickness tests and Quickness-linked skills (`derived.armorQuicknessTN`), pre-applied as
-     a delta in the attribute/skill roll dialogs and itemised in ranged attacks; a coat + helmet is
-     not layering. Movement-rate reduction is not modelled.
-14. Soak roll (interactive Rule of Six)
-15. Soak result: each 2 soak hits = stage down (D→S→M→L). Below L = completely soaked.
-16. GM applies damage manually using wound track buttons.
-
-### Firearms — fire modes, recoil & ammunition
-**Fire modes** (`SR3EItem._promptFireMode`, weapon `mode` string e.g. "SA/BF/FA"):
-- SS: single shot, no recoil accumulation. Warns if already fired this phase ("SS weapons cannot fire twice").
-- SA: +1 round to the phase counter; cumulative recoil.
-- BF: Power +3, level +1. **Recoil stacks +3/+6/+9** per burst (counts its own 3 rounds).
-- FA: 3–10 rounds; Power +rounds, level +⌊rounds/3⌋; multi-target & walking-fire (wasted rounds) options.
-
-**Recoil** (`SR3EItem.recoilTN`, pure) = `max(0, (roundsBefore + ownRounds) − totalComp) × mult`.
-
-⚠ **BF and FA count their OWN rounds; SS and SA do not.** *"Each round fired imposes a +1
-recoil modifier for the entire burst"* (p.115). BF contributes 3, FA contributes the rounds
-that burst fires, SS/SA contribute 0 — their shot penalises the *next* one. This was wrong
-for FA until 2026-08-13 (it counted only prior rounds), so the book's own Wedge example came
-out +0/+2 instead of +2/+6 — understating recoil more the longer a firefight ran.
-⚠ **Compensation is subtracted BEFORE the multiplier**: *"2 × uncompensated recoil"*, and
-p.111 works it — an MMG firing 10 rounds with 6 comp is **+8**, i.e. (10−6)×2, not 14.
-Pinned with all three worked examples in `tests/fire-modes.test.mjs`. `totalComp = actor.system.recoilCompensation + weapon.system.recoilMod`, both editable inline in the fire dialog and persisted on confirm. Heavy weapons (LMG/MMG/HMG/MinG) double uncompensated recoil; shotguns (ShtG) double it in **BF mode only** (SR3 p.111). Actor comp is edited on the **Cyber tab**; weapon comp ("Recoil Comp") on the firearm item. `roundsFiredThisPhase` resets each combat phase (`SR3EActor.resetRecoil`).
-
-**Short bursts** (`SR3EItem.resolveBurst`, pure) · *SR3 p.115* — a burst fired on a nearly
-empty clip is three cases, not one: **3+ rounds** = normal burst; **2 rounds** = +2 Power with
-the Damage Level **unchanged** and +2 recoil; **1 round** = resolved as **single-shot**, not as
-a burst at all. ⚠ "+2 and +1 level" is the mis-reading, and the one-round case changes the
-MODE. Only reachable with `trackAmmo` on; `rollWeapon` re-computes recoil after consulting the
-clip, since the dialog priced a full burst. See TODO 51/55.
-
-**Per-phase firing caps** (`SR3EItem.phaseFireWarning`) — SS 1 shot · SA 2 shots · BF 2 bursts
-· FA 10 rounds. ⚠ A **proxy**: the book states these in Actions and the system does not model
-the action economy, so they are inferred from `roundsFiredThisPhase` and a mixed-mode phase
-drifts. Warns, never blocks.
-
-**Walking fire** (`SR3EItem.roundsExpended`, pure) · *SR3 p.116* — full-auto only: **1 round
-wasted per metre between targets, and smartguns waste none**. A wasted round is still a **fired**
-round, so it counts against the **10-round phase budget**, against **recoil**, and against the
-**magazine** — `roundsExpended = rounds + roundsWasted` is the single source for all three.
-⚠ **Damage is the exception**: Power rises "for every round in that full-auto burst", and a
-round spent walking is not in the burst that arrives, so `fireModeDamage` keeps using `rounds`
-alone. ⚠ **Each burst is ≥3 rounds** (p.116), so three targets a metre apart costs
-3+1+3+1+3 = **11** and is *not legal* without a smartgun. The fire dialog's *Smartgun* tick (pre-ticked
-from the gun's `smartgun` field) zeroes the waste — `SR3EItem.walkingWaste` (TODO 56.1). Previously the magazine was
-decremented by rounds+waste while the cap and recoil saw `rounds` alone, so waste was invisible
-to the leg that spent it and Able's 11-round walk never warned.
-
-**Multiple targets** (`SR3EItem.multiTargetTN`, pure) · *SR3 p.111* — **+2 per additional
-target that Combat Phase**, asked for in **every** fire mode via the "Which target this Combat
-Phase?" dropdown. ⚠ **Not a full-auto rule.** p.111's rule sentence is unrestricted — *"If a
-character is attacking multiple targets within a single Combat Phase, he adds a +2 modifier per
-additional target"* — and full auto appears only in the **example** that follows it. Two Simple
-Actions at two targets is the ordinary way there (a second SA shot, a second burst, a pistol in
-each hand). It reads as full-auto-only because p.116 restates the +2 beneath a *Multiple
-Targets* heading inside FULL-AUTO MODE; what is genuinely full-auto-only there is **walking the
-fire** (1 wasted round per metre; smartguns waste none). The ordinal counts **targets, not shots** — a second burst at the same target is
-still the 1st. The dialog **prefills** the ordinal and the walking-fire metres from `system.targetsThisPhase`
-(TODO 56.2, `scripts/data/phase-targets.mjs`): who was shot at, keyed to the ledger's `round|turn` phase,
-cleared by `resetRecoil` with the full empty record, never `{}` (an ObjectField update merges). It is
-snapshotted for the GM's ↺ undo. ⚠ The **GM window cannot supply this**: `multiTarget` carries no `mvp` flag, so
-`mvpModifierGroups()` never renders it and the fire dialog is the only source. It used to live
-inside the dialog's FA-only section, so SA's second shot and BF's second burst were both free.
-
-**Ammunition** — two-layer model (see also the ammo-architecture memory):
-- *Stockpile*: ammo items are a reservoir (gear/ammo tabs show "Stock"). Fields: `ammoType`, `loadMechanism`, and the count. Rules live in `SR3E.ammoTypes` config, NOT on the item.
-- *Rounds or reloads — the Ammo Reloading Table, SR3 p.280* (TODO 114, reported in play; the maintainer chose the table as the model). All of it in `scripts/data/ammo-stock.mjs` (`AmmoStock`, on `game.sr3e` for the importer):
-  | Mechanism | Stock | Reloading | Takes |
-  |---|---|---|---|
-  | clip `c`, drum `d`, cylinder `cy`, belt `belt` | **either** — the item's `countedIn` | a **reload** (pre-filled clip / speed loader / belt) is swapped; **the old one's rounds are lost** | clip: 2 Simple (remove, insert — p.107); speed loader, belt: 1 Complex |
-  | | | or **loose rounds** by hand, topping up | 1 Complex per (Quickness) rounds |
-  | internal magazine `m`, break action `b`, `sb`, `internal`, arrow, bolt | **rounds** only | topped up | 1 Complex per (Quickness) rounds; **2** for break action |
-
-  `reloads` of `roundsPerReload` each (0 = fills the gun). ⚠ **A reload is used up whole** — a 10-round clip in an 8-round gun loads 8 and is gone. ⚠ **Round by round never loses a round** (the maintainer: *"reloading a weapon using a clip should lose the old rounds. anything that's going round by round … shouldn't lose the unused rounds"*) — loading a **different type** by hand unloads the unfired rounds back into the character's loose stock of that type, or a new *"… rounds (unloaded)"* item (`SR3EItem._returnRounds`). ⚠ The action cost is **shown, never enforced** (TODO 48); the dialog asks how many loose rounds go in this time. ⚠ **Not from storage.** ⚠ The importer reads the generator's `N-Rnd Clip (Type)` as reloads, typed from the name and fitted to the character's gun of that size (`mechanismFor`) — as loose rounds if that gun loads by hand; it used to import them with **0 rounds and type Regular**, unloadable. Migration 0.5.2 converts such items where the stock is empty in both units.
-- *Stacks and storage* (TODO 113): moving a stack of more than one (`quantity`, or ammunition `rounds`) into or out of storage asks how many; part of a stack splits off and an identical stack on the far side is merged into (`SR3EActor.stackKey`, strict — every field but the count). Pure rule: `SR3EActor.planStackMove`.
-- *Magazine*: each firearm tracks `loadedAmmoType` + `loadedRounds`; magazine size is parsed from its capacity string (`15(c)` → 15). The weapons-tab ammo cell shows the capacity, a loaded badge, and a ↻ **Reload** button (`SR3EItem.reload`).
-- *Reload*: prompts a compatible stock (`AmmoStock.fits`: ⚠ **loose rounds fit any firearm** — every shipped box says `c`; a pre-filled reload only its own mechanism; arrows/bolts only their bow/crossbow — never from storage) and applies `AmmoStock.reloadPlan` with what is already in the gun — swap a reload, or top up with loose rounds — then reports what was lost and what it takes (`reloadActions`). When `trackAmmo` is off it only sets the loaded type (no stock math).
-- *Firing* uses whatever is loaded; decrements `loadedRounds` when `trackAmmo` is on (warns, never blocks, when empty).
-- *Type rules*: Explosive +1 / EX +2 power; Gel −2 power + Stun (attack time). **Shot** (shotguns, p.117): flechette rules + choke spread (above). APDS halves ballistic; Flechette unarmoured → level +1, armoured → **`max(Impact × 2, Ballistic)`** (`SR3EActor.flechetteArmor`, soak time via `ammoType` carried into `_postSoakCard`).
-  ⚠ **The doubling is on IMPACT ONLY** — *"use either double its Impact Armor Rating or its normal Ballistic Armor Rating, whichever is higher"* (p.116). This was `max(ballistic, impact) × 2` until 2026-08-30, which doubles the wrong number and then doubles it anyway: ballistic 8 / impact 2 gave 16 where the book gives 8. The two agree whenever Impact is the higher, which is the common case for light armour and is why it survived. ⚠ *"Dermal armor negates the Damage Level increase"* — `SR3EActor.flechetteRaisesLevel`, fed by `dermalArmorSources`: a troll's hide, **Dermal Plating** or a **Dermal Sheath** (`SR3E.dermalArmorImplants`; M&M p.133 defines dermal armor as *"plating or sheath"*). ⚠ **Orthoskin is not dermal armor** — it is bioware armour, and now counts as armour instead (below). Anti-Vehicle sets `weaponOpts.avMunition` to bypass the vehicle Power/2. Tracer: FA-only, tracer rounds raise Level not Power, TN bonus shown as a manual note.
-- *Loading mechanisms*: c/m/cy/b/belt/d/sb/internal + arrow/bolt (`SR3E.ammoLoadMechanisms`); for firearms parsed from the gun's capacity string by `SR3EItem._parseLoadMechanism`. ⚠ **`b` is BREAK ACTION and `m` an INTERNAL magazine** (SR3 p.280) — the map said Belt and Magazine until 2026-09-13; 14 shipped guns are `(b)`, all break-action. Belt feed is `belt`.
-- *Weight*: ⚠ **ammunition weight is PER ROUND** (per reload for a clip) — TODO 126. A box that has been
-  fired down weighs less, which a per-box figure could not express; `build-default-gear` divides the
-  generator's package weight down, and the 661 shipped documents store it that way.
-- *Setting*: world setting `trackAmmo` gates all counting/depletion — **on** for a new world (TODO 55).
-  ⚠ A world from before 0.6 that never set it stays **off**. `SR3EMigrations.DEFAULT_CHANGES` writes the
-  old default in, because Foundry stores only a value someone set, so a changed default would silently
-  empty every gun in that world. Changing another setting's default goes there too.
-
-**Bows & crossbows — nocked arrows/bolts** (`projectile` type, bow/crossbow categories per `SR3E.nockedAmmoByCategory`; `SR3EItem._usesNockedAmmo`): treated like firearms with a **magazine of 1**. Each draws from the same `ammunition` stockpile, matched by loading mechanism — **bows ↔ `arrow`, crossbows ↔ `bolt`** (the mechanism is inferred from the weapon category, not a capacity string; see `_weaponLoadMechanism` / `_weaponMagazineSize`). Reload nocks one round (subtracts 1 from stock); firing spends it (`loadedRounds` 1→0) so you must re-nock. The weapons-tab projectile section shows a **Nocked** column (Arrow/Bolt or empty) + ↻ Reload, only when `trackAmmo` is on. **Slings (SL) and any non-mapped category never deplete.** No special arrow/bolt types yet (always `regular`).
-
-**Thrown weapons / grenades** (`thrown` type, and `projectile` type with a thrown category — `SR3EItem._isConsumable`): carry a `quantity` and are decremented 1 per use (`_consumeThrown`) when `trackAmmo` is on. The weapons-tab thrown section shows `×qty`.
-
-**Empty = inoperable** (when `trackAmmo` is on): `rollWeapon` bails at the top if a firearm or nocked bow/crossbow has `loadedRounds ≤ 0`, or a consumable has `quantity ≤ 0`. The roll dice icon is rendered faded + struck-through (`_itemControls` `rollDisabled`, gated by `SR3EActorSheet._weaponOutOfAmmo` for firearms & bows / inline for thrown). The Reload button stays active so you can refill.
-
-**Vehicle-mounted weapons** keep their own AV-munition checkbox in the `🚗` firing dialog — they do **not** use the clip/reload system (built for vehicle-vs-vehicle). Character firearm dialogs no longer have a manual AV checkbox (driven by Anti-Vehicle ammo type).
-
-### Carried load and Encumbrance  · *SR3 p.274* — TODO 126
-
-`scripts/data/carried-load.mjs`. The Gear tab leads with **⚖ Carried N kg**, from every item NOT in
-storage (TODO 113); installed cyberware and bioware weigh nothing, stacks multiply by `quantity`, and
-ammunition by its rounds or reloads.
-
-⚠ **The book makes this OPTIONAL** — *"If the player characters' equipment seems to be getting a bit
-out of hand, the gamemaster can impose the following Encumbrance rules"*. Shown, never enforced.
-
-| Load | Effect |
+> **Audited so far:** Rule of Six/One · Defaulting · Damage staging · Combat Pool · pool refresh · initiative −10 ·
+> dodge resolution · Spell Pool · astral Initiative · all 117 adept powers (`audit/adept-powers-audit.md`) · every
+> lookup table (`tests/tables.test.mjs`) · Matrix Defragged v2 (`audit/matrix-defragged-audit.md`).
+
+| Rules file (`.claude/rules/`) | Covers |
 |---|---|
-| up to **Strength × 5** kg | no appreciable effect |
-| × 10 | **Light** Stun wound after (Body) Combat Turns, then a box every turn |
-| × 15 | **Moderate**; cannot run, movement halved |
-| × 20 | **Serious**; cannot run, movement quartered |
-| heavier | passes out from exertion |
-
-⚠ **Each bound is "up to"** — exactly Strength × 5 is still free. ⚠ The movement penalties are stated,
-not modelled (there is no movement rate), and the Stun is the GM's to apply like any other wound.
-
-### Range (firearms, bows/crossbows, thrown)  · *SR3 p.111*
-Every band and Strength multiplier is asserted against the printed table in
-`tests/tables.test.mjs` — all 15 firearm rows and all 6 projectile rows match.
-Auto-measured from tokens when available, otherwise manual. Applies to `firearm`/`projectile`/`thrown` in the single-target `rollWeapon` path (AoE/grenades use the scatter flow instead).
-- **Distance**: `SR3EItem._measureDistance(aToken, tToken)` via `canvas.grid.measurePath` (scene units assumed **metres**). Attacker token = `actor.getActiveTokens()[0]`. Target token = the single canvas target (`game.user.targets`) if present, else the chosen actor's first token. Target acquisition: `SR3EItem._acquireCanvasTarget()` (one canvas target → skips the actor dialog), else `_promptTarget`.
-- **Bands**: `SR3EItem._getRangeBands(actor)` → weapon `rangeOverride` ("5/15/30/50") → fixed metre table `SR3E.weaponRanges[category]` (firearms) → Strength-scaled `SR3E.weaponRangeMultipliers[category]` × effective STR (bows/thrown).
-- **Classify**: `SR3EItem._rangeBandForDistance(bands, metres)` → `{idx,label,tnMod,beyond}`. TN modifier from `SR3E.rangeTN` = `[0,1,2,5]` (Short 4 / Medium 5 / Long 6 / Extreme 9). Beyond Extreme warns but still allows.
-  ⚠ **GRENADES USE A DIFFERENT ROW.** The Grenade Range Table (p.119) heads its columns **4 / 5 / 8 / 9** — Long is **8**, and the Weapon Range Table agrees from the other side (the launcher's Long band is footnoted *"Target number 8: see page 119"*). `SR3E.grenadeRangeTN` = `[0,1,4,5]` and the AoE flow reads it. Until 2026-08-30 the grenade path read `rangeTN`, so every long throw was two points easier than RAW — the shared array looked authoritative because every other weapon genuinely does use it.
-- **Override at fire time**: range is NOT pre-baked into `extraTNMod`; it's passed to `_promptWeaponRollOptions` as `rangeInfo` and rendered as an editable **Range dropdown** (pre-set to the measured band, shows measured metres). Changing it recomputes the TN live, wired through the dialog's own `render` option. The TN field stays the authoritative value on confirm.
-
-### Attacking from the canvas
-Two entry points besides the sheet (both fire ready weapons via `_sr3eReadyWeapons`: firearms with ammo loaded when tracking, equipped melee, thrown w/ quantity, bows/crossbows with a nocked arrow/bolt when tracking, slings, **and combat/damaging spells — those with a damage code — for Awakened actors**):
-- **Token HUD** (`renderTokenHUD` hook, sr3e.js): adds a 🎯 crosshair button on owned character/npc tokens → `_sr3eQuickAttack(actor)` opens a picker (or fires directly if only one ready) → `_sr3eFireWeapon` dispatches `rollMelee`/`rollWeapon`/`rollSpell`. Works for all players (system code, not a macro).
-- **Hotbar drag** (`hotbarDrop` hook + draggable `.weapon-section .item-row` emitting `{type:'Item', uuid}`): creates a "Fire: \<weapon\>" **script macro**. ⚠ Script macros only run for users with script-macro permission (off for the base Player role) — the Token HUD path has no such restriction.
-
-### Foundry integrations (tokens / statuses / enrichers)
-- **Token wound bars**: `preCreateActor` (sr3e.js) defaults character/npc prototype tokens to `bar1=wounds.physical`, `bar2=wounds.stun` (fill as damage rises), `OWNER_HOVER`. Only affects newly-created actors. Wounds are `{value,max}` so Foundry treats them as trackable.
-- **Status effects**: custom SR conditions appended to `CONFIG.statusEffects` (init): `sr3e-sustaining/-fulldefense/-dumpshock/-astral/-dual/-vr` + core (prone/unconscious/dead…). The `updateActor` hook (gated to `game.users.activeGM.isSelf`) auto-toggles `sr3e-astral`/`-dual` from `astralMode`, `sr3e-vr` from `matrixUserMode` (VR-Cold/Hot), `sr3e-fulldefense` from `fullDefense`, `sr3e-sustaining` from `sustainedSpells` (any held), via `actor.toggleStatusEffect`.
-- **Auto-defeated**: same `updateActor` hook — when a wound track is full → combatant `defeated=true` + `unconscious` overlay; physical full AND overflow ≥ Body → `dead` overlay. Reversible on healing.
-- **Drops onto the character sheet** (TODO 97): items ride core's `ActorSheetV2` handling, which
-  works. `SR3EActorSheet._onDrop` / `_onDropDocument` catch what used to fail **silently** — a
-  damaged pack entry (null `_id`, install drift — see *Pack integrity*) now warns the person — and
-  `_onDropActor` deploys (compendium) or links (world) a dropped **vehicle/drone** to that character
-  through `sr3e.actor.create` / `sr3e.vehicle.link`, taking the id from the drag data's uuid, not the
-  document (a drifted install loads actor-pack documents with `_id: null`).
-- **Text enrichers**: actor Biography/Notes render as read-only enriched HTML (`_bioField` + `_enrichBioFields` in `_onRender`, via `TextEditor.enrichHTML`) with an ✎ Edit toggle revealing the textarea; submit-on-change re-renders back to enriched. Chat-card content is auto-enriched by core. Item/actor edit fields stay plain textareas by design.
-- **AoE / grenade flow (RAW scatter-first)**: requires a scene. `rollWeapon` AoE path:
-  1. **Nominate** the blast point — `_placeBlastTemplate`: a plain **PIXI.Graphics circle** (added to `canvas.interface`) that follows the cursor — left-click detonates, right-click/Esc cancels, destroyed via PIXI. Records `aoeCenter` (scene coords) + the thrower token centre. *(Foundry v14 deprecated both the MeasuredTemplate **document** and **placeable** — merged into Region — so the aiming preview uses no MeasuredTemplate at all, avoiding every compatibility warning.)*
-  2. **Roll options** — `_promptWeaponRollOptionsAoE(rawDamage, actor, {throwDistance})`: grenade type (Standard/Aero/Launcher), damage code, **auto range-TN** by type (`SR3E.grenadeTypes[type].rangeMult × STR` or `rangeFixed`, recomputed on type change), and a Confined-Space tickbox. No targets chosen here.
-  3. **Throw roll** (`rollPool`) carries `aoeCenter / aoeRadius / aoeThrowerCenter / grenadeType / aoeChunky` in the roll state.
-  4. **Resolution** (`SR3EActor._postWaveCard`, the `state.isAoE && state.aoeCenter` branch — runs **before** the `successes===0` check, so a grenade always detonates): rolls scatter (`scatterDice` d6) − `successes × scatterReduction`; **relocates the epicentre** along the throw axis (dir 1 = overthrow, 4 = short); creates a result template at the landing spot; **re-detects every token in range — including the thrower**; draws a landing marker as a **Region document** (circle shape, `visibility: ALWAYS` — synced & visible to **all players**, deleted warning-free since Region isn't deprecated). If the thrower lacks Region-create permission it falls back to a **local PIXI circle** (tracked in `game.sr3e._blastMarkers`). The chat 🧹 Clear button removes whichever was made (`data-region-id` → region `delete()`; `data-marker-id` → PIXI `destroy()`). Per-target power = base − distance (or the **Chunky Salsa GUI** `game.sr3e.openChunkySalsa({...returnOnly})` when confined). Posts a soak card per caught token.
-  ⚠ **The throw's successes STAGE THE DAMAGE LEVEL** · SR3 p.119: *"Compare the target's successes
-  against those from the attacker's Success Test. If the attacker rolled more successes, the Damage
-  Level of the blast increases one level for every two successes over the target's success total. If
-  the target rolls more successes, the Damage Level … is reduced one level for every two."* Only half
-  of that was implemented until 2026-09-22 — the soak already staged DOWN on the target's Body
-  successes, but the thrower's did nothing except tighten scatter, so a perfect throw hit no harder
-  than a fumbled one. **This line used to say "never success-staged", stated as settled.**
-  ⚠ **POWER is not staged, only the LEVEL** — Power is the distance-reduced blast Power *and* the
-  Damage Resistance TN, so staging it would make the wound both likelier and worse, twice over.
-  ⚠ p.119 also prints an **optional** rule (the GM rolls half the grenade's Power vs TN 4 to stage
-  up) — a different rule, not implemented; we do the standard one.
-- `_openChunkySalsaCalculator(opts)` posts soak cards itself when called with no `returnOnly` (the Rollable Tables button); returns per-target codes when `returnOnly:true`.
-- *(The dead remnants of the pre-scatter rework — `_promptTargetsAoE`, `_tokensInBlast`, the `aoeTargetIds`-gated branch in `_postWaveCard` and its `aoeTargetIds`/`chunkySalsa` payload plumbing, and `rollPool`'s inert `options.defaulting` +4 — have been removed.)*
-- **Shared blast-area marker**: `SR3EActor._drawBlastArea(center, radiusM, {name,color})` → `{regionId, markerId}` (Region with `visibility: ALWAYS`, local PIXI fallback) and `SR3EActor._clearBlastButton({regionId,markerId})` build the marker + chat 🧹 Clear button. Used by both grenade resolution and **spell AoE** (purple). Spell AoE has **no scatter/falloff** — `SR3EItem._actorsInRadius(center, radiusM, caster)` auto-detects targets at cast time; each resists at full Force.
-
-### Melee combat flow  · *SR3 p.121-123*
-1. Attacker clicks a melee weapon on their sheet.
-2. Target selection dialog. **Adjacency:** if both are tokens and the target is not in an
-   adjacent square (`SR3EItem._tokensAdjacent`), `rollMelee` **warns but proceeds**
-   (minimal guardrails). Reach affects the TN only, never whether the attack is possible.
-3. Defender auto-uses their equipped melee weapon, falling back to an unarmed/cyber item,
-   then to bare hands (STR + M). **Reach never gates participation** — p.122 step 2 has the
-   defender roll unconditionally, so an unarmed defender still defends normally.
-4. Either side lacking the skill is prompted to default — **on their own client**.
-5. Called shot (attacker only).
-6. **The GM sets BOTH target numbers** — `sr3e.melee.negotiate` →
-   `SR3EItem._promptGMMeleeWindow`. See below.
-7. Two-corner boxing card; each side edits only its own corner and submits. The last
-   submission resolves (see **Two-corner cards**).
-8. Winner = most successes. **A tie does no damage.** The winner's damage code stages up by
-   the net successes; the loser gets a Resist Damage button into the usual soak flow.
-
-#### The GM's melee TN window — separate from the ranged one on purpose
-
-**Multiple targets** (p.122: *"+2 per additional target struck in that Combat Phase"*):
-- The window's count is **prefilled** from the attacker's `system.targetsThisPhase`, the same record
-  the fire dialog reads (TODO 56.2).
-- Each melee attack records its target there.
-- With no window (NPC against NPC), the flow adds the +2s to the attacker's TN itself.
-
-Ranged resolves **one** target number; melee resolves **two**, and most p.123 rows move both
-at once in opposite directions — "friends in the melee" is a single fact that helps one
-fighter and hurts the other by the same amount. `sumMeleeModifiers` therefore returns an
-`{atk, def}` **pair of deltas**, not finished numbers: the base TNs already carry reach,
-defaulting tiers and any called shot, and handing back absolutes would silently discard them.
-
-Governed by the same `gmApprovesTN` setting as ranged — `SR3EQuery.gmWindowOpens`. Its default,
-`player`, opens the window **whenever a player's character is involved on either side** (a player
-attacking, or the GM attacking a PC) and skips only NPC against NPC (TODO 94; it used to skip
-whenever a GM asked, so the GM attacking a player saw no breakdown). ⚠ "A player's character" is
-`SR3EQuery.isPlayerCharacter` — assigned character or an **explicit** Owner entry — never
-`hasPlayerOwner`, which counts default ownership and would make every goon a PC in a world whose
-Actors default to Owner. `adjudicated` is the caller's only reliable signal that a GM actually
-looked — do not infer it from the payload (TODO 50).
-
-⚠ **Visibility halves in melee.** p.123 applies the Visibility Table *"at half their value,
-rounding down, except for Full Darkness"* — `meleeVisibilityModifier`, not the ranged
-`visibilityModifier`. An odd +1 therefore becomes 0 rather than persisting.
-
-#### ⚠ Reach is a DIFFERENTIAL, and its application is the fighter's CHOICE
-
-p.121: *"Calculate the **difference** between the Reach Ratings of opponents. The character
-with the longer (higher) Reach **can choose** to apply this number as either a negative
-target number modifier to his attack test OR as a positive modifier to his opponent's target
-number."* The book gives the reason the two are not the same: *"beat the opponent's
-defenses"* versus *"make himself harder to hit."*
-
-- **Differential, not an absolute.** Equal reach cancels — two staff-wielders both roll
-  against 4, not 2. Each side subtracting its own reach was an old bug: the *gap* came out
-  right, which is why it survived play, but the absolute level did not.
-- **The election lives in the holder's own corner** (`sr-melee-atk-reach` /
-  `sr-melee-def-reach`), rendered only for the fighter who holds the longer reach, so the
-  per-corner owner gate already makes it read-only to everyone else. It is **not** in the GM
-  window — putting it there would repeat exactly the mistake the contested rework removed.
-- Electing "onto the opponent" raises **both** TNs by N: the holder gives back the bonus the
-  card was posted with, and the opponent takes the penalty. The gap is unchanged; only who
-  is measured against the harder number moves.
-- ⚠ **At the TN floor the two branches stop being equivalent, and that is RAW.** No TN may
-  fall below 2, so a bonus that would take you under it is simply lost while the same points
-  pushed onto the opponent are not. Against a soft target the election is a real edge.
-- Trolls have natural Reach 1 cumulative with weapon reach (p.121) — `SR3EActor.meleeReach`
-  adds `SR3E.racialReach` to each fighter's weapon Reach **before** the differential is taken.
-  ⚠ Per fighter, never onto the difference: troll-vs-troll must still cancel.
-
-### Full Defense  · *SR3 p.123-124*
-
-A **melee** posture (p.108 Interception forces it; p.121 whips reference it). Two stages, in
-`SR3EActor.fullDefenseOutcome` — pure, returning `{blocked, net, cleanMiss, remaining,
-dealsDamage}`.
-
-1. **Skill test, pool-free.** `handleMeleeRoll` zeroes the defender's Combat Pool and says why.
-   It **zeroes rather than rejects** — the pool is reserved for stage 2.
-2. Defender with **more** successes → **blocked**. A tie is *not* a block.
-3. Otherwise `.sr-fd-dodge-btn` → `handleFullDefenseDodge`: **Combat Pool dice only**, TN from
-   the defender's melee TN so the Melee Modifiers Table applies.
-4. **The defender deals no damage**, even winning outright.
-
-⚠ **This dodge SUBTRACTS from the attacker's net before staging** — *"subtract the Dodge
-successes from the attacker's"* (p.124). The **ordinary** dodge instead *adds* its successes to
-the Damage Resistance Test and never touches staging (p.113). Two arithmetics; `dodgeOutcome`
-and `fullDefenseOutcome` stay separate, and `tests/full-defense.test.mjs` asserts both on the
-same numbers.
-
-⚠ **Ranged Full Defense is a system EXTENSION, not RAW** — nothing in the ranged rules
-mentions it. The reserved-pool-as-dodge-declaration behaviour is kept deliberately.
-
-### The melee tie goes to the ATTACKER  · *SR3 p.122*
-
-*"The character who rolls the most successes has hit his or her opponent. A tie goes in favor of
-the attacker."* Net 0 → base Damage Level, defender resists. `SR3EActor.meleeOutcome`.
-⚠ The staging gate is unconditional, **not** `net > 0`: gating on that posts no soak button and
-deletes the attack. ⚠ Same strictness trap as the ranged dodge tie, pointing the other way.
-
-### Cyberware/bioware bonuses — the `Mods` field
-
-Upstream (`criticalfault/Shadowrun-Character-Generator`) encodes an item's effects as
-`+2RCT,+1INI,`. `scripts/SR3EMods.js` parses it; `tools/build-mods-bonuses.mjs` generates
-`scripts/data/srcg-bonuses.js` (**generated — do not hand-edit**), which feeds BOTH the pack
-patcher and the world migration.
-
-⚠ **Parse `Mods`, never `Notes`** — the upstream maintainer confirmed `Mods` is authoritative
-(issue #199); `Notes` is a flattened view that sometimes disagrees.
-
-⚠ **Two racial encodings coexist TODAY**, split by file: 3-letter with the first letter
-replaced (`ROD` `RTR` `RCK` `RNT` `NCT` `NNI` `XOD`) in Bioware, 4-letter `R`+code
-(`RBOD` `RSTR` `RQCK`) in AdeptPowers. Neither of the maintainer's own two maps covers both.
-SR3E collapses them all to the plain attribute — we track no racial maxima.
-
-⚠ **Most codes are NOT attributes.** `STG` `MNE` `DGX` drive karma spending and lifestyle
-cost; `DJK` `PCL` `PCA` `MUL` `AST` are equipment flags. `IMP`/`BAL`, `TAS`/`HAC`/`CPL` and
-`VCT`/`VNI`/`VCR` are real modifiers with no SR3E field. **Nothing is silently discarded** —
-every token lands in `bonuses`, `flags`, `unmapped` or `unparsed`.
-
-⚠ **`bonus*` fields on cyberware/bioware have NO `min`** — three entries carry a penalty
-(`-1RCT`), which a floor of 0 silently swallowed. AdeptPowerData keeps its floor deliberately.
-
-### Pack integrity — `npm run packs:check`
-
-Point it at any install; **read-only by default**, exits 1 on a fault so it can gate a release.
-
-```bash
-npm run packs:check                     # the local install
-npm run packs:check:repo                # this checkout's packs/
-node tools/check-packs.mjs <path>       # any other install (prod, a player's machine)
-npm run packs:fix                       # remove SAFE duplicates only
-```
-
-Checks: documents with a null/missing `_id`, pack keys that disagree with the document's own
-`_id`, duplicate `_id`s within a pack, and manifest packs missing from disk. Undeclared packs
-on disk are reported as **information, not a fault** — the maintainer's install still carries
-22 pre-split monolithic packs, which Foundry simply ignores.
-
-**Book and page (TODO 117)** — also information, not yet a fault: documents with a blank or `???`
-`system.bookPage`, and documents whose page names a different book from their pack (fan `pw`
-items in the SR2 core packs, say — shipping content the book toggle cannot hide). One reader,
-`scripts/data/book-page.mjs` (`BookPage.missing` / `codes` / `format` / `namesOtherBook`), shared
-with the sheets, which show the raw code with *"SR3 p.303"* beneath it. ⚠ Upstream writes SOTA 2064
-as **`sta2`**; `CODE_ALIASES` maps it to the registry's `sota2`. Pages are filled from
-`tools/data/book-pages.json` by `tools/fill-book-pages.mjs` — each entry records *why* its page is
-what it is. `tests/book-page.test.mjs` ratchets the count still missing (200 on 2026-09-13).
-
-⚠ **Foundry must be closed even to READ.** A LevelDB allows one process to open a database;
-there is no shared-read mode. The tool reports a lock as "close Foundry" rather than a stack
-trace, because that is what it always means.
-
-⚠ **Why it exists.** On 2026-08-30 a sweep found **one malformed document in every pack** —
-92 of them, keyed `!items!null` / `!actors!null` with `_id: null`. Nothing was visibly broken
-and they had survived the entire per-book restructure. **The repo was clean**: the shipped
-packs are built by a node tool, which writes minimal documents, while every malformed record
-carried full Foundry scaffolding (`_stats`, `ownership`, `sort`, `folder`) — the signature of
-`pack.importDocument`, i.e. of running the populate macros against a live install. Several sat
-in packs that do not exist in the repo at all. So this is drift a **particular install**
-accumulates, which no test can see.
-
-⚠ **`--fix` deletes only what it can PROVE is redundant** — a malformed record goes only when
-some *other* properly-keyed record in the same pack is byte-identical in content. Anything
-else is reported and left. Two traps are already handled, both found the hard way:
-- **`prototypeToken` and the scaffolding fields are excluded from the comparison.** They
-  differ by construction between a built document and a Foundry-hydrated one, and comparing
-  them made all 92 look like genuine conflicts.
-- **Any identical twin counts, not the first name-match.** A name can legitimately repeat
-  within a pack — `sr3e-sr3-melee` carries three "Spur"s — and comparing against the wrong one
-  reported 23 false conflicts.
-
-### World migrations — `scripts/SR3EMigrations.js`
-
-⚠ **Foundry EMBEDS items, it does not link them.** An actor holding an item carries its **own
-copy**, made at drag time. Fixing a compendium entry changes nothing for anyone who already
-owns one, and there is no relink. So a pack correction needs **two** changes: the pack file
-itself, and a migration for worlds already in play.
-
-**Adding one:** append to `MIGRATIONS` with the system version that introduces it, and **bump
-`system.json` in the same commit** — `migrate()` stamps `game.system.version` when it finishes,
-so a migration numbered *above* that version never gets stamped past and re-runs on every world
-load for ever. Silent, because migrations only fill blanks. `tests/migrations.test.mjs`
-asserts this, and caught it the first time.
-
-**Two rules, both asserted:**
-1. **Fill blanks, never overwrite** — a GM who typed a value keeps it (`_fillBlank`). Note `0`
-   and `''` count as unset, since they are the schema defaults; that is why migrations name a
-   specific item rather than sweeping a type.
-2. **Idempotent** — a second run changes nothing. The version stamp is a fast path, not the
-   guarantee; a failed run leaves the stamp alone so the next load retries.
-
-⚠ **Three populations, and the third is the one people forget:** world actors, world items, and
-**unlinked token actors on every scene** (`scene.tokens[].actor` when `actorLink` is false).
-Skip the third and the fix works everywhere except the token actually being played.
-
-⚠ **Compendium packs are deliberately NOT migrated** — they ship as files, so a pack fix belongs
-in the pack (see `tools/patch-enhanced-articulation.mjs`, which needs Foundry **closed**: a
-LevelDB allows one writer).
-
-Gated to `game.users.activeGM`. `game.sr3e.SR3EMigrations.force()` re-runs everything from the
-console, for an actor imported from an older world — safe, because of rule 1.
-
-### Skill bonus dice — two channels, and they are NOT interchangeable
-
-| | `derived.skillBonusDice` | `derived.skillCategoryBonuses` |
-|---|---|---|
-| keyed by | skill **name** | skill **category** |
-| applied | **automatically**, every roll path | **opt-in**, a checkbox on the Roll Skill dialog |
-| read via | `SR3EItem._skillBonusDice` | `SR3EActor.skillCategoryBonus` |
-| fed by | `improvedSkillName` + `improvedSkillDice` | `improvedSkillCategory` (comma-separated) + `improvedSkillDice` |
-
-⚠ **Do not fold the second into the first.** `skillBonusDice` promises "always applies" and
-consumers trust it. A category bonus cannot promise that: Enhanced Articulation (M&M p.66)
-covers *"physical use of Vehicle Skills"* but **not** *"driving a car via datajack"* — the same
-skill, actor and sheet, differing only in what the character is doing. Hence a per-roll
-checkbox, on `SR3EActorSheet._promptSkillRollOptions`.
-
-⚠ **FIVE categories, not four** — the Vehicle sentence is easy to miss and TODO 10 missed it.
-⚠ **`Martial Arts` COUNTS AS `Combat skills`** (`SKILL_CATEGORY_COUNTS_AS` in config.js). CC
-p.87: martial arts are *"considered a Combat skill"*. Without the alias a martial artist got
-Enhanced Articulation on Unarmed Combat and Edged Weapons but **not on `MA:Aikido`** — the one
-skill they roll. The alias lives on the CATEGORY, not on EA's list, so any later
-category-scoped bonus inherits it; it is one-way, and a bonus covering both pays once.
-⚠ **Vehicle skills start UNTICKED**, everything else ticked: rigging is the exception, so it is
-what the player opts into.
-⚠ **Parse the category field on COMMAS ONLY** — `Build/Repair skills` contains a slash.
-
-Both skill-roll paths go through the same dialog: the character sheet's skill row, and the
-**skill item sheet's own roll button** (unified 2026-08-20; it previously rolled at a hardcoded
-TN 4 with no dialog at all).
-
-### Triggered cyber/bioware  · *M&M p.63, p.71* — TODO 30
-
-Two shipped items do nothing until switched on. `SR3E.triggeredAugmentations` classifies them
-and `system.augmentations` (an ObjectField keyed by ITEM ID) holds the state.
-
-| | Kind | Effect |
-|---|---|---|
-| Adrenal Pump [1]/[2] | **duration** | +1 QCK / +2 STR / +1 WIL / +2 REA **per level** |
-| Pain Editor | **toggle** | +1 WIL, −1 INT, and Stun wound modifiers ignored |
-
-⚠ **Adrenal Pump is a DURATION, not a toggle** — *"roll 1D6 for each level; the die result
-indicates the number of Combat Turns"*. A boolean flag would let a GM forget to switch it off and
-leave a character permanently boosted. It counts down on the `updateCombat` round hook beside
-`tickAttributeBoosts`, and on expiry bills a **Body Test vs (turns it ran)D Stun** — Power is the
-duration, read from `rolledTurns` recorded at activation, because by expiry the counter is zero.
-⚠ The crash goes through the ordinary soak card with **`noArmor`** — shock is not an attack. Until
-0.5.2 it passed `power`/`level` where the card reads `stagedPower`/`stagedLevel`, so the card had
-no Power and a NaN TN (`tests/soak-payload.test.mjs`).
-
-⚠ **WHERE the bonuses are applied is the rule, not a detail.** p.63: *"The Quickness bonus does
-not affect Reaction, nor does the Reaction bonus affect the Control Pool. However, the Quickness
-and Willpower bonuses affect the Combat Pool."* They are applied **after** the Reaction
-derivation and **before** the pools, which satisfies all three for free — Reaction is already
-computed, Combat Pool is not yet, and Control Pool is the Vehicle Skill rating and never reads
-Reaction. Moving the block either way silently breaks one clause.
-⚠ Most attribute combinations round to the same Reaction either way; `tests/adept-powers.test.mjs`
-uses QUI 4 / INT 5 deliberately, because that is a pair where the two orderings differ.
-
-⚠ **The Pain Editor recomputes the wound modifier from the PHYSICAL track — it does not zero
-it.** *"Penalties from Physical damage are applied, but without the player's knowledge."* Zeroing
-would make it total immunity.
-
-**Damage Compensators** (M&M p.71, TODO 116) are passive, not triggered:
-`SR3EActor.damageCompensatorLevel(items)` (the highest set, level via `itemRating`) is subtracted
-from both tracks before the injury-modifier lookup — the same offset as Pain Resistance, taking the
-**larger** of the two (M&M p.78: *"incompatible"*). They did nothing until 0.5.2. The
-`painEditorHidesWounds` setting also conceals a character with compensators installed, as p.71
-suggests. Stress (half at Serious, none at Deadly) is not modelled — TODO 109.
-
-⚠ **Nephritic Screen needed no mechanism at all** — it rides `situationalBonuses` with the
-`toxin` key, exactly as Body Control does. That is the point of keying those channels by
-situation rather than by source. A **dwarf's racial +2** (SR3 p.56, `SR3E.racialSituational`)
-joins them, and all three are offered on the **attribute-roll dialog** as one unticked checkbox,
-live only while Body is selected (`SR3EActor.toxinResistanceOffer`, TODO 98) — dice on the
-test, never added to `body.value`.
-
-### Stress on implants and Attributes  · *M&M pp.124-131* — TODO 109
-
-Rules: `scripts/data/stress.mjs` (pure). Dialog, writes and card: `scripts/SR3EStress.js`. Fields:
-`stress` on cyberware (starts 0) and bioware (**starts 1** — the book's permanent point), `integrity`
-for a cyberlimb's Integrity Enhancement, and `system.attributeStress` keyed by attribute.
-
-| | |
-|---|---|
-| Stress Level | 1-2 Light · 3-5 Moderate · 6-9 Serious · **10+ Deadly = automatic failure** |
-| Stress Test dice | cyberware Basic 1 / Alpha 2 / Beta 3 / Delta 5 · bioware Cosmetic 1 / Basic 2 / Cultured 4 · an Attribute **half its unaugmented rating** |
-| Target number | **the current total** − a cyberlimb's Integrity Rating + a bioware Attribute boost |
-| A wound effect | **1D6 ÷ 2** Stress, then the test |
-
-⚠ **The TN is the NEW total, not what was just added** — p.126's example rolls the nephritic screen
-against 4 because it already carried 3. ⚠ **One success avoids failure**; this is a check, not a graded
-test. ⚠ **The 1D6 ÷ 2 must NOT go through `rollPool`** — *"the Rule of Six does not apply to this roll"*,
-and every `rollPool` path explodes 6s. ⚠ **Nothing is automatic**: ⚙ Apply Stress is GM-only and the soak
-card does not reach in, because a wound effect is a judgement about what the wound did.
-⚠ **1D6 ÷ 2 rounds DOWN** here, so a 1 inflicts nothing — M&M does not say, and it is the maintainer's to
-settle. Not built: Stress Maintenance and repair (p.130-131), bioware malfunction thresholds, and the
-Fragile/Rugged surgery options (p.148).
-
-### Cybersystem damage — Essence slots and the Wound Effect Table  · *M&M pp.126-129* — TODO 129
-
-Rules: `scripts/data/cyber-slots.mjs` (pure). The flow: 🎲 **Wound effects…** beside ⚙ Apply Stress on
-the Cyber tab (GM-only) → a card naming what each effect hit → ⚙ **Apply Stress — <implant>**, which
-opens TODO 109's dialog with *"what took it"* filled in.
-
-| Step | Rule |
-|---|---|
-| How many effects | the Damage Resistance Test read as a Success Test: **boxes − the highest die** · p.127 |
-| What kind | 1D6: **1-2 cybersystem · 3-4 bioware · 5-6 organic** · p.127 |
-| Which system | 1D6 against the **six Essence slots**, one per point of Essence · p.127 |
-| Bioware | the same procedure with **Bio Index slots** · p.128 |
-| The Stress | 1D6 ÷ 2 and a Stress Test — TODO 109 already does it · p.127 |
-
-⚠ **The count is the MARGIN OF FAILURE, not the successes** — *"the difference between the highest
-roll and the number of damage boxes suffered"*. The book's 1,1,2,2,3 against 6 boxes is **3** wound
-effects; counting successes gives 0 and the rule never fires. Mutant: `wound-effects-count-successes`.
-
-⚠ **A partly filled slot is a CHANCE, not a hit** — *"he might not have taken any damage at all
-because that slot is only half full … a 50-50 chance between the smartlink getting hit and no damage
-being done"* (p.128). `hitChance` is the filled fraction. Mutant: `half-slot-is-a-certain-hit`.
-
-⚠ **Ignore, never re-roll.** An effect landing on an empty slot, or on a type the character has none
-of, is *"ignored"* — it does not become a hit somewhere else.
-
-⚠ **The module never picks within a slot.** The book hands that to the GM — *"choose an appropriate
-cybersystem from that slot, choose randomly, or roll a ten sided die"* — so `systemHit` returns the
-candidates with their shares (summing to 1, for the optional 1D10) and the card offers all of them.
-
-⚠ **A slot holds GRADED Essence.** An alphaware VCR occupies **2.4**, not its base 3.0 — the slots
-picture the Essence actually spent, which is what makes the printed layout come out right.
-
-⚠ **Electrical damage SKIPS the Wound Effect Table** (p.129): every effect goes straight to Determine
-System Affected, plus an extra 1D6 each where **1-2 damages another implant**.
-
-⚠ **Cyberzombies double up** (p.127) — more cyberware than slots, so filling wraps to slot 1 rather
-than spilling off the end, and *"two systems [can] be damaged at the same time"*. Driven by
-`system.cybermancy.is` (TODO 111).
-
-⚠ **`assignSlots` is pinned to Leggy's printed six slots** (p.127), the only worked layout in the
-book. It exercises an implant spanning three slots, two sharing with a remainder, three sharing
-another, and a half-full last slot. ⚠ The two reaction enhancers' *"Essence Cost .6"* is the pair's
-**combined** cost (.3 each) — the only reading that reproduces the printed slots.
-
-⚠ **Offered, never automatic** — the soak card does not reach in, because whether a wound damaged a
-cybersystem is a judgement about that wound (the design ethos). `tests/cyber-slots.test.mjs` asserts
-`SR3EActor.js` never calls it.
-
-⚠ **Not the Essence hole.** #53's hole records Essence spent on cyberware that was **removed**; these
-slots describe cyberware that is still **installed**.
-
-**Not built:** the Cyberware Failure Table (p.128, a GM flavour table), bioware Stress Level side
-effects (p.128, per-item text the packs do not carry), and applying anything automatically.
-
-### Item ratings — one reader  · TODO 118
-
-`scripts/data/item-rating.mjs`: `itemRating(item)` — a stored `system.rating` **above 0 wins**,
-else the name's `[N]` / `Rating N`, else 0; `vcrLevel(item)` — at least 1 for a rig that exists;
-`ratingFromName(name)`. **Never read `system.rating` directly on gear, cyberware, bioware or
-medical items.**
-
-⚠ **The rating usually lives in the NAME.** The packs inherited the generator's `Wired Reflexes [2]`
-naming: **537 of 540** bracketed cyberware and **all 72** bracketed bioware store `rating: 0`, and
-gear had no rating field until 0.5.2. Reading the field gave 0 — the core pack's **Vehicle Control
-Rig [1]/[2]/[3] all store 0**, so a compendium VCR added nothing to a rigger's initiative or Driving
-Test, at seven read sites (`tests/item-rating.test.mjs` now checks none read the field directly).
-⚠ **A bare trailing number is not a rating** — "Predator 2" is a model; a bracket must hold only
-digits — "[Initiate Grade 2]" is a note.
-⚠ The item sheet's Rating box is **blank with the name's rating as its placeholder** until someone
-types one; migration 0.5.2 copies name ratings into blank fields in each world, and
-`tools/patch-name-ratings.mjs` did the same to the shipped packs (623 items; a test sweeps them so
-new content cannot regress). ⚠ **A range is not a rating** — "Rating 4-8" reads as none.
-
-**The field is the rating, and null means NO rating** (the maintainer, 2026-09-14: *"a column
-where nil means no rating"*) — **gear and medical** in 0.5.2 (#118), **cyberware and bioware** in 0.6
-(TODO 122). `GearData.rating` is **nullable, initial null**; `itemRating` reads a
-number as the rating, **null as none (the name is not consulted)**, and a `0` or missing field as
-**legacy** → the name, then `GEAR_RATINGS`. A `preCreateItem` hook (`ratingOnCreate`) fills a new
-gear item's field when its creator gave none, so nothing downstream reads a name; migration 0.5.2 and
-the pack tool turn a legacy `0` with nothing to fill it from into `null`.
-⚠ **`GEAR_RATINGS`** (`scripts/data/gear-ratings.mjs`, **generated** by `tools/build-gear-ratings.mjs`)
-— 253 upstream gear names rated only in the generator's **Rating column**, not the name: *Basic
-Medkit* 3, *Stabilization Unit* 2 / *Deluxe* 6, and a plain ***Medkit* 3 from SR3 p.304** (the one
-book entry). They read **0** before (reported: *"medkits for one"*). ⚠ Names upstream rates
-differently in different entries (Gyro Mount 5/6/7) are **left out** — a name cannot settle them.
-⚠ **`displayName(item)`** shows `Medkit [3]` for a plain-named rated gear item and never doubles a
-bracket — the path to storing names plainly.
-⚠ **WEAPONS HAVE NO RATING FIELD, and that is the ANSWER, not an omission** (TODO 122). They were
-named in the request beside cyberware and bioware, so the survey is worth recording: of **343
-firearms, 107 melee weapons and 67 projectiles, not one** carries a rating in its name, and none of
-the four weapon data models has ever declared the field. SR3 rates gear and implants, not guns —
-adding the column would add an empty one. `tests/item-rating.test.mjs` asserts all four models stay
-without it, so the question is answered once rather than re-asked.
-
-⚠ **TODO 122 needed NO MIGRATION, and the reason is worth keeping.** On an implant a legacy `0`
-and an explicit `null` read the **same number**: 0 falls through to the name, and an unrated implant
-has nothing there either way. What `null` adds is the ability to *say* "no rating" and have the name
-ignored — which `0` cannot express. No world's dice move, so the 0.5.2 migration is left exactly as
-it shipped (a world that ran it never runs it again). That invariant is asserted in
-`tests/item-rating.test.mjs`; if it ever stops holding, a migration is owed.
-
-⚠ **Every bracketed cyberware (494) and bioware (69) document already stored its rating** before
-this change — and none disagreed with its name. `tools/patch-name-ratings.mjs` then turned the
-**495** legacy `0`s with nothing to fill them from into explicit `null`s. ⚠ `medical` is excluded
-from that: its rating is a **string** (`"+2"` is a real Biotech rating), so it has no null to mean
-anything.
-
-### Cyberware grades  · *M&M p.45* — TODO 86
-
-`SR3EActor.gradedEssenceCost(cost, grade)` applies the Cyberware Grades Table before
-`installedEssenceCost` sums anything. Registry: `SR3E.cyberwareGradeEssence`.
-
-| Grade | Essence | Cost | Availability |
-|---|---|---|---|
-| Alpha | **× .8** | 2 | Standard |
-| Beta | **× .6** | 4 | +5 / × 1.5 |
-| Delta | **× .5** | 8 | +9 / × 3 |
-| Used | **by grade** | .5 | Standard |
-
-⚠ **Only the ESSENCE multiplier is implemented.** The cost multiplier and availability
-modifiers are real rules with nowhere to land — there is no purchasing flow (TODO 82).
-
-⚠ **Rounded UP, per item, to 2dp** — *"Round all numbers up."* Rounding the TOTAL instead would
-let several cheap alphaware implants come in under the book's price.
-⚠ **Round the float noise off first** — 0.2 × 0.8 is 0.16000000000000003, and a bare `Math.ceil`
-made it 0.17 (every alphaware eye in the contacts pack, until TODO 101).
-
-⚠ **Grade the BASE, once — `SR3EActor.baseEssenceCost(item)`** (TODO 101). Three writers disagree
-about `essenceCost`: the contacts pack stores the **base**; the item sheet's grade dropdown stores
-the **graded** figure with the base in `essenceCostBase`; the importer (via
-`importedCyberwareCosts`) now does the same. A stored base wins, else `essenceCost` is the base.
-Grading `essenceCost` blindly discounted sheet-graded and imported alphaware twice.
-
-⚠ **The .01 floor is on the REDUCTION, not on a free item.** A base cost of 0 stays 0; reading
-the floor as unconditional starts charging Essence for every cosmetic mod.
-
-⚠ **An unknown grade costs FULL Essence.** Bioware's `Cultured`/`Exotic`, a typo, or a grade
-from a book we lack all fall to ×1. Essence is **permanent**, so an over-refund cannot be taken
-back and is far worse than an over-charge.
-
-⚠ **"Used" is a modifier ON a grade, not a grade** — it halves the price and leaves Essence "by
-grade". The map has no `used` key; `gradedEssenceCost` strips the word, so `'Used Alpha'` reads
-as alpha and a bare `'Used'` reads as basic.
-
-⚠ **Bioware never reaches this** — `installedEssenceCost` skips it, because M&M charges bioware
-against the Bio Index.
-
-⚠ **`SR3E.cyberwareGrades` is a DIFFERENT thing** — the array of names the item sheet's grade
-dropdown offers. Do not conflate them; the multiplier map is `cyberwareGradeEssence`.
-
-⚠ **`CyberwareData.grade` is kept for more than this.** A player salvaging chrome off a corpse
-needs to know whether it is standard, alpha or beta — that is what the part is worth. Do not
-collapse the field into a pre-multiplied number.
-
-### Move-by-wire  · *M&M p.60*
-
-The **shipped pack data is correct** and asserted row-by-row — rating N gives **+N QUI, +2N REA,
-+N initiative dice, +N Athletics/Stealth dice**, ratings 1-4. The packs are the source of truth
-(the retired `populate-cyberware` macro carried pre-[#8] numbers; it was deleted in TODO 1).
-
-⚠ **The Quickness bonus is excluded from Reaction and from nothing else.** *"The Quickness bonus
-does not count when calculating the character's Reaction Attribute."* The Combat Pool is
-⌊(QUI + INT + WIL) / 2⌋ and the book does not carve it out, so the bonus genuinely does move the
-pool. Both halves are asserted so the exclusion is not later widened.
-
-⚠ **It could NOT be fixed by ordering, the way the Adrenal Pump's identical clause was.** The
-pump is activated, so applying it after the Reaction derivation satisfies its rule for free.
-Move-by-wire is passive and lands with every other cyber bonus, before Reaction exists — so the
-exempt portion accumulates into `cyberBonus.quiNotForReaction` and is subtracted at the
-derivation. Registry: `SR3E.quicknessNotForReaction`.
-
-⚠ **The carve-out is NAMED, not general** — it belongs to specific implants, and
-`SR3E.quicknessNotForReaction` is the registry. **Muscle Replacement shares it**, in the book's
-identical words: *"Add the rating of the muscle replacement to Strength and Quickness; this
-change does not affect Reaction."* Muscle **Augmentation** does not — that is M&M bioware
-granting Strength only. Same shape as Enhanced Articulation above.
-
-⚠ **The packs ABBREVIATE cyberware names**, so a pattern written from the book's spelling can
-match nothing. `Muscle Replacement` ships as **`Muscle Replac. [1..4]`** and `Reaction Enhancer`
-as **`Reaction Enhance [1..6]`**. I once reported both as "in no pack at all" on the strength of
-a full-name search. **Search a stem, never a full name**, and write registry patterns against
-what actually ships.
-
-⚠ **The incompatibility is REPORTED, never enforced** (`derived.reactionExclusiveConflict`, warned
-on the Cyber tab). Contrast `reflexBonus`, which picks a winner: there one side is an adept power
-and keeping both would give a rules-forbidden total, whereas here both are cyberware the character
-paid Essence for and the book never says which loses. Registry: `SR3E.reactionExclusive`.
-
-⚠ **Rating 3/4's forced extra Complex Action is not modelled** — it needs the action economy
-(TODO 48).
-
-**Its side effects are built** (TODO 110, `scripts/data/move-by-wire.mjs`) · *M&M p.60*:
-- **Automatic Stress** — 1 point every **6 / 4 / 2 / 1 months** at ratings 1-4, *"to both Quickness and
-  Reaction"*, removable only by therapeutic surgery. Shown on the Cyber tab; the points go on through
-  ⚙ Apply Stress (TODO 109).
-- **TLE-x** — each time the system takes Stress, an **unaugmented Willpower (rating × 2)** Test, offered
-  on the Stress card. `system.tlex = { has, surgeries }`; the GM marks it, and clearing it counts one of
-  the **two** brain surgeries the book allows (Correct Failure, base TN 8).
-- ⚠ **Nothing is applied to a roll.** −1 Charisma *"in important social situations"*, and +2 Perception
-  TNs / −2 Initiative / −1D6 Reaction *"in circumstances that the gamemaster deems dangerous or
-  tactically crucial"* — both are situations the book hands to the GM, so the sheet states them.
-- **CCSS is not modelled** — a failed system risks it, and its aftermath is explicitly the GM's.
-
-### Enhanced Articulation's Reaction stops at rigging and decking  · *M&M p.66*
-
-`derived.reactionNoRigDeck` is Reaction with the exempt bonuses removed; only **remote-control
-rigging** and **TRM/AR/VR-Cold decking** read it. Jumped-in VCR, VR-Hot and Orthodox Matrix all
-read `reaction.base` and never saw a cyber bonus in the first place.
-
-⚠ **The exclusion is that BONUS, not cyberware at large** — wired reflexes apply to decking
-normally. Switching those paths to `reaction.base` would look tidier and would silently strip
-wired reflexes from every decker.
-⚠ **It subtracts only when the CYBER package actually landed.** `reflexBonus` picks one package
-or the other, so after an adept's Improved Reflexes wins there is nothing to take away.
-
-### Where an attribute's modifiers come from — `derived.attributeSources` · TODO 100
-
-`_prepareCharacter` records every attribute bonus **as it is applied** — `{ label, amount, kind,
-note }` per attribute, plus `initiativeDice` — and the Attributes tab renders them on hover
-(`SR3EActor.attributeBreakdown`, `attributeSourceSum`). Kinds: `cyber` `bio` `adept` `racial`
-`boost` `triggered`, and `note` for a bonus that did **not** apply (the p.169 package dropped,
-move-by-wire's Quickness skipping Reaction).
-⚠ **base + sources = the value every roll uses**, asserted in `tests/attribute-sources.test.mjs`.
-Add a new bonus to an attribute and you must record it with `_source(…)` beside the arithmetic, or
-that invariant fails.
-⚠ The sheet's bracketed total is `attr[key].value`, never a sum it makes up — it used to add base +
-adept + cyber + racial itself, so a boost or a running Adrenal Pump never showed.
-
-### Adept powers  · *SR3 p.168-170*
-
-**117 powers ship across four packs** (`sr3` 42 · `mits` 26 · `sota2` 40 · `tss` 9). Until
-2026-08-29 **not one of them did anything** — every `bonus*` field was 0. Full inventory,
-per-power classification and citations: **`audit/adept-powers-audit.md`**.
-
-Only these channels exist. Everything else is reference-only by design, and correct as such.
-
-| Channel | Powers | Read at |
-|---|---|---|
-| `bonus*` attribute fields | Improved Physical Attribute, Improved Reflexes | `_prepareCharacter` |
-| `improvedSkillName` | **Improved Ability only** | `skillBonusDice` |
-| `improvedSkillCategory` | genuinely category-wide powers | `skillCategoryBonuses` |
-| `system.attributeBoost` | **Attribute Boost only** — activated, expiring | `_prepareCharacter` |
-
-⚠ **A levelled power's `bonus*` is PER LEVEL and must be multiplied.** Upstream stores `+1STR`
-on Improved Physical Attribute with `hasLevels: true`, meaning +1 *each*. Powers with fixed
-levels (Improved Reflexes 1/2/3) ship as **separate items** with `hasLevels: false` and
-absolute values. The same number therefore means two different things, correctly, by item.
-
-⚠ **`mods` had to be declared on `AdeptPowerData`.** A TypeDataModel drops undeclared keys, so
-the 14 powers shipping a `mods` string lost it at load — patching the packs alone could never
-have worked. Both halves are the fix (TODO 59).
-
-⚠ **`tools/build-mods-bonuses.mjs` now reads three files.** `AdeptPowers.json` was missing, and
-nothing said it had been considered. `SRCG_BONUSES` entries carry a **`type`**, which is a
-**guard, not a field**: the map is keyed by name alone and spans three item types, so both
-`_patchItemsByName` and the pack patcher must skip a name whose type does not match. There is
-no collision today; the guard is what stops the generator creating one silently.
-
-#### Attribute Boost is ACTIVATED — never a passive bonus  · *SR3 p.168-169*
-
-Four stages, all implemented (`SR3EActor.openAttributeBoost` → `tickAttributeBoosts` →
-`_postAttributeBoostDrain`):
-
-1. **Magic Test**, TN = ½ the **base (unaugmented)** rating, round up. No successes → no boost.
-2. Attribute + the power's level, ceiling **2× Racial Modified Limit**.
-3. Lasts **Combat Turns equal to the successes** — counted down by the `updateCombat` round hook.
-4. On expiry, a **Drain Resistance Test**: TN = ½ the **boosted** value (round up), Willpower,
-   2 successes per level reduced, **always Stun**.
-
-⚠ **The two TNs read off different numbers** — activation off the *base*, Drain off the
-*boosted* value, one page apart in near-identical wording. `tests/adept-powers.test.mjs`
-asserts they cannot silently converge.
-
-⚠ **Filling `bonusStr` for this power would be worse than leaving it inert** — permanent,
-always-on, untested, undrained, and stacking with the cyberware p.169 says it cannot combine
-with. `_prepareCharacter` has an explicit `continue` for `attributeBoost` powers; the shipped
-packs carry no `Mods` for them, so that guard exists purely to stop a future edit re-creating
-the bug.
-
-⚠ **No successes means NO Drain.** Drain is owed *"when the boost runs out"*, and a boost that
-never started never runs out. This is the **opposite** of Conjuring, whose Drain applies even
-on a failed test — the two branches sit next to each other in `_postWaveCard`.
-
-⚠ **Duration is per Combat TURN, i.e. per Foundry round** — not per Initiative Pass. Per-pass
-would evaporate a 3-success boost inside a single turn.
-
-⚠ Racial limits (`SR3E.racialLimits`, p.245) exist **only** to grade this Drain. They cap
-nothing — every stat stays hand-editable. `SR3EMods` still collapses the upstream racial
-encodings to plain attributes, deliberately.
-
-#### Improved Ability is capped  · *SR3 p.169* — TODO 60
-
-> "You cannot have more additional dice than your base skill rating or your Magic Attribute,
-> whichever is less."
-
-`SR3EActor.improvedAbilityDice({level, skillRating, magic})` = `min` of the three. Resolved
-**after** Magic is derived (it needs effective Magic, which depends on Essence and Bio Index),
-so the adept loop collects claims into `pendingImprovedAbility` and a second pass applies the
-cap. A capped power still shows its full level in the breakdown, with the cap noted.
-
-The defaulting clause — *"only half (round down) of the Improved Ability dice may be used"* when
-defaulting to the improved skill — is implemented (TODO 61): see *Defaulting carries half the
-augmentation dice* below. (This line said "still not implemented" until 2026-09-14.)
-
-#### Improved Reflexes does not stack with technology  · *SR3 p.169* — TODO 64
-
-> "the increase cannot be combined with technological or other magical increases to Reaction
-> or Initiative"
-
-`SR3EActor.reflexBonus` returns **one** package, never a sum, and reports what it dropped
-(the sheet renders a notice). **Initiative dice decide, then Reaction** — a die is worth far
-more than a point of Reaction across a Combat Turn. Ties go to the adept.
-
-⚠ **Resolved ONCE and read by both** the Reaction derivation and `initiativeDice`. Deriving it
-twice is how a character ends up with the adept package for Reaction and the cyber package for
-dice — neither of the two things the rule allows.
-
-⚠ The book forbids combining but does not say which side wins; taking the better package (and
-saying so) follows the ethos rather than refusing to derive anything.
-
-#### Missile Parry  · *SR3 p.170*
-
-A third option in the defence declaration (step 4 of the ranged sequence), offered only when the
-defender holds the power and the incoming weapon is catchable. `SR3EActor.missileParryTN`,
-`missileParryOutcome` and `canMissileParry` are the pure rules.
-
-⚠ **The book's worked example contradicts the table it cites, and the table wins.** p.170 says
-*"against an arrow coming from long range, the target number is 2 (10 − 8, the base Target
-Number for long range)"* — but Long on the **Weapon Range Table** is **6**; **8 is the GRENADE
-table's** column (p.119), and a grenade is not something you catch. The short-range half of the
-same sentence (10 − 4 = 6) agrees with both tables, so only the long figure is astray, and Bow /
-Thrown Knife / Shuriken are rows *in* the Weapon Range Table. The rule sentence governs: TN =
-`10 − the attack's own base range TN`, floored at 2, **editable** on the card.
-
-⚠ **It rolls REACTION plus optional pool** — the opposite way round from a dodge, so **zero pool
-is a valid parry** and must not fall through to the soak.
-
-⚠ **A failed parry carries NOTHING into the soak** — the one place it differs from
-`dodgeOutcome`. p.113's carry rule is specific to the **Dodge Test**; this is a Reaction Test.
-Do not unify the two functions.
-
-⚠ **"Slow-moving" excludes firearms.** `projectile` and `thrown` only — on bullets it would be a
-general anti-ranged defence at Cost 1. Grenades are `thrown` but never reach the declaration
-(the AoE path posts soak cards directly), which is structural, not checked.
-
-⚠ **Ties go to the attacker**, stated outright — same strictness trap as `dodgeOutcome`.
-
-⚠ Its **Free Action** cost is not modelled (TODO 48); the card says so.
-
-**Quick Strike** (MITS p.151, TODO 78):
-- A ⚡ on the adept's tracker row (`SR3ECombat.renderQuickStrike`).
-- It moves the adept's pending slot in the current pass to the front of the round's stored queue
-  (`SR3ECombat.quickStrike`, rules in `scripts/data/quick-strike.mjs`). Players reach it through
-  `sr3e.combat.quickStrike`.
-- ⚠ **Never an initiative write**: *"The adept's Initiative Score is not affected."*
-- ⚠ The slot is **moved, not copied** — it uses the pass's action.
-- Once per Combat Turn, via the combatant flag `quickStrikeRound`.
-- **"Unwounded" = no injury modifier** — the maintainer's ruling (2026-09-15), because MITS p.151 does
-  not define it. Revisit if another book does. It reads the derived `woundMod`, so Pain Resistance and
-  Damage Compensators count. The code confirms rather than refuses, and the card says so.
-
-#### Three bonus channels, and a bonus belongs to exactly one
-
-| Channel | Scope | Applied |
-|---|---|---|
-| `derived.skillBonusDice` | one named skill | **automatically**, every roll path |
-| `derived.skillCategoryBonuses` | a skill CATEGORY | opt-in checkbox per roll |
-| `derived.situationalBonuses` | a **situation** (`SR3E.adeptSituations`) | auto where a flow knows its situation; checkbox otherwise |
-
-⚠ **The third channel exists because the first two could not carry the rule.** `skillBonusDice`
-promises "always applies" and every consumer trusts it, so it cannot express Counterstrike's
-*"these dice can only be used for counterattacks"* or Sixth Sense's *"these dice do not apply to
-any other type of Reaction Test"*. Do not widen `skillBonusDice` to fix a scoped power.
-
-⚠ **Situational bonuses SUM when two powers cover the same situation** — Rooting and Enhanced
-Balance both resist knockdown, and an adept who bought both gets both. This is the opposite of
-`reflexBonus`, where the book forbids combining. Both behaviours are asserted.
-
-⚠ **`adeptPowerLevel` is NOT `system.level`.** Nineteen shipped powers carry their level in the
-NAME with `hasLevels: false` — `Combat Sense +3`, `Kinesics Level 3`, `Penetrating Strike Level
-2`. Reading `system.level` makes every one of them level 1. **Effects only**: Power Point cost
-and the sheet's Level column keep using `system.level`, because a fixed-level item's cost
-already covers its level (`Imp. Reflexes Level 3` costs 5, not 15).
-
-#### Direct-effect powers
-
-| Power | Effect | Where |
-|---|---|---|
-| Combat Sense | +N **Combat Pool** dice · p.169 | `combatPool` derivation |
-| Pain Resistance | level off the damage used for the **injury-modifier lookup** · p.170 | `woundMod`, recomputed in `_prepareCharacter` |
-| Mystic Armor | +N **Impact** armour, cumulative, astral too · p.170 | soak card; **astral soak card** as −N Power (`astralSoakTN`, p.175) |
-| Penetrating Strike | −N the **target's** Impact armour · SOTA2 p.67 | soak card, from the payload |
-| Killing Hands | replaces unarmed (STR)M Stun with (STR)*level* **Physical** · p.170 | declared in the called-shot dialog |
-
-⚠ **Pain Resistance reduces the LOOKUP, never the wound track** — *"It does not reduce actual
-damage, only its effect on you."* Touching the track would un-fill boxes the GM ticked.
-⚠ **Killing Hands REPLACES the level, it does not stage it.** Light on a (STR)M punch is
-(STR)L — worse in level, better in kind. Staging would make the cheapest tier a free upgrade.
-⚠ **Killing Hands is DECLARED per attack** — *"you may do normal stun damage, or physical
-damage as purchased… must be declared with the Unarmed Combat attack."* Never automatic.
-⚠ **Mystic Armor is added BEFORE the ammo rules**, so it survives Flechette's doubling.
-⚠ **Astral combat has its OWN soak card** (`_postAstralSoakCard`), and until 0.6 it read no armour at
-all — the row above said "astral too" while the code never did (rules-check 0.6.0, Finding 5). p.175:
-*"the Power of the attack is reduced by the target's natural armor. Physical armor worn by a character
-has no effect in astral combat."* So `astralSoakTN` takes Mystic Armor off the Power and nothing else.
-⚠ Mystic Armor only counts for `magicType: 'Adept'` — a test actor without it derives 0.
-
-#### Defaulting carries half the augmentation dice  · *SR3 p.169* — TODO 61
-
-`defaultTiers`' **Skill** tier is the book's "defaulting to the improved skill", so it adds
-`floor(bonus / 2)`. It previously contributed **none**. The halving applies to the dice *after*
-the p.169 cap, and it halves cyber/bio dice on the same skill too — the map is deliberately
-source-agnostic, and splitting it at the point of use is the coupling it exists to avoid.
-
-#### The item sheet offers fields by POWER KIND
-
-`SR3E.adeptPowerKind(name)` classifies on the shipped name — the only join available, since
-the upstream data carries no type. The sheet used to render **"Improves Skill" on all 117
-powers**, so an `Attribute Boost(STR)` was configured to grant +4 dice to Unarmed Combat
-(reported in play). Offering a control is a claim that it does something.
-
-⚠ Migration `0.4.5.6` **clears** that field on Attribute Boost items — the only corrective
-migration in the file, via a new `fixItem` hook. Every other migration fills blanks and never
-overwrites; this one argues its case at the call site, and is scoped so Improved Ability's own
-`improvedSkillName` survives untouched.
-
-⚠ `QIC` is an upstream **typo** for Quickness that ships in the pack, so `attributeBoostTarget`
-accepts it beside `QCK`. Reading it as unknown leaves the Quickness boost silently inert.
-
-### Charging Attack  · *Cannon Companion p.86* — and the source-book rule gate
-
-**The first MECHANICAL rule conditioned on a source book.** Declared as a checkbox in the
-attacker's called-shot dialog, shown only when `cc` is enabled.
-
-⚠ **`SR3ESourceBooks.optionalRuleAllowed(code)` is the precedent**: optional rules ride the
-existing per-book toggle rather than getting a settings list of their own. A table that has not
-enabled Cannon Companion has already answered the question; a second list could disagree with
-the first. Change that one function if granularity is ever needed.
-
-| | |
-|---|---|
-| Charge lands | **+1 Power** (`chargingPowerBonus`) — not a TN |
-| Charge fails, no damage | **Quickness (5) Test or prone** |
-| Charge fails, damage taken | **+2 to the charger's Knockdown TN — INSTEAD** |
-
-⚠ **"Instead" is exclusive.** A charger who took damage does NOT also roll Quickness; running
-both punishes one failure twice. `SR3EActor.chargingFailure` owns that, with a mutant.
-⚠ **+1 POWER, not a target number** — and Power is also the Damage Resistance TN, so it makes
-the wound likelier *and* worse.
-⚠ **Movement continuity is DECLARED, not measured** — the book wants 2+ metres of continuous
-movement across passes, which no single action can evidence.
-
-### Knockdown  · *SR3 p.124, p.116*
-
-A **third stage**, after the soak: `.sr-knockdown-btn` on the soak result card, gated with
-`_isDecider` (it rolls). Not offered when damage is completely soaked. The target rolls **Body**;
-`SR3EActor.knockdownOutcome` and `knockdownTN` are the pure rules.
-
-| Wound taken | Successes to stay standing |
-|---|---|
-| Light | 2 |
-| Moderate | 3 |
-| Serious | 4 |
-| **Deadly** | **no test — always knocked down** |
-
-Zero successes → **prone**; below the threshold → driven back ~1m; at or above → standing.
-
-⚠ **Deadly skips the test, it is not a hard test** — the table prints NA, not 5.
-⚠ **Zero successes is specifically prone**, not "fewer than needed"; staggering requires
-`successes > 0`, or nobody ever hits the floor.
-⚠ **TN: ranged = ⌊Power ÷ 2⌋ of the attack's POWER (armour is ignored — it is NOT the soak
-TN); melee = the opponent's STRENGTH ATTRIBUTE (not the weapon's damage code); gel rounds =
-the FULL Power** (p.116), so the easiest round to soak is the hardest to stay upright against.
-⚠ **Which wound level drives the threshold is ambiguous in the book** — p.124 says both
-*"his wound level"* (cumulative) and *"take a Deadly wound"* (this blow). The threshold defaults
-from **this attack** and is **editable**, with the target's current level shown beside it,
-because damage is never auto-applied and the cumulative figure would ignore the hit that caused
-the test.
-
-The result card offers **🔻 Mark prone** (core Foundry status), gated with `_mine` — it only
-toggles a status, so a GM doing it for a player is ordinary. **Not modelled:** the +2 TN for a
-staggered character who cannot step back; that is a positional judgement, stated on the card for
-the GM to apply.
-
-### Called shots (SR3 p.114)
-Available on **all single-target weapons except AoE/grenades** — firearms (any mode **except Full
-Auto**), bows/crossbows, thrown, and melee. Declared before the roll; **+4 TN**, with two
-mutually-exclusive options. **Take Aim** folds in as **−1 TN per point** (1 Simple Action each).
-- **Stage up damage**: base Damage Level +1 (L→M→S→D, cap D), resolved normally otherwise.
-- **Specific sub-target**: a named component on a vehicle-sized+ target (tires, window, fuel tank…);
-  normal damage rules, GM adjudicates destruction (usually Moderate+).
-- **Ranged**: built into `_promptWeaponRollOptions` (the `#sr-called` select + `#sr-aim` + sub-target
-  field). The +4/−aim is **folded live into the TN field** (the same per-dialog `render` wiring as the range
-  dropdown); stage-up rewrites the returned `damageCode` **before** any
-  vehicle Power/2. The caller (`rollWeapon`) passes `calledShotAllowed = mode !== 'FA'` and appends a
-  🎯 note to the card label.
-- **Melee**: a standalone `SR3EItem._promptCalledShot(actor)` dialog (attacker only) runs after
-  defaulting; its `tnMod` is baked into `atkTN`, and `calledShot`/`calledShotTarget` ride in the
-  boxing-card ctx. `handleMeleeRoll` adds the extra stage **only when the attacker wins**
-  (`winnerIsAtk && ctx.calledShot==='stage'`); the card header shows the declaration.
-- **Not wired**: vehicle-mounted weapons (`rollVehicleWeapon` uses its own 🚗 dialog) and spells.
-
-### Damage staging  · *SR3 p.113-114*
-Power (number) + Level (L/M/S/D) + optional Stun flag
-- Each 2 net successes = +1 stage (L→M→S→D) — the same 2-per-level applies to the
-  defender staging **down**
-- ⚠ **Past Deadly, SR3 gives TWO answers and both are RAW.** A general rule with a
-  melee-specific exception — do not "resolve" the conflict, it is scoped on purpose.
-  `SR3EItem.stageDamage(base, net, { meleeRules })` is the single implementation.
-  - **General — the default.** Surplus successes are **discarded**: *"On the other end of
-    the spectrum, Deadly damage is the highest level of damage possible"* (**p.113**).
-    **Power is the Damage Resistance TN**, so a phantom point makes the soak harder *and*
-    the wound worse. A 9M firearm rolling 6 successes is **9D**, not 10D.
-  - **Melee — `meleeRules: true`.** *"If the Damage Level has been increased to Deadly,
-    extra successes can be used to stage the Power Rating up. For every two successes the
-    Power Rating increases by one"* (**p.122**, step 4). The same 9M/6-success roll is
-    **10D** in melee.
-  - **Astral counts as melee** — *"Astral combat uses the same rules as Melee Combat"*
-    (**p.174**). Matrix and contested tests do **not**.
-  - ⚠ Melee used to carry its own inline copy of the staging loop, so capping
-    `stageDamage` for the ranged fix left melee accidentally right and broke **astral**.
-    The duplicate is gone; both rules are pinned in `tests/damage-codes.test.mjs`.
-- Stun damage goes to stun track; physical to physical track
-- GM applies manually
-
-### Combat pool  · *SR3 p.43; refresh p.104*
-- Derived: ⌊(QUI + INT + WIL) / 2⌋ + wound modifier
-- Tracked via `combatPoolSpent` on actor system
-- Available = derived − spent
-- Spent when allocated to attack, dodge, or melee
-- **Refreshed at the start of every Combat Turn** — `SR3ECombat._endOfTurnReset()` refreshes
-  combat / spell / astral / hacking pools together (and resets recoil and Full Defense). This
-  is RAW:
-
-  > "At the start of each Combat Turn, all dice pools refresh to their original, full value…
-  > **Unused pool dice do not carry over** from one Combat Turn to the next."
-
-  A Foundry **round** is an SR3 **Combat Turn** (which contains several Initiative Passes), so
-  per-round is the correct granularity. ⚠ Do not "fix" this to per-pass or per-combat — pools
-  refreshing once per combat would leave everyone dry after the first turn.
-- **Three call sites, and round 1 needs its own.** `_newRound()` covers rounds 2+; `startCombat()`
-  covers round 1, because a Combat Turn Sequence (**p.104**) begins with step 1 *"All Dice Pools
-  Refresh"* and round 1 is a Combat Turn like any other. The **Begin Encounter** flow
-  (`sr3e.js`) calls it once more *before* `rollInitiative()` — that ordering is load-bearing, not
-  decorative: `rollInitiative()` ends by opening the Spell Defense declarations, and each one caps
-  its Spell Pool input at `availableSpellPool` **as read when the dialog is built**, so refreshing
-  afterwards would show a mage a stale cap and block dice they actually have.
-  ⚠ `_endOfTurnReset()` had exactly **one** caller for a long time (`_newRound`), which meant
-  round 1 silently inherited leftover state and `endCombat()`'s prompt was the only thing keeping
-  the *next* fight clean. Covered by `tests/initiative.test.mjs`.
-- Every write is **dirty-checked**, so the overlapping calls above cost nothing — each helper
-  writes unconditionally and each write fires the `updateActor` hook that drives status icons and
-  the auto-defeated logic.
-- Also refreshed by `endCombat()`, **silently** — it calls the same `_endOfTurnReset()`, then clears
-  the two things that outlive a Combat Turn but not the fight (`clearSpellDefense`, the
-  `tempMagicLoss` flag). A tidy-up on the way out, **not** the mechanism that keeps pools topped up
-  during a fight.
-  ⚠ This used to **ask** ("Refresh all combat pools?"). The prompt was removed 2026-08-11: once
-  `startCombat()` gained its own reset, the next fight refreshed at round 1 either way, so declining
-  achieved nothing. Do not restore it — it is a question with only one meaningful answer.
-
-### Sustained spells  · *SR3 p.178, p.180, p.183* — `feature/sustained-spells`
-
-> "Characters sustaining spells have a +2 target modifier per sustained spell applied to all tests,
-> including Drain Resistance Tests (but not normal Damage Resistance Tests). You can simultaneously
-> sustain a number of spells equal to your Sorcery rating." — p.178
-
-`system.sustainedSpells` (characters and NPCs) — `[{ id, name, force, spellItemId, target, focus }]`.
-The rule is `scripts/data/sustaining.mjs` (pure); `SR3EActor.sustainingTN(actor)` reads it.
-
-| Where | How |
-|---|---|
-| `rollPool` (skills, attributes, casting, weapons, healing…) | added unless `skipSustainMod` — **its own opt-out**, not `skipWoundMod` (healing skips the wound, not the spells) |
-| Ranged roll options · sheet attribute/skill dialogs | pre-applied in the TN beside the wound, then `skipSustainMod` |
-| Melee (GM window base TNs + note) · astral · both dodge prompts | beside `woundTN`, each fighter's own |
-| Contested · cybercombat · Orthodox cards · MIJI and every EW test · knockdown · vehicle weapons | beside `woundTN` — and ⚠ **also on the defences p.125 spares the wound** (the cybercombat defender, the decker's IC defence, Missile Parry): p.178 excludes only *"normal Damage Resistance"*, a narrower exclusion than the wound's |
-| Drain Resistance | added to the card's TN — a spell's own Drain counts what was held **at casting** (`spellContext.sustainTN`), never itself |
-| Damage Resistance (soak) | **never** (p.178) |
-| Spell Resistance Test | **yes** — the maintainer's ruling (2026-09-14): p.178's "all tests" over p.183's *"No target modifiers apply to this test except where specifically noted"*. Wounds still skip it |
-
-- ⚠ **One modifier, stated three times.** p.180's *"+2 to the Power of the Drain"* and p.183's cast
-  TN are p.178's "all tests" restated. Adding p.180 on top charges +4 per spell on Drain.
-- ⚠ **A focus-held spell costs nothing** (`focus`, a tick on the Magic tab) and does not count
-  against the limit. The **Sorcery limit is shown, never enforced**.
-- **Starting:** the cast card offers **🔒 Sustain** for a Sustained/Permanent spell that took effect
-  (`_mine`), or *+ Sustain a spell* on the Magic tab. **Offered, never automatic** — it costs +2 on
-  everything. **Stopping:** ✕ (a Free Action).
-- **Taking damage** (`preUpdateActor` sees the old boxes on the client making the change, which then
-  posts the card — no GM needed): a card with one 🎲 **Keep** per concentration-held spell, *Sorcery
-  vs Force + injury modifiers* through `rollPool`. Nothing drops by itself.
-- Not modelled: Exclusive actions forcing a drop (TODO 48, the action economy), Permanent spells'
-  base time (the GM tracks it).
-
-### Spell pool (Awakened characters only)  · *SR3 p.43*
-> "A character's Spell Pool is equal to Intelligence plus Willpower plus Magic Rating,
-> divided by 3, rounded down."
-
-- Derived: ⌊(INT + WIL + MAG) / 3⌋ (effective Magic)
-- Tracked via `spellPoolSpent` on actor system (manual adjustment via `spellPoolMod`)
-- Available = derived − spent
-- Spent when allocated to spellcasting
-- Null / hidden for non-Awakened actors (Magic attribute = 0)
-
-### Spellcasting flow
-1. Caster clicks "Cast" on a spell row (magic tab)
-2. Choose Force dialog — note shown if Force > Magic (drain becomes Physical). For **Combat and Elemental** spells (`SR3EItem.spellChoosesDamageLevel(category)`) it also has a **Damage Level** dropdown (L/M/S/D, default = the spell item's level, else Moderate); the chosen level drives **both** the target's base damage **and** the caster's drain level. **AoE spells** (Range code contains `(A)`, e.g. `LOS (A)` — there is no separate AoE flag) also show an **Area radius (m)** input (default = caster's **Magic** attribute, editable).
-3. Targeting (combat spells are resisted, never dodged; **elemental spells are dodged** — see *Elemental Manipulation spells* below):
-   - **Single**: target dialog only.
-   - **AoE** (`SR3EItem._placeBlastTemplate` cursor aim → `_actorsInRadius`): nominate the area centre on the canvas; **every live actor (not the caster, not vehicles) inside the radius is auto-detected** as a target — no manual checkbox list, **no scatter, no falloff**. A purple **Region** area marker is drawn for all players (`SR3EActor._drawBlastArea`, local PIXI fallback) with a 🧹 Clear button on the result card. Off-canvas → falls back to the manual checkbox dialog (`_promptTargetsMulti`). Empty area → casts anyway (drain still applies).
-4. Allocate Spell Pool dice dialog (if any available)
-5. **Casting = SR3 opposed test.** Caster rolls Sorcery + Spell Pool vs **TN = the spell's Target attribute** on the target — `SR3EItem._parseSpellTarget` (the single parser for both cast TN and resist): `W`→Willpower, `B`→Body, `I`→Intelligence, `Q`→Quickness, `F`→Force (the TN, not a target attribute), a number→fixed TN, blank/`OR`/unknown→Mana=Willpower/Physical=Body. **Any `(R)/(T)/(RC)/(V)/(DT)` suffix is stripped and ignored** (so `W(R)`, `4(V)` parse cleanly). For AoE the **primary** target sets the cast TN. Rule of Six throughout.
-6. On the caster's final wave (allDone):
-   - 0 successes: spell fails (targets auto-resist), no effect — drain still posted.
-   - 1+ successes: damage is **not** pre-staged; each target gets a **"Resist Spell"** button carrying the caster's successes + base damage (`SR3EActor._spellResistButton`). Caster always gets a **"Resist Drain"** button. The card shows the **cast TN's source** (`spellContext.tnSource`, e.g. "Dave Decker's Willpower") and the **staging the cast hits produce** (base → staged, before the target's resistance reduces it).
-   - If anyone has a Spell Defense pool, a **Counterspelling** card posts first and reduces the caster's successes (`_postSpellResistOrDoneCard` → same Resist Spell buttons).
-
-**Spell Defense is declared per mage, on that mage's own client.** `rollInitiative()` ends by
-calling `SR3EActor.promptSpellDefenseDeclaration(combatants)`, which fans one
-`sr3e.spelldefense.declare` query out per Sorcery-capable actor to `SR3EQuery.deciderFor(actor)`;
-the handler opens `SR3EActor.promptSpellDefenseFor` on that client, commits, and posts a summary
-card so the GM can see what was taken.
-- ⚠ **The asks are deliberately NOT awaited as a set.** Round start must never block on a human —
-  an active-but-AFK mage would otherwise hold the table for the full query timeout. Firing them in
-  parallel and letting each resolve on its own preserves the non-blocking behaviour the old shared
-  card had. Do not "tidy" this into `await Promise.all(...)`.
-- This replaced **one public chat card carrying a row per mage**, where whoever clicked Commit —
-  in practice the GM, who advances the round — allocated every player's dice. Worse than the dodge
-  equivalent, because Spell Defense commits **Spell Pool for the whole Combat Turn**.
-- Unlike `sr3e.dodge.declare` and `sr3e.default.choose`, this handler **does write** — nothing is
-  waiting on the answer to fold into a larger exchange. The writes still land on the GM
-  (`commitSpellDefense` → `sr3e.actor.set`, `spendSpellPool` → `sr3e.pool.spend`).
-- Covered by `tests/spell-defense.test.mjs`, including that each mage is asked on their own
-  decider and that a mage who never answers does not block round start.
-7. **Resist Spell** (`_postSpellSoakCard` → `handleSpellResistRoll`): target rolls the **spell's Target attribute** — the *same* `SR3EItem._parseSpellTarget` is reused so the resist attribute always matches the cast — **attribute only, no pool** — vs **TN = Force** (interactive). **Net = caster successes − resister successes** (`isSpellResist` branch in `_postWaveCard`): ≤ 0 → no effect; otherwise `stageDamage(base, net)` → **Assign Damage** button. **There is no separate soak** — the resistance test *is* the defence.
-   **Elemental Manipulation spells do NOT come here** · *SR3 p.183, p.196* (rules-check 0.6.0 Finding 4).
-   *"Elemental spells are treated like normal ranged attacks … These spells can be dodged"* and *"the
-   Resistance Test is actually a Damage Resistance Test … The Combat Pool may be used"*. `_spellResistButton`
-   checks `sc.isElemental` (`SR3EItem.isElementalSpell(category)`, 17 shipped spells) and posts the
-   **ranged `.sr-dodge-declare-btn`** instead, staged by the caster's successes on the ranged rule; the dodge,
-   the carried successes and the soak card are the gunshot's. The soak card halves **Impact** for
-   `payload.elemental` (`SR3EActor.elementalImpact`, p.196: *"at only half its normal rating (round down)"*),
-   never Ballistic. ⚠ **Every target in an area elemental spell dodges** (the maintainer, 2026-09-22 — MITS p.56;
-   p.182's grenade comparison is about who is caught, not the dodge). ⚠ **Mystic Armor is halved with worn
-   Impact.** ⚠ `_soakButtonHtml` lists its fields, so `elemental` is one of them. Secondary effects are stated
-   on the card, never applied. Cover and visibility on the cast are TODO 131.
-   ⚠ **The Sorcery Test's own Rule of One costs +2 on the Drain TN** · SR3 p.182: *"If the results are
-   all ones (see Rule Of One, p. 38), the spell fails and the target number for the Drain Resistance
-   Test is increased by +2."* Carried as `castGlitch` on the drain payload and added in
-   `_postDrainCard`. ⚠ **Cumulative with sustaining**, not an alternative — a glitched cast while
-   sustaining pays both. The glitch was computed for the dice card from the start and simply never
-   reached the drain (found by the guide validation, 2026-09-22).
-   ⚠ **Detection spells have a SECOND Rule-of-One consequence that is not modelled** (same page):
-   *"On a roll of all ones, the gamemaster lies, giving the caster or target misleading or false
-   information."* We cannot make a GM lie; it is theirs to apply.
-
-8. Drain resist: Willpower dice, two components (`SR3EItem.parseDrainFormula(drainStr, force, damageLevel)`):
-   - **Power → TN** = ⌊Force/2⌋ + the **modifier outside the brackets** (the ½F base is implicit, not written; default +0).
-   - **Level** = the nominated Damage Level + the **modifier inside the brackets** (`(+1)` or `(DL+1)`/`(Damage Level +1)` both = +1 stage; `(DL)`/`()` = +0; `(DL-1)` = −1).
-   - e.g. **Manaball `(DL+1)`** at Force 6 / Serious → TN ⌊6/2⌋=3, level Serious+1 = **Deadly** → "3D".
-   - *Legacy:* a code with an explicit `F` formula (e.g. `(F/2+1)S`) uses that as the TN; level = nominated level (or a bare letter for non-damaging spells). Stage down by Willpower successes.
-   - Remaining drain = **Stun if Force ≤ Magic, Physical if Force > Magic** — the caster's **Magic
-     Attribute**, the *effective* rating (`SR3EActor.magicAttribute`), not Sorcery — **and always
-     Physical while astrally projecting** (*"All spells cast while astrally projecting cause physical
-     damage, regardless of Force"*, SR3 p.183). One rule: `SR3EActor.drainIsPhysical(force, attr,
-     { astral })`; the astral half is for casting only, not dispelling or conjuring.
-   - ⚠ Drain is resisted with the **effective** Willpower (Charisma for conjuring) —
-     `SR3EActor.drainResistRating`. It read `base` until 0.5.2, so a Pain Editor's or Adrenal
-     Pump's +1 Willpower never counted.
-- Sheet displays as "available / total"
-
-### Conjuring / Summoning flow (`SR3ESpiritSummoning.js`)
-Wired in (Magic tab → summon). SR3 RAW:
-1. **Summon dialog** (`openSummonDialog`): pick spirit type + Force + **Hold back dice** (0…Conjuring−1, saved for the Drain Resist). Live preview shows the drain level (Force-vs-Charisma table) and Stun/Physical. Reminder that totem/foci dice may be added.
-2. **Conjuring Test** (`rollPool`, `isConjuringRoll`): pool = **Conjuring skill − held-back**, TN = **Force**. **Each success = one service** (straight success test — no spirit resistance). 0 successes → no spirit (Drain still applies).
-3. **Drain** (always, even on failure): **Level from the Force-vs-Charisma table** (`SR3ESpiritSummoning._conjuringDrainLevel`: F≤½C Light, ≤C Moderate, ≤1.5C Serious, else Deadly — computed at cast), **TN = Force**, resisted with **Charisma + held-back dice** (`_postDrainCard` with `resistAttr:'charisma'`, `bonusDice`). Physical if Force > Magic, else Stun.
-4. **Result** (`confirmSummoning`): "Confirm Summoning" button creates the spirit actor bound for *successes* services and adds it to the tracker **only if a combat is already running** (`game.combat?.started`) — summoning never starts/activates combat.
-
-### Karma & advancement  · *SR3 p.244-245*
-
-**Spending is implemented, and this file previously said it was not.** **Awarding is not** —
-see the warning below, which is the more useful half.
-
-Three persisted fields, and conflating them is the mistake the code itself made:
-
-| Field | Is | Changes when |
-|---|---|---|
-| `system.totalKarma` | career odometer | only grows |
-| `system.karma` | **Good Karma** — the currency for advancement · p.244-245 | awards add, purchases subtract |
-| `system.karmaPool` | a **dice pool** of luck: rerolls, buying off the Rule of One, Hand of God · p.246 | refreshes per scene; burning is permanent |
-
-⚠ **The Pool is not a currency and does not refresh per Combat Turn** — unlike Combat and Spell
-Pool it refreshes "roughly every new scene", GM's call, and *burned* points never come back.
-
-⚠ **They are shown on two different tabs**, which is how the bug below stayed invisible: Karma
-Pool sits in the **Attributes** tab's derived grid beside Combat Pool, while Good Karma and
-Total Karma are on the **Bio** tab under *Resources*. Total Karma used to render under
-*Reputation*, beside Street Cred and Notoriety — moved in 0.4.5.9, along with labelling the
-Karma field **Good Karma**.
-
-#### Awarding — two paths, one rule
-
-**Award Karma…** (GM-only, Bio tab → Resources) awards to one character; **🎖 Session Rewards**
-(GM-only, Rollable Tables sidebar) awards karma, nuyen and a gear note to a checkbox list of
-every live PC at once. Both go through `SR3EActor.karmaAward(totalKarma, amount, metatype)`.
-
-⚠ **Humans gain a Pool point every TENTH karma, not every twentieth** — *"One-twentieth
-(one-tenth for humans) of all Karma earned"* (p.246). `karmaPoolDivisor` owns that, matched
-case-insensitively because `system.metatype` is free text on the sheet. **A missing metatype
-gives 20**, the conservative direction — real actors default to `'human'` and get 10.
-
-⚠ **Both paths were broken until 0.4.5.9, and the way they were broken is the lesson.**
-`_onAwardKarma` was correct but **unreachable** — registered in `DEFAULT_OPTIONS.actions`, never
-rendered — while Session Rewards, the tool a GM actually reaches for, wrote karma into
-**`system.karmaPool`**. So nothing in the system added Good Karma at all. TODO 80 had audited
-`_onAwardKarma`'s arithmetic a day earlier and never asked whether anything *calls* it, or
-looked at the tool beside it: **auditing a function is not auditing a feature.**
-
-⚠ **Migration `0.4.5.7` is deliberately NOT metatype-aware** and no longer calls
-`karmaPoolForTotal`. It fixes the starting point on existing characters and is pinned to
-`⌊total / 20⌋ + 1`; following the new divisor would turn a documented +1 into a silent 3 → 7
-jump for humans, off a `totalKarma` that was never reliably written.
-
-The Spend dialog (`_onSpendKarmaCalculator`) lists every purchase the character can currently
-afford, with its cost, and buys the selected one: **attributes** at 2 × the new rating, **skill increases**, **new
-specialisations**, and **specialisation increases**. Two pure helpers hold the table:
-`_skillCost(newRating, attrRating, isActive)` and `_specCost(newRating, attrRating)`.
-
-**Skill Improvement Cost Table** (p.245) — multiply by the **new** rating:
-
-| New rating is… | Base: Active | Base: Knowledge/Language | Specialisation (both) |
-|---|---:|---:|---:|
-| ≤ the linked Attribute | 1.5 | 1 | .5 |
-| ≤ 2× the linked Attribute | 2 | 1.5 | 1 |
-| > 2× the linked Attribute | 2.5 | 2 | 1.5 |
-
-⚠ **`specialisations[].level` is the BONUS over the base skill, and its default of 2 is the
-CHARGEN GAP** · *SR3 p.57*: *"Specializing gives you a rating in the specialization equal to the
-base skill rating +1. You then subtract one from the base skill rating."* Edged Weapons 6 →
-Katanas 7, Edged Weapons 5. `SkillData.migrateData` uses 2 when converting a legacy
-`specialisation` string for exactly this reason — it is not an arbitrary default, and changing
-it would re-rate every legacy specialisation in every world.
-
-⚠ **The gap of 2 is where a specialisation STARTS, not a ceiling.** p.245 raises it with karma
-with no limit, each raise widening the gap by one — so a printed `Etiquette 4 (Corporate 8)` is
-a chargen specialisation raised twice more, and `level: 4` is legitimate data. Nothing may clamp
-it at 2. ⚠ The item sheet's level dropdown still offers only Lv1 and Lv2 (TODO 88).
-
-⚠ **A specialisation costs the same for active and knowledge skills.** `_specCost` ignoring the
-`isActive` flag looks like an oversight in a function sitting next to one that uses it. It is
-not — the table's two specialisation columns are identical.
-
-⚠ **A new specialisation is bought at the base skill's rating +1, an existing one at +2** —
-*"you must buy the specialization at rating 1 point higher than your base skill, as if you
-already had the specialization at the rating of the base skill"*. Brick (p.245) buys Sneaking at
-6 on Stealth 5, then raises it at 7. `system.specialisations[].level` is the **bonus**, so
-level 1 = base+1.
-
-⚠ **`_isActiveSkill` delegates to `skillTypeForCategory` and must keep doing so.** It once
-tested `!category.includes('knowledge')`, which is a different question: `Martial Arts` contains
-neither "knowledge" nor "language", so karma charged Aikido as an active skill while the sheet
-filed it under knowledge. One classifier.
-
-#### Seven defects, found and fixed 2026-08-31 — TODO 80
-
-All corrected in **0.4.5.7**. Kept as the record of what was wrong, because six of the
-seven were invisible from play and the two marked ⚠ below cannot be caught by any test
-written from the book's own examples.
-
-| # | Rule | Was |
-|---|---|---|
-| 1 | New skills cost a **flat 1 karma**, any type (p.245) | not offered at all; rating-0 skills were `continue`d |
-| 2 | *"round fractions down"* (p.245) | `Math.ceil` — **overcharged ~half of all purchases** |
-| 3 | Max specialisations = the **linked Attribute** rating | gated on the **skill** rating |
-| 4 | *"improve the specialization beyond that… as normal"* | hard-capped at level 2 |
-| 5 | Above the Racial Modified Limit costs **3×** (p.244) | always 2× |
-| 6 | The twentieth point goes to the Pool **instead of** Good Karma | awarded to both |
-| 7 | *"each character starts with 1 Karma Pool"* | `initial: 0` |
-
-The rules are pure statics on `SR3EActor` — `karmaSkillCost`, `karmaSpecCost`,
-`karmaNewSkillCost`, `karmaAttributeCost`, `karmaAttributeMaximum`, `karmaMaxSpecialisations`,
-`karmaSpecTargetRating`, `karmaAward`, `karmaPoolForTotal`. They live there rather than on the
-sheet because the sheet cannot be imported without Foundry, so nothing on it can be tested or
-mutated. `tests/karma.test.mjs` + one mutant per defect.
-
-⚠ **Defects 1 and 2 are entangled.** Deleting the `rating === 0` guard alone made `_skillCost`
-charge `ceil(1 × 1.5)` = **2** for a new active skill; with the rounding fixed it returns 1 and
-agrees with the flat rate. Fixing either without the other is wrong in one direction or the
-other. They agree only by coincidence — the flat rate reads neither the attribute nor the skill
-type, and diverges at an attribute of 0 — so `karmaNewSkillCost()` stays argument-free.
-
-⚠ **Defects 2 and 3 cannot be caught by the book's own worked examples**, which is why they
-survived: every printed example lands on an integer (where `ceil` and `floor` agree) and Brick's
-Stealth 5 / Quickness 6 is one apart (where either cap reads correctly). Any test written from
-the examples alone passes against the wrong code — write the fractional and divergent cases.
-
-⚠ **Defect 7 needed a new migration hook.** It is a data-model change (full restart), and
-existing actors keep their stored 0 — which is also the schema default, so a fill-blanks pass
-cannot tell it from a deliberate GM value. Migration `0.4.5.7` instead matches a Pool equal to
-**exactly** what the old formula produced (`⌊total / 20⌋`) and declines everything else, and it
-runs through **`fixActor`** — the third migration hook, and the first to touch the actor
-document rather than its embedded items. Like `fixItem` it can overwrite, so it argues its case
-at the call site.
-
-#### The ledger — what was earned and spent, and why  · TODO 79
-
-`scripts/data/ledger.mjs`. `system.ledger` on characters and NPCs: `{ when, kind: 'karma' | 'nuyen'
-| 'pool', delta, from, to, reason, by }`, newest rendered first under **📒 Ledger** on the Bio tab.
-
-⚠ **Every entry is derived from the WRITE, in `SR3EActor.recordLedger` (called by `_preUpdate`) —
-never from a call site.** Session Rewards, Award Karma, all six Spend-calculator purchases, a
-healing bill and a player typing in the box are recorded by one piece of code. Instrumenting the
-ten call sites instead would silently miss the eleventh, and the eleventh is the one a future
-feature adds. `tests/ledger.test.mjs` **ratchets** it: a writer that reaches these fields without
-going through `actor.update` fails the suite by name.
-
-⚠ **The entry RIDES ALONG in the same update** — not a second write, and no GM relay: whoever may
-change the number may write the actor. A relayed write would also race the change it describes. It
-is written in the **spelling the caller used** (flat from a form, nested from code), because mixing
-the two in one update object is a trap for the next reader.
-
-⚠ **A record, not a gate** (the ethos). The totals stay editable and an unexplained edit is logged
-with an **empty reason** rather than refused. A caller explains itself with `options.ledgerReason`.
-
-⚠ **A delta of 0 is not an entry** — Foundry re-sends unchanged fields on a form submit, and
-logging those would bury the real entries within one session.
-
-⚠ **Append-only for players, compared by CONTENT not by length** (`Ledger.reconcile`): a same-length
-array with an edited reason is a rewrite, and a length check waves it through. Mutant:
-`ledger-rewrite-checks-length-only`. A player can still set their karma to 9,999 — that is the
-ethos — but the ledger will say they did.
-
-⚠ **Capped at `MAX_ENTRIES` (500), trimmed oldest-first.** The whole array rides on a document that
-is broadcast on every update; unbounded would be a performance bug waiting to happen.
-
-⚠ **A write to the ledger itself is never described**, or every append would describe itself for ever.
-
-### Buying gear — Availability, Street Index and the deal  · *SR3 pp.272-273* — TODO 82
-
-Rules: `scripts/data/purchasing.mjs` (pure). Flow: `scripts/SR3EPurchase.js`, opened by
-**🛒 Buy gear…** on the Bio tab beside Spend Karma.
-
-    🛒 pick the item + contact, optionally buy the TN down
-      → 🎲 Etiquette vs Availability      (`rollThen` → `onSourced`)
-      → a card: delivery in N, the meet at N/2, the asking price
-      → 🤝 Negotiate, a Success Contest   (`rollOpposedPair` → `onNegotiated`)
-      → 💴 Pay & receive
-
-⚠ **The Availability code is TWO numbers.** `24/14 days` is **target number 24** and a **base time
-of 14 days**: the TN is what Etiquette rolls against, the time is what the successes divide into.
-Reading it as one number makes every item instant.
-
-⚠ **Successes DIVIDE the time; they never lower the target number.** An easier TN is bought
-separately and *before* the roll, at **2 days and +0.1 Street Index per point**.
-
-⚠ **Those days are added to the BASE TIME.** The book's Cheshire cuts TN 24 → 12 for "24 extra
-days (2 x 12)", making the base **14 + 24 = 38**, so 2 successes deliver in **19 days**. Shortening
-the final time instead reads just as naturally and gives a different answer everywhere except a
-case the book happens to work. Mutant: `availability-reduction-shortens-the-wait`.
-
-⚠ **Losing the haggle COSTS.** It is a Success Contest — Negotiation against the other side's
-Intelligence — at **5% per net success**, and *"if the player loses, the gamemaster can either
-raise the price or demand the extra percentage up front"*. The adjustment is **signed**; clamping
-it at zero turns every bad roll into a free retry. Mutant: `negotiation-loss-is-merely-no-discount`.
-
-⚠ **The contact is a HINT, not a gate** (`SOURCE_AFFINITY`). The book names only talismongers —
-*"ideal contact for magical items, but not very good at acquiring weapons"* — and leaves the rest to
-the GM, so a poor source is shown in amber and allowed, and an unknown archetype has no opinion.
-
-⚠ **Nothing is written until 💴.** The item is not created and the nuyen not deducted before then,
-so a deal that falls through — *"If the buyer cannot or will not pay the resulting price, the deal
-is off"* — is a card nobody presses. The payment goes through `actor.update` with a
-`ledgerReason`, so [the ledger](#the-ledger--what-was-earned-and-spent-and-why--todo-79) records it.
-
-⚠ **Every number is editable**, because p.272 says the Availability code *"is intended as a
-guideline for the gamemaster, who should adjust the listed value"*.
-
-⚠ **Racial modifications** (p.272): dwarf-sized gear **+10%**, troll **+25%**, applied to the
-asking price from `system.metatype`.
-
-**Not modelled:** Legality codes and permits (p.273), which are a scene rather than a number, and
-the Etiquette **specialisation** the book's example uses ("three Etiquette (Street) Tests").
-`tests/purchasing.test.mjs` pins Cheshire's whole worked example: 38 days, 19 days, ¥12,600, ¥10,080.
-
-### Drugs — addiction, tolerance, withdrawal, effects  · *M&M pp.105-110, 117-123* — TODO 124
-
-Pure rules in `scripts/data/drug-rules.mjs` (`DrugRules`, tested against the book's Cram example
-from first hit to forced withdrawal); cards and writes in `scripts/SR3EDrugs.js`; state in
-**`system.substances`** (characters and NPCs), one record per drug keyed by `DrugRules.drugKey(name)`.
-Same shape as healing: 💊 on a drug row → a dose card and a roll card per test → `rollPool` with
-`drugContext` (carried at all three 💥 sites) → a result card whose buttons **offer** the consequence
-(`.sr-drug-roll-btn` `_isDeciderId`, `.sr-drug-act-btn` `_mineId`). The **Substance use** block on the
-Gear tab moves the record on: wears off, crash over, stretch a fix, monthly test, kick it, no fix, a
-day passes, clear.
-
-| Rule | Where |
-|---|---|
-| First dose: a test per addiction type vs the **base** rating — Willpower (M), Body (P), **unaugmented**, a dwarf +2 Body dice on P | `takeDose` · p.108 |
-| Every Edge doses (**total** doses; pre-Edge until addicted, post after): Addiction and Tolerance +1, retest the modified rating | `takeDose` · p.108 |
-| Failed: addicted, rating → base + 1 | `addictionResult` · p.108 |
-| Tolerance: Body vs Tolerance **after it wears off**; no successes = tolerant | `toleranceResult` · p.109 |
-| Kick: Willpower vs current +1 (M) / +3 (P) / +4 (both — the higher rating, editable) | `kickTN` · pp.109-110 |
-| Withdrawal −1 every 2 days, forced −1 a day, to the base; then rest (Addiction Rating) days | `passDay` · p.110 |
-| Standing TN: withdrawal +2, forced +3, recovery +1 (concentration ×2); forced = a Moderate Stun wound's modifier | `withdrawalPenalty` · p.110 |
-| A dose in withdrawal, recovery or after kicking re-addicts, +1 | `takeDose` · p.110 |
-
-- **Effects are a registry, `DRUG_EFFECTS`, keyed by name with a page each** (Jazz, Kamikaze, Cram,
-  Novacoke, Bliss, Nitro, Zen, Psyche, Deepweed; notes for ACTH, Burn, Long Haul). Applied in
-  `_prepareCharacter` **beside the Attribute Boost, before Reaction and the pools** — Kamikaze's
-  *"may also increase calculated reaction and Dice Pools"* (p.119). A drug's Reaction adds to
-  whichever p.169 package won; its pain resistance takes the **larger** with the adept power.
-- ⚠ **Durations are minutes and hours**, not Combat Turns — rolled and stated on the card; ⏳ Wears
-  off is a button. Crash damage and a drug's own damage go through the soak card with **`noArmor`**.
-- ⚠ **`SR3EActor.standingTN(actor)` = sustaining + drugs**, and every "all tests" site now adds it
-  (`sustainingTN` stays the sustain rule alone); rollPool labels it with `standingNote`. The two
-  dodge prompts pass drugs as their own `drugs:` term. `tests/drug-wiring.test.mjs` ratchets it.
-- ⚠ **The M&M drug pack** was two half-items per drug; `tools/fix-mm-drugs.mjs` merges them from a
-  transcription of the tables (`rawdata/MM-Drugs.json`, pp.122, 157-158). **`edge` is its own field**;
-  the legacy `effect` (upstream's name for Edge) is still read by `DrugRules.drugEdge`, so worlds need
-  no migration. `build-default-gear` writes `edge`/`damage` too, and knows "Neuro-stun"/"CS/Tear Gas".
-- Not modelled: overdosing (p.107, GM's call), exposure modifiers and weapon-delivered doses (p.106),
-  the concentration half of the withdrawal TN (stated on the sheet), tolerance decay (edit the record).
-
-### Guided healing  · *SR3 pp.125-129, 178, 193-194, 304-305; M&M pp.95, 136, 138* — TODO 115
-
-`scripts/SR3EHealing.js`, opened by 🩹 **Healing** on the character sheet (wound-tracks area) and
-in the GM tools list. A step menu → a small form → a **roll card** (`.sr-heal-roll-btn`, editable
-`.sr-heal-pool` / `.sr-heal-tn`, gated `_isDeciderId(rollerId)`) → a **result card** whose
-`.sr-heal-act-btn` buttons *offer* each consequence (gated `_mineId(ownerId)`). Same ethos as
-combat: **nothing is applied until someone clicks** — lowering the wound, the bill, the lost
-Attribute point.
-
-- **The roll goes through `rollPool` with `healingContext`**, and `_postWaveCard`'s final wave calls
-  `SR3EHealing.onRolled`. It is carried at all three explosion-carry sites (Deadly first aid is TN
-  10, which explodes). `skipWoundMod` for the patient's own Body tests — the tables already price
-  the wound in.
-- ⚠ **Dice and TN are the GM's, read-only to players** (`SR3EHealing.wireCard`, reported in play
-  on 0.5.1). A GM's edit is **saved on the message** (flag `healRoll`) — the roll usually runs on
-  the *player's* client, which never sees the GM's copy of the card, so an edit that only lived in
-  the GM's DOM was silently ignored. `rollFromCard` reads the boxes only for a GM; everyone else
-  rolls the saved numbers, else the posted ones.
-- ⚠ **Chat-card number boxes need `.sr-roll-card input[type="number"]`'s colours.** Foundry styles
-  chat inputs for a light ground (`#222`), so on the dark cards the numbers were there but
-  invisible — reported as the card "not filling in" Dice and TN.
-- ⚠ **A medic treats someone else's character** (reported in play: "player A can't heal player B").
-  `patientsFor` offers your own characters, every other player's, and anyone you can see (not
-  hidden NPCs); "Treat someone else…" in the menu, and an unhurt character's sheet button, open
-  that picker. Buttons a roll produces carry **`byId`** (the roller), gated `_mineAny(ownerId,
-  byId)`, so the medic can press *Lower*. Their client cannot write the patient, so every change
-  goes through **`applyToPatient`** → the owner writes directly, anyone else sends the INTENT to the
-  GM (`sr3e.heal.apply` → `_applyOp` in the actor's queue) — never a box count, since wounds are
-  accumulators that `sr3e.actor.set` refuses. Money, Attribute and Magic loss stay the patient's.
-- **⏱ Time boxes** (`_timeBox`, `_roadHtml`, `recoveryRoad`, `formatTurns` — a Combat Turn is 3
-  seconds, p.39): every roll and result card leads with how long it takes, and the menu and stage
-  cards show the Healing Table road — each stage's minimum to its 1-success time, and the total.
-- **`act()` returning `false` means "cancelled"**: `sr3e.js` then hands the one-shot button back
-  (Charge's confirm, Next's form). Anything else keeps it spent.
-- ⚠ **The per-injury record is the actor flag `healing`** — `{stabilized, magicHealed,
-  timeMultiplier, baseMultiplier}` — and it is **cleared whenever Physical reaches 0**, by either
-  *Lower* or *Heal these boxes*. `magicHealed` blocks further Heal/Treat **and** first aid for *these*
-  injuries (p.129, p.194); left set after a full heal it silently blocked the next wound.
-- **The `healing` situation** (Rapid Healing, SR3 p.170) is added to the patient's Body tests — the
-  Wound Table test, each stage, permanent damage — by `healingSituationDice`, named on the card
-  (TODO 76, which this flow closed).
-- ⚠ **Equipment ratings come from `itemRating()`** (`scripts/data/item-rating.mjs`, TODO 118) — a
-  stored rating above 0 wins, else the name's `[N]` / `Rating N`. `findEquipment` takes the **best**
-  usable item, not the first, and skips anything in storage.
-- ⚠ **Medkit (M&M p.136/138):** no Biotech → the kit's rating **is** the skill; with Biotech → its
-  rating adds **complementary dice**. Not p.97's 2:1 complementary skill — same reading as R3's EW
-  dice. A kit flagged `suppliesOut` (a 1 on the 1D6, p.304) is invisible to `findEquipment` until
-  restocked (50¥). "Medkit Supplies" is not a medkit.
-- ⚠ **Spell Pool on a Heal card is spent on ROLL, on the caster's client** — an unrolled card costs
-  nothing. It was offered and never spent until the live test.
-- **Equipment is detected by name** (`SR3EHealing.EQUIPMENT` regexes): stabilization unit
-  (automatic stabilization, −2 on healing tests), trauma patch, antidote patch (its rating in dice on
-  stabilization tests). The forms pre-tick what the patient carries; the GM can untick.
-- **No successes on a healing stage returns `null`** — the Healing Table gives no time, so the card
-  says it is the GM's call rather than inventing one.
-- Costs come from the Medical Costs Table and the lifestyle table (monthly ÷ 30); a hospital or ICU
-  meets the minimum lifestyle. **Charge** confirms before deducting `system.nuyen`.
+| `dice-and-defaulting.md` | Rule of Six/One, 💥 explosions, opposed ⏳ cards, `rollOpposedPair`/`rollThen`, Default Table |
+| `initiative-and-vehicles.md` | Initiative modes & formulas, action ledger, Ready Weapon, hands, gyro, GM tools, Driving/Crash Test, chases |
+| `ranged-combat.md` | Ranged flow, GM TN window, visibility, dodge (TN + resolution), armour & layering, fire modes, recoil, shotguns, ammunition, range, canvas attacks, grenades/AoE |
+| `melee-combat.md` | Melee flow, GM melee window, reach, tie to attacker, Full Defense, Charging |
+| `combat-resolution.md` | Damage staging (past Deadly), called shots, knockdown, Combat Pool refresh |
+| `magic.md` | Astral state, sustained spells, Spell Pool, spellcasting, elemental spells, Drain, Spell Defense, conjuring |
+| `adept-powers.md` | Power channels, Attribute Boost, Improved Ability/Reflexes, Missile Parry, Quick Strike, direct-effect powers |
+| `essence-and-cyberware.md` | Essence & the Essence hole, cyberzombies, `Mods` parsing, skill bonus channels, triggered ware, Stress, cybersystem damage, item ratings, grades, move-by-wire, attribute sources |
+| `karma-and-economy.md` | Karma award/spend, the ledger, buying gear, encumbrance |
+| `drugs-and-healing.md` | Drugs (addiction, tolerance, effects), guided healing |
+| `matrix.md` | The two Matrix rulesets, Orthodox fields/packs, Matrix Defragged rules, IC, host sheet |
+| `electronic-warfare.md` | Flux/Footprint/ECM/ECCM, Signal Monitor, MIJI, infiltration, Drone Comprehension, IVIS |
+| `source-books.md` | Book codes, pack filtering, default-book gear, the archive, the `mat` decision |
 
 ---
 
@@ -2762,53 +419,40 @@ Attribute point.
 
 ### Key system fields (character/npc)
 ```
-system.attributes.body.base / .value
-system.attributes.quickness.base / .value
-system.attributes.strength.base / .value
-system.attributes.intelligence.base / .value
-system.attributes.willpower.base / .value
+system.attributes.<attr>.base / .value     ← body quickness strength intelligence willpower charisma magic
 system.attributes.reaction.value / .reactionBonus / .diceBonus / .override
-system.attributes.essence.value     ← DERIVED: base − max(lost, installed cyberware)
+system.attributes.essence.value     ← DERIVED (see essence-and-cyberware.md)
 system.attributes.essence.base      ← persisted starting Essence (6)
-system.attributes.essence.lost      ← persisted PERMANENT loss; accumulates on install
-system.attributes.magic.base / .value
-system.wounds.stun.value / .max
-system.wounds.physical.value / .max
-system.woundMod                    ← derived, written by prepareDerivedData
-system.derived.combatPool          ← derived
-system.derived.availableCombatPool ← derived (combatPool − combatPoolSpent)
-system.derived.spellPool           ← derived ⌊(INT+WIL+MAG)/3⌋, null if not Awakened
-system.derived.availableSpellPool  ← derived (spellPool − spellPoolSpent), null if not Awakened
-system.derived.initiative          ← derived (reaction + woundMod)
-system.derived.initiativeDice      ← derived
-system.combatPoolSpent             ← persisted, tracks pool usage mid-combat
-system.spellPoolSpent              ← persisted, tracks spell pool usage mid-combat
-system.equippedArmor               ← item ID string
-system.equippedMelee               ← item ID string
-system.karmaPool                   ← persisted
-system.astralMode                  ← persisted: '' | 'physical' | 'dual' | 'astral'
-system.matrixUserMode              ← persisted: '' | 'TRM' | 'AR' | 'VR-Cold' | 'VR-Hot'
-system.recoilCompensation          ← persisted, cyber/body recoil comp (edited on Cyber tab)
-system.roundsFiredThisPhase        ← persisted, recoil accumulator; reset each phase
+system.attributes.essence.lost      ← persisted PERMANENT loss, nullable; accumulates on install
+system.wounds.stun / .physical      ← { value, max }
+system.woundMod                     ← derived (negative)
+system.derived.combatPool / .availableCombatPool
+system.derived.spellPool / .availableSpellPool   ← null if not Awakened
+system.derived.initiative / .initiativeDice
+system.combatPoolSpent / .spellPoolSpent          ← persisted pool usage
+system.equippedArmor / .equippedMelee             ← item ID strings (armour now uses the item `worn` flag)
+system.karma / .totalKarma / .karmaPool / .ledger
+system.astralMode                  ← '' | 'physical' | 'dual' | 'astral'
+system.matrixUserMode              ← '' | 'TRM' | 'AR' | 'VR-Cold' | 'VR-Hot'
+system.recoilCompensation / .roundsFiredThisPhase / .targetsThisPhase
 ```
 
 ### Item types and key fields
-- `firearm`: `damage` (string e.g. "9M"), `category` (weapon code), `mode` (e.g. "SA/BF/FA"), `ammunition` (capacity string e.g. "15(c)"), `recoilMod` (weapon-mounted comp), `smartgun` / `laserSight` (nullable booleans, TODO 18), `rangeOverride` ("S/M/L/E" metres, e.g. "5/15/30/50"), `loadedAmmoType` / `loadedRounds` (current magazine)
-- `melee`: `damage` (string e.g. "9M"), `reach` (number), `category` (weapon code)
-- `projectile` / `thrown`: `damage`, `category`, `quantity` (thrown weapons consume `quantity`; bows/crossbows instead nock a single arrow/bolt via `loadedAmmoType`/`loadedRounds` — see Bows & crossbows above). `projectile`/`thrown` use Strength-scaled range bands.
-- `ammunition`: `ammoType` (key into `SR3E.ammoTypes`), `loadMechanism` (c/m/cy/b/d/sb/internal + arrow/bolt), `rounds` (stockpile total) + descriptive fields. NO power/armour data fields — rules are in config
-- `armor`: `ballistic` (number), `impact` (number)
-- `skill`: `rating`, `linkedAttribute`, `specialisation`
-- `spell`: **`force`** — the Force it was LEARNED at · *SR3 p.178*: *"Spellcasters learn spells at a
-  specific Force. They can cast the spell at a lower Force, if desired, but **can never cast the spell
-  at a higher Force than they have learned.**"* The cast dialog caps its Force input at this and
-  defaults to it, so casting lower is a deliberate choice. ⚠ **Nullable, and null means NOT RECORDED**
-  — every shipped spell predates the field, so a null caps nothing and the dialog says so; reading it
-  as 0 would make the whole spell library uncastable. ⚠ **The clamp is on READ, not just `max=`** —
-  `max` is a hint the browser applies to spinner clicks only, and a typed value sails past it.
-  There was no field at all before 2026-09-22, so the limit could not even be shown.
-- `spell`: `type` ("Mana"/"Physical" — sets **only the damage track**: Mana → Stun, Physical → Physical; it does **not** set the resist attribute), `target` (sets the **resist attribute *and* the cast TN** — `W/B/I/Q/F`/number, suffixes stripped — `SR3EItem._parseSpellTarget`), `category` (**Combat or Elemental = damaging**: shows the cast Damage-Level dropdown; **Elemental** also resolves as a ranged attack — dodge, then soak), `drain` (drain-Power/TN formula e.g. "(F/2)" or "(DL+1)" — level = nominated Damage Level ± a `DL` token), `range` (Touch/LOS; an **`(A)` suffix = area effect**, no separate flag), `duration`. **No damage code** — spell power = Force and the level is chosen at cast (the `damage` field is hidden/legacy; only `drain` is required for a complete spell).
-- `drug`: 💊 takes a dose — see *Drugs* (TODO 124). `category`, `addiction` (e.g. "2M", "4M+3P", "5M/5P" — M=Mental, P=Physical), `tolerance`, `edge` ("5/50"), `fixFactor`, `damage` ("6S Stun"), `legality`, `speed` (onset time), `vector` (delivery method), `availability`, `cost`, `streetIndex`, `bookPage`, `notes`. `effect` is **legacy** — the Edge on items copied before `edge` existed. Shipped in the per-book drug packs (`sr3e-mm-drugs`, …).
+- `firearm`: `damage` ("9M"), `category` (weapon code), `mode` ("SA/BF/FA"), `ammunition` (capacity "15(c)"),
+  `recoilMod`, `smartgun`/`laserSight` (nullable), `rangeOverride` ("5/15/30/50"), `loadedAmmoType`/`loadedRounds`,
+  `ready`, `hands`, `choke`
+- `melee`: `damage`, `reach`, `category`
+- `projectile` / `thrown`: `damage`, `category`, `quantity` (thrown consume it; bows/crossbows nock via `loadedAmmoType`/`loadedRounds`)
+- `ammunition`: `ammoType` (key into `SR3E.ammoTypes`), `loadMechanism`, `rounds`/`reloads`/`roundsPerReload`/`countedIn` — rules live in config
+- `armor`: `ballistic`, `impact`, `worn`
+- `skill`: `rating`, `linkedAttribute`, `specialisations` (`level` = bonus over base)
+- `spell`: `force` (learned Force, nullable — caps the cast; SR3 p.178), `type` (Mana/Physical — **damage track
+  only**), `target` (**resist attribute AND cast TN**, via `SR3EItem._parseSpellTarget`), `category` (Combat or
+  Elemental = damaging; Elemental resolves as a ranged attack), `drain` ("(DL+1)"), `range` (`(A)` = area),
+  `duration`. **No damage code** — Power = Force, level chosen at cast.
+- `drug`: `addiction` ("4M+3P"), `tolerance`, `edge` ("5/50"; legacy `effect`), `fixFactor`, `damage`, `speed`,
+  `vector`, `legality`, `availability`, `cost`, `streetIndex`, `bookPage`
+- gear/cyberware/bioware/medical: `rating` — read only through `itemRating()` (see essence-and-cyberware.md)
 
 ### Weapon category codes → skills
 ```
@@ -2830,46 +474,31 @@ CYB/UNA → Unarmed Combat
 ## Key methods reference
 
 ### SR3EActor
-- `rollPool(pool, tn, label, options)` — entry point for all skill/attribute rolls
-- `_rollWave(count, tn, isFirstWave, prevDice, explodeIdx)` — rolls one wave of dice
-- `_postWaveCard(state)` — posts a chat card for a wave result
-- `handleExplosionClick(payloadJson)` — static, handles explosion button clicks
-- `spendCombatPool(amount)` — spends from available pool, returns actual spent
-- `refreshCombatPool()` — resets combatPoolSpent to 0
-- `_postSoakCard(payload)` — posts editable soak card for this actor
-- `postSoakCard(actorId, payload)` — static wrapper, safe actor lookup
-- `handleSoakRollClick(btn)` — static, handles soak roll button
-- `postMeleeCard(ctx)` — static, posts boxing card
-- `handleMeleeRoll(btn)` — static, rolls both sides and posts result
-- `_rollDodge(targetActor, dodgeDice, dodgeContext)` — static, fires dodge roll
-- `rollInitiative(options)` — rolls initiative; `options.physicalDice` skips virtual roll and prompts for manual entry
+- `rollPool(pool, tn, label, options)` — entry point for skill/attribute rolls (adds wound, sustaining/drugs, signal mods unless skipped)
+- `_rollWave(count, tn, isFirstWave, prevDice, explodeIdx)` — one wave; **only the 💥 handler may call it with `false`**
+- `_postWaveCard(state)` — posts a wave card; final-wave branches for every flow
+- `handleExplosionClick(payloadJson)` — static, 💥 buttons
+- `rollOpposedPair(kind, ctx, atk, def)` / `rollThen(actor, pool, tn, {label, followUp})` — static, explosion-safe sequencing
+- `spendCombatPool(amount)` etc. — route through `sr3e.pool.spend`; **return what was actually deducted**
+- `_postSoakCard(payload)` / `postSoakCard(actorId, payload)` / `handleSoakRollClick(btn)`
+- `postMeleeCard(ctx)` / `handleMeleeRoll(btn)` — melee boxing card
+- `_rollDodge(targetActor, dodgeDice, dodgeContext)` — static
+- `rollInitiative(options)` — `options.physicalDice` prompts for manual entry
 
 ### SR3EItem
-- `rollWeapon(tn, options)` — ranged attack flow (reads loaded ammo, fire mode, recoil; decrements magazine)
-- `rollMelee()` — instance: melee attack flow → calls `rollMeleeAttack(this.actor, this)`
-- `rollMeleeAttack(actor, atkWeapon)` — static: shared melee flow for a real Item OR a synthetic weapon (adjacency warn → boxing card)
-- `_unarmedWeapon()` — static: synthetic "Unarmed Combat" attacker weapon ((STR)M Stun, reach 0, UNA). Built-in, not a real item; triggered from the Cyber & Unarmed sheet row (`rollUnarmed` action → `_onRollUnarmed`) and the canvas picker (`_sr3eReadyWeapons` appends it; `_sr3eFireWeapon` routes `_unarmed` items to `rollMeleeAttack`)
-- `_buildMeleePoolInfo(actor, weapon)` — static: builds the boxing-card pool info. **Unarmed skill choice:** Unarmed Combat and Martial Arts (`MA:`-prefixed) skills are interchangeable — use the **highest-rated** among Unarmed Combat + all MA skills; default (interactive) only if none exist. The chosen skill's name is shown on the card.
-- `promptDefaultChoice(actor, opts)` — static async: the **SR3 Default Table** dialog (specialization +3 / skill +2 / attribute +4). Returns `{ mode, pool, tnMod, allowPool, label }` or `null` (cancelled). `opts = { message, linkedAttr, title }`. See the **Defaulting** section.
-- `_tokensAdjacent(aToken, tToken)` — static: true when tokens are in the same/adjacent square (melee range warn)
-- `reload()` — firearm **or** nocked bow/crossbow: prompt a compatible stockpile, swap the magazine (capacity 1 for bows), subtract from stock
-- `_usesNockedAmmo()` / `_weaponLoadMechanism()` / `_weaponMagazineSize()` — bow/crossbow nocked-ammo helpers (category → arrow/bolt, capacity 1); the latter two also cover firearms
-- `_promptFireMode(availableModes, actor, weapon, isHeavy)` — static, fire-mode + editable recoil-comp dialog
-- `_parseLoadMechanism(capacityStr)` — static, "15(c)" → 'c'
-- `_parseMagazineSize(capacityStr)` — static, "15(c)" → 15
-- `_promptReloadChoice(stock, weapon, magSize, trackOn)` — static, reload selection dialog
-- `_getRangeBands(actor)` — range bands: override → fixed (firearms) → STR-scaled (bows/thrown)
-- `_rangeBandForDistance(bands, metres)` / `_measureDistance(aToken, tToken)` / `_acquireCanvasTarget()` — static, range classification + token distance + canvas target
-- `parseDamageCode(code)` — static, returns `{ power, level, isStun }`
-- `stageDamage(base, netSuccesses)` — static, returns staged `{ power, level, isStun }`
-- `_getEquippedMelee(actor)` — static, finds equipped/fallback melee weapon
-- `_promptTarget(attacker)` — static, shows target selection dialog
-- `_promptDodgeDeclaration(defender, attackerName, weaponName)` — static, defender commits dodge dice
+- `rollWeapon(tn, options)` — ranged attack flow
+- `rollMelee()` → `rollMeleeAttack(actor, atkWeapon)` — static, shared for real items and the synthetic `_unarmedWeapon()`
+- `_buildMeleePoolInfo(actor, weapon)` — unarmed uses the **highest** of Unarmed Combat and every `MA:` skill
+- `promptDefaultChoice(actor, opts)` / `defaultTiers(actor, opts)` — the Default Table
+- `reload()`, `_promptFireMode`, `_parseLoadMechanism`, `_parseMagazineSize`, `_promptReloadChoice`
+- `_getRangeBands`, `_rangeBandForDistance`, `_measureDistance`, `_acquireCanvasTarget`, `_tokensAdjacent`
+- `parseDamageCode(code)` → `{ power, level, isStun }`; `stageDamage(base, net, { meleeRules })`
+- `_getEquippedMelee(actor)`, `_promptTarget(attacker)`
 
 ### SR3ECombat
-- `_nextTurnSR3()` — SR3 pass-based initiative advancement
-- `_nextTurnSR2()` — SR2 flat queue advancement
-- `endCombat()` — override, silently refreshes pools + clears Spell Defense / `tempMagicLoss` before ending
+- `_nextTurnSR3()` / `_nextTurnSR2()` — pass-based / flat-queue advancement
+- `_endOfTurnReset()` — pool/recoil/Full Defense refresh each Combat Turn
+- `endCombat()` — silently refreshes pools, clears Spell Defense / `tempMagicLoss`
 
 ---
 
@@ -2879,7 +508,7 @@ CYB/UNA → Unarmed Combat
 --sr-border, --sr-border-hi        ← borders
 --sr-text, --sr-muted, --sr-dim    ← text colours
 --sr-accent                        ← blue, primary interactive colour
---sr-gold                          ← #c8a040, used for karma/explosion/soak
+--sr-gold                          ← #c8a040, karma/explosion/soak
 --sr-green, --sr-green-bg          ← success/dodge success
 --sr-red, --sr-red-bg              ← failure/damage/melee
 --sr-amber, --sr-amber-bg          ← warnings/defaulting
@@ -2888,473 +517,66 @@ CYB/UNA → Unarmed Combat
 
 ---
 
-## Two-track Matrix system
+## GM-routed writes and creating documents
 
-The system supports two mutually-exclusive Matrix rulesets, toggled via the **`matrixRuleset`** world
-setting (Configure Settings → System → Matrix Ruleset). **Changing this requires a full Foundry
-restart** (`requiresReload: true`). A red warning is injected into the settings UI by the
-`renderSettingsConfig` hook.
+Foundry runs authoritative writes on `game.users.activeGM`. Players write other actors through GM query
+verbs (`sr3e.actor.set`, `sr3e.pool.spend`, …), queued per actor.
 
-| Setting value | Ruleset | Sheet classes registered |
-|---------------|---------|--------------------------|
-| `'defragged'` (default) | **Matrix Defragged v2** | `SR3EHostSheet`, `SR3EICSheet` |
-| `'orthodox'`  | **Orthodox SR3** (core book Ch. 8) | `SR3EHostSheetOrthodox`, `SR3EICSheetOrthodox` |
+**`sr3e.actor.create`** (TODO 71) — `Actor.create` needs `ACTOR_CREATE`, which base Players lack. The verb
+takes a compendium entry, a blank vehicle, or **an existing actor to copy**, and grants the requester `OWNER`;
+**`sr3e.vehicle.link`** attaches a vehicle to a driver with ownership. One verb for all creation because the
+ownership grant is what gets forgotten (the actor appears, then refuses to roll).
+- ⚠ **Delete `_stats` when copying** (it carries `compendiumSource`, which re-flags the copy as a template);
+  the flag is also cleared after creation.
+- `tests/gm-writes.test.mjs` is a source-level invariant.
 
-The character sheet (`SR3EActorSheet`) renders its Matrix tab differently depending on the setting:
-- **Defragged** — Hacking Pool (INT+MPCP/3 from equipped cyberdeck item), node tracking, Overwatch.
-- **Orthodox** — `system.orthodoxDeck.*` fields (MPCP, Active Memory, Hardening, Response, etc.),
-  Loaded Programs list (program items with memory tracking), **Matrix Condition Monitor** (10-box
-  track), Cyberdeck picker, Program picker (both read every pack declaring `cyberdeck` / `program`
-  items via `SR3EItem._documentsOfType` — see the missing-packs warning below).
-  Hacking Pool = `⌊(INT + MPCP) / 3⌋` via `system.orthodoxDeck.mpcp`.
-
-**Key data model fields for Orthodox SR3 (on `CharacterData` / `NpcData`):**
-- `system.orthodoxDeck.{ mccp, activeMemory, storageMemory, hardening, responseIncrease, ioPeed }` — persisted
-  (⚠ the MPCP field is really named **`mccp`**; the sheet writes the UI's "MPCP" into it)
-- `system.orthodoxRunState.{ hostId, hostName, securityCode, securityValue, securityTally, personaBod, personaEvasion, personaMasking, personaSensor }` — current run state
-- `system.orthodoxMatrixCM.value` — Matrix Condition Monitor boxes (0–10); crash at 10 → dumpshock
-
-**Compendiums (Orthodox only) — `sr3e-sr3-odm-cyberdecks` · `sr3e-sr3-odm-programs`** (restored
-2026-09-14; the old `sr3e-odm-*` packs shipped EMPTY and were dropped in `f457d3c`). Built by
-**`node tools/build-odm-packs.mjs`** (`--install` for the install, Foundry closed; then
-`npm run sync:install -- --force` for the manifest) from the ODM-\* rawdata, **core book only**: the 8
-stock decks (stats p.207, cost/availability p.304 — `bookPage: sr3.207,sr3.304`) and the 22 core
-utilities (pp.220-222, Attack at each damage level, each with its own `bookPage`). The rawdata's other rows — Cyberpunk 2020 (`cp`), `cd.130`, the Matrix sourcebook
-(`mat`, 23 programs + 5 decks), 4 Erosion variants in neither PDF — are left in rawdata. The tool
-**refuses to write** if a row disagrees with the book; `tests/odm-packs.test.mjs` diffs the committed
-packs against it.
-
-⚠ **Shown only under the Orthodox ruleset** — `flags.The2ndChumming3e.matrixRuleset: 'orthodox'`, read
-by `SR3ESourceBooks.rulesetAllows` inside `packAllowed`, so the sidebar and the pickers both follow it.
-The two **Matrix Defragged** item packs of the same types (`sr3e-mdf-cyberdecks`, `sr3e-mdf-programs`)
-are tagged `'defragged'` so the Orthodox pickers do not list them; IC, agents and hosts are untagged.
-Presentation only, fails visible; the setting already requires a reload.
-- ⚠ The old `populate-odm-*.js` macros (deleted, TODO 1) had several program descriptions wrong
-  (Lock-On, Relocate); the packs describe each utility by category, multiplier and page instead.
-- Program items store extra fields in `modules[0]` with `_odmType: 'orthodox'` (hardening, storageMemory, responseIncrease) since these don't map to the Defragged `CyberdeckData` schema.
-
----
-
-## Matrix rules (Matrix Defragged v2)
-
-### System Rating
-- All Matrix-enabled devices have a System Rating (range 1–12, can exceed 12)
-- Determines the **TN** for any action taken against a host or its assets
-- Hosts: assigned by GM. Cyberdecks: equal to MPCP Rating. Other devices: Device Rating.
-
-### Security Tiers
-- All Matrix-enabled devices belong to a Security Tier
-- Represented by a **colour** (flavour hint to deckers) and a **Security Threshold** (the actual firewall rating)
-- Any hack attempt must generate successes **≥ Security Threshold**, or the action fails and the user's **Overwatch increases by 1**
-- Cyberdecks determine their tier from their Firewall Rating
-
-| Tier | Threshold | Colour | Description |
-|------|-----------|--------|-------------|
-| Ivory | 0 | Cream | No security. Toys and minor Matrix devices. |
-| Blue | 1 | Blue | Low security. Public access: bus tickets, libraries. |
-| Green | 2 | Green | Standard. Shops, petty outfits, public Matrix. |
-| Orange | 3 | Orange | Challenging. Mid-size corps, corp offices. |
-| Red | 4 | Red | Threatening. Classified info; agencies will kill to protect. |
-| Black | 5 | Black | Dangerous. Top military/corporate/government SOTA. |
-| Ultraviolet | 6 | Purple | Deadly. The Sixth World's greatest secrets. |
-
-### Hacking Pool
-- Formula: `Intelligence + ⌊MPCP / 3⌋` (MPCP = cyberdeck's MPCP Rating)
-- Replaces the raw Intelligence roll — always pair with the appropriate skill
-
-### User Modes and their effects
-| Mode | Initiative | Biofeedback | Dumpshock |
-|------|-----------|-------------|-----------|
-| Tortoise (TRM) | **meat world** | Immune | — |
-| AR | **meat world** | Immune | — |
-| VR-Cold | **meat world** | Stun overflow | Stun |
-| VR-Hot | Matrix (Response) | Physical | Physical |
-
-- ⚠ **Only VR-Hot uses Matrix Initiative** (MDF p.10, verified TODO 119). Tortoise, AR and VR-Cold all
-  *"rely on their meat world Initiative; cannot benefit from Response, but may use their Hacking Pool"* —
-  their **own** initiative dice, wired reflexes included. The code forced them to 1d6 until the audit;
-  the book excludes Response, not the character's dice.
-- Tortoise mode: +2 TN to all Matrix actions, immune to Biofeedback
-- VR-Cold: overflow damage after stun track filled goes to physical; dumpshock = Stun
-- VR-Hot: all damage physical; dumpshock = physical; *"may rely on their Matrix Initiative, benefit from
-  Response"*
-- **Dumpshock is SERIOUS** — *"The user must immediately resist Serious Biofeedback Damage. The attack's
-  Power is equal to the System Rating of the grid or host that dumped the user"* (MDF p.27). It was
-  Moderate at three sites until the audit.
-
-### Hacking procedure (3 steps)
-1. **Declare action** — attacker picks a node prompt (e.g. Duplicate/Download on DS)
-2. **Check Security Threshold** — roll Hacking vs System Rating; need ≥ Security Threshold successes or: action fails + Overwatch +1
-3. **Perform action** — if threshold met, action resolves (may require a second roll per the prompt's test field)
-
-### Overwatch / Convergence  · *MDF p.22-23* (verified, TODO 119)
-- Track: 10 boxes, on the host's **Security Sheaf**
-- Overwatch +1 on either of the book's two triggers: *"Failing a test using the Hacking skill"* and
-  *"Crashing an icon without Suppressing it"*. ⚠ **Only the first is implemented** — the crash trigger and
-  the Suppression utility that avoids it are TODO 128, as are the sheaf's ten **Trigger Steps**, which
-  hold the IC a host responds with.
-- Box 10 = **Convergence**: Dumpshock attack (Power = System Rating) + GOD/corporate response + possible physical security
-
-### Cybercombat procedure  · *MDF p.26* (verified, TODO 119)
-1. **Attack** — attacker rolls Cybercombat + Hacking Pool *"against a base target number 4, modified as
-   appropriate"*. ⚠ **Not the target's System Rating** — this file said so until the audit; the code was
-   always right.
-2. **Defend** — defender rolls Cybercombat + Hacking Pool, also against **base TN 4**.
-3. **Compare** — net successes. ⚠ *"Ties are resolved in favor of the defender."* The card posts 🤝 Tie
-   and deals no damage; whether the defender should instead land their own base damage (as a melee tie
-   does for the attacker, SR3 p.122) is the maintainer's to settle — see the audit.
-4. **Determine damage** — +1 Damage Level per 2 net successes; past Deadly the extra successes raise the
-   **Power** by one per two, exactly as melee does.
-5. **Resist** — *"Roll the target icon's System Rating (or MPCP) against a target number equal to the
-   attack's Power, minus the target's Security Threshold or Firewall (which act as armor)."* ⚠ **Not
-   Body** — this file said Body until the audit; the code carries the firewall as armour and rolls
-   MPCP / Rating.
-
-### IC / Agent rules
-- **Firewall** = host's Security Threshold (not a separate stat on the IC actor)
-- IC initiative is tier-based (derived in `_prepareIC`):
-
-| Tier | Initiative formula |
-|------|--------------------|
-| Ivory | Rating + 0d6 |
-| Blue | Rating + 1d6 |
-| Green | Rating + 2d6 |
-| Orange | Rating + 3d6 |
-| Red / Black / Ultraviolet | Rating + 4d6 |
-
-- IC grading (White/Gray/Black) determines lethality; Black IC deal physical damage
-- IC act on their own initiative in the Matrix combat tracker (type = `ic` actor)
-
-### Official IC/Agent types (by grading)
-- **White**: ARis, Authenticator, Looper, Mr. Medkit, Scrambler
-- **Gray**: Blaster, Crippler, Dataworm, Gemini, Hydra, Sparky, Tar Baby, Tracker
-- **Black**: Killer, Ripper
-
-### Matrix Condition Monitor
-- 10 boxes (same click-to-toggle pattern as physical/stun wound track) — ✅ *"When an icon achieves 10
-  boxes of Overload Damage, it crashes"* (MDF p.26)
-- 🔴 **THE THRESHOLDS ARE UNVERIFIED.** We use 3/6/8/10 → +1/+2/+3/crash. The book's table (MDF p.12) is a
-  **graphic**: its labels extract as `Icon | +1 TN | +2 TN | +3 TN | +4 TN` — **four** penalty steps, not
-  three — but the box counts do not, and this machine has no PDF rasteriser. One look at p.12 settles it
-  (TODO 119, `audit/matrix-defragged-audit.md`).
-- Not yet implemented as a separate track on the host sheet
-
-### Sys/Sec modifiers
-| Condition | Modifier |
-|-----------|---------|
-| Hardlined via a datajack or trodes | −2 |
-| Operating in a Tortoise Terminal | +2 |
-| Maintaining real-time communication with meat world associates | +1 |
-| Circumstantial — Matrix noise, jamming, wound modifiers | ±1-4 |
-
-Verified against MDF p.14 (TODO 119); the fourth row was missing from this file.
-
-### Host sheet implementation notes (SR3EHostSheet.js)
-- `securityTierName` change auto-fills both `securityTierColor` and `securityTierThreshold`
-- Overwatch track (10 boxes, gradient green→amber→red→gold) increments on failed hacks
-- Box 10 = Convergence (gold border)
-- Default topology mirrors the canonical host system map: SAN (top) → SPU (centre) → SN (left) / DS (right) / CPU (bottom); I/O (upper-right) hangs off SAN
-- Node shapes: SAN=rectangle, SPU=hexagon, DS=square, **SN=circle**, CPU=doubleHexagon, I/O=triangle
-
----
-
-## Electronic Warfare — Flux / Footprint / ECM / ECCM / MIJI (R3 p.36-40, 137-138, 144-145)
-
-A parallel-to-combat electronic-warfare layer for riggers. **Hybrid stat placement:**
-- **Rigger (character/npc)** `system.ew`: `deckRating`, `fluxRating`, `protocolModule`. Edited on
-  the **Matrix tab** ("Rigger — Electronic Warfare" block). Electronics(EW) skill (an Electronics
-  specialisation) drives every roll.
-- **Vehicle (network hub)** `system.ew`: `ecm`, `eccm`, `fluxRating`, `footprint`; plus
-  `system.signalMonitor.{command,simsense,system}` (0-10 each) and `system.infiltration`
-  (`intruderActorId`, `turnsRemaining`, `intrusionFactor`, per-channel `command/simsense/system`
-  booleans). All on the vehicle sheet's **Electronic Warfare tab**.
-
-**Complementary dice** = the **full rating, uncapped**, added as extra pool dice
-(`_complementaryDice`). R3 states the quantity three times and never bounds it by the primary
-skill: the MIJI intruder's Flux (p.37), the MIJI defender's Flux (p.37), and the rigger's EW
-skill on ECCM regeneration (p.40).
-⚠ **Not SR3 p.97's Complementary Skills mechanic**, which is a separate test converting at
-2 successes → 1. R3 says "dice", repeatedly, so R3's reading is what is implemented — the
-maintainer's call, 2026-08-14. Switching to 2:1 would be a second roll, not a tweak.
-⚠ **Granted to the MIJI Test and ECCM regeneration only.** Infiltration rolls the EW skill
-alone — R3 scopes the allowance to "this part of the test" (p.37), and its worked example has
-Trixie roll 6 dice on Flux 8 (p.36-37).
-**Footprint** derived = `round((riggerDeckFlux + vehFlux + ECM) / 10)`; "↻ Recalc" writes it into
-the editable field. Targeting the vehicle's Sig uses TN = Sig − Footprint.
-
-**Signal Monitor** (`_signalChannel`/`_signalTier` on the vehicle sheet) is a 10-box track per
-channel. Each row has an **Infil** toggle (`signalInfil` → flips `system.infiltration.<channel>`,
-the same per-channel breach flag the infiltration roll/panel use) and **+1 / −1** degradation buttons
-(`signalDamage`). **Until a channel is infiltrated its boxes and ±1 buttons are faded + locked**
-(`.signal-faded`, plus a guard in `_onSignalBox`/`_onSignalDamage`); only Infil is clickable. MIJI
-`applyDegradation` sets the breach flag true so a jammed channel never shows as locked. Degradation
-tiers (`SR3E.electronicWarfare.degradationTiers`): 1-3 +1, 4-6 +2, 7-9 +3, 10 = channel lost.
-
-**Degradation effects (R3 p.145) — how each tier modifier is applied:**
-- **Simsense, VCR-jacked rigger = wound-equivalent (fully automatic).** `SR3EActor._jackedSignalMod`
-  finds the drone the rigger is jumped into (`controlMode==='vcr'`, exclusive) and returns its
-  Simsense tier as a +N TN penalty. It's folded into **every** `rollPool` (alongside `woundMod`, via
-  a new `skipSignalMod` opt-out) and **subtracted from VCR initiative** in both `rollInitiative`
-  sites (vehicle's own + the rigger's own). `_signalTierMod`/`_vehicleSimsenseMod` are the shared
-  helpers. Simsense full (10) → `applyDegradation` posts a **Dumpshock** pointer for the jacked rigger.
-- **Gunnery (vehicle weapons) — auto-prefilled, editable.** `_promptVehicleWeaponRollOptions` adds a
-  "Shot type" select (Direct / Manual = Simsense / Indirect = System) that folds the firing vehicle's
-  matching channel tier into the TN live (per-dialog `render` wiring on `#vw-shottype`); only shown when a
-  relevant channel is degraded.
-- **Reference-only (no roll path / not modelled):** Command (Drone Comprehension, IVIS), Simsense
-  Perception-through-drone, and System Smartlink-cancel. Surfaced via the vehicle EW tab's **Active
-  Degradation Modifiers** readout (`_degradationReadout`, using each channel's `appliesTo`) and a
-  reminder line on MIJI degradation cards — the GM applies them to those specific tests.
-
-**MIJI** (`scripts/SR3EMIJI.js`, registered on `game.sr3e`): a **chat-card opposed contest**
-cloned from the melee boxing card. `openAttackDialog(targetVehicle)` (vehicle EW tab → ⚡ MIJI
-Attack) picks intruder vehicle + operation + channel; `SR3E.electronicWarfare.operations` maps each
-operation to its allowed channels and the stat that sets the **defender TN** (`ecm` for Jamming,
-`protocolModule` otherwise). Intruder TN = defender deck rating. Both sides get Flux complementary
-dice. `postMIJICard` → `.sr-miji-roll-btn` → `handleMIJIRoll` rolls both sides through
-`SR3EActor.rollOpposedPair('miji', …)` (6s at TN 7+ are 💥 clicks; the result waits) → net successes; intruder win posts a
-`.sr-miji-degradation-btn` → `applyDegradation` fills `signalMonitor[channel]`. Both buttons use the
-`_checkBtn`/`_claimBtn` one-shot guards.
-
-**Corner ownership reaches the rigger THROUGH the vehicle** — `vehicle.system.driverActorId`.
-The contest is between vehicles, but the corners belong to the two riggers. A vehicle with no
-linked driver has an owner of `null`, so its corner **fails closed to GM-only**, which is
-correct (there is no player to ask) and deliberate: do not "fix" the greyed-out button by
-widening the gate, or an unmanned drone's defence goes to whoever is nearest. The defender is
-the rigger when there is one, else the vehicle itself — `postMIJICard` resolves that once and
-carries it as `ctx.defenderName`, because the result card used to print the target *vehicle*
-unconditionally and so credited an empty drone with its rigger's dice.
-
-⚠ **`_pickEwSkill` is a RANKING, not `find`.** Three SR3 skills contain "electronic" —
-`Electronics`, `Electronics B/R`, `Electronic Intelligence` — so the old
-`items.find(n => n.includes('electronic'))` let **item order** decide a rigger's EW dice. It
-also ignored the **Electronic Warfare specialisation**, which is a specialisation *of*
-Electronics and whose `level` is its bonus, so Electronics 4 (EW +2) rolled 4 instead of 6.
-Order: EW specialisation → plain `Electronics` → any loose match, highest rating breaking ties.
-A loose match still counts (last) so nobody who had dice loses them. Pinned in
-`tests/ew-skill.test.mjs`; the live dice totals are asserted in `tests/e2e/miji.spec.mjs`.
-
-**Infiltration** (`openInfiltration`): EW + Flux comp vs TN 6 − (intruder Protocol − target Deck);
-a second dialog lets the user freely allocate successes **three ways** (R3 p.37): channels breached
-(1 each), **time reduction** (base 10 turns ÷ successes spent → `Math.ceil(10/time)`), and **Intrusion
-Factor** — each its own input with a live spent/remaining counter (over-allocation is trimmed
-Factor-then-Time on confirm; unspent successes are allowed). Writes `system.infiltration`
-(turnsRemaining = the reduced time). `detectInfiltration` rolls the
-defender's EW vs Intrusion Factor. The `updateCombat` round hook decrements every vehicle's
-`turnsRemaining` (GM client); a manual −1 button is also on the tab.
-
-**ECCM repair** (`openECCMRepair(vehicle, channel)`): ECCM + EW comp vs (attacker ECM/Protocol + 3);
-each success removes one degradation box from that channel. **Reduce Footprint** (`reduceFootprint`):
-EW vs (Footprint + 4); each success lowers vehicle Flux by 1, Footprint recomputes (retry +2 TN
-applied manually). Vehicle-sheet actions: `signalBox/signalInfil/signalDamage/recalcFootprint/
-mijiAttack/infiltrate/detectInfiltration/advanceInfiltration/eccmRepair/reduceFootprint`.
-
-**Drone Comprehension Test** (SR3 p.157, `SR3EVehicleSheet.runDroneComprehension(vehicle)`): a
-drone understanding a rigger's command. Simple fully-editable dialog — **Pilot Rating dice** (no
-pool) vs a GM-set **TN** (default 4; complex orders 8+), with optional **secondary-drone +2** and
-the vehicle's **Command-channel degradation** (auto-filled from `signalMonitor.command`, editable).
-Rolls via `vehicle.rollPool` with a footer note (0 = no comprehension · 1 = literal · 2+ = leeway).
-Not forced into any flow — accessed from the **📡 Drone Comprehension** button on the vehicle Stats
-tab (next to Driving Test) and the **Vehicle Tools** Token-HUD button (see below).
-
-**IVIS Test** (BattleTac, R3 p.96, `SR3EMIJI.openIVIS(rigger)`): a **rigger** test (not per-vehicle).
-Setup dialog rolls **Small Unit Tactics (Vehicle Tactics)** vs **TN 5** (editable; +System-channel
-degradation field). On success a second dialog splits the hits between **Comprehension bonus dice**
-(announced — add them to the Drone Comprehension dialog's editable Pilot field) and the **IVIS
-Pool**. The pool is a tracked resource on the rigger (`system.ew.ivisPool {value,max}`): shown in the
-Matrix-tab EW block with **−1** (spend) and **Clear** (expire) buttons, **auto-refreshed to max each
-Combat round** by the `updateCombat` hook. Launched from the **📶 IVIS Test** button in the rigger's
-Matrix-tab EW block and a **tower-broadcast Token-HUD** button shown only on character tokens that
-have a Small Unit Tactics / Vehicle Tactics skill. Sheet actions: `ivisTest/ivisSpend/ivisClear`.
-
-**Vehicle Tools Token-HUD menu** (`_sr3eVehicleToolMenu` in sr3e.js): owned **vehicle** tokens get a
-single satellite-dish HUD button that opens a picker of vehicle tools (currently Driving Test +
-Drone Comprehension). Add new entries to the `_sr3eVehicleTools` array — they nest into the one
-button so the HUD never sprawls. (`runDrivingTest` warns if the vehicle has no linked driver.)
-
----
-
-## Creating documents — `sr3e.actor.create`  · TODO 71
-
-**`Actor.create` requires `ACTOR_CREATE`, which the base Player role does not have.** A sheet
-calling it directly works for the GM and throws for everyone else — and since the buttons render
-unconditionally, it reads as a broken feature rather than a permission problem.
-
-Three sites did exactly that, and **only one was ever reported**: the Vehicles tab's add button,
-plus the "deploy template" button on *both* the character and vehicle sheets. The latter two
-were found the moment `tests/gm-writes.test.mjs` existed — a template is usually GM-owned, so a
-player rarely reaches one.
-
-- **`sr3e.actor.create`** takes a compendium entry, a blank vehicle, or **an existing actor to
-  copy**, and grants the requester `OWNER`.
-- **`sr3e.vehicle.link`** attaches an existing vehicle to a driver, and grants ownership.
-
-⚠ **The verb is `actor.create`, not `vehicle.create`** — template deploy copies characters and
-NPCs too, and a vehicle-shaped verb would have left both of those sites behind.
-
-⚠ **One verb rather than three, because the ownership grant is what gets forgotten**, and it
-fails *differently*: the actor is created, appears on the player's sheet, and then refuses to
-roll. That reads as a second bug.
-
-⚠ **Delete `_stats` when copying an actor.** It carries `compendiumSource`, which `preCreateActor`
-reads to set `isTemplate` — copy it and every deployed template is a template again. The flag is
-cleared after creation too, since that hook runs on the GM's client and beats the payload.
-
-⚠ **`tests/gm-writes.test.mjs` is a source-level invariant**, like `explosion-carry` and
-`pool-spend`: reproducing this behaviourally needs a live world, two clients and a non-GM user.
+### ⚠ A stale GM CLIENT breaks GM-routed fixes invisibly
+The active GM is usually a tab open for hours; editing a file doesn't change what it loaded, so a correct fix
+silently fails on the one client that executes it. `game.sr3e.loadedAt` records each client's load time; the
+read-only query `sr3e.debug.loadedAt` exposes it, and the e2e preflight fails with "reload <user>'s tab"
+(including when the GM can't answer at all).
 
 ## Two-corner cards — each side edits only its own half
 
-Eight opposed-test cards (melee · astral · contested · cybercombat · MIJI · and the three
-Orthodox Matrix ones) share **one** generic handler in `sr3e.js`, found by
-`[data-twocorner="<kind>"]` and dispatched through the `_RESOLVERS` name→function table.
-Each corner declares `data-corner-role` / `-owner` / `-label`; `SR3EActor.cornerActions()`
-renders the per-corner `.sr-corner-submit-btn` and one `.sr-corner-resolve-btn`.
+Eight opposed cards (melee · astral · contested · cybercombat · MIJI · three Orthodox Matrix) share **one**
+handler in `sr3e.js`, found by `[data-twocorner="<kind>"]` and dispatched via the `_RESOLVERS` table. Each
+corner declares `data-corner-role` / `-owner` / `-label`; `SR3EActor.cornerActions()` renders the per-corner
+`.sr-corner-submit-btn` and one `.sr-corner-resolve-btn`.
 
-- **Both corners stay visible on every client; only your own is editable.** The lock sets
-  `readOnly` on inputs and `disabled` on `<select>`s — two different branches, because
-  `readOnly` does nothing to a dropdown. Collapsing them would leave every dropdown on
-  every card editable by everyone and **no existing assertion would fail**.
-- **Resolution is claimed by the submission that completes the set.** `sr3e.card.mark` is
-  append-only and GM-serialised, so exactly one client can observe the ledger becoming
-  full — that, not a lock, is what stops two near-simultaneous clicks double-rolling.
-- **`.sr-corner-resolve-btn` ("⚔ Resolve now (GM)") is the AFK escape.** GM-only. It
-  submits nothing; whoever has not answered falls through to the card's own defaults.
-  Without it a card that moved a choice onto a player's client can stall for ever.
-- ⚠ **Unsubmitted edits live in `_cornerDrafts`, and they have to.** The other side
-  submitting writes the `acted` flag, which updates the message, which makes Foundry
-  **rebuild the card from its payload** — throwing away numbers you dialled in while
-  waiting. The map is keyed `messageId|role`, restored only into your **own** unacted
-  corner, and dropped once that role submits. Do not remove it as redundant state: the
-  bug it fixes is silent, and you submit dice you never chose.
-
-### The setup dialog configures ONE side
-
-`SR3EActor.openContestedDialog` sets the initiator's pool source, dice, TN and damage —
-and, for the opponent, **only who they are**. Naming an opponent is the same act as
-picking a target; choosing their dice is not. Their pool source is a dropdown in **their
-own corner** (`SR3EActor.contestedSourceOptions`, built from *their* attributes and
-skills), and the owner gate makes it read-only to everyone else.
-
-⚠ This dialog used to set `#opp-source` / `#opp-pool` / `#opp-tn` / `#opp-damage` too, so
-whoever clicked ⚔ Contested Roll on their own sheet decided how their opponent played.
-`tests/e2e/contested.spec.mjs` asserts those four ids are **absent** from the dialog.
-
-### Matrix cards — the Hacking Pool has TWO derivations
-
-`availableHackingPool` comes from an **equipped cyberdeck ITEM** (Defragged).
-`availableOrthodoxHackingPool` comes from **`system.orthodoxDeck.mccp`** on the actor
-(Orthodox). An Orthodox decker owns no deck item, so the Defragged value is `null` for them
-— and `?? 0` turns that into a silent zero rather than an error.
-
-Three sites read the wrong one: the Orthodox System Test and Orthodox Cybercombat dialogs
-offered **0 Hacking Pool to every Orthodox decker**, and `spendHackingPool` clamped every
-Orthodox spend to 0, so allocating dice did nothing. Only the IC-attack card had it right,
-and that disagreement is what exposed it. Always fall back across both:
-`d.availableHackingPool ?? d.availableOrthodoxHackingPool ?? 0`.
-
-### Both corners of an opposed card must be CHARGED, not just rolled
-
-Cybercombat spent the attacker's Hacking Pool and never the defender's, built its dice from
-the raw input while clamping the spend, and wrote with a bare `actor.update` — which fails
-when resolution runs on a client that does not own that side. Use the pool helpers
-(`spendCombatPool` / `spendHackingPool` / …): they route through `sr3e.pool.spend`, are
-queued per actor, and **return what was actually deducted** — roll that, not what was typed.
-
-### The Orthodox IC-attack dialog configures ONE side
-
-`rollOrthodoxICAttack` names the target decker and sets the IC's own dice/TN. It used to
-carry "Decker defense dice" and "Decker HP allocation" and commit the allocation before the
-decker had seen the card — the GM spending a player's Hacking Pool, which does not come back
-until pools refresh. The decker's dice and a `sr-icia-def-hp` field live in **their** corner;
-the spend happens in `handleOrthodoxICAttackRoll` from what they submitted.
-`tests/e2e/orthodox-matrix.spec.mjs` asserts those three ids are absent from the dialog.
-
-### ⚠ A stale GM CLIENT breaks GM-routed fixes invisibly
-
-Foundry runs every authoritative write on `game.users.activeGM` — usually a human's tab that
-has been open for hours. Editing a file does not change what that browser already loaded, so
-a correct fix applies everywhere except the client that executes it, and the caller just sees
-a silently wrong number (a spend returning 0). Serving fresh files does not help.
-
-`game.sr3e.loadedAt` records when each client loaded; the read-only query
-`sr3e.debug.loadedAt` exposes it. The e2e preflight compares the active GM's stamp against
-the files' mtime and fails with "reload <user>'s tab" — including when the GM cannot answer
-at all, which is itself proof the tab predates the query.
+- **Both corners visible everywhere; only your own editable.** The lock sets `readOnly` on inputs **and**
+  `disabled` on `<select>`s — keep both branches (`readOnly` does nothing to a dropdown).
+- **The submission that completes the set resolves.** `sr3e.card.mark` is append-only and GM-serialised, so
+  exactly one client sees the ledger fill.
+- **`.sr-corner-resolve-btn` (GM-only) is the AFK escape**: unanswered corners fall to the card's defaults.
+- ⚠ **`_cornerDrafts` keeps unsubmitted edits** (keyed `messageId|role`, restored into your own unacted corner):
+  the other side's submission re-renders the card from its payload. Don't remove it as redundant.
+- **A setup dialog configures ONE side.** The initiator names the opponent only; the opponent's pool source,
+  dice and TN live in **their** corner (`SR3EActor.contestedSourceOptions`). `tests/e2e/contested.spec.mjs`
+  asserts `#opp-source`/`#opp-pool`/`#opp-tn`/`#opp-damage` are absent from the dialog.
+- ⚠ **Charge BOTH corners, not just roll them** — use the pool helpers (they route via `sr3e.pool.spend`, work on
+  a non-owning client, and return what was deducted — roll that, not what was typed).
 
 ## What is NOT yet implemented
 
-⚠ **This list was stale until 2026-09-14** and named five things that exist: vehicle sheets
-(`SR3EVehicleSheet.js`), Matrix combat rolls (the cybercombat, hacking-action and Orthodox cards),
-combat spells' application (Resist Spell → Assign Damage), learning a new skill with karma (TODO 80,
-`karmaNewSkillCost`), and astral/hacking pool refresh (`SR3ECombat._endOfTurnReset`, every Combat Turn
-— deliberately without a prompt). The open work lives in `TODO.md`; the larger gaps are:
-- The action economy — actions are charged by hand (TODO 48), hands and Ready Weapon (TODO 47, 49)
-- Cyberware/bioware Stress, TLE-x, cybermancy (TODO 109-111)
-- A purchasing flow — Availability, grade cost multipliers (TODO 82)
-- The Matrix Condition Monitor on the host sheet (see *Matrix rules* below)
+The open work lives in `TODO.md`. Larger gaps: Take Aim across phases and two-gun actions (#48/#49 remainders);
+bioware Stress side effects and Stress repair; Legality/permits; the Matrix Condition Monitor on the host sheet;
+Overwatch's crash trigger and Trigger Steps (TODO 128).
 
 ---
 
 ## Known issues / watch out for
-- **Reading the checkout's packs must go through a copy** — `tools/lib/pack-copy.mjs`. Opening a
-  LevelDB rewrites its log, MANIFEST and CURRENT even for a read, so every test run used to leave
-  all 82 packs "modified" in git with identical content (~410 files, found 2026-09-13).
-  `tests/pack-churn.test.mjs` fails any test that opens a LevelDB without it, and
-  `npm run packs:check:repo` reads a copy. Tools that WRITE a pack still open the real one, and
-  those changes are committed — the download is the branch zip, so the LevelDB files ship from git.
-- 🔴 **`node --check` is USELESS on this codebase — use `npx eslint <file>` instead.**
-  `tests/syntax.test.mjs` now parses every file under `scripts/` with ESLint's parser, so
-  `node tests/run.mjs` catches a broken string in a sheet too (one slipped past every other suite
-  on 2026-09-13, because the sheets cannot be imported without Foundry).
-  Every file under `scripts/` is an ES module in a `.js` file, and for those `node --check`
-  **exits 0 on genuine syntax errors, printing nothing.** Verified 2026-08-10 against Node
-  v24.18.0: a two-line `.js` containing `import {a} from './x.js'` plus an unescaped
-  apostrophe inside a string passes `node --check` with exit 0, while the identical file
-  saved as `.mjs`, or without the `import`, fails correctly. (Node can't parse it as
-  CommonJS, re-parses as ESM, and the check silently stops reporting.)
-  **This bit for real:** 11 broken string literals in `sr3e.js` passed `node --check` and
-  were caught only by ESLint (`Parsing error: Unexpected token s`). Treat any past
-  "syntax OK" from `node --check` on a `scripts/**/*.js` file as meaningless.
-- **Do NOT pass `-c core.autocrlf=false` to git any more.** It was a workaround for
-  Git-for-Windows setting `core.autocrlf=true` in its *system* config; line endings are now
-  pinned in `.gitattributes` (`* text=auto eol=lf`) and the working tree matches the objects.
-  Forcing the override makes git re-read the tree without the conversion the index was written
-  under, so it reports phantom "local changes would be overwritten" on a clean tree and refuses
-  to merge or rebase. `node_modules` is also no longer tracked — it never was needed at runtime
-  (no bare imports in `scripts/`, no reference from `system.json`).
-- **`system.json` changes require a full Foundry restart** — a browser reload is not enough. JS/CSS changes hot-reload; manifest/data-model changes do not.
-- `prepareDerivedData` must initialise missing fields in-place: `if (!sys.x) sys.x = {}` not `const x = sys.x ?? {}`
-- TypeDataModel defaults only apply to **newly created** documents — always guard reads with `?? defaultValue` for existing actors
-- Circular import between SR3EActor and SR3EItem is broken via `game.sr3e` registry
-- `DialogV2.render(true)` does NOT await user input — always use `DialogV2.wait()`
-- Chat button handlers must use `renderChatMessageHTML` hook (v13), not `renderChatMessage`
-- **Every chat-card button must be permission-gated at render time**, not just guarded by
-  `_checkBtn`/`_claimBtn` — those stop *double* clicks, not *wrong-person* clicks. Cards are
-  public by design, so without a gate any spectator can roll your dice. Helpers in `sr3e.js`:
-  `_mine(p)` (any owner or GM — for buttons that post a card onward), `_isDecider(p)` (exactly
-  one user — for buttons that **roll**), `_mineId(id)` / `_isDeciderId(id)` (same, for the many
-  payloads that name their actor something other than `actorId`), `_mineAny(...ids)` (either
-  side of a two-corner card), `_payload(btn)` and `_denyBtn(btn, why)`.
-  ⚠ **Check the payload's actor key before gating.** `_payloadActorId` resolves
-  `actorId → icActorId → vehicleActorId → wardActorId → targetActorId` **only**; a card using
-  `deckerActorId`, `conjurerActorId`, `passengerActorId`, `targetVehicleId`, `defenderActorId`,
-  `atkActorId` or `intruderRiggerId` **fails closed and becomes GM-only** unless you pass the id
-  explicitly. `attackerActorId` is excluded on purpose — an attacker must never inherit rights
-  over their target's card.
-- **Explosion button payloads must carry every field the final wave reads.** `_postWaveCard`
-  rebuilds the roll state into the button payload **by hand**, ~70 fields listed one at a time
-  across three sites with nothing checking they agree. A field that is read on the final wave
-  but missing from the carry is silently `undefined` and its branch just never runs.
-  ⚠ **`tests/explosion-carry.test.mjs` is the check** — it parses the source, diffs `state.X`
-  reads against the carry's declared keys, and fails with the missing names. Add a field to
-  `_postWaveCard` and you must add it to the carry, or to that file's `EXEMPT`/`NESTED` maps
-  **with a reason**.
-  ⚠ **Nothing here is found by play-testing**, because `_rollWave` sets
-  `needsExplosion = face === 6 && !success` — a 6 at TN ≤ 6 is already a success and never
-  explodes, so every bug of this class needs **TN ≥ 7**. An audit on 2026-08-19 found seven
-  live ones: `ammoType` (APDS/Flechette dropped from the soak), `isDodgeRoll`/`dodgePayload`
-  (no dodge result *and no soak button* — the attack stops silently), `isSpellDefenseRoll`/
-  `spellDefenseContext` (no success reduction, no resist or drain card), `escapeContext` and
-  `fallingContext` (whole result cards lost).
-- `renderCombatTracker` fires on every render — guard any DOM insertions with a class check to avoid duplicates (e.g. `if (!el.querySelector('.sr3e-chase-btn'))`)
+
+- 🔴 **`node --check` is USELESS here — use `npx eslint <file>`.** For an ES module in a `.js` file it exits 0 on
+  real syntax errors. `tests/syntax.test.mjs` parses every `scripts/` file with ESLint's parser. Treat any
+  "syntax OK" from `node --check` on `scripts/**/*.js` as meaningless.
+- **Don't pass `-c core.autocrlf=false` to git.** Line endings are pinned in `.gitattributes` (`* text=auto
+  eol=lf`); the override makes git report phantom local changes and refuse merges.
+- **`system.json` or data-model changes need a full Foundry restart**; JS/CSS hot-reload.
+- TypeDataModel defaults apply only to **new** documents — guard reads with `?? default`.
+- `DialogV2.render(true)` doesn't await input — use `DialogV2.wait()`.
+- **Explosion payloads must carry every field the final wave reads.** `_postWaveCard` rebuilds roll state into
+  the 💥 payload by hand at three sites; a missing field is silently `undefined` and its branch never runs.
+  **`tests/explosion-carry.test.mjs`** diffs `state.X` reads against the carry — add a new field to the carry or
+  to its `EXEMPT`/`NESTED` maps with a reason. ⚠ Play-testing won't find these: a 6 only explodes at **TN ≥ 7**.
+- `renderCombatTracker` fires on every render — guard DOM insertions with a class check
+  (`if (!el.querySelector('.sr3e-chase-btn'))`).
