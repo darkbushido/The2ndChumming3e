@@ -937,7 +937,7 @@ Skill rating + committed magic pool dice.
 **In:** Sorcery 5, 2 magic pool committed → **7 dice**.
 
 ### Cast result card shows TN source + staging
-The caster's result card reads: **"🔮 <Spell> (<base>) cast — N successes vs TN X (Target's Attribute)"** then **"N hits stages up ×K. base → staged"** (the cast's own staging, K = ⌊hits/2⌋; the target's resistance then reduces it via net).
+The caster's result card reads: **"🔮 &lt;Spell&gt; (&lt;base&gt;) cast — N successes vs TN X (Target's Attribute)"** then **"N hits stages up ×K. base → staged"** (the cast's own staging, K = ⌊hits/2⌋; the target's resistance then reduces it via net).
 
 **In:** Manaball (5M) vs Dave Decker, 4 hits, TN 3 → "🔮 Manaball (5M) cast — 4 successes vs TN 3 (Dave Decker's Willpower)" / "4 hits stages up ×2. 5M → 5D". With 1 hit → "1 hit — no stage up. 5M".
 
