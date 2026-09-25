@@ -150,19 +150,46 @@ export class SR3EOpenSteps {
       (el.querySelector('.sr-roll-card') ?? el.querySelector('.message-content') ?? el).prepend(line);
     }
 
-    const fold = OpenSteps.finished(steps) && game.settings.get(MODULE, 'collapseFinishedCards');
+    SR3EOpenSteps._applyFold(message, el, steps);
+  }
+
+  /** How many messages were posted after this one. */
+  static _newerThan(message) {
+    const all = game.messages.contents;
+    const i = all.findIndex(m => m.id === message.id);
+    return i < 0 ? 0 : all.length - 1 - i;
+  }
+
+  /**
+   * Fold or unfold one rendered card (`OpenSteps.shouldFold`: finished, and play has moved past it).
+   * Re-run on every new message by `refresh`, because a card's own render does not fire again when
+   * newer cards arrive below it.
+   */
+  static _applyFold(message, el, steps = SR3EOpenSteps.stepsOf(message)) {
+    const fold = game.settings.get(MODULE, 'collapseFinishedCards')
+      && OpenSteps.shouldFold(steps, SR3EOpenSteps._newerThan(message));
     el.classList.toggle('sr3e-card-done', fold && !_expanded.has(message.id));
-    if (fold) {
-      const header = el.querySelector('.sr-roll-header');
-      if (header && !header.dataset.sr3eFold) {
-        header.dataset.sr3eFold = '1';
-        header.title = 'Finished — click to show or hide the card';
-        header.addEventListener('click', ev => {
-          ev.preventDefault();
-          if (_expanded.has(message.id)) _expanded.delete(message.id); else _expanded.add(message.id);
-          el.classList.toggle('sr3e-card-done', !_expanded.has(message.id));
-        });
-      }
+    if (!fold) return;
+    const header = el.querySelector('.sr-roll-header');
+    if (header && !header.dataset.sr3eFold) {
+      header.dataset.sr3eFold = '1';
+      header.title = 'Finished — click to show or hide the card';
+      header.addEventListener('click', ev => {
+        ev.preventDefault();
+        if (_expanded.has(message.id)) _expanded.delete(message.id); else _expanded.add(message.id);
+        el.classList.toggle('sr3e-card-done', !_expanded.has(message.id));
+      });
+    }
+  }
+
+  /** Re-check the folds of the recent cards in the chat log (and the pop-out notifications). */
+  static _refreshFolds() {
+    for (const message of game.messages.contents.slice(-(OpenSteps.FOLD_AFTER + 20))) {
+      const steps = SR3EOpenSteps.stepsOf(message);
+      if (!steps.length) continue;
+      document.querySelectorAll(`[data-message-id="${message.id}"]`).forEach(el => {
+        if (el.classList.contains('chat-message') || el.classList.contains('message')) SR3EOpenSteps._applyFold(message, el, steps);
+      });
     }
   }
 
@@ -252,6 +279,7 @@ export class SR3EOpenSteps {
       const el = ui.combat?.element;
       SR3EOpenSteps.renderPanel(el instanceof HTMLElement ? el : el?.[0]);
       SR3EOpenSteps.renderBadge();
+      SR3EOpenSteps._refreshFolds();
     }, 150);
   }
 

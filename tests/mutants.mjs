@@ -39,6 +39,13 @@ const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
 
 export const MUTANTS = [
   {
+    id:     'open-steps-fold-on-finish',
+    suite:  'open-steps',
+    module: '../scripts/data/open-steps.mjs', klass: 'OpenSteps', method: 'shouldFold',
+    was:    'a card folded the moment its last step was taken — a self-clicking dodge declaration folded the attack card before anyone read it (TODO 147, caught by e2e)',
+    impl:   (steps = []) => steps.length > 0 && steps.every(s => s.done),
+  },
+  {
     id:     'fallen-wall-costs-nothing',
     suite:  'blast',
     module: '../scripts/data/blast.mjs', klass: 'Blast', method: 'pastBarrier',

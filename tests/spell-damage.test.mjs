@@ -42,6 +42,13 @@ export async function run(t) {
   t.ok('the cast reads the rule, never Mana/Physical', /const isStun\s*= SR3EItem\.spellDealsStun\(this\)/.test(item)
     && !/isStun\s*=\s*spellType/.test(item));
   t.ok('the data model declares the field', /damageTrack:\s*new StringField/.test(read('scripts/data/ItemDataModels.js')));
+  // A blank default with `choices` fails Foundry's validation ("may not be a blank string"), which made
+  // every spell invalid. Any field anywhere that pairs initial '' with choices must list blank: true.
+  for (const f of ['scripts/data/ItemDataModels.js', 'scripts/data/ActorDataModels.js']) {
+    const bad = [...read(f).matchAll(/(\w+):\s*new StringField\(\{([^}]*)\}\)/g)]
+      .filter(([, , o]) => /initial:\s*''/.test(o) && /choices:/.test(o) && !/blank:\s*true/.test(o)).map(m => m[1]);
+    t.eq(`${f}: no blank-default field with choices (it fails validation)`, bad, []);
+  }
   t.ok('the item sheet offers it', /'damageTrack'/.test(read('scripts/sheets/SR3EItemSheet.js')));
 
   /* ══ 170: Drain past Deadly ══════════════════════════════════════════════════════ */

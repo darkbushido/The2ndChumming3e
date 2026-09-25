@@ -20,8 +20,13 @@ test.describe('one player\'s character treats another\'s', () => {
 
   test.beforeEach(async ({ janitor }) => {
     await sweepTestActors(janitor.page);
+    // ⚠ The medic needs a TOKEN. The First aid form's Medic list is scene-first (F2: the medic works
+    // at the patient's side), so a token-less medic is offered only while the active scene has no
+    // tokens AND Player2 has no assigned character. Both stopped being true in the test world on
+    // 2026-09-24 (Test Map active; Player2 → SWAT Team Member) and this spec failed on the world, not
+    // the code. deleteActors removes the token with the actor.
     const medic = await createTestActor(janitor.page, {
-      name: MEDIC, ownerUserName: 'Player2', withToken: false,
+      name: MEDIC, ownerUserName: 'Player2', withToken: true,
       system: { attributes: { intelligence: { base: 4 } } },
       items: [{ name: 'Biotech', type: 'skill',
                 system: { skillName: 'Biotech', category: 'Technical skills', rating: 4, linkedAttribute: 'intelligence' } }],

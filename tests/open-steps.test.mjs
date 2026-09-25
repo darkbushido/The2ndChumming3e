@@ -51,6 +51,13 @@ export async function run(t) {
     OpenSteps.finished(OpenSteps.stepsOf(card, { 'step:sr-soak-btn:0': 1, 'step:sr-soak-btn:1': 1, 'step:sr-drain-btn:0': 1 })));
   t.ok('…not while one is open', !OpenSteps.finished(after));
   t.ok('a card with NO steps (a roll result, a note) never folds', !OpenSteps.finished([]));
+  const allDone = OpenSteps.stepsOf(card, { 'step:sr-soak-btn:0': 1, 'step:sr-soak-btn:1': 1, 'step:sr-drain-btn:0': 1 });
+  // A dodge declaration clicks itself, so an attack card is finished the moment it posts — folding then
+  // hid "6 hits incoming" before anyone read it (tests/e2e/ranged.spec.mjs caught it).
+  t.ok('a finished card does NOT fold while it is the newest', !OpenSteps.shouldFold(allDone, 0));
+  t.ok('…nor with one card below it', !OpenSteps.shouldFold(allDone, 1));
+  t.ok('…it folds once play has moved past it (2 newer)', OpenSteps.shouldFold(allDone, 2));
+  t.ok('…and an unfinished card never folds, however old', !OpenSteps.shouldFold(after, 50));
 
   /* ── Owners ──────────────────────────────────────────────────────────────────── */
   t.is('an attacker never owes their target\'s step', OpenSteps.ownerId({ attackerActorId: 'bad', targetActorId: 'tgt' }), 'tgt');
@@ -71,7 +78,9 @@ export async function run(t) {
   t.ok('a step is recorded through the GM-serialised card.mark', /asGM\('sr3e\.card\.mark', \{ messageId, role: key, label \}\)/.test(mod));
   t.ok('…and bookkeeping never throws into the action', /catch \(err\)[\s\S]{0,80}console\.warn/.test(mod));
   t.ok('owed-by uses the flows\' own decider', /SR3EQuery\.deciderFor\(actor\)/.test(mod));
-  t.ok('a finished card folds only when the client setting is on', /OpenSteps\.finished\(steps\) && game\.settings\.get\(MODULE, 'collapseFinishedCards'\)/.test(mod));
+  t.ok('a finished card folds only when the client setting is on, and play has moved past it',
+    /game\.settings\.get\(MODULE, 'collapseFinishedCards'\)\s*\n?\s*&& OpenSteps\.shouldFold\(steps, SR3EOpenSteps\._newerThan\(message\)\)/.test(mod));
+  t.ok('…re-checked on every new message, since an old card does not re-render', /SR3EOpenSteps\._refreshFolds\(\);/.test(mod));
   t.ok('a step already done is greyed on every client', /if \(step\.done\) \{[\s\S]{0,120}btn\.disabled = true/.test(mod));
 
   t.ok('the chat-tab badge goes on the tab BUTTON, never the chat section (which also has data-tab="chat")',

@@ -105,6 +105,21 @@ export const OpenSteps = {
     return steps.length > 0 && steps.every(s => s.done);
   },
 
+  /** Newer messages a finished card waits for before it folds. */
+  FOLD_AFTER: 2,
+
+  /**
+   * Fold this card now? Finished, AND at least `FOLD_AFTER` newer messages below it.
+   *
+   * ⚠ **Not the moment it finishes.** A dodge declaration clicks itself on the defender's client, so a
+   * ranged attack card was finished — and folded, for everyone — the instant it was posted, before
+   * anyone had read "6 hits incoming" (caught by tests/e2e/ranged.spec.mjs). A card folds once play has
+   * moved past it, so the latest exchange stays readable.
+   */
+  shouldFold(steps = [], newerCount = 0, after = OpenSteps.FOLD_AFTER) {
+    return OpenSteps.finished(steps) && (Number(newerCount) || 0) >= after;
+  },
+
   /** How many open steps are owed by `userId`, given each owner's deciding user. */
   countFor(userId, openSteps = [], deciderOf = () => null) {
     return openSteps.filter(s => deciderOf(s.ownerId) === userId).length;

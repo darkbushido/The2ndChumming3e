@@ -571,7 +571,10 @@ Rules: `scripts/data/open-steps.mjs` (pure). Foundry side: `scripts/SR3EOpenStep
   last 50 messages; a row click shows the card; the GM's ✕ marks a step nobody will take); a gold edge,
   a "Waiting on you" line and a chat-tab count for the user a card waits on; and a card whose steps are
   all done folds to its header (client setting `collapseFinishedCards`, on by default). ⚠ A card with
-  **no** steps never folds — a roll result is something to read.
+  **no** steps never folds — a roll result is something to read. ⚠ **It folds only once play has moved
+  past it** (`OpenSteps.shouldFold`, `FOLD_AFTER` = 2 newer messages; `_refreshFolds` re-checks on every
+  new message). A dodge declaration clicks itself, so folding on finish hid a ranged attack card before
+  anyone read "6 hits incoming" — the e2e ranged spec caught it.
 - A step already done is greyed on every client and after a reload, which the in-memory `_usedButtons`
   could not do.
 
