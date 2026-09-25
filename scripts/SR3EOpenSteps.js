@@ -128,8 +128,13 @@ export class SR3EOpenSteps {
       if (!step) return;
       if (step.done) {
         // Done — on every client, and after a reload, when the in-memory guard has forgotten.
-        btn.disabled = true;
-        btn.title    = 'Already done.';
+        // ⚠ Only an ENABLED button is relabelled. One the card's own hook already refused
+        //   (`_denyBtn`: "Only the defender…") keeps that reason: "who may press this" is the more
+        //   useful thing to tell someone who could never have pressed it (e2e ranged spec).
+        if (!btn.disabled) {
+          btn.disabled = true;
+          btn.title    = 'Already done.';
+        }
         return;
       }
       btn.addEventListener('click', () => {

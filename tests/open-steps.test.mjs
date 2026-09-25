@@ -81,7 +81,9 @@ export async function run(t) {
   t.ok('a finished card folds only when the client setting is on, and play has moved past it',
     /game\.settings\.get\(MODULE, 'collapseFinishedCards'\)\s*\n?\s*&& OpenSteps\.shouldFold\(steps, SR3EOpenSteps\._newerThan\(message\)\)/.test(mod));
   t.ok('…re-checked on every new message, since an old card does not re-render', /SR3EOpenSteps\._refreshFolds\(\);/.test(mod));
-  t.ok('a step already done is greyed on every client', /if \(step\.done\) \{[\s\S]{0,120}btn\.disabled = true/.test(mod));
+  t.ok('a step already done is greyed on every client', /if \(step\.done\) \{[\s\S]{0,800}btn\.disabled = true/.test(mod));
+  t.ok('…but a button the card already REFUSED keeps its reason (not overwritten by "Already done.")',
+    /if \(!btn\.disabled\) \{\s*\n\s*btn\.disabled = true;\s*\n\s*btn\.title\s*= 'Already done\.';/.test(mod));
 
   t.ok('the chat-tab badge goes on the tab BUTTON, never the chat section (which also has data-tab="chat")',
     /querySelectorAll\('#sidebar-tabs \[data-tab="chat"\], #sidebar nav \[data-tab="chat"\]'\)/.test(mod)
