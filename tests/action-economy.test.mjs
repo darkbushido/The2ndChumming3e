@@ -79,7 +79,7 @@ export async function run(t) {
   t.ok('firearms are charged by fire mode, thrown weapons as Throw Weapon',
     /_isConsumable\(\) \? 'throwWeapon' : game\.sr3e\.SR3EActionLedger\.rules\.fireAction\(fireModeResult\?\.mode\)/.test(item));
   t.ok('only NATURE spirits are a Complex Action (elementals take hours)', /spiritDef\.category === 'nature'\) game\.sr3e\.SR3EActionLedger\?\.charge\(conjurer, 'summonSpirit'/.test(summ));
-  t.is('every flow snapshots at its start, for the undo', (item.match(/SR3EActionLedger\?\.begin\(actor\)/g) ?? []).length + (summ.match(/begin\(conjurer\)/g) ?? []).length, 7);
+  t.is('every flow snapshots at its start, for the undo', (item.match(/SR3EActionLedger\?\.begin\(actor\)/g) ?? []).length + (summ.match(/begin\(conjurer\)/g) ?? []).length, 8);   // 8: unload (TODO 134)
   t.ok('the dodge, soak and resistance handlers never charge', !/charge\(/.test(
     ['static async handleDodgeDeclare', 'static async handleSoakRollClick'].map(h => {
       const a = read('scripts/documents/SR3EActor.js'); const i = a.indexOf(h); return i < 0 ? '' : a.slice(i, i + 3000); }).join('')));

@@ -205,6 +205,14 @@ export const MUTANTS = [
     impl:   text => ({ smartgun: /smart/i.test(String(text ?? '')), laserSight: /laser/i.test(String(text ?? '')) }),
   },
   {
+    id:     'loose-rounds-shown-as-clips',
+    suite:  'ammo-stock',
+    ...AMMO, method: 'loadLabel',
+    was:    'the sheet printed every stock\'s loadMechanism — loose rounds default to (c), so unloaded rounds and '
+          + 'boxes of rounds read "Removable Clip" (TODO 133/142, reported in the trial session)',
+    impl:   (sys, labels = {}) => { const m = String(sys?.loadMechanism ?? 'c'); return { code: m, title: labels[m] ?? m }; },
+  },
+  {
     id:     'ammo-fits-by-mechanism-only',
     suite:  'ammo-stock',
     ...AMMO, method: 'fits',

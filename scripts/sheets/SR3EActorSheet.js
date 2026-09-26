@@ -110,6 +110,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         toggleFullDefense:  SR3EActorSheet._onToggleFullDefense,
         resetRecoil:        SR3EActorSheet._onResetRecoil,
         reloadWeapon:       SR3EActorSheet._onReloadWeapon,
+        unloadWeapon:       SR3EActorSheet._onUnloadWeapon,
         rollCybercombat:    SR3EActorSheet._onRollCybercombat,
         rollHackingAction:  SR3EActorSheet._onRollHackingAction,
         rollDumpshock:      SR3EActorSheet._onRollDumpshock,
@@ -1688,12 +1689,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const ammo     = actor.items.filter(i => i.type === 'ammunition');
     const ammoRows = ammo.length ? ammo.map(a => {
       const typeLabel = SR3E.ammoTypes[a.system.ammoType ?? 'regular']?.label ?? 'Regular';
-      const mech      = a.system.loadMechanism ?? 'c';
+      const load      = AmmoStock.loadLabel(a.system, SR3E.ammoLoadMechanisms);   // loose rounds are not clips (TODO 133)
       return `
       <div class="item-row" data-item-id="${a.id}">
         <span class="item-name">${a.name}</span>
         <span class="item-cell">${typeLabel}</span>
-        <span class="item-cell" title="${SR3E.ammoLoadMechanisms[mech] ?? mech}">${mech}</span>
+        <span class="item-cell" title="${load.title}">${load.code}</span>
         <span class="item-cell">${this._ammoStockCell(a)}</span>
         ${this._itemControls(a.id, false)}
       </div>`;
@@ -2549,12 +2550,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const aRows = ammo.length ? ammo.map(a => {
       const typeLabel = SR3E.ammoTypes[a.system.ammoType ?? 'regular']?.label ?? 'Regular';
-      const mech      = a.system.loadMechanism ?? 'c';
+      const load      = AmmoStock.loadLabel(a.system, SR3E.ammoLoadMechanisms);   // loose rounds are not clips (TODO 133)
       return `
       <div class="item-row" data-item-id="${a.id}">
         <span class="item-name">${a.name}</span>
         <span class="item-cell">${typeLabel}</span>
-        <span class="item-cell" title="${SR3E.ammoLoadMechanisms[mech] ?? mech}">${mech}</span>
+        <span class="item-cell" title="${load.title}">${load.code}</span>
         <span class="item-cell">${this._ammoStockCell(a)}</span>
         ${this._itemControls(a.id, false, 'rollWeapon', false)}
       </div>`;
@@ -3286,6 +3287,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   _itemControls(itemId, hasRoll, rollAction = 'rollWeapon', stored = null, rollDisabled = false, reloadId = null) {
     const reloadIcon = reloadId ? `<i class="fas fa-arrows-rotate rollable" data-action="reloadWeapon" data-item-id="${reloadId}"
       title="Reload — load ammo from stock" style="cursor:pointer"></i>` : '';
+    // ⏏ Unload (TODO 134) — only a gun with rounds in it, and only when rounds are counted.
+    const gun = reloadId ? this.actor.items.get(reloadId) : null;
+    const unloadIcon = gun?.type === 'firearm' && (gun.system.loadedRounds ?? 0) > 0
+      && game.settings.get('The2ndChumming3e', 'trackAmmo')
+      ? `<i class="fas fa-eject rollable" data-action="unloadWeapon" data-item-id="${reloadId}"
+      title="Unload — the unfired rounds go back into stock as loose rounds" style="cursor:pointer"></i>` : '';
     const storeIcon = stored !== null ? `<i class="fas fa-home" data-action="toggleStored" data-item-id="${itemId}"
       style="color:${stored ? 'var(--sr-gold)' : 'var(--sr-dim)'}"
       title="${stored ? 'Remove from storage' : 'Put in storage'}"></i>` : '';
@@ -3293,10 +3300,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       : rollDisabled
         ? `<i class="fas fa-dice-d6" style="opacity:0.25;cursor:not-allowed;text-decoration:line-through" title="Out of ammo — reload / restock"></i>`
         : `<i class="fas fa-dice-d6 rollable" data-action="${rollAction}" data-item-id="${itemId}" title="Shift+Click to use Real Dice"></i>`;
-    // Order: ready, reload, dice, edit, house (store), trash
+    // Order: ready, reload, unload, dice, edit, house (store), trash
     return `<div class="item-controls">
       ${this._readyIcon(itemId)}
       ${reloadIcon}
+      ${unloadIcon}
       ${rollIcon}
       <i class="fas fa-edit" data-action="itemEdit" data-item-id="${itemId}" title="Edit"></i>
       ${storeIcon}
@@ -4566,6 +4574,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const weapon = this.actor.items.get(target.dataset.itemId);
     if (!weapon) return;
     await weapon.reload();
+  }
+
+  static async _onUnloadWeapon(_ev, target) {
+    const weapon = this.actor.items.get(target.dataset.itemId);
+    if (!weapon) return;
+    await weapon.unload();
   }
 
   static async _onRollCybercombat(_ev, _target) {
