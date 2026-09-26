@@ -608,6 +608,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const body         = sys.attributes?.body?.value ?? 0;
     const overflowVal  = w.overflow?.value ?? 0;
     const isDead       = game.sr3e.SR3EActor.deadFromOverflow(overflowVal, body);
+    // ⚠ TODO 138: the wound row's text that comes and goes with damage (☠ DEAD, "unconscious",
+    // the TN/Init modifier) is rendered LAST in the row, after 🩹 Healing, Stim and Carry. Placed
+    // before them, it pushed the Healing button sideways every time a character was hurt.
     const deadHtml     = isDead
       ? `<span style="color:var(--sr-red);font-weight:bold;font-size:12px;letter-spacing:1px;margin-left:6px;">☠ DEAD</span>`
       : '';
@@ -663,9 +666,20 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                 <input type="number" name="system.wounds.overflow.value" value="${overflowVal}" min="0"
                   style="width:38px;text-align:center;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);color:var(--sr-text);padding:2px 4px;font-size:13px;"
                   title="Dead if this exceeds Body (${body})"/>
-                ${deadHtml}
               </div>
             </div>
+            <button type="button" class="btn-sm" data-action="openHealing"
+                    title="Guided healing: stabilize, first aid, magic, a doctor, healing stages and the bill (SR3 pp.126-129)">🩹 Healing</button>
+            <span class="wound-mod-display">
+              Stim: <input type="number" name="system.stimBonus" value="${sys.stimBonus ?? 0}" min="0"
+                style="width:36px;text-align:center;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);color:var(--sr-text);padding:1px 2px;font-size:12px;"
+                title="Wound modifier reduction from stim patches or drugs (does not heal wounds)"/>
+            </span>
+            ${(() => { const rb = sys.attributes?.reaction?.reactionBonus ?? 0; return rb !== 0 ? `<span class="wound-mod-display" style="color:var(--sr-accent)">Init Mod: <strong>${rb > 0 ? '+' : ''}${rb}</strong></span>` : ''; })()}
+            <span class="wound-mod-display">
+              Carry: <strong>${weightDisplay}</strong>
+            </span>
+            ${deadHtml}
             ${(() => {
               const wm    = sys.woundMod    ?? 0;
               const stim  = sys.stimBonus   ?? 0;
@@ -681,17 +695,6 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                 return `<span class="wound-mod-display" style="color:var(--sr-red)">TN+${-wm}, Init${wm}</span>`;
               return '';
             })()}
-            <button type="button" class="btn-sm" data-action="openHealing"
-                    title="Guided healing: stabilize, first aid, magic, a doctor, healing stages and the bill (SR3 pp.126-129)">🩹 Healing</button>
-            <span class="wound-mod-display">
-              Stim: <input type="number" name="system.stimBonus" value="${sys.stimBonus ?? 0}" min="0"
-                style="width:36px;text-align:center;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);color:var(--sr-text);padding:1px 2px;font-size:12px;"
-                title="Wound modifier reduction from stim patches or drugs (does not heal wounds)"/>
-            </span>
-            ${(() => { const rb = sys.attributes?.reaction?.reactionBonus ?? 0; return rb !== 0 ? `<span class="wound-mod-display" style="color:var(--sr-accent)">Init Mod: <strong>${rb > 0 ? '+' : ''}${rb}</strong></span>` : ''; })()}
-            <span class="wound-mod-display">
-              Carry: <strong>${weightDisplay}</strong>
-            </span>
           </div>
         </div>
       </header>`;
@@ -3348,6 +3351,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const item = this.actor.items.get(target.dataset.itemId);
     if (!item) return;
     const now = !game.sr3e.ReadyWeapon.isReady(item);
+    if (now) game.sr3e.SR3EActionLedger?.begin(this.actor);   // its own snapshot, not the last flow's (TODO 152)
     await item.update({ 'system.ready': now });
     if (now) game.sr3e.SR3EActionLedger?.charge(this.actor, 'readyWeapon', item.name);
     // More in hand than there are hands (TODO 49) — said, never refused.

@@ -291,6 +291,15 @@ export async function run(t) {
   t.ok('a cancelled Charge / Next hands the button back', /act\(btn, pl\) === false/.test(entry));
   t.ok('the final wave posts the result card', /allDone && state\.healingContext[\s\S]{0,120}SR3EHealing\.onRolled/.test(actor));
   t.ok('the character sheet has the 🩹 Healing button', /data-action="openHealing"/.test(sheet) && /openHealing:\s+SR3EActorSheet\._onOpenHealing/.test(sheet));
+  {
+    // TODO 138: the button moved whenever the character was hurt, because the wound status text
+    // ("unconscious", TN/Init modifier, ☠ DEAD) sat before it in the same wrapping flex row.
+    const row = sheet.slice(sheet.indexOf('<div class="wound-tracks">'), sheet.indexOf('</header>'));
+    const btn = row.indexOf('data-action="openHealing"');
+    const after = marker => row.indexOf(marker) > btn;
+    t.ok('TODO 138: 🩹 Healing comes before the wound status, ☠ DEAD and the Init Mod, so damage cannot move it',
+      btn > 0 && after('${deadHtml}') && after('unconscious') && after('const wm    = sys.woundMod') && after('Init Mod:'));
+  }
   t.ok('the GM tools list has it too, for everyone', /mk\('sr3e-heal-btn'[^\n]*false\)/.test(entry));
   t.ok('every render wires the Dice / TN boxes', /SR3EHealing\.wireCard\(message, html\)/.test(entry));
   const css = read('styles/sr3e.css');
