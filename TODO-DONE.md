@@ -6512,6 +6512,16 @@ cyberware that is still installed.
 
 **Done 2026-09-26 (`f48e4eba`).** ⏏ Unload on a loaded firearm's row (ammo tracking on): the unfired rounds go back to loose stock of their type (`SR3EItem.unload` → `_returnRounds`), nothing is lost, and a clip or drum charges Remove Clip, one Simple Action (SR3 p.107). The book gives no action for emptying anything else by hand, so nothing is charged and the notice says so.
 
+## 138. ✅ The healing button moves when a character is unconscious or damaged — `6af59ead`
+
+The wound status text (TN/Init modifier, "unconscious", ☠ DEAD) sat before the 🩹 Healing button in the header's wrapping row, so the
+button shifted whenever the wounds changed. That text now comes last in the row; `tests/healing.test.mjs` pins the order.
+
+## 140. ✅ The resist card's soak-hits section looks clickable — it should be greyed out — `7ea7137a`
+
+`.sr-soak-result` was a gold box with a full gold border, like the resist buttons under it. Now a grey panel with a left rule,
+muted text and a default cursor (`tests/soak-result-style.test.mjs`).
+
 ## 142. ✅ Loading a clip-fed gun treats the clips as individual rounds — `d86e53f3`
 
 **Done 2026-09-26 (`f48e4eba`, `d86e53f3`).** The clips were the unconverted ones of #143: counted in rounds, so the reload dialog topped the gun up round by round. The 0.6.2 migration converts them; the sheet no longer labels loose rounds as clips.
@@ -6630,6 +6640,14 @@ worked example has a defensive grenade at 3 m doing 4S (10S − 6) and nothing a
 `system.blast` on projectile and thrown items (the book's `-1/m`, `-1/.5m`; blank = −1/m) is read by
 `scripts/data/blast.mjs`; the blast radius follows it too. Data-model change: full Foundry restart, no
 migration. The Chunky Salsa path is [#159](#159).
+
+## 152. ✅ Undoing an action only works on the second try — `c264b6d3`
+
+The GM's ↺ Undo on the action ledger ([#48](TODO.md#48)) has to be pressed twice before it takes effect.
+
+**Cause:** a flow that charges twice (Ready Weapon then Fire Weapon, Remove Clip then Insert Clip) gave its
+snapshot to the first charge only; ↺ defaults to the last entry, which had none, so the first press only freed
+the slot. Every charge in a flow now carries the snapshot (`ActionEconomy.pendingSnap`, keyed to the phase).
 
 ## 155. ✅ Grenades with no damage code cannot be thrown — `5df18568`
 
