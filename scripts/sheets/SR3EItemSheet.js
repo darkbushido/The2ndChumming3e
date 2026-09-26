@@ -13,6 +13,7 @@ import { SPIRIT_TYPES } from '../documents/SR3ESpiritSummoning.js';
 import { knownRating } from '../data/item-rating.mjs';
 import { BookPage } from '../data/book-page.mjs';
 import { AmmoStock, GUN_CLASSES } from '../data/ammo-stock.mjs';
+import { MiniGrenade } from '../data/mini-grenade.mjs';
 
 export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
 
@@ -465,7 +466,13 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
             ? `${this._f('Reloads', 'reloads', s.reloads ?? 0, 'number', 'min="0" title="How many pre-filled reloads you own. Each reload of a weapon uses one, and the rounds left in the old one are lost."')}
                ${this._f('Rounds per Reload', 'roundsPerReload', s.roundsPerReload || '', 'number', `min="0" placeholder="fills the gun" title="Rounds in each reload. Blank = whatever the weapon holds."`)}`
             : this._f('Rounds in Stock', 'rounds', s.rounds ?? 0, 'number', 'min="0" title="Loose rounds you own. Reloading tops the weapon up — a Complex Action per (Quickness) rounds, 2 for break action (SR3 p.280)."')}
-          ${this._f('Description', 'damage', s.damage, 'text', 'placeholder="Ex-Explosive, Hollow Point…"')}
+          ${MiniGrenade.isMiniGrenade(s) ? `
+            ${this._f('Damage', 'damage', s.damage, 'text', 'placeholder="10S" title="A mini-grenade\'s Damage Code is its grenade\'s (SR3 p.283). The launcher fires it."')}
+            ${this._f('Blast falloff', 'blast', s.blast ?? '', 'text', 'placeholder="-1/m" title="Power lost with distance (SR3 p.119, p.283): -1/m offensive, -1/.5m defensive. Blank = -1/m."')}
+            ${this._f('Area radius (m)', 'areaRadius', s.areaRadius ?? '', 'number', 'min="0" step="1" placeholder="10" title="Gas and smoke rounds that deal no damage: the radius of the area they mark (SR3 p.283). Blank = none."')}
+            ${this._f('Area effect', 'areaEffect', s.areaEffect ?? '', 'text', 'placeholder="what it does — shown on the card"')}
+            ${this._check('Flechette rules (p.116)', 'flechette', s.flechette)}`
+            : this._f('Description', 'damage', s.damage, 'text', 'placeholder="Ex-Explosive, Hollow Point…"')}
           ${this._f('Concealability', 'concealability', s.concealability)}
           ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
           ${this._f('Availability', 'availability', s.availability)}

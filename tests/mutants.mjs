@@ -797,6 +797,27 @@ export const MUTANTS = [
     needsOriginal: '__origBuild',
   },
   {
+    id:     'launcher-reads-its-own-blast',
+    suite:  'mini-grenade',
+    module: '../scripts/data/mini-grenade.mjs', klass: 'MiniGrenade', method: 'round',
+    was:    'a launched grenade read the launcher, which has no blast, so a Defensive mini-grenade fell off at -1/m (SR3 p.283, TODO 163)',
+    impl:   weaponSystem => weaponSystem,
+  },
+  {
+    id:     'launcher-mixes-grenades',
+    suite:  'mini-grenade',
+    ...AMMO, method: 'reloadPlan', needsOriginal: '_reloadPlanMini',
+    was:    'every mini-grenade is `regular`, so a launcher topped up offensive rounds with defensive ones and fired them all as one grenade (TODO 163)',
+    impl:   function (sys, magSize, current = {}, opts = {}) { return this._reloadPlanMini(sys, magSize, { ...current, ammoId: '' }, opts); },
+  },
+  {
+    id:     'mini-grenade-cost-not-doubled',
+    suite:  'mini-grenade',
+    module: '../scripts/data/mini-grenade.mjs', klass: 'MiniGrenade', method: 'fromGrenade', needsOriginal: '_fromGrenade',
+    was:    'the p.283 Mini-grenade row doubles the cost (x2) and adds 2 to Availability; a copy of the grenade row would ship otherwise (TODO 163)',
+    impl:   function (g) { return { ...this._fromGrenade(g), cost: g.cost, avail: g.avail }; },
+  },
+  {
     id:     'coded-flechette-raises-level-twice',
     suite:  'flechette-weapons',
     ...ITEM, method: 'flechetteAmmo',

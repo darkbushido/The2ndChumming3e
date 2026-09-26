@@ -42,12 +42,12 @@ export async function run(t) {
   t.is('defensive 10 reaches 5 m', Blast.radius(10, def), 5);
 
   const models = read('scripts/data/ItemDataModels.js');
-  t.is('projectile and thrown items both carry a blast field',
-    (models.match(/blast:\s+new StringField/g) ?? []).length, 2);
+  t.is('projectile, thrown and ammunition (mini-grenades, TODO 163) items carry a blast field',
+    (models.match(/blast:\s+new StringField/g) ?? []).length, 3);
 
   const sheet = read('scripts/sheets/SR3EItemSheet.js');
-  t.is('the projectile and thrown sheets let a GM set it',
-    (sheet.match(/_f\('Blast falloff', 'blast'/g) ?? []).length, 2);
+  t.is('the projectile, thrown and mini-grenade sheets let a GM set it',
+    (sheet.match(/_f\('Blast falloff', 'blast'/g) ?? []).length, 3);
 
   // The flow reads it (source-level: the AoE branch cannot be imported without Foundry).
   const actor = read('scripts/documents/SR3EActor.js');
@@ -65,8 +65,9 @@ export async function run(t) {
     Blast.power(10, 2 * 2, def) === 2 && Blast.power(10, 2 * 2, off) === 6);
 
   const item = read('scripts/documents/SR3EItem.js');
-  t.ok('the throw hands the item\'s falloff to the roll', /options\.aoeBlast\s+= this\.system\.blast/.test(item));
-  t.ok('the blast radius follows the falloff', /Blast\.radius\(power, Blast\.rate\(this\.system\.blast\)\)/.test(item));
+  // `round` is the grenade itself, or a launcher's loaded mini-grenade (TODO 163, tests/mini-grenade.test.mjs).
+  t.ok('the throw hands the grenade\'s falloff to the roll', /options\.aoeBlast\s+= round\.blast/.test(item));
+  t.ok('the blast radius follows the falloff', /Blast\.radius\(power, Blast\.rate\(round\.blast\)\)/.test(item));
 
   /* ── Walls — TODO 149 (reported in play: scatter went through walls) ──────────────────────
    *   SR3 p.119: "When a grenade's blast hits a barrier such as a wall … If the barrier falls, the

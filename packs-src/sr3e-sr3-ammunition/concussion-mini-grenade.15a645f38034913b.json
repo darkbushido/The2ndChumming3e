@@ -1,0 +1,34 @@
+{
+  "_key": "!items!15a645f38034913b",
+  "doc": {
+    "_id": "15a645f38034913b",
+    "name": "Concussion Mini-grenade",
+    "type": "ammunition",
+    "system": {
+      "concealability": "8",
+      "damage": "12M Stun",
+      "ammoType": "regular",
+      "loadMechanism": "m",
+      "countedIn": "rounds",
+      "gunClass": "GrLn",
+      "rounds": 1,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 0.1,
+      "availability": "7/4 days",
+      "cost": 60,
+      "streetIndex": "3",
+      "bookPage": "sr3.283",
+      "notes": "<p>A mini-grenade for a grenade launcher (SR3 p.283): the Concussion Grenade's effects, fired rather than thrown. It does not arm until it has travelled about five metres (SR3 p.118).</p><p>SR3 p.283, the Mini-grenade row applied to the Concussion Grenade row: Conceal 8, Weight .1, Availability 5/4 days +2, Cost 30¥ ×2, Street Index 2 +1. Legality 3-J. Blast –1/m.</p>",
+      "blast": "-1/m"
+    },
+    "effects": [],
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-core-grenades"
+      }
+    },
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

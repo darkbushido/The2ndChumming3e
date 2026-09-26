@@ -33,7 +33,7 @@ export async function run(t) {
   const dlg  = item.slice(item.indexOf('static async _promptWeaponRollOptionsAoE'), item.indexOf('static async _promptWeaponRollOptions('));
 
   t.ok('the throw builds the pre-applied TN from the thrower\'s wound', /throwPreTN\(\{\s*woundMod:\s*actor\.system\.woundMod/.test(item));
-  t.ok('…and hands it to the grenade dialog', /_promptWeaponRollOptionsAoE\(rawDamage, actor, \{ throwDistance, pre \}\)/.test(item));
+  t.ok('…and hands it to the grenade dialog', /_promptWeaponRollOptionsAoE\(rawDamage, actor, \{ throwDistance, pre, launcher \}\)/.test(item));
   t.ok('…which starts its TN from it', /const baseTN\s+= 4 \+ pre\.mod/.test(dlg) && /defaultTN = baseTN \+/.test(dlg));
   t.ok('…and keeps it when the grenade type changes the range band', /tnIn\.value = baseTN \+ b\.tnMod/.test(dlg) && !/tnIn\.value = 4 \+/.test(dlg));
   t.ok('the roll still skips rollPool\'s wound modifier — counted once, not twice', /options\.skipWoundMod\s+= true/.test(aoe));

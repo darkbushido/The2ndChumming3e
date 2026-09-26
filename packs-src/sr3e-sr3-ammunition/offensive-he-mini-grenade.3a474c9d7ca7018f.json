@@ -1,0 +1,34 @@
+{
+  "_key": "!items!3a474c9d7ca7018f",
+  "doc": {
+    "_id": "3a474c9d7ca7018f",
+    "name": "Offensive HE Mini-grenade",
+    "type": "ammunition",
+    "system": {
+      "concealability": "8",
+      "damage": "10S",
+      "ammoType": "regular",
+      "loadMechanism": "m",
+      "countedIn": "rounds",
+      "gunClass": "GrLn",
+      "rounds": 1,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 0.1,
+      "availability": "6/4 days",
+      "cost": 60,
+      "streetIndex": "3",
+      "bookPage": "sr3.283",
+      "notes": "<p>A mini-grenade for a grenade launcher (SR3 p.283): the Offensive HE Grenade's effects, fired rather than thrown. It does not arm until it has travelled about five metres (SR3 p.118).</p><p>SR3 p.283, the Mini-grenade row applied to the Offensive HE Grenade row: Conceal 8, Weight .1, Availability 4/4 days +2, Cost 30¥ ×2, Street Index 2 +1. Legality 3-J. Blast –1/m.</p>",
+      "blast": "-1/m"
+    },
+    "effects": [],
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-core-grenades"
+      }
+    },
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

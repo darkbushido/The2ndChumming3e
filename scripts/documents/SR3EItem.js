@@ -6,6 +6,7 @@ import { WeaponAccessories } from '../data/weapon-accessories.mjs';
 import { PhaseTargets } from '../data/phase-targets.mjs';
 import { Blast } from '../data/blast.mjs';
 import { AreaEffect } from '../data/area-effect.mjs';
+import { MiniGrenade } from '../data/mini-grenade.mjs';
 
 export class SR3EItem extends Item {
 
@@ -1093,15 +1094,21 @@ export class SR3EItem extends Item {
       ui.notifications.warn('AoE attacks need a scene — place the attacker and targets on a map.');
       return null;
     }
+    // A launcher fires the mini-grenade it was loaded with: its Damage Code, blast and area are the
+    // grenade's — "by grenade", SR3 p.283 (TODO 163). A thrown grenade is its own round.
+    const grenade    = this._loadedGrenade();
+    const round      = MiniGrenade.round(this.system, grenade?.system ?? null);
+    const roundName  = grenade ? `${this.name} (${grenade.name})` : this.name;
+    if (grenade?.system.damage) rawDamage = grenade.system.damage;
     const parsedRaw  = SR3EItem.parseDamageCode(rawDamage, actor);
     // A gas / smoke / flash grenade has no Damage Code but still lands and marks an area (TODO 155, p.283).
-    const areaEffect = AreaEffect.of(this.system, parsedRaw);
+    const areaEffect = AreaEffect.of(round, parsedRaw);
     const power  = parsedRaw?.power ?? 5;
     // The blast reaches as far as its Power lasts at THIS grenade's falloff — a defensive grenade
     // (−1 per half metre) runs out at half the distance (SR3 p.119, TODO 150).
     const placed = await SR3EItem._placeBlastTemplate(actor, areaEffect
       ? (areaEffect.radius ?? 1)
-      : Blast.radius(power, Blast.rate(this.system.blast)));
+      : Blast.radius(power, Blast.rate(round.blast)));
     if (!placed) return null; // cancelled placement
 
     const aToken        = actor.getActiveTokens?.()[0] ?? null;
@@ -1118,7 +1125,8 @@ export class SR3EItem extends Item {
       woundMod: actor.system.woundMod ?? 0,
       armorQTN: this._getDefaultAttribute() === 'quickness' ? (actor.system.derived?.armorQuicknessTN ?? 0) : 0,
     });
-    const weaponOpts = await SR3EItem._promptWeaponRollOptionsAoE(rawDamage, actor, { throwDistance, pre });
+    const launcher   = this.type === 'firearm' && MiniGrenade.isLauncher(this.system);
+    const weaponOpts = await SR3EItem._promptWeaponRollOptionsAoE(rawDamage, actor, { throwDistance, pre, launcher });
     if (!weaponOpts) return null;
 
     let   tn                 = weaponOpts.tn;
@@ -1138,7 +1146,7 @@ export class SR3EItem extends Item {
     );
 
     let pool  = 0;
-    let label = `${this.name} [${effectiveRawDamage}] — Throw`;
+    let label = `${roundName} [${effectiveRawDamage}] — ${launcher ? 'Fire' : 'Throw'}`;
     let defTnMod = 0, defAllowPool = false, defPoolCap = Infinity;
     if (skill) {
       // Improved Ability / augmentation dice for this weapon's skill.
@@ -1207,15 +1215,16 @@ export class SR3EItem extends Item {
     options.aoeRadius        = placed.radius;          // blast radius (metres)
     options.aoeThrowerCenter = throwerCenter;          // for relative scatter direction
     options.aoeChunky        = weaponOpts.useSalsaGUI; // resolve confined space after scatter
-    options.aoeBlast         = this.system.blast ?? '';   // falloff per metre, read at resolution (TODO 150)
-    options.aoeEffect        = areaEffect ? { name: this.name, ...areaEffect } : null;   // no-damage area grenade (TODO 155)
-    options.ammoType         = SR3EItem.flechetteAmmo(this.system);   // AP grenades: the flechette rules, p.119 (TODO 156)
+    options.aoeBlast         = round.blast ?? '';   // falloff per metre, read at resolution (TODO 150, 163)
+    options.aoeEffect        = areaEffect ? { name: roundName, ...areaEffect } : null;   // no-damage area grenade (TODO 155)
+    options.ammoType         = SR3EItem.flechetteAmmo(round);   // AP grenades: the flechette rules, p.119 (TODO 156)
     options.grenadeType      = weaponOpts.grenadeType ?? 'standard';
     options.skipWoundMod     = true;   // pre-applied in the roll-options TN (throwPreTN)
 
     // A thrown grenade is Throw Weapon; a launcher is Fire Weapon — Simple, SR3 p.106-107 (TODO 48).
     game.sr3e.SR3EActionLedger?.charge(actor, this._isConsumable() ? 'throwWeapon' : 'fireWeapon', this.name);
     await this._consumeThrown();
+    await this._spendLaunchedRound();
     return actor.rollPool(pool, tn, label, options);
   }
 
@@ -1962,6 +1971,29 @@ export class SR3EItem extends Item {
   }
 
   /**
+   * The mini-grenade a grenade launcher is loaded with — the ammunition item its last reload came from
+   * (`equippedAmmoId`) — or null: not a launcher, nothing recorded, or that stock is gone (the launcher's
+   * own fields are used then, as before). TODO 163, SR3 p.283.
+   */
+  _loadedGrenade() {
+    if (this.type !== 'firearm' || !MiniGrenade.isLauncher(this.system)) return null;
+    const ammo = this.actor?.items.get(this.system.equippedAmmoId || '');
+    return ammo?.type === 'ammunition' ? ammo : null;
+  }
+
+  /**
+   * A launched grenade spends one round from the magazine when ammo tracking is on. The AoE path never
+   * did, so a launcher fired forever (found with TODO 163).
+   */
+  async _spendLaunchedRound() {
+    if (this.type !== 'firearm' || !game.settings.get('The2ndChumming3e', 'trackAmmo')) return;
+    const loaded = this.system.loadedRounds ?? 0;
+    if (loaded <= 0) return;   // guarded earlier
+    await this.update({ 'system.loadedRounds': loaded - 1 });
+    if (loaded === 1) ui.notifications.warn(`${this.name} is now empty — reload.`);
+  }
+
+  /**
    * Decrement a thrown weapon's quantity by one when ammo tracking is on.
    */
   async _consumeThrown() {
@@ -2120,10 +2152,12 @@ export class SR3EItem extends Item {
     // armour and a medkit. A stack split into storage used to be offered here.
     // The gun's ammunition class (SR3 p.279): a box already stated for another class is not offered.
     const gunClass = this.type === 'firearm' ? AmmoStock.gunClass(this.system.category) : null;
+    const launcher = this.type === 'firearm' && MiniGrenade.isLauncher(this.system);
     let stock = actor.items.filter(i =>
       i.type === 'ammunition' && !i.getFlag('The2ndChumming3e', 'stored')
       && AmmoStock.fits(i.system, gunMech, gunClass)   // loose rounds fit any gun of their class; a reload only its own mechanism
-      && SR3EItem.weaponAcceptsAmmoType(this.system, i.system.ammoType ?? 'regular'));   // a flechette weapon takes no other type (TODO 161)
+      && SR3EItem.weaponAcceptsAmmoType(this.system, i.system.ammoType ?? 'regular')   // a flechette weapon takes no other type (TODO 161)
+      && (!launcher || MiniGrenade.isMiniGrenade(i.system)));   // a launcher fires only mini-grenades (SR3 p.279, TODO 163)
     if (trackOn) stock = stock.filter(i => AmmoStock.stock(i.system).count > 0);
     if (stock.length === 0) {
       ui.notifications.warn(SR3EItem.flechetteAmmo(this.system, 'regular') === 'regular'
@@ -2132,7 +2166,9 @@ export class SR3EItem extends Item {
       return;
     }
 
-    const current = { rounds: this.system.loadedRounds ?? 0, type: this.system.loadedAmmoType ?? null };
+    // A launcher's load is one grenade item (TODO 163) — see AmmoStock.reloadPlan.
+    const loadedId = launcher ? (this.system.equippedAmmoId || '') : '';
+    const current = { rounds: this.system.loadedRounds ?? 0, type: this.system.loadedAmmoType ?? null, ammoId: loadedId };
     const choice  = await SR3EItem._promptReloadChoice(stock, this, magSize, trackOn, current);
     if (!choice?.id) return;
     const ammo = actor.items.get(choice.id);
@@ -2143,19 +2179,20 @@ export class SR3EItem extends Item {
     if (gunClass && !String(ammo.system.gunClass ?? '').trim()) await ammo.update({ 'system.gunClass': gunClass });
 
     if (!trackOn) {
-      await this.update({ 'system.loadedAmmoType': type, 'system.loadedRounds': magSize });
+      await this.update({ 'system.loadedAmmoType': type, 'system.loadedRounds': magSize, 'system.equippedAmmoId': ammo.id });
       ui.notifications.info(`${this.name} loaded with ${typeLabel}.`);
       return;
     }
 
-    const plan = AmmoStock.reloadPlan(ammo.system, magSize, current, { want: choice.want });
+    const plan = AmmoStock.reloadPlan(ammo.system, magSize, current, { want: choice.want, ammoId: ammo.id });
     if (plan.taken <= 0) {
       ui.notifications.info(`${this.name} is already full — nothing loaded.`);
       return;
     }
     await ammo.update({ [`system.${plan.field}`]: plan.remaining });
-    await this.update({ 'system.loadedAmmoType': type, 'system.loadedRounds': plan.loaded });
-    const returnedTo = plan.returned > 0 ? await SR3EItem._returnRounds(actor, gunMech, current.type, plan.returned, gunClass) : null;
+    // `equippedAmmoId` — the stock this load came from; a launcher fires that grenade (`_loadedGrenade`).
+    await this.update({ 'system.loadedAmmoType': type, 'system.loadedRounds': plan.loaded, 'system.equippedAmmoId': ammo.id });
+    const returnedTo = plan.returned > 0 ? await SR3EItem._returnRounds(actor, gunMech, current.type, plan.returned, gunClass, loadedId) : null;
     const quickness = actor.system?.attributes?.quickness?.value ?? 1;
     const actions   = AmmoStock.reloadActions(ammo.system, { taken: plan.taken, quickness, gunMech }).text;
     // Charge what the Ammo Reloading Table says it took (TODO 48): a clip swap is Remove Clip + Insert
@@ -2198,7 +2235,8 @@ export class SR3EItem extends Item {
     const gunClass = AmmoStock.gunClass(this.system.category);
     const type     = this.system.loadedAmmoType ?? 'regular';
     await this.update({ 'system.loadedRounds': 0 });
-    const into = await SR3EItem._returnRounds(actor, gunMech, type, n, gunClass);
+    const homeId   = MiniGrenade.isLauncher(this.system) ? (this.system.equippedAmmoId || '') : '';   // TODO 163
+    const into = await SR3EItem._returnRounds(actor, gunMech, type, n, gunClass, homeId);
     const cost = AmmoStock.unloadActions(gunMech);
     if (cost.simple > 0) game.sr3e.SR3EActionLedger?.charge(actor, 'removeClip', this.name);
     ui.notifications.info(`${this.name}: ${n} unfired round${n === 1 ? '' : 's'} unloaded into ${into} — ${cost.text}.`);
@@ -2210,14 +2248,20 @@ export class SR3EItem extends Item {
    * (the maintainer, 2026-09-13), and a gun holds one ammunition type, so switching type this way
    * unloads the old rounds rather than discarding them. Returns the stock item's name.
    */
-  static async _returnRounds(actor, mech, type, n, gunClass = null) {
+  static async _returnRounds(actor, mech, type, n, gunClass = null, homeId = '') {
     const t = type || 'regular';
+    // A launcher's mini-grenades go back to the grenade they were loaded from, or to a new box — never
+    // to another box of the type: every mini-grenade is `regular`, so that would pour defensive rounds
+    // into an offensive box (TODO 163).
+    const own = homeId ? actor.items.get(homeId) : null;
+    const ownFits = own?.type === 'ammunition' && AmmoStock.unit(own.system) === 'rounds';
     // Rounds out of a gun are that gun's class (p.279): they go back to a box of the same class.
-    const home = actor.items.find(i => i.type === 'ammunition' && !i.getFlag('The2ndChumming3e', 'stored')
+    const sameType = () => actor.items.find(i => i.type === 'ammunition' && !i.getFlag('The2ndChumming3e', 'stored')
       && AmmoStock.fits(i.system, mech, gunClass) && (i.system.ammoType ?? 'regular') === t
       && (!gunClass || String(i.system.gunClass ?? '') === gunClass)
       && AmmoStock.unit(i.system) === 'rounds'
       && !AmmoStock.fromName(i.name));   // never a clip still counted in rounds — the rounds would read as full clips (TODO 133)
+    const home = homeId ? (ownFits ? own : null) : sameType();
     if (home) {
       await home.update({ 'system.rounds': (home.system.rounds ?? 0) + n });
       return home.name;
@@ -2257,14 +2301,14 @@ export class SR3EItem extends Item {
         const ammo = stock.find(a => a.id === sel.value);
         if (!ammo || !trackOn) { out.textContent = ''; if (row) row.style.display = 'none'; return; }
         const loose = AmmoStock.stock(ammo.system).unit === 'rounds';
-        const full  = AmmoStock.reloadPlan(ammo.system, magSize, current);   // fill it
+        const full  = AmmoStock.reloadPlan(ammo.system, magSize, current, { ammoId: ammo.id });   // fill it
         if (row) row.style.display = loose ? '' : 'none';
         if (loose && inp) {
           inp.max = String(full.taken);
           if (fromSelect || inp.value === '') inp.value = String(full.taken);
         }
         const want = loose && inp ? Number(inp.value) : null;
-        const plan = AmmoStock.reloadPlan(ammo.system, magSize, current, { want });
+        const plan = AmmoStock.reloadPlan(ammo.system, magSize, current, { want, ammoId: ammo.id });
         const act  = AmmoStock.reloadActions(ammo.system, { taken: plan.taken, quickness, gunMech: mech }).text;
         out.textContent = plan.taken <= 0 ? 'Already full.'
           : `${plan.loaded}/${magSize} in the gun afterwards${plan.discarded ? ` — ${plan.discarded} unfired lost` : ''}${plan.returned ? ` — ${plan.returned} unfired go back into stock` : ''}.${act ? ` ${act}.` : ''}`;
@@ -2434,10 +2478,15 @@ export class SR3EItem extends Item {
       return { label: 'Beyond Extreme', tnMod: rangeTNarr[3] ?? 5, beyond: true };
     }
 
-    const typeOpts  = Object.entries(gTypes).map(([k, v], i) =>
-      `<option value="${k}" ${i === 0 ? 'selected' : ''}>${v.label}</option>`).join('');
-    const initType  = Object.keys(gTypes)[0] ?? 'standard';
+    // A launcher scatters and ranges as one (SR3 p.119); anything else starts at the first type.
+    const initType  = opts.launcher && gTypes.launcher ? 'launcher' : (Object.keys(gTypes)[0] ?? 'standard');
+    const typeOpts  = Object.entries(gTypes).map(([k, v]) =>
+      `<option value="${k}" ${k === initType ? 'selected' : ''}>${v.label}</option>`).join('');
     const defaultTN = baseTN + (bandFor(initType)?.tnMod ?? 0);
+    // SR3 p.118: a mini-grenade arms only after about five metres — said, never enforced.
+    const armNote   = opts.launcher && !MiniGrenade.arms(throwDist)
+      ? `<div style="font-size:11px;color:var(--sr-amber);margin-top:4px">⚠ Under ${MiniGrenade.ARMS_AT} m: a mini-grenade does not arm before it has travelled about ${MiniGrenade.ARMS_AT} metres, and does not detonate if it hits anything first (SR3 p.118).</div>`
+      : '';
 
     const AOE_TITLE = 'AoE Weapon Roll Options';
     const wireAoe = (app, html) => {
@@ -2466,6 +2515,7 @@ export class SR3EItem extends Item {
           <div style="margin-bottom:10px"><label>Grenade Type:
             <select id="sr-grenade-type" style="margin-left:8px">${typeOpts}</select></label>
             <div id="sr-range-note" style="font-size:11px;color:var(--sr-amber);margin-top:4px"></div>
+            ${armNote}
           </div>
           <div style="margin-bottom:10px"><label>Target Number (TN):
             <input type="number" id="sr-tn" value="${defaultTN}" min="2" max="30" style="width:60px;margin-left:8px"/></label>

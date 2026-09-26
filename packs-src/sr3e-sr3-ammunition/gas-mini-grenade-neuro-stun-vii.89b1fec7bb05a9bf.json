@@ -1,0 +1,36 @@
+{
+  "_key": "!items!89b1fec7bb05a9bf",
+  "doc": {
+    "_id": "89b1fec7bb05a9bf",
+    "name": "Gas Mini-grenade (Neuro-Stun VII)",
+    "type": "ammunition",
+    "system": {
+      "concealability": "8",
+      "damage": "Special",
+      "ammoType": "regular",
+      "loadMechanism": "m",
+      "countedIn": "rounds",
+      "gunClass": "GrLn",
+      "rounds": 1,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 0.1,
+      "availability": "10/4 days",
+      "cost": 120,
+      "streetIndex": "3",
+      "bookPage": "sr3.283",
+      "notes": "<p>A mini-grenade for a grenade launcher (SR3 p.283): the Gas Grenade (Neuro-Stun VII)'s effects, fired rather than thrown. It does not arm until it has travelled about five metres (SR3 p.118).</p><p>SR3 p.283, the Mini-grenade row applied to the Gas Grenade (Neuro-Stun VII) row: Conceal 8, Weight .1, Availability 8/4 days +2, Cost 60¥ ×2, Street Index 2 +1. Legality 3-J. No blast.</p>",
+      "blast": "",
+      "areaRadius": 10,
+      "areaEffect": "A cloud of stun gas: everything within 10 m is exposed, for 2 Combat Turns (less in windy areas, at the gamemaster's discretion)."
+    },
+    "effects": [],
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-core-grenades"
+      }
+    },
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

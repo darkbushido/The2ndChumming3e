@@ -50,7 +50,7 @@ export async function run(t) {
   const item = read('scripts/documents/SR3EItem.js');
   t.ok('the reload list offers only what the weapon accepts', /SR3EItem\.weaponAcceptsAmmoType\(this\.system, i\.system\.ammoType \?\? 'regular'\)/.test(item));
   t.ok('the ranged attack carries it to the soak card', /options\.ammoType\s+= SR3EItem\.flechetteAmmo\(this\.system, ammoType\)/.test(item));
-  t.ok('the grenade throw carries it too', /options\.ammoType\s+= SR3EItem\.flechetteAmmo\(this\.system\)/.test(item));
+  t.ok('the grenade throw carries it too', /options\.ammoType\s+= SR3EItem\.flechetteAmmo\(round\)/.test(item));
   const actor = read('scripts/documents/SR3EActor.js');
   t.ok('each grenade\'s soak button carries the ammo type', /ammoType:\s+state\.ammoType \?\? null,\s+\/\/ flechette rules for an AP grenade/.test(actor));
   t.ok('the soak card reads `flechette-coded` as flechette with the level already in the code',
@@ -61,9 +61,9 @@ export async function run(t) {
 
   // The sheet and data model.
   const models = read('scripts/data/ItemDataModels.js');
-  t.is('firearm, projectile and thrown items carry the checkbox', (models.match(/flechette:\s+new BooleanField/g) ?? []).length, 3);
-  t.is('…and the sheet offers it on all three',
-    (read('scripts/sheets/SR3EItemSheet.js').match(/'Flechette rules \(p\.116\)', 'flechette'/g) ?? []).length, 3);
+  t.is('firearm, projectile, thrown and ammunition (AP mini-grenades, TODO 163) carry the checkbox', (models.match(/flechette:\s+new BooleanField/g) ?? []).length, 4);
+  t.is('…and the sheet offers it on all four',
+    (read('scripts/sheets/SR3EItemSheet.js').match(/'Flechette rules \(p\.116\)', 'flechette'/g) ?? []).length, 4);
 
   // Shipped data: every firearm/projectile/thrown whose FIRST alternative is (f) is ticked, and the
   // core AP grenades (a plain 10S, p.119) are ticked too.

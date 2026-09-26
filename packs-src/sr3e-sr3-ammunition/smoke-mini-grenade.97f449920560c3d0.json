@@ -1,0 +1,36 @@
+{
+  "_key": "!items!97f449920560c3d0",
+  "doc": {
+    "_id": "97f449920560c3d0",
+    "name": "Smoke Mini-grenade",
+    "type": "ammunition",
+    "system": {
+      "concealability": "8",
+      "damage": "--",
+      "ammoType": "regular",
+      "loadMechanism": "m",
+      "countedIn": "rounds",
+      "gunClass": "GrLn",
+      "rounds": 1,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 0.1,
+      "availability": "5/24 hrs",
+      "cost": 60,
+      "streetIndex": "3",
+      "bookPage": "sr3.283",
+      "notes": "<p>A mini-grenade for a grenade launcher (SR3 p.283): the Smoke Grenade's effects, fired rather than thrown. It does not arm until it has travelled about five metres (SR3 p.118).</p><p>SR3 p.283, the Mini-grenade row applied to the Smoke Grenade row: Conceal 8, Weight .1, Availability 3/24 hrs +2, Cost 30¥ ×2, Street Index 2 +1. Legality 5-J. No blast.</p>",
+      "blast": "",
+      "areaRadius": 10,
+      "areaEffect": "A smoke cloud 20 m across for 2 Combat Turns (less in windy areas): it obscures vision — apply the visibility modifiers (SR3 p.112)."
+    },
+    "effects": [],
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-core-grenades"
+      }
+    },
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

@@ -198,6 +198,14 @@ export class AmmunitionData extends foundry.abstract.TypeDataModel {
        * (`LPist`, `AsRf`, `ShtG`…). '' = not stated yet: fits any gun, and the first gun to load from it
        * states it (`SR3EItem.reload`). TODO 173. Read through AmmoStock.classFits. */
       gunClass:       new StringField({ initial: '' }),
+      // A mini-grenade for a launcher (SR3 p.283, TODO 163): Damage and Blast are "by grenade", so the
+      // round carries its grenade's — `damage` holds the Damage Code, `blast` the falloff (blank = -1/m),
+      // `flechette` the AP rules (p.119), and a gas / smoke round its area (TODO 155). Other ammunition
+      // leaves them blank. Read by `SR3EItem#_loadedGrenade`.
+      blast:          new StringField({ initial: '' }),
+      flechette:      new BooleanField({ initial: false }),
+      areaRadius:     new NumberField({ nullable: true, initial: null, min: 0 }),
+      areaEffect:     new StringField({ initial: '' }),
       reloads:        new NumberField({ integer: true, initial: 0, min: 0 }),
       roundsPerReload: new NumberField({ integer: true, initial: 0, min: 0 }),
       weight:         new NumberField({ initial: 0, min: 0 }),

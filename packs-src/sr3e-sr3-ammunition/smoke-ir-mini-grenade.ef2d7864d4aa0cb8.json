@@ -1,0 +1,36 @@
+{
+  "_key": "!items!ef2d7864d4aa0cb8",
+  "doc": {
+    "_id": "ef2d7864d4aa0cb8",
+    "name": "Smoke (IR) Mini-grenade",
+    "type": "ammunition",
+    "system": {
+      "concealability": "8",
+      "damage": "--",
+      "ammoType": "regular",
+      "loadMechanism": "m",
+      "countedIn": "rounds",
+      "gunClass": "GrLn",
+      "rounds": 1,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 0.1,
+      "availability": "6/48 hrs",
+      "cost": 80,
+      "streetIndex": "3",
+      "bookPage": "sr3.283",
+      "notes": "<p>A mini-grenade for a grenade launcher (SR3 p.283): the Smoke (IR) Grenade's effects, fired rather than thrown. It does not arm until it has travelled about five metres (SR3 p.118).</p><p>SR3 p.283, the Mini-grenade row applied to the Smoke (IR) Grenade row: Conceal 8, Weight .1, Availability 4/48 hrs +2, Cost 40¥ ×2, Street Index 2 +1. Legality 5-J. No blast.</p>",
+      "blast": "",
+      "areaRadius": 10,
+      "areaEffect": "An infra-red smoke cloud 20 m across for 2 Combat Turns: hot particles obscure thermographic vision as well as normal sight."
+    },
+    "effects": [],
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-core-grenades"
+      }
+    },
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

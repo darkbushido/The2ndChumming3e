@@ -148,13 +148,13 @@ export async function run(t) {
   const read = rel => readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
   const item = read('scripts/documents/SR3EItem.js');
   const reload = item.slice(item.indexOf('async reload()'), item.indexOf('static async _promptReloadChoice'));
-  t.ok('reload() plans with what is already in the gun', /AmmoStock\.reloadPlan\(ammo\.system, magSize, current, \{ want: choice\.want \}\)/.test(reload));
+  t.ok('reload() plans with what is already in the gun', /AmmoStock\.reloadPlan\(ammo\.system, magSize, current, \{ want: choice\.want, ammoId: ammo\.id \}\)/.test(reload));
   t.ok('…writes the plan\'s own field', /\[`system\.\$\{plan\.field\}`\]: plan\.remaining/.test(reload));
   t.ok('…says what the reload takes', /AmmoStock\.reloadActions\(/.test(reload));
   t.ok('…and what was lost', /plan\.discarded/.test(reload));
   t.ok('…never from storage (the stash is not on the character)', /!i\.getFlag\('The2ndChumming3e', 'stored'\)/.test(reload));
-  t.ok('…and puts unloaded rounds back into stock', /plan\.returned > 0 \? await SR3EItem\._returnRounds\(actor, gunMech, current\.type, plan\.returned, gunClass\)/.test(reload));
-  const back = item.slice(item.indexOf('static async _returnRounds'), item.indexOf('static async _returnRounds') + 1200);
+  t.ok('…and puts unloaded rounds back into stock', /plan\.returned > 0 \? await SR3EItem\._returnRounds\(actor, gunMech, current\.type, plan\.returned, gunClass, loadedId\)/.test(reload));
+  const back = item.slice(item.indexOf('static async _returnRounds'), item.indexOf('static async _returnRounds') + 2400);
   t.ok('_returnRounds adds to the loose stock of that type, or makes one', /'system\.rounds': \(home\.system\.rounds \?\? 0\) \+ n/.test(back) && /createEmbeddedDocuments\('Item'/.test(back));
   const dlg = item.slice(item.indexOf('static async _promptReloadChoice'), item.indexOf('static async _promptReloadChoice') + 5000);
   t.ok('the dialog asks how many loose rounds', /id="reload-rounds"/.test(dlg));
@@ -191,7 +191,7 @@ export async function run(t) {
   const unloadBody = /async unload\(\) \{([\s\S]*?)\n  \}/.exec(itemSrc)?.[1] ?? '';
   t.ok('SR3EItem.unload exists', unloadBody.length > 0);
   t.ok('…empties the gun', /'system\.loadedRounds': 0/.test(unloadBody));
-  t.ok('…returns the rounds to loose stock', /_returnRounds\(actor, gunMech, type, n, gunClass\)/.test(unloadBody));
+  t.ok('…returns the rounds to loose stock', /_returnRounds\(actor, gunMech, type, n, gunClass, homeId\)/.test(unloadBody));
   t.ok('…snapshots for the GM\'s undo before writing', unloadBody.indexOf('.begin(actor)') > -1 && unloadBody.indexOf('.begin(actor)') < unloadBody.indexOf('update('));
   t.ok('the sheet offers ⏏ Unload and wires it', /data-action="unloadWeapon"/.test(sheetSrc) && /unloadWeapon:\s+SR3EActorSheet\._onUnloadWeapon/.test(sheetSrc));
   const returnBody = /static async _returnRounds\([^)]*\) \{([\s\S]*?)\n  \}/.exec(itemSrc)?.[1] ?? '';

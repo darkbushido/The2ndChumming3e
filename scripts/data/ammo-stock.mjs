@@ -96,10 +96,14 @@ export const AmmoStock = {
    * ⚠ **Loose rounds TOP UP**; `want` caps how many go in this time (a Complex Action per
    *   Quickness rounds). A different ammunition type cannot share the gun, so the unfired rounds
    *   come out and go back into stock (`returned`) — round by round never loses one.
+   * ⚠ **A grenade launcher's load is one grenade ITEM, not a type** (TODO 163): Damage and Blast are
+   *   "by grenade" (SR3 p.283), so an offensive and a defensive mini-grenade — both `regular` — must not
+   *   share the magazine. `current.ammoId` names the item loaded (launchers only) and `opts.ammoId` the
+   *   one being loaded; when both are given and differ, it is a different load.
    * @param {object} sys  the ammunition item's system data
    * @param {number} magSize
-   * @param {{rounds?:number, type?:string|null}} [current]  what is in the gun now
-   * @param {{want?:number|null}} [opts]  loose rounds to load this time (default: fill it)
+   * @param {{rounds?:number, type?:string|null, ammoId?:string}} [current]  what is in the gun now
+   * @param {{want?:number|null, ammoId?:string}} [opts]  loose rounds to load this time (default: fill it)
    * @returns {{unit, field, loaded, remaining, taken, discarded, returned, short, mismatch, topUp}}
    *   `loaded` — rounds in the gun afterwards; `taken` — out of the stock, in its own unit;
    *   `discarded` — rounds lost with a swapped reload; `returned` — unfired rounds of another type
@@ -119,7 +123,8 @@ export const AmmoStock = {
     // ⚠ Round by round NEVER loses a round (the maintainer, 2026-09-13: "anything that's going round
     // by round … shouldn't lose the unused rounds"). A different type cannot share the gun, so the
     // unfired ones are UNLOADED back into stock (`returned`) — never discarded.
-    const same   = inGun > 0 && (current?.type ?? null) === (sys?.ammoType ?? 'regular');
+    const sameItem = !current?.ammoId || !opts?.ammoId || current.ammoId === opts.ammoId;
+    const same   = inGun > 0 && sameItem && (current?.type ?? null) === (sys?.ammoType ?? 'regular');
     const kept   = same ? inGun : 0;
     const room   = mag - kept;
     const want   = opts?.want === null || opts?.want === undefined ? room : Math.min(room, whole(opts.want));
