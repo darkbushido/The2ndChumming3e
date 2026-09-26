@@ -1,6 +1,6 @@
 # Rules check v0.6.1 — code vs `guides/`, PDFs as authority (TODO 121)
 
-**Status: COMPLETE — all 1225 units of 23 guide pages resolved, and every quote and code location re-verified by `tools/rules-ledger.mjs check`.**
+**Status: COMPLETE — all 1227 units of 23 guide pages resolved, and every quote and code location re-verified by `tools/rules-ledger.mjs check`.**
 
 Generated from `audit/rules-ledger-0.6.1.json`. Regenerate; do not hand-edit. A complete record proves the ledger is
 fully evidenced — it does not prove the evidence was read correctly. Every `diverges` and every `unverifiable`
@@ -8,316 +8,25 @@ below is the maintainer's to decide.
 
 | Verdict | Units |
 | :--- | ---: |
-| match | 478 |
-| diverges | 26 |
-| guide-differs | 3 |
+| match | 508 |
+| diverges | 1 |
+| guide-differs | 0 |
 | not-implemented | 167 |
-| unverifiable | 145 |
-| no-rule-claim | 406 |
+| unverifiable | 144 |
+| no-rule-claim | 407 |
 | unchecked | 0 |
 
-## Code diverges from the book (26)
-
-### hiring/street-samurai.md#12
-
-Guide: | Smartlink | .5 | 2,500¥ |
-
-> "smartlink (.5). Assigning all his cyberware to Essence slots" — Shadowrun 3e - Man and Machine Cyberware {FASA7126}.pdf, printed p.127
-
-Code: `packs-src/sr3e-sr3-cyberware/smartlink.sr3e-cyberware-0846.json:10`
-
-The guide (and Man & Machine's own Essence-slot example, which lists 'a smartlink (.5)') gives the smartlink .5 Essence; the shipped pack item has 0.25. The core Bodyware table's Essence column cannot be lined up with its rows in the text layer (the layout view puts '.2' beside the Smartlink row), so the printed value on p.302 should be read from the page image. The 2,500¥ cost matches.
-
-### magic/spellcasting.md#31
-
-Guide: - **Area spells**: the base radius is your **Magic in meters**, and it hits
-
-> "Area spells affect all valid targets within the radius of effect, friend and foe alike (including the caster)" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.181
-> "every die withheld from the Sorcery Test increases the radius by 1 meter" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.181
-
-Code: `scripts/documents/SR3EItem.js:4655`, `scripts/documents/SR3EItem.js:4441`
-
-Two differences. (1) The book: area spells 'affect all valid targets within the radius of effect, friend and foe alike (including the caster)'. The code auto-detects the targets in the radius but excludes the caster (SR3EItem.js `_actorsInRadius`: `a.id === caster.id → continue`). (2) The radius is a free number field defaulting to Magic; withholding Sorcery dice (2 per metre smaller, 1 per metre wider) is not tied to it — no dice are withheld or spent to change the radius.
-
-### magic/spellcasting.md#60
-
-Guide: - **Area spells:** roll once and compare the dice against **each** target's
-
-> "Successes are counted separately for each target, and a separate Resistance Test is made for each target" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.182
-
-Code: `scripts/documents/SR3EItem.js:4576`
-
-The book rolls once and counts successes separately against each target's own target number, with a separate Resistance Test each. The code takes the target number from the PRIMARY (first) target only (`primaryTarget = targetActors[0]`, SR3EItem.js:4577) and applies the one success count to every target.
-
-### magic/spellcasting.md#66
-
-Guide: - **No modifiers apply** unless the spell says so. That includes the
-
-> "No target modifiers apply to this test except where specifically noted" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.183
-> "applied to all tests, including Drain Resistance Tests (but not normal Damage Resistance Tests)" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.178
-
-Code: `scripts/documents/SR3EActor.js:9684`
-
-The book (p.183): 'No target modifiers apply to this test except where specifically noted'. The code skips the WOUND modifier (skipWoundMod: true) but adds the +2-per-sustained-spell modifier to the resist test — the maintainer's ruling of 2026-09-14, reading p.178's 'all tests' over p.183. The guide says no modifiers apply. Flagged so the ruling and the guide can be made consistent.
-
-### magic/spellcasting.md#84
-
-Guide: | Manabolt / Manaball | Mana | Willpower | (Damage Level) / (Damage Level +1) | Physical |
-
-> "Manabolt and Manaball channel destructive magical power into the target, doing physical damage" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.191
-> "Drain: (Damage Level) Manaball" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.191
-
-Code: `scripts/documents/SR3EItem.js:4590`, `packs-src/sr3e-sr3-spells/manaball.sr3e-spell-0004.json:13`
-
-Drain codes match (packs). The DAMAGE TRACK does not: the book says Manabolt and Manaball 'channel destructive magical power into the target, doing physical damage' although they are mana spells. The code derives the track from the spell type — `isStun = spellType !== 'Physical'` (SR3EItem.js:4595) — so every mana spell, Manabolt and Manaball included, deals STUN in this system. The pack items carry an empty `damage` field, so nothing overrides it. Same for Death Touch (#86).
-
-### magic/spellcasting.md#86
-
-Guide: | Death Touch | Mana | Willpower | (Damage Level −1) | Physical, by touch |
-
-> "(Damage Level -1) Death Touch requires the caster to touch the target" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.191
-
-Code: `scripts/documents/SR3EItem.js:4590`, `packs-src/sr3e-sr3-spells/death-touch.sr3e-spell-0001.json:13`
-
-Drain code matches (pack). The book says Death Touch 'does physical damage'; it is a mana spell, so the code (`isStun = spellType !== 'Physical'`) makes it Stun. See #84.
-
-### magic/spellcasting.md#102
-
-Guide: - If a modifier would push the Drain Level **above Deadly**, add **+2 Drain
-
-> "add +2 to the Drain Power instead for each level above Deadly" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.191
-
-Code: `scripts/documents/SR3EItem.js:4175`
-
-The book: 'If a modifier would raise the Drain Level above Deadly, add +2 to the Drain Power instead for each level above Deadly.' `parseDrainFormula` clamps the level at Deadly (`Math.min(3, idx + mod)`) and adds nothing to the Power, so e.g. Fireball's +1(Damage Level +2) cast at Serious drains at Deadly with no extra +2 Power.
-
-### magic/spellcasting.md#137
-
-Guide: 5. **Effect.** 4 − 1 = **3 net successes**. Two of them stage Serious up to
-
-> "For any spells that damage the target, stage up the Damage Level for every 2 net successes" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.183
-> "Manabolt and Manaball channel destructive magical power into the target, doing physical damage" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.191
-
-Code: `scripts/documents/SR3EItem.js:4590`
-
-The arithmetic (4 − 1 = 3 net, two stage Serious to Deadly, the odd success is discarded) matches. The outcome does not: the example ends 'a Deadly Physical wound' because the book makes Manabolt physical, while the code deals Manabolt as Stun (see #84).
-
-### rules/combat.md#50
-
-Guide: 5. **Determine the outcome**: compare the attacker's successes with the
-
-> "compare the successes rolled by the attacker and the target" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.113
-> "The successes of the participants are usually compared, and the character with the higher net successes wins" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.114
-> "His 2 net successes (2 more than Snot) are enough to increase the Damage Level by one" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.114
-
-Code: `scripts/documents/SR3EActor.js:3233`, `scripts/documents/SR3EActor.js:4094`
-
-The book compares NET successes: p.113 'compare the successes rolled by the attacker and the target' and its worked example stages once for Liam's 2 net successes. The code does not net them. It stages UP by the attacker's raw successes (SR3EItem.stageDamage(state.damageBase, successes), SR3EActor.js:3233) and then stages DOWN separately by the defender's soak + carried dodge successes (floor(total/2), SR3EActor.js:4098). floor(A/2) − floor(D/2) is not floor((A−D)/2): attacker 2 vs defender 1 should be base damage (net 1) but the code stages up one level; attacker 4 vs 1 should stage up once (net 3) but the code stages up twice. p.114 also has a paragraph describing each side staging on its own successes ('usually compared'), so the code follows one reading of the book; the worked example follows the other. The maintainer's call which governs.
-
-### rules/combat.md#51
-
-Guide:    - Attacker ahead: stage the Damage Level **up** one step (L → M → S → D)
-
-> "The base damage increases by one Damage Level for every two successes the attacker rolls over the target's total" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.113
-
-Code: `scripts/documents/SR3EActor.js:3233`
-
-Same finding as #50: 'one step per 2 successes over the defender's total' is a net comparison; the code stages up by 2-per-level of the attacker's RAW successes before the defender's total is known.
-
-### rules/combat.md#52
-
-Guide:    - Defender ahead: stage it **down** one step per 2 successes over the
-
-> "the target can stage down the weapon's base Damage Level by one for every two successes the target rolls over the attacker's total" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.113
-
-Code: `scripts/documents/SR3EActor.js:4094`, `scripts/documents/SR3EActor.js:3599`
-
-Same finding as #50: the defender stages down by floor(total/2) of ITS OWN successes, not by 2 per success over the attacker's.
-
-### rules/combat.md#53
-
-Guide:    - Tie: base damage.
-
-> "If the attacker's successes equal the target's, the weapon does its base Damage Level" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.113
-
-Code: `scripts/documents/SR3EItem.js:1038`, `scripts/documents/SR3EActor.js:4094`
-
-A tie is base damage in the book. In the code a tie is base damage only while staging up does not hit the Deadly cap: attacker and defender both at 6 successes against a 9M attack stage up to 9D (surplus discarded) and then down three levels to Light instead of staying Moderate. Same root as #50.
-
-### rules/combat.md#124
-
-Guide: - **Physical past 10 boxes**: you can survive overflow up to your **Body**
-
-> "Instant death occurs only if damage overflows the Physical column by more than the character's Body Rating" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.125
-> "takes an additional box of damage every (Body Rating) in Combat Turns" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.126
-
-Code: `scripts/sr3e.js:1988`, `scripts/sheets/SR3EActorSheet.js:607`
-
-Two differences. (1) Death: the book says instant death occurs only if Physical overflows 'by MORE than the character's Body Rating' (a character can take 10 + Body and one more point kills), so overflow equal to Body is survivable. The code flags the character dead at overflow >= Body (sr3e.js:1988 `dead = physFull && overflow >= body`; the sheet's isDead is the same test). (2) The extra box every (Body) Combat Turns while in overflow is not applied by the system (SR3EHealing mentions it as a note only).
-
-### rules/combat.md#152
-
-Guide: - **Vehicle Control Rig**: each level gives +2 Reaction and **+1D6**
-
-> "Each level adds +2 to the user's Reaction and +1D6 Initiative dice while rigging" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.301
-
-Code: `scripts/documents/SR3EActor.js:10028`, `scripts/documents/SR3EActor.js:9910`
-
-The book: each VCR level adds +2 to Reaction and +1D6 Initiative dice while rigging. The code gives +1 Reaction per level (base = Reaction base + vcrLevel) with 1 + vcrLevel dice — the dice are right, the Reaction is half what it should be. Both the rigger's own initiative and the jumped-in drone's initiative do this (SR3EActor.js, `vcrLevel` at the two 'VCR' branches).
-
-### rules/combat.md#153
-
-Guide: - **Control Pool** = Reaction as modified by the VCR. *(SR3 p.44)* It only
-
-> "A rigger's Control Pool is equal to the character's Reaction, modified only by his or her vehicle control rig" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.44
-> "the vehicle is adapted for rigger control" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.134
-
-Code: `scripts/documents/SR3EItem.js:1744`, `scripts/documents/SR3EActor.js:2243`
-
-The book: a rigger's Control Pool equals the character's Reaction, modified only by the VCR. The code treats Control Pool as the Vehicle Skill rating (comment at SR3EActor.js:2243, and the Driving Test uses the skill), and the gunnery flow sizes it as Reaction base + VCR level (SR3EItem.js:1744) — neither matches, and the second adds only +1 per level. The 'only works in a vehicle adapted for rigger control' condition is not modelled (no adaptation field).
-
-### rules/combat.md#155
-
-Guide: - **Gunnery**: mounted weapons use the Gunnery skill and the ordinary
-
-> "The player rolls a number of dice equal to the character's Gunnery Skill plus half the vehicle's Sensor Rating (round down)" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.152
-> "all standard ranged combat rules apply" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.151
-
-Code: `scripts/documents/SR3EItem.js:1801`
-
-First half matches (manual gunnery uses the Gunnery skill and the ordinary ranged rules, p.151). Sensor-enhanced gunnery does not: the book rolls Gunnery + half the Sensor Rating (round down) as DICE and uses the target's Signature as the TN. The code instead subtracts the Sensor Rating (or the VCR level when jacked in) from the target's Signature as a TN reduction (SR3EItem.js:1800-1802) and adds no Sensor dice.
-
-### rules/combat.md#156
-
-Guide: - **Shooting a vehicle**: halve the weapon's Power and drop its Damage Level
-
-> "Weapons that do Light Damage cannot affect the vehicle unless the attacker uses special ammunition" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.149
-> "The Power of the AV munitions is reduced by half the Armor Rating" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.149
-
-Code: `scripts/documents/SR3EItem.js:1484`, `scripts/documents/SR3EItem.js:1483`
-
-Three differences. (1) The book halves Power 'round down'; the code rounds UP (Math.ceil(power / 2), SR3EItem.js:1483 and 1772). (2) 'Weapons that do Light Damage cannot affect the vehicle' — the code's level table maps L to L, so Light damage still goes through. (3) Anti-vehicle munitions subtract only half the armour (rounded down) from the Power; the code only skips the halving/level drop for AV and does not halve the armour.
-
-### rules/grenades.md#31
-
-Guide: Each target resists with **Body** plus any Combat Pool dice, against TN =
-
-> "If the attacker rolled more successes, the Damage Level of the blast increases one level for every two successes over the target's success total" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.119
-
-Code: `scripts/documents/SR3EActor.js:3187`
-
-The resistance test (Body + Combat Pool vs adjusted Power − Impact) matches. The staging does not follow the book's net comparison ('one level for every two successes over the target's success total'): the code stages UP by the thrower's raw successes first (SR3EActor.js:3187, stageDamage(..., successes)) and lets the soak card stage DOWN by the target's own successes, so floor(A/2) − floor(D/2) replaces floor((A−D)/2). Same root as combat.md #50; the code comment claims this 'gives exactly the book's net comparison', which holds only when both halve evenly.
-
-### rules/healing.md#29
-
-Guide: - **Physical** past 10 boxes: you can survive overflow up to your **Body**
-
-> "Instant death occurs only if damage overflows the Physical column by more than the character's Body Rating" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.125
-
-Code: `scripts/sr3e.js:1988`, `scripts/SR3EHealing.js:466`
-
-The extra box every (Body) Combat Turns is shown on the healing card (SR3EHealing.js:466) but not applied. And, as combat.md #124 records, the code marks a character dead at overflow >= Body (sr3e.js:1988) whereas the book, and this guide line, kill only when overflow EXCEEDS Body ('Past Body in overflow, you're dead').
-
-### rules/reloading.md#22
-
-Guide: | | Complex Action | Load **(Quickness × 2)** rounds into a belt |
-
-> "Insert (Quickness Insert (Quickness Use speed loader Insert belt. Insert (Quickness" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.280
-
-Code: `scripts/data/ammo-stock.mjs:154`, `scripts/data/ammo-stock.mjs:15`
-
-The book's last row is 'Insert (Quickness × 2) rounds into belt' (the trailing '× 2) rounds into belt' prints in the facing column, so the text layer splits it). The code loads a belt's loose rounds at the same rate as everything else — Quickness rounds per Complex Action (`each = Math.max(1, whole(quickness))` for any mechanism but a break action) — and its own table comment says 'insert (Quickness) rounds'. A belt therefore takes twice the actions the book gives.
+## Code diverges from the book (1)
 
 ### rules/reloading.md#34
 
-Guide: The rules don't throw away the rounds left in a removed clip. **Spare clips**
+Guide: The book doesn't say what happens to the rounds left in a removed clip.
 
 > "They hold the maximum rounds available for the weapon, and are not interchangeable from weapon to weapon even within the same class" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.281
 
-Code: `scripts/data/ammo-stock.mjs:21`, `scripts/data/ammo-stock.mjs:132`
+Code: `packs-src/sr3e-sr3-gear/spare-clip.27d3735181b12497.json:21`, `scripts/data/ammo-stock.mjs:144`
 
-Two differences. (1) 'The rules don't throw away the rounds left in a removed clip' is not in the book (the reloading passage says nothing about leftover rounds), and the code does the opposite by the maintainer's ruling (TODO 114): swapping in a pre-filled reload loses the rounds left in the old one (ammo-stock.mjs header, lines 20-21; `discarded` in reloadPlan). (2) The Spare Clips rule — 5¥ each, unloaded, holds the weapon's maximum, 'not interchangeable from weapon to weapon even within the same class' — is not modelled: reloads fit by loading mechanism, not by weapon (`AmmoStock.fits`).
-
-### rules/reloading.md#43
-
-Guide: - Loading rounds into a belt is a Complex Action per **(Quickness × 2)**
-
-> "Insert (Quickness Insert (Quickness Use speed loader Insert belt. Insert (Quickness" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.280
-
-Code: `scripts/data/ammo-stock.mjs:154`, `scripts/data/ammo-stock.mjs:15`
-
-The book's last row is 'Insert (Quickness × 2) rounds into belt' (the trailing '× 2) rounds into belt' prints in the facing column, so the text layer splits it). The code loads a belt's loose rounds at the same rate as everything else — Quickness rounds per Complex Action (`each = Math.max(1, whole(quickness))` for any mechanism but a break action) — and its own table comment says 'insert (Quickness) rounds'. A belt therefore takes twice the actions the book gives.
-
-### rules/reloading.md#58
-
-Guide: **Ammo is shared by gun class**, using the categories on the Weapon Range
-
-> "each kind of gun can trade ammo with another of its class" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.279
-> "Shotguns, whether pistols or rifles, can share ammo" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.279
-
-Code: `scripts/data/ammo-stock.mjs:134`
-
-The book: each kind of gun trades ammunition only with its own class (all light pistols, all assault rifles…), with shotguns sharing across pistol and rifle. The code lets loose rounds fit ANY firearm — `AmmoStock.fits` matches only the loading mechanism, and its comment states 'Loose rounds fit every firearm' as a deliberate choice because every shipped box of rounds is marked (c). Nothing checks the gun class.
-
-### street/cyberware-grades.md#4
-
-Guide: {: .fixed }
-
-> "Beta Delta Used -40% (x .6) 4 -50% (x .5) 8 By grade .5 +5/x 1.5 +9/x 3 Standard" — Shadowrun 3e - Man and Machine Cyberware {FASA7126}.pdf, printed p.45
-> "used cyberware begins with 1D6" — Shadowrun 3e - Man and Machine Cyberware {FASA7126}.pdf, printed p.124
-
-Code: `scripts/documents/SR3EActor.js:8777`, `scripts/data/stress.mjs:95`
-
-Composite errata callout; the code differs in two of its claims. (1) 'Used deltaware can be installed as betaware' — `gradedEssenceCost` strips the word 'used' and reads a Used Delta as delta (×.5), not beta (×.6). (2) 'Used implants come with 1D3 permanent Stress Points' (M&M p.45) — the Stress code starts used cyberware with 1D6 ÷ 2 rounded down (stress.mjs `pointsFromDie`), following M&M p.124's own wording ('1D6 ÷ 2'), so the book itself is inconsistent between p.45 and p.124. Also: 'betaware isn't available to starting characters' is not enforced. The other claims (beta ×.6, used at half price, +5/×1.5 and +9/×3 availability, removal gives no Essence back) are implemented.
-
-### street/cyberware-grades.md#26
-
-Guide: - **Used deltaware can't be bought.** If you acquire some anyway, it's
-
-> "Used deltaware cannot be purchased, but if you can otherwise acquire it, you can have it installed as if it were betaware" — Shadowrun 3e - Man and Machine Cyberware {FASA7126}.pdf, printed p.11
-
-Code: `scripts/documents/SR3EActor.js:8777`
-
-The book: 'Used deltaware cannot be purchased, but if you can otherwise acquire it, you can have it installed as if it were betaware.' The code strips 'used' from a grade and reads a Used Delta as delta (Essence ×.5), not as beta (×.6).
-
-### street/cyberware-grades.md#29
-
-Guide: - **Each used item comes with 1D3 permanent Stress Points.** They can never
-
-> "Each used cyberware item comes with 1D3 permanent Stress Points" — Shadowrun 3e - Man and Machine Cyberware {FASA7126}.pdf, printed p.45
-> "used cyberware begins with 1D6" — Shadowrun 3e - Man and Machine Cyberware {FASA7126}.pdf, printed p.124
-
-Code: `scripts/data/stress.mjs:95`
-
-M&M p.45 says each used implant comes with 1D3 permanent Stress Points; M&M p.124 says used cyberware begins with 1D6 ÷ 2 permanent Stress Points. The code follows p.124 and rounds down (1D6 ÷ 2 → 0, 1, 1, 2, 2, 3), so a roll of 1 gives none and the spread differs from a flat 1D3. The book contradicts itself; the guide states the p.45 form.
-
-
-## The guide differs from the book (3)
-
-### rules/combat.md#4
-
-Guide: {: .fixed }
-
-> "engage the security forces with some suppressive fire" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.156
-> "perform the Locate Access Node operation" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.210
-
-Composite errata callout. Most claims are checked in their own sections below. Two are qualified by the PDF: (a) 'suppressive fire does not exist in the core rules' — the phrase appears in the core rulebook's rigger example (printed p.156) as something a drone controller decides to do, though it is not a defined action or modifier; (b) 'there is no Access Node action' — the Matrix chapter lists a 'Locate Access Node' operation (printed p.210). The maintainer should confirm what the callout meant to rule out.
-
-### rules/grenades.md#16
-
-Guide: ## 2. Scatter  *(SR3 p.119)*
-
-> "Because all grenades scatter to some degree" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.118
-
-Citation only: the guide heads this section (SR3 p.119); the scatter procedure (direction, distance, reduction per success) is on printed p.118. The scatter DICE are in the Grenade Range Table on p.119. The rules stated match.
-
-### rules/grenades.md#21
-
-Guide: ## 3. When it goes off  *(SR3 p.119)*
-
-> "All grenades go off in the next Combat Phase of the character making the grenade attack" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.118
-
-Citation only: the timing rules are on printed p.118 (the guide says p.119). The rules stated match the book.
+The 5¥ cost matches (a generic 'Spare Clip' gear item at cost 5), but it is not functionally linked to the reload system — nothing ties it to a specific gun's capacity. The 'not interchangeable from weapon to weapon even within the same class' restriction is not modelled: AmmoStock.fits() matches any reload of the same loading mechanism to any gun taking that mechanism, deliberately (see #35's house-rule note, which documents this as the table's simplification).
 
 
 ## Real rules the code does not implement (167)
@@ -942,7 +651,7 @@ Searched: `/willing/` — no matches.
 
 A resistance test is offered to every live target; the exception for a willing target ('unless the target of the spell is willing') is not modelled.
 
-### magic/spellcasting.md#70
+### magic/spellcasting.md#71
 
 Guide: - They can protect up to **their Sorcery rating** in subjects, all within
 
@@ -953,7 +662,7 @@ Searched: `/protected subjects?|protectedIds|subjects? protected|Magic Attribute
 
 A mage's Spell Defense pool is one total for the Combat Turn. Who is protected, the Sorcery-rating limit on subjects, the Magic × 100 m range and the same-plane condition are not recorded; every defender with a pool is offered a Counterspelling roll against any spell.
 
-### magic/spellcasting.md#78
+### magic/spellcasting.md#79
 
 Guide: - **No resistance roll** (an object, or a willing subject): all the caster's
 
@@ -961,7 +670,7 @@ Guide: - **No resistance roll** (an object, or a willing subject): all the caste
 
 Searched: `/willing|non-resisting|nonResisting/` — no matches.
 
-### magic/spellcasting.md#94
+### magic/spellcasting.md#95
 
 Guide: Glass and walls **do** block elemental spells, which have to break through
 
@@ -972,7 +681,7 @@ Searched: `/impeded by|firing through barriers|glass[^\n]*(block|stop)/` — no 
 
 Elemental spells are not blocked by glass or walls in the code: nothing checks obstructions. (Everyone the area picks up is a target, which happens to match the 'hidden targets still get hit' half.)
 
-### magic/spellcasting.md#107
+### magic/spellcasting.md#108
 
 Guide: | Each extra spell cast in the same action | +2 *(p.181)* |
 
@@ -980,7 +689,7 @@ Guide: | Each extra spell cast in the same action | +2 *(p.181)* |
 
 Searched: `/extra spell|extraSpells|splitSorcery|multiple spells|several spells/` — no matches.
 
-### magic/spellcasting.md#115
+### magic/spellcasting.md#116
 
 Guide: - A **limited spell** (fetish −1, exclusive −2) can lower the Force *for
 
@@ -988,7 +697,7 @@ Guide: - A **limited spell** (fetish −1, exclusive −2) can lower the Force *
 
 Searched: `/fetishLimit|exclusiveLimit|limitedSpell|limited spell|drainForce/` — no matches.
 
-### magic/spellcasting.md#122
+### magic/spellcasting.md#123
 
 Guide: | **Permanent (P)** | Must be sustained for a base time, then becomes permanent. Sorcery successes can be spent dividing that time instead of on the effect. |
 
@@ -998,7 +707,7 @@ Searched: `/permanentBase|Permanent Spell Base Time|divide the base time/` — n
 
 The Permanent Spell Base Time table exists only inside the healing flow (SR3EHealing.js:72); a permanent spell cast through the Sorcery flow gets no base time, and successes cannot be allocated to divide it.
 
-### magic/spellcasting.md#128
+### magic/spellcasting.md#129
 
 Guide: - An **Exclusive Action** means dropping every sustained spell first.
 
@@ -1190,7 +899,7 @@ Searched: `/\bwallRating\b|\bwall\.br\b|\bwall\.barrier|\bwall\.rating/` — no 
 
 The Chunky Salsa tool takes the walls the GM draws as holding; it does not test them against the Barrier Rules first.
 
-### rules/reloading.md#47
+### rules/reloading.md#48
 
 Guide: - A character below a crossbow's **Strength Minimum** needs **one extra Ready
 
@@ -1198,7 +907,7 @@ Guide: - A character below a crossbow's **Strength Minimum** needs **one extra R
 
 Searched: `/crossbow[^\n]*(additional|extra) Ready|Strength Minimum[^\n]*Ready Weapon/` — no matches.
 
-### rules/reloading.md#70
+### rules/reloading.md#71
 
 Guide: Ammunition is Concealability 8 (assault-cannon rounds and taser darts 3), and
 
@@ -2018,17 +1727,17 @@ Guide: - On the Local Fines and Punishment Table, **(T) Class E Magic** covers
 Searched: `/Local Fines|restriction level|enforcement area/` — no matches.
 
 
-## Could not be verified (145)
+## Could not be verified (144)
 
-- **hiring/combat-mage.md#6** — Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart.
+- **hiring/combat-mage.md#6** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — the table sits on a grey shaded panel with no OCR text layer, so pdftotext finds nothing. Read from the rendered page image: the Security Duty row is 200¥/day, agreeing with this unit.
 - **hiring/combat-mage.md#7** — Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart.
 - **hiring/combat-mage.md#8** — Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart.
 - **hiring/combat-mage.md#14** — Astral damage appearing on the physical body and disruption forcing a Magic Loss check are on printed p.175, an image-only page (no text layer). Read via the SR-OCR dump: 'The physical body manifests any damage inflicted on the astral form' and 'A character who is disrupted in astral combat must immediately check for Magic Loss (p. 160)' — the guide agrees. The Magic Loss check for disruption is not implemented.
 - **hiring/combat-mage.md#15** — Legal background with no code counterpart. Checked against MitS printed p.11: Force 3+ magic is regulated in the UCAS and CAS, and a felony committed with magic is treated as premeditated; the guide agrees.
 - **hiring/combat-mage.md#38** — House-rule text (hazard pay percentages and worked-example arithmetic): the guide marks it as not from any SR3 book, so there is nothing in the PDFs to check it against. The arithmetic was checked and is consistent.
-- **hiring/decker.md#6** — Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart.
-- **hiring/decker.md#7** — Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart.
-- **hiring/decker.md#8** — Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart.
+- **hiring/decker.md#6** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Hacking row is 1,000¥ x Host's Security Value, agreeing with this unit.
+- **hiring/decker.md#7** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Datasteal row is 20% value of data, agreeing with this unit.
+- **hiring/decker.md#8** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Encryption/Decryption row is 200¥ per MP, agreeing with this unit.
 - **hiring/decker.md#12** — 'Decks are expensive (SR3 p.304)': the deck price table is on the cyberdeck pages; the row-by-row figures are in the next units.
 - **hiring/decker.md#14** — Stock cyberdeck prices (Allegiance Sigma 70,000¥, Sony CTY-360-D 125,000¥, Novatech Hyperdeck-6 250,000¥, Renraku Kraftwerk-8 600,000¥, Novatech Slimcase-10 1,500,000¥ — SR3 p.304). The deck table columns cannot be read row by row from the text layer; the shipped Orthodox cyberdeck pack was not compared to the guide's figures in this pass.
 - **hiring/decker.md#15** — Stock cyberdeck prices (Allegiance Sigma 70,000¥, Sony CTY-360-D 125,000¥, Novatech Hyperdeck-6 250,000¥, Renraku Kraftwerk-8 600,000¥, Novatech Slimcase-10 1,500,000¥ — SR3 p.304). The deck table columns cannot be read row by row from the text layer; the shipped Orthodox cyberdeck pack was not compared to the guide's figures in this pass.
@@ -2038,7 +1747,7 @@ Searched: `/Local Fines|restriction level|enforcement area/` — no matches.
 - **hiring/decker.md#35** — House-rule text (hazard pay percentages and worked-example arithmetic): the guide marks it as not from any SR3 book, so there is nothing in the PDFs to check it against. The arithmetic was checked and is consistent.
 - **hiring/decker.md#42** — House-rule text (hazard pay percentages and worked-example arithmetic): the guide marks it as not from any SR3 book, so there is nothing in the PDFs to check it against. The arithmetic was checked and is consistent.
 - **hiring/face.md#3** — Composite errata callout. Commanding Voice (SOTA64 p.64-65) and Kinesics (p.66) exist and 'Authoritative Voice' is absent from the core text; a Rating 4 fake ID costs 16,000¥ and Rating 6 costs 30,000¥ by the Creating a Credstick Table (p.239, agrees); Corporate Download is not in the library. Fake IDs are not modelled in the system.
-- **hiring/face.md#6** — Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart.
+- **hiring/face.md#6** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Investigation row is 200¥/day, agreeing with this unit.
 - **hiring/face.md#7** — Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart.
 - **hiring/face.md#16** — Tailored pheromones (M&M printed p.71) — bioware entry; a reference item with no mechanical hook beyond its listed Bio Index and cost.
 - **hiring/face.md#32** — House-rule text (hazard pay percentages and worked-example arithmetic): the guide marks it as not from any SR3 book, so there is nothing in the PDFs to check it against. The arithmetic was checked and is consistent.
@@ -2049,18 +1758,18 @@ Searched: `/Local Fines|restriction level|enforcement area/` — no matches.
 - **hiring/index.md#10** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
 - **hiring/index.md#11** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
 - **hiring/index.md#13** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
-- **hiring/index.md#14** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
+- **hiring/index.md#14** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Bodyguard/Security Duty row is 200¥/day, agreeing with this unit.
 - **hiring/index.md#15** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
-- **hiring/index.md#16** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
-- **hiring/index.md#17** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
+- **hiring/index.md#16** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Courier Run row is 1,000¥, agreeing with this unit.
+- **hiring/index.md#17** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Datasteal row is 20% value of data, agreeing with this unit.
 - **hiring/index.md#18** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
 - **hiring/index.md#19** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
 - **hiring/index.md#20** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
-- **hiring/index.md#21** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
+- **hiring/index.md#21** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Encryption/Decryption row is 200¥ per MP, agreeing with this unit.
 - **hiring/index.md#22** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
-- **hiring/index.md#23** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
-- **hiring/index.md#24** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
-- **hiring/index.md#25** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
+- **hiring/index.md#23** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Hacking row is 1,000¥ x Host's Security Value, agreeing with this unit.
+- **hiring/index.md#24** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Investigation row is 200¥/day, agreeing with this unit.
+- **hiring/index.md#25** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Smuggling Run row is 5,000¥, agreeing with this unit.
 - **hiring/index.md#26** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
 - **hiring/index.md#27** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
 - **hiring/index.md#28** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
@@ -2096,7 +1805,7 @@ Searched: `/Local Fines|restriction level|enforcement area/` — no matches.
 - **hiring/infiltrator.md#29** — House-rule text (hazard pay percentages and worked-example arithmetic): the guide marks it as not from any SR3 book, so there is nothing in the PDFs to check it against. The arithmetic was checked and is consistent.
 - **hiring/infiltrator.md#36** — House-rule text (hazard pay percentages and worked-example arithmetic): the guide marks it as not from any SR3 book, so there is nothing in the PDFs to check it against. The arithmetic was checked and is consistent.
 - **hiring/physical-adept.md#3** — Composite errata callout. Improved Reflexes (levels 1-3) not combining with technological or magical boosts (SR3 p.169) is implemented (SR3EActor.reflexBonus); initiative passes dropping 10 a pass (p.104) is implemented; Traceless Walk (MitS p.151), Melanin Control (SOTA64 p.67) and Wall Running (SOTA64 p.68) exist at the cited pages; 'Invisibility' and 'Silence' are spells, not adept powers, in the core rulebook. The Scenario C figure checks: 18,000 × 4 × 1.5 = 108,000.
-- **hiring/physical-adept.md#6** — Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart.
+- **hiring/physical-adept.md#6** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Bodyguard/Security Duty row is 200¥/day, agreeing with this unit.
 - **hiring/physical-adept.md#7** — Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart.
 - **hiring/physical-adept.md#8** — Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart.
 - **hiring/physical-adept.md#14** — Astral Perception as an adept power (SR3 p.169): the power lets an adept perceive the astral, and the system has the astral-perception mode, but no mechanic hangs on the power item itself.
@@ -2109,12 +1818,12 @@ Searched: `/Local Fines|restriction level|enforcement area/` — no matches.
 - **hiring/rigger.md#6** — Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart.
 - **hiring/rigger.md#7** — Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart.
 - **hiring/rigger.md#38** — House-rule text (hazard pay percentages and worked-example arithmetic): the guide marks it as not from any SR3 book, so there is nothing in the PDFs to check it against. The arithmetic was checked and is consistent.
-- **hiring/shaman.md#6** — Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart.
-- **hiring/shaman.md#7** — Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart.
+- **hiring/shaman.md#6** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Investigation row is 200¥/day, agreeing with this unit.
+- **hiring/shaman.md#7** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Security Duty row is 200¥/day, agreeing with this unit.
 - **hiring/shaman.md#9** — Shamanic lodge materials cost (Rating × Rating) × 1,000¥ on the Magical Gear Table, MitS printed p.169 — I read the table in the text layer (Shamanic Lodge Materials: (Rating x Rating) x 1,000Y), but the page's footer number is not in the text so the ledger cannot record the printed page. Not modelled in the system.
 - **hiring/shaman.md#12** — Totem modifiers (printed pp.163-165): the rule that a totem gives bonus dice for some spells and spirits and penalties for others is in the text, and Bear favours health spells and forest spirits on p.160 ('a shamanist of Bear can only cast health spells and summon forest spirits') and on the Bear entry; the system holds the totem list only as descriptive text and applies no modifiers.
 - **hiring/shaman.md#36** — House-rule text (hazard pay percentages and worked-example arithmetic): the guide marks it as not from any SR3 book, so there is nothing in the PDFs to check it against. The arithmetic was checked and is consistent.
-- **hiring/street-samurai.md#6** — Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart.
+- **hiring/street-samurai.md#6** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Bodyguard/Security Duty row is 200¥/day, agreeing with this unit.
 - **hiring/street-samurai.md#7** — Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart.
 - **hiring/street-samurai.md#8** — Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart.
 - **hiring/street-samurai.md#9** — Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart.
@@ -2125,9 +1834,8 @@ Searched: `/Local Fines|restriction level|enforcement area/` — no matches.
 - **magic/awakened-primer.md#59** — The Astral Damage Codes Table is on printed p.175, an image-only page in the PDF (no text layer). Read through the SR-OCR text dump instead: Unarmed (Charisma)M, Armed (Charisma) + Weapon Focus damage, Spirit/Focus/Barrier (Force)M — the guide agrees, and the code deals unarmed `${cha}M` and armed `${cha + focus power}` (SR3EActor.js rollAstralCombat). Spirit/focus/barrier (Force)M damage was not traced in the code.
 - **magic/awakened-primer.md#61** — Printed p.175 (astral damage: attacker's choice of Stun or Physical; wounds appear on the physical body; if the astral form dies the body dies) is an image-only page in the PDF. Read via the SR-OCR dump: the guide agrees. The code applies astral damage through the normal condition-monitor buttons, choosing the track from the attack's stun flag; nothing links the astral form's death to the body.
 - **magic/awakened-primer.md#66** — World lore, no code counterpart. Checked against the book: the Ryumyo appeared near Mount Fuji on 24 December 2011 (printed p.25 and p.269); the guide agrees.
-- **magic/awakened-primer.md#67** — World lore / roleplaying text, no code counterpart. Totem modifiers giving bonus dice and penalties are on printed p.163 and agree; the mage description ('a discipline of formulae and elements') is the hermetic-tradition text on printed p.158, not p.163-165.
 - **magic/awakened-primer.md#69** — World lore / law, no code counterpart. Checked against MitS printed p.11: spells, spirits and foci of Force 3 or higher are legally regulated in the UCAS and CAS, with permits available. The 'killing with magic is treated as premeditated' clause was not searched for.
-- **magic/awakened-primer.md#71** — World lore, no code counterpart. Tir Tairngire's extent (most of former Oregon plus parts of Washington and California) is on printed p.321 and agrees; the 'Land of Promise in Sperethiel' gloss is not on that page (the book gives the translation on p.30; Sperethiel is named as a language elsewhere).
+- **magic/awakened-primer.md#71** — World lore (geography), no code counterpart. 'Meaning the Land of Promise ... Tir Tairngire takes up most of the former state of Oregon, along with portions of Washington and California' is on printed p.321 (pdf p.323); the name and founding in 2035 is on printed p.30 (pdf p.32).
 - **magic/awakened-primer.md#72** — World lore, no code counterpart. Council of Princes, High Prince Lugh Surehand and the dragon Lofwyr's seat agree with printed p.30 and p.321; the Council being 'all-elven at first' is on p.30.
 - **magic/awakened-primer.md#73** — An absence claim about the core rulebook: a search of the whole text layer finds no mention of immortal elves, so it agrees; nothing in code to check.
 - **magic/awakened-primer.md#75** — World lore, no code counterpart. Corporate extraterritoriality is on printed p.22 (the Shiawase Decision) and agrees.
@@ -2140,7 +1848,7 @@ Searched: `/Local Fines|restriction level|enforcement area/` — no matches.
 - **sources.md#19** — Statements about the library used for checking (Corporate Download is not in it; some gear in the original gists is in no book) — no game rule; not checkable against the PDFs.
 - **sources.md#20** — Statements about the library used for checking (Corporate Download is not in it; some gear in the original gists is in no book) — no game rule; not checkable against the PDFs.
 - **sources.md#24** — Terminology-replacement table. Read against the books: SR3 has the Spell Pool (p.44) not a Magic Pool; ritual sorcery uses a material link (MitS printed p.37, not pp.34-36 — the 'Material Link' passage is on p.37); Legality Codes like 6P-E (p.273); security codes Blue/Green/Orange/Red with 'UV' slang (p.205); Drain written +1(M) (p.162); Improved Reflexes is an adept power (p.169) and Increase Reflexes a spell (p.194). All agree except the material-link page range.
-- **sources.md#25** — Terminology-replacement table. Read against the books: SR3 has the Spell Pool (p.44) not a Magic Pool; ritual sorcery uses a material link (MitS printed p.37, not pp.34-36 — the 'Material Link' passage is on p.37); Legality Codes like 6P-E (p.273); security codes Blue/Green/Orange/Red with 'UV' slang (p.205); Drain written +1(M) (p.162); Improved Reflexes is an adept power (p.169) and Increase Reflexes a spell (p.194). All agree except the material-link page range.
+- **sources.md#25** — Terminology-replacement table row (meta-documentation of the guide's own corrections, not a claim about the system's code). Checked against the book: MitS's ritual sorcery section names 'Material Link' as the term, printed p.37 (pdf p.38), agreeing with the guide's citation. No code implements ritual sorcery's targeting link, so there is nothing to compare it against.
 - **sources.md#26** — Terminology-replacement table. Read against the books: SR3 has the Spell Pool (p.44) not a Magic Pool; ritual sorcery uses a material link (MitS printed p.37, not pp.34-36 — the 'Material Link' passage is on p.37); Legality Codes like 6P-E (p.273); security codes Blue/Green/Orange/Red with 'UV' slang (p.205); Drain written +1(M) (p.162); Improved Reflexes is an adept power (p.169) and Increase Reflexes a spell (p.194). All agree except the material-link page range.
 - **sources.md#27** — Terminology-replacement table. Read against the books: SR3 has the Spell Pool (p.44) not a Magic Pool; ritual sorcery uses a material link (MitS printed p.37, not pp.34-36 — the 'Material Link' passage is on p.37); Legality Codes like 6P-E (p.273); security codes Blue/Green/Orange/Red with 'UV' slang (p.205); Drain written +1(M) (p.162); Improved Reflexes is an adept power (p.169) and Increase Reflexes a spell (p.194). All agree except the material-link page range.
 - **sources.md#28** — Terminology-replacement table. Read against the books: SR3 has the Spell Pool (p.44) not a Magic Pool; ritual sorcery uses a material link (MitS printed p.37, not pp.34-36 — the 'Material Link' passage is on p.37); Legality Codes like 6P-E (p.273); security codes Blue/Green/Orange/Red with 'UV' slang (p.205); Drain written +1(M) (p.162); Improved Reflexes is an adept power (p.169) and Increase Reflexes a spell (p.194). All agree except the material-link page range.
@@ -2166,7 +1874,7 @@ Searched: `/Local Fines|restriction level|enforcement area/` — no matches.
 - **street/sins.md#46** — Legal background with no code counterpart. Checked against MitS printed p.11: Force 3 or higher magic is regulated in the UCAS and CAS with permits available, and a felony committed with magic is always premeditated. The guide agrees.
 - **street/sins.md#48** — Legal background with no code counterpart. Checked against MitS printed p.11: reading astral signatures has the same status as fingerprinting or DNA testing in forensic science. The guide agrees.
 
-## Matches (478)
+## Matches (508)
 
 Each carries its quote and code location in the ledger; not repeated here.
 
