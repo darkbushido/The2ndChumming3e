@@ -6512,6 +6512,14 @@ cyberware that is still installed.
 
 **Done 2026-09-26 (`f48e4eba`).** ⏏ Unload on a loaded firearm's row (ammo tracking on): the unfired rounds go back to loose stock of their type (`SR3EItem.unload` → `_returnRounds`), nothing is lost, and a clip or drum charges Remove Clip, one Simple Action (SR3 p.107). The book gives no action for emptying anything else by hand, so nothing is charged and the notice says so.
 
+## 139. ✅ A medkit can be restocked in combat — restocking should happen when shopping — `81013d4`
+
+**Fixed.** The healing card's 🧰 Restock button charged 50¥ and refilled the kit with one click, mid-fight. It is gone; the
+card now says to buy *Medkit Supplies* (50¥, Availability 2/24hrs, Street Index 1.5, SR3 p.304). 🛒 Buy gear lists the
+empty kits and fills the form with the supplies; 💴 Pay refills the first empty kit instead of adding an item.
+- 🧪 Live: fail a medkit supplies check (1 on 1D6) → no restock button; 🛒 Buy gear → "Buy Medkit Supplies" fills the form →
+  source, pay → the kit counts again in the healing flow.
+
 ## 142. ✅ Loading a clip-fed gun treats the clips as individual rounds — `d86e53f3`
 
 **Done 2026-09-26 (`f48e4eba`, `d86e53f3`).** The clips were the unconverted ones of #143: counted in rounds, so the reload dialog topped the gun up round by round. The 0.6.2 migration converts them; the sheet no longer labels loose rounds as clips.
