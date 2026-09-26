@@ -2527,3 +2527,19 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
   - [x] Full restart first — the data model changed.
 
 **Ran 2026-09-20 by the agent in the Browser pane** (mcp-api, sole user, fresh load, system 0.5.2 after merging `feature/0-6-rules` + `feature/release-pipeline`): every box above verified by driving `game.sr3e.*` directly. The *player sees it greyed out* half is covered by `tests/e2e/player-sheet.spec.mjs`, which has the seats the Browser pane does not: the GM opens a 1.5 hole, Player2's sheet shows all three Essence boxes unnamed and disabled, and the same block is read back from the GM's seat named and editable — so a sheet that locked everyone out would fail too.
+
+## 41. Elemental spells — cover and visibility (TODO 131, SR3 p.182-183)
+
+**Prerequisites:** F5 after merging. `gmApprovesTN` on `player` (default). A mage PC with Flamethrower
+(LOS) and Fireball (LOS(A)), an NPC target on the scene.
+
+- [ ] Player casts Flamethrower at the NPC → after the target, **before** the Spell Pool prompt, the GM
+      gets the window titled with the spell. Groups: Target, Attacker, Conditions — **no Gear**. Base TN 4,
+      and the note says "regardless of range".
+- [ ] GM ticks Partial cover and picks Thermal Smoke → the TN follows; ✓ → the cast card rolls at that TN
+      and its TN source reads "GM +N cover/visibility".
+- [ ] GM presses **Cancel attack** → nothing is cast, no Spell Pool spent.
+- [ ] Fireball → the window shows Attacker and Conditions only (no Target); on Cancel the purple area
+      marker is removed.
+- [ ] A touch-range elemental spell and a Manabolt → no window.
+- [ ] GM casts at an NPC with `gmApprovesTN` on `player` → no window (NPC vs NPC); set `always` → it opens.
