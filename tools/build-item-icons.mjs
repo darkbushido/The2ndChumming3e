@@ -27,22 +27,25 @@ export const OUT = join(ROOT, 'styles', 'icons');
 
 /* ── The style ─────────────────────────────────────────────────────────────────────────────── */
 
-const NEON = { ammo: '#ff962d', money: '#ff962d', tech: '#78f0ff', magic: '#c38bff', medical: '#5dffa0', boom: '#ff962d' };
-const BODY = '#35363b', RIM = '#64656a', HOLE = '#131416';
-const GRID = Array.from({ length: 7 }, (_, i) => 16 * (i + 1)).map(p => `M${p} 0V128M0 ${p}H128`).join('');
+export const NEON = { ammo: '#ff962d', money: '#ff962d', tech: '#78f0ff', magic: '#c38bff', medical: '#5dffa0', boom: '#ff962d' };
+export const BODY = '#35363b', RIM = '#64656a', HOLE = '#131416';
+export const GRID = Array.from({ length: 7 }, (_, i) => 16 * (i + 1)).map(p => `M${p} 0V128M0 ${p}H128`).join('');
+
+/** The two filters every icon uses: the `neon` glow and the drop `shadow` shapes cast. */
+export const FILTERS = `<filter id="neon" filterUnits="userSpaceOnUse" x="-16" y="-16" width="160" height="160"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000" flood-opacity="0.8"/></filter>`;
 
 /** Glowing parts: `n` is the group's neon colour. */
-const lit  = n => `fill="${n}" stroke="none" filter="url(#neon)"`;
-const line = (n, w = 4) => `fill="none" stroke="${n}" stroke-width="${w}" stroke-linecap="round" filter="url(#neon)"`;
-const hole = `fill="${HOLE}" stroke="none"`;
+export const lit  = n => `fill="${n}" stroke="none" filter="url(#neon)"`;
+export const line = (n, w = 4) => `fill="none" stroke="${n}" stroke-width="${w}" stroke-linecap="round" filter="url(#neon)"`;
+export const hole = `fill="${HOLE}" stroke="none"`;
 /** A small lowercase caption, as the battlemaps label rooms. */
 const caption = text => `<text x="64" y="118" text-anchor="middle" font-family="Bahnschrift, 'Segoe UI', Arial, sans-serif" font-size="12" fill="#9a9ba0" stroke="none" letter-spacing="0.5">${text}</text>`;
 
 function svg(neon, body) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
 <defs>
-<filter id="neon" filterUnits="userSpaceOnUse" x="-16" y="-16" width="160" height="160"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-<filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000" flood-opacity="0.8"/></filter>
+${FILTERS}
 </defs>
 <rect width="128" height="128" rx="6" fill="#1b1c1f"/>
 <path d="${GRID}" stroke="#fff" stroke-opacity="0.045" stroke-width="1"/>

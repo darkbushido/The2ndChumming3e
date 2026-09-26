@@ -4,7 +4,7 @@
     "_id": "e7d9facc28c20472",
     "name": "Scanner",
     "type": "program",
-    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/program-analyze.svg",
     "system": {
       "name": "Scanner",
       "category": "utility",

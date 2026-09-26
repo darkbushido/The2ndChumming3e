@@ -1,7 +1,7 @@
 {
   "_key": "!actors!sr3e-ic-0010",
   "doc": {
-    "img": "systems/The2ndChumming3e/styles/textures/agent-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/hostile/ic-sparky.svg",
     "_id": "sr3e-ic-0010",
     "name": "Sparky",
     "type": "ic",

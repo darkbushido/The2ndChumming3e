@@ -37,6 +37,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ClassicLevel } from 'classic-level';
 import { extractPack } from './lib/pack-source.mjs';
+import { itemIcon } from '../scripts/data/item-icons.mjs';
 
 const ROOT    = join(dirname(fileURLToPath(import.meta.url)), '..');
 const INSTALL = process.env.SR3E_INSTALL
@@ -44,8 +45,7 @@ const INSTALL = process.env.SR3E_INSTALL
 
 export const DECK_PACK    = 'sr3e-sr3-odm-cyberdecks';
 export const PROGRAM_PACK = 'sr3e-sr3-odm-programs';
-const DECK_IMG    = 'systems/The2ndChumming3e/styles/textures/cyberdeck-default.webp';
-const PROGRAM_IMG = 'systems/The2ndChumming3e/styles/textures/programs-default.webp';
+const DECK_IMG    = itemIcon({ type: 'cyberdeck' });   // the friendly Matrix icons (scripts/data/item-icons.mjs)
 
 /** Stock Cyberdeck Types — SR3 p.207 (stats) and p.304 (availability, cost). */
 export const CORE_DECKS = {
@@ -142,7 +142,7 @@ export function programDocs(raw) {
     if (int(r.Multiplyer) !== b.mult) throw new Error(`${name}: rawdata multiplier ${r.Multiplyer} ≠ the book's ${b.mult}`);
     const label = b.label ?? name;
     return {
-      _id: idFor(`odm-program:${name}`), name: label, type: 'program', img: PROGRAM_IMG,
+      _id: idFor(`odm-program:${name}`), name: label, type: 'program', img: itemIcon({ type: 'program', name: label }),
       system: {
         name: label, category: b.cat, multiplier: b.mult, rating: 0, bookPage: `sr3.${b.page}`,
         description: `<p><strong>${CAT_LABEL[b.cat]}</strong> · Multiplier ${b.mult} — size in Mp = Rating² × ${b.mult} `

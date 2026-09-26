@@ -4,7 +4,7 @@
     "_id": "sr3e-prog-0006",
     "name": "Biofeedback Filtering",
     "type": "program",
-    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/program-biofeedback-filtering.svg",
     "system": {
       "name": "Biofeedback Filtering",
       "type": "Program",

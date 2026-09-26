@@ -4,7 +4,7 @@
     "_id": "sr3e-host-0005",
     "name": "Fuchi Industrial — Seaport Logistics Server",
     "type": "host",
-    "img": "systems/The2ndChumming3e/styles/textures/data-host-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/hostile/host.svg",
     "system": {
       "systemRating": 7,
       "securityTierName": "Orange",

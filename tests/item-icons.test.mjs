@@ -6,8 +6,12 @@
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { itemIcon, defaultImage, isStockImage, restockImage, allIconNames, TYPE_ART, ICON_DIR } from '../scripts/data/item-icons.mjs';
+import {
+  itemIcon, defaultImage, isStockImage, restockImage, allIconNames, TYPE_ART, ICON_DIR,
+  actorIcon, restockActorImage, MATRIX_ICONS, MATRIX_SCHEMES, matrixIcon,
+} from '../scripts/data/item-icons.mjs';
 import { render, OUT } from '../tools/build-item-icons.mjs';
+import * as Matrix from '../tools/build-matrix-icons.mjs';
 
 export const name = 'item-icons';
 
@@ -69,6 +73,29 @@ export async function run(t) {
   t.ok('icons reference nothing outside themselves (an <img> cannot load it)',
     render().every(({ text }) => !/(href|url\()\s*=?\s*["']?(?!#)(https?:|\/|\.)/.test(text.replace(/xmlns="[^"]+"/, ''))));
 
+  /* ── Matrix: drawn twice, hostile and friendly (asked for 2026-09-26) ──────────── */
+  const M = (n, s) => matrixIcon(n, s);
+  t.eq('the builder draws exactly the Matrix icons the mapping knows', Object.keys(Matrix.ICONS).sort(), [...MATRIX_ICONS].sort());
+  t.eq('…in both schemes', Object.keys(Matrix.SCHEMES), MATRIX_SCHEMES);
+  const mStale = Matrix.render().filter(({ file, text }) => !existsSync(join(Matrix.OUT, file)) || readFileSync(join(Matrix.OUT, file), 'utf8') !== text).map(i => i.file);
+  t.eq('styles/icons/matrix matches the builder (run: node tools/build-matrix-icons.mjs)', mStale, []);
+  const mExtra = MATRIX_SCHEMES.flatMap(s => readdirSync(join(Matrix.OUT, s)).filter(f => !Matrix.render().some(i => i.file === `${s}/${f}`)));
+  t.eq('no Matrix icon on disk that the builder does not draw', mExtra, []);
+  t.is('a program by name, friendly', itemIcon({ type: 'program', name: 'Read/Write' }), M('program-read-write', 'friendly'));
+  t.is('an Orthodox rating in brackets is dropped', itemIcon({ type: 'program', name: 'Attack (Deadly)' }), M('program-attack', 'friendly'));
+  t.is('an Orthodox utility with no icon uses its MDF twin', itemIcon({ type: 'program', name: 'Spoof' }), M('program-sleaze', 'friendly'));
+  t.is('an unknown program is the generic one', itemIcon({ type: 'program', name: 'Homebrew' }), M('program', 'friendly'));
+  t.is('a cyberdeck', itemIcon({ type: 'cyberdeck', name: 'Fuchi Cyber-7' }), M('cyberdeck', 'friendly'));
+  t.is('IC by its type, hostile', actorIcon({ type: 'ic', name: 'Killer IC', system: { icType: 'Killer' } }), M('ic-killer', 'hostile'));
+  t.is('a passive IC by its name, not its type', actorIcon({ type: 'ic', name: 'Alert (Passive)', system: { icType: 'Scrambler' } }), M('ic-alert', 'hostile'));
+  t.is('a host, hostile', actorIcon({ type: 'host', name: 'Downtown Public MetroGrid' }), M('host', 'hostile'));
+  t.is('an agent, friendly', actorIcon({ type: 'agent', name: 'Bloodhound' }), M('persona-agent', 'friendly'));
+  t.is('a character has no Matrix icon', actorIcon({ type: 'character' }), null);
+  t.ok('a Matrix icon is never stock — the scheme is the GM\'s mark', !isStockImage(M('ic-killer', 'friendly')));
+  t.is('an IC the GM marked friendly stays friendly', restockActorImage({ type: 'ic', name: 'Killer', system: { icType: 'Killer' }, img: M('ic-killer', 'friendly') }), null);
+  t.is('an IC on the old texture gets its icon', restockActorImage({ type: 'ic', name: 'Killer', system: { icType: 'Killer' },
+    img: 'systems/The2ndChumming3e/styles/textures/agent-default.webp' }), M('ic-killer', 'hostile'));
+
   /* ── The packs ────────────────────────────────────────────────────────────────── */
   const behind = [];
   const src = join(ROOT, 'packs-src');
@@ -77,6 +104,7 @@ export async function run(t) {
       const g = JSON.parse(readFileSync(join(src, pack, f), 'utf8'));
       const items = [[g._key, g.doc], ...Object.entries(g.embedded ?? {})].filter(([k]) => /^!(items|[a-z]+\.items)!/.test(k));
       for (const [, doc] of items) if (restockImage(doc)) behind.push(`${pack}: ${doc.name}`);
+      if (g._key.startsWith('!actors!') && restockActorImage(g.doc)) behind.push(`${pack}: ${g.doc.name}`);
     }
   }
   t.eq('every shipped item carries its picture (run: node tools/apply-item-icons.mjs)', behind.slice(0, 5), []);
@@ -84,5 +112,6 @@ export async function run(t) {
   /* ── The Foundry side (source-level: sr3e.js cannot be imported without Foundry) ── */
   const main = readFileSync(join(ROOT, 'scripts', 'sr3e.js'), 'utf8');
   t.ok('a new item gets its picture on create', /Hooks\.on\('preCreateItem'[\s\S]{0,120}restockImage\(document\)/.test(main));
+  t.ok('an IC, host or agent gets its Matrix icon on create', /Hooks\.on\('preCreateActor'[\s\S]{0,120}restockActorImage\(document\)/.test(main));
   t.ok('ammunition\'s picture follows an update to its class', /Hooks\.on\('preUpdateItem'[\s\S]{0,300}restockImage\(/.test(main));
 }

@@ -4,7 +4,7 @@
     "_id": "sr3e-prog-0027",
     "name": "Suppression",
     "type": "program",
-    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/program-suppression.svg",
     "system": {
       "name": "Suppression",
       "type": "Program",

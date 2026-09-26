@@ -4,7 +4,7 @@
     "_id": "sr3e-prog-0021",
     "name": "Shield",
     "type": "program",
-    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/program-shield.svg",
     "system": {
       "name": "Shield",
       "type": "Program",

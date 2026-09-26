@@ -4,7 +4,7 @@
     "_id": "sr3e-prog-0029",
     "name": "Nexus",
     "type": "program",
-    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/program-nexus.svg",
     "system": {
       "name": "Nexus",
       "type": "Protocol",

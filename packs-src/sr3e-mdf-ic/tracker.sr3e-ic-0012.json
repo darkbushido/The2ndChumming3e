@@ -1,7 +1,7 @@
 {
   "_key": "!actors!sr3e-ic-0012",
   "doc": {
-    "img": "systems/The2ndChumming3e/styles/textures/agent-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/hostile/ic-tracker.svg",
     "_id": "sr3e-ic-0012",
     "name": "Tracker",
     "type": "ic",

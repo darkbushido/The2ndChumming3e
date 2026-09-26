@@ -4,7 +4,7 @@
     "_id": "f6b9d3f6a4a0afd4",
     "name": "Analyze",
     "type": "program",
-    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/program-analyze.svg",
     "system": {
       "name": "Analyze",
       "category": "utility",

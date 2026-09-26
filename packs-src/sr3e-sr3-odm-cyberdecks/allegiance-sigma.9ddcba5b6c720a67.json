@@ -4,7 +4,7 @@
     "_id": "9ddcba5b6c720a67",
     "name": "Allegiance Sigma",
     "type": "cyberdeck",
-    "img": "systems/The2ndChumming3e/styles/textures/cyberdeck-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/cyberdeck.svg",
     "system": {
       "cost": 14000,
       "availability": "4/7days",

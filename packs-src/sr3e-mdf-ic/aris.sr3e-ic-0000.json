@@ -1,7 +1,7 @@
 {
   "_key": "!actors!sr3e-ic-0000",
   "doc": {
-    "img": "systems/The2ndChumming3e/styles/textures/agent-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/hostile/ic-aris.svg",
     "_id": "sr3e-ic-0000",
     "name": "ARis",
     "type": "ic",

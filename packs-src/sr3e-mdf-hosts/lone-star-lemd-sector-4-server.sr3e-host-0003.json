@@ -4,7 +4,7 @@
     "_id": "sr3e-host-0003",
     "name": "Lone Star — LEMD Sector 4 Server",
     "type": "host",
-    "img": "systems/The2ndChumming3e/styles/textures/data-host-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/hostile/host.svg",
     "system": {
       "systemRating": 6,
       "securityTierName": "Orange",

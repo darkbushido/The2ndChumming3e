@@ -4,7 +4,7 @@
     "_id": "bb1a8d6665ae6734",
     "name": "Fairlight Excalibur",
     "type": "cyberdeck",
-    "img": "systems/The2ndChumming3e/styles/textures/cyberdeck-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/cyberdeck.svg",
     "system": {
       "cost": 1500000,
       "availability": "22/7days",

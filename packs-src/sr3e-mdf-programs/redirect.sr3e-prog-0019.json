@@ -4,7 +4,7 @@
     "_id": "sr3e-prog-0019",
     "name": "Redirect",
     "type": "program",
-    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/program-redirect.svg",
     "system": {
       "name": "Redirect",
       "type": "Program",

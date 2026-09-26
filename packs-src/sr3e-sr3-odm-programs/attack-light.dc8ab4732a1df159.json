@@ -4,7 +4,7 @@
     "_id": "dc8ab4732a1df159",
     "name": "Attack (Light)",
     "type": "program",
-    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/program-attack.svg",
     "system": {
       "name": "Attack (Light)",
       "category": "attack",

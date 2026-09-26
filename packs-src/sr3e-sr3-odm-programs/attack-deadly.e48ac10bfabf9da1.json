@@ -4,7 +4,7 @@
     "_id": "e48ac10bfabf9da1",
     "name": "Attack (Deadly)",
     "type": "program",
-    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/program-attack.svg",
     "system": {
       "name": "Attack (Deadly)",
       "category": "attack",

@@ -1,7 +1,7 @@
 {
   "_key": "!items!sr3e-deck-0001",
   "doc": {
-    "img": "systems/The2ndChumming3e/styles/textures/cyberdeck-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/cyberdeck.svg",
     "_id": "sr3e-deck-0001",
     "name": "Radio Shack PCD-100",
     "type": "cyberdeck",

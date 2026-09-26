@@ -1,7 +1,7 @@
 {
   "_key": "!actors!sr3e-ic-0017",
   "doc": {
-    "img": "systems/The2ndChumming3e/styles/textures/agent-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/hostile/ic-encryption.svg",
     "_id": "sr3e-ic-0017",
     "name": "Encryption (Passive)",
     "type": "ic",

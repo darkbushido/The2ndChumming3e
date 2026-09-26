@@ -9,7 +9,7 @@ import { SR3EActor } from './documents/SR3EActor.js';
 import { SR3EMigrations } from './SR3EMigrations.js';
 import { SR3EPackRepair } from './SR3EPackRepair.js';
 import { AmmoStock } from './data/ammo-stock.mjs';
-import { restockImage } from './data/item-icons.mjs';
+import { restockImage, restockActorImage } from './data/item-icons.mjs';
 import { EssenceHoles } from './data/essence-holes.mjs';
 import { SR3EStress } from './SR3EStress.js';
 import { Stress } from './data/stress.mjs';
@@ -463,6 +463,12 @@ Hooks.on('preCreateItem', (document) => {
  * ⚠ A picture someone chose is never touched (`isStockImage`). */
 Hooks.on('preCreateItem', (document) => {
   const img = restockImage(document);
+  if (img) document.updateSource({ img });
+});
+// …and an IC, host or agent created with a stock picture gets its Matrix icon (hostile IC and hosts,
+// friendly agents); the GM marks a system the other way by picking the other scheme's file.
+Hooks.on('preCreateActor', (document) => {
+  const img = restockActorImage(document);
   if (img) document.updateSource({ img });
 });
 Hooks.on('preUpdateItem', (document, changes) => {

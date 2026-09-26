@@ -4,7 +4,7 @@
     "_id": "a4bf4a4cb2ab3a06",
     "name": "Browse",
     "type": "program",
-    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/program-browse.svg",
     "system": {
       "name": "Browse",
       "category": "utility",

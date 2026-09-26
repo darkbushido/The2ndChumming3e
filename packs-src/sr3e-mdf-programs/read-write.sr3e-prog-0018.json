@@ -4,7 +4,7 @@
     "_id": "sr3e-prog-0018",
     "name": "Read/Write",
     "type": "program",
-    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/program-read-write.svg",
     "system": {
       "name": "Read/Write",
       "type": "Program",

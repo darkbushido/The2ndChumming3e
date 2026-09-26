@@ -4,7 +4,7 @@
     "_id": "sr3e-prog-0007",
     "name": "Browse",
     "type": "program",
-    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/program-browse.svg",
     "system": {
       "name": "Browse",
       "type": "Program",

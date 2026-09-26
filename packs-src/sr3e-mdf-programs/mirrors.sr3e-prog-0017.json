@@ -4,7 +4,7 @@
     "_id": "sr3e-prog-0017",
     "name": "Mirrors",
     "type": "program",
-    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/program-mirrors.svg",
     "system": {
       "name": "Mirrors",
       "type": "Program",

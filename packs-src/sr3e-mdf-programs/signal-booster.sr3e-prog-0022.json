@@ -4,7 +4,7 @@
     "_id": "sr3e-prog-0022",
     "name": "Signal Booster",
     "type": "program",
-    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/program-signal-booster.svg",
     "system": {
       "name": "Signal Booster",
       "type": "Program",

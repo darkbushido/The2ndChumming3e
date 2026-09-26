@@ -4,7 +4,7 @@
     "_id": "38ab174338ec5ab3",
     "name": "Decrypt",
     "type": "program",
-    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/program-decrypt.svg",
     "system": {
       "name": "Decrypt",
       "category": "utility",

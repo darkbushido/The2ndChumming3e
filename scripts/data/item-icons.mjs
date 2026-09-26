@@ -5,6 +5,10 @@
  * - **Gear, ammunition and medical** get a drawn icon (`styles/icons/`, drawn by
  *   `tools/build-item-icons.mjs`) by category, and ammunition by what it is: loose rounds or a
  *   magazine, for the class of gun it is stated for (SR3 p.279).
+ * - **Matrix** programs and cyberdecks, and IC, host and agent actors, get a Matrix icon
+ *   (`styles/icons/matrix/<scheme>/`, `tools/build-matrix-icons.mjs`) by name or IC type. Each icon comes
+ *   in two schemes, **hostile** (red, octagonal) and **friendly** (cyan, rounded), so a GM marks a
+ *   system by picking the file. IC and hosts start hostile; programs, decks and agents friendly.
  * - **Every other type** gets its painted texture (`TYPE_ART`) instead of a Foundry core icon.
  *
  * Used by `tools/apply-item-icons.mjs` (the packs), the pack generators, and `sr3e.js` (the type
@@ -25,8 +29,65 @@ export const TYPE_ART = {
   thrown: tex('thrown-weapons-default'), armor: tex('armour-default'), drug: tex('drugs-default'),
   skill: tex('skills-default'), spell: tex('spells-default'), cyberware: tex('cyberware-default'),
   bioware: tex('bioware-default'), adeptpower: tex('adept-default'), vehiclemod: tex('vehicles-default'),
-  vehicleweapon: tex('vehicle-weapons-default'), program: tex('programs-default'), cyberdeck: tex('cyberdeck-default'),
+  vehicleweapon: tex('vehicle-weapons-default'),
 };
+/** Retired defaults: stock, so they may be replaced. */
+const OLD_ART = ['medical-default', 'programs-default', 'cyberdeck-default', 'agent-default', 'data-host-default'].map(tex);
+
+/* ── Matrix ─────────────────────────────────────────────────────────────────────────────────── */
+
+export const MATRIX_DIR = `${ICON_DIR}/matrix`;
+export const MATRIX_SCHEMES = ['hostile', 'friendly'];
+/** Every Matrix icon `tools/build-matrix-icons.mjs` draws (the test holds the two lists together). */
+export const MATRIX_ICONS = new Set([
+  'persona-decker', 'persona-security-decker', 'persona-agent', 'cyberdeck', 'paydata',
+  'host', 'grid', 'node-san', 'node-spu', 'node-datastore', 'node-slave', 'node-cpu', 'node-io',
+  'ic-aris', 'ic-authenticator', 'ic-looper', 'ic-mr-medkit', 'ic-scrambler', 'ic-blaster', 'ic-crippler',
+  'ic-dataworm', 'ic-gemini', 'ic-hydra', 'ic-sparky', 'ic-tar-baby', 'ic-tracker', 'ic-killer', 'ic-ripper',
+  'ic-alert', 'ic-barrier', 'ic-databomb', 'ic-encryption', 'ic-system-sweep',
+  'program', 'program-analyze', 'program-armor', 'program-attack', 'program-baby-monitor',
+  'program-biofeedback-filtering', 'program-browse', 'program-decrypt', 'program-encrypt', 'program-evasion',
+  'program-exploit', 'program-jackpot', 'program-jamboree', 'program-kill-switch', 'program-lock-on',
+  'program-medic', 'program-mirrors', 'program-read-write', 'program-redirect', 'program-saboteur',
+  'program-shield', 'program-signal-booster', 'program-sleaze', 'program-slow', 'program-smoke-screen',
+  'program-snoop', 'program-suppression', 'program-passcode', 'program-dewormer', 'program-nexus', 'program-shadownet',
+]);
+/** Orthodox SR3 utilities (pp.220-222) with no icon of their own → the MDF utility that does the same job. */
+const PROGRAM_ALIASES = {
+  'black-hammer': 'attack', killjoy: 'attack', cloak: 'sleaze', deception: 'sleaze', spoof: 'sleaze',
+  relocate: 'redirect', track: 'lock-on', scanner: 'analyze', commlink: 'signal-booster',
+};
+export const matrixIcon = (name, scheme) => `${MATRIX_DIR}/${scheme}/${name}.svg`;
+/** "Alert (Passive)", "Attack (Deadly)" → "alert", "attack". */
+const slug = s => String(s ?? '').replace(/\(.*?\)/g, '').toLowerCase().normalize('NFKD')
+  .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+function programIcon(name) {
+  const s = slug(name);
+  const key = `program-${PROGRAM_ALIASES[s] ?? s}`;
+  return MATRIX_ICONS.has(key) ? key : 'program';
+}
+
+/**
+ * The Matrix icon for an IC, host or agent ACTOR, else null. IC by its name first (the passive IC
+ * carry another type — "Alert (Passive)" is a Scrambler), then its `icType`.
+ * @param {{type: string, name?: string, system?: object}} actor
+ */
+export function actorIcon(actor) {
+  const { type, name = '', system: sys = {} } = actor ?? {};
+  if (type === 'host') return matrixIcon('host', 'hostile');
+  if (type === 'agent') return matrixIcon('persona-agent', 'friendly');
+  if (type !== 'ic') return null;
+  const key = [slug(name), slug(sys.icType)].map(s => `ic-${s}`).find(k => MATRIX_ICONS.has(k)) ?? 'ic-scrambler';
+  return matrixIcon(key, 'hostile');
+}
+
+/** The Matrix icon to switch this actor to, or null to leave it (the actor twin of `restockImage`). */
+export function restockActorImage(actor) {
+  if (!isStockImage(actor?.img)) return null;
+  const want = actorIcon(actor);
+  return want && want !== actor.img ? want : null;
+}
 
 /** The generator's gear categories (`tools/build-default-gear.mjs` CATEGORY_TYPE) → icon. */
 export const GEAR_ICONS = {
@@ -77,6 +138,8 @@ export function itemIcon(item) {
     if (/\b(hospital|clinic|docwagon)\b/i.test(name)) return icon('medical-clinic');
     return icon('medical-medkit');
   }
+  if (type === 'program') return matrixIcon(programIcon(name), 'friendly');
+  if (type === 'cyberdeck') return matrixIcon('cyberdeck', 'friendly');
   if (type === 'ammunition') {
     const gunClass = AmmoStock.gunClass(sys.gunClass);
     const special = specialAmmo(name, sys, gunClass);
@@ -93,14 +156,17 @@ export const defaultImage = item => itemIcon(item) ?? TYPE_ART[item?.type] ?? nu
 
 /**
  * Is this picture one the system put there — blank, a Foundry core icon, a type texture or one of
- * the drawn icons — and so free to replace? Anything else was chosen by someone.
+ * the drawn gear icons — and so free to replace? Anything else was chosen by someone.
  */
 export function isStockImage(img) {
   const s = String(img ?? '').trim();
   if (!s) return true;
   if (s.startsWith('icons/svg/')) return true;
+  // ⚠ A Matrix icon is never stock: which glyph and which scheme (hostile / friendly) is the GM's call,
+  // and a re-run of the pack tool must not flip a marked system back.
+  if (s.startsWith(`${MATRIX_DIR}/`)) return false;
   if (s.startsWith(`${ICON_DIR}/`)) return true;
-  return Object.values(TYPE_ART).includes(s) || s === tex('medical-default');
+  return Object.values(TYPE_ART).includes(s) || OLD_ART.includes(s);
 }
 
 /**

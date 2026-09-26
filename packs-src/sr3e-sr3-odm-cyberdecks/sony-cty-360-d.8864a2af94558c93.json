@@ -4,7 +4,7 @@
     "_id": "8864a2af94558c93",
     "name": "Sony CTY-360-D",
     "type": "cyberdeck",
-    "img": "systems/The2ndChumming3e/styles/textures/cyberdeck-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/cyberdeck.svg",
     "system": {
       "cost": 70000,
       "availability": "4/7days",

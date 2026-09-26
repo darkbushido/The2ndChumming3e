@@ -4,7 +4,7 @@
     "_id": "4b30ecbd08e61201",
     "name": "Transys Highlander",
     "type": "cyberdeck",
-    "img": "systems/The2ndChumming3e/styles/textures/cyberdeck-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/cyberdeck.svg",
     "system": {
       "cost": 600000,
       "availability": "14/7days",

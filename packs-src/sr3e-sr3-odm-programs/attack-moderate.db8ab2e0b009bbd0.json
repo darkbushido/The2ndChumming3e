@@ -4,7 +4,7 @@
     "_id": "db8ab2e0b009bbd0",
     "name": "Attack (Moderate)",
     "type": "program",
-    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/program-attack.svg",
     "system": {
       "name": "Attack (Moderate)",
       "category": "attack",

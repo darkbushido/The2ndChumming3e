@@ -4,7 +4,7 @@
     "_id": "sr3e-agent-0016",
     "name": "Mirage",
     "type": "agent",
-    "img": "systems/The2ndChumming3e/styles/textures/agent-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/persona-agent.svg",
     "system": {
       "rating": 4,
       "graded": true,

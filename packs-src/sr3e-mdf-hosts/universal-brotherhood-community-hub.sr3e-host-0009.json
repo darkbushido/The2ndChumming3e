@@ -4,7 +4,7 @@
     "_id": "sr3e-host-0009",
     "name": "Universal Brotherhood — Community Hub",
     "type": "host",
-    "img": "systems/The2ndChumming3e/styles/textures/data-host-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/hostile/host.svg",
     "system": {
       "systemRating": 8,
       "securityTierName": "Red",

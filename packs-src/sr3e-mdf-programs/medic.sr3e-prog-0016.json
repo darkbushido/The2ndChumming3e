@@ -4,7 +4,7 @@
     "_id": "sr3e-prog-0016",
     "name": "Medic",
     "type": "program",
-    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/program-medic.svg",
     "system": {
       "name": "Medic",
       "type": "Program",

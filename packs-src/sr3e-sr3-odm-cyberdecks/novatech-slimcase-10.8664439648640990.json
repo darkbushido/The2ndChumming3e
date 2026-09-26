@@ -4,7 +4,7 @@
     "_id": "8664439648640990",
     "name": "Novatech Slimcase-10",
     "type": "cyberdeck",
-    "img": "systems/The2ndChumming3e/styles/textures/cyberdeck-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/cyberdeck.svg",
     "system": {
       "cost": 960000,
       "availability": "18/7days",

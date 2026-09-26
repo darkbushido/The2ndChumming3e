@@ -1,7 +1,7 @@
 {
   "_key": "!actors!sr3e-ic-0019",
   "doc": {
-    "img": "systems/The2ndChumming3e/styles/textures/agent-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/hostile/ic-system-sweep.svg",
     "_id": "sr3e-ic-0019",
     "name": "System Sweep (Passive)",
     "type": "ic",

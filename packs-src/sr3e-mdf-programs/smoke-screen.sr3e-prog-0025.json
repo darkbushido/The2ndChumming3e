@@ -4,7 +4,7 @@
     "_id": "sr3e-prog-0025",
     "name": "Smoke Screen",
     "type": "program",
-    "img": "systems/The2ndChumming3e/styles/textures/programs-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/program-smoke-screen.svg",
     "system": {
       "name": "Smoke Screen",
       "type": "Program",
