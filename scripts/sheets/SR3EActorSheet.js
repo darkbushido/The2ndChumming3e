@@ -4,6 +4,7 @@ import { itemRating, vcrLevel, displayName } from '../data/item-rating.mjs';
 import { CarriedLoad } from '../data/carried-load.mjs';
 import { AmmoStock } from '../data/ammo-stock.mjs';
 import { BookPage } from '../data/book-page.mjs';
+import { CyberWeapons } from '../data/cyber-weapons.mjs';
 
 /**
  * SR3EActorSheet — V2 Application framework (Foundry v13+).
@@ -36,6 +37,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       rollWeapon:     SR3EActorSheet._onRollWeapon,
       rollMelee:      SR3EActorSheet._onRollMelee,
       rollUnarmed:    SR3EActorSheet._onRollUnarmed,
+      armImplant:     SR3EActorSheet._onArmImplant,
       attributeBoost: SR3EActorSheet._onAttributeBoost,
       toggleAugmentation: SR3EActorSheet._onToggleAugmentation,
       takeDrug:       SR3EActorSheet._onTakeDrug,
@@ -1350,6 +1352,17 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         : ''}
     </div>`;
 
+  // Implants that are weapons but have no weapon entry yet (TODO 151) — fitted before the fix, or with
+  // no GM online to make it. Offered, not made: the owner presses Add.
+  const unarmedImplants = CyberWeapons.missing([...actor.items]);
+  const implantOffer = unarmedImplants.length ? unarmedImplants.map(c => `
+    <div class="item-row" data-item-id="${c.id}" style="color:var(--sr-amber)">
+      <span class="item-name">⚠ ${c.name} <span style="font-size:10px">(implant — no weapon entry yet)</span></span>
+      <span class="item-cell col-xs">${CyberWeapons.damage(c.system.description) ?? '—'}</span>
+      <div class="item-controls"><button type="button" class="btn-add" data-action="armImplant" data-item-id="${c.id}"
+        title="Add this implant's weapon, so it can attack">+ Add weapon</button></div>
+    </div>`).join('') : '';
+
   // Built-in unarmed attack — always available, not a real item (uses STR / Unarmed Combat).
   const _unarmedStr = actor.system.attributes?.strength?.value ?? actor.system.attributes?.strength?.base ?? 1;
   const unarmedBuiltinRow = `
@@ -1485,6 +1498,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <div class="list-header"><span>Name</span><span class="col-xs" title="Damage">Dam.</span><span>Reach</span><span class="col-xs" title="Concealability">Con.</span><span class="col-xs" title="Weight (kg)">KG</span><span></span></div>
         ${unarmedBuiltinRow}
         ${unarmedRows}
+        ${implantOffer}
         <button type="button" class="btn-add" data-action="itemCreate" data-type="melee">+ Add Unarmed/Cyber</button>
       </div>`,
   };
@@ -3849,6 +3863,14 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   static async _onRollUnarmed(_ev, _target) {
     const SR3EItem = game.sr3e.SR3EItem;
     await SR3EItem.rollMeleeAttack(this.actor, SR3EItem._unarmedWeapon(this.actor));
+  }
+
+  /** Add an implant's weapon entry (TODO 151) — the same item the install hook makes. */
+  static async _onArmImplant(_ev, target) {
+    const implant = this.actor.items.get(target.dataset.itemId);
+    const data    = implant ? CyberWeapons.weaponData(implant) : null;
+    if (!data) return;
+    await this.actor.createEmbeddedDocuments('Item', [data]);
   }
 
   static async _onRollSpell(ev, target) {

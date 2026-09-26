@@ -25,10 +25,15 @@ export const ALWAYS_READY_CATEGORIES = ['UNA', 'CYB'];
 export const ReadyWeapon = {
   READY_TYPES,
 
+  /** Is this one of the body's own weapons (unarmed, cyber-melee) — never holstered, never equipped? */
+  isBodyWeapon(item) {
+    return ALWAYS_READY_CATEGORIES.includes(String(item?.system?.category ?? '').toUpperCase());
+  },
+
   /** Is this weapon in hand? Non-weapons, the body's own weapons and anything unset read as ready. */
   isReady(item) {
     if (!READY_TYPES.includes(item?.type)) return true;
-    if (ALWAYS_READY_CATEGORIES.includes(String(item?.system?.category ?? '').toUpperCase())) return true;
+    if (ReadyWeapon.isBodyWeapon(item)) return true;
     return item?.system?.ready !== false;
   },
 

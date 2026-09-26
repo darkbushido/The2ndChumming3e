@@ -137,6 +137,7 @@ export class SR3EOpenSteps {
         }
         return;
       }
+      if (OpenSteps.recordsItself(cls)) return;   // its handler records it with the action (TODO 137)
       btn.addEventListener('click', () => {
         if (btn.dataset.sr3eStepMarked) return;
         btn.dataset.sr3eStepMarked = '1';
