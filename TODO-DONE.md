@@ -6559,10 +6559,28 @@ resist (p.174 gives it the pool; whether it covers resistance is not stated), an
 
 **Done 2026-09-26 (`f48e4eba`).** ⏏ Unload on a loaded firearm's row (ammo tracking on): the unfired rounds go back to loose stock of their type (`SR3EItem.unload` → `_returnRounds`), nothing is lost, and a clip or drum charges Remove Clip, one Simple Action (SR3 p.107). The book gives no action for emptying anything else by hand, so nothing is charged and the notice says so.
 
+## 135. ✅ Characters should start with nothing equipped — `db49fa8`
+
+## 136. ✅ A character who started with grenades always seems to have one equipped — `db49fa8`
+
+**Fixed 2026-09-26 (`db49fa8`, `main`), with #135 — one cause.** `system.ready` starts true (so sheets from before
+Ready Weapon keep fighting), which made every NEW weapon read as drawn: a starting character held its whole kit and
+a grenade always showed ✋. A `preCreateItem` hook now puts any weapon created on a character or NPC away
+(`ReadyWeapon.putAwayOnCreate`; body weapons, `hands: 0` cyberguns and vehicle mounts excepted) and takes new
+armour off. Mutant `new-weapons-arrive-in-hand`; live check in TESTING.md §40.
+
 ## 138. ✅ The healing button moves when a character is unconscious or damaged — `6af59ead`
 
 The wound status text (TN/Init modifier, "unconscious", ☠ DEAD) sat before the 🩹 Healing button in the header's wrapping row, so the
 button shifted whenever the wounds changed. That text now comes last in the row; `tests/healing.test.mjs` pins the order.
+
+## 139. ✅ A medkit can be restocked in combat — restocking should happen when shopping — `81013d4`
+
+**Fixed.** The healing card's 🧰 Restock button charged 50¥ and refilled the kit with one click, mid-fight. It is gone; the
+card now says to buy *Medkit Supplies* (50¥, Availability 2/24hrs, Street Index 1.5, SR3 p.304). 🛒 Buy gear lists the
+empty kits and fills the form with the supplies; 💴 Pay refills the first empty kit instead of adding an item.
+- 🧪 Live: fail a medkit supplies check (1 on 1D6) → no restock button; 🛒 Buy gear → "Buy Medkit Supplies" fills the form →
+  source, pay → the kit counts again in the healing flow.
 
 ## 140. ✅ The resist card's soak-hits section looks clickable — it should be greyed out — `7ea7137a`
 
@@ -6658,7 +6676,7 @@ Tracking open steps needs a persisted record, such as a message flag.
 ## 148. ✅ Throwing a grenade asks for a firearm skill — `cd98d5c7`
 
 Throwing a grenade offers a firearm skill instead of a throwing skill. It may belong with
-[#146](#146) and [#136](TODO.md#136), which are also about grenades.
+[#146](#146) and [#136](#136), which are also about grenades.
 
 **Fixed 2026-09-23 (`cd98d5c7`, `main`).** `WEAPON_SKILL_MAP` had no entry for `GR` (or any thrown
 category), so `_getWeaponSkill` fell through to `'Firearms'`. SR3 p.86: *"Throwing Weapons governs the

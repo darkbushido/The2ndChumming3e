@@ -18,6 +18,16 @@ export async function run(t) {
     && RW.isReady({ type: 'melee', system: { ready: false, category: 'CYB' } }));
   t.ok('non-weapons are not gated', RW.isReady({ type: 'gear', system: { ready: false } }));
 
+  /* ── Nothing arrives in hand · TODO 135/136 ───────────────────────────────── */
+  const grenade = { type: 'thrown', system: { ready: true, category: 'Gren' } };
+  t.ok('a grenade created on a character starts put away', RW.putAwayOnCreate(grenade, 'character'));
+  t.ok('…so does a gun on an NPC, and a sword', RW.putAwayOnCreate(gun(true), 'npc')
+    && RW.putAwayOnCreate({ type: 'melee', system: { ready: true, category: 'EDG' } }, 'character'));
+  t.ok('fists and cyber-melee are never put away', !RW.putAwayOnCreate({ type: 'melee', system: { category: 'CYB' } }, 'character'));
+  t.ok('a cybergun (no hand) is never put away', !RW.putAwayOnCreate({ type: 'firearm', system: { category: 'HPist', hands: 0 } }, 'character'));
+  t.ok('a vehicle\'s mounted guns and a world item are left alone', !RW.putAwayOnCreate(gun(true), 'vehicle') && !RW.putAwayOnCreate(gun(true), null));
+  t.ok('non-weapons are left alone', !RW.putAwayOnCreate({ type: 'gear', system: {} }, 'character'));
+
   /* ── Quick Draw · p.107 ────────────────────────────────────────────────────── */
   t.ok('a pistol-sized firearm (Concealability 4+) can be quick-drawn', RW.canQuickDraw(gun(false, '5')) && RW.canQuickDraw(gun(false, '4')));
   t.ok('…Concealability 3 cannot', !RW.canQuickDraw(gun(false, '3')));
@@ -46,6 +56,8 @@ export async function run(t) {
   t.ok('Quick Draw rolls through rollThen, so its 💥 settle before the gun is drawn', /rollThen\(actor, pool, tn, \{[\s\S]{0,200}kind: 'quickDraw'/.test(item)
     && /quickDraw:\s+\['SR3EItem', '_quickDrawRolled'\]/.test(actor));
   t.ok('🎯 Fire is the one decider\'s, one-shot', /\.sr-quickdraw-fire-btn[\s\S]{0,200}_checkBtn[\s\S]{0,200}_isDeciderId\(pl\.actorId\)[\s\S]{0,300}_claimBtn[\s\S]{0,200}rollWeapon\(\{ quickDrawn: true \}\)/.test(main));
+  t.ok('a preCreateItem hook puts new weapons away and takes new armour off (TODO 135/136)',
+    /Hooks\.on\('preCreateItem', \(document\) => \{[\s\S]{0,200}ReadyWeapon\.putAwayOnCreate\(document, parentType\)\) document\.updateSource\(\{ 'system\.ready': false \}\)[\s\S]{0,250}'flags\.The2ndChumming3e\.worn': false/.test(main));
   t.ok('the sheet has the ✋ toggle on every weapon row, and readying charges a Simple Action',
     /toggleReady:\s+SR3EActorSheet\._onToggleReady/.test(sheet) && (sheet.match(/\$\{this\._readyIcon\(itemId\)\}/g) ?? []).length === 2
     && /_onToggleReady[\s\S]{0,400}if \(now\) game\.sr3e\.SR3EActionLedger\?\.charge\(this\.actor, 'readyWeapon'/.test(sheet));

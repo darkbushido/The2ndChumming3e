@@ -69,6 +69,9 @@ the GM via **`sr3e.action.charge`**.
   of `rollWeapon`/`rollMeleeAttack`: Ready / Quick Draw (Concealability 4+ firearms, Reaction (4) +2
   unholstered via `rollThen` → `_quickDrawRolled` → 🎯 Fire card → `rollWeapon({ quickDrawn: true })`,
   uncharged) / Attack anyway. ⚠ Warns, never refuses. Fists and cyber-melee are always ready.
+  ⚠ **New weapons arrive put away** (TODO 135/136): the field's initial stays true for old sheets, but a
+  `preCreateItem` hook sets `ready: false` on any weapon created on a character/NPC (`putAwayOnCreate`;
+  not body weapons, `hands: 0` cyberguns or vehicles) and takes new armour off (`worn: false`).
 - **Hands** (TODO 49, p.112): `system.hands` (0-2, blank = `Hands.defaultHands(type, category)`; packs
   store it via `tools/fill-weapon-hands.mjs`), `system.extraHands` on actors. In hand = ready.
   ⚠ **p.112 is a class whitelist** — only pistol/SMG classes dual-wield (`DUAL_WIELD_CATEGORIES`).

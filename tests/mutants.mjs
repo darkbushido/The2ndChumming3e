@@ -36,6 +36,7 @@ const SLOTS  = { module: '../scripts/data/cyber-slots.mjs',  klass: 'CyberSlots'
 const LEDGER = { module: '../scripts/data/ledger.mjs',       klass: 'Ledger' };
 const BUY    = { module: '../scripts/data/purchasing.mjs', klass: 'Purchasing' };
 const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
+const READY  = { module: '../scripts/data/ready-weapon.mjs', klass: 'ReadyWeapon' };
 
 export const MUTANTS = [
   {
@@ -499,6 +500,13 @@ export const MUTANTS = [
       }
       return null;
     },
+  },
+  {
+    id:     'medkit-supplies-refill-any-kit',
+    suite:  'healing',
+    ...HEAL, method: 'emptyMedkits',
+    was:    'TODO 139: restocking ignored whether the kit had run out, so a stocked kit could be "refilled"',
+    impl:   function (items) { return [...(items ?? [])].filter(i => this.EQUIPMENT.medkit.test(String(i.name ?? ''))); },
   },
   {
     id:     'heal-own-patients-only',
@@ -1850,5 +1858,13 @@ export const MUTANTS = [
           + 'soak card offered Willpower to everyone until 0.6.2 (TODO 132)',
     impl:   ({ attributes = {} } = {}) => ({ key: 'willpower', label: 'Willpower',
       value: Math.max(attributes?.willpower?.value ?? 0, attributes?.willpower?.base ?? 0, 1), combatPool: false }),
+  },
+  {
+    id:     'new-weapons-arrive-in-hand',
+    suite:  'ready-weapon',
+    ...READY, method: 'putAwayOnCreate',
+    was:    'every weapon created on a character read as ready (the field\'s initial true), so new characters '
+          + 'started with their whole kit, grenades included, in hand (TODO 135/136)',
+    impl:   () => false,
   },
 ];
