@@ -25,6 +25,7 @@ import { spawn } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { parseProgress, heartbeat } from './lib/progress.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
@@ -43,17 +44,19 @@ const record = (name, ok, detail = '', hint = '') => {
 };
 
 /* Progress — so a long gate is visibly working, not frozen. `begin` announces a gate and a
-   heartbeat re-prints the elapsed time every 10 s until `record` closes it. Progress goes to
-   stderr-free stdout lines only; the verdict block at the end is unchanged. */
-let gate = null, beat = null, gateNo = 0, latest = '';
+   heartbeat prints every 10 s until `record` closes it. When the gate's command prints "[n/N] …"
+   lines (the suites, the mutants, and Playwright through tests/e2e/progress-reporter.mjs), the
+   heartbeat also shows a bar, n/N, a rough time left, and the current item with how long it has
+   been running — the number that tells a slow test from a hung one. tools/lib/progress.mjs. */
+let gate = null, beat = null, gateNo = 0, item = null;
 function begin(label) {
   gate = { label, t: Date.now() };
-  latest = '';
+  item = null;
   gateNo++;
   console.log(`▶ [${gateNo}] ${label} …`);
   clearInterval(beat);
   beat = setInterval(() => {
-    console.log(`    … ${label} still running (${Math.round((Date.now() - gate.t) / 1000)}s)${latest ? '  ' + latest : ''}`);
+    console.log(heartbeat({ label, startedAt: gate.t, now: Date.now(), item }));
   }, 10_000);
   beat.unref();
 }
@@ -69,7 +72,7 @@ function end(ok) {
 function run(cmd, cmdArgs, opts = {}) {
   const { timeout = 15 * 60_000 } = opts;
   return new Promise(resolve => {
-    let out = '', timedOut = false;
+    let out = '', partial = '', timedOut = false;
     // ⚠ `shell` only for a real shell script (bundle). Node 24 on Windows refuses to spawn a
     // `.cmd` without it (EINVAL), and passing `shell: true` concatenates arguments unescaped
     // (DEP0190) — so everything else is invoked as node against a JS entry point instead, which
@@ -80,9 +83,14 @@ function run(cmd, cmdArgs, opts = {}) {
     const timer = setTimeout(() => { timedOut = true; child.kill(); }, timeout);
     child.stdout.on('data', d => {
       out += d;
-      // A "[n/N] …" line from the test runner or the mutation checker: keep the latest so the
-      // heartbeat says WHICH suite or mutant is running, not only that something is.
-      for (const line of String(d).split(/\r?\n/)) if (/^\s*\[\s*\d+\/\d+\]/.test(line)) latest = line.trim();
+      // A "[n/N] …" line: keep the latest so the heartbeat says WHICH suite, mutant or test is
+      // running and since when. A chunk can end mid-line, so the tail waits for the next one.
+      const lines = (partial + d).split(/\r?\n/);
+      partial = lines.pop();
+      for (const line of lines) {
+        const p = parseProgress(line);
+        if (p) item = { ...p, itemAt: Date.now() };
+      }
     });
     child.stderr.on('data', d => { out += d; });
     child.on('error', err => { clearTimeout(timer); resolve({ ok: false, out: out || String(err.message ?? err) }); });
@@ -190,8 +198,10 @@ if (WANT_E2E && !FAST) {
       + '⚠ Release the seats first: the suite joins as Player2, Player3 and mcp-api, so close '
       + 'any Browser-pane session holding one of them.');
   } else {
-    const r = await run('node', [path.join(ROOT, 'node_modules/@playwright/test/cli.js'), 'test'],
-      { timeout: 30 * 60_000 });
+    // progress-reporter prints "[n/N] <test>" as each test STARTS; `list` alone prints a test
+    // only once it has finished when its output is piped, as it is here.
+    const r = await run('node', [path.join(ROOT, 'node_modules/@playwright/test/cli.js'), 'test',
+      '--reporter=list,./tests/e2e/progress-reporter.mjs'], { timeout: 30 * 60_000 });
     const m = r.out.match(/(\d+) passed[^\n]*/);
     record('e2e (Playwright)', r.ok, m ? m[0] : tail(r.out, 14),
       'npx playwright test. A failure that dies in milliseconds usually means a client had not '
