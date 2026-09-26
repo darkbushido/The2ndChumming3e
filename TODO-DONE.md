@@ -6504,6 +6504,34 @@ automatic — the design ethos, and the book gives the GM the pick within a slot
 ⚠ **Not the Essence hole.** #53's hole records Essence spent on removed cyberware; these slots describe
 cyberware that is still installed.
 
+## 131. ✅ Cover and visibility on elemental spells — `629638e1`
+
+**The book, SR3 p.183:** *"Elemental spells are treated like normal ranged attacks … They have a base
+Target Number of 4, regardless of range, as long as the caster can see the target. Cover, visibility,
+injury and sustaining modifiers apply."*
+
+Finding 4's fix routed elemental spells through the ranged dodge and soak. Injury and sustaining
+modifiers reach the Sorcery Test already (`rollPool`), but **cover and visibility do not**: the cast
+never opens the GM's TN window (`SR3EItem._promptGMAttackWindow`), so a Flamethrower through Thermal
+Smoke is cast at a flat 4. Wanted: open that window for an elemental cast — its Target, Attacker and
+Conditions groups, not the Gear guesses (a smartlink does nothing for a spell) — on the same
+`gmApprovesTN` rule as ranged, and fold the result into the cast TN. ⚠ **Range stays out**:
+*"regardless of range"*. ⚠ An **area** elemental spell does not need line of sight to a target behind
+a wall (p.182: *"Targets hidden behind a wall … will still get cooked"*), so for area casts the
+visibility row applies to the caster's view of the centre, not to each target.
+
+Also noticed, not fixed: `SR3EActor._spellSoakButtonHtml` and the `dp.isSpellSoak` branch after a
+failed dodge are **dead** — nothing sets `isSpellSoak`. They are a leftover spell-dodge route that led
+back to a Willpower resist; remove them once #131 is done, so nobody revives them for elemental spells.
+
+> **Done 2026-09-26.** The cast opens the GM window through `sr3e.spell.negotiate` (same `gmApprovesTN`
+> rule) after the targets and before the Spell Pool; rows from `spellModifierGroups()` (no Gear; an area
+> cast drops Target, p.182). Touch-range spells never ask (p.182: *"not subject to cover or visibility
+> modifiers"*). The GM's difference moves the roll's TN and every target's. The dead spell-soak route is
+> removed. Tests: `tests/elemental-spells.test.mjs`, two mutants; live check TESTING.md §41.
+
+<a id="124"></a>
+
 ## 133. ✅ Unloading a gun returns the rounds to storage as full clips — `f48e4eba`
 
 **Done 2026-09-26 (`f48e4eba`, `d86e53f3`).** Two causes. The sheet printed every stock's `loadMechanism`, and loose rounds default to `c`, so rounds that came back out of a gun read "Removable Clip" — now `AmmoStock.loadLabel` shows them as `loose`. And an unconverted clip item (#143) still counted in rounds could take returned rounds, which then read as that many clips — `_returnRounds` now never picks an item whose name is a reload.
@@ -6526,6 +6554,14 @@ armour off. Mutant `new-weapons-arrive-in-hand`; live check in TESTING.md §40.
 
 The wound status text (TN/Init modifier, "unconscious", ☠ DEAD) sat before the 🩹 Healing button in the header's wrapping row, so the
 button shifted whenever the wounds changed. That text now comes last in the row; `tests/healing.test.mjs` pins the order.
+
+## 139. ✅ A medkit can be restocked in combat — restocking should happen when shopping — `81013d4`
+
+**Fixed.** The healing card's 🧰 Restock button charged 50¥ and refilled the kit with one click, mid-fight. It is gone; the
+card now says to buy *Medkit Supplies* (50¥, Availability 2/24hrs, Street Index 1.5, SR3 p.304). 🛒 Buy gear lists the
+empty kits and fills the form with the supplies; 💴 Pay refills the first empty kit instead of adding an item.
+- 🧪 Live: fail a medkit supplies check (1 on 1D6) → no restock button; 🛒 Buy gear → "Buy Medkit Supplies" fills the form →
+  source, pay → the kit counts again in the healing flow.
 
 ## 140. ✅ The resist card's soak-hits section looks clickable — it should be greyed out — `7ea7137a`
 

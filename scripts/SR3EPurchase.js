@@ -81,6 +81,12 @@ export const SR3EPurchase = {
 
     const etiquette = SR3EPurchase.etiquetteDice(actor);
 
+    // An empty medkit is refilled here, by buying Medkit Supplies (TODO 139, SR3 p.304) — never from the healing card.
+    const H = game.sr3e.SR3EHealing;
+    const empty = item ? [] : H.emptyMedkits(actor.items);
+    const supplies = H.MEDKIT_SUPPLIES;
+    const suppliesAvail = Purchasing.parseAvailability(supplies.availability);
+
     let result = null;
     await foundry.applications.api.DialogV2.wait({
       window: { title: `${actor.name}: buy ${item ? item.name : 'gear'} (${Purchasing.PAGE})` },
@@ -90,6 +96,9 @@ export const SR3EPurchase = {
           Successes divide the base time. ${avail.always ? '<strong>This item is "Always" available — no test needed.</strong>' : ''}
           ${avail.unknown && !avail.always ? '<strong style="color:var(--sr-amber)">This item has no Availability code — the GM sets one.</strong>' : ''}
         </p>
+        ${empty.length ? `<p style="font-size:11px;color:var(--sr-amber);margin:0 0 6px">
+          🧰 Out of supplies: ${empty.map(i => esc(i.name)).join(', ')}.
+          <button type="button" id="sr-buy-supplies" class="btn-sm">Buy ${esc(supplies.name)}</button></p>` : ''}
         <label style="display:block;margin-bottom:6px">Item
           <input type="text" id="sr-buy-name" value="${esc(item?.name ?? '')}" style="width:100%"/>
         </label>
@@ -171,6 +180,17 @@ export const SR3EPurchase = {
           }
         };
         con?.addEventListener('change', sync);
+        el.querySelector('#sr-buy-supplies')?.addEventListener('click', ev => {
+          ev.preventDefault();
+          const set = (id, v) => { const f = el.querySelector(id); if (f) f.value = v; };
+          set('#sr-buy-name', supplies.name);
+          set('#sr-buy-tn', suppliesAvail.tn);
+          set('#sr-buy-time', suppliesAvail.time);
+          set('#sr-buy-unit', suppliesAvail.unit);
+          set('#sr-buy-cost', supplies.cost);
+          set('#sr-buy-index', supplies.streetIndex);
+          sync();
+        });
         for (const id of ['#sr-buy-tn', '#sr-buy-time', '#sr-buy-cost', '#sr-buy-index', '#sr-buy-reduce', '#sr-buy-unit']) {
           el.querySelector(id)?.addEventListener('input', sync);
           el.querySelector(id)?.addEventListener('change', sync);
@@ -342,7 +362,13 @@ export const SR3EPurchase = {
       { ledgerReason: `Bought ${payload.name}` });
 
     let added = '';
-    if (payload.itemUuid) {
+    // Medkit Supplies refill the first empty medkit rather than landing on the sheet (TODO 139, SR3 p.304).
+    const H = game.sr3e.SR3EHealing;
+    const refill = H.isMedkitSupplies(payload.name) ? H.emptyMedkits(actor.items)[0] : null;
+    if (refill) {
+      await refill.unsetFlag('The2ndChumming3e', 'suppliesOut');
+      added = ` — ${refill.name} is restocked`;
+    } else if (payload.itemUuid) {
       const src = await fromUuid(payload.itemUuid).catch(() => null);
       if (src) {
         const data = src.toObject();

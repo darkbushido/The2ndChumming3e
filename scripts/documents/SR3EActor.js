@@ -4100,9 +4100,7 @@ _prepareCharacter(sys, attr) {
         // Successes." They carry to the soak, where they join the target's total that the
         // attacker's successes are compared with (p.113, `netStagedDamage`, TODO 165).
         const trackLabel = dp.isStun ? 'Stun' : 'Physical';
-        const soakBtn    = dp.isSpellSoak
-          ? SR3EActor._spellSoakButtonHtml({ ...dp, carriedSuccesses: carried })
-          : SR3EActor._soakButtonHtml({ ...dp, carriedSuccesses: carried });
+        const soakBtn    = SR3EActor._soakButtonHtml({ ...dp, carriedSuccesses: carried });
         const tieNote = (successes === atkHits && atkHits > 0)
           ? ' <span style="color:var(--sr-muted);font-size:11px">(a tie goes to the attacker)</span>'
           : '';
@@ -6146,30 +6144,6 @@ _prepareCharacter(sys, attr) {
       <div class="sr-soak-action">
         <button class="sr-soak-btn" data-payload='${soakPayload}'>
           🛡 ${targetName}: Resist Damage
-        </button>
-      </div>`;
-  }
-
-  static _spellSoakButtonHtml(payload) {
-    const targetActor      = game.actors.get(payload.targetActorId);
-    const targetName       = targetActor?.name ?? 'Target';
-    const spellSoakPayload = JSON.stringify({
-      actorId:         payload.targetActorId,
-      targetActorId:   payload.targetActorId,
-      attackerActorId: payload.attackerActorId,
-      isSpellSoak:     true,
-      spellType:       payload.spellType,
-      spellTarget:     payload.spellTarget ?? '',
-      force:           payload.force,
-      stagedPower:     payload.stagedPower,
-      stagedLevel:     payload.stagedLevel,
-      isStun:          payload.isStun,
-      rawDamage:       payload.rawDamage,
-    }).replace(/'/g, '&#39;');
-    return `
-      <div class="sr-soak-action">
-        <button class="sr-spell-soak-btn" data-payload='${spellSoakPayload}'>
-          🔮 ${targetName}: Resist Spell
         </button>
       </div>`;
   }

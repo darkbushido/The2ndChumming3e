@@ -502,6 +502,13 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'medkit-supplies-refill-any-kit',
+    suite:  'healing',
+    ...HEAL, method: 'emptyMedkits',
+    was:    'TODO 139: restocking ignored whether the kit had run out, so a stocked kit could be "refilled"',
+    impl:   function (items) { return [...(items ?? [])].filter(i => this.EQUIPMENT.medkit.test(String(i.name ?? ''))); },
+  },
+  {
     id:     'heal-own-patients-only',
     suite:  'healing',
     ...HEAL, method: 'patientsFor',
@@ -1795,6 +1802,22 @@ export const MUTANTS = [
           + 'Resistance Test". Every elemental spell went down the combat-spell path until 0.6: no '
           + 'dodge, a Willpower-only resist, no armour (rules-check 0.6.0, Finding 4)',
     impl:   () => false,
+  },
+  {
+    id:     'elemental-cast-at-flat-4',
+    suite:  'elemental-spells',
+    ...ITEM, method: 'spellTakesGMWindow',
+    was:    'SR3 p.183 - "Cover, visibility, injury and sustaining modifiers apply". The cast never '
+          + 'opened the GM\'s TN window, so a Flamethrower through Thermal Smoke was cast at a flat 4 (TODO 131)',
+    impl:   () => false,
+  },
+  {
+    id:     'elemental-touch-takes-cover',
+    suite:  'elemental-spells',
+    ...ITEM, method: 'spellTakesGMWindow',
+    was:    'SR3 p.182 - "Spells with a range of touch are not subject to cover or visibility modifiers" '
+          + '(the easy way to get TODO 131 wrong)',
+    impl:   category => /^\s*elemental\s*$/i.test(String(category ?? '')),
   },
   {
     id:     'elemental-level-fixed-at-moderate',
