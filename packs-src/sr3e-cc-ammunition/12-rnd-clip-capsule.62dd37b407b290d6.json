@@ -4,7 +4,7 @@
     "_id": "62dd37b407b290d6",
     "name": "12-Rnd Clip (Capsule)",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mag.svg",
     "effects": [],
     "folder": null,
     "flags": {

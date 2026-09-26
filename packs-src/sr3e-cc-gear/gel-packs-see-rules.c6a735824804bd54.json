@@ -4,7 +4,7 @@
     "_id": "c6a735824804bd54",
     "name": "Gel Packs (See Rules)",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-scanner.svg",
     "effects": [],
     "folder": null,
     "flags": {

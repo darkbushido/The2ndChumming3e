@@ -318,7 +318,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -353,7 +353,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -424,7 +424,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -459,7 +459,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -530,7 +530,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -565,7 +565,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -600,7 +600,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -635,7 +635,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -702,7 +702,7 @@
         "rating": 8
       },
       "_id": "DAGk1BlttPaotlVt",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -770,7 +770,7 @@
         "rating": null
       },
       "_id": "OAU5lzWbKIyo9TUe",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -847,7 +847,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -882,7 +882,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -917,7 +917,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -952,7 +952,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -987,7 +987,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -1090,7 +1090,7 @@
         "rating": null
       },
       "_id": "obWCsSDCStMoIyjO",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
       "effects": [],
       "folder": null,
       "sort": 0,

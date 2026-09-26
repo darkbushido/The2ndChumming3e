@@ -4,7 +4,7 @@
     "_id": "ceb3269120575733",
     "name": "Trapdoor Smart Mine",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mine.svg",
     "effects": [],
     "folder": null,
     "flags": {

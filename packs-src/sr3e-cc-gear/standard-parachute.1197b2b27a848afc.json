@@ -4,7 +4,7 @@
     "_id": "1197b2b27a848afc",
     "name": "Standard Parachute",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-camera.svg",
     "effects": [],
     "folder": null,
     "flags": {

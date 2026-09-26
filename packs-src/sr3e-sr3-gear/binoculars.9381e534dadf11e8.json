@@ -4,7 +4,7 @@
     "_id": "9381e534dadf11e8",
     "name": "Binoculars",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-goggles.svg",
     "effects": [],
     "folder": null,
     "flags": {

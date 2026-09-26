@@ -4,7 +4,7 @@
     "_id": "adbcc7f3e122f09b",
     "name": "50-Rnd Clip (Regular)",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mag.svg",
     "effects": [],
     "folder": null,
     "flags": {

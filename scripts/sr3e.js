@@ -9,6 +9,7 @@ import { SR3EActor } from './documents/SR3EActor.js';
 import { SR3EMigrations } from './SR3EMigrations.js';
 import { SR3EPackRepair } from './SR3EPackRepair.js';
 import { AmmoStock } from './data/ammo-stock.mjs';
+import { restockImage } from './data/item-icons.mjs';
 import { EssenceHoles } from './data/essence-holes.mjs';
 import { SR3EStress } from './SR3EStress.js';
 import { Stress } from './data/stress.mjs';
@@ -454,6 +455,20 @@ Hooks.on('preCreateItem', (document) => {
   if (parentType && document.type === 'armor' && document.getFlag('The2ndChumming3e', 'worn')) {
     document.updateSource({ 'flags.The2ndChumming3e.worn': false });
   }
+});
+
+/* No Foundry white icons (2026-09-26): an item created with a stock picture — Foundry's item bag, or
+ * the type's own — gets its type's drawn icon or painted texture (`scripts/data/item-icons.mjs`), and
+ * ammunition follows its gun class once a gun states one (`reload` stamps `gunClass`, SR3 p.279).
+ * ⚠ A picture someone chose is never touched (`isStockImage`). */
+Hooks.on('preCreateItem', (document) => {
+  const img = restockImage(document);
+  if (img) document.updateSource({ img });
+});
+Hooks.on('preUpdateItem', (document, changes) => {
+  if (document.type !== 'ammunition' || !foundry.utils.hasProperty(changes, 'system') || 'img' in changes) return;
+  const img = restockImage(foundry.utils.mergeObject(document.toObject(), changes, { inplace: false }));
+  if (img) changes.img = img;
 });
 
 // Auto-assign newly created Matrix/vehicle actors to their organisational folder,

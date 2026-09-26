@@ -4,7 +4,7 @@
     "_id": "751954c8013ba940",
     "name": "Assault Cannon Belt (100)",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-belt.svg",
     "effects": [],
     "folder": null,
     "flags": {

@@ -4,7 +4,7 @@
     "_id": "e63c3e64e0fe3e26",
     "name": "Barret Model 121 Rnds",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-rounds.svg",
     "effects": [],
     "folder": null,
     "flags": {

@@ -4,7 +4,7 @@
     "_id": "1b5fa4ec9c4b243e",
     "name": "Type III Maglock [9]",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-scanner.svg",
     "effects": [],
     "folder": null,
     "flags": {

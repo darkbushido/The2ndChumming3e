@@ -4,7 +4,7 @@
     "_id": "7a1ccebb71bd0ead",
     "name": "Taser Darts",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-dart.svg",
     "effects": [],
     "folder": null,
     "flags": {

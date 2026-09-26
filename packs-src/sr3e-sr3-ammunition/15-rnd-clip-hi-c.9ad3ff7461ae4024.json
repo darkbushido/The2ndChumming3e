@@ -4,7 +4,7 @@
     "_id": "9ad3ff7461ae4024",
     "name": "15-Rnd Clip (Hi-C)",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mag.svg",
     "effects": [],
     "folder": null,
     "flags": {

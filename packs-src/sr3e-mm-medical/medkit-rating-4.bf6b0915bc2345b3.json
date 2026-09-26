@@ -4,7 +4,7 @@
     "_id": "bf6b0915bc2345b3",
     "name": "Medkit Rating 4",
     "type": "medical",
-    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/medical-medkit.svg",
     "effects": [],
     "folder": null,
     "flags": {

@@ -4,7 +4,7 @@
     "_id": "7d4d36df6198cbe3",
     "name": "Ultrasound Goggles",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-scope.svg",
     "effects": [],
     "folder": null,
     "flags": {

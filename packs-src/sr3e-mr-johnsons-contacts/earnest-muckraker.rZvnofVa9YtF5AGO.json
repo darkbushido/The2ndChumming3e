@@ -399,7 +399,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -434,7 +434,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -508,7 +508,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -539,7 +539,7 @@
         "rating": null
       },
       "_id": "4fn0SfLEjW6a2Un8",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -575,7 +575,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -688,7 +688,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -723,7 +723,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -754,7 +754,7 @@
         "rating": null
       },
       "_id": "AhC5IXpaE6iQyrEl",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -786,7 +786,7 @@
         "rating": null
       },
       "_id": "EwoHqIgmE4uk8hg8",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -818,7 +818,7 @@
         "rating": null
       },
       "_id": "Fl9Q5lO0j3W3yTNw",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -850,7 +850,7 @@
         "rating": null
       },
       "_id": "Q6FQSjrMOasAyn3t",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -887,7 +887,7 @@
         "description": "<p><strong>Mag:</strong> 50x</p>"
       },
       "_id": "UqazoO2SPjwOhAzm",
-      "img": "icons/svg/chest.svg",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-goggles.svg",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -962,7 +962,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -1041,7 +1041,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -1076,7 +1076,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -1111,7 +1111,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -1151,7 +1151,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -1182,7 +1182,7 @@
         "rating": null
       },
       "_id": "dTsyEvqVCxowx2aL",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -1218,7 +1218,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -1262,7 +1262,7 @@
         "force": 0,
         "description": ""
       },
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -1293,7 +1293,7 @@
         "rating": null
       },
       "_id": "khuu7Ku2nqWAsD7q",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -1325,7 +1325,7 @@
         "rating": null
       },
       "_id": "yHf1Q6buIrTuWzmT",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
       "effects": [],
       "folder": null,
       "sort": 0,

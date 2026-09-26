@@ -4,7 +4,7 @@
     "_id": "16a12ba293dc1d06",
     "name": "Hollow Point Rnds",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-rounds.svg",
     "effects": [],
     "folder": null,
     "flags": {

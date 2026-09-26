@@ -4,7 +4,7 @@
     "_id": "edc82b8339ad027d",
     "name": "Ultrasound Shades",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-scope.svg",
     "effects": [],
     "folder": null,
     "flags": {

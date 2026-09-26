@@ -4,7 +4,7 @@
     "_id": "502166d1a80b9f2d",
     "name": "Gunsmith Shop",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-camera.svg",
     "effects": [],
     "folder": null,
     "flags": {

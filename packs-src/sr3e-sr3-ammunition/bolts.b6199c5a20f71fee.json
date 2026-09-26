@@ -4,7 +4,7 @@
     "_id": "b6199c5a20f71fee",
     "name": "Bolts",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-bolts.svg",
     "effects": [],
     "folder": null,
     "flags": {

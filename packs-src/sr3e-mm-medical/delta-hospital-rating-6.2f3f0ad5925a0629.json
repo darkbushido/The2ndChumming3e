@@ -4,7 +4,7 @@
     "_id": "2f3f0ad5925a0629",
     "name": "Delta Hospital Rating 6",
     "type": "medical",
-    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/medical-clinic.svg",
     "effects": [],
     "folder": null,
     "flags": {

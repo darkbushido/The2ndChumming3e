@@ -4,7 +4,7 @@
     "_id": "f2dd651bdf2e5619",
     "name": "5-Rnd Clip (APDS)",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mag.svg",
     "effects": [],
     "folder": null,
     "flags": {

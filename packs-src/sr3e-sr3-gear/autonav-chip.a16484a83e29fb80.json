@@ -4,7 +4,7 @@
     "_id": "a16484a83e29fb80",
     "name": "Autonav Chip",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-chip.svg",
     "effects": [],
     "folder": null,
     "flags": {

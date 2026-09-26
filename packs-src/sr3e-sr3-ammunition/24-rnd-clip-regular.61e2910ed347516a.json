@@ -4,7 +4,7 @@
     "_id": "61e2910ed347516a",
     "name": "24-Rnd Clip (Regular)",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mag.svg",
     "effects": [],
     "folder": null,
     "flags": {

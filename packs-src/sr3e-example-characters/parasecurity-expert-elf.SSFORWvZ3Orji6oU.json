@@ -281,7 +281,7 @@
         "description": ""
       },
       "_id": "3QfsVHfukzggT5w6",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -305,7 +305,7 @@
       "name": "Lined Coat",
       "type": "armor",
       "_id": "6tvKue0BRSFxifgi",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
       "system": {
         "concealability": "8",
         "ballistic": 4,
@@ -351,7 +351,7 @@
         "description": ""
       },
       "_id": "EVZMQwKyctmuQ5GB",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -386,7 +386,7 @@
         "description": ""
       },
       "_id": "IsO3CCgGfa4qyqAu",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -410,7 +410,7 @@
       "name": "Remington 750",
       "type": "firearm",
       "_id": "LFEf0cKRYjo8ZbkB",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
       "system": {
         "category": "SptR",
         "concealability": "3",
@@ -454,7 +454,7 @@
       "name": "Rifle Clip Ammo",
       "type": "ammunition",
       "_id": "NYPvTP0dCKJI4pKZ",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/icons/ammo-rounds.svg",
       "system": {
         "concealability": "",
         "damage": "",
@@ -502,7 +502,7 @@
         "description": ""
       },
       "_id": "Q6PTrO72jpZEYYIa",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -537,7 +537,7 @@
         "description": ""
       },
       "_id": "Rq4EvbRQ9Fxh9Pf8",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -572,7 +572,7 @@
         "description": ""
       },
       "_id": "dGsziqY6ErpAjcWX",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -607,7 +607,7 @@
         "description": ""
       },
       "_id": "f46igybDXaqMdalw",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -647,7 +647,7 @@
         "description": ""
       },
       "_id": "jbVEIlpsvPSxNJZQ",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -687,7 +687,7 @@
         "description": ""
       },
       "_id": "oCidLuGK61TBU8nA",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -722,7 +722,7 @@
         "description": ""
       },
       "_id": "p40WNTglqXgzHn5U",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -757,7 +757,7 @@
         "description": ""
       },
       "_id": "t5fiPUBw7pi5VSMc",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -797,7 +797,7 @@
         "description": ""
       },
       "_id": "tV3RYmdlWqgM1cvs",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,

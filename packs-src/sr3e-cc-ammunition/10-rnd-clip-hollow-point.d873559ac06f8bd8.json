@@ -4,7 +4,7 @@
     "_id": "d873559ac06f8bd8",
     "name": "10-Rnd Clip (Hollow Point)",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mag.svg",
     "effects": [],
     "folder": null,
     "flags": {

@@ -4,7 +4,7 @@
     "_id": "a679791f49e3d215",
     "name": "18-Rnd Clip (EX Explosive)",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mag.svg",
     "effects": [],
     "folder": null,
     "flags": {

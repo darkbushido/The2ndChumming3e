@@ -4,7 +4,7 @@
     "_id": "54fa5f1837bc187c",
     "name": "Scuba Tank",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-camera.svg",
     "effects": [],
     "folder": null,
     "flags": {

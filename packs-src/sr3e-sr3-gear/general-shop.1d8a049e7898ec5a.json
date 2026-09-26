@@ -4,7 +4,7 @@
     "_id": "1d8a049e7898ec5a",
     "name": "General Shop",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-camera.svg",
     "effects": [],
     "folder": null,
     "flags": {

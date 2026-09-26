@@ -4,7 +4,7 @@
     "_id": "4120e16c49affe62",
     "name": "Satellite Dish - Temporary",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-camera.svg",
     "effects": [],
     "folder": null,
     "flags": {

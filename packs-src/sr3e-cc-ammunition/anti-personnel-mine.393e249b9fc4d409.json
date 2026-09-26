@@ -4,7 +4,7 @@
     "_id": "393e249b9fc4d409",
     "name": "Anti-Personnel Mine",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mine.svg",
     "effects": [],
     "folder": null,
     "flags": {

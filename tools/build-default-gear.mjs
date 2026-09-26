@@ -42,6 +42,7 @@ import { PLAYABLE_EDITIONS } from '../scripts/config.js';
 // The system's own rating reader — the name, then GEAR_RATINGS — so a generated item agrees with
 // `itemRating`, migration 0.5.2 and `tools/patch-name-ratings.mjs`, which would otherwise fill it later.
 import { knownRating, ratingFromName } from '../scripts/data/item-rating.mjs';
+import { defaultImage } from '../scripts/data/item-icons.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, '..');
@@ -82,12 +83,7 @@ export const CATEGORY_TYPE = {
 };
 const PACK_SUFFIX = { gear: 'gear', medical: 'medical', ammunition: 'ammunition', drug: 'drugs', armor: 'armor' };
 const FOLDER = { gear: 'Gear', medical: 'Medical', ammunition: 'Ammunition', drug: 'Drugs & Toxins', armor: 'Armor' };
-const IMG = {
-  gear: 'icons/svg/chest.svg', ammunition: 'icons/svg/skull.svg',
-  medical: 'systems/The2ndChumming3e/styles/textures/medical-default.webp',
-  drug: 'systems/The2ndChumming3e/styles/textures/drugs-default.webp',
-  armor: 'systems/The2ndChumming3e/styles/textures/armour-default.webp',
-};
+
 
 /* ── Pure helpers (tested) ────────────────────────────────────────────────────────────────── */
 
@@ -139,8 +135,14 @@ const extras = (r, skip) => Object.entries(r)
   .filter(([k, v]) => !skip.includes(k) && !['Name', 'BookPage', 'attributes', 'entries'].includes(k) && v !== '' && v !== '-' && typeof v !== 'object')
   .map(([k, v]) => `<strong>${k.replace(/:$/, '')}:</strong> ${v}`).join('<br>');
 
-/** One upstream row → the document to write, or null when out of scope. Pure. */
+/** One upstream row → the document to write, or null when out of scope, with its picture (item-icons.mjs). Pure. */
 export function docFor(row, category, edition) {
+  const doc = rowDoc(row, category, edition);
+  if (doc) doc.img = defaultImage(doc);
+  return doc;
+}
+
+function rowDoc(row, category, edition) {
   // Arrows and bolts are AMMUNITION the generator files under "Bow and crossbow" — the nocked-ammo
   // flow matches them by the `arrow` / `bolt` mechanism (TODO 91). The bows themselves stay out.
   const missile = category === 'Bow and crossbow' && /\b(arrows?|bolts?)\s*$/i.exec(cleanName(row.Name));
@@ -152,7 +154,7 @@ export function docFor(row, category, edition) {
   if (!EDITION_BOOKS[edition].includes(book)) return null;
   const type = type0 === 'ammunition' && /^spare clip/i.test(name) ? 'gear' : type0;
   const base = {
-    _id: idFor(`${GENERATOR}|${book}|${type}|${normName(name)}`), name, type, img: IMG[type],
+    _id: idFor(`${GENERATOR}|${book}|${type}|${normName(name)}`), name, type, img: null,
     effects: [], folder: null, flags: { The2ndChumming3e: { generatedBy: GENERATOR, upstreamCategory: category } },
   };
   // `cost` is an INTEGER field on every item type — a fractional book price (".5") would fail

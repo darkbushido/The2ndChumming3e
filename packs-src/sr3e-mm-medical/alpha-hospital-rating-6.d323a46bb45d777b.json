@@ -4,7 +4,7 @@
     "_id": "d323a46bb45d777b",
     "name": "Alpha Hospital Rating 6",
     "type": "medical",
-    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/medical-clinic.svg",
     "effects": [],
     "folder": null,
     "flags": {

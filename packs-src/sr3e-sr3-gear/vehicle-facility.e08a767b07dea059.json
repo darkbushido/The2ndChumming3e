@@ -4,7 +4,7 @@
     "_id": "e08a767b07dea059",
     "name": "Vehicle Facility",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-camera.svg",
     "effects": [],
     "folder": null,
     "flags": {

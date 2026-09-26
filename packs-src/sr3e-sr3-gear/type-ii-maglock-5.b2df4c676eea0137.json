@@ -4,7 +4,7 @@
     "_id": "b2df4c676eea0137",
     "name": "Type II Maglock [5]",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-scanner.svg",
     "effects": [],
     "folder": null,
     "flags": {

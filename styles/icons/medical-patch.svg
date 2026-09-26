@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+<filter id="neon" filterUnits="userSpaceOnUse" x="-16" y="-16" width="160" height="160"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000" flood-opacity="0.8"/></filter>
+</defs>
+<rect width="128" height="128" rx="6" fill="#1b1c1f"/>
+<path d="M16 0V128M0 16H128M32 0V128M0 32H128M48 0V128M0 48H128M64 0V128M0 64H128M80 0V128M0 80H128M96 0V128M0 96H128M112 0V128M0 112H128" stroke="#fff" stroke-opacity="0.045" stroke-width="1"/>
+<rect x="3" y="3" width="122" height="122" rx="4" fill="none" stroke="#3a3b40" stroke-width="6" filter="url(#shadow)"/>
+<rect x="3" y="3" width="122" height="122" rx="4" fill="none" stroke="#4a4b50" stroke-width="2"/>
+<path d="M40 3H88" stroke="#5dffa0" stroke-width="3" filter="url(#neon)"/>
+<g filter="url(#shadow)" fill="#35363b" stroke="#64656a" stroke-width="2" stroke-linejoin="round">
+<rect x="28" y="28" width="72" height="72" rx="18" transform="rotate(15 64 64)"/>
+<rect x="42" y="42" width="44" height="44" rx="10" transform="rotate(15 64 64)" fill="#131416" stroke="none"/>
+<path d="M58 50 H70 V58 H78 V70 H70 V78 H58 V70 H50 V58 H58 Z" transform="rotate(15 64 64)" fill="#5dffa0" stroke="none" filter="url(#neon)"/>
+</g>
+</svg>

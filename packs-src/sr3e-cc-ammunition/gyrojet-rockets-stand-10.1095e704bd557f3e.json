@@ -4,7 +4,7 @@
     "_id": "1095e704bd557f3e",
     "name": "Gyrojet Rockets (Stand.)(10)",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-rocket.svg",
     "effects": [],
     "folder": null,
     "flags": {

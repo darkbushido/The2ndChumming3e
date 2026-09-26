@@ -4,7 +4,7 @@
     "_id": "add7c1d2a4491ef4",
     "name": "5-Rnd Clip (Explosive)",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mag.svg",
     "effects": [],
     "folder": null,
     "flags": {

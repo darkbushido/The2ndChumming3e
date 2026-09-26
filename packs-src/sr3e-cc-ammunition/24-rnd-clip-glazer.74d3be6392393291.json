@@ -4,7 +4,7 @@
     "_id": "74d3be6392393291",
     "name": "24-Rnd Clip (Glazer)",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mag.svg",
     "effects": [],
     "folder": null,
     "flags": {

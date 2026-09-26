@@ -4,7 +4,7 @@
     "_id": "a18c5751cb83c621",
     "name": "Smoke (IR) Mortar Round",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mortar.svg",
     "effects": [],
     "folder": null,
     "flags": {

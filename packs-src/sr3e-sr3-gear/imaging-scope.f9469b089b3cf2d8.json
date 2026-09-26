@@ -4,7 +4,7 @@
     "_id": "f9469b089b3cf2d8",
     "name": "Imaging Scope",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-scope.svg",
     "effects": [],
     "folder": null,
     "flags": {

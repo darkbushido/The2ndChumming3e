@@ -278,7 +278,7 @@
       "name": "Military Procedures",
       "type": "skill",
       "_id": "3m738muf5VIv7Nsf",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "system": {
         "rating": 1,
         "force": 0,
@@ -324,7 +324,7 @@
         "description": ""
       },
       "_id": "3zTmWoDtymgveySQ",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -359,7 +359,7 @@
         "description": ""
       },
       "_id": "3zcygMjYFc8s6wml",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -394,7 +394,7 @@
         "description": ""
       },
       "_id": "49HmhO4pIv5AKXOG",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -418,7 +418,7 @@
       "name": "Mercenary Hotspots",
       "type": "skill",
       "_id": "5Ci7U6k1btLfJ5rH",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "system": {
         "rating": 4,
         "force": 0,
@@ -464,7 +464,7 @@
         "description": ""
       },
       "_id": "Bui9aUjnIBvyZQmn",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -488,7 +488,7 @@
       "name": "Muscle Replacement [2]",
       "type": "cyberware",
       "_id": "EuoSrYrBheJZSqWS",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
       "system": {
         "essenceCost": 2,
         "grade": "Standard",
@@ -543,7 +543,7 @@
       "name": "War History",
       "type": "skill",
       "_id": "GO2MYiyQwXtVCfH3",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "system": {
         "rating": 5,
         "force": 0,
@@ -578,7 +578,7 @@
       "name": "Security Companies",
       "type": "skill",
       "_id": "KpPIDdZT85rn1xvh",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "system": {
         "rating": 1,
         "force": 0,
@@ -624,7 +624,7 @@
         "description": ""
       },
       "_id": "QnH7nOT2iQ3ibJbu",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -659,7 +659,7 @@
         "description": ""
       },
       "_id": "TVrDeneMuroowrn5",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -694,7 +694,7 @@
         "description": ""
       },
       "_id": "UevtsGQ1wee2sY0W",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -729,7 +729,7 @@
         "description": ""
       },
       "_id": "UyIsIYJQBNFtv0fe",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -753,7 +753,7 @@
       "name": "Smartlink II",
       "type": "cyberware",
       "_id": "YMovxBTLltBDN1wL",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
       "system": {
         "essenceCost": 0.5,
         "grade": "Standard",
@@ -823,7 +823,7 @@
         "description": ""
       },
       "_id": "azeG5M1QSlb2B3Kk",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -858,7 +858,7 @@
         "description": ""
       },
       "_id": "ciwmLiMLoID4Usl1",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -882,7 +882,7 @@
       "name": "Eyes, Flare Compensation",
       "type": "cyberware",
       "_id": "dR8Cfv3rGERrYr9L",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
       "system": {
         "essenceCost": 0.1,
         "grade": "Standard",
@@ -944,7 +944,7 @@
         "description": ""
       },
       "_id": "m6kbHVPCWtGtH8Yy",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -968,7 +968,7 @@
       "name": "Bone Lace, Plastic",
       "type": "cyberware",
       "_id": "myDwcoGZolpPmllm",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
       "system": {
         "essenceCost": 0.4,
         "grade": "Alpha",
@@ -1018,7 +1018,7 @@
       "name": "Nepoleonic Miniatures",
       "type": "skill",
       "_id": "n9C4dFeIPJkV6Co6",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "system": {
         "rating": 3,
         "force": 0,
@@ -1064,7 +1064,7 @@
         "description": ""
       },
       "_id": "pgFlZKRStlgcuvOP",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -1088,7 +1088,7 @@
       "name": "Wired Reflexes [2]",
       "type": "cyberware",
       "_id": "uuVDArUrxB7Rzb2w",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
       "system": {
         "essenceCost": 3,
         "grade": "Standard",
@@ -1153,7 +1153,7 @@
         "description": ""
       },
       "_id": "zMpYsy7DPRJMVzGv",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,

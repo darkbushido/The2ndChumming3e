@@ -4,7 +4,7 @@
     "_id": "213edd440e627f8c",
     "name": "Big D (Cost 200¥)",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-rounds.svg",
     "effects": [],
     "folder": null,
     "flags": {

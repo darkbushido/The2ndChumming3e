@@ -4,7 +4,7 @@
     "_id": "2e09739fbdae9db1",
     "name": "Stimulant Patch [4]",
     "type": "medical",
-    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/medical-patch.svg",
     "effects": [],
     "folder": null,
     "flags": {

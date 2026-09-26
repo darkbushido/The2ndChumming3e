@@ -4,7 +4,7 @@
     "_id": "976602e6699640ce",
     "name": "Hospital Rating 9",
     "type": "medical",
-    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/medical-clinic.svg",
     "effects": [],
     "folder": null,
     "flags": {

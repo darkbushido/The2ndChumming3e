@@ -4,7 +4,7 @@
     "_id": "7a73d1416f0ca409",
     "name": "Seeker Round B",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-rounds.svg",
     "effects": [],
     "folder": null,
     "flags": {

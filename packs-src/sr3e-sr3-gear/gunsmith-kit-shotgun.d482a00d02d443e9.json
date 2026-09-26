@@ -4,7 +4,7 @@
     "_id": "d482a00d02d443e9",
     "name": "Gunsmith Kit (Shotgun)",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-camera.svg",
     "effects": [],
     "folder": null,
     "flags": {

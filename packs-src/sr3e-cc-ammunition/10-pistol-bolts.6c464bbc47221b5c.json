@@ -4,7 +4,7 @@
     "_id": "6c464bbc47221b5c",
     "name": "10 Pistol Bolts",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-bolts.svg",
     "effects": [],
     "folder": null,
     "flags": {

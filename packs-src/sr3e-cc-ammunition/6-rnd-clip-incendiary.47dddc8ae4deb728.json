@@ -4,7 +4,7 @@
     "_id": "47dddc8ae4deb728",
     "name": "6-Rnd Clip (Incendiary)",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mag.svg",
     "effects": [],
     "folder": null,
     "flags": {

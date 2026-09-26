@@ -4,7 +4,7 @@
     "_id": "3fe1b32de2a2d153",
     "name": "Witch",
     "type": "medical",
-    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/medical-medkit.svg",
     "effects": [],
     "folder": null,
     "flags": {

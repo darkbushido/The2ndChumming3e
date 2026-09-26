@@ -4,7 +4,7 @@
     "_id": "1ef1d37316e155fb",
     "name": "Stabilization Unit",
     "type": "medical",
-    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/medical-medkit.svg",
     "effects": [],
     "folder": null,
     "flags": {

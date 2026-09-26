@@ -4,7 +4,7 @@
     "_id": "8bddbdf95f45fb07",
     "name": "Dart, Insecticide",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-dart.svg",
     "effects": [],
     "folder": null,
     "flags": {

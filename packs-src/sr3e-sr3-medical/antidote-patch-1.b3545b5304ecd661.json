@@ -4,7 +4,7 @@
     "_id": "b3545b5304ecd661",
     "name": "Antidote Patch [1]",
     "type": "medical",
-    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/medical-patch.svg",
     "effects": [],
     "folder": null,
     "flags": {

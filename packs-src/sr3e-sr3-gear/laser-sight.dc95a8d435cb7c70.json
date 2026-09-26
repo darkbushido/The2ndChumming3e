@@ -4,7 +4,7 @@
     "_id": "dc95a8d435cb7c70",
     "name": "Laser Sight",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-scope.svg",
     "effects": [],
     "folder": null,
     "flags": {

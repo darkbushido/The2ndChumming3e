@@ -4,7 +4,7 @@
     "_id": "d598bcf6e3396f34",
     "name": "50-Rnd Clip (Stun Shells)",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mag.svg",
     "effects": [],
     "folder": null,
     "flags": {

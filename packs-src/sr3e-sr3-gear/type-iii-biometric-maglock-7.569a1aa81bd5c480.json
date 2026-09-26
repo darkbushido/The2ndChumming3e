@@ -4,7 +4,7 @@
     "_id": "569a1aa81bd5c480",
     "name": "Type III Biometric Maglock [7]",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-scanner.svg",
     "effects": [],
     "folder": null,
     "flags": {

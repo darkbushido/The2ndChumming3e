@@ -4,7 +4,7 @@
     "_id": "26fcc1813c323523",
     "name": "38-Rnd Clip (Gel)",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mag.svg",
     "effects": [],
     "folder": null,
     "flags": {

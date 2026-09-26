@@ -275,7 +275,7 @@
       "name": "Vehicle Control Rig [3]",
       "type": "cyberware",
       "_id": "106gKbJmPO5WGZjM",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
       "system": {
         "essenceCost": 5,
         "grade": "Standard",
@@ -337,7 +337,7 @@
         "description": ""
       },
       "_id": "4XhYKhJbRoTJIi9I",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -361,7 +361,7 @@
       "name": "Weapon Systems",
       "type": "skill",
       "_id": "6SYnUXuAALKun56W",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "system": {
         "rating": 5,
         "force": 0,
@@ -407,7 +407,7 @@
         "description": ""
       },
       "_id": "EcM6b67Rxqj7Stf4",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -431,7 +431,7 @@
       "name": "Chess",
       "type": "skill",
       "_id": "EwWsOL54w6GGJFtn",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "system": {
         "rating": 5,
         "force": 0,
@@ -466,7 +466,7 @@
       "name": "Eyes, Flare Compensation",
       "type": "cyberware",
       "_id": "JZP4BwB8JXvKNUy6",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
       "system": {
         "essenceCost": 0.5,
         "grade": "Standard",
@@ -528,7 +528,7 @@
         "description": ""
       },
       "_id": "MC3eCqdMWLpTnIm8",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -552,7 +552,7 @@
       "name": "Ares Predator II",
       "type": "firearm",
       "_id": "MmkZa0S4gu0bfkVM",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
       "system": {
         "category": "HPist",
         "concealability": "4",
@@ -596,7 +596,7 @@
       "name": "Datajack",
       "type": "cyberware",
       "_id": "OJua3qw76Uc4TDUm",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
       "system": {
         "essenceCost": 0.2,
         "grade": "Standard",
@@ -657,7 +657,7 @@
         "description": ""
       },
       "_id": "PIbwZzT09T7g4LxX",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -681,7 +681,7 @@
       "name": "Armor Jacket",
       "type": "armor",
       "_id": "RFNYg68Z9PB8lUDD",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
       "system": {
         "concealability": "6",
         "ballistic": 5,
@@ -727,7 +727,7 @@
         "description": ""
       },
       "_id": "Tb6g38Qe9wNC9K8k",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -751,7 +751,7 @@
       "name": "Power Grids",
       "type": "skill",
       "_id": "UTy0VAJDsBtvF8Wp",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "system": {
         "rating": 6,
         "force": 0,
@@ -786,7 +786,7 @@
       "name": "Heavy Pistol Clip Ammo",
       "type": "ammunition",
       "_id": "V35U51KAELvr7xWL",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/icons/ammo-rounds.svg",
       "system": {
         "concealability": "",
         "damage": "",
@@ -834,7 +834,7 @@
         "description": ""
       },
       "_id": "j4vYcjIjqqR5YNwT",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -858,7 +858,7 @@
       "name": "Remote Control ECCM [5]",
       "type": "cyberware",
       "_id": "jIVa6EtSwycDqMcP",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
       "system": {
         "essenceCost": 0,
         "grade": "Standard",
@@ -932,7 +932,7 @@
         "description": ""
       },
       "_id": "nBVV8oArM00Omlrj",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -976,7 +976,7 @@
         "description": ""
       },
       "_id": "pBTPLo02tDyvrVsE",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -1000,7 +1000,7 @@
       "name": "Lined Coat",
       "type": "armor",
       "_id": "ycvwJd6dCQ9PzZ10",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
       "system": {
         "concealability": "8",
         "ballistic": 4,
@@ -1035,7 +1035,7 @@
       "name": "Remote Control Deck [6]",
       "type": "cyberware",
       "_id": "zLzFbjm6mGVXHMrD",
-      "img": "icons/svg/item-bag.svg",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
       "system": {
         "essenceCost": 0,
         "grade": "Standard",

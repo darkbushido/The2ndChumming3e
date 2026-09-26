@@ -4,7 +4,7 @@
     "_id": "67ac6207a49940ab",
     "name": "Handset Cell Phone",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-commlink.svg",
     "effects": [],
     "folder": null,
     "flags": {

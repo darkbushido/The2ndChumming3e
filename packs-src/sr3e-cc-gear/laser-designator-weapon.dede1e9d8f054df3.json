@@ -4,7 +4,7 @@
     "_id": "dede1e9d8f054df3",
     "name": "Laser Designator (Weapon)",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-scope.svg",
     "effects": [],
     "folder": null,
     "flags": {

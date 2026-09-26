@@ -4,7 +4,7 @@
     "_id": "be747a8a0c3ce632",
     "name": "Ascent (Cost 75¥)",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-camera.svg",
     "effects": [],
     "folder": null,
     "flags": {

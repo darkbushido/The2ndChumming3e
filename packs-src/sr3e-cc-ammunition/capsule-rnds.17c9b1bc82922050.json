@@ -4,7 +4,7 @@
     "_id": "17c9b1bc82922050",
     "name": "Capsule Rnds",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-rounds.svg",
     "effects": [],
     "folder": null,
     "flags": {

@@ -4,7 +4,7 @@
     "_id": "18fa87bb2215256d",
     "name": "Anti-Vehicle Mine",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mine.svg",
     "effects": [],
     "folder": null,
     "flags": {

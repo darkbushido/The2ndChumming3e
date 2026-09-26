@@ -4,7 +4,7 @@
     "_id": "f99c712313da1699",
     "name": "Disk Drive",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-cable.svg",
     "effects": [],
     "folder": null,
     "flags": {

@@ -4,7 +4,7 @@
     "_id": "4ab38a6d65e51dc5",
     "name": "Ranger-X Arrows",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-arrows.svg",
     "effects": [],
     "folder": null,
     "flags": {

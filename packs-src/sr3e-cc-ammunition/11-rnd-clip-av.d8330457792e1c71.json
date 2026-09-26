@@ -4,7 +4,7 @@
     "_id": "d8330457792e1c71",
     "name": "11-Rnd Clip (AV)",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mag.svg",
     "effects": [],
     "folder": null,
     "flags": {

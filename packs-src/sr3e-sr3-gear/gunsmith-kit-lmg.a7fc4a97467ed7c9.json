@@ -4,7 +4,7 @@
     "_id": "a7fc4a97467ed7c9",
     "name": "Gunsmith Kit (LMG)",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-camera.svg",
     "effects": [],
     "folder": null,
     "flags": {

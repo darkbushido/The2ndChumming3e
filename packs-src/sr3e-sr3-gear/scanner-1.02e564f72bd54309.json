@@ -4,7 +4,7 @@
     "_id": "02e564f72bd54309",
     "name": "Scanner [1]",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-scanner.svg",
     "effects": [],
     "folder": null,
     "flags": {

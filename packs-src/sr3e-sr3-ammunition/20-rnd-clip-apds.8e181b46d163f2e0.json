@@ -4,7 +4,7 @@
     "_id": "8e181b46d163f2e0",
     "name": "20-Rnd Clip (APDS)",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mag.svg",
     "effects": [],
     "folder": null,
     "flags": {

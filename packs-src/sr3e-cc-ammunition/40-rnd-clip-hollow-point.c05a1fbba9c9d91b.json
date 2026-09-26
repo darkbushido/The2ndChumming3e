@@ -4,7 +4,7 @@
     "_id": "c05a1fbba9c9d91b",
     "name": "40-Rnd Clip (Hollow Point)",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mag.svg",
     "effects": [],
     "folder": null,
     "flags": {

@@ -4,7 +4,7 @@
     "_id": "8a25d1e83f1cccba",
     "name": "Delta Medical Clinic Rating 2",
     "type": "medical",
-    "img": "systems/The2ndChumming3e/styles/textures/medical-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/medical-clinic.svg",
     "effects": [],
     "folder": null,
     "flags": {

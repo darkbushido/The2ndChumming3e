@@ -4,7 +4,7 @@
     "_id": "fe4b22f2846bd464",
     "name": "28-Rnd Clip (Incendiary)",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mag.svg",
     "effects": [],
     "folder": null,
     "flags": {

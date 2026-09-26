@@ -4,7 +4,7 @@
     "_id": "e196aedd9a05b073",
     "name": "Wet Suit",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-camera.svg",
     "effects": [],
     "folder": null,
     "flags": {

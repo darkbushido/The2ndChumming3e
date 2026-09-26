@@ -4,7 +4,7 @@
     "_id": "1f496432af28095e",
     "name": "Grenade Link",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-scope.svg",
     "effects": [],
     "folder": null,
     "flags": {

@@ -4,7 +4,7 @@
     "_id": "09096f326473bffc",
     "name": "Splash Mortar Round B",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mortar.svg",
     "effects": [],
     "folder": null,
     "flags": {

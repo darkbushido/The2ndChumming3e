@@ -4,7 +4,7 @@
     "_id": "39f6ba7be1219271",
     "name": "Liquid Breathing Apparatus",
     "type": "gear",
-    "img": "icons/svg/chest.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-camera.svg",
     "effects": [],
     "folder": null,
     "flags": {

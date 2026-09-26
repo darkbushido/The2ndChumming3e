@@ -4,7 +4,7 @@
     "_id": "48f73bede03fd26b",
     "name": "10-Rnd Clip (Flare)",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mag.svg",
     "effects": [],
     "folder": null,
     "flags": {

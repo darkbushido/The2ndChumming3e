@@ -36,6 +36,7 @@ import { readFileSync, writeFileSync, readdirSync, existsSync, unlinkSync } from
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { MiniGrenade } from '../scripts/data/mini-grenade.mjs';
+import { defaultImage } from '../scripts/data/item-icons.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DIR  = join(root, 'packs-src', 'sr3e-sr3-projectiles');
@@ -78,6 +79,8 @@ const ROWS = [
 ];
 
 const IMG = 'systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp';
+/** A mini-grenade is ammunition: the drawn icon (scripts/data/item-icons.mjs). */
+const MINI_IMG = defaultImage({ type: 'ammunition', system: { loadMechanism: 'm' } });
 
 /** Every grenade row but the Flash-Pak comes as a mini-grenade. */
 const hasMini = row => row.name !== 'Flash-Pak';
@@ -124,7 +127,7 @@ function buildMiniDoc(row) {
       },
       effects: [],
       flags: { The2ndChumming3e: { generatedBy: 'build-core-grenades' } },
-      img: IMG,
+      img: MINI_IMG,
     },
     embedded: {},
   };

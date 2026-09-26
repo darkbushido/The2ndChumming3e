@@ -4,7 +4,7 @@
     "_id": "3651fb9d310dcf7b",
     "name": "14-Rnd Clip (APDS)",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-mag.svg",
     "effects": [],
     "folder": null,
     "flags": {

@@ -4,7 +4,7 @@
     "_id": "4fb05083db64fc8d",
     "name": "Regular Rnds",
     "type": "ammunition",
-    "img": "icons/svg/skull.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/ammo-rounds.svg",
     "effects": [],
     "folder": null,
     "flags": {
